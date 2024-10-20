@@ -3,7 +3,7 @@
   "version": "8.2.3",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --port 4201",
+    "start": "ng serve --port 4200",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "rtl": "webpack --config=rtl.config.js",
@@ -28,7 +28,7 @@
     "@ngx-translate/core": "15.0.0",
     "@ngx-translate/http-loader": "8.0.0",
     "@popperjs/core": "2.11.8",
-    "@sweetalert2/ngx-sweetalert2": "^12.2.0",
+    "@sweetalert2/ngx-sweetalert2": "^12.4.0",
     "angular-datatables": "^17.0.0",
     "angular-in-memory-web-api": "^0.16.0",
     "animate.css": "4.1.1",
