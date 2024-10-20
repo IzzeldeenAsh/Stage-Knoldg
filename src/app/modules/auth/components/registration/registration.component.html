@@ -1,0 +1,86 @@
+<form class="form w-100 p-10" novalidate="novalidate" id="kt_login_signup_form" [formGroup]="registrationForm"
+  (ngSubmit)="submit()">
+  
+  <!--begin::Heading-->
+  <div class="text-center mb-5">
+    <!--begin::Title-->
+    <h1 class="text-gray-900 fs-5 fw-bolder mb-3">
+      {{ 'AUTH.REGISTRATION.SIGN_UP' | translate }}
+    </h1>
+    <!--end::Title-->
+  </div>
+  <!--end::Heading-->
+
+  <!--begin::Login options-->
+  <!-- <div class="row g-3 mb-4">
+    <div class="col-md-6">
+      <a href="#"
+        class="btn fs-7 btn-flex btn-outline btn-text-gray-700 btn-active-color-primary bg-state-light flex-center text-nowrap w-100">
+        <img alt="Logo" src="./assets/media/svg/brand-logos/google-icon.svg" class="h-15px mx-3" />
+        {{ 'AUTH.REGISTRATION.USE_GOOGLE' | translate }}
+      </a>
+    </div>
+
+    <div class="col-md-6">
+      <a href="#"
+        class="btn fs-7 btn-flex btn-outline btn-text-gray-700 btn-active-color-primary bg-state-light flex-center text-nowrap w-100">
+        <img alt="Logo" src="./assets/media/svg/brand-logos/linkedin-2.svg" class="h-15px mx-3" />
+        {{ 'AUTH.REGISTRATION.USE_LINKEDIN' | translate }}
+      </a>
+    </div>
+  </div> -->
+  <!--end::Login options-->
+
+  <!--begin::Separator-->
+  <!-- <div class="separator separator-content my-8">
+    <span class="w-125px text-gray-500 fw-semibold fs-7">{{ 'AUTH.REGISTRATION.OR_WITH_EMAIL' | translate }}</span>
+  </div> -->
+  <!--end::Separator-->
+
+  <!-- begin::Alert error-->
+  <ng-container *ngIf="hasError">
+    <div class="mb-lg-15 alert alert-danger">
+      <div class="alert-text font-weight-bold">
+        {{ 'AUTH.REGISTRATION.ERROR' | translate }}
+      </div>
+    </div>
+  </ng-container>
+  <!-- end::Alert error-->
+
+  <!--begin::Form group-->
+  <div class="d-grid mb-10">
+    <button type="submit" id="kt_sign_up_submit" [disabled]="
+        registrationForm.invalid || !registrationForm.controls['agree'].value
+      " class="btn btn-primary">
+      <ng-container *ngIf="(isLoading$ | async) === false">
+        <span class="indicator-label">{{ 'AUTH.REGISTRATION.SUBMIT' | translate }}</span>
+      </ng-container>
+      <ng-container *ngIf="isLoading$ | async">
+        <span class="indicator-progress" [style.display]="'block'">
+          {{ 'AUTH.REGISTRATION.PLEASE_WAIT' | translate }}
+          <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+        </span>
+      </ng-container>
+    </button>
+  </div>
+  <!--end::Form group-->
+
+  <!--begin::Sign up-->
+  <div class="text-gray-500 text-center fw-semibold fs-6">
+    {{ 'AUTH.REGISTRATION.ALREADY_HAVE_ACCOUNT' | translate }}
+    <a routerLink="/auth/login" class="link-primary fw-semibold">{{ 'AUTH.REGISTRATION.SIGN_IN' | translate }}</a>
+  </div>
+  <!--end::Sign up-->
+</form>
+
+<ng-template #formError let-control="control" let-message="message" let-validation="validation">
+  <ng-container *ngIf="control.hasError(validation) && (control.dirty || control.touched)">
+    <div class="fv-plugins-message-container">
+      <div class="fv-help-block">
+        <span role="alert">
+          {{ message }}
+        </span>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>

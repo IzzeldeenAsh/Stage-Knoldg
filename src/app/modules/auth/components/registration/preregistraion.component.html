@@ -1,0 +1,592 @@
+<!-- <div id="splash-screen" class="splash-screen" *ngIf="(isLoadingConsultingFields$ | async) || (isLoadingIsicCodes$|async) || (isLoadingCountires$|async) || (isLoadingHSCodes$ | async)">
+  <img src="./assets/media/logos/default-small.svg" alt="Metronic logo" />
+  <span>Loading ...</span>
+</div> -->
+
+<div class="row p-15 p-lg-10 h-100vh">
+  <div
+    class="col-lg-6 mil-up d-flex justify-content-center align-items-center pt-4 order-lg-1 order-2"
+  >
+    <div class="w-90">
+      <p-messages [(value)]="messages" [enableService]="false"></p-messages>
+      <form
+        class="form w-100"
+        novalidate="novalidate"
+        id="kt_login_signup_form"
+        [formGroup]="registrationForm"
+        (ngSubmit)="submit()"
+      >
+        <!--begin::Login options-->
+        <!-- <div class="row g-3 mb-4">
+          <div class="col-md-6">
+            <a href="#"
+              class="btn fs-7 btn-flex btn-outline btn-text-gray-700 btn-active-color-primary bg-state-light flex-center text-nowrap w-100">
+              <img alt="Logo" src="./assets/media/svg/brand-logos/google-icon.svg" class="h-15px mx-3" />
+              {{ 'AUTH.REGISTRATION.USE_GOOGLE' | translate }}
+            </a>
+          </div>
+      
+          <div class="col-md-6">
+            <a href="#"
+              class="btn fs-7 btn-flex btn-outline btn-text-gray-700 btn-active-color-primary bg-state-light flex-center text-nowrap w-100">
+              <img alt="Logo" src="./assets/media/svg/brand-logos/linkedin-2.svg" class="h-15px mx-3" />
+              {{ 'AUTH.REGISTRATION.USE_LINKEDIN' | translate }}
+            </a>
+          </div>
+        </div> -->
+        <!--end::Login options-->
+
+        <!--begin::Separator-->
+        <!-- <div class="separator separator-content my-8">
+          <span class="w-125px text-gray-500 fw-semibold fs-7">{{ 'AUTH.REGISTRATION.OR_WITH_EMAIL' | translate }}</span>
+        </div> -->
+        <!--end::Separator-->
+
+        <!-- begin::Alert error-->
+        <ng-container *ngIf="hasError">
+          <div class="mb-lg-15 alert alert-danger">
+            <div class="alert-text font-weight-bold">
+              {{ "AUTH.REGISTRATION.ERROR" | translate }}
+            </div>
+          </div>
+        </ng-container>
+        <!-- end::Alert error-->
+
+        <!-- begin::Name Field-->
+        <div class="row mb-4">
+          <div class="col-12 col-md-6 mb-4">
+            <label class="form-label fs-6 text-gray-900">{{
+              "AUTH.REGISTRATION.FIRSTNAME_LABEL" | translate
+            }}</label>
+            <input
+              class="form-control"
+              type="text"
+              name="firstName"
+              formControlName="firstName"
+              placeholder="{{
+                'AUTH.REGISTRATION.FIRSTNAME_PLACEHOLDER' | translate
+              }}"
+              autocomplete="off"
+              [ngClass]="{
+                'is-invalid':
+                  registrationForm.controls['firstName'].invalid &&
+                  (registrationForm.controls['firstName'].dirty ||
+                    registrationForm.controls['firstName'].touched)
+              }"
+            />
+            <ng-container
+              [ngTemplateOutlet]="formError"
+              [ngTemplateOutletContext]="{
+                validation: 'required',
+                message: 'AUTH.REGISTRATION.FIRSTNAME_REQUIRED' | translate,
+                control: registrationForm.controls['firstName']
+              }"
+            ></ng-container>
+            <ng-container
+              [ngTemplateOutlet]="formError"
+              [ngTemplateOutletContext]="{
+                validation: 'minlength',
+                message: 'AUTH.REGISTRATION.FIRSTNAME_MINLENGTH' | translate,
+                control: registrationForm.controls['firstName']
+              }"
+            ></ng-container>
+            <ng-container
+              [ngTemplateOutlet]="formError"
+              [ngTemplateOutletContext]="{
+                validation: 'maxLength',
+                message: 'AUTH.REGISTRATION.FIRSTNAME_MAXLENGTH' | translate,
+                control: registrationForm.controls['firstName']
+              }"
+            ></ng-container>
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label fs-6 text-gray-900">{{
+              "AUTH.REGISTRATION.LASTNAME_LABEL" | translate
+            }}</label>
+            <input
+              class="form-control"
+              type="text"
+              name="lastName"
+              formControlName="lastName"
+              placeholder="{{
+                'AUTH.REGISTRATION.LASTNAME_PLACEHOLDER' | translate
+              }}"
+              autocomplete="off"
+              [ngClass]="{
+                'is-invalid':
+                  registrationForm.controls['lastName'].invalid &&
+                  (registrationForm.controls['lastName'].dirty ||
+                    registrationForm.controls['lastName'].touched)
+              }"
+            />
+            <ng-container
+              [ngTemplateOutlet]="formError"
+              [ngTemplateOutletContext]="{
+                validation: 'required',
+                message: 'AUTH.REGISTRATION.LASTNAME_REQUIRED' | translate,
+                control: registrationForm.controls['lastName']
+              }"
+            ></ng-container>
+            <ng-container
+              [ngTemplateOutlet]="formError"
+              [ngTemplateOutletContext]="{
+                validation: 'minlength',
+                message: 'AUTH.REGISTRATION.LASTNAME_MINLENGTH' | translate,
+                control: registrationForm.controls['lastName']
+              }"
+            ></ng-container>
+            <ng-container
+              [ngTemplateOutlet]="formError"
+              [ngTemplateOutletContext]="{
+                validation: 'maxLength',
+                message: 'AUTH.REGISTRATION.LASTNAME_MAXLENGTH' | translate,
+                control: registrationForm.controls['lastName']
+              }"
+            ></ng-container>
+          </div>
+        </div>
+
+        <!--begin::Email group-->
+        <div class="fv-row mb-4">
+          <label class="form-label text-gray-900 fs-6 mb-0">{{
+            "AUTH.REGISTRATION.EMAIL_LABEL" | translate
+          }}</label>
+          <input
+            class="form-control"
+            type="email"
+            placeholder="{{
+              'AUTH.REGISTRATION.EMAIL_PLACEHOLDER' | translate
+            }}"
+            name="email"
+            formControlName="email"
+            autocomplete="off"
+            [ngClass]="{
+              'is-invalid':
+                registrationForm.controls['email'].invalid &&
+                (registrationForm.controls['email'].dirty ||
+                  registrationForm.controls['email'].touched)
+            }"
+          />
+          <ng-container
+            [ngTemplateOutlet]="formError"
+            [ngTemplateOutletContext]="{
+              validation: 'required',
+              message: 'AUTH.REGISTRATION.EMAIL_REQUIRED' | translate,
+              control: registrationForm.controls['email']
+            }"
+          ></ng-container>
+          <ng-container
+            [ngTemplateOutlet]="formError"
+            [ngTemplateOutletContext]="{
+              validation: 'email',
+              message: 'AUTH.REGISTRATION.EMAIL_INVALID' | translate,
+              control: registrationForm.controls['email']
+            }"
+          ></ng-container>
+          <ng-container
+            [ngTemplateOutlet]="formError"
+            [ngTemplateOutletContext]="{
+              validation: 'minlength',
+              message: 'AUTH.REGISTRATION.EMAIL_MINLENGTH' | translate,
+              control: registrationForm.controls['email']
+            }"
+          ></ng-container>
+          <ng-container
+            [ngTemplateOutlet]="formError"
+            [ngTemplateOutletContext]="{
+              validation: 'maxLength',
+              message: 'AUTH.REGISTRATION.EMAIL_MAXLENGTH' | translate,
+              control: registrationForm.controls['email']
+            }"
+          ></ng-container>
+        </div>
+
+        <!--::Password group-->
+        <div class="row mb-4">
+          <!--begin::Form group-->
+          <div class="col-12 col-md-6 mb-4 position-relative">
+            <label class="form-label fs-6 text-gray-900">{{
+              "AUTH.REGISTRATION.PASSWORD_LABEL" | translate
+            }}</label>
+            <input
+              class="form-control"
+              [type]="passwordFieldType"
+              placeholder="{{
+                'AUTH.REGISTRATION.PASSWORD_PLACEHOLDER' | translate
+              }}"
+              name="password"
+              formControlName="password"
+              autocomplete="off"
+              [ngClass]="{
+                'is-invalid':
+                  registrationForm.controls['password'].invalid &&
+                  (registrationForm.controls['password'].dirty ||
+                    registrationForm.controls['password'].touched)
+              }"
+            />
+            <!-- Eye Icon Button -->
+            <!-- <button
+          type="button"
+          class="btn position-absolute"
+          (click)="togglePasswordVisibility('password')"
+          [ngClass]="{ 
+            'end-0 top-ltr': lang === 'en', 
+            'start-0 top-rtl': lang === 'ar' 
+          }"
+       
+        >
+          <i [ngClass]="passwordFieldType === 'password' ? 'bi-eye-slash' : 'bi-eye'"></i>
+        </button> -->
+            <ng-container
+              [ngTemplateOutlet]="formError"
+              [ngTemplateOutletContext]="{
+                validation: 'required',
+                message: 'AUTH.REGISTRATION.PASSWORD_REQUIRED' | translate,
+                control: registrationForm.controls['password']
+              }"
+            ></ng-container>
+          </div>
+
+          <!--begin::Confirm Password-->
+          <div class="col-12 col-md-6 position-relative">
+            <label class="form-label fs-6 text-gray-900">{{
+              "AUTH.REGISTRATION.CONFIRM_PASSWORD_LABEL" | translate
+            }}</label>
+            <input
+              class="form-control"
+              [type]="confirmPasswordFieldType"
+              placeholder="{{
+                'AUTH.REGISTRATION.CONFIRM_PASSWORD_PLACEHOLDER' | translate
+              }}"
+              name="cPassword"
+              formControlName="cPassword"
+              autocomplete="off"
+              [ngClass]="{
+                'is-invalid':
+                  registrationForm.controls['cPassword'].invalid &&
+                  (registrationForm.controls['cPassword'].dirty ||
+                    registrationForm.controls['cPassword'].touched)
+              }"
+            />
+            <!-- Eye Icon Button -->
+            <!-- <button
+          type="button"
+          class="btn position-absolute"
+          (click)="togglePasswordVisibility('confirmPassword')"
+          [ngClass]="{ 
+            'end-0 top-ltr': lang === 'en', 
+            'start-0 top-rtl': lang === 'ar' 
+          }"
+         
+        >
+          <i
+            [ngClass]="confirmPasswordFieldType === 'password' ? 'bi-eye-slash' : 'bi-eye'"
+          ></i>
+        </button> -->
+            <ng-container
+              [ngTemplateOutlet]="formError"
+              [ngTemplateOutletContext]="{
+                validation: 'required',
+                message:
+                  'AUTH.REGISTRATION.CONFIRM_PASSWORD_REQUIRED' | translate,
+                control: registrationForm.controls['cPassword']
+              }"
+            ></ng-container>
+          </div>
+        </div>
+        <!--begin::Country and Consulting Field-->
+        <div class="row mb-4">
+          <!--begin::Form group for country-->
+          <div class="col-12 mb-4" [ngClass]="{
+            'col-md-6' : !isOtherSelected ,
+            'col-md-4' : isOtherSelected
+            }">
+            <label class="form-label fs-6 text-gray-900">{{
+              "AUTH.REGISTRATION.COUNTRY_LABEL" | translate
+            }}</label>
+            <p-progressBar
+              *ngIf="isLoadingCountires$ | async"
+              mode="indeterminate"
+              [style]="{ height: '4px' }"
+            />
+            <p-dropdown
+              *ngIf="(isLoadingCountires$ | async) === false"
+              class="form-control reg-coutries"
+              [options]="countries"
+              formControlName="country"
+              [optionLabel]="optionLabel"
+              placeholder="{{
+                'AUTH.REGISTRATION.COUNTRY_PLACEHOLDER' | translate
+              }}"
+              [filter]="true"
+              [showClear]="true"
+            >
+            </p-dropdown>
+            <!-- Validation for country -->
+          </div>
+          <!--end::Form group-->
+
+          <!--begin::Form group for Consulting Field-->
+          <div class="col-12 " [ngClass]="{
+            'col-md-6' : !isOtherSelected ,
+            'col-md-4' : isOtherSelected
+            }">
+            <label class="form-label fs-6 text-gray-900">{{
+              "AUTH.REGISTRATION.CONSULTING_FIELD_LABEL" | translate
+            }}</label>
+            <p-progressBar
+              *ngIf="isLoadingConsultingFields$ | async"
+              mode="indeterminate"
+              [style]="{ height: '4px' }"
+            ></p-progressBar>
+            <p-dropdown
+              *ngIf="(isLoadingConsultingFields$ | async) === false"
+              class="form-control reg-coutries"
+              [options]="consultingFields"
+              formControlName="consultingField"
+              [optionLabel]="optionLabelField"
+              placeholder="{{
+                'AUTH.REGISTRATION.CONSULTING_FIELD_PLACEHOLDER' | translate
+              }}"
+              [filter]="true"
+              [showClear]="true"
+            >
+            </p-dropdown>
+          </div>
+          <!--end::Form group-->
+              <!--begin::Form group for "Other" Consulting Field-->
+       <div class="col-12 " [ngClass]="{
+        'col-md-6' : !isOtherSelected ,
+        'col-md-4' : isOtherSelected
+        }" *ngIf="isOtherSelected">
+        <label class="form-label text-gray-900 fs-6">
+          {{ "AUTH.REGISTRATION.OTHER_FIELD_LABEL" | translate }}
+          <!-- Label for Other Consulting Field -->
+        </label>
+        <input
+          class="form-control"
+          type="text"
+          placeholder="{{
+            'AUTH.REGISTRATION.OTHER_FIELD_PLACEHOLDER' | translate
+          }}"
+          formControlName="otherConsultingField"
+          autocomplete="off"
+          [ngClass]="{
+            'is-invalid':
+              registrationForm.controls['otherConsultingField'].invalid &&
+              (registrationForm.controls['otherConsultingField'].dirty ||
+                registrationForm.controls['otherConsultingField'].touched)
+          }"
+        />
+        <!-- Validation errors for Other Consulting Field -->
+        <ng-container
+          *ngIf="
+            registrationForm.controls['otherConsultingField'].invalid &&
+            (registrationForm.controls['otherConsultingField'].dirty ||
+              registrationForm.controls['otherConsultingField'].touched)
+          "
+        >
+          <div class="fv-plugins-message-container">
+            <div class="fv-help-block">
+              {{ "AUTH.REGISTRATION.OTHER_FIELD_REQUIRED" | translate }}
+            </div>
+          </div>
+        </ng-container>
+      </div>
+        </div>
+   
+
+
+        <!-- ISIC & HSCODE -->
+        <div class="row mb-4">
+          <!--begin::Form group for country-->
+          <div class="col-12 ">
+            <label class="form-label fs-6 text-gray-900">{{
+              "AUTH.REGISTRATION.INDUSTRY" | translate
+            }}</label>
+            <p-progressBar
+              *ngIf="isLoadingIsicCodes$ | async"
+              mode="indeterminate"
+              [style]="{ height: '4px' }"
+            ></p-progressBar>
+            <p-dropdown
+            *ngIf="(isLoadingIsicCodes$ | async) === false"
+            class="form-control reg-coutries ltr"
+            [options]="isicCodes"
+            formControlName="industry"
+            [optionLabel]="optionLabelField"
+            placeholder="{{
+              'AUTH.REGISTRATION.INDUSTRY_PLACEHOLDER' | translate
+            }}"
+            [filter]="true"
+            [showClear]="true"
+          >
+            <!-- Template for selected item -->
+            <ng-template let-option pTemplate="selectedItem">
+              {{ trimText(option.description.en, 22) }}
+            </ng-template>
+          
+            <!-- Template for each dropdown item -->
+            <ng-template let-option pTemplate="item">
+              {{ trimText(option.description.en, 100) }}
+            </ng-template>
+          </p-dropdown>
+          
+          </div>
+          <!--end::Form group-->
+
+        
+        </div>
+        <div class="row mb-4">
+            <!--begin::Form group for Consulting Field-->
+            <div class="col-12">
+              <label class="form-label fs-6 text-gray-900">
+                {{ "AUTH.REGISTRATION.HSCODE" | translate }}
+                <span class="text-gray-600 fs-7">
+                  ({{ "AUTH.REGISTRATION.OPTIONAL" | translate }})
+                </span>
+              </label>
+  
+             
+  
+              <div class="dropdown-wrapper">
+                <p-dropdown
+                 
+                  class="form-control reg-coutries ltr"
+                  [options]="hsCodes"
+                  formControlName="hscode"
+                  optionLabel="label"
+                  placeholder="{{ 'AUTH.REGISTRATION.HSCODE' | translate }}"
+                  [filter]="true"
+                  [disabled]="hsCodes.length === 0"
+                  [readonly]="hsCodes.length === 0"
+                  [showClear]="true"
+                  [virtualScroll]="true"
+                  [virtualScrollItemSize]="34"
+                >
+                  <!-- Template for selected item -->
+                  <ng-template let-option pTemplate="selectedItem">
+                    {{ trimText(option.label, 22) }}
+                  </ng-template>
+              
+                  <!-- Template for each dropdown item -->
+                  <ng-template let-option pTemplate="item">
+                    {{ trimText(option.label, 100) }}
+                  </ng-template>
+                </p-dropdown>
+              
+                <!-- Overlay layer when disabled -->
+                <div *ngIf="hsCodes.length === 0" class="dropdown-overlay"></div>
+              </div>
+              <p-progressBar
+              *ngIf="isLoadingHSCodes$ | async"
+              mode="indeterminate"
+              [style]="{ height: '4px' }"
+            ></p-progressBar>
+            </div>
+            <!--end::Form group-->
+        </div>
+
+ 
+        <!--About-->
+        <div class="row mb-4">
+          <!--begin::Form group for About Description-->
+          <div class="col-12">
+            <label class="form-label fs-6 text-gray-900"
+              >{{ "AUTH.REGISTRATION.ABOUT_DESCRIPTION_LABEL" | translate }}
+              <span class="text-gray-600 fs-7"
+                >({{ "AUTH.REGISTRATION.OPTIONAL" | translate }})</span
+              ></label
+            >
+            <textarea
+              class="form-control h-70px"
+              rows="5"
+              placeholder="{{
+                'AUTH.REGISTRATION.ABOUT_DESCRIPTION_PLACEHOLDER' | translate
+              }}"
+              name="aboutDescription"
+              formControlName="aboutDescription"
+              autocomplete="off"
+            ></textarea>
+          </div>
+        </div>
+        <!--begin::Form group-->
+        <div class="d-grid mb-10">
+          <button
+            type="submit"
+            id="kt_sign_up_submit"
+            [disabled]="
+              registrationForm.invalid ||
+              !registrationForm.controls['agree'].value
+            "
+            class="btn btn-primary"
+          >
+            <ng-container *ngIf="(isLoadingSubmit$ | async) === false">
+              <span class="indicator-label">{{
+                "AUTH.REGISTRATION.SUBMIT" | translate
+              }}</span>
+            </ng-container>
+            <ng-container *ngIf="isLoadingSubmit$ | async">
+              <span class="indicator-progress" [style.display]="'block'">
+                {{ "AUTH.REGISTRATION.PLEASE_WAIT" | translate }}
+                <span
+                  class="spinner-border spinner-border-sm align-middle ms-2"
+                ></span>
+              </span>
+            </ng-container>
+          </button>
+        </div>
+        <!--end::Form group-->
+
+        <!--begin::Sign up-->
+        <!-- <div class="text-gray-500 text-center fw-semibold fs-6">
+          {{ "AUTH.REGISTRATION.ALREADY_HAVE_ACCOUNT" | translate }}
+          <a routerLink="/auth/login" class="link-primary fw-semibold">{{
+            "AUTH.REGISTRATION.SIGN_IN" | translate
+          }}</a>
+        </div> -->
+        <!--end::Sign up-->
+      </form>
+
+      <ng-template
+        #formError
+        let-control="control"
+        let-message="message"
+        let-validation="validation"
+      >
+        <ng-container
+          *ngIf="
+            control.hasError(validation) && (control.dirty || control.touched)
+          "
+        >
+          <div class="fv-plugins-message-container">
+            <div class="fv-help-block">
+              <span role="alert">
+                {{ message }}
+              </span>
+            </div>
+          </div>
+        </ng-container>
+      </ng-template>
+    </div>
+  </div>
+  <div class="col-lg-6 z-negative-1 mil-up order-lg-2 order-1 mt-5 rounded-4 p-20 bg-light">
+    <div class="d-flex flex-column p-4">
+      <a href="/metronic/tailwind/demo1/" class="w-100px">
+        <img
+          class="h-100 w-60px"
+          src="./../../../../assets/media/logos/light-logo-sm.svg"
+        />
+      </a>
+      <div class="mt-4">
+        <h3 class="h4 font-weight-bold text-dark fs-1 fw-bold py-2">
+          {{ "AUTH.REGISTRATION.EMPOWER_INSIGHTS_TITLE" | translate }}
+        </h3>
+        <p
+          class="text-gray-600 fs-4"
+          [innerHTML]="'AUTH.REGISTRATION.EMPOWER_INSIGHTS_TEXT' | translate"
+        ></p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,82 @@
+<app-home-navbar></app-home-navbar>
+
+<section class="position-relative">
+  <div class="home-waves">
+    <div class="search-bar-container">
+      <div class="search-bar">
+        <a class="icon cursor-pointer">
+          <i class="ki-solid ki-magnifier text-gray-400 fs-1"></i>
+        </a>
+        <div class="d-flex justify-content-between w-100 align-items-center">
+          <form action="/search" class="flex-1 js-search-input-form search-input-form" method="get">
+            <input id="search" type="search" name="q" placeholder="{{ 'HOME.SEARCH_PLACEHOLDER' | translate }}" class="px-4 search-input js-search-input">
+       
+          </form>
+          <p-dropdown  
+          class="home-countries-dropdown" 
+          [options]="countries" 
+          [(ngModel)]="selectedCountry" 
+          optionLabel="name" 
+          [placeholder]="'HOME.REGION_PLACEHOLDER' | translate"
+          [filter]="true">
+          <ng-template let-item pTemplate="item">
+              <div class="country-item">
+                  <img [src]="item.file_url" alt="{{item.name}}" class="country-flag">
+                  <span>{{item.name}}</span>
+              </div>
+          </ng-template>
+      </p-dropdown> 
+    </div>
+   
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="mt-20 d-flex flex-column align-items-center">
+  <h1 class="main-title">{{ 'HOME.ADVANCED_DATA_INSIGHTS' | translate }}</h1>
+  <div class="subtitle text-center">
+    {{ 'HOME.ACCESS_INSIGHTS' | translate }}
+  </div>
+  <div class="slider ">
+    <div class="discover-container d-md-none d-flex"  [ngClass]="{'slider-active': items.length > 5}">
+      <a *ngFor="let item of items" href="#" class="nav-item" [ngClass]="{'active': item.active}">
+        {{ item.label | translate }}
+      </a>
+    </div>
+    <div class="d-md-block d-none">
+<swiper-container
+class="discover-container"
+  slides-per-view="auto"
+  space-between="10"
+  loop="false"
+  navigation="false"> <!-- Disable built-in navigation -->
+  <swiper-slide *ngFor="let item of items">
+    <a href="#" class="nav-item">{{ item.label | translate }}</a>
+  </swiper-slide>
+</swiper-container>
+
+<!-- Custom navigation buttons -->
+<button class="custom-prev"><i class="ki-duotone ki-left text-gray-900 fs-2"></i></button>
+<button class="custom-next"><i class="ki-duotone ki-right text-gray-900 fs-2"></i></button>
+    </div>
+
+    
+    <div class="white-blur"></div>
+    <div class="white-blur-2"></div>
+  </div>
+  <div class="subtitle text-center">
+    {{ 'HOME.READY_TO_DIVE' | translate }} 
+    <a [routerLink]="['app']" class="text-blue cursor-pointer fw-bold text-hover-underline">{{ 'HOME.TUTORIALS' | translate }}</a> 
+    {{ 'HOME.MASTER_ESSENTIALS' | translate }}
+  </div>
+</section>
+
+<footer class="footer d-flex justify-content-center align-items-center">
+  <div class="footer-content text-center">
+    {{ 'HOME.COPYRIGHT' | translate }}
+    <a href="#" class="footer-link">{{ 'HOME.TERMS' | translate }}</a>
+    <a href="#" class="footer-link">{{ 'HOME.PRIVACY' | translate }}</a>
+    <a href="#" class="footer-link">{{ 'HOME.COOKIES' | translate }}</a>
+  </div>
+</footer>

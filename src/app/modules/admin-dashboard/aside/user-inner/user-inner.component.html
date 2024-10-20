@@ -1,0 +1,43 @@
+<!-- <ng-container *ngIf="user$ | async as _user">
+  <div class="menu-item px-3">
+    <div class="menu-content d-flex align-items-center px-3">
+      <div class="symbol symbol-50px me-5">
+        <img alt="Logo" [src]="('data:image/jpeg;base64,'+ _user.profilePicBase64)" />
+      </div>
+
+      <div class="d-flex flex-column">
+        <div class="fw-bolder d-flex align-items-center fs-5">
+          {{_user.fullName }}
+          <span class="badge badge-light-danger fw-bolder fs-8 px-2 py-1 ms-2"
+            >Admin</span
+          >
+        </div>
+        <a class="fw-bold text-muted text-hover-primary fs-9 cursor-pointer">
+            {{_user.username}}
+        </a>
+      </div>
+    </div>
+  </div> -->
+
+  <div class="separator my-2"></div>
+
+
+  <div class="menu-item px-5">
+    <a class="menu-link px-5 cursor-pointer" placement="top-start" ngbTooltip="Coming soon">
+      <span class="menu-text">Pending Users</span>
+      <span class="menu-badge">
+        <span class="badge badge-light-danger badge-circle fw-bolder fs-7">3</span>
+      </span>
+    </a>
+  </div>
+
+
+
+  <div class="separator my-2"></div>
+
+
+
+  <div class="menu-item px-5">
+    <a (click)="logout()" class="menu-link px-5 cursor-pointer"> Sign Out </a>
+  </div>
+<!-- </ng-container> -->

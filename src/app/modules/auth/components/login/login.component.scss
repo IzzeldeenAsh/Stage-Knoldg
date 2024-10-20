@@ -1,0 +1,68 @@
+:host {
+  width: 100%;
+  @media (min-width: 992px) {
+    .login-form {
+      width: 100%;
+      max-width: 450px;
+
+      .mat-form-field {
+        width: 100%;
+      }
+    }
+  }
+}
+
+.country-item {
+  display: flex;
+  align-items: center;
+  
+  .country-flag {
+    width: 20px;
+    margin-right: 8px;
+  }
+}
+.w-90{
+  width: 75%;
+  @media screen and (max-width:767px) {
+    width: 100%;
+  }
+}
+
+.form-control{
+  background-color: #ffffffa7 !important;
+}
+
+.bg-light{
+  background-image: url('../../../../../assets/media/images/2600x1200/bg-abstract-login-2.png');
+  background-size: cover;
+}
+.h-100vh{
+  min-height: 100vh;
+}
+.first-block{
+  width: 40%;
+  margin-inline-start: auto;
+}
+.second-block{
+  width: 40%;
+  margin-inline-end: auto;
+
+}
+.pt-100{
+  padding-top: 180px;
+}
+.gap{
+  gap: 30px;
+}
+.top-rtl{
+  top: 29px;
+   z-index: 1; 
+   background: none; 
+   border: none;
+}
+.top-ltr{
+  top: 27px;
+   z-index: 1; 
+   background: none; 
+   border: none;
+}
