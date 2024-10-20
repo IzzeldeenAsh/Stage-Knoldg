@@ -1,0 +1,35 @@
+.menu-sub{
+    z-index: 108;
+     position: absolute; 
+     inset: 0px 0px auto auto;
+      margin: 0px;
+    top: 40px;
+    direction: ltr !important;
+  }
+.show{
+  opacity: 1;
+  visibility: visible;
+  transform:
+ translateY(-10px);
+}
+.hide{
+  transform:
+  translateY(0);
+  opacity: 0;
+  visibility: hidden;
+}
+.menu-link:hover{
+  background-color: #eeeeee;
+  border-radius: 8px;
+}
+.right-130px{
+  right: -130px !important
+}
+
+
+@media screen and (max-width:768px) {
+    .menu-sub{
+        right: 40px;
+    }
+   
+}
