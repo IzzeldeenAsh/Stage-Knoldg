@@ -101,12 +101,14 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     this.onISICFieldChange()
   }
   getIsicCodes() {
+    console.log('getIsicCodes called');
     const getIsicCodesSub = this._isicService.getIsicCodes(this.lang).subscribe({
       next: (res) => {
+        console.log('Isic Codes:', res);
         this.isicCodes = res;
       },
       error: (err) => {
-       
+        console.error('Error fetching ISIC codes:', err);
       },
     });
     this.unsubscribe.push(getIsicCodesSub);
