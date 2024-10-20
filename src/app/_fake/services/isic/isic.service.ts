@@ -17,8 +17,7 @@ export class IsicService {
   }
 
   private handleError(error: any) {
-    console.error('An error occurred:', error);
-    return throwError(() => new Error('Could not get ISIC codes; please try again later.'));
+    return throwError(() => new Error(error));
   }
 
   getIsicCodes(lang: string = 'ar'): Observable<any> {
