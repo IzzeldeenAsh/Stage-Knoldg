@@ -6,7 +6,7 @@ import { BehaviorSubject, Observable, catchError, finalize, map, throwError } fr
   providedIn: 'root'
 })
 export class IsicService {
-  private apiUrl = 'https://myinsighta.com/api/isic-code';
+  private myInsighta = 'https://myinsighta.com/api/isic-code';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
 
@@ -28,7 +28,7 @@ export class IsicService {
     });
 
     this.setLoading(true);
-    return this.http.get<any>(this.apiUrl, { headers }).pipe(
+    return this.http.get<any>('https://myinsighta.com/api/isic-code', { headers }).pipe(
       map(res => res),
       catchError(this.handleError),
       finalize(() => this.setLoading(false))
