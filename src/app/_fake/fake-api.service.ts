@@ -1,24 +1,19 @@
 import { Injectable } from '@angular/core';
-import { InMemoryDbService } from 'angular-in-memory-web-api';
-import { Observable, map, of, throwError } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { UsersTable } from './users.table';
 
 @Injectable({
   providedIn: 'root',
 })
-export class FakeAPIService implements InMemoryDbService {
+export class FakeAPIService {
   private users: any[] = UsersTable.users;
 
   constructor() { }
 
   /**
-   * Create Fake DB and API
+   * Mock API to return users
    */
-  createDb(): {} | Observable<{}> {
-    const db = {
-      // auth module
-      users: this.users,
-    };
-    return db;
+  getUsers(): Observable<any[]> {
+    return of(this.users);
   }
 }
