@@ -21,7 +21,7 @@ export class IsicService {
     return throwError(() => new Error('Could not get ISIC codes; please try again later.'));
   }
 
-  getIsicCodes(lang: string = 'en'): Observable<any> {
+  getIsicCodes(lang: string = 'ar'): Observable<any> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
       'Content-Type': 'application/json',
