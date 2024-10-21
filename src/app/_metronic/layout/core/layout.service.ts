@@ -14,8 +14,8 @@ import { LightHeaderConfig } from './configs/light-header.config';
 import { LightSidebarConfig } from './configs/light-sidebar.config';
 import { ActivatedRoute } from '@angular/router';
 
-const LAYOUT_CONFIG_LOCAL_STORAGE_KEY = `${environment.appVersion}-layoutConfig`;
-const BASE_LAYOUT_TYPE_LOCAL_STORAGE_KEY = `${environment.appVersion}-baseLayoutType`;
+const LAYOUT_CONFIG_LOCAL_STORAGE_KEY = `tet-layoutConfig`;
+const BASE_LAYOUT_TYPE_LOCAL_STORAGE_KEY = `fsfs-baseLayoutType`;
 const defaultBaseLayoutType: LayoutType = 'dark-sidebar';
 const defaultLayoutConfig: ILayout = DarkSidebarConfig;
 

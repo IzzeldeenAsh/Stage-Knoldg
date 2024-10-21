@@ -14,8 +14,8 @@ interface AsideMenuLinkInterface{
 })
 export class AsideMenuComponent implements OnInit {
   base:string='';
-  appAngularVersion: string = environment.appVersion;
-  appPreviewChangelogUrl: string = environment.appPreviewChangelogUrl;
+  appAngularVersion: string = "tst";
+  appPreviewChangelogUrl: string = "tst";
   dashboardLinks:AsideMenuLinkInterface[]=[
     {
       icon:'./assets/media/icons/figmaSVGs/summary.svg',

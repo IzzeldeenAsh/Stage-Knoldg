@@ -6,10 +6,10 @@ import { environment } from 'src/environments/environment';
   templateUrl: './explore-main-drawer.component.html',
 })
 export class ExploreMainDrawerComponent implements OnInit {
-  appThemeName: string = environment.appThemeName;
-  appPurchaseUrl: string = environment.appPurchaseUrl;
-  appPreviewUrl: string = environment.appPreviewUrl;
-  appDemos = environment.appDemos;
+  appThemeName: string = 'sts';
+  appPurchaseUrl: string ='sts';
+  appPreviewUrl: string ='sts';
+  appDemos ='sts';
 
   constructor() {
   }
