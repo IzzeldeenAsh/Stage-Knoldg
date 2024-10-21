@@ -69,11 +69,11 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     this.isLoadingHSCodes$ = this._hsCodeService.isLoading$;
     this.isLoadingSubmit$ = this._register.isLoading$;
   }
-  // ngAfterViewInit(): void {
-  //   setTimeout(() => {
-  //     this.scrollAnims.scrollAnimations();
-  //   }, 100); 
-  // }
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.scrollAnims.scrollAnimations();
+    }, 100); 
+  }
 
   ngOnInit(): void {
    
@@ -196,7 +196,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       return;
     }
   
-    const getHScodeSub = this._hsCodeService.getHScodeByISIC(this.lang, ISICid).subscribe({
+    const getHScodeSub = this._hsCodeService.getHScodeByISIC( ISICid).subscribe({
       next: (res) => {
         if (Array.isArray(res)) {
           this.hsCodes = res.map((item: any) => {
