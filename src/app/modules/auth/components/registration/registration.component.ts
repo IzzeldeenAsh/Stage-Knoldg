@@ -86,18 +86,8 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     this.setOptionLabel()
     this.initForm();
     this.getConsultingFields();
-    this._isicService.getIsicCodes(this.lang).subscribe({
-      next: (res) => {
-        if (res && Array.isArray(res)) {  // Ensure that 'res' is an array
-          console.log('Isic Codes:', res);
-          this.isicCodes = res;
-        } else {
-          console.error('Unexpected response format for ISIC codes:', res);
-        }
-      },
-      error: (err) => {
-        console.error('Error fetching ISIC codes:', err);
-      },
+    this._isicService.getIsicCodes().subscribe(res=>{
+      this.isicCodes = res;
     });
     this.onConsultingFieldChange();
     this.onISICFieldChange()
