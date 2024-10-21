@@ -5,10 +5,9 @@ import { map } from 'rxjs/operators';
 
 import { UserModel } from '../../../models/user.model';
 import { AuthModel } from '../../../models/auth.model';
-import { UsersTable } from '../../../../../_fake/users.table';
 import { environment } from '../../../../../../environments/environment';
 
-const API_USERS_URL = `${environment.apiUrl}/users`;
+const API_USERS_URL = `test`;
 
 @Injectable({
   providedIn: 'root',
@@ -47,6 +46,18 @@ export class AuthHTTPService {
       })
     );
   }
+  getUserByToken(token: string): Observable<UserModel | undefined> {
+    // const user = UsersTable.users.find((u: UserModel) => {
+    //   return u.authToken === token;
+    // });
+
+    // if (!user) {
+    //   return of(undefined);
+    // }
+
+    // return of(user);
+    return of(undefined);
+  }
 
   createUser(user: UserModel): Observable<any> {
     user.roles = [2]; // Manager
@@ -69,17 +80,9 @@ export class AuthHTTPService {
     );
   }
 
-  getUserByToken(token: string): Observable<UserModel | undefined> {
-    const user = UsersTable.users.find((u: UserModel) => {
-      return u.authToken === token;
-    });
-
-    if (!user) {
-      return of(undefined);
-    }
-
-    return of(user);
-  }
+  // getUserByToken(token: string): Observable<UserModel | undefined> {
+   
+  // }
 
   getAllUsers(): Observable<UserModel[]> {
     return this.http.get<UserModel[]>(API_USERS_URL);

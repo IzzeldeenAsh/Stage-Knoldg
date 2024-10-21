@@ -10,8 +10,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthService } from './modules/auth/services/auth.service';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
-// Remove FakeAPI imports
-// import { FakeAPIService } from './_fake/fake-api.service';
 
 function appInitializer(authService: AuthService) {
   return () => {

@@ -4,17 +4,13 @@ import { Subscription, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ConfirmPasswordValidator } from './confirm-password.validator';
-import { Signal , computed, effect } from '@angular/core';
-
 import { first } from 'rxjs/operators';
-import countriesData from 'src/app/_metronic/shared/countires.json';
 import { CountryService } from 'src/app/_fake/services/countries-api/countries-get.service';
 import { Country } from 'src/app/_fake/models/country.model';
 import { TranslationService } from 'src/app/modules/i18n';
 import { ConsultingFieldService } from 'src/app/_fake/services/consulting-field/consulting-field.service';
 import { IsicService } from 'src/app/_fake/services/isic/isic.service';
 import { HSCodeService } from 'src/app/_fake/services/hs-code/hs-code.service';
-import { Dropdown } from 'primeng/dropdown';
 import { UserPreRegistration } from 'src/app/_fake/models/pre-user.model';
 import { PreRegsiterService } from 'src/app/_fake/services/pre-register/pre-regsiter.service';
 
@@ -34,12 +30,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   isLoadingCountires$: Observable<boolean>;
   isLoadingHSCodes$: Observable<boolean>;
 
-  // isLoading = signal(false);
-  // isLoadingSubmit = signal(false);
-  // isLoadingCountries = signal(false);
-  // isLoadingIsicCodes = signal(false);
-  // isLoadingHSCodes = signal(false);
-  // isLoadingConsultingFields = signal(false);
+  
 
   messages: Message[] = [];  // Array to hold error messages
   passwordFieldType: string = 'password';
@@ -96,7 +87,6 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     this.initForm();
     this.getConsultingFields();
     this.getIsicCodes();
-     // Initial fetch of HS codes
     this.onConsultingFieldChange();
     this.onISICFieldChange()
   }
