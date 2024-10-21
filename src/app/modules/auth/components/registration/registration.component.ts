@@ -167,11 +167,16 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   // When the user changes the Consulting Field
   onConsultingFieldChange() {
     const consultingFieldSub= this.registrationForm.get('consultingField')?.valueChanges.subscribe(res=>{
-     if(res && res.id ===6){
+      const cField = res ?  res.description.en.trim(' ') : null;
+     if(cField && cField=="other"){
       this.isOtherSelected = true;
+      console.log('this.isOtherSelected',this.isOtherSelected)
       if (!this.isOtherSelected) {
         this.registrationForm.controls['otherConsultingField'].reset();
       }
+     }else{
+      this.isOtherSelected = false;
+      this.registrationForm.get('otherConsultingField')?.setValue('')
      }
     })
   if(consultingFieldSub)  this.unsubscribe.push(consultingFieldSub)
