@@ -37,11 +37,11 @@ export class HSCodeService {
     );
   }
 
-  getHScodeByISIC(lang: string = 'en',isicCode:string):Observable<any> {
+  getHScodeByISIC(isicCode:string):Observable<any> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'lang': lang
+      'lang': 'en'
     });
 
     this.setLoading(true);
