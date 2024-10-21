@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TranslationService } from '../../i18n/translation.service';
 import { register } from 'swiper/element';
 import countriesData from 'src/app/_metronic/shared/countires.json';
+import { IsicService } from 'src/app/_fake/services/isic/isic.service';
 @Component({
   selector: 'app-home-search-engine',
   templateUrl: './home-search-engine.component.html',
@@ -22,11 +23,14 @@ export class HomeSearchEngineComponent   implements OnInit {
   mobileSidebar:boolean=false;
   countries: any[] = [];
   selectedCountry: any;
-  constructor(private translationService: TranslationService) {
+  constructor(private translationService: TranslationService,private ISCI:IsicService) {
     this.selectedLang = this.translationService.getSelectedLanguage()
   }
   ngOnInit(): void {
     this.countries = countriesData.countriesLocalAPI;
+    this.ISCI.getIsicCodes().subscribe((res)=>{
+      console.log("reshome",res)
+    })
   }
 
   changeLanguage(event: Event) {
