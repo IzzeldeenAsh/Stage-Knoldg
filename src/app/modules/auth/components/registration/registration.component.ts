@@ -69,11 +69,11 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     this.isLoadingHSCodes$ = this._hsCodeService.isLoading$;
     this.isLoadingSubmit$ = this._register.isLoading$;
   }
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.scrollAnims.scrollAnimations();
-    }, 100); // Delay to ensure DOM elements are fully loaded
-  }
+  // ngAfterViewInit(): void {
+  //   setTimeout(() => {
+  //     this.scrollAnims.scrollAnimations();
+  //   }, 100); 
+  // }
 
   ngOnInit(): void {
    
