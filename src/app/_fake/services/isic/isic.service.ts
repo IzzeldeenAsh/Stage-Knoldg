@@ -26,10 +26,10 @@ export class IsicService {
       'Content-Type': 'application/json',
       'lang': lang
     });
-
+  
     this.setLoading(true);
-    return this.http.get<any>('https://myinsighta.com/api/isic-code', { headers }).pipe(
-      map(res => res),
+    return this.http.get<any>(this.myInsighta, { headers }).pipe(
+      map(res => res ? res : []),  // Ensure that the response is always an array or fallback to an empty array
       catchError(this.handleError),
       finalize(() => this.setLoading(false))
     );

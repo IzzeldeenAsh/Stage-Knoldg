@@ -94,8 +94,12 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     console.log('getIsicCodes called');
     const getIsicCodesSub = this._isicService.getIsicCodes(this.lang).subscribe({
       next: (res) => {
-        console.log('Isic Codes:', res);
-        this.isicCodes = res;
+        if (res && Array.isArray(res)) {  // Ensure that 'res' is an array
+          console.log('Isic Codes:', res);
+          this.isicCodes = res;
+        } else {
+          console.error('Unexpected response format for ISIC codes:', res);
+        }
       },
       error: (err) => {
         console.error('Error fetching ISIC codes:', err);
@@ -188,42 +192,40 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   }
 
   onISICFieldChange() {
-    const ISICFieldSub= this.registrationForm.get('industry')?.valueChanges.subscribe(res=>{
-      if(res){
-        this.getHScodeByISIC(res.code)
-      }else{
-        this.hsCodes=[];
-        this.registrationForm.get('hscode')?.setValue(null)
+    const ISICFieldSub = this.registrationForm.get('industry')?.valueChanges.subscribe(res => {
+      if (res && res.code) {  // Ensure 'res' and 'res.code' are not null or undefined
+        this.getHScodeByISIC(res.code);
+      } else {
+        console.log('No valid industry selected');
+        this.hsCodes = [];
+        this.registrationForm.get('hscode')?.setValue(null);
       }
-     
-    })
-  if(ISICFieldSub)  this.unsubscribe.push(ISICFieldSub)
+    });
+    if (ISICFieldSub) this.unsubscribe.push(ISICFieldSub);
   }
 
-  getHScodeByISIC(ISICid:string){
-    const getHScodeSub = this._hsCodeService.getHScodeByISIC(this.lang,ISICid).subscribe(
-      {
-        next: (res) => {
-          this.hsCodes = res.map((item:any) => {
-            // Set the label for the dropdown based on the current language
-            let label = '';
-            if (this.lang === 'en') {
-              label = item.section.en;
-            } else if (this.lang === 'ar') {
-              label = item.section.ar || item.section.en; // Fallback to English if Arabic is not available
-            }
-            return {
-              ...item,
-              label: label,
-            };
+  getHScodeByISIC(ISICid: string) {
+    if (!ISICid) {
+      console.error('ISIC code is null or undefined');
+      return;
+    }
+  
+    const getHScodeSub = this._hsCodeService.getHScodeByISIC(this.lang, ISICid).subscribe({
+      next: (res) => {
+        if (Array.isArray(res)) {
+          this.hsCodes = res.map((item: any) => {
+            let label = this.lang === 'en' ? item.section.en : (item.section.ar || item.section.en);
+            return { ...item, label };
           });
-        },
-        error: (err) => {
-          console.log('Error fetching HS codes:', err);
-        },
-      }
-    );
-    if(getHScodeSub)  this.unsubscribe.push(getHScodeSub)
+        } else {
+          console.error('Unexpected response format for HS codes:', res);
+        }
+      },
+      error: (err) => {
+        console.error('Error fetching HS codes:', err);
+      },
+    });
+    if (getHScodeSub) this.unsubscribe.push(getHScodeSub);
   }
 
   submit() {
