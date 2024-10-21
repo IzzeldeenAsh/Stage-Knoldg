@@ -23,14 +23,12 @@ export class HomeSearchEngineComponent   implements OnInit {
   mobileSidebar:boolean=false;
   countries: any[] = [];
   selectedCountry: any;
-  constructor(private translationService: TranslationService,private ISCI:IsicService) {
+  constructor(private translationService: TranslationService) {
     this.selectedLang = this.translationService.getSelectedLanguage()
   }
   ngOnInit(): void {
     this.countries = countriesData.countriesLocalAPI;
-    this.ISCI.getIsicCodes().subscribe((res)=>{
-      console.log("reshome",res)
-    })
+ 
   }
 
   changeLanguage(event: Event) {

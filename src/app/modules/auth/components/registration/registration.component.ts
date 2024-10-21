@@ -86,13 +86,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     this.setOptionLabel()
     this.initForm();
     this.getConsultingFields();
-    this.getIsicCodes();
-    this.onConsultingFieldChange();
-    this.onISICFieldChange()
-  }
-  getIsicCodes() {
-    console.log('getIsicCodes called');
-    const getIsicCodesSub = this._isicService.getIsicCodes(this.lang).subscribe({
+    this._isicService.getIsicCodes(this.lang).subscribe({
       next: (res) => {
         if (res && Array.isArray(res)) {  // Ensure that 'res' is an array
           console.log('Isic Codes:', res);
@@ -105,8 +99,10 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         console.error('Error fetching ISIC codes:', err);
       },
     });
-    this.unsubscribe.push(getIsicCodesSub);
+    this.onConsultingFieldChange();
+    this.onISICFieldChange()
   }
+
   getConsultingFields() {
     const getConsultingFieldsSub = this._consultingFieldsService.getConsultingFields().subscribe({
       next: (res) => {
