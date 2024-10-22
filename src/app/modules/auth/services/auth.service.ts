@@ -45,9 +45,9 @@ export class AuthService implements OnDestroy {
   }
 
   // public methods
-  login(email: string, password: string,lang:string): Observable<UserType> {
+  login(email: string, password: string): Observable<UserType> {
     this.isLoadingSubject.next(true);
-    return this.authHttpService.login(email, password ,lang).pipe(
+    return this.authHttpService.login(email, password).pipe(
       map((response: any) => {
         //setting authToken
         const auth = new AuthModel();
@@ -108,7 +108,7 @@ export class AuthService implements OnDestroy {
       map(() => {
         this.isLoadingSubject.next(false);
       }),
-      switchMap(() => this.login(user.email, user.password ,'en')),
+      switchMap(() => this.login(user.email, user.password)),
       catchError((err) => {
         console.error('err', err);
         return of(undefined);
