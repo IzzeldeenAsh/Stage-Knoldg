@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AuthGuard } from './modules/auth/services/auth.guard';
 import { adminGuard } from './guards/admin-gurad/admin.guard';
 
 export const routes: Routes = [
@@ -29,7 +28,7 @@ export const routes: Routes = [
     path: 'admin-dashboard',
     loadChildren: () =>
       import('./modules/admin-dashboard/admin-dashboard.module').then((m) => m.AdminDashboardModule),
-      // canActivate: [adminGuard]
+      canActivate: [adminGuard]
   },
   { path: '**', redirectTo: 'error/404' },
 ];
