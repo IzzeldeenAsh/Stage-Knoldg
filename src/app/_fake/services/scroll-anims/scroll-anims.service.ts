@@ -1,15 +1,28 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
+import { Observable, map, catchError, finalize } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ScrollAnimsService {
 
-  constructor() { 
+  constructor(private http: HttpClient) { 
     gsap.registerPlugin(ScrollTrigger);
   }
+
+  // login(body:any): Observable<any> {
+  //   const headers = new HttpHeaders({
+  //     'Accept': 'application/json',
+  //     'Accept-Language': 'ar'
+  //   });
+  
+  //   return this.http.get<any>('http://api.4sighta.com/api/common/user/login',body ,{ headers }).pipe(
+  //     map(res => res ? res : []),  // Ensure that the response is always an array or fallback to an empty array
+  //   );
+  // }
 
   public scrollAnimations() {
     // appearance

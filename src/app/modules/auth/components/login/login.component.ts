@@ -35,7 +35,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private translationService: TranslationService,
-    private scrollAnims: ScrollAnimsService
+    private scrollAnims: ScrollAnimsService,
     
   ) {
     
@@ -59,6 +59,10 @@ export class LoginComponent implements OnInit, OnDestroy {
     // get return url from route parameters or default to '/'
     this.returnUrl =
       this.route.snapshot.queryParams['returnUrl'.toString()] || '/';
+
+      this.translationService.onLanguageChange().subscribe((lang)=>{
+        this.selectedLang =lang;
+      })
   }
 
   // convenience getter for easy access to form fields
@@ -96,18 +100,11 @@ export class LoginComponent implements OnInit, OnDestroy {
   submit() {
     this.hasError = false;
     const loginSubscr = this.authService
-      .login(this.f.email.value, this.f.password.value)
-      .pipe(first())
-      .subscribe((user: UserModel | undefined) => {
-        if (user) {
-          // this.router.navigate(['/auth/wait']);
-          // this.router.navigate([this.returnUrl]);
-        } else {
-          // this.router.navigate(['app']);
-          // this.hasError = true;
-        }
-      });
-    this.unsubscribe.push(loginSubscr);
+    .login(this.f.email.value, this.f.password.value , this.selectedLang)
+    .pipe(first())
+    .subscribe();
+   this.unsubscribe.push(loginSubscr);
+   
   }
 
   ngOnDestroy() {

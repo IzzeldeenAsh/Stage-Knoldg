@@ -6,7 +6,7 @@ import { ILayout, ILayoutCSSVariables } from 'src/app/_metronic/layout/core/conf
 import { DefaultLayoutConfig } from './default-layout.config';
 
 
-const LAYOUT_CONFIG_LOCAL_STORAGE_KEY = `tst-layoutConfig`;
+const LAYOUT_CONFIG_LOCAL_STORAGE_KEY = `${environment.appVersion}-layoutConfig`;
 
 export type LayoutType = ILayout | undefined;
 

@@ -1,7 +1,7 @@
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ClipboardModule } from 'ngx-clipboard';
 import { TranslateModule } from '@ngx-translate/core';
 import { InlineSVGModule } from 'ng-inline-svg-2';
@@ -10,6 +10,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthService } from './modules/auth/services/auth.service';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+import { AuthInterceptor } from './modules/auth/interceptor-auth.interceptor';
 
 function appInitializer(authService: AuthService) {
   return () => {
@@ -40,6 +41,7 @@ function appInitializer(authService: AuthService) {
       multi: true,
       deps: [AuthService],
     },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }, // Register the interceptor
   ],
   bootstrap: [AppComponent],
 })
