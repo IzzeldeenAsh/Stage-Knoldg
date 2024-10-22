@@ -5,20 +5,26 @@ import { UserModel } from '../../models/user.model';
 import { environment } from '../../../../../environments/environment';
 import { AuthModel } from '../../models/auth.model';
 
-const API_USERS_URL = `${environment.apiUrl}/auth`;
+const API_USERS_URL = `auth`;
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthHTTPService {
   constructor(private http: HttpClient) {}
-
+  private apiUrlLogin = 'http://api.4sighta.com/api/common/user/login';
   // public methods
-  login(email: string, password: string): Observable<any> {
-    return this.http.post<AuthModel>(`${API_USERS_URL}/login`, {
+
+
+  login(email: string, password: string , lang:string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': lang // As per your example
+    });
+    return this.http.post<any>(this.apiUrlLogin, {
       email,
       password,
-    });
+    },{headers});
   }
 
   // CREATE =>  POST: add a new user to the server

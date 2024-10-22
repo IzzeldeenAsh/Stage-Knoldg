@@ -3,11 +3,11 @@ import { Observable, BehaviorSubject, of, Subscription } from 'rxjs';
 import { map, catchError, switchMap, finalize } from 'rxjs/operators';
 import { UserModel } from '../models/user.model';
 import { AuthModel } from '../models/auth.model';
-import { AuthHTTPService } from './auth-http';
-import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
+import { AuthHTTPService } from './auth-http/auth-http.service';
+import { InsightaUserModel } from '../models/insighta-user.model';
 
-export type UserType = UserModel | undefined;
+export type UserType = InsightaUserModel | undefined;
 
 @Injectable({
   providedIn: 'root',
@@ -45,14 +45,26 @@ export class AuthService implements OnDestroy {
   }
 
   // public methods
-  login(email: string, password: string): Observable<UserType> {
+  login(email: string, password: string,lang:string): Observable<UserType> {
     this.isLoadingSubject.next(true);
-    return this.authHttpService.login(email, password).pipe(
-      map((auth: AuthModel) => {
-        const result = this.setAuthFromLocalStorage(auth);
-        return result;
+    return this.authHttpService.login(email, password ,lang).pipe(
+      map((response: any) => {
+        //setting authToken
+        const auth = new AuthModel();
+        auth.authToken = response.data.token; // Extract the token from the response
+        this.setAuthFromLocalStorage(auth);
+        //setting userModel
+        const user:UserType = {
+        id : response.data.id,
+        name : response.data.name,
+        email : response.data.email,
+        countryId : response.data.countryId,
+        country : response.data.country,
+        roles : response.data.roles
+        }
+        this.currentUserSubject.next(user);
+        return user;
       }),
-      switchMap(() => this.getUserByToken()),
       catchError((err) => {
         console.error('err', err);
         return of(undefined);
@@ -69,23 +81,24 @@ export class AuthService implements OnDestroy {
   }
 
   getUserByToken(): Observable<UserType> {
-    const auth = this.getAuthFromLocalStorage();
-    if (!auth || !auth.authToken) {
-      return of(undefined);
-    }
+    // const auth = this.getAuthFromLocalStorage();
+    // if (!auth || !auth.authToken) {
+    //   return of(undefined);
+    // }
 
-    this.isLoadingSubject.next(true);
-    return this.authHttpService.getUserByToken(auth.authToken).pipe(
-      map((user: UserType) => {
-        if (user) {
-          this.currentUserSubject.next(user);
-        } else {
-          this.logout();
-        }
-        return user;
-      }),
-      finalize(() => this.isLoadingSubject.next(false))
-    );
+    // this.isLoadingSubject.next(true);
+    // return this.authHttpService.getUserByToken(auth.authToken).pipe(
+    //   map((user: UserType) => {
+    //     if (user) {
+    //       this.currentUserSubject.next(user);
+    //     } else {
+    //       this.logout();
+    //     }
+    //     return user;
+    //   }),
+    //   finalize(() => this.isLoadingSubject.next(false))
+    // );
+    return of(undefined)
   }
 
   // need create new user then login
@@ -95,7 +108,7 @@ export class AuthService implements OnDestroy {
       map(() => {
         this.isLoadingSubject.next(false);
       }),
-      switchMap(() => this.login(user.email, user.password)),
+      switchMap(() => this.login(user.email, user.password ,'en')),
       catchError((err) => {
         console.error('err', err);
         return of(undefined);
@@ -121,13 +134,13 @@ export class AuthService implements OnDestroy {
     return false;
   }
 
-  private getAuthFromLocalStorage(): AuthModel | undefined {
+  getAuthFromLocalStorage(): AuthModel | undefined {
     try {
       const lsValue = localStorage.getItem(this.authLocalStorageToken);
       if (!lsValue) {
         return undefined;
       }
-
+  
       const authData = JSON.parse(lsValue);
       return authData;
     } catch (error) {

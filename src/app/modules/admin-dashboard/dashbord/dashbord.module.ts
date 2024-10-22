@@ -16,6 +16,7 @@ import { SummaryComponent } from './dashboard/summary/summary.component';
 import { DashboardStatsBarComponent } from './dashboard/dashboard-stats-bar/dashboard-stats-bar.component';
 import { AdminNotificationsComponent } from './dashboard/admin-notifications/admin-notifications.component';
 import { InlineSVGModule } from 'ng-inline-svg-2';
+import { DashboardSideBarComponent } from "./dashboard-side-bar/dashboard-side-bar.component";
 
 
 @NgModule({
@@ -38,6 +39,7 @@ import { InlineSVGModule } from 'ng-inline-svg-2';
     DashbordRoutingModule,
     InlineSVGModule,
     NgApexchartsModule,
-  ]
+    DashboardSideBarComponent
+]
 })
 export class DashbordModule { }
