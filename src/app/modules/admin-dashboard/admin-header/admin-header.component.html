@@ -1,6 +1,6 @@
 <div class="head d-flex align-items-center">
    <div class="head-wrap d-flex align-items-center justify-content-between">
-    <a (click)="toggleMobileSideBar()" class="burger-menu d-block d-lg-none svg-icon svg-icon-1 svg-icon-white">
+    <a (click)="toggleMobileSideBar()" class="burger-menu cursor-pointer d-block d-lg-none svg-icon svg-icon-1 svg-icon-white">
       <span  [inlineSVG]="'./assets/media/icons/duotune/abstract/abs015.svg'"> </span>
     </a>
     <div class="logo text-start d-flex align-item-center gap-3">
@@ -130,28 +130,7 @@
         </svg>
         
     </div>
-    <div class="d-flex">
-        <div class=" me-lg-3">
-            <a  class="btn btn-sm btn-flex gap-2 flex-center border border-300 bg-light btn-active-color-gray-900 px-0 px-lg-3 min-w-35px h-35px">
-              <i class="ki-outline ki-rocket fs-2 text-gray-600"></i>
-                 <span class="d-none d-lg-inline ">Announcement</span>
-            </a>
-        </div>
-        <div class="btn btn-sm btn-icon  h-35px w-35px " style="background-color: rgba(255,255,255,.16);" data-kt-menu-trigger="{default: 'click', lg: 'hover'}" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end">
-            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none">
-                <path d="M15.5833 6.03502V2.81919C15.5833 1.82044 15.13 1.41669 14.0038 1.41669H11.1421C10.0158 1.41669 9.5625 1.82044 9.5625 2.81919V6.02794C9.5625 7.03377 10.0158 7.43044 11.1421 7.43044H14.0038C15.13 7.43752 15.5833 7.03377 15.5833 6.03502Z" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M15.5833 14.0038V11.1421C15.5833 10.0158 15.13 9.5625 14.0038 9.5625H11.1421C10.0158 9.5625 9.5625 10.0158 9.5625 11.1421V14.0038C9.5625 15.13 10.0158 15.5833 11.1421 15.5833H14.0038C15.13 15.5833 15.5833 15.13 15.5833 14.0038Z" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M7.43734 6.03502V2.81919C7.43734 1.82044 6.984 1.41669 5.85775 1.41669H2.99609C1.86984 1.41669 1.4165 1.82044 1.4165 2.81919V6.02794C1.4165 7.03377 1.86984 7.43044 2.99609 7.43044H5.85775C6.984 7.43752 7.43734 7.03377 7.43734 6.03502Z" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M7.43734 14.0038V11.1421C7.43734 10.0158 6.984 9.5625 5.85775 9.5625H2.99609C1.86984 9.5625 1.4165 10.0158 1.4165 11.1421V14.0038C1.4165 15.13 1.86984 15.5833 2.99609 15.5833H5.85775C6.984 15.5833 7.43734 15.13 7.43734 14.0038Z" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-        </div>
-        <div class="btn btn-sm btn-icon  h-35px w-35px ml-10" style="background-color: rgba(255,255,255,.16);" data-kt-menu-trigger="{default: 'click', lg: 'hover'}" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end">
-            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none">
-                <path d="M8.5 10.625C9.6736 10.625 10.625 9.6736 10.625 8.5C10.625 7.32639 9.6736 6.375 8.5 6.375C7.32639 6.375 6.375 7.32639 6.375 8.5C6.375 9.6736 7.32639 10.625 8.5 10.625Z" stroke="white" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M1.41699 9.12343V7.87676C1.41699 7.1401 2.01908 6.53093 2.76283 6.53093C4.04491 6.53093 4.56908 5.62426 3.92449 4.51218C3.55616 3.87468 3.77574 3.04593 4.42033 2.6776L5.64574 1.97635C6.20533 1.64343 6.92783 1.84176 7.26074 2.40135L7.33866 2.53593C7.97616 3.64801 9.02449 3.64801 9.66908 2.53593L9.74699 2.40135C10.0799 1.84176 10.8024 1.64343 11.362 1.97635L12.5874 2.6776C13.232 3.04593 13.4516 3.87468 13.0832 4.51218C12.4387 5.62426 12.9628 6.53093 14.2449 6.53093C14.9816 6.53093 15.5907 7.13301 15.5907 7.87676V9.12343C15.5907 9.8601 14.9887 10.4693 14.2449 10.4693C12.9628 10.4693 12.4387 11.3759 13.0832 12.488C13.4516 13.1326 13.232 13.9543 12.5874 14.3226L11.362 15.0238C10.8024 15.3568 10.0799 15.1584 9.74699 14.5988L9.66908 14.4643C9.03158 13.3522 7.98324 13.3522 7.33866 14.4643L7.26074 14.5988C6.92783 15.1584 6.20533 15.3568 5.64574 15.0238L4.42033 14.3226C3.77574 13.9543 3.55616 13.1255 3.92449 12.488C4.56908 11.3759 4.04491 10.4693 2.76283 10.4693C2.01908 10.4693 1.41699 9.8601 1.41699 9.12343Z" stroke="white" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-        </div>
-    </div>
+   
 
    </div>
 

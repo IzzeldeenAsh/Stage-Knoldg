@@ -78,7 +78,7 @@ mode="indeterminate"
       <div class="card-body pt-0">
         <!-- Add #dt reference here -->
         <p-messages [(value)]="messages" [enableService]="false"></p-messages>
-        <p-table #dt [value]="listOfDepartments" [paginator]="true" [rows]="10" [globalFilterFields]="['name', 'names.en', 'names.ar']" class="table-striped">
+        <p-table #dt [value]="listOfDepartments" [paginator]="false" [rows]="10" [globalFilterFields]="['name', 'names.en', 'names.ar']" class="table-striped">
           <ng-template pTemplate="header">
             <tr>
               <th>Name</th>
