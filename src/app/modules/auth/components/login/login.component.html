@@ -22,6 +22,7 @@
     class=" second-block "
   >
     <div class="w-lg-500px mil-up">
+    
       <form class="form w-100 " [formGroup]="loginForm" novalidate="novalidate" id="kt_login_signin_form"
       (ngSubmit)="submit()">
       <!--begin::Heading-->
@@ -117,6 +118,7 @@
       <!--end::Form group-->
       
       <!--begin::Form group-->
+    
       <div class="fv-row mb-3 position-relative">
       
       <label class="form-label text-gray-900 fs-6 mb-0">{{ 'AUTH.LOGIN.PASSWORD_LABEL' | translate }}</label>
@@ -171,7 +173,7 @@
         <!--end::Link-->
       </div>
       <!--end::Wrapper-->
-      
+     
       <!--begin::Action-->
       <div class="d-grid mb-10">
         <button type="submit" id="kt_sign_in_submit" class="btn btn-primary" [disabled]="loginForm.invalid">
@@ -185,6 +187,7 @@
             <span class="indicator-label">{{ 'AUTH.LOGIN.CONTINUE' | translate }}</span>
           </ng-container>
         </button>
+        <p-messages [(value)]="messages" [enableService]="false"></p-messages>
       </div>
       
       

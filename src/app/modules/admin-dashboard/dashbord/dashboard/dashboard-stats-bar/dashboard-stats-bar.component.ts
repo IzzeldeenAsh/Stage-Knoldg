@@ -16,9 +16,9 @@ contractstats:number=0;
 
 dashboardStats:DashboardStats[]=
   [
-    { icon: './assets/media/icons/figmaSVGs/pending-user.svg', label: `${this.userstats} Users` },
-    { icon: './assets/media/icons/duotune/abstract/abs027.svg', label:  `${this.casestats} Cases` },
-    { icon: './assets/media/icons/prize.svg', label:  `${this.prizestats} Prizes` },
+   
+    { icon: './assets/media/icons/duotune/abstract/abs027.svg', label:  `${this.casestats} Departments` },
+    { icon: '', label:  `${this.prizestats} Positions` },
     { icon: './assets/media/icons/duotune/abstract/abs022.svg', label: `${this.contractstats} Contracts` }
   ]
 

@@ -46,7 +46,7 @@
     cursor: pointer;
   }
   
-  @media (max-width: 768px) {
+  @media (max-width: 991px) {
     .sidebar {
       transform: translateX(-100%); /* Initially hidden on small screens */
       width: 100%;
@@ -65,4 +65,11 @@
       display: inline-block;
       padding: 10px;
     }
+  }
+
+  .menu-link.active {
+    background-color: #f0f0f0;
+    font-weight: bold;
+    color: #007bff; /* Example color */
+    border-radius: 5px;
   }

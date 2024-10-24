@@ -1,10 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { MessagsComponent } from './messags/messags.component';
-import { ReportsComponent } from './reports/reports.component';
 import { CompanySettingsComponent } from './company-settings/company-settings.component';
-import { SummaryComponent } from './dashboard/summary/summary.component';
+import { DepartmentComponent } from './dashboard/departments/departments.component';
 
 const routes: Routes = [
   {
@@ -18,23 +16,13 @@ const routes: Routes = [
     children:[
       {
         path:'',
-        redirectTo:'summary',
+        redirectTo:'Departments',
         pathMatch:'full'
       },
       {
-        path:'summary',
-        component:SummaryComponent
+        path:'Departments',
+        component:DepartmentComponent
       },
-      {
-
-        path:'messages',
-        component:MessagsComponent
-      },
-      {
-        path:'reports',
-        component:ReportsComponent
-      }
-      ,
       {
         path:'co-settings',
         component:CompanySettingsComponent

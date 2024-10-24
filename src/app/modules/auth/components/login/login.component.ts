@@ -2,12 +2,11 @@ import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription, Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
-import { UserModel } from '../../models/user.model';
 import { AuthService } from '../../services/auth.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { TranslationService } from 'src/app/modules/i18n/translation.service';
 import { ScrollAnimsService } from 'src/app/_fake/services/scroll-anims/scroll-anims.service';
-
+import { Message } from 'primeng/api';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -24,6 +23,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   returnUrl: string;
   isLoading$: Observable<boolean>;
   selectedLang: string = 'en';
+  messages: Message[] = [];  // Array to hold error messages
   isRTL: boolean = false; // Added for RTL logic
   passwordVisible: boolean = false;
   // private fields
@@ -102,7 +102,27 @@ export class LoginComponent implements OnInit, OnDestroy {
     const loginSubscr = this.authService
     .login(this.f.email.value, this.f.password.value)
     .pipe(first())
-    .subscribe();
+    .subscribe({
+      next : (res) =>{
+        if(res && res?.roles){
+         if (res.roles.includes('admin') || res.roles.includes('staff')) {
+            this.router.navigate(['/admin-dashboard']);
+          } else {
+            this.router.navigate(['/auth/wait']);  // Default to /home if no admin or staff roles
+          }
+        }
+      },
+      error : (error)=>{
+        this.messages = [];
+        
+          // Check if the error contains validation messages
+          if (error.validationMessages) {
+            this.messages = error.validationMessages;  // Set the messages array
+          } else {
+            this.messages.push({ severity: 'error', summary: 'Error', detail: 'An unexpected error occurred.' });
+          }
+      }
+    });
    this.unsubscribe.push(loginSubscr);
    
   }

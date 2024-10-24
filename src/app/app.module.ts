@@ -41,7 +41,7 @@ function appInitializer(authService: AuthService) {
       multi: true,
       deps: [AuthService],
     },
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }, // Register the interceptor
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }, 
   ],
   bootstrap: [AppComponent],
 })

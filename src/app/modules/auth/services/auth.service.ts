@@ -1,11 +1,12 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { Observable, BehaviorSubject, of, Subscription } from 'rxjs';
+import { Observable, BehaviorSubject, of, Subscription, throwError } from 'rxjs';
 import { map, catchError, switchMap, finalize } from 'rxjs/operators';
 import { UserModel } from '../models/user.model';
 import { AuthModel } from '../models/auth.model';
 import { Router } from '@angular/router';
 import { AuthHTTPService } from './auth-http/auth-http.service';
 import { InsightaUserModel } from '../models/insighta-user.model';
+import { environment } from 'src/environments/environment';
 
 export type UserType = InsightaUserModel | undefined;
 
@@ -15,8 +16,7 @@ export type UserType = InsightaUserModel | undefined;
 export class AuthService implements OnDestroy {
   // private fields
   private unsubscribe: Subscription[] = []; // Read more: => https://brianflove.com/2016/12/11/anguar-2-unsubscribe-observables/
-  // private authLocalStorageToken = `${environment.appVersion}-${environment.USERDATA_KEY}`;
-  private authLocalStorageToken = `test`;
+   private authLocalStorageToken = `${environment.appVersion}-${environment.USERDATA_KEY}`;
 
   // public fields
   currentUser$: Observable<UserType>;
@@ -49,28 +49,67 @@ export class AuthService implements OnDestroy {
     this.isLoadingSubject.next(true);
     return this.authHttpService.login(email, password).pipe(
       map((response: any) => {
-        //setting authToken
+        // Extract token and user info from the response
         const auth = new AuthModel();
         auth.authToken = response.data.token; // Extract the token from the response
         this.setAuthFromLocalStorage(auth);
-        //setting userModel
-        const user:UserType = {
-        id : response.data.id,
-        name : response.data.name,
-        email : response.data.email,
-        countryId : response.data.countryId,
-        country : response.data.country,
-        roles : response.data.roles
-        }
+  
+        // Store user information in local storage
+        const user: UserType = {
+          id: response.data.id,
+          name: response.data.name,
+          email: response.data.email,
+          countryId: response.data.countryId,
+          country: response.data.country,
+          roles: response.data.roles,
+        };
+  
+        this.setUserInLocalStorage(user);
         this.currentUserSubject.next(user);
         return user;
       }),
-      catchError((err) => {
-        console.error('err', err);
-        return of(undefined);
-      }),
+      catchError((error) => this.handleError(error)),
       finalize(() => this.isLoadingSubject.next(false))
     );
+  }
+  
+
+  private setUserInLocalStorage(user: UserType): void {
+    if (user) {
+      localStorage.setItem('currentUser', JSON.stringify(user));
+    }
+  }
+  
+  private getUserFromLocalStorage(): UserType | undefined {
+    const userJson = localStorage.getItem('currentUser');
+    if (userJson) {
+      return JSON.parse(userJson) as UserType;
+    }
+    return undefined;
+  }
+
+  private handleError(error: any) {
+  
+    // Initialize an empty array to hold the formatted error messages
+    let validationErrors: any[] = [];
+  
+    // Check if there are validation errors in the response
+    if (error.error.errors) {
+      const errors = error.error.errors;
+      for (const field in errors) {
+        if (errors.hasOwnProperty(field)) {
+          const errorMsgArray = errors[field];
+          errorMsgArray.forEach((msg: string) => {
+            validationErrors.push({ severity: 'error', summary: 'Validation Error', detail: msg });
+          });
+        }
+      }
+    }
+  
+    // Return the array of validation error messages to the component
+    return throwError(() => ({
+      validationMessages: validationErrors
+    }));
   }
 
   logout() {
@@ -81,24 +120,14 @@ export class AuthService implements OnDestroy {
   }
 
   getUserByToken(): Observable<UserType> {
-    // const auth = this.getAuthFromLocalStorage();
-    // if (!auth || !auth.authToken) {
-    //   return of(undefined);
-    // }
-
-    // this.isLoadingSubject.next(true);
-    // return this.authHttpService.getUserByToken(auth.authToken).pipe(
-    //   map((user: UserType) => {
-    //     if (user) {
-    //       this.currentUserSubject.next(user);
-    //     } else {
-    //       this.logout();
-    //     }
-    //     return user;
-    //   }),
-    //   finalize(() => this.isLoadingSubject.next(false))
-    // );
-    return of(undefined)
+    const user = this.getUserFromLocalStorage();
+    if (user) {
+      this.currentUserSubject.next(user);
+      return of(user);
+    } else {
+      this.logout(); // If no user is found in storage, log out
+      return of(undefined);
+    }
   }
 
   // need create new user then login
