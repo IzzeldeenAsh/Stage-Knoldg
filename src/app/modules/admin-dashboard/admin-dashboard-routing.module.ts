@@ -25,7 +25,7 @@ const routes: Routes = [ {
     },
 
     {
-      path: 'finance',
+      path: 'settings',
       loadChildren: () =>
         import('./finance/finance.module').then(
           (m) => m.FinanceModule

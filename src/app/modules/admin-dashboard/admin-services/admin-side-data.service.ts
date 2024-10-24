@@ -53,16 +53,16 @@ export class AdminSideDataService {
           ],
         },
         
-        {
-          menuValue: 'finance',
-          route: '/admin-dashboard/admin/finance/main-finance',
-          hasSubRoute: false,
-          showSubRoute: false,
-          icon: 'space_dashboard',
-          base: 'finance',
-          subMenus: [
-          ],
-        },
+        // {
+        //   menuValue: 'settings',
+        //   route: '/admin-dashboard/admin/finance/main-finance',
+        //   hasSubRoute: false,
+        //   showSubRoute: false,
+        //   icon: 'space_dashboard',
+        //   base: 'settings',
+        //   subMenus: [
+        //   ],
+        // },
         {
           menuValue: 'users',
           route: '/admin-dashboard/admin/users/main-users',

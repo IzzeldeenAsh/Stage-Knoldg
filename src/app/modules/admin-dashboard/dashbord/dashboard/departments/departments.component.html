@@ -1,0 +1,112 @@
+<p-progressBar
+*ngIf="isLoading$ | async"
+mode="indeterminate"
+[style]="{ height: '4px' }"
+/>
+
+<ng-container *ngIf="(isLoading$ | async) ===false">
+<div id="kt_app_toolbar" class="app-toolbar pt-10 mb-0">
+  <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex align-items-stretch">
+    <div class="app-toolbar-wrapper d-flex flex-stack flex-wrap gap-4 w-100">
+      <div class="page-title d-flex flex-column justify-content-center gap-1 me-3">
+        <h1 class="page-heading d-flex flex-column justify-content-center text-gray-900 fw-bold fs-3 m-0">
+          Departments
+        </h1>
+        <div class="fw-semibold fs-7 my-0 text-muted">{{listOfDepartments.length}} Department</div>
+      </div>
+
+      <div class="d-flex align-items-center gap-2 gap-lg-3">
+        <a (click)="showDialog()" class="btn btn-sm btn-flex btn-primary">
+          <i class="ki-outline ki-plus text-white fs-4"></i>
+          Create
+        </a>
+        <p-dialog [header]="isEditMode ? 'Edit Department' : 'Add Department'" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }">
+          <span class="text-muted mb-3 d-block">{{ isEditMode ? 'Edit Department Details' : 'Add Department Details' }}.</span>
+        
+          <div class="mb-3 row">
+            <label for="arabicName" class="col-sm-3 col-form-label">Arabic Name</label>
+            <div class="col-sm-9">
+              <input pInputText id="arabicName" class="form-control" [(ngModel)]="newDepartmentAr" name="arabicName" autocomplete="off" />
+            </div>
+          </div>
+        
+          <div class="mb-3 row">
+            <label for="englishName" class="col-sm-3 col-form-label">English Name</label>
+            <div class="col-sm-9">
+              <input pInputText id="englishName" class="form-control" [(ngModel)]="newDepartmentEn" name="englishName" autocomplete="off" />
+            </div>
+          </div>
+        
+          <div class="d-flex justify-content-end gap-2">
+            <button (click)="submit()" class="btn btn-primary btn-sm">
+              Save
+            </button>
+            <button (click)="visible = false" class="btn btn-outline-secondary btn-sm">
+              Cancel
+            </button>
+          </div>
+        </p-dialog>
+      </div>
+      <!--end::Actions-->
+    </div>
+  </div>
+</div>
+
+<div id="kt_app_content" class="app-content flex-column-fluid">
+  <div id="kt_app_content_container" class="app-container container-fluid">
+    <div class="card">
+      <div class="card-header border-0 pt-6">
+        <div class="card-title">
+          <div class="d-flex align-items-center position-relative my-1">
+            <i class="pi pi-search fs-3 position-absolute ms-5"></i>
+            <input type="text" pInputText class="form-control form-control-solid w-250px ps-12"
+              placeholder="Search Departments" (input)="applyFilter($event)" />
+          </div>
+        </div>
+
+        <div class="card-toolbar">
+          <div class="d-flex justify-content-end align-items-center d-none" data-kt-customer-table-toolbar="selected">
+            <div class="fw-bold me-5">
+              <span class="me-2" data-kt-customer-table-select="selected_count"></span> Selected
+            </div>
+            <button type="button" class="btn btn-danger" data-kt-customer-table-select="delete_selected">Delete
+              Selected</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-body pt-0">
+        <!-- Add #dt reference here -->
+        <p-messages [(value)]="messages" [enableService]="false"></p-messages>
+        <p-table #dt [value]="listOfDepartments" [paginator]="false" [rows]="10" [globalFilterFields]="['name', 'names.en', 'names.ar']" class="table-striped">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Name</th>
+              <th>Name (English)</th>
+              <th>Name (Arabic)</th>
+              <th>Action</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-department>
+            <tr>
+              <td>{{ department.name }}</td>
+              <td>{{ department.names.en }}</td>
+              <td>{{ department.names.ar }}</td>
+              <td>
+                <a  pTooltip="Edit Department" tooltipPosition="top" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" (click)="editDepartment(department)">
+                  <i class="ki-duotone ki-pencil fs-2"><span class="path1"></span><span class="path2"></span></i>
+                </a>
+                <a  pTooltip="Delete Department" tooltipPosition="top" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm" (click)="deleteDepartment(department.id)">
+                  <i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></i>
+                </a>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+
+        
+      </div>
+    </div>
+  </div>
+</div>
+</ng-container>

@@ -11,7 +11,7 @@ const routes: Routes = [
     pathMatch:'full'
   },
   {
-    path:'main-finance',
+    path:'main-settings',
     component:MainFinanceComponent,
     children:[
       {

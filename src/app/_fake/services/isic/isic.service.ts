@@ -34,4 +34,18 @@ export class IsicService {
       finalize(() => this.setLoading(false))
     );
   }
+
+  getList(): Observable<any> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Language': 'en'
+    });
+  
+    return this.http.get<any>( 'https://api.4sighta.com/api/common/setting/department/list', { headers }).pipe(
+      map(res => res),  // Ensure that the response is always an array or fallback to an empty array
+      catchError(this.handleError),
+      finalize(() => this.setLoading(false))
+    );
+  }
 }

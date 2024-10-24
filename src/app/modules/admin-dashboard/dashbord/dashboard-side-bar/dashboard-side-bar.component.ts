@@ -1,16 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { SidebarService } from '../../admin-services/sidebar.service';
 
 @Component({
   selector: 'app-dashboard-side-bar',
-  standalone: true,
-  imports: [],
   templateUrl: './dashboard-side-bar.component.html',
   styleUrl: './dashboard-side-bar.component.scss'
 })
-export class DashboardSideBarComponent {
-  isSidebarHidden: boolean = false; // Sidebar starts hidden on small screens
+export class DashboardSideBarComponent implements OnInit {
+  isSidebarHidden: boolean = false; // Sidebar is visible by default for larger screens
+
+  constructor(private sidebarService: SidebarService) {}
+
+  ngOnInit(): void {
+    // Subscribe to the sidebar visibility state from the service
+    this.sidebarService.sidebarVisible$.subscribe((isVisible) => {
+      this.isSidebarHidden = !isVisible;
+      console.log("isVisible",isVisible);
+    });
+  }
 
   toggleSidebar() {
-    this.isSidebarHidden = !this.isSidebarHidden; // Toggle between hidden and shown
+    this.sidebarService.toggleSidebar();
   }
 }

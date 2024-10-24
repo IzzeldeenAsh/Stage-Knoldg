@@ -76,7 +76,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-   
+   this._isicService.getList().subscribe()
     this._translateion.onLanguageChange().subscribe((lang)=>{
       this.lang =lang;
       this.setOptionLabel()

@@ -12,7 +12,7 @@ const API_USERS_URL = `auth`;
 })
 export class AuthHTTPService {
   constructor(private http: HttpClient) {}
-  private apiUrlLogin = 'http://api.4sighta.com/api/common/user/login';
+  private apiUrlLogin = 'https://api.4sighta.com/api/common/user/login';
   // public methods
 
 
