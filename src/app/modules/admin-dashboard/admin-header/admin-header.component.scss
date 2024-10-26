@@ -9,3 +9,10 @@
     width: 95%;
     margin: auto;
 }
+
+.menu-link.active {
+    background-color: #f0f0f0;
+    font-weight: bold;
+    color: #007bff; /* Example color */
+    border-radius: 5px;
+  }

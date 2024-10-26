@@ -59,7 +59,6 @@ export class DepartmentComponent implements OnInit {
       next: (data: Department[]) => {
         this.listOfDepartments = data;
         this.cdr.detectChanges()
-        console.log("this.listOfDepartments", this.listOfDepartments);
       },
       error: (error) => {
         // Clear the existing messages

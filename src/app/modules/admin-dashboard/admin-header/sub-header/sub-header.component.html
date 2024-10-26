@@ -3,7 +3,7 @@
         <div class="list-menu d-flex gap-md-0 gap-0 h-100 ">
           <ng-container *ngFor="let mainTittle of side_bar_data ">
             <ng-container *ngFor="let menu of mainTittle?.menu">
-              <a class="menu-link-admin min-w-100px  position-relative" [class.active]="menu?.menuValue === base" [routerLink]="menu.route">
+              <a class="menu-link-admin min-w-100px  position-relative" [class.active]="(menu?.menuValue === base) " [routerLink]="menu.route" >
                 <span class="menu-element">
                   <span
                     class="d-flex text-decoration-none justify-content-center align-items-center ">

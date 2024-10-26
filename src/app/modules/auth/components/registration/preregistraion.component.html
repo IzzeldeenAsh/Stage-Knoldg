@@ -59,7 +59,8 @@
               "AUTH.REGISTRATION.FIRSTNAME_LABEL" | translate
             }}</label>
             <input
-              class="form-control"
+            pInputText
+            class="w-100" 
               type="text"
               name="firstName"
               formControlName="firstName"
@@ -104,9 +105,10 @@
               "AUTH.REGISTRATION.LASTNAME_LABEL" | translate
             }}</label>
             <input
-              class="form-control"
+            pInputText
               type="text"
               name="lastName"
+              class="w-100" 
               formControlName="lastName"
               placeholder="{{
                 'AUTH.REGISTRATION.LASTNAME_PLACEHOLDER' | translate
@@ -152,7 +154,8 @@
             "AUTH.REGISTRATION.EMAIL_LABEL" | translate
           }}</label>
           <input
-            class="form-control"
+          pInputText
+          class="w-100"
             type="email"
             placeholder="{{
               'AUTH.REGISTRATION.EMAIL_PLACEHOLDER' | translate
@@ -208,7 +211,13 @@
             <label class="form-label fs-6 text-gray-900">{{
               "AUTH.REGISTRATION.PASSWORD_LABEL" | translate
             }}</label>
-            <input
+                  <p-password     name="password"   formControlName="password" class="w-100" [ngClass]="{
+                    'is-invalid':
+                      registrationForm.controls['cPassword'].invalid &&
+                      (registrationForm.controls['cPassword'].dirty ||
+                        registrationForm.controls['cPassword'].touched)
+                  }"/>
+            <!-- <input
               class="form-control"
               [type]="passwordFieldType"
               placeholder="{{
@@ -223,7 +232,7 @@
                   (registrationForm.controls['password'].dirty ||
                     registrationForm.controls['password'].touched)
               }"
-            />
+            /> -->
             <!-- Eye Icon Button -->
             <!-- <button
           type="button"
@@ -248,11 +257,17 @@
           </div>
 
           <!--begin::Confirm Password-->
-          <div class="col-12 col-md-6 position-relative">
+          <div class="col-12 col-md-6 position-relative w=100">
             <label class="form-label fs-6 text-gray-900">{{
               "AUTH.REGISTRATION.CONFIRM_PASSWORD_LABEL" | translate
             }}</label>
-            <input
+               <p-password      name="cPassword"   formControlName="cPassword" class="w-100" [ngClass]="{
+                'is-invalid':
+                  registrationForm.controls['cPassword'].invalid &&
+                  (registrationForm.controls['cPassword'].dirty ||
+                    registrationForm.controls['cPassword'].touched)
+              }"/>
+            <!-- <input
               class="form-control"
               [type]="confirmPasswordFieldType"
               placeholder="{{
@@ -267,7 +282,7 @@
                   (registrationForm.controls['cPassword'].dirty ||
                     registrationForm.controls['cPassword'].touched)
               }"
-            />
+            /> -->
             <!-- Eye Icon Button -->
             <!-- <button
           type="button"
@@ -311,7 +326,6 @@
             />
             <p-dropdown
               *ngIf="(isLoadingCountires$ | async) === false"
-              class="form-control reg-coutries"
               [options]="countries"
               formControlName="country"
               [optionLabel]="optionLabel"
@@ -341,7 +355,6 @@
             ></p-progressBar>
             <p-dropdown
               *ngIf="(isLoadingConsultingFields$ | async) === false"
-              class="form-control reg-coutries"
               [options]="consultingFields"
               formControlName="consultingField"
               [optionLabel]="optionLabelField"
@@ -409,9 +422,26 @@
               mode="indeterminate"
               [style]="{ height: '4px' }"
             ></p-progressBar>
+            <!-- <div class="card flex justify-content-center">
+              <p-treeSelect
+              [ngModelOptions]="{standalone: true}"
+                class="min-w-500px"
+                containerStyleClass="w-full min-w-500px"
+                [(ngModel)]="selectedNodes"
+                [options]="nodes"
+                display="chip"
+                [metaKeySelection]="false"
+                selectionMode="checkbox"
+                placeholder="Select Item"
+                [virtualScroll]="true"
+                [virtualScrollItemSize]="46"
+                [virtualScrollOptions]="{ scrollHeight: '200px' }"
+              ></p-treeSelect>
+            </div> -->
+            
             <p-dropdown
             *ngIf="(isLoadingIsicCodes$ | async) === false"
-            class="form-control reg-coutries ltr"
+            class="ltr"
             [options]="isicCodes"
             formControlName="industry"
             [optionLabel]="optionLabelField"
@@ -421,12 +451,10 @@
             [filter]="true"
             [showClear]="true"
           >
-            <!-- Template for selected item -->
             <ng-template let-option pTemplate="selectedItem">
               {{ trimText(option.description.en, 22) }}
             </ng-template>
           
-            <!-- Template for each dropdown item -->
             <ng-template let-option pTemplate="item">
               {{ trimText(option.description.en, 100) }}
             </ng-template>
@@ -452,13 +480,12 @@
               <div class="dropdown-wrapper">
                 <p-dropdown
                  
-                  class="form-control reg-coutries ltr"
+                  class=" ltr"
                   [options]="hsCodes"
                   formControlName="hscode"
                   optionLabel="label"
                   placeholder="{{ 'AUTH.REGISTRATION.HSCODE' | translate }}"
                   [filter]="true"
-                  [disabled]="hsCodes.length === 0"
                   [readonly]="hsCodes.length === 0"
                   [showClear]="true"
                   [virtualScroll]="true"
