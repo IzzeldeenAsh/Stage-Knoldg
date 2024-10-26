@@ -23,21 +23,13 @@ const routes: Routes = [ {
           (m) => m.DashbordModule
         ),
     },
-
     {
-      path: 'settings',
+      path: 'accounts',
       loadChildren: () =>
-        import('./finance/finance.module').then(
-          (m) => m.FinanceModule
+        import('./accounts/accounts.module').then(
+          (m) => m.AccountsModule
         ),
-    },
-    {
-      path: 'users',
-      loadChildren: () =>
-        import('./users/users.module').then(
-          (m) => m.UsersModule
-        ),
-    },
+    }
   ],
 }
 ];

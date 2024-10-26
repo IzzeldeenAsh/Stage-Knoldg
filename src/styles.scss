@@ -21,7 +21,7 @@
     width:  100% !important;
     justify-content: space-between !important;
 }
-.reg-coutries .p-dropdown ul{
+ .p-dropdown ul{
    padding: 0 !important;
    direction: ltr !important;
    overflow: auto !important;
@@ -33,7 +33,9 @@
     font-weight: 500 !important;
     font-size: 1.1rem !important;
 }
-
+ .p-dialog-content{
+    overflow: visible !important;
+}
 
   
 .reg-coutries .p-dropdown .p-dropdown-filter-icon{
@@ -227,4 +229,15 @@ color: #017BFE !important;
   }
 .p-message-close{
     margin-inline-start: auto !important;
+}
+.p-dropdown{
+    width: 100% !important;
+}
+.p-password-input{
+    width: 100% !important;
+    display: block !important;
+}
+.p-password{
+    width: 100% !important;
+    display: block !important;
 }

@@ -66,3 +66,9 @@
   z-index: 1; /* Make sure the overlay is on top */
   cursor: not-allowed; /* Show disabled cursor */
 }
+.w-full{
+  width: 100% !important;
+}
+.min-w-500px{
+  min-width: 500px;
+}

@@ -52,24 +52,13 @@ export class AdminSideDataService {
           subMenus: [
           ],
         },
-        
-        // {
-        //   menuValue: 'settings',
-        //   route: '/admin-dashboard/admin/finance/main-finance',
-        //   hasSubRoute: false,
-        //   showSubRoute: false,
-        //   icon: 'space_dashboard',
-        //   base: 'settings',
-        //   subMenus: [
-        //   ],
-        // },
         {
-          menuValue: 'users',
-          route: '/admin-dashboard/admin/users/main-users',
+          menuValue: 'accounts',
+          route:'/admin-dashboard/admin/accounts/main-accounts' ,
           hasSubRoute: false,
           showSubRoute: false,
           icon: 'space_dashboard',
-          base: 'users',
+          base: 'accounts',
           subMenus: [
           ],
         },

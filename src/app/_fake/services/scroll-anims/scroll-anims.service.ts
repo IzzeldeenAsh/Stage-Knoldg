@@ -153,13 +153,6 @@ export class ScrollAnimsService {
       });
     }
 
-    // progress bar
-    gsap.to('.mil-progress', {
-      height: '100%',
-      ease: 'sine',
-      scrollTrigger: {
-        scrub: 0.3
-      }
-    });
+    
   }
 }

@@ -8,7 +8,6 @@ import { CompanySettingsComponent } from './company-settings/company-settings.co
 import { DashboardStatsBarComponent } from './dashboard/dashboard-stats-bar/dashboard-stats-bar.component';
 import { AdminNotificationsComponent } from './dashboard/admin-notifications/admin-notifications.component';
 import { InlineSVGModule } from 'ng-inline-svg-2';
-import { DashboardSideBarComponent } from "./dashboard-side-bar/dashboard-side-bar.component";
 import { DepartmentComponent } from './dashboard/departments/departments.component';
 import { TableModule } from 'primeng/table';
 import { CardModule } from 'primeng/card';
@@ -18,14 +17,19 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { FormsModule } from '@angular/forms';
 import { TooltipModule } from 'primeng/tooltip';
+import { PositionsComponent } from './dashboard/positions/positions.component';
+import { CountriesComponent } from './dashboard/countries/countries.component';
+import { RegionsComponent } from './dashboard/regions/regions.component';
 @NgModule({
   declarations: [
     DashboardComponent,
     CompanySettingsComponent,
     DashboardStatsBarComponent,
     AdminNotificationsComponent,
-    DashboardSideBarComponent,
+    CountriesComponent,
     DepartmentComponent,
+    RegionsComponent,
+    PositionsComponent
   ],
   imports: [
     CommonModule,

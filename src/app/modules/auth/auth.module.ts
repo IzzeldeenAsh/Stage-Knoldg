@@ -16,7 +16,9 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { WaitComponent } from './components/wait/wait.component';
 import { MessagesModule } from 'primeng/messages';
-
+import { TreeSelectModule } from 'primeng/treeselect';
+import { PasswordModule } from 'primeng/password';
+import { InputTextModule } from 'primeng/inputtext';
 @NgModule({
   declarations: [
     LoginComponent,
@@ -30,10 +32,13 @@ import { MessagesModule } from 'primeng/messages';
   imports: [
     CommonModule,
     TranslationModule,
+    TreeSelectModule,
     MessagesModule,
     SweetAlert2Module.forChild(),
     AuthRoutingModule,
     ProgressBarModule,
+    InputTextModule,
+    PasswordModule,
     LanguageSwitchModule,
     FormsModule,
     ReactiveFormsModule,

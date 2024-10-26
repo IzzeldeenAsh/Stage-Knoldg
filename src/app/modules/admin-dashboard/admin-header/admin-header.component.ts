@@ -1,14 +1,41 @@
 import { Component } from '@angular/core';
-import { SidebarService } from '../admin-services/sidebar.service';
+import { Router, NavigationEnd, NavigationSkipped } from '@angular/router';
+
 @Component({
   selector: 'app-admin-header',
   templateUrl: './admin-header.component.html',
   styleUrls: ['./admin-header.component.scss']
 })
 export class AdminHeaderComponent {
-  constructor(private sidebarService: SidebarService) {}
-
+  sidebarVisible: boolean = false;
   toggleMobileSideBar(): void {
-    this.sidebarService.toggleSidebar(); // Use service to toggle the sidebar
+    this.sidebarVisible = !this.sidebarVisible
   }
+
+  base:string=''
+  page:string=''
+  constructor( public router: Router){
+    
+    router.events.subscribe((event:Object)=>{
+      if(event instanceof NavigationEnd){
+        const splitVal =event.url.split('/');
+        this.base = splitVal[3];
+        this.page=splitVal[2];
+        
+      } else if(event instanceof NavigationSkipped){
+        const splitVal = event.url.split('/');
+        this.page = splitVal[2];
+        this.base = splitVal[3];
+      }
+    })
+
+  }
+
+  ngOnInit(): void {
+   
+  
+
+    this.base=this.router.url.split('/')[3]
+  }
+
 }

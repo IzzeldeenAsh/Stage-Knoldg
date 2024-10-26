@@ -16,6 +16,7 @@ import { PreRegsiterService } from 'src/app/_fake/services/pre-register/pre-regs
 
 import { ScrollAnimsService } from 'src/app/_fake/services/scroll-anims/scroll-anims.service';
 import { Message } from 'primeng/api';
+import { IsicCode, TreeNode } from 'src/app/_fake/models/isicNodes.model';
 @Component({
   selector: 'app-registration',
   templateUrl: './preregistraion.component.html',
@@ -29,7 +30,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   isLoadingIsicCodes$: Observable<boolean>;
   isLoadingCountires$: Observable<boolean>;
   isLoadingHSCodes$: Observable<boolean>;
-
+  selectedNodes:any;
   
 
   messages: Message[] = [];  // Array to hold error messages
@@ -41,7 +42,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   consultingFields: any[] = []; 
   isic:any;
   isicCodes: any[] = [];
-
+  nodes:any;
   hsCodes: any[] = [];
   optionLabelHSCode:string;
   lang:string;
@@ -86,11 +87,38 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     this.setOptionLabel()
     this.initForm();
     this.getConsultingFields();
-    this._isicService.getIsicCodes().subscribe(res=>{
-      this.isicCodes = res;
-    });
+    this.loadIsicCodes()
+   
     this.onConsultingFieldChange();
     this.onISICFieldChange()
+  }
+
+  loadIsicCodes() {
+    const isicSub = this._isicService.getIsicCodes().subscribe({
+      next: (res) => {
+        this.isicCodes = res;
+        this.nodes = this.mapIsicCodesToTreeNodes(this.isicCodes);
+      },
+      error: (err) => {
+        console.error('Error loading ISIC codes:', err);
+      },
+    });
+    this.unsubscribe.push(isicSub);
+  }
+
+  mapIsicCodesToTreeNodes(isicCodes: IsicCode[]): TreeNode[] {
+    return isicCodes.map((isicCode) => this.mapIsicCodeToTreeNode(isicCode));
+  }
+
+  mapIsicCodeToTreeNode(isicCode: IsicCode): TreeNode {
+    return {
+      key: isicCode.id.toString(),
+      label: `${isicCode.code} - ${isicCode.description.en}`,
+      data: isicCode,
+      children: isicCode.child_isic_code?.length
+        ? this.mapIsicCodesToTreeNodes(isicCode.child_isic_code)
+        : undefined,
+    };
   }
 
   getConsultingFields() {
@@ -170,7 +198,6 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       const cField = res ?  res.description.en.trim(' ') : null;
      if(cField && cField=="other"){
       this.isOtherSelected = true;
-      console.log('this.isOtherSelected',this.isOtherSelected)
       if (!this.isOtherSelected) {
         this.registrationForm.controls['otherConsultingField'].reset();
       }
@@ -245,11 +272,9 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       newUser.hs_code=this.registrationForm.get('hscode')?.value?this.registrationForm.get('hscode')?.value.id  : null ;
       newUser.description =this.registrationForm.get('aboutDescription')?.value ? this.registrationForm.get('aboutDescription')?.value : null;
       newUser.other_consulting_field=this.registrationForm.get('otherConsultingField')?.value ? this.registrationForm.get('otherConsultingField')?.value : null;
-      console.log('newUser',newUser);
 
       const registerAPI= this._register.preRegisterUser(newUser).pipe(first()).subscribe({
         next: (res)=>{
-          console.log('res',res)
           if(res.state){
            this.registrationForm.reset();
            this.router.navigate(['/auth/verify-email' , newUser.email])
