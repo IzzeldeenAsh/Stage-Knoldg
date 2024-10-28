@@ -294,27 +294,27 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       newUser.other_consulting_field=this.registrationForm.get('otherConsultingField')?.value ? this.registrationForm.get('otherConsultingField')?.value : null;
 console.log("newUser" ,newUser);
 console.log("selectedNodes",this.selectedNodes);
-      // const registerAPI= this._register.preRegisterUser(newUser).pipe(first()).subscribe({
-      //   next: (res)=>{
-      //     if(res.state){
-      //      this.registrationForm.reset();
-      //      this.router.navigate(['/auth/verify-email' , newUser.email])
-      //     }
-      //   },
-      //   error: (error) => {
-      //     // Clear the existing messages
-      //     this.messages = [];
+      const registerAPI= this._register.preRegisterUser(newUser).pipe(first()).subscribe({
+        next: (res)=>{
+          if(res.state){
+           this.registrationForm.reset();
+           this.router.navigate(['/auth/verify-email' , newUser.email])
+          }
+        },
+        error: (error) => {
+          // Clear the existing messages
+          this.messages = [];
         
-      //     // Check if the error contains validation messages
-      //     if (error.validationMessages) {
-      //       this.messages = error.validationMessages;  // Set the messages array
-      //     } else {
-      //       this.messages.push({ severity: 'error', summary: 'Error', detail: 'An unexpected error occurred.' });
-      //     }
-      //   }
+          // Check if the error contains validation messages
+          if (error.validationMessages) {
+            this.messages = error.validationMessages;  // Set the messages array
+          } else {
+            this.messages.push({ severity: 'error', summary: 'Error', detail: 'An unexpected error occurred.' });
+          }
+        }
       
-      // })
-      // this.unsubscribe.push(registerAPI);
+      })
+      this.unsubscribe.push(registerAPI);
     }else{
       this.hasError = true;
     }

@@ -86,6 +86,7 @@ export class PositionsComponent implements OnInit, OnDestroy {
   }
 
   submit() {
+    this.messages=[]
     if (this.selectedPositionId) {
       // Update existing position
       const updatedData = {
@@ -149,6 +150,7 @@ export class PositionsComponent implements OnInit, OnDestroy {
   }
 
   deletePosition(positionId: number) {
+    this.messages=[]
     Swal.fire({
       title: 'Are you sure?',
       text: 'Do you want to delete this position? This action cannot be undone.',

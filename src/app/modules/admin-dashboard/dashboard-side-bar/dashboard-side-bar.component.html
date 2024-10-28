@@ -54,11 +54,10 @@
             ><span class="menu-icon">
               <div class="symbol symbol-30px">
                 <span class="symbol-label">
-                  <span
-                    
-                    class="svg-icon svg-icon-3 svg-icon-primary"
-                  >
-                  <i class="ki-duotone ki-abstract-39 text-gray-900 fs-3"><span class="path1"></span><span class="path2"></span></i></span>
+                  <span class="svg-icon svg-icon-3 svg-icon-primary">
+                    <i class="ki-duotone ki-abstract-39 text-gray-900 fs-3"
+                      ><span class="path1"></span><span class="path2"></span></i
+                  ></span>
                 </span>
               </div> </span
             ><span class="menu-title">Countries</span
@@ -75,11 +74,10 @@
             ><span class="menu-icon">
               <div class="symbol symbol-30px">
                 <span class="symbol-label">
-                  <span
-                    
-                    class="svg-icon svg-icon-3 svg-icon-primary"
-                  >
-                  <i class="ki-duotone ki-abstract-39 text-gray-900 fs-3"><span class="path1"></span><span class="path2"></span></i></span>
+                  <span class="svg-icon svg-icon-3 svg-icon-primary">
+                    <i class="ki-duotone ki-abstract-39 text-gray-900 fs-3"
+                      ><span class="path1"></span><span class="path2"></span></i
+                  ></span>
                 </span>
               </div> </span
             ><span class="menu-title">Regions</span
@@ -157,29 +155,20 @@
     </ng-container>
   </ul>
   <div class="d-flex flex-stack px-10">
-    <div class="d-flex align-items-center ">
+    <div class="d-flex align-items-center">
       <div class="symbol symbol-circle symbol-40px bg-primary">
-        <span class="symbol-label  bg-primary fs-2 text-white">
-          {{ (username || 'U').charAt(0) }}
+        <span class="symbol-label bg-primary fs-2 text-white">
+          {{ (username || "U").charAt(0) }}
         </span>
       </div>
       <div class="ms-2">
-        <a
-          class="text-gray-800 text-hover-primary fs-6 fw-bolder lh-1"
-          >
+        <a class="text-gray-800 text-hover-primary fs-6 fw-bolder lh-1">
           <ng-container *ngIf="username">
-            {{username}}
+            {{ username }}
           </ng-container>
-          <ng-container *ngIf="!username">
-            USER
-          </ng-container>
-          </a
-        >
-          <span
-          
-          class="text-muted fw-bold d-block fs-7 lh-1"
-          >{{roles}}</span>
-       
+          <ng-container *ngIf="!username"> USER </ng-container>
+        </a>
+        <span class="text-muted fw-bold d-block fs-7 lh-1">{{ roles }}</span>
       </div>
     </div>
     <div class="ms-1">
@@ -187,9 +176,15 @@
         (click)="signOut()"
         class="btn btn-sm btn-icon btn-active-color-primary position-relative me-n2"
       >
-      <i  pTooltip="Sign Out"  class="ki-duotone ki-entrance-left text-gray-900 fs-1"><span class="path1"></span><span class="path2"></span></i>
+        <i
+          pTooltip="Sign Out"
+          class="ki-duotone ki-entrance-left text-gray-900 fs-1"
+          ><span class="path1"></span><span class="path2"></span
+        ></i>
       </div>
- 
     </div>
   </div>
+  
 </div>
+
+

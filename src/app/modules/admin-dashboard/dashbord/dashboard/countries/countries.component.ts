@@ -144,6 +144,7 @@ selectedRegionId: number | null = null;
   }
 
   submit() {
+    this.messages=[]
     const countryData = {
       name: {
         en: this.newCountryEn,
@@ -179,7 +180,6 @@ selectedRegionId: number | null = null;
             summary: 'Error',
             detail: 'Failed to update country.'
           }];
-          this.visible = false;
         }
       });
       this.unsubscribe.push(updateSub);
@@ -209,6 +209,7 @@ selectedRegionId: number | null = null;
   
 
   deleteCountry(countryId: number) {
+    this.messages=[]
     Swal.fire({
       title: 'Are you sure?',
       text: 'Do you want to delete this country? This action cannot be undone.',
@@ -244,6 +245,9 @@ selectedRegionId: number | null = null;
   get hasSuccessMessage(){
     return this.messages.some(msg=>msg.severity ==='success')
    }
+   get successMessages() {
+    return this.messages.filter((msg) => msg.severity === 'success');
+  }
    get hasErrorMessage() {
     return this.messages.some(msg => msg.severity === 'error');
   }

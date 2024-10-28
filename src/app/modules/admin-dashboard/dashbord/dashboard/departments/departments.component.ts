@@ -95,6 +95,7 @@ export class DepartmentComponent implements OnInit {
   }
 
   submit() {
+    this.messages=[]
     if (this.selectedDepartmentId) {
       // Update the department if an ID exists
       const updatedData = {
@@ -160,6 +161,7 @@ export class DepartmentComponent implements OnInit {
    // Example delete department method
    deleteDepartment(departmentId: number) {
     // Use SweetAlert2 for confirmation
+    this.messages=[]
     Swal.fire({
       title: 'Are you sure?',
       text: 'Do you want to delete this department? This action cannot be undone.',
