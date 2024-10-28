@@ -6,6 +6,7 @@ import { DepartmentComponent } from './dashboard/departments/departments.compone
 import { PositionsComponent } from './dashboard/positions/positions.component';
 import { CountriesComponent } from './dashboard/countries/countries.component';
 import { RegionsComponent } from './dashboard/regions/regions.component';
+import { ConsultingFieldsComponent } from './dashboard/consulting-fields/consulting-fields.component';
 
 const routes: Routes = [
   {
@@ -37,6 +38,10 @@ const routes: Routes = [
       {
         path:'regions',
         component:RegionsComponent
+      },
+      {
+        path:'consulting-fields',
+        component:ConsultingFieldsComponent
       },
       {
         path:'co-settings',
