@@ -79,6 +79,17 @@
                 <input pInputText id="internationalCode" class="form-control" [(ngModel)]="newInternationalCode" name="internationalCode" autocomplete="off" />
               </div>
             </div>
+            <div class="mb-3 row">
+              <label for="status" class="col-sm-3 col-form-label">Status</label>
+              <div class="col-sm-9">
+                <p-dropdown 
+                  [options]="statusOptions" 
+                  [(ngModel)]="newStatus" 
+                  name="status"
+                  placeholder="Select Status">
+                </p-dropdown>
+              </div>
+            </div>
 
             <div class="mb-3 row">
               <label for="flag" class="col-sm-3 col-form-label">Flag</label>
@@ -105,7 +116,7 @@
     <div id="kt_app_content_container" class="app-container container-fluid">
       <div class="card">
         <div class="card-header border-0 pt-6">
-          <div class="card-title">
+          <div class="card-title d-flex flex-column flex-md-row justify-content-between w-100">
             <div class="d-flex align-items-center position-relative my-1">
               <i class="pi pi-search fs-3 position-absolute ms-5"></i>
               <input
@@ -115,6 +126,15 @@
                 placeholder="Search Countries"
                 (input)="applyFilter($event)"
               />
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <p-dropdown 
+                id="regionFilter" 
+                [options]="regionOptions" 
+                [(ngModel)]="selectedRegionId" 
+                placeholder="Select Region" 
+                (onChange)="filterCountriesByRegion()"
+              ></p-dropdown>
             </div>
           </div>
 
@@ -127,7 +147,7 @@
           <p-messages [(value)]="messages" [enableService]="false"></p-messages>
           <p-table
             #dt
-            [value]="listOfCountries"
+            [value]="filteredCountires"
             [paginator]="true"
             [rows]="10"
             [globalFilterFields]="['name', 'names.en', 'names.ar', 'iso2', 'iso3']"
@@ -136,11 +156,11 @@
             <ng-template pTemplate="header">
               <tr>
                 <th></th>
-                <th>Name</th>
                 <th>Name (English)</th>
                 <th>Name (Arabic)</th>
                 <th>ISO2</th>
                 <th>ISO3</th>
+                <th>Status</th>
                 <th>Action</th>
               </tr>
             </ng-template>
@@ -159,11 +179,15 @@
                 
                   </div>
                 </td>
-                <td>{{ country.name }}</td>
                 <td>{{ country.names.en }}</td>
                 <td>{{ country.names.ar }}</td>
                 <td>{{ country.iso2 }}</td>
                 <td>{{ country.iso3 }}</td>
+                <td
+               
+                ><div class="badge fs-8 fw-bold"  [ngClass]="{' badge-light-success ' : country.status==='Active'
+                  , ' badge-light-danger ' : country.status ==='Inactive'
+                }">{{country.status}}</div></td>
                 <td>
                   <a
                     pTooltip="Edit Country"

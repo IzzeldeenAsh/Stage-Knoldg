@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { Router, NavigationEnd, NavigationSkipped } from '@angular/router';
+import { AuthService } from '../../auth/services/auth.service';
+import { first } from 'rxjs';
 
 @Component({
   selector: 'app-admin-header',
@@ -11,10 +13,12 @@ export class AdminHeaderComponent {
   toggleMobileSideBar(): void {
     this.sidebarVisible = !this.sidebarVisible
   }
-
+  roles:any=[]
   base:string=''
   page:string=''
-  constructor( public router: Router){
+  username:string|undefined = ''
+  constructor(     public router: Router,
+    private _auth:AuthService){
     
     router.events.subscribe((event:Object)=>{
       if(event instanceof NavigationEnd){
@@ -32,10 +36,16 @@ export class AdminHeaderComponent {
   }
 
   ngOnInit(): void {
-   
-  
-
-    this.base=this.router.url.split('/')[3]
+    this.base=this.router.url.split('/')[3];
+    this._auth.currentUser$.pipe(first()).subscribe((res)=>{
+      const user = res
+      this.username = user?.name;
+      this.roles = user?.roles  ? user?.roles : [];
+      console.log('usre',user);
+    })
+  }
+  signOut(){
+    this._auth.logout()
   }
 
 }

@@ -139,19 +139,26 @@
 
 <div class="card flex justify-content-center">
   <p-sidebar [(visible)]="sidebarVisible">
+  <div class="sidebarslide">
     <ul>
-      <ng-container *ngIf="base ==='dashboard'">
+      <ng-container *ngIf="base === 'dashboard'">
         <li>
           <div class="menu-item menu-accordion menu-fit">
-            <!--begin:Menu link--><span  routerLink="/admin-dashboard/admin/dashboard/main-dashboard/departments"  routerLinkActive="active" class="menu-link"
-              ><span class="menu-icon"
-                >
-                <div class="symbol symbol-30px ">
+            <!--begin:Menu link--><span
+              routerLink="/admin-dashboard/admin/dashboard/main-dashboard/departments"
+              routerLinkActive="active"
+              class="menu-link"
+              ><span class="menu-icon">
+                <div class="symbol symbol-30px">
                   <span class="symbol-label">
-                   <span [inlineSVG]="'./assets/media/icons/duotune/abstract/abs027.svg'"   class="svg-icon svg-icon-3 svg-icon-primary"></span>
+                    <span
+                      [inlineSVG]="
+                        './assets/media/icons/duotune/abstract/abs027.svg'
+                      "
+                      class="svg-icon svg-icon-3 svg-icon-primary"
+                    ></span>
                   </span>
-              </div>
-              </span
+                </div> </span
               ><span class="menu-title">Departments</span
               ><span class="menu-badge"></span></span
             ><!--end:Menu link-->
@@ -159,35 +166,88 @@
         </li>
         <li>
           <div class="menu-item menu-accordion menu-fit">
-            <!--begin:Menu link--><span  routerLink="/admin-dashboard/admin/dashboard/main-dashboard/positions"  routerLinkActive="active" class="menu-link"
-              ><span class="menu-icon"
-                >
-                <div class="symbol symbol-30px ">
-                  <span class="symbol-label"> 
-                   <span [inlineSVG]="'./assets/media/icons/duotune/communication/com006.svg'"   class="svg-icon svg-icon-3 svg-icon-primary"></span>
+            <!--begin:Menu link--><span
+              routerLink="/admin-dashboard/admin/dashboard/main-dashboard/positions"
+              routerLinkActive="active"
+              class="menu-link"
+              ><span class="menu-icon">
+                <div class="symbol symbol-30px">
+                  <span class="symbol-label">
+                    <span
+                      [inlineSVG]="
+                        './assets/media/icons/duotune/communication/com006.svg'
+                      "
+                      class="svg-icon svg-icon-3 svg-icon-primary"
+                    ></span>
                   </span>
-              </div>
-              </span
+                </div> </span
               ><span class="menu-title">Positions</span
               ><span class="menu-badge"></span></span
             ><!--end:Menu link-->
           </div>
         </li>
-      </ng-container>
-      <ng-container *ngIf="base ==='accounts'">
         <li>
           <div class="menu-item menu-accordion menu-fit">
-            <!--begin:Menu link--><span  routerLink="/admin-dashboard/admin/accounts/main-accounts/staff"  routerLinkActive="active" class="menu-link"
-              ><span class="menu-icon"
-                >
-                <div class="symbol symbol-30px ">
+            <!--begin:Menu link--><span
+              routerLink="/admin-dashboard/admin/dashboard/main-dashboard/countries"
+              routerLinkActive="active"
+              class="menu-link"
+              ><span class="menu-icon">
+                <div class="symbol symbol-30px">
                   <span class="symbol-label">
-                   <span   class="svg-icon svg-icon-3 svg-icon-primary">
-                    <i class="ki-duotone ki-people text-gray-900 fs-3"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></i>
-                   </span>
+                    <span
+                      
+                      class="svg-icon svg-icon-3 svg-icon-primary"
+                    >
+                    <i class="ki-duotone ki-abstract-39 text-gray-900 fs-3"><span class="path1"></span><span class="path2"></span></i></span>
                   </span>
-              </div>
-              </span
+                </div> </span
+              ><span class="menu-title">Countries</span
+              ><span class="menu-badge"></span></span
+            ><!--end:Menu link-->
+          </div>
+        </li>
+        <li>
+          <div class="menu-item menu-accordion menu-fit">
+            <!--begin:Menu link--><span
+              routerLink="/admin-dashboard/admin/dashboard/main-dashboard/regions"
+              routerLinkActive="active"
+              class="menu-link"
+              ><span class="menu-icon">
+                <div class="symbol symbol-30px">
+                  <span class="symbol-label">
+                    <span
+                      
+                      class="svg-icon svg-icon-3 svg-icon-primary"
+                    >
+                    <i class="ki-duotone ki-abstract-39 text-gray-900 fs-3"><span class="path1"></span><span class="path2"></span></i></span>
+                  </span>
+                </div> </span
+              ><span class="menu-title">Regions</span
+              ><span class="menu-badge"></span></span
+            ><!--end:Menu link-->
+          </div>
+        </li>
+      </ng-container>
+      <ng-container *ngIf="base === 'accounts'">
+        <li>
+          <div class="menu-item menu-accordion menu-fit">
+            <!--begin:Menu link--><span
+              routerLink="/admin-dashboard/admin/accounts/main-accounts/staff"
+              routerLinkActive="active"
+              class="menu-link"
+              ><span class="menu-icon">
+                <div class="symbol symbol-30px">
+                  <span class="symbol-label">
+                    <span class="svg-icon svg-icon-3 svg-icon-primary">
+                      <i class="ki-duotone ki-people text-gray-900 fs-3"
+                        ><span class="path1"></span><span class="path2"></span
+                        ><span class="path3"></span><span class="path4"></span
+                        ><span class="path5"></span
+                      ></i>
+                    </span>
+                  </span>
+                </div> </span
               ><span class="menu-title">Staff</span
               ><span class="menu-badge"></span></span
             ><!--end:Menu link-->
@@ -195,16 +255,20 @@
         </li>
         <li>
           <div class="menu-item menu-accordion menu-fit">
-            <!--begin:Menu link--><span  routerLink="/admin-dashboard/admin/accounts/main-accounts/roles"  routerLinkActive="active" class="menu-link"
-              ><span class="menu-icon"
-                >
-                <div class="symbol symbol-30px ">
-                  <span class="symbol-label"> 
-                   <span  class="svg-icon svg-icon-3 svg-icon-primary">
-                    <i class="ki-duotone ki-profile-user text-gray-900 fs-3"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i></span>
+            <!--begin:Menu link--><span
+              routerLink="/admin-dashboard/admin/accounts/main-accounts/roles"
+              routerLinkActive="active"
+              class="menu-link"
+              ><span class="menu-icon">
+                <div class="symbol symbol-30px">
+                  <span class="symbol-label">
+                    <span class="svg-icon svg-icon-3 svg-icon-primary">
+                      <i class="ki-duotone ki-profile-user text-gray-900 fs-3"
+                        ><span class="path1"></span><span class="path2"></span
+                        ><span class="path3"></span><span class="path4"></span></i
+                    ></span>
                   </span>
-              </div>
-              </span
+                </div> </span
               ><span class="menu-title">Roles</span
               ><span class="menu-badge"></span></span
             ><!--end:Menu link-->
@@ -212,22 +276,63 @@
         </li>
         <li>
           <div class="menu-item menu-accordion menu-fit">
-            <!--begin:Menu link--><span  routerLink="/admin-dashboard/admin/accounts/main-accounts/permissions"  routerLinkActive="active" class="menu-link"
-              ><span class="menu-icon"
-                >
-                <div class="symbol symbol-30px ">
-                  <span class="symbol-label"> 
-                    <span  class="svg-icon svg-icon-3 svg-icon-primary">
-                      <i class="ki-duotone ki-user-tick text-gray-900 fs-3"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i></span>
+            <!--begin:Menu link--><span
+              routerLink="/admin-dashboard/admin/accounts/main-accounts/permissions"
+              routerLinkActive="active"
+              class="menu-link"
+              ><span class="menu-icon">
+                <div class="symbol symbol-30px">
+                  <span class="symbol-label">
+                    <span class="svg-icon svg-icon-3 svg-icon-primary">
+                      <i class="ki-duotone ki-user-tick text-gray-900 fs-3"
+                        ><span class="path1"></span><span class="path2"></span
+                        ><span class="path3"></span></i
+                    ></span>
                   </span>
-              </div>
-              </span
+                </div> </span
               ><span class="menu-title">Permissions</span
               ><span class="menu-badge"></span></span
             ><!--end:Menu link-->
           </div>
         </li>
       </ng-container>
-      </ul>
+    </ul>
+    <div class="d-flex flex-stack px-10">
+      <div class="d-flex align-items-center ">
+        <div class="symbol symbol-circle symbol-40px bg-primary">
+          <span class="symbol-label  bg-primary fs-2 text-white">
+            {{ (username || 'U').charAt(0) }}
+          </span>
+        </div>
+        <div class="ms-2">
+          <a
+            class="text-gray-800 text-hover-primary fs-6 fw-bolder lh-1"
+            >
+            <ng-container *ngIf="username">
+              {{username}}
+            </ng-container>
+            <ng-container *ngIf="!username">
+              USER
+            </ng-container>
+            </a
+          >
+            <span
+            
+            class="text-muted fw-bold d-block fs-7 lh-1"
+            >{{roles}}</span>
+         
+        </div>
+      </div>
+      <div class="ms-1">
+        <div
+          (click)="signOut()"
+          class="btn btn-sm btn-icon btn-active-color-primary position-relative me-n2"
+        >
+        <i  pTooltip="Sign Out"  class="ki-duotone ki-entrance-left text-gray-900 fs-1"><span class="path1"></span><span class="path2"></span></i>
+        </div>
+   
+      </div>
+    </div>
+  </div>
   </p-sidebar>
 </div>

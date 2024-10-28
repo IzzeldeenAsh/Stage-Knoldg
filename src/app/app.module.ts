@@ -17,6 +17,7 @@ function appInitializer(authService: AuthService) {
     return new Promise((resolve) => {
       //@ts-ignore
       authService.getUserByToken().subscribe().add(resolve);
+   
     });
   };
 }
