@@ -34,7 +34,7 @@
             <span class="text-muted mb-3 d-block">
               {{ isEditMode ? 'Edit Consulting Field Details' : 'Add Consulting Field Details' }}.
             </span>
-            <div class="mb-3 row">
+            <!-- <div class="mb-3 row">
               <label for="code" class="col-sm-3 col-form-label">Code</label>
               <div class="col-sm-9">
                 <input
@@ -74,7 +74,7 @@
                   autocomplete="off"
                 />
               </div>
-            </div>
+            </div> -->
 
             <div class="mb-3 row">
               <label for="nameEn" class="col-sm-3 col-form-label">Name (English)</label>
@@ -106,7 +106,7 @@
 
             <div class="d-flex justify-content-end gap-2">
               <button
-                [disabled]="!newNameEn || !newNameAr || !newCode || !newIsicCodeId || !newStatus"
+                [disabled]="!newNameEn || !newNameAr "
                 (click)="submit()"
                 class="btn btn-primary btn-sm"
               >

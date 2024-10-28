@@ -107,9 +107,6 @@ export class ConsultingFieldsComponent implements OnInit {
     if (this.selectedConsultingFieldId) {
       // Update
       const updatedData = {
-        code: this.newCode,
-        isic_code_id: this.newIsicCodeId,
-        status: this.newStatus,
         name: {
           en: this.newNameEn,
           ar: this.newNameAr,
