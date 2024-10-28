@@ -20,7 +20,8 @@
             <i class="ki-outline ki-plus text-white fs-4"></i>
             Create
           </a>
-          <p-dialog [header]="isEditMode ? 'Edit Position' : 'Add Position'" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }">
+          <p-dialog [header]="isEditMode ? 'Edit Position' : 'Add Position'" [modal]="true" [(visible)]="visible" [style]="{ width: '40rem' }">
+            <p-messages *ngIf="hasErrorMessage" [(value)]="messages" [enableService]="false"></p-messages>
             <span class="text-muted mb-3 d-block">{{ isEditMode ? 'Edit Position Details' : 'Add Position Details' }}.</span>
 
             <div class="mb-3 row">
@@ -38,7 +39,7 @@
             </div>
 
             <div class="d-flex justify-content-end gap-2">
-              <button (click)="submit()" class="btn btn-primary btn-sm">
+              <button [disabled]="!newPositionEn || !newPositionAr" (click)="submit()" class="btn btn-primary btn-sm">
                 Save
               </button>
               <button (click)="visible = false" class="btn btn-outline-secondary btn-sm">
@@ -81,7 +82,7 @@
         </div>
 
         <div class="card-body pt-0">
-          <p-messages [(value)]="messages" [enableService]="false"></p-messages>
+          <p-messages *ngIf="hasSuccessMessage" [(value)]="messages" [enableService]="false"></p-messages>
           <p-table
             #dt
             [value]="listOfPositions"

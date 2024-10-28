@@ -201,7 +201,6 @@ selectedRegionId: number | null = null;
             summary: 'Error',
             detail: 'Failed to create country.'
           }];
-          this.visible = false;
         }
       });
       this.unsubscribe.push(createSub);
@@ -241,6 +240,12 @@ selectedRegionId: number | null = null;
         this.unsubscribe.push(deleteSub);
       }
     });
+  }
+  get hasSuccessMessage(){
+    return this.messages.some(msg=>msg.severity ==='success')
+   }
+   get hasErrorMessage() {
+    return this.messages.some(msg => msg.severity === 'error');
   }
 
   ngOnDestroy() {

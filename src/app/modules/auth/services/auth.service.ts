@@ -125,13 +125,13 @@ export class AuthService implements OnDestroy {
     const user = this.getUserFromLocalStorage();
     if (user) {
       this.currentUserSubject.next(user);
-      this.checkUserRoleAndRedirect(user);
+      this.checkUserRoleAndRedirect(user); // Redirect based on roles if user exists
       return of(user);
-    } else {
-      this.logout(); // If no user is found in storage, log out
-      return of(undefined);
     }
+    // If no user is found, handle the situation here without automatically redirecting
+    return of(undefined);
   }
+  
 
   // need create new user then login
   registration(user: UserModel): Observable<any> {

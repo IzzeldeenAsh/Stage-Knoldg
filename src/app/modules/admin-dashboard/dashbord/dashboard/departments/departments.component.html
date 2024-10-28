@@ -20,9 +20,9 @@ mode="indeterminate"
           <i class="ki-outline ki-plus text-white fs-4"></i>
           Create
         </a>
-        <p-dialog [header]="isEditMode ? 'Edit Department' : 'Add Department'" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }">
+        <p-dialog [header]="isEditMode ? 'Edit Department' : 'Add Department'" [modal]="true" [(visible)]="visible" [style]="{ width: '40rem' }">
+          <p-messages *ngIf="hasErrorMessage" [(value)]="messages" [enableService]="false"></p-messages>
           <span class="text-muted mb-3 d-block">{{ isEditMode ? 'Edit Department Details' : 'Add Department Details' }}.</span>
-        
           <div class="mb-3 row">
             <label for="arabicName" class="col-sm-3 col-form-label">Arabic Name</label>
             <div class="col-sm-9">
@@ -38,7 +38,7 @@ mode="indeterminate"
           </div>
         
           <div class="d-flex justify-content-end gap-2">
-            <button (click)="submit()" class="btn btn-primary btn-sm">
+            <button [disabled]="!newDepartmentAr || !newDepartmentEn" (click)="submit()" class="btn btn-primary btn-sm">
               Save
             </button>
             <button (click)="visible = false" class="btn btn-outline-secondary btn-sm">
@@ -77,7 +77,7 @@ mode="indeterminate"
 
       <div class="card-body pt-0">
         <!-- Add #dt reference here -->
-        <p-messages [(value)]="messages" [enableService]="false"></p-messages>
+        <p-messages *ngIf="hasSuccessMessage" [(value)]="messages" [enableService]="false"></p-messages>
         <p-table #dt [value]="listOfDepartments" [paginator]="false" [rows]="10" [globalFilterFields]="['name', 'names.en', 'names.ar']" class="table-striped">
           <ng-template pTemplate="header">
             <tr>

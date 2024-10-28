@@ -5,9 +5,14 @@ import { adminGuard } from './guards/admin-gurad/admin.guard';
 export const routes: Routes = [
   {
     path: '',
-    loadChildren: () =>
-      import('./modules/main-page/main-page.module').then((m) => m.MainPageModule),
+    redirectTo : 'auth',
+    pathMatch:"full"
   },
+  // {
+  //   path: '',
+  //   loadChildren: () =>
+  //     import('./modules/main-page/main-page.module').then((m) => m.MainPageModule),
+  // },
   {
     path: 'auth',
     loadChildren: () =>

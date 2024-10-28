@@ -87,6 +87,13 @@ export class DepartmentComponent implements OnInit {
     this.table.filterGlobal(value, "contains");
   }
 
+   get hasSuccessMessage(){
+    return this.messages.some(msg=>msg.severity ==='success')
+   }
+   get hasErrorMessage() {
+    return this.messages.some(msg => msg.severity === 'error');
+  }
+
   submit() {
     if (this.selectedDepartmentId) {
       // Update the department if an ID exists
@@ -143,7 +150,6 @@ export class DepartmentComponent implements OnInit {
             summary: 'Error',
             detail: 'Failed to create department.'
           }];
-          this.visible = false; // Close the dialog
         }
       });
 

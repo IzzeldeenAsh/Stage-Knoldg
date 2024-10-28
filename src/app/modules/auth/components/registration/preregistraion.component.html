@@ -17,31 +17,7 @@
         (ngSubmit)="submit()"
       >
         <!--begin::Login options-->
-        <!-- <div class="row g-3 mb-4">
-          <div class="col-md-6">
-            <a href="#"
-              class="btn fs-7 btn-flex btn-outline btn-text-gray-700 btn-active-color-primary bg-state-light flex-center text-nowrap w-100">
-              <img alt="Logo" src="./assets/media/svg/brand-logos/google-icon.svg" class="h-15px mx-3" />
-              {{ 'AUTH.REGISTRATION.USE_GOOGLE' | translate }}
-            </a>
-          </div>
       
-          <div class="col-md-6">
-            <a href="#"
-              class="btn fs-7 btn-flex btn-outline btn-text-gray-700 btn-active-color-primary bg-state-light flex-center text-nowrap w-100">
-              <img alt="Logo" src="./assets/media/svg/brand-logos/linkedin-2.svg" class="h-15px mx-3" />
-              {{ 'AUTH.REGISTRATION.USE_LINKEDIN' | translate }}
-            </a>
-          </div>
-        </div> -->
-        <!--end::Login options-->
-
-        <!--begin::Separator-->
-        <!-- <div class="separator separator-content my-8">
-          <span class="w-125px text-gray-500 fw-semibold fs-7">{{ 'AUTH.REGISTRATION.OR_WITH_EMAIL' | translate }}</span>
-        </div> -->
-        <!--end::Separator-->
-
         <!-- begin::Alert error-->
         <ng-container *ngIf="hasError">
           <div class="mb-lg-15 alert alert-danger">
@@ -60,7 +36,7 @@
             }}</label>
             <input
             pInputText
-            class="w-100" 
+            class="w-100 form-control" 
               type="text"
               name="firstName"
               formControlName="firstName"
@@ -108,7 +84,7 @@
             pInputText
               type="text"
               name="lastName"
-              class="w-100" 
+              class="w-100 form-control" 
               formControlName="lastName"
               placeholder="{{
                 'AUTH.REGISTRATION.LASTNAME_PLACEHOLDER' | translate
@@ -155,7 +131,7 @@
           }}</label>
           <input
           pInputText
-          class="w-100"
+          class="w-100 form-control"
             type="email"
             placeholder="{{
               'AUTH.REGISTRATION.EMAIL_PLACEHOLDER' | translate
@@ -211,7 +187,7 @@
             <label class="form-label fs-6 text-gray-900">{{
               "AUTH.REGISTRATION.PASSWORD_LABEL" | translate
             }}</label>
-                  <p-password     name="password"   formControlName="password" class="w-100" [ngClass]="{
+                  <p-password     name="password"   formControlName="password" class="w-100 " [ngClass]="{
                     'is-invalid':
                       registrationForm.controls['cPassword'].invalid &&
                       (registrationForm.controls['cPassword'].dirty ||
@@ -239,37 +215,8 @@
                   (registrationForm.controls['cPassword'].dirty ||
                     registrationForm.controls['cPassword'].touched)
               }"/>
-            <!-- <input
-              class="form-control"
-              [type]="confirmPasswordFieldType"
-              placeholder="{{
-                'AUTH.REGISTRATION.CONFIRM_PASSWORD_PLACEHOLDER' | translate
-              }}"
-              name="cPassword"
-              formControlName="cPassword"
-              autocomplete="off"
-              [ngClass]="{
-                'is-invalid':
-                  registrationForm.controls['cPassword'].invalid &&
-                  (registrationForm.controls['cPassword'].dirty ||
-                    registrationForm.controls['cPassword'].touched)
-              }"
-            /> -->
-            <!-- Eye Icon Button -->
-            <!-- <button
-          type="button"
-          class="btn position-absolute"
-          (click)="togglePasswordVisibility('confirmPassword')"
-          [ngClass]="{ 
-            'end-0 top-ltr': lang === 'en', 
-            'start-0 top-rtl': lang === 'ar' 
-          }"
-         
-        >
-          <i
-            [ngClass]="confirmPasswordFieldType === 'password' ? 'bi-eye-slash' : 'bi-eye'"
-          ></i>
-        </button> -->
+           
+      
         <ng-container
         [ngTemplateOutlet]="formError"
         [ngTemplateOutletContext]="{
@@ -299,17 +246,28 @@
               [style]="{ height: '4px' }"
             />
             <p-dropdown
-              *ngIf="(isLoadingCountires$ | async) === false"
-              [options]="countries"
-              formControlName="country"
-              [optionLabel]="optionLabel"
-              placeholder="{{
-                'AUTH.REGISTRATION.COUNTRY_PLACEHOLDER' | translate
-              }}"
-              [filter]="true"
-              [showClear]="true"
-            >
-            </p-dropdown>
+            *ngIf="(isLoadingCountires$ | async) === false"
+            [options]="countries"
+            [(ngModel)]="selectedCountry"
+            [ngModelOptions]="{standalone: true}"
+            class="d-block form-p-control "
+            [optionLabel]="optionLabel"
+            placeholder="{{ 'AUTH.REGISTRATION.COUNTRY_PLACEHOLDER' | translate }}"
+            [filter]="true"
+            [showClear]="true"
+          >
+            <ng-template pTemplate="item" let-country>
+              <div class="country-option">
+                <img
+                  [src]="country.flagPath"
+                  alt="{{ country.name.en }}"
+                  class="flag-icon"
+                />
+                <span>{{ country.name.en }}</span>
+              </div>
+            </ng-template>
+          </p-dropdown>
+          
             <!-- Validation for country -->
           </div>
           <!--end::Form group-->
@@ -327,18 +285,16 @@
               mode="indeterminate"
               [style]="{ height: '4px' }"
             ></p-progressBar>
-            <p-dropdown
-              *ngIf="(isLoadingConsultingFields$ | async) === false"
-              [options]="consultingFields"
-              formControlName="consultingField"
-              [optionLabel]="optionLabelField"
-              placeholder="{{
-                'AUTH.REGISTRATION.CONSULTING_FIELD_PLACEHOLDER' | translate
-              }}"
-              [filter]="true"
-              [showClear]="true"
-            >
-            </p-dropdown>
+            <p-multiSelect
+            *ngIf="(isLoadingConsultingFields$ | async) === false"
+            [options]="consultingFields"
+            class="d-block form-p-control"
+            formControlName="consultingField"
+            [optionLabel]="optionLabelField"
+            placeholder="{{ 'AUTH.REGISTRATION.CONSULTING_FIELD_PLACEHOLDER' | translate }}"
+            [filter]="true"
+            [showClear]="true"
+          ></p-multiSelect>
           </div>
           <!--end::Form group-->
               <!--begin::Form group for "Other" Consulting Field-->
@@ -396,22 +352,32 @@
               mode="indeterminate"
               [style]="{ height: '4px' }"
             ></p-progressBar>
-            <div class="card flex justify-content-center">
+            <div class=" flex justify-content-center">
               <p-treeSelect
+              class="w-100 form-p-control"
+              containerStyleClass="w-full w-100"
+              [(ngModel)]="selectedNodes"
+              [options]="nodes"
+              display="chip"
+              [metaKeySelection]="false"
+              selectionMode="checkbox"
+              placeholder="{{ 'AUTH.REGISTRATION.INDUSTRY_PLACEHOLDER' | translate }}"
+              [virtualScroll]="true"
+              [virtualScrollItemSize]="46"
               [ngModelOptions]="{standalone: true}"
-                class="w-100"
-                containerStyleClass="w-full w-100"
-                [(ngModel)]="selectedNodes"
-                [options]="nodes"
-                display="chip"
-                [metaKeySelection]="false"
-                selectionMode="checkbox"
-                placeholder="Select Item"
-                [virtualScroll]="true"
-                [virtualScrollItemSize]="46"
-                [virtualScrollOptions]="{ scrollHeight: '200px' }"
-              ></p-treeSelect>
+              [virtualScrollOptions]="{ scrollHeight: '200px' }"
+            ></p-treeSelect>
             </div>
+            <!-- Validation message for ISIC codes -->
+<ng-container *ngIf="hasError && (!selectedNodes || selectedNodes.length === 0)">
+  <div class="fv-plugins-message-container">
+    <div class="fv-help-block">
+      {{ 'AUTH.REGISTRATION.ISIC_CODES_REQUIRED' | translate }}
+    </div>
+  </div>
+</ng-container>
+
+            
 <!--             
             <p-dropdown
             *ngIf="(isLoadingIsicCodes$ | async) === false"
@@ -441,7 +407,7 @@
         </div>
         <div class="row mb-4">
             <!--begin::Form group for Consulting Field-->
-            <div class="col-12">
+            <!-- <div class="col-12">
               <label class="form-label fs-6 text-gray-900">
                 {{ "AUTH.REGISTRATION.HSCODE" | translate }}
                 <span class="text-gray-600 fs-7">
@@ -465,18 +431,15 @@
                   [virtualScroll]="true"
                   [virtualScrollItemSize]="34"
                 >
-                  <!-- Template for selected item -->
                   <ng-template let-option pTemplate="selectedItem">
                     {{ trimText(option.label, 22) }}
                   </ng-template>
               
-                  <!-- Template for each dropdown item -->
                   <ng-template let-option pTemplate="item">
                     {{ trimText(option.label, 100) }}
                   </ng-template>
                 </p-dropdown>
               
-                <!-- Overlay layer when disabled -->
                 <div *ngIf="hsCodes.length === 0" class="dropdown-overlay"></div>
               </div>
               <p-progressBar
@@ -484,7 +447,7 @@
               mode="indeterminate"
               [style]="{ height: '4px' }"
             ></p-progressBar>
-            </div>
+            </div> -->
             <!--end::Form group-->
         </div>
 
@@ -517,8 +480,7 @@
             type="submit"
             id="kt_sign_up_submit"
             [disabled]="
-              registrationForm.invalid ||
-              !registrationForm.controls['agree'].value
+              registrationForm.invalid || !this.selectedNodes || this.selectedNodes.length === 0 || !this.selectedCountry
             "
             class="btn btn-primary"
           >
