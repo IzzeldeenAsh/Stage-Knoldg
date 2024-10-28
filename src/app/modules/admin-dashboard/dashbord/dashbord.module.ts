@@ -20,6 +20,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { PositionsComponent } from './dashboard/positions/positions.component';
 import { CountriesComponent } from './dashboard/countries/countries.component';
 import { RegionsComponent } from './dashboard/regions/regions.component';
+import { DropdownModule } from 'primeng/dropdown';
 @NgModule({
   declarations: [
     DashboardComponent,
@@ -38,6 +39,7 @@ import { RegionsComponent } from './dashboard/regions/regions.component';
     ProgressBarModule,
     DashbordRoutingModule,
     InlineSVGModule,
+    DropdownModule,
     InputTextModule,
     FormsModule,
     CardModule,

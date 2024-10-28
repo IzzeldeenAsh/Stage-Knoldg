@@ -9,7 +9,8 @@ export interface Country {
   region_id: number;
   iso2: string;
   iso3: string;
-  nationality: {
+  nationality: string;
+  nationalities: {
     en: string;
     ar: string;
   };
@@ -20,6 +21,7 @@ export interface Country {
     en: string;
     ar: string;
   };
+  status:string;
 }
 
 @Injectable({
@@ -72,15 +74,15 @@ export class CountriesService {
     }));
   }
 
-  getCountries(): Observable<Country[]> {
+  getCountries(apiUrl: string = this.apiUrl): Observable<Country[]> {
     const headers = new HttpHeaders({
       Accept: 'application/json',
       'Content-Type': 'application/json',
       'Accept-Language': this.currentLang
     });
-
+  
     this.setLoading(true);
-    return this.http.get<any>(this.apiUrl, { headers }).pipe(
+    return this.http.get<any>(apiUrl, { headers }).pipe(
       map(res => res.data),
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))

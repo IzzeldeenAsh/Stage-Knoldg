@@ -16,7 +16,7 @@ export type UserType = InsightaUserModel | undefined;
 export class AuthService implements OnDestroy {
   // private fields
   private unsubscribe: Subscription[] = []; // Read more: => https://brianflove.com/2016/12/11/anguar-2-unsubscribe-observables/
-   private authLocalStorageToken = `${environment.appVersion}-${environment.USERDATA_KEY}`;
+   private authLocalStorageToken = `foresighta-creds`;
 
   // public fields
   currentUser$: Observable<UserType>;
@@ -125,6 +125,7 @@ export class AuthService implements OnDestroy {
     const user = this.getUserFromLocalStorage();
     if (user) {
       this.currentUserSubject.next(user);
+      this.checkUserRoleAndRedirect(user);
       return of(user);
     } else {
       this.logout(); // If no user is found in storage, log out
@@ -173,13 +174,22 @@ export class AuthService implements OnDestroy {
       }
   
       const authData = JSON.parse(lsValue);
+      console.log("authData",authData);
       return authData;
     } catch (error) {
       console.error(error);
       return undefined;
     }
   }
+  checkUserRoleAndRedirect(user:any) {
+    if (user) {
 
+      if (user.roles && (user.roles.includes('admin') || user.roles.includes('staff'))) {
+        this.router.navigate(['/admin-dashboard']);
+      }
+    }
+
+  }
   ngOnDestroy() {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }

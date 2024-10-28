@@ -217,35 +217,7 @@
                       (registrationForm.controls['cPassword'].dirty ||
                         registrationForm.controls['cPassword'].touched)
                   }"/>
-            <!-- <input
-              class="form-control"
-              [type]="passwordFieldType"
-              placeholder="{{
-                'AUTH.REGISTRATION.PASSWORD_PLACEHOLDER' | translate
-              }}"
-              name="password"
-              formControlName="password"
-              autocomplete="off"
-              [ngClass]="{
-                'is-invalid':
-                  registrationForm.controls['password'].invalid &&
-                  (registrationForm.controls['password'].dirty ||
-                    registrationForm.controls['password'].touched)
-              }"
-            /> -->
-            <!-- Eye Icon Button -->
-            <!-- <button
-          type="button"
-          class="btn position-absolute"
-          (click)="togglePasswordVisibility('password')"
-          [ngClass]="{ 
-            'end-0 top-ltr': lang === 'en', 
-            'start-0 top-rtl': lang === 'ar' 
-          }"
-       
-        >
-          <i [ngClass]="passwordFieldType === 'password' ? 'bi-eye-slash' : 'bi-eye'"></i>
-        </button> -->
+  
             <ng-container
               [ngTemplateOutlet]="formError"
               [ngTemplateOutletContext]="{
@@ -298,15 +270,17 @@
             [ngClass]="confirmPasswordFieldType === 'password' ? 'bi-eye-slash' : 'bi-eye'"
           ></i>
         </button> -->
-            <ng-container
-              [ngTemplateOutlet]="formError"
-              [ngTemplateOutletContext]="{
-                validation: 'required',
-                message:
-                  'AUTH.REGISTRATION.CONFIRM_PASSWORD_REQUIRED' | translate,
-                control: registrationForm.controls['cPassword']
-              }"
-            ></ng-container>
+        <ng-container
+        [ngTemplateOutlet]="formError"
+        [ngTemplateOutletContext]="{
+          control: registrationForm.controls['password'],
+          validationMessages: [
+            { validation: 'required', message: 'AUTH.REGISTRATION.PASSWORD_REQUIRED' | translate },
+            { validation: 'minlength', message: 'AUTH.REGISTRATION.PASSWORD_MIN_LENGTH' | translate },
+            { validation: 'pattern', message: 'AUTH.REGISTRATION.PASSWORD_PATTERN' | translate }
+          ]
+        }"
+      ></ng-container>
           </div>
         </div>
         <!--begin::Country and Consulting Field-->
@@ -422,11 +396,11 @@
               mode="indeterminate"
               [style]="{ height: '4px' }"
             ></p-progressBar>
-            <!-- <div class="card flex justify-content-center">
+            <div class="card flex justify-content-center">
               <p-treeSelect
               [ngModelOptions]="{standalone: true}"
-                class="min-w-500px"
-                containerStyleClass="w-full min-w-500px"
+                class="w-100"
+                containerStyleClass="w-full w-100"
                 [(ngModel)]="selectedNodes"
                 [options]="nodes"
                 display="chip"
@@ -437,8 +411,8 @@
                 [virtualScrollItemSize]="46"
                 [virtualScrollOptions]="{ scrollHeight: '200px' }"
               ></p-treeSelect>
-            </div> -->
-            
+            </div>
+<!--             
             <p-dropdown
             *ngIf="(isLoadingIsicCodes$ | async) === false"
             class="ltr"
@@ -458,7 +432,7 @@
             <ng-template let-option pTemplate="item">
               {{ trimText(option.description.en, 100) }}
             </ng-template>
-          </p-dropdown>
+          </p-dropdown> -->
           
           </div>
           <!--end::Form group-->

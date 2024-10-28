@@ -89,6 +89,7 @@ export const locale = {
           "PASSWORD_LABEL": "كلمة المرور",
           "PASSWORD_PLACEHOLDER": "كلمة المرور",
           "PASSWORD_REQUIRED": "كلمة المرور مطلوبة",
+          "PASSWORD_PATTERN": "يجب أن تحتوي كلمة المرور على حرف واحد ورقم واحد ورمز خاص على الأقل.",
           "PASSWORD_MINLENGTH": "يجب أن تحتوي كلمة المرور على 3 أحرف على الأقل",
           "PASSWORD_MAXLENGTH": "يجب أن تحتوي كلمة المرور على 100 حرف كحد أقصى",
           "CONFIRM_PASSWORD_LABEL": "تأكيد كلمة المرور",

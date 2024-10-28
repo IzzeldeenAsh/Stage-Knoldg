@@ -3,6 +3,7 @@ import { Message } from "primeng/api";
 import { Table } from "primeng/table";
 import { Observable, Subscription } from "rxjs";
 import { CountriesService, Country } from "src/app/_fake/services/countries/countries.service";
+import { Region, RegionsService } from "src/app/_fake/services/region/regions.service";
 import Swal from 'sweetalert2';
 
 @Component({
@@ -14,11 +15,15 @@ export class CountriesComponent implements OnInit, OnDestroy {
   messages: Message[] = [];
   private unsubscribe: Subscription[] = [];
   listOfCountries: Country[] = [];
+  filteredCountires: Country[] = [];
   isEditMode: boolean = false;
   isLoading$: Observable<boolean>;
   selectedCountryId: number | null = null;
   visible: boolean = false;
-
+currentPage = 1;
+perPage = 10;
+totalRecords = 0;
+filterKeyword: string = '';
   // Form fields
   newCountryEn: string = '';
   newCountryAr: string = '';
@@ -29,11 +34,18 @@ export class CountriesComponent implements OnInit, OnDestroy {
   newNationalityAr: string = '';
   newInternationalCode: string = '';
   newFlag: string = '';
-
+  regionOptions: { label: string, value: number }[] = [];
+selectedRegionId: number | null = null;
+  statusOptions = [
+    { label: 'Active', value: 'Active' },
+    { label: 'Inactive', value: 'Inactive' }
+  ];
+  newStatus: string = 'Active'; // Default to 'Active'
   @ViewChild("dt") table: Table;
 
   constructor(
     private countriesService: CountriesService,
+    private regionsService: RegionsService,
     private cdr: ChangeDetectorRef
   ) {
     this.isLoading$ = this.countriesService.isLoading$;
@@ -41,6 +53,25 @@ export class CountriesComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getCountriesList();
+    this.getRegionsList(); // Fetch and set regions
+  }
+  getRegionsList() {
+    this.regionsService.getRegions().subscribe({
+      next: (data: Region[]) => {
+        this.regionOptions = data.map(region => ({
+          label: region.names.en, // Display in English (or adjust as needed)
+          value: region.id
+        }));
+        this.regionOptions.unshift({ label: 'All Regions', value: 0 });
+      },
+      error: (error) => {
+        this.messages = error.validationMessages || [{
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to fetch regions.'
+        }];
+      }
+    });
   }
 
   showDialog() {
@@ -57,12 +88,14 @@ export class CountriesComponent implements OnInit, OnDestroy {
     this.newRegionId = country.region_id;
     this.newIso2 = country.iso2;
     this.newIso3 = country.iso3;
-    this.newNationalityEn = country.nationality.en;
-    this.newNationalityAr = country.nationality.ar;
+    this.newNationalityEn = country.nationalities.en;
+    this.newNationalityAr = country.nationalities.ar;
     this.newInternationalCode = country.international_code;
     this.newFlag = country.flag;
+    this.newStatus = country.status; // Set status
     this.selectedCountryId = country.id;
     this.isEditMode = true;
+    console.log("country",country);
   }
 
   resetForm() {
@@ -75,32 +108,36 @@ export class CountriesComponent implements OnInit, OnDestroy {
     this.newNationalityAr = '';
     this.newInternationalCode = '';
     this.newFlag = '';
+    this.newStatus = 'Active'; // Reset to default
   }
 
   getCountriesList() {
-    const listSub = this.countriesService.getCountries().subscribe({
+    let apiUrl = 'https://api.4sighta.com/api/admin/setting/country/list'
+    console.log("selectedRegionId", this.selectedRegionId);
+    const listSub = this.countriesService.getCountries(apiUrl).subscribe({
       next: (data: Country[]) => {
         this.listOfCountries = data;
+        this.filteredCountires = this.listOfCountries
         this.cdr.detectChanges();
-        console.log("listOfCountries", this.listOfCountries);
       },
       error: (error) => {
-        this.messages = [];
-
-        if (error.validationMessages) {
-          this.messages = error.validationMessages;
-        } else {
-          this.messages.push({
-            severity: "error",
-            summary: "Error",
-            detail: "An unexpected error occurred.",
-          });
-        }
-      },
+        this.messages = error.validationMessages || [{
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to fetch countries.'
+        }];
+      }
     });
     this.unsubscribe.push(listSub);
   }
-
+  
+  filterCountriesByRegion() {
+  if(this.selectedRegionId){
+    this.filteredCountires = this.listOfCountries.filter((country)=>country.region_id === this.selectedRegionId)
+  }else{
+    this.filteredCountires = this.listOfCountries
+  }
+  }
   applyFilter(event: any) {
     const value = event.target.value.trim().toLowerCase();
     this.table.filterGlobal(value, "contains");
@@ -120,9 +157,10 @@ export class CountriesComponent implements OnInit, OnDestroy {
         ar: this.newNationalityAr
       },
       international_code: this.newInternationalCode,
-      flag: this.newFlag
+      flag: this.newFlag,
+      status: this.newStatus // Include status
     };
-
+  
     if (this.selectedCountryId) {
       // Update existing country
       const updateSub = this.countriesService.updateCountry(this.selectedCountryId, countryData).subscribe({
@@ -144,7 +182,6 @@ export class CountriesComponent implements OnInit, OnDestroy {
           this.visible = false;
         }
       });
-
       this.unsubscribe.push(updateSub);
     } else {
       // Create new country
@@ -167,10 +204,10 @@ export class CountriesComponent implements OnInit, OnDestroy {
           this.visible = false;
         }
       });
-
       this.unsubscribe.push(createSub);
     }
   }
+  
 
   deleteCountry(countryId: number) {
     Swal.fire({

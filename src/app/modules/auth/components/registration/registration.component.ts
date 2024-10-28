@@ -177,13 +177,21 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         lastName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
         aboutDescription: [''],
         email: ['', [Validators.required, Validators.email, Validators.minLength(3), Validators.maxLength(320)]],
-        password: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
+        password: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(8),
+            Validators.maxLength(100),
+            Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
+          ]
+        ],
         country: [null, Validators.required],
         consultingField: [null, Validators.required], // Consulting Field
         otherConsultingField: ['', Validators.maxLength(100)], // Optional field for "Other"
         industry: [null, Validators.required], // Updated to [null]
         hscode: [null], // Updated to [null] for dropdown
-        cPassword: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
+        cPassword: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(100)]],
         agree: [true],
       },
       {
@@ -247,56 +255,57 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   }
 
   submit() {
-    if(this.registrationForm.valid){
-      this.hasError = false;
-      const newUser:UserPreRegistration={
-        first_name: '',
-        last_name: '',
-        email: '',
-        password: '',
-        confirm_password: '',
-        country_id: 1,
-        isic_code: '',
-        consulting_feild_id: 7,
-        hs_code: '',
-        description: ''
-      };
-      newUser.first_name=this.registrationForm.get('firstName')?.value;
-      newUser.last_name=this.registrationForm.get('lastName')?.value;
-      newUser.email=this.registrationForm.get('email')?.value;
-      newUser.password=this.registrationForm.get('password')?.value;
-      newUser.confirm_password=this.registrationForm.get('password')?.value;
-      newUser.country_id=this.registrationForm.get('country')?.value.id;
-      newUser.isic_code=this.registrationForm.get('industry')?.value.id;
-      newUser.consulting_feild_id =this.registrationForm.get('consultingField')?.value.id;
-      newUser.hs_code=this.registrationForm.get('hscode')?.value?this.registrationForm.get('hscode')?.value.id  : null ;
-      newUser.description =this.registrationForm.get('aboutDescription')?.value ? this.registrationForm.get('aboutDescription')?.value : null;
-      newUser.other_consulting_field=this.registrationForm.get('otherConsultingField')?.value ? this.registrationForm.get('otherConsultingField')?.value : null;
+    console.log("selectedNodes", this.selectedNodes);
+    // if(this.registrationForm.valid){
+    //   this.hasError = false;
+    //   const newUser:UserPreRegistration={
+    //     first_name: '',
+    //     last_name: '',
+    //     email: '',
+    //     password: '',
+    //     confirm_password: '',
+    //     country_id: 1,
+    //     isic_code: '',
+    //     consulting_feild_id: 7,
+    //     hs_code: '',
+    //     description: ''
+    //   };
+    //   newUser.first_name=this.registrationForm.get('firstName')?.value;
+    //   newUser.last_name=this.registrationForm.get('lastName')?.value;
+    //   newUser.email=this.registrationForm.get('email')?.value;
+    //   newUser.password=this.registrationForm.get('password')?.value;
+    //   newUser.confirm_password=this.registrationForm.get('password')?.value;
+    //   newUser.country_id=this.registrationForm.get('country')?.value.id;
+    //   newUser.isic_code=this.registrationForm.get('industry')?.value.id;
+    //   newUser.consulting_feild_id =this.registrationForm.get('consultingField')?.value.id;
+    //   newUser.hs_code=this.registrationForm.get('hscode')?.value?this.registrationForm.get('hscode')?.value.id  : null ;
+    //   newUser.description =this.registrationForm.get('aboutDescription')?.value ? this.registrationForm.get('aboutDescription')?.value : null;
+    //   newUser.other_consulting_field=this.registrationForm.get('otherConsultingField')?.value ? this.registrationForm.get('otherConsultingField')?.value : null;
 
-      const registerAPI= this._register.preRegisterUser(newUser).pipe(first()).subscribe({
-        next: (res)=>{
-          if(res.state){
-           this.registrationForm.reset();
-           this.router.navigate(['/auth/verify-email' , newUser.email])
-          }
-        },
-        error: (error) => {
-          // Clear the existing messages
-          this.messages = [];
+    //   const registerAPI= this._register.preRegisterUser(newUser).pipe(first()).subscribe({
+    //     next: (res)=>{
+    //       if(res.state){
+    //        this.registrationForm.reset();
+    //        this.router.navigate(['/auth/verify-email' , newUser.email])
+    //       }
+    //     },
+    //     error: (error) => {
+    //       // Clear the existing messages
+    //       this.messages = [];
         
-          // Check if the error contains validation messages
-          if (error.validationMessages) {
-            this.messages = error.validationMessages;  // Set the messages array
-          } else {
-            this.messages.push({ severity: 'error', summary: 'Error', detail: 'An unexpected error occurred.' });
-          }
-        }
+    //       // Check if the error contains validation messages
+    //       if (error.validationMessages) {
+    //         this.messages = error.validationMessages;  // Set the messages array
+    //       } else {
+    //         this.messages.push({ severity: 'error', summary: 'Error', detail: 'An unexpected error occurred.' });
+    //       }
+    //     }
       
-      })
-      this.unsubscribe.push(registerAPI);
-    }else{
-      this.hasError = true;
-    }
+    //   })
+    //   this.unsubscribe.push(registerAPI);
+    // }else{
+    //   this.hasError = true;
+    // }
 
   }
   togglePasswordVisibility(field: string): void {
