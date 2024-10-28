@@ -21,6 +21,7 @@ import { PositionsComponent } from './dashboard/positions/positions.component';
 import { CountriesComponent } from './dashboard/countries/countries.component';
 import { RegionsComponent } from './dashboard/regions/regions.component';
 import { DropdownModule } from 'primeng/dropdown';
+import { ConsultingFieldsComponent } from './dashboard/consulting-fields/consulting-fields.component';
 @NgModule({
   declarations: [
     DashboardComponent,
@@ -29,6 +30,7 @@ import { DropdownModule } from 'primeng/dropdown';
     AdminNotificationsComponent,
     CountriesComponent,
     DepartmentComponent,
+    ConsultingFieldsComponent,
     RegionsComponent,
     PositionsComponent
   ],
