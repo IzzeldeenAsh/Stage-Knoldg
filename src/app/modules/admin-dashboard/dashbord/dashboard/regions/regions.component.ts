@@ -92,6 +92,7 @@ export class RegionsComponent implements OnInit, OnDestroy {
   }
 
   submit() {
+    this.messages=[]
     const regionData = {
       name: {
         en: this.newRegionEn,
@@ -148,6 +149,7 @@ export class RegionsComponent implements OnInit, OnDestroy {
   }
 
   deleteRegion(regionId: number) {
+    this.messages=[]
     Swal.fire({
       title: 'Are you sure?',
       text: 'Do you want to delete this region? This action cannot be undone.',

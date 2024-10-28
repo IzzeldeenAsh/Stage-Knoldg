@@ -119,7 +119,15 @@ export class StaffComponent implements OnInit, OnDestroy {
     this.table.filterGlobal(value, "contains");
   }
 
+  get hasSuccessMessage(){
+    return this.messages.some(msg=>msg.severity ==='success')
+   }
+  
+   get hasErrorMessage() {
+    return this.messages.some(msg => msg.severity === 'error');
+  }
   submit() {
+    this.messages=[]
     if (this.selectedStaffId) {
       // Update existing staff
       const updatedData = {
@@ -145,7 +153,6 @@ export class StaffComponent implements OnInit, OnDestroy {
             summary: 'Error',
             detail: 'Failed to update staff.'
           }];
-          this.visible = false;
         }
       });
 
@@ -175,7 +182,6 @@ export class StaffComponent implements OnInit, OnDestroy {
             summary: 'Error',
             detail: 'Failed to create staff.'
           }];
-          this.visible = false;
         }
       });
 
@@ -184,6 +190,7 @@ export class StaffComponent implements OnInit, OnDestroy {
   }
 
   deleteStaff(staffId: number) {
+    this.messages=[]
     Swal.fire({
       title: 'Are you sure?',
       text: 'Do you want to delete this staff? This action cannot be undone.',
