@@ -1,12 +1,12 @@
 import { Component, OnInit, OnDestroy, ViewChild, signal } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription, Observable, map } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ConfirmPasswordValidator } from './confirm-password.validator';
 import { first } from 'rxjs/operators';
 import { CountryService } from 'src/app/_fake/services/countries-api/countries-get.service';
-import { Country } from 'src/app/_fake/models/country.model';
+import { Country, ICountry } from 'src/app/_fake/models/country.model';
 import { TranslationService } from 'src/app/modules/i18n';
 import { ConsultingFieldService } from 'src/app/_fake/services/consulting-field/consulting-field.service';
 import { IsicService } from 'src/app/_fake/services/isic/isic.service';
@@ -30,7 +30,9 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   isLoadingIsicCodes$: Observable<boolean>;
   isLoadingCountires$: Observable<boolean>;
   isLoadingHSCodes$: Observable<boolean>;
-  selectedNodes:any;
+  selectedNodes: any[] = []; // Initialize as an empty array
+  selectedCountry: any; // Initialize as an empty array
+
   
 
   messages: Message[] = [];  // Array to hold error messages
@@ -50,7 +52,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   private unsubscribe: Subscription[] = [];
   optionLabelField: string = 'description.en';  // default to English
   optionLabel: string = 'name.en';  // default to English
-  countries: Country[];
+  countries: ICountry[];
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
@@ -152,7 +154,11 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   getListOfCountries(){
     const getCountriesSub = this._countriesGet.getCountries().subscribe({
       next : (res)=>{
-        this.countries=res
+        this.countries=res.map((country:ICountry) => ({
+          ...country,
+          flagPath: `../../../../../assets/media/flags/${country.flag}.svg` 
+        }));
+
       },
       error : (err)=>{console.log('err',err)}
     })
@@ -186,11 +192,10 @@ export class RegistrationComponent implements OnInit, OnDestroy {
             Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
           ]
         ],
-        country: [null, Validators.required],
-        consultingField: [null, Validators.required], // Consulting Field
+        // country: [null, Validators.required],
+        consultingField: [[], Validators.required], // Consulting Field
         otherConsultingField: ['', Validators.maxLength(100)], // Optional field for "Other"
-        industry: [null, Validators.required], // Updated to [null]
-        hscode: [null], // Updated to [null] for dropdown
+        // hscode: [null], // Updated to [null] for dropdown
         cPassword: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(100)]],
         agree: [true],
       },
@@ -202,20 +207,26 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
   // When the user changes the Consulting Field
   onConsultingFieldChange() {
-    const consultingFieldSub= this.registrationForm.get('consultingField')?.valueChanges.subscribe(res=>{
-      const cField = res ?  res.description.en.trim(' ') : null;
-     if(cField && cField=="other"){
-      this.isOtherSelected = true;
-      if (!this.isOtherSelected) {
-        this.registrationForm.controls['otherConsultingField'].reset();
+    const consultingFieldSub = this.registrationForm.get('consultingField')?.valueChanges.subscribe(res => {
+      const selectedFields = res; // res is now an array
+      if (selectedFields && selectedFields.length > 0) {
+        // Check if 'Other' is selected among the selectedFields
+        this.isOtherSelected = selectedFields.some((field:any) => field.description.en.trim() === 'Other');
+      } else {
+        this.isOtherSelected = false;
       }
-     }else{
-      this.isOtherSelected = false;
-      this.registrationForm.get('otherConsultingField')?.setValue('')
-     }
-    })
-  if(consultingFieldSub)  this.unsubscribe.push(consultingFieldSub)
+  
+      if (this.isOtherSelected) {
+        this.registrationForm.get('otherConsultingField')?.setValidators([Validators.required, Validators.maxLength(100)]);
+      } else {
+        this.registrationForm.get('otherConsultingField')?.clearValidators();
+        this.registrationForm.get('otherConsultingField')?.setValue('');
+      }
+      this.registrationForm.get('otherConsultingField')?.updateValueAndValidity();
+    });
+    if (consultingFieldSub) this.unsubscribe.push(consultingFieldSub);
   }
+  
 
   onISICFieldChange() {
     const ISICFieldSub = this.registrationForm.get('industry')?.valueChanges.subscribe(res => {
@@ -255,57 +266,58 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   }
 
   submit() {
-    console.log("selectedNodes", this.selectedNodes);
-    // if(this.registrationForm.valid){
-    //   this.hasError = false;
-    //   const newUser:UserPreRegistration={
-    //     first_name: '',
-    //     last_name: '',
-    //     email: '',
-    //     password: '',
-    //     confirm_password: '',
-    //     country_id: 1,
-    //     isic_code: '',
-    //     consulting_feild_id: 7,
-    //     hs_code: '',
-    //     description: ''
-    //   };
-    //   newUser.first_name=this.registrationForm.get('firstName')?.value;
-    //   newUser.last_name=this.registrationForm.get('lastName')?.value;
-    //   newUser.email=this.registrationForm.get('email')?.value;
-    //   newUser.password=this.registrationForm.get('password')?.value;
-    //   newUser.confirm_password=this.registrationForm.get('password')?.value;
-    //   newUser.country_id=this.registrationForm.get('country')?.value.id;
-    //   newUser.isic_code=this.registrationForm.get('industry')?.value.id;
-    //   newUser.consulting_feild_id =this.registrationForm.get('consultingField')?.value.id;
-    //   newUser.hs_code=this.registrationForm.get('hscode')?.value?this.registrationForm.get('hscode')?.value.id  : null ;
-    //   newUser.description =this.registrationForm.get('aboutDescription')?.value ? this.registrationForm.get('aboutDescription')?.value : null;
-    //   newUser.other_consulting_field=this.registrationForm.get('otherConsultingField')?.value ? this.registrationForm.get('otherConsultingField')?.value : null;
-
-    //   const registerAPI= this._register.preRegisterUser(newUser).pipe(first()).subscribe({
-    //     next: (res)=>{
-    //       if(res.state){
-    //        this.registrationForm.reset();
-    //        this.router.navigate(['/auth/verify-email' , newUser.email])
-    //       }
-    //     },
-    //     error: (error) => {
-    //       // Clear the existing messages
-    //       this.messages = [];
+    
+    if (this.registrationForm.valid && this.selectedNodes && this.selectedNodes.length > 0) {
+      this.hasError = false;
+      const newUser:UserPreRegistration={
+        first_name: '',
+        last_name: '',
+        email: '',
+        password: '',
+        confirm_password: '',
+        country_id: 1,
+        isic_codes: [],
+        consulting_feild_ids: [],
+        hs_code: '',
+        description: ''
+      };
+      newUser.first_name=this.registrationForm.get('firstName')?.value;
+      newUser.last_name=this.registrationForm.get('lastName')?.value;
+      newUser.email=this.registrationForm.get('email')?.value;
+      newUser.password=this.registrationForm.get('password')?.value;
+      newUser.confirm_password=this.registrationForm.get('password')?.value;
+      newUser.country_id=this.selectedCountry.id;
+      newUser.isic_codes=this.selectedNodes ? this.selectedNodes.map(node => node.data.id) : [];;
+      newUser.consulting_feild_ids =this.registrationForm.get('consultingField')?.value.map((field:any) => field.id);
+      // newUser.hs_code=this.registrationForm.get('hscode')?.value?this.registrationForm.get('hscode')?.value.id  : null ;
+      newUser.description =this.registrationForm.get('aboutDescription')?.value ? this.registrationForm.get('aboutDescription')?.value : null;
+      newUser.other_consulting_field=this.registrationForm.get('otherConsultingField')?.value ? this.registrationForm.get('otherConsultingField')?.value : null;
+console.log("newUser" ,newUser);
+console.log("selectedNodes",this.selectedNodes);
+      // const registerAPI= this._register.preRegisterUser(newUser).pipe(first()).subscribe({
+      //   next: (res)=>{
+      //     if(res.state){
+      //      this.registrationForm.reset();
+      //      this.router.navigate(['/auth/verify-email' , newUser.email])
+      //     }
+      //   },
+      //   error: (error) => {
+      //     // Clear the existing messages
+      //     this.messages = [];
         
-    //       // Check if the error contains validation messages
-    //       if (error.validationMessages) {
-    //         this.messages = error.validationMessages;  // Set the messages array
-    //       } else {
-    //         this.messages.push({ severity: 'error', summary: 'Error', detail: 'An unexpected error occurred.' });
-    //       }
-    //     }
+      //     // Check if the error contains validation messages
+      //     if (error.validationMessages) {
+      //       this.messages = error.validationMessages;  // Set the messages array
+      //     } else {
+      //       this.messages.push({ severity: 'error', summary: 'Error', detail: 'An unexpected error occurred.' });
+      //     }
+      //   }
       
-    //   })
-    //   this.unsubscribe.push(registerAPI);
-    // }else{
-    //   this.hasError = true;
-    // }
+      // })
+      // this.unsubscribe.push(registerAPI);
+    }else{
+      this.hasError = true;
+    }
 
   }
   togglePasswordVisibility(field: string): void {

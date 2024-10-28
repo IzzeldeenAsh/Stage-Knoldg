@@ -84,6 +84,12 @@ export class RegionsComponent implements OnInit, OnDestroy {
     const value = event.target.value.trim().toLowerCase();
     this.table.filterGlobal(value, "contains");
   }
+  get hasSuccessMessage(){
+    return this.messages.some(msg=>msg.severity ==='success')
+   }
+   get hasErrorMessage() {
+    return this.messages.some(msg => msg.severity === 'error');
+  }
 
   submit() {
     const regionData = {
@@ -134,7 +140,6 @@ export class RegionsComponent implements OnInit, OnDestroy {
             summary: 'Error',
             detail: 'Failed to create region.'
           }];
-          this.visible = false;
         }
       });
 

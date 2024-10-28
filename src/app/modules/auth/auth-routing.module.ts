@@ -15,7 +15,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'login', // Only one redirection to 'login'
+        redirectTo: 'registration', // Only one redirection to 'login'
         pathMatch: 'full',
       },
       {

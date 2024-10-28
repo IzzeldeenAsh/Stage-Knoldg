@@ -19,6 +19,7 @@ import { MessagesModule } from 'primeng/messages';
 import { TreeSelectModule } from 'primeng/treeselect';
 import { PasswordModule } from 'primeng/password';
 import { InputTextModule } from 'primeng/inputtext';
+import { MultiSelectModule } from 'primeng/multiselect';
 @NgModule({
   declarations: [
     LoginComponent,
@@ -42,6 +43,7 @@ import { InputTextModule } from 'primeng/inputtext';
     LanguageSwitchModule,
     FormsModule,
     ReactiveFormsModule,
+    MultiSelectModule,
     DropdownModule,
     HttpClientModule,
   ],

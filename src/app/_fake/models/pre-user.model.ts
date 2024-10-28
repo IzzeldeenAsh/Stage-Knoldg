@@ -5,8 +5,8 @@ export interface UserPreRegistration {
     password: string;
     confirm_password: string;
     country_id: number;
-    isic_code: string;
-    consulting_feild_id: number;
+    isic_codes: number[];
+    consulting_feild_ids: number[];
     hs_code?: string;
     description?: string;
     other_consulting_field?:string;

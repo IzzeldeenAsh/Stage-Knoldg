@@ -50,6 +50,13 @@ export class PositionsComponent implements OnInit, OnDestroy {
     this.isEditMode = true;
   }
 
+  get hasSuccessMessage(){
+    return this.messages.some(msg=>msg.severity ==='success')
+   }
+   get hasErrorMessage() {
+    return this.messages.some(msg => msg.severity === 'error');
+  }
+
   getPositionsList() {
     const listSub = this.positionsService.getPositions().subscribe({
       next: (data: Position[]) => {
@@ -134,7 +141,6 @@ export class PositionsComponent implements OnInit, OnDestroy {
             summary: 'Error',
             detail: 'Failed to create position.'
           }];
-          this.visible = false;
         }
       });
 

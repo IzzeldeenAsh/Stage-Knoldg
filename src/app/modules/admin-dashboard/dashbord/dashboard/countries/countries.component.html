@@ -20,93 +20,85 @@
             <i class="ki-outline ki-plus text-white fs-4"></i>
             Create
           </a>
-          <p-dialog [header]="isEditMode ? 'Edit Country' : 'Add Country'" [modal]="true" [(visible)]="visible" [style]="{ width: '30rem' }">
+          <p-dialog [header]="isEditMode ? 'Edit Country' : 'Add Country'" class="scrollable-dialog" [modal]="true" [(visible)]="visible" [style]="{ width: '60rem'}">
+            <p-messages *ngIf="hasErrorMessage" [(value)]="messages" [enableService]="false"></p-messages>
             <span class="text-muted mb-3 d-block">{{ isEditMode ? 'Edit Country Details' : 'Add Country Details' }}.</span>
-
+        
+            <!-- Country Name Fields -->
             <div class="mb-3 row">
               <label for="countryEn" class="col-sm-3 col-form-label">Name (English)</label>
-              <div class="col-sm-9">
-                <input pInputText id="countryEn" class="form-control" [(ngModel)]="newCountryEn" name="countryEn" autocomplete="off" />
+              <div class="col-sm-3">
+                  <input pInputText id="countryEn" class="form-control" [(ngModel)]="newCountryEn" name="countryEn" autocomplete="off" />
               </div>
-            </div>
-
-            <div class="mb-3 row">
               <label for="countryAr" class="col-sm-3 col-form-label">Name (Arabic)</label>
-              <div class="col-sm-9">
-                <input pInputText id="countryAr" class="form-control" [(ngModel)]="newCountryAr" name="countryAr" autocomplete="off" />
+              <div class="col-sm-3">
+                  <input pInputText id="countryAr" class="form-control" [(ngModel)]="newCountryAr" name="countryAr" autocomplete="off" />
               </div>
-            </div>
-
-            <!-- Add more form fields here -->
+          </div>
+        
+            <!-- Region ID and International Code in the same row -->
             <div class="mb-3 row">
-              <label for="regionId" class="col-sm-3 col-form-label">Region ID</label>
-              <div class="col-sm-9">
-                <input pInputText id="regionId" class="form-control" [(ngModel)]="newRegionId" name="regionId" autocomplete="off" />
-              </div>
+                <label for="regionId" class="col-sm-3 col-form-label">Region ID</label>
+                <div class="col-sm-3">
+                    <input pInputText id="regionId" class="form-control" [(ngModel)]="newRegionId" name="regionId" autocomplete="off" />
+                </div>
+                <label for="internationalCode" class="col-sm-3 col-form-label">International Code</label>
+                <div class="col-sm-3">
+                    <input pInputText id="internationalCode" class="form-control" [(ngModel)]="newInternationalCode" name="internationalCode" autocomplete="off" />
+                </div>
             </div>
-
+        
+            <!-- ISO2 and ISO3 in the same row -->
             <div class="mb-3 row">
-              <label for="iso2" class="col-sm-3 col-form-label">ISO2</label>
-              <div class="col-sm-9">
-                <input pInputText id="iso2" class="form-control" [(ngModel)]="newIso2" name="iso2" autocomplete="off" />
-              </div>
+                <label for="iso2" class="col-sm-3 col-form-label">ISO2</label>
+                <div class="col-sm-3">
+                    <input pInputText id="iso2" class="form-control" [(ngModel)]="newIso2" name="iso2" autocomplete="off" />
+                </div>
+                <label for="iso3" class="col-sm-3 col-form-label">ISO3</label>
+                <div class="col-sm-3">
+                    <input pInputText id="iso3" class="form-control" [(ngModel)]="newIso3" name="iso3" autocomplete="off" />
+                </div>
             </div>
-
+        
+            <!-- Nationality Fields in the same row -->
             <div class="mb-3 row">
-              <label for="iso3" class="col-sm-3 col-form-label">ISO3</label>
-              <div class="col-sm-9">
-                <input pInputText id="iso3" class="form-control" [(ngModel)]="newIso3" name="iso3" autocomplete="off" />
-              </div>
+                <label for="nationalityEn" class="col-sm-3 col-form-label">Nationality (English)</label>
+                <div class="col-sm-3">
+                    <input pInputText id="nationalityEn" class="form-control" [(ngModel)]="newNationalityEn" name="nationalityEn" autocomplete="off" />
+                </div>
+                <label for="nationalityAr" class="col-sm-3 col-form-label">Nationality (Arabic)</label>
+                <div class="col-sm-3">
+                    <input pInputText id="nationalityAr" class="form-control" [(ngModel)]="newNationalityAr" name="nationalityAr" autocomplete="off" />
+                </div>
             </div>
-
+        
+            <!-- Status and Flag in the same row -->
             <div class="mb-3 row">
-              <label for="nationalityEn" class="col-sm-3 col-form-label">Nationality (English)</label>
-              <div class="col-sm-9">
-                <input pInputText id="nationalityEn" class="form-control" [(ngModel)]="newNationalityEn" name="nationalityEn" autocomplete="off" />
-              </div>
+                <label for="status" class="col-sm-3 col-form-label">Status</label>
+                <div class="col-sm-3">
+                    <p-dropdown 
+                      [options]="statusOptions" 
+                      [(ngModel)]="newStatus" 
+                      name="status"
+                      class="form-p-control"
+                      appendTo="body"
+                      placeholder="Select Status">
+                      
+                    </p-dropdown>
+                </div>
+                <label for="flag" class="col-sm-3 col-form-label">Flag</label>
+                <div class="col-sm-3">
+                    <input pInputText id="flag" class="form-control" [(ngModel)]="newFlag" name="flag" autocomplete="off" />
+                </div>
             </div>
-
-            <div class="mb-3 row">
-              <label for="nationalityAr" class="col-sm-3 col-form-label">Nationality (Arabic)</label>
-              <div class="col-sm-9">
-                <input pInputText id="nationalityAr" class="form-control" [(ngModel)]="newNationalityAr" name="nationalityAr" autocomplete="off" />
-              </div>
-            </div>
-
-            <div class="mb-3 row">
-              <label for="internationalCode" class="col-sm-3 col-form-label">International Code</label>
-              <div class="col-sm-9">
-                <input pInputText id="internationalCode" class="form-control" [(ngModel)]="newInternationalCode" name="internationalCode" autocomplete="off" />
-              </div>
-            </div>
-            <div class="mb-3 row">
-              <label for="status" class="col-sm-3 col-form-label">Status</label>
-              <div class="col-sm-9">
-                <p-dropdown 
-                  [options]="statusOptions" 
-                  [(ngModel)]="newStatus" 
-                  name="status"
-                  placeholder="Select Status">
-                </p-dropdown>
-              </div>
-            </div>
-
-            <div class="mb-3 row">
-              <label for="flag" class="col-sm-3 col-form-label">Flag</label>
-              <div class="col-sm-9">
-                <input pInputText id="flag" class="form-control" [(ngModel)]="newFlag" name="flag" autocomplete="off" />
-              </div>
-            </div>
-
+        
+            <!-- Action Buttons -->
             <div class="d-flex justify-content-end gap-2">
-              <button (click)="submit()" class="btn btn-primary btn-sm">
-                Save
-              </button>
-              <button (click)="visible = false" class="btn btn-outline-secondary btn-sm">
-                Cancel
-              </button>
+                <button [disabled]="!newRegionId || !newIso2 || !newIso3 || !newCountryAr || !newCountryEn || !newFlag || !newInternationalCode || !newNationalityAr || !newNationalityEn || !newStatus" (click)="submit()" class="btn btn-primary btn-sm">Save</button>
+                <button (click)="visible = false" class="btn btn-outline-secondary btn-sm">Cancel</button>
             </div>
-          </p-dialog>
+        </p-dialog>
+        
         </div>
       </div>
     </div>
@@ -144,7 +136,7 @@
         </div>
 
         <div class="card-body pt-0">
-          <p-messages [(value)]="messages" [enableService]="false"></p-messages>
+          <p-messages *ngIf="hasSuccessMessage" [(value)]="messages" [enableService]="false"></p-messages>
           <p-table
             #dt
             [value]="filteredCountires"
