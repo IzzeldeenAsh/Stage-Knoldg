@@ -1,9 +1,10 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import { Message } from "primeng/api";
+import { MessageService, Message } from "primeng/api";
 import { Table } from "primeng/table";
 import { Observable, Subscription } from "rxjs";
 import Swal from 'sweetalert2';
 import { Region, RegionsService } from "src/app/_fake/services/region/regions.service";
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: "app-regions",
@@ -19,41 +20,46 @@ export class RegionsComponent implements OnInit, OnDestroy {
   selectedRegionId: number | null = null;
   visible: boolean = false;
 
-  // Form fields
-  newRegionEn: string = '';
-  newRegionAr: string = '';
+  regionForm: FormGroup;
 
   @ViewChild("dt") table: Table;
 
   constructor(
     private regionsService: RegionsService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private fb: FormBuilder,
+    private messageService: MessageService
   ) {
     this.isLoading$ = this.regionsService.isLoading$;
   }
 
   ngOnInit(): void {
+    this.initializeForm();
     this.getRegionsList();
+  }
+
+  initializeForm() {
+    this.regionForm = this.fb.group({
+      regionEn: ['', Validators.required],
+      regionAr: ['', Validators.required]
+    });
   }
 
   showDialog() {
     this.visible = true;
-    this.resetForm();
     this.selectedRegionId = null;
     this.isEditMode = false;
+    this.regionForm.reset();
   }
 
   editRegion(region: Region) {
     this.visible = true;
-    this.newRegionEn = region.names.en;
-    this.newRegionAr = region.names.ar;
     this.selectedRegionId = region.id;
     this.isEditMode = true;
-  }
-
-  resetForm() {
-    this.newRegionEn = '';
-    this.newRegionAr = '';
+    this.regionForm.patchValue({
+      regionEn: region.names.en,
+      regionAr: region.names.ar
+    });
   }
 
   getRegionsList() {
@@ -61,20 +67,13 @@ export class RegionsComponent implements OnInit, OnDestroy {
       next: (data: Region[]) => {
         this.listOfRegions = data;
         this.cdr.detectChanges();
-        console.log("listOfRegions", this.listOfRegions);
       },
       error: (error) => {
-        this.messages = [];
-
-        if (error.validationMessages) {
-          this.messages = error.validationMessages;
-        } else {
-          this.messages.push({
-            severity: "error",
-            summary: "Error",
-            detail: "An unexpected error occurred.",
-          });
-        }
+        this.messages = error.validationMessages || [{
+          severity: "error",
+          summary: "Error",
+          detail: "An unexpected error occurred."
+        }];
       },
     });
     this.unsubscribe.push(listSub);
@@ -84,19 +83,37 @@ export class RegionsComponent implements OnInit, OnDestroy {
     const value = event.target.value.trim().toLowerCase();
     this.table.filterGlobal(value, "contains");
   }
-  get hasSuccessMessage(){
-    return this.messages.some(msg=>msg.severity ==='success')
-   }
-   get hasErrorMessage() {
+
+  get hasSuccessMessage() {
+    return this.messages.some(msg => msg.severity === 'success');
+  }
+
+  get hasErrorMessage() {
     return this.messages.some(msg => msg.severity === 'error');
   }
 
+  // Getters for form controls
+  get regionEn() {
+    return this.regionForm.get('regionEn');
+  }
+
+  get regionAr() {
+    return this.regionForm.get('regionAr');
+  }
+
   submit() {
-    this.messages=[]
+    this.messages = [];
+
+    if (this.regionForm.invalid) {
+      this.regionForm.markAllAsTouched();
+      return;
+    }
+
+    const formValues = this.regionForm.value;
     const regionData = {
       name: {
-        en: this.newRegionEn,
-        ar: this.newRegionAr
+        en: formValues.regionEn,
+        ar: formValues.regionAr
       }
     };
 
@@ -104,21 +121,17 @@ export class RegionsComponent implements OnInit, OnDestroy {
       // Update existing region
       const updateSub = this.regionsService.updateRegion(this.selectedRegionId, regionData).subscribe({
         next: (res: Region) => {
-          this.messages.push({
+          this.messageService.add({
             severity: 'success',
             summary: 'Success',
             detail: 'Region updated successfully.'
           });
           this.getRegionsList();
           this.visible = false;
+          this.regionForm.reset();
         },
         error: (error) => {
-          this.messages = error.validationMessages || [{
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Failed to update region.'
-          }];
-          this.visible = false;
+          this.handleServerErrors(error);
         }
       });
 
@@ -127,20 +140,17 @@ export class RegionsComponent implements OnInit, OnDestroy {
       // Create new region
       const createSub = this.regionsService.createRegion(regionData).subscribe({
         next: (res: any) => {
-          this.messages.push({
+          this.messageService.add({
             severity: 'success',
             summary: 'Success',
             detail: 'Region created successfully.'
           });
           this.getRegionsList();
           this.visible = false;
+          this.regionForm.reset();
         },
         error: (error) => {
-          this.messages = error.validationMessages || [{
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Failed to create region.'
-          }];
+          this.handleServerErrors(error);
         }
       });
 
@@ -149,7 +159,7 @@ export class RegionsComponent implements OnInit, OnDestroy {
   }
 
   deleteRegion(regionId: number) {
-    this.messages=[]
+    this.messages = [];
     Swal.fire({
       title: 'Are you sure?',
       text: 'Do you want to delete this region? This action cannot be undone.',
@@ -163,7 +173,7 @@ export class RegionsComponent implements OnInit, OnDestroy {
       if (result.isConfirmed) {
         const deleteSub = this.regionsService.deleteRegion(regionId).subscribe({
           next: (res: any) => {
-            this.messages.push({
+            this.messageService.add({
               severity: 'success',
               summary: 'Success',
               detail: 'Region deleted successfully.'
@@ -171,16 +181,51 @@ export class RegionsComponent implements OnInit, OnDestroy {
             this.getRegionsList();
           },
           error: (error) => {
-            this.messages = error.validationMessages || [{
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Failed to delete region.'
-            }];
+            this.handleServerErrors(error);
           }
         });
         this.unsubscribe.push(deleteSub);
       }
     });
+  }
+
+  private handleServerErrors(error: any) {
+    if (error.error && error.error.errors) {
+      const serverErrors = error.error.errors;
+      const errorKeyToFormControlName: any = {
+        'name.en': 'regionEn',
+        'name.ar': 'regionAr'
+      };
+
+      for (const key in serverErrors) {
+        if (serverErrors.hasOwnProperty(key)) {
+          const messages = serverErrors[key];
+          const formControlName = errorKeyToFormControlName[key];
+          if (formControlName) {
+            const control = this.regionForm.get(formControlName);
+            if (control) {
+              control.setErrors({ serverError: messages[0] });
+              control.markAsTouched();
+            }
+          } else {
+            // General messages
+            this.messages.push({ severity: 'error', summary: '', detail: messages.join(', ') });
+          }
+        }
+      }
+    } else {
+      // Handle non-validation errors
+      this.messages.push({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'An unexpected error occurred.'
+      });
+    }
+  }
+
+  onCancel() {
+    this.visible = false;
+    this.regionForm.reset();
   }
 
   ngOnDestroy() {

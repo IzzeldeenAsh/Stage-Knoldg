@@ -12,8 +12,9 @@ import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { InputTextModule } from 'primeng/inputtext';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
+import { MessageService } from 'primeng/api';
 
 
 @NgModule({
@@ -27,6 +28,7 @@ import { DropdownModule } from 'primeng/dropdown';
     CommonModule,
     AccountsRoutingModule,
     MessagesModule,
+    ReactiveFormsModule,
     TableModule,
     DialogModule, ButtonModule, 
     ProgressBarModule,
@@ -34,5 +36,6 @@ import { DropdownModule } from 'primeng/dropdown';
     FormsModule,
     DropdownModule,
   ]
+  ,providers:[MessageService]
 })
 export class AccountsModule { }

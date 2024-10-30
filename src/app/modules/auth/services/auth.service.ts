@@ -112,6 +112,16 @@ export class AuthService implements OnDestroy {
     }));
   }
 
+  private isTokenExpired(token:string) : boolean{
+    if (!token) {
+      return true;
+    }
+  
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const currentTime = Math.floor(Date.now() / 1000);
+    return payload.exp < currentTime;
+  }
+
   logout() {
     localStorage.removeItem(this.authLocalStorageToken);
     localStorage.removeItem('currentUser');
@@ -122,13 +132,18 @@ export class AuthService implements OnDestroy {
   }
 
   getUserByToken(): Observable<UserType> {
-    const user = this.getUserFromLocalStorage();
-    if (user) {
-      this.currentUserSubject.next(user);
-      this.checkUserRoleAndRedirect(user); // Redirect based on roles if user exists
-      return of(user);
+    const authData = this.getAuthFromLocalStorage();
+    if (authData && !this.isTokenExpired(authData.authToken)) {
+      const user = this.getUserFromLocalStorage();
+      if (user) {
+        this.currentUserSubject.next(user);
+        this.checkUserRoleAndRedirect(user);
+        return of(user);
+      }
+    } else {
+      this.logout(); // Token is expired; clear stored data and navigate to login
     }
-    // If no user is found, handle the situation here without automatically redirecting
+  
     return of(undefined);
   }
   
@@ -174,7 +189,6 @@ export class AuthService implements OnDestroy {
       }
   
       const authData = JSON.parse(lsValue);
-      console.log("authData",authData);
       return authData;
     } catch (error) {
       console.error(error);

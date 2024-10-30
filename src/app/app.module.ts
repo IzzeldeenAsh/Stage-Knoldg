@@ -11,7 +11,6 @@ import { AppComponent } from './app.component';
 import { AuthService } from './modules/auth/services/auth.service';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { AuthInterceptor } from './modules/auth/interceptor-auth.interceptor';
-
 function appInitializer(authService: AuthService) {
   return () => {
     return new Promise((resolve) => {
@@ -36,6 +35,7 @@ function appInitializer(authService: AuthService) {
     SweetAlert2Module.forRoot(),
   ],
   providers: [
+  
     {
       provide: APP_INITIALIZER,
       useFactory: appInitializer,

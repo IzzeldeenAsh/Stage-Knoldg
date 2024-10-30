@@ -1,7 +1,4 @@
-@import "~primeng/resources/themes/bootstrap4-light-blue/theme.css";
-@import "~primeng/resources/primeng.min.css";
-@import "~primeicons/primeicons.css";
-@layer reset, bootstrap, primeng;
+
 /* You can add global styles to this file, and also import other style files */
 @import "./assets/sass/style.scss";
 // Replace above style with this css file to enable RTL styles
@@ -270,3 +267,22 @@ color: #017BFE !important;
     overflow-y: auto !important;
   }
 
+  #toast-container > div {
+    opacity:1;
+}
+
+.toast {
+    opacity: 1 !important;
+}
+.p-toast .p-toast-message.p-toast-message-success{
+    background: rgba(228, 248, 240, 1) !important;
+}
+.p-paginator .p-paginator-pages .p-paginator-page.p-highlight{
+    background: #0d2037 !important;
+    border-color: none !important;
+    color: #fff !important;
+    border-radius: 7px !important;
+}
+.p-paginator .p-paginator-pages .p-paginator-page:not(.p-highlight):hover {
+    border-radius: 10px !important;
+    }

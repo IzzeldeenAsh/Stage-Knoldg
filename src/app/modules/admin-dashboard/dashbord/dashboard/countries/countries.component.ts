@@ -1,10 +1,11 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import { Message } from "primeng/api";
+import { MessageService, Message } from "primeng/api";
 import { Table } from "primeng/table";
 import { Observable, Subscription } from "rxjs";
 import { CountriesService, Country } from "src/app/_fake/services/countries/countries.service";
 import { Region, RegionsService } from "src/app/_fake/services/region/regions.service";
 import Swal from 'sweetalert2';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: "app-countries",
@@ -15,51 +16,58 @@ export class CountriesComponent implements OnInit, OnDestroy {
   messages: Message[] = [];
   private unsubscribe: Subscription[] = [];
   listOfCountries: Country[] = [];
-  filteredCountires: Country[] = [];
+  filteredCountries: Country[] = [];
   isEditMode: boolean = false;
   isLoading$: Observable<boolean>;
   selectedCountryId: number | null = null;
   visible: boolean = false;
-currentPage = 1;
-perPage = 10;
-totalRecords = 0;
-filterKeyword: string = '';
-  // Form fields
-  newCountryEn: string = '';
-  newCountryAr: string = '';
-  newRegionId: number | null = null;
-  newIso2: string = '';
-  newIso3: string = '';
-  newNationalityEn: string = '';
-  newNationalityAr: string = '';
-  newInternationalCode: string = '';
-  newFlag: string = '';
   regionOptions: { label: string, value: number }[] = [];
-selectedRegionId: number | null = null;
+  selectedRegionId: number | null = null;
   statusOptions = [
     { label: 'Active', value: 'Active' },
     { label: 'Inactive', value: 'Inactive' }
   ];
-  newStatus: string = 'Active'; // Default to 'Active'
+
+  countryForm: FormGroup;
+
   @ViewChild("dt") table: Table;
 
   constructor(
     private countriesService: CountriesService,
     private regionsService: RegionsService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private fb: FormBuilder,
+    private messageService: MessageService
   ) {
     this.isLoading$ = this.countriesService.isLoading$;
   }
 
   ngOnInit(): void {
+    this.initializeForm();
     this.getCountriesList();
-    this.getRegionsList(); // Fetch and set regions
+    this.getRegionsList();
   }
+
+  initializeForm() {
+    this.countryForm = this.fb.group({
+      countryEn: ['', Validators.required],
+      countryAr: ['', Validators.required],
+      regionId: [null, Validators.required],
+      internationalCode: ['', Validators.required],
+      iso2: ['', Validators.required],
+      iso3: ['', Validators.required],
+      nationalityEn: ['', Validators.required],
+      nationalityAr: ['', Validators.required],
+      status: ['Active', Validators.required],
+      flag: ['', Validators.required]
+    });
+  }
+
   getRegionsList() {
     this.regionsService.getRegions().subscribe({
       next: (data: Region[]) => {
         this.regionOptions = data.map(region => ({
-          label: region.names.en, // Display in English (or adjust as needed)
+          label: region.names.en,
           value: region.id
         }));
         this.regionOptions.unshift({ label: 'All Regions', value: 0 });
@@ -76,48 +84,34 @@ selectedRegionId: number | null = null;
 
   showDialog() {
     this.visible = true;
-    this.resetForm();
     this.selectedCountryId = null;
     this.isEditMode = false;
+    this.countryForm.reset({ status: 'Active' });
   }
 
   editCountry(country: Country) {
     this.visible = true;
-    this.newCountryEn = country.names.en;
-    this.newCountryAr = country.names.ar;
-    this.newRegionId = country.region_id;
-    this.newIso2 = country.iso2;
-    this.newIso3 = country.iso3;
-    this.newNationalityEn = country.nationalities.en;
-    this.newNationalityAr = country.nationalities.ar;
-    this.newInternationalCode = country.international_code;
-    this.newFlag = country.flag;
-    this.newStatus = country.status; // Set status
     this.selectedCountryId = country.id;
     this.isEditMode = true;
-    console.log("country",country);
-  }
-
-  resetForm() {
-    this.newCountryEn = '';
-    this.newCountryAr = '';
-    this.newRegionId = null;
-    this.newIso2 = '';
-    this.newIso3 = '';
-    this.newNationalityEn = '';
-    this.newNationalityAr = '';
-    this.newInternationalCode = '';
-    this.newFlag = '';
-    this.newStatus = 'Active'; // Reset to default
+    this.countryForm.patchValue({
+      countryEn: country.names.en,
+      countryAr: country.names.ar,
+      regionId: country.region_id,
+      internationalCode: country.international_code,
+      iso2: country.iso2,
+      iso3: country.iso3,
+      nationalityEn: country.nationalities.en,
+      nationalityAr: country.nationalities.ar,
+      status: country.status,
+      flag: country.flag
+    });
   }
 
   getCountriesList() {
-    let apiUrl = 'https://api.4sighta.com/api/admin/setting/country/list'
-    console.log("selectedRegionId", this.selectedRegionId);
-    const listSub = this.countriesService.getCountries(apiUrl).subscribe({
+    const listSub = this.countriesService.getCountries().subscribe({
       next: (data: Country[]) => {
         this.listOfCountries = data;
-        this.filteredCountires = this.listOfCountries
+        this.filteredCountries = [...this.listOfCountries];
         this.cdr.detectChanges();
       },
       error: (error) => {
@@ -130,56 +124,64 @@ selectedRegionId: number | null = null;
     });
     this.unsubscribe.push(listSub);
   }
-  
+
   filterCountriesByRegion() {
-  if(this.selectedRegionId){
-    this.filteredCountires = this.listOfCountries.filter((country)=>country.region_id === this.selectedRegionId)
-  }else{
-    this.filteredCountires = this.listOfCountries
+    if (this.selectedRegionId && this.selectedRegionId !== 0) {
+      this.filteredCountries = this.listOfCountries.filter(
+        country => country.region_id === this.selectedRegionId
+      );
+    } else {
+      this.filteredCountries = [...this.listOfCountries];
+    }
   }
-  }
+
   applyFilter(event: any) {
     const value = event.target.value.trim().toLowerCase();
     this.table.filterGlobal(value, "contains");
   }
 
   submit() {
-    this.messages=[]
+    this.messages = [];
+
+    if (this.countryForm.invalid) {
+      this.countryForm.markAllAsTouched();
+      return;
+    }
+
+    const formValues = this.countryForm.value;
+
     const countryData = {
       name: {
-        en: this.newCountryEn,
-        ar: this.newCountryAr
+        en: formValues.countryEn,
+        ar: formValues.countryAr
       },
-      region_id: this.newRegionId,
-      iso2: this.newIso2,
-      iso3: this.newIso3,
+      region_id: formValues.regionId,
+      iso2: formValues.iso2,
+      iso3: formValues.iso3,
       nationality: {
-        en: this.newNationalityEn,
-        ar: this.newNationalityAr
+        en: formValues.nationalityEn,
+        ar: formValues.nationalityAr
       },
-      international_code: this.newInternationalCode,
-      flag: this.newFlag,
-      status: this.newStatus // Include status
+      international_code: formValues.internationalCode,
+      flag: formValues.flag,
+      status: formValues.status
     };
-  
+
     if (this.selectedCountryId) {
       // Update existing country
       const updateSub = this.countriesService.updateCountry(this.selectedCountryId, countryData).subscribe({
         next: (res: Country) => {
-          this.messages.push({
+          this.messageService.add({
             severity: 'success',
             summary: 'Success',
             detail: 'Country updated successfully.'
           });
           this.getCountriesList();
           this.visible = false;
+          this.countryForm.reset({ status: 'Active' });
         },
         error: (error) => {
-          this.messages = error.validationMessages || [{
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Failed to update country.'
-          }];
+          this.handleServerErrors(error);
         }
       });
       this.unsubscribe.push(updateSub);
@@ -187,29 +189,30 @@ selectedRegionId: number | null = null;
       // Create new country
       const createSub = this.countriesService.createCountry(countryData).subscribe({
         next: (res: any) => {
-          this.messages.push({
+          this.messageService.add({
             severity: 'success',
             summary: 'Success',
             detail: 'Country created successfully.'
           });
           this.getCountriesList();
           this.visible = false;
+          this.countryForm.reset({ status: 'Active' });
         },
         error: (error) => {
-          this.messages = error.validationMessages || [{
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Failed to create country.'
-          }];
+          this.handleServerErrors(error);
         }
       });
       this.unsubscribe.push(createSub);
     }
   }
-  
+
+  onCancel() {
+    this.visible = false;
+    this.countryForm.reset({ status: 'Active' });
+  }
 
   deleteCountry(countryId: number) {
-    this.messages=[]
+    this.messages = [];
     Swal.fire({
       title: 'Are you sure?',
       text: 'Do you want to delete this country? This action cannot be undone.',
@@ -223,7 +226,7 @@ selectedRegionId: number | null = null;
       if (result.isConfirmed) {
         const deleteSub = this.countriesService.deleteCountry(countryId).subscribe({
           next: (res: any) => {
-            this.messages.push({
+            this.messageService.add({
               severity: 'success',
               summary: 'Success',
               detail: 'Country deleted successfully.'
@@ -231,25 +234,103 @@ selectedRegionId: number | null = null;
             this.getCountriesList();
           },
           error: (error) => {
-            this.messages = error.validationMessages || [{
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Failed to delete country.'
-            }];
+            this.handleServerErrors(error);
           }
         });
         this.unsubscribe.push(deleteSub);
       }
     });
   }
-  get hasSuccessMessage(){
-    return this.messages.some(msg=>msg.severity ==='success')
-   }
-   get successMessages() {
-    return this.messages.filter((msg) => msg.severity === 'success');
+
+  get hasSuccessMessage() {
+    return this.messages.some(msg => msg.severity === 'success');
   }
-   get hasErrorMessage() {
+
+  get hasErrorMessage() {
     return this.messages.some(msg => msg.severity === 'error');
+  }
+
+  // Getters for form controls
+  get countryEn() {
+    return this.countryForm.get('countryEn');
+  }
+
+  get countryAr() {
+    return this.countryForm.get('countryAr');
+  }
+
+  get regionId() {
+    return this.countryForm.get('regionId');
+  }
+
+  get internationalCode() {
+    return this.countryForm.get('internationalCode');
+  }
+
+  get iso2() {
+    return this.countryForm.get('iso2');
+  }
+
+  get iso3() {
+    return this.countryForm.get('iso3');
+  }
+
+  get nationalityEn() {
+    return this.countryForm.get('nationalityEn');
+  }
+
+  get nationalityAr() {
+    return this.countryForm.get('nationalityAr');
+  }
+
+  get status() {
+    return this.countryForm.get('status');
+  }
+
+  get flag() {
+    return this.countryForm.get('flag');
+  }
+
+  private handleServerErrors(error: any) {
+    if (error.error && error.error.errors) {
+      const serverErrors = error.error.errors;
+      const errorKeyToFormControlName: any = {
+        'name.en': 'countryEn',
+        'name.ar': 'countryAr',
+        'region_id': 'regionId',
+        'international_code': 'internationalCode',
+        'iso2': 'iso2',
+        'iso3': 'iso3',
+        'nationality.en': 'nationalityEn',
+        'nationality.ar': 'nationalityAr',
+        'status': 'status',
+        'flag': 'flag'
+      };
+  
+      for (const key in serverErrors) {
+        if (serverErrors.hasOwnProperty(key)) {
+          const messages = serverErrors[key];
+          const formControlName = errorKeyToFormControlName[key];
+          if (formControlName) {
+            const control = this.countryForm.get(formControlName);
+            if (control) {
+              control.setErrors({ serverError: messages[0] });
+              control.markAsTouched();
+            }
+          } else {
+            // General messages
+            this.messages.push({ severity: 'error', summary: '', detail: messages.join(', ') });
+          }
+        }
+      }
+    } else {
+      // Handle non-validation errors
+      this.messages.push({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'An unexpected error occurred.'
+      });
+    }
   }
 
   ngOnDestroy() {

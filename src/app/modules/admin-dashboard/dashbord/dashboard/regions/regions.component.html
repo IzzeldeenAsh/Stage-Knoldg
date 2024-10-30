@@ -3,8 +3,6 @@
   mode="indeterminate"
   [style]="{ height: '4px' }"
 ></p-progressBar>
-
-<ng-container *ngIf="(isLoading$ | async) === false">
   <div id="kt_app_toolbar" class="app-toolbar pt-10 mb-0">
     <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex align-items-stretch">
       <div class="app-toolbar-wrapper d-flex flex-stack flex-wrap gap-4 w-100">
@@ -24,25 +22,54 @@
             <p-messages *ngIf="hasErrorMessage" [(value)]="messages" [enableService]="false"></p-messages>
             <span class="text-muted mb-3 d-block">{{ isEditMode ? 'Edit Region Details' : 'Add Region Details' }}.</span>
 
-            <div class="mb-3 row">
-              <label for="regionEn" class="col-sm-3 col-form-label">Name (English)</label>
-              <div class="col-sm-9">
-                <input pInputText id="regionEn" class="form-control" [(ngModel)]="newRegionEn" name="regionEn" autocomplete="off" />
+            <form [formGroup]="regionForm">
+              <div class="mb-3 row">
+                <label for="regionEn" class="col-sm-3 col-form-label">Name (English)</label>
+                <div class="col-sm-9">
+                  <input pInputText id="regionEn" class="form-control" formControlName="regionEn" autocomplete="off" />
+                  <div *ngIf="regionEn?.invalid && (regionEn?.dirty || regionEn?.touched)">
+                    <div *ngIf="regionEn?.errors?.required" class="text-danger">
+                      English Name is required.
+                    </div>
+                    <div *ngIf="regionEn?.errors?.serverError" class="text-danger">
+                      {{ regionEn?.errors?.serverError }}
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
 
-            <div class="mb-3 row">
-              <label for="regionAr" class="col-sm-3 col-form-label">Name (Arabic)</label>
-              <div class="col-sm-9">
-                <input pInputText id="regionAr" class="form-control" [(ngModel)]="newRegionAr" name="regionAr" autocomplete="off" />
+              <div class="mb-3 row">
+                <label for="regionAr" class="col-sm-3 col-form-label">Name (Arabic)</label>
+                <div class="col-sm-9">
+                  <input pInputText id="regionAr" class="form-control" formControlName="regionAr" autocomplete="off" />
+                  <div *ngIf="regionAr?.invalid && (regionAr?.dirty || regionAr?.touched)">
+                    <div *ngIf="regionAr?.errors?.required" class="text-danger">
+                      Arabic Name is required.
+                    </div>
+                    <div *ngIf="regionAr?.errors?.serverError" class="text-danger">
+                      {{ regionAr?.errors?.serverError }}
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
+            </form>
 
             <div class="d-flex justify-content-end gap-2">
-              <button [disabled]="!newRegionAr || !newRegionEn" (click)="submit()" class="btn btn-primary btn-sm">
-                Save
+              <button
+                type="submit"
+                [disabled]="regionForm.invalid || (isLoading$ | async)" (click)="submit()" class="btn btn-primary btn-sm"
+              >
+                <ng-container *ngIf="(isLoading$ | async) === false">
+                  <span class="indicator-label">Save</span>
+                </ng-container>
+                <ng-container *ngIf="isLoading$ | async">
+                  <span class="indicator-progress" [style.display]="'block'">
+                    Please wait
+                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                  </span>
+                </ng-container>
               </button>
-              <button (click)="visible = false" class="btn btn-outline-secondary btn-sm">
+              <button (click)="onCancel()" class="btn btn-outline-secondary btn-sm">
                 Cancel
               </button>
             </div>
@@ -51,6 +78,8 @@
       </div>
     </div>
   </div>
+
+  <ng-container *ngIf="(isLoading$ | async) === false && listOfRegions.length >0">
 
   <div id="kt_app_content" class="app-content flex-column-fluid">
     <div id="kt_app_content_container" class="app-container container-fluid">
@@ -126,3 +155,9 @@
     </div>
   </div>
 </ng-container>
+<ng-container *ngIf="(isLoading$ | async) === false && listOfRegions.length ===0">
+  <div class="d-flex align-items-center justify-content-center h-400px text-muted">
+    No Available Data
+  </div>
+  </ng-container>
+  
