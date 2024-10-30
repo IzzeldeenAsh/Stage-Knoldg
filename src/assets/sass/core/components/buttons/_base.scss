@@ -27,6 +27,9 @@
 		&.btn-sm {
 			padding: calc(#{$btn-padding-y-sm} + #{$btn-border-width}) calc(#{$btn-padding-x-sm} + #{$btn-border-width});
 		}
+		&.btn-md {
+			padding: calc(#{$btn-padding-y-md} + #{$btn-border-width}) calc(#{$btn-padding-x-sm} + #{$btn-border-width});
+		}
 	}
 
 	// Link

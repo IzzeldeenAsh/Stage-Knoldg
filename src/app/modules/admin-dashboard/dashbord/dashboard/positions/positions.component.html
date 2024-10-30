@@ -16,10 +16,7 @@
         </div>
 
         <div class="d-flex align-items-center gap-2 gap-lg-3">
-          <a (click)="showDialog()" class="btn btn-sm btn-flex btn-primary">
-            <i class="ki-outline ki-plus text-white fs-4"></i>
-            Create
-          </a>
+       
           <p-dialog [header]="isEditMode ? 'Edit Position' : 'Add Position'" [modal]="true" [(visible)]="visible" [style]="{ width: '40rem' }">
             <p-messages *ngIf="hasErrorMessage" [(value)]="messages" [enableService]="false"></p-messages>
             <span class="text-muted mb-3 d-block">{{ isEditMode ? 'Edit Position Details' : 'Add Position Details' }}.</span>
@@ -80,7 +77,7 @@
       </div>
     </div>
   </div>
-  <ng-container *ngIf="(isLoading$ | async) === false && listOfPositions.length >0">
+
   <div id="kt_app_content" class="app-content flex-column-fluid">
     <div id="kt_app_content_container" class="app-container container-fluid">
       <div class="card">
@@ -91,7 +88,7 @@
               <input
                 type="text"
                 pInputText
-                class="form-control form-control-solid w-250px ps-12"
+                class="form-control  w-250px ps-12"
                 placeholder="Search Positions"
                 (input)="applyFilter($event)"
               />
@@ -99,18 +96,15 @@
           </div>
 
           <div class="card-toolbar">
-            <div class="d-flex justify-content-end align-items-center d-none" data-kt-customer-table-toolbar="selected">
-              <div class="fw-bold me-5">
-                <span class="me-2" data-kt-customer-table-select="selected_count"></span> Selected
-              </div>
-              <button type="button" class="btn btn-danger" data-kt-customer-table-select="delete_selected">
-                Delete Selected
-              </button>
-            </div>
+            <a (click)="showDialog()" class="btn btn-md btn-flex btn-primary">
+              <i class="ki-outline ki-plus text-white fs-4"></i>
+              Create
+            </a>
           </div>
         </div>
 
         <div class="card-body pt-0">
+          <ng-container *ngIf="(isLoading$ | async) === false && listOfPositions.length >0">
           <p-messages *ngIf="hasSuccessMessage" [(value)]="messages" [enableService]="false"></p-messages>
           <p-table
             #dt
@@ -118,7 +112,7 @@
             [paginator]="false"
             [rows]="10"
             [globalFilterFields]="['name', 'names.en', 'names.ar']"
-            class="table-striped"
+            class="table-p"
           >
             <ng-template pTemplate="header">
               <tr>
@@ -157,11 +151,12 @@
               </tr>
             </ng-template>
           </p-table>
+        </ng-container>
         </div>
       </div>
     </div>
   </div>
-</ng-container>
+
 <ng-container *ngIf="(isLoading$ | async) === false && listOfPositions.length ===0">
   <div class="d-flex align-items-center justify-content-center h-400px text-muted">
     No Available Data

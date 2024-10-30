@@ -6,6 +6,7 @@ import { CountriesService, Country } from "src/app/_fake/services/countries/coun
 import { Region, RegionsService } from "src/app/_fake/services/region/regions.service";
 import Swal from 'sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ICountry } from "src/app/_fake/models/country.model";
 
 @Component({
   selector: "app-countries",
@@ -17,13 +18,17 @@ export class CountriesComponent implements OnInit, OnDestroy {
   private unsubscribe: Subscription[] = [];
   listOfCountries: Country[] = [];
   filteredCountries: Country[] = [];
+  selectedStatus: string | null = null; 
   isEditMode: boolean = false;
   isLoading$: Observable<boolean>;
+  noOfActiveCountries:number= 0;
+  noOfInactiveCountries:number= 0;
   selectedCountryId: number | null = null;
   visible: boolean = false;
   regionOptions: { label: string, value: number }[] = [];
-  selectedRegionId: number | null = null;
+  selectedRegionId: number | null = 0;
   statusOptions = [
+    { label: 'All Statuses', value: null },
     { label: 'Active', value: 'Active' },
     { label: 'Inactive', value: 'Inactive' }
   ];
@@ -60,6 +65,14 @@ export class CountriesComponent implements OnInit, OnDestroy {
       nationalityAr: ['', Validators.required],
       status: ['Active', Validators.required],
       flag: ['', Validators.required]
+    });
+  }
+
+  filterCountries() {
+    this.filteredCountries = this.listOfCountries.filter(country => {
+      const matchesRegion = this.selectedRegionId ? country.region_id === this.selectedRegionId : true;
+      const matchesStatus = this.selectedStatus ? country.status === this.selectedStatus : true;
+      return matchesRegion && matchesStatus;
     });
   }
 
@@ -111,6 +124,8 @@ export class CountriesComponent implements OnInit, OnDestroy {
     const listSub = this.countriesService.getCountries().subscribe({
       next: (data: Country[]) => {
         this.listOfCountries = data;
+        this.noOfActiveCountries = this.listOfCountries.filter((country:any)=> country.status ==='Active').length
+        this.noOfInactiveCountries = this.listOfCountries.filter((country:any)=> country.status ==='Inactive').length
         this.filteredCountries = [...this.listOfCountries];
         this.cdr.detectChanges();
       },

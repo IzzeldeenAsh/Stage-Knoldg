@@ -286,3 +286,16 @@ color: #017BFE !important;
 .p-paginator .p-paginator-pages .p-paginator-page:not(.p-highlight):hover {
     border-radius: 10px !important;
     }
+  
+    .table-p td , .table-p th{
+        border: 1px solid #F1F1F4 !important;
+        color: #4B5675  !important;
+        font-weight: 500 !important;
+        line-height: 1.25rem !important;
+    }
+    .border-success{
+        border: 1px solid var(--bs-success);
+    }
+    .border-danger{
+        border: 1px solid var(--bs-danger);
+    }
