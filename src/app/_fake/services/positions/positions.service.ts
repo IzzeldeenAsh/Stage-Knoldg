@@ -38,29 +38,7 @@ export class PositionsService {
   }
 
   private handleError(error: any) {
-    console.log('Error from service', error.error.errors);
-
-    let validationErrors: any[] = [];
-
-    if (error.error.errors) {
-      const errors = error.error.errors;
-      for (const field in errors) {
-        if (errors.hasOwnProperty(field)) {
-          const errorMsgArray = errors[field];
-          errorMsgArray.forEach((msg: string) => {
-            validationErrors.push({
-              severity: 'error',
-              summary: 'Validation Error',
-              detail: msg
-            });
-          });
-        }
-      }
-    }
-
-    return throwError(() => ({
-      validationMessages: validationErrors
-    }));
+    return throwError(error);
   }
 
   getPositions(): Observable<Position[]> {

@@ -3,9 +3,10 @@ import { Message } from "primeng/api";
 import { Table } from "primeng/table"; // Import PrimeNG table
 import { Observable, Subscription } from "rxjs";
 import Swal from 'sweetalert2';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MessageService } from 'primeng/api';
 import {
   Department,
-  DepartmentResponse,
   DepartmentsService,
 } from "src/app/_fake/services/department/departments.service";
 
@@ -22,36 +23,78 @@ export class DepartmentComponent implements OnInit {
   isLoading$: Observable<boolean>;
   selectedDepartmentId: number | null = null; // Holds the ID of the department being edited
   visible: boolean = false;
-  newDepartmentAr:string =''
-  newDepartmentEn:string =''
+  departmentForm: FormGroup;
+  //
   constructor(
     private _departments: DepartmentsService,
-    private cdr : ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private fb: FormBuilder, // Inject FormBuilder
+    private messageService: MessageService // Inject MessageService
   
   ) {
     this.isLoading$ = this._departments.isLoading$;
   }
   ngOnInit(): void {
+    this.departmentForm = this.fb.group({
+      arabicName: ['', Validators.required],
+      englishName: ['', Validators.required]
+    });
+    
     this.getDepartmentsList();
   }
 
 
   showDialog() {
     this.visible = true;
-    this.newDepartmentEn = '';
-    this.newDepartmentAr = '';
     this.selectedDepartmentId = null; // Reset selected department ID for create
     this.isEditMode = false; // Set to false when adding a new department
+    this.departmentForm.reset(); // Reset the form
   }
 
   editDepartment(department: Department) {
     this.visible = true; // Open dialog
-    this.newDepartmentEn = department.names.en;
-    this.newDepartmentAr = department.names.ar;
     this.selectedDepartmentId = department.id; // Set the ID for update
     this.isEditMode = true; // Set to true for editing mode
+    this.departmentForm.patchValue({
+      arabicName: department.names.ar,
+      englishName: department.names.en
+    });
   }
 
+  private handleServerErrors(error: any) {
+    if (error.error && error.error.errors) {
+      const serverErrors = error.error.errors;
+      const errorKeyToFormControlName:any = {
+        'name.en': 'englishName',
+        'name.ar': 'arabicName'
+      };
+  
+      for (const key in serverErrors) {
+        if (serverErrors.hasOwnProperty(key)) {
+          const messages = serverErrors[key];
+          const formControlName = errorKeyToFormControlName[key];
+          if (formControlName) {
+            const control = this.departmentForm.get(formControlName);
+            if (control) {
+              // Set the server error on the control
+              control.setErrors({ serverError: messages[0] }); // Use messages[0] or combine messages as needed
+              control.markAsTouched(); // Mark as touched to display the error
+            }
+          } else {
+            // If the error doesn't map to a form control, add it to general messages
+            this.messages.push({ severity: 'error', summary: '', detail: messages.join(', ') });
+          }
+        }
+      }
+    } else {
+      // Handle non-validation errors
+      this.messages.push({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'An unexpected error occurred.'
+      });
+    }
+  }
   
 
   getDepartmentsList() {
@@ -93,75 +136,101 @@ export class DepartmentComponent implements OnInit {
    get hasErrorMessage() {
     return this.messages.some(msg => msg.severity === 'error');
   }
-
+  onCancel() {
+    this.visible = false;
+    this.departmentForm.reset();
+  }
+  get arabicName() {
+    return this.departmentForm.get('arabicName');
+  }
+  
+  get englishName() {
+    return this.departmentForm.get('englishName');
+  }
   submit() {
-    this.messages=[]
+    this.messages = [];
+  
+    if (this.departmentForm.invalid) {
+      // Mark all controls as touched to trigger validation messages
+      this.departmentForm.markAllAsTouched();
+      return;
+    }
+  
+    const formValues = this.departmentForm.value;
+  
     if (this.selectedDepartmentId) {
       // Update the department if an ID exists
       const updatedData = {
         name: {
-          en: this.newDepartmentEn,
-          ar: this.newDepartmentAr
+          en: formValues.englishName,
+          ar: formValues.arabicName
         }
       };
-
-     const updateSub= this._departments.updateDepartment(this.selectedDepartmentId, updatedData).subscribe({
+  
+      const updateSub = this._departments.updateDepartment(this.selectedDepartmentId, updatedData).subscribe({
         next: (res: Department) => {
-          this.messages.push({
+          // this.messages.push({
+          //   severity: 'success',
+          //   summary: 'Success',
+          //   detail: 'Department updated successfully.'
+          // });
+          this.messageService.add({
             severity: 'success',
             summary: 'Success',
-            detail: 'Department updated successfully.'
+            detail: 'Department updated successfully.',
+             // or just omit this line
           });
           this.getDepartmentsList(); // Refresh the list after updating
           this.visible = false; // Close the dialog
+          this.departmentForm.reset(); // Reset the form
         },
         error: (error) => {
-          this.messages = error.validationMessages || [{
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Failed to update department.'
-          }];
-          this.visible = false; // Close the dialog
+          this.handleServerErrors(error);
         }
       });
-
+  
       this.unsubscribe.push(updateSub)
     } else {
       // Create a new department if no ID exists
       const newDepartment: any = {
         name: {
-          en: this.newDepartmentEn,
-          ar: this.newDepartmentAr
+          en: formValues.englishName,
+          ar: formValues.arabicName
         }
       };
-
-   const createSub =    this._departments.createDepartment(newDepartment).subscribe({
+  
+      const createSub = this._departments.createDepartment(newDepartment).subscribe({
         next: (res: any) => {
-          this.messages.push({
+          // this.messages.push({
+          //   severity: 'success',
+          //   summary: 'Success',
+          //   detail: 'Department created successfully.'
+          // });
+          this.messageService.add({
             severity: 'success',
             summary: 'Success',
-            detail: 'Department created successfully.'
+            detail: 'Department created successfully.',
+             // or just omit this line
           });
           this.getDepartmentsList(); // Refresh the list after creating
           this.visible = false; // Close the dialog
+          this.departmentForm.reset(); // Reset the form
         },
         error: (error) => {
-          this.messages = error.validationMessages || [{
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Failed to create department.'
-          }];
+          this.handleServerErrors(error);
         }
       });
-
+  
       this.unsubscribe.push(createSub)
     }
   }
+  
 
    // Example delete department method
    deleteDepartment(departmentId: number) {
     // Use SweetAlert2 for confirmation
-    this.messages=[]
+    this.messages=[];
+    console.log("this.messages",this.messages);
     Swal.fire({
       title: 'Are you sure?',
       text: 'Do you want to delete this department? This action cannot be undone.',
@@ -176,19 +245,21 @@ export class DepartmentComponent implements OnInit {
         // If user confirms, proceed with the deletion
         const deleteSub = this._departments.deleteDepartment(departmentId).subscribe({
           next: (res: any) => {
-            this.messages.push({
+            // this.messages.push({
+            //   severity: 'success',
+            //   summary: 'Success',
+            //   detail: 'Department deleted successfully.'
+            // });
+            this.messageService.add({
               severity: 'success',
               summary: 'Success',
-              detail: 'Department deleted successfully.'
+              detail: 'Department created successfully.',
+               // or just omit this line
             });
             this.getDepartmentsList(); // Refresh the department list after deletion
           },
           error: (error) => {
-            this.messages = error.validationMessages || [{
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Failed to delete department.'
-            }];
+            this.handleServerErrors(error);
           }
         });
       }

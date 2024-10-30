@@ -4,7 +4,7 @@ mode="indeterminate"
 [style]="{ height: '4px' }"
 />
 
-<ng-container *ngIf="(isLoading$ | async) ===false">
+
 <div id="kt_app_toolbar" class="app-toolbar pt-10 mb-0">
   <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex align-items-stretch">
     <div class="app-toolbar-wrapper d-flex flex-stack flex-wrap gap-4 w-100">
@@ -23,35 +23,72 @@ mode="indeterminate"
         <p-dialog [header]="isEditMode ? 'Edit Department' : 'Add Department'" [modal]="true" [(visible)]="visible" [style]="{ width: '40rem' }">
           <p-messages *ngIf="hasErrorMessage" [(value)]="messages" [enableService]="false"></p-messages>
           <span class="text-muted mb-3 d-block">{{ isEditMode ? 'Edit Department Details' : 'Add Department Details' }}.</span>
-          <div class="mb-3 row">
-            <label for="arabicName" class="col-sm-3 col-form-label">Arabic Name</label>
-            <div class="col-sm-9">
-              <input pInputText id="arabicName" class="form-control" [(ngModel)]="newDepartmentAr" name="arabicName" autocomplete="off" />
-            </div>
-          </div>
         
-          <div class="mb-3 row">
-            <label for="englishName" class="col-sm-3 col-form-label">English Name</label>
-            <div class="col-sm-9">
-              <input pInputText id="englishName" class="form-control" [(ngModel)]="newDepartmentEn" name="englishName" autocomplete="off" />
+          <form [formGroup]="departmentForm">
+            <div class="mb-3 row">
+              <label for="arabicName" class="col-sm-3 col-form-label">Arabic Name</label>
+              <div class="col-sm-9">
+                <input pInputText id="arabicName" class="form-control" formControlName="arabicName" autocomplete="off" />
+                <div *ngIf="arabicName && arabicName.errors && (arabicName.touched || arabicName.dirty)">
+                  <div *ngIf="arabicName.errors['required']" class="text-danger">
+                    Arabic Name is required.
+                  </div>
+                  <div *ngIf="arabicName.errors['serverError']" class="text-danger">
+                    {{ arabicName.errors['serverError'] }}
+                  </div>
+                </div>
+                
+              </div>
             </div>
-          </div>
+        
+            <div class="mb-3 row">
+              <label for="englishName" class="col-sm-3 col-form-label">English Name</label>
+              <div class="col-sm-9">
+                <input pInputText id="englishName" class="form-control" formControlName="englishName" autocomplete="off" />
+                <div *ngIf="englishName && englishName.errors && (englishName.touched || englishName.dirty)">
+                  <div *ngIf="englishName.errors['required']" class="text-danger">
+                    English Name is required.
+                  </div>
+                  <div *ngIf="englishName.errors['serverError']" class="text-danger">
+                    {{ englishName.errors['serverError'] }}
+                  </div>
+                </div>
+                
+              </div>
+            </div>
+          </form>
         
           <div class="d-flex justify-content-end gap-2">
-            <button [disabled]="!newDepartmentAr || !newDepartmentEn" (click)="submit()" class="btn btn-primary btn-sm">
-              Save
-            </button>
-            <button (click)="visible = false" class="btn btn-outline-secondary btn-sm">
+            
+            <button
+            type="submit"
+            [disabled]="departmentForm.invalid || (isLoading$ | async)" (click)="submit()" class="btn btn-primary btn-sm"
+          >
+            <ng-container *ngIf="(isLoading$ | async) === false">
+              <span class="indicator-label">Save</span>
+            </ng-container>
+            <ng-container *ngIf="isLoading$ | async">
+              <span class="indicator-progress" [style.display]="'block'">
+              Please wait
+                <span
+                  class="spinner-border spinner-border-sm align-middle ms-2"
+                ></span>
+              </span>
+            </ng-container>
+          </button>
+            <button (click)="onCancel()" class="btn btn-outline-secondary btn-sm">
               Cancel
             </button>
           </div>
         </p-dialog>
+        
       </div>
       <!--end::Actions-->
     </div>
   </div>
 </div>
 
+<ng-container *ngIf="(isLoading$ | async) ===false && listOfDepartments.length >0">
 <div id="kt_app_content" class="app-content flex-column-fluid">
   <div id="kt_app_content_container" class="app-container container-fluid">
     <div class="card">
@@ -74,7 +111,6 @@ mode="indeterminate"
           </div>
         </div>
       </div>
-
       <div class="card-body pt-0">
         <!-- Add #dt reference here -->
         <p-messages *ngIf="hasSuccessMessage" [(value)]="messages" [enableService]="false"></p-messages>
@@ -110,3 +146,9 @@ mode="indeterminate"
   </div>
 </div>
 </ng-container>
+<ng-container *ngIf="(isLoading$ | async) === false && listOfDepartments.length ===0">
+  <div class="d-flex align-items-center justify-content-center h-400px text-muted">
+    No Available Data
+  </div>
+  </ng-container>
+  

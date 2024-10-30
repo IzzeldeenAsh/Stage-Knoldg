@@ -40,7 +40,6 @@ export class DashboardSideBarComponent implements OnInit {
       const user = res
       this.username = user?.name;
       this.roles = user?.roles  ? user?.roles : [];
-      console.log('usre',user);
     })
   }
   signOut(){

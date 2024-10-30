@@ -21,7 +21,7 @@ export interface Country {
     en: string;
     ar: string;
   };
-  status:string;
+  status: string;
 }
 
 @Injectable({
@@ -49,32 +49,10 @@ export class CountriesService {
   }
 
   private handleError(error: any) {
-    console.log('Error from service', error.error.errors);
-
-    let validationErrors: any[] = [];
-
-    if (error.error.errors) {
-      const errors = error.error.errors;
-      for (const field in errors) {
-        if (errors.hasOwnProperty(field)) {
-          const errorMsgArray = errors[field];
-          errorMsgArray.forEach((msg: string) => {
-            validationErrors.push({
-              severity: 'error',
-              summary: 'Validation Error',
-              detail: msg
-            });
-          });
-        }
-      }
-    }
-
-    return throwError(() => ({
-      validationMessages: validationErrors
-    }));
+    return throwError(error);
   }
 
-  getCountries(apiUrl: string = this.apiUrl): Observable<Country[]> {
+  getCountries(): Observable<Country[]> {
     const headers = new HttpHeaders({
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -82,7 +60,7 @@ export class CountriesService {
     });
   
     this.setLoading(true);
-    return this.http.get<any>(apiUrl, { headers }).pipe(
+    return this.http.get<any>(this.apiUrl, { headers }).pipe(
       map(res => res.data),
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))

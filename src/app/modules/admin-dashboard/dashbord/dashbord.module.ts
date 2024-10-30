@@ -15,13 +15,15 @@ import { InputTextModule } from 'primeng/inputtext';
 import { MessagesModule } from 'primeng/messages';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TooltipModule } from 'primeng/tooltip';
 import { PositionsComponent } from './dashboard/positions/positions.component';
 import { CountriesComponent } from './dashboard/countries/countries.component';
 import { RegionsComponent } from './dashboard/regions/regions.component';
 import { DropdownModule } from 'primeng/dropdown';
 import { ConsultingFieldsComponent } from './dashboard/consulting-fields/consulting-fields.component';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 @NgModule({
   declarations: [
     DashboardComponent,
@@ -44,11 +46,15 @@ import { ConsultingFieldsComponent } from './dashboard/consulting-fields/consult
     DropdownModule,
     InputTextModule,
     FormsModule,
+    ReactiveFormsModule,
     CardModule,
+    ToastModule,
     MessagesModule,
     TableModule,
     NgApexchartsModule,
     
 ]
+,providers:[MessageService]
+
 })
 export class DashbordModule { }

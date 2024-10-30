@@ -4,7 +4,7 @@
   [style]="{ height: '4px' }"
 ></p-progressBar>
 
-<ng-container *ngIf="(isLoading$ | async) === false">
+
   <div id="kt_app_toolbar" class="app-toolbar pt-10 mb-0">
     <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex align-items-stretch">
       <div class="app-toolbar-wrapper d-flex flex-stack flex-wrap gap-4 w-100">
@@ -24,86 +24,185 @@
             <p-messages *ngIf="hasErrorMessage" [(value)]="messages" [enableService]="false"></p-messages>
             <span class="text-muted mb-3 d-block">{{ isEditMode ? 'Edit Country Details' : 'Add Country Details' }}.</span>
         
-            <!-- Country Name Fields -->
-            <div class="mb-3 row">
-              <label for="countryEn" class="col-sm-3 col-form-label">Name (English)</label>
-              <div class="col-sm-3">
-                  <input pInputText id="countryEn" class="form-control" [(ngModel)]="newCountryEn" name="countryEn" autocomplete="off" />
+            <form [formGroup]="countryForm">
+              <!-- Country Name Fields -->
+              <div class="mb-3">
+                  <label for="countryEn" class="form-label">Name (English)</label>
+                  <input pInputText id="countryEn" class="form-control" formControlName="countryEn" autocomplete="off" />
+                  <div *ngIf="countryEn?.invalid && (countryEn?.dirty || countryEn?.touched)">
+                      <div *ngIf="countryEn?.errors?.required" class="text-danger">
+                          English Name is required.
+                      </div>
+                      <div *ngIf="countryEn?.errors?.serverError" class="text-danger">
+                          {{ countryEn?.errors?.serverError }}
+                      </div>
+                  </div>
               </div>
-              <label for="countryAr" class="col-sm-3 col-form-label">Name (Arabic)</label>
-              <div class="col-sm-3">
-                  <input pInputText id="countryAr" class="form-control" [(ngModel)]="newCountryAr" name="countryAr" autocomplete="off" />
+          
+              <div class="mb-3">
+                  <label for="countryAr" class="form-label">Name (Arabic)</label>
+                  <input pInputText id="countryAr" class="form-control" formControlName="countryAr" autocomplete="off" />
+                  <div *ngIf="countryAr?.invalid && (countryAr?.dirty || countryAr?.touched)">
+                      <div *ngIf="countryAr?.errors?.required" class="text-danger">
+                          Arabic Name is required.
+                      </div>
+                      <div *ngIf="countryAr?.errors?.serverError" class="text-danger">
+                          {{ countryAr?.errors?.serverError }}
+                      </div>
+                  </div>
               </div>
-          </div>
-        
-            <!-- Region ID and International Code in the same row -->
-            <div class="mb-3 row">
-                <label for="regionId" class="col-sm-3 col-form-label">Region ID</label>
-                <div class="col-sm-3">
-                    <input pInputText id="regionId" class="form-control" [(ngModel)]="newRegionId" name="regionId" autocomplete="off" />
-                </div>
-                <label for="internationalCode" class="col-sm-3 col-form-label">International Code</label>
-                <div class="col-sm-3">
-                    <input pInputText id="internationalCode" class="form-control" [(ngModel)]="newInternationalCode" name="internationalCode" autocomplete="off" />
-                </div>
-            </div>
-        
-            <!-- ISO2 and ISO3 in the same row -->
-            <div class="mb-3 row">
-                <label for="iso2" class="col-sm-3 col-form-label">ISO2</label>
-                <div class="col-sm-3">
-                    <input pInputText id="iso2" class="form-control" [(ngModel)]="newIso2" name="iso2" autocomplete="off" />
-                </div>
-                <label for="iso3" class="col-sm-3 col-form-label">ISO3</label>
-                <div class="col-sm-3">
-                    <input pInputText id="iso3" class="form-control" [(ngModel)]="newIso3" name="iso3" autocomplete="off" />
-                </div>
-            </div>
-        
-            <!-- Nationality Fields in the same row -->
-            <div class="mb-3 row">
-                <label for="nationalityEn" class="col-sm-3 col-form-label">Nationality (English)</label>
-                <div class="col-sm-3">
-                    <input pInputText id="nationalityEn" class="form-control" [(ngModel)]="newNationalityEn" name="nationalityEn" autocomplete="off" />
-                </div>
-                <label for="nationalityAr" class="col-sm-3 col-form-label">Nationality (Arabic)</label>
-                <div class="col-sm-3">
-                    <input pInputText id="nationalityAr" class="form-control" [(ngModel)]="newNationalityAr" name="nationalityAr" autocomplete="off" />
-                </div>
-            </div>
-        
-            <!-- Status and Flag in the same row -->
-            <div class="mb-3 row">
-                <label for="status" class="col-sm-3 col-form-label">Status</label>
-                <div class="col-sm-3">
-                    <p-dropdown 
+          
+              <!-- Region ID -->
+              <div class="mb-3">
+                  <label for="regionId" class="form-label">Region</label>
+                  <p-dropdown 
+                      id="regionId"
+                      formControlName="regionId"
+                      [options]="regionOptions"
+                      placeholder="Select Region"
+                      appendTo="body">
+                  </p-dropdown>
+                  <div *ngIf="regionId?.invalid && (regionId?.dirty || regionId?.touched)">
+                      <div *ngIf="regionId?.errors?.required" class="text-danger">
+                          Region is required.
+                      </div>
+                      <div *ngIf="regionId?.errors?.serverError" class="text-danger">
+                          {{ regionId?.errors?.serverError }}
+                      </div>
+                  </div>
+              </div>
+          
+              <!-- International Code -->
+              <div class="mb-3">
+                  <label for="internationalCode" class="form-label">International Code</label>
+                  <input pInputText id="internationalCode" class="form-control" formControlName="internationalCode" autocomplete="off" />
+                  <div *ngIf="internationalCode?.invalid && (internationalCode?.dirty || internationalCode?.touched)">
+                      <div *ngIf="internationalCode?.errors?.required" class="text-danger">
+                          International Code is required.
+                      </div>
+                      <div *ngIf="internationalCode?.errors?.serverError" class="text-danger">
+                          {{ internationalCode?.errors?.serverError }}
+                      </div>
+                  </div>
+              </div>
+          
+              <!-- ISO2 -->
+              <div class="mb-3">
+                  <label for="iso2" class="form-label">ISO2</label>
+                  <input pInputText id="iso2" class="form-control" formControlName="iso2" autocomplete="off" />
+                  <div *ngIf="iso2?.invalid && (iso2?.dirty || iso2?.touched)">
+                      <div *ngIf="iso2?.errors?.required" class="text-danger">
+                          ISO2 is required.
+                      </div>
+                      <div *ngIf="iso2?.errors?.serverError" class="text-danger">
+                          {{ iso2?.errors?.serverError }}
+                      </div>
+                  </div>
+              </div>
+          
+              <!-- ISO3 -->
+              <div class="mb-3">
+                  <label for="iso3" class="form-label">ISO3</label>
+                  <input pInputText id="iso3" class="form-control" formControlName="iso3" autocomplete="off" />
+                  <div *ngIf="iso3?.invalid && (iso3?.dirty || iso3?.touched)">
+                      <div *ngIf="iso3?.errors?.required" class="text-danger">
+                          ISO3 is required.
+                      </div>
+                      <div *ngIf="iso3?.errors?.serverError" class="text-danger">
+                          {{ iso3?.errors?.serverError }}
+                      </div>
+                  </div>
+              </div>
+          
+              <!-- Nationality (English) -->
+              <div class="mb-3">
+                  <label for="nationalityEn" class="form-label">Nationality (English)</label>
+                  <input pInputText id="nationalityEn" class="form-control" formControlName="nationalityEn" autocomplete="off" />
+                  <div *ngIf="nationalityEn?.invalid && (nationalityEn?.dirty || nationalityEn?.touched)">
+                      <div *ngIf="nationalityEn?.errors?.required" class="text-danger">
+                          Nationality (English) is required.
+                      </div>
+                      <div *ngIf="nationalityEn?.errors?.serverError" class="text-danger">
+                          {{ nationalityEn?.errors?.serverError }}
+                      </div>
+                  </div>
+              </div>
+          
+              <!-- Nationality (Arabic) -->
+              <div class="mb-3">
+                  <label for="nationalityAr" class="form-label">Nationality (Arabic)</label>
+                  <input pInputText id="nationalityAr" class="form-control" formControlName="nationalityAr" autocomplete="off" />
+                  <div *ngIf="nationalityAr?.invalid && (nationalityAr?.dirty || nationalityAr?.touched)">
+                      <div *ngIf="nationalityAr?.errors?.required" class="text-danger">
+                          Nationality (Arabic) is required.
+                      </div>
+                      <div *ngIf="nationalityAr?.errors?.serverError" class="text-danger">
+                          {{ nationalityAr?.errors?.serverError }}
+                      </div>
+                  </div>
+              </div>
+          
+              <!-- Status -->
+              <div class="mb-3">
+                  <label for="status" class="form-label">Status</label>
+                  <p-dropdown 
+                      id="status" 
                       [options]="statusOptions" 
-                      [(ngModel)]="newStatus" 
-                      name="status"
+                      formControlName="status"
                       class="form-p-control"
                       appendTo="body"
                       placeholder="Select Status">
-                      
-                    </p-dropdown>
-                </div>
-                <label for="flag" class="col-sm-3 col-form-label">Flag</label>
-                <div class="col-sm-3">
-                    <input pInputText id="flag" class="form-control" [(ngModel)]="newFlag" name="flag" autocomplete="off" />
-                </div>
-            </div>
+                  </p-dropdown>
+                  <div *ngIf="status?.invalid && (status?.dirty || status?.touched)">
+                      <div *ngIf="status?.errors?.required" class="text-danger">
+                          Status is required.
+                      </div>
+                      <div *ngIf="status?.errors?.serverError" class="text-danger">
+                          {{ status?.errors?.serverError }}
+                      </div>
+                  </div>
+              </div>
+          
+              <!-- Flag -->
+              <div class="mb-3">
+                  <label for="flag" class="form-label">Flag</label>
+                  <input pInputText id="flag" class="form-control" formControlName="flag" autocomplete="off" />
+                  <div *ngIf="flag?.invalid && (flag?.dirty || flag?.touched)">
+                      <div *ngIf="flag?.errors?.required" class="text-danger">
+                          Flag is required.
+                      </div>
+                      <div *ngIf="flag?.errors?.serverError" class="text-danger">
+                          {{ flag?.errors?.serverError }}
+                      </div>
+                  </div>
+              </div>
+          </form>
+          
         
             <!-- Action Buttons -->
             <div class="d-flex justify-content-end gap-2">
-                <button [disabled]="!newRegionId || !newIso2 || !newIso3 || !newCountryAr || !newCountryEn || !newFlag || !newInternationalCode || !newNationalityAr || !newNationalityEn || !newStatus" (click)="submit()" class="btn btn-primary btn-sm">Save</button>
-                <button (click)="visible = false" class="btn btn-outline-secondary btn-sm">Cancel</button>
+              <button
+                type="submit"
+                [disabled]="countryForm.invalid || (isLoading$ | async)" (click)="submit()" class="btn btn-primary btn-sm"
+              >
+                <ng-container *ngIf="(isLoading$ | async) === false">
+                  <span class="indicator-label">Save</span>
+                </ng-container>
+                <ng-container *ngIf="isLoading$ | async">
+                  <span class="indicator-progress" [style.display]="'block'">
+                    Please wait
+                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                  </span>
+                </ng-container>
+              </button>
+              <button (click)="onCancel()" class="btn btn-outline-secondary btn-sm">Cancel</button>
             </div>
-        </p-dialog>
-        
+          </p-dialog>
         </div>
       </div>
     </div>
   </div>
-
+  <ng-container *ngIf="(isLoading$ | async) === false  && listOfCountries.length >0"  >
   <div id="kt_app_content" class="app-content flex-column-fluid">
     <div id="kt_app_content_container" class="app-container container-fluid">
       <div class="card">
@@ -140,7 +239,7 @@
 
           <p-table
             #dt
-            [value]="filteredCountires"
+            [value]="filteredCountries"
             [paginator]="true"
             [rows]="10"
             [globalFilterFields]="['name', 'names.en', 'names.ar', 'iso2', 'iso3']"
@@ -159,28 +258,26 @@
             </ng-template>
             <ng-template pTemplate="body" let-country>
               <tr>
-                <td>  <div
-                    class="symbol symbol-20px "
-                    data-bs-toggle="tooltip"
-                    data-bs-original-title="Alan Warden"
-                    data-kt-initialized="1"
-                  >
-                  <span
-                  class="symbol-label fw-bold"
-                  [inlineSVG]="'./assets/media/flags/' + country.flag + '.svg'"
-                ></span>
-                
+                <td>
+                  <div class="symbol symbol-20px" data-bs-toggle="tooltip" data-kt-initialized="1">
+                    <span
+                      class="symbol-label fw-bold"
+                      [inlineSVG]="'./assets/media/flags/' + country.flag + '.svg'"
+                    ></span>
                   </div>
                 </td>
                 <td>{{ country.names.en }}</td>
                 <td>{{ country.names.ar }}</td>
                 <td>{{ country.iso2 }}</td>
                 <td>{{ country.iso3 }}</td>
-                <td
-               
-                ><div class="badge fs-8 fw-bold"  [ngClass]="{' badge-light-success ' : country.status==='Active'
-                  , ' badge-light-danger ' : country.status ==='Inactive'
-                }">{{country.status}}</div></td>
+                <td>
+                  <div class="badge fs-8 fw-bold" [ngClass]="{
+                    'badge-light-success': country.status === 'Active',
+                    'badge-light-danger': country.status === 'Inactive'
+                  }">
+                    {{ country.status }}
+                  </div>
+                </td>
                 <td>
                   <a
                     pTooltip="Edit Country"
@@ -210,3 +307,9 @@
     </div>
   </div>
 </ng-container>
+<ng-container *ngIf="(isLoading$ | async) === false && listOfCountries.length ===0">
+  <div class="d-flex align-items-center justify-content-center h-400px text-muted">
+    No Available Data
+  </div>
+  </ng-container>
+  

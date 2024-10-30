@@ -2,14 +2,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { BehaviorSubject, Observable, catchError, finalize, map, throwError } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  catchError,
+  finalize,
+  map,
+  throwError,
+} from 'rxjs';
 import { TranslationService } from 'src/app/modules/i18n/translation.service';
 
 export interface ConsultingField {
   id: number;
-  code: string;
-  isic_code_id: string;
-  status: string;
   name: string;
   names: {
     en: string;
@@ -21,7 +25,7 @@ export interface ConsultingField {
   providedIn: 'root',
 })
 export class ConsultingFieldsService {
-  private apiUrl = 'https://api.4sighta.com/api/common/setting/department/list';
+  private apiUrl = 'https://api.4sighta.com/api/common/setting/consulting-field/list';
   private createApi = 'https://api.4sighta.com/api/admin/setting/consulting-field';
   private updateDeleteApi = 'https://api.4sighta.com/api/admin/setting/consulting-field';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
@@ -42,25 +46,7 @@ export class ConsultingFieldsService {
   }
 
   private handleError(error: any) {
-    console.log('Error from service', error.error.errors);
-
-    let validationErrors: any[] = [];
-
-    if (error.error.errors) {
-      const errors = error.error.errors;
-      for (const field in errors) {
-        if (errors.hasOwnProperty(field)) {
-          const errorMsgArray = errors[field];
-          errorMsgArray.forEach((msg: string) => {
-            validationErrors.push({ severity: 'error', summary: 'Validation Error', detail: msg });
-          });
-        }
-      }
-    }
-
-    return throwError(() => ({
-      validationMessages: validationErrors,
-    }));
+    return throwError(error);
   }
 
   // Fetch consulting fields data from the API
@@ -106,7 +92,9 @@ export class ConsultingFieldsService {
 
     this.setLoading(true);
     return this.http
-      .put<ConsultingField>(`${this.updateDeleteApi}/${consultingFieldId}`, updatedData, { headers })
+      .put<ConsultingField>(`${this.updateDeleteApi}/${consultingFieldId}`, updatedData, {
+        headers,
+      })
       .pipe(
         map((res) => res),
         catchError((error) => this.handleError(error)),

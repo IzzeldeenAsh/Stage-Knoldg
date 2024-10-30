@@ -29,6 +29,7 @@ export class DepartmentsService {
   constructor(
     private http: HttpClient,
     private translationService: TranslationService,
+    
   
   ) {
     this.translationService.onLanguageChange().subscribe(lang=>{
@@ -43,28 +44,7 @@ export class DepartmentsService {
 
   // Your custom handleError method
   private handleError(error: any) {
-    console.log('Error from service', error.error.errors);
-  
-    // Initialize an empty array to hold the formatted error messages
-    let validationErrors: any[] = [];
-  
-    // Check if there are validation errors in the response
-    if (error.error.errors) {
-      const errors = error.error.errors;
-      for (const field in errors) {
-        if (errors.hasOwnProperty(field)) {
-          const errorMsgArray = errors[field];
-          errorMsgArray.forEach((msg: string) => {
-            validationErrors.push({ severity: 'error', summary: 'Validation Error', detail: msg });
-          });
-        }
-      }
-    }
-  
-    // Return the array of validation error messages to the component
-    return throwError(() => ({
-      validationMessages: validationErrors
-    }));
+    return throwError(error);
   }
 
   // Fetch department data from the API
