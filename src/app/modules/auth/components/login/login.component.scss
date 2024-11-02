@@ -9,8 +9,11 @@
         width: 100%;
       }
     }
+   
   }
 }
+
+
 
 .country-item {
   display: flex;
@@ -73,4 +76,14 @@
    z-index: 1; 
    background: none; 
    border: none;
+}
+
+.pt-res-100{
+  padding-top: 180px;
+}
+
+@media screen and (max-width: 992px) {
+  .pt-res-100{
+    padding-top: 50px;
+  }
 }

@@ -12,6 +12,7 @@ import { DepartmentComponent } from './dashboard/departments/departments.compone
 import { TableModule } from 'primeng/table';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
+import { TreeSelectModule } from 'primeng/treeselect';
 import { MessagesModule } from 'primeng/messages';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -24,6 +25,12 @@ import { DropdownModule } from 'primeng/dropdown';
 import { ConsultingFieldsComponent } from './dashboard/consulting-fields/consulting-fields.component';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { TreeTableModule } from 'primeng/treetable';
+import { MessageModule } from 'primeng/message';
+import { ISICCodeManagmentComponent } from './dashboard/isic-code-managment/isic-code-managment.component';
+import { NodeService } from 'src/app/_fake/services/nodeService/nodeservice';
+import { TagsComponent } from './dashboard/tags/tags.component';
+
 @NgModule({
   declarations: [
     DashboardComponent,
@@ -33,8 +40,10 @@ import { ToastModule } from 'primeng/toast';
     CountriesComponent,
     DepartmentComponent,
     ConsultingFieldsComponent,
+    TagsComponent,
+    ISICCodeManagmentComponent,
     RegionsComponent,
-    PositionsComponent
+    PositionsComponent,
   ],
   imports: [
     CommonModule,
@@ -46,15 +55,18 @@ import { ToastModule } from 'primeng/toast';
     DropdownModule,
     InputTextModule,
     FormsModule,
+    TreeSelectModule,
+    TreeTableModule,
     ReactiveFormsModule,
     CardModule,
     ToastModule,
+    MessageModule,
     MessagesModule,
     TableModule,
     NgApexchartsModule,
-    
 ]
-,providers:[MessageService]
+
+,providers:[MessageService,NodeService]
 
 })
 export class DashbordModule { }
