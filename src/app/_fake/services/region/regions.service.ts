@@ -29,7 +29,7 @@ export class RegionsService {
     private translationService: TranslationService
   ) {
     this.translationService.onLanguageChange().subscribe(lang => {
-      this.currentLang = lang;
+      this.currentLang = lang || 'en';;
     });
   }
 

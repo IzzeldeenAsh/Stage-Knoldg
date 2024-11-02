@@ -35,6 +35,7 @@ export class DepartmentComponent implements OnInit {
     this.isLoading$ = this._departments.isLoading$;
   }
   ngOnInit(): void {
+console.log("Step 1");
     this.departmentForm = this.fb.group({
       arabicName: ['', Validators.required],
       englishName: ['', Validators.required]
@@ -98,12 +99,17 @@ export class DepartmentComponent implements OnInit {
   
 
   getDepartmentsList() {
+
+    console.log("Fetching department list...");
+
     const listSub = this._departments.getDepartments().subscribe({
       next: (data: Department[]) => {
+        console.log("Received department data:", data);
         this.listOfDepartments = data;
         this.cdr.detectChanges()
       },
       error: (error) => {
+        console.error("Error fetching departments:", error);
         // Clear the existing messages
         this.messages = [];
 

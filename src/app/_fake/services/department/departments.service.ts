@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable, catchError, finalize, map, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, finalize, map, tap, throwError } from 'rxjs';
 import { TranslationService } from 'src/app/modules/i18n/translation.service';
 
 export interface Department {
@@ -33,7 +33,7 @@ export class DepartmentsService {
   
   ) {
     this.translationService.onLanguageChange().subscribe(lang=>{
-     this.currentLang = lang
+     this.currentLang = lang || 'en';
     })
    
   }
@@ -49,6 +49,7 @@ export class DepartmentsService {
 
   // Fetch department data from the API
   getDepartments(): Observable<any> {
+    console.log("Department List Step2");
     const headers = new HttpHeaders({
       'Accept': 'application/json',
       'Content-Type': 'application/json',
