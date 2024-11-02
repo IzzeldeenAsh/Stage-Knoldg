@@ -1,4 +1,5 @@
 
+
 /* You can add global styles to this file, and also import other style files */
 @import "./assets/sass/style.scss";
 // Replace above style with this css file to enable RTL styles
@@ -287,7 +288,7 @@ color: #017BFE !important;
     border-radius: 10px !important;
     }
   
-    .table-p td , .table-p th{
+    .table-p td , .table-p th , .p-treetable-thead th , .p-treetable-tbody td{
         border: 1px solid #F1F1F4 !important;
         color: #4B5675  !important;
         font-weight: 500 !important;
