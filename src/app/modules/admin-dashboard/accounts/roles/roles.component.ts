@@ -4,11 +4,12 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MessageService, Message } from 'primeng/api';
 import Swal from 'sweetalert2';
 import { Role, RolesService } from 'src/app/_fake/services/role.service';
-
+import { DialogService } from 'primeng/dynamicdialog';
+import { EditPermissionsDialogComponent } from './edit-permissions-dialog/edit-permissions-dialog.component';
 @Component({
   selector: 'app-roles',
   templateUrl: './roles.component.html',
-  styleUrls: ['./roles.component.scss'],
+  styleUrls: ['./roles.component.scss']
 })
 export class RolesComponent implements OnInit, OnDestroy {
   roles: Role[] = [];
@@ -23,7 +24,8 @@ export class RolesComponent implements OnInit, OnDestroy {
   constructor(
     private rolesService: RolesService,
     private fb: FormBuilder,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private dialogService: DialogService // Inject DialogService
   ) {
     this.isLoading$ = this.rolesService.isLoading$;
   }
@@ -39,7 +41,28 @@ export class RolesComponent implements OnInit, OnDestroy {
       description: ['', Validators.required],
     });
   }
+  openEditPermissionsDialog(role: Role) {
+    const ref = this.dialogService.open(EditPermissionsDialogComponent, {
+      header: 'Edit Permissions',
+      width: '50%',
+      data: {
+        roleId: role.id,
+        roleName: role.display_name,
+      },
+    });
 
+    ref.onClose.subscribe((updated) => {
+      if (updated) {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Permissions updated successfully.',
+        });
+        this.getRolesList()
+        // Optionally refresh roles or permissions data
+      }
+    });
+  }
   getRolesList() {
     const rolesSub = this.rolesService.getRoles().subscribe({
       next: (data: Role[]) => {

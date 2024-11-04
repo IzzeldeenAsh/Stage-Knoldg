@@ -4,12 +4,36 @@ import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, finalize, map } from 'rxjs/operators';
 import { TranslationService } from 'src/app/modules/i18n/translation.service';
 
+export interface Department {
+  id: number;
+  code: string;
+  isic_code_id: string;
+  status: string;
+  name: string;
+  names: {
+    en: string;
+    ar: string;
+  };
+}
+
+export interface Position {
+  id: number;
+  name: string;
+  names: {
+    en: string;
+    ar: string;
+  };
+}
+
 export interface Staff {
   id: number;
   name: string;
   email: string;
-  department_id?: number;
-  position_id?: number;
+  roles: string[];
+  department: Department;
+  position: Position;
+  profile_photo_url: string | null;
+  status: string;
 }
 
 @Injectable({
@@ -28,7 +52,7 @@ export class StaffService {
     private translationService: TranslationService
   ) {
     this.translationService.onLanguageChange().subscribe(lang => {
-      this.currentLang = lang || 'en';;
+      this.currentLang = lang || 'en';
     });
   }
 
@@ -71,7 +95,7 @@ export class StaffService {
 
     this.setLoading(true);
     return this.http.get<any>(this.apiUrl, { headers }).pipe(
-      map(res => res.data),
+      map(res => res.data as Staff[]),
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );

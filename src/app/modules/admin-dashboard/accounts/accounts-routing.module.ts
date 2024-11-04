@@ -4,6 +4,7 @@ import { AccountsComponent } from './accounts.component';
 import { StaffComponent } from './staff/staff.component';
 import { RolesComponent } from './roles/roles.component';
 import { PermissionsComponent } from './permissions/permissions.component';
+import { RoleUsersComponent } from './role-users/role-users.component';
 
 const routes: Routes = [
   {
@@ -31,6 +32,10 @@ const routes: Routes = [
       {
         path:'permissions',
         component:PermissionsComponent
+      },
+      {
+        path:'users-roles',
+        component:RoleUsersComponent
       }
     ]
   }

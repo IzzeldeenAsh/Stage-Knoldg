@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import { Staff, StaffService } from "src/app/_fake/services/staff/staff.service";
 import { Department, DepartmentsService } from "src/app/_fake/services/department/departments.service";
 import { Position, PositionsService } from "src/app/_fake/services/positions/positions.service";
+import { RolesService } from "src/app/_fake/services/roles/roles.service";
 
 @Component({
   selector: 'app-staff',
@@ -33,6 +34,7 @@ export class StaffComponent implements OnInit, OnDestroy {
     private staffService: StaffService,
     private departmentsService: DepartmentsService,
     private positionsService: PositionsService,
+    private roles:RolesService,
     private cdr: ChangeDetectorRef
   ) {
     this.isLoading$ = this.staffService.isLoading$;
@@ -58,8 +60,8 @@ export class StaffComponent implements OnInit, OnDestroy {
     this.visible = true;
     this.newStaffName = staff.name;
     this.newStaffEmail = staff.email;
-    this.newDepartmentId = staff.department_id || null;
-    this.newPositionId = staff.position_id || null;
+    this.newDepartmentId = staff.department.id || null;
+    this.newPositionId = staff.department.id || null;
     this.selectedStaffId = staff.id;
     this.isEditMode = true;
   }
@@ -162,8 +164,8 @@ export class StaffComponent implements OnInit, OnDestroy {
       const newStaff: any = {
         name: this.newStaffName,
         email: this.newStaffEmail,
-        department_id: this.newDepartmentId,
-        position_id: this.newPositionId
+        department_id: this.newDepartmentId?.toString(),
+        position_id: this.newPositionId?.toString()
       };
 
       const createSub = this.staffService.createStaff(newStaff).subscribe({
