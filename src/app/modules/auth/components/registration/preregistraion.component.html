@@ -187,21 +187,39 @@
             <label class="form-label fs-6 text-gray-900">{{
               "AUTH.REGISTRATION.PASSWORD_LABEL" | translate
             }}</label>
-                  <p-password     name="password"   formControlName="password" class="w-100 " [ngClass]="{
-                    'is-invalid':
-                      registrationForm.controls['cPassword'].invalid &&
-                      (registrationForm.controls['cPassword'].dirty ||
-                        registrationForm.controls['cPassword'].touched)
-                  }"/>
-  
-            <ng-container
-              [ngTemplateOutlet]="formError"
-              [ngTemplateOutletContext]="{
-                validation: 'required',
-                message: 'AUTH.REGISTRATION.PASSWORD_REQUIRED' | translate,
-                control: registrationForm.controls['password']
-              }"
-            ></ng-container>
+          <p-password 
+          name="password" 
+          formControlName="password" 
+          class="w-100" 
+          [ngClass]="{
+            'is-invalid': 
+              registrationForm.controls['password'].invalid &&
+              (registrationForm.controls['password'].dirty || 
+               registrationForm.controls['password'].touched)
+          }"
+        ></p-password>
+      
+        <!-- Custom Error Messages for Password Validation -->
+        <ng-container *ngIf="registrationForm.controls['password'].errors">
+          <div class="fv-plugins-message-container">
+            <div class="fv-help-block">
+              <!-- Minimum length error -->
+              <span *ngIf="registrationForm.controls['password'].hasError('minlength')" role="alert">
+                {{ 'AUTH.REGISTRATION.PASSWORD_MINLENGTH' | translate }}
+              </span>
+              
+              <!-- Pattern error for specific criteria -->
+              <span *ngIf="registrationForm.controls['password'].hasError('pattern')" role="alert">
+                {{ 'AUTH.REGISTRATION.PASSWORD_PATTERN' | translate }}
+              </span>
+      
+              <!-- Required error -->
+              <span *ngIf="registrationForm.controls['password'].hasError('required') && registrationForm.controls['password'].touched" role="alert">
+                {{ 'AUTH.REGISTRATION.PASSWORD_REQUIRED' | translate }}
+              </span>
+            </div>
+          </div>
+        </ng-container>
           </div>
 
           <!--begin::Confirm Password-->
