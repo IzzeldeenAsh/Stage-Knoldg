@@ -160,6 +160,7 @@
               <div class="col-sm-9">
                 <input
                   pInputText
+                  type="number"
                   id="isic_code_id"
                   class="form-control"
                   formControlName="isic_code_id"
@@ -193,13 +194,14 @@
                 >Status</label
               >
               <div class="col-sm-9">
-                <input
-                  pInputText
-                  id="status"
-                  class="form-control"
-                  formControlName="status"
-                  autocomplete="off"
-                />
+                <p-dropdown 
+                id="status" 
+                [options]="statusOptions" 
+                formControlName="status"
+                appendTo="body"
+                placeholder="Select Status">
+            </p-dropdown>
+                
                 <div
                   *ngIf="
                     status &&
