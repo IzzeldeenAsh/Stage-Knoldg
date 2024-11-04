@@ -30,6 +30,7 @@ import { MessageModule } from 'primeng/message';
 import { ISICCodeManagmentComponent } from './dashboard/isic-code-managment/isic-code-managment.component';
 import { NodeService } from 'src/app/_fake/services/nodeService/nodeservice';
 import { TagsComponent } from './dashboard/tags/tags.component';
+import { HSCodeComponent } from './hscode/hscode.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { TagsComponent } from './dashboard/tags/tags.component';
     DepartmentComponent,
     ConsultingFieldsComponent,
     TagsComponent,
+    HSCodeComponent,
     ISICCodeManagmentComponent,
     RegionsComponent,
     PositionsComponent,
