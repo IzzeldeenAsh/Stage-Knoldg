@@ -27,7 +27,10 @@ export class HSCodeComponent implements OnInit {
   selectedHSCodeId: number | null = null;
   visible: boolean = false;
   hscodeForm: FormGroup;
-
+  statusOptions = [
+    { label: 'Active', value: 'Active' },
+    { label: 'Inactive', value: 'Inactive' }
+  ];
   constructor(
     private _hscodes: HSCodeService,
     private cdr: ChangeDetectorRef,
