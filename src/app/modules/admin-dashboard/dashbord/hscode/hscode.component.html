@@ -151,43 +151,33 @@
               </div>
             </div>
 
-            <div class="mb-3 row">
-              <label
-                for="isic_code_id"
-                class="col-sm-3 col-form-label"
-                >ISIC Code ID</label
-              >
-              <div class="col-sm-9">
-                <input
-                  pInputText
-                  type="number"
-                  id="isic_code_id"
-                  class="form-control"
-                  formControlName="isic_code_id"
-                  autocomplete="off"
-                />
-                <div
-                  *ngIf="
-                    isic_code_id &&
-                    isic_code_id.errors &&
-                    (isic_code_id.touched || isic_code_id.dirty)
-                  "
-                >
-                  <div
-                    *ngIf="isic_code_id.errors['required']"
-                    class="text-danger"
-                  >
-                    ISIC Code ID is required.
-                  </div>
-                  <div
-                    *ngIf="isic_code_id.errors['serverError']"
-                    class="text-danger"
-                  >
-                    {{ isic_code_id.errors['serverError'] }}
-                  </div>
+              <div class="mb-3 row">
+                <label for="isic_code_id" class="col-sm-3 col-form-label">ISIC Code</label>
+                <div class="col-sm-9">
+                  <p-treeSelect
+                    id="isic_code_id"
+                    [options]="isicTreeData"
+                    [(ngModel)]="selectedNode"
+                    placeholder="Select Parent ISIC Code"
+                    [ngModelOptions]="{standalone: true}"
+                    class="w-100"
+                    optionLabel="label"
+                    optionValue="value"
+                    [showClear]="true"
+                    [filter]="true"
+                    filterBy="label"
+                  ></p-treeSelect>
+                  <!-- <div *ngIf="isic_code_id && isic_code_id.errors && (isic_code_id.touched || isic_code_id.dirty)">
+                    <div *ngIf="isic_code_id.errors['required']" class="text-danger">
+                      ISIC Code is required.
+                    </div>
+                    <div *ngIf="isic_code_id.errors['serverError']" class="text-danger">
+                      {{ isic_code_id.errors['serverError'] }}
+                    </div>
+                  </div> -->
                 </div>
               </div>
-            </div>
+              
 
             <div class="mb-3 row">
               <label for="status" class="col-sm-3 col-form-label"
@@ -229,7 +219,7 @@
           <div class="d-flex justify-content-end gap-2">
             <button
               type="submit"
-              [disabled]="hscodeForm.invalid || (isLoading$ | async)"
+              [disabled]="hscodeForm.invalid || (isLoading$ | async) || !this.selectedNode"
               (click)="submit()"
               class="btn btn-primary btn-sm"
             >

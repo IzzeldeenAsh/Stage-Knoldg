@@ -196,7 +196,6 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         consultingField: [[], Validators.required], // Consulting Field
         otherConsultingField: ['', Validators.maxLength(100)], // Optional field for "Other"
         // hscode: [null], // Updated to [null] for dropdown
-        cPassword: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(100)]],
         agree: [true],
       },
       {
@@ -292,8 +291,6 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       // newUser.hs_code=this.registrationForm.get('hscode')?.value?this.registrationForm.get('hscode')?.value.id  : null ;
       newUser.description =this.registrationForm.get('aboutDescription')?.value ? this.registrationForm.get('aboutDescription')?.value : null;
       newUser.other_consulting_field=this.registrationForm.get('otherConsultingField')?.value ? this.registrationForm.get('otherConsultingField')?.value : null;
-console.log("newUser" ,newUser);
-console.log("selectedNodes",this.selectedNodes);
       const registerAPI= this._register.preRegisterUser(newUser).pipe(first()).subscribe({
         next: (res)=>{
           if(res.state){

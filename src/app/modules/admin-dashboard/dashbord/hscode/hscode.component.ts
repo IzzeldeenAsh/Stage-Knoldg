@@ -4,13 +4,14 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { Message } from 'primeng/api';
+import { Message, TreeNode } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { Observable, Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { HSCode, HSCodeService } from 'src/app/_fake/services/hs-code-management/hscode.service';
+import { IsicCodesService } from 'src/app/_fake/services/isic-code/isic-codes.service';
 
 
 @Component({
@@ -23,6 +24,8 @@ export class HSCodeComponent implements OnInit {
   private unsubscribe: Subscription[] = [];
   listOfHSCodes: HSCode[] = [];
   isEditMode: boolean = false;
+  isicTreeData: TreeNode[] = [];
+  selectedNode:any;
   isLoading$: Observable<boolean>;
   selectedHSCodeId: number | null = null;
   visible: boolean = false;
@@ -35,23 +38,56 @@ export class HSCodeComponent implements OnInit {
     private _hscodes: HSCodeService,
     private cdr: ChangeDetectorRef,
     private fb: FormBuilder,
+    private isicCodesService: IsicCodesService,
     private messageService: MessageService
   ) {
     this.isLoading$ = this._hscodes.isLoading$;
   }
 
-  ngOnInit(): void {
-    this.hscodeForm = this.fb.group({
-      arabicName: ['', Validators.required],
-      englishName: ['', Validators.required],
-      code: ['', Validators.required],
-      isic_code_id: ['', Validators.required],
-      status: ['', Validators.required],
-    });
+  
+ngOnInit(): void {
+  this.hscodeForm = this.fb.group({
+    arabicName: ['', Validators.required],
+    englishName: ['', Validators.required],
+    code: ['', Validators.required],
+    status: ['', Validators.required],
+  });
 
-    this.getHSCodesList();
-  }
+  this.loadIsicCodes(); // Method to populate isicTreeData
+  this.getHSCodesList();
+}
+loadIsicCodes() {
+  const listSub = this.isicCodesService.getIsicCodesTree().subscribe({
+    next: (res) => {
+      this.isicTreeData = this.changeKeyToValue([...res]); // Transform only for isicTreeData
+      this.cdr.detectChanges();
+    },
+    error: (error) => {
+      this.handleServerErrors(error);
+    },
+  });
+  this.unsubscribe.push(listSub);
+}
+changeKeyToValue(nodes: any) {
+  return nodes.map((node: any) => {
+    const newNode = {
+      ...node,
+      value: node.data.key, // Ensure the top-level 'value' is set from 'key'
+      children: node.children ? this.changeKeyToValue(node.children) : []
+    };
+    delete newNode.key;
+    
+    if (newNode.data && newNode.data.key !== undefined) {
+      newNode.data = {
+        ...newNode.data,
+        value: newNode.data.key
+      };
+      delete newNode.data.key;
+    }
 
+    return newNode;
+  });
+}
   showDialog() {
     this.visible = true;
     this.selectedHSCodeId = null;
@@ -63,14 +99,36 @@ export class HSCodeComponent implements OnInit {
     this.visible = true;
     this.selectedHSCodeId = hscode.id;
     this.isEditMode = true;
+    console.log(hscode);
+    // Find the node in isicTreeData corresponding to isic_code_id
+    this.selectedNode = this.findNodeById(this.isicTreeData, hscode.isic_code_id);
+    console.log("this.selectedNode",this.selectedNode);
+    // Patch the other fields in the form
     this.hscodeForm.patchValue({
       arabicName: hscode.names.ar,
       englishName: hscode.names.en,
       code: hscode.code,
-      isic_code_id: hscode.isic_code_id,
       status: hscode.status,
     });
   }
+  
+  // Helper method to find a node by ID in a tree structure
+  findNodeById(nodes: any[], id: any): TreeNode | null {
+    console.log("nodes",nodes);
+    for (const node of nodes) {
+      if (node.value === id) {
+        return node;
+      }
+      if (node.children) {
+        const foundNode = this.findNodeById(node.children, id);
+        if (foundNode) {
+          return foundNode;
+        }
+      }
+    }
+    return null;
+  }
+  
 
   private handleServerErrors(error: any) {
     if (error.error && error.error.errors) {
@@ -176,7 +234,7 @@ export class HSCodeComponent implements OnInit {
   submit() {
     this.messages = [];
 
-    if (this.hscodeForm.invalid) {
+    if (this.hscodeForm.invalid || !this.selectedNode) {
       this.hscodeForm.markAllAsTouched();
       return;
     }
@@ -190,7 +248,7 @@ export class HSCodeComponent implements OnInit {
           ar: formValues.arabicName,
         },
         code: formValues.code,
-        isic_code_id: formValues.isic_code_id,
+        isic_code_id: this.selectedNode.value,
         status: formValues.status,
       };
 
@@ -220,7 +278,7 @@ export class HSCodeComponent implements OnInit {
           ar: formValues.arabicName,
         },
         code: formValues.code,
-        isic_code_id: formValues.isic_code_id,
+        isic_code_id: this.selectedNode.value,
         status: formValues.status,
       };
 

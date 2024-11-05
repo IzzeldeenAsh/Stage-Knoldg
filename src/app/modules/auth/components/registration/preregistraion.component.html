@@ -183,7 +183,7 @@
         <!--::Password group-->
         <div class="row mb-4">
           <!--begin::Form group-->
-          <div class="col-12 col-md-6 mb-4 position-relative">
+          <div class="col-12  position-relative">
             <label class="form-label fs-6 text-gray-900">{{
               "AUTH.REGISTRATION.PASSWORD_LABEL" | translate
             }}</label>
@@ -220,32 +220,14 @@
             </div>
           </div>
         </ng-container>
-          </div>
 
-          <!--begin::Confirm Password-->
-          <div class="col-12 col-md-6 position-relative w=100">
-            <label class="form-label fs-6 text-gray-900">{{
-              "AUTH.REGISTRATION.CONFIRM_PASSWORD_LABEL" | translate
-            }}</label>
-               <p-password      name="cPassword"   formControlName="cPassword" class="w-100" [ngClass]="{
-                'is-invalid':
-                  registrationForm.controls['cPassword'].invalid &&
-                  (registrationForm.controls['cPassword'].dirty ||
-                    registrationForm.controls['cPassword'].touched)
-              }"/>
-           
-      
-        <ng-container
-        [ngTemplateOutlet]="formError"
-        [ngTemplateOutletContext]="{
-          control: registrationForm.controls['password'],
-          validationMessages: [
-            { validation: 'required', message: 'AUTH.REGISTRATION.PASSWORD_REQUIRED' | translate },
-            { validation: 'minlength', message: 'AUTH.REGISTRATION.PASSWORD_MIN_LENGTH' | translate },
-            { validation: 'pattern', message: 'AUTH.REGISTRATION.PASSWORD_PATTERN' | translate }
-          ]
-        }"
-      ></ng-container>
+        <ng-container *ngIf="registrationForm.errors?.passwordMismatch">
+          <div class="fv-plugins-message-container">
+            <div class="fv-help-block" role="alert">
+              {{ 'AUTH.REGISTRATION.PASSWORD_MISMATCH' | translate }}
+            </div>
+          </div>
+        </ng-container>
           </div>
         </div>
         <!--begin::Country and Consulting Field-->
