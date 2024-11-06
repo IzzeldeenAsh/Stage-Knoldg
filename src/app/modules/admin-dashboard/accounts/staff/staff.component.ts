@@ -1,17 +1,18 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import { Message } from "primeng/api";
+import { Message, MessageService } from "primeng/api";
 import { Table } from "primeng/table";
 import { Observable, Subscription } from "rxjs";
 import Swal from 'sweetalert2';
 import { Staff, StaffService } from "src/app/_fake/services/staff/staff.service";
 import { Department, DepartmentsService } from "src/app/_fake/services/department/departments.service";
 import { Position, PositionsService } from "src/app/_fake/services/positions/positions.service";
-import { RolesService } from "src/app/_fake/services/roles/roles.service";
+import { RolesService, Role } from "src/app/_fake/services/roles/roles.service"; // Ensure Role is imported
 
 @Component({
   selector: 'app-staff',
   templateUrl: './staff.component.html',
-  styleUrl: './staff.component.scss'
+  styleUrls: ['./staff.component.scss'],
+  providers: [MessageService] // Add MessageService if not already provided
 })
 export class StaffComponent implements OnInit, OnDestroy {
   messages: Message[] = [];
@@ -28,13 +29,19 @@ export class StaffComponent implements OnInit, OnDestroy {
   newDepartmentId: number | null = null;
   newPositionId: number | null = null;
 
+  // Variables for Role Management
+  rolesDialogVisible: boolean = false;
+  listOfRoles: Role[] = []; // All available roles
+  userRoles: number[] = []; // Selected user's role IDs
+
   @ViewChild("dt") table: Table;
 
   constructor(
     private staffService: StaffService,
     private departmentsService: DepartmentsService,
     private positionsService: PositionsService,
-    private roles:RolesService,
+    private rolesService: RolesService, // Inject RolesService
+    private messageService: MessageService, // Inject MessageService
     private cdr: ChangeDetectorRef
   ) {
     this.isLoading$ = this.staffService.isLoading$;
@@ -60,10 +67,38 @@ export class StaffComponent implements OnInit, OnDestroy {
     this.visible = true;
     this.newStaffName = staff.name;
     this.newStaffEmail = staff.email;
-    this.newDepartmentId = staff.department.id || null;
-    this.newPositionId = staff.department.id || null;
+    this.newDepartmentId = staff.department?.id || null;
+    this.newPositionId = staff.position?.id || null; // Corrected to position.id
     this.selectedStaffId = staff.id;
     this.isEditMode = true;
+  }
+
+  // New Method to Edit Roles
+  editRoles(staff: Staff) {
+    this.selectedStaffId = staff.id;
+    this.rolesDialogVisible = true;
+    this.userRoles = [];
+    this.getAllRoles();
+    this.getUserRoles(staff.id);
+  }
+
+  private handleServerErrors(error: any) {
+    this.messages = [];
+    if (error.error && error.error.errors) {
+      const serverErrors = error.error.errors;
+      for (const key in serverErrors) {
+        if (serverErrors.hasOwnProperty(key)) {
+          const messages = serverErrors[key];
+          this.messages.push({ severity: 'error', summary: '', detail: messages.join(', ') });
+        }
+      }
+    } else {
+      this.messages.push({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'An unexpected error occurred.'
+      });
+    }
   }
 
   getStaffList() {
@@ -71,20 +106,9 @@ export class StaffComponent implements OnInit, OnDestroy {
       next: (data: Staff[]) => {
         this.listOfStaff = data;
         this.cdr.detectChanges();
-        console.log("listOfStaff", this.listOfStaff);
       },
       error: (error) => {
-        this.messages = [];
-
-        if (error.validationMessages) {
-          this.messages = error.validationMessages;
-        } else {
-          this.messages.push({
-            severity: "error",
-            summary: "Error",
-            detail: "An unexpected error occurred.",
-          });
-        }
+        this.handleServerErrors(error);
       },
     });
     this.unsubscribe.push(listSub);
@@ -109,7 +133,7 @@ export class StaffComponent implements OnInit, OnDestroy {
         this.listOfPositions = data;
         this.cdr.detectChanges();
       },
-      error: (error:any) => {
+      error: (error: any) => {
         console.error("Failed to fetch positions", error);
       }
     });
@@ -122,77 +146,46 @@ export class StaffComponent implements OnInit, OnDestroy {
   }
 
   get hasSuccessMessage(){
-    return this.messages.some(msg=>msg.severity ==='success')
-   }
-  
-   get hasErrorMessage() {
+    return this.messages.some(msg => msg.severity === 'success');
+  }
+
+  get hasErrorMessage() {
     return this.messages.some(msg => msg.severity === 'error');
   }
+
   submit() {
-    this.messages=[]
-    if (this.selectedStaffId) {
-      // Update existing staff
-      const updatedData = {
-        name: this.newStaffName,
-        email: this.newStaffEmail,
-        department_id: this.newDepartmentId?.toString(),
-        position_id: this.newPositionId?.toString()
-      };
+    this.messages = [];
+    const staffData = {
+      name: this.newStaffName,
+      email: this.newStaffEmail,
+      department_id: this.newDepartmentId?.toString(),
+      position_id: this.newPositionId?.toString()
+    };
 
-      const updateSub = this.staffService.updateStaff(this.selectedStaffId, updatedData).subscribe({
-        next: (res: Staff) => {
-          this.messages.push({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'Staff updated successfully.'
-          });
-          this.getStaffList();
-          this.visible = false;
-        },
-        error: (error) => {
-          this.messages = error.validationMessages || [{
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Failed to update staff.'
-          }];
-        }
-      });
+    const staffObservable = this.selectedStaffId
+      ? this.staffService.updateStaff(this.selectedStaffId, staffData)
+      : this.staffService.createStaff(staffData);
 
-      this.unsubscribe.push(updateSub);
-    } else {
-      // Create new staff
-      const newStaff: any = {
-        name: this.newStaffName,
-        email: this.newStaffEmail,
-        department_id: this.newDepartmentId?.toString(),
-        position_id: this.newPositionId?.toString()
-      };
+    const staffSub = staffObservable.subscribe({
+      next: (res: Staff) => {
+        this.messages.push({
+          severity: 'success',
+          summary: 'Success',
+          detail: `Staff ${this.selectedStaffId ? 'updated' : 'created'} successfully.`
+        });
+        this.getStaffList();
+        this.visible = false;
+      },
+      error: (error) => {
+        this.handleServerErrors(error);
+      }
+    });
 
-      const createSub = this.staffService.createStaff(newStaff).subscribe({
-        next: (res: any) => {
-          this.messages.push({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'Staff created successfully.'
-          });
-          this.getStaffList();
-          this.visible = false;
-        },
-        error: (error) => {
-          this.messages = error.validationMessages || [{
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Failed to create staff.'
-          }];
-        }
-      });
-
-      this.unsubscribe.push(createSub);
-    }
+    this.unsubscribe.push(staffSub);
   }
 
   deleteStaff(staffId: number) {
-    this.messages=[]
+    this.messages = [];
     Swal.fire({
       title: 'Are you sure?',
       text: 'Do you want to delete this staff? This action cannot be undone.',
@@ -214,11 +207,7 @@ export class StaffComponent implements OnInit, OnDestroy {
             this.getStaffList();
           },
           error: (error) => {
-            this.messages = error.validationMessages || [{
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Failed to delete staff.'
-            }];
+            this.handleServerErrors(error);
           }
         });
         this.unsubscribe.push(deleteSub);
@@ -226,7 +215,70 @@ export class StaffComponent implements OnInit, OnDestroy {
     });
   }
 
+  // New Methods for Role Management
+  getAllRoles() {
+    const rolesSub = this.rolesService.getRoles().subscribe({
+      next: (data: Role[]) => {
+        this.listOfRoles = data;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to fetch roles.'
+        });
+        console.error('Error fetching roles', error);
+      }
+    });
+    this.unsubscribe.push(rolesSub);
+  }
+
+  getUserRoles(userId: number) {
+    const userRolesSub = this.rolesService.getRolesByUserId(userId).subscribe({
+      next: (data: Role[]) => {
+        this.userRoles = data.map(role => role.id);
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to fetch user roles.'
+        });
+        console.error('Error fetching user roles', error);
+      }
+    });
+    this.unsubscribe.push(userRolesSub);
+  }
+
+  submitRoles() {
+    if (this.selectedStaffId !== null) {
+      this.messageService.clear();
+      const updateSub = this.rolesService.syncRolesForUser(this.selectedStaffId, this.userRoles).subscribe({
+        next: (res: any) => {
+          this.messages.push({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Roles updated successfully.'
+          });
+          this.rolesDialogVisible = false; // Close dialog
+          this.getStaffList();
+        },
+        error: (error) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to update roles.'
+          });
+          console.error('Error updating roles', error);
+        }
+      });
+      this.unsubscribe.push(updateSub);
+    }
+  }
+
   ngOnDestroy() {
-    this.unsubscribe.forEach((sb) => sb.unsubscribe());
+    this.unsubscribe.forEach(sb => sb.unsubscribe());
   }
 }

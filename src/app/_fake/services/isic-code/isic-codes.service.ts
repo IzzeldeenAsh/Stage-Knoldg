@@ -37,6 +37,7 @@ export class IsicCodesService {
   }
 
   private handleError(error: any) {
+    console.log("error",error);
     return throwError(error);
   }
 
@@ -56,6 +57,19 @@ export class IsicCodesService {
     }));
   }
 
+  private transformToTreeNodeParent(isicData: any[]): any[] {
+    return isicData.map(node => ({
+      key: node.key,
+      label: node.label,
+      data: {
+        key: node.key,
+        code: node.code,
+        label: node.label,
+      },
+      children: node.children ? this.transformToTreeNodeParent(node.children) : []
+    }));
+  }
+
   // Fetch ISIC Codes data from the API
   getIsicCodesTree(): Observable<any[]> {
     const headers = new HttpHeaders({
@@ -71,6 +85,22 @@ export class IsicCodesService {
       finalize(() => this.setLoading(false))
     );
   }
+
+    // Fetch ISIC Codes data from the API
+    getIsicCodesTreeParent(): Observable<any[]> {
+      const headers = new HttpHeaders({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Accept-Language': this.currentLang
+      });
+  
+      this.setLoading(true);
+      return this.http.get<any>('https://api.4sighta.com/api/common/setting/isic-code/tree/parent', { headers }).pipe(
+        map((res) => this.transformToTreeNodeParent(res)),
+        catchError((error) => this.handleError(error)),
+        finalize(() => this.setLoading(false))
+      );
+    }
 
   // Create a new ISIC code
   createIsicCode(isicCode: any): Observable<IsicCode> {
