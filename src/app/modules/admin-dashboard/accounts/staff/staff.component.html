@@ -114,50 +114,117 @@
         <div class="card-body pt-0">
           <p-messages *ngIf="hasSuccessMessage" [(value)]="messages" [enableService]="false"></p-messages>
           <p-table
-            #dt
-            [value]="listOfStaff"
-            [paginator]="false"
-            [rows]="10"
-            [globalFilterFields]="['name', 'email']"
-            class="table-p"
-          >
-            <ng-template pTemplate="header">
-              <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Action</th>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-staff>
-              <tr>
-                <td>{{ staff.name }}</td>
-                <td>{{ staff.email }}</td>
-                <td>
-                  <a
-                    pTooltip="Edit Staff"
-                    tooltipPosition="top"
-                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-                    (click)="editStaff(staff)"
-                  >
-                    <i class="ki-duotone ki-pencil fs-2"><span class="path1"></span><span class="path2"></span></i>
-                  </a>
-                  <a
-                    pTooltip="Delete Staff"
-                    tooltipPosition="top"
-                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
-                    (click)="deleteStaff(staff.id)"
-                  >
-                    <i class="ki-duotone ki-trash fs-2">
-                      <span class="path1"></span><span class="path2"></span><span class="path3"></span>
-                      <span class="path4"></span><span class="path5"></span>
-                    </i>
-                  </a>
-                </td>
-              </tr>
-            </ng-template>
-          </p-table>
+          #dt
+          [value]="listOfStaff"
+          [paginator]="false"
+          [rows]="10"
+          [globalFilterFields]="['name', 'email']"
+          class="table-p"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Roles</th>
+              <th>Action</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-staff>
+            <tr>
+              <td>{{ staff.name }}</td>
+              <td>{{ staff.email }}</td>
+              <td>{{ staff.roles.join(', ') }}</td>
+              <td>
+                
+                <a  pTooltip="Edit Roles" class="mx-1 btn btn-sm btn-light bg-hover-primary" (click)="editRoles(staff)">Edit Role</a>
+                <a
+                  pTooltip="Edit Staff"
+                  tooltipPosition="top"
+                 
+                  class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                  (click)="editStaff(staff)"
+                >
+                  <i class="ki-duotone ki-pencil fs-2"><span class="path1"></span><span class="path2"></span></i>
+                </a>
+                <a
+                  pTooltip="Delete Staff"
+                  tooltipPosition="top"
+                  class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
+                  (click)="deleteStaff(staff.id)"
+                >
+                  <i class="ki-duotone ki-trash fs-2">
+                    <span class="path1"></span><span class="path2"></span><span class="path3"></span>
+                    <span class="path4"></span><span class="path5"></span>
+                  </i>
+                </a>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
         </div>
       </div>
     </div>
   </div>
 </ng-container>
+
+<p-dialog
+    header="Edit Roles"
+    [(visible)]="rolesDialogVisible"
+    [modal]="true"
+    [style]="{ width: '50%' }"
+  >
+    <p-progressBar
+      *ngIf="isLoading$ | async"
+      mode="indeterminate"
+      [style]="{ height: '4px' }"
+    ></p-progressBar>
+
+    <p-messages [(value)]="messages" [enableService]="false"></p-messages>
+    <div *ngIf="listOfRoles && userRoles">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Role</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let role of listOfRoles">
+            <td>
+              <p-checkbox
+                name="role{{ role.id }}"
+                [value]="role.id"
+                label="{{ role.display_name }}"
+                [(ngModel)]="userRoles"
+                inputId="{{ 'role' + role.id }}"
+              ></p-checkbox>
+            </td>
+            <td class="text-muted">{{ role.description }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="d-flex justify-content-end gap-2 mt-3">
+      <button
+        [disabled]="isLoading$ | async"
+        (click)="submitRoles()"
+        class="btn btn-primary btn-sm"
+      >
+        <ng-container *ngIf="!(isLoading$ | async)">
+          <span class="indicator-label">Save</span>
+        </ng-container>
+        <ng-container *ngIf="isLoading$ | async">
+          <span class="indicator-progress" style="display: block;">
+            Please wait
+            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+          </span>
+        </ng-container>
+      </button>
+      <button
+        (click)="rolesDialogVisible = false"
+        class="btn btn-outline-secondary btn-sm"
+      >
+        Cancel
+      </button>
+    </div>
+  </p-dialog>

@@ -57,8 +57,9 @@ ngOnInit(): void {
   this.getHSCodesList();
 }
 loadIsicCodes() {
-  const listSub = this.isicCodesService.getIsicCodesTree().subscribe({
+  const listSub = this.isicCodesService.getIsicCodesTreeParent().subscribe({
     next: (res) => {
+      console.log("res",res);
       this.isicTreeData = this.changeKeyToValue([...res]); // Transform only for isicTreeData
       this.cdr.detectChanges();
     },

@@ -141,7 +141,7 @@
   <p-sidebar [(visible)]="sidebarVisible">
   <div class="sidebarslide">
     <ul>
-      <ng-container *ngIf="base === 'dashboard'">
+   
         <li>
           <div class="menu-item menu-accordion menu-fit">
             <!--begin:Menu link--><span
@@ -304,8 +304,6 @@
             >
           </div>
         </li>
-      </ng-container>
-      <ng-container *ngIf="base === 'accounts'">
         <li>
           <div class="menu-item menu-accordion menu-fit">
             <!--begin:Menu link--><span
@@ -371,28 +369,7 @@
             ><!--end:Menu link-->
           </div>
         </li>
-        <li>
-          <div class="menu-item menu-accordion menu-fit">
-            <!--begin:Menu link--><span
-              routerLink="/admin-dashboard/admin/accounts/main-accounts/users-roles"
-              routerLinkActive="active"
-              class="menu-link"
-              ><span class="menu-icon">
-                <div class="symbol symbol-30px">
-                  <span class="symbol-label">
-                    <span class="svg-icon svg-icon-3 svg-icon-primary">
-                      <i class="ki-duotone ki-user-tick text-gray-900 fs-3"
-                        ><span class="path1"></span><span class="path2"></span
-                        ><span class="path3"></span></i
-                    ></span>
-                  </span>
-                </div> </span
-              ><span class="menu-title">Users Roles</span
-              ><span class="menu-badge"></span></span
-            ><!--end:Menu link-->
-          </div>
-        </li>
-      </ng-container>
+      
     </ul>
     <div class="d-flex flex-stack px-10">
       <div class="d-flex align-items-center ">

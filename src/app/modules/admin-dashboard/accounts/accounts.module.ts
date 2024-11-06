@@ -15,7 +15,6 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { MessageService } from 'primeng/api';
-import { RoleUsersComponent } from './role-users/role-users.component';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ChipModule } from 'primeng/chip';
 import { EditPermissionsDialogComponent } from './roles/edit-permissions-dialog/edit-permissions-dialog.component';
@@ -26,7 +25,6 @@ import { DialogService } from 'primeng/dynamicdialog';
     AccountsComponent,
     StaffComponent,
     EditPermissionsDialogComponent,
-    RoleUsersComponent,
     RolesComponent,
     PermissionsComponent
   ],
