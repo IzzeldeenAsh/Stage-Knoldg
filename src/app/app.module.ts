@@ -26,10 +26,10 @@ function appInitializer(authService: AuthService) {
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    AppRoutingModule,
     TranslateModule.forRoot(),
     HttpClientModule,
     ClipboardModule,
-    AppRoutingModule,
     InlineSVGModule.forRoot(),
     NgbModule,
     SweetAlert2Module.forRoot(),

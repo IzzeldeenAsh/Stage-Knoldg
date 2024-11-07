@@ -101,11 +101,16 @@ color: #017BFE !important;
     line-height: 1.5 !important;
     color: var(--bs-gray-700) !important;
     appearance: none !important;
+    text-align: start;
     background-clip: padding-box !important;
     border: 1px solid var(--bs-gray-300) !important;
     border-radius: 0.475rem !important;
     box-shadow: false !important;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+}
+ .form-p-control .p-placeholder{
+    font-weight: 500 !important;
+    color: #99A1B7 !important;
 }
 .p-password-input{
     padding: 0.775rem 1rem !important;
@@ -300,3 +305,11 @@ color: #017BFE !important;
     .border-danger{
         border: 1px solid var(--bs-danger);
     }
+
+html[dir="rtl"] .p-element{
+    font-family: 'Tajawal' ,"sans-serif" !important;
+}
+
+html[dir="ltr"] .p-element{
+    font-family: 'Inter' ,"sans-serif" !important;
+}

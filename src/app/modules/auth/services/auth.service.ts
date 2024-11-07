@@ -1,22 +1,29 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { Observable, BehaviorSubject, of, Subscription, throwError } from 'rxjs';
-import { map, catchError, switchMap, finalize } from 'rxjs/operators';
-import { UserModel } from '../models/user.model';
-import { AuthModel } from '../models/auth.model';
-import { Router } from '@angular/router';
-import { AuthHTTPService } from './auth-http/auth-http.service';
-import { InsightaUserModel } from '../models/insighta-user.model';
-import { environment } from 'src/environments/environment';
+import { Injectable, OnDestroy } from "@angular/core";
+import {
+  Observable,
+  BehaviorSubject,
+  of,
+  Subscription,
+  throwError,
+} from "rxjs";
+import { map, catchError, switchMap, finalize, take } from "rxjs/operators";
+import { ForesightaGeneralUserModel, UserModel } from "../models/user.model";
+import { AuthModel } from "../models/auth.model";
+import { Router } from "@angular/router";
+import { AuthHTTPService } from "./auth-http/auth-http.service";
+import { InsightaUserModel } from "../models/insighta-user.model";
+import { environment } from "src/environments/environment";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 export type UserType = InsightaUserModel | undefined;
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class AuthService implements OnDestroy {
   // private fields
   private unsubscribe: Subscription[] = []; // Read more: => https://brianflove.com/2016/12/11/anguar-2-unsubscribe-observables/
-   private authLocalStorageToken = `foresighta-creds`;
+  private authLocalStorageToken = `foresighta-creds`;
 
   // public fields
   currentUser$: Observable<UserType>;
@@ -34,7 +41,8 @@ export class AuthService implements OnDestroy {
 
   constructor(
     private authHttpService: AuthHTTPService,
-    private router: Router
+    private router: Router,
+    private http: HttpClient
   ) {
     this.isLoadingSubject = new BehaviorSubject<boolean>(false);
     this.currentUserSubject = new BehaviorSubject<UserType>(undefined);
@@ -53,7 +61,7 @@ export class AuthService implements OnDestroy {
         const auth = new AuthModel();
         auth.authToken = response.data.token; // Extract the token from the response
         this.setAuthFromLocalStorage(auth);
-  
+
         // Store user information in local storage
         const user: UserType = {
           id: response.data.id,
@@ -63,7 +71,7 @@ export class AuthService implements OnDestroy {
           country: response.data.country,
           roles: response.data.roles,
         };
-  
+
         this.setUserInLocalStorage(user);
         this.currentUserSubject.next(user);
         return user;
@@ -72,16 +80,24 @@ export class AuthService implements OnDestroy {
       finalize(() => this.isLoadingSubject.next(false))
     );
   }
+  getGoogleAuthRedirectUrl(): Observable<string> {
+    return this.http.get('https://api.4sighta.com/api/auth/provider/google', { responseType: 'text' });
+  }
+
+  getLinkedInAuthRedirectUrl(): Observable<string> {
+    return this.http.get('https://api.4sighta.com/api/auth/provider/linkedin', { responseType: 'text' });
+  }
   
+
 
   private setUserInLocalStorage(user: UserType): void {
     if (user) {
-      localStorage.setItem('currentUser', JSON.stringify(user));
+      localStorage.setItem("currentUser", JSON.stringify(user));
     }
   }
-  
+
   private getUserFromLocalStorage(): UserType | undefined {
-    const userJson = localStorage.getItem('currentUser');
+    const userJson = localStorage.getItem("currentUser");
     if (userJson) {
       return JSON.parse(userJson) as UserType;
     }
@@ -89,10 +105,9 @@ export class AuthService implements OnDestroy {
   }
 
   private handleError(error: any) {
-  
     // Initialize an empty array to hold the formatted error messages
     let validationErrors: any[] = [];
-  
+
     // Check if there are validation errors in the response
     if (error.error.errors) {
       const errors = error.error.errors;
@@ -100,35 +115,48 @@ export class AuthService implements OnDestroy {
         if (errors.hasOwnProperty(field)) {
           const errorMsgArray = errors[field];
           errorMsgArray.forEach((msg: string) => {
-            validationErrors.push({ severity: 'error', summary: 'Validation Error', detail: msg });
+            validationErrors.push({
+              severity: "error",
+              summary: "Validation Error",
+              detail: msg,
+            });
           });
         }
       }
     }
-  
+
     // Return the array of validation error messages to the component
     return throwError(() => ({
-      validationMessages: validationErrors
+      validationMessages: validationErrors,
     }));
   }
 
-  private isTokenExpired(token:string) : boolean{
+  private isTokenExpired(token: string): boolean {
     if (!token) {
       return true;
     }
-  
-    const payload = JSON.parse(atob(token.split('.')[1]));
+
+    const payload = JSON.parse(atob(token.split(".")[1]));
     const currentTime = Math.floor(Date.now() / 1000);
     return payload.exp < currentTime;
   }
 
   logout() {
-    localStorage.removeItem(this.authLocalStorageToken);
-    localStorage.removeItem('currentUser');
-    localStorage.removeItem('authToken');
-    this.router.navigate(['/auth/login'], {
-      queryParams: {},
+    const headers = new HttpHeaders({
+      Accept: "application/json",
+      "Accept-Language": "en", // As per your example
     });
+    localStorage.removeItem(this.authLocalStorageToken);
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("authToken");
+    // this.router.navigate(['/auth/login'], {
+    //   queryParams: {},
+    // });
+    return this.http.post<any>(
+      "https://api.4sighta.com/api/account/logout",
+      {},
+      { headers }
+    );
   }
 
   getUserByToken(): Observable<UserType> {
@@ -143,13 +171,12 @@ export class AuthService implements OnDestroy {
     } else {
       this.logout(); // Token is expired; clear stored data and navigate to login
     }
-  
+
     return of(undefined);
   }
-  
 
   // need create new user then login
-  registration(user: UserModel): Observable<any> {
+  registration(user: ForesightaGeneralUserModel): Observable<any> {
     this.isLoadingSubject.next(true);
     return this.authHttpService.createUser(user).pipe(
       map(() => {
@@ -157,7 +184,7 @@ export class AuthService implements OnDestroy {
       }),
       switchMap(() => this.login(user.email, user.password)),
       catchError((err) => {
-        console.error('err', err);
+        console.error("err", err);
         return of(undefined);
       }),
       finalize(() => this.isLoadingSubject.next(false))
@@ -187,7 +214,7 @@ export class AuthService implements OnDestroy {
       if (!lsValue) {
         return undefined;
       }
-  
+
       const authData = JSON.parse(lsValue);
       return authData;
     } catch (error) {
@@ -195,14 +222,15 @@ export class AuthService implements OnDestroy {
       return undefined;
     }
   }
-  checkUserRoleAndRedirect(user:any) {
+  checkUserRoleAndRedirect(user: any) {
     if (user) {
-
-      if (user.roles && (user.roles.includes('admin') || user.roles.includes('staff'))) {
-        this.router.navigate(['/admin-dashboard']);
+      if (
+        user.roles &&
+        (user.roles.includes("admin") || user.roles.includes("staff"))
+      ) {
+        this.router.navigate(["/admin-dashboard"]);
       }
     }
-
   }
   ngOnDestroy() {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());

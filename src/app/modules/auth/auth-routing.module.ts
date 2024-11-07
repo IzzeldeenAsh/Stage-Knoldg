@@ -7,6 +7,7 @@ import { ForgotPasswordComponent } from './components/forgot-password/forgot-pas
 import { LogoutComponent } from './components/logout/logout.component';
 import { VerficationCardComponent } from './components/verfication-card/verfication-card.component';
 import { WaitComponent } from './components/wait/wait.component';
+import { SignUpComponent } from './components/sign-up/sign-up.component';
 
 const routes: Routes = [
   {
@@ -38,6 +39,10 @@ const routes: Routes = [
       {
         path: 'forgot-password',
         component: ForgotPasswordComponent,
+      },
+      {
+        path: 'sign-up',
+        component: SignUpComponent,
       },
       {
         path: 'logout',
