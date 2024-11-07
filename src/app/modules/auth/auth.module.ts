@@ -11,6 +11,7 @@ import { AuthComponent } from './auth.component';
 import { TranslationModule } from '../i18n/translation.module';
 import { LanguageSwitchModule } from 'src/app/reusable-components/language-switch/language-switch.module';
 import { VerficationCardComponent } from './components/verfication-card/verfication-card.component';
+import { MessageService } from 'primeng/api';
 import { DropdownModule } from 'primeng/dropdown';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
@@ -20,6 +21,8 @@ import { TreeSelectModule } from 'primeng/treeselect';
 import { PasswordModule } from 'primeng/password';
 import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { SignUpComponent } from './components/sign-up/sign-up.component';
+import { ToastModule } from 'primeng/toast';
 @NgModule({
   declarations: [
     LoginComponent,
@@ -27,19 +30,21 @@ import { MultiSelectModule } from 'primeng/multiselect';
     ForgotPasswordComponent,
     VerficationCardComponent,
     LogoutComponent,
+    SignUpComponent,
     WaitComponent,
     AuthComponent,
   ],
   imports: [
     CommonModule,
+    AuthRoutingModule,
     TranslationModule,
     TreeSelectModule,
     MessagesModule,
     SweetAlert2Module.forChild(),
-    AuthRoutingModule,
     ProgressBarModule,
     InputTextModule,
     PasswordModule,
+    ToastModule,
     LanguageSwitchModule,
     FormsModule,
     ReactiveFormsModule,
@@ -47,5 +52,6 @@ import { MultiSelectModule } from 'primeng/multiselect';
     DropdownModule,
     HttpClientModule,
   ],
+  providers:[MessageService]
 })
 export class AuthModule {}

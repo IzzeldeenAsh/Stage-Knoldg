@@ -44,7 +44,9 @@ export class AdminHeaderComponent {
     })
   }
   signOut(){
-    this._auth.logout()
+    this._auth.logout().subscribe((res)=>{
+      this.router.navigateByUrl("/")
+    })
   }
 
 }

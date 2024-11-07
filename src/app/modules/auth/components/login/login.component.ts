@@ -1,18 +1,19 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subscription, Observable } from 'rxjs';
-import { first } from 'rxjs/operators';
-import { AuthService } from '../../services/auth.service';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { TranslationService } from 'src/app/modules/i18n/translation.service';
-import { ScrollAnimsService } from 'src/app/_fake/services/scroll-anims/scroll-anims.service';
-import { Message } from 'primeng/api';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from "@angular/core";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { Observable } from "rxjs";
+import { first } from "rxjs/operators";
+import { AuthService } from "../../services/auth.service";
+import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
+import { TranslationService } from "src/app/modules/i18n/translation.service";
+import { ScrollAnimsService } from "src/app/_fake/services/scroll-anims/scroll-anims.service";
+import { Message } from "primeng/api";
+import {BaseComponent} from "src/app/modules/base.component"
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss'],
+  selector: "app-login",
+  templateUrl: "./login.component.html",
+  styleUrls: ["./login.component.scss"],
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
   // KeenThemes mock, change it to:
   defaultAuth: any = {
     email: null,
@@ -22,12 +23,11 @@ export class LoginComponent implements OnInit, OnDestroy {
   hasError: boolean;
   returnUrl: string;
   isLoading$: Observable<boolean>;
-  selectedLang: string = 'en';
-  messages: Message[] = [];  // Array to hold error messages
+  selectedLang: string = "en";
+  messages: Message[] = []; // Array to hold error messages
   isRTL: boolean = false; // Added for RTL logic
   passwordVisible: boolean = false;
   // private fields
-  private unsubscribe: Subscription[] = []; // Read more: => https://brianflove.com/2016/12/11/anguar-2-unsubscribe-observables/
 
   constructor(
     private fb: FormBuilder,
@@ -35,17 +35,12 @@ export class LoginComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private translationService: TranslationService,
-    private scrollAnims: ScrollAnimsService,
-    
+    scrollAnims: ScrollAnimsService,
   ) {
-    
+    super(scrollAnims);
     this.isLoading$ = this.authService.isLoading$;
-    // redirect to home if already logged in
-    // if (this.authService.currentUserValue) {
-    //   this.router.navigate(['/']);
-    // }
     this.selectedLang = this.translationService.getSelectedLanguage();
-    this.isRTL = this.selectedLang === 'ar'; // Set RTL based on the selected language
+    this.isRTL = this.selectedLang === "ar"; // Set RTL based on the selected language
   }
   ngAfterViewInit(): void {
     setTimeout(() => {
@@ -53,16 +48,15 @@ export class LoginComponent implements OnInit, OnDestroy {
     }, 100); // Delay to ensure DOM elements are fully loaded
   }
 
- 
   ngOnInit(): void {
     this.initForm();
     // get return url from route parameters or default to '/'
     this.returnUrl =
-      this.route.snapshot.queryParams['returnUrl'.toString()] || '/';
+      this.route.snapshot.queryParams["returnUrl".toString()] || "/";
 
-      this.translationService.onLanguageChange().subscribe((lang)=>{
-        this.selectedLang =lang;
-      })
+    this.translationService.onLanguageChange().subscribe((lang) => {
+      this.selectedLang = lang;
+    });
   }
 
   // convenience getter for easy access to form fields
@@ -92,42 +86,42 @@ export class LoginComponent implements OnInit, OnDestroy {
     });
   }
 
-
   togglePasswordVisibility(passwordField: HTMLInputElement): void {
     this.passwordVisible = !this.passwordVisible;
-    passwordField.type = this.passwordVisible ? 'text' : 'password';
+    passwordField.type = this.passwordVisible ? "text" : "password";
   }
   submit() {
     this.hasError = false;
     const loginSubscr = this.authService
-    .login(this.f.email.value, this.f.password.value)
-    .pipe(first())
-    .subscribe({
-      next : (res) =>{
-        if(res && res?.roles){
-         if (res.roles.includes('admin') || res.roles.includes('staff')) {
-            this.router.navigate(['/admin-dashboard']);
-          } else {
-            this.router.navigate(['/auth/wait']);  // Default to /home if no admin or staff roles
+      .login(this.f.email.value, this.f.password.value)
+      .pipe(first())
+      .subscribe({
+        next: (res) => {
+          if (res && res?.roles) {
+            if (res.roles.includes("admin") || res.roles.includes("staff")) {
+              this.router.navigate(["/admin-dashboard"]);
+            } else {
+              this.router.navigate(["/auth/wait"]); // Default to /home if no admin or staff roles
+            }
           }
-        }
-      },
-      error : (error)=>{
-        this.messages = [];
-        
+        },
+        error: (error) => {
+          this.messages = [];
+
           // Check if the error contains validation messages
           if (error.validationMessages) {
-            this.messages = error.validationMessages;  // Set the messages array
+            this.messages = error.validationMessages; // Set the messages array
           } else {
-            this.messages.push({ severity: 'error', summary: 'Error', detail: 'An unexpected error occurred.' });
+            this.messages.push({
+              severity: "error",
+              summary: "Error",
+              detail: "An unexpected error occurred.",
+            });
           }
-      }
-    });
-   this.unsubscribe.push(loginSubscr);
-   
+        },
+      });
+    this.unsubscribe.push(loginSubscr);
   }
 
-  ngOnDestroy() {
-    this.unsubscribe.forEach((sb) => sb.unsubscribe());
-  }
+
 }

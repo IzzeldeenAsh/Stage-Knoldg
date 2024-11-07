@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { UserModel } from '../../models/user.model';
+import { ForesightaGeneralUserModel, UserModel } from '../../models/user.model';
 import { environment } from '../../../../../environments/environment';
 import { AuthModel } from '../../models/auth.model';
 
 const API_USERS_URL = `auth`;
+const API_GENERALREGISTER= 'https://api.4sighta.com/api/auth/register'
 
 @Injectable({
   providedIn: 'root',
@@ -28,9 +29,17 @@ export class AuthHTTPService {
   }
 
   // CREATE =>  POST: add a new user to the server
-  createUser(user: UserModel): Observable<UserModel> {
-    return this.http.post<UserModel>(API_USERS_URL, user);
+  createUser(user: ForesightaGeneralUserModel): Observable<any> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': 'en' // As per your example
+    });
+
+    return this.http.post<ForesightaGeneralUserModel>(API_GENERALREGISTER, user,{headers});
   }
+
+
+ 
 
   // Your server should check email => If email exists send link to the user and return true | If email doesn't exist return false
   forgotPassword(email: string): Observable<boolean> {
