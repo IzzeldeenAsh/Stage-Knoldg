@@ -313,3 +313,9 @@ html[dir="rtl"] .p-element{
 html[dir="ltr"] .p-element{
     font-family: 'Inter' ,"sans-serif" !important;
 }
+html[dir="rtl"] .logo{
+    right: 20px;
+  }
+  html[dir="ltr"] .logo{
+    left: 20px;
+  }

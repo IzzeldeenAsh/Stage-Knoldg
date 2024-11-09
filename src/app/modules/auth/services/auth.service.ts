@@ -61,7 +61,7 @@ export class AuthService implements OnDestroy {
         const auth = new AuthModel();
         auth.authToken = response.data.token; // Extract the token from the response
         this.setAuthFromLocalStorage(auth);
-
+        console.log(response);
         // Store user information in local storage
         const user: UserType = {
           id: response.data.id,
@@ -149,9 +149,6 @@ export class AuthService implements OnDestroy {
     localStorage.removeItem(this.authLocalStorageToken);
     localStorage.removeItem("currentUser");
     localStorage.removeItem("authToken");
-    // this.router.navigate(['/auth/login'], {
-    //   queryParams: {},
-    // });
     return this.http.post<any>(
       "https://api.4sighta.com/api/account/logout",
       {},

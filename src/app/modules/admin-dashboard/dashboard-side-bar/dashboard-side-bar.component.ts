@@ -10,10 +10,8 @@ import { first } from 'rxjs';
 })
 export class DashboardSideBarComponent implements OnInit {
   isSidebarHidden: boolean = false; // Sidebar is visible by default for larger screens
-  username:string|undefined = ''
   base:string=''
   page:string=''
-  roles:any=[]
   constructor( 
     public router: Router,
     private _auth:AuthService
@@ -36,14 +34,8 @@ export class DashboardSideBarComponent implements OnInit {
 
   ngOnInit(): void {
     this.base=this.router.url.split('/')[3];
-    this._auth.currentUser$.pipe(first()).subscribe((res)=>{
-      const user = res
-      this.username = user?.name;
-      this.roles = user?.roles  ? user?.roles : [];
-    })
+   
   }
-  signOut(){
-    this._auth.logout()
-  }
+
   
 }

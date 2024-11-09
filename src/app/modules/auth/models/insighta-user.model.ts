@@ -5,7 +5,8 @@ export class InsightaUserModel {
     countryId: number | null = null; // Country ID (nullable)
     country: string | null = null; // Country name (nullable)
     roles: string[] = []; // Array of roles (e.g., 'admin', 'staff')
-  
+    profile_photo_url?:string;
+    status?:string;
     constructor(init?: Partial<InsightaUserModel>) {
       Object.assign(this, init);
     }
