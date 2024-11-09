@@ -13,10 +13,8 @@ export class AdminHeaderComponent {
   toggleMobileSideBar(): void {
     this.sidebarVisible = !this.sidebarVisible
   }
-  roles:any=[]
   base:string=''
   page:string=''
-  username:string|undefined = ''
   constructor(     public router: Router,
     private _auth:AuthService){
     
@@ -37,16 +35,8 @@ export class AdminHeaderComponent {
 
   ngOnInit(): void {
     this.base=this.router.url.split('/')[3];
-    this._auth.currentUser$.pipe(first()).subscribe((res)=>{
-      const user = res
-      this.username = user?.name;
-      this.roles = user?.roles  ? user?.roles : [];
-    })
+ 
   }
-  signOut(){
-    this._auth.logout().subscribe((res)=>{
-      this.router.navigateByUrl("/")
-    })
-  }
+
 
 }

@@ -3,11 +3,12 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthComponent } from './auth.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegistrationComponent } from './components/registration/registration.component';
-import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
+
 import { LogoutComponent } from './components/logout/logout.component';
 import { VerficationCardComponent } from './components/verfication-card/verfication-card.component';
 import { WaitComponent } from './components/wait/wait.component';
 import { SignUpComponent } from './components/sign-up/sign-up.component';
+import { PasswordResetComponent } from './components/password-reset/password-reset.component';
 
 const routes: Routes = [
   {
@@ -25,6 +26,10 @@ const routes: Routes = [
         data: { returnUrl: window.location.pathname },
       },
       {
+        path: 'password-reset',
+        component: PasswordResetComponent,
+      },
+      {
         path: 'registration',
         component: RegistrationComponent,
       },
@@ -36,10 +41,7 @@ const routes: Routes = [
         path: 'wait',
         component: WaitComponent,
       },
-      {
-        path: 'forgot-password',
-        component: ForgotPasswordComponent,
-      },
+     
       {
         path: 'sign-up',
         component: SignUpComponent,
