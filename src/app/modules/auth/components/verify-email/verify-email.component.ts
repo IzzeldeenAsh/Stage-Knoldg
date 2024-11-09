@@ -21,6 +21,7 @@ export class VerifyEmailComponent extends BaseComponent implements OnInit {
 
   private insightaHost: string = "https://api.4sighta.com";
   verified: boolean=false;
+  showSignUpButton: boolean=false;
 
   constructor(
     private route: ActivatedRoute,
@@ -36,12 +37,12 @@ export class VerifyEmailComponent extends BaseComponent implements OnInit {
   }
 
   verify() {
+    this.showSignUpButton=false;
     this.error = false;
     this.route.queryParamMap.subscribe((paramMap) => {
       let paramsValue = paramMap.get("params");
-      const signature = paramMap.get("signature");
 
-      if (!paramsValue || !signature) {
+      if (!paramsValue ) {
         this.verificationStatus = "Invalid verification link.";
         this.error = true;
         this.loading = false;
@@ -87,8 +88,8 @@ export class VerifyEmailComponent extends BaseComponent implements OnInit {
         return;
       }
       // Construct the API URL
-      const apiUrl = `${this.insightaHost}/api/account/email/${mainParams}?expires=${expires}&signature=${signature}`;
-      
+      const apiUrl = `${this.insightaHost}/api/account/email/${paramsValue}`;
+
       console.log("API URL:", apiUrl);
 
       // Make the HTTP GET request to verify the email
@@ -119,7 +120,7 @@ export class VerifyEmailComponent extends BaseComponent implements OnInit {
     this.resendErrorMessage = "";
     this.resendSuccessMessage = "";
     this.error = false;
-
+    this.showSignUpButton=false;
     const resendApiUrl = `${this.insightaHost}/api/account/email/resend`;
 
     this.http.post(resendApiUrl, {}).subscribe({
@@ -135,9 +136,10 @@ export class VerifyEmailComponent extends BaseComponent implements OnInit {
         this.error = true;
         console.error("Resend Verification Error:", error);
         if (error.status === 400) {
-          this.resendErrorMessage =
-            "The provided email address is invalid or already verified.";
-        } else {
+          this.resendErrorMessage ="Please try again later."
+        } else if (error.status ===401){
+          this.showSignUpButton=true
+        }else {
           this.resendErrorMessage = "Please try again later.";
         }
         this.loading = false;
@@ -147,5 +149,8 @@ export class VerifyEmailComponent extends BaseComponent implements OnInit {
 
   toApp() {
     this.router.navigateByUrl('/')
+  }
+  signuppath(){
+    this.router.navigateByUrl('/auth/sign-up')
   }
 }
