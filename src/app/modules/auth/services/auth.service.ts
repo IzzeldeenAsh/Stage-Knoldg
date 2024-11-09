@@ -24,7 +24,6 @@ export class AuthService implements OnDestroy {
   // private fields
   private unsubscribe: Subscription[] = []; // Read more: => https://brianflove.com/2016/12/11/anguar-2-unsubscribe-observables/
   private authLocalStorageToken = `foresighta-creds`;
-
   // public fields
   currentUser$: Observable<UserType>;
   isLoading$: Observable<boolean>;
@@ -34,11 +33,9 @@ export class AuthService implements OnDestroy {
   get currentUserValue(): UserType {
     return this.currentUserSubject.value;
   }
-
   set currentUserValue(user: UserType) {
     this.currentUserSubject.next(user);
   }
-
   constructor(
     private authHttpService: AuthHTTPService,
     private router: Router,
@@ -51,7 +48,6 @@ export class AuthService implements OnDestroy {
     const subscr = this.getUserByToken().subscribe();
     this.unsubscribe.push(subscr);
   }
-
   // public methods
   login(email: string, password: string): Observable<UserType> {
     this.isLoadingSubject.next(true);
@@ -83,19 +79,14 @@ export class AuthService implements OnDestroy {
   getGoogleAuthRedirectUrl(): Observable<string> {
     return this.http.get('https://api.4sighta.com/api/auth/provider/google', { responseType: 'text' });
   }
-
   getLinkedInAuthRedirectUrl(): Observable<string> {
     return this.http.get('https://api.4sighta.com/api/auth/provider/linkedin', { responseType: 'text' });
   }
-  
-
-
   private setUserInLocalStorage(user: UserType): void {
     if (user) {
       localStorage.setItem("currentUser", JSON.stringify(user));
     }
   }
-
   private getUserFromLocalStorage(): UserType | undefined {
     const userJson = localStorage.getItem("currentUser");
     if (userJson) {
@@ -103,7 +94,6 @@ export class AuthService implements OnDestroy {
     }
     return undefined;
   }
-
   private handleError(error: any) {
     // Initialize an empty array to hold the formatted error messages
     let validationErrors: any[] = [];
@@ -130,7 +120,6 @@ export class AuthService implements OnDestroy {
       validationMessages: validationErrors,
     }));
   }
-
   private isTokenExpired(token: string): boolean {
     if (!token) {
       return true;
@@ -140,7 +129,6 @@ export class AuthService implements OnDestroy {
     const currentTime = Math.floor(Date.now() / 1000);
     return payload.exp < currentTime;
   }
-
   logout() {
     const headers = new HttpHeaders({
       Accept: "application/json",
@@ -155,7 +143,6 @@ export class AuthService implements OnDestroy {
       { headers }
     );
   }
-
   getUserByToken(): Observable<UserType> {
     const authData = this.getAuthFromLocalStorage();
     if (authData && !this.isTokenExpired(authData.authToken)) {
@@ -171,7 +158,6 @@ export class AuthService implements OnDestroy {
 
     return of(undefined);
   }
-
   // need create new user then login
   registration(user: ForesightaGeneralUserModel): Observable<any> {
     this.isLoadingSubject.next(true);
@@ -181,8 +167,7 @@ export class AuthService implements OnDestroy {
       }),
       switchMap(() => this.login(user.email, user.password)),
       catchError((err) => {
-        console.error("err", err);
-        return of(undefined);
+        return throwError(err);
       }),
       finalize(() => this.isLoadingSubject.next(false))
     );

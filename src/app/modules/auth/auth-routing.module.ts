@@ -9,6 +9,7 @@ import { VerficationCardComponent } from './components/verfication-card/verficat
 import { WaitComponent } from './components/wait/wait.component';
 import { SignUpComponent } from './components/sign-up/sign-up.component';
 import { PasswordResetComponent } from './components/password-reset/password-reset.component';
+import { VerifyEmailComponent } from './components/verify-email/verify-email.component';
 
 const routes: Routes = [
   {
@@ -24,6 +25,10 @@ const routes: Routes = [
         path: 'login',
         component: LoginComponent,
         data: { returnUrl: window.location.pathname },
+      },
+      {
+        path:'verify-email',
+        component:VerifyEmailComponent,
       },
       {
         path: 'password-reset',

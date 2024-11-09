@@ -66,7 +66,7 @@ export class UserModel extends AuthModel {
 }
 
 
-export class ForesightaGeneralUserModel extends AuthModel {
+export class ForesightaGeneralUserModel  {
   first_name: string;
   last_name: string;
   email: string;
