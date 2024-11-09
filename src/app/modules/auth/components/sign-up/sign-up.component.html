@@ -53,6 +53,9 @@
               novalidate
               id="kt_sign_up_form"
             >
+              <!-- General Error Messages -->
+            
+            
               <!-- Heading -->
               <div class="text-center mb-11">
                 <h1 class="text-gray-900 fw-bolder mb-3">{{ 'AUTH.REGISTRATION.TITLE' | translate }}</h1>
@@ -60,26 +63,29 @@
                   {{ 'AUTH.REGISTRATION.SUBTITLE' | translate }}
                 </div>
               </div>
-              <!-- Login options -->
+            
+              <!-- Login Options -->
               <div class="row g-3 mb-9">
                 <div class="col-md-6">
                   <a (click)="signInWithGoogle($event)" class="btn btn-flex btn-outline btn-text-gray-700 btn-active-color-primary bg-state-light flex-center text-nowrap w-100">
-                    <img alt="Google Logo" src="../../../../../assets/media/svg/brand-logos/google-icon.svg" class="h-15px " [ngClass]="{'me-3' : translate.currentLang=='en' , 'ms-3' : translate.currentLang=='ar'}"/>
+                    <img alt="Google Logo" src="../../../../../assets/media/svg/brand-logos/google-icon.svg" class="h-15px" [ngClass]="{'me-3': translate.currentLang=='en', 'ms-3': translate.currentLang=='ar'}" />
                     {{ 'AUTH.REGISTRATION.GOOGLE_SIGNUP' | translate }}
                   </a>
                 </div>
                 <div class="col-md-6">
-                  <a (click)="signInWithLinkedIn($event)"  class="btn btn-flex btn-outline btn-text-gray-700 btn-active-color-primary bg-state-light flex-center text-nowrap w-100">
-                    <img alt="LinkedIn Logo" src="../../../../../assets/media/svg/brand-logos/linkedin-2.svg" class="theme-light-show h-15px " [ngClass]="{'me-3' : translate.currentLang=='en' , 'ms-3' : translate.currentLang=='ar'}" />
-                    <img alt="Apple Logo" src="../../../../../assets/media/svg/brand-logos/apple-black-dark.svg" class="theme-dark-show h-15px " [ngClass]="{'me-3' : translate.currentLang=='en' , 'ms-3' : translate.currentLang=='ar'}" />
+                  <a (click)="signInWithLinkedIn($event)" class="btn btn-flex btn-outline btn-text-gray-700 btn-active-color-primary bg-state-light flex-center text-nowrap w-100">
+                    <img alt="LinkedIn Logo" src="../../../../../assets/media/svg/brand-logos/linkedin-2.svg" class="theme-light-show h-15px" [ngClass]="{'me-3': translate.currentLang=='en', 'ms-3': translate.currentLang=='ar'}" />
+                    <img alt="Apple Logo" src="../../../../../assets/media/svg/brand-logos/apple-black-dark.svg" class="theme-dark-show h-15px" [ngClass]="{'me-3': translate.currentLang=='en', 'ms-3': translate.currentLang=='ar'}" />
                     {{ 'AUTH.REGISTRATION.LINKEDIN_SIGNUP' | translate }}
                   </a>
                 </div>
               </div>
+            
               <!-- Separator -->
               <div class="separator separator-content my-14">
                 <span class="w-125px text-gray-500 fw-semibold fs-7">{{ 'AUTH.REGISTRATION.OR_WITH_EMAIL' | translate }}</span>
               </div>
+            
               <!-- Input Groups -->
               <div class="row mb-4">
                 <!-- First Name -->
@@ -98,7 +104,7 @@
                         (registrationForm.controls['firstName'].dirty || registrationForm.controls['firstName'].touched)
                     }"
                   />
-                  <!-- Validation Errors -->
+                  <!-- Client-Side Validation Errors -->
                   <ng-container
                     [ngTemplateOutlet]="formError"
                     [ngTemplateOutletContext]="{
@@ -107,7 +113,7 @@
                       control: registrationForm.controls['firstName']
                     }"
                   ></ng-container>
-                 
+                  
                   <ng-container
                     [ngTemplateOutlet]="formError"
                     [ngTemplateOutletContext]="{
@@ -116,7 +122,13 @@
                       control: registrationForm.controls['firstName']
                     }"
                   ></ng-container>
+            
+                  <!-- Server-Side Validation Error -->
+                  <div *ngIf="registrationForm.controls['firstName'].errors?.serverError && (registrationForm.controls['firstName'].touched || registrationForm.controls['firstName'].dirty)" class="text-danger mt-1">
+                    {{ registrationForm.controls['firstName'].errors?.serverError }}
+                  </div>
                 </div>
+            
                 <!-- Last Name -->
                 <div class="col-12 col-md-6 mb-4">
                   <input
@@ -133,7 +145,7 @@
                         (registrationForm.controls['lastName'].dirty || registrationForm.controls['lastName'].touched)
                     }"
                   />
-                  <!-- Validation Errors -->
+                  <!-- Client-Side Validation Errors -->
                   <ng-container
                     [ngTemplateOutlet]="formError"
                     [ngTemplateOutletContext]="{
@@ -142,6 +154,7 @@
                       control: registrationForm.controls['lastName']
                     }"
                   ></ng-container>
+            
                   <ng-container
                     [ngTemplateOutlet]="formError"
                     [ngTemplateOutletContext]="{
@@ -150,6 +163,7 @@
                       control: registrationForm.controls['lastName']
                     }"
                   ></ng-container>
+            
                   <ng-container
                     [ngTemplateOutlet]="formError"
                     [ngTemplateOutletContext]="{
@@ -158,8 +172,14 @@
                       control: registrationForm.controls['lastName']
                     }"
                   ></ng-container>
+            
+                  <!-- Server-Side Validation Error -->
+                  <div *ngIf="registrationForm.controls['lastName'].errors?.serverError && (registrationForm.controls['lastName'].touched || registrationForm.controls['lastName'].dirty)" class="text-danger mt-1">
+                    {{ registrationForm.controls['lastName'].errors?.serverError }}
+                  </div>
                 </div>
               </div>
+            
               <!-- Email -->
               <div class="fv-row mb-8 fv-plugins-icon-container">
                 <input
@@ -175,7 +195,7 @@
                       (registrationForm.controls['email'].dirty || registrationForm.controls['email'].touched)
                   }"
                 />
-                <!-- Validation Errors -->
+                <!-- Client-Side Validation Errors -->
                 <ng-container
                   [ngTemplateOutlet]="formError"
                   [ngTemplateOutletContext]="{
@@ -192,7 +212,13 @@
                     control: registrationForm.controls['email']
                   }"
                 ></ng-container>
+            
+                <!-- Server-Side Validation Error -->
+                <div *ngIf="registrationForm.controls['email'].errors?.serverError && (registrationForm.controls['email'].touched || registrationForm.controls['email'].dirty)" class="text-danger mt-1">
+                  {{ registrationForm.controls['email'].errors?.serverError }}
+                </div>
               </div>
+            
               <!-- Password -->
               <div class="fv-row mb-8 fv-plugins-icon-container">
                 <div class="mb-1">
@@ -211,8 +237,11 @@
                       }"
                     />
                     <span
-                      class="btn btn-sm btn-icon position-absolute  top-50 "
-                      [ngClass]="{'end-0 me-n2 translate-middle' : translate.currentLang =='en' , 'start-0 me-2 translate-middle-y' : translate.currentLang =='ar'}"
+                      class="btn btn-sm btn-icon position-absolute top-50"
+                      [ngClass]="{
+                        'end-0 me-n2 translate-middle': translate.currentLang === 'en',
+                        'start-0 me-2 translate-middle-y': translate.currentLang === 'ar'
+                      }"
                       (click)="togglePasswordVisibility()"
                       type="button"
                     >
@@ -223,8 +252,8 @@
                     </span>
                   </div>
                 </div>
-                
-                <!-- Validation Errors -->
+            
+                <!-- Client-Side Validation Errors -->
                 <ng-container
                   [ngTemplateOutlet]="formError"
                   [ngTemplateOutletContext]="{
@@ -241,7 +270,14 @@
                     control: registrationForm.controls['password']
                   }"
                 ></ng-container>
+            
+                <!-- Server-Side Validation Error -->
+                <div *ngIf="registrationForm.controls['password'].errors?.serverError && (registrationForm.controls['password'].touched || registrationForm.controls['password'].dirty)" class="text-danger mt-1">
+                  {{ registrationForm.controls['password'].errors?.serverError }}
+                </div>
               </div>
+            
+     
               <!-- Country (Optional) -->
               <div class="fv-row mb-8 fv-plugins-icon-container">
                 <p-progressBar
@@ -270,7 +306,12 @@
                     </div>
                   </ng-template>
                 </p-dropdown>
+                <!-- Server-Side Validation Error (if any for country) -->
+                <div *ngIf="registrationForm.controls['country'].errors?.serverError && (registrationForm.controls['country'].touched || registrationForm.controls['country'].dirty)" class="text-danger mt-1">
+                  {{ registrationForm.controls['country'].errors?.serverError }}
+                </div>
               </div>
+            
               <!-- Submit Button -->
               <div class="d-grid mb-10">
                 <button
@@ -290,6 +331,7 @@
                   </ng-container>
                 </button>
               </div>
+            
               <!-- Sign in Link -->
               <div class="text-gray-500 text-center fw-semibold fs-6">
                 {{ 'AUTH.REGISTRATION.ALREADY_HAVE_ACCOUNT' | translate }}
@@ -297,7 +339,15 @@
                   {{ 'AUTH.REGISTRATION.SIGNIN_LINK' | translate }}
                 </a>
               </div>
+            
+              <!-- Define the formError Template -->
+              <ng-template #formError let-validation="validation" let-message="message" let-control="control">
+                <div *ngIf="control.hasError(validation) && (control.dirty || control.touched)" class="text-danger">
+                  {{ message }}
+                </div>
+              </ng-template>
             </form>
+            
             <!--end::Form--> 
   
             <!-- Step 2: Email Verification -->
@@ -312,10 +362,18 @@
               <img src="../../../../../assets/media/auth/verify-email.svg" alt="Verify Email" class="img-fluid my-5">
               <p class="text-gray-500 fw-semibold fs-6">
                 {{ 'AUTH.VERIFY_EMAIL.DIDNT_RECEIVE_EMAIL' | translate }}
-                <a href="#" (click)="resendVerificationEmail()" class="link-primary fw-semibold">
+                <span *ngIf="isResendDisabled">
+                  ({{ resendCountdown$ | async }}s)
+                </span>
+                <a 
+                  (click)="onResendClick()" 
+                  class="link-primary fw-semibold"
+                  [class.disabled]="isResendDisabled"
+                  [style.pointer-events]="isResendDisabled ? 'none' : 'auto'">
                   {{ 'AUTH.VERIFY_EMAIL.TRY_AGAIN' | translate }}
                 </a>
               </p>
+              
             </div>
             <!--end::Email Verification-->
 

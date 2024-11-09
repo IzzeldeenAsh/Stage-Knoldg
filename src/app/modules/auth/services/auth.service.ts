@@ -162,10 +162,12 @@ export class AuthService implements OnDestroy {
   registration(user: ForesightaGeneralUserModel): Observable<any> {
     this.isLoadingSubject.next(true);
     return this.authHttpService.createUser(user).pipe(
-      map(() => {
+      map((response: any) => {
         this.isLoadingSubject.next(false);
+        const auth = new AuthModel();
+        auth.authToken = response.data.token; 
+        this.setAuthFromLocalStorage(auth);
       }),
-      switchMap(() => this.login(user.email, user.password)),
       catchError((err) => {
         return throwError(err);
       }),
@@ -213,6 +215,17 @@ export class AuthService implements OnDestroy {
         this.router.navigate(["/admin-dashboard"]);
       }
     }
+  }
+  resendVerificationEmail(): Observable<any> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Language': 'en'
+    });
+    return this.http.post('https://api.4sighta.com/api/account/email/resend',{ headers }).pipe(
+      map((res) => res), // Adjust this based on the API response structure
+      catchError((error) => this.handleError(error))// Use the custom error handler
+    );
   }
   ngOnDestroy() {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());

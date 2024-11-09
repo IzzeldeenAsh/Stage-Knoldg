@@ -20,6 +20,7 @@ export class VerifyEmailComponent extends BaseComponent implements OnInit {
   loading: boolean = true;
 
   private insightaHost: string = "https://api.4sighta.com";
+  verified: boolean=false;
 
   constructor(
     private route: ActivatedRoute,
@@ -87,7 +88,7 @@ export class VerifyEmailComponent extends BaseComponent implements OnInit {
       }
       // Construct the API URL
       const apiUrl = `${this.insightaHost}/api/account/email/${mainParams}?expires=${expires}&signature=${signature}`;
-
+      
       console.log("API URL:", apiUrl);
 
       // Make the HTTP GET request to verify the email
@@ -95,6 +96,7 @@ export class VerifyEmailComponent extends BaseComponent implements OnInit {
         next: (response: any) => {
           // Handle successful verification
           this.verificationStatus = "Email successfully verified!";
+          this.verified=true
           console.log("Verification Response:", response);
         },
         error: (error: HttpErrorResponse) => {
@@ -125,6 +127,7 @@ export class VerifyEmailComponent extends BaseComponent implements OnInit {
         // Handle successful resend
         this.verificationStatus =
           "A new verification email has been sent to your email address.";
+        
         this.loading = false;
       },
       error: (error: HttpErrorResponse) => {
