@@ -1,4 +1,3 @@
-// verify-email.component.ts
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
@@ -20,14 +19,14 @@ export class VerifyEmailComponent extends BaseComponent implements OnInit {
   loading: boolean = true;
 
   private insightaHost: string = "https://api.4sighta.com";
-  verified: boolean=false;
-  showSignUpButton: boolean=false;
+  verified: boolean = false;
+  showSignUpButton: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
     private http: HttpClient,
     scrollAnims: ScrollAnimsService,
-    private router :Router
+    private router: Router
   ) {
     super(scrollAnims);
   }
@@ -37,71 +36,74 @@ export class VerifyEmailComponent extends BaseComponent implements OnInit {
   }
 
   verify() {
-    this.showSignUpButton=false;
+    this.showSignUpButton = false;
     this.error = false;
+    this.loading = true; // Ensure loading is true at the start
+
     this.route.queryParamMap.subscribe((paramMap) => {
       let paramsValue = paramMap.get("params");
 
-      if (!paramsValue ) {
+      if (!paramsValue) {
         this.verificationStatus = "Invalid verification link.";
+        this.errorMessage = "The verification link is invalid.";
         this.error = true;
         this.loading = false;
         return;
       }
 
       const splitParams = paramsValue.split("?");
-      const mainParams = splitParams[0]; // '3/e7e5a4d25faf55663a8267582a53294b856832b2'
+      const mainParams = splitParams[0];
       let expires = "";
 
       if (splitParams.length > 1) {
-        // Extract 'expires' from the split
         const subParams = new URLSearchParams(splitParams[1]);
         expires = subParams.get("expires") || "";
       }
 
-      // If 'expires' was not in 'params', try to get it as a separate query param
       if (!expires) {
         expires = paramMap.get("expires") || "";
       }
 
       if (!expires) {
         this.verificationStatus = "Link expired.";
-        this.error = true;
-        return;
-      }
-      // Convert 'expires' to a number (assuming it's a Unix timestamp in seconds)
-      const expiresTimestamp = Number(expires);
-      if (isNaN(expiresTimestamp)) {
-        this.verificationStatus = "Invalid expiration parameter.";
+        this.errorMessage = "The verification link has expired.";
         this.error = true;
         this.loading = false;
         return;
       }
 
-      // Get current time in seconds
+      const expiresTimestamp = Number(expires);
+      if (isNaN(expiresTimestamp)) {
+        this.verificationStatus = "Invalid expiration parameter.";
+        this.errorMessage =
+          "The verification link has an invalid expiration parameter.";
+        this.error = true;
+        this.loading = false;
+        return;
+      }
+
       const currentTimestamp = Math.floor(Date.now() / 1000);
 
       if (currentTimestamp > expiresTimestamp) {
         this.verificationStatus = "Link has expired.";
+        this.errorMessage = "The verification link has expired.";
         this.error = true;
         this.loading = false;
         return;
       }
-      // Construct the API URL
+
       const apiUrl = `${this.insightaHost}/api/account/email/${paramsValue}`;
 
       console.log("API URL:", apiUrl);
 
-      // Make the HTTP GET request to verify the email
       this.http.get(apiUrl).subscribe({
         next: (response: any) => {
-          // Handle successful verification
           this.verificationStatus = "Email successfully verified!";
-          this.verified=true
+          this.verified = true;
+          this.loading = false; // Ensure loading is false after success
           console.log("Verification Response:", response);
         },
         error: (error: HttpErrorResponse) => {
-          // Handle errors
           console.error("Verification Error:", error);
           if (error.status === 400) {
             this.errorMessage = "Invalid or expired verification link.";
@@ -110,6 +112,8 @@ export class VerifyEmailComponent extends BaseComponent implements OnInit {
               "An unexpected error occurred. Please try again later.";
           }
           this.verificationStatus = "Verification failed.";
+          this.error = true;
+          this.loading = false; // Ensure loading is false after error
         },
       });
     });
@@ -120,26 +124,23 @@ export class VerifyEmailComponent extends BaseComponent implements OnInit {
     this.resendErrorMessage = "";
     this.resendSuccessMessage = "";
     this.error = false;
-    this.showSignUpButton=false;
+    this.showSignUpButton = false;
     const resendApiUrl = `${this.insightaHost}/api/account/email/resend`;
 
     this.http.post(resendApiUrl, {}).subscribe({
       next: (response: any) => {
-        // Handle successful resend
         this.verificationStatus =
           "A new verification email has been sent to your email address.";
-        
         this.loading = false;
       },
       error: (error: HttpErrorResponse) => {
-        // Handle errors
-        this.error = true;
         console.error("Resend Verification Error:", error);
         if (error.status === 400) {
-          this.resendErrorMessage ="Please try again later."
-        } else if (error.status ===401){
-          this.showSignUpButton=true
-        }else {
+          this.resendErrorMessage = "Please try again later.";
+        } else if (error.status === 401) {
+          this.showSignUpButton = true;
+          this.resendErrorMessage = "Your session has expired. Please sign up again.";
+        } else {
           this.resendErrorMessage = "Please try again later.";
         }
         this.loading = false;
@@ -148,9 +149,9 @@ export class VerifyEmailComponent extends BaseComponent implements OnInit {
   }
 
   toApp() {
-    this.router.navigateByUrl('/')
+    this.router.navigateByUrl("/");
   }
-  signuppath(){
-    this.router.navigateByUrl('/auth/sign-up')
+  signuppath() {
+    this.router.navigateByUrl("/auth/sign-up");
   }
 }
