@@ -24,6 +24,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { SignUpComponent } from './components/sign-up/sign-up.component';
 import { ToastModule } from 'primeng/toast';
 import { PasswordResetComponent } from './components/password-reset/password-reset.component';
+import { VerifyEmailComponent } from './components/verify-email/verify-email.component';
 @NgModule({
   declarations: [
     LoginComponent,
@@ -32,6 +33,7 @@ import { PasswordResetComponent } from './components/password-reset/password-res
     PasswordResetComponent,
     LogoutComponent,
     SignUpComponent,
+    VerifyEmailComponent,
     WaitComponent,
     AuthComponent,
   ],
