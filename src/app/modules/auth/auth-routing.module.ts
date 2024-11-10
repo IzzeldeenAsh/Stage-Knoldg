@@ -10,6 +10,7 @@ import { WaitComponent } from './components/wait/wait.component';
 import { SignUpComponent } from './components/sign-up/sign-up.component';
 import { PasswordResetComponent } from './components/password-reset/password-reset.component';
 import { VerifyEmailComponent } from './components/verify-email/verify-email.component';
+import { CallbackComponent } from './components/callback/callback.component';
 
 const routes: Routes = [
   {
@@ -34,6 +35,11 @@ const routes: Routes = [
         path: 'password-reset',
         component: PasswordResetComponent,
       },
+      {
+        path: 'callback',
+        component: CallbackComponent,
+      },
+
       {
         path: 'registration',
         component: RegistrationComponent,
