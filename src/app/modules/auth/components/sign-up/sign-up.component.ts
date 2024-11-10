@@ -167,22 +167,20 @@ export class SignUpComponent extends BaseComponent implements OnInit {
       password_confirmation: formData.password,
       country_id: formData.country.id 
     };
+ 
+    this.authService.registration(user).subscribe({
+      next: (response) => {
+        this.isLoadingSubmit$ = of(false);
+        console.log("sign-up resopone",response);
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Registration successful! Verification email sent.' });
         this.step = 2; // Move to Email Verification step
         this.startResendCooldown()
-
-    // this.authService.registration(user).subscribe({
-    //   next: (response) => {
-    //     this.isLoadingSubmit$ = of(false);
-    //     console.log("sign-up resopone",response);
-    //     this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Registration successful! Verification email sent.' });
-    //     this.step = 2; // Move to Email Verification step
-    //     this.startResendCooldown()
-    //   },
-    //   error: (error) => {
-    //     this.isLoadingSubmit$ = of(false);
-    //     this.handleServerErrors(error);
-    //   }
-    // });
+      },
+      error: (error) => {
+        this.isLoadingSubmit$ = of(false);
+        this.handleServerErrors(error);
+      }
+    });
   }
  
   

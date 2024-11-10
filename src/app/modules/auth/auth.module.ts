@@ -25,6 +25,7 @@ import { SignUpComponent } from './components/sign-up/sign-up.component';
 import { ToastModule } from 'primeng/toast';
 import { PasswordResetComponent } from './components/password-reset/password-reset.component';
 import { VerifyEmailComponent } from './components/verify-email/verify-email.component';
+import { CallbackComponent } from './components/callback/callback.component';
 @NgModule({
   declarations: [
     LoginComponent,
@@ -32,6 +33,7 @@ import { VerifyEmailComponent } from './components/verify-email/verify-email.com
     VerficationCardComponent,
     PasswordResetComponent,
     LogoutComponent,
+    CallbackComponent,
     SignUpComponent,
     VerifyEmailComponent,
     WaitComponent,

@@ -13,11 +13,7 @@ export const routes: Routes = [
   loadChildren: () =>
     import('./modules/auth/auth.module').then((m) => m.AuthModule),
 },
-{
-  path: 'callback',
-  loadChildren: () =>
-    import('./modules/callback/callback.module').then((m) => m.CallbackModule),
-},
+
 // {
 //   path: 'app',
 //   loadChildren: () =>
