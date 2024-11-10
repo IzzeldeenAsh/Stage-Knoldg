@@ -359,13 +359,14 @@
               <p class="text-gray-500 fw-semibold fs-6">
                 {{ 'AUTH.VERIFY_EMAIL.EMAIL_SENT' | translate }}
               </p>
-              <img src="../../../../../assets/media/auth/verify-email.svg" alt="Verify Email" class="img-fluid my-5">
+              <img src="../../../../../assets/media/auth/verify-email.svg" alt="Verify Email" class="img-fluid my-5 fade-up ">
               <p class="text-gray-500 fw-semibold fs-6">
-                {{ 'AUTH.VERIFY_EMAIL.DIDNT_RECEIVE_EMAIL' | translate }}
+           <span>     {{ 'AUTH.VERIFY_EMAIL.DIDNT_RECEIVE_EMAIL' | translate }}</span>
                 <span *ngIf="isResendDisabled">
+                  {{ 'AUTH.VERIFY_EMAIL.COUNTER' | translate }}
                   ({{ resendCountdown$ | async }}s)
                 </span>
-                <a 
+                <a  *ngIf="!isResendDisabled"
                   (click)="onResendClick()" 
                   class="link-primary fw-semibold"
                   [class.disabled]="isResendDisabled"

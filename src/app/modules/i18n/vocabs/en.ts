@@ -69,7 +69,7 @@ export const locale = {
         PASSWORD_MINLENGTH: "Password should have at least 3 symbols",
         PASSWORD_MAXLENGTH: "Password should have a maximum of 100 symbols",
         EMPOWER_INSIGHTS_TEXT: `
-          Unlock a world of advanced data insights tailored to your needs. Stay ahead with real-time insights and strategic data-driven solutions that empower your decision-making process.
+        A revolutionary gateway to a world of research insights and advisors
         `
       },
       FORGOT: {
@@ -143,11 +143,15 @@ export const locale = {
         "STAY_TUNED_MESSAGE": `
           Stay tuned for more updates. Your future of smarter decisions is about to begin!
         `,
-        "EMPOWER_INSIGHTS_TITLE": "Discover Insights from Anywhere",
+        "EMPOWER_INSIGHTS_TITLE": "Unlock Your Expertise with Foresighta.",
         "EMPOWER_INSIGHTS_TEXT": `
-          Uncover a world of advanced insights tailored to your needs.<br /><br />
-          <span class="text-dark font-weight-bolder" dir='ltr'>Foresighta</span> provides easy access to expert consulting across all your devices.<br /><br />
-          Get started now with pre-registration to gain priority access to the platform that empowers your business with unmatched knowledge and insights.
+        Start generating revenue from your insights every time your report is downloaded.<br /><br />
+          <span class="text-dark font-weight-bolder" ><strong>Reach a Global Audience</strong></span> by uploading and sharing your research, reports and data that will have a meaningful impact on individuals, businesses decision-makers around the world.<br /><br />
+          Foresighta provides a unique and redefined consulting opportunity. Experience Flexible  <span class="text-dark font-weight-bolder" >Engagement with visitors</span>  who can reach out to you for one-on-one consultations and expert opinions, allowing you to offer tailored guidance.
+          <br><br><span class="text-dark font-weight-bolder" ><strong>Work at your convenience, work any time.</strong></span> <br><br>
+          Bring your reports and studies out of the drawer and let your experience shine.
+Your wealth of knowledge is valued and many are eager to learn from it.
+<br><br>Build your ideal team from a pool of expert consultants and execute a tailored project plan to achieve your objectives.
         `,
         "OPTIONAL": "Optional",
         "PREREGISTERATION": "Pre-register now",
@@ -180,7 +184,30 @@ export const locale = {
         DIDNT_RECEIVE_EMAIL: "Didn't receive an email?",
         TRY_AGAIN: "Try Again",
         RESEND_EMAIL: "Resend Email",
-        EMAIL_SENT:"A verification link has been sent to your email."
+        EMAIL_SENT:"A verification link has been sent to your email.",
+        COUNTER: "Resend again after",
+
+        PLEASE_WAIT: "Please wait!",
+        ALL_SET: "You're all set!",
+        GET_STARTED: "Get Started!",
+        ALT_FAILED_VERIFICATION: "Failed Verification",
+        ALT_VERIFY_EMAIL: "Verify Email",
+        RESEND: "Resend",
+        VERIFYING_EMAIL: "Verifying your email!",
+        INVALID_VERIFICATION_LINK: "Invalid verification link.",
+        VERIFICATION_LINK_INVALID: "The verification link is invalid.",
+        LINK_EXPIRED: "Link expired.",
+        VERIFICATION_LINK_EXPIRED: "The verification link has expired.",
+        INVALID_EXPIRATION_PARAMETER: "Invalid expiration parameter.",
+        VERIFICATION_LINK_INVALID_EXPIRATION_PARAMETER: "The verification link has an invalid expiration parameter.",
+        EMAIL_SUCCESSFULLY_VERIFIED: "Email successfully verified!",
+        VERIFICATION_FAILED: "Verification failed.",
+        NEW_VERIFICATION_EMAIL_SENT: "A new verification email has been sent to your email address.",
+        INVALID_OR_EXPIRED_VERIFICATION_LINK: "Invalid or expired verification link.",
+        UNEXPECTED_ERROR: "An unexpected error occurred. Please try again later.",
+        PLEASE_TRY_AGAIN_LATER: "Please try again later.",
+        SESSION_EXPIRED_SIGN_UP_AGAIN: "Your session has expired. Please sign up again.",
+    
       },
     },
     BUTTONS: {

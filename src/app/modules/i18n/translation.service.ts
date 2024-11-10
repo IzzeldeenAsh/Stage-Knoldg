@@ -3,12 +3,14 @@ import { TranslateService } from '@ngx-translate/core';
 import { locale as enLang } from './vocabs/en';
 import { locale as arLang } from './vocabs/ar';
 import { BehaviorSubject } from 'rxjs';
+
 @Injectable({
   providedIn: 'root',
 })
 export class TranslationService {
   private langIds: any = [];
-  private currentLang : BehaviorSubject<string> = new BehaviorSubject<string>(this.getSelectedLanguage())
+  private currentLang: BehaviorSubject<string> = new BehaviorSubject<string>(this.getSelectedLanguage());
+
   constructor(private translate: TranslateService) {
     this.translate.addLangs(['en', 'ar']);
     this.translate.setDefaultLang('en');
@@ -31,16 +33,16 @@ export class TranslationService {
       this.translate.use(lang);
       localStorage.setItem('language', lang);
       this.updateDirection(lang);
-      this.currentLang.next(lang)
+      this.currentLang.next(lang);
     }
   }
+
   onLanguageChange() {
     return this.currentLang.asObservable(); // Expose an observable for global subscriptions
   }
 
-
   getSelectedLanguage(): any {
-    return localStorage.getItem('language') 
+    return localStorage.getItem('language') || 'en';
   }
 
   updateDirection(lang: string) {
@@ -74,5 +76,10 @@ export class TranslationService {
     if (linkElement) {
       document.head.removeChild(linkElement);
     }
+  }
+
+  // **Add this method**
+  getTranslation(key: string): string {
+    return this.translate.instant(key);
   }
 }

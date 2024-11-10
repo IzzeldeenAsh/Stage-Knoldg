@@ -55,10 +55,10 @@ export const locale = {
         EMAIL_MAXLENGTH:
           "يجب أن يحتوي البريد الإلكتروني على 360 حرفًا كحد أقصى",
         PASSWORD_MINLENGTH: "يجب أن تحتوي كلمة المرور على 3 أحرف على الأقل",
-        WELCOME_LOGIN: "مرحباً بك في فورسايتا",
+        WELCOME_LOGIN: "أهلاً بكم في فورسايتا",
         PASSWORD_MAXLENGTH: "يجب أن تحتوي كلمة المرور على 100 حرف كحد أقصى",
         EMPOWER_INSIGHTS_TEXT: `
-    اكتشف عالماً من التحليلات البيانية المتقدمة المصممة خصيصاً لتلبية احتياجاتك. ابقَ في الصدارة مع رؤى فورية وحلول استراتيجية قائمة على البيانات تدعم عملية اتخاذ القرارات لديك.
+        البوابة العصرية لعالم من الرؤى الاستشارية
    
   `,
       },
@@ -135,11 +135,17 @@ export const locale = {
         STAY_TUNED_MESSAGE: `
           ترقب المزيد من التحديثات. مستقبلك من القرارات الأكثر ذكاءً على وشك البدء!
         `,
-        EMPOWER_INSIGHTS_TITLE: "استكشف الرؤى من كل مكان",
+        EMPOWER_INSIGHTS_TITLE: "أطلق العنان لخبراتك.",
         EMPOWER_INSIGHTS_TEXT: `
-            اكتشف عالماً من الرؤى المتقدمة التي تلبي احتياجاتك.<br /><br />
-            <span class="text-dark font-weight-bolder" dir='ltr'>فورسايتا</span> تقدم وصولاً سهلاً إلى استشارات الخبراء عبر جميع أجهزتك.<br /><br />
-            ابدأ الآن بالتسجيل المسبق للحصول على أولوية الوصول إلى المنصة التي تزود عملك بمعرفة ورؤى لا مثيل لها.
+        إبدأ رحلة جني الإيرادات في كل مرة يتم فيها تنزيل محتواك من قبل الزوار.<br /><br />
+            <span class="text-dark font-weight-bolder" ><strong>جمهورك العالم </strong></span> <br>من خلال مشاركتك رؤاك وخبراتك للأفراد والشركات في العالم أجمع، ستحدث أبحاثك وتقاريرك تغير ملموس في صناعة القرار.<br /><br />
+            <span class="text-dark font-weight-bolder" >إبدأ رحلة العمل الاستشاري الفريدة من نوعها</span>
+
+            ، فالمنصة تتيح للزائر ميزة التواصل معك للحصول على الاستشارات الفردية والإرشادات المتخصصة.
+            <br><br><span class="text-dark font-weight-bolder" ><strong>أينما تكون وفي الوقت الذي تريد.</strong></span><br><br>
+            أخرج دراساتك وأبحاثك من مكتبتك وقم برفعها على المنصة، فنحن نقدر مخزونك الفكري وكثير ينتظرون أن يطّلعوا عليها.<br><br>
+            اختر فريقك الاستشاري بنفسك واشرع بخطة العمل التي تتناسب وأهداف مشروعك.
+            
           `,
         // Add other translations as needed
       },
@@ -149,7 +155,28 @@ export const locale = {
         DIDNT_RECEIVE_EMAIL: "لم تستلم بريدًا إلكترونيًا؟",
         TRY_AGAIN: "حاول مرة أخرى",
         RESEND_EMAIL: "إعادة إرسال البريد الإلكتروني",
-        EMAIL_SENT: "لقد تم إرسال رابط التحقق لبريدك الإلكتروني."
+        EMAIL_SENT: "لقد تم إرسال رابط التحقق لبريدك الإلكتروني.",
+        COUNTER: "أعد الإرسال بعد",
+        PLEASE_WAIT: "يرجى الانتظار!",
+        ALL_SET: "تم الأمر!",
+        GET_STARTED: "ابدأ الآن!",
+        ALT_FAILED_VERIFICATION: "فشل التحقق",
+        ALT_VERIFY_EMAIL: "تأكيد البريد الإلكتروني",
+        RESEND: "إعادة الإرسال",
+        VERIFYING_EMAIL: "جارٍ التحقق من بريدك الإلكتروني!",
+        INVALID_VERIFICATION_LINK: "رابط التحقق غير صالح.",
+        VERIFICATION_LINK_INVALID: "رابط التحقق غير صالح.",
+        LINK_EXPIRED: "انتهت صلاحية الرابط.",
+        VERIFICATION_LINK_EXPIRED: "انتهت صلاحية رابط التحقق.",
+        INVALID_EXPIRATION_PARAMETER: "معلمة انتهاء الصلاحية غير صالحة.",
+        VERIFICATION_LINK_INVALID_EXPIRATION_PARAMETER: "رابط التحقق يحتوي على معلمة انتهاء صلاحية غير صالحة.",
+        EMAIL_SUCCESSFULLY_VERIFIED: "تم التحقق من البريد الإلكتروني بنجاح!",
+        VERIFICATION_FAILED: "فشل التحقق.",
+        NEW_VERIFICATION_EMAIL_SENT: "تم إرسال بريد إلكتروني جديد للتحقق إلى عنوان بريدك الإلكتروني.",
+        INVALID_OR_EXPIRED_VERIFICATION_LINK: "رابط التحقق غير صالح أو منتهي الصلاحية.",
+        UNEXPECTED_ERROR: "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى لاحقًا.",
+        PLEASE_TRY_AGAIN_LATER: "يرجى المحاولة مرة أخرى لاحقًا.",
+        SESSION_EXPIRED_SIGN_UP_AGAIN: "انتهت صلاحية جلستك. يرجى التسجيل مرة أخرى.",
       },
     },
     COMMON: {
