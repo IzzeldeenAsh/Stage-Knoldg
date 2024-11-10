@@ -92,7 +92,7 @@ export class VerifyEmailComponent extends BaseComponent implements OnInit {
         return;
       }
 
-      const apiUrl = `${this.insightaHost}/api/account/email/${paramsValue}`;
+      const apiUrl = `${this.insightaHost}/api/account/email/verify/${paramsValue}`;
 
       console.log("API URL:", apiUrl);
 
