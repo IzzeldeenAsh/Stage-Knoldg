@@ -1,0 +1,52 @@
+/* navbar.component.css */
+
+/* Container Styles */
+.menu-dropdown {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+  }
+  
+  /* Dropdown Menu Styles */
+  .menu-sub-dropdown {
+    position: absolute;
+    top: 100%; /* Positions the menu directly below the trigger */
+    right: 0;
+    z-index: 200; /* Ensure the dropdown appears above other elements */
+    width: 275px;
+    background: #fff; /* Menu background */
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 0.5rem 0;
+    display: none; /* Hidden by default */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+  
+  /* Show the dropdown menu when the 'show' class is applied */
+  .menu-sub-dropdown.show {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+  }
+
+
+
+  /* Dropdown Icon Styles */
+  .dropdown-icon {
+    position: absolute;
+    top: 50%;
+    right: 0.5rem;
+    transform: translateY(-50%);
+    pointer-events: none;
+    fill: #555;
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .menu-sub-dropdown {
+      width: 200px;
+    }
+  }
+  

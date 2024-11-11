@@ -65,15 +65,14 @@
   }
 
 
-  
   .check-container {
-    width: 6.25rem;
     margin: auto;
+    width: 6.25rem;
     height: 7.5rem;
     display: flex;
     flex-flow: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
   }
   .check-container .check-background {
     width: 100%;
@@ -157,7 +156,4 @@
       height: 15%;
       opacity: 0.25;
     }
-  }
-  .max-width-350px{
-    max-width: 350px;
   }
