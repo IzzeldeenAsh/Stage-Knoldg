@@ -66,6 +66,7 @@ export class AuthService implements OnDestroy {
           countryId: response.data.countryId,
           country: response.data.country,
           roles: response.data.roles,
+          profile_photo_url:response.data.profile_photo_url
         };
 
         this.setUserInLocalStorage(user);

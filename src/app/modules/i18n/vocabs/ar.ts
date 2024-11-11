@@ -137,9 +137,9 @@ export const locale = {
         `,
         EMPOWER_INSIGHTS_TITLE: "أطلق العنان لخبراتك.",
         EMPOWER_INSIGHTS_TEXT: `
-        إبدأ رحلة جني الإيرادات في كل مرة يتم فيها تنزيل محتواك من قبل الزوار.<br /><br />
+        ابدأ رحلة جني الإيرادات في كل مرة يتم فيها تنزيل محتواك من قبل الزوار.<br /><br />
             <span class="text-dark font-weight-bolder" ><strong>جمهورك العالم </strong></span> <br>من خلال مشاركتك رؤاك وخبراتك للأفراد والشركات في العالم أجمع، ستحدث أبحاثك وتقاريرك تغير ملموس في صناعة القرار.<br /><br />
-            <span class="text-dark font-weight-bolder" >إبدأ رحلة العمل الاستشاري الفريدة من نوعها</span>
+            <span class="text-dark font-weight-bolder" >ابدأ رحلة العمل الاستشاري الفريدة من نوعها</span>
 
             ، فالمنصة تتيح للزائر ميزة التواصل معك للحصول على الاستشارات الفردية والإرشادات المتخصصة.
             <br><br><span class="text-dark font-weight-bolder" ><strong>أينما تكون وفي الوقت الذي تريد.</strong></span><br><br>
