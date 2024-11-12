@@ -130,6 +130,24 @@ export class AuthService implements OnDestroy {
     const currentTime = Math.floor(Date.now() / 1000);
     return payload.exp < currentTime;
   }
+
+  getProfile():Observable<any>{
+    this.isLoadingSubject.next(true);
+    const headers = new HttpHeaders({
+      Accept: "application/json",
+      "Accept-Language": "en", // As per your example
+    });
+    return this.http.get('https://api.4sighta.com/api/account/profile',{headers}).pipe(
+      map((response: any) => {
+        this.isLoadingSubject.next(false);
+        return response.data
+      }),
+      catchError((err) => {
+        return throwError(err);
+      }),
+      finalize(() => this.isLoadingSubject.next(false))
+    );
+  }
   logout() {
     const headers = new HttpHeaders({
       Accept: "application/json",

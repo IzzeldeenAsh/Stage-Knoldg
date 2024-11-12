@@ -32,19 +32,27 @@
       <div class="menu-item px-3">
         <div class="menu-content d-flex align-items-center px-3">
           <!-- Avatar -->
-          <div class="symbol symbol-50px me-5">
-            <img *ngIf="user &&user?.profile_photo_url; else defaultAvatarLarge" [src]="user.profile_photo_url" alt="User Avatar">
-            <ng-template #defaultAvatarLarge>
-              <span class="symbol-label bg-primary fs-2 text-white">
-                {{ user?.name?.charAt(0) }}
-              </span>
-            </ng-template>
+          <div class="position-relative">
+            <div class="symbol symbol-50px me-5">
+              <img *ngIf="user &&user?.profile_photo_url; else defaultAvatarLarge" [src]="user.profile_photo_url" alt="User Avatar">
+              <ng-template #defaultAvatarLarge>
+                <span class="symbol-label bg-primary fs-2 text-white">
+                  {{ user?.name?.charAt(0) }}
+                </span>
+              </ng-template>
+            </div>
+        <div class="position-absolute icon">
+          <label for="avatar" class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" aria-label="Change avatar" data-bs-original-title="Change avatar" data-kt-initialized="1">
+            <i class="ki-outline ki-pencil fs-7"></i>
+        </label>
+        <input (change)="onFileSelected($event)" id="avatar" type="file" name="avatar" accept=".png, .jpg, .jpeg" class="hidden">
+        </div>
           </div>
           <!-- Username and Role -->
           <div class="d-flex flex-column">
             <div class="fw-bold d-flex align-items-center fs-5">
               {{ user?.name }} 
-              <span class="badge badge-light-success fw-bold fs-8 px-2 py-1 ms-2">Pro</span>
+          
             </div>
             <a class="fw-semibold text-muted text-hover-primary fs-7">
               {{ user?.roles }}

@@ -11,6 +11,8 @@ import { InlineSVGModule } from 'ng-inline-svg-2';
 import { DashboardSideBarComponent } from './dashboard-side-bar/dashboard-side-bar.component';
 import { SidebarModule } from 'primeng/sidebar';
 import { TooltipModule } from 'primeng/tooltip';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @NgModule({
   declarations: [
@@ -26,8 +28,10 @@ import { TooltipModule } from 'primeng/tooltip';
     AdminDashboardRoutingModule,
     SidebarModule,
     InlineSVGModule,
+    ToastModule,
     TooltipModule
-  ]
+  ],
+  providers:[MessageService]
 })
 export class AdminDashboardModule { }
 //test

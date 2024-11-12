@@ -14,120 +14,16 @@
 @import "./assets/plugins/keenicons/solid/style.css";
 
 
-.p-dropdown-items{
-    padding: 0 !important;
-}
- .p-dropdown ul {
-   padding: 0 !important;
-   direction: ltr !important;
-   overflow: auto !important;
-   
-}
-.p-treeselect ul {
-padding: 0 !important;
-}
-
-html[dir="ltr"] .p-multiselect-clearable .p-multiselect-clear-icon{
-    left: unset;
-    right:3.357rem;
-}
-html[dir="rtl"] .p-multiselect-clearable .p-multiselect-clear-icon{
-    right: unset;
-    left:3.357rem;
-}
-html[dir="rtl"] .p-dropdown .p-dropdown-clear-icon{
-    right: unset;
-    left:3.357rem;
-}
-html[dir="ltr"] .p-dropdown .p-dropdown-clear-icon{
-    left: unset;
-    right:3.357rem;
-}
-  .p-multiselect-panel .p-multiselect-items .p-multiselect-item .p-checkbox{
-    margin: 0.5rem !important; 
-}
-.p-multiselect-clearable .p-multiselect-label-container{
-    padding-right: 1.5rem;
-}
- 
- .p-dialog-content{
-    overflow: visible !important;
-}
-
-.home-countries-dropdown .p-dropdown {
-    border: none !important;  /* Remove all borders */
-    border-radius: 0 !important; /* Remove rounded corners if needed */
-}
 
 
-html[dir='ltr']  .home-countries-dropdown .p-dropdown {
-    border-left: 1px solid #C4CADA !important;  /* Apply border-left */
-}
 
-
-html[dir='rtl']  .home-countries-dropdown .p-dropdown {
-    border-right: 1px solid #C4CADA !important;   /* Apply border-left */
-}
-html[dir='ltr']  .home-countries-dropdown .p-dropdown-panel{
-    left: -10% !important;
-    @media screen and (max-width:768px) {
-        position: absolute !important;
-        top: 50% !important; 
-        transform: translate(-50%,-50%) !important;
-        left: -100% !important;
-    }
-}
-
-html[dir='rtl']  .home-countries-dropdown .p-dropdown-panel{
-    right: 10% !important;
-    @media screen and (max-width:768px) {
-        position: absolute !important;
-        top: 50% !important; 
-        transform: translate(90%, -50%) !important;
-        width: 250px;
-    }
-}
 
 
 .text-hover-blue:hover{
 color: #017BFE !important;
 }
 
-.form-p-control .p-dropdown  , .p-password-input , .form-p-control .p-multiselect-clearable , .form-p-control .p-treeselect {
-    border-color: #DBDFE9 !important;
-    width: 100% !important;
-    font-size: 12px !important;
-    font-weight: 500 !important;
-    line-height: 1.5 !important;
-    color: var(--bs-gray-700) !important;
-    appearance: none !important;
-    text-align: start;
-    background-clip: padding-box !important;
-    border: 1px solid var(--bs-gray-300) !important;
-    border-radius: 0.475rem !important;
-    box-shadow: false !important;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
-}
- .form-p-control .p-placeholder{
-    font-weight: 500 !important;
-    color: #99A1B7 !important;
-}
-.p-password-input{
-    padding: 0.775rem 1rem !important;
-}
-.form-p-control .p-multiselect-label .p-placeholder ,.form-p-control .p-treeselect{
-    font-size: 12px !important;
-}
 
-.form-p-control .p-dropdown , .p-multiselect-clearable ,.form-p-control .p-treeselect  {
-    padding: 0.88rem 1rem !important;
-}
-.form-p-control .p-multiselect .p-multiselect-label {
-    padding: 0 !important;
-}
-.form-p-control .p-dropdown .p-inputtext ,.form-p-control .p-placeholder{
-    padding: 0 !important;
-}
 .country-item {
     display: flex;
     align-items: center;
@@ -138,34 +34,8 @@ color: #017BFE !important;
     height: 15px;
     margin: 0px 10px;
 }
-/* General styling for the dropdown */
-.search-bar-tools .p-dropdown {
-    background: none !important;
-    border: none !important;
-    color: #033761 !important;
-  
-}
 
-/* Styling for the placeholder text */
-.search-bar-tools .p-dropdown .p-dropdown-label.p-placeholder {
-    color: #033761 !important;
-    font-size: 1rem !important;
-    font-weight: 500 !important;
-}
 
-/* Styling for the selected text in the dropdown */
-.search-bar-tools .p-dropdown .p-dropdown-label {
-    color: #033761 !important;
-    font-size: 1rem !important;
-    font-weight: 500 !important;
-}
-
-/* Optional: To ensure the dropdown text in the list items follows the same style */
-.search-bar-tools .p-dropdown .p-dropdown-items .country-item span {
-    color: #033761 !important;
-    font-size: 1rem !important;
-    font-weight: 500 !important;
-}
 .search-bar-tools .p-dropdown-trigger{
     justify-content: start !important; 
 }
@@ -251,24 +121,7 @@ color: #017BFE !important;
   .table-striped tbody tr:nth-child(even) {
     background-color: #ffffff;
   }
-.p-message-close{
-    margin-inline-start: auto !important;
-}
-.p-dropdown{
-    width: 100% !important;
-}
-.p-password-input{
-    width: 100% !important;
-    display: block !important;
-}
-.p-password{
-    width: 100% !important;
-    display: block !important;
-}
-.p-inputwrapper{
-    display: flex !important;
-    width: 100% !important;
-}
+  
 .scrollable-dialog .p-dialog-content {
     overflow-y: auto !important;
   }
@@ -280,42 +133,12 @@ color: #017BFE !important;
 .toast {
     opacity: 1 !important;
 }
-.p-toast .p-toast-message.p-toast-message-success{
-    background: rgba(228, 248, 240, 1) !important;
-}
-.p-paginator .p-paginator-pages .p-paginator-page.p-highlight{
-    background: #033761 !important;
-    border-color: none !important;
-    color: #fff !important;
-    border-radius: 7px !important;
-}
-.p-paginator .p-paginator-pages .p-paginator-page:not(.p-highlight):hover {
-    border-radius: 10px !important;
-    }
-  
-    .table-p td , .table-p th , .p-treetable-thead th , .p-treetable-tbody td{
-        border: 1px solid #F1F1F4 !important;
-        color: #4B5675  !important;
-        font-weight: 500 !important;
-        line-height: 1.25rem !important;
-    }
-    .border-success{
-        border: 1px solid var(--bs-success);
-    }
-    .border-danger{
-        border: 1px solid var(--bs-danger);
-    }
 
-html[dir="rtl"] .p-element{
-    font-family: 'Tajawal' ,"sans-serif" !important;
-}
-
-html[dir="ltr"] .p-element{
-    font-family: 'Inter' ,"sans-serif" !important;
-}
 html[dir="rtl"] .logo{
     right: 20px;
   }
   html[dir="ltr"] .logo{
     left: 20px;
   }
+
+ 

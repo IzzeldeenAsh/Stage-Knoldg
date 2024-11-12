@@ -50,3 +50,12 @@
     }
   }
   
+  .hidden{
+    visibility: hidden;
+    opacity: 0;
+    display: none;
+  }
+  .icon{
+    top: -10px;
+    right: 8px;
+  }
