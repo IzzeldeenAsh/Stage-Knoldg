@@ -1,0 +1,45 @@
+.app-toolbar{
+    background-image: url('https://res.cloudinary.com/dsiku9ipv/image/upload/v1728124322/Artboard_3_anigtm.png');
+    background-size: cover;
+    background-position: 10% 90%;
+}
+.hs-code:placeholder-shown{
+   font-size: 1rem !important;
+    
+}
+a.btn-link {
+    cursor: pointer;
+  }
+
+  .px-40{
+    padding: 0 60px;
+  }
+  .max-w-80{
+    max-width: 90%;
+  }
+  .star{
+    
+    margin: 10px 0;
+    svg{
+        height: 20px;
+        width: 20px;
+    }
+  }
+
+  .sidebar{
+    border-left: 1px solid #F2F2F2
+  }
+  .channel-stats-bg {
+    background-image: url('https://keenthemes.com/static/metronic/tailwind/dist/assets/media/images/2600x1600/bg-3.png');
+    background-size: cover; 
+    background-position: 9rem -4rem; 
+    background-repeat: no-repeat;
+    height: 100%;
+
+    /* Adjust background positioning for RTL if needed */
+  }
+  .bg{
+    background-image: url('../../../../assets/media/auth/bg12-dark.webp');
+    background-size: cover;
+    background-position: -10% 0;
+  }

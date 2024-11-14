@@ -36,7 +36,8 @@
 .nav-group {
 	padding: 0.35rem;
 	@include border-radius($border-radius);
-	background-color: var(--#{$prefix}gray-100);
+	background-color: #f1f1f4;
+    border: 1px solid #f9f9f9;
 
 	// Outline nav group
 	&.nav-group-outline {	

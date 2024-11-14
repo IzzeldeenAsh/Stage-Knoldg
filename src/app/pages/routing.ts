@@ -3,12 +3,16 @@ import { Routes } from '@angular/router';
 const Routing: Routes = [
   {
     path: '',
-    redirectTo: 'dashboard',
+    redirectTo: 'results-home',
     pathMatch: 'full',
   },
   {
-    path: 'dashboard',
-    loadChildren: () => import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
+    path: 'results-home',
+    loadChildren: () => import('./main-page/main-page.module').then((m) => m.MainPageModule),
+  },
+  {
+    path: 'insighter-register',
+    loadChildren: () => import('./wizards/wizards.module').then((m) => m.WizardsModule),
   },
   {
     path: '**',

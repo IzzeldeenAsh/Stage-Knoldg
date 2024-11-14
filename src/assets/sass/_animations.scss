@@ -12,4 +12,12 @@
   .fade-up {
     animation: fadeUp 0.5s ease-out;
   }
+  .slide-right-arrow{
+    transform: translateX(0);
+    transition: transform 0.3s ease;
+  }
   
+  .slide-right-arrow:hover {
+    transform: translateX(10px);
+    transition: transform 0.3s ease;
+  }
