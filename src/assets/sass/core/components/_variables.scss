@@ -57,7 +57,7 @@ $primary-clarity: 				rgba(#1B84FF, 0.2) !default;
 $primary-inverse: 				$white !default; 
 
 // Secondary colors
-$secondary: 					#F9F9F9 !default;
+$secondary: 					#f5f5f5 !default;
 $secondary-active: 				$gray-300 !default;
 $secondary-light: 				#F9F9F9 !default;
 $secondary-clarity:				rgba(#F9F9F9, 0.2) !default; 
@@ -512,9 +512,11 @@ $input-btn-focus-box-shadow:                null !default;
 
 $input-btn-padding-y-md:                    .65rem !default;
 $input-btn-padding-y-sm:                    .55rem !default;
+$input-btn-padding-y-xs:                    .35rem !default;
 $input-btn-padding-x-sm:                    .75rem !default;
+$input-btn-padding-x-xs:                    .55rem !default;
 $input-btn-font-size-sm:                    $font-size-sm !default;
-
+$input-height-xs:							0.4rem;
 $input-btn-padding-y-lg:                    .825rem !default;
 $input-btn-padding-x-lg:                    1.5rem !default;
 $input-btn-font-size-lg:                    $font-size-base * 1.15 !default;
@@ -533,6 +535,7 @@ $btn-white-space:                           null !default; // Set to `nowrap` to
 
 $btn-padding-y-md:                          $input-btn-padding-y-md !default;
 $btn-padding-y-sm:                          $input-btn-padding-y-sm !default;
+$btn-padding-y-xs:                          $input-btn-padding-y-xs !default;
 $btn-padding-x-sm:                          1rem !default;
 $btn-font-size-sm:                          $input-btn-font-size-sm !default;
 

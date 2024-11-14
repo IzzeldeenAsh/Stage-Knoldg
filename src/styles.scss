@@ -130,6 +130,10 @@ color: #017BFE !important;
     opacity:1;
 }
 
+.text-underline{
+  text-decoration: underline !important;
+}
+
 .toast {
     opacity: 1 !important;
 }
@@ -142,3 +146,44 @@ html[dir="rtl"] .logo{
   }
 
  
+  .form-control-lg{
+    padding: 1.2rem 1.5rem;
+  }
+  .h-fit{
+    height: fit-content;
+  }
+  .text-blue{
+    color: #0CA5E9 !important; 
+}
+.btn-light{
+  border: 1px solid #dbdfe9 !important;
+} 
+.btn-xs{
+font-size: 10px;
+padding: 0.4rem 0.6rem !important;
+width: fit-content;
+
+}
+.radio{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+.radio-active{
+  background-color: #FFF;
+  box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, 0.03);
+  height: 100%;
+  border-radius: 9px;
+}
+.card-hover-shadow{
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+.card-hover-shadow:hover{
+  border: 1px solid #0337612c;
+  box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, 0.09);
+}
+.h-100vh{
+  height: 100vh;
+}

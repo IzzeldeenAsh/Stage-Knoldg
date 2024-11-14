@@ -62,6 +62,7 @@
 
         @if ( $border-color-active != null ) {
             border-color: $border-color-active;
+            background-color: aliceblue;
         }
 
         @if ( $bg-color-active != null ) {

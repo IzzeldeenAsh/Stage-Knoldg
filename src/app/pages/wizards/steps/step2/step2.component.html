@@ -1,0 +1,240 @@
+<div class="pb-10 pb-lg-15">
+  <h2 class="fw-bolder text-gray-900">Insighter Info</h2>
+  <div class="text-gray-500 fw-bold fs-6">
+    If you need more info, please check out
+    <a href="#" class="link-primary fw-bolder"> Help Page</a>.
+  </div>
+</div>
+
+
+<div [formGroup]="form">
+
+  <ng-container *ngIf="defaultValues.accountType === 'personal'">
+    <!-- Phone Number -->
+  <div class="mb-10 fv-row">
+    <label class="form-label mb-3 required">Phone Number</label>
+    <input
+      formControlName="phone"
+      type="text"
+      class="form-control "
+      placeholder="Your phone number"
+    />
+    <div
+      *ngIf="
+        form.get('phone')?.hasError('required') &&
+        form.get('phone')?.touched
+      "
+      class="fv-plugins-message-container invalid-feedback">
+
+      Your phone number is required
+    </div>
+  </div>
+
+  <div class="mb-10 row">
+    <!-- Consulting Field -->
+<div class="col-md-6 col-12">
+  <label class="form-label mb-3 required">Consulting Fields</label>
+  <p-progressBar
+  *ngIf="isLoadingConsultingFields$ | async"
+  mode="indeterminate"
+  [style]="{ height: '4px' }"
+></p-progressBar>
+<p-multiSelect
+*ngIf="(isLoadingConsultingFields$ | async) === false"
+[options]="listOfConsultingFields"
+class="d-block form-p-control"
+formControlName="consultingFields"
+[optionLabel]="optionLabel"
+placeholder="{{ 'AUTH.REGISTRATION.CONSULTING_FIELD_PLACEHOLDER' | translate }}"
+[filter]="true"
+[showClear]="true"
+></p-multiSelect>
+  
+  <div
+    *ngIf="
+      form.get('consultingFields')?.hasError('required') &&
+      form.get('consultingFields')?.touched
+    "
+    class="fv-plugins-message-container invalid-feedback">
+
+    Consulting Fields are required
+  </div>
+</div>
+<!-- ISIC Codes -->
+<div class="col-md-6 col-12">
+  <label class="form-label mb-3 required">ISIC Code</label>
+  <input
+    formControlName="phone"
+    type="text"
+    class="form-control"
+    placeholder="Your phone number"
+  />
+  <div
+    *ngIf="
+      form.get('phone')?.hasError('required') &&
+      form.get('phone')?.touched
+    "
+    class="fv-plugins-message-container invalid-feedback">
+
+    Your phone number is required
+  </div>
+</div>
+  </div>
+
+    <div class="mb-10 fv-row">
+      <label class="form-label mb-3 required">About You</label>
+      <div class="row mb-2" data-kt-buttons="true">
+        <div class="col">
+          <textarea
+        name="bio"
+        class="form-control "
+        rows="3"
+        formControlName="bio"
+      ></textarea>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="defaultValues.accountType === 'corporate'">
+        <!-- Phone Number -->
+  <div class="mb-10 row">
+   <div class="col-md-6 col-12">
+    <label class="form-label mb-3 required">Phone Number</label>
+    <input
+      formControlName="phone"
+      type="text"
+      class="form-control "
+      placeholder="Your phone number"
+    />
+    <div
+      *ngIf="
+        form.get('phone')?.hasError('required') &&
+        form.get('phone')?.touched
+      "
+      class="fv-plugins-message-container invalid-feedback">
+
+      Your phone number is required
+    </div>
+   </div>
+   <div class="col-md-6 col-12">
+    <label class="form-label mb-3 required">Legal Name</label>
+    <input
+      formControlName="legalName"
+      type="text"
+      class="form-control "
+      placeholder="Your Company's Legal Name"
+    />
+    <div
+      *ngIf="
+        form.get('legalName')?.hasError('required') &&
+        form.get('legalName')?.touched
+      "
+      class="fv-plugins-message-container invalid-feedback">
+  
+      Your Company's Legal name is required
+    </div>
+   </div>
+  </div>
+
+  <div class="mb-10 row">
+      <!-- Consulting Field -->
+      <div class="col-md-6 col-12">
+      <label class="form-label mb-3 required">Consulting Fields</label>
+      <p-progressBar
+      *ngIf="isLoadingConsultingFields$ | async"
+      mode="indeterminate"
+      [style]="{ height: '4px' }"
+      ></p-progressBar>
+      <p-multiSelect
+      *ngIf="(isLoadingConsultingFields$ | async) === false"
+      [options]="listOfConsultingFields"
+      class="d-block form-p-control"
+      formControlName="consultingFields"
+      [optionLabel]="optionLabel"
+      placeholder="{{ 'AUTH.REGISTRATION.CONSULTING_FIELD_PLACEHOLDER' | translate }}"
+      [filter]="true"
+      [showClear]="true"
+      ></p-multiSelect>
+
+      <div
+      *ngIf="
+        form.get('consultingFields')?.hasError('required') &&
+        form.get('consultingFields')?.touched
+      "
+      class="fv-plugins-message-container invalid-feedback">
+
+      Consulting Fields are required
+      </div>
+      </div>
+      <!-- ISIC Codes -->
+      <div class="col-md-6 col-12">
+      <label class="form-label mb-3 required">ISIC Code</label>
+      <input
+      formControlName="phone"
+      type="text"
+      class="form-control"
+      placeholder="Your phone number"
+      />
+      <div
+      *ngIf="
+        form.get('phone')?.hasError('required') &&
+        form.get('phone')?.touched
+      "
+      class="fv-plugins-message-container invalid-feedback">
+
+      Your phone number is required
+      </div>
+      </div>
+  </div>
+    <!-- Separator -->
+    <div class="separator separator-content my-5">
+      <span class="w-300px text-gray-500 fw-semibold fs-7">Verify your company with</span>
+    </div>
+    <div class="mb-10 row">
+   <div class=" col-12">
+    <label class="form-label m-0 required">
+      Website URL
+    </label>
+    <div class="text-muted  mb-3 fs-7">Your email address should match the website domain</div>
+    <input
+      formControlName="website"
+      type="text"
+      class="form-control "
+      placeholder="Your Website's URL"
+    />
+    <div
+      *ngIf="
+        form.get('website')?.hasError('required') &&
+        form.get('website')?.touched
+      "
+      class="fv-plugins-message-container invalid-feedback">
+  
+      Your Website's URL is required
+    </div>
+   </div>
+    </div>
+    <!-- Separator -->
+    <div class="separator separator-content my-5">
+      <span class="w-125px text-gray-500 fw-semibold fs-7">or</span>
+    </div>
+  
+    <!-- About -->
+    <div class="mb-10 fv-row">
+      <label class="form-label mb-3 required">About Company</label>
+      <div class="row mb-2" data-kt-buttons="true">
+        <div class="col">
+          <textarea
+        name="aboutCompany"
+        class="form-control "
+        rows="3"
+        formControlName="aboutCompany"
+      ></textarea>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+
+  
+</div>

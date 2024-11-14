@@ -152,6 +152,11 @@ html[dir='rtl'] .home-countries-dropdown .p-dropdown-panel {
 .form-p-control .p-treeselect {
     padding: 0.88rem 1rem !important;
 }
+.form-p-control-lg .p-dropdown,
+.form-p-control-lg .p-multiselect-clearable,
+.form-p-control-lg .p-treeselect {
+    padding: 1.3rem 1.5rem !important;
+}
 
 .form-p-control .p-multiselect .p-multiselect-label,
 .form-p-control .p-dropdown .p-inputtext,

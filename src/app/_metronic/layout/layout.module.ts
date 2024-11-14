@@ -90,7 +90,6 @@ const routes: Routes = [
     EngagesModule,
     InputTextModule,
     DropdownMenusModule,
-    InlineSVGModule,
     FormsModule,
     NgbTooltipModule,
     TranslateModule,

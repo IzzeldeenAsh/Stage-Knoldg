@@ -35,11 +35,20 @@
 			height: $input-height-sm;
 			width: $input-height-sm;			 
 		}
-
+	// Sizes
+	&.btn-xs {
+		height: $input-height-xs;
+		width: $input-height-xs;			 
+	}
 		&.btn-lg {
 			height: $input-height-lg;
 			width: $input-height-lg;
 		}
+		&.btn-xlg {
+			height: calc($input-height-lg + 20px) ;
+			width: calc($input-width-lg + 20px) ;
+		}
+
 
 		&.btn-circle {
 			border-radius: 50%;

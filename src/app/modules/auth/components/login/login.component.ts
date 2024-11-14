@@ -101,7 +101,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
             if (res.roles.includes("admin") || res.roles.includes("staff")) {
               this.router.navigate(["/admin-dashboard"]);
             } else {
-              this.router.navigate(["/auth/wait"]); // Default to /home if no admin or staff roles
+              this.router.navigate(["/app"]); // Default to /home if no admin or staff roles
             }
           }
         },
