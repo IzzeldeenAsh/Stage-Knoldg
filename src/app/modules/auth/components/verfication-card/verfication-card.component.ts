@@ -1,12 +1,13 @@
-import {  ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Observable, Subscription } from "rxjs";
+import { Observable, Subscription, Subject, timer, of } from "rxjs";
 import { CheckCodeEmailService } from "src/app/_fake/services/check-code/check-code-email.service";
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: "app-verfication-card",
   templateUrl: "./verfication-card.component.html",
-  styleUrl: "./verfication-card.component.scss",
+  styleUrls: ["./verfication-card.component.scss"],
 })
 export class VerficationCardComponent implements OnInit, OnDestroy {
   email: string = "****@email.com";
@@ -14,24 +15,31 @@ export class VerficationCardComponent implements OnInit, OnDestroy {
   hasError: boolean = false;
   private unsubscribe: Subscription[] = [];
   isLoading$: Observable<boolean>;
+
+  isResendDisabled: boolean = false;
+  resendCountdown$: Subject<number| null> = new Subject<number | null>();
+  message: string = '';
+  messageType: 'success' | 'error' = 'success';
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private _checkCode: CheckCodeEmailService,
-    private cdr: ChangeDetectorRef // Inject ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private http: HttpClient
   ) {
-    this.isLoading$ = this._checkCode.isLoading$;
+    this.isLoading$ = of(false); // Initialize loading state
   }
+
   ngOnInit(): void {
     this.getEmail();
   }
 
-  resetError(){
-    this.hasError=false;
-    this.cdr.detectChanges()
+  resetError() {
+    this.hasError = false;
+    this.cdr.detectChanges();
   }
 
-  //get email from param
   getEmail() {
     const email = this.route.snapshot.paramMap.get("email");
     if (email) {
@@ -49,19 +57,61 @@ export class VerficationCardComponent implements OnInit, OnDestroy {
         next: (res) => {
           if (res.state == false) {
             this.hasError = true;
-            console.log("hasError", this.hasError);
-            this.cdr.detectChanges(); // Trigger change detection
-          }else{
-            this.router.navigate(['/auth/wait'])
+            this.cdr.detectChanges();
+          } else {
+            this.router.navigate(['/auth/wait']);
           }
         },
         error: (err) => {
           this.hasError = true;
-          this.cdr.detectChanges(); // Trigger change detection
+          this.cdr.detectChanges();
         },
       });
     this.unsubscribe.push(verifySub);
   }
+
+  onResendClick(): void {
+    if (this.isResendDisabled) return;
+
+    this.resendVerificationEmail();
+    this.startResendCooldown();
+  }
+
+  startResendCooldown(): void {
+    this.isResendDisabled = true;
+    const countdownTime = 30; // seconds
+
+    const timerSub = timer(0, 1000).subscribe(elapsedTime => {
+      const remainingTime = countdownTime - elapsedTime;
+      if (remainingTime >= 0) {
+        this.resendCountdown$.next(remainingTime);
+      } else {
+        this.resendCountdown$.next(null);
+        this.isResendDisabled = false;
+        timerSub.unsubscribe();
+      }
+    });
+
+    this.unsubscribe.push(timerSub);
+  }
+
+  resendVerificationEmail(): void {
+    this.isLoading$ = of(true);
+    const resendSub = this._checkCode.resendEmailCode(this.email).subscribe({
+      next: (response: any) => {
+        this.isLoading$ = of(false);
+        this.messageType = 'success';
+        this.message = 'Verification email resent successfully.';
+      },
+      error: (error: any) => {
+        this.isLoading$ = of(false);
+        this.messageType = 'error';
+        this.message = 'Failed to resend verification email.';
+      }
+    });
+    this.unsubscribe.push(resendSub);
+  }
+
   ngOnDestroy() {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }

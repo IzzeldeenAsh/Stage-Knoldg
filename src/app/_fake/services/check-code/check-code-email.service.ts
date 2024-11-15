@@ -20,6 +20,15 @@ export class CheckCodeEmailService {
     console.error('An error occurred:', error);
     return throwError(() => new Error('Could not get verify email; please try again later.'));
   }
+  resendEmailCode(email: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    });
+
+    const url = `https://myinsighta.com/api/resend-code/${email}`;
+    return this.http.get(url,{ headers });
+  }
 
   checkEmailcode(email:string,code:string): Observable<any> {
     this.setLoading(true)

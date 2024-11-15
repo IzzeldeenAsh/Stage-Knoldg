@@ -13,7 +13,39 @@
 .text-inline-start{
   text-align: start;
 }
+.height-logo{
+  height: 70px;
+  @media screen and (max-width:768px) {
+    height: 50px;
+  }
+}
+.word-nowrap{
+  white-space: nowrap;
+}
+.top-round{
+ border-bottom-left-radius: 0; 
+ border-bottom-right-radius: 0;
+ @media screen and (min-width:1440px) {
+  margin-top: 100px;
+  position: static;
+  border-bottom-left-radius: 1rem; 
+  border-bottom-right-radius: 1rem;
+ }
 
+ @media screen and (max-width:1213px) {
+  position: static;
+ }
+}
+html[dir='rtl'] .top-round{
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+html[dir='ltr'] .top-round{
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
   /* Slide-in animation for forms */
   @keyframes slideIn {
     from {
