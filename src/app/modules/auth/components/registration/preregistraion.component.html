@@ -1,11 +1,7 @@
-<!-- <div id="splash-screen" class="splash-screen" *ngIf="(isLoadingConsultingFields$ | async) || (isLoadingIsicCodes$|async) || (isLoadingCountires$|async) || (isLoadingHSCodes$ | async)">
-  <img src="./assets/media/logos/default-small.svg" alt="Metronic logo" />
-  <span>Loading ...</span>
-</div> -->
 
 <div class="row  h-100vh">
   <div
-    class="col-lg-6 mil-up d-flex justify-content-center align-items-center pt-4 p-10 p-md-0 order-lg-1 order-2"
+    class="col-lg-6  mil-up d-flex justify-content-center align-items-center pt-4 p-10 p-md-0 order-lg-1 order-2"
   >
     <div class="w-90">
       <p-messages [(value)]="messages" [enableService]="false"></p-messages>
@@ -27,7 +23,6 @@
           </div>
         </ng-container>
         <!-- end::Alert error-->
-
         <!-- begin::Name Field-->
         <div class="row mb-4">
           <div class="col-12 col-md-6 mb-4">
@@ -123,73 +118,72 @@
             ></ng-container>
           </div>
         </div>
-
-        <!--begin::Email group-->
-        <div class="fv-row mb-4">
-          <label class="form-label text-gray-900 fs-6 mb-0">{{
-            "AUTH.REGISTRATION.EMAIL_LABEL" | translate
-          }}</label>
-          <input
-          pInputText
-          class="w-100 form-control"
-            type="email"
-            placeholder="{{
-              'AUTH.REGISTRATION.EMAIL_PLACEHOLDER' | translate
-            }}"
-            name="email"
-            formControlName="email"
-            autocomplete="off"
-            [ngClass]="{
-              'is-invalid':
-                registrationForm.controls['email'].invalid &&
-                (registrationForm.controls['email'].dirty ||
-                  registrationForm.controls['email'].touched)
-            }"
-          />
-          <ng-container
-            [ngTemplateOutlet]="formError"
-            [ngTemplateOutletContext]="{
-              validation: 'required',
-              message: 'AUTH.REGISTRATION.EMAIL_REQUIRED' | translate,
-              control: registrationForm.controls['email']
-            }"
-          ></ng-container>
-          <ng-container
-            [ngTemplateOutlet]="formError"
-            [ngTemplateOutletContext]="{
-              validation: 'email',
-              message: 'AUTH.REGISTRATION.EMAIL_INVALID' | translate,
-              control: registrationForm.controls['email']
-            }"
-          ></ng-container>
-          <ng-container
-            [ngTemplateOutlet]="formError"
-            [ngTemplateOutletContext]="{
-              validation: 'minlength',
-              message: 'AUTH.REGISTRATION.EMAIL_MINLENGTH' | translate,
-              control: registrationForm.controls['email']
-            }"
-          ></ng-container>
-          <ng-container
-            [ngTemplateOutlet]="formError"
-            [ngTemplateOutletContext]="{
-              validation: 'maxLength',
-              message: 'AUTH.REGISTRATION.EMAIL_MAXLENGTH' | translate,
-              control: registrationForm.controls['email']
-            }"
-          ></ng-container>
-        </div>
-
         <!--::Password group-->
         <div class="row mb-4">
+          <div class="col-md-6 col-12 mb-4">
+            <label class="form-label text-gray-900 fs-6 mb-0">{{
+              "AUTH.REGISTRATION.EMAIL_LABEL" | translate
+            }}</label>
+            <input
+            pInputText
+            class="w-100 form-control"
+              type="email"
+              placeholder="{{
+                'AUTH.REGISTRATION.EMAIL_PLACEHOLDER' | translate
+              }}"
+              name="email"
+              formControlName="email"
+              autocomplete="off"
+              [ngClass]="{
+                'is-invalid':
+                  registrationForm.controls['email'].invalid &&
+                  (registrationForm.controls['email'].dirty ||
+                    registrationForm.controls['email'].touched)
+              }"
+            />
+            <ng-container
+              [ngTemplateOutlet]="formError"
+              [ngTemplateOutletContext]="{
+                validation: 'required',
+                message: 'AUTH.REGISTRATION.EMAIL_REQUIRED' | translate,
+                control: registrationForm.controls['email']
+              }"
+            ></ng-container>
+            <ng-container
+              [ngTemplateOutlet]="formError"
+              [ngTemplateOutletContext]="{
+                validation: 'email',
+                message: 'AUTH.REGISTRATION.EMAIL_INVALID' | translate,
+                control: registrationForm.controls['email']
+              }"
+            ></ng-container>
+            <ng-container
+              [ngTemplateOutlet]="formError"
+              [ngTemplateOutletContext]="{
+                validation: 'minlength',
+                message: 'AUTH.REGISTRATION.EMAIL_MINLENGTH' | translate,
+                control: registrationForm.controls['email']
+              }"
+            ></ng-container>
+            <ng-container
+              [ngTemplateOutlet]="formError"
+              [ngTemplateOutletContext]="{
+                validation: 'maxLength',
+                message: 'AUTH.REGISTRATION.EMAIL_MAXLENGTH' | translate,
+                control: registrationForm.controls['email']
+              }"
+            ></ng-container>
+          </div>
           <!--begin::Form group-->
-          <div class="col-12  position-relative">
-            <label class="form-label fs-6 text-gray-900">{{
+          <div class=" col-md-6 col-12  position-relative">
+            <label class="m-0 form-label fs-6 text-gray-900">{{
               "AUTH.REGISTRATION.PASSWORD_LABEL" | translate
             }}</label>
           <p-password 
           name="password" 
+          [placeholder]="'AUTH.REGISTRATION.PASSWORD_LABEL' | translate" 
           formControlName="password" 
+          [toggleMask]="true"
           class="w-100" 
           [ngClass]="{
             'is-invalid': 
@@ -231,7 +225,7 @@
           </div>
         </div>
         <!--begin::Country and Consulting Field-->
-        <div class="row mb-4">
+        <div class="row mb-2">
           <!--begin::Form group for country-->
           <div class="col-12 mb-4" [ngClass]="{
             'col-md-6' : !isOtherSelected ,
@@ -338,120 +332,29 @@
       </div>
         </div>
    
-
-
-        <!-- ISIC & HSCODE -->
         <div class="row mb-4">
-          <!--begin::Form group for country-->
-          <div class="col-12 ">
+          <div class="col-12 mb-4">
             <label class="form-label fs-6 text-gray-900">{{
               "AUTH.REGISTRATION.INDUSTRY" | translate
             }}</label>
-            <p-progressBar
-              *ngIf="isLoadingIsicCodes$ | async"
-              mode="indeterminate"
-              [style]="{ height: '4px' }"
-            ></p-progressBar>
-            <div class=" flex justify-content-center">
-              <p-treeSelect
-              class="w-100 form-p-control"
-              containerStyleClass="w-full w-100"
-              [(ngModel)]="selectedNodes"
-              [options]="nodes"
-              display="chip"
-              [metaKeySelection]="false"
-              selectionMode="checkbox"
+            <input
+              type="text"
+              class="form-control"
+              readonly
               placeholder="{{ 'AUTH.REGISTRATION.INDUSTRY_PLACEHOLDER' | translate }}"
-              [virtualScroll]="true"
-              [virtualScrollItemSize]="46"
-              [ngModelOptions]="{standalone: true}"
-              [virtualScrollOptions]="{ scrollHeight: '200px' }"
-            ></p-treeSelect>
-            </div>
+              (click)="showISICDialog()"
+              [value]="selectedNodesLabel()"
+            />
             <!-- Validation message for ISIC codes -->
-<ng-container *ngIf="hasError && (!selectedNodes || selectedNodes.length === 0)">
-  <div class="fv-plugins-message-container ">
-    <div class="fv-help-block ">
-      {{ 'AUTH.REGISTRATION.ISIC_CODES_REQUIRED' | translate }}
-    </div>
-  </div>
-</ng-container>
-
-            
-<!--             
-            <p-dropdown
-            *ngIf="(isLoadingIsicCodes$ | async) === false"
-            class="ltr"
-            [options]="isicCodes"
-            formControlName="industry"
-            [optionLabel]="optionLabelField"
-            placeholder="{{
-              'AUTH.REGISTRATION.INDUSTRY_PLACEHOLDER' | translate
-            }}"
-            [filter]="true"
-            [showClear]="true"
-          >
-            <ng-template let-option pTemplate="selectedItem">
-              {{ trimText(option.description.en, 22) }}
-            </ng-template>
-          
-            <ng-template let-option pTemplate="item">
-              {{ trimText(option.description.en, 100) }}
-            </ng-template>
-          </p-dropdown> -->
-          
-          </div>
-          <!--end::Form group-->
-
-        
-        </div>
-        <div class="row mb-4">
-            <!--begin::Form group for Consulting Field-->
-            <!-- <div class="col-12">
-              <label class="form-label fs-6 text-gray-900">
-                {{ "AUTH.REGISTRATION.HSCODE" | translate }}
-                <span class="text-gray-600 fs-7">
-                  ({{ "AUTH.REGISTRATION.OPTIONAL" | translate }})
-                </span>
-              </label>
-  
-             
-  
-              <div class="dropdown-wrapper">
-                <p-dropdown
-                 
-                  class=" ltr"
-                  [options]="hsCodes"
-                  formControlName="hscode"
-                  optionLabel="label"
-                  placeholder="{{ 'AUTH.REGISTRATION.HSCODE' | translate }}"
-                  [filter]="true"
-                  [readonly]="hsCodes.length === 0"
-                  [showClear]="true"
-                  [virtualScroll]="true"
-                  [virtualScrollItemSize]="34"
-                >
-                  <ng-template let-option pTemplate="selectedItem">
-                    {{ trimText(option.label, 22) }}
-                  </ng-template>
-              
-                  <ng-template let-option pTemplate="item">
-                    {{ trimText(option.label, 100) }}
-                  </ng-template>
-                </p-dropdown>
-              
-                <div *ngIf="hsCodes.length === 0" class="dropdown-overlay"></div>
+            <ng-container *ngIf="hasError && (!selectedNodes || selectedNodes.length === 0)">
+              <div class="fv-plugins-message-container ">
+                <div class="fv-help-block ">
+                  {{ 'AUTH.REGISTRATION.ISIC_CODES_REQUIRED' | translate }}
+                </div>
               </div>
-              <p-progressBar
-              *ngIf="isLoadingHSCodes$ | async"
-              mode="indeterminate"
-              [style]="{ height: '4px' }"
-            ></p-progressBar>
-            </div> -->
-            <!--end::Form group-->
+            </ng-container>
+          </div>
         </div>
-
- 
         <!--About-->
         <div class="row mb-4">
           <!--begin::Form group for About Description-->
@@ -463,7 +366,7 @@
               ></label
             >
             <textarea
-              class="form-control h-70px"
+              class="form-control h-100px"
               rows="5"
               placeholder="{{
                 'AUTH.REGISTRATION.ABOUT_DESCRIPTION_PLACEHOLDER' | translate
@@ -491,7 +394,7 @@
             </ng-container>
             <ng-container *ngIf="isLoadingSubmit$ | async">
               <span class="indicator-progress" [style.display]="'block'">
-                {{ "BUTTONS.REGISTRATION.BACK_BUTTON" | translate }}
+                {{ "AUTH.REGISTRATION.PLEASE_WAIT" | translate }}
                 <span
                   class="spinner-border spinner-border-sm align-middle ms-2"
                 ></span>
@@ -533,7 +436,7 @@
       </ng-template>
     </div>
   </div>
-  <div class="col-lg-6 z-negative-1 mil-up order-lg-2 order-1 mt-5 rounded-4 p-5 p-md-10 bg-light">
+  <div class="col-lg-6 mb-10 z-negative-1 mil-up order-lg-2 order-1 mt-5 rounded-4 p-5 p-md-10 bg-light">
     <div class="d-flex flex-column p-4">
       <a href="/metronic/tailwind/demo1/" class="w-100px">
         <img
@@ -554,4 +457,37 @@
   </div>
 </div>
 
-
+<!-- ISIC Codes Selection Dialog -->
+<p-dialog
+  header="{{ 'COMMON.SELECISCIC' | translate }}"
+  [(visible)]="isISICDialogVisible"
+  [modal]="true"
+  [style]="{'width': dialogWidth, 'max-height': '100vh', 'overflow': 'hidden'}"
+  [contentStyle]="{'max-height': 'calc(90vh - 100px)', 'overflow': 'auto'}"
+>
+<div class="tree-container">
+  <p-tree
+  [style]="{ 'max-height': '100%','overflow': 'auto'}"
+  [value]="nodes"
+  selectionMode="checkbox"
+  [(selection)]="selectedNodes"
+  [metaKeySelection]="false"
+  [filter]="true"
+  [filterMode]="'strict'" 
+></p-tree>
+</div>
+  <p-footer >
+    <div class="p-2 d-flex justify-content-between align-items-center" >
+      <a
+      class="btn btn-sm btn-primary  m-1 btn-shadow cursor-pointer"
+      (click)="onISICDialogOK()"
+    >
+  
+    {{ "BUTTONS.OK" | translate }}</a>
+      <a
+      class="btn btn-sm btn-secondary btn-shadow cursor-pointer"
+        (click)="onISICDialogCancel()"
+      > {{ "BUTTONS.CANCEL" | translate }}</a>
+     </div>
+  </p-footer>
+</p-dialog>

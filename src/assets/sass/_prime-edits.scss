@@ -227,3 +227,20 @@ html[dir="ltr"] .p-element {
 html[dir="rtl"] .p-element {
     font-family: 'Tajawal', sans-serif !important;
 }
+.p-treenode-content{
+    gap: 10px !important;
+    }
+    
+     ul.p-tree-container{
+        direction: ltr !important;
+    }
+   
+
+      html[dir='ltr']   .p-input-icon-right > .p-icon-wrapper{
+          right: 0.75rem !important;
+          left: unset !important;
+        }
+        html[dir='rtl']   .p-input-icon-right > .p-icon-wrapper {
+            left: 0.75rem !important;
+            right: unset !important;
+          }

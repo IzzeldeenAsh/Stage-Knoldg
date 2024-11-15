@@ -134,11 +134,11 @@ export const locale = {
         "INDUSTRY_PLACEHOLDER": "Select industry",
         "HSCODE": "HS-Code",
         "THANK_YOU_TITLE": "Thank you!",
-        "SUCCESS_JOURNEY_TITLE": "Your journey to success is about to begin!",
+        "SUCCESS_JOURNEY_TITLE": "Congratulations on joining Foresighta!",
         "THANK_YOU_MESSAGE": `
-          Congratulations on pre-registering with <span class="text-dark font-weight-bolder">Foresighta</span>, where data-driven decisions meet innovation.
-          You are one step closer to gaining powerful insights to elevate your business strategies. <br/><br/>
-          We’ll notify you as soon as our platform is ready, so you can be among the first to harness the full potential of expert consulting.
+        You are now part of an elite network of insight providers and consultants dedicated to empowering our visitors with valuable expertise.
+       <br><br> You’ll be notified by email when it’s time to start uploading your reports, researches, and insights to the platform.
+        Thank you!
         `,
         "STAY_TUNED_MESSAGE": `
           Stay tuned for more updates. Your future of smarter decisions is about to begin!
@@ -147,7 +147,7 @@ export const locale = {
         "EMPOWER_INSIGHTS_TEXT": `
         Start generating revenue from your insights every time your report is downloaded.<br /><br />
           <span class="text-dark font-weight-bolder" ><strong>Reach a Global Audience</strong></span> by uploading and sharing your research, reports and data that will have a meaningful impact on individuals, businesses decision-makers around the world.<br /><br />
-          Foresighta provides a unique and redefined consulting opportunity. Experience Flexible  <span class="text-dark font-weight-bolder" >Engagement with visitors</span>  who can reach out to you for one-on-one consultations and expert opinions, allowing you to offer tailored guidance.
+          Foresighta provides a unique and Redefining consulting opportunity. Experience Flexible  <span class="text-dark font-weight-bolder" >Engagement with visitors</span>  who can reach out to you for one-on-one consultations and expert opinions, allowing you to offer tailored guidance.
           <br><br><span class="text-dark font-weight-bolder" ><strong>Work at your convenience, work any time.</strong></span> <br><br>
           Bring your reports and studies out of the drawer and let your experience shine.
 Your wealth of knowledge is valued and many are eager to learn from it.
@@ -212,10 +212,13 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     },
     BUTTONS: {
       BACK_BUTTON: "Back",
+      OK:"Ok",
+      CANCEL:"Cancel"
       // ... other BUTTONS keys
     },
     COMMON:{
-      "SLOGAN":"Redefines the insights landscape"
+      "SLOGAN":"Redefining the insights landscape",
+      "SELECISCIC":"Select ISIC Codes"
     }
   }
 };
