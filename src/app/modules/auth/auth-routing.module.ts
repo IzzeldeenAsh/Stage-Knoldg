@@ -19,7 +19,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'registration', // Only one redirection to 'login'
+        redirectTo: 'login', // Only one redirection to 'login'
         pathMatch: 'full',
       },
       {
@@ -39,20 +39,6 @@ const routes: Routes = [
         path: 'callback',
         component: CallbackComponent,
       },
-
-      {
-        path: 'registration',
-        component: RegistrationComponent,
-      },
-      {
-        path: 'verify-email/:email',
-        component: VerficationCardComponent,
-      },
-      {
-        path: 'wait',
-        component: WaitComponent,
-      },
-     
       {
         path: 'sign-up',
         component: SignUpComponent,
