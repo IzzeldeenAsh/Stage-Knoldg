@@ -1,8 +1,14 @@
-<ng-container *ngIf="user$ | async as _user">
+<!-- 
+  <ng-container *ngIf="user$ | async as _user">
   <div class="menu-item px-3">
     <div class="menu-content d-flex align-items-center px-3">
       <div class="symbol symbol-50px me-5">
-        <img alt="Logo" src="https://m.media-amazon.com/images/M/MV5BNzk0MDQ5OTUxMV5BMl5BanBnXkFtZTcwMDM5ODk5Mg@@._V1_FMjpg_UX1000_.jpg" />
+        <img *ngIf="_user.profile_photo_url" [src]="_user.profile_photo_url" />
+      <ng-container *ngIf="!_user.profile_photo_url">
+        <span class="symbol-label bg-primary fs-2 text-white">
+          {{ _user?.name?.charAt(0) }}
+        </span>
+      </ng-container>
       </div>
 
       <div class="d-flex flex-column">
@@ -159,3 +165,5 @@
     <a (click)="logout()" class="menu-link px-5 cursor-pointer"> Sign Out </a>
   </div>
 </ng-container>
+
+ -->

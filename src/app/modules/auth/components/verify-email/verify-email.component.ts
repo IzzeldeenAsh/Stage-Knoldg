@@ -116,7 +116,9 @@ export class VerifyEmailComponent extends BaseComponent implements OnInit, OnDes
           }
           this.verificationStatusKey = 'AUTH.VERIFY_EMAIL.VERIFICATION_FAILED';
           this.verificationStatus = this.translationService.getTranslation(this.verificationStatusKey);
-
+          localStorage.removeItem("foresighta-creds");
+          localStorage.removeItem("currentUser");
+          localStorage.removeItem("authToken");
           this.error = true;
           this.loading = false;
         },
@@ -157,7 +159,7 @@ export class VerifyEmailComponent extends BaseComponent implements OnInit, OnDes
   }
 
   toApp() {
-    this.router.navigateByUrl("/");
+    this.router.navigateByUrl("/app");
   }
 
   signuppath() {

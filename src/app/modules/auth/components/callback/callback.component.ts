@@ -15,6 +15,6 @@ export class CallbackComponent  extends BaseComponent implements OnInit, OnDestr
   ngOnInit(): void {
   }
   toApp() {
-    this.router.navigateByUrl("/");
+    this.router.navigateByUrl("/app");
   }
 }

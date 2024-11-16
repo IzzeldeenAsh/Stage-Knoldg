@@ -24,8 +24,6 @@ export class InsighterRegistraionService {
 
   personalInsighterRegister(insighterData:FormData){
     const headers = new HttpHeaders({
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
       'Accept-Language': this.currentLang,
     });
      this.setLoading(true);
@@ -39,8 +37,6 @@ export class InsighterRegistraionService {
 
   corporateInsighterRegister(insighterData:FormData){
     const headers = new HttpHeaders({
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
       'Accept-Language': this.currentLang,
     });
      this.setLoading(true);
