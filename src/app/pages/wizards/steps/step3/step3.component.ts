@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ICreateAccount } from '../../create-account.helper';
@@ -13,8 +13,10 @@ export class Step3Component implements OnInit, OnDestroy {
     isFormValid: boolean
   ) => void;
   form: FormGroup;
+
   @Input() defaultValues: Partial<ICreateAccount>;
 
+  @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
   private unsubscribe: Subscription[] = [];
 
   constructor(private fb: FormBuilder) {}
@@ -28,15 +30,12 @@ export class Step3Component implements OnInit, OnDestroy {
     this.form = this.fb.group({
       certifications: this.fb.array([]),
     });
-
-    if (this.defaultValues.certifications && this.defaultValues.certifications.length > 0) {
-      this.defaultValues.certifications.forEach((cert) => {
+    if (this.defaultValues?.certifications) {
+      this.defaultValues.certifications.forEach(cert => {
         this.addCertification(cert);
       });
-    } else {
-      this.addCertification();
     }
-
+  
     const formChangesSubscr = this.form.valueChanges.subscribe((val) => {
       this.updateParentModel(val, this.checkForm());
     });
@@ -46,26 +45,62 @@ export class Step3Component implements OnInit, OnDestroy {
   get certifications(): FormArray {
     return this.form.get('certifications') as FormArray;
   }
-  
-  addCertification(cert?: { type: string; file: File }) {
+
+  addCertification(cert?: { file: File }) {
     const certForm = this.fb.group({
-      type: [cert ? cert.type : '', [Validators.required]],
       file: [cert ? cert.file : null, [Validators.required]],
     });
     this.certifications.push(certForm);
+    this.updateParentModel(this.form.value, this.checkForm());
   }
 
   removeCertification(index: number) {
     this.certifications.removeAt(index);
+    this.updateParentModel(this.form.value, this.checkForm());
+    this.fileInput.nativeElement.value=''
   }
 
-  onFileChange(event: any, index: number) {
-    const file = event.target.files[0];
-    if (file) {
-      this.certifications.at(index).patchValue({ file: file });
-      this.updateParentModel({ certifications: this.form.value.certifications }, this.checkForm());
-    }
+  onDropzoneClick() {
+    this.fileInput.nativeElement.click();
   }
+
+  onFileSelected(event: any) {
+    const files: FileList = event.target.files;
+    this.handleFiles(files);
+  }
+
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
+  }
+
+  onFileDrop(event: DragEvent) {
+    event.preventDefault();
+    if(event.dataTransfer){
+      const files = event.dataTransfer.files;
+      this.handleFiles(files);
+    }
+
+  }
+
+  handleFiles(files: FileList) {
+    for (let i = 0; i < files.length; i++) {
+      const file = files.item(i);
+      if(file){
+        this.addCertification({ file });
+      }
+        }
+  }
+
+  getFileIcon(file: File) {
+    if(file){
+    const extension = file?.name?.split('.')?.pop()?.toLowerCase();
+    const iconPath = `./assets/media/svg/files/${extension}.svg`;
+    // If the icon doesn't exist, return a default icon
+    // You might need to implement a check to see if the file exists
+    return iconPath;
+  }
+  }
+
   checkForm() {
     return this.form.valid;
   }
@@ -74,3 +109,4 @@ export class Step3Component implements OnInit, OnDestroy {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }
 }
+

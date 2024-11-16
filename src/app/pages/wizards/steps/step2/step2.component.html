@@ -6,235 +6,485 @@
   </div>
 </div>
 
-
 <div [formGroup]="form">
-
   <ng-container *ngIf="defaultValues.accountType === 'personal'">
-    <!-- Phone Number -->
-  <div class="mb-10 fv-row">
-    <label class="form-label mb-3 required">Phone Number</label>
+  <!-- Phone Number -->
+<div class="mb-10 fv-row">
+  <label class="form-label mb-3 required">Phone Number</label>
+  <div class="input-group">
+    <div class="max-width-200px">
+      <p-dropdown
+        [options]="phoneNumbers"
+        formControlName="phoneCountryCode"
+        class="d-block form-p-control"
+        optionLabel="text"
+        placeholder="{{ 'AUTH.REGISTRATION.COUNTRY_PLACEHOLDER' | translate }}"
+        [filter]="true"
+        [showClear]="true"
+      ></p-dropdown>
+    </div>
     <input
-      formControlName="phone"
+      formControlName="phoneNumber"
       type="text"
-      class="form-control "
+      maxlength="10"
+      class="form-control"
       placeholder="Your phone number"
+      (input)="onPhoneNumberInput($event)"
     />
+  </div>
+  <!-- Validation messages -->
+  <div class="fv-plugins-message-container">
+    <!-- Country Code Required -->
     <div
       *ngIf="
-        form.get('phone')?.hasError('required') &&
-        form.get('phone')?.touched
+        form.get('phoneCountryCode')?.hasError('required') &&
+        form.get('phoneCountryCode')?.touched
       "
-      class="fv-plugins-message-container invalid-feedback">
+      class="invalid-feedback d-block"
+    >
+      Country code is required.
+    </div>
 
-      Your phone number is required
+    <!-- Phone Number Required -->
+    <div
+      *ngIf="
+        form.get('phoneNumber')?.hasError('required') &&
+        form.get('phoneNumber')?.touched
+      "
+      class="invalid-feedback d-block"
+    >
+      Phone number is required.
+    </div>
+
+    <!-- Phone Number Min Length -->
+    <div
+      *ngIf="
+        form.get('phoneNumber')?.hasError('minlength') &&
+        form.get('phoneNumber')?.touched
+      "
+      class="invalid-feedback d-block"
+    >
+    </div>
+
+    <!-- Phone Number Pattern (Exact 10 Digits) -->
+    <div
+      *ngIf="
+        form.get('phoneNumber')?.hasError('pattern') &&
+        form.get('phoneNumber')?.touched
+      "
+      class="invalid-feedback d-block"
+    >
+      Phone number must contain exactly 10 digits.
     </div>
   </div>
-
-  <div class="mb-10 row">
-    <!-- Consulting Field -->
-<div class="col-md-6 col-12">
-  <label class="form-label mb-3 required">Consulting Fields</label>
-  <p-progressBar
-  *ngIf="isLoadingConsultingFields$ | async"
-  mode="indeterminate"
-  [style]="{ height: '4px' }"
-></p-progressBar>
-<p-multiSelect
-*ngIf="(isLoadingConsultingFields$ | async) === false"
-[options]="listOfConsultingFields"
-class="d-block form-p-control"
-formControlName="consultingFields"
-[optionLabel]="optionLabel"
-placeholder="{{ 'AUTH.REGISTRATION.CONSULTING_FIELD_PLACEHOLDER' | translate }}"
-[filter]="true"
-[showClear]="true"
-></p-multiSelect>
-  
-  <div
-    *ngIf="
-      form.get('consultingFields')?.hasError('required') &&
-      form.get('consultingFields')?.touched
-    "
-    class="fv-plugins-message-container invalid-feedback">
-
-    Consulting Fields are required
-  </div>
 </div>
-<!-- ISIC Codes -->
-<div class="col-md-6 col-12">
-  <label class="form-label mb-3 required">ISIC Code</label>
-  <input
-    formControlName="phone"
-    type="text"
-    class="form-control"
-    placeholder="Your phone number"
-  />
-  <div
-    *ngIf="
-      form.get('phone')?.hasError('required') &&
-      form.get('phone')?.touched
-    "
-    class="fv-plugins-message-container invalid-feedback">
 
-    Your phone number is required
-  </div>
-</div>
-  </div>
+
+    <div class="mb-10 row">
+      <!-- Consulting Field -->
+      <div class="col-md-6 col-12">
+        <label class="form-label mb-3 required">Consulting Fields</label>
+        <p-progressBar
+          *ngIf="isLoadingConsultingFields$ | async"
+          mode="indeterminate"
+          [style]="{ height: '4px' }"
+        ></p-progressBar>
+        <p-multiSelect
+          *ngIf="(isLoadingConsultingFields$ | async) === false"
+          [options]="listOfConsultingFields"
+          class="d-block form-p-control"
+          formControlName="consultingFields"
+          [optionLabel]="optionLabel"
+          placeholder="{{
+            'AUTH.REGISTRATION.CONSULTING_FIELD_PLACEHOLDER' | translate
+          }}"
+          [filter]="false"
+          [showClear]="true"
+        ></p-multiSelect>
+
+        <div
+          *ngIf="
+            form.get('consultingFields')?.hasError('required') &&
+            form.get('consultingFields')?.touched
+          "
+          class="fv-plugins-message-container invalid-feedback"
+        >
+          Consulting Fields are required
+        </div>
+      </div>
+      <!-- ISIC Codes -->
+      <div class="col-md-6 col-12">
+        <label class="form-label fs-6 text-gray-900 required mb-3">{{
+          "AUTH.REGISTRATION.INDUSTRY" | translate
+        }}</label>
+        <p-progressBar
+          *ngIf="reverseLoader"
+          mode="indeterminate"
+          [style]="{ height: '4px' }"
+        ></p-progressBar>
+        <input
+          type="text"
+          class="form-control"
+          [readonly]="reverseLoader"
+          placeholder="{{
+            'AUTH.REGISTRATION.INDUSTRY_PLACEHOLDER' | translate
+          }}"
+          (click)="showISICDialog()"
+          [value]="selectedNodesLabel()"
+        />
+        <ng-container
+          *ngIf="
+            form.get('isicCodes')?.hasError('required') &&
+            form.get('isicCodes')?.touched
+          "
+        >
+          <div class="fv-plugins-message-container">
+            <div class="fv-help-block">
+              {{ "AUTH.REGISTRATION.ISIC_CODES_REQUIRED" | translate }}
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
 
     <div class="mb-10 fv-row">
       <label class="form-label mb-3 required">About You</label>
       <div class="row mb-2" data-kt-buttons="true">
         <div class="col">
           <textarea
-        name="bio"
-        class="form-control "
-        rows="3"
-        formControlName="bio"
-      ></textarea>
+            name="bio"
+            class="form-control"
+            rows="3"
+            formControlName="bio"
+          ></textarea>
         </div>
       </div>
     </div>
   </ng-container>
-
   <ng-container *ngIf="defaultValues.accountType === 'corporate'">
-        <!-- Phone Number -->
-  <div class="mb-10 row">
-   <div class="col-md-6 col-12">
+    <div class="mb-10 row">
+      <div class="col-12">
+        <label class="form-label mb-3 required"> Legal Name </label>
+        <input
+          formControlName="legalName"
+          type="text"
+          class="form-control"
+          placeholder="Your Company's Legal Name"
+        />
+        <div
+          *ngIf="
+            form.get('legalName')?.hasError('required') &&
+            form.get('legalName')?.touched
+          "
+          class="fv-plugins-message-container invalid-feedback"
+        >
+          Your Compnay's Legal Name
+        </div>
+      </div>
+    </div>
+  <!-- Phone Number -->
+  <div class="mb-10 fv-row">
     <label class="form-label mb-3 required">Phone Number</label>
-    <input
-      formControlName="phone"
-      type="text"
-      class="form-control "
-      placeholder="Your phone number"
-    />
-    <div
-      *ngIf="
-        form.get('phone')?.hasError('required') &&
-        form.get('phone')?.touched
-      "
-      class="fv-plugins-message-container invalid-feedback">
-
-      Your phone number is required
+    <div class="input-group">
+      <div class="max-width-200px">
+        <p-dropdown
+          [options]="phoneNumbers"
+          formControlName="phoneCountryCode"
+          class="d-block form-p-control"
+          optionLabel="text"
+          placeholder="{{ 'AUTH.REGISTRATION.COUNTRY_PLACEHOLDER' | translate }}"
+          [filter]="true"
+          [showClear]="true"
+        ></p-dropdown>
+      </div>
+      <input
+        formControlName="phoneNumber"
+        type="text"
+        maxlength="10"
+        class="form-control"
+        placeholder="Your phone number"
+        (input)="onPhoneNumberInput($event)"
+      />
     </div>
-   </div>
-   <div class="col-md-6 col-12">
-    <label class="form-label mb-3 required">Legal Name</label>
-    <input
-      formControlName="legalName"
-      type="text"
-      class="form-control "
-      placeholder="Your Company's Legal Name"
-    />
-    <div
-      *ngIf="
-        form.get('legalName')?.hasError('required') &&
-        form.get('legalName')?.touched
-      "
-      class="fv-plugins-message-container invalid-feedback">
+    <!-- Validation messages -->
+    <div class="fv-plugins-message-container">
+      <!-- Country Code Required -->
+      <div
+        *ngIf="
+          form.get('phoneCountryCode')?.hasError('required') &&
+          form.get('phoneCountryCode')?.touched
+        "
+        class="invalid-feedback d-block"
+      >
+        Country code is required.
+      </div>
   
-      Your Company's Legal name is required
+      <!-- Phone Number Required -->
+      <div
+        *ngIf="
+          form.get('phoneNumber')?.hasError('required') &&
+          form.get('phoneNumber')?.touched
+        "
+        class="invalid-feedback d-block"
+      >
+        Phone number is required.
+      </div>
+  
+      <!-- Phone Number Min Length -->
+      <div
+        *ngIf="
+          form.get('phoneNumber')?.hasError('minlength') &&
+          form.get('phoneNumber')?.touched
+        "
+        class="invalid-feedback d-block"
+      >
+      </div>
+  
+      <!-- Phone Number Pattern (Exact 10 Digits) -->
+      <div
+        *ngIf="
+          form.get('phoneNumber')?.hasError('pattern') &&
+          form.get('phoneNumber')?.touched
+        "
+        class="invalid-feedback d-block"
+      >
+        Phone number must contain exactly 10 digits.
+      </div>
     </div>
-   </div>
   </div>
 
-  <div class="mb-10 row">
+    <div class="mb-10 row">
       <!-- Consulting Field -->
       <div class="col-md-6 col-12">
-      <label class="form-label mb-3 required">Consulting Fields</label>
-      <p-progressBar
-      *ngIf="isLoadingConsultingFields$ | async"
+        <label class="form-label mb-3 required">Consulting Fields</label>
+        <p-progressBar
+          *ngIf="isLoadingConsultingFields$ | async"
+          mode="indeterminate"
+          [style]="{ height: '4px' }"
+        ></p-progressBar>
+        <p-multiSelect
+          *ngIf="(isLoadingConsultingFields$ | async) === false"
+          [options]="listOfConsultingFields"
+          class="d-block form-p-control"
+          formControlName="consultingFields"
+          [optionLabel]="optionLabel"
+          placeholder="{{
+            'AUTH.REGISTRATION.CONSULTING_FIELD_PLACEHOLDER' | translate
+          }}"
+          [filter]="true"
+          [showClear]="true"
+        ></p-multiSelect>
+
+        <div
+          *ngIf="
+            form.get('consultingFields')?.hasError('required') &&
+            form.get('consultingFields')?.touched
+          "
+          class="fv-plugins-message-container invalid-feedback"
+        >
+          Consulting Fields are required
+        </div>
+      </div>
+  <!-- ISIC Codes -->
+  <div class="col-md-6 col-12">
+    <label class="form-label fs-6 text-gray-900 required mb-3">{{
+      "AUTH.REGISTRATION.INDUSTRY" | translate
+    }}</label>
+    <p-progressBar
+      *ngIf="reverseLoader"
       mode="indeterminate"
       [style]="{ height: '4px' }"
-      ></p-progressBar>
-      <p-multiSelect
-      *ngIf="(isLoadingConsultingFields$ | async) === false"
-      [options]="listOfConsultingFields"
-      class="d-block form-p-control"
-      formControlName="consultingFields"
-      [optionLabel]="optionLabel"
-      placeholder="{{ 'AUTH.REGISTRATION.CONSULTING_FIELD_PLACEHOLDER' | translate }}"
-      [filter]="true"
-      [showClear]="true"
-      ></p-multiSelect>
-
-      <div
-      *ngIf="
-        form.get('consultingFields')?.hasError('required') &&
-        form.get('consultingFields')?.touched
-      "
-      class="fv-plugins-message-container invalid-feedback">
-
-      Consulting Fields are required
-      </div>
-      </div>
-      <!-- ISIC Codes -->
-      <div class="col-md-6 col-12">
-      <label class="form-label mb-3 required">ISIC Code</label>
-      <input
-      formControlName="phone"
+    ></p-progressBar>
+    <input
       type="text"
       class="form-control"
-      placeholder="Your phone number"
-      />
-      <div
+      [readonly]="reverseLoader"
+      placeholder="{{
+        'AUTH.REGISTRATION.INDUSTRY_PLACEHOLDER' | translate
+      }}"
+      (click)="showISICDialog()"
+      [value]="selectedNodesLabel()"
+    />
+    <ng-container
       *ngIf="
-        form.get('phone')?.hasError('required') &&
-        form.get('phone')?.touched
+        form.get('isicCodes')?.hasError('required') &&
+        form.get('isicCodes')?.touched
       "
-      class="fv-plugins-message-container invalid-feedback">
-
-      Your phone number is required
+    >
+      <div class="fv-plugins-message-container">
+        <div class="fv-help-block">
+          {{ "AUTH.REGISTRATION.ISIC_CODES_REQUIRED" | translate }}
+        </div>
       </div>
-      </div>
+    </ng-container>
   </div>
+    </div>
     <!-- Separator -->
     <div class="separator separator-content my-5">
-      <span class="w-300px text-gray-500 fw-semibold fs-7">Verify your company with</span>
+      <span class="w-300px text-gray-500 fw-semibold fs-7"
+        >Verify your company with</span
+      >
     </div>
+
     <div class="mb-10 row">
-   <div class=" col-12">
-    <label class="form-label m-0 required">
-      Website URL
-    </label>
-    <div class="text-muted  mb-3 fs-7">Your email address should match the website domain</div>
-    <input
-      formControlName="website"
-      type="text"
-      class="form-control "
-      placeholder="Your Website's URL"
-    />
-    <div
-      *ngIf="
-        form.get('website')?.hasError('required') &&
-        form.get('website')?.touched
-      "
-      class="fv-plugins-message-container invalid-feedback">
-  
-      Your Website's URL is required
-    </div>
-   </div>
+      <div class="col-12">
+        <label class="form-label m-0 required"> Website URL </label>
+        <div class="text-muted mb-3 fs-7">
+          Your email address should match the website domain
+        </div>
+        <input
+          formControlName="website"
+          type="text"
+          class="form-control"
+          placeholder="Your Website's URL"
+        />
+        <div
+          *ngIf="
+            form.get('website')?.hasError('required') &&
+            form.get('website')?.touched
+          "
+          class="fv-plugins-message-container invalid-feedback"
+        >
+          Your Website's URL is required
+        </div>
+      </div>
     </div>
     <!-- Separator -->
     <div class="separator separator-content my-5">
       <span class="w-125px text-gray-500 fw-semibold fs-7">or</span>
     </div>
-  
+    <!-- Dropzone -->
+    <div class="fv-row mb-10">
+      <!-- Show dropzone only if no file has been uploaded -->
+      <div
+        class="dropzone dz-clickable"
+        *ngIf="!form.get('registerDocument')?.value"
+        (click)="onDropzoneClick()"
+        (drop)="onFileDrop($event)"
+        (dragover)="onDragOver($event)"
+      >
+        <div class="dz-message needsclick">
+          <i class="ki-outline ki-file-up fs-3hx text-primary"></i>
+          <div class="ms-4">
+            <h3 class="dfs-3 fw-bold text-gray-900 mb-1">
+              Drop or Upload Registry Document
+            </h3>
+            <span class="fw-semibold fs-7 text-muted"
+              >Verify company account by uploading company registry
+              document</span
+            >
+          </div>
+        </div>
+      </div>
+      <!-- Display uploaded file if a file has been uploaded -->
+      <div *ngIf="form.get('registerDocument')?.value">
+        <!-- Uploaded File Details -->
+        <div
+          class="d-flex flex-stack py-4 border border-top-0 border-left-0 border-right-0 border-dashed"
+        >
+          <div class="d-flex align-items-center">
+            <!-- File Icon -->
+            <div class="symbol symbol-35px">
+              <img
+                [src]="getFileIcon(form.get('registerDocument')?.value)"
+                alt="icon"
+              />
+            </div>
+            <!-- File Details -->
+            <div class="ms-6">
+              <a
+                href="#"
+                class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2"
+              >
+                {{ form.get("registerDocument")?.value.name }}
+              </a>
+              <div class="fw-semibold text-muted">
+                {{
+                  form.get("registerDocument")?.value.size / 1000
+                    | number : "1.0-2"
+                }}
+                KB
+              </div>
+            </div>
+          </div>
+          <!-- Delete Button -->
+          <div class="min-w-100px">
+            <button
+              type="button"
+              pTooltip="Delete File"
+              tooltipPosition="top"
+              class="btn btn-icon btn-bg-light btn-active-color-danger btn-sm text-danger"
+              (click)="removeRegisterDocument()"
+            >
+              <i class="ki-duotone ki-trash fs-2"
+                ><span class="path1"></span><span class="path2"></span
+                ><span class="path3"></span><span class="path4"></span
+                ><span class="path5"></span
+              ></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Hidden File Input -->
+      <input
+        type="file"
+        #fileInput
+        (change)="onFileSelected($event)"
+        accept=".png, .jpg, .jpeg, .pdf"
+        style="display: none"
+      />
+    </div>
     <!-- About -->
     <div class="mb-10 fv-row">
       <label class="form-label mb-3 required">About Company</label>
       <div class="row mb-2" data-kt-buttons="true">
         <div class="col">
           <textarea
-        name="aboutCompany"
-        class="form-control "
-        rows="3"
-        formControlName="aboutCompany"
-      ></textarea>
+            name="aboutCompany"
+            class="form-control"
+            rows="3"
+            formControlName="aboutCompany"
+          ></textarea>
         </div>
       </div>
     </div>
   </ng-container>
-
-
-  
 </div>
+
+<!-- ISIC Codes Selection Dialog -->
+<p-dialog
+  header="{{ 'COMMON.SELECISCIC' | translate }}"
+  [(visible)]="isISICDialogVisible"
+  [modal]="true"
+  [style]="{ width: dialogWidth, 'max-height': '100vh', overflow: 'hidden' }"
+  [contentStyle]="{ 'max-height': 'calc(90vh - 100px)', overflow: 'auto' }"
+>
+  <div class="tree-container">
+    <p-tree
+      [style]="{ 'max-height': '100%', overflow: 'auto' }"
+      [value]="nodes"
+      selectionMode="checkbox"
+      [(selection)]="selectedNodes"
+      [metaKeySelection]="false"
+      [filter]="true"
+      [filterMode]="'strict'"
+      [loading]="isLoadingISIC$ | async"
+    ></p-tree>
+  </div>
+  <p-footer>
+    <div class="p-2 d-flex justify-content-between align-items-center">
+      <a
+        class="btn btn-sm btn-primary m-1 btn-shadow cursor-pointer"
+        (click)="onISICDialogOK()"
+      >
+        {{ "BUTTONS.OK" | translate }}
+      </a>
+      <a
+        class="btn btn-sm btn-secondary btn-shadow cursor-pointer"
+        (click)="onISICDialogCancel()"
+      >
+        {{ "BUTTONS.CANCEL" | translate }}
+      </a>
+    </div>
+  </p-footer>
+</p-dialog>

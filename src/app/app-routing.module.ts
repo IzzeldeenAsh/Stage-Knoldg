@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { adminGuard } from './guards/admin-guard/admin.guard';
+import { AuthGuard } from './modules/auth/services/auth.guard';
 
 export const routes: Routes = [
 {
@@ -17,6 +18,7 @@ export const routes: Routes = [
   path: 'app',
   loadChildren: () =>
     import('./_metronic/layout/layout.module').then((m) => m.LayoutModule),
+  canActivate:[AuthGuard]
 },
 {
   path: 'admin-dashboard',

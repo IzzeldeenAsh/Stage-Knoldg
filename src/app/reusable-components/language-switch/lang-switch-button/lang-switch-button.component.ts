@@ -48,6 +48,6 @@ export class LangSwitchButtonComponent implements OnInit {
     // Update the flag based on the selected language
     this.selectedFlag = this.selectedLang === 'ar'
       ? '../../../../assets/media/flags/saudi-arabia.svg'
-      : '../../../../assets/media/flags/united-states.svg';
+      : '../../../../assets/media/flags/uk.svg';
   }
 }

@@ -34,6 +34,8 @@
 
  @media screen and (max-width:1213px) {
   position: static;
+  border-bottom-left-radius: 1rem; 
+  border-bottom-right-radius: 1rem;
  }
 }
 html[dir='rtl'] .top-round{

@@ -2,9 +2,10 @@
 
 export interface ICreateAccount {
   accountType: 'personal' | 'corporate';
-  phone: string;
+  phoneNumber: number | null;
   consultingFields: number[]; // Array of IDs
-  isicCodes: number[]; // Array of IDs
+  isicCodes:any; // Array of IDs
+  phoneCountryCode:any;
 
   // Personal account fields
   bio?: string;
@@ -21,7 +22,8 @@ export interface ICreateAccount {
 
 export const inits: ICreateAccount = {
   accountType: 'personal',
-  phone: '',
+  phoneCountryCode:  { text: '🇺🇸 +1   United States', code: '+1', country: 'US' },
+  phoneNumber: null,
   consultingFields: [],
   isicCodes: [],
   bio: '',

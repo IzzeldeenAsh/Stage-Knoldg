@@ -35,7 +35,11 @@ export class TopbarComponent implements OnInit {
     // });
   }
   signOut() {
-    this._auth.logout().pipe(first()).subscribe();
+    this._auth.logout().pipe(first()).subscribe((res)=>{
+      localStorage.removeItem("foresighta-creds");
+      localStorage.removeItem("currentUser");
+      localStorage.removeItem("authToken");
+    });
     this.router.navigateByUrl("/auth/login");
   }
 
