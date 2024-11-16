@@ -28,13 +28,20 @@ export class UserInnerComponent implements OnInit, OnDestroy {
   }
 
   logout() {
-    this.auth.logout().pipe(first()).subscribe((res)=>{
-      localStorage.removeItem("foresighta-creds");
-      localStorage.removeItem("currentUser");
-      localStorage.removeItem("authToken");
+    this.auth.logout().pipe(first()).subscribe({
+      next : (res)=>{
+          localStorage.removeItem("foresighta-creds");
+          localStorage.removeItem("currentUser");
+          localStorage.removeItem("authToken");
+          document.location.reload();
+      },
+      error: (err)=>{
+        localStorage.removeItem("foresighta-creds");
+        localStorage.removeItem("currentUser");
+        localStorage.removeItem("authToken");
+        document.location.reload();
+      }
     });
-   
-    document.location.reload();
   }
 
   selectLanguage(lang: string) {

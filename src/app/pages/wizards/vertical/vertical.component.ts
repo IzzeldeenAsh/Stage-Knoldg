@@ -113,7 +113,9 @@ export class VerticalComponent implements OnInit, OnDestroy {
         formData.append("about_us", user.aboutCompany ? user.aboutCompany : "");
         formData.append("legal_name", user.legalName ? user.legalName : '');
         formData.append("website", user.website ? user.website : '');
+       if(user.registerDocument){
         formData.append("register_document", user.registerDocument ? user.registerDocument : '');
+       }
         formData.append("phone", userPhoneNumber);
         user.isicCodes.forEach((code: any) => {
           formData.append("isic_code[]", code.key.toString());
