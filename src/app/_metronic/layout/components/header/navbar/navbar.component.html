@@ -71,14 +71,21 @@
 <!--end::Theme mode-->
 
 <!--begin::User menu-->
-<div class="app-navbar-item" [ngClass]="itemClass">
-  <!--begin::Menu wrapper-->
-  <div class="cursor-pointer symbol" [ngClass]="userAvatarClass" data-kt-menu-trigger="{default: 'click'}" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end">
-    <img src="./assets/media/avatars/300-5.jpg" />
-  </div>
-  <app-user-inner data-kt-menu='true'></app-user-inner>
-  <!--end::Menu wrapper-->
-</div>
+<ng-container *ngIf="user$ | async as _user">
+  <div class="app-navbar-item" [ngClass]="itemClass">
+    <!--begin::Menu wrapper-->
+    <div class="cursor-pointer symbol" [ngClass]="userAvatarClass" data-kt-menu-trigger="{default: 'click'}" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end">
+      <img *ngIf="_user.profile_photo_url" [src]="_user.profile_photo_url" />
+      <ng-container *ngIf="!_user.profile_photo_url">
+        <span class="symbol-label bg-primary fs-2 text-white">
+          {{ _user?.name?.charAt(0) }}
+        </span>
+      </ng-container>
+    </div>
+    <app-user-inner data-kt-menu='true'></app-user-inner>
+    <!--end::Menu wrapper-->
+  </div></ng-container>
+
 <!--end::User menu-->
 
 <!--begin::Header menu toggle-->

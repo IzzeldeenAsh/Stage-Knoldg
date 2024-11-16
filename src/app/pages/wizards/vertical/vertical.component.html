@@ -168,7 +168,7 @@
 
         <ng-container *ngIf="currentStep$.value !== formsCount">
           <div>
-            <button type="button" class="btn btn-lg btn-primary me-3" [disabled]="!isCurrentFormValid$.value"
+            <button type="button" class="btn btn-lg btn-primary me-3" [disabled]="!isCurrentFormValid$.value || (isLoadingSubmit$ | async)"
               (click)="nextStep()">
               <span class="indicator-label">
                 <ng-container *ngIf="currentStep$.value < formsCount - 1">
@@ -176,7 +176,10 @@
                   <app-keenicon name="arrow-right" class="fs-3 ms-2 me-0"></app-keenicon>
                 </ng-container>
                 <ng-container *ngIf="currentStep$.value === formsCount - 1">
-                  Submit
+                  <ng-container *ngIf="!(isLoadingSubmit$ | async) else loading">{{
+                    "AUTH.REGISTRATION.SUBMIT" | translate
+                  }}</ng-container>
+                  <ng-template #loading>   {{ "AUTH.REGISTRATION.PLEASE_WAIT" | translate }}</ng-template>
                 </ng-container>
               </span>
             </button>

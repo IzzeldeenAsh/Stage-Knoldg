@@ -91,6 +91,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       this.selectedNodes= null;
       this.loadISIC();
       this.setOptionLabel();
+      this.setOptionLabelField()
     });
     this.getListOfCountries();
     this.setOptionLabel();

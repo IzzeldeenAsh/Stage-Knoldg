@@ -31,7 +31,7 @@ export const routes: Routes = [
   loadChildren: () =>
     import('./modules/errors/errors.module').then((m) => m.ErrorsModule),
 },
-{ path: '**', redirectTo: 'error/404' },
+{ path: '**', redirectTo: 'auth' },
 ];
 
 @NgModule({
