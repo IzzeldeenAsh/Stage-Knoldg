@@ -1,5 +1,5 @@
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, first } from 'rxjs';
 import { TranslationService } from '../../../../../../modules/i18n';
 import { AuthService, UserType } from '../../../../../../modules/auth';
 
@@ -28,7 +28,12 @@ export class UserInnerComponent implements OnInit, OnDestroy {
   }
 
   logout() {
-    this.auth.logout();
+    this.auth.logout().pipe(first()).subscribe((res)=>{
+      localStorage.removeItem("foresighta-creds");
+      localStorage.removeItem("currentUser");
+      localStorage.removeItem("authToken");
+    });
+   
     document.location.reload();
   }
 

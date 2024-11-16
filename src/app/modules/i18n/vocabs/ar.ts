@@ -64,6 +64,7 @@ export const locale = {
       },
       REGISTRATION: {
         TITLE: "التسجيل",
+        ISIC_CODES_REQUIRED:"كود ISIC مطلوب",
         SUBTITLE: "ادخل معلوماتك لإنشاء حسابك",
         GOOGLE_SIGNUP: "عن طريق قوقل",
         LINKEDIN_SIGNUP: "عن طريق لكندان",
@@ -84,7 +85,6 @@ export const locale = {
         LASTNAME_MAXLENGTH: "يجب أن يحتوي اسم العائلة على 100 حرف كحد أقصى",
         FIRSTNAME_LABEL: "الاسم الاول",
         FIRSTNAME_PLACEHOLDER: "الاسم الاول",
-        ISIC_CODES_REQUIRED: "الصناعة مطلوبة",
         FIRSTNAME_REQUIRED: "الاسم الاول مطلوب",
         FIRSTNAME_MINLENGTH: "يجب أن يحتوي الاسم الاول على 3 أحرف على الأقل",
         FIRSTNAME_MAXLENGTH: "يجب أن يحتوي الاسم الاول على 100 حرف كحد أقصى",

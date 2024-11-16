@@ -1,7 +1,9 @@
 <div class="position-relative">
     <a (click)="toggleMenu()" class="cursor-pointer d-flex active">
-        <span class="symbol symbol-20px me-4">
+        <span class="symbol symbol-20px me-4 d-flex align-items-center gap-1">
             <img class="rounded-4" [src]="selectedFlag" alt="Language Flag">
+            <ng-container *ngIf="selectedLang=='en'">English</ng-container>
+            <ng-container *ngIf="selectedLang=='ar'">عربي</ng-container>
         </span>
     </a>
     <div 

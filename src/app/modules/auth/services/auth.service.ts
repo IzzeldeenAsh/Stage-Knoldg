@@ -6,7 +6,7 @@ import {
   Subscription,
   throwError,
 } from "rxjs";
-import { map, catchError, switchMap, finalize, take } from "rxjs/operators";
+import { map, catchError, switchMap, finalize, take, first } from "rxjs/operators";
 import { ForesightaGeneralUserModel, UserModel } from "../models/user.model";
 import { AuthModel } from "../models/auth.model";
 import { Router } from "@angular/router";
@@ -148,19 +148,9 @@ export class AuthService implements OnDestroy {
       finalize(() => this.isLoadingSubject.next(false))
     );
   }
-  logout() {
-    const headers = new HttpHeaders({
-      Accept: "application/json",
-      "Accept-Language": "en", // As per your example
-    });
-    localStorage.removeItem(this.authLocalStorageToken);
-    localStorage.removeItem("currentUser");
-    localStorage.removeItem("authToken");
-    return this.http.post<any>(
-      "https://api.4sighta.com/api/account/logout",
-      {},
-      { headers }
-    );
+  logout():Observable<any> {
+   return this.authHttpService.logout()
+   
   }
   getUserByToken(): Observable<UserType> {
     const authData = this.getAuthFromLocalStorage();
@@ -172,7 +162,7 @@ export class AuthService implements OnDestroy {
         return of(user);
       }
     } else {
-      this.logout(); // Token is expired; clear stored data and navigate to login
+     
     }
 
     return of(undefined);

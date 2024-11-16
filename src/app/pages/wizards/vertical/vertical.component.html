@@ -57,10 +57,10 @@
             <!--begin::Label-->
             <div class="stepper-label">
               <h3 class="stepper-title">
-                Account Settings
+                Account Info
               </h3>
               <div class="stepper-desc fw-semibold">
-                Setup Your Account Settings
+                Setup Your Insighter Inforamtion
               </div>
             </div>
             <!--end::Label-->
@@ -88,10 +88,10 @@
             <!--begin::Label-->
             <div class="stepper-label">
               <h3 class="stepper-title">
-                Business Info
+                Certificates 
               </h3>
               <div class="stepper-desc fw-semibold">
-                Your Business Related Info
+                Upload Your Qualificaitons 
               </div>
             </div>
             <!--end::Label-->
@@ -103,10 +103,9 @@
           <!--end::Line-->
         </div>
 
-        <div class="stepper-item" [ngClass]="{
-            current: currentStep$.value === 4,
-            completed: currentStep$.value > 4
-          }">
+       
+
+        <div class="stepper-item" [ngClass]="{ current: currentStep$.value === 4 }">
           <!--begin::Wrapper-->
           <div class="stepper-wrapper">
             <!--begin::Icon-->
@@ -119,38 +118,10 @@
             <!--begin::Label-->
             <div class="stepper-label">
               <h3 class="stepper-title">
-                Billing Details
+                Completion
               </h3>
               <div class="stepper-desc fw-semibold">
-                Set Your Payment Methods
-              </div>
-            </div>
-            <!--end::Label-->
-          </div>
-          <!--end::Wrapper-->
-
-          <!--begin::Line-->
-          <div class="stepper-line h-40px"></div>
-          <!--end::Line-->
-        </div>
-
-        <div class="stepper-item" [ngClass]="{ current: currentStep$.value === 5 }">
-          <!--begin::Wrapper-->
-          <div class="stepper-wrapper">
-            <!--begin::Icon-->
-            <div class="stepper-icon w-40px h-40px">
-              <i class="stepper-check fas fa-check"></i>
-              <span class="stepper-number">5</span>
-            </div>
-            <!--end::Icon-->
-
-            <!--begin::Label-->
-            <div class="stepper-label">
-              <h3 class="stepper-title">
-                Completed
-              </h3>
-              <div class="stepper-desc fw-semibold">
-                Woah, we are here
+               Finish up!
               </div>
             </div>
             <!--end::Label-->
@@ -161,10 +132,12 @@
     </div>
   </div>
   <!--begin::Aside-->
-
+ 
   <!--begin::Content-->
   <div class="d-flex flex-row-fluid flex-center bg-body rounded">
+    
     <form class="py-20 w-100 w-xl-700px px-9" noValidate id="kt_create_account_form">
+      <p-messages [(value)]="messages" [enableService]="false"></p-messages>
       <div class="current">
         <ng-container *ngIf="currentStep$.value === 1">
           <app-step1 class="w-100" [updateParentModel]="updateAccount" [defaultValues]="account$.value"></app-step1>
@@ -185,7 +158,7 @@
 
       <div class="d-flex flex-stack pt-10">
         <div class="mr-2">
-          <ng-container *ngIf="currentStep$.value !== 1">
+          <ng-container *ngIf="currentStep$.value !== 1 ">
             <button type="button" class="btn btn-lg btn-light-primary me-3" (click)="prevStep()">
               <app-keenicon name="arrow-left" class="fs-3 ms-1"></app-keenicon>
               Back

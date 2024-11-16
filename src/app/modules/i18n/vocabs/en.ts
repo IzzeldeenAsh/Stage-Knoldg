@@ -84,6 +84,7 @@ export const locale = {
       },
       "REGISTRATION": {
         "TITLE": "Sign Up",
+        ISIC_CODES_REQUIRED:"ISIC Code is required",
         "SUBTITLE": "Enter your details to create your account",
         "GOOGLE_SIGNIN": "Sign in with Google",
         "LINKEDIN_SIGNIN": "Sign in with LinkedIn",

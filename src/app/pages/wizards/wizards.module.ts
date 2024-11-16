@@ -20,7 +20,10 @@ import { MessagesModule } from 'primeng/messages';
 import { NodeService } from 'src/app/_fake/services/nodeService/nodeservice';
 import { MessageService } from 'primeng/api';
 import { TranslationModule } from 'src/app/modules/i18n';
-
+import { DropdownModule } from 'primeng/dropdown';
+import { DialogModule } from 'primeng/dialog';
+import { TreeSelectModule } from 'primeng/treeselect';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 @NgModule({
   declarations: [
     HorizontalComponent,
@@ -38,7 +41,11 @@ import { TranslationModule } from 'src/app/modules/i18n';
     TranslationModule,
     ReactiveFormsModule,
     ProgressBarModule,
+    ProgressSpinnerModule,
     ToastModule,
+    DialogModule,
+    TreeSelectModule,
+    DropdownModule,
     MessageModule,
     MultiSelectModule,
     MessagesModule,

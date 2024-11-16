@@ -74,6 +74,15 @@ color: #017BFE !important;
     width: 2rem !important;
     height: 2rem !important;
   }
+   .mt-100{
+    margin-top: 100px;
+    @media screen and (max-width:768px) {
+      margin-top: 70px;
+    }
+    @media screen and (max-width:464px) {
+      margin-top: 30px;
+    }
+   }
   .mil-up {
     opacity: 0; /* Initially hidden */
     transform: translateY(20px); /* Optional, based on the animation */

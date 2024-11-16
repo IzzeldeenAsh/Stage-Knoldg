@@ -1,0 +1,19 @@
+.responsive-dialog {
+    width: 50vw;
+    max-height: 90vh;
+    overflow: hidden;
+  }
+  
+  @media (max-width: 768px) {
+    .responsive-dialog {
+      width: 100vw;
+    }
+  }
+  .tree-container{
+    height: 500px;
+    max-height:calc(-100px + 80vh)
+  }
+  .max-width-200px{
+    max-width: 250px;
+    width: 250px;
+  }

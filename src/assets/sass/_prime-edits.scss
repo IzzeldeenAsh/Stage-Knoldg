@@ -12,11 +12,14 @@
 }
 
 /* Dropdown and TreeSelect Padding */
+.p-multiselect-items ,
+.p-multiselect-items ul,
 .p-dropdown-items,
 .p-treeselect ul,
 .p-dropdown ul {
     padding: 0 !important;
 }
+
 
 .p-dropdown ul {
     direction: ltr !important;
@@ -244,3 +247,15 @@ html[dir="rtl"] .p-element {
             left: 0.75rem !important;
             right: unset !important;
           }
+
+          .p-checkbox .p-checkbox-box {
+            border: 1px solid #d1d5db  !important;
+            width: 18px !important;
+            height: 18px !important;
+            border-radius: 4px !important;
+          }
+
+          .p-multiselect-panel .p-multiselect-items .p-multiselect-item .p-checkbox {
+           display: flex;
+           align-items: center;
+        }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
+import { first } from 'rxjs';
 
 @Component({
   selector: 'app-logout',
@@ -8,7 +9,11 @@ import { AuthService } from '../../services/auth.service';
 })
 export class LogoutComponent implements OnInit {
   constructor(private authService: AuthService) {
-    this.authService.logout();
+    this.authService.logout().pipe(first()).subscribe((res)=>{
+      localStorage.removeItem("foresighta-creds");
+      localStorage.removeItem("currentUser");
+      localStorage.removeItem("authToken");
+    });
   }
 
   ngOnInit(): void {}
