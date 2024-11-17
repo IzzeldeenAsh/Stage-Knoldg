@@ -140,6 +140,15 @@ export class AuthService implements OnDestroy {
     return this.http.get('https://api.4sighta.com/api/account/profile',{headers}).pipe(
       map((response: any) => {
         this.isLoadingSubject.next(false);
+        const user: UserType = {
+          id: response.data.id,
+          name: response.data.name,
+          email: response.data.email,
+          countryId: null,
+          country: null,
+          roles: response.data.roles,
+        };
+        this.setUserInLocalStorage(user);
         return response.data
       }),
       catchError((err) => {
@@ -155,24 +164,14 @@ export class AuthService implements OnDestroy {
   getUserByToken(): Observable<UserType> {
     const authData = this.getAuthFromLocalStorage();
     if (authData && !this.isTokenExpired(authData.authToken)) {
-    this.authHttpService.getUserByToken(authData.authToken).pipe(first()).subscribe((userProfile)=>{
-        if (userProfile) {
-          console.log("userProfile",userProfile);
-          const user: UserType = {
-            id: userProfile.data.id,
-            name: userProfile.data.name,
-            email: userProfile.data.email,
-            countryId: null,
-            country: null,
-            roles: userProfile.data.roles,
-          };
-          this.currentUserSubject.next(user);
-          this.checkUserRoleAndRedirect(user);
-          return of(user);
-        }
-      })
-     
+      const user = this.getUserFromLocalStorage();
+      if (user) {
+        this.currentUserSubject.next(user);
+        this.checkUserRoleAndRedirect(user);
+        return of(user);
+      }
     } else {
+      this.logout(); // Token is expired; clear stored data and navigate to login
     }
 
     return of(undefined);
