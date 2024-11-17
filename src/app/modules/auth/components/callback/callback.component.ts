@@ -49,8 +49,7 @@ export class CallbackComponent extends BaseComponent implements OnInit, OnDestro
 
   toApp(): void {
     this.isSubmitting=true;
-    this.auth.getProfile()
-    this.auth.getUserByToken().pipe(first()).subscribe(()=>{
+    this.auth.getProfile().pipe(first()).subscribe(()=>{
       this.isSubmitting=false
     })
   }
