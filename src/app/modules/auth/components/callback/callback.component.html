@@ -33,9 +33,16 @@
   
                 <div class="d-flex flex-center mt-10">
                   <button type="button" (click)="toApp()" class="btn btn-lg btn-primary fw-bold">
-                    <span class="indicator-label">
-                      {{ 'AUTH.VERIFY_EMAIL.GET_STARTED' | translate }}
-                    </span>
+                    <ng-container *ngIf="!isSubmitting">
+                      <span class="indicator-label">   {{ 'AUTH.VERIFY_EMAIL.GET_STARTED' | translate }}</span>
+                    </ng-container>
+                    <ng-container *ngIf="isSubmitting">
+                      <span class="indicator-progress" [style.display]="'block'">
+                        {{ "AUTH.REGISTRATION.PLEASE_WAIT" | translate }}
+                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                      </span>
+                    </ng-container>
+           
                   </button>
                 </div>
               </ng-container>

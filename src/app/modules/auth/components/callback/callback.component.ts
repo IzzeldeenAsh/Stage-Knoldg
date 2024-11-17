@@ -16,7 +16,7 @@ export class CallbackComponent extends BaseComponent implements OnInit, OnDestro
   token: string | null = null;
   roles: string[] = [];
   errorMessage: string | null = null;
-
+  isSubmitting:boolean=false;
   constructor(
     scrollAnims: ScrollAnimsService,
     private router: Router,
@@ -48,6 +48,9 @@ export class CallbackComponent extends BaseComponent implements OnInit, OnDestro
 
 
   toApp(): void {
-    this.auth.getUserByToken().pipe(first()).subscribe()
+    this.isSubmitting=true;
+    this.auth.getUserByToken().pipe(first()).subscribe(()=>{
+      this.isSubmitting=false
+    })
   }
 }
