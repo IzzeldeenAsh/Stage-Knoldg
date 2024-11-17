@@ -155,16 +155,16 @@ export class AuthService implements OnDestroy {
   getUserByToken(): Observable<UserType> {
     const authData = this.getAuthFromLocalStorage();
     if (authData && !this.isTokenExpired(authData.authToken)) {
-    this.authHttpService.getUserByToken(authData.authToken).pipe(first()).subscribe((userProfile)=>{
+    this.getProfile().pipe(first()).subscribe((userProfile)=>{
         if (userProfile) {
           console.log("userProfile",userProfile);
           const user: UserType = {
-            id: userProfile.data.id,
-            name: userProfile.data.name,
-            email: userProfile.data.email,
+            id: userProfile.id,
+            name: userProfile.name,
+            email: userProfile.email,
             countryId: null,
             country: null,
-            roles: userProfile.data.roles,
+            roles: userProfile.roles,
           };
           this.currentUserSubject.next(user);
           this.checkUserRoleAndRedirect(user);
