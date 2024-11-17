@@ -31,7 +31,7 @@ export class CallbackComponent extends BaseComponent implements OnInit, OnDestro
   const routeSub =  this.route.queryParamMap.subscribe(params => {
       this.token = params.get('token');
       const rolesParam = params.get('roles');
-
+    console.log("tok",this.token);
       if (this.token && rolesParam) {
         // Assuming roles are comma-separated if multiple
         this.roles = rolesParam.split(',').map(role => role.trim());

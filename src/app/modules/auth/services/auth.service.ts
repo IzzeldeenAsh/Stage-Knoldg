@@ -173,7 +173,6 @@ export class AuthService implements OnDestroy {
       })
      
     } else {
-     this.router.navigate(['/auth'])
     }
 
     return of(undefined);
