@@ -13,8 +13,9 @@ export class CallbackComponent  extends BaseComponent implements OnInit, OnDestr
     super(scrollAnims);
   }
   ngOnInit(): void {
+
   }
   toApp() {
-    this.router.navigateByUrl("/app");
+    this.router.navigate(['/app']);
   }
 }

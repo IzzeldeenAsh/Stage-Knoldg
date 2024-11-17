@@ -13,6 +13,7 @@ import { MessageService, Message } from 'primeng/api';
 import { Router } from "@angular/router";
 import { BaseComponent } from "src/app/modules/base.component";
 import { TranslateService } from "@ngx-translate/core";
+import zxcvbn from 'zxcvbn';
 @Component({
   selector: "app-sign-up",
   templateUrl: "./sign-up.component.html",
@@ -27,7 +28,12 @@ export class SignUpComponent extends BaseComponent implements OnInit {
   showPassword: boolean = false;
   isResendDisabled = false;
   resendCountdown$ = new BehaviorSubject<number | null>(null);
-  
+  passwordStrength: any = {
+    score: 0,
+    feedback: ''
+  };
+
+
   constructor(
     private fb: FormBuilder,
     private _countriesGet: CountryService,
@@ -59,7 +65,73 @@ export class SignUpComponent extends BaseComponent implements OnInit {
 
   ngOnInit(): void {
     this.getListOfCountries();
+    this.registrationForm.get('password')?.valueChanges.subscribe(password => {
+      this.evaluatePasswordStrength(password);
+    });
   }
+
+  evaluatePasswordStrength(password: string): void {
+    if (password) {
+      const evaluation = zxcvbn(password);
+      this.passwordStrength.score = evaluation.score;
+      this.passwordStrength.feedback = evaluation.feedback.warning || evaluation.feedback.suggestions.join(' ');
+    } else {
+      this.passwordStrength.score = 0;
+      this.passwordStrength.feedback = '';
+    }
+  }
+// Add these methods inside your RegistrationComponent class
+
+passwordStrengthClass(): string {
+  switch (this.passwordStrength.score) {
+    case 0:
+      return 'bg-danger';
+    case 1:
+      return 'bg-warning';
+    case 2:
+      return 'bg-info';
+    case 3:
+      return 'bg-success';
+    case 4:
+      return 'bg-success';
+    default:
+      return 'bg-danger';
+  }
+}
+
+getPasswordStrengthLabel(): string {
+ if(this.translate.currentLang==='en'){
+  switch (this.passwordStrength.score) {
+    case 0:
+      return 'Very Weak';
+    case 1:
+      return 'Weak';
+    case 2:
+      return 'Fair';
+    case 3:
+      return 'Good';
+    case 4:
+      return 'Strong';
+    default:
+      return '';
+  }
+ }else{
+  switch (this.passwordStrength.score) {
+    case 0:
+      return 'ضعيف جداً ';
+    case 1:
+      return 'ضعيف';
+    case 2:
+      return 'معتدل';
+    case 3:
+      return 'جيد';
+    case 4:
+      return 'قوي';
+    default:
+      return '';
+  }
+ }
+}
 
   getListOfCountries() {
     const getCountriesSub = this._countriesGet.getCountries().subscribe({

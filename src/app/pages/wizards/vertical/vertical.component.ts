@@ -4,6 +4,7 @@ import { ICreateAccount, inits } from "../create-account.helper";
 import Swal from 'sweetalert2';
 import { InsighterRegistraionService } from "src/app/_fake/services/insighter-registraion/insighter-registraion.service";
 import { Message } from "primeng/api";
+import { Router } from "@angular/router";
 @Component({
   selector: "app-vertical",
   templateUrl: "./vertical.component.html",
@@ -19,7 +20,10 @@ export class VerticalComponent implements OnInit, OnDestroy {
   );
   private unsubscribe: Subscription[] = [];
   isLoadingSubmit$: Observable<boolean> = of(false);
-  constructor(private insighterRegistraionService: InsighterRegistraionService) {
+  constructor(
+    private insighterRegistraionService: InsighterRegistraionService,
+    private router:Router
+  ) {
     this.isLoadingSubmit$ = this.insighterRegistraionService.isLoading$
   }
 
@@ -54,6 +58,10 @@ export class VerticalComponent implements OnInit, OnDestroy {
       return;
     }
     this.currentStep$.next(nextStep);
+  }
+
+  toUploadInsighta(){
+    this.router.navigate(['/app'])
   }
 
   prevStep() {

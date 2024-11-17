@@ -64,12 +64,6 @@
 </div>
 <!--end::Quick links-->
 
-<!--begin::Theme mode-->
-<div class="app-navbar-item" [ngClass]="itemClass">
-  <app-theme-mode-switcher [toggleBtnClass]="btnClass" toggleBtnClass="{`btn-active-light-primary btn-custom ${toolbarButtonHeightClass}`}"></app-theme-mode-switcher>
-</div>
-<!--end::Theme mode-->
-
 <!--begin::User menu-->
 <ng-container *ngIf="user$ | async as _user">
   <div class="app-navbar-item" [ngClass]="itemClass">

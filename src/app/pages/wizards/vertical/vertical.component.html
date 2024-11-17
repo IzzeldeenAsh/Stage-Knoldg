@@ -159,10 +159,17 @@
       <div class="d-flex flex-stack pt-10">
         <div class="mr-2">
           <ng-container *ngIf="currentStep$.value !== 1 ">
+           <ng-container *ngIf="currentStep$.value !==4">
             <button type="button" class="btn btn-lg btn-light-primary me-3" (click)="prevStep()">
               <app-keenicon name="arrow-left" class="fs-3 ms-1"></app-keenicon>
               Back
             </button>
+           </ng-container>
+           <ng-container *ngIf="currentStep$.value ===4">
+            <button type="button" class="btn btn-lg btn-light-primary me-3" (click)="toUploadInsighta()">
+              Get Started
+            </button>
+           </ng-container>
           </ng-container>
         </div>
 

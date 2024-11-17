@@ -85,3 +85,16 @@
     transition: all 0.2s ease-in-out;
   }
 
+  .password-strength .progress {
+    height: 5px;
+  }
+  
+  .password-strength small {
+    display: block;
+    margin-top: 5px;
+  }
+  
+  .password-strength .text-warning {
+    font-size: 0.875rem;
+  }
+  
