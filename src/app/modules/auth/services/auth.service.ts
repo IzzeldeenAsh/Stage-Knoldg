@@ -157,6 +157,7 @@ export class AuthService implements OnDestroy {
     if (authData && !this.isTokenExpired(authData.authToken)) {
     this.authHttpService.getUserByToken(authData.authToken).pipe(first()).subscribe((userProfile)=>{
         if (userProfile) {
+          console.log("userProfile",userProfile);
           const user: UserType = {
             id: userProfile.data.id,
             name: userProfile.data.name,
@@ -172,7 +173,7 @@ export class AuthService implements OnDestroy {
       })
      
     } else {
-     
+     this.router.navigate(['/auth'])
     }
 
     return of(undefined);

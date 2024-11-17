@@ -48,6 +48,6 @@ export class CallbackComponent extends BaseComponent implements OnInit, OnDestro
 
 
   toApp(): void {
-    this.auth.getProfile().pipe(first()).subscribe()
+    this.auth.getUserByToken().pipe(first()).subscribe()
   }
 }
