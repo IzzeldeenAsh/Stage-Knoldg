@@ -1,3 +1,5 @@
+// src/app/pages/wizards/step1.component.ts
+
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -12,15 +14,18 @@ export class Step1Component implements OnInit, OnDestroy {
     part: Partial<ICreateAccount>,
     isFormValid: boolean
   ) => void;
-  form: FormGroup;
+  
   @Input() defaultValues: Partial<ICreateAccount>;
-  private unsubscribe: Subscription[] = [];
+  
+  form: FormGroup;
+  private subscriptions: Subscription = new Subscription();
 
   constructor(private fb: FormBuilder) {}
 
   ngOnInit() {
     this.initForm();
-    this.updateParentModel({}, true);
+    // Initial update to parent with default values
+    this.updateParentModel(this.defaultValues, this.form.valid);
   }
 
   initForm() {
@@ -28,13 +33,48 @@ export class Step1Component implements OnInit, OnDestroy {
       accountType: [this.defaultValues.accountType, [Validators.required]],
     });
 
-    const formChangesSubscr = this.form.valueChanges.subscribe((val) => {
-      this.updateParentModel(val, true);
+    // Subscribe to all form value changes
+    const formChangesSub = this.form.valueChanges.subscribe((val) => {
+      this.updateParentModel(val, this.form.valid);
     });
-    this.unsubscribe.push(formChangesSubscr);
+
+    // Specifically subscribe to accountType changes
+    const accountTypeChangeSub = this.form.get('accountType')!.valueChanges.subscribe((newType) => {
+      if (newType !== this.defaultValues.accountType) {
+        this.resetDefaultValues(newType);
+      }
+    });
+
+    this.subscriptions.add(formChangesSub);
+    this.subscriptions.add(accountTypeChangeSub);
+  }
+
+  /**
+   * Notify the parent to reset defaultValues based on the new account type
+   * @param newType The newly selected account type
+   */
+  private resetDefaultValues(newType: 'personal' | 'corporate') {
+    // Define the new default values based on accountType
+    const newDefaults: Partial<ICreateAccount> = {
+      accountType: newType,
+      // Reset other fields as necessary
+      phoneNumber: null,
+      consultingFields: [],
+      isicCodes: [],
+      phoneCountryCode: { text: '', code: '', country: '' }, // Adjust as needed
+      bio: newType === 'personal' ? '' : undefined,
+      legalName: newType === 'corporate' ? '' : undefined,
+      website: newType === 'corporate' ? '' : undefined,
+      registerDocument: null,
+      aboutCompany: newType === 'corporate' ? '' : undefined,
+      certifications: [],
+    };
+
+    // Notify the parent component with the new default values
+    this.updateParentModel(newDefaults, this.form.valid);
   }
 
   ngOnDestroy() {
-    this.unsubscribe.forEach((sb) => sb.unsubscribe());
+    this.subscriptions.unsubscribe();
   }
 }

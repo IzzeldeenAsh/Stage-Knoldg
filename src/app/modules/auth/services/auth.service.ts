@@ -155,12 +155,22 @@ export class AuthService implements OnDestroy {
   getUserByToken(): Observable<UserType> {
     const authData = this.getAuthFromLocalStorage();
     if (authData && !this.isTokenExpired(authData.authToken)) {
-      const user = this.getUserFromLocalStorage();
-      if (user) {
-        this.currentUserSubject.next(user);
-        this.checkUserRoleAndRedirect(user);
-        return of(user);
-      }
+    this.authHttpService.getUserByToken(authData.authToken).pipe(first()).subscribe((userProfile)=>{
+        if (userProfile) {
+          const user: UserType = {
+            id: userProfile.data.id,
+            name: userProfile.data.name,
+            email: userProfile.data.email,
+            countryId: null,
+            country: null,
+            roles: userProfile.data.roles,
+          };
+          this.currentUserSubject.next(user);
+          this.checkUserRoleAndRedirect(user);
+          return of(user);
+        }
+      })
+     
     } else {
      
     }
@@ -203,7 +213,7 @@ export class AuthService implements OnDestroy {
   }
 
   // private methods
-  private setAuthFromLocalStorage(auth: AuthModel): boolean {
+  setAuthFromLocalStorage(auth: AuthModel): boolean {
     // store auth authToken/refreshToken/epiresIn in local storage to keep user logged in between page refreshes
     if (auth && auth.authToken) {
       localStorage.setItem(this.authLocalStorageToken, JSON.stringify(auth));
@@ -233,6 +243,8 @@ export class AuthService implements OnDestroy {
         (user.roles.includes("admin") || user.roles.includes("staff"))
       ) {
         this.router.navigate(["/admin-dashboard"]);
+      }else{
+        this.router.navigate(["/app"]);
       }
     }
   }
