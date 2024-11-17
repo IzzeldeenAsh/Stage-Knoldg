@@ -7,7 +7,7 @@ import { BehaviorSubject, Observable, catchError, finalize, map, throwError } fr
 })
 export class InsighterRegistraionService {
   private individuial_insighter = 'https://api.4sighta.com/api/account/insighter/individual/register'
-  private company_insighter = 'https://api.4sighta.com//api/account/insighter/company/register'
+  private company_insighter = 'https://api.4sighta.com/api/account/insighter/company/register'
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> =
     this.isLoadingSubject.asObservable();

@@ -1,14 +1,18 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { BehaviorSubject, Observable, Subscription, first, of } from "rxjs";
 import { ICreateAccount, inits } from "../create-account.helper";
 import Swal from 'sweetalert2';
 import { InsighterRegistraionService } from "src/app/_fake/services/insighter-registraion/insighter-registraion.service";
 import { Message } from "primeng/api";
+import { Router } from "@angular/router";
+import { BaseComponent } from "src/app/modules/base.component";
+import { ScrollAnimsService } from "src/app/_fake/services/scroll-anims/scroll-anims.service";
 @Component({
   selector: "app-vertical",
   templateUrl: "./vertical.component.html",
 })
-export class VerticalComponent implements OnInit, OnDestroy {
+export class VerticalComponent extends BaseComponent implements OnInit {
+
   formsCount = 4;
   messages: Message[] = [];
   account$: BehaviorSubject<ICreateAccount> =
@@ -17,9 +21,14 @@ export class VerticalComponent implements OnInit, OnDestroy {
   isCurrentFormValid$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
     false
   );
-  private unsubscribe: Subscription[] = [];
   isLoadingSubmit$: Observable<boolean> = of(false);
-  constructor(private insighterRegistraionService: InsighterRegistraionService) {
+  constructor(
+    scrollAnims: ScrollAnimsService,
+    private insighterRegistraionService: InsighterRegistraionService,
+    private router:Router,
+    
+  ) {
+    super(scrollAnims);
     this.isLoadingSubmit$ = this.insighterRegistraionService.isLoading$
   }
 
@@ -54,6 +63,10 @@ export class VerticalComponent implements OnInit, OnDestroy {
       return;
     }
     this.currentStep$.next(nextStep);
+  }
+
+  toUploadInsighta(){
+    this.router.navigate(['/app'])
   }
 
   prevStep() {
@@ -113,7 +126,9 @@ export class VerticalComponent implements OnInit, OnDestroy {
         formData.append("about_us", user.aboutCompany ? user.aboutCompany : "");
         formData.append("legal_name", user.legalName ? user.legalName : '');
         formData.append("website", user.website ? user.website : '');
+       if(user.registerDocument){
         formData.append("register_document", user.registerDocument ? user.registerDocument : '');
+       }
         formData.append("phone", userPhoneNumber);
         user.isicCodes.forEach((code: any) => {
           formData.append("isic_code[]", code.key.toString());

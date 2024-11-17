@@ -11,6 +11,7 @@ import { SignUpComponent } from './components/sign-up/sign-up.component';
 import { PasswordResetComponent } from './components/password-reset/password-reset.component';
 import { VerifyEmailComponent } from './components/verify-email/verify-email.component';
 import { CallbackComponent } from './components/callback/callback.component';
+import { UnAuthGuard } from './services/un-auth.guard';
 
 const routes: Routes = [
   {
@@ -19,13 +20,14 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'registration', // Only one redirection to 'login'
+        redirectTo: 'login', // Only one redirection to 'login'
         pathMatch: 'full',
       },
       {
         path: 'login',
         component: LoginComponent,
         data: { returnUrl: window.location.pathname },
+        canActivate:[UnAuthGuard]
       },
       {
         path:'verify-email',
@@ -39,23 +41,10 @@ const routes: Routes = [
         path: 'callback',
         component: CallbackComponent,
       },
-
-      {
-        path: 'registration',
-        component: RegistrationComponent,
-      },
-      {
-        path: 'verify-email/:email',
-        component: VerficationCardComponent,
-      },
-      {
-        path: 'wait',
-        component: WaitComponent,
-      },
-     
       {
         path: 'sign-up',
         component: SignUpComponent,
+        canActivate:[UnAuthGuard]
       },
       {
         path: 'logout',

@@ -159,7 +159,7 @@ export class VerifyEmailComponent extends BaseComponent implements OnInit, OnDes
   }
 
   toApp() {
-    this.router.navigateByUrl("/app");
+    this.router.navigate(['/app']);
   }
 
   signuppath() {

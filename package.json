@@ -51,7 +51,8 @@
     "sweetalert2": "11.4.8",
     "swiper": "^11.1.14",
     "tslib": "^2.3.0",
-    "zone.js": "~0.14.2"
+    "zone.js": "~0.14.2",
+    "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^17.0.8",
@@ -70,6 +71,7 @@
     "@types/object-path": "0.11.1",
     "@types/prismjs": "1.26.0",
     "@types/sass-loader": "8.0.3",
+    "@types/zxcvbn": "^4.4.5",
     "@typescript-eslint/eslint-plugin": "^6.16.0",
     "@typescript-eslint/parser": "^6.16.0",
     "css-loader": "^6.7.3",

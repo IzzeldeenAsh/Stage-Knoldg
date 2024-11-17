@@ -219,64 +219,62 @@
                 </div>
               </div>
             
-              <!-- Password -->
-              <div class="fv-row mb-4 fv-plugins-icon-container">
-                <div class="mb-1">
-                  <div class="position-relative mb-3">
-                    <input
-                      class="form-control bg-transparent"
-                      [type]="showPassword ? 'text' : 'password'"
-                      placeholder="{{ 'AUTH.REGISTRATION.PASSWORD_PLACEHOLDER' | translate }}"
-                      name="password"
-                      formControlName="password"
-                      autocomplete="off"
-                      [ngClass]="{
-                        'is-invalid':
-                          registrationForm.controls['password'].invalid &&
-                          (registrationForm.controls['password'].dirty || registrationForm.controls['password'].touched)
-                      }"
-                    />
-                    <span
-                      class="btn btn-sm btn-icon position-absolute top-50"
-                      [ngClass]="{
-                        'end-0 me-n2 translate-middle': translate.currentLang === 'en',
-                        'start-0 me-2 translate-middle-y': translate.currentLang === 'ar'
-                      }"
-                      (click)="togglePasswordVisibility()"
-                      type="button"
-                    >
-                      <i class="ki-outline" [ngClass]="{
-                        'ki-eye-slash fs-2': !showPassword,
-                        'ki-eye fs-3': showPassword
-                      }"></i>
-                    </span>
-                  </div>
-                </div>
-            
-                <!-- Client-Side Validation Errors -->
-                <ng-container
-                  [ngTemplateOutlet]="formError"
-                  [ngTemplateOutletContext]="{
-                    validation: 'required',
-                    message: 'AUTH.REGISTRATION.PASSWORD_REQUIRED' | translate,
-                    control: registrationForm.controls['password']
-                  }"
-                ></ng-container>
-                <ng-container
-                  [ngTemplateOutlet]="formError"
-                  [ngTemplateOutletContext]="{
-                    validation: 'pattern',
-                    message: 'AUTH.REGISTRATION.PASSWORD_PATTERN' | translate,
-                    control: registrationForm.controls['password']
-                  }"
-                ></ng-container>
-            
-                <!-- Server-Side Validation Error -->
-                <div *ngIf="registrationForm.controls['password'].errors?.serverError && (registrationForm.controls['password'].touched || registrationForm.controls['password'].dirty)" class="text-danger mt-1">
-                  {{ registrationForm.controls['password'].errors?.serverError }}
-                </div>
-              </div>
-            
+       <!-- Password -->
+<div class="fv-row mb-4 fv-plugins-icon-container">
+  <div class="mb-1">
+    <div class="position-relative mb-3">
+      <input
+        class="form-control bg-transparent"
+        [type]="showPassword ? 'text' : 'password'"
+        placeholder="{{ 'AUTH.REGISTRATION.PASSWORD_PLACEHOLDER' | translate }}"
+        name="password"
+        formControlName="password"
+        autocomplete="off"
+        [ngClass]="{
+          'is-invalid':
+            registrationForm.controls['password'].invalid &&
+            (registrationForm.controls['password'].dirty || registrationForm.controls['password'].touched)
+        }"
+      />
+      <span
+        class="btn btn-sm btn-icon position-absolute top-50"
+        [ngClass]="{
+          'end-0 me-n2 translate-middle': translate.currentLang === 'en',
+          'start-0 me-2 translate-middle-y': translate.currentLang === 'ar'
+        }"
+        (click)="togglePasswordVisibility()"
+        type="button"
+      >
+        <i class="ki-outline" [ngClass]="{
+          'ki-eye-slash fs-2': !showPassword,
+          'ki-eye fs-3': showPassword
+        }"></i>
+      </span>
+    </div>
+  </div>
+
+  <!-- Password Strength Meter -->
+  <div class="password-strength mt-2" *ngIf="registrationForm.get('password')?.value">
+    <div class="progress">
+      <div 
+        class="progress-bar"
+        [ngClass]="passwordStrengthClass()"
+        [style.width.%]="(passwordStrength.score + 1) * 20"
+        role="progressbar"
+        aria-valuemin="0"
+        aria-valuemax="100"
+      ></div>
+    </div>
+    <small class="text-muted">
+      {{ getPasswordStrengthLabel() }}
+    </small>
+    <div *ngIf="passwordStrength.feedback && translate.currentLang=='en'" class="text-warning mt-1">
+      {{ passwordStrength.feedback }}
+    </div>
+  </div>
+
+</div>
+
      
               <!-- Country (Optional) -->
               <div class="fv-row mb-8 fv-plugins-icon-container">

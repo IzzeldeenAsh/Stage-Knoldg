@@ -40,7 +40,7 @@
     </div>
     <!-- Uploaded Files List -->
     <div class="mb-10">
-      <label class="fs-6 fw-semibold mb-2">Uploaded Files</label>
+      <label class="fs-6 fw-semibold mb-2" *ngIf="certifications.controls.length>0">Uploaded Files</label>
       <div class="mh-300px scroll-y me-n7 pe-7">
         <div
           *ngFor="let fileControl of certifications.controls; let i = index"

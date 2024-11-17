@@ -9,10 +9,19 @@ import { first } from 'rxjs';
 })
 export class LogoutComponent implements OnInit {
   constructor(private authService: AuthService) {
-    this.authService.logout().pipe(first()).subscribe((res)=>{
-      localStorage.removeItem("foresighta-creds");
-      localStorage.removeItem("currentUser");
-      localStorage.removeItem("authToken");
+    this.authService.logout().pipe(first()).subscribe({
+      next : (res)=>{
+          localStorage.removeItem("foresighta-creds");
+          localStorage.removeItem("currentUser");
+          localStorage.removeItem("authToken");
+          document.location.reload();
+      },
+      error: (err)=>{
+        localStorage.removeItem("foresighta-creds");
+        localStorage.removeItem("currentUser");
+        localStorage.removeItem("authToken");
+        document.location.reload();
+      }
     });
   }
 

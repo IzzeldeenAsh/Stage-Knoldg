@@ -208,7 +208,8 @@
     class="d-flex flex-column-fluid align-items-stretch gap-3 justify-content-around container-xxl "
   >
     <div
-      class="wrapper d-flex flex-column flex-row-fluid  w-50  px-40"
+      class="wrapper d-flex flex-column flex-row-fluid"
+      [ngClass]="{'list-style-container' : selectedType ==='list' , 'grid-style-container' : selectedType==='grid'}"
       id="kt_wrapper"
     >
     
@@ -276,7 +277,7 @@
             <div class="mb-10 " *ngIf="selectedType=='list'">
      
             
-              <div class="mb-0 py-4">
+              <div class="mb-0 py-4 list-card">
                 <div class="d-flex align-items-start flex-column mb-1">
                   <div class="d-flex align-items-center mb-3 me-5">
                     <!--begin::Symbol-->
@@ -288,7 +289,7 @@
                     <!--begin::Content-->
                     <div class="me-5">
                       <!--begin::Title-->
-                      <a  class="text-gray-800 fw-bold text-hover-primary fs-7">Esther Howard</a>
+                      <a  class="text-gray-800 text-hover-primary fs-8">Esther Howard</a>
                       <!--end::Title-->
                     </div>
                     <!--end::Content-->                                       
@@ -296,7 +297,7 @@
                   <div class="d-flex justify-content-between align-items-center w-100">
                     <a
                       href="/metronic8/demo5/apps/devs/question.html"
-                      class="fs-1 fw-bolder text-primary text-hover-gray-800 me-1 max-w-80"
+                      class="fs-2 fw-bolder text-primary text-hover-gray-800 me-1 max-w-80"
                     >
                       Global sports market - statistics and facts
                     </a>
@@ -316,9 +317,8 @@
                         data-kt-initialized="1"
                       >
                         <span
-                          class="symbol-label fw-bold"
-                          [inlineSVG]="'./assets/media/svg/files/pdf.svg'"
-                        ></span>
+                          class="symbol-label fw-bold" 
+                        ><img src="./assets/media/svg/files/SVG/pdf.png" class="h-25px" alt="pdf"></span>
                       </div>
                     </div>
                     <div class="symbol-group symbol-hover flex-nowrap me-2">
@@ -366,7 +366,7 @@
               <div class="separator separator-solid border-gray-200 my-2"></div>
               
               <!-- Question 2 -->
-              <div class="mb-0 py-4">
+              <div class="mb-0 py-4 list-card">
                 <div class="d-flex align-items-start flex-column mb-1">
                   <div class="d-flex align-items-center mb-3 me-5">
                     <!--begin::Symbol-->
@@ -378,7 +378,7 @@
                     <!--begin::Content-->
                     <div class="me-5">
                       <!--begin::Title-->
-                      <a  class="text-gray-800 fw-bold text-hover-primary fs-7">Michel Howard</a>
+                      <a  class="text-gray-800 text-hover-primary fs-8">Michel Howard</a>
                       <!--end::Title-->
                     </div>
                     <!--end::Content-->                                       
@@ -386,7 +386,7 @@
                   <div class="d-flex justify-content-between align-items-center w-100">
                     <a
                       href="/metronic8/demo5/apps/devs/question.html"
-                      class="fs-1 fw-bolder text-primary text-hover-gray-800 me-1 max-w-80"
+                      class="fs-2 fw-bolder text-primary text-hover-gray-800 me-1 max-w-80"
                     >
                       Market share of leading retail e-commerce companies in the United States in 2023
                     </a>
@@ -407,8 +407,8 @@
                       >
                         <span
                           class="symbol-label fw-bold"
-                          [inlineSVG]="'./assets/media/svg/files/pdf.svg'"
-                        ></span>
+                          
+                        ><img src="./assets/media/svg/files/SVG/pdf.png" class="h-25px" alt="pdf"></span>
                       </div>
                     </div>
                     <div class="symbol-group symbol-hover flex-nowrap me-2">
@@ -459,7 +459,7 @@
               <!-- Additional Dummy Questions -->
               
               <!-- Dummy Question 1 -->
-              <div class="mb-0 py-4">
+              <div class="mb-0 py-4 list-card">
                 <div class="d-flex align-items-start flex-column mb-1">
                   <div class="d-flex align-items-center mb-3 me-5">
                     <!--begin::Symbol-->
@@ -471,7 +471,7 @@
                     <!--begin::Content-->
                     <div class="me-5">
                       <!--begin::Title-->
-                      <a  class="text-gray-800 fw-bold text-hover-primary fs-7">John Doe</a>
+                      <a  class="text-gray-800 text-hover-primary fs-8">John Doe</a>
                       <!--end::Title-->
                     </div>
                     <!--end::Content-->                                       
@@ -479,7 +479,7 @@
                   <div class="d-flex justify-content-between align-items-center w-100">
                     <a
                       
-                      class="fs-1 fw-bolder text-primary text-hover-gray-800 me-1 max-w-80"
+                      class="fs-2 fw-bolder text-primary text-hover-gray-800 me-1 max-w-80"
                     >
                       Trends in renewable energy adoption worldwide
                     </a>
@@ -500,8 +500,8 @@
                       >
                         <span
                           class="symbol-label fw-bold"
-                          [inlineSVG]="'./assets/media/svg/files/pdf.svg'"
-                        ></span>
+                          
+                        ><img src="./assets/media/svg/files/SVG/pdf.png" class="h-25px" alt="pdf"></span>
                       </div>
                     </div>
                     <div class="symbol-group symbol-hover flex-nowrap me-2">
@@ -550,7 +550,7 @@
               <div class="separator separator-dashed border-gray-300 my-2"></div>
               
               <!-- Dummy Question 2 -->
-              <div class="mb-0 py-4">
+              <div class="mb-0 py-4 list-card">
                 <div class="d-flex align-items-start flex-column mb-1">
                   <div class="d-flex align-items-center mb-3 me-5">
                     <!--begin::Symbol-->
@@ -562,7 +562,7 @@
                     <!--begin::Content-->
                     <div class="me-5">
                       <!--begin::Title-->
-                      <a  class="text-gray-800 fw-bold text-hover-primary fs-7">Emily Clark</a>
+                      <a  class="text-gray-800 text-hover-primary fs-8">Emily Clark</a>
                       <!--end::Title-->
                     </div>
                     <!--end::Content-->                                       
@@ -570,7 +570,7 @@
                   <div class="d-flex justify-content-between align-items-center w-100">
                     <a
                       
-                      class="fs-1 fw-bolder text-primary text-hover-gray-800 me-1 max-w-80"
+                      class="fs-2 fw-bolder text-primary text-hover-gray-800 me-1 max-w-80"
                     >
                       Impact of artificial intelligence on modern workplaces
                     </a>
@@ -591,8 +591,8 @@
                       >
                         <span
                           class="symbol-label fw-bold"
-                          [inlineSVG]="'./assets/media/svg/files/pdf.svg'"
-                        ></span>
+                          
+                        ><img src="./assets/media/svg/files/SVG/pdf.png" class="h-25px" alt="pdf"></span>
                       </div>
                     </div>
                     <div class="symbol-group symbol-hover flex-nowrap me-2">
@@ -641,7 +641,7 @@
               <div class="separator separator-dashed border-gray-300 my-2"></div>
               
               <!-- Dummy Question 3 -->
-              <div class="mb-0 py-4">
+              <div class="mb-0 py-4 list-card">
                 <div class="d-flex align-items-start flex-column mb-1">
                   <div class="d-flex align-items-center mb-3 me-5">
                     <!--begin::Symbol-->
@@ -653,7 +653,7 @@
                     <!--begin::Content-->
                     <div class="me-5">
                       <!--begin::Title-->
-                      <a  class="text-gray-800 fw-bold text-hover-primary fs-7">Michael Scott</a>
+                      <a  class="text-gray-800 text-hover-primary fs-8">Michael Scott</a>
                       <!--end::Title-->
                     </div>
                     <!--end::Content-->                                       
@@ -661,7 +661,7 @@
                   <div class="d-flex justify-content-between align-items-center w-100">
                     <a
                       
-                      class="fs-1 fw-bolder text-primary text-hover-gray-800 me-1 max-w-80"
+                      class="fs-2 fw-bolder text-primary text-hover-gray-800 me-1 max-w-80"
                     >
                       Future of blockchain technology in finance
                     </a>
@@ -682,8 +682,8 @@
                       >
                         <span
                           class="symbol-label fw-bold"
-                          [inlineSVG]="'./assets/media/svg/files/pdf.svg'"
-                        ></span>
+                         
+                        ><img src="./assets/media/svg/files/SVG/pdf.png" class="h-25px" alt="pdf"></span>
                       </div>
                     </div>
                     <div class="symbol-group symbol-hover flex-nowrap me-2">
@@ -732,7 +732,7 @@
               <div class="separator separator-dashed border-gray-300 my-2"></div>
               
               <!-- Dummy Question 4 -->
-              <div class="mb-0 py-4">
+              <div class="mb-0 py-4 list-card">
                 <div class="d-flex align-items-start flex-column mb-1">
                   <div class="d-flex align-items-center mb-3 me-5">
                     <!--begin::Symbol-->
@@ -744,7 +744,7 @@
                     <!--begin::Content-->
                     <div class="me-5">
                       <!--begin::Title-->
-                      <a  class="text-gray-800 fw-bold text-hover-primary fs-7">Sarah Connor</a>
+                      <a  class="text-gray-800 text-hover-primary fs-8">Sarah Connor</a>
                       <!--end::Title-->
                     </div>
                     <!--end::Content-->                                       
@@ -752,7 +752,7 @@
                   <div class="d-flex justify-content-between align-items-center w-100">
                     <a
                       
-                      class="fs-1 fw-bolder text-primary text-hover-gray-800 me-1 max-w-80"
+                      class="fs-2 fw-bolder text-primary text-hover-gray-800 me-1 max-w-80"
                     >
                       Cybersecurity threats and prevention strategies in 2024
                     </a>
@@ -773,8 +773,8 @@
                       >
                         <span
                           class="symbol-label fw-bold"
-                          [inlineSVG]="'./assets/media/svg/files/pdf.svg'"
-                        ></span>
+                          
+                        ><img src="./assets/media/svg/files/SVG/pdf.png" class="h-25px" alt="pdf"></span>
                       </div>
                     </div>
                     <div class="symbol-group symbol-hover flex-nowrap me-2">
@@ -851,7 +851,7 @@
                             <!-- File Icons -->
                             <div class="symbol-group symbol-hover flex-nowrap me-2">
                               <div class="symbol symbol-25px" data-bs-toggle="tooltip" title="Alan Warden">
-                                <span class="symbol-label fw-bold" [inlineSVG]="'./assets/media/svg/files/pdf.svg'"></span>
+                                <span class="symbol-label fw-bold" ><img src="./assets/media/svg/files/SVG/pdf.png" class="h-25px" alt="pdf"></span>
                               </div>
                             </div>
                             <div class="symbol-group symbol-hover flex-nowrap me-2">
@@ -903,7 +903,7 @@
                             <!-- File Icons -->
                             <div class="symbol-group symbol-hover flex-nowrap me-2">
                               <div class="symbol symbol-25px" data-bs-toggle="tooltip" title="Alan Warden">
-                                <span class="symbol-label fw-bold" [inlineSVG]="'./assets/media/svg/files/pdf.svg'"></span>
+                                <span class="symbol-label fw-bold" ><img src="./assets/media/svg/files/SVG/pdf.png" class="h-25px" alt="pdf"></span>
                               </div>
                             </div>
                             <div class="symbol-group symbol-hover flex-nowrap me-2">
@@ -955,7 +955,7 @@
                             <!-- File Icons -->
                             <div class="symbol-group symbol-hover flex-nowrap me-2">
                               <div class="symbol symbol-25px" data-bs-toggle="tooltip" title="Jane Smith">
-                                <span class="symbol-label fw-bold" [inlineSVG]="'./assets/media/svg/files/pdf.svg'"></span>
+                                <span class="symbol-label fw-bold" ><img src="./assets/media/svg/files/SVG/pdf.png" class="h-25px" alt="pdf"></span>
                               </div>
                             </div>
                             <div class="symbol-group symbol-hover flex-nowrap me-2">
@@ -1007,7 +1007,7 @@
                             <!-- File Icons -->
                             <div class="symbol-group symbol-hover flex-nowrap me-2">
                               <div class="symbol symbol-25px" data-bs-toggle="tooltip" title="Tom Lee">
-                                <span class="symbol-label fw-bold" [inlineSVG]="'./assets/media/svg/files/pdf.svg'"></span>
+                                <span class="symbol-label fw-bold" ><img src="./assets/media/svg/files/SVG/pdf.png" class="h-25px" alt="pdf"></span>
                               </div>
                             </div>
                             <div class="symbol-group symbol-hover flex-nowrap me-2">
@@ -1059,7 +1059,7 @@
                             <!-- File Icons -->
                             <div class="symbol-group symbol-hover flex-nowrap me-2">
                               <div class="symbol symbol-25px" data-bs-toggle="tooltip" title="Anna Bell">
-                                <span class="symbol-label fw-bold" [inlineSVG]="'./assets/media/svg/files/pdf.svg'"></span>
+                                <span class="symbol-label fw-bold" ><img src="./assets/media/svg/files/SVG/pdf.png" class="h-25px" alt="pdf"></span>
                               </div>
                             </div>
                             <div class="symbol-group symbol-hover flex-nowrap me-2">
@@ -1111,7 +1111,7 @@
                             <!-- File Icons -->
                             <div class="symbol-group symbol-hover flex-nowrap me-2">
                               <div class="symbol symbol-25px" data-bs-toggle="tooltip" title="David Kim">
-                                <span class="symbol-label fw-bold" [inlineSVG]="'./assets/media/svg/files/pdf.svg'"></span>
+                                <span class="symbol-label fw-bold" ><img src="./assets/media/svg/files/SVG/pdf.png" class="h-25px" alt="pdf"></span>
                               </div>
                             </div>
                             <div class="symbol-group symbol-hover flex-nowrap me-2">
@@ -1145,16 +1145,47 @@
     </div>
   
     <div
-      class="sidebar p-5 px-lg-10 py-lg-11"
+      class="sidebar  p-5 px-lg-5 py-lg-11"
       data-kt-drawer-name="sidebar"
       data-kt-drawer-overlay="true"
       data-kt-drawer-width="275px"
       data-kt-drawer-direction="end"
       data-kt-drawer-toggle="#kt_sidebar_toggle"
     >
-  
+    <div class="card bg-primary bg-opacity-15  " > 
+      <!--begin::Body-->
+      <div class="card-body bg d-flex justify-content-between flex-column h-250px rounded ">  
+          <!--begin::Heading-->
+     <div>
+      <div class="mb-1">
+        <!--begin::Title-->
+        <h1 class="fw-semibold text-gray-100 d-flex gap-2 align-items-center  lh-lg">
+           
+          <span class="star-2">
+            <svg _ngcontent-ng-c4268021054="" xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="none" viewBox="0 0 64 64" role="presentation" aria-hidden="true" focusable="false" class="hs fi"><path _ngcontent-ng-c4268021054="" fill="#FFFFFF" d="m39.637 40.831-5.771 15.871a1.99 1.99 0 0 1-3.732 0l-5.771-15.87a2.02 2.02 0 0 0-1.194-1.195L7.298 33.866a1.99 1.99 0 0 1 0-3.732l15.87-5.771a2.02 2.02 0 0 0 1.195-1.194l5.771-15.871a1.99 1.99 0 0 1 3.732 0l5.771 15.87a2.02 2.02 0 0 0 1.194 1.195l15.871 5.771a1.99 1.99 0 0 1 0 3.732l-15.87 5.771a2.02 2.02 0 0 0-1.195 1.194"></path></svg>
+          </span>           
+          <span class="fw-bolder"> Become an Insighter!</span>
+        </h1>
+       
+    </div>
+    <p class="text-gray-300 fw-bold px-5 ">
+      Monetize your expertise by joining our insighter community. Earn through reports, research, and consulting.
+    </p>
+     </div>
+          <!--end::Heading-->
+          <!--begin::Links-->
+          <div class="text-center mb-3"> 
+              <!--begin::Link-->
+              <a href="/app/insighter-register" class="btn btn-sm btn-secondary me-2 w-100" data-bs-target="#kt_modal_create_app" data-bs-toggle="modal">
+                  Get Started           </a>
+              <!--end::Link-->
+          </div>
+          <!--end::Links-->
+      </div>
+      <!--end::Body-->
+  </div>
       <!--begin::Popular Questions-->
-      <div class="card bg-light mb-5 mb-lg-10 shadow-none border-0">
+      <div class="card bg-light my-5 mb-lg-10 shadow-none px-10 py-2 border-gray-300">
         <!--begin::Header-->
         <div class="card-header align-items-center border-0 p-0">
           <!--begin::Title-->
@@ -1255,31 +1286,7 @@
         </div>
         <!--end: Card Body-->
       </div>
-      <div class="card bg-primary bg-opacity-15  " > 
-        <!--begin::Body-->
-        <div class="card-body bg d-flex flex-column h-300px rounded flex-center">  
-            <!--begin::Heading-->
-            <div class="mb-2">
-                <!--begin::Title-->
-                <h1 class="fw-semibold text-gray-100 text-center lh-lg">           
-                    Publish & Earn! <br> 
-                    <span class="fw-bolder"> Become an Insighter</span>
-                </h1>
-               
-            </div>
-            <!--end::Heading-->
-    
-            <!--begin::Links-->
-            <div class="text-center mb-1"> 
-                <!--begin::Link-->
-                <a href="/app/insighter-register" class="btn btn-sm btn-secondary me-2" data-bs-target="#kt_modal_create_app" data-bs-toggle="modal">
-                    Get Started           </a>
-                <!--end::Link-->
-            </div>
-            <!--end::Links-->
-        </div>
-        <!--end::Body-->
-    </div>
+   
     </div>
   </div>
   <!-- Bootstrap Card -->

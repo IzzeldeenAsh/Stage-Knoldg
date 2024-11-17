@@ -25,9 +25,18 @@ a.btn-link {
         width: 20px;
     }
   }
+  .star-2{
+    
+    margin: 2px 0;
+    svg{
+        height: 20px;
+        width: 20px;
+    }
+  }
 
   .sidebar{
-    border-left: 1px solid #F2F2F2
+    border-left: 1px solid #DFDFDF;
+    width: 30%;
   }
   .channel-stats-bg {
     background-image: url('https://keenthemes.com/static/metronic/tailwind/dist/assets/media/images/2600x1600/bg-3.png');
@@ -39,7 +48,25 @@ a.btn-link {
     /* Adjust background positioning for RTL if needed */
   }
   .bg{
-    background-image: url('../../../../assets/media/auth/bg12-dark.webp');
+    background-image: url('../../../../assets/media/auth/adbg-1.webp');
     background-size: cover;
-    background-position: -10% 0;
+    background-position: -150% 0;
   }
+.list-style-container{
+  max-width: 55%;
+  margin: 0 auto;
+}
+.grid-style-container{
+  max-width: 60%;
+}
+
+.list-card{
+  border: 1px solid #DFDFDF;
+  padding: 24px;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+.separator{
+  display: none;
+}
+
