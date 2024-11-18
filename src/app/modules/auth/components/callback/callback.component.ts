@@ -56,7 +56,7 @@ export class CallbackComponent
       .pipe(first())
       .subscribe({
         next:(user)=>{
-          console.log("user");
+          console.log("user",user);
           if(user.verified){
             this.router.navigate(['/app'])
           }else{

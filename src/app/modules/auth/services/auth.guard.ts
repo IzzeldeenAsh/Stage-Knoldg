@@ -10,16 +10,17 @@ export class AuthGuard  {
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
      this.authService.getProfile().pipe(first()).subscribe({
       next:(user)=>{
-        console.log("Guard User",user);
       if(user.verified){
         return true
       }
       },
-      error:(error)=>{
-        this.router.navigate(['auth'])
+      error:(error)=>{;
+        this.authService.handleLogout().subscribe()
+        this.router.navigate(['auth']);
         return false;
       }
-    })
+    });
+    this.authService.handleLogout().subscribe()
     this.router.navigate(['auth'])
     return false;
   }
