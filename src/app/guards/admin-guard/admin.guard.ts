@@ -1,20 +1,26 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { map } from 'rxjs';
+import { first, map } from 'rxjs';
 import { AuthService } from 'src/app/modules/auth/services/auth.service';
 
 export const adminGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
-  return authService.currentUser$.pipe(
-    map(user=>{
+  authService.getProfile().pipe(first()).subscribe({
+    next:(user)=>{
       if(user &&(user.roles.includes('admin') || user.roles.includes('staff'))){
-      return true
+        return true
       }else{
-        router.navigate(['/auth/login']); // Redirect to login if not authorized
-        return false; // Deny access
+        router.navigate(['/auth/login']);
+        return false;
       }
-    })
-  )
+    },
+    error:(error)=>{
+      router.navigate(['/auth/login']);
+      return false;
+    }
+  })
 
+  router.navigate(['/auth/login']);
+  return false;
 };

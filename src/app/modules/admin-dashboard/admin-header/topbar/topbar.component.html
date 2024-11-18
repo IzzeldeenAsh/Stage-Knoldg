@@ -9,7 +9,7 @@
         <img *ngIf="user && user?.profile_photo_url; else defaultAvatar" [src]="user.profile_photo_url" alt="User Avatar">
         <ng-template #defaultAvatar>
           <span class="symbol-label bg-primary fs-2 text-white">
-            {{ user?.name?.charAt(0) }}
+            {{ user.name.charAt(0) }}
           </span>
         </ng-template>
       </div>
@@ -37,7 +37,7 @@
               <img *ngIf="user &&user?.profile_photo_url; else defaultAvatarLarge" [src]="user.profile_photo_url" alt="User Avatar">
               <ng-template #defaultAvatarLarge>
                 <span class="symbol-label bg-primary fs-2 text-white">
-                  {{ user?.name?.charAt(0) }}
+                  {{ user.name.charAt(0) }}
                 </span>
               </ng-template>
             </div>
@@ -51,11 +51,11 @@
           <!-- Username and Role -->
           <div class="d-flex flex-column">
             <div class="fw-bold d-flex align-items-center fs-5">
-              {{ user?.name }} 
+              {{ user.name }} 
           
             </div>
             <a class="fw-semibold text-muted text-hover-primary fs-7">
-              {{ user?.roles }}
+              {{ user.roles }}
             </a>
           </div>
         </div>

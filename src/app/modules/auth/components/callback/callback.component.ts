@@ -54,9 +54,18 @@ export class CallbackComponent
     this.auth
       .getProfile()
       .pipe(first())
-      .subscribe(() => {
-        this.isSubmitting = false;
-        this.router.navigate(['/app'])
-      });
+      .subscribe({
+        next:(user)=>{
+          if(user.verified){
+            this.router.navigate(['/app'])
+          }else{
+            this.errorMessage ="Verification Failed"
+          }
+        },
+        error:(error)=>{
+          this.errorMessage ="Verification Failed"
+        }
+      })
+      
   }
 }

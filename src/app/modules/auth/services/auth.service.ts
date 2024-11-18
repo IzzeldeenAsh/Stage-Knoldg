@@ -14,6 +14,7 @@ import { AuthHTTPService } from "./auth-http/auth-http.service";
 import { InsightaUserModel } from "../models/insighta-user.model";
 import { environment } from "src/environments/environment";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { IForsightaProfile } from "src/app/_fake/models/profile.interface";
 
 export type UserType = InsightaUserModel | undefined;
 
@@ -67,9 +68,7 @@ export class AuthService implements OnDestroy {
           email: response.data.email,
           countryId: response.data.countryId,
           country: response.data.country,
-          roles: response.data.roles,
           profile_photo_url:response.data.profile_photo_url,
-          verified: response.data.verified
         };
 
         this.setUserInLocalStorage(user);
@@ -134,7 +133,7 @@ export class AuthService implements OnDestroy {
     return payload.exp < currentTime;
   }
 
-  getProfile():Observable<any>{
+  getProfile():Observable<IForsightaProfile>{
     this.isLoadingSubject.next(true);
     const headers = new HttpHeaders({
       Accept: "application/json",
@@ -149,8 +148,6 @@ export class AuthService implements OnDestroy {
           email: response.data.email,
           countryId: null,
           country: null,
-          roles: response.data.roles,
-          verified:response.data.verified 
         };
         this.setUserInLocalStorage(user);
         return response.data
@@ -219,8 +216,6 @@ export class AuthService implements OnDestroy {
           email: response.data.email,
           countryId: response.data.country_id,
           country: response.data.country,
-          roles: response.data.roles,
-          verified: response.data.verified
         };
 
         this.setUserInLocalStorage(user);
