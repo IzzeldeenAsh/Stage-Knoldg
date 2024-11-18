@@ -180,7 +180,7 @@ export class AuthService implements OnDestroy {
     return of(undefined);
   }
   
-  private handleLogout(): Observable<void> {
+   handleLogout(): Observable<void> {
     return this.logout().pipe(first()).pipe(
       tap({
         next: () => {
