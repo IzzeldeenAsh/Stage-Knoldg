@@ -65,14 +65,14 @@
 <!--end::Quick links-->
 
 <!--begin::User menu-->
-<ng-container *ngIf="user$ | async as _user">
+<ng-container *ngIf="userProfile">
   <div class="app-navbar-item" [ngClass]="itemClass">
     <!--begin::Menu wrapper-->
     <div class="cursor-pointer symbol" [ngClass]="userAvatarClass" data-kt-menu-trigger="{default: 'click'}" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end">
-      <img *ngIf="_user.profile_photo_url" [src]="_user.profile_photo_url" />
-      <ng-container *ngIf="!_user.profile_photo_url">
+      <img *ngIf="userProfile.profile_photo_url" [src]="userProfile.profile_photo_url" />
+      <ng-container *ngIf="!userProfile.profile_photo_url">
         <span class="symbol-label bg-primary fs-2 text-white">
-          {{ _user?.name?.charAt(0) }}
+          {{ userProfile.name.charAt(0) }}
         </span>
       </ng-container>
     </div>

@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, first } from 'rxjs';
+import { IForsightaProfile } from 'src/app/_fake/models/profile.interface';
 import { AuthService, UserType } from 'src/app/modules/auth';
 import { TranslationService } from 'src/app/modules/i18n';
 
@@ -17,6 +18,7 @@ export class NavbarComponent implements OnInit {
   userAvatarClass: string = 'symbol-35px symbol-md-40px';
   btnIconClass: string = 'fs-2 fs-md-1';
   user$: Observable<UserType>;
+  userProfile:IForsightaProfile;
   constructor(
     private auth: AuthService,
     private translationService: TranslationService
@@ -24,6 +26,9 @@ export class NavbarComponent implements OnInit {
 
   ngOnInit(): void {
     this.user$ = this.auth.currentUserSubject.asObservable();
+    this.auth.getProfile().pipe(first()).subscribe((user)=>{
+      this.userProfile=user
+    })
   }
 
 }
