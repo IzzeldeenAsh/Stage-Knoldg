@@ -32,7 +32,7 @@
                 <!--end::Success Animation-->
   
                 <div class="d-flex flex-center mt-10">
-                  <button type="button" (click)="toApp()" class="btn btn-lg btn-primary fw-bold">
+                  <button type="button" (click)="toApp()" [disabled]="isSubmitting" class="btn btn-lg btn-primary fw-bold">
                     <ng-container *ngIf="!isSubmitting">
                       <span class="indicator-label">   {{ 'AUTH.VERIFY_EMAIL.GET_STARTED' | translate }}</span>
                     </ng-container>

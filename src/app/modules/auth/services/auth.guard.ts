@@ -9,7 +9,7 @@ export class AuthGuard  {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     const currentUser = this.authService.currentUserValue;
-    if (currentUser) {
+    if (currentUser && currentUser.verified) {
       // logged in so return true
       return true;
     }
