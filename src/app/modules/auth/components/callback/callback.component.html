@@ -1,4 +1,5 @@
 <div class="d-flex flex-column flex-root bg-light h-100vh" id="kt_app_root">
+  <div class="bg-red-light" *ngIf="errorMessage"></div>
     <!--begin::Authentication - Sign-up -->
     <div class="d-flex justify-content-center flex-column-fluid flex-lg-row align-items-center">
       <!--begin::Body-->
@@ -13,7 +14,7 @@
               
               </h1>
             
-              <ng-container>
+              <ng-container *ngIf="!errorMessage else error">
                 <!--begin::Sub-title-->
                 <div class="text-muted fw-semibold fs-5 mb-5">{{ 'AUTH.VERIFY_EMAIL.ALL_SET' | translate }}</div>
                 <!--end::Sub-title-->
@@ -46,6 +47,14 @@
                   </button>
                 </div>
               </ng-container>
+              <ng-template #error>
+                <h1 class="text-gray-900 mb-3 max-width-350px">
+               {{errorMessage}}
+                </h1>
+                  <div class="m-auto">
+                    <img [alt]="'AUTH.VERIFY_EMAIL.ALT_FAILED_VERIFICATION' | translate" src="../../../../../assets/media/auth/faild-verify.svg">
+                  </div>
+              </ng-template>
             </div>
           </div>
           <!--end::Wrapper-->
