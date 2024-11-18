@@ -65,20 +65,38 @@
 <!--end::Quick links-->
 
 <!--begin::User menu-->
+<!-- navbar.component.html -->
 <ng-container *ngIf="userProfile">
-  <div class="app-navbar-item" [ngClass]="itemClass">
-    <!--begin::Menu wrapper-->
-    <div class="cursor-pointer symbol" [ngClass]="userAvatarClass" data-kt-menu-trigger="{default: 'click'}" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end">
-      <img *ngIf="userProfile.profile_photo_url" [src]="userProfile.profile_photo_url" />
-      <ng-container *ngIf="!userProfile.profile_photo_url">
-        <span class="symbol-label bg-primary fs-2 text-white">
-          {{ userProfile.name.charAt(0) }}
-        </span>
-      </ng-container>
+  <div class="app-navbar-item user-menu-container" [ngClass]="itemClass">
+    <!-- User Avatar -->
+    <div
+      class="cursor-pointer symbol"
+      [ngClass]="userAvatarClass"
+      (click)="toggleUserMenu()"
+    >
+      <img
+        *ngIf="userProfile.profile_photo_url"
+        [src]="userProfile.profile_photo_url"
+        alt="User Avatar"
+      />
+      <span
+        *ngIf="!userProfile.profile_photo_url"
+        class="symbol-label bg-primary fs-2 text-white"
+      >
+        {{ userProfile.name.charAt(0) }}
+      </span>
     </div>
-    <app-user-inner data-kt-menu='true'></app-user-inner>
-    <!--end::Menu wrapper-->
-  </div></ng-container>
+
+    <!-- Conditionally Rendered User Menu -->
+    <div
+      class="user-menu"
+      *ngIf="isUserMenuOpen"
+    >
+      <app-user-inner [userProfile]="userProfile"></app-user-inner>
+    </div>
+  </div>
+</ng-container>
+
 
 <!--end::User menu-->
 

@@ -30,10 +30,7 @@ export class TopbarComponent implements OnInit {
   ) {}
   ngOnInit(): void {
     this.getProfile();
-    // this._auth.currentUser$.pipe(first()).subscribe((res) => {
-    //   this.user = res;
-    //   console.log("res", res);
-    // });
+ 
   }
   signOut() {
     this._auth.logout().pipe(first()).subscribe({
