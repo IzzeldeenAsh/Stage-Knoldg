@@ -41,13 +41,13 @@ export class TopbarComponent implements OnInit {
           localStorage.removeItem("foresighta-creds");
           localStorage.removeItem("currentUser");
           localStorage.removeItem("authToken");
-          document.location.reload();
+           this.router.navigate(['/auth'])
       },
       error: (err)=>{
         localStorage.removeItem("foresighta-creds");
         localStorage.removeItem("currentUser");
         localStorage.removeItem("authToken");
-        document.location.reload();
+         this.router.navigate(['/auth'])
       }
     });
     this.router.navigateByUrl("/auth/login");
@@ -64,6 +64,7 @@ export class TopbarComponent implements OnInit {
           summary: "Error",
           detail: "Cannot get profile.",
         });
+        this._auth.handleLogout().subscribe()
       }
     })
   }

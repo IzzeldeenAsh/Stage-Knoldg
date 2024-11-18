@@ -1,26 +1,29 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, Router } from '@angular/router';
-import { first, map } from 'rxjs';
+import { CanActivateFn, Router, UrlTree } from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { map, catchError, first } from 'rxjs/operators';
 import { AuthService } from 'src/app/modules/auth/services/auth.service';
 
-export const adminGuard: CanActivateFn = (route, state) => {
+export const adminGuard: CanActivateFn = (route, state): Observable<boolean | UrlTree> => {
   const authService = inject(AuthService);
   const router = inject(Router);
-  authService.getProfile().pipe(first()).subscribe({
-    next:(user)=>{
-      if(user &&(user.roles.includes('admin') || user.roles.includes('staff'))){
-        return true
-      }else{
-        router.navigate(['/auth/login']);
-        return false;
-      }
-    },
-    error:(error)=>{
-      router.navigate(['/auth/login']);
-      return false;
-    }
-  })
 
-  router.navigate(['/auth/login']);
-  return false;
+  return authService.getProfile().pipe(
+    first(),
+    map(user => {
+      if (user && (user.roles.includes('admin') || user.roles.includes('staff'))) {
+        // User has the required role, allow access
+        return true;
+      } else {
+        // User does not have the required role, redirect to login
+        localStorage.removeItem('foresighta-creds');
+        return router.createUrlTree(['/auth/login']);
+      }
+    }),
+    catchError(() => {
+      // On error (e.g., token invalid), redirect to login
+      localStorage.removeItem('foresighta-creds');
+      return of(router.createUrlTree(['/auth/login']));
+    })
+  );
 };

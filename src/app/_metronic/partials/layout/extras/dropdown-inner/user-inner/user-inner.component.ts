@@ -2,6 +2,8 @@ import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subscription, first } from 'rxjs';
 import { TranslationService } from '../../../../../../modules/i18n';
 import { AuthService, UserType } from '../../../../../../modules/auth';
+import { Router } from '@angular/router';
+import { IForsightaProfile } from 'src/app/_fake/models/profile.interface';
 
 @Component({
   selector: 'app-user-inner',
@@ -15,15 +17,20 @@ export class UserInnerComponent implements OnInit, OnDestroy {
   language: LanguageFlag;
   user$: Observable<UserType>;
   langs = languages;
+  userProfile:IForsightaProfile;
   private unsubscribe: Subscription[] = [];
 
   constructor(
     private auth: AuthService,
-    private translationService: TranslationService
+    private translationService: TranslationService,
+    private router:Router
   ) {}
 
   ngOnInit(): void {
     this.user$ = this.auth.currentUserSubject.asObservable();
+    this.auth.getProfile().pipe(first()).subscribe((user)=>{
+      this.userProfile=user
+    })
     this.setLanguage(this.translationService.getSelectedLanguage());
   }
 
@@ -33,13 +40,13 @@ export class UserInnerComponent implements OnInit, OnDestroy {
           localStorage.removeItem("foresighta-creds");
           localStorage.removeItem("currentUser");
           localStorage.removeItem("authToken");
-          document.location.reload();
+          this.router.navigate(['/auth'])
       },
       error: (err)=>{
         localStorage.removeItem("foresighta-creds");
         localStorage.removeItem("currentUser");
         localStorage.removeItem("authToken");
-        document.location.reload();
+        this.router.navigate(['/auth'])
       }
     });
   }

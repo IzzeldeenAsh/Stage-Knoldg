@@ -58,13 +58,17 @@ export class CallbackComponent
         next:(user)=>{
           console.log("user",user);
           if(user.verified){
-            this.router.navigate(['/app'])
+            this.router.navigate(['/app']);
           }else{
-            this.errorMessage ="Verification Failed"
+            this.errorMessage ="Verification Failed";
+            localStorage.removeItem('foresighta-creds');
+            this.router.navigate(['auth'])
           }
         },
         error:(error)=>{
-          this.errorMessage ="Verification Failed"
+          this.errorMessage ="Verification Failed";
+          localStorage.removeItem('foresighta-creds');
+            this.router.navigate(['auth'])
         }
       })
       

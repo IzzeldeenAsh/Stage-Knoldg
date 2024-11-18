@@ -73,7 +73,7 @@ export class AuthService implements OnDestroy {
 
         this.setUserInLocalStorage(user);
         this.currentUserSubject.next(user);
-        return user;
+        return response.data;
       }),
       catchError((error) => this.handleError(error)),
       finalize(() => this.isLoadingSubject.next(false))
@@ -251,7 +251,6 @@ export class AuthService implements OnDestroy {
       if (!lsValue) {
         return undefined;
       }
-
       const authData = JSON.parse(lsValue);
       return authData;
     } catch (error) {
