@@ -6,7 +6,7 @@ import {
   Subscription,
   throwError,
 } from "rxjs";
-import { map, catchError, switchMap, finalize, take, first } from "rxjs/operators";
+import { map, catchError, switchMap, finalize, take, first, tap, mapTo } from "rxjs/operators";
 import { ForesightaGeneralUserModel, UserModel } from "../models/user.model";
 import { AuthModel } from "../models/auth.model";
 import { Router } from "@angular/router";
@@ -22,7 +22,7 @@ export type UserType = InsightaUserModel | undefined;
 })
 export class AuthService implements OnDestroy {
   // private fields
-  private unsubscribe: Subscription[] = []; // Read more: => https://brianflove.com/2016/12/11/anguar-2-unsubscribe-observables/
+  private unsubscribe: Subscription[] = []; 
   private authLocalStorageToken = `foresighta-creds`;
   // public fields
   currentUser$: Observable<UserType>;
@@ -30,12 +30,6 @@ export class AuthService implements OnDestroy {
   currentUserSubject: BehaviorSubject<UserType>;
   isLoadingSubject: BehaviorSubject<boolean>;
 
-  get currentUserValue(): UserType {
-    return this.currentUserSubject.value;
-  }
-  set currentUserValue(user: UserType) {
-    this.currentUserSubject.next(user);
-  }
   constructor(
     private authHttpService: AuthHTTPService,
     private router: Router,
@@ -48,6 +42,14 @@ export class AuthService implements OnDestroy {
     const subscr = this.getUserByToken().subscribe();
     this.unsubscribe.push(subscr);
   }
+  //Current User Getter Setter
+  get currentUserValue(): UserType {
+    return this.currentUserSubject.value;
+  }
+  set currentUserValue(user: UserType) {
+    this.currentUserSubject.next(user);
+  }
+ 
   // public methods
   login(email: string, password: string): Observable<UserType> {
     this.isLoadingSubject.next(true);
@@ -66,7 +68,8 @@ export class AuthService implements OnDestroy {
           countryId: response.data.countryId,
           country: response.data.country,
           roles: response.data.roles,
-          profile_photo_url:response.data.profile_photo_url
+          profile_photo_url:response.data.profile_photo_url,
+          verified: response.data.verified
         };
 
         this.setUserInLocalStorage(user);
@@ -147,6 +150,7 @@ export class AuthService implements OnDestroy {
           countryId: null,
           country: null,
           roles: response.data.roles,
+          verified:response.data.verified 
         };
         this.setUserInLocalStorage(user);
         return response.data
@@ -161,21 +165,49 @@ export class AuthService implements OnDestroy {
    return this.authHttpService.logout()
    
   }
-  getUserByToken(): Observable<UserType> {
+  getUserByToken(): Observable<any> {
     const authData = this.getAuthFromLocalStorage();
-    if (authData && !this.isTokenExpired(authData.authToken)) {
-      const user = this.getUserFromLocalStorage();
-      if (user) {
-        this.currentUserSubject.next(user);
-        this.checkUserRoleAndRedirect(user);
-        return of(user);
+    if (authData) { // Check if authData exists
+      if (!this.isTokenExpired(authData.authToken)) {
+        const user = this.getUserFromLocalStorage();
+        if (user) {
+          this.currentUserSubject.next(user);
+          this.checkUserRoleAndRedirect(user);
+          return of(user);
+        } else {
+          // User data missing but authData exists; perform logout
+          return this.handleLogout();
+        }
+      } else {
+        // Token is expired; perform logout
+        return this.handleLogout();
       }
-    } else {
-      this.logout(); // Token is expired; clear stored data and navigate to login
     }
-
+    // No authData; allow unauthenticated access without logout
     return of(undefined);
   }
+  
+  private handleLogout(): Observable<void> {
+    return this.logout().pipe(first()).pipe(
+      tap({
+        next: () => {
+          localStorage.removeItem("foresighta-creds");
+          localStorage.removeItem("currentUser");
+          localStorage.removeItem("authToken");
+          document.location.reload();
+        },
+        error: () => {
+          localStorage.removeItem("foresighta-creds");
+          localStorage.removeItem("currentUser");
+          localStorage.removeItem("authToken");
+          document.location.reload();
+        }
+      }),
+      // Return an observable that completes after handling logout
+      mapTo(undefined)
+    );
+  }
+  
   // need create new user then login
   registration(user: ForesightaGeneralUserModel): Observable<any> {
     this.isLoadingSubject.next(true);
@@ -192,6 +224,7 @@ export class AuthService implements OnDestroy {
           countryId: response.data.country_id,
           country: response.data.country,
           roles: response.data.roles,
+          verified: response.data.verified
         };
 
         this.setUserInLocalStorage(user);

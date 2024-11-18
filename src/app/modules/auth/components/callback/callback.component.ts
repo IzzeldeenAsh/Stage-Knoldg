@@ -1,22 +1,25 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { ScrollAnimsService } from 'src/app/_fake/services/scroll-anims/scroll-anims.service';
-import { BaseComponent } from 'src/app/modules/base.component';
-import { AuthService } from '../../services/auth.service';
-import { first } from 'rxjs/operators';
-import { AuthModel } from '../../models/auth.model';
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
+import { ScrollAnimsService } from "src/app/_fake/services/scroll-anims/scroll-anims.service";
+import { BaseComponent } from "src/app/modules/base.component";
+import { AuthService } from "../../services/auth.service";
+import { first } from "rxjs/operators";
+import { AuthModel } from "../../models/auth.model";
 
 @Component({
-  selector: 'app-callback',
-  templateUrl: './callback.component.html',
-  styleUrls: ['./callback.component.scss']
+  selector: "app-callback",
+  templateUrl: "./callback.component.html",
+  styleUrls: ["./callback.component.scss"],
 })
-export class CallbackComponent extends BaseComponent implements OnInit, OnDestroy {
+export class CallbackComponent
+  extends BaseComponent
+  implements OnInit, OnDestroy
+{
   user: any;
   token: string | null = null;
   roles: string[] = [];
   errorMessage: string | null = null;
-  isSubmitting:boolean=false;
+  isSubmitting: boolean = false;
   constructor(
     scrollAnims: ScrollAnimsService,
     private router: Router,
@@ -28,29 +31,32 @@ export class CallbackComponent extends BaseComponent implements OnInit, OnDestro
 
   ngOnInit(): void {
     // Extract query parameters from the URL
-  const routeSub =  this.route.queryParamMap.subscribe(params => {
-      this.token = params.get('token');
-      const rolesParam = params.get('roles');
-    console.log("tok",this.token);
-      if (this.token && rolesParam) {
-        // Assuming roles are comma-separated if multiple
-        this.roles = rolesParam.split(',').map(role => role.trim());
+    const routeSub = this.route.queryParamMap.subscribe((params) => {
+      this.token = params.get("token");
+      const rolesParam = params.get("roles");
+      console.log("tok", this.token);
+      if (rolesParam) {
+        this.roles = rolesParam.split(",").map((role) => role.trim());
+      }
+      if (this.token) {
         const auth = new AuthModel();
-        auth.authToken = this.token
+        auth.authToken = this.token;
         this.auth.setAuthFromLocalStorage(auth);
-       
       } else {
-        this.errorMessage = 'Invalid callback parameters.';
+        this.errorMessage = "Invalid callback parameters.";
       }
     });
-    this.unsubscribe.push(routeSub)
+    this.unsubscribe.push(routeSub);
   }
 
-
   toApp(): void {
-    this.isSubmitting=true;
-    this.auth.getProfile().pipe(first()).subscribe(()=>{
-      this.isSubmitting=false
-    })
+    this.isSubmitting = true;
+    this.auth
+      .getProfile()
+      .pipe(first())
+      .subscribe(() => {
+        this.isSubmitting = false;
+        this.router.navigate(['/app'])
+      });
   }
 }

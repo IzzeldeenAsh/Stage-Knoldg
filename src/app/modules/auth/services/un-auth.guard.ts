@@ -14,7 +14,6 @@ export class UnAuthGuard  {
       return true;
     }
     this.router.navigate(['/app'])
-   
     return false;
   }
 }

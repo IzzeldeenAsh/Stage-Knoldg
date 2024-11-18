@@ -2,11 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthComponent } from './auth.component';
 import { LoginComponent } from './components/login/login.component';
-import { RegistrationComponent } from './components/registration/registration.component';
-
 import { LogoutComponent } from './components/logout/logout.component';
-import { VerficationCardComponent } from './components/verfication-card/verfication-card.component';
-import { WaitComponent } from './components/wait/wait.component';
 import { SignUpComponent } from './components/sign-up/sign-up.component';
 import { PasswordResetComponent } from './components/password-reset/password-reset.component';
 import { VerifyEmailComponent } from './components/verify-email/verify-email.component';
@@ -43,6 +39,7 @@ const routes: Routes = [
       {
         path: 'sign-up',
         component: SignUpComponent,
+        canActivate:[UnAuthGuard]
       },
       {
         path: 'logout',
