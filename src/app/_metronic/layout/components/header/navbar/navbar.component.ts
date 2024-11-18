@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Observable, first } from 'rxjs';
 import { IForsightaProfile } from 'src/app/_fake/models/profile.interface';
 import { AuthService, UserType } from 'src/app/modules/auth';
@@ -18,6 +19,22 @@ export class NavbarComponent implements OnInit {
   toggleUserMenu(): void {
     this.isUserMenuOpen = !this.isUserMenuOpen;
   }
+  logout() {
+    this.auth.logout().pipe(first()).subscribe({
+      next : (res)=>{
+          localStorage.removeItem("foresighta-creds");
+          localStorage.removeItem("currentUser");
+          localStorage.removeItem("authToken");
+          this.router.navigate(['/auth'])
+      },
+      error: (err)=>{
+        localStorage.removeItem("foresighta-creds");
+        localStorage.removeItem("currentUser");
+        localStorage.removeItem("authToken");
+        this.router.navigate(['/auth'])
+      }
+    });
+  }
 
   // Close the user menu
   closeUserMenu(): void {
@@ -29,15 +46,27 @@ export class NavbarComponent implements OnInit {
   userAvatarClass: string = 'symbol-35px symbol-md-40px';
   btnIconClass: string = 'fs-2 fs-md-1';
   userProfile:IForsightaProfile;
+  isMenuOpen: boolean = false; 
   constructor(
     private auth: AuthService,
-    private translationService: TranslationService
+    private translationService: TranslationService,
+    private router:Router
   ) {}
 
   ngOnInit(): void {
     this.auth.getProfile().pipe(first()).subscribe((user)=>{
       this.userProfile=user
     })
+  }
+  toggleMenu(): void {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  /**
+   * Closes the dropdown menu.
+   */
+  closeMenu(): void {
+    this.isMenuOpen = false;
   }
 
 }

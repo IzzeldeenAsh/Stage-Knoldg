@@ -67,35 +67,34 @@
 <!--begin::User menu-->
 <!-- navbar.component.html -->
 <ng-container *ngIf="userProfile">
-  <div class="app-navbar-item user-menu-container" [ngClass]="itemClass">
+  <div
+    class="app-navbar-item user-menu-container"
+    [ngClass]="itemClass"
+    (click)="toggleMenu()"
+    tabindex="0"
+    (keydown.enter)="toggleMenu()"
+    aria-haspopup="true"
+    [attr.aria-expanded]="isMenuOpen"
+  >
     <!-- User Avatar -->
-    <div
-      class="cursor-pointer symbol"
-      [ngClass]="userAvatarClass"
-      (click)="toggleUserMenu()"
-    >
+    <div class="cursor-pointer symbol" [ngClass]="userAvatarClass">
       <img
         *ngIf="userProfile.profile_photo_url"
         [src]="userProfile.profile_photo_url"
         alt="User Avatar"
       />
-      <span
-        *ngIf="!userProfile.profile_photo_url"
-        class="symbol-label bg-primary fs-2 text-white"
-      >
+      <span *ngIf="!userProfile.profile_photo_url" class="symbol-label bg-primary fs-2 text-white">
         {{ userProfile.name.charAt(0) }}
       </span>
     </div>
 
-    <!-- Conditionally Rendered User Menu -->
-    <div
-      class="user-menu"
-      *ngIf="isUserMenuOpen"
-    >
-      <app-user-inner [userProfile]="userProfile"></app-user-inner>
+    <!-- Dropdown Menu -->
+    <div class="user-dropdown-menu" *ngIf="isMenuOpen">
+      <button class="signout-button" (click)="logout()">Sign Out</button>
     </div>
   </div>
 </ng-container>
+
 
 
 <!--end::User menu-->
