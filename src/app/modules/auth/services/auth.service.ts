@@ -172,12 +172,8 @@ export class AuthService implements OnDestroy {
         const user = this.getUserFromLocalStorage();
         if (user) {
           this.currentUserSubject.next(user);
-          this.checkUserRoleAndRedirect(user);
           return of(user);
-        } else {
-          // User data missing but authData exists; perform logout
-          return this.handleLogout();
-        }
+        } 
       } else {
         // Token is expired; perform logout
         return this.handleLogout();
