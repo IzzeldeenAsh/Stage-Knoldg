@@ -8,8 +8,9 @@ export class AuthGuard  {
   constructor(private authService: AuthService, private router:Router) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    const currentUser = this.authService.getProfile().pipe(first()).subscribe({
+     this.authService.getProfile().pipe(first()).subscribe({
       next:(user)=>{
+        console.log("Guard User",user);
       if(user.verified){
         return true
       }
