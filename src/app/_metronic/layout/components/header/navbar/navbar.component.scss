@@ -1,0 +1,37 @@
+/* Container for the user menu */
+.user-menu-container {
+    position: relative;
+  }
+  
+  /* Dropdown menu styling */
+  .user-dropdown-menu {
+    display: block; /* Hidden by default */
+    position: absolute;
+    top: 100%; /* Position below the avatar */
+    right: 0;
+    background-color: white;
+    min-width: 120px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    z-index: 1000;
+    margin-top: 8px; /* Space between avatar and menu */
+  }
+  
+
+  
+  /* Style for the sign-out button */
+  .signout-button {
+    width: 100%;
+    padding: 10px 16px;
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+  }
+  
+  .signout-button:hover {
+    background-color: #f1f1f1;
+  }
+  
