@@ -1,4 +1,4 @@
-import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subscription, first } from 'rxjs';
 import { TranslationService } from '../../../../../../modules/i18n';
 import { AuthService, UserType } from '../../../../../../modules/auth';
@@ -13,11 +13,9 @@ export class UserInnerComponent implements OnInit, OnDestroy {
   @HostBinding('class')
   class = `menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg menu-state-primary fw-bold py-4 fs-6 w-275px`;
   @HostBinding('attr.data-kt-menu') dataKtMenu = 'true';
-
+  @Input() userProfile:IForsightaProfile;
   language: LanguageFlag;
-  user$: Observable<UserType>;
   langs = languages;
-  userProfile:IForsightaProfile;
   private unsubscribe: Subscription[] = [];
 
   constructor(
@@ -27,10 +25,7 @@ export class UserInnerComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.user$ = this.auth.currentUserSubject.asObservable();
-    this.auth.getProfile().pipe(first()).subscribe((user)=>{
-      this.userProfile=user
-    })
+   
     this.setLanguage(this.translationService.getSelectedLanguage());
   }
 

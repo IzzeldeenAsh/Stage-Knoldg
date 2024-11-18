@@ -12,12 +12,22 @@ import { TranslationService } from 'src/app/modules/i18n';
 export class NavbarComponent implements OnInit {
   @Input() appHeaderDefaulMenuDisplay: boolean;
   @Input() isRtl: boolean;
+  isUserMenuOpen = false;
+
+  // Toggle the user menu's visibility
+  toggleUserMenu(): void {
+    this.isUserMenuOpen = !this.isUserMenuOpen;
+  }
+
+  // Close the user menu
+  closeUserMenu(): void {
+    this.isUserMenuOpen = false;
+  }
 
   itemClass: string = 'ms-1 ms-lg-3';
   btnClass: string = 'btn btn-icon btn-custom btn-icon-muted btn-active-light btn-active-color-primary w-35px h-35px w-md-40px h-md-40px';
   userAvatarClass: string = 'symbol-35px symbol-md-40px';
   btnIconClass: string = 'fs-2 fs-md-1';
-  user$: Observable<UserType>;
   userProfile:IForsightaProfile;
   constructor(
     private auth: AuthService,
@@ -25,7 +35,6 @@ export class NavbarComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.user$ = this.auth.currentUserSubject.asObservable();
     this.auth.getProfile().pipe(first()).subscribe((user)=>{
       this.userProfile=user
     })
