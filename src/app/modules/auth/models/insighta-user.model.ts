@@ -4,7 +4,7 @@ export class InsightaUserModel {
     email!: string; // User's email
     countryId?: number | null = null; // Country ID (nullable)
     country?: string | null = null; // Country name (nullable)
-    roles: string[] = []; // Array of roles (e.g., 'admin', 'staff')
+    roles?: string[] = []; // Array of roles (e.g., 'admin', 'staff')
     profile_photo_url?:string;
     status?:string;
     verified?:boolean;

@@ -8,6 +8,7 @@ import {
 import { Router } from "@angular/router";
 import { MessageService } from "primeng/api";
 import { first } from "rxjs";
+import { IForsightaProfile } from "src/app/_fake/models/profile.interface";
 import { FileUploadService } from "src/app/_fake/services/upload-picture/upload-picture";
 import { AuthService, UserType } from "src/app/modules/auth";
 
@@ -17,7 +18,7 @@ import { AuthService, UserType } from "src/app/modules/auth";
   styleUrls: ["./topbar.component.scss"],
 })
 export class TopbarComponent implements OnInit {
-  user: UserType;
+  user: IForsightaProfile;
 
   constructor(
     private elRef: ElementRef,
