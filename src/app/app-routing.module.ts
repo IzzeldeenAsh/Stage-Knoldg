@@ -19,13 +19,13 @@ export const routes: Routes = [
   path: 'app',
   loadChildren: () =>
     import('./_metronic/layout/layout.module').then((m) => m.LayoutModule),
-  // canActivate:[AuthGuard]
+  canActivate:[AuthGuard]
 },
 {
   path: 'admin-dashboard',
   loadChildren: () =>
     import('./modules/admin-dashboard/admin-dashboard.module').then((m) => m.AdminDashboardModule),
-    // canActivate: [adminGuard]
+    canActivate: [adminGuard]
 },
 {
   path: 'error',

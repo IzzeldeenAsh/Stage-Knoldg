@@ -23,7 +23,7 @@ const routes: Routes = [
         path: 'login',
         component: LoginComponent,
         data: { returnUrl: window.location.pathname },
-        // canActivate:[UnAuthGuard]
+        canActivate:[UnAuthGuard]
       },
       {
         path:'verify-email',
@@ -40,7 +40,7 @@ const routes: Routes = [
       {
         path: 'sign-up',
         component: SignUpComponent,
-        // canActivate:[UnAuthGuard]
+        canActivate:[UnAuthGuard]
       },
       {
         path: 'logout',
