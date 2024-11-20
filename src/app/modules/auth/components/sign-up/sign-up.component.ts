@@ -4,7 +4,7 @@ import {
   FormGroup,
   Validators
 } from "@angular/forms";
-import { BehaviorSubject, Observable, Subscription, of, timer } from "rxjs";
+import { BehaviorSubject, Observable, Subscription, of, take, timer } from "rxjs";
 import { CountryService } from "src/app/_fake/services/countries-api/countries-get.service";
 import { Country } from "src/app/_fake/services/countries/countries.service";
 import { ScrollAnimsService } from "src/app/_fake/services/scroll-anims/scroll-anims.service";
@@ -257,42 +257,53 @@ getPasswordStrengthLabel(): string {
  
   
   resendVerificationEmail(): void {
-   
-
+    this.isResendDisabled = true; // Disable immediately
     this.authService.resendVerificationEmail().subscribe({
-      next: (response:any) => {
-        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Verification email resent successfully.' });
-       
+      next: (response: any) => {
+        this.messageService.add({ 
+          severity: 'success', 
+          summary: 'Success', 
+          detail: 'Verification email resent successfully.' 
+        });
+        this.startResendCooldown();
       },
-      error: (error:any) => {
+      error: (error: any) => {
+        this.isResendDisabled = false; // Re-enable on error
         const errorMsg = error?.error?.message || 'Failed to resend verification email.';
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: errorMsg });
+        this.messageService.add({ 
+          severity: 'error', 
+          summary: 'Error', 
+          detail: errorMsg 
+        });
       }
     });
   }
-onResendClick(): void {
-    if (this.isResendDisabled) return;
 
+  onResendClick(): void {
     this.resendVerificationEmail();
-    this.startResendCooldown();
   }
+
   startResendCooldown(): void {
-    this.isResendDisabled = true;
     const countdownTime = 30; // seconds
 
-    // Emit countdown values every second
-    timer(0, 1000).subscribe({
+    this.resendCountdown$.next(countdownTime);
+    
+    const resendTimerSubscription = timer(1, 1000).pipe(
+      take(countdownTime)
+    ).subscribe({
       next: (elapsedTime) => {
         const remainingTime = countdownTime - elapsedTime;
-        if (remainingTime >= 0) {
-          this.resendCountdown$.next(remainingTime);
-        } else {
-          this.resendCountdown$.next(null);
-          this.isResendDisabled = false;
-        }
+        this.resendCountdown$.next(remainingTime);
       },
-      complete: () => this.isResendDisabled = false
+      complete: () => {
+        this.resendCountdown$.next(null);
+        this.isResendDisabled = false;
+      }
     });
+
+    if (resendTimerSubscription) {
+      this.unsubscribe.push(resendTimerSubscription)
+    }
   }
   
 }
