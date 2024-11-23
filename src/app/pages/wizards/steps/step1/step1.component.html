@@ -1,15 +1,15 @@
 <div class="pb-10 pb-lg-15">
   <h2 class="fw-bolder d-flex align-items-center text-gray-900">
-    Choose Account Type
+    {{ 'INSIGHTER_WIZARD.CHOOSE_ACCOUNT_TYPE' | translate }}
     <i
-      class="fas fa-exclamation-circle ms-2 fs-7"
+      class="fas fa-exclamation-circle mx-2 fs-7"
       ngbTooltip="Billing is issued based on your selected account type"
     ></i>
   </h2>
 
   <div class="text-gray-500 fw-bold fs-6">
-    If you need more info, please check out
-    <a href="#" class="link-primary fw-bolder"> Help Page </a>
+    {{ 'INSIGHTER_WIZARD.MORE_INFO' | translate }}
+    <a href="#" class="link-primary fw-bolder"> {{ 'INSIGHTER_WIZARD.HELP_PAGE' | translate }} </a>
     .
   </div>
 </div>
@@ -31,17 +31,18 @@
           p-7
           d-flex
           align-items-center
+          choose-account
           mb-10
         "
         for="kt_create_account_form_account_type_personal"
       >
-        <app-keenicon name="address-book" class="fs-1 me-5"></app-keenicon>
-        <span class="d-block fw-bold text-start">
-          <span class="text-gray-900 fw-bolder d-block fs-4 mb-2"
-            >Personal Account</span
-          >
+        <app-keenicon name="address-book" class=" fs-1 me-5"></app-keenicon>
+        <span class="d-block fw-bold text-inline-start">
+          <span class="text-gray-900 text-inline-start fw-bolder d-block fs-4 mb-2">
+            {{ 'INSIGHTER_WIZARD.PERSONAL_ACCOUNT' | translate }}
+          </span>
           <span class="text-gray-500 fw-bold fs-6">
-            If you need more info, please check it out
+            {{ 'INSIGHTER_WIZARD.PERSONAL_ACCOUNT_DESC' | translate }}
           </span>
         </span>
       </label>
@@ -52,7 +53,7 @@
         formControlName="accountType"
         name="accountType"
         type="radio"
-        class="btn-check"
+        class="btn-check "
         id="kt_create_account_form_account_type_corporate"
         value="corporate"
       />
@@ -61,17 +62,18 @@
           btn btn-outline btn-outline-dashed btn-outline-default
           p-7
           d-flex
+          choose-account
           align-items-center
         "
         for="kt_create_account_form_account_type_corporate"
       >
-        <app-keenicon name="briefcase" class="fs-1 me-5"></app-keenicon>
-        <span class="d-block fw-bold text-start">
-          <span class="text-gray-900 fw-bolder d-block fs-4 mb-2"
-            >Corporate Account</span
+        <app-keenicon name="briefcase" class="fs-1 mx-2"></app-keenicon>
+        <span class="d-block fw-bold text-inline-start">
+          <span class="text-gray-900  text-inline-start fw-bolder d-block fs-4 mb-2"
+            > {{ 'INSIGHTER_WIZARD.CORPORATE_ACCOUNT' | translate }} </span
           >
           <span class="text-gray-500 fw-bold fs-6">
-            Create corporate account to mane users
+            {{ 'INSIGHTER_WIZARD.CORPORATE_ACCOUNT_DESC' | translate }}
           </span>
         </span>
       </label>

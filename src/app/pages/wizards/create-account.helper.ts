@@ -2,20 +2,23 @@
 
 export interface ICreateAccount {
   accountType: 'personal' | 'corporate';
-  phoneNumber: number | null;
+  phoneNumber?: number | null;
   consultingFields: number[]; // Array of IDs
   isicCodes:any; // Array of IDs
-  phoneCountryCode:any;
+  phoneCountryCode?:any;
 
   // Personal account fields
   bio?: string;
 
   // Corporate account fields
   legalName?: string;
+  logo:File | null;
   website?: string;
   registerDocument?: File | null;
-  aboutCompany?: string;
-
+  aboutCompany?: string;  
+  verificationMethod: 'websiteEmail' | 'uploadDocument';
+  companyEmail?: string;
+  code?: string;
   // Step 3: Documents
   certifications?: { type: string; file: File }[];
 }
@@ -30,6 +33,10 @@ export const inits: ICreateAccount = {
   legalName: '',
   website: '',
   registerDocument: null,
+  logo: null,
   aboutCompany: '',
   certifications: [],
+  verificationMethod: 'websiteEmail',
+  companyEmail: '',
+  code: ''
 };

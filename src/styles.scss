@@ -17,7 +17,9 @@
 
 
 
-
+.choose-account{
+  min-height: 125px;
+}
 
 .text-hover-blue:hover{
 color: #017BFE !important;
@@ -199,4 +201,7 @@ width: fit-content;
 
 .swal2-styled.swal2-confirm{
   background-color: #033761 !important;
+}
+.text-inline-start{
+  text-align: start !important;
 }

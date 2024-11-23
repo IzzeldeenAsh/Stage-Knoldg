@@ -1,7 +1,10 @@
+// src/app/pages/wizards/step3/step3.component.ts
+
 import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable, of } from 'rxjs';
 import { ICreateAccount } from '../../create-account.helper';
+import { Document, DocumentsService } from 'src/app/_fake/services/douments-types/documents-types.service.spec';
 
 @Component({
   selector: 'app-step3',
@@ -19,10 +22,18 @@ export class Step3Component implements OnInit, OnDestroy {
   @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
   private unsubscribe: Subscription[] = [];
 
-  constructor(private fb: FormBuilder) {}
+  documentTypes: Document[] = [];
+  isLoadingDocumentTypes: boolean = false;
+  documentTypesError: string = '';
+
+  constructor(
+    private fb: FormBuilder,
+    private documentsService: DocumentsService
+  ) {}
 
   ngOnInit() {
     this.initForm();
+    this.loadDocumentTypes();
     this.updateParentModel({}, this.checkForm());
   }
 
@@ -30,34 +41,57 @@ export class Step3Component implements OnInit, OnDestroy {
     this.form = this.fb.group({
       certifications: this.fb.array([]),
     });
+
     if (this.defaultValues?.certifications) {
       this.defaultValues.certifications.forEach(cert => {
         this.addCertification(cert);
       });
     }
-  
+
     const formChangesSubscr = this.form.valueChanges.subscribe((val) => {
       this.updateParentModel(val, this.checkForm());
+     
     });
     this.unsubscribe.push(formChangesSubscr);
   }
 
-  get certifications(): FormArray {
-    return this.form.get('certifications') as FormArray;
+  loadDocumentTypes() {
+    this.isLoadingDocumentTypes = true;
+    const docTypesSub = this.documentsService.getDocumentsTypes().subscribe({
+      next: (types) => {
+        this.documentTypes = types;
+        this.isLoadingDocumentTypes = false;
+      },
+      error: (error) => {
+        this.documentTypesError = 'Failed to load document types.';
+        this.isLoadingDocumentTypes = false;
+        console.error(error);
+      }
+    });
+    this.unsubscribe.push(docTypesSub);
   }
 
-  addCertification(cert?: { file: File }) {
+  get certifications(): FormArray<FormGroup> {
+    return this.form.get('certifications') as FormArray;
+  }
+  get certificationControls(): FormGroup[] {
+    return this.certifications.controls as FormGroup[];
+  }
+  addCertification(cert?: { type?: string; file?: File }) {
     const certForm = this.fb.group({
-      file: [cert ? cert.file : null, [Validators.required]],
+      type: [cert?.type || '', [Validators.required]],
+      file: [cert?.file || null, [Validators.required]],
     });
     this.certifications.push(certForm);
     this.updateParentModel(this.form.value, this.checkForm());
   }
+  
 
   removeCertification(index: number) {
     this.certifications.removeAt(index);
     this.updateParentModel(this.form.value, this.checkForm());
-    this.fileInput.nativeElement.value=''
+    // Optionally reset the file input if needed
+    // this.fileInput.nativeElement.value = '';
   }
 
   onDropzoneClick() {
@@ -67,6 +101,8 @@ export class Step3Component implements OnInit, OnDestroy {
   onFileSelected(event: any) {
     const files: FileList = event.target.files;
     this.handleFiles(files);
+    // Reset the file input to allow re-uploading the same file if needed
+    this.fileInput.nativeElement.value = '';
   }
 
   onDragOver(event: DragEvent) {
@@ -75,30 +111,29 @@ export class Step3Component implements OnInit, OnDestroy {
 
   onFileDrop(event: DragEvent) {
     event.preventDefault();
-    if(event.dataTransfer){
+    if (event.dataTransfer) {
       const files = event.dataTransfer.files;
       this.handleFiles(files);
     }
-
   }
 
   handleFiles(files: FileList) {
     for (let i = 0; i < files.length; i++) {
       const file = files.item(i);
-      if(file){
+      if (file) {
         this.addCertification({ file });
       }
-        }
+    }
   }
 
   getFileIcon(file: File) {
-    if(file){
-    const extension = file?.name?.split('.')?.pop()?.toLowerCase();
-    const iconPath = `./assets/media/svg/files/${extension}.svg`;
-    // If the icon doesn't exist, return a default icon
-    // You might need to implement a check to see if the file exists
-    return iconPath;
-  }
+    if (file) {
+      const extension = file.name.split('.').pop()?.toLowerCase();
+      const iconPath = `./assets/media/svg/files/${extension}.svg`;
+      // Optionally, you can add logic to handle missing icons
+      return iconPath;
+    }
+    return './assets/media/svg/files/default.svg';
   }
 
   checkForm() {
@@ -109,4 +144,3 @@ export class Step3Component implements OnInit, OnDestroy {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }
 }
-

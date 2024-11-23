@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
@@ -24,6 +24,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { DialogModule } from 'primeng/dialog';
 import { TreeSelectModule } from 'primeng/treeselect';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { TooltipModule } from 'primeng/tooltip';
 @NgModule({
   declarations: [
     HorizontalComponent,
@@ -45,6 +46,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     ToastModule,
     DialogModule,
     TreeSelectModule,
+    TooltipModule,
     DropdownModule,
     MessageModule,
     MultiSelectModule,
@@ -52,6 +54,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     NgbTooltipModule,
     SharedModule
   ],
-  providers:[MessageService,NodeService]
+  providers:[MessageService,NodeService],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]  // Add this line
 })
 export class WizardsModule {}

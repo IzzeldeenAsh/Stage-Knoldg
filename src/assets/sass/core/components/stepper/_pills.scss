@@ -8,9 +8,9 @@
     --#{$prefix}stepper-icon-border-radius: 9px;
     --#{$prefix}stepper-icon-check-size: 1rem;
 
-    --#{$prefix}stepper-icon-bg-color: var(--#{$prefix}primary-light);    
-    --#{$prefix}stepper-icon-bg-color-current: var(--#{$prefix}primary);
-    --#{$prefix}stepper-icon-bg-color-completed: var(--#{$prefix}primary-light);
+    --#{$prefix}stepper-icon-bg-color: var(--#{$prefix}info-light);    
+    --#{$prefix}stepper-icon-bg-color-current: var(--#{$prefix}info);
+    --#{$prefix}stepper-icon-bg-color-completed: var(--#{$prefix}info-light);
 
     --#{$prefix}stepper-icon-border: 0;
     --#{$prefix}stepper-icon-border-current: 0;
@@ -56,13 +56,14 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+         
             transition: $transition-link;
             width: var(--#{$prefix}stepper-pills-size);
             height: var(--#{$prefix}stepper-pills-size);
             border-radius: var(--#{$prefix}stepper-icon-border-radius);
             background-color: var(--#{$prefix}stepper-icon-bg-color);
             border: var(--#{$prefix}stepper-icon-border);
-            margin-right: 1.5rem;
+            margin-inline-end: 1.5rem;
 
             .stepper-check {
                 display: none;
@@ -104,7 +105,7 @@
                 transition: $transition-link;
                 background-color: var(--#{$prefix}stepper-icon-bg-color-current);
                 border: var(--#{$prefix}stepper-icon-border-current);
-
+                box-shadow: 2.26px 12.8px 15px 0 #0182d547;
                 .stepper-check {
                     display: none;
                 }
@@ -118,7 +119,7 @@
             .stepper-label {
                 .stepper-title {
                     opacity: var(--#{$prefix}stepper-label-title-opacity-current);
-                    color: var(--#{$prefix}stepper-label-title-color-current);
+                    color: var(--#{$prefix}primary);
                 }
 
                 .stepper-desc {
@@ -133,11 +134,13 @@
         &.completed {
             .stepper-icon {
                 transition: $transition-link;
-                background-color: var(--#{$prefix}stepper-icon-bg-color-completed);
                 border: var(--#{$prefix}stepper-icon-border-completed);
-
+                background: none;
+                border: 1px solid #0FB316;
+                box-shadow: 2.26px 3.8px 3px 0 #01d52d24;
+            
                 .stepper-check {
-                    color: var(--#{$prefix}stepper-icon-check-color-completed);
+                    color: #0FB316;
                     display: inline-block;
                 }
 
@@ -192,10 +195,18 @@
         .stepper-line {
             display: block;
             flex-grow: 1;
-            margin-left: calc(var(--#{$prefix}stepper-pills-size) / 2);
-            border-left: var(--#{$prefix}stepper-line-border); 
+          
             margin-top: 2px;
             margin-bottom: 2px;
         }
     }    
+}
+
+html[dir='rtl']  .stepper-line {
+    border-right: var(--#{$prefix}stepper-line-border); 
+    margin-right: calc(var(--#{$prefix}stepper-pills-size) / 2);
+}
+html[dir='ltr']  .stepper-line {
+    border-left: var(--#{$prefix}stepper-line-border); 
+    margin-left: calc(var(--#{$prefix}stepper-pills-size) / 2);
 }

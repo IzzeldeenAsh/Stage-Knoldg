@@ -14,7 +14,8 @@ export class NavbarComponent implements OnInit {
   @Input() appHeaderDefaulMenuDisplay: boolean;
   @Input() isRtl: boolean;
   isUserMenuOpen = false;
-
+  toolbarButtonMarginClass = 'ms-1 ms-lg-3';
+  toolbarUserAvatarHeightClass = 'symbol-30px symbol-md-40px';
   // Toggle the user menu's visibility
   toggleUserMenu(): void {
     this.isUserMenuOpen = !this.isUserMenuOpen;

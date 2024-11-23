@@ -33,7 +33,7 @@
         <div class="menu-content d-flex align-items-center px-3">
           <!-- Avatar -->
           <div class="position-relative">
-            <div class="symbol symbol-50px me-5">
+            <div class="symbol symbol-50px mx-4">
               <img *ngIf="user &&user?.profile_photo_url; else defaultAvatarLarge" [src]="user.profile_photo_url" alt="User Avatar">
               <ng-template #defaultAvatarLarge>
                 <span class="symbol-label bg-primary fs-2 text-white">

@@ -42,6 +42,7 @@ export class CallbackComponent
         const auth = new AuthModel();
         auth.authToken = this.token;
         this.auth.setAuthFromLocalStorage(auth);
+        this.toApp()
       } else {
         this.errorMessage = "Invalid callback parameters.";
       }
@@ -56,7 +57,9 @@ export class CallbackComponent
       .pipe(first())
       .subscribe({
         next:(user)=>{
-          console.log("user",user);
+          if (user && (user.roles.includes('admin') || user.roles.includes('staff'))) {
+            this.router.navigate(['/admin-dashboard']);
+          }
           if(user.verified){
             this.router.navigate(['/app']);
           }else{

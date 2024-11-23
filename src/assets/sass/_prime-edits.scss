@@ -259,3 +259,28 @@ html[dir="rtl"] .p-element {
            display: flex;
            align-items: center;
         }
+        .no-border-radius-start-end .p-dropdown {
+            border-end-end-radius: 0px !important;
+            border-start-end-radius: 0px !important;
+
+          }
+          html[dir='rtl'] .no-rtl-b-radius{
+            border-radius: 0px !important;
+          }
+
+          .flex-1{
+            flex: 1;
+          }
+          .flex-2{
+            flex: 2;
+          }
+          .flex-3{
+            flex: 3;
+          }
+          .flex-4{
+            flex: 4;
+          }
+          .p-message .p-message-icon {
+            margin-left: 0.5rem !important;
+            display: flex !important;
+          }

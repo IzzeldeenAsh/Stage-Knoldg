@@ -23,7 +23,18 @@ export const locale = {
       COPYRIGHT: '© 2024 Insighta',
       TERMS: 'Terms',
       PRIVACY: 'Privacy',
-      COOKIES: 'Cookies'
+      COOKIES: 'Cookies',
+      MY_PROFILE: 'My Profile',
+      MY_PROJECTS: 'My Projects',
+      MY_SUBSCRIPTION: 'My Subscription',
+      MY_STATEMENTS: 'My Statements',
+      ACCOUNT_SETTINGS: 'Account Settings',
+      SIGN_OUT: 'Sign Out',
+      LANGUAGE: 'Language',
+      ARABIC: 'Arabic',
+      CLIENT: 'Client',
+      INSIGHTER: 'Insighter',
+      COMPANY: 'Company'
     },
     AUTH: {
       TWO_FA: {
@@ -214,12 +225,103 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     BUTTONS: {
       BACK_BUTTON: "Back",
       OK:"Ok",
-      CANCEL:"Cancel"
+      CANCEL:"Cancel",
+      DELETE_FILE: "Delete File",
       // ... other BUTTONS keys
     },
     COMMON:{
       "SLOGAN":"Redefining the insights landscape",
-      "SELECISCIC":"Select ISIC Codes"
-    }
+      "SELECISCIC":"Select ISIC Codes",
+      OR:"OR"
+    },
+    INSIGHTER_WIZARD: {
+      ACCOUNT_TYPE: "Account Type",
+      ACCOUNT_DETAILS_DESC: "Setup Your Account Details",
+      ACCOUNT_INFO: "Account Info",
+      ACCOUNT_INFO_DESC: "Setup Your Insighter Information",
+      CERTIFICATES: "Certificates",
+      CERTIFICATES_DESC: "Upload Your Qualifications",
+      VERIFY_ACCOUNT: "Verify Account",
+      VERIFY_ACCOUNT_DESC: "Verify Corporate Account",
+      BACK: "Back",
+      GET_STARTED: "Get Started",
+      CONTINUE: "Continue",
+      SUBMIT: "Submit",
+      PLEASE_WAIT: "Please wait...",
+      
+      // New Keys for the Current Component
+      CHOOSE_ACCOUNT_TYPE: "Choose Account Type",
+      BILLING_TOOLTIP: "Billing is issued based on your selected account type",
+      MORE_INFO: "If you need more info, please check out",
+      HELP_PAGE: "Help Page",
+      PERSONAL_ACCOUNT: "Personal Account",
+      PERSONAL_ACCOUNT_DESC: "If you need more info, please check it out",
+      CORPORATE_ACCOUNT: "Corporate Account",
+      CORPORATE_ACCOUNT_DESC: "Create corporate account to manage users",
+      IF_NEED_MORE_INFO: "If you need more info, please check out",
+      INSIGHTER_INFO: "Insighter Info",
+      CONSULTING_FIELDS: "Consulting Fields",
+      CONSULTING_FIELDS_REQUIRED: "Consulting Fields are required",
+      ABOUT_YOU: "About You",
+      PHONE_NUMBER: "Phone Number",
+      PHONE_NUMBER_OPTIONAL: "(optional)",
+      YOUR_PHONE_NUMBER: "Your phone number",
+      PHONE_NUMBER_REQUIRED: "Phone number is required.",
+      PHONE_NUMBER_PATTERN: "Phone number must contain exactly 10 digits.",
+      LEGAL_NAME: "Legal Name",
+      LEGAL_NAME_PLACEHOLDER: "Your Company's Legal Name",
+      LEGAL_NAME_REQUIRED: "Your Company's Legal Name is required.",
+      ABOUT_COMPANY: "About Company",
+      COUNTRY_PLACEHOLDER: "Select Country",
+
+      UPLOAD_FILES: "Upload Files",
+      CAMPAIGN_GUIDELINES: "Campaign Guidelines",
+      DROP_FILES_HERE_OR_CLICK: "Drop campaign files here or click to upload.",
+      UPLOAD_UP_TO_FILES: "Upload up to 10 files",
+      UPLOADED_FILES: "Uploaded Files",
+      DOCUMENT_TYPE: "Document Type",
+      SELECT_DOCUMENT_TYPE: "Select Document Type",
+      DOCUMENT_TYPE_REQUIRED: "Document type is required.",
+      COMPANYLOGO:" Company Logo",
+      VERIFY_FILES: "Uploaded Files",
+      CORPORATE_ACCOUNT_VERIFICATION: "Corporate Account Verification",
+      VERIFY_YOUR_COMPANY_WITH: "Verify your company with",
+      DROP_OR_UPLOAD_REGISTRY_DOCUMENT: "Drop or Upload Registry Document",
+      VERIFY_COMPANY_ACCOUNT_BY_UPLOADING_REGISTRY_DOC: "Verify company account by uploading company registry document",
+      IF_NEED_MORE_INFO_VERIFICATION: "If you need more info, please check out",
+      REGISTER_DOCUMENT_REQUIRED: "Register document is required.",
+      WEBSITE_URL: "Website URL",
+      WEBSITE_DOMAIN_MATCH_INFO: "Your email address should match the website domain",
+      YOUR_WEBSITE_URL_REQUIRED: "Your Website's URL is required",
+      CHANGE_LOGO:"Change Logo",
+      CANCEL_LOGO:"Cancel Logo",
+      REMOVE_LOGO:"Remove Logo",
+      "CHOOSE_VERIFICATION_METHOD": "Choose your verification method",
+      "BY_WEBSITE_COMPANY_EMAIL": "By website and company email",
+      "BY_UPLOADING_REGISTRY_DOCUMENT": "By uploading registry document",
+      "WEBSITE_DOMAIN": "Website Domain",
+      "COMPANY_EMAIL": "Company Email",
+      "GET_CODE": "Get Code",
+      "CODE": "Verification Code",
+      "ENTER_CODE": "Enter the code you received",
+      
+    },
+    CONGRATS_CARD:{
+      TITLE: "Congratulations!",
+      DESCRIPTION: "You now have access to powerful tools to upload insights, manage insighters, and maximize your data capabilities. Here’s a quick overview of what you can do:",
+      FEATURES: {
+        UPLOAD_INSIGHTS: "Upload Insights:",
+        UPLOAD_INSIGHTS_DESC: "Share data and insights easily, helping your team stay informed and make data-driven decisions.",
+        MANAGE_INSIGHTERS: "Manage Insighters:",
+        MANAGE_INSIGHTERS_DESC: "Add, remove, or manage your insighters to ensure seamless collaboration within your organization."
+      },
+      BUTTON: "Get Started"
+    },
+    ACCOUNT_PENDING: {
+      TITLE: "Account Pending Approval",
+      MESSAGE1: "Thank you for registering! Your account is currently pending approval by our administrators. Once your account has been reviewed and approved, you will receive a confirmation email.",
+      MESSAGE2: "If you believe there is an issue with your registration or have any questions, please contact our support team.",
+      BUTTON: "Contact Support"
+    },
   }
 };

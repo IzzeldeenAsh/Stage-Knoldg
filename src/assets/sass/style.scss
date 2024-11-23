@@ -19,3 +19,42 @@
 @import "animations";
 //prime
 @import "prime-edits";
+
+/* Apply 'Tajawal'  ki-outline to body and its descendants, excluding .ki-duotone and its descendants */
+/* 1. Apply 'Tajawal' to all elements within RTL, excluding specific classes and their descendants */
+/* 1. Apply 'Tajawal' to all elements within RTL, excluding specific classes and their descendants */
+html[dir="rtl"] *:not(.ki-duotone):not(.ki-duotone *):not(.ki-outline):not(.ki-outline *):not(.ki-solid):not(.ki-solid *):not(.fa-classic):not(.fa-classic *):not(.fa-regular):not(.fa-regular *):not(.fa-solid):not(.fa-solid *):not(.far):not(.far *):not(.fas):not(.fas *) {
+    font-family: 'Tajawal', sans-serif !important;
+}
+
+/* 2. Assign 'keenicons-duotone' to .ki-duotone and its descendants */
+html[dir="rtl"] .ki-duotone,
+html[dir="rtl"] .ki-duotone * {
+    font-family: 'keenicons-duotone' !important;
+}
+
+/* 3. Assign 'keenicons-outline' to .ki-outline and its descendants */
+html[dir="rtl"] .ki-outline,
+html[dir="rtl"] .ki-outline * {
+    font-family: 'keenicons-outline' !important;
+}
+
+/* 4. Assign 'keenicons-solid' to .ki-solid and its descendants */
+html[dir="rtl"] .ki-solid,
+html[dir="rtl"] .ki-solid * {
+    font-family: 'keenicons-solid' !important;
+}
+
+/* 5. Assign 'Font Awesome 6 Free' to Font Awesome classes and their descendants */
+html[dir="rtl"] .fa-classic,
+html[dir="rtl"] .fa-classic *,
+html[dir="rtl"] .fa-regular,
+html[dir="rtl"] .fa-regular *,
+html[dir="rtl"] .fa-solid,
+html[dir="rtl"] .fa-solid *,
+html[dir="rtl"] .far,
+html[dir="rtl"] .far *,
+html[dir="rtl"] .fas,
+html[dir="rtl"] .fas * {
+    font-family: "Font Awesome 6 Free" !important;
+}

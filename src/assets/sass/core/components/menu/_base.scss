@@ -82,6 +82,7 @@
             align-items: center;
             flex-shrink: 0;
             margin-left: $menu-badge-space;
+            margin-right: $menu-badge-space;
         }
 
         .menu-arrow {
@@ -111,6 +112,14 @@
     // Menu Content
     .menu-content {
         padding: $menu-link-padding-y $menu-link-padding-x;
+    }
+}
+html[dir='rtl']{
+    .menu-arrow{
+        transform: rotateZ(180deg);
+    }
+    .ki-arrow-right{
+        transform: rotateZ(180deg);
     }
 }
 

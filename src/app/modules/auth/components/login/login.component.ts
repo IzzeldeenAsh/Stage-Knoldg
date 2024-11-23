@@ -6,7 +6,7 @@ import { AuthService } from "../../services/auth.service";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { TranslationService } from "src/app/modules/i18n/translation.service";
 import { ScrollAnimsService } from "src/app/_fake/services/scroll-anims/scroll-anims.service";
-import { Message } from "primeng/api";
+import { Message, MessageService } from "primeng/api";
 import {BaseComponent} from "src/app/modules/base.component"
 @Component({
   selector: "app-login",
@@ -34,6 +34,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private route: ActivatedRoute,
     private router: Router,
+    private messageService: MessageService,
     private translationService: TranslationService,
     scrollAnims: ScrollAnimsService,
   ) {
@@ -83,6 +84,19 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
           Validators.maxLength(100),
         ]),
       ],
+    });
+  }
+
+  signInWithGoogle(event: Event): void {
+    event.preventDefault();
+    this.authService.getGoogleAuthRedirectUrl().subscribe({
+      next: (redirectUrl) => {
+        window.location.href = redirectUrl;
+      },
+      error: (err) => {
+        console.error('Error getting Google auth redirect URL', err);
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to initiate Google sign-in.' });
+      }
     });
   }
 
