@@ -1,6 +1,6 @@
 <div class="position-relative">
     <a (click)="toggleMenu()" class="cursor-pointer d-flex active">
-        <span class="symbol symbol-20px me-4 d-flex align-items-center gap-1">
+        <span class="symbol symbol-20px mx-4 d-flex align-items-center gap-1">
             <img class="rounded-4" [src]="selectedFlag" alt="Language Flag">
         </span>
     </a>
@@ -14,7 +14,7 @@
         <!--begin::Menu item-->
         <div class="menu-item px-3">
             <a (click)="changeLanguage('en')" class="menu-link d-flex px-5" [class.active]="selectedLang === 'en'">
-                <span class="symbol symbol-20px me-4">
+                <span class="symbol symbol-20px mx-4">
                     <img class="rounded-1" src="../../../../assets/media/flags/united-states.svg" alt="English">
                 </span>
                 English
@@ -25,7 +25,7 @@
         <!--begin::Menu item-->
         <div class="menu-item px-3">
             <a (click)="changeLanguage('ar')" class="menu-link d-flex px-5" [class.active]="selectedLang === 'ar'">
-                <span class="symbol symbol-20px me-4">
+                <span class="symbol symbol-20px mx-4">
                     <img class="rounded-1" src="../../../../assets/media/flags/saudi-arabia.svg" alt="Arabic">
                 </span>
                 Arabic

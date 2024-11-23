@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { NonInsightersAuthGuard } from '../modules/auth/services/non-insighters.guard';
 
 const Routing: Routes = [
   {
@@ -13,6 +14,11 @@ const Routing: Routes = [
   {
     path: 'insighter-register',
     loadChildren: () => import('./wizards/wizards.module').then((m) => m.WizardsModule),
+    canActivate: [NonInsightersAuthGuard], // Apply the guard here
+  },
+  {
+    path: 'profile',
+    loadChildren: () => import('./user-profile/user-profile.module').then((m) => m.UserProfileModule),
   },
   {
     path: '**',

@@ -26,6 +26,7 @@ export class Step2Component implements OnInit, OnDestroy {
   nodes: TreeNode[] = [];
   selectedNodes: any;
   reverseLoader:boolean=false;
+  logoPreview: string | ArrayBuffer | null = null;
   @Input('updateParentModel') updateParentModel: (
     part: Partial<ICreateAccount>,
     isFormValid: boolean
@@ -34,7 +35,7 @@ export class Step2Component implements OnInit, OnDestroy {
   @Input() defaultValues: Partial<ICreateAccount>;
   @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
   resizeSubscription!: Subscription;
-
+  defaultImage = 'https://au.eragroup.com/wp-content/uploads/2018/02/logo-placeholder.png';
   private unsubscribe: Subscription[] = [];
 
   constructor(
@@ -64,6 +65,9 @@ export class Step2Component implements OnInit, OnDestroy {
       this.form.patchValue({ registerDocument: this.defaultValues?.registerDocument });
       this.form.get('registerDocument')?.markAsTouched();
       this.updateParentModel({ registerDocument: this.defaultValues?.registerDocument }, this.checkForm());
+    }
+    if(this.defaultValues?.logo){
+      this.logoPreview =URL.createObjectURL(this.defaultValues.logo);
     }
   }
   loadISIC() {
@@ -117,9 +121,8 @@ export class Step2Component implements OnInit, OnDestroy {
     traverse(this.nodes);
     this.reverseLoader=false;
   }
-  
-    // Optional: Additional handling to sanitize input
-    onPhoneNumberInput(event: Event) {
+  // Optional: Additional handling to sanitize input
+  onPhoneNumberInput(event: Event) {
       const input = event.target as HTMLInputElement;
       // Remove any non-digit characters
       let sanitizedValue = input.value.replace(/\D/g, '');
@@ -129,7 +132,7 @@ export class Step2Component implements OnInit, OnDestroy {
       }
       // Update the input value without triggering another event
       this.form.controls.phoneNumber.setValue(sanitizedValue, { emitEvent: false });
-    }
+  }
   windowResize(){
     const screenwidth$ = fromEvent(window,'resize').pipe(
       map(()=>window.innerWidth),
@@ -144,7 +147,58 @@ export class Step2Component implements OnInit, OnDestroy {
   showISICDialog() {
     this.isISICDialogVisible = true;
   }
-
+  getBackgroundImage(){
+    return `url(${this.logoPreview || this.defaultImage})`;
+  }
+  onLogoSelected(event:Event){
+    const input  =event.target as HTMLInputElement;
+    if(input.files && input.files[0]){
+      const file = input.files[0];
+      const validTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+      if(!validTypes.includes(file.type)){
+        this.messages = [{
+          severity: 'error',
+          summary: 'Invalid File Type',
+          detail: 'Please select a PNG or JPEG image.',
+          id:'fileType'
+        }];
+        setTimeout(() => {
+          this.messages = [];
+        }, 4000);
+        return
+      };
+      const maxSize = 2 *1024*1024 ; //2MB
+      if(file.size > maxSize){
+        this.messages = [{
+          icon:'',
+          severity: 'error',
+          summary:this.lang ==='en' ? 'Logo must be smaller than 2MB.' : 'يجب أن يكون الحجم أقل من ٢ ميجا',
+          detail:  '',
+          id:'fizeSize'
+        }];
+        setTimeout(() => {
+          this.messages = [];
+        }, 4000);
+        return;
+      }
+      this.form.patchValue({logo:file});
+      this.updateParentModel({ logo: file }, this.checkForm());
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.logoPreview = reader.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  removeLogo() {
+    this.form.patchValue({ logo: null });
+    this.logoPreview = null;
+    this.updateParentModel({ logo: null }, this.checkForm());
+    if (this.fileInput) {
+      this.fileInput.nativeElement.value = '';
+    }
+  }
+  
   onDropzoneClick() {
     this.fileInput.nativeElement.click();
   }
@@ -230,6 +284,9 @@ getFileIcon(file: File): string {
             summary: 'Error',
             detail: 'An unexpected error occurred.',
           });
+          setTimeout(() => {
+            this.messages = [];
+          }, 4000);
         }
       },
     });
@@ -251,11 +308,10 @@ getFileIcon(file: File): string {
     if (accountType === 'personal') {
       this.form = this.fb.group({
         bio: [this.defaultValues.bio || '', [Validators.required]],
-        phoneCountryCode: [this.defaultValues.phoneCountryCode || '', [Validators.required]],
+        phoneCountryCode: [this.defaultValues.phoneCountryCode || ''],
         phoneNumber: [
           this.defaultValues.phoneNumber || '',
           [
-            Validators.required,
             Validators.minLength(10),
             Validators.pattern('^[0-9]{10}$'), // Ensures exactly 10 digits
           ],
@@ -267,22 +323,19 @@ getFileIcon(file: File): string {
       this.form = this.fb.group(
         {
           legalName: [this.defaultValues.legalName || '', [Validators.required]],
-          website: [this.defaultValues.website || ''],
-          registerDocument: [this.defaultValues.registerDocument || null],
           aboutCompany: [this.defaultValues.aboutCompany || '', [Validators.required]],
-          phoneCountryCode: [this.defaultValues.phoneCountryCode || '', [Validators.required]],
+          phoneCountryCode: [this.defaultValues.phoneCountryCode || ''],
           phoneNumber: [
             this.defaultValues.phoneNumber || '',
             [
-              Validators.required,
               Validators.minLength(10),
               Validators.pattern('^[0-9]{10}$'), // Ensures exactly 10 digits
             ],
           ],
           consultingFields: [this.defaultValues.consultingFields || [], [Validators.required]],
           isicCodes: [this.defaultValues.isicCodes || [], [Validators.required]],
-        },
-        { validators: this.atLeastOneRequired('website', 'registerDocument') }
+          logo: [this.defaultValues.logo || null, [Validators.required]],
+        }
       );
     }
     
@@ -293,15 +346,6 @@ getFileIcon(file: File): string {
     this.unsubscribe.push(formChangesSubscr);
   }
 
-  atLeastOneRequired(...fields: string[]) {
-    return (group: FormGroup) => {
-      const hasAtLeastOne = fields.some((fieldName) => {
-        const field = group.get(fieldName);
-        return field && field.value && field.value !== '';
-      });
-      return hasAtLeastOne ? null : { atLeastOneRequired: true };
-    };
-  }
 onFileChange(event: any) {
     const file = event.target.files[0];
     if (file) {
@@ -313,7 +357,13 @@ onFileChange(event: any) {
     return this.form.valid;
   }
 
+  get fizeSizeMessages() {
+    // Return only the messages with the ID 'fizeSize'
+    return this.messages.filter((message) => message.id === 'fizeSize');
+  }
+
   ngOnDestroy() {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }
+
 }

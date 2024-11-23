@@ -66,7 +66,7 @@
 
 <!--begin::User menu-->
 <!-- navbar.component.html -->
-<ng-container *ngIf="userProfile">
+<!-- <ng-container *ngIf="userProfile">
   <div
     class="app-navbar-item user-menu-container"
     [ngClass]="itemClass"
@@ -76,7 +76,7 @@
     aria-haspopup="true"
     [attr.aria-expanded]="isMenuOpen"
   >
-    <!-- User Avatar -->
+   
     <div class="cursor-pointer symbol" [ngClass]="userAvatarClass">
       <img
         *ngIf="userProfile.profile_photo_url"
@@ -88,13 +88,37 @@
       </span>
     </div>
 
-    <!-- Dropdown Menu -->
+    
     <div class="user-dropdown-menu" *ngIf="isMenuOpen">
       <button class="signout-button" (click)="logout()">Sign Out</button>
     </div>
   </div>
-</ng-container>
-
+</ng-container> -->
+<!-- begin::User -->
+<div
+  class="d-flex align-items-center"
+  [ngClass]="toolbarButtonMarginClass"
+  id="kt_header_user_menu_toggle"
+>
+  <!-- begin::Toggle -->
+  <div
+    class="cursor-pointer symbol"
+    [ngClass]="toolbarUserAvatarHeightClass"
+    data-kt-menu-trigger="click"
+    data-kt-menu-attach="parent"
+    data-kt-menu-placement="bottom-end"
+    data-kt-menu-flip="bottom"
+  >
+    <img *ngIf="userProfile && userProfile.profile_photo_url" src="./assets/media/avatars/300-1.jpg" alt="metronic" />
+    <span *ngIf="userProfile && !userProfile.profile_photo_url" class="symbol-label bg-primary fs-4 text-white">
+     <span> {{ userProfile.first_name.charAt(0) }} </span>
+     <span style="padding: 0 -20px;"> {{ userProfile.last_name.charAt(0) }} </span>
+    </span>
+  </div>
+  <!-- end::Toggle  -->
+  <app-user-inner></app-user-inner>
+</div>
+<!-- end::User -->
 
 
 <!--end::User menu-->
