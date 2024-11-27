@@ -73,3 +73,14 @@
         background-color: var(--#{$prefix}#{$name}-light);
     }    
 }
+.badge-outline-gray{
+    color: #78829d;
+    background-color: #f9f9f9;
+    justify-content: center;
+    line-height: 1;
+    border-radius: .25rem;
+    padding: .5rem;
+    border: 1px solid  #dbdfe9;;
+    font-weight: 500;
+    font-size: .6875rem;
+}

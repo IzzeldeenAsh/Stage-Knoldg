@@ -2,7 +2,7 @@
   <div class="menu-item px-3">
     <div class="menu-content d-flex align-items-center px-3">
       <div class="symbol symbol-50px mx-4">
-        <img alt="Logo" *ngIf="_user.profile_photo_url" [src]="_user.profile_photo_url" />
+        <img alt="Logo" *ngIf="_user.profile_photo_url" [src]="_user.profile_photo_url" class="object-fit-cover" />
         <span *ngIf="!_user.profile_photo_url" class="symbol-label bg-primary fs-4 text-white">
           <span> {{ _user.first_name.charAt(0) }} </span>
           <span style="padding: 0 -20px;"> {{ _user.last_name.charAt(0) }} </span>
@@ -18,12 +18,12 @@
             </span>
             </ng-container>
             <ng-container *ngIf="_user.roles.includes('insighter') && !_user.roles.includes('company')">
-              <span class="badge badge-light-warning fw-bolder fs-8 px-2 py-1 mx-2">
+              <span class="badge badge-light-info fw-bolder fs-8 px-2 py-1 mx-2">
               {{ 'HOME.INSIGHTER' | translate }}
             </span>
             </ng-container>
             <ng-container *ngIf="!_user.roles.includes('insighter') && _user.roles.includes('company')">
-              <span class="badge badge-light-info fw-bolder fs-8 px-2 py-1 mx-2">
+              <span class="badge badge-light-warning fw-bolder fs-8 px-2 py-1 mx-2">
               {{ 'HOME.COMPANY' | translate }}
             </span>
             </ng-container>
@@ -39,7 +39,7 @@
   <div class="separator my-2"></div>
 
   <div class="menu-item px-5">
-    <a routerLink="/crafted/pages/profile" class="menu-link px-5">
+    <a [routerLink]="'/app/profile/'" class="menu-link px-5">
       {{ 'HOME.MY_PROFILE' | translate }}
     </a>
   </div>

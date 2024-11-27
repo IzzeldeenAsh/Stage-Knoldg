@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable, Subscription, first, of } from "rxjs";
 import { ICreateAccount, inits } from "../create-account.helper";
 import Swal from "sweetalert2";
 import { InsighterRegistraionService } from "src/app/_fake/services/insighter-registraion/insighter-registraion.service";
-import { Message } from "primeng/api";
+import { Message, MessageService } from "primeng/api";
 import { Router } from "@angular/router";
 import { BaseComponent } from "src/app/modules/base.component";
 import { ScrollAnimsService } from "src/app/_fake/services/scroll-anims/scroll-anims.service";
@@ -36,9 +36,10 @@ export class VerticalComponent extends BaseComponent implements OnInit {
     private insighterRegistraionService: InsighterRegistraionService,
     private router: Router,
     private translateService: TranslationService,
-    private auth:AuthService
+    private auth:AuthService,
+    messageService:MessageService
   ) {
-    super(scrollAnims);
+    super(scrollAnims,messageService);
     this.isLoadingSubmit$ = this.insighterRegistraionService.isLoading$;
   }
 
@@ -135,7 +136,7 @@ export class VerticalComponent extends BaseComponent implements OnInit {
           formData.append("phone", userPhoneNumber);
         }
         user.isicCodes.forEach((code: any) => {
-          formData.append("isic_code[]", code.key.toString());
+          formData.append("industries[]", code.key.toString());
         });
         user.consultingFields.forEach((field: any) => {
           formData.append("consulting_field[]", field.id.toString());
@@ -195,7 +196,7 @@ export class VerticalComponent extends BaseComponent implements OnInit {
           formData.append("phone", userPhoneNumber);
         }
         user.isicCodes.forEach((code: any) => {
-          formData.append("isic_code[]", code.key.toString());
+          formData.append("industries[]", code.key.toString());
         });
         user.consultingFields.forEach((field: any) => {
           formData.append("consulting_field[]", field.id.toString());
@@ -205,7 +206,7 @@ export class VerticalComponent extends BaseComponent implements OnInit {
           user.certifications?.forEach((certification, index) => {
             formData.append(
               `certification[${index}][type]`,
-              certification.file.type
+              certification.type
             );
             formData.append(
               `certification[${index}][file]`,

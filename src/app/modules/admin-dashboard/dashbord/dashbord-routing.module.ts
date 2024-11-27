@@ -10,6 +10,7 @@ import { ConsultingFieldsComponent } from './dashboard/consulting-fields/consult
 import { ISICCodeManagmentComponent } from './dashboard/isic-code-managment/isic-code-managment.component';
 import { TagsComponent } from './dashboard/tags/tags.component';
 import { HSCodeComponent } from './hscode/hscode.component';
+import { GuidelineComponent } from './dashboard/guidelines/guidelines.component';
 
 
 const routes: Routes = [
@@ -38,6 +39,10 @@ const routes: Routes = [
       {
         path:'countries',
         component:CountriesComponent
+      },
+      {
+        path:'guidelines',
+        component:GuidelineComponent,
       },
       {
         path:'regions',

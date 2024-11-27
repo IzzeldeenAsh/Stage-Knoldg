@@ -17,7 +17,9 @@
     margin-top: 8px; /* Space between avatar and menu */
   }
   
-
+  .object-fit-cover{
+    object-fit: cover;
+  }
   
   /* Style for the sign-out button */
   .signout-button {

@@ -1,6 +1,6 @@
 <!-- navbar.component.html -->
 
-<div class="app-navbar-item ms-1">
+<div class="app-navbar-item ms-1" *ngIf="user">
     <!-- Menu Wrapper -->
     <div class="menu-dropdown" (click)="toggleMenu()" tabindex="0" aria-haspopup="true" >
       

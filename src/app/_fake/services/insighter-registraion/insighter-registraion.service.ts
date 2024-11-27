@@ -1,20 +1,25 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, catchError, finalize, map, throwError } from 'rxjs';
+import { TranslationService } from 'src/app/modules/i18n';
 
 @Injectable({
   providedIn: 'root'
 })
 export class InsighterRegistraionService {
-  private individuial_insighter = 'https://api.4sighta.com/api/account/insighter/individual/register'
-  private company_insighter = 'https://api.4sighta.com/api/account/insighter/company/register'
+  private individuial_insighter = 'https://api.foresighta.co/api/account/insighter/individual/register'
+  private company_insighter = 'https://api.foresighta.co/api/account/insighter/company/register'
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> =
     this.isLoadingSubject.asObservable();
   currentLang: string = 'en';
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,private translationService :TranslationService) {}
   private setLoading(loading: boolean) {
     this.isLoadingSubject.next(loading);
+    this.currentLang = this.translationService.getSelectedLanguage()
+    this.translationService.onLanguageChange().subscribe((lang) => {
+      this.currentLang = lang || 'en';
+    });
   }
 
   // Custom handleError method
@@ -36,6 +41,7 @@ export class InsighterRegistraionService {
 
 
   corporateInsighterRegister(insighterData:FormData){
+    console.log("this.currentLAng",this.currentLang);
     const headers = new HttpHeaders({
       'Accept-Language': this.currentLang,
     });

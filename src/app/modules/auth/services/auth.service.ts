@@ -15,6 +15,7 @@ import { InsightaUserModel } from "../models/insighta-user.model";
 import { environment } from "src/environments/environment";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { IForsightaProfile } from "src/app/_fake/models/profile.interface";
+import { TranslationService } from "../../i18n";
 
 export type UserType = InsightaUserModel | undefined;
 
@@ -30,11 +31,12 @@ export class AuthService implements OnDestroy {
   isLoading$: Observable<boolean>;
   currentUserSubject: BehaviorSubject<UserType>;
   isLoadingSubject: BehaviorSubject<boolean>;
-
+  currentLang:string='en'
   constructor(
     private authHttpService: AuthHTTPService,
     private router: Router,
-    private http: HttpClient
+    private http: HttpClient,
+    private translationService:TranslationService
   ) {
     this.isLoadingSubject = new BehaviorSubject<boolean>(false);
     this.currentUserSubject = new BehaviorSubject<UserType>(undefined);
@@ -42,6 +44,9 @@ export class AuthService implements OnDestroy {
     this.isLoading$ = this.isLoadingSubject.asObservable();
     const subscr = this.getUserByToken().subscribe();
     this.unsubscribe.push(subscr);
+    this.translationService.onLanguageChange().subscribe((lang) => {
+      this.currentLang = lang || 'en';
+    });
   }
   //Current User Getter Setter
   get currentUserValue(): UserType {
@@ -80,10 +85,10 @@ export class AuthService implements OnDestroy {
     );
   }
   getGoogleAuthRedirectUrl(): Observable<string> {
-    return this.http.get('https://api.4sighta.com/api/auth/provider/google', { responseType: 'text' });
+    return this.http.get('https://api.foresighta.co/api/auth/provider/google', { responseType: 'text' });
   }
   getLinkedInAuthRedirectUrl(): Observable<string> {
-    return this.http.get('https://api.4sighta.com/api/auth/provider/linkedin', { responseType: 'text' });
+    return this.http.get('https://api.foresighta.co/api/auth/provider/linkedin', { responseType: 'text' });
   }
   private setUserInLocalStorage(user: UserType): void {
     if (user) {
@@ -133,13 +138,13 @@ export class AuthService implements OnDestroy {
     return payload.exp < currentTime;
   }
 
-  getProfile():Observable<IForsightaProfile>{
+  getProfile():Observable<any>{
     this.isLoadingSubject.next(true);
     const headers = new HttpHeaders({
       Accept: "application/json",
-      "Accept-Language": "en", // As per your example
+      "Accept-Language": this.currentLang, // As per your example
     });
-    return this.http.get('https://api.4sighta.com/api/account/profile',{headers}).pipe(
+    return this.http.get('https://api.foresighta.co/api/account/profile',{headers}).pipe(
       map((response: any) => {
         this.isLoadingSubject.next(false);
         const user: UserType = {
@@ -276,11 +281,20 @@ export class AuthService implements OnDestroy {
       'Content-Type': 'application/json',
       'Accept-Language': 'en'
     });
-    return this.http.post('https://api.4sighta.com/api/account/email/resend',{ headers }).pipe(
+    return this.http.post('https://api.foresighta.co/api/account/email/resend',{ headers }).pipe(
       map((res) => res), // Adjust this based on the API response structure
       catchError((error) => this.handleError(error))// Use the custom error handler
     );
   }
+
+  getCurrentUserId(): number | undefined {
+    const currentUser = this.currentUserValue; 
+    if (currentUser && currentUser.id) {
+      return currentUser.id;
+    }
+    return undefined;
+  }
+
   ngOnDestroy() {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }

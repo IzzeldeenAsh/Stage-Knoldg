@@ -1,0 +1,196 @@
+<p-progressBar *ngIf="loadingProfile" mode="indeterminate" [style]="{ height: '4px' }"></p-progressBar>
+<ng-container *ngIf="!loadingProfile" >
+  <div class="card" *ngIf="profile">
+  <div class="card-header">
+    <h3 class="card-title">{{ 'PROFILE.GENERAL_INFO' | translate }}</h3>
+  </div>
+  <div class="card-body py-3">
+    <table class="table">
+      <tbody>
+        <tr *ngIf="profile.company && profile.company.legal_name">
+          <td class="small text-muted pb-3 pe-4 pe-lg-5">
+            {{ 'PROFILE.COMPANY_NAME' | translate }}
+          </td>
+          <td class="small text-dark pb-3">
+            {{ profile.company.legal_name }}
+          </td>
+        </tr>
+        <tr *ngIf="profile.company && profile.company.website">
+          <td class="small text-muted pb-3 pe-4 pe-lg-5">
+            {{ 'PROFILE.WEBSITE' | translate }}
+          </td>
+          <td class="small text-dark pb-3">
+            {{ profile.company.website }}
+          </td>
+        </tr>
+        <tr>
+          <td class="small text-muted pb-3 pe-4 pe-lg-5">
+            {{ 'PROFILE.FIRST_NAME' | translate }}
+          </td>
+          <td class="small text-dark pb-3">
+            {{ profile.first_name }}
+          </td>
+        </tr>
+        <tr>
+          <td class="small text-muted pb-3 pe-4 pe-lg-5">
+            {{ 'PROFILE.LAST_NAME' | translate }}
+          </td>
+          <td class="small text-dark pb-3">
+            {{ profile.last_name }}
+          </td>
+        </tr>
+        <tr>
+          <td class="small text-muted pb-3 pe-4 pe-lg-5">
+            {{ 'PROFILE.EMAIL' | translate }}
+          </td>
+          <td class="small text-dark pb-3">
+            {{ profile.email }}
+          </td>
+        </tr>
+        <tr>
+          <td class="small text-muted pb-3 pe-4 pe-lg-5">
+            {{ 'PROFILE.ROLES' | translate }}
+          </td>
+          <td class="small text-dark pb-3">
+            <span
+              *ngFor="let role of profile.roles"
+              class="badge me-2 px-4 fs-7"
+              [ngClass]="{
+                'badge-light-success': role === 'client',
+                'badge-light-info': role === 'insighter',
+                'badge-light-primary': role === 'company'
+              }"
+            >
+              <ng-container *ngIf="role === 'client'">
+                {{ "HOME.CLIENT" | translate }}
+              </ng-container>
+              <ng-container *ngIf="role === 'insighter'">
+                {{ "HOME.INSIGHTER" | translate }}
+              </ng-container>
+              <ng-container *ngIf="role === 'company'">
+                {{ "HOME.COMPANY" | translate }}
+              </ng-container>
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td class="small text-muted pb-3 pe-4 pe-lg-5">
+            {{ 'PROFILE.COUNTRY' | translate }}
+          </td>
+          <td class="small text-dark pb-3">
+            {{ profile.country }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div
+  class="card my-4"
+  *ngIf="profile && (profile.bio || profile.company?.about_us)"
+>
+<div class="card-header">
+  <h3 class="card-title">{{ 'PROFILE.ABOUT' | translate }}</h3>
+</div>
+<div class="card-body py-3">
+  <!-- About Insighter Account -->
+  <div *ngIf="profile.bio" class="mb-6">
+    <p class="text-sm text-gray-800 leading-5.5">
+      {{ profile.bio }}
+    </p>
+  </div>
+  <!-- About Company Account-->
+  <div *ngIf="profile.company && profile.company.about_us" class="mb-6">
+    <p class="text-sm text-gray-800 leading-5.5">
+      {{ profile.company.about_us }}
+    </p>
+  </div>
+</div>
+</div>
+
+<div class="card my-4" *ngIf="profile && profile.consulting_field && profile.consulting_field.length>0">
+  <div class="card-header">
+    <h3 class="card-title">{{ 'PROFILE.CONSULTING_FIELDS' | translate }}</h3>
+  </div>
+  <div class="card-body py-3">
+    <div class="d-flex gap-2 flex-wrap">
+      <span
+        *ngFor="let field of profile.consulting_field"
+        class="badge-outline-gray fs-7 my-2"
+      >
+        <ng-container *ngIf="lang === 'ar'">
+          {{ field.names.ar }}
+        </ng-container>
+        <ng-container *ngIf="lang === 'en'">
+          {{ field.names.en }}
+        </ng-container>
+      </span>
+    </div>
+  </div>
+</div>
+<div class="card my-4" *ngIf="profile && profile.industries && profile.industries.length>0">
+  <div class="card-header">
+    <h3 class="card-title">{{ 'PROFILE.INDUSTRIES' | translate }}</h3>
+  </div>
+  <div class="card-body py-3">
+    <div class="d-flex gap-2 flex-wrap">
+      <span
+        *ngFor="let isic of profile.industries"
+        class="badge-outline-gray fs-7 my-2"
+      >
+        <ng-container *ngIf="lang === 'ar'">
+          {{ isic.names.ar }}
+        </ng-container>
+        <ng-container *ngIf="lang === 'en'">
+          {{ isic.names.en }}
+        </ng-container>
+      </span>
+    </div>
+  </div>
+</div>
+<div
+  class="row g-6 g-xl-9 mb-6 mb-xl-9"
+  *ngIf="profile && profile.certifications"
+>
+  <!--begin::Col-->
+  <div
+    class="col-md-6 col-lg-4 col-xl-3"
+    *ngFor="let cert of profile.certifications"
+  >
+    <!--begin::Card-->
+    <div class="card h-100">
+      <!--begin::Card body-->
+      <div
+        class="card-body d-flex justify-content-center text-center flex-column p-8"
+      >
+        <!--begin::Name-->
+        <a
+          [href]="cert.url"
+          target="_blank"
+          class="text-gray-800 text-hover-primary d-flex flex-column"
+        >
+          <!--begin::Image-->
+          <div class="symbol symbol-60px mb-5">
+            <img [src]="getFileIcon(cert.url)" alt="icon" />
+          </div>
+          <!--end::Image-->
+
+          <!--begin::Title-->
+          <div class="fs-5 fw-bold mb-2">
+            {{ cert.name }}
+          </div>
+          <div class="fs-7 fw-semibold text-gray-500">
+            {{ cert.type }}
+          </div>
+          <!--end::Title-->
+        </a>
+        <!--end::Name-->
+      </div>
+      <!--end::Card body-->
+    </div>
+    <!--end::Card-->
+  </div>
+  <!--end::Col-->
+</div>
+</ng-container>

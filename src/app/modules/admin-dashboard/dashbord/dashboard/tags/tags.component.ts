@@ -36,7 +36,7 @@ export class TagsComponent implements OnInit, OnDestroy {
     this.tagForm = this.fb.group({
       arabicName: ['', Validators.required],
       englishName: ['', Validators.required],
-      status: ['Active', Validators.required],
+      status: ['active', Validators.required],
       category: [null, Validators.required] // Initialize to hold the full category object
     });
 

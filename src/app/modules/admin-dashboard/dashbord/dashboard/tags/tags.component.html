@@ -44,8 +44,8 @@
               <label for="status" class="col-sm-3 col-form-label">Status</label>
               <div class="col-sm-9">
                 <select id="status" class="form-control" formControlName="status">
-                  <option value="Active">Active</option>
-                  <option value="Inactive">Inactive</option>
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
                 </select>
                 <div *ngIf="status?.errors?.serverError" class="text-danger">
                   {{ status?.errors?.serverError }}

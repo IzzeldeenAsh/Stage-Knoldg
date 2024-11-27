@@ -4,6 +4,10 @@
     background-size: cover;
     background-position: center;
     margin-top: 65px;
-    padding-top: 70px;
+    padding-top: 30px;
     min-height: 300px;
+    @media screen and (max-width:998px) {
+        margin-top: 10px;
+        padding-top: 0px;
+    }
 }

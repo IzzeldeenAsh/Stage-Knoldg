@@ -15,7 +15,7 @@ export interface Permission {
   providedIn: 'root'
 })
 export class PermissionsService {
-  private apiUrl = 'https://api.4sighta.com/api/admin/account/permission/list';
+  private apiUrl = 'https://api.foresighta.co/api/admin/account/permission/list';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   currentLang: string = 'en';

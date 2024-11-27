@@ -26,8 +26,8 @@ export class ISICCodeManagmentComponent implements OnInit, OnDestroy {
   originalIsicNodes!: TreeNode[];
   isicTreeData!: TreeNode[];
   statusOptions = [
-    { label: 'Active', value: 'Active' },
-    { label: 'Inactive', value: 'Inactive' }
+    { label: 'Active', value: 'active' },
+    { label: 'Inactive', value: 'inactive' }
   ];
   isicForm!: FormGroup;
   selectedParentId: number | null = null;

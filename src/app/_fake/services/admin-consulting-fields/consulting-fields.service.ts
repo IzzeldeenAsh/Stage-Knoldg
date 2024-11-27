@@ -25,9 +25,9 @@ export interface ConsultingField {
   providedIn: 'root',
 })
 export class ConsultingFieldsService {
-  private apiUrl = 'https://api.4sighta.com/api/common/setting/consulting-field/list';
-  private createApi = 'https://api.4sighta.com/api/admin/setting/consulting-field';
-  private updateDeleteApi = 'https://api.4sighta.com/api/admin/setting/consulting-field';
+  private apiUrl = 'https://api.foresighta.co/api/common/setting/consulting-field/list';
+  private createApi = 'https://api.foresighta.co/api/admin/setting/consulting-field';
+  private updateDeleteApi = 'https://api.foresighta.co/api/admin/setting/consulting-field';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   currentLang: string = 'en';
@@ -37,7 +37,7 @@ export class ConsultingFieldsService {
     private translationService: TranslationService
   ) {
     this.translationService.onLanguageChange().subscribe((lang) => {
-      this.currentLang = lang || 'en';;
+      this.currentLang = lang || 'en';
     });
   }
 

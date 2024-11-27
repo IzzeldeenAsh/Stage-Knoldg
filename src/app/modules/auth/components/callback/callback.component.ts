@@ -5,6 +5,7 @@ import { BaseComponent } from "src/app/modules/base.component";
 import { AuthService } from "../../services/auth.service";
 import { first } from "rxjs/operators";
 import { AuthModel } from "../../models/auth.model";
+import { MessageService } from "primeng/api";
 
 @Component({
   selector: "app-callback",
@@ -24,9 +25,10 @@ export class CallbackComponent
     scrollAnims: ScrollAnimsService,
     private router: Router,
     private route: ActivatedRoute,
-    private auth: AuthService
+    private auth: AuthService,
+    messageService: MessageService // Inject MessageService
   ) {
-    super(scrollAnims);
+    super(scrollAnims,messageService);
   }
 
   ngOnInit(): void {

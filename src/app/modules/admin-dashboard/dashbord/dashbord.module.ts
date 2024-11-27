@@ -10,10 +10,12 @@ import { AdminNotificationsComponent } from './dashboard/admin-notifications/adm
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { DepartmentComponent } from './dashboard/departments/departments.component';
 import { TableModule } from 'primeng/table';
+import { AccordionModule } from 'primeng/accordion';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { TreeSelectModule } from 'primeng/treeselect';
 import { MessagesModule } from 'primeng/messages';
+import { EditorModule } from '@tinymce/tinymce-angular';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -31,6 +33,7 @@ import { ISICCodeManagmentComponent } from './dashboard/isic-code-managment/isic
 import { NodeService } from 'src/app/_fake/services/nodeService/nodeservice';
 import { TagsComponent } from './dashboard/tags/tags.component';
 import { HSCodeComponent } from './hscode/hscode.component';
+import { GuidelineComponent } from './dashboard/guidelines/guidelines.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +48,7 @@ import { HSCodeComponent } from './hscode/hscode.component';
     HSCodeComponent,
     ISICCodeManagmentComponent,
     RegionsComponent,
+    GuidelineComponent,
     PositionsComponent,
   ],
   imports: [
@@ -55,12 +59,14 @@ import { HSCodeComponent } from './hscode/hscode.component';
     DashbordRoutingModule,
     InlineSVGModule,
     DropdownModule,
+    EditorModule,
     InputTextModule,
     FormsModule,
     TreeSelectModule,
     TreeTableModule,
     ReactiveFormsModule,
     CardModule,
+    AccordionModule,
     ToastModule,
     MessageModule,
     MessagesModule,

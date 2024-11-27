@@ -23,7 +23,7 @@ export interface TagResponse {
   providedIn: 'root'
 })
 export class TagsService {
-  private insightaHost = 'https://api.4sighta.com';
+  private insightaHost = 'https://api.foresighta.co';
   private apiUrl = `${this.insightaHost}/api/common/setting/tag/list`;
   private createApi = `${this.insightaHost}/api/admin/setting/tag`;
   private updateDeleteApi = `${this.insightaHost}/api/admin/setting/tag`;

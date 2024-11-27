@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { NonInsightersAuthGuard } from '../modules/auth/services/non-insighters.guard';
+import { NonInsightersAuthGuard } from '../guards/non-insighter-guard/non-insighters.guard';
 
 const Routing: Routes = [
   {

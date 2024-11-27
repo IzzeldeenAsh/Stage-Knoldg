@@ -23,10 +23,11 @@ export class PasswordResetComponent extends BaseComponent implements OnInit {
     scrollAnims: ScrollAnimsService,
     private fb: FormBuilder,
     public passwordResetService: PasswordResetService,
-    private messageService: MessageService,
+     messageService: MessageService,
     private router: Router
+
   ) {
-    super(scrollAnims);
+    super(scrollAnims,messageService);
   }
 
   ngOnInit(): void {

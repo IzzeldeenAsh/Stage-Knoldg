@@ -31,9 +31,9 @@ export interface HSCodeResponse {
   providedIn: 'root',
 })
 export class HSCodeService {
-  private apiUrl = 'https://api.4sighta.com/api/common/setting/hs-code/list';
-  private createApi = 'https://api.4sighta.com/api/admin/setting/hs-code';
-  private updateDeleteApi = 'https://api.4sighta.com/api/admin/setting/hs-code';
+  private apiUrl = 'https://api.foresighta.co/api/common/setting/hs-code/list';
+  private createApi = 'https://api.foresighta.co/api/admin/setting/hs-code';
+  private updateDeleteApi = 'https://api.foresighta.co/api/admin/setting/hs-code';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> =
     this.isLoadingSubject.asObservable();
