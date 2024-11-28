@@ -158,6 +158,7 @@ export class AuthService implements OnDestroy {
         return response.data
       }),
       catchError((err) => {
+       
         return throwError(err);
       }),
       finalize(() => this.isLoadingSubject.next(false))

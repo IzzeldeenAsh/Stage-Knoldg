@@ -14,6 +14,7 @@ export class ProfileHeaderComponent implements OnInit {
   @Input() profile: IForsightaProfile;
   @Output() photoupdated: EventEmitter<void> = new EventEmitter<void>();
 
+  isAvatar:boolean=true;
   selectedImage: any = null;
   profileImage: string;
 
@@ -29,12 +30,14 @@ export class ProfileHeaderComponent implements OnInit {
   }
 
   getProfileImage(): string {
-    console.log('this.selectediamge',this.profile);
+   
     if (this.selectedImage) {
       return this.selectedImage;
     } else if (this.profile.company?.logo) {
+      this.isAvatar=false;
       return this.profile.company.logo;
     } else if (this.profile.profile_photo_url) {
+      this.isAvatar=true;
       return this.profile.profile_photo_url;
     } else {
       return 'assets/media/avatars/blank.png';

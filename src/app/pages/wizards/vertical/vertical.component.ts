@@ -224,7 +224,7 @@ export class VerticalComponent extends BaseComponent implements OnInit {
           .subscribe({
             next: (response) => {
               console.log("Submission successful:", response);
-              this.onPendingMessage = true;
+              this.onSuccessMessage = true;
             },
             error: (error) => {
               this.handleServerErrors(error);

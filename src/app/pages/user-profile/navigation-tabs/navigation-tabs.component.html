@@ -1,17 +1,16 @@
 <nav class="navigation-tabs d-flex flex-column flex-md-row justify-content-between align-items-center border-bottom border-gray-200 pt-9 pb-0">
-    <ul class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bolder flex-nowrap">
-      <li class="nav-item" *ngFor="let tab of tabs">
-        <a
+  <ul class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bolder flex-nowrap">
+    <li class="nav-item" *ngFor="let tab of filteredTabs">
+      <a
         class="nav-link"
         [ngClass]="{'text-active-info': tab.activeInfo, 'text-active-primary': tab.activePrimary}"
         [routerLink]="tab.link"
         routerLinkActive="active"
       >
-       <ng-container *ngIf="lang ==='en'"> {{ tab.labelen }}</ng-container>
-       <ng-container  *ngIf="lang ==='ar'"> {{ tab.labelar }}</ng-container>
+        <ng-container *ngIf="lang === 'en'"> {{ tab.labelen }}</ng-container>
+        <ng-container *ngIf="lang === 'ar'"> {{ tab.labelar }}</ng-container>
       </a>
-      </li>
-    </ul>
-    <app-action-buttons [profile]="profile"></app-action-buttons>
-  </nav>
-  
+    </li>
+  </ul>
+  <app-action-buttons [profile]="profile"></app-action-buttons>
+</nav>

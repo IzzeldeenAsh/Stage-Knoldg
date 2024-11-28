@@ -24,15 +24,7 @@ constructor(scrollAnims: ScrollAnimsService,private auth:AuthService,messageServ
     this.handleLanguage()
    }
 
-   getFileIcon(url: string) {
-    if (url) {
-      const extension = url.split('.').pop()?.toLowerCase();
-      const iconPath = `./assets/media/svg/files/${extension}.svg`;
-      // Optionally, you can add logic to handle missing icons
-      return iconPath;
-    }
-    return './assets/media/svg/files/default.svg';
-  }
+  
 
    handleLanguage(){
     this.lang = this.translationService.getSelectedLanguage()

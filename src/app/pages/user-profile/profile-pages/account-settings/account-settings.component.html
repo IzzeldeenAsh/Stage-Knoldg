@@ -68,14 +68,12 @@
               }}</label>
             <div class="input-group">
               <!-- <p-dropdown [options]="phoneNumbers" formControlName="phoneCountryCode" optionLabel="text" placeholder="Code" [filter]="true" [showClear]="true" class="no-border-radius-start-end" ></p-dropdown> -->
-              <input type="text" formControlName="phoneNumber" maxlength="10" class="form-control no-rtl-b-radius"
+              <input type="text" formControlName="phoneNumber"  class="form-control no-rtl-b-radius"
                 placeholder="{{
                   'ACCOUNT_SETTINGS.YOUR_PHONE_NUMBER' | translate
-                }}" (input)="onPhoneNumberInput($event)" />
+                }}" />
             </div>
-            <div class="invalid-feedback" *ngIf="phoneNumberInvalid">
-              {{ "ACCOUNT_SETTINGS.PHONE_NUMBER_INVALID" | translate }}
-            </div>
+           
           </ng-container>
         </div>
       </div>
@@ -119,13 +117,7 @@
         </div>
       </div>
 
-      <!-- Bio (Visible to 'insighter') -->
-      <div class=" mb-6" *ngIf="hasRole(['insighter']) && !hasRole(['company'])">
-        <label class="form-label">{{
-          "ACCOUNT_SETTINGS.BIO" | translate
-          }}</label>
-        <textarea formControlName="bio" class="form-control"></textarea>
-      </div>
+   
 
       <!-- About Us (Visible to 'company') -->
       <div class=" mb-6" *ngIf="hasRole(['company'])">
@@ -134,7 +126,13 @@
           }}</label>
         <textarea formControlName="about_us" class="form-control h-200px"></textarea>
       </div>
-
+   <!-- Bio (Visible to 'insighter') -->
+   <div class=" mb-6" *ngIf="hasRole(['insighter']) || hasRole(['company'])">
+    <label class="form-label">{{
+      "ACCOUNT_SETTINGS.BIO" | translate
+      }}</label>
+    <textarea formControlName="bio" class="form-control"></textarea>
+  </div>
       <!-- Legal Name and Website (Visible to 'company') -->
       <div class="row " *ngIf="hasRole(['company'])">
         <div class="col-lg-6  mb-6 fv-row">
@@ -167,7 +165,6 @@
                 <div class="symbol symbol-60px mb-5">
                   <img [src]="getFileIcon(cert.url)" alt="icon" />
                 </div>
-                <div class="fs-5 fw-bold mb-2">{{ cert.name }}</div>
                 <div class="mt-2 w-200px mx-auto">
                   <div class="fs-7 badge-outline-gray fw-bold mb-2">
                     {{ gerCertName(cert.type) }}
@@ -186,9 +183,7 @@
                   <div class="symbol symbol-60px mb-5">
                     <img [src]="getFileIconAdded(fileControl.value.file)" alt="icon" />
                   </div>
-                  <div class="fs-5 fw-bold mb-2">
-                    {{ fileControl.value.file.name }}
-                  </div>
+     
                   <div class="mt-2 w-200px mx-auto">
                     <select class="form-select" formControlName="type">
                       <option value="">
@@ -211,7 +206,7 @@
             </div>
           </ng-container>
           <!-- Add Certification Button -->
-          <div class="col-md-6 col-lg-4">
+          <div class="col-md-6 col-lg-3">
             <a (click)="onDropzoneClick()"
               class="b-color card-hover-shadow cursor-pointer card border-2 border-brand-clarity offer-bg bg-center bg-no-repeat">
               <input type="file" #fileInput (change)="onFileSelected($event)" multiple accept=".png, .jpg, .jpeg, .pdf"
@@ -281,10 +276,19 @@
         </div>
       </div>
     </div>
-
+    <p-messages [(value)]="messages" [enableService]="false"></p-messages>
     <div class="card-footer">
       <button type="submit" class="btn btn-primary" [disabled]="isSubmitDisabled">
-        {{ "ACCOUNT_SETTINGS.SAVE_CHANGES" | translate }}
+        <ng-container *ngIf="(isUpdatingProfile$ | async) === false">
+          <span class="indicator-label">  {{ "ACCOUNT_SETTINGS.SAVE_CHANGES" | translate }}</span>
+        </ng-container>
+        <ng-container *ngIf="isUpdatingProfile$ | async">
+          <span class="indicator-progress" [style.display]="'block'">
+            {{ "AUTH.REGISTRATION.PLEASE_WAIT" | translate }}
+            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+          </span>
+        </ng-container>
+      
       </button>
     </div>
   </form>
@@ -310,3 +314,4 @@
     </div>
   </p-footer>
 </p-dialog>
+

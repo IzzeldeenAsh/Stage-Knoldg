@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { UserProfileRoutingModule } from './user-profile-routing.module';
@@ -21,6 +21,8 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { FileUploadModule } from 'primeng/fileupload';
+import { CertificatesComponent } from './profile-pages/certificates/certificates.component';
+import { DocumentsComponent } from './profile-pages/documents/documents.component';
 
 
 @NgModule({
@@ -30,7 +32,9 @@ import { FileUploadModule } from 'primeng/fileupload';
     ActionButtonsComponent,
     NavigationTabsComponent,
     AccountSettingsComponent,
-    OverviewComponent
+    DocumentsComponent,
+    OverviewComponent,
+    CertificatesComponent
   ],
   imports: [
     CommonModule,
@@ -48,6 +52,7 @@ import { FileUploadModule } from 'primeng/fileupload';
     TranslationModule,
     DropdownMenusModule
   ],
-  providers: [MessageService] 
+  providers: [MessageService] ,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]  // Add this line
 })
 export class UserProfileModule { }

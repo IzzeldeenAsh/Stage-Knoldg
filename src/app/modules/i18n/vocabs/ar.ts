@@ -240,8 +240,8 @@ export const locale = {
       COUNTRY_PLACEHOLDER: "اختر الدولة",
       IF_NEED_MORE_INFO: "إذا كنت تحتاج إلى مزيد من المعلومات، يرجى زيارة",
       UPLOAD_FILES: "تحميل الملفات",
-      CAMPAIGN_GUIDELINES: "إرشادات الحملة",
-      DROP_FILES_HERE_OR_CLICK: "قم بإسقاط ملفات الحملة هنا أو انقر للتحميل.",
+      CAMPAIGN_GUIDELINES: "إرشادات الشهادات",
+      DROP_FILES_HERE_OR_CLICK: "قم بإسقاط ملفات هنا أو انقر للتحميل.",
       UPLOAD_UP_TO_FILES: "قم بتحميل ما يصل إلى 10 ملفات",
       UPLOADED_FILES: "الملفات المرفوعة",
       DOCUMENT_TYPE: "نوع المستند",
@@ -301,6 +301,9 @@ export const locale = {
       INDUSTRIES: 'الصناعات',
       CERTIFICATIONS: 'الشهادات',
       CERTIFICATIONS_TYPE: 'النوع',
+      MYDOCUMENTS:'ملفاتي',
+      REGYDOCUMENT:"السجل التجاري",
+      MYCERTS:"شهاداتي"
     },
     ACCOUNT_SETTINGS: {
       TITLE: 'إعدادات الحساب',

@@ -80,7 +80,7 @@
                   {{ docType.name }}
                 </option>
               </select>
-              <div class="text-danger" *ngIf="documentTypesError">
+              <div class="text-danger" *ngIf="!fileControl.get('type')?.value">
                 {{ 'INSIGHTER_WIZARD.DOCUMENT_TYPE_REQUIRED' | translate }}
               </div>
             </div>

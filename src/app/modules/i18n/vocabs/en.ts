@@ -275,8 +275,8 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       COUNTRY_PLACEHOLDER: "Select Country",
 
       UPLOAD_FILES: "Upload Files",
-      CAMPAIGN_GUIDELINES: "Campaign Guidelines",
-      DROP_FILES_HERE_OR_CLICK: "Drop campaign files here or click to upload.",
+      CAMPAIGN_GUIDELINES: "Certificate Guidelines",
+      DROP_FILES_HERE_OR_CLICK: "Drop certificate files here or click to upload.",
       UPLOAD_UP_TO_FILES: "Upload up to 10 files",
       UPLOADED_FILES: "Uploaded Files",
       DOCUMENT_TYPE: "Document Type",
@@ -337,6 +337,9 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       INDUSTRIES: 'Industries',
       CERTIFICATIONS: 'Certifications',
       CERTIFICATIONS_TYPE: 'Type',
+      MYDOCUMENTS:'My Documents',
+      REGYDOCUMENT:"Registry Document",
+      MYCERTS:"My Certificates"
     },
     ACCOUNT_SETTINGS: {
       TITLE: 'Account Settings',
