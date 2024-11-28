@@ -5,6 +5,7 @@ import { BaseComponent } from "src/app/modules/base.component";
 import { ScrollAnimsService } from "src/app/_fake/services/scroll-anims/scroll-anims.service";
 import { Subscription } from 'rxjs';
 import { TranslationService } from "src/app/modules/i18n";
+import { MessageService } from "primeng/api";
 
 @Component({
   selector: "app-verify-email",
@@ -25,7 +26,7 @@ export class VerifyEmailComponent extends BaseComponent implements OnInit, OnDes
   error: boolean = false;
   loading: boolean = true;
 
-  private insightaHost: string = "https://api.4sighta.com";
+  private insightaHost: string = "https://api.foresighta.co";
   verified: boolean = false;
   showSignUpButton: boolean = false;
 
@@ -36,9 +37,10 @@ export class VerifyEmailComponent extends BaseComponent implements OnInit, OnDes
     private http: HttpClient,
     scrollAnims: ScrollAnimsService,
     private router: Router,
-    private translationService: TranslationService
+    private translationService: TranslationService,
+    messageService:MessageService
   ) {
-    super(scrollAnims);
+    super(scrollAnims,messageService);
   }
 
   ngOnInit(): void {

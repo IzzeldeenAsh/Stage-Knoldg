@@ -5,8 +5,8 @@ import {
   Validators
 } from "@angular/forms";
 import { BehaviorSubject, Observable, Subscription, of, take, timer } from "rxjs";
-import { CountryService } from "src/app/_fake/services/countries-api/countries-get.service";
-import { Country } from "src/app/_fake/services/countries/countries.service";
+import { CountryService } from "src/app/_fake/services/countries-api/countries-get.service"; 
+import { CountriesService, Country } from "src/app/_fake/services/countries/countries.service";
 import { ScrollAnimsService } from "src/app/_fake/services/scroll-anims/scroll-anims.service";
 import { AuthService } from "../../services/auth.service";
 import { MessageService, Message } from 'primeng/api';
@@ -38,12 +38,13 @@ export class SignUpComponent extends BaseComponent implements OnInit {
     private fb: FormBuilder,
     private _countriesGet: CountryService,
     scrollAnims: ScrollAnimsService,
-    private messageService: MessageService,
+     messageService: MessageService,
     private authService: AuthService,
+    private adminCountreis:CountriesService,
     public translate :TranslateService,
-    private router: Router
+ 
   ) {
-    super(scrollAnims);
+    super(scrollAnims,messageService);
     this.registrationForm = this.fb.group({
       firstName: ["", [Validators.maxLength(50)]],
       lastName: ["", [Validators.maxLength(50)]],
@@ -64,6 +65,7 @@ export class SignUpComponent extends BaseComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.adminCountreis.getCountries().subscribe()
     this.getListOfCountries();
     this.registrationForm.get('password')?.valueChanges.subscribe(password => {
       this.evaluatePasswordStrength(password);

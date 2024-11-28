@@ -6,14 +6,14 @@ import { environment } from '../../../../../environments/environment';
 import { AuthModel } from '../../models/auth.model';
 
 const API_USERS_URL = `auth`;
-const API_GENERALREGISTER= 'https://api.4sighta.com/api/auth/register'
+const API_GENERALREGISTER= 'https://api.foresighta.co/api/auth/register'
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthHTTPService {
   constructor(private http: HttpClient) {}
-  private apiUrlLogin = 'https://api.4sighta.com/api/auth/login';
+  private apiUrlLogin = 'https://api.foresighta.co/api/auth/login';
   // public methods
 
 
@@ -34,7 +34,7 @@ export class AuthHTTPService {
       "Accept-Language": "en", // As per your example
     });
     return this.http.post<any>(
-      "https://api.4sighta.com/api/account/logout",
+      "https://api.foresighta.co/api/account/logout",
       { headers }
     );
   }

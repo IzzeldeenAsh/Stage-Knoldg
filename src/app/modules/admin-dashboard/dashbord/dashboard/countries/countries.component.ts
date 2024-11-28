@@ -29,8 +29,8 @@ export class CountriesComponent implements OnInit, OnDestroy {
   selectedRegionId: number | null = 0;
   statusOptions = [
     { label: 'All Statuses', value: null },
-    { label: 'Active', value: 'Active' },
-    { label: 'Inactive', value: 'Inactive' }
+    { label: 'Active', value: 'active' },
+    { label: 'Inactive', value: 'inactive' }
   ];
 
   countryForm: FormGroup;
@@ -63,7 +63,7 @@ export class CountriesComponent implements OnInit, OnDestroy {
       iso3: ['', Validators.required],
       nationalityEn: ['', Validators.required],
       nationalityAr: ['', Validators.required],
-      status: ['Active', Validators.required],
+      status: ['active', Validators.required],
       flag: ['', Validators.required]
     });
   }
@@ -99,7 +99,7 @@ export class CountriesComponent implements OnInit, OnDestroy {
     this.visible = true;
     this.selectedCountryId = null;
     this.isEditMode = false;
-    this.countryForm.reset({ status: 'Active' });
+    this.countryForm.reset({ status: 'active' });
   }
 
   editCountry(country: Country) {
@@ -124,8 +124,8 @@ export class CountriesComponent implements OnInit, OnDestroy {
     const listSub = this.countriesService.getCountries().subscribe({
       next: (data: Country[]) => {
         this.listOfCountries = data;
-        this.noOfActiveCountries = this.listOfCountries.filter((country:any)=> country.status ==='Active').length
-        this.noOfInactiveCountries = this.listOfCountries.filter((country:any)=> country.status ==='Inactive').length
+        this.noOfActiveCountries = this.listOfCountries.filter((country:any)=> country.status ==='active').length
+        this.noOfInactiveCountries = this.listOfCountries.filter((country:any)=> country.status ==='inactive').length
         this.filteredCountries = [...this.listOfCountries];
         this.cdr.detectChanges();
       },
@@ -193,7 +193,7 @@ export class CountriesComponent implements OnInit, OnDestroy {
           });
           this.getCountriesList();
           this.visible = false;
-          this.countryForm.reset({ status: 'Active' });
+          this.countryForm.reset({ status: 'active' });
         },
         error: (error) => {
           this.handleServerErrors(error);
@@ -211,7 +211,7 @@ export class CountriesComponent implements OnInit, OnDestroy {
           });
           this.getCountriesList();
           this.visible = false;
-          this.countryForm.reset({ status: 'Active' });
+          this.countryForm.reset({ status: 'active' });
         },
         error: (error) => {
           this.handleServerErrors(error);
@@ -223,7 +223,7 @@ export class CountriesComponent implements OnInit, OnDestroy {
 
   onCancel() {
     this.visible = false;
-    this.countryForm.reset({ status: 'Active' });
+    this.countryForm.reset({ status: 'active' });
   }
 
   deleteCountry(countryId: number) {

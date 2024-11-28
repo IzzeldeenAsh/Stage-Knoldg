@@ -1,10 +1,11 @@
-<div class="  d-flex justify-content-center align-items-center hero-bg">
+<p-toast></p-toast>
+<div class="   d-flex justify-content-center align-items-center hero-bg">
     <div class="bg-center bg-cover bg-no-repeat container">
         <!-- Container -->
-        <div class="container">
-          <app-profile-header></app-profile-header>
+        <div class="container" *ngIf="profile">
+          <app-profile-header (photoupdated)="reloadAPI()" [profile]="profile"></app-profile-header>
           <div class=" mb-5 mb-xl-10">
-            <app-navigation-tabs></app-navigation-tabs>
+            <app-navigation-tabs [profile]="profile"></app-navigation-tabs>
           </div>
           
         </div>
@@ -13,5 +14,7 @@
 </div>
 
 
-  <router-outlet></router-outlet>
+  <div class="container  pb-5">
+    <router-outlet></router-outlet>
   
+  </div>

@@ -31,8 +31,8 @@ export class HSCodeComponent implements OnInit {
   visible: boolean = false;
   hscodeForm: FormGroup;
   statusOptions = [
-    { label: 'Active', value: 'Active' },
-    { label: 'Inactive', value: 'Inactive' }
+    { label: 'Active', value: 'active' },
+    { label: 'Inactive', value: 'inactive' }
   ];
   constructor(
     private _hscodes: HSCodeService,

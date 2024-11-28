@@ -85,7 +85,7 @@ export class Step5Component implements OnInit, OnDestroy {
     const email = this.form.get('companyEmail')?.value;
     if (email) {
       this.gettingCodeLoader = true;
-      this.http.post('https://api.4sighta.com/api/auth/company/code/send', {
+      this.http.post('https://api.foresighta.co/api/auth/company/code/send', {
         verified_email: email,
       }).subscribe({
         next: (response) => {

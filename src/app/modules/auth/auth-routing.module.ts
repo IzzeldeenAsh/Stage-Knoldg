@@ -7,7 +7,7 @@ import { SignUpComponent } from './components/sign-up/sign-up.component';
 import { PasswordResetComponent } from './components/password-reset/password-reset.component';
 import { VerifyEmailComponent } from './components/verify-email/verify-email.component';
 import { CallbackComponent } from './components/callback/callback.component';
-import { UnAuthGuard } from './services/un-auth.guard';
+import { UnAuthGuard } from '../../guards/unauth-guard/un-auth.guard';
 
 const routes: Routes = [
   {

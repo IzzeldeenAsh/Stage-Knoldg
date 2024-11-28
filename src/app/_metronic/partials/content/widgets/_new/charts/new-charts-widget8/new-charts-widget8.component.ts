@@ -82,7 +82,7 @@ function getChart1Options(chartHeightNumber: number) {
         data: data[1],
       },
       {
-        name: 'TV Campaign',
+        name: 'TV Certificate',
         data: data[2],
       },
       {
@@ -231,7 +231,7 @@ function getChart2Options(chartHeightNumber: number) {
         data: data[1],
       },
       {
-        name: 'TV Campaign',
+        name: 'TV Certificate',
         data: data[2],
       },
       {

@@ -1,0 +1,317 @@
+<p-progressBar *ngIf="loadingData" mode="indeterminate" [style]="{ height: '4px' }"></p-progressBar>
+<div class="card" *ngIf="profile">
+  <div class="card-header">
+    <h3 class="card-title">{{ "ACCOUNT_SETTINGS.TITLE" | translate }}</h3>
+  </div>
+  <form  [formGroup]="accountForm" (ngSubmit)="onSubmit()">
+    <div class="card-body">
+      <!-- First Name and Last Name (Visible to all roles) -->
+      <div class="row ">
+        <div class="col-lg-6 mb-6 fv-row">
+          <label class="form-label required">{{
+            "ACCOUNT_SETTINGS.FIRST_NAME" | translate
+            }}</label>
+          <input type="text" formControlName="first_name" class="form-control" />
+          <div *ngIf="
+              accountForm.get('first_name')?.invalid &&
+              accountForm.get('first_name')?.touched
+            " class="invalid-feedback">
+            {{ "ACCOUNT_SETTINGS.FIRST_NAME_REQUIRED" | translate }}
+          </div>
+        </div>
+        <div class="col-lg-6  mb-6 fv-row">
+          <label class="form-label required">{{
+            "ACCOUNT_SETTINGS.LAST_NAME" | translate
+            }}</label>
+          <input type="text" formControlName="last_name" class="form-control" />
+          <div *ngIf="
+              accountForm.get('last_name')?.invalid &&
+              accountForm.get('last_name')?.touched
+            " class="invalid-feedback">
+            {{ "ACCOUNT_SETTINGS.LAST_NAME_REQUIRED" | translate }}
+          </div>
+        </div>
+      </div>
+
+      <div class="row ">
+        <!-- Country (Visible to all roles) -->
+        <div class="col-lg-6  mb-6 fv-row">
+          <label class="form-label required">{{
+            "ACCOUNT_SETTINGS.COUNTRY" | translate
+            }}</label>
+          <p-progressBar *ngIf="isLoadingCountries" mode="indeterminate" [style]="{ height: '4px' }"></p-progressBar>
+          <p-dropdown *ngIf="!isLoadingCountries" [options]="countries" formControlName="country" class="d-block"
+            optionLabel="name.en" placeholder="{{ 'ACCOUNT_SETTINGS.SELECT_COUNTRY' | translate }}" [filter]="true"
+            [showClear]="true">
+            <ng-template pTemplate="item" let-country>
+              <div class="country-option">
+                <img *ngIf="country.showFlag" [src]="country.flagPath" (error)="onFlagError(country)"
+                  alt="{{ country.name.en }}" class="flag-icon w-20px mx-2" />
+                <span *ngIf="lang === 'en'">{{ country.names.en }}</span>
+                <span *ngIf="lang === 'ar'">{{ country.names.ar }}</span>
+              </div>
+            </ng-template>
+          </p-dropdown>
+          <div *ngIf="
+              accountForm.get('country')?.invalid &&
+              accountForm.get('country')?.touched
+            " class="invalid-feedback">
+            {{ "ACCOUNT_SETTINGS.COUNTRY_REQUIRED" | translate }}
+          </div>
+        </div>
+
+        <!-- Phone Number (Visible to 'insighter' and 'company') -->
+        <div class="col-lg-6  mb-6 fv-row" *ngIf="hasRole(['insighter', 'company'])">
+          <ng-container *ngIf="hasRole(['insighter', 'company'])">
+            <label class="form-label">{{
+              "ACCOUNT_SETTINGS.PHONE_NUMBER" | translate
+              }}</label>
+            <div class="input-group">
+              <!-- <p-dropdown [options]="phoneNumbers" formControlName="phoneCountryCode" optionLabel="text" placeholder="Code" [filter]="true" [showClear]="true" class="no-border-radius-start-end" ></p-dropdown> -->
+              <input type="text" formControlName="phoneNumber"  class="form-control no-rtl-b-radius"
+                placeholder="{{
+                  'ACCOUNT_SETTINGS.YOUR_PHONE_NUMBER' | translate
+                }}" />
+            </div>
+           
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="row ">
+        <!-- ISIC Codes -->
+        <div class="col-lg-6  mb-6 fv-row" *ngIf="hasRole(['insighter', 'company'])">
+          <label class="form-label fs-6 text-gray-900 required">
+            {{ "AUTH.REGISTRATION.INDUSTRY" | translate }}
+          </label>
+          <p-progressBar *ngIf="reverseLoader" mode="indeterminate" [style]="{ height: '4px' }"></p-progressBar>
+          <input type="text" class="form-control" [readonly]="reverseLoader" placeholder="{{
+              'AUTH.REGISTRATION.INDUSTRY_PLACEHOLDER' | translate
+            }}" (click)="showISICDialog()" [value]="selectedNodesLabel()" />
+          <ng-container *ngIf="
+              form.get('isicCodes')?.hasError('required') &&
+              form.get('isicCodes')?.touched
+            ">
+            <div class="fv-plugins-message-container">
+              <div class="fv-help-block">
+                {{ "AUTH.REGISTRATION.ISIC_CODES_REQUIRED" | translate }}
+              </div>
+            </div>
+          </ng-container>
+        </div>
+
+        <!-- Consulting Fields (Visible to 'insighter' and 'company') -->
+        <div class="col-lg-6  mb-6 fv-row" *ngIf="hasRole(['insighter', 'company'])">
+          <label class="form-label required">{{
+            "ACCOUNT_SETTINGS.CONSULTING_FIELDS" | translate
+            }}</label>
+          <p-multiSelect [options]="consultingFields" formControlName="consultingFields" optionLabel="name" placeholder="{{
+                'ACCOUNT_SETTINGS.CONSULTING_FIELDS' | translate
+              }}" [filter]="true" [showClear]="true" class="d-block"></p-multiSelect>
+          <div *ngIf="
+                accountForm.get('consultingFields')?.invalid &&
+                accountForm.get('consultingFields')?.touched
+              " class="invalid-feedback">
+            {{ "ACCOUNT_SETTINGS.CONSULTING_FIELDS_REQUIRED" | translate }}
+          </div>
+        </div>
+      </div>
+
+   
+
+      <!-- About Us (Visible to 'company') -->
+      <div class=" mb-6" *ngIf="hasRole(['company'])">
+        <label class="form-label">{{
+          "ACCOUNT_SETTINGS.ABOUT_COMPANY" | translate
+          }}</label>
+        <textarea formControlName="about_us" class="form-control h-200px"></textarea>
+      </div>
+   <!-- Bio (Visible to 'insighter') -->
+   <div class=" mb-6" *ngIf="hasRole(['insighter']) || hasRole(['company'])">
+    <label class="form-label">{{
+      "ACCOUNT_SETTINGS.BIO" | translate
+      }}</label>
+    <textarea formControlName="bio" class="form-control"></textarea>
+  </div>
+      <!-- Legal Name and Website (Visible to 'company') -->
+      <div class="row " *ngIf="hasRole(['company'])">
+        <div class="col-lg-6  mb-6 fv-row">
+          <label class="form-label">{{
+            "ACCOUNT_SETTINGS.COMPANY_LEGAL_NAME" | translate
+            }}</label>
+          <input type="text" formControlName="legal_name" class="form-control" />
+        </div>
+        <div class="col-lg-6  mb-6 fv-row">
+          <label class="form-label">{{
+            "ACCOUNT_SETTINGS.WEBSITE" | translate
+            }}</label>
+          <input type="text" formControlName="website" class="form-control" />
+        </div>
+      </div>
+
+      <!-- Certifications (Visible to 'insighter' and 'company') -->
+      <div class="" *ngIf="hasRole(['insighter', 'company'])">
+        <label class="form-label">{{
+          "ACCOUNT_SETTINGS.CERTIFICATIONS" | translate
+          }}</label>
+        <!-- Add the formArrayName directive here -->
+        <div class="row gap-2">
+          <!-- Iterate over certifications FormArray -->
+          <div class="col-md-6 col-lg-4 " *ngFor="let cert of certifications; let i = index">
+            <div class="card h-100" *ngIf="certifications.length > 0">
+              <div class="card-body text-center position-relative">
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-2"
+                  (click)="removeCertification(i)" aria-label="Close"></button>
+                <div class="symbol symbol-60px mb-5">
+                  <img [src]="getFileIcon(cert.url)" alt="icon" />
+                </div>
+                <div class="mt-2 w-200px mx-auto">
+                  <div class="fs-7 badge-outline-gray fw-bold mb-2">
+                    {{ gerCertName(cert.type) }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ng-container *ngIf="certificationsAdded.controls.length > 0">
+            <div class="col-md-6 col-lg-4" *ngFor="let fileControl of certificationControls; let i = index"
+              [formGroup]="fileControl">
+              <div class="card h-100">
+                <div class="card-body text-center position-relative">
+                  <button type="button" class="btn-close position-absolute top-0 end-0 m-2"
+                    (click)="removeCertificationAdded(i)" aria-label="Close"></button>
+                  <div class="symbol symbol-60px mb-5">
+                    <img [src]="getFileIconAdded(fileControl.value.file)" alt="icon" />
+                  </div>
+     
+                  <div class="mt-2 w-200px mx-auto">
+                    <select class="form-select" formControlName="type">
+                      <option value="">
+                        {{
+                        "INSIGHTER_WIZARD.SELECT_DOCUMENT_TYPE" | translate
+                        }}
+                      </option>
+                      <option *ngFor="let docType of documentTypes" [value]="docType.id">
+                        {{ docType.name }}
+                      </option>
+                    </select>
+                    <div class="text-danger" *ngIf="!fileControl.value.type">
+                      {{
+                      "ACCOUNT_SETTINGS.DOCUMENT_TYPE_REQUIRED" | translate
+                      }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          <!-- Add Certification Button -->
+          <div class="col-md-6 col-lg-3">
+            <a (click)="onDropzoneClick()"
+              class="b-color card-hover-shadow cursor-pointer card border-2 border-brand-clarity offer-bg bg-center bg-no-repeat">
+              <input type="file" #fileInput (change)="onFileSelected($event)" multiple accept=".png, .jpg, .jpeg, .pdf"
+                style="display: none" />
+              <div class="card-body d-grid align-items-center">
+                <div class="d-flex flex-column gap-3">
+                  <div class="d-flex justify-content-center pt-5">
+                    <div
+                      class="position-relative d-flex justify-content-center align-items-center h-90px w-90x flex-shrink-0">
+                      <svg width="68" height="68" viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g clip-path="url(#clip0_444_127)">
+                          <path
+                            d="M67.1529 9.18097V45.2602C67.1529 49.6554 63.5901 53.2111 59.209 53.2111H50.5879V51.5251C52.2106 50.5725 53.6498 49.3309 54.8279 47.8706C57.015 45.1685 58.3342 41.7186 58.3342 37.9654C58.3342 29.2594 51.2792 22.2044 42.5804 22.2044C33.8815 22.2044 26.8265 29.2594 26.8265 37.9654C26.8265 41.7186 28.1458 45.1685 30.3328 47.8706C31.518 49.331 32.9503 50.5727 34.5658 51.518V53.2111H8.78689C4.39159 53.2111 0.835938 49.6553 0.835938 45.2602V9.18097C0.835938 4.79285 4.39173 1.23706 8.78689 1.23706H59.2089C63.5901 1.23706 67.1529 4.79285 67.1529 9.18097Z"
+                            fill="#FFD194" />
+                          <path
+                            d="M61.8181 9.18308V45.2625C61.8181 46.6972 60.6465 47.8687 59.2119 47.8687H54.8284C57.0201 45.167 58.3352 41.716 58.3352 37.9622C58.3352 29.2592 51.2819 22.2059 42.5789 22.2059C33.8838 22.2059 26.8305 29.2592 26.8305 37.9622C26.8305 41.716 28.1455 45.167 30.3373 47.8687H8.78684C7.3522 47.8687 6.18066 46.6972 6.18066 45.2625V9.18308C6.18066 7.74858 7.3522 6.5769 8.78684 6.5769H59.212C60.6465 6.5769 61.8181 7.74858 61.8181 9.18308Z"
+                            fill="white" />
+                          <path
+                            d="M54.7809 13.3755V17.1851C54.7809 18.1415 53.9998 18.9146 53.0435 18.9146H14.9556C13.9992 18.9146 13.2183 18.1415 13.2183 17.1851V13.3755C13.2183 12.4112 13.9993 11.6382 14.9556 11.6382H53.0434C53.9998 11.6382 54.7809 12.4113 54.7809 13.3755Z"
+                            fill="#FCFFD7" />
+                          <path
+                            d="M42.5795 53.7113C51.2785 53.7113 58.3304 46.6594 58.3304 37.9604C58.3304 29.2614 51.2785 22.2095 42.5795 22.2095C33.8805 22.2095 26.8286 29.2614 26.8286 37.9604C26.8286 46.6594 33.8805 53.7113 42.5795 53.7113Z"
+                            fill="#FCFFD7" />
+                          <path
+                            d="M42.5821 49.3045C48.8479 49.3045 53.9273 44.2251 53.9273 37.9593C53.9273 31.6935 48.8479 26.614 42.5821 26.614C36.3163 26.614 31.2368 31.6935 31.2368 37.9593C31.2368 44.2251 36.3163 49.3045 42.5821 49.3045Z"
+                            fill="white" />
+                          <path
+                            d="M50.59 51.5243V65.472C50.59 66.5654 49.313 67.151 48.4805 66.4596L43.401 62.2195C42.9213 61.8244 42.2369 61.8244 41.7572 62.2195L36.6847 66.4596C35.8451 67.151 34.5752 66.5654 34.5752 65.472V51.5171C36.9175 52.914 39.6547 53.7112 42.5826 53.7112C45.5034 53.7112 48.2477 52.914 50.59 51.5243Z"
+                            fill="#FFD194" />
+                          <path
+                            d="M59.2105 0.532227H8.78506C4.0147 0.532227 0.133789 4.41314 0.133789 9.1835V45.2628C0.133789 50.0332 4.0147 53.9145 8.78506 53.9145H33.8647V65.4736C33.8647 67.1644 35.8349 68.0788 37.1339 67.0034L42.2109 62.7639C42.4286 62.5828 42.7311 62.583 42.9488 62.7635L48.0272 67.0052C49.3256 68.0811 51.2949 67.1608 51.2949 65.4736V53.9145H59.2104C63.9808 53.9145 67.8617 50.0332 67.8617 45.2628V9.1835C67.8618 4.41314 63.9809 0.532227 59.2105 0.532227ZM27.5346 37.9626C27.5346 29.7349 34.2476 22.9146 42.5795 22.9146C50.876 22.9146 57.6251 29.664 57.6251 37.9599C57.6251 46.23 50.8925 52.9824 42.6193 53.0034C34.4426 53.0564 27.5346 46.3579 27.5346 37.9626ZM59.0389 37.9626C59.0389 28.8856 51.6546 21.5008 42.5775 21.5008C37.4734 21.5008 32.9049 23.8379 29.8846 27.4986H14.9541C14.5641 27.4986 14.2486 27.8144 14.2486 28.2041C14.2486 28.5938 14.5641 28.9096 14.9541 28.9096H28.8447C28.832 28.9289 28.82 28.9485 28.8075 28.9678C28.0288 30.1565 27.4002 31.4508 26.9476 32.8253H14.9542C14.5643 32.8253 14.2487 33.1412 14.2487 33.5308C14.2487 33.9205 14.5643 34.2363 14.9542 34.2363H26.5531C26.275 35.4338 26.1231 36.679 26.1231 37.9599C26.1231 41.1585 27.0832 44.4148 28.9368 47.1638H8.78506C7.73717 47.1638 6.88425 46.3111 6.88425 45.263V9.1835C6.88425 8.13561 7.73717 7.28295 8.78506 7.28295H59.2104C60.2583 7.28295 61.1112 8.13561 61.1112 9.1835V45.2628C61.1112 46.3111 60.2583 47.1636 59.2104 47.1636H56.2265C58.0423 44.4707 59.0389 41.1629 59.0389 37.9626ZM48.929 65.9205L43.8527 61.6803C43.1158 61.066 42.0442 61.0654 41.307 61.6807L36.2321 65.9189C35.857 66.2283 35.2758 65.9729 35.2758 65.4738V52.7066C37.4943 53.8086 40.0392 54.4165 42.5796 54.4165C45.1546 54.4165 47.7144 53.7855 49.8812 52.7125C49.885 70.2005 49.8838 64.1689 49.884 65.4737C49.8839 65.9735 49.2998 66.2274 48.929 65.9205ZM66.4508 45.263C66.4508 49.2556 63.203 52.5036 59.2105 52.5036H51.295V51.923C52.6999 51.0491 54.1075 49.8042 55.1454 48.5748H59.2107C61.0371 48.5748 62.5225 47.089 62.5225 45.263V9.1835C62.5225 7.35746 61.0371 5.87195 59.2107 5.87195H8.78506C6.95863 5.87195 5.47325 7.35733 5.47325 9.1835V45.2628C5.47325 47.0889 6.95863 48.5746 8.78506 48.5746H30.0177C31.1429 49.9004 32.5122 51.0804 33.8621 51.9175V52.5035H8.78506C4.79245 52.5035 1.54479 49.2554 1.54479 45.2628V9.1835C1.54479 5.19129 4.79259 1.94323 8.78506 1.94323H59.2104C63.203 1.94323 66.4507 5.19129 66.4507 9.1835L66.4508 45.263Z"
+                            fill="#FFD311" />
+                          <path
+                            d="M53.0447 10.9331H14.9572C13.6103 10.9331 12.5142 12.0289 12.5142 13.3762V17.1855C12.5142 18.5283 13.6103 19.6206 14.9572 19.6206H53.0445C54.3915 19.6206 55.4876 18.5283 55.4876 17.1855V13.3762C55.4878 12.0289 54.3915 10.9331 53.0447 10.9331ZM54.0768 17.1855C54.0768 17.7501 53.6138 18.2096 53.0447 18.2096H14.9572C14.3881 18.2096 13.9252 17.7501 13.9252 17.1855V13.3762C13.9252 12.8071 14.3881 12.3441 14.9572 12.3441H53.0445C53.6137 12.3441 54.0766 12.8071 54.0766 13.3762V17.1855H54.0768Z"
+                            fill="#FFD311" />
+                          <path
+                            d="M14.954 39.5624H22.9205C23.3105 39.5624 23.626 39.2465 23.626 38.8569C23.626 38.4672 23.3105 38.1514 22.9205 38.1514H14.954C14.5641 38.1514 14.2485 38.4672 14.2485 38.8569C14.2485 39.2465 14.5641 39.5624 14.954 39.5624Z"
+                            fill="#FFD311" />
+                          <path
+                            d="M42.58 50.0097C49.225 50.0097 54.6308 44.6037 54.6308 37.9589C54.6308 31.3142 49.2252 25.9082 42.58 25.9082C35.9349 25.9082 30.5293 31.3142 30.5293 37.9589C30.5293 44.6037 35.935 50.0097 42.58 50.0097ZM42.58 27.3193C48.4466 27.3193 53.2198 32.0921 53.2198 37.9591C53.2198 43.8261 48.4466 48.5988 42.58 48.5988C36.7134 48.5988 31.9403 43.8261 31.9403 37.9591C31.9403 32.0921 36.7136 27.3193 42.58 27.3193Z"
+                            fill="#FFD311" />
+                          <path
+                            d="M36.2993 38.6652H41.8758V44.242C41.8758 44.6317 42.1913 44.9475 42.5813 44.9475C42.9712 44.9475 43.2868 44.6317 43.2868 44.242V38.6652H48.864C49.2539 38.6652 49.5695 38.3494 49.5695 37.9597C49.5695 37.57 49.2539 37.2542 48.864 37.2542H43.2868V31.6774C43.2868 31.2878 42.9712 30.9719 42.5813 30.9719C42.1913 30.9719 41.8758 31.2878 41.8758 31.6774V37.2542H36.2993C35.9093 37.2542 35.5938 37.57 35.5938 37.9597C35.5938 38.3494 35.9093 38.6652 36.2993 38.6652Z"
+                            fill="#FFD311" />
+                        </g>
+                        <defs>
+                          <clipPath id="clip0_444_127">
+                            <rect width="68" height="68" fill="white" />
+                          </clipPath>
+                        </defs>
+                      </svg>
+
+                      <div class="position-absolute top-50 start-50 translate-middle lh-1">
+                        <i class="ki-filled ki-rocket text-brand" style="font-size: 2.25rem"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="d-flex flex-column text-center">
+                    <span class="fs-4 fw-semibold text-hover-warning text-dark mb-1 offer-link">
+                      {{ "ACCOUNT_SETTINGS.ADD_CERTIFICATION" | translate }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p-messages [(value)]="messages" [enableService]="false"></p-messages>
+    <div class="card-footer">
+      <button type="submit" class="btn btn-primary" [disabled]="isSubmitDisabled">
+        <ng-container *ngIf="(isUpdatingProfile$ | async) === false">
+          <span class="indicator-label">  {{ "ACCOUNT_SETTINGS.SAVE_CHANGES" | translate }}</span>
+        </ng-container>
+        <ng-container *ngIf="isUpdatingProfile$ | async">
+          <span class="indicator-progress" [style.display]="'block'">
+            {{ "AUTH.REGISTRATION.PLEASE_WAIT" | translate }}
+            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+          </span>
+        </ng-container>
+      
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- ISIC Codes Selection Dialog -->
+<p-dialog header="{{ 'COMMON.SELECISCIC' | translate }}" [(visible)]="isISICDialogVisible" [modal]="true"
+  [style]="{ width: dialogWidth, 'max-height': '100vh', overflow: 'hidden' }"
+  [contentStyle]="{ 'max-height': 'calc(90vh - 100px)', overflow: 'auto' }">
+  <div class="tree-container">
+    <p-tree [style]="{ 'max-height': '100%', overflow: 'auto' }" [value]="isicCodes" selectionMode="checkbox"
+      [(selection)]="selectedNodes" [metaKeySelection]="false" [filter]="true" [filterMode]="'strict'"
+      [loading]="isLoadingISIC$ | async"></p-tree>
+  </div>
+  <p-footer>
+    <div class="p-2 d-flex justify-content-between align-items-center">
+      <a class="btn btn-sm btn-secondary btn-shadow cursor-pointer" (click)="onISICDialogCancel()">
+        {{ "BUTTONS.CANCEL" | translate }}
+      </a>
+      <a class="btn btn-sm btn-primary m-1 btn-shadow cursor-pointer" (click)="onISICDialogOK()">
+        {{ "BUTTONS.OK" | translate }}
+      </a>
+    </div>
+  </p-footer>
+</p-dialog>
+

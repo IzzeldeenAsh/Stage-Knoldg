@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { IForsightaProfile } from 'src/app/_fake/models/profile.interface';
 
 @Component({
   selector: 'app-action-buttons',
@@ -6,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrl: './action-buttons.component.scss'
 })
 export class ActionButtonsComponent {
-
+@Input() profile:IForsightaProfile;
 }

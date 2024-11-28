@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { UserProfileRoutingModule } from './user-profile-routing.module';
@@ -8,6 +8,21 @@ import { DropdownMenusModule } from 'src/app/_metronic/partials';
 import { ProfileHeaderComponent } from './profile-header/profile-header.component';
 import { ActionButtonsComponent } from './action-buttons/action-buttons.component';
 import { NavigationTabsComponent } from './navigation-tabs/navigation-tabs.component';
+import { TranslationModule } from 'src/app/modules/i18n';
+import { OverviewComponent } from './profile-pages/overview/overview.component';
+import { AccountSettingsComponent } from './profile-pages/account-settings/account-settings.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { DropdownModule } from 'primeng/dropdown';
+import { DialogModule } from 'primeng/dialog';
+import { TreeSelectModule } from 'primeng/treeselect';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
+import { FileUploadModule } from 'primeng/fileupload';
+import { CertificatesComponent } from './profile-pages/certificates/certificates.component';
+import { DocumentsComponent } from './profile-pages/documents/documents.component';
 
 
 @NgModule({
@@ -15,13 +30,29 @@ import { NavigationTabsComponent } from './navigation-tabs/navigation-tabs.compo
     ProfileComponent,
     ProfileHeaderComponent,
     ActionButtonsComponent,
-    NavigationTabsComponent
+    NavigationTabsComponent,
+    AccountSettingsComponent,
+    DocumentsComponent,
+    OverviewComponent,
+    CertificatesComponent
   ],
   imports: [
     CommonModule,
     UserProfileRoutingModule,
     SharedModule,
+    ReactiveFormsModule,
+    ToastModule,
+    FileUploadModule,
+    ProgressBarModule,
+    ButtonModule,
+    DropdownModule,
+    DialogModule,
+    TreeSelectModule,
+    MultiSelectModule,
+    TranslationModule,
     DropdownMenusModule
-  ]
+  ],
+  providers: [MessageService] ,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]  // Add this line
 })
 export class UserProfileModule { }

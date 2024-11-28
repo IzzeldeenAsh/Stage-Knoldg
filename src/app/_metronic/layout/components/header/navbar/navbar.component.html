@@ -109,7 +109,7 @@
     data-kt-menu-placement="bottom-end"
     data-kt-menu-flip="bottom"
   >
-    <img *ngIf="userProfile && userProfile.profile_photo_url" src="./assets/media/avatars/300-1.jpg" alt="metronic" />
+    <img *ngIf="userProfile && userProfile.profile_photo_url" [src]="userProfile.profile_photo_url" alt="foresighta" class="object-fit-cover" />
     <span *ngIf="userProfile && !userProfile.profile_photo_url" class="symbol-label bg-primary fs-4 text-white">
      <span> {{ userProfile.first_name.charAt(0) }} </span>
      <span style="padding: 0 -20px;"> {{ userProfile.last_name.charAt(0) }} </span>

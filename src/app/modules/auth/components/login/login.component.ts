@@ -34,11 +34,12 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private route: ActivatedRoute,
     private router: Router,
-    private messageService: MessageService,
+    messageService: MessageService,
     private translationService: TranslationService,
     scrollAnims: ScrollAnimsService,
+    
   ) {
-    super(scrollAnims);
+    super(scrollAnims,messageService);
     this.isLoading$ = this.authService.isLoading$;
     this.selectedLang = this.translationService.getSelectedLanguage();
     this.isRTL = this.selectedLang === "ar"; // Set RTL based on the selected language

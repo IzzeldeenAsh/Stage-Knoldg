@@ -17,9 +17,9 @@ export interface Position {
   providedIn: 'root'
 })
 export class PositionsService {
-  private apiUrl = 'https://api.4sighta.com/api/common/setting/position/list';
-  private createApi = 'https://api.4sighta.com/api/admin/setting/position';
-  private updateDeleteApi = 'https://api.4sighta.com/api/admin/setting/position';
+  private apiUrl = 'https://api.foresighta.co/api/common/setting/position/list';
+  private createApi = 'https://api.foresighta.co/api/admin/setting/position';
+  private updateDeleteApi = 'https://api.foresighta.co/api/admin/setting/position';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   currentLang: string = 'en';

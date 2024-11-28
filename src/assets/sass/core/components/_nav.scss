@@ -31,7 +31,10 @@
 		align-items: center;
 	}
 }
-
+html[dir='rtl'] .nav-stretch{
+	padding: 0;
+	gap: 20px;
+}
 // Nav group
 .nav-group {
 	padding: 0.35rem;
