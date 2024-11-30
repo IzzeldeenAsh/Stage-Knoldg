@@ -74,7 +74,7 @@ import { GuidelineComponent } from './dashboard/guidelines/guidelines.component'
     NgApexchartsModule,
 ]
 
-,providers:[MessageService,NodeService]
+,providers:[NodeService]
 
 })
 export class DashbordModule { }

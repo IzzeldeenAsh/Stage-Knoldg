@@ -29,6 +29,13 @@ const routes: Routes = [ {
         import('./accounts/accounts.module').then(
           (m) => m.AccountsModule
         ),
+    },
+    {
+      path: 'my-settings',
+      loadChildren: () =>
+        import('./staff-settings/staff-settings.module').then(
+          (m) => m.StaffSettingsModule
+        ),
     }
   ],
 }

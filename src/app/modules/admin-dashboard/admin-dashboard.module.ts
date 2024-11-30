@@ -31,7 +31,6 @@ import { ToastModule } from 'primeng/toast';
     ToastModule,
     TooltipModule
   ],
-  providers:[MessageService]
 })
 export class AdminDashboardModule { }
 //test

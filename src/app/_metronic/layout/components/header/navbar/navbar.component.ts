@@ -16,10 +16,13 @@ export class NavbarComponent implements OnInit {
   isUserMenuOpen = false;
   toolbarButtonMarginClass = 'ms-1 ms-lg-3';
   toolbarUserAvatarHeightClass = 'symbol-30px symbol-md-40px';
+
   // Toggle the user menu's visibility
   toggleUserMenu(): void {
     this.isUserMenuOpen = !this.isUserMenuOpen;
   }
+  
+
   logout() {
     this.auth.logout().pipe(first()).subscribe({
       next : (res)=>{
@@ -67,7 +70,7 @@ export class NavbarComponent implements OnInit {
    * Closes the dropdown menu.
    */
   closeMenu(): void {
-    this.isMenuOpen = false;
+    this.isUserMenuOpen = false
   }
 
 }

@@ -1,0 +1,24 @@
+.no-bg{
+    mix-blend-mode: multiply;
+    border-radius: 10px;
+}
+.update-label{
+    position: absolute;
+    bottom: 3%;
+    left: 10px;
+}
+.image-input-wrapper {
+    background-size: contain;
+    background-position: center;
+  }
+  
+  .image-input {
+    position: relative;
+  }
+  
+  .btn-icon {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
+  

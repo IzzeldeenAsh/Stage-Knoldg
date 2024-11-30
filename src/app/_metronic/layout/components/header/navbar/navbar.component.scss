@@ -36,4 +36,18 @@
   .signout-button:hover {
     background-color: #f1f1f1;
   }
-  
+  .my-menu{
+    position: absolute;
+    top: 260px;
+    transform: translate(-50%, -50%);
+  }
+  .relative{
+    position: relative;
+  }
+  // .img-icon:hover{
+  //   .my-menu{
+  //     display: block !important;
+  //     visibility: visible !important;
+  //     opacity: 100% !important;
+  //   }
+  // }

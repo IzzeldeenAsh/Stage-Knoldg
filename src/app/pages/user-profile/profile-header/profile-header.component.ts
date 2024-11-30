@@ -55,7 +55,6 @@ export class ProfileHeaderComponent implements OnInit {
       };
       reader.readAsDataURL(file);
 
-      // Upload the image to the server
       this.uploadImage(file);
     }
   }
@@ -90,6 +89,28 @@ export class ProfileHeaderComponent implements OnInit {
   }
 
   uploadImage(file: File): void {
+   if(this.profile.roles.includes('company')){
+    this.profileService.updateCompanyLogo(file).subscribe(
+      (response:any) => {
+        // Handle successful upload
+        this.photoupdated.emit();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Profile Picture Updated',
+          detail: 'Your profile picture has been updated successfully.',
+        });
+        document.location.reload();
+      },
+      (error:any) => {
+        // Handle error
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'An error occurred while updating your profile picture.',
+        });
+      }
+    );
+   }else{
     this.profileService.updateProfilePhoto(file).subscribe(
       (response:any) => {
         // Handle successful upload
@@ -110,5 +131,6 @@ export class ProfileHeaderComponent implements OnInit {
         });
       }
     );
+   }
   }
 }

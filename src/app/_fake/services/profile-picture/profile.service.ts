@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 export class ProfileService {
   private uploadUrl = 'https://api.foresighta.co/api/account/profile/photo';
   private removeUrl = 'https://api.foresighta.co/api/account/profile/photo/remove';
+  private updateLogo ='https://api.foresighta.co/api/account/profile/company/logo'
 
   constructor(private http: HttpClient) {}
 
@@ -17,6 +18,14 @@ export class ProfileService {
 
     return this.http.post<any>(this.uploadUrl, formData);
   }
+
+  updateCompanyLogo(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('logo', file);
+
+    return this.http.post<any>(this.updateLogo, formData);
+  }
+
 
   removeProfilePhoto(): Observable<any> {
     return this.http.delete<any>(this.removeUrl);

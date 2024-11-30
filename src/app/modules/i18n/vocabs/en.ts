@@ -25,7 +25,7 @@ export const locale = {
       PRIVACY: 'Privacy',
       COOKIES: 'Cookies',
       MY_PROFILE: 'My Profile',
-      MY_PROJECTS: 'My Projects',
+      MY_PROJECTS: 'My Insights',
       MY_SUBSCRIPTION: 'My Subscription',
       MY_STATEMENTS: 'My Statements',
       ACCOUNT_SETTINGS: 'Account Settings',
@@ -248,7 +248,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       CONTINUE: "Continue",
       SUBMIT: "Submit",
       PLEASE_WAIT: "Please wait...",
-      
+      ABOUT_COMPANY_REQUIRED:"About Company Required",
       // New Keys for the Current Component
       CHOOSE_ACCOUNT_TYPE: "Choose Account Type",
       BILLING_TOOLTIP: "Billing is issued based on your selected account type",
@@ -304,6 +304,13 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       "GET_CODE": "Get Code",
       "CODE": "Verification Code",
       "ENTER_CODE": "Enter the code you received",
+
+      UPGRADE_TO_CORPORATE_ACCOUNT: "Upgrade to Corporate Account", // Heading for the form
+  COMPANY_LOGO_REQUIRED: "Company logo is required.", // Error message for logo
+  WEBSITE_REQUIRED: "Website domain is required.", // Error message for website domain
+  COMPANY_EMAIL_REQUIRED: "Company email is required.", // Error message for company email
+  CODE_REQUIRED: "Verification code is required.", // Error message for verification code
+  DELETE_FILE: "Delete File", // Tooltip for delete file buttonA
       
     },
     CONGRATS_CARD:{
@@ -364,6 +371,22 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       SELECT_DOCUMENT_TYPE: 'Select Document Type',
       ADD_CERTIFICATION: 'Add Certification',
       SAVE_CHANGES: 'Save Changes',
+      "CHANGE_PASSWORD": "Change Password",
+      "PASSWORD": "Password",
+      "CURRENT_PASSWORD": "Current Password",
+      "NEW_PASSWORD": "New Password",
+      "CONFIRM_NEW_PASSWORD": "Confirm New Password",
+      "PASSWORD_RULES": "Password must be at least 8 characters and contain symbols.",
+      "UPDATE_PASSWORD": "Update Password",
+      "CANCEL": "Cancel",
+      PASSWORDS_DO_NOT_MATCH:"Passwords do not match"
+      
     },
+    "UPGRADE_TO_COMPANY_ACCOUNT": {
+      "TITLE": "Upgrade to a Company Account",
+      "DESCRIPTION": "Unlock premium features tailored for businesses.\nCollaborate with your team and manage your projects effortlessly.",
+      "BUTTON_TEXT": "Upgrade to Company Account",
+      "ILLUSTRATION_ALT": "Upgrade Illustration"
+    }
   }
 };

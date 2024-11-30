@@ -25,7 +25,7 @@ export const locale = {
       PRIVACY: "الخصوصية",
       COOKIES: "الكوكيز",
       MY_PROFILE: 'ملفي الشخصي',
-      MY_PROJECTS: 'مشاريعي',
+      MY_PROJECTS: 'تقاريري',
       MY_SUBSCRIPTION: 'اشتراكي',
       MY_STATEMENTS: 'بياناتي',
       ACCOUNT_SETTINGS: 'إعدادات الحساب',
@@ -214,7 +214,13 @@ export const locale = {
       CONTINUE: "متابعة",
       SUBMIT: "إرسال",
       PLEASE_WAIT: "يرجى الانتظار...",
-      
+      ABOUT_COMPANY_REQUIRED:"معلومات حول الشركة مطلوبة",
+  UPGRADE_TO_CORPORATE_ACCOUNT: "ترقية إلى حساب تجاري", // Heading for the form
+  COMPANY_LOGO_REQUIRED: "شعار الشركة مطلوب.", // Error message for logo
+  WEBSITE_REQUIRED: "موقع الشركة مطلوب.", // Error message for website domain
+  COMPANY_EMAIL_REQUIRED: "البريد الإلكتروني للشركة مطلوب.", // Error message for company email
+  CODE_REQUIRED: "رمز التحقق مطلوب.", // Error message for verification code
+  DELETE_FILE: "حذف الملف", // Tooltip for delete file button
       // New Keys for the Current Component
       CHOOSE_ACCOUNT_TYPE: "اختر نوع الحساب",
       BILLING_TOOLTIP: "يتم إصدار الفواتير بناءً على نوع الحساب الذي اخترته",
@@ -328,6 +334,21 @@ export const locale = {
       SELECT_DOCUMENT_TYPE: 'اختر نوع المستند',
       ADD_CERTIFICATION: 'إضافة شهادة',
       SAVE_CHANGES: 'حفظ التغييرات',
+      "CHANGE_PASSWORD": "تغيير كلمة المرور",
+      "PASSWORD": "كلمة المرور",
+      "CURRENT_PASSWORD": "كلمة المرور الحالية",
+      "NEW_PASSWORD": "كلمة المرور الجديدة",
+      "CONFIRM_NEW_PASSWORD": "تأكيد كلمة المرور الجديدة",
+      "PASSWORD_RULES": "يجب أن تكون كلمة المرور 8 أحرف على الأقل وتحتوي على رموز.",
+      "UPDATE_PASSWORD": "تحديث كلمة المرور",
+      "CANCEL": "إلغاء",
+      PASSWORDS_DO_NOT_MATCH:"كلمتا السر غير متطابقتين"
     },
+    "UPGRADE_TO_COMPANY_ACCOUNT": {
+      "TITLE": "ترقية إلى حساب الشركة",
+      "DESCRIPTION": "افتح ميزات مميزة مصممة خصيصًا للشركات.\nتعاون مع فريقك وأدِر مشاريعك بسهولة.",
+      "BUTTON_TEXT": "ترقية إلى حساب الشركة",
+      "ILLUSTRATION_ALT": "صورة الترقية"
+    }
   },
 };

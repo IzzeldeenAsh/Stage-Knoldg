@@ -57,7 +57,6 @@ import { CallbackComponent } from './components/callback/callback.component';
     MultiSelectModule,
     DropdownModule,
     HttpClientModule,
-  ],
-  providers:[MessageService]
+  ]
 })
 export class AuthModule {}

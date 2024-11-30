@@ -7,6 +7,34 @@
   <div class="card-body py-3">
     <table class="table">
       <tbody>
+        <tr *ngIf="profile.company">
+          <td class="py-2 text-body fw-normal" style="min-width: 7rem;">
+              Photo
+          </td>
+          <td class="py-2 ">
+            <div class="image-input image-input-circle mb-4 " >
+                <!--begin::Image preview wrapper-->
+    <div class="image-input-wrapper border-1 border-success w-70px h-70px" [ngStyle]="{'background-image': 'url(' + this.profile.profile_photo_url + ')'}"></div>
+    <!--end::Image preview wrapper-->
+
+    <!--begin::Edit button-->
+    <label 
+      class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
+      title="Change avatar"
+    >
+      <i class="ki-duotone ki-pencil fs-6">
+        <span class="path1"></span>
+        <span class="path2"></span>
+      </i>
+
+      <!--begin::Input-->
+      <input type="file" name="avatar" accept=".png, .jpg, .jpeg" (change)="onFileSelected($event)" class="d-none" />
+      <!--end::Input-->
+    </label>
+
+            </div>
+          </td>
+      </tr>
         <tr *ngIf="profile.company && profile.company.legal_name">
           <td class="small text-muted pb-3 pe-4 pe-lg-5">
             {{ 'PROFILE.COMPANY_NAME' | translate }}
