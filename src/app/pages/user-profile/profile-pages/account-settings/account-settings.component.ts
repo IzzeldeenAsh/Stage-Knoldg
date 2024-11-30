@@ -14,6 +14,8 @@
   import { phoneNumbers } from 'src/app/pages/wizards/phone-keys';
   import { IsicCodesService } from 'src/app/_fake/services/isic-code/isic-codes.service';
   import { UpdateProfileService } from 'src/app/_fake/services/profile/profile.service';
+import { DialogService } from 'primeng/dynamicdialog';
+import { UpgradeToCompanyComponent } from './upgrade-to-company/upgrade-to-company.component';
 
   interface Certification {
     id: number;
@@ -25,7 +27,8 @@
   @Component({
     selector: 'app-account-settings',
     templateUrl: './account-settings.component.html',
-    styleUrls: ['./account-settings.component.scss']
+    styleUrls: ['./account-settings.component.scss'],
+    providers: [DialogService]
   })
   export class AccountSettingsComponent extends BaseComponent implements OnInit {
     profile: any;
@@ -56,6 +59,7 @@
     onSuccessMessage:boolean=false;
     isUpdatingProfile$:Observable<any>;
     displayLoadingDialog: boolean = false;
+    showCorporateUpgrade:boolean =false
     @ViewChild("fileInput") fileInput: ElementRef<HTMLInputElement>;
 
     constructor(
@@ -68,6 +72,7 @@
       private documentsService: DocumentsService,
       private certificationService:CertificationService,
       private _profilePost:UpdateProfileService,
+      private dialogService: DialogService,
       scrollAnims: ScrollAnimsService,
       messageService: MessageService // Inject MessageService
     ) {
@@ -147,7 +152,20 @@
       }
     
     }
-
+    openUpgradeDialog() {
+      const ref = this.dialogService.open(UpgradeToCompanyComponent, {
+        header: 'Upgrade to Corporate Account',
+        width: '50%',
+        contentStyle: { 'max-height': '500px', overflow: 'auto' },
+        baseZIndex: 10000,
+      });
+  
+      ref.onClose.subscribe((result) => {
+        if (result) {
+          // Handle the result if needed
+        }
+      });
+    }
     get certificationsAdded(): FormArray<FormGroup> {
       return this.form.get("certificationsAdded") as FormArray;
     }

@@ -29,7 +29,7 @@
             <p-accordion>
                 <p-accordionTab
                   *ngFor="let guideline of guidelines"
-                  [header]="guideline.names.en + ' - ' + guideline.names.ar"
+                  [header]="guideline.names.en + ' - ' + guideline.names.ar + ' - ' +' Version ' + '(' +guideline.version + ')'"
                 >
                   <!-- Form for editing guideline -->
                   <form [formGroup]="getGuidelineForm(guideline.id)">
@@ -123,13 +123,13 @@
                     <div class="mb-3 mt-3 row">
                         <label for="englishFile" class="col-sm-3 col-form-label">English File</label>
                         <div class="col-sm-9">
-                          <input type="file" pInputText id="englishFile" class="form-control"   (change)="onFileChange($event, 'fileEn', guideline.id)" />
+                          <input type="file" accept=".png, .jpg, .jpeg, .pdf" pInputText id="englishFile" class="form-control"   (change)="onFileChange($event, 'fileEn', guideline.id)" />
                         </div>
                       </div>
                       <div class="mb-3 row">
                         <label for="englishFile" class="col-sm-3 col-form-label">Arabic File</label>
                         <div class="col-sm-9">
-                          <input type="file" pInputText id="englishFile" class="form-control"   (change)="onFileChange($event, 'fileAr', guideline.id)" />
+                          <input type="file" accept=".png, .jpg, .jpeg, .pdf" pInputText id="englishFile" class="form-control"   (change)="onFileChange($event, 'fileAr', guideline.id)" />
                         </div>
                       </div>
                 
@@ -243,22 +243,29 @@
                         Version is required.
                       </div>
                     </div>
-                    <!-- File inputs -->
-                    <div class="form-group">
-                      <label for="fileEn-new">File (English)</label>
-                      <input
+                 
+                    <div class="mb-3 mt-3 row">
+                      <label for="fileEn-new" class="col-sm-3 col-form-label">English File</label>
+                      <div class="col-sm-9">
+                        <input type="file" pInputText id="englishFile" class="form-control"
                         id="fileEn-new"
-                        type="file"
+                        accept=".png, .jpg, .jpeg, .pdf"
                         (change)="onFileChange($event, 'fileEn')"
                       />
+                      </div>
+               
                     </div>
-                    <div class="form-group">
-                      <label for="fileAr-new">File (Arabic)</label>
-                      <input
+                    <div class="mb-3 mt-3 row">
+                      <label for="fileAr-new" class="col-sm-3 col-form-label">Arabic File</label>
+                      <div class="col-sm-9">
+                        <input type="file" pInputText id="fileAr-new" class="form-control" pInputText id="englishFile" 
                         id="fileAr-new"
                         type="file"
+                        accept=".png, .jpg, .jpeg, .pdf"
                         (change)="onFileChange($event, 'fileAr')"
                       />
+                      </div>
+                      
                     </div>
                     <!-- Buttons -->
                     <div class="d-flex justify-content-end mt-3">

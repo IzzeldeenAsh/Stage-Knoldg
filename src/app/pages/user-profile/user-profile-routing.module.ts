@@ -9,6 +9,7 @@ import { InsighterGuard } from 'src/app/guards/insighter-guard/insighter.guard';
 import { CompanyGuard } from 'src/app/guards/company-guard/company.guard';
 import { RolesGuard } from 'src/app/guards/roles-guard/roles-gurad.gurad';
 import { DocumentsComponent } from './profile-pages/documents/documents.component';
+import { UpgradeToCompanyComponent } from './profile-pages/account-settings/upgrade-to-company/upgrade-to-company.component';
 
 const routes: Routes = [
   {
@@ -40,6 +41,13 @@ const routes: Routes = [
       path: 'settings',
       component: AccountSettingsComponent,
       canActivate: [AuthGuard], // Apply guards here
+      data: { roles: ['insighter', 'company'] } 
+    },
+    {
+      path:'company-account',
+      component:UpgradeToCompanyComponent,
+      canActivate:[RolesGuard],
+      data: { roles: ['insighter'] } 
     },
    ]
   },

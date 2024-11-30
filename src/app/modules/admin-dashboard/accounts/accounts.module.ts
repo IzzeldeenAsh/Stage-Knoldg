@@ -43,7 +43,7 @@ import { DialogService } from 'primeng/dynamicdialog';
     FormsModule,
     DropdownModule,
   ]
-  ,providers:[MessageService,DialogService],
+  ,providers:[DialogService],
   
 })
 export class AccountsModule { }

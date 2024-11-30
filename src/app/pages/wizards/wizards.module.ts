@@ -54,7 +54,7 @@ import { TooltipModule } from 'primeng/tooltip';
     NgbTooltipModule,
     SharedModule
   ],
-  providers:[MessageService,NodeService],
+  providers:[NodeService],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]  // Add this line
 })
 export class WizardsModule {}

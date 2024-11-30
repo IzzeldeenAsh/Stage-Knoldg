@@ -11,6 +11,7 @@ import { AppComponent } from './app.component';
 import { AuthService } from './modules/auth/services/auth.service';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { AuthInterceptor } from './modules/auth/interceptor-auth.interceptor';
+import { MessageService } from 'primeng/api';
 function appInitializer(authService: AuthService) {
   return () => {
     return new Promise((resolve) => {
@@ -35,14 +36,14 @@ function appInitializer(authService: AuthService) {
     SweetAlert2Module.forRoot(),
   ],
   providers: [
-  
+    MessageService,
     {
       provide: APP_INITIALIZER,
       useFactory: appInitializer,
       multi: true,
       deps: [AuthService],
     },
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }, 
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],
   bootstrap: [AppComponent],
 })
