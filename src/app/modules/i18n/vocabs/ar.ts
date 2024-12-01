@@ -315,6 +315,7 @@ export const locale = {
       TITLE: 'إعدادات الحساب',
       FIRST_NAME: 'الاسم الأول',
       LAST_NAME: 'اسم العائلة',
+      REGISTRY_DOCUMENT:'سجل التسجيل',
       FIRST_NAME_REQUIRED: 'الاسم الأول مطلوب.',
       LAST_NAME_REQUIRED: 'اسم العائلة مطلوب.',
       COUNTRY: 'البلد',

@@ -61,7 +61,7 @@ import { UpgradeToCompanyComponent } from './upgrade-to-company/upgrade-to-compa
     displayLoadingDialog: boolean = false;
     showCorporateUpgrade:boolean =false
     @ViewChild("fileInput") fileInput: ElementRef<HTMLInputElement>;
-
+    @ViewChild("fileInputRegistry") fileInputRegistry: ElementRef<HTMLInputElement>;
     constructor(
       private fb: FormBuilder,
       private authService: AuthService,
@@ -145,6 +145,7 @@ import { UpgradeToCompanyComponent } from './upgrade-to-company/upgrade-to-compa
           consultingFields: [[], Validators.required],
           legal_name: [''],
           website: [''],
+          registerDocument:[null]
         });
         this.form = this.fb.group({
           certificationsAdded: this.fb.array([]),
@@ -521,8 +522,35 @@ import { UpgradeToCompanyComponent } from './upgrade-to-company/upgrade-to-compa
       return requiredRoles.some(role => this.roles.includes(role));
     }
 
-
-
+    onDropzoneClickRegistry(){
+      this.fileInputRegistry.nativeElement.click();
+    }
+    onFileSelectedRegistry(event: any) {
+      const file = event.target.files[0];
+      if (file) {
+        this.accountForm.patchValue({ registerDocument: file });
+        this.accountForm.get("registerDocument")?.markAsTouched();
+      }
+    }
+  // Handle files dropped into the dropzone
+  onFileDrop(event: DragEvent) {
+    event.preventDefault();
+    const files = event.dataTransfer?.files;
+    if (files && files.length > 0) {
+      const file = files.item(0);
+      this.accountForm.patchValue({ registerDocument: file });
+      this.accountForm.get("registerDocument")?.markAsTouched();
+    }
+  }
+    // Prevent default drag over behavior
+    onDragOver(event: DragEvent) {
+      event.preventDefault();
+    }
+    // Remove the uploaded register document
+    removeRegisterDocument() {
+      this.form.patchValue({ registerDocument: null });
+      this.fileInputRegistry.nativeElement.value = "";
+    }
     // Form Submission
     onSubmit() {
       if (this.isSubmitDisabled) {
@@ -594,6 +622,9 @@ import { UpgradeToCompanyComponent } from './upgrade-to-company/upgrade-to-compa
         this.accountForm.get('consultingFields')?.value.forEach((field: any) => {
           formData.append("consulting_field[]", field.id.toString());
         });
+        if(this.accountForm.get('registerDocument')?.value){
+          formData.append("register_document", this.accountForm.get('registerDocument')?.value);
+        }
         const certs = this.form.value.certificationsAdded
         if (certs && certs.length > 0) {
           certs.forEach((cert:any, index:number) => {
@@ -624,7 +655,7 @@ import { UpgradeToCompanyComponent } from './upgrade-to-company/upgrade-to-compa
             this.onSuccessMessage = true;
             const message = this.lang ==='ar' ? 'تم تعديل البروفايل' : 'Profile Updated Successfully'
             this.showSuccess(message);
-            this.handleApiCalls()
+                document.location.reload
           },
           error: (error) => {
             this.handleServerErrors(error);

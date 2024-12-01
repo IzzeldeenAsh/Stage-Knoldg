@@ -1,15 +1,20 @@
 import { Component, OnDestroy, signal, computed } from '@angular/core';
-import { Message } from 'primeng/api';
+import { Message, MessageService } from 'primeng/api';
 import { Subject, takeUntil, throwError } from 'rxjs';
 import { ChangePasswordService } from 'src/app/_fake/services/change-password/change-password.service';
+import { ScrollAnimsService } from 'src/app/_fake/services/scroll-anims/scroll-anims.service';
+import { BaseComponent } from 'src/app/modules/base.component';
 
 @Component({
   selector: 'app-reset-password',
   templateUrl: './reset-password.component.html',
   styleUrls: ['./reset-password.component.scss'],
 })
-export class ResetPasswordComponent implements OnDestroy {
-  constructor(private _changepassword: ChangePasswordService) {}
+export class ResetPasswordComponent extends BaseComponent implements OnDestroy {
+  constructor(private _changepassword: ChangePasswordService,
+     scrollAnims: ScrollAnimsService,
+     messageService: MessageService // Inject MessageService
+  ) {super(scrollAnims,messageService)}
 
   protected unsub$ = new Subject<void>();
 
@@ -113,13 +118,8 @@ export class ResetPasswordComponent implements OnDestroy {
       .pipe(takeUntil(this.unsub$))
       .subscribe({
         next: () => {
-          this._messages.set([
-            {
-              severity: 'success',
-              summary: 'Success',
-              detail: 'Password changed successfully.',
-            },
-          ]);
+         
+         this.showSuccess('Changes Successfully')
           this.isEditing.set(false);
           this.clearForm();
         },
