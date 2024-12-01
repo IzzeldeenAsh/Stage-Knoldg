@@ -231,7 +231,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     },
     COMMON:{
       "SLOGAN":"Redefining the insights landscape",
-      "SELECISCIC":"Select ISIC Codes",
+      "SELECISCIC":"Select Industry",
       OR:"OR"
     },
     INSIGHTER_WIZARD: {
@@ -284,6 +284,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       DOCUMENT_TYPE_REQUIRED: "Document type is required.",
       COMPANYLOGO:" Company Logo",
       VERIFY_FILES: "Uploaded Files",
+
       CORPORATE_ACCOUNT_VERIFICATION: "Corporate Account Verification",
       VERIFY_YOUR_COMPANY_WITH: "Verify your company with",
       DROP_OR_UPLOAD_REGISTRY_DOCUMENT: "Drop or Upload Registry Document",
@@ -352,6 +353,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       TITLE: 'Account Settings',
       FIRST_NAME: 'First Name',
       LAST_NAME: 'Last Name',
+      REGISTRY_DOCUMENT:'Registry Document',
       FIRST_NAME_REQUIRED: 'First name is required.',
       LAST_NAME_REQUIRED: 'Last name is required.',
       COUNTRY: 'Country',

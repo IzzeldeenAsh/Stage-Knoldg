@@ -164,45 +164,57 @@
   </div>
 </div>
 </div>
-<div class="card my-4" *ngIf="profile && profile.consulting_field && profile.consulting_field.length>0">
-  <div class="card-header">
-    <h3 class="card-title">{{ 'PROFILE.CONSULTING_FIELDS' | translate }}</h3>
-  </div>
-  <div class="card-body py-3">
-    <div class="d-flex gap-2 flex-wrap">
-      <span
-        *ngFor="let field of profile.consulting_field"
-        class="badge-outline-gray fs-7 my-2"
-      >
-        <ng-container *ngIf="lang === 'ar'">
-          {{ field.names.ar }}
-        </ng-container>
-        <ng-container *ngIf="lang === 'en'">
-          {{ field.names.en }}
-        </ng-container>
-      </span>
+<div class="row">
+  <div class="col-12 col-md-6">
+    <div class="card my-4" *ngIf="profile && profile.consulting_field && profile.consulting_field.length>0">
+      <div class="card-header">
+       
+        <h3 class="card-title">
+         
+          {{ 'PROFILE.CONSULTING_FIELDS' | translate }}</h3>
+      </div>
+      <div class="card-body py-3">
+        <div class="d-flex gap-2 flex-wrap">
+          <span
+            *ngFor="let field of profile.consulting_field"
+            class="badge-outline-gray fs-7 my-2"
+          >
+            <ng-container *ngIf="lang === 'ar'">
+              {{ field.names.ar }}
+            </ng-container>
+            <ng-container *ngIf="lang === 'en'">
+              {{ field.names.en }}
+            </ng-container>
+          </span>
+        </div>
+      </div>
     </div>
   </div>
-</div>
-<div class="card my-4" *ngIf="profile && profile.industries && profile.industries.length>0">
-  <div class="card-header">
-    <h3 class="card-title">{{ 'PROFILE.INDUSTRIES' | translate }}</h3>
-  </div>
-  <div class="card-body py-3">
-    <div class="d-flex gap-2 flex-wrap">
-      <span
-        *ngFor="let isic of profile.industries"
-        class="badge-outline-gray fs-7 my-2"
-      >
-        <ng-container *ngIf="lang === 'ar'">
-          {{ isic.names.ar }}
-        </ng-container>
-        <ng-container *ngIf="lang === 'en'">
-          {{ isic.names.en }}
-        </ng-container>
-      </span>
+  <div class="col-12 col-md-6">
+    <div class="card my-4" *ngIf="profile && profile.industries && profile.industries.length>0">
+      <div class="card-header">
+        <h3 class="card-title">{{ 'PROFILE.INDUSTRIES' | translate }}</h3>
+      </div>
+      <div class="card-body py-3">
+        <div class="d-flex gap-2 flex-wrap">
+          <span
+            *ngFor="let isic of profile.industries"
+            class="badge-outline-gray fs-7 my-2"
+          >
+            <ng-container *ngIf="lang === 'ar'">
+              {{ isic.names.ar }}
+            </ng-container>
+            <ng-container *ngIf="lang === 'en'">
+              {{ isic.names.en }}
+            </ng-container>
+          </span>
+        </div>
+      </div>
     </div>
+    
   </div>
 </div>
 
+
 </ng-container>
+
