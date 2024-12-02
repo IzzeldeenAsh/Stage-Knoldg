@@ -262,11 +262,13 @@ import { UpgradeToCompanyComponent } from './upgrade-to-company/upgrade-to-compa
     loadCountries(): Observable<any[]> {
       return this.countryService.getCountries().pipe(
         tap((countries) => {
+         
           this.countries = countries.map((country: any) => ({
             ...country,
             flagPath: `assets/media/flags/${country.flag}.svg`,
             showFlag: true,
           }));
+          console.log("countries",this.countries);
           this.isLoadingCountries = false;
         }),
         catchError((err) => {

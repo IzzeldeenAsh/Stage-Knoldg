@@ -77,8 +77,7 @@
                   alt="{{ country.name.en }}"
                   class="flag-icon w-20px mx-2"
                 />
-                <span *ngIf="lang === 'en'">{{ country.names.en }}</span>
-                <span *ngIf="lang === 'ar'">{{ country.names.ar }}</span>
+                <span>{{ country.name.en }}</span>
               </div>
             </ng-template>
           </p-dropdown>
