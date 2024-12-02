@@ -25,7 +25,6 @@ import { CountriesComponent } from './dashboard/countries/countries.component';
 import { RegionsComponent } from './dashboard/regions/regions.component';
 import { DropdownModule } from 'primeng/dropdown';
 import { ConsultingFieldsComponent } from './dashboard/consulting-fields/consulting-fields.component';
-import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { TreeTableModule } from 'primeng/treetable';
 import { MessageModule } from 'primeng/message';
@@ -34,6 +33,8 @@ import { NodeService } from 'src/app/_fake/services/nodeService/nodeservice';
 import { TagsComponent } from './dashboard/tags/tags.component';
 import { HSCodeComponent } from './hscode/hscode.component';
 import { GuidelineComponent } from './dashboard/guidelines/guidelines.component';
+import { ChipModule } from 'primeng/chip';
+import { TreeModule } from 'primeng/tree';
 
 @NgModule({
   declarations: [
@@ -64,6 +65,7 @@ import { GuidelineComponent } from './dashboard/guidelines/guidelines.component'
     FormsModule,
     TreeSelectModule,
     TreeTableModule,
+    TreeModule,
     ReactiveFormsModule,
     CardModule,
     AccordionModule,
@@ -72,6 +74,7 @@ import { GuidelineComponent } from './dashboard/guidelines/guidelines.component'
     MessagesModule,
     TableModule,
     NgApexchartsModule,
+    ChipModule,
 ]
 
 ,providers:[NodeService]

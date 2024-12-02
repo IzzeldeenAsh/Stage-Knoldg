@@ -6,6 +6,17 @@ import Swal from 'sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { Tag, TagsService } from "src/app/_fake/services/tags/tags.service";
+import { IsicCodesService } from "src/app/_fake/services/isic-code/isic-codes.service"; // Import ISIC Codes Service
+import { TreeNode } from "src/app/_fake/models/treenode";
+
+interface TagWithIndustries extends Tag {
+  associatedIndustries: IndustryDisplay[];
+}
+
+interface IndustryDisplay {
+  en: string;
+  ar: string;
+}
 
 @Component({
   selector: "app-tags",
@@ -16,15 +27,21 @@ export class TagsComponent implements OnInit, OnDestroy {
   messages: Message[] = [];
   private unsubscribe: Subscription[] = [];
   listOfTags: Tag[] = [];
+  tagsWithIndustries: TagWithIndustries[] = [];
   isEditMode: boolean = false;
+  nodes: TreeNode[] = [];
+  selectedNodes: any;
   isLoading$: Observable<boolean>;
   selectedTagId: number | null = null;
+  reverseLoader:boolean=false;
   visible: boolean = false;
   tagForm: FormGroup;
   categories: { id: string; name: string }[] = []; // To store category options
+  industriesList: any[] = []; // Store all industries
 
   constructor(
     private _tags: TagsService,
+    private _isic: IsicCodesService, // Inject ISIC Codes Service
     private cdr: ChangeDetectorRef,
     private fb: FormBuilder,
     private messageService: MessageService
@@ -37,11 +54,117 @@ export class TagsComponent implements OnInit, OnDestroy {
       arabicName: ['', Validators.required],
       englishName: ['', Validators.required],
       status: ['active', Validators.required],
-      category: [null, Validators.required] // Initialize to hold the full category object
+     
     });
 
-    this.getTagsList();
-    this.getCategories(); // Fetch categories for the dropdown
+    this.getIndustriesList(); // Fetch industries first
+    this.getIndustriesTree();
+  }
+
+  getIndustriesList() {
+    const industrySub = this._isic.getIndustryList().subscribe({
+      next: (data) => {
+        this.industriesList = data;
+        this.getTagsList(); // Fetch tags after industries are loaded
+      },
+      error: (error) => {
+        this.handleServerErrors(error);
+      }
+    });
+    this.unsubscribe.push(industrySub);
+  }
+
+  getIndustriesTree() {
+    this.reverseLoader = true;
+    const isicSub = this._isic.getIsicCodesTree().subscribe({
+      next: (res) => {
+        console.log("res",res);
+        this.nodes = this.disableRootNodes(res); // Disable parent nodes
+      },
+      error: (err) => {
+        console.error('Error fetching ISIC codes:', err);
+      },
+      complete: () => {
+        this.reverseLoader = false;
+      }
+    });
+    this.unsubscribe.push(isicSub);
+  }
+  
+  disableRootNodes(nodes: TreeNode[]): TreeNode[] {
+    return nodes.map(node => {
+      node.selectable = false; // Disable selection for root node
+      node.selected = false; // Ensure node is not selected
+      node.partialSelected = false; // Ensure node is not partially selected
+      node.styleClass = 'root-node'; // Add a CSS class for styling
+      if (node.children && node.children.length > 0) {
+        node.children = this.enableChildNodes(node.children); // Ensure children remain selectable
+      }
+      return node;
+    });
+  }
+
+  enableChildNodes(nodes: TreeNode[]): TreeNode[] {
+    return nodes.map(child => {
+      child.selectable = true; // Ensure child nodes are selectable
+      if (child.children && child.children.length > 0) {
+        child.children = this.enableChildNodes(child.children); // Recurse for deeper levels
+      }
+      return child;
+    });
+  }
+  onNodeSelect(event: any) {
+    if (!event.node.selectable) {
+      // If the node is not selectable, remove it from the selection
+      this.selectedNodes = this.selectedNodes.filter((node: TreeNode) => node.key !== event.node.key);
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Selection Disabled',
+        detail: 'This category cannot be selected.',
+      });
+    }
+  }
+  
+  onNodeUnselect(event: any) {
+    // Optional: Handle unselection if needed
+  }
+  
+  selectDefaultNodes(tag:Tag) {
+    this.reverseLoader=true;
+    this.selectedNodes = [];
+    const codesToSelect = tag.industries;
+    const traverse = (nodes: any[], parentNode: any = null) => {
+      nodes.forEach((node: any) => {
+        node.parent = parentNode; // Set the parent property
+  
+        if (codesToSelect.includes(node.data.key)) {
+          this.selectedNodes.push(node);
+          node.selected = true; // Mark the node as selected
+        }
+  
+        if (node.children && node.children.length) {
+          traverse(node.children, node);
+  
+          // Update parent node selection state based on child nodes
+          const allChildrenSelected = node.children.every((child: any) => child.selected);
+          const someChildrenSelected = node.children.some((child: any) => child.selected || child.partialSelected);
+  
+          if (allChildrenSelected) {
+            node.selected = true;
+            node.partialSelected = false;
+          } else if (someChildrenSelected) {
+            node.selected = false;
+            node.partialSelected = true;
+          } else {
+            node.selected = false;
+            node.partialSelected = false;
+          }
+        }
+      });
+      }
+
+      traverse(this.nodes);
+      this.reverseLoader=false;
   }
 
   getCategories() {
@@ -60,6 +183,7 @@ export class TagsComponent implements OnInit, OnDestroy {
     const listSub = this._tags.getTags().subscribe({
       next: (data: Tag[]) => {
         this.listOfTags = data;
+        this.mapTagsWithIndustries();
         this.cdr.detectChanges();
       },
       error: (error) => {
@@ -79,6 +203,22 @@ export class TagsComponent implements OnInit, OnDestroy {
     this.unsubscribe.push(listSub);
   }
 
+  mapTagsWithIndustries() {
+    this.tagsWithIndustries = this.listOfTags.map(tag => {
+      const associatedIndustries = this.industriesList
+        .filter(industry => industry.tags.some((t:any) => t.tag_id === tag.id))
+        .map(industry => ({
+          en: industry.names.en.trim(),
+          ar: industry.names.ar.trim()
+        }));
+
+      return {
+        ...tag,
+        associatedIndustries
+      };
+    });
+  }
+
   showDialog() {
     this.visible = true;
     this.selectedTagId = null;
@@ -87,20 +227,23 @@ export class TagsComponent implements OnInit, OnDestroy {
     this.messages = [];
   }
 
-  editTag(tag: Tag) {
+  editTag(tag:Tag) { // Update parameter type
     this.visible = true;
     this.selectedTagId = tag.id;
     this.isEditMode = true;
+    this.selectDefaultNodes(tag);
     console.log(tag);
     this.tagForm.patchValue({
       arabicName: tag.names.ar,
       englishName: tag.names.en,
       status: tag.status,
-      category: this.categories.find(cat => cat.id === tag.category) // Match selected category object
     });
     this.messages = [];
-  }
 
+  }
+  handleDialogClose(){
+    this.selectedNodes=[]
+  }
   private handleServerErrors(error: any) {
     if (error.error && error.error.errors) {
       const serverErrors = error.error.errors;
@@ -131,10 +274,6 @@ export class TagsComponent implements OnInit, OnDestroy {
       }
     }
   }
-  
-  
-
- 
 
   applyFilter(event: any) {
     const value = event.target.value.trim().toLowerCase();
@@ -148,13 +287,15 @@ export class TagsComponent implements OnInit, OnDestroy {
   get hasErrorMessage() {
     return this.messages.some(msg => msg.severity === 'error');
   }
+
   get status() {
     return this.tagForm.get('status');
   }
-  
+
   get category() {
     return this.tagForm.get('category');
   }
+
   onCancel() {
     this.visible = false;
     this.tagForm.reset();
@@ -168,7 +309,7 @@ export class TagsComponent implements OnInit, OnDestroy {
   get englishName() {
     return this.tagForm.get('englishName');
   }
-
+  
   submit() {
     this.messages = [];
 
@@ -180,15 +321,13 @@ export class TagsComponent implements OnInit, OnDestroy {
     const formValues = this.tagForm.value;
 
     const tagData = {
-      
-        name: {
-          en: formValues.englishName,
-          ar: formValues.arabicName
-        },
-        status: formValues.status,
-        category: formValues.category.id // Only pass category ID to the backend
-      }
-   
+      name: {
+        en: formValues.englishName.trim(),
+        ar: formValues.arabicName.trim()
+      },
+      status: formValues.status,
+      industries: this.selectedNodes.filter((node:any)=>node.selectable).map((node:any)=>node.key)
+    }
 
     if (this.selectedTagId) {
       // Update existing tag
@@ -199,7 +338,8 @@ export class TagsComponent implements OnInit, OnDestroy {
             summary: 'Success',
             detail: 'Tag updated successfully.',
           });
-          this.getTagsList(); // Refresh the list after update
+          this.getIndustriesList(); // Fetch industries first
+          this.getIndustriesTree();
           this.visible = false; // Close dialog
           this.tagForm.reset(); // Reset the form
         },
@@ -218,7 +358,8 @@ export class TagsComponent implements OnInit, OnDestroy {
             summary: 'Success',
             detail: 'Tag created successfully.',
           });
-          this.getTagsList(); // Refresh the list after creation
+          this.getIndustriesList(); // Fetch industries first
+          this.getIndustriesTree();
           this.visible = false; // Close dialog
           this.tagForm.reset(); // Reset the form
         },

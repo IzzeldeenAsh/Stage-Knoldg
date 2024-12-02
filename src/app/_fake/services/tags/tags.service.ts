@@ -13,6 +13,7 @@ export interface Tag {
     ar: string;
   };
   status?:string;
+  industries:number[];
 }
 
 export interface TagResponse {
@@ -66,7 +67,7 @@ export class TagsService {
   }
 
 // Create a new tag
-createTag(tag:  { name: { en: string; ar: string }; status: string; category: string  }): Observable<any> {
+createTag(tag:   { name: { en: string; ar: string }; status: string; industries:any }): Observable<any> {
   const headers = new HttpHeaders({
     'Accept': 'application/json',
     'Content-Type': 'application/json',
@@ -82,7 +83,7 @@ createTag(tag:  { name: { en: string; ar: string }; status: string; category: st
 }
 
 // Update an existing tag
-updateTag(tagId: number, tag:   { name: { en: string; ar: string }; status: string; category: string } ): Observable<Tag> {
+updateTag(tagId: number, tag:   { name: { en: string; ar: string }; status: string; industries:any } ): Observable<Tag> {
   const headers = new HttpHeaders({
     'Accept': 'application/json',
     'Content-Type': 'application/json',

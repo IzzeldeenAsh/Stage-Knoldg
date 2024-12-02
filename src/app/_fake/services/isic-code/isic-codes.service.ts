@@ -19,6 +19,7 @@ export interface IsicCode {
 })
 export class IsicCodesService {
   private apiUrl = 'https://api.foresighta.co/api/common/setting/industry/tree-list'; 
+  private apiList = 'https://api.foresighta.co/api/common/setting/industry/list'
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   currentLang: any = 'en';
@@ -101,6 +102,23 @@ export class IsicCodesService {
         finalize(() => this.setLoading(false))
       );
     }
+
+     // Fetch ISIC Codes data from the API
+  getIndustryList(): Observable<any[]> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+
+    this.setLoading(true);
+    return this.http.get<any>(this.apiList, { headers }).pipe(
+      map((res) => res.data),
+      catchError((error) => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
 
   // Create a new ISIC code
   createIsicCode(isicCode: any): Observable<IsicCode> {
