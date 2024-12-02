@@ -35,6 +35,7 @@ import { HSCodeComponent } from './hscode/hscode.component';
 import { GuidelineComponent } from './dashboard/guidelines/guidelines.component';
 import { ChipModule } from 'primeng/chip';
 import { TreeModule } from 'primeng/tree';
+import { TopicsComponent } from './dashboard/topics/topics.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import { TreeModule } from 'primeng/tree';
     AdminNotificationsComponent,
     CountriesComponent,
     DepartmentComponent,
+    TopicsComponent,
     ConsultingFieldsComponent,
     TagsComponent,
     HSCodeComponent,
