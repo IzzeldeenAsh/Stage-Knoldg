@@ -1,8 +1,3 @@
-<p-progressBar
-  *ngIf="isLoading$ | async"
-  mode="indeterminate"
-  [style]="{ height: '4px' }"
-></p-progressBar>
 
 <div id="kt_app_toolbar" class="app-toolbar pt-10 mb-0">
   <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex align-items-stretch">
@@ -149,7 +144,7 @@
       <div class="card-body pt-0">
         <ng-container *ngIf="!(isLoading$ | async) && listOfTopics.length > 0">
           <p-messages *ngIf="hasSuccessMessage || hasErrorMessage" [(value)]="messages" [enableService]="false"></p-messages>
-          <p-table #dt [value]="listOfTopics" [paginator]="false" [rows]="10" [globalFilterFields]="['names.en', 'names.ar']" class="table-p">
+          <p-table #dt [value]="listOfTopics" [paginator]="true" [rows]="10" [globalFilterFields]="['names.en', 'names.ar']" class="table-p">
             <ng-template pTemplate="header">
               <tr>
                 <th>Topic Name (English)</th>
@@ -194,5 +189,11 @@
         </ng-container>
       </div>
     </div>
+    <p-progressBar
+  *ngIf="isLoading$ | async"
+  mode="indeterminate"
+  [style]="{ height: '4px' }"
+></p-progressBar>
+
   </div>
 </div>

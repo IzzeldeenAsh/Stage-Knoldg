@@ -17,9 +17,9 @@ export interface IsicCode {
 @Injectable({
   providedIn: 'root'
 })
-export class IsicCodesService {
-  private apiUrl = 'https://api.foresighta.co/api/common/setting/isic-code/tree-list'; 
-  private apiList = 'https://api.foresighta.co/api/common/setting/isic-code/list'
+export class IndustryService {
+  private apiUrl = 'https://api.foresighta.co/api/common/setting/industry/tree-list'; 
+  private apiList = 'https://api.foresighta.co/api/common/setting/industry/list'
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   currentLang: any = 'en';

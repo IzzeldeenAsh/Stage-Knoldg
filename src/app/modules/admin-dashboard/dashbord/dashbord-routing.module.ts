@@ -12,6 +12,7 @@ import { TagsComponent } from './dashboard/tags/tags.component';
 import { HSCodeComponent } from './hscode/hscode.component';
 import { GuidelineComponent } from './dashboard/guidelines/guidelines.component';
 import { TopicsComponent } from './dashboard/topics/topics.component';
+import { IndustriesComponent } from './dashboard/industries/industries.component';
 
 
 const routes: Routes = [
@@ -64,6 +65,10 @@ const routes: Routes = [
       {
         path:'ISIC-code',
         component:ISICCodeManagmentComponent
+      },
+      {
+        path:'industries',
+        component:IndustriesComponent
       },
       {
         path:'tags',

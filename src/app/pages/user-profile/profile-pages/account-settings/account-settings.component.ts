@@ -16,6 +16,7 @@
   import { UpdateProfileService } from 'src/app/_fake/services/profile/profile.service';
 import { DialogService } from 'primeng/dynamicdialog';
 import { UpgradeToCompanyComponent } from './upgrade-to-company/upgrade-to-company.component';
+import { IndustryService } from 'src/app/_fake/services/industries/industry.service';
 
   interface Certification {
     id: number;
@@ -67,7 +68,7 @@ import { UpgradeToCompanyComponent } from './upgrade-to-company/upgrade-to-compa
       private authService: AuthService,
       private translationService: TranslationService,
       private countryService: CountryService,
-      private isicService: IsicCodesService,
+      private isicService: IndustryService,
       private consultingFieldService: ConsultingFieldsService,
       private documentsService: DocumentsService,
       private certificationService:CertificationService,

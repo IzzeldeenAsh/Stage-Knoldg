@@ -1,4 +1,9 @@
-
+<!-- Loading Indicator -->
+<p-progressBar
+  *ngIf="isLoading$ | async"
+  mode="indeterminate"
+  [style]="{ height: '4px' }"
+></p-progressBar>
 
 <!-- Toolbar -->
 <div id="kt_app_toolbar" class="app-toolbar pt-10 mb-0">
@@ -6,10 +11,9 @@
     <div class="app-toolbar-wrapper d-flex flex-stack flex-wrap gap-4 w-100">
       <div class="page-title d-flex flex-column justify-content-center gap-1 me-3">
         <h1 class="page-heading d-flex flex-column justify-content-center text-gray-900 fw-bold fs-3 m-0">
-          ISIC Codes
+          Industry
         </h1>
-
-        <div class="fw-semibold fs-7 my-0 text-muted" *ngIf="isicnodes && isicnodes.length >0">{{ isicnodes.length || 0 }} ISIC Codes</div>
+        <div class="fw-semibold fs-7 my-0 text-muted" *ngIf="isicnodes && isicnodes.length >0">{{ isicnodes.length || 0 }} Industries</div>
       </div>
 
       <!-- Actions -->
@@ -22,8 +26,6 @@
 <!-- Content -->
 <div id="kt_app_content" class="app-content flex-column-fluid">
   <div id="kt_app_content_container" class="app-container container-fluid">
-            <!-- Loading Indicator -->
-
     <div class="card">
       <div class="card-header border-0 pt-6">
         <div class="card-title">
@@ -33,7 +35,7 @@
               type="text"
               pInputText
               class="form-control w-250px ps-12"
-              placeholder="Search ISIC Code"
+              placeholder="Search Industry"
               (input)="applyFilter($event)"
             />
           </div>
@@ -60,7 +62,6 @@
           >
             <ng-template pTemplate="header">
               <tr>
-                <th></th>
                 <th>Name (EN)</th>
                 <th>Name (AR)</th>
                 <th>Status</th>
@@ -69,11 +70,8 @@
             </ng-template>
             <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
               <tr [ttRow]="rowNode">
-                <td>
-                  <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
-                  {{ rowData.code }}
-                </td>
-                <td>{{ rowData.nameEn }}</td>
+             
+                <td>  <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>{{ rowData.nameEn }}</td>
                 <td>{{ rowData.nameAr }}</td>
                 <td >
                   <div class="badge" [ngClass]="{
@@ -83,7 +81,7 @@
                 </td>
                 <td>
                   <a
-                    pTooltip="Edit ISIC Code"
+                    pTooltip="Edit Industry"
                     tooltipPosition="top"
                     class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
                     (click)="editIsicCode(rowNode)"
@@ -91,7 +89,7 @@
                     <i class="ki-duotone ki-pencil fs-2"><span class="path1"></span><span class="path2"></span></i>
                   </a>
                   <a
-                    pTooltip="Delete ISIC Code"
+                    pTooltip="Delete Industry"
                     tooltipPosition="top"
                     class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
                     (click)="deleteIsicCode(rowNode)"
@@ -106,10 +104,10 @@
       </div>
     </div>
     <p-progressBar
-*ngIf="isLoading$|async"
-mode="indeterminate"
-[style]="{ height: '4px' }"
-></p-progressBar>
+    *ngIf="isLoading$|async"
+    mode="indeterminate"
+    [style]="{ height: '4px' }"
+    ></p-progressBar>
   </div>
 </div>
 
@@ -122,14 +120,14 @@ mode="indeterminate"
 
 <!-- Dialog for Create/Update -->
 <p-dialog
-  [header]="isUpdate ? 'Edit ISIC Code' : 'Add ISIC Code'"
+  [header]="isUpdate ? 'Edit Industry' : 'Add Industry'"
   [modal]="true"
   [(visible)]="displayDialog"
   [style]="{ width: '40rem' }"
 >
   <p-messages *ngIf="hasErrorMessage" [(value)]="messages" [enableService]="false"></p-messages>
   <span class="text-muted mb-3 d-block">
-    {{ isUpdate ? 'Edit ISIC Code Details' : 'Add ISIC Code Details' }}.
+    {{ isUpdate ? 'Edit Industry' : 'Add Industry' }}.
   </span>
 
   <form [formGroup]="isicForm">
