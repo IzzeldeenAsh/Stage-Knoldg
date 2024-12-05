@@ -7,6 +7,7 @@ import { Message, TreeNode } from 'primeng/api';
 import { TranslationService } from 'src/app/modules/i18n';
 import { IsicCodesService } from 'src/app/_fake/services/isic-code/isic-codes.service';
 import { phoneNumbers } from 'src/app/pages/wizards/phone-keys';
+import { IndustryService } from 'src/app/_fake/services/industries/industry.service';
 @Component({
   selector: 'app-step2',
   templateUrl: './step2.component.html',
@@ -42,7 +43,7 @@ export class Step2Component implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private _ForsightaFieldsService: ConsultingFieldsService,
     private _translateion:TranslationService,
-    private _isicService: IsicCodesService // Add this line
+    private _isicService: IndustryService // Add this line
   ) {
     this.isLoadingConsultingFields$ = this._ForsightaFieldsService.isLoading$
     this.lang=this._translateion.getSelectedLanguage();

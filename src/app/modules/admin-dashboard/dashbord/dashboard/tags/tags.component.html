@@ -1,8 +1,3 @@
-<p-progressBar
-  *ngIf="isLoading$ | async"
-  mode="indeterminate"
-  [style]="{ height: '4px' }"
-></p-progressBar>
 
 <div id="kt_app_toolbar" class="app-toolbar pt-10 mb-0">
   <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex align-items-stretch">
@@ -206,5 +201,11 @@
         </ng-container>
       </div>
     </div>
+    <p-progressBar
+  *ngIf="isLoading$ | async"
+  mode="indeterminate"
+  [style]="{ height: '4px' }"
+></p-progressBar>
+
   </div>
 </div>

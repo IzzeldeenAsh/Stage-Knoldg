@@ -61,11 +61,9 @@ export class AuthService implements OnDestroy {
     this.isLoadingSubject.next(true);
     return this.authHttpService.login(email, password).pipe(
       map((response: any) => {
-        // Extract token and user info from the response
         const auth = new AuthModel();
-        auth.authToken = response.data.token; // Extract the token from the response
+        auth.authToken = response.data.token; 
         this.setAuthFromLocalStorage(auth);
-        console.log(response);
         // Store user information in local storage
         const user: UserType = {
           id: response.data.id,

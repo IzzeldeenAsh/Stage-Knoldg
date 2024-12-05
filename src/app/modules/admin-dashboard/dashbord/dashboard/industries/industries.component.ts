@@ -9,17 +9,17 @@ import {
 import { TreeNode, MessageService } from 'primeng/api';
 import { IsicCodesService } from 'src/app/_fake/services/isic-code/isic-codes.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Observable, Subscription, of } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
 import { TreeTable } from 'primeng/treetable';
+import { IndustryService } from 'src/app/_fake/services/industries/industry.service';
 
 @Component({
-  selector: 'app-isic-code-managment',
-  templateUrl: './isic-code-managment.component.html',
-  styleUrls: ['./isic-code-managment.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'app-industries',
+  templateUrl: './industries.component.html',
+  styleUrl: './industries.component.scss'
 })
-export class ISICCodeManagmentComponent implements OnInit, OnDestroy {
+export class IndustriesComponent  implements OnInit, OnDestroy {
   messages: any[] = [];
   private unsubscribe: Subscription[] = [];
   isicnodes!: TreeNode[];
@@ -41,7 +41,7 @@ export class ISICCodeManagmentComponent implements OnInit, OnDestroy {
 
   constructor(
     private cdr: ChangeDetectorRef,
-    private isicCodesService: IsicCodesService,
+    private isicCodesService: IndustryService,
     private fb: FormBuilder,
     private messageService: MessageService
   ) {
@@ -61,18 +61,14 @@ export class ISICCodeManagmentComponent implements OnInit, OnDestroy {
   }
 
   loadIsicCodes() {
-    this.isLoading$ = of(true)
     const listSub = this.isicCodesService.getIsicCodesTree().subscribe({
       next: (res) => {
         this.isicnodes = res;
         this.originalIsicNodes = [...res];  // Store original data here
         this.isicTreeData = this.changeKeyToValue([...res]); // Transform only for isicTreeData
-        this.isLoading$ = of(false)
         this.cdr.detectChanges();
-        
       },
       error: (error) => {
-        this.isLoading$ = of(false)
         this.handleServerErrors(error);
       },
     });

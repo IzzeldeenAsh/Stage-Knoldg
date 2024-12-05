@@ -1,13 +1,14 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild, OnDestroy } from "@angular/core";
 import { Message } from "primeng/api";
 import { Table } from "primeng/table";
-import { Observable, Subscription } from "rxjs";
+import { Observable, Subscription, of } from "rxjs";
 import Swal from 'sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { Tag, TagsService } from "src/app/_fake/services/tags/tags.service";
 import { IsicCodesService } from "src/app/_fake/services/isic-code/isic-codes.service"; // Import ISIC Codes Service
 import { TreeNode } from "src/app/_fake/models/treenode";
+import { IndustryService } from "src/app/_fake/services/industries/industry.service";
 
 interface TagWithIndustries extends Tag {
   associatedIndustries: IndustryDisplay[];
@@ -41,7 +42,7 @@ export class TagsComponent implements OnInit, OnDestroy {
 
   constructor(
     private _tags: TagsService,
-    private _isic: IsicCodesService, // Inject ISIC Codes Service
+    private _isic: IndustryService, // Inject ISIC Codes Service
     private cdr: ChangeDetectorRef,
     private fb: FormBuilder,
     private messageService: MessageService
@@ -62,12 +63,15 @@ export class TagsComponent implements OnInit, OnDestroy {
   }
 
   getIndustriesList() {
+    this.isLoading$ = of(true)
     const industrySub = this._isic.getIndustryList().subscribe({
       next: (data) => {
         this.industriesList = data;
+        this.isLoading$ = of(false)
         this.getTagsList(); // Fetch tags after industries are loaded
       },
       error: (error) => {
+        this.isLoading$ = of(false)
         this.handleServerErrors(error);
       }
     });
@@ -180,15 +184,17 @@ export class TagsComponent implements OnInit, OnDestroy {
   }
 
   getTagsList() {
+    this.isLoading$ = of(true)
     const listSub = this._tags.getTags().subscribe({
       next: (data: Tag[]) => {
         this.listOfTags = data;
         this.mapTagsWithIndustries();
+        this.isLoading$ = of(false)
         this.cdr.detectChanges();
       },
       error: (error) => {
         this.messages = [];
-
+        this.isLoading$ = of(false)
         if (error.validationMessages) {
           this.messages = error.validationMessages;
         } else {

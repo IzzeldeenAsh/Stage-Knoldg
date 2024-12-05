@@ -1,13 +1,14 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild, OnDestroy } from "@angular/core";
 import { Message } from "primeng/api";
 import { Table } from "primeng/table";
-import { Observable, Subscription } from "rxjs";
+import { Observable, Subscription, of } from "rxjs";
 import Swal from 'sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { IsicCodesService } from "src/app/_fake/services/isic-code/isic-codes.service"; // Import ISIC Codes Service
 import { Topic, TopicsService } from "src/app/_fake/services/topic-service/topic.service";
 import { TreeNode } from "src/app/_fake/models/treenode";
+import { IndustryService } from "src/app/_fake/services/industries/industry.service";
 
 @Component({
   selector: "app-topics",
@@ -30,7 +31,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
   submitted = false;
   constructor(
     private _topics: TopicsService,
-    private _isic: IsicCodesService, // Inject ISIC Codes Service
+    private _isic: IndustryService, // Inject ISIC Codes Service
     private cdr: ChangeDetectorRef,
     private fb: FormBuilder,
     private messageService: MessageService
@@ -49,6 +50,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
   }
 
   getIndustriesList() {
+    this.isLoading$=of(true)
     const industrySub = this._isic.getIndustryList().subscribe({
       next: (data) => {
         this.industriesList = data;
@@ -153,6 +155,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
     };
 
     traverse(this.nodes);
+    this.expandToSelectedNode();
     this.reverseLoader = false;
   }
 
@@ -160,11 +163,12 @@ export class TopicsComponent implements OnInit, OnDestroy {
     const listSub = this._topics.getTopics().subscribe({
       next: (data: Topic[]) => {
         this.listOfTopics = data;
+        this.isLoading$=of(false)
         this.cdr.detectChanges();
       },
       error: (error) => {
         this.messages = [];
-
+        this.isLoading$=of(false)
         if (error.validationMessages) {
           this.messages = error.validationMessages;
         } else {
@@ -378,6 +382,30 @@ export class TopicsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.unsubscribe.forEach(sb => sb.unsubscribe());
+  }
+
+  expandToSelectedNode() {
+    if (this.selectedNode) {
+      this.expandAncestors(this.nodes, this.selectedNode);
+    }
+  }
+  expandAncestors(nodes: TreeNode[], targetNode: TreeNode, path: TreeNode[] = []): boolean {
+    for (let node of nodes) {
+      const currentPath = [...path, node];
+      if (node === targetNode) {
+        // Expand all nodes in the current path
+        currentPath.forEach(n => n.expanded = true);
+        return true;
+      }
+      if (node.children && node.children.length) {
+        const found = this.expandAncestors(node.children, targetNode, currentPath);
+        if (found) {
+          node.expanded = true;
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   @ViewChild("dt") table: Table;
