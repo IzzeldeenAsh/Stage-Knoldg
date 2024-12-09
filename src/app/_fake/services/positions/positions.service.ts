@@ -18,8 +18,8 @@ export interface Position {
 })
 export class PositionsService {
   private apiUrl = 'https://api.foresighta.co/api/common/setting/position/list';
-  private createApi = 'https://api.foresighta.co/api/admin/setting/position';
-  private updateDeleteApi = 'https://api.foresighta.co/api/admin/setting/position';
+  private createApi = 'https://api.foresighta.co/api/common/setting/position/list';
+  private updateDeleteApi = 'https://api.foresighta.co/api/common/setting/position/list';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   currentLang: string = 'en';

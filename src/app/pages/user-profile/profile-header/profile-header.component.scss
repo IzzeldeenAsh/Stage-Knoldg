@@ -1,5 +1,4 @@
 .no-bg{
-        mix-blend-mode: multiply;
         border-radius: 10px;
 }
 .update-label{
@@ -21,4 +20,10 @@
         bottom: 0;
         right: 0;
       }
-      
+      .profile-image {
+        width: 125px;
+        height: 125px;
+        border: 1px solid #28a745; /* Border color for visibility */
+        border-radius: 50%; /* Make it circular if desired */
+        object-fit: cover; /* Ensure the image covers the container */
+      }

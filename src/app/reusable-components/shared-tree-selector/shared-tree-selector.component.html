@@ -1,0 +1,75 @@
+<p-dialog
+  [header]="title"
+  [(visible)]="dialogVisible"
+  [modal]="true"
+  [style]="{ width: dialogWidth, 'max-height': '100vh', overflow: 'hidden' }"
+  [contentStyle]="{ 'max-height': 'calc(90vh - 100px)', overflow: 'auto' }"
+  appendTo="body"
+>
+  <div class="tree-container">
+    <p-tree
+      class="industry-tree"
+      [style]="{ 'max-height': '100%', overflow: 'auto' }"
+      [value]="nodes"
+      selectionMode="checkbox"
+      [(selection)]="selectedNodes"
+      [metaKeySelection]="false"
+      [filter]="true"
+      filterMode="strict"
+      [loading]="isLoading$ | async"
+      (onNodeSelect)="onNodeSelect($event)"
+      (onNodeUnselect)="onNodeUnselect($event)"
+      (onChange)="updateSelectAllState()"
+    >
+      <ng-template let-node pTemplate="default">
+        <ng-container *ngIf="!node.isOther">
+          <span>{{ node.label }}</span>
+        </ng-container>
+        <ng-container *ngIf="node.isOther">
+          <span>{{ node.label }}</span>
+          <input
+            pInputText
+            type="text"
+            [(ngModel)]="node.data.customInput"
+            [placeholder]="otherFieldPlaceholder"
+            (input)="onOtherInput(node)"
+            style="margin:0px 10px; width: 70%;"
+          />
+        </ng-container>
+      </ng-template>
+    </p-tree>
+  </div>
+  <p-footer>
+    <div class="p-2 d-flex justify-content-between align-items-center">
+      <a
+        class="btn btn-sm btn-secondary btn-shadow cursor-pointer"
+        (click)="onCancel()"
+      >
+        {{ cancelLabel }}
+      </a>
+      <a
+        class="btn btn-sm btn-primary m-1 btn-shadow cursor-pointer"
+        (click)="onOk()"
+      >
+        {{ okLabel }}
+      </a>
+    </div>
+  </p-footer>
+</p-dialog>
+
+<div class="col-12 mb-4">
+  <label class="form-label fs-6 text-gray-900" [class.required]="isRequired">
+    {{ title }}
+  </label>
+
+  <input
+    type="text"
+    pInputText
+    class="w-100 d-block"
+    [readonly]="true"
+    [placeholder]="placeholder"
+    (click)="showDialog()"
+    [value]="selectedNodesLabel()"
+    style="font-size: 13px; font-weight: 400; color: #000"
+  />
+</div>

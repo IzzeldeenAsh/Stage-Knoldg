@@ -50,7 +50,6 @@ export class IndustriesComponent  implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.isicForm = this.fb.group({
-      code: ['', Validators.required],
       nameEn: ['', Validators.required],
       nameAr: ['', Validators.required],
       status: ['', Validators.required],
@@ -201,13 +200,16 @@ export class IndustriesComponent  implements OnInit, OnDestroy {
     }
     const formValues = this.isicForm.value;
     const isicCode = {
-      code: formValues.code,
       name: {
         en: formValues.nameEn,
         ar: formValues.nameAr,
       },
+      description: {
+        en: formValues.nameEn,
+        ar: formValues.nameAr,
+      },
       status: formValues.status,
-      parent_id: this.selectedNode.value,
+      parent_id: this.selectedNode? this.selectedNode.value :null,
     };
 
     if (this.isUpdate && this.selectedNodeId !== null) {

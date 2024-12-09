@@ -13,32 +13,31 @@
 
 <!-- Form Section -->
 <div [formGroup]="form">
- 
   <!-- Personal Account Section -->
   <ng-container *ngIf="defaultValues.accountType === 'personal'">
     <div class="mb-10 row">
       <!-- Consulting Fields -->
       <div class="col-md-6 col-12">
-        <label class="form-label mb-3 required">
-          {{ "INSIGHTER_WIZARD.CONSULTING_FIELDS" | translate }}
-        </label>
+        <shared-tree-selector *ngIf="(isLoadingConsultingFields$ | async)===false"
+        [title]="'INSIGHTER_WIZARD.CONSULTING_FIELDS' | translate"
+        [placeholder]="
+          'AUTH.REGISTRATION.CONSULTING_FIELD_PLACEHOLDER' | translate
+        "
+        [otherFieldPlaceholder]="
+          'INSIGHTER_WIZARD.OTHER_FIELD_PLACEHOLDER' | translate
+        "
+        [selectAllLabel]="this.lang === 'ar' ? 'اختر الكل' : 'Select All'"
+        [fetchedData]="listOfConsultingFields"
+        [initialSelectedNodes]="form.value.consultingFields" 
+        [cancelLabel]="'BUTTONS.CANCEL' | translate"
+        [okLabel]="'BUTTONS.OK' | translate"
+        (nodesSelected)="onConsultingNodesSelected($event)"
+      ></shared-tree-selector>
         <p-progressBar
           *ngIf="isLoadingConsultingFields$ | async"
           mode="indeterminate"
           [style]="{ height: '4px' }"
         ></p-progressBar>
-        <p-multiSelect
-          *ngIf="!(isLoadingConsultingFields$ | async)"
-          [options]="listOfConsultingFields"
-          class="d-block form-p-control"
-          formControlName="consultingFields"
-          [optionLabel]="optionLabel"
-          placeholder="{{
-            'AUTH.REGISTRATION.CONSULTING_FIELD_PLACEHOLDER' | translate
-          }}"
-          [filter]="false"
-          [showClear]="true"
-        ></p-multiSelect>
 
         <div
           *ngIf="
@@ -53,36 +52,27 @@
 
       <!-- ISIC Codes -->
       <div class="col-md-6 col-12">
-        <label class="form-label fs-6 text-gray-900 required mb-3">
-          {{ "AUTH.REGISTRATION.INDUSTRY" | translate }}
-        </label>
+        <shared-tree-selector *ngIf="(isLoadingISIC$ | async)==false"
+        [title]="'AUTH.REGISTRATION.INDUSTRY' | translate"
+        [placeholder]="
+          'AUTH.REGISTRATION.INDUSTRY_PLACEHOLDER' | translate
+        "
+        [otherFieldPlaceholder]="
+          'INSIGHTER_WIZARD.OTHER_FIELD_PLACEHOLDER' | translate
+        "
+        [selectAllLabel]="this.lang === 'ar' ? 'اختر الكل' : 'Select All'"
+        [fetchedData]="this.nodes"
+        [cancelLabel]="'BUTTONS.CANCEL' | translate"
+        [initialSelectedNodes]="form.value.isicCodes" 
+        [okLabel]="'BUTTONS.OK' | translate"
+        (nodesSelected)="onIndustrySelected($event)"
+      ></shared-tree-selector>
         <p-progressBar
-          *ngIf="reverseLoader"
+          *ngIf="isLoadingISIC$ | async"
           mode="indeterminate"
           [style]="{ height: '4px' }"
         ></p-progressBar>
-        <input
-          type="text"
-          class="form-control"
-          [readonly]="reverseLoader"
-          placeholder="{{
-            'AUTH.REGISTRATION.INDUSTRY_PLACEHOLDER' | translate
-          }}"
-          (click)="showISICDialog()"
-          [value]="selectedNodesLabel()"
-        />
-        <ng-container
-          *ngIf="
-            form.get('isicCodes')?.hasError('required') &&
-            form.get('isicCodes')?.touched
-          "
-        >
-          <div class="fv-plugins-message-container">
-            <div class="fv-help-block">
-              {{ "AUTH.REGISTRATION.ISIC_CODES_REQUIRED" | translate }}
-            </div>
-          </div>
-        </ng-container>
+
       </div>
     </div>
 
@@ -175,6 +165,91 @@
 
   <!-- Corporate Account Section -->
   <ng-container *ngIf="defaultValues.accountType === 'corporate'">
+    <!-- Logo -->
+    <div class="mb-10 row">
+      <div class="col-12">
+        <label class="form-label mb-3 required">
+          {{ "INSIGHTER_WIZARD.COMPANYLOGO" | translate }}
+        </label>
+        <div class="d-flex flex-column">
+          <div
+            class="image-input logo-placeholder image-input-outline fit-content"
+            data-kt-image-input="true"
+            [style.backgroundImage]="getBackgroundImage()"
+          >
+            <!--begin::Image preview wrapper-->
+            <div
+              class="image-input-wrapper logo-placeholder shadow-sm w-225px h-100px"
+              [style.backgroundImage]="getBackgroundImage()"
+            ></div>
+            <!--end::Image preview wrapper-->
+
+            <!--begin::Edit button-->
+            <label
+              class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
+              data-kt-image-input-action="change"
+              data-bs-toggle="tooltip"
+              data-bs-dismiss="click"
+              title="{{ 'INSIGHTER_WIZARD.CHANGE_LOGO' | translate }}"
+            >
+              <i class="ki-duotone ki-pencil fs-6"
+                ><span class="path1"></span><span class="path2"></span
+              ></i>
+
+              <!--begin::Inputs-->
+              <input
+                type="file"
+                name="avatar"
+                accept=".png, .jpg, .jpeg"
+                (change)="onLogoSelected($event)"
+              />
+              <input type="hidden" name="avatar_remove" />
+              <!--end::Inputs-->
+            </label>
+            <!--end::Edit button-->
+
+            <!--begin::Cancel button-->
+            <span
+              class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
+              data-kt-image-input-action="cancel"
+              data-bs-toggle="tooltip"
+              data-bs-dismiss="click"
+              title="{{ 'INSIGHTER_WIZARD.CANCEL_LOGO' | translate }}"
+            >
+              <i class="ki-outline ki-cross fs-3"></i>
+            </span>
+            <!--end::Cancel button-->
+
+            <!--begin::Remove button-->
+            <span
+              class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
+              data-kt-image-input-action="remove"
+              data-bs-toggle="tooltip"
+              data-bs-dismiss="click"
+              (click)="removeLogo()"
+              title="{{ 'INSIGHTER_WIZARD.REMOVE_LOGO' | translate }}"
+            >
+              <i class="ki-outline ki-cross fs-3"></i>
+            </span>
+            <!--end::Remove button-->
+          </div>
+          <div
+            *ngIf="
+              form.get('logo')?.hasError('required') &&
+              form.get('logo')?.touched
+            "
+            class="fv-plugins-message-container invalid-feedback"
+          >
+            {{ "INSIGHTER_WIZARD.COMPANY_LOGO_REQUIRED" | translate }}
+          </div>
+          <p-messages
+            [value]="fizeSizeMessages"
+            [enableService]="false"
+          ></p-messages>
+        </div>
+      </div>
+    </div>
+    <!-- Legal Name -->
     <div class="mb-10 row">
       <div class="col-12">
         <label class="form-label mb-3 required">
@@ -198,172 +273,34 @@
           {{ "INSIGHTER_WIZARD.LEGAL_NAME_REQUIRED" | translate }}
         </div>
       </div>
-     
     </div>
+    <!-- Legal Name -->
     <div class="mb-10 row">
-      <div class="col-12 ">
+      <div class="col-12">
         <label class="form-label mb-3 required">
-          {{ "INSIGHTER_WIZARD.COMPANYLOGO" | translate }}
+          {{ "INSIGHTER_WIZARD.COMPANY_ADDRESS" | translate }}
         </label>
-    <div class="d-flex flex-column">
-   
-          <div
-       class="image-input logo-placeholder image-input-outline fit-content"
-        data-kt-image-input="true"
-        [style.backgroundImage]="getBackgroundImage()"
-      >  
-          <!--begin::Image preview wrapper-->
-          <div
-          class="image-input-wrapper logo-placeholder shadow-sm w-225px h-100px"
-          [style.backgroundImage]="getBackgroundImage()"
-        ></div>
-          <!--end::Image preview wrapper-->
-      
-          <!--begin::Edit button-->
-          <label class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
-          data-kt-image-input-action="change"
-          data-bs-toggle="tooltip"
-          data-bs-dismiss="click"
-          title="{{ 'INSIGHTER_WIZARD.CHANGE_LOGO' | translate }}">
-              <i class="ki-duotone ki-pencil fs-6"><span class="path1"></span><span class="path2"></span></i>
-      
-              <!--begin::Inputs-->
-              <input type="file" name="avatar" accept=".png, .jpg, .jpeg"  (change)="onLogoSelected($event)"/>
-              <input type="hidden" name="avatar_remove" />
-              <!--end::Inputs-->
-          </label>
-          <!--end::Edit button-->
-      
-          <!--begin::Cancel button-->
-          <span class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
-          data-kt-image-input-action="cancel"
-          data-bs-toggle="tooltip"
-          data-bs-dismiss="click"
-          title="{{ 'INSIGHTER_WIZARD.CANCEL_LOGO' | translate }}">
-              <i class="ki-outline ki-cross fs-3"></i>
-          </span>
-          <!--end::Cancel button-->
-      
-          <!--begin::Remove button-->
-          <span class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
-          data-kt-image-input-action="remove"
-          data-bs-toggle="tooltip"
-          data-bs-dismiss="click"
-          (click)="removeLogo()"
-          title="{{ 'INSIGHTER_WIZARD.REMOVE_LOGO' | translate }}">
-              <i class="ki-outline ki-cross fs-3"></i>
-          </span>
-          <!--end::Remove button-->
-      </div>
-      <div
-      *ngIf="
-        form.get('logo')?.hasError('required') &&
-        form.get('logo')?.touched
-      "
-      class="fv-plugins-message-container invalid-feedback"
-    >
-      {{ "INSIGHTER_WIZARD.COMPANY_LOGO_REQUIRED" | translate }}
-    </div>
-    <p-messages [value]="fizeSizeMessages"  [enableService]="false"></p-messages>
-    </div>
-      </div>
-    </div>
-
-    <div class="mb-10 row">
-      <!-- Consulting Fields -->
-      <div class="col-md-6 col-12">
-        <label class="form-label mb-3 required">
-          {{ "INSIGHTER_WIZARD.CONSULTING_FIELDS" | translate }}
-        </label>
-        <p-progressBar
-          *ngIf="isLoadingConsultingFields$ | async"
-          mode="indeterminate"
-          [style]="{ height: '4px' }"
-        ></p-progressBar>
-        <p-multiSelect
-          *ngIf="!(isLoadingConsultingFields$ | async)"
-          [options]="listOfConsultingFields"
-          class="d-block form-p-control"
-          formControlName="consultingFields"
-          [optionLabel]="optionLabel"
-          placeholder="{{
-            'AUTH.REGISTRATION.CONSULTING_FIELD_PLACEHOLDER' | translate
-          }}"
-          [filter]="true"
-          [showClear]="true"
-        ></p-multiSelect>
-
+        <input
+          formControlName="companyAddress"
+          type="text"
+          class="form-control"
+          placeholder="{{ 'INSIGHTER_WIZARD.COMPANY_ADDRESS' | translate }}"
+        />
         <div
           *ngIf="
-            form.get('consultingFields')?.hasError('required') &&
-            form.get('consultingFields')?.touched
+            form.get('companyAddress')?.hasError('required') &&
+            form.get('companyAddress')?.touched
           "
           class="fv-plugins-message-container invalid-feedback"
         >
-          {{ "INSIGHTER_WIZARD.CONSULTING_FIELDS_REQUIRED" | translate }}
-        </div>
-      </div>
-
-      <!-- ISIC Codes -->
-      <div class="col-md-6 col-12">
-        <label class="form-label fs-6 text-gray-900 required mb-3">
-          {{ "AUTH.REGISTRATION.INDUSTRY" | translate }}
-        </label>
-        <p-progressBar
-          *ngIf="reverseLoader"
-          mode="indeterminate"
-          [style]="{ height: '4px' }"
-        ></p-progressBar>
-        <input
-          type="text"
-          class="form-control"
-          [readonly]="reverseLoader"
-          placeholder="{{
-            'AUTH.REGISTRATION.INDUSTRY_PLACEHOLDER' | translate
-          }}"
-          (click)="showISICDialog()"
-          [value]="selectedNodesLabel()"
-        />
-        <ng-container
-          *ngIf="
-            form.get('isicCodes')?.hasError('required') &&
-            form.get('isicCodes')?.touched
-          "
-        >
-          <div class="fv-plugins-message-container">
-            <div class="fv-help-block">
-              {{ "AUTH.REGISTRATION.ISIC_CODES_REQUIRED" | translate }}
-            </div>
-          </div>
-        </ng-container>
-      </div>
-    </div>
-
-    <!-- About Company -->
-    <div class="mb-10 fv-row">
-      <label class="form-label mb-3 required">
-        {{ "INSIGHTER_WIZARD.ABOUT_COMPANY" | translate }}
-      </label>
-      <div class="row mb-2" data-kt-buttons="true">
-        <div class="col">
-          <textarea
-            name="aboutCompany"
-            class="form-control"
-            rows="3"
-            formControlName="aboutCompany"
-          ></textarea>
+          {{ "INSIGHTER_WIZARD.COMPANY_ADDRESS_REQUIRED" | translate }}
         </div>
       </div>
     </div>
-
-
     <!-- Phone Number -->
     <div class="mb-10 fv-row">
-      <label class="form-label mb-3">
+      <label class="form-label mb-3 required">
         {{ "INSIGHTER_WIZARD.PHONE_NUMBER" | translate }}
-        <span class="text-gray-500">{{
-          "INSIGHTER_WIZARD.PHONE_NUMBER_OPTIONAL" | translate
-        }}</span>
       </label>
       <div class="input-group">
         <div class="max-width-200px">
@@ -380,11 +317,13 @@
           ></p-dropdown>
         </div>
         <input
-          formControlName="phoneNumber"
+          formControlName="phoneCompanyNumber"
           type="text"
           maxlength="10"
           class="form-control no-rtl-b-radius"
-          placeholder="{{ 'INSIGHTER_WIZARD.YOUR_PHONE_NUMBER' | translate }}"
+          placeholder="{{
+            'INSIGHTER_WIZARD.COMPANY_PHONE_NUMBER' | translate
+          }}"
           (input)="onPhoneNumberInput($event)"
         />
       </div>
@@ -394,8 +333,8 @@
         <!-- Country Code Required -->
         <div
           *ngIf="
-            form.get('phoneCountryCode')?.hasError('required') &&
-            form.get('phoneCountryCode')?.touched
+            form.get('phoneCompanyNumber')?.hasError('required') &&
+            form.get('phoneCompanyNumber')?.touched
           "
           class="invalid-feedback d-block"
         >
@@ -405,8 +344,8 @@
         <!-- Phone Number Required -->
         <div
           *ngIf="
-            form.get('phoneNumber')?.hasError('required') &&
-            form.get('phoneNumber')?.touched
+            form.get('phoneCompanyNumber')?.hasError('required') &&
+            form.get('phoneCompanyNumber')?.touched
           "
           class="invalid-feedback d-block"
         >
@@ -416,8 +355,8 @@
         <!-- Phone Number Pattern (Exact 10 Digits) -->
         <div
           *ngIf="
-            form.get('phoneNumber')?.hasError('pattern') &&
-            form.get('phoneNumber')?.touched
+            form.get('phoneCompanyNumber')?.hasError('pattern') &&
+            form.get('phoneCompanyNumber')?.touched
           "
           class="invalid-feedback d-block"
         >
@@ -425,43 +364,70 @@
         </div>
       </div>
     </div>
+    <!-- Consulting Fied + Industry -->
+    <div class="mb-10 row">
+      <!-- Consulting Fields -->
+      <shared-tree-selector *ngIf="(isLoadingConsultingFields$ |async) ==false"
+        [title]="'INSIGHTER_WIZARD.CONSULTING_FIELDS' | translate"
+        [placeholder]="
+          'AUTH.REGISTRATION.CONSULTING_FIELD_PLACEHOLDER' | translate
+        "
+        [otherFieldPlaceholder]="
+          'INSIGHTER_WIZARD.OTHER_FIELD_PLACEHOLDER' | translate
+        "
+        [selectAllLabel]="this.lang === 'ar' ? 'اختر الكل' : 'Select All'"
+        [fetchedData]="listOfConsultingFields"
+        [cancelLabel]="'BUTTONS.CANCEL' | translate"
+        [initialSelectedNodes]="form.value.consultingFields" 
+        [okLabel]="'BUTTONS.OK' | translate"
+        (nodesSelected)="onConsultingNodesSelected($event)"
+      ></shared-tree-selector>
+      <p-progressBar
+      *ngIf="isLoadingConsultingFields$ | async"
+      mode="indeterminate"
+      [style]="{ height: '4px' }"
+    ></p-progressBar>
+      <!-- ISIC Codes -->
+      <div class="col-md-6 col-12">
+        <shared-tree-selector *ngIf="(isLoadingISIC$ | async)==false"
+        [title]="'AUTH.REGISTRATION.INDUSTRY' | translate"
+        [placeholder]="
+          'AUTH.REGISTRATION.INDUSTRY_PLACEHOLDER' | translate
+        "
+        [otherFieldPlaceholder]="
+          'INSIGHTER_WIZARD.OTHER_FIELD_PLACEHOLDER' | translate
+        "
+        [selectAllLabel]="this.lang === 'ar' ? 'اختر الكل' : 'Select All'"
+        [fetchedData]="this.nodes"
+        [cancelLabel]="'BUTTONS.CANCEL' | translate"
+        [initialSelectedNodes]="form.value.isicCodes" 
+        [okLabel]="'BUTTONS.OK' | translate"
+        (nodesSelected)="onIndustrySelected($event)"
+      ></shared-tree-selector>
+        <p-progressBar
+          *ngIf="isLoadingISIC$ | async"
+          mode="indeterminate"
+          [style]="{ height: '4px' }"
+        ></p-progressBar>
+
+      </div>
+    </div>
+    <!-- About Company -->
+    <div class="mb-10 fv-row">
+      <label class="form-label mb-3 required">
+        {{ "INSIGHTER_WIZARD.ABOUT_COMPANY" | translate }}
+      </label>
+      <div class="row mb-2" data-kt-buttons="true">
+        <div class="col">
+          <textarea
+            name="aboutCompany"
+            class="form-control"
+            rows="3"
+            formControlName="aboutCompany"
+          ></textarea>
+        </div>
+      </div>
+    </div>
   </ng-container>
 </div>
 
-<!-- ISIC Codes Selection Dialog -->
-<p-dialog
-  header="{{ 'COMMON.SELECISCIC' | translate }}"
-  [(visible)]="isISICDialogVisible"
-  [modal]="true"
-  [style]="{ width: dialogWidth, 'max-height': '100vh', overflow: 'hidden' }"
-  [contentStyle]="{ 'max-height': 'calc(90vh - 100px)', overflow: 'auto' }"
->
-  <div class="tree-container" >
-    <p-tree
-      [style]="{ 'max-height': '100%', overflow: 'auto'  }"
-      [value]="nodes"
-      selectionMode="checkbox"
-      [(selection)]="selectedNodes"
-      [metaKeySelection]="false"
-      [filter]="true"
-      [filterMode]="'strict'"
-      [loading]="isLoadingISIC$ | async"
-    ></p-tree>
-  </div>
-  <p-footer>
-    <div class="p-2 d-flex justify-content-between align-items-center">
-      <a
-        class="btn btn-sm btn-secondary btn-shadow cursor-pointer"
-        (click)="onISICDialogCancel()"
-      >
-        {{ "BUTTONS.CANCEL" | translate }}
-      </a>
-      <a
-        class="btn btn-sm btn-primary m-1 btn-shadow cursor-pointer"
-        (click)="onISICDialogOK()"
-      >
-        {{ "BUTTONS.OK" | translate }}
-      </a>
-    </div>
-  </p-footer>
-</p-dialog>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Injector, OnInit } from "@angular/core";
 import {
   FormBuilder,
   FormGroup,
@@ -7,9 +7,7 @@ import {
 import { BehaviorSubject, Observable, Subscription, of, take, timer } from "rxjs";
 import { CountryService } from "src/app/_fake/services/countries-api/countries-get.service"; 
 import { CountriesService, Country } from "src/app/_fake/services/countries/countries.service";
-import { ScrollAnimsService } from "src/app/_fake/services/scroll-anims/scroll-anims.service";
 import { AuthService } from "../../services/auth.service";
-import { MessageService, Message } from 'primeng/api';
 import { Router } from "@angular/router";
 import { BaseComponent } from "src/app/modules/base.component";
 import { TranslateService } from "@ngx-translate/core";
@@ -37,14 +35,12 @@ export class SignUpComponent extends BaseComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private _countriesGet: CountryService,
-    scrollAnims: ScrollAnimsService,
-     messageService: MessageService,
     private authService: AuthService,
     private adminCountreis:CountriesService,
-    public translate :TranslateService,
- 
+
+    injector: Injector
   ) {
-    super(scrollAnims,messageService);
+    super(injector);
     this.registrationForm = this.fb.group({
       firstName: ["", [Validators.maxLength(50)]],
       lastName: ["", [Validators.maxLength(50)]],
@@ -102,7 +98,7 @@ passwordStrengthClass(): string {
 }
 
 getPasswordStrengthLabel(): string {
- if(this.translate.currentLang==='en'){
+ if(this.lang==='en'){
   switch (this.passwordStrength.score) {
     case 0:
       return 'Very Weak';

@@ -6,9 +6,11 @@ export interface ICreateAccount {
   consultingFields: number[]; // Array of IDs
   isicCodes:any; // Array of IDs
   phoneCountryCode?:any;
-
+  companyAddress?:string;
   // Personal account fields
   bio?: string;
+
+  phoneCompanyNumber?:string;
 
   // Corporate account fields
   legalName?: string;
@@ -30,7 +32,9 @@ export const inits: ICreateAccount = {
   consultingFields: [],
   isicCodes: [],
   bio: '',
+  phoneCompanyNumber:'',
   legalName: '',
+  companyAddress:'',
   website: '',
   registerDocument: null,
   logo: null,

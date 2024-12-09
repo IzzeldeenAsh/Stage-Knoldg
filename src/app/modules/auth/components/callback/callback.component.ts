@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, Injector, OnDestroy, OnInit } from "@angular/core";
 import { Router, ActivatedRoute } from "@angular/router";
 import { ScrollAnimsService } from "src/app/_fake/services/scroll-anims/scroll-anims.service";
 import { BaseComponent } from "src/app/modules/base.component";
@@ -22,13 +22,13 @@ export class CallbackComponent
   errorMessage: string | null = null;
   isSubmitting: boolean = false;
   constructor(
-    scrollAnims: ScrollAnimsService,
     private router: Router,
     private route: ActivatedRoute,
     private auth: AuthService,
-    messageService: MessageService // Inject MessageService
+    injector: Injector
   ) {
-    super(scrollAnims,messageService);
+    super(injector);
+    // Now you can use someOtherService alongside base services
   }
 
   ngOnInit(): void {

@@ -1,6 +1,4 @@
-import { Component } from '@angular/core';
-import { MessageService } from 'primeng/api';
-import { ScrollAnimsService } from 'src/app/_fake/services/scroll-anims/scroll-anims.service';
+import { Component, Injector } from '@angular/core';
 import { BaseComponent } from 'src/app/modules/base.component';
 
 @Component({
@@ -9,7 +7,7 @@ import { BaseComponent } from 'src/app/modules/base.component';
   styleUrl: './wait.component.scss'
 })
 export class WaitComponent extends BaseComponent {
-constructor(scrollAnims: ScrollAnimsService,messageService:MessageService) {
-  super(scrollAnims,messageService);
-}
-}
+constructor(injector: Injector
+) {
+  super(injector);
+}}

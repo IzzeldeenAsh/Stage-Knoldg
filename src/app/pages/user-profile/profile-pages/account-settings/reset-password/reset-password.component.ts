@@ -1,4 +1,4 @@
-import { Component, OnDestroy, signal, computed } from '@angular/core';
+import { Component, OnDestroy, signal, computed, Injector } from '@angular/core';
 import { Message, MessageService } from 'primeng/api';
 import { Subject, takeUntil, throwError } from 'rxjs';
 import { ChangePasswordService } from 'src/app/_fake/services/change-password/change-password.service';
@@ -12,9 +12,9 @@ import { BaseComponent } from 'src/app/modules/base.component';
 })
 export class ResetPasswordComponent extends BaseComponent implements OnDestroy {
   constructor(private _changepassword: ChangePasswordService,
-     scrollAnims: ScrollAnimsService,
-     messageService: MessageService // Inject MessageService
-  ) {super(scrollAnims,messageService)}
+    injector: Injector
+  ) {
+    super(injector);}
 
   protected unsub$ = new Subject<void>();
 
@@ -119,7 +119,7 @@ export class ResetPasswordComponent extends BaseComponent implements OnDestroy {
       .subscribe({
         next: () => {
          
-         this.showSuccess('Changes Successfully')
+         this.showSuccess('','Changes Successfully')
           this.isEditing.set(false);
           this.clearForm();
         },

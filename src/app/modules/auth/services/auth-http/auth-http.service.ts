@@ -17,10 +17,10 @@ export class AuthHTTPService {
   // public methods
 
 
-  login(email: string, password: string): Observable<any> {
+  login(email: string, password: string ,lang:string): Observable<any> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
-      'Accept-Language': 'en' // As per your example
+      'Accept-Language': lang
     });
     return this.http.post<any>(this.apiUrlLogin, {
       email,

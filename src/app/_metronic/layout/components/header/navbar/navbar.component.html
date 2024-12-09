@@ -49,7 +49,11 @@
     <ng-template #companyLogo>
       <img alt="Logo" [src]="userProfile.company?.logo" class="object-fit-cover" />
      </ng-template>
-     <span *ngIf="userProfile && !userProfile.profile_photo_url" class="symbol-label bg-primary fs-4 text-white">
+     <span *ngIf="(userProfile && !userProfile.profile_photo_url && !userProfile.company) " class="symbol-label bg-primary fs-4 text-white">
+      <span> {{ userProfile.first_name.charAt(0) }} </span>
+      <span style="padding: 0 -20px;"> {{ userProfile.last_name.charAt(0) }} </span>
+     </span>
+     <span *ngIf="userProfile.company &&  !userProfile.company?.logo" class="symbol-label bg-primary fs-4 text-white">
       <span> {{ userProfile.first_name.charAt(0) }} </span>
       <span style="padding: 0 -20px;"> {{ userProfile.last_name.charAt(0) }} </span>
      </span>

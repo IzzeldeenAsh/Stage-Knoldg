@@ -25,6 +25,7 @@ import { DialogModule } from 'primeng/dialog';
 import { TreeSelectModule } from 'primeng/treeselect';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TooltipModule } from 'primeng/tooltip';
+import { SharedTreeSelectorComponent } from 'src/app/reusable-components/shared-tree-selector/shared-tree-selector.component';
 @NgModule({
   declarations: [
     HorizontalComponent,
@@ -47,6 +48,7 @@ import { TooltipModule } from 'primeng/tooltip';
     DialogModule,
     TreeSelectModule,
     TooltipModule,
+    SharedTreeSelectorComponent,
     DropdownModule,
     MessageModule,
     MultiSelectModule,

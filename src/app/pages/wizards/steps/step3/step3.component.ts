@@ -45,6 +45,7 @@ export class Step3Component implements OnInit, OnDestroy {
     this.initForm();
     this.loadDocumentTypes();
     this.updateParentModel({}, this.checkForm());
+    console.log(this.defaultValues);
   }
 
   initForm() {

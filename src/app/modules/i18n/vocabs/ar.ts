@@ -72,6 +72,7 @@ export const locale = {
         البوابة العصرية لعالم من الرؤى الاستشارية
    
   `,
+ 
       },
       REGISTRATION: {
         TITLE: "التسجيل",
@@ -125,6 +126,7 @@ export const locale = {
         ALREADY_HAVE_ACCOUNT: "هل لديك حساب بالفعل؟",
         SIGN_IN: "تسجيل الدخول",
         COUNTRY_LABEL: "البلد",
+        INDUSTRY_REQUIRED:"الصناعة مطلوبة ",
         COUNTRY_PLACEHOLDER: "اختر بلدك",
         INDUSTRY_PLACEHOLDER: "اختر الصناعة",
         COUNTRY_REQUIRED: "البلد مطلوب",
@@ -159,6 +161,14 @@ export const locale = {
             
           `,
         // Add other translations as needed
+      },
+      FORGOT: {
+        TITLE: 'نسيت كلمة السر ؟',
+        DESC: 'ادخل بريدك الالكتروني',
+        SUCCESS: 'تم استعادة الحساب بنجاح',
+        PASSWORD_CHANGED: 'تم تغيير كلمة المرور!',
+        PASSWORD_CHANGED_MESSAGE: 'تم تغيير كلمة المرور الخاصة بك بنجاح.',
+        BACK_TO_LOGIN: 'العودة إلى تسجيل الدخول',
       },
       VERIFY_EMAIL: {
         TITLE: "وثّق حسابك",
@@ -237,10 +247,12 @@ export const locale = {
       PHONE_NUMBER: "رقم الهاتف",
       PHONE_NUMBER_OPTIONAL: "(اختياري)",
       YOUR_PHONE_NUMBER: "رقم هاتفك",
+      COMPANY_PHONE_NUMBER:"رقم هاتف الشركة",
       PHONE_NUMBER_REQUIRED: "رقم الهاتف مطلوب.",
       PHONE_NUMBER_PATTERN: "يجب أن يحتوي رقم الهاتف على 10 أرقام بالضبط.",
       LEGAL_NAME: "الاسم القانوني",
       LEGAL_NAME_PLACEHOLDER: "الاسم القانوني لشركتك",
+      COMPANY_ADDRESS:"عنوان الشركة",
       LEGAL_NAME_REQUIRED: "الاسم القانوني لشركتك مطلوب.",
       ABOUT_COMPANY: "معلومات عن الشركة",
       COUNTRY_PLACEHOLDER: "اختر الدولة",
@@ -253,7 +265,8 @@ export const locale = {
       DOCUMENT_TYPE: "نوع المستند",
       SELECT_DOCUMENT_TYPE: "اختر نوع المستند",
       DOCUMENT_TYPE_REQUIRED: "نوع المستند مطلوب.",
-
+      COUNTRY_CODE_REQUIRED:"مفتاح الدولة مطلوب",
+      COMPANY_ADDRESS_REQUIRED:"عنوان الشركة مطلوب",
       COMPANYLOGO:"شعار الشركة",
       REGISTER_DOCUMENT_REQUIRED: "وثيقة التسجيل مطلوبة.",
       CORPORATE_ACCOUNT_VERIFICATION: "تحقق من الحساب التجاري",
@@ -275,6 +288,7 @@ export const locale = {
     "GET_CODE": "اطلب رمز التأكيد",
     "CODE": "رمز التأكيد ",
     "ENTER_CODE": "ادخل الرمز المرسل",
+    OTHER_FIELD_PLACEHOLDER: "أدخل تخصصك الآخر",
     },
     CONGRATS_CARD: {
       TITLE: "تهانينا!",

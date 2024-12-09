@@ -1,0 +1,1295 @@
+
+
+
+<div class="pt-20">
+    <div id="kt_app_toolbar" class="app-toolbar">
+      <!--begin::Toolbar container-->
+      <div
+        id="kt_app_toolbar_container"
+        class="app-container container-xxl d-flex align-items-start"
+      >
+        <div class="d-flex flex-column flex-row-fluid">
+          <!--begin::Page title-->
+          <div
+            class="page-title d-flex align-items-md-center flex-column flex-sm-row gap-4 mb-1 pt-9 pt-lg-17 mb-lg-10"
+          >
+            <!-- <div class="btn btn-icon btn-custom h-65px w-65px me-6">
+          <img alt="Logo" src="../../../assets/media/svg/misc/infography.svg" class="h-40px">
+          </div> -->
+  
+          <div
+          class="rounded d-flex flex-column border-bar flex-lg-row align-items-lg-center bg-body p-5 w-100 h-lg-60px me-lg-10 my-5">
+          <!--begin::Row-->
+          <div class="row flex-grow-1 mb-5 mb-lg-0">
+            <!--begin::Col-->
+            <div class="col-lg-8 d-flex align-items-center mb-3 mb-lg-0">
+              <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
+              <span [inlineSVG]="'./assets/media/icons/duotune/general/gen021.svg'"
+                class="svg-icon svg-icon-5 svg-icon-gray-500 me-1"></span>
+              <!--end::Svg Icon-->
+              <!--begin::Input-->
+              <input type="text" class="form-control form-control-flush flex-grow-1" name="search" value=""
+                placeholder="Your Search">
+              <!--end::Input-->
+            </div>
+            <!--end::Col-->
+            <!--begin::Col-->
+            <div class="col-lg-2 d-flex align-items-center mb-5 mb-lg-0">
+              <!--begin::Desktop separator-->
+              <div class="bullet bg-secondary d-none d-lg-block h-30px w-2px me-5"></div>
+              <!--end::Desktop separator-->
+              <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
+              <span [inlineSVG]="'./assets/media/icons/duotune/general/gen025.svg'"
+                class="svg-icon svg-icon-5 svg-icon-gray-500 me-1"></span>
+              <!--end::Svg Icon-->
+              <!--begin::Select-->
+              <select class="form-select border-0 flex-grow-1" data-placeholder="Category"
+                data-hide-search="true">
+                <option value=""></option>
+                <option value="1" selected="selected" data-select2-id="select2-data-9-g0zo">Category</option>
+                <option value="2">In Progress</option>
+                <option value="3">Done</option>
+              </select>
+              <!--end::Select-->
+            </div>
+            <!--end::Col-->
+            <!--begin::Col-->
+            <div class="col-lg-2 d-flex align-items-center">
+              <!--begin::Desktop separator-->
+              <div class="bullet bg-secondary d-none d-lg-block h-30px w-2px me-5"></div>
+              <!--end::Desktop separator-->
+              <!--begin::Svg Icon | path: icons/duotune/general/gen018.svg-->
+              <span [inlineSVG]="'./assets/media/icons/duotune/general/gen018.svg'"
+                class="svg-icon svg-icon-5 svg-icon-gray-500 me-1"></span>
+              <!--end::Svg Icon-->
+              <!--begin::Link-->
+              <a href="#" class="btn btn-color-muted px-0 text-start rounded-0 py-1"
+                id="kt_modal_select_location_target">Region</a>
+              <!--end::Link-->
+            </div>
+          </div>
+          <!--end::Row-->
+          <!--begin::Action-->
+          <div class="min-w-150px text-end">
+            <button type="submit" class="btn btn-primary" id="kt_advanced_search_button_1">Search</button>
+          </div>
+          <!--end::Action-->
+        </div>
+  
+            <!--end::Title-->
+          </div>
+          <!--end::Page title-->
+          <!--begin::Toolbar wrapper--->
+          <div class="d-flex justify-content-between flex-wrap gap-4 gap-lg-10">
+            <!--begin::Toolbar menu-->
+            <div
+              class="app-toolbar-menu menu menu-rounded menu-gray-800 menu-state-bg flex-wrap fs-5 fw-semibold"
+            >
+              <!--begin::Menu item-->
+              <div class="pb-xl-8 pb-2 pt-2 mt-5 mt-lg-0">
+                <p-dropdown
+                  class="search-bar-tools"
+                  [options]="countries"
+                  [(ngModel)]="selectedCountry"
+                  optionLabel="name"
+                  placeholder="City"
+                  [filter]="true"
+                >
+                  <ng-template let-item pTemplate="item">
+                    <div class="country-item">
+                      <img
+                        [src]="item.file_url"
+                        alt="{{ item.name }}"
+                        class="country-flag"
+                      />
+                      <span>{{ item.name }}</span>
+                    </div>
+                  </ng-template>
+                </p-dropdown>
+              </div>
+              <!--end::Menu item-->
+              <!--begin::Menu item-->
+              <div class="pb-xl-8 pb-2 pt-2 mt-5 mt-lg-0">
+                <p-dropdown
+                  class="search-bar-tools"
+                  [options]="countries"
+                  [(ngModel)]="selectedCountry"
+                  optionLabel="name"
+                  placeholder="Field"
+                  [filter]="true"
+                >
+                  <ng-template let-item pTemplate="item">
+                    <div class="country-item">
+                      <img
+                        [src]="item.file_url"
+                        alt="{{ item.name }}"
+                        class="country-flag"
+                      />
+                      <span>{{ item.name }}</span>
+                    </div>
+                  </ng-template>
+                </p-dropdown>
+              </div>
+              <!--end::Menu item-->
+              <!--begin::Menu item-->
+              <div class="pb-xl-8 pb-2 pt-2 mt-5 mt-lg-0">
+                <p-dropdown
+                  class="search-bar-tools"
+                  [options]="countries"
+                  [(ngModel)]="selectedCountry"
+                  optionLabel="name"
+                  placeholder="Any time"
+                  [filter]="true"
+                >
+                  <ng-template let-item pTemplate="item">
+                    <div class="country-item">
+                      <img
+                        [src]="item.file_url"
+                        alt="{{ item.name }}"
+                        class="country-flag"
+                      />
+                      <span>{{ item.name }}</span>
+                    </div>
+                  </ng-template>
+                </p-dropdown>
+              </div>
+              <!--end::Menu item-->
+              <!--begin::Menu item-->
+              <div class="pb-xl-8 pb-2 pt-2 mt-5 mt-lg-0">
+                <p-dropdown
+                  class="search-bar-tools"
+                  [options]="countries"
+                  [(ngModel)]="selectedCountry"
+                  optionLabel="name"
+                  placeholder="Industry sector (ISIC)"
+                  [filter]="true"
+                >
+                  <ng-template let-item pTemplate="item">
+                    <div class="country-item">
+                      <img
+                        [src]="item.file_url"
+                        alt="{{ item.name }}"
+                        class="country-flag"
+                      />
+                      <span>{{ item.name }}</span>
+                    </div>
+                  </ng-template>
+                </p-dropdown>
+              </div>
+              <!--end::Menu item-->
+  
+              <!-- <div class=" pb-xl-8 pb-4 mt-5 mt-lg-0  align-items-center d-flex">
+            
+            <input type="text" placeholder="HS code" class="w-150px hs-code" name="HS Code" value="">
+          </div> -->
+            </div>
+            <!--begin::Toolbar menu-->
+            <!--begin::Wrapper-->
+           
+          </div>
+          <!--end::Toolbar wrapper--->
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="w-100 h-45px bg-secondary d-flex align-items-center justify-content-center">
+    <div class="d-flex align-items-center gap-2"> 
+      <div class="star">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="none" viewBox="0 0 64 64" role="presentation" aria-hidden="true" focusable="false" class="hs fi">
+          <path fill="#FFC017" d="m39.637 40.831-5.771 15.871a1.99 1.99 0 0 1-3.732 0l-5.771-15.87a2.02 2.02 0 0 0-1.194-1.195L7.298 33.866a1.99 1.99 0 0 1 0-3.732l15.87-5.771a2.02 2.02 0 0 0 1.195-1.194l5.771-15.871a1.99 1.99 0 0 1 3.732 0l5.771 15.87a2.02 2.02 0 0 0 1.194 1.195l15.871 5.771a1.99 1.99 0 0 1 0 3.732l-15.87 5.771a2.02 2.02 0 0 0-1.195 1.194"></path></svg>
+        </div>
+      <span class="text-gray-700">
+      Take the first step towards your consulting journey.  
+    </span>
+    <a class="cursor-pointer text-hover-gray-900 text-primary text-underline">
+      Start a project!
+    </a>
+  </div>
+  </div>
+  <div
+    id="kt_content_container"
+    class="d-flex flex-column-fluid align-items-stretch gap-3 justify-content-around container-xxl "
+  >
+    <div
+      class="wrapper d-flex flex-column flex-row-fluid"
+      [ngClass]="{'list-style-container' : selectedType ==='list' , 'grid-style-container' : selectedType==='grid'}"
+      id="kt_wrapper"
+    >
+    
+      <div class="content flex-column-fluid" id="kt_content">
+        <div
+          class="toolbar d-flex flex-stack flex-wrap  mb-lg-7"
+          id="kt_toolbar"
+        >
+          <div class="d-flex align-items-center py-1">
+          </div>
+        </div>
+        <div class="post" id="kt_post">
+            <div class="d-flex justify-content-end">
+              <div class="nav-group nav-group-fluid">
+                <!-- Option 1 -->
+                <label>
+                  <input
+                    type="radio"
+                    class="btn-check"
+                    name="type"
+                    value="grid"
+                    [(ngModel)]="selectedType"
+                    (change)="onTypeChange($event)"
+                  />
+                  <span
+                    class="radio h-30px fw-bold px-4"
+                    [class.radio-active]="selectedType === 'grid'"
+                  >
+                    <i
+                      class="ki-outline ki-element-11"
+                      [ngClass]="{
+                        'text-gray-700': selectedType === 'grid',
+                        'text-gray-500': selectedType !== 'grid'
+                      }"
+                    ></i>
+                  </span>
+                </label>
+              
+                <!-- Option 2 -->
+                <label>
+                  <input
+                    type="radio"
+                    class="btn-check"
+                    name="type"
+                    value="list"
+                    [(ngModel)]="selectedType"
+                    (change)="onTypeChange($event)"
+                  />
+                  <span
+                    class="radio h-30px fw-bold px-4"
+                    [class.radio-active]="selectedType === 'list'"
+                  >
+                    <i
+                      class="ki-outline ki-row-horizontal"
+                      [ngClass]="{
+                        'text-gray-700': selectedType === 'list',
+                        'text-gray-500': selectedType !== 'list'
+                      }"
+                    ></i>
+                  </span>
+                </label>
+              </div>
+                
+             </div>
+            <div class="mb-10 " *ngIf="selectedType=='list'">
+     
+            
+              <div class="mb-0 py-4 list-card">
+                <div class="d-flex align-items-start flex-column mb-1">
+                  <div class="d-flex align-items-center mb-3 me-5">
+                    <!--begin::Symbol-->
+                    <div class="symbol symbol-25px symbol-circle me-3">
+                      <img src="./assets/media/avatars/300-2.jpg" class="" alt="Esther Howard">  
+                    </div>
+                    <!--end::Symbol-->
+            
+                    <!--begin::Content-->
+                    <div class="me-5">
+                      <!--begin::Title-->
+                      <a  class="text-gray-800 text-hover-primary fs-8">Esther Howard</a>
+                      <!--end::Title-->
+                    </div>
+                    <!--end::Content-->                                       
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    <a
+                      href="/metronic8/demo5/apps/devs/question.html"
+                      class="fs-2 fw-bolder text-primary text-hover-gray-800 me-1 max-w-80"
+                    >
+                      Global sports market - statistics and facts
+                    </a>
+                    <span class="badge badge-light-success fs-7 fw-semibold h-fit">Free</span>
+                  </div>
+                </div>
+                <div class="fs-base fw-normal text-gray-700 mb-1">
+                  Explore comprehensive statistics and facts about the global sports market, including key trends and future projections.
+                </div>
+                <div class="d-flex flex-stack flex-wrap">
+                  <div class="d-flex">
+                    <div class="symbol-group symbol-hover flex-nowrap me-2">
+                      <div
+                        class="symbol symbol-25px"
+                        data-bs-toggle="tooltip"
+                        data-bs-original-title="Alan Warden"
+                        data-kt-initialized="1"
+                      >
+                        <span
+                          class="symbol-label fw-bold" 
+                        ><img src="./assets/media/svg/files/SVG/pdf.png" class="h-25px" alt="pdf"></span>
+                      </div>
+                    </div>
+                    <div class="symbol-group symbol-hover flex-nowrap me-2">
+                      <div
+                        class="symbol symbol-25px"
+                        data-bs-toggle="tooltip"
+                        data-bs-original-title="Susan Redwood"
+                        data-kt-initialized="1"
+                      >
+                        <span  [inlineSVG]="'./assets/media/svg/files/csv.svg'" class="symbol-label fw-bold"></span>
+                      </div>
+                    </div>
+                    <div class="symbol-group symbol-hover flex-nowrap me-2">
+                      <div
+                        class="symbol symbol-25px"
+                        data-bs-toggle="tooltip"
+                        data-bs-original-title="Perry Matthew"
+                        data-kt-initialized="1"
+                      >
+                        <span [inlineSVG]="'./assets/media/svg/files/doc.svg'" class="symbol-label fw-bold"></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="d-flex align-items-center py-1">
+                    <!--begin::Upvote-->
+                    <a
+                      class="btn btn-sm btn-flex  px-3"
+                      data-bs-toggle="tooltip"
+                      data-bs-dismiss="click"
+                      data-bs-original-title="Upvote this question"
+                      data-kt-initialized="1"
+                    >
+                      <i class="ki-duotone ki-arrow-right text-blue slide-right-arrow fs-1">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                      </i>
+                    </a>
+                    <!--end::Upvote-->
+                  </div>
+                  <!--end::Info-->
+                </div>
+              </div>
+              
+              <!-- Separator -->
+              <div class="separator separator-solid border-gray-200 my-2"></div>
+              
+              <!-- Question 2 -->
+              <div class="mb-0 py-4 list-card">
+                <div class="d-flex align-items-start flex-column mb-1">
+                  <div class="d-flex align-items-center mb-3 me-5">
+                    <!--begin::Symbol-->
+                    <div class="symbol symbol-25px symbol-circle me-3">
+                      <img src="./assets/media/avatars/300-4.jpg" class="" alt="Esther Howard">  
+                    </div>
+                    <!--end::Symbol-->
+            
+                    <!--begin::Content-->
+                    <div class="me-5">
+                      <!--begin::Title-->
+                      <a  class="text-gray-800 text-hover-primary fs-8">Michel Howard</a>
+                      <!--end::Title-->
+                    </div>
+                    <!--end::Content-->                                       
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    <a
+                      href="/metronic8/demo5/apps/devs/question.html"
+                      class="fs-2 fw-bolder text-primary text-hover-gray-800 me-1 max-w-80"
+                    >
+                      Market share of leading retail e-commerce companies in the United States in 2023
+                    </a>
+                    <span class="badge badge-light-warning fs-7 fw-semibold h-fit">Paid</span>
+                  </div>
+                </div>
+                <div class="fs-base fw-normal text-gray-700 mb-1">
+                  Analyze the market share of top retail e-commerce companies in the U.S., including revenue figures and growth rates for 2023.
+                </div>
+                <div class="d-flex flex-stack flex-wrap">
+                  <div class="d-flex">
+                    <div class="symbol-group symbol-hover flex-nowrap me-2">
+                      <div
+                        class="symbol symbol-25px"
+                        data-bs-toggle="tooltip"
+                        data-bs-original-title="Alan Warden"
+                        data-kt-initialized="1"
+                      >
+                        <span
+                          class="symbol-label fw-bold"
+                          
+                        ><img src="./assets/media/svg/files/SVG/pdf.png" class="h-25px" alt="pdf"></span>
+                      </div>
+                    </div>
+                    <div class="symbol-group symbol-hover flex-nowrap me-2">
+                      <div
+                        class="symbol symbol-25px"
+                        data-bs-toggle="tooltip"
+                        data-bs-original-title="Susan Redwood"
+                        data-kt-initialized="1"
+                      >
+                        <span  [inlineSVG]="'./assets/media/svg/files/csv.svg'" class="symbol-label fw-bold"></span>
+                      </div>
+                    </div>
+                    <div class="symbol-group symbol-hover flex-nowrap me-2">
+                      <div
+                        class="symbol symbol-25px"
+                        data-bs-toggle="tooltip"
+                        data-bs-original-title="Perry Matthew"
+                        data-kt-initialized="1"
+                      >
+                        <span [inlineSVG]="'./assets/media/svg/files/doc.svg'" class="symbol-label fw-bold"></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="d-flex align-items-center py-1">
+                    <!--begin::Upvote-->
+                    <a
+                      
+                      class="btn btn-sm btn-flex  px-3"
+                      data-bs-toggle="tooltip"
+                      data-bs-dismiss="click"
+                      data-bs-original-title="Upvote this question"
+                      data-kt-initialized="1"
+                    >
+                      <i class="ki-duotone ki-arrow-right text-blue slide-right-arrow fs-1">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                      </i>
+                    </a>
+                    <!--end::Upvote-->
+                  </div>
+                  <!--end::Info-->
+                </div>
+              </div>
+              
+              <!-- Separator -->
+              <div class="separator separator-dashed border-gray-300 my-2"></div>
+              
+              <!-- Additional Dummy Questions -->
+              
+              <!-- Dummy Question 1 -->
+              <div class="mb-0 py-4 list-card">
+                <div class="d-flex align-items-start flex-column mb-1">
+                  <div class="d-flex align-items-center mb-3 me-5">
+                    <!--begin::Symbol-->
+                    <div class="symbol symbol-25px symbol-circle me-3">
+                      <img src="./assets/media/avatars/300-5.jpg" class="" alt="John Doe">  
+                    </div>
+                    <!--end::Symbol-->
+            
+                    <!--begin::Content-->
+                    <div class="me-5">
+                      <!--begin::Title-->
+                      <a  class="text-gray-800 text-hover-primary fs-8">John Doe</a>
+                      <!--end::Title-->
+                    </div>
+                    <!--end::Content-->                                       
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    <a
+                      
+                      class="fs-2 fw-bolder text-primary text-hover-gray-800 me-1 max-w-80"
+                    >
+                      Trends in renewable energy adoption worldwide
+                    </a>
+                    <span class="badge badge-light-warning fs-7 fw-semibold h-fit">Paid</span>
+                  </div>
+                </div>
+                <div class="fs-base fw-normal text-gray-700 mb-1">
+                  Discuss the latest trends in renewable energy adoption across different regions and their impact on global sustainability.
+                </div>
+                <div class="d-flex flex-stack flex-wrap">
+                  <div class="d-flex">
+                    <div class="symbol-group symbol-hover flex-nowrap me-2">
+                      <div
+                        class="symbol symbol-25px"
+                        data-bs-toggle="tooltip"
+                        data-bs-original-title="Jane Smith"
+                        data-kt-initialized="1"
+                      >
+                        <span
+                          class="symbol-label fw-bold"
+                          
+                        ><img src="./assets/media/svg/files/SVG/pdf.png" class="h-25px" alt="pdf"></span>
+                      </div>
+                    </div>
+                    <div class="symbol-group symbol-hover flex-nowrap me-2">
+                      <div
+                        class="symbol symbol-25px"
+                        data-bs-toggle="tooltip"
+                        data-bs-original-title="Mike Johnson"
+                        data-kt-initialized="1"
+                      >
+                        <span  [inlineSVG]="'./assets/media/svg/files/csv.svg'" class="symbol-label fw-bold"></span>
+                      </div>
+                    </div>
+                    <div class="symbol-group symbol-hover flex-nowrap me-2">
+                      <div
+                        class="symbol symbol-25px"
+                        data-bs-toggle="tooltip"
+                        data-bs-original-title="Lisa Wong"
+                        data-kt-initialized="1"
+                      >
+                        <span [inlineSVG]="'./assets/media/svg/files/doc.svg'" class="symbol-label fw-bold"></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="d-flex align-items-center py-1">
+                    <!--begin::Upvote-->
+                    <a
+                      
+                      class="btn btn-sm btn-flex  px-3"
+                      data-bs-toggle="tooltip"
+                      data-bs-dismiss="click"
+                      data-bs-original-title="Upvote this question"
+                      data-kt-initialized="1"
+                    >
+                      <i class="ki-duotone ki-arrow-right text-blue slide-right-arrow fs-1">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                      </i>
+                    </a>
+                    <!--end::Upvote-->
+                  </div>
+                  <!--end::Info-->
+                </div>
+              </div>
+              
+              <!-- Separator -->
+              <div class="separator separator-dashed border-gray-300 my-2"></div>
+              
+              <!-- Dummy Question 2 -->
+              <div class="mb-0 py-4 list-card">
+                <div class="d-flex align-items-start flex-column mb-1">
+                  <div class="d-flex align-items-center mb-3 me-5">
+                    <!--begin::Symbol-->
+                    <div class="symbol symbol-25px symbol-circle me-3">
+                      <img src="./assets/media/avatars/300-6.jpg" class="" alt="Emily Clark">  
+                    </div>
+                    <!--end::Symbol-->
+            
+                    <!--begin::Content-->
+                    <div class="me-5">
+                      <!--begin::Title-->
+                      <a  class="text-gray-800 text-hover-primary fs-8">Emily Clark</a>
+                      <!--end::Title-->
+                    </div>
+                    <!--end::Content-->                                       
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    <a
+                      
+                      class="fs-2 fw-bolder text-primary text-hover-gray-800 me-1 max-w-80"
+                    >
+                      Impact of artificial intelligence on modern workplaces
+                    </a>
+                    <span class="badge badge-light-success fs-7 fw-semibold h-fit">Free</span>
+                  </div>
+                </div>
+                <div class="fs-base fw-normal text-gray-700 mb-1">
+                  Examine how artificial intelligence is transforming workplaces, including automation, employee roles, and productivity enhancements.
+                </div>
+                <div class="d-flex flex-stack flex-wrap">
+                  <div class="d-flex">
+                    <div class="symbol-group symbol-hover flex-nowrap me-2">
+                      <div
+                        class="symbol symbol-25px"
+                        data-bs-toggle="tooltip"
+                        data-bs-original-title="Tom Lee"
+                        data-kt-initialized="1"
+                      >
+                        <span
+                          class="symbol-label fw-bold"
+                          
+                        ><img src="./assets/media/svg/files/SVG/pdf.png" class="h-25px" alt="pdf"></span>
+                      </div>
+                    </div>
+                    <div class="symbol-group symbol-hover flex-nowrap me-2">
+                      <div
+                        class="symbol symbol-25px"
+                        data-bs-toggle="tooltip"
+                        data-bs-original-title="Sara Davis"
+                        data-kt-initialized="1"
+                      >
+                        <span  [inlineSVG]="'./assets/media/svg/files/csv.svg'" class="symbol-label fw-bold"></span>
+                      </div>
+                    </div>
+                    <div class="symbol-group symbol-hover flex-nowrap me-2">
+                      <div
+                        class="symbol symbol-25px"
+                        data-bs-toggle="tooltip"
+                        data-bs-original-title="Kevin Brown"
+                        data-kt-initialized="1"
+                      >
+                        <span [inlineSVG]="'./assets/media/svg/files/doc.svg'" class="symbol-label fw-bold"></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="d-flex align-items-center py-1">
+                    <!--begin::Upvote-->
+                    <a
+                      
+                      class="btn btn-sm btn-flex  px-3"
+                      data-bs-toggle="tooltip"
+                      data-bs-dismiss="click"
+                      data-bs-original-title="Upvote this question"
+                      data-kt-initialized="1"
+                    >
+                      <i class="ki-duotone ki-arrow-right text-blue slide-right-arrow fs-1">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                      </i>
+                    </a>
+                    <!--end::Upvote-->
+                  </div>
+                  <!--end::Info-->
+                </div>
+              </div>
+              
+              <!-- Separator -->
+              <div class="separator separator-dashed border-gray-300 my-2"></div>
+              
+              <!-- Dummy Question 3 -->
+              <div class="mb-0 py-4 list-card">
+                <div class="d-flex align-items-start flex-column mb-1">
+                  <div class="d-flex align-items-center mb-3 me-5">
+                    <!--begin::Symbol-->
+                    <div class="symbol symbol-25px symbol-circle me-3">
+                      <img src="./assets/media/avatars/300-7.jpg" class="" alt="Michael Scott">  
+                    </div>
+                    <!--end::Symbol-->
+            
+                    <!--begin::Content-->
+                    <div class="me-5">
+                      <!--begin::Title-->
+                      <a  class="text-gray-800 text-hover-primary fs-8">Michael Scott</a>
+                      <!--end::Title-->
+                    </div>
+                    <!--end::Content-->                                       
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    <a
+                      
+                      class="fs-2 fw-bolder text-primary text-hover-gray-800 me-1 max-w-80"
+                    >
+                      Future of blockchain technology in finance
+                    </a>
+                    <span class="badge badge-light-warning fs-7 fw-semibold h-fit">Paid</span>
+                  </div>
+                </div>
+                <div class="fs-base fw-normal text-gray-700 mb-1">
+                  Investigate the potential applications and challenges of blockchain technology in the financial sector, including security, transparency, and efficiency.
+                </div>
+                <div class="d-flex flex-stack flex-wrap">
+                  <div class="d-flex">
+                    <div class="symbol-group symbol-hover flex-nowrap me-2">
+                      <div
+                        class="symbol symbol-25px"
+                        data-bs-toggle="tooltip"
+                        data-bs-original-title="Anna Bell"
+                        data-kt-initialized="1"
+                      >
+                        <span
+                          class="symbol-label fw-bold"
+                         
+                        ><img src="./assets/media/svg/files/SVG/pdf.png" class="h-25px" alt="pdf"></span>
+                      </div>
+                    </div>
+                    <div class="symbol-group symbol-hover flex-nowrap me-2">
+                      <div
+                        class="symbol symbol-25px"
+                        data-bs-toggle="tooltip"
+                        data-bs-original-title="Brian King"
+                        data-kt-initialized="1"
+                      >
+                        <span  [inlineSVG]="'./assets/media/svg/files/csv.svg'" class="symbol-label fw-bold"></span>
+                      </div>
+                    </div>
+                    <div class="symbol-group symbol-hover flex-nowrap me-2">
+                      <div
+                        class="symbol symbol-25px"
+                        data-bs-toggle="tooltip"
+                        data-bs-original-title="Catherine Lee"
+                        data-kt-initialized="1"
+                      >
+                        <span [inlineSVG]="'./assets/media/svg/files/doc.svg'" class="symbol-label fw-bold"></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="d-flex align-items-center py-1">
+                    <!--begin::Upvote-->
+                    <a
+                      
+                      class="btn btn-sm btn-flex  px-3"
+                      data-bs-toggle="tooltip"
+                      data-bs-dismiss="click"
+                      data-bs-original-title="Upvote this question"
+                      data-kt-initialized="1"
+                    >
+                      <i class="ki-duotone ki-arrow-right text-blue slide-right-arrow fs-1">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                      </i>
+                    </a>
+                    <!--end::Upvote-->
+                  </div>
+                  <!--end::Info-->
+                </div>
+              </div>
+              
+              <!-- Separator -->
+              <div class="separator separator-dashed border-gray-300 my-2"></div>
+              
+              <!-- Dummy Question 4 -->
+              <div class="mb-0 py-4 list-card">
+                <div class="d-flex align-items-start flex-column mb-1">
+                  <div class="d-flex align-items-center mb-3 me-5">
+                    <!--begin::Symbol-->
+                    <div class="symbol symbol-25px symbol-circle me-3">
+                      <img src="./assets/media/avatars/300-10.jpg" class="" alt="Sarah Connor">  
+                    </div>
+                    <!--end::Symbol-->
+            
+                    <!--begin::Content-->
+                    <div class="me-5">
+                      <!--begin::Title-->
+                      <a  class="text-gray-800 text-hover-primary fs-8">Sarah Connor</a>
+                      <!--end::Title-->
+                    </div>
+                    <!--end::Content-->                                       
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    <a
+                      
+                      class="fs-2 fw-bolder text-primary text-hover-gray-800 me-1 max-w-80"
+                    >
+                      Cybersecurity threats and prevention strategies in 2024
+                    </a>
+                    <span class="badge badge-light-success fs-7 fw-semibold h-fit">Free</span>
+                  </div>
+                </div>
+                <div class="fs-base fw-normal text-gray-700  mb-1">
+                  Delve into the latest cybersecurity threats facing organizations in 2024 and explore effective prevention strategies to safeguard digital assets.
+                </div>
+                <div class="d-flex flex-stack flex-wrap">
+                  <div class="d-flex">
+                    <div class="symbol-group symbol-hover flex-nowrap me-2">
+                      <div
+                        class="symbol symbol-25px"
+                        data-bs-toggle="tooltip"
+                        data-bs-original-title="David Kim"
+                        data-kt-initialized="1"
+                      >
+                        <span
+                          class="symbol-label fw-bold"
+                          
+                        ><img src="./assets/media/svg/files/SVG/pdf.png" class="h-25px" alt="pdf"></span>
+                      </div>
+                    </div>
+                    <div class="symbol-group symbol-hover flex-nowrap me-2">
+                      <div
+                        class="symbol symbol-25px"
+                        data-bs-toggle="tooltip"
+                        data-bs-original-title="Fiona Gallagher"
+                        data-kt-initialized="1"
+                      >
+                        <span  [inlineSVG]="'./assets/media/svg/files/csv.svg'" class="symbol-label fw-bold"></span>
+                      </div>
+                    </div>
+                    <div class="symbol-group symbol-hover flex-nowrap me-2">
+                      <div
+                        class="symbol symbol-25px"
+                        data-bs-toggle="tooltip"
+                        data-bs-original-title="George Martin"
+                        data-kt-initialized="1"
+                      >
+                        <span [inlineSVG]="'./assets/media/svg/files/doc.svg'" class="symbol-label fw-bold"></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="d-flex align-items-center py-1">
+                    <!--begin::Upvote-->
+                    <a
+                      
+                      class="btn btn-sm btn-flex  px-3"
+                      data-bs-toggle="tooltip"
+                      data-bs-dismiss="click"
+                      data-bs-original-title="Upvote this question"
+                      data-kt-initialized="1"
+                    >
+                      <i class="ki-duotone ki-arrow-right text-blue slide-right-arrow fs-1">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                      </i>
+                    </a>
+                    <!--end::Upvote-->
+                  </div>
+                  <!--end::Info-->
+                </div>
+              </div>
+              
+              <!-- Separator -->
+              <div class="separator separator-dashed border-gray-300 my-2"></div>
+              
+            </div>
+            <div class="my-10" *ngIf="selectedType=='grid'">
+              <div class="row">
+                <!-- Grid Card 1 -->
+                <div class="col-md-6 mb-5">
+                  <div class="card channel-stats-bg bg-no-repeat card-hover-shadow">
+                    <div class="card-body d-flex flex-column gap-4 pt-4">
+                      <i class="ki-filled ki-badge fs-4 text-gray-600"></i>
+                      <div class="d-flex flex-column gap-3 mb-2">
+                        <div class="d-flex justify-content-between w-100">
+                          <div class="d-flex align-items-center mb-1 me-5">
+                            <!-- Symbol -->
+                            <div class="symbol symbol-20px symbol-circle me-3">
+                              <img src="./assets/media/avatars/300-2.jpg" alt="Esther Howard">  
+                            </div>
+                            <!-- Content -->
+                            <div class="me-5">
+                              <a class="text-gray-800 fw-bold text-hover-primary fs-8">Esther Howard</a>
+                            </div>
+                          </div>
+                          <span class="badge badge-light-success fs-7 fw-semibold">Free</span>
+                        </div>
+                        <h3 class="card-title fs-2 text-gray-900">Global sports market - statistics and facts</h3>
+                        <p class="card-text text-gray-800">Explore comprehensive statistics.</p>
+                        <div class="d-flex justify-content-between">
+                          <div class="d-flex">
+                            <!-- File Icons -->
+                            <div class="symbol-group symbol-hover flex-nowrap me-2">
+                              <div class="symbol symbol-25px" data-bs-toggle="tooltip" title="Alan Warden">
+                                <span class="symbol-label fw-bold" ><img src="./assets/media/svg/files/SVG/pdf.png" class="h-25px" alt="pdf"></span>
+                              </div>
+                            </div>
+                            <div class="symbol-group symbol-hover flex-nowrap me-2">
+                              <div class="symbol symbol-25px" data-bs-toggle="tooltip" title="Susan Redwood">
+                                <span class="symbol-label fw-bold" [inlineSVG]="'./assets/media/svg/files/csv.svg'"></span>
+                              </div>
+                            </div>
+                            <div class="symbol-group symbol-hover flex-nowrap me-2">
+                              <div class="symbol symbol-25px" data-bs-toggle="tooltip" title="Perry Matthew">
+                                <span class="symbol-label fw-bold" [inlineSVG]="'./assets/media/svg/files/doc.svg'"></span>
+                              </div>
+                            </div>
+                          </div>
+                          <a class="btn btn-sm btn-flex ms-auto px-3" data-bs-toggle="tooltip" title="Upvote this question">
+                            <i class="ki-duotone ki-arrow-right text-blue slide-right-arrow fs-1">
+                              <span class="path1"></span>
+                              <span class="path2"></span>
+                            </i>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            
+                <!-- Grid Card 2 -->
+                <div class="col-md-6 mb-5">
+                  <div class="card channel-stats-bg bg-no-repeat card-hover-shadow">
+                    <div class="card-body d-flex flex-column gap-4 pt-4">
+                      <i class="ki-filled ki-badge fs-4 text-gray-600"></i>
+                      <div class="d-flex flex-column gap-3 mb-2">
+                        <div class="d-flex justify-content-between w-100">
+                          <div class="d-flex align-items-center mb-1 me-5">
+                            <!-- Symbol -->
+                            <div class="symbol symbol-20px symbol-circle me-3">
+                              <img src="./assets/media/avatars/300-4.jpg" alt="Michel Howard">  
+                            </div>
+                            <!-- Content -->
+                            <div class="me-5">
+                              <a class="text-gray-800 fw-bold text-hover-primary fs-8">Michel Howard</a>
+                            </div>
+                          </div>
+                          <span class="badge badge-light-warning fs-7 fw-semibold">Paid</span>
+                        </div>
+                        <h3 class="card-title fs-2 text-gray-900">Market share of leading retail e-commerce companies in the United States in 2023</h3>
+                        <p class="card-text text-gray-800">Analyze market shares.</p>
+                        <div class="d-flex justify-content-between">
+                          <div class="d-flex">
+                            <!-- File Icons -->
+                            <div class="symbol-group symbol-hover flex-nowrap me-2">
+                              <div class="symbol symbol-25px" data-bs-toggle="tooltip" title="Alan Warden">
+                                <span class="symbol-label fw-bold" ><img src="./assets/media/svg/files/SVG/pdf.png" class="h-25px" alt="pdf"></span>
+                              </div>
+                            </div>
+                            <div class="symbol-group symbol-hover flex-nowrap me-2">
+                              <div class="symbol symbol-25px" data-bs-toggle="tooltip" title="Susan Redwood">
+                                <span class="symbol-label fw-bold" [inlineSVG]="'./assets/media/svg/files/csv.svg'"></span>
+                              </div>
+                            </div>
+                            <div class="symbol-group symbol-hover flex-nowrap me-2">
+                              <div class="symbol symbol-25px" data-bs-toggle="tooltip" title="Perry Matthew">
+                                <span class="symbol-label fw-bold" [inlineSVG]="'./assets/media/svg/files/doc.svg'"></span>
+                              </div>
+                            </div>
+                          </div>
+                          <a class="btn btn-sm btn-flex ms-auto px-3" data-bs-toggle="tooltip" title="Upvote this question">
+                            <i class="ki-duotone ki-arrow-right text-blue slide-right-arrow fs-1">
+                              <span class="path1"></span>
+                              <span class="path2"></span>
+                            </i>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            
+                <!-- Grid Card 3 -->
+                <div class="col-md-6 mb-5">
+                  <div class="card channel-stats-bg bg-no-repeat card-hover-shadow">
+                    <div class="card-body d-flex flex-column gap-4 pt-4">
+                      <i class="ki-filled ki-badge fs-4 text-gray-600"></i>
+                      <div class="d-flex flex-column gap-3 mb-2">
+                        <div class="d-flex justify-content-between w-100">
+                          <div class="d-flex align-items-center mb-1 me-5">
+                            <!-- Symbol -->
+                            <div class="symbol symbol-20px symbol-circle me-3">
+                              <img src="./assets/media/avatars/300-5.jpg" alt="John Doe">  
+                            </div>
+                            <!-- Content -->
+                            <div class="me-5">
+                              <a class="text-gray-800 fw-bold text-hover-primary fs-8">John Doe</a>
+                            </div>
+                          </div>
+                          <span class="badge badge-light-warning fs-7 fw-semibold">Paid</span>
+                        </div>
+                        <h3 class="card-title fs-2 text-gray-900">Trends in renewable energy adoption worldwide</h3>
+                        <p class="card-text text-gray-800">Discuss renewable trends.</p>
+                        <div class="d-flex justify-content-between">
+                          <div class="d-flex">
+                            <!-- File Icons -->
+                            <div class="symbol-group symbol-hover flex-nowrap me-2">
+                              <div class="symbol symbol-25px" data-bs-toggle="tooltip" title="Jane Smith">
+                                <span class="symbol-label fw-bold" ><img src="./assets/media/svg/files/SVG/pdf.png" class="h-25px" alt="pdf"></span>
+                              </div>
+                            </div>
+                            <div class="symbol-group symbol-hover flex-nowrap me-2">
+                              <div class="symbol symbol-25px" data-bs-toggle="tooltip" title="Mike Johnson">
+                                <span class="symbol-label fw-bold" [inlineSVG]="'./assets/media/svg/files/csv.svg'"></span>
+                              </div>
+                            </div>
+                            <div class="symbol-group symbol-hover flex-nowrap me-2">
+                              <div class="symbol symbol-25px" data-bs-toggle="tooltip" title="Lisa Wong">
+                                <span class="symbol-label fw-bold" [inlineSVG]="'./assets/media/svg/files/doc.svg'"></span>
+                              </div>
+                            </div>
+                          </div>
+                          <a class="btn btn-sm btn-flex ms-auto px-3" data-bs-toggle="tooltip" title="Upvote this question">
+                            <i class="ki-duotone ki-arrow-right text-blue slide-right-arrow fs-1">
+                              <span class="path1"></span>
+                              <span class="path2"></span>
+                            </i>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            
+                <!-- Grid Card 4 -->
+                <div class="col-md-6 mb-5">
+                  <div class="card channel-stats-bg bg-no-repeat card-hover-shadow">
+                    <div class="card-body d-flex flex-column gap-4 pt-4">
+                      <i class="ki-filled ki-badge fs-4 text-gray-600"></i>
+                      <div class="d-flex flex-column gap-3 mb-2">
+                        <div class="d-flex justify-content-between w-100">
+                          <div class="d-flex align-items-center mb-1 me-5">
+                            <!-- Symbol -->
+                            <div class="symbol symbol-20px symbol-circle me-3">
+                              <img src="./assets/media/avatars/300-6.jpg" alt="Emily Clark">  
+                            </div>
+                            <!-- Content -->
+                            <div class="me-5">
+                              <a class="text-gray-800 fw-bold text-hover-primary fs-8">Emily Clark</a>
+                            </div>
+                          </div>
+                          <span class="badge badge-light-success fs-7 fw-semibold">Free</span>
+                        </div>
+                        <h3 class="card-title fs-2 text-gray-900">Impact of artificial intelligence on modern workplaces</h3>
+                        <p class="card-text text-gray-800">Examine AI transformations.</p>
+                        <div class="d-flex justify-content-between">
+                          <div class="d-flex">
+                            <!-- File Icons -->
+                            <div class="symbol-group symbol-hover flex-nowrap me-2">
+                              <div class="symbol symbol-25px" data-bs-toggle="tooltip" title="Tom Lee">
+                                <span class="symbol-label fw-bold" ><img src="./assets/media/svg/files/SVG/pdf.png" class="h-25px" alt="pdf"></span>
+                              </div>
+                            </div>
+                            <div class="symbol-group symbol-hover flex-nowrap me-2">
+                              <div class="symbol symbol-25px" data-bs-toggle="tooltip" title="Sara Davis">
+                                <span class="symbol-label fw-bold" [inlineSVG]="'./assets/media/svg/files/csv.svg'"></span>
+                              </div>
+                            </div>
+                            <div class="symbol-group symbol-hover flex-nowrap me-2">
+                              <div class="symbol symbol-25px" data-bs-toggle="tooltip" title="Kevin Brown">
+                                <span class="symbol-label fw-bold" [inlineSVG]="'./assets/media/svg/files/doc.svg'"></span>
+                              </div>
+                            </div>
+                          </div>
+                          <a class="btn btn-sm btn-flex ms-auto px-3" data-bs-toggle="tooltip" title="Upvote this question">
+                            <i class="ki-duotone ki-arrow-right text-blue slide-right-arrow fs-1">
+                              <span class="path1"></span>
+                              <span class="path2"></span>
+                            </i>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            
+                <!-- Grid Card 5 -->
+                <div class="col-md-6 mb-5">
+                  <div class="card channel-stats-bg bg-no-repeat card-hover-shadow">
+                    <div class="card-body d-flex flex-column gap-4 pt-4">
+                      <i class="ki-filled ki-badge fs-4 text-gray-600"></i>
+                      <div class="d-flex flex-column gap-3 mb-2">
+                        <div class="d-flex justify-content-between w-100">
+                          <div class="d-flex align-items-center mb-1 me-5">
+                            <!-- Symbol -->
+                            <div class="symbol symbol-20px symbol-circle me-3">
+                              <img src="./assets/media/avatars/300-7.jpg" alt="Michael Scott">  
+                            </div>
+                            <!-- Content -->
+                            <div class="me-5">
+                              <a class="text-gray-800 fw-bold text-hover-primary fs-8">Michael Scott</a>
+                            </div>
+                          </div>
+                          <span class="badge badge-light-warning fs-7 fw-semibold">Paid</span>
+                        </div>
+                        <h3 class="card-title fs-2 text-gray-900">Future of blockchain technology in finance</h3>
+                        <p class="card-text text-gray-800">Investigate blockchain potential.</p>
+                        <div class="d-flex justify-content-between">
+                          <div class="d-flex">
+                            <!-- File Icons -->
+                            <div class="symbol-group symbol-hover flex-nowrap me-2">
+                              <div class="symbol symbol-25px" data-bs-toggle="tooltip" title="Anna Bell">
+                                <span class="symbol-label fw-bold" ><img src="./assets/media/svg/files/SVG/pdf.png" class="h-25px" alt="pdf"></span>
+                              </div>
+                            </div>
+                            <div class="symbol-group symbol-hover flex-nowrap me-2">
+                              <div class="symbol symbol-25px" data-bs-toggle="tooltip" title="Brian King">
+                                <span class="symbol-label fw-bold" [inlineSVG]="'./assets/media/svg/files/csv.svg'"></span>
+                              </div>
+                            </div>
+                            <div class="symbol-group symbol-hover flex-nowrap me-2">
+                              <div class="symbol symbol-25px" data-bs-toggle="tooltip" title="Catherine Lee">
+                                <span class="symbol-label fw-bold" [inlineSVG]="'./assets/media/svg/files/doc.svg'"></span>
+                              </div>
+                            </div>
+                          </div>
+                          <a class="btn btn-sm btn-flex ms-auto px-3" data-bs-toggle="tooltip" title="Upvote this question">
+                            <i class="ki-duotone ki-arrow-right text-blue slide-right-arrow fs-1">
+                              <span class="path1"></span>
+                              <span class="path2"></span>
+                            </i>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            
+                <!-- Grid Card 6 -->
+                <div class="col-md-6 mb-5">
+                  <div class="card channel-stats-bg bg-no-repeat card-hover-shadow">
+                    <div class="card-body d-flex flex-column gap-4 pt-4">
+                      <i class="ki-filled ki-badge fs-4 text-gray-600"></i>
+                      <div class="d-flex flex-column gap-3 mb-2">
+                        <div class="d-flex justify-content-between w-100">
+                          <div class="d-flex align-items-center mb-1 me-5">
+                            <!-- Symbol -->
+                            <div class="symbol symbol-20px symbol-circle me-3">
+                              <img src="./assets/media/avatars/300-10.jpg" alt="Sarah Connor">  
+                            </div>
+                            <!-- Content -->
+                            <div class="me-5">
+                              <a class="text-gray-800 fw-bold text-hover-primary fs-8">Sarah Connor</a>
+                            </div>
+                          </div>
+                          <span class="badge badge-light-success fs-7 fw-semibold">Free</span>
+                        </div>
+                        <h3 class="card-title fs-2 text-gray-900">Cybersecurity threats and prevention strategies in 2024</h3>
+                        <p class="card-text text-gray-800">Explore cybersecurity strategies.</p>
+                        <div class="d-flex justify-content-between">
+                          <div class="d-flex">
+                            <!-- File Icons -->
+                            <div class="symbol-group symbol-hover flex-nowrap me-2">
+                              <div class="symbol symbol-25px" data-bs-toggle="tooltip" title="David Kim">
+                                <span class="symbol-label fw-bold" ><img src="./assets/media/svg/files/SVG/pdf.png" class="h-25px" alt="pdf"></span>
+                              </div>
+                            </div>
+                            <div class="symbol-group symbol-hover flex-nowrap me-2">
+                              <div class="symbol symbol-25px" data-bs-toggle="tooltip" title="Fiona Gallagher">
+                                <span class="symbol-label fw-bold" [inlineSVG]="'./assets/media/svg/files/csv.svg'"></span>
+                              </div>
+                            </div>
+                            <div class="symbol-group symbol-hover flex-nowrap me-2">
+                              <div class="symbol symbol-25px" data-bs-toggle="tooltip" title="George Martin">
+                                <span class="symbol-label fw-bold" [inlineSVG]="'./assets/media/svg/files/doc.svg'"></span>
+                              </div>
+                            </div>
+                          </div>
+                          <a class="btn btn-sm btn-flex ms-auto px-3" data-bs-toggle="tooltip" title="Upvote this question">
+                            <i class="ki-duotone ki-arrow-right text-blue slide-right-arrow fs-1">
+                              <span class="path1"></span>
+                              <span class="path2"></span>
+                            </i>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            
+              </div>
+            </div>
+        </div>
+  
+      </div>
+    </div>
+  
+    <div
+      class="sidebar  p-5 px-lg-5 py-lg-11"
+      data-kt-drawer-name="sidebar"
+      data-kt-drawer-overlay="true"
+      data-kt-drawer-width="275px"
+      data-kt-drawer-direction="end"
+      data-kt-drawer-toggle="#kt_sidebar_toggle"
+    >
+    <div class="card bg-primary bg-opacity-15  " > 
+      <!--begin::Body-->
+      <div class="card-body bg d-flex justify-content-between flex-column h-250px rounded ">  
+          <!--begin::Heading-->
+     <div>
+      <div class="mb-1">
+        <!--begin::Title-->
+        <h1 class="fw-semibold text-gray-100 d-flex gap-2 align-items-center  lh-lg">
+           
+          <span class="star-2">
+            <svg _ngcontent-ng-c4268021054="" xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="none" viewBox="0 0 64 64" role="presentation" aria-hidden="true" focusable="false" class="hs fi"><path _ngcontent-ng-c4268021054="" fill="#FFFFFF" d="m39.637 40.831-5.771 15.871a1.99 1.99 0 0 1-3.732 0l-5.771-15.87a2.02 2.02 0 0 0-1.194-1.195L7.298 33.866a1.99 1.99 0 0 1 0-3.732l15.87-5.771a2.02 2.02 0 0 0 1.195-1.194l5.771-15.871a1.99 1.99 0 0 1 3.732 0l5.771 15.87a2.02 2.02 0 0 0 1.194 1.195l15.871 5.771a1.99 1.99 0 0 1 0 3.732l-15.87 5.771a2.02 2.02 0 0 0-1.195 1.194"></path></svg>
+          </span>           
+          <span class="fw-bolder"> Become an Insighter!</span>
+        </h1>
+       
+    </div>
+    <p class="text-gray-300 fw-bold px-5 ">
+      Monetize your expertise by joining our insighter community. Earn through reports, research, and consulting.
+    </p>
+     </div>
+          <!--end::Heading-->
+          <!--begin::Links-->
+          <div class="text-center mb-3"> 
+              <!--begin::Link-->
+              <a href="/app/insighter-register" class="btn btn-sm btn-secondary me-2 w-100" data-bs-target="#kt_modal_create_app" data-bs-toggle="modal">
+                  Get Started           </a>
+              <!--end::Link-->
+          </div>
+          <!--end::Links-->
+      </div>
+      <!--end::Body-->
+  </div>
+      <!--begin::Popular Questions-->
+      <div class="card bg-light my-5 mb-lg-10 shadow-none px-10 py-2 border-gray-300">
+        <!--begin::Header-->
+        <div class="card-header align-items-center border-0 p-0">
+          <!--begin::Title-->
+          <h3 class="card-title fw-bold text-gray-900 fs-5">Experties in this field</h3>
+          <!--end::Title-->
+        </div>
+        <!--end::Header-->
+  
+        <!--begin::Body-->
+        <div class="card-body pt-0 px-0 ps-0 pe-0">
+          <div class="d-flex flex-stack py-4 border-bottom border-gray-300 border-bottom-solid">
+            <!--begin::Details-->
+            <div class="d-flex align-items-center">
+                <!--begin::Avatar-->
+                <div class="symbol symbol-35px symbol-circle">
+                                                                <img alt="Pic" src="./assets/media/avatars/300-6.jpg">
+                                                        </div>
+                <!--end::Avatar-->
+  
+                <!--begin::Details-->
+                <div class="ms-5">
+                    <a  class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2">Emma Smith</a>
+  
+                    <div class="fw-semibold text-muted">Consulting Field</div>
+                </div>
+                <!--end::Details-->
+            </div>
+            <!--end::Details-->
+  
+            <!--begin::Access menu-->
+            <div class="ms-2 w-100px">
+              <a class="btn btn-light btn-xs d-flex ">
+                <i class="ki-outline ki-profile-user text-gray-700 fs-5"></i>
+                <div>Connect</div>
+               </a>
+            </div>
+            <!--end::Access menu-->
+        </div>
+        <div class="d-flex flex-stack py-4 border-bottom border-gray-300 border-bottom-solid">
+          <!--begin::Details-->
+          <div class="d-flex align-items-center">
+              <!--begin::Avatar-->
+              <div class="symbol symbol-35px symbol-circle">
+                                                              <img alt="Pic" src="./assets/media/avatars/300-7.jpg">
+                                                      </div>
+              <!--end::Avatar-->
+  
+              <!--begin::Details-->
+              <div class="ms-5">
+                  <a  class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2">John Deo</a>
+  
+                  <div class="fw-semibold text-muted">Finance</div>
+              </div>
+              <!--end::Details-->
+          </div>
+          <!--end::Details-->
+  
+          <!--begin::Access menu-->
+          <div class="ms-2 w-100px">
+            <a class="btn btn-light btn-xs d-flex ">
+              <i class="ki-outline ki-profile-user text-gray-700 fs-5"></i>
+              <div>Connect</div>
+             </a>
+          </div>
+          <!--end::Access menu-->
+      </div>
+      <div class="d-flex flex-stack py-4 border-bottom border-gray-300 border-bottom-solid">
+        <!--begin::Details-->
+        <div class="d-flex align-items-center">
+            <!--begin::Avatar-->
+            <div class="symbol symbol-35px symbol-circle">
+                                                            <img alt="Pic" src="./assets/media/avatars/300-12.jpg">
+                                                    </div>
+            <!--end::Avatar-->
+  
+            <!--begin::Details-->
+            <div class="ms-5">
+                <a  class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2">Marsa Smith</a>
+  
+                <div class="fw-semibold text-muted">IT Expert</div>
+            </div>
+            <!--end::Details-->
+        </div>
+        <!--end::Details-->
+  
+        <!--begin::Access menu-->
+        <div class="ms-2 w-100px">
+          <a class="btn btn-light btn-xs d-flex ">
+            <i class="ki-outline ki-profile-user text-gray-700 fs-5"></i>
+            <div>Connect</div>
+           </a>
+        </div>
+        <!--end::Access menu-->
+    </div>
+    <div class="view-more d-flex justify-content-center mt-4">
+    <a class="cursor-pointer"> <span class="text-blue"> View More</span></a>
+    </div>
+        </div>
+        <!--end: Card Body-->
+      </div>
+   
+    </div>
+  </div>
+

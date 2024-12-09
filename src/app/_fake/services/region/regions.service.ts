@@ -18,8 +18,8 @@ export interface Region {
 })
 export class RegionsService {
   private apiUrl = 'https://api.foresighta.co/api/common/setting/region/list';
-  private createApi = 'https://api.foresighta.co/api/common/setting/region';
-  private updateDeleteApi = 'https://api.foresighta.co/api/common/setting/region';
+  private createApi = 'https://api.foresighta.co/api/admin/setting/region';
+  private updateDeleteApi = 'https://api.foresighta.co/api/admin/setting/region';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   currentLang: string = 'en';
