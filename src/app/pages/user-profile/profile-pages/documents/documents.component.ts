@@ -1,7 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { MessageService } from 'primeng/api';
+import { Component, Injector, OnInit } from '@angular/core';
 import { IForsightaProfile } from 'src/app/_fake/models/profile.interface';
-import { ScrollAnimsService } from 'src/app/_fake/services/scroll-anims/scroll-anims.service';
 import { AuthService } from 'src/app/modules/auth';
 import { BaseComponent } from 'src/app/modules/base.component';
 
@@ -12,16 +10,14 @@ import { BaseComponent } from 'src/app/modules/base.component';
 })
 export class DocumentsComponent extends BaseComponent implements OnInit {
   profile: IForsightaProfile;
-  lang: string = "en";
   loadingProfile: boolean = false;
   documentTypes:Document[]
   isLoadingDocumentTypes:boolean=true;
   constructor(
-    scrollAnims: ScrollAnimsService,
     private auth: AuthService,
-    messageService: MessageService,
+    injector: Injector
   ) {
-    super(scrollAnims, messageService);
+    super(injector);
   }
   ngOnInit(): void {
     this.getProfile();

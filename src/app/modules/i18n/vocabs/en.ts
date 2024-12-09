@@ -57,6 +57,7 @@ export const locale = {
         LEGAL: 'Legal',
         CONTACT: 'Contact',
       },
+     
       LOGIN: {
         BUTTON: 'Sign In',
         TITLE: "Sign In",
@@ -86,7 +87,10 @@ export const locale = {
       FORGOT: {
         TITLE: 'Forgot Password?',
         DESC: 'Enter your email to reset your password',
-        SUCCESS: 'Your account has been successfully reset.'
+        SUCCESS: 'Your account has been successfully reset.',
+        PASSWORD_CHANGED: 'Password Changed!',
+        PASSWORD_CHANGED_MESSAGE: 'Your password has been changed successfully.',
+        BACK_TO_LOGIN: 'Back to login',
       },
       REGISTER: {
         TITLE: 'Sign Up',
@@ -99,6 +103,7 @@ export const locale = {
         "SUBTITLE": "Enter your details to create your account",
         "GOOGLE_SIGNIN": "Sign in with Google",
         "LINKEDIN_SIGNIN": "Sign in with LinkedIn",
+        INDUSTRY_REQUIRED:"Industry Required",
         "GOOGLE_SIGNUP": "Sign up with Google",
         "LINKEDIN_SIGNUP": "Sign up with LinkedIn",
         "OR_WITH_EMAIL": "Or with email",
@@ -265,7 +270,11 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       ABOUT_YOU: "About You",
       PHONE_NUMBER: "Phone Number",
       PHONE_NUMBER_OPTIONAL: "(optional)",
+      COMPANY_ADDRESS_REQUIRED:"Company address required",
+      COMPANY_ADDRESS:"Company Address",
       YOUR_PHONE_NUMBER: "Your phone number",
+      COMPANY_PHONE_NUMBER:"Company Phone Number",
+      COUNTRY_CODE_REQUIRED:"Country code required",
       PHONE_NUMBER_REQUIRED: "Phone number is required.",
       PHONE_NUMBER_PATTERN: "Phone number must contain exactly 10 digits.",
       LEGAL_NAME: "Legal Name",
@@ -284,7 +293,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       DOCUMENT_TYPE_REQUIRED: "Document type is required.",
       COMPANYLOGO:" Company Logo",
       VERIFY_FILES: "Uploaded Files",
-
+     
       CORPORATE_ACCOUNT_VERIFICATION: "Corporate Account Verification",
       VERIFY_YOUR_COMPANY_WITH: "Verify your company with",
       DROP_OR_UPLOAD_REGISTRY_DOCUMENT: "Drop or Upload Registry Document",
@@ -313,6 +322,8 @@ Your wealth of knowledge is valued and many are eager to learn from it.
   CODE_REQUIRED: "Verification code is required.", // Error message for verification code
   DELETE_FILE: "Delete File", // Tooltip for delete file buttonA
       
+  OTHER_FIELD_PLACEHOLDER: "Enter your other field",
+  
     },
     CONGRATS_CARD:{
       TITLE: "Congratulations!",

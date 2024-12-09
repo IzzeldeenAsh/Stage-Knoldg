@@ -75,6 +75,14 @@
             {{ profile.email }}
           </td>
         </tr>
+        <tr *ngIf='profile.phone'>
+          <td class="small text-muted pb-3 pe-4 pe-lg-5">
+            {{ 'ACCOUNT_SETTINGS.PHONE_NUMBER' | translate }}
+          </td>
+          <td class="small text-dark pb-3">
+            {{ profile.phone }}
+          </td>
+        </tr>
         <tr>
           <td class="small text-muted pb-3 pe-4 pe-lg-5">
             {{ 'PROFILE.ROLES' | translate }}

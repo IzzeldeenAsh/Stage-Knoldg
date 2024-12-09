@@ -3,11 +3,13 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable, Subscription, fromEvent, map, startWith } from 'rxjs';
 import { ICreateAccount } from '../../create-account.helper';
 import { ConsultingField, ConsultingFieldsService } from 'src/app/_fake/services/admin-consulting-fields/consulting-fields.service';
-import { Message, TreeNode } from 'primeng/api';
+import { Message } from 'primeng/api';
 import { TranslationService } from 'src/app/modules/i18n';
 import { IsicCodesService } from 'src/app/_fake/services/isic-code/isic-codes.service';
 import { phoneNumbers } from 'src/app/pages/wizards/phone-keys';
 import { IndustryService } from 'src/app/_fake/services/industries/industry.service';
+import { ConsultingFieldTreeService } from 'src/app/_fake/services/consulting-fields-tree/consulting-fields-tree.service';
+import { TreeNode } from 'src/app/reusable-components/shared-tree-selector/TreeNode';
 @Component({
   selector: 'app-step2',
   templateUrl: './step2.component.html',
@@ -16,17 +18,13 @@ import { IndustryService } from 'src/app/_fake/services/industries/industry.serv
 export class Step2Component implements OnInit, OnDestroy {
   isLoadingConsultingFields$: Observable<boolean>;
   isLoadingISIC$: Observable<boolean>;
-  phoneMask: string = '000-000-0000'; // Default mask
-  listOfConsultingFields: ConsultingField[] = [];
+  listOfConsultingFields: TreeNode[] = [];
   messages: Message[] = [];
   optionLabel: string = 'name.en';
   lang:string;
   phoneNumbers = phoneNumbers;
-  isISICDialogVisible: boolean = false;
-  dialogWidth: string = '50vw';
   nodes: TreeNode[] = [];
   selectedNodes: any;
-  reverseLoader:boolean=false;
   logoPreview: string | ArrayBuffer | null = null;
   @Input('updateParentModel') updateParentModel: (
     part: Partial<ICreateAccount>,
@@ -35,13 +33,14 @@ export class Step2Component implements OnInit, OnDestroy {
   form: FormGroup;
   @Input() defaultValues: Partial<ICreateAccount>;
   @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
-  resizeSubscription!: Subscription;
   defaultImage = 'https://au.eragroup.com/wp-content/uploads/2018/02/logo-placeholder.png';
   private unsubscribe: Subscription[] = [];
 
+  allConsultingFieldSelected  = []
+  allIndustriesSelected  = []
   constructor(
     private fb: FormBuilder,
-    private _ForsightaFieldsService: ConsultingFieldsService,
+    private _ForsightaFieldsService: ConsultingFieldTreeService,
     private _translateion:TranslationService,
     private _isicService: IndustryService // Add this line
   ) {
@@ -51,15 +50,12 @@ export class Step2Component implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.windowResize()
-    this.setOptionLabel()
     this.getConsultingFieldsList();
     this.loadISIC();
     this.initForm();
     this.updateParentModel({}, this.checkForm());
     this._translateion.onLanguageChange().subscribe((lang)=>{
       this.lang =lang;
-      this.setOptionLabel();
       this.loadISIC();
     });
     if (this.defaultValues?.registerDocument) {
@@ -72,11 +68,9 @@ export class Step2Component implements OnInit, OnDestroy {
     }
   }
   loadISIC() {
-    this.reverseLoader=true;
     const isicSub = this._isicService.getIsicCodesTree().subscribe({
       next: (res) => {
         this.nodes = res;
-        this.selectDefaultNodes();
       },
       error: (err) => {
         console.error('Error fetching ISIC codes:', err);
@@ -84,44 +78,7 @@ export class Step2Component implements OnInit, OnDestroy {
     });
     this.unsubscribe.push(isicSub);
   }
-  selectDefaultNodes() {
-    this.reverseLoader=true;
-    this.selectedNodes = [];
-    const codesToSelect = this.defaultValues.isicCodes.map((node: any) => node.data.key);
-  
-    const traverse = (nodes: any[], parentNode: any = null) => {
-      nodes.forEach((node: any) => {
-        node.parent = parentNode; // Set the parent property
-  
-        if (codesToSelect.includes(node.data.key)) {
-          this.selectedNodes.push(node);
-          node.selected = true; // Mark the node as selected
-        }
-  
-        if (node.children && node.children.length) {
-          traverse(node.children, node);
-  
-          // Update parent node selection state based on child nodes
-          const allChildrenSelected = node.children.every((child: any) => child.selected);
-          const someChildrenSelected = node.children.some((child: any) => child.selected || child.partialSelected);
-  
-          if (allChildrenSelected) {
-            node.selected = true;
-            node.partialSelected = false;
-          } else if (someChildrenSelected) {
-            node.selected = false;
-            node.partialSelected = true;
-          } else {
-            node.selected = false;
-            node.partialSelected = false;
-          }
-        }
-      });
-    };
-  
-    traverse(this.nodes);
-    this.reverseLoader=false;
-  }
+
   // Optional: Additional handling to sanitize input
   onPhoneNumberInput(event: Event) {
       const input = event.target as HTMLInputElement;
@@ -132,21 +89,11 @@ export class Step2Component implements OnInit, OnDestroy {
         sanitizedValue = sanitizedValue.slice(0, 10);
       }
       // Update the input value without triggering another event
-      this.form.controls.phoneNumber.setValue(sanitizedValue, { emitEvent: false });
-  }
-  windowResize(){
-    const screenwidth$ = fromEvent(window,'resize').pipe(
-      map(()=>window.innerWidth),
-      startWith(window.innerWidth)
-    );
-
-    this.resizeSubscription = screenwidth$.subscribe((width)=>{
-      this.dialogWidth = width <768 ? '100vw' : '70vw';
-      console.log(this.dialogWidth);
-    })
-  }
-  showISICDialog() {
-    this.isISICDialogVisible = true;
+      if(this.defaultValues.accountType==='corporate'){
+          this.form.controls.phoneCompanyNumber.setValue(sanitizedValue, { emitEvent: false });
+      }else{
+        this.form.controls.phoneNumber.setValue(sanitizedValue, { emitEvent: false });
+      }
   }
   getBackgroundImage(){
     return `url(${this.logoPreview || this.defaultImage})`;
@@ -249,30 +196,10 @@ getFileIcon(file: File): string {
 }
 
 
-
-  onISICDialogOK() {
-    this.isISICDialogVisible = false;
-    // Update the form control 'isicCodes' with selected nodes
-    const selectedIsicCodes = this.selectedNodes.map((node: any) => node);
-    this.form.get('isicCodes')?.setValue(selectedIsicCodes);
-    this.form.get('isicCodes')?.markAsTouched();
-    this.updateParentModel({ isicCodes: selectedIsicCodes }, this.checkForm());
-    console.log("this.selectedNodoes on Dialog", this.selectedNodes);
-  }
-  
-  onISICDialogCancel() {
-    this.isISICDialogVisible = false;
-  }
-  selectedNodesLabel(): string {
-    if (this.selectedNodes && this.selectedNodes.length > 0) {
-      return this.selectedNodes.map((node: any) => node.label).join(', ');
-    } else {
-      return '';
-    }
-  }  
   getConsultingFieldsList() {
-    const listSub = this._ForsightaFieldsService.getConsultingFields().subscribe({
-      next: (data: ConsultingField[]) => {
+    const listSub = this._ForsightaFieldsService.getConsultingCodesTree(this.lang ? this.lang : 'en')
+    .subscribe({
+      next: (data) => {
         this.listOfConsultingFields = data;
       },
       error: (error) => {
@@ -294,15 +221,20 @@ getFileIcon(file: File): string {
     this.unsubscribe.push(listSub);
   }
 
-  
-  setOptionLabel() {
-    // Adjust the optionLabel based on the current language
-    if (this.lang === 'en') {
-      this.optionLabel = 'names.en';
-    } else if (this.lang === 'ar') {
-      this.optionLabel = 'names.ar';
-    }
+  onConsultingNodesSelected(event:any){
+   this.allConsultingFieldSelected=event && event.length >0 ? event : [];
+   this.form.get('consultingFields')?.setValue(this.allConsultingFieldSelected);
+   this.updateParentModel({consultingFields:this.allConsultingFieldSelected}, this.checkForm());
+ 
   }
+
+  onIndustrySelected(event: any) {
+    this.allIndustriesSelected = event && event.length > 0 ? event : [];
+    this.form.get('isicCodes')?.setValue(this.allIndustriesSelected);
+    this.updateParentModel({isicCodes:this.allIndustriesSelected}, this.checkForm());
+   
+  }
+  
 
   initForm() {
     const accountType = this.defaultValues.accountType;
@@ -324,11 +256,13 @@ getFileIcon(file: File): string {
       this.form = this.fb.group(
         {
           legalName: [this.defaultValues.legalName || '', [Validators.required]],
+          companyAddress: [this.defaultValues.companyAddress || '', [Validators.required]],
           aboutCompany: [this.defaultValues.aboutCompany || '', [Validators.required]],
           phoneCountryCode: [this.defaultValues.phoneCountryCode || ''],
-          phoneNumber: [
+          phoneCompanyNumber: [
             this.defaultValues.phoneNumber || '',
             [
+              Validators.required,
               Validators.minLength(10),
               Validators.pattern('^[0-9]{10}$'), // Ensures exactly 10 digits
             ],

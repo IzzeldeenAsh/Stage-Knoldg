@@ -68,14 +68,14 @@
               <div class="row g-3 mb-9">
                 <div class="col-md-6">
                   <a (click)="signInWithGoogle($event)" class="btn btn-flex btn-outline btn-text-gray-700 btn-active-color-primary bg-state-light flex-center text-nowrap w-100">
-                    <img alt="Google Logo" src="../../../../../assets/media/svg/brand-logos/google-icon.svg" class="h-15px" [ngClass]="{'me-3': translate.currentLang=='en', 'ms-3': translate.currentLang=='ar'}" />
+                    <img alt="Google Logo" src="../../../../../assets/media/svg/brand-logos/google-icon.svg" class="h-15px" [ngClass]="{'me-3': lang=='en', 'ms-3': lang=='ar'}" />
                     {{ 'AUTH.REGISTRATION.GOOGLE_SIGNUP' | translate }}
                   </a>
                 </div>
                 <div class="col-md-6">
                   <a (click)="signInWithLinkedIn($event)" class="btn btn-flex btn-outline btn-text-gray-700 btn-active-color-primary bg-state-light flex-center text-nowrap w-100">
-                    <img alt="LinkedIn Logo" src="../../../../../assets/media/svg/brand-logos/linkedin-2.svg" class="theme-light-show h-15px" [ngClass]="{'me-3': translate.currentLang=='en', 'ms-3': translate.currentLang=='ar'}" />
-                    <img alt="Apple Logo" src="../../../../../assets/media/svg/brand-logos/apple-black-dark.svg" class="theme-dark-show h-15px" [ngClass]="{'me-3': translate.currentLang=='en', 'ms-3': translate.currentLang=='ar'}" />
+                    <img alt="LinkedIn Logo" src="../../../../../assets/media/svg/brand-logos/linkedin-2.svg" class="theme-light-show h-15px" [ngClass]="{'me-3': lang=='en', 'ms-3': lang=='ar'}" />
+                    <img alt="Apple Logo" src="../../../../../assets/media/svg/brand-logos/apple-black-dark.svg" class="theme-dark-show h-15px" [ngClass]="{'me-3': lang=='en', 'ms-3': lang=='ar'}" />
                     {{ 'AUTH.REGISTRATION.LINKEDIN_SIGNUP' | translate }}
                   </a>
                 </div>
@@ -239,8 +239,8 @@
       <span
         class="btn btn-sm btn-icon position-absolute top-50"
         [ngClass]="{
-          'end-0 me-n2 translate-middle': translate.currentLang === 'en',
-          'start-0 me-2 translate-middle-y': translate.currentLang === 'ar'
+          'end-0 me-n2 translate-middle': lang === 'en',
+          'start-0 me-2 translate-middle-y': lang === 'ar'
         }"
         (click)="togglePasswordVisibility()"
         type="button"
@@ -268,7 +268,7 @@
     <small class="text-muted">
       {{ getPasswordStrengthLabel() }}
     </small>
-    <div *ngIf="passwordStrength.feedback && translate.currentLang=='en'" class="text-warning mt-1">
+    <div *ngIf="passwordStrength.feedback && lang=='en'" class="text-warning mt-1">
       {{ passwordStrength.feedback }}
     </div>
   </div>

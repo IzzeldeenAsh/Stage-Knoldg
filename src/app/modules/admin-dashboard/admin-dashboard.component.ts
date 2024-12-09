@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { TranslationService } from '../i18n';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -7,11 +8,12 @@ import { Component } from '@angular/core';
 })
 export class AdminDashboardComponent {
 constructor(
+  private translation:TranslationService
 ) {
 }
 
 ngOnInit(): void {
- 
+ this.translation.setLanguage('en')
 }
 
 ngAfterViewInit(): void {

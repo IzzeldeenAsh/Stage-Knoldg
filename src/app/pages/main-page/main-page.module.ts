@@ -7,10 +7,11 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { ResultsPageComponent } from './results-page/results-page.component';
 import { FormsModule } from '@angular/forms';
+import { InsighterCardComponent } from './results-page/insighter-card/insighter-card.component';
 
 
 @NgModule({
-  declarations: [MainComponent,ResultsPageComponent],
+  declarations: [MainComponent,ResultsPageComponent,InsighterCardComponent],
   imports: [
     CommonModule,
     MainPageRoutingModule,

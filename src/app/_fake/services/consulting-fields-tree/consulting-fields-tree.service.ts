@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { TranslationService } from 'src/app/modules/i18n/translation.service';
 import { map, catchError, finalize } from 'rxjs/operators';
+import { TreeNode } from 'src/app/reusable-components/shared-tree-selector/TreeNode';
 
 export interface IsicCode {
   key: number;
@@ -17,9 +18,9 @@ export interface IsicCode {
 @Injectable({
   providedIn: 'root'
 })
-export class IndustryService {
-  private apiUrl = 'https://api.foresighta.co/api/common/setting/industry/tree-list'; 
-  private apiList = 'https://api.foresighta.co/api/common/setting/industry/list'
+export class ConsultingFieldTreeService {
+  private apiUrl = 'https://api.foresighta.co/api/common/setting/consulting-field/tree/list'; 
+  private apiList = 'https://api.foresighta.co/api/common/setting/consulting-field/list'
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   currentLang: any = 'en';
@@ -29,7 +30,7 @@ export class IndustryService {
     private translationService: TranslationService
   ) {
     this.translationService.onLanguageChange().subscribe(lang => {
-      this.currentLang = lang || 'en';;
+      this.currentLang = lang || 'en';
     });
   }
 
@@ -72,11 +73,11 @@ export class IndustryService {
   }
 
   // Fetch ISIC Codes data from the API
-  getIsicCodesTree(): Observable<any[]> {
+  getConsultingCodesTree(lang:string): Observable<TreeNode[]> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'Accept-Language': this.currentLang
+      'Accept-Language': lang
     });
 
     this.setLoading(true);
@@ -86,29 +87,27 @@ export class IndustryService {
       finalize(() => this.setLoading(false))
     );
   }
-
-    // Fetch ISIC Codes data from the API
-    getIsicCodesTreeParent(): Observable<any[]> {
+  // Fetch ISIC Codes data from the API
+  getConsultingCodesTreeParent(lang:string): Observable<any[]> {
       const headers = new HttpHeaders({
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Accept-Language': this.currentLang
+        'Accept-Language': lang
       });
   
       this.setLoading(true);
-      return this.http.get<any>('https://api.foresighta.co/api/common/setting/industry/tree/parent', { headers }).pipe(
+      return this.http.get<any>('https://api.foresighta.co/api/common/setting/consulting-field/tree/parent', { headers }).pipe(
         map((res) => this.transformToTreeNodeParent(res)),
         catchError((error) => this.handleError(error)),
         finalize(() => this.setLoading(false))
       );
     }
-
-     // Fetch ISIC Codes data from the API
-  getIndustryList(): Observable<any[]> {
+  // Fetch ISIC Codes data from the API
+  getConsultingList(lang:string): Observable<any[]> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'Accept-Language': this.currentLang
+      'Accept-Language': lang
     });
 
     this.setLoading(true);
@@ -118,36 +117,32 @@ export class IndustryService {
       finalize(() => this.setLoading(false))
     );
   }
-
-
   // Create a new ISIC code
-  createIsicCode(isicCode: any): Observable<IsicCode> {
+  createConsultingField(isicCode: any,lang:string): Observable<IsicCode> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'Accept-Language': this.currentLang
+      'Accept-Language': lang
     });
     this.setLoading(true);
-    return this.http.post<IsicCode>('https://api.foresighta.co/api/admin/setting/industry', isicCode, { headers }).pipe(
+    return this.http.post<IsicCode>('https://api.foresighta.co/api/admin/setting/consulting-field', isicCode, { headers }).pipe(
       catchError(this.handleError),
       finalize(() => this.setLoading(false))
     );
   }
-
   // Update an existing ISIC code
-  updateIsicCode(id: number, isicCode: any): Observable<IsicCode> {
+  updateConsultingField(id: number, isicCode: any, lang:string): Observable<IsicCode> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'Accept-Language': this.currentLang
+      'Accept-Language': lang
     });
     this.setLoading(true);
-    return this.http.put<IsicCode>(`https://api.foresighta.co/api/admin/setting/industry/${id}`, isicCode, { headers }).pipe(
+    return this.http.put<IsicCode>(`https://api.foresighta.co/api/admin/setting/consulting-field/${id}`, isicCode, { headers }).pipe(
       catchError(this.handleError),
       finalize(() => this.setLoading(false))
     );
   }
-
   // Delete an ISIC code
   deleteIsicCode(id: number): Observable<any> {
     const headers = new HttpHeaders({
@@ -156,7 +151,7 @@ export class IndustryService {
       'Accept-Language': this.currentLang
     });
     this.setLoading(true);
-    return this.http.delete<any>(`https://api.foresighta.co/api/admin/setting/industry/${id}`, { headers }).pipe(
+    return this.http.delete<any>(`https://api.foresighta.co/api/admin/setting/consulting-field/${id}`, { headers }).pipe(
       catchError(this.handleError),
       finalize(() => this.setLoading(false))
     );

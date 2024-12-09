@@ -19,6 +19,9 @@ export interface IForsightaProfile {
     industries?:any;
     consulting_field?:any;
     company?:Company;
+    insighter_status?:string;
+    client_status?:string;
+    phone?:string
   }
   
   export interface Department {
@@ -28,6 +31,7 @@ export interface IForsightaProfile {
     status: string;
     name: string;
     names: TranslatedNames;
+
   }
   
   export interface Position {
@@ -71,4 +75,6 @@ export interface Company {
   register_document: string; // URL as a string
   logo: string; // URL as a string
   status: string;
+  address:string;
+  company_phone:string;
 }

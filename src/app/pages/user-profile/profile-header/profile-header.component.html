@@ -1,30 +1,36 @@
 <div *ngIf="profile" class="profile-header d-flex flex-column align-items-center gap-2 gap-lg-3 py-4 pt-lg-5 pb-lg-5">
   <!--begin::Image input-->
-  <div class="image-input mb-4 " data-kt-image-input="true" [ngClass]="{'image-input-circle' : isAvatar , 'image-input-outline':!isAvatar}">
+  <div class="image-input image-input-outline mb-4" data-kt-image-input="true">
     <!--begin::Image preview wrapper-->
-    <div class="image-input-wrapper border-1 border-success w-125px h-125px" [ngStyle]="{'background-image': 'url(' + profileImage + ')'}"></div>
+    <div class="image-input-wrapper border-1 border-success w-125px h-125px" 
+         [ngStyle]="{'background-image': 'url(' + profileImage + ')'}">
+    </div>
     <!--end::Image preview wrapper-->
-
+  
     <!--begin::Edit button-->
     <label 
       class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
-      title="Change avatar"
-    >
+      title="Change avatar">
       <i class="ki-duotone ki-pencil fs-6">
         <span class="path1"></span>
         <span class="path2"></span>
       </i>
-
+  
       <!--begin::Input-->
-      <input type="file" name="avatar" accept=".png, .jpg, .jpeg" (change)="onFileSelected($event)" class="d-none" />
+      <input 
+        type="file" 
+        name="avatar" 
+        accept=".png, .jpg, .jpeg" 
+        (change)="onFileSelected($event)" 
+        class="d-none" 
+        #fileInput 
+      />
       <!--end::Input-->
     </label>
-
-
   </div>
   <!--end::Image input-->
 
-  <!-- Your existing profile name and details -->
+  <!-- Existing Profile Name and Details -->
   <div class="profile-name d-flex align-items-center gap-2" style="direction: ltr;">
     <div class="text-dark fs-2 fw-bolder" *ngIf="!profile.company?.legal_name">
       {{ profile.first_name }} {{ profile.last_name }}
@@ -33,17 +39,18 @@
       {{ profile.company?.legal_name }}
     </div>
     <!-- SVG Icon -->
-    <app-keenicon name="verify" type="solid" class="fs-1 text-info"></app-keenicon>
+    <app-keenicon name="verify" type="solid" class="fs-1 text-info" *ngIf="profile.verified"></app-keenicon>
   </div>
 
   <div class="profile-details d-flex flex-wrap justify-content-center gap-1 gap-lg-4 small">
     <div class="detail-item d-flex gap-1 align-items-center">
       <i class="ki-filled ki-abstract-41 text-primary small"></i>
-      <span class="text-primary fw-medium fs-7" *ngIf="profile.country">{{ profile.country }}, </span>
+      <span class="text-primary fw-medium fs-7" *ngIf="profile.country">{{ profile.country }} </span>
     </div>
-    <div class="detail-item d-flex gap-1 align-items-center">
+    <div class="detail-item d-flex gap-1 align-items-center" *ngIf="profile.company">
       <i class="ki-filled ki-sms text-primary small"></i>
-      <a class="text-primary fw-medium fs-7" href="mailto:{{ profile.email }}">{{ profile.email }}</a>
+      <a class="text-primary fw-medium fs-7" >,{{ profile.company.address }}</a>
     </div>
+   
   </div>
 </div>

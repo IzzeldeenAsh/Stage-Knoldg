@@ -1,12 +1,11 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Injector, OnInit } from "@angular/core";
 import { BehaviorSubject, Observable, Subscription, first, of } from "rxjs";
 import { ICreateAccount, inits } from "../create-account.helper";
 import Swal from "sweetalert2";
 import { InsighterRegistraionService } from "src/app/_fake/services/insighter-registraion/insighter-registraion.service";
-import { Message, MessageService } from "primeng/api";
+import { Message } from "primeng/api";
 import { Router } from "@angular/router";
 import { BaseComponent } from "src/app/modules/base.component";
-import { ScrollAnimsService } from "src/app/_fake/services/scroll-anims/scroll-anims.service";
 import { TranslationService } from "src/app/modules/i18n";
 import { AuthService } from "src/app/modules/auth";
 import { IForsightaProfile } from "src/app/_fake/models/profile.interface";
@@ -19,8 +18,8 @@ export class VerticalComponent extends BaseComponent implements OnInit {
   formsCount$ = new BehaviorSubject<number>(this.baseFormsCount);
   onSuccessMessage: boolean = false;
   onPendingMessage: boolean = false;
-  user:IForsightaProfile;
-  userRoles:string[]=[]
+  user: IForsightaProfile;
+  userRoles: string[] = [];
   formsCount = 4;
   messages: Message[] = [];
   account$: BehaviorSubject<ICreateAccount> =
@@ -32,14 +31,13 @@ export class VerticalComponent extends BaseComponent implements OnInit {
   isLoadingSubmit$: Observable<boolean> = of(false);
   lang: string = "en";
   constructor(
-    scrollAnims: ScrollAnimsService,
     private insighterRegistraionService: InsighterRegistraionService,
     private router: Router,
     private translateService: TranslationService,
-    private auth:AuthService,
-    messageService:MessageService
+    private auth: AuthService,
+    injector: Injector
   ) {
-    super(scrollAnims,messageService);
+    super(injector);
     this.isLoadingSubmit$ = this.insighterRegistraionService.isLoading$;
   }
 
@@ -47,21 +45,19 @@ export class VerticalComponent extends BaseComponent implements OnInit {
     this.translateService.onLanguageChange().subscribe((lang) => {
       this.lang = lang;
     });
-    this.checkUserRoleAndVerificaiton()
+    this.checkUserRoleAndVerificaiton();
   }
 
-  checkUserRoleAndVerificaiton(){
+  checkUserRoleAndVerificaiton() {
     const authSub = this.auth.getProfile().subscribe({
-      next:(res)=>{
-     
-      },
-      error:(error)=>{
+      next: (res) => {},
+      error: (error) => {
         this.messages.push({
           severity: "error",
           summary: "",
-          detail: "Error fetchingUsers"
+          detail: "Error fetchingUsers",
         });
-      }
+      },
     });
     this.unsubscribe.push(authSub);
   }
@@ -124,41 +120,151 @@ export class VerticalComponent extends BaseComponent implements OnInit {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }
 
+  preparePersonalData(user:ICreateAccount){
+    const industriesList = user.isicCodes.filter((node: any) => typeof node.key === 'number');
+    const otherIndustriesFields = user.isicCodes.filter((node: any) => 
+        typeof node.key === 'string' && node.key !== 'selectAll' && node.data.customInput !== undefined  && node.data.customInput !== null
+    );
+    const consultingFieldList = user.consultingFields.filter((node: any) => typeof node.key === 'number');
+    const otherConsultingFields = user.consultingFields.filter((node: any) => 
+        typeof node.key === 'string' && node.key !== 'selectAll' && node.data.customInput !== undefined  && node.data.customInput !== null
+    );
+    const formData = new FormData();
+    formData.append("bio", user.bio ? user.bio : "");
+    if (user.phoneNumber) {
+      const userPhoneNumber = user.phoneCountryCode.code + user.phoneNumber;
+      formData.append("phone", userPhoneNumber);
+    }
+    if(industriesList && industriesList.length>0){
+      industriesList.forEach((code: any) => {
+        formData.append("industries[]", code.key.toString());
+      });
+    }
+    if(consultingFieldList && consultingFieldList.length>0){
+      consultingFieldList.forEach((field: any) => {
+        formData.append("consulting_field[]", field.key.toString());
+      });
+    }
+    if(otherIndustriesFields && otherIndustriesFields.length>0){
+      otherIndustriesFields.forEach((field:any, index:number) => {
+        formData.append(`suggest_industries[${index}][parent_id]`, field.parent.key ==="selectAll" ? 0 :field.parent.key);
+      formData.append(`suggest_industries[${index}][name][en]`, field.data.customInput);
+      formData.append(`suggest_industries[${index}][name][ar]`, field.data.customInput);
+      });
+    }
+ if(otherConsultingFields && otherConsultingFields.length>0){
+      otherConsultingFields.forEach((field:any, index:number) => {
+        formData.append(`suggest_consulting_fields[${index}][parent_id]`, field.parent.key ==="selectAll" ? 0 :field.parent.key);
+        formData.append(`suggest_consulting_fields[${index}][name][en]`, field.data.customInput);
+        formData.append(`suggest_consulting_fields[${index}][name][ar]`, field.data.customInput);
+      });
+    }
+
+    // Append each certification
+    if (user.certifications && user.certifications.length > 0) {
+      user.certifications?.forEach((certification, index) => {
+        formData.append(
+          `certification[${index}][type]`,
+          certification.type
+        );
+        formData.append(
+          `certification[${index}][file]`,
+          certification.file
+        );
+      });
+    }
+    const formDataEntries: Array<{ key: string; value: string }> = [];
+    formData.forEach((value, key) => {
+      formDataEntries.push({ key, value: value.toString() });
+    });
+    console.table(formDataEntries);
+
+    return formData
+  }
+
+  prepareCorporateAccount(user:ICreateAccount){
+ 
+    const formData = new FormData();
+    formData.append("about_us", user.aboutCompany ? user.aboutCompany : "");
+    formData.append("legal_name", user.legalName ? user.legalName : "");
+    formData.append("address", user.companyAddress ? user.companyAddress : "");
+    formData.append("logo", user.logo!);
+    if (user.verificationMethod === "websiteEmail") {
+      formData.append("website", user.website ? user.website : "");
+      formData.append(
+        "verified_email",
+        user.companyEmail ? user.companyEmail : ""
+      );
+      formData.append("code", user.code ? user.code : "");
+    } else if (user.verificationMethod === "uploadDocument") {
+      if (user.registerDocument) {
+        formData.append("register_document", user.registerDocument);
+      }
+    }
+    if (user.phoneCompanyNumber) {
+      const userPhoneNumber = user.phoneCountryCode.code + user.phoneCompanyNumber;
+      formData.append("company_phone", userPhoneNumber);
+    }
+    
+   
+    const industriesList = user.isicCodes.filter((node: any) => typeof node.key === 'number');
+    const otherIndustriesFields = user.isicCodes.filter((node: any) => 
+        typeof node.key === 'string' && node.key !== 'selectAll' && node.data.customInput !== undefined  && node.data.customInput !== null
+    );
+    const consultingFieldList = user.consultingFields.filter((node: any) => typeof node.key === 'number');
+    const otherConsultingFields = user.consultingFields.filter((node: any) => 
+        typeof node.key === 'string' && node.key !== 'selectAll' && node.data.customInput !== undefined  && node.data.customInput !== null
+    );
+    if(industriesList && industriesList.length>0){
+      industriesList.forEach((code: any) => {
+        formData.append("industries[]", code.key.toString());
+      });
+    }
+    if(consultingFieldList && consultingFieldList.length>0){
+      consultingFieldList.forEach((field: any) => {
+        formData.append("consulting_field[]", field.key.toString());
+      });
+    }
+    if(otherIndustriesFields && otherIndustriesFields.length>0){
+      otherIndustriesFields.forEach((field:any, index:number) => {
+        formData.append(`suggest_industries[${index}][parent_id]`, field.parent.key ==="selectAll" ? 0 :field.parent.key);
+      formData.append(`suggest_industries[${index}][name][en]`, field.data.customInput);
+      formData.append(`suggest_industries[${index}][name][ar]`, field.data.customInput);
+      });
+    }
+ if(otherConsultingFields && otherConsultingFields.length>0){
+      otherConsultingFields.forEach((field:any, index:number) => {
+        formData.append(`suggest_consulting_fields[${index}][parent_id]`, field.parent.key ==="selectAll" ? 0 :field.parent.key);
+        formData.append(`suggest_consulting_fields[${index}][name][en]`, field.data.customInput);
+        formData.append(`suggest_consulting_fields[${index}][name][ar]`, field.data.customInput);
+      });
+    }
+
+    // Append each certification
+    if (user.certifications && user.certifications.length > 0) {
+      user.certifications?.forEach((certification, index) => {
+        formData.append(
+          `certification[${index}][type]`,
+          certification.type
+        );
+        formData.append(
+          `certification[${index}][file]`,
+          certification.file
+        );
+      });
+    }
+    const formDataEntries: Array<{ key: string; value: string }> = [];
+    formData.forEach((value, key) => {
+      formDataEntries.push({ key, value: value.toString() });
+    });
+    console.table(formDataEntries);
+    return formData
+  }
   submit() {
     this.account$.pipe(first()).subscribe((account) => {
       const user = account;
       if (user.accountType === "personal") {
-       
-        const formData = new FormData();
-        formData.append("bio", user.bio ? user.bio : "");
-        if(user.phoneNumber){
-          const userPhoneNumber = user.phoneCountryCode.code + user.phoneNumber;
-          formData.append("phone", userPhoneNumber);
-        }
-        user.isicCodes.forEach((code: any) => {
-          formData.append("industries[]", code.key.toString());
-        });
-        user.consultingFields.forEach((field: any) => {
-          formData.append("consulting_field[]", field.id.toString());
-        });
-        // Append each certification
-        if (user.certifications && user.certifications.length > 0) {
-          user.certifications?.forEach((certification, index) => {
-            formData.append(
-              `certification[${index}][type]`,
-              certification.type
-            );
-            formData.append(
-              `certification[${index}][file]`,
-              certification.file
-            );
-          });
-        }
-        const formDataEntries: Array<{ key: string; value: string }> = [];
-        formData.forEach((value, key) => {
-          formDataEntries.push({ key, value: value.toString() });
-        });
-        console.table(formDataEntries);
+        const formData = this.preparePersonalData(user)
         // Call the service
         const insigheterSub = this.insighterRegistraionService
           .personalInsighterRegister(formData)
@@ -171,60 +277,19 @@ export class VerticalComponent extends BaseComponent implements OnInit {
               this.handleServerErrors(error);
             },
           });
-
         this.unsubscribe.push(insigheterSub);
       } else {
-       
-        const formData = new FormData();
-        formData.append("about_us", user.aboutCompany ? user.aboutCompany : "");
-        formData.append("legal_name", user.legalName ? user.legalName : "");
-        formData.append("logo", user.logo!);
-        if (user.verificationMethod === "websiteEmail") {
-          formData.append("website", user.website ? user.website : "");
-          formData.append(
-            "verified_email",
-            user.companyEmail ? user.companyEmail : ""
-          );
-          formData.append("code", user.code ? user.code : "");
-        } else if (user.verificationMethod === "uploadDocument") {
-          if (user.registerDocument) {
-            formData.append("register_document", user.registerDocument);
-          }
-        }
-        if(user.phoneNumber){
-          const userPhoneNumber = user.phoneCountryCode.code + user.phoneNumber;
-          formData.append("phone", userPhoneNumber);
-        }
-        user.isicCodes.forEach((code: any) => {
-          formData.append("industries[]", code.key.toString());
-        });
-        user.consultingFields.forEach((field: any) => {
-          formData.append("consulting_field[]", field.id.toString());
-        });
-        // Append each certification
-        if (user.certifications && user.certifications.length > 0) {
-          user.certifications?.forEach((certification, index) => {
-            formData.append(
-              `certification[${index}][type]`,
-              certification.type
-            );
-            formData.append(
-              `certification[${index}][file]`,
-              certification.file
-            );
-          });
-        }
-        const formDataEntries: Array<{ key: string; value: string }> = [];
-        formData.forEach((value, key) => {
-          formDataEntries.push({ key, value: value.toString() });
-        });
-        console.table(formDataEntries);
+        const formData = this.prepareCorporateAccount(user)
         const insigheterSub = this.insighterRegistraionService
           .corporateInsighterRegister(formData)
           .subscribe({
             next: (response) => {
               console.log("Submission successful:", response);
-              this.onSuccessMessage = true;
+              if(user.verificationMethod === "uploadDocument"){
+                this.onPendingMessage=true
+              }else{
+                this.onSuccessMessage=true
+              }
             },
             error: (error) => {
               this.handleServerErrors(error);
@@ -239,7 +304,7 @@ export class VerticalComponent extends BaseComponent implements OnInit {
   }
 
   private handleServerErrors(error: any) {
-    this.messages = [];
+    this.messages = []; 
     if (error.error && error.error.errors) {
       const serverErrors = error.error.errors;
       for (const key in serverErrors) {

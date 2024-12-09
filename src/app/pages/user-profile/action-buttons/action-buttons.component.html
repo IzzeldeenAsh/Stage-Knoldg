@@ -1,18 +1,21 @@
-<div *ngIf="profile" class="action-buttons d-flex align-items-center justify-content-end flex-grow-1 flex-lg-grow-0  gap-2 mb-lg-0">
+<div *ngIf="profile && profile.insighter_status" class="action-buttons d-flex align-items-center justify-content-end flex-grow-1 flex-lg-grow-0  gap-2 mb-lg-0 py-10 py-sm-0">
     <!-- <button class=" mb-2 btn btn-sm btn-primary d-flex align-items-center gap-2">
       <app-keenicon type="outline" name="calendar-2" class="fs-2 text-gray-300"></app-keenicon>
       <span>Schedule</span>
-    </button>
-    <button class="mb-2 btn btn-light btn-sm btn-secondary d-flex align-items-center gap-2">
-      <app-keenicon type="outline" name="question" class="fs-2 text-gray-600"></app-keenicon>
-      <span>Service</span>
-    </button>
-    <button class=" mb-2 btn btn-sm btn-light d-flex align-items-center">
-      <app-keenicon type="outline" name="messages" class="fs-2 text-gray-600"></app-keenicon>
-    </button>
-    <button  *ngIf="canAccessAccountSettings" class=" mb-2 btn btn-sm btn-light d-flex align-items-center">
-      <app-keenicon type="outline" name="setting-4" class="fs-2 text-gray-600"></app-keenicon>
     </button> -->
+    <button class="mb-2 btn btn-xs d-flex align-items-center gap-2 cursor-default"
+    [ngClass]="{'btn-light-success border border-success' : profile.client_status ==='active', 'btn-danger':profile.client_status ==='inactive'}"
+    >
+      <span class="text-capitalize">{{profile.client_status}} Client</span>
+    </button>
+    <button class="mb-2 btn btn-xs d-flex align-items-center gap-2 cursor-default"
+    [ngClass]="{'btn-light-success border border-success' : profile.insighter_status ==='active', 'btn-danger':profile.insighter_status ==='inactive'}"
+    >
+      <span class="text-capitalize">{{profile.insighter_status}} Insighter</span>
+    </button>
     
+    <!-- <button class=" mb-2 btn btn-sm btn-light d-flex align-items-center">
+      <app-keenicon type="outline" name="messages" class="fs-2 text-gray-600"></app-keenicon>
+    </button> -->
   </div>
   

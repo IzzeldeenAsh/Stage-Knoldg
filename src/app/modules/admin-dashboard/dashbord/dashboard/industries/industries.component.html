@@ -58,7 +58,7 @@
             [value]="isicnodes"
             [scrollable]="true"
             [tableStyle]="{ 'min-width': '50rem' }"
-            [globalFilterFields]="['data.code', 'data.label', 'data.status', 'data.nameEn', 'data.nameAr']"
+            [globalFilterFields]="['data.label', 'data.status', 'data.nameEn', 'data.nameAr']"
           >
             <ng-template pTemplate="header">
               <tr>
@@ -131,20 +131,7 @@
   </span>
 
   <form [formGroup]="isicForm">
-    <div class="mb-3 row">
-      <label for="code" class="col-sm-3 col-form-label">Code</label>
-      <div class="col-sm-9">
-        <input pInputText id="code" class="form-control" formControlName="code" autocomplete="off" />
-        <div *ngIf="code && code.errors && (code.touched || code.dirty)">
-          <div *ngIf="code.errors['required']" class="text-danger">
-            Code is required.
-          </div>
-          <div *ngIf="code.errors['serverError']" class="text-danger">
-            {{ code.errors['serverError'] }}
-          </div>
-        </div>
-      </div>
-    </div>
+   
 
     <div class="mb-3 row">
       <label for="nameEn" class="col-sm-3 col-form-label">Name (EN)</label>
@@ -198,7 +185,7 @@
     </div>
     
     <div class="mb-3 row">
-      <label for="parentId" class="col-sm-3 col-form-label">Parent ISIC Code</label>
+      <label for="parentId" class="col-sm-3 col-form-label">Parent Industry if exist</label>
       <div class="col-sm-9">
       
         

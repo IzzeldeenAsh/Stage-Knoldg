@@ -10,10 +10,15 @@
        <ng-template #companyLogo>
         <img alt="Logo" [src]="_user.company?.logo" class="object-fit-cover" />
        </ng-template>
-        <span *ngIf="!_user.profile_photo_url" class="symbol-label bg-primary fs-4 text-white">
-          <span> {{ _user.first_name.charAt(0) }} </span>
-          <span style="padding: 0 -20px;"> {{ _user.last_name.charAt(0) }} </span>
-        </span>
+       <span *ngIf="(_user && !_user.profile_photo_url && !_user.company) " class="symbol-label bg-primary fs-4 text-white">
+        <span> {{ _user.first_name.charAt(0) }} </span>
+        <span style="padding: 0 -20px;"> {{ _user.last_name.charAt(0) }} </span>
+       </span>
+       <span *ngIf="_user.company &&  !_user.company?.logo" class="symbol-label bg-primary fs-4 text-white">
+        <span> {{ _user.first_name.charAt(0) }} </span>
+        <span style="padding: 0 -20px;"> {{ _user.last_name.charAt(0) }} </span>
+       </span>
+    
       </div>
 
       <div class="d-flex flex-column">

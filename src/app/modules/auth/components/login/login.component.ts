@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from "@angular/core";
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, Injector } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Observable } from "rxjs";
 import { first } from "rxjs/operators";
@@ -34,12 +34,11 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private route: ActivatedRoute,
     private router: Router,
-    messageService: MessageService,
     private translationService: TranslationService,
-    scrollAnims: ScrollAnimsService,
-    
+    injector: Injector
   ) {
-    super(scrollAnims,messageService);
+    super(injector);
+    // Now you can use someOtherService alongside base services
     this.isLoading$ = this.authService.isLoading$;
     this.selectedLang = this.translationService.getSelectedLanguage();
     this.isRTL = this.selectedLang === "ar"; // Set RTL based on the selected language
@@ -109,7 +108,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     this.hasError = false;
 
     const loginSubscr = this.authService
-      .login(this.f.email.value, this.f.password.value)
+      .login(this.f.email.value, this.f.password.value , this.selectedLang ? this.selectedLang :'en')
       .pipe(first())
       .subscribe({
         next: (res) => {

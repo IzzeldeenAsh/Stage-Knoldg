@@ -1,11 +1,12 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Injector, OnInit } from "@angular/core";
 import { MessageService } from "primeng/api";
 import { IForsightaProfile } from "src/app/_fake/models/profile.interface";
-import { Document, DocumentsService } from "src/app/_fake/services/douments-types/documents-types.service.spec";
-import { ScrollAnimsService } from "src/app/_fake/services/scroll-anims/scroll-anims.service";
+import {
+  Document,
+  DocumentsService,
+} from "src/app/_fake/services/douments-types/documents-types.service.spec";
 import { AuthService } from "src/app/modules/auth";
 import { BaseComponent } from "src/app/modules/base.component";
-import { TranslationService } from "src/app/modules/i18n";
 
 @Component({
   selector: "app-certificates",
@@ -16,66 +17,62 @@ export class CertificatesComponent extends BaseComponent implements OnInit {
   profile: IForsightaProfile;
   lang: string = "en";
   loadingProfile: boolean = false;
-  documentTypes:Document[]
-  isLoadingDocumentTypes:boolean=true;
+  documentTypes: Document[];
+  isLoadingDocumentTypes: boolean = true;
   constructor(
-    scrollAnims: ScrollAnimsService,
     private auth: AuthService,
-    messageService: MessageService,
-    private translationService: TranslationService,
     private documentsService: DocumentsService,
+    injector: Injector
   ) {
-    super(scrollAnims, messageService);
+    super(injector);
   }
   ngOnInit(): void {
-    this.loadDocList()
-   this.getProfile();
+    this.loadDocList();
+    this.getProfile();
   }
-  getProfile(){
-    this.loadingProfile=true;
+  getProfile() {
+    this.loadingProfile = true;
     const getProfileSub = this.auth.getProfile().subscribe({
-        next : ( profile)=>{
-          this.profile = profile
-          this.loadingProfile=false;
-        },
-        error:(error)=>{
-          this.loadingProfile=false;
-        }
+      next: (profile) => {
+        this.profile = profile;
+        this.loadingProfile = false;
+      },
+      error: (error) => {
+        this.loadingProfile = false;
+      },
     });
-    this.unsubscribe.push(getProfileSub)
+    this.unsubscribe.push(getProfileSub);
   }
 
-  loadDocList(){
-    const docListSub = this.documentsService.getDocumentsTypes().subscribe(
-      {
-        next  : (types)=>{
-          this.documentTypes = types;
-          this.isLoadingDocumentTypes = false;
-        },
-        error: (error)=>{
-          this.isLoadingDocumentTypes = false;
-        }
-      }
-    )
-    this.unsubscribe.push(docListSub)
+  loadDocList() {
+    const docListSub = this.documentsService.getDocumentsTypes().subscribe({
+      next: (types) => {
+        this.documentTypes = types;
+        this.isLoadingDocumentTypes = false;
+      },
+      error: (error) => {
+        this.isLoadingDocumentTypes = false;
+      },
+    });
+    this.unsubscribe.push(docListSub);
   }
 
   getFileIcon(url: string) {
     if (url) {
-      const extension = url.split('.').pop()?.toLowerCase();
+      const extension = url.split(".").pop()?.toLowerCase();
       const iconPath = `./assets/media/svg/files/${extension}.svg`;
       // Optionally, you can add logic to handle missing icons
       return iconPath;
     }
-    return './assets/media/svg/files/default.svg';
+    return "./assets/media/svg/files/default.svg";
   }
 
-  gerCertName(certId:string){
-    const doc =  this.documentTypes.find((cert)=>cert.id ===certId);
-    if (doc){
-      return doc.name 
-    }else{
-      return "Other"
+  gerCertName(certId: string) {
+    const doc = this.documentTypes.find((cert) => cert.id === certId);
+    if (doc) {
+      return doc.name;
+    } else {
+      return "Other";
     }
-   }
+  }
 }

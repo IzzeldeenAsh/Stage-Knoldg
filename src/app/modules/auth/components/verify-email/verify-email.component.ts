@@ -1,11 +1,10 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit, OnDestroy, Injector } from "@angular/core";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { BaseComponent } from "src/app/modules/base.component";
-import { ScrollAnimsService } from "src/app/_fake/services/scroll-anims/scroll-anims.service";
 import { Subscription } from 'rxjs';
 import { TranslationService } from "src/app/modules/i18n";
-import { MessageService } from "primeng/api";
+
 
 @Component({
   selector: "app-verify-email",
@@ -35,12 +34,11 @@ export class VerifyEmailComponent extends BaseComponent implements OnInit, OnDes
   constructor(
     private route: ActivatedRoute,
     private http: HttpClient,
-    scrollAnims: ScrollAnimsService,
     private router: Router,
     private translationService: TranslationService,
-    messageService:MessageService
+    injector: Injector
   ) {
-    super(scrollAnims,messageService);
+    super(injector);
   }
 
   ngOnInit(): void {

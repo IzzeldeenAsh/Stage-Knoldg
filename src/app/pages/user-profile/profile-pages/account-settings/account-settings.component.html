@@ -50,7 +50,7 @@
       <div class="row">
         <!-- Country (Visible to all roles) -->
         <div class="col-lg-6 mb-6 fv-row">
-          <label class="form-label required">{{
+          <label class="form-label">{{
             "ACCOUNT_SETTINGS.COUNTRY" | translate
           }}</label>
           <p-progressBar
@@ -122,36 +122,24 @@
           class="col-lg-6 mb-6 fv-row"
           *ngIf="hasRole(['insighter', 'company'])"
         >
-          <label class="form-label fs-6 text-gray-900 required">
-            {{ "AUTH.REGISTRATION.INDUSTRY" | translate }}
-          </label>
-          <p-progressBar
-            *ngIf="reverseLoader"
-            mode="indeterminate"
-            [style]="{ height: '4px' }"
-          ></p-progressBar>
-          <input
-            type="text"
-            class="form-control"
-            [readonly]="reverseLoader"
-            placeholder="{{
-              'AUTH.REGISTRATION.INDUSTRY_PLACEHOLDER' | translate
-            }}"
-            (click)="showISICDialog()"
-            [value]="selectedNodesLabel()"
-          />
-          <ng-container
-            *ngIf="
-              form.get('isicCodes')?.hasError('required') &&
-              form.get('isicCodes')?.touched
-            "
-          >
-            <div class="fv-plugins-message-container">
-              <div class="fv-help-block">
-                {{ "AUTH.REGISTRATION.ISIC_CODES_REQUIRED" | translate }}
-              </div>
-            </div>
-          </ng-container>
+        <shared-tree-selector
+        *ngIf="(isLoadingISIC$ | async) === false"
+        [title]="'AUTH.REGISTRATION.INDUSTRY' | translate"
+        [placeholder]="'AUTH.REGISTRATION.INDUSTRY_PLACEHOLDER' | translate"
+        [otherFieldPlaceholder]="'INSIGHTER_WIZARD.OTHER_FIELD_PLACEHOLDER' | translate"
+        [selectAllLabel]="lang === 'ar' ? 'اختر الكل' : 'Select All'"
+        [fetchedData]="isicCodes"
+        [initialSelectedNodes]="accountForm.value.isicCodes"
+        [cancelLabel]="'BUTTONS.CANCEL' | translate"
+        [okLabel]="'BUTTONS.OK' | translate"
+        (nodesSelected)="onIndustrySelected($event)"
+      ></shared-tree-selector>
+    
+      <p-progressBar
+        *ngIf="isLoadingISIC$ | async"
+        mode="indeterminate"
+        [style]="{ height: '4px' }"
+      ></p-progressBar>
         </div>
 
         <!-- Consulting Fields (Visible to 'insighter' and 'company') -->
@@ -159,27 +147,23 @@
           class="col-lg-6 mb-6 fv-row"
           *ngIf="hasRole(['insighter', 'company'])"
         >
-          <label class="form-label required">{{
-            "ACCOUNT_SETTINGS.CONSULTING_FIELDS" | translate
-          }}</label>
-          <p-multiSelect
-            [options]="consultingFields"
-            formControlName="consultingFields"
-            optionLabel="name"
-            placeholder="{{ 'ACCOUNT_SETTINGS.CONSULTING_FIELDS' | translate }}"
-            [filter]="true"
-            [showClear]="true"
-            class="d-block"
-          ></p-multiSelect>
-          <div
-            *ngIf="
-              accountForm.get('consultingFields')?.invalid &&
-              accountForm.get('consultingFields')?.touched
-            "
-            class="invalid-feedback"
-          >
-            {{ "ACCOUNT_SETTINGS.CONSULTING_FIELDS_REQUIRED" | translate }}
-          </div>
+        <shared-tree-selector
+        *ngIf="(isLoadingConsultingFields) === false"
+        [title]="'INSIGHTER_WIZARD.CONSULTING_FIELDS' | translate"
+        [placeholder]="'AUTH.REGISTRATION.CONSULTING_FIELD_PLACEHOLDER' | translate"
+        [otherFieldPlaceholder]="'INSIGHTER_WIZARD.OTHER_FIELD_PLACEHOLDER' | translate"
+        [selectAllLabel]="lang === 'ar' ? 'اختر الكل' : 'Select All'"
+        [fetchedData]="consultingFields"
+        [initialSelectedNodes]="accountForm.value.consultingFields"
+        [cancelLabel]="'BUTTONS.CANCEL' | translate"
+        [okLabel]="'BUTTONS.OK' | translate"
+        (nodesSelected)="onConsultingNodesSelected($event)"
+      ></shared-tree-selector>
+      <p-progressBar
+        *ngIf="isLoadingConsultingFields"
+        mode="indeterminate"
+        [style]="{ height: '4px' }"
+      ></p-progressBar>
         </div>
       </div>
 
@@ -573,40 +557,3 @@
     </div>
   </div>
 </ng-container>
-<!-- ISIC Codes Selection Dialog -->
-<p-dialog
-  header="{{ 'COMMON.SELECISCIC' | translate }}"
-  [(visible)]="isISICDialogVisible"
-  [modal]="true"
-  [style]="{ width: dialogWidth, 'max-height': '100vh', overflow: 'hidden' }"
-  [contentStyle]="{ 'max-height': 'calc(90vh - 100px)', overflow: 'auto' }"
->
-  <div class="tree-container">
-    <p-tree
-      [style]="{ 'max-height': '100%', overflow: 'auto' }"
-      [value]="isicCodes"
-      selectionMode="checkbox"
-      [(selection)]="selectedNodes"
-      [metaKeySelection]="false"
-      [filter]="true"
-      [filterMode]="'strict'"
-      [loading]="isLoadingISIC$ | async"
-    ></p-tree>
-  </div>
-  <p-footer>
-    <div class="p-2 d-flex justify-content-between align-items-center">
-      <a
-        class="btn btn-sm btn-secondary btn-shadow cursor-pointer"
-        (click)="onISICDialogCancel()"
-      >
-        {{ "BUTTONS.CANCEL" | translate }}
-      </a>
-      <a
-        class="btn btn-sm btn-primary m-1 btn-shadow cursor-pointer"
-        (click)="onISICDialogOK()"
-      >
-        {{ "BUTTONS.OK" | translate }}
-      </a>
-    </div>
-  </p-footer>
-</p-dialog>

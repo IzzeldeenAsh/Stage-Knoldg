@@ -1,33 +1,33 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Injector, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { MessageService } from 'primeng/api'; // Assuming you're using PrimeNG for p-messages
 import { Router } from '@angular/router';
-import { ScrollAnimsService } from 'src/app/_fake/services/scroll-anims/scroll-anims.service';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { PasswordResetService } from 'src/app/_fake/services/password-reset/password-reset.service';
+import { TranslationService } from 'src/app/modules/i18n';
 
 @Component({
   selector: 'app-password-reset',
   templateUrl: './password-reset.component.html',
   styleUrls: ['./password-reset.component.scss'],
-  providers: [MessageService] // Provide MessageService here
 })
 export class PasswordResetComponent extends BaseComponent implements OnInit {
   step: number = 1; // 1: Email submission, 2: Reset form
   emailForm: FormGroup;
   resetForm: FormGroup;
   messages: any[] = [];
-
+  successRest:boolean=false;
+  lang:string= 'en'
   constructor(
-    scrollAnims: ScrollAnimsService,
+
     private fb: FormBuilder,
     public passwordResetService: PasswordResetService,
-     messageService: MessageService,
-    private router: Router
-
+    private router: Router,
+    private translation:TranslationService,
+    injector: Injector
   ) {
-    super(scrollAnims,messageService);
+    super(injector);
+    this.lang = this.translation.getSelectedLanguage()
   }
 
   ngOnInit(): void {
@@ -36,8 +36,12 @@ export class PasswordResetComponent extends BaseComponent implements OnInit {
     });
 
     this.resetForm = this.fb.group({
-      code: ['', [Validators.required, Validators.pattern(/^\d{6,7}$/)]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      code: ['', [Validators.required]],
+      password: ['', [Validators.required, Validators.minLength(6),  Validators.required,
+        Validators.minLength(8),
+        Validators.pattern(
+          /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+        ),]],
       password_confirmation: ['', [Validators.required]]
     }, { validators: this.passwordMatchValidator });
   }
@@ -51,6 +55,7 @@ export class PasswordResetComponent extends BaseComponent implements OnInit {
 
   // Submit email form
   submitEmail() {
+    this.messageService.clear()
     if (this.emailForm.invalid) {
       this.emailForm.markAllAsTouched();
       return;
@@ -59,14 +64,17 @@ export class PasswordResetComponent extends BaseComponent implements OnInit {
 
     this.passwordResetService.forgetPassword(email).subscribe({
       next: (response) => {
-        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Verification code sent to your email.' });
+        const message= this.lang ==='ar' ?'تم ارسال كود التفعيل للايميل' :  'Verification code sent to your email.' ;
+        this.showSuccess('',message)
+  
         this.step = 2; // Move to the reset form
       },
       error: (error) => {
         const errorMsg = error?.error?.message || 'An error occurred. Please try again.';
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: errorMsg });
+        this.showError('',errorMsg)
       }
     });
+
   }
 
   // Submit reset form
@@ -80,15 +88,11 @@ export class PasswordResetComponent extends BaseComponent implements OnInit {
 
     this.passwordResetService.resetPassword(code, password, password_confirmation).subscribe({
       next: (response) => {
-        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Password has been reset successfully.' });
-        // Optionally, redirect to login after a delay
-        setTimeout(() => {
-          this.router.navigate(['/authentication/layouts/creative/sign-in.html']);
-        }, 2000);
+        this.step = 3; // Move to the reset form
       },
       error: (error) => {
         const errorMsg = error?.error?.message || 'An error occurred. Please try again.';
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: errorMsg });
+        this.showError('',errorMsg)
       }
     });
   }

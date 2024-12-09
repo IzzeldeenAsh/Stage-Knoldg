@@ -27,6 +27,7 @@
   import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
   import { TooltipModule } from 'primeng/tooltip';
   import { UpgradeToCompanyComponent } from './profile-pages/account-settings/upgrade-to-company/upgrade-to-company.component';
+import { SharedTreeSelectorComponent } from 'src/app/reusable-components/shared-tree-selector/shared-tree-selector.component';
 
 
 
@@ -50,6 +51,7 @@
       SharedModule,
       ReactiveFormsModule,
       ToastModule,
+      SharedTreeSelectorComponent,
       FileUploadModule,
       ProgressBarModule,
       ButtonModule,
