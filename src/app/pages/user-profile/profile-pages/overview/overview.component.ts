@@ -31,7 +31,6 @@ export class OverviewComponent extends BaseComponent implements OnInit {
   }
 
   handleLanguage() {
-    
       const onLanguageSub = this.translate
         .onLanguageChange()
         .subscribe((lang) => {
