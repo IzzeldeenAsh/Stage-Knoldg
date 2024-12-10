@@ -1,21 +1,26 @@
-<div *ngIf="profile && profile.insighter_status" class="action-buttons d-flex align-items-center justify-content-end flex-grow-1 flex-lg-grow-0  gap-2 mb-lg-0 py-10 py-sm-0">
+<div *ngIf="profile && profile.insighter_status" class="action-buttons d-flex align-items-center justify-content-end flex-grow-1 flex-lg-grow-0 gap-2 mb-lg-0 py-10 py-md-0">
     <!-- <button class=" mb-2 btn btn-sm btn-primary d-flex align-items-center gap-2">
       <app-keenicon type="outline" name="calendar-2" class="fs-2 text-gray-300"></app-keenicon>
       <span>Schedule</span>
     </button> -->
-    <button class="mb-2 btn btn-xs d-flex align-items-center gap-2 cursor-default"
-    [ngClass]="{'btn-light-success border border-success' : profile.client_status ==='active', 'btn-danger':profile.client_status ==='inactive'}"
-    >
+    <a class="mb-2 badge btn btn-xs d-flex align-items-center gap-2 cursor-default"
+       [ngClass]="{'badge-light-success' : profile.client_status === 'active', 'badge-light-danger' : profile.client_status === 'inactive'}">
+      <app-keenicon type="duotone" name="check" class="fs-6 text-success" *ngIf="profile.client_status === 'active'"></app-keenicon>
+        <app-keenicon type="duotone" name="cross" class="fs-6 text-danger" *ngIf="profile.client_status === 'inactive'"></app-keenicon>
       <span class="text-capitalize">{{profile.client_status}} Client</span>
-    </button>
-    <button class="mb-2 btn btn-xs d-flex align-items-center gap-2 cursor-default"
-    [ngClass]="{'btn-light-success border border-success' : profile.insighter_status ==='active', 'btn-danger':profile.insighter_status ==='inactive'}"
-    >
+    </a>
+    <a class="mb-2 badge btn btn-xs d-flex align-items-center gap-2 cursor-default" 
+       *ngIf="profile.insighter_status"
+       [ngClass]="{'badge-light-success' : profile.insighter_status === 'active', 'badge-light-danger' : profile.insighter_status === 'inactive'}">
+      <app-keenicon type="duotone" name="check" class="fs-6 text-success" *ngIf="profile.insighter_status === 'active'"></app-keenicon>
+      <app-keenicon type="duotone" name="cross" class="fs-6 text-danger" *ngIf="profile.insighter_status === 'inactive'"></app-keenicon>
       <span class="text-capitalize">{{profile.insighter_status}} Insighter</span>
-    </button>
-    
-    <!-- <button class=" mb-2 btn btn-sm btn-light d-flex align-items-center">
-      <app-keenicon type="outline" name="messages" class="fs-2 text-gray-600"></app-keenicon>
-    </button> -->
-  </div>
-  
+    </a>
+    <a class="mb-2 badge btn btn-xs d-flex align-items-center gap-2 cursor-default" 
+       *ngIf="profile.company"
+       [ngClass]="{'badge-light-success' : profile.company.status === 'active', 'badge-light-danger' : profile.company.status === 'inactive'}">
+      <app-keenicon type="duotone" name="check" class="fs-6 text-success" *ngIf="profile.company.status === 'active'"></app-keenicon>
+      <app-keenicon type="duotone" name="cross" class="fs-6 text-danger" *ngIf="profile.company.status === 'inactive'"></app-keenicon>
+      <span class="text-capitalize">{{profile.company.status}} Company</span>
+    </a>
+</div>
