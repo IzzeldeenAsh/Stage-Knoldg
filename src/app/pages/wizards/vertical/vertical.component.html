@@ -131,12 +131,13 @@
         <!-- Back Button Section -->
         <div class="mr-2">
           <ng-container *ngIf="currentStep$.value !== 1">
-            <ng-container *ngIf="currentStep$.value !== 4">
-              <button type="button" class="btn btn-lg btn-light-primary me-3" (click)="prevStep()">
-                {{ 'INSIGHTER_WIZARD.BACK' | translate }}
-              </button>
-            </ng-container>
-
+            <button 
+              type="button" 
+              class="btn btn-lg btn-light-primary me-3" 
+              (click)="prevStep()"
+            >
+              {{ 'INSIGHTER_WIZARD.BACK' | translate }}
+            </button>
           </ng-container>
         </div>
         
