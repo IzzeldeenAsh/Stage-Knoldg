@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, OnInit, Injector, ViewChild, ElementRef } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit, Injector, ViewChild, ElementRef, SimpleChanges } from '@angular/core';
 import { IForsightaProfile } from 'src/app/_fake/models/profile.interface';
 import { MessageService } from 'primeng/api';
 import { ProfileService } from 'src/app/_fake/services/profile-picture/profile.service';
@@ -30,21 +30,27 @@ export class ProfileHeaderComponent extends BaseComponent implements OnInit {
 
   ngOnInit() {
     this.profileImage = this.getProfileImage();
-    console.log("profileImage",this.profileImage);
+    console.log("profileImage onInit", this.profileImage);
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.profile && !changes.profile.firstChange) {
+      this.profileImage = this.getProfileImage();
+      console.log("profileImage onChanges", this.profileImage);
+    }
   }
 
   getProfileImage(): string {
     if (this.selectedImage) {
       return this.selectedImage;
-    } else if (this.profile.company?.logo) {
+    } else if (this.profile?.company?.logo) {
       return this.profile.company.logo;
-    } else if (this.profile.profile_photo_url) {
+    } else if (this.profile?.profile_photo_url) {
       return this.profile.profile_photo_url;
     } else {
       return 'assets/media/avatars/blank.png';
     }
   }
-
   onFileSelected(event: any): void {
     const file = event.target.files[0];
     if (file) {

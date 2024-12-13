@@ -80,7 +80,7 @@ export class TagsComponent implements OnInit, OnDestroy {
 
   getIndustriesTree() {
     this.reverseLoader = true;
-    const isicSub = this._isic.getIsicCodesTree().subscribe({
+    const isicSub = this._isic.getIsicCodesTree( 'en').subscribe({
       next: (res) => {
         console.log("res",res);
         this.nodes = this.disableRootNodes(res); // Disable parent nodes

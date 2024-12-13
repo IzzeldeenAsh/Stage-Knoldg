@@ -60,7 +60,7 @@ export class IndustriesComponent  implements OnInit, OnDestroy {
   }
 
   loadIsicCodes() {
-    const listSub = this.isicCodesService.getIsicCodesTree().subscribe({
+    const listSub = this.isicCodesService.getIsicCodesTree('en').subscribe({
       next: (res) => {
         this.isicnodes = res;
         this.originalIsicNodes = [...res];  // Store original data here

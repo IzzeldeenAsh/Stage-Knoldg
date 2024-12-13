@@ -1,0 +1,87 @@
+<div class="mt-5 pb-5" *ngIf="hasRole(['company'])">
+    <div class="col-12">
+      <div class="card card-custom bg-body h-md-100">
+        <div
+          class="card-body d-flex justify-content-between align-items-center flex-wrap px-xl-15 "
+        >
+       <div class="row  justify-content-center align-items-center w-100" >
+        <div class="col-12 col-lg-6 ">
+          <div class="d-flex flex-column justify-content-center align-items-center align-items-lg-start">
+            <div
+              class="position-relative text-gray-800 fs-1 z-index-2 fw-bold mb-5"
+            >
+              {{ 'TRANSFER_COMPANY_ACCOUNT.TITLE' | translate }}
+            </div>
+            <span class="text-gray-600 fw-semibold fs-6 mb-6 d-block ">
+              {{ 'TRANSFER_COMPANY_ACCOUNT.DESCRIPTION' | translate }}
+            </span>
+            <div class="mb-7">
+              <a
+                
+              class="btn btn-sm btn-primary fw-semibold me-2"
+              data-bs-toggle="modal"
+              data-bs-target="#insightersModal"
+              >
+                {{ 'TRANSFER_COMPANY_ACCOUNT.BUTTON_TEXT' | translate }}
+              </a>
+            </div>
+          </div>
+       
+        </div>
+        <div class="col-12 col-lg-6 text-center">
+          <img
+          src="../../../../../assets/media/images/2600x1200/transfer.svg"
+          class="mw-300px me-15"
+          alt="{{ 'TRANSFER_COMPANY_ACCOUNT.ILLUSTRATION_ALT' | translate }}"
+        />
+        </div>
+        </div>
+       </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-5 pb-5" *ngIf="hasRole(['company'])">
+    <div class="col-12">
+      <div class="card card-custom bg-body h-md-100">
+        <div
+          class="card-body d-flex justify-content-between align-items-center flex-wrap px-xl-15 "
+        >
+       <div class="row  justify-content-center align-items-center w-100" >
+        <div class="col-12 col-lg-6 ">
+          <div class="d-flex flex-column justify-content-center align-items-center align-items-lg-start">
+            <div
+              class="position-relative text-gray-800 fs-1 z-index-2 fw-bold mb-5"
+            >
+              {{ 'DEACTIVATE_ACCOUNT.TITLE' | translate }}
+            </div>
+            <span class="text-gray-600 fw-semibold fs-6 mb-6 d-block ">
+              {{ 'DEACTIVATE_ACCOUNT.DESCRIPTION' | translate }}
+            </span>
+            <div class="mb-7">
+              <a
+              class="btn btn-sm btn-danger fw-semibold me-2"
+              data-bs-toggle="modal" 
+              data-bs-target="#deactivateModal"
+              >
+                {{ 'DEACTIVATE_ACCOUNT.BUTTON_TEXT' | translate }}
+              </a>
+            </div>
+          </div>
+        
+        </div>
+        <div class="col-12 col-lg-6 text-center">
+          <img
+          src="../../../../../assets/media/images/2600x1200/deactivate_account.svg"
+          class="mw-300px mh-200px me-15"
+          alt="{{ 'DEACTIVATE_ACCOUNT.ILLUSTRATION_ALT' | translate }}"
+        />
+        </div>
+        </div>
+       </div>
+      </div>
+    </div>
+  </div>
+
+  <app-insighters-modal></app-insighters-modal>
+  <app-deactivate-modal></app-deactivate-modal>

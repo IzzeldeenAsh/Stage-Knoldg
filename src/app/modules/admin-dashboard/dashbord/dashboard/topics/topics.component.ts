@@ -69,7 +69,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
   
   getIndustriesTree() {
     this.reverseLoader = true;
-    const isicSub = this._isic.getIsicCodesTree().subscribe({
+    const isicSub = this._isic.getIsicCodesTree( 'en').subscribe({
       next: (res) => {
         this.nodes = this.disableRootNodes(res); // Disable parent nodes
       },

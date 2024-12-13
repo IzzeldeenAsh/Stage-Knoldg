@@ -77,58 +77,34 @@
     data-kt-menu-flip="bottom"
   >
     <a class="menu-link px-5 cursor-pointer">
-      <span class="menu-title">{{ 'HOME.MY_SUBSCRIPTION' | translate }}</span>
+      <span class="menu-title">{{ 'HOME.ACCOUNT_SETTINGS' | translate }}</span>
       <span class="menu-arrow"></span>
     </a>
 
     <div class="menu-sub menu-sub-dropdown w-175px py-4">
       <div class="menu-item px-3">
-        <a class="menu-link px-5 cursor-pointer" placement="top-start" ngbTooltip="Coming soon">
-          {{ 'HOME.REFERRALS' | translate }}
+        <a class="menu-link px-5 cursor-pointer" placement="top-start" [routerLink]="'/app/profile/settings/personal-info'">
+          {{ 'ACCOUNT_SETTINGS.PERSONAL_INFO' | translate }}
         </a>
       </div>
 
       <div class="menu-item px-3">
-        <a class="menu-link px-5 cursor-pointer" placement="top-start" ngbTooltip="Coming soon">
-          {{ 'HOME.BILLING' | translate }}
+        <a class="menu-link px-5 cursor-pointer" placement="top-start" [routerLink]="'/app/profile/settings/company-settings'">
+          {{ 'ACCOUNT_SETTINGS.COMPANY_INFO' | translate }}
         </a>
       </div>
 
       <div class="menu-item px-3">
-        <a class="menu-link px-5 cursor-pointer" placement="top-start" ngbTooltip="Coming soon">
-          {{ 'HOME.PAYMENTS' | translate }}
+        <a class="menu-link px-5 cursor-pointer" placement="top-start" [routerLink]="'/app/profile/settings/reset-password'">
+          {{ 'ACCOUNT_SETTINGS.RESET_PASSWORD' | translate }}
+        </a>
+      </div>
+      <div class="menu-item px-3">
+        <a class="menu-link px-5 cursor-pointer" placement="top-start" [routerLink]="'/app/profile/settings/settings-action'">
+            {{ 'ACCOUNT_SETTINGS.SETTINGS' | translate }}
         </a>
       </div>
 
-      <div class="menu-item px-3">
-        <a class="menu-link d-flex flex-stack px-5 cursor-pointer" placement="top-start" ngbTooltip="Coming soon">
-          {{ 'HOME.STATEMENTS' | translate }}
-          <i
-            class="fas fa-exclamation-circle ms-2 fs-7"
-            data-bs-toggle="tooltip"
-            title="{{ 'HOME.VIEW_STATEMENTS_TOOLTIP' | translate }}"
-          ></i>
-        </a>
-      </div>
-
-      <div class="separator my-2"></div>
-
-      <div class="menu-item px-3">
-        <div class="menu-content px-3">
-          <label
-            class="form-check form-switch form-check-custom form-check-solid"
-          >
-            <input
-              class="form-check-input w-30px h-20px"
-              type="checkbox"
-              value="1"
-              defaultChecked="{true}"
-              name="notifications"
-            />
-            <span class="form-check-label text-muted fs-7">{{ 'HOME.NOTIFICATIONS' | translate }}</span>
-          </label>
-        </div>
-      </div>
     </div>
   </div>
 
