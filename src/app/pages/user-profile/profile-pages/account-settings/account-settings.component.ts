@@ -328,7 +328,7 @@ export class AccountSettingsComponent extends BaseComponent implements OnInit {
   }
   loadIsicCodes(): Observable<any> {
     this.reverseLoader = true;
-    return this.isicService.getIsicCodesTree().pipe(
+    return this.isicService.getIsicCodesTree(this.lang).pipe(
       tap((codes) => {
         this.isicCodes = codes;
         this.isLoadingIsicCodes = false;

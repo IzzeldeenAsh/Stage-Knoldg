@@ -37,6 +37,7 @@ import { ChipModule } from 'primeng/chip';
 import { TreeModule } from 'primeng/tree';
 import { TopicsComponent } from './dashboard/topics/topics.component';
 import { IndustriesComponent } from './dashboard/industries/industries.component';
+import { RequestsListComponent } from './dashboard/requests-list/requests-list.component';
 
 @NgModule({
   declarations: [
@@ -50,6 +51,7 @@ import { IndustriesComponent } from './dashboard/industries/industries.component
     ConsultingFieldsComponent,
     TagsComponent,
     HSCodeComponent,
+    RequestsListComponent,
     ISICCodeManagmentComponent,
     RegionsComponent,
     IndustriesComponent,

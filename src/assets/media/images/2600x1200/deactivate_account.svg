@@ -1,0 +1,3698 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 282.1 294.9">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #f22b38;
+      }
+
+      .cls-2 {
+        fill: #fe4340;
+      }
+
+      .cls-3 {
+        fill: #f4f4fa;
+      }
+
+      .cls-4 {
+        fill: #dadaf9;
+      }
+
+      .cls-5 {
+        fill: #231869;
+      }
+
+      .cls-6 {
+        isolation: isolate;
+      }
+
+      .cls-7 {
+        fill: #bfbeed;
+      }
+
+      .cls-8 {
+        clip-path: url(#clippath-17);
+      }
+
+      .cls-9 {
+        clip-path: url(#clippath-19);
+      }
+
+      .cls-10 {
+        clip-path: url(#clippath-11);
+      }
+
+      .cls-11 {
+        clip-path: url(#clippath-16);
+      }
+
+      .cls-12 {
+        clip-path: url(#clippath-18);
+      }
+
+      .cls-13 {
+        clip-path: url(#clippath-10);
+      }
+
+      .cls-14 {
+        clip-path: url(#clippath-15);
+      }
+
+      .cls-15 {
+        clip-path: url(#clippath-13);
+      }
+
+      .cls-16 {
+        clip-path: url(#clippath-14);
+      }
+
+      .cls-17 {
+        clip-path: url(#clippath-12);
+      }
+
+      .cls-18 {
+        clip-path: url(#clippath-61);
+      }
+
+      .cls-19 {
+        clip-path: url(#clippath-67);
+      }
+
+      .cls-20 {
+        clip-path: url(#clippath-68);
+      }
+
+      .cls-21 {
+        clip-path: url(#clippath-60);
+      }
+
+      .cls-22 {
+        clip-path: url(#clippath-65);
+      }
+
+      .cls-23 {
+        clip-path: url(#clippath-62);
+      }
+
+      .cls-24 {
+        clip-path: url(#clippath-64);
+      }
+
+      .cls-25 {
+        clip-path: url(#clippath-66);
+      }
+
+      .cls-26 {
+        clip-path: url(#clippath-63);
+      }
+
+      .cls-27 {
+        clip-path: url(#clippath-76);
+      }
+
+      .cls-28 {
+        clip-path: url(#clippath-78);
+      }
+
+      .cls-29 {
+        clip-path: url(#clippath-75);
+      }
+
+      .cls-30 {
+        clip-path: url(#clippath-79);
+      }
+
+      .cls-31 {
+        clip-path: url(#clippath-50);
+      }
+
+      .cls-32 {
+        clip-path: url(#clippath-55);
+      }
+
+      .cls-33 {
+        clip-path: url(#clippath-52);
+      }
+
+      .cls-34 {
+        clip-path: url(#clippath-57);
+      }
+
+      .cls-35 {
+        clip-path: url(#clippath-54);
+      }
+
+      .cls-36 {
+        clip-path: url(#clippath-56);
+      }
+
+      .cls-37 {
+        clip-path: url(#clippath-53);
+      }
+
+      .cls-38 {
+        clip-path: url(#clippath-70);
+      }
+
+      .cls-39 {
+        clip-path: url(#clippath-77);
+      }
+
+      .cls-40 {
+        clip-path: url(#clippath-74);
+      }
+
+      .cls-41 {
+        clip-path: url(#clippath-71);
+      }
+
+      .cls-42 {
+        clip-path: url(#clippath-73);
+      }
+
+      .cls-43 {
+        clip-path: url(#clippath-72);
+      }
+
+      .cls-44 {
+        clip-path: url(#clippath-51);
+      }
+
+      .cls-45 {
+        clip-path: url(#clippath-58);
+      }
+
+      .cls-46 {
+        clip-path: url(#clippath-59);
+      }
+
+      .cls-47 {
+        clip-path: url(#clippath-31);
+      }
+
+      .cls-48 {
+        clip-path: url(#clippath-32);
+      }
+
+      .cls-49 {
+        clip-path: url(#clippath-33);
+      }
+
+      .cls-50 {
+        clip-path: url(#clippath-34);
+      }
+
+      .cls-51 {
+        clip-path: url(#clippath-35);
+      }
+
+      .cls-52 {
+        clip-path: url(#clippath-39);
+      }
+
+      .cls-53 {
+        clip-path: url(#clippath-30);
+      }
+
+      .cls-54 {
+        clip-path: url(#clippath-36);
+      }
+
+      .cls-55 {
+        clip-path: url(#clippath-37);
+      }
+
+      .cls-56 {
+        clip-path: url(#clippath-38);
+      }
+
+      .cls-57 {
+        clip-path: url(#clippath-27);
+      }
+
+      .cls-58 {
+        clip-path: url(#clippath-29);
+      }
+
+      .cls-59 {
+        clip-path: url(#clippath-26);
+      }
+
+      .cls-60 {
+        clip-path: url(#clippath-28);
+      }
+
+      .cls-61 {
+        clip-path: url(#clippath-20);
+      }
+
+      .cls-62 {
+        clip-path: url(#clippath-21);
+      }
+
+      .cls-63 {
+        clip-path: url(#clippath-22);
+      }
+
+      .cls-64 {
+        clip-path: url(#clippath-23);
+      }
+
+      .cls-65 {
+        clip-path: url(#clippath-24);
+      }
+
+      .cls-66 {
+        clip-path: url(#clippath-25);
+      }
+
+      .cls-67 {
+        clip-path: url(#clippath-69);
+      }
+
+      .cls-68 {
+        clip-path: url(#clippath-41);
+      }
+
+      .cls-69 {
+        clip-path: url(#clippath-42);
+      }
+
+      .cls-70 {
+        clip-path: url(#clippath-43);
+      }
+
+      .cls-71 {
+        clip-path: url(#clippath-44);
+      }
+
+      .cls-72 {
+        clip-path: url(#clippath-45);
+      }
+
+      .cls-73 {
+        clip-path: url(#clippath-49);
+      }
+
+      .cls-74 {
+        clip-path: url(#clippath-40);
+      }
+
+      .cls-75 {
+        clip-path: url(#clippath-46);
+      }
+
+      .cls-76 {
+        clip-path: url(#clippath-47);
+      }
+
+      .cls-77 {
+        clip-path: url(#clippath-48);
+      }
+
+      .cls-78 {
+        clip-path: url(#clippath-90);
+      }
+
+      .cls-79 {
+        clip-path: url(#clippath-95);
+      }
+
+      .cls-80 {
+        clip-path: url(#clippath-93);
+      }
+
+      .cls-81 {
+        clip-path: url(#clippath-99);
+      }
+
+      .cls-82 {
+        clip-path: url(#clippath-94);
+      }
+
+      .cls-83 {
+        clip-path: url(#clippath-96);
+      }
+
+      .cls-84 {
+        clip-path: url(#clippath-85);
+      }
+
+      .cls-85 {
+        clip-path: url(#clippath-86);
+      }
+
+      .cls-86 {
+        clip-path: url(#clippath-87);
+      }
+
+      .cls-87 {
+        clip-path: url(#clippath-80);
+      }
+
+      .cls-88 {
+        clip-path: url(#clippath-89);
+      }
+
+      .cls-89 {
+        clip-path: url(#clippath-81);
+      }
+
+      .cls-90 {
+        clip-path: url(#clippath-82);
+      }
+
+      .cls-91 {
+        clip-path: url(#clippath-83);
+      }
+
+      .cls-92 {
+        clip-path: url(#clippath-84);
+      }
+
+      .cls-93 {
+        clip-path: url(#clippath-88);
+      }
+
+      .cls-94 {
+        clip-path: url(#clippath-92);
+      }
+
+      .cls-95 {
+        clip-path: url(#clippath-97);
+      }
+
+      .cls-96 {
+        clip-path: url(#clippath-91);
+      }
+
+      .cls-97 {
+        clip-path: url(#clippath-98);
+      }
+
+      .cls-98 {
+        clip-path: url(#clippath-1);
+      }
+
+      .cls-99 {
+        clip-path: url(#clippath-3);
+      }
+
+      .cls-100 {
+        clip-path: url(#clippath-4);
+      }
+
+      .cls-101 {
+        clip-path: url(#clippath-2);
+      }
+
+      .cls-102 {
+        clip-path: url(#clippath-7);
+      }
+
+      .cls-103 {
+        clip-path: url(#clippath-6);
+      }
+
+      .cls-104 {
+        clip-path: url(#clippath-9);
+      }
+
+      .cls-105 {
+        clip-path: url(#clippath-8);
+      }
+
+      .cls-106 {
+        clip-path: url(#clippath-5);
+      }
+
+      .cls-107 {
+        fill: #ff6661;
+      }
+
+      .cls-108 {
+        clip-path: url(#clippath-207);
+      }
+
+      .cls-109 {
+        clip-path: url(#clippath-201);
+      }
+
+      .cls-110 {
+        clip-path: url(#clippath-200);
+      }
+
+      .cls-111 {
+        clip-path: url(#clippath-202);
+      }
+
+      .cls-112 {
+        clip-path: url(#clippath-203);
+      }
+
+      .cls-113 {
+        clip-path: url(#clippath-204);
+      }
+
+      .cls-114 {
+        clip-path: url(#clippath-205);
+      }
+
+      .cls-115 {
+        clip-path: url(#clippath-206);
+      }
+
+      .cls-116 {
+        clip-path: url(#clippath-163);
+      }
+
+      .cls-117 {
+        clip-path: url(#clippath-165);
+      }
+
+      .cls-118 {
+        clip-path: url(#clippath-160);
+      }
+
+      .cls-119 {
+        clip-path: url(#clippath-161);
+      }
+
+      .cls-120 {
+        clip-path: url(#clippath-168);
+      }
+
+      .cls-121 {
+        clip-path: url(#clippath-167);
+      }
+
+      .cls-122 {
+        clip-path: url(#clippath-162);
+      }
+
+      .cls-123 {
+        clip-path: url(#clippath-169);
+      }
+
+      .cls-124 {
+        clip-path: url(#clippath-164);
+      }
+
+      .cls-125 {
+        clip-path: url(#clippath-166);
+      }
+
+      .cls-126 {
+        clip-path: url(#clippath-178);
+      }
+
+      .cls-127 {
+        clip-path: url(#clippath-174);
+      }
+
+      .cls-128 {
+        clip-path: url(#clippath-172);
+      }
+
+      .cls-129 {
+        clip-path: url(#clippath-171);
+      }
+
+      .cls-130 {
+        clip-path: url(#clippath-179);
+      }
+
+      .cls-131 {
+        clip-path: url(#clippath-173);
+      }
+
+      .cls-132 {
+        clip-path: url(#clippath-176);
+      }
+
+      .cls-133 {
+        clip-path: url(#clippath-175);
+      }
+
+      .cls-134 {
+        clip-path: url(#clippath-190);
+      }
+
+      .cls-135 {
+        clip-path: url(#clippath-198);
+      }
+
+      .cls-136 {
+        clip-path: url(#clippath-191);
+      }
+
+      .cls-137 {
+        clip-path: url(#clippath-182);
+      }
+
+      .cls-138 {
+        clip-path: url(#clippath-185);
+      }
+
+      .cls-139 {
+        clip-path: url(#clippath-181);
+      }
+
+      .cls-140 {
+        clip-path: url(#clippath-188);
+      }
+
+      .cls-141 {
+        clip-path: url(#clippath-184);
+      }
+
+      .cls-142 {
+        clip-path: url(#clippath-186);
+      }
+
+      .cls-143 {
+        clip-path: url(#clippath-187);
+      }
+
+      .cls-144 {
+        clip-path: url(#clippath-189);
+      }
+
+      .cls-145 {
+        clip-path: url(#clippath-183);
+      }
+
+      .cls-146 {
+        clip-path: url(#clippath-180);
+      }
+
+      .cls-147 {
+        clip-path: url(#clippath-192);
+      }
+
+      .cls-148 {
+        clip-path: url(#clippath-193);
+      }
+
+      .cls-149 {
+        clip-path: url(#clippath-199);
+      }
+
+      .cls-150 {
+        clip-path: url(#clippath-195);
+      }
+
+      .cls-151 {
+        clip-path: url(#clippath-194);
+      }
+
+      .cls-152 {
+        clip-path: url(#clippath-197);
+      }
+
+      .cls-153 {
+        clip-path: url(#clippath-196);
+      }
+
+      .cls-154 {
+        clip-path: url(#clippath-102);
+      }
+
+      .cls-155 {
+        clip-path: url(#clippath-101);
+      }
+
+      .cls-156 {
+        clip-path: url(#clippath-104);
+      }
+
+      .cls-157 {
+        clip-path: url(#clippath-109);
+      }
+
+      .cls-158 {
+        clip-path: url(#clippath-106);
+      }
+
+      .cls-159 {
+        clip-path: url(#clippath-103);
+      }
+
+      .cls-160 {
+        clip-path: url(#clippath-105);
+      }
+
+      .cls-161 {
+        clip-path: url(#clippath-100);
+      }
+
+      .cls-162 {
+        clip-path: url(#clippath-108);
+      }
+
+      .cls-163 {
+        clip-path: url(#clippath-107);
+      }
+
+      .cls-164 {
+        clip-path: url(#clippath-118);
+      }
+
+      .cls-165 {
+        clip-path: url(#clippath-114);
+      }
+
+      .cls-166 {
+        clip-path: url(#clippath-119);
+      }
+
+      .cls-167 {
+        clip-path: url(#clippath-111);
+      }
+
+      .cls-168 {
+        clip-path: url(#clippath-110);
+      }
+
+      .cls-169 {
+        clip-path: url(#clippath-113);
+      }
+
+      .cls-170 {
+        clip-path: url(#clippath-112);
+      }
+
+      .cls-171 {
+        clip-path: url(#clippath-117);
+      }
+
+      .cls-172 {
+        clip-path: url(#clippath-115);
+      }
+
+      .cls-173 {
+        clip-path: url(#clippath-116);
+      }
+
+      .cls-174 {
+        clip-path: url(#clippath-170);
+      }
+
+      .cls-175 {
+        clip-path: url(#clippath-177);
+      }
+
+      .cls-176 {
+        clip-path: url(#clippath-151);
+      }
+
+      .cls-177 {
+        clip-path: url(#clippath-156);
+      }
+
+      .cls-178 {
+        clip-path: url(#clippath-159);
+      }
+
+      .cls-179 {
+        clip-path: url(#clippath-150);
+      }
+
+      .cls-180 {
+        clip-path: url(#clippath-143);
+      }
+
+      .cls-181 {
+        clip-path: url(#clippath-144);
+      }
+
+      .cls-182 {
+        clip-path: url(#clippath-141);
+      }
+
+      .cls-183 {
+        clip-path: url(#clippath-148);
+      }
+
+      .cls-184 {
+        clip-path: url(#clippath-142);
+      }
+
+      .cls-185 {
+        clip-path: url(#clippath-149);
+      }
+
+      .cls-186 {
+        clip-path: url(#clippath-140);
+      }
+
+      .cls-187 {
+        clip-path: url(#clippath-145);
+      }
+
+      .cls-188 {
+        clip-path: url(#clippath-146);
+      }
+
+      .cls-189 {
+        clip-path: url(#clippath-147);
+      }
+
+      .cls-190 {
+        clip-path: url(#clippath-153);
+      }
+
+      .cls-191 {
+        clip-path: url(#clippath-152);
+      }
+
+      .cls-192 {
+        clip-path: url(#clippath-157);
+      }
+
+      .cls-193 {
+        clip-path: url(#clippath-154);
+      }
+
+      .cls-194 {
+        clip-path: url(#clippath-158);
+      }
+
+      .cls-195 {
+        clip-path: url(#clippath-155);
+      }
+
+      .cls-196 {
+        clip-path: url(#clippath-120);
+      }
+
+      .cls-197 {
+        clip-path: url(#clippath-125);
+      }
+
+      .cls-198 {
+        clip-path: url(#clippath-122);
+      }
+
+      .cls-199 {
+        clip-path: url(#clippath-121);
+      }
+
+      .cls-200 {
+        clip-path: url(#clippath-123);
+      }
+
+      .cls-201 {
+        clip-path: url(#clippath-124);
+      }
+
+      .cls-202 {
+        clip-path: url(#clippath-129);
+      }
+
+      .cls-203 {
+        clip-path: url(#clippath-126);
+      }
+
+      .cls-204 {
+        clip-path: url(#clippath-128);
+      }
+
+      .cls-205 {
+        clip-path: url(#clippath-127);
+      }
+
+      .cls-206 {
+        clip-path: url(#clippath-130);
+      }
+
+      .cls-207 {
+        clip-path: url(#clippath-132);
+      }
+
+      .cls-208 {
+        clip-path: url(#clippath-131);
+      }
+
+      .cls-209 {
+        clip-path: url(#clippath-134);
+      }
+
+      .cls-210 {
+        clip-path: url(#clippath-133);
+      }
+
+      .cls-211 {
+        clip-path: url(#clippath-136);
+      }
+
+      .cls-212 {
+        clip-path: url(#clippath-139);
+      }
+
+      .cls-213 {
+        clip-path: url(#clippath-137);
+      }
+
+      .cls-214 {
+        clip-path: url(#clippath-138);
+      }
+
+      .cls-215 {
+        clip-path: url(#clippath-135);
+      }
+
+      .cls-216 {
+        fill: #fff;
+      }
+
+      .cls-217 {
+        fill: #262028;
+      }
+
+      .cls-218 {
+        opacity: .2;
+      }
+
+      .cls-219 {
+        fill: #fe8786;
+      }
+
+      .cls-220 {
+        fill: #444454;
+      }
+
+      .cls-221 {
+        clip-path: url(#clippath);
+      }
+    </style>
+    <clipPath id="clippath">
+      <path class="cls-3" d="M135.8,24l-4,.6c.5,0,1,0,1.5.3l4-.6c-.5-.3-1-.4-1.5-.3Z"/>
+    </clipPath>
+    <clipPath id="clippath-1">
+      <path class="cls-3" d="M278.1,112.6l4-.6c.5-1.8-.3-4-1.7-4.8l-4,.6c1.4.8,2.2,3,1.7,4.8Z"/>
+    </clipPath>
+    <clipPath id="clippath-2">
+      <path class="cls-7" d="M0,210.3v-4.4c0,.7.5,1.4,1.4,1.9v4.4C.5,211.7,0,211,0,210.3Z"/>
+    </clipPath>
+    <clipPath id="clippath-3">
+      <path class="cls-7" d="M149.9,289.7v4.4c-1.8,1.1-4.8,1.1-6.7,0v-4.4c1.9,1.1,4.8,1.1,6.7,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-4">
+      <path class="cls-217" d="M99.1,164.3v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-5">
+      <path class="cls-217" d="M109.9,165.5v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-6">
+      <path class="cls-217" d="M107.3,167.4v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-7">
+      <path class="cls-217" d="M102.3,170v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-8">
+      <path class="cls-217" d="M88,170.7v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-9">
+      <path class="cls-217" d="M96.2,173.9v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-10">
+      <path class="cls-217" d="M110.4,170.8v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-11">
+      <path class="cls-217" d="M121.2,172.1v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-12">
+      <path class="cls-217" d="M118.6,173.9v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-13">
+      <path class="cls-217" d="M111.8,175.4v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-14">
+      <path class="cls-217" d="M97.4,176.2v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-15">
+      <path class="cls-217" d="M105.6,179.3v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-16">
+      <path class="cls-217" d="M121.7,177.3v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-17">
+      <path class="cls-217" d="M132.5,178.6v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-18">
+      <path class="cls-217" d="M129.9,180.5v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-19">
+      <path class="cls-217" d="M120.9,180.7v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-20">
+      <path class="cls-217" d="M106.5,181.4v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-21">
+      <path class="cls-217" d="M114.7,184.6v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-22">
+      <path class="cls-217" d="M130.3,186.1v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-23">
+      <path class="cls-217" d="M116,186.9v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-24">
+      <path class="cls-217" d="M124.2,190v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-25">
+      <path class="cls-217" d="M133,183.8v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-26">
+      <path class="cls-217" d="M143.8,185.1v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-27">
+      <path class="cls-217" d="M141.2,187v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-28">
+      <path class="cls-217" d="M139.8,191.6v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-29">
+      <path class="cls-217" d="M125.4,192.3v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-30">
+      <path class="cls-217" d="M133.6,195.5v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-31">
+      <path class="cls-217" d="M144.3,190.4v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-32">
+      <path class="cls-217" d="M155.2,191.6v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-33">
+      <path class="cls-217" d="M152.5,193.5v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-34">
+      <path class="cls-217" d="M149.2,197v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-35">
+      <path class="cls-217" d="M134.8,197.8v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-36">
+      <path class="cls-217" d="M143.1,200.9v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-37">
+      <path class="cls-217" d="M155.6,196.9v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-38">
+      <path class="cls-217" d="M166.5,198.2v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-39">
+      <path class="cls-217" d="M163.8,200v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-40">
+      <path class="cls-217" d="M158.6,202.5v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-41">
+      <path class="cls-217" d="M144.3,203.2v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-42">
+      <path class="cls-217" d="M152.5,206.4v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-43">
+      <path class="cls-217" d="M166.9,203.4v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-44">
+      <path class="cls-217" d="M177.8,204.7v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-45">
+      <path class="cls-217" d="M175.1,206.6v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-46">
+      <path class="cls-217" d="M168.1,207.9v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-47">
+      <path class="cls-217" d="M153.7,208.7v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-48">
+      <path class="cls-217" d="M161.9,211.8v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-49">
+      <path class="cls-217" d="M178.2,209.9v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-50">
+      <path class="cls-217" d="M189.1,211.2v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-51">
+      <path class="cls-217" d="M186.4,213.1v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-52">
+      <path class="cls-217" d="M177.5,213.4v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-53">
+      <path class="cls-217" d="M163.2,214.1v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-54">
+      <path class="cls-217" d="M171.4,217.3v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-55">
+      <path class="cls-217" d="M187,218.8v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-56">
+      <path class="cls-217" d="M172.6,219.6v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-57">
+      <path class="cls-217" d="M180.8,222.7v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-58">
+      <path class="cls-217" d="M189.5,216.5v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-59">
+      <path class="cls-217" d="M200.4,217.8v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-60">
+      <path class="cls-217" d="M197.8,219.6v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-61">
+      <path class="cls-217" d="M196.4,224.3v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-62">
+      <path class="cls-217" d="M182.1,225v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-63">
+      <path class="cls-217" d="M190.3,228.2v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-64">
+      <path class="cls-217" d="M200.8,223v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-65">
+      <path class="cls-217" d="M211.7,224.3v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-66">
+      <path class="cls-217" d="M209.1,226.1v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-67">
+      <path class="cls-217" d="M205.8,229.7v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-68">
+      <path class="cls-217" d="M191.5,230.5v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-69">
+      <path class="cls-217" d="M199.7,233.6v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-70">
+      <path class="cls-217" d="M212.2,229.5v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-71">
+      <path class="cls-217" d="M223,230.8v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-72">
+      <path class="cls-217" d="M220.4,232.7v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-73">
+      <path class="cls-217" d="M215.3,235.2v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-74">
+      <path class="cls-217" d="M200.9,235.9v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-75">
+      <path class="cls-217" d="M209.1,239.1v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-76">
+      <path class="cls-217" d="M78.8,176.1v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-77">
+      <path class="cls-217" d="M107.3,183.5v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-78">
+      <path class="cls-217" d="M101.1,187.4v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-79">
+      <path class="cls-217" d="M116.4,188.8v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-80">
+      <path class="cls-217" d="M102,189.5v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-81">
+      <path class="cls-217" d="M110.2,192.7v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-82">
+      <path class="cls-217" d="M69.5,181.5v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-83">
+      <path class="cls-217" d="M93.3,186.1v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-84">
+      <path class="cls-217" d="M87.2,190.1v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-85">
+      <path class="cls-217" d="M102.4,191.4v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-86">
+      <path class="cls-217" d="M88.1,192.2v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-87">
+      <path class="cls-217" d="M96.3,195.3v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-88">
+      <path class="cls-217" d="M125.8,194.2v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-89">
+      <path class="cls-217" d="M111.4,195v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-90">
+      <path class="cls-217" d="M119.7,198.1v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-91">
+      <path class="cls-217" d="M111.8,196.9v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-92">
+      <path class="cls-217" d="M97.5,197.6v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-93">
+      <path class="cls-217" d="M105.7,200.8v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-94">
+      <path class="cls-217" d="M135.2,199.7v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-95">
+      <path class="cls-217" d="M120.9,200.4v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-96">
+      <path class="cls-217" d="M129.1,203.6v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-97">
+      <path class="cls-217" d="M121.3,202.3v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-98">
+      <path class="cls-217" d="M106.9,203.1v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-99">
+      <path class="cls-217" d="M115.1,206.2v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-100">
+      <path class="cls-217" d="M144.7,205.1v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-101">
+      <path class="cls-217" d="M130.3,205.9v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-102">
+      <path class="cls-217" d="M138.5,209v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-103">
+      <path class="cls-217" d="M130.7,207.8v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-104">
+      <path class="cls-217" d="M116.4,208.5v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-105">
+      <path class="cls-217" d="M124.6,211.7v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-106">
+      <path class="cls-217" d="M154.1,210.6v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-107">
+      <path class="cls-217" d="M139.8,211.3v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-108">
+      <path class="cls-217" d="M148,214.5v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-109">
+      <path class="cls-217" d="M140.2,213.2v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-110">
+      <path class="cls-217" d="M125.8,214v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-111">
+      <path class="cls-217" d="M134,217.1v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-112">
+      <path class="cls-217" d="M163.6,216v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-113">
+      <path class="cls-217" d="M149.2,216.8v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-114">
+      <path class="cls-217" d="M157.4,219.9v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-115">
+      <path class="cls-217" d="M149.6,218.7v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-116">
+      <path class="cls-217" d="M135.3,219.4v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-117">
+      <path class="cls-217" d="M143.5,222.6v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-118">
+      <path class="cls-217" d="M173,221.5v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-119">
+      <path class="cls-217" d="M158.7,222.2v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-120">
+      <path class="cls-217" d="M166.9,225.4v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-121">
+      <path class="cls-217" d="M159,224.1v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-122">
+      <path class="cls-217" d="M144.7,224.9v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-123">
+      <path class="cls-217" d="M152.9,228v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-124">
+      <path class="cls-217" d="M182.4,226.9v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-125">
+      <path class="cls-217" d="M168.1,227.7v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-126">
+      <path class="cls-217" d="M176.3,230.8v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-127">
+      <path class="cls-217" d="M191.9,232.4v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-128">
+      <path class="cls-217" d="M177.5,233.1v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-129">
+      <path class="cls-217" d="M185.7,236.3v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-130">
+      <path class="cls-217" d="M187,238.6v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-131">
+      <path class="cls-217" d="M206,240.5v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-132">
+      <path class="cls-217" d="M199.9,244.4v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-133">
+      <path class="cls-217" d="M168.5,229.6v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-134">
+      <path class="cls-217" d="M154.1,230.3v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-135">
+      <path class="cls-217" d="M162.3,233.5v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-136">
+      <path class="cls-217" d="M177.9,235v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-137">
+      <path class="cls-217" d="M163.6,235.8v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-138">
+      <path class="cls-217" d="M171.8,238.9v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-139">
+      <path class="cls-217" d="M173,241.2v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-140">
+      <path class="cls-217" d="M196.8,245.9v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-141">
+      <path class="cls-217" d="M190.7,249.8v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-142">
+      <path class="cls-217" d="M60.3,186.8v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-143">
+      <path class="cls-217" d="M88.4,194v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-144">
+      <path class="cls-217" d="M82.3,197.9v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-145">
+      <path class="cls-217" d="M97.9,199.5v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-146">
+      <path class="cls-217" d="M83.5,200.3v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-147">
+      <path class="cls-217" d="M91.7,203.4v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-148">
+      <path class="cls-217" d="M65.4,191.4v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-149">
+      <path class="cls-217" d="M51.1,192.2v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-150">
+      <path class="cls-217" d="M59.3,195.3v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-151">
+      <path class="cls-217" d="M74.8,196.9v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-152">
+      <path class="cls-217" d="M60.5,197.6v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-153">
+      <path class="cls-217" d="M68.7,200.8v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-154">
+      <path class="cls-217" d="M83.9,202.1v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-155">
+      <path class="cls-217" d="M69.6,202.9v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-156">
+      <path class="cls-217" d="M77.8,206v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-157">
+      <path class="cls-217" d="M107.3,204.9v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-158">
+      <path class="cls-217" d="M93,205.7v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-159">
+      <path class="cls-217" d="M101.2,208.8v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-160">
+      <path class="cls-217" d="M116.8,210.4v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-161">
+      <path class="cls-217" d="M102.4,211.2v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-162">
+      <path class="cls-217" d="M110.6,214.3v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-163">
+      <path class="cls-217" d="M126.2,215.8v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-164">
+      <path class="cls-217" d="M111.9,216.6v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-165">
+      <path class="cls-217" d="M120.1,219.8v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-166">
+      <path class="cls-217" d="M135.7,221.3v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-167">
+      <path class="cls-217" d="M121.3,222.1v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-168">
+      <path class="cls-217" d="M129.5,225.2v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-169">
+      <path class="cls-217" d="M145.1,226.7v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-170">
+      <path class="cls-217" d="M130.7,227.5v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-171">
+      <path class="cls-217" d="M139,230.7v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-172">
+      <path class="cls-217" d="M154.5,232.2v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-173">
+      <path class="cls-217" d="M140.2,233v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-174">
+      <path class="cls-217" d="M148.4,236.1v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-175">
+      <path class="cls-217" d="M164,237.6v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-176">
+      <path class="cls-217" d="M149.6,238.4v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-177">
+      <path class="cls-217" d="M157.8,241.6v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-178">
+      <path class="cls-217" d="M173.4,243.1v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-179">
+      <path class="cls-217" d="M159.1,243.9v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-180">
+      <path class="cls-217" d="M167.3,247v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-181">
+      <path class="cls-217" d="M93.4,207.6v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-182">
+      <path class="cls-217" d="M79,208.4v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-183">
+      <path class="cls-217" d="M87.2,211.5v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-184">
+      <path class="cls-217" d="M88.5,213.8v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-185">
+      <path class="cls-217" d="M112.3,218.5v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-186">
+      <path class="cls-217" d="M106.1,222.4v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-187">
+      <path class="cls-217" d="M107.4,224.7v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-188">
+      <path class="cls-217" d="M150,240.3v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-189">
+      <path class="cls-217" d="M143.9,244.2v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-190">
+      <path class="cls-217" d="M159.5,245.7v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-191">
+      <path class="cls-217" d="M145.1,246.5v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-192">
+      <path class="cls-217" d="M153.3,249.6v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-193">
+      <path class="cls-217" d="M168.5,249.3v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-194">
+      <path class="cls-217" d="M187.6,251.3v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-195">
+      <path class="cls-217" d="M181.4,255.2v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-196">
+      <path class="cls-217" d="M154.6,252v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-197">
+      <path class="cls-217" d="M178.3,256.6v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-198">
+      <path class="cls-217" d="M172.2,260.5v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+    </clipPath>
+    <clipPath id="clippath-199">
+      <path class="cls-3" d="M94.9,5.6l-2.1,1.2c1.5-.9,3.6-.8,6,.6l2.1-1.2c-2.3-1.3-4.4-1.5-6-.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-200">
+      <path class="cls-7" d="M224.9,194.7l2.1-1.2c1.5-.9,2.4-2.7,2.4-5.4l-2.1,1.2c0,2.6-.9,4.5-2.4,5.4Z"/>
+    </clipPath>
+    <clipPath id="clippath-201">
+      <path class="cls-3" d="M227.6,91.4l2.1-1.2c0-5.3-3.7-11.8-8.3-14.5l-2.1,1.2c4.6,2.7,8.4,9.1,8.3,14.5Z"/>
+    </clipPath>
+    <clipPath id="clippath-202">
+      <path class="cls-219" d="M140.8,118.7l3.1-1.8c2.5,3.1,5.3,5.7,8.4,7.5l-3.1,1.8c-3.1-1.8-5.9-4.4-8.4-7.5Z"/>
+    </clipPath>
+    <clipPath id="clippath-203">
+      <path class="cls-219" d="M132.7,97.5l3.1-1.8c0,4.7,1.5,9.9,3.9,14.6l-3.1,1.8c-2.5-4.8-3.9-9.9-3.9-14.6Z"/>
+    </clipPath>
+    <clipPath id="clippath-204">
+      <path class="cls-219" d="M137.5,86.8l3.1-1.8c-3,1.7-4.8,5.4-4.9,10.7l-3.1,1.8c0-5.2,1.9-8.9,4.9-10.7Z"/>
+    </clipPath>
+    <clipPath id="clippath-205">
+      <path class="cls-219" d="M164.2,125.5l-3.1,1.8c-3,1.8-7.2,1.5-11.8-1.2l3.1-1.8c4.6,2.7,8.8,2.9,11.8,1.2Z"/>
+    </clipPath>
+    <clipPath id="clippath-206">
+      <path class="cls-219" d="M133.6,80l3.1-1.8c4-2.3,9.6-2,15.8,1.5l-3.1,1.8c-6.2-3.6-11.8-3.9-15.8-1.5Z"/>
+    </clipPath>
+    <clipPath id="clippath-207">
+      <path class="cls-219" d="M168.1,132.3l-3.1,1.8c4-2.3,6.5-7.2,6.5-14.3,0-14.1-9.9-31.3-22.1-38.4l3.1-1.8c12.3,7.1,22.2,24.3,22.1,38.4,0,7-2.5,11.9-6.5,14.3Z"/>
+    </clipPath>
+  </defs>
+  <!-- Generator: Adobe Illustrator 28.6.0, SVG Export Plug-In . SVG Version: 1.2.0 Build 709)  -->
+  <g>
+    <g id="Layer_1">
+      <g>
+        <path class="cls-7" d="M149.9,289.7l97.6-56.6c.9-.5,1.4-1.2,1.4-1.9v4.4c0,.7-.5,1.4-1.4,1.9l-97.6,56.6v-4.4Z"/>
+        <g>
+          <polygon class="cls-7" points="246.5 236.7 245.3 234.4 278.1 112.6 282.1 112 248.7 236.2 246.5 236.7"/>
+          <g class="cls-6">
+            <g>
+              <path class="cls-3" d="M135.8,24l-4,.6c.5,0,1,0,1.5.3l4-.6c-.5-.3-1-.4-1.5-.3Z"/>
+              <g class="cls-221">
+                <g class="cls-6">
+                  <path class="cls-3" d="M133.2,25l4-.6c-.5-.3-1-.4-1.5-.3l-4,.6c.5,0,1,0,1.5.3Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-7" points="276.4 107.8 280.4 107.2 137.2 24.3 133.2 25 276.4 107.8"/>
+            <g>
+              <path class="cls-3" d="M278.1,112.6l4-.6c.5-1.8-.3-4-1.7-4.8l-4,.6c1.4.8,2.2,3,1.7,4.8Z"/>
+              <g class="cls-98">
+                <path class="cls-7" d="M278.1,112.6l4-.6c.5-1.8-.3-4-1.7-4.8l-4,.6c1.4.8,2.2,3,1.7,4.8Z"/>
+              </g>
+            </g>
+            <path class="cls-4" d="M133.2,25c-1.4-.8-3,0-3.5,1.8l-32.7,121.8,148.5,85.7,32.6-121.6c.5-1.8-.3-4-1.7-4.8L133.2,25Z"/>
+          </g>
+          <g>
+            <polygon class="cls-4" points="245.3 222.7 243.4 229.8 100.5 147.1 102.4 139.9 245.3 222.7"/>
+            <polygon class="cls-2" points="274.4 114.5 245.3 222.7 102.4 139.9 131.5 31.8 132.1 32.1 132.9 32.5 137.8 35.4 274.4 114.5"/>
+          </g>
+          <path class="cls-5" d="M205.6,68c-1.1-.6-2.3,0-2.7,1.4-.4,1.4.2,3,1.3,3.7,1.1.6,2.3,0,2.7-1.4.4-1.4-.2-3-1.3-3.7Z"/>
+          <path class="cls-5" d="M211,72.4c-.6-.4-1.3,0-1.5.8-.2.8.1,1.7.7,2.1.6.4,1.3,0,1.5-.8.2-.8-.1-1.7-.7-2.1Z"/>
+        </g>
+        <g class="cls-6">
+          <g>
+            <path class="cls-7" d="M0,210.3v-4.4c0,.7.5,1.4,1.4,1.9v4.4C.5,211.7,0,211,0,210.3Z"/>
+            <g class="cls-101">
+              <g class="cls-6">
+                <path class="cls-7" d="M1.4,207.9v4.4C.5,211.7,0,211,0,210.3v-4.4c0,.7.5,1.4,1.4,1.9Z"/>
+              </g>
+            </g>
+          </g>
+          <polygon class="cls-7" points="143.2 289.7 143.2 294.1 1.4 212.3 1.4 207.9 143.2 289.7"/>
+          <g>
+            <path class="cls-7" d="M149.9,289.7v4.4c-1.8,1.1-4.8,1.1-6.7,0v-4.4c1.9,1.1,4.8,1.1,6.7,0Z"/>
+            <g class="cls-99">
+              <g class="cls-6">
+                <path class="cls-7" d="M149.9,289.7v4.4c-1.8,1.1-4.8,1.1-6.7,0v-4.4c1.9,1.1,4.8,1.1,6.7,0Z"/>
+              </g>
+            </g>
+          </g>
+          <path class="cls-3" d="M1.4,207.9l141.8,81.9c1.8,1.1,4.8,1.1,6.7,0l95.6-55.5-148.5-85.7L1.4,204c-1.8,1.1-1.8,2.8,0,3.9Z"/>
+        </g>
+        <g>
+          <path class="cls-7" d="M229.9,231.8c-.3,1.1-1.2,2.2-2.7,3.1l-49.6,28.7c-3.4,2-8.6,2.2-11.6.5l-119-68.7c-1.1-.6-1.7-1.4-1.9-2.3-.4-1.5.6-3.2,2.7-4.4l49.6-28.7c3.4-2,8.6-2.2,11.6-.5l119,68.7c1.6.9,2.2,2.2,1.9,3.6Z"/>
+          <path class="cls-4" d="M229.9,231.8c-.3,1.1-1.2,2.2-2.7,3.1l-49.6,28.7c-3.4,2-8.6,2.2-11.6.5l-119-68.7c-1.1-.6-1.7-1.4-1.9-2.3.3-1.1,1.2-2.2,2.7-3.1l49.6-28.7c3.4-2,8.6-2.2,11.6-.5l119,68.7c1.1.6,1.7,1.4,1.9,2.3Z"/>
+        </g>
+        <g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M99.1,164.3v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-100">
+                <g class="cls-6">
+                  <path class="cls-217" d="M99.5,164.1v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M109.9,165.5v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-106">
+                <g class="cls-6">
+                  <path class="cls-217" d="M109.9,165.5v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M109.8,165.9v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="109.5 166.1 109.5 166.9 107.3 168.2 107.3 167.4 109.5 166.1"/>
+            <polygon class="cls-217" points="105.3 167.4 105.3 168.2 99.5 164.8 99.5 164.1 105.3 167.4"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M107.3,167.4v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-103">
+                <g class="cls-6">
+                  <path class="cls-217" d="M107.3,167.4v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M106.6,167.6v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M109.5,164.9c.6.3.6.8,0,1.2l-2.2,1.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l2.2-1.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M102.3,170v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-102">
+                <g class="cls-6">
+                  <path class="cls-217" d="M102.3,170v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M102.2,170.3v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M88,170.7v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-105">
+                <g class="cls-6">
+                  <path class="cls-217" d="M88.4,170.5v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="101.9 170.5 101.9 171.3 96.2 174.7 96.2 173.9 101.9 170.5"/>
+            <polygon class="cls-217" points="94.2 173.9 94.2 174.6 88.4 171.3 88.4 170.5 94.2 173.9"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M96.2,173.9v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-104">
+                <g class="cls-6">
+                  <path class="cls-217" d="M96.2,173.9v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M95.5,174.1v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M101.9,169.4c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M110.4,170.8v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-13">
+                <g class="cls-6">
+                  <path class="cls-217" d="M110.8,170.6v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M121.2,172.1v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-10">
+                <g class="cls-6">
+                  <path class="cls-217" d="M121.2,172.1v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M121.1,172.4v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="120.8 172.6 120.8 173.4 118.6 174.7 118.6 173.9 120.8 172.6"/>
+            <polygon class="cls-217" points="116.6 173.9 116.6 174.7 110.8 171.4 110.8 170.6 116.6 173.9"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M118.6,173.9v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-17">
+                <g class="cls-6">
+                  <path class="cls-217" d="M118.6,173.9v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M117.9,174.1v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M120.8,171.5c.6.3.6.8,0,1.2l-2.2,1.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l2.2-1.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M111.8,175.4v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-15">
+                <g class="cls-6">
+                  <path class="cls-217" d="M111.8,175.4v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M111.6,175.8v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M97.4,176.2v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-16">
+                <g class="cls-6">
+                  <path class="cls-217" d="M97.9,176v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="111.4 176 111.4 176.8 105.6 180.1 105.6 179.3 111.4 176"/>
+            <polygon class="cls-217" points="103.6 179.3 103.6 180.1 97.8 176.8 97.9 176 103.6 179.3"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M105.6,179.3v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-14">
+                <g class="cls-6">
+                  <path class="cls-217" d="M105.6,179.3v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M104.9,179.5v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M111.3,174.8c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M121.7,177.3v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-11">
+                <g class="cls-6">
+                  <path class="cls-217" d="M122.1,177.1v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M132.5,178.6v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-8">
+                <g class="cls-6">
+                  <path class="cls-217" d="M132.5,178.6v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M132.4,179v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="132.1 179.2 132.1 179.9 129.9 181.2 129.9 180.5 132.1 179.2"/>
+            <polygon class="cls-217" points="127.9 180.5 127.9 181.2 122.1 177.9 122.1 177.1 127.9 180.5"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M129.9,180.5v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-12">
+                <g class="cls-6">
+                  <path class="cls-217" d="M129.9,180.5v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M129.2,180.7v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M132.1,178c.6.3.6.8,0,1.2l-2.2,1.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l2.2-1.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M120.9,180.7v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-9">
+                <g class="cls-6">
+                  <path class="cls-217" d="M120.9,180.7v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M120.7,181v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M106.5,181.4v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-61">
+                <g class="cls-6">
+                  <path class="cls-217" d="M106.9,181.2v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="120.5 181.3 120.4 182 114.7 185.4 114.7 184.6 120.5 181.3"/>
+            <polygon class="cls-217" points="112.7 184.6 112.7 185.4 106.9 182 106.9 181.2 112.7 184.6"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M114.7,184.6v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-62">
+                <g class="cls-6">
+                  <path class="cls-217" d="M114.7,184.6v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M114,184.8v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M120.4,180.1c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M130.3,186.1v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-63">
+                <g class="cls-6">
+                  <path class="cls-217" d="M130.3,186.1v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M130.2,186.5v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M116,186.9v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-64">
+                <g class="cls-6">
+                  <path class="cls-217" d="M116.4,186.7v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="129.9 186.7 129.9 187.5 124.2 190.8 124.2 190 129.9 186.7"/>
+            <polygon class="cls-217" points="122.1 190 122.1 190.8 116.4 187.5 116.4 186.7 122.1 190"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M124.2,190v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-65">
+                <g class="cls-6">
+                  <path class="cls-217" d="M124.2,190v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M123.5,190.3v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M129.9,185.5c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M133,183.8v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-66">
+                <g class="cls-6">
+                  <path class="cls-217" d="M133.4,183.7v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M143.8,185.1v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-59">
+                <g class="cls-6">
+                  <path class="cls-217" d="M143.8,185.1v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M143.7,185.5v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="143.4 185.7 143.4 186.5 141.2 187.8 141.2 187 143.4 185.7"/>
+            <polygon class="cls-217" points="139.2 187 139.2 187.8 133.4 184.4 133.4 183.7 139.2 187"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M141.2,187v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-57">
+                <g class="cls-6">
+                  <path class="cls-217" d="M141.2,187v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M140.5,187.2v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M143.4,184.5c.6.3.6.8,0,1.2l-2.2,1.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l2.2-1.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M139.8,191.6v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-60">
+                <g class="cls-6">
+                  <path class="cls-217" d="M139.8,191.6v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M139.6,191.9v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M125.4,192.3v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-58">
+                <g class="cls-6">
+                  <path class="cls-217" d="M125.8,192.2v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="139.3 192.2 139.3 192.9 133.6 196.3 133.6 195.5 139.3 192.2"/>
+            <polygon class="cls-217" points="131.6 195.5 131.6 196.3 125.8 192.9 125.8 192.2 131.6 195.5"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M133.6,195.5v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-53">
+                <g class="cls-6">
+                  <path class="cls-217" d="M133.6,195.5v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M132.9,195.7v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M139.3,191c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M144.3,190.4v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-47">
+                <g class="cls-6">
+                  <path class="cls-217" d="M144.7,190.2v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M155.2,191.6v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-48">
+                <g class="cls-6">
+                  <path class="cls-217" d="M155.2,191.6v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M155,192v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="154.7 192.2 154.7 193 152.5 194.3 152.5 193.5 154.7 192.2"/>
+            <polygon class="cls-217" points="150.5 193.5 150.5 194.3 144.7 191 144.7 190.2 150.5 193.5"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M152.5,193.5v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-49">
+                <g class="cls-6">
+                  <path class="cls-217" d="M152.5,193.5v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M151.8,193.7v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M154.7,191.1c.6.3.6.8,0,1.2l-2.2,1.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l2.2-1.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M149.2,197v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-50">
+                <g class="cls-6">
+                  <path class="cls-217" d="M149.2,197v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M149,197.4v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M134.8,197.8v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-51">
+                <g class="cls-6">
+                  <path class="cls-217" d="M135.3,197.6v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="148.8 197.6 148.8 198.4 143 201.7 143.1 200.9 148.8 197.6"/>
+            <polygon class="cls-217" points="141 200.9 141 201.7 135.3 198.4 135.3 197.6 141 200.9"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M143.1,200.9v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-54">
+                <g class="cls-6">
+                  <path class="cls-217" d="M143.1,200.9v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M142.3,201.2v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M148.8,196.4c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M155.6,196.9v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-55">
+                <g class="cls-6">
+                  <path class="cls-217" d="M156,196.7v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M166.5,198.2v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-56">
+                <g class="cls-6">
+                  <path class="cls-217" d="M166.5,198.2v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M166.3,198.5v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="166 198.7 166 199.5 163.8 200.8 163.8 200 166 198.7"/>
+            <polygon class="cls-217" points="161.8 200 161.8 200.8 156 197.5 156 196.7 161.8 200"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M163.8,200v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-52">
+                <g class="cls-6">
+                  <path class="cls-217" d="M163.8,200v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M163.1,200.3v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M166,197.6c.6.3.6.8,0,1.2l-2.2,1.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l2.2-1.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M158.6,202.5v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-74">
+                <g class="cls-6">
+                  <path class="cls-217" d="M158.6,202.5v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M158.5,202.8v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M144.3,203.2v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-68">
+                <g class="cls-6">
+                  <path class="cls-217" d="M144.7,203.1v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="158.2 203.1 158.2 203.8 152.5 207.2 152.5 206.4 158.2 203.1"/>
+            <polygon class="cls-217" points="150.5 206.4 150.5 207.2 144.7 203.8 144.7 203.1 150.5 206.4"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M152.5,206.4v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-69">
+                <g class="cls-6">
+                  <path class="cls-217" d="M152.5,206.4v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M151.8,206.6v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M158.2,201.9c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M166.9,203.4v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-70">
+                <g class="cls-6">
+                  <path class="cls-217" d="M167.4,203.2v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M177.8,204.7v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-71">
+                <g class="cls-6">
+                  <path class="cls-217" d="M177.8,204.7v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M177.6,205.1v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="177.4 205.3 177.3 206.1 175.1 207.3 175.1 206.6 177.4 205.3"/>
+            <polygon class="cls-217" points="173.1 206.6 173.1 207.3 167.4 204 167.4 203.2 173.1 206.6"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M175.1,206.6v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-72">
+                <g class="cls-6">
+                  <path class="cls-217" d="M175.1,206.6v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M174.4,206.8v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M177.3,204.1c.6.3.6.8,0,1.2l-2.2,1.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l2.2-1.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M168.1,207.9v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-75">
+                <g class="cls-6">
+                  <path class="cls-217" d="M168.1,207.9v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M167.9,208.3v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M153.7,208.7v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-76">
+                <g class="cls-6">
+                  <path class="cls-217" d="M154.2,208.5v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="167.7 208.5 167.7 209.3 161.9 212.6 161.9 211.8 167.7 208.5"/>
+            <polygon class="cls-217" points="159.9 211.8 159.9 212.6 154.1 209.3 154.2 208.5 159.9 211.8"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M161.9,211.8v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-77">
+                <g class="cls-6">
+                  <path class="cls-217" d="M161.9,211.8v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M161.2,212.1v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M167.7,207.3c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M178.2,209.9v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-73">
+                <g class="cls-6">
+                  <path class="cls-217" d="M178.7,209.8v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M189.1,211.2v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-31">
+                <g class="cls-6">
+                  <path class="cls-217" d="M189.1,211.2v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M188.9,211.6v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="188.7 211.8 188.7 212.6 186.4 213.9 186.4 213.1 188.7 211.8"/>
+            <polygon class="cls-217" points="184.4 213.1 184.4 213.9 178.7 210.5 178.7 209.8 184.4 213.1"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M186.4,213.1v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-44">
+                <g class="cls-6">
+                  <path class="cls-217" d="M186.4,213.1v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M185.7,213.3v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M188.6,210.6c.6.3.6.8,0,1.2l-2.2,1.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l2.2-1.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M177.5,213.4v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-33">
+                <g class="cls-6">
+                  <path class="cls-217" d="M177.5,213.4v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M177.4,213.7v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M163.2,214.1v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-37">
+                <g class="cls-6">
+                  <path class="cls-217" d="M163.6,214v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="177.1 214 177.1 214.7 171.4 218.1 171.4 217.3 177.1 214"/>
+            <polygon class="cls-217" points="169.4 217.3 169.4 218.1 163.6 214.7 163.6 214 169.4 217.3"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M171.4,217.3v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-35">
+                <g class="cls-6">
+                  <path class="cls-217" d="M171.4,217.3v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M170.7,217.5v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M177.1,212.8c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M187,218.8v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-32">
+                <g class="cls-6">
+                  <path class="cls-217" d="M187,218.8v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M186.8,219.2v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M172.6,219.6v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-36">
+                <g class="cls-6">
+                  <path class="cls-217" d="M173,219.4v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="186.5 219.4 186.5 220.2 180.8 223.5 180.8 222.7 186.5 219.4"/>
+            <polygon class="cls-217" points="178.8 222.7 178.8 223.5 173 220.2 173 219.4 178.8 222.7"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M180.8,222.7v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-34">
+                <g class="cls-6">
+                  <path class="cls-217" d="M180.8,222.7v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M180.1,223v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M186.5,218.2c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M189.5,216.5v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-45">
+                <g class="cls-6">
+                  <path class="cls-217" d="M190,216.3v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M200.4,217.8v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-46">
+                <g class="cls-6">
+                  <path class="cls-217" d="M200.4,217.8v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M200.2,218.1v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="200 218.3 200 219.1 197.7 220.4 197.8 219.6 200 218.3"/>
+            <polygon class="cls-217" points="195.7 219.6 195.7 220.4 190 217.1 190 216.3 195.7 219.6"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M197.8,219.6v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-21">
+                <g class="cls-6">
+                  <path class="cls-217" d="M197.8,219.6v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M197,219.8v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M200,217.2c.6.3.6.8,0,1.2l-2.2,1.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l2.2-1.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M196.4,224.3v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-18">
+                <g class="cls-6">
+                  <path class="cls-217" d="M196.4,224.3v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M196.2,224.6v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M182.1,225v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-23">
+                <g class="cls-6">
+                  <path class="cls-217" d="M182.5,224.9v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="196 224.9 196 225.6 190.3 229 190.3 228.2 196 224.9"/>
+            <polygon class="cls-217" points="188.2 228.2 188.2 229 182.5 225.6 182.5 224.9 188.2 228.2"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M190.3,228.2v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-26">
+                <g class="cls-6">
+                  <path class="cls-217" d="M190.3,228.2v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M189.5,228.4v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M196,223.7c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M200.8,223v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-24">
+                <g class="cls-6">
+                  <path class="cls-217" d="M201.3,222.8v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M211.7,224.3v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-22">
+                <g class="cls-6">
+                  <path class="cls-217" d="M211.7,224.3v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M211.5,224.7v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="211.3 224.9 211.3 225.6 209.1 226.9 209.1 226.1 211.3 224.9"/>
+            <polygon class="cls-217" points="207 226.1 207 226.9 201.3 223.6 201.3 222.8 207 226.1"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M209.1,226.1v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-25">
+                <g class="cls-6">
+                  <path class="cls-217" d="M209.1,226.1v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M208.3,226.4v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M211.3,223.7c.6.3.6.8,0,1.2l-2.2,1.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l2.2-1.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M205.8,229.7v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-19">
+                <g class="cls-6">
+                  <path class="cls-217" d="M205.8,229.7v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M205.7,230.1v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M191.5,230.5v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-20">
+                <g class="cls-6">
+                  <path class="cls-217" d="M191.9,230.3v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="205.4 230.3 205.4 231.1 199.7 234.4 199.7 233.6 205.4 230.3"/>
+            <polygon class="cls-217" points="197.7 233.6 197.7 234.4 191.9 231.1 191.9 230.3 197.7 233.6"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M199.7,233.6v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-67">
+                <g class="cls-6">
+                  <path class="cls-217" d="M199.7,233.6v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M199,233.9v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M205.4,229.1c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M212.2,229.5v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-38">
+                <g class="cls-6">
+                  <path class="cls-217" d="M212.6,229.3v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M223,230.8v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-41">
+                <g class="cls-6">
+                  <path class="cls-217" d="M223,230.8v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M222.8,231.2v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="222.6 231.4 222.6 232.2 220.4 233.5 220.4 232.7 222.6 231.4"/>
+            <polygon class="cls-217" points="218.3 232.7 218.3 233.4 212.6 230.1 212.6 229.3 218.3 232.7"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M220.4,232.7v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-43">
+                <g class="cls-6">
+                  <path class="cls-217" d="M220.4,232.7v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M219.7,232.9v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M222.6,230.2c.6.3.6.8,0,1.2l-2.2,1.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l2.2-1.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M215.3,235.2v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-42">
+                <g class="cls-6">
+                  <path class="cls-217" d="M215.3,235.2v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M215.1,235.5v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M200.9,235.9v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-40">
+                <g class="cls-6">
+                  <path class="cls-217" d="M201.4,235.8v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="214.9 235.8 214.9 236.5 209.1 239.9 209.1 239.1 214.9 235.8"/>
+            <polygon class="cls-217" points="207.1 239.1 207.1 239.9 201.4 236.5 201.4 235.8 207.1 239.1"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M209.1,239.1v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-29">
+                <g class="cls-6">
+                  <path class="cls-217" d="M209.1,239.1v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M208.4,239.3v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M214.9,234.6c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M78.8,176.1v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-27">
+                <g class="cls-6">
+                  <path class="cls-217" d="M79.2,175.9v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M107.3,183.5v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-39">
+                <g class="cls-6">
+                  <path class="cls-217" d="M107.3,183.5v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M107.1,183.9v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="106.8 184.1 106.8 184.9 101.1 188.2 101.1 187.4 106.8 184.1"/>
+            <polygon class="cls-217" points="99.1 187.4 99.1 188.2 79.2 176.7 79.2 175.9 99.1 187.4"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M101.1,187.4v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-28">
+                <g class="cls-6">
+                  <path class="cls-217" d="M101.1,187.4v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M100.4,187.6v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M106.8,182.9c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-19.9-11.5c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l19.9,11.5Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M116.4,188.8v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-30">
+                <g class="cls-6">
+                  <path class="cls-217" d="M116.4,188.8v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M116.2,189.1v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M102,189.5v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-87">
+                <g class="cls-6">
+                  <path class="cls-217" d="M102.4,189.3v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="115.9 189.3 115.9 190.1 110.2 193.4 110.2 192.7 115.9 189.3"/>
+            <polygon class="cls-217" points="108.2 192.7 108.2 193.4 102.4 190.1 102.4 189.3 108.2 192.7"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M110.2,192.7v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-89">
+                <g class="cls-6">
+                  <path class="cls-217" d="M110.2,192.7v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M109.5,192.9v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M115.9,188.2c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M69.5,181.5v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-90">
+                <g class="cls-6">
+                  <path class="cls-217" d="M69.9,181.3v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M93.3,186.1v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-91">
+                <g class="cls-6">
+                  <path class="cls-217" d="M93.3,186.1v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M93.2,186.5v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="92.9 186.7 92.9 187.5 87.2 190.8 87.2 190.1 92.9 186.7"/>
+            <polygon class="cls-217" points="85.1 190.1 85.1 190.8 69.9 182.1 69.9 181.3 85.1 190.1"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M87.2,190.1v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-92">
+                <g class="cls-6">
+                  <path class="cls-217" d="M87.2,190.1v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M86.5,190.3v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M92.9,185.6c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-15.2-8.8c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l15.2,8.8Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M102.4,191.4v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-84">
+                <g class="cls-6">
+                  <path class="cls-217" d="M102.4,191.4v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M102.2,191.8v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M88.1,192.2v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-85">
+                <g class="cls-6">
+                  <path class="cls-217" d="M88.5,192v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="102 192 102 192.8 96.3 196.1 96.3 195.3 102 192"/>
+            <polygon class="cls-217" points="94.2 195.3 94.2 196.1 88.5 192.8 88.5 192 94.2 195.3"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M96.3,195.3v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-86">
+                <g class="cls-6">
+                  <path class="cls-217" d="M96.3,195.3v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M95.6,195.5v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M102,190.8c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M125.8,194.2v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-93">
+                <g class="cls-6">
+                  <path class="cls-217" d="M125.8,194.2v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M125.6,194.6v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M111.4,195v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-88">
+                <g class="cls-6">
+                  <path class="cls-217" d="M111.9,194.8v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="125.4 194.8 125.4 195.6 119.7 198.9 119.7 198.1 125.4 194.8"/>
+            <polygon class="cls-217" points="117.6 198.1 117.6 198.9 111.9 195.6 111.9 194.8 117.6 198.1"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M119.7,198.1v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-78">
+                <g class="cls-6">
+                  <path class="cls-217" d="M119.7,198.1v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M118.9,198.3v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M125.4,193.6c.6.3.6.9,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M111.8,196.9v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-96">
+                <g class="cls-6">
+                  <path class="cls-217" d="M111.8,196.9v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M111.7,197.2v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M97.5,197.6v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-94">
+                <g class="cls-6">
+                  <path class="cls-217" d="M97.9,197.4v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="111.4 197.4 111.4 198.2 105.7 201.5 105.7 200.8 111.4 197.4"/>
+            <polygon class="cls-217" points="103.7 200.8 103.7 201.5 97.9 198.2 97.9 197.4 103.7 200.8"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M105.7,200.8v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-80">
+                <g class="cls-6">
+                  <path class="cls-217" d="M105.7,200.8v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M105,201v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M111.4,196.3c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M135.2,199.7v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-82">
+                <g class="cls-6">
+                  <path class="cls-217" d="M135.2,199.7v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M135.1,200v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M120.9,200.4v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-79">
+                <g class="cls-6">
+                  <path class="cls-217" d="M121.3,200.2v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="134.8 200.2 134.8 201 129.1 204.3 129.1 203.6 134.8 200.2"/>
+            <polygon class="cls-217" points="127.1 203.6 127.1 204.3 121.3 201 121.3 200.2 127.1 203.6"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M129.1,203.6v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-83">
+                <g class="cls-6">
+                  <path class="cls-217" d="M129.1,203.6v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M128.4,203.8v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M134.8,199.1c.6.3.6.9,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M121.3,202.3v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-95">
+                <g class="cls-6">
+                  <path class="cls-217" d="M121.3,202.3v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M121.1,202.7v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M106.9,203.1v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-97">
+                <g class="cls-6">
+                  <path class="cls-217" d="M107.4,202.9v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="120.9 202.9 120.9 203.7 115.1 207 115.1 206.2 120.9 202.9"/>
+            <polygon class="cls-217" points="113.1 206.2 113.1 207 107.4 203.7 107.4 202.9 113.1 206.2"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M115.1,206.2v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-81">
+                <g class="cls-6">
+                  <path class="cls-217" d="M115.1,206.2v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M114.4,206.4v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M120.9,201.7c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M144.7,205.1v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-161">
+                <g class="cls-6">
+                  <path class="cls-217" d="M144.7,205.1v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M144.5,205.5v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M130.3,205.9v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-155">
+                <g class="cls-6">
+                  <path class="cls-217" d="M130.8,205.7v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="144.3 205.7 144.3 206.5 138.5 209.8 138.5 209 144.3 205.7"/>
+            <polygon class="cls-217" points="136.5 209 136.5 209.8 130.8 206.5 130.8 205.7 136.5 209"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M138.5,209v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-154">
+                <g class="cls-6">
+                  <path class="cls-217" d="M138.5,209v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M137.8,209.2v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M144.3,204.5c.6.3.6.9,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M130.7,207.8v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-159">
+                <g class="cls-6">
+                  <path class="cls-217" d="M130.7,207.8v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M130.6,208.1v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M116.4,208.5v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-156">
+                <g class="cls-6">
+                  <path class="cls-217" d="M116.8,208.3v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="130.3 208.3 130.3 209.1 124.6 212.4 124.6 211.7 130.3 208.3"/>
+            <polygon class="cls-217" points="122.6 211.7 122.6 212.4 116.8 209.1 116.8 208.3 122.6 211.7"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M124.6,211.7v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-160">
+                <g class="cls-6">
+                  <path class="cls-217" d="M124.6,211.7v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M123.9,211.9v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M130.3,207.2c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M154.1,210.6v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-158">
+                <g class="cls-6">
+                  <path class="cls-217" d="M154.1,210.6v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M154,210.9v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M139.8,211.3v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-163">
+                <g class="cls-6">
+                  <path class="cls-217" d="M140.2,211.1v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="153.7 211.1 153.7 211.9 148 215.2 148 214.5 153.7 211.1"/>
+            <polygon class="cls-217" points="146 214.5 146 215.2 140.2 211.9 140.2 211.1 146 214.5"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M148,214.5v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-162">
+                <g class="cls-6">
+                  <path class="cls-217" d="M148,214.5v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M147.3,214.7v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M153.7,210c.6.3.6.9,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M140.2,213.2v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-157">
+                <g class="cls-6">
+                  <path class="cls-217" d="M140.2,213.2v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M140,213.6v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M125.8,214v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-168">
+                <g class="cls-6">
+                  <path class="cls-217" d="M126.2,213.8v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="139.8 213.8 139.7 214.6 134 217.9 134 217.1 139.8 213.8"/>
+            <polygon class="cls-217" points="132 217.1 132 217.9 126.2 214.6 126.2 213.8 132 217.1"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M134,217.1v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-167">
+                <g class="cls-6">
+                  <path class="cls-217" d="M134,217.1v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M133.3,217.3v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M139.7,212.6c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M163.6,216v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-170">
+                <g class="cls-6">
+                  <path class="cls-217" d="M163.6,216v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M163.4,216.4v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M149.2,216.8v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-169">
+                <g class="cls-6">
+                  <path class="cls-217" d="M149.6,216.6v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="163.1 216.6 163.1 217.4 157.4 220.7 157.4 219.9 163.1 216.6"/>
+            <polygon class="cls-217" points="155.4 219.9 155.4 220.7 149.6 217.4 149.6 216.6 155.4 219.9"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M157.4,219.9v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-165">
+                <g class="cls-6">
+                  <path class="cls-217" d="M157.4,219.9v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M156.7,220.1v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M163.1,215.4c.6.3.6.9,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M149.6,218.7v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-172">
+                <g class="cls-6">
+                  <path class="cls-217" d="M149.6,218.7v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M149.5,219v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M135.3,219.4v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-173">
+                <g class="cls-6">
+                  <path class="cls-217" d="M135.7,219.2v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="149.2 219.2 149.2 220 143.5 223.3 143.5 222.6 149.2 219.2"/>
+            <polygon class="cls-217" points="141.4 222.6 141.4 223.3 135.7 220 135.7 219.2 141.4 222.6"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M143.5,222.6v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-171">
+                <g class="cls-6">
+                  <path class="cls-217" d="M143.5,222.6v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M142.8,222.8v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M149.2,218.1c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M173,221.5v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-164">
+                <g class="cls-6">
+                  <path class="cls-217" d="M173,221.5v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M172.8,221.8v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M158.7,222.2v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-166">
+                <g class="cls-6">
+                  <path class="cls-217" d="M159.1,222v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="172.6 222 172.6 222.8 166.9 226.1 166.9 225.4 172.6 222"/>
+            <polygon class="cls-217" points="164.8 225.4 164.8 226.1 159.1 222.8 159.1 222 164.8 225.4"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M166.9,225.4v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-196">
+                <g class="cls-6">
+                  <path class="cls-217" d="M166.9,225.4v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M166.2,225.6v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M172.6,220.9c.6.3.6.9,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M159,224.1v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-199">
+                <g class="cls-6">
+                  <path class="cls-217" d="M159,224.1v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M158.9,224.5v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M144.7,224.9v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-198">
+                <g class="cls-6">
+                  <path class="cls-217" d="M145.1,224.7v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="158.6 224.7 158.6 225.5 152.9 228.8 152.9 228 158.6 224.7"/>
+            <polygon class="cls-217" points="150.9 228 150.9 228.8 145.1 225.5 145.1 224.7 150.9 228"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M152.9,228v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-200">
+                <g class="cls-6">
+                  <path class="cls-217" d="M152.9,228v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M152.2,228.2v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M158.6,223.5c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M182.4,226.9v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-201">
+                <g class="cls-6">
+                  <path class="cls-217" d="M182.4,226.9v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M182.3,227.3v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M168.1,227.7v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-197">
+                <g class="cls-6">
+                  <path class="cls-217" d="M168.5,227.5v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="182 227.5 182 228.3 176.3 231.6 176.3 230.8 182 227.5"/>
+            <polygon class="cls-217" points="174.3 230.8 174.3 231.6 168.5 228.3 168.5 227.5 174.3 230.8"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M176.3,230.8v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-203">
+                <g class="cls-6">
+                  <path class="cls-217" d="M176.3,230.8v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M175.6,231v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M182,226.3c.6.3.6.9,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M191.9,232.4v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-205">
+                <g class="cls-6">
+                  <path class="cls-217" d="M191.9,232.4v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M191.7,232.7v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M177.5,233.1v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-204">
+                <g class="cls-6">
+                  <path class="cls-217" d="M178,232.9v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="191.5 232.9 191.5 233.7 185.7 237.1 185.7 236.3 191.5 232.9"/>
+            <polygon class="cls-217" points="183.7 236.3 183.7 237.1 178 233.7 178 232.9 183.7 236.3"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M185.7,236.3v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-202">
+                <g class="cls-6">
+                  <path class="cls-217" d="M185.7,236.3v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M185,236.5v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M191.5,231.8c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M187,238.6v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-206">
+                <g class="cls-6">
+                  <path class="cls-217" d="M187.4,238.4v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M206,240.5v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-208">
+                <g class="cls-6">
+                  <path class="cls-217" d="M206,240.5v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M205.9,240.9v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="205.6 241.1 205.6 241.9 199.9 245.2 199.9 244.4 205.6 241.1"/>
+            <polygon class="cls-217" points="197.9 244.5 197.9 245.2 187.4 239.2 187.4 238.4 197.9 244.5"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M199.9,244.4v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-207">
+                <g class="cls-6">
+                  <path class="cls-217" d="M199.9,244.4v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M199.2,244.7v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M205.6,240c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-10.5-6.1c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l10.5,6.1Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M168.5,229.6v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-210">
+                <g class="cls-6">
+                  <path class="cls-217" d="M168.5,229.6v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M168.3,229.9v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M154.1,230.3v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-209">
+                <g class="cls-6">
+                  <path class="cls-217" d="M154.6,230.1v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="168.1 230.1 168.1 230.9 162.3 234.2 162.3 233.5 168.1 230.1"/>
+            <polygon class="cls-217" points="160.3 233.5 160.3 234.2 154.6 230.9 154.6 230.1 160.3 233.5"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M162.3,233.5v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-215">
+                <g class="cls-6">
+                  <path class="cls-217" d="M162.3,233.5v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M161.6,233.7v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M168.1,229c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M177.9,235v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-211">
+                <g class="cls-6">
+                  <path class="cls-217" d="M177.9,235v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M177.8,235.4v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M163.6,235.8v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-213">
+                <g class="cls-6">
+                  <path class="cls-217" d="M164,235.6v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="177.5 235.6 177.5 236.4 171.8 239.7 171.8 238.9 177.5 235.6"/>
+            <polygon class="cls-217" points="169.8 238.9 169.8 239.7 164 236.4 164 235.6 169.8 238.9"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M171.8,238.9v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-214">
+                <g class="cls-6">
+                  <path class="cls-217" d="M171.8,238.9v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M171.1,239.1v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M177.5,234.4c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M173,241.2v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-212">
+                <g class="cls-6">
+                  <path class="cls-217" d="M173.4,241v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M196.8,245.9v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-186">
+                <g class="cls-6">
+                  <path class="cls-217" d="M196.8,245.9v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M196.7,246.3v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="196.4 246.5 196.4 247.3 190.7 250.6 190.7 249.8 196.4 246.5"/>
+            <polygon class="cls-217" points="188.7 249.8 188.7 250.6 173.4 241.8 173.4 241 188.7 249.8"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M190.7,249.8v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-182">
+                <g class="cls-6">
+                  <path class="cls-217" d="M190.7,249.8v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M190,250v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M196.4,245.3c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-15.2-8.8c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l15.2,8.8Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M60.3,186.8v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-184">
+                <g class="cls-6">
+                  <path class="cls-217" d="M60.7,186.6v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M88.4,194v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-180">
+                <g class="cls-6">
+                  <path class="cls-217" d="M88.4,194v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M88.3,194.4v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="88 194.6 88 195.4 82.3 198.7 82.3 197.9 88 194.6"/>
+            <polygon class="cls-217" points="80.3 197.9 80.3 198.7 60.7 187.4 60.7 186.6 80.3 197.9"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M82.3,197.9v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-181">
+                <g class="cls-6">
+                  <path class="cls-217" d="M82.3,197.9v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M81.6,198.2v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M88,193.4c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-19.6-11.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l19.6,11.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M97.9,199.5v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-187">
+                <g class="cls-6">
+                  <path class="cls-217" d="M97.9,199.5v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M97.7,199.9v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M83.5,200.3v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-188">
+                <g class="cls-6">
+                  <path class="cls-217" d="M84,200.1v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="97.5 200.1 97.5 200.8 91.7 204.2 91.7 203.4 97.5 200.1"/>
+            <polygon class="cls-217" points="89.7 203.4 89.7 204.2 84 200.8 84 200.1 89.7 203.4"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M91.7,203.4v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-189">
+                <g class="cls-6">
+                  <path class="cls-217" d="M91.7,203.4v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M91,203.6v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M97.5,198.9c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M65.4,191.4v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-183">
+                <g class="cls-6">
+                  <path class="cls-217" d="M65.4,191.4v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M65.2,191.8v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M51.1,192.2v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-185">
+                <g class="cls-6">
+                  <path class="cls-217" d="M51.5,192v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="65 192 65 192.8 59.3 196.1 59.3 195.3 65 192"/>
+            <polygon class="cls-217" points="57.2 195.3 57.2 196.1 51.5 192.8 51.5 192 57.2 195.3"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M59.3,195.3v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-179">
+                <g class="cls-6">
+                  <path class="cls-217" d="M59.3,195.3v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M58.6,195.6v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M65,190.8c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.9,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M74.8,196.9v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-176">
+                <g class="cls-6">
+                  <path class="cls-217" d="M74.8,196.9v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M74.7,197.2v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M60.5,197.6v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-191">
+                <g class="cls-6">
+                  <path class="cls-217" d="M60.9,197.5v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="74.4 197.5 74.4 198.2 68.7 201.6 68.7 200.8 74.4 197.5"/>
+            <polygon class="cls-217" points="66.7 200.8 66.7 201.6 60.9 198.2 60.9 197.5 66.7 200.8"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M68.7,200.8v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-190">
+                <g class="cls-6">
+                  <path class="cls-217" d="M68.7,200.8v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M68,201v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M74.4,196.3c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.9,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M83.9,202.1v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-193">
+                <g class="cls-6">
+                  <path class="cls-217" d="M83.9,202.1v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M83.8,202.5v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M69.6,202.9v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-195">
+                <g class="cls-6">
+                  <path class="cls-217" d="M70,202.7v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="83.5 202.7 83.5 203.5 77.8 206.8 77.8 206 83.5 202.7"/>
+            <polygon class="cls-217" points="75.8 206 75.8 206.8 70 203.5 70 202.7 75.8 206"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M77.8,206v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-177">
+                <g class="cls-6">
+                  <path class="cls-217" d="M77.8,206v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M77.1,206.3v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M83.5,201.5c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M107.3,204.9v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-192">
+                <g class="cls-6">
+                  <path class="cls-217" d="M107.3,204.9v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M107.2,205.3v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M93,205.7v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-194">
+                <g class="cls-6">
+                  <path class="cls-217" d="M93.4,205.5v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="106.9 205.5 106.9 206.3 101.2 209.6 101.2 208.8 106.9 205.5"/>
+            <polygon class="cls-217" points="99.2 208.8 99.2 209.6 93.4 206.3 93.4 205.5 99.2 208.8"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M101.2,208.8v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-178">
+                <g class="cls-6">
+                  <path class="cls-217" d="M101.2,208.8v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M100.5,209.1v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M106.9,204.4c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M116.8,210.4v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-118">
+                <g class="cls-6">
+                  <path class="cls-217" d="M116.8,210.4v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M116.6,210.8v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M102.4,211.2v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-119">
+                <g class="cls-6">
+                  <path class="cls-217" d="M102.9,211v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="116.4 211 116.4 211.7 110.6 215.1 110.6 214.3 116.4 211"/>
+            <polygon class="cls-217" points="108.6 214.3 108.6 215.1 102.8 211.8 102.9 211 108.6 214.3"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M110.6,214.3v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-122">
+                <g class="cls-6">
+                  <path class="cls-217" d="M110.6,214.3v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M109.9,214.5v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M116.3,209.8c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M126.2,215.8v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-116">
+                <g class="cls-6">
+                  <path class="cls-217" d="M126.2,215.8v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M126.1,216.2v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M111.9,216.6v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-124">
+                <g class="cls-6">
+                  <path class="cls-217" d="M112.3,216.4v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="125.8 216.4 125.8 217.2 120.1 220.5 120.1 219.8 125.8 216.4"/>
+            <polygon class="cls-217" points="118.1 219.7 118.1 220.5 112.3 217.2 112.3 216.4 118.1 219.7"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M120.1,219.8v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-117">
+                <g class="cls-6">
+                  <path class="cls-217" d="M120.1,219.8v.8c-.2.1-.4.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M119.4,220v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M125.8,215.3c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M135.7,221.3v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-125">
+                <g class="cls-6">
+                  <path class="cls-217" d="M135.7,221.3v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M135.5,221.7v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M121.3,222.1v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-121">
+                <g class="cls-6">
+                  <path class="cls-217" d="M121.7,221.9v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="135.2 221.9 135.2 222.7 129.5 226 129.5 225.2 135.2 221.9"/>
+            <polygon class="cls-217" points="127.5 225.2 127.5 226 121.7 222.7 121.7 221.9 127.5 225.2"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M129.5,225.2v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-120">
+                <g class="cls-6">
+                  <path class="cls-217" d="M129.5,225.2v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M128.8,225.4v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M135.2,220.7c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M145.1,226.7v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-123">
+                <g class="cls-6">
+                  <path class="cls-217" d="M145.1,226.7v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M144.9,227.1v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M130.7,227.5v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-174">
+                <g class="cls-6">
+                  <path class="cls-217" d="M131.2,227.3v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="144.7 227.3 144.7 228.1 139 231.4 139 230.7 144.7 227.3"/>
+            <polygon class="cls-217" points="136.9 230.7 136.9 231.4 131.2 228.1 131.2 227.3 136.9 230.7"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M139,230.7v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-129">
+                <g class="cls-6">
+                  <path class="cls-217" d="M139,230.7v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M138.2,230.9v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M144.7,226.2c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M154.5,232.2v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-128">
+                <g class="cls-6">
+                  <path class="cls-217" d="M154.5,232.2v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M154.4,232.6v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M140.2,233v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-131">
+                <g class="cls-6">
+                  <path class="cls-217" d="M140.6,232.8v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="154.1 232.8 154.1 233.6 148.4 236.9 148.4 236.1 154.1 232.8"/>
+            <polygon class="cls-217" points="146.4 236.1 146.4 236.9 140.6 233.6 140.6 232.8 146.4 236.1"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M148.4,236.1v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-127">
+                <g class="cls-6">
+                  <path class="cls-217" d="M148.4,236.1v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M147.7,236.3v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M154.1,231.6c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M164,237.6v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-133">
+                <g class="cls-6">
+                  <path class="cls-217" d="M164,237.6v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M163.8,238v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M149.6,238.4v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-132">
+                <g class="cls-6">
+                  <path class="cls-217" d="M150.1,238.2v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="163.6 238.2 163.6 239 157.8 242.3 157.8 241.6 163.6 238.2"/>
+            <polygon class="cls-217" points="155.8 241.6 155.8 242.3 150.1 239 150.1 238.2 155.8 241.6"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M157.8,241.6v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-175">
+                <g class="cls-6">
+                  <path class="cls-217" d="M157.8,241.6v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M157.1,241.8v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M163.6,237.1c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M173.4,243.1v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-126">
+                <g class="cls-6">
+                  <path class="cls-217" d="M173.4,243.1v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M173.3,243.5v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M159.1,243.9v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-130">
+                <g class="cls-6">
+                  <path class="cls-217" d="M159.5,243.7v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="173 243.7 173 244.5 167.3 247.8 167.3 247 173 243.7"/>
+            <polygon class="cls-217" points="165.3 247 165.3 247.8 159.5 244.5 159.5 243.7 165.3 247"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M167.3,247v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-146">
+                <g class="cls-6">
+                  <path class="cls-217" d="M167.3,247v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M166.6,247.2v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M173,242.5c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M93.4,207.6v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-139">
+                <g class="cls-6">
+                  <path class="cls-217" d="M93.4,207.6v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M93.2,207.9v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M79,208.4v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-137">
+                <g class="cls-6">
+                  <path class="cls-217" d="M79.5,208.2v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="93 208.2 93 208.9 87.2 212.3 87.2 211.5 93 208.2"/>
+            <polygon class="cls-217" points="85.2 211.5 85.2 212.3 79.5 208.9 79.5 208.2 85.2 211.5"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M87.2,211.5v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-145">
+                <g class="cls-6">
+                  <path class="cls-217" d="M87.2,211.5v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M86.5,211.7v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M93,207c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M88.5,213.8v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-141">
+                <g class="cls-6">
+                  <path class="cls-217" d="M88.9,213.6v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M112.3,218.5v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-138">
+                <g class="cls-6">
+                  <path class="cls-217" d="M112.3,218.5v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M112.1,218.9v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="111.8 219.1 111.8 219.8 106.1 223.2 106.1 222.4 111.8 219.1"/>
+            <polygon class="cls-217" points="104.1 222.4 104.1 223.2 88.9 214.4 88.9 213.6 104.1 222.4"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M106.1,222.4v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-142">
+                <g class="cls-6">
+                  <path class="cls-217" d="M106.1,222.4v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M105.4,222.6v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M111.8,217.9c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-15.2-8.8c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l15.2,8.8Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M107.4,224.7v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-143">
+                <g class="cls-6">
+                  <path class="cls-217" d="M107.8,224.5v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M150,240.3v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-140">
+                <g class="cls-6">
+                  <path class="cls-217" d="M150,240.3v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M149.9,240.7v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="149.6 240.9 149.6 241.6 143.9 245 143.9 244.2 149.6 240.9"/>
+            <polygon class="cls-217" points="141.9 244.2 141.9 245 107.8 225.3 107.8 224.5 141.9 244.2"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M143.9,244.2v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-144">
+                <g class="cls-6">
+                  <path class="cls-217" d="M143.9,244.2v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M143.2,244.4v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M149.6,239.7c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-34.1-19.7c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l34.1,19.7Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M159.5,245.7v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-134">
+                <g class="cls-6">
+                  <path class="cls-217" d="M159.5,245.7v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M159.3,246.1v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M145.1,246.5v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-136">
+                <g class="cls-6">
+                  <path class="cls-217" d="M145.5,246.3v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="159 246.3 159 247.1 153.3 250.4 153.3 249.6 159 246.3"/>
+            <polygon class="cls-217" points="151.3 249.6 151.3 250.4 145.5 247.1 145.5 246.3 151.3 249.6"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M153.3,249.6v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-147">
+                <g class="cls-6">
+                  <path class="cls-217" d="M153.3,249.6v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M152.6,249.9v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M159,245.1c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-5.8-3.3c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l5.8,3.3Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M168.5,249.3v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-148">
+                <g class="cls-6">
+                  <path class="cls-217" d="M168.9,249.1v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M187.6,251.3v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-151">
+                <g class="cls-6">
+                  <path class="cls-217" d="M187.6,251.3v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M187.4,251.6v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="187.2 251.9 187.2 252.6 181.4 256 181.4 255.2 187.2 251.9"/>
+            <polygon class="cls-217" points="179.4 255.2 179.4 256 168.9 249.9 168.9 249.1 179.4 255.2"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M181.4,255.2v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-150">
+                <g class="cls-6">
+                  <path class="cls-217" d="M181.4,255.2v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M180.7,255.4v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M187.2,250.7c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-10.5-6.1c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l10.5,6.1Z"/>
+          </g>
+          <g class="cls-6">
+            <g class="cls-6">
+              <path class="cls-217" d="M154.6,252v-.8c0,.2.1.4.4.6v.8c-.3-.2-.4-.4-.4-.6Z"/>
+              <g class="cls-153">
+                <g class="cls-6">
+                  <path class="cls-217" d="M155,251.8v.8c-.3-.2-.4-.4-.4-.6v-.8c0,.2.1.4.4.6Z"/>
+                </g>
+              </g>
+            </g>
+            <g class="cls-6">
+              <path class="cls-217" d="M178.3,256.6v.8c0,.2-.1.4-.4.6v-.8c.3-.2.4-.4.4-.6Z"/>
+              <g class="cls-152">
+                <g class="cls-6">
+                  <path class="cls-217" d="M178.3,256.6v.8c0,.1,0,.3-.2.4v-.8c.1-.1.2-.2.2-.4Z"/>
+                  <path class="cls-217" d="M178.2,257v.8c0,0-.2.1-.3.2v-.8c.1,0,.2-.1.3-.2Z"/>
+                </g>
+              </g>
+            </g>
+            <polygon class="cls-217" points="177.9 257.2 177.9 258 172.2 261.3 172.2 260.5 177.9 257.2"/>
+            <polygon class="cls-217" points="170.2 260.5 170.2 261.3 155 252.5 155 251.8 170.2 260.5"/>
+            <g class="cls-6">
+              <path class="cls-217" d="M172.2,260.5v.8c-.6.3-1.5.3-2,0v-.8c.6.3,1.5.3,2,0Z"/>
+              <g class="cls-135">
+                <g class="cls-6">
+                  <path class="cls-217" d="M172.2,260.5v.8c-.2.1-.5.2-.7.2v-.8c.3,0,.5-.1.7-.2Z"/>
+                  <path class="cls-217" d="M171.5,260.8v.8c-.5,0-1,0-1.3-.2v-.8c.4.2.9.3,1.3.2Z"/>
+                </g>
+              </g>
+            </g>
+            <path class="cls-220" d="M177.9,256c.6.3.6.8,0,1.2l-5.7,3.3c-.6.3-1.5.3-2,0l-15.2-8.8c-.6-.3-.6-.8,0-1.2l5.7-3.3c.6-.3,1.5-.3,2,0l15.2,8.8Z"/>
+          </g>
+        </g>
+        <g>
+          <path class="cls-7" d="M59,235.1c0,.1,0,.2.1.3,0,0,0,.2.2.3.2.3.6.7,1.1,1l31.9,18.5c1.9,1.1,4.9,1.1,6.8,0l17.6-10.1c.5-.3.8-.6,1.1-.9,0,0,.1-.2.2-.3,0,0,0-.2.1-.3.2-.8-.2-1.7-1.3-2.4l-31.9-18.5c-1.9-1.1-4.9-1.1-6.7,0l-17.6,10.1c-1.1.6-1.6,1.5-1.3,2.4Z"/>
+          <path class="cls-4" d="M59.1,235.4c0,0,0,.2.2.3.2.3.6.7,1.1,1l31.9,18.5c1.9,1.1,4.9,1.1,6.8,0l17.6-10.1c.5-.3.8-.6,1.1-.9,0,0,.1-.2.2-.3-.2-.5-.6-.9-1.2-1.2l-31.9-18.5c-1.9-1.1-4.9-1.1-6.7,0l-17.6,10.1c-.6.4-1,.8-1.2,1.2Z"/>
+        </g>
+      </g>
+      <g>
+        <g class="cls-218">
+          <path class="cls-216" d="M95.1,105.3c0,5.4,3.8,12,8.5,14.7l122.3,70.6c4.7,2.7,8.5.5,8.5-4.9l.3-90.5v-8.8c0-5.4-3.8-12-8.4-14.7L103.9,1.2c-4.7-2.7-8.5-.5-8.5,4.9v8.8s-.3,90.5-.3,90.5Z"/>
+        </g>
+        <g class="cls-6">
+          <g class="cls-6">
+            <path class="cls-3" d="M94.9,5.6l-2.1,1.2c1.5-.9,3.6-.8,6,.6l2.1-1.2c-2.3-1.3-4.4-1.5-6-.6Z"/>
+            <g class="cls-149">
+              <path class="cls-219" d="M98.7,7.4l2.1-1.2c-2.3-1.3-4.4-1.5-6-.6l-2.1,1.2c1.5-.9,3.6-.8,6,.6Z"/>
+            </g>
+          </g>
+          <g class="cls-6">
+            <path class="cls-7" d="M224.9,194.7l2.1-1.2c1.5-.9,2.4-2.7,2.4-5.4l-2.1,1.2c0,2.6-.9,4.5-2.4,5.4Z"/>
+            <g class="cls-110">
+              <g class="cls-6">
+                <path class="cls-7" d="M224.9,194.7l2.1-1.2c1.5-.9,2.4-2.7,2.4-5.4l-2.1,1.2c0,2.6-.9,4.5-2.4,5.4Z"/>
+              </g>
+            </g>
+          </g>
+          <g>
+            <polygon class="cls-107" points="227.6 91.4 229.7 90.2 229.7 98.9 227.6 100.1 227.6 91.4"/>
+            <polygon class="cls-7" points="229.7 98.9 229.5 188.1 227.3 189.3 227.6 100.1 229.7 98.9"/>
+          </g>
+          <polygon class="cls-219" points="219.3 77 221.4 75.7 100.9 6.2 98.7 7.4 219.3 77"/>
+          <g class="cls-6">
+            <path class="cls-3" d="M227.6,91.4l2.1-1.2c0-5.3-3.7-11.8-8.3-14.5l-2.1,1.2c4.6,2.7,8.4,9.1,8.3,14.5Z"/>
+            <g class="cls-109">
+              <g class="cls-6">
+                <path class="cls-107" d="M227.6,91.4l2.1-1.2c0-5.3-3.7-11.8-8.3-14.5l-2.1,1.2c4.6,2.7,8.4,9.1,8.3,14.5Z"/>
+              </g>
+            </g>
+          </g>
+          <path class="cls-3" d="M90.1,110.1c0,5.3,3.7,11.8,8.3,14.5l120.5,69.6c4.6,2.7,8.4.5,8.4-4.8l.3-89.2v-8.7c0-5.3-3.7-11.8-8.3-14.5L98.7,7.4c-4.6-2.7-8.4-.5-8.4,4.8v8.7s-.3,89.2-.3,89.2Z"/>
+          <path class="cls-2" d="M90.3,20.9l137.3,79.2v-8.7c0-5.3-3.7-11.8-8.3-14.5L98.7,7.4c-4.6-2.7-8.4-.5-8.4,4.8v8.7Z"/>
+        </g>
+        <polygon class="cls-216" points="127.8 105.8 185 138.9 185 129.2 127.8 96.1 127.8 105.8"/>
+        <polygon class="cls-1" points="145.4 136.9 166.8 149.2 166.8 155.4 145.4 143.1 145.4 136.9"/>
+        <polygon class="cls-216" points="127.8 120.7 185 153.8 185 144.1 127.8 111.1 127.8 120.7"/>
+        <g>
+          <path class="cls-1" d="M181.4,148.2h-.4c0,.1-.6-1.4-.6-1.4l-.6.8-.4-.6.7-.7-1.1-1,.2-.5,1,1v-1.4s.5.3.5.3v1.4s1,.2,1,.2l.2.7-1-.2.7,1.5Z"/>
+          <path class="cls-1" d="M178.4,146.4h-.4c0,.1-.6-1.4-.6-1.4l-.6.8-.4-.6.7-.7-1.1-1,.2-.5,1,1v-1.4s.5.3.5.3v1.3s1,.2,1,.2l.2.7-1-.2.7,1.5Z"/>
+          <path class="cls-1" d="M175.3,144.7h-.4c0,.1-.6-1.4-.6-1.4l-.6.8-.4-.6.7-.7-1.1-1,.2-.5,1,1v-1.4s.5.3.5.3v1.4s1,.2,1,.2l.2.7-1-.2.7,1.5Z"/>
+          <path class="cls-1" d="M172.3,142.9h-.4c0,.1-.6-1.4-.6-1.4l-.6.8-.4-.6.7-.7-1.1-1,.2-.5,1,1v-1.4s.5.3.5.3v1.4s1,.2,1,.2l.2.7-1-.2.7,1.5Z"/>
+          <path class="cls-1" d="M169.3,141.2h-.4c0,.1-.6-1.4-.6-1.4l-.6.8-.4-.6.7-.7-1.1-1,.2-.5,1,1v-1.4s.5.3.5.3v1.3s1,.2,1,.2l.2.7-1-.2.7,1.5Z"/>
+        </g>
+        <g>
+          <path class="cls-3" d="M103.5,19.7c0,1.1-.8,1.6-1.8,1-1-.6-1.8-2-1.8-3.1s.8-1.6,1.8-1,1.8,2,1.8,3.1Z"/>
+          <path class="cls-3" d="M109.1,22.9c0,1.1-.8,1.6-1.8,1s-1.8-2-1.8-3.1.8-1.6,1.8-1c1,.6,1.8,2,1.8,3.1Z"/>
+          <path class="cls-3" d="M114.8,26.2c0,1.1-.8,1.6-1.8,1-1-.6-1.8-2-1.8-3.1s.8-1.6,1.8-1c1,.6,1.8,2,1.8,3.1Z"/>
+        </g>
+      </g>
+      <g class="cls-6">
+        <g class="cls-6">
+          <path class="cls-219" d="M140.8,118.7l3.1-1.8c2.5,3.1,5.3,5.7,8.4,7.5l-3.1,1.8c-3.1-1.8-5.9-4.4-8.4-7.5Z"/>
+          <g class="cls-111">
+            <g class="cls-6">
+              <path class="cls-219" d="M140.8,118.7l3.1-1.8c2.5,3.1,5.3,5.7,8.4,7.5l-3.1,1.8c-3.1-1.8-5.9-4.4-8.4-7.5Z"/>
+            </g>
+          </g>
+        </g>
+        <g class="cls-6">
+          <path class="cls-219" d="M132.7,97.5l3.1-1.8c0,4.7,1.5,9.9,3.9,14.6l-3.1,1.8c-2.5-4.8-3.9-9.9-3.9-14.6Z"/>
+          <g class="cls-112">
+            <g class="cls-6">
+              <path class="cls-219" d="M132.7,97.5l3.1-1.8c0,4.7,1.5,9.9,3.9,14.6l-3.1,1.8c-2.5-4.8-3.9-9.9-3.9-14.6Z"/>
+            </g>
+          </g>
+        </g>
+        <g class="cls-6">
+          <path class="cls-219" d="M137.5,86.8l3.1-1.8c-3,1.7-4.8,5.4-4.9,10.7l-3.1,1.8c0-5.2,1.9-8.9,4.9-10.7Z"/>
+          <g class="cls-113">
+            <g class="cls-6">
+              <path class="cls-219" d="M137.5,86.8l3.1-1.8c-3,1.7-4.8,5.4-4.9,10.7l-3.1,1.8c0-5.2,1.9-8.9,4.9-10.7Z"/>
+            </g>
+          </g>
+        </g>
+        <g class="cls-6">
+          <path class="cls-219" d="M164.2,125.5l-3.1,1.8c-3,1.8-7.2,1.5-11.8-1.2l3.1-1.8c4.6,2.7,8.8,2.9,11.8,1.2Z"/>
+          <g class="cls-114">
+            <g class="cls-6">
+              <path class="cls-219" d="M149.2,126.2l3.1-1.8c4.6,2.7,8.8,2.9,11.8,1.2l-3.1,1.8c-3,1.8-7.2,1.5-11.8-1.2Z"/>
+            </g>
+          </g>
+        </g>
+        <g class="cls-6">
+          <path class="cls-219" d="M133.6,80l3.1-1.8c4-2.3,9.6-2,15.8,1.5l-3.1,1.8c-6.2-3.6-11.8-3.9-15.8-1.5Z"/>
+          <g class="cls-115">
+            <g class="cls-6">
+              <path class="cls-219" d="M133.6,80l3.1-1.8c4-2.3,9.6-2,15.8,1.5l-3.1,1.8c-6.2-3.6-11.8-3.9-15.8-1.5Z"/>
+            </g>
+          </g>
+        </g>
+        <polygon class="cls-219" points="136.6 112.1 139.7 110.3 163.2 96.9 160.1 98.7 136.6 112.1"/>
+        <g class="cls-6">
+          <path class="cls-219" d="M168.1,132.3l-3.1,1.8c4-2.3,6.5-7.2,6.5-14.3,0-14.1-9.9-31.3-22.1-38.4l3.1-1.8c12.3,7.1,22.2,24.3,22.1,38.4,0,7-2.5,11.9-6.5,14.3Z"/>
+          <g class="cls-108">
+            <g class="cls-6">
+              <path class="cls-219" d="M149.4,81.5l3.1-1.8c12.3,7.1,22.2,24.3,22.1,38.4,0,7-2.5,11.9-6.5,14.3l-3.1,1.8c4-2.3,6.5-7.2,6.5-14.3,0-14.1-9.9-31.3-22.1-38.4Z"/>
+            </g>
+          </g>
+        </g>
+        <path class="cls-2" d="M149.4,81.5c12.3,7.1,22.2,24.3,22.1,38.4,0,14.1-10,19.8-22.3,12.7-12.3-7.1-22.2-24.3-22.1-38.4,0-14.1,10-19.8,22.3-12.7ZM136.6,112.1l23.5-13.4c-2.9-4.5-6.6-8.4-10.7-10.7-9.2-5.3-16.7-1-16.7,9.5,0,4.7,1.5,9.9,3.9,14.6ZM165.9,116.7c0-3.5-.8-7.3-2.2-11l-22.8,13c2.5,3.1,5.3,5.7,8.4,7.5,9.2,5.3,16.7,1,16.7-9.5Z"/>
+      </g>
+      <polygon class="cls-2" points="145.9 106.5 135.3 88.7 135.3 85.7 140.6 85 150.9 103.9 165.9 129.4 162 132.4 145.9 106.5"/>
+    </g>
+  </g>
+</svg>

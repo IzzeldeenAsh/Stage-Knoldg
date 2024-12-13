@@ -227,6 +227,20 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     
       },
     },
+    "DEACTIVATE_ACCOUNT": {
+      "TITLE": "Deactivate Account",
+      "DESCRIPTION": "Permanently deactivate your account. This action cannot be undone and will remove all your data from our system.",
+      "BUTTON_TEXT": "Deactivate Account",
+      "ILLUSTRATION_ALT": "Deactivate Account Illustration",
+      "MODAL": {
+      "TITLE": "Deactivate Company Account",
+      "DESCRIPTION": "You are about to deactivate your company account. This will remove all your company data from our platform.",
+      "WARNING": "This action is not reversible. Please be certain.",
+      "REASON_LABEL": "Deactivation Reason",
+      "REASON_PLACEHOLDER": "Please explain why you want to deactivate your account",
+      "CONFIRM_BUTTON": "Deactivate Account"
+    }
+    },
     BUTTONS: {
       BACK_BUTTON: "Back",
       OK:"Ok",
@@ -337,6 +351,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       BUTTON: "Get Started"
     },
     ACCOUNT_PENDING: {
+
       TITLE: "Account Pending Approval",
       MESSAGE1: "Thank you for registering! Your account is currently pending approval by our administrators. Once your account has been reviewed and approved, you will receive a confirmation email.",
       MESSAGE2: "If you believe there is an issue with your registration or have any questions, please contact our support team.",
@@ -361,6 +376,10 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       MYCERTS:"My Certificates"
     },
     ACCOUNT_SETTINGS: {
+      PERSONAL_INFO: 'Personal Info',
+      COMPANY_INFO: 'Company Info',
+      RESET_PASSWORD: 'Reset Password',
+      SETTINGS: 'Settings',
       TITLE: 'Account Settings',
       FIRST_NAME: 'First Name',
       LAST_NAME: 'Last Name',
@@ -400,6 +419,12 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       "DESCRIPTION": "Unlock premium features tailored for businesses.\nCollaborate with your team and manage your projects effortlessly.",
       "BUTTON_TEXT": "Upgrade to Company Account",
       "ILLUSTRATION_ALT": "Upgrade Illustration"
+    },
+    "TRANSFER_COMPANY_ACCOUNT": {
+      "TITLE": "Transfer Company Account",
+      "DESCRIPTION": "Transfer your company account to another user. This action will remove your admin privileges and assign them to the new owner.",
+      "ILLUSTRATION_ALT": "Transfer Company Account Illustration",
+      "BUTTON_TEXT": "Transfer Account"
     }
   }
 };

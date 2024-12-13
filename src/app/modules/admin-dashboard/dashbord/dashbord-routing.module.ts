@@ -13,6 +13,7 @@ import { HSCodeComponent } from './hscode/hscode.component';
 import { GuidelineComponent } from './dashboard/guidelines/guidelines.component';
 import { TopicsComponent } from './dashboard/topics/topics.component';
 import { IndustriesComponent } from './dashboard/industries/industries.component';
+import { RequestsListComponent } from './dashboard/requests-list/requests-list.component';
 
 
 const routes: Routes = [
@@ -27,8 +28,12 @@ const routes: Routes = [
     children:[
       {
         path:'',
-        redirectTo:'departments',
+        redirectTo:'requests',
         pathMatch:'full'
+      },
+      {
+        path:'requests',
+        component:RequestsListComponent
       },
       {
         path:'departments',

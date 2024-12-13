@@ -28,6 +28,14 @@
   import { TooltipModule } from 'primeng/tooltip';
   import { UpgradeToCompanyComponent } from './profile-pages/account-settings/upgrade-to-company/upgrade-to-company.component';
 import { SharedTreeSelectorComponent } from 'src/app/reusable-components/shared-tree-selector/shared-tree-selector.component';
+import { InsightersModalComponent } from './profile-pages/account-settings/insighters-modal/insighters-modal.component';
+import { InputTextModule } from 'primeng/inputtext';
+import { SettingsDashboardComponent } from './profile-pages/account-settings/settings-dashboard/settings-dashboard.component';
+import { SettingsSidebarComponent } from './profile-pages/account-settings/settings-sidebar/settings-sidebar.component';
+import { CompanySettingsComponent } from './profile-pages/account-settings/company-settings/company-settings.component';
+import { PersonalSettingsComponent } from './profile-pages/account-settings/personal-settings/personal-settings.component';
+import { SettingsActionComponent } from './profile-pages/account-settings/settings-action/settings-action.component';
+import { DeactivateModalComponent } from './profile-pages/account-settings/deactivate-modal/deactivate-modal.component';
 
 
 
@@ -38,9 +46,16 @@ import { SharedTreeSelectorComponent } from 'src/app/reusable-components/shared-
       ActionButtonsComponent,
       NavigationTabsComponent,
       AccountSettingsComponent,
+      SettingsActionComponent,
+      CompanySettingsComponent,
+      PersonalSettingsComponent,
       DocumentsComponent,
+      DeactivateModalComponent,
+      SettingsSidebarComponent,
+      SettingsDashboardComponent,
       OverviewComponent,
       UpgradeToCompanyComponent,
+      InsightersModalComponent,
       CertificatesComponent,
       ResetPasswordComponent,
     ],
@@ -50,7 +65,9 @@ import { SharedTreeSelectorComponent } from 'src/app/reusable-components/shared-
       FormsModule,
       SharedModule,
       ReactiveFormsModule,
+      DynamicDialogModule,
       ToastModule,
+      InputTextModule,
       SharedTreeSelectorComponent,
       FileUploadModule,
       ProgressBarModule,

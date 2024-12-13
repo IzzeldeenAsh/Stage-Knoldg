@@ -287,4 +287,26 @@ html[dir="rtl"] .p-element {
           .industry-tree .p-checkbox-disabled{
             display: none !important;
         }
-         
+        .p-toast .p-toast-message .p-toast-message-content .p-toast-message-text{
+            margin: 0 1rem !important;
+        }
+        .p-toast .p-toast-message .p-toast-message-content .p-icon:not(.p-toast-icon-close-icon) {
+            width: 1.5rem !important;
+            height: 1.5rem !important;
+        }
+        .p-toast .p-toast-message.p-toast-message-error{
+            background: rgba(255, 231, 230,1) !important;
+        }
+        .p-toast .p-toast-message.p-toast-message-success{
+            background: rgba(228, 248, 240,1) !important;
+        }
+        .p-toast .p-toast-message.p-toast-message-info{
+            background: rgba(240, 249, 255,1) !important;
+        }
+        .p-toast .p-toast-message.p-toast-message-warn{
+            background: rgba(255, 245, 220,1) !important;
+        }
+    .overflow-dialog .p-dialog{
+        overflow: auto !important;
+    }
+    

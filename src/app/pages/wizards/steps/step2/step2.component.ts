@@ -68,7 +68,7 @@ export class Step2Component implements OnInit, OnDestroy {
     }
   }
   loadISIC() {
-    const isicSub = this._isicService.getIsicCodesTree().subscribe({
+    const isicSub = this._isicService.getIsicCodesTree(this.lang ? this.lang : 'en').subscribe({
       next: (res) => {
         this.nodes = res;
       },

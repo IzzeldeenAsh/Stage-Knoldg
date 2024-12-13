@@ -9,112 +9,8 @@
   </div>
   <form [formGroup]="accountForm" (ngSubmit)="onSubmit()">
     <div class="card-body">
-      <!-- First Name and Last Name (Visible to all roles) -->
-      <div class="row">
-        <div class="col-lg-6 mb-6 fv-row">
-          <label class="form-label required">{{
-            "ACCOUNT_SETTINGS.FIRST_NAME" | translate
-          }}</label>
-          <input
-            type="text"
-            formControlName="first_name"
-            class="form-control"
-          />
-          <div
-            *ngIf="
-              accountForm.get('first_name')?.invalid &&
-              accountForm.get('first_name')?.touched
-            "
-            class="invalid-feedback"
-          >
-            {{ "ACCOUNT_SETTINGS.FIRST_NAME_REQUIRED" | translate }}
-          </div>
-        </div>
-        <div class="col-lg-6 mb-6 fv-row">
-          <label class="form-label required">{{
-            "ACCOUNT_SETTINGS.LAST_NAME" | translate
-          }}</label>
-          <input type="text" formControlName="last_name" class="form-control" />
-          <div
-            *ngIf="
-              accountForm.get('last_name')?.invalid &&
-              accountForm.get('last_name')?.touched
-            "
-            class="invalid-feedback"
-          >
-            {{ "ACCOUNT_SETTINGS.LAST_NAME_REQUIRED" | translate }}
-          </div>
-        </div>
-      </div>
-
-      <div class="row">
-        <!-- Country (Visible to all roles) -->
-        <div class="col-lg-6 mb-6 fv-row">
-          <label class="form-label">{{
-            "ACCOUNT_SETTINGS.COUNTRY" | translate
-          }}</label>
-          <p-progressBar
-            *ngIf="isLoadingCountries"
-            mode="indeterminate"
-            [style]="{ height: '4px' }"
-          ></p-progressBar>
-          <p-dropdown
-            *ngIf="!isLoadingCountries"
-            [options]="countries"
-            formControlName="country"
-            class="d-block"
-            optionLabel="name.en"
-            placeholder="{{ 'ACCOUNT_SETTINGS.SELECT_COUNTRY' | translate }}"
-            [filter]="true"
-            [showClear]="true"
-          >
-            <ng-template pTemplate="item" let-country>
-              <div class="country-option">
-                <img
-                  *ngIf="country.showFlag"
-                  [src]="country.flagPath"
-                  (error)="onFlagError(country)"
-                  alt="{{ country.name.en }}"
-                  class="flag-icon w-20px mx-2"
-                />
-                <span>{{ country.name.en }}</span>
-              </div>
-            </ng-template>
-          </p-dropdown>
-          <div
-            *ngIf="
-              accountForm.get('country')?.invalid &&
-              accountForm.get('country')?.touched
-            "
-            class="invalid-feedback"
-          >
-            {{ "ACCOUNT_SETTINGS.COUNTRY_REQUIRED" | translate }}
-          </div>
-        </div>
-
-        <!-- Phone Number (Visible to 'insighter' and 'company') -->
-        <div
-          class="col-lg-6 mb-6 fv-row"
-          *ngIf="hasRole(['insighter', 'company'])"
-        >
-          <ng-container *ngIf="hasRole(['insighter', 'company'])">
-            <label class="form-label">{{
-              "ACCOUNT_SETTINGS.PHONE_NUMBER" | translate
-            }}</label>
-            <div class="input-group">
-              <!-- <p-dropdown [options]="phoneNumbers" formControlName="phoneCountryCode" optionLabel="text" placeholder="Code" [filter]="true" [showClear]="true" class="no-border-radius-start-end" ></p-dropdown> -->
-              <input
-                type="text"
-                formControlName="phoneNumber"
-                class="form-control no-rtl-b-radius"
-                placeholder="{{
-                  'ACCOUNT_SETTINGS.YOUR_PHONE_NUMBER' | translate
-                }}"
-              />
-            </div>
-          </ng-container>
-        </div>
-      </div>
+     
+   
 
       <div class="row">
         <!-- ISIC Codes -->
@@ -122,19 +18,7 @@
           class="col-lg-6 mb-6 fv-row"
           *ngIf="hasRole(['insighter', 'company'])"
         >
-        <shared-tree-selector
-        *ngIf="(isLoadingISIC$ | async) === false"
-        [title]="'AUTH.REGISTRATION.INDUSTRY' | translate"
-        [placeholder]="'AUTH.REGISTRATION.INDUSTRY_PLACEHOLDER' | translate"
-        [otherFieldPlaceholder]="'INSIGHTER_WIZARD.OTHER_FIELD_PLACEHOLDER' | translate"
-        [selectAllLabel]="lang === 'ar' ? 'اختر الكل' : 'Select All'"
-        [fetchedData]="isicCodes"
-        [initialSelectedNodes]="accountForm.value.isicCodes"
-        [cancelLabel]="'BUTTONS.CANCEL' | translate"
-        [okLabel]="'BUTTONS.OK' | translate"
-        (nodesSelected)="onIndustrySelected($event)"
-      ></shared-tree-selector>
-    
+  
       <p-progressBar
         *ngIf="isLoadingISIC$ | async"
         mode="indeterminate"
@@ -203,7 +87,6 @@
           <input type="text" formControlName="website" class="form-control" />
         </div>
       </div>
-
       <!-- Certifications (Visible to 'insighter' and 'company') -->
       <div class="" *ngIf="hasRole(['insighter', 'company'])">
         <label class="form-label">{{
@@ -429,7 +312,7 @@
                 <!-- File Details -->
                 <div class="ms-6">
                   <a
-                    href="#"
+                    
                     class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2"
                   >
                     {{ accountForm.get("registerDocument")?.value.name }}
@@ -499,61 +382,3 @@
     </div>
   </form>
 </div>
-<ng-container *ngIf="profile">
-<!-- Reset Password -->
-<div class="mt-5">
-  <app-reset-password></app-reset-password>
-</div>
-
-  <div class="mt-5 pb-5" *ngIf="!hasRole(['company']) && hasRole(['insighter'])">
-    <div class="col-12">
-      <div class="card card-custom bg-body h-md-100">
-        <!--begin::Body-->
-        <div
-          class="card-body d-flex justify-content-center align-items-center flex-wrap px-xl-15 "
-        >
-          <!--begin::Wrapper-->
-          <div class="flex-grow-1 mt-2 me-9 me-md-0">
-            <!--begin::Title-->
-            <div
-              class="position-relative text-gray-800 fs-1 z-index-2 fw-bold mb-5"
-            >
-              {{ 'UPGRADE_TO_COMPANY_ACCOUNT.TITLE' | translate }}
-            </div>
-            <!--end::Title-->
-      
-            <!--begin::Text-->
-            <span class="text-gray-600 fw-semibold fs-6 mb-6 d-block">
-              {{ 'UPGRADE_TO_COMPANY_ACCOUNT.DESCRIPTION' | translate }}
-            </span>
-            <!--end::Text-->
-      
-            <!--begin::Action-->
-            <div class="mb-7">
-              <a
-                [routerLink]="['/app/profile/company-account']"
-                class="btn btn-sm btn-primary fw-semibold me-2"
-                data-bs-toggle="modal"
-                data-bs-target="#kt_modal_upgrade_plan"
-              >
-                {{ 'UPGRADE_TO_COMPANY_ACCOUNT.BUTTON_TEXT' | translate }}
-              </a>
-            </div>
-            <!--begin::Action-->
-          </div>
-          <!--begin::Wrapper-->
-      
-          <!--begin::Illustration-->
-          <img
-            src="../../../../../assets/media/auth/Wavy_Bus-32_Single-03.jpg"
-            class="h-250px me-15"
-            alt="{{ 'UPGRADE_TO_COMPANY_ACCOUNT.ILLUSTRATION_ALT' | translate }}"
-          />
-          <!--end::Illustration-->
-        </div>
-        <!--end::Body-->
-      </div>
-      
-    </div>
-  </div>
-</ng-container>

@@ -1,0 +1,134 @@
+<p-progressBar
+*ngIf="isLoading$ | async"
+mode="indeterminate"
+[style]="{ height: '4px' }"
+></p-progressBar>
+<form [formGroup]="personalInfoForm" (ngSubmit)="onSubmit()" *ngIf="!(isLoading$ | async)">
+    <!-- personal-info.component.html -->
+     <div class="">
+        <div class="">
+            <div class="personal-info">
+                <div class="row">
+                  <div class="col-lg-6 mb-6 fv-row">
+                    <label for="first_name" class="form-label required">
+                      {{ "ACCOUNT_SETTINGS.FIRST_NAME" | translate }}
+                    </label>
+                    <input
+                    class="d-block w-100"
+                    pInputText
+                      id="first_name"
+                      type="text"
+                      formControlName="first_name"
+                    />
+                    <div
+                      *ngIf="
+                        personalInfoForm.get('first_name')?.invalid &&
+                        personalInfoForm.get('first_name')?.touched
+                      "
+                      class="invalid-feedback"
+                    >
+                      {{ "ACCOUNT_SETTINGS.FIRST_NAME_REQUIRED" | translate }}
+                    </div>
+                  </div>
+                  <div class="col-lg-6 mb-6 fv-row">
+                    <label for="last_name" class="form-label required">
+                      {{ "ACCOUNT_SETTINGS.LAST_NAME" | translate }}
+                    </label>
+                    <input
+                      id="last_name"
+                      type="text"
+                      pInputText
+                      formControlName="last_name"
+                      class="d-block w-100"
+                    />
+                    <div
+                      *ngIf="
+                        personalInfoForm.get('last_name')?.invalid &&
+                        personalInfoForm.get('last_name')?.touched
+                      "
+                      class="invalid-feedback"
+                    >
+                      {{ "ACCOUNT_SETTINGS.LAST_NAME_REQUIRED" | translate }}
+                    </div>
+                  </div>
+                </div>
+              
+                <div class="row">
+                  <div class="col-lg-6 mb-6 fv-row">
+                    <label for="country" class="form-label">
+                      {{ "ACCOUNT_SETTINGS.COUNTRY" | translate }}
+                    </label>
+                
+                    <p-dropdown
+                      [options]="countries"
+                      formControlName="country"
+                      class="d-block"
+                      optionLabel="name.en"
+                      placeholder="{{ 'ACCOUNT_SETTINGS.SELECT_COUNTRY' | translate }}"
+                      [filter]="true"
+                      [showClear]="true"
+                    >
+                      <ng-template pTemplate="item" let-country>
+                        <div class="country-option">
+                          <img
+                            *ngIf="country.showFlag"
+                            [src]="country.flagPath"
+                            (error)="onFlagError(country)"
+                            alt="{{ country.name.en }}"
+                            class="flag-icon w-20px mx-2"
+                          />
+                          <span>{{ country.name.en }}</span>
+                        </div>
+                      </ng-template>
+                    </p-dropdown>
+                    <div
+                      *ngIf="
+                        personalInfoForm.get('country')?.invalid &&
+                        personalInfoForm.get('country')?.touched
+                      "
+                      class="invalid-feedback"
+                    >
+                      {{ "ACCOUNT_SETTINGS.COUNTRY_REQUIRED" | translate }}
+                    </div>
+                  </div>
+                </div>
+            
+                <div class="row">
+                   <div class="col-12">
+                    <div class="mb-6" *ngIf="hasRole(['insighter']) || hasRole(['company'])">
+                        <label class="form-label">{{
+                          "ACCOUNT_SETTINGS.BIO" | translate
+                        }}</label>
+                        <textarea formControlName="bio" class="form-control"></textarea>
+                      </div>
+                   </div>
+                </div>
+              </div>
+        </div>
+        <div class="d-flex justify-content-end">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="this.personalInfoForm.invalid || (isUpdatingProfile$ | async)"
+            >
+              <ng-container *ngIf="(isUpdatingProfile$ | async) === false">
+                <span class="indicator-label">
+                  {{ "ACCOUNT_SETTINGS.SAVE_CHANGES" | translate }}</span
+                >
+              </ng-container>
+              <ng-container *ngIf="isUpdatingProfile$ | async">
+                <span class="indicator-progress" [style.display]="'block'">
+                  {{ "AUTH.REGISTRATION.PLEASE_WAIT" | translate }}
+                  <span
+                    class="spinner-border spinner-border-sm align-middle ms-2"
+                  ></span>
+                </span>
+              </ng-container>
+            </button>
+          </div>  
+     </div>
+
+
+ 
+</form>
+

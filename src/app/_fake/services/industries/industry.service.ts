@@ -72,11 +72,11 @@ export class IndustryService {
   }
 
   // Fetch ISIC Codes data from the API
-  getIsicCodesTree(): Observable<any[]> {
+  getIsicCodesTree(lang:string): Observable<any[]> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'Accept-Language': this.currentLang
+      'Accept-Language': lang
     });
 
     this.setLoading(true);

@@ -1,0 +1,62 @@
+<div class="modal fade" id="deactivateModal" tabindex="-1" aria-labelledby="deactivateModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" *ngIf="step === 1">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deactivateModalLabel">
+          {{ 'DEACTIVATE_ACCOUNT.MODAL.TITLE' | translate }}
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-5">
+          <p class="text-gray-800 fs-6">
+            {{ 'DEACTIVATE_ACCOUNT.MODAL.DESCRIPTION' | translate }}
+          </p>
+          <div class="alert alert-danger">
+            <i class="ki-duotone ki-warning-2 fs-2 me-2">
+              <span class="path1"></span>
+              <span class="path2"></span>
+            </i>
+            {{ 'DEACTIVATE_ACCOUNT.MODAL.WARNING' | translate }}
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label required">{{ 'DEACTIVATE_ACCOUNT.MODAL.REASON_LABEL' | translate }}</label>
+          <textarea 
+            class="form-control" 
+            rows="4" 
+            [(ngModel)]="deactivationReason"
+            [placeholder]="'DEACTIVATE_ACCOUNT.MODAL.REASON_PLACEHOLDER' | translate"
+          ></textarea>
+        </div>
+      </div>
+      <div class="modal-footer d-flex justify-content-between">
+        <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+          {{ 'ACCOUNT_SETTINGS.CANCEL' | translate }}
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-danger" 
+          [disabled]="!deactivationReason"
+          (click)="deactivateAccount()"
+        >
+          {{ 'DEACTIVATE_ACCOUNT.MODAL.CONFIRM_BUTTON' | translate }}
+        </button>
+      </div>
+    </div>
+    <div class="modal-content" *ngIf="step === 2">
+        <div class="modal-header">
+            <h5 class="modal-title" id="deactivateModalLabel">
+                {{ 'DEACTIVATE_ACCOUNT.MODAL.TITLE' | translate }}
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <p class="text-gray-800 fs-6">
+                {{ lang === 'ar' ? 'تم إرسال طلب إلغاء تنشيط حسابك بنجاح. سيتم مراجعة طلبك من قبل فريقنا وسنتواصل معك قريباً.' : 'Your account deactivation request has been successfully submitted. Our team will review your request and get back to you soon.' }}
+            </p>
+        </div>
+    </div>
+  </div>
+</div>

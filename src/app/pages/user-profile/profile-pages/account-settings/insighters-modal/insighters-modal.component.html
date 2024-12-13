@@ -1,0 +1,199 @@
+<div
+  class="modal fade "
+  id="insightersModal"
+  tabindex="-1"
+  aria-labelledby="insightersModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered mw-650px">
+    <div class="modal-content">
+      <div class="modal-body p-0">
+        <div class="card pb-10" *ngIf="step===1">
+          <!--begin::Modal content-->
+          <div class="card-body">
+            <!--begin::Modal header-->
+            <div class="modal-header pb-0 border-0 justify-content-end">
+              <!--begin::Close-->
+              <div
+                class="btn btn-sm btn-icon btn-active-color-primary"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              >
+                <i class="ki-duotone ki-cross fs-1">
+                  <span class="path1"></span>
+                  <span class="path2"></span>
+                </i>
+              </div>
+              <!--end::Close-->
+            </div>
+            <div class="mx-5 mx-xl-18 pt-0">
+              <!--begin::Heading-->
+              <div class="text-center mb-10">
+                <!--begin::Title-->
+                <h1 class="mb-3">Transfer To</h1>
+                <!--end::Title-->
+                <!--begin::Description-->
+                <div class="text-muted fw-semibold fs-5">
+                  If you need more info, please check out
+                  <a class="link-primary fw-bold">this page</a>.
+                </div>
+                <!--end::Description-->
+              </div>
+              <!--end::Heading-->
+
+              <!--begin::Header Row (Insighters & Search Bar)-->
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <div class="fs-6 fw-semibold">Insighters</div>
+                <div class="input-group w-50">
+                
+                  <span class="input-group-text border-0">
+                    <i class="ki-duotone ki-magnifier fs-3">
+                      <span class="path1"></span>
+                      <span class="path2"></span>
+                    </i>
+                  </span>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    placeholder="Search..." 
+                    [(ngModel)]="searchTerm"
+                  />
+                </div>
+              </div>
+              <!--end::Header Row-->
+
+              <!--begin::List-->
+              <div class="mh-300px list-box scroll-y me-n7 pe-7">
+                <div
+                  *ngFor="let user of filteredUsers"
+                  class="d-flex flex-stack py-4 border-bottom border-gray-300 border-bottom-dashed"
+                >
+                  <!--begin::Details-->
+                  <div class="d-flex align-items-center">
+                    <!--begin::Avatar-->
+                    <div class="symbol symbol-35px symbol-circle">
+                      <ng-container *ngIf="user.avatar">
+                        <img [src]="user.avatar" alt="Pic" />
+                      </ng-container>
+                      <ng-container *ngIf="!user.avatar">
+                        <span class="symbol-label fw-semibold" [ngClass]="user.bg">
+                          {{ user.initials }}
+                        </span>
+                      </ng-container>
+                    </div>
+                    <!--end::Avatar-->
+
+                    <!--begin::Details-->
+                    <div class="ms-5">
+                      <a class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2">
+                        {{ user.name }}
+                      </a>
+                      <div class="fw-semibold text-muted">{{ user.email }}</div>
+                    </div>
+                    <!--end::Details-->
+                  </div>
+                  <!--end::Details-->
+                  <a
+                    class="btn btn-sm btn-light-secondary border border-gray-300 text-gray-800"
+                    (click)="inviteUser(user.email)"
+                  >
+                    Invite
+                  </a>
+                </div>
+              </div>
+              <!--end::List-->
+            </div>
+            <!--end::Modal body-->
+          </div>
+          <!--end::Modal content-->
+        </div>
+        <div class="card" *ngIf="step===2">
+                 <!--begin::Modal content-->
+          <div class="card-body">
+            <!--begin::Modal header-->
+            <div class="modal-header pb-0 border-0 justify-content-end">
+              <!--begin::Close-->
+              <div
+                class="btn btn-sm btn-icon btn-active-color-primary"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              >
+                <i class="ki-duotone ki-cross fs-1">
+                  <span class="path1"></span>
+                  <span class="path2"></span>
+                </i>
+              </div>
+              <!--end::Close-->
+            </div>
+            <div class="mx-5 mx-xl-18 pt-0">
+              <!--begin::Heading-->
+              <div class="text-center mb-10">
+                <!--begin::Title-->
+                <h1 class="mb-3">Transfer To</h1>
+                <!--end::Title-->
+                <!--begin::Description-->
+                <div class="text-muted fw-semibold fs-5">
+                  If you need more info, please check out
+                  <a class="link-primary fw-bold">this page</a>.
+                </div>
+                <!--end::Description-->
+              </div>
+              <!--end::Heading-->
+              <!--begin::List-->
+              <div class="mh-300px list-box scroll-y me-n7 pe-7">
+                <div
+                  *ngFor="let user of userSelected"
+                  class="d-flex flex-stack py-4  "
+                >
+                  <!--begin::Details-->
+                  <div class="d-flex align-items-center">
+                    <!--begin::Avatar-->
+                    <div class="symbol symbol-35px symbol-circle">
+                      <ng-container *ngIf="user.avatar">
+                        <img [src]="user.avatar" alt="Pic" />
+                      </ng-container>
+                      <ng-container *ngIf="!user.avatar">
+                        <span class="symbol-label fw-semibold" [ngClass]="user.bg">
+                          {{ user.initials }}
+                        </span>
+                      </ng-container>
+                    </div>
+                    <!--end::Avatar-->
+
+                    <!--begin::Details-->
+                    <div class="ms-5">
+                      <a class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2">
+                        {{ user.name }}
+                      </a>
+                      <div class="fw-semibold text-muted">{{ user.email }}</div>
+                    </div>
+                    <!--end::Details-->
+                  </div>
+                  <div class="d-flex flex-column align-items-center justify-content-center flex-1 mw-300px">
+                    <div class="row mt-2 mb-2 w-100">
+                    
+                      <div class="col-12">
+                        <input pInputText type="text"  [(ngModel)]="code" [placeholder]="'AUTH.TWO_FA.ENTER_CODE' | translate"  autocomplete="off" class="w-100">
+                      </div>
+                    
+                      </div>
+                     
+                </div>
+                </div>
+
+
+              </div>
+              <!--end::List-->
+            
+            </div>
+            <!--end::Modal body-->
+           <div class="py-4 text-center m-auto">
+            <button [disabled]="code.length!==6" (click)="transfer()" class="btn btn-primary">Transfer</button>
+           </div>
+          </div>
+          <!--end::Modal content-->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

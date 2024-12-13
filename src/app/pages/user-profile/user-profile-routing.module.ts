@@ -3,11 +3,15 @@ import { RouterModule, Routes } from '@angular/router';
 import { ProfileComponent } from './profile.component';
 import { AuthGuard } from 'src/app/guards/auth-guard/auth.guard';
 import { OverviewComponent } from './profile-pages/overview/overview.component';
-import { AccountSettingsComponent } from './profile-pages/account-settings/account-settings.component';
 import { CertificatesComponent } from './profile-pages/certificates/certificates.component';
 import { RolesGuard } from 'src/app/guards/roles-guard/roles-gurad.gurad';
 import { DocumentsComponent } from './profile-pages/documents/documents.component';
 import { UpgradeToCompanyComponent } from './profile-pages/account-settings/upgrade-to-company/upgrade-to-company.component';
+import { SettingsDashboardComponent } from './profile-pages/account-settings/settings-dashboard/settings-dashboard.component';
+import { ResetPasswordComponent } from './profile-pages/account-settings/reset-password/reset-password.component';
+import { PersonalSettingsComponent } from './profile-pages/account-settings/personal-settings/personal-settings.component';
+import { CompanySettingsComponent } from './profile-pages/account-settings/company-settings/company-settings.component';
+import { SettingsActionComponent } from './profile-pages/account-settings/settings-action/settings-action.component';
 
 const routes: Routes = [
   {
@@ -37,8 +41,35 @@ const routes: Routes = [
     },
     {
       path: 'settings',
-      component: AccountSettingsComponent,
+      component: SettingsDashboardComponent,
       canActivate: [AuthGuard], // Apply guards here
+      children:[
+        {
+          path:'',
+          redirectTo:'personal-info',
+          pathMatch:'full'
+        },
+        {
+          path:'personal-info',
+          component:PersonalSettingsComponent
+        },
+        {
+          path:'company-settings',
+          component:CompanySettingsComponent
+        },
+        {
+          path:'reset-password',
+          component:ResetPasswordComponent
+        },
+        {
+          path:'company-account',
+          component:CompanySettingsComponent
+        },
+        {
+          path:'settings-action',
+          component:SettingsActionComponent
+        }
+      ],
       data: { roles: ['insighter', 'company'] } 
     },
     {

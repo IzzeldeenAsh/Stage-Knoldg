@@ -1,0 +1,64 @@
+import { Component, Injector, OnInit } from '@angular/core';
+import { AuthService } from 'src/app/modules/auth';
+import { BaseComponent } from 'src/app/modules/base.component';
+
+interface MenuItem {
+  title: string;
+  route: string;
+  roles?: string[];
+}
+
+@Component({
+  selector: 'app-settings-sidebar',
+  templateUrl: './settings-sidebar.component.html',
+  styleUrl: './settings-sidebar.component.scss'
+})
+export class SettingsSidebarComponent extends BaseComponent implements OnInit {
+  roles: string[] = [];
+  isLoading: boolean = false;
+  menuItems: MenuItem[] = [
+    {
+      title: this.lang === 'ar' ? 'البيانات الشخصية' : 'Personal Info',
+      route: '/app/profile/settings/personal-info',
+      roles: ['company', 'insighter','client']
+    },
+    {
+      title: this.lang === 'ar' ? 'بيانات الشركة' : 'Company Info',
+      route: '/app/profile/settings/company-settings',
+      roles: ['company', 'insighter']
+    },
+    {
+      title: this.lang === 'ar' ? 'إعادة تعيين كلمة المرور' : 'Reset Password',
+      route: '/app/profile/settings/reset-password',
+      roles: ['company', 'insighter','client']
+    },
+    {
+      title: this.lang === 'ar' ? 'الإعدادات' : 'Settings',
+      route: '/app/profile/settings/settings-action',
+      roles: ['company', 'insighter','client']
+    }
+  ];
+  constructor(
+    injector: Injector,
+    private readonly _profileService: AuthService,
+  ) {
+    super(injector);
+  }
+
+  ngOnInit(): void {
+    this.getProfile();
+  }
+
+    getProfile(){
+    this.isLoading = true;
+   const profileSubscription = this._profileService.getProfile().subscribe((profile) => {
+      this.roles = profile.roles;
+      this.isLoading = false;
+    });
+    this.unsubscribe.push(profileSubscription);
+  }
+
+  hasRole(role: string[]): boolean {
+    return this.roles.some(r => role.includes(r));
+  }
+}
