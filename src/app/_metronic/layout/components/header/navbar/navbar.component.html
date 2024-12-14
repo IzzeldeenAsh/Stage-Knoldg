@@ -31,16 +31,14 @@
   class="d-flex align-items-center relative"
   [ngClass]="toolbarButtonMarginClass"
   id="kt_header_user_menu_toggle"
+  (mouseleave)="closeUserMenu()"
 >
   <!-- begin::Toggle -->
   <div
     class="cursor-pointer symbol img-icon"
     (click)="toggleUserMenu()"
     [ngClass]="toolbarUserAvatarHeightClass"
-    data-kt-menu-trigger="click"
-    data-kt-menu-attach="parent"
-    data-kt-menu-placement="bottom-end"
-    data-kt-menu-flip="bottom"
+   
   >
   <ng-container  *ngIf="userProfile">
     <ng-container *ngIf="!userProfile.company else companyLogo">
@@ -73,6 +71,7 @@
   fw-bold fs-6 w-275px
   my-menu
   "
+  (mouseleave)="closeUserMenu()"
   [ngClass]="{'show':isUserMenuOpen}"
   ></app-user-inner>
 </div>

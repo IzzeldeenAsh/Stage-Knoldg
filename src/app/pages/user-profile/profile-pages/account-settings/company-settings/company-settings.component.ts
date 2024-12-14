@@ -111,7 +111,7 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
         companyIndustries: [[], Validators.required],
         companyConsultingFields: [[], Validators.required],
         companyLegalName: ["", Validators.required],
-        companyWebsite: [""],
+        companyWebsite: [null],
         companyRegisterDocument: [null],
         companyAboutUs: ["",Validators.required],
       });

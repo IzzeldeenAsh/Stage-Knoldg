@@ -77,4 +77,5 @@ export interface Company {
   status: string;
   address:string;
   company_phone:string;
+  verified:boolean;
 }

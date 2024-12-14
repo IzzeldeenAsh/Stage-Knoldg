@@ -45,7 +45,12 @@
       {{ profile.company?.legal_name }}
     </div>
     <!-- SVG Icon -->
+  <ng-container *ngIf="profile.company">
+    <app-keenicon name="verify" type="solid" class="fs-1 text-info" *ngIf="profile.company.verified"></app-keenicon>
+  </ng-container>
+  <ng-container *ngIf="!profile.company">
     <app-keenicon name="verify" type="solid" class="fs-1 text-info" *ngIf="profile.verified"></app-keenicon>
+  </ng-container>
   </div>
 
   <div class="profile-details d-flex flex-wrap justify-content-center gap-1 gap-lg-4 small">
