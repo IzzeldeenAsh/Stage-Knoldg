@@ -26,6 +26,10 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
   staffNotes: string = '';
   visibleDeactivate: boolean = false;
 
+  activateRequestsCount: number = 0;
+  deactivateRequestsCount: number = 0;
+  verifiedRequestsCount: number = 0;
+
   @ViewChild('dt') table: Table;
 
 
@@ -56,6 +60,13 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
       next: (result) => {
         this.requestsList = result.requests.data;
         this.verificationQuestions = result.questions.data;
+
+        // Compute counts based on request types
+        this.activateRequestsCount = this.requestsList.filter(request => request.type.key === 'activate_company').length;
+        this.deactivateRequestsCount = this.requestsList.filter(request => request.type.key === 'deactivate_company').length;
+        this.verifiedRequestsCount = this.requestsList.filter(request => request.type.key === 'verified_company').length;
+
+
         this.initializeVerificationForm();
         this.cdr.detectChanges();
         this.loading = false;
