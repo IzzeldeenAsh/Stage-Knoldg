@@ -16,6 +16,7 @@ export interface RequestResponse {
     handel_by: string | null;
     handel_at: string | null;
     requestable: Requestable;
+    status: string;
   }
   
   export interface Requestable {

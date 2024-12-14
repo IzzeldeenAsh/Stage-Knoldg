@@ -4,17 +4,21 @@
   [style]="{ height: '4px' }"
 ></p-progressBar>
 
+
+
 <ng-container *ngIf="!(isLoading$ | async)">
 <div id="kt_app_toolbar" class="app-toolbar pt-10 mb-0">
     <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex align-items-stretch">
+   
       <div class="app-toolbar-wrapper d-flex flex-stack flex-wrap gap-4 w-100">
+      
         <div class="page-title d-flex flex-column justify-content-center gap-1 me-3">
           <h1 class="page-heading d-flex flex-column justify-content-center text-gray-900 fw-bold fs-3 m-0">
             Requests
           </h1>
           <div class="fw-semibold fs-7 my-0 text-muted">{{requestsList.length}} Requests</div>
         </div>
-        <!-- No actions for now -->
+    
       </div>
     </div>
  </div>
@@ -67,42 +71,15 @@
                   >{{ request.requestable_type }}</td>
                   <td 
                   >
-                  <div class='badge' [ngClass]="{
-                    ' badge-light-success text-success': request.type.key === 'activate_company',
-                    ' badge-light-danger text-danger': request.type.key === 'deactivate_company'
-                  }"> {{ request.type.label }}</div>
+                  <div> {{ request.type.label }}</div>
                  
                 </td>
                 <td>
-                  <div class='badge text-capitalize'  *ngIf="request.type.key === 'activate_company'"
-                  [ngClass]="{
-                     ' badge-light-success text-success': request.status === 'approved',
-                    ' badge-light-danger text-danger': request.status === 'rejected',
-                    ' badge-light-warning text-warning': request.status === 'pending'
-                  }">
-                   {{ request.status }}
-                  </div>
-
-                  <div class='badge text-capitalize'  *ngIf="request.type.key === 'verified_company'"
-                  [ngClass]="{
-                    ' badge-light-success text-success': request.status === 'approved',
-                    ' badge-light-danger text-danger': request.status === 'rejected',
-                    ' badge-light-warning text-warning': request.status === 'pending'
-                  }">
-                   {{ request.status }}
-                  </div>
-                  <div class='badge text-capitalize'  *ngIf="request.type.key === 'deactivate_company'"
-                  [ngClass]="{
-                    ' badge-light-success text-success': request.status === 'approved',
-                    ' badge-light-danger text-danger': request.status === 'rejected',
-                    ' badge-light-warning text-warning': request.status === 'pending'
-                  }">
-                   {{ request.status }}
-                  </div>
+                  <div *ngIf="request.status !== 'pending'" class="badge badge-danger">Closed</div>
+                  <div *ngIf="request.status === 'pending'" class="badge badge-success">Open</div>
                 </td>
                   <td class="text-center">
-                   <button
-                    [disabled]="(request.requestable.status === 'active' && request.type.key === 'activate_company') || (request.status ==='approved' && request.type.key === 'verified_company')"
+                   <button 
                     class="btn-sm btn btn-primary" (click)="viewRequest(request)">View</button>
                   </td>
                 </tr>
@@ -147,7 +124,8 @@
         'text-danger': selectedRequest?.type?.key === 'deactivate_company'
       }"
     >
-      {{ selectedRequest?.type?.label }} Request
+      {{ selectedRequest?.type?.label }} Request <br>
+      <div class="text-muted text-capitalize" > {{ selectedRequest?.status }}</div>
     </div>
   </div>
   <div class="card mb-4" *ngIf="selectedRequest?.requestable?.register_document && selectedRequest?.type?.key==='activate_company'">
@@ -284,7 +262,7 @@
         </div>
       </div>
     </div>
-    <div class="mb-4">
+    <div class="mb-4" *ngIf="selectedRequest?.status ==='pending'">
       <h6 class="mb-3">Staff Notes</h6>
       <div class="mb-3">
         <label class="form-label">Internal notes and comments:</label>
@@ -298,7 +276,7 @@
     </div>
     <p-messages *ngIf="hasErrorMessage" [(value)]="messages" [enableService]="false"></p-messages>
     <!-- Optional Footer (e.g., action buttons) -->
-    <div class="w-100">
+    <div class="w-100" *ngIf="selectedRequest?.status ==='pending'">
       <button type="button" class="btn btn-success me-2 w-100" (click)="onActivate()" [disabled]="!staffNotes">
         Activate
       </button>
@@ -333,7 +311,8 @@
         'text-danger': selectedRequest?.type?.key === 'deactivate_company'
       }"
     >
-      {{ selectedRequest?.type?.label }} Request
+      {{ selectedRequest?.type?.label }} Request <br>
+      <div class="text-muted text-capitalize" > {{ selectedRequest?.status }}</div>
     </div>
   </div>
 
@@ -399,7 +378,7 @@
       </div>
 
       <!-- Staff Notes -->
-      <div class="mb-4">
+      <div class="mb-4" *ngIf="selectedRequest?.status ==='pending'">
         <h6 class="mb-3">Staff Notes</h6>
         <div class="mb-3">
           <label class="form-label">Internal notes and comments:</label>
@@ -413,7 +392,7 @@
       </div>
 
       <!-- Confirmation Checkbox -->
-      <div class="form-check mb-3">
+      <div class="form-check mb-3" *ngIf="selectedRequest?.status ==='pending'">
         <input
           class="form-check-input"
           type="checkbox"
@@ -426,7 +405,7 @@
       </div>
       <p-messages *ngIf="hasErrorMessage" [(value)]="messages" [enableService]="false"></p-messages>
       <!-- Action Buttons -->
-      <div class="d-flex gap-2">
+      <div class="d-flex gap-2" *ngIf="selectedRequest?.status ==='pending'">
         <button
           type="button"
           class="btn btn-success flex-grow-1"
@@ -474,7 +453,8 @@
       'text-danger': selectedRequest?.type?.key === 'deactivate_company'
     }"
   >
-    {{ selectedRequest?.type?.label }} Request
+    {{ selectedRequest?.type?.label }} Request <br>
+    <div class="text-muted text-capitalize" > {{ selectedRequest?.status }}</div>
   </div>
 </div>
 <div class="card mb-4" *ngIf="selectedRequest?.requestable?.register_document && selectedRequest?.type?.key==='activate_company'">
@@ -611,7 +591,7 @@
       </div>
     </div>
   </div>
-  <div class="mb-4">
+  <div class="mb-4" *ngIf="selectedRequest?.status ==='pending'">
     <h6 class="mb-3">Staff Notes</h6>
     <div class="mb-3">
       <label class="form-label">Internal notes and comments:</label>
@@ -625,7 +605,7 @@
   </div>
   <p-messages *ngIf="hasErrorMessage" [(value)]="messages" [enableService]="false"></p-messages>
   <!-- Optional Footer (e.g., action buttons) -->
-  <div class="w-100">
+  <div class="w-100" *ngIf="selectedRequest?.status ==='pending'">
     <button type="button" class="btn btn-danger me-2 w-100" (click)="onDeactivate()" [disabled]="!staffNotes">
       Deactivate
     </button>
