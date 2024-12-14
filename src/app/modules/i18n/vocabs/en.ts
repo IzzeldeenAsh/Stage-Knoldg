@@ -228,17 +228,17 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       },
     },
     "DEACTIVATE_ACCOUNT": {
-      "TITLE": "Deactivate Account",
-      "DESCRIPTION": "Permanently deactivate your account. This action cannot be undone and will remove all your data from our system.",
-      "BUTTON_TEXT": "Deactivate Account",
-      "ILLUSTRATION_ALT": "Deactivate Account Illustration",
+      "TITLE": "Deactivate Company Account",
+      "DESCRIPTION": "Permanently deactivate your company account. This action cannot be undone and will remove all your data from our system.",
+      "BUTTON_TEXT": "Deactivate Company Account",
+      "ILLUSTRATION_ALT": "Deactivate Company Account Illustration",
       "MODAL": {
       "TITLE": "Deactivate Company Account",
       "DESCRIPTION": "You are about to deactivate your company account. This will remove all your company data from our platform.",
       "WARNING": "This action is not reversible. Please be certain.",
       "REASON_LABEL": "Deactivation Reason",
       "REASON_PLACEHOLDER": "Please explain why you want to deactivate your account",
-      "CONFIRM_BUTTON": "Deactivate Account"
+      "CONFIRM_BUTTON": "Deactivate Company Account"
     }
     },
     BUTTONS: {

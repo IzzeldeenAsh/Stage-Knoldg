@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild,AfterViewInit    } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable, Subscription, fromEvent, map, startWith } from 'rxjs';
 import { ICreateAccount } from '../../create-account.helper';
@@ -15,7 +15,7 @@ import { TreeNode } from 'src/app/reusable-components/shared-tree-selector/TreeN
   templateUrl: './step2.component.html',
   styleUrl: './step2.component.scss'
 })
-export class Step2Component implements OnInit, OnDestroy {
+export class Step2Component implements OnInit, OnDestroy  {
   isLoadingConsultingFields$: Observable<boolean>;
   isLoadingISIC$: Observable<boolean>;
   listOfConsultingFields: TreeNode[] = [];
@@ -48,6 +48,7 @@ export class Step2Component implements OnInit, OnDestroy {
     this.lang=this._translateion.getSelectedLanguage();
     this.isLoadingISIC$ = this._isicService.isLoading$
   }
+ 
 
   ngOnInit() {
     this.getConsultingFieldsList();
@@ -260,7 +261,7 @@ getFileIcon(file: File): string {
           aboutCompany: [this.defaultValues.aboutCompany || '', [Validators.required]],
           phoneCountryCode: [this.defaultValues.phoneCountryCode || ''],
           phoneCompanyNumber: [
-            this.defaultValues.phoneNumber || '',
+            this.defaultValues.phoneCompanyNumber || '',
             [
               Validators.required,
               Validators.minLength(10),
