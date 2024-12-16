@@ -49,7 +49,7 @@ export class InsightersModalComponent extends BaseComponent {
     );
   }
   inviteUser(email: string) {
-    const fakeEmail= "ezraashour00@gmail.com"
+    const fakeEmail= "yazan.o.alkhatib@gmail.com"
     Swal.fire({
       title: this.lang==='ar' ? 'هل انت متاكد' : "Are you sure?",
       text:  this.lang ==='ar' ? `هل أنت متاكد من إرسال الدعوة إلى ${email}؟` : `Are you sure you want to send an invitation to ${email}?`,
