@@ -36,6 +36,7 @@ import { CompanySettingsComponent } from './profile-pages/account-settings/compa
 import { PersonalSettingsComponent } from './profile-pages/account-settings/personal-settings/personal-settings.component';
 import { SettingsActionComponent } from './profile-pages/account-settings/settings-action/settings-action.component';
 import { DeactivateModalComponent } from './profile-pages/account-settings/deactivate-modal/deactivate-modal.component';
+import { UserRequestsComponent } from './profile-pages/user-requests/user-requests.component';
 
 
 
@@ -43,6 +44,7 @@ import { DeactivateModalComponent } from './profile-pages/account-settings/deact
     declarations: [
       ProfileComponent,
       ProfileHeaderComponent,
+      UserRequestsComponent,
       ActionButtonsComponent,
       NavigationTabsComponent,
       AccountSettingsComponent,

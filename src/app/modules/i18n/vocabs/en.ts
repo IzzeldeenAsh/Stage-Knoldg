@@ -414,6 +414,38 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       PASSWORDS_DO_NOT_MATCH:"Passwords do not match"
       
     },
+    USER_REQUESTS: {
+      TITLE: 'User Requests',
+      REQUEST_COUNT: 'Requests',
+      FILTER: {
+        REQUEST_TYPE: 'Request Type',
+        SHOW_ALL: 'Show All',
+        ACTIVATE_COMPANY_ACCOUNT: 'Activate Company Account',
+        DEACTIVATE_COMPANY_ACCOUNT: 'Deactivate Company Account',
+        VERIFY_COMPANY: 'Verify Company',
+        STATUS_TITLE: 'Status',
+        PENDING: 'Pending',
+        APPROVED: 'Approved',
+        REJECTED: 'Rejected',
+      },
+      TABLE_HEADERS: {
+        LEGAL_NAME: 'Legal Name',
+        REQUEST_TYPE: 'Request Type',
+        STATUS: 'Status',
+        COMMENTS: 'Comments',
+        ACTION: 'Action',
+      },
+      BUTTONS: {
+        VIEW: 'View',
+      },
+      DIALOG: {
+        HEADER: 'Request Details',
+        REQUEST_TYPE_LABEL: 'Request Type',
+        STATUS_BADGE: '{{status}}',
+        STAFF_NOTES_LABEL: 'Staff Notes',
+        NO_STAFF_NOTES: 'No staff notes available.',
+      },
+    },
     "UPGRADE_TO_COMPANY_ACCOUNT": {
       "TITLE": "Upgrade to a Company Account",
       "DESCRIPTION": "Unlock premium features tailored for businesses.\nCollaborate with your team and manage your projects effortlessly.",

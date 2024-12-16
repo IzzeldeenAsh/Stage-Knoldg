@@ -58,7 +58,14 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
       questions: this.requestsService.getListOfVerificationQuestions()
     }).subscribe({
       next: (result) => {
-        this.requestsList = result.requests.data;
+        this.requestsList = result.requests.data.sort((a,b)=>{
+          if(a.status === 'pending'){
+            return -1;
+          }else if(b.status === 'pending'){
+            return 1;
+          }
+          return 0;
+        });
         this.verificationQuestions = result.questions.data;
 
         // Compute counts based on request types
@@ -186,7 +193,7 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
   }
 
 
-  onVerify() {
+  onVerify(status: 'approved' | 'declined') {
     if (this.visibleVerification) {
       // Handle activation with verification
       if (this.verificationForm && this.verificationForm.valid && this.confirmationChecked) {
@@ -203,7 +210,8 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
           const reqSub = this.requestsService.verifyCompanyRequest(
             this.selectedRequest.id,
             verificationAnswers,
-            this.staffNotes
+            this.staffNotes,
+            status
           ).subscribe({
             next: (result) => {
               this.showSuccess('Success', 'Company verified successfully.');

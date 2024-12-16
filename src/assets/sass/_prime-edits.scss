@@ -309,4 +309,15 @@ html[dir="rtl"] .p-element {
     .overflow-dialog .p-dialog{
         overflow: auto !important;
     }
-    
+    .my-menu{
+        position: absolute;
+        top: 260px;
+        transform: translate(-50%, -50%);
+       
+      }
+      html[dir="rtl"] .my-menu{
+        left: 70px;
+      }
+      html[dir="ltr"] .my-menu{
+        left: -50px;
+      }
