@@ -142,7 +142,7 @@ export class RequestsService {
    * @param staffNotes Staff notes about the verification
    * @returns Observable of the verification response
    */
-  verifyCompanyRequest(requestId: number, verificationAnswers: VerificationAnswer[], staffNotes: string): Observable<any> {
+  verifyCompanyRequest(requestId: number, verificationAnswers: VerificationAnswer[], staffNotes: string, status: 'approved' | 'declined'): Observable<any> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
       'Content-Type': 'application/json',
@@ -153,7 +153,7 @@ export class RequestsService {
     const body = {
       verification_answers: verificationAnswers,
       staff_notes: staffNotes,
-      status: 'approved'
+      status: status
     };
 
     this.setLoading(true);

@@ -316,7 +316,7 @@
     </div>
   </div>
 
-  <div class="card mb-4">
+  <div class="card mb-4" *ngIf="selectedRequest?.status === 'pending'">
     <div class="card-body">
       <!-- Dynamic Verification Questions -->
       <div class="mb-4">
@@ -409,7 +409,7 @@
         <button
           type="button"
           class="btn btn-success flex-grow-1"
-          (click)="onVerify()"
+          (click)="onVerify('approved')"
           [disabled]="!isFormValid()"
         >
           Approve
@@ -417,10 +417,34 @@
         <button
           type="button"
           class="btn btn-danger flex-grow-1"
-          (click)="onCancel()"
+          (click)="onVerify('declined')"
+          [disabled]="!isFormValid()"
         >
           Disapprove
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Show handling details if not pending -->
+  <div class="card mb-4" *ngIf="selectedRequest?.status !== 'pending'">
+    <div class="card-body">
+      <h5 class="card-title mb-3">Handling Details</h5>
+      <div class="row mb-2">
+        <div class="col-md-4 text-muted">Handled By:</div>
+        <div class="col-md-8">Admin</div>
+      </div>
+      <div class="row mb-2">
+        <div class="col-md-4 text-muted">Handled At:</div>
+        <div class="col-md-8">
+          {{ selectedRequest?.handel_at | date:'medium' }}
+        </div>
+      </div>
+      <div class="row mb-2">
+        <div class="col-md-4 text-muted">Staff Notes:</div>
+        <div class="col-md-8">
+          {{ selectedRequest?.staff_notes || 'None' }}
+        </div>
       </div>
     </div>
   </div>

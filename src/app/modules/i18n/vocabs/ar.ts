@@ -363,6 +363,39 @@ export const locale = {
       "CANCEL": "إلغاء",
       PASSWORDS_DO_NOT_MATCH:"كلمتا السر غير متطابقتين"
     },
+
+    USER_REQUESTS: {
+      TITLE: 'طلبات المستخدم',
+      REQUEST_COUNT: 'طلبات',
+      FILTER: {
+        REQUEST_TYPE: 'نوع الطلب',
+        SHOW_ALL: 'عرض الكل',
+        ACTIVATE_COMPANY_ACCOUNT: 'تفعيل حساب الشركة',
+        DEACTIVATE_COMPANY_ACCOUNT: 'تعطيل حساب الشركة',
+        VERIFY_COMPANY: 'تحقق من الشركة',
+        STATUS_TITLE: 'الحالة',
+        PENDING: 'قيد الانتظار',
+        APPROVED: 'موافق',
+        REJECTED: 'مرفوض',
+      },
+      TABLE_HEADERS: {
+        LEGAL_NAME: 'الاسم القانوني',
+        REQUEST_TYPE: 'نوع الطلب',
+        STATUS: 'الحالة',
+        COMMENTS: 'التعليقات',
+        ACTION: 'الإجراء',
+      },
+      BUTTONS: {
+        VIEW: 'عرض',
+      },
+      DIALOG: {
+        HEADER: 'تفاصيل الطلب',
+        REQUEST_TYPE_LABEL: 'نوع الطلب',
+        STATUS_BADGE: '{{status}}',
+        STAFF_NOTES_LABEL: 'ملاحظات الموظفين',
+        NO_STAFF_NOTES: 'لا توجد ملاحظات موظفين متاحة.',
+      },
+    },
     "UPGRADE_TO_COMPANY_ACCOUNT": {
       "TITLE": "ترقية إلى حساب الشركة",
       "DESCRIPTION": "افتح ميزات مميزة مصممة خصيصًا للشركات.\nتعاون مع فريقك وأدِر مشاريعك بسهولة.",

@@ -12,6 +12,7 @@ import { ResetPasswordComponent } from './profile-pages/account-settings/reset-p
 import { PersonalSettingsComponent } from './profile-pages/account-settings/personal-settings/personal-settings.component';
 import { CompanySettingsComponent } from './profile-pages/account-settings/company-settings/company-settings.component';
 import { SettingsActionComponent } from './profile-pages/account-settings/settings-action/settings-action.component';
+import { UserRequestsComponent } from './profile-pages/user-requests/user-requests.component';
 
 const routes: Routes = [
   {
@@ -32,6 +33,12 @@ const routes: Routes = [
       component:DocumentsComponent,
       canActivate:[RolesGuard],
       data: { roles: [ 'company'] } 
+    },
+    {
+      path:'user-requests',
+      component:UserRequestsComponent,
+      canActivate:[RolesGuard],
+      data: { roles: ['insighter', 'company'] } 
     },
     {
       path:'certificates',
