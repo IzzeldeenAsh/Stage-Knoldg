@@ -75,8 +75,14 @@
                  
                 </td>
                 <td>
-                  <div *ngIf="request.status !== 'pending'" class="badge badge-danger">Closed</div>
-                  <div *ngIf="request.status === 'pending'" class="badge badge-success">Open</div>
+                  <div class="badge"
+                    [ngClass]="{
+                      ' badge-warning' : request.status === 'pending',
+                      ' badge-success' : request.status === 'approved',
+                      ' badge-danger' : request.status === 'declined',
+                    }"
+                  >{{request.status}}</div>
+                 
                 </td>
                   <td class="text-center">
                    <button 
@@ -103,7 +109,7 @@
     [(visible)]="visible"
     [dismissableMask]="true"
     [maximizable]="true"
-    [style]="{ width: '50rem' , overflow: 'auto' }"
+    [style]="{ width: '80rem' , overflow: 'auto' }"
   >
   <div class="d-flex flex-column justify-content-center align-items-center  py-5 ">
     <!-- Logo -->
@@ -290,7 +296,7 @@
   [(visible)]="visibleVerification"
   [dismissableMask]="true"
   [maximizable]="true"
-  [style]="{ width: '50rem', overflow: 'auto' }"
+  [style]="{ width: '80rem', overflow: 'auto' }"
 >
   <div class="d-flex flex-column justify-content-center align-items-center py-5">
     <!-- Logo -->
@@ -456,7 +462,7 @@
   [(visible)]="visibleDeactivate"
   [dismissableMask]="true"
   [maximizable]="true"
-  [style]="{ width: '50rem', overflow: 'auto' }"
+  [style]="{ width: '80rem', overflow: 'auto' }"
 >
 <div class="d-flex flex-column justify-content-center align-items-center  py-5 ">
   <!-- Logo -->
