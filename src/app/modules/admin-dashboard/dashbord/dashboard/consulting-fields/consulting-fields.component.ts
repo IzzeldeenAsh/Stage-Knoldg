@@ -4,14 +4,12 @@ import {
   OnInit,
   ViewChild,
   OnDestroy,
-  ChangeDetectionStrategy,
 } from '@angular/core';
 import { TreeNode, MessageService } from 'primeng/api';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
 import { TreeTable } from 'primeng/treetable';
-import { IndustryService } from 'src/app/_fake/services/industries/industry.service';
 import { ConsultingFieldTreeService } from 'src/app/_fake/services/consulting-fields-tree/consulting-fields-tree.service';
 import { TranslationService } from 'src/app/modules/i18n';
 
@@ -27,32 +25,33 @@ export class ConsultingFieldsComponent implements OnInit, OnDestroy {
   originalIsicNodes!: TreeNode[];
   isicTreeData!: TreeNode[];
   statusOptions = [
+    { label: 'All', value: '' },
     { label: 'Active', value: 'active' },
-    { label: 'Inactive', value: 'inactive' }
+    { label: 'Inactive', value: 'inactive' },
+    { label: 'Suggestion', value: 'suggestion' }
   ];
   isicForm!: FormGroup;
-  selectedParentId: number | null = null;
   displayDialog: boolean = false;
-  selectedNode:any;
   isUpdate: boolean = false;
   selectedNodeId: number | null = null;
   isLoading$: Observable<boolean>;
-  parentKey:number | null = null;
-  @ViewChild('tt') treeTable!: TreeTable; // Reference to the TreeTable
-  lang:string='en'
+  @ViewChild('tt') treeTable!: TreeTable; 
+  lang: string = 'en';
+  selectedStatus: string = '';
+  searchTerm: string = '';
+
   constructor(
     private cdr: ChangeDetectorRef,
     private isicCodesService: ConsultingFieldTreeService,
     private fb: FormBuilder,
     private messageService: MessageService,
-    private trans:TranslationService
+    private trans: TranslationService
   ) {
     this.isLoading$ = this.isicCodesService.isLoading$;
   }
 
   ngOnInit() {
     this.isicForm = this.fb.group({
-      code: ['', Validators.required],
       nameEn: ['', Validators.required],
       nameAr: ['', Validators.required],
       status: ['', Validators.required],
@@ -66,8 +65,8 @@ export class ConsultingFieldsComponent implements OnInit, OnDestroy {
     const listSub = this.isicCodesService.getConsultingCodesTree('en').subscribe({
       next: (res) => {
         this.isicnodes = res;
-        this.originalIsicNodes = [...res];  // Store original data here
-        this.isicTreeData = this.changeKeyToValue([...res]); // Transform only for isicTreeData
+        this.originalIsicNodes = [...res];  
+        this.isicTreeData = this.changeKeyToValue([...res]); 
         this.cdr.detectChanges();
       },
       error: (error) => {
@@ -76,11 +75,12 @@ export class ConsultingFieldsComponent implements OnInit, OnDestroy {
     });
     this.unsubscribe.push(listSub);
   }
+
   changeKeyToValue(nodes: any) {
     return nodes.map((node: any) => {
       const newNode = {
         ...node,
-        value: node.data.key, // Ensure the top-level 'value' is set from 'key'
+        value: node.data.key, 
         children: node.children ? this.changeKeyToValue(node.children) : []
       };
       delete newNode.key;
@@ -96,45 +96,27 @@ export class ConsultingFieldsComponent implements OnInit, OnDestroy {
       return newNode;
     });
   }
+
   showDialog() {
     this.displayDialog = true;
-    this.selectedNodeId = null; // Reset selected node ID for create
-    this.parentKey=null;
-    this.selectedNode=null;
-    this.isUpdate = false; // Set to false when adding a new ISIC code
-    this.isicForm.reset(); // Reset the form
+    this.isUpdate = false; 
+    this.isicForm.reset(); 
   }
 
   editIsicCode(node: any) {
-    console.log('node', node);
-    this.displayDialog = true; // Open dialog
-    this.selectedNodeId = node.node.data.key; // Set the ID for update
-    this.isUpdate = true; // Set to true for editing mode
+    this.displayDialog = true; 
+    console.log('node',node);
+    this.selectedNodeId = node.node.data.key;
+    this.isUpdate = true;
     
-    const parentValue = node.node.parent ? node.node.parent.key : null;
-    this.parentKey = parentValue;
-    this.selectedNode = this.findNodeByValue(this.isicTreeData, this.parentKey);
+    const parentValue = node.node.parent ? node.node.parent.data.value : null;
+
     this.isicForm.patchValue({
-      code: node.node.data.code,
       nameEn: node.node.data.nameEn,
       nameAr: node.node.data.nameAr,
       status: node.node.data.status,
       parentId: parentValue,
     });
-  }
-  findNodeByValue(nodes: any[], value: any): any | null {
-    for (const item of nodes) {
-      if (item.data.value === value) {
-        return item;
-      }
-      if (item.children && item.children.length > 0) {
-        const found = this.findNodeByValue(item.children, value);
-        if (found) {
-          return found;
-        }
-      }
-    }
-    return null;
   }
 
   private handleServerErrors(error: any) {
@@ -143,7 +125,6 @@ export class ConsultingFieldsComponent implements OnInit, OnDestroy {
     if (error.error && error.error.errors) {
       const serverErrors = error.error.errors;
       const errorKeyToFormControlName: any = {
-        'code': 'code',
         'name.en': 'nameEn',
         'name.ar': 'nameAr',
         'status': 'status',
@@ -174,10 +155,6 @@ export class ConsultingFieldsComponent implements OnInit, OnDestroy {
     }
   }
 
-  get code() {
-    return this.isicForm.get('code');
-  }
-
   get nameEn() {
     return this.isicForm.get('nameEn');
   }
@@ -201,15 +178,15 @@ export class ConsultingFieldsComponent implements OnInit, OnDestroy {
       this.isicForm.markAllAsTouched();
       return;
     }
+
     const formValues = this.isicForm.value;
     const isicCode = {
-      code: formValues.code,
       name: {
         en: formValues.nameEn,
         ar: formValues.nameAr,
       },
       status: formValues.status,
-      parent_id: this.selectedNode.value,
+      parent_id: formValues.parentId ? formValues.parentId : 0,
     };
 
     if (this.isUpdate && this.selectedNodeId !== null) {
@@ -218,12 +195,10 @@ export class ConsultingFieldsComponent implements OnInit, OnDestroy {
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
-            detail: 'ISIC Code updated successfully.',
+            detail: 'Industry updated successfully.',
           });
           this.loadIsicCodes();
           this.displayDialog = false;
-          this.parentKey=null;
-          this.selectedNode=null;
           this.isicForm.reset();
         },
         error: (error) => {
@@ -237,12 +212,10 @@ export class ConsultingFieldsComponent implements OnInit, OnDestroy {
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
-            detail: 'ISIC Code created successfully.',
+            detail: 'Industry created successfully.',
           });
           this.loadIsicCodes();
           this.displayDialog = false;
-          this.parentKey=null;
-          this.selectedNode=null;
           this.isicForm.reset();
         },
         error: (error) => {
@@ -257,7 +230,7 @@ export class ConsultingFieldsComponent implements OnInit, OnDestroy {
     const id = node.node.data.key;
     Swal.fire({
       title: 'Are you sure?',
-      text: 'Do you want to delete this ISIC Code? This action cannot be undone.',
+      text: 'Do you want to delete this Industry? This action cannot be undone.',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -271,7 +244,7 @@ export class ConsultingFieldsComponent implements OnInit, OnDestroy {
             this.messageService.add({
               severity: 'success',
               summary: 'Success',
-              detail: 'ISIC Code deleted successfully.',
+              detail: 'Industry deleted successfully.',
             });
             this.loadIsicCodes();
           },
@@ -284,51 +257,57 @@ export class ConsultingFieldsComponent implements OnInit, OnDestroy {
     });
   }
 
- 
   applyFilter(event: any) {
-    const searchTerm = event.target.value.trim().toLowerCase();
-
-    if (!searchTerm) {
-      // If search term is empty, reset to original data
-      this.isicnodes = [...this.originalIsicNodes];
-      return;
-    }
-
-    // Otherwise, filter nodes
-    this.isicnodes = this.filterNodes(searchTerm, this.originalIsicNodes);
+    this.searchTerm = event.target.value.trim().toLowerCase();
+    this.applyFilters();
   }
 
-  filterNodes(searchTerm: string, nodes: TreeNode[]): TreeNode[] {
-    const filteredNodes: TreeNode[] = [];
-
-    nodes.forEach((node) => {
-      const matched = this.isMatch(searchTerm, node);
-      const childMatches = this.filterNodes(searchTerm, node.children || []);
-
-      if (matched || childMatches.length) {
-        filteredNodes.push({
-          ...node,
-          children: childMatches,
-        });
-      }
-    });
-
-    return filteredNodes;
+  applyStatusFilter() {
+    this.applyFilters();
   }
 
-  isMatch(searchTerm: string, node: TreeNode): boolean {
-    return (
-      node.data.code.toLowerCase().includes(searchTerm) ||
-      node.data.label.toLowerCase().includes(searchTerm) ||
-      node.data.nameEn.toLowerCase().includes(searchTerm) ||
-      node.data.nameAr.toLowerCase().includes(searchTerm)
-    );
+  applyFilters() {
+    this.isicnodes = this.filterNodesRecursively(this.originalIsicNodes, this.selectedStatus, this.searchTerm.toLowerCase());
   }
   
+  filterNodesRecursively(nodes: TreeNode[], selectedStatus: string, searchTerm: string): TreeNode[] {
+    const filteredNodes: TreeNode[] = [];
+  
+    for (const node of nodes) {
+      const childMatches = node.children ? this.filterNodesRecursively(node.children, selectedStatus, searchTerm) : [];
+      const matchesCurrentNode = this.isNodeMatch(node, selectedStatus, searchTerm);
+  
+      // If current node matches or if any child matches, include this node
+      if (matchesCurrentNode || childMatches.length > 0) {
+        filteredNodes.push({
+          ...node,
+          children: childMatches
+        });
+      }
+    }
+  
+    return filteredNodes;
+  }
+  
+  isNodeMatch(node: TreeNode, selectedStatus: string, searchTerm: string): boolean {
+    const { status, code, label, nameEn, nameAr } = node.data;
+    
+    // Check status if one is selected
+    const statusMatches = !selectedStatus || status === selectedStatus;
+  
+    // Check search term
+    const termMatches = !searchTerm 
+      || (code && code.toLowerCase().includes(searchTerm))
+      || (label && label.toLowerCase().includes(searchTerm))
+      || (nameEn && nameEn.toLowerCase().includes(searchTerm))
+      || (nameAr && nameAr.toLowerCase().includes(searchTerm));
+  
+    return statusMatches && termMatches;
+  }
+  
+
   onCancel() {
     this.displayDialog = false;
-    this.parentKey=null;
-    this.selectedNode=null
     this.isicForm.reset();
   }
 

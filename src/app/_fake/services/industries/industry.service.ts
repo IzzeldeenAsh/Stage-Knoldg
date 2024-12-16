@@ -121,11 +121,11 @@ export class IndustryService {
 
 
   // Create a new ISIC code
-  createIsicCode(isicCode: any): Observable<IsicCode> {
+  createIsicCode(isicCode: any,lang:string): Observable<IsicCode> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'Accept-Language': this.currentLang
+      'Accept-Language': lang
     });
     this.setLoading(true);
     return this.http.post<IsicCode>('https://api.foresighta.co/api/admin/setting/industry', isicCode, { headers }).pipe(
