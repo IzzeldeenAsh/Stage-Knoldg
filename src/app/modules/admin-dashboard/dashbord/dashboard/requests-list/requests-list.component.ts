@@ -143,15 +143,16 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
     this.staffNotes = '';
   }
 
-  onActivate() {
+  onActivate(status: 'approved' | 'declined') {
     if (this.selectedRequest?.id) {
       const reqSub = this.requestsService.activateCompanyRequest(
         this.selectedRequest?.id,
         this.staffNotes,
-        'approved'
+       status
       ).subscribe({
         next: (result) => {
-          this.showSuccess('Success', 'Company activated successfully.');
+          const msg = status === 'approved' ? 'Company approved successfully.' : 'Company declined successfully.';
+          this.showSuccess('Success', msg);
           this.loadData();
           this.visible = false;
           this.selectedRequest = null;
@@ -168,14 +169,16 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
     }
   }
 
-  onDeactivate() {
+  onDeactivate(status: 'approved' | 'declined') {
     if (this.selectedRequest?.id) {
       const reqSub = this.requestsService.deactivateCompanyRequest(
         this.selectedRequest?.id,
-        this.staffNotes
+        this.staffNotes,
+        status
       ).subscribe({
         next: (result) => {
-          this.showSuccess('Success', 'Company deactivated successfully.');
+          const msg = status === 'approved' ? 'Company approved successfully.' : 'Company declined successfully.';
+          this.showSuccess('Success', msg);
           this.loadData();
           this.visibleDeactivate = false;
           this.selectedRequest = null;
@@ -214,7 +217,8 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
             status
           ).subscribe({
             next: (result) => {
-              this.showSuccess('Success', 'Company verified successfully.');
+              const msg = status === 'approved' ? 'Company approved successfully.' : 'Company declined successfully.';
+              this.showSuccess('Success', msg);
               this.loadData();
               this.visible = false;
               this.visibleVerification = false;
