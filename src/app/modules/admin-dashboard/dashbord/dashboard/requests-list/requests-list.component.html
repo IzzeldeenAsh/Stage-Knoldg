@@ -131,7 +131,7 @@
       }"
     >
       {{ selectedRequest?.type?.label }} Request <br>
-      <div class="text-muted text-capitalize" > {{ selectedRequest?.status }}</div>
+      <div class="badge fs-5 my-3 text-uppercase" [ngClass]="{'bg-light-success text-success': selectedRequest?.status === 'approved', 'bg-light-danger text-danger': selectedRequest?.status === 'declined'}" > {{ selectedRequest?.status }}</div>
     </div>
   </div>
   <div class="card mb-4" *ngIf="selectedRequest?.requestable?.register_document && selectedRequest?.type?.key==='activate_company'">
@@ -283,10 +283,14 @@
     <p-messages *ngIf="hasErrorMessage" [(value)]="messages" [enableService]="false"></p-messages>
     <!-- Optional Footer (e.g., action buttons) -->
     <div class="w-100" *ngIf="selectedRequest?.status ==='pending'">
-      <button type="button" class="btn btn-success me-2 w-100" (click)="onActivate()" [disabled]="!staffNotes">
-        Activate
-      </button>
-      <!-- Add more buttons as needed -->
+      <div class="d-flex gap-2">
+        <button type="button" class="btn btn-success w-50" (click)="onActivate('approved')" [disabled]="!staffNotes">
+          Approve
+        </button>
+        <button type="button" class="btn btn-danger w-50" (click)="onActivate('declined')" [disabled]="!staffNotes">
+          Disapprove
+        </button>
+      </div>
     </div>
 </p-dialog>
 
@@ -318,7 +322,7 @@
       }"
     >
       {{ selectedRequest?.type?.label }} Request <br>
-      <div class="text-muted text-capitalize" > {{ selectedRequest?.status }}</div>
+      <div class=" text-uppercase" [ngClass]="{'text-success': selectedRequest?.status === 'approved', 'text-danger': selectedRequest?.status === 'declined'}" > {{ selectedRequest?.status }}</div>
     </div>
   </div>
 
@@ -484,7 +488,7 @@
     }"
   >
     {{ selectedRequest?.type?.label }} Request <br>
-    <div class="text-muted text-capitalize" > {{ selectedRequest?.status }}</div>
+    <div class=" text-uppercase" [ngClass]="{'text-success': selectedRequest?.status === 'approved', 'text-danger': selectedRequest?.status === 'declined'}" > {{ selectedRequest?.status }}</div>
   </div>
 </div>
 <div class="card mb-4" *ngIf="selectedRequest?.requestable?.register_document && selectedRequest?.type?.key==='activate_company'">
@@ -636,10 +640,14 @@
   <p-messages *ngIf="hasErrorMessage" [(value)]="messages" [enableService]="false"></p-messages>
   <!-- Optional Footer (e.g., action buttons) -->
   <div class="w-100" *ngIf="selectedRequest?.status ==='pending'">
-    <button type="button" class="btn btn-danger me-2 w-100" (click)="onDeactivate()" [disabled]="!staffNotes">
-      Deactivate
-    </button>
-    <!-- Add more buttons as needed -->
+    <div class="d-flex gap-2">
+      <button type="button" class="btn btn-success w-50" (click)="onDeactivate('approved')" [disabled]="!staffNotes">
+        Approve
+      </button>
+      <button type="button" class="btn btn-danger w-50" (click)="onDeactivate('declined')" [disabled]="!staffNotes">
+        Disapprove
+      </button>
+    </div>
   </div>
 
 </p-dialog> 

@@ -87,7 +87,7 @@ export class RequestsService {
    * @param status The status to set ('approved' or 'decline')
    * @returns Observable of the activation response
    */
-  activateCompanyRequest(requestId: number, staffNotes: string, status: 'approved' | 'decline'): Observable<any> {
+  activateCompanyRequest(requestId: number, staffNotes: string, status: 'approved' | 'declined'): Observable<any> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
       'Content-Type': 'application/json',
@@ -114,7 +114,7 @@ export class RequestsService {
    * @param staffNotes Staff notes about the deactivation
    * @returns Observable of the deactivation response
    */
-  deactivateCompanyRequest(requestId: number, staffNotes: string): Observable<any> {
+  deactivateCompanyRequest(requestId: number, staffNotes: string, status: 'approved' | 'declined'): Observable<any> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
       'Content-Type': 'application/json',
@@ -124,7 +124,7 @@ export class RequestsService {
     const url = `${this.apiUrl}/action/company/deactivate/${requestId}`;
     const body = {
       staff_notes: staffNotes,
-      status: 'approved'
+      status: status
     };
 
     this.setLoading(true);
