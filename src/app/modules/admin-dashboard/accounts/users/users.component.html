@@ -1,0 +1,333 @@
+<p-progressBar
+  *ngIf="isLoading"
+  mode="indeterminate"
+  [style]="{ height: '4px' }"
+></p-progressBar>
+
+<ng-container *ngIf="!isLoading">
+ 
+
+  <p-tabView class="custom-tabview p-6">
+    <!-- Clients Tab -->
+    <p-tabPanel header="Clients" >
+      <div id="kt_app_toolbar" class="app-toolbar mb-2">
+        <div id="kt_app_toolbar_container" class="  d-flex align-items-stretch">
+          <div class="app-toolbar-wrapper d-flex flex-stack flex-wrap gap-4 w-100">
+            <div class="page-title d-flex flex-column justify-content-center gap-1 me-3">
+              <h1 class="page-heading d-flex flex-column justify-content-center text-gray-900 fw-bold fs-3 m-0">
+                Clients List
+              </h1>
+              <div class="fw-semibold fs-7 my-0 text-muted">
+                <!-- You can dynamically show total counts here if desired -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header border-0 pt-6 d-flex justify-content-between align-items-center">
+          <div class="card-title">
+            <div class="d-flex align-items-center position-relative my-1">
+              <i class="pi pi-search fs-3 position-absolute ms-5"></i>
+              <input
+                type="text"
+                pInputText
+                class="form-control  w-250px ps-12"
+                placeholder="Search Clients"
+                (input)="applyClientFilter($event)"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body pt-0">
+          <p-table *ngIf="clients.length > 0"
+            [value]="clients"
+            [paginator]="true"
+            [rows]="10"
+            [loading]="isLoading"
+            class="table-p"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Profile</th> <!-- New Profile Image Column -->
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Country</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-client>
+              <tr>
+                <td>
+                  <ng-container *ngIf="client.profile_photo_url; else initials">
+                    <img
+                      [src]="client.profile_photo_url"
+                      alt="Profile Photo"
+                      class="rounded-circle object-fit"
+                      width="40"
+                      height="40"
+                    />
+                  </ng-container>
+                  <ng-template #initials>
+                    <div
+                      class="symbol-label fw-semibold bg-light-success">
+                      {{client.first_name[0] + client.last_name[0] }}
+                    </div>
+                  </ng-template>
+                </td>
+            
+                <td>{{ client.first_name }}</td>
+                <td>{{ client.last_name }}</td>
+                <td>{{ client.email }}</td>
+                <td>{{ client.country }}</td>
+                <td>
+                  <span
+                    [ngClass]="{
+                      'active-status': client.status === 'active',
+                      'inactive-status': client.status !== 'active'
+                    }"
+                  >
+                    {{ client.status }}
+                  </span>
+                </td>
+                <td>
+               
+                  <a
+                    pTooltip="Delete Client"
+                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
+                    (click)="deleteClient(client.id)"
+                  >
+                    <i class="ki-duotone ki-trash text-danger fs-2">
+                      <span class="path1"></span>
+                      <span class="path2"></span>
+                      <span class="path3"></span>
+                      <span class="path4"></span>
+                      <span class="path5"></span>
+                    </i>
+                  </a>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+          <div *ngIf="clients.length === 0" class="text-center">
+          No clients found
+          </div>
+        </div>
+      </div>
+    </p-tabPanel>
+
+    <!-- Individual Insighters Tab -->
+    <p-tabPanel header="Individual Insighters">
+      <div id="kt_app_toolbar" class="app-toolbar mb-2">
+        <div id="kt_app_toolbar_container" class="  d-flex align-items-stretch">
+          <div class="app-toolbar-wrapper d-flex flex-stack flex-wrap gap-4 w-100">
+            <div class="page-title d-flex flex-column justify-content-center gap-1 me-3">
+              <h1 class="page-heading d-flex flex-column justify-content-center text-gray-900 fw-bold fs-3 m-0">
+                Individuals List
+              </h1>
+              <div class="fw-semibold fs-7 my-0 text-muted">
+                <!-- You can dynamically show total counts here if desired -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header border-0 pt-6 d-flex justify-content-between align-items-center">
+          <div class="card-title">
+            <div class="d-flex align-items-center position-relative my-1">
+              <i class="pi pi-search fs-3 position-absolute ms-5"></i>
+              <input
+                type="text"
+                pInputText
+                class="form-control  w-250px ps-12"
+                placeholder="Search Insighters"
+                (input)="applyInsighterFilter($event)"
+              />
+            </div>
+          </div>
+
+        
+        </div>
+
+        <div class="card-body pt-0">
+          <p-table *ngIf="individualInsighters.length > 0"
+            [value]="individualInsighters"
+            [paginator]="true"
+            [rows]="10"
+            [loading]="isLoading"
+            class="table-p"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Profile</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Country</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-insighter>
+              <tr>
+                <td>
+                  <ng-container *ngIf="insighter.profile_photo_url; else initials">
+                    <img
+                      [src]="insighter.profile_photo_url"
+                      alt="Profile Photo"
+                      class="rounded-circle object-fit"
+                      width="40"
+                      height="40"
+                    />
+                  </ng-container>
+                  <ng-template #initials>
+                    <div class="symbol-label fw-semibold bg-light-success">
+                      {{insighter.first_name[0] + insighter.last_name[0] }}
+                    </div>
+                  </ng-template>
+                </td>
+                <td>{{ insighter.name }}</td>
+                <td>{{ insighter.email }}</td>
+                <td>{{ insighter.country }}</td>
+                <td>
+                  <span
+                    [ngClass]="{
+                      'active-status': insighter.insighter_status === 'active',
+                      'inactive-status': insighter.insighter_status !== 'active'
+                    }"
+                  >
+                    {{ insighter.insighter_status }}
+                  </span>
+                </td>
+                <td>
+                  <!-- PrimeNG Menu for Actions -->
+                  <p-menu #insighterMenu [model]="insighterItems" [popup]="true" appendTo="body" class="custom-admin-menu"></p-menu>
+                  <button
+                    pButton
+                    type="button"
+                    icon="pi pi-ellipsis-v"
+                    class="p-button-text"
+                    (click)="setCurrentInsighter(insighter.id, insighter.insighter_status); insighterMenu.toggle($event)"
+                  ></button>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+          <div *ngIf="individualInsighters.length === 0" class="text-center">
+            No Insighters found
+          </div>
+        </div>
+      </div>
+    </p-tabPanel>
+
+    <!-- Company Insighters Tab -->
+    <p-tabPanel header="Company Insighters">
+      <div id="kt_app_toolbar" class="app-toolbar mb-2">
+        <div id="kt_app_toolbar_container" class="  d-flex align-items-stretch">
+          <div class="app-toolbar-wrapper d-flex flex-stack flex-wrap gap-4 w-100">
+            <div class="page-title d-flex flex-column justify-content-center gap-1 me-3">
+              <h1 class="page-heading d-flex flex-column justify-content-center text-gray-900 fw-bold fs-3 m-0">
+                Corporate List
+              </h1>
+              <div class="fw-semibold fs-7 my-0 text-muted">
+                <!-- You can dynamically show total counts here if desired -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header border-0 pt-6 d-flex justify-content-between align-items-center">
+          <div class="card-title">
+            <div class="d-flex align-items-center position-relative my-1">
+              <i class="pi pi-search fs-3 position-absolute ms-5"></i>
+              <input
+                type="text"
+                pInputText
+                class="form-control  w-250px ps-12"
+                placeholder="Search Company Insighters"
+                (input)="applyCompanyInsighterFilter($event)"
+              />
+            </div>
+          </div>
+
+      
+        </div>
+
+        <div class="card-body pt-0">
+          <p-table *ngIf="companyInsighters.length > 0"
+            [value]="companyInsighters"
+            [paginator]="true"
+            [rows]="10"
+            [loading]="isLoading"
+            class="table-p"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Company Logo</th> <!-- New Company Logo Column -->
+                <th>Name</th>
+                <th>Email</th>
+                <th>Company</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-companyInsighter>
+              <tr>
+                <td>
+                  <ng-container *ngIf="companyInsighter.company?.logo; else initials">
+                    <img
+                      [src]="companyInsighter.company.logo"
+                      alt="Company Logo"
+                      class="rounded-circle object-fit"
+                      width="40"
+                      height="40"
+                    />
+                  </ng-container>
+                  <ng-template #initials>
+                    <div
+                      class="symbol-label fw-semibold bg-light-primary"
+                    >
+                    {{companyInsighter.company?.legal_name[0] + companyInsighter.company?.legal_name[0] }}
+                    </div>
+                  </ng-template>
+                </td>
+                <td>{{ companyInsighter.name }}</td>
+                <td>{{ companyInsighter.email }}</td>
+                <td>{{ companyInsighter.company?.legal_name }}</td>
+                <td>
+                  <span
+                    [ngClass]="{
+                      'active-status': companyInsighter.company.status === 'active',
+                      'inactive-status': companyInsighter.company.status !== 'active'
+                    }"
+                  >
+                    {{ companyInsighter.company.status }}
+                  </span>
+                </td>
+                <td>
+                  <!-- PrimeNG Menu for Actions -->
+                    <p-menu #menu [model]="items" [popup]="true" appendTo="body"  class="custom-admin-menu"></p-menu>
+                    <button
+                      pButton
+                      type="button"
+                      icon="pi pi-ellipsis-v"
+                      class="p-button-text"
+                      (click)="setCurrentCompanyInsighter(companyInsighter.id); menu.toggle($event)"
+                    ></button>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+          <div *ngIf="companyInsighters.length === 0" class="text-center">
+            No Company Insighters found
+          </div>
+        </div>
+      </div>
+    </p-tabPanel>
+  </p-tabView>
+</ng-container>
+

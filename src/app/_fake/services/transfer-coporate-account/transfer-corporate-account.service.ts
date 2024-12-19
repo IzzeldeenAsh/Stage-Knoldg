@@ -9,6 +9,7 @@ import { TranslationService } from 'src/app/modules/i18n/translation.service';
 export class TransferCorporateAccountService {
   private apiUrl = 'https://api.foresighta.co/api/company/transfer/account/invitation';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
+  private searchInsighterUrl = 'https://api.foresighta.co/api/insighter/search/insighter';
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   currentLang: string = "en";
 
@@ -61,6 +62,15 @@ export class TransferCorporateAccountService {
       catchError((error) => this.handleError(error)), 
       finalize(() => this.setLoading(false))
     );
+  }
+
+  searchInsighters(keyword: string, lang: string = 'en'): Observable<any[]> {
+    
+    const headers = new HttpHeaders({
+      'Accept-Language': lang
+    });
+    const params = { keyword };
+    return this.http.get<any[]>(this.searchInsighterUrl, { headers, params });
   }
   
 }

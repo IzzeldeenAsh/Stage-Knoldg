@@ -54,15 +54,20 @@
   </div>
 
   <div class="profile-details d-flex flex-wrap justify-content-center gap-1 gap-lg-4 small">
-    <div class="detail-item d-flex gap-1 align-items-center">
-      <i class="ki-filled ki-abstract-41 text-primary small"></i>
-      <span class="text-primary fw-medium fs-7" *ngIf="profile.country">{{ profile.country }} </span>
-    </div>
-    <div class="detail-item d-flex gap-1 align-items-center" *ngIf="profile.company">
-      <i class="ki-filled ki-sms text-primary small"></i>
-      <a class="text-primary fw-medium fs-7" >,{{ profile.company.address }}</a>
-    </div>
-   
+ 
+   @if (hasRole(['insighter']) && !hasRole(['company'])) {
+    <div class="fw-bold text-uppercase"
+    [class.text-success]="profile.insighter_status === 'active'"
+    [class.text-danger]="profile.insighter_status === 'inactive'"
+    >{{profile.insighter_status}}</div>
+   }
+
+   @if (hasRole(['company'])) {
+    <div class="fw-bold text-uppercase"
+    [class.text-success]="profile.company?.status === 'active'" 
+    [class.text-danger]="profile.company?.status === 'inactive'"
+    >{{profile.company?.status}}</div>
+   }
   </div>
 </div>
 

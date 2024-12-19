@@ -238,8 +238,10 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       "WARNING": "This action is not reversible. Please be certain.",
       "REASON_LABEL": "Deactivation Reason",
       "REASON_PLACEHOLDER": "Please explain why you want to deactivate your account",
-      "CONFIRM_BUTTON": "Deactivate Company Account"
-    }
+      "CONFIRM_BUTTON": "Deactivate Company Account",
+
+    },
+          "PENDING_REQUEST" : "Pending Request"
     },
     BUTTONS: {
       BACK_BUTTON: "Back",
@@ -337,6 +339,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
   DELETE_FILE: "Delete File", // Tooltip for delete file buttonA
       
   OTHER_FIELD_PLACEHOLDER: "Enter your other field",
+  "DOCUMENT_REGISTRY_APPROVAL_NOTE": "Please note that uploading a registry document requires approval. You will be notified once your document has been reviewed.",
   
     },
     CONGRATS_CARD:{

@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, Injector, OnInit, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { Message } from 'primeng/api';
-import { forkJoin, Observable, Subscription } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 import { IVerificationQuestion, RequestsService } from 'src/app/_fake/services/requests-list-admin/requests.service';
 import { RequestItem } from 'src/app/modules/admin-dashboard/dashbord/dashboard/requests-list/request.interface';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -30,9 +30,14 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
   deactivateRequestsCount: number = 0;
   verifiedRequestsCount: number = 0;
 
+  // New properties for filters
+  selectedType: string = '';
+  selectedStatus: string = '';
+  globalFilter: string = '';
+  requestTypes: { key: string; label: string }[] = [];
+  statuses: string[] = ['pending', 'approved', 'declined'];
+
   @ViewChild('dt') table: Table;
-
-
 
   constructor(
     injector: Injector,
@@ -73,6 +78,11 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
         this.deactivateRequestsCount = this.requestsList.filter(request => request.type.key === 'deactivate_company').length;
         this.verifiedRequestsCount = this.requestsList.filter(request => request.type.key === 'verified_company').length;
 
+        // Generate unique request types from the requestsList
+        const typesSet = new Set(
+          this.requestsList.map(request => JSON.stringify({key: request.type.key, label: request.type.label}))
+        );
+        this.requestTypes = Array.from(typesSet).map(item => JSON.parse(item));
 
         this.initializeVerificationForm();
         this.cdr.detectChanges();
@@ -95,7 +105,6 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
       } else if (question.type === 'text') {
         group['question_' + question.id] = ['', Validators.required];
       } else {
-        // If other types are added later, handle them here.
         group['question_' + question.id] = ['', Validators.required];
       }
     });
@@ -107,7 +116,44 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
     this.table.filterGlobal(value, 'contains');
   }
 
+  onTypeChange() {
+    this.applyCustomFilters();
+  }
 
+  onStatusChange() {
+    this.applyCustomFilters();
+  }
+
+  applyCustomFilters() {
+    // Clear existing filters first
+    this.table.clear();
+
+    // Apply global filter if any
+    if (this.globalFilter) {
+      this.table.filterGlobal(this.globalFilter.toLowerCase(), 'contains');
+    }
+
+    // Filter by selectedType if chosen (Note: adjust the field if different structure)
+    if (this.selectedType) {
+      // If the requestsList array items are structured as `request.type.key`:
+      // We can filter by the nested property `type.key` using table.filter(value, field, matchMode)
+      this.table.filter(this.selectedType, 'type.key', 'equals');
+    }
+
+    // Filter by selectedStatus if chosen
+    if (this.selectedStatus) {
+      this.table.filter(this.selectedStatus, 'status', 'equals');
+    }
+  }
+
+  resetFilters() {
+    this.selectedType = '';
+    this.selectedStatus = '';
+    this.globalFilter = '';
+    if (this.table) {
+      this.table.clear();
+    }
+  }
 
   onCancel() {
     this.visible = false;
@@ -118,7 +164,6 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
   get hasErrorMessage() {
     return this.messages.some(msg => msg.severity === 'error');
   }
-
 
   viewRequest(request: RequestItem) {
     if (request.type.key === 'activate_company') {
@@ -148,7 +193,7 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
       const reqSub = this.requestsService.activateCompanyRequest(
         this.selectedRequest?.id,
         this.staffNotes,
-       status
+        status
       ).subscribe({
         next: (result) => {
           const msg = status === 'approved' ? 'Company approved successfully.' : 'Company declined successfully.';
@@ -192,9 +237,7 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
       });
       this.unsubscribe.push(reqSub);
     }
-   
   }
-
 
   onVerify(status: 'approved' | 'declined') {
     if (this.visibleVerification) {
@@ -235,7 +278,6 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
           this.unsubscribe.push(reqSub);
         }
       } else {
-      
         this.showError('Error', 'Please answer all verification questions and confirm.');
       }
     } else {
@@ -250,6 +292,7 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
   isFormValid() {
     return this.verificationForm && this.verificationForm.valid && this.confirmationChecked;
   }
+
   private handleServerErrors(error: any) {
     this.messages = [];
     if (error.error && error.error.errors) {
@@ -272,5 +315,4 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
       });
     }
   }
-
 }

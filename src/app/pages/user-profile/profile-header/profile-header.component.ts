@@ -32,14 +32,12 @@ export class ProfileHeaderComponent extends BaseComponent implements OnInit {
     this.profileImage = this.getProfileImage();
     console.log("profileImage onInit", this.profileImage);
   }
-
   ngOnChanges(changes: SimpleChanges) {
     if (changes.profile && !changes.profile.firstChange) {
       this.profileImage = this.getProfileImage();
       console.log("profileImage onChanges", this.profileImage);
     }
   }
-
   getProfileImage(): string {
     if (this.selectedImage) {
       return this.selectedImage;
@@ -57,7 +55,6 @@ export class ProfileHeaderComponent extends BaseComponent implements OnInit {
       this.uploadImage(file);
     }
   }
-
   onCancel(): void {
     // Reset the selected image
     this.selectedImage = null;
@@ -68,7 +65,6 @@ export class ProfileHeaderComponent extends BaseComponent implements OnInit {
       this.fileInput.nativeElement.value = '';
     }
   }
-
   onRemove(): void {
     // Call service to remove the image on the server
     this.profileService.removeProfilePhoto().subscribe(
@@ -95,7 +91,6 @@ export class ProfileHeaderComponent extends BaseComponent implements OnInit {
       }
     );
   }
-
   uploadImage(file: File): void {
     const MIN_WIDTH = 800;  // Set your desired minimum width
     const MIN_HEIGHT = 800; // Set your desired minimum height
@@ -263,4 +258,9 @@ export class ProfileHeaderComponent extends BaseComponent implements OnInit {
         this.isLoading = false; // Optional: Stop loading
       });
   }
+
+  hasRole(rolesRequired: string[]): boolean {
+    return rolesRequired.some((role)=>this.profile.roles.includes(role))
+  }
+  
 }

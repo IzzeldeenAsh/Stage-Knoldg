@@ -37,6 +37,7 @@ import { PersonalSettingsComponent } from './profile-pages/account-settings/pers
 import { SettingsActionComponent } from './profile-pages/account-settings/settings-action/settings-action.component';
 import { DeactivateModalComponent } from './profile-pages/account-settings/deactivate-modal/deactivate-modal.component';
 import { UserRequestsComponent } from './profile-pages/user-requests/user-requests.component';
+import { NgbActiveModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 
@@ -71,6 +72,7 @@ import { UserRequestsComponent } from './profile-pages/user-requests/user-reques
       ToastModule,
       InputTextModule,
       SharedTreeSelectorComponent,
+      NgbModalModule,
       FileUploadModule,
       ProgressBarModule,
       ButtonModule,
@@ -83,7 +85,7 @@ import { UserRequestsComponent } from './profile-pages/user-requests/user-reques
       TranslationModule,
       DropdownMenusModule
     ],
-    providers: [ DialogService],
+    providers: [ DialogService,NgbActiveModal],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]  // Add this line
   })
   export class UserProfileModule { }

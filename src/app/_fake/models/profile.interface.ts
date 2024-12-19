@@ -5,6 +5,7 @@ export interface IForsightaProfile {
     first_name: string;
     last_name: string;
     roles: string[];
+    
     department?: Department;
     position?: Position;
     profile_photo_url: string | null;

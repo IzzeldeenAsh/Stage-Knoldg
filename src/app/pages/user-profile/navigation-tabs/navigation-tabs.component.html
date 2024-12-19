@@ -6,6 +6,7 @@
         [ngClass]="{'text-active-info': tab.activeInfo, 'text-active-primary': tab.activePrimary}"
         [routerLink]="tab.link"
         routerLinkActive="active"
+        
       >
         <ng-container *ngIf="lang === 'en'"> {{ tab.labelen }}</ng-container>
         <ng-container *ngIf="lang === 'ar'"> {{ tab.labelar }}</ng-container>
