@@ -1,8 +1,4 @@
-<p-progressBar
-  *ngIf="isLoading"
-  mode="indeterminate"
-  [style]="{ height: '4px' }"
-></p-progressBar>
+
 <div *ngIf="!isLoading" class="menu-sub menu-sub-accordion show" kt-hidden-height="258">
   <div class="menu-item" *ngFor="let item of menuItems ">
    <ng-container *ngIf="!item.roles || hasRole(item.roles)">

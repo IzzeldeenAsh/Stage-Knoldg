@@ -36,7 +36,12 @@ export class SettingsSidebarComponent extends BaseComponent implements OnInit {
       route: '/app/profile/settings/reset-password',
       roles: ['company', 'insighter','client'],
       isActive: this.isActive
-    }
+    },
+   { title: this.lang === 'ar' ? 'الإعدادات' : 'Settings',
+    route: '/app/profile/settings/settings-action',
+    roles: ['company'],
+  }
+
   ];
   constructor(
     injector: Injector,
@@ -53,8 +58,12 @@ export class SettingsSidebarComponent extends BaseComponent implements OnInit {
     this.isLoading = true;
    const profileSubscription = this._profileService.getProfile().subscribe((profile) => {
       this.roles = profile.roles;
-      this.isActive = profile.status === 'active';
-      this.initializeMenuItems();
+     
+      if(profile.comapny){
+        this.isActive = profile.comapny.status === 'active';
+      }else{
+        this.isActive = profile.status === 'active';
+      }
       this.isLoading = false;
     });
     this.unsubscribe.push(profileSubscription);

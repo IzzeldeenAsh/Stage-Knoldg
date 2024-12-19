@@ -321,3 +321,29 @@ html[dir="rtl"] .p-element {
       html[dir="ltr"] .my-menu{
         left: -50px;
       }
+
+         /* src/app/modules/admin-dashboard/accounts/users/users.component.scss */
+
+   .custom-tabview {
+    .p-tabview-nav {
+      background: none !important; /* Remove background from the tab navigation */
+    
+    }
+
+    .p-tabview-nav li a {
+      background: none !important; /* Remove background from individual tabs */
+    }
+
+   
+
+    .p-tabview-nav li a.p-highlight {
+      background: none !important; /* Ensure active tab has no background */
+    }
+  }
+
+    .p-menu-list{
+        padding-left: 0 !important;
+        margin-bottom: 0 !important;
+    }
+
+  

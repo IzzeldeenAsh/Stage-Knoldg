@@ -98,7 +98,7 @@ export const locale = {
         FIRSTNAME_LABEL: "الاسم الاول",
         FIRSTNAME_PLACEHOLDER: "الاسم الاول",
         FIRSTNAME_REQUIRED: "الاسم الاول مطلوب",
-        FIRSTNAME_MINLENGTH: "يجب أن يح��وي الاسم الاول على 3 أحرف على الأقل",
+        FIRSTNAME_MINLENGTH: "يجب أن يحتوي الاسم الاول على 3 أحرف على الأقل",
         FIRSTNAME_MAXLENGTH: "يجب أن يحتوي الاسم الاول على 100 حرف كحد أقصى",
         EMAIL_LABEL: "البريد الإلكتروني",
         EMAIL_PLACEHOLDER: "البريد الإلكتروني",
@@ -113,7 +113,7 @@ export const locale = {
           "يجب أن تحتوي كلمة المرور على حرف واحد ورقم واحد ورمز خاص على الأقل.",
         PASSWORD_MINLENGTH: "يجب أن تحتوي كلمة المرور على 3 أحرف على الأقل",
         PASSWORD_MAXLENGTH: "يجب أن تحتوي كلمة المرور على 100 حرف كحد أقصى",
-        CONFIRM_PASSWORD_LABEL: "تأكيد كلمة المرور",
+        CONFIRM_PASSWORD_LABEL: "تأكيد كلمة ��لمرور",
         CONFIRM_PASSWORD_PLACEHOLDER: "تأكيد كلمة المرور",
         CONFIRM_PASSWORD_REQUIRED: "تأكيد كلمة المرور مطلوب",
         CONFIRM_PASSWORD_MINLENGTH:
@@ -150,7 +150,7 @@ export const locale = {
         `,
         EMPOWER_INSIGHTS_TITLE: "أطلق العنان لخبراتك.",
         EMPOWER_INSIGHTS_TEXT: `
-        ابدأ رحلة جني الإيرادات في كل مرة يتم فيها تنزيل محتواك من قبل الزوار.<br /><br />
+        ابدأ رحلة جني الإيرادات في كل مرة يتم فيها تنزيل محتواك من قبل ال��وار.<br /><br />
             <span class="text-dark font-weight-bolder" ><strong>جمهورك العالم.</strong></span> <br><br>من خلال مشاركتك رؤاك وخبراتك للأفراد والشركات في العالم أجمع، ستحدث أبحاثك وتقاريرك تغيراً ملموساً في صناعة القرار.<br /><br />
             <span class="text-dark font-weight-bolder" ><strong>ابدأ رحلة العمل الاستشاري الفريدة من نوعها.</strong></span><br><br>
 
@@ -228,7 +228,7 @@ export const locale = {
   UPGRADE_TO_CORPORATE_ACCOUNT: "ترقية إلى حساب تجاري", // Heading for the form
   COMPANY_LOGO_REQUIRED: "شعار الشركة مطلوب.", // Error message for logo
   WEBSITE_REQUIRED: "موقع الشركة مطلوب.", // Error message for website domain
-  COMPANY_EMAIL_REQUIRED: "البريد الإلكتروني للشركة مطلوب.", // Error message for company email
+  COMPANY_EMAIL_REQUIRED: "البريد الإلكتر��ني للشركة مطلوب.", // Error message for company email
   CODE_REQUIRED: "رمز التحقق مطلوب.", // Error message for verification code
   DELETE_FILE: "حذف الملف", // Tooltip for delete file button
       // New Keys for the Current Component
@@ -289,6 +289,7 @@ export const locale = {
     "CODE": "رمز التأكيد ",
     "ENTER_CODE": "ادخل الرمز المرسل",
     OTHER_FIELD_PLACEHOLDER: "أدخل تخصصك الآخر",
+    DOCUMENT_REGISTRY_APPROVAL_NOTE: "يرجى ملاحظة أن تحميل وثيقة التسجيل يتطلب الموافقة. سيتم إشعارك بمجرد مراجعة وثيقتك.",
     },
     CONGRATS_CARD: {
       TITLE: "تهانينا!",
@@ -304,7 +305,7 @@ export const locale = {
     ACCOUNT_PENDING: {
       TITLE: "الحساب قيد الموافقة",
       MESSAGE1: "شكرًا لتسجيلك! حسابك قيد الموافقة حاليًا من قبل المسؤولين لدينا. بمجرد مراجعة حسابك والموافقة عليه، ستتلقى بريدًا إلكترونيًا للتأكيد.",
-      MESSAGE2: "إذا كنت تعت��د أن هناك مشكلة في تسجيلك أو لديك أي أسئلة، يرجى الاتصال بفريق الدعم لدينا.",
+      MESSAGE2: "إذا كنت تعتد أن هناك مشكلة في تسجيلك أو لديك أي أسئلة، يرجى الاتصال بفريق الدعم لدينا.",
       BUTTON: "اتصل بالدعم"
     },
     PROFILE: {
@@ -392,7 +393,7 @@ export const locale = {
         HEADER: 'تفاصيل الطلب',
         REQUEST_TYPE_LABEL: 'نوع الطلب',
         STATUS_BADGE: '{{status}}',
-        STAFF_NOTES_LABEL: 'ملاحظات الموظفين',
+        STAFF_NOTES_LABEL: 'ملاحظات ال��وظفين',
         NO_STAFF_NOTES: 'لا توجد ملاحظات موظفين متاحة.',
       },
     },
@@ -420,7 +421,8 @@ export const locale = {
         "REASON_LABEL": "سبب إلغاء التنشيط",
         "REASON_PLACEHOLDER": "يرجى توضيح سبب رغبتك في إلغاء تنشيط حسابك",
         "CONFIRM_BUTTON": "إلغاء تنشيط حساب الشركة"
-      }
+      },
+      "PENDING_REQUEST" : "طلب قيد المراجعة"
     }
   },
 };

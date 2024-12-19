@@ -20,7 +20,7 @@ export class DeactivateModalComponent extends BaseComponent {
   deactivateAccount() {
     // TODO: Implement account deactivation logic
     const deactivateSub = this._deactivateService
-      .deactivateRequest(this.lang ? this.lang : "en", this.deactivationReason)
+      .deactivateRequest(this.deactivationReason , this.lang ? this.lang : "en")
       .subscribe({
         next: (res) => {
           const message =

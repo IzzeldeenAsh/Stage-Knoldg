@@ -7,101 +7,127 @@
 
 
 <ng-container *ngIf="!(isLoading$ | async)">
-<div id="kt_app_toolbar" class="app-toolbar pt-10 mb-0">
+  <div id="kt_app_toolbar" class="app-toolbar pt-10 mb-0">
     <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex align-items-stretch">
-   
-      <div class="app-toolbar-wrapper d-flex flex-stack flex-wrap gap-4 w-100">
-      
-        <div class="page-title d-flex flex-column justify-content-center gap-1 me-3">
-          <h1 class="page-heading d-flex flex-column justify-content-center text-gray-900 fw-bold fs-3 m-0">
-            Requests
-          </h1>
-          <div class="fw-semibold fs-7 my-0 text-muted">{{requestsList.length}} Requests</div>
+        <div class="app-toolbar-wrapper d-flex flex-stack flex-wrap gap-4 w-100">
+            <div class="page-title d-flex flex-column justify-content-center gap-1 me-3">
+                <h1 class="page-heading d-flex flex-column justify-content-center text-gray-900 fw-bold fs-3 m-0">
+                    Requests
+                </h1>
+                <div class="fw-semibold fs-7 my-0 text-muted">{{requestsList.length}} Requests</div>
+            </div>
         </div>
-    
-      </div>
     </div>
- </div>
+  </div>
   
-<div id="kt_app_content" class="app-content flex-column-fluid">
+  <div id="kt_app_content" class="app-content flex-column-fluid">
     <div id="kt_app_content_container" class="app-container container-fluid">
-      <div class="card">
-        <div class="card-header border-0 pt-6">
-          <div class="card-title">
-            <div class="d-flex align-items-center position-relative my-1">
-              <i class="pi pi-search fs-3 position-absolute ms-5"></i>
-              <input
-                type="text"
-                pInputText
-                class="form-control w-250px ps-12"
-                placeholder="Search Requests"
-                (input)="applyFilter($event)"
-              />
-            </div>
-          </div>
-        </div>
-        <div class="card-body pt-0">
-          <ng-container *ngIf="(isLoading$ | async) === false && requestsList.length > 0">
-        
-            <p-table #dt [value]="requestsList" [paginator]="false" [rows]="10" [globalFilterFields]="['requestable.legal_name','requestable_type','comments']" class="table-p">
-              <ng-template pTemplate="header">
-                <tr>
-                  <th>Profile</th>
-                  <th>Legal Name</th>
-                  <th>Requestable</th>
-                  <th>Request Type</th>
-                  <th>Status</th>
-                  <th>Action</th>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="body" let-request>
-                <tr>
-                  <td class="text-center">
-                    <img
-                      [src]="request.requestable.logo"
-                      alt="{{ request.requestable.legal_name }}"
-                      width="40"
-                      height="40"
-                      style="object-fit: cover; border-radius: 50%;"
-                    />
-                  </td>
-                  <td>{{ request.requestable.legal_name }}</td>
-                  <td
-                 
-                  >{{ request.requestable_type }}</td>
-                  <td 
-                  >
-                  <div> {{ request.type.label }}</div>
-                 
-                </td>
-                <td>
-                  <div class="badge"
-                    [ngClass]="{
-                      ' badge-warning' : request.status === 'pending',
-                      ' badge-success' : request.status === 'approved',
-                      ' badge-danger' : request.status === 'declined',
-                    }"
-                  >{{request.status}}</div>
-                 
-                </td>
-                  <td class="text-center">
-                   <button 
-                    class="btn-sm btn btn-primary" (click)="viewRequest(request)">View</button>
-                  </td>
-                </tr>
-              </ng-template>
-            </p-table>
-          </ng-container>
+        <div class="card">
+            <div class="card-header border-0 pt-6">
+                <div class="card-title">
+                    <div class="d-flex align-items-center position-relative my-1">
+                        <i class="pi pi-search fs-3 position-absolute ms-5"></i>
+                        <input
+                            type="text"
+                            pInputText
+                            class="form-control w-250px ps-12"
+                            placeholder="Search Requests"
+                            (input)="applyFilter($event)"
+                            [(ngModel)]="globalFilter"
+                        />
+                    </div>
+                </div>
+                <div class="card-toolbar d-flex align-items-center flex-1 justify-content-end gap-3">
+                    <!-- Filter by Request Type -->
+                    <p-dropdown 
+                        [options]="requestTypes"
+                        optionLabel="label"
+                        optionValue="key"
+                        placeholder="Select Request Type"
+                        [(ngModel)]="selectedType"
+                        class="mw-200px"
+                        (onChange)="onTypeChange()">
+                    </p-dropdown>
   
-          <ng-container *ngIf="(isLoading$ | async) === false && requestsList.length === 0">
-            <div class="d-flex align-items-center justify-content-center h-400px text-muted">
-              No Available Data
+                    <!-- Filter by Status -->
+                    <p-dropdown 
+                        [options]="statuses"
+                        placeholder="Select Status"
+                        [(ngModel)]="selectedStatus"
+                        class="mw-200px"
+                        (onChange)="onStatusChange()">
+                    </p-dropdown>
+  
+                    <button class="btn btn-sm btn-light" (click)="resetFilters()">Reset</button>
+                </div>
             </div>
-          </ng-container>
+            <div class="card-body pt-0">
+                <ng-container *ngIf="(isLoading$ | async) === false && requestsList.length > 0">
+                    <p-table #dt 
+                        [value]="requestsList" 
+                        [paginator]="false" 
+                        [rows]="10" 
+                        [globalFilterFields]="['requestable.legal_name','type.label','status','requestable_type','comments']" 
+                        class="table-p"
+                        [resizableColumns]="true"
+                        [showCurrentPageReport]="false"
+                        sortField="status"
+                        >
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>Profile</th>
+                                <th>Legal Name</th>
+                                <th>Requestable</th>
+                                <th>Request Type</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-request>
+                            <tr>
+                                <td class="text-center">
+                                    <img
+                                        [src]="request.requestable.logo"
+                                        alt="{{ request.requestable.legal_name }}"
+                                        width="40"
+                                        height="40"
+                                        style="object-fit: cover; border-radius: 4px;"
+                                    />
+                                </td>
+                                <td>{{ request.requestable.legal_name }}</td>
+                                <td>{{ request.requestable_type }}</td>
+                                <td>{{ request.type.label }}</td>
+                                <td>
+                                    <div class="badge"
+                                        [ngClass]="{
+                                            ' badge-warning': request.status === 'pending',
+                                            ' badge-success': request.status === 'approved',
+                                            ' badge-danger': request.status === 'declined'
+                                        }">
+                                        {{request.status}}
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <button 
+                                        class="btn-sm btn btn-primary" 
+                                        (click)="viewRequest(request)">View
+                                    </button>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </ng-container>
+  
+                <ng-container *ngIf="(isLoading$ | async) === false && requestsList.length === 0">
+                    <div class="d-flex align-items-center justify-content-center h-400px text-muted">
+                        No Available Data
+                    </div>
+                </ng-container>
+            </div>
         </div>
-      </div>
     </div>
- </div>
+  </div>
+  
 
 <p-dialog
     class="position-relative"
@@ -264,6 +290,17 @@
             {{ selectedRequest?.handel_at
               ? (selectedRequest?.handel_at | date: 'medium')
               : 'Not Handled Yet' }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-body">
+        <div class="row mb-2">
+          <div class="col-md-4 text-muted">Comments:</div>
+          <div class="col-md-8">
+            {{ selectedRequest?.comments || 'None' }}
           </div>
         </div>
       </div>
@@ -488,7 +525,7 @@
     }"
   >
     {{ selectedRequest?.type?.label }} Request <br>
-    <div class=" text-uppercase" [ngClass]="{'text-success': selectedRequest?.status === 'approved', 'text-danger': selectedRequest?.status === 'declined'}" > {{ selectedRequest?.status }}</div>
+    <div class=" text-uppercase" [ngClass]="{'text-success': selectedRequest?.status === 'approved', 'text-danger': selectedRequest?.status === 'declined', 'text-warning': selectedRequest?.status === 'pending'}" > {{ selectedRequest?.status }}</div>
   </div>
 </div>
 <div class="card mb-4" *ngIf="selectedRequest?.requestable?.register_document && selectedRequest?.type?.key==='activate_company'">
@@ -591,12 +628,7 @@
           <ng-template #noDocument>N/A</ng-template>
         </div>
       </div>
-      <div class="row mb-2">
-        <div class="col-md-4 text-muted">Comments:</div>
-        <div class="col-md-8">
-          {{ selectedRequest?.comments || 'None' }}
-        </div>
-      </div>
+      
       <div class="row mb-2">
         <div class="col-md-4 text-muted">Staff Notes:</div>
         <div class="col-md-8">
@@ -621,6 +653,16 @@
           {{ selectedRequest?.handel_at
             ? (selectedRequest?.handel_at | date: 'medium')
             : 'Not Handled Yet' }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title mb-3">Client Notes</h5>
+      <div class="row mb-2">
+        <div class="col-md-8">
+          {{ selectedRequest?.comments || 'None' }}
         </div>
       </div>
     </div>

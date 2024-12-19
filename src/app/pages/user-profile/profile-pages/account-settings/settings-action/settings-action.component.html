@@ -59,13 +59,23 @@
               {{ 'DEACTIVATE_ACCOUNT.DESCRIPTION' | translate }}
             </span>
             <div class="mb-7">
-              <a
-              class="btn btn-sm btn-danger fw-semibold me-2"
-              data-bs-toggle="modal" 
-              data-bs-target="#deactivateModal"
-              >
-                {{ 'DEACTIVATE_ACCOUNT.BUTTON_TEXT' | translate }}
-              </a>
+              @if(!isDeactivateRequestPending){
+                <a
+                class="btn btn-sm btn-danger fw-semibold me-2"
+                data-bs-toggle="modal" 
+                data-bs-target="#deactivateModal"
+                >
+                  {{ 'DEACTIVATE_ACCOUNT.BUTTON_TEXT' | translate }}
+                </a>
+              }@else{
+                <div
+                class="badge badge-light-warning text-uppercase"
+             
+                >
+                  {{ 'DEACTIVATE_ACCOUNT.PENDING_REQUEST' | translate }}
+                </div>
+              }
+            
             </div>
           </div>
         

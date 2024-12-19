@@ -1,6 +1,6 @@
 // base.component.ts
 import { OnDestroy, AfterViewInit, Directive, Injector } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { ScrollAnimsService } from '../_fake/services/scroll-anims/scroll-anims.service';
 import { MessageService } from 'primeng/api';
 import { TranslationService } from 'src/app/modules/i18n';
@@ -10,7 +10,7 @@ export abstract class BaseComponent implements OnDestroy, AfterViewInit {
   protected scrollAnims: ScrollAnimsService;
   public messageService: MessageService;
   protected translate: TranslationService;
-
+   unsubscribe$ = new Subject<void>();
   protected unsubscribe: Subscription[] = [];
   lang: string='en';
 
@@ -46,5 +46,7 @@ export abstract class BaseComponent implements OnDestroy, AfterViewInit {
   ngOnDestroy(): void {
     console.log("Subs Destroyed");
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 }

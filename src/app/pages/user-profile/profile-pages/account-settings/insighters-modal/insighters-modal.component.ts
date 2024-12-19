@@ -1,55 +1,80 @@
-import { Component, Injector } from '@angular/core';
+import { Component, Inject, Injector, OnInit } from '@angular/core';
 import { extend } from 'jquery';
 import { TransferCorporateAccountService } from 'src/app/_fake/services/transfer-coporate-account/transfer-corporate-account.service';
 import { BaseComponent } from 'src/app/modules/base.component';
 import Swal from 'sweetalert2';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { FormControl } from '@angular/forms';
+import { debounceTime, distinctUntilChanged, of, switchMap, takeUntil } from 'rxjs';
+
+interface User {
+  name: string;
+  email: string;
+  profile_image?: string;
+  first_name: string;
+  last_name: string;
+  bgClass?: string; // Add a property to hold the background class
+  // Add other relevant fields if necessary
+}
+
+
 @Component({
   selector: 'app-insighters-modal',
   templateUrl: './insighters-modal.component.html',
   styleUrls: ['./insighters-modal.component.scss']
 })
-export class InsightersModalComponent extends BaseComponent {
+export class InsightersModalComponent extends BaseComponent implements OnInit {
   step:number=1;
+  isLoading: boolean = false;
+  fetchedUsers: any[] = [];
+  selectedUser: User | null = null;
   constructor(
-    injector :Injector,
-    private transferCoporateAccountService:TransferCorporateAccountService){
+    injector: Injector,
+    private transferCoporateAccountService: TransferCorporateAccountService,
+    @Inject(NgbActiveModal) public activeModal: NgbActiveModal
+  ){
     super(injector)
   }
-  code:string='';
-  searchTerm: string = '';
-   userSelected=[{ name: 'Emma Smith', email: 'smithkpmg.com',initials: 'M', bg: 'bg-light-warning text-warning' , avatar: './assets/media/avatars/300-6.jpg' }]
-  users = [
-    { name: 'Emma Smith', email: 'smithkpmg.com', avatar: './assets/media/avatars/300-6.jpg' },
-    { name: 'Melody Macy', email: 'melodyaltbox.com', initials: 'M', bg: 'bg-light-danger text-danger' },
-    { name: 'Max Smith', email: 'maxkt.com', avatar: './assets/media/avatars/300-1.jpg' },
-    { name: 'Sean Bean', email: 'seandellito.com', avatar: './assets/media/avatars/300-5.jpg' },
-    { name: 'Brian Cox', email: 'brianexchange.com', avatar: './assets/media/avatars/300-25.jpg' },
-    { name: 'Mikaela Collins', email: 'mikpex.com', initials: 'C', bg: 'bg-light-warning text-warning' },
-    { name: 'Francis Mitcham', email: 'f.mitkpmg.com', avatar: './assets/media/avatars/300-9.jpg' },
-    { name: 'Olivia Wild', email: 'oliviacorpmail.com', initials: 'O', bg: 'bg-light-danger text-danger' },
-    { name: 'Neil Owen', email: 'owen.neilgmail.com', initials: 'N', bg: 'bg-light-primary text-primary' },
-    { name: 'Dan Wilson', email: 'damconsilting.com', avatar: './assets/media/avatars/300-23.jpg' },
-    { name: 'Emma Bold', email: 'emmaintenso.com', initials: 'E', bg: 'bg-light-danger text-danger' },
-    { name: 'Ana Crown', email: 'ana.cflimtel.com', avatar: './assets/media/avatars/300-12.jpg' },
-    { name: 'Robert Doe', email: 'robertbenko.com', initials: 'A', bg: 'bg-light-info text-info' },
-    { name: 'John Miller', email: 'millermapple.com', avatar: './assets/media/avatars/300-13.jpg' },
-    { name: 'Lucy Kunic', email: 'lucy.mfentech.com', initials: 'L', bg: 'bg-light-success text-success' },
-    { name: 'Ethan Wilder', email: 'ethanloop.com.au', avatar: './assets/media/avatars/300-21.jpg' },
-    { name: 'Max Smith', email: 'maxkt.com', avatar: './assets/media/avatars/300-1.jpg' }
-  ];
+  searchControl:FormControl = new FormControl('')
 
-  get filteredUsers() {
-    if (!this.searchTerm) {
-      return this.users;
-    }
-    const term = this.searchTerm.toLowerCase();
-    return this.users.filter(user => 
-      user.name.toLowerCase().includes(term) ||
-      user.email.toLowerCase().includes(term)
-    );
+  ngOnInit(): void {
+    this.searchControl.valueChanges.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap((term: string) => {
+        if (term.trim() === '') {
+          return of([]); // Return an Observable emitting an empty array
+        }
+        this.isLoading = true;
+        return this.transferCoporateAccountService.searchInsighters(term, this.lang ? this.lang : "en");
+      }),
+      takeUntil(this.unsubscribe$)
+    ).subscribe({
+      next: (response: any) => { // Adjust based on actual response structure
+        // Assuming the response has a 'data' property containing the users
+        const users: User[] = Array.isArray(response) ? response : response.data || [];
+        // Assign a random class to each user
+        this.fetchedUsers = users.map(user => ({
+          ...user,
+          bgClass: this.getRandomClass()
+        }));
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.handleServerErrors(err);
+        this.isLoading = false;
+      }
+    });
   }
-  inviteUser(email: string) {
-    const fakeEmail= "yazan.o.alkhatib@gmail.com"
+
+  code: string = '';
+  searchTerm: string = '';
+
+
+ 
+  inviteUser(user: User) {
+    const email = user.email;
+    this.selectedUser = user;
     Swal.fire({
       title: this.lang==='ar' ? 'هل انت متاكد' : "Are you sure?",
       text:  this.lang ==='ar' ? `هل أنت متاكد من إرسال الدعوة إلى ${email}؟` : `Are you sure you want to send an invitation to ${email}?`,
@@ -61,7 +86,7 @@ export class InsightersModalComponent extends BaseComponent {
       cancelButtonText: this.lang==='ar' ? "لا" : "No",
     }).then((result) => {
       if (result.isConfirmed) {
-        const inviteSub = this.transferCoporateAccountService.sendTransferInvitation(fakeEmail,this.lang ? this.lang : "en")
+        const inviteSub = this.transferCoporateAccountService.sendTransferInvitation(email,this.lang ? this.lang : "en")
         .subscribe({
           next: (res) => {
             const title = this.lang==='ar' ? "تم إرسال الدعوة بنجاح" : "Invitation sent successfully"
@@ -81,7 +106,36 @@ export class InsightersModalComponent extends BaseComponent {
    
   }
   transfer(){
-    console.log(this.code)
+    if(!this.selectedUser) return;
+   const verifySub = this.transferCoporateAccountService.verifyTransferInvitation(this.selectedUser.email,this.code,this.lang ? this.lang : "en")
+   .subscribe({
+    next: (res) => {
+      const message = this.lang==='ar' ? "تم التحقق بنجاح" : "Verification successful";
+      this.showSuccess('',message);
+      this.activeModal.close();
+    },
+    error: (err) => {
+      this.handleServerErrors(err)
+    }
+   })
+   this.unsubscribe.push(verifySub)
+  }
+
+  getInitials(name:string){
+    return name.split(' ').map(word => word[0]).join('');
+  }
+  private getRandomClass(): string {
+    const classes = [
+      'bg-light-success',
+      'bg-light-info',
+      'bg-light-primary',
+      'bg-light-warning',
+      'bg-light-danger',
+      'bg-light-secondary',
+      'bg-light-dark'
+    ];
+    const randomIndex = Math.floor(Math.random() * classes.length);
+    return classes[randomIndex];
   }
   private handleServerErrors(error: any) {
    

@@ -85,4 +85,8 @@ export class OverviewComponent extends BaseComponent implements OnInit {
         }
       );
   }
+
+  getLogoBackgroundImage(){
+    return this.profile.profile_photo_url ? `url(${this.profile.profile_photo_url})` : 'url(../../../assets/media/svg/avatars/blank.svg)';
+  }
 }
