@@ -23,7 +23,7 @@ export class AppComponent implements OnInit {
   constructor(
     private translationService: TranslationService,
     private modeService: ThemeModeService,
-    private getProfileService: ProfileService
+    private profileService: ProfileService
   ) {
     // register translations
     this.translationService.loadTranslations(
@@ -34,7 +34,7 @@ export class AppComponent implements OnInit {
       deLang,
       frLang
     );
-    this.getProfileService.getProfile().pipe(first()).subscribe()
+    this.profileService.getProfile().subscribe();
   }
 
   ngOnInit() {

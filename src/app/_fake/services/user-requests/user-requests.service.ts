@@ -159,5 +159,22 @@ export class UserRequestsService {
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );
+  };
+
+  /**
+   * Send reactivate request for a company
+   * @param comments User comments for the request 
+   * @param parentId Parent company ID
+   * @returns Observable of the request response
+   */
+  sendReactivateRequest(type:string): Observable<any> {
+    const url = type === 'company' ? 'https://api.foresighta.co/api/company/activate' : 'https://api.foresighta.co/api/insighter/activate';
+    
+
+    this.setLoading(true);
+    return this.http.post(url, {}).pipe(
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
   }
 }

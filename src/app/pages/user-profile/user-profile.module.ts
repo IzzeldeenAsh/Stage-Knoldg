@@ -39,6 +39,7 @@ import { UserRequestsComponent } from './profile-pages/user-requests/user-reques
 import { NgbActiveModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { DeleteWithDataComponent } from './profile-pages/account-settings/delete-with-data/delete-with-data.component';
+import { ReactivateModalComponent } from './profile-pages/account-settings/reactivate-modal/reactivate-modal.component';
 
 
 
@@ -60,6 +61,7 @@ import { DeleteWithDataComponent } from './profile-pages/account-settings/delete
       DeleteWithDataComponent,
       UpgradeToCompanyComponent,
       InsightersModalComponent,
+      ReactivateModalComponent,
       CertificatesComponent,
       ResetPasswordComponent,
     ],

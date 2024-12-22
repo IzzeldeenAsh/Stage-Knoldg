@@ -36,8 +36,10 @@ const routes: Routes = [ {
         import('./staff-settings/staff-settings.module').then(
           (m) => m.StaffSettingsModule
         ),
-    }
+    },
+    { path: '**', redirectTo: 'auth' },
   ],
+  
 }
 ];
 

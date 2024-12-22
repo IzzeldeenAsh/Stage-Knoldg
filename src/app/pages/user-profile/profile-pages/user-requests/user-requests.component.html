@@ -74,8 +74,8 @@ mode="indeterminate"
                 <!--begin::Table head-->
                 <thead>
                     <tr class="text-linline-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
-                        <th *ngIf="userProfile?.roles?.includes('company')" class="min-w-150px">{{ 'USER_REQUESTS.TABLE_HEADERS.LEGAL_NAME' | translate }}</th>
-                        <th *ngIf="userProfile?.roles?.includes('insighter')" class="min-w-150px">{{ 'USER_REQUESTS.TABLE_HEADERS.NAME' | translate }}</th>
+                        <ng-container *ngIf="userProfile?.roles?.includes('company')">   <th class="min-w-150px">{{ 'USER_REQUESTS.TABLE_HEADERS.LEGAL_NAME' | translate }}</th></ng-container>
+                        <ng-container *ngIf="userProfile?.roles?.includes('insighter')">   <th class="min-w-150px">{{ 'USER_REQUESTS.TABLE_HEADERS.NAME' | translate }}</th></ng-container>
                         <th class="min-w-150px">{{ 'USER_REQUESTS.TABLE_HEADERS.REQUEST_TYPE' | translate }}</th>
                         <th class="min-w-150px">{{ 'USER_REQUESTS.TABLE_HEADERS.STATUS' | translate }}</th>
                         <th class="min-w-150px">{{ 'USER_REQUESTS.TABLE_HEADERS.COMMENTS' | translate }}</th>
@@ -87,12 +87,16 @@ mode="indeterminate"
                 <!--begin::Table body-->
                 <tbody class="fw-bold text-gray-600">
                     <tr *ngFor="let request of filteredUserRequests">
-                        <td *ngIf="request.requestable?.roles?.includes('company')">
+                        <ng-container *ngIf="request.requestable_type==='company'">
+                        <td>
                             {{ request.requestable.legal_name }}
                         </td>
-                        <td *ngIf="request.requestable?.roles?.includes('insighter')">
+                        </ng-container>
+                        <ng-container *ngIf="request.requestable_type==='userinsighter'">
+                        <td>
                             {{ request.requestable.first_name }} {{ request.requestable.last_name }}
                         </td>
+                        </ng-container>
                         <td>
                             {{ request.type.label }}
                         </td>

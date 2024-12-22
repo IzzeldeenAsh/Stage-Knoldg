@@ -62,7 +62,9 @@ const routes: Routes = [
         },
         {
           path:'company-settings',
-          component:CompanySettingsComponent
+          component:CompanySettingsComponent,
+          canActivate:[RolesGuard],
+          data: { roles: ['company'] } 
         },
         {
           path:'reset-password',
@@ -70,11 +72,15 @@ const routes: Routes = [
         },
         {
           path:'company-account',
-          component:CompanySettingsComponent
+          component:CompanySettingsComponent,
+          canActivate:[RolesGuard],
+          data: { roles: ['company'] } 
         },
         {
           path:'settings-action',
-          component:SettingsActionComponent
+          component:SettingsActionComponent,
+          canActivate:[RolesGuard],
+          data: { roles: ['insighter', 'company'] } 
         }
       ],
       data: { roles: ['insighter', 'company'] } 

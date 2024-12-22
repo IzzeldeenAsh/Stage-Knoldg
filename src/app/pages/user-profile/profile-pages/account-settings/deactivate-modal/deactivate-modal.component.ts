@@ -1,5 +1,6 @@
-import { Component, Injector } from "@angular/core";
+import { Component, Injector, OnInit } from "@angular/core";
 import { DeactivateAccountService } from "src/app/_fake/services/deactivate-account/deactivate-account.service";
+import { ProfileService } from "src/app/_fake/services/get-profile/get-profile.service";
 import { BaseComponent } from "src/app/modules/base.component";
 
 @Component({
@@ -7,35 +8,72 @@ import { BaseComponent } from "src/app/modules/base.component";
   templateUrl: "./deactivate-modal.component.html",
   styleUrl: "./deactivate-modal.component.scss",
 })
-export class DeactivateModalComponent extends BaseComponent {
+export class DeactivateModalComponent extends BaseComponent implements OnInit {
   deactivationReason: string = "";
   step: number = 1;
+  roles:any[] = [];
   constructor(
     injector: Injector,
-    private _deactivateService: DeactivateAccountService
+    private _deactivateService: DeactivateAccountService,
+    private getProfileService: ProfileService
   ) {
     super(injector);
   }
 
-  deactivateAccount() {
-    // TODO: Implement account deactivation logic
-    // const deactivateSub = this._deactivateService
-    //   .deactivateRequest(this.deactivationReason , this.lang ? this.lang : "en")
-    //   .subscribe({
-    //     next: (res) => {
-    //       const message =
-    //         this.lang === "ar"
-    //           ? "تم إرسال طلب إلغاء التنشيط بنجاح"
-    //           : "Account deactivation request sent successfully";
-    //       this.showSuccess("", message);
-    //       this.step = 2;
-    //     },
-    //     error: (err) => {
-    //       this.handleServerErrors(err);
-    //     },
-    //   });
+  ngOnInit(): void {
+  const profile = this.getProfileService.getProfile()
+  .subscribe(
+    {
+      next:(profile)=>{
+        this.roles = profile.roles;
+      },
+    }
+  ) 
+  this.unsubscribe.push(profile);
+  }
 
-    // this.unsubscribe.push(deactivateSub);
+  hasRole(role:string[]){
+    return this.roles.some((r:any)=>role.includes(r));
+  }
+
+
+
+  deactivateInsighter(){
+    const deactivateSub = this._deactivateService.deactivateInsighterWithoutDelete(this.deactivationReason,'0',this.lang).subscribe({
+      next:(res)=>{
+        const message = this.lang === "ar" ? "تم إلغاء التنشيط بنجاح" : "Account deactivated successfully";
+        this.showSuccess("",message);
+        this.step = 2;
+      },
+      error:(err)=>{
+        this.handleServerErrors(err);
+      }
+    })
+    this.unsubscribe.push(deactivateSub);
+  }
+  deactivateCompany(){
+    const deactivateSub = this._deactivateService.deactivateCompanyWithoutDelete(this.deactivationReason,'0',this.lang).subscribe({
+      next:(res)=>{
+       const message = this.lang === "ar" ? "تم إلغاء التنشيط بنجاح" : "Account deactivated successfully";
+       this.showSuccess("",message);
+       this.step = 2;
+      },
+      error:(err)=>{
+        this.handleServerErrors(err);
+      }
+    })
+    this.unsubscribe.push(deactivateSub);
+  }
+
+
+  deactivateAccount() {
+    if(this.hasRole(['insighter'])){
+      this.deactivateInsighter();
+    }
+    else if(this.hasRole(['company'])){
+      this.deactivateCompany();
+    }
+
   }
 
   private handleServerErrors(error: any) {

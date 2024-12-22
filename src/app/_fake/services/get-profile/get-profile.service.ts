@@ -35,10 +35,9 @@ export class ProfileService {
     }
     this.currentLang = this.translateService.getSelectedLanguage() ? this.translateService.getSelectedLanguage() : 'en';
   }
-
-  getProfile(): Observable<any> {
+  getProfile(isPass:boolean=false): Observable<any> {
     // Return cached observable if it exists
-    if (this.profileCache$) {
+    if (this.profileCache$ && !isPass) {
       return this.profileCache$;
     }
 

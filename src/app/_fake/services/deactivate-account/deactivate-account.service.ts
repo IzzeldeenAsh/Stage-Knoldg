@@ -101,4 +101,29 @@ export class DeactivateAccountService {
       finalize(() => this.setLoading(false))
     );
   }
+
+  /**
+   * Deactivate insighter account without data deletion
+   * @param comments - User comments for deactivation 
+   * @param parentId - Parent request ID
+   * @param lang - Current language
+   * @returns Observable<any>
+   */
+  deactivateInsighterWithoutDelete(comments: string, parentId: string, lang: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': lang
+    });
+
+    const formData = new FormData();
+    formData.append('comments', comments);
+    formData.append('parent_id', parentId);
+
+    this.setLoading(true);
+    return this.http.post<any>(`${this.baseUrl}/insighter/deactivate`, formData, { headers }).pipe(
+      map((res) => res),
+      catchError((error) => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
 }
