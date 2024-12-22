@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AccountSettingsComponent } from './account-settings.component';
+import { DeleteWithDataComponent } from './delete-with-data.component';
 
-describe('AccountSettingsComponent', () => {
-  let component: AccountSettingsComponent;
-  let fixture: ComponentFixture<AccountSettingsComponent>;
+describe('DeleteWithDataComponent', () => {
+  let component: DeleteWithDataComponent;
+  let fixture: ComponentFixture<DeleteWithDataComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AccountSettingsComponent]
+      imports: [DeleteWithDataComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(AccountSettingsComponent);
+    fixture = TestBed.createComponent(DeleteWithDataComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

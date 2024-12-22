@@ -12,25 +12,38 @@ import { BaseComponent } from 'src/app/modules/base.component';
   templateUrl: './requests-list.component.html',
   styleUrls: ['./requests-list.component.scss']
 })
-export class RequestsListComponent extends BaseComponent implements OnInit {
+export class RequestsListComponent 
+extends BaseComponent implements OnInit {
   messages: Message[] = [];
+  answeredQuestions: Array<{
+    id: number;
+    verification_question_id: number;
+    answer: string;
+  }> = [];
+
   requestsList: RequestItem[] = [];
   isLoading$: Observable<boolean>;
   visible: boolean = false;
   visibleVerification: boolean = false;
+  visibleDeactivate: boolean = false;
+  visibleDeactivateDelete: boolean = false;
+
   selectedRequest: RequestItem | null = null;
+  selectedChain: RequestItem[] = [];
+
   verificationQuestions: IVerificationQuestion[] = [];
   loading: boolean = false;
-  confirmationChecked: boolean = false;
   verificationForm: FormGroup;
   staffNotes: string = '';
-  visibleDeactivate: boolean = false;
 
   activateRequestsCount: number = 0;
   deactivateRequestsCount: number = 0;
   verifiedRequestsCount: number = 0;
 
-  // New properties for filters
+  // Flags for splitting question submission vs. approval flow
+  showVerificationQuestions: boolean = false; // true: show question form, false: show approve/disapprove
+
+  // Filters
   selectedType: string = '';
   selectedStatus: string = '';
   globalFilter: string = '';
@@ -47,13 +60,19 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
   ) {
     super(injector);
     this.isLoading$ = this.requestsService.isLoading$;
-
-    // Initialize an empty form group to avoid undefined errors
+    // Initialize an empty form group
     this.verificationForm = this.fb.group({});
   }
 
   ngOnInit(): void {
     this.loadData();
+  }
+  // This helper lets us look up the full question text
+  getQuestionText(questionId: number): string {
+    const found = this.verificationQuestions.find(
+      (q) => q.id === questionId
+    );
+    return found ? found.question : 'Unknown Question';
   }
 
   loadData() {
@@ -63,27 +82,25 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
       questions: this.requestsService.getListOfVerificationQuestions()
     }).subscribe({
       next: (result) => {
-        this.requestsList = result.requests.data.sort((a,b)=>{
-          if(a.status === 'pending'){
-            return -1;
-          }else if(b.status === 'pending'){
-            return 1;
-          }
+        this.requestsList = result.requests.data.sort((a, b) => {
+          if (a.status === 'pending') return -1;
+          else if (b.status === 'pending') return 1;
           return 0;
         });
+
+        // We'll keep a global list of verification questions, if needed
         this.verificationQuestions = result.questions.data;
 
-        // Compute counts based on request types
-        this.activateRequestsCount = this.requestsList.filter(request => request.type.key === 'activate_company').length;
-        this.deactivateRequestsCount = this.requestsList.filter(request => request.type.key === 'deactivate_company').length;
-        this.verifiedRequestsCount = this.requestsList.filter(request => request.type.key === 'verified_company').length;
-
-        // Generate unique request types from the requestsList
+        // Build the set of requestTypes for the p-dropdown
         const typesSet = new Set(
-          this.requestsList.map(request => JSON.stringify({key: request.type.key, label: request.type.label}))
+          this.requestsList.map(request => JSON.stringify({
+            key: request.type.key,
+            label: request.type.label
+          }))
         );
         this.requestTypes = Array.from(typesSet).map(item => JSON.parse(item));
 
+        // Build a minimal (empty) form for our verification questions
         this.initializeVerificationForm();
         this.cdr.detectChanges();
         this.loading = false;
@@ -96,17 +113,11 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
     });
     this.unsubscribe.push(reqSub);
   }
-
   initializeVerificationForm() {
     const group: any = {};
     this.verificationQuestions.forEach(question => {
-      if (question.type === 'boolean') {
-        group['question_' + question.id] = [null, Validators.required];
-      } else if (question.type === 'text') {
-        group['question_' + question.id] = ['', Validators.required];
-      } else {
-        group['question_' + question.id] = ['', Validators.required];
-      }
+      // All questions required
+      group['question_' + question.id] = ['', Validators.required];
     });
     this.verificationForm = this.fb.group(group);
   }
@@ -125,22 +136,13 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
   }
 
   applyCustomFilters() {
-    // Clear existing filters first
     this.table.clear();
-
-    // Apply global filter if any
     if (this.globalFilter) {
       this.table.filterGlobal(this.globalFilter.toLowerCase(), 'contains');
     }
-
-    // Filter by selectedType if chosen (Note: adjust the field if different structure)
     if (this.selectedType) {
-      // If the requestsList array items are structured as `request.type.key`:
-      // We can filter by the nested property `type.key` using table.filter(value, field, matchMode)
       this.table.filter(this.selectedType, 'type.key', 'equals');
     }
-
-    // Filter by selectedStatus if chosen
     if (this.selectedStatus) {
       this.table.filter(this.selectedStatus, 'status', 'equals');
     }
@@ -155,43 +157,102 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
     }
   }
 
-  onCancel() {
-    this.visible = false;
-    this.selectedRequest = null;
-    this.staffNotes = '';
-  }
-
   get hasErrorMessage() {
     return this.messages.some(msg => msg.severity === 'error');
   }
 
+  /**
+   * Construct a chain of requests from the given request down to the latest child.
+   * If there are multiple children, we always pick the last child in the array 
+   * until we reach a request with no children.
+   */
+  getRequestChain(root: RequestItem): RequestItem[] {
+    const chain: RequestItem[] = [root];
+    let current: RequestItem = root;
+    while (current.children && current.children.length > 0) {
+      const lastChild = current.children[current.children.length - 1];
+      chain.push(lastChild);
+      current = lastChild;
+    }
+    return chain;
+  }
+
   viewRequest(request: RequestItem) {
-    if (request.type.key === 'activate_company') {
-      this.selectedRequest = request;
+    this.selectedChain = this.getRequestChain(request);
+    this.selectedRequest = this.selectedChain[this.selectedChain.length - 1];
+
+    // Add new condition for deactivate_delete_company
+    if (this.selectedRequest.type.key === 'deactivate_delete_company' || 
+        this.selectedRequest.type.key === 'deactivate_delete_insighter') {
+      this.visibleDeactivateDelete = true;
+      return;
+    }
+
+    // If it's a verified company request, decide which UI to show
+    if (this.selectedRequest.type.key === 'verified_company') {
+      const targetId = request.id;
+      // Fetch the stored (already answered) Q&A from the service
+      this.requestsService.getRequestVerificationQuestion(targetId).subscribe({
+        next: (res) => {
+          this.answeredQuestions = res.data || [];
+
+          // If the answeredQuestions array is empty, we show the question form
+          // else we show the read-only Q&A plus the typical "Approve/Decline"
+          if (this.answeredQuestions.length === 0) {
+            this.showVerificationQuestions = true;
+          } else {
+            this.showVerificationQuestions = false;
+          }
+          this.visibleVerification = true;
+        },
+        error: (err) => {
+          console.error('Error fetching verification answers:', err);
+          // Fallback: show question form if something goes wrong
+          this.showVerificationQuestions = true;
+          this.visibleVerification = true;
+        },
+      });
+      return;
+    }
+
+    // Otherwise, it’s either activate_company or deactivate_company
+    if (this.selectedRequest.type.key === 'activate_company') {
       this.visible = true;
-    } else if (request.type.key === 'deactivate_company') {
-      this.selectedRequest = request;
+    } else if (this.selectedRequest.type.key === 'deactivate_company') {
       this.visibleDeactivate = true;
-    } else if (request.type.key === 'verified_company') {
-      this.selectedRequest = request;
-      this.visibleVerification = true;
     }
   }
 
-  showDialogDeactivate() {
-    this.visibleVerification = true;
-  }
 
-  onCancelDeactivate() {
-    this.visibleVerification = false;
+  onCancel() {
+    this.visible = false;
     this.selectedRequest = null;
+    this.selectedChain = [];
     this.staffNotes = '';
   }
 
+  onCancelDeactivate() {
+    this.visibleDeactivate = false;
+    this.selectedRequest = null;
+    this.selectedChain = [];
+    this.staffNotes = '';
+  }
+  onCancelVerification() {
+    this.visibleVerification = false;
+    this.selectedRequest = null;
+    this.selectedChain = [];
+    this.staffNotes = '';
+    this.verificationForm.reset();
+    this.showVerificationQuestions = false;
+  }
+
   onActivate(status: 'approved' | 'declined') {
-    if (this.selectedRequest?.id) {
+    if (this.selectedChain.length > 0) {
+      const latestRequest = this.selectedChain[this.selectedChain.length - 1];
+      const targetId = latestRequest.id;
+     
       const reqSub = this.requestsService.activateCompanyRequest(
-        this.selectedRequest?.id,
+        targetId,
         this.staffNotes,
         status
       ).subscribe({
@@ -199,9 +260,7 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
           const msg = status === 'approved' ? 'Company approved successfully.' : 'Company declined successfully.';
           this.showSuccess('Success', msg);
           this.loadData();
-          this.visible = false;
-          this.selectedRequest = null;
-          this.staffNotes = '';
+          this.onCancel();
         },
         error: (error) => {
           console.error('Error fetching data:', error);
@@ -214,10 +273,39 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
     }
   }
 
+
+  // Called when "Submit Answers" is clicked
+  submitVerificationAnswers() {
+    if (!this.verificationForm.valid || !this.selectedRequest) {
+      this.showError('Error', 'Please fill out all answers.');
+      return;
+    }
+    const formValues = this.verificationForm.value;
+    const verificationAnswers = Object.keys(formValues).map(key => {
+      const questionId = parseInt(key.replace('question_', ''), 10);
+      return { verification_question_id: questionId, answer: formValues[key] };
+    });
+
+    const requestId = this.selectedRequest.id;
+    this.requestsService.sendVerificationAnswers(requestId, verificationAnswers).subscribe({
+      next: () => {
+        // Answers were submitted successfully, now reload or switch to approval UI
+        this.showSuccess('Success', 'Answers submitted.');
+        // Flip the flag so now we show the Approve/Disapprove UI
+        this.visibleVerification = false;
+      },
+      error: (error) => {
+        console.error('Error sending verification answers:', error);
+        this.handleServerErrors(error);
+      }
+    });
+  }
   onDeactivate(status: 'approved' | 'declined') {
-    if (this.selectedRequest?.id) {
+    if (this.selectedChain.length > 0) {
+      const latestRequest = this.selectedChain[this.selectedChain.length - 1];
+      const targetId = latestRequest.id;
       const reqSub = this.requestsService.deactivateCompanyRequest(
-        this.selectedRequest?.id,
+        targetId,
         this.staffNotes,
         status
       ).subscribe({
@@ -227,6 +315,7 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
           this.loadData();
           this.visibleDeactivate = false;
           this.selectedRequest = null;
+          this.selectedChain = [];
           this.staffNotes = '';
         },
         error: (error) => {
@@ -239,58 +328,27 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
     }
   }
 
-  onVerify(status: 'approved' | 'declined') {
-    if (this.visibleVerification) {
-      // Handle activation with verification
-      if (this.verificationForm && this.verificationForm.valid && this.confirmationChecked) {
-        const formValues = this.verificationForm.value;
-        const verificationAnswers = Object.keys(formValues).map(key => {
-          const questionId = parseInt(key.replace('question_', ''));
-          return {
-            verification_question_id: questionId,
-            answer: formValues[key]
-          };
-        });
-
-        if (this.selectedRequest?.id) {
-          const reqSub = this.requestsService.verifyCompanyRequest(
-            this.selectedRequest.id,
-            verificationAnswers,
-            this.staffNotes,
-            status
-          ).subscribe({
-            next: (result) => {
-              const msg = status === 'approved' ? 'Company approved successfully.' : 'Company declined successfully.';
-              this.showSuccess('Success', msg);
-              this.loadData();
-              this.visible = false;
-              this.visibleVerification = false;
-              this.selectedRequest = null;
-              this.staffNotes = '';
-              this.verificationForm.reset();
-              this.confirmationChecked = false;
-            },
-            error: (error) => {
-              console.error('Error verifying company:', error);
-              this.handleServerErrors(error);
-            }
-          });
-          this.unsubscribe.push(reqSub);
+    // Called when "Approve" or "Disapprove" is clicked
+    onVerify(status: 'approved' | 'declined') {
+      if (!this.selectedRequest) return;
+      const requestId = this.selectedRequest.id;
+      this.requestsService.verifyCompanyRequest(requestId, this.staffNotes, status).subscribe({
+        next: () => {
+          const msg = status === 'approved' ? 'Company approved successfully.' : 'Company declined successfully.';
+          this.showSuccess('Success', msg);
+          this.loadData();
+          this.onCancelVerification();
+        },
+        error: (error) => {
+          console.error('Error verifying company:', error);
+          this.handleServerErrors(error);
         }
-      } else {
-        this.showError('Error', 'Please answer all verification questions and confirm.');
-      }
-    } else {
-      // Handle regular activation
-      this.visible = false;
-      this.selectedRequest = null;
-      this.staffNotes = '';
-      this.loadData();
+      });
     }
-  }
+  
 
   isFormValid() {
-    return this.verificationForm && this.verificationForm.valid && this.confirmationChecked;
+    return this.verificationForm && this.verificationForm.valid 
   }
 
   private handleServerErrors(error: any) {
@@ -314,5 +372,44 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
         detail: "An unexpected error occurred.",
       });
     }
+  }
+
+  // Add new method for handling deactivate delete requests
+  onDeactivateDelete(status: 'approved' | 'declined') {
+    if (this.selectedChain.length > 0) {
+      const latestRequest = this.selectedChain[this.selectedChain.length - 1];
+      const targetId = latestRequest.id;
+      
+      const reqSub = this.requestsService.deactivateDeleteRequest(
+        targetId,
+        this.staffNotes,
+        status
+      ).subscribe({
+        next: (result) => {
+          const msg = status === 'approved' ? 'Request approved successfully.' : 'Request declined successfully.';
+          this.showSuccess('Success', msg);
+          this.loadData();
+          this.visibleDeactivateDelete = false;
+          this.selectedRequest = null;
+          this.selectedChain = [];
+          this.staffNotes = '';
+        },
+        error: (error) => {
+          console.error('Error processing request:', error);
+          this.handleServerErrors(error);
+          this.showError('Error', 'An unexpected error occurred.');
+        }
+      });
+
+      this.unsubscribe.push(reqSub);
+    }
+  }
+
+  // Add cancel method for deactivate delete dialog
+  onCancelDeactivateDelete() {
+    this.visibleDeactivateDelete = false;
+    this.selectedRequest = null;
+    this.selectedChain = [];
+    this.staffNotes = '';
   }
 }

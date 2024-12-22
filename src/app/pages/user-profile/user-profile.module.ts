@@ -10,7 +10,6 @@
   import { NavigationTabsComponent } from './navigation-tabs/navigation-tabs.component';
   import { TranslationModule } from 'src/app/modules/i18n';
   import { OverviewComponent } from './profile-pages/overview/overview.component';
-  import { AccountSettingsComponent } from './profile-pages/account-settings/account-settings.component';
   import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   import { ProgressBarModule } from 'primeng/progressbar';
   import { DropdownModule } from 'primeng/dropdown';
@@ -38,6 +37,8 @@ import { SettingsActionComponent } from './profile-pages/account-settings/settin
 import { DeactivateModalComponent } from './profile-pages/account-settings/deactivate-modal/deactivate-modal.component';
 import { UserRequestsComponent } from './profile-pages/user-requests/user-requests.component';
 import { NgbActiveModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { InlineSVGModule } from 'ng-inline-svg-2';
+import { DeleteWithDataComponent } from './profile-pages/account-settings/delete-with-data/delete-with-data.component';
 
 
 
@@ -48,7 +49,6 @@ import { NgbActiveModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
       UserRequestsComponent,
       ActionButtonsComponent,
       NavigationTabsComponent,
-      AccountSettingsComponent,
       SettingsActionComponent,
       CompanySettingsComponent,
       PersonalSettingsComponent,
@@ -57,6 +57,7 @@ import { NgbActiveModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
       SettingsSidebarComponent,
       SettingsDashboardComponent,
       OverviewComponent,
+      DeleteWithDataComponent,
       UpgradeToCompanyComponent,
       InsightersModalComponent,
       CertificatesComponent,
@@ -66,6 +67,7 @@ import { NgbActiveModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
       CommonModule,
       UserProfileRoutingModule,
       FormsModule,
+      
       SharedModule,
       ReactiveFormsModule,
       DynamicDialogModule,
@@ -77,6 +79,7 @@ import { NgbActiveModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
       ProgressBarModule,
       ButtonModule,
       DynamicDialogModule,
+      InlineSVGModule,
       DropdownModule,
       TooltipModule,
       DialogModule,

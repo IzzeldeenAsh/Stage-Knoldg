@@ -4,16 +4,17 @@ import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from
 import { AuthService } from '../../modules/auth/services/auth.service';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 
 @Injectable({ providedIn: 'root' })
 export class CompanyGuard implements CanActivate {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private getProfileService: ProfileService, private router: Router) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> {
-    return this.authService.getProfile().pipe(
+    return this.getProfileService.getProfile().pipe(
       map(user => {
         if (user && user.roles.includes('company')) {
           // User has 'insighter' role, deny access

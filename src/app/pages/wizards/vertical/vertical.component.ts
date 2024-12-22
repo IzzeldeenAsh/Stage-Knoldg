@@ -9,6 +9,7 @@ import { BaseComponent } from "src/app/modules/base.component";
 import { TranslationService } from "src/app/modules/i18n";
 import { AuthService } from "src/app/modules/auth";
 import { IForsightaProfile } from "src/app/_fake/models/profile.interface";
+import { ProfileService } from "src/app/_fake/services/get-profile/get-profile.service";
 @Component({
   selector: "app-vertical",
   templateUrl: "./vertical.component.html",
@@ -35,7 +36,8 @@ export class VerticalComponent extends BaseComponent implements OnInit {
     private router: Router,
     private translateService: TranslationService,
     private auth: AuthService,
-    injector: Injector
+    injector: Injector,
+      private getProfileService: ProfileService
   ) {
     super(injector);
     this.isLoadingSubmit$ = this.insighterRegistraionService.isLoading$;
@@ -49,7 +51,7 @@ export class VerticalComponent extends BaseComponent implements OnInit {
   }
 
   checkUserRoleAndVerificaiton() {
-    const authSub = this.auth.getProfile().subscribe({
+    const authSub = this.getProfileService.getProfile().subscribe({
       next: (res) => {},
       error: (error) => {
         this.messages.push({

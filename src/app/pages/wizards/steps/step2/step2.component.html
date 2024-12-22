@@ -13,12 +13,18 @@
 
 <!-- Form Section -->
 <div [formGroup]="form">
+  <p-progressBar
+  class="w-100"
+  *ngIf="isLoading$ | async"
+  mode="indeterminate"
+  [style]="{ height: '4px' }"
+></p-progressBar>
   <!-- Personal Account Section -->
   <ng-container *ngIf="defaultValues.accountType === 'personal'">
     <div class="mb-10 row">
       <!-- Consulting Fields -->
       <div class="col-md-6 col-12">
-        <shared-tree-selector *ngIf="(isLoadingConsultingFields$ | async)===false"
+        <shared-tree-selector *ngIf="(isLoading$ | async)===false"
         [title]="'INSIGHTER_WIZARD.CONSULTING_FIELDS' | translate"
         [placeholder]="
           'AUTH.REGISTRATION.CONSULTING_FIELD_PLACEHOLDER' | translate
@@ -33,11 +39,7 @@
         [okLabel]="'BUTTONS.OK' | translate"
         (nodesSelected)="onConsultingNodesSelected($event)"
       ></shared-tree-selector>
-        <p-progressBar
-          *ngIf="isLoadingConsultingFields$ | async"
-          mode="indeterminate"
-          [style]="{ height: '4px' }"
-        ></p-progressBar>
+   
 
         <div
           *ngIf="
@@ -52,7 +54,7 @@
 
       <!-- ISIC Codes -->
       <div class="col-md-6 col-12">
-        <shared-tree-selector *ngIf="(isLoadingISIC$ | async)==false"
+        <shared-tree-selector *ngIf="(isLoading$ | async)===false"
         [title]="'AUTH.REGISTRATION.INDUSTRY' | translate"
         [placeholder]="
           'AUTH.REGISTRATION.INDUSTRY_PLACEHOLDER' | translate
@@ -67,11 +69,6 @@
         [okLabel]="'BUTTONS.OK' | translate"
         (nodesSelected)="onIndustrySelected($event)"
       ></shared-tree-selector>
-        <p-progressBar
-          *ngIf="isLoadingISIC$ | async"
-          mode="indeterminate"
-          [style]="{ height: '4px' }"
-        ></p-progressBar>
 
       </div>
     </div>
@@ -367,7 +364,7 @@
     <!-- Consulting Fied + Industry -->
     <div class="mb-10 row">
       <!-- Consulting Fields -->
-      <shared-tree-selector *ngIf="(isLoadingConsultingFields$ |async) ==false"
+      <shared-tree-selector *ngIf="(isLoading$ |async) ==false"
         [title]="'INSIGHTER_WIZARD.CONSULTING_FIELDS' | translate"
         [placeholder]="
           'AUTH.REGISTRATION.CONSULTING_FIELD_PLACEHOLDER' | translate
@@ -382,14 +379,10 @@
         [okLabel]="'BUTTONS.OK' | translate"
         (nodesSelected)="onConsultingNodesSelected($event)"
       ></shared-tree-selector>
-      <p-progressBar
-      *ngIf="isLoadingConsultingFields$ | async"
-      mode="indeterminate"
-      [style]="{ height: '4px' }"
-    ></p-progressBar>
+   
       <!-- ISIC Codes -->
       <div class="col-12">
-        <shared-tree-selector *ngIf="(isLoadingISIC$ | async)==false"
+        <shared-tree-selector *ngIf="(isLoading$ | async)==false"
         [title]="'AUTH.REGISTRATION.INDUSTRY' | translate"
         [placeholder]="
           'AUTH.REGISTRATION.INDUSTRY_PLACEHOLDER' | translate
@@ -404,11 +397,7 @@
         [okLabel]="'BUTTONS.OK' | translate"
         (nodesSelected)="onIndustrySelected($event)"
       ></shared-tree-selector>
-        <p-progressBar
-          *ngIf="isLoadingISIC$ | async"
-          mode="indeterminate"
-          [style]="{ height: '4px' }"
-        ></p-progressBar>
+       
 
       </div>
     </div>

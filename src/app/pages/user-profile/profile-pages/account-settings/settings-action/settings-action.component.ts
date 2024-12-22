@@ -1,6 +1,6 @@
 import { Component, Injector, OnInit } from '@angular/core';
+import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import { UserRequestsService } from 'src/app/_fake/services/user-requests/user-requests.service';
-import { AuthService } from 'src/app/modules/auth';
 import { BaseComponent } from 'src/app/modules/base.component';
 
 @Component({
@@ -13,14 +13,14 @@ export class SettingsActionComponent extends BaseComponent implements OnInit {
   isDeactivateRequestPending:boolean = false;
   constructor(
     injector:Injector,
-    private _profile:AuthService,
-    private userRequestsService: UserRequestsService
+    private userRequestsService: UserRequestsService,
+    private getProfileService: ProfileService
   
   ){
     super(injector);
   }
   ngOnInit(): void {
-    const profile = this._profile.getProfile()
+    const profile = this.getProfileService.getProfile()
     .subscribe(
       {
         next:(profile)=>{

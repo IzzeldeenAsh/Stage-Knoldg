@@ -4,6 +4,7 @@ import { TranslationService } from '../../../../../../modules/i18n';
 import { AuthService, UserType } from '../../../../../../modules/auth';
 import { IForsightaProfile } from 'src/app/_fake/models/profile.interface';
 import { Router } from '@angular/router';
+import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 
 @Component({
   selector: 'app-user-inner',
@@ -22,11 +23,12 @@ export class UserInnerComponent implements OnInit, OnDestroy {
   constructor(
     private auth: AuthService,
     private translationService: TranslationService,
-    private router:Router
+    private router:Router,
+    private getProfileService: ProfileService
   ) {}
 
   ngOnInit(): void {
-    this.user$ = this.auth.getProfile().pipe(first())
+    this.user$ = this.getProfileService.getProfile().pipe(first())
     this.setLanguage(this.translationService.getSelectedLanguage());
   }
 

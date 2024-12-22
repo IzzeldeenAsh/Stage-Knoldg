@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { NavigationEnd, NavigationSkipped, Router } from '@angular/router';
 import { AuthService } from '../../auth';
 import { first } from 'rxjs';
@@ -10,6 +10,14 @@ import { first } from 'rxjs';
 })
 export class DashboardSideBarComponent implements OnInit {
   isSidebarHidden: boolean = false; // Sidebar is visible by default for larger screens
+  @Input() isMobile:boolean=false;
+  activeMenu: string | null = null;
+
+  // Example state variables (optional if using activeMenu)
+  isCPanelActive: boolean = false;
+  isAccountActive: boolean = false;
+  isSettingsActive: boolean = false;
+
   base:string=''
   page:string=''
   constructor( 

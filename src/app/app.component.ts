@@ -8,6 +8,8 @@ import { locale as jpLang } from './modules/i18n/vocabs/jp';
 import { locale as deLang } from './modules/i18n/vocabs/de';
 import { locale as frLang } from './modules/i18n/vocabs/fr';
 import { ThemeModeService } from './_metronic/partials/layout/theme-mode-switcher/theme-mode.service';
+import { ProfileService } from './_fake/services/get-profile/get-profile.service';
+import { first } from 'rxjs';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -20,7 +22,8 @@ import { ThemeModeService } from './_metronic/partials/layout/theme-mode-switche
 export class AppComponent implements OnInit {
   constructor(
     private translationService: TranslationService,
-    private modeService: ThemeModeService
+    private modeService: ThemeModeService,
+    private getProfileService: ProfileService
   ) {
     // register translations
     this.translationService.loadTranslations(
@@ -31,6 +34,7 @@ export class AppComponent implements OnInit {
       deLang,
       frLang
     );
+    this.getProfileService.getProfile().pipe(first()).subscribe()
   }
 
   ngOnInit() {

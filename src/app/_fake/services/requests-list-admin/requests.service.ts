@@ -33,6 +33,39 @@ export class RequestsService {
     });
   }
 
+  getRequestVerificationQuestion(requestId: number): Observable<any> {
+    const url = `https://api.foresighta.co/api/admin/request/verification/question/${requestId}`;
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': 'en'
+    });
+
+    this.setLoading(true);
+    return this.http.get(url, { headers }).pipe(
+      map(response => response),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  sendVerificationAnswers(requestId: number, verificationAnswers: VerificationAnswer[]): Observable<any> {
+    const url = `https://api.foresighta.co/api/admin/request/action/company/verified/question/${requestId}`;
+    const body = { 
+      verification_answers: verificationAnswers
+    };
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+
+    this.setLoading(true);
+    return this.http.post(url, body, { headers }).pipe(
+      map(response => response),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
   private setLoading(loading: boolean) {
     this.isLoadingSubject.next(loading);
   }
@@ -142,16 +175,36 @@ export class RequestsService {
    * @param staffNotes Staff notes about the verification
    * @returns Observable of the verification response
    */
-  verifyCompanyRequest(requestId: number, verificationAnswers: VerificationAnswer[], staffNotes: string, status: 'approved' | 'declined'): Observable<any> {
+  verifyCompanyRequest(requestId: number, staffNotes: string, status: 'approved' | 'declined'): Observable<any> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Language': 'en'
+    });
+  
+    const url = `${this.apiUrl}/action/company/verified/${requestId}`;
+    const body = {
+      staff_notes: staffNotes,
+      status: status
+    };
+  
+    this.setLoading(true);
+    return this.http.post<any>(url, body, { headers }).pipe(
+      map((response) => response),
+      catchError((error) => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  deactivateDeleteRequest(requestId: number, staffNotes: string, status: 'approved' | 'declined'): Observable<any> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
       'Content-Type': 'application/json',
       'Accept-Language': 'en'
     });
 
-    const url = `${this.apiUrl}/action/company/verified/${requestId}`;
+    const url = `https://api.foresighta.co/api/admin/request/action/company/deactivate-delete/${requestId}`;
     const body = {
-      verification_answers: verificationAnswers,
       staff_notes: staffNotes,
       status: status
     };

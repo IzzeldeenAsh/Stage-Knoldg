@@ -61,9 +61,12 @@ export class SettingsSidebarComponent extends BaseComponent implements OnInit {
      
       if(profile.comapny){
         this.isActive = profile.comapny.status === 'active';
-      }else{
-        this.isActive = profile.status === 'active';
+      }else if(profile.roles.includes('insighter')){
+        this.isActive = profile.insighter_status === 'active';
+      }else if(profile.roles.includes('client')){
+        this.isActive = profile.client_status === 'active';
       }
+      this.initializeMenuItems()
       this.isLoading = false;
     });
     this.unsubscribe.push(profileSubscription);

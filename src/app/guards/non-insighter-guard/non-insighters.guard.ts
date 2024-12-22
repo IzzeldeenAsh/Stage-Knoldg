@@ -3,16 +3,17 @@ import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from
 import { AuthService } from '../../modules/auth/services/auth.service';
 import { Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 
 @Injectable({ providedIn: 'root' })
 export class NonInsightersAuthGuard implements CanActivate {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private getProfileService: ProfileService, private router: Router) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> {
-    return this.authService.getProfile().pipe(
+    return this.getProfileService.getProfile().pipe(
       map(user => {
         if (user && (user.roles.includes('company') || user.roles.includes('insighter'))) {
           // User is already registered as company or insighter, redirect them

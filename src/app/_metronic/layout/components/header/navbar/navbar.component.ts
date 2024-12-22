@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, first } from 'rxjs';
 import { IForsightaProfile } from 'src/app/_fake/models/profile.interface';
+import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import { AuthService, UserType } from 'src/app/modules/auth';
 import { TranslationService } from 'src/app/modules/i18n';
 
@@ -54,11 +55,12 @@ export class NavbarComponent implements OnInit {
   constructor(
     private auth: AuthService,
     private translationService: TranslationService,
-    private router:Router
+    private router:Router,
+    private getProfileService: ProfileService
   ) {}
 
   ngOnInit(): void {
-    this.auth.getProfile().pipe(first()).subscribe((user)=>{
+    this.getProfileService.getProfile().pipe(first()).subscribe((user)=>{
       this.userProfile=user
     })
   }

@@ -102,6 +102,7 @@ export const locale = {
         ISIC_CODES_REQUIRED:"ISIC Code is required",
         "SUBTITLE": "Enter your details to create your account",
         "GOOGLE_SIGNIN": "Sign in with Google",
+         "PASSWORD_PATTERN_ERROR": "Password must be at least 8 characters long and include both letters and numbers.",
         "LINKEDIN_SIGNIN": "Sign in with LinkedIn",
         INDUSTRY_REQUIRED:"Industry Required",
         "GOOGLE_SIGNUP": "Sign up with Google",
@@ -243,6 +244,21 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     },
           "PENDING_REQUEST" : "Pending Request"
     },
+    "DEACTIVATE_ACCOUNT_WITH_DELETE": {
+    "TITLE": "Delete Account Permanently",
+    "DESCRIPTION": "Request permanent account deletion. This action will deactivate your account and delete all associated data after the review process.",
+    "BUTTON_TEXT": "Request Account Deletion",
+    "PENDING_REQUEST": "Deletion Request Pending",
+    "ILLUSTRATION_ALT": "Account deletion illustration",
+    "MODAL": {
+      "TITLE": "Delete Account Permanently",
+      "DESCRIPTION": "Request permanent account deletion. This action will deactivate your account and delete all associated data after the review process.",
+      "WARNING": "This action is not reversible. Please be certain.",
+      "REASON_LABEL": "Deactivation Reason",
+      "REASON_PLACEHOLDER": "Please explain why you want to deactivate your account",
+      "CONFIRM_BUTTON": "Delete Account Permanently"
+    }
+  },
     BUTTONS: {
       BACK_BUTTON: "Back",
       OK:"Ok",
@@ -433,6 +449,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       },
       TABLE_HEADERS: {
         LEGAL_NAME: 'Legal Name',
+        NAME: 'Name',
         REQUEST_TYPE: 'Request Type',
         STATUS: 'Status',
         COMMENTS: 'Comments',

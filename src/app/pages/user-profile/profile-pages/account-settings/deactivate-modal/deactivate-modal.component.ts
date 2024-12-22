@@ -19,23 +19,23 @@ export class DeactivateModalComponent extends BaseComponent {
 
   deactivateAccount() {
     // TODO: Implement account deactivation logic
-    const deactivateSub = this._deactivateService
-      .deactivateRequest(this.deactivationReason , this.lang ? this.lang : "en")
-      .subscribe({
-        next: (res) => {
-          const message =
-            this.lang === "ar"
-              ? "تم إرسال طلب إلغاء التنشيط بنجاح"
-              : "Account deactivation request sent successfully";
-          this.showSuccess("", message);
-          this.step = 2;
-        },
-        error: (err) => {
-          this.handleServerErrors(err);
-        },
-      });
+    // const deactivateSub = this._deactivateService
+    //   .deactivateRequest(this.deactivationReason , this.lang ? this.lang : "en")
+    //   .subscribe({
+    //     next: (res) => {
+    //       const message =
+    //         this.lang === "ar"
+    //           ? "تم إرسال طلب إلغاء التنشيط بنجاح"
+    //           : "Account deactivation request sent successfully";
+    //       this.showSuccess("", message);
+    //       this.step = 2;
+    //     },
+    //     error: (err) => {
+    //       this.handleServerErrors(err);
+    //     },
+    //   });
 
-    this.unsubscribe.push(deactivateSub);
+    // this.unsubscribe.push(deactivateSub);
   }
 
   private handleServerErrors(error: any) {

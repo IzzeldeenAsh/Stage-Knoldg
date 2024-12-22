@@ -77,6 +77,7 @@ export const locale = {
       REGISTRATION: {
         TITLE: "التسجيل",
         ISIC_CODES_REQUIRED:"كود ISIC مطلوب",
+        PASSWORD_PATTERN_ERROR:"يجب أن تحتوي كلمة المرور على حرف واحد ورقم واحد ورمز خاص على الأقل.",
         SUBTITLE: "ادخل معلوماتك لإنشاء حسابك",
         GOOGLE_SIGNUP: "عن طريق قوقل",
         LINKEDIN_SIGNUP: "عن طريق لكندان",
@@ -199,6 +200,21 @@ export const locale = {
         PLEASE_TRY_AGAIN_LATER: "يرجى المحاولة مرة أخرى لاحقًا.",
         SESSION_EXPIRED_SIGN_UP_AGAIN: "انتهت صلاحية جلستك. يرجى التسجيل مرة أخرى.",
       },
+    },
+    "DEACTIVATE_ACCOUNT_WITH_DELETE": {
+      "TITLE": "حذف الحساب نهائياً",
+      "DESCRIPTION": "طلب حذف الحساب بشكل دائم. سيؤدي هذا الإجراء إلى إلغاء تنشيط حسابك وحذف جميع البيانات المرتبطة به بعد عملية المراجعة.",
+      "BUTTON_TEXT": "طلب حذف الحساب",
+      "PENDING_REQUEST": "طلب الحذف قيد المراجعة",
+      "ILLUSTRATION_ALT": "رسم توضيحي لحذف الحساب",
+      "MODAL": {
+        "TITLE": "إلغاء تنشيط الحساب",
+        "DESCRIPTION": "هل أنت متأكد أنك تريد إلغاء تنشيط حسابك؟ سيتم حذف جميع بياناتك ولا يمكن التراجع عن هذا الإجراء.",
+        "WARNING": "تحذير: سيؤدي هذا الإجراء إلى حذف جميع بياناتك بشكل دائم.",
+        "REASON_LABEL": "سبب إلغاء التنشيط",
+        "REASON_PLACEHOLDER": "يرجى إخبارنا بسبب رغبتك في إلغاء تنشيط حسابك...",
+        "CONFIRM_BUTTON": "إلغاء تنشيط الحساب"
+      }
     },
     BUTTONS:{
        OK:"تم",
@@ -381,6 +397,7 @@ export const locale = {
       },
       TABLE_HEADERS: {
         LEGAL_NAME: 'الاسم القانوني',
+        NAME: 'الاسم',
         REQUEST_TYPE: 'نوع الطلب',
         STATUS: 'الحالة',
         COMMENTS: 'التعليقات',

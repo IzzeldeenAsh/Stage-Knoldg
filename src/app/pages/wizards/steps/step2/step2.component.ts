@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild,AfterViewInit    } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Observable, Subscription, fromEvent, map, startWith } from 'rxjs';
+import { Observable, Subscription, fromEvent, map, startWith, forkJoin, of } from 'rxjs';
 import { ICreateAccount } from '../../create-account.helper';
 import { ConsultingField, ConsultingFieldsService } from 'src/app/_fake/services/admin-consulting-fields/consulting-fields.service';
 import { Message } from 'primeng/api';
@@ -16,8 +16,7 @@ import { TreeNode } from 'src/app/reusable-components/shared-tree-selector/TreeN
   styleUrl: './step2.component.scss'
 })
 export class Step2Component implements OnInit, OnDestroy  {
-  isLoadingConsultingFields$: Observable<boolean>;
-  isLoadingISIC$: Observable<boolean>;
+  isLoading$: Observable<boolean>;
   listOfConsultingFields: TreeNode[] = [];
   messages: Message[] = [];
   optionLabel: string = 'name.en';
@@ -44,20 +43,17 @@ export class Step2Component implements OnInit, OnDestroy  {
     private _translateion:TranslationService,
     private _isicService: IndustryService // Add this line
   ) {
-    this.isLoadingConsultingFields$ = this._ForsightaFieldsService.isLoading$
     this.lang=this._translateion.getSelectedLanguage();
-    this.isLoadingISIC$ = this._isicService.isLoading$
   }
  
 
   ngOnInit() {
-    this.getConsultingFieldsList();
-    this.loadISIC();
+    this.initApiCalls();
     this.initForm();
     this.updateParentModel({}, this.checkForm());
     this._translateion.onLanguageChange().subscribe((lang)=>{
       this.lang =lang;
-      this.loadISIC();
+      this.initApiCalls();
     });
     if (this.defaultValues?.registerDocument) {
       this.form.patchValue({ registerDocument: this.defaultValues?.registerDocument });
@@ -68,16 +64,36 @@ export class Step2Component implements OnInit, OnDestroy  {
       this.logoPreview =URL.createObjectURL(this.defaultValues.logo);
     }
   }
-  loadISIC() {
-    const isicSub = this._isicService.getIsicCodesTree(this.lang ? this.lang : 'en').subscribe({
-      next: (res) => {
-        this.nodes = res;
+
+  initApiCalls() {
+    this.isLoading$=of(true);
+    const apiCalls = forkJoin({
+      consultingFields: this._ForsightaFieldsService.getConsultingCodesTree(this.lang || 'en'),
+      isicCodes: this._isicService.getIsicCodesTree(this.lang || 'en')
+    }).subscribe({
+      next: (results) => {
+        this.listOfConsultingFields = results.consultingFields;
+        this.nodes = results.isicCodes;
+        this.isLoading$=of(false);
       },
       error: (err) => {
-        console.error('Error fetching ISIC codes:', err);
-      },
+        this.messages = [];
+        if (err.validationMessages) {
+          this.messages = err.validationMessages;
+        } else {
+          this.messages.push({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'An unexpected error occurred.',
+          });
+          setTimeout(() => {
+            this.messages = [];
+          }, 4000);
+          this.isLoading$=of(false);
+        }
+      }
     });
-    this.unsubscribe.push(isicSub);
+    this.unsubscribe.push(apiCalls);
   }
 
   // Optional: Additional handling to sanitize input
@@ -195,32 +211,6 @@ getFileIcon(file: File): string {
   // If the icon doesn't exist, you can return a default icon path
   return iconPath;
 }
-
-
-  getConsultingFieldsList() {
-    const listSub = this._ForsightaFieldsService.getConsultingCodesTree(this.lang ? this.lang : 'en')
-    .subscribe({
-      next: (data) => {
-        this.listOfConsultingFields = data;
-      },
-      error: (error) => {
-        this.messages = [];
-        if (error.validationMessages) {
-          this.messages = error.validationMessages;
-        } else {
-          this.messages.push({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'An unexpected error occurred.',
-          });
-          setTimeout(() => {
-            this.messages = [];
-          }, 4000);
-        }
-      },
-    });
-    this.unsubscribe.push(listSub);
-  }
 
   onConsultingNodesSelected(event:any){
    this.allConsultingFieldSelected=event && event.length >0 ? event : [];

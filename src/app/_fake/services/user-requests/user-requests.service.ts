@@ -22,6 +22,9 @@ export interface Type {
     verified: boolean;
     address: string;
     company_phone: string;
+    first_name?: string;
+    last_name?: string;
+    roles?: string[];
   }
   
   // models/data-item.model.ts
@@ -35,6 +38,8 @@ export interface Type {
     handel_at: string | null; // Consider renaming to 'handled_at' for clarity
     status: string;
     requestable: Requestable;
+    final_status: string;
+    children: UserRequest[];
   }
   
 
@@ -75,6 +80,82 @@ export class UserRequestsService {
     this.setLoading(true);
     return this.http.get<any>(this.apiUrl, { headers }).pipe(
       map(response => response.data),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  /**
+   * Send activation request for a company
+   * @param comments User comments for the request
+   * @param parentId Parent company ID
+   * @returns Observable of the request response
+   */
+  sendActivationRequest(comments: string, parentId: string): Observable<any> {
+    const url = 'https://api.foresighta.co/api/company/request/activate';
+    const formData = new FormData();
+    formData.append('comments', comments);
+    formData.append('parent_id', parentId);
+
+    this.setLoading(true);
+    return this.http.post(url, formData).pipe(
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  /**
+   * Send verification request for a company
+   * @param comments User comments for the request
+   * @param parentId Parent company ID
+   * @returns Observable of the request response
+   */
+  sendVerificationRequest(comments: string, parentId: string): Observable<any> {
+    const url = 'https://api.foresighta.co/api/company/request/verified';
+    const formData = new FormData();
+    formData.append('comments', comments);
+    formData.append('parent_id', parentId);
+
+    this.setLoading(true);
+    return this.http.post(url, formData).pipe(
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  /**
+   * Send deactivate and delete request for a company
+   * @param comments User comments for the request 
+   * @param parentId Parent company ID
+   * @returns Observable of the request response
+   */
+  sendDeactivateAndDeleteRequest(comments: string, parentId: string): Observable<any> {
+    const url = 'https://api.foresighta.co/api/company/request/deactivate-delete';
+    const formData = new FormData();
+    formData.append('comments', comments);
+    formData.append('parent_id', parentId);
+
+    this.setLoading(true);
+    return this.http.post(url, formData).pipe(
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  /**
+   * Send deactivate and delete request for an insighter
+   * @param comments User comments for the request 
+   * @param parentId Parent insighter ID
+   * @returns Observable of the request response
+   */
+  sendDeactivateAndDeleteRequestInsighter(comments: string, parentId: string): Observable<any> {
+    const url = 'https://api.foresighta.co/api/insighter/request/deactivate-delete';
+    const formData = new FormData();
+    formData.append('comments', comments);
+    formData.append('parent_id', parentId);
+
+    this.setLoading(true);
+    return this.http.post(url, formData).pipe(
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );

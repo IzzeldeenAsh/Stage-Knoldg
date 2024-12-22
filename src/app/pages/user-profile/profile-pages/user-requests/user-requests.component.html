@@ -4,7 +4,7 @@ mode="indeterminate"
 [style]="{ height: '4px' }"
 ></p-progressBar>
 
-<div class="card card-flush mb-5 mb-xl-10">
+<div class="card card-flush mb-5 mb-xl-10" *ngIf="userProfile">
     <!--begin::Card header-->
     <div class="card-header pt-7">
         <!--begin::Title-->
@@ -74,7 +74,8 @@ mode="indeterminate"
                 <!--begin::Table head-->
                 <thead>
                     <tr class="text-linline-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
-                        <th class="min-w-150px">{{ 'USER_REQUESTS.TABLE_HEADERS.LEGAL_NAME' | translate }}</th>
+                        <th *ngIf="userProfile?.roles?.includes('company')" class="min-w-150px">{{ 'USER_REQUESTS.TABLE_HEADERS.LEGAL_NAME' | translate }}</th>
+                        <th *ngIf="userProfile?.roles?.includes('insighter')" class="min-w-150px">{{ 'USER_REQUESTS.TABLE_HEADERS.NAME' | translate }}</th>
                         <th class="min-w-150px">{{ 'USER_REQUESTS.TABLE_HEADERS.REQUEST_TYPE' | translate }}</th>
                         <th class="min-w-150px">{{ 'USER_REQUESTS.TABLE_HEADERS.STATUS' | translate }}</th>
                         <th class="min-w-150px">{{ 'USER_REQUESTS.TABLE_HEADERS.COMMENTS' | translate }}</th>
@@ -86,19 +87,22 @@ mode="indeterminate"
                 <!--begin::Table body-->
                 <tbody class="fw-bold text-gray-600">
                     <tr *ngFor="let request of filteredUserRequests">
-                        <td>
+                        <td *ngIf="request.requestable?.roles?.includes('company')">
                             {{ request.requestable.legal_name }}
+                        </td>
+                        <td *ngIf="request.requestable?.roles?.includes('insighter')">
+                            {{ request.requestable.first_name }} {{ request.requestable.last_name }}
                         </td>
                         <td>
                             {{ request.type.label }}
                         </td>
                         <td>
                             <div class="badge" [ngClass]="{
-                                ' badge-light-warning': request.status === 'pending',
-                                ' badge-light-success': request.status === 'approved',
-                                ' badge-light-danger': request.status === 'rejected'
+                                ' badge-warning': request.final_status === 'pending',
+                                ' badge-success': request.final_status === 'approved',
+                                ' badge-danger': request.final_status === 'declined'
                             }">
-                                {{ request.status | titlecase }}
+                                {{ request.final_status | titlecase }}
                             </div>
                         </td>
                         <td>
@@ -134,20 +138,41 @@ mode="indeterminate"
         <!-- Status Badge -->
         <div class="mb-4">
             <div class="badge" [ngClass]="{
-                'badge-light-warning': selectedRequest.status === 'pending',
-                'badge-light-success': selectedRequest.status === 'approved', 
-                'badge-light-danger': selectedRequest.status === 'rejected'
+                'badge-light-warning': selectedRequest.final_status === 'pending',
+                'badge-light-success': selectedRequest.final_status === 'approved', 
+                'badge-light-danger': selectedRequest.final_status === 'declined'
             }">
-                {{ selectedRequest.status | titlecase }}
+                {{ selectedRequest.final_status | titlecase }}
             </div>
         </div>
 
         <!-- Staff Notes -->
-        <div class="w-100 mb-4">
+        <div class="w-100 mb-4" *ngIf="selectedRequest.final_status !== 'pending'">
             <h5 class="mb-3">{{ 'USER_REQUESTS.DIALOG.STAFF_NOTES_LABEL' | translate }}</h5>
             <p class="text-muted">
-                {{ selectedRequest.staff_notes || ('USER_REQUESTS.DIALOG.NO_STAFF_NOTES' | translate) }}
+              {{ selectedRequest.staff_notes || ('USER_REQUESTS.DIALOG.NO_STAFF_NOTES' | translate) }}
             </p>
-        </div>
+          </div>
+
     </div>
+    <div *ngIf="selectedRequest?.final_status === 'declined'" class="mt-4">
+        <div class="mb-3">
+          <label for="resendComments" class="form-label">Comments:</label>
+          <textarea
+            id="resendComments"
+            class="form-control"
+            rows="4"
+            placeholder="Enter your comments here..."
+            [(ngModel)]="resendComments"
+          ></textarea>
+        </div>
+        <button
+          type="button"
+          class="btn btn-primary w-100"
+          (click)="onResendRequest()"
+          [disabled]="!resendComments"
+        >
+          Resend Request
+        </button>
+      </div>
 </p-dialog>
