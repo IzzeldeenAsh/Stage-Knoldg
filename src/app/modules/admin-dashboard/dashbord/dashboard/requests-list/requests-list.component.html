@@ -87,7 +87,7 @@
                             <tr>
                                 <td class="text-center">
                                    
-                                    <ng-container *ngIf="request.requestable.roles && request.requestable.roles.includes('company')">
+                                    <ng-container *ngIf="request.requestable_type==='company'">
                                       <img *ngIf="request.requestable.logo ; else initials"
                                       [src]="request.requestable.logo"
                                       alt="{{ request.requestable.legal_name }}"
@@ -97,12 +97,12 @@
                                   />
                                    <ng-template #initials>
                                     <div
-                                    class="symbol-label fw-semibold bg-light-success">
+                                    class="symbol-label w-50px h-50px d-flex justify-content-center align-items-center rounded-circle fw-semibold bg-light-success">
                                     {{request.requestable.legal_name[0] + request.requestable.legal_name[1] }}
                                   </div>
                                    </ng-template>
                                     </ng-container>
-                                    <ng-container *ngIf="request.requestable.roles &&request.requestable.roles.includes('insighter')">
+                                    <ng-container *ngIf="request.requestable_type==='userinsighter'">
                                       <img *ngIf="request.requestable.profile_photo_url else initials"
                                       [src]="request.requestable.profile_photo_url"
                                       alt="{{ request.requestable.first_name }}"
@@ -118,7 +118,12 @@
                                     </div>
                                     </ng-template>
                                 </td>
+                              <ng-container *ngIf="request.requestable_type==='company'">
                                 <td>{{ request.requestable.legal_name }}</td>
+                              </ng-container>
+                              <ng-container *ngIf="request.requestable_type==='userinsighter'">
+                                <td>{{ request.requestable.first_name + ' ' + request.requestable.last_name }}</td>
+                              </ng-container>
                                 <td>{{ request.requestable_type }}</td>
                                 <td>{{ request.type.label }}</td>
                                 <td>
@@ -886,7 +891,7 @@ class="position-relative"
   <div class="d-flex flex-column justify-content-center align-items-center py-5">
     <!-- Logo/Profile Photo -->
     <div class="c-logo mb-3">
-      <ng-container *ngIf="selectedRequest?.requestable?.roles?.includes('company')">
+      <ng-container *ngIf="selectedRequest?.requestable_type === 'company'">
         <img 
           *ngIf="selectedRequest?.requestable?.logo"
           [src]="selectedRequest?.requestable?.logo"
@@ -895,7 +900,7 @@ class="position-relative"
           style="max-width: 150px; max-height: 150px; object-fit: contain;"
         />
       </ng-container>
-      <ng-container *ngIf="selectedRequest?.requestable?.roles?.includes('insighter')">
+      <ng-container *ngIf="selectedRequest?.requestable_type === 'userinsighter'">
         <img
           *ngIf="selectedRequest?.requestable?.profile_photo_url ;else initials"
           [src]="selectedRequest?.requestable?.profile_photo_url"
@@ -930,22 +935,27 @@ class="position-relative"
     <!-- Details Card -->
     <div class="card mb-4 w-100">
       <div class="card-body">
-        <h5 class="card-title">{{ selectedRequest?.requestable?.roles?.includes('company') ? 'Company' : 'Insighter' }} Details</h5>
+        <h5 class="card-title">{{ selectedRequest?.requestable_type === 'company' ? 'Company' : 'Insighter' }} Details</h5>
         <div class="row">
-          <ng-container *ngIf="selectedRequest?.requestable?.roles?.includes('company')">
+          <ng-container *ngIf="selectedRequest?.requestable_type === 'company'">
             <div class="col-6">
               <p><strong>Legal Name:</strong> {{ selectedRequest?.requestable?.legal_name }}</p>
               <p><strong>Email:</strong> {{ selectedRequest?.requestable?.verified_email }}</p>
               <p><strong>Website:</strong> {{ selectedRequest?.requestable?.website }}</p>
+              <p><strong>About Us:</strong> {{ selectedRequest?.requestable?.about_us }}</p>
             </div>
             <div class="col-6">
               <p><strong>Phone:</strong> {{ selectedRequest?.requestable?.company_phone }}</p>
               <p><strong>Address:</strong> {{ selectedRequest?.requestable?.address }}</p>
               <p><strong>Status:</strong> {{ selectedRequest?.requestable?.status }}</p>
+              <p *ngIf="selectedRequest?.requestable?.register_document">
+                <strong>Register Document:</strong>
+                <a [href]="selectedRequest?.requestable?.register_document" target="_blank">View Document</a>
+              </p>
             </div>
           </ng-container>
           
-          <ng-container *ngIf="selectedRequest?.requestable?.roles?.includes('insighter')">
+          <ng-container *ngIf="selectedRequest?.requestable_type === 'userinsighter'">
             <div class="col-6">
               <p><strong>Full Name:</strong> {{ selectedRequest?.requestable?.first_name }} {{ selectedRequest?.requestable?.last_name }}</p>
               <p><strong>Email:</strong> {{ selectedRequest?.requestable?.email }}</p>

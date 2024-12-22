@@ -36,6 +36,20 @@ export const locale = {
       INSIGHTER: 'Insighter',
       COMPANY: 'Company'
     },
+    "REACTIVATE_ACCOUNT": {
+      "TITLE": "Reactivate Account",
+      "DESCRIPTION": "Your account is currently deactivated. Reactivate it to regain full access to all features and services.",
+      "BUTTON_TEXT": "Reactivate Account",
+      "ILLUSTRATION_ALT": "Reactivate account illustration",
+      "MODAL": {
+        "TITLE": "Reactivate Account",
+        "HEADING": "Are you sure you want to reactivate your account?",
+        "DESCRIPTION": "By reactivating your account, you'll regain access to all features and services. Your account settings and data will be restored.",
+        "CONFIRM_BUTTON": "Yes, Reactivate",
+        "SUCCESS_MESSAGE": "Your account has been successfully reactivated",
+        "ERROR_MESSAGE": "An error occurred while reactivating your account"
+      },
+    },
     AUTH: {
       TWO_FA: {
         VERIFY_PHONE: "Verify your email",
@@ -230,23 +244,22 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     },
     "DEACTIVATE_ACCOUNT": {
       "TITLE": "Deactivate Company Account",
-      "DESCRIPTION": "Permanently deactivate your company account. This action cannot be undone and will remove all your data from our system.",
-      "BUTTON_TEXT": "Deactivate Company Account",
+      "DESCRIPTION": "<i class='fa-sharp fa-solid fa-circle fs-10'></i> Your account data will be preserved<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> Account will be inaccessible until reactivation<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> Your insights remain visible on marketplace<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> Cannot upload new insights while deactivated",
+      "BUTTON_TEXT": "Deactivate Company Account", 
       "ILLUSTRATION_ALT": "Deactivate Company Account Illustration",
       "MODAL": {
-      "TITLE": "Deactivate Company Account",
-      "DESCRIPTION": "You are about to deactivate your company account. This will remove all your company data from our platform.",
-      "WARNING": "This action is not reversible. Please be certain.",
-      "REASON_LABEL": "Deactivation Reason",
-      "REASON_PLACEHOLDER": "Please explain why you want to deactivate your account",
-      "CONFIRM_BUTTON": "Deactivate Company Account",
-
-    },
-          "PENDING_REQUEST" : "Pending Request"
+        "TITLE": "Deactivate Company Account",
+        "DESCRIPTION": "You are about to deactivate your company account. Your account will be inaccessible but your data will be preserved.",
+        "WARNING": "This action is not reversible. Please be certain.",
+        "REASON_LABEL": "Deactivation Reason",
+        "REASON_PLACEHOLDER": "Please explain why you want to deactivate your account",
+        "CONFIRM_BUTTON": "Deactivate Company Account"
+      },
+      "PENDING_REQUEST" : "Pending Request"
     },
     "DEACTIVATE_ACCOUNT_WITH_DELETE": {
     "TITLE": "Delete Account Permanently",
-    "DESCRIPTION": "Request permanent account deletion. This action will deactivate your account and delete all associated data after the review process.",
+    "DESCRIPTION": "<i class='fa-sharp fa-solid fa-circle fs-10'></i> Your account will be deleted permanently<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> All data will be lost<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> Data will be removed and deleted from marketplace<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> Your account will be unvisible anymore",
     "BUTTON_TEXT": "Request Account Deletion",
     "PENDING_REQUEST": "Deletion Request Pending",
     "ILLUSTRATION_ALT": "Account deletion illustration",
@@ -269,7 +282,9 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     COMMON:{
       "SLOGAN":"Redefining the insights landscape",
       "SELECISCIC":"Select Industry",
-      OR:"OR"
+      OR:"OR",
+      PLEASE_WAIT:"Please wait...",
+      CANCEL:"Cancel",
     },
     INSIGHTER_WIZARD: {
       ACCOUNT_TYPE: "Account Type",

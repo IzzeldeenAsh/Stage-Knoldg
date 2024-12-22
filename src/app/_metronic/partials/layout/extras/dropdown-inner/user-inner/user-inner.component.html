@@ -61,7 +61,7 @@
     </a>
   </div>
 
-  <div class="menu-item px-5">
+  <div class="menu-item px-5" *ngIf="_user.roles.includes('company') || _user.roles.includes('insighter')">
     <a class="menu-link px-5 cursor-pointer" placement="top-start" ngbTooltip="Coming soon">
       <span class="menu-text">{{ 'HOME.MY_PROJECTS' | translate }}</span>
       <span class="menu-badge">
@@ -88,7 +88,7 @@
         </a>
       </div>
 
-      <div class="menu-item px-3">
+      <div class="menu-item px-3" *ngIf="_user.roles.includes('company')">
         <a class="menu-link px-5 cursor-pointer" placement="top-start" [routerLink]="'/app/profile/settings/company-settings'">
           {{ 'ACCOUNT_SETTINGS.COMPANY_INFO' | translate }}
         </a>
@@ -99,7 +99,7 @@
           {{ 'ACCOUNT_SETTINGS.RESET_PASSWORD' | translate }}
         </a>
       </div>
-      <div class="menu-item px-3">
+      <div class="menu-item px-3" *ngIf="_user.roles.includes('company') || _user.roles.includes('insighter')">
         <a class="menu-link px-5 cursor-pointer" placement="top-start" [routerLink]="'/app/profile/settings/settings-action'">
             {{ 'ACCOUNT_SETTINGS.SETTINGS' | translate }}
         </a>
@@ -108,11 +108,7 @@
     </div>
   </div>
 
-  <div class="menu-item px-5">
-    <a class="menu-link px-5 cursor-pointer" placement="top-start" ngbTooltip="Coming soon">
-      {{ 'HOME.MY_STATEMENTS' | translate }}
-    </a>
-  </div>
+
 
   <div class="separator my-2"></div>
 
@@ -167,11 +163,7 @@
     </div>
   </div>
 
-  <div class="menu-item px-5 my-1">
-    <a routerLink="/app/profile/settings" class="menu-link px-5">
-      {{ 'HOME.ACCOUNT_SETTINGS' | translate }}
-    </a>
-  </div>
+
 
   <div class="menu-item px-5">
     <a (click)="logout()" class="menu-link px-5 cursor-pointer">

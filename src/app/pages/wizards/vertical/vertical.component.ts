@@ -37,7 +37,7 @@ export class VerticalComponent extends BaseComponent implements OnInit {
     private translateService: TranslationService,
     private auth: AuthService,
     injector: Injector,
-      private getProfileService: ProfileService
+      private getProfileService: ProfileService,
   ) {
     super(injector);
     this.isLoadingSubmit$ = this.insighterRegistraionService.isLoading$;
@@ -274,6 +274,8 @@ export class VerticalComponent extends BaseComponent implements OnInit {
             next: (response) => {
               console.log("Submission successful:", response);
               this.onSuccessMessage = true;
+              const profileSub = this.getProfileService.getProfile(true).subscribe();
+              this.unsubscribe.push(profileSub);
             },
             error: (error) => {
               this.handleServerErrors(error);
@@ -290,7 +292,9 @@ export class VerticalComponent extends BaseComponent implements OnInit {
               if(user.verificationMethod === "uploadDocument"){
                 this.onPendingMessage=true
               }else{
-                this.onSuccessMessage=true
+                this.onSuccessMessage=true;
+                const profileSub = this.getProfileService.getProfile(true).subscribe();
+                this.unsubscribe.push(profileSub);
               }
             },
             error: (error) => {
