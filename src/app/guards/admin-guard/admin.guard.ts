@@ -2,13 +2,13 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router, UrlTree } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { map, catchError, first } from 'rxjs/operators';
-import { AuthService } from 'src/app/modules/auth/services/auth.service';
+import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 
 export const adminGuard: CanActivateFn = (route, state): Observable<boolean | UrlTree> => {
-  const authService = inject(AuthService);
+  const getProfileService = inject(ProfileService);
   const router = inject(Router);
 
-  return authService.getProfile().pipe(
+  return getProfileService.getProfile().pipe(
     first(),
     map(user => {
       if (user && (user.roles.includes('admin') || user.roles.includes('staff'))) {

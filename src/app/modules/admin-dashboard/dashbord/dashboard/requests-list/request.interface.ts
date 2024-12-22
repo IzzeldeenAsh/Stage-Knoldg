@@ -17,6 +17,8 @@ export interface RequestResponse {
     handel_at: string | null;
     requestable: Requestable;
     status: string;
+    final_status: string;
+    children: RequestItem[];
   }
   
   export interface Requestable {
@@ -30,6 +32,16 @@ export interface RequestResponse {
     status: string;
     address: string;
     company_phone: string;
+    roles?: string[];
+    first_name?: string;
+    last_name?: string;
+    email?: string;
+    phone?: string;
+    country?: string;
+    bio?: string;
+    profile_photo_url?: string;
+    insighter_status?: string;
+    company_status?: string;
   }
   
   export interface Links {

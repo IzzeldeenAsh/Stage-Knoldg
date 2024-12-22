@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { catchError, forkJoin, Observable, of, tap } from "rxjs";
 import { IForsightaProfile } from "src/app/_fake/models/profile.interface";
 import { CountryService } from "src/app/_fake/services/countries-api/countries-get.service";
-import { ProfileService } from "src/app/_fake/services/profile-picture/profile.service";
+import { ProfileService } from "src/app/_fake/services/get-profile/get-profile.service";
 import { UpdateProfileService } from "src/app/_fake/services/profile/profile.service";
 import { AuthService } from "src/app/modules/auth";
 import { BaseComponent } from "src/app/modules/base.component";
@@ -27,6 +27,7 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
     private readonly fb: FormBuilder,
     private _countryService: CountryService,
     private _profilePost: UpdateProfileService,
+    private getProfileService: ProfileService
   ) {
     super(injector);
   }
@@ -37,7 +38,7 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
 
   handleAPIs(){
     this.isLoading$ = of(true);
-    const profile$ = this._profileService.getProfile().pipe(
+      const profile$ = this.getProfileService.getProfile().pipe(
       tap((profile) => {
         this.profile = profile;
         this.roles = profile.roles;

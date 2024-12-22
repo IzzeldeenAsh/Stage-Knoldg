@@ -252,7 +252,7 @@
       </span>
     </div>
   </div>
-
+ 
   <!-- Password Strength Meter -->
   <div class="password-strength mt-2" *ngIf="registrationForm.get('password')?.value">
     <div class="progress">
@@ -272,7 +272,9 @@
       {{ passwordStrength.feedback }}
     </div>
   </div>
-
+  <div *ngIf="registrationForm.get('password')?.hasError('pattern') && (registrationForm.get('password')?.dirty || registrationForm.get('password')?.touched)" class="text-danger fs-8">
+    {{ 'AUTH.REGISTRATION.PASSWORD_PATTERN_ERROR' | translate }}
+  </div>
 </div>
 
      

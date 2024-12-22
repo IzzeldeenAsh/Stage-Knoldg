@@ -6,6 +6,7 @@ import { AuthService } from "../../services/auth.service";
 import { first } from "rxjs/operators";
 import { AuthModel } from "../../models/auth.model";
 import { MessageService } from "primeng/api";
+import { ProfileService } from "src/app/_fake/services/get-profile/get-profile.service";
 
 @Component({
   selector: "app-callback",
@@ -25,7 +26,8 @@ export class CallbackComponent
     private router: Router,
     private route: ActivatedRoute,
     private auth: AuthService,
-    injector: Injector
+    injector: Injector,
+    private getProfileService: ProfileService
   ) {
     super(injector);
     // Now you can use someOtherService alongside base services
@@ -54,7 +56,7 @@ export class CallbackComponent
 
   toApp(): void {
     this.isSubmitting = true;
-    this.auth
+    this.getProfileService
       .getProfile()
       .pipe(first())
       .subscribe({

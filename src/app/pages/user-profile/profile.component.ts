@@ -7,6 +7,7 @@ import {
 import { ScrollAnimsService } from "src/app/_fake/services/scroll-anims/scroll-anims.service";
 import { AuthService } from "src/app/modules/auth";
 import { BaseComponent } from "src/app/modules/base.component";
+import { ProfileService } from "src/app/_fake/services/get-profile/get-profile.service";
 
 @Component({
   selector: "app-profile",
@@ -17,7 +18,8 @@ export class ProfileComponent extends BaseComponent implements OnInit {
   profile: IForsightaProfile;
   constructor(
     private auth: AuthService,
-    injector: Injector
+    injector: Injector,
+    private getProfileService: ProfileService
   ) {
     super(injector);
   }
@@ -26,7 +28,7 @@ export class ProfileComponent extends BaseComponent implements OnInit {
   }
 
   getProfile() {
-    const getProfileSub = this.auth.getProfile().subscribe({
+    const getProfileSub = this.getProfileService.getProfile().subscribe({
       next: (profile) => {
         this.profile = profile;
       },

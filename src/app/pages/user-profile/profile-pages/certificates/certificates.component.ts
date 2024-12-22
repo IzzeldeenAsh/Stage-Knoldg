@@ -5,7 +5,7 @@ import {
   Document,
   DocumentsService,
 } from "src/app/_fake/services/douments-types/documents-types.service.spec";
-import { AuthService } from "src/app/modules/auth";
+import { ProfileService } from "src/app/_fake/services/get-profile/get-profile.service";
 import { BaseComponent } from "src/app/modules/base.component";
 
 @Component({
@@ -20,9 +20,9 @@ export class CertificatesComponent extends BaseComponent implements OnInit {
   documentTypes: Document[];
   isLoadingDocumentTypes: boolean = true;
   constructor(
-    private auth: AuthService,
     private documentsService: DocumentsService,
-    injector: Injector
+    injector: Injector,
+    private getProfileService: ProfileService
   ) {
     super(injector);
   }
@@ -32,7 +32,7 @@ export class CertificatesComponent extends BaseComponent implements OnInit {
   }
   getProfile() {
     this.loadingProfile = true;
-    const getProfileSub = this.auth.getProfile().subscribe({
+    const getProfileSub = this.getProfileService.getProfile().subscribe({
       next: (profile) => {
         this.profile = profile;
         this.loadingProfile = false;

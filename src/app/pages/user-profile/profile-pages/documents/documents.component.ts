@@ -1,5 +1,6 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import { IForsightaProfile } from 'src/app/_fake/models/profile.interface';
+import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import { AuthService } from 'src/app/modules/auth';
 import { BaseComponent } from 'src/app/modules/base.component';
 
@@ -14,8 +15,8 @@ export class DocumentsComponent extends BaseComponent implements OnInit {
   documentTypes:Document[]
   isLoadingDocumentTypes:boolean=true;
   constructor(
-    private auth: AuthService,
-    injector: Injector
+    injector: Injector,
+    private getProfileService: ProfileService
   ) {
     super(injector);
   }
@@ -24,7 +25,7 @@ export class DocumentsComponent extends BaseComponent implements OnInit {
   }
   getProfile(){
     this.loadingProfile=true;
-    const getProfileSub = this.auth.getProfile().subscribe({
+    const getProfileSub = this.getProfileService.getProfile().subscribe({
         next : ( profile)=>{
           this.profile = profile
           this.loadingProfile=false;

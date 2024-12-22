@@ -13,11 +13,14 @@ export class AdminHeaderComponent {
   toggleMobileSideBar(): void {
     this.sidebarVisible = !this.sidebarVisible
   }
+  isSidebarHidden: boolean = false; // Sidebar is visible by default for larger screens
   base:string=''
   page:string=''
-  constructor(     public router: Router,
-    private _auth:AuthService){
-    
+  constructor( 
+    public router: Router,
+    private _auth:AuthService
+  
+  ){
     router.events.subscribe((event:Object)=>{
       if(event instanceof NavigationEnd){
         const splitVal =event.url.split('/');
@@ -35,8 +38,7 @@ export class AdminHeaderComponent {
 
   ngOnInit(): void {
     this.base=this.router.url.split('/')[3];
- 
+   
   }
-
 
 }

@@ -4,9 +4,9 @@ import { first } from "rxjs";
 import { IForsightaProfile } from "src/app/_fake/models/profile.interface";
 import { ProfileService } from "src/app/_fake/services/profile-picture/profile.service";
 import { ScrollAnimsService } from "src/app/_fake/services/scroll-anims/scroll-anims.service";
-import { AuthService } from "src/app/modules/auth";
 import { BaseComponent } from "src/app/modules/base.component";
 import { TranslationService } from "src/app/modules/i18n";
+import { ProfileService as GetProfileService } from "src/app/_fake/services/get-profile/get-profile.service";
 
 @Component({
   selector: "app-overview",
@@ -20,7 +20,7 @@ export class OverviewComponent extends BaseComponent implements OnInit {
   constructor(
     scrollAnims: ScrollAnimsService,
     private profileService: ProfileService,
-    private auth: AuthService,
+    private getProfileService: GetProfileService,
     injector: Injector
   ) {
     super(injector);
@@ -40,7 +40,7 @@ export class OverviewComponent extends BaseComponent implements OnInit {
   }
   getProfile() {
     this.loadingProfile = true;
-    const getProfileSub = this.auth.getProfile().subscribe({
+    const getProfileSub = this.getProfileService.getProfile().subscribe({
       next: (profile) => {
         this.profile = profile;
         this.loadingProfile = false;

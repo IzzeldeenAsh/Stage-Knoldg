@@ -7,7 +7,7 @@ import { TranslationService } from 'src/app/modules/i18n/translation.service';
   providedIn: 'root'
 })
 export class DeactivateAccountService {
-  private deactivateApiUrl = 'https://api.foresighta.co/api/company/request/deactivate'; // New API URL
+  private readonly baseUrl = 'https://api.foresighta.co/api';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   currentLang: string = "en";
@@ -28,12 +28,13 @@ export class DeactivateAccountService {
   }
 
   /**
-   * Deactivate Account Request
+   * Deactivate company account with data deletion
    * @param comments - User comments for deactivation
+   * @param parentId - Parent request ID
    * @param lang - Current language
    * @returns Observable<any>
    */
-  deactivateRequest(comments: string, lang: string): Observable<any> {
+  deactivateCompanyWithDelete(comments: string, parentId: string, lang: string): Observable<any> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
       'Accept-Language': lang
@@ -41,9 +42,60 @@ export class DeactivateAccountService {
 
     const formData = new FormData();
     formData.append('comments', comments);
+    formData.append('parent_id', parentId);
 
     this.setLoading(true);
-    return this.http.post<any>(this.deactivateApiUrl, formData, { headers }).pipe(
+    return this.http.post<any>(`${this.baseUrl}/company/request/deactivate-delete`, formData, { headers }).pipe(
+      map((res) => res),
+      catchError((error) => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  /**
+   * Deactivate insighter account with data deletion
+   * @param comments - User comments for deactivation
+   * @param parentId - Parent request ID
+   * @param lang - Current language
+   * @returns Observable<any>
+   */
+  deactivateInsighterWithDelete(comments: string, parentId: string, lang: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': lang
+    });
+
+    const formData = new FormData();
+    formData.append('comments', comments);
+    formData.append('parent_id', parentId);
+
+    this.setLoading(true);
+    return this.http.post<any>(`${this.baseUrl}/insighter/request/deactivate-delete`, formData, { headers }).pipe(
+      map((res) => res),
+      catchError((error) => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  /**
+   * Deactivate company account without data deletion
+   * @param comments - User comments for deactivation
+   * @param parentId - Parent request ID
+   * @param lang - Current language
+   * @returns Observable<any>
+   */
+  deactivateCompanyWithoutDelete(comments: string, parentId: string, lang: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': lang
+    });
+
+    const formData = new FormData();
+    formData.append('comments', comments);
+    formData.append('parent_id', parentId);
+
+    this.setLoading(true);
+    return this.http.post<any>(`${this.baseUrl}/company/deactivate`, formData, { headers }).pipe(
       map((res) => res),
       catchError((error) => this.handleError(error)),
       finalize(() => this.setLoading(false))

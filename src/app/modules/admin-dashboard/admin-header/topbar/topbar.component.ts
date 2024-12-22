@@ -9,6 +9,7 @@ import { Router } from "@angular/router";
 import { MessageService } from "primeng/api";
 import { first } from "rxjs";
 import { IForsightaProfile } from "src/app/_fake/models/profile.interface";
+import { ProfileService } from "src/app/_fake/services/get-profile/get-profile.service";
 import { FileUploadService } from "src/app/_fake/services/upload-picture/upload-picture";
 import { AuthService, UserType } from "src/app/modules/auth";
 
@@ -26,7 +27,8 @@ export class TopbarComponent implements OnInit {
     private _auth: AuthService,
     private router: Router,
     private fileUploadService: FileUploadService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private getProfileService: ProfileService
   ) {}
   ngOnInit(): void {
     this.getProfile();
@@ -51,7 +53,7 @@ export class TopbarComponent implements OnInit {
   }
 
   getProfile(){
-    this._auth.getProfile().pipe(first()).subscribe({
+    this.getProfileService.getProfile().pipe(first()).subscribe({
       next :(res)=>{
         this.user = res
       },

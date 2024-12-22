@@ -4,10 +4,11 @@ import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from
 import { AuthService } from '../../modules/auth/services/auth.service';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 
 @Injectable({ providedIn: 'root' })
 export class RolesGuard implements CanActivate {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private getProfileService: ProfileService, private router: Router) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,
@@ -15,8 +16,7 @@ export class RolesGuard implements CanActivate {
   ): Observable<boolean> {
     // Retrieve the required roles from route data
     const requiredRoles: string[] = route.data.roles;
-
-    return this.authService.getProfile().pipe(
+    return this.getProfileService.getProfile().pipe(
       map(user => {
         if (user && requiredRoles.some(role => user.roles.includes(role))) {
           // User has at least one of the required roles

@@ -139,239 +139,196 @@
 <!-- mobile sidebar -->
 <div class="card flex justify-content-center">
   <p-sidebar [(visible)]="sidebarVisible">
-  <div class="sidebarslide">
-    <ul>
-   
-        <li>
-          <div class="menu-item menu-accordion menu-fit">
-            <!--begin:Menu link--><span
-              routerLink="/admin-dashboard/admin/dashboard/main-dashboard/departments"
-              routerLinkActive="active"
-              class="menu-link"
-              ><span class="menu-icon">
-                <div class="symbol symbol-30px">
-                  <span class="symbol-label">
-                    <span
-                      [inlineSVG]="
-                        './assets/media/icons/duotune/abstract/abs027.svg'
-                      "
-                      class="svg-icon svg-icon-3 svg-icon-primary"
-                    ></span>
-                  </span>
-                </div> </span
-              ><span class="menu-title">Departments</span
-              ><span class="menu-badge"></span></span
-            ><!--end:Menu link-->
+    <div  [class.sidebar-hidden]="isSidebarHidden">
+      <!--begin::Menu-->
+      <div
+        class="menu menu-column menu-fit menu-rounded menu-title-gray-600 menu-icon-gray-500 menu-state-primary menu-state-icon-primary menu-state-bullet-primary menu-arrow-gray-500 fw-bold fs-5 px-6 my-5 my-lg-0"
+        id="kt_aside_menu" data-kt-menu="true">
+        
+        <div id="kt_aside_menu_wrapper" class="menu-fit">
+          
+          <!-- CPanel Section Title -->
+          <div class="menu-item">
+            <div class="menu-content pt-8 pb-2">
+              <span class="menu-section text-muted text-uppercase fs-8 ls-1">CPanel</span>
+            </div>
           </div>
-        </li>
-        <li>
-          <div class="menu-item menu-accordion menu-fit">
-            <!--begin:Menu link--><span
-              routerLink="/admin-dashboard/admin/dashboard/main-dashboard/positions"
-              routerLinkActive="active"
-              class="menu-link"
-              ><span class="menu-icon">
-                <div class="symbol symbol-30px">
-                  <span class="symbol-label">
-                    <span
-                      [inlineSVG]="
-                        './assets/media/icons/duotune/communication/com006.svg'
-                      "
-                      class="svg-icon svg-icon-3 svg-icon-primary"
-                    ></span>
-                  </span>
-                </div> </span
-              ><span class="menu-title">Positions</span
-              ><span class="menu-badge"></span></span
-            ><!--end:Menu link-->
+          
+          <!-- CPanel Menu Items -->
+          <div class="menu-item" routerLinkActive="active">
+            <a class="menu-link without-sub" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/requests">
+              <span class="menu-icon">
+                <span class="svg-icon svg-icon-2" ></span>
+              </span>
+              <span class="menu-title">Requests</span>
+            </a>
           </div>
-        </li>
-        <li>
-          <div class="menu-item menu-accordion menu-fit">
-            <!--begin:Menu link--><span
-              routerLink="/admin-dashboard/admin/dashboard/main-dashboard/countries"
-              routerLinkActive="active"
-              class="menu-link"
-              ><span class="menu-icon">
-                <div class="symbol symbol-30px">
-                  <span class="symbol-label">
-                    <span
-                      
-                      class="svg-icon svg-icon-3 svg-icon-primary"
-                    >
-                    <i class="ki-duotone ki-abstract-39 text-gray-900 fs-3"><span class="path1"></span><span class="path2"></span></i></span>
-                  </span>
-                </div> </span
-              ><span class="menu-title">Countries</span
-              ><span class="menu-badge"></span></span
-            ><!--end:Menu link-->
+          
+          <div class="menu-item" routerLinkActive="active">
+            <a class="menu-link without-sub" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/departments">
+              <span class="menu-icon">
+                <span class="svg-icon svg-icon-2" ></span>
+              </span>
+              <span class="menu-title">Departments</span>
+            </a>
           </div>
-        </li>
-        <li>
-          <div class="menu-item menu-accordion menu-fit">
-            <!--begin:Menu link--><span
-              routerLink="/admin-dashboard/admin/dashboard/main-dashboard/regions"
-              routerLinkActive="active"
-              class="menu-link"
-              ><span class="menu-icon">
-                <div class="symbol symbol-30px">
-                  <span class="symbol-label">
-                    <span
-                      
-                      class="svg-icon svg-icon-3 svg-icon-primary"
-                    >
-                    <i class="ki-duotone ki-abstract-39 text-gray-900 fs-3"><span class="path1"></span><span class="path2"></span></i></span>
-                  </span>
-                </div> </span
-              ><span class="menu-title">Regions</span
-              ><span class="menu-badge"></span></span
-            ><!--end:Menu link-->
+          
+          <div class="menu-item" routerLinkActive="active">
+            <a class="menu-link without-sub" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/positions">
+              <span class="menu-icon">
+                <span class="svg-icon svg-icon-2" ></span>
+              </span>
+              <span class="menu-title">Positions</span>
+            </a>
           </div>
-        </li>
-        <li>
-          <div class="menu-item menu-accordion menu-fit">
-        <span
-              routerLink="/admin-dashboard/admin/dashboard/main-dashboard/consulting-fields"
-              routerLinkActive="active"
-              class="menu-link"
-              ><span class="menu-icon">
-                <div class="symbol symbol-30px">
-                  <span class="symbol-label">
-                    <span class="svg-icon svg-icon-3 svg-icon-primary">
-                      <i class="ki-duotone ki-category text-gray-900 fs-3"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
-                  </span>
-                  </span>
-                </div> </span
-              ><span class="menu-title">Consulting Fields</span
-              ><span class="menu-badge"></span></span
-            >
+          
+          <div class="menu-item" routerLinkActive="active">
+            <a class="menu-link without-sub" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/countries">
+              <span class="menu-icon">
+                <span class="svg-icon svg-icon-2" ></span>
+              </span>
+              <span class="menu-title">Countries</span>
+            </a>
           </div>
-        </li>
-        <li>
-          <div class="menu-item menu-accordion menu-fit">
-           <span
-              routerLink="/admin-dashboard/admin/dashboard/main-dashboard/ISIC-code"
-              routerLinkActive="active"
-              class="menu-link"
-              ><span class="menu-icon">
-                <div class="symbol symbol-30px">
-                  <span class="symbol-label">
-                    <span class="svg-icon svg-icon-3 svg-icon-primary">
-                      <span [inlineSVG]="'./assets/media/icons/duotune/abstract/ISIC.svg'"></span>
-                  </span>
-                  </span>
-                </div> </span
-              ><span class="menu-title">ISIC Code</span
-              ><span class="menu-badge"></span></span
-            >
+          
+          <div class="menu-item" routerLinkActive="active">
+            <a class="menu-link without-sub" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/regions">
+              <span class="menu-icon">
+                <span class="svg-icon svg-icon-2" ></span>
+              </span>
+              <span class="menu-title">Regions</span>
+            </a>
           </div>
-        </li>
-        <li>
-          <div class="menu-item menu-accordion menu-fit">
-        <span
-              routerLink="/admin-dashboard/admin/dashboard/main-dashboard/tags"
-              routerLinkActive="active"
-              class="menu-link"
-              ><span class="menu-icon">
-                <div class="symbol symbol-30px">
-                  <span class="symbol-label">
-                    <span class="svg-icon svg-icon-3 svg-icon-primary">
-                      <i class="ki-duotone ki-abstract-23 text-gray-900 fs-3"><span class="path1"></span><span class="path2"></span></i>
-                  </span>
-                  </span>
-                </div> </span
-              ><span class="menu-title">Tags</span
-              ><span class="menu-badge"></span></span
-            >
+          
+          <div class="menu-item" routerLinkActive="active">
+            <a class="menu-link without-sub" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/consulting-fields">
+              <span class="menu-icon">
+                <span class="svg-icon svg-icon-2" ></span>
+              </span>
+              <span class="menu-title">Consulting Fields</span>
+            </a>
           </div>
-        </li>
-        <li>
-          <div class="menu-item menu-accordion menu-fit">
-        <span
-              routerLink="/admin-dashboard/admin/dashboard/main-dashboard/hscode"
-              routerLinkActive="active"
-              class="menu-link"
-              ><span class="menu-icon">
-                <div class="symbol symbol-30px">
-                  <span class="symbol-label">
-                    <span class="svg-icon svg-icon-3 svg-icon-primary">
-                      <i class="ki-duotone ki-abstract-3 text-gray-900 fs-3"><span class="path1"></span><span class="path2"></span></i>
-                  </span>
-                  </span>
-                </div> </span
-              ><span class="menu-title">HS-Code</span
-              ><span class="menu-badge"></span></span
-            >
+          
+          <div class="menu-item" routerLinkActive="active">
+            <a class="menu-link without-sub" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/ISIC-code">
+              <span class="menu-icon">
+                <span class="svg-icon svg-icon-2" ></span>
+              </span>
+              <span class="menu-title">ISIC Code</span>
+            </a>
           </div>
-        </li>
-        <li>
-          <div class="menu-item menu-accordion menu-fit">
-            <!--begin:Menu link--><span
-              routerLink="/admin-dashboard/admin/accounts/main-accounts/staff"
-              routerLinkActive="active"
-              class="menu-link"
-              ><span class="menu-icon">
-                <div class="symbol symbol-30px">
-                  <span class="symbol-label">
-                    <span class="svg-icon svg-icon-3 svg-icon-primary">
-                      <i class="ki-duotone ki-people text-gray-900 fs-3"
-                        ><span class="path1"></span><span class="path2"></span
-                        ><span class="path3"></span><span class="path4"></span
-                        ><span class="path5"></span
-                      ></i>
-                    </span>
-                  </span>
-                </div> </span
-              ><span class="menu-title">Staff</span
-              ><span class="menu-badge"></span></span
-            ><!--end:Menu link-->
+          
+          <div class="menu-item" routerLinkActive="active">
+            <a class="menu-link without-sub" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/industries">
+              <span class="menu-icon">
+                <span class="svg-icon svg-icon-2" ></span>
+              </span>
+              <span class="menu-title">Industries</span>
+            </a>
           </div>
-        </li>
-        <li>
-          <div class="menu-item menu-accordion menu-fit">
-            <!--begin:Menu link--><span
-              routerLink="/admin-dashboard/admin/accounts/main-accounts/roles"
-              routerLinkActive="active"
-              class="menu-link"
-              ><span class="menu-icon">
-                <div class="symbol symbol-30px">
-                  <span class="symbol-label">
-                    <span class="svg-icon svg-icon-3 svg-icon-primary">
-                      <i class="ki-duotone ki-profile-user text-gray-900 fs-3"
-                        ><span class="path1"></span><span class="path2"></span
-                        ><span class="path3"></span><span class="path4"></span></i
-                    ></span>
-                  </span>
-                </div> </span
-              ><span class="menu-title">Roles</span
-              ><span class="menu-badge"></span></span
-            ><!--end:Menu link-->
+          
+          <div class="menu-item" routerLinkActive="active">
+            <a class="menu-link without-sub" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/tags">
+              <span class="menu-icon">
+                <span class="svg-icon svg-icon-2" ></span>
+              </span>
+              <span class="menu-title">Tags</span>
+            </a>
           </div>
-        </li>
-        <li>
-          <div class="menu-item menu-accordion menu-fit">
-            <!--begin:Menu link--><span
-              routerLink="/admin-dashboard/admin/accounts/main-accounts/permissions"
-              routerLinkActive="active"
-              class="menu-link"
-              ><span class="menu-icon">
-                <div class="symbol symbol-30px">
-                  <span class="symbol-label">
-                    <span class="svg-icon svg-icon-3 svg-icon-primary">
-                      <i class="ki-duotone ki-user-tick text-gray-900 fs-3"
-                        ><span class="path1"></span><span class="path2"></span
-                        ><span class="path3"></span></i
-                    ></span>
-                  </span>
-                </div> </span
-              ><span class="menu-title">Permissions</span
-              ><span class="menu-badge"></span></span
-            ><!--end:Menu link-->
+          
+          <div class="menu-item" routerLinkActive="active">
+            <a class="menu-link without-sub" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/topics">
+              <span class="menu-icon">
+                <span class="svg-icon svg-icon-2" ></span>
+              </span>
+              <span class="menu-title">Topics</span>
+            </a>
           </div>
-        </li>
-      
-    </ul>
-   
-  </div>
+          
+          <div class="menu-item" routerLinkActive="active">
+            <a class="menu-link without-sub" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/hscode">
+              <span class="menu-icon">
+                <span class="svg-icon svg-icon-2" ></span>
+              </span>
+              <span class="menu-title">HS Code</span>
+            </a>
+          </div>
+          
+          <div class="menu-item" routerLinkActive="active">
+            <a class="menu-link without-sub" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/guidelines">
+              <span class="menu-icon">
+                <span class="svg-icon svg-icon-2" ></span>
+              </span>
+              <span class="menu-title">Guidelines</span>
+            </a>
+          </div>
+          
+          <!-- Account Section Title -->
+          <div class="menu-item">
+            <div class="menu-content pt-2 pb-2">
+              <span class="menu-section text-muted text-uppercase fs-8 ls-1">Account</span>
+            </div>
+          </div>
+          
+          <!-- Account Menu Items -->
+          <div class="menu-item" routerLinkActive="active">
+            <a class="menu-link without-sub" routerLink="/admin-dashboard/admin/accounts/main-accounts/staff">
+              <span class="menu-icon">
+                <span class="svg-icon svg-icon-2" ></span>
+              </span>
+              <span class="menu-title">Staff</span>
+            </a>
+          </div>
+          
+          <div class="menu-item" routerLinkActive="active">
+            <a class="menu-link without-sub" routerLink="/admin-dashboard/admin/accounts/main-accounts/roles">
+              <span class="menu-icon">
+                <span class="svg-icon svg-icon-2" ></span>
+              </span>
+              <span class="menu-title">Roles</span>
+            </a>
+          </div>
+          
+          <div class="menu-item" routerLinkActive="active">
+            <a class="menu-link without-sub" routerLink="/admin-dashboard/admin/accounts/main-accounts/permissions">
+              <span class="menu-icon">
+                <span class="svg-icon svg-icon-2" ></span>
+              </span>
+              <span class="menu-title">Permissions</span>
+            </a>
+          </div>
+          
+          <div class="menu-item" routerLinkActive="active">
+            <a class="menu-link without-sub" routerLink="/admin-dashboard/admin/accounts/main-accounts/users">
+              <span class="menu-icon">
+                <span class="svg-icon svg-icon-2" ></span>
+              </span>
+              <span class="menu-title">Users</span>
+            </a>
+          </div>
+          
+          <!-- MY SETTINGS Section Title -->
+          <div class="menu-item">
+            <div class="menu-content pt-2 pb-2">
+              <span class="menu-section text-muted text-uppercase fs-8 ls-1">MY SETTINGS</span>
+            </div>
+          </div>
+          
+          <!-- Settings Menu Items -->
+          <div class="menu-item" routerLinkActive="active">
+            <a class="menu-link without-sub" routerLink="/admin-dashboard/admin/my-settings/resetpassword">
+              <span class="menu-icon">
+                <span class="svg-icon svg-icon-2" ></span>
+              </span>
+              <span class="menu-title">Change Password</span>
+            </a>
+          </div>
+          
+          <!-- Add more settings items here if needed -->
+          
+        </div>
+      </div>
+    </div>
+    
   </p-sidebar>
 </div>

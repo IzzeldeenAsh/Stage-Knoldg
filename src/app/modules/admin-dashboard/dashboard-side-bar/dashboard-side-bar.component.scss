@@ -51,6 +51,9 @@
     .sidebar {
       transform: translateX(-100%);
     }
+    .sidebar-mobile{
+      transform: translateX(0);
+    }
   }
 
   .menu-link.active {

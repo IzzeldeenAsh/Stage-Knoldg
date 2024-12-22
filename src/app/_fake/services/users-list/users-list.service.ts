@@ -66,7 +66,7 @@ export class UsersListService {
     );
   }
 
-  activateInsighter(insighterId: number, status: string): Observable<any> {
+activateInsighter(insighterId: number, status: string): Observable<any> {
     this.setLoading(true);
     const url = `${this.apiUrl}/insighter/activate/${insighterId}`;
     const body = { status };

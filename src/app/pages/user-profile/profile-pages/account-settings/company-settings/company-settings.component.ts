@@ -5,6 +5,7 @@ import { IForsightaProfile } from 'src/app/_fake/models/profile.interface';
 import { CertificationService } from 'src/app/_fake/services/certifications/certification.service';
 import { ConsultingFieldTreeService } from 'src/app/_fake/services/consulting-fields-tree/consulting-fields-tree.service';
 import { DocumentsService } from 'src/app/_fake/services/douments-types/documents-types.service.spec';
+import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import { IndustryService } from 'src/app/_fake/services/industries/industry.service';
 import { UpdateProfileService } from 'src/app/_fake/services/profile/profile.service';
 import { AuthService } from 'src/app/modules/auth';
@@ -41,6 +42,7 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
     private _consultingFieldService: ConsultingFieldTreeService,
     private _profilePost: UpdateProfileService,
     injector: Injector,
+    private getProfileService: ProfileService 
   ) {
     super(injector);
   }
@@ -52,7 +54,7 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
   handleAPIs(){
     this.isLoading$ = of(true);
 
-    const profile$ = this._profileService.getProfile().pipe(
+    const profile$ = this.getProfileService.getProfile().pipe(
       tap((profile) => {
         this.profile = profile;
         this.roles = profile.roles;
