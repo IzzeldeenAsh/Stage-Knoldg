@@ -66,14 +66,42 @@ export class UsersListService {
     );
   }
 
-activateInsighter(insighterId: number, status: string): Observable<any> {
+activateInsighter(insighterId: number, staffNotes: string): Observable<any> {
     this.setLoading(true);
     const url = `${this.apiUrl}/insighter/activate/${insighterId}`;
-    const body = { status };
+    const body = { staff_notes:staffNotes };
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
-    return this.http.put(url, body, { headers }).pipe(
+    return this.http.post(url, body, { headers }).pipe(
+      map(response => response),
+      catchError(this.handleError),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  deactivateInsighter(insighterId: number, staffNotes: string): Observable<any> {
+    this.setLoading(true);
+    const url = `${this.apiUrl}/insighter/deactivate/${insighterId}`;
+    const body = { staff_notes: staffNotes };
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    return this.http.post(url, body, { headers }).pipe(
+      map(response => response),
+      catchError(this.handleError),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  deactivateInsighterWithDataDelete(insighterId: number, staffNotes: string): Observable<any> {
+    this.setLoading(true);
+    const url = `${this.apiUrl}/insighter/deactivate-delete/${insighterId}`;
+    const body = { staff_notes: staffNotes };
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    return this.http.post(url, body, { headers }).pipe(
       map(response => response),
       catchError(this.handleError),
       finalize(() => this.setLoading(false))
@@ -101,14 +129,42 @@ activateInsighter(insighterId: number, status: string): Observable<any> {
     );
   }
 
-  activateCompanyInsighter(companyId: number, status: string): Observable<any> {
+  activateCompanyInsighter(companyId: number, staffNotes: string): Observable<any> {
     this.setLoading(true);
     const url = `${this.apiUrl}/company/activate/${companyId}`;
-    const body = { status };
+    const body = { staff_notes:staffNotes };
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
-    return this.http.put(url, body, { headers }).pipe(
+    return this.http.post(url, body, { headers }).pipe(
+      map(response => response),
+      catchError(this.handleError),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  deactivateCompanyInsighter(companyId: number, staffNotes: string): Observable<any> {
+    this.setLoading(true);
+    const url = `${this.apiUrl}/company/deactivate/${companyId}`;
+    const body = { staff_notes: staffNotes };
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    return this.http.post(url, body, { headers }).pipe(
+      map(response => response),
+      catchError(this.handleError),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  deactivateCompanyWithDataDelete(companyId: number, staffNotes: string): Observable<any> {
+    this.setLoading(true);
+    const url = `${this.apiUrl}/company/deactivate-delete/${companyId}`;
+    const body = { staff_notes: staffNotes };
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    return this.http.post(url, body, { headers }).pipe(
       map(response => response),
       catchError(this.handleError),
       finalize(() => this.setLoading(false))
