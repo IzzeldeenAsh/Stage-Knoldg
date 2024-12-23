@@ -18,13 +18,7 @@
         </div>
       </div>
 
-      <!-- Actions -->
-      <div class="d-flex align-items-center gap-2 gap-lg-3">
-        <a (click)="showDialog()" class="btn btn-md btn-flex btn-primary">
-          <i class="ki-outline ki-plus text-white fs-4"></i>
-          Create
-        </a>
-      </div>
+  
       <!--end::Actions-->
     </div>
   </div>
@@ -211,23 +205,25 @@
     </div>
     
     <div class="mb-3 row">
-      <label for="parentId" class="col-sm-3 col-form-label">Parent Industry if exist</label>
+      <label for="parentNode" class="col-sm-3 col-form-label">Parent Industry</label>
       <div class="col-sm-9">
         <p-treeSelect
-          id="parentId"
-          formControlName="parentId"
-          [options]="isicTreeData"
-          placeholder="Select Parent"
-          class="w-100"
+          id="parentNode"
+          formControlName="parentNode"
+          [options]="parentsOnlyTreeData"
+          selectionMode="single"
           optionLabel="label"
           optionValue="value"
+          placeholder="Select Parent"
+          class="w-100"
           [showClear]="true"
           [filter]="true"
           filterBy="label"
-        ></p-treeSelect>
-        <div *ngIf="parentId && parentId.errors && (parentId.touched || parentId.dirty)">
-          <div *ngIf="parentId.errors['serverError']" class="text-danger">
-            {{ parentId.errors['serverError'] }}
+        >
+        </p-treeSelect>
+        <div *ngIf="parentNode && parentNode.errors && (parentNode.touched || parentNode.dirty)">
+          <div *ngIf="parentNode.errors['serverError']" class="text-danger">
+            {{ parentNode.errors['serverError'] }}
           </div>
         </div>
       </div>
