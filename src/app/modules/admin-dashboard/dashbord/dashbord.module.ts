@@ -38,6 +38,7 @@ import { TreeModule } from 'primeng/tree';
 import { TopicsComponent } from './dashboard/topics/topics.component';
 import { IndustriesComponent } from './dashboard/industries/industries.component';
 import { RequestsListComponent } from './dashboard/requests-list/requests-list.component';
+import { VerificationQuestionsListComponent } from './dashboard/verification-questions-list/verification-questions-list.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +58,7 @@ import { RequestsListComponent } from './dashboard/requests-list/requests-list.c
     IndustriesComponent,
     GuidelineComponent,
     PositionsComponent,
+    VerificationQuestionsListComponent,
   ],
   imports: [
     CommonModule,

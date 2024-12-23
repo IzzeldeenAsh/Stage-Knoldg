@@ -1,15 +1,9 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  OnInit,
-  ViewChild,
-  OnDestroy,
-} from '@angular/core';
-import { TreeNode, MessageService } from 'primeng/api';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { TreeNode, MessageService } from 'primeng/api';
+import { TreeTable } from 'primeng/treetable';
 import { Observable, Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
-import { TreeTable } from 'primeng/treetable';
 import { ConsultingFieldTreeService } from 'src/app/_fake/services/consulting-fields-tree/consulting-fields-tree.service';
 import { TranslationService } from 'src/app/modules/i18n';
 
@@ -19,32 +13,38 @@ import { TranslationService } from 'src/app/modules/i18n';
   styleUrls: ['./consulting-fields.component.scss'],
 })
 export class ConsultingFieldsComponent implements OnInit, OnDestroy {
-  messages: any[] = [];
-  private unsubscribe: Subscription[] = [];
+  isicForm!: FormGroup;
   isicnodes!: TreeNode[];
   originalIsicNodes!: TreeNode[];
   isicTreeData!: TreeNode[];
-  statusOptions = [
-    { label: 'All', value: '' },
-    { label: 'Active', value: 'active' },
-    { label: 'Inactive', value: 'inactive' },
-    { label: 'Suggestion', value: 'suggestion' }
-  ];
-  isicForm!: FormGroup;
+  selectedNodeId: number | null = null;
   displayDialog: boolean = false;
   isUpdate: boolean = false;
-  selectedNodeId: number | null = null;
-  isLoading$: Observable<boolean>;
-  @ViewChild('tt') treeTable!: TreeTable; 
-  lang: string = 'en';
+
+    // Add this to hold parent-level only data
+    parentsOnlyTreeData!: TreeNode[];
+
+
+  statusOptions = [
+    { label: 'All',        value: '' },
+    { label: 'Active',     value: 'active' },
+    { label: 'Inactive',   value: 'inactive' },
+    { label: 'Suggestion', value: 'suggestion' }
+  ];
   selectedStatus: string = '';
   searchTerm: string = '';
+  isLoading$: Observable<boolean>;
+  messages: any[] = [];
+  selectedParentNode: any;
+  private unsubscribe: Subscription[] = [];
+
+  @ViewChild('tt') treeTable!: TreeTable; 
 
   constructor(
     private cdr: ChangeDetectorRef,
-    private isicCodesService: ConsultingFieldTreeService,
     private fb: FormBuilder,
     private messageService: MessageService,
+    private isicCodesService: ConsultingFieldTreeService,
     private trans: TranslationService
   ) {
     this.isLoading$ = this.isicCodesService.isLoading$;
@@ -52,10 +52,10 @@ export class ConsultingFieldsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.isicForm = this.fb.group({
-      nameEn: ['', Validators.required],
-      nameAr: ['', Validators.required],
-      status: ['', Validators.required],
-      parentId: [null],
+      nameEn:   ['', Validators.required],
+      nameAr:   ['', Validators.required],
+      status:   ['', Validators.required],
+      parentNode: [null],
     });
 
     this.loadIsicCodes();
@@ -65,8 +65,17 @@ export class ConsultingFieldsComponent implements OnInit, OnDestroy {
     const listSub = this.isicCodesService.getConsultingCodesTree('en').subscribe({
       next: (res) => {
         this.isicnodes = res;
-        this.originalIsicNodes = [...res];  
-        this.isicTreeData = this.changeKeyToValue([...res]); 
+        this.originalIsicNodes = [...res];
+        this.isicTreeData = this.changeKeyToValue([...res]);
+
+        // Strip out children so only the top-level (parents) appear
+        this.parentsOnlyTreeData = this.isicTreeData.map(node => {
+          return {
+            ...node,
+            children: [] // remove children
+          };
+        });
+
         this.cdr.detectChanges();
       },
       error: (error) => {
@@ -76,161 +85,118 @@ export class ConsultingFieldsComponent implements OnInit, OnDestroy {
     this.unsubscribe.push(listSub);
   }
 
-  changeKeyToValue(nodes: any) {
-    return nodes.map((node: any) => {
+  changeKeyToValue(nodes: TreeNode[]): TreeNode[] {
+    return nodes.map((node) => {
       const newNode = {
         ...node,
-        value: node.data.key, 
-        children: node.children ? this.changeKeyToValue(node.children) : []
+        value: node.data.key,
+        children: node.children ? this.changeKeyToValue(node.children) : [],
       };
       delete newNode.key;
-      
+
       if (newNode.data && newNode.data.key !== undefined) {
         newNode.data = {
           ...newNode.data,
-          value: newNode.data.key
+          value: newNode.data.key,
         };
         delete newNode.data.key;
       }
-  
+
       return newNode;
     });
   }
 
   showDialog() {
     this.displayDialog = true;
-    this.isUpdate = false; 
-    this.isicForm.reset(); 
+    this.isUpdate = false;
+    this.isicForm.reset();
   }
 
-  editIsicCode(node: any) {
-    this.displayDialog = true; 
-    console.log('node',node);
-    this.selectedNodeId = node.node.data.key;
+  editIsicCode(rowNode: any) {
+    this.displayDialog = true;
+    this.selectedParentNode = null;
     this.isUpdate = true;
-    
-    const parentValue = node.node.parent ? node.node.parent.data.value : null;
-
-    this.isicForm.patchValue({
-      nameEn: node.node.data.nameEn,
-      nameAr: node.node.data.nameAr,
-      status: node.node.data.status,
-      parentId: parentValue,
-    });
-  }
-
-  private handleServerErrors(error: any) {
-    this.messages = [];
-
-    if (error.error && error.error.errors) {
-      const serverErrors = error.error.errors;
-      const errorKeyToFormControlName: any = {
-        'name.en': 'nameEn',
-        'name.ar': 'nameAr',
-        'status': 'status',
-        'parent_id': 'parentId',
-      };
-
-      for (const key in serverErrors) {
-        if (serverErrors.hasOwnProperty(key)) {
-          const messages = serverErrors[key];
-          const formControlName = errorKeyToFormControlName[key];
-          if (formControlName) {
-            const control = this.isicForm.get(formControlName);
-            if (control) {
-              control.setErrors({ serverError: messages[0] });
-              control.markAsTouched();
-            }
-          } else {
-            this.messages.push({ severity: 'error', summary: '', detail: messages.join(', ') });
-          }
-        }
-      }
-    } else {
-      this.messages.push({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'An unexpected error occurred.',
-      });
+    // This is the node you clicked to edit
+    const dataNode = rowNode.node.data;
+    this.selectedNodeId = dataNode.key;
+    const parentValue = rowNode.node.parent ? rowNode.node.parent.data.key : null;
+    if(parentValue) {
+      this.selectedParentNode = this.parentsOnlyTreeData.find((node:any) => node.value === parentValue);
     }
-  }
-
-  get nameEn() {
-    return this.isicForm.get('nameEn');
-  }
-
-  get nameAr() {
-    return this.isicForm.get('nameAr');
-  }
-
-  get status() {
-    return this.isicForm.get('status');
-  }
-
-  get parentId() {
-    return this.isicForm.get('parentId');
+    this.isicForm.patchValue({
+      nameEn: dataNode.nameEn,
+      nameAr: dataNode.nameAr,
+      status: dataNode.status,
+      parentNode: this.selectedParentNode,
+    });
   }
 
   submit() {
     this.messages = [];
-
     if (this.isicForm.invalid) {
       this.isicForm.markAllAsTouched();
       return;
     }
 
     const formValues = this.isicForm.value;
+    // Construct the payload that the backend expects
     const isicCode = {
       name: {
         en: formValues.nameEn,
         ar: formValues.nameAr,
       },
       status: formValues.status,
-      parent_id: formValues.parentId ? formValues.parentId : 0,
+      parent_id: formValues.parentNode ? formValues.parentNode.value : 0,
     };
 
     if (this.isUpdate && this.selectedNodeId !== null) {
-      const updateSub = this.isicCodesService.updateConsultingField(this.selectedNodeId, isicCode,'en').subscribe({
-        next: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'Industry updated successfully.',
-          });
-          this.loadIsicCodes();
-          this.displayDialog = false;
-          this.isicForm.reset();
-        },
-        error: (error) => {
-          this.handleServerErrors(error);
-        },
-      });
+      // Update mode
+      const updateSub = this.isicCodesService
+        .updateConsultingField(this.selectedNodeId, isicCode, 'en')
+        .subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Consulting field updated successfully.',
+            });
+            this.loadIsicCodes();
+            this.displayDialog = false;
+            this.isicForm.reset();
+          },
+          error: (error) => {
+            this.handleServerErrors(error);
+          },
+        });
       this.unsubscribe.push(updateSub);
     } else {
-      const createSub = this.isicCodesService.createConsultingField(isicCode,'en').subscribe({
-        next: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'Industry created successfully.',
-          });
-          this.loadIsicCodes();
-          this.displayDialog = false;
-          this.isicForm.reset();
-        },
-        error: (error) => {
-          this.handleServerErrors(error);
-        },
-      });
+      // Create mode
+      const createSub = this.isicCodesService
+        .createConsultingField(isicCode, 'en')
+        .subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Consulting field created successfully.',
+            });
+            this.loadIsicCodes();
+            this.displayDialog = false;
+            this.isicForm.reset();
+          },
+          error: (error) => {
+            this.handleServerErrors(error);
+          },
+        });
       this.unsubscribe.push(createSub);
     }
   }
 
-  deleteIsicCode(node: any) {
-    const id = node.node.data.key;
+  deleteIsicCode(rowNode: any) {
+    const id = rowNode.node.data.key;
     Swal.fire({
       title: 'Are you sure?',
-      text: 'Do you want to delete this Industry? This action cannot be undone.',
+      text: 'Do you want to delete this field? This action cannot be undone.',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -244,7 +210,7 @@ export class ConsultingFieldsComponent implements OnInit, OnDestroy {
             this.messageService.add({
               severity: 'success',
               summary: 'Success',
-              detail: 'Industry deleted successfully.',
+              detail: 'Consulting field deleted successfully.',
             });
             this.loadIsicCodes();
           },
@@ -267,59 +233,102 @@ export class ConsultingFieldsComponent implements OnInit, OnDestroy {
   }
 
   applyFilters() {
-    this.isicnodes = this.filterNodesRecursively(this.originalIsicNodes, this.selectedStatus, this.searchTerm.toLowerCase());
+    this.isicnodes = this.filterNodesRecursively(
+      this.originalIsicNodes,
+      this.selectedStatus,
+      this.searchTerm.toLowerCase()
+    );
   }
-  
+
   filterNodesRecursively(nodes: TreeNode[], selectedStatus: string, searchTerm: string): TreeNode[] {
     const filteredNodes: TreeNode[] = [];
-  
     for (const node of nodes) {
-      const childMatches = node.children ? this.filterNodesRecursively(node.children, selectedStatus, searchTerm) : [];
+      const childMatches = node.children
+        ? this.filterNodesRecursively(node.children, selectedStatus, searchTerm)
+        : [];
       const matchesCurrentNode = this.isNodeMatch(node, selectedStatus, searchTerm);
-  
-      // If current node matches or if any child matches, include this node
+
       if (matchesCurrentNode || childMatches.length > 0) {
         filteredNodes.push({
           ...node,
-          children: childMatches
+          children: childMatches,
         });
       }
     }
-  
     return filteredNodes;
   }
-  
+
   isNodeMatch(node: TreeNode, selectedStatus: string, searchTerm: string): boolean {
     const { status, code, label, nameEn, nameAr } = node.data;
-    
-    // Check status if one is selected
     const statusMatches = !selectedStatus || status === selectedStatus;
-  
-    // Check search term
-    const termMatches = !searchTerm 
-      || (code && code.toLowerCase().includes(searchTerm))
-      || (label && label.toLowerCase().includes(searchTerm))
-      || (nameEn && nameEn.toLowerCase().includes(searchTerm))
-      || (nameAr && nameAr.toLowerCase().includes(searchTerm));
-  
+
+    const termMatches =
+      !searchTerm ||
+      (code && code.toLowerCase().includes(searchTerm)) ||
+      (label && label.toLowerCase().includes(searchTerm)) ||
+      (nameEn && nameEn.toLowerCase().includes(searchTerm)) ||
+      (nameAr && nameAr.toLowerCase().includes(searchTerm));
+
     return statusMatches && termMatches;
   }
-  
 
   onCancel() {
     this.displayDialog = false;
     this.isicForm.reset();
   }
 
+  private handleServerErrors(error: any) {
+    this.messages = [];
+    if (error.error && error.error.errors) {
+      const serverErrors = error.error.errors;
+      const errorKeyToFormControlName: any = {
+        'name.en': 'nameEn',
+        'name.ar': 'nameAr',
+        'status': 'status',
+        'parent_id': 'parentNode',
+      };
+
+      for (const key in serverErrors) {
+        if (serverErrors.hasOwnProperty(key)) {
+          const messages = serverErrors[key];
+          const formControlName = errorKeyToFormControlName[key];
+          if (formControlName) {
+            const control = this.isicForm.get(formControlName);
+            if (control) {
+              control.setErrors({ serverError: messages[0] });
+              control.markAsTouched();
+            }
+          } else {
+            this.messages.push({
+              severity: 'error',
+              summary: '',
+              detail: messages.join(', '),
+            });
+          }
+        }
+      }
+    } else {
+      this.messages.push({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'An unexpected error occurred.',
+      });
+    }
+  }
+
   ngOnDestroy() {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }
 
-  get hasSuccessMessage() {
-    return this.messages.some((msg: any) => msg.severity === 'success');
-  }
+  get nameEn()   { return this.isicForm.get('nameEn');   }
+  get nameAr()   { return this.isicForm.get('nameAr');   }
+  get status()   { return this.isicForm.get('status');   }
+  get parentNode() { return this.isicForm.get('parentNode'); }
 
+  get hasSuccessMessage() {
+    return this.messages.some((msg) => msg.severity === 'success');
+  }
   get hasErrorMessage() {
-    return this.messages.some((msg: any) => msg.severity === 'error');
+    return this.messages.some((msg) => msg.severity === 'error');
   }
 }

@@ -21,24 +21,31 @@ import { IndustryService } from 'src/app/_fake/services/industries/industry.serv
 export class IndustriesComponent implements OnInit, OnDestroy {
   messages: any[] = [];
   private unsubscribe: Subscription[] = [];
+
   isicnodes!: TreeNode[];
   originalIsicNodes!: TreeNode[];
   isicTreeData!: TreeNode[];
+
+  parentsOnlyTreeData!: TreeNode[];
+
   statusOptions = [
     { label: 'All', value: '' },
     { label: 'Active', value: 'active' },
     { label: 'Inactive', value: 'inactive' },
-    { label: 'Suggestion', value: 'suggestion' }
+    { label: 'Suggestion', value: 'suggestion' },
   ];
+
   isicForm!: FormGroup;
-  displayDialog: boolean = false;
-  isUpdate: boolean = false;
+  displayDialog = false;
+  isUpdate = false;
   selectedNodeId: number | null = null;
   isLoading$: Observable<boolean>;
   @ViewChild('tt') treeTable!: TreeTable;
-  lang: string = 'en';
-  selectedStatus: string = '';
-  searchTerm: string = '';
+  lang = 'en';
+  selectedStatus = '';
+  searchTerm = '';
+
+  selectedParentNode: TreeNode | null = null;
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -55,7 +62,7 @@ export class IndustriesComponent implements OnInit, OnDestroy {
       nameEn: ['', Validators.required],
       nameAr: ['', Validators.required],
       status: ['', Validators.required],
-      parentId: [null],
+      parentNode: [null],
     });
 
     this.loadIndustries();
@@ -66,7 +73,16 @@ export class IndustriesComponent implements OnInit, OnDestroy {
       next: (res) => {
         this.isicnodes = res;
         this.originalIsicNodes = [...res];
+
         this.isicTreeData = this.changeKeyToValue([...res]);
+
+        this.parentsOnlyTreeData = this.isicTreeData.map((node) => {
+          return {
+            ...node,
+            children: [],
+          };
+        });
+
         this.cdr.detectChanges();
       },
       error: (error) => {
@@ -76,19 +92,19 @@ export class IndustriesComponent implements OnInit, OnDestroy {
     this.unsubscribe.push(listSub);
   }
 
-  changeKeyToValue(nodes: any) {
-    return nodes.map((node: any) => {
+  changeKeyToValue(nodes: TreeNode[]): TreeNode[] {
+    return nodes.map((node) => {
       const newNode = {
         ...node,
         value: node.data.key,
-        children: node.children ? this.changeKeyToValue(node.children) : []
+        children: node.children ? this.changeKeyToValue(node.children) : [],
       };
       delete newNode.key;
 
       if (newNode.data && newNode.data.key !== undefined) {
         newNode.data = {
           ...newNode.data,
-          value: newNode.data.key
+          value: newNode.data.key,
         };
         delete newNode.data.key;
       }
@@ -100,75 +116,31 @@ export class IndustriesComponent implements OnInit, OnDestroy {
   showDialog() {
     this.displayDialog = true;
     this.isUpdate = false;
+    this.selectedParentNode = null;
     this.isicForm.reset();
   }
 
-  editIsicCode(node: any) {
+  editIsicCode(rowNode: any) {
     this.displayDialog = true;
-    console.log('node', node);
-    this.selectedNodeId = node.node.data.key;
     this.isUpdate = true;
+    this.selectedParentNode = null;
 
-    const parentValue = node.node.parent ? node.node.parent.data.value : null;
+    const dataNode = rowNode.node.data;
+    this.selectedNodeId = dataNode.key;
+
+    const parentValue = rowNode.node.parent ? rowNode.node.parent.data.key : null;
+    if (parentValue) {
+      this.selectedParentNode = this.parentsOnlyTreeData.find(
+        (node: any) => node.value === parentValue
+      ) || null;
+    }
 
     this.isicForm.patchValue({
-      nameEn: node.node.data.nameEn,
-      nameAr: node.node.data.nameAr,
-      status: node.node.data.status,
-      parentId: parentValue,
+      nameEn: dataNode.nameEn,
+      nameAr: dataNode.nameAr,
+      status: dataNode.status,
+      parentNode: this.selectedParentNode,
     });
-  }
-
-  private handleServerErrors(error: any) {
-    this.messages = [];
-
-    if (error.error && error.error.errors) {
-      const serverErrors = error.error.errors;
-      const errorKeyToFormControlName: any = {
-        'name.en': 'nameEn',
-        'name.ar': 'nameAr',
-        'status': 'status',
-        'parent_id': 'parentId',
-      };
-
-      for (const key in serverErrors) {
-        if (serverErrors.hasOwnProperty(key)) {
-          const messages = serverErrors[key];
-          const formControlName = errorKeyToFormControlName[key];
-          if (formControlName) {
-            const control = this.isicForm.get(formControlName);
-            if (control) {
-              control.setErrors({ serverError: messages[0] });
-              control.markAsTouched();
-            }
-          } else {
-            this.messages.push({ severity: 'error', summary: '', detail: messages.join(', ') });
-          }
-        }
-      }
-    } else {
-      this.messages.push({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'An unexpected error occurred.',
-      });
-    }
-  }
-
-  get nameEn() {
-    return this.isicForm.get('nameEn');
-  }
-
-  get nameAr() {
-    return this.isicForm.get('nameAr');
-  }
-
-  get status() {
-    return this.isicForm.get('status');
-  }
-
-  get parentId() {
-    return this.isicForm.get('parentId');
   }
 
   submit() {
@@ -186,48 +158,52 @@ export class IndustriesComponent implements OnInit, OnDestroy {
         ar: formValues.nameAr,
       },
       status: formValues.status,
-      parent_id: formValues.parentId ? formValues.parentId : 0,
+      parent_id: formValues.parentNode ? formValues.parentNode.value : 0,
     };
 
     if (this.isUpdate && this.selectedNodeId !== null) {
-      const updateSub = this.industriesService.updateIsicCode(this.selectedNodeId, isicCode).subscribe({
-        next: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'Industry updated successfully.',
-          });
-          this.loadIndustries();
-          this.displayDialog = false;
-          this.isicForm.reset();
-        },
-        error: (error) => {
-          this.handleServerErrors(error);
-        },
-      });
+      const updateSub = this.industriesService
+        .updateIsicCode(this.selectedNodeId, isicCode)
+        .subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Industry updated successfully.',
+            });
+            this.loadIndustries();
+            this.displayDialog = false;
+            this.isicForm.reset();
+          },
+          error: (error) => {
+            this.handleServerErrors(error);
+          },
+        });
       this.unsubscribe.push(updateSub);
     } else {
-      const createSub = this.industriesService.createIsicCode(isicCode, 'en').subscribe({
-        next: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'Industry created successfully.',
-          });
-          this.loadIndustries();
-          this.displayDialog = false;
-          this.isicForm.reset();
-        },
-        error: (error) => {
-          this.handleServerErrors(error);
-        },
-      });
+      const createSub = this.industriesService
+        .createIsicCode(isicCode, 'en')
+        .subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Industry created successfully.',
+            });
+            this.loadIndustries();
+            this.displayDialog = false;
+            this.isicForm.reset();
+          },
+          error: (error) => {
+            this.handleServerErrors(error);
+          },
+        });
       this.unsubscribe.push(createSub);
     }
   }
 
-  deleteIsicCode(node: any) {
-    const id = node.node.data.key;
+  deleteIsicCode(rowNode: any) {
+    const id = rowNode.node.data.key;
     Swal.fire({
       title: 'Are you sure?',
       text: 'Do you want to delete this Industry? This action cannot be undone.',
@@ -265,59 +241,116 @@ export class IndustriesComponent implements OnInit, OnDestroy {
   applyStatusFilter() {
     this.applyFilters();
   }
+
   applyFilters() {
-    this.isicnodes = this.filterNodesRecursively(this.originalIsicNodes, this.selectedStatus, this.searchTerm.toLowerCase());
+    this.isicnodes = this.filterNodesRecursively(
+      this.originalIsicNodes,
+      this.selectedStatus,
+      this.searchTerm.toLowerCase()
+    );
   }
-  
-  filterNodesRecursively(nodes: TreeNode[], selectedStatus: string, searchTerm: string): TreeNode[] {
+
+  filterNodesRecursively(
+    nodes: TreeNode[],
+    selectedStatus: string,
+    searchTerm: string
+  ): TreeNode[] {
     const filteredNodes: TreeNode[] = [];
-  
+
     for (const node of nodes) {
-      const childMatches = node.children ? this.filterNodesRecursively(node.children, selectedStatus, searchTerm) : [];
-      const matchesCurrentNode = this.isNodeMatch(node, selectedStatus, searchTerm);
-  
-      // If current node matches or if any child matches, include this node
-      if (matchesCurrentNode || childMatches.length > 0) {
+      const childMatches = node.children
+        ? this.filterNodesRecursively(node.children, selectedStatus, searchTerm)
+        : [];
+      const matches = this.isNodeMatch(node, selectedStatus, searchTerm);
+
+      if (matches || childMatches.length > 0) {
         filteredNodes.push({
           ...node,
-          children: childMatches
+          children: childMatches,
         });
       }
     }
-  
     return filteredNodes;
   }
-  
+
   isNodeMatch(node: TreeNode, selectedStatus: string, searchTerm: string): boolean {
     const { status, code, label, nameEn, nameAr } = node.data;
-    
-    // Check status if one is selected
+
     const statusMatches = !selectedStatus || status === selectedStatus;
-  
-    // Check search term
-    const termMatches = !searchTerm 
-      || (code && code.toLowerCase().includes(searchTerm))
-      || (label && label.toLowerCase().includes(searchTerm))
-      || (nameEn && nameEn.toLowerCase().includes(searchTerm))
-      || (nameAr && nameAr.toLowerCase().includes(searchTerm));
-  
+    const termMatches =
+      !searchTerm ||
+      (code && code.toLowerCase().includes(searchTerm)) ||
+      (label && label.toLowerCase().includes(searchTerm)) ||
+      (nameEn && nameEn.toLowerCase().includes(searchTerm)) ||
+      (nameAr && nameAr.toLowerCase().includes(searchTerm));
+
     return statusMatches && termMatches;
   }
-  
 
   onCancel() {
     this.displayDialog = false;
     this.isicForm.reset();
   }
 
+  private handleServerErrors(error: any) {
+    this.messages = [];
+    if (error.error && error.error.errors) {
+      const serverErrors = error.error.errors;
+      const errorKeyToFormControlName: any = {
+        'name.en': 'nameEn',
+        'name.ar': 'nameAr',
+        status: 'status',
+        parent_id: 'parentNode',
+      };
+
+      for (const key in serverErrors) {
+        if (serverErrors.hasOwnProperty(key)) {
+          const messages = serverErrors[key];
+          const formControlName = errorKeyToFormControlName[key];
+          if (formControlName) {
+            const control = this.isicForm.get(formControlName);
+            if (control) {
+              control.setErrors({ serverError: messages[0] });
+              control.markAsTouched();
+            }
+          } else {
+            this.messages.push({
+              severity: 'error',
+              summary: '',
+              detail: messages.join(', '),
+            });
+          }
+        }
+      }
+    } else {
+      this.messages.push({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'An unexpected error occurred.',
+      });
+    }
+  }
+
   ngOnDestroy() {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
+  }
+
+  get nameEn() {
+    return this.isicForm.get('nameEn');
+  }
+  get nameAr() {
+    return this.isicForm.get('nameAr');
+  }
+  get status() {
+    return this.isicForm.get('status');
+  }
+  get parentNode() {
+    return this.isicForm.get('parentNode');
   }
 
   get hasSuccessMessage() {
     return this.messages.some((msg: any) => msg.severity === 'success');
   }
-
   get hasErrorMessage() {
     return this.messages.some((msg: any) => msg.severity === 'error');
   }

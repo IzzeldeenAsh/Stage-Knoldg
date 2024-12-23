@@ -200,20 +200,23 @@
       <label for="parentId" class="col-sm-3 col-form-label">Parent Consulting Field</label>
       <div class="col-sm-9">
         <p-treeSelect
-          id="parentId"
-          formControlName="parentId"
-          [options]="isicTreeData"
-          placeholder="Select Parent"
-          class="w-100"
-          optionLabel="label"
-          optionValue="value"
-          [showClear]="true"
-          [filter]="true"
-          filterBy="label"
-        ></p-treeSelect>
-        <div *ngIf="parentId && parentId.errors && (parentId.touched || parentId.dirty)">
-          <div *ngIf="parentId.errors['serverError']" class="text-danger">
-            {{ parentId.errors['serverError'] }}
+        id="parentNode"
+        formControlName="parentNode"
+        [options]="parentsOnlyTreeData"
+        selectionMode="single"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Select Parent"
+        class="w-100"
+        [showClear]="true"
+        [filter]="true"
+        filterBy="label"
+      >
+      </p-treeSelect>
+
+        <div *ngIf="parentNode && parentNode.errors && (parentNode.touched || parentNode.dirty)">
+          <div *ngIf="parentNode.errors['serverError']" class="text-danger">
+            {{ parentNode.errors['serverError'] }}
           </div>
         </div>
       </div>
