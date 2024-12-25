@@ -11,6 +11,8 @@ import {SearchResultInnerComponent} from "./dropdown-inner/search-result-inner/s
 import {NgbTooltipModule} from "@ng-bootstrap/ng-bootstrap";
 import {FormsModule} from "@angular/forms";
 import { SharedModule } from "../../../shared/shared.module";
+import { NotificationsNamesPipe } from 'src/app/pipes/notificaitons-pipe/notifications-names.pipe';
+import { NotificationsLinksPipe } from 'src/app/pipes/notifications-links/notifications-links.pipe';
 
 @NgModule({
   declarations: [
@@ -18,11 +20,14 @@ import { SharedModule } from "../../../shared/shared.module";
     QuickLinksInnerComponent,
     SearchResultInnerComponent,
     UserInnerComponent,
+    
     LayoutScrollTopComponent,
   ],
   imports: [
     CommonModule,
     FormsModule,
+    NotificationsNamesPipe,
+    NotificationsLinksPipe,
     InlineSVGModule,
     RouterModule,
     TranslationModule,

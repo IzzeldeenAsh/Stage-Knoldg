@@ -1,5 +1,6 @@
-import { Component, HostBinding, OnInit } from '@angular/core';
+import { Component, HostBinding, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { LayoutService } from '../../../../../layout';
+import { Notification } from 'src/app/_fake/services/nofitications/notifications.service';
 
 export type NotificationsTabsType =
   | 'kt_topbar_notifications_1'
@@ -11,6 +12,7 @@ export type NotificationsTabsType =
   templateUrl: './notifications-inner.component.html',
 })
 export class NotificationsInnerComponent implements OnInit {
+  @Input() notifications: Notification[] = [];
   @HostBinding('class') class =
     'menu menu-sub menu-sub-dropdown menu-column w-350px w-lg-375px';
   @HostBinding('attr.data-kt-menu') dataKtMenu = 'true';
@@ -18,12 +20,18 @@ export class NotificationsInnerComponent implements OnInit {
   activeTabId: NotificationsTabsType = 'kt_topbar_notifications_2';
   alerts: Array<AlertModel> = defaultAlerts;
   logs: Array<LogModel> = defaultLogs;
+  @Output() notificationClicked = new EventEmitter<string>();
+
   constructor() {}
 
   ngOnInit(): void {}
 
   setActiveTabId(tabId: NotificationsTabsType) {
     this.activeTabId = tabId;
+  }
+
+  onNotificationClick(notificationId: string) {
+    this.notificationClicked.emit(notificationId);
   }
 }
 

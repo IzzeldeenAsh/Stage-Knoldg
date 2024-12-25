@@ -2,6 +2,11 @@
 export const locale = {
   lang: 'en',
   data: {
+    NOTIFICATIONS: {
+      TITLE: 'Notifications',
+      NO_NEW: 'No new notifications',
+      VIEW: 'View'
+    },
     HOME: {
       LATEST_INSIGHTS: 'Latest Insights',
       TRENDING: 'Trending',
@@ -82,7 +87,7 @@ export const locale = {
         OR_WITH_EMAIL: "Or with email",
         EMAIL_LABEL: "Email",
         EMAIL_REQUIRED: "Email is required",
-        WELCOME_LOGIN: "Welcome To Foresighta",
+        WELCOME_LOGIN: "Welcome To Knowrland",
         EMAIL_INVALID: "Email is invalid",
         PASSWORD_LABEL: "Password",
         PASSWORD_REQUIRED: "Password is required",
@@ -166,7 +171,7 @@ export const locale = {
         "INDUSTRY_PLACEHOLDER": "Select industry",
         "HSCODE": "HS-Code",
         "THANK_YOU_TITLE": "Thank you!",
-        "SUCCESS_JOURNEY_TITLE": "Congratulations on joining Foresighta!",
+        "SUCCESS_JOURNEY_TITLE": "Congratulations on joining Knowrland!",
         "THANK_YOU_MESSAGE": `
         You are now part of an elite network of insight providers and consultants dedicated to empowering our visitors with valuable expertise.
        <br><br> You’ll be notified by email when it’s time to start uploading your reports, researches, and insights to the platform.
@@ -175,11 +180,11 @@ export const locale = {
         "STAY_TUNED_MESSAGE": `
           Stay tuned for more updates. Your future of smarter decisions is about to begin!
         `,
-        "EMPOWER_INSIGHTS_TITLE": "Unlock Your Expertise with Foresighta.",
+        "EMPOWER_INSIGHTS_TITLE": "Unlock Your Expertise with Knowrland.",
         "EMPOWER_INSIGHTS_TEXT": `
         Start generating revenue from your insights every time your report is downloaded.<br /><br />
           <span class="text-dark font-weight-bolder" ><strong>Reach a Global Audience</strong></span> by uploading and sharing your research, reports and data that will have a meaningful impact on individuals, businesses decision-makers around the world.<br /><br />
-          Foresighta provides a unique and Redefining consulting opportunity. Experience Flexible  <span class="text-dark font-weight-bolder" >Engagement with visitors</span>  who can reach out to you for one-on-one consultations and expert opinions, allowing you to offer tailored guidance.
+          Knowrland provides a unique and Redefining consulting opportunity. Experience Flexible  <span class="text-dark font-weight-bolder" >Engagement with visitors</span>  who can reach out to you for one-on-one consultations and expert opinions, allowing you to offer tailored guidance.
           <br><br><span class="text-dark font-weight-bolder" ><strong>Work at your convenience, work any time.</strong></span> <br><br>
           Bring your reports and studies out of the drawer and let your experience shine.
 Your wealth of knowledge is valued and many are eager to learn from it.
