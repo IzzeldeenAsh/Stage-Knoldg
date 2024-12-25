@@ -12,62 +12,40 @@
     class="tab-pane fade"
     id="kt_topbar_notifications_2"
     role="tabpanel"
-    [ngClass]="activeTabId === 'kt_topbar_notifications_2' ? 'show active' : ''"
   >
   <div class="scroll-y mh-325px my-5 px-8">
     <div *ngIf="notifications.length === 0" class="text-center py-4">
       <div class="text-gray-500">{{ 'NOTIFICATIONS.NO_NEW' | translate }}</div>
     </div>
-    <div *ngFor="let alert of notifications" class="d-flex flex-stack py-4">
-      <div class="d-flex align-items-center">
-        <div class="symbol symbol-35px me-4">
-          <span class="symbol-label" [ngClass]="'bg-light-info'">
-            <span
-              [inlineSVG]="'./assets/media/icons/duotune/general/gen006.svg'"
-              class="svg-icon fs-2"
-              [ngClass]="'svg-icon-info'"
-            ></span>
-          </span>
+    <ng-container *ngIf="notifications.length > 0">
+      <div *ngFor="let alert of notifications" class="d-flex flex-stack py-4">
+        <div class="d-flex align-items-center">
+          <div class="symbol symbol-35px me-4">
+            <span class="symbol-label" [ngClass]="'bg-light-info'">
+              <span
+                [inlineSVG]="'./assets/media/icons/duotune/general/gen006.svg'"
+                class="svg-icon fs-2"
+                [ngClass]="'svg-icon-info'"
+              ></span>
+            </span>
+          </div>
+  
+          <div class="mb-0 me-2">
+            <a href="#" class="fs-6 text-gray-800 text-hover-primary fw-bolder">
+              {{ alert.data.type | notificationsNames }}
+            </a>
+            <div class="text-gray-500 fs-7">{{ alert.data.message }}</div>
+          </div>
         </div>
-
-        <div class="mb-0 me-2">
-          <a href="#" class="fs-6 text-gray-800 text-hover-primary fw-bolder">
-            {{ alert.data.type | notificationsNames }}
-          </a>
-          <div class="text-gray-500 fs-7">{{ alert.data.message }}</div>
-        </div>
+  
+       <a [routerLink]=" alert.data.type | notificationsLinks" (click)="onNotificationClick(alert.id)"> 
+         <span class="badge badge-light-info fs-8 badge-hover-primary">{{ 'NOTIFICATIONS.VIEW' | translate }}</span>
+       </a>
       </div>
-
-     <a [routerLink]=" alert.data.type | notificationsLinks" (click)="onNotificationClick(alert.id)"> 
-       <span class="badge badge-light-info fs-8 badge-hover-primary">{{ 'NOTIFICATIONS.VIEW' | translate }}</span>
-     </a>
-    </div>
+    </ng-container>
+    
   </div>
   </div>
 
-  <div
-    class="tab-pane fade"
-    id="kt_topbar_notifications_3"
-    role="tabpanel"
-    [ngClass]="activeTabId === 'kt_topbar_notifications_3' ? 'show active' : ''"
-  >
-    <div class="scroll-y mh-325px my-5 px-8">
-      <div *ngFor="let log of logs" class="d-flex flex-stack py-4">
-        <div class="d-flex align-items-center me-2">
-          <span
-            class="w-70px badge"
-            [ngClass]="'badge-light-' + log.state + ' me-4'"
-          >
-            {{ log.code }}
-          </span>
 
-          <a class="text-gray-800 text-hover-primary fw-bold cursor-pointer">
-            {{ log.message }}
-          </a>
-
-          <span class="badge badge-light fs-8">{{ log.time }}</span>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
