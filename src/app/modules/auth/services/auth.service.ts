@@ -6,15 +6,13 @@ import {
   Subscription,
   throwError,
 } from "rxjs";
-import { map, catchError, switchMap, finalize, take, first, tap, mapTo } from "rxjs/operators";
-import { ForesightaGeneralUserModel, UserModel } from "../models/user.model";
+import { map, catchError, finalize, first, tap, mapTo } from "rxjs/operators";
+import { ForesightaGeneralUserModel } from "../models/user.model";
 import { AuthModel } from "../models/auth.model";
 import { Router } from "@angular/router";
 import { AuthHTTPService } from "./auth-http/auth-http.service";
 import { InsightaUserModel } from "../models/insighta-user.model";
-import { environment } from "src/environments/environment";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { IForsightaProfile } from "src/app/_fake/models/profile.interface";
 import { TranslationService } from "../../i18n";
 
 export type UserType = InsightaUserModel | undefined;
@@ -42,8 +40,6 @@ export class AuthService implements OnDestroy {
     this.currentUserSubject = new BehaviorSubject<UserType>(undefined);
     this.currentUser$ = this.currentUserSubject.asObservable();
     this.isLoading$ = this.isLoadingSubject.asObservable();
-    const subscr = this.getUserByToken().subscribe();
-    this.unsubscribe.push(subscr);
     this.translationService.onLanguageChange().subscribe((lang) => {
       this.currentLang = lang || 'en';
     });
@@ -73,8 +69,6 @@ export class AuthService implements OnDestroy {
           country: response.data.country,
           profile_photo_url:response.data.profile_photo_url,
         };
-
-        this.setUserInLocalStorage(user);
         this.currentUserSubject.next(user);
         return response.data;
       }),
@@ -88,22 +82,10 @@ export class AuthService implements OnDestroy {
   getLinkedInAuthRedirectUrl(): Observable<string> {
     return this.http.get('https://api.foresighta.co/api/auth/provider/linkedin', { responseType: 'text' });
   }
-  private setUserInLocalStorage(user: UserType): void {
-    if (user) {
-      localStorage.setItem("currentUser", JSON.stringify(user));
-    }
-  }
-  private getUserFromLocalStorage(): UserType | undefined {
-    const userJson = localStorage.getItem("currentUser");
-    if (userJson) {
-      return JSON.parse(userJson) as UserType;
-    }
-    return undefined;
-  }
+
   private handleError(error: any) {
     // Initialize an empty array to hold the formatted error messages
     let validationErrors: any[] = [];
-
     // Check if there are validation errors in the response
     if (error.error.errors) {
       const errors = error.error.errors;
@@ -126,6 +108,7 @@ export class AuthService implements OnDestroy {
       validationMessages: validationErrors,
     }));
   }
+
   private isTokenExpired(token: string): boolean {
     if (!token) {
       return true;
@@ -145,66 +128,35 @@ export class AuthService implements OnDestroy {
     return this.http.get('https://api.foresighta.co/api/account/profile',{headers}).pipe(
       map((response: any) => {
         this.isLoadingSubject.next(false);
-        const user: UserType = {
-          id: response.data.id,
-          name: response.data.name,
-          email: response.data.email,
-          countryId: null,
-          country: null,
-        };
-        this.setUserInLocalStorage(user);
         return response.data
       }),
       catchError((err) => {
-       
         return throwError(err);
       }),
       finalize(() => this.isLoadingSubject.next(false))
     );
   }
+
   logout():Observable<any> {
    return this.authHttpService.logout()
-   
-  }
-  getUserByToken(): Observable<any> {
-    const authData = this.getAuthFromLocalStorage();
-    if (authData) { // Check if authData exists
-      if (!this.isTokenExpired(authData.authToken)) {
-        const user = this.getUserFromLocalStorage();
-        if (user) {
-          this.currentUserSubject.next(user);
-          return of(user);
-        } 
-      } else {
-        // Token is expired; perform logout
-        return this.handleLogout();
-      }
-    }
-    // No authData; allow unauthenticated access without logout
-    return of(undefined);
   }
   
    handleLogout(): Observable<void> {
+    localStorage.removeItem("foresighta-creds");
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("authToken");
     return this.logout().pipe(first()).pipe(
       tap({
         next: () => {
-          localStorage.removeItem("foresighta-creds");
-          localStorage.removeItem("currentUser");
-          localStorage.removeItem("authToken");
           document.location.reload();
         },
         error: () => {
-          localStorage.removeItem("foresighta-creds");
-          localStorage.removeItem("currentUser");
-          localStorage.removeItem("authToken");
           document.location.reload();
         }
       }),
       // Return an observable that completes after handling logout
-      mapTo(undefined)
     );
   }
-  
   // need create new user then login
   registration(user: ForesightaGeneralUserModel): Observable<any> {
     this.isLoadingSubject.next(true);
@@ -214,16 +166,6 @@ export class AuthService implements OnDestroy {
         const auth = new AuthModel();
         auth.authToken = response.data.token; 
         this.setAuthFromLocalStorage(auth);
-        const user: UserType = {
-          id: response.data.id,
-          name: response.data.name,
-          email: response.data.email,
-          countryId: response.data.country_id,
-          country: response.data.country,
-        };
-
-        this.setUserInLocalStorage(user);
-        this.currentUserSubject.next(user);
       }),
       catchError((err) => {
         return throwError(err);
@@ -231,14 +173,12 @@ export class AuthService implements OnDestroy {
       finalize(() => this.isLoadingSubject.next(false))
     );
   }
-
   forgotPassword(email: string): Observable<boolean> {
     this.isLoadingSubject.next(true);
     return this.authHttpService
       .forgotPassword(email)
       .pipe(finalize(() => this.isLoadingSubject.next(false)));
   }
-
   // private methods
   setAuthFromLocalStorage(auth: AuthModel): boolean {
     // store auth authToken/refreshToken/epiresIn in local storage to keep user logged in between page refreshes
@@ -248,7 +188,6 @@ export class AuthService implements OnDestroy {
     }
     return false;
   }
-
   getAuthFromLocalStorage(): AuthModel | undefined {
     try {
       const lsValue = localStorage.getItem(this.authLocalStorageToken);
@@ -285,7 +224,6 @@ export class AuthService implements OnDestroy {
       catchError((error) => this.handleError(error))// Use the custom error handler
     );
   }
-
   getCurrentUserId(): number | undefined {
     const currentUser = this.currentUserValue; 
     if (currentUser && currentUser.id) {
@@ -293,7 +231,6 @@ export class AuthService implements OnDestroy {
     }
     return undefined;
   }
-
   ngOnDestroy() {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }
