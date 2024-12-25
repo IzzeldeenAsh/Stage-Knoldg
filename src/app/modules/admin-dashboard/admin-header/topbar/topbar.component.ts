@@ -35,21 +35,12 @@ export class TopbarComponent implements OnInit {
  
   }
   signOut() {
-    this._auth.logout().pipe(first()).subscribe({
-      next : (res)=>{
-          localStorage.removeItem("foresighta-creds");
-          localStorage.removeItem("currentUser");
-          localStorage.removeItem("authToken");
-           this.router.navigate(['/auth'])
-      },
-      error: (err)=>{
-        localStorage.removeItem("foresighta-creds");
-        localStorage.removeItem("currentUser");
-        localStorage.removeItem("authToken");
-         this.router.navigate(['/auth'])
-      }
-    });
-    this.router.navigateByUrl("/auth/login");
+    localStorage.removeItem("foresighta-creds");
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("authToken");
+    this.router.navigate(['/auth/login'])
+    this._auth.logout().pipe(first()).subscribe();
+
   }
 
   getProfile(){
