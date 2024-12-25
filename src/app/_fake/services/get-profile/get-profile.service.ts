@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { map, catchError, finalize, tap, shareReplay } from 'rxjs/operators';
 import { TranslationService } from 'src/app/modules/i18n';
+import { Router } from '@angular/router';
 
 interface UserType {
   id: string;
@@ -26,7 +27,8 @@ export class ProfileService {
 
   constructor(
     private http: HttpClient,
-    private translateService: TranslationService
+    private translateService: TranslationService,
+    private router:Router
   ) {
     // Initialize from localStorage if available
     const savedUser = this.getUserFromLocalStorage();
@@ -37,9 +39,9 @@ export class ProfileService {
   }
   getProfile(isPass:boolean=false): Observable<any> {
     // Return cached observable if it exists
-    if (this.profileCache$ && !isPass) {
-      return this.profileCache$;
-    }
+    // if (this.profileCache$ && !isPass) {
+    //   return this.profileCache$;
+    // }
 
     this.isLoadingSubject.next(true);
     const headers = new HttpHeaders({
@@ -63,6 +65,7 @@ export class ProfileService {
       }),
       catchError((err) => {
         this.profileCache$ = null; // Clear cache on error
+   
         return throwError(err);
       }),
       finalize(() => this.isLoadingSubject.next(false)),

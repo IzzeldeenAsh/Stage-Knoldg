@@ -26,20 +26,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
   
 
   logout() {
-    this.auth.logout().pipe(first()).subscribe({
-      next : (res)=>{
-          localStorage.removeItem("foresighta-creds");
-          localStorage.removeItem("currentUser");
-          localStorage.removeItem("authToken");
-          this.router.navigate(['/auth'])
-      },
-      error: (err)=>{
-        localStorage.removeItem("foresighta-creds");
-        localStorage.removeItem("currentUser");
-        localStorage.removeItem("authToken");
-        this.router.navigate(['/auth'])
-      }
-    });
+    localStorage.removeItem("foresighta-creds");
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("authToken");
+    this.router.navigate(['/auth/login'])
+    this.auth.logout().pipe(first()).subscribe();
   }
 
   // Close the user menu
