@@ -1,6 +1,11 @@
 export const locale = {
   lang: "ar",
   data: {
+      NOTIFICATIONS: {
+        TITLE: 'إشعارات',
+        NO_NEW: 'لا توجد إشعارات جديدة',
+        VIEW: 'عرض'
+      },
     HOME: {
       LATEST_INSIGHTS: "أحدث الرؤى",
       TRENDING: "الشائع",
@@ -261,7 +266,7 @@ export const locale = {
   UPGRADE_TO_CORPORATE_ACCOUNT: "ترقية إلى حساب تجاري", // Heading for the form
   COMPANY_LOGO_REQUIRED: "شعار الشركة مطلوب.", // Error message for logo
   WEBSITE_REQUIRED: "موقع الشركة مطلوب.", // Error message for website domain
-  COMPANY_EMAIL_REQUIRED: "البريد الإلكتر��ني للشركة مطلوب.", // Error message for company email
+  COMPANY_EMAIL_REQUIRED: "البريد الإلكتروني للشركة مطلوب.", // Error message for company email
   CODE_REQUIRED: "رمز التحقق مطلوب.", // Error message for verification code
   DELETE_FILE: "حذف الملف", // Tooltip for delete file button
       // New Keys for the Current Component
@@ -427,7 +432,7 @@ export const locale = {
         HEADER: 'تفاصيل الطلب',
         REQUEST_TYPE_LABEL: 'نوع الطلب',
         STATUS_BADGE: '{{status}}',
-        STAFF_NOTES_LABEL: 'ملاحظات ال��وظفين',
+        STAFF_NOTES_LABEL: 'ملاحظات الموظفين',
         NO_STAFF_NOTES: 'لا توجد ملاحظات موظفين متاحة.',
       },
     },

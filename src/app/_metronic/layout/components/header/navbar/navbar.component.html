@@ -1,28 +1,52 @@
 <!--begin::Search-->
 <div class="app-navbar-item align-items-stretch" [ngClass]="itemClass">
-  <div id="kt_header_search" class="header-search d-flex align-items-stretch" data-kt-search-keypress="true"
-    data-kt-search-min-length="2" data-kt-search-enter="enter" data-kt-search-layout="menu"
-    data-kt-menu-trigger="{default: 'hover'}" data-kt-menu-overflow="false" data-kt-menu-permanent="true"
-    data-kt-menu-placement="bottom-end" data-kt-search="true">
-    <div class="d-flex align-items-center" data-kt-search-element="toggle" id="kt_header_search_toggle">
+  <div
+    id="kt_header_search"
+    class="header-search d-flex align-items-stretch"
+    data-kt-search-keypress="true"
+    data-kt-search-min-length="2"
+    data-kt-search-enter="enter"
+    data-kt-search-layout="menu"
+    data-kt-menu-trigger="{default: 'hover'}"
+    data-kt-menu-overflow="false"
+    data-kt-menu-permanent="true"
+    data-kt-menu-placement="bottom-end"
+    data-kt-search="true"
+  >
+    <div
+      class="d-flex align-items-center"
+      data-kt-search-element="toggle"
+      id="kt_header_search_toggle"
+    >
       <div [ngClass]="btnClass">
         <app-keenicon name="magnifier" [class]="btnIconClass"></app-keenicon>
       </div>
     </div>
-    <app-search-result-inner data-kt-search-element="content" data-kt-menu="true"
-      class="menu menu-sub menu-sub-dropdown p-7 w-325px w-md-375px"></app-search-result-inner>
+    <app-search-result-inner
+      data-kt-search-element="content"
+      data-kt-menu="true"
+      class="menu menu-sub menu-sub-dropdown p-7 w-325px w-md-375px"
+    ></app-search-result-inner>
   </div>
-
 </div>
-
 
 <!--begin::Notifications-->
 <div class="app-navbar-item" [ngClass]="itemClass">
-  <div [ngClass]="btnClass" data-kt-menu-trigger="{default: 'click', lg: 'hover'}" data-kt-menu-attach="parent"
-    data-kt-menu-placement="bottom-end">
-    <app-keenicon name="notification-status" class="fs-2"></app-keenicon>
+  <div
+    [ngClass]="btnClass"
+    data-kt-menu-trigger="{default: 'click', lg: 'hover'}"
+    data-kt-menu-attach="parent"
+    data-kt-menu-placement="bottom-end"
+  >
+    <i class="ki-outline ki-notification-on fs-1"></i>
+    <div
+      *ngIf="notificationCount > 0"
+      class="badge badge-circle badge-danger position-absolute translate-middle bottom-0 ms-10 mt-7 h-15px w-15px fs-9"
+    >
+      {{ notificationCount }}
+    </div>  
   </div>
-  <app-notifications-inner></app-notifications-inner>
+  <app-notifications-inner (notificationClicked)="handleNotificationClick($event)" [notifications]="notifications"></app-notifications-inner>
 </div>
 
 
@@ -38,53 +62,69 @@
     class="cursor-pointer symbol img-icon"
     (click)="toggleUserMenu()"
     [ngClass]="toolbarUserAvatarHeightClass"
-   
   >
-  <ng-container  *ngIf="userProfile">
-    <ng-container *ngIf="!userProfile.company else companyLogo">
-      <img *ngIf="userProfile && userProfile.profile_photo_url" [src]="userProfile.profile_photo_url" alt="foresighta" class="object-fit-cover" />
+    <ng-container *ngIf="userProfile">
+      <ng-container *ngIf="!userProfile.company; else companyLogo">
+        <img
+          *ngIf="userProfile && userProfile.profile_photo_url"
+          [src]="userProfile.profile_photo_url"
+          alt="foresighta"
+          class="object-fit-cover"
+        />
+      </ng-container>
+      <ng-template #companyLogo>
+        <img
+          alt="Logo"
+          [src]="userProfile.company?.logo"
+          class="object-fit-cover"
+        />
+      </ng-template>
+      <span
+        *ngIf="
+          userProfile && !userProfile.profile_photo_url && !userProfile.company
+        "
+        class="symbol-label bg-primary fs-4 text-white"
+      >
+        <span> {{ userProfile.first_name.charAt(0) }} </span>
+        <span style="padding: 0 -20px">
+          {{ userProfile.last_name.charAt(0) }}
+        </span>
+      </span>
+      <span
+        *ngIf="userProfile.company && !userProfile.company?.logo"
+        class="symbol-label bg-primary fs-4 text-white"
+      >
+        <span> {{ userProfile.first_name.charAt(0) }} </span>
+        <span style="padding: 0 -20px">
+          {{ userProfile.last_name.charAt(0) }}
+        </span>
+      </span>
     </ng-container>
-    <ng-template #companyLogo>
-      <img alt="Logo" [src]="userProfile.company?.logo" class="object-fit-cover" />
-     </ng-template>
-     <span *ngIf="(userProfile && !userProfile.profile_photo_url && !userProfile.company) " class="symbol-label bg-primary fs-4 text-white">
-      <span> {{ userProfile.first_name.charAt(0) }} </span>
-      <span style="padding: 0 -20px;"> {{ userProfile.last_name.charAt(0) }} </span>
-     </span>
-     <span *ngIf="userProfile.company &&  !userProfile.company?.logo" class="symbol-label bg-primary fs-4 text-white">
-      <span> {{ userProfile.first_name.charAt(0) }} </span>
-      <span style="padding: 0 -20px;"> {{ userProfile.last_name.charAt(0) }} </span>
-     </span>
-  </ng-container>
   </div>
   <!-- end::Toggle  -->
-  
-  <app-user-inner  
-  class="menu 
-  menu-sub 
-  menu-sub-dropdown 
-  menu-column 
-  menu-rounded 
-  menu-gray-600 
-  menu-state-bg 
-  menu-state-primary 
-  fw-bold fs-6 w-275px
-  my-menu
-  "
-  (mouseleave)="closeUserMenu()"
-  [ngClass]="{'show':isUserMenuOpen}"
+
+  <app-user-inner
+    class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg menu-state-primary fw-bold fs-6 w-275px my-menu"
+    (mouseleave)="closeUserMenu()"
+    [ngClass]="{ show: isUserMenuOpen }"
   ></app-user-inner>
 </div>
 <!-- end::User -->
-
 
 <!--end::User menu-->
 
 <!--begin::Header menu toggle-->
 <ng-container *ngIf="appHeaderDefaulMenuDisplay">
   <div class="app-navbar-item d-lg-none ms-2 me-n3" title="Show header menu">
-    <div class="btn btn-icon btn-active-color-primary w-35px h-35px" id="kt_app_header_menu_toggle">
-      <app-keenicon name="element-4" class="fs-1" [ngClass]="btnIconClass"></app-keenicon>
+    <div
+      class="btn btn-icon btn-active-color-primary w-35px h-35px"
+      id="kt_app_header_menu_toggle"
+    >
+      <app-keenicon
+        name="element-4"
+        class="fs-1"
+        [ngClass]="btnIconClass"
+      ></app-keenicon>
     </div>
   </div>
 </ng-container>
