@@ -39,9 +39,9 @@ export class ProfileService {
   }
   getProfile(isPass:boolean=false): Observable<any> {
     // Return cached observable if it exists
-    // if (this.profileCache$ && !isPass) {
-    //   return this.profileCache$;
-    // }
+    if (this.profileCache$ && !isPass) {
+      return this.profileCache$;
+    }
 
     this.isLoadingSubject.next(true);
     const headers = new HttpHeaders({
