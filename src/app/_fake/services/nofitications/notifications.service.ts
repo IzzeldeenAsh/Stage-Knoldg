@@ -3,23 +3,18 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, catchError, finalize, map, throwError } from 'rxjs';
 import { TranslationService } from 'src/app/modules/i18n';
 
-interface NotificationData {
+
+ 
+export interface Notification {
+  id:string;
   message: string;
   type: string;
   notifiable_group_id: string;
   notifiable_id: number;
   request_id: number;
-}
-
-export interface Notification {
-  id: string;
-  type: string;
-  notifiable_type: string;
-  notifiable_id: number;
-  data: NotificationData;
-  read_at: string | null;
-  created_at: string;
-  updated_at: string;
+  param: any;
+  sub_type: string;
+  redirect_page : boolean;
 }
 
 
@@ -65,8 +60,10 @@ export class NotificationsService {
     });
 
     this.setLoading(true);
-    return this.http.get<Notification[]>(this.apiUrl, { headers }).pipe(
-      map(res => res),
+    return this.http.get<any>(this.apiUrl, { headers }).pipe(
+      map(res => {
+        return res?.data || [];
+      }),
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );

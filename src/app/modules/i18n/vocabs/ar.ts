@@ -4,7 +4,8 @@ export const locale = {
       NOTIFICATIONS: {
         TITLE: 'إشعارات',
         NO_NEW: 'لا توجد إشعارات جديدة',
-        VIEW: 'عرض'
+        VIEW: 'عرض',
+        REQUESTS: 'الطلبات'
       },
     HOME: {
       LATEST_INSIGHTS: "أحدث الرؤى",

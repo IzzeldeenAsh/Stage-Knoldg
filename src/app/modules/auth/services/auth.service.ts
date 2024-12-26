@@ -163,8 +163,7 @@ export class AuthService implements OnDestroy {
     );
   }
   logout():Observable<any> {
-   return this.authHttpService.logout()
-   
+   return this.http.post<any>('https://api.foresighta.co/api/account/logout',{})
   }
   getUserByToken(): Observable<any> {
     const authData = this.getAuthFromLocalStorage();

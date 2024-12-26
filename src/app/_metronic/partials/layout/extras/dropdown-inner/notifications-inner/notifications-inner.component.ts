@@ -17,7 +17,7 @@ export class NotificationsInnerComponent implements OnInit {
     'menu menu-sub menu-sub-dropdown menu-column w-350px w-lg-375px';
   @HostBinding('attr.data-kt-menu') dataKtMenu = 'true';
 
-  activeTabId: NotificationsTabsType = 'kt_topbar_notifications_2';
+  activeTabId: NotificationsTabsType = 'kt_topbar_notifications_1';
   alerts: Array<AlertModel> = defaultAlerts;
   logs: Array<LogModel> = defaultLogs;
   @Output() notificationClicked = new EventEmitter<string>();
