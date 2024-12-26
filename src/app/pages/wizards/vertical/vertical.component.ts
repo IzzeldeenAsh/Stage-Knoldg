@@ -272,10 +272,10 @@ export class VerticalComponent extends BaseComponent implements OnInit {
           .personalInsighterRegister(formData)
           .subscribe({
             next: (response) => {
-              console.log("Submission successful:", response);
               this.onSuccessMessage = true;
               const profileSub = this.getProfileService.getProfile(true).subscribe();
               this.unsubscribe.push(profileSub);
+              this.getProfileService.clearProfile()
             },
             error: (error) => {
               this.handleServerErrors(error);
@@ -296,6 +296,7 @@ export class VerticalComponent extends BaseComponent implements OnInit {
                 const profileSub = this.getProfileService.getProfile(true).subscribe();
                 this.unsubscribe.push(profileSub);
               }
+              this.getProfileService.clearProfile()
             },
             error: (error) => {
               this.handleServerErrors(error);

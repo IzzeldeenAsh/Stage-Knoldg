@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, throwError } from 'rxjs';
 import { map, catchError, finalize, tap, shareReplay } from 'rxjs/operators';
 import { TranslationService } from 'src/app/modules/i18n';
 import { Router } from '@angular/router';
@@ -21,9 +21,11 @@ export class ProfileService {
   private profileCache$: Observable<any> | null = null;
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   private userSubject = new BehaviorSubject<UserType | null>(null);
+  private profileUpdateSubject = new Subject<void>();
   currentLang: string = '';
   isLoading$ = this.isLoadingSubject.asObservable();
   currentUser$ = this.userSubject.asObservable();
+  profileUpdate$ = this.profileUpdateSubject.asObservable();
 
   constructor(
     private http: HttpClient,
@@ -37,6 +39,7 @@ export class ProfileService {
     }
     this.currentLang = this.translateService.getSelectedLanguage() ? this.translateService.getSelectedLanguage() : 'en';
   }
+
   getProfile(isPass:boolean=false): Observable<any> {
     // Return cached observable if it exists
     if (this.profileCache$) {
@@ -61,11 +64,11 @@ export class ProfileService {
         };
         this.setUserInLocalStorage(user);
         this.userSubject.next(user);
+        this.profileUpdateSubject.next(); // Notify subscribers of update
         return response.data;
       }),
       catchError((err) => {
         this.profileCache$ = null; // Clear cache on error
-   
         return throwError(err);
       }),
       finalize(() => this.isLoadingSubject.next(false)),
@@ -90,6 +93,7 @@ export class ProfileService {
   clearProfile(): void {
     this.profileCache$ = null;
     this.userSubject.next(null);
+    this.profileUpdateSubject.next(); // Notify subscribers of clear
     localStorage.removeItem('user'); // Adjust key as needed
   }
 
