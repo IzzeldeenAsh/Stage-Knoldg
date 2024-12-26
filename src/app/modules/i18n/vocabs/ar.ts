@@ -44,8 +44,8 @@ export const locale = {
     },
     AUTH: {
       TWO_FA: {
-        VERIFY_PHONE: "تحقق من بريدك ",
-        ENTER_VERIFICATION_CODE: "أدخل رمز التحقق الذي أرسلناه إلى",
+        VERIFY_PHONE: "تحقق من بريدك الإلكتروني",
+        ENTER_VERIFICATION_CODE: "أدخل رمز التحقق الذي أرسلناه إلى بريدك الإلكتروني",
         ENTER_CODE: "أدخل رمز التحقق الخاص بك",
         DIDNT_RECEIVE_CODE: "لم تتلق رمز؟",
         RESEND: "إعادة الإرسال",

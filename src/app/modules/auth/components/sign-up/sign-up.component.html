@@ -290,7 +290,7 @@
                   [options]="countries"
                   formControlName="country"
                   class="d-block form-p-control"
-                  optionLabel="name.en"
+                  [optionLabel]="lang=='en' ? 'names.en' : 'names.ar'"
                   placeholder="{{ 'AUTH.REGISTRATION.COUNTRY_PLACEHOLDER' | translate }}"
                   [filter]="true"
                   [showClear]="true"
@@ -300,9 +300,10 @@
                       <img *ngIf="country.showFlag"
                         [src]="country.flagPath"
                         (error)="onFlagError(country)"
-                        alt="{{ country.name.en }}"
+                        alt="{{ country.names.en }}"
                         class="flag-icon w-20px mx-2" />
-                      <span>{{ country.name.en }}</span>
+                      <span *ngIf="lang=='en'">{{ country.names.en }}</span>
+                      <span *ngIf="lang=='ar'">{{ country.names.ar }}</span>
                     </div>
                   </ng-template>
                 </p-dropdown>
