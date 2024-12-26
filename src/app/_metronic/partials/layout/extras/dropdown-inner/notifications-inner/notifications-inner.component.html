@@ -5,47 +5,65 @@
   <h3 class="text-white fw-bold px-9 mt-10 mb-6">
     {{ 'NOTIFICATIONS.TITLE' | translate }}
   </h3>
+
+  <ul class="nav nav-line-tabs nav-line-tabs-2x nav-stretch fw-bold px-9">
+    <li class="nav-item">
+      <a
+        class="
+          nav-link
+          text-white
+          opacity-75 opacity-state-100
+          pb-4
+          cursor-pointer
+        "
+        data-bs-toggle="tab"
+        [ngClass]="activeTabId === 'kt_topbar_notifications_1' ? 'active' : ''"
+        (click)="setActiveTabId('kt_topbar_notifications_1')"
+      >
+        {{ 'NOTIFICATIONS.REQUESTS' | translate }}
+      </a>
+    </li>
+  </ul>
 </div>
 
 <div class="tab-content">
   <div
     class="tab-pane fade"
-    id="kt_topbar_notifications_2"
+    id="kt_topbar_notifications_1"
     role="tabpanel"
+    [ngClass]="activeTabId === 'kt_topbar_notifications_1' ? 'show active' : ''"
   >
-  <div class="scroll-y mh-325px my-5 px-8">
-    <div *ngIf="notifications.length === 0" class="text-center py-4">
-      <div class="text-gray-500">{{ 'NOTIFICATIONS.NO_NEW' | translate }}</div>
-    </div>
-    <ng-container *ngIf="notifications.length > 0">
-      <div *ngFor="let alert of notifications" class="d-flex flex-stack py-4">
-        <div class="d-flex align-items-center">
-          <div class="symbol symbol-35px me-4">
-            <span class="symbol-label" [ngClass]="'bg-light-info'">
-              <span
-                [inlineSVG]="'./assets/media/icons/duotune/general/gen006.svg'"
-                class="svg-icon fs-2"
-                [ngClass]="'svg-icon-info'"
-              ></span>
-            </span>
-          </div>
-  
-          <div class="mb-0 me-2">
-            <a href="#" class="fs-6 text-gray-800 text-hover-primary fw-bolder">
-              {{ alert.data.type | notificationsNames }}
-            </a>
-            <div class="text-gray-500 fs-7">{{ alert.data.message }}</div>
-          </div>
-        </div>
-  
-       <a [routerLink]=" alert.data.type | notificationsLinks" (click)="onNotificationClick(alert.id)"> 
-         <span class="badge badge-light-info fs-8 badge-hover-primary">{{ 'NOTIFICATIONS.VIEW' | translate }}</span>
-       </a>
+    <div class="scroll-y mh-325px my-5 px-8">
+      <div *ngIf="notifications.length === 0" class="text-center py-4">
+        <div class="text-gray-500">{{ 'NOTIFICATIONS.NO_NEW' | translate }}</div>
       </div>
-    </ng-container>
-    
-  </div>
-  </div>
 
+      <ng-container *ngIf="notifications.length > 0">
+        <div *ngFor="let alert of notifications" class="d-flex flex-stack py-4">
+          <div class="d-flex align-items-center">
+            <div class="symbol symbol-35px me-4">
+              <span class="symbol-label" [ngClass]="'bg-light-' + (alert.sub_type | notificationsBg)">
+                <span
+                [inlineSVG]="'./assets/media/icons/' + (alert.sub_type | notificationsIcons)"
+                class="svg-icon fs-3"
+                [ngClass]="'svg-icon-' + (alert.sub_type | notificationsBg)"
+              ></span>
+              </span>
+            </div>
 
+            <div class="mb-0 me-2">
+              <a href="#" class="fs-6 text-gray-800 text-hover-primary fw-bolder">
+                {{ alert.sub_type | notificationsNames }}
+              </a>
+              <div class="text-gray-500 fs-7">{{ alert.message }}</div>
+            </div>
+          </div>
+
+          <a [routerLink]=" alert.type | notificationsLinks" (click)="onNotificationClick(alert.id)"> 
+            <span class="badge badge-light-info fs-8 badge-hover-primary">{{ 'NOTIFICATIONS.VIEW' | translate }}</span>
+          </a>
+        </div>
+      </ng-container>
+    </div>
+  </div>
 </div>

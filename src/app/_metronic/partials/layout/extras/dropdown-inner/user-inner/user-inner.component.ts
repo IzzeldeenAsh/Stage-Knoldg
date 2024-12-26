@@ -33,12 +33,23 @@ export class UserInnerComponent implements OnInit, OnDestroy {
   }
 
   logout() {
-    localStorage.removeItem("foresighta-creds");
-    localStorage.removeItem("currentUser");
-    localStorage.removeItem("authToken");
-    this.router.navigate(['/auth/login'])
-   const authLogout =this.auth.logout().pipe(first()).subscribe({});
-   this.unsubscribe.push(authLogout)
+    const authLogout = this.auth.logout().pipe(
+      first()
+    ).subscribe({
+      next: () => {
+        localStorage.removeItem("foresighta-creds");
+        localStorage.removeItem("user");
+        this.router.navigate(['/auth']).then(() => {
+          // Optional: Reload the page after navigation if needed
+         window.location.reload();
+        });
+      },
+      error: (error) => {
+        console.error('Logout error:', error);
+      }
+    });
+    
+    this.unsubscribe.push(authLogout);
   }
 
   selectLanguage(lang: string) {

@@ -5,7 +5,8 @@ export const locale = {
     NOTIFICATIONS: {
       TITLE: 'Notifications',
       NO_NEW: 'No new notifications',
-      VIEW: 'View'
+      VIEW: 'View',
+      REQUESTS: 'Requests'
     },
     HOME: {
       LATEST_INSIGHTS: 'Latest Insights',

@@ -26,11 +26,17 @@ export class NavbarComponent implements OnInit, OnDestroy {
   
 
   logout() {
-    localStorage.removeItem("foresighta-creds");
-    localStorage.removeItem("currentUser");
-    localStorage.removeItem("authToken");
-    this.router.navigate(['/auth/login'])
-    this.auth.logout().pipe(first()).subscribe();
+    
+    this.auth.logout().pipe(first()).subscribe({
+      next:()=>{
+        localStorage.removeItem("foresighta-creds");
+        localStorage.removeItem("user");
+        this.router.navigate(['/auth']).then(() => {
+          // Optional: Reload the page after navigation if needed
+         window.location.reload();
+        });
+      }
+    });
   }
 
   // Close the user menu
@@ -62,9 +68,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
     });
     
     // Subscribe to notifications stream
-    this.notificationService.notifications$.subscribe(notifications => {
+    this.notificationService.getNotifications(this.lang).subscribe(notifications => {
       this.notifications = notifications;
       this.notificationCount = notifications.length;
+      console.log('Notification Count:', this.notificationCount);
+      console.log('Notifications:', this.notifications);
     });
 
     // Start polling

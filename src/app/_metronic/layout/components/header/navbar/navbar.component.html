@@ -46,7 +46,10 @@
       {{ notificationCount }}
     </div>  
   </div>
-  <app-notifications-inner (notificationClicked)="handleNotificationClick($event)" [notifications]="notifications"></app-notifications-inner>
+  <app-notifications-inner 
+   (notificationClicked)="handleNotificationClick($event)" 
+   [notifications]="notifications"
+   ></app-notifications-inner>
 </div>
 
 

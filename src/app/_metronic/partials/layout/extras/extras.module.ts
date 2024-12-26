@@ -13,6 +13,8 @@ import {FormsModule} from "@angular/forms";
 import { SharedModule } from "../../../shared/shared.module";
 import { NotificationsNamesPipe } from 'src/app/pipes/notificaitons-pipe/notifications-names.pipe';
 import { NotificationsLinksPipe } from 'src/app/pipes/notifications-links/notifications-links.pipe';
+import { NotificationsBgPipe } from 'src/app/pipes/notifications-background/notifications-bg.pipe';
+import { NotificationsIconsPipe } from 'src/app/pipes/notifications-icons/notificaitons-icons.pipe';
 
 @NgModule({
   declarations: [
@@ -20,15 +22,16 @@ import { NotificationsLinksPipe } from 'src/app/pipes/notifications-links/notifi
     QuickLinksInnerComponent,
     SearchResultInnerComponent,
     UserInnerComponent,
-    
     LayoutScrollTopComponent,
   ],
   imports: [
     CommonModule,
+    NotificationsIconsPipe,
     FormsModule,
     NotificationsNamesPipe,
     NotificationsLinksPipe,
     InlineSVGModule,
+    NotificationsBgPipe,
     RouterModule,
     TranslationModule,
     NgbTooltipModule,

@@ -28,16 +28,7 @@ export class AuthHTTPService {
     },{headers});
   }
 
-  logout(): Observable<any> {
-    const headers = new HttpHeaders({
-      Accept: "application/json",
-      "Accept-Language": "en", // As per your example
-    });
-    return this.http.post<any>(
-      "https://api.foresighta.co/api/account/logout",
-      { headers }
-    );
-  }
+ 
 
   // CREATE =>  POST: add a new user to the server
   createUser(user: ForesightaGeneralUserModel): Observable<any> {
