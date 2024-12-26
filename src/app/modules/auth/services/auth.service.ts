@@ -59,24 +59,24 @@ export class AuthService implements OnDestroy {
   // public methods
   login(email: string, password: string, lang:string): Observable<UserType> {
     this.isLoadingSubject.next(true);
-    return this.authHttpService.login(email, password ,lang).pipe(
+    return this.authHttpService.login(email, password, lang).pipe(
       map((response: any) => {
         const auth = new AuthModel();
-        auth.authToken = response.data.token; 
+        auth.authToken = response.data.token;
         this.setAuthFromLocalStorage(auth);
-        // Store user information in local storage
-        const user: UserType = {
-          id: response.data.id,
-          name: response.data.name,
-          email: response.data.email,
-          countryId: response.data.countryId,
-          country: response.data.country,
-          profile_photo_url:response.data.profile_photo_url,
-        };
-
-        this.setUserInLocalStorage(user);
-        this.currentUserSubject.next(user);
         return response.data;
+      }),
+      switchMap(() => {
+        return this.http.get('https://api.foresighta.co/api/account/profile').pipe(
+          map((profileResponse: any) => {
+            if (profileResponse.data.roles.includes('admin')) {
+              this.router.navigate(['/admin-dashboard']);
+            } else {
+              this.router.navigate(['/app']);
+            }
+            return profileResponse.data;
+          })
+        );
       }),
       catchError((error) => this.handleError(error)),
       finalize(() => this.isLoadingSubject.next(false))
@@ -126,7 +126,7 @@ export class AuthService implements OnDestroy {
       validationMessages: validationErrors,
     }));
   }
-  private isTokenExpired(token: string): boolean {
+   isTokenExpired(token: string): boolean {
     if (!token) {
       return true;
     }
