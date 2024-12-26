@@ -40,6 +40,7 @@ export class TopbarComponent implements OnInit {
       next:()=>{
         localStorage.removeItem("foresighta-creds");
         localStorage.removeItem("currentUser");
+        localStorage.removeItem("user");
         localStorage.removeItem("authToken");
         this.router.navigate(['/auth/login'])
       }
