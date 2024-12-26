@@ -30,6 +30,15 @@ export class UserInnerComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.user$ = this.getProfileService.getProfile().pipe(first())
     this.setLanguage(this.translationService.getSelectedLanguage());
+    this.getProfileService.profileUpdate$.subscribe(() => {
+      // Handle profile update here
+      // For example, refresh your component's data
+      this.refreshComponentData();
+    });
+  }
+
+  refreshComponentData(){
+    this.user$ = this.getProfileService.getProfile().pipe(first())
   }
 
   logout() {
