@@ -59,7 +59,7 @@ export const locale = {
     AUTH: {
       TWO_FA: {
         VERIFY_PHONE: "Verify your email",
-        ENTER_VERIFICATION_CODE: "Enter the verification code we sent to",
+        ENTER_VERIFICATION_CODE: "Enter the verification code we sent to your email",
         ENTER_CODE: "Enter your verification code",
         DIDNT_RECEIVE_CODE: "Didn't receive a code?",
         RESEND: "Resend",

@@ -39,7 +39,7 @@ export class ProfileService {
   }
   getProfile(isPass:boolean=false): Observable<any> {
     // Return cached observable if it exists
-    if (this.profileCache$ && !isPass) {
+    if (this.profileCache$) {
       return this.profileCache$;
     }
 

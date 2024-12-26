@@ -5,12 +5,9 @@ import {
   Validators
 } from "@angular/forms";
 import { BehaviorSubject, Observable, Subscription, of, take, timer } from "rxjs";
-import { CountryService } from "src/app/_fake/services/countries-api/countries-get.service"; 
 import { CountriesService, Country } from "src/app/_fake/services/countries/countries.service";
 import { AuthService } from "../../services/auth.service";
-import { Router } from "@angular/router";
 import { BaseComponent } from "src/app/modules/base.component";
-import { TranslateService } from "@ngx-translate/core";
 import zxcvbn from 'zxcvbn';
 @Component({
   selector: "app-sign-up",
@@ -34,7 +31,7 @@ export class SignUpComponent extends BaseComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private _countriesGet: CountryService,
+    private _countriesGet: CountriesService,
     private authService: AuthService,
     private adminCountreis:CountriesService,
 

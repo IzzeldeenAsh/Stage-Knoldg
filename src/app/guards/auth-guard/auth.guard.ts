@@ -1,25 +1,31 @@
-import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
-import { AuthService } from '../../modules/auth/services/auth.service';
-import { first, map } from 'rxjs';
-import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
+import { inject } from '@angular/core';
+import { CanActivateFn, Router, UrlTree } from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { AuthService } from 'src/app/modules/auth';
+import { jwtDecode } from 'jwt-decode';
 
-@Injectable({ providedIn: 'root' })
-export class AuthGuard  {
-  constructor(private getProfileService: ProfileService, private router:Router) {}
+export const authGuard: CanActivateFn = (route, state): Observable<boolean | UrlTree> => {
+  const router = inject(Router);
+  const authService = inject(AuthService);
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    return this.getProfileService.getProfile().pipe(
-      map(user=>{
-        if (user && user.verified) {
-          // User is authenticated, allow access
-          return true;
-        }else{
-          localStorage.removeItem('foresighta-creds');
-           this.router.createUrlTree(['/auth']);
-           return false
-        }
-      })
-    )
+  const auth = authService.getAuthFromLocalStorage();
+  if (auth && auth.authToken) {
+    try {
+      // Decode the token
+      const decodedToken: any = jwtDecode(auth.authToken);
+      
+      // Check if token is expired
+      const currentTime = Date.now() / 1000;
+      if (decodedToken.exp && decodedToken.exp > currentTime) {
+        // Token exists and is not expired, allow access
+        return of(true);
+      }
+    } catch (error) {
+      console.error('Error decoding token:', error);
+    }
   }
-}
+
+  // No token found or token is expired, redirect to auth page
+  localStorage.removeItem('foresighta-creds');
+  return of(router.createUrlTree(['/auth']));
+};

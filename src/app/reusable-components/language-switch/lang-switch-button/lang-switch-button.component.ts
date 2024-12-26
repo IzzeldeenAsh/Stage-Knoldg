@@ -42,6 +42,7 @@ export class LangSwitchButtonComponent implements OnInit {
 
     // Hide the menu after the language is selected
     this.isMenuVisible = false;
+    window.location.reload();
   }
 
   updateFlag(): void {

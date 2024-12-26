@@ -63,7 +63,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.getProfileService.getProfile().pipe(first()).subscribe((user)=>{
+    this.getProfileService.getProfile().subscribe((user)=>{
       this.userProfile=user
     });
     

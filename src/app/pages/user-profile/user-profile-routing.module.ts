@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ProfileComponent } from './profile.component';
-import { AuthGuard } from 'src/app/guards/auth-guard/auth.guard';
 import { OverviewComponent } from './profile-pages/overview/overview.component';
 import { CertificatesComponent } from './profile-pages/certificates/certificates.component';
 import { RolesGuard } from 'src/app/guards/roles-guard/roles-gurad.gurad';
@@ -13,6 +12,7 @@ import { PersonalSettingsComponent } from './profile-pages/account-settings/pers
 import { CompanySettingsComponent } from './profile-pages/account-settings/company-settings/company-settings.component';
 import { SettingsActionComponent } from './profile-pages/account-settings/settings-action/settings-action.component';
 import { UserRequestsComponent } from './profile-pages/user-requests/user-requests.component';
+import { authGuard } from 'src/app/guards/auth-guard/auth.guard';
 
 const routes: Routes = [
   {
@@ -49,7 +49,7 @@ const routes: Routes = [
     {
       path: 'settings',
       component: SettingsDashboardComponent,
-      canActivate: [AuthGuard], // Apply guards here
+      canActivate: [authGuard], // Apply guards here
       children:[
         {
           path:'',
