@@ -144,7 +144,7 @@ extends BaseComponent implements OnInit {
       this.table.filter(this.selectedType, 'type.key', 'equals');
     }
     if (this.selectedStatus) {
-      this.table.filter(this.selectedStatus, 'status', 'equals');
+      this.table.filter(this.selectedStatus, 'final_status', 'equals');
     }
   }
 
