@@ -179,8 +179,6 @@ export class VerticalComponent extends BaseComponent implements OnInit {
     formData.forEach((value, key) => {
       formDataEntries.push({ key, value: value.toString() });
     });
-    console.table(formDataEntries);
-
     return formData
   }
 
@@ -259,7 +257,6 @@ export class VerticalComponent extends BaseComponent implements OnInit {
     formData.forEach((value, key) => {
       formDataEntries.push({ key, value: value.toString() });
     });
-    console.table(formDataEntries);
     return formData
   }
   submit() {
@@ -288,7 +285,6 @@ export class VerticalComponent extends BaseComponent implements OnInit {
           .corporateInsighterRegister(formData)
           .subscribe({
             next: (response) => {
-              console.log("Submission successful:", response);
               if(user.verificationMethod === "uploadDocument"){
                 this.onPendingMessage=true
               }else{
@@ -307,29 +303,20 @@ export class VerticalComponent extends BaseComponent implements OnInit {
       }
     });
 
-    console.log("Submit Triggerd");
   }
 
   private handleServerErrors(error: any) {
-    this.messages = []; 
     if (error.error && error.error.errors) {
       const serverErrors = error.error.errors;
       for (const key in serverErrors) {
         if (serverErrors.hasOwnProperty(key)) {
           const messages = serverErrors[key];
-          this.messages.push({
-            severity: "error",
-            summary: "",
-            detail: messages.join(", "),
-          });
+         this.showError('',messages.join(", "),10000);
         }
       }
     } else {
-      this.messages.push({
-        severity: "error",
-        summary: "Error",
-        detail: "An unexpected error occurred.",
-      });
+  
+      this.showError('','An unexpected error occurred.');
     }
   }
 }

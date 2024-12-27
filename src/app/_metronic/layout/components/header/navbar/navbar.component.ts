@@ -1,9 +1,9 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import {  first } from 'rxjs';
+import { first } from 'rxjs';
 import { IForsightaProfile } from 'src/app/_fake/models/profile.interface';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
-import { Notification, NotificationsService } from 'src/app/_fake/services/nofitications/notifications.service';
+import { Notification, NotificationsService } from 'src/app/_fake/services/notifications/notifications.service';
 import { AuthService } from 'src/app/modules/auth';
 import { TranslationService } from 'src/app/modules/i18n';
 
@@ -18,7 +18,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   isUserMenuOpen = false;
   toolbarButtonMarginClass = 'ms-1 ms-lg-3';
   toolbarUserAvatarHeightClass = 'symbol-30px symbol-md-40px';
-  notifications: Notification[] = [];
+  notifications: any[] = [];
   // Toggle the user menu's visibility
   toggleUserMenu(): void {
     this.isUserMenuOpen = !this.isUserMenuOpen;
@@ -68,15 +68,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
       this.userProfile=user
     });
     
-    // Subscribe to notifications stream
-    this.notificationService.getNotifications(this.lang).subscribe(notifications => {
+    // Subscribe to the notifications$ observable to receive updates from polling
+    this.notificationService.notifications$.subscribe((notifications) => {
       this.notifications = notifications;
-      this.notificationCount = notifications.length;
-      console.log('Notification Count:', this.notificationCount);
-      console.log('Notifications:', this.notifications);
+      this.notificationCount = this.notifications.length;
     });
 
-    // Start polling
+    // Start polling for notifications
     this.notificationService.startPolling();
   }
 

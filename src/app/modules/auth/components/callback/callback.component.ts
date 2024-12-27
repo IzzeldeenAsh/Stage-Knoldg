@@ -38,7 +38,6 @@ export class CallbackComponent
     const routeSub = this.route.queryParamMap.subscribe((params) => {
       this.token = params.get("token");
       const rolesParam = params.get("roles");
-      console.log("tok", this.token);
       if (rolesParam) {
         this.roles = rolesParam.split(",").map((role) => role.trim());
       }

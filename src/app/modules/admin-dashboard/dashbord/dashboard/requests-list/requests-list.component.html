@@ -75,8 +75,6 @@
                         >
                         <ng-template pTemplate="header">
                             <tr>
-                                <th>Profile</th>
-                                <th>Legal Name</th>
                                 <th>Requestable</th>
                                 <th>Request Type</th>
                                 <th>Status</th>
@@ -85,45 +83,8 @@
                         </ng-template>
                         <ng-template pTemplate="body" let-request>
                             <tr>
-                                <td class="text-center">
-                                   
-                                    <ng-container *ngIf="request.requestable_type==='company'">
-                                      <img *ngIf="request.requestable.logo ; else initials"
-                                      [src]="request.requestable.logo"
-                                      alt="{{ request.requestable.legal_name }}"
-                                      width="40"
-                                      height="40"
-                                      style="object-fit: cover; border-radius: 4px;"
-                                  />
-                                   <ng-template #initials>
-                                    <div
-                                    class="symbol-label w-50px h-50px d-flex justify-content-center align-items-center rounded-circle fw-semibold bg-light-success">
-                                    {{request.requestable.legal_name[0] + request.requestable.legal_name[1] }}
-                                  </div>
-                                   </ng-template>
-                                    </ng-container>
-                                    <ng-container *ngIf="request.requestable_type==='userinsighter'">
-                                      <img *ngIf="request.requestable.profile_photo_url else initials"
-                                      [src]="request.requestable.profile_photo_url"
-                                      alt="{{ request.requestable.first_name }}"
-                                      width="40"
-                                      height="40"
-                                      style="object-fit: cover; border-radius: 4px;"
-                                  />
-                                    </ng-container>
-                                    <ng-template #initials>
-                                      <div
-                                      class="symbol-label w-50px h-50px d-flex justify-content-center align-items-center rounded-circle fw-semibold bg-light-success">
-                                      {{request.requestable.first_name[0] + request.requestable.last_name[0] }}
-                                    </div>
-                                    </ng-template>
-                                </td>
-                              <ng-container *ngIf="request.requestable_type==='company'">
-                                <td>{{ request.requestable.legal_name }}</td>
-                              </ng-container>
-                              <ng-container *ngIf="request.requestable_type==='userinsighter'">
-                                <td>{{ request.requestable.first_name + ' ' + request.requestable.last_name }}</td>
-                              </ng-container>
+                           
+                          
                                 <td>{{ request.requestable_type }}</td>
                                 <td>{{ request.type.label }}</td>
                                 <td>

@@ -39,7 +39,6 @@ export class ConsultingFieldTreeService {
   }
 
   private handleError(error: any) {
-    console.log("error",error);
     return throwError(error);
   }
 

@@ -38,7 +38,6 @@ export class IndustryService {
   }
 
   private handleError(error: any) {
-    console.log("error",error);
     return throwError(error);
   }
 

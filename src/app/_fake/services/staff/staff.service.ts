@@ -61,7 +61,6 @@ export class StaffService {
   }
 
   private handleError(error: any) {
-    console.log('Error from service', error.error.errors);
 
     let validationErrors: any[] = [];
 

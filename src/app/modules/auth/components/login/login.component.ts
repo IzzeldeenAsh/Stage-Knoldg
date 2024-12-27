@@ -112,7 +112,6 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
       .pipe(first())
       .subscribe({
         next: (res) => {
-          console.log("res",res);
           if (res && res?.roles) {
             if (res.roles.includes("admin") || res.roles.includes("staff")) {
               this.router.navigate(["/admin-dashboard"]);

@@ -65,8 +65,8 @@ export class NotificationsService {
     });
 
     this.setLoading(true);
-    return this.http.get<Notification[]>(this.apiUrl, { headers }).pipe(
-      map(res => res),
+    return this.http.get<any>(this.apiUrl, { headers }).pipe(
+      map(res => res.data),
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );

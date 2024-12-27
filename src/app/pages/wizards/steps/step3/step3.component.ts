@@ -3,6 +3,7 @@
 import {
   Component,
   ElementRef,
+  Injector,
   Input,
   OnDestroy,
   OnInit,
@@ -15,12 +16,13 @@ import {
   Document,
   DocumentsService,
 } from "src/app/_fake/services/douments-types/documents-types.service.spec";
+import { BaseComponent } from "src/app/modules/base.component";
 
 @Component({
   selector: "app-step3",
   templateUrl: "./step3.component.html",
 })
-export class Step3Component implements OnInit, OnDestroy {
+export class Step3Component extends BaseComponent implements OnInit, OnDestroy {
   @Input("updateParentModel") updateParentModel: (
     part: Partial<ICreateAccount>,
     isFormValid: boolean
@@ -30,7 +32,6 @@ export class Step3Component implements OnInit, OnDestroy {
   @Input() defaultValues: Partial<ICreateAccount>;
 
   @ViewChild("fileInput") fileInput: ElementRef<HTMLInputElement>;
-  private unsubscribe: Subscription[] = [];
 
   documentTypes: Document[] = [];
   isLoadingDocumentTypes: boolean = false;
@@ -38,14 +39,16 @@ export class Step3Component implements OnInit, OnDestroy {
 
   constructor(
     private fb: FormBuilder,
-    private documentsService: DocumentsService
-  ) {}
+    private documentsService: DocumentsService,
+    injector: Injector
+  ) {
+    super(injector);
+  }
 
   ngOnInit() {
     this.initForm();
     this.loadDocumentTypes();
     this.updateParentModel({}, this.checkForm());
-    console.log(this.defaultValues);
   }
 
   initForm() {
@@ -127,9 +130,16 @@ export class Step3Component implements OnInit, OnDestroy {
   }
 
   handleFiles(files: FileList) {
+    const MAX_SIZE_MB = 2;
+    const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
+
     for (let i = 0; i < files.length; i++) {
       const file = files.item(i);
       if (file) {
+        if (file.size > MAX_SIZE_BYTES) {
+          this.showError('', `File "${file.name}" exceeds the 2MB size limit.`);
+          continue; // Skip adding this file
+        }
         this.addCertification({ file });
       }
     }
@@ -148,6 +158,7 @@ export class Step3Component implements OnInit, OnDestroy {
   checkForm() {
     return this.form.valid;
   }
+
 
   ngOnDestroy() {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());

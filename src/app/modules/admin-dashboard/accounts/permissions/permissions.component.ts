@@ -24,7 +24,6 @@ export class PermissionsComponent  implements OnInit, OnDestroy {
     const permSub = this.permissionsService.getPermissions().subscribe({
       next: (data: Permission[]) => {
         this.permissions = data;
-        console.log('Permissions:', this.permissions);
       },
       error: (error) => {
         console.error('Failed to fetch permissions', error);

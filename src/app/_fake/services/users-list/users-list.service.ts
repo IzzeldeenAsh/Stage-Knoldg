@@ -21,7 +21,7 @@ export class UsersListService {
 
   private handleError(error: any) {
     console.error('An error occurred:', error);
-    return throwError(() => new Error('Something bad happened; please try again later.'));
+    return throwError(error);
   }
 
   // Clients

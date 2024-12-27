@@ -83,7 +83,6 @@ export class Step1Component extends BaseComponent implements OnInit {
   }
 
   onEconomicBlocksSelected(selectedBlocks: EconomicBloc[]) {
-    console.log('Selected Economic Blocks:', selectedBlocks);
     // Handle the selected blocks as needed
     // For example, you might want to store them in a form or process them further
   }
@@ -101,7 +100,6 @@ export class Step1Component extends BaseComponent implements OnInit {
         this.languages = response.languages;
         this.industryNodes = response.industries;
         this.economicBlocs = response.economicBlocs;
-        console.log('Economic Blocs loaded:', this.economicBlocs);
       },
       error: (error) => {
         console.error('Error loading data:', error);
@@ -122,7 +120,6 @@ export class Step1Component extends BaseComponent implements OnInit {
         topic: this.form.value.topic.id === 'other' ? this.form.value.customTopic : this.form.value.topic
         // 'category' is included in form.value and represents the selected market
       };
-      console.log('Submitting:', submissionData);
       this.next.emit();
     } else {
       // Mark all controls as touched to display validation errors
@@ -140,7 +137,6 @@ export class Step1Component extends BaseComponent implements OnInit {
    * @param node The selected industry node.
    */
   onIndustrySelected(node: TreeNode) {
-    console.log('Selected Industry Node:', node);
 
     if (node.data && node.data.key) {
       const industryId = node.data.key;
@@ -162,7 +158,6 @@ export class Step1Component extends BaseComponent implements OnInit {
    * @param topic The selected topic.
    */
   onTopicSelected(topic: Topic) {
-    console.log('Selected Topic:', topic);
     this.selectedTopic = topic;
     this.form.get('topic')?.setValue(topic);
   }
@@ -179,7 +174,6 @@ export class Step1Component extends BaseComponent implements OnInit {
    */
   handleCategoryChanges() {
     this.form.get('category')?.valueChanges.subscribe(value => {
-      console.log('Selected Market:', value);
 
     });
   }

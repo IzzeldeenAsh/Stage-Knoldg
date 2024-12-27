@@ -89,7 +89,7 @@ export class UsersComponent extends BaseComponent implements OnInit {
         this.clients = data;
         this.originalClients = data;
       },
-      error: (err) => console.error(err)
+      error: (err) => this.handleServerErrors(err)
     });
   }
 
@@ -130,8 +130,7 @@ export class UsersComponent extends BaseComponent implements OnInit {
             this.showSuccess('','Client deleted successfully');
           },
           error: (err) => {
-            console.error(err);
-            this.showError('','There was a problem deleting the client.');
+            this.handleServerErrors(err);
           }
         });
       }
@@ -155,7 +154,7 @@ export class UsersComponent extends BaseComponent implements OnInit {
         this.individualInsighters = data;
         this.originalIndividualInsighters = data;
       },
-      error: (err) => console.error(err)
+      error: (err) => this.handleServerErrors(err)
     });
   }
 
@@ -299,8 +298,8 @@ export class UsersComponent extends BaseComponent implements OnInit {
             this.updateInsighterMenuItems();
             this.showSuccess('', `Insighter ${action} successfully.`);
           },
-          error: () => {
-            this.showError('', `There was a problem ${action} the insighter.`);
+          error: (err) => {
+            this.handleServerErrors(err);
           },
         });
         this.unsubscribe.push(activateSub);
@@ -332,8 +331,8 @@ export class UsersComponent extends BaseComponent implements OnInit {
             this.updateInsighterMenuItems();
             this.showSuccess('', 'Insighter deactivated successfully.');
           },
-          error: () => {
-            this.showError('', 'There was a problem deactivating the insighter.');
+          error: (err) => {
+            this.handleServerErrors(err);
           },
         });
         this.unsubscribe.push(deactivateSub);
@@ -365,8 +364,8 @@ export class UsersComponent extends BaseComponent implements OnInit {
             this.updateInsighterMenuItems();
             this.showSuccess('', 'Insighter deactivated with date delete successfully.');
           },
-          error: () => {
-            this.showError('', 'There was a problem deactivating the insighter with date delete.');
+          error: (err) => {
+            this.handleServerErrors(err);
           },
         });
         this.unsubscribe.push(deactivateSub);
@@ -396,8 +395,7 @@ export class UsersComponent extends BaseComponent implements OnInit {
         this.showSuccess('', 'Insighter deleted successfully.');
       },
       error: (err) => {
-        console.error(err);
-        this.showError('', 'There was a problem deleting the insighter.');
+        this.handleServerErrors(err);
       }
     });
     this.unsubscribe.push(deleteSub);
@@ -419,7 +417,7 @@ export class UsersComponent extends BaseComponent implements OnInit {
         this.companyInsighters = data;
         this.originalCompanyInsighters = data;
       },
-      error: (err) => console.error(err)
+      error: (err) => this.handleServerErrors(err)
     });
   }
 
@@ -535,8 +533,8 @@ export class UsersComponent extends BaseComponent implements OnInit {
             this.updateMenuItems();
             this.showSuccess('', 'Company insighter deactivated with date delete successfully.');
           },
-          error: () => {
-            this.showError('', 'There was a problem deactivating the company insighter with date delete.');
+          error: (err) => {
+            this.handleServerErrors(err);
           },
         });
         this.unsubscribe.push(deactivateSub);
@@ -604,8 +602,8 @@ export class UsersComponent extends BaseComponent implements OnInit {
             this.updateMenuItems();
             this.showSuccess('', `Company insighter ${action} successfully.`);
           },
-          error: () => {
-            this.showError('', `There was a problem ${action} the company insighter.`);
+          error: (err) => {
+            this.handleServerErrors(err);
           },
         });
         this.unsubscribe.push(activateSub);
@@ -637,8 +635,8 @@ export class UsersComponent extends BaseComponent implements OnInit {
             this.updateMenuItems();
             this.showSuccess('', 'Company insighter deactivated successfully.');
           },
-          error: () => {
-            this.showError('', 'There was a problem deactivating the company insighter.');
+          error: (err) => {
+            this.handleServerErrors(err);
           },
         });
         this.unsubscribe.push(deactivateSub);
@@ -674,11 +672,25 @@ export class UsersComponent extends BaseComponent implements OnInit {
         }
       },
       error: (err) => {
-        console.error(err);
-        this.showError('', 'There was a problem deleting the insighter.');
+        this.handleServerErrors(err);
       }
     });
     this.unsubscribe.push(deleteSub);
+  }
+
+  private handleServerErrors(error: any) {
+    if (error.error && error.error.errors) {
+      const serverErrors = error.error.errors;
+      for (const key in serverErrors) {
+        if (serverErrors.hasOwnProperty(key)) {
+          const messages = serverErrors[key];
+         this.showError('',messages.join(", "));
+        }
+      }
+    } else {
+  
+      this.showError('','An unexpected error occurred.');
+    }
   }
 
   applyCompanyInsighterFilter(event: any): void {

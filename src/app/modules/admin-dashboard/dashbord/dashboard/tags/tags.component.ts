@@ -82,7 +82,6 @@ export class TagsComponent implements OnInit, OnDestroy {
     this.reverseLoader = true;
     const isicSub = this._isic.getIsicCodesTree( 'en').subscribe({
       next: (res) => {
-        console.log("res",res);
         this.nodes = this.disableRootNodes(res); // Disable parent nodes
       },
       error: (err) => {
@@ -238,7 +237,6 @@ export class TagsComponent implements OnInit, OnDestroy {
     this.selectedTagId = tag.id;
     this.isEditMode = true;
     this.selectDefaultNodes(tag);
-    console.log(tag);
     this.tagForm.patchValue({
       arabicName: tag.names.ar,
       englishName: tag.names.en,

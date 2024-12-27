@@ -1,6 +1,7 @@
 import {
   Component,
   ElementRef,
+  Injector,
   Input,
   OnDestroy,
   OnInit,
@@ -10,19 +11,16 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { BehaviorSubject, Subscription, fromEvent, map, startWith, take, timer } from "rxjs";
 
 import { ICreateAccount } from "../../create-account.helper";
-import {
-  ConsultingFieldsService,
-} from "src/app/_fake/services/admin-consulting-fields/consulting-fields.service";
-import { Message, MessageService } from "primeng/api";
+
 import { TranslationService } from "src/app/modules/i18n";
-import { IsicCodesService } from "src/app/_fake/services/isic-code/isic-codes.service";
+
 import { HttpClient } from "@angular/common/http";
+import { BaseComponent } from "src/app/modules/base.component";
 @Component({
   selector: "app-step5",
   templateUrl: "./step5.component.html",
 })
-export class Step5Component implements OnInit, OnDestroy {
-  messages: Message[] = [];
+export class Step5Component extends BaseComponent implements OnInit {
   lang: string;
   dialogWidth: string = "50vw";
   reverseLoader: boolean = false;
@@ -37,14 +35,17 @@ export class Step5Component implements OnInit, OnDestroy {
   resizeSubscription!: Subscription;
   isGetCodeDisabled: boolean = false;
   getCodeCountdown$ = new BehaviorSubject<number | null>(null);
-  private unsubscribe: Subscription[] = [];
+
+  private readonly MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB in bytes
 
   constructor(
+    injector: Injector,
     private fb: FormBuilder,
     private _translateion: TranslationService,
     private http: HttpClient,
-    private messageService: MessageService,
+ 
   ) {
+    super(injector);
     this.lang = this._translateion.getSelectedLanguage();
   }
 
@@ -75,7 +76,6 @@ export class Step5Component implements OnInit, OnDestroy {
 
     this.resizeSubscription = screenwidth$.subscribe((width) => {
       this.dialogWidth = width < 768 ? "100vw" : "70vw";
-      console.log(this.dialogWidth);
     });
   }
   onDropzoneClick() {
@@ -90,7 +90,6 @@ export class Step5Component implements OnInit, OnDestroy {
       }).subscribe({
         next: (response) => {
           // Handle success (e.g., show a success message)
-          console.log('Code sent successfully:', response);
           this.messageService.add({ 
             severity: 'success', 
             summary: 'Success', 
@@ -103,11 +102,8 @@ export class Step5Component implements OnInit, OnDestroy {
           // Handle error (e.g., show an error message)
           console.error('Error sending code:', error);
           const errorMsg = error?.error?.message || 'Failed to resend verification code.';
-          this.messageService.add({ 
-            severity: 'error', 
-            summary: 'Error', 
-            detail: errorMsg 
-          });
+    
+          this.showError('', errorMsg);
           this.gettingCodeLoader = false;
         }
       });
@@ -140,6 +136,10 @@ export class Step5Component implements OnInit, OnDestroy {
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
+      if (file.size > this.MAX_FILE_SIZE) {
+        this.showError('File Size Exceeded', 'The uploaded document exceeds the 2MB size limit.');
+        return;
+      }
       this.form.patchValue({ registerDocument: file });
       this.form.get("registerDocument")?.markAsTouched();
       this.updateParentModel({ registerDocument: file }, this.checkForm());
@@ -157,6 +157,10 @@ export class Step5Component implements OnInit, OnDestroy {
     const files = event.dataTransfer?.files;
     if (files && files.length > 0) {
       const file = files.item(0);
+      if (file && file.size > this.MAX_FILE_SIZE) {
+        this.showError('File Size Exceeded', 'The uploaded document exceeds the 2MB size limit.');
+        return;
+      }
       this.form.patchValue({ registerDocument: file });
       this.form.get("registerDocument")?.markAsTouched();
       this.updateParentModel({ registerDocument: file }, this.checkForm());
@@ -230,6 +234,10 @@ export class Step5Component implements OnInit, OnDestroy {
   onFileChange(event: any) {
     const file = event.target.files[0];
     if (file) {
+      if (file.size > this.MAX_FILE_SIZE) {
+        this.showError('File Size Exceeded', 'The uploaded document exceeds the 2MB size limit.');
+        return;
+      }
       this.form.patchValue({ registerDocument: file });
       this.updateParentModel({ registerDocument: file }, this.checkForm());
     }
@@ -238,7 +246,5 @@ export class Step5Component implements OnInit, OnDestroy {
     return this.form.valid;
   }
 
-  ngOnDestroy() {
-    this.unsubscribe.forEach((sb) => sb.unsubscribe());
-  }
+
 }

@@ -23,7 +23,6 @@ export class HomeNavbarComponent  {
   toLogin(event:Event){
     // event.preventDefault();
     // event.stopPropagation();
-    // console.log("Test")
     // this.router.navigate(['/auth/login'])
   }
 

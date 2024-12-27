@@ -297,7 +297,6 @@ class StepperComponent {
   };
 
   public destroy = () => {
-    console.log('destroy stepper');
   };
 
   public trigger = (name: string, event: Event) => {

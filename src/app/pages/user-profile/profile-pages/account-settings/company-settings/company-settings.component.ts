@@ -99,7 +99,6 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
         this.isLoading$ = of(false);
       },
       error: (err) => {
-        console.log(err);
         this.isLoading$ = of(false);
       }
     });
@@ -374,7 +373,6 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
     formData.forEach((value, key) => {
       formDataEntries.push({ key, value: value.toString() });
     });
-    console.table(formDataEntries);
     this.postProfileAPI(formData);
   }
 
