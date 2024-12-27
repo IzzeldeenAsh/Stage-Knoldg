@@ -3,10 +3,11 @@ import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse
 import { catchError, first, Observable, throwError } from 'rxjs';
 import { AuthService } from './services/auth.service';
 import { Router } from '@angular/router';
+import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private authService: AuthService,private router:Router) {}
+  constructor(private authService: AuthService,private router:Router,private getProfileService:ProfileService) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const auth = this.authService.getAuthFromLocalStorage();
@@ -30,6 +31,7 @@ export class AuthInterceptor implements HttpInterceptor {
             next: () => {
               localStorage.removeItem("foresighta-creds");
               localStorage.removeItem("user");
+              this.getProfileService.clearProfile()
               this.router.navigate(['/auth']).then(() => {
                 // Optional: Reload the page after navigation if needed
                window.location.reload();

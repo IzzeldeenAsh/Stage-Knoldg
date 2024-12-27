@@ -347,3 +347,31 @@ html[dir="rtl"] .p-element {
     }
 
   
+    .p-steps ul{
+        padding-left: 0 !important;
+    }
+
+    .p-steps .p-steps-item .p-menuitem-link .p-steps-number {
+        min-width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        
+      }
+      .p-steps .p-steps-item.p-highlight .p-steps-number {
+        background: #0778B9;
+        color: #ffffff;
+        border: 1px solid #0778B9;
+        box-shadow: 2.26px 12.8px 15px 0 #0182d547;
+      }
+      .insight-dropdown .p-inputwrapper {
+        background-color: #f9f9f9 !important;
+        border:none !important; 
+        border-radius: 0.625rem !important;
+        padding: 0.65rem 1rem !important;
+    }
+    .insight-dropdown .p-inputtext{
+        font-weight: 500 !important; 
+        font-size: 1.15rem !important;
+        color: #4b5775 !important;
+    }
+   

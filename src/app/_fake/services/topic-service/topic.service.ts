@@ -26,6 +26,7 @@ export class TopicsService {
   private apiUrl = `${this.insightaHost}/api/common/setting/topic/list`;
   private createApi = `${this.insightaHost}/api/admin/setting/topic`;
   private updateDeleteApi = `${this.insightaHost}/api/admin/setting/topic`;
+  private topicsByIndustryApi = `${this.insightaHost}/api/common/setting/topic/industry`;
 
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
@@ -33,7 +34,8 @@ export class TopicsService {
 
   constructor(
     private http: HttpClient,
-    private translationService: TranslationService
+    private translationService: TranslationService,
+    
   ) {
     this.translationService.onLanguageChange().subscribe(lang => {
       this.currentLang = lang || 'en';
@@ -58,6 +60,22 @@ export class TopicsService {
 
     this.setLoading(true);
     return this.http.get<TopicResponse>(this.apiUrl, { headers }).pipe(
+      map(res => res.data),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  // Get topics by industry ID
+  getTopicsByIndustry(industryId: number): Observable<Topic[]> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+
+    this.setLoading(true);
+    return this.http.get<TopicResponse>(`${this.topicsByIndustryApi}/${industryId}`, { headers }).pipe(
       map(res => res.data),
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))

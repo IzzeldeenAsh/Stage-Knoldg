@@ -69,6 +69,15 @@ export class ProfileService {
       }),
       catchError((err) => {
         this.profileCache$ = null; // Clear cache on error
+        if(err.status === 401){
+          localStorage.removeItem("foresighta-creds");
+          localStorage.removeItem("user");
+          this.clearProfile()
+          this.router.navigate(['/auth']).then(() => {
+            // Optional: Reload the page after navigation if needed
+           window.location.reload();
+          });
+        }
         return throwError(err);
       }),
       finalize(() => this.isLoadingSubject.next(false)),
