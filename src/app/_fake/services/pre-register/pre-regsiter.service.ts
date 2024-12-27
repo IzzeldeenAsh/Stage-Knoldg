@@ -19,7 +19,6 @@ export class PreRegsiterService {
   }
 
   private handleError(error: any) {
-    console.log('Error from service', error.error.errors);
   
     // Initialize an empty array to hold the formatted error messages
     let validationErrors: any[] = [];

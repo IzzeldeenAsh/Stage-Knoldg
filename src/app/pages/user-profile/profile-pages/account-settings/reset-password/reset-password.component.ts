@@ -64,34 +64,19 @@ export class ResetPasswordComponent extends BaseComponent implements OnDestroy {
 
   isEditing = signal(false);
 
-  handleServerErrors(error: any) {
-    this._messages.set([]);
+  private handleServerErrors(error: any) {
     if (error.error && error.error.errors) {
       const serverErrors = error.error.errors;
       for (const key in serverErrors) {
         if (serverErrors.hasOwnProperty(key)) {
-          const messagesArray = serverErrors[key];
-          this._messages.update((msgs) => [
-            ...msgs,
-            {
-              severity: 'error',
-              summary: '',
-              detail: messagesArray.join(', '),
-            },
-          ]);
+          const messages = serverErrors[key];
+         this.showError('',messages.join(", "));
         }
       }
     } else {
-      this._messages.update((msgs) => [
-        ...msgs,
-        {
-          severity: 'error',
-          summary: 'Error',
-          detail: 'An unexpected error occurred.',
-        },
-      ]);
+  
+      this.showError('','An unexpected error occurred.');
     }
-    return throwError(error);
   }
 
   changePassword() {
@@ -125,8 +110,7 @@ export class ResetPasswordComponent extends BaseComponent implements OnDestroy {
         },
         error: (error) => {
           this.handleServerErrors(error);
-          this.isEditing.set(false);
-          this.clearForm();
+          this.isEditing.set(true);
         },
       });
   }

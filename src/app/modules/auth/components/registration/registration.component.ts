@@ -111,7 +111,6 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
     this.resizeSubscription = screenwidth$.subscribe((width)=>{
       this.dialogWidth = width <768 ? '100vw' : '70vw';
-      console.log(this.dialogWidth);
     })
   }
 
@@ -119,7 +118,6 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   loadISIC() {
     this._isicService.getIsicCodes().pipe(first()).subscribe({
       next: (res) => {
-        console.log('ISIC DATA', res);
         this.nodes = this.buildTreeNodes(res);
       },
       error: (err) => {
@@ -170,7 +168,6 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         this.consultingFields = res;
       },
       error: (err) => {
-        console.log('err', err);
       },
     });
     this.unsubscribe.push(getConsultingFieldsSub);
@@ -195,7 +192,6 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         }));
       },
       error: (err) => {
-        console.log('err', err);
       },
     });
     this.unsubscribe.push(getCountriesSub);
@@ -286,7 +282,6 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         ?.value.map((field: any) => field.id);
       newUser.description = this.registrationForm.get('aboutDescription')?.value || null;
       newUser.other_consulting_field = this.registrationForm.get('otherConsultingField')?.value || null;
-      console.log("newUser",newUser);
       const registerAPI = this._register.preRegisterUser(newUser).pipe(first()).subscribe({
         next: (res) => {
           if (res.state) {

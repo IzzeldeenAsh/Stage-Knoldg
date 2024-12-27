@@ -108,7 +108,6 @@ export class ISICCodeManagmentComponent implements OnInit, OnDestroy {
   }
 
   editIsicCode(node: any) {
-    console.log('node', node);
     this.displayDialog = true; // Open dialog
     this.selectedNodeId = node.node.data.key; // Set the ID for update
     this.isUpdate = true; // Set to true for editing mode

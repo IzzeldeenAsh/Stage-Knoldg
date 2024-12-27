@@ -38,7 +38,6 @@ export class UserRequestsComponent extends BaseComponent implements OnInit {
   getProfile() {
     this.getProfileService.getProfile().pipe(first()).subscribe((user)=>{
       this.userProfile=user
-      console.log(this.userProfile)
     })
   }
 

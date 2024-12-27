@@ -49,7 +49,6 @@ export class DepartmentsService {
 
   // Fetch department data from the API
   getDepartments(): Observable<any> {
-    console.log("Department List Step2");
     const headers = new HttpHeaders({
       'Accept': 'application/json',
       'Content-Type': 'application/json',

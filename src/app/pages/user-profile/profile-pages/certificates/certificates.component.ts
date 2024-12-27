@@ -68,11 +68,10 @@ export class CertificatesComponent extends BaseComponent implements OnInit {
   }
 
   gerCertName(certId: string) {
-    const doc = this.documentTypes.find((cert) => cert.id === certId);
-    if (doc) {
-      return doc.name;
-    } else {
+    if (!this.documentTypes || this.documentTypes.length === 0) {
       return "Other";
     }
+    const doc = this.documentTypes.find((cert) => cert.id === certId);
+    return doc ? doc.name : "Other";
   }
 }

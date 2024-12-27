@@ -176,7 +176,6 @@ export class LayoutService {
         try {
           return JSON.parse(configInString) as ILayout;
         } catch (ex) {
-          console.log('reading config exception', ex);
         }
       }
     }

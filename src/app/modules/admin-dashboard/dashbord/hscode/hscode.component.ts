@@ -59,7 +59,6 @@ ngOnInit(): void {
 loadIsicCodes() {
   const listSub = this.isicCodesService.getIsicCodesTreeParent().subscribe({
     next: (res) => {
-      console.log("res",res);
       this.isicTreeData = this.changeKeyToValue([...res]); // Transform only for isicTreeData
       this.cdr.detectChanges();
     },
@@ -100,10 +99,8 @@ changeKeyToValue(nodes: any) {
     this.visible = true;
     this.selectedHSCodeId = hscode.id;
     this.isEditMode = true;
-    console.log(hscode);
     // Find the node in isicTreeData corresponding to isic_code_id
     this.selectedNode = this.findNodeById(this.isicTreeData, hscode.isic_code_id);
-    console.log("this.selectedNode",this.selectedNode);
     // Patch the other fields in the form
     this.hscodeForm.patchValue({
       arabicName: hscode.names.ar,
@@ -115,7 +112,6 @@ changeKeyToValue(nodes: any) {
   
   // Helper method to find a node by ID in a tree structure
   findNodeById(nodes: any[], id: any): TreeNode | null {
-    console.log("nodes",nodes);
     for (const node of nodes) {
       if (node.value === id) {
         return node;

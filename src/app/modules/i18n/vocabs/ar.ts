@@ -231,8 +231,10 @@ export const locale = {
       "MODAL": {
         "TITLE": "إعادة تفعيل الحساب",
         "HEADING": "هل أنت متأكد أنك تريد إعادة تفعيل حسابك؟",
-        "DESCRIPTION": "عند إعادة تفعيل حسابك، ستستعيد الوصول إلى جميع الميزات والخدمات. سيتم استعادة إعدادات وبيانات حسابك.",
-        "CONFIRM_BUTTON": "نعم، إعادة التفعيل",
+        "DESCRIPTION_COMPANY": "عند إعادة تفعيل حسابك، ستستعيد الوصول إلى جميع الميزات والخدمات. سيتم استعادة إعدادات وبيانات حسابك.",
+        "DESCRIPTION_INSIGHTER": "عند إعادة تفعيل حسابك، ستستعيد الوصول إلى جميع الميزات والخدمات. سيتم استعادة إعدادات وبيانات حسابك.",
+        "CONFIRM_BUTTON_COMPANY": "نعم، إعادة التفعيل",
+        "CONFIRM_BUTTON_INSIGHTER": "نعم، إعادة التفعيل",
         "SUCCESS_MESSAGE": "تم إعادة تفعيل حسابك بنجاح",
         "ERROR_MESSAGE": "حدث خطأ أثناء إعادة تفعيل حسابك"
       }
@@ -450,17 +452,21 @@ export const locale = {
       "BUTTON_TEXT": "نقل الحساب"
     },
     "DEACTIVATE_ACCOUNT": {
-      "TITLE": "إلغاء تنشيط حساب الشركة",
+      "TITLE_COMPANY": "إلغاء تنشيط حساب الشركة",
+      "TITLE_INSIGHTER": "إلغاء تنشيط حساب المستكشف",
       "DESCRIPTION": "<i class='fa-sharp fa-solid fa-circle fs-10'></i> سيتم الاحتفاظ ببيانات حسابك<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> لن يمكن الوصول إلى الحساب حتى إعادة التنشيط<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> ستظل رؤى شركتك مرئية في السوق<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> لا يمكن تحميل رؤى جديدة أثناء إلغاء التنشيط",
-      "BUTTON_TEXT": "إلغاء تنشيط حساب الشركة",
+      "BUTTON_TEXT_COMPANY": "إلغاء تنشيط حساب الشركة",
+      "BUTTON_TEXT_INSIGHTER": "إلغاء تنشيط حساب المستكشف",
       "ILLUSTRATION_ALT": "صورة إلغاء تنشيط حساب الشركة",
       "MODAL": {
-        "TITLE": "إلغاء تنشيط حساب الشركة",
+        "TITLE_COMPANY": "إلغاء تنشيط حساب الشركة",
+        "TITLE_INSIGHTER": "إلغاء تنشيط حساب المستكشف",
         "DESCRIPTION": "أنت على وشك إلغاء تنشيط حساب شركتك. لن يمكن الوصول إلى حسابك ولكن سيتم الاحتفاظ ببياناتك.",
         "WARNING": "هذا الإجراء غير قابل للعكس. يرجى التأكد.",
         "REASON_LABEL": "سبب إلغاء التنشيط",
         "REASON_PLACEHOLDER": "يرجى توضيح سبب رغبتك في إلغاء تنشيط حسابك",
-        "CONFIRM_BUTTON": "إلغاء تنشيط حساب الشركة"
+        "CONFIRM_BUTTON_COMPANY": "إلغاء تنشيط حساب الشركة",
+        "CONFIRM_BUTTON_INSIGHTER": "إلغاء تنشيط حساب المستكشف"
       },
       "PENDING_REQUEST" : "طلب قيد المراجعة"
     }

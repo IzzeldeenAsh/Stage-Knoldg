@@ -30,12 +30,10 @@ export class ProfileHeaderComponent extends BaseComponent implements OnInit {
 
   ngOnInit() {
     this.profileImage = this.getProfileImage();
-    console.log("profileImage onInit", this.profileImage);
   }
   ngOnChanges(changes: SimpleChanges) {
     if (changes.profile && !changes.profile.firstChange) {
       this.profileImage = this.getProfileImage();
-      console.log("profileImage onChanges", this.profileImage);
     }
   }
   getProfileImage(): string {
@@ -225,7 +223,6 @@ export class ProfileHeaderComponent extends BaseComponent implements OnInit {
               // **Clear the image preview on upload error**
               this.selectedImage = null;
               this.profileImage = this.getProfileImage();
-              console.log('profileImage',this.profileImage);
               // **Reset the file input**
               if (this.fileInput) {
                 this.fileInput.nativeElement.value = '';

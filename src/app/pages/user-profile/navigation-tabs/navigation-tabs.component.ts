@@ -39,7 +39,6 @@ export class NavigationTabsComponent implements OnInit, OnChanges {
     this.lang = this.translationService.getSelectedLanguage();
     this.translationService.onLanguageChange().subscribe((lang) => {
       this.lang = lang;
-      console.log("LangChanged");
     });
   }
 

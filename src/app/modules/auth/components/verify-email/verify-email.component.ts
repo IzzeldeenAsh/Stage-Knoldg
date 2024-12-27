@@ -94,7 +94,6 @@
 
         const apiUrl = `${this.insightaHost}/api/account/email/verify/${paramsValue}`;
 
-        console.log("API URL:", apiUrl);
 
         this.http.get(apiUrl).subscribe({
           next: (response: any) => {
@@ -103,7 +102,6 @@
 
             this.verified = true;
             this.loading = false;
-            console.log("Verification Response:", response);
           },
           error: (error: HttpErrorResponse) => {
             console.error("Verification Error:", error);

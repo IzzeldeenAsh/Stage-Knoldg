@@ -40,7 +40,6 @@ export class SettingsActionComponent extends BaseComponent implements OnInit {
           }
         },
         error:(err)=>{
-          console.log(err);
         }
       }
     )

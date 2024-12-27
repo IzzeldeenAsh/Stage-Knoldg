@@ -137,7 +137,6 @@ getPasswordStrengthLabel(): string {
         this.isLoadingCountries$ = of(false);
       },
       error: (err) => {
-        console.log("Error fetching countries:", err);
         this.isLoadingCountries$ = of(false);
       },
     });
@@ -236,7 +235,6 @@ getPasswordStrengthLabel(): string {
     this.authService.registration(user).subscribe({
       next: (response) => {
         this.isLoadingSubmit$ = of(false);
-        console.log("sign-up resopone",response);
         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Registration successful! Verification email sent.' });
         this.step = 2; // Move to Email Verification step
         this.startResendCooldown()

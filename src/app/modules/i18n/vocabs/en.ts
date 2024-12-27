@@ -249,17 +249,22 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       },
     },
     "DEACTIVATE_ACCOUNT": {
-      "TITLE": "Deactivate Company Account",
+      "TITLE_COMPANY": "Deactivate Company Account",
+      "TITLE_INSIGHTER": "Deactivate Insighter Account",
       "DESCRIPTION": "<i class='fa-sharp fa-solid fa-circle fs-10'></i> Your account data will be preserved<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> Account will be inaccessible until reactivation<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> Your insights remain visible on marketplace<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> Cannot upload new insights while deactivated",
-      "BUTTON_TEXT": "Deactivate Company Account", 
+      "BUTTON_TEXT_COMPANY": "Deactivate Company Account", 
+      "BUTTON_TEXT_INSIGHTER": "Deactivate Insighter Account",
       "ILLUSTRATION_ALT": "Deactivate Company Account Illustration",
       "MODAL": {
-        "TITLE": "Deactivate Company Account",
-        "DESCRIPTION": "You are about to deactivate your company account. Your account will be inaccessible but your data will be preserved.",
+        "TITLE_COMPANY": "Deactivate Company Account",
+        "TITLE_INSIGHTER": "Deactivate Insighter Account",
+        "DESCRIPTION_COMPANY": "You are about to deactivate your company account. Your account will be inaccessible but your data will be preserved.",
+        "DESCRIPTION_INSIGHTER": "You are about to deactivate your insighter account. Your account will be inaccessible but your data will be preserved.",
         "WARNING": "This action is not reversible. Please be certain.",
         "REASON_LABEL": "Deactivation Reason",
         "REASON_PLACEHOLDER": "Please explain why you want to deactivate your account",
-        "CONFIRM_BUTTON": "Deactivate Company Account"
+        "CONFIRM_BUTTON_COMPANY": "Deactivate Company Account",
+        "CONFIRM_BUTTON_INSIGHTER": "Deactivate Insighter Account"
       },
       "PENDING_REQUEST" : "Pending Request"
     },

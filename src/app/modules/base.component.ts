@@ -39,12 +39,11 @@ export abstract class BaseComponent implements OnDestroy, AfterViewInit {
     this.messageService.add({ severity: 'success', summary, detail, life: 5000 }); // 5 seconds
   }
 
-  showError(summary:string ='Error',detail: string) {
-    this.messageService.add({ severity: 'error', summary, detail });
+  showError(summary:string ='Error',detail: string ,life:number=5000) {
+    this.messageService.add({ severity: 'error', summary, detail, life });
   }
 
   ngOnDestroy(): void {
-    console.log("Subs Destroyed");
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
     this.unsubscribe$.next();
     this.unsubscribe$.complete();

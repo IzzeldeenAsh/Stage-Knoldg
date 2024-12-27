@@ -92,10 +92,15 @@
        <div class="row  justify-content-center align-items-center w-100" >
         <div class="col-12 col-lg-6 ">
           <div class="d-flex flex-column justify-content-center align-items-center align-items-lg-start">
-            <div
+            <div *ngIf="hasRole(['company'])"
               class="position-relative text-gray-800 fs-1 z-index-2 fw-bold mb-5"
             >
-              {{ 'DEACTIVATE_ACCOUNT.TITLE' | translate }}
+              {{ 'DEACTIVATE_ACCOUNT.TITLE_COMPANY' | translate }}
+            </div>
+            <div *ngIf="hasRole(['insighter'])"
+              class="position-relative text-gray-800 fs-1 z-index-2 fw-bold mb-5"
+            >
+              {{ 'DEACTIVATE_ACCOUNT.TITLE_INSIGHTER' | translate }}
             </div>
             <span class="text-gray-600 fw-semibold fs-6 mb-6 d-block " [innerHTML]="'DEACTIVATE_ACCOUNT.DESCRIPTION' | translate"></span>
             
@@ -107,7 +112,12 @@
                 data-bs-toggle="modal" 
                 data-bs-target="#deactivateModal"
                 >
-                  {{ 'DEACTIVATE_ACCOUNT.BUTTON_TEXT' | translate }}
+                <ng-container *ngIf="hasRole(['company'])">
+                  {{ 'DEACTIVATE_ACCOUNT.BUTTON_TEXT_COMPANY' | translate }}
+                </ng-container>
+                <ng-container *ngIf="hasRole(['insighter'])">
+                  {{ 'DEACTIVATE_ACCOUNT.BUTTON_TEXT_INSIGHTER' | translate }}
+                </ng-container>
                 </a>
               }@else{
                 <div

@@ -41,7 +41,6 @@ export class InsighterRegistraionService {
 
 
   corporateInsighterRegister(insighterData:FormData){
-    console.log("this.currentLAng",this.currentLang);
     const headers = new HttpHeaders({
       'Accept-Language': this.currentLang,
     });
