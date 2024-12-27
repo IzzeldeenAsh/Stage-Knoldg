@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { NonInsightersAuthGuard } from '../guards/non-insighter-guard/non-insighters.guard';
+import { authGuard } from '../guards/auth-guard/auth.guard';
 
 const Routing: Routes = [
   {
@@ -19,6 +20,10 @@ const Routing: Routes = [
   {
     path: 'profile',
     loadChildren: () => import('./user-profile/user-profile.module').then((m) => m.UserProfileModule),
+  },
+  {
+    path: 'initiate-insight',
+    loadChildren: () => import('./insighte-initiate/insighte-initiate.module').then((m) => m.InsighteInitiateModule),
   },
   {
     path: '**',

@@ -1,0 +1,294 @@
+<div class="pb-5 pb-lg-10 pt-15">
+  <h2 class="fw-bolder text-dark">Create New Insight</h2>
+  <div class="text-gray-400 fw-bold fs-6">
+    Start by providing basic information about your insight
+  </div>
+</div>
+
+<div [formGroup]="form" class="fv-row mb-10">
+  <!-- Insight Title -->
+  <div class="mb-10">
+    <label class="form-label required">Insight Title</label>
+    <input
+      type="text"
+      class="form-control form-control-lg form-control-solid"
+      formControlName="insightTitle"
+      placeholder="Enter insight title"
+    />
+    <div
+      class="fv-plugins-message-container invalid-feedback"
+      *ngIf="
+        form.get('insightTitle')?.invalid && form.get('insightTitle')?.touched
+      "
+    >
+      <div *ngIf="form.get('insightTitle')?.errors?.['required']">
+        Title is required
+      </div>
+      <div *ngIf="form.get('insightTitle')?.errors?.['minlength']">
+        Title must be at least 3 characters
+      </div>
+      <div *ngIf="form.get('insightTitle')?.errors?.['maxlength']">
+        Title cannot exceed 100 characters
+      </div>
+    </div>
+  </div>
+
+  <!-- Insight Description -->
+  <div class="mb-10">
+    <label class="form-label required">Insight Description</label>
+    <textarea
+      class="form-control form-control-lg form-control-solid"
+      rows="5"
+      formControlName="insightDescription"
+      placeholder="Enter insight description"
+      ktAutosize
+    ></textarea>
+    <div
+      class="fv-plugins-message-container invalid-feedback"
+      *ngIf="
+        form.get('insightDescription')?.invalid &&
+        form.get('insightDescription')?.touched
+      "
+    >
+      <div *ngIf="form.get('insightDescription')?.errors?.['required']">
+        Description is required
+      </div>
+      <div *ngIf="form.get('insightDescription')?.errors?.['minlength']">
+        Description must be at least 10 characters
+      </div>
+      <div *ngIf="form.get('insightDescription')?.errors?.['maxlength']">
+        Description cannot exceed 500 characters
+      </div>
+    </div>
+  </div>
+
+  <!-- Language Dropdown (Replaced with p-dropdown) -->
+  <div class="mb-10">
+    <label class="form-label required">Language used in the insight</label>
+    <p-dropdown
+      id="language"
+      formControlName="language"
+      [options]="languages"
+      optionLabel="name"
+      optionValue="id"
+      placeholder="Select a language"
+      [showClear]="true"
+      [filter]="true"
+      filterPlaceholder="Search Languages"
+      class="insight-dropdown"
+      [autoWidth]="false"
+      [appendTo]="'body'"
+      [virtualScroll]="true"
+      [itemSize]="30"
+    ></p-dropdown>
+    <div
+      class="invalid-feedback"
+      *ngIf="form.get('language')?.invalid && form.get('language')?.touched"
+    >
+      Please select a language
+    </div>
+  </div>
+
+  <!-- Industry Selector Component -->
+  <div class="mb-10" *ngIf="!isLoading">
+    <app-industry-selector
+      [title]="'Select Industry'"
+      [placeholder]="'Choose an industry...'"
+      [fetchedData]="industryNodes"
+      [cancelLabel]="'Cancel'"
+      [okLabel]="'Ok'"
+      (nodeSelected)="onIndustrySelected($event)"
+    >
+    </app-industry-selector>
+  </div>
+
+  <!-- Topic Dropdown with Fade and Y Movement Animation -->
+  <div [@fadeInMoveY] class="mb-10" *ngIf="topics && topics.length > 0">
+    <label for="topic" class="form-label required">Topic</label>
+    <p-dropdown
+      id="topic"
+      formControlName="topic"
+      [options]="topics"
+      optionLabel="name"
+      optionValue="id"
+      placeholder="Select a Topic"
+      [showClear]="true"
+      [filter]="true"
+      filterPlaceholder="Search Topics"
+      class="insight-dropdown"
+      (onChange)="onTopicSelected($event.value)"
+    ></p-dropdown>
+    <div
+      *ngIf="form.controls['topic']?.invalid && form.controls['topic']?.touched"
+      class="text-danger"
+    >
+      Topic is required.
+    </div>
+  </div>
+
+  <!-- Custom Topic Input -->
+  <div
+    [@fadeInMoveY]
+    class="mb-10"
+    *ngIf="form.get('topic')?.value === 'other'"
+  >
+    <label class="form-label required">Specify Other Topic</label>
+    <input
+      type="text"
+      class="form-control form-control-lg form-control-solid"
+      formControlName="customTopic"
+      placeholder="Enter your custom topic"
+    />
+    <div
+      class="fv-plugins-message-container invalid-feedback"
+      *ngIf="
+        form.get('customTopic')?.invalid && form.get('customTopic')?.touched
+      "
+    >
+      <div *ngIf="form.get('customTopic')?.errors?.['required']">
+        Custom topic is required
+      </div>
+      <div *ngIf="form.get('customTopic')?.errors?.['minlength']">
+        Custom topic must be at least 3 characters
+      </div>
+      <div *ngIf="form.get('customTopic')?.errors?.['maxlength']">
+        Custom topic cannot exceed 100 characters
+      </div>
+    </div>
+  </div>
+
+  <!-- Target Market -->
+  <div class="mb-10">
+    <label class="d-flex align-items-center fs-5 fw-semibold mb-4">
+      <span class="required">Target Market</span>
+      <span
+        class="ms-1"
+        data-bs-toggle="tooltip"
+        aria-label="Select your app category"
+        data-bs-original-title="Select your app category"
+        data-kt-initialized="1"
+      >
+        <i class="ki-duotone ki-information-5 text-gray-500 fs-6">
+          <span class="path1"></span><span class="path2"></span
+          ><span class="path3"></span>
+        </i>
+      </span>
+    </label>
+    <div
+      class="fv-row fv-plugins-icon-container fv-plugins-bootstrap5-row-valid"
+    >
+      <div class="row">
+        <div class="col-md-6 col-12">
+          <label
+            class="d-flex flex-stack mb-5 cursor-pointer block-content"
+            [ngClass]="{ 'active-block': selectedMarket === '1' }"
+          >
+            <span class="d-flex align-items-center me-2">
+              <!-- Icon and Info -->
+              <span class="symbol symbol-50px me-6">
+                <span class="symbol-label bg-light-info">
+                  <i class="ki-duotone ki-compass fs-1 text-info">
+                    <span class="path1"></span><span class="path2"></span>
+                  </i>
+                </span>
+              </span>
+              <span class="d-flex flex-column">
+                <span class="fw-bold fs-6">Economic Block</span>
+                <span class="fs-7 text-muted"
+                  >Group of countries that share similar economic
+                  characteristics.</span
+                >
+              </span>
+            </span>
+            <span class="form-check form-check-custom form-check-solid">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="category"
+                value="1"
+                data-gtm-form-interact-field-id="0"
+                formControlName="category"
+              />
+            </span>
+          </label>
+        </div>
+
+        <div class="col-md-6 col-12">
+          <label
+            class="d-flex flex-stack mb-5 cursor-pointer block-content"
+            [ngClass]="{ 'active-block': selectedMarket === '2' }"
+          >
+            <span class="d-flex align-items-center me-2">
+              <span class="symbol symbol-50px me-6">
+                <span class="symbol-label bg-light-danger">
+                  <i class="ki-duotone ki-element-11 fs-1 text-danger">
+                    <span class="path1"></span><span class="path2"></span
+                    ><span class="path3"></span><span class="path4"></span>
+                  </i>
+                </span>
+              </span>
+              <span class="d-flex flex-column">
+                <span class="fw-bold fs-6">Region</span>
+                <span class="fs-7 text-muted"
+                  >Group of countries that share similar cultural and social
+                  characteristics.</span
+                >
+              </span>
+            </span>
+            <span class="form-check form-check-custom form-check-solid">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="category"
+                value="2"
+                data-gtm-form-interact-field-id="1"
+                formControlName="category"
+              />
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Validation Message -->
+      <div
+        class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"
+      >
+        <div
+          *ngIf="form.get('category')?.invalid && form.get('category')?.touched"
+        >
+          Please select a target market.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mb-10">
+  <div *ngIf=" selectedMarket === '1'" >
+    <app-select-economic-block
+    placeholder="Select economic blocks..."
+    title="Choose Economic Blocks"
+    (blocksSelected)="onEconomicBlocksSelected($event)"
+  ></app-select-economic-block>
+  </div>
+</div>
+
+<div class="d-flex flex-stack pt-15">
+  <div></div>
+  <div>
+    <button
+      type="button"
+      class="btn btn-lg btn-primary"
+      [disabled]="form.invalid"
+      (click)="submit()"
+    >
+      Continue
+      <span class="svg-icon svg-icon-4 ms-1">
+        <i class="ki-duotone ki-arrow-right fs-2">
+          <span class="path1"></span>
+          <span class="path2"></span>
+        </i>
+      </span>
+    </button>
+  </div>
+</div>

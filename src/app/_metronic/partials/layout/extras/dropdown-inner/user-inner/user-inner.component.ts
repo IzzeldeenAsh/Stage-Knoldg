@@ -48,6 +48,7 @@ export class UserInnerComponent implements OnInit, OnDestroy {
       next: () => {
         localStorage.removeItem("foresighta-creds");
         localStorage.removeItem("user");
+        this.getProfileService.clearProfile()
         this.router.navigate(['/auth']).then(() => {
           // Optional: Reload the page after navigation if needed
          window.location.reload();
