@@ -162,14 +162,16 @@ export class AuthService implements OnDestroy {
       finalize(() => this.isLoadingSubject.next(false))
     );
   }
-  logout():Observable<any> {
-    const token = this.getAuthFromLocalStorage()?.authToken;
-    if(token){
-      localStorage.removeItem("foresighta-creds");
-      localStorage.removeItem("user");
-      return this.http.post<any>('https://api.foresighta.co/api/account/logout',{token})
-    }
-    return of(null);
+
+  
+  logout(): Observable<any> {
+    const headers = new HttpHeaders({
+      Accept: "application/json",
+    });
+    return this.http.post<any>(
+      "https://api.foresighta.co/api/account/logout",
+      { headers }
+    );
   }
   getUserByToken(): Observable<any> {
     const authData = this.getAuthFromLocalStorage();
