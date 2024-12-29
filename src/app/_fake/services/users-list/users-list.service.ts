@@ -45,6 +45,20 @@ export class UsersListService {
     );
   }
 
+  deactivateAndDeleteClient(clientId: number, staffNotes: string): Observable<any> {
+    this.setLoading(true);
+    const url = `${this.apiUrl}/client/deactivate-delete/${clientId}`;
+    const body = { staff_notes: staffNotes };
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    return this.http.post(url, body, { headers }).pipe(
+      map(response => response),
+      catchError(this.handleError),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
   // Insighters
   getInsighters(): Observable<IForsightaProfile[]> {
     this.setLoading(true);
