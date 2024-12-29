@@ -6,7 +6,10 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class NotificationsLinksPipe implements PipeTransform {
 
-  transform(value: string): string {
+  transform(value: string, parent?: string): string {
+    if (parent === 'admin') {
+      return '/admin-dashboard/admin/dashboard/main-dashboard/requests';
+    }
     return '/app/profile/user-requests';
   }
 

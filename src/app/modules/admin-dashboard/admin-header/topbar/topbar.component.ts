@@ -12,7 +12,7 @@ import { IForsightaProfile } from "src/app/_fake/models/profile.interface";
 import { ProfileService } from "src/app/_fake/services/get-profile/get-profile.service";
 import { FileUploadService } from "src/app/_fake/services/upload-picture/upload-picture";
 import { AuthService, UserType } from "src/app/modules/auth";
-
+import { Notification, NotificationsService } from 'src/app/_fake/services/notifications/notifications.service';
 @Component({
   selector: "app-topbar",
   templateUrl: "./topbar.component.html",
@@ -20,7 +20,9 @@ import { AuthService, UserType } from "src/app/modules/auth";
 })
 export class TopbarComponent implements OnInit {
   user: IForsightaProfile;
-
+  itemClass: string = 'ms-1 ms-lg-3';
+  btnClass: string = 'btn btn-icon btn-custom btn-icon-muted  btn-active-color-secondary w-35px h-35px w-md-40px h-md-40px';
+  notifications: any[] = [];
   constructor(
     private elRef: ElementRef,
     private renderer: Renderer2,
@@ -28,10 +30,20 @@ export class TopbarComponent implements OnInit {
     private router: Router,
     private fileUploadService: FileUploadService,
     private messageService: MessageService,
-    private getProfileService: ProfileService
+    private getProfileService: ProfileService,
+    private notificationService: NotificationsService
   ) {}
   ngOnInit(): void {
     this.getProfile();
+       
+    // Subscribe to the notifications$ observable to receive updates from polling
+    this.notificationService.notifications$.subscribe((notifications) => {
+      this.notifications = notifications;
+      this.notificationCount = this.notifications.length;
+    });
+
+    // Start polling for notifications
+    this.notificationService.startPolling();
  
   }
   signOut() {
@@ -64,6 +76,8 @@ export class TopbarComponent implements OnInit {
       }
     })
   }
+
+  notificationCount: number = 0;
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -122,5 +136,30 @@ export class TopbarComponent implements OnInit {
     if (!clickedInside) {
       this.closeMenu();
     }
+  }
+
+   // Add ngOnDestroy to clean up
+   ngOnDestroy(): void {
+    this.notificationService.stopPolling();
+  }
+
+
+  handleNotificationClick(notificationId: string) {
+    // Mark notification as read
+    this.notificationService.markAsRead(notificationId,'en').subscribe({
+      next: () => {
+        // Refresh notifications from API
+        this.notificationService.getNotifications( 'en').subscribe(notifications => {
+          this.notifications = notifications;
+          this.notificationCount = notifications.length;
+        });
+      },
+      error: (error) => {
+        console.error('Error marking notification as read:', error);
+      }
+    });
+
+    // Handle any other notification click logic (navigation, etc.)
+    // ... existing notification click handling code ...
   }
 }

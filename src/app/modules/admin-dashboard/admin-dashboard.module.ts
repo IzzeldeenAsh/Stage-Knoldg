@@ -13,6 +13,7 @@ import { SidebarModule } from 'primeng/sidebar';
 import { TooltipModule } from 'primeng/tooltip';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { ExtrasModule } from 'src/app/_metronic/partials/layout/extras/extras.module';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { ToastModule } from 'primeng/toast';
     AdminDashboardRoutingModule,
     SidebarModule,
     InlineSVGModule,
+    ExtrasModule,
     ToastModule,
     TooltipModule
   ],

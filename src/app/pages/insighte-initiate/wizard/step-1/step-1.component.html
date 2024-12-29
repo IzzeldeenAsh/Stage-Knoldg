@@ -1,6 +1,6 @@
 <div class="pb-5 pb-lg-10 pt-15">
   <h2 class="fw-bolder text-dark">Create New Insight</h2>
-  <div class="text-gray-400 fw-bold fs-6">
+  <div class="text-gray-600 fw-bold fs-6">
     Start by providing basic information about your insight
   </div>
 </div>
@@ -8,7 +8,21 @@
 <div [formGroup]="form" class="fv-row mb-10">
   <!-- Insight Title -->
   <div class="mb-10">
-    <label class="form-label required">Insight Title</label>
+    <label class="d-flex align-items-center fs-5 fw-semibold mb-4">
+      <span class="required">Insight Title</span>
+      <span
+        class="ms-1"
+        data-bs-toggle="tooltip"
+        aria-label="Select your app category"
+        data-bs-original-title="Select your app category"
+        data-kt-initialized="1"
+      >
+        <i class="ki-duotone ki-information-5 text-gray-500 fs-6">
+          <span class="path1"></span><span class="path2"></span
+          ><span class="path3"></span>
+        </i>
+      </span>
+    </label>
     <input
       type="text"
       class="form-control form-control-lg form-control-solid"
@@ -35,7 +49,21 @@
 
   <!-- Insight Description -->
   <div class="mb-10">
-    <label class="form-label required">Insight Description</label>
+    <label class="d-flex align-items-center fs-5 fw-semibold mb-4">
+      <span class="required">Insight Description</span>
+      <span
+        class="ms-1"
+        data-bs-toggle="tooltip"
+        aria-label="Select your app category"
+        data-bs-original-title="Select your app category"
+        data-kt-initialized="1"
+      >
+        <i class="ki-duotone ki-information-5 text-gray-500 fs-6">
+          <span class="path1"></span><span class="path2"></span
+          ><span class="path3"></span>
+        </i>
+      </span>
+    </label>
     <textarea
       class="form-control form-control-lg form-control-solid"
       rows="5"
@@ -64,7 +92,21 @@
 
   <!-- Language Dropdown (Replaced with p-dropdown) -->
   <div class="mb-10">
-    <label class="form-label required">Language used in the insight</label>
+    <label class="d-flex align-items-center fs-5 fw-semibold mb-4">
+      <span class="required">Language used in the insight</span>
+      <span
+        class="ms-1"
+        data-bs-toggle="tooltip"
+        aria-label="Select your app category"
+        data-bs-original-title="Select your app category"
+        data-kt-initialized="1"
+      >
+        <i class="ki-duotone ki-information-5 text-gray-500 fs-6">
+          <span class="path1"></span><span class="path2"></span
+          ><span class="path3"></span>
+        </i>
+      </span>
+    </label>
     <p-dropdown
       id="language"
       formControlName="language"
@@ -104,7 +146,21 @@
 
   <!-- Topic Dropdown with Fade and Y Movement Animation -->
   <div [@fadeInMoveY] class="mb-10" *ngIf="topics && topics.length > 0">
-    <label for="topic" class="form-label required">Topic</label>
+    <label class="d-flex align-items-center fs-5 fw-semibold mb-4">
+      <span class="required">Topic</span>
+      <span
+        class="ms-1"
+        data-bs-toggle="tooltip"
+        aria-label="Select your app category"
+        data-bs-original-title="Select your app category"
+        data-kt-initialized="1"
+      >
+        <i class="ki-duotone ki-information-5 text-gray-500 fs-6">
+          <span class="path1"></span><span class="path2"></span
+          ><span class="path3"></span>
+        </i>
+      </span>
+    </label>
     <p-dropdown
       id="topic"
       formControlName="topic"
@@ -132,7 +188,21 @@
     class="mb-10"
     *ngIf="form.get('topic')?.value === 'other'"
   >
-    <label class="form-label required">Specify Other Topic</label>
+    <label class="d-flex align-items-center fs-5 fw-semibold mb-4">
+      <span class="required">Specify Other Topic</span>
+      <span
+        class="ms-1"
+        data-bs-toggle="tooltip"
+        aria-label="Select your app category"
+        data-bs-original-title="Select your app category"
+        data-kt-initialized="1"
+      >
+        <i class="ki-duotone ki-information-5 text-gray-500 fs-6">
+          <span class="path1"></span><span class="path2"></span
+          ><span class="path3"></span>
+        </i>
+      </span>
+    </label>
     <input
       type="text"
       class="form-control form-control-lg form-control-solid"
@@ -159,7 +229,7 @@
 
   <!-- Target Market -->
   <div class="mb-10">
-    <label class="d-flex align-items-center fs-5 fw-semibold mb-4">
+      <label class="d-flex align-items-center fs-5 fw-semibold mb-4">
       <span class="required">Target Market</span>
       <span
         class="ms-1"
@@ -187,7 +257,7 @@
               <!-- Icon and Info -->
               <span class="symbol symbol-50px me-6">
                 <span class="symbol-label bg-light-info">
-                  <i class="ki-duotone ki-compass fs-1 text-info">
+                  <i class="ki-duotone ki-chart fs-1 text-info">
                     <span class="path1"></span><span class="path2"></span>
                   </i>
                 </span>
@@ -220,11 +290,9 @@
           >
             <span class="d-flex align-items-center me-2">
               <span class="symbol symbol-50px me-6">
-                <span class="symbol-label bg-light-danger">
-                  <i class="ki-duotone ki-element-11 fs-1 text-danger">
-                    <span class="path1"></span><span class="path2"></span
-                    ><span class="path3"></span><span class="path4"></span>
-                  </i>
+                <span class="symbol-label bg-light-success">
+                  <i class="ki-duotone ki-icon fs-1 text-success"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                 
                 </span>
               </span>
               <span class="d-flex flex-column">
@@ -272,6 +340,46 @@
   ></app-select-economic-block>
   </div>
 </div>
+
+<div class="mb-10">
+  <div *ngIf=" selectedMarket === '2'" >
+    <app-select-region
+    placeholder="Select regions..."
+    title="Choose Regions"
+    (regionsSelected)="onRegionsSelected($event)"
+  ></app-select-region>
+  </div>
+</div>
+
+<div class="mb-10" *ngIf="selectedMarket === '2'">
+<app-select-countries (countriesSelected)="onCountriesSelected($event)"></app-select-countries>
+</div>
+
+  <!-- Language Dropdown (Replaced with p-dropdown) -->
+  <div class="mb-10">
+    <label class="d-flex align-items-center fs-5 fw-semibold mb-4">
+      <span >ISIC-Code <span class="text-muted fs-5">(optional)</span></span>
+    </label>
+    <input
+    type="text"
+    class="form-control form-control-lg form-control-solid"
+    formControlName="isicCode"
+    placeholder="Select ISIC-Code"
+  />
+  </div>
+
+  <div class="mb-10">
+    <label class="d-flex align-items-center fs-5 fw-semibold mb-4">
+      <span >HS-Code <span class="text-muted fs-5">(optional)</span></span>
+    </label>
+    <input
+    type="text"
+    class="form-control form-control-lg form-control-solid"
+    formControlName="hsCode"
+    placeholder="Select HS-Code"
+  />
+  </div>
+
 
 <div class="d-flex flex-stack pt-15">
   <div></div>

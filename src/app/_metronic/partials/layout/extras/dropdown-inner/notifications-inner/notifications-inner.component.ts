@@ -1,5 +1,4 @@
 import { Component, HostBinding, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { LayoutService } from '../../../../../layout';
 import { Notification } from 'src/app/_fake/services/nofitications/notifications.service';
 
 export type NotificationsTabsType =
@@ -13,6 +12,7 @@ export type NotificationsTabsType =
 })
 export class NotificationsInnerComponent implements OnInit {
   @Input() notifications: Notification[] = [];
+  @Input() parent: string = '';
   @HostBinding('class') class =
     'menu menu-sub menu-sub-dropdown menu-column w-350px w-lg-375px';
   @HostBinding('attr.data-kt-menu') dataKtMenu = 'true';

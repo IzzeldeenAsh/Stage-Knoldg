@@ -11,25 +11,24 @@
 }
 
 .countries-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1rem;
-  padding: 1rem;
-  border: 1px solid #DFDFDF;
-  border-radius: 8px;
-  max-height: 300px;
-  overflow-y: auto;
+  overflow: auto;
+  max-height: 40vh;
 }
 
 .country-item {
     display: flex;
+    flex-direction: column;
     align-items: center;
     gap: 0.5rem;
     padding: 10px;
     border: 1px solid #f2f8ff;
     border-radius: 7px;
 }
-
+.country-box{
+  padding: 10px;
+  border: 1px solid #f2f8ff;
+  border-radius: 7px;
+}
 .country-flag {
     width: 28px;
     height: 28px;

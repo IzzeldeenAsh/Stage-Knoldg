@@ -5,11 +5,12 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { FormsModule } from '@angular/forms';
 import { EconomicBloc, EconomicBlockService } from '../../_fake/services/economic-block/economic-block.service';
 import { InputTextModule } from 'primeng/inputtext';
+import { TruncateTextPipe } from 'src/app/pipes/truncate-pipe/truncate-text.pipe';
 
 @Component({
   selector: 'app-select-economic-block',
   standalone: true,
-  imports: [CommonModule, DialogModule, MultiSelectModule, FormsModule, InputTextModule],
+  imports: [CommonModule, DialogModule, MultiSelectModule, TruncateTextPipe,FormsModule, InputTextModule],
   templateUrl: './select-economic-block.component.html',
   styleUrls: ['./select-economic-block.component.scss']
 })
@@ -56,13 +57,12 @@ export class SelectEconomicBlockComponent implements OnInit {
     this.dialogVisible = false;
   }
 
-  getCountryFlagPath(countryName: string): string {
-    const countryCode = this.getCountryCode(countryName);
-    const countryCodeSmall = countryCode.toLowerCase();
-    try {
-      return `../../../../assets/media/flags/${countryCodeSmall}.svg`;
+  getCountryFlagPath(flag: string): string {
+   
+    try { 
+      return `../../../assets/media/flags/${flag}.svg`;
     } catch {
-      return `../../../../assets/media/flags/default.svg`;
+      return `../../../assets/media/flags/default.svg`;
     }
   }
 

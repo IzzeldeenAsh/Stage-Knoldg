@@ -8,6 +8,7 @@ import { TreeNode } from 'primeng/api';
 import { Topic, TopicsService } from 'src/app/_fake/services/topic-service/topic.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { EconomicBlockService, EconomicBloc } from '../../../../_fake/services/economic-block/economic-block.service';
+import { Continent, Country } from 'src/app/_fake/services/region/regions.service';
 
 @Component({
   selector: 'app-step-1',
@@ -84,6 +85,15 @@ export class Step1Component extends BaseComponent implements OnInit {
 
   onEconomicBlocksSelected(selectedBlocks: EconomicBloc[]) {
     // Handle the selected blocks as needed
+    // For example, you might want to store them in a form or process them further
+  }
+
+  onRegionsSelected(selectedRegions: Continent[]) {
+    // Handle the selected regions as needed
+    // For example, you might want to store them in a form or process them further
+  }
+  onCountriesSelected(selectedCountries: Country[]) {
+    // Handle the selected countries as needed
     // For example, you might want to store them in a form or process them further
   }
   /**
