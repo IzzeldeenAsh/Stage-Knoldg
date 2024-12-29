@@ -31,12 +31,6 @@
         >
           <ng-template let-block pTemplate="item">
             <div class="p-d-flex p-ai-center">
-              <img 
-                [src]="getCountryFlagPath(block.country)"
-                (error)="onFlagError($event)"
-                [alt]="block.country"
-                class="country-flag"
-              />
               <span class="ml-2">{{ block.name }}</span>
             </div>
           </ng-template>
@@ -44,20 +38,24 @@
   
         <div class="countries-container" *ngIf="selectedBlocks && selectedBlocks.length > 0">
           <h5 class="mb-3">Countries in selected blocks:</h5>
-          <div class="countries-grid">
+          <div class="d-flex flex-column gap-3 countries-grid">
             <div class="country-item" *ngFor="let block of selectedBlocks">
               <div>
                 <strong>{{ block.name }}</strong>
               </div>
-              <div *ngFor="let country of block.countries">
-                <img 
-                  [src]="getCountryFlagPath(country.name)"
+              <div class="row">
+              <ng-container  *ngFor="let country of block.countries">
+                <div class="col-sm-6 col-md-4 col-12 mb-2 country-box">
+                  <img 
+                  [src]="getCountryFlagPath(country.flag)"
                   (error)="onFlagError($event)"
                   [alt]="country.name"
                   class="country-flag"
                 />
-                <span class="country-name">{{country.name}}</span>
-              </div>
+                <span class="country-name">{{country.name | truncateText: 10}}</span>
+                </div>
+              </ng-container>
+            </div>
             </div>
           </div>
         </div>

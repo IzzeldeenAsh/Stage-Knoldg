@@ -1,1 +1,45 @@
-<p>step-5 works!</p>
+<div class="pb-5 pb-lg-10 pt-15 mb-10">
+    <h2 class="fw-bolder text-dark">Tags and Keywords</h2>
+    <div class="text-gray-600 fw-bold fs-6">
+      Add tags and keywords to help users discover your insights and improve searchability.
+    </div>
+</div>
+
+<!-- Tags Section -->
+<label class="d-flex align-items-center fs-5 fw-semibold mb-5">
+    <span class="required">Select Tags</span>
+</label>
+<div class="chip-group mb-5">
+  <div 
+    class="chip" 
+    *ngFor="let chip of chips" 
+    [class.selected]="chip.selected" 
+    (click)="toggleSelection(chip)"
+  >
+    <span class="check-icon" *ngIf="chip.selected">
+      <i class="pi pi-check" style="font-size: 1rem"></i>
+    </span>
+    <span>{{ chip.label }}</span>
+  </div>
+</div>
+
+<div class="d-flex gap-3">
+    <button class="btn btn-sm btn-light-info text-info text-hover-white text-active-white" (click)="selectAll()">Select All</button>
+    <button class="btn btn-sm btn-light-warning text-warning text-hover-white text-active-white" (click)="clearAll()">Clear All</button>
+</div>
+
+<!-- Keywords Section -->
+<div class="mt-10">
+  <label class="d-flex align-items-center fs-5 fw-semibold mb-5">
+      <span>Keywords</span>
+  </label>
+  <tag-input 
+      [(ngModel)]="keywords" 
+      [placeholder]="'Add a keyword'" 
+      [secondaryPlaceholder]="'Press enter to add'"
+      [addOnBlur]="true"
+      [addOnPaste]="true"
+      [class]="'keywords-input'"
+      [autocompleteItems]="availableKeywords">
+  </tag-input>
+</div>

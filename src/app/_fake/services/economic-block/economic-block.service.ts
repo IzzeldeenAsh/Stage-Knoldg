@@ -10,6 +10,7 @@ export interface EconomicBloc {
   countries: {
     id: number;
     name: string;
+    flag: string;
   }[];
 }
 

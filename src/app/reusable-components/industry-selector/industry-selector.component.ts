@@ -76,7 +76,21 @@ import { TreeNode } from "primeng/api";
     </p-dialog>
 
     <div class="w-100">
-      <label class="form-label required" > {{ title }}</label>
+    <label class="d-flex align-items-center fs-5 fw-semibold mb-4">
+      <span class="required">{{ title }}</span>
+      <span
+        class="ms-1"
+        data-bs-toggle="tooltip"
+        aria-label="Select your app category"
+        data-bs-original-title="Select your app category"
+        data-kt-initialized="1"
+      >
+        <i class="ki-duotone ki-information-5 text-gray-500 fs-6">
+          <span class="path1"></span><span class="path2"></span
+          ><span class="path3"></span>
+        </i>
+      </span>
+    </label>
       <input
         type="text"
         pInputText
