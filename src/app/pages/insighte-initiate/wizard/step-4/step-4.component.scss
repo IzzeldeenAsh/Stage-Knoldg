@@ -102,6 +102,10 @@ p {
     min-height: 100px;
     position: relative;
     transition: background-color 0.3s;
+   
+  }
+  .cursor-move{
+    cursor: move !important;
   }
 
   .dropzone:hover {

@@ -59,7 +59,7 @@
             </div>
           </div>
 
-          <a [routerLink]=" alert.type | notificationsLinks" (click)="onNotificationClick(alert.id)"> 
+          <a [routerLink]="alert.type | notificationsLinks:parent" (click)="onNotificationClick(alert.id)">
             <span class="badge badge-light-info fs-8 badge-hover-primary">{{ 'NOTIFICATIONS.VIEW' | translate }}</span>
           </a>
         </div>

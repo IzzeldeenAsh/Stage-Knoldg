@@ -6,7 +6,9 @@
     display: inline-block;
     cursor: pointer;
   }
-  
+  .transition-all{
+    transition: all 0.3s ease;
+  }
   /* Dropdown Menu Styles */
   .menu-sub-dropdown {
     position: absolute;
@@ -17,7 +19,6 @@
     background: #fff; /* Menu background */
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    padding: 0.5rem 0;
     display: none; /* Hidden by default */
     opacity: 0;
     visibility: hidden;
@@ -59,3 +60,46 @@
     top: -10px;
     right: 8px;
   }
+
+/* Container for the user menu */
+.user-menu-container {
+  position: relative;
+}
+
+/* Dropdown menu styling */
+.user-dropdown-menu {
+  display: block; /* Hidden by default */
+  position: absolute;
+  top: 100%; /* Position below the avatar */
+  right: 0;
+  background-color: white;
+  min-width: 120px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  z-index: 1000;
+  margin-top: 8px; /* Space between avatar and menu */
+}
+
+.object-fit-cover{
+  object-fit: cover;
+}
+
+/* Style for the sign-out button */
+.signout-button {
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+}
+
+.signout-button:hover {
+  background-color: #f1f1f1;
+}
+
+.relative{
+  position: relative;
+}

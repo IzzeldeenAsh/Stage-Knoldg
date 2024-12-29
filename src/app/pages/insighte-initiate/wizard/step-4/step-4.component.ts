@@ -1,6 +1,5 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import { BaseComponent } from 'src/app/modules/base.component';
-import { trigger, transition, style, animate } from '@angular/animations';
 
 interface DraggableCard {
   title: string;
@@ -20,18 +19,7 @@ interface Package {
 @Component({
   selector: 'app-step-4',
   templateUrl: './step-4.component.html',
-  styleUrls: ['./step-4.component.scss'],
-  animations: [
-    trigger('slideInOut', [
-      transition(':enter', [
-        style({ transform: 'translateY(-20px)', opacity: 0 }),
-        animate('300ms ease-out', style({ transform: 'translateY(0)', opacity: 1 }))
-      ]),
-      transition(':leave', [
-        animate('300ms ease-in', style({ transform: 'translateY(-20px)', opacity: 0 }))
-      ])
-    ])
-  ]
+  styleUrls: ['./step-4.component.scss']
 })
 export class Step4Component extends BaseComponent implements OnInit {
   name = 'Angular';
@@ -125,5 +113,9 @@ export class Step4Component extends BaseComponent implements OnInit {
     console.log('Drag ended');
     this.draggedCard = null;
     // Optionally, reset any states or provide feedback
+  }
+
+  getOriginalPrice(pkg: any): number {
+    return pkg.items.reduce((sum: number, item: any) => sum + item.price, 0);
   }
 }

@@ -43,8 +43,9 @@
           ></textarea>
         </div>
 
-        <!-- Price -->
-        <div class="col-md-2">
+     <div class="row">
+         <!-- Price -->
+         <div class="col-md-4">
           <label class="form-label">Price:</label>
           <input
             type="number"
@@ -64,27 +65,14 @@
           />
         </div>
 
-        <!-- Delete Button -->
-        <!-- <div class="col-md-2 d-flex align-items-end">
-          <button
-            type="button"
-            class="btn btn-sm btn-light-danger text-hover-white mt-3 mt-md-8 ms-2"
-            (click)="removeItem(i)"
-          >
-            <i class="ki-duotone text-danger ki-trash text-hover-white fs-1"
-              ><span class="path1"></span><span class="path2"></span
-              ><span class="path3"></span><span class="path4"></span
-              ><span class="path5"></span
-            ></i>
-            Delete
-          </button>
-        </div> -->
-        <div class="form-group mt-5 d-flex justify-content-end">
-            <button type="button" class="btn btn-light-info" (click)="addItem()">
+        <div class="col-md-4 mt-3 mt-md-0 d-flex flex-column">
+          <label class="form-label text-white">tst</label>
+            <button type="button w-100" class="btn btn-light-info" (click)="addItem()">
               <i class="ki-duotone ki-plus fs-3"></i>
               Add
             </button>
           </div>
+     </div>
       </div>
     </div>
   </div>
