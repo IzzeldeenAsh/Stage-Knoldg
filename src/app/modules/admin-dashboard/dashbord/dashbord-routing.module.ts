@@ -14,88 +14,31 @@ import { GuidelineComponent } from './dashboard/guidelines/guidelines.component'
 import { TopicsComponent } from './dashboard/topics/topics.component';
 import { IndustriesComponent } from './dashboard/industries/industries.component';
 import { RequestsListComponent } from './dashboard/requests-list/requests-list.component';
-import { VerificationQuestionsListComponent } from './dashboard/verification-questions-list/verification-questions-list.component';
-
+import { EconomicBlocksComponent } from './dashboard/economic-blocks/economic-blocks.component';
 
 const routes: Routes = [
   {
-    path:'',
-    redirectTo:'main-dashboard',
-    pathMatch:'full'
+    path: '',
+    component: DashboardComponent,
+    children: [
+      { path: 'main-dashboard/requests', component: RequestsListComponent },
+      { path: 'main-dashboard/departments', component: DepartmentComponent },
+      { path: 'main-dashboard/positions', component: PositionsComponent },
+      { path: 'main-dashboard/countries', component: CountriesComponent },
+      { path: 'main-dashboard/regions', component: RegionsComponent },
+      { path: 'main-dashboard/consulting-fields', component: ConsultingFieldsComponent },
+      { path: 'main-dashboard/ISIC-code', component: ISICCodeManagmentComponent },
+      { path: 'main-dashboard/industries', component: IndustriesComponent },
+      { path: 'main-dashboard/hscode', component: HSCodeComponent },
+      { path: 'main-dashboard/guidelines', component: GuidelineComponent },
+      { path: 'main-dashboard/economic-blocks', component: EconomicBlocksComponent },
+      { path: '', redirectTo: 'main-dashboard/requests', pathMatch: 'full' },
+    ],
   },
-  {
-    path:'main-dashboard',
-    component:DashboardComponent,
-    children:[
-      {
-        path:'',
-        redirectTo:'requests',
-        pathMatch:'full'
-      },
-      {
-        path:'requests',
-        component:RequestsListComponent
-      },
-      {
-        path:'departments',
-        component:DepartmentComponent
-      },
-      {
-        path:'positions',
-        component:PositionsComponent
-      },
-      {
-        path:'countries',
-        component:CountriesComponent
-      },
-      {
-        path:'guidelines',
-        component:GuidelineComponent,
-      },
-      {
-        path:'topics',
-        component:TopicsComponent,
-      },
-      {
-        path:'regions',
-        component:RegionsComponent
-      },
-      {
-        path:'consulting-fields',
-        component:ConsultingFieldsComponent
-      },
-      {
-        path:'co-settings',
-        component:CompanySettingsComponent
-      },
-      {
-        path:'ISIC-code',
-        component:ISICCodeManagmentComponent
-      },
-      {
-        path:'industries',
-        component:IndustriesComponent
-      },
-      {
-        path:'tags',
-        component:TagsComponent,
-      }
-      ,
-      {
-        path:'hscode',
-        component:HSCodeComponent,
-      },
-      {
-        path:'verification-questions',
-        component:VerificationQuestionsListComponent,
-      }
-    ]
-  },
-
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class DashbordRoutingModule { }

@@ -18,6 +18,30 @@ export interface TopicResponse {
   data: Topic[];
 }
 
+export interface PaginatedTopicResponse {
+  data: Topic[];
+  links: {
+    first: string;
+    last: string;
+    prev: string | null;
+    next: string | null;
+  };
+  meta: {
+    current_page: number;
+    from: number;
+    last_page: number;
+    links: {
+      url: string | null;
+      label: string;
+      active: boolean;
+    }[];
+    path: string;
+    per_page: number;
+    to: number;
+    total: number;
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -125,6 +149,21 @@ export class TopicsService {
     this.setLoading(true);
     return this.http.delete<any>(`${this.updateDeleteApi}/${topicId}`, { headers }).pipe(
       map(res => res),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  // Get admin topics with pagination
+  getAdminTopics(page: number = 1): Observable<PaginatedTopicResponse> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+
+    this.setLoading(true);
+    return this.http.get<PaginatedTopicResponse>(`${this.updateDeleteApi}?page=${page}`, { headers }).pipe(
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );

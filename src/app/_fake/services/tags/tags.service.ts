@@ -20,6 +20,30 @@ export interface TagResponse {
   data: Tag[];
 }
 
+export interface PaginatedTagResponse {
+  data: Tag[];
+  links: {
+    first: string;
+    last: string;
+    prev: string | null;
+    next: string | null;
+  };
+  meta: {
+    current_page: number;
+    from: number;
+    last_page: number;
+    links: {
+      url: string | null;
+      label: string;
+      active: boolean;
+    }[];
+    path: string;
+    per_page: number;
+    to: number;
+    total: number;
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -61,6 +85,21 @@ export class TagsService {
     this.setLoading(true);
     return this.http.get<TagResponse>(this.apiUrl, { headers }).pipe(
       map(res => res.data),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  // Get admin tags with pagination
+  getAdminTags(page: number = 1): Observable<PaginatedTagResponse> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+
+    this.setLoading(true);
+    return this.http.get<PaginatedTagResponse>(`${this.updateDeleteApi}?page=${page}`, { headers }).pipe(
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );

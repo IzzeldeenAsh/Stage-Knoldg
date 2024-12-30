@@ -14,11 +14,29 @@ export interface EconomicBloc {
   }[];
 }
 
+export interface AdminEconomicBloc {
+  id: number;
+  name: string;
+  names: {
+    en: string;
+    ar: string;
+  };
+}
+
+export interface AdminEconomicBlocResponse {
+  data: AdminEconomicBloc[];
+  path: string;
+  per_page: number;
+  to: number;
+  total: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class EconomicBlockService {
   private apiUrl = 'https://api.foresighta.co/api/common/setting/economic-bloc/list';
+  private adminApiUrl = 'https://api.foresighta.co/api/admin/setting/economic-bloc';
   private createApi = 'https://api.foresighta.co/api/admin/setting/economic-bloc';
   private updateDeleteApi = 'https://api.foresighta.co/api/admin/setting/economic-bloc';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
@@ -53,6 +71,20 @@ export class EconomicBlockService {
     this.setLoading(true);
     return this.http.get<any>(this.apiUrl, { headers }).pipe(
       map(res => res.data),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  getAdminEconomicBlocs(): Observable<AdminEconomicBlocResponse> {
+    const headers = new HttpHeaders({
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+
+    this.setLoading(true);
+    return this.http.get<AdminEconomicBlocResponse>(this.adminApiUrl, { headers }).pipe(
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );
