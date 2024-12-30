@@ -38,7 +38,7 @@ import { TreeModule } from 'primeng/tree';
 import { TopicsComponent } from './dashboard/topics/topics.component';
 import { IndustriesComponent } from './dashboard/industries/industries.component';
 import { RequestsListComponent } from './dashboard/requests-list/requests-list.component';
-import { VerificationQuestionsListComponent } from './dashboard/verification-questions-list/verification-questions-list.component';
+import { EconomicBlocksComponent } from './dashboard/economic-blocks/economic-blocks.component';
 
 @NgModule({
   declarations: [
@@ -58,11 +58,12 @@ import { VerificationQuestionsListComponent } from './dashboard/verification-que
     IndustriesComponent,
     GuidelineComponent,
     PositionsComponent,
-    VerificationQuestionsListComponent,
+    EconomicBlocksComponent,
   ],
   imports: [
     CommonModule,
-    DialogModule, ButtonModule, 
+    DialogModule,
+    ButtonModule,
     TooltipModule,
     ProgressBarModule,
     DashbordRoutingModule,
@@ -83,9 +84,7 @@ import { VerificationQuestionsListComponent } from './dashboard/verification-que
     TableModule,
     NgApexchartsModule,
     ChipModule,
-]
-
-,providers:[NodeService]
-
+  ],
+  providers: [NodeService]
 })
 export class DashbordModule { }

@@ -117,17 +117,25 @@ export class UsersComponent extends BaseComponent implements OnInit {
 
   deleteClient(clientId: number): void {
     Swal.fire({
-      title: 'Are you sure?',
-      text: 'Are you sure you want to delete this client?',
-      icon: 'warning',
+      title: 'Enter note for client deletion',
+      input: 'textarea',
+      inputPlaceholder: 'Enter your staff notes here...',
       showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonText: 'Submit',
+      cancelButtonText: 'Cancel',
+      inputValidator: (value) => {
+        if (!value) {
+          return 'You need to enter a note!';
+        }
+        return null;
+      }
     }).then((result) => {
       if (result.isConfirmed) {
-        this.usersListService.deleteClient(clientId).subscribe({
+        const staffNotes = result.value;
+        this.usersListService.deactivateAndDeleteClient(clientId, staffNotes).subscribe({
           next: () => {
             this.loadClients();
-            this.showSuccess('','Client deleted successfully');
+            this.showSuccess('', 'Client deactivated and deleted successfully');
           },
           error: (err) => {
             this.handleServerErrors(err);
@@ -189,15 +197,7 @@ export class UsersComponent extends BaseComponent implements OnInit {
           }
         },
       },
-      {
-        label: 'Delete',
-        icon: 'pi pi-trash',
-        command: () => {
-          if (this.currentInsighterId !== null) {
-            this.confirmDeleteInsighter(this.currentInsighterId);
-          }
-        }
-      }
+     
     ];
   }
 
@@ -232,15 +232,7 @@ export class UsersComponent extends BaseComponent implements OnInit {
           }
         },
       },
-      {
-        label: 'Delete',
-        icon: 'pi pi-trash',
-        command: () => {
-          if (this.currentInsighterId !== null) {
-            this.confirmDeleteInsighter(this.currentInsighterId);
-          }
-        }
-      }
+     
     ];
   }
 
@@ -452,16 +444,7 @@ export class UsersComponent extends BaseComponent implements OnInit {
           }
         },
         disabled: this.currentCompanyStatus === 'inactive'
-      },
-      {
-        label: 'Delete',
-        icon: 'pi pi-trash',
-        command: () => {
-          if (this.currentCompanyInsighterId !== null) {
-            this.confirmDeleteCompanyInsighter(this.currentCompanyInsighterId);
-          }
-        },
-      },
+      }
     ];
   }
 
@@ -497,15 +480,7 @@ export class UsersComponent extends BaseComponent implements OnInit {
         },
         // disabled: this.currentCompanyStatus === 'inactive'
       },
-      {
-        label: 'Delete',
-        icon: 'pi pi-trash',
-        command: () => {
-          if (this.currentCompanyInsighterId !== null) {
-            this.confirmDeleteCompanyInsighter(this.currentCompanyInsighterId);
-          }
-        },
-      },
+     
     ];
   }
 

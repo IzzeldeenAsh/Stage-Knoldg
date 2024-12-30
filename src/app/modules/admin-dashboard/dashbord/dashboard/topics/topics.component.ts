@@ -5,7 +5,6 @@ import { Observable, Subscription, of } from "rxjs";
 import Swal from 'sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
-import { IsicCodesService } from "src/app/_fake/services/isic-code/isic-codes.service"; // Import ISIC Codes Service
 import { Topic, TopicsService } from "src/app/_fake/services/topic-service/topic.service";
 import { TreeNode } from "src/app/_fake/models/treenode";
 import { IndustryService } from "src/app/_fake/services/industries/industry.service";
