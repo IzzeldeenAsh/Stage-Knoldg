@@ -84,7 +84,7 @@ extends BaseComponent implements OnInit {
       next: (result) => {
         this.requestsList = result.requests.data.sort((a, b) => {
           if (a.status === 'pending') return -1;
-          else if (b.status === 'pending') return 1;
+          if (b.status === 'pending') return 1;
           return 0;
         });
 

@@ -11,6 +11,7 @@ export class NotificationsBgPipe implements PipeTransform {
         return 'success';
       case 'deactivate_company':
       case 'deactivate_company_with_delete':
+      case 'deactivate_delete_company':
         return 'danger';
       case 'activate_insighter':
         return 'info';
