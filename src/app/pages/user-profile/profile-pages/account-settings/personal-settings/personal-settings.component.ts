@@ -2,8 +2,10 @@ import { Component, Injector, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { catchError, forkJoin, Observable, of, tap } from "rxjs";
 import { IForsightaProfile } from "src/app/_fake/models/profile.interface";
+import { ConsultingFieldTreeService } from "src/app/_fake/services/consulting-fields-tree/consulting-fields-tree.service";
 import { CountryService } from "src/app/_fake/services/countries-api/countries-get.service";
 import { ProfileService } from "src/app/_fake/services/get-profile/get-profile.service";
+import { IndustryService } from "src/app/_fake/services/industries/industry.service";
 import { UpdateProfileService } from "src/app/_fake/services/profile/profile.service";
 import { AuthService } from "src/app/modules/auth";
 import { BaseComponent } from "src/app/modules/base.component";
@@ -18,19 +20,27 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
   isLoadingCountries: boolean = false;
   countries: any[] = [];  
   roles: string[] = [];
-  isUpdatingProfile$ :Observable<boolean> = of(false);
-  isLoading$ :Observable<boolean> = of(false);
-  profile:IForsightaProfile;
+  consultingFields: any[] = [];
+  industries: any[] = [];
+  isUpdatingProfile$: Observable<boolean> = of(false);
+  isLoading$: Observable<boolean> = of(false);
+  profile: IForsightaProfile;
+  allIndustriesSelected: any[] = [];
+  allConsultingFieldsSelected: any[] = [];
+
   constructor(
     injector: Injector,
     private readonly _profileService: AuthService,
     private readonly fb: FormBuilder,
     private _countryService: CountryService,
     private _profilePost: UpdateProfileService,
-    private getProfileService: ProfileService
+    private getProfileService: ProfileService,
+    private _consultingFieldService: ConsultingFieldTreeService,
+    private _industries: IndustryService,
   ) {
     super(injector);
   }
+
   ngOnInit(): void {
     this.handleAPIs();
     this.initForm();
@@ -38,12 +48,16 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
 
   handleAPIs(){
     this.isLoading$ = of(true);
-      const profile$ = this.getProfileService.getProfile().pipe(
+    const profile$ = this.getProfileService.getProfile().pipe(
       tap((profile) => {
         this.profile = profile;
         this.roles = profile.roles;
+        if(this.hasRole(['insighter'])){
+          this.callConsultingFields();
+          this.callIndustries();
+        }
       })
-    )
+    );
     const countries$ = this._countryService.getCountries(this.lang ? this.lang : 'en').pipe(
       tap((countries) => {
         this.countries = countries.map((country: any) => ({
@@ -57,28 +71,64 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
       })
     );
 
-    forkJoin([profile$, countries$]).subscribe(
-      {
-        next: () => {
-          this.populateForm();
-          this.isLoading$ = of(false);
-        },
-        error: (err) => {
-          this.isLoading$ = of(false);
-        }
+    forkJoin([profile$, countries$]).subscribe({
+      next: () => {
+        this.populateForm();
+        this.isLoading$ = of(false);
+      },
+      error: (err) => {
+        this.isLoading$ = of(false);
       }
-    );
+    });
   }
 
- 
+  callIndustries(){
+    const sub = this._industries.getIsicCodesTree(this.lang ? this.lang : 'en').subscribe((industries: any) => {
+      this.industries = industries;
+    });
+    this.unsubscribe.push(sub);
+  }
+
+  callConsultingFields(){
+    const sub = this._consultingFieldService.getConsultingCodesTree(this.lang ? this.lang : 'en').subscribe((consultingFields: any) => {
+      this.consultingFields = consultingFields;
+    });
+    this.unsubscribe.push(sub);
+  }
 
   populateForm(){
+    const transformNodes = (nodes: any[]): any[] => {
+      return nodes.map(node => ({
+        key: node.id,
+        label: node.name,
+        data: { 
+          key: node.id,
+          nameEn: node.names.en,
+          nameAr: node.names.ar,
+        },
+        children: node.children ? transformNodes(node.children) : []
+      }));
+    };
+    const transformedIndustries = transformNodes(this.profile.industries);
+    const transformedConsultingFields = transformNodes(this.profile.consulting_field);
     this.personalInfoForm.patchValue({
       first_name: this.profile.first_name,
       last_name: this.profile.last_name,
       country: this.countries.find((country: any) => country.id === this.profile.country_id),
-      bio: this.profile.bio
-    });
+      bio: this.profile.bio,
+      industries: transformedIndustries, // Correct form control
+      consulting_field: transformedConsultingFields // Correct form control
+    }); 
+  }
+
+  onConsultingNodesSelected(selectedNodes: any) {
+    this.allConsultingFieldsSelected = selectedNodes && selectedNodes.length > 0 ? selectedNodes : [];
+    this.personalInfoForm.get('consulting_field')?.setValue(this.allConsultingFieldsSelected); // Corrected
+  }
+
+  onIndustrySelected(selectedNodes: any) {
+    this.allIndustriesSelected = selectedNodes && selectedNodes.length > 0 ? selectedNodes : [];
+    this.personalInfoForm.get('industries')?.setValue(this.allIndustriesSelected); // Corrected
   }
 
   initForm() {
@@ -86,7 +136,9 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
       first_name: ["", Validators.required],
       last_name: ["", Validators.required],
       country: [""],
-      bio:[""]
+      bio: [""],
+      industries: [], // Correct form control
+      consulting_field: [] // Correct form control
     });
   }
 
@@ -188,11 +240,10 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
       for (const key in serverErrors) {
         if (serverErrors.hasOwnProperty(key)) {
           const messages = serverErrors[key];
-         this.showError('',messages.join(", "));
+          this.showError('',messages.join(", "));
         }
       }
     } else {
-  
       this.showError('','An unexpected error occurred.');
     }
   }
