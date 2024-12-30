@@ -43,6 +43,7 @@ onCloseModal(){
           this.roles = profile.roles;
           if(this.roles.includes('company')){
             this.isActive = profile.company.status === "active";
+            this.isPrimaryKey = !!profile.company.primary_activate_at;
           }else if(this.roles.includes('insighter')){
             this.isActive = profile.insighter_status === "active";
           }
@@ -78,9 +79,9 @@ onCloseModal(){
     if(isThereDeleteAccountRequesCompany){
       this.isDeleteAccountRequesCompanyPending = isThereDeleteAccountRequesCompany.final_status === "pending" || isThereDeleteAccountRequesCompany.final_status === "declined";
     }
-    if(ActivateRequestCompany){
-      this.isPrimaryKey = !!ActivateRequestCompany.requestable.primary_activate_at;
-    }
+    // if(ActivateRequestCompany){
+    //   this.isPrimaryKey = !!ActivateRequestCompany.requestable.primary_activate_at;
+    // }
     });
     this.unsubscribe.push(userReqSub);
   }
