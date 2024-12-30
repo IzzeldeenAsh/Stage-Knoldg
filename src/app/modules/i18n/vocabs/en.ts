@@ -59,7 +59,7 @@ export const locale = {
     AUTH: {
       TWO_FA: {
         VERIFY_PHONE: "Verify your email",
-        ENTER_VERIFICATION_CODE: "Enter the verification code we sent to your email",
+        ENTER_VERIFICATION_CODE: "Enter the verification code we sent to email",
         ENTER_CODE: "Enter your verification code",
         DIDNT_RECEIVE_CODE: "Didn't receive a code?",
         RESEND: "Resend",
@@ -296,6 +296,8 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       OR:"OR",
       PLEASE_WAIT:"Please wait...",
       CANCEL:"Cancel",
+      "SEARCH": "Search...",
+      "LOADING": "Loading..."
     },
     INSIGHTER_WIZARD: {
       ACCOUNT_TYPE: "Account Type",
@@ -502,7 +504,12 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       "TITLE": "Transfer Company Account",
       "DESCRIPTION": "Transfer your company account to another user. This action will remove your admin privileges and assign them to the new owner.",
       "ILLUSTRATION_ALT": "Transfer Company Account Illustration",
-      "BUTTON_TEXT": "Transfer Account"
+      "BUTTON_TEXT": "Transfer Account",
+      "TRANSFER_TO": "Transfer To",
+      "MORE_INFO_TEXT": "If you need more info, please check out",
+      "THIS_PAGE": "this page",
+      "NO_USERS_FOUND": "No users found.",
+      "INVITE": "Invite"
     }
   }
 };

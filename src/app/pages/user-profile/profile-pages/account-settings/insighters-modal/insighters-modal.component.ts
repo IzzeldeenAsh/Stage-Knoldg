@@ -1,11 +1,9 @@
-import { Component, Inject, Injector, OnInit } from '@angular/core';
-import { extend } from 'jquery';
-import { TransferCorporateAccountService } from 'src/app/_fake/services/transfer-coporate-account/transfer-corporate-account.service';
-import { BaseComponent } from 'src/app/modules/base.component';
-import Swal from 'sweetalert2';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component, Injector, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, of, switchMap, takeUntil } from 'rxjs';
+import { ConfirmationService } from 'primeng/api';
+import { BaseComponent } from 'src/app/modules/base.component';
+import { TransferCorporateAccountService } from 'src/app/_fake/services/transfer-coporate-account/transfer-corporate-account.service';
 
 interface User {
   name: string;
@@ -13,29 +11,33 @@ interface User {
   profile_image?: string;
   first_name: string;
   last_name: string;
-  bgClass?: string; // Add a property to hold the background class
-  // Add other relevant fields if necessary
+  bgClass?: string;
 }
-
 
 @Component({
   selector: 'app-insighters-modal',
   templateUrl: './insighters-modal.component.html',
-  styleUrls: ['./insighters-modal.component.scss']
+  styleUrls: ['./insighters-modal.component.scss'],
+  providers: [ConfirmationService]
 })
 export class InsightersModalComponent extends BaseComponent implements OnInit {
-  step:number=1;
+  // Controls PrimeNG Dialog
+  @Input() displayModal: boolean = false;
+  @Output() onCloseModal = new EventEmitter<void>();
+  step: number = 1;
   isLoading: boolean = false;
-  fetchedUsers: any[] = [];
+  fetchedUsers: User[] = [];
   selectedUser: User | null = null;
+  searchControl: FormControl = new FormControl('');
+  code: string = '';
+
   constructor(
     injector: Injector,
     private transferCoporateAccountService: TransferCorporateAccountService,
-    @Inject(NgbActiveModal) public activeModal: NgbActiveModal
-  ){
-    super(injector)
+    private confirmationService: ConfirmationService
+  ) {
+    super(injector);
   }
-  searchControl:FormControl = new FormControl('')
 
   ngOnInit(): void {
     this.searchControl.valueChanges.pipe(
@@ -43,17 +45,15 @@ export class InsightersModalComponent extends BaseComponent implements OnInit {
       distinctUntilChanged(),
       switchMap((term: string) => {
         if (term.trim() === '') {
-          return of([]); // Return an Observable emitting an empty array
+          return of([]);
         }
         this.isLoading = true;
-        return this.transferCoporateAccountService.searchInsighters(term, this.lang ? this.lang : "en");
+        return this.transferCoporateAccountService.searchInsighters(term, this.lang ?? 'en');
       }),
       takeUntil(this.unsubscribe$)
     ).subscribe({
-      next: (response: any) => { // Adjust based on actual response structure
-        // Assuming the response has a 'data' property containing the users
+      next: (response: any) => {
         const users: User[] = Array.isArray(response) ? response : response.data || [];
-        // Assign a random class to each user
         this.fetchedUsers = users.map(user => ({
           ...user,
           bgClass: this.getRandomClass()
@@ -63,67 +63,77 @@ export class InsightersModalComponent extends BaseComponent implements OnInit {
       error: (err) => {
         this.handleServerErrors(err);
         this.isLoading = false;
+      },
+    });
+  }
+
+  inviteUser(user: User) {
+    const email = user.email;
+    this.selectedUser = user;
+    
+    this.confirmationService.confirm({
+      message: this.lang === 'ar'
+        ? `هل أنت متاكد من إرسال الدعوة إلى ${email}؟`
+        : `Are you sure you want to send an invitation to ${email}?`,
+      header: this.lang === 'ar' ? 'هل انت متاكد' : 'Are you sure?',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        const inviteSub = this.transferCoporateAccountService
+          .sendTransferInvitation(email, this.lang ?? 'en')
+          .subscribe({
+            next: () => {
+              const title =
+                this.lang === 'ar'
+                  ? 'تم إرسال الدعوة بنجاح'
+                  : 'Invitation sent successfully';
+              const message =
+                this.lang === 'ar'
+                  ? `تم إرسال الدعوة إلى ${email} بنجاح`
+                  : `Invitation sent to ${email} successfully`;
+              this.showSuccess(title, message);
+              this.step = 2;
+            },
+            error: (err) => this.handleServerErrors(err),
+          });
+        this.unsubscribe.push(inviteSub);
       }
     });
   }
 
-  code: string = '';
-  searchTerm: string = '';
-
-
- 
-  inviteUser(user: User) {
-    const email = user.email;
-    this.selectedUser = user;
-    Swal.fire({
-      title: this.lang==='ar' ? 'هل انت متاكد' : "Are you sure?",
-      text:  this.lang ==='ar' ? `هل أنت متاكد من إرسال الدعوة إلى ${email}؟` : `Are you sure you want to send an invitation to ${email}?`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: this.lang==='ar' ? "نعم" : "Yes",
-      cancelButtonText: this.lang==='ar' ? "لا" : "No",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const inviteSub = this.transferCoporateAccountService.sendTransferInvitation(email,this.lang ? this.lang : "en")
-        .subscribe({
-          next: (res) => {
-            const title = this.lang==='ar' ? "تم إرسال الدعوة بنجاح" : "Invitation sent successfully"
-            const message = this.lang==='ar' ? `تم إرسال الدعوة إلى ${email} بنجاح` : `Invitation sent to ${email} successfully`;
-          this.showSuccess(title,message);
-            this.step=2;
-          },
-          error: (err) => {
-            this.handleServerErrors(err)
-          }
-        });
-        this.unsubscribe.push(inviteSub)
-      }
-    })
-
-
-   
-  }
-  transfer(){
-    if(!this.selectedUser) return;
-   const verifySub = this.transferCoporateAccountService.verifyTransferInvitation(this.selectedUser.email,this.code,this.lang ? this.lang : "en")
-   .subscribe({
-    next: (res) => {
-      const message = this.lang==='ar' ? "تم التحقق بنجاح" : "Verification successful";
-      this.showSuccess('',message);
-      this.activeModal.close();
-    },
-    error: (err) => {
-      this.handleServerErrors(err)
-    }
-   })
-   this.unsubscribe.push(verifySub)
+  transfer() {
+    if (!this.selectedUser) return;
+    const verifySub = this.transferCoporateAccountService
+      .verifyTransferInvitation(
+        this.selectedUser.email,
+        this.code,
+        this.lang ?? 'en'
+      )
+      .subscribe({
+        next: () => {
+          const message =
+            this.lang === 'ar' ? 'تم التحقق بنجاح' : 'Verification successful';
+          this.showSuccess('', message);
+          // Close the PrimeNG modal instead of NgbActiveModal
+          this.displayModal = false;
+          this.onCloseModal.emit();
+          // Reload the page after successful transfer
+          window.location.reload();
+        },
+        error: (err) => this.handleServerErrors(err),
+      });
+    this.unsubscribe.push(verifySub);
   }
 
-  getInitials(name:string){
+  onClose() {
+    // Called when the user hides the modal
+    this.displayModal = false;
+    this.onCloseModal.emit();
+  }
+
+  getInitials(name: string) {
     return name.split(' ').map(word => word[0]).join('');
   }
+
   private getRandomClass(): string {
     const classes = [
       'bg-light-success',
@@ -137,20 +147,26 @@ export class InsightersModalComponent extends BaseComponent implements OnInit {
     const randomIndex = Math.floor(Math.random() * classes.length);
     return classes[randomIndex];
   }
+
   private handleServerErrors(error: any) {
-   
     if (error.error && error.error.errors) {
       const serverErrors = error.error.errors;
       for (const key in serverErrors) {
         if (serverErrors.hasOwnProperty(key)) {
           const messages = serverErrors[key];
-         
-          this.showError(this.lang==='ar' ? "حدث خطأ" : "An error occurred",messages.join(", "))
+          this.showError(
+            this.lang === 'ar' ? 'حدث خطأ' : 'An error occurred',
+            messages.join(', ')
+          );
         }
       }
     } else {
-
-      this.showError(this.lang==='ar' ? "حدث خطأ" : "An error occurred",this.lang==='ar' ? "حدث خطأ" : "An unexpected error occurred.")
+      this.showError(
+        this.lang === 'ar' ? 'حدث خطأ' : 'An error occurred',
+        this.lang === 'ar'
+          ? 'حدث خطأ'
+          : 'An unexpected error occurred.'
+      );
     }
   }
 }

@@ -1,193 +1,123 @@
-<div
-  class="modal fade "
-  id="insightersModal"
-  tabindex="-1"
-  aria-labelledby="insightersModalLabel"
-  aria-hidden="true"
+<p-dialog
+  [(visible)]="displayModal"
+  [modal]="true"
+  [style]="{ width: '650px' }"
+  [closeOnEscape]="true"
+  [dismissableMask]="true"
+  (onHide)="onClose()"
 >
-  <div class="modal-dialog modal-dialog-centered mw-650px">
-    <div class="modal-content">
-      <div class="modal-body p-0">
-        <div class="card pb-10" *ngIf="step===1">
-          <!--begin::Modal content-->
-          <div class="card-body">
-            <!--begin::Modal header-->
-            <div class="modal-header pb-0 border-0 justify-content-end">
-              <!--begin::Close-->
-              <div
-                class="btn btn-sm btn-icon btn-active-color-primary"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              >
-                <i class="ki-duotone ki-cross fs-1">
-                  <span class="path1"></span>
-                  <span class="path2"></span>
-                </i>
-              </div>
-              <!--end::Close-->
-            </div>
-            <div class="mx-5 mx-xl-18 pt-0">
-              <!--begin::Heading-->
-              <div class="text-center mb-10">
-                <!--begin::Title-->
-                <h1 class="mb-3">Transfer To</h1>
-                <!--end::Title-->
-                <!--begin::Description-->
-                <div class="text-muted fw-semibold fs-5">
-                  If you need more info, please check out
-                  <a class="link-primary fw-bold">this page</a>.
-                </div>
-                <!--end::Description-->
-              </div>
-              <div class="input-group w-100">
-                <span class="input-group-text border-0">
-                  <i class="ki-duotone ki-magnifier fs-3">
-                    <span class="path1"></span>
-                    <span class="path2"></span>
-                  </i>
-                </span>
-                <input 
-                  type="text" 
-                  class="form-control" 
-                  placeholder="Search..." 
-                  [formControl]="searchControl"
-                />
-              </div>
-              <!--end::Heading-->
-              <ng-container *ngIf="searchControl.value.length>0">  
-           
-              <!--end::Header Row-->
-
-              <!--begin::List-->
-              <div class="mh-300px list-box scroll-y me-n7 pe-7">
-                <div
-                  *ngFor="let user of fetchedUsers"
-                  class="d-flex flex-stack py-4 border-bottom border-gray-300 border-bottom-dashed"
-                >
-                  <!--begin::Details-->
-                  <div class="d-flex align-items-center">
-                    <!--begin::Avatar-->
-                    <div class="symbol symbol-35px symbol-circle">
-                      <ng-container *ngIf="user.profile_image">
-                        <img [src]="user.profile_image" alt="Pic" />
-                      </ng-container>
-                       
-                          <ng-container *ngIf="!user.profile_image">
-                            <span class="symbol-label fw-semibold" [ngClass]="user.bgClass">
-                              {{getInitials(user.name)}}
-                            </span>
-                          </ng-container>
-                    </div>
-                    <!--end::Avatar-->
-
-                    <!--begin::Details-->
-                    <div class="ms-5">
-                      <a class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2">
-                        {{ user.name}}
-                      </a>
-                      <div class="fw-semibold text-muted">{{ user.email }}</div>
-                    </div>
-                    <!--end::Details-->
-                  </div>
-                  <!--end::Details-->
-                  <a
-                    class="btn btn-sm btn-light-secondary border border-gray-300 text-gray-800"
-                    (click)="inviteUser(user)"
-                  >
-                    Invite
-                  </a>
-                </div>
-                <div *ngIf="isLoading" class="text-center py-4">
-                  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                  Loading...
-                </div>
-                <div *ngIf="!isLoading && fetchedUsers.length === 0" class="text-center py-4">
-                  No users found.
-                </div>
-              </div>
-              <!--end::List-->
-            </ng-container>
-            </div>
-            <!--end::Modal body-->
+  <!-- Step 1: Search and Invite User -->
+  <ng-container *ngIf="step === 1">
+    <div class="card">
+      <div class="card-body">
+        <!-- Header -->
+        <div class="text-center mb-8">
+          <h1 class="mb-3">{{ 'TRANSFER_COMPANY_ACCOUNT.TRANSFER_TO' | translate }}</h1>
+          <div class="text-muted fw-semibold">
+            {{ 'TRANSFER_COMPANY_ACCOUNT.MORE_INFO_TEXT' | translate }}
+            <a class="link-primary fw-bold">{{ 'TRANSFER_COMPANY_ACCOUNT.THIS_PAGE' | translate }}</a>.
           </div>
-          <!--end::Modal content-->
         </div>
-        <div class="card" *ngIf="step===2">
-          <!--begin::Modal content-->
-          <div class="card-body">
-            <!--begin::Modal header-->
-            <div class="modal-header pb-0 border-0 justify-content-end">
-              <!--begin::Close-->
-              <div
-                class="btn btn-sm btn-icon btn-active-color-primary"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              >
-                <i class="ki-duotone ki-cross fs-1">
-                  <span class="path1"></span>
-                  <span class="path2"></span>
-                </i>
-              </div>
-              <!--end::Close-->
-            </div>
-            <div class="mx-5 mx-xl-18 pt-0">
-              <!--begin::Heading-->
-              <div class="text-center mb-10">
-                <!--begin::Title-->
-                <h1 class="mb-3">Transfer To</h1>
-                <!--end::Title-->
-                <!--begin::Description-->
-                <div class="text-muted fw-semibold fs-5">
-                  If you need more info, please check out
-                  <a class="link-primary fw-bold">this page</a>.
-                </div>
-                <!--end::Description-->
-              </div>
-              <!--end::Heading-->
-              <!--begin::List-->
-              <div class="mh-300px list-box scroll-y me-n7 pe-7">
-                <div
 
-                class="d-flex flex-stack py-4 border-bottom border-gray-300 border-bottom-dashed"
-              >
-                <!--begin::Details-->
-                <div class="d-flex align-items-center">
-                  <!--begin::Avatar-->
-                  <div class="symbol symbol-35px symbol-circle" *ngIf="selectedUser">
-                    <ng-container *ngIf="selectedUser.profile_image">
-                      <img [src]="selectedUser.profile_image" alt="Pic" />
-                    </ng-container>
-                     
-                        <ng-container *ngIf="!selectedUser.profile_image">
-                          <span class="symbol-label fw-semibold" [ngClass]="selectedUser.bgClass">
-                            {{getInitials(selectedUser.name)}}
-                          </span>
-                        </ng-container>
-                  </div>
-                  <!--end::Avatar-->
+        <!-- Search Input -->
+        <div class="input-group mb-5">
+          <span class="input-group-text border-0">
+            <i class="ki-duotone ki-magnifier fs-3">
+              <span class="path1"></span>
+              <span class="path2"></span>
+            </i>
+          </span>
+          <input
+            type="text"
+            class="form-control"
+            [placeholder]="'COMMON.SEARCH' | translate"
+            [formControl]="searchControl"
+          />
+        </div>
 
-                  <!--begin::Details-->
-                  <div class="ms-5">
-                    <a class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2" *ngIf="selectedUser">
-                      {{ selectedUser.name}}
-                    </a>
-                    <div class="fw-semibold text-muted" *ngIf="selectedUser">{{ selectedUser.email }}</div>
-                  </div>
-                  <!--end::Details-->
+        <!-- Search Results -->
+        <ng-container *ngIf="searchControl.value.length > 0">
+          <div class="mh-300px overflow-auto">
+            <!-- User List -->
+            <div *ngFor="let user of fetchedUsers" 
+                 class="d-flex align-items-center justify-content-between p-4 border-bottom">
+              <div class="d-flex align-items-center">
+                <!-- User Avatar -->
+                <div class="symbol symbol-35px symbol-circle">
+                  <img *ngIf="user.profile_image" [src]="user.profile_image" [alt]="user.name"/>
+                  <span *ngIf="!user.profile_image" 
+                        [ngClass]="user.bgClass"
+                        class="symbol-label fw-semibold">
+                    {{ getInitials(user.name) }}
+                  </span>
                 </div>
                 
+                <!-- User Info -->
+                <div class="ms-4">
+                  <div class="fs-5 fw-bold text-gray-900">{{ user.name }}</div>
+                  <div class="text-muted">{{ user.email }}</div>
+                </div>
               </div>
-              </div>
-              <!--end::List-->
+
+              <!-- Invite Button -->
+              <button class="btn btn-sm btn-light" (click)="inviteUser(user)">
+                {{ 'TRANSFER_COMPANY_ACCOUNT.INVITE' | translate }}
+              </button>
             </div>
-            <!--end::Modal body-->
-            <div class="py-4 text-center m-auto">
-              <button [disabled]="code.length!==6" (click)="transfer()" class="btn btn-primary">Transfer</button>
+
+            <!-- Loading State -->
+            <div *ngIf="isLoading" class="text-center py-4">
+              <span class="spinner-border spinner-border-sm me-2"></span>
+              {{ 'COMMON.LOADING' | translate }}
+            </div>
+
+            <!-- Empty State -->
+            <div *ngIf="!isLoading && fetchedUsers.length === 0" class="text-center py-4">
+              {{ 'TRANSFER_COMPANY_ACCOUNT.NO_USERS_FOUND' | translate }}
             </div>
           </div>
-          <!--end::Modal content-->
+        </ng-container>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Step 2: Verification Code -->
+  <ng-container *ngIf="step === 2">
+    <div class="card">
+      <div class="card-body">
+        <!-- Header -->
+        <div class="text-center mb-8">
+          <h1 class="mb-3">{{ 'AUTH.TWO_FA.VERIFY_PHONE' | translate }}</h1>
+          <div class="text-muted">
+            {{ 'AUTH.TWO_FA.ENTER_VERIFICATION_CODE' | translate }}
+            <div class="fw-bold mt-2">{{ selectedUser?.email }}</div>
+          </div>
+        </div>
+
+        <!-- Verification Form -->
+        <div class="d-flex flex-column align-items-center gap-4">
+          <input
+            [(ngModel)]="code"
+            class="form-control form-control-lg text-center w-200px"
+            type="text"
+            maxlength="6"
+            [placeholder]="'AUTH.TWO_FA.ENTER_CODE' | translate"
+          />
+
+          <button
+            class="btn btn-primary w-200px"
+            [disabled]="code.length !== 6"
+            (click)="transfer()"
+          >
+            {{ 'TRANSFER_COMPANY_ACCOUNT.BUTTON_TEXT' | translate }}
+          </button>
         </div>
       </div>
     </div>
-  </div>
-</div>
+  </ng-container>
+
+  <p-confirmDialog class="p-confirmdialog-custom" [style]="{width: '450px'}"
+                  [acceptLabel]="lang === 'ar' ? 'نعم' : 'Yes'"
+                  [rejectLabel]="lang === 'ar' ? 'لا' : 'No'">
+  </p-confirmDialog>
+</p-dialog>

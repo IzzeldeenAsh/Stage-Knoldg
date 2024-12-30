@@ -45,7 +45,7 @@ export const locale = {
     AUTH: {
       TWO_FA: {
         VERIFY_PHONE: "تحقق من بريدك الإلكتروني",
-        ENTER_VERIFICATION_CODE: "أدخل رمز التحقق الذي أرسلناه إلى بريدك الإلكتروني",
+        ENTER_VERIFICATION_CODE: "أدخل رمز التحقق الذي أرسلناه إلى البريد الإلكتروني",
         ENTER_CODE: "أدخل رمز التحقق الخاص بك",
         DIDNT_RECEIVE_CODE: "لم تتلق رمز؟",
         RESEND: "إعادة الإرسال",
@@ -120,7 +120,7 @@ export const locale = {
           "يجب أن تحتوي كلمة المرور على حرف واحد ورقم واحد ورمز خاص على الأقل.",
         PASSWORD_MINLENGTH: "يجب أن تحتوي كلمة المرور على 3 أحرف على الأقل",
         PASSWORD_MAXLENGTH: "يجب أن تحتوي كلمة المرور على 100 حرف كحد أقصى",
-        CONFIRM_PASSWORD_LABEL: "تأكيد كلمة ��لمرور",
+        CONFIRM_PASSWORD_LABEL: "تأكيد كلمة المرور",
         CONFIRM_PASSWORD_PLACEHOLDER: "تأكيد كلمة المرور",
         CONFIRM_PASSWORD_REQUIRED: "تأكيد كلمة المرور مطلوب",
         CONFIRM_PASSWORD_MINLENGTH:
@@ -157,7 +157,7 @@ export const locale = {
         `,
         EMPOWER_INSIGHTS_TITLE: "أطلق العنان لخبراتك.",
         EMPOWER_INSIGHTS_TEXT: `
-        ابدأ رحلة جني الإيرادات في كل مرة يتم فيها تنزيل محتواك من قبل ال��وار.<br /><br />
+        ابدأ رحلة جني الإيرادات في كل مرة يتم فيها تنزيل محتواك من قبل الوار.<br /><br />
             <span class="text-dark font-weight-bolder" ><strong>جمهورك العالم.</strong></span> <br><br>من خلال مشاركتك رؤاك وخبراتك للأفراد والشركات في العالم أجمع، ستحدث أبحاثك وتقاريرك تغيراً ملموساً في صناعة القرار.<br /><br />
             <span class="text-dark font-weight-bolder" ><strong>ابدأ رحلة العمل الاستشاري الفريدة من نوعها.</strong></span><br><br>
 
@@ -250,6 +250,8 @@ export const locale = {
       OR:"أو",
       PLEASE_WAIT:"يرجى الانتظار...",
       CANCEL:"الغاء",
+      SEARCH: "بحث...",
+      LOADING: "جاري التحميل..."
     },
     INSIGHTER_WIZARD: {
       ACCOUNT_TYPE: "نوع الحساب",
@@ -445,12 +447,7 @@ export const locale = {
       "BUTTON_TEXT": "ترقية إلى حساب الشركة",
       "ILLUSTRATION_ALT": "صورة الترقية"
     },
-    "TRANSFER_COMPANY_ACCOUNT": {
-      "TITLE": "نقل حساب الشركة",
-      "DESCRIPTION": "قم بنقل حساب شركتك إلى مستخدم آخر. سيؤدي هذا الإجراء إلى إزالة امتيازات المسؤول الخاصة بك وتعيينها للمالك الجديد.",
-      "ILLUSTRATION_ALT": "صورة نقل حساب الشركة",
-      "BUTTON_TEXT": "نقل الحساب"
-    },
+  
     "DEACTIVATE_ACCOUNT": {
       "TITLE_COMPANY": "إلغاء تنشيط حساب الشركة",
       "TITLE_INSIGHTER": "إلغاء تنشيط حساب المستكشف",
@@ -469,6 +466,18 @@ export const locale = {
         "CONFIRM_BUTTON_INSIGHTER": "إلغاء تنشيط حساب المستكشف"
       },
       "PENDING_REQUEST" : "طلب قيد المراجعة"
+    },
+    "TRANSFER_COMPANY_ACCOUNT": {
+      "TRANSFER_TO": "نقل إلى",
+      "TITLE": "نقل حساب الشركة",
+      "DESCRIPTION": "قم بنقل حساب شركتك إلى مستخدم آخر. سيؤدي هذا الإجراء إلى إزالة امتيازات المسؤول الخاصة بك وتعيينها للمالك الجديد.",
+      "ILLUSTRATION_ALT": "صورة نقل حساب الشركة",
+      "BUTTON_TEXT": "نقل الحساب",
+      "MORE_INFO_TEXT": "إذا كنت بحاجة إلى مزيد من المعلومات، يرجى مراجعة",
+      "THIS_PAGE": "هذه الصفحة",
+      "NO_USERS_FOUND": "لم يتم العثور على مستخدمين.",
+      "INVITE": "دعوة"
     }
+    
   },
 };

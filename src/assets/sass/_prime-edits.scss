@@ -373,3 +373,20 @@ html[dir="ltr"] .my-menu {
     padding-right: 10px !important;
     padding-left: 10px !important;
 }
+.p-confirmdialog-custom .p-button{
+  color: #ffffff !important;
+  padding:0.75rem !important;
+  border-radius: 0.475rem !important;
+  margin-left: 1rem !important;
+  margin-right: 1rem !important;
+}
+.p-confirmdialog-custom .p-confirmdialog-reject-button{
+    background: #ef4444 !important;
+    border: 1px solid #ef4444 !important;
+ 
+}
+.p-confirmdialog-custom .p-confirmdialog-accept-button{
+    background: #0778b9 !important;
+    border: 1px solid #0778b9 !important;
+  
+}

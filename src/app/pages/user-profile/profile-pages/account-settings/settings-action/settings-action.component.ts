@@ -26,6 +26,14 @@ export class SettingsActionComponent extends BaseComponent implements OnInit {
     super(injector);
 
   }
+  public displayInsightersModal = false;
+
+showInsighters() {
+  this.displayInsightersModal = true;
+}
+onCloseModal(){
+  this.displayInsightersModal = false;
+}
   ngOnInit(): void {
     const profile = this.getProfileService.getProfile()
     .subscribe(
