@@ -107,12 +107,14 @@ export class InsightersModalComponent extends BaseComponent implements OnInit {
   }
   transfer(){
     if(!this.selectedUser) return;
-   const verifySub = this.transferCoporateAccountService.verifyTransferInvitation(this.selectedUser.email,this.code,this.lang ? this.lang : "en")
+   const verifySub = this.transferCoporateAccountService.verifyTransferInvitation(this.selectedUser.email, this.code, this.lang ? this.lang : "en")
    .subscribe({
     next: (res) => {
-      const message = this.lang==='ar' ? "تم التحقق بنجاح" : "Verification successful";
-      this.showSuccess('',message);
+      const message = this.lang === 'ar' ? "تم التحقق بنجاح" : "Verification successful";
+      this.showSuccess('', message);
       this.activeModal.close();
+      // Reload the page after successful transfer
+      window.location.reload();
     },
     error: (err) => {
       this.handleServerErrors(err)
