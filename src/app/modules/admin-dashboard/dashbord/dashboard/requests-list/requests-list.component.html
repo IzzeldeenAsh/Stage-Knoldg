@@ -270,43 +270,41 @@ class="position-relative"
     </div>
   </div>
 </div>
-
 <!-- Request History Section -->
-<div class="card mb-4">
-<div class="card-body">
-  <h5 class="card-title mb-3">Request History</h5>
-  <div *ngFor="let req of selectedChain; let i = index" class="mb-4 border-bottom pb-3">
-    <h6>Request #{{i+1}} {{ req.type.label }} (ID: {{req.id}})</h6>
-    <div class="row mb-2">
-      <div class="col-md-4 text-muted"
-      
-      >Status:</div>
-     <div class="col-md-8">
-      <div class="badge"
-      [ngClass]="{'bg-light-success text-success': req.status === 'approved', 'bg-light-danger text-danger': req.status === 'declined', 'bg-light-warning text-warning': req.status === 'pending'}"
-      >{{ req.status }}</div>
-     </div>
-    </div>
-    <div class="row mb-2">
-      <div class="col-md-4 text-muted">Handled By:</div>
-      <div class="col-md-8">{{ req.handel_by || 'Unassigned' }}</div>
-    </div>
-    <div class="row mb-2">
-      <div class="col-md-4 text-muted">Handled At:</div>
-      <div class="col-md-8">
-        {{ req.handel_at ? (req.handel_at | date: 'medium') : 'Not Handled Yet' }}
+<div class="card mb-4 w-100" *ngIf="selectedRequest && selectedRequest.children && selectedRequest.children.length > 0">
+  <div class="card-body">
+    <h5 class="card-title mb-3">Request History</h5>
+    <div class="timeline-container">
+      <div class="timeline-item" *ngFor="let req of selectedChain">
+        <div class="timeline-marker" [ngClass]="{
+          'bg-success': req.status === 'approved',
+          'bg-danger': req.status === 'declined',
+          'bg-warning': req.status === 'pending'
+        }"></div>
+        <div class="timeline-content p-3 border rounded">
+          <div class="d-flex justify-content-between mb-2">
+            <span class="fw-bold">Status: 
+              <span class="badge" [ngClass]="{
+                'bg-light-success text-success': req.status === 'approved',
+                'bg-light-danger text-danger': req.status === 'declined',
+                'bg-light-warning text-warning': req.status === 'pending'
+              }">{{ req.status | titlecase }}</span>
+            </span>
+            <span class="text-muted">{{ req.handel_at | date:'medium' }}</span>
+          </div>
+          <div class="mb-2" *ngIf="req.handel_by">
+            <span class="text-muted">Handled by:</span> {{ req.handel_by }}
+          </div>
+          <div class="mb-2" *ngIf="req.staff_notes">
+            <span class="text-muted">Staff Notes:</span> {{ req.staff_notes }}
+          </div>
+          <div *ngIf="req.comments">
+            <span class="text-muted">Comments:</span> {{ req.comments }}
+          </div>
+        </div>
       </div>
     </div>
-    <div class="row mb-2">
-      <div class="col-md-4 text-muted">Staff Notes:</div>
-      <div class="col-md-8">{{ req.staff_notes || 'None' }}</div>
-    </div>
-    <div class="row mb-2">
-      <div class="col-md-4 text-muted">Client Comments:</div>
-      <div class="col-md-8">{{ req.comments || 'None' }}</div>
-    </div>
   </div>
-</div>
 </div>
 
 <!-- Existing company info and other details cards (as before) ... -->
@@ -969,9 +967,8 @@ class="position-relative"
       ></textarea>
     </div>
   </div>
-
   <!-- Request History Section -->
-  <div class="card mb-4 w-100">
+  <div class="card mb-4 w-100" *ngIf="selectedRequest && selectedRequest.children && selectedRequest.children.length > 0">
     <div class="card-body">
       <h5 class="card-title mb-3">Request History</h5>
       <div class="timeline-container">
