@@ -22,6 +22,8 @@ export class NotificationsNamesPipe implements PipeTransform {
         return 'Deactivate Insighter with Delete';
       case 'deactivate_delete_insighter':
         return 'Deactivate Delete Insighter';
+      case 'deactivate_delete_company':
+        return 'Deactivate Delete Company';
       case 'verified_company':
         return 'Verified Company';
       case 'verified_insighter':

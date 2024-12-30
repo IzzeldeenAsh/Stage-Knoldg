@@ -76,6 +76,7 @@
                         <ng-template pTemplate="header">
                             <tr>
                                 <th>Requestable</th>
+                                <th>Requestable Name</th>
                                 <th>Request Type</th>
                                 <th>Status</th>
                                 <th>Action</th>
@@ -86,6 +87,13 @@
                            
                           
                                 <td>{{ request.requestable_type }}</td>
+                                <td>
+                                  @if(request.requestable_type === 'company'){
+                                    {{request.requestable.legal_name}}
+                                  }@else if(request.requestable_type === 'userinsighter'){
+                                    {{request.requestable.name}}
+                                  }
+                                </td>
                                 <td>{{ request.type.label }}</td>
                                 <td>
                                     <div class="badge"
@@ -849,6 +857,7 @@ class="position-relative"
   [maximizable]="true"
   [style]="{ width: '80rem', overflow: 'auto' }"
 >
+  <!-- Header Section -->
   <div class="d-flex flex-column justify-content-center align-items-center py-5">
     <!-- Logo/Profile Photo -->
     <div class="c-logo mb-3">
@@ -863,24 +872,29 @@ class="position-relative"
       </ng-container>
       <ng-container *ngIf="selectedRequest?.requestable_type === 'userinsighter'">
         <img
-          *ngIf="selectedRequest?.requestable?.profile_photo_url ;else initials"
+          *ngIf="selectedRequest?.requestable?.profile_photo_url; else initials"
           [src]="selectedRequest?.requestable?.profile_photo_url"
           [alt]="selectedRequest?.requestable?.first_name"
           class="img-fluid rounded-circle"
           style="max-width: 150px; max-height: 150px; object-fit: cover;"
         />
+        <ng-template #initials>
+          <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style="width: 150px; height: 150px;">
+            {{ selectedRequest?.requestable?.first_name?.charAt(0) }}
+            {{ selectedRequest?.requestable?.last_name?.charAt(0) }}
+          </div>
+        </ng-template>
       </ng-container>
-      <ng-template #initials>
-        <div
-        class="symbol-label w-50px h-50px d-flex justify-content-center align-items-center rounded-circle fw-semibold bg-light-success">
-        {{(selectedRequest?.requestable?.first_name?.[0] || '') + (selectedRequest?.requestable?.last_name?.[0] || '')}}
-      </div>
-      </ng-template>
-      
     </div>
 
     <!-- Dynamic Header Text -->
-    <div class="text-center fs-4 fw-bold text-danger">
+    <div
+      class="text-center fs-4 fw-bold"
+      [ngClass]="{
+        'text-success': selectedRequest?.type?.key === 'activate_company',
+        'text-danger': selectedRequest?.type?.key === 'deactivate_company' || selectedRequest?.type?.key === 'deactivate_delete_insighter'
+      }"
+    >
       {{ selectedRequest?.type?.label }} Request
       <br />
       <div class="text-uppercase"
@@ -889,80 +903,119 @@ class="position-relative"
           'text-danger': selectedRequest?.status === 'declined',
           'text-warning': selectedRequest?.status === 'pending'
         }">
-        {{ selectedRequest?.status }}
+        {{ selectedRequest?.status | titlecase }}
       </div>
     </div>
+  </div>
 
-    <!-- Details Card -->
-    <div class="card mb-4 w-100">
-      <div class="card-body">
-        <h5 class="card-title">{{ selectedRequest?.requestable_type === 'company' ? 'Company' : 'Insighter' }} Details</h5>
-        <div class="row">
-          <ng-container *ngIf="selectedRequest?.requestable_type === 'company'">
-            <div class="col-6">
-              <p><strong>Legal Name:</strong> {{ selectedRequest?.requestable?.legal_name }}</p>
-              <p><strong>Email:</strong> {{ selectedRequest?.requestable?.verified_email }}</p>
-              <p><strong>Website:</strong> {{ selectedRequest?.requestable?.website }}</p>
-              <p><strong>About Us:</strong> {{ selectedRequest?.requestable?.about_us }}</p>
+  <!-- Details Section -->
+  <div class="card mb-4 w-100">
+    <div class="card-body">
+      <h5 class="card-title">
+        {{ selectedRequest?.requestable_type === 'company' ? 'Company' : 'Insighter' }} Details
+      </h5>
+      <div class="row">
+        <ng-container *ngIf="selectedRequest?.requestable_type === 'company'">
+          <div class="col-6">
+            <p><strong>Legal Name:</strong> {{ selectedRequest?.requestable?.legal_name }}</p>
+            <p><strong>Email:</strong> {{ selectedRequest?.requestable?.verified_email }}</p>
+            <p><strong>Website:</strong> {{ selectedRequest?.requestable?.website }}</p>
+            <p><strong>About Us:</strong> {{ selectedRequest?.requestable?.about_us }}</p>
+          </div>
+          <div class="col-6">
+            <p><strong>Phone:</strong> {{ selectedRequest?.requestable?.company_phone }}</p>
+            <p><strong>Address:</strong> {{ selectedRequest?.requestable?.address }}</p>
+            <p><strong>Status:</strong> {{ selectedRequest?.requestable?.status }}</p>
+            <p *ngIf="selectedRequest?.requestable?.register_document">
+              <strong>Register Document:</strong>
+              <a [href]="selectedRequest?.requestable?.register_document" target="_blank">View Document</a>
+            </p>
+          </div>
+        </ng-container>
+        
+        <ng-container *ngIf="selectedRequest?.requestable_type === 'userinsighter'">
+          <div class="col-6">
+            <p><strong>Full Name:</strong> {{ selectedRequest?.requestable?.first_name }} {{ selectedRequest?.requestable?.last_name }}</p>
+            <p><strong>Email:</strong> {{ selectedRequest?.requestable?.email }}</p>
+            <p><strong>Phone:</strong> {{ selectedRequest?.requestable?.phone }}</p>
+          </div>
+          <div class="col-6">
+            <p><strong>Country:</strong> {{ selectedRequest?.requestable?.country }}</p>
+            <p><strong>Status:</strong> {{ selectedRequest?.requestable?.insighter_status }}</p>
+            <p><strong>Bio:</strong> {{ selectedRequest?.requestable?.bio }}</p>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <!-- Deactivation Reason Section -->
+  <div class="card mb-4 w-100">
+    <div class="card-body">
+      <h5 class="card-title">Deactivation Reason</h5>
+      <p>{{ selectedRequest?.comments }}</p>
+    </div>
+  </div>
+
+  <!-- Staff Notes Section -->
+  <div class="card mb-4 w-100" *ngIf="selectedRequest?.status === 'pending'">
+    <div class="card-body">
+      <h5 class="card-title">Staff Notes</h5>
+      <textarea 
+        class="form-control"
+        rows="4"
+        [(ngModel)]="staffNotes"
+        placeholder="Enter staff notes..."
+      ></textarea>
+    </div>
+  </div>
+
+  <!-- Request History Section -->
+  <div class="card mb-4 w-100">
+    <div class="card-body">
+      <h5 class="card-title mb-3">Request History</h5>
+      <div class="timeline-container">
+        <div class="timeline-item" *ngFor="let req of selectedChain">
+          <div class="timeline-marker" [ngClass]="{
+            'bg-success': req.status === 'approved',
+            'bg-danger': req.status === 'declined',
+            'bg-warning': req.status === 'pending'
+          }"></div>
+          <div class="timeline-content p-3 border rounded">
+            <div class="d-flex justify-content-between mb-2">
+              <span class="fw-bold">Status: 
+                <span class="badge" [ngClass]="{
+                  'bg-light-success text-success': req.status === 'approved',
+                  'bg-light-danger text-danger': req.status === 'declined',
+                  'bg-light-warning text-warning': req.status === 'pending'
+                }">{{ req.status | titlecase }}</span>
+              </span>
+              <span class="text-muted">{{ req.handel_at | date:'medium' }}</span>
             </div>
-            <div class="col-6">
-              <p><strong>Phone:</strong> {{ selectedRequest?.requestable?.company_phone }}</p>
-              <p><strong>Address:</strong> {{ selectedRequest?.requestable?.address }}</p>
-              <p><strong>Status:</strong> {{ selectedRequest?.requestable?.status }}</p>
-              <p *ngIf="selectedRequest?.requestable?.register_document">
-                <strong>Register Document:</strong>
-                <a [href]="selectedRequest?.requestable?.register_document" target="_blank">View Document</a>
-              </p>
+            <div class="mb-2" *ngIf="req.handel_by">
+              <span class="text-muted">Handled by:</span> {{ req.handel_by }}
             </div>
-          </ng-container>
-          
-          <ng-container *ngIf="selectedRequest?.requestable_type === 'userinsighter'">
-            <div class="col-6">
-              <p><strong>Full Name:</strong> {{ selectedRequest?.requestable?.first_name }} {{ selectedRequest?.requestable?.last_name }}</p>
-              <p><strong>Email:</strong> {{ selectedRequest?.requestable?.email }}</p>
-              <p><strong>Phone:</strong> {{ selectedRequest?.requestable?.phone }}</p>
+            <div class="mb-2" *ngIf="req.staff_notes">
+              <span class="text-muted">Staff Notes:</span> {{ req.staff_notes }}
             </div>
-            <div class="col-6">
-              <p><strong>Country:</strong> {{ selectedRequest?.requestable?.country }}</p>
-              <p><strong>Status:</strong> {{ selectedRequest?.requestable?.insighter_status }}</p>
-              <p><strong>Bio:</strong> {{ selectedRequest?.requestable?.bio }}</p>
+            <div *ngIf="req.comments">
+              <span class="text-muted">Comments:</span> {{ req.comments }}
             </div>
-          </ng-container>
+          </div>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- Deactivation Reason -->
-    <div class="card mb-4 w-100">
-      <div class="card-body">
-        <h5 class="card-title">Deactivation Reason</h5>
-        <p>{{ selectedRequest?.comments }}</p>
-      </div>
-    </div>
-
-    <!-- Staff Notes -->
-    <div class="card mb-4 w-100" *ngIf="selectedRequest?.status === 'pending'">
-      <div class="card-body">
-        <h5 class="card-title">Staff Notes</h5>
-        <textarea 
-          class="form-control" 
-          rows="4" 
-          [(ngModel)]="staffNotes"
-          placeholder="Enter staff notes..."
-        ></textarea>
-      </div>
-    </div>
-
-    <!-- Action Buttons -->
-    <div class="w-100" *ngIf="selectedRequest?.status === 'pending'">
-      <div class="d-flex gap-2">
-        <button type="button" class="btn btn-success w-50" (click)="onDeactivateDelete('approved')" [disabled]="!staffNotes">
-          Approve
-        </button>
-        <button type="button" class="btn btn-danger w-50" (click)="onDeactivateDelete('declined')" [disabled]="!staffNotes">
-          Disapprove
-        </button>
-      </div>
+  <!-- Action Buttons -->
+  <div class="w-100" *ngIf="selectedRequest?.status === 'pending'">
+    <div class="d-flex gap-2">
+      <button type="button" class="btn btn-success w-50" (click)="onDeactivateDelete('approved')" [disabled]="!staffNotes">
+        Approve
+      </button>
+      <button type="button" class="btn btn-danger w-50" (click)="onDeactivateDelete('declined')" [disabled]="!staffNotes">
+        Disapprove
+      </button>
     </div>
   </div>
 </p-dialog>
