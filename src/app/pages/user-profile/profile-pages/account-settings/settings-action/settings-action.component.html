@@ -1,44 +1,88 @@
-<div class="mt-5 pb-5" *ngIf="!isActive && isPrimaryKey">
-  <div class="col-12">
-    <div class="card card-custom bg-body h-md-100">
-      <div
-        class="card-body d-flex justify-content-between align-items-center flex-wrap px-xl-15 "
-      >
-        <div class="row justify-content-center align-items-center w-100" >
-          <div class="col-12 col-lg-6 ">
-            <div class="d-flex flex-column justify-content-center align-items-center align-items-lg-start">
-              <div
-                class="position-relative text-gray-800 fs-1 z-index-2 fw-bold mb-5"
-              >
-                {{ 'REACTIVATE_ACCOUNT.TITLE' | translate }}
-              </div>
-              <span class="text-gray-600 fw-semibold fs-6 mb-6 d-block">
-                {{ 'REACTIVATE_ACCOUNT.DESCRIPTION' | translate }}
-              </span>
-              <div class="mb-7">
-                <a
-                  class="btn btn-sm btn-success fw-semibold me-2"
-                  data-bs-toggle="modal"
-                  data-bs-target="#reactivateModal"
+<ng-container *ngIf="hasRole(['company'])">
+  <div class="mt-5 pb-5" *ngIf="!isActive && isPrimaryKey">
+    <div class="col-12">
+      <div class="card card-custom bg-body h-md-100">
+        <div
+          class="card-body d-flex justify-content-between align-items-center flex-wrap px-xl-15 "
+        >
+          <div class="row justify-content-center align-items-center w-100" >
+            <div class="col-12 col-lg-6 ">
+              <div class="d-flex flex-column justify-content-center align-items-center align-items-lg-start">
+                <div
+                  class="position-relative text-gray-800 fs-1 z-index-2 fw-bold mb-5"
                 >
-                  {{ 'REACTIVATE_ACCOUNT.BUTTON_TEXT' | translate }}
-                </a>
+                  {{ 'REACTIVATE_ACCOUNT.TITLE' | translate }}
+                </div>
+                <span class="text-gray-600 fw-semibold fs-6 mb-6 d-block">
+                  {{ 'REACTIVATE_ACCOUNT.DESCRIPTION' | translate }}
+                </span>
+                <div class="mb-7">
+                  <a
+                    class="btn btn-sm btn-success fw-semibold me-2"
+                    data-bs-toggle="modal"
+                    data-bs-target="#reactivateModal"
+                  >
+                    {{ 'REACTIVATE_ACCOUNT.BUTTON_TEXT' | translate }}
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="col-12 col-lg-6 text-center">
-            <img
-              src="../../../../../assets/media/images/2600x1200/activate.png"
-              class="mw-300px mh-200px me-15"
-              alt="{{ 'REACTIVATE_ACCOUNT.ILLUSTRATION_ALT' | translate }}"
-            />
+            <div class="col-12 col-lg-6 text-center">
+              <img
+                src="../../../../../assets/media/images/2600x1200/activate.png"
+                class="mw-300px mh-200px me-15"
+                alt="{{ 'REACTIVATE_ACCOUNT.ILLUSTRATION_ALT' | translate }}"
+              />
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
-
+  
+</ng-container>
+<ng-container *ngIf="hasRole(['insighter'])">
+  <div class="mt-5 pb-5" *ngIf="!isActive">
+    <div class="col-12">
+      <div class="card card-custom bg-body h-md-100">
+        <div
+          class="card-body d-flex justify-content-between align-items-center flex-wrap px-xl-15 "
+        >
+          <div class="row justify-content-center align-items-center w-100" >
+            <div class="col-12 col-lg-6 ">
+              <div class="d-flex flex-column justify-content-center align-items-center align-items-lg-start">
+                <div
+                  class="position-relative text-gray-800 fs-1 z-index-2 fw-bold mb-5"
+                >
+                  {{ 'REACTIVATE_ACCOUNT.TITLE' | translate }}
+                </div>
+                <span class="text-gray-600 fw-semibold fs-6 mb-6 d-block">
+                  {{ 'REACTIVATE_ACCOUNT.DESCRIPTION' | translate }}
+                </span>
+                <div class="mb-7">
+                  <a
+                    class="btn btn-sm btn-success fw-semibold me-2"
+                    data-bs-toggle="modal"
+                    data-bs-target="#reactivateModal"
+                  >
+                    {{ 'REACTIVATE_ACCOUNT.BUTTON_TEXT' | translate }}
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-lg-6 text-center">
+              <img
+                src="../../../../../assets/media/images/2600x1200/activate.png"
+                class="mw-300px mh-200px me-15"
+                alt="{{ 'REACTIVATE_ACCOUNT.ILLUSTRATION_ALT' | translate }}"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
 <!-- Transfer -->
 <div class="mt-5 pb-5" *ngIf="hasRole(['company']) && isActive">
     <div class="col-12">
