@@ -40,6 +40,7 @@ import { NgbActiveModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { DeleteWithDataComponent } from './profile-pages/account-settings/delete-with-data/delete-with-data.component';
 import { ReactivateModalComponent } from './profile-pages/account-settings/reactivate-modal/reactivate-modal.component';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 
 
@@ -69,7 +70,7 @@ import { ReactivateModalComponent } from './profile-pages/account-settings/react
       CommonModule,
       UserProfileRoutingModule,
       FormsModule,
-      
+      ConfirmDialogModule,
       SharedModule,
       ReactiveFormsModule,
       DynamicDialogModule,

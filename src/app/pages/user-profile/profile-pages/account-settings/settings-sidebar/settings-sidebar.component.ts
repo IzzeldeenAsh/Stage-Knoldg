@@ -1,7 +1,7 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/modules/auth';
 import { BaseComponent } from 'src/app/modules/base.component';
-
+import Swal from 'sweetalert2';
 interface MenuItem {
   title: string;
   route: string;

@@ -58,14 +58,14 @@
               {{ 'TRANSFER_COMPANY_ACCOUNT.DESCRIPTION' | translate }}
             </span>
             <div class="mb-7">
-              <a
-                
-              class="btn btn-sm btn-primary fw-semibold me-2"
-              data-bs-toggle="modal"
-              data-bs-target="#insightersModal"
-              >
-                {{ 'TRANSFER_COMPANY_ACCOUNT.BUTTON_TEXT' | translate }}
-              </a>
+         
+              <a 
+  class="btn btn-sm btn-primary fw-semibold me-2"
+  (click)="showInsighters()"
+>
+  {{ 'TRANSFER_COMPANY_ACCOUNT.BUTTON_TEXT' | translate }}
+</a>
+
             </div>
           </div>
        
@@ -229,7 +229,13 @@
 <!-- Reactivate -->
 
 
-  <app-insighters-modal (hidden.bs.modal)="getUserRequests.bind(this)()"></app-insighters-modal>
+
+<!-- Then include the insighters modal somewhere in the same template -->
+<app-insighters-modal
+ [displayModal]="displayInsightersModal"
+ (onCloseModal)="onCloseModal()"
+>
+</app-insighters-modal>
   <app-deactivate-modal (hidden.bs.modal)="refresh.bind(this)()"></app-deactivate-modal>
   <app-delete-with-data (hidden.bs.modal)="refresh.bind(this)()" [roles]="roles"></app-delete-with-data>
   <app-reactivate-modal (hidden.bs.modal)="refresh.bind(this)()"></app-reactivate-modal>
