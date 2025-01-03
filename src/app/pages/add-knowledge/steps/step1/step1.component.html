@@ -1,0 +1,171 @@
+<div class="pb-10 pb-lg-15">
+  <h2 class="fw-bolder d-flex align-items-center text-gray-900">
+    Choose Account Type
+    <i
+      class="fas fa-exclamation-circle ms-2 fs-7"
+      ngbTooltip="Billing is issued based on your selected account type"
+    ></i>
+  </h2>
+
+  <div class="text-gray-500 fw-bold fs-6">
+    If you need more info, please check out
+    <a href="#" class="link-info fw-bolder"> Help Page </a>
+    .
+  </div>
+</div>
+
+<div class="fv-row" [formGroup]="form">
+  <div class="row">
+    <div class="col-lg-6 mb-4">
+      <input
+        formControlName="knowledgeType"
+        name="knowledgeType"
+        type="radio"
+        class="btn-check"
+        id="kt_create_account_form_type_data"
+        value="Data"
+      />
+      <label
+        class="
+          btn btn-outline btn-outline-dashed btn-outline-default
+          p-7
+          d-flex
+          align-items-center
+          position-relative
+          hover-elevate-up
+          shadow-sm
+          rounded-3
+          transition
+          h-100
+        "
+        for="kt_create_account_form_type_data"
+      >
+        <app-keenicon name="data" class="fs-1 me-5 text-primary"></app-keenicon>
+        <span class="d-block fw-bold text-start">
+          <span class="text-gray-900 fw-bolder d-block fs-4 mb-2">
+            Data
+            <i class="fas fa-database text-primary ms-2 fs-6"></i>
+          </span>
+          <span class="text-gray-500 fw-bold fs-6">
+            Raw data sets, statistics, and numerical information for analysis
+          </span>
+        </span>
+      </label>
+    </div>
+
+    <div class="col-lg-6 mb-4">
+      <input
+        formControlName="knowledgeType"
+        name="knowledgeType"
+        type="radio"
+        class="btn-check"
+        id="kt_create_account_form_type_insights"
+        value="Insights"
+      />
+      <label
+        class="
+          btn btn-outline btn-outline-dashed btn-outline-default
+          p-7
+          d-flex
+          align-items-center
+          position-relative
+          hover-elevate-up
+          shadow-sm
+          rounded-3
+          transition
+          h-100
+        "
+        for="kt_create_account_form_type_insights"
+      >
+        <app-keenicon name="chart-line" class="fs-1 me-5 text-success"></app-keenicon>
+        <span class="d-block fw-bold text-start">
+          <span class="text-gray-900 fw-bolder d-block fs-4 mb-2">
+            Insights
+            <i class="fas fa-lightbulb text-success ms-2 fs-6"></i>
+          </span>
+          <span class="text-gray-500 fw-bold fs-6">
+            Analyzed information providing valuable business intelligence and trends
+          </span>
+        </span>
+      </label>
+    </div>
+
+    <div class="col-lg-6 mb-4">
+      <input
+        formControlName="knowledgeType"
+        name="knowledgeType"
+        type="radio"
+        class="btn-check"
+        id="kt_create_account_form_type_reports"
+        value="Reports"
+      />
+      <label
+        class="
+          btn btn-outline btn-outline-dashed btn-outline-default
+          p-7
+          d-flex
+          align-items-center
+          position-relative
+          hover-elevate-up
+          shadow-sm
+          rounded-3
+          transition
+          h-100
+        "
+        for="kt_create_account_form_type_reports"
+      >
+        <app-keenicon name="document" class="fs-1 me-5 text-info"></app-keenicon>
+        <span class="d-block fw-bold text-start">
+          <span class="text-gray-900 fw-bolder d-block fs-4 mb-2">
+            Reports
+            <i class="fas fa-file-alt text-info ms-2 fs-6"></i>
+          </span>
+          <span class="text-gray-500 fw-bold fs-6">
+            Comprehensive documents with detailed analysis and recommendations
+          </span>
+        </span>
+      </label>
+    </div>
+
+    <div class="col-lg-6 mb-4">
+      <input
+        formControlName="knowledgeType"
+        name="knowledgeType"
+        type="radio"
+        class="btn-check"
+        id="kt_create_account_form_type_manual"
+        value="Manual"
+      />
+      <label
+        class="
+          btn btn-outline btn-outline-dashed btn-outline-default
+          p-7
+          d-flex
+          align-items-center
+          position-relative
+          hover-elevate-up
+          shadow-sm
+          rounded-3
+          transition
+          h-100
+        "
+        for="kt_create_account_form_type_manual"
+      >
+        <app-keenicon name="book" class="fs-1 me-5 text-warning"></app-keenicon>
+        <span class="d-block fw-bold text-start">
+          <span class="text-gray-900 fw-bolder d-block fs-4 mb-2">
+            Manual
+            <i class="fas fa-book text-warning ms-2 fs-6"></i>
+          </span>
+          <span class="text-gray-500 fw-bold fs-6">
+            Step-by-step guides, procedures, and instructional documentation
+          </span>
+        </span>
+      </label>
+    </div>
+
+    <div class="fv-plugins-message-container invalid-feedback">
+      <!-- <ErrorMessage name='knowledgeType' /> -->
+    </div>
+  </div>
+</div>

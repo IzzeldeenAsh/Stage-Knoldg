@@ -27,6 +27,10 @@ const Routing: Routes = [
     loadChildren: () => import('./insighte-initiate/insighte-initiate.module').then((m) => m.InsighteInitiateModule),
   },
   {
+    path: 'add-knowledge',
+    loadChildren: () => import('./add-knowledge/wizards.module').then((m) => m.WizardsModule),
+  },
+  {
     path: 'insighter-dashboard',
     loadChildren: () => import('./insighter-dashboard/insighter-dashboard.module').then((m) => m.InsighterDashboardModule),
     canActivate:[authGuard,RolesGuard],
