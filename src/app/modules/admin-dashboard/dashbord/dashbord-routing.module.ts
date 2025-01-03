@@ -15,6 +15,7 @@ import { TopicsComponent } from './dashboard/topics/topics.component';
 import { IndustriesComponent } from './dashboard/industries/industries.component';
 import { RequestsListComponent } from './dashboard/requests-list/requests-list.component';
 import { EconomicBlocksComponent } from './dashboard/economic-blocks/economic-blocks.component';
+import { VerificationQuestionsListComponent } from './dashboard/verification-questions-list/verification-questions-list.component';
 
 const routes: Routes = [
   {
@@ -23,6 +24,7 @@ const routes: Routes = [
     children: [
       { path: 'main-dashboard/requests', component: RequestsListComponent },
       { path: 'main-dashboard/departments', component: DepartmentComponent },
+      { path: 'main-dashboard/verification-questions', component: VerificationQuestionsListComponent },
       { path: 'main-dashboard/positions', component: PositionsComponent },
       { path: 'main-dashboard/countries', component: CountriesComponent },
       { path: 'main-dashboard/regions', component: RegionsComponent },

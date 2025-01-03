@@ -22,30 +22,37 @@
     <div id="kt_app_content_container" class="app-container container-fluid">
         <div class="card">
             <div class="card-body pt-0">
-                <ng-container *ngIf="(isLoading$ | async) === false && requestsList.length > 0">
-                    <table class="table table-row-bordered table-row-gray-100 align-middle gs-0 gy-3">
+                <ng-container *ngIf="(isLoading$ | async) === false && requestsList && requestsList.length > 0">
+                    <table class="table align-middle table-row-dashed fs-6 gy-4 dataTable no-footer">
                         <thead>
-                            <tr class="fw-bold text-muted">
-                                <th>Requestable</th>
-                                <th>Requestable Name</th>
-                                <th>Request Type</th>
-                                <th>Status</th>
-                                <th class="text-end">Actions</th>
+                            <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
+                                <th class="min-w-125px">Requestable</th>
+                                <th class="min-w-200px">Requestable Name</th>
+                                <th class="min-w-150px">Request Type</th>
+                                <th class="min-w-125px">Status</th>
+                                <th class="text-end min-w-100px">Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr *ngFor="let request of requestsList">
-                                <td>{{ request.requestable_type }}</td>
+                        <tbody class="fw-semibold text-gray-600">
+                            <tr *ngFor="let request of requestsList" class="odd">
+                                <td class="text-capitalize">{{ request.requestable_type }}</td>
                                 <td>
                                     @if(request.requestable_type === 'company'){
-                                        {{request.requestable.legal_name}}
+                                        <div class="d-flex align-items-center">
+                                            <div class="symbol symbol-45px me-5" *ngIf="request.requestable?.logo">
+                                                <img [src]="request.requestable.logo" alt="logo">
+                                            </div>
+                                            <div class="text-gray-800 text-hover-primary">{{request.requestable.legal_name}}</div>
+                                        </div>
                                     }@else if(request.requestable_type === 'userinsighter'){
-                                        {{request.requestable.name}}
+                                        <div class="text-gray-800">{{request.requestable.name}}</div>
                                     }
                                 </td>
-                                <td>{{ request.type.label }}</td>
                                 <td>
-                                    <span class="badge" [ngClass]="{
+                                    <span class="fw-bold">{{ request.type.label }}</span>
+                                </td>
+                                <td>
+                                    <span class="badge py-3 px-4 fs-7 fw-bold" [ngClass]="{
                                         'badge-light-warning': request.final_status === 'pending',
                                         'badge-light-success': request.final_status === 'approved',
                                         'badge-light-danger': request.final_status === 'declined'
@@ -55,8 +62,11 @@
                                 </td>
                                 <td class="text-end">
                                     <button 
-                                        class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm" 
-                                        (click)="viewRequest(request)">
+                                        class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" 
+                                        (click)="viewRequest(request)"
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="View Details">
                                         <i class="ki-duotone ki-eye fs-2">
                                             <span class="path1"></span>
                                             <span class="path2"></span>
@@ -68,7 +78,7 @@
                         </tbody>
                     </table>
 
-                    <ul class="pagination">
+                    <ul class="pagination mt-6">
                         <li class="page-item previous" [ngClass]="{'disabled': currentPage === 1}">
                             <a class="page-link cursor-pointer" (click)="loadPage(currentPage - 1)">
                                 <i class="previous"></i>
@@ -85,9 +95,10 @@
                     </ul>
                 </ng-container>
   
-                <ng-container *ngIf="(isLoading$ | async) === false && requestsList.length === 0">
-                    <div class="d-flex align-items-center justify-content-center h-400px text-muted">
-                        No Available Data
+                <ng-container *ngIf="(isLoading$ | async) === false &&  requestsList && requestsList.length === 0">
+                    <div class="d-flex flex-column align-items-center justify-content-center py-10">
+                        <i class="ki-duotone ki-information-5 fs-5x text-gray-400 mb-5"></i>
+                        <div class="text-gray-600 fs-3 fw-semibold">No Available Data</div>
                     </div>
                 </ng-container>
             </div>
