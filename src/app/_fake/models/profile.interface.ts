@@ -77,6 +77,7 @@ export interface Company {
   logo: string; // URL as a string
   status: string;
   address:string;
+  primary_activate_at?:string;
   company_phone:string;
   verified:boolean;
 }

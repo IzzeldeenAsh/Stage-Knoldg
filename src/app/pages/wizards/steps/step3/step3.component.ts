@@ -36,13 +36,14 @@ export class Step3Component extends BaseComponent implements OnInit, OnDestroy {
   documentTypes: Document[] = [];
   isLoadingDocumentTypes: boolean = false;
   documentTypesError: string = "";
-
+  isLoading$: Observable<boolean> = of(false);
   constructor(
     private fb: FormBuilder,
     private documentsService: DocumentsService,
     injector: Injector
   ) {
     super(injector);
+    this.isLoading$ = this.documentsService.isLoading$
   }
 
   ngOnInit() {

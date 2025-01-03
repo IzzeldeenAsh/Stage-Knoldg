@@ -35,6 +35,10 @@ const routes: Routes = [
       { path: '', redirectTo: 'main-dashboard/requests', pathMatch: 'full' },
     ],
   },
+  {
+    path: 'topics',
+    component: TopicsComponent,
+  },
 ];
 
 @NgModule({

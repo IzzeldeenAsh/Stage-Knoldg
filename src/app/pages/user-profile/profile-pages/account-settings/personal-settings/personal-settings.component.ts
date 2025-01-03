@@ -95,29 +95,36 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
     });
     this.unsubscribe.push(sub);
   }
-
   populateForm(){
-    const transformNodes = (nodes: any[]): any[] => {
-      return nodes.map(node => ({
-        key: node.id,
-        label: node.name,
-        data: { 
+    let transformedIndustries;
+    let transformedConsultingFields;
+    
+    if(this.profile.roles.includes('insighter')){
+      const transformNodes = (nodes: any[]): any[] => {
+        return nodes.map(node => ({
           key: node.id,
-          nameEn: node.names.en,
-          nameAr: node.names.ar,
-        },
-        children: node.children ? transformNodes(node.children) : []
-      }));
-    };
-    const transformedIndustries = transformNodes(this.profile.industries);
-    const transformedConsultingFields = transformNodes(this.profile.consulting_field);
+          label: node.name,
+          data: { 
+            key: node.id,
+            nameEn: node.names.en,
+            nameAr: node.names.ar,
+          },
+          children: node.children ? transformNodes(node.children) : []
+        }));
+      };
+      transformedIndustries = transformNodes(this.profile.industries);
+      transformedConsultingFields = transformNodes(this.profile.consulting_field);
+    }
+
     this.personalInfoForm.patchValue({
       first_name: this.profile.first_name,
       last_name: this.profile.last_name,
       country: this.countries.find((country: any) => country.id === this.profile.country_id),
       bio: this.profile.bio,
-      industries: transformedIndustries, // Correct form control
-      consulting_field: transformedConsultingFields // Correct form control
+      ...(this.profile.roles.includes('insighter') ? {
+        industries: transformedIndustries,
+        consulting_field: transformedConsultingFields
+      } : {}),
     }); 
   }
 

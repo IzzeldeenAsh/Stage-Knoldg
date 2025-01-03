@@ -2,6 +2,14 @@
 export const locale = {
   lang: 'en',
   data: {
+    "PROFILE_COMPLETION": {
+      "ALMOST_THERE": "Almost there!",
+      "TITLE": "Profile Completion",
+      "DESCRIPTION": "Complete your profile to unlock all features and get the most out of your account."
+    },
+    INSIGHTER_DASHBOARD: {
+      TITLE: 'Insighter Dashboard'
+    },
     NOTIFICATIONS: {
       TITLE: 'Notifications',
       NO_NEW: 'No new notifications',
@@ -9,6 +17,7 @@ export const locale = {
       REQUESTS: 'Requests'
     },
     HOME: {
+      INSIGHTER_DASHBOARD: 'Insighter Dashboard',
       LATEST_INSIGHTS: 'Latest Insights',
       TRENDING: 'Trending',
       REGION_PLACEHOLDER: "Region",
@@ -251,7 +260,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     "DEACTIVATE_ACCOUNT": {
       "TITLE_COMPANY": "Deactivate Company Account",
       "TITLE_INSIGHTER": "Deactivate Insighter Account",
-      "DESCRIPTION": "<i class='fa-sharp fa-solid fa-circle fs-10'></i> Your account data will be preserved<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> Account will be inaccessible until reactivation<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> Your insights remain visible on marketplace<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> Cannot upload new insights while deactivated",
+      "DESCRIPTION": "Your account data will be preserved\nAccount will be inaccessible until reactivation\nYour insights remain visible on marketplace\nCannot upload new insights while deactivated",
       "BUTTON_TEXT_COMPANY": "Deactivate Company Account", 
       "BUTTON_TEXT_INSIGHTER": "Deactivate Insighter Account",
       "ILLUSTRATION_ALT": "Deactivate Company Account Illustration",
@@ -270,7 +279,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     },
     "DEACTIVATE_ACCOUNT_WITH_DELETE": {
     "TITLE": "Delete Account Permanently",
-    "DESCRIPTION": "<i class='fa-sharp fa-solid fa-circle fs-10'></i> Your account will be deleted permanently<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> All data will be lost<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> Data will be removed and deleted from marketplace<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> Your account will be unvisible anymore",
+    "DESCRIPTION": "Your account will be deleted permanently\nAll data will be lost\nData will be removed and deleted from marketplace\nYour account will be unvisible anymore",
     "BUTTON_TEXT": "Request Account Deletion",
     "PENDING_REQUEST": "Deletion Request Pending",
     "ILLUSTRATION_ALT": "Account deletion illustration",
@@ -498,7 +507,8 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       "TITLE": "Upgrade to a Company Account",
       "DESCRIPTION": "Unlock premium features tailored for businesses.\nCollaborate with your team and manage your projects effortlessly.",
       "BUTTON_TEXT": "Upgrade to Company Account",
-      "ILLUSTRATION_ALT": "Upgrade Illustration"
+      "ILLUSTRATION_ALT": "Upgrade Illustration",
+      "UPGRADE_NOW": "Upgrade Now"
     },
     "TRANSFER_COMPANY_ACCOUNT": {
       "TITLE": "Transfer Company Account",
@@ -510,6 +520,24 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       "THIS_PAGE": "this page",
       "NO_USERS_FOUND": "No users found.",
       "INVITE": "Invite"
+    },
+    "INSIGHTER": {
+    "DASHBOARD": {
+      "TITLE": "Insighter Dashboard",
+      "OVERVIEW": "Overview",
+      "READ_MORE": "Read more about this step!",
+      "NAV": {
+        "OVERVIEW": "Overview",
+        "MY_REQUESTS": "My Requests",
+        "MY_KNOWLEDGE": "My Knowledge",
+        "ACCOUNT_SETTINGS": "Account Settings"
+      },
+      REQUESTS: {
+        APPROVED: "Approved Requests",
+        PENDING: "Pending Requests",
+        DECLINED: "Declined Requests"
+      }
     }
+  }
   }
 };

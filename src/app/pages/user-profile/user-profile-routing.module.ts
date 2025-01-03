@@ -5,13 +5,9 @@ import { OverviewComponent } from './profile-pages/overview/overview.component';
 import { CertificatesComponent } from './profile-pages/certificates/certificates.component';
 import { RolesGuard } from 'src/app/guards/roles-guard/roles-gurad.gurad';
 import { DocumentsComponent } from './profile-pages/documents/documents.component';
-import { UpgradeToCompanyComponent } from './profile-pages/account-settings/upgrade-to-company/upgrade-to-company.component';
 import { SettingsDashboardComponent } from './profile-pages/account-settings/settings-dashboard/settings-dashboard.component';
-import { ResetPasswordComponent } from './profile-pages/account-settings/reset-password/reset-password.component';
 import { PersonalSettingsComponent } from './profile-pages/account-settings/personal-settings/personal-settings.component';
 import { CompanySettingsComponent } from './profile-pages/account-settings/company-settings/company-settings.component';
-import { SettingsActionComponent } from './profile-pages/account-settings/settings-action/settings-action.component';
-import { UserRequestsComponent } from './profile-pages/user-requests/user-requests.component';
 import { authGuard } from 'src/app/guards/auth-guard/auth.guard';
 
 const routes: Routes = [
@@ -34,12 +30,7 @@ const routes: Routes = [
       canActivate:[RolesGuard],
       data: { roles: [ 'company'] } 
     },
-    {
-      path:'user-requests',
-      component:UserRequestsComponent,
-      canActivate:[RolesGuard],
-      data: { roles: ['insighter', 'company'] } 
-    },
+   
     {
       path:'certificates',
       component:CertificatesComponent,
@@ -66,31 +57,18 @@ const routes: Routes = [
           canActivate:[RolesGuard],
           data: { roles: ['company'] } 
         },
-        {
-          path:'reset-password',
-          component:ResetPasswordComponent
-        },
+        
         {
           path:'company-account',
           component:CompanySettingsComponent,
           canActivate:[RolesGuard],
           data: { roles: ['company'] } 
-        },
-        {
-          path:'settings-action',
-          component:SettingsActionComponent,
-          canActivate:[RolesGuard],
-          data: { roles: ['insighter', 'company'] } 
         }
+       
       ],
       data: { roles: ['insighter', 'company'] } 
     },
-    {
-      path:'company-account',
-      component:UpgradeToCompanyComponent,
-      canActivate:[RolesGuard],
-      data: { roles: ['insighter'] } 
-    },
+   
    ]
   },
  

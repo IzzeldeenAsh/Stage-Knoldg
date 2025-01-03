@@ -33,11 +33,7 @@ export class SettingsSidebarComponent extends BaseComponent implements OnInit {
       title: this.lang === 'ar' ? 'إعادة تعيين كلمة المرور' : 'Reset Password',
       route: '/app/profile/settings/reset-password',
       roles: ['company', 'insighter','client'],
-    },
-   { title: this.lang === 'ar' ? 'الإعدادات' : 'Settings',
-    route: '/app/profile/settings/settings-action',
-    roles: ['company'],
-  }
+    }
 
   ];
   constructor(
@@ -88,11 +84,6 @@ export class SettingsSidebarComponent extends BaseComponent implements OnInit {
         route: '/app/profile/settings/reset-password',
         roles: ['company', 'insighter', 'client'],
         // isActive: this.isActive
-      },
-      {
-        title: this.lang === 'ar' ? 'الإعدادات' : 'Settings',
-        route: '/app/profile/settings/settings-action',
-        roles: ['company', 'insighter', 'client'],
       }
     ];
 

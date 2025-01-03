@@ -12,6 +12,7 @@ export interface Topic {
     ar: string;
   };
   industry_id: number;
+  status?: string;
 }
 
 export interface TopicResponse {

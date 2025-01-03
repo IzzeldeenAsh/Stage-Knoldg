@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable, catchError, finalize, map, throwError } from 'rxjs';
 import { TranslationService } from 'src/app/modules/i18n/translation.service';
 import { RequestResponse } from 'src/app/modules/admin-dashboard/dashbord/dashboard/requests-list/request.interface';
@@ -12,6 +12,30 @@ export interface IVerificationQuestion {
 export interface VerificationAnswer {
   verification_question_id: number;
   answer: string;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  links: {
+    first: string;
+    last: string;
+    prev: string | null;
+    next: string | null;
+  };
+  meta: {
+    current_page: number;
+    from: number;
+    last_page: number;
+    links: {
+      url: string | null;
+      label: string;
+      active: boolean;
+    }[];
+    path: string;
+    per_page: number;
+    to: number;
+    total: number;
+  };
 }
 
 @Injectable({
@@ -75,19 +99,24 @@ export class RequestsService {
   }
 
   /**
-   * Fetch requests data via a POST request.
-   * @param postData The request body payload to send to the endpoint (filters, pagination, etc.)
-   * @returns Observable of RequestResponse
+   * Fetch requests data with pagination
+   * @param page Page number to fetch
+   * @param perPage Number of items per page
+   * @returns Observable of PaginatedResponse containing RequestResponse data
    */
-  getRequests(): Observable<RequestResponse> {
+  getRequests(page: number = 1, perPage: number = 10): Observable<PaginatedResponse<RequestResponse>> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
       'Content-Type': 'application/json',
       'Accept-Language':'en'
     });
 
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('per_page', perPage.toString());
+
     this.setLoading(true);
-    return this.http.get<RequestResponse>(this.apiUrl, { headers }).pipe(
+    return this.http.get<PaginatedResponse<RequestResponse>>(this.apiUrl, { headers, params }).pipe(
       map((response) => response),
       catchError((error) => this.handleError(error)),
       finalize(() => this.setLoading(false))

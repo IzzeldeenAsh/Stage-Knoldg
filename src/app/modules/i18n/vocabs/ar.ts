@@ -1,6 +1,11 @@
 export const locale = {
   lang: "ar",
   data: {
+  "PROFILE_COMPLETION": {
+    "ALMOST_THERE": "أوشكت على الإنتهاء",
+    "TITLE": "اكتمال الملف الشخصي",
+    "DESCRIPTION": "أكمل ملفك الشخصي لفتح جميع الميزات والاستفادة القصوى من حسابك."
+  },
       NOTIFICATIONS: {
         TITLE: 'إشعارات',
         NO_NEW: 'لا توجد إشعارات جديدة',
@@ -8,6 +13,7 @@ export const locale = {
         REQUESTS: 'الطلبات'
       },
     HOME: {
+      INSIGHTER_DASHBOARD: 'لوحة التحكم',
       LATEST_INSIGHTS: "أحدث الرؤى",
       TRENDING: "الشائع",
       REGION_PLACEHOLDER: "المنطقة",
@@ -270,7 +276,7 @@ export const locale = {
       ABOUT_COMPANY_REQUIRED:"معلومات حول الشركة مطلوبة",
   UPGRADE_TO_CORPORATE_ACCOUNT: "ترقية إلى حساب تجاري", // Heading for the form
   COMPANY_LOGO_REQUIRED: "شعار الشركة مطلوب.", // Error message for logo
-  WEBSITE_REQUIRED: "موقع الشركة مطلوب.", // Error message for website domain
+  WEBSITE_REQUIRED: "موقع الشركة الالكتروني مطلوب.", // Error message for website domain
   COMPANY_EMAIL_REQUIRED: "البريد الإلكتروني للشركة مطلوب.", // Error message for company email
   CODE_REQUIRED: "رمز التحقق مطلوب.", // Error message for verification code
   DELETE_FILE: "حذف الملف", // Tooltip for delete file button
@@ -445,7 +451,8 @@ export const locale = {
       "TITLE": "ترقية إلى حساب الشركة",
       "DESCRIPTION": "افتح ميزات مميزة مصممة خصيصًا للشركات.\nتعاون مع فريقك وأدِر مشاريعك بسهولة.",
       "BUTTON_TEXT": "ترقية إلى حساب الشركة",
-      "ILLUSTRATION_ALT": "صورة الترقية"
+      "ILLUSTRATION_ALT": "صورة الترقية",
+      "UPGRADE_NOW": "ترقية",
     },
   
     "DEACTIVATE_ACCOUNT": {
@@ -477,7 +484,24 @@ export const locale = {
       "THIS_PAGE": "هذه الصفحة",
       "NO_USERS_FOUND": "لم يتم العثور على مستخدمين.",
       "INVITE": "دعوة"
+    },
+    "INSIGHTER": {
+      "DASHBOARD": {
+        "TITLE": "لوحة تحكم المستكشف",
+        "OVERVIEW": "نظرة عامة",
+        "READ_MORE": "اقرأ المزيد عن هذه الخطوة!",
+        "NAV": {
+          "OVERVIEW": "نظرة عامة",
+          "MY_REQUESTS": "طلباتي",
+          "MY_KNOWLEDGE": "قاعدة المعرفة",
+          "ACCOUNT_SETTINGS": "إعدادات الحساب"
+        },
+        "REQUESTS": {
+          APPROVED: "الطلبات المقبولة",
+          PENDING: "الطلبات قيد الانتظار",
+          DECLINED: "الطلبات المرفوضة"
+        }
+      }
     }
-    
   },
 };

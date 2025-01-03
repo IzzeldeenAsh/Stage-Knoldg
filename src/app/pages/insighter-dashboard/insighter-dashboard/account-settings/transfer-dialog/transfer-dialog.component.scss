@@ -1,0 +1,54 @@
+.card {
+  border: none;
+  box-shadow: none;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+.symbol {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  border-radius: 50%;
+  background-color: var(--bs-gray-100);
+}
+
+.symbol-35px {
+  width: 35px;
+  height: 35px;
+}
+
+.symbol-label {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  color: var(--bs-gray-800);
+  border-radius: 50%;
+}
+
+.bg-light-success { background-color: var(--bs-light-success); }
+.bg-light-info { background-color: var(--bs-light-info); }
+.bg-light-primary { background-color: var(--bs-light-primary); }
+.bg-light-warning { background-color: var(--bs-light-warning); }
+.bg-light-danger { background-color: var(--bs-light-danger); }
+.bg-light-secondary { background-color: var(--bs-light-secondary); }
+.bg-light-dark { background-color: var(--bs-light-dark); }
+
+.mh-300px {
+  max-height: 300px;
+}
+
+.w-200px {
+  width: 200px;
+}
+
+.gap-4 {
+  gap: 1rem;
+} 

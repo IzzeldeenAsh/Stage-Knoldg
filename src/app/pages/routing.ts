@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { NonInsightersAuthGuard } from '../guards/non-insighter-guard/non-insighters.guard';
 import { authGuard } from '../guards/auth-guard/auth.guard';
+import { RolesGuard } from '../guards/roles-guard/roles-gurad.gurad';
 
 const Routing: Routes = [
   {
@@ -24,6 +25,12 @@ const Routing: Routes = [
   {
     path: 'initiate-insight',
     loadChildren: () => import('./insighte-initiate/insighte-initiate.module').then((m) => m.InsighteInitiateModule),
+  },
+  {
+    path: 'insighter-dashboard',
+    loadChildren: () => import('./insighter-dashboard/insighter-dashboard.module').then((m) => m.InsighterDashboardModule),
+    canActivate:[authGuard,RolesGuard],
+    data: { roles: [ 'insighter','company'] } 
   },
   {
     path: '**',

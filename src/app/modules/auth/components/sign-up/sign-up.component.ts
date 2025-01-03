@@ -9,10 +9,22 @@ import { CountriesService, Country } from "src/app/_fake/services/countries/coun
 import { AuthService } from "../../services/auth.service";
 import { BaseComponent } from "src/app/modules/base.component";
 import zxcvbn from 'zxcvbn';
+import { trigger, transition, style, animate } from "@angular/animations";
 @Component({
   selector: "app-sign-up",
   templateUrl: "./sign-up.component.html",
   styleUrls: ["./sign-up.component.scss"],
+   animations: [
+    trigger('fadeInMoveY', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(-20px)' }),
+        animate('300ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+      ]),
+      transition(':leave', [
+        animate('300ms ease-in', style({ opacity: 0, transform: 'translateY(-20px)' }))
+      ])
+    ])
+  ]
 })
 export class SignUpComponent extends BaseComponent implements OnInit {
   step: number = 1; // 1: Registration Form, 2: Email Verification
