@@ -6,7 +6,7 @@ interface ICreateKnowldege {
   industry_id:number|null;
   isic_code_id:number|null;
   hs_code_id:number|null;
-  language:string;
+  language:any;
   region:any[];
   country:any[];
   economic_block:any[];
@@ -22,7 +22,10 @@ const inits: ICreateKnowldege = {
   industry_id:null,
   isic_code_id:null,
   hs_code_id:null,
-  language:'en',
+  language: {
+    "id": "en",
+    "name": "English"
+},
   region:[],
   country:[],
   economic_block:[],

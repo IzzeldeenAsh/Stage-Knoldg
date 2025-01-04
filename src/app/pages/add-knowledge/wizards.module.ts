@@ -11,11 +11,10 @@ import { Step3Component } from './steps/step3/step3.component';
 import { Step4Component } from './steps/step4/step4.component';
 import { Step5Component } from './steps/step5/step5.component';
 import { SharedModule } from "../../_metronic/shared/shared.module";
-import { TranslateModule } from '@ngx-translate/core';
 import { TranslationModule } from 'src/app/modules/i18n';
 import { InputTextModule } from 'primeng/inputtext';
 import { EditorModule } from '@tinymce/tinymce-angular';
-import { SelectModule } from 'primeng/select';
+import { DropdownModule } from 'primeng/dropdown';
 @NgModule({
   declarations: [
     HorizontalComponent,
@@ -31,11 +30,11 @@ import { SelectModule } from 'primeng/select';
     WizardsRoutingModule,
     ReactiveFormsModule,
     EditorModule,
-    SelectModule,
     TranslationModule,
     InputTextModule,
     NgbTooltipModule,
-    SharedModule
+    SharedModule,
+    DropdownModule,
   ],
 })
 export class WizardsModule {}

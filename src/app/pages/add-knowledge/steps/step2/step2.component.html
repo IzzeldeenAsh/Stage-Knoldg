@@ -8,7 +8,7 @@
 <div [formGroup]="form">
   <!-- Knowledge Title -->
   <div class="mb-10 fv-row">
-    <label class="d-flex align-items-center form-label mb-3">
+    <label class="d-flex align-items-center form-label mb-3 required">
       Knowledge Title<i
       class="fas fa-exclamation-circle ms-2 fs-7"
       ngbTooltip="Provide your team size to help us setup your billing">
@@ -31,7 +31,7 @@
   </div>
   <!-- Knowledge Description -->
   <div class="mb-10 fv-row">
-    <label class="d-flex align-items-center form-label mb-3">
+    <label class="d-flex align-items-center form-label mb-3 required">
       Description<i
       class="fas fa-exclamation-circle ms-2 fs-7"
       ngbTooltip="Provide your team size to help us setup your billing">
@@ -68,8 +68,11 @@
   </div>
  <!-- Knowledge Language -->
   <div class="mb-10 fv-row">
-    <label class="d-flex align-items-center form-label mb-3">
-      Language<span class="required">*</span>
+    <label class="d-flex align-items-center form-label mb-3 required">
+      knowledge Language  <i
+      class="fas fa-exclamation-circle ms-2 fs-7"
+      ngbTooltip="Select the language written in this knowledge">
+    </i>
     </label>
     <div class="row mb-2">
       <div class="col-lg-12">
@@ -80,16 +83,13 @@
           filterBy="name"
           [showClear]="true"
           placeholder="Select a language"
-          optionLabel="name"
+          optionLabel="name" 
           optionValue="id"
           styleClass="w-100"
           [loading]="languagesService.isLoading$ | async"
+          
         >
-          <ng-template pTemplate="selectedItem">
-            <div class="flex align-items-center gap-2" *ngIf="form.get('language')?.value">
-              <div>{{form.get('language')?.value | json}}</div>
-            </div>
-          </ng-template>
+        
         </p-dropdown>
         <div
           *ngIf="form.get('language')?.hasError('required') && form.get('language')?.touched"

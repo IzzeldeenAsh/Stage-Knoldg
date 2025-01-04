@@ -23,7 +23,7 @@ export class Step2Component extends BaseComponent implements OnInit {
   constructor(
     injector: Injector,
     private fb: FormBuilder,
-    private languagesService: LanguagesService,
+    public languagesService: LanguagesService,
     private translationService: TranslationService
   ) {
     super(injector);
