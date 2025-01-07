@@ -99,11 +99,11 @@
               
 
               <ng-container [ngSwitch]="activeStep">
-                <app-step-1 *ngSwitchCase="1" (next)="goToStep(2)" class="mil-up"></app-step-1>
-                <app-step-2 *ngSwitchCase="2" (next)="goToStep(3)" (back)="goToStep(1)" class="mil-up"></app-step-2>
-                <app-step-3 *ngSwitchCase="3" (back)="goToStep(2)" (next)="goToStep(4)" class="mil-up"></app-step-3>
-                <app-step-4 *ngSwitchCase="4" (back)="goToStep(3)" (next)="goToStep(5)" class="mil-up"></app-step-4>
-                <app-step-5 *ngSwitchCase="5" (back)="goToStep(4)"></app-step-5>
+                <app-step-1  *ngSwitchCase="1" (next)="goToStep(2)" class="mil-up"></app-step-1>
+                <app-step-2  *ngSwitchCase="2" (next)="goToStep(3)" (back)="goToStep(1)" class="mil-up"></app-step-2>
+                <app-step-3  *ngSwitchCase="3" (back)="goToStep(2)" (next)="goToStep(4)" class="mil-up"></app-step-3>
+                <app-step-4  *ngSwitchCase="4" (back)="goToStep(3)" (next)="goToStep(5)" class="mil-up"></app-step-4>
+                <app-step-5  *ngSwitchCase="5" (back)="goToStep(4)"></app-step-5>
               </ng-container>
             </div>
           </div>

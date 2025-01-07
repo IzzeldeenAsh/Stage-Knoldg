@@ -15,6 +15,12 @@ import { TranslationModule } from 'src/app/modules/i18n';
 import { InputTextModule } from 'primeng/inputtext';
 import { EditorModule } from '@tinymce/tinymce-angular';
 import { DropdownModule } from 'primeng/dropdown';
+import { IndustrySelectorComponent } from 'src/app/reusable-components/industry-selector/industry-selector.component';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { SelectEconomicBlockComponent } from 'src/app/reusable-components/select-economic-block/select-economic-block.component';
+import { SelectRegionComponent } from 'src/app/reusable-components/select-region/select-region.component';
+import { GetHsCodeByIsicComponent } from 'src/app/reusable-components/get-hs-code-by-isic/get-hs-code-by-isic.component';
+import { ToastModule } from 'primeng/toast';
 @NgModule({
   declarations: [
     HorizontalComponent,
@@ -31,10 +37,16 @@ import { DropdownModule } from 'primeng/dropdown';
     ReactiveFormsModule,
     EditorModule,
     TranslationModule,
+    IndustrySelectorComponent,
     InputTextModule,
     NgbTooltipModule,
+    SelectEconomicBlockComponent,
+    GetHsCodeByIsicComponent,
     SharedModule,
     DropdownModule,
+    SelectRegionComponent,
+    SelectButtonModule,
+    ToastModule
   ],
 })
 export class WizardsModule {}

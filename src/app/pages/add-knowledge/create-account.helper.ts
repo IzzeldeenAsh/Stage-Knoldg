@@ -1,35 +1,36 @@
 interface ICreateKnowldege {
-  knowledgeType: 'Data' | 'Insights' | 'Reports' | 'Manual';
+  knowledgeType: 'data' | 'insight' | 'report' | 'manual';
   title: string;
-  accountPlan: '1' | '2' | '3';
-  topicId:number|null;
-  industry_id:number|null;
-  isic_code_id:number|null;
-  hs_code_id:number|null;
+  topicId:any;
+  industry:number|null;
+  isic_code:number|null;
+  hs_code:number|null;
   language:any;
-  region:any[];
-  country:any[];
-  economic_block:any[];
+  regions:any[];
+  countries:any[];
+  economic_block:number[];
   description:string;
-
+  targetMarket:string;
+  customTopic:string;
 }
 
 const inits: ICreateKnowldege = {
-  knowledgeType: 'Data',
+  knowledgeType: 'data',
   title: '',
-  accountPlan: '1',
   topicId:null,
-  industry_id:null,
-  isic_code_id:null,
-  hs_code_id:null,
+  industry:null,
+  isic_code:null,
+  hs_code:null,
   language: {
     "id": "en",
     "name": "English"
 },
-  region:[],
-  country:[],
+  regions:[],
+  countries:[],
   economic_block:[],
   description: '',
+  targetMarket:'1',
+  customTopic:''
 };
 
 export { ICreateKnowldege, inits };

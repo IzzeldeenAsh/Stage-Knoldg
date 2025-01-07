@@ -88,7 +88,7 @@ export class Step1Component extends BaseComponent implements OnInit {
     // For example, you might want to store them in a form or process them further
   }
 
-  onRegionsSelected(selectedRegions: Continent[]) {
+  onRegionsSelected(selectedRegions: any) {
     // Handle the selected regions as needed
     // For example, you might want to store them in a form or process them further
   }

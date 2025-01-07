@@ -12,7 +12,7 @@
             completed: currentStep$.value > 1
           }"
         >
-          <h3 class="stepper-title">Knowledge Type</h3>
+          <h3 class="stepper-title">{{'KNOWLEDGE_TYPE' | translate}}</h3>
         </div>
 
         <div
@@ -22,7 +22,7 @@
             completed: currentStep$.value > 2
           }"
         >
-          <h3 class="stepper-title">Knowledge Info</h3>
+          <h3 class="stepper-title">{{'KNOWLEDGE_INFO' | translate}}</h3>
         </div>
 
         <div
@@ -105,7 +105,7 @@
                 (click)="prevStep()"
               >
                 <app-keenicon name="arrow-left" class="fs-3 ms-4 me-1"></app-keenicon>
-                Back
+                {{'INSIGHTER_WIZARD.BACK' | translate}}
               </button>
             </ng-container>
           </div>
@@ -120,11 +120,11 @@
               >
                 <span class="indicator-label">
                   <ng-container *ngIf="currentStep$.value < formsCount - 1">
-                    Continue {{ " " }}
-                    <app-keenicon name="arrow-right" class="fs-3 ms-2 me-0"></app-keenicon>
+                    {{'INSIGHTER_WIZARD.CONTINUE' | translate}} {{ " " }}
+                    <app-keenicon name="arrow-right" class="fs-3 mx-2 me-0"></app-keenicon>
                   </ng-container>
                   <ng-container *ngIf="currentStep$.value === formsCount - 1">
-                    Submit
+                    {{'INSIGHTER_WIZARD.SUBMIT' | translate}}
                   </ng-container>
                 </span>
               </button>

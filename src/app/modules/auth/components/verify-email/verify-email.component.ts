@@ -1,6 +1,6 @@
   import { Component, OnInit, OnDestroy, Injector } from "@angular/core";
   import { ActivatedRoute, Params, Router } from "@angular/router";
-  import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+  import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
   import { BaseComponent } from "src/app/modules/base.component";
   import { Subscription } from 'rxjs';
   import { TranslationService } from "src/app/modules/i18n";
@@ -69,7 +69,6 @@
         this.resendErrorMessage = this.translationService.getTranslation(this.resendErrorMessageKey);
       }
     }
-
     verify() {
       this.showSignUpButton = false;
       this.error = false;
@@ -94,8 +93,12 @@
 
         const apiUrl = `${this.insightaHost}/api/account/email/verify/${paramsValue}`;
 
+        const headers = new HttpHeaders({
+          'Accept': 'application/json',
+          'Accept-Language': 'en'
+        });
 
-        this.http.get(apiUrl).subscribe({
+        this.http.get(apiUrl, { headers }).subscribe({
           next: (response: any) => {
             this.verificationStatusKey = 'AUTH.VERIFY_EMAIL.EMAIL_SUCCESSFULLY_VERIFIED';
             this.verificationStatus = this.translationService.getTranslation(this.verificationStatusKey);

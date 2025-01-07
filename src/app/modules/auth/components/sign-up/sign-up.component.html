@@ -44,7 +44,7 @@
         <div class="bg-body d-flex flex-column align-items-stretch flex-center rounded-top-4  w-md-600px p-20 top-round h-fit ">
             <!--begin::Wrapper-->
             <div class="d-flex flex-center flex-column flex-column-fluid px-lg-10 pb-15 pb-lg-20">
-              <span class="spinner-border spinner-border-md align-middle ms-2  text-info"  *ngIf="(isLoadingCountries$ | async)"></span>
+              <span class="spinner-border spinner-border-md align-middle mx-2  text-info"  *ngIf="(isLoadingCountries$ | async)"></span>
               <form 
               [@fadeInMoveY]
               *ngIf="step === 1 && !(isLoadingCountries$ | async)"

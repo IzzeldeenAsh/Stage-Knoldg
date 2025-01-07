@@ -67,9 +67,9 @@ html[dir="rtl"] .p-dropdown .p-dropdown-clear-icon {
 }
 
 /* Dialog Content Overflow */
-.p-dialog-content {
-  overflow: visible !important;
-}
+// .p-dialog-content {
+//   overflow: visible !important;
+// }
 
 /* Home Countries Dropdown Styling */
 .home-countries-dropdown .p-dropdown {
@@ -403,4 +403,7 @@ html[dir="ltr"] .my-menu {
 height: 100%;
 min-height: 100vh;
 width:  100vw;
+}
+.select-region-dialog .p-dialog-content{
+  overflow: auto !important;
 }

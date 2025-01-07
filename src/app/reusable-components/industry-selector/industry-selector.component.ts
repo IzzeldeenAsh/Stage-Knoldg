@@ -21,6 +21,8 @@ import { TreeModule } from "primeng/tree";
 import { FormsModule } from "@angular/forms";
 import { InputTextModule } from "primeng/inputtext";
 import { TreeNode } from "primeng/api";
+import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
+import { TranslationModule } from "src/app/modules/i18n";
 
 @Component({
   selector: "app-industry-selector",
@@ -31,6 +33,8 @@ import { TreeNode } from "primeng/api";
     TreeModule,
     FormsModule,
     InputTextModule,
+    NgbTooltipModule,
+    TranslationModule
   ],
   template: `
     <p-dialog
@@ -76,25 +80,18 @@ import { TreeNode } from "primeng/api";
     </p-dialog>
 
     <div class="w-100">
-    <label class="d-flex align-items-center fs-5 fw-semibold mb-4">
-      <span class="required">{{ title }}</span>
-      <span
-        class="ms-1"
-        data-bs-toggle="tooltip"
-        aria-label="Select your app category"
-        data-bs-original-title="Select your app category"
-        data-kt-initialized="1"
-      >
-        <i class="ki-duotone ki-information-5 text-gray-500 fs-6">
-          <span class="path1"></span><span class="path2"></span
-          ><span class="path3"></span>
-        </i>
-      </span>
+    <label class="d-flex align-items-center form-label mb-3" [ngClass]="{'required': isRequired}">
+      {{ title }}
+       <i
+      class="fas fa-exclamation-circle mx-2 fs-7"
+      ngbTooltip="{{tip}}">
+    </i>
+    <span class="text-muted fs-8 mx-2" *ngIf="!isRequired"> ({{'OPTIONAL' | translate}}) </span>
     </label>
       <input
         type="text"
         pInputText
-        class="form-control form-control-lg form-control-solid"
+        class="w-100"
         [readonly]="true"
         [placeholder]="placeholder"
         (click)="showDialog()"
@@ -142,10 +139,14 @@ export class IndustrySelectorComponent implements OnInit, OnDestroy {
   @Input() fetchedData: TreeNode[] = [];
   @Input() cancelLabel: string = "Cancel";
   @Input() okLabel: string = "OK";
+  @Input() tip: string = "";
 
-  @Input() set initialSelectedNode(node: TreeNode | undefined) {
-    if (node) {
-      this.selectedNode = node;
+  private _selectedIndustryId: number | undefined;
+
+  @Input() set selectedIndustryId(id: number | undefined) {
+    this._selectedIndustryId = id;
+    if (id && this.nodes.length) {
+      this.findAndSelectNodeById(id);
     }
   }
 
@@ -174,6 +175,9 @@ export class IndustrySelectorComponent implements OnInit, OnDestroy {
     }
 
     this.nodes = this.fetchedData;
+    if (this._selectedIndustryId) {
+      this.findAndSelectNodeById(this._selectedIndustryId);
+    }
   }
 
   selectedNodeLabel(): string {
@@ -219,5 +223,25 @@ export class IndustrySelectorComponent implements OnInit, OnDestroy {
       this.dialogWidth = width < 768 ? "100vw" : "70vw";
     });
     this.unsubscribe.push(sub);
+  }
+
+  private findAndSelectNodeById(id: number) {
+    const findNode = (nodes: TreeNode[]): TreeNode | null => {
+      for (const node of nodes) {
+        if (node.data.key === id) {
+          return node;
+        }
+        if (node.children) {
+          const found = findNode(node.children);
+          if (found) return found;
+        }
+      }
+      return null;
+    };
+
+    const found = findNode(this.nodes);
+    if (found) {
+      this.selectedNode = found;
+    }
   }
 } 

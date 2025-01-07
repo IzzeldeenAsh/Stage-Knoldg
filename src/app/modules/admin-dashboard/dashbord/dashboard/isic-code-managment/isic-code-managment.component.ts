@@ -62,7 +62,7 @@ export class ISICCodeManagmentComponent implements OnInit, OnDestroy {
 
   loadIsicCodes() {
     this.isLoading$ = of(true)
-    const listSub = this.isicCodesService.getIsicCodesTree().subscribe({
+    const listSub = this.isicCodesService.getIsicCodesTree('en').subscribe({
       next: (res) => {
         this.isicnodes = res;
         this.originalIsicNodes = [...res];  // Store original data here
