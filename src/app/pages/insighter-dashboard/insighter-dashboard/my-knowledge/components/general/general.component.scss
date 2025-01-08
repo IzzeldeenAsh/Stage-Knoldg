@@ -1,0 +1,24 @@
+:host {
+    display: block;
+    
+    .card-body {
+      .d-flex.flex-row {
+        margin: 0 -1rem;
+        transition: all 0.3s ease;
+      }
+      
+      .flex-grow-1 {
+        transition: all 0.3s ease;
+        padding: 0 1rem;
+        
+        &.pe-0 {
+          padding-right: 0;
+        }
+      }
+    }
+  }
+  
+  // Optional: Add smooth transition for table width
+  ::ng-deep table {
+    transition: width 0.3s ease;
+  }

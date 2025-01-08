@@ -1,97 +1,129 @@
 <div class="pb-10 pb-lg-12">
-  <h2 class="fw-bolder text-gray-900">Business Details</h2>
+  <h2 class="fw-bolder text-gray-900">{{"KNOWLEDGE_DOCUMENTS" | translate}}</h2>
   <div class="text-gray-500 fw-bold fs-6">
-    If you need more info, please check out
-    <a href="#" class="link-primary fw-bolder">Help Page</a>.
+    {{'IF_NEED_MORE_INFO' | translate}}
+    <a href="#" class="link-primary fw-bolder">{{'HELP_PAGE' | translate}}</a>.
   </div>
 </div>
+
 <div [formGroup]="form">
+  <!-- File Name -->
   <div class="fv-row mb-10">
-    <label class="form-label required">Business Name</label
-    ><input
-      name="businessName"
-      class="form-control form-control-lg form-control-solid"
-      formControlName="businessName"
+    <label class="form-label required">{{"FILE_NAME" | translate}}</label>
+    <input
+      type="text"
+      pInputText
+      formControlName="file_name"
+      class="w-100"
+      placeholder="{{'ENTER_FILE_NAME' | translate}}"
     />
-    <div
-      class="fv-plugins-message-container invalid-feedback"
+    <small
       *ngIf="
-        form.get('businessName')?.hasError('required') &&
-        form.get('businessName')?.touched
+        form.get('file_name')?.hasError('required') &&
+        form.get('file_name')?.touched
       "
+      class="p-error"
     >
-      Business Name is required
-    </div>
+      {{'FILE_NAME_REQUIRED' | translate}}
+    </small>
   </div>
+
+  <!-- Table of Content -->
   <div class="fv-row mb-10">
-    <label class="d-flex align-items-center form-label"
-      ><span class="required">Shortened Descriptor</span></label
-    ><input
-      name="businessDescriptor"
-      class="form-control form-control-lg form-control-solid"
-      formControlName="businessDescriptor"
-    />
-    <div
-      class="fv-plugins-message-container invalid-feedback"
-      *ngIf="
-        form.get('businessDescriptor')?.hasError('required') &&
-        form.get('businessDescriptor')?.touched
-      "
-    >
-      Shortened Descriptor is required
-    </div>
-    <div class="form-text">
-      Customers will see this shortened version of your statement descriptor
+    <div class="card">
+      <div class="card-header min-h-10px px-5 py-5">
+        <label class="form-label required">{{"TABLE_OF_CONTENT" | translate}}</label>
+      </div>
+      <div class="card-body">
+        <app-table-of-content
+          [initialToc]="parsedToc"
+          (tocChange)="handleTocChange($event)"
+        ></app-table-of-content>
+      </div>
     </div>
   </div>
+
+  <!-- Price -->
   <div class="fv-row mb-10">
-    <label class="form-label required">Corporation Type</label
-    ><select
-      name="businessType"
-      class="form-select form-select-lg form-select-solid"
-      formControlName="businessType"
+    <label class="form-label required">{{"PRICE" | translate}}</label>
+    <p-inputNumber
+      formControlName="price"
+      class="w-100"
+      mode="currency"
+      currency="USD"
+      [min]="0"
+      placeholder="{{'ENTER_PRICE' | translate}}"
+    ></p-inputNumber>
+    <small
+      *ngIf="
+        form.get('price')?.hasError('required') &&
+        form.get('price')?.touched
+      "
+      class="p-error"
     >
-      <option value="1">S Corporation</option>
-      <option value="1">C Corporation</option>
-      <option value="2">Sole Proprietorship</option>
-      <option value="3">Non-profit</option>
-      <option value="4">Limited Liability</option>
-      <option value="5">General Partnership</option>
-    </select>
+      {{'PRICE_REQUIRED' | translate}}
+    </small>
+    <small
+      *ngIf="
+        form.get('price')?.hasError('min') &&
+        form.get('price')?.touched
+      "
+      class="p-error"
+    >
+      {{'PRICE_MINIMUM' | translate}}
+    </small>
   </div>
+
+  <!-- File Upload -->
   <div class="fv-row mb-10">
-    <label class="form-label">Business Description</label
-    ><textarea
-      name="description"
-      class="form-control form-control-lg form-control-solid"
-      rows="3"
-      formControlName="description"
-    ></textarea>
-  </div>
-  <div class="fv-row mb-0">
-    <label class="fs-6 fw-bold form-label required">Contact Email</label
-    ><input
-      name="businessEmail"
-      class="form-control form-control-lg form-control-solid"
-      formControlName="businessEmail"
-    />
-    <div
-      class="fv-plugins-message-container invalid-feedback"
-      *ngIf="
-        form.get('businessEmail')?.hasError('required') &&
-        form.get('businessEmail')?.touched
-      "
-    >
-      Contact Email is required
+    <label class="form-label required">{{"UPLOAD_FILE" | translate}}</label>
+    <div class="file-upload-wrapper">
+      <label class="file-upload-label" for="fileInput">
+        <i class="ki-duotone ki-file-up fs-3x text-info">
+          <span class="path1"></span>
+          <span class="path2"></span>
+        </i>
+        <div class="ms-4">
+          <h3 class="fs-5 fw-bold text-gray-900 mb-1">Drop file here or click to upload</h3>
+          <span class="fs-7 fw-semibold text-info">Upload up to 1 file</span>
+        </div>
+      </label>
+      <input
+        type="file"
+        id="fileInput"
+        (change)="onFilesSelected($event)"
+        class="file-upload-input"
+      />
     </div>
-    <div
-      class="fv-plugins-message-container invalid-feedback"
-      *ngIf="
-        form.get('businessEmail')?.hasError('email') &&
-        form.get('businessEmail')?.touched
-      "
-    >
-      Wrong email format
+
+    <div class="file-preview mt-5" *ngIf="previewFiles.length > 0">
+      <div class="file-preview-item" *ngFor="let preview of previewFiles">
+        <div class="preview-content">
+          <!-- Image Preview -->
+          <div class="preview-thumbnail" *ngIf="preview.type === 'image'">
+            <img [src]="preview.preview" [alt]="preview.name">
+          </div>
+          <!-- File Icon -->
+          <div class="file-icon" *ngIf="preview.type !== 'image'">
+            <img [src]="preview.icon" [alt]="preview.type">
+          </div>
+          <!-- File Details -->
+          <div class="preview-details">
+            <h4 class="file-name">{{preview.name}}</h4>
+            <span class="file-size">{{preview.size | fileSize}}</span>
+          </div>
+          <!-- Remove Button -->
+          <button type="button" class="btn btn-danger" (click)="removeFile(preview)">
+            <i class="ki-duotone ki-trash fs-5">
+              <span class="path1"></span>
+              <span class="path2"></span>
+              <span class="path3"></span>
+              <span class="path4"></span>
+              <span class="path5"></span>
+            </i>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>

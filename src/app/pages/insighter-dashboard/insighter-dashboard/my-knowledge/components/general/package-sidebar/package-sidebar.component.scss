@@ -1,0 +1,37 @@
+.package-sidebar {
+    width: 400px;
+    border-left: 1px solid var(--kt-border-color);
+    background: #ffffff;
+    height: 100%;
+    overflow-y: auto;
+  }
+  
+  // ... rest of the styles remain the same ...
+  
+  .dropzone-container {
+    min-height: 150px;
+    border: 2px dashed #e4e6ef;
+    border-radius: 0.475rem;
+    padding: 1rem;
+    
+    &.drag-over {
+      border-color: var(--kt-primary);
+      background-color: var(--kt-primary-light);
+    }
+  }
+  
+  .dropzone-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 100px;
+  }
+  
+  .package-item-card {
+    padding: 1rem;
+    background-color: var(--kt-gray-100);
+    border-radius: 0.475rem;
+    margin-bottom: 0.5rem;
+  }

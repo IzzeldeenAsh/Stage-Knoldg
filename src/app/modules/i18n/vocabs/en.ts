@@ -585,6 +585,22 @@ Your wealth of knowledge is valued and many are eager to learn from it.
   ENTER_REGION: "Enter Region",
   ENTER_ECONOMIC_BLOCK: "Enter Economic Block",
   OPTIONAL: "Optional",
+  CHOOSE_ECONOMIC_BLOCK: "Choose Economic Block",
+  ENTER_CUSTOM_TOPIC: "Enter Custom Topic",
+  DUPLICATE_TOPIC: "This topic already exists. Please choose a different name.",
+  KNOWLEDGE_DOCUMENTS: "Knowledge Documents",
+  UPLOAD_FILE: "Upload File",
+  FILE_NAME: "File Name",
+  PRICE: "Price",
+  ENTER_FILE_NAME: "Enter File Name",
+  ENTER_PRICE: "Enter Price",
+  FILE_REQUIRED: "File is required",
+  INVALID_FILE_TYPE: "Invalid file type",
+  FILE_SIZE_EXCEEDED: "File size exceeded",
+  TABLE_OF_CONTENT: "Table of Content",
+  PRICE_REQUIRED: "Price is required",
+  TABLE_OF_CONTENT_REQUIRED: "Table of Content is required",
+  FILE_NAME_REQUIRED: "File name is required",
   }
 };
 

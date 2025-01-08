@@ -1,5 +1,5 @@
 import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { Subscription, forkJoin } from 'rxjs';
 import { ICreateKnowldege } from '../../create-account.helper';
 import { BaseComponent } from 'src/app/modules/base.component';
@@ -34,12 +34,14 @@ export class Step2Component extends BaseComponent implements OnInit {
   ) => void;
   form: FormGroup;
   @Input() defaultValues: Partial<ICreateKnowldege>;
+  @Input() knowledgeId!: number;
   languages: Language[] = [];
   currentLang: string = 'en';
   industryNodes: TreeNode[] = [];
   isLoading = false;
   topics: any[] = [];
   selectedTopic: Topic | null = null;
+
   marketOptions = [
     {
       label: 'Economic Block',
@@ -58,6 +60,10 @@ export class Step2Component extends BaseComponent implements OnInit {
   hsCodeNodes: TreeNode[] = [];
   selectedIsicId: number = 0;
   selectedIndustryId: number = 0;
+
+  // Add new class property to store trimmed and lowercased topic names
+  private topicNames: string[] = [];
+
   constructor(
     injector: Injector,
     private fb: FormBuilder,
@@ -72,6 +78,10 @@ export class Step2Component extends BaseComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (this.defaultValues.industry) {
+      this.selectedIndustryId = this.defaultValues.industry;
+      this.getTopics(this.defaultValues.industry);
+    }
     this.initForm();
     this.loadData();
     this.updateParentModel({}, this.checkForm());
@@ -136,7 +146,7 @@ export class Step2Component extends BaseComponent implements OnInit {
     targetMarketControl?.valueChanges.subscribe(value => {
       const economicBlocksControl = this.form.get('economicBlocks');
       const regionsControl = this.form.get('regions');
-      
+
       if (value === '1') {
         economicBlocksControl?.setValidators([Validators.required]);
         economicBlocksControl?.updateValueAndValidity();
@@ -151,23 +161,24 @@ export class Step2Component extends BaseComponent implements OnInit {
     });
 
     const topicIdControl = this.form.get('topicId');
+    const customTopicControl = this.form.get('customTopic');
 
     topicIdControl?.valueChanges.subscribe(value => {
-      const customTopicControl = this.form.get('customTopic');
-      
       if (value === 'other') {
-        customTopicControl?.setValidators([Validators.required]);
+        customTopicControl?.setValidators([
+          Validators.required,
+          this.duplicateTopicValidator()
+        ]);
       } else {
         customTopicControl?.clearValidators();
       }
-      
       customTopicControl?.updateValueAndValidity();
     });
 
-    if(this.defaultValues.industry){
+    if (this.defaultValues.industry) {
       this.selectedIndustryId = this.defaultValues.industry;
     }
-    if(this.defaultValues.isic_code){
+    if (this.defaultValues.isic_code) {
       this.selectedIsicId = this.defaultValues.isic_code;
     }
 
@@ -175,6 +186,18 @@ export class Step2Component extends BaseComponent implements OnInit {
       this.updateParentModel(val, this.checkForm());
     });
     this.unsubscribe.push(formChangesSubscr);
+  }
+
+  // Custom Validator Function
+  private duplicateTopicValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (!control.value) {
+        return null;
+      }
+      const enteredTopic = control.value.trim().toLowerCase();
+      const exists = this.topicNames.includes(enteredTopic);
+      return exists ? { duplicateTopic: true } : null;
+    };
   }
 
   checkForm() {
@@ -185,54 +208,77 @@ export class Step2Component extends BaseComponent implements OnInit {
     this.form.get('industry')?.setValue(node.data.key);
     this.selectedIndustryId = node.data.key;
     if (node.data && node.data.key) {
-      const industryId = node.data.key;
-      this.topicService.getTopicsByIndustry(industryId).subscribe({
-        next: (data: Topic[]) => {
-          this.topics = [...data, { id: 'other', name: 'Other' }];
-          this.selectedTopic = null;
+      this.getTopics(node.data.key);
+    }
+  }
+
+  private getTopics(industryId: number) {
+    this.topicService.getTopicsByIndustry(industryId).subscribe({
+      next: (data: Topic[]) => {
+        this.topics = [...data, { id: 'other', name: 'Other' }];
+        // Store trimmed and lowercased topic names for validation
+        this.topicNames = data.map(topic => topic.name.trim().toLowerCase());
+        this.selectedTopic = null;
+        if (this.selectedIndustryId && this.defaultValues.topicId) {
+          this.form.get('topicId')?.setValue(this.defaultValues.topicId);
+        } else {
           this.form.get('topicId')?.reset();
-        },
-        error: (error) => {
-          console.error('Error fetching topics:', error);
         }
-      });
-    }   
+      },
+      error: (error) => {
+        console.error('Error fetching topics:', error);
+      }
+    });
   }
+
   onTopicSelected(topicId: any) {
-    console.log("topicId", topicId);
+    const customTopicControl = this.form.get('customTopic');
+
+    if (topicId === 'other') {
+      // If "Other" is selected, validate the custom topic input
+      if (customTopicControl?.value) {
+        const enteredTopic = customTopicControl.value.trim().toLowerCase();
+        if (this.topicNames.includes(enteredTopic)) {
+          customTopicControl.setErrors({ duplicateTopic: true });
+          return;
+        }
+      }
+    }
+
     this.form.get('topicId')?.setValue(topicId);
-    this.updateParentModel({topicId: topicId}, this.checkForm());
+    this.updateParentModel({ topicId: topicId }, this.checkForm());
   }
+
   onEconomicBlocksSelected(blocks: EconomicBloc[]) {
     const selectedBlocks = blocks.map(block => block.id);
     this.form.get('economicBlocks')?.setValue(selectedBlocks);
     // Force validation check
     this.form.get('economicBlocks')?.updateValueAndValidity();
-    this.updateParentModel({economic_block: selectedBlocks}, this.checkForm());
+    this.updateParentModel({ economic_block: selectedBlocks }, this.checkForm());
   }
+
   onRegionsSelected(regions: any) {
     console.log("regions", regions);
-    if(regions.regions.length > 0){
+    if (regions.regions.length > 0) {
       this.form.get('regions')?.setValue(regions.regions);
-      this.updateParentModel({regions: regions.regions}, this.checkForm());
+      this.updateParentModel({ regions: regions.regions }, this.checkForm());
     }
-    if(regions.countries.length > 0){
+    if (regions.countries.length > 0) {
       this.form.get('countries')?.setValue(regions.countries);
-      this.updateParentModel({countries: regions.countries}, this.checkForm());
+      this.updateParentModel({ countries: regions.countries }, this.checkForm());
     }
   }
+
   onIsicCodeSelected(node: any) {
     console.log("ISIC", node);
     this.selectedIsicId = node.data.key;
     this.form.get('isic_code')?.setValue(node.data.key);
-    this.updateParentModel({isic_code: node.data.key}, this.checkForm());
+    this.updateParentModel({ isic_code: node.data.key }, this.checkForm());
   }
 
   onHSCodeSelected(node: any) {
     console.log("HS Code", node);
     this.form.get('hs_code')?.setValue(node.id);
-    this.updateParentModel({hs_code: node.id}, this.checkForm());
+    this.updateParentModel({ hs_code: node.id }, this.checkForm());
   }
-
-  
 }

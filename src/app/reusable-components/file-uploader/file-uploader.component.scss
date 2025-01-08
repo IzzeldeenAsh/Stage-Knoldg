@@ -1,0 +1,127 @@
+.dropzone {
+    border: 2px dashed #009ef7;
+    border-radius: 6px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    min-height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+        background: rgba(0, 158, 247, 0.05);
+    }
+
+    .dz-message {
+        display: flex;
+        align-items: center;
+        margin: 0 !important;
+    }
+}
+
+// Override default dropzone styles
+:host ::ng-deep {
+    .dropzone {
+        .dz-preview {
+            margin: 10px;
+            
+            .dz-image {
+                border-radius: 6px;
+            }
+        }
+    }
+} 
+
+.file-upload-wrapper {
+  position: relative;
+}
+
+.file-upload-input {
+  display: none;
+}
+
+.file-upload-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 20px;
+  border: 1px dashed #d1d1d1;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+}
+
+.file-upload-label:hover {
+  background-color: #f9f9f9;
+}
+
+.file-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  
+  .file-preview-item {
+    width: 100%;
+    min-width: 250px;
+    
+    .preview-content {
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+      background-color: #f9f9f9;
+      border: 1px solid #eee;
+      border-radius: 0.475rem;
+      
+      .preview-thumbnail {
+        width: 60px;
+        height: 60px;
+        overflow: hidden;
+        border-radius: 0.475rem;
+        
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+      
+      .file-icon {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        img {
+          width: 40px;
+          height: 40px;
+        }
+      }
+      
+      .preview-details {
+        flex: 1;
+        margin-left: 1rem;
+        
+        .file-name {
+          font-size: 0.95rem;
+          font-weight: 600;
+          color: #181c32;
+          margin-bottom: 0.25rem;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        
+        .file-size {
+          font-size: 0.85rem;
+          color: #a1a5b7;
+        }
+      }
+    }
+  }
+}
+
+.btn-danger {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+} 

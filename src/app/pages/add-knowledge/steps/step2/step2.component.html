@@ -151,13 +151,12 @@
     <div
     [@fadeInMoveY]
     class="mb-10"
-    *ngIf="form.get('topicId')?.value && form.get('topicId')?.value === 'other'"
+    *ngIf="form.get('topicId')?.value === 'other'"
   >
   <label class="d-flex align-items-center form-label mb-3 required">
-    {{'SPECIFY_OTHER_TOPIC' | translate}}  <i
-    class="fas fa-exclamation-circle mx-2 fs-7"
-    ngbTooltip="{{'TOPIC_TOOLTIP' | translate}}">
-  </i>
+    {{'SPECIFY_OTHER_TOPIC' | translate}}  
+    <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{'TOPIC_TOOLTIP' | translate}}">
+    </i>
   </label>
     <input
       type="text"
@@ -166,21 +165,19 @@
       formControlName="customTopic"
       placeholder="{{'ENTER_CUSTOM_TOPIC' | translate}}"
     />
+    <!-- Duplicate Topic Error -->
+    <div 
+      class="invalid-feedback d-block" 
+      *ngIf="form.get('customTopic')?.errors?.['duplicateTopic'] && form.get('customTopic')?.touched"
+    >
+      {{'DUPLICATE_TOPIC' | translate}}
+    </div>
+    <!-- Required Field Error -->
     <div
       class="fv-plugins-message-container invalid-feedback"
-      *ngIf="
-        form.get('customTopic')?.invalid && form.get('customTopic')?.touched
-      "
+      *ngIf="form.get('customTopic')?.errors?.['required'] && form.get('customTopic')?.touched"
     >
-      <div *ngIf="form.get('customTopic')?.errors?.['required']">
-        {{'CUSTOM_TOPIC_REQUIRED' | translate}}
-      </div>
-      <div *ngIf="form.get('customTopic')?.errors?.['minlength']">
-        {{'CUSTOM_TOPIC_MIN_LENGTH' | translate}}
-      </div>
-      <div *ngIf="form.get('customTopic')?.errors?.['maxlength']">
-        {{'CUSTOM_TOPIC_MAX_LENGTH' | translate}}
-      </div>
+      {{'CUSTOM_TOPIC_REQUIRED' | translate}}
     </div>
   </div>
 

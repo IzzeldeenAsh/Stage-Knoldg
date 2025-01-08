@@ -1,7 +1,7 @@
 import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ICreateKnowldege, inits } from '../create-account.helper';
-import { AddInsightStepsService, CreateKnowledgeRequest, SuggestTopicRequest } from 'src/app/_fake/services/add-insight-steps/add-insight-steps.service';
+import { AddInsightStepsService, CreateKnowledgeRequest, SuggestTopicRequest, AddKnowledgeDocumentRequest } from 'src/app/_fake/services/add-insight-steps/add-insight-steps.service';
 import { switchMap } from 'rxjs/operators';
 import { BaseComponent } from 'src/app/modules/base.component';
 
@@ -12,6 +12,7 @@ import { BaseComponent } from 'src/app/modules/base.component';
 })
 export class HorizontalComponent extends BaseComponent implements OnInit {
   formsCount = 5;
+  knowledgeId!: number;
   account$: BehaviorSubject<ICreateKnowldege> =
     new BehaviorSubject<ICreateKnowldege>(inits);
   currentStep$: BehaviorSubject<number> = new BehaviorSubject(1);
@@ -61,28 +62,144 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
         economic_block: currentAccount.economic_block || []
       };
 
-      // If customTopic exists, first create the topic then create knowledge
-      if (currentAccount.customTopic) {
-        const topicRequest: SuggestTopicRequest = {
-          industry_id: currentAccount.industry || 0,
-          name: {
-            en: currentAccount.customTopic,
-            ar: currentAccount.customTopic
-          }
-        };
+      let submitObservable;
 
-        const submitSub = this.addInsightStepsService.createSuggestTopic(topicRequest,this.lang)
+      if (this.knowledgeId) {
+        // **Update Scenario**
+        if (currentAccount.customTopic.trim() !== '') {
+          // If customTopic is provided, create a new topic
+          const topicRequest: SuggestTopicRequest = {
+            industry_id: currentAccount.industry || 0,
+            name: {
+              en: currentAccount.customTopic,
+              ar: currentAccount.customTopic
+            }
+          };
+
+          submitObservable = this.addInsightStepsService.createSuggestTopic(topicRequest, this.lang)
+            .pipe(
+              switchMap(response => {
+                // Update the knowledge request with the new topic ID
+                knowledgeRequest.topic_id = response.data.topic_id;
+                
+                // Update account with new topic ID and clear custom topic
+                this.updateAccount({
+                  topicId: response.data.topic_id,
+                  customTopic: ''
+                }, true);
+
+                return this.addInsightStepsService.step2UpdateKnowledge(this.knowledgeId, knowledgeRequest);
+              })
+            );
+        } else {
+          // If no customTopic, directly update knowledge
+          submitObservable = this.addInsightStepsService.step2UpdateKnowledge(this.knowledgeId, knowledgeRequest);
+        }
+      } else {
+        // **Create Scenario**
+        if (currentAccount.customTopic.trim() !== '') {
+          // If customTopic is provided, create a new topic first
+          const topicRequest: SuggestTopicRequest = {
+            industry_id: currentAccount.industry || 0,
+            name: {
+              en: currentAccount.customTopic,
+              ar: currentAccount.customTopic
+            }
+          };
+
+          submitObservable = this.addInsightStepsService.createSuggestTopic(topicRequest, this.lang)
+            .pipe(
+              switchMap(response => {
+                // Update the knowledge request with the new topic ID
+                knowledgeRequest.topic_id = response.data.topic_id;
+                
+                // Update account with new topic ID and clear custom topic
+                this.updateAccount({
+                  topicId: response.data.topic_id,
+                  customTopic: ''
+                }, true);
+
+                return this.addInsightStepsService.step2CreateKnowledge(knowledgeRequest);
+              })
+            );
+        } else {
+          // If no customTopic, directly create knowledge
+          submitObservable = this.addInsightStepsService.step2CreateKnowledge(knowledgeRequest);
+        }
+      }
+
+      const submitSub = submitObservable.subscribe({
+        next: (response) => {
+          console.log('Knowledge processed successfully', response);
+          if (!this.knowledgeId && response.data.knowledge_id) {
+            this.knowledgeId = response.data.knowledge_id;
+          }
+          this.currentStep$.next(nextStep);
+        },
+        error: (error) => {
+          this.handleServerErrors(error);
+          // Handle error appropriately
+        }
+      });
+
+      this.unsubscribe.push(submitSub);
+    } else {
+      // Handle step 3 submission
+      if (this.currentStep$.value === 3) {
+        const currentAccount = this.account$.value;
+
+        // Optional safeguard: ensure we have knowledgeId from step 2
+        if (!this.knowledgeId) {
+          console.error('No knowledge ID found. Please complete step 2 first.');
+          return;
+        }
+
+        // Check whether we have existing documents (to decide isUpdate)
+        const listDocs$ = this.addInsightStepsService
+          .getListDocumentsInfo(this.knowledgeId);
+
+        const step3Sub = listDocs$
           .pipe(
-            switchMap(response => {
-              // Update the knowledge request with the new topic ID
-              knowledgeRequest.topic_id = response.data.topic_id;
-              return this.addInsightStepsService.step2CreateKnowledge(knowledgeRequest);
+            switchMap((listResponse) => {
+              const documents = listResponse.data || [];
+              const isUpdate = documents.length > 0;
+              const table_of_content = JSON.parse(currentAccount.table_of_content);
+              const chaptersArray = table_of_content.chapters;
+
+              // **Reshape the chaptersArray to the desired structure**
+              const transformedChapters = chaptersArray.map((chapter: any) => ({
+                Chapter: {
+                  title: chapter.name,
+                  page: chapter.index,
+                  sub_child: chapter.subChapters.map((sub: any) => ({
+                    title: sub.name,
+                    page: sub.index,
+                  })),
+                },
+              }));
+
+              const jsonChapters = JSON.stringify(transformedChapters);
+
+              // Construct your AddKnowledgeDocumentRequest
+              const documentRequest: AddKnowledgeDocumentRequest = {
+                file_name: currentAccount.file_name,
+                table_of_content: jsonChapters,
+                price: currentAccount.price?.toString() || '0',
+                file: currentAccount.file,
+                status: currentAccount.status || 'active',
+              };
+
+              return this.addInsightStepsService.step3AddKnowledgeDocument(
+                this.knowledgeId,
+                documentRequest,
+                isUpdate
+              );
             })
           )
           .subscribe({
             next: (response) => {
-              console.log('Knowledge created successfully', response);
-              this.currentStep$.next(nextStep);
+              console.log('Document processed successfully', response);
+              this.currentStep$.next(nextStep); // Move to step 4
             },
             error: (error) => {
               this.handleServerErrors(error);
@@ -90,26 +207,11 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
             }
           });
 
-        this.unsubscribe.push(submitSub);
+        this.unsubscribe.push(step3Sub);
       } else {
-        // If no custom topic, directly create knowledge
-        const submitSub = this.addInsightStepsService.step2CreateKnowledge(knowledgeRequest)
-          .subscribe({
-            next: (response) => {
-              console.log('Knowledge created successfully', response);
-              this.currentStep$.next(nextStep);
-            },
-            error: (error) => {
-              // Handle error appropriately
-              this.handleServerErrors(error);
-            }
-          });
-
-        this.unsubscribe.push(submitSub);
+        // For other steps, just proceed
+        this.currentStep$.next(nextStep);
       }
-    } else {
-      // For other steps, just proceed to next step
-      this.currentStep$.next(nextStep);
     }
   }
 

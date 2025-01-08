@@ -21,6 +21,11 @@ import { SelectEconomicBlockComponent } from 'src/app/reusable-components/select
 import { SelectRegionComponent } from 'src/app/reusable-components/select-region/select-region.component';
 import { GetHsCodeByIsicComponent } from 'src/app/reusable-components/get-hs-code-by-isic/get-hs-code-by-isic.component';
 import { ToastModule } from 'primeng/toast';
+import { FileUploadModule } from 'primeng/fileupload';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { FileUploaderComponent } from 'src/app/reusable-components/file-uploader/file-uploader.component';
+import { TableOfContentComponent } from 'src/app/reusable-components/table-of-content/table-of-content.component';
+import { FileSizePipe } from './steps/step3/file-size.pipe';
 @NgModule({
   declarations: [
     HorizontalComponent,
@@ -37,11 +42,16 @@ import { ToastModule } from 'primeng/toast';
     ReactiveFormsModule,
     EditorModule,
     TranslationModule,
+    FileSizePipe,
+    FileUploaderComponent,
     IndustrySelectorComponent,
     InputTextModule,
     NgbTooltipModule,
     SelectEconomicBlockComponent,
+    FileUploadModule,
+    TableOfContentComponent,
     GetHsCodeByIsicComponent,
+    InputNumberModule,
     SharedModule,
     DropdownModule,
     SelectRegionComponent,

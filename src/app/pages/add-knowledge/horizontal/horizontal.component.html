@@ -32,7 +32,9 @@
             completed: currentStep$.value > 3
           }"
         >
-          <h3 class="stepper-title">Business Info</h3>
+          <h3 class="stepper-title">
+            {{'KNOWLEDGE_DOCUMENTS' | translate}}
+          </h3>
         </div>
 
         <div
@@ -54,7 +56,7 @@
       </div>
 
       <form
-        class="mx-auto mw-600px w-100 pt-15 pb-10"
+        class="mx-auto mw-700px w-100 pt-15 pb-10"
         noValidate
         id="kt_create_account_form"
       >
@@ -64,6 +66,7 @@
               class="w-100"
               [updateParentModel]="updateAccount"
               [defaultValues]="account$.value"
+              [knowledgeId]="knowledgeId"
             ></app-step1>
           </ng-container>
 
@@ -72,6 +75,7 @@
               class="w-100"
               [updateParentModel]="updateAccount"
               [defaultValues]="account$.value"
+              [knowledgeId]="knowledgeId"
             ></app-step2>
           </ng-container>
 

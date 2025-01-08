@@ -549,6 +549,22 @@ export const locale = {
     ENTER_REGION: "ادخل الإقليم",
     ENTER_ECONOMIC_BLOCK: "ادخل المنطقة الاقتصادية",
     OPTIONAL: "اختياري",
+    CHOOSE_ECONOMIC_BLOCK: "اختر المنطقة الاقتصادية",
+    ENTER_CUSTOM_TOPIC: "ادخل موضوع آخر",
+    DUPLICATE_TOPIC: "هذا الموضوع مستخدم بالفعل",
+    KNOWLEDGE_DOCUMENTS: "ملفات المعرفة",
+    UPLOAD_FILE: "رفع ملف",
+    FILE_NAME: "اسم الملف",
+    PRICE: "السعر",
+    ENTER_FILE_NAME: "ادخل اسم الملف",
+    ENTER_PRICE: "ادخل السعر",
+    FILE_REQUIRED: "الملف مطلوب",
+    INVALID_FILE_TYPE: "نوع الملف غير صالح",
+    FILE_SIZE_EXCEEDED: "حجم الملف قد تجاوز الحد المسموح به",
+    TABLE_OF_CONTENT: "جدول المحتويات",
+    TABLE_OF_CONTENT_REQUIRED: "جدول المحتويات مطلوب",
+    PRICE_REQUIRED: "السعر مطلوب",
+    FILE_NAME_REQUIRED: "اسم الملف مطلوب"
   }
  
 };

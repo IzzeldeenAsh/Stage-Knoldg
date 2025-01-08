@@ -1,0 +1,69 @@
+<!--begin::Form-->
+<form class="form">
+    <!--begin::Input group-->
+    <div class="fv-row">
+        <!--begin::File Input-->
+        <div class="file-upload-wrapper" *ngIf="showUploadContainer">
+            <label class="file-upload-label" for="fileInput">
+                <i class="ki-duotone ki-file-up fs-3x text-info">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                </i>
+                <div class="ms-4">
+                    <h3 class="fs-5 fw-bold text-gray-900 mb-1">
+                        {{ maxFiles === 1 ? 'Drop file here or click to upload' : 'Drop files here or click to upload' }}
+                    </h3>
+                    <span class="fs-7 fw-semibold text-info">
+                        Upload up to {{ maxFiles }} {{ maxFiles === 1 ? 'file' : 'files' }}
+                    </span>
+                </div>
+            </label>
+            <input
+                type="file"
+                id="fileInput"
+                [attr.multiple]="maxFiles > 1 ? true : null"
+                [attr.accept]="acceptedFiles"
+                (change)="onFilesSelected($event)"
+                class="file-upload-input"
+            />
+        </div>
+        <!--end::File Input-->
+
+        <!--begin::Preview Files-->
+        <div class="file-preview mt-5" *ngIf="previewFiles.length > 0" [@fadeInMoveY]>
+            <div class="file-preview-item" *ngFor="let file of previewFiles" [@fadeInMoveY]>
+                <div class="preview-content" [@fadeInMoveY]>
+                    <!-- Image Preview -->
+                    <div class="preview-thumbnail" *ngIf="file.type === 'image'">
+                        <img [src]="file.preview" [alt]="file.name" class="img-preview">
+                    </div>
+                    <!-- File Icon -->
+                    <div class="file-icon" *ngIf="file.type !== 'image'">
+                        <img [src]="file.icon" [alt]="file.type">
+                    </div>
+                    <!-- File Details -->
+                    <div class="preview-details">
+                        <h4 class="file-name">{{ file.name }}</h4>
+                        <span class="file-size">{{ file.size | fileSize }}</span>
+                    </div>
+                    <!-- Remove Button -->
+                    <button 
+                        type="button" 
+                        class="btn btn-danger"
+                        (click)="removeFile(file)">
+                        <i class="ki-duotone ki-trash fs-5">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                            <span class="path4"></span>
+                            <span class="path5"></span>
+                        </i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!--end::Preview Files-->
+    </div>
+    <!--end::Input group-->
+</form>
+<!--end::Form-->

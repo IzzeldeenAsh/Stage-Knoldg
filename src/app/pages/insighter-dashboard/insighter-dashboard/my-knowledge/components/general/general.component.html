@@ -33,11 +33,12 @@
 
         <!--begin::Add customer-->
         <button
-          type="button"
-          class="btn btn-sm btn-info"
-        >
-          <i class="ki-outline ki-folder-up fs-2"></i> Generate Package
-        </button>
+        type="button"
+        class="btn btn-sm btn-info"
+        (click)="togglePackageSidebar()"
+      >
+        <i class="ki-outline ki-folder-up fs-2"></i> Generate Package
+      </button>
         <!--end::Add customer-->
       </div>
       <!--end::Toolbar-->
@@ -92,1855 +93,1860 @@
     </div>
     <!--end::Table header-->
 
-    <!--begin::Table-->
-    <div
-      id="kt_file_manager_list_wrapper"
-      class="dt-container dt-bootstrap5 dt-empty-footer"
-    >
-      <div id="" class="table-responsive">
-        <table
-          id="kt_file_manager_list"
-          data-kt-filemanager-table="files"
-          class="table align-middle table-row-dashed fs-6 gy-5 dataTable"
-          style="width: 100%"
-        >
-          <colgroup>
-            <col data-dt-column="0" style="width: 33.5938px" />
-            <col data-dt-column="1" style="width: 355.578px" />
-            <col data-dt-column="2" style="width: 89.6797px" />
-            <col data-dt-column="3" style="width: 219.148px" />
-            <col data-dt-column="4" style="width: 125px" />
-          </colgroup>
-          <thead>
-            <tr
-              class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0"
+    <!-- New flex container for table and sidebar -->
+    <div class="d-flex flex-row">
+      <!-- Table container with flex-grow -->
+      <div class="flex-grow-1 me-3" [ngClass]="{'pe-0': !showPackageSidebar}">
+        <!--begin::Table-->
+        <div id="kt_file_manager_list_wrapper" class="dataTables_wrapper dt-bootstrap5">
+          <div id="" class="table-responsive">
+            <table
+              id="kt_file_manager_list"
+              data-kt-filemanager-table="files"
+              class="table align-middle table-row-dashed fs-6 gy-5 dataTable"
+              style="width: 100%"
             >
-              <th
-                class="w-10px pe-2 dt-orderable-none"
-                data-dt-column="0"
-                rowspan="1"
-                colspan="1"
-              >
-                <span class="dt-column-title">
-                  <div
-                    class="form-check form-check-sm form-check-custom form-check-solid me-3"
-                  >
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      data-kt-check="true"
-                      data-kt-check-target="#kt_file_manager_list .form-check-input"
-                      value="1"
-                    />
-                  </div> </span
-                ><span class="dt-column-order"></span>
-              </th>
-              <th
-                class="min-w-250px dt-orderable-none"
-                data-dt-column="1"
-                rowspan="1"
-                colspan="1"
-              >
-                <span class="dt-column-title">Name</span
-                ><span class="dt-column-order"></span>
-              </th>
-              <th
-                class="min-w-10px dt-orderable-none"
-                data-dt-column="2"
-                rowspan="1"
-                colspan="1"
-              >
-                <span class="dt-column-title">Size</span
-                ><span class="dt-column-order"></span>
-              </th>
-              <th
-                class="min-w-125px dt-orderable-none"
-                data-dt-column="3"
-                rowspan="1"
-                colspan="1"
-              >
-                <span class="dt-column-title">Last Modified</span
-                ><span class="dt-column-order"></span>
-              </th>
-              <th
-                class="w-125px dt-orderable-none"
-                data-dt-column="4"
-                rowspan="1"
-                colspan="1"
-              >
-                <span class="dt-column-title"></span
-                ><span class="dt-column-order"></span>
-              </th>
-            </tr>
-          </thead>
-          <tbody class="fw-semibold text-gray-600">
-            <tr>
-              <td>
-                <div
-                  class="form-check form-check-sm form-check-custom form-check-solid"
+              <colgroup>
+                <col data-dt-column="0" style="width: 33.5938px" />
+                <col data-dt-column="1" style="width: 355.578px" />
+                <col data-dt-column="2" style="width: 89.6797px" />
+                <col data-dt-column="3" style="width: 219.148px" />
+                <col data-dt-column="4" style="width: 125px" />
+              </colgroup>
+              <thead>
+                <tr
+                  class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0"
                 >
-                  <input class="form-check-input" type="checkbox" value="1" />
-                </div>
-              </td>
-              <td>
-                <div class="d-flex align-items-center">
-                  <i class="ki-outline ki-files fs-2x text-info me-4"></i>
-                  <a href="#" class="text-gray-800 text-hover-info"
-                    >api-keys.html</a
+                  <th
+                    class="w-10px pe-2 dt-orderable-none"
+                    data-dt-column="0"
+                    rowspan="1"
+                    colspan="1"
                   >
-                </div>
-              </td>
-              <td>489 KB</td>
-              <td data-order="2025-02-21T17:30:00+03:00">
-                21 Feb 2025, 5:30 pm
-              </td>
-              <td class="text-end" data-kt-filemanager-table="action_dropdown">
-                <div class="d-flex justify-content-end">
-                  <!--begin::Share link-->
-                  <div class="ms-2" data-kt-filemanger-table="copy_link">
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-icon btn-light btn-active-light-info"
-                      data-kt-menu-trigger="click"
-                      data-kt-menu-placement="bottom-end"
-                    >
-                      <i class="ki-outline ki-fasten fs-5 m-0"></i>
-                    </button>
-                    <!--begin::Menu-->
+                    <span class="dt-column-title">
+                      <div
+                        class="form-check form-check-sm form-check-custom form-check-solid me-3"
+                      >
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          data-kt-check="true"
+                          data-kt-check-target="#kt_file_manager_list .form-check-input"
+                          value="1"
+                        />
+                      </div> </span
+                    ><span class="dt-column-order"></span>
+                  </th>
+                  <th
+                    class="min-w-250px dt-orderable-none"
+                    data-dt-column="1"
+                    rowspan="1"
+                    colspan="1"
+                  >
+                    <span class="dt-column-title">Name</span
+                    ><span class="dt-column-order"></span>
+                  </th>
+                  <th
+                    class="min-w-10px dt-orderable-none"
+                    data-dt-column="2"
+                    rowspan="1"
+                    colspan="1"
+                  >
+                    <span class="dt-column-title">Size</span
+                    ><span class="dt-column-order"></span>
+                  </th>
+                  <th
+                    class="min-w-125px dt-orderable-none"
+                    data-dt-column="3"
+                    rowspan="1"
+                    colspan="1"
+                  >
+                    <span class="dt-column-title">Last Modified</span
+                    ><span class="dt-column-order"></span>
+                  </th>
+                  <th
+                    class="w-125px dt-orderable-none"
+                    data-dt-column="4"
+                    rowspan="1"
+                    colspan="1"
+                  >
+                    <span class="dt-column-title"></span
+                    ><span class="dt-column-order"></span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="fw-semibold text-gray-600">
+                <tr>
+                  <td>
                     <div
-                      class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-300px"
-                      data-kt-menu="true"
+                      class="form-check form-check-sm form-check-custom form-check-solid"
                     >
-                      <!--begin::Card-->
-                      <div class="card card-flush">
-                        <div class="card-body p-5">
-                          <!--begin::Loader-->
-                          <div
-                            class="d-flex"
-                            data-kt-filemanger-table="copy_link_generator"
-                          >
-                            <!--begin::Spinner-->
-                            <div class="me-5" data-kt-indicator="on">
-                              <span class="indicator-progress">
-                                <span
-                                  class="spinner-border spinner-border-sm align-middle ms-2"
-                                ></span>
-                              </span>
-                            </div>
-                            <!--end::Spinner-->
-
-                            <!--begin::Label-->
-                            <div class="fs-6 text-gray-900">
-                              Generating Share Link...
-                            </div>
-                            <!--end::Label-->
-                          </div>
-                          <!--end::Loader-->
-
-                          <!--begin::Link-->
-                          <div
-                            class="d-flex flex-column text-start d-none"
-                            data-kt-filemanger-table="copy_link_result"
-                          >
-                            <div class="d-flex mb-3">
-                              <i
-                                class="ki-outline ki-check fs-2 text-success me-3"
-                              ></i>
-                              <div class="fs-6 text-gray-900">
-                                Share Link Generated
-                              </div>
-                            </div>
-                            <input
-                              type="text"
-                              class="form-control form-control-sm"
-                              value="https://path/to/file/or/folder/"
-                            />
-                            <div class="text-muted fw-normal mt-2 fs-8 px-3">
-                              Read only.
-                              <a
-                                href="/metronic8/demo62/apps/file-manager/settings/.html"
-                                class="ms-2"
-                                >Change permissions</a
+                      <input class="form-check-input" type="checkbox" value="1" />
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <i class="ki-outline ki-files fs-2x text-info me-4"></i>
+                      <a href="#" class="text-gray-800 text-hover-info"
+                        >api-keys.html</a
+                      >
+                    </div>
+                  </td>
+                  <td>489 KB</td>
+                  <td data-order="2025-02-21T17:30:00+03:00">
+                    21 Feb 2025, 5:30 pm
+                  </td>
+                  <td class="text-end" data-kt-filemanager-table="action_dropdown">
+                    <div class="d-flex justify-content-end">
+                      <!--begin::Share link-->
+                      <div class="ms-2" data-kt-filemanger-table="copy_link">
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-icon btn-light btn-active-light-info"
+                          data-kt-menu-trigger="click"
+                          data-kt-menu-placement="bottom-end"
+                        >
+                          <i class="ki-outline ki-fasten fs-5 m-0"></i>
+                        </button>
+                        <!--begin::Menu-->
+                        <div
+                          class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-300px"
+                          data-kt-menu="true"
+                        >
+                          <!--begin::Card-->
+                          <div class="card card-flush">
+                            <div class="card-body p-5">
+                              <!--begin::Loader-->
+                              <div
+                                class="d-flex"
+                                data-kt-filemanger-table="copy_link_generator"
                               >
-                            </div>
-                          </div>
-                          <!--end::Link-->
-                        </div>
-                      </div>
-                      <!--end::Card-->
-                    </div>
-                    <!--end::Menu-->
-                  </div>
-                  <!--end::Share link-->
+                                <!--begin::Spinner-->
+                                <div class="me-5" data-kt-indicator="on">
+                                  <span class="indicator-progress">
+                                    <span
+                                      class="spinner-border spinner-border-sm align-middle ms-2"
+                                    ></span>
+                                  </span>
+                                </div>
+                                <!--end::Spinner-->
 
-                  <!--begin::More-->
-                  <div class="ms-2">
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-icon btn-light btn-active-light-info"
-                      data-kt-menu-trigger="click"
-                      data-kt-menu-placement="bottom-end"
-                    >
-                      <i class="ki-outline ki-dots-square fs-5 m-0"></i>
-                    </button>
-                    <!--begin::Menu-->
-                    <div
-                      class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-150px py-4"
-                      data-kt-menu="true"
-                    >
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a href="#" class="menu-link px-3"> Download File </a>
-                      </div>
-                      <!--end::Menu item-->
-
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a
-                          href="#"
-                          class="menu-link px-3"
-                          data-kt-filemanager-table="rename"
-                        >
-                          Rename
-                        </a>
-                      </div>
-                      <!--end::Menu item-->
-
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a
-                          href="#"
-                          class="menu-link px-3"
-                          data-kt-filemanager-table-filter="move_row"
-                          data-bs-toggle="modal"
-                          data-bs-target="#kt_modal_move_to_folder"
-                        >
-                          Move to folder
-                        </a>
-                      </div>
-                      <!--end::Menu item-->
-
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a
-                          href="#"
-                          class="menu-link text-danger px-3"
-                          data-kt-filemanager-table-filter="delete_row"
-                        >
-                          Delete
-                        </a>
-                      </div>
-                      <!--end::Menu item-->
-                    </div>
-                    <!--end::Menu-->
-                  </div>
-                  <!--end::More-->
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div
-                  class="form-check form-check-sm form-check-custom form-check-solid"
-                >
-                  <input class="form-check-input" type="checkbox" value="1" />
-                </div>
-              </td>
-              <td>
-                <div class="d-flex align-items-center">
-                  <i class="ki-outline ki-files fs-2x text-info me-4"></i>
-                  <a href="#" class="text-gray-800 text-hover-info"
-                    >billing.html</a
-                  >
-                </div>
-              </td>
-              <td>554 KB</td>
-              <td data-order="2025-06-24T14:40:00+03:00">
-                24 Jun 2025, 2:40 pm
-              </td>
-              <td class="text-end" data-kt-filemanager-table="action_dropdown">
-                <div class="d-flex justify-content-end">
-                  <!--begin::Share link-->
-                  <div class="ms-2" data-kt-filemanger-table="copy_link">
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-icon btn-light btn-active-light-info"
-                      data-kt-menu-trigger="click"
-                      data-kt-menu-placement="bottom-end"
-                    >
-                      <i class="ki-outline ki-fasten fs-5 m-0"></i>
-                    </button>
-                    <!--begin::Menu-->
-                    <div
-                      class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-300px"
-                      data-kt-menu="true"
-                    >
-                      <!--begin::Card-->
-                      <div class="card card-flush">
-                        <div class="card-body p-5">
-                          <!--begin::Loader-->
-                          <div
-                            class="d-flex"
-                            data-kt-filemanger-table="copy_link_generator"
-                          >
-                            <!--begin::Spinner-->
-                            <div class="me-5" data-kt-indicator="on">
-                              <span class="indicator-progress">
-                                <span
-                                  class="spinner-border spinner-border-sm align-middle ms-2"
-                                ></span>
-                              </span>
-                            </div>
-                            <!--end::Spinner-->
-
-                            <!--begin::Label-->
-                            <div class="fs-6 text-gray-900">
-                              Generating Share Link...
-                            </div>
-                            <!--end::Label-->
-                          </div>
-                          <!--end::Loader-->
-
-                          <!--begin::Link-->
-                          <div
-                            class="d-flex flex-column text-start d-none"
-                            data-kt-filemanger-table="copy_link_result"
-                          >
-                            <div class="d-flex mb-3">
-                              <i
-                                class="ki-outline ki-check fs-2 text-success me-3"
-                              ></i>
-                              <div class="fs-6 text-gray-900">
-                                Share Link Generated
+                                <!--begin::Label-->
+                                <div class="fs-6 text-gray-900">
+                                  Generating Share Link...
+                                </div>
+                                <!--end::Label-->
                               </div>
-                            </div>
-                            <input
-                              type="text"
-                              class="form-control form-control-sm"
-                              value="https://path/to/file/or/folder/"
-                            />
-                            <div class="text-muted fw-normal mt-2 fs-8 px-3">
-                              Read only.
-                              <a
-                                href="/metronic8/demo62/apps/file-manager/settings/.html"
-                                class="ms-2"
-                                >Change permissions</a
+                              <!--end::Loader-->
+
+                              <!--begin::Link-->
+                              <div
+                                class="d-flex flex-column text-start d-none"
+                                data-kt-filemanger-table="copy_link_result"
                               >
-                            </div>
-                          </div>
-                          <!--end::Link-->
-                        </div>
-                      </div>
-                      <!--end::Card-->
-                    </div>
-                    <!--end::Menu-->
-                  </div>
-                  <!--end::Share link-->
-
-                  <!--begin::More-->
-                  <div class="ms-2">
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-icon btn-light btn-active-light-info"
-                      data-kt-menu-trigger="click"
-                      data-kt-menu-placement="bottom-end"
-                    >
-                      <i class="ki-outline ki-dots-square fs-5 m-0"></i>
-                    </button>
-                    <!--begin::Menu-->
-                    <div
-                      class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-150px py-4"
-                      data-kt-menu="true"
-                    >
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a href="#" class="menu-link px-3"> Download File </a>
-                      </div>
-                      <!--end::Menu item-->
-
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a
-                          href="#"
-                          class="menu-link px-3"
-                          data-kt-filemanager-table="rename"
-                        >
-                          Rename
-                        </a>
-                      </div>
-                      <!--end::Menu item-->
-
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a
-                          href="#"
-                          class="menu-link px-3"
-                          data-kt-filemanager-table-filter="move_row"
-                          data-bs-toggle="modal"
-                          data-bs-target="#kt_modal_move_to_folder"
-                        >
-                          Move to folder
-                        </a>
-                      </div>
-                      <!--end::Menu item-->
-
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a
-                          href="#"
-                          class="menu-link text-danger px-3"
-                          data-kt-filemanager-table-filter="delete_row"
-                        >
-                          Delete
-                        </a>
-                      </div>
-                      <!--end::Menu item-->
-                    </div>
-                    <!--end::Menu-->
-                  </div>
-                  <!--end::More-->
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div
-                  class="form-check form-check-sm form-check-custom form-check-solid"
-                >
-                  <input class="form-check-input" type="checkbox" value="1" />
-                </div>
-              </td>
-              <td>
-                <div class="d-flex align-items-center">
-                  <i class="ki-outline ki-files fs-2x text-info me-4"></i>
-                  <a href="#" class="text-gray-800 text-hover-info"
-                    >overview.html</a
-                  >
-                </div>
-              </td>
-              <td>522 KB</td>
-              <td data-order="2025-03-10T21:23:00+03:00">
-                10 Mar 2025, 9:23 pm
-              </td>
-              <td class="text-end" data-kt-filemanager-table="action_dropdown">
-                <div class="d-flex justify-content-end">
-                  <!--begin::Share link-->
-                  <div class="ms-2" data-kt-filemanger-table="copy_link">
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-icon btn-light btn-active-light-info"
-                      data-kt-menu-trigger="click"
-                      data-kt-menu-placement="bottom-end"
-                    >
-                      <i class="ki-outline ki-fasten fs-5 m-0"></i>
-                    </button>
-                    <!--begin::Menu-->
-                    <div
-                      class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-300px"
-                      data-kt-menu="true"
-                    >
-                      <!--begin::Card-->
-                      <div class="card card-flush">
-                        <div class="card-body p-5">
-                          <!--begin::Loader-->
-                          <div
-                            class="d-flex"
-                            data-kt-filemanger-table="copy_link_generator"
-                          >
-                            <!--begin::Spinner-->
-                            <div class="me-5" data-kt-indicator="on">
-                              <span class="indicator-progress">
-                                <span
-                                  class="spinner-border spinner-border-sm align-middle ms-2"
-                                ></span>
-                              </span>
-                            </div>
-                            <!--end::Spinner-->
-
-                            <!--begin::Label-->
-                            <div class="fs-6 text-gray-900">
-                              Generating Share Link...
-                            </div>
-                            <!--end::Label-->
-                          </div>
-                          <!--end::Loader-->
-
-                          <!--begin::Link-->
-                          <div
-                            class="d-flex flex-column text-start d-none"
-                            data-kt-filemanger-table="copy_link_result"
-                          >
-                            <div class="d-flex mb-3">
-                              <i
-                                class="ki-outline ki-check fs-2 text-success me-3"
-                              ></i>
-                              <div class="fs-6 text-gray-900">
-                                Share Link Generated
+                                <div class="d-flex mb-3">
+                                  <i
+                                    class="ki-outline ki-check fs-2 text-success me-3"
+                                  ></i>
+                                  <div class="fs-6 text-gray-900">
+                                    Share Link Generated
+                                  </div>
+                                </div>
+                                <input
+                                  type="text"
+                                  class="form-control form-control-sm"
+                                  value="https://path/to/file/or/folder/"
+                                />
+                                <div class="text-muted fw-normal mt-2 fs-8 px-3">
+                                  Read only.
+                                  <a
+                                    href="/metronic8/demo62/apps/file-manager/settings/.html"
+                                    class="ms-2"
+                                    >Change permissions</a
+                                  >
+                                </div>
                               </div>
-                            </div>
-                            <input
-                              type="text"
-                              class="form-control form-control-sm"
-                              value="https://path/to/file/or/folder/"
-                            />
-                            <div class="text-muted fw-normal mt-2 fs-8 px-3">
-                              Read only.
-                              <a
-                                href="/metronic8/demo62/apps/file-manager/settings/.html"
-                                class="ms-2"
-                                >Change permissions</a
-                              >
+                              <!--end::Link-->
                             </div>
                           </div>
-                          <!--end::Link-->
+                          <!--end::Card-->
                         </div>
+                        <!--end::Menu-->
                       </div>
-                      <!--end::Card-->
-                    </div>
-                    <!--end::Menu-->
-                  </div>
-                  <!--end::Share link-->
+                      <!--end::Share link-->
 
-                  <!--begin::More-->
-                  <div class="ms-2">
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-icon btn-light btn-active-light-info"
-                      data-kt-menu-trigger="click"
-                      data-kt-menu-placement="bottom-end"
-                    >
-                      <i class="ki-outline ki-dots-square fs-5 m-0"></i>
-                    </button>
-                    <!--begin::Menu-->
-                    <div
-                      class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-150px py-4"
-                      data-kt-menu="true"
-                    >
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a href="#" class="menu-link px-3"> Download File </a>
-                      </div>
-                      <!--end::Menu item-->
-
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a
-                          href="#"
-                          class="menu-link px-3"
-                          data-kt-filemanager-table="rename"
+                      <!--begin::More-->
+                      <div class="ms-2">
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-icon btn-light btn-active-light-info"
+                          data-kt-menu-trigger="click"
+                          data-kt-menu-placement="bottom-end"
                         >
-                          Rename
-                        </a>
-                      </div>
-                      <!--end::Menu item-->
-
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a
-                          href="#"
-                          class="menu-link px-3"
-                          data-kt-filemanager-table-filter="move_row"
-                          data-bs-toggle="modal"
-                          data-bs-target="#kt_modal_move_to_folder"
+                          <i class="ki-outline ki-dots-square fs-5 m-0"></i>
+                        </button>
+                        <!--begin::Menu-->
+                        <div
+                          class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-150px py-4"
+                          data-kt-menu="true"
                         >
-                          Move to folder
-                        </a>
-                      </div>
-                      <!--end::Menu item-->
-
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a
-                          href="#"
-                          class="menu-link text-danger px-3"
-                          data-kt-filemanager-table-filter="delete_row"
-                        >
-                          Delete
-                        </a>
-                      </div>
-                      <!--end::Menu item-->
-                    </div>
-                    <!--end::Menu-->
-                  </div>
-                  <!--end::More-->
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div
-                  class="form-check form-check-sm form-check-custom form-check-solid"
-                >
-                  <input class="form-check-input" type="checkbox" value="1" />
-                </div>
-              </td>
-              <td>
-                <div class="d-flex align-items-center">
-                  <i class="ki-outline ki-files fs-2x text-info me-4"></i>
-                  <a href="#" class="text-gray-800 text-hover-info"
-                    >referrals.html</a
-                  >
-                </div>
-              </td>
-              <td>477 KB</td>
-              <td data-order="2025-10-25T22:10:00+03:00">
-                25 Oct 2025, 10:10 pm
-              </td>
-              <td class="text-end" data-kt-filemanager-table="action_dropdown">
-                <div class="d-flex justify-content-end">
-                  <!--begin::Share link-->
-                  <div class="ms-2" data-kt-filemanger-table="copy_link">
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-icon btn-light btn-active-light-info"
-                      data-kt-menu-trigger="click"
-                      data-kt-menu-placement="bottom-end"
-                    >
-                      <i class="ki-outline ki-fasten fs-5 m-0"></i>
-                    </button>
-                    <!--begin::Menu-->
-                    <div
-                      class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-300px"
-                      data-kt-menu="true"
-                    >
-                      <!--begin::Card-->
-                      <div class="card card-flush">
-                        <div class="card-body p-5">
-                          <!--begin::Loader-->
-                          <div
-                            class="d-flex"
-                            data-kt-filemanger-table="copy_link_generator"
-                          >
-                            <!--begin::Spinner-->
-                            <div class="me-5" data-kt-indicator="on">
-                              <span class="indicator-progress">
-                                <span
-                                  class="spinner-border spinner-border-sm align-middle ms-2"
-                                ></span>
-                              </span>
-                            </div>
-                            <!--end::Spinner-->
-
-                            <!--begin::Label-->
-                            <div class="fs-6 text-gray-900">
-                              Generating Share Link...
-                            </div>
-                            <!--end::Label-->
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a href="#" class="menu-link px-3"> Download File </a>
                           </div>
-                          <!--end::Loader-->
+                          <!--end::Menu item-->
 
-                          <!--begin::Link-->
-                          <div
-                            class="d-flex flex-column text-start d-none"
-                            data-kt-filemanger-table="copy_link_result"
-                          >
-                            <div class="d-flex mb-3">
-                              <i
-                                class="ki-outline ki-check fs-2 text-success me-3"
-                              ></i>
-                              <div class="fs-6 text-gray-900">
-                                Share Link Generated
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a
+                              href="#"
+                              class="menu-link px-3"
+                              data-kt-filemanager-table="rename"
+                            >
+                              Rename
+                            </a>
+                          </div>
+                          <!--end::Menu item-->
+
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a
+                              href="#"
+                              class="menu-link px-3"
+                              data-kt-filemanager-table-filter="move_row"
+                              data-bs-toggle="modal"
+                              data-bs-target="#kt_modal_move_to_folder"
+                            >
+                              Move to folder
+                            </a>
+                          </div>
+                          <!--end::Menu item-->
+
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a
+                              href="#"
+                              class="menu-link text-danger px-3"
+                              data-kt-filemanager-table-filter="delete_row"
+                            >
+                              Delete
+                            </a>
+                          </div>
+                          <!--end::Menu item-->
+                        </div>
+                        <!--end::Menu-->
+                      </div>
+                      <!--end::More-->
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div
+                      class="form-check form-check-sm form-check-custom form-check-solid"
+                    >
+                      <input class="form-check-input" type="checkbox" value="1" />
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <i class="ki-outline ki-files fs-2x text-info me-4"></i>
+                      <a href="#" class="text-gray-800 text-hover-info"
+                        >billing.html</a
+                      >
+                    </div>
+                  </td>
+                  <td>554 KB</td>
+                  <td data-order="2025-06-24T14:40:00+03:00">
+                    24 Jun 2025, 2:40 pm
+                  </td>
+                  <td class="text-end" data-kt-filemanager-table="action_dropdown">
+                    <div class="d-flex justify-content-end">
+                      <!--begin::Share link-->
+                      <div class="ms-2" data-kt-filemanger-table="copy_link">
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-icon btn-light btn-active-light-info"
+                          data-kt-menu-trigger="click"
+                          data-kt-menu-placement="bottom-end"
+                        >
+                          <i class="ki-outline ki-fasten fs-5 m-0"></i>
+                        </button>
+                        <!--begin::Menu-->
+                        <div
+                          class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-300px"
+                          data-kt-menu="true"
+                        >
+                          <!--begin::Card-->
+                          <div class="card card-flush">
+                            <div class="card-body p-5">
+                              <!--begin::Loader-->
+                              <div
+                                class="d-flex"
+                                data-kt-filemanger-table="copy_link_generator"
+                              >
+                                <!--begin::Spinner-->
+                                <div class="me-5" data-kt-indicator="on">
+                                  <span class="indicator-progress">
+                                    <span
+                                      class="spinner-border spinner-border-sm align-middle ms-2"
+                                    ></span>
+                                  </span>
+                                </div>
+                                <!--end::Spinner-->
+
+                                <!--begin::Label-->
+                                <div class="fs-6 text-gray-900">
+                                  Generating Share Link...
+                                </div>
+                                <!--end::Label-->
                               </div>
-                            </div>
-                            <input
-                              type="text"
-                              class="form-control form-control-sm"
-                              value="https://path/to/file/or/folder/"
-                            />
-                            <div class="text-muted fw-normal mt-2 fs-8 px-3">
-                              Read only.
-                              <a
-                                href="/metronic8/demo62/apps/file-manager/settings/.html"
-                                class="ms-2"
-                                >Change permissions</a
+                              <!--end::Loader-->
+
+                              <!--begin::Link-->
+                              <div
+                                class="d-flex flex-column text-start d-none"
+                                data-kt-filemanger-table="copy_link_result"
                               >
-                            </div>
-                          </div>
-                          <!--end::Link-->
-                        </div>
-                      </div>
-                      <!--end::Card-->
-                    </div>
-                    <!--end::Menu-->
-                  </div>
-                  <!--end::Share link-->
-
-                  <!--begin::More-->
-                  <div class="ms-2">
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-icon btn-light btn-active-light-info"
-                      data-kt-menu-trigger="click"
-                      data-kt-menu-placement="bottom-end"
-                    >
-                      <i class="ki-outline ki-dots-square fs-5 m-0"></i>
-                    </button>
-                    <!--begin::Menu-->
-                    <div
-                      class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-150px py-4"
-                      data-kt-menu="true"
-                    >
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a href="#" class="menu-link px-3"> Download File </a>
-                      </div>
-                      <!--end::Menu item-->
-
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a
-                          href="#"
-                          class="menu-link px-3"
-                          data-kt-filemanager-table="rename"
-                        >
-                          Rename
-                        </a>
-                      </div>
-                      <!--end::Menu item-->
-
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a
-                          href="#"
-                          class="menu-link px-3"
-                          data-kt-filemanager-table-filter="move_row"
-                          data-bs-toggle="modal"
-                          data-bs-target="#kt_modal_move_to_folder"
-                        >
-                          Move to folder
-                        </a>
-                      </div>
-                      <!--end::Menu item-->
-
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a
-                          href="#"
-                          class="menu-link text-danger px-3"
-                          data-kt-filemanager-table-filter="delete_row"
-                        >
-                          Delete
-                        </a>
-                      </div>
-                      <!--end::Menu item-->
-                    </div>
-                    <!--end::Menu-->
-                  </div>
-                  <!--end::More-->
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div
-                  class="form-check form-check-sm form-check-custom form-check-solid"
-                >
-                  <input class="form-check-input" type="checkbox" value="1" />
-                </div>
-              </td>
-              <td>
-                <div class="d-flex align-items-center">
-                  <i class="ki-outline ki-files fs-2x text-info me-4"></i>
-                  <a href="#" class="text-gray-800 text-hover-info"
-                    >security.html</a
-                  >
-                </div>
-              </td>
-              <td>514 KB</td>
-              <td data-order="2025-10-25T17:20:00+03:00">
-                25 Oct 2025, 5:20 pm
-              </td>
-              <td class="text-end" data-kt-filemanager-table="action_dropdown">
-                <div class="d-flex justify-content-end">
-                  <!--begin::Share link-->
-                  <div class="ms-2" data-kt-filemanger-table="copy_link">
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-icon btn-light btn-active-light-info"
-                      data-kt-menu-trigger="click"
-                      data-kt-menu-placement="bottom-end"
-                    >
-                      <i class="ki-outline ki-fasten fs-5 m-0"></i>
-                    </button>
-                    <!--begin::Menu-->
-                    <div
-                      class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-300px"
-                      data-kt-menu="true"
-                    >
-                      <!--begin::Card-->
-                      <div class="card card-flush">
-                        <div class="card-body p-5">
-                          <!--begin::Loader-->
-                          <div
-                            class="d-flex"
-                            data-kt-filemanger-table="copy_link_generator"
-                          >
-                            <!--begin::Spinner-->
-                            <div class="me-5" data-kt-indicator="on">
-                              <span class="indicator-progress">
-                                <span
-                                  class="spinner-border spinner-border-sm align-middle ms-2"
-                                ></span>
-                              </span>
-                            </div>
-                            <!--end::Spinner-->
-
-                            <!--begin::Label-->
-                            <div class="fs-6 text-gray-900">
-                              Generating Share Link...
-                            </div>
-                            <!--end::Label-->
-                          </div>
-                          <!--end::Loader-->
-
-                          <!--begin::Link-->
-                          <div
-                            class="d-flex flex-column text-start d-none"
-                            data-kt-filemanger-table="copy_link_result"
-                          >
-                            <div class="d-flex mb-3">
-                              <i
-                                class="ki-outline ki-check fs-2 text-success me-3"
-                              ></i>
-                              <div class="fs-6 text-gray-900">
-                                Share Link Generated
+                                <div class="d-flex mb-3">
+                                  <i
+                                    class="ki-outline ki-check fs-2 text-success me-3"
+                                  ></i>
+                                  <div class="fs-6 text-gray-900">
+                                    Share Link Generated
+                                  </div>
+                                </div>
+                                <input
+                                  type="text"
+                                  class="form-control form-control-sm"
+                                  value="https://path/to/file/or/folder/"
+                                />
+                                <div class="text-muted fw-normal mt-2 fs-8 px-3">
+                                  Read only.
+                                  <a
+                                    href="/metronic8/demo62/apps/file-manager/settings/.html"
+                                    class="ms-2"
+                                    >Change permissions</a
+                                  >
+                                </div>
                               </div>
-                            </div>
-                            <input
-                              type="text"
-                              class="form-control form-control-sm"
-                              value="https://path/to/file/or/folder/"
-                            />
-                            <div class="text-muted fw-normal mt-2 fs-8 px-3">
-                              Read only.
-                              <a
-                                href="/metronic8/demo62/apps/file-manager/settings/.html"
-                                class="ms-2"
-                                >Change permissions</a
-                              >
+                              <!--end::Link-->
                             </div>
                           </div>
-                          <!--end::Link-->
+                          <!--end::Card-->
                         </div>
+                        <!--end::Menu-->
                       </div>
-                      <!--end::Card-->
-                    </div>
-                    <!--end::Menu-->
-                  </div>
-                  <!--end::Share link-->
+                      <!--end::Share link-->
 
-                  <!--begin::More-->
-                  <div class="ms-2">
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-icon btn-light btn-active-light-info"
-                      data-kt-menu-trigger="click"
-                      data-kt-menu-placement="bottom-end"
-                    >
-                      <i class="ki-outline ki-dots-square fs-5 m-0"></i>
-                    </button>
-                    <!--begin::Menu-->
-                    <div
-                      class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-150px py-4"
-                      data-kt-menu="true"
-                    >
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a href="#" class="menu-link px-3"> Download File </a>
-                      </div>
-                      <!--end::Menu item-->
-
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a
-                          href="#"
-                          class="menu-link px-3"
-                          data-kt-filemanager-table="rename"
+                      <!--begin::More-->
+                      <div class="ms-2">
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-icon btn-light btn-active-light-info"
+                          data-kt-menu-trigger="click"
+                          data-kt-menu-placement="bottom-end"
                         >
-                          Rename
-                        </a>
-                      </div>
-                      <!--end::Menu item-->
-
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a
-                          href="#"
-                          class="menu-link px-3"
-                          data-kt-filemanager-table-filter="move_row"
-                          data-bs-toggle="modal"
-                          data-bs-target="#kt_modal_move_to_folder"
+                          <i class="ki-outline ki-dots-square fs-5 m-0"></i>
+                        </button>
+                        <!--begin::Menu-->
+                        <div
+                          class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-150px py-4"
+                          data-kt-menu="true"
                         >
-                          Move to folder
-                        </a>
-                      </div>
-                      <!--end::Menu item-->
-
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a
-                          href="#"
-                          class="menu-link text-danger px-3"
-                          data-kt-filemanager-table-filter="delete_row"
-                        >
-                          Delete
-                        </a>
-                      </div>
-                      <!--end::Menu item-->
-                    </div>
-                    <!--end::Menu-->
-                  </div>
-                  <!--end::More-->
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div
-                  class="form-check form-check-sm form-check-custom form-check-solid"
-                >
-                  <input class="form-check-input" type="checkbox" value="1" />
-                </div>
-              </td>
-              <td>
-                <div class="d-flex align-items-center">
-                  <i class="ki-outline ki-files fs-2x text-info me-4"></i>
-                  <a href="#" class="text-gray-800 text-hover-info"
-                    >settings.html</a
-                  >
-                </div>
-              </td>
-              <td>475 KB</td>
-              <td data-order="2025-11-10T20:43:00+03:00">
-                10 Nov 2025, 8:43 pm
-              </td>
-              <td class="text-end" data-kt-filemanager-table="action_dropdown">
-                <div class="d-flex justify-content-end">
-                  <!--begin::Share link-->
-                  <div class="ms-2" data-kt-filemanger-table="copy_link">
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-icon btn-light btn-active-light-info"
-                      data-kt-menu-trigger="click"
-                      data-kt-menu-placement="bottom-end"
-                    >
-                      <i class="ki-outline ki-fasten fs-5 m-0"></i>
-                    </button>
-                    <!--begin::Menu-->
-                    <div
-                      class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-300px"
-                      data-kt-menu="true"
-                    >
-                      <!--begin::Card-->
-                      <div class="card card-flush">
-                        <div class="card-body p-5">
-                          <!--begin::Loader-->
-                          <div
-                            class="d-flex"
-                            data-kt-filemanger-table="copy_link_generator"
-                          >
-                            <!--begin::Spinner-->
-                            <div class="me-5" data-kt-indicator="on">
-                              <span class="indicator-progress">
-                                <span
-                                  class="spinner-border spinner-border-sm align-middle ms-2"
-                                ></span>
-                              </span>
-                            </div>
-                            <!--end::Spinner-->
-
-                            <!--begin::Label-->
-                            <div class="fs-6 text-gray-900">
-                              Generating Share Link...
-                            </div>
-                            <!--end::Label-->
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a href="#" class="menu-link px-3"> Download File </a>
                           </div>
-                          <!--end::Loader-->
+                          <!--end::Menu item-->
 
-                          <!--begin::Link-->
-                          <div
-                            class="d-flex flex-column text-start d-none"
-                            data-kt-filemanger-table="copy_link_result"
-                          >
-                            <div class="d-flex mb-3">
-                              <i
-                                class="ki-outline ki-check fs-2 text-success me-3"
-                              ></i>
-                              <div class="fs-6 text-gray-900">
-                                Share Link Generated
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a
+                              href="#"
+                              class="menu-link px-3"
+                              data-kt-filemanager-table="rename"
+                            >
+                              Rename
+                            </a>
+                          </div>
+                          <!--end::Menu item-->
+
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a
+                              href="#"
+                              class="menu-link px-3"
+                              data-kt-filemanager-table-filter="move_row"
+                              data-bs-toggle="modal"
+                              data-bs-target="#kt_modal_move_to_folder"
+                            >
+                              Move to folder
+                            </a>
+                          </div>
+                          <!--end::Menu item-->
+
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a
+                              href="#"
+                              class="menu-link text-danger px-3"
+                              data-kt-filemanager-table-filter="delete_row"
+                            >
+                              Delete
+                            </a>
+                          </div>
+                          <!--end::Menu item-->
+                        </div>
+                        <!--end::Menu-->
+                      </div>
+                      <!--end::More-->
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div
+                      class="form-check form-check-sm form-check-custom form-check-solid"
+                    >
+                      <input class="form-check-input" type="checkbox" value="1" />
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <i class="ki-outline ki-files fs-2x text-info me-4"></i>
+                      <a href="#" class="text-gray-800 text-hover-info"
+                        >overview.html</a
+                      >
+                    </div>
+                  </td>
+                  <td>522 KB</td>
+                  <td data-order="2025-03-10T21:23:00+03:00">
+                    10 Mar 2025, 9:23 pm
+                  </td>
+                  <td class="text-end" data-kt-filemanager-table="action_dropdown">
+                    <div class="d-flex justify-content-end">
+                      <!--begin::Share link-->
+                      <div class="ms-2" data-kt-filemanger-table="copy_link">
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-icon btn-light btn-active-light-info"
+                          data-kt-menu-trigger="click"
+                          data-kt-menu-placement="bottom-end"
+                        >
+                          <i class="ki-outline ki-fasten fs-5 m-0"></i>
+                        </button>
+                        <!--begin::Menu-->
+                        <div
+                          class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-300px"
+                          data-kt-menu="true"
+                        >
+                          <!--begin::Card-->
+                          <div class="card card-flush">
+                            <div class="card-body p-5">
+                              <!--begin::Loader-->
+                              <div
+                                class="d-flex"
+                                data-kt-filemanger-table="copy_link_generator"
+                              >
+                                <!--begin::Spinner-->
+                                <div class="me-5" data-kt-indicator="on">
+                                  <span class="indicator-progress">
+                                    <span
+                                      class="spinner-border spinner-border-sm align-middle ms-2"
+                                    ></span>
+                                  </span>
+                                </div>
+                                <!--end::Spinner-->
+
+                                <!--begin::Label-->
+                                <div class="fs-6 text-gray-900">
+                                  Generating Share Link...
+                                </div>
+                                <!--end::Label-->
                               </div>
-                            </div>
-                            <input
-                              type="text"
-                              class="form-control form-control-sm"
-                              value="https://path/to/file/or/folder/"
-                            />
-                            <div class="text-muted fw-normal mt-2 fs-8 px-3">
-                              Read only.
-                              <a
-                                href="/metronic8/demo62/apps/file-manager/settings/.html"
-                                class="ms-2"
-                                >Change permissions</a
+                              <!--end::Loader-->
+
+                              <!--begin::Link-->
+                              <div
+                                class="d-flex flex-column text-start d-none"
+                                data-kt-filemanger-table="copy_link_result"
                               >
-                            </div>
-                          </div>
-                          <!--end::Link-->
-                        </div>
-                      </div>
-                      <!--end::Card-->
-                    </div>
-                    <!--end::Menu-->
-                  </div>
-                  <!--end::Share link-->
-
-                  <!--begin::More-->
-                  <div class="ms-2">
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-icon btn-light btn-active-light-info"
-                      data-kt-menu-trigger="click"
-                      data-kt-menu-placement="bottom-end"
-                    >
-                      <i class="ki-outline ki-dots-square fs-5 m-0"></i>
-                    </button>
-                    <!--begin::Menu-->
-                    <div
-                      class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-150px py-4"
-                      data-kt-menu="true"
-                    >
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a href="#" class="menu-link px-3"> Download File </a>
-                      </div>
-                      <!--end::Menu item-->
-
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a
-                          href="#"
-                          class="menu-link px-3"
-                          data-kt-filemanager-table="rename"
-                        >
-                          Rename
-                        </a>
-                      </div>
-                      <!--end::Menu item-->
-
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a
-                          href="#"
-                          class="menu-link px-3"
-                          data-kt-filemanager-table-filter="move_row"
-                          data-bs-toggle="modal"
-                          data-bs-target="#kt_modal_move_to_folder"
-                        >
-                          Move to folder
-                        </a>
-                      </div>
-                      <!--end::Menu item-->
-
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a
-                          href="#"
-                          class="menu-link text-danger px-3"
-                          data-kt-filemanager-table-filter="delete_row"
-                        >
-                          Delete
-                        </a>
-                      </div>
-                      <!--end::Menu item-->
-                    </div>
-                    <!--end::Menu-->
-                  </div>
-                  <!--end::More-->
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div
-                  class="form-check form-check-sm form-check-custom form-check-solid"
-                >
-                  <input class="form-check-input" type="checkbox" value="1" />
-                </div>
-              </td>
-              <td>
-                <div class="d-flex align-items-center">
-                  <i class="ki-outline ki-files fs-2x text-info me-4"></i>
-                  <a href="#" class="text-gray-800 text-hover-info"
-                    >statements.html</a
-                  >
-                </div>
-              </td>
-              <td>552 KB</td>
-              <td data-order="2025-03-10T21:23:00+03:00">
-                10 Mar 2025, 9:23 pm
-              </td>
-              <td class="text-end" data-kt-filemanager-table="action_dropdown">
-                <div class="d-flex justify-content-end">
-                  <!--begin::Share link-->
-                  <div class="ms-2" data-kt-filemanger-table="copy_link">
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-icon btn-light btn-active-light-info"
-                      data-kt-menu-trigger="click"
-                      data-kt-menu-placement="bottom-end"
-                    >
-                      <i class="ki-outline ki-fasten fs-5 m-0"></i>
-                    </button>
-                    <!--begin::Menu-->
-                    <div
-                      class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-300px"
-                      data-kt-menu="true"
-                    >
-                      <!--begin::Card-->
-                      <div class="card card-flush">
-                        <div class="card-body p-5">
-                          <!--begin::Loader-->
-                          <div
-                            class="d-flex"
-                            data-kt-filemanger-table="copy_link_generator"
-                          >
-                            <!--begin::Spinner-->
-                            <div class="me-5" data-kt-indicator="on">
-                              <span class="indicator-progress">
-                                <span
-                                  class="spinner-border spinner-border-sm align-middle ms-2"
-                                ></span>
-                              </span>
-                            </div>
-                            <!--end::Spinner-->
-
-                            <!--begin::Label-->
-                            <div class="fs-6 text-gray-900">
-                              Generating Share Link...
-                            </div>
-                            <!--end::Label-->
-                          </div>
-                          <!--end::Loader-->
-
-                          <!--begin::Link-->
-                          <div
-                            class="d-flex flex-column text-start d-none"
-                            data-kt-filemanger-table="copy_link_result"
-                          >
-                            <div class="d-flex mb-3">
-                              <i
-                                class="ki-outline ki-check fs-2 text-success me-3"
-                              ></i>
-                              <div class="fs-6 text-gray-900">
-                                Share Link Generated
+                                <div class="d-flex mb-3">
+                                  <i
+                                    class="ki-outline ki-check fs-2 text-success me-3"
+                                  ></i>
+                                  <div class="fs-6 text-gray-900">
+                                    Share Link Generated
+                                  </div>
+                                </div>
+                                <input
+                                  type="text"
+                                  class="form-control form-control-sm"
+                                  value="https://path/to/file/or/folder/"
+                                />
+                                <div class="text-muted fw-normal mt-2 fs-8 px-3">
+                                  Read only.
+                                  <a
+                                    href="/metronic8/demo62/apps/file-manager/settings/.html"
+                                    class="ms-2"
+                                    >Change permissions</a
+                                  >
+                                </div>
                               </div>
-                            </div>
-                            <input
-                              type="text"
-                              class="form-control form-control-sm"
-                              value="https://path/to/file/or/folder/"
-                            />
-                            <div class="text-muted fw-normal mt-2 fs-8 px-3">
-                              Read only.
-                              <a
-                                href="/metronic8/demo62/apps/file-manager/settings/.html"
-                                class="ms-2"
-                                >Change permissions</a
-                              >
+                              <!--end::Link-->
                             </div>
                           </div>
-                          <!--end::Link-->
+                          <!--end::Card-->
                         </div>
+                        <!--end::Menu-->
                       </div>
-                      <!--end::Card-->
-                    </div>
-                    <!--end::Menu-->
-                  </div>
-                  <!--end::Share link-->
+                      <!--end::Share link-->
 
-                  <!--begin::More-->
-                  <div class="ms-2">
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-icon btn-light btn-active-light-info"
-                      data-kt-menu-trigger="click"
-                      data-kt-menu-placement="bottom-end"
-                    >
-                      <i class="ki-outline ki-dots-square fs-5 m-0"></i>
-                    </button>
-                    <!--begin::Menu-->
-                    <div
-                      class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-150px py-4"
-                      data-kt-menu="true"
-                    >
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a href="#" class="menu-link px-3"> Download File </a>
-                      </div>
-                      <!--end::Menu item-->
-
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a
-                          href="#"
-                          class="menu-link px-3"
-                          data-kt-filemanager-table="rename"
+                      <!--begin::More-->
+                      <div class="ms-2">
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-icon btn-light btn-active-light-info"
+                          data-kt-menu-trigger="click"
+                          data-kt-menu-placement="bottom-end"
                         >
-                          Rename
-                        </a>
-                      </div>
-                      <!--end::Menu item-->
-
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a
-                          href="#"
-                          class="menu-link px-3"
-                          data-kt-filemanager-table-filter="move_row"
-                          data-bs-toggle="modal"
-                          data-bs-target="#kt_modal_move_to_folder"
+                          <i class="ki-outline ki-dots-square fs-5 m-0"></i>
+                        </button>
+                        <!--begin::Menu-->
+                        <div
+                          class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-150px py-4"
+                          data-kt-menu="true"
                         >
-                          Move to folder
-                        </a>
-                      </div>
-                      <!--end::Menu item-->
-
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a
-                          href="#"
-                          class="menu-link text-danger px-3"
-                          data-kt-filemanager-table-filter="delete_row"
-                        >
-                          Delete
-                        </a>
-                      </div>
-                      <!--end::Menu item-->
-                    </div>
-                    <!--end::Menu-->
-                  </div>
-                  <!--end::More-->
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div
-                  class="form-check form-check-sm form-check-custom form-check-solid"
-                >
-                  <input class="form-check-input" type="checkbox" value="1" />
-                </div>
-              </td>
-              <td>
-                <div class="d-flex align-items-center">
-                  <i class="ki-outline ki-files fs-2x text-info me-4"></i>
-                  <a href="#" class="text-gray-800 text-hover-info"
-                    >widgets-1.html</a
-                  >
-                </div>
-              </td>
-              <td>554 KB</td>
-              <td data-order="2025-05-05T06:43:00+03:00">
-                05 May 2025, 6:43 am
-              </td>
-              <td class="text-end" data-kt-filemanager-table="action_dropdown">
-                <div class="d-flex justify-content-end">
-                  <!--begin::Share link-->
-                  <div class="ms-2" data-kt-filemanger-table="copy_link">
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-icon btn-light btn-active-light-info"
-                      data-kt-menu-trigger="click"
-                      data-kt-menu-placement="bottom-end"
-                    >
-                      <i class="ki-outline ki-fasten fs-5 m-0"></i>
-                    </button>
-                    <!--begin::Menu-->
-                    <div
-                      class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-300px"
-                      data-kt-menu="true"
-                    >
-                      <!--begin::Card-->
-                      <div class="card card-flush">
-                        <div class="card-body p-5">
-                          <!--begin::Loader-->
-                          <div
-                            class="d-flex"
-                            data-kt-filemanger-table="copy_link_generator"
-                          >
-                            <!--begin::Spinner-->
-                            <div class="me-5" data-kt-indicator="on">
-                              <span class="indicator-progress">
-                                <span
-                                  class="spinner-border spinner-border-sm align-middle ms-2"
-                                ></span>
-                              </span>
-                            </div>
-                            <!--end::Spinner-->
-
-                            <!--begin::Label-->
-                            <div class="fs-6 text-gray-900">
-                              Generating Share Link...
-                            </div>
-                            <!--end::Label-->
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a href="#" class="menu-link px-3"> Download File </a>
                           </div>
-                          <!--end::Loader-->
+                          <!--end::Menu item-->
 
-                          <!--begin::Link-->
-                          <div
-                            class="d-flex flex-column text-start d-none"
-                            data-kt-filemanger-table="copy_link_result"
-                          >
-                            <div class="d-flex mb-3">
-                              <i
-                                class="ki-outline ki-check fs-2 text-success me-3"
-                              ></i>
-                              <div class="fs-6 text-gray-900">
-                                Share Link Generated
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a
+                              href="#"
+                              class="menu-link px-3"
+                              data-kt-filemanager-table="rename"
+                            >
+                              Rename
+                            </a>
+                          </div>
+                          <!--end::Menu item-->
+
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a
+                              href="#"
+                              class="menu-link px-3"
+                              data-kt-filemanager-table-filter="move_row"
+                              data-bs-toggle="modal"
+                              data-bs-target="#kt_modal_move_to_folder"
+                            >
+                              Move to folder
+                            </a>
+                          </div>
+                          <!--end::Menu item-->
+
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a
+                              href="#"
+                              class="menu-link text-danger px-3"
+                              data-kt-filemanager-table-filter="delete_row"
+                            >
+                              Delete
+                            </a>
+                          </div>
+                          <!--end::Menu item-->
+                        </div>
+                        <!--end::Menu-->
+                      </div>
+                      <!--end::More-->
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div
+                      class="form-check form-check-sm form-check-custom form-check-solid"
+                    >
+                      <input class="form-check-input" type="checkbox" value="1" />
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <i class="ki-outline ki-files fs-2x text-info me-4"></i>
+                      <a href="#" class="text-gray-800 text-hover-info"
+                        >referrals.html</a
+                      >
+                    </div>
+                  </td>
+                  <td>477 KB</td>
+                  <td data-order="2025-10-25T22:10:00+03:00">
+                    25 Oct 2025, 10:10 pm
+                  </td>
+                  <td class="text-end" data-kt-filemanager-table="action_dropdown">
+                    <div class="d-flex justify-content-end">
+                      <!--begin::Share link-->
+                      <div class="ms-2" data-kt-filemanger-table="copy_link">
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-icon btn-light btn-active-light-info"
+                          data-kt-menu-trigger="click"
+                          data-kt-menu-placement="bottom-end"
+                        >
+                          <i class="ki-outline ki-fasten fs-5 m-0"></i>
+                        </button>
+                        <!--begin::Menu-->
+                        <div
+                          class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-300px"
+                          data-kt-menu="true"
+                        >
+                          <!--begin::Card-->
+                          <div class="card card-flush">
+                            <div class="card-body p-5">
+                              <!--begin::Loader-->
+                              <div
+                                class="d-flex"
+                                data-kt-filemanger-table="copy_link_generator"
+                              >
+                                <!--begin::Spinner-->
+                                <div class="me-5" data-kt-indicator="on">
+                                  <span class="indicator-progress">
+                                    <span
+                                      class="spinner-border spinner-border-sm align-middle ms-2"
+                                    ></span>
+                                  </span>
+                                </div>
+                                <!--end::Spinner-->
+
+                                <!--begin::Label-->
+                                <div class="fs-6 text-gray-900">
+                                  Generating Share Link...
+                                </div>
+                                <!--end::Label-->
                               </div>
-                            </div>
-                            <input
-                              type="text"
-                              class="form-control form-control-sm"
-                              value="https://path/to/file/or/folder/"
-                            />
-                            <div class="text-muted fw-normal mt-2 fs-8 px-3">
-                              Read only.
-                              <a
-                                href="/metronic8/demo62/apps/file-manager/settings/.html"
-                                class="ms-2"
-                                >Change permissions</a
+                              <!--end::Loader-->
+
+                              <!--begin::Link-->
+                              <div
+                                class="d-flex flex-column text-start d-none"
+                                data-kt-filemanger-table="copy_link_result"
                               >
-                            </div>
-                          </div>
-                          <!--end::Link-->
-                        </div>
-                      </div>
-                      <!--end::Card-->
-                    </div>
-                    <!--end::Menu-->
-                  </div>
-                  <!--end::Share link-->
-
-                  <!--begin::More-->
-                  <div class="ms-2">
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-icon btn-light btn-active-light-info"
-                      data-kt-menu-trigger="click"
-                      data-kt-menu-placement="bottom-end"
-                    >
-                      <i class="ki-outline ki-dots-square fs-5 m-0"></i>
-                    </button>
-                    <!--begin::Menu-->
-                    <div
-                      class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-150px py-4"
-                      data-kt-menu="true"
-                    >
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a href="#" class="menu-link px-3"> Download File </a>
-                      </div>
-                      <!--end::Menu item-->
-
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a
-                          href="#"
-                          class="menu-link px-3"
-                          data-kt-filemanager-table="rename"
-                        >
-                          Rename
-                        </a>
-                      </div>
-                      <!--end::Menu item-->
-
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a
-                          href="#"
-                          class="menu-link px-3"
-                          data-kt-filemanager-table-filter="move_row"
-                          data-bs-toggle="modal"
-                          data-bs-target="#kt_modal_move_to_folder"
-                        >
-                          Move to folder
-                        </a>
-                      </div>
-                      <!--end::Menu item-->
-
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a
-                          href="#"
-                          class="menu-link text-danger px-3"
-                          data-kt-filemanager-table-filter="delete_row"
-                        >
-                          Delete
-                        </a>
-                      </div>
-                      <!--end::Menu item-->
-                    </div>
-                    <!--end::Menu-->
-                  </div>
-                  <!--end::More-->
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div
-                  class="form-check form-check-sm form-check-custom form-check-solid"
-                >
-                  <input class="form-check-input" type="checkbox" value="1" />
-                </div>
-              </td>
-              <td>
-                <div class="d-flex align-items-center">
-                  <i class="ki-outline ki-files fs-2x text-info me-4"></i>
-                  <a href="#" class="text-gray-800 text-hover-info"
-                    >widgets-2.html</a
-                  >
-                </div>
-              </td>
-              <td>522 KB</td>
-              <td data-order="2025-07-25T06:43:00+03:00">
-                25 Jul 2025, 6:43 am
-              </td>
-              <td class="text-end" data-kt-filemanager-table="action_dropdown">
-                <div class="d-flex justify-content-end">
-                  <!--begin::Share link-->
-                  <div class="ms-2" data-kt-filemanger-table="copy_link">
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-icon btn-light btn-active-light-info"
-                      data-kt-menu-trigger="click"
-                      data-kt-menu-placement="bottom-end"
-                    >
-                      <i class="ki-outline ki-fasten fs-5 m-0"></i>
-                    </button>
-                    <!--begin::Menu-->
-                    <div
-                      class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-300px"
-                      data-kt-menu="true"
-                    >
-                      <!--begin::Card-->
-                      <div class="card card-flush">
-                        <div class="card-body p-5">
-                          <!--begin::Loader-->
-                          <div
-                            class="d-flex"
-                            data-kt-filemanger-table="copy_link_generator"
-                          >
-                            <!--begin::Spinner-->
-                            <div class="me-5" data-kt-indicator="on">
-                              <span class="indicator-progress">
-                                <span
-                                  class="spinner-border spinner-border-sm align-middle ms-2"
-                                ></span>
-                              </span>
-                            </div>
-                            <!--end::Spinner-->
-
-                            <!--begin::Label-->
-                            <div class="fs-6 text-gray-900">
-                              Generating Share Link...
-                            </div>
-                            <!--end::Label-->
-                          </div>
-                          <!--end::Loader-->
-
-                          <!--begin::Link-->
-                          <div
-                            class="d-flex flex-column text-start d-none"
-                            data-kt-filemanger-table="copy_link_result"
-                          >
-                            <div class="d-flex mb-3">
-                              <i
-                                class="ki-outline ki-check fs-2 text-success me-3"
-                              ></i>
-                              <div class="fs-6 text-gray-900">
-                                Share Link Generated
+                                <div class="d-flex mb-3">
+                                  <i
+                                    class="ki-outline ki-check fs-2 text-success me-3"
+                                  ></i>
+                                  <div class="fs-6 text-gray-900">
+                                    Share Link Generated
+                                  </div>
+                                </div>
+                                <input
+                                  type="text"
+                                  class="form-control form-control-sm"
+                                  value="https://path/to/file/or/folder/"
+                                />
+                                <div class="text-muted fw-normal mt-2 fs-8 px-3">
+                                  Read only.
+                                  <a
+                                    href="/metronic8/demo62/apps/file-manager/settings/.html"
+                                    class="ms-2"
+                                    >Change permissions</a
+                                  >
+                                </div>
                               </div>
-                            </div>
-                            <input
-                              type="text"
-                              class="form-control form-control-sm"
-                              value="https://path/to/file/or/folder/"
-                            />
-                            <div class="text-muted fw-normal mt-2 fs-8 px-3">
-                              Read only.
-                              <a
-                                href="/metronic8/demo62/apps/file-manager/settings/.html"
-                                class="ms-2"
-                                >Change permissions</a
-                              >
+                              <!--end::Link-->
                             </div>
                           </div>
-                          <!--end::Link-->
+                          <!--end::Card-->
                         </div>
+                        <!--end::Menu-->
                       </div>
-                      <!--end::Card-->
-                    </div>
-                    <!--end::Menu-->
-                  </div>
-                  <!--end::Share link-->
+                      <!--end::Share link-->
 
-                  <!--begin::More-->
-                  <div class="ms-2">
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-icon btn-light btn-active-light-info"
-                      data-kt-menu-trigger="click"
-                      data-kt-menu-placement="bottom-end"
-                    >
-                      <i class="ki-outline ki-dots-square fs-5 m-0"></i>
-                    </button>
-                    <!--begin::Menu-->
-                    <div
-                      class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-150px py-4"
-                      data-kt-menu="true"
-                    >
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a href="#" class="menu-link px-3"> Download File </a>
-                      </div>
-                      <!--end::Menu item-->
-
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a
-                          href="#"
-                          class="menu-link px-3"
-                          data-kt-filemanager-table="rename"
+                      <!--begin::More-->
+                      <div class="ms-2">
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-icon btn-light btn-active-light-info"
+                          data-kt-menu-trigger="click"
+                          data-kt-menu-placement="bottom-end"
                         >
-                          Rename
-                        </a>
-                      </div>
-                      <!--end::Menu item-->
-
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a
-                          href="#"
-                          class="menu-link px-3"
-                          data-kt-filemanager-table-filter="move_row"
-                          data-bs-toggle="modal"
-                          data-bs-target="#kt_modal_move_to_folder"
+                          <i class="ki-outline ki-dots-square fs-5 m-0"></i>
+                        </button>
+                        <!--begin::Menu-->
+                        <div
+                          class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-150px py-4"
+                          data-kt-menu="true"
                         >
-                          Move to folder
-                        </a>
-                      </div>
-                      <!--end::Menu item-->
-
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a
-                          href="#"
-                          class="menu-link text-danger px-3"
-                          data-kt-filemanager-table-filter="delete_row"
-                        >
-                          Delete
-                        </a>
-                      </div>
-                      <!--end::Menu item-->
-                    </div>
-                    <!--end::Menu-->
-                  </div>
-                  <!--end::More-->
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div
-                  class="form-check form-check-sm form-check-custom form-check-solid"
-                >
-                  <input class="form-check-input" type="checkbox" value="1" />
-                </div>
-              </td>
-              <td>
-                <div class="d-flex align-items-center">
-                  <i class="ki-outline ki-files fs-2x text-info me-4"></i>
-                  <a href="#" class="text-gray-800 text-hover-info"
-                    >widgets-3.html</a
-                  >
-                </div>
-              </td>
-              <td>477 KB</td>
-              <td data-order="2025-06-24T11:30:00+03:00">
-                24 Jun 2025, 11:30 am
-              </td>
-              <td class="text-end" data-kt-filemanager-table="action_dropdown">
-                <div class="d-flex justify-content-end">
-                  <!--begin::Share link-->
-                  <div class="ms-2" data-kt-filemanger-table="copy_link">
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-icon btn-light btn-active-light-info"
-                      data-kt-menu-trigger="click"
-                      data-kt-menu-placement="bottom-end"
-                    >
-                      <i class="ki-outline ki-fasten fs-5 m-0"></i>
-                    </button>
-                    <!--begin::Menu-->
-                    <div
-                      class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-300px"
-                      data-kt-menu="true"
-                    >
-                      <!--begin::Card-->
-                      <div class="card card-flush">
-                        <div class="card-body p-5">
-                          <!--begin::Loader-->
-                          <div
-                            class="d-flex"
-                            data-kt-filemanger-table="copy_link_generator"
-                          >
-                            <!--begin::Spinner-->
-                            <div class="me-5" data-kt-indicator="on">
-                              <span class="indicator-progress">
-                                <span
-                                  class="spinner-border spinner-border-sm align-middle ms-2"
-                                ></span>
-                              </span>
-                            </div>
-                            <!--end::Spinner-->
-
-                            <!--begin::Label-->
-                            <div class="fs-6 text-gray-900">
-                              Generating Share Link...
-                            </div>
-                            <!--end::Label-->
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a href="#" class="menu-link px-3"> Download File </a>
                           </div>
-                          <!--end::Loader-->
+                          <!--end::Menu item-->
 
-                          <!--begin::Link-->
-                          <div
-                            class="d-flex flex-column text-start d-none"
-                            data-kt-filemanger-table="copy_link_result"
-                          >
-                            <div class="d-flex mb-3">
-                              <i
-                                class="ki-outline ki-check fs-2 text-success me-3"
-                              ></i>
-                              <div class="fs-6 text-gray-900">
-                                Share Link Generated
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a
+                              href="#"
+                              class="menu-link px-3"
+                              data-kt-filemanager-table="rename"
+                            >
+                              Rename
+                            </a>
+                          </div>
+                          <!--end::Menu item-->
+
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a
+                              href="#"
+                              class="menu-link px-3"
+                              data-kt-filemanager-table-filter="move_row"
+                              data-bs-toggle="modal"
+                              data-bs-target="#kt_modal_move_to_folder"
+                            >
+                              Move to folder
+                            </a>
+                          </div>
+                          <!--end::Menu item-->
+
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a
+                              href="#"
+                              class="menu-link text-danger px-3"
+                              data-kt-filemanager-table-filter="delete_row"
+                            >
+                              Delete
+                            </a>
+                          </div>
+                          <!--end::Menu item-->
+                        </div>
+                        <!--end::Menu-->
+                      </div>
+                      <!--end::More-->
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div
+                      class="form-check form-check-sm form-check-custom form-check-solid"
+                    >
+                      <input class="form-check-input" type="checkbox" value="1" />
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <i class="ki-outline ki-files fs-2x text-info me-4"></i>
+                      <a href="#" class="text-gray-800 text-hover-info"
+                        >security.html</a
+                      >
+                    </div>
+                  </td>
+                  <td>514 KB</td>
+                  <td data-order="2025-10-25T17:20:00+03:00">
+                    25 Oct 2025, 5:20 pm
+                  </td>
+                  <td class="text-end" data-kt-filemanager-table="action_dropdown">
+                    <div class="d-flex justify-content-end">
+                      <!--begin::Share link-->
+                      <div class="ms-2" data-kt-filemanger-table="copy_link">
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-icon btn-light btn-active-light-info"
+                          data-kt-menu-trigger="click"
+                          data-kt-menu-placement="bottom-end"
+                        >
+                          <i class="ki-outline ki-fasten fs-5 m-0"></i>
+                        </button>
+                        <!--begin::Menu-->
+                        <div
+                          class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-300px"
+                          data-kt-menu="true"
+                        >
+                          <!--begin::Card-->
+                          <div class="card card-flush">
+                            <div class="card-body p-5">
+                              <!--begin::Loader-->
+                              <div
+                                class="d-flex"
+                                data-kt-filemanger-table="copy_link_generator"
+                              >
+                                <!--begin::Spinner-->
+                                <div class="me-5" data-kt-indicator="on">
+                                  <span class="indicator-progress">
+                                    <span
+                                      class="spinner-border spinner-border-sm align-middle ms-2"
+                                    ></span>
+                                  </span>
+                                </div>
+                                <!--end::Spinner-->
+
+                                <!--begin::Label-->
+                                <div class="fs-6 text-gray-900">
+                                  Generating Share Link...
+                                </div>
+                                <!--end::Label-->
                               </div>
-                            </div>
-                            <input
-                              type="text"
-                              class="form-control form-control-sm"
-                              value="https://path/to/file/or/folder/"
-                            />
-                            <div class="text-muted fw-normal mt-2 fs-8 px-3">
-                              Read only.
-                              <a
-                                href="/metronic8/demo62/apps/file-manager/settings/.html"
-                                class="ms-2"
-                                >Change permissions</a
+                              <!--end::Loader-->
+
+                              <!--begin::Link-->
+                              <div
+                                class="d-flex flex-column text-start d-none"
+                                data-kt-filemanger-table="copy_link_result"
                               >
+                                <div class="d-flex mb-3">
+                                  <i
+                                    class="ki-outline ki-check fs-2 text-success me-3"
+                                  ></i>
+                                  <div class="fs-6 text-gray-900">
+                                    Share Link Generated
+                                  </div>
+                                </div>
+                                <input
+                                  type="text"
+                                  class="form-control form-control-sm"
+                                  value="https://path/to/file/or/folder/"
+                                />
+                                <div class="text-muted fw-normal mt-2 fs-8 px-3">
+                                  Read only.
+                                  <a
+                                    href="/metronic8/demo62/apps/file-manager/settings/.html"
+                                    class="ms-2"
+                                    >Change permissions</a
+                                  >
+                                </div>
+                              </div>
+                              <!--end::Link-->
                             </div>
                           </div>
-                          <!--end::Link-->
+                          <!--end::Card-->
                         </div>
+                        <!--end::Menu-->
                       </div>
-                      <!--end::Card-->
-                    </div>
-                    <!--end::Menu-->
-                  </div>
-                  <!--end::Share link-->
+                      <!--end::Share link-->
 
-                  <!--begin::More-->
-                  <div class="ms-2">
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-icon btn-light btn-active-light-info"
-                      data-kt-menu-trigger="click"
-                      data-kt-menu-placement="bottom-end"
-                    >
-                      <i class="ki-outline ki-dots-square fs-5 m-0"></i>
-                    </button>
-                    <!--begin::Menu-->
+                      <!--begin::More-->
+                      <div class="ms-2">
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-icon btn-light btn-active-light-info"
+                          data-kt-menu-trigger="click"
+                          data-kt-menu-placement="bottom-end"
+                        >
+                          <i class="ki-outline ki-dots-square fs-5 m-0"></i>
+                        </button>
+                        <!--begin::Menu-->
+                        <div
+                          class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-150px py-4"
+                          data-kt-menu="true"
+                        >
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a href="#" class="menu-link px-3"> Download File </a>
+                          </div>
+                          <!--end::Menu item-->
+
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a
+                              href="#"
+                              class="menu-link px-3"
+                              data-kt-filemanager-table="rename"
+                            >
+                              Rename
+                            </a>
+                          </div>
+                          <!--end::Menu item-->
+
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a
+                              href="#"
+                              class="menu-link px-3"
+                              data-kt-filemanager-table-filter="move_row"
+                              data-bs-toggle="modal"
+                              data-bs-target="#kt_modal_move_to_folder"
+                            >
+                              Move to folder
+                            </a>
+                          </div>
+                          <!--end::Menu item-->
+
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a
+                              href="#"
+                              class="menu-link text-danger px-3"
+                              data-kt-filemanager-table-filter="delete_row"
+                            >
+                              Delete
+                            </a>
+                          </div>
+                          <!--end::Menu item-->
+                        </div>
+                        <!--end::Menu-->
+                      </div>
+                      <!--end::More-->
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
                     <div
-                      class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-150px py-4"
-                      data-kt-menu="true"
+                      class="form-check form-check-sm form-check-custom form-check-solid"
                     >
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a href="#" class="menu-link px-3"> Download File </a>
-                      </div>
-                      <!--end::Menu item-->
-
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a
-                          href="#"
-                          class="menu-link px-3"
-                          data-kt-filemanager-table="rename"
-                        >
-                          Rename
-                        </a>
-                      </div>
-                      <!--end::Menu item-->
-
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a
-                          href="#"
-                          class="menu-link px-3"
-                          data-kt-filemanager-table-filter="move_row"
-                          data-bs-toggle="modal"
-                          data-bs-target="#kt_modal_move_to_folder"
-                        >
-                          Move to folder
-                        </a>
-                      </div>
-                      <!--end::Menu item-->
-
-                      <!--begin::Menu item-->
-                      <div class="menu-item px-3">
-                        <a
-                          href="#"
-                          class="menu-link text-danger px-3"
-                          data-kt-filemanager-table-filter="delete_row"
-                        >
-                          Delete
-                        </a>
-                      </div>
-                      <!--end::Menu item-->
+                      <input class="form-check-input" type="checkbox" value="1" />
                     </div>
-                    <!--end::Menu-->
-                  </div>
-                  <!--end::More-->
-                </div>
-              </td>
-            </tr>
-          </tbody>
-          <tfoot></tfoot>
-        </table>
-      </div>
-      <div id="" class="row">
-        <div
-          id=""
-          class="col-sm-12 col-md-5 d-flex align-items-center justify-content-center justify-content-md-start dt-toolbar"
-        ></div>
-        <div
-          id=""
-          class="col-sm-12 col-md-7 d-flex align-items-center justify-content-center justify-content-md-end"
-        >
-          <div class="dt-paging paging_simple_numbers">
-            <nav aria-label="pagination">
-              <ul class="pagination">
-                <li class="dt-paging-button page-item disabled">
-                  <button
-                    class="page-link previous"
-                    role="link"
-                    type="button"
-                    aria-controls="kt_file_manager_list"
-                    aria-disabled="true"
-                    aria-label="Previous"
-                    data-dt-idx="previous"
-                    tabindex="-1"
-                  >
-                    <i class="previous"></i>
-                  </button>
-                </li>
-                <li class="dt-paging-button page-item active">
-                  <button
-                    class="page-link"
-                    role="link"
-                    type="button"
-                    aria-controls="kt_file_manager_list"
-                    aria-current="page"
-                    data-dt-idx="0"
-                  >
-                    1
-                  </button>
-                </li>
-                <li class="dt-paging-button page-item">
-                  <button
-                    class="page-link"
-                    role="link"
-                    type="button"
-                    aria-controls="kt_file_manager_list"
-                    data-dt-idx="1"
-                  >
-                    2
-                  </button>
-                </li>
-                <li class="dt-paging-button page-item">
-                  <button
-                    class="page-link"
-                    role="link"
-                    type="button"
-                    aria-controls="kt_file_manager_list"
-                    data-dt-idx="2"
-                  >
-                    3
-                  </button>
-                </li>
-                <li class="dt-paging-button page-item">
-                  <button
-                    class="page-link"
-                    role="link"
-                    type="button"
-                    aria-controls="kt_file_manager_list"
-                    data-dt-idx="3"
-                  >
-                    4
-                  </button>
-                </li>
-                <li class="dt-paging-button page-item">
-                  <button
-                    class="page-link"
-                    role="link"
-                    type="button"
-                    aria-controls="kt_file_manager_list"
-                    data-dt-idx="4"
-                  >
-                    5
-                  </button>
-                </li>
-                <li class="dt-paging-button page-item">
-                  <button
-                    class="page-link"
-                    role="link"
-                    type="button"
-                    aria-controls="kt_file_manager_list"
-                    data-dt-idx="5"
-                  >
-                    6
-                  </button>
-                </li>
-                <li class="dt-paging-button page-item">
-                  <button
-                    class="page-link"
-                    role="link"
-                    type="button"
-                    aria-controls="kt_file_manager_list"
-                    data-dt-idx="6"
-                  >
-                    7
-                  </button>
-                </li>
-                <li class="dt-paging-button page-item">
-                  <button
-                    class="page-link next"
-                    role="link"
-                    type="button"
-                    aria-controls="kt_file_manager_list"
-                    aria-label="Next"
-                    data-dt-idx="next"
-                  >
-                    <i class="next"></i>
-                  </button>
-                </li>
-              </ul>
-            </nav>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <i class="ki-outline ki-files fs-2x text-info me-4"></i>
+                      <a href="#" class="text-gray-800 text-hover-info"
+                        >settings.html</a
+                      >
+                    </div>
+                  </td>
+                  <td>475 KB</td>
+                  <td data-order="2025-11-10T20:43:00+03:00">
+                    10 Nov 2025, 8:43 pm
+                  </td>
+                  <td class="text-end" data-kt-filemanager-table="action_dropdown">
+                    <div class="d-flex justify-content-end">
+                      <!--begin::Share link-->
+                      <div class="ms-2" data-kt-filemanger-table="copy_link">
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-icon btn-light btn-active-light-info"
+                          data-kt-menu-trigger="click"
+                          data-kt-menu-placement="bottom-end"
+                        >
+                          <i class="ki-outline ki-fasten fs-5 m-0"></i>
+                        </button>
+                        <!--begin::Menu-->
+                        <div
+                          class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-300px"
+                          data-kt-menu="true"
+                        >
+                          <!--begin::Card-->
+                          <div class="card card-flush">
+                            <div class="card-body p-5">
+                              <!--begin::Loader-->
+                              <div
+                                class="d-flex"
+                                data-kt-filemanger-table="copy_link_generator"
+                              >
+                                <!--begin::Spinner-->
+                                <div class="me-5" data-kt-indicator="on">
+                                  <span class="indicator-progress">
+                                    <span
+                                      class="spinner-border spinner-border-sm align-middle ms-2"
+                                    ></span>
+                                  </span>
+                                </div>
+                                <!--end::Spinner-->
+
+                                <!--begin::Label-->
+                                <div class="fs-6 text-gray-900">
+                                  Generating Share Link...
+                                </div>
+                                <!--end::Label-->
+                              </div>
+                              <!--end::Loader-->
+
+                              <!--begin::Link-->
+                              <div
+                                class="d-flex flex-column text-start d-none"
+                                data-kt-filemanger-table="copy_link_result"
+                              >
+                                <div class="d-flex mb-3">
+                                  <i
+                                    class="ki-outline ki-check fs-2 text-success me-3"
+                                  ></i>
+                                  <div class="fs-6 text-gray-900">
+                                    Share Link Generated
+                                  </div>
+                                </div>
+                                <input
+                                  type="text"
+                                  class="form-control form-control-sm"
+                                  value="https://path/to/file/or/folder/"
+                                />
+                                <div class="text-muted fw-normal mt-2 fs-8 px-3">
+                                  Read only.
+                                  <a
+                                    href="/metronic8/demo62/apps/file-manager/settings/.html"
+                                    class="ms-2"
+                                    >Change permissions</a
+                                  >
+                                </div>
+                              </div>
+                              <!--end::Link-->
+                            </div>
+                          </div>
+                          <!--end::Card-->
+                        </div>
+                        <!--end::Menu-->
+                      </div>
+                      <!--end::Share link-->
+
+                      <!--begin::More-->
+                      <div class="ms-2">
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-icon btn-light btn-active-light-info"
+                          data-kt-menu-trigger="click"
+                          data-kt-menu-placement="bottom-end"
+                        >
+                          <i class="ki-outline ki-dots-square fs-5 m-0"></i>
+                        </button>
+                        <!--begin::Menu-->
+                        <div
+                          class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-150px py-4"
+                          data-kt-menu="true"
+                        >
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a href="#" class="menu-link px-3"> Download File </a>
+                          </div>
+                          <!--end::Menu item-->
+
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a
+                              href="#"
+                              class="menu-link px-3"
+                              data-kt-filemanager-table="rename"
+                            >
+                              Rename
+                            </a>
+                          </div>
+                          <!--end::Menu item-->
+
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a
+                              href="#"
+                              class="menu-link px-3"
+                              data-kt-filemanager-table-filter="move_row"
+                              data-bs-toggle="modal"
+                              data-bs-target="#kt_modal_move_to_folder"
+                            >
+                              Move to folder
+                            </a>
+                          </div>
+                          <!--end::Menu item-->
+
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a
+                              href="#"
+                              class="menu-link text-danger px-3"
+                              data-kt-filemanager-table-filter="delete_row"
+                            >
+                              Delete
+                            </a>
+                          </div>
+                          <!--end::Menu item-->
+                        </div>
+                        <!--end::Menu-->
+                      </div>
+                      <!--end::More-->
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div
+                      class="form-check form-check-sm form-check-custom form-check-solid"
+                    >
+                      <input class="form-check-input" type="checkbox" value="1" />
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <i class="ki-outline ki-files fs-2x text-info me-4"></i>
+                      <a href="#" class="text-gray-800 text-hover-info"
+                        >statements.html</a
+                      >
+                    </div>
+                  </td>
+                  <td>552 KB</td>
+                  <td data-order="2025-03-10T21:23:00+03:00">
+                    10 Mar 2025, 9:23 pm
+                  </td>
+                  <td class="text-end" data-kt-filemanager-table="action_dropdown">
+                    <div class="d-flex justify-content-end">
+                      <!--begin::Share link-->
+                      <div class="ms-2" data-kt-filemanger-table="copy_link">
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-icon btn-light btn-active-light-info"
+                          data-kt-menu-trigger="click"
+                          data-kt-menu-placement="bottom-end"
+                        >
+                          <i class="ki-outline ki-fasten fs-5 m-0"></i>
+                        </button>
+                        <!--begin::Menu-->
+                        <div
+                          class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-300px"
+                          data-kt-menu="true"
+                        >
+                          <!--begin::Card-->
+                          <div class="card card-flush">
+                            <div class="card-body p-5">
+                              <!--begin::Loader-->
+                              <div
+                                class="d-flex"
+                                data-kt-filemanger-table="copy_link_generator"
+                              >
+                                <!--begin::Spinner-->
+                                <div class="me-5" data-kt-indicator="on">
+                                  <span class="indicator-progress">
+                                    <span
+                                      class="spinner-border spinner-border-sm align-middle ms-2"
+                                    ></span>
+                                  </span>
+                                </div>
+                                <!--end::Spinner-->
+
+                                <!--begin::Label-->
+                                <div class="fs-6 text-gray-900">
+                                  Generating Share Link...
+                                </div>
+                                <!--end::Label-->
+                              </div>
+                              <!--end::Loader-->
+
+                              <!--begin::Link-->
+                              <div
+                                class="d-flex flex-column text-start d-none"
+                                data-kt-filemanger-table="copy_link_result"
+                              >
+                                <div class="d-flex mb-3">
+                                  <i
+                                    class="ki-outline ki-check fs-2 text-success me-3"
+                                  ></i>
+                                  <div class="fs-6 text-gray-900">
+                                    Share Link Generated
+                                  </div>
+                                </div>
+                                <input
+                                  type="text"
+                                  class="form-control form-control-sm"
+                                  value="https://path/to/file/or/folder/"
+                                />
+                                <div class="text-muted fw-normal mt-2 fs-8 px-3">
+                                  Read only.
+                                  <a
+                                    href="/metronic8/demo62/apps/file-manager/settings/.html"
+                                    class="ms-2"
+                                    >Change permissions</a
+                                  >
+                                </div>
+                              </div>
+                              <!--end::Link-->
+                            </div>
+                          </div>
+                          <!--end::Card-->
+                        </div>
+                        <!--end::Menu-->
+                      </div>
+                      <!--end::Share link-->
+
+                      <!--begin::More-->
+                      <div class="ms-2">
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-icon btn-light btn-active-light-info"
+                          data-kt-menu-trigger="click"
+                          data-kt-menu-placement="bottom-end"
+                        >
+                          <i class="ki-outline ki-dots-square fs-5 m-0"></i>
+                        </button>
+                        <!--begin::Menu-->
+                        <div
+                          class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-150px py-4"
+                          data-kt-menu="true"
+                        >
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a href="#" class="menu-link px-3"> Download File </a>
+                          </div>
+                          <!--end::Menu item-->
+
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a
+                              href="#"
+                              class="menu-link px-3"
+                              data-kt-filemanager-table="rename"
+                            >
+                              Rename
+                            </a>
+                          </div>
+                          <!--end::Menu item-->
+
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a
+                              href="#"
+                              class="menu-link px-3"
+                              data-kt-filemanager-table-filter="move_row"
+                              data-bs-toggle="modal"
+                              data-bs-target="#kt_modal_move_to_folder"
+                            >
+                              Move to folder
+                            </a>
+                          </div>
+                          <!--end::Menu item-->
+
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a
+                              href="#"
+                              class="menu-link text-danger px-3"
+                              data-kt-filemanager-table-filter="delete_row"
+                            >
+                              Delete
+                            </a>
+                          </div>
+                          <!--end::Menu item-->
+                        </div>
+                        <!--end::Menu-->
+                      </div>
+                      <!--end::More-->
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div
+                      class="form-check form-check-sm form-check-custom form-check-solid"
+                    >
+                      <input class="form-check-input" type="checkbox" value="1" />
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <i class="ki-outline ki-files fs-2x text-info me-4"></i>
+                      <a href="#" class="text-gray-800 text-hover-info"
+                        >widgets-1.html</a
+                      >
+                    </div>
+                  </td>
+                  <td>554 KB</td>
+                  <td data-order="2025-05-05T06:43:00+03:00">
+                    05 May 2025, 6:43 am
+                  </td>
+                  <td class="text-end" data-kt-filemanager-table="action_dropdown">
+                    <div class="d-flex justify-content-end">
+                      <!--begin::Share link-->
+                      <div class="ms-2" data-kt-filemanger-table="copy_link">
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-icon btn-light btn-active-light-info"
+                          data-kt-menu-trigger="click"
+                          data-kt-menu-placement="bottom-end"
+                        >
+                          <i class="ki-outline ki-fasten fs-5 m-0"></i>
+                        </button>
+                        <!--begin::Menu-->
+                        <div
+                          class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-300px"
+                          data-kt-menu="true"
+                        >
+                          <!--begin::Card-->
+                          <div class="card card-flush">
+                            <div class="card-body p-5">
+                              <!--begin::Loader-->
+                              <div
+                                class="d-flex"
+                                data-kt-filemanger-table="copy_link_generator"
+                              >
+                                <!--begin::Spinner-->
+                                <div class="me-5" data-kt-indicator="on">
+                                  <span class="indicator-progress">
+                                    <span
+                                      class="spinner-border spinner-border-sm align-middle ms-2"
+                                    ></span>
+                                  </span>
+                                </div>
+                                <!--end::Spinner-->
+
+                                <!--begin::Label-->
+                                <div class="fs-6 text-gray-900">
+                                  Generating Share Link...
+                                </div>
+                                <!--end::Label-->
+                              </div>
+                              <!--end::Loader-->
+
+                              <!--begin::Link-->
+                              <div
+                                class="d-flex flex-column text-start d-none"
+                                data-kt-filemanger-table="copy_link_result"
+                              >
+                                <div class="d-flex mb-3">
+                                  <i
+                                    class="ki-outline ki-check fs-2 text-success me-3"
+                                  ></i>
+                                  <div class="fs-6 text-gray-900">
+                                    Share Link Generated
+                                  </div>
+                                </div>
+                                <input
+                                  type="text"
+                                  class="form-control form-control-sm"
+                                  value="https://path/to/file/or/folder/"
+                                />
+                                <div class="text-muted fw-normal mt-2 fs-8 px-3">
+                                  Read only.
+                                  <a
+                                    href="/metronic8/demo62/apps/file-manager/settings/.html"
+                                    class="ms-2"
+                                    >Change permissions</a
+                                  >
+                                </div>
+                              </div>
+                              <!--end::Link-->
+                            </div>
+                          </div>
+                          <!--end::Card-->
+                        </div>
+                        <!--end::Menu-->
+                      </div>
+                      <!--end::Share link-->
+
+                      <!--begin::More-->
+                      <div class="ms-2">
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-icon btn-light btn-active-light-info"
+                          data-kt-menu-trigger="click"
+                          data-kt-menu-placement="bottom-end"
+                        >
+                          <i class="ki-outline ki-dots-square fs-5 m-0"></i>
+                        </button>
+                        <!--begin::Menu-->
+                        <div
+                          class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-150px py-4"
+                          data-kt-menu="true"
+                        >
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a href="#" class="menu-link px-3"> Download File </a>
+                          </div>
+                          <!--end::Menu item-->
+
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a
+                              href="#"
+                              class="menu-link px-3"
+                              data-kt-filemanager-table="rename"
+                            >
+                              Rename
+                            </a>
+                          </div>
+                          <!--end::Menu item-->
+
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a
+                              href="#"
+                              class="menu-link px-3"
+                              data-kt-filemanager-table-filter="move_row"
+                              data-bs-toggle="modal"
+                              data-bs-target="#kt_modal_move_to_folder"
+                            >
+                              Move to folder
+                            </a>
+                          </div>
+                          <!--end::Menu item-->
+
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a
+                              href="#"
+                              class="menu-link text-danger px-3"
+                              data-kt-filemanager-table-filter="delete_row"
+                            >
+                              Delete
+                            </a>
+                          </div>
+                          <!--end::Menu item-->
+                        </div>
+                        <!--end::Menu-->
+                      </div>
+                      <!--end::More-->
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div
+                      class="form-check form-check-sm form-check-custom form-check-solid"
+                    >
+                      <input class="form-check-input" type="checkbox" value="1" />
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <i class="ki-outline ki-files fs-2x text-info me-4"></i>
+                      <a href="#" class="text-gray-800 text-hover-info"
+                        >widgets-2.html</a
+                      >
+                    </div>
+                  </td>
+                  <td>522 KB</td>
+                  <td data-order="2025-07-25T06:43:00+03:00">
+                    25 Jul 2025, 6:43 am
+                  </td>
+                  <td class="text-end" data-kt-filemanager-table="action_dropdown">
+                    <div class="d-flex justify-content-end">
+                      <!--begin::Share link-->
+                      <div class="ms-2" data-kt-filemanger-table="copy_link">
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-icon btn-light btn-active-light-info"
+                          data-kt-menu-trigger="click"
+                          data-kt-menu-placement="bottom-end"
+                        >
+                          <i class="ki-outline ki-fasten fs-5 m-0"></i>
+                        </button>
+                        <!--begin::Menu-->
+                        <div
+                          class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-300px"
+                          data-kt-menu="true"
+                        >
+                          <!--begin::Card-->
+                          <div class="card card-flush">
+                            <div class="card-body p-5">
+                              <!--begin::Loader-->
+                              <div
+                                class="d-flex"
+                                data-kt-filemanger-table="copy_link_generator"
+                              >
+                                <!--begin::Spinner-->
+                                <div class="me-5" data-kt-indicator="on">
+                                  <span class="indicator-progress">
+                                    <span
+                                      class="spinner-border spinner-border-sm align-middle ms-2"
+                                    ></span>
+                                  </span>
+                                </div>
+                                <!--end::Spinner-->
+
+                                <!--begin::Label-->
+                                <div class="fs-6 text-gray-900">
+                                  Generating Share Link...
+                                </div>
+                                <!--end::Label-->
+                              </div>
+                              <!--end::Loader-->
+
+                              <!--begin::Link-->
+                              <div
+                                class="d-flex flex-column text-start d-none"
+                                data-kt-filemanger-table="copy_link_result"
+                              >
+                                <div class="d-flex mb-3">
+                                  <i
+                                    class="ki-outline ki-check fs-2 text-success me-3"
+                                  ></i>
+                                  <div class="fs-6 text-gray-900">
+                                    Share Link Generated
+                                  </div>
+                                </div>
+                                <input
+                                  type="text"
+                                  class="form-control form-control-sm"
+                                  value="https://path/to/file/or/folder/"
+                                />
+                                <div class="text-muted fw-normal mt-2 fs-8 px-3">
+                                  Read only.
+                                  <a
+                                    href="/metronic8/demo62/apps/file-manager/settings/.html"
+                                    class="ms-2"
+                                    >Change permissions</a
+                                  >
+                                </div>
+                              </div>
+                              <!--end::Link-->
+                            </div>
+                          </div>
+                          <!--end::Card-->
+                        </div>
+                        <!--end::Menu-->
+                      </div>
+                      <!--end::Share link-->
+
+                      <!--begin::More-->
+                      <div class="ms-2">
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-icon btn-light btn-active-light-info"
+                          data-kt-menu-trigger="click"
+                          data-kt-menu-placement="bottom-end"
+                        >
+                          <i class="ki-outline ki-dots-square fs-5 m-0"></i>
+                        </button>
+                        <!--begin::Menu-->
+                        <div
+                          class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-150px py-4"
+                          data-kt-menu="true"
+                        >
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a href="#" class="menu-link px-3"> Download File </a>
+                          </div>
+                          <!--end::Menu item-->
+
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a
+                              href="#"
+                              class="menu-link px-3"
+                              data-kt-filemanager-table="rename"
+                            >
+                              Rename
+                            </a>
+                          </div>
+                          <!--end::Menu item-->
+
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a
+                              href="#"
+                              class="menu-link px-3"
+                              data-kt-filemanager-table-filter="move_row"
+                              data-bs-toggle="modal"
+                              data-bs-target="#kt_modal_move_to_folder"
+                            >
+                              Move to folder
+                            </a>
+                          </div>
+                          <!--end::Menu item-->
+
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a
+                              href="#"
+                              class="menu-link text-danger px-3"
+                              data-kt-filemanager-table-filter="delete_row"
+                            >
+                              Delete
+                            </a>
+                          </div>
+                          <!--end::Menu item-->
+                        </div>
+                        <!--end::Menu-->
+                      </div>
+                      <!--end::More-->
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div
+                      class="form-check form-check-sm form-check-custom form-check-solid"
+                    >
+                      <input class="form-check-input" type="checkbox" value="1" />
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <i class="ki-outline ki-files fs-2x text-info me-4"></i>
+                      <a href="#" class="text-gray-800 text-hover-info"
+                        >widgets-3.html</a
+                      >
+                    </div>
+                  </td>
+                  <td>477 KB</td>
+                  <td data-order="2025-06-24T11:30:00+03:00">
+                    24 Jun 2025, 11:30 am
+                  </td>
+                  <td class="text-end" data-kt-filemanager-table="action_dropdown">
+                    <div class="d-flex justify-content-end">
+                      <!--begin::Share link-->
+                      <div class="ms-2" data-kt-filemanger-table="copy_link">
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-icon btn-light btn-active-light-info"
+                          data-kt-menu-trigger="click"
+                          data-kt-menu-placement="bottom-end"
+                        >
+                          <i class="ki-outline ki-fasten fs-5 m-0"></i>
+                        </button>
+                        <!--begin::Menu-->
+                        <div
+                          class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-300px"
+                          data-kt-menu="true"
+                        >
+                          <!--begin::Card-->
+                          <div class="card card-flush">
+                            <div class="card-body p-5">
+                              <!--begin::Loader-->
+                              <div
+                                class="d-flex"
+                                data-kt-filemanger-table="copy_link_generator"
+                              >
+                                <!--begin::Spinner-->
+                                <div class="me-5" data-kt-indicator="on">
+                                  <span class="indicator-progress">
+                                    <span
+                                      class="spinner-border spinner-border-sm align-middle ms-2"
+                                    ></span>
+                                  </span>
+                                </div>
+                                <!--end::Spinner-->
+
+                                <!--begin::Label-->
+                                <div class="fs-6 text-gray-900">
+                                  Generating Share Link...
+                                </div>
+                                <!--end::Label-->
+                              </div>
+                              <!--end::Loader-->
+
+                              <!--begin::Link-->
+                              <div
+                                class="d-flex flex-column text-start d-none"
+                                data-kt-filemanger-table="copy_link_result"
+                              >
+                                <div class="d-flex mb-3">
+                                  <i
+                                    class="ki-outline ki-check fs-2 text-success me-3"
+                                  ></i>
+                                  <div class="fs-6 text-gray-900">
+                                    Share Link Generated
+                                  </div>
+                                </div>
+                                <input
+                                  type="text"
+                                  class="form-control form-control-sm"
+                                  value="https://path/to/file/or/folder/"
+                                />
+                                <div class="text-muted fw-normal mt-2 fs-8 px-3">
+                                  Read only.
+                                  <a
+                                    href="/metronic8/demo62/apps/file-manager/settings/.html"
+                                    class="ms-2"
+                                    >Change permissions</a
+                                  >
+                                </div>
+                              </div>
+                              <!--end::Link-->
+                            </div>
+                          </div>
+                          <!--end::Card-->
+                        </div>
+                        <!--end::Menu-->
+                      </div>
+                      <!--end::Share link-->
+
+                      <!--begin::More-->
+                      <div class="ms-2">
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-icon btn-light btn-active-light-info"
+                          data-kt-menu-trigger="click"
+                          data-kt-menu-placement="bottom-end"
+                        >
+                          <i class="ki-outline ki-dots-square fs-5 m-0"></i>
+                        </button>
+                        <!--begin::Menu-->
+                        <div
+                          class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-info fw-semibold fs-7 w-150px py-4"
+                          data-kt-menu="true"
+                        >
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a href="#" class="menu-link px-3"> Download File </a>
+                          </div>
+                          <!--end::Menu item-->
+
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a
+                              href="#"
+                              class="menu-link px-3"
+                              data-kt-filemanager-table="rename"
+                            >
+                              Rename
+                            </a>
+                          </div>
+                          <!--end::Menu item-->
+
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a
+                              href="#"
+                              class="menu-link px-3"
+                              data-kt-filemanager-table-filter="move_row"
+                              data-bs-toggle="modal"
+                              data-bs-target="#kt_modal_move_to_folder"
+                            >
+                              Move to folder
+                            </a>
+                          </div>
+                          <!--end::Menu item-->
+
+                          <!--begin::Menu item-->
+                          <div class="menu-item px-3">
+                            <a
+                              href="#"
+                              class="menu-link text-danger px-3"
+                              data-kt-filemanager-table-filter="delete_row"
+                            >
+                              Delete
+                            </a>
+                          </div>
+                          <!--end::Menu item-->
+                        </div>
+                        <!--end::Menu-->
+                      </div>
+                      <!--end::More-->
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot></tfoot>
+            </table>
+          </div>
+          <div id="" class="row">
+            <div
+              id=""
+              class="col-sm-12 col-md-5 d-flex align-items-center justify-content-center justify-content-md-start dt-toolbar"
+            ></div>
+            <div
+              id=""
+              class="col-sm-12 col-md-7 d-flex align-items-center justify-content-center justify-content-md-end"
+            >
+              <div class="dt-paging paging_simple_numbers">
+                <nav aria-label="pagination">
+                  <ul class="pagination">
+                    <li class="dt-paging-button page-item disabled">
+                      <button
+                        class="page-link previous"
+                        role="link"
+                        type="button"
+                        aria-controls="kt_file_manager_list"
+                        aria-disabled="true"
+                        aria-label="Previous"
+                        data-dt-idx="previous"
+                        tabindex="-1"
+                      >
+                        <i class="previous"></i>
+                      </button>
+                    </li>
+                    <li class="dt-paging-button page-item active">
+                      <button
+                        class="page-link"
+                        role="link"
+                        type="button"
+                        aria-controls="kt_file_manager_list"
+                        aria-current="page"
+                        data-dt-idx="0"
+                      >
+                        1
+                      </button>
+                    </li>
+                    <li class="dt-paging-button page-item">
+                      <button
+                        class="page-link"
+                        role="link"
+                        type="button"
+                        aria-controls="kt_file_manager_list"
+                        data-dt-idx="1"
+                      >
+                        2
+                      </button>
+                    </li>
+                    <li class="dt-paging-button page-item">
+                      <button
+                        class="page-link"
+                        role="link"
+                        type="button"
+                        aria-controls="kt_file_manager_list"
+                        data-dt-idx="2"
+                      >
+                        3
+                      </button>
+                    </li>
+                    <li class="dt-paging-button page-item">
+                      <button
+                        class="page-link"
+                        role="link"
+                        type="button"
+                        aria-controls="kt_file_manager_list"
+                        data-dt-idx="3"
+                      >
+                        4
+                      </button>
+                    </li>
+                    <li class="dt-paging-button page-item">
+                      <button
+                        class="page-link"
+                        role="link"
+                        type="button"
+                        aria-controls="kt_file_manager_list"
+                        data-dt-idx="4"
+                      >
+                        5
+                      </button>
+                    </li>
+                    <li class="dt-paging-button page-item">
+                      <button
+                        class="page-link"
+                        role="link"
+                        type="button"
+                        aria-controls="kt_file_manager_list"
+                        data-dt-idx="5"
+                      >
+                        6
+                      </button>
+                    </li>
+                    <li class="dt-paging-button page-item">
+                      <button
+                        class="page-link"
+                        role="link"
+                        type="button"
+                        aria-controls="kt_file_manager_list"
+                        data-dt-idx="6"
+                      >
+                        7
+                      </button>
+                    </li>
+                    <li class="dt-paging-button page-item">
+                      <button
+                        class="page-link next"
+                        role="link"
+                        type="button"
+                        aria-controls="kt_file_manager_list"
+                        aria-label="Next"
+                        data-dt-idx="next"
+                      >
+                        <i class="next"></i>
+                      </button>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
           </div>
         </div>
+        <!--end::Table-->
+       
       </div>
+      <!--end::Card body-->
+      <app-package-sidebar [isVisible]="showPackageSidebar"></app-package-sidebar>
     </div>
-    <!--end::Table-->
+    <!--end::Card-->
   </div>
-  <!--end::Card body-->
-</div>

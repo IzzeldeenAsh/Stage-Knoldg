@@ -15,6 +15,7 @@ export class Step1Component extends BaseComponent implements OnInit {
     isFormValid: boolean
   ) => void;
   form: FormGroup;
+  @Input() knowledgeId!:number;
   @Input() defaultValues: Partial<ICreateKnowldege>;
 
   knowledgeTypes = [
@@ -38,7 +39,7 @@ export class Step1Component extends BaseComponent implements OnInit {
     },
     {
       id: 'kt_create_account_form_type_reports',
-      value: 'reports',
+      value: 'report',
       label: 'REPORTS',
       iconName: 'document',
       iconClass: 'text-info',
@@ -61,6 +62,9 @@ export class Step1Component extends BaseComponent implements OnInit {
   }
 
   ngOnInit() {
+    if(this.knowledgeId){
+      
+    }
     this.initForm();
     this.updateParentModel({}, this.checkForm());
 

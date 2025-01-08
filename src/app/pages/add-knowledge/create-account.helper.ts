@@ -12,6 +12,11 @@ interface ICreateKnowldege {
   description:string;
   targetMarket:string;
   customTopic:string;
+  file_name:string;
+  table_of_content:string;
+  price:number;
+  file:any;
+  status:'active'|'inactive';
 }
 
 const inits: ICreateKnowldege = {
@@ -30,7 +35,12 @@ const inits: ICreateKnowldege = {
   economic_block:[],
   description: '',
   targetMarket:'1',
-  customTopic:''
+  customTopic:'',
+  file_name:'',
+  table_of_content:'',
+  price:0,
+  file:null,
+  status:'active'
 };
 
 export { ICreateKnowldege, inits };
