@@ -17,37 +17,45 @@ import { animate, style, transition, trigger } from '@angular/animations';
     ])
   ]
 })
-export class PackageSidebarComponent implements OnInit {
+export class PackageSidebarComponent {
   @Input() isVisible = false;
+  isDragging = false;
   packages: any[] = [];
-  
-  constructor() {}
 
-  ngOnInit(): void {}
+ 
 
   addNewPackage() {
     this.packages.push({
-      id: this.packages.length + 1,
       items: [],
       discount: 0,
       totalPrice: 0
     });
   }
 
-  onDrop(event: any, packageIndex: number) {
-    const item = event.dragData;
-    if (item) {
-      const pkg = this.packages[packageIndex];
-      if (!pkg.items.find((i: any) => i.id === item.id)) {
-        pkg.items.push(item);
-        this.calculatePackageTotal(packageIndex);
-      }
-    }
-  }
-
-  private calculatePackageTotal(packageIndex: number) {
+  updatePackageTotal(packageIndex: number) {
     const pkg = this.packages[packageIndex];
     const subtotal = pkg.items.reduce((sum: number, item: any) => sum + item.price, 0);
-    pkg.totalPrice = subtotal - (subtotal * pkg.discount / 100);
+    pkg.totalPrice = subtotal * (1 - pkg.discount / 100);
   }
+
+  onDrop(event: DragEvent, packageIndex: number): void {
+    event.preventDefault(); // Prevent default behavior
+    const data = event.dataTransfer?.getData('text'); // Extract the dropped item data
+    if (data) {
+      const item = JSON.parse(data); // Parse the data into an object
+      this.packages[packageIndex].items.push(item); // Add the item to the package
+      this.updatePackageTotal(packageIndex); // Recalculate totals
+    }
+    this.isDragging = false;
+  }
+  
+  onDragEnter(): void {
+    this.isDragging = true; // Optional: visual feedback for active drag
+  }
+  
+  onDragLeave(): void {
+    this.isDragging = false;
+  }
+
+  
 }

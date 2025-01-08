@@ -22,3 +22,16 @@
   ::ng-deep table {
     transition: width 0.3s ease;
   }
+
+.cursor-move {
+  cursor: move;
+}
+
+.drag-handle {
+  opacity: 0.5;
+  transition: opacity 0.2s;
+  
+  &:hover {
+    opacity: 1;
+  }
+}

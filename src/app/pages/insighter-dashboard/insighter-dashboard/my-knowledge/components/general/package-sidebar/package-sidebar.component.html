@@ -24,23 +24,27 @@
               
               <div class="card-body">
                 <div class="dropzone-container" 
-                     pDroppable 
-                     (onDrop)="onDrop($event, i)">
-                  <div *ngIf="package.items.length === 0" class="dropzone-placeholder">
-                    <i class="ki-outline ki-abstract-24 fs-3x text-primary mb-3"></i>
-                    <div class="text-gray-600">Drop items here</div>
-                  </div>
-  
-                  <div *ngFor="let item of package.items" class="package-item-card">
-                    <div class="d-flex align-items-center">
-                      <i class="ki-outline ki-document fs-2 text-primary me-3"></i>
-                      <div class="flex-grow-1">
-                        <div class="fw-bold">{{item.name}}</div>
-                        <div class="text-gray-600">{{item.price | currency}}</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                pDroppable 
+                (onDragEnter)="isDragging = true"
+                (onDragLeave)="isDragging = false"
+                (onDrop)="onDrop($event, i)"
+                [ngClass]="{'dropzone-active': isDragging}">
+             <div *ngIf="package.items.length === 0" class="dropzone-placeholder">
+               <i class="ki-outline ki-abstract-24 fs-3x text-primary mb-3"></i>
+               <div class="text-gray-600">Drop items here</div>
+             </div>
+           
+             <div *ngFor="let item of package.items" class="package-item-card">
+               <div class="d-flex align-items-center">
+                 <i class="ki-outline ki-document fs-2 text-primary me-3"></i>
+                 <div class="flex-grow-1">
+                   <div class="fw-bold">{{item.name}}</div>
+                   <div class="text-gray-600">{{item.price | currency}}</div>
+                 </div>
+               </div>
+             </div>
+           </div>
+           
   
                 <div class="package-summary mt-5">
                   <div class="d-flex justify-content-between mb-2">

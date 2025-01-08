@@ -13,8 +13,9 @@
     border: 2px dashed #e4e6ef;
     border-radius: 0.475rem;
     padding: 1rem;
+    transition: all 0.3s;
     
-    &.drag-over {
+    &.dropzone-active {
       border-color: var(--kt-primary);
       background-color: var(--kt-primary-light);
     }

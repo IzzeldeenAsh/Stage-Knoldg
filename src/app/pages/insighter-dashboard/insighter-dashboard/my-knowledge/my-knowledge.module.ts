@@ -10,6 +10,7 @@ import { PostedComponent } from './components/posted/posted.component';
 import { PackagesComponent } from './components/packages/packages.component';
 import { PackageSidebarComponent } from './components/general/package-sidebar/package-sidebar.component';
 import { FormsModule } from '@angular/forms';
+import { DragDropModule } from 'primeng/dragdrop';
 
 const routes: Routes = [
   {
@@ -55,7 +56,8 @@ const routes: Routes = [
     CommonModule,
     RouterModule.forChild(routes),
     TranslationModule,
-    FormsModule
+    FormsModule,
+    DragDropModule
   ]
 })
 export class MyKnowledgeModule { } 
