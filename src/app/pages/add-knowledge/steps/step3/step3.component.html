@@ -77,7 +77,9 @@
   <!-- File Upload -->
   <div class="fv-row mb-10">
     <label class="form-label required">{{"UPLOAD_FILE" | translate}}</label>
-    <div class="file-upload-wrapper">
+    
+    <!-- Show upload input only when no files are present -->
+    <div class="file-upload-wrapper" *ngIf="previewFiles.length === 0">
       <label class="file-upload-label" for="fileInput">
         <i class="ki-duotone ki-file-up fs-3x text-info">
           <span class="path1"></span>
@@ -96,6 +98,7 @@
       />
     </div>
 
+    <!-- File preview section remains the same -->
     <div class="file-preview mt-5" *ngIf="previewFiles.length > 0">
       <div class="file-preview-item" *ngFor="let preview of previewFiles">
         <div class="preview-content">

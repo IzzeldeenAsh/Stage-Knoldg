@@ -161,11 +161,33 @@ export class AddInsightStepsService {
   ): Observable<any> {
     const formData = new FormData();
     formData.append("file_name", request.file_name);
-    formData.append("table_of_content", request.table_of_content);
     formData.append("price", request.price);
-    formData.append("file", request.file);
+    if (request.file) {
+      formData.append("file", request.file);
+    }
     formData.append("status", request.status || "active");
-    // This will act like a PUT request for update 
+
+    // Parse the table of content JSON
+    const tocData = JSON.parse(request.table_of_content);
+    
+    // Loop through chapters and append to formData in the required format
+    tocData.forEach((chapter: any, index: number) => {
+      formData.append(`table_of_content[${index}][chapter][title]`, chapter.chapter.title);
+      formData.append(`table_of_content[${index}][chapter][page]`, chapter.chapter.page.toString());
+      
+      // Handle subchapters
+      chapter.chapter.sub_child.forEach((subChapter: any, subIndex: number) => {
+        formData.append(
+          `table_of_content[${index}][chapter][sub_child][${subIndex}][title]`,
+          subChapter.title
+        );
+        formData.append(
+          `table_of_content[${index}][chapter][sub_child][${subIndex}][page]`,
+          subChapter.page.toString()
+        );
+      });
+    });
+
     if (isUpdate) {
       formData.append("_method", "PUT");
     }
@@ -176,8 +198,13 @@ export class AddInsightStepsService {
     });
 
     this.setLoading(true);
+    
+    const url = isUpdate 
+      ? `${this.apiUrl}/document/${knowledgeId}`
+      : `${this.apiUrl}/document/upload/${knowledgeId}`;
+
     return this.http
-      .post(`${this.apiUrl}/document/upload/${knowledgeId}`, formData, {
+      .post(url, formData, {
         headers,
       })
       .pipe(
@@ -199,7 +226,15 @@ export class AddInsightStepsService {
         headers,
       })
       .pipe(
-        map((res) => res),
+        map((res) => {
+          // Transform the table_of_content to string in each document
+          return {
+            data: res.data.map(doc => ({
+              ...doc,
+              table_of_content: JSON.stringify(doc.table_of_content)
+            }))
+          };
+        }),
         catchError((error) => this.handleError(error)),
         finalize(() => this.setLoading(false))
       );

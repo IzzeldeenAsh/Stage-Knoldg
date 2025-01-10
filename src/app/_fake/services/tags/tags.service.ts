@@ -44,6 +44,13 @@ export interface PaginatedTagResponse {
   };
 }
 
+export interface IndustryTagResponse {
+  data: {
+    id: number;
+    name: string;
+  }[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -153,6 +160,20 @@ updateTag(tagId: number, tag:   { name: { en: string; ar: string }; status: stri
     );
   }
 
+  // Get tags by industry
+  getTagsByIndustry(industryId: number,lang:string): Observable<{id: number, name: string}[]> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Language': lang
+    });
+
+    return this.http.get<IndustryTagResponse>(`${this.insightaHost}/api/common/setting/tag/industry/${industryId}`, { headers })
+      .pipe(
+        map(res => res.data),
+        catchError(error => this.handleError(error))
+      );
+  }
 
   getCategories(): Observable<{ id: string; name: string }[]> {
     const headers = new HttpHeaders({
@@ -164,6 +185,20 @@ updateTag(tagId: number, tag:   { name: { en: string; ar: string }; status: stri
     return this.http.get<{ data: { id: string; name: string }[] }>(`${this.insightaHost}/api/common/setting/tag/category/list`, { headers })
       .pipe(
         map(res => res.data),
+        catchError(error => this.handleError(error))
+      );
+  }
+
+  getSuggestKeywords(industryId: number,lang:string): Observable<string[]> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+
+    return this.http.get<{data: {[key: string]: string}}>(`${this.insightaHost}/api/insighter/library/knowledge/keyword/suggest/${industryId}`, { headers })
+      .pipe(
+        map(res => Object.values(res.data)),
         catchError(error => this.handleError(error))
       );
   }

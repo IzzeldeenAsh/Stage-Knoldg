@@ -8,7 +8,6 @@ import { GeneralComponent } from './components/general/general.component';
 import { ScheduledComponent } from './components/scheduled/scheduled.component';
 import { PostedComponent } from './components/posted/posted.component';
 import { PackagesComponent } from './components/packages/packages.component';
-import { PackageSidebarComponent } from './components/general/package-sidebar/package-sidebar.component';
 import { FormsModule } from '@angular/forms';
 import { DragDropModule } from 'primeng/dragdrop';
 
@@ -49,7 +48,6 @@ const routes: Routes = [
     GeneralComponent,
     ScheduledComponent,
     PostedComponent,
-    PackageSidebarComponent,
     PackagesComponent
   ],
   imports: [

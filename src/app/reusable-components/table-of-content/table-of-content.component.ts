@@ -1,7 +1,8 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { ICreateKnowldege } from 'src/app/pages/add-knowledge/create-account.helper';
 
 @Component({
   selector: 'app-table-of-content',
@@ -21,7 +22,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
     ])
   ]
 })
-export class TableOfContentComponent implements OnInit {
+export class TableOfContentComponent implements OnInit, OnChanges {
   @Input() initialToc: any; // Expecting { chapters: [ { name, index, subChapters: [...] } ] }
   @Output() tocChange = new EventEmitter<any>();
   tocForm: FormGroup;
@@ -44,6 +45,15 @@ export class TableOfContentComponent implements OnInit {
       this.loadChapters(this.initialToc.chapters);
     } else {
       this.addChapter(); // Initialize with one chapter if no initial TOC
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['initialToc'] && changes['initialToc'].currentValue) {
+      const chapters = changes['initialToc'].currentValue.chapters;
+      if (chapters && chapters.length > 0) {
+        this.loadChapters(chapters);
+      }
     }
   }
 

@@ -17,7 +17,7 @@
                     <!-- Chapter Page Index -->
                     <div class="col-md-2">
                         <label class="form-label">Page Index:</label>
-                        <input formControlName="index" type="number" class="form-control" placeholder="Index" />
+                        <input formControlName="index" type="number" min="0" class="form-control" placeholder="Index" />
                         <div *ngIf="chapter.get('index')?.invalid && chapter.get('index')?.touched" class="text-danger">
                             Page index is required.
                         </div>
@@ -46,7 +46,7 @@
                         <!-- Sub Chapter Page Index -->
                         <div class="col-md-2">
                             <label class="form-label">Page Index:</label>
-                            <input formControlName="index" type="number" class="form-control" placeholder="Index" />
+                            <input formControlName="index" type="number" min="0" class="form-control" placeholder="Index" />
                             <div *ngIf="subChapter.get('index')?.invalid && subChapter.get('index')?.touched" class="text-danger">
                                 Page index is required.
                             </div>
@@ -75,4 +75,3 @@
     <!-- Submit Button -->
   
 </form>
-

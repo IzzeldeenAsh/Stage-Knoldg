@@ -15,10 +15,11 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
   knowledgeId!: number;
   account$: BehaviorSubject<ICreateKnowldege> =
     new BehaviorSubject<ICreateKnowldege>(inits);
-  currentStep$: BehaviorSubject<number> = new BehaviorSubject(1);
+  currentStep$: BehaviorSubject<number> = new BehaviorSubject(4);
   isCurrentFormValid$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
     false
   );
+  isLoading = false;
 
   constructor(
     injector: Injector,
@@ -45,6 +46,7 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
 
     // Handle step 2 submission
     if (this.currentStep$.value === 2) {
+      this.isLoading = true;
       const currentAccount = this.account$.value;
       
       // Prepare the knowledge request
@@ -133,85 +135,88 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
           console.log('Knowledge processed successfully', response);
           if (!this.knowledgeId && response.data.knowledge_id) {
             this.knowledgeId = response.data.knowledge_id;
+            this.updateAccount({
+              knowledgeId: response.data.knowledge_id
+            }, true);
           }
           this.currentStep$.next(nextStep);
+          this.isLoading = false;
         },
         error: (error) => {
           this.handleServerErrors(error);
-          // Handle error appropriately
+          this.isLoading = false;
         }
       });
 
       this.unsubscribe.push(submitSub);
-    } else {
-      // Handle step 3 submission
-      if (this.currentStep$.value === 3) {
-        const currentAccount = this.account$.value;
+    } else if (this.currentStep$.value === 3) {
+      this.isLoading = true;
+      const currentAccount = this.account$.value;
 
-        // Optional safeguard: ensure we have knowledgeId from step 2
-        if (!this.knowledgeId) {
-          console.error('No knowledge ID found. Please complete step 2 first.');
-          return;
-        }
-
-        // Check whether we have existing documents (to decide isUpdate)
-        const listDocs$ = this.addInsightStepsService
-          .getListDocumentsInfo(this.knowledgeId);
-
-        const step3Sub = listDocs$
-          .pipe(
-            switchMap((listResponse) => {
-              const documents = listResponse.data || [];
-              const isUpdate = documents.length > 0;
-              const table_of_content = JSON.parse(currentAccount.table_of_content);
-              const chaptersArray = table_of_content.chapters;
-
-              // **Reshape the chaptersArray to the desired structure**
-              const transformedChapters = chaptersArray.map((chapter: any) => ({
-                Chapter: {
-                  title: chapter.name,
-                  page: chapter.index,
-                  sub_child: chapter.subChapters.map((sub: any) => ({
-                    title: sub.name,
-                    page: sub.index,
-                  })),
-                },
-              }));
-
-              const jsonChapters = JSON.stringify(transformedChapters);
-
-              // Construct your AddKnowledgeDocumentRequest
-              const documentRequest: AddKnowledgeDocumentRequest = {
-                file_name: currentAccount.file_name,
-                table_of_content: jsonChapters,
-                price: currentAccount.price?.toString() || '0',
-                file: currentAccount.file,
-                status: currentAccount.status || 'active',
-              };
-
-              return this.addInsightStepsService.step3AddKnowledgeDocument(
-                this.knowledgeId,
-                documentRequest,
-                isUpdate
-              );
-            })
-          )
-          .subscribe({
-            next: (response) => {
-              console.log('Document processed successfully', response);
-              this.currentStep$.next(nextStep); // Move to step 4
-            },
-            error: (error) => {
-              this.handleServerErrors(error);
-              // Handle error appropriately
-            }
-          });
-
-        this.unsubscribe.push(step3Sub);
-      } else {
-        // For other steps, just proceed
-        this.currentStep$.next(nextStep);
+      // Optional safeguard: ensure we have knowledgeId from step 2
+      if (!this.knowledgeId) {
+        console.error('No knowledge ID found. Please complete step 2 first.');
+        return;
       }
+
+      // Check whether we have existing documents (to decide isUpdate)
+      const listDocs$ = this.addInsightStepsService
+        .getListDocumentsInfo(this.knowledgeId);
+
+      const step3Sub = listDocs$
+        .pipe(
+          switchMap((listResponse) => {
+            const documents = listResponse.data || [];
+            const isUpdate = documents.length > 0;
+            const documentId = documents.length > 0 ? documents[0].id : null; // Get the first document's ID
+            const table_of_content = JSON.parse(currentAccount.table_of_content);
+            const chaptersArray = table_of_content.chapters;
+
+            // **Reshape the chaptersArray to the desired structure**
+            const transformedChapters = chaptersArray.map((chapter: any) => ({
+              chapter: {
+                title: chapter.name,
+                page: chapter.index.toString(),
+                sub_child: chapter.subChapters.map((sub: any) => ({
+                  title: sub.name,
+                  page: sub.index.toString(),
+                })),
+              },
+            }));
+
+            const jsonChapters = JSON.stringify(transformedChapters);
+
+            // Construct your AddKnowledgeDocumentRequest
+            const documentRequest: AddKnowledgeDocumentRequest = {
+              file_name: currentAccount.file_name,
+              table_of_content: jsonChapters,
+              price: currentAccount.price?.toString() || '0',
+              file: currentAccount.file,
+              status: currentAccount.status || 'active',
+            };
+            return this.addInsightStepsService.step3AddKnowledgeDocument(
+              isUpdate ? (documentId || this.knowledgeId) : this.knowledgeId, // Use documentId if updating and not null, otherwise use knowledgeId
+              documentRequest,
+              isUpdate
+            );
+          })
+        )
+        .subscribe({
+          next: (response) => {
+            console.log('Document processed successfully', response);
+            this.currentStep$.next(nextStep);
+            this.isLoading = false;
+          },
+          error: (error) => {
+            this.handleServerErrors(error);
+            this.isLoading = false;
+          }
+        });
+
+      this.unsubscribe.push(step3Sub);
+    } else {
+      // For other steps, just proceed without loading state
+      this.currentStep$.next(nextStep);
     }
   }
 

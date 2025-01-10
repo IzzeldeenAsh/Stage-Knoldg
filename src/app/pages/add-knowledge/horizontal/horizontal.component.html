@@ -119,18 +119,24 @@
               <button
                 type="button"
                 class="btn btn-lg btn-primary me-3"
-                [disabled]="!isCurrentFormValid$.value"
+                [disabled]="!isCurrentFormValid$.value || isLoading"
                 (click)="nextStep()"
               >
-                <span class="indicator-label">
+                <span class="indicator-label" >
                   <ng-container *ngIf="currentStep$.value < formsCount - 1">
-                    {{'INSIGHTER_WIZARD.CONTINUE' | translate}} {{ " " }}
-                    <app-keenicon name="arrow-right" class="fs-3 mx-2 me-0"></app-keenicon>
+                    <ng-container *ngIf="!isLoading">
+                      {{'INSIGHTER_WIZARD.CONTINUE' | translate}} {{ " " }}
+                      <app-keenicon name="arrow-right" class="fs-3 mx-2 me-0"></app-keenicon>
+                    </ng-container>
+                    <ng-container *ngIf="isLoading">
+                      {{'COMMON.PLEASE_WAIT' | translate}}<span class="spinner-border spinner-border-sm align-middle mx-2"></span>
+                    </ng-container>
                   </ng-container>
                   <ng-container *ngIf="currentStep$.value === formsCount - 1">
                     {{'INSIGHTER_WIZARD.SUBMIT' | translate}}
                   </ng-container>
                 </span>
+             
               </button>
             </div>
           </ng-container>

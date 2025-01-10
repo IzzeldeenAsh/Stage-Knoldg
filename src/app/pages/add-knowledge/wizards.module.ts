@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { HorizontalComponent } from './horizontal/horizontal.component';
 import { WizardsRoutingModule } from './wizards-routing.module';
@@ -26,6 +26,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { FileUploaderComponent } from 'src/app/reusable-components/file-uploader/file-uploader.component';
 import { TableOfContentComponent } from 'src/app/reusable-components/table-of-content/table-of-content.component';
 import { FileSizePipe } from './steps/step3/file-size.pipe';
+import { TagInputModule } from 'ngx-chips';
 @NgModule({
   declarations: [
     HorizontalComponent,
@@ -41,6 +42,7 @@ import { FileSizePipe } from './steps/step3/file-size.pipe';
     WizardsRoutingModule,
     ReactiveFormsModule,
     EditorModule,
+    FormsModule,
     TranslationModule,
     FileSizePipe,
     FileUploaderComponent,
@@ -52,6 +54,7 @@ import { FileSizePipe } from './steps/step3/file-size.pipe';
     TableOfContentComponent,
     GetHsCodeByIsicComponent,
     InputNumberModule,
+    TagInputModule,
     SharedModule,
     DropdownModule,
     SelectRegionComponent,

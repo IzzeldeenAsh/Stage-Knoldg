@@ -17,13 +17,16 @@ interface ICreateKnowldege {
   price:number;
   file:any;
   status:'active'|'inactive';
+  knowledgeId:number;
+  tag_ids:any[];
+  keywords:any[];
 }
 
 const inits: ICreateKnowldege = {
   knowledgeType: 'data',
   title: '',
   topicId:null,
-  industry:null,
+  industry:1,
   isic_code:null,
   hs_code:null,
   language: {
@@ -40,7 +43,10 @@ const inits: ICreateKnowldege = {
   table_of_content:'',
   price:0,
   file:null,
-  status:'active'
+  status:'active',
+  knowledgeId:0,
+  keywords:[],
+  tag_ids:[]
 };
 
 export { ICreateKnowldege, inits };

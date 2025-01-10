@@ -66,7 +66,7 @@ export class Step3Component extends BaseComponent implements OnInit, OnDestroy {
     this.updateParentModel({}, this.checkForm());
 
     // Load existing document if knowledgeId is present
-    if (this.knowledgeId) {
+    if (this.defaultValues.knowledgeId) {
       this.loadExistingDocument();
     }
 
@@ -93,7 +93,7 @@ export class Step3Component extends BaseComponent implements OnInit, OnDestroy {
    * Loads existing document information if available.
    */
   loadExistingDocument() {
-    this.addInsightStepsService.getListDocumentsInfo(this.knowledgeId).subscribe({
+    this.addInsightStepsService.getListDocumentsInfo(this.defaultValues.knowledgeId ? this.defaultValues.knowledgeId : this.knowledgeId).subscribe({
       next: (response) => {
         if (response.data?.length) {
           const existingDoc: DocumentInfo = response.data[0];
@@ -109,6 +109,7 @@ export class Step3Component extends BaseComponent implements OnInit, OnDestroy {
           if (rawToc) {
             this.parsedToc = this.unreshapeTableOfContent(rawToc);
             this.form.patchValue({ table_of_content: rawToc });
+            this.updateParentModel({ table_of_content: rawToc }, this.checkForm());
           }
 
           // Fetch document URL for preview
@@ -154,9 +155,9 @@ export class Step3Component extends BaseComponent implements OnInit, OnDestroy {
       }
       const chapters = arr.map((item: any) => {
         return {
-          name: item.Chapter?.title || '',
-          index: item.Chapter?.page || 1,
-          subChapters: (item.Chapter?.sub_child || []).map((sub: any) => {
+          name: item.chapter?.title || '',
+          index: item.chapter?.page || 1,
+          subChapters: (item.chapter?.sub_child || []).map((sub: any) => {
             return {
               name: sub.title,
               index: sub.page
@@ -244,9 +245,39 @@ export class Step3Component extends BaseComponent implements OnInit, OnDestroy {
   checkForm() {
     const hasFileFromServer = this.previewFiles.some(p => p.fromServer);
     const hasLocalFile = !!this.form.get('file')?.value;
+    
     if (!this.form.valid) {
       return false;
     }
+
+    // Validate table of content if it exists
+    const tocString = this.form.get('table_of_content')?.value;
+    if (tocString) {
+      try {
+        const tocData = JSON.parse(tocString);
+        if (Array.isArray(tocData)) {
+          // Check each chapter
+          for (const chapter of tocData) {
+            // Validate chapter title and page
+            if (!chapter.chapter?.title?.trim() || !chapter.chapter?.page) {
+              return false;
+            }
+
+            // Validate subchapters if they exist
+            if (chapter.chapter?.sub_child?.length) {
+              for (const subChapter of chapter.chapter.sub_child) {
+                if (!subChapter.title?.trim() || !subChapter.page) {
+                  return false;
+                }
+              }
+            }
+          }
+        }
+      } catch (e) {
+        return false;
+      }
+    }
+
     // Must have either a server document or an uploaded file
     return (hasFileFromServer || hasLocalFile);
   }
