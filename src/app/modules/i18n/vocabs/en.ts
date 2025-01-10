@@ -601,6 +601,9 @@ Your wealth of knowledge is valued and many are eager to learn from it.
   PRICE_REQUIRED: "Price is required",
   TABLE_OF_CONTENT_REQUIRED: "Table of Content is required",
   FILE_NAME_REQUIRED: "File name is required",
+  TAGS_KEYWORDS: "Tags & Keywords",
+  PUBLISH_KNOWLEDGE: "Publish Knowledge",
+  COMPLETED: "Completed"
   }
 };
 

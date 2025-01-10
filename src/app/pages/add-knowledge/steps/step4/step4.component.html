@@ -35,17 +35,14 @@
     </label>
     <tag-input 
       [(ngModel)]="keywords" 
-      [placeholder]="'Add a keyword'" 
-      [secondaryPlaceholder]="'Press enter to add'"
-      [addOnBlur]="true"
+      [secondaryPlaceholder]="'Enter keywords'"
       [ngModelOptions]="{standalone: true}"
-      [addOnPaste]="true"
-      [class]="'keywords-input'"
-      [autocompleteItems]="availableKeywords"
-      [onlyFromAutocomplete]="false"
-      (onAdd)="onKeywordAdded($event)"
-      (onRemove)="onKeywordRemoved($event)"
-    >
+      [separatorKeyCodes]="[188, 13]"
+      [addOnBlur]="true">
+      <tag-input-dropdown
+        [showDropdownIfEmpty]="true"
+        [autocompleteItems]="availableKeywords">
+      </tag-input-dropdown>
     </tag-input>
   </div>
 </form>

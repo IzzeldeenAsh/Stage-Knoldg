@@ -11,7 +11,7 @@ import { BaseComponent } from 'src/app/modules/base.component';
   styleUrls: ['./horizontal.component.scss'],
 })
 export class HorizontalComponent extends BaseComponent implements OnInit {
-  formsCount = 5;
+  formsCount = 6;
   knowledgeId!: number;
   account$: BehaviorSubject<ICreateKnowldege> =
     new BehaviorSubject<ICreateKnowldege>(inits);

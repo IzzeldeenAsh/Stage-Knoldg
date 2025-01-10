@@ -564,7 +564,10 @@ export const locale = {
     TABLE_OF_CONTENT: "جدول المحتويات",
     TABLE_OF_CONTENT_REQUIRED: "جدول المحتويات مطلوب",
     PRICE_REQUIRED: "السعر مطلوب",
-    FILE_NAME_REQUIRED: "اسم الملف مطلوب"
+    FILE_NAME_REQUIRED: "اسم الملف مطلوب",
+    TAGS_KEYWORDS: "العلامات والكلمات الرئيسية",
+    PUBLISH_KNOWLEDGE: "نشر المعرفة",
+    COMPLETED: "الاكتمال"
   }
  
 };

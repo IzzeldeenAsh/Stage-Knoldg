@@ -5,6 +5,7 @@
       id="kt_create_account_stepper"
     >
       <div class="stepper-nav mb-5">
+        
         <div
           class="stepper-item"
           [ngClass]="{
@@ -44,15 +45,21 @@
             completed: currentStep$.value > 4
           }"
         >
-          <h3 class="stepper-title">Billing Details</h3>
+          <h3 class="stepper-title">{{'TAGS_KEYWORDS' | translate}}</h3>
         </div>
 
         <div
           class="stepper-item"
           [ngClass]="{ current: currentStep$.value === 5 }"
         >
-          <h3 class="stepper-title">Completed</h3>
+          <h3 class="stepper-title">{{'PUBLISH_KNOWLEDGE' | translate}}</h3>
         </div>
+        <div
+        class="stepper-item"
+        [ngClass]="{ current: currentStep$.value === 6 }"
+      >
+        <h3 class="stepper-title">{{'COMPLETED' | translate}}</h3>
+      </div>
       </div>
 
       <form
@@ -97,6 +104,10 @@
 
           <ng-container *ngIf="currentStep$.value === 5">
             <app-step5 class="w-100"></app-step5>
+          </ng-container>
+
+          <ng-container *ngIf="currentStep$.value === 6">
+            <app-step6 class="w-100"></app-step6>
           </ng-container>
         </div>
 
