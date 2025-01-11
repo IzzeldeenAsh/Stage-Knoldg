@@ -3,14 +3,12 @@ import {
   FormBuilder,
   FormGroup,
   Validators,
-  ValidatorFn,
-  AbstractControl,
-  ValidationErrors,
 } from "@angular/forms";
 import { Subscription } from "rxjs";
 import { ICreateKnowldege } from "../../create-account.helper";
-import { TagsService, Tag } from "src/app/_fake/services/tags/tags.service";
+import { TagsService } from "src/app/_fake/services/tags/tags.service";
 import { BaseComponent } from "src/app/modules/base.component";
+import { KnowledgeService } from "src/app/_fake/services/knowledge/knowledge.service";
 
 interface Chip {
   id: number;
@@ -23,56 +21,45 @@ interface Chip {
   templateUrl: "./step4.component.html",
   styleUrls: ["./step4.compontent.scss"],
 })
+
 export class Step4Component extends BaseComponent implements OnInit {
   @Input("updateParentModel") updateParentModel: (
     part: Partial<ICreateKnowldege>,
     isFormValid: boolean
   ) => void;
-  form: FormGroup;
   @Input() defaultValues: Partial<ICreateKnowldege>;
-
-  tags: {
-    id: number;
-    name: string;
-  }[] = [];
+  
+  form: FormGroup;
+  tags: { id: number; name: string }[] = [];
   chips: Chip[] = [];
-  set keywords(value: string[]) {
-    this._keywords = value;
-    this.form.patchValue({ keywords: value });
-    this.updateParentModel({ keywords: value }, this.checkForm());
-  }
-  get keywords(): string[] {
-    return this._keywords;
-  }
-  private _keywords: string[] = [];
-
+  keywords: string[] = [];
   availableKeywords: string[] = [];
+
+  // Custom Tag Form Controls
+  customTagForm: FormGroup;
+  isAddingCustomTag: boolean = false;
 
   constructor(
     injector: Injector,
     private fb: FormBuilder,
-    private tagsService: TagsService
+    private tagsService: TagsService,
+    private knowledgeService: KnowledgeService
   ) {
     super(injector);
   }
 
   ngOnInit() {
     this.initForm();
-    this.fetchTags();
-    
-    if (this.defaultValues.industry) {
-      this.loadKeywordSuggestions();
+
+    if (this.defaultValues.knowledgeId) {
+      this.fetchKnowledgeData(this.defaultValues.knowledgeId);
     }
 
-    if (this.defaultValues.keywords) {
-      const cleanKeywords = this.defaultValues.keywords.map((k: any) => 
-        typeof k === 'string' ? k : k.value
-      );
-      this.form.patchValue({ keywords: cleanKeywords });
-      this.updateParentModel({ keywords: cleanKeywords }, this.checkForm());
-    }
-    
-    this.updateParentModel({}, this.checkForm());
+    this.fetchTags();
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe.forEach((sub) => sub.unsubscribe());
   }
 
   initForm() {
@@ -81,51 +68,79 @@ export class Step4Component extends BaseComponent implements OnInit {
       keywords: [this.defaultValues.keywords || []],
     });
 
+    this.customTagForm = this.fb.group({
+      name: ['', Validators.required],
+    });
+
     const formChangesSubscr = this.form.valueChanges.subscribe((val) => {
       this.updateParentModel(val, this.checkForm());
     });
     this.unsubscribe.push(formChangesSubscr);
   }
 
+  fetchKnowledgeData(knowledgeId: number) {
+    this.knowledgeService.getKnowledgeById(knowledgeId).subscribe({
+      next: (response) => {
+        const knowledge = response.data;
+        if (knowledge.tags) {
+          this.defaultValues.tag_ids = knowledge.tags.map(tag => tag.id);
+        }
+        if (knowledge.keywords) {
+          this.defaultValues.keywords = knowledge.keywords;
+        }
+        this.fetchTagsAndSetSelections();
+      },
+      error: (error) => {
+        console.error("Error fetching knowledge data:", error);
+      },
+    });
+  }
+
+  fetchTagsAndSetSelections() {
+    if (!this.defaultValues.industry) return;
+    
+    this.tagsService.getTagsByIndustry(this.defaultValues.industry, this.lang).subscribe({
+      next: (tags) => {
+        this.tags = tags;
+        this.chips = this.tags.map((tag) => ({
+          id: tag.id,
+          label: tag.name,
+          selected: this.defaultValues.tag_ids?.includes(tag.id) || false,
+        }));
+        this.updateParentModel({ tag_ids: this.defaultValues.tag_ids }, this.checkForm());
+      },
+      error: (error) => {
+        console.error("Error fetching tags by industry:", error);
+      },
+    });
+  }
+
   fetchTags() {
     if (this.defaultValues.industry) {
-      const tagSub = this.tagsService
+      this.tagsService
         .getTagsByIndustry(this.defaultValues.industry, this.lang)
         .subscribe({
           next: (tags) => {
             this.tags = tags;
-            // Initialize chips based on fetched tags
             this.chips = this.tags.map((tag) => ({
               id: tag.id,
               label: tag.name,
-              selected: false,
+              selected: this.defaultValues.tag_ids?.includes(tag.id) || false,
             }));
-            // If there are default tags, select them
-            if (
-              this.defaultValues.tag_ids &&
-              this.defaultValues.tag_ids.length > 0
-            ) {
-              this.chips.forEach((chip) => {
-                if (this.defaultValues.tag_ids?.includes(chip.id)) {
-                  chip.selected = true;
-                }
-              });
-              this.updateSelectedTags();
-            }
+            this.updateParentModel({ tag_ids: this.defaultValues.tag_ids }, this.checkForm());
           },
           error: (error) => {
             console.error("Error fetching tags:", error);
           },
         });
-      this.unsubscribe.push(tagSub);
     }
   }
 
   toggleSelection(chip: Chip): void {
     chip.selected = !chip.selected;
     const selectedTagIds = this.chips
-      .filter((chip) => chip.selected)
-      .map((chip) => chip.id);
+      .filter((c) => c.selected)
+      .map((c) => c.id);
 
     this.form.patchValue({ tag_ids: selectedTagIds });
     this.updateParentModel({ tag_ids: selectedTagIds }, this.checkForm());
@@ -146,78 +161,106 @@ export class Step4Component extends BaseComponent implements OnInit {
     this.updateParentModel({ tag_ids: [] }, this.checkForm());
   }
 
-  addKeyword(keyword: string) {
-    const currentKeywords = this.form.get("keywords")?.value || [];
-    if (!currentKeywords.includes(keyword)) {
-      const newKeywords = [...currentKeywords, keyword];
-      this.form.patchValue({ keywords: newKeywords });
-      this.updateParentModel({ keywords: newKeywords }, this.checkForm());
+ 
+
+  checkForm(): boolean {
+    const keywords = this.form.get('keywords')?.value || [];
+    return this.form.valid && keywords.length > 0;
+  }
+
+  // Custom Tag Methods
+  openAddCustomTag() {
+    this.isAddingCustomTag = true;
+  }
+
+  closeAddCustomTag() {
+    this.isAddingCustomTag = false;
+    this.customTagForm.reset();
+  }
+
+  submitCustomTag() {
+    if (this.customTagForm.invalid || !this.defaultValues.industry) {
+      this.customTagForm.markAllAsTouched();
+      return;
     }
+
+    const tagName = this.customTagForm.value.name.trim();
+    const tagRequest = {
+      industry_id: this.defaultValues.industry,
+      name: {
+        en: tagName,
+        ar: tagName,
+      },
+    } as const;
+
+    this.tagsService.createSuggestTag(tagRequest).subscribe({
+      next: (response) => {
+        const newTagId = response.data.tag_id;
+        this.closeAddCustomTag();
+        this.fetchTagsAndSelectNewTag(newTagId);
+      },
+      error: (error) => {
+       this.handleServerErrors(error);
+      },
+    });
   }
 
-  removeKeyword(keyword: string) {
-    const currentKeywords = this.form.get("keywords")?.value || [];
-    const newKeywords = currentKeywords.filter((k: string) => k !== keyword);
+  fetchTagsAndSelectNewTag(newTagId: number) {
+    if (!this.defaultValues.industry) return;
 
-    this.form.patchValue({ keywords: newKeywords });
-    this.updateParentModel({ keywords: newKeywords }, this.checkForm());
-  }
+    this.tagsService.getTagsByIndustry(this.defaultValues.industry, this.lang).subscribe({
+      next: (tags) => {
+        this.tags = tags;
+        this.chips = this.tags.map((tag) => ({
+          id: tag.id,
+          label: tag.name,
+          selected: tag.id === newTagId || (this.defaultValues.tag_ids?.includes(tag.id) ?? false),
+        }));
+        const selectedTagIds = this.chips
+          .filter((c) => c.selected)
+          .map((c) => c.id);
 
-  updateSelectedTags() {
-    const selectedTags = this.chips
-      .filter((chip) => chip.selected)
-      .map((chip) => chip.label);
-    this.form.get("tags")?.setValue(selectedTags);
-  }
-
-  checkForm() {
-    return this.form.valid;
-  }
-
-  onKeywordAdded(event: any) {
-    const newKeyword =
-      typeof event.value === "string" ? event.value : event.value.value;
-    const currentKeywords = (this.form.get("keywords")?.value || []).map(
-      (k: any) => (typeof k === "string" ? k : k.value)
-    );
-
-    // Check for duplicates (case-insensitive)
-    if (
-      !currentKeywords.some(
-        (k: any) => k.toLowerCase() === newKeyword.toLowerCase()
-      )
-    ) {
-      const updatedKeywords = [...currentKeywords, newKeyword];
-      this.form.patchValue({ keywords: updatedKeywords });
-      this.updateParentModel({ keywords: updatedKeywords }, this.checkForm());
-    }
-  }
-
-  onKeywordRemoved(event: any) {
-    const removedKeyword =
-      typeof event.value === "string" ? event.value : event.value.value;
-    const currentKeywords = (this.form.get("keywords")?.value || []).map(
-      (k: any) => (typeof k === "string" ? k : k.value)
-    );
-    const updatedKeywords = currentKeywords.filter(
-      (k: string) => k !== removedKeyword
-    );
-
-    this.form.patchValue({ keywords: updatedKeywords });
-    this.updateParentModel({ keywords: updatedKeywords }, this.checkForm());
-  }
-
-  private loadKeywordSuggestions() {
-    const suggestionsSub = this.tagsService
-      .getSuggestKeywords(this.defaultValues.industry!, this.lang)
-      .subscribe({
-        next: (keywords) => {
-          this.availableKeywords = keywords;
+        this.form.patchValue({ tag_ids: selectedTagIds });
+        this.updateParentModel({ tag_ids: selectedTagIds }, this.checkForm());
+      },
+      error: (error) => {
+        this.handleServerErrors(error);
         },
-        error: (error) => {
-          console.error('Error loading keyword suggestions:', error);
+    });
+  }
+
+  addKeyword(event: any) {
+    // Get current keywords from form control
+    const currentKeywords = this.form.get('keywords')?.value || [];
+    
+    // Update parent model with all keywords
+    this.updateParentModel({
+      keywords: currentKeywords
+    }, this.checkForm());
+  }
+
+  removeKeyword(event: any) {
+    // Get current keywords after removal
+    const currentKeywords = this.form.get('keywords')?.value || [];
+    
+    // Update parent model with remaining keywords
+    this.updateParentModel({
+      keywords: currentKeywords
+    }, this.checkForm());
+  }
+
+  private handleServerErrors(error: any) {
+    if (error.error && error.error.errors) {
+      const serverErrors = error.error.errors;
+      for (const key in serverErrors) {
+        if (serverErrors.hasOwnProperty(key)) {
+          const messages = serverErrors[key];
+         this.showError('',messages.join(", "));
         }
-      });
-    this.unsubscribe.push(suggestionsSub);
+      }
+    } else {
+  
+      this.showError('','An unexpected error occurred.');
+    }
   }
 }

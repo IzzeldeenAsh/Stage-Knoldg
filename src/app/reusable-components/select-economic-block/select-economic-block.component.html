@@ -37,7 +37,7 @@
         </p-multiSelect>
   
         <div class="countries-container" *ngIf="selectedBlocks && selectedBlocks.length > 0">
-          <h5 class="mb-3">Countries in selected blocks:</h5>
+          <h5 class="mb-3">{{ 'COUNTRIES_IN_SELECTED_BLOCKS' | translate }}</h5>
           <div class="d-flex flex-column gap-3 countries-grid">
             <div class="country-item" *ngFor="let block of selectedBlocks">
               <div>
@@ -66,12 +66,12 @@
           <button 
             class="btn btn-secondary me-2" 
             (click)="dialogVisible = false"
-          >Cancel</button>
+          >{{ 'CANCEL' | translate }}</button>
           <button 
             class="btn btn-primary" 
             (click)="onConfirm()"
             [disabled]="!selectedBlocks || selectedBlocks.length === 0"
-          >Confirm</button>
+          >{{ 'CONFIRM' | translate }}</button>
         </div>
       </ng-template>
     </p-dialog>

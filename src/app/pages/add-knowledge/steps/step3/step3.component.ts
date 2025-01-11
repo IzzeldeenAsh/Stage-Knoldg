@@ -6,7 +6,7 @@ import { TranslationService } from 'src/app/modules/i18n/translation.service';
 import { AddInsightStepsService, DocumentInfo } from 'src/app/_fake/services/add-insight-steps/add-insight-steps.service';
 import { ICreateKnowldege } from '../../create-account.helper';
 import { trigger, transition, style, animate } from '@angular/animations';
-
+import { ChangeDetectorRef } from '@angular/core';
 interface FilePreview {
   file: File | null; 
   name: string;
@@ -55,7 +55,7 @@ export class Step3Component extends BaseComponent implements OnInit, OnDestroy {
   constructor(
     injector: Injector,
     private fb: FormBuilder,
-    private translationService: TranslationService,
+    private cdr: ChangeDetectorRef, // Add this,
     private addInsightStepsService: AddInsightStepsService
   ) {
     super(injector);
@@ -110,6 +110,8 @@ export class Step3Component extends BaseComponent implements OnInit, OnDestroy {
             this.parsedToc = this.unreshapeTableOfContent(rawToc);
             this.form.patchValue({ table_of_content: rawToc });
             this.updateParentModel({ table_of_content: rawToc }, this.checkForm());
+            this.updateParentModel(this.form.value, this.checkForm());
+            this.cdr.markForCheck();
           }
 
           // Fetch document URL for preview
@@ -119,14 +121,16 @@ export class Step3Component extends BaseComponent implements OnInit, OnDestroy {
               const preview: FilePreview = {
                 file: null,
                 name: existingDoc.file_name,
-                size: 0,
+                size: existingDoc.file_size || 0,
                 preview: docUrl,
                 type: this.getFileTypeByExtension(existingDoc.file_name),
-                icon: this.getFileIconByExtension(existingDoc.file_name),
+                icon: this.getFileIconByExtension(existingDoc.file_name+'.'+existingDoc.file_extension),
                 docId: existingDoc.id,
                 fromServer: true
               };
               this.previewFiles = [preview];
+
+              this.updateParentModel(this.form.value, this.checkForm());
             },
             error: (err) => {
               console.error('Error fetching document URL:', err);

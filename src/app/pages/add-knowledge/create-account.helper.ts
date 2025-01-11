@@ -8,7 +8,7 @@ interface ICreateKnowldege {
   language:any;
   regions:any[];
   countries:any[];
-  economic_block:number[];
+  economic_blocks:number[];
   description:string;
   targetMarket:string;
   customTopic:string;
@@ -20,13 +20,15 @@ interface ICreateKnowldege {
   knowledgeId:number;
   tag_ids:any[];
   keywords:any[];
+  publish_status:'draft'|'now'|'scheduled';
+  publish_date_time:string
 }
 
 const inits: ICreateKnowldege = {
   knowledgeType: 'data',
   title: '',
   topicId:null,
-  industry:1,
+  industry:null,
   isic_code:null,
   hs_code:null,
   language: {
@@ -35,7 +37,7 @@ const inits: ICreateKnowldege = {
 },
   regions:[],
   countries:[],
-  economic_block:[],
+  economic_blocks:[],
   description: '',
   targetMarket:'1',
   customTopic:'',
@@ -46,7 +48,9 @@ const inits: ICreateKnowldege = {
   status:'active',
   knowledgeId:0,
   keywords:[],
-  tag_ids:[]
+  tag_ids:[],
+  publish_status:'draft',
+  publish_date_time:''
 };
 
 export { ICreateKnowldege, inits };

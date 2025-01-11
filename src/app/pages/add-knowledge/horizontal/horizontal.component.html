@@ -13,7 +13,7 @@
             completed: currentStep$.value > 1
           }"
         >
-          <h3 class="stepper-title">{{'KNOWLEDGE_TYPE' | translate}}</h3>
+          <h3 class="stepper-title fs-6">{{'KNOWLEDGE_TYPE' | translate}}</h3>
         </div>
 
         <div
@@ -23,7 +23,7 @@
             completed: currentStep$.value > 2
           }"
         >
-          <h3 class="stepper-title">{{'KNOWLEDGE_INFO' | translate}}</h3>
+          <h3 class="stepper-title fs-6">{{'KNOWLEDGE_INFO' | translate}}</h3>
         </div>
 
         <div
@@ -33,7 +33,7 @@
             completed: currentStep$.value > 3
           }"
         >
-          <h3 class="stepper-title">
+          <h3 class="stepper-title fs-6">
             {{'KNOWLEDGE_DOCUMENTS' | translate}}
           </h3>
         </div>
@@ -45,20 +45,20 @@
             completed: currentStep$.value > 4
           }"
         >
-          <h3 class="stepper-title">{{'TAGS_KEYWORDS' | translate}}</h3>
+          <h3 class="stepper-title fs-6">{{'TAGS_KEYWORDS' | translate}}</h3>
         </div>
 
         <div
           class="stepper-item"
           [ngClass]="{ current: currentStep$.value === 5 }"
         >
-          <h3 class="stepper-title">{{'PUBLISH_KNOWLEDGE' | translate}}</h3>
+          <h3 class="stepper-title fs-6">{{'PUBLISH_KNOWLEDGE' | translate}}</h3>
         </div>
         <div
         class="stepper-item"
         [ngClass]="{ current: currentStep$.value === 6 }"
       >
-        <h3 class="stepper-title">{{'COMPLETED' | translate}}</h3>
+        <h3 class="stepper-title fs-6">{{'COMPLETED' | translate}}</h3>
       </div>
       </div>
 
@@ -103,17 +103,22 @@
           </ng-container>
 
           <ng-container *ngIf="currentStep$.value === 5">
-            <app-step5 class="w-100"></app-step5>
+            <app-step5 
+            [updateParentModel]="updateAccount"
+            [defaultValues]="account$.value"
+            class="w-100"></app-step5>
           </ng-container>
 
           <ng-container *ngIf="currentStep$.value === 6">
-            <app-step6 class="w-100"></app-step6>
+            <app-step6 
+            [defaultValues]="account$.value"
+            class="w-100"></app-step6>
           </ng-container>
         </div>
 
         <div class="d-flex flex-stack pt-15">
           <div class="mr-2">
-            <ng-container *ngIf="currentStep$.value !== 1">
+            <ng-container *ngIf="currentStep$.value !== 1 && currentStep$.value !== 6">
               <button
                 type="button"
                 class="btn btn-lg btn-light-primary me-3"
@@ -121,6 +126,15 @@
               >
                 <app-keenicon name="arrow-left" class="fs-3 ms-4 me-1"></app-keenicon>
                 {{'INSIGHTER_WIZARD.BACK' | translate}}
+              </button>
+            </ng-container>
+            <ng-container *ngIf="currentStep$.value === 6">
+              <button
+                type="button"
+                class="btn btn-lg btn-primary me-3"
+                routerLink="/app/insighter-dashboard/my-knowledge/general"
+              >
+                {{'VIEW_LIBRARY' | translate}}
               </button>
             </ng-container>
           </div>

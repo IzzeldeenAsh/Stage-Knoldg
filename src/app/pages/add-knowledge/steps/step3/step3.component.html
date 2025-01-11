@@ -85,9 +85,9 @@
           <span class="path1"></span>
           <span class="path2"></span>
         </i>
-        <div class="ms-4">
-          <h3 class="fs-5 fw-bold text-gray-900 mb-1">Drop file here or click to upload</h3>
-          <span class="fs-7 fw-semibold text-info">Upload up to 1 file</span>
+        <div class="mx-4">
+          <h3 class="fs-5 fw-bold text-gray-900 mb-1">{{"UPLOAD_FILE_HERE" | translate}}</h3>
+          <span class="fs-7 fw-semibold text-info">{{"UPLOAD_ONE_FILE" | translate}}</span>
         </div>
       </label>
       <input
@@ -98,22 +98,23 @@
       />
     </div>
 
-    <!-- File preview section remains the same -->
+    <!-- File preview section -->
     <div class="file-preview mt-5" *ngIf="previewFiles.length > 0">
       <div class="file-preview-item" *ngFor="let preview of previewFiles">
         <div class="preview-content">
-          <!-- Image Preview -->
-          <div class="preview-thumbnail" *ngIf="preview.type === 'image'">
-            <img [src]="preview.preview" [alt]="preview.name">
-          </div>
           <!-- File Icon -->
-          <div class="file-icon" *ngIf="preview.type !== 'image'">
+          <div class="file-icon">
             <img [src]="preview.icon" [alt]="preview.type">
           </div>
           <!-- File Details -->
           <div class="preview-details">
             <h4 class="file-name">{{preview.name}}</h4>
-            <span class="file-size">{{preview.size | fileSize}}</span>
+            <span class="file-size">
+              <!-- Show file size if available -->
+              <ng-container *ngIf="preview.size > 0">
+                {{preview.size | fileSize}}
+              </ng-container>
+            </span>
           </div>
           <!-- Remove Button -->
           <button type="button" class="btn btn-danger" (click)="removeFile(preview)">

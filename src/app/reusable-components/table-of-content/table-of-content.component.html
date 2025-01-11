@@ -8,24 +8,24 @@
                 <div class="form-group row mb-6" >
                     <!-- Chapter Name -->
                     <div class="col-md-4">
-                        <label class="form-label">Chapter {{i+1}} Name:</label>
-                        <input formControlName="name" class="form-control mb-2 mb-md-0" placeholder="Enter Chapter name" />
+                        <label class="form-label">{{ 'CHAPTER' | translate }} {{ i+1 }}:</label>
+                        <input formControlName="name" class="form-control mb-2 mb-md-0" placeholder="{{ 'ENTER_CHAPTER_NAME' | translate }}" />
                         <div *ngIf="chapter.get('name')?.invalid && chapter.get('name')?.touched" class="text-danger">
-                            Chapter name is required.
+                           {{'CHAPTER_NAME_REQUIRED' | translate}}
                         </div>
                     </div>
                     <!-- Chapter Page Index -->
                     <div class="col-md-2">
-                        <label class="form-label">Page Index:</label>
-                        <input formControlName="index" type="number" min="0" class="form-control" placeholder="Index" />
+                        <label class="form-label">{{ 'PAGE_INDEX' | translate }}:</label>
+                        <input formControlName="index" type="number" min="0" class="form-control" placeholder="{{ 'INDEX' | translate }}" />
                         <div *ngIf="chapter.get('index')?.invalid && chapter.get('index')?.touched" class="text-danger">
-                            Page index is required.
+                            {{ 'PAGE_INDEX_REQUIRED' | translate }}
                         </div>
                     </div>
                     <!-- Actions -->
                     <div class="col-md-6 d-flex align-items-end">
                         <button type="button" class="btn btn-light-warning mx-2" (click)="addSubChapter(i)">
-                            <i class="ki-duotone ki-plus fs-5"></i> Sub Chapter
+                            <i class="ki-duotone ki-plus fs-5"></i> {{ 'SUB_CHAPTER' | translate }}
                         </button>
                         <button type="button" class="btn btn-light-danger mx-2" (click)="removeChapter(i)">
                             <i class="ki-duotone ki-trash fs-5" ><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></i>
@@ -37,18 +37,18 @@
                     <div *ngFor="let subChapter of getSubChapters(i).controls; let j = index" [formGroupName]="j" class="form-group row mb-6" [@fadeInMoveY]>
                         <!-- Sub Chapter Name -->
                         <div class="col-md-4">
-                            <label class="form-label">Sub Chapter {{j+1}} Name:</label>
-                            <input formControlName="name" class="form-control" placeholder="Enter Sub Chapter name" />
+                            <label class="form-label">{{ 'SUB_CHAPTER' | translate }} {{j+1}} {{ 'NAME' | translate }}:</label>
+                            <input formControlName="name" class="form-control" placeholder="{{ 'ENTER_SUB_CHAPTER_NAME' | translate }}" />
                             <div *ngIf="subChapter.get('name')?.invalid && subChapter.get('name')?.touched" class="text-danger">
-                                Sub Chapter name is required.
+                                {{ 'SUB_CHAPTER_NAME_REQUIRED' | translate }}
                             </div>
                         </div>
                         <!-- Sub Chapter Page Index -->
                         <div class="col-md-2">
-                            <label class="form-label">Page Index:</label>
-                            <input formControlName="index" type="number" min="0" class="form-control" placeholder="Index" />
+                            <label class="form-label">{{ 'PAGE_INDEX' | translate }}:</label>
+                            <input formControlName="index" type="number" min="0" class="form-control" placeholder="{{ 'INDEX' | translate }}" />
                             <div *ngIf="subChapter.get('index')?.invalid && subChapter.get('index')?.touched" class="text-danger">
-                                Page index is required.
+                                {{ 'PAGE_INDEX_REQUIRED' | translate }}
                             </div>
                         </div>
                         <!-- Sub Chapter Actions -->
@@ -64,7 +64,7 @@
             <div class="form-group d-flex justify-content-end " >
                 <button type="button" class="btn btn-flex btn-light-info" (click)="addChapter()">
                     <i class="ki-duotone ki-plus fs-3"></i>
-                    Add Chapter
+                    {{ 'ADD_CHAPTER' | translate }}
                 </button>
             </div>
         </div>

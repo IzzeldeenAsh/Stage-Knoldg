@@ -407,3 +407,13 @@ width:  100vw;
 .select-region-dialog .p-dialog-content{
   overflow: auto !important;
 }
+html[dir="rtl"] .p-accordion-toggle-icon{
+  transform: rotate(180deg)   !important;
+    margin-left: 10px !important;
+    margin-right: 10px !important;
+}
+html[dir="ltr"] .p-accordion-toggle-icon{
+  transform: rotate(0deg) !important;
+    margin-left: 10px !important;
+    margin-right: 10px !important;
+}

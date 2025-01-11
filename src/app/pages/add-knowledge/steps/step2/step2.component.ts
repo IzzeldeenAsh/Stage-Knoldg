@@ -126,7 +126,7 @@ export class Step2Component extends BaseComponent implements OnInit {
       language: [this.defaultValues.language, [Validators.required]],
       targetMarket: [this.defaultValues.targetMarket, [Validators.required]],
       industry: [this.defaultValues.industry, [Validators.required]],
-      economicBlocks: [this.defaultValues.economic_block],
+      economicBlocks: [this.defaultValues.economic_blocks],
       regions: [this.defaultValues.regions],
       countries: [this.defaultValues.countries],
       topicId: [this.defaultValues.topicId, [Validators.required]],
@@ -146,17 +146,42 @@ export class Step2Component extends BaseComponent implements OnInit {
     targetMarketControl?.valueChanges.subscribe(value => {
       const economicBlocksControl = this.form.get('economicBlocks');
       const regionsControl = this.form.get('regions');
+      const countriesControl = this.form.get('countries');
 
       if (value === '1') {
+        // Switching to Economic Blocks
         economicBlocksControl?.setValidators([Validators.required]);
         economicBlocksControl?.updateValueAndValidity();
+        
+        // Clear regions and countries
         regionsControl?.clearValidators();
+        regionsControl?.setValue(null);
+        countriesControl?.setValue(null);
         regionsControl?.updateValueAndValidity();
+        
+        // Update parent with cleared values
+        this.updateParentModel({ 
+          regions: [], 
+          countries: [],
+          economic_blocks: economicBlocksControl?.value 
+        }, this.checkForm());
+
       } else if (value === '2') {
+        // Switching to Regions
         regionsControl?.setValidators([Validators.required]);
         regionsControl?.updateValueAndValidity();
+        
+        // Clear economic blocks
         economicBlocksControl?.clearValidators();
+        economicBlocksControl?.setValue(null);
         economicBlocksControl?.updateValueAndValidity();
+        
+        // Update parent with cleared values
+        this.updateParentModel({ 
+          economic_blocks: [],
+          regions: regionsControl?.value,
+          countries: countriesControl?.value 
+        }, this.checkForm());
       }
     });
 
@@ -254,19 +279,24 @@ export class Step2Component extends BaseComponent implements OnInit {
     this.form.get('economicBlocks')?.setValue(selectedBlocks);
     // Force validation check
     this.form.get('economicBlocks')?.updateValueAndValidity();
-    this.updateParentModel({ economic_block: selectedBlocks }, this.checkForm());
+    this.updateParentModel({ economic_blocks: selectedBlocks }, this.checkForm());
   }
 
   onRegionsSelected(regions: any) {
     console.log("regions", regions);
-    if (regions.regions.length > 0) {
-      this.form.get('regions')?.setValue(regions.regions);
-      this.updateParentModel({ regions: regions.regions }, this.checkForm());
-    }
-    if (regions.countries.length > 0) {
-      this.form.get('countries')?.setValue(regions.countries);
-      this.updateParentModel({ countries: regions.countries }, this.checkForm());
-    }
+    
+    // Update form controls
+    this.form.get('regions')?.setValue(regions.regions);
+    this.form.get('countries')?.setValue(regions.countries);
+    
+    // Consolidate parent model updates
+    this.updateParentModel(
+      { 
+        regions: regions.regions, 
+        countries: regions.countries 
+      }, 
+      this.checkForm()
+    );
   }
 
   onIsicCodeSelected(node: any) {

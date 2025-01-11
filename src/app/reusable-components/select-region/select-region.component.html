@@ -29,7 +29,7 @@
             (change)="toggleSelectRegion(region, $event)"
             id="select-region-{{ region.id }}"
           />
-          <label for="select-region-{{ region.id }}">Select All Countries</label>
+          <label for="select-region-{{ region.id }}">{{ 'SELECT_ALL_COUNTRIES' | translate }}</label>
         </div>
         <div class="countries-container">
         <div class="row">
@@ -61,12 +61,12 @@
       <button 
         class="btn btn-secondary me-2" 
         (click)="dialogVisible = false"
-      >Cancel</button>
+      >{{ 'CANCEL' | translate }}</button>
       <button 
         class="btn btn-primary" 
         (click)="onConfirm()"
         [disabled]="!hasSelections()"
-      >Confirm</button>
+      >{{ 'CONFIRM' | translate }}</button>
     </div>
   </ng-template>
 </p-dialog>

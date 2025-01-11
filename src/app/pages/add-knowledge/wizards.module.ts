@@ -28,6 +28,7 @@ import { TableOfContentComponent } from 'src/app/reusable-components/table-of-co
 import { FileSizePipe } from './steps/step3/file-size.pipe';
 import { TagInputModule } from 'ngx-chips';
 import { Step6Component } from './steps/step6/step6.component';
+import { DialogModule } from 'primeng/dialog';
 @NgModule({
   declarations: [
     HorizontalComponent,
@@ -44,6 +45,7 @@ import { Step6Component } from './steps/step6/step6.component';
     WizardsRoutingModule,
     ReactiveFormsModule,
     EditorModule,
+    DialogModule,
     FormsModule,
     TranslationModule,
     FileSizePipe,

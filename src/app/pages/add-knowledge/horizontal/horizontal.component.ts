@@ -1,7 +1,7 @@
 import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ICreateKnowldege, inits } from '../create-account.helper';
-import { AddInsightStepsService, CreateKnowledgeRequest, SuggestTopicRequest, AddKnowledgeDocumentRequest } from 'src/app/_fake/services/add-insight-steps/add-insight-steps.service';
+import { AddInsightStepsService, CreateKnowledgeRequest, SuggestTopicRequest, AddKnowledgeDocumentRequest, SyncTagsKeywordsRequest, PublishKnowledgeRequest } from 'src/app/_fake/services/add-insight-steps/add-insight-steps.service';
 import { switchMap } from 'rxjs/operators';
 import { BaseComponent } from 'src/app/modules/base.component';
 
@@ -15,7 +15,7 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
   knowledgeId!: number;
   account$: BehaviorSubject<ICreateKnowldege> =
     new BehaviorSubject<ICreateKnowldege>(inits);
-  currentStep$: BehaviorSubject<number> = new BehaviorSubject(4);
+  currentStep$: BehaviorSubject<number> = new BehaviorSubject(5);
   isCurrentFormValid$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
     false
   );
@@ -59,9 +59,16 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
         isic_code_id: currentAccount.isic_code ? currentAccount.isic_code : null,
         hs_code_id: currentAccount.hs_code ? currentAccount.hs_code : null,
         language: currentAccount.language,
-        region: currentAccount.regions || [],
-        country: currentAccount.countries || [],
-        economic_block: currentAccount.economic_block || []
+        // Set region/country or economic_blocks based on targetMarket
+        ...(currentAccount.targetMarket === '2' ? {
+          region: currentAccount.regions || [],
+          country: currentAccount.countries || [],
+          economic_blocks: []
+        } : {
+          region: [],
+          country: [],
+          economic_blocks: currentAccount.economic_blocks || []
+        })
       };
 
       let submitObservable;
@@ -214,10 +221,96 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
         });
 
       this.unsubscribe.push(step3Sub);
+    } else if (this.currentStep$.value === 4) {
+      this.isLoading = true;
+      const currentAccount = this.account$.value;
+
+      // Convert keywords objects to string array
+      const keywordsArray = currentAccount.keywords.map(k => k.value);
+
+      const syncRequest: SyncTagsKeywordsRequest = {
+        keywords: keywordsArray,
+        tag_ids: currentAccount.tag_ids
+      };
+
+      const step4Sub = this.addInsightStepsService
+        .syncTagsKeywords(this.knowledgeId, syncRequest)
+        .subscribe({
+          next: (response) => {
+            console.log('Tags and keywords synced successfully', response);
+            this.currentStep$.next(nextStep);
+            this.isLoading = false;
+          },
+          error: (error) => {
+            this.handleServerErrors(error);
+            this.isLoading = false;
+          }
+        });
+
+      this.unsubscribe.push(step4Sub);
+    } else if (this.currentStep$.value === 5) {
+      this.handleStep5Submission(nextStep);
     } else {
       // For other steps, just proceed without loading state
       this.currentStep$.next(nextStep);
     }
+  }
+
+  /**
+   * Handles the submission logic for Step 5.
+   * @param nextStep The next step number to navigate to.
+   */
+  private handleStep5Submission(nextStep: number) {
+    const currentAccount = this.account$.value;
+    const publishStatus = currentAccount.publish_status;
+
+    if (publishStatus === 'draft') {
+      // Proceed to the next step without publishing
+      this.currentStep$.next(nextStep);
+      return;
+    }
+
+    const publishRequest: PublishKnowledgeRequest = {
+      status: publishStatus === 'now' ? 'published' : 'scheduled',
+      published_at: publishStatus === 'now' ? this.getCurrentDateTime() : currentAccount.publish_date_time
+    };
+
+    this.isLoading = true;
+
+    this.addInsightStepsService.publishKnowledge(this.knowledgeId, publishRequest)
+      .subscribe({
+        next: (response) => {
+          console.log('Knowledge published successfully', response);
+          this.currentStep$.next(nextStep);
+          this.isLoading = false;
+        },
+        error: (error) => {
+          this.handleServerErrors(error);
+          this.isLoading = false;
+        }
+      });
+  }
+
+  /**
+   * Returns the current date and time formatted as "YYYY-MM-DD HH:mm:ss".
+   */
+  private getCurrentDateTime(): string {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = this.padZero(now.getMonth() + 1);
+    const day = this.padZero(now.getDate());
+    const hours = this.padZero(now.getHours());
+    const minutes = this.padZero(now.getMinutes());
+    const seconds = this.padZero(now.getSeconds());
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  }
+
+  /**
+   * Pads a number with a leading zero if it's less than 10.
+   * @param num The number to pad.
+   */
+  private padZero(num: number): string {
+    return num < 10 ? `0${num}` : `${num}`;
   }
 
   prevStep() {

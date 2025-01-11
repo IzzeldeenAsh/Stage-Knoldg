@@ -3,11 +3,12 @@ import { FormBuilder, FormGroup, FormArray, Validators, FormsModule, ReactiveFor
 import { CommonModule } from '@angular/common';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { ICreateKnowldege } from 'src/app/pages/add-knowledge/create-account.helper';
+import { TranslationModule } from 'src/app/modules/i18n';
 
 @Component({
   selector: 'app-table-of-content',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, TranslationModule,ReactiveFormsModule, FormsModule],
   templateUrl: './table-of-content.component.html',
   styleUrls: ['./table-of-content.component.scss'],
   animations: [

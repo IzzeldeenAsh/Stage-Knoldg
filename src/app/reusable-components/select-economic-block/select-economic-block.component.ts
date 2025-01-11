@@ -6,11 +6,12 @@ import { FormsModule } from '@angular/forms';
 import { EconomicBloc, EconomicBlockService } from '../../_fake/services/economic-block/economic-block.service';
 import { InputTextModule } from 'primeng/inputtext';
 import { TruncateTextPipe } from 'src/app/pipes/truncate-pipe/truncate-text.pipe';
+import { TranslationModule } from 'src/app/modules/i18n';
 
 @Component({
   selector: 'app-select-economic-block',
   standalone: true,
-  imports: [CommonModule, DialogModule, MultiSelectModule, TruncateTextPipe,FormsModule, InputTextModule],
+  imports: [CommonModule, TranslationModule, DialogModule, MultiSelectModule, TruncateTextPipe,FormsModule, InputTextModule],
   templateUrl: './select-economic-block.component.html',
   styleUrls: ['./select-economic-block.component.scss']
 })

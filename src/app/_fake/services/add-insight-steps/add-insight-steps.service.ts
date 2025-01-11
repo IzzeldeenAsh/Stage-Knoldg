@@ -15,7 +15,7 @@ export interface CreateKnowledgeRequest {
   language: string;
   region: number[];
   country: number[];
-  economic_block: number[];
+  economic_blocks: number[];
 }
 
 export interface CreateKnowledgeResponse {
@@ -51,6 +51,8 @@ export interface DocumentInfo {
   file_name: string;
   table_of_content: string;
   price: string;
+  file_size: number;
+  file_extension: string;
 }
 
 export interface DocumentListResponse {
@@ -61,6 +63,16 @@ export interface DocumentUrlResponse {
   data: {
     url: string;
   };
+}
+
+export interface SyncTagsKeywordsRequest {
+  keywords: string[];
+  tag_ids: string[];
+}
+
+export interface PublishKnowledgeRequest {
+  status: string;
+  published_at: string;
 }
 
 @Injectable({
@@ -267,6 +279,44 @@ export class AddInsightStepsService {
     this.setLoading(true);
     return this.http
       .delete(`${this.apiUrl}/document/${documentId}`, {
+        headers,
+      })
+      .pipe(
+        map((res) => res),
+        catchError((error) => this.handleError(error)),
+        finalize(() => this.setLoading(false))
+      );
+  }
+
+  syncTagsKeywords(knowledgeId: number, request: SyncTagsKeywordsRequest): Observable<any> {
+    const headers = new HttpHeaders({
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "Accept-Language": this.currentLang,
+    });
+
+    this.setLoading(true);
+    return this.http
+      .put(`${this.apiUrl}/tag-keyword/sync/${knowledgeId}`, request, {
+        headers,
+      })
+      .pipe(
+        map((res) => res),
+        catchError((error) => this.handleError(error)),
+        finalize(() => this.setLoading(false))
+      );
+  }
+
+  publishKnowledge(knowledgeId: number, request: PublishKnowledgeRequest): Observable<any> {
+    const headers = new HttpHeaders({
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "Accept-Language": this.currentLang,
+    });
+
+    this.setLoading(true);
+    return this.http
+      .put(`${this.apiUrl}/status/${knowledgeId}`, request, {
         headers,
       })
       .pipe(

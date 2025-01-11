@@ -6,10 +6,11 @@ import { RegionsService, Continent, Country } from '../../_fake/services/region/
 import { InputTextModule } from 'primeng/inputtext';
 import { TruncateTextPipe } from 'src/app/pipes/truncate-pipe/truncate-text.pipe';
 import { AccordionModule } from 'primeng/accordion';
+import { TranslationModule } from 'src/app/modules/i18n';
 @Component({
   selector: 'app-select-region',
   standalone: true,
-  imports: [CommonModule, DialogModule, TruncateTextPipe, FormsModule, InputTextModule,AccordionModule],
+  imports: [CommonModule, DialogModule, TranslationModule,TruncateTextPipe, FormsModule, InputTextModule,AccordionModule],
   templateUrl: './select-region.component.html',
   styleUrls: ['./select-region.component.scss']
 })
