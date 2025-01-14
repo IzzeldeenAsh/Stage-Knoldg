@@ -1,133 +1,210 @@
 <div class="pb-10 pb-lg-12">
-  <h2 class="fw-bolder text-gray-900">{{"KNOWLEDGE_DOCUMENTS" | translate}}</h2>
+  <h2 class="fw-bolder text-gray-900">
+    <ng-container *ngIf="defaultValues.knowledgeType === 'course'"> 
+      {{"COURSE_DOCUMENTS" | translate}}
+    </ng-container>
+    <ng-container *ngIf="defaultValues.knowledgeType === 'media'"> 
+      {{"MEDIA_DOCUMENTS" | translate}}
+    </ng-container>
+    <ng-container *ngIf="defaultValues.knowledgeType === 'data'"> 
+      {{"DATA_DOCUMENTS" | translate}}
+    </ng-container>
+    <ng-container *ngIf="defaultValues.knowledgeType === 'report'"> 
+      {{"REPORT_DOCUMENTS" | translate}}
+    </ng-container>
+    <ng-container *ngIf="defaultValues.knowledgeType === 'manual'"> 
+      {{"MANUAL_DOCUMENTS" | translate}}
+    </ng-container>
+    <ng-container *ngIf="defaultValues.knowledgeType === 'insight'"> 
+      {{"INSIGHT_DOCUMENTS" | translate}}
+    </ng-container>
+  </h2>
   <div class="text-gray-500 fw-bold fs-6">
     {{'IF_NEED_MORE_INFO' | translate}}
     <a href="#" class="link-primary fw-bolder">{{'HELP_PAGE' | translate}}</a>.
   </div>
 </div>
 
-<div [formGroup]="form">
-  <!-- File Name -->
-  <div class="fv-row mb-10">
-    <label class="form-label required">{{"FILE_NAME" | translate}}</label>
-    <input
-      type="text"
-      pInputText
-      formControlName="file_name"
-      class="w-100"
-      placeholder="{{'ENTER_FILE_NAME' | translate}}"
-    />
-    <small
-      *ngIf="
-        form.get('file_name')?.hasError('required') &&
-        form.get('file_name')?.touched
-      "
-      class="p-error"
-    >
-      {{'FILE_NAME_REQUIRED' | translate}}
-    </small>
-  </div>
+<button type="button" class="btn btn-primary" (click)="openDocumentDialog()">
+  <i class="ki-duotone ki-plus fs-2"></i>
+ <ng-container *ngIf="defaultValues.knowledgeType === 'course'"> 
+  {{"ADD_DOCUMENT" | translate}}
+ </ng-container>
+ <ng-container *ngIf="defaultValues.knowledgeType === 'media'"> 
+  {{"ADD_MEDIA_FILE" | translate}}
+ </ng-container>
+ <ng-container *ngIf="defaultValues.knowledgeType === 'data'"> 
+  {{"ADD_NODE" | translate}}
+ </ng-container>
+ <ng-container *ngIf="defaultValues.knowledgeType === 'report'"> 
+  {{"ADD_CHAPTER" | translate}}
+ </ng-container>
+ <ng-container *ngIf="defaultValues.knowledgeType === 'manual'"> 
+  {{"ADD_CHAPTER" | translate}}
+ </ng-container>
+ <ng-container *ngIf="defaultValues.knowledgeType === 'insight'"> 
+  {{"ADD_DOCUMENT" | translate}}
+ </ng-container>
+</button>
 
-  <!-- Table of Content -->
-  <div class="fv-row mb-10">
-    <div class="card">
-      <div class="card-header min-h-10px px-5 py-5">
-        <label class="form-label required">{{"TABLE_OF_CONTENT" | translate}}</label>
-      </div>
-      <div class="card-body">
-        <app-table-of-content
-          [initialToc]="parsedToc"
-          (tocChange)="handleTocChange($event)"
-        ></app-table-of-content>
-      </div>
-    </div>
-  </div>
-
-  <!-- Price -->
-  <div class="fv-row mb-10">
-    <label class="form-label required">{{"PRICE" | translate}}</label>
-    <p-inputNumber
-      formControlName="price"
-      class="w-100"
-      mode="currency"
-      currency="USD"
-      [min]="0"
-      placeholder="{{'ENTER_PRICE' | translate}}"
-    ></p-inputNumber>
-    <small
-      *ngIf="
-        form.get('price')?.hasError('required') &&
-        form.get('price')?.touched
-      "
-      class="p-error"
-    >
-      {{'PRICE_REQUIRED' | translate}}
-    </small>
-    <small
-      *ngIf="
-        form.get('price')?.hasError('min') &&
-        form.get('price')?.touched
-      "
-      class="p-error"
-    >
-      {{'PRICE_MINIMUM' | translate}}
-    </small>
-  </div>
-
-  <!-- File Upload -->
-  <div class="fv-row mb-10">
-    <label class="form-label required">{{"UPLOAD_FILE" | translate}}</label>
-    
-    <!-- Show upload input only when no files are present -->
-    <div class="file-upload-wrapper" *ngIf="previewFiles.length === 0">
-      <label class="file-upload-label" for="fileInput">
-        <i class="ki-duotone ki-file-up fs-3x text-info">
-          <span class="path1"></span>
-          <span class="path2"></span>
-        </i>
-        <div class="mx-4">
-          <h3 class="fs-5 fw-bold text-gray-900 mb-1">{{"UPLOAD_FILE_HERE" | translate}}</h3>
-          <span class="fs-7 fw-semibold text-info">{{"UPLOAD_ONE_FILE" | translate}}</span>
+<!-- Display the list of documents as cards -->
+<div class="row mt-5">
+  <div class="col-6 col-12 mb-5 position-relative" *ngFor="let doc of documents; let i = index">
+    <div class="card start-now-bg d-flex flex-column gap-3 justify-content-between" 
+         style="background-position: center top 1.3rem; background-repeat: no-repeat; background-size: 700px;">
+      
+      <!-- Edit and Delete Icons -->
+      <div class="icon-group">
+        <div class="delete-icon" pTooltip="Delete" (click)="removeDocument(i)">
+          <i class="ki-duotone ki-cross-circle text-gray-400 text-hover-danger fs-1">
+            <span class="path1"></span>
+            <span class="path2"></span>
+          </i>
         </div>
-      </label>
+      </div>
+
+      <div class="text-start position-relative">
+        <h3 class="text-primary fs-3 fw-bold mb-2">
+          {{ doc.file_name || 'Untitled' }}
+          <span class="text-muted px-2 fs-6">|</span>
+          <span class="fw-900 fs-6"
+          [ngClass]="{
+            'text-danger': ['PDF', 'PPTX', 'PPT'].includes(doc.file_extension),
+            'text-info': ['DOCX', 'DOC'].includes(doc.file_extension), 
+            'text-success': ['XLSX', 'CSV', 'XLS'].includes(doc.file_extension),
+            'text-primary': doc.file_extension === 'TXT',
+            'text-secondary': doc.file_extension === 'RTF'
+          }"
+          >{{ doc.file_extension }}</span>
+          <span class="text-muted px-2 fs-6">|</span>
+          <span class="text-muted fs-6">{{ doc.file.size | fileSize }}</span>
+        </h3>
+      </div>
+      <div>
+        <button type="button" class="btn btn-sm btn-primary" pTooltip="Edit" (click)="openDocumentDialog(i)">
+          {{'VIEW' | translate}}
+        </button>
+      </div>
+      <div class="text-center">
+        <img 
+          alt="" 
+          class="d-none d-lg-block" 
+          style="max-height: 300px;" 
+          src="/static/metronic/tailwind/dist/assets/media/images/2600x1200/3-dark.png"
+        >
+      </div>
+    </div>
+    <div class="d-flex position-absolute end-10 top-80 translate-middle-y">
+      <span style="font-size: 25px; font-weight: 800;">{{ doc.price || 0 | currency:'USD' }}</span>
+    </div>
+  </div>
+</div>
+
+<!-- Dialog for Adding/Editing a Document -->
+<p-dialog
+  [(visible)]="displayDocumentDialog"
+  header="Document Details"
+  [modal]="true"
+  [style]="{width: '900px'}"
+  [dismissableMask]="true"
+  (onHide)="closeDialog()">
+
+  <div [formGroup]="docForm">
+    <!-- File Name -->
+    <div class="mb-3">
+      <label class="form-label required">File Name</label>
       <input
-        type="file"
-        id="fileInput"
-        (change)="onFilesSelected($event)"
-        class="file-upload-input"
+        type="text"
+        pInputText
+        formControlName="file_name"
+        class="w-100"
+        placeholder="Enter File Name"
       />
+      <small
+        *ngIf="docForm.get('file_name')?.hasError('required') && docForm.get('file_name')?.touched"
+        class="text-danger"
+      >
+        File Name is required
+      </small>
     </div>
 
-    <!-- File preview section -->
-    <div class="file-preview mt-5" *ngIf="previewFiles.length > 0">
-      <div class="file-preview-item" *ngFor="let preview of previewFiles">
-        <div class="preview-content">
-          <!-- File Icon -->
-          <div class="file-icon">
-            <img [src]="preview.icon" [alt]="preview.type">
+    <!-- Table of Content -->
+    <app-table-of-content *ngIf="displayDocumentDialog"
+    [initialToc]="docForm.get('table_of_content')?.value"
+    (tocChange)="handleTocChange($event)"
+    ></app-table-of-content>
+
+    <!-- Price -->
+    <div class="mb-3">
+      <label class="form-label required">Price</label>
+      <p-inputNumber
+        formControlName="price"
+        class="w-100"
+        mode="currency"
+        currency="USD"
+        [min]="0"
+        placeholder="Enter Price">
+      </p-inputNumber>
+      <small
+        *ngIf="docForm.get('price')?.hasError('required') && docForm.get('price')?.touched"
+        class="text-danger"
+      >
+        Price is required
+      </small>
+      <small
+        *ngIf="docForm.get('price')?.hasError('min') && docForm.get('price')?.touched"
+        class="text-danger"
+      >
+        Minimum price is 0
+      </small>
+    </div>
+
+    <!-- File Upload -->
+    <div class="mb-3">
+      <label class="form-label required">Upload File</label>
+
+      <div *ngIf="previewFilesDialog.length === 0">
+        <input
+          type="file"
+          (change)="onFilesSelectedDialog($event)"
+          class="form-control"
+        />
+      </div>
+
+      <!-- File preview section -->
+      <div class="mt-3" *ngIf="previewFilesDialog.length > 0">
+        <div class="border p-3 d-flex align-items-center justify-content-between" *ngFor="let preview of previewFilesDialog">
+          <div>
+            <img [src]="preview.icon" [alt]="preview.type" style="width: 30px; margin-right: 10px;">
+            {{ preview.name }}
+            <span *ngIf="preview.size" class="text-muted">{{ preview.size | number }} bytes</span>
           </div>
-          <!-- File Details -->
-          <div class="preview-details">
-            <h4 class="file-name">{{preview.name}}</h4>
-            <span class="file-size">
-              <!-- Show file size if available -->
-              <ng-container *ngIf="preview.size > 0">
-                {{preview.size | fileSize}}
-              </ng-container>
-            </span>
-          </div>
-          <!-- Remove Button -->
-          <button type="button" class="btn btn-danger" (click)="removeFile(preview)">
-            <i class="ki-duotone ki-trash fs-5">
-              <span class="path1"></span>
-              <span class="path2"></span>
-              <span class="path3"></span>
-              <span class="path4"></span>
-              <span class="path5"></span>
-            </i>
+          <button
+            type="button"
+            class="btn btn-icon btn-sm btn-danger btn-active-danger"
+            (click)="removeFileDialog(preview)">
+            <i class="ki-duotone ki-trash fs-2" ><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></i>
           </button>
         </div>
       </div>
     </div>
   </div>
-</div>
+
+  <ng-template pTemplate="footer">
+    <button
+      type="button"
+      class="btn btn-light me-3"
+      (click)="closeDialog()">
+      <i class="ki-duotone ki-cross fs-2"></i>
+      Cancel
+    </button>
+    <button
+      type="button"
+      class="btn btn-primary"
+      [disabled]="docForm.invalid || (previewFilesDialog.length === 0 && editingIndex === -1)"
+      (click)="saveDocument()">
+      <i class="ki-duotone ki-check fs-2"></i>
+      Save
+    </button>
+  </ng-template>
+</p-dialog>

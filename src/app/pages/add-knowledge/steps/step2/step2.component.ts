@@ -44,16 +44,16 @@ export class Step2Component extends BaseComponent implements OnInit {
 
   marketOptions = [
     {
+      label: 'Region',
+      value: '2',
+      icon: 'ki-duotone ki-globe fs-1',
+      description: 'Group of countries that share similar cultural and social characteristics.'
+    },
+    {
       label: 'Economic Block',
       value: '1',
       icon: 'ki-duotone ki-chart fs-1',
       description: 'Group of countries that share similar economic characteristics.'
-    },
-    {
-      label: 'Region',
-      value: '2',
-      icon: 'ki-duotone ki-globe fs-1', // Changed to a globe icon for regions
-      description: 'Group of countries that share similar cultural and social characteristics.'
     }
   ];
   isicCodeNodes: TreeNode[] = [];
@@ -124,7 +124,7 @@ export class Step2Component extends BaseComponent implements OnInit {
       description: [this.defaultValues.description, [Validators.required]],
       accountPlan: ['1', [Validators.required]],
       language: [this.defaultValues.language, [Validators.required]],
-      targetMarket: [this.defaultValues.targetMarket, [Validators.required]],
+      targetMarket: ['2', [Validators.required]],
       industry: [this.defaultValues.industry, [Validators.required]],
       economicBlocks: [this.defaultValues.economic_blocks],
       regions: [this.defaultValues.regions],

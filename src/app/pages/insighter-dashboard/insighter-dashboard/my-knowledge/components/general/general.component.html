@@ -27,7 +27,7 @@
           type="button"
           class="btn btm-sm btn-light-info mx-3"
         >
-          <i class="ki-outline ki-add-folder fs-2"></i> New Knowledge
+          <i class="ki-outline ki-add-folder fs-2"></i> Add Knowledge
         </a>
         <!--end::Export-->
 
@@ -108,9 +108,10 @@
                     <input class="form-check-input" type="checkbox">
                   </div>
                 </th>
-                <th class="min-w-250px">Name</th>
-                <th class="min-w-10px">Size</th>
-                <th class="min-w-125px">Price</th>
+                <th class="min-w-250px">Knowledge Name</th>
+                <th class="min-w-10px">Type</th>
+                <th class="min-w-125px">Total Price</th>
+                <th class="min-w-100px">Status</th>
                 <th class="w-125px"></th>
               </tr>
             </thead>
@@ -132,15 +133,56 @@
                 </td>
                 <td>{{ item.size }}</td>
                 <td>{{ item.price | currency }}</td>
+                <td>
+                  <span class="badge" [ngClass]="{
+                    'badge-light-success': item.status === 'Published',
+                    'badge-light-warning': item.status === 'Scheduled',
+                    'badge-light-danger': item.status === 'Draft'
+                  }">{{ item.status }}</span>
+                </td>
                 <td class="text-end">
                   <div class="d-flex justify-content-end">
-                    <!-- Action buttons -->
-                    <button type="button" class="btn btn-sm btn-icon btn-light btn-active-light-primary me-2">
-                      <i class="ki-duotone ki-dots-square fs-5 m-0">
+                    <!-- Resume button for Draft status -->
+                    <button type="button" 
+                            class="btn btn-sm btn-icon btn-light btn-active-light-success me-2" 
+                            pTooltip="Edit"
+                            tooltipPosition="top"
+                            *ngIf="item.status === 'Draft' || item.status === 'Scheduled'">
+                            <i class="ki-duotone ki-notepad-edit m-0 fs-5"><span class="path1"></span><span class="path2"></span></i>
+                    </button>
+                    <!-- Publish button - only show for Draft -->
+                    <button type="button" 
+                            class="btn btn-sm btn-icon btn-light btn-active-light-info me-2" 
+                            pTooltip="Publish"
+                            tooltipPosition="top"
+                            *ngIf="item.status === 'Draft' || item.status === 'Scheduled'">
+                      <i class="ki-duotone ki-send fs-5 m-0">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                      </i>
+                    </button>
+                    <!-- Schedule button - hide for Scheduled and Published -->
+                    <button type="button" 
+                            class="btn btn-sm btn-icon btn-light btn-active-light-warning me-2" 
+                            pTooltip="Schedule publication for later"
+                            tooltipPosition="top"
+                            *ngIf="item.status === 'Draft'">
+                      <i class="ki-duotone ki-calendar fs-5 m-0">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                      </i>
+                    </button>
+                    <!-- Delete button - always visible -->
+                    <button type="button" 
+                            class="btn btn-sm btn-icon btn-light btn-active-light-danger"
+                            pTooltip="Delete"
+                            tooltipPosition="top">
+                      <i class="ki-duotone ki-trash fs-5">
                         <span class="path1"></span>
                         <span class="path2"></span>
                         <span class="path3"></span>
                         <span class="path4"></span>
+                        <span class="path5"></span>
                       </i>
                     </button>
                   </div>

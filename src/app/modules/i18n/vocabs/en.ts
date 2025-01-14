@@ -8,7 +8,7 @@ export const locale = {
       "DESCRIPTION": "Complete your profile to unlock all features and get the most out of your account."
     },
     INSIGHTER_DASHBOARD: {
-      TITLE: 'Insighter Dashboard'
+      TITLE: 'Dashboard'
     },
     NOTIFICATIONS: {
       TITLE: 'Notifications',
@@ -17,7 +17,7 @@ export const locale = {
       REQUESTS: 'Requests'
     },
     HOME: {
-      INSIGHTER_DASHBOARD: 'Insighter Dashboard',
+      INSIGHTER_DASHBOARD: 'Dashboard',
       LATEST_INSIGHTS: 'Latest Insights',
       TRENDING: 'Trending',
       REGION_PLACEHOLDER: "Region",
@@ -439,6 +439,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       TITLE: 'Account Settings',
       FIRST_NAME: 'First Name',
       LAST_NAME: 'Last Name',
+      SOCIAL_NETWORKS: 'Social Media',
       REGISTRY_DOCUMENT:'Registry Document',
       FIRST_NAME_REQUIRED: 'First name is required.',
       LAST_NAME_REQUIRED: 'Last name is required.',
@@ -523,7 +524,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     },
     "INSIGHTER": {
     "DASHBOARD": {
-      "TITLE": "Insighter Dashboard",
+      "TITLE": "Dashboard",
       "OVERVIEW": "Overview",
       "READ_MORE": "Read more about this step!",
       "NAV": {
@@ -553,7 +554,19 @@ Your wealth of knowledge is valued and many are eager to learn from it.
   MANUAL_DESCRIPTION: "Step-by-step guides, procedures, and instructional documentation",
   KNOWLEDGE_TYPE: "Knowledge Type",
   KNOWLEDGE_INFO: "Knowledge Info",
+  COURSE_INFO: "Course Info",
+  MEDIA_INFO: "Media Info",
+  INSIGHT_INFO: "Insight Info",
+  DATA_INFO: "Data Info",
+  REPORT_INFO: "Report Info",
+  MANUAL_INFO: "Manual Info",
   KNOWLEDGE_TITLE: "Knowledge Title",
+  COURSE_TITLE: "Course Title",
+  MEDIA_TITLE: "Media Title",
+  DATA_TITLE: "Data Title",
+  REPORT_TITLE: "Report Title",
+  MANUAL_TITLE: "Manual Title",
+  INSIGHT_TITLE: "Insight Title",
   KNOWLEDGE_TITLE_REQUIRED: "Knowledge title is required",
   ENTER_KNOWLEDGE_TITLE: "Enter Knowledge title",
   KNOWLEDGE_DESCRIPTION: "Description",
@@ -561,7 +574,13 @@ Your wealth of knowledge is valued and many are eager to learn from it.
   ENTER_KNOWLEDGE_DESCRIPTION: "Enter Description",
   KNOWLEDGE_DESCRIPTION_TOOLTIP: "Enter Description",
   KNOWLEDGE_TITLE_TOOLTIP: "Enter Knowledge title",
-  KNOWLEDGE_LANGUAGE: "Language",
+  KNOWLEDGE_LANGUAGE: "Language used in the knowledge",
+  MEDIA_LANGUAGE: "Language used in the media",
+  COURSE_LANGUAGE: "Language used in the course",
+  DATA_LANGUAGE: "Language used in the data",
+  REPORT_LANGUAGE: "Language used in the report",
+  MANUAL_LANGUAGE: "Language used in the manual",
+  INSIGHT_LANGUAGE: "Language used in the insight",
   KNOWLEDGE_LANGUAGE_REQUIRED: "Language is required",
   ENTER_KNOWLEDGE_LANGUAGE: "Enter Language",
   KNOWLEDGE_LANGUAGE_TOOLTIP: "Enter Language",
@@ -589,6 +608,15 @@ Your wealth of knowledge is valued and many are eager to learn from it.
   ENTER_CUSTOM_TOPIC: "Enter Custom Topic",
   DUPLICATE_TOPIC: "This topic already exists. Please choose a different name.",
   KNOWLEDGE_DOCUMENTS: "Knowledge Documents",
+  DATA_DOCUMENTS: "Data Nodes",
+  MEDIA_DOCUMENTS: "Media Documents",
+  COURSE_DOCUMENTS: "Course Documents",
+  REPORT_DOCUMENTS: "Report Chapters",
+  MANUAL_DOCUMENTS: "Manual Chapters",
+  INSIGHT_DOCUMENTS: "Insight Documents",
+  ADD_DOCUMENT: "Add Document",
+  ADD_NODE: "Add Node",
+  ADD_MEDIA_FILE: "Add Media File",
   UPLOAD_FILE: "Upload File",
   FILE_NAME: "File Name",
   PRICE: "Price",
@@ -669,8 +697,29 @@ Your wealth of knowledge is valued and many are eager to learn from it.
   DASHBOARD_FEATURE_4: "Create new knowledge items",
   CHAPTER: "Chapter",
   NAME: "Name",
+  VIEW: "View",
+  'KNOWLEDGE': {
+    'TITLE': 'My Knowledge Base',
+    'TOTAL': 'Total',
+    'ITEMS': 'items',
+    'TABS': {
+      'GENERAL': 'General',
+      'SCHEDULED': 'Scheduled',
+      'POSTED': 'Posted',
+      'PACKAGES': 'Packages'
+    }
+  },
+  DEACTIVATE_ACCOUNT_SUCCESS_MESSAGE: "Account deactivated successfully",
+  OVERVIEW: "Overview",
+    "COURSE": "Course",
+    "COURSE_DESCRIPTION": "Educational content with structured lessons and learning objectives",
+    "MEDIA": "Media",
+    "MEDIA_DESCRIPTION": "Audio, video, and multimedia content for learning and reference",
+    COUNTRIES_AND_REGIONS: "Countries and Regions"
+  
   }
 };
+
 
 
 

@@ -56,6 +56,7 @@ export class Step4Component extends BaseComponent implements OnInit {
     }
 
     this.fetchTags();
+    this.fetchSuggestedKeywords();
   }
 
   ngOnDestroy() {
@@ -262,5 +263,19 @@ export class Step4Component extends BaseComponent implements OnInit {
   
       this.showError('','An unexpected error occurred.');
     }
+  }
+
+  fetchSuggestedKeywords() {
+    if (!this.defaultValues.industry) return;
+
+    this.tagsService.getSuggestKeywords(this.defaultValues.industry, this.lang).subscribe({
+      next: (keywords) => {
+        this.availableKeywords = keywords;
+      },
+      error: (error) => {
+        console.error("Error fetching suggested keywords:", error);
+        this.handleServerErrors(error);
+      }
+    });
   }
 }

@@ -34,6 +34,14 @@
     padding-top: 2px;
     max-height: 3.5rem;
     height: 3.5rem;
+    position: relative;
+  }
+  .dots{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    font-size: 1.5rem;
+    color: #6c757d;
   }
 
   .placeholder-text {

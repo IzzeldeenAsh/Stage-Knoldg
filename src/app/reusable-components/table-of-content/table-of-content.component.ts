@@ -24,7 +24,7 @@ import { TranslationModule } from 'src/app/modules/i18n';
   ]
 })
 export class TableOfContentComponent implements OnInit, OnChanges {
-  @Input() initialToc: any; // Expecting { chapters: [ { name, index, subChapters: [...] } ] }
+  @Input() initialToc: string; // Expecting stringified JSON { chapters: [ { name, index, subChapters: [...] } ] }
   @Output() tocChange = new EventEmitter<any>();
   tocForm: FormGroup;
 
@@ -42,8 +42,18 @@ export class TableOfContentComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    if (this.initialToc && this.initialToc.chapters && this.initialToc.chapters.length > 0) {
-      this.loadChapters(this.initialToc.chapters);
+    if (this.initialToc) {
+      try {
+        const parsedToc = JSON.parse(this.initialToc);
+        if (parsedToc.chapters && parsedToc.chapters.length > 0) {
+          this.loadChapters(parsedToc.chapters);
+        } else {
+          this.addChapter();
+        }
+      } catch (e) {
+        console.error('Failed to parse initialToc:', e);
+        this.addChapter();
+      }
     } else {
       this.addChapter(); // Initialize with one chapter if no initial TOC
     }
@@ -51,9 +61,14 @@ export class TableOfContentComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['initialToc'] && changes['initialToc'].currentValue) {
-      const chapters = changes['initialToc'].currentValue.chapters;
-      if (chapters && chapters.length > 0) {
-        this.loadChapters(chapters);
+      try {
+        const parsedToc = JSON.parse(changes['initialToc'].currentValue);
+        const chapters = parsedToc.chapters;
+        if (chapters && chapters.length > 0) {
+          this.loadChapters(chapters);
+        }
+      } catch (e) {
+        console.error('Failed to parse initialToc in ngOnChanges:', e);
       }
     }
   }
@@ -127,5 +142,9 @@ export class TableOfContentComponent implements OnInit, OnChanges {
   // Method to remove a subchapter from a specific chapter
   removeSubChapter(chapterIndex: number, subChapterIndex: number): void {
     this.getSubChapters(chapterIndex).removeAt(subChapterIndex);
+  }
+
+  reset() {
+    this.tocForm.reset();
   }
 }

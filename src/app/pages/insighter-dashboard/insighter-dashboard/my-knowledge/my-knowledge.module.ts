@@ -10,6 +10,7 @@ import { PostedComponent } from './components/posted/posted.component';
 import { PackagesComponent } from './components/packages/packages.component';
 import { FormsModule } from '@angular/forms';
 import { DragDropModule } from 'primeng/dragdrop';
+import { TooltipModule } from 'primeng/tooltip';
 
 const routes: Routes = [
   {
@@ -53,6 +54,7 @@ const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
+    TooltipModule,
     TranslationModule,
     FormsModule,
     DragDropModule

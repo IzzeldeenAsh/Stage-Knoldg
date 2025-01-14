@@ -40,6 +40,7 @@ export class Step5Component extends BaseComponent implements OnInit {
       description: 'SAVE_AS_DRAFT_DESC'
     }
   ];
+  timeError: string = '';
 
   constructor(injector: Injector, private fb: FormBuilder) {
     super(injector);
@@ -79,8 +80,15 @@ export class Step5Component extends BaseComponent implements OnInit {
     });
 
     // Subscribe to date/time changes
-    this.publishForm.get('publishDate')?.valueChanges.subscribe(() => this.updateParentValues());
-    this.publishForm.get('publishTime')?.valueChanges.subscribe(() => this.updateParentValues());
+    this.publishForm.get('publishDate')?.valueChanges.subscribe(() => {
+      this.validateDateTime();
+      this.updateParentValues();
+    });
+    
+    this.publishForm.get('publishTime')?.valueChanges.subscribe(() => {
+      this.validateDateTime();
+      this.updateParentValues();
+    });
 
     // Add these debug logs
     this.publishForm.valueChanges.subscribe(value => {
@@ -155,7 +163,8 @@ export class Step5Component extends BaseComponent implements OnInit {
     if (publishOption === 'scheduled') {
       return this.publishForm.valid && 
              !!this.publishForm.get('publishDate')?.value && 
-             !!this.publishForm.get('publishTime')?.value;
+             !!this.publishForm.get('publishTime')?.value &&
+             !this.timeError;
     }
     return this.publishForm.valid;
   }
@@ -166,5 +175,33 @@ export class Step5Component extends BaseComponent implements OnInit {
     this.publishForm.patchValue({
       publishDate: dateValue
     }, { emitEvent: true });
+  }
+
+  private validateDateTime() {
+    const date = this.publishForm.get('publishDate')?.value;
+    const time = this.publishForm.get('publishTime')?.value;
+    const publishOption = this.publishForm.get('publishOption')?.value;
+
+    if (publishOption !== 'scheduled' || !date || !time) {
+      this.timeError = '';
+      return;
+    }
+
+    const selectedDateTime = new Date(`${date}T${time}`);
+    const now = new Date();
+
+    if (selectedDateTime < now) {
+      this.timeError = this.lang === 'ar' ? 'لا يمكن أن يكون الوقت المحدد في الماضي' : 'Selected time cannot be in the past';
+      this.publishForm.get('publishTime')?.setErrors({ 'invalidTime': true });
+    } else {
+      this.timeError = '';
+      const timeControl = this.publishForm.get('publishTime');
+      if (timeControl?.errors?.['invalidTime']) {
+        delete timeControl.errors['invalidTime'];
+        if (Object.keys(timeControl.errors).length === 0) {
+          timeControl.setErrors(null);
+        }
+      }
+    }
   }
 }

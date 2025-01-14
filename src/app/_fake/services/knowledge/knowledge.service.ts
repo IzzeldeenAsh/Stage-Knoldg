@@ -39,6 +39,30 @@ export interface KnowledgeResponse {
   data: Knowledge;
 }
 
+export interface PaginatedKnowledgeResponse {
+  data: Knowledge[];
+  links: {
+    first: string;
+    last: string;
+    prev: string | null;
+    next: string | null;
+  };
+  meta: {
+    current_page: number;
+    from: number;
+    last_page: number;
+    links: {
+      url: string | null;
+      label: string;
+      active: boolean;
+    }[];
+    path: string;
+    per_page: number;
+    to: number;
+    total: number;
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -76,6 +100,24 @@ export class KnowledgeService {
     this.setLoading(true);
     return this.http.get<KnowledgeResponse>(
       `${this.baseUrl}/api/insighter/library/knowledge/${id}`,
+      { headers }
+    ).pipe(
+      map((res) => res),
+      catchError((error) => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  getPaginatedKnowledges(page: number = 1): Observable<PaginatedKnowledgeResponse> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Language': this.currentLang,
+    });
+
+    this.setLoading(true);
+    return this.http.get<PaginatedKnowledgeResponse>(
+      `${this.baseUrl}/api/insighter/library/knowledge?page=${page}`,
       { headers }
     ).pipe(
       map((res) => res),

@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable, Subject, throwError } from 'rxjs';
-import { map, catchError, finalize, tap, shareReplay } from 'rxjs/operators';
-import { TranslationService } from 'src/app/modules/i18n';
-import { Router } from '@angular/router';
+import { Injectable } from "@angular/core";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { BehaviorSubject, Observable, Subject, throwError } from "rxjs";
+import { map, catchError, finalize, tap, shareReplay } from "rxjs/operators";
+import { TranslationService } from "src/app/modules/i18n";
+import { Router } from "@angular/router";
 
 interface UserType {
   id: string;
@@ -14,15 +14,15 @@ interface UserType {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class ProfileService {
-  private readonly API_URL = 'https://api.foresighta.co/api/account/profile';
+  private readonly API_URL = "https://api.foresighta.co/api/account/profile";
   private profileCache$: Observable<any> | null = null;
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   private userSubject = new BehaviorSubject<UserType | null>(null);
   private profileUpdateSubject = new Subject<void>();
-  currentLang: string = '';
+  currentLang: string = "";
   isLoading$ = this.isLoadingSubject.asObservable();
   currentUser$ = this.userSubject.asObservable();
   profileUpdate$ = this.profileUpdateSubject.asObservable();
@@ -30,17 +30,19 @@ export class ProfileService {
   constructor(
     private http: HttpClient,
     private translateService: TranslationService,
-    private router:Router
+    private router: Router
   ) {
     // Initialize from localStorage if available
     const savedUser = this.getUserFromLocalStorage();
     if (savedUser) {
       this.userSubject.next(savedUser);
     }
-    this.currentLang = this.translateService.getSelectedLanguage() ? this.translateService.getSelectedLanguage() : 'en';
+    this.currentLang = this.translateService.getSelectedLanguage()
+      ? this.translateService.getSelectedLanguage()
+      : "en";
   }
 
-  getProfile(isPass:boolean=false): Observable<any> {
+  getProfile(isPass: boolean = false): Observable<any> {
     // Return cached observable if it exists
     if (this.profileCache$) {
       return this.profileCache$;
@@ -69,13 +71,13 @@ export class ProfileService {
       }),
       catchError((err) => {
         this.profileCache$ = null; // Clear cache on error
-        if(err.status === 401){
+        if (err.status === 401) {
           localStorage.removeItem("foresighta-creds");
           localStorage.removeItem("user");
-          this.clearProfile()
-          this.router.navigate(['/auth']).then(() => {
+          this.clearProfile();
+          this.router.navigate(["/auth"]).then(() => {
             // Optional: Reload the page after navigation if needed
-           window.location.reload();
+            window.location.reload();
           });
         }
         return throwError(err);
@@ -103,15 +105,15 @@ export class ProfileService {
     this.profileCache$ = null;
     this.userSubject.next(null);
     this.profileUpdateSubject.next(); // Notify subscribers of clear
-    localStorage.removeItem('user'); // Adjust key as needed
+    localStorage.removeItem("user"); // Adjust key as needed
   }
 
   private setUserInLocalStorage(user: UserType): void {
-    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem("user", JSON.stringify(user));
   }
 
   private getUserFromLocalStorage(): UserType | null {
-    const userStr = localStorage.getItem('user');
+    const userStr = localStorage.getItem("user");
     return userStr ? JSON.parse(userStr) : null;
   }
 }

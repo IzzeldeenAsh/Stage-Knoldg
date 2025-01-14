@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, catchError, finalize, map, throwError } from 'rxjs';
-import { TranslationService } from 'src/app/modules/i18n/translation.service';
-
+import { TranslationService } from 'src/app/modules/i18n';
 // models/type.model.ts
 export interface Type {
     key: string;
@@ -51,11 +50,12 @@ export class UserRequestsService {
   private apiUrl = 'https://api.foresighta.co/api/account/request';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
-
+  currentLang: string = 'en';
   constructor(
     private http: HttpClient,
+    private translationService: TranslationService
   ) {
- 
+    this.currentLang = this.translationService.getSelectedLanguage();
   }
 
   private setLoading(loading: boolean) {
@@ -97,8 +97,13 @@ export class UserRequestsService {
     formData.append('comments', comments);
     formData.append('parent_id', parentId);
 
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+
     this.setLoading(true);
-    return this.http.post(url, formData).pipe(
+    return this.http.post(url, formData, { headers }).pipe(
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );
@@ -116,8 +121,13 @@ export class UserRequestsService {
     formData.append('comments', comments);
     formData.append('parent_id', parentId);
 
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+
     this.setLoading(true);
-    return this.http.post(url, formData).pipe(
+    return this.http.post(url, formData, { headers }).pipe(
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );
@@ -135,8 +145,13 @@ export class UserRequestsService {
     formData.append('comments', comments);
     formData.append('parent_id', parentId);
 
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+
     this.setLoading(true);
-    return this.http.post(url, formData).pipe(
+    return this.http.post(url, formData, { headers }).pipe(
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );
@@ -154,8 +169,13 @@ export class UserRequestsService {
     formData.append('comments', comments);
     formData.append('parent_id', parentId);
 
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+
     this.setLoading(true);
-    return this.http.post(url, formData).pipe(
+    return this.http.post(url, formData, { headers }).pipe(
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );
@@ -170,9 +190,13 @@ export class UserRequestsService {
   sendReactivateRequest(type:string): Observable<any> {
     const url = type === 'company' ? 'https://api.foresighta.co/api/company/activate' : 'https://api.foresighta.co/api/insighter/activate';
     
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': this.currentLang
+    });
 
     this.setLoading(true);
-    return this.http.post(url, {}).pipe(
+    return this.http.post(url, {}, { headers }).pipe(
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );

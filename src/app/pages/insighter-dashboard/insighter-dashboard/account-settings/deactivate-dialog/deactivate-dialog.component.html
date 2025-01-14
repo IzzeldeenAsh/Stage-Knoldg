@@ -45,18 +45,18 @@
           [disabled]="!deactivationReason || isLoading"
           (click)="deactivateAccount()"
         >
-          <span class="indicator-label" *ngIf="!isLoading">
+          <ng-container *ngIf="!isLoading">
             <ng-container *ngIf="hasRole(['company'])">
               {{ 'DEACTIVATE_ACCOUNT.MODAL.CONFIRM_BUTTON_COMPANY' | translate }}
             </ng-container>
             <ng-container *ngIf="hasRole(['insighter'])">
               {{ 'DEACTIVATE_ACCOUNT.MODAL.CONFIRM_BUTTON_INSIGHTER' | translate }}
             </ng-container>
-          </span>
-          <span class="indicator-progress" *ngIf="isLoading">
+          </ng-container>
+          <ng-container *ngIf="isLoading">
             {{ 'COMMON.PLEASE_WAIT' | translate }}
             <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
-          </span>
+          </ng-container>
         </button>
       </div>
     </div>
@@ -69,7 +69,7 @@
     <div class="card-body">
       <div class="text-center">
         <div class="text-success font-bold text-xl mb-3">
-          {{ 'DEACTIVATE_ACCOUNT.MODAL.SUCCESS_MESSAGE' | translate }}
+          {{ 'DEACTIVATE_ACCOUNT_SUCCESS_MESSAGE' | translate }}
         </div>
         <i class="pi pi-check-circle text-success" style="font-size: 3rem"></i>
       </div>

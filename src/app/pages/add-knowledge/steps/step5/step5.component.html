@@ -161,6 +161,7 @@
         >
           {{ "VALID_TIME_REQUIRED" | translate }}
         </div>
+        <div class="error-message text-danger fs-7" *ngIf="timeError">{{ timeError }}</div>
       </div>
     </div>
   </div>

@@ -342,12 +342,12 @@ export const locale = {
     },
     CONGRATS_CARD: {
       TITLE: "تهانينا!",
-      DESCRIPTION: "لديك الآن وصول إلى أدوات قوية لتحميل الرؤى، إدارة المستكشفين، وتعظيم قدرات بياناتك. إليك نظرة سريعة على ما يمكنك القيام به:",
+      DESCRIPTION: "لديك الآن وصول إلى أدوات قوية لتحميل الرؤى، إدارة الانسايترين، وتعظيم قدرات بياناتك. إليك نظرة سريعة على ما يمكنك القيام به:",
       FEATURES: {
         UPLOAD_INSIGHTS: "تحميل الرؤى:",
         UPLOAD_INSIGHTS_DESC: "شارك البيانات والرؤى بسهولة، مما يساعد فريقك على البقاء مطلعًا واتخاذ قرارات مستندة إلى البيانات.",
-        MANAGE_INSIGHTERS: "إدارة المستكشفين:",
-        MANAGE_INSIGHTERS_DESC: "أضف أو احذف أو قم بإدارة المستكشفين لديك لضمان تعاون سلس داخل مؤسستك."
+        MANAGE_INSIGHTERS: "إدارة الانسايترين:",
+        MANAGE_INSIGHTERS_DESC: "أضف أو احذف أو قم بإدارة الانسايترين لديك لضمان تعاون سلس داخل مؤسستك."
       },
       BUTTON: "ابدأ الآن"
     },
@@ -389,6 +389,7 @@ export const locale = {
       COUNTRY: 'البلد',
       SELECT_COUNTRY: 'اختر بلدك',
       COUNTRY_REQUIRED: 'البلد مطلوب.',
+      SOCIAL_NETWORKS: "حسابات التواصل الاجتماعي",
       PHONE_NUMBER: 'رقم الهاتف',
       YOUR_PHONE_NUMBER: 'رقم هاتفك',
       PHONE_NUMBER_INVALID: 'رقم الهاتف مطلوب ويجب أن يكون 10 أرقام.',
@@ -457,20 +458,22 @@ export const locale = {
   
     "DEACTIVATE_ACCOUNT": {
       "TITLE_COMPANY": "إلغاء تنشيط حساب الشركة",
-      "TITLE_INSIGHTER": "إلغاء تنشيط حساب المستكشف",
+      "TITLE_INSIGHTER": "إلغاء تنشيط حساب الانسايتر",
       "DESCRIPTION": "<i class='fa-sharp fa-solid fa-circle fs-10'></i> سيتم الاحتفاظ ببيانات حسابك<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> لن يمكن الوصول إلى الحساب حتى إعادة التنشيط<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> ستظل رؤى شركتك مرئية في السوق<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> لا يمكن تحميل رؤى جديدة أثناء إلغاء التنشيط",
       "BUTTON_TEXT_COMPANY": "إلغاء تنشيط حساب الشركة",
-      "BUTTON_TEXT_INSIGHTER": "إلغاء تنشيط حساب المستكشف",
+      "BUTTON_TEXT_INSIGHTER": "إلغاء تنشيط حساب الانسايتر",
       "ILLUSTRATION_ALT": "صورة إلغاء تنشيط حساب الشركة",
       "MODAL": {
         "TITLE_COMPANY": "إلغاء تنشيط حساب الشركة",
-        "TITLE_INSIGHTER": "إلغاء تنشيط حساب المستكشف",
+        "TITLE_INSIGHTER": "إلغاء تنشيط حساب الانسايتر",
+        "DESCRIPTION_COMPANY": "أنت على وشك إلغاء تنشيط حساب شركتك. لن يمكن الوصول إلى حسابك ولكن سيتم الاحتفاظ ببياناتك.",
+        "DESCRIPTION_INSIGHTER": "أنت على وشك إلغاء تنشيط حساب الانسايتر. لن يمكن الوصول إلى حسابك ولكن سيتم الاحتفاظ ببياناتك.",
         "DESCRIPTION": "أنت على وشك إلغاء تنشيط حساب شركتك. لن يمكن الوصول إلى حسابك ولكن سيتم الاحتفاظ ببياناتك.",
         "WARNING": "هذا الإجراء غير قابل للعكس. يرجى التأكد.",
         "REASON_LABEL": "سبب إلغاء التنشيط",
         "REASON_PLACEHOLDER": "يرجى توضيح سبب رغبتك في إلغاء تنشيط حسابك",
         "CONFIRM_BUTTON_COMPANY": "إلغاء تنشيط حساب الشركة",
-        "CONFIRM_BUTTON_INSIGHTER": "إلغاء تنشيط حساب المستكشف"
+        "CONFIRM_BUTTON_INSIGHTER": "إلغاء تنشيط حساب الانسايتر"
       },
       "PENDING_REQUEST" : "طلب قيد المراجعة"
     },
@@ -487,7 +490,7 @@ export const locale = {
     },
     "INSIGHTER": {
       "DASHBOARD": {
-        "TITLE": "لوحة تحكم المستكشف",
+        "TITLE": "لوحة تحكم الانسايتر",
         "OVERVIEW": "نظرة عامة",
         "READ_MORE": "اقرأ المزيد عن هذه الخطوة!",
         "NAV": {
@@ -517,7 +520,19 @@ export const locale = {
     MANUAL_DESCRIPTION: "أدلة خطوة بخطوة، إجراءات، وتوثيق تعليمي",
     KNOWLEDGE_TYPE: "نوع المعرفة",
     KNOWLEDGE_INFO: "معلومات المعرفة",
+    INSIGHT_INFO: "معلومات الرؤى",
+    DATA_INFO: "معلومات البيانات",
+    REPORT_INFO: "معلومات التقارير",
+    MANUAL_INFO: "معلومات الدليل",
+    COURSE_INFO: "معلومات الدورة",
+    MEDIA_INFO: "معلومات الوسائط",
     KNOWLEDGE_TITLE: "عنوان المعرفة",
+    COURSE_TITLE: "عنوان الدورة",
+    MEDIA_TITLE: "عنوان الوسائط", 
+    DATA_TITLE: "عنوان البيانات",
+    REPORT_TITLE: "عنوان التقارير",
+    MANUAL_TITLE: "عنوان الدليل",
+    INSIGHT_TITLE: "عنوان الرؤى",
     KNOWLEDGE_TITLE_REQUIRED: "عنوان المعرفة مطلوب",
     ENTER_KNOWLEDGE_TITLE: "ادخل عنوان المعرفة",
     KNOWLEDGE_DESCRIPTION: "الوصف",
@@ -526,6 +541,12 @@ export const locale = {
     KNOWLEDGE_DESCRIPTION_TOOLTIP: "ادخل الوصف",
     KNOWLEDGE_TITLE_TOOLTIP: "ادخل عنوان المعرفة",
     KNOWLEDGE_LANGUAGE: "اللغة",
+    COURSE_LANGUAGE: "اللغة المستخدمة في الدورة",
+    MEDIA_LANGUAGE: "اللغة المستخدمة في الوسائط",
+    DATA_LANGUAGE: "اللغة المستخدمة في البيانات",
+    REPORT_LANGUAGE: "اللغة المستخدمة في التقارير",
+    MANUAL_LANGUAGE: "اللغة المستخدمة في الدليل",
+    INSIGHT_LANGUAGE: "اللغة المستخدمة في الرؤى",
     KNOWLEDGE_LANGUAGE_REQUIRED: "اللغة مطلوبة",
     ENTER_KNOWLEDGE_LANGUAGE: "ادخل اللغة",
     KNOWLEDGE_LANGUAGE_TOOLTIP: "ادخل اللغة",
@@ -553,6 +574,16 @@ export const locale = {
     ENTER_CUSTOM_TOPIC: "ادخل موضوع آخر",
     DUPLICATE_TOPIC: "هذا الموضوع مستخدم بالفعل",
     KNOWLEDGE_DOCUMENTS: "ملفات المعرفة",
+    DATA_DOCUMENTS: "عقد البيانات",
+    MEDIA_DOCUMENTS: "مستندات الوسائط",
+    COURSE_DOCUMENTS: "مستندات الدورة",
+    REPORT_DOCUMENTS: "فصول التقرير",
+    MANUAL_DOCUMENTS: "فصول الدليل", 
+    INSIGHT_DOCUMENTS: "مستندات الرؤى",
+    ADD_DOCUMENT: "إضافة مستند",
+    ADD_NODE: "إضافة عقدة",
+    ADD_CHAPTER: "إضافة فصل",
+    ADD_MEDIA_FILE: "إضافة ملف وسائط",
     UPLOAD_FILE: "رفع ملف",
     FILE_NAME: "اسم الملف",
     PRICE: "السعر",
@@ -601,7 +632,6 @@ export const locale = {
     PAGE_INDEX_REQUIRED: 'رقم الصفحة مطلوب.',
     SUB_CHAPTER: "فصل فرعي",
     SUB_CHAPTER_NAME_REQUIRED: 'اسم الفصل الفرعي مطلوب.',
-    ADD_CHAPTER: 'إضافة فصل',
     ADD_SUB_CHAPTER: 'إضافة فصل فرعي',
     ENTER_CHAPTER_NAME: 'ادخل اسم الفصل',
     ENTER_SUB_CHAPTER_NAME: 'ادخل اسم الفصل الفرعي',
@@ -625,6 +655,27 @@ export const locale = {
     KNOWLEDGE_SCHEDULED_MESSAGE: "تم جدولة نشر معرفتك بنجاح. سيتم نشر المحتوى تلقائياً في التاريخ والوقت المحددين. يمكنك تعديل موعد النشر أو إلغاء الجدولة في أي وقت من خلال لوحة التحكم.",
     WHATS_NEXT: "ما الخطوة التالية؟",
     VISIT_DASHBOARD_MESSAGE: "قم بزيارة لوحة التحكم الخاصة بك لإدارة معرفتك ومتابعة أدائها. يمكنك من هناك تعديل المحتوى، وتتبع الإحصائيات، والتفاعل مع تعليقات المستخدمين، وإدارة كافة جوانب المعرفة المنشورة.",
+    VIEW: "عرض",
+  'KNOWLEDGE': {
+    'TITLE': 'قاعدة معرفتي',
+    'TOTAL': 'المجموع',
+    'ITEMS': 'عناصر',
+    'TABS': {
+      'GENERAL': 'عام',
+      'SCHEDULED': 'مجدول',
+      'POSTED': 'منشور',
+      'PACKAGES': 'الحزم'
+    }
+  },
+  DEACTIVATE_ACCOUNT_SUCCESS_MESSAGE: "تم إلغاء تنشيط حساب الانسايتر بنجاح",
+  OVERVIEW: "نظرة عامة",
+  "COURSE": "دورة تدريبية",
+  "COURSE_DESCRIPTION": "محتوى تعليمي مع دروس منظمة وأهداف تعليمية",
+  "MEDIA": "وسائط",
+  "MEDIA_DESCRIPTION": "محتوى صوتي ومرئي ووسائط متعددة للتعلم والمرجع",
+  COUNTRIES_AND_REGIONS: "الدول والمناطق",
   }
- 
 };
+
+
+

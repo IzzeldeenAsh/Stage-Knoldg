@@ -20,11 +20,11 @@
                     <div class="d-flex align-items-center flex-column mt-3 w-100">
                         <div class="d-flex justify-content-between w-100 mt-auto mb-2">
                             <span class="fw-bolder fs-6 text-gray-900">{{ 'PROFILE_COMPLETION.TITLE' | translate }}</span>
-                            <span class="fw-bold fs-6 text-gray-500">70%</span>
+                            <span class="fw-bold fs-6 text-gray-500">90%</span>
                         </div>
             
                         <div class="h-8px mx-3 w-100 bg-light-success rounded">
-                            <div class="bg-success rounded h-8px" role="progressbar" style="width: 62%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="bg-success rounded h-8px" role="progressbar" style="width: 90%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
                     <!--begin::Subtitle-->
@@ -36,8 +36,9 @@
             <!--end::Header-->
         
             <!--begin::Card body-->
-            <div class="card-body d-flex pt-4   ">
-                <span class="text-gray-500 pt-1 fw-semibold fs-6">{{ 'PROFILE_COMPLETION.DESCRIPTION' | translate }}</span>           
+            <div class="card-body d-flex flex-column pt-4">
+                <span class="text-gray-500 pt-1 fw-semibold fs-6">Complete your profile to unlock all features and get the most out of your account.</span>
+                <a [routerLink]="['/app/profile/settings/personal-info']" class="text-info pt-2 fw-semibold fs-6">Add socials accounts!</a>           
             </div>
             <!--end::Card body-->
         </div>

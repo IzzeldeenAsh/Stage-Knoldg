@@ -4,7 +4,7 @@
     <div id="kt_docs_repeater_nested">
         <!--begin::Form group-->
         <div formArrayName="chapters" >
-            <div *ngFor="let chapter of chapters.controls; let i = index" [formGroupName]="i" class="form-group mb-4" [@fadeInMoveY]>
+            <div *ngFor="let chapter of chapters.controls; let i = index" [formGroupName]="i" class="form-group mb-4" >
                 <div class="form-group row mb-6" >
                     <!-- Chapter Name -->
                     <div class="col-md-4">
@@ -23,7 +23,7 @@
                         </div>
                     </div>
                     <!-- Actions -->
-                    <div class="col-md-6 d-flex align-items-end">
+                    <div class="col-md-6 d-flex align-items-end actions-responsive">
                         <button type="button" class="btn btn-light-warning mx-2" (click)="addSubChapter(i)">
                             <i class="ki-duotone ki-plus fs-5"></i> {{ 'SUB_CHAPTER' | translate }}
                         </button>
@@ -34,7 +34,7 @@
                 </div>
                 <!-- Sub Chapters -->
                 <div formArrayName="subChapters" class="ms-4">
-                    <div *ngFor="let subChapter of getSubChapters(i).controls; let j = index" [formGroupName]="j" class="form-group row mb-6" [@fadeInMoveY]>
+                    <div *ngFor="let subChapter of getSubChapters(i).controls; let j = index" [formGroupName]="j" class="form-group row mb-6" >
                         <!-- Sub Chapter Name -->
                         <div class="col-md-4">
                             <label class="form-label">{{ 'SUB_CHAPTER' | translate }} {{j+1}} {{ 'NAME' | translate }}:</label>

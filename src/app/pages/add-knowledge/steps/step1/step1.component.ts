@@ -54,6 +54,24 @@ export class Step1Component extends BaseComponent implements OnInit {
       iconClass: 'text-warning',
       icon: 'fas fa-book text-warning mx-2 fs-6',
       description: 'MANUAL_DESCRIPTION'
+    },
+    {
+      id: 'kt_create_account_form_type_course',
+      value: 'course',
+      label: 'COURSE',
+      iconName: 'teacher',
+      iconClass: 'text-success',
+      icon: 'fas fa-graduation-cap text-success mx-2 fs-6',
+      description: 'COURSE_DESCRIPTION'
+    },
+    {
+      id: 'kt_create_account_form_type_media',
+      value: 'media',
+      label: 'MEDIA',
+      iconName: 'youtube',
+      iconClass: 'text-danger',
+      icon: 'fas fa-play-circle text-danger mx-2 fs-6',
+      description: 'MEDIA_DESCRIPTION'
     }
   ];
 

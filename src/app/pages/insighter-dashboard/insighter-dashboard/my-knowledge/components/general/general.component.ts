@@ -7,6 +7,7 @@ interface Item {
   size: string;
   price: number;
   id: string;
+  status: 'Published' | 'Scheduled' | 'Draft';
 }
 
 @Component({
@@ -39,10 +40,12 @@ interface Item {
 })
 export class GeneralComponent {
   items: Item[] = [
-    { id: '1', name: 'Item 1', size: 'Small', price: 10 },
-    { id: '2', name: 'Item 2', size: 'Medium', price: 20 },
-    { id: '3', name: 'Item 3', size: 'Large', price: 30 },
-    // Add more items as needed
+    { id: '2', name: 'Real Estate Investment Opportunities in GCC', size: 'Data', price: 2999, status: 'Draft' },
+    { id: '4', name: 'E-commerce Growth Strategy Guide', size: 'Manual', price: 899, status: 'Draft' },
+    { id: '3', name: 'Renewable Energy Projects Feasibility Study', size: 'Insight', price: 1999, status: 'Scheduled' },
+    { id: '6', name: 'Tourism Sector Development Plan', size: 'Insight', price: 1799, status: 'Scheduled' },
+    { id: '1', name: 'Dates Market Analysis in Saudi Arabia', size: 'Report', price: 1499, status: 'Published' },
+    { id: '5', name: 'Healthcare Industry Market Research', size: 'Report', price: 2499, status: 'Published' }
   ];
 
   packages: Item[] = [];

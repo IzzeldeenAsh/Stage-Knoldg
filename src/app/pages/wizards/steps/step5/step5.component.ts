@@ -14,7 +14,7 @@ import { ICreateAccount } from "../../create-account.helper";
 
 import { TranslationService } from "src/app/modules/i18n";
 
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { BaseComponent } from "src/app/modules/base.component";
 @Component({
   selector: "app-step5",
@@ -83,10 +83,17 @@ export class Step5Component extends BaseComponent implements OnInit {
   }
   getCode() {
     const email = this.form.get('companyEmail')?.value;
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Language': 'en'
+    });
     if (email) {
       this.gettingCodeLoader = true;
       this.http.post('https://api.foresighta.co/api/auth/company/code/send', {
         verified_email: email,
+      }, {
+        headers: headers
       }).subscribe({
         next: (response) => {
           // Handle success (e.g., show a success message)

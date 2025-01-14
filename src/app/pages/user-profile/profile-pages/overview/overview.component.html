@@ -83,6 +83,7 @@
             {{ profile.phone }}
           </td>
         </tr>
+      
         <tr *ngIf="profile.roles.includes('insighter') || profile.roles.includes('company')">
           <td class="small text-muted pb-3 pe-4 pe-lg-5">
             {{ 'PROFILE.ROLES' | translate }}
@@ -109,6 +110,36 @@
           </td>
           <td class="small text-dark pb-3">
             {{ profile.country }}
+          </td>
+        </tr>
+        <tr >
+          <td class="small text-muted pb-3 pe-4 pe-lg-5">
+            Social Media
+          </td>
+          <td class="small text-dark pb-3">
+            <div class="d-flex gap-3">
+            <ng-container *ngIf="profile.roles.includes('insighter')">
+              <a *ngFor="let social of profile.social" 
+              [href]="social.link" 
+              target="_blank" 
+              class="text-decoration-none">
+               <img [src]="'assets/media/svg/social-logos/' + social.type + '.svg'"
+                    [alt]="social.type"
+                    width="30"
+                    height="30">
+           </a>
+            </ng-container>
+            <ng-container *ngIf="profile.roles.includes('company')">
+              <a *ngFor="let social of profile.company?.social" 
+              [href]="social.link" 
+              target="_blank" 
+              class="text-decoration-none">
+               <img [src]="'assets/media/svg/social-logos/' + social.type + '.svg'"
+                    [alt]="social.type"
+                    width="30"
+                    height="30"></a>
+            </ng-container>
+            </div>
           </td>
         </tr>
       </tbody>
@@ -182,10 +213,10 @@
             class="badge-outline-gray fs-7 my-2"
           >
             <ng-container *ngIf="lang === 'ar'">
-              {{ field.names.ar }}
+              {{ field.name }}
             </ng-container>
             <ng-container *ngIf="lang === 'en'">
-              {{ field.names.en }}
+              {{ field.name }}
             </ng-container>
           </span>
         </div>
@@ -204,10 +235,10 @@
             class="badge-outline-gray fs-7 my-2"
           >
             <ng-container *ngIf="lang === 'ar'">
-              {{ isic.names.ar }}
+              {{ isic.name }}
             </ng-container>
             <ng-container *ngIf="lang === 'en'">
-              {{ isic.names.en }}
+              {{ isic.name }}
             </ng-container>
           </span>
         </div>
@@ -216,7 +247,4 @@
     
   </div>
 </div>
-
-
 </ng-container>
-

@@ -4,7 +4,26 @@
 
 @if(!isLoading){
 <div class="pb-10 pb-lg-15">
-  <h2 class="fw-bolder text-gray-900">{{'KNOWLEDGE_INFO' | translate}}</h2>
+  <h2 class="fw-bolder text-gray-900">
+    <ng-container *ngIf="defaultValues.knowledgeType === 'course'">
+      {{'COURSE_INFO' | translate}}
+    </ng-container>
+    <ng-container *ngIf="defaultValues.knowledgeType === 'media'">
+      {{'MEDIA_INFO' | translate}}
+    </ng-container>
+      <ng-container *ngIf="defaultValues.knowledgeType === 'data'">
+      {{'DATA_INFO' | translate}}
+    </ng-container>
+    <ng-container *ngIf="defaultValues.knowledgeType === 'report'">
+      {{'REPORT_INFO' | translate}}
+    </ng-container>
+    <ng-container *ngIf="defaultValues.knowledgeType === 'insight'">
+      {{'INSIGHT_INFO' | translate}}
+    </ng-container>
+    <ng-container *ngIf="defaultValues.knowledgeType === 'manual'">
+      {{'MANUAL_INFO' | translate}}
+    </ng-container>
+  </h2>
   <div class="text-gray-500 fw-bold fs-6">
     {{'IF_NEED_MORE_INFO' | translate}}
     <a href="#" class="link-primary fw-bolder"> {{ 'HELP_PAGE' | translate }} </a>
@@ -15,7 +34,25 @@
   <!-- Knowledge Title -->
   <div class="mb-10 fv-row">
     <label class="d-flex align-items-center form-label mb-3 required">
-      {{'KNOWLEDGE_TITLE' | translate}}<i
+      <ng-container *ngIf="defaultValues.knowledgeType === 'course'">
+        {{'COURSE_TITLE' | translate}}
+      </ng-container>
+      <ng-container *ngIf="defaultValues.knowledgeType === 'media'">
+        {{'MEDIA_TITLE' | translate}}
+      </ng-container>
+      <ng-container *ngIf="defaultValues.knowledgeType === 'data'">
+        {{'DATA_TITLE' | translate}}
+      </ng-container>
+      <ng-container *ngIf="defaultValues.knowledgeType === 'report'">
+        {{'REPORT_TITLE' | translate}}
+      </ng-container>
+      <ng-container *ngIf="defaultValues.knowledgeType === 'manual'">
+        {{'MANUAL_TITLE' | translate}}
+      </ng-container>
+      <ng-container *ngIf="defaultValues.knowledgeType === 'insight'">
+        {{'INSIGHT_TITLE' | translate}}
+      </ng-container>
+      <i
       class="fas fa-exclamation-circle mx-2 fs-7"
       ngbTooltip="{{'KNOWLEDGE_TITLE_TOOLTIP' | translate}}">
 
@@ -74,7 +111,25 @@
  <!-- Knowledge Language -->
   <div class="mb-10 fv-row">
     <label class="d-flex align-items-center form-label mb-3 required">
-      {{'KNOWLEDGE_LANGUAGE' | translate}}  <i
+      <ng-container *ngIf="defaultValues.knowledgeType === 'course'">
+        {{'COURSE_LANGUAGE' | translate}}
+      </ng-container>
+      <ng-container *ngIf="defaultValues.knowledgeType === 'media'">
+        {{'MEDIA_LANGUAGE' | translate}}
+      </ng-container>
+      <ng-container *ngIf="defaultValues.knowledgeType === 'data'">
+        {{'DATA_LANGUAGE' | translate}}
+      </ng-container>
+      <ng-container *ngIf="defaultValues.knowledgeType === 'report'">
+        {{'REPORT_LANGUAGE' | translate}}
+      </ng-container>
+      <ng-container *ngIf="defaultValues.knowledgeType === 'manual'">
+        {{'MANUAL_LANGUAGE' | translate}}
+      </ng-container>
+      <ng-container *ngIf="defaultValues.knowledgeType === 'insight'">
+        {{'INSIGHT_LANGUAGE' | translate}}
+      </ng-container>
+      <i
       class="fas fa-exclamation-circle mx-2 fs-7"
       ngbTooltip="{{'KNOWLEDGE_LANGUAGE_TOOLTIP' | translate}}">
     </i>
@@ -190,6 +245,20 @@
     </label>
 
     <div class="nav-group nav-group-fluid">    
+      <label for="targetMarket2">  
+        <input 
+          type="radio" 
+          class="btn-check" 
+          formControlName="targetMarket" 
+          name="targetMarket" 
+          value="2" 
+          id="targetMarket2">
+        <span class="btn btn-sm btn-color-muted btn-active btn-active-info fw-bold px-4">
+          <i class="ki-duotone ki-icon fs-1"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+          {{'COUNTRIES_AND_REGIONS' | translate}}
+        </span>
+      </label>
+    
       <label for="targetMarket1">      
         <input 
           type="radio" 
@@ -204,20 +273,6 @@
             <span class="path2"></span>
           </i>
           {{'ECONOMIC_BLOCK' | translate}}
-        </span>
-      </label>
-    
-      <label for="targetMarket2">  
-        <input 
-          type="radio" 
-          class="btn-check" 
-          formControlName="targetMarket" 
-          name="targetMarket" 
-          value="2" 
-          id="targetMarket2">
-        <span class="btn btn-sm btn-color-muted btn-active btn-active-info fw-bold px-4">
-          <i class="ki-duotone ki-icon fs-1"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
-          {{'REGION' | translate}}
         </span>
       </label>
     </div>
@@ -247,7 +302,7 @@
   <div class="mb-10">
     <div *ngIf="form.get('targetMarket')?.value === '2'">
       <label class="d-flex align-items-center form-label mb-3 required">
-        {{'REGION' | translate}}  <i
+        {{'COUNTRIES_AND_REGIONS' | translate}}  <i
         class="fas fa-exclamation-circle mx-2 fs-7"
         ngbTooltip="{{'REGION_TOOLTIP' | translate}}">
       </i>
