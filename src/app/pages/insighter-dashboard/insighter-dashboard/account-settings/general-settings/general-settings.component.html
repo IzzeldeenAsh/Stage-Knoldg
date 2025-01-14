@@ -1,0 +1,75 @@
+<div class="p-24px">
+    <app-reset-password></app-reset-password>
+    <app-activate-account *ngIf="!isActive && isPrimaryKey" [role]="hasRole(['company']) ? 'company' : 'insighter'"></app-activate-account>
+
+    <!-- Transfer Account Section -->
+    <div class="mt-5 border border-1 border-gray-300 rounded-2 mb-10" *ngIf="hasRole(['company']) && isActive">
+        <div class="col-12">
+            <div class="action-section border-1 border-light w-100">
+                <div class="p-24px">
+                    <div class="fs-2 fw-bolder">
+                        {{ 'TRANSFER_COMPANY_ACCOUNT.TITLE' | translate }}
+                    </div>
+                    <span class="text-gray-600 fw-semibold fs-6 mb-6 d-block">
+                        {{ 'TRANSFER_COMPANY_ACCOUNT.DESCRIPTION' | translate }}
+                    </span>
+                  
+                </div>
+               
+            </div>
+        </div>
+        <div class="action-footer bg-light">
+            <button class="btn btn-sm btn-primary" (click)="showTransferDialog()">
+                {{ 'TRANSFER_COMPANY_ACCOUNT.BUTTON_TEXT' | translate }}
+            </button>
+        </div>
+    </div>
+
+    <!-- Deactivate Account Section -->
+    <div class="delete-section border-1 border-light-danger w-100 mb-10" *ngIf="(hasRole(['company']) || hasRole(['insighter'])) && isActive">
+        <div class="p-24px">
+            <div class="fs-2 fw-bolder">
+                <ng-container *ngIf="hasRole(['company'])">
+                    {{ 'DEACTIVATE_ACCOUNT.TITLE_COMPANY' | translate }}
+                </ng-container>
+                <ng-container *ngIf="hasRole(['insighter'])">
+                    {{ 'DEACTIVATE_ACCOUNT.TITLE_INSIGHTER' | translate }}
+                </ng-container>
+            </div>
+        
+            <p class="warning-text" [innerHTML]="'DEACTIVATE_ACCOUNT.DESCRIPTION' | translate">
+            </p>
+      
+            
+        </div>
+      
+        <div class="action-footer bg-light-danger">
+            <button class="btn btn-sm btn-danger" (click)="showDeactivateDialog()">
+                <ng-container *ngIf="hasRole(['company'])">
+                    {{ 'DEACTIVATE_ACCOUNT.BUTTON_TEXT_COMPANY' | translate }}
+                </ng-container>
+                <ng-container *ngIf="hasRole(['insighter'])">
+                    {{ 'DEACTIVATE_ACCOUNT.BUTTON_TEXT_INSIGHTER' | translate }}
+                </ng-container>
+            </button>
+        </div>
+    </div>
+
+    <!-- Delete Account Section -->
+    <div class="delete-section border-1 border-light-danger w-100">
+        <div class="p-24px">
+            <div class="fs-2 fw-bolder">{{ 'DEACTIVATE_ACCOUNT_WITH_DELETE.TITLE' | translate }}</div>
+            
+            <p class="warning-text" [innerHTML]="'DEACTIVATE_ACCOUNT_WITH_DELETE.DESCRIPTION' | translate">
+            </p>
+        
+           
+        </div>
+        
+        <div class="action-footer bg-light-danger">
+            <button class="btn btn-sm btn-danger" (click)="showDeleteDialog()">
+                {{ 'DEACTIVATE_ACCOUNT_WITH_DELETE.BUTTON_TEXT' | translate }}
+            </button>
+        </div>
+    </div>
+</div>

@@ -21,7 +21,7 @@ import { TreeModule } from "primeng/tree";
 import { FormsModule } from "@angular/forms";
 import { InputTextModule } from "primeng/inputtext";
 import { TreeNode } from "./TreeNode";
-
+import { ChipModule } from 'primeng/chip';
 @Component({
   selector: "shared-tree-selector",
   standalone: true,
@@ -31,6 +31,7 @@ import { TreeNode } from "./TreeNode";
     TreeModule,
     FormsModule,
     InputTextModule,
+    ChipModule,
   ],
   templateUrl: "./shared-tree-selector.component.html",
   styleUrls: ["./shared-tree-selector.component.scss"],

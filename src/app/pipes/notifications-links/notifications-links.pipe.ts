@@ -10,7 +10,7 @@ export class NotificationsLinksPipe implements PipeTransform {
     if (parent === 'admin') {
       return '/admin-dashboard/admin/dashboard/main-dashboard/requests';
     }
-    return '/app/profile/user-requests';
+    return '/app/insighter-dashboard/my-dashboard';
   }
 
 }

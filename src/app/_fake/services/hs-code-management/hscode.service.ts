@@ -73,6 +73,24 @@ export class HSCodeService {
     );
   }
 
+  // Fetch HSCode data by ISIC code
+  getHSCodeByISIC(isicCodeId: number,language:string): Observable<HSCode[]> {
+    const headers = new HttpHeaders({
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Language': language,
+    });
+
+    this.setLoading(true);
+    return this.http
+      .get<HSCodeResponse>(`https://api.foresighta.co/api/common/setting/hs-code/isic-code/${isicCodeId}`, { headers })
+      .pipe(
+        map((res) => res.data),
+        catchError((error) => this.handleError(error)),
+        finalize(() => this.setLoading(false))
+      );
+  }
+
   createHSCode(hscode: any): Observable<any> {
     const headers = new HttpHeaders({
       Accept: 'application/json',

@@ -28,7 +28,7 @@
 			}           
 
             .stepper-title {
-                color: var(--#{$prefix}gray-900);		
+                color: var(--#{$prefix}gray-500);		
                 font-weight: 600;
                 font-size: 1.25rem; 
             }             
@@ -38,11 +38,11 @@
 				transition: $transition-link;
 				
 				.stepper-title {
-					color: var(--#{$prefix}primary);					 
+					color: var(--#{$prefix}info);					 
 				}               
                 
 				&:after {					
-					background-color: var(--#{$prefix}primary);
+					background-color: var(--#{$prefix}info);
 				}				                              
 			} 
 			

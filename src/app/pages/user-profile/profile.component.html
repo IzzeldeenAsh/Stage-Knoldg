@@ -5,7 +5,9 @@
         <div class="container" *ngIf="profile">
           <app-profile-header (photoupdated)="reloadAPI()" [profile]="profile"></app-profile-header>
           <div class=" justify-content-between mb-5 mb-xl-10">
-            <app-navigation-tabs [profile]="profile"></app-navigation-tabs>
+          <div>  <app-navigation-tabs [profile]="profile"></app-navigation-tabs></div>
+           
+           
           </div>
         </div>
         <!-- End of Container -->

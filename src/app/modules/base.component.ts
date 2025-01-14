@@ -4,12 +4,14 @@ import { Subject, Subscription } from 'rxjs';
 import { ScrollAnimsService } from '../_fake/services/scroll-anims/scroll-anims.service';
 import { MessageService } from 'primeng/api';
 import { TranslationService } from 'src/app/modules/i18n';
+import { ToastService } from '../_fake/services/toast-service/toast.service';
 
 @Directive()
 export abstract class BaseComponent implements OnDestroy, AfterViewInit {
   protected scrollAnims: ScrollAnimsService;
   public messageService: MessageService;
   protected translate: TranslationService;
+  public toastService: ToastService;
    unsubscribe$ = new Subject<void>();
   protected unsubscribe: Subscription[] = [];
   lang: string='en';
@@ -19,6 +21,7 @@ export abstract class BaseComponent implements OnDestroy, AfterViewInit {
     this.messageService = this.injector.get(MessageService);
     this.translate = this.injector.get(TranslationService);
     this.lang = this.translate.getSelectedLanguage();
+    this.toastService = this.injector.get(ToastService);
   }
 
   ngAfterViewInit(): void {

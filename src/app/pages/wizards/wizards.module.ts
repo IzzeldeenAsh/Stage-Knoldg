@@ -26,6 +26,7 @@ import { TreeSelectModule } from 'primeng/treeselect';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TooltipModule } from 'primeng/tooltip';
 import { SharedTreeSelectorComponent } from 'src/app/reusable-components/shared-tree-selector/shared-tree-selector.component';
+import { TruncateTextPipe } from 'src/app/pipes/truncate-pipe/truncate-text.pipe';
 @NgModule({
   declarations: [
     HorizontalComponent,
@@ -51,6 +52,7 @@ import { SharedTreeSelectorComponent } from 'src/app/reusable-components/shared-
     SharedTreeSelectorComponent,
     DropdownModule,
     MessageModule,
+    TruncateTextPipe,
     MultiSelectModule,
     MessagesModule,
     NgbTooltipModule,

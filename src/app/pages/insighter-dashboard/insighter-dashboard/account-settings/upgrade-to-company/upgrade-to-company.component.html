@@ -1,0 +1,295 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="mil-up">
+  <!-- Header Section -->
+  <div class="mb-10">
+    <h2 class="fw-bolder text-gray-900 mb-3">
+      {{ 'INSIGHTER_WIZARD.UPGRADE_TO_CORPORATE_ACCOUNT' | translate }}
+    </h2>
+    <div class="text-gray-500 fw-bold fs-6">
+      {{ 'INSIGHTER_WIZARD.IF_NEED_MORE_INFO_VERIFICATION' | translate }}
+      <a href="#" class="link-primary fw-bolder">
+        {{ 'INSIGHTER_WIZARD.HELP_PAGE' | translate }}
+      </a>
+    </div>
+  </div>
+
+  <!-- Company Information Section -->
+  <div class="card shadow-sm mb-10">
+    <div class="card-body p-8">
+      <!-- Legal Name -->
+      <div class="mb-8">
+        <label class="form-label required fw-bold">
+          {{ 'INSIGHTER_WIZARD.LEGAL_NAME' | translate }}
+        </label>
+        <input
+          formControlName="legalName"
+          type="text"
+          class="form-control form-control-lg"
+          placeholder="{{ 'INSIGHTER_WIZARD.LEGAL_NAME_PLACEHOLDER' | translate }}"
+        />
+        <div
+          *ngIf="form.get('legalName')?.invalid && form.get('legalName')?.touched"
+          class="fv-plugins-message-container invalid-feedback"
+        >
+          {{ 'INSIGHTER_WIZARD.LEGAL_NAME_REQUIRED' | translate }}
+        </div>
+      </div>
+
+      <!-- About Company -->
+      <div class="mb-8">
+        <label class="form-label required fw-bold">
+          {{ 'INSIGHTER_WIZARD.ABOUT_COMPANY' | translate }}
+        </label>
+        <textarea
+          formControlName="aboutCompany"
+          class="form-control form-control-lg"
+          rows="4"
+        ></textarea>
+        <div
+          *ngIf="form.get('aboutCompany')?.invalid && form.get('aboutCompany')?.touched"
+          class="fv-plugins-message-container invalid-feedback"
+        >
+          {{ 'INSIGHTER_WIZARD.ABOUT_COMPANY_REQUIRED' | translate }}
+        </div>
+      </div>
+
+      <!-- Logo Upload -->
+      <div class="mb-8">
+        <label class="form-label required fw-bold">
+          {{ 'INSIGHTER_WIZARD.COMPANYLOGO' | translate }}
+        </label>
+        <div class="d-flex flex-column align-items-start">
+          <div
+            class="image-input logo-placeholder image-input-outline"
+            [style.backgroundImage]="getLogoBackgroundImage()"
+          >
+            <div
+              class="image-input-wrapper logo-placeholder shadow-sm w-225px h-100px"
+              [style.backgroundImage]="getLogoBackgroundImage()"
+            ></div>
+            <label
+              class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow position-absolute top-0 end-0 m-2"
+              data-kt-image-input-action="change"
+              data-bs-toggle="tooltip"
+              data-bs-dismiss="click"
+              title="{{ 'INSIGHTER_WIZARD.CHANGE_LOGO' | translate }}"
+            >
+              <i class="ki-duotone ki-pencil fs-6">
+                <span class="path1"></span>
+                <span class="path2"></span>
+              </i>
+              <input
+                type="file"
+                accept=".png, .jpg, .jpeg"
+                (change)="onLogoSelected($event)"
+                #logoInput
+              />
+              <input type="hidden" name="avatar_remove" />
+            </label>
+          </div>
+          <div
+            *ngIf="form.get('logo')?.invalid && form.get('logo')?.touched"
+            class="fv-plugins-message-container invalid-feedback mt-2"
+          >
+            {{ 'INSIGHTER_WIZARD.COMPANY_LOGO_REQUIRED' | translate }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Verification Section -->
+  <div class="card shadow-sm mb-10">
+    <div class="card-body p-8">
+      <!-- Verification Method Selection -->
+      <div class="mb-8">
+        <label class="form-label required fw-bold mb-4">
+          {{ 'INSIGHTER_WIZARD.CHOOSE_VERIFICATION_METHOD' | translate }}
+        </label>
+        <div class="nav-group nav-group-fluid d-flex gap-3">
+          <label class="flex-grow-1">
+            <input
+              type="radio"
+              class="btn-check"
+              formControlName="verificationMethod"
+              name="verificationMethod"
+              value="websiteEmail"
+              id="verificationMethod1"
+            />
+            <span class="btn btn-outline  btn-active-primary p-6 d-flex align-items-center w-100">
+              {{ 'INSIGHTER_WIZARD.BY_WEBSITE_COMPANY_EMAIL' | translate }}
+            </span>
+          </label>
+
+          <label class="flex-grow-1">
+            <input
+              type="radio"
+              class="btn-check"
+              formControlName="verificationMethod"
+              name="verificationMethod"
+              value="uploadDocument"
+              id="verificationMethod2"
+            />
+            <span class="btn btn-outline  btn-active-primary p-6 d-flex align-items-center w-100">
+              {{ 'INSIGHTER_WIZARD.BY_UPLOADING_REGISTRY_DOCUMENT' | translate }}
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Website Email Verification -->
+      <div *ngIf="form.get('verificationMethod')?.value === 'websiteEmail'" class="mb-8">
+        <div class="mb-8">
+          <label class="form-label required fw-bold">
+            {{ 'INSIGHTER_WIZARD.WEBSITE_DOMAIN' | translate }}
+          </label>
+          <input
+            formControlName="website"
+            type="text"
+            class="form-control form-control-lg"
+            placeholder="{{ 'INSIGHTER_WIZARD.WEBSITE_DOMAIN' | translate }}"
+          />
+          <div
+            *ngIf="form.get('website')?.invalid && form.get('website')?.touched"
+            class="fv-plugins-message-container invalid-feedback"
+          >
+            {{ 'INSIGHTER_WIZARD.WEBSITE_REQUIRED' | translate }}
+          </div>
+        </div>
+
+        <div class="row g-5">
+          <div class="col-lg-6">
+            <label class="form-label required fw-bold">
+              {{ 'INSIGHTER_WIZARD.COMPANY_EMAIL' | translate }}
+            </label>
+            <div class="d-flex gap-3">
+              <input
+                formControlName="companyEmail"
+                type="email"
+                class="form-control form-control-lg"
+                placeholder="{{ 'INSIGHTER_WIZARD.COMPANY_EMAIL' | translate }}"
+              />
+              <button
+                type="button"
+                class="btn btn-lg btn-primary min-w-100px"
+                (click)="getCode()"
+                [disabled]="!form.get('companyEmail')?.valid || gettingCodeLoader || isGetCodeDisabled"
+              >
+                <ng-container *ngIf="!gettingCodeLoader && !isGetCodeDisabled">
+                  {{ 'INSIGHTER_WIZARD.GET_CODE' | translate }}
+                </ng-container>
+                <ng-container *ngIf="gettingCodeLoader">
+                  {{ 'AUTH.REGISTRATION.PLEASE_WAIT' | translate }}
+                  <span class="spinner-border spinner-border-sm ms-2"></span>
+                </ng-container>
+                <ng-container *ngIf="isGetCodeDisabled && !gettingCodeLoader">
+                  {{ 'INSIGHTER_WIZARD.PLEASE_WAIT' | translate }}
+                  ({{ getCodeCountdown$ | async }}s)
+                </ng-container>
+              </button>
+            </div>
+            <div
+              *ngIf="form.get('companyEmail')?.invalid && form.get('companyEmail')?.touched"
+              class="fv-plugins-message-container invalid-feedback"
+            >
+              {{ 'INSIGHTER_WIZARD.COMPANY_EMAIL_REQUIRED' | translate }}
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <label class="form-label required fw-bold">
+              {{ 'INSIGHTER_WIZARD.CODE' | translate }}
+            </label>
+            <input
+              formControlName="code"
+              type="text"
+              class="form-control form-control-lg"
+              placeholder="{{ 'INSIGHTER_WIZARD.ENTER_CODE' | translate }}"
+            />
+            <div
+              *ngIf="form.get('code')?.invalid && form.get('code')?.touched"
+              class="fv-plugins-message-container invalid-feedback"
+            >
+              {{ 'INSIGHTER_WIZARD.CODE_REQUIRED' | translate }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Document Upload Verification -->
+      <div *ngIf="form.get('verificationMethod')?.value === 'uploadDocument'" class="mb-8">
+        <div class="fv-row">
+          <div
+            class="dropzone dz-clickable border-2 border-dashed rounded p-8 text-center"
+            *ngIf="!form.get('registerDocument')?.value"
+            (click)="onDropzoneClick()"
+            (drop)="onFileDrop($event)"
+            (dragover)="onDragOver($event)"
+          >
+            <i class="ki-outline ki-file-up fs-3x text-primary mb-3"></i>
+            <h3 class="fs-4 fw-bold text-gray-900 mb-2">
+              {{ 'INSIGHTER_WIZARD.DROP_OR_UPLOAD_REGISTRY_DOCUMENT' | translate }}
+            </h3>
+            <span class="fs-7 text-muted">
+              {{ 'INSIGHTER_WIZARD.VERIFY_COMPANY_ACCOUNT_BY_UPLOADING_REGISTRY_DOC' | translate }}
+            </span>
+          </div>
+
+          <div *ngIf="form.get('registerDocument')?.value" class="border rounded p-4">
+            <div class="d-flex align-items-center justify-content-between">
+              <div class="d-flex align-items-center">
+                <div class="symbol symbol-40px me-4">
+                  <img [src]="getFileIcon(form.get('registerDocument')?.value)" alt="icon" />
+                </div>
+                <div>
+                  <span class="fs-6 fw-bold text-gray-900 d-block">
+                    {{ form.get('registerDocument')?.value.name }}
+                  </span>
+                  <span class="fs-7 text-muted">
+                    {{ (form.get('registerDocument')?.value.size / 1000) | number:'1.0-2' }} KB
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                pTooltip="{{ 'BUTTONS.DELETE_FILE' | translate }}"
+                tooltipPosition="top"
+                class="btn btn-icon btn-light-danger btn-sm"
+                (click)="removeRegisterDocument()"
+              >
+                   <i class="ki-duotone ki-trash fs-2">
+                    <span class="path1"></span><span class="path2"></span><span class="path3"></span>
+                    <span class="path4"></span><span class="path5"></span>
+                  </i>
+              </button>
+            </div>
+          </div>
+
+          <input
+            type="file"
+            #fileInput
+            (change)="onFileSelected($event)"
+            accept=".png, .jpg, .jpeg, .pdf"
+            style="display: none"
+          />
+        </div>
+        <div
+          *ngIf="form.get('registerDocument')?.invalid && form.get('registerDocument')?.touched"
+          class="fv-plugins-message-container invalid-feedback mt-2"
+        >
+          {{ 'INSIGHTER_WIZARD.REGISTER_DOCUMENT_REQUIRED' | translate }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Submit Button -->
+  <div class="d-flex justify-content-end">
+    <button 
+      type="submit" 
+      class="btn btn-lg btn-primary min-w-200px"
+      [disabled]="form.invalid"
+    >
+      {{ 'INSIGHTER_WIZARD.UPGRADE_TO_CORPORATE_ACCOUNT' | translate }}
+    </button>
+  </div>
+</form>

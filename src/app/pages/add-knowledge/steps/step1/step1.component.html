@@ -1,0 +1,49 @@
+<div class="pb-10 pb-lg-15">
+  <h2 class="fw-bolder d-flex align-items-center text-gray-900">
+    Choose Knowledge type
+    <i
+      class="fas fa-exclamation-circle mx-2 fs-7"
+      [ngbTooltip]=" 'BILLING_TOOLTIP' | translate "
+    ></i>
+  </h2>
+
+  <div class="text-gray-500 fw-bold fs-6">
+    {{ 'IF_NEED_MORE_INFO' | translate }}
+    <a href="#" class="link-info fw-bolder"> {{ 'HELP_PAGE' | translate }} </a>
+    .
+  </div>
+</div>
+
+<div class="fv-row" [formGroup]="form">
+  <div class="row">
+    <div class="col-lg-6 mb-4" *ngFor="let type of knowledgeTypes">
+      <input
+        formControlName="knowledgeType"
+        name="knowledgeType"
+        type="radio"
+        class="btn-check"
+        [id]="type.id"
+        [value]="type.value"
+      />
+      <label
+        class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center position-relative hover-elevate-up shadow-sm rounded-3 transition h-100"
+        [for]="type.id"
+      >
+        <app-keenicon [name]="type.iconName"  class="fs-1 mx-5" [class]="type.iconClass"></app-keenicon>
+        <span class="d-block fw-bold text-inline-start">
+          <span class="text-gray-900 fw-bolder d-block fs-4 mb-2">
+            {{ type.label | translate }}
+            <i [ngClass]="type.icon"></i>
+          </span>
+          <span class="text-gray-500 fw-bold fs-6">
+            {{ type.description | translate }}
+          </span>
+        </span>
+      </label>
+    </div>
+
+    <div class="fv-plugins-message-container invalid-feedback">
+      <!-- <ErrorMessage name='knowledgeType' /> -->
+    </div>
+  </div>
+</div>

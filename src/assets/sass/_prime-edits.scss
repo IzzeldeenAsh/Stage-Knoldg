@@ -67,9 +67,9 @@ html[dir="rtl"] .p-dropdown .p-dropdown-clear-icon {
 }
 
 /* Dialog Content Overflow */
-.p-dialog-content {
-  overflow: visible !important;
-}
+// .p-dialog-content {
+//   overflow: visible !important;
+// }
 
 /* Home Countries Dropdown Styling */
 .home-countries-dropdown .p-dropdown {
@@ -389,4 +389,38 @@ html[dir="ltr"] .my-menu {
     background: #0778b9 !important;
     border: 1px solid #0778b9 !important;
   
+}
+
+.p-tabview .p-tabview-nav li .p-tabview-nav-link{
+  font-weight: 400 !important;
+}
+.gradient-background{
+  background: rgb(255,255,255);
+  background: -moz-linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(253,254,255,1) 51%, rgba(239,251,255,1) 100%);
+  background: -webkit-linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(253,254,255,1) 51%, rgba(239,251,255,1) 100%);
+  background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(253,254,255,1) 51%, rgba(239,251,255,1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#effbff",GradientType=1);
+height: 100%;
+min-height: 100vh;
+width:  100vw;
+}
+.select-region-dialog .p-dialog-content{
+  overflow: auto !important;
+}
+html[dir="rtl"] .p-accordion-toggle-icon{
+  transform: rotate(180deg)   !important;
+    margin-left: 10px !important;
+    margin-right: 10px !important;
+}
+html[dir="ltr"] .p-accordion-toggle-icon{
+  transform: rotate(0deg) !important;
+    margin-left: 10px !important;
+    margin-right: 10px !important;
+}
+
+.end-10{
+  right: 10%;
+}
+.top-80{
+  top: 80%;
 }

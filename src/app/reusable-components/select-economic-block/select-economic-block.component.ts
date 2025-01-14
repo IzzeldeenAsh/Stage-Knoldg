@@ -6,11 +6,12 @@ import { FormsModule } from '@angular/forms';
 import { EconomicBloc, EconomicBlockService } from '../../_fake/services/economic-block/economic-block.service';
 import { InputTextModule } from 'primeng/inputtext';
 import { TruncateTextPipe } from 'src/app/pipes/truncate-pipe/truncate-text.pipe';
+import { TranslationModule } from 'src/app/modules/i18n';
 
 @Component({
   selector: 'app-select-economic-block',
   standalone: true,
-  imports: [CommonModule, DialogModule, MultiSelectModule, TruncateTextPipe,FormsModule, InputTextModule],
+  imports: [CommonModule, TranslationModule, DialogModule, MultiSelectModule, TruncateTextPipe,FormsModule, InputTextModule],
   templateUrl: './select-economic-block.component.html',
   styleUrls: ['./select-economic-block.component.scss']
 })
@@ -18,7 +19,8 @@ export class SelectEconomicBlockComponent implements OnInit {
   @Input() placeholder: string = 'Select Economic Block...';
   @Input() title: string = 'Select Economic Blocks';
   @Output() blocksSelected = new EventEmitter<EconomicBloc[]>();
-
+  @Input() selectedBlockIds: number[] | undefined = [];
+  
   dialogVisible: boolean = false;
   economicBlocks: EconomicBloc[] = [];
   selectedBlocks: EconomicBloc[] = [];
@@ -34,6 +36,12 @@ export class SelectEconomicBlockComponent implements OnInit {
     this.economicBlockService.getEconomicBlocs().subscribe({
       next: (blocks) => {
         this.economicBlocks = blocks;
+        if (this.selectedBlockIds && this.selectedBlockIds.length > 0) {
+          this.selectedBlocks = this.economicBlocks.filter(block => 
+            this.selectedBlockIds!.includes(block.id)
+          );
+          this.displayValue = this.selectedBlocks.map(block => block.name).join(', ');
+        }
       },
       error: (error) => {
         console.error('Error loading economic blocks:', error);

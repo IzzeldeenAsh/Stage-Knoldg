@@ -1,10 +1,8 @@
-import { ChangeDetectorRef, Component, Injector, OnInit, ViewChild } from '@angular/core';
-import { Table } from 'primeng/table';
-import { Message } from 'primeng/api';
-import { forkJoin, Observable } from 'rxjs';
+import { ChangeDetectorRef, Component, Injector, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Observable, forkJoin } from 'rxjs';
 import { IVerificationQuestion, RequestsService } from 'src/app/_fake/services/requests-list-admin/requests.service';
 import { RequestItem } from 'src/app/modules/admin-dashboard/dashbord/dashboard/requests-list/request.interface';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BaseComponent } from 'src/app/modules/base.component';
 
 @Component({
@@ -12,16 +10,20 @@ import { BaseComponent } from 'src/app/modules/base.component';
   templateUrl: './requests-list.component.html',
   styleUrls: ['./requests-list.component.scss']
 })
-export class RequestsListComponent 
-extends BaseComponent implements OnInit {
-  messages: Message[] = [];
+export class RequestsListComponent extends BaseComponent implements OnInit {
+  messages: any[] = [];
   answeredQuestions: Array<{
     id: number;
     verification_question_id: number;
     answer: string;
   }> = [];
 
-  requestsList: RequestItem[] = [];
+  requestsList: any;
+  paginatedRequests: any;
+  currentPage: number = 1;
+  totalPages: number = 1;
+  pageSize: number = 10;
+
   isLoading$: Observable<boolean>;
   visible: boolean = false;
   visibleVerification: boolean = false;
@@ -43,15 +45,6 @@ extends BaseComponent implements OnInit {
   // Flags for splitting question submission vs. approval flow
   showVerificationQuestions: boolean = false; // true: show question form, false: show approve/disapprove
 
-  // Filters
-  selectedType: string = '';
-  selectedStatus: string = '';
-  globalFilter: string = '';
-  requestTypes: { key: string; label: string }[] = [];
-  statuses: string[] = ['pending', 'approved', 'declined'];
-
-  @ViewChild('dt') table: Table;
-
   constructor(
     injector: Injector,
     private requestsService: RequestsService,
@@ -60,48 +53,21 @@ extends BaseComponent implements OnInit {
   ) {
     super(injector);
     this.isLoading$ = this.requestsService.isLoading$;
-    // Initialize an empty form group
     this.verificationForm = this.fb.group({});
   }
 
   ngOnInit(): void {
     this.loadData();
-  }
-  // This helper lets us look up the full question text
-  getQuestionText(questionId: number): string {
-    const found = this.verificationQuestions.find(
-      (q) => q.id === questionId
-    );
-    return found ? found.question : 'Unknown Question';
+    this.loadVerificationQuestions();
   }
 
   loadData() {
     this.loading = true;
-    const reqSub = forkJoin({
-      requests: this.requestsService.getRequests(),
-      questions: this.requestsService.getListOfVerificationQuestions()
-    }).subscribe({
+    const reqSub = this.requestsService.getRequests(this.currentPage, this.pageSize).subscribe({
       next: (result) => {
-        this.requestsList = result.requests.data.sort((a, b) => {
-          if (a.status === 'pending') return -1;
-          if (b.status === 'pending') return 1;
-          return 0;
-        });
-
-        // We'll keep a global list of verification questions, if needed
-        this.verificationQuestions = result.questions.data;
-
-        // Build the set of requestTypes for the p-dropdown
-        const typesSet = new Set(
-          this.requestsList.map(request => JSON.stringify({
-            key: request.type.key,
-            label: request.type.label
-          }))
-        );
-        this.requestTypes = Array.from(typesSet).map(item => JSON.parse(item));
-
-        // Build a minimal (empty) form for our verification questions
-        this.initializeVerificationForm();
+        this.paginatedRequests = result;
+        this.requestsList = result.data;
+        this.totalPages = Math.ceil(result.meta.total / this.pageSize);
         this.cdr.detectChanges();
         this.loading = false;
       },
@@ -113,6 +79,51 @@ extends BaseComponent implements OnInit {
     });
     this.unsubscribe.push(reqSub);
   }
+
+  loadVerificationQuestions() {
+    const questionsSub = this.requestsService.getListOfVerificationQuestions().subscribe({
+      next: (result) => {
+        this.verificationQuestions = result.data;
+        this.initializeVerificationForm();
+      },
+      error: (error) => {
+        console.error('Error fetching verification questions:', error);
+      }
+    });
+    this.unsubscribe.push(questionsSub);
+  }
+
+  loadPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.loadData();
+    }
+  }
+
+  getPages(): number[] {
+    const pages: number[] = [];
+    const maxVisiblePages = 5;
+    let startPage = Math.max(1, this.currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(this.totalPages, startPage + maxVisiblePages - 1);
+
+    if (endPage - startPage + 1 < maxVisiblePages) {
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+
+  // This helper lets us look up the full question text
+  getQuestionText(questionId: number): string {
+    const found = this.verificationQuestions.find(
+      (q) => q.id === questionId
+    );
+    return found ? found.question : 'Unknown Question';
+  }
+
   initializeVerificationForm() {
     const group: any = {};
     this.verificationQuestions.forEach(question => {
@@ -120,41 +131,6 @@ extends BaseComponent implements OnInit {
       group['question_' + question.id] = ['', Validators.required];
     });
     this.verificationForm = this.fb.group(group);
-  }
-
-  applyFilter(event: any) {
-    const value = event.target.value.trim().toLowerCase();
-    this.table.filterGlobal(value, 'contains');
-  }
-
-  onTypeChange() {
-    this.applyCustomFilters();
-  }
-
-  onStatusChange() {
-    this.applyCustomFilters();
-  }
-
-  applyCustomFilters() {
-    this.table.clear();
-    if (this.globalFilter) {
-      this.table.filterGlobal(this.globalFilter.toLowerCase(), 'contains');
-    }
-    if (this.selectedType) {
-      this.table.filter(this.selectedType, 'type.key', 'equals');
-    }
-    if (this.selectedStatus) {
-      this.table.filter(this.selectedStatus, 'final_status', 'equals');
-    }
-  }
-
-  resetFilters() {
-    this.selectedType = '';
-    this.selectedStatus = '';
-    this.globalFilter = '';
-    if (this.table) {
-      this.table.clear();
-    }
   }
 
   get hasErrorMessage() {

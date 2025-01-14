@@ -1,0 +1,291 @@
+<div class="card ">
+  <!--begin::Card header-->
+  <div class="card-header pt-8">
+    <div class="card-title">
+      <!--begin::Search-->
+      <div class="d-flex align-items-center position-relative my-1">
+        <i class="ki-outline ki-magnifier fs-1 position-absolute ms-6"></i>
+        <input
+          type="text"
+          data-kt-filemanager-table-filter="search"
+          class="form-control form-control-solid w-250px ps-15"
+          placeholder="Search Files &amp; Folders"
+        />
+      </div>
+      <!--end::Search-->
+    </div>
+
+    <!--begin::Card toolbar-->
+    <div class="card-toolbar">
+      <!--begin::Toolbar-->
+      <div
+        class="d-flex justify-content-end"
+        data-kt-filemanager-table-toolbar="base"
+      >
+        <!--begin::Export-->
+        <a [routerLink]="['/app/add-knowledge']"
+          type="button"
+          class="btn btm-sm btn-light-info mx-3"
+        >
+          <i class="ki-outline ki-add-folder fs-2"></i> Add Knowledge
+        </a>
+        <!--end::Export-->
+
+        <!--begin::Add customer-->
+        <button
+        type="button"
+        class="btn btn-sm btn-info"
+        (click)="togglePackageBuilder()"
+      >
+        <i class="ki-outline ki-folder-up fs-2"></i> {{ showPackageBuilder ? 'Close Package Builder' : 'Generate Package' }}
+      </button>
+        <!--end::Add customer-->
+      </div>
+      <!--end::Toolbar-->
+
+      <!--begin::Group actions-->
+      <div
+        class="d-flex justify-content-end align-items-center d-none"
+        data-kt-filemanager-table-toolbar="selected"
+      >
+        <div class="fw-bold me-5">
+          <span
+            class="me-2"
+            data-kt-filemanager-table-select="selected_count"
+          ></span>
+          Selected
+        </div>
+
+        <button
+          type="button"
+          class="btn btn-danger"
+          data-kt-filemanager-table-select="delete_selected"
+        >
+          Delete Selected
+        </button>
+      </div>
+      <!--end::Group actions-->
+    </div>
+    <!--end::Card toolbar-->
+  </div>
+  <!--end::Card header-->
+
+  <!--begin::Card body-->
+  <div class="card-body">
+    <!--begin::Table header-->
+    <div class="d-flex flex-stack mb-6">
+      <!--begin::Title-->
+      <div class="badge badge-lg badge-light-info">
+        <div class="d-flex align-items-center flex-wrap">
+          <i class="ki-duotone ki-abstract-32 fs-2x text-info me-3">
+            <span class="path1"></span>
+            <span class="path2"></span>
+          </i>
+          <span class="fw-bold">Available Knowledges</span>
+        </div>
+      </div>
+      <!--end::Title-->
+
+      <!--begin::Items Counter-->
+      <div class="badge badge-lg badge-primary">
+        <span>{{ items.length }} items</span>
+      </div>
+      <!--end::Items Counter-->
+    </div>
+    <!--end::Table header-->
+
+    <div class="d-flex gap-4">
+      <!-- Table Column -->
+      <div [@columnResize]="showPackageBuilder ? 'w-65' : 'w-100'" 
+           [class]="showPackageBuilder ? 'w-65' : 'w-100'">
+        <!--begin::Table-->
+        <div class="table-responsive">
+          <table class="table align-middle table-row-dashed fs-6 gy-5">
+            <thead>
+              <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
+                <th class="w-10px pe-2">
+                  <div class="form-check form-check-sm form-check-custom form-check-solid me-3">
+                    <input class="form-check-input" type="checkbox">
+                  </div>
+                </th>
+                <th class="min-w-250px">Knowledge Name</th>
+                <th class="min-w-10px">Type</th>
+                <th class="min-w-125px">Total Price</th>
+                <th class="min-w-100px">Status</th>
+                <th class="w-125px"></th>
+              </tr>
+            </thead>
+            <tbody class="fw-semibold text-gray-600">
+              <tr *ngFor="let item of items"
+                  draggable="true"
+                  (dragstart)="onDragStart($event, item)"
+                  (dragend)="onDragEnd($event)">
+                <td>
+                  <div class="form-check form-check-sm form-check-custom form-check-solid">
+                    <input class="form-check-input" type="checkbox">
+                  </div>
+                </td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <i class="ki-duotone ki-file fs-2x text-primary me-4"></i>
+                    <span class="text-gray-800 text-hover-primary">{{ item.name }}</span>
+                  </div>
+                </td>
+                <td>{{ item.size }}</td>
+                <td>{{ item.price | currency }}</td>
+                <td>
+                  <span class="badge" [ngClass]="{
+                    'badge-light-success': item.status === 'Published',
+                    'badge-light-warning': item.status === 'Scheduled',
+                    'badge-light-danger': item.status === 'Draft'
+                  }">{{ item.status }}</span>
+                </td>
+                <td class="text-end">
+                  <div class="d-flex justify-content-end">
+                    <!-- Resume button for Draft status -->
+                    <button type="button" 
+                            class="btn btn-sm btn-icon btn-light btn-active-light-success me-2" 
+                            pTooltip="Edit"
+                            tooltipPosition="top"
+                            *ngIf="item.status === 'Draft' || item.status === 'Scheduled'">
+                            <i class="ki-duotone ki-notepad-edit m-0 fs-5"><span class="path1"></span><span class="path2"></span></i>
+                    </button>
+                    <!-- Publish button - only show for Draft -->
+                    <button type="button" 
+                            class="btn btn-sm btn-icon btn-light btn-active-light-info me-2" 
+                            pTooltip="Publish"
+                            tooltipPosition="top"
+                            *ngIf="item.status === 'Draft' || item.status === 'Scheduled'">
+                      <i class="ki-duotone ki-send fs-5 m-0">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                      </i>
+                    </button>
+                    <!-- Schedule button - hide for Scheduled and Published -->
+                    <button type="button" 
+                            class="btn btn-sm btn-icon btn-light btn-active-light-warning me-2" 
+                            pTooltip="Schedule publication for later"
+                            tooltipPosition="top"
+                            *ngIf="item.status === 'Draft'">
+                      <i class="ki-duotone ki-calendar fs-5 m-0">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                      </i>
+                    </button>
+                    <!-- Delete button - always visible -->
+                    <button type="button" 
+                            class="btn btn-sm btn-icon btn-light btn-active-light-danger"
+                            pTooltip="Delete"
+                            tooltipPosition="top">
+                      <i class="ki-duotone ki-trash fs-5">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                        <span class="path3"></span>
+                        <span class="path4"></span>
+                        <span class="path5"></span>
+                      </i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!--end::Table-->
+
+        <!-- Package Builder Toggle Button -->
+        <div class="d-flex justify-content-end mt-6">
+          <button class="btn btn-primary d-none" (click)="togglePackageBuilder()">
+            <i class="ki-duotone" [class.ki-abstract-24]="!showPackageBuilder" [class.ki-cross]="showPackageBuilder"></i>
+            {{ showPackageBuilder ? 'Close Package Builder' : 'Generate Package' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Package Sidebar -->
+        <div class="w-35 package-sidebar" *ngIf="showPackageBuilder" [@slideInOut]>
+          <div class="card">
+            <div class="card-body">
+              <h3 class="card-title fs-4 fw-bold mb-6">Create Package</h3>
+              
+              <div class="dropzone-container" 
+                   [class.dropzone-active]="draggedItem"
+                   (dragover)="onDragOver($event)"
+                   (drop)="onDrop($event)">
+                <div class="dropzone-placeholder" *ngIf="packages.length === 0">
+                  <i class="ki-duotone ki-abstract-24 fs-3x text-primary mb-3">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                  </i>
+                  <div class="text-gray-600 fw-semibold">Drag items here</div>
+                </div>
+                
+                <div class="package-items" *ngIf="packages.length > 0">
+                  <div *ngFor="let pkg of packages" class="package-item-card">
+                    <div class="d-flex align-items-center justify-content-between">
+                      <div>
+                        <div class="d-flex align-items-center">
+                          <i class="ki-duotone ki-file fs-2 text-primary me-2"></i>
+                          <span class="fw-bold">{{ pkg.name }}</span>
+                        </div>
+                        <div class="text-gray-600 fs-7 mt-1">
+                          {{ pkg.size }} · {{ pkg.price | currency }}
+                        </div>
+                      </div>
+                      <button class="btn btn-icon btn-sm btn-light-danger" (click)="removePackageItem(pkg)">
+                        <i class="ki-duotone ki-trash fs-2">
+                          <span class="path1"></span>
+                          <span class="path2"></span>
+                          <span class="path3"></span>
+                          <span class="path4"></span>
+                          <span class="path5"></span>
+                        </i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+  
+              <!-- Package Summary -->
+              <div class="mt-6" *ngIf="packages.length > 0">
+                <div class="separator my-6"></div>
+                
+                <!-- Subtotal -->
+                <div class="d-flex justify-content-between mb-3">
+                  <span class="text-gray-600">Subtotal:</span>
+                  <span class="fw-bold">{{ subtotal | currency }}</span>
+                </div>
+  
+                <!-- Discount Input -->
+                <div class="d-flex align-items-center mb-3">
+                  <span class="text-gray-600 me-3">Discount:</span>
+                  <input type="number" 
+                         class="form-control form-control-sm w-75px" 
+                         min="0" 
+                         max="100"
+                         [value]="discount"
+                         (input)="updateDiscount($event)">
+                  <span class="ms-2">%</span>
+                </div>
+  
+                <!-- Total -->
+                <div class="d-flex justify-content-between mb-6">
+                  <span class="text-gray-800 fw-bold">Total:</span>
+                  <span class="text-primary fw-bolder fs-5">{{ totalPrice | currency }}</span>
+                </div>
+  
+                <!-- Package Actions -->
+                <div class="d-flex justify-content-end">
+                  <button class="btn btn-primary" (click)="savePackage()">
+                    <i class="ki-duotone ki-check fs-2 me-2"></i>
+                    Save Package
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+  <!--end::Card body-->
+</div>

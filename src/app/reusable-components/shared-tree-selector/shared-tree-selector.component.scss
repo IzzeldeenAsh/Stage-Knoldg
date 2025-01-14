@@ -24,3 +24,39 @@
   .fit-content{
     width: fit-content;
   }
+  .selected-nodes-container {
+    cursor: pointer;
+    background-color: #fff;
+    border: 1px solid #DBDFE9;
+    border-radius: 0.475rem;
+    overflow: hidden;
+    /* padding: 0.775rem 1rem; */
+    padding-top: 2px;
+    max-height: 3.5rem;
+    height: 3.5rem;
+    position: relative;
+  }
+  .dots{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    font-size: 1.5rem;
+    color: #6c757d;
+  }
+
+  .placeholder-text {
+    color: #6c757d;
+    padding: 10px;
+  }
+
+  :host ::ng-deep .read-only-chips {
+    .p-chips-input-token {
+      display: none;
+    }
+    
+    .p-chips-token {
+      margin: 2px;
+      background: #e9ecef;
+      color: #495057;
+    }
+  }

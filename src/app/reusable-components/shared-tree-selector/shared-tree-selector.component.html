@@ -62,14 +62,17 @@
     {{ title }}
   </label>
 
-  <input
-    type="text"
-    pInputText
-    class="w-100 d-block"
-    [readonly]="true"
-    [placeholder]="placeholder"
-    (click)="showDialog()"
-    [value]="selectedNodesLabel()"
-    style="font-size: 13px; font-weight: 400; color: #000"
-  />
+  <div class="selected-nodes-container" (click)="showDialog()">
+    <ng-container *ngIf="selectedNodesLabel()">
+      <p-chip
+        *ngFor="let value of selectedNodesLabel().split(',')"
+        [label]="value.trim()"
+        [styleClass]="'read-only-chip'"
+        [style]="{'margin': '5px'}"
+      />
+    </ng-container>
+    <div *ngIf="!selectedNodesLabel()" class="placeholder-text">
+      {{ placeholder }}
+    </div>
+  </div>
 </div>

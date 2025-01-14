@@ -115,6 +115,11 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
         companyWebsite: [null],
         companyRegisterDocument: [null],
         companyAboutUs: ["",Validators.required],
+        linkedIn: [''],
+        facebook: [''],
+        x: [''],
+        instagram: [''],
+        youtube: [''],
       });
       this.form = this.fb.group({
         certificationsAdded: this.fb.array([]),
@@ -223,13 +228,13 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
     const transformNodes = (nodes: any[]): any[] => {
       return nodes.map(node => ({
         key: node.id,
-        label: this.lang === 'ar' ? node.name : node.names.en,
+        label: this.lang === 'ar' ? node.name : node.name,
         data: { 
           key: node.id,
           code: node.code,
           status: node.status,
-          nameEn: node.names.en,
-          nameAr: node.names.ar,
+          nameEn: node.name,
+          nameAr: node.name,
         },
         children: node.children ? transformNodes(node.children) : []
       }));
@@ -252,6 +257,29 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
       companyPhoneNumber: this.profile.company?.company_phone,
       companyAddress: this.profile.company?.address,
     });
+
+    // Add social media population
+    if (this.profile.company?.social) {
+      this.profile.company.social.forEach((social: any) => {
+        switch (social.type) {
+          case 'linkedin':
+            this.corporateInfoForm.patchValue({ linkedIn: social.link });
+            break;
+          case 'facebook':
+            this.corporateInfoForm.patchValue({ facebook: social.link });
+            break;
+          case 'x':
+            this.corporateInfoForm.patchValue({ x: social.link });
+            break;
+          case 'instagram':
+            this.corporateInfoForm.patchValue({ instagram: social.link });
+            break;
+          case 'youtube':
+            this.corporateInfoForm.patchValue({ youtube: social.link });
+            break;
+        }
+      });
+    }
   }
 
   getProfile(){
@@ -373,26 +401,46 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
     formData.forEach((value, key) => {
       formDataEntries.push({ key, value: value.toString() });
     });
-    this.postProfileAPI(formData);
+
+    // Call both profile and social networks update
+    forkJoin([
+      this._profilePost.postProfile(formData),
+      this.submitSocialNetworks()
+    ]).subscribe({
+      next: ([profileRes, socialRes]) => {
+        const message = this.lang === "ar" 
+          ? "تم تعديل البروفايل"
+          : "Profile Updated Successfully";
+        this.showSuccess("", message);
+        document.location.reload();
+      },
+      error: (error) => {
+        this.handleServerErrors(error);
+      }
+    });
   }
 
-  postProfileAPI(formData: FormData) {
-    const postprofileAPISub = this._profilePost
-      .postProfile(formData)
-      .subscribe({
-        next: (res) => {
-          const message =
-            this.lang === "ar"
-              ? "تم تعديل البروفايل"
-              : "Profile Updated Successfully";
-          this.showSuccess("", message);
-          document.location.reload;
-        },
-        error: (error) => {
-          this.handleServerErrors(error);
-        },
-      });
-    this.unsubscribe.push(postprofileAPISub);
+  submitSocialNetworks() {
+    const social = [];
+    const formValues = this.corporateInfoForm.value;
+
+    if (formValues.linkedIn) {
+      social.push({ type: 'linkedin', link: formValues.linkedIn });
+    }
+    if (formValues.facebook) {
+      social.push({ type: 'facebook', link: formValues.facebook });
+    }
+    if (formValues.x) {
+      social.push({ type: 'x', link: formValues.x });
+    }
+    if (formValues.instagram) {
+      social.push({ type: 'instagram', link: formValues.instagram });
+    }
+    if (formValues.youtube) {
+      social.push({ type: 'youtube', link: formValues.youtube });
+    }
+
+    return this._profilePost.addCompanySocial(social);
   }
 
   private handleServerErrors(error: any) {

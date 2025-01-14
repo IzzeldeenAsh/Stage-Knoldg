@@ -55,11 +55,20 @@
 
   <div class="separator my-2"></div>
 
+
+
   <div class="menu-item px-5">
     <a [routerLink]="'/app/profile/'" class="menu-link px-5">
       {{ 'HOME.MY_PROFILE' | translate }}
     </a>
   </div>
+
+  <div class="menu-item px-5" *ngIf="_user.roles.includes('insighter') || _user.roles.includes('company')"> 
+    <a [routerLink]="'/app/insighter-dashboard'" class="menu-link px-5">
+      {{ 'HOME.INSIGHTER_DASHBOARD' | translate }}
+    </a>
+  </div>
+
 
   <div class="menu-item px-5" *ngIf="_user.roles.includes('company') || _user.roles.includes('insighter')">
     <a class="menu-link px-5 cursor-pointer" placement="top-start" ngbTooltip="Coming soon">
@@ -95,12 +104,12 @@
       </div>
 
       <div class="menu-item px-3">
-        <a class="menu-link px-5 cursor-pointer" placement="top-start" [routerLink]="'/app/profile/settings/reset-password'">
+        <a class="menu-link px-5 cursor-pointer" placement="top-start" [routerLink]="'/app/insighter-dashboard/account-settings/general-settings'">
           {{ 'ACCOUNT_SETTINGS.RESET_PASSWORD' | translate }}
         </a>
       </div>
       <div class="menu-item px-3" *ngIf="_user.roles.includes('company') || _user.roles.includes('insighter')">
-        <a class="menu-link px-5 cursor-pointer" placement="top-start" [routerLink]="'/app/profile/settings/settings-action'">
+        <a class="menu-link px-5 cursor-pointer" placement="top-start" [routerLink]="'/app/insighter-dashboard/account-settings/general-settings'">
             {{ 'ACCOUNT_SETTINGS.SETTINGS' | translate }}
         </a>
       </div>

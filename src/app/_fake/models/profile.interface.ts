@@ -22,7 +22,8 @@ export interface IForsightaProfile {
     company?:Company;
     insighter_status?:string;
     client_status?:string;
-    phone?:string
+    phone?:string;
+    social?: SocialNetwork[];
   }
   
   export interface Department {
@@ -46,6 +47,11 @@ export interface IForsightaProfile {
     ar: string;
   }
   
+  export interface SocialNetwork {
+    id: number;
+    link: string;
+    type: string;
+  }
 
   export interface IClient {
     id: number;
@@ -77,6 +83,8 @@ export interface Company {
   logo: string; // URL as a string
   status: string;
   address:string;
+  primary_activate_at?:string;
   company_phone:string;
   verified:boolean;
+  social?: SocialNetwork[];
 }

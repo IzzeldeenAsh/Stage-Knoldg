@@ -11,28 +11,28 @@ export interface RequestResponse {
       label: string;
     };
     requestable_type: string;
-    comments: string;
-    staff_notes: string | null;
-    handel_by: string | null;
-    handel_at: string | null;
     requestable: Requestable;
+    comments?: string;
+    staff_notes?: string;
     status: string;
     final_status: string;
-    children: RequestItem[];
+    children?: RequestItem[];
+    handel_by?: string;
+    handel_at?: string;
   }
   
   export interface Requestable {
     id: number;
-    legal_name: string;
-    website: string | null;
-    verified_email: string | null;
-    about_us: string;
-    register_document: string;
-    logo: string;
-    status: string;
-    address: string;
-    company_phone: string;
-    roles?: string[];
+    legal_name?: string;
+    name?: string;
+    logo?: string;
+    website?: string;
+    verified_email?: string;
+    company_phone?: string;
+    address?: string;
+    about_us?: string;
+    register_document?: string;
+    status?: string;
     first_name?: string;
     last_name?: string;
     email?: string;

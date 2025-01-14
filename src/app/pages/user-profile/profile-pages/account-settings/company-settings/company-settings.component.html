@@ -88,7 +88,7 @@
     <textarea formControlName="companyAboutUs" class="form-control h-200px"></textarea>
   </div>
   <!-- Certifications -->
-  <div class="" >
+  <div class="row mb-6" >
     <label class="form-label">{{
       "ACCOUNT_SETTINGS.CERTIFICATIONS" | translate
     }}</label>
@@ -263,6 +263,88 @@
             </div>
           </div>
         </a>
+      </div>
+    </div>
+  </div>
+  <div class="row mb-6">
+    <div class="col-12">
+      <label class="form-label">
+        {{ "ACCOUNT_SETTINGS.SOCIAL_NETWORKS" | translate }}
+      </label>
+
+      <!-- LinkedIn -->
+      <div class="d-flex align-items-center mb-4">
+        <div class="symbol symbol-60px me-5">
+          <img src="assets/media/svg/social-logos/linkedin.svg" alt="LinkedIn" class="p-3"/>
+        </div>
+        <div class="flex-grow-1">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="linkedIn"
+            placeholder="LinkedIn Profile URL"
+          />
+        </div>
+      </div>
+
+      <!-- Facebook -->
+      <div class="d-flex align-items-center mb-4">
+        <div class="symbol symbol-60px me-5">
+          <img src="assets/media/svg/social-logos/facebook.svg" alt="Facebook" class="p-3"/>
+        </div>
+        <div class="flex-grow-1">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="facebook"
+            placeholder="Facebook Profile URL"
+          />
+        </div>
+      </div>
+
+      <!-- x -->
+      <div class="d-flex align-items-center mb-4">
+        <div class="symbol symbol-60px me-5">
+          <img src="assets/media/svg/social-logos/x.svg" alt="x" class="p-3"/>
+        </div>
+        <div class="flex-grow-1">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="x"
+            placeholder="X Profile URL"
+          />
+        </div>
+      </div>
+
+      <!-- Instagram -->
+      <div class="d-flex align-items-center mb-4">
+        <div class="symbol symbol-60px me-5">
+          <img src="assets/media/svg/social-logos/instagram.svg" alt="Instagram" class="p-3"/>
+        </div>
+        <div class="flex-grow-1">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="instagram"
+            placeholder="Instagram Profile URL"
+          />
+        </div>
+      </div>
+
+      <!-- YouTube -->
+      <div class="d-flex align-items-center">
+        <div class="symbol symbol-60px me-5">
+          <img src="assets/media/svg/social-logos/youtube.svg" alt="YouTube" class="p-3"/>
+        </div>
+        <div class="flex-grow-1">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="youtube"
+            placeholder="YouTube Channel URL"
+          />
+        </div>
       </div>
     </div>
   </div>

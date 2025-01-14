@@ -1,0 +1,83 @@
+.chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .chip {
+      position: relative;
+      padding: 5px 15px;
+      border: 1px solid #DFDFDF;
+      border-radius: 12px;
+      cursor: pointer;
+      color: #636363;
+    transition: background-color 0.3s, color 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    &.selected {
+      background-color: rgba(12, 165, 233, 0.2);
+      color: #1559b5;
+      border:1px solid #5699f2;
+    }
+  
+    .check-icon svg{
+      color: #1559b5;
+    }
+  }
+  
+  .control-buttons {
+    display: flex;
+    gap: 10px;
+  
+    .btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+  
+      &.select-all-btn {
+        background-color: #0CA5E9;
+        color: #fff;
+  
+        &:hover {
+          background-color: #0A95D4;
+        }
+      }
+  
+      &.clear-all-btn {
+        background-color: #f44336;
+        color: #fff;
+  
+        &:hover {
+          background-color: #d32f2f;
+        }
+      }
+    }
+  }
+  
+   .text-active-white:focus{
+      color: #fff !important;
+  }
+  
+  /* Example styling for ngx-chips */
+  tag-input {
+      width: 100%;
+    }
+    
+    .tag {
+      background-color: #e0e0e0;
+      border-radius: 3px;
+      padding: 5px 10px !important;
+      align-items: center !important; 
+      margin: 2px;
+    }
+    
+    .tag-input-wrapper {
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      padding: 5px;
+    }
+  

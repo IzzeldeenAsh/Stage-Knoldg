@@ -1,0 +1,181 @@
+<p-progressBar
+*ngIf="isLoading$ | async"
+mode="indeterminate"
+[style]="{ height: '4px' }"
+></p-progressBar>
+<div class="mb-5 mb-xl-10" *ngIf="userProfile">
+    <!--begin::Header-->
+    <div class="pt-7">
+        <!--begin::Title-->
+        <h3 class="align-items-start flex-column">
+            <span class="fw-bold text-gray-900">{{ 'USER_REQUESTS.TITLE' | translate }}</span>
+            <span class="text-gray-500 mt-1 fw-semibold fs-6">
+                {{ userRequests.length }} {{ 'USER_REQUESTS.REQUEST_COUNT' | translate }}
+            </span>
+        </h3>
+        <!--end::Title-->
+
+        <!--begin::Actions-->
+        <div class="toolbar">
+            <!--begin::Filters-->
+            <div class="d-flex justify-content-end flex-wrap gap-4">
+                <!--begin::Request Type-->
+                <div class="d-flex fw-bold">
+                    <!--begin::Label-->
+                    <div class="text-muted fs-7 me-2">{{ 'USER_REQUESTS.FILTER.REQUEST_TYPE' | translate }}</div>
+                    <!--end::Label-->
+
+                    <!--begin::Select-->
+                    <select class="form-select form-select-transparent text-gray-900 fs-7 lh-1 fw-bold py-0 ps-3 w-auto"
+                            [(ngModel)]="selectedType"
+                            (change)="filterRequests()">
+                        <option value="">{{ 'USER_REQUESTS.FILTER.SHOW_ALL' | translate }}</option>
+                        <option value="activate_company">{{ 'USER_REQUESTS.FILTER.ACTIVATE_COMPANY_ACCOUNT' | translate }}</option>
+                        <option value="deactivate_company">{{ 'USER_REQUESTS.FILTER.DEACTIVATE_COMPANY_ACCOUNT' | translate }}</option>
+                        <option value="verified_company">{{ 'USER_REQUESTS.FILTER.VERIFY_COMPANY' | translate }}</option>
+                        <!-- Add more options as needed -->
+                    </select>
+                    <!--end::Select-->
+                </div>
+                <!--end::Request Type-->
+                <!--begin::Status-->
+                <div class="d-flex fw-bold">
+                    <!--begin::Label-->
+                    <div class="text-muted fs-7 me-2">{{ 'USER_REQUESTS.FILTER.STATUS_TITLE' | translate }}</div>
+                    <!--end::Label-->
+
+                    <!--begin::Select-->
+                    <select class="form-select form-select-transparent text-gray-900 fs-7 lh-1 fw-bold py-0 ps-3 w-auto"
+                            [(ngModel)]="selectedStatus"
+                            (change)="filterRequests()">
+                        <option value="">{{ 'USER_REQUESTS.FILTER.SHOW_ALL' | translate }}</option>
+                        <option value="pending">{{ 'USER_REQUESTS.FILTER.PENDING' | translate }}</option>
+                        <option value="approved">{{ 'USER_REQUESTS.FILTER.APPROVED' | translate }}</option>
+                        <option value="rejected">{{ 'USER_REQUESTS.FILTER.REJECTED' | translate }}</option>
+                        <!-- Add more options as needed -->
+                    </select>
+                    <!--end::Select-->
+                </div>
+                <!--end::Status-->
+            </div>
+            <!--end::Filters-->
+        </div>
+        <!--end::Actions-->
+    </div>
+    <!--end::Header-->
+
+    <!--begin::Body-->
+    <div class="mt-5">
+        <!--begin::Table-->
+        <div class="table-responsive">
+            <table class="table align-middle table-row-dashed fs-6 gy-3">
+                <!--begin::Table head-->
+                <thead>
+                    <tr class="text-linline-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
+                        <ng-container *ngIf="userProfile?.roles?.includes('company')">   <th class="min-w-150px">{{ 'USER_REQUESTS.TABLE_HEADERS.LEGAL_NAME' | translate }}</th></ng-container>
+                        <ng-container *ngIf="userProfile?.roles?.includes('insighter')">   <th class="min-w-150px">{{ 'USER_REQUESTS.TABLE_HEADERS.NAME' | translate }}</th></ng-container>
+                        <th class="min-w-150px">{{ 'USER_REQUESTS.TABLE_HEADERS.REQUEST_TYPE' | translate }}</th>
+                        <th class="min-w-150px">{{ 'USER_REQUESTS.TABLE_HEADERS.STATUS' | translate }}</th>
+                        <th class="min-w-150px">{{ 'USER_REQUESTS.TABLE_HEADERS.COMMENTS' | translate }}</th>
+                        <th class="min-w-150px">{{ 'USER_REQUESTS.TABLE_HEADERS.ACTION' | translate }}</th>
+                    </tr>
+                </thead>
+                <!--end::Table head-->
+
+                <!--begin::Table body-->
+                <tbody class="fw-bold text-gray-600">
+                    <tr *ngFor="let request of filteredUserRequests">
+                        <ng-container *ngIf="request.requestable_type==='company'">
+                        <td>
+                            {{ request.requestable.legal_name }}
+                        </td>
+                        </ng-container>
+                        <ng-container *ngIf="request.requestable_type==='userinsighter'">
+                        <td>
+                            {{ request.requestable.first_name }} {{ request.requestable.last_name }}
+                        </td>
+                        </ng-container>
+                        <td>
+                            {{ request.type.label }}
+                        </td>
+                        <td>
+                            <div class="badge" [ngClass]="{
+                                ' badge-warning': request.final_status === 'pending',
+                                ' badge-success': request.final_status === 'approved',
+                                ' badge-danger': request.final_status === 'declined'
+                            }">
+                                {{ request.final_status | titlecase }}
+                            </div>
+                        </td>
+                        <td>
+                            {{ request.comments }}
+                        </td>
+                        <td>
+                            <button class="btn btn-primary btn-sm" (click)="openRequestDialog(request)">
+                                {{ 'USER_REQUESTS.BUTTONS.VIEW' | translate }}
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+                <!--end::Table body-->
+            </table>
+        </div>
+        <!--end::Table-->
+    </div>
+    <!--end::Body-->
+</div>
+
+<!-- Request Details Dialog -->
+<p-dialog
+    header="{{ 'USER_REQUESTS.DIALOG.HEADER' | translate }}"
+    [(visible)]="displayRequestDialog"
+    [modal]="true"
+    [style]="{ width: '50rem' }"
+    [closable]="true"
+    appendTo="body"
+>
+    <div *ngIf="selectedRequest" class="d-flex flex-column align-items-center">
+        <!-- Request Type Label -->
+        <h3 class="mb-4">{{ selectedRequest.type.label }}</h3>
+
+        <!-- Status Badge -->
+        <div class="mb-4">
+            <div class="badge" [ngClass]="{
+                'badge-light-warning': selectedRequest.final_status === 'pending',
+                'badge-light-success': selectedRequest.final_status === 'approved', 
+                'badge-light-danger': selectedRequest.final_status === 'declined'
+            }">
+                {{ selectedRequest.final_status | titlecase }}
+            </div>
+        </div>
+
+        <!-- Staff Notes -->
+        <div class="w-100 mb-4" *ngIf="selectedRequest.final_status !== 'pending'">
+            <h5 class="mb-3">{{ 'USER_REQUESTS.DIALOG.STAFF_NOTES_LABEL' | translate }}</h5>
+            <p class="text-muted">
+              {{ selectedRequest.staff_notes || ('USER_REQUESTS.DIALOG.NO_STAFF_NOTES' | translate) }}
+            </p>
+          </div>
+
+    </div>
+    <div *ngIf="selectedRequest?.final_status === 'declined'" class="mt-4">
+        <div class="mb-3">
+          <label for="resendComments" class="form-label">Comments:</label>
+          <textarea
+            id="resendComments"
+            class="form-control"
+            rows="4"
+            placeholder="Enter your comments here..."
+            [(ngModel)]="resendComments"
+          ></textarea>
+        </div>
+        <button
+          type="button"
+          class="btn btn-primary w-100"
+          (click)="onResendRequest()"
+          [disabled]="!resendComments"
+        >
+          Resend Request
+        </button>
+      </div>
+</p-dialog>

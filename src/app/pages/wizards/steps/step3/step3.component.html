@@ -1,7 +1,13 @@
 <!-- Upload Files Section -->
+<div *ngIf="(isLoading$ | async)" class="d-flex justify-content-center align-items-center min-h-300px">
+  <span class="spinner-border spinner-border-md align-middle mx-2  text-info"></span>
+</div>
 <div data-kt-stepper-element="content" class="current">
-  <!-- Wrapper -->
-  <div class="w-100">
+  <!-- Loading Spinner -->
+
+
+  <!-- Content (shown when loading is complete) -->
+  <div class="w-100" *ngIf="!(isLoading$ | async)">
     <!-- Heading -->
     <div class="pb-10 pb-lg-12">
       <h1 class="fw-bold text-gray-900">
@@ -63,7 +69,7 @@
             <!-- File Details -->
             <div class="ms-6 w-200px">
               <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2">
-                {{ fileControl.value.file.name }}
+                {{ fileControl.value.file.name | truncateText: 15 }}
               </a>
               <div class="fw-semibold text-muted">
                 {{ (fileControl.value.file.size / 1000) | number: '1.0-2' }} KB

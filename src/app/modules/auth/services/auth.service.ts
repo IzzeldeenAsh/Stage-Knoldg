@@ -67,7 +67,11 @@ export class AuthService implements OnDestroy {
         return response.data;
       }),
       switchMap(() => {
-        return this.http.get('https://api.foresighta.co/api/account/profile').pipe(
+        const headers = new HttpHeaders({
+          Accept: "application/json",
+          "Accept-Language": this.currentLang,
+        });
+        return this.http.get('https://api.foresighta.co/api/account/profile',{headers}).pipe(
           map((profileResponse: any) => {
             if (profileResponse.data.roles.includes('admin')) {
               this.router.navigate(['/admin-dashboard']);

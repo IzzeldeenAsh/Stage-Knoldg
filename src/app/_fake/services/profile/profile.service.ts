@@ -7,7 +7,9 @@ import { TranslationService } from 'src/app/modules/i18n/translation.service';
   providedIn: 'root'
 })
 export class UpdateProfileService {
-  private postProfileUrl = 'https://api.foresighta.co/api/account/profile'; 
+  private postProfileUrl = 'https://api.foresighta.co/api/account/profile';
+  private insighterSocialUrl = 'https://api.foresighta.co/api/insighter/social';
+  private companySocialUrl = 'https://api.foresighta.co/api/company/social';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   currentLang:string = "en"
@@ -31,7 +33,6 @@ export class UpdateProfileService {
     return throwError(error);
   }
 
- 
   postProfile(profile: FormData): Observable<any> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
@@ -40,6 +41,34 @@ export class UpdateProfileService {
 
     this.setLoading(true);
     return this.http.post<any>(this.postProfileUrl, profile, { headers }).pipe(
+      map((res) => res),
+      catchError((error) => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  addInsighterSocial(social: {type: string, link: string}[]): Observable<any> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+
+    this.setLoading(true);
+    return this.http.post<any>(this.insighterSocialUrl, { social }, { headers }).pipe(
+      map((res) => res),
+      catchError((error) => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  addCompanySocial(social: {type: string, link: string}[]): Observable<any> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json', 
+      'Accept-Language': this.currentLang
+    });
+
+    this.setLoading(true);
+    return this.http.post<any>(this.companySocialUrl, { social }, { headers }).pipe(
       map((res) => res),
       catchError((error) => this.handleError(error)),
       finalize(() => this.setLoading(false))

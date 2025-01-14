@@ -9,6 +9,7 @@ import { IndustryService } from "src/app/_fake/services/industries/industry.serv
 import { UpdateProfileService } from "src/app/_fake/services/profile/profile.service";
 import { AuthService } from "src/app/modules/auth";
 import { BaseComponent } from "src/app/modules/base.component";
+import { SocialNetworksModel } from 'src/app/modules/auth/models/social-networks.model';
 
 @Component({
   selector: "app-personal-settings",
@@ -27,6 +28,7 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
   profile: IForsightaProfile;
   allIndustriesSelected: any[] = [];
   allConsultingFieldsSelected: any[] = [];
+  socialNetworks: {type: string, link: string}[] = [];
 
   constructor(
     injector: Injector,
@@ -56,6 +58,7 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
           this.callConsultingFields();
           this.callIndustries();
         }
+        this.socialNetworks = profile.social || [];
       })
     );
     const countries$ = this._countryService.getCountries(this.lang ? this.lang : 'en').pipe(
@@ -95,29 +98,40 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
     });
     this.unsubscribe.push(sub);
   }
-
   populateForm(){
-    const transformNodes = (nodes: any[]): any[] => {
-      return nodes.map(node => ({
-        key: node.id,
-        label: node.name,
-        data: { 
+    let transformedIndustries;
+    let transformedConsultingFields;
+    
+    if(this.profile.roles.includes('insighter')){
+      const transformNodes = (nodes: any[]): any[] => {
+        return nodes.map(node => ({
           key: node.id,
-          nameEn: node.names.en,
-          nameAr: node.names.ar,
-        },
-        children: node.children ? transformNodes(node.children) : []
-      }));
-    };
-    const transformedIndustries = transformNodes(this.profile.industries);
-    const transformedConsultingFields = transformNodes(this.profile.consulting_field);
+          label: node.name,
+          data: { 
+            key: node.id,
+            nameEn: node.name,
+            nameAr: node.name,
+          },
+          children: node.children ? transformNodes(node.children) : []
+        }));
+      };
+      transformedIndustries = transformNodes(this.profile.industries);
+      transformedConsultingFields = transformNodes(this.profile.consulting_field);
+    }
+
     this.personalInfoForm.patchValue({
       first_name: this.profile.first_name,
       last_name: this.profile.last_name,
       country: this.countries.find((country: any) => country.id === this.profile.country_id),
       bio: this.profile.bio,
-      industries: transformedIndustries, // Correct form control
-      consulting_field: transformedConsultingFields // Correct form control
+      ...(this.profile.roles.includes('insighter') ? {
+        industries: transformedIndustries,
+        consulting_field: transformedConsultingFields
+      } : {}),
+      linkedIn: this.getSocialLink('linkedin'),
+      facebook: this.getSocialLink('facebook'),
+      twitter: this.getSocialLink('twitter'),
+      instagram: this.getSocialLink('instagram'),
     }); 
   }
 
@@ -137,8 +151,13 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
       last_name: ["", Validators.required],
       country: [""],
       bio: [""],
-      industries: [], // Correct form control
-      consulting_field: [] // Correct form control
+      industries: [],
+      consulting_field: [],
+      linkedIn: [''],
+      facebook: [''],
+      twitter: [''],
+      instagram: [''],
+      youtube: ['']
     });
   }
 
@@ -156,7 +175,39 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
     }
 
     const formData = this.createFormData();
-    this.postProfileAPI(formData);
+    
+    if (this.hasRole(['insighter'])) {
+      // Call both profile and social networks update for insighters
+      forkJoin([
+        this._profilePost.postProfile(formData),
+        this.submitSocialNetworks()
+      ]).subscribe({
+        next: ([profileRes, socialRes]) => {
+          const message = this.lang === "ar" 
+            ? "تم تعديل البروفايل"
+            : "Profile Updated Successfully";
+          this.showSuccess("", message);
+          document.location.reload();
+        },
+        error: (error) => {
+          this.handleServerErrors(error);
+        }
+      });
+    } else {
+      // Only call profile update for non-insighters
+      this._profilePost.postProfile(formData).subscribe({
+        next: (profileRes) => {
+          const message = this.lang === "ar" 
+            ? "تم تعديل البروفايل"
+            : "Profile Updated Successfully";
+          this.showSuccess("", message);
+          document.location.reload();
+        },
+        error: (error) => {
+          this.handleServerErrors(error);
+        }
+      });
+    }
   }
 
   private createFormData(): FormData {
@@ -198,6 +249,10 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
       if(this.hasRole(['company']) && this.profile.company?.legal_name){
         formData.append("legal_name", this.profile.company.legal_name);
         formData.append("about_us", this.profile.company.about_us);
+       
+      }
+      if(this.hasRole(['company']) && this.profile.company?.website){
+        formData.append("website", this.profile.company.website);
       }
     }
 
@@ -215,23 +270,54 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
            !this.hasRole(["insighter"]);
   }
 
-  postProfileAPI(formData: FormData) {
-    const postprofileAPISub = this._profilePost
-      .postProfile(formData)
-      .subscribe({
-        next: (res) => {
-          const message =
-            this.lang === "ar"
-              ? "تم تعديل البروفايل"
-              : "Profile Updated Successfully";
-          this.showSuccess("", message);
-          document.location.reload;
-        },
-        error: (error) => {
-          this.handleServerErrors(error);
-        },
+  private submitSocialNetworks() {
+    const form = this.personalInfoForm;
+    
+    this.socialNetworks = [];
+    
+    if (form.get('linkedIn')?.value) {
+      this.socialNetworks.push({
+        type: 'linkedin',
+        link: form.get('linkedIn')?.value
       });
-    this.unsubscribe.push(postprofileAPISub);
+    }
+    
+    if (form.get('facebook')?.value) {
+      this.socialNetworks.push({
+        type: 'facebook',
+        link: form.get('facebook')?.value
+      });
+    }
+    
+    if (form.get('twitter')?.value) {
+      this.socialNetworks.push({
+        type: 'twitter',
+        link: form.get('twitter')?.value
+      });
+    }
+    
+    if (form.get('instagram')?.value) {
+      this.socialNetworks.push({
+        type: 'instagram',
+        link: form.get('instagram')?.value
+      });
+    }
+
+    if (form.get('youtube')?.value) {
+      this.socialNetworks.push({
+        type: 'youtube',
+        link: form.get('youtube')?.value
+      });
+    }
+
+    if (this.socialNetworks.length > 0) {
+      if (this.hasRole(['insighter'])) {
+        return this._profilePost.addInsighterSocial(this.socialNetworks);
+      } else if (this.hasRole(['company'])) {
+        return this._profilePost.addCompanySocial(this.socialNetworks);
+      }
+    }
+    return of(null);
   }
 
   private handleServerErrors(error: any) {
@@ -246,5 +332,10 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
     } else {
       this.showError('','An unexpected error occurred.');
     }
+  }
+
+  private getSocialLink(type: string): string {
+    const social = this.socialNetworks.find(s => s.type === type);
+    return social ? social.link : '';
   }
 }

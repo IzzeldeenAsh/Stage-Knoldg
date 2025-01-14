@@ -34,7 +34,7 @@ export class AuthHTTPService {
   createUser(user: ForesightaGeneralUserModel): Observable<any> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
-      'Accept-Language': 'en' // As per your example
+      'Accept-Language': 'en_us' // As per your example
     });
 
     return this.http.post<ForesightaGeneralUserModel>(API_GENERALREGISTER, user,{headers});

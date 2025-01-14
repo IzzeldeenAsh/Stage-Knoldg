@@ -12,6 +12,7 @@ export interface Topic {
     ar: string;
   };
   industry_id: number;
+  status?: string;
 }
 
 export interface TopicResponse {
@@ -164,6 +165,22 @@ export class TopicsService {
 
     this.setLoading(true);
     return this.http.get<PaginatedTopicResponse>(`${this.updateDeleteApi}?page=${page}`, { headers }).pipe(
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  // Add this new method to the TopicService class
+  getSuggestKeywords(industryId: number, lang: string): Observable<string[]> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Language': lang
+    });
+
+    this.setLoading(true);
+    return this.http.get<{data: string[]}>(`${this.insightaHost}/api/common/setting/topic/suggest-keywords/${industryId}`, { headers }).pipe(
+      map(res => res.data),
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );

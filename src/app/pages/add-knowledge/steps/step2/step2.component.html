@@ -1,0 +1,346 @@
+<div *ngIf="isLoading" class="d-flex justify-content-center align-items-center min-h-300px">
+  <span class="spinner-border spinner-border-md align-middle mx-2  text-info"></span>
+</div>
+
+@if(!isLoading){
+<div class="pb-10 pb-lg-15">
+  <h2 class="fw-bolder text-gray-900">
+    <ng-container *ngIf="defaultValues.knowledgeType === 'course'">
+      {{'COURSE_INFO' | translate}}
+    </ng-container>
+    <ng-container *ngIf="defaultValues.knowledgeType === 'media'">
+      {{'MEDIA_INFO' | translate}}
+    </ng-container>
+      <ng-container *ngIf="defaultValues.knowledgeType === 'data'">
+      {{'DATA_INFO' | translate}}
+    </ng-container>
+    <ng-container *ngIf="defaultValues.knowledgeType === 'report'">
+      {{'REPORT_INFO' | translate}}
+    </ng-container>
+    <ng-container *ngIf="defaultValues.knowledgeType === 'insight'">
+      {{'INSIGHT_INFO' | translate}}
+    </ng-container>
+    <ng-container *ngIf="defaultValues.knowledgeType === 'manual'">
+      {{'MANUAL_INFO' | translate}}
+    </ng-container>
+  </h2>
+  <div class="text-gray-500 fw-bold fs-6">
+    {{'IF_NEED_MORE_INFO' | translate}}
+    <a href="#" class="link-primary fw-bolder"> {{ 'HELP_PAGE' | translate }} </a>
+    .
+  </div>
+</div>
+<div [formGroup]="form" >
+  <!-- Knowledge Title -->
+  <div class="mb-10 fv-row">
+    <label class="d-flex align-items-center form-label mb-3 required">
+      <ng-container *ngIf="defaultValues.knowledgeType === 'course'">
+        {{'COURSE_TITLE' | translate}}
+      </ng-container>
+      <ng-container *ngIf="defaultValues.knowledgeType === 'media'">
+        {{'MEDIA_TITLE' | translate}}
+      </ng-container>
+      <ng-container *ngIf="defaultValues.knowledgeType === 'data'">
+        {{'DATA_TITLE' | translate}}
+      </ng-container>
+      <ng-container *ngIf="defaultValues.knowledgeType === 'report'">
+        {{'REPORT_TITLE' | translate}}
+      </ng-container>
+      <ng-container *ngIf="defaultValues.knowledgeType === 'manual'">
+        {{'MANUAL_TITLE' | translate}}
+      </ng-container>
+      <ng-container *ngIf="defaultValues.knowledgeType === 'insight'">
+        {{'INSIGHT_TITLE' | translate}}
+      </ng-container>
+      <i
+      class="fas fa-exclamation-circle mx-2 fs-7"
+      ngbTooltip="{{'KNOWLEDGE_TITLE_TOOLTIP' | translate}}">
+
+    </i>
+    </label>
+    <div class="row mb-2" >
+      <div class="col-lg-12">
+        <input pInputText
+               formControlName="title" 
+               class=" w-100"
+               placeholder="{{'ENTER_KNOWLEDGE_TITLE' | translate}}"/>
+        <div
+          *ngIf="form.get('title')?.hasError('required') && form.get('title')?.touched"
+          class="fv-plugins-message-container invalid-feedback">
+          {{'KNOWLEDGE_TITLE_REQUIRED' | translate}}
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Knowledge Description -->
+  <div class="mb-10 fv-row">
+    <label class="d-flex align-items-center form-label mb-3 required">
+      {{'KNOWLEDGE_DESCRIPTION' | translate}}<i
+      class="fas fa-exclamation-circle mx-2 fs-7"
+      ngbTooltip="{{'KNOWLEDGE_DESCRIPTION_TOOLTIP' | translate}}">
+
+    </i>
+    </label>
+    <div class="row mb-2" >
+      <div class="col-lg-12">
+        <editor
+          apiKey="fovwl5u83es9vkiv7x6h34fynj0utg108qrb0edwwwlxevt9"
+          formControlName="description"
+          [init]="{
+            menubar: false,
+            content_css: '/assets/sass/core/vendors/plugins/_tinymce.scss',
+            plugins: ['link', 'table', 'lists', 'advlist', 'image'],
+            toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image',
+            image_advtab: true,
+            image_description: false,
+            image_dimensions: false,
+            image_uploadtab: false,
+            image_title: false,
+            height: 200,
+            content_style: 'body { font-size: 13px;font-weight: 400;}'
+          }"
+        ></editor>
+        <div
+          *ngIf="form.get('description')?.hasError('required') && form.get('description')?.touched"
+          class="fv-plugins-message-container invalid-feedback">
+          {{'KNOWLEDGE_DESCRIPTION_REQUIRED' | translate}}
+        </div>
+      </div>
+    </div>
+  </div>
+ <!-- Knowledge Language -->
+  <div class="mb-10 fv-row">
+    <label class="d-flex align-items-center form-label mb-3 required">
+      <ng-container *ngIf="defaultValues.knowledgeType === 'course'">
+        {{'COURSE_LANGUAGE' | translate}}
+      </ng-container>
+      <ng-container *ngIf="defaultValues.knowledgeType === 'media'">
+        {{'MEDIA_LANGUAGE' | translate}}
+      </ng-container>
+      <ng-container *ngIf="defaultValues.knowledgeType === 'data'">
+        {{'DATA_LANGUAGE' | translate}}
+      </ng-container>
+      <ng-container *ngIf="defaultValues.knowledgeType === 'report'">
+        {{'REPORT_LANGUAGE' | translate}}
+      </ng-container>
+      <ng-container *ngIf="defaultValues.knowledgeType === 'manual'">
+        {{'MANUAL_LANGUAGE' | translate}}
+      </ng-container>
+      <ng-container *ngIf="defaultValues.knowledgeType === 'insight'">
+        {{'INSIGHT_LANGUAGE' | translate}}
+      </ng-container>
+      <i
+      class="fas fa-exclamation-circle mx-2 fs-7"
+      ngbTooltip="{{'KNOWLEDGE_LANGUAGE_TOOLTIP' | translate}}">
+    </i>
+    </label>
+    <div class="row mb-2">
+      <div class="col-lg-12">
+        <p-dropdown
+          [options]="languages"
+          formControlName="language"
+          [filter]="true"
+          filterBy="name"
+          [showClear]="true"
+          placeholder="{{'ENTER_KNOWLEDGE_LANGUAGE' | translate}}"
+          optionLabel="name" 
+          optionValue="id"
+          styleClass="w-100"
+          [loading]="languagesService.isLoading$ | async"
+          
+        >
+        
+        </p-dropdown>
+        <div
+          *ngIf="form.get('language')?.hasError('required') && form.get('language')?.touched"
+          class="fv-plugins-message-container invalid-feedback">
+          {{'KNOWLEDGE_LANGUAGE_REQUIRED' | translate}}
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- knowledge industry -->
+  <div class="mb-10 fv-row" >
+    <app-industry-selector
+      [title]="lang=='ar' ? 'اختر الصناعة' : 'Choose an industry...'"
+      [placeholder]="lang=='ar' ? 'اختر الصناعة' : 'Choose an industry...'"
+      [fetchedData]="industryNodes"
+      [cancelLabel]="lang=='ar' ? 'الغاء' : 'Cancel'"
+      [okLabel]="lang=='ar' ? 'تأكيد' : 'Ok'"
+      [tip]="lang=='ar' ?  ' اختر الصناعة' : 'Select the industry that best describes your knowledge'"
+      [selectedIndustryId]="selectedIndustryId"
+      [isRequired]="true"
+      (nodeSelected)="onIndustrySelected($event)"
+    >
+    </app-industry-selector>
+  </div>
+  <!-- Topics -->
+  <div [@fadeInMoveY] class="mb-10" *ngIf="topics && topics.length > 0">
+    <label class="d-flex align-items-center form-label mb-3 required">
+      {{'TOPIC' | translate}}  <i
+      class="fas fa-exclamation-circle mx-2 fs-7"
+      ngbTooltip="{{'TOPIC_TOOLTIP' | translate}}">
+    </i>
+    </label>
+    <p-dropdown
+      id="topicId"
+      formControlName="topicId"
+      [options]="topics"
+      optionLabel="name"
+      optionValue="id"
+      placeholder="{{'ENTER_TOPIC' | translate}}"
+      [showClear]="true"
+      [filter]="true"
+      filterPlaceholder="{{'SEARCH_TOPICS' | translate}}"
+      class="w-100"
+      (onChange)="onTopicSelected($event.value)"
+    ></p-dropdown>
+    <div
+      *ngIf="form.controls['topicId']?.invalid && form.controls['topicId']?.touched"
+      class="text-danger"
+    >
+      {{'TOPIC_REQUIRED' | translate}}
+    </div>
+  </div>
+  <!-- Custom Topic Input -->
+  <div
+    [@fadeInMoveY]
+    class="mb-10"
+    *ngIf="form.get('topicId')?.value === 'other'"
+  >
+  <label class="d-flex align-items-center form-label mb-3 required">
+    {{'SPECIFY_OTHER_TOPIC' | translate}}  
+    <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{'TOPIC_TOOLTIP' | translate}}">
+    </i>
+  </label>
+    <input
+      type="text"
+      pInputText
+      class="w-100"
+      formControlName="customTopic"
+      placeholder="{{'ENTER_CUSTOM_TOPIC' | translate}}"
+    />
+    <!-- Duplicate Topic Error -->
+    <div 
+      class="invalid-feedback d-block" 
+      *ngIf="form.get('customTopic')?.errors?.['duplicateTopic'] && form.get('customTopic')?.touched"
+    >
+      {{'DUPLICATE_TOPIC' | translate}}
+    </div>
+    <!-- Required Field Error -->
+    <div
+      class="fv-plugins-message-container invalid-feedback"
+      *ngIf="form.get('customTopic')?.errors?.['required'] && form.get('customTopic')?.touched"
+    >
+      {{'CUSTOM_TOPIC_REQUIRED' | translate}}
+    </div>
+  </div>
+  <!-- Target Market -->
+  <div class="mb-10">
+    <label class="d-flex align-items-center form-label mb-3 required">
+      {{'TARGET_MARKET' | translate}}  <i
+      class="fas fa-exclamation-circle mx-2 fs-7"
+      ngbTooltip="{{'TARGET_MARKET_TOOLTIP' | translate}}">
+    </i>
+    </label>
+
+    <div class="nav-group nav-group-fluid">    
+      <label for="targetMarket2">  
+        <input 
+          type="radio" 
+          class="btn-check" 
+          formControlName="targetMarket" 
+          name="targetMarket" 
+          value="2" 
+          id="targetMarket2">
+        <span class="btn btn-sm btn-color-muted btn-active btn-active-info fw-bold px-4">
+          <i class="ki-duotone ki-icon fs-1"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+          {{'COUNTRIES_AND_REGIONS' | translate}}
+        </span>
+      </label>
+    
+      <label for="targetMarket1">      
+        <input 
+          type="radio" 
+          class="btn-check" 
+          formControlName="targetMarket" 
+          name="targetMarket" 
+          value="1" 
+          id="targetMarket1">
+        <span class="btn btn-sm btn-color-muted btn-active btn-active-info fw-bold px-4">
+          <i class="ki-duotone ki-chart fs-2 me-2">
+            <span class="path1"></span>
+            <span class="path2"></span>
+          </i>
+          {{'ECONOMIC_BLOCK' | translate}}
+        </span>
+      </label>
+    </div>
+
+    <div class="fv-plugins-message-container invalid-feedback" *ngIf="form.get('targetMarket')?.invalid && form.get('targetMarket')?.touched">
+        {{'TARGET_MARKET_REQUIRED' | translate}}
+    </div>
+  </div>
+  <!-- Economic Block -->
+  <div class="mb-10">
+    <div *ngIf="form.get('targetMarket')?.value === '1'">
+      <label class="d-flex align-items-center form-label mb-3 required">
+        {{'ECONOMIC_BLOCK' | translate}}  <i
+        class="fas fa-exclamation-circle mx-2 fs-7"
+        ngbTooltip="{{'ECONOMIC_BLOCK_TOOLTIP' | translate}}">
+      </i>
+      </label>
+      <app-select-economic-block
+        placeholder="{{'ENTER_ECONOMIC_BLOCK' | translate}}"
+        title="{{'CHOOSE_ECONOMIC_BLOCKS' | translate}}"
+        [selectedBlockIds]="defaultValues.economic_blocks"
+        (blocksSelected)="onEconomicBlocksSelected($event)"
+      ></app-select-economic-block>
+    </div>
+  </div>
+  <!-- Region -->
+  <div class="mb-10">
+    <div *ngIf="form.get('targetMarket')?.value === '2'">
+      <label class="d-flex align-items-center form-label mb-3 required">
+        {{'COUNTRIES_AND_REGIONS' | translate}}  <i
+        class="fas fa-exclamation-circle mx-2 fs-7"
+        ngbTooltip="{{'REGION_TOOLTIP' | translate}}">
+      </i>
+      </label>
+      <app-select-region
+        placeholder="{{'ENTER_REGION' | translate}}"
+        title="{{'CHOOSE_REGIONS' | translate}}"
+        [preSelectedRegions]="defaultValues.regions"
+        [preSelectedCountries]="defaultValues.countries"
+        (regionsSelected)="onRegionsSelected($event)"
+      ></app-select-region>
+    </div>
+  </div>
+  <!-- ISIC Code -->
+  <div class="mb-10 fv-row">
+    <app-industry-selector
+      [title]="lang=='ar' ? 'اختر الرمز الصناعي' : 'Choose an ISIC Code...'"
+      [placeholder]="lang=='ar' ? 'اختر الرمز الصناعي' : 'Choose an ISIC Code...'"
+      [fetchedData]="isicCodeNodes"
+      [cancelLabel]="lang=='ar' ? 'الغاء' : 'Cancel'"
+      [selectedIndustryId]="form.get('isic_code')?.value"
+      [okLabel]="lang=='ar' ? 'تأكيد' : 'Ok'"
+      [tip]="lang=='ar' ? 'اختر الرمز الصناعي الأفضل لمعرفتك' : 'Select the ISIC code that best describes your knowledge'"
+      (nodeSelected)="onIsicCodeSelected($event)"
+      [isRequired]="false"
+    >
+    </app-industry-selector>
+  </div>
+  <!-- HS Code -->
+  <div class="mb-10 fv-row" [@fadeInMoveY] *ngIf="selectedIsicId">
+    <app-get-hs-code-by-isic
+      [isicCodeId]="selectedIsicId"
+      [isRequired]="false"
+      [language]="lang"
+      [preselectedHSCodeId]="form.get('hs_code')?.value"
+      (hsCodeSelected)="onHSCodeSelected($event)"
+    >
+    </app-get-hs-code-by-isic>
+  </div>
+</div>
+}
