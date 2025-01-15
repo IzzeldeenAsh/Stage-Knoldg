@@ -140,20 +140,15 @@ export class Step2Component extends BaseComponent implements OnInit {
     const countriesControl = this.form.get('countries');
     const economicBlocksControl = this.form.get('economicBlocks');
 
-    // Set initial validators for Countries and Regions
+    // Set initial validators - note countries no longer has required validator
     regionsControl?.setValidators([Validators.required]);
-    countriesControl?.setValidators([Validators.required]);
+    countriesControl?.clearValidators(); // Countries is now optional
     economicBlocksControl?.clearValidators();
-
-    // Update validity
-    regionsControl?.updateValueAndValidity();
-    countriesControl?.updateValueAndValidity();
-    economicBlocksControl?.updateValueAndValidity();
 
     this.form.get('targetMarket')?.valueChanges.subscribe(value => {
       if (value === '1') { // Regions and Countries
         regionsControl?.setValidators([Validators.required]);
-        countriesControl?.setValidators([Validators.required]); 
+        countriesControl?.clearValidators(); // Keep countries optional
         economicBlocksControl?.clearValidators();
         
         regionsControl?.updateValueAndValidity();
@@ -165,7 +160,7 @@ export class Step2Component extends BaseComponent implements OnInit {
           regions: regionsControl?.value,
           countries: countriesControl?.value 
         }, this.checkForm());
-      } else if (value === '2') { // Economic Blocks
+      } else if (value === '2') {
         economicBlocksControl?.setValidators([Validators.required]);
         regionsControl?.clearValidators();
         countriesControl?.clearValidators();
