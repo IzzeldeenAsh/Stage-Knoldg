@@ -45,13 +45,13 @@ export class Step2Component extends BaseComponent implements OnInit {
   marketOptions = [
     {
       label: 'Region',
-      value: '2',
+      value: '1',
       icon: 'ki-duotone ki-globe fs-1',
       description: 'Group of countries that share similar cultural and social characteristics.'
     },
     {
       label: 'Economic Block',
-      value: '1',
+      value: '2',
       icon: 'ki-duotone ki-chart fs-1',
       description: 'Group of countries that share similar economic characteristics.'
     }
@@ -124,7 +124,7 @@ export class Step2Component extends BaseComponent implements OnInit {
       description: [this.defaultValues.description, [Validators.required]],
       accountPlan: ['1', [Validators.required]],
       language: [this.defaultValues.language, [Validators.required]],
-      targetMarket: ['2', [Validators.required]],
+      targetMarket: [this.defaultValues.targetMarket , [Validators.required]],
       industry: [this.defaultValues.industry, [Validators.required]],
       economicBlocks: [this.defaultValues.economic_blocks],
       regions: [this.defaultValues.regions],
@@ -135,52 +135,49 @@ export class Step2Component extends BaseComponent implements OnInit {
       hs_code: [this.defaultValues.hs_code],
     });
 
-    // Update initial validation based on default values
-    const targetMarketControl = this.form.get('targetMarket');
-    if (this.defaultValues.targetMarket === '1') {
-      this.form.get('economicBlocks')?.setValidators([Validators.required]);
-    } else if (this.defaultValues.targetMarket === '2') {
-      this.form.get('regions')?.setValidators([Validators.required]);
-    }
+    // Initialize validators based on default selection
+    const regionsControl = this.form.get('regions');
+    const countriesControl = this.form.get('countries');
+    const economicBlocksControl = this.form.get('economicBlocks');
 
-    targetMarketControl?.valueChanges.subscribe(value => {
-      const economicBlocksControl = this.form.get('economicBlocks');
-      const regionsControl = this.form.get('regions');
-      const countriesControl = this.form.get('countries');
+    // Set initial validators for Countries and Regions
+    regionsControl?.setValidators([Validators.required]);
+    countriesControl?.setValidators([Validators.required]);
+    economicBlocksControl?.clearValidators();
 
-      if (value === '1') {
-        // Switching to Economic Blocks
-        economicBlocksControl?.setValidators([Validators.required]);
-        economicBlocksControl?.updateValueAndValidity();
-        
-        // Clear regions and countries
-        regionsControl?.clearValidators();
-        regionsControl?.setValue(null);
-        countriesControl?.setValue(null);
-        regionsControl?.updateValueAndValidity();
-        
-        // Update parent with cleared values
-        this.updateParentModel({ 
-          regions: [], 
-          countries: [],
-          economic_blocks: economicBlocksControl?.value 
-        }, this.checkForm());
+    // Update validity
+    regionsControl?.updateValueAndValidity();
+    countriesControl?.updateValueAndValidity();
+    economicBlocksControl?.updateValueAndValidity();
 
-      } else if (value === '2') {
-        // Switching to Regions
+    this.form.get('targetMarket')?.valueChanges.subscribe(value => {
+      if (value === '1') { // Regions and Countries
         regionsControl?.setValidators([Validators.required]);
-        regionsControl?.updateValueAndValidity();
-        
-        // Clear economic blocks
+        countriesControl?.setValidators([Validators.required]); 
         economicBlocksControl?.clearValidators();
-        economicBlocksControl?.setValue(null);
+        
+        regionsControl?.updateValueAndValidity();
+        countriesControl?.updateValueAndValidity();
         economicBlocksControl?.updateValueAndValidity();
         
-        // Update parent with cleared values
         this.updateParentModel({ 
           economic_blocks: [],
           regions: regionsControl?.value,
           countries: countriesControl?.value 
+        }, this.checkForm());
+      } else if (value === '2') { // Economic Blocks
+        economicBlocksControl?.setValidators([Validators.required]);
+        regionsControl?.clearValidators();
+        countriesControl?.clearValidators();
+        
+        economicBlocksControl?.updateValueAndValidity();
+        regionsControl?.updateValueAndValidity();
+        countriesControl?.updateValueAndValidity();
+        
+        this.updateParentModel({ 
+          regions: [], 
+          countries: [],
+          economic_blocks: economicBlocksControl?.value 
         }, this.checkForm());
       }
     });
@@ -226,6 +223,16 @@ export class Step2Component extends BaseComponent implements OnInit {
   }
 
   checkForm() {
+    console.log('Form State:', {
+      valid: this.form.valid,
+      targetMarket: this.form.get('targetMarket')?.value,
+      regionsValue: this.form.get('regions')?.value,
+      regionsValid: this.form.get('regions')?.valid,
+      regionsErrors: this.form.get('regions')?.errors,
+      countriesValue: this.form.get('countries')?.value,
+      countriesValid: this.form.get('countries')?.valid,
+      countriesErrors: this.form.get('countries')?.errors,
+    });
     return this.form.valid;
   }
 
@@ -285,9 +292,18 @@ export class Step2Component extends BaseComponent implements OnInit {
   onRegionsSelected(regions: any) {
     console.log("regions", regions);
     
+    const regionsControl = this.form.get('regions');
+    const countriesControl = this.form.get('countries');
+    
     // Update form controls
-    this.form.get('regions')?.setValue(regions.regions);
-    this.form.get('countries')?.setValue(regions.countries);
+    regionsControl?.setValue(regions.regions);
+    countriesControl?.setValue(regions.countries);
+    
+    // Force validation check
+    regionsControl?.markAsTouched();
+    countriesControl?.markAsTouched();
+    regionsControl?.updateValueAndValidity();
+    countriesControl?.updateValueAndValidity();
     
     // Consolidate parent model updates
     this.updateParentModel(

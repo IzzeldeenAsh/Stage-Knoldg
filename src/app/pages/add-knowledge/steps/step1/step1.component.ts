@@ -71,7 +71,9 @@ export class Step1Component extends BaseComponent implements OnInit {
       iconName: 'youtube',
       iconClass: 'text-danger',
       icon: 'fas fa-play-circle text-danger mx-2 fs-6',
-      description: 'MEDIA_DESCRIPTION'
+      description: 'MEDIA_DESCRIPTION',
+      disabled: true,
+      tooltip: 'Coming Soon'
     }
   ];
 

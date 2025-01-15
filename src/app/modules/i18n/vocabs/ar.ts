@@ -674,6 +674,14 @@ export const locale = {
   "MEDIA": "وسائط",
   "MEDIA_DESCRIPTION": "محتوى صوتي ومرئي ووسائط متعددة للتعلم والمرجع",
   COUNTRIES_AND_REGIONS: "الدول والمناطق",
+  FILE: "الملف",
+  TOTAL_KNOWLEDGE_PRICE: "ثمن المعرفة الكلي",
+  NODE_NAME: "اسم العقدة",
+  CHAPTER_NAME: "اسم الفصل",
+  NODE_NAME_REQUIRED: "اسم العقدة مطلوب",
+  DESCRIPTION: "الوصف",
+  ENTER_DESCRIPTION: "ادخل الوصف",
+  DESCRIPTION_REQUIRED: "الوصف مطلوب",
   }
 };
 

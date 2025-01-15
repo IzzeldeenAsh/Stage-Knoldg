@@ -40,10 +40,11 @@ export interface SuggestTopicResponse {
 
 export interface AddKnowledgeDocumentRequest {
   file_name: string;
-  table_of_content: string;
+  table_of_content?: string;
   price: string;
   file: File;
   status?: string;
+  description?: string;
 }
 
 export interface DocumentInfo {
@@ -178,14 +179,13 @@ export class AddInsightStepsService {
       formData.append("file", request.file);
     }
     formData.append("status", request.status || "active");
-
-    // Parse the table of content JSON
-    const tocData = JSON.parse(request.table_of_content);
+    // Parse the table of content JSON if defined
+    const tocData = request.table_of_content ? JSON.parse(request.table_of_content) : [];
     
     // Loop through chapters and append to formData in the required format
     tocData.forEach((chapter: any, index: number) => {
       formData.append(`table_of_content[${index}][chapter][title]`, chapter.chapter.title);
-      formData.append(`table_of_content[${index}][chapter][page]`, chapter.chapter.page.toString());
+     
       
       // Handle subchapters
       chapter.chapter.sub_child.forEach((subChapter: any, subIndex: number) => {
@@ -193,10 +193,7 @@ export class AddInsightStepsService {
           `table_of_content[${index}][chapter][sub_child][${subIndex}][title]`,
           subChapter.title
         );
-        formData.append(
-          `table_of_content[${index}][chapter][sub_child][${subIndex}][page]`,
-          subChapter.page.toString()
-        );
+        
       });
     });
 

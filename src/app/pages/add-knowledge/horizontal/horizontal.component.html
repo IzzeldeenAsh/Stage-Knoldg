@@ -5,7 +5,6 @@
       id="kt_create_account_stepper"
     >
       <div class="stepper-nav mb-5">
-        
         <div
           class="stepper-item"
           [ngClass]="{
@@ -13,7 +12,7 @@
             completed: currentStep$.value > 1
           }"
         >
-          <h3 class="stepper-title fs-6">{{'KNOWLEDGE_TYPE' | translate}}</h3>
+          <h3 class="stepper-title fs-6">{{ "KNOWLEDGE_TYPE" | translate }}</h3>
         </div>
 
         <div
@@ -23,7 +22,7 @@
             completed: currentStep$.value > 2
           }"
         >
-          <h3 class="stepper-title fs-6">{{'KNOWLEDGE_INFO' | translate}}</h3>
+          <h3 class="stepper-title fs-6">{{ "KNOWLEDGE_INFO" | translate }}</h3>
         </div>
 
         <div
@@ -34,7 +33,7 @@
           }"
         >
           <h3 class="stepper-title fs-6">
-            {{'KNOWLEDGE_DOCUMENTS' | translate}}
+            {{ "KNOWLEDGE_DOCUMENTS" | translate }}
           </h3>
         </div>
 
@@ -45,21 +44,23 @@
             completed: currentStep$.value > 4
           }"
         >
-          <h3 class="stepper-title fs-6">{{'TAGS_KEYWORDS' | translate}}</h3>
+          <h3 class="stepper-title fs-6">{{ "TAGS_KEYWORDS" | translate }}</h3>
         </div>
 
         <div
           class="stepper-item"
           [ngClass]="{ current: currentStep$.value === 5 }"
         >
-          <h3 class="stepper-title fs-6">{{'PUBLISH_KNOWLEDGE' | translate}}</h3>
+          <h3 class="stepper-title fs-6">
+            {{ "PUBLISH_KNOWLEDGE" | translate }}
+          </h3>
         </div>
         <div
-        class="stepper-item"
-        [ngClass]="{ current: currentStep$.value === 6 }"
-      >
-        <h3 class="stepper-title fs-6">{{'COMPLETED' | translate}}</h3>
-      </div>
+          class="stepper-item"
+          [ngClass]="{ current: currentStep$.value === 6 }"
+        >
+          <h3 class="stepper-title fs-6">{{ "COMPLETED" | translate }}</h3>
+        </div>
       </div>
 
       <form
@@ -88,10 +89,31 @@
 
           <ng-container *ngIf="currentStep$.value === 3">
             <app-step3
-              class="w-100"
               [updateParentModel]="updateAccount"
               [defaultValues]="account$.value"
+              class="w-100"
             ></app-step3>
+            <ng-container
+              *ngIf="
+                account$.value.knowledgeType === 'data' ||
+                account$.value.knowledgeType === 'report' ||
+                account$.value.knowledgeType === 'course' ||
+                account$.value.knowledgeType === 'manual'
+              "
+            >
+              <app-sub-step-chapters
+                class="w-100"
+                [updateParentModel]="updateAccount"
+                [defaultValues]="account$.value"
+              ></app-sub-step-chapters>
+            </ng-container>
+            <ng-container *ngIf="account$.value.knowledgeType === 'insight'">
+              <app-sub-step-documents
+                class="w-100"
+                [updateParentModel]="updateAccount"
+                [defaultValues]="account$.value"
+              ></app-sub-step-documents>
+            </ng-container>
           </ng-container>
 
           <ng-container *ngIf="currentStep$.value === 4">
@@ -103,29 +125,36 @@
           </ng-container>
 
           <ng-container *ngIf="currentStep$.value === 5">
-            <app-step5 
-            [updateParentModel]="updateAccount"
-            [defaultValues]="account$.value"
-            class="w-100"></app-step5>
+            <app-step5
+              [updateParentModel]="updateAccount"
+              [defaultValues]="account$.value"
+              class="w-100"
+            ></app-step5>
           </ng-container>
 
           <ng-container *ngIf="currentStep$.value === 6">
-            <app-step6 
-            [defaultValues]="account$.value"
-            class="w-100"></app-step6>
+            <app-step6
+              [defaultValues]="account$.value"
+              class="w-100"
+            ></app-step6>
           </ng-container>
         </div>
 
         <div class="d-flex flex-stack pt-15">
           <div class="mr-2">
-            <ng-container *ngIf="currentStep$.value !== 1 && currentStep$.value !== 6">
+            <ng-container
+              *ngIf="currentStep$.value !== 1 && currentStep$.value !== 6"
+            >
               <button
                 type="button"
                 class="btn btn-lg btn-light-primary me-3"
                 (click)="prevStep()"
               >
-                <app-keenicon name="arrow-left" class="fs-3 ms-4 me-1"></app-keenicon>
-                {{'INSIGHTER_WIZARD.BACK' | translate}}
+                <app-keenicon
+                  name="arrow-left"
+                  class="fs-3 ms-4 me-1"
+                ></app-keenicon>
+                {{ "INSIGHTER_WIZARD.BACK" | translate }}
               </button>
             </ng-container>
             <ng-container *ngIf="currentStep$.value === 6">
@@ -134,7 +163,7 @@
                 class="btn btn-lg btn-primary me-3"
                 routerLink="/app/insighter-dashboard/my-knowledge/general"
               >
-                {{'VIEW_LIBRARY' | translate}}
+                {{ "VIEW_LIBRARY" | translate }}
               </button>
             </ng-container>
           </div>
@@ -147,21 +176,26 @@
                 [disabled]="!isCurrentFormValid$.value || isLoading"
                 (click)="nextStep()"
               >
-                <span class="indicator-label" >
+                <span class="indicator-label">
                   <ng-container *ngIf="currentStep$.value < formsCount - 1">
                     <ng-container *ngIf="!isLoading">
-                      {{'INSIGHTER_WIZARD.CONTINUE' | translate}} {{ " " }}
-                      <app-keenicon name="arrow-right" class="fs-3 mx-2 me-0"></app-keenicon>
+                      {{ "INSIGHTER_WIZARD.CONTINUE" | translate }} {{ " " }}
+                      <app-keenicon
+                        name="arrow-right"
+                        class="fs-3 mx-2 me-0"
+                      ></app-keenicon>
                     </ng-container>
                     <ng-container *ngIf="isLoading">
-                      {{'COMMON.PLEASE_WAIT' | translate}}<span class="spinner-border spinner-border-sm align-middle mx-2"></span>
+                      {{ "COMMON.PLEASE_WAIT" | translate
+                      }}<span
+                        class="spinner-border spinner-border-sm align-middle mx-2"
+                      ></span>
                     </ng-container>
                   </ng-container>
                   <ng-container *ngIf="currentStep$.value === formsCount - 1">
-                    {{'INSIGHTER_WIZARD.SUBMIT' | translate}}
+                    {{ "INSIGHTER_WIZARD.SUBMIT" | translate }}
                   </ng-container>
                 </span>
-             
               </button>
             </div>
           </ng-container>

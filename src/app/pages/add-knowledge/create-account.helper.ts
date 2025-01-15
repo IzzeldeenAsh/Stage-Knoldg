@@ -4,7 +4,8 @@ interface IDocument {
   file: any;
   status: 'active' | 'inactive';
   price: number;
-  file_extension?: string;
+  file_extension?: string;  
+  description?: string;
 }
 
 interface ICreateKnowldege {

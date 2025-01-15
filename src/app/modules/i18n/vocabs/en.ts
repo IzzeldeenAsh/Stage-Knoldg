@@ -715,7 +715,15 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     "COURSE_DESCRIPTION": "Educational content with structured lessons and learning objectives",
     "MEDIA": "Media",
     "MEDIA_DESCRIPTION": "Audio, video, and multimedia content for learning and reference",
-    COUNTRIES_AND_REGIONS: "Countries and Regions"
+    COUNTRIES_AND_REGIONS: "Countries and Regions",
+    FILE: "File",
+    TOTAL_KNOWLEDGE_PRICE: "Total Knowledge Price",
+    NODE_NAME: "Node Name",
+    CHAPTER_NAME: "Chapter Name",
+    NODE_NAME_REQUIRED: "Node name is required",
+    DESCRIPTION: "Description",
+    ENTER_DESCRIPTION: "Enter Description",
+    DESCRIPTION_REQUIRED: "Description is required"
   
   }
 };
