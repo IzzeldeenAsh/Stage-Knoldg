@@ -20,6 +20,7 @@ export class HorizontalComponent implements OnInit, OnDestroy {
   ngOnInit(): void {}
 
   updateAccount = (part: Partial<ICreateAccount>, isFormValid: boolean) => {
+    //s
     const currentAccount = this.account$.value;
     const updatedAccount = { ...currentAccount, ...part };
     this.account$.next(updatedAccount);
