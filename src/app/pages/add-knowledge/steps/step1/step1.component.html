@@ -16,18 +16,22 @@
 
 <div class="fv-row" [formGroup]="form">
   <div class="row">
-    <div class="col-lg-6 mb-4" *ngFor="let type of knowledgeTypes">
-      <input
+    <div class="col-lg-6 mb-4" *ngFor="let type of knowledgeTypes" >
+      <input 
         formControlName="knowledgeType"
         name="knowledgeType"
         type="radio"
         class="btn-check"
         [id]="type.id"
         [value]="type.value"
+        [disabled]="type.disabled || false"
       />
       <label
         class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center position-relative hover-elevate-up shadow-sm rounded-3 transition h-100"
         [for]="type.id"
+        [ngbTooltip]="type.tooltip"
+        [class.disabled]="type.disabled"
+        [style.cursor]="type.disabled ? 'not-allowed' : 'pointer'"
       >
         <app-keenicon [name]="type.iconName"  class="fs-1 mx-5" [class]="type.iconClass"></app-keenicon>
         <span class="d-block fw-bold text-inline-start">

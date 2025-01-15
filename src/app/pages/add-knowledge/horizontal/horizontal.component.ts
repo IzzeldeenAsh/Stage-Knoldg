@@ -16,7 +16,7 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
   knowledgeId!: number;
   account$: BehaviorSubject<ICreateKnowldege> =
     new BehaviorSubject<ICreateKnowldege>(inits);
-  currentStep$: BehaviorSubject<number> = new BehaviorSubject(5);
+  currentStep$: BehaviorSubject<number> = new BehaviorSubject(3);
   isCurrentFormValid$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
     false
   );
@@ -307,27 +307,33 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
               existing.file_name === doc.file_name
             );
             
-            const table_of_content = JSON.parse(doc.table_of_content);
-            const chaptersArray = table_of_content.chapters;
-
-            const transformedChapters = chaptersArray.map((chapter: any) => ({
-              chapter: {
-                title: chapter.name,
-                page: chapter.index.toString(),
-                sub_child: chapter.subChapters.map((sub: any) => ({
-                  title: sub.name,
-                  page: sub.index.toString(),
-                })),
-              },
-            }));
-
-            const documentRequest: AddKnowledgeDocumentRequest = {
+            let documentRequest: AddKnowledgeDocumentRequest = {
               file_name: doc.file_name,
-              table_of_content: JSON.stringify(transformedChapters),
               price: doc.price?.toString() || '0',
               file: doc.file,
               status: doc.status || 'active',
             };
+
+            // Add description for non-insight knowledge types
+            if (currentAccount.knowledgeType !== 'insight') {
+              documentRequest.description = doc.description || '';
+              
+              // Existing table_of_content logic remains the same
+              const table_of_content = JSON.parse(doc.table_of_content);
+              const chaptersArray = table_of_content.chapters;
+
+              const transformedChapters = chaptersArray.map((chapter: any) => ({
+                chapter: {
+                  title: chapter.name,
+                  sub_child: chapter.subChapters.map((sub: any) => ({
+                    title: sub.name,
+                    page: sub.index.toString(),
+                  })),
+                },
+              }));
+
+              documentRequest.table_of_content = JSON.stringify(transformedChapters);
+            }
 
             // Return object containing request and metadata
             return {

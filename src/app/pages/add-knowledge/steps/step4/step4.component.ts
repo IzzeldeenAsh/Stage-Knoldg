@@ -266,9 +266,9 @@ export class Step4Component extends BaseComponent implements OnInit {
   }
 
   fetchSuggestedKeywords() {
-    if (!this.defaultValues.industry) return;
+    if ( !this.defaultValues.knowledgeId) return;
 
-    this.tagsService.getSuggestKeywords(this.defaultValues.industry, this.lang).subscribe({
+    this.tagsService.getSuggestKeywords(this.defaultValues.knowledgeId!, this.lang).subscribe({
       next: (keywords) => {
         this.availableKeywords = keywords;
       },

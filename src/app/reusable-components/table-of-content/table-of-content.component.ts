@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { ICreateKnowldege } from 'src/app/pages/add-knowledge/create-account.helper';
 import { TranslationModule } from 'src/app/modules/i18n';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-table-of-content',
@@ -33,8 +34,10 @@ export class TableOfContentComponent implements OnInit, OnChanges {
       chapters: this.fb.array([])
     });
 
-    // Emit changes whenever form is valid
-    this.tocForm.valueChanges.subscribe(value => {
+    // Add debounceTime to prevent interference with typing
+    this.tocForm.valueChanges.pipe(
+      debounceTime(300)  // Wait 300ms after changes before emitting
+    ).subscribe(value => {
       if (this.tocForm.valid) {
         this.tocChange.emit(value);
       }
@@ -83,7 +86,7 @@ export class TableOfContentComponent implements OnInit, OnChanges {
       const chapterGroup = this.createChapter();
       chapterGroup.patchValue({
         name: ch.name,
-        index: ch.index
+        // index: ch.index
       });
       (ch.subChapters || []).forEach((sub: any) => {
         const subGroup = this.createSubChapter();
@@ -111,7 +114,7 @@ export class TableOfContentComponent implements OnInit, OnChanges {
   private createChapter(): FormGroup {
     return this.fb.group({
       name: ['', Validators.required],
-      index: [null, [Validators.required, Validators.min(1)]],
+      // index: [null, [Validators.required, Validators.min(1)]],
       subChapters: this.fb.array([])
     });
   }
@@ -130,7 +133,7 @@ export class TableOfContentComponent implements OnInit, OnChanges {
   private createSubChapter(): FormGroup {
     return this.fb.group({
       name: ['', Validators.required],
-      index: [null, [Validators.required, Validators.min(1)]]
+      // index: [null, [Validators.required, Validators.min(1)]]
     });
   }
 

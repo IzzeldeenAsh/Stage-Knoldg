@@ -238,34 +238,41 @@
   <!-- Target Market -->
   <div class="mb-10">
     <label class="d-flex align-items-center form-label mb-3 required">
-      {{'TARGET_MARKET' | translate}}  <i
-      class="fas fa-exclamation-circle mx-2 fs-7"
-      ngbTooltip="{{'TARGET_MARKET_TOOLTIP' | translate}}">
-    </i>
+      {{'TARGET_MARKET' | translate}}  
+      <i class="fas fa-exclamation-circle mx-2 fs-7"
+         ngbTooltip="{{'TARGET_MARKET_TOOLTIP' | translate}}">
+      </i>
     </label>
 
     <div class="nav-group nav-group-fluid">    
-      <label for="targetMarket2">  
-        <input 
-          type="radio" 
-          class="btn-check" 
-          formControlName="targetMarket" 
-          name="targetMarket" 
-          value="2" 
-          id="targetMarket2">
-        <span class="btn btn-sm btn-color-muted btn-active btn-active-info fw-bold px-4">
-          <i class="ki-duotone ki-icon fs-1"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
-          {{'COUNTRIES_AND_REGIONS' | translate}}
-        </span>
-      </label>
-    
-      <label for="targetMarket1">      
+      <!-- Countries and Regions Option (First) -->
+      <label for="targetMarket2" class="me-2">  
         <input 
           type="radio" 
           class="btn-check" 
           formControlName="targetMarket" 
           name="targetMarket" 
           value="1" 
+          id="targetMarket2"
+          [checked]="true">
+        <span class="btn btn-sm btn-color-muted btn-active btn-active-info fw-bold px-4">
+          <i class="ki-duotone ki-icon fs-1">
+            <span class="path1"></span>
+            <span class="path2"></span>
+            <span class="path3"></span>
+          </i>
+          {{'COUNTRIES_AND_REGIONS' | translate}}
+        </span>
+      </label>
+
+      <!-- Economic Block Option (Second) -->
+      <label for="targetMarket1">      
+        <input 
+          type="radio" 
+          class="btn-check" 
+          formControlName="targetMarket" 
+          name="targetMarket" 
+          value="2" 
           id="targetMarket1">
         <span class="btn btn-sm btn-color-muted btn-active btn-active-info fw-bold px-4">
           <i class="ki-duotone ki-chart fs-2 me-2">
@@ -277,13 +284,32 @@
       </label>
     </div>
 
-    <div class="fv-plugins-message-container invalid-feedback" *ngIf="form.get('targetMarket')?.invalid && form.get('targetMarket')?.touched">
-        {{'TARGET_MARKET_REQUIRED' | translate}}
+    <div class="fv-plugins-message-container invalid-feedback" 
+         *ngIf="form.get('targetMarket')?.invalid && form.get('targetMarket')?.touched">
+      {{'TARGET_MARKET_REQUIRED' | translate}}
     </div>
   </div>
+    <!-- Region -->
+    <div class="mb-10">
+      <div *ngIf="form.get('targetMarket')?.value === '1'">
+        <label class="d-flex align-items-center form-label mb-3 required">
+          {{'COUNTRIES_AND_REGIONS' | translate}}  <i
+          class="fas fa-exclamation-circle mx-2 fs-7"
+          ngbTooltip="{{'REGION_TOOLTIP' | translate}}">
+        </i>
+        </label>
+        <app-select-region
+          placeholder="{{'ENTER_REGION' | translate}}"
+          title="{{'CHOOSE_REGIONS' | translate}}"
+          [preSelectedRegions]="defaultValues.regions"
+          [preSelectedCountries]="defaultValues.countries"
+          (regionsSelected)="onRegionsSelected($event)"
+        ></app-select-region>
+      </div>
+    </div>
   <!-- Economic Block -->
   <div class="mb-10">
-    <div *ngIf="form.get('targetMarket')?.value === '1'">
+    <div *ngIf="form.get('targetMarket')?.value === '2'">
       <label class="d-flex align-items-center form-label mb-3 required">
         {{'ECONOMIC_BLOCK' | translate}}  <i
         class="fas fa-exclamation-circle mx-2 fs-7"
@@ -298,24 +324,7 @@
       ></app-select-economic-block>
     </div>
   </div>
-  <!-- Region -->
-  <div class="mb-10">
-    <div *ngIf="form.get('targetMarket')?.value === '2'">
-      <label class="d-flex align-items-center form-label mb-3 required">
-        {{'COUNTRIES_AND_REGIONS' | translate}}  <i
-        class="fas fa-exclamation-circle mx-2 fs-7"
-        ngbTooltip="{{'REGION_TOOLTIP' | translate}}">
-      </i>
-      </label>
-      <app-select-region
-        placeholder="{{'ENTER_REGION' | translate}}"
-        title="{{'CHOOSE_REGIONS' | translate}}"
-        [preSelectedRegions]="defaultValues.regions"
-        [preSelectedCountries]="defaultValues.countries"
-        (regionsSelected)="onRegionsSelected($event)"
-      ></app-select-region>
-    </div>
-  </div>
+
   <!-- ISIC Code -->
   <div class="mb-10 fv-row">
     <app-industry-selector

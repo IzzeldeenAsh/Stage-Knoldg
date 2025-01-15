@@ -29,6 +29,9 @@ import { FileSizePipe } from './steps/step3/file-size.pipe';
 import { TagInputModule } from 'ngx-chips';
 import { Step6Component } from './steps/step6/step6.component';
 import { DialogModule } from 'primeng/dialog';
+import { SubStepDocumentsComponent } from './steps/step3/sub-step-documents/sub-step-documents.component';
+import { SubStepChaptersComponent } from './steps/step3/sub-step-chapters/sub-step-chapters.component';
+import { TruncateTextPipe } from 'src/app/pipes/truncate-pipe/truncate-text.pipe';
 @NgModule({
   declarations: [
     HorizontalComponent,
@@ -39,11 +42,14 @@ import { DialogModule } from 'primeng/dialog';
     Step4Component,
     Step5Component,
     Step6Component,
+    SubStepDocumentsComponent,
+    SubStepChaptersComponent,
   ],
   imports: [
     CommonModule,
     WizardsRoutingModule,
     ReactiveFormsModule,
+    TruncateTextPipe,
     EditorModule,
     DialogModule,
     FormsModule,

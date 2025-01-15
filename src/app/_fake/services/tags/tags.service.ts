@@ -204,14 +204,14 @@ updateTag(tagId: number, tag:   { name: { en: string; ar: string }; status: stri
       );
   }
 
-  getSuggestKeywords(industryId: number,lang:string): Observable<string[]> {
+  getSuggestKeywords(knowledgeId: number,lang:string): Observable<string[]> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
       'Content-Type': 'application/json',
       'Accept-Language': this.currentLang
     });
 
-    return this.http.get<{data: {[key: string]: string}}>(`${this.insightaHost}/api/insighter/library/knowledge/keyword/suggest/${industryId}`, { headers })
+    return this.http.get<{data: {[key: string]: string}}>(`${this.insightaHost}/api/insighter/library/knowledge/keyword/suggest/${knowledgeId}`, { headers })
       .pipe(
         map(res => Object.values(res.data)),
         catchError(error => this.handleError(error))
