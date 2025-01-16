@@ -19,6 +19,12 @@ export interface Industry {
   name: string;
 }
 
+export interface IsicCode {
+  id: number;
+  key: number;
+  name: string;
+}
+
 export interface Knowledge {
   id: number;
   type: string;
@@ -29,9 +35,10 @@ export interface Knowledge {
   tags: Tag[];
   topic: Topic;
   industry: Industry;
-  isic_code: any[]; // You might want to create a specific interface if there's a known structure
-  hs_code: any; // You might want to specify the type if there's a known structure
+  isic_code: IsicCode;
+  hs_code: any;
   language: string;
+  total_price: string;
   status: string;
 }
 
@@ -61,6 +68,10 @@ export interface PaginatedKnowledgeResponse {
     to: number;
     total: number;
   };
+}
+
+export interface ListKnowledgeResponse {
+  data: Knowledge[];
 }
 
 @Injectable({
@@ -118,6 +129,42 @@ export class KnowledgeService {
     this.setLoading(true);
     return this.http.get<PaginatedKnowledgeResponse>(
       `${this.baseUrl}/api/insighter/library/knowledge?page=${page}`,
+      { headers }
+    ).pipe(
+      map((res) => res),
+      catchError((error) => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  getListKnowledge(): Observable<ListKnowledgeResponse> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Language': this.currentLang,
+    });
+
+    this.setLoading(true);
+    return this.http.get<ListKnowledgeResponse>(
+      `${this.baseUrl}/api/insighter/library/knowledge/list`,
+      { headers }
+    ).pipe(
+      map((res) => res),
+      catchError((error) => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  deleteKnowledge(id: number): Observable<any> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Language': this.currentLang,
+    });
+
+    this.setLoading(true);
+    return this.http.delete(
+      `${this.baseUrl}/api/insighter/library/knowledge/${id}`,
       { headers }
     ).pipe(
       map((res) => res),

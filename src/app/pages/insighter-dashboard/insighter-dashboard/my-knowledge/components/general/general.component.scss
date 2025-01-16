@@ -96,3 +96,51 @@
 .btn:hover {
   transform: translateY(-1px);
 }
+
+// Add these styles to your component's SCSS file
+.responsive-layout {
+  display: flex;
+  gap: 1rem;
+  
+  @media (max-width: 991px) {
+    flex-direction: column;
+  }
+
+  .table-column {
+    transition: width 0.3s ease;
+    
+    @media (min-width: 992px) {
+      &.w-65 {
+        width: 65%;
+      }
+      &.w-100 {
+        width: 100%;
+      }
+    }
+  }
+
+  .package-sidebar {
+    @media (min-width: 992px) {
+      width: 35%;
+    }
+    
+    @media (max-width: 991px) {
+      width: 100%;
+    }
+  }
+}
+
+// Additional mobile optimizations
+@media (max-width: 991px) {
+  .package-sidebar {
+    margin-top: 1rem;
+    
+    .card {
+      margin-bottom: 1rem;
+    }
+  }
+  
+  .table-responsive {
+    margin-bottom: 1rem;
+  }
+}

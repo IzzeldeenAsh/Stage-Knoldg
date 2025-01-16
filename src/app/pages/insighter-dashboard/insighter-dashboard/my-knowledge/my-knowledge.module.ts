@@ -11,6 +11,10 @@ import { PackagesComponent } from './components/packages/packages.component';
 import { FormsModule } from '@angular/forms';
 import { DragDropModule } from 'primeng/dragdrop';
 import { TooltipModule } from 'primeng/tooltip';
+import { DropdownModule } from 'primeng/dropdown';
+import { InputTextModule } from 'primeng/inputtext';
+import { PackageBuilderContentComponent } from './components/package-builder-content/package-builder-content.component';
+import { DialogModule } from 'primeng/dialog';
 
 const routes: Routes = [
   {
@@ -49,6 +53,7 @@ const routes: Routes = [
     GeneralComponent,
     ScheduledComponent,
     PostedComponent,
+    PackageBuilderContentComponent,
     PackagesComponent
   ],
   imports: [
@@ -56,8 +61,11 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     TooltipModule,
     TranslationModule,
+    DropdownModule,
+    DialogModule,
     FormsModule,
-    DragDropModule
+    DragDropModule,
+    InputTextModule
   ]
 })
 export class MyKnowledgeModule { } 
