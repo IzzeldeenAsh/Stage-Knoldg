@@ -1,10 +1,11 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, Injector } from '@angular/core';
 import { KnowledgeService, Knowledge } from 'src/app/_fake/services/knowledge/knowledge.service';
 import { KnowldegePackegesService } from 'src/app/_fake/services/knowldege-packages/knowldege-packeges.service';
 import { PageEvent } from '@angular/material/paginator';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import Swal from 'sweetalert2';
 import { switchMap } from 'rxjs';
+import { BaseComponent } from 'src/app/modules/base.component';
 
 interface PackageData {
   packageName: string;
@@ -52,7 +53,7 @@ interface PackageData {
     ])
   ]
 })
-export class GeneralComponent implements OnInit {
+export class GeneralComponent extends BaseComponent implements OnInit {
   knowledges: Knowledge[] = [];
   packages: Knowledge[] = [];
   showPackageBuilder = false;
@@ -74,9 +75,12 @@ export class GeneralComponent implements OnInit {
   loading: boolean = false;
 
   constructor(
+    injector: Injector,
     private knowledgeService: KnowledgeService,
     private knowldegePackegesService: KnowldegePackegesService
-  ) {}
+  ) {
+    super(injector);
+  }
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
@@ -293,11 +297,7 @@ export class GeneralComponent implements OnInit {
             // Update total items count
             this.totalItems--;
             
-            Swal.fire(
-              'Deleted!',
-              'Knowledge has been deleted.',
-              'success'
-            );
+            this.showSuccess('Knowledge has been deleted.', 'success');
           },
           (error) => {
             console.error('Error deleting knowledge:', error);

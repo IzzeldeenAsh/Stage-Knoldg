@@ -30,6 +30,22 @@ export class KnowldegePackegesService {
     return throwError(error);
   }
 
+  // Get list of packages
+  getPackages(): Observable<PackageListResponse> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+
+    this.setLoading(true);
+    return this.http.get<PackageListResponse>(`${this.baseUrl}/package/list`, { headers }).pipe(
+      map(res => res),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
   // Create a new package
   createPackage(name: string): Observable<any> {
     const headers = new HttpHeaders({
@@ -140,9 +156,14 @@ export class KnowldegePackegesService {
 export interface Package {
   id: number;
   name: string;
+  price: number;
+  discount: number;
+  final_price: number;
   status: string;
-  created_at: string;
-  updated_at: string;
+}
+
+export interface PackageListResponse {
+  data: Package[];
 }
 
 export interface PackageKnowledge {

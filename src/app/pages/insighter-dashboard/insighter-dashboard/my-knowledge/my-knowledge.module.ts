@@ -15,6 +15,9 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { PackageBuilderContentComponent } from './components/package-builder-content/package-builder-content.component';
 import { DialogModule } from 'primeng/dialog';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { SharedModule } from 'src/app/_metronic/shared/shared.module';
+import { ScheduleDialogComponent } from './components/packages/schedule-dialog/schedule-dialog.component';
 
 const routes: Routes = [
   {
@@ -54,7 +57,8 @@ const routes: Routes = [
     ScheduledComponent,
     PostedComponent,
     PackageBuilderContentComponent,
-    PackagesComponent
+    PackagesComponent,
+    ScheduleDialogComponent
   ],
   imports: [
     CommonModule,
@@ -65,7 +69,9 @@ const routes: Routes = [
     DialogModule,
     FormsModule,
     DragDropModule,
-    InputTextModule
+    InputTextModule,
+    SharedModule,
+    NgbDropdownModule
   ]
 })
 export class MyKnowledgeModule { } 

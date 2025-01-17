@@ -1,274 +1,282 @@
-<div class="card">
-  <!--begin::Card header-->
-  <div class="card-header pt-8">
-    <div class="card-title">
-      <!--begin::Search-->
-      <div class="d-flex align-items-center position-relative my-1">
-        <i class="ki-outline ki-magnifier fs-1 position-absolute ms-6"></i>
-        <input
-          type="text"
-          data-kt-filemanager-table-filter="search"
-          class="form-control form-control-solid w-250px ps-15"
-          placeholder="Search Files &amp; Folders"
-        />
-      </div>
-      <!--end::Search-->
+<!--begin::Card header-->
+<div class="card-header p-0">
+  <div class="card-title">
+    <!--begin::Search-->
+    <div class="d-flex align-items-center position-relative my-1">
+      <i class="ki-outline ki-magnifier fs-1 position-absolute ms-6"></i>
+      <input
+        type="text"
+        data-kt-filemanager-table-filter="search"
+        class="form-control form-control-solid w-250px ps-15"
+        placeholder="Search Files &amp; Folders"
+      />
     </div>
-
-    <!--begin::Card toolbar-->
-    <div class="card-toolbar">
-      <!--begin::Toolbar-->
-      <div
-        class="d-flex justify-content-end"
-        data-kt-filemanager-table-toolbar="base"
-      >
-        <!--begin::Add Knowledge-->
-        <a [routerLink]="['/app/add-knowledge']"
-          type="button"
-          class="btn btn-sm btn-light-info mx-3"
-        >
-          <i class="ki-outline ki-add-folder fs-2"></i> Add Knowledge
-        </a>
-        <!--end::Add Knowledge-->
-
-        <!--begin::Generate Package-->
-        <button
-          type="button"
-          class="btn btn-sm btn-info"
-          (click)="togglePackageBuilder()"
-        >
-          <i class="ki-outline ki-folder-up fs-2"></i> {{ showPackageBuilder ? 'Close Package Builder' : 'Generate Package' }}
-        </button>
-        <!--end::Generate Package-->
-      </div>
-      <!--end::Toolbar-->
-
-      <!--begin::Group actions-->
-      <div
-        class="d-flex justify-content-end align-items-center d-none"
-        data-kt-filemanager-table-toolbar="selected"
-      >
-        <div class="fw-bold me-5">
-          <span
-            class="me-2"
-            data-kt-filemanager-table-select="selected_count"
-          ></span>
-          Selected
-        </div>
-
-        <button
-          type="button"
-          class="btn btn-danger"
-          data-kt-filemanager-table-select="delete_selected"
-        >
-          Delete Selected
-        </button>
-      </div>
-      <!--end::Group actions-->
-    </div>
-    <!--end::Card toolbar-->
+    <!--end::Search-->
   </div>
-  <!--end::Card header-->
 
-  <!--begin::Card body-->
-  <div class="card-body">
-    <!--begin::Table header-->
-    <div class="d-flex flex-stack mb-6">
-      <!--begin::Title-->
-      <div class="badge badge-lg badge-light-info">
-        <div class="d-flex align-items-center flex-wrap">
-          <i class="ki-duotone ki-abstract-32 fs-2x text-info me-3">
-            <span class="path1"></span>
-            <span class="path2"></span>
-          </i>
-          <span class="fw-bold">Available Knowledges</span>
-        </div>
-      </div>
-      <!--end::Title-->
+  <!--begin::Card toolbar-->
+  <div class="card-toolbar">
+    <!--begin::Toolbar-->
+    <div
+      class="d-flex justify-content-end"
+      data-kt-filemanager-table-toolbar="base"
+    >
+      <!--begin::Add Knowledge-->
+      <a [routerLink]="['/app/add-knowledge']"
+        type="button"
+        class="btn btn-sm btn-light-info mx-3"
+      >
+        <i class="ki-outline ki-add-folder fs-2"></i> Add Knowledge
+      </a>
+      <!--end::Add Knowledge-->
 
-      <!--begin::Items Counter-->
-      <div class="badge badge-lg badge-primary">
-        <span>{{ totalItems }} items</span>
-      </div>
-      <!--end::Items Counter-->
+      <!--begin::Generate Package-->
+      <button
+        type="button"
+        class="btn btn-sm btn-info"
+        (click)="togglePackageBuilder()"
+      >
+        <i class="ki-outline ki-folder-up fs-2"></i> {{ showPackageBuilder ? 'Close Package Builder' : 'Generate Package' }}
+      </button>
+      <!--end::Generate Package-->
     </div>
-    <!--end::Table header-->
+    <!--end::Toolbar-->
 
-    <div class="d-flex gap-4">
-      <!-- Table Column -->
-      <div [@columnResize]="showPackageBuilder ? 'w-65' : 'w-100'" 
-           [class]="showPackageBuilder ? 'w-65' : 'w-100'">
-        <!--begin::Table-->
-        <div class="table-responsive">
-          <table class="table align-middle table-row-dashed fs-6 gy-5">
-            <thead>
-              <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
-                <th class="w-10px pe-2">
-                  <div class="form-check form-check-sm form-check-custom form-check-solid me-3">
-                    <input class="form-check-input" type="checkbox">
-                  </div>
-                </th>
-                <th class="min-w-250px">Knowledge Name</th>
-                <th class="min-w-10px">Type</th>
-                <th class="min-w-125px">Total Price</th>
-                <th class="min-w-100px">Status</th>
-                <th class="w-125px"></th>
-              </tr>
-            </thead>
-            <tbody class="fw-semibold text-gray-600">
-              <tr *ngFor="let knowledge of knowledges"
-                  draggable="true"
-                  (dragstart)="onDragStart($event, knowledge)"
-                  (dragend)="onDragEnd($event)">
-                <td>
-                  <div class="form-check form-check-sm form-check-custom form-check-solid">
-                    <input class="form-check-input" type="checkbox">
-                  </div>
-                </td>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <i class="ki-duotone ki-file fs-2x text-primary me-4"></i>
-                    <span class="text-gray-800 text-hover-primary">{{ knowledge.title }}</span>
-                  </div>
-                </td>
-                <td>{{ knowledge.type }}</td>
-                <td>{{ knowledge.total_price | currency }}</td>
-                <td>
-                  <span class="badge" [ngClass]="{
-                    'badge-light-success': knowledge.status === 'published',
-                    'badge-light-warning': knowledge.status === 'scheduled',
-                    'badge-light-danger': knowledge.status === 'unpublished'
-                  }">{{ knowledge.status }}</span>
-                </td>
-                <td class="text-end">
-                  <div class="d-flex justify-content-end">
-                    <!-- Edit button for unpublished and scheduled statuses -->
-                    <button type="button" 
-                            class="btn btn-sm btn-icon btn-light btn-active-light-success me-2" 
-                            pTooltip="Edit"
-                            tooltipPosition="top"
-                            *ngIf="knowledge.status === 'unpublished' || knowledge.status === 'scheduled'">
-                            <i class="ki-duotone ki-notepad-edit m-0 fs-5"><span class="path1"></span><span class="path2"></span></i>
-                    </button>
-                    <!-- Publish button for unpublished and scheduled statuses -->
-                    <button type="button" 
-                            class="btn btn-sm btn-icon btn-light btn-active-light-info me-2" 
-                            pTooltip="Publish"
-                            tooltipPosition="top"
-                            *ngIf="knowledge.status === 'unpublished' || knowledge.status === 'scheduled'">
-                      <i class="ki-duotone ki-send fs-5 m-0">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                      </i>
-                    </button>
-                    <!-- Schedule button for unpublished status -->
-                    <button type="button" 
-                            class="btn btn-sm btn-icon btn-light btn-active-light-warning me-2" 
-                            pTooltip="Schedule publication for later"
-                            tooltipPosition="top"
-                            *ngIf="knowledge.status === 'unpublished'">
-                      <i class="ki-duotone ki-calendar fs-5 m-0">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                      </i>
-                    </button>
-                    <!-- Delete button - always visible -->
-                    <button type="button" 
-                            class="btn btn-sm btn-icon btn-light btn-active-light-danger"
-                            pTooltip="Delete"
-                            tooltipPosition="top"
-                            (click)="deleteKnowledge(knowledge)">
-                      <i class="ki-duotone ki-trash fs-5">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                        <span class="path3"></span>
-                        <span class="path4"></span>
-                        <span class="path5"></span>
-                      </i>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <!--end::Table-->
-
-        <!--begin::Pagination-->
-        <div class="d-flex justify-content-end mt-6">
-          <ul class="pagination">
-            <li class="page-item previous" [ngClass]="{'disabled': currentPage === 1}">
-              <a class="page-link cursor-pointer" (click)="loadPage(currentPage - 1)">
-                <i class="previous"></i>
-              </a>
-            </li>
-            <li class="page-item" *ngFor="let page of getPages()" [ngClass]="{'active': page === currentPage}">
-              <a class="page-link cursor-pointer" (click)="loadPage(page)">{{ page }}</a>
-            </li>
-            <li class="page-item next" [ngClass]="{'disabled': currentPage === totalPages}">
-              <a class="page-link cursor-pointer" (click)="loadPage(currentPage + 1)">
-                <i class="next"></i>
-              </a>
-            </li>
-          </ul>
-        </div>
-        <!--end::Pagination-->
-
-        <!-- Package Builder Toggle Button -->
-        <div class="d-flex justify-content-end mt-6">
-          <button class="btn btn-primary d-none" (click)="togglePackageBuilder()">
-            <i class="ki-duotone" [class.ki-abstract-24]="!showPackageBuilder" [class.ki-cross]="showPackageBuilder"></i>
-            {{ showPackageBuilder ? 'Close Package Builder' : 'Generate Package' }}
-          </button>
-        </div>
+    <!--begin::Group actions-->
+    <div
+      class="d-flex justify-content-end align-items-center d-none"
+      data-kt-filemanager-table-toolbar="selected"
+    >
+      <div class="fw-bold me-5">
+        <span
+          class="me-2"
+          data-kt-filemanager-table-select="selected_count"
+        ></span>
+        Selected
       </div>
 
-      <!-- Package Sidebar -->
-      <div class="w-35 package-sidebar position-sticky" 
-           *ngIf="showPackageBuilder && !isSmallScreen" 
-           [@slideInOut]
-           style="top: 200px; height: calc(100vh - 100px); overflow-y: auto;">
-        <div class="card">
-          <div class="card-body">
-            <app-package-builder-content
-              [packageName]="packageName"
-              [(packages)]="packages"
-              [(discount)]="discount"
-              [allKnowledges]="allKnowledges"
-              [(selectedKnowledge)]="selectedKnowledge"
-              [showDragDrop]="true"
-              [loading]="loading"
-              (savePackage)="showEmittedPackage($event)"
-              (onKnowledgeSelect)="onKnowledgeSelect($event)">
-            </app-package-builder-content>
-          </div>
-        </div>
-      </div>
-
-      <!-- Package Builder Dialog for small screens -->
-      <p-dialog 
-        [(visible)]="showDialog" 
-        [modal]="true"
-        [style]="{width: '100vw', height: '100vh'}"
-        [draggable]="false" 
-        [resizable]="false"
-        [closeOnEscape]="true"
-        (onHide)="hideDialog()"
-        appendTo="body"
-        header="Create Package">
-        <app-package-builder-content
-          [packageName]="packageName"
-          [(packages)]="packages"
-          [(discount)]="discount"
-          [allKnowledges]="allKnowledges"
-          [(selectedKnowledge)]="selectedKnowledge"
-          [showDragDrop]="false"
-          [loading]="loading"
-          (savePackage)="showEmittedPackage($event)"
-          (onKnowledgeSelect)="onKnowledgeSelect($event)">
-        </app-package-builder-content>
-      </p-dialog>
+      <button
+        type="button"
+        class="btn btn-danger"
+        data-kt-filemanager-table-select="delete_selected"
+      >
+        Delete Selected
+      </button>
     </div>
+    <!--end::Group actions-->
   </div>
-  <!--end::Card body-->
+  <!--end::Card toolbar-->
 </div>
+<!--end::Card header-->
+
+<!--begin::Card body-->
+<div class="card-body p-0">
+  <!--begin::Table header-->
+  <div class="d-flex flex-stack mb-6 pt-3">
+    <!--begin::Title-->
+    <div class="badge badge-lg badge-light-info">
+      <div class="d-flex align-items-center flex-wrap">
+        <i class="ki-duotone ki-abstract-32 fs-2x text-info me-3">
+          <span class="path1"></span>
+          <span class="path2"></span>
+        </i>
+        <span class="fw-bold">Available Knowledges</span>
+      </div>
+    </div>
+    <!--end::Title-->
+
+    <!--begin::Items Counter-->
+    <div class="badge badge-lg badge-primary">
+      <span>{{ totalItems }} items</span>
+    </div>
+    <!--end::Items Counter-->
+  </div>
+  <!--end::Table header-->
+
+  <div class="d-flex gap-4">
+    <!-- Table Column -->
+    <div [@columnResize]="showPackageBuilder ? 'w-65' : 'w-100'" 
+         [class]="showPackageBuilder ? 'w-65' : 'w-100'">
+      <!--begin::Table-->
+      <div class="table-responsive">
+        <table class="table align-middle table-row-dashed fs-6 gy-5">
+          <thead>
+            <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
+              <th class="w-10px pe-2">
+                <div class="form-check form-check-sm form-check-custom form-check-solid me-3">
+                  <input class="form-check-input" type="checkbox">
+                </div>
+              </th>
+              <th class="min-w-250px">Knowledge Name</th>
+              <th class="min-w-10px">Type</th>
+              <th class="min-w-125px">Total Price</th>
+              <th class="min-w-100px">Status</th>
+              <th class="w-125px"></th>
+            </tr>
+          </thead>
+          <tbody class="fw-semibold text-gray-600">
+            <tr *ngFor="let knowledge of knowledges"
+                draggable="true"
+                (dragstart)="onDragStart($event, knowledge)"
+                (dragend)="onDragEnd($event)">
+              <td>
+                <div class="form-check form-check-sm form-check-custom form-check-solid">
+                  <input class="form-check-input" type="checkbox">
+                </div>
+              </td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <i class="ki-duotone ki-file fs-2x text-primary me-4"></i>
+                  <span class="text-gray-800 text-hover-primary">{{ knowledge.title }}</span>
+                </div>
+              </td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <i *ngIf="knowledge.type === 'data'" class="fas fa-database text-primary mx-2 fs-6"></i>
+                  <i *ngIf="knowledge.type === 'insight'" class="fas fa-lightbulb text-success mx-2 fs-6"></i>
+                  <i *ngIf="knowledge.type === 'report'" class="fas fa-file-alt text-info mx-2 fs-6"></i>
+                  <i *ngIf="knowledge.type === 'manual'" class="fas fa-book text-warning mx-2 fs-6"></i>
+                  <i *ngIf="knowledge.type === 'course'" class="fas fa-graduation-cap text-success mx-2 fs-6"></i>
+                  <i *ngIf="knowledge.type === 'media'" class="fas fa-play-circle text-danger mx-2 fs-6"></i>
+                  {{ knowledge.type | titlecase }}
+                </div>
+              </td>
+              <td class="fw-bold text-gray-900">{{ knowledge.total_price | currency }}</td>
+              <td>
+                <span class="badge" [ngClass]="{
+                  'badge-light-success': knowledge.status === 'published',
+                  'badge-light-warning': knowledge.status === 'scheduled',
+                  'badge-light-danger': knowledge.status === 'unpublished'
+                }">{{ knowledge.status | titlecase }}</span>
+              </td>
+              <td class="text-end">
+                <div class="d-flex justify-content-end">
+                  <!-- Edit button for unpublished and scheduled statuses -->
+                  <button type="button" 
+                          class="btn btn-sm btn-icon btn-light btn-active-light-success me-2" 
+                          pTooltip="Edit"
+                          tooltipPosition="top"
+                          *ngIf="knowledge.status === 'unpublished' || knowledge.status === 'scheduled'">
+                          <i class="ki-duotone ki-notepad-edit m-0 fs-5"><span class="path1"></span><span class="path2"></span></i>
+                  </button>
+                  <!-- Publish button for unpublished and scheduled statuses -->
+                  <button type="button" 
+                          class="btn btn-sm btn-icon btn-light btn-active-light-info me-2" 
+                          pTooltip="Publish"
+                          tooltipPosition="top"
+                          *ngIf="knowledge.status === 'unpublished' || knowledge.status === 'scheduled'">
+                    <i class="ki-duotone ki-send fs-5 m-0">
+                      <span class="path1"></span>
+                      <span class="path2"></span>
+                    </i>
+                  </button>
+                  <!-- Schedule button for unpublished status -->
+                  <button type="button" 
+                          class="btn btn-sm btn-icon btn-light btn-active-light-warning me-2" 
+                          pTooltip="Schedule publication for later"
+                          tooltipPosition="top"
+                          *ngIf="knowledge.status === 'unpublished'">
+                    <i class="ki-duotone ki-calendar fs-5 m-0">
+                      <span class="path1"></span>
+                      <span class="path2"></span>
+                    </i>
+                  </button>
+                  <!-- Delete button - always visible -->
+                  <button type="button" 
+                          class="btn btn-sm btn-icon btn-light btn-active-light-danger"
+                          pTooltip="Delete"
+                          tooltipPosition="top"
+                          (click)="deleteKnowledge(knowledge)">
+                    <i class="ki-duotone ki-trash fs-5">
+                      <span class="path1"></span>
+                      <span class="path2"></span>
+                      <span class="path3"></span>
+                      <span class="path4"></span>
+                      <span class="path5"></span>
+                    </i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!--end::Table-->
+
+      <!--begin::Pagination-->
+      <div class="d-flex justify-content-end mt-6">
+        <ul class="pagination">
+          <li class="page-item previous" [ngClass]="{'disabled': currentPage === 1}">
+            <a class="page-link cursor-pointer" (click)="loadPage(currentPage - 1)">
+              <i class="previous"></i>
+            </a>
+          </li>
+          <li class="page-item" *ngFor="let page of getPages()" [ngClass]="{'active': page === currentPage}">
+            <a class="page-link cursor-pointer" (click)="loadPage(page)">{{ page }}</a>
+          </li>
+          <li class="page-item next" [ngClass]="{'disabled': currentPage === totalPages}">
+            <a class="page-link cursor-pointer" (click)="loadPage(currentPage + 1)">
+              <i class="next"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <!--end::Pagination-->
+
+      <!-- Package Builder Toggle Button -->
+      <div class="d-flex justify-content-end mt-6">
+        <button class="btn btn-primary d-none" (click)="togglePackageBuilder()">
+          <i class="ki-duotone" [class.ki-abstract-24]="!showPackageBuilder" [class.ki-cross]="showPackageBuilder"></i>
+          {{ showPackageBuilder ? 'Close Package Builder' : 'Generate Package' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Package Sidebar -->
+    <div class="w-35 package-sidebar position-sticky" 
+         *ngIf="showPackageBuilder && !isSmallScreen" 
+         [@slideInOut]
+         style="top: 200px; height: calc(100vh - 100px); overflow-y: auto;">
+      <div class="card">
+        <div class="card-body">
+          <app-package-builder-content
+            [packageName]="packageName"
+            [(packages)]="packages"
+            [(discount)]="discount"
+            [allKnowledges]="allKnowledges"
+            [(selectedKnowledge)]="selectedKnowledge"
+            [showDragDrop]="true"
+            [loading]="loading"
+            (savePackage)="showEmittedPackage($event)"
+            (onKnowledgeSelect)="onKnowledgeSelect($event)">
+          </app-package-builder-content>
+        </div>
+      </div>
+    </div>
+
+    <!-- Package Builder Dialog for small screens -->
+    <p-dialog 
+      [(visible)]="showDialog" 
+      [modal]="true"
+      [style]="{width: '100vw', height: '100vh'}"
+      [draggable]="false" 
+      [resizable]="false"
+      [closeOnEscape]="true"
+      (onHide)="hideDialog()"
+      appendTo="body"
+      header="Create Package">
+      <app-package-builder-content
+        [packageName]="packageName"
+        [(packages)]="packages"
+        [(discount)]="discount"
+        [allKnowledges]="allKnowledges"
+        [(selectedKnowledge)]="selectedKnowledge"
+        [showDragDrop]="false"
+        [loading]="loading"
+        (savePackage)="showEmittedPackage($event)"
+        (onKnowledgeSelect)="onKnowledgeSelect($event)">
+      </app-package-builder-content>
+    </p-dialog>
+  </div>
+</div>
+<!--end::Card body-->
