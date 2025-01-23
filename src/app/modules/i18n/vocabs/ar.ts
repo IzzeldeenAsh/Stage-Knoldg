@@ -682,6 +682,9 @@ export const locale = {
   DESCRIPTION: "الوصف",
   ENTER_DESCRIPTION: "ادخل الوصف",
   DESCRIPTION_REQUIRED: "الوصف مطلوب",
+  DASHBOARD: "لوحة التحكم",
+  MY_KNOWLEDGE_BASE: "قاعدة المعرفة",
+  COMING_SOON:"قريباً",
   }
 };
 

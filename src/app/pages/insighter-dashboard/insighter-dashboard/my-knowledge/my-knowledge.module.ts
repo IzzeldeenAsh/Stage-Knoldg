@@ -18,6 +18,7 @@ import { DialogModule } from 'primeng/dialog';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { SharedModule } from 'src/app/_metronic/shared/shared.module';
 import { ScheduleDialogComponent } from './components/packages/schedule-dialog/schedule-dialog.component';
+import { DynamicDialogModule } from 'primeng/dynamicdialog';
 
 const routes: Routes = [
   {
@@ -71,7 +72,8 @@ const routes: Routes = [
     DragDropModule,
     InputTextModule,
     SharedModule,
-    NgbDropdownModule
+    NgbDropdownModule,
+    DynamicDialogModule
   ]
 })
 export class MyKnowledgeModule { } 

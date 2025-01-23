@@ -31,10 +31,18 @@ const Routing: Routes = [
     loadChildren: () => import('./add-knowledge/wizards.module').then((m) => m.WizardsModule),
   },
   {
+    path: 'edit-knowledge',
+    loadChildren: () => import('./add-knowledge/wizards.module').then((m) => m.WizardsModule),
+  },
+  {
     path: 'insighter-dashboard',
     loadChildren: () => import('./insighter-dashboard/insighter-dashboard.module').then((m) => m.InsighterDashboardModule),
     canActivate:[authGuard,RolesGuard],
     data: { roles: [ 'insighter','company'] } 
+  },
+  {
+    path: 'knowledge-detail',
+    loadChildren: () => import('./knowledge-detail/knowledge-detail.module').then((m) => m.KnowledgeDetailModule),
   },
   {
     path: '**',

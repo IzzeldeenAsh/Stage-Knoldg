@@ -127,7 +127,7 @@
               <td>
                 <div class="d-flex align-items-center">
                   <i class="ki-duotone ki-file fs-2x text-primary me-4"></i>
-                  <span class="text-gray-800 text-hover-primary">{{ knowledge.title }}</span>
+                  <a [routerLink]="['/app/knowledge-detail/detail', knowledge.id]" class="text-gray-800 text-hover-primary">{{ knowledge.title }}</a>
                 </div>
               </td>
               <td>
@@ -151,37 +151,37 @@
               </td>
               <td class="text-end">
                 <div class="d-flex justify-content-end">
-                  <!-- Edit button for unpublished and scheduled statuses -->
-                  <button type="button" 
-                          class="btn btn-sm btn-icon btn-light btn-active-light-success me-2" 
-                          pTooltip="Edit"
-                          tooltipPosition="top"
-                          *ngIf="knowledge.status === 'unpublished' || knowledge.status === 'scheduled'">
-                          <i class="ki-duotone ki-notepad-edit m-0 fs-5"><span class="path1"></span><span class="path2"></span></i>
-                  </button>
-                  <!-- Publish button for unpublished and scheduled statuses -->
-                  <button type="button" 
-                          class="btn btn-sm btn-icon btn-light btn-active-light-info me-2" 
-                          pTooltip="Publish"
-                          tooltipPosition="top"
-                          *ngIf="knowledge.status === 'unpublished' || knowledge.status === 'scheduled'">
-                    <i class="ki-duotone ki-send fs-5 m-0">
-                      <span class="path1"></span>
-                      <span class="path2"></span>
-                    </i>
-                  </button>
-                  <!-- Schedule button for unpublished status -->
-                  <button type="button" 
-                          class="btn btn-sm btn-icon btn-light btn-active-light-warning me-2" 
-                          pTooltip="Schedule publication for later"
-                          tooltipPosition="top"
-                          *ngIf="knowledge.status === 'unpublished'">
-                    <i class="ki-duotone ki-calendar fs-5 m-0">
-                      <span class="path1"></span>
-                      <span class="path2"></span>
-                    </i>
-                  </button>
-                  <!-- Delete button - always visible -->
+                  <!-- Status Actions -->
+                  <div ngbDropdown class="d-inline-block me-2">
+                    <button type="button" class="btn btn-sm btn-light btn-active-light-primary" ngbDropdownToggle>
+                      Status
+                    </button>
+                    <div ngbDropdownMenu>
+                      <button ngbDropdownItem (click)="updateStatus(knowledge.id, 'published')"
+                              *ngIf="knowledge.status !== 'published'">
+                        Publish
+                      </button>
+                      <button ngbDropdownItem (click)="updateStatus(knowledge.id, 'unpublished')"
+                              *ngIf="knowledge.status !== 'unpublished'">
+                        Unpublish
+                      </button>
+                      <button ngbDropdownItem (click)="updateStatus(knowledge.id, 'scheduled')"
+                              *ngIf="knowledge.status !== 'scheduled' && knowledge.status !== 'published'">
+                        Schedule
+                      </button>
+                    </div>
+                  </div>
+                  <!-- Edit button -->
+                  <a [routerLink]="['/app/edit-knowledge/stepper', knowledge.id]" 
+                  class="btn btn-sm btn-icon btn-light btn-active-light-primary me-2"
+                  pTooltip="Edit"
+                  tooltipPosition="top">
+                 <i class="ki-duotone ki-pencil fs-5">
+                   <span class="path1"></span>
+                   <span class="path2"></span>
+                 </i>
+               </a>
+                  <!-- Delete button -->
                   <button type="button" 
                           class="btn btn-sm btn-icon btn-light btn-active-light-danger"
                           pTooltip="Delete"

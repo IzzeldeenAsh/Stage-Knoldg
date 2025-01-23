@@ -1,10 +1,15 @@
 import { trigger, transition, style, animate } from '@angular/animations';
-import { ChangeDetectorRef, Component, Injector, Input, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, Injector, Input, OnInit } from '@angular/core';
 import { BaseComponent } from 'src/app/modules/base.component';
-import { TableOfContentComponent } from 'src/app/reusable-components/table-of-content/table-of-content.component';
 import { ICreateKnowldege } from '../../../create-account.helper';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { AddInsightStepsService } from 'src/app/_fake/services/add-insight-steps/add-insight-steps.service';
+
+interface Chapter {
+  chapter: {
+    title: string;
+  }
+}
 
 interface FilePreview {
   file: File | null;
@@ -34,9 +39,7 @@ interface FilePreview {
     ])
   ]
 })
-
 export class SubStepChaptersComponent extends BaseComponent implements OnInit {
-  @ViewChild(TableOfContentComponent) tocComponent!: TableOfContentComponent;
   @Input('updateParentModel') updateParentModel: (
     part: Partial<ICreateKnowldege>,
     isFormValid: boolean
@@ -53,7 +56,6 @@ export class SubStepChaptersComponent extends BaseComponent implements OnInit {
   headerTitle = 'CHAPTERS';
   totalPrice: number = 0;
 
-
   constructor(
     injector: Injector,
     private fb: FormBuilder,
@@ -61,56 +63,235 @@ export class SubStepChaptersComponent extends BaseComponent implements OnInit {
     private addInsightStepsService: AddInsightStepsService
   ) {
     super(injector);
-  } 
+  }
+
   ngOnInit() {
-    this.documents = this.defaultValues.documents ? this.defaultValues.documents : [];
-    this.updateParentModel({ documents: this.documents }, this.checkParentValidator());
+    // Initialize empty documents array
+    this.documents = [];
+    
+    // Initialize form
     this.initDocForm();
     
-    if (this.knowledgeId) {
-      this.fetchDocumentsFromServer();
+    // Set header title based on knowledge type
+    if(this.defaultValues.knowledgeType === 'data'){
+      this.headerTitle = this.lang ==='en' ? 'Node Details' : 'معلومات العقدة';
+    } else {
+      this.headerTitle = this.lang ==='en' ? 'Chapter details' : 'معلومات الفصل';
     }
 
-   if(this.defaultValues.knowledgeType === 'data'){
-    this.headerTitle = this.lang ==='en'  ? 'Node Details' : 'معلومات العقدة'
-   }else{
-    this.headerTitle = this.lang ==='en'  ? 'Chapter details' : 'معلومات الفصل'
-   }
-
-    this.calculateTotalPrice();
+    // Load documents either from server or default values
+    if (this.defaultValues.knowledgeId) {
+      this.fetchDocumentsFromServer();
+    } else if (this.defaultValues.documents?.length) {
+      this.documents = [...this.defaultValues.documents];
+      this.updateParentModel({ documents: this.documents }, this.checkParentValidator());
+      this.calculateTotalPrice();
+    }
   }
 
   initDocForm(): void {
     this.docForm = this.fb.group({
       file_name: ['', Validators.required],
       description: [''],
-      table_of_content: ['', Validators.required],
+      table_of_content: this.fb.array([]),
       price: [0, [Validators.required, Validators.min(0)]],
       file: [null],
       file_extension: ['']
     });
     this.previewFilesDialog = [];
+    this.addChapter(); // Add initial chapter
+  }
+
+  get chapters(): FormArray {
+    return this.docForm.get('table_of_content') as FormArray;
+  }
+
+  private createChapter(): FormGroup {
+    return this.fb.group({
+      chapter: this.fb.group({
+        title: ['', Validators.required]
+      })
+    });
+  }
+
+  addChapter(): void {
+    this.chapters.push(this.createChapter());
+  }
+
+  removeChapter(index: number): void {
+    this.chapters.removeAt(index);
+  }
+
+  loadChapters(chaptersData: any[]) {
+    this.chapters.clear();
+    if (chaptersData?.length) {
+      chaptersData.forEach(ch => {
+        const chapterGroup = this.createChapter();
+        chapterGroup.patchValue({
+          chapter: {
+            title: ch.chapter?.title || ''
+          }
+        });
+        this.chapters.push(chapterGroup);
+      });
+    } else {
+      this.addChapter();
+    }
+  }
+
+  saveDocument(): void {
+    if (this.docForm.invalid) {
+      this.docForm.markAllAsTouched();
+      return;
+    }
+
+    const fileName = this.docForm.value.file_name || '';
+    const file: File | null = this.docForm.value.file;
+
+    // Get chapters from form array and ensure correct structure
+    const tableOfContent = this.chapters.controls.map(control => ({
+      chapter: {
+        title: control.get('chapter.title')?.value?.trim() || ''
+      }
+    })).filter(ch => ch.chapter.title !== '');
+
+    const newDoc: any = {
+      file_name: fileName,
+      description: this.docForm.value.description || '',
+      table_of_content: tableOfContent,
+      price: this.docForm.value.price || 0,
+      status: 'active'
+    };
+
+    if (file) {
+      newDoc.file = file;
+      newDoc.file_extension = this.getFileExtension(file.name);
+    } else if (this.editingIndex >= 0) {
+      const existingDoc = this.documents[this.editingIndex];
+      newDoc.docUrl = existingDoc.docUrl;
+      newDoc.id = existingDoc.id;
+      newDoc.fromServer = existingDoc.fromServer;
+      newDoc.file_extension = existingDoc.file_extension;
+      newDoc.file_size = existingDoc.file_size;
+    }
+
+    if (this.editingIndex >= 0) {
+      this.documents[this.editingIndex] = { ...this.documents[this.editingIndex], ...newDoc };
+    } else {
+      this.documents.push(newDoc);
+    }
+
+    this.updateParentModel({ documents: this.documents }, this.checkParentValidator());
+    this.initDocForm();
+    this.closeDialog();
+    this.calculateTotalPrice();
+  }
+
+  checkParentValidator(): boolean {
+    if (!this.documents.length) {
+      return false;
+    }
+    return this.documents.every(doc => 
+      doc.file_name && 
+      doc.price !== null && 
+      doc.price >= 0 && 
+      doc.table_of_content && 
+      Array.isArray(doc.table_of_content) && 
+      doc.table_of_content.length > 0 && 
+      doc.table_of_content.every((item: any) => 
+        item && 
+        item.chapter && 
+        typeof item.chapter.title === 'string' && 
+        item.chapter.title.trim() !== ''
+      )
+    );
+  }
+
+  private transformTableOfContent(tocData: any): any[] {
+    try {
+      // Handle empty or null cases
+      if (!tocData) return [];
+      
+      // If it's a string (from JSON), parse it
+      if (typeof tocData === 'string') {
+        try {
+          tocData = JSON.parse(tocData);
+        } catch (e) {
+          console.error('Failed to parse table of content string:', e);
+          return [];
+        }
+      }
+
+      // Handle single object case (wrap in array)
+      if (!Array.isArray(tocData) && typeof tocData === 'object') {
+        tocData = [tocData];
+      }
+
+      // If it's not an array at this point, return empty array
+      if (!Array.isArray(tocData)) {
+        console.warn('Table of content data is not in expected format:', tocData);
+        return [];
+      }
+
+      // Transform to correct format
+      return tocData.map(item => {
+        // Handle case where item is already in correct format
+        if (item.chapter?.title) {
+          return item;
+        }
+        
+        // Handle case where item is just the chapter object
+        if (item.title) {
+          return {
+            chapter: {
+              title: item.title
+            }
+          };
+        }
+
+        // Handle case where item might be nested differently
+        const title = item.chapter?.title || item.title || '';
+        return {
+          chapter: {
+            title
+          }
+        };
+      });
+    } catch (e) {
+      console.error('Error transforming table of content:', e);
+      return [];
+    }
   }
 
   private fetchDocumentsFromServer() {
-    this.addInsightStepsService.getListDocumentsInfo(this.knowledgeId)
+    this.addInsightStepsService.getListDocumentsInfo(this.defaultValues.knowledgeId || this.knowledgeId)
       .subscribe({
         next: (response) => {
           const documentInfos = response.data;
-          // Fetch URLs for each document
+          // Clear existing documents before adding server documents
+          this.documents = [];
+          
           documentInfos.forEach(docInfo => {
             this.addInsightStepsService.getDocumentUrl(docInfo.id)
               .subscribe({
                 next: (urlResponse) => {
                   const serverDoc = {
-                    ...docInfo,
+                    id: docInfo.id,
+                    file_name: docInfo.file_name || 'Untitled Document',
+                    file_extension: docInfo.file_extension || this.getFileExtension(docInfo.file_name || ''),
+                    description: docInfo.description || '',
+                    table_of_content: this.transformTableOfContent(docInfo.table_of_content),
+                    price: docInfo.price || 0,
                     docUrl: urlResponse.data.url,
                     fromServer: true,
                     file: null,
-                    status: 'active'
+                    status: 'active',
+                    file_size: docInfo.file_size || 0
                   };
+                  
                   this.documents.push(serverDoc);
                   this.updateParentModel({ documents: this.documents }, this.checkParentValidator());
+                  this.calculateTotalPrice();
                 },
                 error: (error) => {
                   console.error(`Error fetching URL for document ${docInfo.id}:`, error);
@@ -138,14 +319,18 @@ export class SubStepChaptersComponent extends BaseComponent implements OnInit {
 
     if (docIndex >= 0) {
       const existingDoc = this.documents[docIndex];
+      const tableOfContent = this.transformTableOfContent(existingDoc.table_of_content);
+
       this.docForm.patchValue({
         file_name: existingDoc.file_name || '',
-        description: existingDoc.description || '',  // Keep existing description if present
-        table_of_content: existingDoc.table_of_content || '',
+        description: existingDoc.description || '',
         price: existingDoc.price || 0,
         file_extension: existingDoc.file_extension || '',
         file: existingDoc.file || null,
       });
+
+      // Load chapters
+      this.loadChapters(tableOfContent);
 
       if (existingDoc.file) {
         // Document has a file uploaded on the client side
@@ -155,8 +340,7 @@ export class SubStepChaptersComponent extends BaseComponent implements OnInit {
           size: existingDoc.file.size,
           preview: null,
           type: this.getFileTypeByExtension(existingDoc.file.name),
-          icon: this.getFileIconByExtension(existingDoc.file.name),
-          isExisting: false
+          icon: this.getFileIconByExtension(existingDoc.file.name)
         }];
       } else if (existingDoc.fromServer) {
         // Document exists on the server
@@ -176,53 +360,6 @@ export class SubStepChaptersComponent extends BaseComponent implements OnInit {
     }
   }
 
-  saveDocument(): void {
-    if (this.docForm.invalid) {
-      this.docForm.markAllAsTouched();
-      return;
-    }
-
-    const fileName = this.docForm.value.file_name || '';
-    const file: File | null = this.docForm.value.file;
-
-    const newDoc: any = {
-      file_name: fileName,
-      description: this.docForm.value.description || '',
-      table_of_content: this.docForm.value.table_of_content || '',
-      price: this.docForm.value.price || 0,
-      status: 'active',
-      file_extension: file ? this.getFileExtension(file.name) : this.getFileExtension(fileName)
-    };
-
-    if (file) {
-      newDoc.file = file;
-    } else {
-      // If no new file is uploaded, retain server-stored file information
-      const existingDoc = this.documents[this.editingIndex];
-      newDoc.docUrl = existingDoc.docUrl;
-      newDoc.id = existingDoc.id;
-      newDoc.fromServer = existingDoc.fromServer;
-    }
-
-    if (this.editingIndex >= 0) {
-      this.documents[this.editingIndex] = { ...this.documents[this.editingIndex], ...newDoc };
-    } else {
-      this.documents.push(newDoc);
-    }
-
-    this.updateParentModel({ documents: this.documents }, this.checkParentValidator());
-
-    this.initDocForm();
-
-    if (this.tocComponent) {
-      this.tocComponent.reset();
-    }
-
-    this.closeDialog();
-
-    this.calculateTotalPrice();
-  }
-
   removeDocument(index: number) {
     if (index >= 0 && index < this.documents.length) {
       this.documents.splice(index, 1);
@@ -234,9 +371,6 @@ export class SubStepChaptersComponent extends BaseComponent implements OnInit {
     this.displayDocumentDialog = false;
     this.editingIndex = -1;
     this.initDocForm();
-    if (this.tocComponent) {
-      this.tocComponent.reset();
-    }
   }
 
   onFilesSelectedDialog(event: any): void {
@@ -267,21 +401,22 @@ export class SubStepChaptersComponent extends BaseComponent implements OnInit {
     this.docForm.patchValue({ file: null });
   }
 
-  handleTocChange(tocData: any) {
-    const json = JSON.stringify(tocData);
-    this.docForm.patchValue({ table_of_content: json });
-  }
+  handleTocChange(chapters: any[]) {
+    if (!Array.isArray(chapters)) {
+      console.warn('Received invalid chapters data:', chapters);
+      return;
+    }
 
-  checkParentValidator(): boolean {
-    if (!this.documents.length) {
-      return false;
-    }
-    for (const doc of this.documents) {
-      if (!doc.file_name || doc.price === null || doc.price < 0 || !doc.table_of_content) {
-        return false;
+    // Transform to server format
+    const serverFormat = chapters.map(chapter => ({
+      chapter: {
+        title: chapter.chapter?.title?.trim() || ''
       }
-    }
-    return true;
+    }));
+
+    this.docForm.patchValue({ 
+      table_of_content: serverFormat
+    });
   }
 
   private getFileTypeByExtension(fileName: string): string {
@@ -298,7 +433,7 @@ export class SubStepChaptersComponent extends BaseComponent implements OnInit {
       zip: 'archive',
       rar: 'archive',
       csv: 'excel',
-      rtf: 'document'
+      rtf: 'document',
     };
     return typeMap[extension] || 'document';
   }
@@ -327,6 +462,10 @@ export class SubStepChaptersComponent extends BaseComponent implements OnInit {
   }
 
   calculateTotalPrice(): void {
-    this.totalPrice = this.documents.reduce((sum, doc) => sum + (doc.price || 0), 0);
+    this.totalPrice = this.documents.reduce((sum, doc) => {
+      const price = typeof doc.price === 'string' ? parseFloat(doc.price) : (doc.price || 0);
+      return sum + price;
+    }, 0);
   }
 }
+

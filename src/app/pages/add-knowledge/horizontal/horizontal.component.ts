@@ -5,6 +5,8 @@ import { AddInsightStepsService, CreateKnowledgeRequest, SuggestTopicRequest, Ad
 import { switchMap } from 'rxjs/operators';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { of } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { KnowledgeService } from 'src/app/_fake/services/knowledge/knowledge.service';
 
 @Component({
   selector: 'app-horizontal',
@@ -21,15 +23,82 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
     false
   );
   isLoading = false;
-
+  
   constructor(
     injector: Injector,
-    private addInsightStepsService: AddInsightStepsService
+    private addInsightStepsService: AddInsightStepsService,
+    private route: ActivatedRoute,
+    private knowledgeService: KnowledgeService
   ) {
     super(injector);
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // Get the ID from the route if it exists
+    this.route.params.subscribe(params => {
+      const id = params['id'];
+      if (id) {
+        this.knowledgeId = +id;
+        // Initialize with empty values when editing
+        const emptyAccount = {
+          ...inits,
+          knowledgeType: '', // Start with empty knowledgeType when editing
+        };
+        this.account$.next(emptyAccount);
+        this.loadKnowledgeData();
+      }
+    });
+  }
+
+  private loadKnowledgeData() {
+    this.isLoading = true;
+    const loadSub = this.knowledgeService.getKnowledgeById(this.knowledgeId)
+      .subscribe({
+        next: (response) => {
+          const knowledge = response.data;
+          
+          // Determine targetMarket based on the rules
+          let targetMarket = '1';
+          if (!knowledge.economic_blocks || knowledge.economic_blocks.length === 0) {
+            if (!knowledge.countries || knowledge.countries.length === 0) {
+              targetMarket = '2';
+            }
+          }
+
+          // Update the account with fetched data
+          const updatedAccount:any = {
+            ...this.account$.value,
+            knowledgeId :this.knowledgeId,
+            knowledgeType: knowledge.type,
+            title: knowledge.title,
+            topicId: knowledge.topic.id,
+            industry: knowledge.industry.id,
+            isic_code: knowledge.isic_code?.id || null,
+            hs_code: knowledge.hs_code?.id || null,
+            language: knowledge.language,
+            regions: knowledge.regions.map((region:any) => region.id) || [],
+            countries: knowledge.countries.map((country:any) => country.id) || [],
+            economic_blocks: knowledge.economic_blocks || [],
+            description: knowledge.description,
+            targetMarket: targetMarket,
+            keywords: knowledge.keywords.map((keyword:any) => ({display: keyword, value: keyword})) || [],
+            customTopic: '',
+            documents: [] // Empty documents array as requested
+          };
+
+          this.account$.next(updatedAccount);
+          this.updateAccount(updatedAccount, true);
+          this.isCurrentFormValid$.next(true);
+          this.isLoading = false;
+        },
+        error: (error) => {
+          this.handleServerErrors(error);
+          this.isLoading = false;
+        }
+      });
+
+    this.unsubscribe.push(loadSub);
+  }
 
   updateAccount = (part: Partial<ICreateKnowldege>, isFormValid: boolean) => {
     const currentAccount = this.account$.value;
@@ -182,8 +251,8 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
       isic_code_id: currentAccount.isic_code ? currentAccount.isic_code : null,
       hs_code_id: currentAccount.hs_code ? currentAccount.hs_code : null,
       language: currentAccount.language,
-      // Set region/country or economic_blocks based on targetMarket
-      ...(currentAccount.targetMarket === '2' ? {
+      // Fix the logic - when targetMarket is '1' use regions/countries, when '2' use economic_blocks
+      ...(currentAccount.targetMarket === '1' ? {
         region: currentAccount.regions || [],
         country: currentAccount.countries || [],
         economic_blocks: []
@@ -299,40 +368,41 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
       .pipe(
         switchMap((listResponse) => {
           const existingDocs = listResponse.data || [];
+          const isEdit = existingDocs.length > 0;
+          
+          console.log('Existing documents:', existingDocs);
+          console.log('Current account documents:', currentAccount.documents);
           
           // Process each document in the currentAccount.documents array
           const documentRequests = currentAccount.documents.map((doc: any) => {
             // Find matching existing document if any
-            const existingDoc = existingDocs.find(existing => 
-              existing.file_name === doc.file_name
-            );
+            const existingDoc = existingDocs.find(existing => {
+              const match = existing.file_name === doc.file_name;
+              console.log(`Comparing ${existing.file_name} with ${doc.file_name}:`, match);
+              return match;
+            });
+            
+            console.log('Found existing doc for', doc.file_name, ':', existingDoc);
             
             let documentRequest: AddKnowledgeDocumentRequest = {
               file_name: doc.file_name,
               price: doc.price?.toString() || '0',
-              file: doc.file,
+              file: existingDoc ? null : doc.file,
               status: doc.status || 'active',
             };
+
+            if (existingDoc) {
+              documentRequest._method = 'PUT';
+              console.log('Setting PUT method for', doc.file_name);
+            } else if (isEdit) {
+              documentRequest._method = 'POST';
+              console.log('Setting POST method for', doc.file_name);
+            }
 
             // Add description for non-insight knowledge types
             if (currentAccount.knowledgeType !== 'insight') {
               documentRequest.description = doc.description || '';
-              
-              // Existing table_of_content logic remains the same
-              const table_of_content = JSON.parse(doc.table_of_content);
-              const chaptersArray = table_of_content.chapters;
-
-              const transformedChapters = chaptersArray.map((chapter: any) => ({
-                chapter: {
-                  title: chapter.name,
-                  sub_child: chapter.subChapters.map((sub: any) => ({
-                    title: sub.name,
-                    page: sub.index.toString(),
-                  })),
-                },
-              }));
-
-              documentRequest.table_of_content = JSON.stringify(transformedChapters);
+              documentRequest.table_of_content = doc.table_of_content;
             }
 
             // Return object containing request and metadata

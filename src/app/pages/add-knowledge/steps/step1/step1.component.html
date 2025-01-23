@@ -33,12 +33,17 @@
         [class.disabled]="type.disabled"
         [style.cursor]="type.disabled ? 'not-allowed' : 'pointer'"
       >
+       
         <app-keenicon [name]="type.iconName"  class="fs-1 mx-5" [class]="type.iconClass"></app-keenicon>
         <span class="d-block fw-bold text-inline-start">
-          <span class="text-gray-900 fw-bolder d-block fs-4 mb-2">
-            {{ type.label | translate }}
-            <i [ngClass]="type.icon"></i>
-          </span>
+          <div class="d-flex justify-content-between">
+            <span class="text-gray-900 fw-bolder d-block fs-4 mb-2">
+              {{ type.label | translate }}
+              <i [ngClass]="type.icon"></i>
+            </span>
+<span class="text-danger fs-8 " *ngIf="type.disabled">{{ 'COMING_SOON' | translate }}</span>
+
+          </div>
           <span class="text-gray-500 fw-bold fs-6">
             {{ type.description | translate }}
           </span>

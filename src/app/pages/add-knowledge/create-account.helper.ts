@@ -1,6 +1,10 @@
 interface IDocument {
   file_name: string;
-  table_of_content: string;
+  table_of_content: Array<{
+    chapter: {
+      title: string;
+    }
+  }>;
   file: any;
   status: 'active' | 'inactive';
   price: number;
@@ -9,7 +13,7 @@ interface IDocument {
 }
 
 interface ICreateKnowldege {
-  knowledgeType: 'data' | 'insight' | 'report' | 'manual' | 'course' | 'media';
+  knowledgeType: string;
   title: string;
   topicId: any;
   industry: number|null;

@@ -9,6 +9,8 @@ import { OverviewStatisticsComponent } from './insighter-dashboard/statistics/ov
 import { AccountSettingsHeaderComponent } from './insighter-dashboard/statistics/account-settings-header/account-settings-header.component';
 import { KnowledgeStatisticsComponent } from './insighter-dashboard/statistics/knowledge-statistics/knowledge-statistics.component';
 import { RequestsStatisticsComponent } from './insighter-dashboard/statistics/requests-statistics/requests-statistics.component';
+import { CountUpDirective } from 'src/app/directives/countup/count-up.directive';
+
 
 @NgModule({
   declarations: [
@@ -21,6 +23,7 @@ import { RequestsStatisticsComponent } from './insighter-dashboard/statistics/re
   imports: [
     CommonModule,
     AppFooterComponent,
+    CountUpDirective,
     InsighterDashboardRoutingModule,
     TranslationModule,
     ToastModule

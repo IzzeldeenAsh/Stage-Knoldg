@@ -170,10 +170,12 @@ export class AuthService implements OnDestroy {
   
   logout(): Observable<any> {
     const headers = new HttpHeaders({
-      Accept: "application/json",
+      'Accept': 'application/json',
+      'Accept-Language': 'en'
     });
     return this.http.post<any>(
-      "https://api.foresighta.co/api/account/logout",
+      'https://api.foresighta.co/api/account/logout',
+      {},
       { headers }
     );
   }

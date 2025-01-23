@@ -723,7 +723,10 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     NODE_NAME_REQUIRED: "Node name is required",
     DESCRIPTION: "Description",
     ENTER_DESCRIPTION: "Enter Description",
-    DESCRIPTION_REQUIRED: "Description is required"
+    DESCRIPTION_REQUIRED: "Description is required",
+    DASHBOARD: "Dashboard",
+    MY_KNOWLEDGE_BASE: "My Knowledge Base",
+    COMING_SOON:"Coming Soon",
   
   }
 };

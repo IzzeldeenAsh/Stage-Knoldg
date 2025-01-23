@@ -24,8 +24,7 @@ import { ToastModule } from 'primeng/toast';
 import { FileUploadModule } from 'primeng/fileupload';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { FileUploaderComponent } from 'src/app/reusable-components/file-uploader/file-uploader.component';
-import { TableOfContentComponent } from 'src/app/reusable-components/table-of-content/table-of-content.component';
-import { FileSizePipe } from './steps/step3/file-size.pipe';
+import { FileSizePipe } from 'src/app/pipes/file-size-pipe/file-size.pipe';
 import { TagInputModule } from 'ngx-chips';
 import { Step6Component } from './steps/step6/step6.component';
 import { DialogModule } from 'primeng/dialog';
@@ -52,16 +51,15 @@ import { TruncateTextPipe } from 'src/app/pipes/truncate-pipe/truncate-text.pipe
     TruncateTextPipe,
     EditorModule,
     DialogModule,
+    FileSizePipe,
     FormsModule,
     TranslationModule,
-    FileSizePipe,
     FileUploaderComponent,
     IndustrySelectorComponent,
     InputTextModule,
     NgbTooltipModule,
     SelectEconomicBlockComponent,
     FileUploadModule,
-    TableOfContentComponent,
     GetHsCodeByIsicComponent,
     InputNumberModule,
     TagInputModule,

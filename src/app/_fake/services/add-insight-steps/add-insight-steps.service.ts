@@ -38,22 +38,41 @@ export interface SuggestTopicResponse {
   };
 }
 
+export interface Chapter {
+  chapter: {
+    title: string;
+    sub_child: {
+      title: string;
+    }[];
+  };
+}
+
 export interface AddKnowledgeDocumentRequest {
   file_name: string;
-  table_of_content?: string;
+  table_of_content?: Chapter[];
   price: string;
   file: File;
   status?: string;
   description?: string;
+  _method?: string;
+}
+
+export interface RawDocumentInfo extends Omit<DocumentInfo, 'table_of_content'> {
+  table_of_content: string;
+}
+
+export interface RawDocumentListResponse {
+  data: RawDocumentInfo[];
 }
 
 export interface DocumentInfo {
   id: number;
   file_name: string;
-  table_of_content: string;
+  table_of_content: Chapter[];
   price: string;
   file_size: number;
   file_extension: string;
+  description?: string;
 }
 
 export interface DocumentListResponse {
@@ -179,23 +198,15 @@ export class AddInsightStepsService {
       formData.append("file", request.file);
     }
     formData.append("status", request.status || "active");
-    // Parse the table of content JSON if defined
-    const tocData = request.table_of_content ? JSON.parse(request.table_of_content) : [];
+    if (request.description) {
+      formData.append("description", request.description);
+    }
     
-    // Loop through chapters and append to formData in the required format
-    tocData.forEach((chapter: any, index: number) => {
-      formData.append(`table_of_content[${index}][chapter][title]`, chapter.chapter.title);
-     
-      
-      // Handle subchapters
-      chapter.chapter.sub_child.forEach((subChapter: any, subIndex: number) => {
-        formData.append(
-          `table_of_content[${index}][chapter][sub_child][${subIndex}][title]`,
-          subChapter.title
-        );
-        
+    if (request.table_of_content) {
+      request.table_of_content.forEach((chapter: any, index: number) => {
+        formData.append(`table_of_content[${index}][chapter][title]`, chapter.chapter.title);
       });
-    });
+    }
 
     if (isUpdate) {
       formData.append("_method", "PUT");
@@ -231,22 +242,43 @@ export class AddInsightStepsService {
 
     this.setLoading(true);
     return this.http
-      .get<DocumentListResponse>(`${this.apiUrl}/document/list/${knowledgeId}`, {
+      .get<RawDocumentListResponse>(`${this.apiUrl}/document/list/${knowledgeId}`, {
         headers,
       })
       .pipe(
-        map((res) => {
-          // Transform the table_of_content to string in each document
-          return {
-            data: res.data.map(doc => ({
-              ...doc,
-              table_of_content: JSON.stringify(doc.table_of_content)
-            }))
-          };
-        }),
+        map((res) => ({
+          data: res.data.map(doc => ({
+            ...doc,
+            table_of_content: this.parseTableOfContent(doc.table_of_content)
+          }))
+        })),
         catchError((error) => this.handleError(error)),
         finalize(() => this.setLoading(false))
       );
+  }
+
+  private parseTableOfContent(toc: any): Chapter[] {
+    try {
+      // If it's already an array of chapters, return it
+      if (Array.isArray(toc) && toc.every(item => item.chapter?.title)) {
+        return toc;
+      }
+
+      // If it's a string, try to parse it
+      if (typeof toc === 'string') {
+        const parsed = JSON.parse(toc);
+        if (Array.isArray(parsed)) {
+          return parsed;
+        }
+      }
+
+      // If we get here, either the parse failed or the data isn't in the right format
+      console.warn('Invalid table of content format:', toc);
+      return [];
+    } catch (e) {
+      console.error('Error parsing table of content:', e);
+      return [];
+    }
   }
 
   getDocumentUrl(documentId: number): Observable<DocumentUrlResponse> {

@@ -6,6 +6,8 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
 import Swal from 'sweetalert2';
 import { switchMap } from 'rxjs';
 import { BaseComponent } from 'src/app/modules/base.component';
+import { DialogService } from 'primeng/dynamicdialog';
+import { ScheduleDialogComponent } from '../packages/schedule-dialog/schedule-dialog.component';
 
 interface PackageData {
   packageName: string;
@@ -17,6 +19,7 @@ interface PackageData {
   selector: 'app-general',
   templateUrl: './general.component.html',
   styleUrls: ['./general.component.scss'],
+  providers: [DialogService],
   animations: [
     trigger('slideInOut', [
       state('void', style({
@@ -77,7 +80,8 @@ export class GeneralComponent extends BaseComponent implements OnInit {
   constructor(
     injector: Injector,
     private knowledgeService: KnowledgeService,
-    private knowldegePackegesService: KnowldegePackegesService
+    private knowldegePackegesService: KnowldegePackegesService,
+    private dialogService: DialogService
   ) {
     super(injector);
   }
@@ -329,5 +333,48 @@ export class GeneralComponent extends BaseComponent implements OnInit {
       this.packages = [...this.packages, event];
       this.selectedKnowledge = null;
     }
+  }
+
+  updateStatus(knowledgeId: number, status: string) {
+    if (status === 'scheduled') {
+      this.openScheduleDialog(knowledgeId);
+    } else {
+      this.setKnowledgeStatus(knowledgeId, status, new Date().toISOString());
+    }
+  }
+
+  openScheduleDialog(knowledgeId: number) {
+    const dialogRef = this.dialogService.open(ScheduleDialogComponent, {
+      header: 'Schedule Publication',
+      width: '400px'
+    });
+
+    dialogRef.onClose.subscribe((dateTime: string | null) => {
+      if (dateTime) {
+        this.setKnowledgeStatus(knowledgeId, 'scheduled', dateTime);
+      }
+    });
+  }
+
+  setKnowledgeStatus(knowledgeId: number, status: string, publishedAt: string) {
+    this.knowledgeService.setKnowledgeStatus(knowledgeId, status, publishedAt).subscribe(
+      () => {
+        // Update the knowledge status in the local array
+        const knowledge = this.knowledges.find(k => k.id === knowledgeId);
+        if (knowledge) {
+          knowledge.status = status;
+        }
+        this.showSuccess('Status updated successfully', 'success');
+      },
+      (error:any) => {
+        console.error('Error updating status:', error);
+        const errorMessage = error.error?.message || error.error?.errors?.common?.[0] || 'There was an error updating the status.';
+        Swal.fire(
+          'Error!',
+          errorMessage,
+          'error'
+        );
+      }
+    );
   }
 }
