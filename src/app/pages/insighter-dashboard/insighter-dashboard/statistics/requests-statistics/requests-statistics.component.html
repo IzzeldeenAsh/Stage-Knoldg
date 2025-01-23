@@ -1,12 +1,34 @@
 <div
 class="
 d-flex 
-flex-wrap 
+flex-column pt-6 pb-lg-10 pt-lg-20"
+>
+<div class="d-flex align-items-center pt-1">
+  <ul class="breadcrumb breadcrumb-separatorless fw-semibold">
+    <li class="breadcrumb-item text-white fw-bold lh-1">
+      <a href="/" class="text-white text-hover-secondary">
+        <i class="ki-outline ki-home text-white fs-3"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item">
+      <i class="ki-outline {{lang === 'ar' ? 'ki-left' : 'ki-right'}} fs-4 text-white mx-n1"></i>
+    </li>
+    <li class="breadcrumb-item text-white  fw-bold lh-1">
+      {{"DASHBOARD" | translate}}
+    </li>
+    <li class="breadcrumb-item">
+      <i class="ki-outline {{lang === 'ar' ? 'ki-left' : 'ki-right'}} fs-4 text-white mx-n1"></i>
+    </li>
+    <li class="breadcrumb-item text-white fw-bold lh-1">
+      {{"INSIGHTER.DASHBOARD.NAV.MY_REQUESTS" | translate}}
+    </li>
+  </ul>
+</div>
+<div class="d-flex flex-wrap 
 flex-lg-nowrap 
 justify-content-between
 gap-4 
-gap-lg-10 pt-6 pb-lg-10 pt-lg-20 align-items-center"
->
+gap-lg-10  align-items-center">
 <div
   
   class="page-title d-flex align-items-center me-3 pt-9 pt-lg-5 mb-lg-5"
@@ -30,7 +52,6 @@ gap-lg-10 pt-6 pb-lg-10 pt-lg-20 align-items-center"
     <div class="step-title-container mx-2">
       <div class="text-white step-title">
         {{ 'INSIGHTER.DASHBOARD.NAV.MY_REQUESTS' | translate }}
-        
       </div>
     </div>
   </h1>
@@ -71,5 +92,6 @@ gap-lg-10 pt-6 pb-lg-10 pt-lg-20 align-items-center"
     </div>                   
   </div>
   <!--end::Item-->
+</div>
 </div>
 </div>

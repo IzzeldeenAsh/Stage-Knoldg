@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, finalize, map } from 'rxjs/operators';
 import { TranslationService } from 'src/app/modules/i18n';
+import { DocumentListResponse, DocumentUrlResponse, RawDocumentListResponse, Chapter } from '../add-insight-steps/add-insight-steps.service';
 
 export interface Tag {
   id: number;
@@ -27,7 +28,7 @@ export interface IsicCode {
 
 export interface Knowledge {
   id: number;
-  type: string;
+  type: "data" | "insight" | "report" | "manual" | "course" | "media";
   title: string;
   slug: string;
   description: string;
@@ -40,6 +41,9 @@ export interface Knowledge {
   language: string;
   total_price: string;
   status: string;
+  regions: string[];
+  countries: string[];
+  economic_blocks: string[];
 }
 
 export interface KnowledgeResponse {
@@ -74,11 +78,19 @@ export interface ListKnowledgeResponse {
   data: Knowledge[];
 }
 
+export interface KnowledgeStatistics {
+  published: number;
+  scheduled: number;
+  draft: number;
+  total: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class KnowledgeService {
   private baseUrl = 'https://api.foresighta.co';
+  private apiUrl = `${this.baseUrl}/api/insighter/library/knowledge`;
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   currentLang: string = 'en';
@@ -119,16 +131,21 @@ export class KnowledgeService {
     );
   }
 
-  getPaginatedKnowledges(page: number = 1): Observable<PaginatedKnowledgeResponse> {
+  getPaginatedKnowledges(page: number = 1, status?: string): Observable<PaginatedKnowledgeResponse> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
       'Content-Type': 'application/json',
       'Accept-Language': this.currentLang,
     });
 
+    let url = `${this.baseUrl}/api/insighter/library/knowledge?page=${page}`;
+    if (status) {
+      url += `&status=${status}`;
+    }
+
     this.setLoading(true);
     return this.http.get<PaginatedKnowledgeResponse>(
-      `${this.baseUrl}/api/insighter/library/knowledge?page=${page}`,
+      url,
       { headers }
     ).pipe(
       map((res) => res),
@@ -155,6 +172,20 @@ export class KnowledgeService {
     );
   }
 
+  getKnowledgeStatistics(): Observable<KnowledgeStatistics> {
+    return this.getListKnowledge().pipe(
+      map(response => {
+        const knowledgeList = response.data;
+        return {
+          published: knowledgeList.filter(k => k.status === 'published').length,
+          scheduled: knowledgeList.filter(k => k.status === 'scheduled').length,
+          draft: knowledgeList.filter(k => k.status === 'unpublished').length,
+          total: knowledgeList.length
+        };
+      })
+    );
+  }
+
   deleteKnowledge(id: number): Observable<any> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
@@ -171,5 +202,94 @@ export class KnowledgeService {
       catchError((error) => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );
+  }
+
+  setKnowledgeStatus(id: number, status: string, publishedAt: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Language': this.currentLang,
+    });
+
+    const body = {
+      status: status,
+      published_at: publishedAt
+    };
+
+    this.setLoading(true);
+    return this.http.put(
+      `${this.baseUrl}/api/insighter/library/knowledge/status/${id}`,
+      body,
+      { headers }
+    ).pipe(
+      map((res) => res),
+      catchError((error) => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  getListDocumentsInfo(knowledgeId: number): Observable<DocumentListResponse> {
+    const headers = new HttpHeaders({
+      Accept: "application/json",
+      "Accept-Language": this.currentLang,
+    });
+
+    this.setLoading(true);
+    return this.http
+      .get<RawDocumentListResponse>(`${this.apiUrl}/document/list/${knowledgeId}`, {
+        headers,
+      })
+      .pipe(
+        map((res) => ({
+          data: res.data.map(doc => ({
+            ...doc,
+            table_of_content: this.parseTableOfContent(doc.table_of_content)
+          }))
+        })),
+        catchError((error) => this.handleError(error)),
+        finalize(() => this.setLoading(false))
+      );
+  }
+
+  private parseTableOfContent(toc: any): Chapter[] {
+    try {
+      // If it's already an array of chapters, return it
+      if (Array.isArray(toc) && toc.every(item => item.chapter?.title)) {
+        return toc;
+      }
+
+      // If it's a string, try to parse it
+      if (typeof toc === 'string') {
+        const parsed = JSON.parse(toc);
+        if (Array.isArray(parsed)) {
+          return parsed;
+        }
+      }
+
+      // If we get here, either the parse failed or the data isn't in the right format
+      console.warn('Invalid table of content format:', toc);
+      return [];
+    } catch (e) {
+      console.error('Error parsing table of content:', e);
+      return [];
+    }
+  }
+
+  getDocumentUrl(documentId: number): Observable<DocumentUrlResponse> {
+    const headers = new HttpHeaders({
+      Accept: "application/json",
+      "Accept-Language": this.currentLang,
+    });
+
+    this.setLoading(true);
+    return this.http
+      .get<DocumentUrlResponse>(`${this.apiUrl}/document/download/${documentId}`, {
+        headers,
+      })
+      .pipe(
+        map((res) => res),
+        catchError((error) => this.handleError(error)),
+        finalize(() => this.setLoading(false))
+      );
   }
 }

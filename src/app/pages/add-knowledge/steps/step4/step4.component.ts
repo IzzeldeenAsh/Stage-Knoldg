@@ -9,6 +9,7 @@ import { ICreateKnowldege } from "../../create-account.helper";
 import { TagsService } from "src/app/_fake/services/tags/tags.service";
 import { BaseComponent } from "src/app/modules/base.component";
 import { KnowledgeService } from "src/app/_fake/services/knowledge/knowledge.service";
+import { ChangeDetectorRef } from '@angular/core';
 
 interface Chip {
   id: number;
@@ -43,7 +44,8 @@ export class Step4Component extends BaseComponent implements OnInit {
     injector: Injector,
     private fb: FormBuilder,
     private tagsService: TagsService,
-    private knowledgeService: KnowledgeService
+    private knowledgeService: KnowledgeService,
+    private cdr: ChangeDetectorRef // Inject ChangeDetectorRef
   ) {
     super(injector);
   }
@@ -83,12 +85,24 @@ export class Step4Component extends BaseComponent implements OnInit {
     this.knowledgeService.getKnowledgeById(knowledgeId).subscribe({
       next: (response) => {
         const knowledge = response.data;
+        console.log('Fetched Knowledge Data:', knowledge); // Debugging Log
+
         if (knowledge.tags) {
           this.defaultValues.tag_ids = knowledge.tags.map(tag => tag.id);
         }
         if (knowledge.keywords) {
           this.defaultValues.keywords = knowledge.keywords;
+          console.log('Fetched Keywords:', this.defaultValues.keywords); // Debugging Log
         }
+
+        // Update form controls individually
+        this.form.get('tag_ids')?.setValue(this.defaultValues.tag_ids || []);
+        this.form.get('keywords')?.setValue(this.defaultValues.keywords || []);
+        console.log('Form Values After Update:', this.form.value); // Debugging Log
+
+        // Trigger change detection
+        this.cdr.detectChanges();
+
         this.fetchTagsAndSetSelections();
       },
       error: (error) => {
@@ -162,8 +176,6 @@ export class Step4Component extends BaseComponent implements OnInit {
     this.updateParentModel({ tag_ids: [] }, this.checkForm());
   }
 
- 
-
   checkForm(): boolean {
     const keywords = this.form.get('keywords')?.value || [];
     return this.form.valid && keywords.length > 0;
@@ -231,23 +243,27 @@ export class Step4Component extends BaseComponent implements OnInit {
   }
 
   addKeyword(event: any) {
-    // Get current keywords from form control
-    const currentKeywords = this.form.get('keywords')?.value || [];
-    
-    // Update parent model with all keywords
-    this.updateParentModel({
-      keywords: currentKeywords
-    }, this.checkForm());
+    const newKeyword = event.value?.trim();
+    if (newKeyword && !this.keywords.includes(newKeyword)) {
+      this.keywords.push(newKeyword);
+      this.form.get('keywords')?.setValue(this.keywords);
+      this.updateParentModel({
+        keywords: this.keywords
+      }, this.checkForm());
+      console.log('Added Keyword:', newKeyword);
+      console.log('Updated Keywords:', this.keywords);
+    }
   }
 
   removeKeyword(event: any) {
-    // Get current keywords after removal
-    const currentKeywords = this.form.get('keywords')?.value || [];
-    
-    // Update parent model with remaining keywords
+    const removedKeyword = event.removed;
+    this.keywords = this.keywords.filter(keyword => keyword !== removedKeyword);
+    this.form.get('keywords')?.setValue(this.keywords);
     this.updateParentModel({
-      keywords: currentKeywords
+      keywords: this.keywords
     }, this.checkForm());
+    console.log('Removed Keyword:', removedKeyword);
+    console.log('Updated Keywords:', this.keywords);
   }
 
   private handleServerErrors(error: any) {
@@ -256,11 +272,10 @@ export class Step4Component extends BaseComponent implements OnInit {
       for (const key in serverErrors) {
         if (serverErrors.hasOwnProperty(key)) {
           const messages = serverErrors[key];
-         this.showError('',messages.join(", "));
+          this.showError('',messages.join(", "));
         }
       }
     } else {
-  
       this.showError('','An unexpected error occurred.');
     }
   }
@@ -271,6 +286,7 @@ export class Step4Component extends BaseComponent implements OnInit {
     this.tagsService.getSuggestKeywords(this.defaultValues.knowledgeId!, this.lang).subscribe({
       next: (keywords) => {
         this.availableKeywords = keywords;
+        console.log('Available Keywords:', this.availableKeywords); // Debugging Log
       },
       error: (error) => {
         console.error("Error fetching suggested keywords:", error);

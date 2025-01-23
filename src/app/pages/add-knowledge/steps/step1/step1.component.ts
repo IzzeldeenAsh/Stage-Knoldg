@@ -1,4 +1,4 @@
-import { Component, Injector, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Injector, Input, OnDestroy, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ICreateKnowldege } from '../../create-account.helper';
@@ -9,7 +9,7 @@ import { BaseComponent } from 'src/app/modules/base.component';
   selector: 'app-step1',
   templateUrl: './step1.component.html',
 })
-export class Step1Component extends BaseComponent implements OnInit {
+export class Step1Component extends BaseComponent implements OnInit, OnChanges {
   @Input('updateParentModel') updateParentModel: (
     part: Partial<ICreateKnowldege>,
     isFormValid: boolean
@@ -82,23 +82,37 @@ export class Step1Component extends BaseComponent implements OnInit {
   }
 
   ngOnInit() {
-    if(this.knowledgeId){
-      
-    }
     this.initForm();
     this.updateParentModel({}, this.checkForm());
 
     const langChangeSub = this.translationService.onLanguageChange().subscribe(lang => {
       // Perform any actions needed when the language changes
-      // For example, you can update form labels or placeholders if they are managed in TypeScript
     });
     this.unsubscribe.push(langChangeSub);
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['defaultValues'] && this.form) {
+      const currentValue = changes['defaultValues'].currentValue;
+      if (currentValue?.knowledgeType) {
+        this.form.patchValue({
+          knowledgeType: currentValue.knowledgeType
+        }, { emitEvent: false });
+      }
+    }
+  }
+
   initForm() {
     this.form = this.fb.group({
-      knowledgeType: [this.defaultValues.knowledgeType, [Validators.required]],
+      knowledgeType: ['', [Validators.required]], // Initialize with empty string
     });
+
+    // If we have initial defaultValues, set them
+    if (this.defaultValues?.knowledgeType) {
+      this.form.patchValue({
+        knowledgeType: this.defaultValues.knowledgeType
+      }, { emitEvent: false });
+    }
 
     const formChangesSubscr = this.form.valueChanges.subscribe((val) => {
       this.updateParentModel(val, this.checkForm());

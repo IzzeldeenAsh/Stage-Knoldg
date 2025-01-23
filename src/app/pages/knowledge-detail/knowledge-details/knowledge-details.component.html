@@ -1,0 +1,305 @@
+<p-toast></p-toast>
+<div class="bg-custom"></div>
+<div class="content-wrapper">
+    
+  <div class="breadcrumb-bg" *ngIf="knowledge">
+    <div class="container">
+      <!-- Breadcrumb -->
+      <div class="d-flex align-items-center pt-10 mb-70">
+        <ul class="breadcrumb breadcrumb-separatorless">
+          <li class="breadcrumb-item text-gray-800 lh-1">
+            <a href="/" class="text-gray-700 text-hover-info">
+              <i class="ki-outline ki-home text-gray-700 fs-3"></i>
+            </a>
+          </li>
+          <li class="breadcrumb-item">
+            <i
+              class="ki-outline {{
+                lang === 'ar' ? 'ki-left' : 'ki-right'
+              }} fs-4 text-gray-700 mx-n1"
+            ></i>
+          </li>
+          <li class="breadcrumb-item text-gray-700 lh-1">
+            <a [routerLink]="['/']" class="text-gray-700 text-hover-info">{{
+              knowledge.industry.name
+            }}</a>
+          </li>
+          <li class="breadcrumb-item">
+            <i
+              class="ki-outline {{
+                lang === 'ar' ? 'ki-left' : 'ki-right'
+              }} fs-4 text-gray-700 mx-n1"
+            ></i>
+          </li>
+          <li class="breadcrumb-item text-gray-700 lh-1">
+            <a [routerLink]="['/']" class="text-gray-700 text-hover-info">{{
+              knowledge.topic.name
+            }}</a>
+          </li>
+        </ul>
+      </div>
+      <!-- Target Market -->
+
+      <div class="page-title d-flex align-items-start me-3 mb-4 mb-lg-15">
+        <div class="btn btn-icon btn-custom bg-white h-70px w-70px me-6">
+          <!-- <i class="ki-outline ki-book text-gray-700 fs-2x"></i> -->
+          <svg
+            width="35"
+            height="32"
+            viewBox="0 0 35 32"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              opacity="0.4"
+              d="M31.5876 15.225L30.1584 21.3208C28.9334 26.5854 26.5126 28.7146 21.9626 28.2771C21.2334 28.2187 20.4459 28.0875 19.6001 27.8833L17.1501 27.3C11.0688 25.8562 9.1876 22.8521 10.6168 16.7562L12.0459 10.6458C12.3376 9.40624 12.6876 8.32707 13.1251 7.43749C14.8313 3.90832 17.7334 2.96041 22.6043 4.11249L25.0397 4.68124C31.1501 6.11041 33.0168 9.12916 31.5876 15.225Z"
+              fill="#699DDE"
+            />
+            <path
+              d="M21.9623 28.2771C21.0581 28.8896 19.9206 29.4 18.5352 29.8521L16.231 30.6104C10.4414 32.4771 7.39352 30.9167 5.51227 25.1271L3.6456 19.3667C1.77893 13.5771 3.32476 10.5146 9.11435 8.64792L11.4185 7.88958C12.0164 7.7 12.5852 7.53958 13.1248 7.4375C12.6873 8.32708 12.3373 9.40625 12.0456 10.6458L10.6164 16.7563C9.18727 22.8521 11.0685 25.8562 17.1498 27.3L19.5998 27.8833C20.4456 28.0875 21.2331 28.2187 21.9623 28.2771Z"
+              fill="#0778B9"
+            />
+            <path
+              d="M25.5065 15.3271C25.419 15.3271 25.3315 15.3125 25.2294 15.298L18.1565 13.5042C17.5732 13.3584 17.2232 12.7605 17.369 12.1771C17.5148 11.5938 18.1127 11.2438 18.6961 11.3896L25.769 13.1834C26.3523 13.3292 26.7023 13.9271 26.5565 14.5105C26.4398 14.9917 25.9877 15.3271 25.5065 15.3271Z"
+              fill="white"
+            />
+            <path
+              d="M21.2335 20.2562C21.146 20.2562 21.0585 20.2416 20.9564 20.2271L16.7126 19.1479C16.1293 19.0021 15.7793 18.4041 15.9251 17.8208C16.071 17.2375 16.6689 16.8875 17.2522 17.0333L21.496 18.1125C22.0793 18.2583 22.4293 18.8562 22.2835 19.4396C22.1668 19.9354 21.7293 20.2562 21.2335 20.2562Z"
+              fill="white"
+            />
+          </svg>
+        </div>
+
+        <h1
+          class="page-heading d-flex text-black fw-bolder fs-lg-rem flex-column justify-content-center my-0 max-w-800px"
+        >
+          {{ knowledge.title }}
+          <span class="page-desc fs-6 fw-bold d-flex align-items-center pt-4">
+            <span class="custom-text me-3 lh-1 d-flex align-items-center">
+              <i class="ki-duotone ki-document text-info fs-3 me-2">
+                <span class="path1"></span>
+                <span class="path2"></span>
+                <span class="path3"></span>
+              </i>
+              Report
+            </span>
+            <span class="bullet text-black h-6px w-6px mx-3"></span>
+            <span class="d-flex align-items-center text-gray-700  ">
+              <i class="ki-duotone ki-tag text-warning fs-3 me-2">
+                <span class="path1"></span>
+                <span class="path2"></span>
+                <span class="path3"></span>
+              </i>
+              7,834 Sales
+            </span>
+          </span>
+            <!-- <div class="d-flex gap-2">
+              <span class="badge badge-info fs-8 fw-bold">Europe</span>
+              <span class="badge badge-info fs-8 fw-bold">Middle East</span>
+          </div> -->
+        </h1>
+      </div>
+      <!-- <div>
+      <span class="badge badge-info fs-6 fw-bold ">Europe</span>
+      <span class="badge badge-info fs-6 fw-bold mx-3">Middle East</span>
+   </div> -->
+
+      <!-- Info Section -->
+      <div class="d-flex align-items-center justify-content-start mb-6">
+        <!-- Teacher Info -->
+        <div
+          class="d-flex align-items-center"
+          style="margin-inline-end: 50px"
+        >
+          <div class="symbol symbol-50px" style="margin-inline-end: 20px">
+            <img
+              src="assets/media/avatars/300-5.jpg"
+              class="rounded-circle"
+              alt="Teacher Avatar"
+            />
+          </div>
+          <div class="d-flex flex-column">
+            <span class="text-gray-600 fs-7 fw-semibold">Professor</span>
+            <span class="text-gray-800 fs-5 fw-bold">Salim Rana</span>
+          </div>
+        </div>
+        <!-- Last Updated -->
+        <div class="d-flex flex-column" style="margin-inline-end: 50px">
+          <span class="text-gray-600 fs-7 fw-semibold">Last Updated</span>
+          <span class="text-gray-800 fs-5 fw-bold">August 22, 2024</span>
+        </div>
+        <!-- Category -->
+        <!-- <div class="d-flex flex-column" style="margin-inline-end: 50px">
+          <span class="text-gray-600 fs-7 fw-semibold">Type</span>
+          <span class="text-gray-800 fs-5 fw-bold">Report</span>
+        </div> -->
+        <!-- Rating -->
+        <div class="d-flex flex-column" style="margin-inline-end: 50px">
+          <span class="text-gray-600 fs-7 fw-semibold">Rating</span>
+          <div class="d-flex align-items-center">
+            <span class="text-gray-800 fs-5 fw-bold me-2">4.89</span>
+            <i class="ki-solid ki-star fs-6 text-warning"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class=" ">
+        <div class="pt-9 pb-0">
+          <!-- Navigation -->
+          <div class="d-flex overflow-auto h-55px">
+            <ul
+              class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bold flex-nowrap"
+            >
+              <!-- Overview Tab -->
+              <li class="nav-item">
+                <a
+                  class="nav-link text-active-info me-6"
+                  routerLink="overview"
+                  routerLinkActive="active"
+                >
+                  Overview
+                </a>
+              </li>
+              <!-- Reviews Tab -->
+              <li class="nav-item">
+                <a
+                  class="nav-link text-active-info me-6"
+                  routerLink="reviews"
+                  routerLinkActive="active"
+                >
+                  Reviews
+                </a>
+              </li>
+              <!-- Comments Tab -->
+              <li class="nav-item">
+                <a
+                  class="nav-link text-active-info me-6"
+                  routerLink="comments"
+                  routerLinkActive="active"
+                >
+                  Comments
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8">
+        <router-outlet></router-outlet>
+      </div>
+      <div class="col-lg-4">
+        <!-- Added sticky sidebar with responsive behavior -->
+        <div
+          class="tp-course-details2-widget position-lg-sticky "
+          style="z-index: 1"
+        >
+          <div class="tp-course-details2-widget-content">
+            <!-- Price and buttons -->
+            <div class="d-flex flex-column gap-3 mb-4">
+              <div
+                class="tp-course-details2-widget-price d-flex justify-content-center align-items-center"
+              >
+                <span class="fs-2x fw-bolder text-primary">$143.00</span>
+                <span class="text-muted fs-5 ms-3">One-time purchase</span>
+              </div>
+              <button class="btn btn-primary w-100">
+                <i class="ki-outline ki-cart fs-4 me-2"></i>
+                Purchase Report
+              </button>
+              <button class="btn btn-secondary w-100">Preview Sample</button>
+            </div>
+
+            <!-- Report details section -->
+            <div class="tp-course-details2-widget-list p-4">
+              <div class="tp-course-details2-widget-list-item-wrapper">
+                <!-- Pages -->
+                <div
+                  class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
+                >
+                  <span>
+                    <i class="ki-outline ki-document fs-4 me-2"></i>
+                    Documents
+                  </span>
+                  <span class="d-flex gap-2 flex-wrap justify-content-end">
+                    <span class="badge badge-light-info text-info fs-8 fw-bold">3 DOCX</span>
+                    <span class="badge badge-light-danger text-danger fs-8 fw-bold">1 PDF</span>
+                    <span class="badge badge-light-danger text-danger fs-8 fw-bold">1 PPT</span>
+                    <span class="badge badge-light-success text-success fs-8 fw-bold">1 XLS</span>
+                  </span>
+                </div>
+               
+                <!-- Language -->
+                <div
+                  class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
+                >
+                  <span>
+                    <i class="ki-outline ki-message-text-2 fs-4 me-2"></i>
+                   Documents Language
+                  </span>
+                  <span>English</span>
+                </div>
+               
+                <!-- ISIC Code -->
+                
+                <div *ngIf="knowledge && knowledge.isic_code"
+                class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
+              >
+                <span>
+                  <i class="ki-outline ki-file fs-4 me-2"></i>
+                  ISIC Code
+                </span>
+                <span class="badge badge-light-secondary text-primary fs-8 fw-bold" [ngbTooltip]="knowledge.isic_code.name">478</span>
+              </div>
+               <!-- Published -->
+               <div
+                 class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
+               >
+                 <span>
+                   <i class="ki-outline ki-check-circle fs-4 me-2"></i>
+                   Published
+                 </span>
+                 <span>January 15, 2024</span>
+               </div>
+               <!-- Last Update -->
+               <div
+               class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
+             >
+               <span>
+                 <i class="ki-outline ki-calendar fs-4 me-2"></i>
+                 Last Update
+               </span>
+               <span>December 22, 2024</span>
+             </div>
+                <!-- License -->
+                <div
+                  class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
+                >
+                  <span>
+                    <i class="ki-outline ki-shield-tick fs-4 me-2"></i>
+                    License
+                  </span>
+                  <span>Single User</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Share button -->
+            <div
+              class="tp-course-details2-widget-share d-flex align-items-center justify-content-center mt-4"
+            >
+              <button class="btn btn-light">
+                <i class="ki-outline ki-share fs-4 me-2"></i>
+                Share this report
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,4 +1,3 @@
-
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { adminGuard } from './guards/admin-guard/admin.guard';
@@ -20,7 +19,11 @@ export const routes: Routes = [
   path: 'app',
   loadChildren: () =>
     import('./_metronic/layout/layout.module').then((m) => m.LayoutModule),
-  canActivate:[authGuard]
+},
+{
+  path: 'edit-knowledge',
+  loadChildren: () =>
+    import('./pages/add-knowledge/wizards.module').then((m) => m.WizardsModule),
 },
 {
   path: 'admin-dashboard',
@@ -33,6 +36,7 @@ export const routes: Routes = [
   loadChildren: () =>
     import('./modules/errors/errors.module').then((m) => m.ErrorsModule),
 },
+
 { path: '**', redirectTo: 'auth' },
 ];
 

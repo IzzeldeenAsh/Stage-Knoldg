@@ -43,17 +43,18 @@
           <h3 class="text-primary fs-3 fw-bold mb-2">
             {{ doc.file_name || 'Untitled' }}
             <span class="text-muted px-2 fs-6">|</span>
-            <span class="fw-900 fs-6"
+            <span class="fw-900 fs-6 text-uppercase"
             [ngClass]="{
-              'text-danger': ['PDF', 'PPTX', 'PPT'].includes(doc.file_extension),
-              'text-info': ['DOCX', 'DOC'].includes(doc.file_extension), 
-              'text-success': ['XLSX', 'CSV', 'XLS'].includes(doc.file_extension),
-              'text-primary': doc.file_extension === 'TXT',
-              'text-secondary': doc.file_extension === 'RTF'
-            }"
-            >{{ doc.file_extension }}</span>
+              'text-danger': ['PDF', 'PPTX', 'PPT' , 'pdf' , 'pptx', 'ppt'].includes(doc.file_extension),
+              'text-info': ['DOCX', 'DOC' , 'docx', 'doc'].includes(doc.file_extension), 
+              'text-success': ['XLSX', 'CSV', 'XLS' , 'xlsx', 'csv', 'xls'].includes(doc.file_extension),
+              'text-primary': doc.file_extension === 'TXT' || doc.file_extension === 'txt',
+              'text-warning': !['PDF', 'PPTX', 'PPT', 'DOCX', 'DOC', 'XLSX', 'CSV', 'XLS', 'TXT' , 'pdf', 'pptx', 'ppt', 'docx', 'doc', 'xlsx', 'csv', 'xls', 'txt'].includes(doc.file_extension)
+            }">
+              {{ doc.file_extension }}
+            </span>
             <span class="text-muted px-2 fs-6">|</span>
-            <span class="text-muted fs-6">{{ doc.file.size | fileSize }}</span>
+            <span class="text-muted fs-6">{{ (doc.fromServer ? doc.file_size : doc.file?.size) | fileSize }}</span>
           </h3>
           <span class="text-muted fs-6 d-block mb-3" >
             {{ doc.description | truncateText: 200 }}
@@ -139,18 +140,50 @@
         ></textarea>
       </div>
   
-      <div class="mb-3">
-        <label class="form-label required table-of-content-label m-0">
-          {{'TABLE_OF_CONTENT' | translate}}
-          </label>
-                <!-- Table of Content -->
-      <app-table-of-content *ngIf="displayDocumentDialog"
-      [initialToc]="docForm.get('table_of_content')?.value"
-      (tocChange)="handleTocChange($event)"
-      ></app-table-of-content>
-  
+      <div class="col-12">
+        <div class="form-group mb-5">
+          <label class="form-label required">{{ "TABLE_OF_CONTENT" | translate }}</label>
+          <div formArrayName="table_of_content">
+            <div *ngFor="let chapter of chapters.controls; let i = index" class="mb-3">
+              <div [formGroupName]="i">
+                <div class="input-group" formGroupName="chapter">
+                  <input type="text" 
+                         class="form-control" 
+                         formControlName="title" 
+                         [placeholder]="'ENTER_SUB_CHAPTER_NAME' | translate"
+                         [class.is-invalid]="chapters.at(i).get('chapter.title')?.invalid && chapters.at(i).get('chapter.title')?.touched">
+                  <button type="button" 
+                          class="btn btn-icon btn-light-danger" 
+                          (click)="removeChapter(i)"
+                          [disabled]="chapters.length === 1">
+                    <i class="ki-duotone ki-trash fs-2">
+                      <span class="path1"></span>
+                      <span class="path2"></span>
+                      <span class="path3"></span>
+                      <span class="path4"></span>
+                      <span class="path5"></span>
+                    </i>
+                  </button>
+                </div>
+                <div *ngIf="chapters.at(i).get('chapter.title')?.invalid && chapters.at(i).get('chapter.title')?.touched" 
+                     class="invalid-feedback d-block">
+                  <span *ngIf="chapters.at(i).get('chapter.title')?.errors?.['required']">
+                    {{ 'CHAPTER_TITLE_REQUIRED' | translate }}
+                  </span>
+                  <span *ngIf="chapters.at(i).get('chapter.title')?.errors?.['minlength']">
+                    {{ 'CHAPTER_TITLE_MIN_LENGTH' | translate }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <button type="button" class="btn btn-light-primary" (click)="addChapter()">
+              <i class="ki-duotone ki-plus fs-2"></i>
+              {{ "ADD_CHAPTER" | translate }}
+            </button>
+          </div>
+        </div>
       </div>
-
+  
       <div class="mb-3 w-200px">
         <label class="form-label required">{{'PRICE' | translate}}:</label>
         <div class="input-group">

@@ -9,13 +9,18 @@ const routes: Routes = [
     component: WizardsComponent,
     children: [
       {
-        path: 'horizontal',
+        path: 'stepper',
         component: HorizontalComponent,
       },
-      { path: '', redirectTo: 'horizontal', pathMatch: 'full' },
-      { path: '**', redirectTo: 'horizontal', pathMatch: 'full' },
+      {
+        path: 'stepper/:id',
+        component: HorizontalComponent,
+      },
+      { path: '', redirectTo: 'stepper', pathMatch: 'full' },
+      { path: '**', redirectTo: 'stepper', pathMatch: 'full' },
     ],
   },
+
 ];
 
 @NgModule({
