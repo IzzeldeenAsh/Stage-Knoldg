@@ -43,6 +43,16 @@
   }
   
   // Package Item Styles
+  .package-items {
+    max-height: none;
+    overflow-y: visible;
+    margin-top: 1rem;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
   .package-item-card {
     padding: 1rem;
     background-color: var(--kt-gray-100);
@@ -50,7 +60,18 @@
     margin-bottom: 0.5rem;
     transition: transform 0.2s;
     animation: slideIn 0.3s ease-out;
-  
+    width: 100%;
+    display: block;
+
+    .d-flex {
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .btn-icon {
+      flex-shrink: 0;
+    }
+
     &:hover {
       transform: translateX(5px);
     }
@@ -85,6 +106,31 @@
       border-left: none;
       border-top: 1px solid var(--kt-border-color);
       margin-top: 2rem;
+      padding: 1rem;
+    }
+
+    .package-items {
+      height: auto;
+      overflow-y: visible;
+      padding: 0.5rem;
+    }
+
+    .package-item-card {
+      .d-flex {
+        flex-direction: column;
+        
+        > div {
+          width: 100%;
+        }
+      }
+
+      .justify-content-between {
+        gap: 0.5rem;
+      }
+    }
+
+    .dropzone-container {
+      min-height: 120px;
     }
   }
   
@@ -151,24 +197,27 @@
     }
   }
   
-  .package-items {
-    .package-item-card {
-      background-color: #f5f8fa;
-      border-radius: 0.475rem;
-      padding: 1rem;
-      margin-bottom: 0.5rem;
-      transition: all 0.3s ease;
-
-      &:hover {
-        background-color: #eef3f7;
-      }
-    }
-  }
-
   :host {
     display: block;
+    height: 100%;
   
     .dropzone-container {
       display: flex;  /* Always show the drop area */
+    }
+    
+    ::ng-deep .p-dialog-content {
+      overflow-y: auto;
+      max-height: calc(100vh - 120px) !important;
+    }
+  }
+  
+  @media (max-width: 992px) {
+    :host ::ng-deep .p-dialog {
+      max-height: 100vh !important;
+      
+      .p-dialog-content {
+        padding: 1rem;
+        height: calc(100vh - 120px) !important;
+      }
     }
   }

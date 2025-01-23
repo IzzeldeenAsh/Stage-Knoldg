@@ -1,6 +1,6 @@
 <form [formGroup]="documentsForm">
     <div formArrayName="documents">
-        <div *ngFor="let doc of documents.controls; let i = index" [formGroupName]="i" class="form-group mb-4" [@fadeInMoveY]>
+        <div *ngFor="let doc of documentControls.controls; let i = index" [formGroupName]="i" class="form-group mb-4" [@fadeInMoveY]>
             <div class="form-group row mb-6">
                 <!-- File Name -->
                 <div class="col-md-6">
@@ -43,18 +43,21 @@
                                 <span class="path2"></span>
                             </i>
                         </button>
-                        <!-- File Preview - modified with tooltip -->
-                        <div *ngIf="doc.get('filePreview')?.value" [ngbTooltip]="doc.get('file')?.value.name">
+                        <!-- File Preview with tooltip -->
+                        <div *ngIf="doc.get('filePreview')?.value" 
+                             class="d-flex align-items-center position-relative"
+                             [ngbTooltip]="doc.get('file_name')?.value">
+                            <!-- File Icon -->
                             <img [src]="doc.get('fileIcon')?.value" 
                                  alt="file icon" 
-                                 style="height: 40px;" 
-                                 />
+                                 style="height: 40px;" />
+                     
                         </div>
                     </div>
                 </div>
                 <!-- Actions -->
                 <div class="col-md-1 d-flex align-items-end">
-                    <button type="button" class="btn actions-btn  btn-light-danger"  style="padding: 11px !important;"  (click)="removeDocument(i)">
+                    <button type="button" class="btn actions-btn btn-light-danger" style="padding: 11px !important;" (click)="removeDocument(i)">
                         <i class="ki-duotone ki-trash fs-5 p-0">
                             <span class="path1"></span>
                             <span class="path2"></span>
@@ -75,10 +78,10 @@
         </div>
 
         <!-- Total Price Section -->
-        <div class="border-top border-gray-300 pt-4 mt-4" *ngIf="totalPrice > 0">
+        <div class="border-top border-gray-300 pt-4 mt-4">
             <div class="d-flex justify-content-end align-items-center">
-                <div class="mx-2 fs-7 text-muted">{{ 'TOTAL_KNOWLEDGE_PRICE' | translate }}</div>
-                <div class="fs-1 text-gray-600 fw-bolder"> ${{ totalPrice }}</div>
+                <div class="mx-2 fs-7 text-muted">{{ 'TOTAL_KNOWLEDGE_PRICE' | translate }}:</div>
+                <div class="fs-1 text-gray-600 fw-bolder">${{ totalPrice | number:'1.2-2' }}</div>
             </div>
         </div>
     </div>

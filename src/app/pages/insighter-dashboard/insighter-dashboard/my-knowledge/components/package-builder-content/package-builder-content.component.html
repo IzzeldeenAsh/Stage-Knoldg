@@ -60,15 +60,15 @@
 </div>
 
 <!-- Drag and Drop Area -->
-<ng-container *ngIf="showDragDrop">
-  <label class="form-label table-of-content-label fs-7 m-0">
+<ng-container >
+  <label class="form-label table-of-content-label fs-7 m-0" *ngIf="showDragDrop">
     Drag and drop
   </label>
   <div class="dropzone-container d-flex flex-column"
        [class.dropzone-active]="draggedItem"
        (dragover)="onDragOver($event)"
        (drop)="onDrop($event)">
-    <div class="dropzone-placeholder mb-5">
+    <div class="dropzone-placeholder mb-5" *ngIf="showDragDrop">
       <i class="ki-duotone ki-abstract-24 fs-3x text-primary mb-3">
         <span class="path1"></span>
         <span class="path2"></span>

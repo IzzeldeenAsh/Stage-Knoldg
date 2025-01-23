@@ -3,12 +3,12 @@
   <div class="card-title">
     <!--begin::Search-->
     <div class="d-flex align-items-center position-relative my-1">
-      <i class="ki-outline ki-magnifier fs-1 position-absolute ms-6"></i>
+      <i class="ki-outline ki-magnifier fs-1 position-absolute mx-2"></i>
       <input
         type="text"
         data-kt-filemanager-table-filter="search"
-        class="form-control form-control-solid w-250px ps-15"
-        placeholder="Search Files &amp; Folders"
+        class="form-control form-control-solid w-250px px-8"
+        placeholder="{{ 'KNOWLEDGE.SEARCH_PLACEHOLDER' | translate }}"
       />
     </div>
     <!--end::Search-->
@@ -26,7 +26,7 @@
         type="button"
         class="btn btn-sm btn-light-info mx-3"
       >
-        <i class="ki-outline ki-add-folder fs-2"></i> Add Knowledge
+        <i class="ki-outline ki-add-folder fs-2"></i> {{ 'KNOWLEDGE.ADD_KNOWLEDGE' | translate }}
       </a>
       <!--end::Add Knowledge-->
 
@@ -36,7 +36,7 @@
         class="btn btn-sm btn-info"
         (click)="togglePackageBuilder()"
       >
-        <i class="ki-outline ki-folder-up fs-2"></i> {{ showPackageBuilder ? 'Close Package Builder' : 'Generate Package' }}
+        <i class="ki-outline ki-folder-up fs-2"></i> {{ showPackageBuilder ? ('KNOWLEDGE.CLOSE_PACKAGE_BUILDER' | translate) : ('KNOWLEDGE.GENERATE_PACKAGE' | translate) }}
       </button>
       <!--end::Generate Package-->
     </div>
@@ -47,12 +47,12 @@
       class="d-flex justify-content-end align-items-center d-none"
       data-kt-filemanager-table-toolbar="selected"
     >
-      <div class="fw-bold me-5">
+      <div class="fw-bold mx-5">
         <span
-          class="me-2"
+          class="mx-2"
           data-kt-filemanager-table-select="selected_count"
         ></span>
-        Selected
+        {{ 'KNOWLEDGE.SELECTED' | translate }}
       </div>
 
       <button
@@ -60,7 +60,7 @@
         class="btn btn-danger"
         data-kt-filemanager-table-select="delete_selected"
       >
-        Delete Selected
+        {{ 'KNOWLEDGE.DELETE_SELECTED' | translate }}
       </button>
     </div>
     <!--end::Group actions-->
@@ -76,18 +76,18 @@
     <!--begin::Title-->
     <div class="badge badge-lg badge-light-info">
       <div class="d-flex align-items-center flex-wrap">
-        <i class="ki-duotone ki-abstract-32 fs-2x text-info me-3">
+        <i class="ki-duotone ki-abstract-32 fs-2x text-info mx-3">
           <span class="path1"></span>
           <span class="path2"></span>
         </i>
-        <span class="fw-bold">Available Knowledges</span>
+        <span class="fw-bold">{{ 'KNOWLEDGE.AVAILABLE_KNOWLEDGES' | translate }}</span>
       </div>
     </div>
     <!--end::Title-->
 
     <!--begin::Items Counter-->
     <div class="badge badge-lg badge-primary">
-      <span>{{ totalItems }} items</span>
+      <span>{{ totalItems }} {{ 'KNOWLEDGE.ITEMS' | translate }}</span>
     </div>
     <!--end::Items Counter-->
   </div>
@@ -101,16 +101,16 @@
       <div class="table-responsive">
         <table class="table align-middle table-row-dashed fs-6 gy-5">
           <thead>
-            <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
+            <tr class="text-inline-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
               <th class="w-10px pe-2">
-                <div class="form-check form-check-sm form-check-custom form-check-solid me-3">
+                <div class="form-check form-check-sm form-check-custom form-check-solid mx-3">
                   <input class="form-check-input" type="checkbox">
                 </div>
               </th>
-              <th class="min-w-250px">Knowledge Name</th>
-              <th class="min-w-10px">Type</th>
-              <th class="min-w-125px">Total Price</th>
-              <th class="min-w-100px">Status</th>
+              <th class="min-w-250px">{{ 'KNOWLEDGE.KNOWLEDGE_NAME' | translate }}</th>
+              <th class="min-w-10px">{{ 'KNOWLEDGE.TYPE' | translate }}</th>
+              <th class="min-w-125px">{{ 'KNOWLEDGE.TOTAL_PRICE' | translate }}</th>
+              <th class="min-w-100px">{{ 'KNOWLEDGE.STATUS' | translate }}</th>
               <th class="w-125px"></th>
             </tr>
           </thead>
@@ -126,7 +126,7 @@
               </td>
               <td>
                 <div class="d-flex align-items-center">
-                  <i class="ki-duotone ki-file fs-2x text-primary me-4"></i>
+                  <i class="ki-duotone ki-file fs-2x text-primary mx-4"></i>
                   <a [routerLink]="['/app/knowledge-detail/detail', knowledge.id]" class="text-gray-800 text-hover-primary">{{ knowledge.title }}</a>
                 </div>
               </td>
@@ -152,29 +152,29 @@
               <td class="text-end">
                 <div class="d-flex justify-content-end">
                   <!-- Status Actions -->
-                  <div ngbDropdown class="d-inline-block me-2">
+                  <div ngbDropdown class="d-inline-block mx-2">
                     <button type="button" class="btn btn-sm btn-light btn-active-light-primary" ngbDropdownToggle>
-                      Status
+                      {{ 'KNOWLEDGE.STATUS' | translate }}
                     </button>
                     <div ngbDropdownMenu>
                       <button ngbDropdownItem (click)="updateStatus(knowledge.id, 'published')"
                               *ngIf="knowledge.status !== 'published'">
-                        Publish
+                        {{ 'KNOWLEDGE.PUBLISH' | translate }}
                       </button>
                       <button ngbDropdownItem (click)="updateStatus(knowledge.id, 'unpublished')"
                               *ngIf="knowledge.status !== 'unpublished'">
-                        Unpublish
+                        {{ 'KNOWLEDGE.UNPUBLISH' | translate }}
                       </button>
                       <button ngbDropdownItem (click)="updateStatus(knowledge.id, 'scheduled')"
                               *ngIf="knowledge.status !== 'scheduled' && knowledge.status !== 'published'">
-                        Schedule
+                        {{ 'KNOWLEDGE.SCHEDULE' | translate }}
                       </button>
                     </div>
                   </div>
                   <!-- Edit button -->
                   <a [routerLink]="['/app/edit-knowledge/stepper', knowledge.id]" 
-                  class="btn btn-sm btn-icon btn-light btn-active-light-primary me-2"
-                  pTooltip="Edit"
+                  class="btn btn-sm btn-icon btn-light btn-active-light-primary mx-2"
+                  pTooltip="{{ 'KNOWLEDGE.EDIT' | translate }}"
                   tooltipPosition="top">
                  <i class="ki-duotone ki-pencil fs-5">
                    <span class="path1"></span>
@@ -184,7 +184,7 @@
                   <!-- Delete button -->
                   <button type="button" 
                           class="btn btn-sm btn-icon btn-light btn-active-light-danger"
-                          pTooltip="Delete"
+                          pTooltip="{{ 'KNOWLEDGE.DELETE' | translate }}"
                           tooltipPosition="top"
                           (click)="deleteKnowledge(knowledge)">
                     <i class="ki-duotone ki-trash fs-5">
@@ -227,7 +227,7 @@
       <div class="d-flex justify-content-end mt-6">
         <button class="btn btn-primary d-none" (click)="togglePackageBuilder()">
           <i class="ki-duotone" [class.ki-abstract-24]="!showPackageBuilder" [class.ki-cross]="showPackageBuilder"></i>
-          {{ showPackageBuilder ? 'Close Package Builder' : 'Generate Package' }}
+          {{ showPackageBuilder ? ('KNOWLEDGE.CLOSE_PACKAGE_BUILDER' | translate) : ('KNOWLEDGE.GENERATE_PACKAGE' | translate) }}
         </button>
       </div>
     </div>
@@ -258,13 +258,15 @@
     <p-dialog 
       [(visible)]="showDialog" 
       [modal]="true"
-      [style]="{width: '100vw', height: '100vh'}"
+      [style]="{width: '90vw', maxWidth: '800px'}"
+      [contentStyle]="{overflow: 'visible'}"
+      [maximizable]="true"
       [draggable]="false" 
       [resizable]="false"
       [closeOnEscape]="true"
       (onHide)="hideDialog()"
       appendTo="body"
-      header="Create Package">
+      header="{{ 'KNOWLEDGE.CREATE_PACKAGE' | translate }}">
       <app-package-builder-content
         [packageName]="packageName"
         [(packages)]="packages"
