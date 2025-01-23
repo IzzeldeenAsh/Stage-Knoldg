@@ -81,6 +81,7 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
             economic_blocks: knowledge.economic_blocks || [],
             description: knowledge.description,
             targetMarket: targetMarket,
+            keywords: knowledge.keywords.map((keyword:any) => ({display: keyword, value: keyword})) || [],
             customTopic: '',
             documents: [] // Empty documents array as requested
           };

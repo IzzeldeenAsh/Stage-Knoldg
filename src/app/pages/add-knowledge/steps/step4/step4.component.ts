@@ -17,6 +17,11 @@ interface Chip {
   selected: boolean;
 }
 
+interface KeywordItem {
+  display: string;
+  value: string;
+}
+
 @Component({
   selector: "app-step4",
   templateUrl: "./step4.component.html",
@@ -33,8 +38,7 @@ export class Step4Component extends BaseComponent implements OnInit {
   form: FormGroup;
   tags: { id: number; name: string }[] = [];
   chips: Chip[] = [];
-  keywords: string[] = [];
-  availableKeywords: string[] = [];
+  availableKeywords: KeywordItem[] = [];
 
   // Custom Tag Form Controls
   customTagForm: FormGroup;
@@ -85,24 +89,23 @@ export class Step4Component extends BaseComponent implements OnInit {
     this.knowledgeService.getKnowledgeById(knowledgeId).subscribe({
       next: (response) => {
         const knowledge = response.data;
-        console.log('Fetched Knowledge Data:', knowledge); // Debugging Log
-
+        
         if (knowledge.tags) {
           this.defaultValues.tag_ids = knowledge.tags.map(tag => tag.id);
         }
         if (knowledge.keywords) {
-          this.defaultValues.keywords = knowledge.keywords;
-          console.log('Fetched Keywords:', this.defaultValues.keywords); // Debugging Log
+          // Convert string keywords to KeywordItem format
+          this.defaultValues.keywords = knowledge.keywords.map(keyword => ({
+            display: keyword,
+            value: keyword
+          }));
         }
 
-        // Update form controls individually
+        // Update form controls
         this.form.get('tag_ids')?.setValue(this.defaultValues.tag_ids || []);
         this.form.get('keywords')?.setValue(this.defaultValues.keywords || []);
-        console.log('Form Values After Update:', this.form.value); // Debugging Log
-
-        // Trigger change detection
+        
         this.cdr.detectChanges();
-
         this.fetchTagsAndSetSelections();
       },
       error: (error) => {
@@ -243,27 +246,64 @@ export class Step4Component extends BaseComponent implements OnInit {
   }
 
   addKeyword(event: any) {
-    const newKeyword = event.value?.trim();
-    if (newKeyword && !this.keywords.includes(newKeyword)) {
-      this.keywords.push(newKeyword);
-      this.form.get('keywords')?.setValue(this.keywords);
-      this.updateParentModel({
-        keywords: this.keywords
-      }, this.checkForm());
+    // Debug logs
+    console.log('Add Event:', event);
+    console.log('Event Value Type:', typeof event.value);
+    console.log('Event Value:', event.value);
+
+    const value = typeof event.value === 'string' ? event.value : event.value?.value;
+    if (!value?.trim()) return;
+
+    // Create keyword item
+    const newKeyword: KeywordItem = {
+      display: value.trim(),
+      value: value.trim()
+    };
+
+    // Get current keywords
+    const currentKeywords: KeywordItem[] = this.form.get('keywords')?.value || [];
+    console.log('Current Keywords:', currentKeywords);
+
+    // Check if keyword already exists
+    if (!currentKeywords.some(k => k.value === newKeyword.value)) {
+      const updatedKeywords = [...currentKeywords, newKeyword];
+      
+      // Update form
+      this.form.get('keywords')?.setValue(updatedKeywords);
+      
+      // Update parent
+      this.updateParentModel(
+        { keywords: updatedKeywords },
+        this.checkForm()
+      );
+
       console.log('Added Keyword:', newKeyword);
-      console.log('Updated Keywords:', this.keywords);
+      console.log('Updated Keywords:', updatedKeywords);
     }
   }
 
   removeKeyword(event: any) {
     const removedKeyword = event.removed;
-    this.keywords = this.keywords.filter(keyword => keyword !== removedKeyword);
-    this.form.get('keywords')?.setValue(this.keywords);
-    this.updateParentModel({
-      keywords: this.keywords
-    }, this.checkForm());
+    if (!removedKeyword) return;
+
+    const currentKeywords: KeywordItem[] = this.form.get('keywords')?.value || [];
+    
+    // Remove the keyword
+    const updatedKeywords = currentKeywords.filter(keyword => 
+      keyword.value !== (typeof removedKeyword === 'string' ? removedKeyword : removedKeyword.value)
+    );
+
+    // Update form
+    this.form.get('keywords')?.setValue(updatedKeywords);
+    
+    // Update parent
+    this.updateParentModel(
+      { keywords: updatedKeywords },
+      this.checkForm()
+    );
+
     console.log('Removed Keyword:', removedKeyword);
-    console.log('Updated Keywords:', this.keywords);
+    console.log('Updated Keywords:', updatedKeywords);
   }
 
   private handleServerErrors(error: any) {
@@ -281,12 +321,16 @@ export class Step4Component extends BaseComponent implements OnInit {
   }
 
   fetchSuggestedKeywords() {
-    if ( !this.defaultValues.knowledgeId) return;
+    if (!this.defaultValues.knowledgeId) return;
 
     this.tagsService.getSuggestKeywords(this.defaultValues.knowledgeId!, this.lang).subscribe({
       next: (keywords) => {
-        this.availableKeywords = keywords;
-        console.log('Available Keywords:', this.availableKeywords); // Debugging Log
+        // Convert suggested keywords to KeywordItem format
+        this.availableKeywords = keywords.map(keyword => ({
+          display: keyword,
+          value: keyword
+        }));
+        console.log('Available Keywords:', this.availableKeywords);
       },
       error: (error) => {
         console.error("Error fetching suggested keywords:", error);
