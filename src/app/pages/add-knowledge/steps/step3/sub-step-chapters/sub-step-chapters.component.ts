@@ -55,6 +55,7 @@ export class SubStepChaptersComponent extends BaseComponent implements OnInit {
   editingIndex = -1;
   headerTitle = 'CHAPTERS';
   totalPrice: number = 0;
+  isSaving: boolean = false;
 
   constructor(
     injector: Injector,
@@ -145,6 +146,8 @@ export class SubStepChaptersComponent extends BaseComponent implements OnInit {
       return;
     }
 
+    this.isSaving = true;
+
     const fileName = this.docForm.value.file_name || '';
     const file: File | null = this.docForm.value.file;
 
@@ -163,6 +166,8 @@ export class SubStepChaptersComponent extends BaseComponent implements OnInit {
       status: 'active'
     };
 
+    const knowledgeId = this.defaultValues.knowledgeId || this.knowledgeId;
+
     if (file) {
       newDoc.file = file;
       newDoc.file_extension = this.getFileExtension(file.name);
@@ -175,16 +180,93 @@ export class SubStepChaptersComponent extends BaseComponent implements OnInit {
       newDoc.file_size = existingDoc.file_size;
     }
 
-    if (this.editingIndex >= 0) {
-      this.documents[this.editingIndex] = { ...this.documents[this.editingIndex], ...newDoc };
-    } else {
-      this.documents.push(newDoc);
-    }
+    // If we have a knowledge ID, upload/update on server
+    if (knowledgeId) {
+      const request = {
+        file_name: newDoc.file_name,
+        price: newDoc.price.toString(),
+        description: newDoc.description,
+        table_of_content: newDoc.table_of_content,
+        file: newDoc.file,
+        status: 'active'
+      };
 
-    this.updateParentModel({ documents: this.documents }, this.checkParentValidator());
-    this.initDocForm();
-    this.closeDialog();
-    this.calculateTotalPrice();
+      const isUpdate = this.editingIndex >= 0 && this.documents[this.editingIndex]?.fromServer;
+      const documentId = isUpdate ? this.documents[this.editingIndex].id : null;
+
+      this.addInsightStepsService.step3AddKnowledgeDocument(
+        isUpdate ? (documentId || knowledgeId) : knowledgeId,
+        request,
+        isUpdate
+      ).subscribe({
+        next: () => {
+          if (isUpdate) {
+            // For updates, use existing document with updated values
+            const updatedDoc = {
+              ...newDoc,
+              id: documentId,
+              fromServer: true,
+              file_size: newDoc.file ? newDoc.file.size : this.documents[this.editingIndex].file_size // Preserve file size
+            };
+            this.documents[this.editingIndex] = updatedDoc;
+            this.updateParentModel({ documents: this.documents }, this.checkParentValidator());
+            this.calculateTotalPrice();
+            this.showSuccess('', 'Document saved successfully');
+            this.closeDialog();
+          } else {
+            // For new documents, refresh the list from server
+            this.fetchDocumentsFromServer();
+            this.showSuccess('', 'Document saved successfully');
+            this.closeDialog();
+          }
+          this.isSaving = false;
+        },
+        error: (error) => {
+          this.showError('','Failed to save document');
+          console.error('Error saving document:', error);
+          this.isSaving = false;
+        }
+      });
+    } else {
+      // No knowledge ID yet, just update local state
+      if (this.editingIndex >= 0) {
+        this.documents[this.editingIndex] = { ...this.documents[this.editingIndex], ...newDoc };
+      } else {
+        this.documents.push(newDoc);
+      }
+
+      this.updateParentModel({ documents: this.documents }, this.checkParentValidator());
+      this.calculateTotalPrice();
+      this.closeDialog();
+    }
+  }
+
+  removeDocument(index: number) {
+    if (index >= 0 && index < this.documents.length) {
+      const doc = this.documents[index];
+      
+      if (doc.fromServer && doc.id && (this.defaultValues.knowledgeId || this.knowledgeId)) {
+        // Delete from server first
+        this.addInsightStepsService.deleteKnowledgeDocument(doc.id)
+          .subscribe({
+            next: () => {
+              this.documents.splice(index, 1);
+              this.updateParentModel({ documents: this.documents }, this.checkParentValidator());
+              this.calculateTotalPrice();
+              this.showSuccess('','Document deleted successfully');
+            },
+            error: (error) => {
+              this.showError('','Failed to delete document');
+              console.error('Error deleting document:', error);
+            }
+          });
+      } else {
+        // Local document, just remove from array
+        this.documents.splice(index, 1);
+        this.updateParentModel({ documents: this.documents }, this.checkParentValidator());
+        this.calculateTotalPrice();
+      }
+    }
   }
 
   checkParentValidator(): boolean {
@@ -360,13 +442,6 @@ export class SubStepChaptersComponent extends BaseComponent implements OnInit {
     }
   }
 
-  removeDocument(index: number) {
-    if (index >= 0 && index < this.documents.length) {
-      this.documents.splice(index, 1);
-      this.updateParentModel({ documents: this.documents }, this.checkParentValidator());
-    }
-  }
-
   closeDialog(): void {
     this.displayDocumentDialog = false;
     this.editingIndex = -1;
@@ -426,9 +501,9 @@ export class SubStepChaptersComponent extends BaseComponent implements OnInit {
       doc: 'word',
       docx: 'word',
       xls: 'excel',
-      xlsx: 'excel',
+      xlsx: 'excelx',
       ppt: 'powerpoint',
-      pptx: 'powerpoint',
+      pptx: 'powerpointx',
       txt: 'text',
       zip: 'archive',
       rar: 'archive',
@@ -444,7 +519,9 @@ export class SubStepChaptersComponent extends BaseComponent implements OnInit {
       pdf: './assets/media/svg/new-files/pdf.svg',
       word: './assets/media/svg/new-files/doc.svg',
       excel: './assets/media/svg/new-files/xls.svg',
+      excelx: './assets/media/svg/new-files/xlsx.svg',
       powerpoint: './assets/media/svg/new-files/ppt.svg',
+      powerpointx: './assets/media/svg/new-files/pp  t.svg',
       text: './assets/media/svg/new-files/txt.svg',
       archive: './assets/media/svg/new-files/zip.svg',
       document: './assets/media/svg/new-files/default.svg'
@@ -455,10 +532,9 @@ export class SubStepChaptersComponent extends BaseComponent implements OnInit {
   private getFileExtension(fileName: string): string {
     if (!fileName) return '';
     
-    const parts = fileName.split('.');
-    if (parts.length <= 1) return '';
-    
-    return parts[parts.length - 1].toUpperCase();
+    // Match only the last occurrence of a dot followed by non-dot characters until the end
+    const match = fileName.match(/\.([^.]+)$/);
+    return match ? match[1].toUpperCase() : '';
   }
 
   calculateTotalPrice(): void {
@@ -468,4 +544,3 @@ export class SubStepChaptersComponent extends BaseComponent implements OnInit {
     }, 0);
   }
 }
-

@@ -54,7 +54,7 @@
               {{ doc.file_extension }}
             </span>
             <span class="text-muted px-2 fs-6">|</span>
-            <span class="text-muted fs-6">{{ (doc.fromServer ? doc.file_size : doc.file?.size) | fileSize }}</span>
+            <span class="text-muted fs-6">{{ (doc.file?.size || doc.file_size || 0) | fileSize }}</span>
           </h3>
           <span class="text-muted fs-6 d-block mb-3" >
             {{ doc.description | truncateText: 200 }}
@@ -239,10 +239,16 @@
       <button
         type="button"
         class="btn btn-primary"
-        [disabled]="docForm.invalid || (previewFilesDialog.length === 0 && editingIndex === -1)"
+        [disabled]="docForm.invalid || (previewFilesDialog.length === 0 && editingIndex === -1) || isSaving"
         (click)="saveDocument()">
-        <i class="ki-duotone ki-check fs-2"></i>
-        Save
+        <ng-container *ngIf="!isSaving">
+          <i class="ki-duotone ki-check fs-2"></i>
+          Save
+        </ng-container>
+        <ng-container *ngIf="isSaving">
+          <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+          Saving...
+        </ng-container>
       </button>
     </ng-template>
   </p-dialog>

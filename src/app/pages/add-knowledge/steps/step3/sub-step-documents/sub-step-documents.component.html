@@ -3,60 +3,72 @@
         <div *ngFor="let doc of documentControls.controls; let i = index" [formGroupName]="i" class="form-group mb-4" [@fadeInMoveY]>
             <div class="form-group row mb-6">
                 <!-- File Name -->
-                <div class="col-md-6">
-                    <label class="form-label">{{ 'FILE_NAME' | translate }}:</label>
-                    <input formControlName="file_name" class="form-control mb-2 mb-md-0" placeholder="{{ 'ENTER_FILE_NAME' | translate }}" />
-                    <div *ngIf="doc.get('file_name')?.invalid && doc.get('file_name')?.touched" class="text-danger">
-                        {{ 'FILE_NAME_REQUIRED' | translate }}
+                <div class="col-md-7">
+                    <label class="form-label required">{{ 'FILE_NAME' | translate }}</label>
+                    <input formControlName="file_name" class="form-control" placeholder="{{ 'ENTER_FILE_NAME' | translate }}" />
+                    <div *ngIf="doc.get('file_name')?.invalid && doc.get('file_name')?.touched" class="text-danger small">
+                        <span *ngIf="doc.get('file_name')?.errors?.['required']">
+                            {{ 'FILE_NAME_REQUIRED' | translate }}
+                        </span>
+                        <span *ngIf="doc.get('file_name')?.errors?.['duplicateFileName']">
+                            {{ 'FILE_NAME_DUPLICATE' | translate }}
+                        </span>
                     </div>
                 </div>
+
                 <!-- Price -->
-                <div class="col-md-4">
-                    <label class="form-label">{{ 'PRICE' | translate }}:</label>
+                <div class="col-md-3">
+                    <label class="form-label required">{{ 'PRICE' | translate }}</label>
                     <div class="input-group">
                         <span class="input-group-text">
                             <i class="ki-duotone ki-dollar fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
                         </span>
                         <input formControlName="price" type="number" min="0" class="form-control" placeholder="{{ 'ENTER_PRICE' | translate }}" />
                     </div>
-                    <div *ngIf="doc.get('price')?.invalid && doc.get('price')?.touched" class="text-danger">
+                    <div *ngIf="doc.get('price')?.invalid && doc.get('price')?.touched" class="text-danger small">
                         {{ 'PRICE_REQUIRED' | translate }}
                     </div>
                 </div>
-                <!-- File Upload -->
+
+                <!-- File Upload/Preview -->
                 <div class="col-md-1">
-                    <label class="form-label">{{ 'FILE' | translate }}:</label>
+                    <label class="form-label required">{{ 'FILE' | translate }}</label>
                     <div class="d-flex align-items-center">
                         <input type="file" 
                                [id]="'fileInput' + i" 
                                (change)="onFileSelected($event, i)" 
-                               accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.jpg,.jpeg,.png,.gif"
+                               accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt"
                                style="display: none" />
-                        <!-- Upload button - show only when no file is uploaded -->
-                        <button *ngIf="!doc.get('filePreview')?.value" 
-                                type="button" 
-                                class="btn actions-btn btn-light-success" 
-                                style="padding: 11px !important;"  
-                                (click)="triggerFileInput(i)">
-                            <i class="ki-duotone ki-file-up fs-2 p-0">
-                                <span class="path1"></span>
-                                <span class="path2"></span>
-                            </i>
-                        </button>
-                        <!-- File Preview with tooltip -->
-                        <div *ngIf="doc.get('filePreview')?.value" 
-                             class="d-flex align-items-center position-relative"
-                             [ngbTooltip]="doc.get('file_name')?.value">
-                            <!-- File Icon -->
-                            <img [src]="doc.get('fileIcon')?.value" 
-                                 alt="file icon" 
-                                 style="height: 40px;" />
-                     
-                        </div>
+                               <ng-container *ngIf="!doc.get('filePreview')?.value">
+                                <button  
+                            type="button" 
+                            class="btn actions-btn btn-light-success" 
+                            style="padding: 11px !important;"  
+                            (click)="triggerFileInput(i)">
+                        <i class="ki-duotone ki-file-up fs-2 p-0">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                                 </button>
+                            </ng-container>
+                           
+                        
+                        <ng-container *ngIf="doc.get('filePreview')?.value">
+                            <div class="d-flex align-items-center justify-content-center w-100">
+                                <img [src]="doc.get('fileIcon')?.value" 
+                                     [alt]="doc.get('file_extension')?.value" 
+                                     style="width: 38px; height: 38px;"
+                                     (click)="triggerFileInput(i)"
+                                     class="cursor-pointer"
+                                     [ngbTooltip]="!doc.get('fromServer')?.value ? doc.get('file')?.value?.name : ''" />
+                            </div>
+                        </ng-container>
                     </div>
                 </div>
-                <!-- Actions -->
-                <div class="col-md-1 d-flex align-items-end">
+
+                <!-- Delete Button -->
+                <div class="col-md-1">
+                    <label class="form-label">&nbsp;</label>
                     <button type="button" class="btn actions-btn btn-light-danger" style="padding: 11px !important;" (click)="removeDocument(i)">
                         <i class="ki-duotone ki-trash fs-5 p-0">
                             <span class="path1"></span>
@@ -69,20 +81,22 @@
                 </div>
             </div>
         </div>
+
         <!-- Add Document Button -->
-        <div class="form-group d-flex justify-content-start">
-            <button type="button" class="btn btn-flex btn-primary" (click)="addDocument()">
-                <i class="ki-duotone ki-plus fs-3"></i>
+        <div class="form-group d-flex justify-content-start mb-5">
+            <button type="button" class="btn btn-primary px-6" (click)="addDocument()">
+                <i class="ki-duotone ki-plus fs-2 me-1"></i>
                 {{ 'ADD_DOCUMENT' | translate }}
             </button>
         </div>
 
-        <!-- Total Price Section -->
-        <div class="border-top border-gray-300 pt-4 mt-4">
+        <!-- Total Price -->
+        <div class="border-top border-gray-300 pt-4">
             <div class="d-flex justify-content-end align-items-center">
-                <div class="mx-2 fs-7 text-muted">{{ 'TOTAL_KNOWLEDGE_PRICE' | translate }}:</div>
-                <div class="fs-1 text-gray-600 fw-bolder">${{ totalPrice | number:'1.2-2' }}</div>
-            </div>
+                <div class="mx-2 fs-7 text-muted">{{ 'TOTAL_KNOWLEDGE_PRICE' | translate }}</div>
+                <div class="fs-1 text-gray-600 fw-bolder"> ${{ totalPrice.toFixed(2) }}</div>
+              </div>
+        
         </div>
     </div>
 </form>

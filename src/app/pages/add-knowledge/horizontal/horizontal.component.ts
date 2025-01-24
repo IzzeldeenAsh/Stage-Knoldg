@@ -1,10 +1,9 @@
-import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
+import { Component, Injector, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ICreateKnowldege, inits } from '../create-account.helper';
-import { AddInsightStepsService, CreateKnowledgeRequest, SuggestTopicRequest, AddKnowledgeDocumentRequest, SyncTagsKeywordsRequest, PublishKnowledgeRequest } from 'src/app/_fake/services/add-insight-steps/add-insight-steps.service';
+import { AddInsightStepsService, CreateKnowledgeRequest, SuggestTopicRequest, SyncTagsKeywordsRequest, PublishKnowledgeRequest, AddKnowledgeDocumentRequest } from 'src/app/_fake/services/add-insight-steps/add-insight-steps.service';
 import { switchMap } from 'rxjs/operators';
 import { BaseComponent } from 'src/app/modules/base.component';
-import { of } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { KnowledgeService } from 'src/app/_fake/services/knowledge/knowledge.service';
 
@@ -118,7 +117,63 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
     if (this.currentStep$.value === 2) {
       this.handleStep2Submission(nextStep);
     } else if (this.currentStep$.value === 3) {
-      this.handleStep3Submission(nextStep);
+      // Handle step 3 submission
+      const currentAccount = this.account$.value;
+      if (currentAccount.knowledgeType === 'insight' && currentAccount.documents?.length > 0) {
+        this.isLoading = true;
+        let completedUpdates = 0;
+        const totalDocuments = currentAccount.documents.length;
+
+        // Create an array to store all subscriptions
+        const documentSubs = currentAccount.documents.map((doc: any) => {
+          // Prepare document request according to interface requirements
+          const documentRequest: any = {
+            file_name: doc.file_name,
+            price: doc.price.toString(),
+            status: 'active',
+          };
+
+          if (doc.description) {
+            documentRequest.description = doc.description;
+          }
+
+          // Add file if not from server
+          if (!doc.fromServer && doc.file) {
+            documentRequest.file = doc.file;
+          }
+
+        
+
+          return this.addInsightStepsService
+            .step3AddKnowledgeDocument(
+              doc.fromServer ? doc.id : this.knowledgeId, 
+              documentRequest, 
+              doc.fromServer
+            )
+            .subscribe({
+              next: (response) => {
+                console.log('Document processed successfully', response);
+                completedUpdates++;
+                
+                // Only proceed to next step when all documents are processed
+                if (completedUpdates === totalDocuments) {
+                  this.currentStep$.next(nextStep);
+                  this.isLoading = false;
+                }
+              },
+              error: (error) => {
+                this.handleServerErrors(error);
+                this.isLoading = false;
+              }
+            });
+        });
+
+        // Add all subscriptions to unsubscribe array
+        this.unsubscribe.push(...documentSubs);
+      } else {
+        // For non-insight types or no documents, just proceed
+        this.currentStep$.next(nextStep);
+      }
     } else if (this.currentStep$.value === 4) {
       this.isLoading = true;
       const currentAccount = this.account$.value;
@@ -348,95 +403,5 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
     });
 
     this.unsubscribe.push(submitSub);
-  }
-
-  handleStep3Submission(nextStep: number) {
-    this.isLoading = true;
-    const currentAccount = this.account$.value;
-
-    // Optional safeguard: ensure we have knowledgeId from step 2
-    if (!this.knowledgeId) {
-      console.error('No knowledge ID found. Please complete step 2 first.');
-      return;
-    }
-
-    // Check whether we have existing documents (to decide isUpdate)
-    const listDocs$ = this.addInsightStepsService
-      .getListDocumentsInfo(this.knowledgeId);
-
-    const step3Sub = listDocs$
-      .pipe(
-        switchMap((listResponse) => {
-          const existingDocs = listResponse.data || [];
-          const isEdit = existingDocs.length > 0;
-          
-          console.log('Existing documents:', existingDocs);
-          console.log('Current account documents:', currentAccount.documents);
-          
-          // Process each document in the currentAccount.documents array
-          const documentRequests = currentAccount.documents.map((doc: any) => {
-            // Find matching existing document if any
-            const existingDoc = existingDocs.find(existing => {
-              const match = existing.file_name === doc.file_name;
-              console.log(`Comparing ${existing.file_name} with ${doc.file_name}:`, match);
-              return match;
-            });
-            
-            console.log('Found existing doc for', doc.file_name, ':', existingDoc);
-            
-            let documentRequest: AddKnowledgeDocumentRequest = {
-              file_name: doc.file_name,
-              price: doc.price?.toString() || '0',
-              file: existingDoc ? null : doc.file,
-              status: doc.status || 'active',
-            };
-
-            if (existingDoc) {
-              documentRequest._method = 'PUT';
-              console.log('Setting PUT method for', doc.file_name);
-            } else if (isEdit) {
-              documentRequest._method = 'POST';
-              console.log('Setting POST method for', doc.file_name);
-            }
-
-            // Add description for non-insight knowledge types
-            if (currentAccount.knowledgeType !== 'insight') {
-              documentRequest.description = doc.description || '';
-              documentRequest.table_of_content = doc.table_of_content;
-            }
-
-            // Return object containing request and metadata
-            return {
-              request: documentRequest,
-              isUpdate: !!existingDoc,
-              documentId: existingDoc?.id
-            };
-          });
-
-          // Process documents sequentially
-          return documentRequests.reduce((chain, docData) => {
-            return chain.pipe(
-              switchMap(() => this.addInsightStepsService.step3AddKnowledgeDocument(
-                docData.isUpdate ? (docData.documentId || this.knowledgeId) : this.knowledgeId,
-                docData.request,
-                docData.isUpdate
-              ))
-            );
-          }, of(null)); // Start with empty observable
-        })
-      )
-      .subscribe({
-        next: (response) => {
-          console.log('All documents processed successfully');
-          this.currentStep$.next(nextStep);
-          this.isLoading = false;
-        },
-        error: (error) => {
-          this.handleServerErrors(error);
-          this.isLoading = false;
-        }
-      });
-
-    this.unsubscribe.push(step3Sub);
   }
 }
