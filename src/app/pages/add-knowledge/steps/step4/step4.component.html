@@ -7,9 +7,16 @@
 </div>
 <form [formGroup]="form">
   <!-- Tags Section -->
-  <label class="d-flex align-items-center fs-5 fw-semibold mb-5">
-    <span class="required">{{'SELECT_TAGS' | translate}}</span>
-  </label>
+  <div class="d-flex justify-content-between align-items-center mb-5">
+    <label class="d-flex align-items-center fs-5 fw-semibold">
+      <span class="required">{{'SELECT_TAGS' | translate}}</span>
+    </label>
+    <div class="d-flex gap-3">
+      <button type="button" class="btn btn-sm btn-light-info text-info text-hover-white text-active-white" (click)="selectAll()">{{'SELECT_ALL' | translate}}</button>
+      <button type="button" class="btn btn-sm btn-light-warning text-warning text-hover-white text-active-white" (click)="clearAll()">{{'CLEAR_ALL' | translate}}</button>
+      <button type="button" class="btn btn-sm btn-light-success text-success text-hover-white text-active-white" (click)="openAddCustomTag()">{{'ADD_CUSTOM_TAG' | translate}}</button>
+    </div>
+  </div>
   <div class="chip-group mb-5">
     <div 
       class="chip" 
@@ -22,12 +29,6 @@
       </span>
       <span>{{ chip.label }}</span>
     </div>
-  </div>
-
-  <div class="d-flex gap-3">
-    <button type="button" class="btn btn-sm btn-light-info text-info text-hover-white text-active-white" (click)="selectAll()">{{'SELECT_ALL' | translate}}</button>
-    <button type="button" class="btn btn-sm btn-light-warning text-warning text-hover-white text-active-white" (click)="clearAll()">{{'CLEAR_ALL' | translate}}</button>
-    <button type="button" class="btn btn-sm btn-light-success text-success text-hover-white text-active-white" (click)="openAddCustomTag()">{{'ADD_CUSTOM_TAG' | translate}}</button>
   </div>
 
   <!-- Add Custom Tag Modal using PrimeNG Dialog -->

@@ -77,6 +77,9 @@ export class GeneralComponent extends BaseComponent implements OnInit {
   // Add loading property
   loading: boolean = false;
 
+  selectedKnowledges: Set<number> = new Set();
+  allSelected: boolean = false;
+
   constructor(
     injector: Injector,
     private knowledgeService: KnowledgeService,
@@ -114,12 +117,82 @@ export class GeneralComponent extends BaseComponent implements OnInit {
     return this.packages.reduce((sum, item) => sum + parseFloat(item.total_price), 0);
   }
 
+  toggleSelectAll() {
+    this.allSelected = !this.allSelected;
+    if (this.allSelected) {
+      this.knowledges.forEach(knowledge => this.selectedKnowledges.add(knowledge.id));
+    } else {
+      this.selectedKnowledges.clear();
+    }
+  }
+
+  toggleSelect(id: number) {
+    if (this.selectedKnowledges.has(id)) {
+      this.selectedKnowledges.delete(id);
+      this.allSelected = false;
+    } else {
+      this.selectedKnowledges.add(id);
+      this.allSelected = this.knowledges.every(k => this.selectedKnowledges.has(k.id));
+    }
+  }
+
+  isSelected(id: number): boolean {
+    return this.selectedKnowledges.has(id);
+  }
+
+  deleteSelectedKnowledges() {
+    if (this.selectedKnowledges.size === 0) return;
+
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete them!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const deletePromises = Array.from(this.selectedKnowledges).map(id =>
+          this.knowledgeService.deleteKnowledge(id).toPromise()
+        );
+
+        Promise.all(deletePromises)
+          .then(() => {
+            // Remove deleted items from packages
+            this.packages = this.packages.filter(pkg => !this.selectedKnowledges.has(pkg.id));
+            // Remove deleted items from knowledges list
+            this.knowledges = this.knowledges.filter(k => !this.selectedKnowledges.has(k.id));
+            // Update total items count
+            this.totalItems -= this.selectedKnowledges.size;
+            // Clear selection
+            this.selectedKnowledges.clear();
+            this.allSelected = false;
+            
+            this.showSuccess('Selected knowledges have been deleted.', 'success');
+          })
+          .catch((error) => {
+            console.error('Error deleting knowledges:', error);
+            const errorMessage = error.error?.message || error.error?.errors?.common?.[0] || 'There was an error deleting the knowledges.';
+            Swal.fire(
+              'Error!',
+              errorMessage,
+              'error'
+            );
+          });
+      }
+    });
+  }
+
   loadKnowledges(page: number) {
     this.knowledgeService.getPaginatedKnowledges(page).subscribe(
       (response) => {
         this.knowledges = response.data;
         this.totalItems = response.meta.total;
         this.currentPage = response.meta.current_page;
+        // Clear selection when page changes
+        this.selectedKnowledges.clear();
+        this.allSelected = false;
       },
       (error) => {
         console.error('Error fetching knowledges:', error);

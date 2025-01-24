@@ -69,7 +69,8 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       });
       
       this.calculateTotalPrice();
-      this.updateParentModel({ documents: this.documents }, this.checkParentValidator());
+      const isValid = this.validateDocuments();
+      this.updateParentModel({ documents: this.documents }, isValid);
     });
   }
 
@@ -89,8 +90,8 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
 
   private createDocument(): FormGroup {
     return this.fb.group({
-      file_name: ['', Validators.required],
-      price: [0, [Validators.required, Validators.min(0)]],
+      file_name: ['', [Validators.required, this.uniqueFileNameValidator()]],
+      price: [0], 
       file: [null],
       filePreview: [false],
       fileIcon: [''],
@@ -103,16 +104,57 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   }
 
   addDocument(): void {
-    this.documentControls.push(this.createDocument());
+    const newDocGroup = this.createDocument();
+    this.documentControls.push(newDocGroup);
+    
+    // Add a new empty document to the documents array
+    const emptyDoc: DocumentInfo = {
+      id: 0,
+      file_name: '',
+      file_extension: '',
+      price: 0,
+      file: null,
+      fromServer: false
+    };
+    this.documents.push(emptyDoc);
+    
+    // Mark the form as invalid by triggering validation
+    this.updateParentModel({ documents: this.documents }, false);
+    
+    // Subscribe to this specific document's value changes
+    const index = this.documentControls.length - 1;
+    const docControl = this.documentControls.at(index);
+    
+    docControl.valueChanges.subscribe(() => {
+      const isValid = this.validateDocuments();
+      this.updateParentModel({ documents: this.documents }, isValid);
+    });
   }
 
   removeDocument(index: number): void {
     const doc = this.documents[index];
     if (doc) {
-      this.documents.splice(index, 1);
+      if (doc.fromServer && doc.id && this.defaultValues?.knowledgeId) {
+        // Delete from server first
+        this.addInsightStepsService.deleteKnowledgeDocument(doc.id)
+          .subscribe({
+            next: () => {
+              this.documents.splice(index, 1);
+              this.documentControls.removeAt(index);
+              this.updateParentModel({ documents: this.documents }, this.validateDocuments());
+            },
+            error: (error) => {
+              this.showError('', 'Failed to delete document');
+              console.error('Error deleting document:', error);
+            }
+          });
+      } else {
+        // Local document, just remove from array
+        this.documents.splice(index, 1);
+        this.documentControls.removeAt(index);
+        this.updateParentModel({ documents: this.documents }, this.validateDocuments());
+      }
     }
-    this.documentControls.removeAt(index);
-    this.updateParentModel({ documents: this.documents }, this.checkParentValidator());
   }
 
   triggerFileInput(index: number): void {
@@ -154,7 +196,7 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
         this.documents.push(localDoc);
       }
 
-      this.updateParentModel({ documents: this.documents }, this.checkParentValidator());
+      this.updateParentModel({ documents: this.documents }, this.validateDocuments());
     }
   }
 
@@ -202,7 +244,7 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
                   });
                   this.documentControls.push(docGroup);
                   
-                  this.updateParentModel({ documents: this.documents }, this.checkParentValidator());
+                  this.updateParentModel({ documents: this.documents }, this.validateDocuments());
                   this.calculateTotalPrice();
                 },
                 error: (error) => {
@@ -239,7 +281,7 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
     });
 
     // Update parent model after loading documents
-    this.updateParentModel({ documents: this.documents }, this.checkParentValidator());
+    this.updateParentModel({ documents: this.documents }, this.validateDocuments());
   }
 
   private getFileExtension(filename: string): string {
@@ -263,13 +305,63 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
     return iconMap[extension.toLowerCase()] || './assets/media/svg/files/default.svg';
   }
 
-  checkParentValidator(): boolean {
+  private uniqueFileNameValidator() {
+    return (control: any) => {
+      if (!control.value) return null;
+      
+      const currentIndex = this.documentControls?.controls.findIndex(
+        group => group.get('file_name') === control
+      );
+      
+      const isDuplicate = this.documentControls?.controls.some(
+        (group, index) => 
+          index !== currentIndex && 
+          group.get('file_name')?.value?.toLowerCase() === control.value.toLowerCase()
+      );
+      
+      return isDuplicate ? { duplicateFileName: true } : null;
+    };
+  }
+
+  private validateDocuments(): boolean {
     if (!this.documents.length) {
       return false;
     }
 
-    for (const doc of this.documents) {
-      if (!doc.file_name || doc.price === null || doc.price < 0 || (!doc.file && !doc.fromServer)) {
+    // Check for duplicate file names
+    const fileNames = new Set<string>();
+    
+    for (let i = 0; i < this.documents.length; i++) {
+      const doc = this.documents[i];
+      const control = this.documentControls.at(i);
+      
+      // Check if file name exists and is not empty
+      if (!doc.file_name?.trim()) {
+        return false;
+      }
+
+      // Check for duplicate file names (case insensitive)
+      const lowerFileName = doc.file_name.toLowerCase();
+      if (fileNames.has(lowerFileName)) {
+        return false;
+      }
+      fileNames.add(lowerFileName);
+
+      // Validate file requirement based on source
+      if (!doc.fromServer) {
+        // Local file: must have either a file or a docUrl
+        if (!doc.file && !doc.docUrl) {
+          return false;
+        }
+      } else {
+        // Server file: must have a docUrl
+        if (!doc.docUrl) {
+          return false;
+        }
+      }
+
+      // Check if the form control has any validation errors
+      if (control.get('file_name')?.errors) {
         return false;
       }
     }
@@ -278,8 +370,9 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   }
 
   private calculateTotalPrice(): void {
-    this.totalPrice = this.documents.reduce((sum, doc) => {
-      return sum + (Number(doc.price) || 0);
+    this.totalPrice = this.documentControls.controls.reduce((sum, control) => {
+      const price = parseFloat(control.get('price')?.value) || 0;
+      return sum + price;
     }, 0);
   }
 }
