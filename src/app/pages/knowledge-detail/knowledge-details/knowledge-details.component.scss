@@ -38,15 +38,22 @@ font-size: 2.5rem;
 .max-w-800px{
   max-width: 800px;
 }
-
+.p-n-10{
+    padding-inline-end: 3rem;
+    text-align: justify;
+    @media (max-width: 991px) {
+        padding-inline-end: 0;
+    }
+}
 .tp-course-details2-widget {
     top: 120px;
     padding: 15px;
     border-radius: 10px;
     background-color: #fff;
-    box-shadow: 0 0 24px 0 rgba(3, 31, 66, 0.1);
+    box-shadow: 0 0 24px 0 rgba(3, 31, 66, 0.05);
     margin-top: -300px;
     position: sticky;
+    border: 1px solid #DFDFDF;
     z-index: 1;
     @media (max-width: 991px) {
         position: relative;

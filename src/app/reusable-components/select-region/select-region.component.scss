@@ -80,3 +80,44 @@
     }
   }
   
+  .region-selector {
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    padding: 0.5rem;
+    cursor: pointer;
+    min-height: 40px;
+    background-color: #fff;
+    width: 100%;
+    
+    &:hover {
+      border-color: #2196F3;
+    }
+  }
+
+  .chips-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    min-height: 24px;
+  }
+
+  .placeholder-text {
+    color: #6c757d;
+    -webkit-user-select: none;
+    user-select: none;
+    padding-top: 2px;
+    padding-inline-start: 3px;
+    font-size: 1.05rem;
+  }
+
+  :host ::ng-deep {
+    .p-chip {
+      background: #e9ecef;
+      padding: 0 0.5rem;
+      
+      &:hover {
+        background: #dee2e6;
+      }
+    }
+  }
+  

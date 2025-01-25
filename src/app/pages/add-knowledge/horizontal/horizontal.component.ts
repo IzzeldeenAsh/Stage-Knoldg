@@ -17,7 +17,7 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
   knowledgeId!: number;
   account$: BehaviorSubject<ICreateKnowldege> =
     new BehaviorSubject<ICreateKnowldege>(inits);
-  currentStep$: BehaviorSubject<number> = new BehaviorSubject(1);
+  currentStep$: BehaviorSubject<number> = new BehaviorSubject(3);
   isCurrentFormValid$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
     false
   );
@@ -65,9 +65,9 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
           }
 
           // Update the account with fetched data
-          const updatedAccount:any = {
+          const updatedAccount: any = {
             ...this.account$.value,
-            knowledgeId :this.knowledgeId,
+            knowledgeId: this.knowledgeId,
             knowledgeType: knowledge.type,
             title: knowledge.title,
             topicId: knowledge.topic.id,
@@ -75,14 +75,14 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
             isic_code: knowledge.isic_code?.id || null,
             hs_code: knowledge.hs_code?.id || null,
             language: knowledge.language,
-            regions: knowledge.regions.map((region:any) => region.id) || [],
-            countries: knowledge.countries.map((country:any) => country.id) || [],
+            regions: knowledge.regions.map((region: any) => region.id) || [],
+            countries: knowledge.countries.map((country: any) => country.id) || [],
             economic_blocks: knowledge.economic_blocks || [],
             description: knowledge.description,
-            targetMarket: targetMarket,
-            keywords: knowledge.keywords.map((keyword:any) => ({display: keyword, value: keyword})) || [],
+            targetMarket: knowledge.economic_blocks && knowledge.economic_blocks.length > 0 ? '2' : '1',
+            keywords: knowledge.keywords.map((keyword: any) => ({ display: keyword, value: keyword })) || [],
             customTopic: '',
-            documents: [] // Empty documents array as requested
+            documents: []
           };
 
           this.account$.next(updatedAccount);

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
@@ -69,5 +69,6 @@ import { TruncateTextPipe } from 'src/app/pipes/truncate-pipe/truncate-text.pipe
     SelectButtonModule,
     ToastModule
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]  // Add this line
 })
 export class WizardsModule {}

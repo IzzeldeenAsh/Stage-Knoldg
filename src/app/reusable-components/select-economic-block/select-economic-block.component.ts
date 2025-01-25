@@ -7,11 +7,12 @@ import { EconomicBloc, EconomicBlockService } from '../../_fake/services/economi
 import { InputTextModule } from 'primeng/inputtext';
 import { TruncateTextPipe } from 'src/app/pipes/truncate-pipe/truncate-text.pipe';
 import { TranslationModule } from 'src/app/modules/i18n';
+import { ChipModule } from 'primeng/chip';
 
 @Component({
   selector: 'app-select-economic-block',
   standalone: true,
-  imports: [CommonModule, TranslationModule, DialogModule, MultiSelectModule, TruncateTextPipe,FormsModule, InputTextModule],
+  imports: [CommonModule, TranslationModule, DialogModule, MultiSelectModule, TruncateTextPipe, FormsModule, InputTextModule, ChipModule],
   templateUrl: './select-economic-block.component.html',
   styleUrls: ['./select-economic-block.component.scss']
 })
@@ -89,5 +90,13 @@ export class SelectEconomicBlockComponent implements OnInit {
 
   onFlagError(event: any) {
     event.target.src = `../../../../assets/media/flags/default.svg`;
+  }
+
+  hasSelections(): boolean {
+    return this.selectedBlocks && this.selectedBlocks.length > 0;
+  }
+
+  getSelectedDisplayItems(): string[] {
+    return this.selectedBlocks.map(block => block.name);
   }
 }

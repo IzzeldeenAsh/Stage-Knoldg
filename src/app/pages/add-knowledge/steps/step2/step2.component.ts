@@ -124,31 +124,38 @@ export class Step2Component extends BaseComponent implements OnInit {
       description: [this.defaultValues.description, [Validators.required]],
       accountPlan: ['1', [Validators.required]],
       language: [this.defaultValues.language, [Validators.required]],
-      targetMarket: [this.defaultValues.targetMarket , [Validators.required]],
+      targetMarket: [this.defaultValues.targetMarket, [Validators.required]],
       industry: [this.defaultValues.industry, [Validators.required]],
-      economicBlocks: [this.defaultValues.economic_blocks],
-      regions: [this.defaultValues.regions],
-      countries: [this.defaultValues.countries],
+      economicBlocks: [this.defaultValues.economic_blocks || []],
+      regions: [this.defaultValues.regions || []],
+      countries: [this.defaultValues.countries || []],
       topicId: [this.defaultValues.topicId, [Validators.required]],
       customTopic: [this.defaultValues.customTopic],
       isic_code: [this.defaultValues.isic_code],
       hs_code: [this.defaultValues.hs_code],
     });
 
-    // Initialize validators based on default selection
     const regionsControl = this.form.get('regions');
     const countriesControl = this.form.get('countries');
     const economicBlocksControl = this.form.get('economicBlocks');
 
-    // Set initial validators - note countries no longer has required validator
-    regionsControl?.setValidators([Validators.required]);
-    countriesControl?.clearValidators(); // Countries is now optional
-    economicBlocksControl?.clearValidators();
+    // Custom validator for regions/countries
+    const regionsCountriesValidator = (): ValidationErrors | null => {
+      const regions = this.form.get('regions')?.value || [];
+      const countries = this.form.get('countries')?.value || [];
+      return regions.length > 0 || countries.length > 0 ? null : { required: true };
+    };
+
+    // Custom validator for economic blocks
+    const economicBlocksValidator = (): ValidationErrors | null => {
+      const blocks = this.form.get('economicBlocks')?.value || [];
+      return blocks.length > 0 ? null : { required: true };
+    };
 
     this.form.get('targetMarket')?.valueChanges.subscribe(value => {
-      if (value === '1') { // Regions and Countries
-        regionsControl?.setValidators([Validators.required]);
-        countriesControl?.clearValidators(); // Keep countries optional
+      if (value === '1') {
+        regionsControl?.setValidators([regionsCountriesValidator]);
+        countriesControl?.clearValidators();
         economicBlocksControl?.clearValidators();
         
         regionsControl?.updateValueAndValidity();
@@ -161,7 +168,7 @@ export class Step2Component extends BaseComponent implements OnInit {
           countries: countriesControl?.value 
         }, this.checkForm());
       } else if (value === '2') {
-        economicBlocksControl?.setValidators([Validators.required]);
+        economicBlocksControl?.setValidators([economicBlocksValidator]);
         regionsControl?.clearValidators();
         countriesControl?.clearValidators();
         
@@ -176,6 +183,19 @@ export class Step2Component extends BaseComponent implements OnInit {
         }, this.checkForm());
       }
     });
+
+    // Set initial validators based on current target market
+    const currentTargetMarket = this.form.get('targetMarket')?.value;
+    if (currentTargetMarket === '1') {
+      regionsControl?.setValidators([regionsCountriesValidator]);
+    } else if (currentTargetMarket === '2') {
+      economicBlocksControl?.setValidators([economicBlocksValidator]);
+    }
+
+    // Update validity of all controls
+    regionsControl?.updateValueAndValidity();
+    countriesControl?.updateValueAndValidity();
+    economicBlocksControl?.updateValueAndValidity();
 
     const topicIdControl = this.form.get('topicId');
     const customTopicControl = this.form.get('customTopic');
@@ -218,17 +238,25 @@ export class Step2Component extends BaseComponent implements OnInit {
   }
 
   checkForm() {
-    console.log('Form State:', {
-      valid: this.form.valid,
-      targetMarket: this.form.get('targetMarket')?.value,
-      regionsValue: this.form.get('regions')?.value,
-      regionsValid: this.form.get('regions')?.valid,
-      regionsErrors: this.form.get('regions')?.errors,
-      countriesValue: this.form.get('countries')?.value,
-      countriesValid: this.form.get('countries')?.valid,
-      countriesErrors: this.form.get('countries')?.errors,
-    });
-    return this.form.valid;
+    const targetMarket = this.form.get('targetMarket')?.value;
+    const regions = this.form.get('regions')?.value || [];
+    const countries = this.form.get('countries')?.value || [];
+    const economicBlocks = this.form.get('economicBlocks')?.value || [];
+
+    // Check target market specific validation
+    let targetMarketValid = false;
+    if (targetMarket === '1') {
+      targetMarketValid = regions.length > 0 || countries.length > 0;
+    } else if (targetMarket === '2') {
+      targetMarketValid = economicBlocks.length > 0;
+    }
+
+    // Check all other form controls
+    const otherControlsValid = Object.keys(this.form.controls)
+      .filter(key => !['regions', 'countries', 'economicBlocks'].includes(key))
+      .every(key => !this.form.get(key)?.errors);
+
+    return targetMarketValid && otherControlsValid;
   }
 
   onIndustrySelected(node: TreeNode) {
