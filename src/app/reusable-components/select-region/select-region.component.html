@@ -1,13 +1,12 @@
-<div class="region-selector">
-  <input
-    type="text"
-    pInputText
-    [placeholder]="placeholder"
-    [value]="getSelectedDisplay()"
-    readonly
-    (click)="showDialog()"
-    class="w-100"
-  />
+<div class="region-selector" (click)="showDialog()">
+  <div class="chips-container">
+    <ng-container *ngIf="hasSelections(); else placeholderTpl">
+      <p-chip *ngFor="let item of getSelectedDisplayItems()" [label]="item"></p-chip>
+    </ng-container>
+    <ng-template #placeholderTpl>
+      <div class="placeholder-text">{{placeholder}}</div>
+    </ng-template>
+  </div>
 </div>
 
 <p-dialog

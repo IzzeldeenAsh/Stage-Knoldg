@@ -83,10 +83,7 @@
                             *ngIf="package.status !== 'unpublished'">
                       Unpublish
                     </button>
-                    <button ngbDropdownItem (click)="updateStatus(package.id, 'scheduled')"
-                            *ngIf="package.status !== 'scheduled' && package.status !== 'published'">
-                      Schedule
-                    </button>
+                    
                   </div>
                 </div>
 

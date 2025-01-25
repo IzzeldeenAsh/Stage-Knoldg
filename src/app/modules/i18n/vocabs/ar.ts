@@ -702,6 +702,7 @@ export const locale = {
   DASHBOARD: "لوحة التحكم",
   MY_KNOWLEDGE_BASE: "قاعدة المعرفة",
   COMING_SOON:"قريباً",
+  VIEW_KNOWLEDGE: "عرض المعرفة",
   }
 };
 

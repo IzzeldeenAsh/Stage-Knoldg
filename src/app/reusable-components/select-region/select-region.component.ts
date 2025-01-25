@@ -7,10 +7,11 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TruncateTextPipe } from 'src/app/pipes/truncate-pipe/truncate-text.pipe';
 import { AccordionModule } from 'primeng/accordion';
 import { TranslationModule } from 'src/app/modules/i18n';
+import { ChipModule } from 'primeng/chip';
 @Component({
   selector: 'app-select-region',
   standalone: true,
-  imports: [CommonModule, DialogModule, TranslationModule,TruncateTextPipe, FormsModule, InputTextModule,AccordionModule],
+  imports: [CommonModule, DialogModule, TranslationModule,TruncateTextPipe, FormsModule, InputTextModule,AccordionModule, ChipModule],
   templateUrl: './select-region.component.html',
   styleUrls: ['./select-region.component.scss']
 })
@@ -168,7 +169,7 @@ export class SelectRegionComponent implements OnInit {
     // this.displayValue = '';
   }
 
-  getSelectedDisplay(): string {
+  getSelectedDisplayItems(): string[] {
     const selectedItems: string[] = [];
     
     this.regions.forEach(region => {
@@ -185,6 +186,6 @@ export class SelectRegionComponent implements OnInit {
       }
     });
 
-    return selectedItems.length > 0 ? selectedItems.join(', ') : '';
+    return selectedItems;
   }
 }

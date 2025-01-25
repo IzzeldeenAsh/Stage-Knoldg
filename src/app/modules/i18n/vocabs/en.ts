@@ -744,7 +744,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     DASHBOARD: "Dashboard",
     MY_KNOWLEDGE_BASE: "My Knowledge Base",
     COMING_SOON:"Coming Soon",
-  
+    VIEW_KNOWLEDGE: "View Knowledge",
   }
 };
 

@@ -1,77 +1,77 @@
-<div class="economic-block-selector">
-    <input
-      type="text"
-      pInputText
-      [placeholder]="placeholder"
-      [value]="displayValue"
-      readonly
-      (click)="showDialog()"
-      class="w-100"
-    />
+<div class="economic-block-selector" (click)="showDialog()">
+  <div class="chips-container">
+    <ng-container *ngIf="hasSelections(); else placeholderTpl">
+      <p-chip *ngFor="let item of getSelectedDisplayItems()" [label]="item"></p-chip>
+    </ng-container>
+    <ng-template #placeholderTpl>
+      <div class="placeholder-text">{{placeholder}}</div>
+    </ng-template>
   </div>
-  <p-dialog
-      [header]="title"
-      [(visible)]="dialogVisible"
-      [modal]="true"
-      [style]="{width: '50vw'}"
-      appendTo="body"
-      [breakpoints]="{'960px': '75vw', '640px': '90vw'}"
+</div>
+
+<p-dialog
+  [header]="title"
+  [(visible)]="dialogVisible"
+  [modal]="true"
+  [style]="{width: '50vw'}"
+  appendTo="body"
+  [breakpoints]="{'960px': '75vw', '640px': '90vw'}"
+>
+  <div class="economic-block-dialog">
+    <p-multiSelect
+      [options]="economicBlocks"
+      [(ngModel)]="selectedBlocks"
+      optionLabel="name"
+      [placeholder]="placeholder"
+      [filter]="true"
+      filterBy="name"
+      class="w-100 mb-3"
+      display="chip"
+      (onChange)="onBlocksSelect($event.value)"
     >
-      <div class="economic-block-dialog">
-        <p-multiSelect
-          [options]="economicBlocks"
-          [(ngModel)]="selectedBlocks"
-          optionLabel="name"
-          [placeholder]="placeholder"
-          [filter]="true"
-          filterBy="name"
-          class="w-100 mb-3"
-          display="chip"
-          (onChange)="onBlocksSelect($event.value)"
-        >
-          <ng-template let-block pTemplate="item">
-            <div class="p-d-flex p-ai-center">
-              <span class="ml-2">{{ block.name }}</span>
-            </div>
-          </ng-template>
-        </p-multiSelect>
-  
-        <div class="countries-container" *ngIf="selectedBlocks && selectedBlocks.length > 0">
-          <h5 class="mb-3">{{ 'COUNTRIES_IN_SELECTED_BLOCKS' | translate }}</h5>
-          <div class="d-flex flex-column gap-3 countries-grid">
-            <div class="country-item" *ngFor="let block of selectedBlocks">
-              <div>
-                <strong>{{ block.name }}</strong>
-              </div>
-              <div class="row">
-              <ng-container  *ngFor="let country of block.countries">
-                <div class="col-sm-6 col-md-4 col-12 mb-2 country-box">
-                  <img 
-                  [src]="getCountryFlagPath(country.flag)"
-                  (error)="onFlagError($event)"
-                  [alt]="country.name"
-                  class="country-flag"
-                />
-                <span class="country-name">{{country.name | truncateText: 10}}</span>
-                </div>
-              </ng-container>
-            </div>
-            </div>
-          </div>
-        </div>
-      </div>
-  
-      <ng-template pTemplate="footer">
-        <div class="dialog-footer">
-          <button 
-            class="btn btn-secondary me-2" 
-            (click)="dialogVisible = false"
-          >{{ 'CANCEL' | translate }}</button>
-          <button 
-            class="btn btn-primary" 
-            (click)="onConfirm()"
-            [disabled]="!selectedBlocks || selectedBlocks.length === 0"
-          >{{ 'CONFIRM' | translate }}</button>
+      <ng-template let-block pTemplate="item">
+        <div class="p-d-flex p-ai-center">
+          <span class="ml-2">{{ block.name }}</span>
         </div>
       </ng-template>
-    </p-dialog>
+    </p-multiSelect>
+  
+    <div class="countries-container" *ngIf="selectedBlocks && selectedBlocks.length > 0">
+      <h5 class="mb-3">{{ 'COUNTRIES_IN_SELECTED_BLOCKS' | translate }}</h5>
+      <div class="d-flex flex-column gap-3 countries-grid">
+        <div class="country-item" *ngFor="let block of selectedBlocks">
+          <div>
+            <strong>{{ block.name }}</strong>
+          </div>
+          <div class="row">
+          <ng-container  *ngFor="let country of block.countries">
+            <div class="col-sm-6 col-md-4 col-12 mb-2 country-box">
+              <img 
+              [src]="getCountryFlagPath(country.flag)"
+              (error)="onFlagError($event)"
+              [alt]="country.name"
+              class="country-flag"
+            />
+            <span class="country-name">{{country.name | truncateText: 10}}</span>
+            </div>
+          </ng-container>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="dialog-footer">
+      <button 
+        class="btn btn-secondary me-2" 
+        (click)="dialogVisible = false"
+      >{{ 'CANCEL' | translate }}</button>
+      <button 
+        class="btn btn-primary" 
+        (click)="onConfirm()"
+        [disabled]="!hasSelections()"
+      >{{ 'CONFIRM' | translate }}</button>
+    </div>
+  </ng-template>
+</p-dialog>

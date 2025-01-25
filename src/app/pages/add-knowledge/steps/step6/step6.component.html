@@ -23,12 +23,13 @@
     class="
       notice
       d-flex
-      bg-light-warning
+      bg-light-success
       rounded
-      border-warning border border-dashed
+      border-success border border-dashed
       p-6
     "
   >
+  <lottie-player src="https://lottie.host/fe2c060d-6387-4674-a21f-55d6e9a8f0c0/9Aun5jI4fu.json" background="##FFFFFF" speed="1" style="width: 300px; height: fit-content;" loop autoplay direction="1" mode="normal"></lottie-player>
     <span class="svg-icon fs-2tx text-warning me-4"></span>
     <div class="d-flex flex-stack flex-grow-1">
       <div class="fw-bold">
@@ -36,6 +37,9 @@
         <div class="fs-6 text-gray-600">
           {{'VISIT_DASHBOARD_MESSAGE' | translate}}
         </div>
+        <button class="btn btn-sm btn-primary mt-4" [routerLink]="['/app/knowledge-detail/detail', defaultValues.knowledgeId]">
+          {{'VIEW_KNOWLEDGE' | translate}}
+        </button>
       </div>
     </div>
   </div>
