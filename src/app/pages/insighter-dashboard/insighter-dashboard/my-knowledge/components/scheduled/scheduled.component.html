@@ -2,6 +2,25 @@
 <div class="card card-flush">
   <!--begin::Card body-->
   <div class="card-body">
+    <!-- Add search input -->
+    <div class="card-header p-0">
+      <div class="card-title">
+        <!--begin::Search-->
+        <div class="d-flex align-items-center position-relative my-1">
+          <i class="ki-outline ki-magnifier fs-1 position-absolute mx-2"></i>
+          <input
+            type="text"
+            data-kt-filemanager-table-filter="search"
+            class="form-control form-control-solid w-250px px-10"
+            placeholder="{{ 'KNOWLEDGE.SEARCH_PLACEHOLDER' | translate }}"
+            [(ngModel)]="searchTerm"
+            (input)="onSearch($event)"
+          />
+        </div>
+        <!--end::Search-->
+      </div>
+    </div>
+
     <!--begin::Table header-->
     <div class="d-flex flex-stack mb-6">
       <!--begin::Title-->

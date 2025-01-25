@@ -10,6 +10,7 @@ import { OverviewComponent } from './knowledge-details/overview/overview.compone
 import { ReviewsComponent } from './knowledge-details/reviews/reviews.component';
 import { FileSizePipe } from 'src/app/pipes/file-size-pipe/file-size.pipe';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { RelatedKnowledgesComponent } from './knowledge-details/related-knowledges/related-knowledges.component';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
     KnowledgeDetailsComponent,
     OverviewComponent,
     ReviewsComponent,
-    CommentsComponent
+    CommentsComponent,
+    RelatedKnowledgesComponent
   ],
   imports: [
     CommonModule,

@@ -1,0 +1,113 @@
+/* src/app/pages/insighte-initiate/wizard/step-2/step-2.component.scss */
+
+.repeater-item {
+  transition: all 0.3s ease-in-out;
+  margin-bottom: 15px;
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.items {
+  padding: 20px;
+  border: 1px solid #DFDFDF;
+  border-radius: 10px;
+}
+
+.swiper-container {
+  padding: 50px 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.swiper-slide {
+  transition: transform 0.3s ease;
+  background: none;
+  .card {
+    height: 100%;
+    transition: all 0.3s ease;
+  }
+  
+  &:not(.swiper-slide-active) {
+    .card {
+      opacity: 0.6;
+      transform: scale(0.85);
+    }
+  }
+}
+
+.start-now-bg {
+  background-image: url('https://keenthemes.com/static/metronic/tailwind/dist/assets/media/images/2600x1200/bg-5.png');
+  background-position: center top 1.3rem;
+  background-repeat: no-repeat;
+  background-size: 700px;
+  padding: 29px;
+  position: relative;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.top-90 {
+  top: 90%;
+}
+
+.fw-900 {
+  font-weight: 900 !important;
+}
+
+// Navigation buttons
+.swiper-button-next,
+.swiper-button-prev {
+  width: 40px;
+  height: 40px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  
+  &:after {
+    font-size: 18px;
+    color: #000;
+  }
+  
+  &:hover {
+    background: #f8f9fa;
+  }
+}
+
+// Pagination
+.swiper-pagination {
+  position: relative;
+  margin-top: 20px;
+  
+  .swiper-pagination-bullet {
+    width: 8px;
+    height: 8px;
+    background: #ccc;
+    opacity: 0.5;
+    transition: all 0.3s ease;
+    
+    &-active {
+      width: 20px;
+      border-radius: 4px;
+      background: #000;
+      opacity: 1;
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .swiper-container {
+    padding: 30px 0;
+  }
+  
+  .swiper-button-next,
+  .swiper-button-prev {
+    display: none;
+  }
+}

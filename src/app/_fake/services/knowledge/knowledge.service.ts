@@ -131,7 +131,7 @@ export class KnowledgeService {
     );
   }
 
-  getPaginatedKnowledges(page: number = 1, status?: string): Observable<PaginatedKnowledgeResponse> {
+  getPaginatedKnowledges(page: number = 1, status?: string, keyword?: string): Observable<PaginatedKnowledgeResponse> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
       'Content-Type': 'application/json',
@@ -141,6 +141,9 @@ export class KnowledgeService {
     let url = `${this.baseUrl}/api/insighter/library/knowledge?page=${page}`;
     if (status) {
       url += `&status=${status}`;
+    }
+    if (keyword) {
+      url += `&keyword=${encodeURIComponent(keyword)}`;
     }
 
     this.setLoading(true);
