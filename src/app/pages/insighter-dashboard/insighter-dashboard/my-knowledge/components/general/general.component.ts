@@ -80,6 +80,10 @@ export class GeneralComponent extends BaseComponent implements OnInit {
   selectedKnowledges: Set<number> = new Set();
   allSelected: boolean = false;
 
+  // Add these properties
+  searchTerm: string = '';
+  searchTimeout: any;
+
   constructor(
     injector: Injector,
     private knowledgeService: KnowledgeService,
@@ -185,12 +189,11 @@ export class GeneralComponent extends BaseComponent implements OnInit {
   }
 
   loadKnowledges(page: number) {
-    this.knowledgeService.getPaginatedKnowledges(page).subscribe(
+    this.knowledgeService.getPaginatedKnowledges(page, undefined, this.searchTerm).subscribe(
       (response) => {
         this.knowledges = response.data;
         this.totalItems = response.meta.total;
         this.currentPage = response.meta.current_page;
-        // Clear selection when page changes
         this.selectedKnowledges.clear();
         this.allSelected = false;
       },
@@ -449,5 +452,22 @@ export class GeneralComponent extends BaseComponent implements OnInit {
         );
       }
     );
+  }
+
+  // Add this method to handle search
+  onSearch(event: any) {
+    const value = event.target.value;
+    this.searchTerm = value;
+    
+    // Clear previous timeout
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
+    
+    // Set new timeout for debouncing
+    this.searchTimeout = setTimeout(() => {
+      this.currentPage = 1; // Reset to first page when searching
+      this.loadKnowledges(this.currentPage);
+    }, 300); // 300ms debounce
   }
 }

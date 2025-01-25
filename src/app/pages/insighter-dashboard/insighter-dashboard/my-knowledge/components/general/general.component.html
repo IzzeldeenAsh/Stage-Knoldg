@@ -9,6 +9,8 @@
         data-kt-filemanager-table-filter="search"
         class="form-control form-control-solid w-250px px-10"
         placeholder="{{ 'KNOWLEDGE.SEARCH_PLACEHOLDER' | translate }}"
+        [(ngModel)]="searchTerm"
+        (input)="onSearch($event)"
       />
     </div>
     <!--end::Search-->
