@@ -20,6 +20,7 @@ import { SharedModule } from 'src/app/_metronic/shared/shared.module';
 import { ScheduleDialogComponent } from './components/packages/schedule-dialog/schedule-dialog.component';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
 
+
 const routes: Routes = [
   {
     path: '',
@@ -47,7 +48,8 @@ const routes: Routes = [
         component: PackagesComponent
       }
     ]
-  }
+  },
+ 
 ];
 
 @NgModule({
@@ -59,7 +61,8 @@ const routes: Routes = [
     PostedComponent,
     PackageBuilderContentComponent,
     PackagesComponent,
-    ScheduleDialogComponent
+    ScheduleDialogComponent,
+   
   ],
   imports: [
     CommonModule,

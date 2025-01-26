@@ -11,14 +11,13 @@ import { KnowledgeStatisticsComponent } from './insighter-dashboard/statistics/k
 import { RequestsStatisticsComponent } from './insighter-dashboard/statistics/requests-statistics/requests-statistics.component';
 import { CountUpDirective } from 'src/app/directives/countup/count-up.directive';
 
-
 @NgModule({
   declarations: [
     InsighterDashboardComponent,
     OverviewStatisticsComponent,
     RequestsStatisticsComponent,
     KnowledgeStatisticsComponent,
-    AccountSettingsHeaderComponent
+    AccountSettingsHeaderComponent,
   ],
   imports: [
     CommonModule,
