@@ -26,7 +26,7 @@
       <!--begin::Add Knowledge-->
       <a [routerLink]="['/app/add-knowledge']"
         type="button"
-        class="btn btn-sm btn-light-info mx-3"
+        class="btn  btn-info mx-3"
       >
         <i class="ki-outline ki-add-folder fs-2"></i> {{ 'KNOWLEDGE.ADD_KNOWLEDGE' | translate }}
       </a>
@@ -35,7 +35,7 @@
       <!--begin::Generate Package-->
       <button
         type="button"
-        class="btn btn-sm btn-info"
+        class="btn  btn-light-info"
         (click)="togglePackageBuilder()"
       >
         <i class="ki-outline ki-folder-up fs-2"></i> {{ showPackageBuilder ? ('KNOWLEDGE.CLOSE_PACKAGE_BUILDER' | translate) : ('KNOWLEDGE.GENERATE_PACKAGE' | translate) }}

@@ -43,7 +43,8 @@ export interface Knowledge {
   status: string;
   regions: string[];
   countries: string[];
-  economic_blocks: string[];
+  economic_blocs: string[];
+  published_at?: string;
 }
 
 export interface KnowledgeResponse {

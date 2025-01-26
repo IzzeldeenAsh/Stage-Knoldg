@@ -1,5 +1,6 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import * as moment from 'moment';
 import { ICreateKnowldege, inits } from '../create-account.helper';
 import { AddInsightStepsService, CreateKnowledgeRequest, SuggestTopicRequest, SyncTagsKeywordsRequest, PublishKnowledgeRequest, AddKnowledgeDocumentRequest } from 'src/app/_fake/services/add-insight-steps/add-insight-steps.service';
 import { switchMap } from 'rxjs/operators';
@@ -58,7 +59,7 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
           
           // Determine targetMarket based on the rules
           let targetMarket = '1';
-          if (!knowledge.economic_blocks || knowledge.economic_blocks.length === 0) {
+          if (!knowledge.economic_blocs || knowledge.economic_blocs.length === 0) {
             if (!knowledge.countries || knowledge.countries.length === 0) {
               targetMarket = '2';
             }
@@ -77,12 +78,14 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
             language: knowledge.language,
             regions: knowledge.regions.map((region: any) => region.id) || [],
             countries: knowledge.countries.map((country: any) => country.id) || [],
-            economic_blocks: knowledge.economic_blocks || [],
+            economic_bloc: knowledge.economic_blocs || [],
             description: knowledge.description,
-            targetMarket: knowledge.economic_blocks && knowledge.economic_blocks.length > 0 ? '2' : '1',
+            targetMarket: knowledge.economic_blocs && knowledge.economic_blocs.length > 0 ? '2' : '1',
             keywords: knowledge.keywords.map((keyword: any) => ({ display: keyword, value: keyword })) || [],
             customTopic: '',
-            documents: []
+            documents: [],
+            publish_date_time: knowledge.published_at ? moment(knowledge.published_at).format('YYYY-MM-DD HH:mm:ss') : '',
+            publish_status: knowledge.status === 'published' ? 'draft' : knowledge.status
           };
 
           this.account$.next(updatedAccount);
@@ -310,11 +313,11 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
       ...(currentAccount.targetMarket === '1' ? {
         region: currentAccount.regions || [],
         country: currentAccount.countries || [],
-        economic_blocks: []
+        economic_blocs: []
       } : {
         region: [],
         country: [],
-        economic_blocks: currentAccount.economic_blocks || []
+        economic_blocs: currentAccount.economic_blocs || []
       })
     };
 

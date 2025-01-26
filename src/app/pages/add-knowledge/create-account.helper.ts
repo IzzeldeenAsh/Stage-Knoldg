@@ -22,7 +22,7 @@ interface ICreateKnowldege {
   language: any;
   regions: any[];
   countries: any[];
-  economic_blocks: number[];
+  economic_blocs: number[];
   description: string;
   targetMarket: string;
   customTopic: string;
@@ -32,6 +32,7 @@ interface ICreateKnowldege {
   keywords: any[];
   publish_status: 'draft'|'now'|'scheduled';
   publish_date_time: string;
+  status?: string;
 }
 
 const inits: ICreateKnowldege = {
@@ -47,7 +48,7 @@ const inits: ICreateKnowldege = {
   },
   regions: [],
   countries: [],
-  economic_blocks: [],
+  economic_blocs: [],
   description: '',
   targetMarket: '1',
   customTopic: '',

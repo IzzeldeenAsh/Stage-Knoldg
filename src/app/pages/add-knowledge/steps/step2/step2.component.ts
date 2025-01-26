@@ -126,7 +126,7 @@ export class Step2Component extends BaseComponent implements OnInit {
       language: [this.defaultValues.language, [Validators.required]],
       targetMarket: [this.defaultValues.targetMarket, [Validators.required]],
       industry: [this.defaultValues.industry, [Validators.required]],
-      economicBlocks: [this.defaultValues.economic_blocks || []],
+      economicBlocks: [this.defaultValues.economic_blocs || []],
       regions: [this.defaultValues.regions || []],
       countries: [this.defaultValues.countries || []],
       topicId: [this.defaultValues.topicId, [Validators.required]],
@@ -163,7 +163,7 @@ export class Step2Component extends BaseComponent implements OnInit {
         economicBlocksControl?.updateValueAndValidity();
         
         this.updateParentModel({ 
-          economic_blocks: [],
+          economic_blocs: [],
           regions: regionsControl?.value,
           countries: countriesControl?.value 
         }, this.checkForm());
@@ -179,7 +179,7 @@ export class Step2Component extends BaseComponent implements OnInit {
         this.updateParentModel({ 
           regions: [], 
           countries: [],
-          economic_blocks: economicBlocksControl?.value 
+          economic_blocs: economicBlocksControl?.value 
         }, this.checkForm());
       }
     });
@@ -309,7 +309,7 @@ export class Step2Component extends BaseComponent implements OnInit {
     this.form.get('economicBlocks')?.setValue(selectedBlocks);
     // Force validation check
     this.form.get('economicBlocks')?.updateValueAndValidity();
-    this.updateParentModel({ economic_blocks: selectedBlocks }, this.checkForm());
+    this.updateParentModel({ economic_blocs: selectedBlocks }, this.checkForm());
   }
 
   onRegionsSelected(regions: any) {

@@ -213,7 +213,11 @@
         <div class="mt-3" *ngIf="previewFilesDialog.length > 0">
           <div class="border p-3 d-flex align-items-center justify-content-between" *ngFor="let preview of previewFilesDialog">
             <div>
-              <img [src]="preview.icon" [alt]="preview.type" style="width: 30px; margin-right: 10px;">
+              <img [src]="preview.icon" 
+                   [alt]="preview.type" 
+                   style="width: 30px; margin-right: 10px; cursor: pointer;" 
+                   (click)="openPreview(preview)"
+                   [ngbTooltip]="'Click to open ' + preview.name">
               {{ preview.name }}
               <span *ngIf="preview.size" class="text-muted">{{ preview.size | number }} bytes</span>
             </div>
