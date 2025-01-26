@@ -494,6 +494,19 @@ export class SubStepChaptersComponent extends BaseComponent implements OnInit {
     });
   }
 
+  openPreview(preview: FilePreview): void {
+    if (preview.fromServer && preview.preview) {
+      // Open server URL in new tab
+      window.open(preview.preview, '_blank');
+    } else if (preview.file) {
+      // Create object URL for local file and open in new tab
+      const objectUrl = URL.createObjectURL(preview.file);
+      window.open(objectUrl, '_blank');
+      // Clean up the object URL after opening
+      setTimeout(() => URL.revokeObjectURL(objectUrl), 100);
+    }
+  }
+
   private getFileTypeByExtension(fileName: string): string {
     const extension = (fileName.split('.').pop() || '').toLowerCase();
     const typeMap: { [key: string]: string } = {
@@ -513,7 +526,7 @@ export class SubStepChaptersComponent extends BaseComponent implements OnInit {
     return typeMap[extension] || 'document';
   }
 
-   getFileIconByExtension(fileName: string): string {
+  private getFileIconByExtension(fileName: string): string {
     const fileType = this.getFileTypeByExtension(fileName);
     const iconMap: { [key: string]: string } = {
       pdf: './assets/media/svg/new-files/pdf.svg',
