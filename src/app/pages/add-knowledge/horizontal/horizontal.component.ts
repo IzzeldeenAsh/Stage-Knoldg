@@ -17,7 +17,7 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
   knowledgeId!: number;
   account$: BehaviorSubject<ICreateKnowldege> =
     new BehaviorSubject<ICreateKnowldege>(inits);
-  currentStep$: BehaviorSubject<number> = new BehaviorSubject(3);
+  currentStep$: BehaviorSubject<number> = new BehaviorSubject(1);
   isCurrentFormValid$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
     false
   );

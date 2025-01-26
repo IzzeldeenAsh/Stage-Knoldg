@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { InsighterDashboardComponent } from './insighter-dashboard/insighter-dashboard.component';
+import { ViewMyKnowledgeComponent } from '../knowledge-detail/knowledge-details/view-my-knowledge/view-my-knowledge.component';
 
 const routes: Routes = [
   {
@@ -27,8 +28,13 @@ const routes: Routes = [
       {
         path: 'account-settings',
         loadChildren: () => import('./insighter-dashboard/account-settings/account-settings.module').then(m => m.AccountSettingsModule)
-      }
+      },
+    
     ]
+  },
+  {
+    path: 'view-my-knowledge/:id',
+    component: ViewMyKnowledgeComponent
   }
 ];
 
