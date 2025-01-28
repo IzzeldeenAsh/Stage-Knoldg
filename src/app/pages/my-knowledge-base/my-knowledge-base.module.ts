@@ -9,6 +9,10 @@ import { KnowledgeDetailsComponent } from './view-my-knowledge/knowledge-details
 import { KnowledgeAnalyticsComponent } from './view-my-knowledge/knowledge-analytics/knowledge-analytics.component';
 import { FileSizePipe } from 'src/app/reusable-components/file-uploader/file-size.pipe';
 import { SharedModule } from 'src/app/_metronic/shared/shared.module';
+import { DialogModule } from 'primeng/dialog';
+import { TranslationModule } from 'src/app/modules/i18n';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MenuModule } from 'primeng/menu';
 
 
 @NgModule({
@@ -19,7 +23,11 @@ import { SharedModule } from 'src/app/_metronic/shared/shared.module';
     ToastModule,
     NgbTooltipModule,
     SharedModule,
-    FileSizePipe
+    FileSizePipe,
+    DialogModule,
+    MenuModule,
+    TranslationModule,
+    ReactiveFormsModule
   ]
 })
 export class MyKnowledgeBaseModule { }

@@ -73,6 +73,7 @@ export interface DocumentInfo {
   file_size: number;
   file_extension: string;
   description?: string;
+  type?: string;
 }
 
 export interface DocumentListResponse {

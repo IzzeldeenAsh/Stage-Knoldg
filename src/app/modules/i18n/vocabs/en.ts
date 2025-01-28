@@ -745,6 +745,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     MY_KNOWLEDGE_BASE: "My Knowledge Base",
     COMING_SOON:"Coming Soon",
     VIEW_KNOWLEDGE: "View Knowledge",
+    CLICK_TO_ADD_DOCUMENT: "Click to add document",
   }
 };
 

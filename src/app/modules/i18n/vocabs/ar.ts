@@ -703,6 +703,7 @@ export const locale = {
   MY_KNOWLEDGE_BASE: "قاعدة المعرفة",
   COMING_SOON:"قريباً",
   VIEW_KNOWLEDGE: "عرض المعرفة",
+  CLICK_TO_ADD_DOCUMENT: "اضغط لإضافة مستند",
   }
 };
 

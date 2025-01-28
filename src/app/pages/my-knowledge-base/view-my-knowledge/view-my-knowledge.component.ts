@@ -22,20 +22,16 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
   knowledge: Knowledge;
   documents: DocumentListResponse;
   isLoading: boolean = false;
-  profile:IForsightaProfile;
   constructor(
     injector: Injector,
     private knowledgeService: KnowledgeService,
     private route: ActivatedRoute,
-    private _getProfile:ProfileService
   ) {
     super(injector);
   }
 
   ngOnInit() {
-    this._getProfile.getProfile().subscribe((profile) => {
-      this.profile = profile;
-    });
+   
     this.route.data.subscribe((data) => {
       if (data["breadcrumb"]) {
         this.breadcrumbs = data["breadcrumb"];

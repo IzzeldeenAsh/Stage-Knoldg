@@ -115,7 +115,7 @@
   
   .file-icon {
     position: relative;
-    
+      margin-bottom: auto;
     img {
       transition: all 0.3s ease;
       transform-origin: center;
@@ -221,6 +221,75 @@
     i {
       transition: all 0.2s ease;
     
+  }
+  
+  .upload-area {
+    border-width: 2px;
+    border-style: dashed;
+    border-radius: 0.475rem;
+    transition: all 0.3s ease;
+
+    &:hover {
+      border-color: var(--kt-primary) !important;
+    }
+  }
+  
+  .timeline-label {
+    position: relative;
+    padding-left: 1rem;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0.75rem;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background-color: var(--kt-primary-light);
+      transform: translateX(-50%);
+    }
+
+    .timeline-item {
+      position: relative;
+      padding: 0.5rem 0;
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: translateX(5px);
+
+        .timeline-badge {
+          transform: scale(1.1);
+        }
+      }
+
+      .timeline-badge {
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        background-color: var(--kt-primary-light);
+        z-index: 1;
+
+        span {
+          font-size: 0.9rem;
+        }
+      }
+
+      .timeline-content {
+        flex: 1;
+        min-width: 0;
+
+        span {
+          display: block;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+    }
   }
   
   
