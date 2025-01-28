@@ -1,0 +1,112 @@
+<div class="container">
+    <div class="py-lg-10">
+        <!-- Knowledge Description -->
+     <div class="description-box p-3 bg-none rounded mb-3" *ngIf="knowledge && knowledge.description">
+       <p class="lead" [innerHTML]="knowledge.description"></p>
+     </div>
+    <!-- knowledge documents -->
+     <div class="documents-container">
+         <div
+           class="document-card d-flex flex-row align-items-center p-10 cursor-pointer position-relative"
+           *ngFor="let doc of documents"
+           [ngClass]="{ 'active': activeDocumentId === doc.id }"
+           (mouseenter)="onDocumentMouseEnter(doc.id)"
+           (mouseleave)="onDocumentMouseLeave(doc.id)"
+           (click)="toggleCollapse(doc.id, $event)"
+         >
+         <!--  [attr.data-label]="doc.highlighted ? 'Best Match' : ''" -->
+           <!-- Icon -->
+           <div class="file-icon me-3">
+             <img
+               [src]="getFileIconByExtension(doc.file_extension)"
+               alt="file icon" 
+               width="40"
+               height="40"
+               [ngClass]="{'animate__animated animate__pulse': activeDocumentId === doc.id}"/>
+           </div>
+       
+           <!-- Main Info -->
+           <div class="flex-grow-1">
+             <div class="d-flex justify-content-between align-items-center">
+               <div class="d-flex align-items-center">
+                 <div>
+                   <h5 class="mb-1" [ngClass]="{'text-info fw-bold': activeDocumentId === doc.id}">{{ doc.file_name }}</h5>
+                   <small class="text-muted">{{ doc.file_size | fileSize }} bytes</small>
+                 </div>
+                 
+                 <!-- Action Buttons moved here -->
+                 <div class="ms-3">
+                   <button class="btn btn-icon btn-sm btn-light-success me-2"
+                           (click)="editDocument(doc, $event)"
+                           [ngbTooltip]="'Edit Document'"
+                           placement="top">
+                     <i class="ki-duotone ki-pencil">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                     </i>
+                   </button>
+                   
+                   <button class="btn btn-icon btn-sm btn-light-danger me-2"
+                           (click)="deleteDocument(doc, $event)"
+                           [ngbTooltip]="'Delete Document'"
+                           placement="top">
+                     <i class="ki-duotone ki-trash">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                        <span class="path3"></span>
+                        <span class="path4"></span>
+                        <span class="path5"></span>
+                     </i>
+                   </button>
+                   
+                   <button class="btn btn-icon btn-sm btn-light-warning me-2"
+                           (click)="unpublishDocument(doc, $event)"
+                           [ngbTooltip]="'Unpublish Document'"
+                           placement="top">
+                     <i class="ki-duotone ki-eye-slash">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                        <span class="path3"></span>
+                        <span class="path4"></span>
+                     </i>
+                   </button>
+                 </div>
+               </div>
+               
+               <div>
+                 <span class="badge me-2 px-2 py-1" 
+                   [ngClass]="{'bg-info text-white fs-4' : activeDocumentId === doc.id, 'bg-secondary fs-6': activeDocumentId !== doc.id}">
+                   {{ doc.price | currency }}
+                 </span>
+                 
+                 <!-- Expand/Collapse Arrow -->
+                 <button
+                   class="btn btn-sm btn-link p-0"
+                   (click)="toggleCollapse(doc.id, $event)"
+                   [ngClass]="{'text-info': activeDocumentId === doc.id}"
+                   [ngbTooltip]="activeDocumentId === doc.id ? 'Collapse' : 'Expand'"
+                   placement="top">
+                   <i class="bi" [ngClass]="activeDocumentId === doc.id ? 'bi-caret-up-fill' : 'bi-caret-down-fill'"></i>
+                 </button>
+               </div>
+             </div>
+       
+             <!-- Collapsible section -->
+             <div
+               class="collapse-content mt-3"
+               [ngClass]="{ 'collapse': activeDocumentId !== doc.id }"
+             >
+               <!-- Description -->
+               <div *ngIf="doc.description">
+                 <p>{{doc.description}}</p>
+               </div>
+               <div *ngIf="!doc.description">
+                 <strong [ngClass]="{'text-info': activeDocumentId === doc.id}">Description:</strong>
+                 <p class="lead fs-6">No description provided.</p>
+               </div>
+             </div>
+           </div>
+         </div>
+     </div>
+    </div>
+</div>
