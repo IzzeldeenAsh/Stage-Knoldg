@@ -45,6 +45,10 @@ const Routing: Routes = [
     loadChildren: () => import('./knowledge-detail/knowledge-detail.module').then((m) => m.KnowledgeDetailModule),
   },
   {
+    path: 'my-knowledge-base',
+    loadChildren: () => import('./my-knowledge-base/my-knowledge-base.module').then((m) => m.MyKnowledgeBaseModule),
+  },
+  {
     path: '**',
     redirectTo: 'error/404',
   },

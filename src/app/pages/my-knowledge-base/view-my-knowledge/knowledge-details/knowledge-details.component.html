@@ -1,0 +1,440 @@
+<div class="container">
+    <div class="py-lg-10">
+        <!-- Knowledge Description -->
+     <div class="description-box p-3 bg-none rounded mb-3" *ngIf="knowledge && knowledge.description">
+       <p class="lead" [innerHTML]="knowledge.description"></p>
+     </div>
+    <!-- knowledge documents -->
+     <div class="documents-container">
+         <div
+           class="document-card d-flex flex-row align-items-center p-10 cursor-pointer position-relative"
+           *ngFor="let doc of documents"
+           [ngClass]="{ 'active': activeDocumentId === doc.id }"
+           (mouseenter)="onDocumentMouseEnter(doc.id)"
+           (mouseleave)="onDocumentMouseLeave(doc.id)"
+           (click)="toggleCollapse(doc.id, $event)"
+         >
+         <!--  [attr.data-label]="doc.highlighted ? 'Best Match' : ''" -->
+           <!-- Icon -->
+           <div class="file-icon me-3">
+             <img
+               [src]="getFileIconByExtension(doc.file_extension)"
+               alt="file icon" 
+               width="40"
+               height="40"
+               [ngClass]="{'animate__animated animate__pulse': activeDocumentId === doc.id}"/>
+           </div>
+       
+           <!-- Main Info -->
+           <div class="flex-grow-1">
+             <div class="d-flex justify-content-between align-items-center">
+               <div class="d-flex align-items-center">
+                 <div>
+                   <h5 class="mb-1" [ngClass]="{'text-info fw-bold': activeDocumentId === doc.id}">{{ doc.file_name }}</h5>
+                   <small class="text-muted">{{ doc.file_size | fileSize }} bytes</small>
+                 </div>
+                 
+                 <!-- Action Buttons moved here -->
+                
+               </div>
+               
+               <div class="d-flex gap-1 align-items-center" >
+              <div >
+                <span class="badge me-2 px-2 py-1" 
+                [ngClass]="{'bg-info text-white fs-4' : activeDocumentId === doc.id, 'bg-secondary fs-6': activeDocumentId !== doc.id}">
+                {{ doc.price | currency }}
+              </span>
+              
+              <!-- Expand/Collapse Arrow -->
+              <button
+                class="btn btn-sm btn-link p-0"
+                (click)="toggleCollapse(doc.id, $event)"
+                [ngClass]="{'text-info': activeDocumentId === doc.id}"
+                [ngbTooltip]="activeDocumentId === doc.id ? 'Collapse' : 'Expand'"
+                placement="top">
+                <i class="bi" [ngClass]="activeDocumentId === doc.id ? 'bi-caret-up-fill' : 'bi-caret-down-fill'"></i>
+              </button>
+            </div>
+              <div class="ms-3">
+                <p-menu #menu [popup]="true" [model]="docActions" [appendTo]="'body'"></p-menu>
+                <button class="btn btn-icon btn-sm btn-outline"
+                        (click)="$event.stopPropagation(); menu.toggle($event); setMenuData(doc)"
+                        placement="top">
+                  <i class="ki-duotone ki-gear text-gray-800">
+                      <span class="path1"></span>
+                      <span class="path2"></span>
+                  </i>
+                </button>
+              </div>
+                </div>
+              
+             
+          
+             </div>
+       
+             <!-- Collapsible section -->
+             <div
+               class="collapse-content mt-3"
+               [ngClass]="{ 'collapse': activeDocumentId !== doc.id }"
+             >
+               <!-- Description -->
+               <div *ngIf="doc.description && knowledge?.type !== 'insight'" class="mb-4">
+                <strong [ngClass]="{'text-info': activeDocumentId === doc.id}">Description:</strong>
+                 <p>{{doc.description}}</p>
+               </div>
+               <div *ngIf="!doc.description && knowledge?.type !== 'insight'" class="mb-4">
+                 <p class="lead fs-6">No description provided.</p>
+               </div>
+
+               <!-- Table of Contents for non-insight types -->
+               <div *ngIf="shouldShowTableOfContents(doc) && knowledge?.type !== 'insight'" class="mt-4">
+                 <div class="d-flex align-items-start mb-3">
+                  
+                   <strong [ngClass]="{'text-info': activeDocumentId === doc.id}">Table of Contents:</strong>
+                 </div>
+                 
+                 <table class="table table-hover-info table-rounded table-striped border gy-4 gs-4">
+                   <thead>
+                     <tr class="fw-bold fs-6 text-gray-800 border-bottom-2 border-gray-200">
+                       <th class="min-w-50px">#</th>
+                       <th class="min-w-200px">Chapter Title</th>
+                     </tr>
+                   </thead>
+                   <tbody>
+                     <tr *ngFor="let item of doc.table_of_content; let i = index" 
+                         class="hover-elevate-up" 
+                         [@fadeInMoveY]>
+                       <td class="text-gray-600 fw-semibold">{{i + 1}}</td>
+                       <td class="fw-bold text-dark">
+                         <div class="d-flex align-items-center">
+                          
+                           {{item.chapter.title}}
+                         </div>
+                       </td>
+                     </tr>
+                   </tbody>
+                 </table>
+               </div>
+             </div>
+           </div>
+         </div>
+     </div>
+
+     <!-- Add Document Section -->
+     <div class="mt-5" *ngIf="knowledge">
+       <div class="upload-area border-dashed border-gray-300 d-flex flex-column justify-content-center align-items-center p-7 cursor-pointer"
+            (click)="openNewDocumentDialog()"
+            [ngClass]="{'border-primary bg-light-info': isUploadAreaHovered}"
+            (mouseenter)="isUploadAreaHovered = true"
+            (mouseleave)="isUploadAreaHovered = false">
+         <i class="ki-duotone ki-plus text-gray-600 fs-1 mb-3" [ngClass]="{'text-primary': isUploadAreaHovered}">
+           <span class="path1"></span>
+           <span class="path2"></span>
+         </i>
+         <div class="text-gray-600 fw-bold fs-4 mb-1" [ngClass]="{'text-primary': isUploadAreaHovered}">
+           {{ 'CLICK_TO_ADD_DOCUMENT' | translate }}
+         </div>
+         <div class="text-gray-400 fs-6">
+           {{ knowledge.type === 'insight' ? 'Upload new insight document' : 'Add new chapter or node' }}
+         </div>
+       </div>
+     </div>
+    </div>
+</div>
+
+<!-- Dialog for Editing Document -->
+<p-dialog
+  [(visible)]="displayDocumentDialog"
+  [header]="headerTitle"
+  [modal]="true"
+  [style]="{width: '900px'}"
+  [dismissableMask]="true"
+  (onHide)="closeDialog()">
+
+  <div [formGroup]="docForm">
+    <!-- File Name -->
+    <div class="mb-3">
+      <label class="form-label required">
+        <ng-container *ngIf="knowledge?.type === 'data'">
+          {{'NODE_NAME' | translate}}
+        </ng-container>
+        <ng-container *ngIf="knowledge?.type !== 'data'">
+          {{'CHAPTER_NAME' | translate}}
+        </ng-container>
+      </label>
+      <input
+        type="text"
+        pInputText
+        formControlName="file_name"
+        class="form-control"
+        placeholder="Enter File Name"
+      />
+      <small
+        *ngIf="docForm.get('file_name')?.hasError('required') && docForm.get('file_name')?.touched"
+        class="text-danger"
+      >
+        <ng-container *ngIf="knowledge?.type === 'data'"> 
+          {{'NODE_NAME_REQUIRED' | translate}}
+        </ng-container>
+        <ng-container *ngIf="knowledge?.type !== 'data'">
+          {{'CHAPTER_NAME_REQUIRED' | translate}}
+        </ng-container>
+      </small>
+    </div>
+
+    <!-- Description -->
+    <div class="mb-3" *ngIf="knowledge?.type !== 'insight'">
+      <label class="form-label required">
+        {{'DESCRIPTION' | translate}}
+      </label>
+      <textarea
+        class="form-control"
+        formControlName="description"
+        rows="3"
+        placeholder="{{'ENTER_DESCRIPTION' | translate}}"
+      ></textarea>
+    </div>
+
+    <!-- Table of Content (for non-insight types) -->
+    <div class="col-12" *ngIf="knowledge?.type !== 'insight'">
+      <div class="form-group mb-5">
+        <label class="form-label required">{{ "TABLE_OF_CONTENT" | translate }}</label>
+        <div formArrayName="table_of_content">
+          <div *ngFor="let chapter of chapters.controls; let i = index" class="mb-3">
+            <div [formGroupName]="i">
+              <div class="input-group" formGroupName="chapter">
+                <input type="text" 
+                       class="form-control" 
+                       formControlName="title" 
+                       [placeholder]="'ENTER_SUB_CHAPTER_NAME' | translate"
+                       [class.is-invalid]="chapters.at(i).get('chapter.title')?.invalid && chapters.at(i).get('chapter.title')?.touched">
+                <button type="button" 
+                        class="btn btn-icon btn-light-danger" 
+                        (click)="removeChapter(i)"
+                        [disabled]="chapters.length === 1">
+                  <i class="ki-duotone ki-trash fs-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                    <span class="path3"></span>
+                    <span class="path4"></span>
+                    <span class="path5"></span>
+                  </i>
+                </button>
+              </div>
+              <div *ngIf="chapters.at(i).get('chapter.title')?.invalid && chapters.at(i).get('chapter.title')?.touched" 
+                   class="invalid-feedback d-block">
+                <span *ngIf="chapters.at(i).get('chapter.title')?.errors?.['required']">
+                  {{ 'CHAPTER_TITLE_REQUIRED' | translate }}
+                </span>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="btn btn-light-primary" (click)="addChapter()">
+            <i class="ki-duotone ki-plus fs-2"></i>
+            {{ "ADD_CHAPTER" | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Price -->
+    <div class="mb-3 w-200px">
+      <label class="form-label required">{{'PRICE' | translate}}:</label>
+      <div class="input-group">
+        <span class="input-group-text">
+          <i class="ki-duotone ki-dollar fs-2">
+            <span class="path1"></span>
+            <span class="path2"></span>
+            <span class="path3"></span>
+          </i>
+        </span>
+        <input formControlName="price" type="number" min="0" class="form-control" placeholder="{{ 'ENTER_PRICE' | translate }}" />
+      </div>
+      <div *ngIf="docForm.get('price')?.invalid && docForm.get('price')?.touched" class="text-danger">
+        {{ 'PRICE_REQUIRED' | translate }}
+      </div>
+    </div>
+
+    <!-- File Upload -->
+    <div class="mb-3">
+      <label class="form-label">Upload File</label>
+
+      <div *ngIf="previewFilesDialog.length === 0">
+        <input
+          type="file"
+          (change)="onFilesSelectedDialog($event)"
+          class="form-control"
+          accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.jpg,.jpeg,.png,.gif"
+        />
+      </div>
+
+      <!-- File preview section -->
+      <div class="mt-3" *ngIf="previewFilesDialog.length > 0">
+        <div class="border p-3 d-flex align-items-center justify-content-between" *ngFor="let preview of previewFilesDialog">
+          <div>
+            <img [src]="preview.icon" 
+                 [alt]="preview.type" 
+                 style="width: 30px; margin-right: 10px; cursor: pointer;" 
+                 (click)="openPreview(preview)"
+                 [ngbTooltip]="'Click to open ' + preview.name">
+            {{ preview.name }}
+            <span *ngIf="preview.size" class="text-muted">{{ preview.size | number }} bytes</span>
+          </div>
+          <button
+            type="button"
+            class="btn btn-icon btn-sm btn-danger btn-active-danger"
+            (click)="removeFileDialog(preview)">
+            <i class="ki-duotone ki-trash fs-2">
+              <span class="path1"></span>
+              <span class="path2"></span>
+              <span class="path3"></span>
+              <span class="path4"></span>
+              <span class="path5"></span>
+            </i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <button
+      type="button"
+      class="btn btn-light me-3"
+      (click)="closeDialog()">
+      <i class="ki-duotone ki-cross fs-2"></i>
+      Cancel
+    </button>
+    <button
+      type="button"
+      class="btn btn-primary"
+      [disabled]="docForm.invalid || isSaving"
+      (click)="saveDocument()">
+      <ng-container *ngIf="!isSaving">
+        <i class="ki-duotone ki-check fs-2"></i>
+        Save
+      </ng-container>
+      <ng-container *ngIf="isSaving">
+        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+        Saving...
+      </ng-container>
+    </button>
+  </ng-template>
+</p-dialog>
+
+<!-- Dialog for Insight Documents -->
+<p-dialog
+  [(visible)]="displayInsightDialog"
+  [header]="headerTitle"
+  [modal]="true"
+  [style]="{width: '900px'}"
+  [dismissableMask]="true"
+  (onHide)="closeInsightDialog()">
+
+  <form [formGroup]="insightDocForm">
+    <div class="form-group row mb-6">
+      <!-- File Name -->
+      <div class="col-md-7">
+        <label class="form-label required">{{ 'FILE_NAME' | translate }}</label>
+        <input formControlName="file_name" class="form-control" placeholder="{{ 'ENTER_FILE_NAME' | translate }}" />
+        <div *ngIf="insightDocForm.get('file_name')?.invalid && insightDocForm.get('file_name')?.touched" class="text-danger small">
+          <span *ngIf="insightDocForm.get('file_name')?.errors?.['required']">
+            {{ 'FILE_NAME_REQUIRED' | translate }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Price -->
+      <div class="col-md-3">
+        <label class="form-label required">{{ 'PRICE' | translate }}</label>
+        <div class="input-group">
+          <span class="input-group-text">
+            <i class="ki-duotone ki-dollar fs-2">
+              <span class="path1"></span>
+              <span class="path2"></span>
+              <span class="path3"></span>
+            </i>
+          </span>
+          <input formControlName="price" type="number" min="0" class="form-control" placeholder="{{ 'ENTER_PRICE' | translate }}" />
+        </div>
+        <div *ngIf="insightDocForm.get('price')?.invalid && insightDocForm.get('price')?.touched" class="text-danger small">
+          {{ 'PRICE_REQUIRED' | translate }}
+        </div>
+      </div>
+
+      <!-- File Upload/Preview -->
+      <div class="col-md-2">
+        <label class="form-label required">{{ 'FILE' | translate }}</label>
+        <div class="d-flex align-items-center">
+          <input type="file" 
+                 #fileInput
+                 (change)="onInsightFileSelected($event)" 
+                 accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt"
+                 style="display: none" />
+          
+          <ng-container *ngIf="!insightDocForm.get('filePreview')?.value">
+            <button type="button" 
+                    class="btn actions-btn btn-light-success" 
+                    style="padding: 11px !important;"
+                    (click)="fileInput.click()">
+              <i class="ki-duotone ki-file-up fs-2 p-0">
+                <span class="path1"></span>
+                <span class="path2"></span>
+              </i>
+            </button>
+          </ng-container>
+          
+          <ng-container *ngIf="insightDocForm.get('filePreview')?.value">
+            <div class="d-flex align-items-center justify-content-center w-100">
+              <img [src]="insightDocForm.get('fileIcon')?.value" 
+                   [alt]="insightDocForm.get('file_extension')?.value" 
+                   style="width: 38px; height: 38px;"
+                   (click)="openPreview({ 
+                     fromServer: insightDocForm.get('fromServer')?.value,
+                     preview: insightDocForm.get('docUrl')?.value,
+                     docId: insightDocForm.get('docId')?.value,
+                     file: insightDocForm.get('file')?.value
+                   })"
+                   class="cursor-pointer"
+                   [ngbTooltip]="'Click to open document'" />
+              
+              <button type="button" 
+                      class="btn btn-icon btn-sm btn-light-primary ms-2"
+                      (click)="fileInput.click()"
+                      [ngbTooltip]="'Upload new file'">
+                <i class="ki-duotone ki-file-up fs-2">
+                  <span class="path1"></span>
+                  <span class="path2"></span>
+                </i>
+              </button>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <button
+      type="button"
+      class="btn btn-light me-3"
+      (click)="closeInsightDialog()">
+      <i class="ki-duotone ki-cross fs-2"></i>
+      {{ 'CANCEL' | translate }}
+    </button>
+    <button
+      type="button"
+      class="btn btn-primary"
+      [disabled]="insightDocForm.invalid || isSaving"
+      (click)="saveInsightDocument()">
+      <ng-container *ngIf="!isSaving">
+        <i class="ki-duotone ki-check fs-2"></i>
+        {{ 'SAVE' | translate }}
+      </ng-container>
+      <ng-container *ngIf="isSaving">
+        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+        {{ 'SAVING' | translate }}
+      </ng-container>
+    </button>
+  </ng-template>
+</p-dialog>

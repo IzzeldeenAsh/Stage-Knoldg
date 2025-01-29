@@ -5,7 +5,7 @@ import { ICreateKnowldege, inits } from '../create-account.helper';
 import { AddInsightStepsService, CreateKnowledgeRequest, SuggestTopicRequest, SyncTagsKeywordsRequest, PublishKnowledgeRequest, AddKnowledgeDocumentRequest } from 'src/app/_fake/services/add-insight-steps/add-insight-steps.service';
 import { switchMap } from 'rxjs/operators';
 import { BaseComponent } from 'src/app/modules/base.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { KnowledgeService } from 'src/app/_fake/services/knowledge/knowledge.service';
 
 @Component({
@@ -15,6 +15,7 @@ import { KnowledgeService } from 'src/app/_fake/services/knowledge/knowledge.ser
 })
 export class HorizontalComponent extends BaseComponent implements OnInit {
   formsCount = 6;
+  isEditMode = false;
   knowledgeId!: number;
   account$: BehaviorSubject<ICreateKnowldege> =
     new BehaviorSubject<ICreateKnowldege>(inits);
@@ -28,7 +29,8 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
     injector: Injector,
     private addInsightStepsService: AddInsightStepsService,
     private route: ActivatedRoute,
-    private knowledgeService: KnowledgeService
+    private knowledgeService: KnowledgeService,
+    private router: Router
   ) {
     super(injector);
   }
@@ -39,6 +41,8 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
       const id = params['id'];
       if (id) {
         this.knowledgeId = +id;
+        this.isEditMode = true;
+        this.formsCount = 5; // Set forms count to 4 in edit mode
         // Initialize with empty values when editing
         const emptyAccount = {
           ...inits,
@@ -116,6 +120,13 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
       return;
     }
 
+    // If in edit mode and on step 4, handle submission
+    if (this.isEditMode && this.currentStep$.value === 4) {
+      // Handle submission for edit mode
+      this.handleStep4Submission(nextStep);
+      return;
+    }
+
     // Handle step 2 submission
     if (this.currentStep$.value === 2) {
       this.handleStep2Submission(nextStep);
@@ -178,38 +189,47 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
         this.currentStep$.next(nextStep);
       }
     } else if (this.currentStep$.value === 4) {
-      this.isLoading = true;
-      const currentAccount = this.account$.value;
-
-      // Convert keywords objects to string array
-      const keywordsArray = currentAccount.keywords.map(k => k.value);
-
-      const syncRequest: SyncTagsKeywordsRequest = {
-        keywords: keywordsArray,
-        tag_ids: currentAccount.tag_ids
-      };
-
-      const step4Sub = this.addInsightStepsService
-        .syncTagsKeywords(this.knowledgeId, syncRequest)
-        .subscribe({
-          next: (response) => {
-            console.log('Tags and keywords synced successfully', response);
-            this.currentStep$.next(nextStep);
-            this.isLoading = false;
-          },
-          error: (error) => {
-            this.handleServerErrors(error);
-            this.isLoading = false;
-          }
-        });
-
-      this.unsubscribe.push(step4Sub);
+     this.handleStep4Submission(nextStep);
     } else if (this.currentStep$.value === 5) {
       this.handleStep5Submission(nextStep);
     } else {
       // For other steps, just proceed without loading state
       this.currentStep$.next(nextStep);
     }
+  }
+
+  /**
+   * Handles the submission logic for Step 4.
+   * @param nextStep The next step number to navigate to.
+   */
+  private handleStep4Submission(nextStep: number) {
+    const currentAccount = this.account$.value;
+    const keywordsArray = currentAccount.keywords.map(k => k.value);
+    const syncRequest: SyncTagsKeywordsRequest = {
+      keywords: keywordsArray,
+      tag_ids: currentAccount.tag_ids
+    };
+
+    const step4Sub = this.addInsightStepsService
+      .syncTagsKeywords(this.knowledgeId, syncRequest)
+      .subscribe({
+        next: (response) => {
+       
+          this.isLoading = false;
+ 
+    
+        },
+        error: (error) => {
+          this.handleServerErrors(error);
+          this.isLoading = false;
+        }
+      });
+      if(this.isEditMode){
+        this.router.navigate(['/app/my-knowledge-base/view-my-knowledge/', this.knowledgeId]);
+      }else{
+        this.currentStep$.next(nextStep);
+      }
+    this.unsubscribe.push(step4Sub);
   }
 
   /**
@@ -309,15 +329,15 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
       isic_code_id: currentAccount.isic_code ? currentAccount.isic_code : null,
       hs_code_id: currentAccount.hs_code ? currentAccount.hs_code : null,
       language: currentAccount.language,
-      // Fix the logic - when targetMarket is '1' use regions/countries, when '2' use economic_blocks
+      // Fix the logic - when targetMarket is '1' use regions/countries, when '2' use economic_bloc
       ...(currentAccount.targetMarket === '1' ? {
         region: currentAccount.regions || [],
         country: currentAccount.countries || [],
-        economic_blocs: []
+        economic_bloc: []
       } : {
         region: [],
         country: [],
-        economic_blocs: currentAccount.economic_blocs || []
+        economic_bloc: currentAccount.economic_blocs || []
       })
     };
 

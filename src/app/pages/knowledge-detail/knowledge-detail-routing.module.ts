@@ -4,7 +4,6 @@ import { KnowledgeDetailsComponent } from './knowledge-details/knowledge-details
 import { OverviewComponent } from './knowledge-details/overview/overview.component';
 import { ReviewsComponent } from './knowledge-details/reviews/reviews.component';
 import { CommentsComponent } from './knowledge-details/comments/comments.component';
-import { ViewMyKnowledgeComponent } from './knowledge-details/view-my-knowledge/view-my-knowledge.component';
 
 
 const routes: Routes = [
@@ -31,10 +30,7 @@ const routes: Routes = [
       }
     ]
   },
-  {
-    path:'view-my-knowledge/:id',
-    component:ViewMyKnowledgeComponent
-  }
+ 
 ];
 
 @NgModule({

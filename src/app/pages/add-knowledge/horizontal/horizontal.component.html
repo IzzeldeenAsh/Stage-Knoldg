@@ -73,6 +73,7 @@
         </div>
 
         <div
+          *ngIf="!isEditMode"
           class="stepper-item"
           [ngClass]="{
             current: currentStep$.value === 5,
@@ -90,6 +91,7 @@
           </h3>
         </div>
         <div
+          *ngIf="!isEditMode"
           class="stepper-item"
           [ngClass]="{ current: currentStep$.value === 6 }"
         >
@@ -164,7 +166,7 @@
             ></app-step4>
           </ng-container>
 
-          <ng-container *ngIf="currentStep$.value === 5">
+          <ng-container *ngIf="currentStep$.value === 5 && !isEditMode">
             <app-step5
               [updateParentModel]="updateAccount"
               [defaultValues]="account$.value"
@@ -172,7 +174,7 @@
             ></app-step5>
           </ng-container>
 
-          <ng-container *ngIf="currentStep$.value === 6">
+          <ng-container *ngIf="currentStep$.value === 6 && !isEditMode">
             <app-step6
               [defaultValues]="account$.value"
               class="w-100"
@@ -187,14 +189,16 @@
             >
               <button
                 type="button"
-                class="btn btn-lg btn-light-primary me-3"
+                class="btn  btn-light-info me-3"
                 (click)="prevStep()"
               >
+               <div class="d-flex align-items-center">
                 <app-keenicon
-                  name="arrow-left"
-                  class="fs-3 ms-4 me-1"
-                ></app-keenicon>
-                {{ "INSIGHTER_WIZARD.BACK" | translate }}
+                name="arrow-left"
+                class="fs-3 ms-4 me-1 text-info text-hover-secondary"
+              ></app-keenicon>
+             <span> {{ "INSIGHTER_WIZARD.BACK" | translate }}</span>
+               </div>
               </button>
             </ng-container>
             <!-- <ng-container *ngIf="currentStep$.value === 6">
@@ -212,17 +216,17 @@
             <div>
               <button
                 type="button"
-                class="btn btn-lg btn-primary me-3"
+                class="btn btn-primary me-3"
                 [disabled]="!isCurrentFormValid$.value || isLoading"
                 (click)="nextStep()"
               >
-                <span class="indicator-label">
-                  <ng-container *ngIf="currentStep$.value < formsCount - 1">
+                <span class="indicator-label d-flex align-items-center">
+                  <ng-container *ngIf="(!isEditMode && currentStep$.value < 5) || (isEditMode && currentStep$.value < 4)">
                     <ng-container *ngIf="!isLoading">
                       {{ "INSIGHTER_WIZARD.CONTINUE" | translate }} {{ " " }}
                       <app-keenicon
                         name="arrow-right"
-                        class="fs-3 mx-2 me-0"
+                        class="fs-3 mx-2 me-0 text-gray-100" 
                       ></app-keenicon>
                     </ng-container>
                     <ng-container *ngIf="isLoading">
@@ -232,9 +236,10 @@
                       ></span>
                     </ng-container>
                   </ng-container>
-                  <ng-container *ngIf="currentStep$.value === formsCount - 1">
+                  <ng-container *ngIf="(!isEditMode && currentStep$.value === 5) || (isEditMode && currentStep$.value === 4)">
                     {{ "INSIGHTER_WIZARD.SUBMIT" | translate }}
                   </ng-container>
+               
                 </span>
               </button>
             </div>

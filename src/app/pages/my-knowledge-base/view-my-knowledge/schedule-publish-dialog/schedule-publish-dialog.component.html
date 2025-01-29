@@ -1,0 +1,64 @@
+<div class="container p-4">
+  <form [formGroup]="publishForm" (ngSubmit)="onSubmit()">
+    <div class="row g-4">
+      <div class="col-md-6">
+        <label class="form-label">{{ "SELECT_DATE" | translate }}</label>
+        <div class="p-field">
+          <p-calendar
+            formControlName="publishDate"
+            [minDate]="minDate"
+            [showIcon]="true"
+            dateFormat="yy-mm-dd"
+            (onSelect)="onDateSelect()"
+            [required]="true"
+            [appendTo]="'body'"
+            styleClass="w-100"
+          ></p-calendar>
+          <small class="p-error block" *ngIf="
+            publishForm.get('publishDate')?.invalid &&
+            publishForm.get('publishDate')?.touched
+          ">
+            {{ "VALID_DATE_REQUIRED" | translate }}
+          </small>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">{{ "SELECT_TIME" | translate }}</label>
+        <div class="p-field">
+          <p-calendar
+            formControlName="publishTime"
+            [timeOnly]="true"
+            [showIcon]="true"
+            [required]="true"
+            [appendTo]="'body'"
+            styleClass="w-100"
+          ></p-calendar>
+          <small class="p-error block" *ngIf="
+            publishForm.get('publishTime')?.invalid &&
+            publishForm.get('publishTime')?.touched
+          ">
+            {{ "VALID_TIME_REQUIRED" | translate }}
+          </small>
+          <small class="p-error block" *ngIf="timeError">{{ timeError }}</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-3 mt-5">
+      <button
+        type="button"
+        class="btn btn-sm btn-light"
+        (click)="onCancel()">
+       
+        {{ 'CANCEL' | translate }}
+      </button>
+      <button
+        type="submit"
+        class="btn btn-sm btn-primary"
+        [disabled]="publishForm.invalid">
+        <i class="ki-duotone ki-check fs-2"></i>
+        {{ 'SCHEDULE' | translate }}
+      </button>
+    </div>
+  </form>
+</div>

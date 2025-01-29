@@ -15,7 +15,7 @@ export interface CreateKnowledgeRequest {
   language: string;
   region: number[];
   country: number[];
-  economic_blocs: number[];
+  economic_bloc: any[];
 }
 
 export interface CreateKnowledgeResponse {
@@ -73,6 +73,7 @@ export interface DocumentInfo {
   file_size: number;
   file_extension: string;
   description?: string;
+  type?: string;
 }
 
 export interface DocumentListResponse {

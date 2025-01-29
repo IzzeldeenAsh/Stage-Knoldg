@@ -11,7 +11,6 @@ import { ReviewsComponent } from './knowledge-details/reviews/reviews.component'
 import { FileSizePipe } from 'src/app/pipes/file-size-pipe/file-size.pipe';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { RelatedKnowledgesComponent } from './knowledge-details/related-knowledges/related-knowledges.component';
-import { ViewMyKnowledgeComponent } from './knowledge-details/view-my-knowledge/view-my-knowledge.component';
 
 
 @NgModule({
@@ -21,7 +20,6 @@ import { ViewMyKnowledgeComponent } from './knowledge-details/view-my-knowledge/
     ReviewsComponent,
     CommentsComponent,
     RelatedKnowledgesComponent,
-    ViewMyKnowledgeComponent
   ],
   imports: [
     CommonModule,

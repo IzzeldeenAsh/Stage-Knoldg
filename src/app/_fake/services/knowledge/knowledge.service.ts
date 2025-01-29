@@ -41,9 +41,9 @@ export interface Knowledge {
   language: string;
   total_price: string;
   status: string;
-  regions: string[];
-  countries: string[];
-  economic_blocs: string[];
+  regions: any[];
+  countries: any[];
+  economic_blocs: any[];
   published_at?: string;
 }
 
