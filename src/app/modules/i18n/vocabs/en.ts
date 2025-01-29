@@ -35,7 +35,7 @@ export const locale = {
       READY_TO_DIVE: 'Ready to dive in? Watch our',
       TUTORIALS: 'tutorials',
       MASTER_ESSENTIALS: 'and start mastering the essentials today!',
-      COPYRIGHT: '© 2024 Insighta',
+      COPYRIGHT: ' 2024 Insighta',
       TERMS: 'Terms',
       PRIVACY: 'Privacy',
       COOKIES: 'Cookies',
@@ -749,10 +749,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     CLICK_TO_ADD_DOCUMENT: "Click to add document",
     SCHEDULE_PUBLICATION: "Schedule Publication",
     EDIT_KNOWLEDGE: "Edit Knowledge"  ,
-    SELECT_KNOWLEDGE_TYPE: "Select Knowledge Type"
+    SELECT_KNOWLEDGE_TYPE: "Select Knowledge Type",
+    GO_TO_LIBRARY: "Go to Library"
   }
 };
-
-
-
-

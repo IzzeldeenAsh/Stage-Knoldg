@@ -78,16 +78,16 @@
                [ngClass]="{ 'collapse': activeDocumentId !== doc.id }"
              >
                <!-- Description -->
-               <div *ngIf="doc.description" class="mb-4">
+               <div *ngIf="doc.description && knowledge?.type !== 'insight'" class="mb-4">
                 <strong [ngClass]="{'text-info': activeDocumentId === doc.id}">Description:</strong>
                  <p>{{doc.description}}</p>
                </div>
-               <div *ngIf="!doc.description" class="mb-4">
+               <div *ngIf="!doc.description && knowledge?.type !== 'insight'" class="mb-4">
                  <p class="lead fs-6">No description provided.</p>
                </div>
 
                <!-- Table of Contents for non-insight types -->
-               <div *ngIf="shouldShowTableOfContents(doc)" class="mt-4">
+               <div *ngIf="shouldShowTableOfContents(doc) && knowledge?.type !== 'insight'" class="mt-4">
                  <div class="d-flex align-items-start mb-3">
                   
                    <strong [ngClass]="{'text-info': activeDocumentId === doc.id}">Table of Contents:</strong>
@@ -183,7 +183,7 @@
     </div>
 
     <!-- Description -->
-    <div class="mb-3">
+    <div class="mb-3" *ngIf="knowledge?.type !== 'insight'">
       <label class="form-label required">
         {{'DESCRIPTION' | translate}}
       </label>

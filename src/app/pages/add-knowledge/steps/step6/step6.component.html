@@ -37,9 +37,14 @@
         <div class="fs-6 text-gray-600">
           {{'VISIT_DASHBOARD_MESSAGE' | translate}}
         </div>
-        <button class="btn btn-sm btn-primary mt-4" [routerLink]="['/app/knowledge-detail/detail', defaultValues.knowledgeId]">
-          {{'VIEW_KNOWLEDGE' | translate}}
-        </button>
+        <div class="d-flex gap-3 mt-4">
+          <button class="btn btn-sm btn-primary" [routerLink]="['/app/my-knowledge-base/view-my-knowledge/', defaultValues.knowledgeId]">
+            {{'VIEW_KNOWLEDGE' | translate}}
+          </button>
+          <button class="btn btn-sm btn-light" [routerLink]="['/app/insighter-dashboard/my-knowledge/general']">
+            {{'GO_TO_LIBRARY' | translate}}
+          </button>
+        </div>
       </div>
     </div>
   </div>

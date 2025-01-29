@@ -283,10 +283,10 @@ export const locale = {
       // New Keys for the Current Component
       CHOOSE_ACCOUNT_TYPE: "اختر نوع الحساب",
       BILLING_TOOLTIP: "يتم إصدار الفواتير بناءً على نوع الحساب الذي اخترته",
-      MORE_INFO: "إذا كنت تحتاج إلى مزيد من المعلومات، يرجى زيارة",
+      MORE_INFO: "إذا كنت بحاجة إلى مزيد من المعلومات، يرجى زيارة",
       HELP_PAGE: "صفحة المساعدة",
       PERSONAL_ACCOUNT: "حساب شخصي",
-      PERSONAL_ACCOUNT_DESC: "إذا كنت تحتاج إلى مزيد من المعلومات، يرجى الاطلاع عليه",
+      PERSONAL_ACCOUNT_DESC: "إذا كنت بحاجة إلى مزيد من المعلومات، يرجى الاطلاع عليه",
       CORPORATE_ACCOUNT: "حساب تجاري",
       CORPORATE_ACCOUNT_DESC: "إنشاء حساب تجاري لإدارة المستخدمين",
       INSIGHTER_INFO: "معلومات Insighter",
@@ -305,7 +305,7 @@ export const locale = {
       LEGAL_NAME_REQUIRED: "الاسم القانوني لشركتك مطلوب.",
       ABOUT_COMPANY: "معلومات عن الشركة",
       COUNTRY_PLACEHOLDER: "اختر الدولة",
-      IF_NEED_MORE_INFO: "إذا كنت تحتاج إلى مزيد من المعلومات، يرجى زيارة",
+      IF_NEED_MORE_INFO: "إذا كنت بحاجة إلى مزيد من المعلومات، يرجى زيارة",
       UPLOAD_FILES: "تحميل الملفات",
       CAMPAIGN_GUIDELINES: "إرشادات الشهادات",
       DROP_FILES_HERE_OR_CLICK: "قم بإسقاط ملفات هنا أو انقر للتحميل.",
@@ -320,7 +320,7 @@ export const locale = {
       REGISTER_DOCUMENT_REQUIRED: "وثيقة التسجيل مطلوبة.",
       CORPORATE_ACCOUNT_VERIFICATION: "تحقق من الحساب التجاري",
       VERIFY_YOUR_COMPANY_WITH: "تحقق من شركتك باستخدام",
-      IF_NEED_MORE_INFO_VERIFICATION: "إذا كنت تحتاج إلى مزيد من المعلومات، يرجى زيارة",
+      IF_NEED_MORE_INFO_VERIFICATION: "إذا كنت بحاجة إلى مزيد من المعلومات، يرجى زيارة",
       DROP_OR_UPLOAD_REGISTRY_DOCUMENT: "قم بإسقاط أو تحميل وثيقة التسجيل",
       VERIFY_COMPANY_ACCOUNT_BY_UPLOADING_REGISTRY_DOC: "تحقق من حساب الشركة عن طريق تحميل وثيقة تسجيل الشركة",
       WEBSITE_URL: "عنوان الموقع الإلكتروني",
@@ -508,7 +508,7 @@ export const locale = {
     },
     CHOOSE_ACCOUNT_TYPE: "اختر نوع الحساب",
     BILLING_TOOLTIP: "يتم إصدار الفواتير بناءً على نوع الحساب الذي اخترته",
-    IF_NEED_MORE_INFO: "إذا كنت تحتاج إلى مزيد من المعلومات، يرجى زيارة",
+    IF_NEED_MORE_INFO: "إذا كنت بحاجة إلى مزيد من المعلومات، يرجى زيارة",
     HELP_PAGE: "صفحة المساعدة",
     DATA: "بيانات",
     INSIGHTS: "رؤى",
@@ -704,12 +704,10 @@ export const locale = {
   MY_KNOWLEDGE_BASE: "قاعدة المعرفة",
   COMING_SOON:"قريباً",
   VIEW_KNOWLEDGE: "عرض المعرفة",
+  GO_TO_LIBRARY: "الذهاب إلى المكتبة",
   CLICK_TO_ADD_DOCUMENT: "اضغط لإضافة مستند",
   SCHEDULE_PUBLICATION: "جدولة النشر",  
   EDIT_KNOWLEDGE: "إدارة المعرفة",
   SELECT_KNOWLEDGE_TYPE: "حدد نوع المعرفة"
   }
 };
-
-
-
