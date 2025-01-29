@@ -248,7 +248,8 @@ export class Step2Component extends BaseComponent implements OnInit {
     if (targetMarket === '1') {
       targetMarketValid = regions.length > 0 || countries.length > 0;
     } else if (targetMarket === '2') {
-      targetMarketValid = economicBlocks.length > 0;
+      // Consider both form control value and defaultValues.economic_bloc
+      targetMarketValid = economicBlocks.length > 0 || (this.defaultValues.economic_bloc?.length || 0) > 0;
     }
 
     // Check all other form controls
@@ -349,5 +350,12 @@ export class Step2Component extends BaseComponent implements OnInit {
     console.log("HS Code", node);
     this.form.get('hs_code')?.setValue(node.id);
     this.updateParentModel({ hs_code: node.id }, this.checkForm());
+  }
+
+  // Add getter for economic bloc IDs
+  get selectedEconomicBlocIds(): string[] {
+    return this.defaultValues.economic_bloc 
+      ? this.defaultValues.economic_bloc.map((block:any) => block.id) 
+      : [];
   }
 }

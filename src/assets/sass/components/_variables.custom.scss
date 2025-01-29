@@ -4,3 +4,12 @@
 // are not accessible in this file but you can override any global variable as shown below:
 //
 
+// Custom button primary gradient styling
+.btn.btn-primary {
+    background: linear-gradient(135deg, #1AADFE 0%, #058BF7 100%) !important;
+    border: none !important;
+    
+    &:hover {
+        background: linear-gradient(135deg, #1a75fe 0%, #056af7 100%) !important;
+    }
+}

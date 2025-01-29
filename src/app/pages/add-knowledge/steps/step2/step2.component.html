@@ -319,7 +319,7 @@
       <app-select-economic-block
         placeholder="{{'ENTER_ECONOMIC_BLOCK' | translate}}"
         title="{{'CHOOSE_ECONOMIC_BLOCKS' | translate}}"
-        [selectedBlockIds]="defaultValues.economic_blocs"
+        [selectedBlockIds]="selectedEconomicBlocIds"
         (blocksSelected)="onEconomicBlocksSelected($event)"
       ></app-select-economic-block>
     </div>

@@ -58,7 +58,7 @@
               <div class="ms-3">
                 <p-menu #menu [popup]="true" [model]="docActions" [appendTo]="'body'"></p-menu>
                 <button class="btn btn-icon btn-sm btn-outline"
-                        (click)="menu.toggle($event); setMenuData(doc)"
+                        (click)="$event.stopPropagation(); menu.toggle($event); setMenuData(doc)"
                         placement="top">
                   <i class="ki-duotone ki-gear text-gray-800">
                       <span class="path1"></span>

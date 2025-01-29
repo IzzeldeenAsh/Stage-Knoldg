@@ -20,7 +20,7 @@ export class SelectEconomicBlockComponent implements OnInit {
   @Input() placeholder: string = 'Select Economic Block...';
   @Input() title: string = 'Select Economic Blocks';
   @Output() blocksSelected = new EventEmitter<EconomicBloc[]>();
-  @Input() selectedBlockIds: number[] | undefined = [];
+  @Input() selectedBlockIds: any[] | undefined = [];
   
   dialogVisible: boolean = false;
   economicBlocks: EconomicBloc[] = [];

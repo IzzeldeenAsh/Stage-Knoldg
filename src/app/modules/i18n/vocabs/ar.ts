@@ -674,6 +674,7 @@ export const locale = {
     'EDIT': 'تعديل',
     'DELETE': 'حذف',
     'PUBLISH': 'نشر',
+    'VIEW': 'عرض',
     'UNPUBLISH': 'إلغاء النشر',
     'SCHEDULE': 'جدولة',
     'CREATE_PACKAGE': 'إنشاء حزمة',
@@ -704,6 +705,9 @@ export const locale = {
   COMING_SOON:"قريباً",
   VIEW_KNOWLEDGE: "عرض المعرفة",
   CLICK_TO_ADD_DOCUMENT: "اضغط لإضافة مستند",
+  SCHEDULE_PUBLICATION: "جدولة النشر",  
+  EDIT_KNOWLEDGE: "إدارة المعرفة",
+  SELECT_KNOWLEDGE_TYPE: "حدد نوع المعرفة"
   }
 };
 

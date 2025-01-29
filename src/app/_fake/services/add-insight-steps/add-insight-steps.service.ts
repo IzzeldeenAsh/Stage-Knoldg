@@ -15,7 +15,7 @@ export interface CreateKnowledgeRequest {
   language: string;
   region: number[];
   country: number[];
-  economic_blocs: number[];
+  economic_bloc: any[];
 }
 
 export interface CreateKnowledgeResponse {

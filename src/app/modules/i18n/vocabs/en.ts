@@ -714,6 +714,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     'TOTAL_PRICE': 'Total Price',
     'STATUS': 'Status',
     'EDIT': 'Edit',
+    'VIEW': 'View',
     'DELETE': 'Delete',
     'PUBLISH': 'Publish',
     'UNPUBLISH': 'Unpublish',
@@ -746,6 +747,9 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     COMING_SOON:"Coming Soon",
     VIEW_KNOWLEDGE: "View Knowledge",
     CLICK_TO_ADD_DOCUMENT: "Click to add document",
+    SCHEDULE_PUBLICATION: "Schedule Publication",
+    EDIT_KNOWLEDGE: "Edit Knowledge"  ,
+    SELECT_KNOWLEDGE_TYPE: "Select Knowledge Type"
   }
 };
 

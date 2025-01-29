@@ -26,7 +26,7 @@
       <!--begin::Add Knowledge-->
       <a [routerLink]="['/app/add-knowledge']"
         type="button"
-        class="btn  btn-info mx-3"
+        class="btn  btn-primary mx-3"
       >
         <i class="ki-outline ki-add-folder fs-2"></i> {{ 'KNOWLEDGE.ADD_KNOWLEDGE' | translate }}
       </a>
@@ -110,7 +110,6 @@
               <th class="min-w-250px">{{ 'KNOWLEDGE.KNOWLEDGE_NAME' | translate }}</th>
               <th class="min-w-10px">{{ 'KNOWLEDGE.TYPE' | translate }}</th>
               <th class="min-w-125px">{{ 'KNOWLEDGE.TOTAL_PRICE' | translate }}</th>
-              <th class="min-w-100px">{{ 'KNOWLEDGE.STATUS' | translate }}</th>
               <th class="w-125px"></th>
             </tr>
           </thead>
@@ -144,50 +143,23 @@
                 </div>
               </td>
               <td class="fw-bold text-gray-900">{{ knowledge.total_price | currency }}</td>
-              <td>
-                <span class="badge" [ngClass]="{
-                  'badge-light-success': knowledge.status === 'published',
-                  'badge-light-warning': knowledge.status === 'scheduled',
-                  'badge-light-danger': knowledge.status === 'unpublished'
-                }">{{ knowledge.status | titlecase }}</span>
-              </td>
               <td class="text-end">
                 <div class="d-flex justify-content-end">
-                  <!-- Status Actions -->
-                  <div ngbDropdown class="d-inline-block mx-2">
-                    <button type="button" class="btn btn-sm btn-light btn-active-light-primary" ngbDropdownToggle>
-                      {{ 'KNOWLEDGE.STATUS' | translate }}
-                    </button>
-                    <div ngbDropdownMenu>
-                      <button ngbDropdownItem (click)="updateStatus(knowledge.id, 'published')"
-                              *ngIf="knowledge.status !== 'published'">
-                        {{ 'KNOWLEDGE.PUBLISH' | translate }}
-                      </button>
-                      <button ngbDropdownItem (click)="updateStatus(knowledge.id, 'unpublished')"
-                              *ngIf="knowledge.status !== 'unpublished'">
-                        {{ 'KNOWLEDGE.UNPUBLISH' | translate }}
-                      </button>
-                      <button ngbDropdownItem (click)="updateStatus(knowledge.id, 'scheduled')"
-                              *ngIf="knowledge.status !== 'scheduled' && knowledge.status !== 'published'">
-                        {{ 'KNOWLEDGE.SCHEDULE' | translate }}
-                      </button>
-                    </div>
-                  </div>
-                  <!-- Edit button -->
-                  <a [routerLink]="['/app/edit-knowledge/stepper', knowledge.id]" 
-                  class="btn btn-sm btn-icon btn-light btn-active-light-primary mx-2"
-                  pTooltip="{{ 'KNOWLEDGE.EDIT' | translate }}"
-                  tooltipPosition="top">
-                 <i class="ki-duotone ki-pencil fs-5">
-                   <span class="path1"></span>
-                   <span class="path2"></span>
-                 </i>
-               </a>
+                  <!-- View button -->
+                  <a [routerLink]="['/app/my-knowledge-base/view-my-knowledge/', knowledge.id]" 
+                     class="btn btn-sm btn-icon btn-light btn-active-light-primary me-2"
+                     ngbTooltip="{{ 'KNOWLEDGE.VIEW' | translate }}"
+>
+                    <i class="ki-duotone ki-eye fs-2">
+                      <span class="path1"></span>
+                      <span class="path2"></span>
+                      <span class="path3"></span>
+                    </i>
+                  </a>
                   <!-- Delete button -->
                   <button type="button" 
                           class="btn btn-sm btn-icon btn-light btn-active-light-danger"
-                          pTooltip="{{ 'KNOWLEDGE.DELETE' | translate }}"
-                          tooltipPosition="top"
+                          ngbTooltip="{{ 'KNOWLEDGE.DELETE' | translate }}"
                           (click)="deleteKnowledge(knowledge)">
                     <i class="ki-duotone ki-trash fs-5">
                       <span class="path1"></span>

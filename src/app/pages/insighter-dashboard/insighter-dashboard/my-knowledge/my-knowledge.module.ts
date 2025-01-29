@@ -15,7 +15,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { PackageBuilderContentComponent } from './components/package-builder-content/package-builder-content.component';
 import { DialogModule } from 'primeng/dialog';
-import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { SharedModule } from 'src/app/_metronic/shared/shared.module';
 import { ScheduleDialogComponent } from './components/packages/schedule-dialog/schedule-dialog.component';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
@@ -73,6 +73,7 @@ const routes: Routes = [
     DialogModule,
     FormsModule,
     DragDropModule,
+    NgbTooltip,
     InputTextModule,
     SharedModule,
     NgbDropdownModule,
