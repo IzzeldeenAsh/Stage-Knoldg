@@ -151,6 +151,40 @@ export class KnowldegePackegesService {
       finalize(() => this.setLoading(false))
     );
   }
+
+  // Get package by id
+  getPackageById(packageId: number): Observable<PackageResponse> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+
+    this.setLoading(true);
+    return this.http.get<PackageResponse>(`${this.baseUrl}/package/${packageId}`, { headers }).pipe(
+      map(res => res),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  // Update package name
+  updatePackageName(packageId: number, name: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+
+    const body = { name };
+
+    this.setLoading(true);
+    return this.http.put(`${this.baseUrl}/package/${packageId}`, body, { headers }).pipe(
+      map(res => res),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
 }
 
 export interface Package {
@@ -160,10 +194,15 @@ export interface Package {
   discount: number;
   final_price: number;
   status: string;
+  knowledge_ids?: number[];
 }
 
 export interface PackageListResponse {
   data: Package[];
+}
+
+export interface PackageResponse {
+  data: Package;
 }
 
 export interface PackageKnowledge {

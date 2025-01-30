@@ -470,4 +470,18 @@ export class GeneralComponent extends BaseComponent implements OnInit {
       this.loadKnowledges(this.currentPage);
     }, 300); // 300ms debounce
   }
+
+  // Add this method to handle status classes
+  getStatusClass(status: string): string {
+    switch (status.toLowerCase()) {
+      case 'published':
+        return 'badge badge-light-success';
+      case 'unpublished':
+        return 'badge badge-light-danger';
+      case 'scheduled':
+        return 'badge badge-light-warning';
+      default:
+        return 'badge badge-light-info';
+    }
+  }
 }

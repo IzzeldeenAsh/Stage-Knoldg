@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ViewMyKnowledgeComponent } from './view-my-knowledge/view-my-knowledge.component';
 import { KnowledgeAnalyticsComponent } from './view-my-knowledge/knowledge-analytics/knowledge-analytics.component';
 import { KnowledgeDetailsComponent } from './view-my-knowledge/knowledge-details/knowledge-details.component';
+import { ViewMyPackagesComponent } from './view-my-packages/view-my-packages.component';
 
 const routes: Routes = [
   {
@@ -19,6 +20,16 @@ const routes: Routes = [
       { path: 'details', component: KnowledgeDetailsComponent },
       { path: 'analytics', component: KnowledgeAnalyticsComponent }
     ]
+  },
+  {
+    path:'view-my-packages/:id',
+    component:ViewMyPackagesComponent,
+    data: {
+      breadcrumb: [
+        { label: 'My Knowledge Base', link: '/app/insighter-dashboard/my-knowledge/general' },
+        { label: 'View Knowledge', link: '' }
+      ]
+    },
   }
 ];
 

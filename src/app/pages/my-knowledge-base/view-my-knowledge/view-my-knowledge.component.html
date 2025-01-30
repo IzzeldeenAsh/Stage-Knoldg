@@ -41,13 +41,12 @@
           </li>
           <li
             class="breadcrumb-item text-gray-800 lh-1 d-flex align-items-center"
-            *ngIf="knowledge?.industry"
           >
             <a
-              [routerLink]="['/industries', knowledge.industry.id]"
+              [routerLink]="['/app/insighter-dashboard/my-knowledge/general']"
               class="text-gray-700 text-hover-info"
             >
-              {{ knowledge.industry.name }}
+            General
             </a>
             <i
               class="ki-outline {{
@@ -55,20 +54,7 @@
               }} fs-4 text-gray-700 ms-2"
             ></i>
           </li>
-          <li
-            class="breadcrumb-item text-gray-800 lh-1"
-            *ngIf="knowledge?.topic"
-          >
-            <a
-              [routerLink]="[
-                '/my-knowledge-base/view-my-knowledge',
-                knowledge.id
-              ]"
-              class="text-gray-700 text-hover-info"
-            >
-              <span class="text-gray-700">{{ knowledge.topic.name }}</span>
-            </a>
-          </li>
+       
         </ul>
       </div>
 
@@ -247,11 +233,21 @@
       </div>
       <div class="col-lg-4">
         <!-- Added sticky sidebar with responsive behavior -->
+         
         <div
           class="tp-course-details2-widget position-lg-sticky"
           style="z-index: 1"
         >
+     
           <div class="tp-course-details2-widget-content">
+            <div
+            class="tp-course-details2-widget-price d-flex justify-content-center align-items-center"
+          >
+            <span class="fs-2x fw-bolder text-primary">{{knowledge.total_price | currency}}</span>
+            <span class="text-muted fs-5 ms-3">One-time purchase</span>
+          </div>
+            <div class="separator separator-dashed my-5"></div>
+
             <!-- Report details section -->
             <div class="tp-course-details2-widget-list p-4">
               <div class="tp-course-details2-widget-list-item-wrapper">
@@ -298,14 +294,14 @@
                 <!-- Industry -->
                 <div
                 *ngIf="knowledge && knowledge.isic_code"
-                class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
+                class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3" 
               >
                 <span>
                   <i class="ki-outline ki-file fs-4 mx-4"></i>
                  Industry
                 </span>
                 <span
-                  class="badge badge-light-secondary text-primary fs-8 fw-bold"
+                  class="badge badge-light-secondary text-primary fs-8 fw-bold  pre-line text-right"
                   >{{ knowledge.industry.name }}</span
                 >
               </div>

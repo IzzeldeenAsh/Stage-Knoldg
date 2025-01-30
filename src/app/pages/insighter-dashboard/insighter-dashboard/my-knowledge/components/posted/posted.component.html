@@ -73,7 +73,7 @@
                 <th class="min-w-10px">Type</th>
                 <th class="min-w-125px">Total Price</th>
                 <th class="min-w-100px">Status</th>
-                <th class="w-125px"></th>
+                <th class="w-125px" *ngIf="!showPackageBuilder"></th>
               </tr>
             </thead>
             <tbody class="fw-semibold text-gray-600">
@@ -102,24 +102,21 @@
                 <td>
                   <span class="badge badge-light-success">{{ knowledge.status | titlecase }}</span>
                 </td>
-                <td class="text-end">
+                <td class="text-end" *ngIf="!showPackageBuilder">
                   <div class="d-flex justify-content-end">
-                 <!-- View button -->
                     <a [routerLink]="['/app/my-knowledge-base/view-my-knowledge/', knowledge.id]" 
                     class="btn btn-sm btn-icon btn-light btn-active-light-primary me-2"
-                    ngbTooltip="{{ 'KNOWLEDGE.VIEW' | translate }}"
-                   >
-                   <i class="ki-duotone ki-eye fs-2">
-                     <span class="path1"></span>
-                     <span class="path2"></span>
-                     <span class="path3"></span>
-                   </i>
-                 </a>
-                    <!-- Delete button -->
+                    ngbTooltip="{{ 'KNOWLEDGE.VIEW' | translate }}">
+                      <i class="ki-duotone ki-eye fs-2">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                        <span class="path3"></span>
+                      </i>
+                    </a>
                     <button type="button" 
                             class="btn btn-sm btn-icon btn-light btn-active-light-danger"
                             (click)="deleteKnowledge(knowledge)"
-                            ngbTooltip=="Delete"
+                            ngbTooltip="Delete"
                             tooltipPosition="top">
                       <i class="ki-duotone ki-trash fs-5">
                         <span class="path1"></span>
