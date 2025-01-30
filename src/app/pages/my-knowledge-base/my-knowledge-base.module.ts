@@ -17,17 +17,19 @@ import { InputTextModule } from "primeng/inputtext";
 import { DropdownModule } from "primeng/dropdown";
 import { TreeModule } from "primeng/tree";
 import { EditorModule } from "@tinymce/tinymce-angular";
-import { ReactiveFormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { ToastModule } from "primeng/toast";
 import { FileSizePipe } from "src/app/reusable-components/file-uploader/file-size.pipe";
 import { SelectRegionComponent } from "src/app/reusable-components/select-region/select-region.component";
 import { SelectEconomicBlockComponent } from "src/app/reusable-components/select-economic-block/select-economic-block.component";
+import { ViewMyPackagesComponent } from "./view-my-packages/view-my-packages.component";
 
 @NgModule({
   declarations: [
     ViewMyKnowledgeComponent,
     KnowledgeDetailsComponent,
     KnowledgeAnalyticsComponent,
+    ViewMyPackagesComponent,
     SchedulePublishDialogComponent,
   ],
   imports: [
@@ -40,6 +42,7 @@ import { SelectEconomicBlockComponent } from "src/app/reusable-components/select
     CalendarModule,
     ButtonModule,
     DialogModule,
+    FormsModule,
     DynamicDialogModule,
     InputTextModule,
     DropdownModule,

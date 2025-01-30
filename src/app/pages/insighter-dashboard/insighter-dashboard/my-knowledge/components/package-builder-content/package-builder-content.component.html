@@ -80,15 +80,16 @@
 
     <!-- Package Items List -->
 <div class="package-items" *ngIf="packages.length > 0">
-    <div *ngFor="let pkg of packages" class="package-item-card">
+  <div *ngFor="let pkg of packages" class="card mb-3">
+    <div class="card-body p-4">
       <div class="d-flex align-items-center justify-content-between">
-        <div>
-          <div class="d-flex align-items-center">
-            <i class="ki-duotone ki-file fs-2 text-primary me-2"></i>
-            <span class="fw-bold">{{ pkg.title }}</span>
-          </div>
-          <div class="text-gray-600 fs-7 mt-1">
-            {{ pkg.type }} · {{ pkg.total_price | currency }}
+        <div class="d-flex align-items-center">
+          <i class="ki-duotone ki-file fs-1 text-primary me-3"></i>
+          <div>
+            <h5 class="card-title mb-1 fs-7">{{ pkg.title }}</h5>
+            <p class="card-text text-muted mb-0">
+              {{ pkg.type }} · {{ pkg.total_price | currency }}
+            </p>
           </div>
         </div>
         <button class="btn btn-icon btn-sm btn-light-danger" (click)="removePackageItem(pkg)">
@@ -103,7 +104,7 @@
       </div>
     </div>
   </div>
-  
+</div>
   </div>
 </ng-container>
 
