@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { NonInsightersAuthGuard } from '../guards/non-insighter-guard/non-insighters.guard';
 import { authGuard } from '../guards/auth-guard/auth.guard';
 import { RolesGuard } from '../guards/roles-guard/roles-gurad.gurad';
-
+//dsds
 const Routing: Routes = [
   {
     path: '',
