@@ -432,3 +432,12 @@ html[dir="ltr"] .p-accordion-toggle-icon{
 }
 
 }
+.p-menubar-root-list{
+  margin-bottom: 0 !important;
+}
+.p-submenu-list{
+  padding-left: 0 !important;
+}
+li .p-menuitem:not(:last-child) {
+  border-bottom: 1px solid #f1f1f4 !important;
+}
