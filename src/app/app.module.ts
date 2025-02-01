@@ -1,5 +1,5 @@
 import { NgModule, APP_INITIALIZER } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ClipboardModule } from 'ngx-clipboard';
@@ -47,6 +47,7 @@ function appInitializer(authService: AuthService) {
       deps: [AuthService],
     },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    provideClientHydration(),
 
   ],
   bootstrap: [AppComponent],

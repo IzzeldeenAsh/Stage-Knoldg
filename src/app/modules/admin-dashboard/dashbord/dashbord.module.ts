@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { DashbordRoutingModule } from './dashbord-routing.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { NgApexchartsModule } from 'ng-apexcharts';
 import { CompanySettingsComponent } from './company-settings/company-settings.component';
 import { DashboardStatsBarComponent } from './dashboard/dashboard-stats-bar/dashboard-stats-bar.component';
 import { AdminNotificationsComponent } from './dashboard/admin-notifications/admin-notifications.component';
@@ -84,7 +83,6 @@ import { VerificationQuestionsListComponent } from './dashboard/verification-que
     MessageModule,
     MessagesModule,
     TableModule,
-    NgApexchartsModule,
     ChipModule,
   ],
   providers: [NodeService]
