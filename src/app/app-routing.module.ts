@@ -11,6 +11,11 @@ export const routes: Routes = [
   pathMatch:"full"
 },
 {
+  path: 'industries',
+  loadChildren: () =>
+    import('./features/industries/industries.module').then((m) => m.IndustriesModule),
+},
+{
   path: 'auth',
   loadChildren: () =>
     import('./modules/auth/auth.module').then((m) => m.AuthModule),
@@ -45,4 +50,3 @@ export const routes: Routes = [
   exports: [RouterModule],
 })
 export class AppRoutingModule {}
-

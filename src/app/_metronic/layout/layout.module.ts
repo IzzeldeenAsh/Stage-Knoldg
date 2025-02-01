@@ -26,6 +26,11 @@ import {
   ModalsModule,
   EngagesModule,
 } from '../partials';
+import { MenubarModule } from 'primeng/menubar';
+import { ButtonModule } from 'primeng/button';
+import { AvatarModule } from 'primeng/avatar';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+
 import { EngagesComponent } from '../partials/layout/engages/engages.component';
 import { ThemeModeModule } from '../partials/layout/theme-mode-switcher/theme-mode.module';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
@@ -96,6 +101,10 @@ const routes: Routes = [
     ThemeModeModule,
     SharedModule,
     DropdownModule,
+    MenubarModule,
+    ButtonModule,
+    AvatarModule,
+    OverlayPanelModule,
   ],
   exports: [RouterModule],
 })
