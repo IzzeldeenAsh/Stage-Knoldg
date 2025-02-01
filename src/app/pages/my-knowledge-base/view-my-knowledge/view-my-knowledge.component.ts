@@ -194,5 +194,32 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
     });
   }
 
- 
+  publishAs(type: 'both' | 'package'): void {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: type === 'package' ? 'This will make the knowledge available in packages only' : 'This will make the knowledge available both standalone and in packages',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, proceed!',
+      cancelButtonText: 'Cancel',
+      customClass: {
+        confirmButton: 'btn btn-primary',
+        cancelButton: 'btn btn-light'
+      },
+      buttonsStyling: false
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.knowledgeService.publishAs(Number(this.knowledgeId), type)
+          .subscribe({
+            next: () => {
+              this.loadKnowledgeData();
+              this.showSuccess('', 'Publishing options updated successfully');
+            },
+            error: (error) => {
+              this.handleServerErrors(error);
+            }
+          });
+      }
+    });
+  }
 }

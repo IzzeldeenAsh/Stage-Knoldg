@@ -45,6 +45,7 @@ export interface Knowledge {
   countries: any[];
   economic_blocs: any[];
   published_at?: string;
+  publish_as?: 'both' | 'package' | 'standalone';
 }
 
 export interface KnowledgeResponse {
@@ -223,6 +224,29 @@ export class KnowledgeService {
     this.setLoading(true);
     return this.http.put(
       `${this.baseUrl}/api/insighter/library/knowledge/status/${id}`,
+      body,
+      { headers }
+    ).pipe(
+      map((res) => res),
+      catchError((error) => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  publishAs(id: number, publishAs: 'both' | 'package'): Observable<any> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Language': this.currentLang,
+    });
+
+    const body = {
+      publish_as: publishAs
+    };
+
+    this.setLoading(true);
+    return this.http.put(
+      `${this.baseUrl}/api/insighter/library/knowledge/publish-as/${id}`,
       body,
       { headers }
     ).pipe(
