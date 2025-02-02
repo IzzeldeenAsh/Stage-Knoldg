@@ -7,8 +7,29 @@
     <ng-template pTemplate="end">
       <div class="d-flex align-items-center gap-3">
         <!-- Notifications -->
-        <p-button icon="pi pi-bell" [badge]="notificationCount.toString()" severity="secondary" [rounded]="true" [text]="true" 
-          (click)="toggleNotifications($event)"></p-button>
+         <!-- Notifications Overlay -->
+  <div class="app-navbar-item 'ms-1 ms-lg-3'" >
+    <div
+   class="btn btn-icon btn-custom btn-icon-muted btn-active-light btn-active-color-primary w-35px h-35px w-md-40px h-md-40px"
+      data-kt-menu-trigger="{default: 'click', lg: 'hover'}"
+      data-kt-menu-attach="parent"
+      data-kt-menu-placement="bottom-end"
+    >
+      <i class="ki-outline ki-notification-on fs-1"></i>
+      <div
+        *ngIf="notificationCount > 0"
+        class="badge badge-circle badge-danger position-absolute translate-middle bottom-0 ms-10 mt-7 h-15px w-15px fs-9"
+      >
+        {{ notificationCount }}
+      </div>  
+    </div>
+    <app-notifications-inner 
+    [parent]="'client'"
+     (notificationClicked)="handleNotificationClick($event)" 
+     [notifications]="notifications"
+     ></app-notifications-inner>
+  </div>
+
         
         <!-- User Profile -->
         <p-avatar [image]="userPhotoUrl || undefined" shape="circle" size="large" 
@@ -19,13 +40,6 @@
     </ng-template>
   </p-menubar>
 
-  <!-- Notifications Overlay -->
-  <p-overlayPanel #notificationsOverlay>
-    <app-notifications-inner [parent]="'client'" 
-      (notificationClicked)="handleNotificationClick($event)" 
-      [notifications]="notifications">
-    </app-notifications-inner>
-  </p-overlayPanel>
 
   <!-- User Menu Overlay -->
   <p-overlayPanel #userMenuOverlay>
