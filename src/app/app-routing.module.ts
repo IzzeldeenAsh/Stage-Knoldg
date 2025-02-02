@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { adminGuard } from './guards/admin-guard/admin.guard';
-import { authGuard } from './guards/auth-guard/auth.guard';
-import { UnAuthGuard } from './guards/unauth-guard/un-auth.guard';
 
 export const routes: Routes = [
 {
@@ -10,11 +8,7 @@ export const routes: Routes = [
   redirectTo : 'auth',
   pathMatch:"full"
 },
-{
-  path: 'industries',
-  loadChildren: () =>
-    import('./features/industries/industries.module').then((m) => m.IndustriesModule),
-},
+
 {
   path: 'auth',
   loadChildren: () =>

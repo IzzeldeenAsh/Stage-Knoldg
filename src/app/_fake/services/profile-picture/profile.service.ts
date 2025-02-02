@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -16,18 +16,32 @@ export class ProfileService {
     const formData = new FormData();
     formData.append('profile_photo', file);
 
-    return this.http.post<any>(this.uploadUrl, formData);
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': 'en'
+    });
+
+    return this.http.post<any>(this.uploadUrl, formData, { headers });
   }
 
   updateCompanyLogo(file: File): Observable<any> {
     const formData = new FormData();
     formData.append('logo', file);
 
-    return this.http.post<any>(this.updateLogo, formData);
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': 'en'
+    });
+
+    return this.http.post<any>(this.updateLogo, formData, { headers });
   }
 
 
   removeProfilePhoto(): Observable<any> {
-    return this.http.delete<any>(this.removeUrl);
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': 'en'
+    });
+    return this.http.delete<any>(this.removeUrl, { headers });
   }
 }
