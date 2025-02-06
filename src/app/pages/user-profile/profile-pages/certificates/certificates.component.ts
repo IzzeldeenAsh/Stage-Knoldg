@@ -21,16 +21,19 @@ export class CertificatesComponent extends BaseComponent implements OnInit {
   documentTypes: Document[];
   isLoadingDocumentTypes: boolean = false;
   displayAddCertDialog: boolean = false;
+  displayDeleteDialog: boolean = false;
   selectedDocType: string;
   selectedFile: File | null = null;
   isUploading: boolean = false;
+  isDeleting: boolean = false;
+  selectedCertificate: any = null;
 
   constructor(
     private documentsService: DocumentsService,
     injector: Injector,
     private _profilePost: UpdateProfileService,
     private getProfileService: ProfileService,
-  
+    public messageService: MessageService
   ) {
     super(injector);
   }
@@ -181,5 +184,42 @@ export class CertificatesComponent extends BaseComponent implements OnInit {
     });
 
     this.unsubscribe.push(uploadSub);
+  }
+
+  confirmDelete(cert: any) {
+    this.selectedCertificate = cert;
+    this.displayDeleteDialog = true;
+  }
+
+  deleteCertificate() {
+    if (!this.selectedCertificate) {
+      return;
+    }
+
+    this.isDeleting = true;
+    const deleteSub = this._profilePost.deleteCertificate(this.selectedCertificate.id).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Certificate deleted successfully'
+        });
+        this.displayDeleteDialog = false;
+        this.getProfileService.clearProfile();
+        this.getProfile(); // Refresh the profile to update the certificates list
+      },
+      error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to delete certificate'
+        });
+      },
+      complete: () => {
+        this.isDeleting = false;
+      }
+    });
+
+    this.unsubscribe.push(deleteSub);
   }
 }

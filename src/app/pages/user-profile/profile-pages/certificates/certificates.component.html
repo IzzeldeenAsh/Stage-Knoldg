@@ -48,6 +48,11 @@
                <!--end::Title-->
              </a>
              <!--end::Name-->
+             
+             <!-- Add Delete Button -->
+             <button class="btn btn-sm btn-light-danger mt-3" (click)="confirmDelete(cert)">
+               <i class="fas fa-trash"></i> Delete
+             </button>
            </div>
            <!--end::Card body-->
          </div>
@@ -107,3 +112,30 @@
      </ng-template>
    </p-dialog>
    <!--end::Add Certificate Dialog-->
+   
+   <!-- Delete Confirmation Dialog -->
+   <p-dialog 
+     [(visible)]="displayDeleteDialog" 
+     [style]="{width: '450px'}" 
+     header="Delete Certificate" 
+     [modal]="true"
+     [draggable]="false"
+     [resizable]="false">
+     
+     <div class="p-fluid">
+       <p>Are you sure you want to delete this certificate?</p>
+     </div>
+
+     <ng-template pTemplate="footer">
+       <button class="btn btn-secondary me-2" (click)="displayDeleteDialog = false" [disabled]="isDeleting">Cancel</button>
+       <button class="btn btn-danger" (click)="deleteCertificate()" [disabled]="isDeleting">
+         <ng-container *ngIf="!isDeleting">
+           Delete
+         </ng-container>
+         <ng-container *ngIf="isDeleting">
+           <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+           Deleting...
+         </ng-container>
+       </button>
+     </ng-template>
+   </p-dialog>
