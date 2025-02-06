@@ -52,6 +52,44 @@
         </div>
       </div>
 
+      <!-- Company Address -->
+      <div class="mb-8">
+        <label class="form-label required fw-bold">
+          {{ 'INSIGHTER_WIZARD.ADDRESS' | translate }}
+        </label>
+        <input
+          formControlName="address"
+          type="text"
+          class="form-control form-control-lg"
+          placeholder="{{ 'INSIGHTER_WIZARD.ADDRESS_PLACEHOLDER' | translate }}"
+        />
+        <div
+          *ngIf="form.get('address')?.invalid && form.get('address')?.touched"
+          class="fv-plugins-message-container invalid-feedback"
+        >
+          {{ 'INSIGHTER_WIZARD.ADDRESS_REQUIRED' | translate }}
+        </div>
+      </div>
+
+      <!-- Company Phone -->
+      <div class="mb-8">
+        <label class="form-label required fw-bold">
+          {{ 'INSIGHTER_WIZARD.COMPANY_PHONE' | translate }}
+        </label>
+        <input
+          formControlName="company_phone"
+          type="tel"
+          class="form-control form-control-lg"
+          placeholder="{{ 'INSIGHTER_WIZARD.COMPANY_PHONE_PLACEHOLDER' | translate }}"
+        />
+        <div
+          *ngIf="form.get('company_phone')?.invalid && form.get('company_phone')?.touched"
+          class="fv-plugins-message-container invalid-feedback"
+        >
+          {{ 'INSIGHTER_WIZARD.COMPANY_PHONE_REQUIRED' | translate }}
+        </div>
+      </div>
+
       <!-- Logo Upload -->
       <div class="mb-8">
         <label class="form-label required fw-bold">

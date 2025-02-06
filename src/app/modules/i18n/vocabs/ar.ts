@@ -274,13 +274,18 @@ export const locale = {
       SUBMIT: "إرسال",
       PLEASE_WAIT: "يرجى الانتظار...",
       ABOUT_COMPANY_REQUIRED:"معلومات حول الشركة مطلوبة",
-  UPGRADE_TO_CORPORATE_ACCOUNT: "ترقية إلى حساب تجاري", // Heading for the form
-  COMPANY_LOGO_REQUIRED: "شعار الشركة مطلوب.", // Error message for logo
-  WEBSITE_REQUIRED: "موقع الشركة الالكتروني مطلوب.", // Error message for website domain
-  COMPANY_EMAIL_REQUIRED: "البريد الإلكتروني للشركة مطلوب.", // Error message for company email
-  CODE_REQUIRED: "رمز التحقق مطلوب.", // Error message for verification code
-  DELETE_FILE: "حذف الملف", // Tooltip for delete file button
-      // New Keys for the Current Component
+      ADDRESS: "عنوان الشركة",
+      ADDRESS_PLACEHOLDER: "أدخل عنوان الشركة",
+      ADDRESS_REQUIRED: "عنوان الشركة مطلوب",
+      COMPANY_PHONE: "رقم هاتف الشركة",
+      COMPANY_PHONE_PLACEHOLDER: "أدخل رقم هاتف الشركة",
+      COMPANY_PHONE_REQUIRED: "رقم هاتف الشركة مطلوب",
+      UPGRADE_TO_CORPORATE_ACCOUNT: "ترقية إلى حساب تجاري",
+      COMPANY_LOGO_REQUIRED: "شعار الشركة مطلوب.",
+      WEBSITE_REQUIRED: "موقع الشركة الالكتروني مطلوب.",
+      COMPANY_EMAIL_REQUIRED: "البريد الإلكتروني للشركة مطلوب.",
+      CODE_REQUIRED: "رمز التحقق مطلوب.",
+      DELETE_FILE: "حذف الملف",
       CHOOSE_ACCOUNT_TYPE: "اختر نوع الحساب",
       BILLING_TOOLTIP: "يتم إصدار الفواتير بناءً على نوع الحساب الذي اخترته",
       MORE_INFO: "إذا كنت بحاجة إلى مزيد من المعلومات، يرجى زيارة",
@@ -296,11 +301,6 @@ export const locale = {
       PHONE_NUMBER: "رقم الهاتف",
       PHONE_NUMBER_OPTIONAL: "(اختياري)",
       YOUR_PHONE_NUMBER: "رقم هاتفك",
-      COMPANY_PHONE_NUMBER:"رقم هاتف الشركة",
-      PHONE_NUMBER_REQUIRED: "رقم الهاتف مطلوب.",
-      PHONE_NUMBER_PATTERN: "يجب أن يحتوي رقم الهاتف على 10 أرقام بالضبط.",
-      LEGAL_NAME: "الاسم القانوني",
-      LEGAL_NAME_PLACEHOLDER: "الاسم القانوني لشركتك",
       COMPANY_ADDRESS:"عنوان الشركة",
       LEGAL_NAME_REQUIRED: "الاسم القانوني لشركتك مطلوب.",
       ABOUT_COMPANY: "معلومات عن الشركة",
@@ -708,6 +708,11 @@ export const locale = {
   CLICK_TO_ADD_DOCUMENT: "اضغط لإضافة مستند",
   SCHEDULE_PUBLICATION: "جدولة النشر",  
   EDIT_KNOWLEDGE: "إدارة المعرفة",
-  SELECT_KNOWLEDGE_TYPE: "حدد نوع المعرفة"
+  SELECT_KNOWLEDGE_TYPE: "حدد نوع المعرفة",
+  "INSIGHTER_DASHBOARD": "لوحة معلومات المحلل",
+    "INSIGHTER_DASHBOARD_GENERAL": "عام",
+    "INSIGHTER_DASHBOARD_SCHEDULED": "المجدولة",
+    "INSIGHTER_DASHBOARD_POSTED": "المُنشَر",
+    "INSIGHTER_DASHBOARD_PACKAGES": "الحزم"
   }
 };

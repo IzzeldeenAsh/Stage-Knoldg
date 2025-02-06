@@ -184,7 +184,7 @@ export const locale = {
         "SUCCESS_JOURNEY_TITLE": "Congratulations on joining Knowrland!",
         "THANK_YOU_MESSAGE": `
         You are now part of an elite network of insight providers and consultants dedicated to empowering our visitors with valuable expertise.
-       <br><br> You’ll be notified by email when it’s time to start uploading your reports, researches, and insights to the platform.
+       <br><br> You'll be notified by email when it's time to start uploading your reports, researches, and insights to the platform.
         Thank you!
         `,
         "STAY_TUNED_MESSAGE": `
@@ -323,6 +323,12 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       SUBMIT: "Submit",
       PLEASE_WAIT: "Please wait...",
       ABOUT_COMPANY_REQUIRED:"About Company Required",
+      ADDRESS: "Company Address",
+      ADDRESS_PLACEHOLDER: "Enter company address",
+      ADDRESS_REQUIRED: "Company address is required",
+      COMPANY_PHONE: "Company Phone",
+      COMPANY_PHONE_PLACEHOLDER: "Enter company phone number",
+      COMPANY_PHONE_REQUIRED: "Company phone number is required",
       // New Keys for the Current Component
       CHOOSE_ACCOUNT_TYPE: "Choose Account Type",
       BILLING_TOOLTIP: "Billing is issued based on your selected account type",
@@ -397,7 +403,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     },
     CONGRATS_CARD:{
       TITLE: "Congratulations!",
-      DESCRIPTION: "You now have access to powerful tools to upload insights, manage insighters, and maximize your data capabilities. Here’s a quick overview of what you can do:",
+      DESCRIPTION: "You now have access to powerful tools to upload insights, manage insighters, and maximize your data capabilities. Here's a quick overview of what you can do:",
       FEATURES: {
         UPLOAD_INSIGHTS: "Upload Insights:",
         UPLOAD_INSIGHTS_DESC: "Share data and insights easily, helping your team stay informed and make data-driven decisions.",
@@ -750,6 +756,10 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     SCHEDULE_PUBLICATION: "Schedule Publication",
     EDIT_KNOWLEDGE: "Edit Knowledge"  ,
     SELECT_KNOWLEDGE_TYPE: "Select Knowledge Type",
-    GO_TO_LIBRARY: "Go to Library"
+    GO_TO_LIBRARY: "Go to Library",
+    "INSIGHTER_DASHBOARD_GENERAL": "General",
+    "INSIGHTER_DASHBOARD_SCHEDULED": "Scheduled",
+    "INSIGHTER_DASHBOARD_POSTED": "Posted",
+    "INSIGHTER_DASHBOARD_PACKAGES": "Packages"
   }
 };

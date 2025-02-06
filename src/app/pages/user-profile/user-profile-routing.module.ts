@@ -8,6 +8,7 @@ import { DocumentsComponent } from './profile-pages/documents/documents.componen
 import { SettingsDashboardComponent } from './profile-pages/account-settings/settings-dashboard/settings-dashboard.component';
 import { PersonalSettingsComponent } from './profile-pages/account-settings/personal-settings/personal-settings.component';
 import { CompanySettingsComponent } from './profile-pages/account-settings/company-settings/company-settings.component';
+import { ResetPasswordComponent } from './profile-pages/account-settings/reset-password/reset-password.component';
 import { authGuard } from 'src/app/guards/auth-guard/auth.guard';
 
 const routes: Routes = [
@@ -40,7 +41,7 @@ const routes: Routes = [
     {
       path: 'settings',
       component: SettingsDashboardComponent,
-      canActivate: [authGuard], // Apply guards here
+      canActivate: [authGuard],
       children:[
         {
           path:'',
@@ -57,7 +58,12 @@ const routes: Routes = [
           canActivate:[RolesGuard],
           data: { roles: ['company'] } 
         },
-        
+        {
+          path:'reset-password',
+          component:ResetPasswordComponent,
+          canActivate:[RolesGuard],
+          data: { roles: ['client'] } 
+        },
         {
           path:'company-account',
           component:CompanySettingsComponent,
@@ -66,7 +72,7 @@ const routes: Routes = [
         }
        
       ],
-      data: { roles: ['insighter', 'company'] } 
+      data: { roles: ['insighter', 'company', 'client'] } 
     },
    
    ]
