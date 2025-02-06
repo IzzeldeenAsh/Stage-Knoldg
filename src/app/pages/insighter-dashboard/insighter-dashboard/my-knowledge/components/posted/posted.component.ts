@@ -109,6 +109,22 @@ export class PostedComponent extends BaseComponent implements OnInit {
     );
   }
 
+  onSearch(event: any) {
+    const value = event.target.value;
+    this.searchTerm = value;
+    
+    // Clear previous timeout
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
+    
+    // Set new timeout for debouncing
+    this.searchTimeout = setTimeout(() => {
+      this.currentPage = 1; // Reset to first page when searching
+      this.loadPage(this.currentPage);
+    }, 300); // 300ms debounce
+  }
+
   getPages(): number[] {
     const pages: number[] = [];
     for (let i = 1; i <= this.totalPages; i++) {
@@ -273,21 +289,5 @@ export class PostedComponent extends BaseComponent implements OnInit {
   hideDialog() {
     this.showDialog = false;
     this.resetPackageBuilder();
-  }
-
-  onSearch(event: any) {
-    const value = event.target.value;
-    this.searchTerm = value;
-    
-    // Clear previous timeout
-    if (this.searchTimeout) {
-      clearTimeout(this.searchTimeout);
-    }
-    
-    // Set new timeout for debouncing
-    this.searchTimeout = setTimeout(() => {
-      this.currentPage = 1; // Reset to first page when searching
-      this.loadPage(this.currentPage);
-    }, 300); // 300ms debounce
   }
 }

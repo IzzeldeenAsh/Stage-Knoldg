@@ -63,19 +63,49 @@
     </a>
   </div>
 
-  <div class="menu-item px-5" *ngIf="_user.roles.includes('insighter') || _user.roles.includes('company')"> 
-    <a [routerLink]="'/app/insighter-dashboard'" class="menu-link px-5">
-      {{ 'HOME.INSIGHTER_DASHBOARD' | translate }}
+  <div
+    class="menu-item px-5"
+    data-kt-menu-trigger="hover"
+    data-kt-menu-placement="left-start"
+    data-kt-menu-flip="bottom"
+    *ngIf="_user.roles.includes('insighter') || _user.roles.includes('company')"
+  >
+    <a class="menu-link px-5 cursor-pointer" [routerLink]="'/app/insighter-dashboard/'" >
+      <span class="menu-title">{{ 'HOME.INSIGHTER_DASHBOARD' | translate }}</span>
+      <span class="menu-arrow"></span>
     </a>
+
+    <div class="menu-sub menu-sub-dropdown w-175px py-4">
+      <div class="menu-item px-3">
+        <a [routerLink]="'/app/insighter-dashboard/my-knowledge/general'" class="menu-link px-5">
+          {{ 'INSIGHTER_DASHBOARD_GENERAL' | translate }}
+        </a>
+      </div>
+
+      <div class="menu-item px-3">
+        <a [routerLink]="'/app/insighter-dashboard/my-knowledge/scheduled'" class="menu-link px-5">
+          {{ 'INSIGHTER_DASHBOARD_SCHEDULED' | translate }}
+        </a>
+      </div>
+
+      <div class="menu-item px-3">
+        <a [routerLink]="'/app/insighter-dashboard/my-knowledge/posted'" class="menu-link px-5">
+          {{ 'INSIGHTER_DASHBOARD_POSTED' | translate }}
+        </a>
+      </div>
+
+      <div class="menu-item px-3">
+        <a [routerLink]="'/app/insighter-dashboard/my-knowledge/packages'" class="menu-link px-5">
+          {{ 'INSIGHTER_DASHBOARD_PACKAGES' | translate }}
+        </a>
+      </div>
+    </div>
   </div>
 
-
-  <div class="menu-item px-5" *ngIf="_user.roles.includes('company') || _user.roles.includes('insighter')">
-    <a class="menu-link px-5 cursor-pointer" placement="top-start" ngbTooltip="Coming soon">
-      <span class="menu-text">{{ 'HOME.MY_PROJECTS' | translate }}</span>
-      <span class="menu-badge">
-        <span class="badge badge-light-danger badge-circle fw-bolder fs-7">3</span>
-      </span>
+  <div class="menu-item px-5" *ngIf="_user.roles.includes('insighter') || _user.roles.includes('company')">
+    <a [routerLink]="'/app/add-knowledge/stepper'" class="menu-link px-5 text-info">
+      <i class="ki-duotone ki-plus fs-5 me-2 text-info"><span class="path1"></span><span class="path2"></span></i>
+      Add Knowledge
     </a>
   </div>
 
@@ -103,8 +133,8 @@
         </a>
       </div>
 
-      <div class="menu-item px-3">
-        <a class="menu-link px-5 cursor-pointer" placement="top-start" [routerLink]="'/app/insighter-dashboard/account-settings/general-settings'">
+      <div class="menu-item px-3" *ngIf="_user.roles.includes('client')">
+        <a class="menu-link px-5 cursor-pointer" placement="top-start" [routerLink]="'/app/profile/settings/reset-password'">
           {{ 'ACCOUNT_SETTINGS.RESET_PASSWORD' | translate }}
         </a>
       </div>

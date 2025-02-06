@@ -34,7 +34,7 @@ export class ChangePasswordService {
       'Content-Type': 'application/json',
       'Accept-Language': this.currentLang
     });
-    return this.http.post(this.apiUrl,payload)
+    return this.http.post(this.apiUrl,payload, { headers })
     .pipe(
       map((res) => res), // Adjust this based on the API response structure
       catchError((error) => this.handleError(error)), // Use the custom error handler

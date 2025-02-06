@@ -28,8 +28,12 @@ export class SettingsSidebarComponent extends BaseComponent implements OnInit {
       title: this.lang === 'ar' ? 'بيانات الشركة' : 'Company Info',
       route: '/app/profile/settings/company-settings',
       roles: ['company'],
+    },
+    {
+      title: this.lang === 'ar' ? 'تغيير كلمة المرور' : 'Reset Password',
+      route: '/app/profile/settings/reset-password',
+      roles: ['client'],
     }
-
   ];
   constructor(
     injector: Injector,
@@ -74,7 +78,11 @@ export class SettingsSidebarComponent extends BaseComponent implements OnInit {
         roles: ['company'],
         // isActive: this.isActive
       },
-    
+      {
+        title: this.lang === 'ar' ? 'تغيير كلمة المرور' : 'Reset Password',
+        route: '/app/profile/settings/reset-password',
+        roles: ['client'],
+      }
     ];
 
     // if (this.isActive) {

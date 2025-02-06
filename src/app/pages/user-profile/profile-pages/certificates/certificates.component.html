@@ -8,6 +8,14 @@
          <span class="fs-6 text-gray-500 fw-semibold ms-1" *ngIf="profile && profile.certifications">{{profile.certifications.length}}</span>
        </h3>
        <!--end::Title-->
+       
+       <!--begin::Add button-->
+       <div class="d-flex my-2">
+         <button class="btn btn-sm btn-primary" (click)="showAddCertDialog()">
+           <i class="fas fa-plus"></i> Add Certificate
+         </button>
+       </div>
+       <!--end::Add button-->
      </div>
 
      <div
@@ -48,3 +56,54 @@
        <!--end::Col-->
      </div>
    </ng-container>
+
+   <!--begin::Add Certificate Dialog-->
+   <p-dialog 
+     [(visible)]="displayAddCertDialog" 
+     [style]="{width: '450px'}" 
+     header="Add Certificate" 
+     [modal]="true"
+     [draggable]="false"
+     [resizable]="false">
+     
+     <div class="p-fluid">
+       <div class="field mb-4">
+         <label for="documentType" class="block mb-2">Certificate Type</label>
+         <p-dropdown 
+           id="documentType"
+           [options]="documentTypes"
+           [(ngModel)]="selectedDocType"
+           optionLabel="name"
+           optionValue="name"
+           placeholder="Select Certificate Type"
+           [style]="{'width':'100%'}"
+           appendTo="body"
+           class="w-full">
+         </p-dropdown>
+       </div>
+
+       <div class="field mb-4">
+         <label for="certificate" class="block mb-2">Certificate File</label>
+         <input 
+           type="file" 
+           class="form-control"
+           (change)="onFileSelect($event)"
+           accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+         <small class="text-muted">Supported formats: PDF, DOC, DOCX, JPG, PNG</small>
+       </div>
+     </div>
+
+     <ng-template pTemplate="footer">
+       <button class="btn btn-secondary me-2" (click)="displayAddCertDialog = false" [disabled]="isUploading">Cancel</button>
+       <button class="btn btn-primary" (click)="uploadCertificate()" [disabled]="!selectedDocType || !selectedFile || isUploading">
+         <ng-container *ngIf="!isUploading">
+           Upload
+         </ng-container>
+         <ng-container *ngIf="isUploading">
+           <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+           Uploading...
+         </ng-container>
+       </button>
+     </ng-template>
+   </p-dialog>
+   <!--end::Add Certificate Dialog-->

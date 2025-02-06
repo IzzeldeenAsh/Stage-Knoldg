@@ -15,6 +15,11 @@
  .pre-line{
     white-space: pre-line;
  }
+ .lg-max-width-700px{
+ @media screen and (min-width: 768px) {
+     max-width: 700px;
+ }
+ }
  .mb-70{
    margin-bottom: 70px;
  }

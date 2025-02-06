@@ -9,7 +9,6 @@ import { IndustryService } from "src/app/_fake/services/industries/industry.serv
 import { UpdateProfileService } from "src/app/_fake/services/profile/profile.service";
 import { AuthService } from "src/app/modules/auth";
 import { BaseComponent } from "src/app/modules/base.component";
-import { SocialNetworksModel } from 'src/app/modules/auth/models/social-networks.model';
 
 @Component({
   selector: "app-personal-settings",
@@ -54,6 +53,8 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
       tap((profile) => {
         this.profile = profile;
         this.roles = profile.roles;
+        console.log('Current roles:', this.roles);
+        console.log('Is insighter:', this.hasRole(['insighter']));
         if(this.hasRole(['insighter'])){
           this.callConsultingFields();
           this.callIndustries();
@@ -87,7 +88,10 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
 
   callIndustries(){
     const sub = this._industries.getIsicCodesTree(this.lang ? this.lang : 'en').subscribe((industries: any) => {
+      console.log('Industries data received:', industries);
       this.industries = industries;
+    }, error => {
+      console.error('Error loading industries:', error);
     });
     this.unsubscribe.push(sub);
   }
@@ -136,13 +140,19 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
   }
 
   onConsultingNodesSelected(selectedNodes: any) {
-    this.allConsultingFieldsSelected = selectedNodes && selectedNodes.length > 0 ? selectedNodes : [];
-    this.personalInfoForm.get('consulting_field')?.setValue(this.allConsultingFieldsSelected); // Corrected
+    const filteredNodes = selectedNodes && selectedNodes.length > 0 
+      ? selectedNodes.filter((node: any) => node.data.key !== 'selectAll')
+      : [];
+    this.allConsultingFieldsSelected = filteredNodes;
+    this.personalInfoForm.get('consulting_field')?.setValue(filteredNodes);
   }
 
   onIndustrySelected(selectedNodes: any) {
-    this.allIndustriesSelected = selectedNodes && selectedNodes.length > 0 ? selectedNodes : [];
-    this.personalInfoForm.get('industries')?.setValue(this.allIndustriesSelected); // Corrected
+    const filteredNodes = selectedNodes && selectedNodes.length > 0 
+      ? selectedNodes.filter((node: any) => node.data.key !== 'selectAll')
+      : [];
+    this.allIndustriesSelected = filteredNodes;
+    this.personalInfoForm.get('industries')?.setValue(filteredNodes);
   }
 
   initForm() {
@@ -232,35 +242,85 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
         formData.append("phone", this.profile.phone);
       }
 
-      // Add industries if any
-      if (this.profile.industries?.length) {
-        this.profile.industries.forEach((code: any) => {
-          formData.append("industries[]", code.id.toString());
+      // Handle industries
+      const industries = form.get('industries')?.value || [];
+      
+      // Regular industries (with numeric keys)
+      const industriesList = industries.filter((node: any) => 
+        typeof node.data.key === 'number' && node.data.key !== 'selectAll'
+      );
+      
+      // Other industries (with custom input)
+      const otherIndustriesFields = industries.filter((node: any) => 
+        typeof node.data.key === 'string' && 
+        node.data.key !== 'selectAll' && 
+        node.data.customInput !== undefined && 
+        node.data.customInput !== null
+      );
+
+      // Append regular industries
+      if (industriesList.length > 0) {
+        industriesList.forEach((industry: any) => {
+          formData.append("industries[]", industry.data.key.toString());
         });
       }
 
-      // Add consulting fields if any  
-      if (this.profile.consulting_field?.length) {
-        this.profile.consulting_field.forEach((field: any) => {
-          formData.append("consulting_field[]", field.id.toString());
+      // Append other industries with custom input
+      if (otherIndustriesFields.length > 0) {
+        otherIndustriesFields.forEach((field: any, index: number) => {
+          formData.append(
+            `suggest_industries[${index}][parent_id]`, 
+            field.parent?.key === "selectAll" ? "0" : field.parent?.key
+          );
+          formData.append(`suggest_industries[${index}][name][en]`, field.data.customInput);
+          formData.append(`suggest_industries[${index}][name][ar]`, field.data.customInput);
+        });
+      }
+
+      // Handle consulting fields
+      const consultingFields = form.get('consulting_field')?.value || [];
+      
+      // Regular consulting fields (with numeric keys)
+      const consultingFieldList = consultingFields.filter((node: any) => 
+        typeof node.data.key === 'number' && node.data.key !== 'selectAll'
+      );
+      
+      // Other consulting fields (with custom input)
+      const otherConsultingFields = consultingFields.filter((node: any) => 
+        typeof node.data.key === 'string' && 
+        node.data.key !== 'selectAll' && 
+        node.data.customInput !== undefined && 
+        node.data.customInput !== null
+      );
+
+      // Append regular consulting fields
+      if (consultingFieldList.length > 0) {
+        consultingFieldList.forEach((field: any) => {
+          formData.append("consulting_field[]", field.data.key.toString());
+        });
+      }
+
+      // Append other consulting fields with custom input
+      if (otherConsultingFields.length > 0) {
+        otherConsultingFields.forEach((field: any, index: number) => {
+          formData.append(
+            `suggest_consulting_fields[${index}][parent_id]`, 
+            field.parent?.key === "selectAll" ? "0" : field.parent?.key
+          );
+          formData.append(`suggest_consulting_fields[${index}][name][en]`, field.data.customInput);
+          formData.append(`suggest_consulting_fields[${index}][name][ar]`, field.data.customInput);
         });
       }
 
       if(this.hasRole(['company']) && this.profile.company?.legal_name){
         formData.append("legal_name", this.profile.company.legal_name);
         formData.append("about_us", this.profile.company.about_us);
-       
       }
       if(this.hasRole(['company']) && this.profile.company?.website){
         formData.append("website", this.profile.company.website);
       }
     }
 
-    // Log form data entries
-    const formDataEntries: Array<{ key: string; value: string }> = [];
-    formData.forEach((value, key) => {
-      formDataEntries.push({ key, value: value.toString() });
-    });
     return formData;
   }
 

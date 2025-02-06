@@ -20,11 +20,6 @@ export const routes: Routes = [
     import('./_metronic/layout/layout.module').then((m) => m.LayoutModule),
 },
 {
-  path: 'edit-knowledge',
-  loadChildren: () =>
-    import('./pages/add-knowledge/wizards.module').then((m) => m.WizardsModule),
-},
-{
   path: 'admin-dashboard',
   loadChildren: () =>
     import('./modules/admin-dashboard/admin-dashboard.module').then((m) => m.AdminDashboardModule),

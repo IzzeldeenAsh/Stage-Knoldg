@@ -197,7 +197,8 @@ export class Step5Component extends BaseComponent implements OnInit {
         companyEmail: [''],
         code: [''],
         registerDocument: [null],
-
+        address: ['', Validators.required],
+        company_phone: ['', Validators.required],
       },
       { validators:this.verificationMethodValidator() }
     );

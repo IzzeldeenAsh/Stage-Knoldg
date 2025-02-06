@@ -1,15 +1,9 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavigationCancel, NavigationEnd, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { LayoutService } from '../../core/layout.service';
 import { MenuComponent } from '../../../kt/components';
 import { ILayout, LayoutType } from '../../core/configs/config';
-import { MenuItem } from 'primeng/api';
-import { OverlayPanel } from 'primeng/overlaypanel';
-import { IForsightaProfile } from 'src/app/_fake/models/profile.interface';
-import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
-import { NotificationsService } from 'src/app/_fake/services/notifications/notifications.service';
-import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-header',
@@ -38,45 +32,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   appHeaderDefaulMenuDisplay: boolean;
   appPageTitleDisplay: boolean;
 
-  menuItems: MenuItem[] = [];
-  notificationCount: number = 0;
-  notifications: any[] = [];
-  userProfile: IForsightaProfile;
-  userPhotoUrl: string = '';
-  userInitials: string = '';
-
-  @ViewChild('notificationsOverlay') notificationsOverlay: OverlayPanel;
-  @ViewChild('userMenuOverlay') userMenuOverlay: OverlayPanel;
-
-  constructor(
-    private layout: LayoutService,
-    private router: Router,
-    private profileService: ProfileService,
-    private notificationsService: NotificationsService,
-    private sanitizer: DomSanitizer
-  ) {
+  constructor(private layout: LayoutService, private router: Router) {
     this.routingChanges();
-    this.initializeMenu();
-  }
-
-  private initializeMenu() {
-    this.menuItems = [
-     
-      {
-        label: 'Industries',
-        icon: '',
-        items: [
-          {
-          label: 'All Industries',
-            routerLink: ['/all-industries']
-          },
-          {
-            label: 'Add Knowledge',
-            routerLink: ['/add-knowledge']
-          }
-        ]
-      }
-    ];
   }
 
   updateProps(config: ILayout) {
@@ -165,24 +122,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.currentLayoutType = layout;
       });
     this.unsubscribe.push(layoutSubscr);
-
-    // Subscribe to profile changes
-    this.profileService.getProfile().subscribe(profile => {
-      this.userProfile = profile;
-      if (profile) {
-        this.userPhotoUrl = profile.profile_photo_url || '';
-        this.userInitials = `${profile.first_name?.charAt(0) || ''}${profile.last_name?.charAt(0) || ''}`;
-      }
-    });
-
-    // Subscribe to notifications
-    this.notificationsService.notifications$.subscribe(notifications => {
-      this.notifications = notifications;
-      this.notificationCount = notifications.length;
-    });
-
-    // Start polling for notifications
-    this.notificationsService.startPolling();
   }
 
   routingChanges() {
@@ -194,41 +133,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.unsubscribe.push(routerSubscription);
   }
 
-  toggleNotifications(event: Event) {
-    this.notificationsOverlay.toggle(event);
-    if (this.userMenuOverlay?.overlayVisible) {
-      this.userMenuOverlay.hide();
-    }
-  }
-
-  toggleUserMenu(event: Event) {
-    this.userMenuOverlay.toggle(event);
-    if (this.notificationsOverlay?.overlayVisible) {
-      this.notificationsOverlay.hide();
-    }
-  }
-
-  handleNotificationClick(notificationId: string) {
-    this.notificationsService.markAsRead(notificationId, 'en').subscribe({
-      next: () => {
-        this.notificationsService.getNotifications('en').subscribe(notifications => {
-          this.notifications = notifications;
-          this.notificationCount = notifications.length;
-        });
-        this.notificationsOverlay.hide();
-      },
-      error: (error) => {
-        console.error('Error marking notification as read:', error);
-      }
-    });
-  }
-
-  getSafeUrl(url: string) {
-    return url ? this.sanitizer.bypassSecurityTrustResourceUrl(url) : '';
-  }
-
   ngOnDestroy() {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
-    this.notificationsService.stopPolling();
   }
 }

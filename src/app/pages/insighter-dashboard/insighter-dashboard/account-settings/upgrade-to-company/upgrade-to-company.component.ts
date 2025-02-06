@@ -80,6 +80,8 @@ export class UpgradeToCompanyComponent
       legalName: ["", Validators.required],
       aboutCompany: ["", Validators.required],
       logo: [null, Validators.required],
+      address: ["", Validators.required],
+      company_phone: ["", Validators.required],
       verificationMethod: ["websiteEmail", Validators.required],
       website: [""],
       companyEmail: ["", Validators.email],
@@ -169,11 +171,15 @@ export class UpgradeToCompanyComponent
       const getCodeSub = this.http
         .post("https://api.foresighta.co/api/auth/company/code/send", {
           verified_email: email,
+        }, {
+          headers: {
+            'Accept-Language': 'en'
+          }
         })
         .subscribe({
           next: (response) => {
             this.messageService.add({
-              severity: "success",
+              severity: "success", 
               summary: "Success",
               detail: "Verification email sent successfully.",
             });
@@ -186,7 +192,7 @@ export class UpgradeToCompanyComponent
               error?.error?.message || "Failed to send verification code.";
             this.messageService.add({
               severity: "error",
-              summary: "Error",
+              summary: "Error", 
               detail: errorMsg,
             });
             this.gettingCodeLoader = false;
@@ -278,6 +284,8 @@ export class UpgradeToCompanyComponent
     formData.append("legal_name", this.form.get("legalName")?.value);
     formData.append("about_us", this.form.get("aboutCompany")?.value);
     formData.append("logo", this.form.get("logo")?.value);
+    formData.append("address", this.form.get("address")?.value);
+    formData.append("company_phone", this.form.get("company_phone")?.value);
 
     const verificationMethod = this.form.get("verificationMethod")?.value;
 

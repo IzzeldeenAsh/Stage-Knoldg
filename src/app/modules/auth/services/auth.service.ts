@@ -87,10 +87,24 @@ export class AuthService implements OnDestroy {
     );
   }
   getGoogleAuthRedirectUrl(): Observable<string> {
-    return this.http.get('https://api.foresighta.co/api/auth/provider/google', { responseType: 'text' });
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': 'en'
+    });
+    return this.http.get('https://api.foresighta.co/api/auth/provider/google', { 
+      headers,
+      responseType: 'text' 
+    });
   }
   getLinkedInAuthRedirectUrl(): Observable<string> {
-    return this.http.get('https://api.foresighta.co/api/auth/provider/linkedin', { responseType: 'text' });
+    const headers = new HttpHeaders({
+      'Accept': 'application/json', 
+      'Accept-Language': 'en'
+    });
+    return this.http.get('https://api.foresighta.co/api/auth/provider/linkedin', {
+      headers,
+      responseType: 'text'
+    });
   }
   private setUserInLocalStorage(user: UserType): void {
     if (user) {

@@ -15,6 +15,44 @@
  
   <ng-container *ngIf="defaultValues.accountType === 'corporate'">
     
+    <!-- Company Address -->
+    <div class="mb-10">
+      <label class="form-label required">
+        {{ 'INSIGHTER_WIZARD.ADDRESS' | translate }}
+      </label>
+      <input
+        formControlName="address"
+        type="text"
+        class="form-control"
+        placeholder="{{ 'INSIGHTER_WIZARD.ADDRESS_PLACEHOLDER' | translate }}"
+      />
+      <div
+        *ngIf="form.get('address')?.invalid && form.get('address')?.touched"
+        class="fv-plugins-message-container invalid-feedback"
+      >
+        {{ 'INSIGHTER_WIZARD.ADDRESS_REQUIRED' | translate }}
+      </div>
+    </div>
+
+    <!-- Company Phone -->
+    <div class="mb-10">
+      <label class="form-label required">
+        {{ 'INSIGHTER_WIZARD.COMPANY_PHONE' | translate }}
+      </label>
+      <input
+        formControlName="company_phone"
+        type="tel"
+        class="form-control"
+        placeholder="{{ 'INSIGHTER_WIZARD.COMPANY_PHONE_PLACEHOLDER' | translate }}"
+      />
+      <div
+        *ngIf="form.get('company_phone')?.invalid && form.get('company_phone')?.touched"
+        class="fv-plugins-message-container invalid-feedback"
+      >
+        {{ 'INSIGHTER_WIZARD.COMPANY_PHONE_REQUIRED' | translate }}
+      </div>
+    </div>
+
     <div class="mb-10">
       <label class="form-label required">
         {{ 'INSIGHTER_WIZARD.CHOOSE_VERIFICATION_METHOD' | translate }}

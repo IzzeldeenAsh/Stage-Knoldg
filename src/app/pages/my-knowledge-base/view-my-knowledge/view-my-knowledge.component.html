@@ -140,14 +140,14 @@
         <h1
           class="page-heading d-flex text-black fw-bolder fs-lg-rem flex-column justify-content-center my-0 max-w-800px"
         >
-    <div class="d-flex align-items-center gap-2">
-      <span>  {{ knowledge.title }}</span>
-      <button type="button" class="btn btn-icon btn-sm btn-light-success" [routerLink]="['/app/edit-knowledge/stepper', knowledge.id]">
+    <div class="d-flex align-items-start flex-column gap-2 lg-max-width-700px">
+      <span>  {{ knowledge.title }}  <button type="button" class="btn btn-icon btn-sm btn-light-success" [routerLink]="['/app/edit-knowledge/stepper', knowledge.id]">
         <i class="ki-duotone ki-pencil fs-2">
           <span class="path1"></span>
           <span class="path2"></span>
         </i>
-      </button>
+      </button></span>
+     
     </div>
           <span class="page-desc fs-6 fw-bold d-flex align-items-center pt-4">
             <span class="custom-text me-3 lh-1 d-flex align-items-center">
