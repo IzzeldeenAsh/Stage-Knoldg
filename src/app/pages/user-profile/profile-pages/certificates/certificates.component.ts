@@ -92,8 +92,8 @@ export class CertificatesComponent extends BaseComponent implements OnInit {
     const formData = new FormData();
     formData.append("first_name", this.profile.first_name);
     formData.append("last_name", this.profile.last_name);
-    if (this.profile.country) {
-      formData.append("country_id", this.profile.country.id);
+    if (this.profile.country_id) {
+      formData.append("country_id", this.profile.country_id.toString());
     }
     if (this.profile.bio) {
       formData.append("bio", this.profile.bio);
@@ -157,8 +157,8 @@ export class CertificatesComponent extends BaseComponent implements OnInit {
     const formData = this.createFormData();
     
     // Add the new certificate
-    formData.append(`certifications[${this.profile.certifications.length}][type]`, this.selectedDocType);
-    formData.append(`certifications[${this.profile.certifications.length}][file]`, this.selectedFile);
+    formData.append(`certification[${this.profile.certifications.length}][type]`, this.selectedDocType);
+    formData.append(`certification[${this.profile.certifications.length}][file]`, this.selectedFile);
 
     const uploadSub = this._profilePost.postProfile(formData).subscribe({
       next: (response: any) => {

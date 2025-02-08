@@ -49,6 +49,7 @@ import { SearchHeadComponent } from './components/search-head/search-head.compon
 import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
+
 const routes: Routes = [
   {
     path: '',
