@@ -64,7 +64,10 @@ export class CallbackComponent
             this.router.navigate(['/admin-dashboard']);
           }
           if(user.verified){
-            this.router.navigate(['/app']);
+            const authtoken:any = localStorage.getItem('foresighta-creds');
+        if (authtoken.authToken) {
+          window.location.href = `http://knowrland-for-client.vercel.app/${authtoken}`;
+        }
           }else{
             this.errorMessage ="Verification Failed";
             localStorage.removeItem('foresighta-creds');

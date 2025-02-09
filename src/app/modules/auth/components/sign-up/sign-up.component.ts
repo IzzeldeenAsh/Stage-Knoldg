@@ -169,6 +169,10 @@ getPasswordStrengthLabel(): string {
     this.authService.getGoogleAuthRedirectUrl().subscribe({
       next: (redirectUrl) => {
         window.location.href = redirectUrl;
+        const authtoken:any = localStorage.getItem('foresighta-creds');
+        if (authtoken.authToken) {
+          window.location.href = `http://knowrland-for-client.vercel.app/${authtoken}`;
+        }
       },
       error: (err) => {
         console.error('Error getting Google auth redirect URL', err);
@@ -182,6 +186,10 @@ getPasswordStrengthLabel(): string {
     this.authService.getLinkedInAuthRedirectUrl().subscribe({
       next: (redirectUrl) => {
         window.location.href = redirectUrl;
+        const authtoken = localStorage.getItem('foresighta-creds');
+        if (authtoken) {
+          window.location.href = `http://knowrland-for-client.vercel.app/${authtoken}`;
+        }
       },
       error: (err) => {
         console.error('Error getting LinkedIn auth redirect URL', err);
