@@ -5,7 +5,6 @@ import { BaseComponent } from "src/app/modules/base.component";
 import { AuthService } from "../../services/auth.service";
 import { first } from "rxjs/operators";
 import { AuthModel } from "../../models/auth.model";
-import { MessageService } from "primeng/api";
 import { ProfileService } from "src/app/_fake/services/get-profile/get-profile.service";
 
 @Component({
@@ -65,9 +64,10 @@ export class CallbackComponent
           }
           if(user.verified){
             const authtoken:any = localStorage.getItem('foresighta-creds');
-        if (authtoken.authToken) {
-          window.location.href = `http://knowrland-for-client.vercel.app/callback/${authtoken}`;
-        }
+              const token = JSON.parse(authtoken);
+              if (token.authToken) {
+                window.location.href = `http://knowrland-for-client.vercel.app/callback/${token.authToken}`;
+              }
           }else{
             this.errorMessage ="Verification Failed";
             localStorage.removeItem('foresighta-creds');
