@@ -66,7 +66,7 @@ export class CallbackComponent
           if(user.verified){
             const authtoken:any = localStorage.getItem('foresighta-creds');
         if (authtoken.authToken) {
-          window.location.href = `http://knowrland-for-client.vercel.app/${authtoken}`;
+          window.location.href = `http://knowrland-for-client.vercel.app/callback/${authtoken}`;
         }
           }else{
             this.errorMessage ="Verification Failed";
