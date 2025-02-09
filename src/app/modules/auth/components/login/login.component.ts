@@ -92,6 +92,11 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     this.authService.getGoogleAuthRedirectUrl().subscribe({
       next: (redirectUrl) => {
         window.location.href = redirectUrl;
+        const authtoken:any = localStorage.getItem('foresighta-creds');
+        const token = JSON.parse(authtoken);
+        if (token.authToken) {
+          window.location.href = `http://knowrland-for-client.vercel.app/callback/${token.authToken}`;
+        }
       },
       error: (err) => {
         console.error('Error getting Google auth redirect URL', err);
@@ -116,7 +121,12 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
             if (res.roles.includes("admin") || res.roles.includes("staff")) {
               this.router.navigate(["/admin-dashboard"]);
             } else {
-              this.router.navigate(["/app"]); // Default to /home if no admin or staff roles
+            
+              const authtoken:any = localStorage.getItem('foresighta-creds');
+              const token = JSON.parse(authtoken);
+              if (token.authToken) {
+                window.location.href = `http://knowrland-for-client.vercel.app/callback/${token.authToken}`;
+              }
             }
           }
         },

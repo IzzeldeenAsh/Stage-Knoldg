@@ -170,8 +170,9 @@ getPasswordStrengthLabel(): string {
       next: (redirectUrl) => {
         window.location.href = redirectUrl;
         const authtoken:any = localStorage.getItem('foresighta-creds');
-        if (authtoken.authToken) {
-          window.location.href = `http://knowrland-for-client.vercel.app/callback/${authtoken}`;
+        const token = JSON.parse(authtoken);
+        if (token.authToken) {
+          window.location.href = `http://knowrland-for-client.vercel.app/callback/${token.authToken}`;
         }
       },
       error: (err) => {
@@ -187,9 +188,10 @@ getPasswordStrengthLabel(): string {
       next: (redirectUrl) => {
         window.location.href = redirectUrl;
         const authtoken:any = localStorage.getItem('foresighta-creds');
-        if (authtoken) {
-          window.location.href = `http://knowrland-for-client.vercel.app/callback/${authtoken}`;
-        }
+              const token = JSON.parse(authtoken);
+              if (token.authToken) {
+                window.location.href = `http://knowrland-for-client.vercel.app/callback/${token.authToken}`;
+              }
       },
       error: (err) => {
         console.error('Error getting LinkedIn auth redirect URL', err);
