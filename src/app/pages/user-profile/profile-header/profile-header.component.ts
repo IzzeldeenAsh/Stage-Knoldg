@@ -90,12 +90,11 @@ export class ProfileHeaderComponent extends BaseComponent implements OnInit {
     );
   }
   uploadImage(file: File): void {
-    const MIN_WIDTH = 800;  // Set your desired minimum width
-    const MIN_HEIGHT = 800; // Set your desired minimum height
+    const MIN_WIDTH = 100;  // Set your desired minimum width
+    const MIN_HEIGHT = 100; // Set your desired minimum height
 
     this.isLoading = true; // Optional: Start loading
 
-    // Function to validate image dimensions
     const validateImage = (file: File): Promise<boolean> => {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -123,7 +122,6 @@ export class ProfileHeaderComponent extends BaseComponent implements OnInit {
       });
     };
 
-    // Start the validation process
     validateImage(file)
       .then((isValid) => {
         if (!isValid) {
@@ -165,33 +163,17 @@ export class ProfileHeaderComponent extends BaseComponent implements OnInit {
               const message = this.lang === 'ar' 
                 ? 'تم تحديث صورة ملفك الشخصي بنجاح.' 
                 : 'Your profile picture has been updated successfully.';
-
+            
               this.showSuccess(title, message);
-
+              window.location.reload();
               // Optionally, you might not need to reload the page. Consider updating the view accordingly.
-               document.location.reload();
+            
 
               this.isLoading = false; // Optional: Stop loading
             },
             (error: any) => {
-              // Handle error
-              const title = this.lang === 'ar' ? 'خطأ' : 'Error';
-              const message = this.lang === 'ar' 
-                ? 'حدث خطأ أثناء تحديث صورة ملفك الشخصي.' 
-                : 'An error occurred while updating your profile picture.';
-
-              this.showError(title, message);
-
-              // **Clear the image preview on upload error**
-              this.selectedImage = null;
-              this.profileImage = this.getProfileImage();
-
-              // **Reset the file input**
-              if (this.fileInput) {
-                this.fileInput.nativeElement.value = '';
-              }
-
-              this.isLoading = false; // Optional: Stop loading
+              console.error('Error updating company logo:', error);
+              this.isLoading = false;
             }
           );
         } else {
@@ -207,7 +189,7 @@ export class ProfileHeaderComponent extends BaseComponent implements OnInit {
               this.showSuccess(title, message);
 
               // Optionally, you might not need to reload the page. Consider updating the view accordingly.
-              // document.location.reload();
+               document.location.reload();
 
               this.isLoading = false; // Optional: Stop loading
             },
