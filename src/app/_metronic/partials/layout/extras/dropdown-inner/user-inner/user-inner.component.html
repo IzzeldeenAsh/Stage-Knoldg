@@ -150,7 +150,7 @@
     </div>
   </div>
 
-  <div class="menu-item px-5" *ngIf="_user.roles.includes('client') && !_user.roles.includes('insighter')">
+  <div class="menu-item px-5" *ngIf="_user.roles.includes('client') && !_user.roles.includes('insighter') && !_user.roles.includes('company')">
     <a [routerLink]="'/app/insighter-register/vertical'" class="menu-link px-5 fw-boldest gradient-text-insighter">
       Become an Insighter
     </a>
