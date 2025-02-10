@@ -42,8 +42,32 @@
   <!--end::Theme mode setup on page load-->
   <div id="splash-screen" class="splash-screen">
     <img src="./assets/media/logos/default-small.svg" alt="Metronic logo" />
-    <span>Loading ...</span>
+    <div class="loading-bar">
+      <div class="loading-bar-progress"></div>
+    </div>
   </div>
+
+  <script>
+    // Handle splash screen
+    document.addEventListener('DOMContentLoaded', function() {
+      const splashScreen = document.getElementById('splash-screen');
+      const progressBar = document.querySelector('.loading-bar-progress');
+      
+      // Ensure the logo is pre-loaded
+      const img = new Image();
+      img.src = './assets/media/logos/default-small.svg';
+      
+      // Animate progress bar
+      progressBar.style.width = '100%';
+      
+      // Hide splash screen when everything is loaded
+      window.addEventListener('load', function() {
+        setTimeout(() => {
+          splashScreen.classList.add('hidden');
+        }, 1000);
+      });
+    });
+  </script>
 </body>
 
 </html>

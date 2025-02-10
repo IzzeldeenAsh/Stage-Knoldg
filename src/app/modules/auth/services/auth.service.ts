@@ -76,7 +76,11 @@ export class AuthService implements OnDestroy {
             if (profileResponse.data.roles.includes('admin')) {
               this.router.navigate(['/admin-dashboard']);
             } else {
-              this.router.navigate(['/app']);
+              const authtoken:any = localStorage.getItem('foresighta-creds');
+              const token = JSON.parse(authtoken);
+              if (token.authToken) {
+                window.location.href = `http://knowrland-for-client.vercel.app/callback/${token.authToken}`;
+              }
             }
             return profileResponse.data;
           })
