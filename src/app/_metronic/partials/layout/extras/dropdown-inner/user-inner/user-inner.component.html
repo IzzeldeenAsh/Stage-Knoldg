@@ -57,6 +57,8 @@
 
 
 
+
+
   <div class="menu-item px-5">
     <a [routerLink]="'/app/profile/'" class="menu-link px-5">
       {{ 'HOME.MY_PROFILE' | translate }}
@@ -115,6 +117,7 @@
     data-kt-menu-placement="left-start"
     data-kt-menu-flip="bottom"
   >
+  
     <a class="menu-link px-5 cursor-pointer">
       <span class="menu-title">{{ 'HOME.ACCOUNT_SETTINGS' | translate }}</span>
       <span class="menu-arrow"></span>
@@ -147,7 +150,11 @@
     </div>
   </div>
 
-
+  <div class="menu-item px-5" *ngIf="_user.roles.includes('client') && !_user.roles.includes('insighter')">
+    <a [routerLink]="'/app/insighter-register/vertical'" class="menu-link px-5 fw-boldest gradient-text-insighter">
+      Become an Insighter
+    </a>
+  </div>
 
   <div class="separator my-2"></div>
 
