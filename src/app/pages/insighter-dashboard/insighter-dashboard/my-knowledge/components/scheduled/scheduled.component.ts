@@ -50,11 +50,46 @@ export class ScheduledComponent implements OnInit {
     );
   }
 
-  getPages(): number[] {
-    const pages: number[] = [];
-    for (let i = 1; i <= this.totalPages; i++) {
+  onPageClick(page: string | number): void {
+    if (typeof page === 'number') {
+      this.loadPage(page);
+    }
+  }
+
+  
+  getPages(): (number | string)[] {
+    const totalPages = this.totalPages;
+    const currentPage = this.currentPage;
+    const delta = 2; // Number of pages to show on either side of current page
+    let pages: (number | string)[] = [];
+  
+    // Determine the left and right bounds of the page window
+    const left = Math.max(2, currentPage - delta);
+    const right = Math.min(totalPages - 1, currentPage + delta);
+  
+    // Always include the first page
+    pages.push(1);
+  
+    // Insert left ellipsis if needed
+    if (left > 2) {
+      pages.push('...');
+    }
+  
+    // Add the range of pages
+    for (let i = left; i <= right; i++) {
       pages.push(i);
     }
+  
+    // Insert right ellipsis if needed
+    if (right < totalPages - 1) {
+      pages.push('...');
+    }
+  
+    // Always include the last page (if there is more than one page)
+    if (totalPages > 1) {
+      pages.push(totalPages);
+    }
+  
     return pages;
   }
 
