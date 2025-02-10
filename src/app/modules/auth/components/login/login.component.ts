@@ -121,7 +121,6 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
             if (res.roles.includes("admin") || res.roles.includes("staff")) {
               this.router.navigate(["/admin-dashboard"]);
             } else {
-            
               const authtoken:any = localStorage.getItem('foresighta-creds');
               const token = JSON.parse(authtoken);
               if (token.authToken) {
