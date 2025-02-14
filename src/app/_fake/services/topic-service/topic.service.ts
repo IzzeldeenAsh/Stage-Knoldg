@@ -12,7 +12,13 @@ export interface Topic {
     ar: string;
   };
   industry_id: number;
-  status?: string;
+  status: string;
+  keywords?: Array<{
+    en: string;
+    ar: string;
+  }>;
+  description?: string | null;
+  descriptions?: any[];
 }
 
 export interface TopicResponse {
@@ -108,7 +114,12 @@ export class TopicsService {
   }
 
   // Create a new topic
-  createTopic(topic: { name: { en: string; ar: string }; industry_id: number }): Observable<any> {
+  createTopic(topic: { 
+    name: { en: string; ar: string }; 
+    industry_id: number;
+    status: string;
+    keywords?: Array<{ en: string; ar: string }>;
+  }): Observable<any> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
       'Content-Type': 'application/json',
@@ -124,7 +135,12 @@ export class TopicsService {
   }
 
   // Update an existing topic
-  updateTopic(topicId: number, topic: { name: { en: string; ar: string }; industry_id: number }): Observable<Topic> {
+  updateTopic(topicId: number, topic: { 
+    name: { en: string; ar: string }; 
+    industry_id: number;
+    status: string;
+    keywords?: Array<{ en: string; ar: string }>;
+  }): Observable<Topic> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
       'Content-Type': 'application/json',
@@ -156,15 +172,23 @@ export class TopicsService {
   }
 
   // Get admin topics with pagination
-  getAdminTopics(page: number = 1): Observable<PaginatedTopicResponse> {
+  getAdminTopics(page: number = 1, status?: string, keyword?: string): Observable<PaginatedTopicResponse> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
       'Content-Type': 'application/json',
       'Accept-Language': this.currentLang
     });
 
+    let url = `${this.updateDeleteApi}?page=${page}`;
+    if (status) {
+      url += `&status=${status}`;
+    }
+    if (keyword) {
+      url += `&keyword=${keyword}`;
+    }
+
     this.setLoading(true);
-    return this.http.get<PaginatedTopicResponse>(`${this.updateDeleteApi}?page=${page}`, { headers }).pipe(
+    return this.http.get<PaginatedTopicResponse>(url, { headers }).pipe(
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );

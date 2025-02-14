@@ -27,6 +27,8 @@
                 pInputText
                 class="form-control w-250px ps-12"
                 placeholder="Search Economic Blocks"
+                (input)="onSearch($event)"
+                [value]="searchTerm"
               />
             </div>
           </div>
@@ -40,7 +42,7 @@
         </div>
 
         <div class="card-body pt-0">
-          <p-table [value]="economicBlocks" [loading]="loading" responsiveLayout="scroll">
+          <p-table [value]="filteredBlocks" [loading]="loading" responsiveLayout="scroll">
             
             <ng-template pTemplate="header">
               <tr>

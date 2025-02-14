@@ -21,6 +21,10 @@ export class PositionsComponent implements OnInit, OnDestroy {
   visible: boolean = false;
   positionForm: FormGroup;
 
+  // Pagination
+  paginator = { page: 1, pageSize: 10, pageSizes: [10, 20, 30, 50, 100], total: 0 };
+  searchTerm: string = '';
+
   @ViewChild("dt") table: Table;
 
   constructor(
@@ -65,9 +69,10 @@ export class PositionsComponent implements OnInit, OnDestroy {
   }
 
   getPositionsList() {
-    const listSub = this.positionsService.getPositions().subscribe({
-      next: (data: Position[]) => {
-        this.listOfPositions = data;
+    const listSub = this.positionsService.getPositions(this.paginator.page, this.paginator.pageSize).subscribe({
+      next: (response) => {
+        this.listOfPositions = response.data;
+        this.paginator.total = response.meta.total;
         this.cdr.detectChanges();
       },
       error: (error) => {
@@ -86,9 +91,27 @@ export class PositionsComponent implements OnInit, OnDestroy {
     this.unsubscribe.push(listSub);
   }
 
+  pageChange(page: number) {
+    this.paginator.page = page;
+    this.getPositionsList();
+  }
+
+  pageSizeChange(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    if (target) {
+      const newPageSize = parseInt(target.value, 10);
+      this.paginator.pageSize = newPageSize;
+      this.paginator.page = 1; // Reset to first page when changing page size
+      this.getPositionsList();
+    }
+  }
+
   applyFilter(event: any) {
-    const value = event.target.value.trim().toLowerCase();
-    this.table.filterGlobal(value, "contains");
+    this.searchTerm = event.target.value;
+    if (this.searchTerm.length >= 3 || this.searchTerm.length === 0) {
+      this.paginator.page = 1; // Reset to first page when searching
+      this.getPositionsList();
+    }
   }
 
   get arabicName() {
@@ -238,4 +261,5 @@ export class PositionsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }
+  Math = Math;
 }

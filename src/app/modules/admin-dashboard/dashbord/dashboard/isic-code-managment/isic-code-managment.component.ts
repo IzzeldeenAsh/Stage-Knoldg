@@ -32,11 +32,12 @@ export class ISICCodeManagmentComponent implements OnInit, OnDestroy {
   isicForm!: FormGroup;
   selectedParentId: number | null = null;
   displayDialog: boolean = false;
-  selectedNode:any;
+  selectedNode: any;
   isUpdate: boolean = false;
   selectedNodeId: number | null = null;
   isLoading$: Observable<boolean>;
-  parentKey:number | null = null;
+  parentKey: number | null = null;
+
   @ViewChild('tt') treeTable!: TreeTable; // Reference to the TreeTable
 
   constructor(
@@ -61,28 +62,28 @@ export class ISICCodeManagmentComponent implements OnInit, OnDestroy {
   }
 
   loadIsicCodes() {
-    this.isLoading$ = of(true)
+    this.isLoading$ = of(true);
     const listSub = this.isicCodesService.getIsicCodesTree('en').subscribe({
       next: (res) => {
         this.isicnodes = res;
         this.originalIsicNodes = [...res];  // Store original data here
-        this.isicTreeData = this.changeKeyToValue([...res]); // Transform only for isicTreeData
-        this.isLoading$ = of(false)
+        this.isicTreeData = this.changeKeyToValue([...res]); // Transform for the tree select
+        this.isLoading$ = of(false);
         this.cdr.detectChanges();
-        
       },
       error: (error) => {
-        this.isLoading$ = of(false)
+        this.isLoading$ = of(false);
         this.handleServerErrors(error);
       },
     });
     this.unsubscribe.push(listSub);
   }
+
   changeKeyToValue(nodes: any) {
     return nodes.map((node: any) => {
       const newNode = {
         ...node,
-        value: node.data.key, // Ensure the top-level 'value' is set from 'key'
+        value: node.data.key, // Set the top-level 'value' from 'key'
         children: node.children ? this.changeKeyToValue(node.children) : []
       };
       delete newNode.key;
@@ -98,19 +99,20 @@ export class ISICCodeManagmentComponent implements OnInit, OnDestroy {
       return newNode;
     });
   }
+
   showDialog() {
     this.displayDialog = true;
-    this.selectedNodeId = null; // Reset selected node ID for create
-    this.parentKey=null;
-    this.selectedNode=null;
-    this.isUpdate = false; // Set to false when adding a new ISIC code
-    this.isicForm.reset(); // Reset the form
+    this.selectedNodeId = null; // Reset for create
+    this.parentKey = null;
+    this.selectedNode = null;
+    this.isUpdate = false; // Set mode to create
+    this.isicForm.reset();
   }
 
   editIsicCode(node: any) {
     this.displayDialog = true; // Open dialog
     this.selectedNodeId = node.node.data.key; // Set the ID for update
-    this.isUpdate = true; // Set to true for editing mode
+    this.isUpdate = true; // Editing mode
     
     const parentValue = node.node.parent ? node.node.parent.key : null;
     this.parentKey = parentValue;
@@ -123,6 +125,7 @@ export class ISICCodeManagmentComponent implements OnInit, OnDestroy {
       parentId: parentValue,
     });
   }
+
   findNodeByValue(nodes: any[], value: any): any | null {
     for (const item of nodes) {
       if (item.data.value === value) {
@@ -210,7 +213,7 @@ export class ISICCodeManagmentComponent implements OnInit, OnDestroy {
         ar: formValues.nameAr,
       },
       status: formValues.status,
-      parent_id: this.selectedNode.value,
+      parent_id: this.selectedNode ? this.selectedNode.value : null,
     };
 
     if (this.isUpdate && this.selectedNodeId !== null) {
@@ -223,8 +226,8 @@ export class ISICCodeManagmentComponent implements OnInit, OnDestroy {
           });
           this.loadIsicCodes();
           this.displayDialog = false;
-          this.parentKey=null;
-          this.selectedNode=null;
+          this.parentKey = null;
+          this.selectedNode = null;
           this.isicForm.reset();
         },
         error: (error) => {
@@ -242,8 +245,8 @@ export class ISICCodeManagmentComponent implements OnInit, OnDestroy {
           });
           this.loadIsicCodes();
           this.displayDialog = false;
-          this.parentKey=null;
-          this.selectedNode=null;
+          this.parentKey = null;
+          this.selectedNode = null;
           this.isicForm.reset();
         },
         error: (error) => {
@@ -285,51 +288,16 @@ export class ISICCodeManagmentComponent implements OnInit, OnDestroy {
     });
   }
 
- 
+  // Updated search using built-in TreeTable filtering
   applyFilter(event: any) {
-    const searchTerm = event.target.value.trim().toLowerCase();
-
-    if (!searchTerm) {
-      // If search term is empty, reset to original data
-      this.isicnodes = [...this.originalIsicNodes];
-      return;
-    }
-
-    // Otherwise, filter nodes
-    this.isicnodes = this.filterNodes(searchTerm, this.originalIsicNodes);
+    const searchTerm = event.target.value;
+    this.treeTable.filterGlobal(searchTerm, 'contains');
   }
 
-  filterNodes(searchTerm: string, nodes: TreeNode[]): TreeNode[] {
-    const filteredNodes: TreeNode[] = [];
-
-    nodes.forEach((node) => {
-      const matched = this.isMatch(searchTerm, node);
-      const childMatches = this.filterNodes(searchTerm, node.children || []);
-
-      if (matched || childMatches.length) {
-        filteredNodes.push({
-          ...node,
-          children: childMatches,
-        });
-      }
-    });
-
-    return filteredNodes;
-  }
-
-  isMatch(searchTerm: string, node: TreeNode): boolean {
-    return (
-      node.data.code.toLowerCase().includes(searchTerm) ||
-      node.data.label.toLowerCase().includes(searchTerm) ||
-      node.data.nameEn.toLowerCase().includes(searchTerm) ||
-      node.data.nameAr.toLowerCase().includes(searchTerm)
-    );
-  }
-  
   onCancel() {
     this.displayDialog = false;
-    this.parentKey=null;
-    this.selectedNode=null
+    this.parentKey = null;
+    this.selectedNode = null;
     this.isicForm.reset();
   }
 
