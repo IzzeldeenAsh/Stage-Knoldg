@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { EconomicBlockService, AdminEconomicBloc, AdminEconomicBlocResponse } from 'src/app/_fake/services/economic-block/economic-block.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-economic-blocks',
@@ -10,11 +11,13 @@ import { EconomicBlockService, AdminEconomicBloc, AdminEconomicBlocResponse } fr
 })
 export class EconomicBlocksComponent implements OnInit {
   economicBlocks: AdminEconomicBloc[] = [];
+  filteredBlocks: AdminEconomicBloc[] = [];
   displayDialog: boolean = false;
   editMode: boolean = false;
   selectedBlock: AdminEconomicBloc | null = null;
   blockForm: FormGroup;
   loading: boolean = false;
+  searchTerm: string = '';
 
   constructor(
     private economicBlockService: EconomicBlockService,
@@ -38,6 +41,7 @@ export class EconomicBlocksComponent implements OnInit {
     this.economicBlockService.getAdminEconomicBlocs().subscribe({
       next: (response: AdminEconomicBlocResponse) => {
         this.economicBlocks = response.data;
+        this.filteredBlocks = [...this.economicBlocks];
         this.loading = false;
       },
       error: (error) => {
@@ -104,16 +108,53 @@ export class EconomicBlocksComponent implements OnInit {
   }
 
   deleteBlock(block: AdminEconomicBloc): void {
-    if (confirm('Are you sure you want to delete this economic block?')) {
-      this.economicBlockService.deleteEconomicBloc(block.id).subscribe({
-        next: () => {
-          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Economic block deleted successfully' });
-          this.loadEconomicBlocks();
-        },
-        error: (error) => {
-          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete economic block' });
-        }
-      });
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You will not be able to recover this economic block!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, keep it',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.economicBlockService.deleteEconomicBloc(block.id).subscribe({
+          next: () => {
+            Swal.fire(
+              'Deleted!',
+              'Economic block has been deleted.',
+              'success'
+            );
+            this.loadEconomicBlocks();
+          },
+          error: (error) => {
+            Swal.fire(
+              'Error!',
+              'Failed to delete economic block.',
+              'error'
+            );
+          }
+        });
+      }
+    });
+  }
+
+  onSearch(event: any): void {
+    const term = event.target.value.toLowerCase();
+    this.searchTerm = term;
+    this.filterBlocks();
+  }
+
+  filterBlocks(): void {
+    if (!this.searchTerm) {
+      this.filteredBlocks = [...this.economicBlocks];
+    } else {
+      this.filteredBlocks = this.economicBlocks.filter(block => 
+        block.names.en.toLowerCase().includes(this.searchTerm) ||
+        block.names.ar.toLowerCase().includes(this.searchTerm) ||
+        block.id.toString().includes(this.searchTerm)
+      );
     }
   }
-} 
+}

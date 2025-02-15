@@ -5,7 +5,7 @@ import {
   ViewChild,
   OnDestroy,
 } from '@angular/core';
-import { TreeNode, MessageService } from 'primeng/api';
+import { TreeNode, MessageService, Message } from 'primeng/api';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
@@ -19,7 +19,7 @@ import { TopicsService, Topic, PaginatedTopicResponse } from 'src/app/_fake/serv
   styleUrls: ['./topics.component.scss'],
 })
 export class TopicsComponent implements OnInit, OnDestroy {
-  messages: any[] = [];
+  messages: Message[] = [];
   private unsubscribe: Subscription[] = [];
 
   topics: Topic[] = [];
@@ -43,6 +43,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
   lang = 'en';
   selectedStatus = '';
   searchTerm = '';
+  debounceTimer: any;
 
   Math = Math; // Make Math available in template
 
@@ -57,19 +58,28 @@ export class TopicsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.initForm();
+    this.loadTopics();
+  }
+
+  private initForm() {
     this.topicForm = this.fb.group({
       nameEn: ['', Validators.required],
       nameAr: ['', Validators.required],
       status: ['', Validators.required],
       industryId: [null, Validators.required],
+      keywordsEn: [''],
+      keywordsAr: ['']
     });
-
-    this.loadTopics();
   }
 
   loadTopics(page: number = 1) {
     this.currentPage = page;
-    const listSub = this.topicsService.getAdminTopics(page).subscribe({
+    const listSub = this.topicsService.getAdminTopics(
+      page, 
+      this.selectedStatus, 
+      this.searchTerm
+    ).subscribe({
       next: (res) => {
         this.paginatedTopics = res;
         this.topics = res.data;
@@ -108,7 +118,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
   showDialog() {
     this.displayDialog = true;
     this.isUpdate = false;
-    this.topicForm.reset();
+    this.initForm();
   }
 
   editTopic(topic: Topic) {
@@ -116,70 +126,103 @@ export class TopicsComponent implements OnInit, OnDestroy {
     this.isUpdate = true;
     this.selectedTopicId = topic.id;
 
+    // Extract keywords if they exist
+    const keywordsEn = topic.keywords?.map(k => k.en).join(', ') || '';
+    const keywordsAr = topic.keywords?.map(k => k.ar).join(', ') || '';
+
     this.topicForm.patchValue({
       nameEn: topic.names.en,
       nameAr: topic.names.ar,
       status: topic.status,
       industryId: topic.industry_id,
+      keywordsEn: keywordsEn,
+      keywordsAr: keywordsAr
     });
   }
 
   submit() {
-    this.messages = [];
-
+    console.log('Submitting form...');
     if (this.topicForm.invalid) {
-      this.topicForm.markAllAsTouched();
+      console.log('Form is invalid. Marking touched fields...');
+      Object.keys(this.topicForm.controls).forEach(key => {
+        const control = this.topicForm.get(key);
+        if (control?.invalid) {
+          control.markAsTouched();
+        }
+      });
       return;
     }
 
     const formValues = this.topicForm.value;
-    const topicData = {
+    console.log('Form values:', formValues);
+    const topicData: any = {
       name: {
         en: formValues.nameEn,
         ar: formValues.nameAr,
       },
       industry_id: formValues.industryId,
       status: formValues.status,
+      keywords: []
     };
 
+    if (formValues.keywordsEn && formValues.keywordsAr) {
+      console.log('Processing keywords...');
+      const keywordsEn = formValues.keywordsEn.split(',').map((k: string) => k.trim()).filter((k: string) => k);
+      const keywordsAr = formValues.keywordsAr.split(',').map((k: string) => k.trim()).filter((k: string) => k);
+      
+      if (keywordsEn.length === keywordsAr.length) {
+        topicData.keywords = keywordsEn.map((en: string, index: number) => ({
+          en,
+          ar: keywordsAr[index]
+        }));
+        console.log('Keywords processed:', topicData.keywords);
+      } else {
+        console.error('Keyword mismatch');
+        this.messages = [{
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Number of English and Arabic keywords must match'
+        }];
+        return;
+      }
+    }
+
     if (this.isUpdate && this.selectedTopicId !== null) {
-      const updateSub = this.topicsService
-        .updateTopic(this.selectedTopicId, topicData)
-        .subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Success',
-              detail: 'Topic updated successfully.',
-            });
-            this.loadTopics();
-            this.displayDialog = false;
-            this.topicForm.reset();
-          },
-          error: (error) => {
-            this.handleServerErrors(error);
-          },
-        });
-      this.unsubscribe.push(updateSub);
+      console.log('Updating topic...');
+      this.topicsService.updateTopic(this.selectedTopicId, topicData).subscribe({
+        next: () => {
+          console.log('Topic updated successfully');
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Topic updated successfully'
+          });
+          this.loadTopics();
+          this.displayDialog = false;
+        },
+        error: (error) => {
+          console.error('Error updating topic:', error);
+          this.handleServerErrors(error);
+        }
+      });
     } else {
-      const createSub = this.topicsService
-        .createTopic(topicData)
-        .subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Success',
-              detail: 'Topic created successfully.',
-            });
-            this.loadTopics();
-            this.displayDialog = false;
-            this.topicForm.reset();
-          },
-          error: (error) => {
-            this.handleServerErrors(error);
-          },
-        });
-      this.unsubscribe.push(createSub);
+      console.log('Creating new topic...');
+      this.topicsService.createTopic(topicData).subscribe({
+        next: () => {
+          console.log('Topic created successfully');
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Topic created successfully'
+          });
+          this.loadTopics();
+          this.displayDialog = false;
+        },
+        error: (error) => {
+          console.error('Error creating topic:', error);
+          this.handleServerErrors(error);
+        }
+      });
     }
   }
 
@@ -214,23 +257,26 @@ export class TopicsComponent implements OnInit, OnDestroy {
   }
 
   applyFilter(event: any) {
-    this.searchTerm = event.target.value.trim().toLowerCase();
-    this.applyFilters();
+    if (this.debounceTimer) {
+      clearTimeout(this.debounceTimer);
+    }
+    
+    this.searchTerm = event.target.value.trim();
+    this.debounceTimer = setTimeout(() => {
+      this.currentPage = 1; // Reset to first page when filtering
+      this.loadTopics();
+    }, 300); // Debounce for 300ms
   }
 
   applyStatusFilter() {
-    this.applyFilters();
-  }
-
-  applyFilters() {
-    // Implement filtering logic based on searchTerm and selectedStatus
-    // This can be adjusted based on API capabilities
-    this.loadTopics(); // Fetch topics again, potentially with query params for filtering
+    this.currentPage = 1; // Reset to first page when filtering
+    this.loadTopics();
   }
 
   onCancel() {
     this.displayDialog = false;
     this.topicForm.reset();
+    this.messages = [];
   }
 
   private handleServerErrors(error: any) {

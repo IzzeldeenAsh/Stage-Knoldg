@@ -13,13 +13,28 @@ export interface Position {
   };
 }
 
+export interface PaginationMeta {
+  current_page: number;
+  from: number;
+  last_page: number;
+  path: string;
+  per_page: number;
+  to: number;
+  total: number;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  meta: PaginationMeta;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class PositionsService {
-  private apiUrl = 'https://api.foresighta.co/api/common/setting/position/list';
-  private createApi = 'https://api.foresighta.co/api/common/setting/position/list';
-  private updateDeleteApi = 'https://api.foresighta.co/api/common/setting/position/list';
+  private apiUrl = 'https://api.foresighta.co/api/admin/setting/position';
+  private createApi = 'https://api.foresighta.co/api/admin/setting/position';
+  private updateDeleteApi = 'https://api.foresighta.co/api/admin/setting/position';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   currentLang: string = 'en';
@@ -41,7 +56,7 @@ export class PositionsService {
     return throwError(error);
   }
 
-  getPositions(): Observable<Position[]> {
+  getPositions(page: number = 1, perPage: number = 10): Observable<PaginatedResponse<Position>> {
     const headers = new HttpHeaders({
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -49,8 +64,10 @@ export class PositionsService {
     });
 
     this.setLoading(true);
-    return this.http.get<any>(this.apiUrl, { headers }).pipe(
-      map(res => res.data),
+    return this.http.get<PaginatedResponse<Position>>(
+      `${this.apiUrl}?page=${page}&per_page=${perPage}`, 
+      { headers }
+    ).pipe(
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );

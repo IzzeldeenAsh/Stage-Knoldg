@@ -1,5 +1,3 @@
-
-
 <!-- Toolbar -->
 <div id="kt_app_toolbar" class="app-toolbar pt-10 mb-0">
   <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex align-items-stretch">
@@ -8,12 +6,11 @@
         <h1 class="page-heading d-flex flex-column justify-content-center text-gray-900 fw-bold fs-3 m-0">
           ISIC Codes
         </h1>
-
-        <div class="fw-semibold fs-7 my-0 text-muted" *ngIf="isicnodes && isicnodes.length >0">{{ isicnodes.length || 0 }} ISIC Codes</div>
+        <div class="fw-semibold fs-7 my-0 text-muted" *ngIf="isicnodes && isicnodes.length > 0">
+          {{ isicnodes.length || 0 }} ISIC Codes
+        </div>
       </div>
-
       <!-- Actions -->
-     
       <!--end::Actions-->
     </div>
   </div>
@@ -22,8 +19,7 @@
 <!-- Content -->
 <div id="kt_app_content" class="app-content flex-column-fluid">
   <div id="kt_app_content_container" class="app-container container-fluid">
-            <!-- Loading Indicator -->
-
+    <!-- Loading Indicator -->
     <div class="card">
       <div class="card-header border-0 pt-6">
         <div class="card-title">
@@ -37,7 +33,6 @@
               (input)="applyFilter($event)"
             />
           </div>
-        
         </div>
         <div class="card-tooltip">
           <div class="d-flex align-items-center gap-2 gap-lg-3">
@@ -49,14 +44,14 @@
         </div>
       </div>
       <div class="card-body pt-0">
-        <ng-container *ngIf="(isLoading$ | async) === false  && isicnodes">
+        <ng-container *ngIf="(isLoading$ | async) === false && isicnodes">
           <p-messages *ngIf="hasSuccessMessage" [(value)]="messages" [enableService]="false"></p-messages>
           <p-treeTable
             #tt
             [value]="isicnodes"
             [scrollable]="true"
             [tableStyle]="{ 'min-width': '50rem' }"
-            [globalFilterFields]="['data.code', 'data.label', 'data.status', 'data.nameEn', 'data.nameAr']"
+            [globalFilterFields]="['data.code', 'data.nameEn', 'data.nameAr']"
           >
             <ng-template pTemplate="header">
               <tr>
@@ -75,11 +70,13 @@
                 </td>
                 <td>{{ rowData.nameEn }}</td>
                 <td>{{ rowData.nameAr }}</td>
-                <td >
+                <td>
                   <div class="badge" [ngClass]="{
                     'badge-light-success': rowData.status === 'active',
                     'badge-light-danger': rowData.status === 'inactive'
-                  }">  {{ rowData.status }}</div>
+                  }">
+                    {{ rowData.status }}
+                  </div>
                 </td>
                 <td>
                   <a
@@ -88,7 +85,7 @@
                     class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
                     (click)="editIsicCode(rowNode)"
                   >
-                    <i class="ki-duotone ki-pencil fs-2"><span class="path1"></span><span class="path2"></span></i>
+                    <i class="ki-duotone ki-pencil fs-2"></i>
                   </a>
                   <a
                     pTooltip="Delete ISIC Code"
@@ -96,7 +93,7 @@
                     class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
                     (click)="deleteIsicCode(rowNode)"
                   >
-                  <i _ngcontent-ng-c540217837="" class="ki-duotone ki-trash fs-2"><span _ngcontent-ng-c540217837="" class="path1"></span><span _ngcontent-ng-c540217837="" class="path2"></span><span _ngcontent-ng-c540217837="" class="path3"></span><span _ngcontent-ng-c540217837="" class="path4"></span><span _ngcontent-ng-c540217837="" class="path5"></span></i>
+                    <i class="ki-duotone ki-trash fs-2"></i>
                   </a>
                 </td>
               </tr>
@@ -106,10 +103,10 @@
       </div>
     </div>
     <p-progressBar
-*ngIf="isLoading$|async"
-mode="indeterminate"
-[style]="{ height: '4px' }"
-></p-progressBar>
+      *ngIf="isLoading$ | async"
+      mode="indeterminate"
+      [style]="{ height: '4px' }"
+    ></p-progressBar>
   </div>
 </div>
 
@@ -202,21 +199,19 @@ mode="indeterminate"
     <div class="mb-3 row">
       <label for="parentId" class="col-sm-3 col-form-label">Parent ISIC Code</label>
       <div class="col-sm-9">
-      
-        
         <p-treeSelect
-        id="parentId"
-        [options]="isicTreeData"
-       [(ngModel)]="selectedNode"
-       [ngModelOptions]="{standalone: true}"
-        placeholder="Select Parent"
-        class="w-100"
-        optionLabel="label"  
-        optionValue="value"   
-        [showClear]="true"
-        [filter]="true"
-        filterBy="label"     
-      ></p-treeSelect>
+          id="parentId"
+          [options]="isicTreeData"
+          [(ngModel)]="selectedNode"
+          [ngModelOptions]="{standalone: true}"
+          placeholder="Select Parent"
+          class="w-100"
+          optionLabel="label"
+          optionValue="value"
+          [showClear]="true"
+          [filter]="true"
+          filterBy="label"
+        ></p-treeSelect>
         <div *ngIf="parentId && parentId.errors && (parentId.touched || parentId.dirty)">
           <div *ngIf="parentId.errors['serverError']" class="text-danger">
             {{ parentId.errors['serverError'] }}

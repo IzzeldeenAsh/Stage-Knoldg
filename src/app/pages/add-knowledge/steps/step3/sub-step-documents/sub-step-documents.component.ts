@@ -89,9 +89,10 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   }
 
   private createDocument(): FormGroup {
-    return this.fb.group({
+    const group = this.fb.group({
       file_name: ['', [Validators.required, this.uniqueFileNameValidator()]],
-      price: [0], 
+      price: [0, [Validators.required, Validators.min(0)]],
+      isCharity: [false],
       file: [null],
       filePreview: [false],
       fileIcon: [''],
@@ -101,8 +102,20 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       file_size: [null],
       docUrl: ['']
     });
+  
+    // Disable/enable price control based on charity toggle
+    group.get('isCharity')?.valueChanges.subscribe(isCharity => {
+      const priceControl = group.get('price');
+      if (isCharity) {
+        priceControl?.setValue(0);
+        priceControl?.disable();
+      } else {
+        priceControl?.enable();
+      }
+    });
+  
+    return group;
   }
-
   addDocument(): void {
     const newDocGroup = this.createDocument();
     this.documentControls.push(newDocGroup);

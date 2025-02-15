@@ -5,7 +5,7 @@ import { Observable, Subscription } from "rxjs";
 import Swal from 'sweetalert2';
 import { Staff, StaffService } from "src/app/_fake/services/staff/staff.service";
 import { Department, DepartmentsService } from "src/app/_fake/services/department/departments.service";
-import { Position, PositionsService } from "src/app/_fake/services/positions/positions.service";
+import { Position, PositionsService, PaginatedResponse } from "src/app/_fake/services/positions/positions.service";
 import { RolesService, Role } from "src/app/_fake/services/roles/roles.service"; // Ensure Role is imported
 
 @Component({
@@ -35,6 +35,9 @@ export class StaffComponent implements OnInit, OnDestroy {
   userRoles: number[] = []; // Selected user's role IDs
 
   @ViewChild("dt") table: Table;
+
+  // Pagination
+  paginator = { page: 1, pageSize: 10, pageSizes: [10, 20, 30, 50, 100], total: 0 };
 
   constructor(
     private staffService: StaffService,
@@ -128,16 +131,17 @@ export class StaffComponent implements OnInit, OnDestroy {
   }
 
   getPositionsList() {
-    const posSub = this.positionsService.getPositions().subscribe({
-      next: (data: Position[]) => {
-        this.listOfPositions = data;
+    const listSub = this.positionsService.getPositions(this.paginator.page, this.paginator.pageSize).subscribe({
+      next: (response: PaginatedResponse<Position>) => {
+        this.listOfPositions = response.data;
+        this.paginator.total = response.meta.total;
         this.cdr.detectChanges();
       },
-      error: (error: any) => {
+      error: (error) => {
         console.error("Failed to fetch positions", error);
       }
     });
-    this.unsubscribe.push(posSub);
+    this.unsubscribe.push(listSub);
   }
 
   applyFilter(event: any) {
@@ -278,7 +282,22 @@ export class StaffComponent implements OnInit, OnDestroy {
     }
   }
 
+  pageChange(page: number) {
+    this.paginator.page = page;
+    this.getPositionsList();
+  }
+
+  pageSizeChange(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    if (target) {
+      const newPageSize = parseInt(target.value, 10);
+      this.paginator.pageSize = newPageSize;
+      this.paginator.page = 1; // Reset to first page when changing page size
+      this.getPositionsList();
+    }
+  }
+
   ngOnDestroy() {
-    this.unsubscribe.forEach(sb => sb.unsubscribe());
+    this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }
 }
