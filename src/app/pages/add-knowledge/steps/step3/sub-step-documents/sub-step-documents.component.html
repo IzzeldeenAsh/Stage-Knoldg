@@ -1,7 +1,7 @@
 <form [formGroup]="documentsForm">
     <div formArrayName="documents">
-        <div *ngFor="let doc of documentControls.controls; let i = index" [formGroupName]="i" class="form-group mb-4" [@fadeInMoveY]>
-            <div class="form-group row mb-6">
+        <div *ngFor="let doc of documentControls.controls; let i = index" [formGroupName]="i" class="form-group mb-6" [@fadeInMoveY]>
+            <div class="form-group row mb-2">
                 <!-- File Name -->
                 <div class="col-md-7">
                     <label class="form-label required">{{ 'FILE_NAME' | translate }}</label>
@@ -16,19 +16,40 @@
                     </div>
                 </div>
 
-                <!-- Price -->
-                <div class="col-md-3">
-                    <label class="form-label required">{{ 'PRICE' | translate }}</label>
-                    <div class="input-group">
-                        <span class="input-group-text">
-                            <i class="ki-duotone ki-dollar fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
-                        </span>
-                        <input formControlName="price" type="number" min="0" class="form-control" placeholder="{{ 'ENTER_PRICE' | translate }}" />
-                    </div>
-                    <div *ngIf="doc.get('price')?.invalid && doc.get('price')?.touched" class="text-danger small">
-                        {{ 'PRICE_REQUIRED' | translate }}
-                    </div>
-                </div>
+     
+            <!-- Price Column -->
+<div class="col-md-3">
+    <label class="form-label required">{{ 'PRICE' | translate }}</label>
+    
+    <!-- Charity Toggle -->
+
+    
+    <!-- Price Input (shown only when NOT charity) -->
+    <div class="input-group" *ngIf="!doc.get('isCharity')?.value">
+      <span class="input-group-text">
+        <i class="ki-duotone ki-dollar fs-2">
+          <span class="path1"></span>
+          <span class="path2"></span>
+          <span class="path3"></span>
+        </i>
+      </span>
+      <input formControlName="price" type="number" min="0" class="form-control" placeholder="{{ 'ENTER_PRICE' | translate }}" />
+    </div>
+    
+    <!-- Free Price Display (when charity is toggled) -->
+    <div class="alert alert-success d-flex align-items-center p-2 mt-2" *ngIf="doc.get('isCharity')?.value">
+      <i class="ki-duotone ki-information-5 fs-2hx text-success me-2"></i>
+      <div class="d-flex flex-column ">
+        <small class="text-success py-1">{{ 'FREE_DOCUMENT_MESSAGE_INSIGHT' | translate }}</small>
+      </div>
+    </div>
+    
+    <!-- Price Validation Message -->
+    <div *ngIf="doc.get('price')?.invalid && doc.get('price')?.touched && !doc.get('isCharity')?.value" class="text-danger small">
+      {{ 'PRICE_REQUIRED' | translate }}
+    </div>
+  </div>
+  
 
                 <!-- File Upload/Preview -->
                 <div class="col-md-1">
@@ -80,6 +101,16 @@
                     </button>
                 </div>
             </div>
+            <div class="form-check form-switch form-check-custom form-check-solid mb-2">
+                <input class="form-check-input" 
+                       type="checkbox" 
+                       formControlName="isCharity" 
+                       [id]="'isCharity' + i" />
+                <label class="form-check-label" [for]="'isCharity' + i">
+                  <span class="fw-bold">{{ 'MAKE_IT_FREE' | translate }}</span>
+                  <span class="badge badge-light-success ms-2">{{ 'CHARITY_MODE' | translate }}</span>
+                </label>
+              </div>
         </div>
 
         <!-- Add Document Button -->

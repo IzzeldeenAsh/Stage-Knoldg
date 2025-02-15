@@ -40,8 +40,10 @@
   
         <div class="text-start position-relative">
         
-          <h3 class="text-primary fs-3 fw-bold mb-2">
+          <h3 class="text-primary fs-3 fw-bold mb-2 d-flex align-items-center">
             {{ doc.file_name || 'Untitled' }}
+            
+            <!-- File Info -->
             <span class="text-muted px-2 fs-6">|</span>
             <span class="fw-900 fs-6 text-uppercase"
             [ngClass]="{
@@ -55,6 +57,16 @@
             </span>
             <span class="text-muted px-2 fs-6">|</span>
             <span class="text-muted fs-6">{{ (doc.file?.size || doc.file_size || 0) | fileSize }}</span>
+
+            <!-- Free Badge -->
+            <span *ngIf="doc.isCharity" 
+                  class="badge badge-success badge-lg ms-3">
+              <i class="ki-duotone ki-heart text-white me-1 fs-6">
+                <span class="path1"></span>
+                <span class="path2"></span>
+              </i>
+              {{'CHARITY_MODE' | translate}}
+            </span>
           </h3>
           <span class="text-muted fs-6 d-block mb-3" >
             {{ doc.description | truncateText: 200 }}
@@ -178,24 +190,70 @@
             </div>
             <button type="button" class="btn btn-light-primary" (click)="addChapter()">
               <i class="ki-duotone ki-plus fs-2"></i>
-              {{ "ADD_CHAPTER" | translate }}
+              <ng-container *ngIf="defaultValues.knowledgeType === 'data'">
+                {{ "ADD_NODE" | translate }}
+              </ng-container>
+              <ng-container *ngIf="defaultValues.knowledgeType !== 'data'">
+                {{ "ADD_CHAPTER" | translate }}
+              </ng-container>
             </button>
           </div>
         </div>
       </div>
   
-      <div class="mb-3 w-200px">
-        <label class="form-label required">{{'PRICE' | translate}}:</label>
-        <div class="input-group">
-          <span class="input-group-text">
-            <i class="ki-duotone ki-dollar fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
-          </span>
-          <input formControlName="price" type="number" min="0" class="form-control" placeholder="{{ 'ENTER_PRICE' | translate }}" />
+      <!-- Price Section with Charity Option -->
+      <div class="mb-5">
+        <label class="form-label required">{{'PRICE_SETTINGS' | translate}}</label>
+        
+        <!-- Charity Toggle -->
+        <div class="form-check form-switch form-check-custom form-check-solid mb-3">
+          <input class="form-check-input" 
+                 type="checkbox" 
+                 formControlName="isCharity" 
+                 id="isCharity"/>
+          <label class="form-check-label" for="isCharity">
+            <span class="fw-bold">{{'MAKE_IT_FREE' | translate}}</span>
+            <span class="badge badge-light-success ms-2">{{'CHARITY_MODE' | translate}}</span>
+            <span class="text-muted d-block fs-7">{{'FREE_DOCUMENT_DESC' | translate}}</span>
+          </label>
         </div>
-        <div *ngIf="docForm.get('price')?.invalid && docForm.get('price')?.touched" class="text-danger">
+
+        <!-- Price Input -->
+        <div class="input-group" *ngIf="!docForm.get('isCharity')?.value">
+          <span class="input-group-text">
+            <i class="ki-duotone ki-dollar fs-2">
+              <span class="path1"></span>
+              <span class="path2"></span>
+              <span class="path3"></span>
+            </i>
+          </span>
+          <input formControlName="price" 
+                 type="number" 
+                 min="0" 
+                 class="form-control" 
+                 placeholder="{{ 'ENTER_PRICE' | translate }}" />
+        </div>
+
+        <!-- Free Price Display -->
+        <div class="alert alert-success d-flex align-items-center p-5 mt-2" *ngIf="docForm.get('isCharity')?.value">
+          <i class="ki-duotone ki-information-5 fs-2hx text-success me-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+            <span class="path3"></span>
+          </i>
+          <div class="d-flex flex-column">
+            <h4 class="mb-1 text-success">{{'FREE_DOCUMENT' | translate}}</h4>
+            <span>{{'FREE_DOCUMENT_MESSAGE' | translate}}</span>
+          </div>
+        </div>
+
+        <!-- Price Validation Message -->
+        <div *ngIf="docForm.get('price')?.invalid && docForm.get('price')?.touched && !docForm.get('isCharity')?.value" 
+             class="text-danger">
           {{ 'PRICE_REQUIRED' | translate }}
         </div>
       </div>
+  
       <!-- File Upload -->
       <div class="mb-3">
         <label class="form-label required">Upload File</label>

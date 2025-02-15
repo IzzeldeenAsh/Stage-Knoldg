@@ -536,7 +536,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       "NAV": {
         "OVERVIEW": "Overview",
         "MY_REQUESTS": "My Requests",
-        "MY_KNOWLEDGE": "My Knowledge",
+        "MY_KNOWLEDGE": "My Knowledge +",
         "ACCOUNT_SETTINGS": "Account Settings"
       },
       REQUESTS: {
@@ -760,6 +760,15 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     "INSIGHTER_DASHBOARD_GENERAL": "General",
     "INSIGHTER_DASHBOARD_SCHEDULED": "Scheduled",
     "INSIGHTER_DASHBOARD_POSTED": "Posted",
-    "INSIGHTER_DASHBOARD_PACKAGES": "Packages"
+    "INSIGHTER_DASHBOARD_PACKAGES": "Packages",
+    PRICE_SETTINGS: 'Price Settings',
+    MAKE_IT_FREE: 'Enable Charity Mode',
+    FREE_DOCUMENT_DESC: 'This document will be available for free to all users',
+    FREE_DOCUMENT: 'Charity Document',
+    FREE_DOCUMENT_MESSAGE: 'This document will be shared for free with the community in Charity Mode',
+    FREE_DOCUMENT_MESSAGE_INSIGHT:'Free Document',
+    FREE: 'Free',
+    CHARITY_MODE: 'Charity Mode',
   }
+  
 };

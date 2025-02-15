@@ -15,41 +15,7 @@
     </div>
     <!--end::Search-->
 
-    <!-- Add View Toggle -->
-    <div class="nav-group nav-group-fluid ms-3">
-      <label>
-        <input
-          type="radio"
-          class="btn-check"
-          name="type"
-          value="grid"
-          [(ngModel)]="selectedType"
-          (change)="onTypeChange($event)"
-        />
-        <span
-          class="btn btn-sm btn-icon btn-active-light-primary me-2"
-          [class.active]="selectedType === 'grid'"
-        >
-          <i class="ki-outline ki-element-11"></i>
-        </span>
-      </label>
-      <label>
-        <input
-          type="radio"
-          class="btn-check"
-          name="type"
-          value="list"
-          [(ngModel)]="selectedType"
-          (change)="onTypeChange($event)"
-        />
-        <span
-          class="btn btn-sm btn-icon btn-active-light-primary"
-          [class.active]="selectedType === 'list'"
-        >
-          <i class="ki-outline ki-row-horizontal"></i>
-        </span>
-      </label>
-    </div>
+
   </div>
 
   <!--begin::Card toolbar-->
@@ -120,11 +86,60 @@
       </div>
     </div>
     <!--end::Title-->
-
+   <div class="d-flex gap-1">
+     <!-- Add View Toggle -->
+     <div class="nav-group nav-group-fluid ms-3">
+      <label>
+        <input
+          type="radio"
+          class="btn-check"
+          name="type"
+          value="grid"
+          [(ngModel)]="selectedType"
+          (change)="onTypeChange($event)"
+        />
+        <span
+        class="radio h-30px fw-bold px-4"
+        [class.radio-active]="selectedType === 'grid'"
+        >
+        <i
+        class="ki-outline ki-element-11"
+        [ngClass]="{
+          'text-gray-700': selectedType === 'grid',
+          'text-gray-500': selectedType !== 'grid'
+        }"
+      ></i>
+        </span>
+      </label>
+      <label>
+        <input
+          type="radio"
+          class="btn-check"
+          name="type"
+          value="list"
+          [(ngModel)]="selectedType"
+          (change)="onTypeChange($event)"
+        />
+        <span
+        class="radio h-30px fw-bold px-4"
+        [class.radio-active]="selectedType === 'list'"
+        >
+        <i
+        class="ki-outline ki-row-horizontal"
+        [ngClass]="{
+          'text-gray-700': selectedType === 'list',
+          'text-gray-500': selectedType !== 'list'
+        }"
+      ></i>
+        </span>
+      </label>
+    </div>
     <!--begin::Items Counter-->
     <div class="badge badge-lg badge-primary">
+      
       <span>{{ totalItems }} {{ 'KNOWLEDGE.ITEMS' | translate }}</span>
     </div>
+   </div>
     <!--end::Items Counter-->
   </div>
   <!--end::Table header-->
@@ -147,7 +162,7 @@
                 <th class="min-w-250px">{{ 'KNOWLEDGE.KNOWLEDGE_NAME' | translate }}</th>
                 <th class="min-w-10px">{{ 'KNOWLEDGE.TYPE' | translate }}</th>
                 <th class="min-w-125px">{{ 'KNOWLEDGE.TOTAL_PRICE' | translate }}</th>
-                <th class="min-w-100px">{{ 'KNOWLEDGE.STATUS' | translate }}</th>
+                <th  class="min-w-100px">{{ 'KNOWLEDGE.STATUS' | translate }}</th>
                 <th class="w-125px" *ngIf="!showPackageBuilder"></th>
               </tr>
             </thead>
@@ -236,12 +251,12 @@
           <div class="card add-knowledge-card h-100">
             <a [routerLink]="['/app/add-knowledge']" class="card-body text-center d-flex flex-column justify-content-center">
               <div class="py-8">
-                <i class="ki-duotone ki-plus-square fs-2x text-primary mb-4">
+                <i class="ki-duotone ki-plus-square fs-3x text-info mb-4">
                   <span class="path1"></span>
                   <span class="path2"></span>
                   <span class="path3"></span>
                 </i>
-                <h3 class="fs-3 fw-bold text-gray-800 mb-2">{{ 'KNOWLEDGE.ADD_KNOWLEDGE' | translate }}</h3>
+                <h3 class="fs-3 fw-bold text-info mb-2">{{ 'KNOWLEDGE.ADD_KNOWLEDGE' | translate }}</h3>
                 <div class="fs-7 text-gray-600">Click to add new knowledge to your collection</div>
               </div>
             </a>
@@ -263,11 +278,13 @@
                 <i *ngIf="knowledge.type === 'data'" class="ki-duotone ki-data text-primary">
                   <span class="path1"></span>
                   <span class="path2"></span>
+                  <span class="path3"></span>
+                  <span class="path4"></span>
+                  <span class="path5"></span>
                 </i>
-                <i *ngIf="knowledge.type === 'insight'" class="ki-duotone ki-bulb text-success">
-                  <span class="path1"></span>
-                  <span class="path2"></span>
-                </i>
+                <span *ngIf="knowledge.type === 'insight'" class="ki-duotone ki-bulb text-success">
+                  <app-keenicon name="chart-line" class="fs-2 text-success"></app-keenicon>
+                </span>
                 <i *ngIf="knowledge.type === 'report'" class="ki-duotone ki-document text-info">
                   <span class="path1"></span>
                   <span class="path2"></span>
@@ -279,6 +296,9 @@
                 <i *ngIf="knowledge.type === 'course'" class="ki-duotone ki-award text-success">
                   <span class="path1"></span>
                   <span class="path2"></span>
+                  <span class="path3"></span>
+                  <span class="path4"></span>
+                  <span class="path5"></span>
                 </i>
                 <i *ngIf="knowledge.type === 'media'" class="ki-duotone ki-play-circle text-danger">
                   <span class="path1"></span>
@@ -291,7 +311,7 @@
               <div class="price">{{ knowledge.total_price | currency }}</div>
 
               <!-- Footer -->
-              <div class="d-flex justify-content-between align-items-center">
+              <div *ngIf="!showPackageBuilder" class="d-flex justify-content-between align-items-center">
                 <span [ngClass]="getStatusClass(knowledge.status)" class="text-capitalize">{{ knowledge.status }}</span>
                 
                 <div class="d-flex gap-2">
@@ -366,8 +386,6 @@
     <!--end::Pagination-->
     </div>
 
- 
-
     <!-- Package Builder Toggle Button -->
     <div class="d-flex justify-content-end mt-6">
       <button class="btn btn-primary d-none" (click)="togglePackageBuilder()">
@@ -375,29 +393,30 @@
         {{ showPackageBuilder ? ('KNOWLEDGE.CLOSE_PACKAGE_BUILDER' | translate) : ('KNOWLEDGE.GENERATE_PACKAGE' | translate) }}
       </button>
     </div>
+    <!-- Package Sidebar -->
+  <div class="w-35 package-sidebar position-sticky" 
+  *ngIf="showPackageBuilder && !isSmallScreen" 
+  [@slideInOut]
+  style="top: 200px; height: calc(100vh - 100px); overflow-y: auto;">
+<div class="card">
+ <div class="card-body">
+   <app-package-builder-content
+     [packageName]="packageName"
+     [(packages)]="packages"
+     [(discount)]="discount"
+     [allKnowledges]="allKnowledges"
+     [(selectedKnowledge)]="selectedKnowledge"
+     [showDragDrop]="true"
+     [loading]="loading"
+     (savePackage)="showEmittedPackage($event)"
+     (onKnowledgeSelect)="onKnowledgeSelect($event)">
+   </app-package-builder-content>
+ </div>
+</div>
+</div>
   </div>
 
-  <!-- Package Sidebar -->
-  <div class="w-35 package-sidebar position-sticky" 
-       *ngIf="showPackageBuilder && !isSmallScreen" 
-       [@slideInOut]
-       style="top: 200px; height: calc(100vh - 100px); overflow-y: auto;">
-    <div class="card">
-      <div class="card-body">
-        <app-package-builder-content
-          [packageName]="packageName"
-          [(packages)]="packages"
-          [(discount)]="discount"
-          [allKnowledges]="allKnowledges"
-          [(selectedKnowledge)]="selectedKnowledge"
-          [showDragDrop]="true"
-          [loading]="loading"
-          (savePackage)="showEmittedPackage($event)"
-          (onKnowledgeSelect)="onKnowledgeSelect($event)">
-        </app-package-builder-content>
-      </div>
-    </div>
-  </div>
+  
 
   <!-- Package Builder Dialog for small screens -->
   <p-dialog 

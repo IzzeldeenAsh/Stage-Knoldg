@@ -95,10 +95,24 @@ export class SubStepChaptersComponent extends BaseComponent implements OnInit {
       file_name: ['', Validators.required],
       description: [''],
       table_of_content: this.fb.array([]),
-      price: [0, [Validators.required, Validators.min(0)]],
+      price: [{ value: 0, disabled: false }, [Validators.required, Validators.min(0)]],
+      isCharity: [false],
       file: [null],
       file_extension: ['']
     });
+
+    // Subscribe to isCharity changes to handle price
+    this.docForm.get('isCharity')?.valueChanges.subscribe(isCharity => {
+      const priceControl = this.docForm.get('price');
+      if (isCharity) {
+        priceControl?.patchValue(0);
+        priceControl?.disable();
+      } else {
+        priceControl?.enable();
+      }
+      this.cdr.detectChanges();
+    });
+
     this.previewFilesDialog = [];
     this.addChapter(); // Add initial chapter
   }
@@ -162,7 +176,8 @@ export class SubStepChaptersComponent extends BaseComponent implements OnInit {
       file_name: fileName,
       description: this.docForm.value.description || '',
       table_of_content: tableOfContent,
-      price: this.docForm.value.price || 0,
+      price: this.docForm.value.isCharity ? 0 : (this.docForm.value.price || 0),
+      isCharity: this.docForm.value.isCharity,
       status: 'active'
     };
 
@@ -407,6 +422,7 @@ export class SubStepChaptersComponent extends BaseComponent implements OnInit {
         file_name: existingDoc.file_name || '',
         description: existingDoc.description || '',
         price: existingDoc.price || 0,
+        isCharity: existingDoc.isCharity || false,
         file_extension: existingDoc.file_extension || '',
         file: existingDoc.file || null,
       });

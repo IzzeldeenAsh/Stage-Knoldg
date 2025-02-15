@@ -496,7 +496,7 @@ export const locale = {
         "NAV": {
           "OVERVIEW": "نظرة عامة",
           "MY_REQUESTS": "طلباتي",
-          "MY_KNOWLEDGE": "قاعدة المعرفة",
+          "MY_KNOWLEDGE": "قاعدة المعرفة + " ,
           "ACCOUNT_SETTINGS": "إعدادات الحساب"
         },
         "REQUESTS": {
@@ -714,5 +714,13 @@ export const locale = {
     "INSIGHTER_DASHBOARD_SCHEDULED": "المجدولة",
     "INSIGHTER_DASHBOARD_POSTED": "المُنشَر",
     "INSIGHTER_DASHBOARD_PACKAGES": "الحزم"
-  }
+  },
+  PRICE_SETTINGS: 'إعدادات السعر',
+  MAKE_IT_FREE: 'تفعيل وضع التبرع',
+  FREE_DOCUMENT_DESC: 'سيكون هذا المستند متاحاً مجاناً لجميع المستخدمين',
+  FREE_DOCUMENT: 'مستند تبرع',
+  FREE_DOCUMENT_MESSAGE: 'سيتم مشاركة هذا المستند مجاناً مع المجتمع في وضع التبرع',
+  FREE_DOCUMENT_MESSAGE_INSIGHT:'ملف مجاني',
+  FREE: 'مجاني',
+  CHARITY_MODE: 'وضع التبرع',
 };
