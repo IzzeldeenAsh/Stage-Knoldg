@@ -65,7 +65,7 @@ export class HeaderMenuComponent extends BaseComponent implements OnInit {
   }
 
   getIndustryUrl(industry: Industry): string {
-    return `https://knowrland-for-client.vercel.app/industry/${industry.id}/${industry.slug}`;
+    return `https://knowrland-for-client.vercel.app/en/industry/${industry.id}/${industry.slug}`;
   }
 
   calculateMenuItemCssClass(url: string): string {

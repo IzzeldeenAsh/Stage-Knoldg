@@ -49,7 +49,7 @@ export class UserInnerComponent implements OnInit, OnDestroy {
         localStorage.removeItem("foresighta-creds");
         localStorage.removeItem("user");
         this.getProfileService.clearProfile()
-        window.location.href = 'https://knowrland-for-client.vercel.app/signout';
+        window.location.href = 'https://knowrland-for-client.vercel.app/en/signout';
        
       },
       error: (error) => {
