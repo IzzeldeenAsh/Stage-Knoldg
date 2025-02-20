@@ -9,7 +9,7 @@ const Routing: Routes = [
     redirectTo: 'insighter-dashboard',
     pathMatch: 'full',
   },
-  // {
+  // removed {
   //   path: 'results-home',
   //   loadChildren: () => import('./main-page/main-page.module').then((m) => m.MainPageModule),
   // },
