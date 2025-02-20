@@ -235,14 +235,15 @@
         </div>
 
         <!-- Free Price Display -->
-        <div class="alert alert-success d-flex align-items-center p-5 mt-2" *ngIf="docForm.get('isCharity')?.value">
-          <i class="ki-duotone ki-information-5 fs-2hx text-success me-4">
+        <div class="border border-info rounded d-flex align-items-center p-5 mx-4 " *ngIf="docForm.get('isCharity')?.value">
+          <!-- <i class="ki-duotone ki-information-5 fs-2hx text-success me-4">
             <span class="path1"></span>
             <span class="path2"></span>
             <span class="path3"></span>
-          </i>
+          </i> -->
+          <img src="../../../../../assets/media/icons/duotune/abstract/charity.svg" alt="charity" class="mx-4">
           <div class="d-flex flex-column">
-            <h4 class="mb-1 text-success">{{'FREE_DOCUMENT' | translate}}</h4>
+            <h4 class="mb-1 text-info">{{'FREE_DOCUMENT' | translate}}</h4>
             <span>{{'FREE_DOCUMENT_MESSAGE' | translate}}</span>
           </div>
         </div>

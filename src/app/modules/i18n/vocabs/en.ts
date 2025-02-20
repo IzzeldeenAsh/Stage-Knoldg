@@ -765,7 +765,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     MAKE_IT_FREE: 'Enable Charity Mode',
     FREE_DOCUMENT_DESC: 'This document will be available for free to all users',
     FREE_DOCUMENT: 'Charity Document',
-    FREE_DOCUMENT_MESSAGE: 'This document will be shared for free with the community in Charity Mode',
+    FREE_DOCUMENT_MESSAGE: 'This document will be shared for free with the community',
     FREE_DOCUMENT_MESSAGE_INSIGHT:'Free Document',
     FREE: 'Free',
     CHARITY_MODE: 'Charity Mode',
