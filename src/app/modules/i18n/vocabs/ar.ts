@@ -1,6 +1,7 @@
 export const locale = {
   lang: "ar",
   data: {
+     
   "PROFILE_COMPLETION": {
     "ALMOST_THERE": "أوشكت على الإنتهاء",
     "TITLE": "اكتمال الملف الشخصي",
@@ -414,7 +415,19 @@ export const locale = {
       "CANCEL": "إلغاء",
       PASSWORDS_DO_NOT_MATCH:"كلمتا السر غير متطابقتين"
     },
-
+    ADD_CERTIFICATE:'إضافة شهادة',
+    HEADER: {
+      INDUSTRIES: 'القطاعات',
+      EXPLORE_INDUSTRIES: 'استكشف القطاعات',
+      EXPLORE_ALL_INDUSTRIES: 'استكشف جميع القطاعات',
+      DISCOVER_OPPORTUNITIES: 'اكتشف فرصًا لا حدود لها',
+      BROWSE_SECTORS: 'تصفح مختلف القطاعات واعثر على ما يناسب احتياجات عملك',
+      EXPLORE_NOW: 'استكشف الآن',
+      REPORTS: 'التقارير',
+      DATA: 'البيانات',
+      INSIGHTS: 'الرؤى',
+      MANUAL: 'الدليل'
+    },
     USER_REQUESTS: {
       TITLE: 'طلبات المستخدم',
       REQUEST_COUNT: 'طلبات',
@@ -506,6 +519,9 @@ export const locale = {
         }
       }
     },
+    BECOME_INSIHGER_HEADER:'سجل كانسايتر',
+    BECOME_INSIGHTER_DESCRIPTION:"مشاركة المعرفة تمكّننا جميعًا من النمو والابتكار معًا!",
+    CHAPTER_TITLE_REQUIRED:'العنوان مطلوب',
     CHOOSE_ACCOUNT_TYPE: "اختر نوع الحساب",
     BILLING_TOOLTIP: "يتم إصدار الفواتير بناءً على نوع الحساب الذي اخترته",
     IF_NEED_MORE_INFO: "إذا كنت بحاجة إلى مزيد من المعلومات، يرجى زيارة",
@@ -723,4 +739,5 @@ export const locale = {
   FREE_DOCUMENT_MESSAGE_INSIGHT:'ملف مجاني',
   FREE: 'مجاني',
   CHARITY_MODE: 'وضع التبرع',
+
 };

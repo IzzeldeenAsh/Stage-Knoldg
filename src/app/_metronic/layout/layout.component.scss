@@ -14,11 +14,25 @@
   }
 }
 
-#kt_app_header{
-background-color:#fafbfb;
-border-bottom: 1px solid #d1d9e0;
-}
 
 .bg-layout{
   background-color: #fafbfb;
 }
+
+.app-header {
+  max-width: 86rem;
+  margin-top: 30px;
+  margin: 25px auto;
+  background-color: hsla(0, 0%, 100%, .9);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.03), 0 4px 6px -4px rgba(0, 0, 0, 0.03);
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border-radius: 1.5rem;
+  backdrop-filter: blur(10px);
+}
+@media (max-width: 768px){
+  .app-header{
+    max-width: 100%;
+  }
+}
+  
