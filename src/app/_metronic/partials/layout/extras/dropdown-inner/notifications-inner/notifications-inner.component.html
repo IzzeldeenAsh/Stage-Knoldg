@@ -1,5 +1,6 @@
 <div
   class="d-flex flex-column bgi-no-repeat rounded-top"
+  [ngClass]="{'right-0': lang === 'en', 'left-20': lang === 'ar'}"
   [style.background-image]="'url(./assets/media/misc/menu-header-bg.jpg)'"
 >
   <h3 class="text-white fw-bold px-9 mt-10 mb-6">

@@ -5,6 +5,8 @@ import { ScrollAnimsService } from '../_fake/services/scroll-anims/scroll-anims.
 import { MessageService } from 'primeng/api';
 import { TranslationService } from 'src/app/modules/i18n';
 import { ToastService } from '../_fake/services/toast-service/toast.service';
+import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 @Directive()
 export abstract class BaseComponent implements OnDestroy, AfterViewInit {
@@ -15,6 +17,8 @@ export abstract class BaseComponent implements OnDestroy, AfterViewInit {
    unsubscribe$ = new Subject<void>();
   protected unsubscribe: Subscription[] = [];
   lang: string='en';
+  clientBaseUrl = 'https://knowrland-for-client.vercel.app';
+  
 
   constructor(protected injector: Injector) {
     this.scrollAnims = this.injector.get(ScrollAnimsService);

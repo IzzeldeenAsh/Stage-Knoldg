@@ -23,7 +23,7 @@ export class RolesGuard implements CanActivate {
           return true;
         }
         // User lacks the required roles, redirect accordingly
-        this.router.navigate(['/app']); // Adjust the redirect path as needed
+        this.router.navigate(['/app/profile']); // Adjust the redirect path as needed
         return false;
       }),
       catchError(() => {

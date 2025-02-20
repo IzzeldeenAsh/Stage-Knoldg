@@ -5,6 +5,7 @@ import { LayoutInitService } from '../../../core/layout-init.service';
 import { LayoutService } from '../../../core/layout.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BaseComponent } from 'src/app/modules/base.component';
+import data from 'src/assets/app-settings.json';
 
 interface Industry {
   id: number;
@@ -65,7 +66,7 @@ export class HeaderMenuComponent extends BaseComponent implements OnInit {
   }
 
   getIndustryUrl(industry: Industry): string {
-    return `https://knowrland-for-client.vercel.app/en/industry/${industry.id}/${industry.slug}`;
+    return `${this.clientBaseUrl}/en/industry/${industry.id}/${industry.slug}`;
   }
 
   calculateMenuItemCssClass(url: string): string {

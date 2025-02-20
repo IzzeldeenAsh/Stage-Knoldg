@@ -1,16 +1,17 @@
-import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, Injector, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subscription, first } from 'rxjs';
 import { TranslationService } from '../../../../../../modules/i18n';
 import { AuthService, UserType } from '../../../../../../modules/auth';
 import { IForsightaProfile } from 'src/app/_fake/models/profile.interface';
 import { Router } from '@angular/router';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
+import { BaseComponent } from 'src/app/modules/base.component';
 
 @Component({
   selector: 'app-user-inner',
   templateUrl: './user-inner.component.html',
 })
-export class UserInnerComponent implements OnInit, OnDestroy {
+export class UserInnerComponent extends BaseComponent implements OnInit {
   // @HostBinding('class')
   // class = `menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg menu-state-primary fw-bold py-4 fs-6 w-275px`;
   @HostBinding('attr.data-kt-menu') dataKtMenu = 'true';
@@ -18,14 +19,15 @@ export class UserInnerComponent implements OnInit, OnDestroy {
   language: LanguageFlag;
   user$: Observable<IForsightaProfile>;
   langs = languages;
-  private unsubscribe: Subscription[] = [];
 
   constructor(
     private auth: AuthService,
     private translationService: TranslationService,
-    private router:Router,
-    private getProfileService: ProfileService
-  ) {}
+    private getProfileService: ProfileService,
+    injector: Injector
+  ) {
+    super(injector);
+  }
 
   ngOnInit(): void {
     this.user$ = this.getProfileService.getProfile().pipe(first())
@@ -49,7 +51,7 @@ export class UserInnerComponent implements OnInit, OnDestroy {
         localStorage.removeItem("foresighta-creds");
         localStorage.removeItem("user");
         this.getProfileService.clearProfile()
-        window.location.href = 'https://knowrland-for-client.vercel.app/en/signout';
+        window.location.href = '#/en/signout';
        
       },
       error: (error) => {
@@ -77,9 +79,7 @@ export class UserInnerComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
-    this.unsubscribe.forEach((sb) => sb.unsubscribe());
-  }
+
 }
 
 interface LanguageFlag {

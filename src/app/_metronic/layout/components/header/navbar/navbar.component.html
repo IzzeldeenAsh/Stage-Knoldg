@@ -1,5 +1,5 @@
 <!--begin::Search-->
-<div class="app-navbar-item align-items-stretch" [ngClass]="itemClass">
+<!-- <div class="app-navbar-item align-items-stretch" [ngClass]="itemClass">
   <div
     id="kt_header_search"
     class="header-search d-flex align-items-stretch"
@@ -28,29 +28,30 @@
       class="menu menu-sub menu-sub-dropdown p-7 w-325px w-md-375px"
     ></app-search-result-inner>
   </div>
-</div>
+</div> -->
 
 <!--begin::Notifications-->
 <div class="app-navbar-item" [ngClass]="itemClass">
-  <div
-    [ngClass]="btnClass"
-    data-kt-menu-trigger="{default: 'click', lg: 'hover'}"
-    data-kt-menu-attach="parent"
-    data-kt-menu-placement="bottom-end"
-  >
-    <i class="ki-outline ki-notification-on fs-1"></i>
     <div
-      *ngIf="notificationCount > 0"
-      class="badge badge-circle badge-danger position-absolute translate-middle bottom-0 ms-10 mt-7 h-15px w-15px fs-9"
+      [ngClass]="btnClass"
+      (click)="toggleNotifications()"
+      class="cursor-pointer"
     >
-      {{ notificationCount }}
-    </div>  
-  </div>
-  <app-notifications-inner 
-  [parent]="'client'"
-   (notificationClicked)="handleNotificationClick($event)" 
-   [notifications]="notifications"
-   ></app-notifications-inner>
+      <i class="ki-outline ki-notification-on fs-1"></i>
+      <div
+        *ngIf="notificationCount > 0"
+        class="badge badge-circle badge-danger position-absolute translate-middle bottom-0 ms-10 mt-7 h-15px w-15px fs-9"
+      >
+        {{ notificationCount }}
+      </div>  
+    </div>
+    <app-notifications-inner 
+      *ngIf="isNotificationsOpen"
+      [parent]="'client'"
+      (notificationClicked)="handleNotificationClick($event)" 
+      [notifications]="notifications"
+      (clickOutside)="closeNotifications()"
+    ></app-notifications-inner>
 </div>
 
 

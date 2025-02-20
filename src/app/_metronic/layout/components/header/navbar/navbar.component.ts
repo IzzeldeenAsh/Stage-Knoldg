@@ -19,6 +19,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   toolbarButtonMarginClass = 'ms-1 ms-lg-3';
   toolbarUserAvatarHeightClass = 'symbol-30px symbol-md-40px';
   notifications: any[] = [];
+  isNotificationsOpen = false;
   // Toggle the user menu's visibility
   toggleUserMenu(): void {
     this.isUserMenuOpen = !this.isUserMenuOpen;
@@ -43,6 +44,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
   // Close the user menu
   closeUserMenu(): void {
     this.isUserMenuOpen = false;
+  }
+
+  toggleNotifications() {
+    this.isNotificationsOpen = !this.isNotificationsOpen;
+  }
+
+  closeNotifications() {
+    this.isNotificationsOpen = false;
   }
 
   itemClass: string = 'ms-1 ms-lg-3';

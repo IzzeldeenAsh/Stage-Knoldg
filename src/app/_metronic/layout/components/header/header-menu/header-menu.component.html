@@ -1,82 +1,92 @@
-<div class="menu-item me-lg-1">
-  <a class="menu-link py-3" routerLinkActive="active menu-here" routerLink="/dashboard">
-    <div class="svg-container d-none d-md-block ">
-      <span  class="w-40px" [inlineSVG]="'./assets/media/logos/light-logo-sm.svg'"></span>
-    </div>
-  </a>
-</div>
-
 <!--begin::Industries menu-->
 <div class="menu-item me-lg-1 position-relative"
      (mouseenter)="showIndustriesMenu()"
      (mouseleave)="hideIndustriesMenu()">
-  <span class="menu-link py-3">
-    <span class="menu-title">Industries</span>
-    <span class="menu-arrow"></span>
+  <span class="menu-link py-3 d-flex align-items-center">
+    <span class="menu-title">{{ 'HEADER.INDUSTRIES' | translate }}</span>
+    <span >
+      <i class="ki-duotone ki-down text-gray-900 fs-4 pt-1"></i>
+    </span>
   </span>
   <div *ngIf="isIndustriesMenuVisible">
     <div class="menu-sub menu-sub-lg-down-accordion menu-sub-lg-dropdown p-0 show"
          style="z-index: 108; position: absolute; top: 100%; left: 0;">
-      <!--begin:Pages menu-->
       <div class="menu-active-bg px-4 px-lg-0">
-        <!--begin:Tabs nav-->
         <div class="d-flex w-100 overflow-auto">
           <ul class="nav nav-stretch nav-line-tabs fw-bold fs-6 p-0 p-lg-10 flex-nowrap flex-grow-1" role="tablist">
             <li class="nav-item mx-lg-1" role="presentation">
               <a class="nav-link py-3 py-lg-6 active text-active-primary" href="#"
                  data-bs-toggle="tab" data-bs-target="#kt_app_header_menu_pages_pages"
                  aria-selected="true" role="tab">
-                Explore Industries
+                {{ 'HEADER.EXPLORE_INDUSTRIES' | translate }}
               </a>
             </li>
           </ul>
         </div>
-        <!--end:Tabs nav-->
         <div class="tab-content py-4 py-lg-8 px-lg-7">
           <div class="tab-pane active w-lg-500px" id="kt_app_header_menu_pages_pages" role="tabpanel">
             <div class="row">
-              <!--begin:Col-->
               <div class="col-lg-5">
                 <div class="row">
-                  <!--begin:Col-->
                   <div class="col-lg-12 mb-6 mb-lg-0">
-                    <!--begin:Menu heading-->
-                    <h4 class="fs-6 fs-lg-4 fw-bold mb-3 ms-4">Industries</h4>
-                    <!-- Menu Items -->
+                    <h4 class="fs-6 fs-lg-4 fw-bold mb-3 ms-4">{{ 'HEADER.INDUSTRIES' | translate }}</h4>
                     <div class="menu-item p-0 m-0" *ngFor="let industry of industries">
                       <a [href]="getIndustryUrl(industry)" class="menu-link">
                         <span class="menu-title">{{industry.name}}</span>
                       </a>
                     </div>
-                    <!--end:Menu heading-->
                   </div>
-                  <!--end:Col-->
                 </div>
               </div>
               <div class="col-lg-7">
                 <div class="card d-flex flex-column justify-content-between align-items-center gap-5 pt-10 px-5 start-now-bg min-h-200px">
                   <div class="text-center">
                     <h4 class="text-dark fw-bold mb-2">
-                      Explore All Industries<br>
-                      Discover Endless Opportunities
+                      {{ 'HEADER.EXPLORE_ALL_INDUSTRIES' | translate }}<br>
+                      {{ 'HEADER.DISCOVER_OPPORTUNITIES' | translate }}
                     </h4>
                     <span class="d-block text-muted small mb-5">
-                      Browse through various sectors and find the perfect match for your business needs.
+                      {{ 'HEADER.BROWSE_SECTORS' | translate }}
                     </span>
-                    <a class="btn btn-primary btn-xs" href="https://knowrland-for-client.vercel.app/en/all-industries">
-                      Explore Now
+                    <a class="btn btn-primary btn-xs" [href]="clientBaseUrl + '/en/all-industries'">
+                      {{ 'HEADER.EXPLORE_NOW' | translate }}
                     </a>
                   </div>
                 </div>
               </div>
-              <!--end:Col-->
             </div>
           </div>
         </div>
       </div>
-      <!--end:Pages menu-->
     </div>
   </div>
 </div>
-
+<div class="menu-item me-lg-1 position-relative">
+  <a [href]="clientBaseUrl + '/en/industries/report'">
+  <span class="menu-link py-3">
+    <span class="menu-title">{{ 'HEADER.REPORTS' | translate }}</span>
+  </span>
+  </a>
+</div>
+<div class="menu-item me-lg-1 position-relative">
+  <a [href]="clientBaseUrl + '/en/industries/data'">
+  <span class="menu-link py-3">
+    <span class="menu-title">{{ 'HEADER.DATA' | translate }}</span>
+  </span>
+  </a>
+</div>
+<div class="menu-item me-lg-1 position-relative">
+  <a [href]="clientBaseUrl + '/en/industries/insight'">
+  <span class="menu-link py-3">
+    <span class="menu-title">{{ 'HEADER.INSIGHTS' | translate }}</span>
+  </span>
+  </a>
+</div>
+<div class="menu-item me-lg-1 position-relative">
+  <a [href]="clientBaseUrl + '/en/industries/manual'">
+  <span class="menu-link py-3">
+    <span class="menu-title">{{ 'HEADER.MANUAL' | translate }}</span>
+  </span>
+  </a>
+</div>
 <!--end::Industries menu-->

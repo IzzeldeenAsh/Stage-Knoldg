@@ -27,3 +27,13 @@
   background-repeat: no-repeat;
   background-size: 700px;
 }
+.menu-link:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 10px;
+  background-color: #d9d9d9;
+}

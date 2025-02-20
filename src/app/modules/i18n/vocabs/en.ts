@@ -769,6 +769,22 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     FREE_DOCUMENT_MESSAGE_INSIGHT:'Free Document',
     FREE: 'Free',
     CHARITY_MODE: 'Charity Mode',
+    BECOME_INSIHGER_HEADER:'Become an Insighter',
+    BECOME_INSIGHTER_DESCRIPTION:"Sharing knowledge empowers us all to grow and innovate together!",
+    CHAPTER_TITLE_REQUIRED: "Chapter Title is required",
+    HEADER: {
+      INDUSTRIES: 'Industries',
+      EXPLORE_INDUSTRIES: 'Explore Industries',
+      EXPLORE_ALL_INDUSTRIES: 'Explore All Industries',
+      DISCOVER_OPPORTUNITIES: 'Discover Endless Opportunities',
+      BROWSE_SECTORS: 'Browse through various sectors and find the perfect match for your business needs.',
+      EXPLORE_NOW: 'Explore Now',
+      REPORTS: 'Reports',
+      DATA: 'Data',
+      INSIGHTS: 'Insights',
+      MANUAL: 'Manual'
+    },
+    ADD_CERTIFICATE:'Add Certificate'
   }
   
 };

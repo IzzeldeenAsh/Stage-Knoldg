@@ -1,5 +1,6 @@
-import { Component, HostBinding, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, HostBinding, Input, OnInit, Output, EventEmitter, OnDestroy, Injector } from '@angular/core';
 import { Notification } from 'src/app/_fake/services/nofitications/notifications.service';
+import { BaseComponent } from 'src/app/modules/base.component';
 
 export type NotificationsTabsType =
   | 'kt_topbar_notifications_1'
@@ -9,22 +10,57 @@ export type NotificationsTabsType =
 @Component({
   selector: 'app-notifications-inner',
   templateUrl: './notifications-inner.component.html',
+  host: {
+    class: 'menu menu-sub menu-sub-dropdown menu-column w-350px w-lg-375px',
+    '[class.show]': 'true'
+  },
+  styles: [`
+    :host {
+      position: absolute;
+      z-index: 105;
+      top: 100%;
+      margin-top: 0.5rem;
+      background: white;
+      border-radius: 0.475rem;
+      box-shadow: 0 0 50px 0 rgb(82 63 105 / 15%);
+    }
+
+    .right-0{
+      right: 0;
+    }
+    .left-20{
+      left: 20px;
+    }
+  `]
 })
-export class NotificationsInnerComponent implements OnInit {
+export class NotificationsInnerComponent extends BaseComponent implements OnInit {
   @Input() notifications: Notification[] = [];
   @Input() parent: string = '';
-  @HostBinding('class') class =
-    'menu menu-sub menu-sub-dropdown menu-column w-350px w-lg-375px';
-  @HostBinding('attr.data-kt-menu') dataKtMenu = 'true';
+  @Output() notificationClicked = new EventEmitter<string>();
+  @Output() clickOutside = new EventEmitter<void>();
 
   activeTabId: NotificationsTabsType = 'kt_topbar_notifications_1';
   alerts: Array<AlertModel> = defaultAlerts;
   logs: Array<LogModel> = defaultLogs;
-  @Output() notificationClicked = new EventEmitter<string>();
 
-  constructor() {}
+  constructor(injector: Injector) {
+    super(injector);
+  }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // Add click outside listener
+    document.addEventListener('click', this.onClickOutside.bind(this));
+  }
+
+  ngOnDestroy(): void {
+    document.removeEventListener('click', this.onClickOutside.bind(this));
+  }
+
+  private onClickOutside(event: MouseEvent) {
+    if (!(event.target as HTMLElement).closest('.app-navbar-item')) {
+      this.clickOutside.emit();
+    }
+  }
 
   setActiveTabId(tabId: NotificationsTabsType) {
     this.activeTabId = tabId;
