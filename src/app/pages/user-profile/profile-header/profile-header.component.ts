@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output, OnInit, Injector, ViewChild, ElementRef, SimpleChanges } from '@angular/core';
-import { IForsightaProfile } from 'src/app/_fake/models/profile.interface';
+import { IKnoldgProfile } from 'src/app/_fake/models/profile.interface';
 import { MessageService } from 'primeng/api';
 import { ProfileService } from 'src/app/_fake/services/profile-picture/profile.service';
 import { BaseComponent } from 'src/app/modules/base.component';
@@ -10,7 +10,7 @@ import { BaseComponent } from 'src/app/modules/base.component';
   styleUrls: ['./profile-header.component.scss'],
 })
 export class ProfileHeaderComponent extends BaseComponent implements OnInit {
-  @Input() profile: IForsightaProfile;
+  @Input() profile: IKnoldgProfile;
   @Output() photoupdated: EventEmitter<void> = new EventEmitter<void>();
 
   @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;

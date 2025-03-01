@@ -8,7 +8,7 @@ import { Router } from "@angular/router";
 import { BaseComponent } from "src/app/modules/base.component";
 import { TranslationService } from "src/app/modules/i18n";
 import { AuthService } from "src/app/modules/auth";
-import { IForsightaProfile } from "src/app/_fake/models/profile.interface";
+import { IKnoldgProfile } from "src/app/_fake/models/profile.interface";
 import { ProfileService } from "src/app/_fake/services/get-profile/get-profile.service";
 @Component({
   selector: "app-vertical",
@@ -19,7 +19,7 @@ export class VerticalComponent extends BaseComponent implements OnInit {
   formsCount$ = new BehaviorSubject<number>(this.baseFormsCount);
   onSuccessMessage: boolean = false;
   onPendingMessage: boolean = false;
-  user: IForsightaProfile;
+  user: IKnoldgProfile;
   userRoles: string[] = [];
   formsCount = 4;
   messages: Message[] = [];

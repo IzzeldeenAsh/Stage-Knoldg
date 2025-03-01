@@ -1,7 +1,7 @@
 import { Component, Injector, OnInit } from "@angular/core";
 import { MessageService } from "primeng/api";
 import { first } from "rxjs";
-import { IForsightaProfile } from "src/app/_fake/models/profile.interface";
+import { IKnoldgProfile } from "src/app/_fake/models/profile.interface";
 import { ProfileService } from "src/app/_fake/services/profile-picture/profile.service";
 import { ScrollAnimsService } from "src/app/_fake/services/scroll-anims/scroll-anims.service";
 import { BaseComponent } from "src/app/modules/base.component";
@@ -14,7 +14,7 @@ import { ProfileService as GetProfileService } from "src/app/_fake/services/get-
   styleUrl: "./overview.component.scss",
 })
 export class OverviewComponent extends BaseComponent implements OnInit {
-  profile: IForsightaProfile;
+  profile: IKnoldgProfile;
   lang: string = "en";
   loadingProfile: boolean = false;
   constructor(

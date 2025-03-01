@@ -1,6 +1,6 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import { UsersListService } from 'src/app/_fake/services/users-list/users-list.service';
-import { IForsightaProfile } from 'src/app/_fake/models/profile.interface';
+import { IKnoldgProfile } from 'src/app/_fake/models/profile.interface';
 import Swal from 'sweetalert2';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { MenuItem } from 'primeng/api';
@@ -20,29 +20,29 @@ export class UsersComponent extends BaseComponent implements OnInit {
   ];
 
   // Arrays to display in the tables
-  clients: IForsightaProfile[] = [];
-  individualInsighters: IForsightaProfile[] = [];
-  companyInsighters: IForsightaProfile[] = [];
+  clients: IKnoldgProfile[] = [];
+  individualInsighters: IKnoldgProfile[] = [];
+  companyInsighters: IKnoldgProfile[] = [];
 
   // Original arrays to preserve data for filtering
-  originalClients: IForsightaProfile[] = [];
-  originalIndividualInsighters: IForsightaProfile[] = [];
-  originalCompanyInsighters: IForsightaProfile[] = [];
+  originalClients: IKnoldgProfile[] = [];
+  originalIndividualInsighters: IKnoldgProfile[] = [];
+  originalCompanyInsighters: IKnoldgProfile[] = [];
 
   isLoading: boolean = false;
 
   // Dialogs
   clientDialog: boolean = false;
-  selectedClient: IForsightaProfile = {} as IForsightaProfile;
+  selectedClient: IKnoldgProfile = {} as IKnoldgProfile;
   
   insighterDialog: boolean = false;
-  selectedInsighter: IForsightaProfile = {} as IForsightaProfile;
+  selectedInsighter: IKnoldgProfile = {} as IKnoldgProfile;
   currentInsighterId: number | null = null;
   currentInsighterStatus: string = '';
   insighterItems: MenuItem[] = [];
 
   companyInsighterDialog: boolean = false;
-  selectedCompanyInsighter: IForsightaProfile = {} as IForsightaProfile;
+  selectedCompanyInsighter: IKnoldgProfile = {} as IKnoldgProfile;
   currentCompanyInsighterId: number | null = null;
   currentCompanyStatus: string = '';
   items: MenuItem[] = [];
@@ -94,11 +94,11 @@ export class UsersComponent extends BaseComponent implements OnInit {
   }
 
   openNewClient(): void {
-    this.selectedClient = {} as IForsightaProfile;
+    this.selectedClient = {} as IKnoldgProfile;
     this.clientDialog = true;
   }
 
-  editClient(client: IForsightaProfile): void {
+  editClient(client: IKnoldgProfile): void {
     this.selectedClient = { ...client };
     this.clientDialog = true;
   }
@@ -243,11 +243,11 @@ export class UsersComponent extends BaseComponent implements OnInit {
   }
 
   openNewInsighter(): void {
-    this.selectedInsighter = {} as IForsightaProfile;
+    this.selectedInsighter = {} as IKnoldgProfile;
     this.insighterDialog = true;
   }
 
-  editInsighter(insighter: IForsightaProfile): void {
+  editInsighter(insighter: IKnoldgProfile): void {
     this.selectedInsighter = { ...insighter };
     this.insighterDialog = true;
   }
@@ -529,11 +529,11 @@ export class UsersComponent extends BaseComponent implements OnInit {
   }
 
   openNewCompanyInsighter(): void {
-    this.selectedCompanyInsighter = {} as IForsightaProfile;
+    this.selectedCompanyInsighter = {} as IKnoldgProfile;
     this.companyInsighterDialog = true;
   }
 
-  editCompanyInsighter(companyInsighter: IForsightaProfile): void {
+  editCompanyInsighter(companyInsighter: IKnoldgProfile): void {
     this.selectedCompanyInsighter = { ...companyInsighter };
     this.companyInsighterDialog = true;
     this.setCurrentCompanyInsighter(companyInsighter.id);

@@ -39,7 +39,7 @@ export class Step2Component implements OnInit, OnDestroy  {
   allIndustriesSelected  = []
   constructor(
     private fb: FormBuilder,
-    private _ForsightaFieldsService: ConsultingFieldTreeService,
+    private _KnoldgFieldsService: ConsultingFieldTreeService,
     private _translateion:TranslationService,
     private _isicService: IndustryService // Add this line
   ) {
@@ -68,7 +68,7 @@ export class Step2Component implements OnInit, OnDestroy  {
   initApiCalls() {
     this.isLoading$=of(true);
     const apiCalls = forkJoin({
-      consultingFields: this._ForsightaFieldsService.getConsultingCodesTree(this.lang || 'en'),
+      consultingFields: this._KnoldgFieldsService.getConsultingCodesTree(this.lang || 'en'),
       isicCodes: this._isicService.getIsicCodesTree(this.lang || 'en')
     }).subscribe({
       next: (results) => {

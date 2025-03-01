@@ -1,4 +1,4 @@
-export interface IForsightaProfile {
+export interface IKnoldgProfile {
     id: number;
     name: string;
     email: string;

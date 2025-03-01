@@ -1,7 +1,7 @@
 import { Component, OnInit, Injector, ElementRef, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { catchError, forkJoin, Observable, of, tap } from 'rxjs';
-import { IForsightaProfile } from 'src/app/_fake/models/profile.interface';
+import { IKnoldgProfile } from 'src/app/_fake/models/profile.interface';
 import { CertificationService } from 'src/app/_fake/services/certifications/certification.service';
 import { ConsultingFieldTreeService } from 'src/app/_fake/services/consulting-fields-tree/consulting-fields-tree.service';
 import { DocumentsService } from 'src/app/_fake/services/douments-types/documents-types.service.spec';
@@ -22,7 +22,7 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
   isLoading$ :Observable<boolean> = of(false);
   roles:string[] = [];
   industries:any[] = [];
-  profile:IForsightaProfile;
+  profile:IKnoldgProfile;
   consultingFields: any[] = [];
   corporateInfoForm:FormGroup;
   form: FormGroup;

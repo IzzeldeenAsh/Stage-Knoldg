@@ -18,13 +18,13 @@
       <!-- Legal Name -->
       <div class="mb-8">
         <label class="form-label required fw-bold">
-          {{ 'INSIGHTER_WIZARD.LEGAL_NAME' | translate }}
+          {{ 'ACCOUNT_SETTINGS.COMPANY_LEGAL_NAME' | translate }}
         </label>
         <input
           formControlName="legalName"
           type="text"
           class="form-control form-control-lg"
-          placeholder="{{ 'INSIGHTER_WIZARD.LEGAL_NAME_PLACEHOLDER' | translate }}"
+          placeholder="{{ 'ACCOUNT_SETTINGS.COMPANY_LEGAL_NAME' | translate }}"
         />
         <div
           *ngIf="form.get('legalName')?.invalid && form.get('legalName')?.touched"
@@ -77,6 +77,7 @@
           {{ 'INSIGHTER_WIZARD.COMPANY_PHONE' | translate }}
         </label>
         <input
+        [dir]="lang == 'ar' ? 'rtl' : 'ltr'"
           formControlName="company_phone"
           type="tel"
           class="form-control form-control-lg"

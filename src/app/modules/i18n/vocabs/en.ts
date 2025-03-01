@@ -97,7 +97,7 @@ export const locale = {
         OR_WITH_EMAIL: "Or with email",
         EMAIL_LABEL: "Email",
         EMAIL_REQUIRED: "Email is required",
-        WELCOME_LOGIN: "Welcome To Knowrland",
+        WELCOME_LOGIN: "Welcome To Knoldg",
         EMAIL_INVALID: "Email is invalid",
         PASSWORD_LABEL: "Password",
         PASSWORD_REQUIRED: "Password is required",
@@ -181,7 +181,7 @@ export const locale = {
         "INDUSTRY_PLACEHOLDER": "Select industry",
         "HSCODE": "HS-Code",
         "THANK_YOU_TITLE": "Thank you!",
-        "SUCCESS_JOURNEY_TITLE": "Congratulations on joining Knowrland!",
+        "SUCCESS_JOURNEY_TITLE": "Congratulations on joining Knoldg!",
         "THANK_YOU_MESSAGE": `
         You are now part of an elite network of insight providers and consultants dedicated to empowering our visitors with valuable expertise.
        <br><br> You'll be notified by email when it's time to start uploading your reports, researches, and insights to the platform.
@@ -190,11 +190,11 @@ export const locale = {
         "STAY_TUNED_MESSAGE": `
           Stay tuned for more updates. Your future of smarter decisions is about to begin!
         `,
-        "EMPOWER_INSIGHTS_TITLE": "Unlock Your Expertise with Knowrland.",
+        "EMPOWER_INSIGHTS_TITLE": "Unlock Your Expertise with Knoldg.",
         "EMPOWER_INSIGHTS_TEXT": `
         Start generating revenue from your insights every time your report is downloaded.<br /><br />
           <span class="text-dark font-weight-bolder" ><strong>Reach a Global Audience</strong></span> by uploading and sharing your research, reports and data that will have a meaningful impact on individuals, businesses decision-makers around the world.<br /><br />
-          Knowrland provides a unique and Redefining consulting opportunity. Experience Flexible  <span class="text-dark font-weight-bolder" >Engagement with visitors</span>  who can reach out to you for one-on-one consultations and expert opinions, allowing you to offer tailored guidance.
+          Knoldg provides a unique and Redefining consulting opportunity. Experience Flexible  <span class="text-dark font-weight-bolder" >Engagement with visitors</span>  who can reach out to you for one-on-one consultations and expert opinions, allowing you to offer tailored guidance.
           <br><br><span class="text-dark font-weight-bolder" ><strong>Work at your convenience, work any time.</strong></span> <br><br>
           Bring your reports and studies out of the drawer and let your experience shine.
 Your wealth of knowledge is valued and many are eager to learn from it.
@@ -700,6 +700,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
   DASHBOARD_FEATURE_1: "Track views, downloads and engagement",
   DASHBOARD_FEATURE_2: "Edit or update published content",
   DASHBOARD_FEATURE_3: "Manage publication schedules",
+  SAVE_CHANGES:'Save Changes',
   DASHBOARD_FEATURE_4: "Create new knowledge items",
   CHAPTER: "Chapter",
   NAME: "Name",
@@ -762,13 +763,13 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     "INSIGHTER_DASHBOARD_POSTED": "Posted",
     "INSIGHTER_DASHBOARD_PACKAGES": "Packages",
     PRICE_SETTINGS: 'Price Settings',
-    MAKE_IT_FREE: 'Enable Charity Mode',
+    MAKE_IT_FREE: 'Make it Free',
     FREE_DOCUMENT_DESC: 'This document will be available for free to all users',
     FREE_DOCUMENT: 'Charity Document',
     FREE_DOCUMENT_MESSAGE: 'This document will be shared for free with the community',
     FREE_DOCUMENT_MESSAGE_INSIGHT:'Free Document',
     FREE: 'Free',
-    CHARITY_MODE: 'Charity Mode',
+    CHARITY_MODE: 'Donate Knowledge',
     BECOME_INSIHGER_HEADER:'Become an Insighter',
     BECOME_INSIGHTER_DESCRIPTION:"Sharing knowledge empowers us all to grow and innovate together!",
     CHAPTER_TITLE_REQUIRED: "Chapter Title is required",
@@ -784,7 +785,46 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       INSIGHTS: 'Insights',
       MANUAL: 'Manual'
     },
-    ADD_CERTIFICATE:'Add Certificate'
+    ADD_CERTIFICATE:'Add Certificate',
+    KNOWLEDGES:'Knowledges',
+    SELLINGS:'Sellings',
+    TOTAL_REVENUE:'Total Revenue',
+    ABOUT:'About',
+    SUPPORT:'Support',
+    KNOLDG:'Knoldg',
+    CLICK_TO_ADD:"Click to add new knowledge to your collection",
+    POSTED_KNOWLEDGE:'Posted Knowledge',
+    PUBLISHED_KNOWLEDGE:'Published Knowledge',
+    DRAFT_KNOWLEDGE:'Draft Knowledge',
+    SCHEDULED_KNOWLEDGE:'Scheduled Knowledge',
+    GENERAL_KNOWLEDGE:'General Knowledge',
+    PACKAGES_KNOWLEDGE:'Packages Knowledge',
+    CHOOSE_KNOWLEDGE_TYPE:'Choose Knowledge Type',
+    FILE_NAME_DUPLICATE:'File name already exists',
+    VIEW_MY_KNOWLEDGE: {
+      BREADCRUMB: {
+        HOME: 'Home',
+        MY_KNOWLEDGE_BASE: 'My Knowledge Base',
+        GENERAL: 'General'
+      },
+      KNOWLEDGE_DETAILS: 'Knowledge Details',
+      ANALYTICS: 'Analytics',
+      DOWNLOADS: 'Downloads',
+      ONE_TIME_PURCHASE: 'One-time purchase',
+      STATUS: 'Status',
+      PUBLISH_DATE: 'Publish Date To',
+      INCLUDED_IN_PACKAGE: 'Included in a package?',
+      DOCUMENTS_LANGUAGE: 'Documents Language',
+      INDUSTRY: 'Industry',
+      ISIC_CODE: 'ISIC Code',
+      PUBLISHED_AT: 'Published at',
+      TARGET_MARKET: 'Target Market',
+      PUBLISH: 'Publish',
+      PUBLISH_IN_PACKAGE: 'Publish in Package only',
+      MAKE_AVAILABLE: 'Make Available Standalone & in Package',
+      SCHEDULE: 'Schedule',
+      UNPUBLISH: 'Unpublish'
+    },
   }
   
 };

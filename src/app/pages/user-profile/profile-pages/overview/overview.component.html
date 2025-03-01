@@ -112,7 +112,7 @@
             {{ profile.country }}
           </td>
         </tr>
-        <tr >
+        <tr *ngIf="profile.roles.includes('insighter') || profile.roles.includes('company')">
           <td class="small text-muted pb-3 pe-4 pe-lg-5">
             Social Media
           </td>

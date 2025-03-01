@@ -1,7 +1,7 @@
 import { Component, Injector, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { catchError, forkJoin, Observable, of, tap } from "rxjs";
-import { IForsightaProfile } from "src/app/_fake/models/profile.interface";
+import { IKnoldgProfile } from "src/app/_fake/models/profile.interface";
 import { ConsultingFieldTreeService } from "src/app/_fake/services/consulting-fields-tree/consulting-fields-tree.service";
 import { CountryService } from "src/app/_fake/services/countries-api/countries-get.service";
 import { ProfileService } from "src/app/_fake/services/get-profile/get-profile.service";
@@ -24,7 +24,7 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
   industries: any[] = [];
   isUpdatingProfile$: Observable<boolean> = of(false);
   isLoading$: Observable<boolean> = of(false);
-  profile: IForsightaProfile;
+  profile: IKnoldgProfile;
   allIndustriesSelected: any[] = [];
   allConsultingFieldsSelected: any[] = [];
   socialNetworks: {type: string, link: string}[] = [];
@@ -242,7 +242,8 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
         formData.append("phone", this.profile.phone);
       }
 
-      // Handle industries
+      if(this.profile.roles.includes('insighter')){
+           // Handle industries
       const industries = form.get('industries')?.value || [];
       
       // Regular industries (with numeric keys)
@@ -276,6 +277,13 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
           formData.append(`suggest_industries[${index}][name][ar]`, field.data.customInput);
         });
       }
+      }else{
+       this.profile.industries.forEach((industry: any) => {
+        formData.append("industries[]", industry.id.toString());
+       })
+      }
+   
+      if(this.hasRole(['insighter'])){
 
       // Handle consulting fields
       const consultingFields = form.get('consulting_field')?.value || [];
@@ -310,6 +318,11 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
           formData.append(`suggest_consulting_fields[${index}][name][en]`, field.data.customInput);
           formData.append(`suggest_consulting_fields[${index}][name][ar]`, field.data.customInput);
         });
+      }
+      }else{
+        this.profile.consulting_field.forEach((field: any) => {
+          formData.append("consulting_field[]", field.id.toString());
+         })
       }
 
       if(this.hasRole(['company']) && this.profile.company?.legal_name){

@@ -31,7 +31,7 @@
 </div> -->
 
 <!--begin::Notifications-->
-<div class="app-navbar-item" [ngClass]="itemClass">
+<div class="app-navbar-item position-relative" [ngClass]="itemClass">
     <div
       [ngClass]="btnClass"
       (click)="toggleNotifications()"
@@ -45,13 +45,16 @@
         {{ notificationCount }}
       </div>  
     </div>
-    <app-notifications-inner 
-      *ngIf="isNotificationsOpen"
-      [parent]="'client'"
-      (notificationClicked)="handleNotificationClick($event)" 
-      [notifications]="notifications"
-      (clickOutside)="closeNotifications()"
-    ></app-notifications-inner>
+    <div class="position-relative">
+      <app-notifications-inner 
+        *ngIf="isNotificationsOpen"
+        [parent]="'client'"
+        (notificationClicked)="handleNotificationClick($event)" 
+        [notifications]="notifications"
+        (clickOutside)="closeNotifications()"
+        class="notification-dropdown"
+      ></app-notifications-inner>
+    </div>
 </div>
 
 

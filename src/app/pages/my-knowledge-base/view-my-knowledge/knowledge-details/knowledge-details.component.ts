@@ -2,6 +2,7 @@ import { Component, Injector, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DocumentInfo, AddInsightStepsService } from 'src/app/_fake/services/add-insight-steps/add-insight-steps.service';
 import { Knowledge, KnowledgeService } from 'src/app/_fake/services/knowledge/knowledge.service';
+import { KnowledgeUpdateService } from 'src/app/_fake/services/knowledge/knowledge-update.service';
 import { BaseComponent } from 'src/app/modules/base.component';
 import Swal from 'sweetalert2';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
@@ -142,6 +143,7 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
     private route: ActivatedRoute,
     private knowledgeService: KnowledgeService,
     private addInsightStepsService: AddInsightStepsService,
+    private knowledgeUpdateService: KnowledgeUpdateService,
     private fb: FormBuilder
   ) {
     super(injector);
@@ -673,6 +675,7 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
       next: () => {
         this.loadDocuments();
         this.closeInsightDialog();
+        this.knowledgeUpdateService.notifyKnowledgeUpdate(); // Notify parent about the update
         Swal.fire({
           title: 'Success!',
           text: isUpdate ? 'Document updated successfully' : 'Document added successfully',

@@ -1,6 +1,6 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import { first, Observable } from 'rxjs';
-import { IForsightaProfile } from 'src/app/_fake/models/profile.interface';
+import { IKnoldgProfile } from 'src/app/_fake/models/profile.interface';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import { UserRequestsService } from 'src/app/_fake/services/user-requests/user-requests.service';
 import { UserRequest } from 'src/app/_fake/services/user-requests/user-requests.service';
@@ -20,7 +20,7 @@ export class MyRequestsComponent extends BaseComponent implements OnInit {
   resendComments: string = '';
   displayRequestDialog: boolean = false;
   selectedRequest: UserRequest | null = null;
-  userProfile: IForsightaProfile | null = null;
+  userProfile: IKnoldgProfile | null = null;
   constructor(
     injector: Injector,
     private userRequestsService: UserRequestsService,

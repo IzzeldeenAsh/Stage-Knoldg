@@ -1,6 +1,6 @@
 import { Component, Injector, OnInit } from "@angular/core";
 import { MessageService } from "primeng/api";
-import { IForsightaProfile } from "src/app/_fake/models/profile.interface";
+import { IKnoldgProfile } from "src/app/_fake/models/profile.interface";
 import {
   Document,
   DocumentsService,
@@ -15,7 +15,7 @@ import { BaseComponent } from "src/app/modules/base.component";
   styleUrl: "./certificates.component.scss",
 })
 export class CertificatesComponent extends BaseComponent implements OnInit {
-  profile: IForsightaProfile;
+  profile: IKnoldgProfile;
   lang: string = "en";
   loadingProfile: boolean = false;
   documentTypes: Document[];

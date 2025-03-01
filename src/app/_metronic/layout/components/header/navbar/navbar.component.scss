@@ -43,3 +43,47 @@
 .transform3d{
   transform: translate3d(0, 40px, 0) !important;
 }
+
+/* Notification dropdown positioning */
+.notification-dropdown {
+  position: absolute !important;
+  z-index: 1050 !important;
+  top: 100% !important;
+  
+  /* For LTR (English) */
+  :host-context([dir="ltr"]) & {
+    left: 0 !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+  }
+  
+  /* For RTL (Arabic) */
+  :host-context([dir="rtl"]) & {
+    right: 0 !important;
+    left: auto !important;
+    transform: translateX(50%) !important;
+  }
+}
+
+/* Position relative container for notifications */
+.app-navbar-item.position-relative {
+  position: relative;
+}
+
+/* Ensure the dropdown is contained within the viewport */
+@media (max-width: 767px) {
+  .notification-dropdown {
+    width: 300px !important;
+    max-width: 90vw !important;
+    
+    :host-context([dir="ltr"]) & {
+      left: 0 !important;
+      transform: none !important;
+    }
+    
+    :host-context([dir="rtl"]) & {
+      right: 0 !important;
+      transform: none !important;
+    }
+  }
+}

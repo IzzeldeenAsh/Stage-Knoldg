@@ -1,5 +1,5 @@
 import { Component, Injector, OnInit } from '@angular/core';
-import { IForsightaProfile } from 'src/app/_fake/models/profile.interface';
+import { IKnoldgProfile } from 'src/app/_fake/models/profile.interface';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import { AuthService } from 'src/app/modules/auth';
 import { BaseComponent } from 'src/app/modules/base.component';
@@ -10,7 +10,7 @@ import { BaseComponent } from 'src/app/modules/base.component';
   styleUrl: './documents.component.scss'
 })
 export class DocumentsComponent extends BaseComponent implements OnInit {
-  profile: IForsightaProfile;
+  profile: IKnoldgProfile;
   loadingProfile: boolean = false;
   documentTypes:Document[]
   isLoadingDocumentTypes:boolean=true;

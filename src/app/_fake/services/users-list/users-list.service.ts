@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, finalize, map } from 'rxjs/operators';
-import { IForsightaProfile } from 'src/app/_fake/models/profile.interface';
+import { IKnoldgProfile } from 'src/app/_fake/models/profile.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +25,7 @@ export class UsersListService {
   }
 
   // Clients
-  getClients(): Observable<IForsightaProfile[]> {
+  getClients(): Observable<IKnoldgProfile[]> {
     this.setLoading(true);
     const url = `${this.apiUrl}/client/list`;
     return this.http.get<any>(url).pipe(
@@ -60,7 +60,7 @@ export class UsersListService {
   }
 
   // Insighters
-  getInsighters(): Observable<IForsightaProfile[]> {
+  getInsighters(): Observable<IKnoldgProfile[]> {
     this.setLoading(true);
     const url = `${this.apiUrl}/insighter/list`;
     return this.http.get<any>(url).pipe(
@@ -123,7 +123,7 @@ activateInsighter(insighterId: number, staffNotes: string): Observable<any> {
   }
 
   // Company Insighters
-  getCompanyInsighters(): Observable<IForsightaProfile[]> {
+  getCompanyInsighters(): Observable<IKnoldgProfile[]> {
     this.setLoading(true);
     const url = `${this.apiUrl}/company/list`;
     return this.http.get<any>(url).pipe(
