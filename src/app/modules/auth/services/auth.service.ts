@@ -14,7 +14,7 @@ import { AuthHTTPService } from "./auth-http/auth-http.service";
 import { InsightaUserModel } from "../models/insighta-user.model";
 import { environment } from "src/environments/environment";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { IForsightaProfile } from "src/app/_fake/models/profile.interface";
+import { IKnoldgProfile } from "src/app/_fake/models/profile.interface";
 import { TranslationService } from "../../i18n";
 
 export type UserType = InsightaUserModel | undefined;

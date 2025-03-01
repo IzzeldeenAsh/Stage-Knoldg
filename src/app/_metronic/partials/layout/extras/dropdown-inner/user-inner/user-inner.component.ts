@@ -2,7 +2,7 @@ import { Component, HostBinding, Injector, OnDestroy, OnInit } from '@angular/co
 import { Observable, Subscription, first } from 'rxjs';
 import { TranslationService } from '../../../../../../modules/i18n';
 import { AuthService, UserType } from '../../../../../../modules/auth';
-import { IForsightaProfile } from 'src/app/_fake/models/profile.interface';
+import { IKnoldgProfile } from 'src/app/_fake/models/profile.interface';
 import { Router } from '@angular/router';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import { BaseComponent } from 'src/app/modules/base.component';
@@ -17,7 +17,7 @@ export class UserInnerComponent extends BaseComponent implements OnInit {
   @HostBinding('attr.data-kt-menu') dataKtMenu = 'true';
 
   language: LanguageFlag;
-  user$: Observable<IForsightaProfile>;
+  user$: Observable<IKnoldgProfile>;
   langs = languages;
 
   constructor(

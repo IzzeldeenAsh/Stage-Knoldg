@@ -2,7 +2,7 @@ import { Component, Injector, OnInit } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
 import { forkJoin } from "rxjs";
 import { Breadcrumb } from "src/app/_fake/models/breadcrumb.model";
-import { IForsightaProfile } from "src/app/_fake/models/profile.interface";
+import { IKnoldgProfile } from "src/app/_fake/models/profile.interface";
 import { AddInsightStepsService, DocumentListResponse, PublishKnowledgeRequest } from "src/app/_fake/services/add-insight-steps/add-insight-steps.service";
 import { ProfileService } from "src/app/_fake/services/get-profile/get-profile.service";
 import {
@@ -13,6 +13,7 @@ import { BaseComponent } from "src/app/modules/base.component";
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { SchedulePublishDialogComponent } from "./schedule-publish-dialog/schedule-publish-dialog.component";
 import Swal from 'sweetalert2';
+import { KnowledgeUpdateService } from "src/app/_fake/services/knowledge/knowledge-update.service";
 
 @Component({
   selector: "app-view-my-knowledge",
@@ -31,6 +32,7 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
   constructor(
     injector: Injector,
     private knowledgeService: KnowledgeService,
+    private knowledgeUpdateService: KnowledgeUpdateService,
     private route: ActivatedRoute,
     private addInsightStepsService: AddInsightStepsService,
     private dialogService: DialogService,
@@ -44,16 +46,23 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
         this.breadcrumbs = data["breadcrumb"];
       }
     });
+    
     const paramsSubscription = this.route.params.subscribe((params: Params) => {
       this.knowledgeId = params["id"];
       if (this.knowledgeId) {
         this.loadKnowledgeData();
       }
     });
-    this.unsubscribe.push(paramsSubscription);
+    
+    // Subscribe to knowledge updates
+    const updateSubscription = this.knowledgeUpdateService.knowledgeUpdated$.subscribe(() => {
+      this.loadKnowledgeData();
+    });
+    
+    this.unsubscribe.push(paramsSubscription, updateSubscription);
   }
 
-  private loadKnowledgeData(): void {
+  public loadKnowledgeData(): void {
     this.isLoading = true;
     const knowledgeSubscription = forkJoin({
       knowledge: this.knowledgeService.getKnowledgeById(

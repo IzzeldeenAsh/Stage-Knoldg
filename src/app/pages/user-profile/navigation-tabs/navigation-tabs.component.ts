@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
-import { IForsightaProfile } from 'src/app/_fake/models/profile.interface';
+import { IKnoldgProfile } from 'src/app/_fake/models/profile.interface';
 import { TranslationService } from 'src/app/modules/i18n';
 
 @Component({
@@ -8,7 +8,7 @@ import { TranslationService } from 'src/app/modules/i18n';
   styleUrls: ['./navigation-tabs.component.scss']
 })
 export class NavigationTabsComponent implements OnInit, OnChanges {
-  @Input() profile: IForsightaProfile;
+  @Input() profile: IKnoldgProfile;
   lang: string = 'en';
   roles: string[] = [];
   filteredTabs:any;

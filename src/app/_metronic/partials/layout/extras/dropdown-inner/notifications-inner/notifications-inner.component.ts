@@ -25,11 +25,31 @@ export type NotificationsTabsType =
       box-shadow: 0 0 50px 0 rgb(82 63 105 / 15%);
     }
 
-    .right-0{
-      right: 0;
+    :host-context([dir="ltr"]) {
+      left: 0;
+      transform: translateX(-30%);
     }
-    .left-20{
-      left: 20px;
+
+    :host-context([dir="rtl"]) {
+      right: 0;
+      transform: translateX(30%);
+    }
+
+    @media (max-width: 767px) {
+      :host {
+        width: 300px !important;
+        max-width: 90vw !important;
+      }
+      
+      :host-context([dir="ltr"]) {
+        left: 0;
+        transform: none;
+      }
+      
+      :host-context([dir="rtl"]) {
+        right: 0;
+        transform: none;
+      }
     }
   `]
 })

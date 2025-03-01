@@ -18,14 +18,14 @@
 
      
             <!-- Price Column -->
-<div class="col-md-3">
+<div class="col-md-3" >
     <label class="form-label required">{{ 'PRICE' | translate }}</label>
     
     <!-- Charity Toggle -->
 
     
     <!-- Price Input (shown only when NOT charity) -->
-    <div class="input-group" *ngIf="!doc.get('isCharity')?.value">
+    <div class="input-group" *ngIf="!doc.get('isCharity')?.value" style="direction: ltr !important;">
       <span class="input-group-text">
         <i class="ki-duotone ki-dollar fs-2">
           <span class="path1"></span>
@@ -40,7 +40,7 @@
     <div class="alert alert-success d-flex align-items-center p-2 mt-2" *ngIf="doc.get('isCharity')?.value">
       <i class="ki-duotone ki-information-5 fs-2hx text-success me-2"></i>
       <div class="d-flex flex-column ">
-        <small class="text-success py-1">{{ 'FREE_DOCUMENT_MESSAGE_INSIGHT' | translate }}</small>
+        <small class="text-success py-1">{{ 'FREE_DOCUMENT' | translate }}</small>
       </div>
     </div>
     
@@ -88,9 +88,9 @@
                 </div>
 
                 <!-- Delete Button -->
-                <div class="col-md-1">
+                <div class="col-md-1" >
                     <label class="form-label">&nbsp;</label>
-                    <button type="button" class="btn actions-btn btn-light-danger" style="padding: 11px !important;" (click)="removeDocument(i)">
+                    <button type="button" class="btn actions-btn btn-light-danger" [class.mt70]="lang==='ar'" style="padding: 11px !important;" (click)="removeDocument(i)">
                         <i class="ki-duotone ki-trash fs-5 p-0">
                             <span class="path1"></span>
                             <span class="path2"></span>
@@ -107,12 +107,11 @@
                        formControlName="isCharity" 
                        [id]="'isCharity' + i" />
                 <label class="form-check-label" [for]="'isCharity' + i">
-                  <span class="fw-bold">{{ 'MAKE_IT_FREE' | translate }}</span>
-                  <span class="badge badge-light-success ms-2">{{ 'CHARITY_MODE' | translate }}</span>
+                  <span class="fw-bold mx-4">{{ 'MAKE_IT_FREE' | translate }}</span>
+                  <span class="badge badge-light-success mx-4">{{ 'CHARITY_MODE' | translate }}</span>
                 </label>
               </div>
         </div>
-
         <!-- Add Document Button -->
         <div class="form-group d-flex justify-content-start mb-5">
             <button type="button" class="btn btn-primary px-6" (click)="addDocument()">
@@ -120,9 +119,8 @@
                 {{ 'ADD_DOCUMENT' | translate }}
             </button>
         </div>
-
         <!-- Total Price -->
-        <div class="border-top border-gray-300 pt-4">
+        <div class="border-top border-gray-300 pt-4" >
             <div class="d-flex justify-content-end align-items-center">
                 <div class="mx-2 fs-7 text-muted">{{ 'TOTAL_KNOWLEDGE_PRICE' | translate }}</div>
                 <div class="fs-1 text-gray-600 fw-bolder"> ${{ totalPrice.toFixed(2) }}</div>

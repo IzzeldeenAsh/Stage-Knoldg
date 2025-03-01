@@ -1,6 +1,6 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { IForsightaProfile } from 'src/app/_fake/models/profile.interface';
+import { IKnoldgProfile } from 'src/app/_fake/models/profile.interface';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { DeactivateDialogComponent } from '../deactivate-dialog/deactivate-dialog.component';
@@ -14,7 +14,7 @@ import { TransferDialogComponent } from '../transfer-dialog/transfer-dialog.comp
   providers: [DialogService]
 })
 export class GeneralSettingsComponent extends BaseComponent implements OnInit {
-  profile: IForsightaProfile;
+  profile: IKnoldgProfile;
   roles: string[];
   isActive: boolean = true;
   isPrimaryKey: boolean = false;
@@ -35,7 +35,7 @@ export class GeneralSettingsComponent extends BaseComponent implements OnInit {
   getProfile() {
     const subscription = this.getProfileService.getProfile()
       .subscribe(
-        (profile: IForsightaProfile) => {
+        (profile: IKnoldgProfile) => {
           this.profile = profile;
           this.roles = profile.roles;
           switch (true) {

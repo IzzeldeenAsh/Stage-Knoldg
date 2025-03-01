@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { first } from 'rxjs';
-import { IForsightaProfile } from 'src/app/_fake/models/profile.interface';
+import { IKnoldgProfile } from 'src/app/_fake/models/profile.interface';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import { Notification, NotificationsService } from 'src/app/_fake/services/notifications/notifications.service';
 import { AuthService } from 'src/app/modules/auth';
@@ -58,10 +58,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
   btnClass: string = 'btn btn-icon btn-custom btn-icon-muted btn-active-light btn-active-color-primary w-35px h-35px w-md-40px h-md-40px';
   userAvatarClass: string = 'symbol-35px symbol-md-40px';
   btnIconClass: string = 'fs-2 fs-md-1';
-  userProfile:IForsightaProfile;
+  userProfile:IKnoldgProfile;
   isMenuOpen: boolean = false; 
   notificationCount: number = 0;
   lang : string = 'en';
+  direction: string = 'ltr';
+  
   constructor(
     private auth: AuthService,
     private translationService: TranslationService,
@@ -69,7 +71,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
     private getProfileService: ProfileService,
     private notificationService: NotificationsService
   ) {
-    this.lang=this.translationService.getSelectedLanguage();
+    this.lang = this.translationService.getSelectedLanguage();
+    this.direction = this.lang === 'ar' ? 'rtl' : 'ltr';
   }
 
   ngOnInit(): void {
@@ -85,6 +88,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
     // Start polling for notifications
     this.notificationService.startPolling();
+    
+    // Subscribe to language changes
+    this.translationService.getSelectedLanguage().subscribe((lang:string) => {
+      this.lang = lang;
+      this.direction = this.lang === 'ar' ? 'rtl' : 'ltr';
+    });
   }
 
   // Add ngOnDestroy to clean up
@@ -103,6 +112,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.isUserMenuOpen = false
   }
   handleNotificationClick(notificationId: string) {
+    // Close notifications dropdown when clicked
+    this.closeNotifications();
+    
     // Mark notification as read
     this.notificationService.markAsRead(notificationId,this.lang).subscribe({
       next: () => {

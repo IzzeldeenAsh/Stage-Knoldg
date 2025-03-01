@@ -8,7 +8,7 @@ import {
 import { Router } from "@angular/router";
 import { MessageService } from "primeng/api";
 import { first } from "rxjs";
-import { IForsightaProfile } from "src/app/_fake/models/profile.interface";
+import { IKnoldgProfile } from "src/app/_fake/models/profile.interface";
 import { ProfileService } from "src/app/_fake/services/get-profile/get-profile.service";
 import { FileUploadService } from "src/app/_fake/services/upload-picture/upload-picture";
 import { AuthService, UserType } from "src/app/modules/auth";
@@ -19,10 +19,12 @@ import { Notification, NotificationsService } from 'src/app/_fake/services/notif
   styleUrls: ["./topbar.component.scss"],
 })
 export class TopbarComponent implements OnInit {
-  user: IForsightaProfile;
+  user: IKnoldgProfile;
   itemClass: string = 'ms-1 ms-lg-3';
   btnClass: string = 'btn btn-icon btn-custom btn-icon-muted  btn-active-color-secondary w-35px h-35px w-md-40px h-md-40px';
   notifications: any[] = [];
+  notificationsMenuOpen: boolean = false;
+  
   constructor(
     private elRef: ElementRef,
     private renderer: Renderer2,
@@ -138,6 +140,21 @@ export class TopbarComponent implements OnInit {
     }
   }
 
+  // Toggle notifications menu
+  toggleNotificationsMenu(): void {
+    this.notificationsMenuOpen = !this.notificationsMenuOpen;
+  }
+
+  // Close notifications menu
+  closeNotificationsMenu(): void {
+    this.notificationsMenuOpen = false;
+  }
+
+  // Handle click outside for notifications
+  handleNotificationsClickOutside(): void {
+    this.closeNotificationsMenu();
+  }
+
    // Add ngOnDestroy to clean up
    ngOnDestroy(): void {
     this.notificationService.stopPolling();
@@ -145,6 +162,9 @@ export class TopbarComponent implements OnInit {
 
 
   handleNotificationClick(notificationId: string) {
+    // Close the notifications menu when a notification is clicked
+    this.closeNotificationsMenu();
+    
     // Mark notification as read
     this.notificationService.markAsRead(notificationId,'en').subscribe({
       next: () => {

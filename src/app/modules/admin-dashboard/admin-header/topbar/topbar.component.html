@@ -7,9 +7,7 @@
           <div
           class="transition-all"
             [ngClass]="btnClass"
-            data-kt-menu-trigger="{default: 'click', lg: 'hover'}"
-            data-kt-menu-attach="parent"
-            data-kt-menu-placement="bottom-end"
+            (click)="toggleNotificationsMenu()"
           >
             <i class="ki-outline ki-notification-on fs-1"></i>
             <div
@@ -20,8 +18,10 @@
             </div>  
           </div>
           <app-notifications-inner 
+          *ngIf="notificationsMenuOpen"
           [parent]="'admin'"
           (notificationClicked)="handleNotificationClick($event)" 
+          (clickOutside)="handleNotificationsClickOutside()"
           [notifications]="notifications"
           ></app-notifications-inner>
         </div>

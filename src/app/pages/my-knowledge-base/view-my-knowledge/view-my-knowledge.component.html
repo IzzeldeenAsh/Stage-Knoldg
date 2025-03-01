@@ -17,6 +17,7 @@
               class="text-gray-700 text-hover-info d-flex align-items-center gap-2"
             >
               <i class="ki-outline ki-home text-gray-700 fs-3"></i>
+              {{ 'VIEW_MY_KNOWLEDGE.BREADCRUMB.HOME' | translate }}
             </a>
             <i
               class="ki-outline {{
@@ -31,7 +32,7 @@
               [routerLink]="['/app/insighter-dashboard/my-knowledge/general']"
               class="text-gray-700 text-hover-info"
             >
-              My Knowledge Base
+              {{ 'VIEW_MY_KNOWLEDGE.BREADCRUMB.MY_KNOWLEDGE_BASE' | translate }}
             </a>
             <i
               class="ki-outline {{
@@ -46,7 +47,7 @@
               [routerLink]="['/app/insighter-dashboard/my-knowledge/general']"
               class="text-gray-700 text-hover-info"
             >
-            General
+              {{ 'VIEW_MY_KNOWLEDGE.BREADCRUMB.GENERAL' | translate }}
             </a>
             <i
               class="ki-outline {{
@@ -54,7 +55,6 @@
               }} fs-4 text-gray-700 ms-2"
             ></i>
           </li>
-       
         </ul>
       </div>
 
@@ -140,15 +140,17 @@
         <h1
           class="page-heading d-flex text-black fw-bolder fs-lg-rem flex-column justify-content-center my-0 max-w-800px"
         >
-    <div class="d-flex align-items-start flex-column gap-2 lg-max-width-700px">
-      <span>  {{ knowledge.title }}  <button type="button" class="btn btn-icon btn-sm btn-light-success" [routerLink]="['/app/edit-knowledge/stepper', knowledge.id]">
-        <i class="ki-duotone ki-pencil fs-2">
-          <span class="path1"></span>
-          <span class="path2"></span>
-        </i>
-      </button></span>
-     
-    </div>
+          <div class="d-flex align-items-start flex-column gap-2 lg-max-width-700px">
+            <span>
+              {{ knowledge.title }}
+              <button type="button" class="btn btn-icon btn-sm btn-light-success" [routerLink]="['/app/edit-knowledge/stepper', knowledge.id]">
+                <i class="ki-duotone ki-pencil fs-2">
+                  <span class="path1"></span>
+                  <span class="path2"></span>
+                </i>
+              </button>
+            </span>
+          </div>
           <span class="page-desc fs-6 fw-bold d-flex align-items-center pt-4">
             <span class="custom-text me-3 lh-1 d-flex align-items-center">
               <i
@@ -207,7 +209,7 @@
                   routerLink="details"
                   routerLinkActive="active"
                 >
-                  Knowledge Details
+                  {{ 'VIEW_MY_KNOWLEDGE.KNOWLEDGE_DETAILS' | translate }}
                 </a>
               </li>
               <li class="nav-item">
@@ -216,7 +218,7 @@
                   routerLink="analytics"
                   routerLinkActive="active"
                 >
-                  Analytics
+                  {{ 'VIEW_MY_KNOWLEDGE.ANALYTICS' | translate }}
                 </a>
               </li>
             </ul>
@@ -233,19 +235,17 @@
       </div>
       <div class="col-lg-4">
         <!-- Added sticky sidebar with responsive behavior -->
-         
         <div
           class="tp-course-details2-widget position-lg-sticky"
           style="z-index: 1"
         >
-     
           <div class="tp-course-details2-widget-content">
             <div
-            class="tp-course-details2-widget-price d-flex justify-content-center align-items-center"
-          >
-            <span class="fs-2x fw-bolder text-primary">{{knowledge.total_price | currency}}</span>
-            <span class="text-muted fs-5 ms-3">One-time purchase</span>
-          </div>
+              class="tp-course-details2-widget-price d-flex justify-content-center align-items-center"
+            >
+              <span class="fs-2x fw-bolder text-primary">{{ knowledge.total_price | currency }}</span>
+              <span class="text-muted fs-5 ms-3">{{ 'VIEW_MY_KNOWLEDGE.ONE_TIME_PURCHASE' | translate }}</span>
+            </div>
             <div class="separator separator-dashed my-5"></div>
 
             <!-- Report details section -->
@@ -257,7 +257,7 @@
                 >
                   <span>
                     <i class="ki-outline ki-message-text-2 fs-4 mx-4"></i>
-                    Status
+                    {{ 'VIEW_MY_KNOWLEDGE.STATUS' | translate }}
                   </span>
                   <span
                     class="text-capitalize"
@@ -268,10 +268,9 @@
                     }"
                   >
                     {{ knowledge.publish_as === 'package' ? 'Published in Package only' : knowledge.status }}
-                   
                   </span>
                 </div>
-                
+
                 <!-- Add Publish Date for Scheduled Status -->
                 <div
                   *ngIf="knowledge.status === 'scheduled'"
@@ -279,46 +278,50 @@
                 >
                   <span>
                     <i class="ki-outline ki-calendar fs-4 mx-4"></i>
-                    Publish Date To
+                    {{ 'VIEW_MY_KNOWLEDGE.PUBLISH_DATE' | translate }}
                   </span>
                   <span>{{ knowledge.published_at | date : "dd MMMM yyyy" }}</span>
                 </div>
-                 <!-- Included in Package -->
-                 <div
-                 *ngIf="knowledge.publish_as === 'both'"
-                 class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
-               >
-                 <span>
-                   <i class="ki-outline ki-package fs-4 mx-4"></i>
-                   Included in a package?
-                 </span>
-                 <span>Yes</span>
-               </div>
-                <!-- Language -->
 
+                <!-- Included in Package -->
+                <div
+                  *ngIf="knowledge.publish_as === 'both'"
+                  class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
+                >
+                  <span>
+                    <i class="ki-outline ki-package fs-4 mx-4"></i>
+                    {{ 'VIEW_MY_KNOWLEDGE.INCLUDED_IN_PACKAGE' | translate }}
+                  </span>
+                  <span>Yes</span>
+                </div>
+
+                <!-- Language -->
                 <div
                   class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
                 >
                   <span>
                     <i class="ki-outline ki-message-text-2 fs-4 mx-4"></i>
-                    Documents Language
+                    {{ 'VIEW_MY_KNOWLEDGE.DOCUMENTS_LANGUAGE' | translate }}
                   </span>
-                  <span class="text-capitalize"> {{ knowledge.language }}</span>
+                  <span class="text-capitalize">{{ knowledge.language }}</span>
                 </div>
+
                 <!-- Industry -->
                 <div
-                *ngIf="knowledge && knowledge.isic_code"
-                class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3" 
-              >
-                <span>
-                  <i class="ki-outline ki-file fs-4 mx-4"></i>
-                 Industry
-                </span>
-                <span
-                  class="badge badge-light-secondary text-primary fs-8 fw-bold  pre-line text-right"
-                  >{{ knowledge.industry.name }}</span
+                  *ngIf="knowledge && knowledge.isic_code"
+                  class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
                 >
-              </div>
+                  <span>
+                    <i class="ki-outline ki-file fs-4 mx-4"></i>
+                    {{ 'VIEW_MY_KNOWLEDGE.INDUSTRY' | translate }}
+                  </span>
+                  <span
+                    class="badge badge-light-secondary text-primary fs-8 fw-bold pre-line text-right"
+                  >
+                    {{ knowledge.industry.name }}
+                  </span>
+                </div>
+
                 <!-- ISIC Code -->
                 <div
                   *ngIf="knowledge && knowledge.isic_code"
@@ -326,14 +329,16 @@
                 >
                   <span>
                     <i class="ki-outline ki-file fs-4 mx-4"></i>
-                    ISIC Code
+                    {{ 'VIEW_MY_KNOWLEDGE.ISIC_CODE' | translate }}
                   </span>
                   <span
                     class="badge badge-light-secondary text-primary fs-8 fw-bold"
                     [ngbTooltip]="knowledge.isic_code.name"
-                    >{{ knowledge.isic_code.key }}</span
                   >
+                    {{ knowledge.isic_code.key }}
+                  </span>
                 </div>
+
                 <!-- Published -->
                 <div
                   class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
@@ -341,20 +346,18 @@
                 >
                   <span>
                     <i class="ki-outline ki-check-circle fs-4 mx-4"></i>
-                    Published at
+                    {{ 'VIEW_MY_KNOWLEDGE.PUBLISHED_AT' | translate }}
                   </span>
-                  <span>{{
-                    knowledge.published_at | date : "dd MMMM yyyy"
-                  }}</span>
+                  <span>{{ knowledge.published_at | date : "dd MMMM yyyy" }}</span>
                 </div>
-               
+
                 <!-- Target Market -->
                 <div
                   class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
                 >
                   <span>
                     <i class="ki-outline ki-icon fs-4 mx-4"></i>
-                    Target Market
+                    {{ 'VIEW_MY_KNOWLEDGE.TARGET_MARKET' | translate }}
                   </span>
                   <div
                     class="max-w-100px d-flex flex-wrap gap-2 justify-content-end"
@@ -385,40 +388,64 @@
                     </ng-container>
                   </div>
                 </div>
-                <div class="d-flex flex-column gap-3 mb-4" >
+
+                <div class="d-flex flex-column gap-3 mb-4">
                   <!-- Show publish button only if not package-only -->
-                  <button class="btn btn-primary w-100" (click)="confirmPublish()" *ngIf="(knowledge.status === 'unpublished' || knowledge.status === 'scheduled') && knowledge.publish_as !== 'package'">
+                  <button
+                    class="btn btn-primary w-100"
+                    (click)="confirmPublish()"
+                    *ngIf="(knowledge.status === 'unpublished' || knowledge.status === 'scheduled') && knowledge.publish_as !== 'package'"
+                  >
                     <i class="ki-outline ki-cart fs-4 me-2"></i>
-                    Publish
-                  </button>
-                  
-                  <!-- Package publishing options -->
-                  <button class="btn btn-info w-100" (click)="publishAs('package')" *ngIf="knowledge.publish_as === 'both' ">
-                    <i class="ki-duotone ki-package fs-4 me-2">
-                      <span class="path1"></span>
-                      <span class="path2"></span>
-                    </i>
-                    Publish in Package only
-                  </button>
-                  
-                  <button class="btn btn-info w-100" (click)="publishAs('both')" *ngIf="knowledge.publish_as === 'package' && (knowledge.status === 'published')">
-                    <i class="ki-duotone ki-package fs-4 me-2">
-                      <span class="path1"></span>
-                      <span class="path2"></span>
-                    </i>
-                    Make Available Standalone & in Package
+                    {{ 'VIEW_MY_KNOWLEDGE.PUBLISH' | translate }}
                   </button>
 
-                  <button class="btn btn-light-warning w-100" (click)="openScheduleDialog()" *ngIf="knowledge.status === 'unpublished' || knowledge.status === 'scheduled'">Schedule</button>
+                  <!-- Package publishing options -->
+                  <button
+                    class="btn btn-info w-100"
+                    (click)="publishAs('package')"
+                    *ngIf="knowledge.publish_as === 'both'"
+                  >
+                    <i class="ki-duotone ki-package fs-4 me-2">
+                      <span class="path1"></span>
+                      <span class="path2"></span>
+                    </i>
+                    {{ 'VIEW_MY_KNOWLEDGE.PUBLISH_IN_PACKAGE' | translate }}
+                  </button>
+
+                  <button
+                    class="btn btn-info w-100"
+                    (click)="publishAs('both')"
+                    *ngIf="knowledge.publish_as === 'package' && (knowledge.status === 'published')"
+                  >
+                    <i class="ki-duotone ki-package fs-4 me-2">
+                      <span class="path1"></span>
+                      <span class="path2"></span>
+                    </i>
+                    {{ 'VIEW_MY_KNOWLEDGE.MAKE_AVAILABLE' | translate }}
+                  </button>
+
+                  <button
+                    class="btn btn-light-warning w-100"
+                    (click)="openScheduleDialog()"
+                    *ngIf="knowledge.status === 'unpublished' || knowledge.status === 'scheduled'"
+                  >
+                    {{ 'VIEW_MY_KNOWLEDGE.SCHEDULE' | translate }}
+                  </button>
                 </div>
-                <div class="d-flex flex-column gap-3 mb-4" *ngIf="knowledge.status === 'published'">
-                 
-                    <button class="btn btn-light-danger w-100" (click)="confirmUnpublish()">
-                      <i class="ki-outline ki-cart fs-4 me-2"></i>
-                      Unpublish
-                    </button>
-                   
-                  </div>
+
+                <div
+                  class="d-flex flex-column gap-3 mb-4"
+                  *ngIf="knowledge.status === 'published'"
+                >
+                  <button
+                    class="btn btn-light-danger w-100"
+                    (click)="confirmUnpublish()"
+                  >
+                    <i class="ki-outline ki-cart fs-4 me-2"></i>
+                    {{ 'VIEW_MY_KNOWLEDGE.UNPUBLISH' | translate }}
+                  </button>
+                </div>
               </div>
             </div>
           </div>

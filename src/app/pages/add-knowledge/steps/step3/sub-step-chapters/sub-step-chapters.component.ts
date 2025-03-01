@@ -115,6 +115,7 @@ export class SubStepChaptersComponent extends BaseComponent implements OnInit {
 
     this.previewFilesDialog = [];
     this.addChapter(); // Add initial chapter
+    this.isSaving = false; // Reset the saving state when initializing the form
   }
 
   get chapters(): FormArray {
@@ -406,6 +407,7 @@ export class SubStepChaptersComponent extends BaseComponent implements OnInit {
     this.editingIndex = docIndex;
     this.displayDocumentDialog = true;
     this.initDocForm();
+    this.isSaving = false; // Reset the saving state when opening a dialog
 
     // Set default description if knowledgeType is not 'insight'
     if (this.defaultValues.knowledgeType !== 'insight') {
@@ -462,6 +464,7 @@ export class SubStepChaptersComponent extends BaseComponent implements OnInit {
     this.displayDocumentDialog = false;
     this.editingIndex = -1;
     this.initDocForm();
+    this.isSaving = false; // Reset the saving state when closing the dialog
   }
 
   onFilesSelectedDialog(event: any): void {
