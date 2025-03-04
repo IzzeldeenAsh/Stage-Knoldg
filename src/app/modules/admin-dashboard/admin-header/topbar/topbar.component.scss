@@ -32,7 +32,29 @@
     visibility: visible;
   }
 
+  /* Notifications dropdown positioning */
+  .position-relative app-notifications-inner {
+    position: absolute;
+    z-index: 105;
+    top: 100%;
+    left: 0;
+    transform: translateX(-75%); /* Increased the translation to move it more to the left */
+    margin-top: 0.5rem;
+    background: white;
+    border-radius: 0.475rem;
+    box-shadow: 0 0 50px 0 rgb(82 63 105 / 15%);
+  }
 
+  /* Responsive adjustments for notifications dropdown */
+  @media (max-width: 767px) {
+    .position-relative app-notifications-inner {
+      transform: none;
+      left: auto;
+      right: 0;
+      width: 300px !important;
+      max-width: 90vw !important;
+    }
+  }
 
   /* Dropdown Icon Styles */
   .dropdown-icon {

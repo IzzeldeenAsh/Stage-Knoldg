@@ -37,7 +37,7 @@ interface ICreateKnowldege {
 }
 
 const inits: ICreateKnowldege = {
-  knowledgeType: 'data',
+  knowledgeType: '',
   title: '',
   topicId: null,
   industry: null,

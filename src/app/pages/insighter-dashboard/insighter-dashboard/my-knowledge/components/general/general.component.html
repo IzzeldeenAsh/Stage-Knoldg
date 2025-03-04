@@ -26,11 +26,16 @@
       data-kt-filemanager-table-toolbar="base"
     >
       <!--begin::Add Knowledge-->
-      <a [routerLink]="['/app/add-knowledge']"
+      <a [routerLink]="['/app/add-knowledge']" *ngIf="selectedType !== 'grid'"
         type="button"
-        class="btn  btn-primary mx-3"
+        class="btn btn-primary mx-3"
       >
-        <i class="ki-outline ki-add-folder fs-2"></i> {{ 'KNOWLEDGE.ADD_KNOWLEDGE' | translate }}
+      <i class="ki-outline ki-plus-square fs-2 text-white">
+        <span class="path1"></span>
+        <span class="path2"></span>
+        <span class="path3"></span>
+      </i>
+       {{ 'KNOWLEDGE.ADD_KNOWLEDGE' | translate }}
       </a>
       <!--end::Add Knowledge-->
 
@@ -74,18 +79,7 @@
 <!--begin::Card body-->
 <div class="card-body p-0">
   <!--begin::Table header-->
-  <div class="d-flex flex-stack mb-6 pt-3">
-    <!--begin::Title-->
-    <div class="badge badge-lg badge-light-info">
-      <div class="d-flex align-items-center flex-wrap">
-        <i class="ki-duotone ki-abstract-32 fs-2x text-info mx-3">
-          <span class="path1"></span>
-          <span class="path2"></span>
-        </i>
-        <span class="fw-bold">{{ 'KNOWLEDGE.AVAILABLE_KNOWLEDGES' | translate }}</span>
-      </div>
-    </div>
-    <!--end::Title-->
+  <div class="d-flex justify-content-end mb-6 pt-3">
    <div class="d-flex gap-1">
      <!-- Add View Toggle -->
      <div class="nav-group nav-group-fluid ms-3">
@@ -97,6 +91,7 @@
           value="grid"
           [(ngModel)]="selectedType"
           (change)="onTypeChange($event)"
+          checked
         />
         <span
         class="radio h-30px fw-bold px-4"
@@ -149,7 +144,7 @@
     <div [@columnResize]="showPackageBuilder ? 'w-65' : 'w-100'" 
          [class]="showPackageBuilder ? 'w-65' : 'w-100'">
       <!--begin::Table-->
-      <div [ngClass]="{'d-none': selectedType === 'grid'}">
+      <div [ngClass]="{'d-none': selectedType !== 'list'}">
         <div class="table-responsive">
           <table class="table align-middle table-row-dashed fs-6 gy-5">
             <thead>
@@ -245,7 +240,7 @@
       </div>
 
       <!-- Grid View -->
-      <div class="row g-6 g-xl-9 mb-6 mb-xl-9" *ngIf="selectedType === 'grid'">
+      <div class="row g-6 g-xl-9 mb-6 mb-xl-9" *ngIf="selectedType !== 'list'">
         <!-- Add Knowledge Card -->
         <div class="col-md-6 col-lg-4 col-xl-3">
           <div class="card add-knowledge-card h-100">

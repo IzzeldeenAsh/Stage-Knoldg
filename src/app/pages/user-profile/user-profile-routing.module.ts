@@ -10,6 +10,7 @@ import { PersonalSettingsComponent } from './profile-pages/account-settings/pers
 import { CompanySettingsComponent } from './profile-pages/account-settings/company-settings/company-settings.component';
 import { ResetPasswordComponent } from './profile-pages/account-settings/reset-password/reset-password.component';
 import { authGuard } from 'src/app/guards/auth-guard/auth.guard';
+import { JoinCompanyComponent } from './profile-pages/join-company/join-company.component';
 
 const routes: Routes = [
   {
@@ -77,7 +78,12 @@ const routes: Routes = [
    
    ]
   },
- 
+ {
+  path:'join-company',
+  component:JoinCompanyComponent,
+  canActivate:[RolesGuard],
+  data: { roles: ['client'] }
+ }
  
 ];
 

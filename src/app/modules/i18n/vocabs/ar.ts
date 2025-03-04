@@ -7,12 +7,54 @@ export const locale = {
     "TITLE": "اكتمال الملف الشخصي",
     "DESCRIPTION": "أكمل ملفك الشخصي لفتح جميع الميزات والاستفادة القصوى من حسابك."
   },
+  "MY_COMPANY": {
+    "TITLE": "شركتي",
+    "SUBTITLE": "إدارة موظفي شركتك",
+    "ADD_EMPLOYEE": "إضافة موظف",
+    "EMPTY_STATE_MESSAGE": "قم ببناء فريقك عن طريق إضافة موظفين إلى شركتك",
+    "TABLE": {
+      "INSIGHTER": "الموظف",
+      "EMAIL": "البريد الإلكتروني",
+      "COUNTRY": "البلد",
+      "STATUS": "الحالة",
+      "VERIFICATION": "التحقق"
+    },
+    "VERIFIED": "تم التحقق",
+    "PENDING": "قيد الانتظار",
+    "LOADING": "جاري التحميل...",
+    "SHOWING_ENTRIES": "عرض {{first}} إلى {{last}} من {{total}} سجل",
+    "EMAIL_ADDRESS": "عنوان البريد الإلكتروني",
+    "ENTER_EMAIL": "أدخل عنوان البريد الإلكتروني",
+    "EMAIL_REQUIRED": "البريد الإلكتروني مطلوب",
+    "EMAIL_INVALID": "البريد الإلكتروني غير صالح",
+    "CHECKING_ACCOUNT": "جاري التحقق من الحساب...",
+    "FIRST_NAME": "الاسم الأول",
+    "ENTER_FIRST_NAME": "أدخل الاسم الأول",
+    "FIRST_NAME_REQUIRED": "الاسم الأول مطلوب",
+    "LAST_NAME": "اسم العائلة",
+    "ENTER_LAST_NAME": "أدخل اسم العائلة",
+    "LAST_NAME_REQUIRED": "اسم العائلة مطلوب",
+    "CANCEL": "إلغاء",
+    "INVITE": "دعوة",
+    "INVITING": "جاري الدعوة..."
+  },
       NOTIFICATIONS: {
         TITLE: 'إشعارات',
         NO_NEW: 'لا توجد إشعارات جديدة',
         VIEW: 'عرض',
         REQUESTS: 'الطلبات'
       },
+    MENU: {
+      TITLE: 'القائمة',
+      INDUSTRIES: 'الصناعات',
+      REPORTS: 'التقارير',
+      INSIGHTS: 'الرؤى',
+      BROWSE_KNOWLEDGE: 'تصفح المعرفة',
+      ADD_KNOWLEDGE: 'إضافة معرفة',
+      DATA: 'البيانات',
+      MANUAL: 'الدليل',
+      COURSES: 'الدورات'
+    },
     HOME: {
       INSIGHTER_DASHBOARD: 'لوحة التحكم',
       LATEST_INSIGHTS: "أحدث الرؤى",
@@ -511,7 +553,8 @@ export const locale = {
           "OVERVIEW": "نظرة عامة",
           "MY_REQUESTS": "طلباتي",
           "MY_KNOWLEDGE": "قاعدة المعرفة + " ,
-          "ACCOUNT_SETTINGS": "إعدادات الحساب"
+          "ACCOUNT_SETTINGS": "إعدادات الحساب",
+          "MY_COMPANY": "شركتي"
         },
         "REQUESTS": {
           APPROVED: "الطلبات المقبولة",

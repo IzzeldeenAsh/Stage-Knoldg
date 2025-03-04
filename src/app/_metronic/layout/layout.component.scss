@@ -19,6 +19,23 @@
   background-color: #fafbfb;
 }
 
+.content-wrapper {
+  padding-top: 70px; /* Match the height of the desktop header */
+  min-height: calc(100vh - 70px);
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (max-width: 768px) {
+  .content-wrapper {
+    padding-top: 60px; /* Match the height of the mobile header */
+    min-height: calc(100vh - 60px);
+  }
+}
+
 .app-header {
   max-width: 86rem;
   margin-top: 30px;
@@ -35,4 +52,3 @@
     max-width: 100%;
   }
 }
-  

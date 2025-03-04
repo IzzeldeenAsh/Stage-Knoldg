@@ -1,25 +1,36 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { filter, map, take } from 'rxjs/operators';
 import { MenuItem } from 'primeng/api';
+import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-insighter-dashboard',
   templateUrl: './insighter-dashboard.component.html',
-  styleUrl: './insighter-dashboard.component.scss'
+  styleUrls: ['./insighter-dashboard.component.scss']
 })
 export class InsighterDashboardComponent implements OnInit {
   activeTabIndex: number = 0;
   items: MenuItem[] = [];
   activeItem: MenuItem | undefined;
+  hasCompanyRole$: Observable<boolean>;
   
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private profileService: ProfileService
+  ) {
+    this.hasCompanyRole$ = this.profileService.hasRole(['company']);
+  }
 
   ngOnInit() {
-    this.initializeMenuItems();
-    
-    // Set initial active tab based on current route
-    this.setActiveTabFromRoute(this.router.url);
+    // Initialize menu items after checking roles
+    this.hasCompanyRole$.pipe(take(1)).subscribe(hasCompanyRole => {
+      this.initializeMenuItems(hasCompanyRole);
+      
+      // Set initial active tab based on current route
+      this.setActiveTabFromRoute(this.router.url);
+    });
 
     // Subscribe to route changes
     this.router.events.pipe(
@@ -29,7 +40,7 @@ export class InsighterDashboardComponent implements OnInit {
     });
   }
 
-  initializeMenuItems() {
+  initializeMenuItems(hasCompanyRole: boolean) {
     this.items = [
       {
         label: 'My Dashboard',
@@ -51,34 +62,36 @@ export class InsighterDashboardComponent implements OnInit {
         command: () => {
           this.router.navigate(['my-knowledge']);
         }
-      },
-      {
-        label: 'Account Settings',
-        icon: 'pi pi-cog',
-        command: () => {
-          this.router.navigate(['account-settings']);
-        }
       }
     ];
+
+    if (hasCompanyRole) {
+      this.items.push({
+        label: 'My Company',
+        icon: 'pi pi-building',
+        command: () => {
+          this.router.navigate(['my-company-settings']);
+        }
+      });
+    }
+
+    this.items.push({
+      label: 'Account Settings',
+      icon: 'pi pi-cog',
+      command: () => {
+        this.router.navigate(['account-settings']);
+      }
+    });
+
     this.activeItem = this.items[0];
   }
 
   setActiveTabFromRoute(url: string) {
-    if (url.includes('my-dashboard')) {
-      this.activeTabIndex = 0;
-      this.activeItem = this.items[0];
-    }
-    else if (url.includes('my-requests')) {
-      this.activeTabIndex = 1;
-      this.activeItem = this.items[1];
-    }
-    else if (url.includes('my-knowledge')) {
-      this.activeTabIndex = 2;
-      this.activeItem = this.items[2];
-    }
-    else if (url.includes('account-settings')) {
-      this.activeTabIndex = 3;
-      this.activeItem = this.items[3];
+    const routes = ['my-dashboard', 'my-requests', 'my-knowledge', 'my-company-settings', 'account-settings'];
+    const index = routes.findIndex(route => url.includes(route));
+    if (index !== -1) {
+      this.activeTabIndex = index;
+      this.activeItem = this.items[index];
     }
   }
 

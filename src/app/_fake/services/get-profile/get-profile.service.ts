@@ -11,6 +11,7 @@ interface UserType {
   email: string;
   countryId: string | null;
   country: string | null;
+  roles: string[];
 }
 
 @Injectable({
@@ -63,6 +64,7 @@ export class ProfileService {
           email: response.data.email,
           countryId: null,
           country: null,
+          roles: response.data.roles || []
         };
         this.setUserInLocalStorage(user);
         this.userSubject.next(user);
@@ -87,6 +89,15 @@ export class ProfileService {
     );
 
     return this.profileCache$;
+  }
+
+  hasRole(roles: string[]): Observable<boolean> {
+    return this.getProfile().pipe(
+      map(profile => {
+        const userRoles = profile.roles || [];
+        return roles.some(role => userRoles.includes(role));
+      })
+    );
   }
 
   // Force refresh the profile

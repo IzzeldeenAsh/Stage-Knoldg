@@ -1,36 +1,4 @@
-
 <div class="bg-layout">
-    <!--begin::Page-->
-    <div class="app-page flex-column flex-column-fluid" id="kt_app_page">
-      <ng-container *ngIf="appHeaderDisplay">
-        <!--begin::Header-->
-        <app-header [ngClass]="appHeaderDefaultClass" id="kt_app_header" class="app-header" data-kt-sticky="true" data-kt-sticky-activate="{default: true, lg: true}" data-kt-sticky-name="app-header-minimize" data-kt-sticky-offset="{default: '200px', lg: '0'}" data-kt-sticky-animation="false">
-        </app-header>
-        <!--end::Header-->
-      </ng-container>
-  
-   
-  
-    </div>
-    <!--end::Page-->
-  <app-search-head ></app-search-head>
-  
-  <app-scripts-init></app-scripts-init>
-  <ng-container>
-    <app-scroll-top id="kt_scrolltop" class="scrolltop" data-kt-scrolltop="true"></app-scroll-top>
-  </ng-container>
-  <!-- begin:: Drawers -->
-  <!-- <app-activity-drawer></app-activity-drawer>
-  <app-messenger-drawer></app-messenger-drawer> -->
-  <!-- end:: Drawers -->
-  <router-outlet></router-outlet>
-  <!-- end:: Engage -->
-  <!-- <app-engages></app-engages> -->
-  <!-- end:: Engage -->
-  
-  <!-- begin:: Modals -->
-  <app-main-modal></app-main-modal>
-  <app-invite-users-modal></app-invite-users-modal>
-  <app-upgrade-plan-modal></app-upgrade-plan-modal>
-  <!-- end:: Modals -->
+  <app-primeng-header></app-primeng-header>
+    <router-outlet></router-outlet>
 </div>

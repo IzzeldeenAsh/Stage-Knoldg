@@ -1,4 +1,3 @@
-
 <div class="py-4">
 <ng-container *ngIf="user$ | async as _user">
   <div class="menu-item px-3">
@@ -67,17 +66,18 @@
 
   <div
     class="menu-item px-5"
-    data-kt-menu-trigger="hover"
+    data-kt-menu-trigger="click"
     data-kt-menu-placement="left-start"
     data-kt-menu-flip="bottom"
+    data-submenu-id="insighterDashboard"
     *ngIf="_user.roles.includes('insighter') || _user.roles.includes('company')"
   >
-    <a class="menu-link px-5 cursor-pointer" [routerLink]="'/app/insighter-dashboard/'" >
+    <a class="menu-link px-5 cursor-pointer">
       <span class="menu-title">{{ 'HOME.INSIGHTER_DASHBOARD' | translate }}</span>
       <span class="menu-arrow"></span>
     </a>
 
-    <div class="menu-sub menu-sub-dropdown w-175px py-4">
+    <div class="menu-sub menu-sub-dropdown w-175px py-4" [ngClass]="{'show': submenuStates['insighterDashboard'], 'ltr': !isRTL, 'rtl': isRTL}" [style.display]="submenuStates['insighterDashboard'] ? 'block' : 'none'">
       <div class="menu-item px-3">
         <a [routerLink]="'/app/insighter-dashboard/my-knowledge/general'" class="menu-link px-5">
           {{ 'INSIGHTER_DASHBOARD_GENERAL' | translate }}
@@ -106,16 +106,17 @@
 
   <div class="menu-item px-5" *ngIf="_user.roles.includes('insighter') || _user.roles.includes('company')">
     <a [routerLink]="'/app/add-knowledge/stepper'" class="menu-link px-5 text-info">
-      <i class="ki-duotone ki-plus fs-5 me-2 text-info"><span class="path1"></span><span class="path2"></span></i>
       {{ 'KNOWLEDGE.ADD_KNOWLEDGE' | translate }}
+      <i class="ki-duotone ki-plus fs-5 me-2 text-info"><span class="path1"></span><span class="path2"></span></i>
     </a>
   </div>
 
   <div
     class="menu-item px-5"
-    data-kt-menu-trigger="hover"
+    data-kt-menu-trigger="click"
     data-kt-menu-placement="left-start"
     data-kt-menu-flip="bottom"
+    data-submenu-id="accountSettings"
   >
   
     <a class="menu-link px-5 cursor-pointer">
@@ -123,7 +124,7 @@
       <span class="menu-arrow"></span>
     </a>
 
-    <div class="menu-sub menu-sub-dropdown w-175px py-4">
+    <div class="menu-sub menu-sub-dropdown w-175px py-4" [ngClass]="{'show': submenuStates['accountSettings'], 'ltr': !isRTL, 'rtl': isRTL}" [style.display]="submenuStates['accountSettings'] ? 'block' : 'none'">
       <div class="menu-item px-3">
         <a class="menu-link px-5 cursor-pointer" placement="top-start" [routerLink]="'/app/profile/settings/personal-info'">
           {{ 'ACCOUNT_SETTINGS.PERSONAL_INFO' | translate }}
@@ -160,9 +161,10 @@
 
   <div
     class="menu-item px-5"
-    data-kt-menu-trigger="hover"
+    data-kt-menu-trigger="click"
     data-kt-menu-placement="left-start"
     data-kt-menu-flip="bottom"
+    data-submenu-id="language"
   >
     <a class="menu-link px-5 cursor-pointer">
       <span class="menu-title position-relative">
@@ -190,7 +192,7 @@
       </span>
     </a>
 
-    <div class="menu-sub menu-sub-dropdown w-175px py-4">
+    <div class="menu-sub menu-sub-dropdown w-175px py-4" [ngClass]="{'show': submenuStates['language'], 'ltr': !isRTL, 'rtl': isRTL}" [style.display]="submenuStates['language'] ? 'block' : 'none'">
       <div
         *ngFor="let l of langs"
         class="menu-item px-3 cursor-pointer"
