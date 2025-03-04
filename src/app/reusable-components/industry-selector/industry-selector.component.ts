@@ -44,6 +44,7 @@ import { TranslationModule } from "src/app/modules/i18n";
       [style]="{ width: dialogWidth, 'max-height': '100vh', overflow: 'hidden' }"
       [contentStyle]="{ 'max-height': 'calc(90vh - 100px)', overflow: 'auto' }"
       appendTo="body"
+      (onShow)="expandFirstNode()"
     >
       <div class="tree-container">
         <p-tree
@@ -191,6 +192,15 @@ export class IndustrySelectorComponent implements OnInit, OnDestroy {
     this.dialogVisible = true;
   }
 
+  expandFirstNode() {
+    if (this.nodes && this.nodes.length > 0) {
+      // Set expanded property directly on the first node
+      if (this.nodes[0]) {
+        this.nodes[0].expanded = true;
+      }
+    }
+  }
+
   onOk() {
     if (this.isValidSelection() && this.selectedNode) {
       this.dialogVisible = false;
@@ -244,4 +254,4 @@ export class IndustrySelectorComponent implements OnInit, OnDestroy {
       this.selectedNode = found;
     }
   }
-} 
+}

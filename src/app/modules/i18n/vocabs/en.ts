@@ -536,8 +536,9 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       "NAV": {
         "OVERVIEW": "Overview",
         "MY_REQUESTS": "My Requests",
-        "MY_KNOWLEDGE": "My Knowledge +",
-        "ACCOUNT_SETTINGS": "Account Settings"
+        "MY_KNOWLEDGE": "My Knowledge",
+        "ACCOUNT_SETTINGS": "Account Settings",
+        "MY_COMPANY": "My Company"
       },
       REQUESTS: {
         APPROVED: "Approved Requests",

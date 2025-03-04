@@ -1,4 +1,4 @@
-import { Component, Injector, Input, OnDestroy, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Injector, Input, OnDestroy, OnInit, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ICreateKnowldege } from '../../create-account.helper';
@@ -17,6 +17,7 @@ export class Step1Component extends BaseComponent implements OnInit, OnChanges {
   form: FormGroup;
   @Input() knowledgeId!:number;
   @Input() defaultValues: Partial<ICreateKnowldege>;
+  @Output() goToNextStep = new EventEmitter<void>();
 
   knowledgeTypes = [
     {
@@ -116,6 +117,13 @@ export class Step1Component extends BaseComponent implements OnInit, OnChanges {
 
     const formChangesSubscr = this.form.valueChanges.subscribe((val) => {
       this.updateParentModel(val, this.checkForm());
+      
+      // If a knowledge type is selected, emit the event to go to the next step
+      if (val.knowledgeType && this.form.valid) {
+        setTimeout(() => {
+          this.goToNextStep.emit();
+        }, 300); // Small delay to ensure the UI updates first
+      }
     });
     this.unsubscribe.push(formChangesSubscr);
   }

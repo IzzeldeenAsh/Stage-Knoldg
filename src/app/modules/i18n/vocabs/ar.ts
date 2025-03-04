@@ -511,7 +511,8 @@ export const locale = {
           "OVERVIEW": "نظرة عامة",
           "MY_REQUESTS": "طلباتي",
           "MY_KNOWLEDGE": "قاعدة المعرفة + " ,
-          "ACCOUNT_SETTINGS": "إعدادات الحساب"
+          "ACCOUNT_SETTINGS": "إعدادات الحساب",
+          "MY_COMPANY": "شركتي"
         },
         "REQUESTS": {
           APPROVED: "الطلبات المقبولة",

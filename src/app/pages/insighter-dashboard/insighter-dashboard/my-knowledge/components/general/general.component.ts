@@ -84,7 +84,7 @@ export class GeneralComponent extends BaseComponent implements OnInit {
   // Add these properties
   searchTerm: string = '';
   searchTimeout: any;
-  selectedType: 'grid' | 'list' = 'list';
+  selectedType: 'grid' | 'list' = 'grid';
 
   constructor(
     injector: Injector,

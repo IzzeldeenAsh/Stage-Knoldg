@@ -6,6 +6,7 @@ import { ConsultingFieldTreeService } from "src/app/_fake/services/consulting-fi
 import { CountryService } from "src/app/_fake/services/countries-api/countries-get.service";
 import { ProfileService } from "src/app/_fake/services/get-profile/get-profile.service";
 import { IndustryService } from "src/app/_fake/services/industries/industry.service";
+import { InvitationService } from "src/app/_fake/services/invitation/invitation.service";
 import { UpdateProfileService } from "src/app/_fake/services/profile/profile.service";
 import { AuthService } from "src/app/modules/auth";
 import { BaseComponent } from "src/app/modules/base.component";
@@ -17,6 +18,7 @@ import { BaseComponent } from "src/app/modules/base.component";
 })
 export class PersonalSettingsComponent extends BaseComponent implements OnInit {
   personalInfoForm!: FormGroup;
+  invitationForm!: FormGroup;
   isLoadingCountries: boolean = false;
   countries: any[] = [];  
   roles: string[] = [];
@@ -24,6 +26,7 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
   industries: any[] = [];
   isUpdatingProfile$: Observable<boolean> = of(false);
   isLoading$: Observable<boolean> = of(false);
+  isProcessingInvitation$: Observable<boolean>;
   profile: IKnoldgProfile;
   allIndustriesSelected: any[] = [];
   allConsultingFieldsSelected: any[] = [];
@@ -38,13 +41,16 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
     private getProfileService: ProfileService,
     private _consultingFieldService: ConsultingFieldTreeService,
     private _industries: IndustryService,
+    private _invitationService: InvitationService
   ) {
     super(injector);
+    this.isProcessingInvitation$ = this._invitationService.isLoading$;
   }
 
   ngOnInit(): void {
     this.handleAPIs();
     this.initForm();
+    this.initInvitationForm();
   }
 
   handleAPIs(){
@@ -171,6 +177,12 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
     });
   }
 
+  initInvitationForm() {
+    this.invitationForm = this.fb.group({
+      invitationCode: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6), Validators.pattern('^[0-9]*$')]]
+    });
+  }
+
   onFlagError(country: any): void {
     country.showFlag = false;
   }
@@ -218,6 +230,29 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
         }
       });
     }
+  }
+
+  onSubmitInvitation() {
+    if (this.invitationForm.invalid) {
+      return;
+    }
+
+    const code = this.invitationForm.get('invitationCode')?.value;
+
+    this._invitationService.acceptInsighterInvitation(code).subscribe({
+      next: (response) => {
+        const message = this.lang === "ar" 
+          ? "تم قبول الدعوة بنجاح"
+          : "Invitation accepted successfully";
+        this.showSuccess("", message);
+        this.invitationForm.reset();
+        // Reload to reflect changes
+        document.location.reload();
+      },
+      error: (error) => {
+        this.handleServerErrors(error);
+      }
+    });
   }
 
   private createFormData(): FormData {

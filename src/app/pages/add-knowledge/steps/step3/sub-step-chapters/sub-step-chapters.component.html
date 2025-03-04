@@ -1,24 +1,3 @@
-<button type="button" class="btn btn-primary" (click)="openDocumentDialog()">
-  <i class="ki-duotone ki-plus fs-2"></i>
- <ng-container *ngIf="defaultValues.knowledgeType === 'course'"> 
-  {{"ADD_DOCUMENT" | translate}}
- </ng-container>
- <ng-container *ngIf="defaultValues.knowledgeType === 'media'"> 
-  {{"ADD_MEDIA_FILE" | translate}}
- </ng-container>
- <ng-container *ngIf="defaultValues.knowledgeType === 'data'"> 
-  {{"ADD_NODE" | translate}}
- </ng-container>
- <ng-container *ngIf="defaultValues.knowledgeType === 'report'"> 
-  {{"ADD_CHAPTER" | translate}}
- </ng-container>
- <ng-container *ngIf="defaultValues.knowledgeType === 'manual'"> 
-  {{"ADD_CHAPTER" | translate}}
- </ng-container>
- <ng-container *ngIf="defaultValues.knowledgeType === 'insight'"> 
-  {{"ADD_DOCUMENT" | translate}}
- </ng-container>
-</button>
 
 <!-- Display the list of documents as cards -->
 <div class="row mt-5">
@@ -91,6 +70,27 @@
     </div>
   </div>
 </div>
+<button type="button" class="btn btn-primary" (click)="openDocumentDialog()">
+  <i class="ki-duotone ki-plus fs-2"></i>
+ <ng-container *ngIf="defaultValues.knowledgeType === 'course'"> 
+  {{"ADD_DOCUMENT" | translate}}
+ </ng-container>
+ <ng-container *ngIf="defaultValues.knowledgeType === 'media'"> 
+  {{"ADD_MEDIA_FILE" | translate}}
+ </ng-container>
+ <ng-container *ngIf="defaultValues.knowledgeType === 'data'"> 
+  {{"ADD_NODE" | translate}}
+ </ng-container>
+ <ng-container *ngIf="defaultValues.knowledgeType === 'report'"> 
+  {{"ADD_CHAPTER" | translate}}
+ </ng-container>
+ <ng-container *ngIf="defaultValues.knowledgeType === 'manual'"> 
+  {{"ADD_CHAPTER" | translate}}
+ </ng-container>
+ <ng-container *ngIf="defaultValues.knowledgeType === 'insight'"> 
+  {{"ADD_DOCUMENT" | translate}}
+ </ng-container>
+</button>
 
 <!-- Add Total Price Section before the Dialog -->
 <div class="border-top border-gray-300 pt-4 mt-4" *ngIf="totalPrice > 0">

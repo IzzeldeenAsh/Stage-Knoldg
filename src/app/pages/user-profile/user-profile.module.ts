@@ -34,6 +34,7 @@ import { InlineSVGModule } from 'ng-inline-svg-2';
 import { ReactivateModalComponent } from './profile-pages/account-settings/reactivate-modal/reactivate-modal.component';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ResetPasswordComponent } from './profile-pages/account-settings/reset-password/reset-password.component';
+import { JoinCompanyComponent } from './profile-pages/join-company/join-company.component';
 
   @NgModule({
     declarations: [
@@ -42,6 +43,7 @@ import { ResetPasswordComponent } from './profile-pages/account-settings/reset-p
       ActionButtonsComponent,
       NavigationTabsComponent,
       CompanySettingsComponent,
+      JoinCompanyComponent,
       PersonalSettingsComponent,
       DocumentsComponent,
       SettingsSidebarComponent,

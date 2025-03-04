@@ -117,6 +117,7 @@
               [updateParentModel]="updateAccount"
               [defaultValues]="account$.value"
               [knowledgeId]="knowledgeId"
+              (goToNextStep)="nextStep()"
             ></app-step1>
           </ng-container>
 

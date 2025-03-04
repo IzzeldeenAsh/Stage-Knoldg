@@ -10,6 +10,7 @@ import { AccountSettingsHeaderComponent } from './insighter-dashboard/statistics
 import { KnowledgeStatisticsComponent } from './insighter-dashboard/statistics/knowledge-statistics/knowledge-statistics.component';
 import { RequestsStatisticsComponent } from './insighter-dashboard/statistics/requests-statistics/requests-statistics.component';
 import { CountUpDirective } from 'src/app/directives/countup/count-up.directive';
+import { CompanyStatisticsComponent } from './insighter-dashboard/statistics/company-statistics/company-statistics.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { CountUpDirective } from 'src/app/directives/countup/count-up.directive'
     RequestsStatisticsComponent,
     KnowledgeStatisticsComponent,
     AccountSettingsHeaderComponent,
+    CompanyStatisticsComponent
   ],
   imports: [
     CommonModule,
