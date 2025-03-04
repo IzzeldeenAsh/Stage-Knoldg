@@ -12,6 +12,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { AvatarModule } from 'primeng/avatar';
+import { Paginator, PaginatorModule } from 'primeng/paginator';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { AvatarModule } from 'primeng/avatar';
     ReactiveFormsModule,
     DialogModule,
     InputTextModule,
+    PaginatorModule,
     ButtonModule,
     ToastModule,
     AvatarModule

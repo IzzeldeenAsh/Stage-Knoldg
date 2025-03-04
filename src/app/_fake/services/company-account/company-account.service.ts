@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { TranslationService } from 'src/app/modules/i18n/translation.service';
 import { map, catchError, finalize } from 'rxjs/operators';
@@ -14,6 +14,26 @@ export interface AccountExistResponse {
   message?: string;
   errors?: {
     common?: string[];
+  };
+}
+
+export interface InsighterResponse {
+  data: any[];
+  links: {
+    first: string;
+    last: string;
+    prev: string | null;
+    next: string | null;
+  };
+  meta: {
+    current_page: number;
+    from: number;
+    last_page: number;
+    links: any[];
+    path: string;
+    per_page: number;
+    to: number;
+    total: number;
   };
 }
 
@@ -56,6 +76,25 @@ export class CompanyAccountService {
 
     this.setLoading(true);
     return this.http.post<AccountExistResponse>(this.accountExistApi, { email }, { headers }).pipe(
+      map(res => res),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  // Get insighters with pagination
+  getInsighters(page: number = 1, perPage: number = 10): Observable<InsighterResponse> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('per_page', perPage.toString());
+
+    this.setLoading(true);
+    return this.http.get<InsighterResponse>(this.inviteInsighterApi, { headers, params }).pipe(
       map(res => res),
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))

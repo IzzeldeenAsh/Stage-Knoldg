@@ -4,7 +4,6 @@ import {RouterModule} from '@angular/router';
 import {InlineSVGModule} from 'ng-inline-svg-2';
 import {NotificationsInnerComponent} from './dropdown-inner/notifications-inner/notifications-inner.component';
 import {QuickLinksInnerComponent} from './dropdown-inner/quick-links-inner/quick-links-inner.component';
-import {UserInnerComponent} from './dropdown-inner/user-inner/user-inner.component';
 import {LayoutScrollTopComponent} from './scroll-top/scroll-top.component';
 import {TranslationModule} from '../../../../modules/i18n';
 import {SearchResultInnerComponent} from "./dropdown-inner/search-result-inner/search-result-inner.component";
@@ -15,6 +14,7 @@ import { NotificationsNamesPipe } from 'src/app/pipes/notificaitons-pipe/notific
 import { NotificationsLinksPipe } from 'src/app/pipes/notifications-links/notifications-links.pipe';
 import { NotificationsBgPipe } from 'src/app/pipes/notifications-background/notifications-bg.pipe';
 import { NotificationsIconsPipe } from 'src/app/pipes/notifications-icons/notificaitons-icons.pipe';
+import { UserInnerComponent } from './dropdown-inner/user-inner/user-inner.component';
 
 @NgModule({
   declarations: [

@@ -1,0 +1,114 @@
+<!-- Main Header -->
+<div class="primeng-header">
+  <!-- Desktop Header -->
+  <div class="desktop-header" *ngIf="!isSmallScreen">
+    <div class="header-container">
+      <div class="header-logo">
+        <a>
+          <img *ngIf="lang === 'en'" src="./assets/media/LOGO-KNOLD/KNOLDG-01.png" alt="Logo" class="h-40px" />
+          <img *ngIf="lang === 'ar'" src="./assets/media/LOGO-KNOLD/KNOLDG-LOGO-12.png" alt="Logo" class="h-40px" />
+        </a>
+      </div>
+      <div class="header-menu">
+        <p-menubar [model]="items" [style]="{'border': 'none', 'background': 'transparent'}">
+          <ng-template pTemplate="item" let-item>
+       <a [href]="item.routerLink">
+        <div class="d-flex align-items-center py-3 mx-4">
+          <app-keenicon [name]="item.iconName" [type]="item.iconType || 'duotone'" class="fs-5 mx-2" [class]="item.iconClass"></app-keenicon>
+          <span>{{ item.label }}</span>
+        </div>
+       </a>
+          </ng-template>
+        </p-menubar>
+      </div>
+      <div class="header-actions">
+        <!-- User dropdown toggle -->
+        <div class="user-dropdown-container">
+          <a  class="user-dropdown-toggle" (click)="toggleUserDropdown($event)" #userDropdownToggle>
+            <div class="user-avatar" *ngIf="userProfileImage">
+              <img [src]="userProfileImage" alt="User Avatar" />
+            </div>
+            <div class="user-avatar user-initials" *ngIf="!userProfileImage">
+              {{ userInitials }}
+            </div>
+            <div class="user-info">
+              <div class="user-name">{{ userName }}</div>
+              <div class="user-email">{{ userEmail }}</div>
+            </div>
+            <i class="ki-duotone ki-arrow-down fs-4 rotate-180" ></i>
+          </a>
+          
+          <!-- User dropdown menu -->
+          <div class="user-dropdown-menu" [ngClass]="{'show': isUserDropdownOpen, 'rtl': lang === 'ar'}" #userDropdownMenu>
+            <app-user-inner></app-user-inner>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Header -->
+  <div class="mobile-header" *ngIf="isSmallScreen">
+    <div class="mobile-header-left">
+      <button class="menu-toggle" (click)="sidebarVisible = true">
+        <app-keenicon [name]="'abstract-14'" [type]="'outline'" class="fs-2"></app-keenicon>
+      </button>
+      <div class="mobile-logo">
+        <a >
+          <img *ngIf="lang === 'en'" src="./assets/media/LOGO-KNOLD/KNOLDG-01.png" alt="Logo" class="h-25px" />
+          <img *ngIf="lang === 'ar'" src="./assets/media/LOGO-KNOLD/KNOLDG-LOGO-12.png" alt="Logo" class="h-25px" />
+        </a>
+      </div>
+    </div>
+    <div class="mobile-header-right">
+      <!-- Mobile User dropdown toggle -->
+      <div class="mobile-user-dropdown-container">
+        <a class="mobile-user-dropdown-toggle" (click)="toggleMobileUserDropdown($event)" #mobileUserDropdown>
+          <div class="user-avatar" *ngIf="userProfileImage">
+            <img [src]="userProfileImage" alt="User Avatar" />
+          </div>
+          <div class="user-avatar user-initials" *ngIf="!userProfileImage">
+            {{ userInitials }}
+          </div>
+        </a>
+        
+        <!-- Mobile User dropdown menu -->
+        <div class="mobile-user-dropdown-menu" [ngClass]="{'show': isMobileUserDropdownOpen, 'rtl': lang === 'ar'}" #userDropdown>
+          <app-user-inner></app-user-inner>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile Sidebar -->
+<p-sidebar [(visible)]="sidebarVisible" position="left" [style]="{'width':'80%', 'max-width':'300px', 'z-index': '1050'}" [baseZIndex]="1050" [showCloseIcon]="true" styleClass="custom-sidebar" [modal]="false">
+  <ng-template pTemplate="header">
+    <div class="sidebar-header">
+      <h3 class="sidebar-title">{{ 'MENU.TITLE' | translate }}</h3>
+    </div>
+  </ng-template>
+  <div class="mobile-menu">
+    <div *ngFor="let item of items" class="mobile-menu-item">
+      <a [routerLink]="item.routerLink" class="mobile-menu-link" *ngIf="!item.items" (click)="sidebarVisible = false">
+        <app-keenicon [name]="item.iconName" [type]="item.iconType || 'duotone'" class="fs-2"></app-keenicon>
+        <span class="menu-text">{{ item.label }}</span>
+      </a>
+      
+      <div *ngIf="item.items" class="mobile-submenu-container">
+        <a  class="mobile-menu-link with-submenu" (click)="toggleSubmenu(item); $event.preventDefault()">
+          <app-keenicon [name]="item.iconName" [type]="item.iconType || 'duotone'" class="fs-2"></app-keenicon>
+          <span class="menu-text">{{ item.label }}</span>
+          <i class="ki-duotone ki-arrow-down fs-4 rotate-180" [ngClass]="{'rotate-180': !item.expanded}"></i>
+        </a>
+        
+        <div class="mobile-submenu" [ngClass]="{'expanded': item.expanded}">
+          <a *ngFor="let subitem of item.items" [routerLink]="subitem.routerLink" class="mobile-submenu-link" (click)="sidebarVisible = false">
+            <app-keenicon [name]="subitem.iconName || 'abstract-14'" [type]="subitem.iconType || 'outline'" class="fs-5 mx-2"></app-keenicon>
+            <span class="submenu-text">{{ subitem.label }}</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</p-sidebar>

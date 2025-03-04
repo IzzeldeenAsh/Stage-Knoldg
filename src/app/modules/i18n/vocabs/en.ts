@@ -7,6 +7,37 @@ export const locale = {
       "TITLE": "Profile Completion",
       "DESCRIPTION": "Complete your profile to unlock all features and get the most out of your account."
     },
+    "MY_COMPANY": {
+      "TITLE": "My Company",
+      "SUBTITLE": "Manage your company employees",
+      "ADD_EMPLOYEE": "Add Employee",
+      "EMPTY_STATE_MESSAGE": "Build up your team by adding employees to your company",
+      "TABLE": {
+        "INSIGHTER": "Insighter",
+        "EMAIL": "Email",
+        "COUNTRY": "Country",
+        "STATUS": "Status",
+        "VERIFICATION": "Verification"
+      },
+      "VERIFIED": "Verified",
+      "PENDING": "Pending",
+      "LOADING": "Loading...",
+      "SHOWING_ENTRIES": "Showing {{first}} to {{last}} of {{total}} entries",
+      "EMAIL_ADDRESS": "Email Address",
+      "ENTER_EMAIL": "Enter email address",
+      "EMAIL_REQUIRED": "Email is required",
+      "EMAIL_INVALID": "Email is invalid",
+      "CHECKING_ACCOUNT": "Checking account...",
+      "FIRST_NAME": "First Name",
+      "ENTER_FIRST_NAME": "Enter first name",
+      "FIRST_NAME_REQUIRED": "First name is required",
+      "LAST_NAME": "Last Name",
+      "ENTER_LAST_NAME": "Enter last name",
+      "LAST_NAME_REQUIRED": "Last name is required",
+      "CANCEL": "Cancel",
+      "INVITE": "Invite",
+      "INVITING": "Inviting..."
+    },
     INSIGHTER_DASHBOARD: {
       TITLE: 'Dashboard'
     },
@@ -15,6 +46,17 @@ export const locale = {
       NO_NEW: 'No new notifications',
       VIEW: 'View',
       REQUESTS: 'Requests'
+    },
+    MENU: {
+      TITLE: 'Menu',
+      INDUSTRIES: 'Industries',
+      REPORTS: 'Reports',
+      INSIGHTS: 'Insights',
+      BROWSE_KNOWLEDGE: 'Browse Knowledge',
+      ADD_KNOWLEDGE: 'Add Knowledge',
+      DATA: 'Data',
+      MANUAL: 'Manual',
+      COURSES: 'Courses'
     },
     HOME: {
       INSIGHTER_DASHBOARD: 'Dashboard',

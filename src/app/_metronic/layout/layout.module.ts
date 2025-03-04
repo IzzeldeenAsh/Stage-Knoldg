@@ -10,7 +10,6 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import { TranslationModule } from '../../modules/i18n';
 import { LayoutComponent } from './layout.component';
-import { ExtrasModule } from '../partials/layout/extras/extras.module';
 import { Routing } from '../../pages/routing';
 import { HeaderComponent } from './components/header/header.component';
 import { ContentComponent } from './components/content/content.component';
@@ -25,11 +24,13 @@ import {
   DropdownMenusModule,
   ModalsModule,
   EngagesModule,
+  ExtrasModule,
 } from '../partials';
 import { MenubarModule } from 'primeng/menubar';
 import { ButtonModule } from 'primeng/button';
 import { AvatarModule } from 'primeng/avatar';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { PrimengHeaderModule } from './components/primeng-header/primeng-header.module';
 
 import { EngagesComponent } from '../partials/layout/engages/engages.component';
 import { ThemeModeModule } from '../partials/layout/theme-mode-switcher/theme-mode.module';
@@ -90,7 +91,6 @@ const routes: Routes = [
     InlineSVGModule,
     NgbDropdownModule,
     NgbProgressbarModule,
-    ExtrasModule,
     ModalsModule,
     DrawersModule,
     EngagesModule,
@@ -106,6 +106,8 @@ const routes: Routes = [
     ButtonModule,
     AvatarModule,
     OverlayPanelModule,
+    PrimengHeaderModule,
+  ExtrasModule,
   ],
   exports: [RouterModule],
 })

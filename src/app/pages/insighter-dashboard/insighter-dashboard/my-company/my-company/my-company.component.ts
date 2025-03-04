@@ -5,6 +5,29 @@ import { CompanyAccountService } from 'src/app/_fake/services/company-account/co
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 
+interface Insighter {
+  id: number;
+  name: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  roles: string[];
+  profile_photo_url: string | null;
+  country: string;
+  insighter_status: string;
+  verified_as_insighter: boolean;
+}
+
+interface PaginationMeta {
+  current_page: number;
+  from: number;
+  last_page: number;
+  path: string;
+  per_page: number;
+  to: number;
+  total: number;
+}
+
 @Component({
   selector: 'app-my-company',
   templateUrl: './my-company.component.html',
@@ -27,6 +50,14 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
   // Forms
   emailForm: FormGroup;
   employeeForm: FormGroup;
+  
+  // Insighter table data
+  insighters: Insighter[] = [];
+  loading: boolean = false;
+  totalRecords: number = 0;
+  rows: number = 10;
+  first: number = 0;
+  paginationMeta: PaginationMeta | null = null;
   
   constructor(
     injector: Injector,
@@ -52,7 +83,11 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     this.profileService.getProfile().subscribe((user)=>{
       this.industries = user.industries;
       this.consultingFields = user.consulting_field;
-    })
+    });
+    
+    // Load initial insighter data
+    this.loadInsighters(1);
+    
     // Listen for email changes to trigger account check
     this.emailForm.get('email')?.valueChanges
       .pipe(
@@ -67,6 +102,32 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
           this.resetAccountState();
         }
       });
+  }
+  
+  // Load insighters with pagination
+  loadInsighters(page: number = 1): void {
+    this.loading = true;
+    this.companyAccountService.getInsighters(page, this.rows).subscribe({
+      next: (response) => {
+        this.insighters = response.data;
+        this.paginationMeta = response.meta;
+        this.totalRecords = response.meta.total;
+        this.loading = false;
+      },
+      error: (error) => {
+        this.loading = false;
+        this.showError('Error', 'Failed to load insighters');
+        console.error('Error loading insighters:', error);
+      }
+    });
+  }
+  
+  // Handle page change event
+  onPageChange(event: any): void {
+    this.first = event.first;
+    this.rows = event.rows;
+    const page = Math.floor(event.first / event.rows) + 1;
+    this.loadInsighters(page);
   }
   
   // Open the add employee modal
@@ -178,6 +239,8 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
         this.isInviting = false;
         this.showSuccess('Success', 'Insighter invitation has been sent');
         this.closeAddEmployeeModal();
+        // Reload insighters after successful invitation
+        this.loadInsighters(1);
       },
       error: (error) => {
         this.isInviting = false;
@@ -201,8 +264,29 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     const nameParts = name.split(' ');
     if (nameParts.length >= 2) {
       return (nameParts[0][0] + nameParts[1][0]).toUpperCase();
+    } else if (nameParts.length === 1) {
+      return nameParts[0][0].toUpperCase();
     }
     
-    return nameParts[0][0].toUpperCase();
+    return '';
+  }
+  
+  // Get status badge class
+  getStatusBadgeClass(status: string): string {
+    switch (status) {
+      case 'active':
+        return 'badge-light-success';
+      case 'pending':
+        return 'badge-light-warning';
+      case 'inactive':
+        return 'badge-light-danger';
+      default:
+        return 'badge-light-info';
+    }
+  }
+  
+  // Get verification badge class
+  getVerificationBadgeClass(verified: boolean): string {
+    return verified ? 'badge-light-success' : 'badge-light-warning';
   }
 }

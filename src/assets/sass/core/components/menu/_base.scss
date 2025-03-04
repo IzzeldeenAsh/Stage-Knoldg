@@ -47,7 +47,8 @@
         padding: $menu-link-padding-y $menu-link-padding-x;
         transition: none;
         outline: none !important;
-
+        font-weight: 600;
+        color: #4b5563eb;
         .menu-icon {
             flex-shrink: 0;
             display: flex;
@@ -75,6 +76,7 @@
             display: flex;
             align-items: center;
             flex-grow: 1;
+            font-weight: 600;
         }
 
         .menu-badge {
