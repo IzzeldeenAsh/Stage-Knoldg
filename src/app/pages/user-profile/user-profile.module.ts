@@ -78,7 +78,7 @@ import { JoinCompanyComponent } from './profile-pages/join-company/join-company.
       TranslationModule,
       DropdownMenusModule
     ],
-    providers: [ DialogService,NgbActiveModal],
+    providers: [ DialogService, NgbActiveModal, MessageService],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]  // Add this line
   })
   export class UserProfileModule { }

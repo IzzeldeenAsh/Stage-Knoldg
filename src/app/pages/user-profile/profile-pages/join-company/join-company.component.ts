@@ -1,5 +1,6 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { InvitationService } from 'src/app/_fake/services/invitation/invitation.service';
 import { BaseComponent } from 'src/app/modules/base.component';
@@ -17,6 +18,7 @@ export class JoinCompanyComponent extends BaseComponent implements OnInit {
   constructor(
     injector: Injector,
     private readonly fb: FormBuilder,
+    private router: Router,
     private _invitationService: InvitationService
   ) {
     super(injector);
@@ -48,7 +50,7 @@ export class JoinCompanyComponent extends BaseComponent implements OnInit {
         this.showSuccess("", message);
         this.invitationForm.reset();
         // Reload to reflect changes
-        document.location.reload();
+        this.router.navigate(['/app/profile/overview']);
       },
       error: (error) => {
         this.handleServerErrors(error);
@@ -58,6 +60,7 @@ export class JoinCompanyComponent extends BaseComponent implements OnInit {
 
   private handleServerErrors(error: any) {
     let errorMessage = '';
+    console.log('Error response:', error); // Add this for debugging
     
     if (error.error && typeof error.error === 'object') {
       // Handle structured error responses
@@ -65,6 +68,17 @@ export class JoinCompanyComponent extends BaseComponent implements OnInit {
         errorMessage = error.error.message;
       } else if (error.error.error) {
         errorMessage = error.error.error;
+      } else if (error.error.errors) {
+        // Handle errors object with common field
+        if (error.error.errors.common && Array.isArray(error.error.errors.common)) {
+          errorMessage = error.error.errors.common[0];
+        } else {
+          // Try to extract first error message from validation errors
+          const firstErrorKey = Object.keys(error.error.errors)[0];
+          if (firstErrorKey && Array.isArray(error.error.errors[firstErrorKey])) {
+            errorMessage = error.error.errors[firstErrorKey][0];
+          }
+        }
       } else {
         // Try to extract first error message from validation errors
         const firstErrorKey = Object.keys(error.error)[0];
@@ -73,10 +87,11 @@ export class JoinCompanyComponent extends BaseComponent implements OnInit {
         }
       }
     } else {
-      // Fallback for unstructured errors
+      // Fallback for unstructured errorsc
       errorMessage = error.message || 'An unexpected error occurred';
     }
     
+    console.log('Extracted error message:', errorMessage); // Add this for debugging
     this.showError('', errorMessage);
   }
 }

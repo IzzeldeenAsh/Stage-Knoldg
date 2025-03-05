@@ -6,6 +6,7 @@ import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.s
 import {  Router } from '@angular/router';
 import { TranslationService } from 'src/app/modules/i18n';
 import { TranslateService } from '@ngx-translate/core';
+import { Notification, NotificationsService } from 'src/app/_fake/services/nofitications/notifications.service';
 
 interface CustomMenuItem extends MenuItem {
   expanded?: boolean;
@@ -26,6 +27,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
   @ViewChild('userDropdownToggle') userDropdownToggle: ElementRef;
 
   items: CustomMenuItem[] = [];
+  profile: any;
   sidebarVisible: boolean = false;
   isSmallScreen: boolean = false;
   userMenuItems: MenuItem[] = [];
@@ -40,25 +42,22 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
   userInitials: string = '';
   userProfileImage: string | null = null;
   lang: string = '';
+  
+  // Notification related properties
+  notifications: Notification[] = [];
+  isNotificationsOpen: boolean = false;
+  notificationCount: number = 0;
+  
   constructor(
     private breakpointObserver: BreakpointObserver,
     private profileService: ProfileService,
     private router: Router,
     private translationService: TranslationService,
     private translate: TranslateService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private notificationService: NotificationsService
   ) {
     this.lang = this.translationService.getSelectedLanguage();
-    this.breakpointSubscription = this.breakpointObserver.observe([
-      Breakpoints.XSmall,
-      Breakpoints.Small
-    ]).subscribe(result => {
-      this.isSmallScreen = result.matches;
-      // Close sidebar when switching to desktop view
-      if (!this.isSmallScreen) {
-        this.sidebarVisible = false;
-      }
-    });
   }
 
   ngOnInit(): void {
@@ -68,11 +67,24 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
       Breakpoints.Small
     ]);
 
-    // Load user profile
-    this.loadUserProfile();
+    // Load profile first
+    this.profileService.getProfile().subscribe({
+      next: (profile) => {
+        this.profile = profile;
+        this.loadUserProfile();
+        this.initializeMenu(); // Initialize menu after getting profile
+        this.onLanguageChange(); // Subscribe to language changes
+        
+        // Subscribe to notifications
+        this.notificationService.notifications$.subscribe((notifications) => {
+          this.notifications = notifications;
+          this.notificationCount = this.notifications.length;
+        });
 
-    this.initializeMenu();
-    this.onLanguageChange(); // Subscribe to language changes
+        // Start polling for notifications
+        this.notificationService.startPolling();
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -83,6 +95,9 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
     if (this.profileSubscription) {
       this.profileSubscription.unsubscribe();
     }
+    
+    // Stop polling for notifications
+    this.notificationService.stopPolling();
   }
 
   loadUserProfile() {
@@ -116,8 +131,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
   }
 
   initializeMenu() {
-    this.items = [
-    
+    const menuItems = [
       {
         label: this.translate.instant('MENU.INSIGHTS'),
         iconName: 'chart-line',
@@ -134,7 +148,6 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         expanded: false,
         routerLink: 'https://knowrland-for-client.vercel.app/en/industries/report'
       },
-    
       {
         label: this.translate.instant('MENU.DATA'),
         iconName: 'data',
@@ -160,6 +173,20 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         routerLink: 'https://knowrland-for-client.vercel.app/en/industries/course'
       }
     ];
+
+    // Add the "Add Knowledge" menu item only for specific roles
+    if (this.profile?.roles?.some((role:string) => !['client'].includes(role))) {
+      menuItems.push({
+        label: this.translate.instant('MENU.ADD_KNOWLEDGE'),
+        iconName: 'plus-square',
+        iconClass: 'text-info fs-2 fw-bold',
+        iconType: 'duotone',
+        expanded: false,
+        routerLink: '/app/add-knowledge/stepper'
+      });
+    }
+
+    this.items = menuItems;
 
     this.userMenuItems = [
       {
@@ -201,54 +228,95 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
     item.expanded = !item.expanded;
   }
 
-  toggleUserDropdown(event: Event): void {
+  toggleUserDropdown(event: Event) {
     event.preventDefault();
     event.stopPropagation();
     this.isUserDropdownOpen = !this.isUserDropdownOpen;
-    // Close other dropdowns
     this.isMobileUserDropdownOpen = false;
+    this.isNotificationsOpen = false;
   }
 
   toggleMobileUserDropdown(event: Event) {
+    event.preventDefault();
     event.stopPropagation();
     this.isMobileUserDropdownOpen = !this.isMobileUserDropdownOpen;
     this.isUserDropdownOpen = false;
+    this.isNotificationsOpen = false;
   }
-
-  closeAllDropdowns() {
+  
+  // Toggle notifications dropdown
+  toggleNotifications(event: Event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isNotificationsOpen = !this.isNotificationsOpen;
     this.isUserDropdownOpen = false;
     this.isMobileUserDropdownOpen = false;
   }
 
-  @HostListener('document:click', ['$event'])
-  handleDocumentClick(event: Event): void {
-    // Check if click is outside user dropdown
-    if (this.isUserDropdownOpen && this.userDropdownMenu && this.userDropdownToggle) {
-      const target = event.target as HTMLElement;
-      const clickedInsideDropdown = this.userDropdownMenu.nativeElement.contains(target);
-      const clickedOnToggle = this.userDropdownToggle.nativeElement.contains(target);
+  // Close notifications dropdown
+  closeNotifications() {
+    this.isNotificationsOpen = false;
+  }
+  
+  // Handle notification click
+  handleNotificationClick(notificationId: string) {
+    // Close notifications dropdown when clicked
+    this.closeNotifications();
+    
+    // Mark notification as read
+    this.notificationService.markAsRead(notificationId, this.lang).subscribe({
+      next: () => {
+        // Refresh notifications from API
+        this.notificationService.getNotifications(this.lang ? this.lang : 'en').subscribe(notifications => {
+          this.notifications = notifications;
+          this.notificationCount = notifications.length;
+        });
+      },
+      error: (error) => {
+        console.error('Error marking notification as read:', error);
+      }
+    });
+  }
 
-      if (!clickedInsideDropdown && !clickedOnToggle) {
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    // Close user dropdown when clicking outside
+    if (this.isUserDropdownOpen && this.userDropdownToggle && this.userDropdownMenu) {
+      const target = event.target as HTMLElement;
+      if (!this.userDropdownToggle.nativeElement.contains(target) && !this.userDropdownMenu.nativeElement.contains(target)) {
         this.isUserDropdownOpen = false;
       }
     }
 
-    // Check if click is outside mobile user dropdown
-    if (this.isMobileUserDropdownOpen && this.userDropdown && this.mobileUserDropdown) {
+    // Close mobile user dropdown when clicking outside
+    if (this.isMobileUserDropdownOpen && this.mobileUserDropdown) {
       const target = event.target as HTMLElement;
-      const clickedInsideDropdown = this.userDropdown.nativeElement.contains(target);
-      const clickedOnToggle = this.mobileUserDropdown.nativeElement.contains(target);
-
-      if (!clickedInsideDropdown && !clickedOnToggle) {
+      if (!this.mobileUserDropdown.nativeElement.contains(target)) {
         this.isMobileUserDropdownOpen = false;
+      }
+    }
+    
+    // Close notifications dropdown when clicking outside
+    if (this.isNotificationsOpen) {
+      const target = event.target as HTMLElement;
+      // Check if the click is outside the notification area
+      if (!target.closest('.notification-dropdown') && !target.closest('.notification-toggle')) {
+        this.closeNotifications();
       }
     }
   }
 
   onLanguageChange() {
-    this.translationService.onLanguageChange().subscribe(() => {
-      this.lang = this.translationService.getSelectedLanguage();
-      this.initializeMenu(); // Reinitialize menu with new language
+    this.translationService.onLanguageChange().subscribe(lang => {
+      this.lang = lang || 'en';
+      // Re-initialize menu to update translations
+      this.initializeMenu();
     });
+  }
+
+  closeAllDropdowns() {
+    this.isUserDropdownOpen = false;
+    this.isMobileUserDropdownOpen = false;
+    this.isNotificationsOpen = false;
   }
 }

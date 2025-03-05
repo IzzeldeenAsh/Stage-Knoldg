@@ -60,7 +60,7 @@
     >{{profile.insighter_status}}</div>
    }
 
-   @if (hasRole(['company'])) {
+   @if (hasRole(['company']) || hasRole(['company-insighter'])) {
     <div class="fw-bold text-uppercase"
     [class.text-success]="profile.company?.status === 'active'" 
     [class.text-danger]="profile.company?.status === 'inactive'"

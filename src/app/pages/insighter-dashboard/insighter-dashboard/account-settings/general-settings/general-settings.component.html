@@ -1,6 +1,6 @@
 <div class="p-24px">
     <app-reset-password></app-reset-password>
-    <app-activate-account *ngIf="!isActive && isPrimaryKey" [role]="hasRole(['company']) ? 'company' : 'insighter'"></app-activate-account>
+    <app-activate-account *ngIf="!isActive && isPrimaryKey" [role]="hasRole(['company']) || hasRole(['company-insighter']) ? 'company' : 'insighter'"></app-activate-account>
 
     <!-- Transfer Account Section -->
     <div class="mt-5 border border-1 border-gray-300 rounded-2 mb-10" *ngIf="hasRole(['company']) && isActive">
@@ -26,7 +26,7 @@
     </div>
 
     <!-- Deactivate Account Section -->
-    <div class="delete-section border-1 border-light-danger w-100 mb-10" *ngIf="(hasRole(['company']) || hasRole(['insighter'])) && isActive">
+    <div class="delete-section border-1 border-light-danger w-100 mb-10" *ngIf="(hasRole(['company']) ||  hasRole(['company-insighter']) || hasRole(['insighter'])) && isActive">
         <div class="p-24px">
             <div class="fs-2 fw-bolder">
                 <ng-container *ngIf="hasRole(['company'])">
@@ -45,7 +45,7 @@
       
         <div class="action-footer bg-light-danger">
             <button class="btn btn-sm btn-danger" (click)="showDeactivateDialog()">
-                <ng-container *ngIf="hasRole(['company'])">
+                <ng-container *ngIf="hasRole(['company']) || hasRole(['company-insighter'])">
                     {{ 'DEACTIVATE_ACCOUNT.BUTTON_TEXT_COMPANY' | translate }}
                 </ng-container>
                 <ng-container *ngIf="hasRole(['insighter'])">

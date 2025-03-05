@@ -339,7 +339,7 @@ export const locale = {
       CORPORATE_ACCOUNT_DESC: "إنشاء حساب تجاري لإدارة المستخدمين",
       INSIGHTER_INFO: "معلومات Insighter",
       CONSULTING_FIELDS: "مجالات الاستشارات",
-      CONSULTING_FIELDS_REQUIRED: "مجالات الاستشارات مطلوبة",
+      CONSULTING_FIELDS_REQUIRED: "مجالات الاستشارة مطلوبة",
       ABOUT_YOU: "معلومات عنك",
       PHONE_NUMBER: "رقم الهاتف",
       PHONE_NUMBER_OPTIONAL: "(اختياري)",
@@ -822,6 +822,19 @@ export const locale = {
     SCHEDULE: 'جدولة',
     UNPUBLISH: 'إلغاء النشر'
   },
+  "JOIN_COMPANY": {
+    "TITLE": "انضم إلى شركتك",
+    "DESCRIPTION": "أدخل رمز الدعوة المكون من 6 أرقام المقدّم من شركتك",
+    "INVITATION_CODE_LABEL": "رمز الدعوة",
+    "INVITATION_CODE_PLACEHOLDER": "أدخل رمز مكوّن من 6 أرقام",
+    "INVITATION_CODE_REQUIRED": "رمز الدعوة مطلوب",
+    "INVITATION_CODE_LENGTH": "يجب أن يتكون رمز الدعوة من 6 أرقام",
+    "INVITATION_CODE_NUMERIC": "يجب أن يحتوي رمز الدعوة على أرقام فقط",
+    "JOIN_BUTTON": "انضم إلى الشركة",
+    "NO_INVITATION_QUESTION": "ليس لديك رمز دعوة؟",
+    "RETURN_TO_DASHBOARD": "العودة إلى لوحة التحكم"
+  }
   },
-
+  
 };
+
