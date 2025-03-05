@@ -12,16 +12,42 @@
       <div class="header-menu">
         <p-menubar [model]="items" [style]="{'border': 'none', 'background': 'transparent'}">
           <ng-template pTemplate="item" let-item>
-       <a [href]="item.routerLink">
-        <div class="d-flex align-items-center py-3 mx-4">
-          <app-keenicon [name]="item.iconName" [type]="item.iconType || 'duotone'" class="fs-5 mx-2" [class]="item.iconClass"></app-keenicon>
-          <span>{{ item.label }}</span>
-        </div>
-       </a>
+            <a [href]="item.routerLink">
+              <div class="d-flex align-items-center py-3 mx-4">
+                <app-keenicon [name]="item.iconName" [type]="item.iconType || 'duotone'" class="fs-5 mx-2" [class]="item.iconClass"></app-keenicon>
+                <span>{{ item.label }}</span>
+              </div>
+            </a>
           </ng-template>
         </p-menubar>
       </div>
       <div class="header-actions">
+        <!-- Notification bell -->
+        <div class="app-navbar-item position-relative notification-item">
+          <div
+            class="btn btn-icon btn-custom btn-icon-muted btn-active-light btn-active-color-primary w-35px h-35px w-md-40px h-md-40px cursor-pointer notification-toggle"
+            (click)="toggleNotifications($event)"
+          >
+            <i class="ki-outline ki-notification-on fs-1"></i>
+            <div
+              *ngIf="notificationCount > 0"
+              class="badge badge-circle badge-danger position-absolute translate-middle bottom-0 ms-10 mt-7 h-15px w-15px fs-9"
+            >
+              {{ notificationCount }}
+            </div>  
+          </div>
+          <div class="position-relative">
+            <app-notifications-inner 
+              *ngIf="isNotificationsOpen"
+              [parent]="'client'"
+              (notificationClicked)="handleNotificationClick($event)" 
+              [notifications]="notifications"
+              (clickOutside)="closeNotifications()"
+              class="notification-dropdown"
+            ></app-notifications-inner>
+          </div>
+        </div>
+
         <!-- User dropdown toggle -->
         <div class="user-dropdown-container">
           <a  class="user-dropdown-toggle" (click)="toggleUserDropdown($event)" #userDropdownToggle>
@@ -61,6 +87,22 @@
       </div>
     </div>
     <div class="mobile-header-right">
+      <!-- Mobile Notification bell -->
+      <div class="app-navbar-item position-relative mobile-notification-item">
+        <div
+          class="btn btn-icon btn-custom btn-icon-muted btn-active-light btn-active-color-primary w-30px h-30px cursor-pointer notification-toggle"
+          (click)="toggleNotifications($event)"
+        >
+          <i class="ki-outline ki-notification-on fs-2"></i>
+          <div
+            *ngIf="notificationCount > 0"
+            class="badge badge-circle badge-danger position-absolute translate-middle bottom-0 ms-10 mt-7 h-15px w-15px fs-9"
+          >
+            {{ notificationCount }}
+          </div>  
+        </div>
+      </div>
+
       <!-- Mobile User dropdown toggle -->
       <div class="mobile-user-dropdown-container">
         <a class="mobile-user-dropdown-toggle" (click)="toggleMobileUserDropdown($event)" #mobileUserDropdown>
@@ -79,6 +121,17 @@
       </div>
     </div>
   </div>
+</div>
+
+<!-- Notifications dropdown for mobile -->
+<div class="mobile-notifications-container" *ngIf="isNotificationsOpen && isSmallScreen">
+  <app-notifications-inner 
+    [parent]="'client'"
+    (notificationClicked)="handleNotificationClick($event)" 
+    [notifications]="notifications"
+    (clickOutside)="closeNotifications()"
+    class="notification-dropdown"
+  ></app-notifications-inner>
 </div>
 
 <!-- Mobile Sidebar -->

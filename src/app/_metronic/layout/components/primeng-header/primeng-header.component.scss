@@ -464,6 +464,28 @@ app-user-inner {
   }
 }
 
+/* Add Knowledge menu item styling */
+:host ::ng-deep .add-knowledge-item {
+  span {
+    color: var(--kt-info);
+    font-weight: 600;
+    transition: color 0.3s ease;
+  }
+
+  &:hover {
+    span {
+      color: var(--kt-info-active);
+    }
+    .ki {
+      transform: scale(1.1);
+    }
+  }
+
+  .ki {
+    transition: transform 0.2s ease;
+  }
+}
+
 /* Sidebar User Profile */
 .sidebar-user-profile {
   display: flex;
@@ -503,5 +525,41 @@ app-user-inner {
 :host ::ng-deep {
   .p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-link {
     padding: 0.75rem 1rem;
+  }
+}
+
+/* Notification Styles */
+.notification-item {
+  margin-right: 1rem;
+}
+
+.notification-toggle {
+  position: relative;
+}
+
+.mobile-notification-item {
+  margin-right: 0.5rem;
+}
+
+.mobile-notifications-container {
+  position: fixed;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1060;
+  width: 90%;
+  max-width: 350px;
+}
+
+/* RTL Support for notifications */
+:host-context([dir="rtl"]) {
+  .notification-item {
+    margin-right: 0;
+    margin-left: 1rem;
+  }
+  
+  .mobile-notification-item {
+    margin-right: 0;
+    margin-left: 0.5rem;
   }
 }

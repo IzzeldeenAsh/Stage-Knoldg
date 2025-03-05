@@ -7,6 +7,7 @@ export const locale = {
       "TITLE": "Profile Completion",
       "DESCRIPTION": "Complete your profile to unlock all features and get the most out of your account."
     },
+    
     "MY_COMPANY": {
       "TITLE": "My Company",
       "SUBTITLE": "Manage your company employees",
@@ -580,7 +581,8 @@ Your wealth of knowledge is valued and many are eager to learn from it.
         "MY_REQUESTS": "My Requests",
         "MY_KNOWLEDGE": "My Knowledge",
         "ACCOUNT_SETTINGS": "Account Settings",
-        "MY_COMPANY": "My Company"
+        "MY_COMPANY": "My Company",
+        "INVITING": "Inviting"
       },
       REQUESTS: {
         APPROVED: "Approved Requests",
@@ -867,6 +869,18 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       MAKE_AVAILABLE: 'Make Available Standalone & in Package',
       SCHEDULE: 'Schedule',
       UNPUBLISH: 'Unpublish'
+    },
+    "JOIN_COMPANY": {
+      "TITLE": "Join Your Company",
+      "DESCRIPTION": "Enter the 6-digit invitation code provided by your company",
+      "INVITATION_CODE_LABEL": "Invitation Code",
+      "INVITATION_CODE_PLACEHOLDER": "Enter 6-digit code",
+      "INVITATION_CODE_REQUIRED": "Invitation code is required",
+      "INVITATION_CODE_LENGTH": "Invitation code must be 6 digits",
+      "INVITATION_CODE_NUMERIC": "Invitation code must contain only numbers",
+      "JOIN_BUTTON": "Join Company",
+      "NO_INVITATION_QUESTION": "Don't have an invitation code?",
+      "RETURN_TO_DASHBOARD": "Return to Dashboard"
     },
   }
   

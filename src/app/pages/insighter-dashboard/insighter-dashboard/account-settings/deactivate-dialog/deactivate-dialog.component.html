@@ -4,7 +4,7 @@
     <div class="card-body">
       <div class="mb-5">
         <h2 class="text-xl font-bold mb-3">
-          <ng-container *ngIf="hasRole(['company'])">
+          <ng-container *ngIf="hasRole(['company']) || hasRole(['company-insighter'])">
             {{ 'DEACTIVATE_ACCOUNT.MODAL.TITLE_COMPANY' | translate }}
           </ng-container>
           <ng-container *ngIf="hasRole(['insighter'])">
@@ -12,7 +12,7 @@
           </ng-container>
         </h2>
         <p class="text-gray-600">
-          <ng-container *ngIf="hasRole(['company'])">
+          <ng-container *ngIf="hasRole(['company']) || hasRole(['company-insighter'])">
             {{ 'DEACTIVATE_ACCOUNT.MODAL.DESCRIPTION_COMPANY' | translate }}
           </ng-container>
           <ng-container *ngIf="hasRole(['insighter'])">
@@ -46,7 +46,7 @@
           (click)="deactivateAccount()"
         >
           <ng-container *ngIf="!isLoading">
-            <ng-container *ngIf="hasRole(['company'])">
+            <ng-container *ngIf="hasRole(['company']) || hasRole(['company-insighter'])">
               {{ 'DEACTIVATE_ACCOUNT.MODAL.CONFIRM_BUTTON_COMPANY' | translate }}
             </ng-container>
             <ng-container *ngIf="hasRole(['insighter'])">
