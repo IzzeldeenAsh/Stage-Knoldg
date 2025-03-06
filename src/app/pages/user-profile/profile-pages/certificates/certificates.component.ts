@@ -128,6 +128,7 @@ export class CertificatesComponent extends BaseComponent implements OnInit {
     this.displayAddCertDialog = true;
     this.selectedDocType = '';
     this.selectedFile = null;
+    this.isUploading = false; // Reset loading state when opening dialog
   }
 
   onFileSelect(event: any) {
@@ -177,6 +178,7 @@ export class CertificatesComponent extends BaseComponent implements OnInit {
           summary: 'Error',
           detail: 'Failed to upload certificate'
         });
+        this.isUploading = false; // Reset loading state on error
       },
       complete: () => {
         this.isUploading = false;

@@ -28,7 +28,7 @@
         <ng-template #companyName>
           {{_user.company?.legal_name}} 
         </ng-template>
-          <ng-container *ngIf="_user.roles.includes('client') && !_user.roles.includes('insighter') && !_user.roles.includes('company')">
+          <ng-container *ngIf="_user.roles.includes('client') && !_user.roles.includes('insighter') && !_user.roles.includes('company') && !_user.roles.includes('company-insighter')">
             <span class="badge badge-light-success fw-bolder fs-8 px-2 py-1 mx-2">
               {{ 'HOME.CLIENT' | translate }}
             </span>
@@ -43,7 +43,11 @@
               {{ 'HOME.COMPANY' | translate }}
             </span>
             </ng-container>
-       
+            <ng-container *ngIf="!_user.roles.includes('insighter') && _user.roles.includes('company-insighter')">
+              <span class="badge badge-light-warning fw-bolder fs-8 px-2 py-1 mx-2">
+              {{ 'HOME.COMPANY_INSIGHTER' | translate }}
+            </span>
+            </ng-container>
         </div>
         <a class="fw-bold text-muted text-hover-primary fs-7 cursor-pointer">
           {{ _user.email }}
@@ -70,9 +74,9 @@
     data-kt-menu-placement="left-start"
     data-kt-menu-flip="bottom"
     data-submenu-id="insighterDashboard"
-    *ngIf="_user.roles.includes('insighter') || _user.roles.includes('company')"
+    *ngIf="_user.roles.includes('insighter') || _user.roles.includes('company') || _user.roles.includes('company-insighter')"
   >
-    <a class="menu-link px-5 cursor-pointer">
+    <a routerLink="/app/insighter-dashboard/my-dashboard" class="menu-link px-5 cursor-pointer">
       <span class="menu-title">{{ 'HOME.INSIGHTER_DASHBOARD' | translate }}</span>
       <span class="menu-arrow"></span>
     </a>
@@ -104,7 +108,7 @@
     </div>
   </div>
 
-  <div class="menu-item px-5" *ngIf="_user.roles.includes('insighter') || _user.roles.includes('company')">
+  <div class="menu-item px-5" *ngIf="_user.roles.includes('insighter') || _user.roles.includes('company') || _user.roles.includes('company-insighter')">
     <a [routerLink]="'/app/add-knowledge/stepper'" class="menu-link px-5 text-info">
       {{ 'KNOWLEDGE.ADD_KNOWLEDGE' | translate }}
       <i class="ki-duotone ki-plus fs-5 me-2 text-info"><span class="path1"></span><span class="path2"></span></i>
@@ -131,7 +135,7 @@
         </a>
       </div>
 
-      <div class="menu-item px-3" *ngIf="_user.roles.includes('company')">
+      <div class="menu-item px-3" *ngIf="_user.roles.includes('company') || _user.roles.includes('company-insighter')">
         <a class="menu-link px-5 cursor-pointer" placement="top-start" [routerLink]="'/app/profile/settings/company-settings'">
           {{ 'ACCOUNT_SETTINGS.COMPANY_INFO' | translate }}
         </a>
@@ -142,7 +146,7 @@
           {{ 'ACCOUNT_SETTINGS.RESET_PASSWORD' | translate }}
         </a>
       </div>
-      <div class="menu-item px-3" *ngIf="_user.roles.includes('company') || _user.roles.includes('insighter')">
+      <div class="menu-item px-3" *ngIf="_user.roles.includes('company') || _user.roles.includes('insighter') || _user.roles.includes('company-insighter')">
         <a class="menu-link px-5 cursor-pointer" placement="top-start" [routerLink]="'/app/insighter-dashboard/account-settings/general-settings'">
             {{ 'ACCOUNT_SETTINGS.SETTINGS' | translate }}
         </a>
@@ -151,9 +155,9 @@
     </div>
   </div>
 
-  <div class="menu-item px-5" *ngIf="_user.roles.includes('client') && !_user.roles.includes('insighter') && !_user.roles.includes('company')">
+  <div class="menu-item px-5" *ngIf="_user.roles.includes('client') && !_user.roles.includes('insighter') && !_user.roles.includes('company') && !_user.roles.includes('company-insighter')">
     <a [routerLink]="'/app/insighter-register/vertical'" class="menu-link px-5 fw-boldest gradient-text-insighter">
-      Become an Insighter
+      {{ 'HOME.BECOME_INSIGHTER' | translate }}
     </a>
   </div>
 

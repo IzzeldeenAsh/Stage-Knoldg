@@ -57,6 +57,8 @@ export const locale = {
     },
     HOME: {
       INSIGHTER_DASHBOARD: 'لوحة التحكم',
+      COMPANY_INSIGHTER: 'شركة insighter',
+      BECOME_INSIGHTER: 'كن insighter',
       LATEST_INSIGHTS: "أحدث الرؤى",
       TRENDING: "الشائع",
       REGION_PLACEHOLDER: "المنطقة",

@@ -37,7 +37,7 @@ const routes: Routes = [
       path:'certificates',
       component:CertificatesComponent,
       canActivate:[RolesGuard],
-      data: { roles: ['insighter', 'company'] } 
+      data: { roles: ['insighter', 'company', 'company-insighter'] } 
     },
     {
       path: 'settings',
@@ -57,7 +57,7 @@ const routes: Routes = [
           path:'company-settings',
           component:CompanySettingsComponent,
           canActivate:[RolesGuard],
-          data: { roles: ['company'] } 
+          data: { roles: ['company', 'company-insighter'] } 
         },
         {
           path:'reset-password',

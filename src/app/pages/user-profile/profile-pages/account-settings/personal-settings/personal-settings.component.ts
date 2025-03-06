@@ -277,7 +277,7 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
         formData.append("phone", this.profile.phone);
       }
 
-      if(this.profile.roles.includes('insighter')){
+      if(this.profile.roles.includes('insighter') ){
            // Handle industries
       const industries = form.get('industries')?.value || [];
       
@@ -375,7 +375,8 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
   private isClientOnly(): boolean {
     return this.hasRole(["client"]) && 
            !this.hasRole(["company"]) && 
-           !this.hasRole(["insighter"]);
+           !this.hasRole(["insighter"]) && 
+           !this.hasRole(["company-insighter"]);
   }
 
   private submitSocialNetworks() {

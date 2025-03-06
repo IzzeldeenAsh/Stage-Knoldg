@@ -13,10 +13,10 @@ export class NavigationTabsComponent implements OnInit, OnChanges {
   roles: string[] = [];
   filteredTabs:any;
   tabs = [
-    { labelen: 'Overview', labelar: 'ملخص', link: '/app/profile/overview', activeInfo: true, activePrimary: false, roles: ['client', 'insighter', 'company'] },
-    { labelen: 'Certificates', labelar: 'شهاداتي', link: '/app/profile/certificates', activeInfo: false, activePrimary: true, roles: ['insighter', 'company'] },
+    { labelen: 'Overview', labelar: 'ملخص', link: '/app/profile/overview', activeInfo: true, activePrimary: false, roles: ['client', 'insighter', 'company', 'company-insighter'] },
+    { labelen: 'Certificates', labelar: 'شهاداتي', link: '/app/profile/certificates', activeInfo: false, activePrimary: true, roles: ['insighter', 'company', 'company-insighter'] },
     { labelen: 'Documents', labelar: 'وثائقي', link: '/app/profile/documents', activeInfo: false, activePrimary: true, roles: ['company'] },
-    { labelen: 'Settings', labelar: 'الإعدادات', link: '/app/profile/settings', activeInfo: false, activePrimary: true, roles: ['client', 'insighter', 'company'] },
+    { labelen: 'Settings', labelar: 'الإعدادات', link: '/app/profile/settings', activeInfo: false, activePrimary: true, roles: ['client', 'insighter', 'company', 'company-insighter'] },
   ];
 
   constructor(private translationService: TranslationService) {}

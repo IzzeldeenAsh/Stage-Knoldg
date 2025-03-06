@@ -69,7 +69,8 @@
      header="Add Certificate" 
      [modal]="true"
      [draggable]="false"
-     [resizable]="false">
+     [resizable]="false"
+     (onHide)="isUploading = false">
      
      <div class="p-fluid">
        <div class="field mb-4">

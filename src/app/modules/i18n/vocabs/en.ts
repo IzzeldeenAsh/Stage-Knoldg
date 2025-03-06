@@ -60,6 +60,8 @@ export const locale = {
       COURSES: 'Courses'
     },
     HOME: {
+      COMPANY_INSIGHTER: 'Company Insighter',
+      BECOME_INSIGHTER: 'Become an Insighter',
       INSIGHTER_DASHBOARD: 'Dashboard',
       LATEST_INSIGHTS: 'Latest Insights',
       TRENDING: 'Trending',
