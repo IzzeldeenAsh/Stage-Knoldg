@@ -4,7 +4,7 @@
       class="stepper stepper-links d-flex flex-column pt-15"
       id="kt_create_account_stepper"
     >
-      <div class="stepper-nav mb-5">
+      <!-- <div class="stepper-nav mb-5">
         <div
           class="stepper-item"
           [ngClass]="{
@@ -103,22 +103,40 @@
           </div>
           <h3 class="stepper-title fs-6">{{ "COMPLETED" | translate }}</h3>
         </div>
-      </div>
+      </div> -->
 
       <form
         class="mx-auto mw-700px w-100 pt-5 pb-10 padding-responsive"
         noValidate
         id="kt_create_account_form"
       >
+        <!-- Fancy Under Development Banner -->
+        <div class="position-relative mb-8">
+          <div class="d-flex align-items-center justify-content-center bg-light-warning rounded p-5 position-relative overflow-hidden">
+            <div class="position-absolute start-0 top-0 w-100 h-100" style="background: repeating-linear-gradient(45deg, rgba(255,193,7,0.1), rgba(255,193,7,0.1) 10px, rgba(255,193,7,0.2) 10px, rgba(255,193,7,0.2) 20px);"></div>
+            <div class="position-relative d-flex align-items-center">
+              <i class="ki-duotone ki-construction fs-2x me-3 text-warning">
+                <span class="path1"></span>
+                <span class="path2"></span>
+                <span class="path3"></span>
+              </i>
+              <div>
+                <h3 class="fs-3 fw-bold mb-1 text-dark">Under Development</h3>
+                <p class="mb-0 text-gray-700">This feature is currently being built. Stay tuned for updates!</p>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="current">
           <ng-container *ngIf="currentStep$.value === 1">
-            <app-step1
+            <!-- <app-step1
               class="w-100"
               [updateParentModel]="updateAccount"
               [defaultValues]="account$.value"
               [knowledgeId]="knowledgeId"
               (goToNextStep)="nextStep()"
-            ></app-step1>
+            ></app-step1> -->
+            
           </ng-container>
 
           <ng-container *ngIf="currentStep$.value === 2">
@@ -183,7 +201,7 @@
           </ng-container>
         </div>
 
-        <div class="d-flex flex-stack pt-15">
+        <!-- <div class="d-flex flex-stack pt-15">
           <div class="mr-2">
             <ng-container
               *ngIf="currentStep$.value !== 1 && currentStep$.value !== 6"
@@ -202,15 +220,6 @@
                </div>
               </button>
             </ng-container>
-            <!-- <ng-container *ngIf="currentStep$.value === 6">
-              <button
-                type="button"
-                class="btn btn-lg btn-primary me-3"
-                routerLink="/app/insighter-dashboard/my-knowledge/general"
-              >
-                {{ "VIEW_LIBRARY" | translate }}
-              </button>
-            </ng-container> -->
           </div>
 
           <ng-container *ngIf="currentStep$.value !== formsCount">
@@ -245,7 +254,7 @@
               </button>
             </div>
           </ng-container>
-        </div>
+        </div> -->
       </form>
     </div>
   </div>

@@ -30,7 +30,7 @@ const Routing: Routes = [
     path: 'add-knowledge',
     loadChildren: () => import('./add-knowledge/wizards.module').then((m) => m.WizardsModule),
     canActivate:[authGuard,RolesGuard],
-    data: { roles: [ 'insighter','company'] }
+    data: { roles: [ 'insighter','company','company-insighter'] }
   },
   {
     path: 'edit-knowledge',
@@ -42,7 +42,7 @@ const Routing: Routes = [
     path: 'insighter-dashboard',
     loadChildren: () => import('./insighter-dashboard/insighter-dashboard.module').then((m) => m.InsighterDashboardModule),
     canActivate:[authGuard,RolesGuard],
-    data: { roles: [ 'insighter','company'] } 
+    data: { roles: [ 'insighter','company','company-insighter'] } 
   },
   {
     path: 'knowledge-detail',

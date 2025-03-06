@@ -3,7 +3,7 @@
     <app-activate-account *ngIf="!isActive && isPrimaryKey" [role]="hasRole(['company']) || hasRole(['company-insighter']) ? 'company' : 'insighter'"></app-activate-account>
 
     <!-- Transfer Account Section -->
-    <div class="mt-5 border border-1 border-gray-300 rounded-2 mb-10" *ngIf="hasRole(['company']) && isActive">
+    <div class="mt-5 border border-1 border-gray-300 rounded-2 mb-10" *ngIf="(hasRole(['company']) || hasRole(['company-insighter'])) && isActive">
         <div class="col-12">
             <div class="action-section border-1 border-light w-100">
                 <div class="p-24px">
@@ -29,7 +29,7 @@
     <div class="delete-section border-1 border-light-danger w-100 mb-10" *ngIf="(hasRole(['company']) ||  hasRole(['company-insighter']) || hasRole(['insighter'])) && isActive">
         <div class="p-24px">
             <div class="fs-2 fw-bolder">
-                <ng-container *ngIf="hasRole(['company'])">
+                <ng-container *ngIf="hasRole(['company']) || hasRole(['company-insighter'])">
                     {{ 'DEACTIVATE_ACCOUNT.TITLE_COMPANY' | translate }}
                 </ng-container>
                 <ng-container *ngIf="hasRole(['insighter'])">

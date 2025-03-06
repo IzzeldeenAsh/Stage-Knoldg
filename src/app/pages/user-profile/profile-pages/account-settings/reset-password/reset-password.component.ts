@@ -19,6 +19,29 @@ export class ResetPasswordComponent extends BaseComponent implements OnDestroy {
   _oldPassword = signal('');
   _newPassword = signal('');
   _confirmPassword = signal('');
+  
+  // Password visibility toggles
+  showOldPassword = signal(false);
+  showNewPassword = signal(false);
+  showConfirmPassword = signal(false);
+  
+  // RTL direction check
+  isRtl(): boolean {
+    return this.lang === 'ar';
+  }
+  
+  // Toggle password visibility functions
+  toggleOldPasswordVisibility() {
+    this.showOldPassword.update(value => !value);
+  }
+  
+  toggleNewPasswordVisibility() {
+    this.showNewPassword.update(value => !value);
+  }
+  
+  toggleConfirmPasswordVisibility() {
+    this.showConfirmPassword.update(value => !value);
+  }
 
   // Getter and Setter for oldPassword
   get oldPassword(): string {
@@ -115,6 +138,9 @@ export class ResetPasswordComponent extends BaseComponent implements OnDestroy {
     this._oldPassword.set('');
     this._newPassword.set('');
     this._confirmPassword.set('');
+    this.showOldPassword.set(false);
+    this.showNewPassword.set(false);
+    this.showConfirmPassword.set(false);
   }
 
   editPassword() {
