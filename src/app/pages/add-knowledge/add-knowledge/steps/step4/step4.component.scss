@@ -1,0 +1,117 @@
+// Step 4 Component Styles
+
+.chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  background-color: #f1f3f5;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  position: relative;
+  min-height: 36px;
+}
+
+.chip:hover {
+  background-color: #e9ecef;
+}
+
+.chip.selected {
+  background-color: #e1f5fe;
+  border-color: #0dcaf0;
+  color: #0dcaf0;
+  padding-left: 2rem;
+}
+
+.check-icon {
+  position: absolute;
+  left: 0.5rem;
+  color: #0dcaf0;
+}
+
+:host ::ng-deep {
+  tag-input {
+    .ng2-tag-input {
+      border-bottom: 1px solid #e4e6ef !important;
+      padding: 0.75rem 1rem !important;
+      border-radius: 0.475rem !important;
+      background-color: #f5f8fa !important;
+      border: 1px solid #e4e6ef !important;
+      
+      &.ng2-tag-input--focused {
+        border-color: #c3e2fd !important;
+        box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25) !important;
+        background-color: #ffffff !important;
+      }
+    }
+    
+    .ng2-tag-input__text-input {
+      height: 32px !important;
+    }
+    
+    .ng2-tags-container {
+      .ng2-tag {
+        background-color: #e1f5fe !important;
+        color: #0dcaf0 !important;
+        border-radius: 0.475rem !important;
+        
+        .ng2-tag__remove-button {
+          color: #0dcaf0 !important;
+        }
+      }
+    }
+  }
+}
+
+// Form field styles
+.form-field {
+  margin-bottom: 1.5rem;
+}
+
+.form-field-label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.info-icon {
+  margin-left: 0.5rem;
+  color: #6c757d;
+  font-size: 0.875rem;
+}
+
+.topic-field {
+  margin-top: 1.5rem;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Target market option styles
+.market-option {
+  margin-bottom: 0.5rem;
+  
+  &.selected {
+    border-color: #0dcaf0 !important;
+    background-color: #e1f5fe !important;
+  }
+} 

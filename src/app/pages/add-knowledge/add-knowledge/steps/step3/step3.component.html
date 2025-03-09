@@ -1,0 +1,56 @@
+<div class="pb-10 pb-lg-12">
+  <h2 class="fw-bolder text-gray-900">
+    {{ "KNOWLEDGE_DOCUMENTS_INFO" | translate }}
+  </h2>
+  <div class="text-gray-500 fw-bold fs-6">
+    {{ "DESCRIBE_KNOWLEDGE_AND_DOCUMENTS" | translate }}
+    <a class="link-primary fw-bolder">{{ "HELP_PAGE" | translate }}</a>.
+  </div>
+</div>
+
+<div [formGroup]="form">
+  <div class="mb-10">
+    <label class="form-label required">{{ "KNOWLEDGE_DESCRIPTION" | translate }}</label>
+    <textarea 
+      class="form-control form-control-lg"
+      formControlName="description"
+      rows="4"
+      placeholder="{{ 'ENTER_KNOWLEDGE_DESCRIPTION' | translate }}"
+    ></textarea>
+    <div class="form-text">{{ "DESCRIPTION_HELP_TEXT" | translate }}</div>
+  </div>
+
+  <div *ngIf="isLoading" class="d-flex justify-content-center my-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">{{ "LOADING" | translate }}</span>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && documents.length > 0">
+    <div class="fs-4 fw-bold mb-4">{{ "DOCUMENT_DESCRIPTIONS" | translate }}</div>
+    <div class="card mb-4" *ngFor="let doc of documents">
+      <div class="card-body">
+        <div class="d-flex align-items-center mb-3">
+          <div class="fs-5 fw-bold">
+            <i class="fas fa-file me-2"></i> {{ doc.file_name }}
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">{{ "DOCUMENT_DESCRIPTION" | translate }}</label>
+          <textarea 
+            class="form-control"
+            rows="3"
+            [value]="doc.description || ''"
+            (input)="updateDocumentDescription(doc.id, descInput.value)"
+            #descInput
+            placeholder="{{ 'ENTER_DOCUMENT_DESCRIPTION' | translate }}"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && documents.length === 0" class="alert alert-info">
+    {{ "NO_DOCUMENTS_UPLOADED" | translate }}
+  </div>
+</div> 

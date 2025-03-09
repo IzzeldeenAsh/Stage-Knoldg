@@ -1,0 +1,144 @@
+<form [formGroup]="documentsForm">
+    <div formArrayName="documents">
+        <div *ngFor="let doc of documentControls.controls; let i = index" [formGroupName]="i" class="form-group mb-6" [@fadeInMoveY]>
+            <div class="form-group row mb-2">
+                   <!-- File Upload/Preview -->
+                   <div class="col-md-1">
+                    <label class="form-label required">{{ 'UPLOAD' | translate }}</label>
+                    <div class="d-flex align-items-center">
+                        <input type="file" 
+                               [id]="'fileInput' + i" 
+                               (change)="onFileSelected($event, i)" 
+                               accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt"
+                               style="display: none" />
+                               <ng-container *ngIf="!doc.get('filePreview')?.value">
+                            <button  
+                            type="button" 
+                            class="btn actions-btn bg-light-info" 
+                            style="padding: 11px !important;"  
+                            (click)="triggerFileInput(i)">
+                            <svg width="29" height="22" viewBox="0 0 29 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <g clip-path="url(#clip0_497_132)">
+                                <path d="M21.3967 6.57925C20.8632 6.73466 20.3471 6.96934 19.8339 7.27044C19.3097 7.57807 18.7933 7.95458 18.2679 8.38663L17.1436 7.09342C18.0907 6.21048 19.0234 5.58855 19.9251 5.18765C19.1854 3.91445 18.1388 2.99654 16.9561 2.42693C15.7475 1.84474 14.3936 1.62109 13.0759 1.74898C11.7662 1.87602 10.4953 2.35283 9.4439 3.17202C8.2289 4.11859 7.3043 5.53311 6.94979 7.40668L6.83883 7.9929L6.25713 8.09532C4.67159 8.37446 3.46571 9.16398 2.69676 10.1866C2.28974 10.7278 2.00416 11.333 1.8489 11.9602C1.69439 12.5845 1.66805 13.2339 1.7785 13.8666C1.9649 14.9337 2.54836 15.9556 3.57225 16.7315C3.88191 16.9663 4.21659 17.1699 4.58533 17.3275C4.93735 17.478 5.32262 17.5897 5.74974 17.6508H10.1823V19.3707H5.71751L5.61041 19.3606C4.98175 19.2803 4.42197 19.1226 3.91606 18.9063C3.40663 18.6885 2.95379 18.4144 2.54173 18.1021C1.1473 17.0454 0.350192 15.6389 0.092194 14.1622C-0.0589798 13.2964 -0.0226166 12.4069 0.189333 11.5504C0.400602 10.6968 0.785419 9.87837 1.3316 9.15203C2.25105 7.92904 3.62561 6.96195 5.39483 6.52255C5.90539 4.48088 6.99771 2.90749 8.40001 1.81495C9.71034 0.793997 11.29 0.200216 12.9152 0.0425296C14.5324 -0.114417 16.199 0.162514 17.6922 0.881739C19.2836 1.64822 20.675 2.91158 21.5997 4.68116C22.3828 4.556 23.1313 4.59467 23.8324 4.76645C24.9008 5.0282 25.8428 5.59731 26.6198 6.36771C27.3765 7.11793 27.9789 8.06211 28.3879 9.09727C29.3403 11.507 29.2494 14.4413 27.6311 16.6032C27.1044 17.3066 26.4274 17.8798 25.6163 18.3357C24.8341 18.7756 23.9237 19.1087 22.9005 19.3472L22.7097 19.3707H18.9518V17.6508H22.618C23.4393 17.452 24.1641 17.1838 24.7799 16.8377C25.3912 16.494 25.8911 16.0759 26.266 15.5753C27.5031 13.9225 27.5543 11.6323 26.802 9.72876C26.4792 8.91224 26.0091 8.17231 25.4221 7.59036C24.8552 7.02842 24.1813 6.61649 23.4309 6.43259C23.054 6.34019 22.6537 6.30476 22.2332 6.33564L21.3967 6.57925ZM11.6229 15.0889C11.3234 15.4524 10.7871 15.5032 10.4251 15.2025C10.0631 14.9018 10.0125 14.3633 10.312 13.9999L13.6903 9.90458C13.9898 9.5411 14.5262 9.49032 14.8881 9.79097C14.9464 9.83927 14.9979 9.89513 15.0415 9.95707L18.444 14.0672C18.7434 14.4288 18.6943 14.9658 18.3342 15.2665C17.974 15.5671 17.4392 15.5178 17.1397 15.1562L15.1976 12.8102L15.209 21.1482C15.209 21.6186 14.8291 22 14.3605 22C13.8919 22 13.512 21.6186 13.512 21.1482L13.5006 12.8128L11.6229 15.0889Z" fill="#149EFB"/>
+                                </g>
+                                <defs>
+                                <clipPath id="clip0_497_132">
+                                <rect width="29" height="22" fill="white"/>
+                                </clipPath>
+                                </defs>
+                            </svg>
+                            </button>
+                            </ng-container>
+                           
+                        
+                        <ng-container *ngIf="doc.get('filePreview')?.value">
+                            <div class="d-flex align-items-center justify-content-center w-100">
+                                <img [src]="doc.get('fileIcon')?.value" 
+                                     [alt]="doc.get('file_extension')?.value" 
+                                     style="width: 38px; height: 38px;"
+                                     (click)="triggerFileInput(i)"
+                                     class="cursor-pointer"
+                                     [ngbTooltip]="!doc.get('fromServer')?.value ? doc.get('file')?.value?.name : ''" />
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+
+                <!-- File Name -->
+                <div class="col-md-7">
+                 <div class="px-lg-4">
+                    <label class="form-label required">{{ 'FILE_NAME' | translate }}</label>
+                    <input formControlName="file_name" class="form-control" placeholder="{{ 'ENTER_FILE_NAME' | translate }}" />
+                    <div *ngIf="doc.get('file_name')?.invalid && doc.get('file_name')?.touched" class="text-danger small">
+                        <span *ngIf="doc.get('file_name')?.errors?.['required']">
+                            {{ 'FILE_NAME_REQUIRED' | translate }}
+                        </span>
+                        <span *ngIf="doc.get('file_name')?.errors?.['duplicateFileName']">
+                            {{ 'FILE_NAME_DUPLICATE' | translate }}
+                        </span>
+                    </div>
+                 </div>
+                </div>
+
+     
+            <!-- Price Column -->
+<div class="col-md-3" >
+    <label class="form-label required">{{ 'PRICE' | translate }}</label>
+    
+    <!-- Charity Toggle -->
+
+    
+    <!-- Price Input (shown only when NOT charity) -->
+    <div class="input-group" *ngIf="!doc.get('isCharity')?.value" style="direction: ltr !important;">
+      <span class="input-group-text">
+        <i class="ki-duotone ki-dollar fs-2">
+          <span class="path1"></span>
+          <span class="path2"></span>
+          <span class="path3"></span>
+        </i>
+      </span>
+      <input formControlName="price" type="number" min="0" class="form-control" placeholder="{{ 'ENTER_PRICE' | translate }}" />
+    </div>
+    
+    <!-- Free Price Display (when charity is toggled) -->
+    <div class="alert alert-success d-flex align-items-center p-2 mt-2" *ngIf="doc.get('isCharity')?.value">
+      <i class="ki-duotone ki-information-5 fs-2hx text-success me-2"></i>
+      <div class="d-flex flex-column ">
+        <small class="text-success py-1">{{ 'FREE_DOCUMENT' | translate }}</small>
+      </div>
+    </div>
+    
+    <!-- Price Validation Message -->
+    <div *ngIf="doc.get('price')?.invalid && doc.get('price')?.touched && !doc.get('isCharity')?.value" class="text-danger small">
+      {{ 'PRICE_REQUIRED' | translate }}
+    </div>
+  </div>
+  
+
+             
+                <!-- Delete Button -->
+                <div class="col-md-1" >
+                    <label class="form-label">&nbsp;</label>
+                    <button type="button" class="btn actions-btn btn-light-danger" [class.mt70]="lang==='ar'" style="padding: 11px !important;" (click)="removeDocument(i)">
+                        <i class="ki-duotone ki-trash fs-5 p-0">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                            <span class="path4"></span>
+                            <span class="path5"></span>
+                        </i>
+                    </button>
+                </div>
+            </div>
+           <div class="d-flex justify-content-end">
+            <div class="form-check form-switch form-check-custom form-check-solid mb-2">
+               
+                <label class="form-check-label" [for]="'isCharity' + i">
+                  <span class="badge badge-light-success mx-4">{{ 'CHARITY_MODE' | translate }}</span>
+                </label>
+                <input class="form-check-input h-2 w-2" 
+                type="checkbox" 
+                formControlName="isCharity" 
+                [id]="'isCharity' + i" />
+              </div>
+           </div>
+        </div>
+        <!-- Add Document Button -->
+        <div class="form-group d-flex justify-content-start mb-5">
+            <button type="button" class="btn btn-primary px-6" (click)="addDocument()">
+                <i class="ki-duotone ki-plus fs-2 me-1"></i>
+                <ng-container *ngIf="defaultValues?.knowledgeType === 'insight'">{{ 'ADD_DOCUMENT' | translate }}</ng-container>
+                <ng-container *ngIf="defaultValues?.knowledgeType === 'data'">{{ 'ADD_NODE' | translate }}</ng-container>
+                <ng-container *ngIf="defaultValues?.knowledgeType === 'report' || defaultValues?.knowledgeType === 'manual' || defaultValues?.knowledgeType === 'course'">{{ 'ADD_CHAPTER' | translate }}</ng-container>
+            </button>
+        </div>
+        <!-- Total Price -->
+        <div class="border-top border-gray-300 pt-4" >
+            <div class="d-flex justify-content-end align-items-center">
+                <div class="mx-2 fs-7 text-muted">{{ 'TOTAL_KNOWLEDGE_PRICE' | translate }}</div>
+                <div class="fs-1 text-gray-600 fw-bolder"> ${{ totalPrice.toFixed(2) }}</div>
+              </div>
+        
+        </div>
+    </div>
+</form>

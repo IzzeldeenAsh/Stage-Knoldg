@@ -1,0 +1,154 @@
+<div class="mb-5">
+  <h3 class="align-items-center mb-3">
+    {{ "PUBLISH_OPTIONS" | translate }}
+  </h3>
+  <div class="text-muted fs-6">
+    {{ "SELECT_PUBLISH_METHOD" | translate }}
+  </div>
+</div>
+<form [formGroup]="publishForm">
+  <div class="fv-row" >
+    <div class="row g-5">
+      <div class="col-lg-4" *ngFor="let option of publishOptions">
+        <input
+          formControlName="publishOption"
+          name="publishOption"
+          type="radio"
+          class="btn-check"
+          [id]="option.id"
+          [value]="option.value"
+        />
+        <label
+          [for]="option.id"
+          class="btn btn-outline btn-outline-dashed btn-outline-default border-dashed border-gray-300 p-5 d-flex align-items-center position-relative rounded-2 transition h-100"
+        >
+          <div class="d-flex align-items-center w-100">
+            <div class="mx-3">
+              <ng-container *ngIf="option.value === 'now'">
+                <span class="svg-icon svg-icon-info svg-icon-2x">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    width="24px"
+                    height="24px"
+                    viewBox="0 0 24 24"
+                    version="1.1"
+                  >
+                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                      <rect x="0" y="0" width="24" height="24" />
+                      <path
+                        d="M8,13.1668961 L20.4470385,11.9999863 L8,10.8330764 L8,5.77181995 C8,5.70108058 8.01501031,5.63114635 8.04403925,5.56663761 C8.15735832,5.31481744 8.45336217,5.20254012 8.70518234,5.31585919 L22.545552,11.5440255 C22.6569791,11.5941677 22.7461882,11.6833768 22.7963304,11.794804 C22.9096495,12.0466241 22.7973722,12.342628 22.545552,12.455947 L8.70518234,18.6841134 C8.64067359,18.7131423 8.57073936,18.7281526 8.5,18.7281526 C8.22385763,18.7281526 8,18.504295 8,18.2281526 L8,13.1668961 Z"
+                        fill="currentColor"
+                      />
+                      <path
+                        d="M4,16 L5,16 C5.55228475,16 6,16.4477153 6,17 C6,17.5522847 5.55228475,18 5,18 L4,18 C3.44771525,18 3,17.5522847 3,17 C3,16.4477153 3.44771525,16 4,16 Z M1,11 L5,11 C5.55228475,11 6,11.4477153 6,12 C6,12.5522847 5.55228475,13 5,13 L1,13 C0.44771525,13 6.76353751e-17,12.5522847 0,12 C-6.76353751e-17,11.4477153 0.44771525,11 1,11 Z M4,6 L5,6 C5.55228475,6 6,6.44771525 6,7 C6,7.55228475 5.55228475,8 5,8 L4,8 C3.44771525,8 3,7.55228475 3,7 C3,6.44771525 3.44771525,6 4,6 Z"
+                        fill="currentColor"
+                        opacity="0.3"
+                      />
+                    </g>
+                  </svg>
+                </span>
+              </ng-container>
+              <ng-container *ngIf="option.value === 'scheduled'">
+                <span class="svg-icon svg-icon-warning svg-icon-2x">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    width="24px"
+                    height="24px"
+                    viewBox="0 0 24 24"
+                    version="1.1"
+                  >
+                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                      <rect x="0" y="0" width="24" height="24" />
+                      <path
+                        d="M7.14319965,19.3575259 C7.67122143,19.7615175 8.25104409,20.1012165 8.87097532,20.3649307 L7.89205065,22.0604779 C7.61590828,22.5387706 7.00431787,22.7026457 6.52602525,22.4265033 C6.04773263,22.150361 5.88385747,21.5387706 6.15999985,21.0604779 L7.14319965,19.3575259 Z M15.1367085,20.3616573 C15.756345,20.0972995 16.3358198,19.7569961 16.8634386,19.3524415 L17.8320512,21.0301278 C18.1081936,21.5084204 17.9443184,22.1200108 17.4660258,22.3961532 C16.9877332,22.6722956 16.3761428,22.5084204 16.1000004,22.0301278 L15.1367085,20.3616573 Z"
+                        fill="currentColor"
+                      />
+                      <path
+                        d="M12,21 C7.581722,21 4,17.418278 4,13 C4,8.581722 7.581722,5 12,5 C16.418278,5 20,8.581722 20,13 C20,17.418278 16.418278,21 12,21 Z M19.068812,3.25407593 L20.8181344,5.00339833 C21.4039208,5.58918477 21.4039208,6.53893224 20.8181344,7.12471868 C20.2323479,7.71050512 19.2826005,7.71050512 18.696814,7.12471868 L16.9474916,5.37539627 C16.3617052,4.78960984 16.3617052,3.83986237 16.9474916,3.25407593 C17.5332781,2.66828949 18.4830255,2.66828949 19.068812,3.25407593 Z M5.29862906,2.88207799 C5.8844155,2.29629155 6.83416297,2.29629155 7.41994941,2.88207799 C8.00573585,3.46786443 8.00573585,4.4176119 7.41994941,5.00339833 L5.29862906,7.12471868 C4.71284263,7.71050512 3.76309516,7.71050512 3.17730872,7.12471868 C2.59152228,6.53893224 2.59152228,5.58918477 3.17730872,5.00339833 L5.29862906,2.88207799 Z"
+                        fill="currentColor"
+                        opacity="0.3"
+                      />
+                      <path
+                        d="M11.9630156,7.5 L12.0475062,7.5 C12.3043819,7.5 12.5194647,7.69464724 12.5450248,7.95024814 L13,12.5 L16.2480695,14.3560397 C16.403857,14.4450611 16.5,14.6107328 16.5,14.7901613 L16.5,15 C16.5,15.2109164 16.3290185,15.3818979 16.1181021,15.3818979 C16.0841582,15.3818979 16.0503659,15.3773725 16.0176181,15.3684413 L11.3986612,14.1087258 C11.1672824,14.0456225 11.0132986,13.8271186 11.0316926,13.5879956 L11.4644883,7.96165175 C11.4845267,7.70115317 11.7017474,7.5 11.9630156,7.5 Z"
+                        fill="currentColor"
+                      />
+                    </g>
+                  </svg>
+                </span>
+              </ng-container>
+              <ng-container *ngIf="option.value === 'draft'">
+                <span class="svg-icon svg-icon-success svg-icon-2x">
+                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                      <polygon points="0 0 24 0 24 24 0 24"/>
+                      <path d="M17,4 L6,4 C4.79111111,4 4,4.7 4,6 L4,18 C4,19.3 4.79111111,20 6,20 L18,20 C19.2,20 20,19.3 20,18 L20,7.20710678 C20,7.07449854 19.9473216,6.94732158 19.8535534,6.85355339 L17,4 Z M17,11 L7,11 L7,4 L17,4 L17,11 Z" fill="currentColor" fill-rule="nonzero"/>
+                      <rect fill="currentColor" opacity="0.3" x="12" y="4" width="3" height="5" rx="0.5"/>
+                    </g>
+                  </svg>
+                </span>
+              </ng-container>
+            </div>
+            <div class="d-flex flex-column">
+              <span class="text-gray-800 fw-bold d-block fs-7 text-inline-start mb-1">{{ option.label | translate }}</span>
+              <span class="text-gray-600 fs-8 text-inline-start">{{ option.description | translate }}</span>
+            </div>
+          </div>
+        </label>
+      </div>
+    </div>
+  
+    <div
+      class="fv-plugins-message-container invalid-feedback mt-2"
+      *ngIf="
+        publishForm.get('publishOption')?.invalid && publishForm.get('publishOption')?.touched
+      "
+    >
+      {{ "PUBLISH_OPTION_REQUIRED" | translate }}
+    </div>
+  </div>
+  
+  <!-- Scheduled Options -->
+  <div *ngIf="publishForm.get('publishOption')?.value === 'scheduled'" class="mt-8" style="direction: ltr !important;">
+    <div class="row g-5">
+      <div class="col-md-12">
+        <label class="form-label">{{ "SELECT_DATE_TIME" | translate }}</label>
+        <div class="p-calendar-container w-100">
+          <div class="input-group">
+             <div class="d-flex justify-content-center align-items-center mx-4 rounded-2" style="background-color: #F3F4F6;">
+                <app-keenicon name="calendar" class="fs-4 mx-3"></app-keenicon>
+             </div>
+            <p-calendar 
+              formControlName="publishDateTime"
+              [showTime]="true"
+              [showSeconds]="false"
+              [minDate]="minDate"
+              [dateFormat]="dateFormat"
+              [hourFormat]="timeFormat"
+              styleClass="w-100 p-calendar-custom"
+              inputStyleClass="form-control"
+              [showIcon]="false"
+              appendTo="body"
+              (onSelect)="onDateTimeChange()"
+              (onBlur)="onDateTimeChange()"
+              placeholder="{{ 'SELECT_DATE_AND_TIME' | translate }}"
+              required
+            ></p-calendar>
+          </div>
+        </div>
+        <div
+          class="text-danger fs-7 mt-2"
+          *ngIf="
+            publishForm.get('publishDateTime')?.invalid &&
+            publishForm.get('publishDateTime')?.touched
+          "
+        >
+          {{ "VALID_DATE_TIME_REQUIRED" | translate }}
+        </div>
+        <div class="error-message text-danger fs-7" *ngIf="timeError">{{ timeError }}</div>
+      </div>
+    </div>
+  </div>
+  
+</form>

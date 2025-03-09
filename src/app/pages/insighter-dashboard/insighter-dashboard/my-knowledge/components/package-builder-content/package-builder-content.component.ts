@@ -44,7 +44,7 @@ export class PackageBuilderContentComponent {
   filteredKnowledges(term: string): Knowledge[] {
     const lowerTerm = (term || '').toLowerCase();
     return this.allKnowledges.filter(
-      kn => kn.title.toLowerCase().includes(lowerTerm)
+      kn => kn.title && kn.title.toLowerCase().includes(lowerTerm)
     );
   }
 

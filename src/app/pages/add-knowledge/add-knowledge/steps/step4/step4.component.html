@@ -1,0 +1,397 @@
+<!-- Loading State -->
+<div *ngIf="isLoading" class="d-flex justify-content-center align-items-center min-h-300px">
+  <span class="spinner-border spinner-border-md align-middle mx-2 text-info"></span>
+</div>
+
+<!-- Content Section -->
+<div *ngIf="!isLoading">
+  <div class="pb-10 pb-lg-15">
+    <h2 class="fw-bolder text-gray-900">
+      {{ "VIEW_MY_KNOWLEDGE.KNOWLEDGE_DETAILS" | translate }}
+    </h2>
+    <div class="text-gray-500 fw-bold fs-6">
+      {{ "IF_NEED_MORE_INFO" | translate }}
+      <a class="link-primary fw-bolder">{{ "HELP_PAGE" | translate }}</a>.
+    </div>
+  </div>
+
+  <!-- Knowledge Details Form -->
+  <form [formGroup]="form">
+    <!-- Knowledge Title -->
+    <div class="mb-10 fv-row">
+      <label class="d-flex align-items-center form-label mb-3 required">
+        <ng-container *ngIf="defaultValues.knowledgeType === 'course'">
+          {{ "COURSE_TITLE" | translate }}
+        </ng-container>
+        <ng-container *ngIf="defaultValues.knowledgeType === 'media'">
+          {{ "MEDIA_TITLE" | translate }}
+        </ng-container>
+        <ng-container *ngIf="defaultValues.knowledgeType === 'data'">
+          {{ "DATA_TITLE" | translate }}
+        </ng-container>
+        <ng-container *ngIf="defaultValues.knowledgeType === 'report'">
+          {{ "REPORT_TITLE" | translate }}
+        </ng-container>
+        <ng-container *ngIf="defaultValues.knowledgeType === 'manual'">
+          {{ "MANUAL_TITLE" | translate }}
+        </ng-container>
+        <ng-container *ngIf="defaultValues.knowledgeType === 'insight'">
+          {{ "INSIGHT_TITLE" | translate }}
+        </ng-container>
+        <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'KNOWLEDGE_TITLE_TOOLTIP' | translate }}"></i>
+      </label>
+      <div class="row mb-2">
+        <div class="col-lg-12">
+          <input pInputText formControlName="title" class="w-100" placeholder="{{ 'ENTER_KNOWLEDGE_TITLE' | translate }}" />
+          <div
+            *ngIf="form.get('title')?.hasError('required') && form.get('title')?.touched"
+            class="fv-plugins-message-container invalid-feedback"
+          >
+            {{ "KNOWLEDGE_TITLE_REQUIRED" | translate }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Knowledge Language -->
+    <div class="mb-10 fv-row">
+      <label class="d-flex align-items-center form-label mb-3 required">
+        <ng-container *ngIf="defaultValues.knowledgeType === 'course'">
+          {{ "COURSE_LANGUAGE" | translate }}
+        </ng-container>
+        <ng-container *ngIf="defaultValues.knowledgeType === 'media'">
+          {{ "MEDIA_LANGUAGE" | translate }}
+        </ng-container>
+        <ng-container *ngIf="defaultValues.knowledgeType === 'data'">
+          {{ "DATA_LANGUAGE" | translate }}
+        </ng-container>
+        <ng-container *ngIf="defaultValues.knowledgeType === 'report'">
+          {{ "REPORT_LANGUAGE" | translate }}
+        </ng-container>
+        <ng-container *ngIf="defaultValues.knowledgeType === 'manual'">
+          {{ "MANUAL_LANGUAGE" | translate }}
+        </ng-container>
+        <ng-container *ngIf="defaultValues.knowledgeType === 'insight'">
+          {{ "INSIGHT_LANGUAGE" | translate }}
+        </ng-container>
+        <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'KNOWLEDGE_LANGUAGE_TOOLTIP' | translate }}"></i>
+      </label>
+      <div class="row mb-2">
+        <div class="col-lg-12">
+          <p-dropdown
+            [options]="languages"
+            formControlName="language"
+            [filter]="true"
+            filterBy="name"
+            [showClear]="true"
+            placeholder="{{ 'ENTER_KNOWLEDGE_LANGUAGE' | translate }}"
+            optionLabel="name"
+            optionValue="id"
+            styleClass="w-100"
+            [loading]="languagesService.isLoading$ | async"
+          >
+          </p-dropdown>
+          <div
+            *ngIf="form.get('language')?.hasError('required') && form.get('language')?.touched"
+            class="fv-plugins-message-container invalid-feedback"
+          >
+            {{ "KNOWLEDGE_LANGUAGE_REQUIRED" | translate }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Industry -->
+    <div class="mb-10 fv-row">
+      <app-industry-selector
+        [title]="currentLanguage == 'ar' ? 'اختر الصناعة' : 'Choose an industry...'"
+        [placeholder]="currentLanguage == 'ar' ? 'اختر الصناعة' : 'Choose an industry...'"
+        [fetchedData]="industryNodes"
+        [cancelLabel]="currentLanguage == 'ar' ? 'الغاء' : 'Cancel'"
+        [okLabel]="currentLanguage == 'ar' ? 'تأكيد' : 'Ok'"
+        [tip]="currentLanguage == 'ar' ? ' اختر الصناعة' : 'Select the industry that best describes your knowledge'"
+        [selectedIndustryId]="selectedIndustryId"
+        [isRequired]="true"
+        (nodeSelected)="onIndustrySelected($event)"
+      >
+      </app-industry-selector>
+    </div>
+
+    <!-- Topics -->
+    <div [@fadeInMoveY] class="mb-10" *ngIf="topics && topics.length > 0">
+      <label class="d-flex align-items-center form-label mb-3 required">
+        {{ "TOPIC" | translate }}
+        <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'TOPIC_TOOLTIP' | translate }}"></i>
+      </label>
+      <p-dropdown
+        id="topicId"
+        formControlName="topicId"
+        [options]="topics"
+        optionLabel="name"
+        optionValue="id"
+        placeholder="{{ 'ENTER_TOPIC' | translate }}"
+        [showClear]="true"
+        [filter]="true"
+        filterPlaceholder="{{ 'SEARCH_TOPICS' | translate }}"
+        class="w-100"
+        (onChange)="onTopicSelected($event.value)"
+      ></p-dropdown>
+      <div *ngIf="form.controls['topicId']?.invalid && form.controls['topicId']?.touched" class="text-danger">
+        {{ "TOPIC_REQUIRED" | translate }}
+      </div>
+    </div>
+
+    <!-- Custom Topic Input -->
+    <div [@fadeInMoveY] class="mb-10" *ngIf="form.get('topicId')?.value === 'other'">
+      <label class="d-flex align-items-center form-label mb-3 required">
+        {{ "SPECIFY_OTHER_TOPIC" | translate }}
+        <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'TOPIC_TOOLTIP' | translate }}"></i>
+      </label>
+      <input
+        type="text"
+        pInputText
+        class="w-100"
+        formControlName="customTopic"
+        placeholder="{{ 'ENTER_CUSTOM_TOPIC' | translate }}"
+      />
+      <!-- Duplicate Topic Error -->
+      <div
+        class="invalid-feedback d-block"
+        *ngIf="form.get('customTopic')?.errors?.['duplicateTopic'] && form.get('customTopic')?.touched"
+      >
+        {{ "DUPLICATE_TOPIC" | translate }}
+      </div>
+      <!-- Required Field Error -->
+      <div
+        class="fv-plugins-message-container invalid-feedback"
+        *ngIf="form.get('customTopic')?.errors?.['required'] && form.get('customTopic')?.touched"
+      >
+        {{ "CUSTOM_TOPIC_REQUIRED" | translate }}
+      </div>
+    </div>
+
+    <!-- Target Market -->
+    <div class="mb-10">
+      <label class="d-flex align-items-center form-label mb-3 required">
+        {{ "TARGET_MARKET" | translate }}
+        <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'TARGET_MARKET_TOOLTIP' | translate }}"></i>
+      </label>
+
+      <div class="nav-group nav-group-fluid">
+        <!-- Countries and Regions Option (First) -->
+        <label for="targetMarket2" class="me-2">
+          <input
+            type="radio"
+            class="btn-check"
+            formControlName="targetMarket"
+            name="targetMarket"
+            value="1"
+            id="targetMarket2"
+            [checked]="true"
+          />
+          <span class="btn btn-sm btn-color-muted btn-active btn-active-info fw-bold px-4">
+            <i class="ki-duotone ki-icon fs-1">
+              <span class="path1"></span>
+              <span class="path2"></span>
+              <span class="path3"></span>
+            </i>
+            {{ "COUNTRIES_AND_REGIONS" | translate }}
+          </span>
+        </label>
+
+        <!-- Economic Block Option (Second) -->
+        <label for="targetMarket1">
+          <input
+            type="radio"
+            class="btn-check"
+            formControlName="targetMarket"
+            name="targetMarket"
+            value="2"
+            id="targetMarket1"
+          />
+          <span class="btn btn-sm btn-color-muted btn-active btn-active-info fw-bold px-4">
+            <i class="ki-duotone ki-chart fs-2 me-2">
+              <span class="path1"></span>
+              <span class="path2"></span>
+            </i>
+            {{ "ECONOMIC_BLOCK" | translate }}
+          </span>
+        </label>
+      </div>
+
+      <div
+        class="fv-plugins-message-container invalid-feedback"
+        *ngIf="form.get('targetMarket')?.invalid && form.get('targetMarket')?.touched"
+      >
+        {{ "TARGET_MARKET_REQUIRED" | translate }}
+      </div>
+    </div>
+
+    <!-- Region -->
+    <div class="mb-10">
+      <div *ngIf="form.get('targetMarket')?.value === '1'">
+        <label class="d-flex align-items-center form-label mb-3 required">
+          {{ "COUNTRIES_AND_REGIONS" | translate }}
+          <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'REGION_TOOLTIP' | translate }}"></i>
+        </label>
+        <app-select-region
+          placeholder="{{ 'ENTER_REGION' | translate }}"
+          title="{{ 'CHOOSE_REGIONS' | translate }}"
+          [preSelectedRegions]="defaultValues.regions"
+          [preSelectedCountries]="defaultValues.countries"
+          (regionsSelected)="onRegionsSelected($event)"
+        ></app-select-region>
+      </div>
+    </div>
+
+    <!-- Economic Block -->
+    <div class="mb-10">
+      <div *ngIf="form.get('targetMarket')?.value === '2'">
+        <label class="d-flex align-items-center form-label mb-3 required">
+          {{ "ECONOMIC_BLOCK" | translate }}
+          <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'ECONOMIC_BLOCK_TOOLTIP' | translate }}"></i>
+        </label>
+        <app-select-economic-block
+          placeholder="{{ 'ENTER_ECONOMIC_BLOCK' | translate }}"
+          title="{{ 'CHOOSE_ECONOMIC_BLOCKS' | translate }}"
+          [selectedBlockIds]="selectedEconomicBlocIds"
+          (blocksSelected)="onEconomicBlocksSelected($event)"
+        ></app-select-economic-block>
+      </div>
+    </div>
+
+    <!-- ISIC Code -->
+    <div class="mb-10 fv-row">
+      <app-industry-selector
+        [title]="currentLanguage == 'ar' ? 'اختر الرمز الصناعي' : 'Choose an ISIC Code...'"
+        [placeholder]="currentLanguage == 'ar' ? 'اختر الرمز الصناعي' : 'Choose an ISIC Code...'"
+        [fetchedData]="isicCodeNodes"
+        [cancelLabel]="currentLanguage == 'ar' ? 'الغاء' : 'Cancel'"
+        [selectedIndustryId]="form.get('isic_code')?.value"
+        [okLabel]="currentLanguage == 'ar' ? 'تأكيد' : 'Ok'"
+        [tip]="
+          currentLanguage == 'ar'
+            ? 'اختر الرمز الصناعي الأفضل لمعرفتك'
+            : 'Select the ISIC code that best describes your knowledge'
+        "
+        (nodeSelected)="onIsicCodeSelected($event)"
+        [isRequired]="false"
+      >
+      </app-industry-selector>
+    </div>
+
+    <!-- HS Code -->
+    <div class="mb-10 fv-row" [@fadeInMoveY] *ngIf="selectedIsicId">
+      <app-get-hs-code-by-isic
+        [isicCodeId]="selectedIsicId"
+        [isRequired]="false"
+        [language]="currentLanguage"
+        [preselectedHSCodeId]="form.get('hs_code')?.value"
+        (hsCodeSelected)="onHSCodeSelected($event)"
+      >
+      </app-get-hs-code-by-isic>
+    </div>
+
+    <!-- Tags Section -->
+    <div class="mt-10 mb-8" *ngIf="form.get('topicId')?.value && form.get('topicId')?.value !== ''">
+      <div class="d-flex justify-content-between align-items-center mb-5">
+        <label class="d-flex align-items-center fs-5 fw-semibold">
+          <span class="required">{{ "SELECT_TAGS" | translate }}</span>
+        </label>
+        <div class="d-flex gap-3">
+          <button
+            type="button"
+            class="btn btn-sm btn-light-info text-info text-hover-white text-active-white"
+            (click)="selectAll()"
+          >
+            {{ "SELECT_ALL" | translate }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-light-warning text-warning text-hover-white text-active-white"
+            (click)="clearAll()"
+          >
+            {{ "CLEAR_ALL" | translate }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-light-success text-success text-hover-white text-active-white"
+            (click)="openAddCustomTag()"
+          >
+            {{ "ADD_CUSTOM_TAG" | translate }}
+          </button>
+        </div>
+      </div>
+      <div class="chip-group mb-5">
+        <div class="chip" *ngFor="let chip of chips" [class.selected]="chip.selected" (click)="toggleSelection(chip)">
+          <span class="check-icon" *ngIf="chip.selected">
+            <i class="pi pi-check" style="font-size: 1rem"></i>
+          </span>
+          <span>{{ chip.label }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Custom Tag Modal using PrimeNG Dialog -->
+    <p-dialog
+      header="{{ 'ADD_CUSTOM_TAG' | translate }}"
+      [(visible)]="isAddingCustomTag"
+      modal="true"
+      [closable]="false"
+      [style]="{ width: '400px' }"
+    >
+      <form [formGroup]="customTagForm" (ngSubmit)="submitCustomTag()">
+        <div class="p-fluid">
+          <div class="p-field">
+            <label for="name">{{ "TAG_NAME" | translate }}</label>
+            <input id="name" type="text" pInputText formControlName="name" />
+            <small
+              *ngIf="customTagForm.get('name')?.invalid && customTagForm.get('name')?.touched"
+              class="p-error"
+            >
+              {{ "TAG_NAME_REQUIRED" | translate }}
+            </small>
+          </div>
+        </div>
+        <div class="p-dialog-footer d-flex justify-content-end gap-3 mt-5">
+          <button
+            type="button"
+            class="btn btn-light-danger btn-sm px-6"
+            (click)="closeAddCustomTag()"
+          >
+            <span class="indicator-label">{{ "CANCEL" | translate }}</span>
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary btn-sm px-6"
+            [disabled]="customTagForm.invalid"
+          >
+            <span class="indicator-label">{{ "ADD_TAG" | translate }}</span>
+          </button>
+        </div>
+      </form>
+    </p-dialog>
+
+    <!-- Keywords Section -->
+    <div class="mt-10" *ngIf="form.get('topicId')?.value && form.get('topicId')?.value !== ''">
+      <label class="d-flex align-items-center fs-5 fw-semibold mb-5">
+        <span class="required">{{ "KEYWORDS" | translate }}</span>
+      </label>
+      <tag-input
+        formControlName="keywords"
+        [secondaryPlaceholder]="'ENTER_KEYWORDS' | translate"
+        [separatorKeyCodes]="[188, 13]"
+        [addOnBlur]="true"
+        [required]="true"
+        [placeholder]="'ENTER_KEYWORDS' | translate"
+        (onAdd)="addKeyword($event)"
+        (onRemove)="removeKeyword($event)"
+      >
+        <tag-input-dropdown
+          [showDropdownIfEmpty]="true"
+          [autocompleteItems]="availableKeywords"
+        ></tag-input-dropdown>
+      </tag-input>
+    </div>
+  </form>
+</div> 

@@ -14,7 +14,9 @@
 .w-65{
     width: 65%; 
 }   
-
+.min-h-220px{
+  min-height: 210px;
+}
 // Dropzone Styles
 .dropzone-container {
   border: 2px dashed #e4e6ef;

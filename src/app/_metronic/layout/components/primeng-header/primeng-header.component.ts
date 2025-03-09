@@ -134,7 +134,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
     const menuItems = [
       {
         label: this.translate.instant('MENU.INSIGHTS'),
-        iconName: 'chart-line',
+        iconName: '',
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
@@ -142,7 +142,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
       },
       {
         label: this.translate.instant('MENU.REPORTS'),
-        iconName: 'document',
+        iconName: '',
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
@@ -150,7 +150,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
       },
       {
         label: this.translate.instant('MENU.DATA'),
-        iconName: 'data',
+        iconName: '',
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
@@ -158,7 +158,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
       },
       {
         label: this.translate.instant('MENU.MANUAL'),
-        iconName: 'book',
+        iconName: '',
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
@@ -166,7 +166,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
       },
       {
         label: this.translate.instant('MENU.COURSES'),
-        iconName: 'teacher',
+        iconName: '',
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,

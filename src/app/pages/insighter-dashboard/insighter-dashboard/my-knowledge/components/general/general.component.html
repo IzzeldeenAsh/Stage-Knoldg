@@ -174,7 +174,7 @@
                   </div>
                 </td>
                 <td>
-                  <div class="d-flex align-items-center" >
+                  <div class="d-flex align-items-center"   *ngIf=" knowledge.title">
                     <a [routerLink]="['/app/my-knowledge-base/view-my-knowledge/', knowledge.id]" class="text-gray-800 text-hover-primary">{{ knowledge.title }}</a>
                   </div>
                 </td>
@@ -260,10 +260,10 @@
 
         <!-- Knowledge Cards -->
         <div class="col-md-6 col-lg-4 col-xl-3" *ngFor="let knowledge of knowledges">
-          <div class="card knowledge-card" draggable="true" (dragstart)="onDragStart($event, knowledge)" (dragend)="onDragEnd($event)">
+          <div class="card knowledge-card h-100 min-h-220px" draggable="true" (dragstart)="onDragStart($event, knowledge)" (dragend)="onDragEnd($event)">
             <div class="card-body">
               <!-- Title Section -->
-              <div class="title-section">
+              <div class="title-section" *ngIf=" knowledge.title">
                 <a [routerLink]="['/app/my-knowledge-base/view-my-knowledge/', knowledge.id]" 
                    class="knowledge-title text-hover-primary">{{ knowledge.title }}</a>
               </div>

@@ -1,0 +1,12 @@
+// Style for disabled cards
+.disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+// Enhance hover effect for cards
+.hover-elevate-up:hover:not(.disabled) {
+  transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1) !important;
+  transition: all 0.3s ease;
+} 

@@ -96,6 +96,28 @@ export interface PublishKnowledgeRequest {
   published_at: string;
 }
 
+export interface UpdateKnowledgeAbstractsRequest {
+  description: string;
+  documents: {
+    id: number;
+    description: string;
+  }[];
+}
+
+export interface KnowledgeDetailsRequest {
+  title: string;
+  topic_id: number;
+  industry_id: number;
+  isic_code_id?: number | null;
+  hs_code_id?: number | null;
+  language: string;
+  region: number[];
+  country: number[];
+  economic_bloc: number[];
+  keywords: string[];
+  tag_ids: string[];
+}
+
 @Injectable({
   providedIn: "root",
 })
@@ -126,6 +148,38 @@ export class AddInsightStepsService {
     return throwError(error);
   }
 
+  step1HandleKnowledgeType(type: string): Observable<CreateKnowledgeResponse> {
+    const headers = new HttpHeaders({
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "Accept-Language": this.currentLang,
+    });
+
+    this.setLoading(true);
+    return this.http
+      .post<CreateKnowledgeResponse>(`${this.apiUrl}/type`, { type }, { headers })
+      .pipe(
+        map((res) => res),
+        catchError((error) => this.handleError(error)),
+        finalize(() => this.setLoading(false))
+      );
+  }
+  updateKnowledgeType(knowledgeId: number, type: string): Observable<CreateKnowledgeResponse> {
+    const headers = new HttpHeaders({
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "Accept-Language": this.currentLang,
+    });
+  
+    this.setLoading(true);
+    return this.http
+      .put<CreateKnowledgeResponse>(`${this.apiUrl}/type/${knowledgeId}`, { type }, { headers })
+      .pipe(
+        map((res) => res),
+        catchError((error) => this.handleError(error)),
+        finalize(() => this.setLoading(false))
+      );
+  }
   step2CreateKnowledge(
     request: CreateKnowledgeRequest
   ): Observable<CreateKnowledgeResponse> {
@@ -347,6 +401,44 @@ export class AddInsightStepsService {
     this.setLoading(true);
     return this.http
       .put(`${this.apiUrl}/status/${knowledgeId}`, request, {
+        headers,
+      })
+      .pipe(
+        map((res) => res),
+        catchError((error) => this.handleError(error)),
+        finalize(() => this.setLoading(false))
+      );
+  }
+
+  updateKnowledgeAbstracts(knowledgeId: number, request: UpdateKnowledgeAbstractsRequest): Observable<any> {
+    const headers = new HttpHeaders({
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "Accept-Language": this.currentLang,
+    });
+
+    this.setLoading(true);
+    return this.http
+      .put(`${this.apiUrl}/abstract/${knowledgeId}`, request, {
+        headers,
+      })
+      .pipe(
+        map((res) => res),
+        catchError((error) => this.handleError(error)),
+        finalize(() => this.setLoading(false))
+      );
+  }
+
+  updateKnowledgeDetails(knowledgeId: number, request: KnowledgeDetailsRequest): Observable<any> {
+    const headers = new HttpHeaders({
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "Accept-Language": this.currentLang,
+    });
+
+    this.setLoading(true);
+    return this.http
+      .put(`${this.apiUrl}/details/${knowledgeId}`, request, {
         headers,
       })
       .pipe(

@@ -563,3 +563,13 @@ app-user-inner {
     margin-left: 0.5rem;
   }
 }
+
+.desktop-header {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+[data-kt-app-theme="dark"] .desktop-header {
+  background: rgba(30, 30, 30, 0.7);
+}
