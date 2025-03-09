@@ -235,6 +235,7 @@
           <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'REGION_TOOLTIP' | translate }}"></i>
         </label>
         <app-select-region
+          #regionSelector
           placeholder="{{ 'ENTER_REGION' | translate }}"
           title="{{ 'CHOOSE_REGIONS' | translate }}"
           [preSelectedRegions]="defaultValues.regions"
@@ -252,6 +253,7 @@
           <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'ECONOMIC_BLOCK_TOOLTIP' | translate }}"></i>
         </label>
         <app-select-economic-block
+          #economicBlockSelector
           placeholder="{{ 'ENTER_ECONOMIC_BLOCK' | translate }}"
           title="{{ 'CHOOSE_ECONOMIC_BLOCKS' | translate }}"
           [selectedBlockIds]="selectedEconomicBlocIds"

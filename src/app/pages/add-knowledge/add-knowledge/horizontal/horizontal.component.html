@@ -221,6 +221,17 @@
                   </ng-container>
                 </span>
               </button>
+              
+              <!-- Upload Error Warning - Only show on Step 2 when there are errors -->
+              <div *ngIf="currentStep$.value === 2 && hasAnyUploadErrors()" class="d-flex align-items-center mt-2">
+                <span class="badge badge-light-danger me-2">
+                  <i class="ki-duotone ki-warning-2 fs-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                  </i>
+                </span>
+                <span class="text-danger small">{{ "Please fix upload errors before continuing" | translate }}</span>
+              </div>
             </div>
           </ng-container>
         </div>

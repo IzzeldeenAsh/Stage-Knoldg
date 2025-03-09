@@ -65,7 +65,10 @@ export class Step3Component extends BaseComponent implements OnInit {
     const loadSub = this.addInsightStepsService.getListDocumentsInfo(this.knowledgeId)
       .subscribe({
         next: (response) => {
-          this.documents = response.data;
+          this.documents = response.data.map(doc => ({
+            ...doc,
+            fileIcon: this.getFileIconByExtension(doc.file_extension)
+          }));
           this.isLoading = false;
         },
         error: (error) => {
@@ -93,5 +96,21 @@ export class Step3Component extends BaseComponent implements OnInit {
         this.form.valid
       );
     }
+  }
+
+  private getFileIconByExtension(extension: string): string {
+    const iconMap: { [key: string]: string } = {
+      pdf: './assets/media/svg/new-files/pdf.svg',
+      doc: './assets/media/svg/new-files/doc.svg',
+      docx: './assets/media/svg/new-files/docx.svg',
+      xls: './assets/media/svg/new-files/xls.svg',
+      xlsx: './assets/media/svg/new-files/xlsx.svg',
+      ppt: './assets/media/svg/new-files/ppt.svg',
+      pptx: './assets/media/svg/new-files/pptx.svg',
+      txt: './assets/media/svg/new-files/txt.svg',
+      zip: './assets/media/svg/new-files/zip.svg',
+      rar: './assets/media/svg/new-files/zip.svg'
+    };
+    return iconMap[extension?.toLowerCase()] || './assets/media/svg/files/default.svg';
   }
 } 

@@ -28,11 +28,15 @@
 
   <div *ngIf="!isLoading && documents.length > 0">
     <div class="fs-4 fw-bold mb-4">{{ "DOCUMENT_DESCRIPTIONS" | translate }}</div>
-    <div class="card mb-4" *ngFor="let doc of documents">
-      <div class="card-body">
+    <div class=" mb-4" *ngFor="let doc of documents">
         <div class="d-flex align-items-center mb-3">
           <div class="fs-5 fw-bold">
-            <i class="fas fa-file me-2"></i> {{ doc.file_name }}
+            <div class="d-flex align-items-center">
+              <img [src]="doc.fileIcon" 
+                  [alt]="doc.file_extension" 
+                  style="width: 38px; height: 38px; margin-right: 15px;" />
+              {{ doc.file_name }}
+            </div>
           </div>
         </div>
         <div class="mb-3">
@@ -46,7 +50,6 @@
             placeholder="{{ 'ENTER_DOCUMENT_DESCRIPTION' | translate }}"
           ></textarea>
         </div>
-      </div>
     </div>
   </div>
 

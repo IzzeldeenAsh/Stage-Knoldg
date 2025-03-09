@@ -665,6 +665,7 @@ export const locale = {
     PRICE_REQUIRED: "السعر مطلوب",
     FILE_NAME_REQUIRED: "اسم الملف مطلوب",
     TAGS_KEYWORDS: "الوسوم والكلمات المفتاحية",
+    REPLACE_FILE: "استبدل الملف",
     PUBLISH_KNOWLEDGE: "نشر المعرفة",
     COMPLETED: "تم الإنتهاء",
     PUBLISH_OPTIONS: "خيارات النشر",

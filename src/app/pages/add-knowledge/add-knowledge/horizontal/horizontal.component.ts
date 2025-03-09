@@ -1,12 +1,13 @@
-import { Component, Injector, OnInit } from '@angular/core';
+import { Component, Injector, OnInit, ViewChild } from '@angular/core';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { ICreateKnowldege, inits } from '../create-account.helper';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, concatMap, from, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { KnowledgeService } from 'src/app/_fake/services/knowledge/knowledge.service';
 import { AddInsightStepsService, UpdateKnowledgeAbstractsRequest } from 'src/app/_fake/services/add-insight-steps/add-insight-steps.service';
 import * as moment from 'moment';
+import { SubStepDocumentsComponent } from '../steps/step2/sub-step-documents/sub-step-documents.component';
 
 @Component({
   selector: 'app-horizontal',
@@ -24,6 +25,8 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
     false
   );
   isLoading = false;
+  
+  @ViewChild(SubStepDocumentsComponent) documentsComponent: SubStepDocumentsComponent;
   
   constructor(
     injector: Injector,
@@ -185,60 +188,254 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
   handleStep2Submission(nextStep: number) {
     const currentAccount = this.account$.value;
     
+    // Make sure the documents component is available
+    if (!this.documentsComponent) {
+      console.error('Documents component not available');
+      return;
+    }
+    
     // Check if there are documents to process
     if (currentAccount.documents?.length > 0) {
+      // Get documents that need actual file upload
+      const documentsToUpload = this.documentsComponent.getDocumentsToUpload();
+      
+      // Get documents that only need metadata updates (no file re-upload)
+      const documentsForMetadataUpdate = this.documentsComponent.getDocumentsForMetadataUpdate();
+      
+      // If nothing needs processing, just proceed to next step
+      if (documentsToUpload.length === 0 && documentsForMetadataUpdate.length === 0) {
+        this.currentStep$.next(nextStep);
+        return;
+      }
+      
+      // Set loading state immediately when starting uploads
       this.isLoading = true;
+      
+      // Prepare document component for upload
+      this.documentsComponent.prepareForUpload();
+      
       let completedUpdates = 0;
-      const totalDocuments = currentAccount.documents.length;
-
-      // Create an array to store all subscriptions
-      const documentSubs = currentAccount.documents.map((doc: any) => {
-        // Prepare document request according to interface requirements
-        const documentRequest: any = {
-          file_name: doc.file_name,
-          price: doc.price.toString(),
-          status: 'active',
-        };
-
-        if (doc.description) {
-          documentRequest.description = doc.description;
-        }
-
-        // Add file if not from server
-        if (!doc.fromServer && doc.file) {
-          documentRequest.file = doc.file;
-        }
-
-        return this.addInsightStepsService
-          .step3AddKnowledgeDocument(
-            doc.fromServer ? doc.id : this.knowledgeId, 
-            documentRequest, 
-            doc.fromServer
-          )
-          .subscribe({
-            next: (response) => {
-              console.log('Document processed successfully', response);
-              completedUpdates++;
-              
-              // Only proceed to next step when all documents are processed
-              if (completedUpdates === totalDocuments) {
-                this.currentStep$.next(nextStep);
-                this.isLoading = false;
-              }
-            },
-            error: (error) => {
-              this.handleServerErrors(error);
-              this.isLoading = false;
+      const totalOperations = documentsToUpload.length + documentsForMetadataUpdate.length;
+      
+      // First handle documents that need file uploads
+      if (documentsToUpload.length > 0) {
+        // Process file uploads
+        const documentSubs = documentsToUpload.map(({ document: doc, index }) => {
+          // Start upload for this document
+          this.documentsComponent.startDocumentUpload(index);
+  
+          // Prepare document request according to interface requirements
+          const documentRequest: any = {
+            file_name: doc.file_name,
+            price: doc.price.toString(),
+            status: 'active',
+          };
+  
+          if (doc.description) {
+            documentRequest.description = doc.description;
+          }
+  
+          // Add file if not from server or if it's a modified file
+          if ((!doc.fromServer || doc.needsFileUpload) && doc.file) {
+            documentRequest.file = doc.file;
+          }
+  
+          // Mock progress updates
+          const progressInterval = setInterval(() => {
+            if (this.documentsComponent) {
+              const currentProgress = Math.min(90, (doc.uploadProgress || 0) + 10);
+              this.documentsComponent.updateUploadProgress(index, currentProgress);
             }
-          });
-      });
-
-      // Add all subscriptions to unsubscribe array
-      this.unsubscribe.push(...documentSubs);
+          }, 500);
+  
+          return this.addInsightStepsService
+            .step3AddKnowledgeDocument(
+              doc.fromServer ? doc.id : this.knowledgeId, 
+              documentRequest, 
+              doc.fromServer // isUpdate flag
+            )
+            .subscribe({
+              next: (response) => {
+                console.log('Document processed successfully', response);
+                clearInterval(progressInterval);
+                
+                // Mark as complete with success
+                if (this.documentsComponent) {
+                  this.documentsComponent.completeDocumentUpload(index, true);
+                }
+                
+                completedUpdates++;
+                
+                // Only proceed to next step when all operations are complete
+                this.checkAndProceedToNextStep(completedUpdates, totalOperations, nextStep);
+              },
+              error: (error) => {
+                clearInterval(progressInterval);
+                
+                // Extract error message
+                let errorMessage = 'Upload failed';
+                if (error.status === 413) {
+                  errorMessage = '413 Request Entity Too Large';
+                } else if (error.error && error.error.message) {
+                  errorMessage = error.error.message;
+                } else if (error.message) {
+                  errorMessage = error.message;
+                }
+                
+                console.error(`Document upload error: ${errorMessage}`, error);
+                
+                // Mark as complete with error
+                if (this.documentsComponent) {
+                  this.documentsComponent.failDocumentUpload(index, errorMessage);
+                }
+                
+                completedUpdates++;
+                
+                // Show error notification but don't navigate away
+                this.showError('Upload Error', `File "${doc.file_name}" failed to upload: ${errorMessage}`);
+                
+                // Check if all operations are complete, but don't proceed if there are errors
+                this.checkAndProceedToNextStep(completedUpdates, totalOperations, nextStep);
+              }
+            });
+        });
+  
+        // Add all subscriptions to unsubscribe array
+        this.unsubscribe.push(...documentSubs);
+      }
+      
+      // Handle documents that only need metadata updates
+      if (documentsForMetadataUpdate.length > 0) {
+        // Process metadata updates
+        const metadataUpdateSubs = documentsForMetadataUpdate.map(({ document: doc, index }) => {
+          // No need to show upload progress for metadata updates
+          // Just prepare the request with the updated metadata
+          const documentRequest: any = {
+            file_name: doc.file_name,
+            price: doc.price.toString(),
+            status: 'active',
+            _method: 'PUT' // Use PUT method for updates
+          };
+          
+          if (doc.description) {
+            documentRequest.description = doc.description;
+          }
+          
+          return this.addInsightStepsService
+            .step3AddKnowledgeDocument(
+              doc.id, // Use document ID directly
+              documentRequest,
+              true // isUpdate flag
+            )
+            .subscribe({
+              next: (response) => {
+                console.log('Document metadata updated successfully', response);
+                
+                // Mark as complete with success
+                if (this.documentsComponent) {
+                  // Update document status without showing progress bar
+                  this.documentsComponent.completeDocumentUpload(index, true);
+                }
+                
+                completedUpdates++;
+                
+                // Only proceed to next step when all operations are complete
+                this.checkAndProceedToNextStep(completedUpdates, totalOperations, nextStep);
+              },
+              error: (error) => {
+                console.error('Error updating document metadata:', error);
+                
+                // Extract error message
+                let errorMessage = 'Failed to update document information';
+                if (error.error && error.error.message) {
+                  errorMessage = error.error.message;
+                } else if (error.message) {
+                  errorMessage = error.message;
+                }
+                
+                // Mark as complete with error
+                if (this.documentsComponent) {
+                  this.documentsComponent.failDocumentUpload(index, errorMessage);
+                }
+                
+                completedUpdates++;
+                
+                // Show error notification but don't navigate away
+                this.showError('Update Error', `Document "${doc.file_name}" update failed: ${errorMessage}`);
+                
+                // Check if all operations are complete
+                this.checkAndProceedToNextStep(completedUpdates, totalOperations, nextStep);
+              }
+            });
+        });
+        
+        // Add metadata update subscriptions to unsubscribe array
+        this.unsubscribe.push(...metadataUpdateSubs);
+      }
+      
+      // If both arrays are empty but we got here, check if we need to process anything
+      if (documentsToUpload.length === 0 && documentsForMetadataUpdate.length === 0) {
+        this.isLoading = false;
+        this.currentStep$.next(nextStep);
+      }
     } else {
       // If no documents, just proceed to next step
       this.currentStep$.next(nextStep);
     }
+  }
+  
+  // Helper method to check if all operations are complete and proceed
+  private checkAndProceedToNextStep(completed: number, total: number, nextStep: number): void {
+    if (completed === total) {
+      // Check if we have any errors before proceeding
+      if (this.documentsComponent && this.hasAnyUploadErrors()) {
+        // Turn off loading but stay on current step if there are errors
+        this.isLoading = false;
+        // Optionally show a message to fix errors before continuing
+        this.showError('Upload Errors', 'Please fix or remove documents with errors before continuing.');
+      } else {
+        // Only proceed if all uploads were successful
+        setTimeout(() => {
+          this.currentStep$.next(nextStep);
+          this.isLoading = false;
+        }, 1000);
+      }
+    }
+  }
+  
+  // Public method to check for upload errors - used in template
+  hasAnyUploadErrors(): boolean {
+    if (!this.documentsComponent) return false;
+    
+    // Check if the documents component has any errors
+    const hasComponentErrors = this.documentsComponent.hasUploadErrors();
+    
+    // Also check if the current step is valid to ensure button state is correct
+    if (this.currentStep$.value === 2) {
+      if (!this.isCurrentFormValid$.value && hasComponentErrors) {
+        // If the form is invalid and we have upload errors,
+        // log this to help with debugging
+        console.log('Form invalid due to upload errors');
+      }
+    }
+    
+    return hasComponentErrors;
+  }
+  
+  // Private method used in code
+  private hasAnyDocumentUploadErrors(): boolean {
+    if (!this.documentsComponent) return false;
+    
+    // Get all documents
+    const documents = this.account$.value.documents || [];
+    if (!documents.length) return false;
+    
+    // Check if any have error status
+    return documents.some(doc => {
+      // Access uploadStatus safely using any type
+      const status = (doc as any)?.uploadStatus;
+      return status === 'error';
+    });
   }
 
   handleStep3Submission(nextStep: number) {

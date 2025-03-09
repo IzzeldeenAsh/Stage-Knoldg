@@ -1,4 +1,4 @@
-import { Component, Injector, Input, OnInit } from '@angular/core';
+import { Component, Injector, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { Subscription, forkJoin, of } from 'rxjs';
 import { ICreateKnowldege } from '../../create-account.helper';
@@ -95,6 +95,9 @@ export class Step4Component extends BaseComponent implements OnInit {
   
   // Keywords related properties
   availableKeywords: KeywordItem[] = [];
+
+  @ViewChild('regionSelector') regionSelector: any;
+  @ViewChild('economicBlockSelector') economicBlockSelector: any;
 
   constructor(
     injector: Injector,
@@ -214,6 +217,13 @@ export class Step4Component extends BaseComponent implements OnInit {
           regions: regionsControl?.value,
           countries: countriesControl?.value 
         }, this.checkForm());
+        
+        // Open region dialog with a slight delay to ensure component is rendered
+        setTimeout(() => {
+          if (this.regionSelector && (!regionsControl?.value?.length && !countriesControl?.value?.length)) {
+            this.regionSelector.showDialog();
+          }
+        }, 100);
       } else if (value === '2') {
         economicBlocksControl?.setValidators([economicBlocksValidator]);
         regionsControl?.clearValidators();
@@ -228,6 +238,13 @@ export class Step4Component extends BaseComponent implements OnInit {
           countries: [],
           economic_blocs: economicBlocksControl?.value 
         }, this.checkForm());
+        
+        // Open economic blocks dialog with a slight delay to ensure component is rendered
+        setTimeout(() => {
+          if (this.economicBlockSelector && (!economicBlocksControl?.value?.length)) {
+            this.economicBlockSelector.showDialog();
+          }
+        }, 100);
       }
     });
     

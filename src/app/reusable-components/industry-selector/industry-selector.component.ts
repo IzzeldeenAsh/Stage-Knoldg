@@ -58,7 +58,13 @@ import { TranslationModule } from "src/app/modules/i18n";
           filterMode="strict"
           [loading]="isLoading$ | async"
           (onNodeSelect)="onNodeSelect($event)"
+          toggleMode="node"
         >
+          <ng-template pTemplate="default" let-node>
+            <div class="w-100 cursor-pointer" (click)="toggleNode(node)">
+              {{node.label}}
+            </div>
+          </ng-template>
         </p-tree>
       </div>
       <p-footer>
@@ -253,5 +259,9 @@ export class IndustrySelectorComponent implements OnInit, OnDestroy {
     if (found) {
       this.selectedNode = found;
     }
+  }
+
+  toggleNode(node: TreeNode) {
+    node.expanded = !node.expanded;
   }
 }

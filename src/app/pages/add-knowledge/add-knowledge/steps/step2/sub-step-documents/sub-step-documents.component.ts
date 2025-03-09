@@ -15,6 +15,13 @@ interface DocumentInfo {
   file: File | null;
   status?: string;
   file_size?: number;
+  uploadStatus?: 'pending' | 'uploading' | 'success' | 'error';
+  uploadProgress?: number;
+  errorMessage?: string;
+  isReadyToUpload?: boolean; // Tracks whether the document needs uploading
+  needsFileUpload?: boolean; // True if file content has changed, false if only metadata changed
+  originalFileName?: string; // To track if name has changed
+  originalPrice?: number;    // To track if price has changed
 }
 
 @Component({
@@ -43,6 +50,8 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   documentsForm: FormGroup;
   totalPrice: number = 0;
   documents: any[] = [];
+  uploadsInProgress: boolean = false;
+  hasActiveUploads = false;
 
   constructor(
     injector: Injector,
@@ -80,8 +89,13 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
     } else if (this.defaultValues?.documents?.length) {
       this.loadDocuments(this.defaultValues.documents);
     } else {
-      this.addDocument();
+      // Initial state - we'll wait for user to add documents
+      // If you want to start with an empty form instead, uncomment the line below:
+      // this.addEmptyDocument();
     }
+    
+    // Listen for form changes to detect metadata changes
+    this.listenForFormChanges();
   }
 
   get documentControls(): FormArray {
@@ -100,7 +114,12 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       fromServer: [false],
       docId: [null],
       file_size: [null],
-      docUrl: ['']
+      docUrl: [''],
+      uploadStatus: ['pending'],
+      uploadProgress: [0],
+      collapsed: [false],
+      errorMessage: [''],
+      isReadyToUpload: [true] // Default to true for new documents
     });
   
     // Disable/enable price control based on charity toggle
@@ -117,6 +136,11 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
     return group;
   }
   addDocument(): void {
+    this.triggerMultipleFileInput();
+  }
+
+  // This is an alternative method to add an empty document if needed
+  addEmptyDocument(): void {
     const newDocGroup = this.createDocument();
     this.documentControls.push(newDocGroup);
     
@@ -174,43 +198,176 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
     document.getElementById('fileInput' + index)?.click();
   }
 
+  triggerMultipleFileInput(): void {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.multiple = true;
+    fileInput.accept = '.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt';
+    
+    fileInput.onchange = (event: any) => {
+      const files = event.target.files;
+      if (files && files.length > 0) {
+        this.handleMultipleFiles(files);
+      }
+    };
+    
+    fileInput.click();
+  }
+
+  handleMultipleFiles(files: FileList): void {
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const extension = this.getFileExtension(file.name);
+      const fileName = file.name.replace(`.${extension}`, ''); // Remove extension from filename
+      
+      // Create new document form group
+      const newDocGroup = this.createDocument();
+      
+      // Set initial values based on the file
+      newDocGroup.patchValue({
+        file_name: fileName,
+        file: file,
+        filePreview: true,
+        fileIcon: this.getFileIconByExtension(extension),
+        file_extension: extension,
+        fromServer: false,
+        file_size: file.size,
+        uploadStatus: 'pending',
+        uploadProgress: 0,
+        collapsed: false,
+        errorMessage: '',
+        isReadyToUpload: true
+      });
+      
+      this.documentControls.push(newDocGroup);
+      
+      // Add to documents array
+      const localDoc: DocumentInfo = {
+        id: 0,
+        file_name: fileName,
+        file_extension: extension,
+        price: Number(newDocGroup.get('price')?.value) || 0,
+        file: file,
+        fromServer: false,
+        file_size: file.size,
+        status: 'active',
+        uploadStatus: 'pending',
+        uploadProgress: 0,
+        errorMessage: '',
+        isReadyToUpload: true
+      };
+      
+      this.documents.push(localDoc);
+    }
+    
+    // Update parent model after adding all documents
+    this.updateParentModel({ documents: this.documents }, this.validateDocuments());
+  }
+
   onFileSelected(event: any, index: number): void {
     const file = event.target.files[0];
     if (file) {
       const extension = this.getFileExtension(file.name);
+      const fileName = file.name.replace(`.${extension}`, ''); // Extract file name without extension
       const docGroup = this.documentControls.at(index);
       
-      // Update form control without changing the file_name
+      // Get current document info
+      const currentDoc = this.documents[index];
+      const isExistingDocument = currentDoc && currentDoc.fromServer;
+      const wasErrorState = currentDoc && currentDoc.uploadStatus === 'error';
+      
+      // Update form control WITH the file_name from the new file
       docGroup.patchValue({
         file: file,
+        file_name: fileName, // Update the file name to match the new file
         filePreview: true,
         fileIcon: this.getFileIconByExtension(extension), 
         file_extension: extension,
-        fromServer: false,
-        docId: null,
-        file_size: file.size
+        fromServer: isExistingDocument, // Keep fromServer status
+        docId: isExistingDocument ? currentDoc.id : null,
+        file_size: file.size,
+        uploadStatus: 'pending', // Reset upload status
+        errorMessage: '', // Clear any errors
+        isReadyToUpload: true, // Mark for upload
+        collapsed: false // Make sure it's not collapsed
       });
 
       // Update documents array
-      const localDoc: DocumentInfo = {
-        id: 0,
-        file_name: docGroup.get('file_name')?.value || '', 
-        file_extension: extension,
-        price: Number(docGroup.get('price')?.value) || 0,
-        file: file,
-        fromServer: false,
-        file_size: file.size,
-        status: 'active'
-      };
-
       if (this.documents[index]) {
+        const localDoc: DocumentInfo = {
+          ...this.documents[index],
+          file_name: fileName,
+          file_extension: extension,
+          price: Number(docGroup.get('price')?.value) || 0,
+          file: file,
+          file_size: file.size,
+          status: 'active',
+          uploadStatus: 'pending',
+          errorMessage: '',
+          isReadyToUpload: true,
+          // Mark that this document needs actual file upload (not just metadata update)
+          needsFileUpload: true
+        };
         this.documents[index] = localDoc;
       } else {
+        const localDoc: DocumentInfo = {
+          id: 0,
+          file_name: fileName,
+          file_extension: extension,
+          price: Number(docGroup.get('price')?.value) || 0,
+          file: file,
+          fromServer: false,
+          file_size: file.size,
+          status: 'active',
+          uploadStatus: 'pending',
+          errorMessage: '',
+          isReadyToUpload: true,
+          needsFileUpload: true
+        };
         this.documents.push(localDoc);
       }
+      
+      // Reset uploads in progress flags
+      this.hasActiveUploads = false;
+      this.uploadsInProgress = false;
 
-      this.updateParentModel({ documents: this.documents }, this.validateDocuments());
+      // Specifically handle transition from error state
+      if (wasErrorState) {
+        // Force error status removal throughout the component
+        this.resetDocumentErrorState(index);
+      }
+
+      // Update parent model and form validity
+      const isValid = this.validateDocuments();
+      this.updateParentModel({ documents: this.documents }, isValid);
+      
+      // Ensure parent is notified of the change immediately
+      setTimeout(() => {
+        // Revalidate once more to ensure UI updates
+        const isValidOnTimeout = this.validateDocuments();
+        this.updateParentModel({ documents: this.documents }, isValidOnTimeout);
+      }, 0);
     }
+  }
+
+  // New method to ensure error state is completely cleared when a file is replaced
+  private resetDocumentErrorState(index: number): void {
+    // Update the document in the documents array
+    if (this.documents[index]) {
+      this.documents[index].uploadStatus = 'pending';
+      this.documents[index].errorMessage = '';
+    }
+    
+    // Update the form control
+    const control = this.documentControls.at(index);
+    if (control) {
+      control.get('uploadStatus')?.setValue('pending');
+      control.get('errorMessage')?.setValue('');
+      control.get('isReadyToUpload')?.setValue(true);
+    }
+    
+    // Update error flags to ensure they're not preventing form validation
+    this.updateActiveUploadsState();
   }
 
   private fetchDocumentsFromServer(): void {
@@ -224,7 +381,7 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
           this.documents = [];
           this.documentControls.clear();
           
-          documentInfos.forEach(docInfo => {
+          documentInfos.forEach((docInfo, index) => {
             this.addInsightStepsService.getDocumentUrl(docInfo.id)
               .subscribe({
                 next: (urlResponse) => {
@@ -237,7 +394,13 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
                     fromServer: true,
                     file: null,
                     status: 'active',
-                    file_size: docInfo.file_size || 0
+                    file_size: docInfo.file_size || 0,
+                    uploadStatus: 'success', // Mark as already uploaded
+                    isReadyToUpload: false,  // No need to re-upload
+                    needsFileUpload: false,  // No file content changes
+                    // Store original values for change tracking
+                    originalFileName: docInfo.file_name || 'Untitled Document',
+                    originalPrice: Number(docInfo.price) || 0
                   };
                   
                   this.documents.push(serverDoc);
@@ -253,9 +416,15 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
                     fromServer: true,
                     docId: serverDoc.id,
                     file_size: serverDoc.file_size,
-                    docUrl: serverDoc.docUrl
+                    docUrl: serverDoc.docUrl,
+                    uploadStatus: 'success',
+                    isReadyToUpload: false,
+                    collapsed: true // Collapsed view for server documents
                   });
                   this.documentControls.push(docGroup);
+                  
+                  // Store original values
+                  this.storeOriginalValues(serverDoc, this.documents.length - 1);
                   
                   this.updateParentModel({ documents: this.documents }, this.validateDocuments());
                   this.calculateTotalPrice();
@@ -273,24 +442,53 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   }
 
   private loadDocuments(documents: any[]): void {
-    this.documents = documents;
+    this.documents = [];
     this.documentControls.clear();
     
-    documents.forEach(doc => {
+    documents.forEach((doc, index) => {
+      // Check if this is a server document
+      const isFromServer = doc.fromServer === true;
+      
+      // Create clean DocumentInfo object
+      const docInfo: DocumentInfo = {
+        id: doc.id || 0,
+        file_name: doc.file_name || '',
+        file_extension: doc.file_extension || '',
+        price: Number(doc.price) || 0,
+        docUrl: doc.docUrl || '',
+        fromServer: isFromServer,
+        file: doc.file || null,
+        status: doc.status || 'active',
+        file_size: doc.file_size || 0,
+        uploadStatus: isFromServer ? 'success' : 'pending',
+        isReadyToUpload: !isFromServer, // Only new docs need uploading
+        needsFileUpload: !isFromServer,  // New docs need file uploads
+        originalFileName: doc.file_name || '',
+        originalPrice: Number(doc.price) || 0
+      };
+      
+      this.documents.push(docInfo);
+      
       const docGroup = this.createDocument();
       docGroup.patchValue({
-        file_name: doc.file_name,
-        price: Number(doc.price) || 0,
-        file: doc.file,
+        file_name: docInfo.file_name,
+        price: Number(docInfo.price) || 0,
+        file: docInfo.file,
         filePreview: true,
-        fileIcon: this.getFileIconByExtension(doc.file_extension),
-        file_extension: doc.file_extension,
-        fromServer: doc.fromServer,
-        docId: doc.id,
-        file_size: doc.file_size,
-        docUrl: doc.docUrl
+        fileIcon: this.getFileIconByExtension(docInfo.file_extension),
+        file_extension: docInfo.file_extension,
+        fromServer: docInfo.fromServer,
+        docId: docInfo.id,
+        file_size: docInfo.file_size,
+        docUrl: docInfo.docUrl,
+        uploadStatus: isFromServer ? 'success' : 'pending',
+        isReadyToUpload: !isFromServer,
+        collapsed: isFromServer // Collapse server documents by default
       });
       this.documentControls.push(docGroup);
+      
+      // Store original values
+      this.storeOriginalValues(docInfo, index);
     });
 
     // Update parent model after loading documents
@@ -337,7 +535,14 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   }
 
   private validateDocuments(): boolean {
+    // If uploads are in progress, the form is invalid
+    if (this.hasActiveUploads || this.uploadsInProgress) {
+      console.log('Form invalid: uploads in progress');
+      return false;
+    }
+    
     if (!this.documents.length) {
+      console.log('Form invalid: no documents');
       return false;
     }
 
@@ -350,12 +555,14 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       
       // Check if file name exists and is not empty
       if (!doc.file_name?.trim()) {
+        console.log(`Form invalid: document ${i} has no file name`);
         return false;
       }
 
       // Check for duplicate file names (case insensitive)
       const lowerFileName = doc.file_name.toLowerCase();
       if (fileNames.has(lowerFileName)) {
+        console.log(`Form invalid: document ${i} has duplicate file name "${doc.file_name}"`);
         return false;
       }
       fileNames.add(lowerFileName);
@@ -364,21 +571,33 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       if (!doc.fromServer) {
         // Local file: must have either a file or a docUrl
         if (!doc.file && !doc.docUrl) {
+          console.log(`Form invalid: document ${i} has no file or docUrl`);
           return false;
         }
       } else {
         // Server file: must have a docUrl
         if (!doc.docUrl) {
+          console.log(`Form invalid: server document ${i} has no docUrl`);
           return false;
         }
       }
 
       // Check if the form control has any validation errors
       if (control.get('file_name')?.errors) {
+        console.log(`Form invalid: document ${i} has validation errors`, control.get('file_name')?.errors);
+        return false;
+      }
+      
+      // Check if there are any error-state documents
+      // Note: If a document is in 'pending' state after being replaced, it should be considered valid
+      if (doc.uploadStatus === 'error') {
+        console.log(`Form invalid: document ${i} has error status`);
         return false;
       }
     }
 
+    // Form is valid
+    console.log('Documents validated successfully');
     return true;
   }
 
@@ -387,5 +606,300 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       const price = parseFloat(control.get('price')?.value) || 0;
       return sum + price;
     }, 0);
+  }
+
+  // Methods to update upload status and progress
+  updateDocumentUploadStatus(index: number, status: 'pending' | 'uploading' | 'success' | 'error', errorMsg?: string): void {
+    if (index >= 0 && index < this.documentControls.length) {
+      // Update form control
+      const control = this.documentControls.at(index);
+      control.get('uploadStatus')?.setValue(status);
+      
+      // Set error message if provided
+      if (errorMsg && status === 'error') {
+        control.get('errorMessage')?.setValue(errorMsg);
+      }
+      
+      // Update documents array
+      if (this.documents[index]) {
+        this.documents[index].uploadStatus = status;
+        if (errorMsg && status === 'error') {
+          this.documents[index].errorMessage = errorMsg;
+        }
+      }
+      
+      // Update hasActiveUploads based on all documents
+      this.updateActiveUploadsState();
+    }
+  }
+
+  updateDocumentUploadProgress(index: number, progress: number): void {
+    if (index >= 0 && index < this.documentControls.length) {
+      // Ensure progress is between 0 and 100
+      progress = Math.min(100, Math.max(0, progress));
+      
+      // Update form control
+      this.documentControls.at(index).get('uploadProgress')?.setValue(progress);
+      
+      // Update documents array
+      if (this.documents[index]) {
+        this.documents[index].uploadProgress = progress;
+      }
+    }
+  }
+
+  // Reset all upload statuses to pending
+  resetAllUploadStatuses(): void {
+    for (let i = 0; i < this.documentControls.length; i++) {
+      this.updateDocumentUploadStatus(i, 'pending');
+      this.updateDocumentUploadProgress(i, 0);
+      // Reset collapsed state
+      this.documentControls.at(i).get('collapsed')?.setValue(false);
+    }
+  }
+
+  // Method to check if any document is currently uploading
+  hasUploadsInProgress(): boolean {
+    return this.hasActiveUploads || this.uploadsInProgress;
+  }
+  
+  // Method to be called from parent component when starting uploads
+  startDocumentUpload(documentIndex: number): void {
+    this.updateDocumentUploadStatus(documentIndex, 'uploading');
+    this.updateDocumentUploadProgress(documentIndex, 0);
+    
+    // Set uploads in progress flags
+    this.hasActiveUploads = true;
+    this.uploadsInProgress = true;
+    
+    // Force form to be invalid during upload
+    this.updateParentModel({ documents: this.documents }, false);
+  }
+  
+  // Method to be called from parent component to update upload progress
+  updateUploadProgress(documentIndex: number, progress: number): void {
+    this.updateDocumentUploadProgress(documentIndex, progress);
+  }
+  
+  // Method to be called from parent component when upload completes
+  completeDocumentUpload(documentIndex: number, success: boolean): void {
+    if (success) {
+      this.updateDocumentUploadStatus(documentIndex, 'success');
+      this.updateDocumentUploadProgress(documentIndex, 100);
+      
+      // Collapse successful uploads and mark as not needing upload
+      if (documentIndex >= 0 && documentIndex < this.documentControls.length) {
+        const control = this.documentControls.at(documentIndex);
+        control.get('collapsed')?.setValue(true);
+        control.get('isReadyToUpload')?.setValue(false);
+      }
+      
+      if (this.documents[documentIndex]) {
+        this.documents[documentIndex].isReadyToUpload = false;
+      }
+    } else {
+      // If error, make sure the document is expanded
+      if (documentIndex >= 0 && documentIndex < this.documentControls.length) {
+        this.documentControls.at(documentIndex).get('collapsed')?.setValue(false);
+      }
+      
+      // Leave isReadyToUpload as true for failed uploads
+      this.updateDocumentUploadStatus(documentIndex, 'error');
+    }
+    
+    // Check if there are still active uploads
+    this.updateActiveUploadsState();
+  }
+
+  // Method to prepare for uploading all documents
+  prepareForUpload(): void {
+    // Only reset statuses for documents that are pending or ready to upload
+    // Don't reset documents with "success" status unless they've been marked for upload
+    for (let i = 0; i < this.documentControls.length; i++) {
+      const control = this.documentControls.at(i);
+      const isReadyToUpload = control.get('isReadyToUpload')?.value === true;
+      const currentStatus = control.get('uploadStatus')?.value;
+      
+      // Only reset documents that are:
+      // 1. Pending or
+      // 2. Had errors but were fixed (isReadyToUpload === true) or
+      // 3. Explicitly marked for upload
+      if (currentStatus === 'pending' || 
+          (currentStatus === 'error' && isReadyToUpload) || 
+          isReadyToUpload) {
+        
+        this.updateDocumentUploadStatus(i, 'pending');
+        this.updateDocumentUploadProgress(i, 0);
+      }
+    }
+    
+    // Update active uploads state
+    this.updateActiveUploadsState();
+    
+    // Validate and notify parent
+    const isValid = !this.hasUploadsInProgress();
+    this.updateParentModel({ documents: this.documents }, isValid);
+  }
+
+  // Toggle collapsed state for a document
+  toggleDocumentCollapse(index: number): void {
+    
+    if (index >= 0 && index < this.documentControls.length) {
+      const docControl = this.documentControls.at(index);
+      if(docControl.get('uploadStatus')?.value ==='uploading'){
+       return;
+      }
+      const currentState = docControl.get('collapsed')?.value;
+      docControl.get('collapsed')?.setValue(!currentState);
+    }
+  }
+
+  // Update the active uploads state based on document statuses
+  private updateActiveUploadsState(): void {
+    const hasUploading = this.documentControls.controls.some(
+      control => control.get('uploadStatus')?.value === 'uploading'
+    );
+    
+    // Update the uploadsInProgress state
+    this.uploadsInProgress = hasUploading;
+    this.hasActiveUploads = hasUploading;
+    
+    // Check if all documents are valid
+    const isFormValid = this.validateDocuments();
+    
+    // Always update parent model with current validity
+    this.updateParentModel({ documents: this.documents }, isFormValid);
+  }
+
+  // Method for parent component to handle document upload failures with error messages
+  failDocumentUpload(documentIndex: number, errorMessage: string): void {
+    this.updateDocumentUploadStatus(documentIndex, 'error', errorMessage);
+    
+    // Mark document as ready to upload again
+    if (documentIndex >= 0 && documentIndex < this.documentControls.length) {
+      const control = this.documentControls.at(documentIndex);
+      control.get('isReadyToUpload')?.setValue(true);
+      control.get('collapsed')?.setValue(false); // Make sure it's expanded to show the error
+    }
+    
+    if (this.documents[documentIndex]) {
+      this.documents[documentIndex].isReadyToUpload = true;
+    }
+    
+    // Check if there are still active uploads
+    this.updateActiveUploadsState();
+  }
+
+  // Get only documents that need uploading (new, changed, or failed)
+  getDocumentsToUpload(): { document: any, index: number }[] {
+    return this.documents
+      .map((doc, index) => ({ document: doc, index }))
+      .filter(item => {
+        if (!item.document) return false;
+        
+        // Get form control for this document
+        const control = this.documentControls.at(item.index);
+        if (!control) return false;
+        
+        const uploadStatus = control.get('uploadStatus')?.value;
+        const needsFileUpload = item.document.needsFileUpload === true;
+        
+        // Include document if:
+        // 1. It's a brand new document (pending status with a file)
+        // 2. It has error status and a file
+        // 3. It's marked for re-upload because the file content changed
+        return (uploadStatus === 'pending' && item.document.file) || 
+               (uploadStatus === 'error' && item.document.file) ||
+               needsFileUpload;
+      });
+  }
+
+  // Get documents that need only metadata updates (not file re-uploads)
+  getDocumentsForMetadataUpdate(): { document: any, index: number }[] {
+    return this.documents
+      .map((doc, index) => ({ document: doc, index }))
+      .filter(item => {
+        if (!item.document || !item.document.id) return false;
+        
+        const doc = item.document;
+        const control = this.documentControls.at(item.index);
+        if (!control) return false;
+        
+        // Only include successfully uploaded documents from server
+        if (doc.fromServer !== true || doc.uploadStatus !== 'success') return false;
+        
+        // Check if metadata changed
+        const currentName = control.get('file_name')?.value;
+        const currentPrice = control.get('isCharity')?.value ? 0 : Number(control.get('price')?.value);
+        
+        // Include if name or price changed but file content didn't
+        return (doc.originalFileName !== currentName || doc.originalPrice !== currentPrice) && 
+               !doc.needsFileUpload;
+      });
+  }
+
+  // Track metadata changes without marking for re-upload
+  trackMetadataChange(index: number): void {
+    const control = this.documentControls.at(index);
+    const doc = this.documents[index];
+    
+    if (control && doc) {
+      // Get current values
+      const currentName = control.get('file_name')?.value;
+      const currentPrice = control.get('isCharity')?.value ? 0 : Number(control.get('price')?.value);
+      
+      // If this is a server document and metadata changed, mark for metadata update
+      if (doc.fromServer && (doc.originalFileName !== currentName || doc.originalPrice !== currentPrice)) {
+        doc.isReadyToUpload = true;
+        
+        // But don't mark for full file re-upload
+        doc.needsFileUpload = false;
+      }
+    }
+  }
+  
+  // Method to store original values when loading documents from server
+  private storeOriginalValues(doc: DocumentInfo, index: number): void {
+    if (doc) {
+      // Store original values to track changes
+      doc.originalFileName = doc.file_name;
+      doc.originalPrice = doc.price;
+      doc.needsFileUpload = false;
+      
+      // Update the document in the array
+      this.documents[index] = doc;
+    }
+  }
+
+  // Set up listeners for form control changes to detect metadata changes
+  private listenForFormChanges(): void {
+    this.documentsForm.valueChanges.subscribe(() => {
+      // Check each document for metadata changes
+      this.documentControls.controls.forEach((control, index) => {
+        if (index < this.documents.length) {
+          this.trackMetadataChange(index);
+        }
+      });
+    });
+  }
+
+  // Check if there are any documents with errors
+  hasUploadErrors(): boolean {
+    // First check the documents array
+    const hasDocsWithErrors = this.documents.some(doc => doc && doc.uploadStatus === 'error');
+    
+    // Then check the form controls as well to be thorough
+    const hasControlsWithErrors = this.documentControls?.controls.some(
+      control => control.get('uploadStatus')?.value === 'error'
+    );
+    
+    const hasErrors = hasDocsWithErrors || hasControlsWithErrors;
+    
+    // Log the result to help with debugging
+    if (hasErrors) {
+      console.log('Upload errors detected in documents');
+    }
+    
+    return hasErrors;
   }
 }
