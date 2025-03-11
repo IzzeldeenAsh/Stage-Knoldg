@@ -17,6 +17,7 @@ interface MenuItem {
 export class SettingsSidebarComponent extends BaseComponent implements OnInit {
   roles: string[] = [];
   isLoading: boolean = false;
+  isSocialLogin: boolean = false;
   // isActive: boolean = false;
   menuItems: MenuItem[] = [
     {
@@ -28,11 +29,6 @@ export class SettingsSidebarComponent extends BaseComponent implements OnInit {
       title: this.lang === 'ar' ? 'بيانات الشركة' : 'Company Info',
       route: '/app/profile/settings/company-settings',
       roles: ['company'],
-    },
-    {
-      title: this.lang === 'ar' ? 'تغيير كلمة المرور' : 'Reset Password',
-      route: '/app/profile/settings/reset-password',
-      roles: ['client'],
     }
   ];
   constructor(
@@ -46,11 +42,12 @@ export class SettingsSidebarComponent extends BaseComponent implements OnInit {
     this.getProfile();
   }
 
-    getProfile(){
+  getProfile(){
     this.isLoading = true;
-   const profileSubscription = this._profileService.getProfile().subscribe((profile) => {
+    const profileSubscription = this._profileService.getProfile().subscribe((profile) => {
       this.roles = profile.roles;
-     
+      this.isSocialLogin = profile.login_social === true;
+      
       // if(profile.comapny){
       //   this.isActive = profile.comapny.status === 'active';
       // }else if(profile.roles.includes('insighter')){
@@ -77,13 +74,17 @@ export class SettingsSidebarComponent extends BaseComponent implements OnInit {
         route: '/app/profile/settings/company-settings',
         roles: ['company'],
         // isActive: this.isActive
-      },
-      {
+      }
+    ];
+
+    // Only add reset password option for non-social login users
+    if (!this.isSocialLogin) {
+      this.menuItems.push({
         title: this.lang === 'ar' ? 'تغيير كلمة المرور' : 'Reset Password',
         route: '/app/profile/settings/reset-password',
         roles: ['client'],
-      }
-    ];
+      });
+    }
 
     // if (this.isActive) {
     //   this.menuItems.push({

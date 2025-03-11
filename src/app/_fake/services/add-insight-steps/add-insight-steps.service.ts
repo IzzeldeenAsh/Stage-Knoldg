@@ -311,7 +311,28 @@ export class AddInsightStepsService {
         finalize(() => this.setLoading(false))
       );
   }
+  getListDocumentsInfoParsed(knowledgeId: number): Observable<DocumentListResponse> {
+    const headers = new HttpHeaders({
+      Accept: "application/json",
+      "Accept-Language": this.currentLang,
+    });
 
+    this.setLoading(true);
+    return this.http
+      .get<RawDocumentListResponse>(`${this.apiUrl}/document/list/${knowledgeId}`, {
+        headers,
+      })
+      .pipe(
+        map((res) => ({
+          data: res.data.map(doc => ({
+            ...doc,
+            table_of_content: this.parseTableOfContent(doc.table_of_content)
+          }))
+        })),
+        catchError((error) => this.handleError(error)),
+        finalize(() => this.setLoading(false))
+      );
+  }
   private parseTableOfContent(toc: any): Chapter[] {
     try {
       // If it's already an array of chapters, return it

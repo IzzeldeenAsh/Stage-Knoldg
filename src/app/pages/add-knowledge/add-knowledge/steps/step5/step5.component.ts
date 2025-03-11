@@ -39,7 +39,7 @@ export class Step5Component extends BaseComponent implements OnInit {
   publishOptions = [
     {
       id: 'publish',
-      value: 'now',
+      value: 'published',
       label: 'PUBLISH_NOW',
       description: 'PUBLISH_NOW_DESC',
       icon: 'send'
@@ -53,7 +53,7 @@ export class Step5Component extends BaseComponent implements OnInit {
     },
     {
       id: 'draft',
-      value: 'draft',
+      value: 'unpublished',
       label: 'SAVE_AS_DRAFT',
       description: 'SAVE_AS_DRAFT_DESC',
       icon: 'document'

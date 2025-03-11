@@ -1,5 +1,5 @@
 <div class="p-24px">
-    <app-reset-password></app-reset-password>
+    <app-reset-password *ngIf="!profile?.login_social"></app-reset-password>
     <app-activate-account *ngIf="!isActive && isPrimaryKey" [role]="hasRole(['company']) || hasRole(['company-insighter']) ? 'company' : 'insighter'"></app-activate-account>
 
     <!-- Transfer Account Section -->

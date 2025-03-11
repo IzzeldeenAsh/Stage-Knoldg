@@ -171,21 +171,48 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   removeDocument(index: number): void {
     const doc = this.documents[index];
     if (doc) {
-      if (doc.fromServer && doc.id && this.defaultValues?.knowledgeId) {
+      console.log(`Removing document at index ${index}:`, doc);
+      
+      // Get the document ID either from id or docId property
+      const documentId = doc.id || (this.documentControls.at(index)?.get('docId')?.value);
+      console.log(`Document ID: ${documentId}, Upload Status: ${doc.uploadStatus}`);
+      
+      // Check if document has been uploaded to server and has an ID
+      if (documentId && doc.uploadStatus === 'success') {
+        console.log(`Deleting document from server with ID: ${documentId}`);
+        
         // Delete from server first
-        this.addInsightStepsService.deleteKnowledgeDocument(doc.id)
+        this.addInsightStepsService.deleteKnowledgeDocument(documentId)
           .subscribe({
-            next: () => {
+            next: (response) => {
+              console.log(`Document deleted successfully from server:`, response);
               this.documents.splice(index, 1);
               this.documentControls.removeAt(index);
               this.updateParentModel({ documents: this.documents }, this.validateDocuments());
+              this.showSuccess('', 'Document deleted successfully');
             },
             error: (error) => {
-              this.showError('', 'Failed to delete document');
-              console.error('Error deleting document:', error);
+              console.error('Error deleting document from server:', error);
+              
+              // Show detailed error message
+              let errorMessage = 'Failed to delete document';
+              if (error.error && error.error.message) {
+                errorMessage += `: ${error.error.message}`;
+              } else if (error.message) {
+                errorMessage += `: ${error.message}`;
+              }
+              
+              this.showError('', errorMessage);
+              
+              // In case of deletion error, we still want to remove the document from the UI
+              // to prevent UI inconsistency
+              this.documents.splice(index, 1);
+              this.documentControls.removeAt(index);
+              this.updateParentModel({ documents: this.documents }, this.validateDocuments());
             }
           });
       } else {
+        console.log(`Document not from server or not successfully uploaded, removing locally only`);
         // Local document, just remove from array
         this.documents.splice(index, 1);
         this.documentControls.removeAt(index);
@@ -567,19 +594,10 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       }
       fileNames.add(lowerFileName);
 
-      // Validate file requirement based on source
-      if (!doc.fromServer) {
-        // Local file: must have either a file or a docUrl
-        if (!doc.file && !doc.docUrl) {
-          console.log(`Form invalid: document ${i} has no file or docUrl`);
-          return false;
-        }
-      } else {
-        // Server file: must have a docUrl
-        if (!doc.docUrl) {
-          console.log(`Form invalid: server document ${i} has no docUrl`);
-          return false;
-        }
+      // Check that all documents have been successfully uploaded
+      if (doc.uploadStatus !== 'success') {
+        console.log(`Form invalid: document ${i} has not been successfully uploaded (status: ${doc.uploadStatus})`);
+        return false;
       }
 
       // Check if the form control has any validation errors
@@ -589,7 +607,6 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       }
       
       // Check if there are any error-state documents
-      // Note: If a document is in 'pending' state after being replaced, it should be considered valid
       if (doc.uploadStatus === 'error') {
         console.log(`Form invalid: document ${i} has error status`);
         return false;
@@ -901,5 +918,140 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
     }
     
     return hasErrors;
+  }
+
+  // New method to handle individual document uploads
+  uploadSingleDocument(index: number): void {
+    // Validate that we have a valid document
+    if (index < 0 || index >= this.documentControls.length) {
+      console.error('Invalid document index');
+      return;
+    }
+
+    const docControl = this.documentControls.at(index);
+    const doc = this.documents[index];
+    
+    if (!doc || !docControl) {
+      console.error('Document not found');
+      return;
+    }
+    
+    // Check if we have the required fields
+    const fileName = docControl.get('file_name')?.value;
+    const file = docControl.get('file')?.value;
+    
+    if (!fileName || !file) {
+      this.showError('', 'File name and file are required');
+      return;
+    }
+    
+    // Update status to uploading
+    this.startDocumentUpload(index);
+    
+    // Prepare the document request
+    const documentRequest: any = {
+      file_name: fileName,
+      price: (docControl.get('isCharity')?.value ? 0 : docControl.get('price')?.value || 0).toString(),
+      status: 'active',
+      file: file
+    };
+    
+    // Set up progress tracking interval
+    const progressInterval = setInterval(() => {
+      const currentProgress = Math.min(90, (doc.uploadProgress || 0) + 10);
+      this.updateDocumentUploadProgress(index, currentProgress);
+    }, 500);
+    
+    // Make API call to upload document
+    this.addInsightStepsService
+      .step3AddKnowledgeDocument(
+        doc.fromServer ? doc.id : this.defaultValues?.knowledgeId, 
+        documentRequest, 
+        doc.fromServer // isUpdate flag
+      )
+      .subscribe({
+        next: (response) => {
+          console.log('Document uploaded successfully', response);
+          clearInterval(progressInterval);
+          
+          // Update document with server response data
+          if (response?.data) {
+            // Extract the document ID from the response
+            // API returns { data: { knowledge_document_id: number } }
+            const documentId = response.data.knowledge_document_id;
+            console.log('Document ID from server:', documentId);
+            
+            if (!documentId) {
+              console.error('No document ID found in response:', response);
+              this.failDocumentUpload(index, 'Failed to get document ID from server');
+              return;
+            }
+            
+            // Update document with server data
+            doc.id = documentId;
+            doc.fromServer = true;
+            doc.needsFileUpload = false;
+            doc.originalFileName = fileName;
+            doc.originalPrice = Number(documentRequest.price);
+            doc.uploadStatus = 'success'; // Ensure upload status is set to success
+            
+            // Update form control
+            docControl.patchValue({
+              docId: documentId,
+              fromServer: true,
+              isReadyToUpload: false,
+              uploadStatus: 'success' // Ensure form control upload status is set to success
+            });
+            
+            // Log the updated document
+            console.log(`Document updated with ID ${documentId}:`, doc);
+          }
+          
+          // Mark upload as complete
+          this.completeDocumentUpload(index, true);
+          
+          // Show success notification
+          this.showSuccess('', `File "${fileName}" uploaded successfully`);
+        },
+        error: (error) => {
+          clearInterval(progressInterval);
+          
+          // Extract error message
+          let errorMessage = 'Upload failed';
+          if (error.status === 413) {
+            errorMessage = 'File too large';
+          } else if (error.error && error.error.message) {
+            errorMessage = error.error.message;
+          } else if (error.message) {
+            errorMessage = error.message;
+          }
+          
+          console.error(`Document upload error: ${errorMessage}`, error);
+          
+          // Mark upload as failed
+          this.failDocumentUpload(index, errorMessage);
+          
+          // Show error notification
+          this.showError('Upload Error', `File "${fileName}" failed to upload: ${errorMessage}`);
+        }
+      });
+  }
+
+  // Method to get documents that still need to be uploaded (pending status)
+  getPendingDocuments(): { document: any, index: number }[] {
+    return this.documents
+      .map((doc, index) => ({ document: doc, index }))
+      .filter(item => {
+        if (!item.document) return false;
+        
+        // Get form control for this document
+        const control = this.documentControls.at(item.index);
+        if (!control) return false;
+        
+        const uploadStatus = control.get('uploadStatus')?.value;
+        
+        // Include document if it has pending status and a file
+        return uploadStatus === 'pending' && item.document.file;
+      });
   }
 }

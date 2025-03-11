@@ -61,12 +61,10 @@ import { BaseComponent } from 'src/app/modules/base.component';
       height: 6px;
       border-top: 1px solid;
       border-right: 1px solid;
-      transform: rotate(45deg);
     }
     
     :host-context([dir="rtl"]) {
       .menu-arrow:after {
-        transform: rotate(135deg);
       }
       
       .menu-arrow {
