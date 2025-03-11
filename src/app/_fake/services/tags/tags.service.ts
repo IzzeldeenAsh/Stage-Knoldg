@@ -190,6 +190,27 @@ updateTag(tagId: number, tag:   { name: { en: string; ar: string }; status: stri
       );
   }
 
+  // Get tags by industry and topic
+  getTagsByTopic(industryId: number, topicId: number | string, lang: string): Observable<{id: number, name: string}[]> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Language': lang
+    });
+
+    // Note: This is a placeholder implementation. In a real scenario, you would have a specific endpoint.
+    // Currently, we're reusing the industryId endpoint since the API might not have a topic-specific endpoint.
+    return this.http.get<IndustryTagResponse>(`${this.insightaHost}/api/common/setting/tag/industry/${industryId}`, { headers })
+      .pipe(
+        map(res => {
+          // Filter tags based on topic if needed (this would ideally be done on the server)
+          // This is a placeholder - in a real implementation, you might not need this client-side filtering
+          return res.data;
+        }),
+        catchError(error => this.handleError(error))
+      );
+  }
+
   getCategories(): Observable<{ id: string; name: string }[]> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
@@ -204,13 +225,29 @@ updateTag(tagId: number, tag:   { name: { en: string; ar: string }; status: stri
       );
   }
 
-  getSuggestKeywords(knowledgeId: number,lang:string): Observable<string[]> {
+  getSuggestKeywords(knowledgeId: number, lang: string): Observable<string[]> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'Accept-Language': this.currentLang
+      'Accept-Language': lang
     });
 
+    return this.http.get<{data: {[key: string]: string}}>(`${this.insightaHost}/api/insighter/library/knowledge/keyword/suggest/${knowledgeId}`, { headers })
+      .pipe(
+        map(res => Object.values(res.data)),
+        catchError(error => this.handleError(error))
+      );
+  }
+
+  getSuggestKeywordsByTopic(knowledgeId: number, topicId: number | string, lang: string): Observable<string[]> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Language': lang
+    });
+
+    // Note: This is a placeholder implementation. In a real scenario, you would have a specific endpoint.
+    // Currently, we're reusing the knowledgeId endpoint since the API might not have a topic-specific endpoint.
     return this.http.get<{data: {[key: string]: string}}>(`${this.insightaHost}/api/insighter/library/knowledge/keyword/suggest/${knowledgeId}`, { headers })
       .pipe(
         map(res => Object.values(res.data)),

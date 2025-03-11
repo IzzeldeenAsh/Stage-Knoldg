@@ -1,0 +1,62 @@
+<!-- Empty step1 component as requested -->
+<div class="step1-container">
+  <!-- Content will be added later -->
+</div>
+
+<div class="pb-10 pb-lg-15">
+  <h2 class="fw-bolder d-flex align-items-center text-gray-900">
+    {{ 'CHOOSE_KNOWLEDGE_TYPE' | translate }}
+    <i
+      class="fas fa-exclamation-circle mx-2 fs-7"
+      [ngbTooltip]=" 'BILLING_TOOLTIP' | translate "
+    ></i>
+  </h2>
+
+  <div class="text-gray-500 fw-bold fs-6">
+    {{ 'IF_NEED_MORE_INFO' | translate }}
+    <a href="#" class="link-info fw-bolder"> {{ 'HELP_PAGE' | translate }} </a>
+    .
+  </div>
+</div>
+
+<div class="fv-row" [formGroup]="form">
+  <div class="row">
+    <div class="col-lg-6 mb-4" *ngFor="let type of knowledgeTypes" >
+      <input 
+        formControlName="knowledgeType"
+        name="knowledgeType"
+        type="radio"
+        class="btn-check"
+        [id]="type.id"
+        [value]="type.value"
+        [disabled]="type.disabled || false"
+      />
+      <label
+        class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center position-relative hover-elevate-up shadow-sm rounded-3 transition h-100"
+        [for]="type.id"
+        [ngbTooltip]="type.tooltip"
+        [class.disabled]="type.disabled"
+        [style.cursor]="type.disabled ? 'not-allowed' : 'pointer'"
+      >
+       
+        <app-keenicon [name]="type.iconName" class="fs-1 mx-5" [class]="type.iconClass"></app-keenicon>
+        <span class="d-block fw-bold text-inline-start">
+          <div class="d-flex justify-content-between">
+            <span class="text-gray-900 fw-bolder d-block fs-4 mb-2">
+              {{ type.label | translate }}
+              <i [ngClass]="type.icon"></i>
+            </span>
+            <span class="text-danger fs-8" *ngIf="type.disabled">{{ 'COMING_SOON' | translate }}</span>
+          </div>
+          <span class="text-gray-500 fw-bold fs-6">
+            {{ type.description | translate }}
+          </span>
+        </span>
+      </label>
+    </div>
+
+    <div class="fv-plugins-message-container invalid-feedback">
+      <!-- <ErrorMessage name='knowledgeType' /> -->
+    </div>
+  </div>
+</div> 

@@ -9,10 +9,6 @@ const Routing: Routes = [
     redirectTo: 'insighter-dashboard',
     pathMatch: 'full',
   },
-  // removed {
-  //   path: 'results-home',
-  //   loadChildren: () => import('./main-page/main-page.module').then((m) => m.MainPageModule),
-  // },
   {
     path: 'insighter-register',
     loadChildren: () => import('./wizards/wizards.module').then((m) => m.WizardsModule),
@@ -22,19 +18,15 @@ const Routing: Routes = [
     path: 'profile',
     loadChildren: () => import('./user-profile/user-profile.module').then((m) => m.UserProfileModule),
   },
-  // {
-  //   path: 'initiate-insight',
-  //   loadChildren: () => import('./insighte-initiate/insighte-initiate.module').then((m) => m.InsighteInitiateModule),
-  // },
   {
     path: 'add-knowledge',
-    loadChildren: () => import('./add-knowledge/wizards.module').then((m) => m.WizardsModule),
+    loadChildren: () => import('./add-knowledge/add-knowledge.module').then((m) => m.AddKnowledgeModule),
     canActivate:[authGuard,RolesGuard],
     data: { roles: [ 'insighter','company','company-insighter'] }
   },
   {
     path: 'edit-knowledge',
-    loadChildren: () => import('./add-knowledge/wizards.module').then((m) => m.WizardsModule),
+    loadChildren: () => import('./add-knowledge/add-knowledge.module').then((m) => m.AddKnowledgeModule),
     canActivate:[authGuard,RolesGuard],
     data: { roles: [ 'insighter','company'] }
   },

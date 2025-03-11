@@ -239,8 +239,10 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
         this.isInviting = false;
         this.showSuccess('Success', 'Insighter invitation has been sent');
         this.closeAddEmployeeModal();
-        // Reload insighters after successful invitation
-        this.loadInsighters(1);
+        
+        // Reload insighters maintaining the current page
+        const currentPage = this.paginationMeta?.current_page || 1;
+        this.loadInsighters(currentPage);
       },
       error: (error) => {
         this.isInviting = false;

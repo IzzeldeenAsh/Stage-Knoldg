@@ -24,6 +24,7 @@ export interface IKnoldgProfile {
     client_status?:string;
     phone?:string;
     social?: SocialNetwork[];
+    login_social?:boolean;
   }
   
   export interface Department {

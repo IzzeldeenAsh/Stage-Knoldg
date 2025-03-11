@@ -10,7 +10,7 @@ import {
   ViewChild,
 } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { Subscription, Observable, of } from "rxjs";
+import {  Observable, of } from "rxjs";
 import { ICreateAccount } from "../../create-account.helper";
 import {
   Document,
@@ -99,29 +99,24 @@ export class Step3Component extends BaseComponent implements OnInit, OnDestroy {
     this.certifications.push(certForm);
     this.updateParentModel(this.form.value, this.checkForm());
   }
-
   removeCertification(index: number) {
     this.certifications.removeAt(index);
     this.updateParentModel(this.form.value, this.checkForm());
     // Optionally reset the file input if needed
     // this.fileInput.nativeElement.value = '';
   }
-
   onDropzoneClick() {
     this.fileInput.nativeElement.click();
   }
-
   onFileSelected(event: any) {
     const files: FileList = event.target.files;
     this.handleFiles(files);
     // Reset the file input to allow re-uploading the same file if needed
     this.fileInput.nativeElement.value = "";
   }
-
   onDragOver(event: DragEvent) {
     event.preventDefault();
   }
-
   onFileDrop(event: DragEvent) {
     event.preventDefault();
     if (event.dataTransfer) {
@@ -129,7 +124,6 @@ export class Step3Component extends BaseComponent implements OnInit, OnDestroy {
       this.handleFiles(files);
     }
   }
-
   handleFiles(files: FileList) {
     const MAX_SIZE_MB = 2;
     const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
@@ -145,7 +139,6 @@ export class Step3Component extends BaseComponent implements OnInit, OnDestroy {
       }
     }
   }
-
   getFileIcon(file: File) {
     if (file) {
       const extension = file.name.split(".").pop()?.toLowerCase();
@@ -155,12 +148,9 @@ export class Step3Component extends BaseComponent implements OnInit, OnDestroy {
     }
     return "./assets/media/svg/files/default.svg";
   }
-
   checkForm() {
     return this.form.valid;
   }
-
-
   ngOnDestroy() {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }

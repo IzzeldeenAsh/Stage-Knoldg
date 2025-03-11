@@ -1,0 +1,21 @@
+// Animation classes
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Document section styling
+.document-section {
+  border-radius: 8px;
+  transition: all 0.3s ease;
+} 
