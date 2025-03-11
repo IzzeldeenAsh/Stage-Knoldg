@@ -111,7 +111,7 @@
         <!--begin::Pagination-->
         <div class="d-flex flex-stack flex-wrap pt-10">
           <div class="fs-6 fw-semibold text-gray-700">
-            Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ Math.min(currentPage * pageSize, paginatedTopics?.meta?.total || 0) }} of {{ paginatedTopics?.meta?.total || 0 }} entries
+            Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ Math.min(currentPage * pageSize, paginatedTopics.meta.total || 0) }} of {{ paginatedTopics.meta.total || 0 }} entries
           </div>
           <ul class="pagination">
             <li class="page-item previous" [class.disabled]="currentPage === 1">

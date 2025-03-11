@@ -9,7 +9,7 @@
 </div>
 
 <div [formGroup]="form">
-  <div class="mb-10">
+  <!-- <div class="mb-10">
     <label class="form-label required">{{ "KNOWLEDGE_DESCRIPTION" | translate }}</label>
     <textarea 
       class="form-control form-control-lg"
@@ -17,17 +17,17 @@
       rows="4"
       placeholder="{{ 'ENTER_KNOWLEDGE_DESCRIPTION' | translate }}"
     ></textarea>
-    <div class="form-text">{{ "DESCRIPTION_HELP_TEXT" | translate }}</div>
+ 
   </div>
 
   <div *ngIf="isLoading" class="d-flex justify-content-center my-5">
     <div class="spinner-border text-primary" role="status">
       <span class="visually-hidden">{{ "LOADING" | translate }}</span>
     </div>
-  </div>
+  </div> -->
 
   <div *ngIf="!isLoading && documents.length > 0">
-    <div class="fs-4 fw-bold mb-4">{{ "DOCUMENT_DESCRIPTIONS" | translate }}</div>
+   
     <div class="mb-5" *ngFor="let doc of documents">
         <div class="d-flex align-items-center mb-3">
           <div class="fs-5 fw-bold">
@@ -64,13 +64,13 @@
                  (change)="toggleChapters(doc.id)"
                  id="chapterToggle{{doc.id}}">
           <label class="form-check-label" for="chapterToggle{{doc.id}}">
-            {{ "ADD_DOCUMENT_CHAPTERS" | translate }}
+            {{ "ADD_TABLE_OF_CONTENT" | translate }}
           </label>
         </div>
         
         <!-- Chapters section with table format -->
         <div *ngIf="doc.showChapters" class="ps-4 border-start border-3 border-light-primary mb-3">
-          <div class="fs-6 fw-bold mb-3">{{ "DOCUMENT_CHAPTERS" | translate }}</div>
+          <div class="fs-6 fw-bold mb-3">{{ "TABLE_OF_CONTENT" | translate }}</div>
           
           <!-- List of added chapters in table format -->
           <div *ngIf="doc.chapters && doc.chapters.length > 0" class="mb-3">
@@ -117,9 +117,7 @@
             </button>
           </div>
           
-          <div class="form-text mt-2">
-            {{ "CHAPTERS_HELP_TEXT" | translate }}
-          </div>
+       
         </div>
     </div>
   </div>
