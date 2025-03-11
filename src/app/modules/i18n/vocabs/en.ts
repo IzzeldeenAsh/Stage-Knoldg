@@ -8,7 +8,7 @@ export const locale = {
       "DESCRIPTION": "Complete your profile to unlock all features and get the most out of your account."
     },
     KNOWLEDGE_DOCUMENTS_INFO:'Documents Info',
-    DESCRIBE_KNOWLEDGE_AND_DOCUMENTS: 'Provide descriptions for your knowledge and related documents. This helps users understand what your content is about.',
+    DESCRIBE_KNOWLEDGE_AND_DOCUMENTS: 'Briefly describe your knowledge and documents to help users understand your content.',
     DOCUMENT_DESCRIPTIONS: 'Document Descriptions',
     DOCUMENT_DESCRIPTION: 'Document Description',
     ENTER_DOCUMENT_DESCRIPTION: 'Enter a description for this document',

@@ -2,7 +2,7 @@ export const locale = {
   lang: "ar",
   data: {
     KNOWLEDGE_DOCUMENTS_INFO:'معلومات الملفات',
-    DESCRIBE_KNOWLEDGE_AND_DOCUMENTS: 'قم بتقديم وصف للمعرفة والمستندات ذات الصلة. هذا يساعد المستخدمين على فهم محتوى منشوراتك.',
+    DESCRIBE_KNOWLEDGE_AND_DOCUMENTS: 'قدم وصفًا للمعرفة والمستندات المرتبطة بها.',
     DOCUMENT_DESCRIPTIONS: 'وصف المستندات',
     DOCUMENT_DESCRIPTION: 'وصف المستند',
     ENTER_DOCUMENT_DESCRIPTION: 'أدخل وصفاً لهذا المستند',
