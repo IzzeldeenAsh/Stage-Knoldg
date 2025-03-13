@@ -175,16 +175,16 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
     ];
 
     // Add the "Add Knowledge" menu item only for specific roles
-    if (this.profile?.roles?.some((role:string) => !['client'].includes(role))) {
-      menuItems.push({
-        label: this.translate.instant('MENU.ADD_KNOWLEDGE'),
-        iconName: 'plus-square',
-        iconClass: 'text-info fs-2 fw-bold',
-        iconType: 'duotone',
-        expanded: false,
-        routerLink: '/app/add-knowledge/stepper'
-      });
-    }
+    // if (this.profile?.roles?.some((role:string) => !['client'].includes(role))) {
+    //   menuItems.push({
+    //     label: this.translate.instant('MENU.ADD_KNOWLEDGE'),
+    //     iconName: 'plus-square',
+    //     iconClass: 'text-info fs-2 fw-bold',
+    //     iconType: 'duotone',
+    //     expanded: false,
+    //     routerLink: '/app/add-knowledge/stepper'
+    //   });
+    // }
 
     this.items = menuItems;
 

@@ -1,10 +1,7 @@
-import { MessageService } from "primeng/api";
 import { Component, Injector, OnInit } from "@angular/core";
 import {
-  IClient,
   IKnoldgProfile,
 } from "src/app/_fake/models/profile.interface";
-import { ScrollAnimsService } from "src/app/_fake/services/scroll-anims/scroll-anims.service";
 import { AuthService } from "src/app/modules/auth";
 import { BaseComponent } from "src/app/modules/base.component";
 import { ProfileService } from "src/app/_fake/services/get-profile/get-profile.service";

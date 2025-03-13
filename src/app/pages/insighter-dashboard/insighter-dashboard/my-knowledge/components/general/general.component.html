@@ -1,21 +1,44 @@
 <!--begin::Card header-->
 <div class="card-header p-0">
   <div class="card-title">
-    <!--begin::Search-->
-    <div class="d-flex align-items-center position-relative my-1">
-      <i class="ki-outline ki-magnifier fs-1 position-absolute mx-2"></i>
-      <input
-        type="text"
-        data-kt-filemanager-table-filter="search"
-        class="form-control form-control-solid w-250px px-10"
-        placeholder="{{ 'KNOWLEDGE.SEARCH_PLACEHOLDER' | translate }}"
-        [(ngModel)]="searchTerm"
-        (input)="onSearch($event)"
-      />
+    <!--begin::Search and Filters-->
+    <div class="d-flex align-items-center">
+      <!--begin::Search-->
+      <div class="d-flex align-items-center position-relative my-1">
+        <i class="ki-outline ki-magnifier fs-1 position-absolute mx-2"></i>
+        <input
+          type="text"
+          data-kt-filemanager-table-filter="search"
+          class="form-control form-control-solid w-250px px-10"
+          placeholder="{{ 'KNOWLEDGE.SEARCH_PLACEHOLDER' | translate }}"
+          [(ngModel)]="searchTerm"
+          (input)="onSearch($event)"
+        />
+      </div>
+      <!--end::Search-->
+
+      <!-- Type Filter Dropdown -->
+      <div class="d-flex align-items-center position-relative my-1 ms-4">
+        <select
+          class="form-select form-select-solid"
+          [(ngModel)]="selectedKnowledgeType"
+          (change)="onKnowledgeTypeChange($event)"
+        >
+          <option *ngFor="let type of knowledgeTypes; trackBy: trackByType" [value]="type.value">{{ type.label }}</option>
+        </select>
+      </div>
+      <!-- End Type Filter Dropdown -->
+      
+      <!-- Add Refresh Button -->
+      <div class="d-flex align-items-center position-relative my-1 ms-4">
+        <button class="btn btn-sm btn-light-primary" (click)="forceRefresh()" [disabled]="loading">
+          <i class="ki-outline ki-arrows-circle fs-2" [ngClass]="{'fa-spin': loading}"></i>
+          Refresh
+        </button>
+      </div>
+      <!-- End Refresh Button -->
     </div>
-    <!--end::Search-->
-
-
+    <!--end::Search and Filters-->
   </div>
 
   <!--begin::Card toolbar-->
@@ -146,7 +169,7 @@
       <!--begin::Table-->
       <div [ngClass]="{'d-none': selectedType !== 'list'}">
         <div class="table-responsive">
-          <table class="table align-middle table-row-dashed fs-6 gy-5">
+          <table class="table align-middle table-row-dashed fs-6 gy-5" *ngIf="!loading">
             <thead>
               <tr class="text-inline-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
                 <th class="w-10px pe-2" *ngIf="!showPackageBuilder">
@@ -162,7 +185,7 @@
               </tr>
             </thead>
             <tbody class="fw-semibold text-gray-600">
-              <tr *ngFor="let knowledge of knowledges"
+              <tr *ngFor="let knowledge of knowledges; trackBy: trackById"
                   draggable="true"
                   (dragstart)="onDragStart($event, knowledge)"
                   (dragend)="onDragEnd($event)">
@@ -240,7 +263,7 @@
       </div>
 
       <!-- Grid View -->
-      <div class="row g-6 g-xl-9 mb-6 mb-xl-9" *ngIf="selectedType !== 'list'">
+      <div class="row g-6 g-xl-9 mb-6 mb-xl-9" *ngIf="selectedType !== 'list' && !loading">
         <!-- Add Knowledge Card -->
         <div class="col-md-6 col-lg-4 col-xl-3">
           <div class="card add-knowledge-card h-100">
@@ -259,7 +282,7 @@
         </div>
 
         <!-- Knowledge Cards -->
-        <div class="col-md-6 col-lg-4 col-xl-3" *ngFor="let knowledge of knowledges">
+        <div class="col-md-6 col-lg-4 col-xl-3" *ngFor="let knowledge of knowledges; trackBy: trackById">
           <div class="card knowledge-card h-100 min-h-220px" draggable="true" (dragstart)="onDragStart($event, knowledge)" (dragend)="onDragEnd($event)">
             <div class="card-body">
               <!-- Title Section -->
@@ -352,7 +375,7 @@
       <!-- Move pagination inside the content area -->
          <!--begin::Pagination-->
     <div class="d-flex justify-content-end mt-6">
-      <ul class="pagination">
+      <ul class="pagination" *ngIf="!loading">
         <!-- Previous Button -->
         <li class="page-item" [ngClass]="{'disabled': currentPage === 1}">
           <a class="page-link cursor-pointer" (click)="currentPage > 1 && loadPage(currentPage - 1)">
@@ -362,7 +385,7 @@
 
         <!-- Page Numbers -->
         <li class="page-item"
-            *ngFor="let page of getPages()"
+            *ngFor="let page of getPages(); trackBy: trackByIndex"
             [ngClass]="{'active': page === currentPage, 'disabled': page === '...'}">
           <a class="page-link cursor-pointer"
              (click)="onPageClick(page)">
@@ -411,8 +434,6 @@
 </div>
   </div>
 
-  
-
   <!-- Package Builder Dialog for small screens -->
   <p-dialog 
     [(visible)]="showDialog" 
@@ -438,5 +459,12 @@
       (onKnowledgeSelect)="onKnowledgeSelect($event)">
     </app-package-builder-content>
   </p-dialog>
+
+  <!-- Add loading indicator -->
+  <div *ngIf="loading" class="d-flex justify-content-center my-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
 </div>
 <!--end::Card body-->

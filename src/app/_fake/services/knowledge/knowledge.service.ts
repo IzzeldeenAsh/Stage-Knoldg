@@ -133,7 +133,7 @@ export class KnowledgeService {
     );
   }
 
-  getPaginatedKnowledges(page: number = 1, status?: string, keyword?: string): Observable<PaginatedKnowledgeResponse> {
+  getPaginatedKnowledges(page: number = 1, status?: string, keyword?: string, type?: string): Observable<PaginatedKnowledgeResponse> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
       'Content-Type': 'application/json',
@@ -146,6 +146,9 @@ export class KnowledgeService {
     }
     if (keyword) {
       url += `&keyword=${encodeURIComponent(keyword)}`;
+    }
+    if (type) {
+      url += `&type=${encodeURIComponent(type)}`;
     }
 
     this.setLoading(true);

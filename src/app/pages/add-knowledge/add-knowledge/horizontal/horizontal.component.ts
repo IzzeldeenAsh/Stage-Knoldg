@@ -225,7 +225,6 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
     
     // Prepare the request for updating abstracts
     const updateRequest: UpdateKnowledgeAbstractsRequest = {
-      description: currentAccount.description || '',
       documents: currentAccount.documentDescriptions || []
     };
 
@@ -251,6 +250,7 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
     // Prepare the request payload
     const updateRequest = {
       title: currentAccount.title || '',
+      description: currentAccount.description || '',
       topic_id: currentAccount.topicId || 0,
       industry_id: currentAccount.industry || 0,
       isic_code_id: currentAccount.isic_code || null,

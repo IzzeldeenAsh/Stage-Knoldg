@@ -1,10 +1,11 @@
-import { Component, OnInit, HostListener, Injector } from '@angular/core';
+import { Component, OnInit, HostListener, Injector, OnDestroy } from '@angular/core';
 import { KnowledgeService, Knowledge } from 'src/app/_fake/services/knowledge/knowledge.service';
 import { KnowldegePackegesService } from 'src/app/_fake/services/knowldege-packages/knowldege-packeges.service';
 import { PageEvent } from '@angular/material/paginator';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import Swal from 'sweetalert2';
-import { switchMap } from 'rxjs';
+import { switchMap, Subject, Observable, of, Subscription } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ScheduleDialogComponent } from '../packages/schedule-dialog/schedule-dialog.component';
@@ -13,6 +14,14 @@ interface PackageData {
   packageName: string;
   knowledge_ids: number[];
   discount: number;
+}
+
+// Add interface for filter state
+interface FilterState {
+  searchTerm: string;
+  knowledgeType: string;
+  page: number;
+  timestamp?: number; // Optional timestamp for forcing refresh
 }
 
 @Component({
@@ -35,18 +44,6 @@ interface PackageData {
       ]),
       transition(':leave', [
         animate('300ms ease-in')
-      ]),
-      transition(':enter', [
-        animate('300ms ease-out', style({
-          transform: 'translateY(100%)',
-          opacity: 0
-        }))
-      ]),
-      transition(':leave', [
-        animate('300ms ease-in', style({
-          transform: 'translateY(0)',
-          opacity: 1
-        }))
       ])
     ]),
     trigger('columnResize', [
@@ -56,7 +53,7 @@ interface PackageData {
     ])
   ]
 })
-export class GeneralComponent extends BaseComponent implements OnInit {
+export class GeneralComponent extends BaseComponent implements OnInit, OnDestroy {
   Math = Math; // Add this line for Math operations in template
   knowledges: Knowledge[] = [];
   packages: Knowledge[] = [];
@@ -85,6 +82,24 @@ export class GeneralComponent extends BaseComponent implements OnInit {
   searchTerm: string = '';
   searchTimeout: any;
   selectedType: 'grid' | 'list' = 'grid';
+  selectedKnowledgeType: string = ''; // Add this property for type filter
+
+  // Update filter state to use the interface
+  filterState: FilterState = {
+    searchTerm: '',
+    knowledgeType: '',
+    page: 1
+  };
+  
+  // Filter change subject for debouncing
+  private filterChange = new Subject<any>();
+
+  // Cache for pagination to prevent recalculation
+  private pagesCache: { [key: string]: (number | string)[] } = {};
+
+  // Add destroy subject for cleanup
+  private destroy$ = new Subject<void>();
+  private filterSubscription: Subscription | null = null;
 
   constructor(
     injector: Injector,
@@ -101,9 +116,34 @@ export class GeneralComponent extends BaseComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadKnowledges(this.currentPage);
+    // Clean up any existing subscription
+    if (this.filterSubscription) {
+      this.filterSubscription.unsubscribe();
+    }
+    
+    // Set up filter debounce with proper cleanup
+    this.filterSubscription = this.filterChange.pipe(
+      takeUntil(this.destroy$),
+      debounceTime(500)
+    ).subscribe(() => {
+      this.loadFilteredKnowledges();
+    });
+    
+    // Initial data load
+    this.loadFilteredKnowledges();
     this.loadAllKnowledges();
     this.checkScreenSize();
+  }
+
+  ngOnDestroy() {
+    // Clean up subscriptions
+    this.destroy$.next();
+    this.destroy$.complete();
+    
+    if (this.filterSubscription) {
+      this.filterSubscription.unsubscribe();
+      this.filterSubscription = null;
+    }
   }
 
   private checkScreenSize() {
@@ -191,18 +231,12 @@ export class GeneralComponent extends BaseComponent implements OnInit {
   }
 
   loadKnowledges(page: number) {
-    this.knowledgeService.getPaginatedKnowledges(page, undefined, this.searchTerm).subscribe(
-      (response) => {
-        this.knowledges = response.data;
-        this.totalItems = response.meta.total;
-        this.currentPage = response.meta.current_page;
-        this.selectedKnowledges.clear();
-        this.allSelected = false;
-      },
-      (error) => {
-        console.error('Error fetching knowledges:', error);
-      }
-    );
+    // Create a new filter state object to ensure change detection
+    this.filterState = {
+      ...this.filterState,
+      page: page
+    };
+    this.filterChange.next(this.filterState);
   }
 
   onPageChange(event: PageEvent) {
@@ -214,7 +248,19 @@ export class GeneralComponent extends BaseComponent implements OnInit {
   onDragStart(event: DragEvent, item: Knowledge) {
     if (event.dataTransfer) {
       this.draggedItem = item;
-      event.dataTransfer.setData('text', JSON.stringify(item));
+      
+      // Use a more efficient approach - only transfer the ID and type
+      const minimalData = {
+        id: item.id,
+        type: item.type,
+        title: item.title,
+        total_price: item.total_price
+      };
+      
+      event.dataTransfer.setData('text', JSON.stringify(minimalData));
+      
+      // Set drag effect
+      event.dataTransfer.effectAllowed = 'copy';
     }
   }
 
@@ -224,35 +270,49 @@ export class GeneralComponent extends BaseComponent implements OnInit {
 
   onDragOver(event: DragEvent) {
     event.preventDefault(); // This is crucial!
+    
+    // Change cursor to indicate valid drop target
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = 'copy';
+    }
   }
 
   onDrop(event: DragEvent) {
     event.preventDefault();
     if (event.dataTransfer) {
-      const data = event.dataTransfer.getData('text');
       try {
-        const item: Knowledge = JSON.parse(data);
-        if (item && !this.packages.some(pkg => pkg.id === item.id)) {
-          this.packages = [...this.packages, item];
-          console.log('Updated packages:', this.packages);
+        const data = event.dataTransfer.getData('text');
+        const parsedData = JSON.parse(data);
+        
+        // Find the complete item in our knowledges array
+        const fullItem = this.knowledges.find(k => k.id === parsedData.id);
+        
+        // If we found the full item and it's not already in packages
+        if (fullItem && !this.packages.some(pkg => pkg.id === fullItem.id)) {
+          this.packages = [...this.packages, fullItem];
+        } else if (parsedData.id && !this.packages.some(pkg => pkg.id === parsedData.id)) {
+          // Fall back to parsed data if we can't find the full item
+          this.packages = [...this.packages, parsedData as Knowledge];
         }
       } catch (e) {
-        console.error('Error parsing dropped item:', e);
+        console.error('Error processing dropped item:', e);
       }
     }
   }
 
   togglePackageBuilder() {
+    // First reset packages if we're closing the builder
+    if ((this.isSmallScreen && this.showDialog) || (!this.isSmallScreen && this.showPackageBuilder)) {
+      this.resetPackageBuilder();
+    }
+
+    // Then update state variables
     if (this.isSmallScreen) {
       this.showDialog = !this.showDialog;
-      if (!this.showDialog) {
-        this.resetPackageBuilder();
-      }
+      this.showPackageBuilder = false; // Ensure main toggle is always false on small screens
     } else {
       this.showPackageBuilder = !this.showPackageBuilder;
-      if (!this.showPackageBuilder) {
-        this.resetPackageBuilder();
-      }
+      this.showDialog = false; // Ensure dialog is always closed on large screens
     }
   }
 
@@ -358,6 +418,14 @@ export class GeneralComponent extends BaseComponent implements OnInit {
 
   
   getPages(): (number | string)[] {
+    // Create cache key based on current state
+    const cacheKey = `${this.totalPages}-${this.currentPage}`;
+    
+    // Return cached result if available
+    if (this.pagesCache[cacheKey]) {
+      return this.pagesCache[cacheKey];
+    }
+    
     const totalPages = this.totalPages;
     const currentPage = this.currentPage;
     const delta = 2; // Number of pages to show on either side of current page
@@ -390,6 +458,9 @@ export class GeneralComponent extends BaseComponent implements OnInit {
       pages.push(totalPages);
     }
   
+    // Cache the result
+    this.pagesCache[cacheKey] = pages;
+    
     return pages;
   }
   
@@ -431,9 +502,11 @@ export class GeneralComponent extends BaseComponent implements OnInit {
   }
 
   loadAllKnowledges() {
+    // Use all statuses for package builder dropdown
     this.knowledgeService.getListKnowledge().subscribe(
       (response) => {
-        this.allKnowledges = response.data;
+        // Limit to a reasonable number to prevent memory issues
+        this.allKnowledges = response.data.slice(0, 100);
       },
       (error) => {
         console.error('Error fetching all knowledges:', error);
@@ -491,21 +564,18 @@ export class GeneralComponent extends BaseComponent implements OnInit {
     );
   }
 
-  // Add this method to handle search
+  // Refactored to use the filter state
   onSearch(event: any) {
     const value = event.target.value;
-    this.searchTerm = value;
+    this.searchTerm = value; // Keep this for template binding
     
-    // Clear previous timeout
-    if (this.searchTimeout) {
-      clearTimeout(this.searchTimeout);
-    }
-    
-    // Set new timeout for debouncing
-    this.searchTimeout = setTimeout(() => {
-      this.currentPage = 1; // Reset to first page when searching
-      this.loadKnowledges(this.currentPage);
-    }, 300); // 300ms debounce
+    // Create a new filter state object to ensure change detection
+    this.filterState = {
+      ...this.filterState,
+      searchTerm: value,
+      page: 1
+    };
+    this.filterChange.next(this.filterState);
   }
 
   // Add this method to handle status classes
@@ -524,5 +594,95 @@ export class GeneralComponent extends BaseComponent implements OnInit {
 
   onTypeChange(event: any) {
     this.selectedType = event.target.value;
+  }
+
+  // Refactored to use the filter state
+  onKnowledgeTypeChange(event: any) {
+    this.selectedKnowledgeType = event.target.value; // Keep this for template binding
+    
+    // Create a new filter state object to ensure change detection
+    this.filterState = {
+      ...this.filterState,
+      knowledgeType: event.target.value,
+      page: 1
+    };
+    this.filterChange.next(this.filterState);
+  }
+  
+  // Get knowledge types for dropdown
+  get knowledgeTypes(): {value: string, label: string}[] {
+    return [
+      { value: '', label: 'All Types' },
+      { value: 'data', label: 'Data' },
+      { value: 'insight', label: 'Insight' },
+      { value: 'course', label: 'Course' },
+      { value: 'report', label: 'Report' },
+      { value: 'manual', label: 'Manual' }
+    ];
+  }
+
+  // New method to load filtered knowledges
+  loadFilteredKnowledges() {
+    this.loading = true;
+    this.pagesCache = {}; // Clear pagination cache
+    
+    console.log('Loading with filter state:', this.filterState);
+    
+    this.knowledgeService.getPaginatedKnowledges(
+      this.filterState.page, 
+      undefined, 
+      this.filterState.searchTerm, 
+      this.filterState.knowledgeType
+    ).subscribe(
+      (response) => {
+        console.log('Received API response:', response);
+        this.knowledges = response.data;
+        this.totalItems = response.meta.total;
+        this.currentPage = response.meta.current_page;
+        this.selectedKnowledges.clear();
+        this.allSelected = false;
+      },
+      (error) => {
+        console.error('Error fetching knowledges:', error);
+        // Show error to user
+        this.displayFilterError('Failed to load knowledge items. Please try again.');
+      }
+    ).add(() => {
+      this.loading = false;
+    });
+  }
+  
+  // Helper method to show filter errors
+  private displayFilterError(message: string) {
+    Swal.fire({
+      title: 'Error',
+      text: message,
+      icon: 'error',
+      confirmButtonText: 'OK'
+    });
+  }
+
+  // TrackBy functions for better rendering performance
+  trackById(index: number, item: Knowledge): number {
+    return item.id;
+  }
+  
+  trackByType(index: number, item: {value: string, label: string}): string {
+    return item.value;
+  }
+  
+  trackByIndex(index: number, item: any): number {
+    return index;
+  }
+
+  // Force refresh method for manual refresh button
+  forceRefresh(): void {
+    console.log('Manual refresh triggered');
+    // Regenerate filter state with timestamp to force change detection
+    this.filterState = {
+      ...this.filterState,
+      timestamp: Date.now() // Add timestamp to ensure it's treated as a new state
+    };
+    this.filterChange.next(this.filterState);
   }
 }

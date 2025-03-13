@@ -81,6 +81,7 @@ export const locale = {
       QUANTUM_COMPUTING: "الحوسبة الكمومية",
       SAUDI_ARABIA_DATES: "تواريخ السعودية",
       READY_TO_DIVE: "هل أنت مستعد للغوص؟ شاهد",
+      PROFILE_SETTINGS: 'إعدادات الملف الشخصي',
       TUTORIALS: "الدروس",
       MASTER_ESSENTIALS: "وابدأ في إتقان الأساسيات اليوم!",
       COPYRIGHT: "© 2024 إنسيتا",

@@ -2,7 +2,8 @@ import { Component, Injector, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { ICreateKnowldege } from '../../create-account.helper';
-import { AddInsightStepsService } from 'src/app/_fake/services/add-insight-steps/add-insight-steps.service';
+import { AddInsightStepsService, DocumentParserResponse } from 'src/app/_fake/services/add-insight-steps/add-insight-steps.service';
+import { delay, finalize, of } from 'rxjs';
 
 // Add the Chapter interface
 export interface Chapter {
@@ -35,6 +36,9 @@ export class Step3Component extends BaseComponent implements OnInit {
   documents: any[] = [];
   validationErrors: { [key: string]: string[] } = {};
   isCurrentFormValid = false;
+  
+  // Track loading state for each document
+  documentLoadingStates: { [key: number]: boolean } = {};
 
   constructor(
     injector: Injector,
@@ -49,9 +53,50 @@ export class Step3Component extends BaseComponent implements OnInit {
     this.loadDocuments();
   }
 
+  // Function to handle Generate AI Abstract button click for a specific document
+  generateAIAbstract(docId: number): void {
+    this.documentLoadingStates[docId] = true;
+    
+    // Wait 5 seconds before calling the API
+    of(null).pipe(
+      delay(5000),
+      finalize(() => {
+        this.fetchDocumentSummary(docId);
+      })
+    ).subscribe();
+  }
+
+  // Fetch document summary from AI parser API
+  fetchDocumentSummary(docId: number): void {
+    // Loading state is already set to true when this is called
+    
+    const summarySubscription = this.addInsightStepsService.getDocumentSummary(docId)
+      .subscribe({
+        next: (response: DocumentParserResponse) => {
+          const index = this.documents.findIndex(doc => doc.id === docId);
+          if (index !== -1 && response.data && response.data.summary) {
+            // Update document description with AI summary
+            this.documents[index].description = response.data.summary;
+            this.documents[index].touched = true;
+            
+            // Validate and update parent model
+            this.validateDocuments();
+            this.updateParentModelWithDocuments();
+          }
+          this.documentLoadingStates[docId] = false;
+        },
+        error: (error) => {
+          console.error(`Error getting document summary for document ${docId}:`, error);
+          this.documentLoadingStates[docId] = false;
+        }
+      });
+    
+    this.unsubscribe.push(summarySubscription);
+  }
+
   initForm(): void {
     this.form = this.fb.group({
-      description: [this.defaultValues.description || '', [Validators.required]]
+      description: [this.defaultValues.description || '', []]
     });
 
     const formChanges = this.form.valueChanges.subscribe(val => {
@@ -92,6 +137,9 @@ export class Step3Component extends BaseComponent implements OnInit {
                 })) 
               : [];
             
+            // Initialize loading state for this document - start with false
+            this.documentLoadingStates[doc.id] = false;
+            
             return {
               ...doc,
               fileIcon: this.getFileIconByExtension(doc.file_extension),
@@ -106,11 +154,31 @@ export class Step3Component extends BaseComponent implements OnInit {
               touched: false
             };
           });
+          
+          // Set loading indicators immediately for documents without descriptions
+          this.documents.forEach(doc => {
+            if (!doc.description || doc.description.trim() === '') {
+              this.documentLoadingStates[doc.id] = true;
+            }
+          });
+          
           this.isLoading = false;
           
           // After loading documents, validate them and update the parent model
           this.validateDocuments();
           this.updateParentModelWithDocuments();
+          
+          // Wait 5 seconds before calling the API for each document that needs it
+          of(null).pipe(
+            delay(20000)
+          ).subscribe(() => {
+            this.documents.forEach(doc => {
+              if (!doc.description || doc.description.trim() === '') {
+                // The loading state is already set to true above
+                this.fetchDocumentSummary(doc.id);
+              }
+            });
+          });
         },
         error: (error) => {
           console.error('Error loading documents:', error);
@@ -142,14 +210,13 @@ export class Step3Component extends BaseComponent implements OnInit {
     }
   }
 
-  // Toggle chapters visibility
   toggleChapters(docId: number): void {
     const index = this.documents.findIndex(doc => doc.id === docId);
     if (index !== -1) {
       this.documents[index].showChapters = !this.documents[index].showChapters;
       
-      // Initialize table_of_content if it doesn't exist
-      if (this.documents[index].showChapters && !this.documents[index].table_of_content) {
+      // Initialize table_of_content as an empty array if toggled on
+      if (this.documents[index].showChapters) {
         this.documents[index].table_of_content = [];
       }
       
@@ -164,7 +231,6 @@ export class Step3Component extends BaseComponent implements OnInit {
     }
   }
 
-  // Add a new chapter
   addChapter(docId: number): void {
     const index = this.documents.findIndex(doc => doc.id === docId);
     if (index !== -1 && this.documents[index].newChapterTitle.trim()) {
@@ -208,7 +274,7 @@ export class Step3Component extends BaseComponent implements OnInit {
         }
       }));
     } else {
-      this.documents[docIndex].table_of_content = undefined;
+      this.documents[docIndex].table_of_content = []; // Set to empty array instead of undefined
     }
   }
 
@@ -253,8 +319,12 @@ export class Step3Component extends BaseComponent implements OnInit {
         description: doc.description || ''
       };
       
-      if (doc.showChapters && doc.table_of_content && doc.table_of_content.length > 0) {
-        result.table_of_content = doc.table_of_content;
+      if (doc.showChapters) {
+        // Always include table_of_content when chapters are enabled
+        result.table_of_content = doc.table_of_content || [];
+      } else {
+        // Include empty array for table_of_content when not enabled
+        result.table_of_content = [];
       }
       
       return result;
@@ -262,7 +332,10 @@ export class Step3Component extends BaseComponent implements OnInit {
     
     // Pass the form validity status that considers both the main form and document descriptions
     this.updateParentModel(
-      { documentDescriptions },
+      { 
+        description: this.form.get('description')?.value, // Keep for UI purposes but it won't be sent to API
+        documentDescriptions 
+      },
       this.form.valid && !this.hasDocumentErrors()
     );
   }

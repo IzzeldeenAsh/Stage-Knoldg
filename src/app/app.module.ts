@@ -16,6 +16,7 @@ import { ApplicationConfig } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { RippleModule } from 'primeng/ripple';
 import Aura from '@primeng/themes/aura';
+import { CoreModule } from './core/core.module';
 
 function appInitializer(authService: AuthService) {
   return () => {
@@ -39,7 +40,8 @@ function appInitializer(authService: AuthService) {
     InlineSVGModule.forRoot(),
     NgbModule,
     SweetAlert2Module.forRoot(),
-    RippleModule
+    RippleModule,
+    CoreModule
   ],
   providers: [
     MessageService,
