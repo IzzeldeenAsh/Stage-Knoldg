@@ -53,6 +53,25 @@
       </div>
     </div>
 
+    <!-- Knowledge Description -->
+    <div class="mb-10 fv-row">
+      <label class="d-flex align-items-center form-label mb-3 required">
+        {{ "KNOWLEDGE_DESCRIPTION" | translate }}
+        <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'KNOWLEDGE_DESCRIPTION_TOOLTIP' | translate }}"></i>
+      </label>
+      <div class="row mb-2">
+        <div class="col-lg-12">
+          <textarea formControlName="description" class="form-control w-100" rows="5" placeholder="{{ 'ENTER_KNOWLEDGE_DESCRIPTION' | translate }}"></textarea>
+          <div
+            *ngIf="form.get('description')?.hasError('required') && form.get('description')?.touched"
+            class="fv-plugins-message-container invalid-feedback"
+          >
+            {{ "KNOWLEDGE_DESCRIPTION_REQUIRED" | translate }}
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Knowledge Language -->
     <div class="mb-10 fv-row">
       <label class="d-flex align-items-center form-label mb-3 required">

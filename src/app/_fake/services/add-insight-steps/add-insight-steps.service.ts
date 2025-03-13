@@ -97,15 +97,16 @@ export interface PublishKnowledgeRequest {
 }
 
 export interface UpdateKnowledgeAbstractsRequest {
-  description: string;
   documents: {
     id: number;
     description: string;
+    table_of_content?: any[];
   }[];
 }
 
 export interface KnowledgeDetailsRequest {
   title: string;
+  description: string;
   topic_id: number;
   industry_id: number;
   isic_code_id?: number | null;
@@ -116,6 +117,23 @@ export interface KnowledgeDetailsRequest {
   economic_bloc: number[];
   keywords: string[];
   tag_ids: string[];
+}
+
+export interface DocumentParserResponse {
+  data: {
+    metadata: {
+      title: string;
+      mime: string;
+      author: string;
+      pages: number;
+      words: number;
+      subject: string;
+      keywords: string[];
+      description: string;
+    };
+    keywords: string[];
+    summary: string;
+  };
 }
 
 @Injectable({
@@ -375,6 +393,24 @@ export class AddInsightStepsService {
       );
   }
 
+  getDocumentSummary(documentId: number): Observable<DocumentParserResponse> {
+    const headers = new HttpHeaders({
+      Accept: "application/json",
+      "Accept-Language": this.currentLang,
+    });
+
+    this.setLoading(true);
+    return this.http
+      .get<DocumentParserResponse>(`${this.insightaHost}/api/insighter/library/knowledge/document/parser/${documentId}`, {
+        headers,
+      })
+      .pipe(
+        map((res) => res),
+        catchError((error) => this.handleError(error)),
+        finalize(() => this.setLoading(false))
+      );
+  }
+
   deleteKnowledgeDocument(documentId: number): Observable<any> {
     const headers = new HttpHeaders({
       Accept: "application/json",
@@ -440,7 +476,7 @@ export class AddInsightStepsService {
 
     this.setLoading(true);
     return this.http
-      .put(`${this.apiUrl}/abstract/${knowledgeId}`, request, {
+      .put(`https://api.foresighta.co/api/insighter/library/knowledge/abstract/document/${knowledgeId}`, request, {
         headers,
       })
       .pipe(

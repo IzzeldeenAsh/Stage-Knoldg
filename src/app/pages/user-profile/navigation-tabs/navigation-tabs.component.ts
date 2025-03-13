@@ -16,7 +16,7 @@ export class NavigationTabsComponent implements OnInit, OnChanges {
     { labelen: 'Overview', labelar: 'ملخص', link: '/app/profile/overview', activeInfo: true, activePrimary: false, roles: ['client', 'insighter', 'company', 'company-insighter'] },
     { labelen: 'Certificates', labelar: 'شهاداتي', link: '/app/profile/certificates', activeInfo: false, activePrimary: true, roles: ['insighter', 'company', 'company-insighter'] },
     { labelen: 'Documents', labelar: 'وثائقي', link: '/app/profile/documents', activeInfo: false, activePrimary: true, roles: ['company'] },
-    { labelen: 'Settings', labelar: 'الإعدادات', link: '/app/profile/settings', activeInfo: false, activePrimary: true, roles: ['client', 'insighter', 'company', 'company-insighter'] },
+    { labelen: 'Profile Settings', labelar: 'إعدادات الملف الشخصي', link: '/app/profile/settings', activeInfo: false, activePrimary: true, roles: ['client', 'insighter', 'company', 'company-insighter'] },
   ];
 
   constructor(private translationService: TranslationService) {}

@@ -93,6 +93,7 @@ export const locale = {
       COOKIES: 'Cookies',
       MY_PROFILE: 'My Profile',
       MY_PROJECTS: 'My Insights',
+      PROFILE_SETTINGS: 'Profile Settings',
       MY_SUBSCRIPTION: 'My Subscription',
       MY_STATEMENTS: 'My Statements',
       ACCOUNT_SETTINGS: 'Account Settings',

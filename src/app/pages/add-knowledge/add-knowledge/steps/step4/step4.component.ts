@@ -144,6 +144,7 @@ export class Step4Component extends BaseComponent implements OnInit {
     // Initialize main form
     this.form = this.fb.group({
       title: [this.defaultValues.title, [Validators.required]],
+      description: [this.defaultValues.description, [Validators.required]],
       language: [this.defaultValues.language, [Validators.required]],
       industry: [this.defaultValues.industry, [Validators.required]],
       topicId: [this.defaultValues.topicId, [Validators.required]],
