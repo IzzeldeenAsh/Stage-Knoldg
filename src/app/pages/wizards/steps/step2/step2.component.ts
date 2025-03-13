@@ -236,8 +236,6 @@ getFileIcon(file: File): string {
         phoneNumber: [
           this.defaultValues.phoneNumber || '',
           [
-            Validators.minLength(10),
-            Validators.pattern('^[0-9]{10}$'), // Ensures exactly 10 digits
           ],
         ],
         consultingFields: [this.defaultValues.consultingFields || [], [Validators.required]],
@@ -253,9 +251,7 @@ getFileIcon(file: File): string {
           phoneCompanyNumber: [
             this.defaultValues.phoneCompanyNumber || '',
             [
-              Validators.required,
-              Validators.minLength(10),
-              Validators.pattern('^[0-9]{10}$'), // Ensures exactly 10 digits
+              Validators.required
             ],
           ],
           consultingFields: [this.defaultValues.consultingFields || [], [Validators.required]],

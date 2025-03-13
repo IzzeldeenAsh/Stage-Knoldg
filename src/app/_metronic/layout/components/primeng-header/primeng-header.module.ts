@@ -12,6 +12,7 @@ import { RippleModule } from 'primeng/ripple';
 import { TranslationModule } from 'src/app/modules/i18n';
 import { ExtrasModule } from '../../../partials/layout/extras/extras.module';
 import { SharedModule } from 'src/app/_metronic/shared/shared.module';
+import { LayoutModule } from '@angular/cdk/layout';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { SharedModule } from 'src/app/_metronic/shared/shared.module';
     InlineSVGModule,
     RippleModule,
     TranslationModule,
-    ExtrasModule
+    ExtrasModule,
+    LayoutModule
   ],
   exports: [
     PrimengHeaderComponent

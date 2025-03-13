@@ -87,6 +87,15 @@ export interface KnowledgeStatistics {
   total: number;
 }
 
+export interface KnowledgeTypeStatistic {
+  type: "data" | "insight" | "report" | "manual" | "course" | "media";
+  count: number;
+}
+
+export interface KnowledgeTypeStatisticsResponse {
+  data: KnowledgeTypeStatistic[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -191,6 +200,24 @@ export class KnowledgeService {
           total: knowledgeList.length
         };
       })
+    );
+  }
+
+  getKnowledgeTypeStatistics(): Observable<KnowledgeTypeStatisticsResponse> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Language': this.currentLang,
+    });
+
+    this.setLoading(true);
+    return this.http.get<KnowledgeTypeStatisticsResponse>(
+      `${this.baseUrl}/api/insighter/library/knowledge/statistics`,
+      { headers }
+    ).pipe(
+      map((res) => res),
+      catchError((error) => this.handleError(error)),
+      finalize(() => this.setLoading(false))
     );
   }
 

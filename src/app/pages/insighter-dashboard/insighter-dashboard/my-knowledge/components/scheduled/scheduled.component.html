@@ -43,8 +43,18 @@
     </div>
     <!--end::Table header-->
 
+    <!-- No Scheduled Items State -->
+    <div *ngIf="knowledges && knowledges.length === 0" class="text-center py-10 bg-light-secondary rounded">
+      <h3 class="fw-bold text-gray-800 mb-2">{{ 'MY_KNOWLEDGE.NO_SCHEDULED.TITLE' | translate }}</h3>
+      <p class="text-gray-600 fs-6">
+        {{ searchTerm ? 
+           ('MY_KNOWLEDGE.NO_SCHEDULED.FILTERED_MESSAGE' | translate) : 
+           ('MY_KNOWLEDGE.NO_SCHEDULED.MESSAGE' | translate) }}
+      </p>
+    </div>
+
     <!--begin::Table-->
-    <div class="table-responsive">
+    <div class="table-responsive" *ngIf="knowledges && knowledges.length > 0">
       <table class="table align-middle table-row-dashed fs-6 gy-5">
         <thead>
           <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">

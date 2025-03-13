@@ -113,7 +113,7 @@
     data-submenu-id="accountSettings"
   >
   
-    <a class="menu-link px-5 cursor-pointer" [routerLink]="'/app/insighter-dashboard/account-settings/general-settings'">
+    <a *ngIf="_user.roles.includes('insighter') || _user.roles.includes('company') || _user.roles.includes('company-insighter')" class="menu-link px-5 cursor-pointer" [routerLink]="'/app/insighter-dashboard/account-settings/general-settings'">
       <span class="menu-title">{{ 'HOME.ACCOUNT_SETTINGS' | translate }}</span>
     </a>
   </div>

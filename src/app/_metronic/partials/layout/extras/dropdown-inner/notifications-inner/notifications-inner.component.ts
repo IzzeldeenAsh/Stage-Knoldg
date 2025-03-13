@@ -18,37 +18,15 @@ export type NotificationsTabsType =
     :host {
       position: absolute;
       z-index: 105;
-      top: 100%;
-      margin-top: 0.5rem;
       background: white;
       border-radius: 0.475rem;
       box-shadow: 0 0 50px 0 rgb(82 63 105 / 15%);
-    }
-
-    :host-context([dir="ltr"]) {
-      left: 0;
-      transform: translateX(-30%);
-    }
-
-    :host-context([dir="rtl"]) {
-      right: 0;
-      transform: translateX(30%);
     }
 
     @media (max-width: 767px) {
       :host {
         width: 300px !important;
         max-width: 90vw !important;
-      }
-      
-      :host-context([dir="ltr"]) {
-        left: 0;
-        transform: none;
-      }
-      
-      :host-context([dir="rtl"]) {
-        right: 0;
-        transform: none;
       }
     }
   `]

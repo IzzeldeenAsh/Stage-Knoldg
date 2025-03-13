@@ -1,6 +1,28 @@
 export const locale = {
   lang: "ar",
   data: {
+
+  "MY_KNOWLEDGE": {
+    "NO_ITEMS": {
+      "TITLE": "لا يوجد عناصر معرفة",
+      "MESSAGE": "لا يوجد عناصر معرفة حاليًا. سيظهرون عناصر جديدة على الفور بمجرد إنشائها.",
+      "FILTERED_MESSAGE": "لا يوجد عناصر معرفة مطابقة لمعايير الفلتر الحالية. حاول ضبط الفلاتر أو عرض جميع العناصر."
+    },
+    "NO_SCHEDULED": {
+      "TITLE": "لا يوجد عناصر معرفة مجدولة",
+      "MESSAGE": "لا يوجد عناصر معرفة مجدولة حاليًا.",
+      "FILTERED_MESSAGE": "لا يوجد عناصر معرفة مطابقة لمعايير البحث الحالية. حاول بحثًا مختلفًا."
+    },
+    "NO_POSTED": {
+      "TITLE": "لا يوجد عناصر معرفة منشورة",
+      "MESSAGE": "لا يوجد عناصر معرفة منشورة حاليًا.",
+      "FILTERED_MESSAGE": "لا يوجد عناصر معرفة مطابقة لمعايير البحث الحالية. حاول بحثًا مختلفًا."
+    },
+    "NO_PACKAGES": {
+      "TITLE": "لا يوجد حزم معرفة",
+      "MESSAGE": "لا يوجد حزم معرفة حاليًا. قم بإنشاء حزمة باستخدام زر 'إنشاء حزمة'."
+    }
+  },
     KNOWLEDGE_DOCUMENTS_INFO:'معلومات الملفات',
     DESCRIBE_KNOWLEDGE_AND_DOCUMENTS: 'قدم وصفًا للمعرفة والمستندات المرتبطة بها.',
     DOCUMENT_DESCRIPTIONS: 'وصف المستندات',
@@ -8,48 +30,50 @@ export const locale = {
     ENTER_DOCUMENT_DESCRIPTION: 'أدخل وصفاً لهذا المستند',
     NO_DOCUMENTS_UPLOADED: 'لم يتم تحميل أي مستندات بعد',
     DESCRIPTION_HELP_TEXT: 'الوصف الجيد يساعد المستخدمين في العثور على المحتوى وفهمه',
-  "PROFILE_COMPLETION": {
-    "ALMOST_THERE": "أوشكت على الإنتهاء",
-    "TITLE": "اكتمال الملف الشخصي",
-    "DESCRIPTION": "أكمل ملفك الشخصي لفتح جميع الميزات والاستفادة القصوى من حسابك."
-  },
-  "MY_COMPANY": {
-    "TITLE": "شركتي",
-    "SUBTITLE": "إدارة موظفي شركتك",
-    "ADD_EMPLOYEE": "إضافة موظف",
-    "EMPTY_STATE_MESSAGE": "قم ببناء فريقك عن طريق إضافة موظفين إلى شركتك",
-    "TABLE": {
-      "INSIGHTER": "الموظف",
-      "EMAIL": "البريد الإلكتروني",
-      "COUNTRY": "البلد",
-      "STATUS": "الحالة",
-      "VERIFICATION": "التحقق"
+    
+    "PROFILE_COMPLETION": {
+      "ALMOST_THERE": "أوشكت على الإنتهاء",
+      "TITLE": "اكتمال الملف الشخصي",
+      "DESCRIPTION": "أكمل ملفك الشخصي لفتح جميع الميزات والاستفادة القصوى من حسابك."
     },
-    "VERIFIED": "تم التحقق",
-    "PENDING": "قيد الانتظار",
-    "LOADING": "جاري التحميل...",
-    "SHOWING_ENTRIES": "عرض {{first}} إلى {{last}} من {{total}} سجل",
-    "EMAIL_ADDRESS": "عنوان البريد الإلكتروني",
-    "ENTER_EMAIL": "أدخل عنوان البريد الإلكتروني",
-    "EMAIL_REQUIRED": "البريد الإلكتروني مطلوب",
-    "EMAIL_INVALID": "البريد الإلكتروني غير صالح",
-    "CHECKING_ACCOUNT": "جاري التحقق من الحساب...",
-    "FIRST_NAME": "الاسم الأول",
-    "ENTER_FIRST_NAME": "أدخل الاسم الأول",
-    "FIRST_NAME_REQUIRED": "الاسم الأول مطلوب",
-    "LAST_NAME": "اسم العائلة",
-    "ENTER_LAST_NAME": "أدخل اسم العائلة",
-    "LAST_NAME_REQUIRED": "اسم العائلة مطلوب",
-    "CANCEL": "إلغاء",
-    "INVITE": "دعوة",
-    "INVITING": "جاري الدعوة..."
-  },
-      NOTIFICATIONS: {
-        TITLE: 'إشعارات',
-        NO_NEW: 'لا توجد إشعارات جديدة',
-        VIEW: 'عرض',
-        REQUESTS: 'الطلبات'
+    
+    "MY_COMPANY": {
+      "TITLE": "شركتي",
+      "SUBTITLE": "إدارة موظفي شركتك",
+      "ADD_EMPLOYEE": "إضافة موظف",
+      "EMPTY_STATE_MESSAGE": "قم ببناء فريقك عن طريق إضافة موظفين إلى شركتك",
+      "TABLE": {
+        "INSIGHTER": "الموظف",
+        "EMAIL": "البريد الإلكتروني",
+        "COUNTRY": "البلد",
+        "STATUS": "الحالة",
+        "VERIFICATION": "التحقق"
       },
+      "VERIFIED": "تم التحقق",
+      "PENDING": "قيد الانتظار",
+      "LOADING": "جاري التحميل...",
+      "SHOWING_ENTRIES": "عرض {{first}} إلى {{last}} من {{total}} سجل",
+      "EMAIL_ADDRESS": "عنوان البريد الإلكتروني",
+      "ENTER_EMAIL": "أدخل عنوان البريد الإلكتروني",
+      "EMAIL_REQUIRED": "البريد الإلكتروني مطلوب",
+      "EMAIL_INVALID": "البريد الإلكتروني غير صالح",
+      "CHECKING_ACCOUNT": "جاري التحقق من الحساب...",
+      "FIRST_NAME": "الاسم الأول",
+      "ENTER_FIRST_NAME": "أدخل الاسم الأول",
+      "FIRST_NAME_REQUIRED": "الاسم الأول مطلوب",
+      "LAST_NAME": "اسم العائلة",
+      "ENTER_LAST_NAME": "أدخل اسم العائلة",
+      "LAST_NAME_REQUIRED": "اسم العائلة مطلوب",
+      "CANCEL": "إلغاء",
+      "INVITE": "دعوة",
+      "INVITING": "جاري الدعوة..."
+    },
+    "NOTIFICATIONS": {
+      TITLE: 'إشعارات',
+      NO_NEW: 'لا توجد إشعارات جديدة',
+      VIEW: 'عرض',
+      REQUESTS: 'الطلبات'
+    },
     MENU: {
       TITLE: 'القائمة',
       INDUSTRIES: 'الصناعات',
@@ -130,7 +154,7 @@ export const locale = {
         EMAIL_MAXLENGTH:
           "يجب أن يحتوي البريد الإلكتروني على 360 حرفًا كحد أقصى",
         PASSWORD_MINLENGTH: "يجب أن تحتوي كلمة المرور على 3 أحرف على الأقل",
-        WELCOME_LOGIN: "أهلاً بكم في فورسايتا",
+        WELCOME_LOGIN: "أهلاً بكم في نولج",
         PASSWORD_MAXLENGTH: "يجب أن تحتوي كلمة المرور على 100 حرف كحد أقصى",
         EMPOWER_INSIGHTS_TEXT: `
         البوابة العصرية لعالم من الرؤى الاستشارية
@@ -206,7 +230,7 @@ export const locale = {
         THANK_YOU_TITLE: "شكراً لك!",
         SUCCESS_JOURNEY_TITLE: "رحلتك نحو النجاح أوشكت على البدء !",
         THANK_YOU_MESSAGE: `
-          تهانينا على التسجيل المسبق في <span class="text-dark font-weight-bolder">فورسايتا</span>، حيث تلتقي القرارات القائمة على البيانات بالابتكار.
+          تهانينا على التسجيل المسبق في <span class="text-dark font-weight-bolder">نولج</span>، حيث تلتقي القرارات القائمة على البيانات بالابتكار.
           لقد اقتربت خطوة أخرى من اكتساب رؤى قوية ترفع استراتيجيات عملك. <br/><br/>
           سنخطرك بمجرد أن تكون منصتنا جاهزة، لتكون من بين أوائل الذين يستفيدون من الإمكانيات الكاملة لاستشارات الخبراء.
         `,
@@ -481,6 +505,11 @@ export const locale = {
       MANUAL: 'الدليل'
     },
     USER_REQUESTS: {
+      "NO_REQUESTS": {
+        "TITLE": "No Requests Found",
+        "MESSAGE": "You don't have any requests at the moment. New requests will appear here once created.",
+        "FILTERED_MESSAGE": "No requests match your current filter criteria. Try adjusting your filters or view all requests."
+      },
       TITLE: 'طلبات المستخدم',
       REQUEST_COUNT: 'طلبات',
       FILTER: {
@@ -820,8 +849,23 @@ export const locale = {
     "JOIN_BUTTON": "انضم إلى الشركة",
     "NO_INVITATION_QUESTION": "ليس لديك رمز دعوة؟",
     "RETURN_TO_DASHBOARD": "العودة إلى لوحة التحكم"
-  }
   },
-  
-};
+  "KNOWLEDGE_TYPES": {
+    "TITLE": "توزيع أنواع المعرفة",
+    "SUBTITLE": "إحصائيات محتوى المعرفة حسب النوع",
+    "LOAD_ERROR": "فشل في تحميل إحصائيات نوع المعرفة. يرجى المحاولة مرة أخرى.",
+    "RETRY": "إعادة المحاولة",
+    "NO_DATA": "لا توجد إحصائيات لأنواع المعرفة.",
+    "TOTAL": "المجموع",
+    "ITEMS": "عناصر",
+    "REPORT": "تقرير",
+    "INSIGHT": "رؤية",
+    "MANUAL": "دليل",
+    "DATA": "بيانات",
+    "COURSE": "دورة",
+    "MEDIA": "وسائط"
+  },
+},
+
+}
 
