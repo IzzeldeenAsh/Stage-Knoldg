@@ -8,6 +8,21 @@ export const environment = {
   USERDATA_KEY: 'authf649fc9a5f55',
   isMockEnabled: true,
   apiUrl: 'api',
+  
+  // API configuration for sharing authentication between domains
+  apiBaseUrl: 'https://api.foresighta.co/api',
+  appDomain: '.knoldg.com',
+  mainAppUrl: 'http://knoldg.com',
+  subAppUrl: 'http://app.knoldg.com',
+  
+  // Cookie configuration
+  cookieOptions: {
+    secure: false, // Set to true in production
+    domain: '.knoldg.com',
+    path: '/',
+    sameSite: 'Lax'
+  },
+  
   appThemeName: 'Metronic',
   appPurchaseUrl: 'https://1.envato.market/EA4JP',
   appHTMLIntegration:

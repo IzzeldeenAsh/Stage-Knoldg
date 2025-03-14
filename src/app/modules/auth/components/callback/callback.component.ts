@@ -6,6 +6,7 @@ import { AuthService } from "../../services/auth.service";
 import { first } from "rxjs/operators";
 import { AuthModel } from "../../models/auth.model";
 import { ProfileService } from "src/app/_fake/services/get-profile/get-profile.service";
+import { environment } from "src/environments/environment";
 
 @Component({
   selector: "app-callback",
@@ -43,7 +44,7 @@ export class CallbackComponent
       if (this.token) {
         const auth = new AuthModel();
         auth.authToken = this.token;
-        this.auth.setAuthFromLocalStorage(auth);
+        this.auth.setAuthInCookie(auth);
         this.toApp()
       } else {
         this.errorMessage = "Invalid callback parameters.";
@@ -63,21 +64,20 @@ export class CallbackComponent
             this.router.navigate(['/admin-dashboard']);
           }
           if(user.verified){
-            const authtoken:any = localStorage.getItem('foresighta-creds');
-              const token = JSON.parse(authtoken);
-              if (token.authToken) {
-                window.location.href = `http://knoldg.com/en/callback/${token.authToken}`;
-              }
+            const authData = this.auth.getAuthFromCookie();
+            if (authData && authData.authToken) {
+              window.location.href = `${environment.mainAppUrl}/en/callback/${authData.authToken}`;
+            }
           }else{
             this.errorMessage ="Verification Failed";
-            localStorage.removeItem('foresighta-creds');
+            this.auth.handleLogout().subscribe();
             this.router.navigate(['auth'])
           }
         },
         error:(error)=>{
           this.errorMessage ="Verification Failed";
-          localStorage.removeItem('foresighta-creds');
-            this.router.navigate(['auth'])
+          this.auth.handleLogout().subscribe();
+          this.router.navigate(['auth'])
         }
       })
       
