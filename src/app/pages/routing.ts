@@ -17,6 +17,8 @@ const Routing: Routes = [
   {
     path: 'profile',
     loadChildren: () => import('./user-profile/user-profile.module').then((m) => m.UserProfileModule),
+    canActivate:[authGuard,RolesGuard],
+    data: { roles: [ 'insighter','company','company-insighter','client'] }
   },
   {
     path: 'add-knowledge',
@@ -28,7 +30,7 @@ const Routing: Routes = [
     path: 'edit-knowledge',
     loadChildren: () => import('./add-knowledge/add-knowledge.module').then((m) => m.AddKnowledgeModule),
     canActivate:[authGuard,RolesGuard],
-    data: { roles: [ 'insighter','company'] }
+    data: { roles: [ 'insighter','company','company-insighter'] }
   },
   {
     path: 'insighter-dashboard',
@@ -40,13 +42,13 @@ const Routing: Routes = [
     path: 'knowledge-detail',
     loadChildren: () => import('./knowledge-detail/knowledge-detail.module').then((m) => m.KnowledgeDetailModule),
     canActivate:[authGuard,RolesGuard],
-    data: { roles: [ 'insighter','company'] }
+    data: { roles: [ 'insighter','company','company-insighter'] }
   },
   {
     path: 'my-knowledge-base',
     loadChildren: () => import('./my-knowledge-base/my-knowledge-base.module').then((m) => m.MyKnowledgeBaseModule),
     canActivate:[authGuard,RolesGuard],
-    data: { roles: [ 'insighter','company'] } 
+    data: { roles: [ 'insighter','company','company-insighter'] } 
   },
   {
     path: '**',

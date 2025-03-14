@@ -2,24 +2,15 @@
     <app-knowledge-types-statistics></app-knowledge-types-statistics>
 </ng-container>
 <div class="row">
-    <div class="col-xl-4 mb-5 mb-xl-10">
+    <!-- <div class="col-xl-4 mb-5 mb-xl-10">
         <div class="card card-flush h-md-100 mb-xl-10">
-            <!--begin::Header-->
             <div class="card-header pt-5">
-                <!--begin::Title-->
                 <div class="card-title d-flex w-100 flex-column">   
-                    <!--begin::Info--> 
                     <div class="d-flex flex-column w-100    ">
-                        <!--begin::Amount-->
                         <div class="position-relative text-gray-800 fs-1 z-index-2 fw-bold mb-5">
                             {{ 'PROFILE_COMPLETION.ALMOST_THERE' | translate }}                      
                         </div>
-                        <!--end::Amount-->
-                           <!--begin::Progress-->
-     
-                <!--end::Progress-->
                     </div>
-                    <!--end::Info--> 
                     <div class="d-flex align-items-center flex-column mt-3 w-100">
                         <div class="d-flex justify-content-between w-100 mt-auto mb-2">
                             <span class="fw-bolder fs-6 text-gray-900">{{ 'PROFILE_COMPLETION.TITLE' | translate }}</span>
@@ -30,24 +21,16 @@
                             <div class="bg-success rounded h-8px" role="progressbar" style="width: 90%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
-                    <!--begin::Subtitle-->
-                     
-                    <!--end::Subtitle--> 
                 </div>
-                <!--end::Title-->         
             </div>
-            <!--end::Header-->
-        
-            <!--begin::Card body-->
             <div class="card-body d-flex flex-column pt-4">
                 <span class="text-gray-500 pt-1 fw-semibold fs-6">Complete your profile to unlock all features and get the most out of your account.</span>
                 <a [routerLink]="['/app/profile/settings/personal-info']" class="text-info pt-2 fw-semibold fs-6">Add socials accounts!</a>           
             </div>
-            <!--end::Card body-->
         </div>
-    </div>
+    </div> -->
     <!-- Upgrade to company account -->
-    <div class="col-xl-8 mb-5 mb-xl-10" *ngIf="hasRole('insighter')">
+    <div class="col-12 mb-5 mb-xl-10" *ngIf="hasRole('insighter')">
         <div class="card card-custom bg-body border-1 h-md-100">
             <!--begin::Body-->
             <div class="card-body d-flex justify-content-center flex-wrap px-xl-15 px-5">          

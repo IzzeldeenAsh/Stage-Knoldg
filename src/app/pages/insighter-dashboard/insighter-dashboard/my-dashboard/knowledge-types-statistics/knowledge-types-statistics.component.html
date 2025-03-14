@@ -1,3 +1,4 @@
+<ng-container *ngIf="statistics.length > 0">
 <div class="card card-flush h-md-100 mb-5 mb-xl-10">
   <!--begin::Header-->
   <div class="card-header pt-5">
@@ -43,10 +44,7 @@
       </div>
     </div>
 
-    <div *ngIf="!loading && !error && statistics.length === 0" class="alert alert-info">
-      <i class="fas fa-info-circle me-2"></i>
-      <span>{{ 'KNOWLEDGE_TYPES.NO_DATA' | translate }}</span>
-    </div>
   </div>
   <!--end::Card body-->
 </div>
+</ng-container>

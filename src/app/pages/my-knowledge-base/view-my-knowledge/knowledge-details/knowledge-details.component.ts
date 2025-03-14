@@ -740,7 +740,7 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
   }
 
   shouldShowTableOfContents(doc: DocumentInfo): boolean {
-    return !this.isInsightType() && !!doc?.table_of_content?.length;
+    return  !!doc?.table_of_content?.length;
   }
 
   isInsightType(): boolean {

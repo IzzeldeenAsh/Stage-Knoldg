@@ -36,7 +36,17 @@ export const locale = {
       "TITLE": "اكتمال الملف الشخصي",
       "DESCRIPTION": "أكمل ملفك الشخصي لفتح جميع الميزات والاستفادة القصوى من حسابك."
     },
-    
+    CHOOSE_REGIONS: 'اختر المناطق',
+    SELECT_ALL_COUNTRIES: 'اختر جميع البلدان',
+    CANCEL: 'إلغاء',
+    CONFIRM: 'تأكيد',
+    KEYWORDS: 'الكلمات المفتاحية',
+    SELECT_TAGS: 'اختر التصنيفات',
+    SELECT_ALL: 'اختر الكل',
+    CLEAR_ALL: 'مسح الكل',
+    ADD_CUSTOM_TAG: 'إضافة تصنيف خاص',
+    TAG_NAME: 'اسم التصنيف',
+    TAG_NAME_REQUIRED: 'اسم التصنيف مطلوب',
     "MY_COMPANY": {
       "TITLE": "شركتي",
       "SUBTITLE": "إدارة موظفي شركتك",
@@ -438,6 +448,7 @@ export const locale = {
       COMPANY_NAME: 'اسم الشركة:',
       WEBSITE: 'الموقع الإلكتروني:',
       FIRST_NAME: 'الاسم الأول:',
+      ABOUT_COMPANY: 'حول الشركة',
       LAST_NAME: 'اسم العائلة:',
       EMAIL: 'البريد الإلكتروني:',
       ROLES: 'الأدوار:',
