@@ -12,10 +12,10 @@ import { AuthModel } from "../models/auth.model";
 import { Router } from "@angular/router";
 import { AuthHTTPService } from "./auth-http/auth-http.service";
 import { InsightaUserModel } from "../models/insighta-user.model";
-import { environment } from "src/environments/environment";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { IKnoldgProfile } from "src/app/_fake/models/profile.interface";
 import { TranslationService } from "../../i18n";
+import { CookieService } from "./cookie.service";
+import { environment } from "src/environments/environment";
 
 export type UserType = InsightaUserModel | undefined;
 
@@ -25,7 +25,8 @@ export type UserType = InsightaUserModel | undefined;
 export class AuthService implements OnDestroy {
   // private fields
   private unsubscribe: Subscription[] = []; 
-  private authLocalStorageToken = `foresighta-creds`;
+  private authCookieName = `foresighta-creds`;
+  private userCookieName = `currentUser`;
   // public fields
   currentUser$: Observable<UserType>;
   isLoading$: Observable<boolean>;
@@ -36,7 +37,8 @@ export class AuthService implements OnDestroy {
     private authHttpService: AuthHTTPService,
     private router: Router,
     private http: HttpClient,
-    private translationService:TranslationService
+    private translationService: TranslationService,
+    private cookieService: CookieService
   ) {
     this.isLoadingSubject = new BehaviorSubject<boolean>(false);
     this.currentUserSubject = new BehaviorSubject<UserType>(undefined);
@@ -63,7 +65,7 @@ export class AuthService implements OnDestroy {
       map((response: any) => {
         const auth = new AuthModel();
         auth.authToken = response.data.token;
-        this.setAuthFromLocalStorage(auth);
+        this.setAuthInCookie(auth);
         return response.data;
       }),
       switchMap(() => {
@@ -76,10 +78,9 @@ export class AuthService implements OnDestroy {
             if (profileResponse.data.roles.includes('admin')) {
               this.router.navigate(['/admin-dashboard']);
             } else {
-              const authtoken:any = localStorage.getItem('foresighta-creds');
-              const token = JSON.parse(authtoken);
-              if (token.authToken) {
-                window.location.href = `http://knoldg.com/en/callback/${token.authToken}`;
+              const authData = this.getAuthFromCookie();
+              if (authData && authData.authToken) {
+                window.location.href = `${environment.mainAppUrl}/en/callback/${authData.authToken}`;
               }
             }
             return profileResponse.data;
@@ -110,13 +111,13 @@ export class AuthService implements OnDestroy {
       responseType: 'text'
     });
   }
-  private setUserInLocalStorage(user: UserType): void {
+  private setUserInCookie(user: UserType): void {
     if (user) {
-      localStorage.setItem("currentUser", JSON.stringify(user));
+      this.cookieService.setCookie(this.userCookieName, JSON.stringify(user));
     }
   }
-  private getUserFromLocalStorage(): UserType | undefined {
-    const userJson = localStorage.getItem("currentUser");
+  private getUserFromCookie(): UserType | undefined {
+    const userJson = this.cookieService.getCookie(this.userCookieName);
     if (userJson) {
       return JSON.parse(userJson) as UserType;
     }
@@ -158,11 +159,11 @@ export class AuthService implements OnDestroy {
     return payload.exp < currentTime;
   }
 
-  getProfile():Observable<any>{
+  getProfile(): Observable<any>{
     this.isLoadingSubject.next(true);
     const headers = new HttpHeaders({
       Accept: "application/json",
-      "Accept-Language": this.currentLang, // As per your example
+      "Accept-Language": this.currentLang,
     });
     return this.http.get('https://api.foresighta.co/api/account/profile',{headers}).pipe(
       map((response: any) => {
@@ -174,11 +175,10 @@ export class AuthService implements OnDestroy {
           countryId: null,
           country: null,
         };
-        this.setUserInLocalStorage(user);
+        this.setUserInCookie(user);
         return response.data
       }),
       catchError((err) => {
-       
         return throwError(err);
       }),
       finalize(() => this.isLoadingSubject.next(false))
@@ -198,10 +198,10 @@ export class AuthService implements OnDestroy {
     );
   }
   getUserByToken(): Observable<any> {
-    const authData = this.getAuthFromLocalStorage();
+    const authData = this.getAuthFromCookie();
     if (authData) { // Check if authData exists
       if (!this.isTokenExpired(authData.authToken)) {
-        const user = this.getUserFromLocalStorage();
+        const user = this.getUserFromCookie();
         if (user) {
           this.currentUserSubject.next(user);
           return of(user);
@@ -219,18 +219,18 @@ export class AuthService implements OnDestroy {
     return this.logout().pipe(first()).pipe(
       tap({
         next: () => {
-          localStorage.removeItem("foresighta-creds");
-          localStorage.removeItem("currentUser");
-          localStorage.removeItem("user");
-          localStorage.removeItem("authToken");
+          this.cookieService.deleteCookie(this.authCookieName);
+          this.cookieService.deleteCookie(this.userCookieName);
+          this.cookieService.deleteCookie("user");
+          this.cookieService.deleteCookie("authToken");
           document.location.reload();
           
         },
         error: () => {
-          localStorage.removeItem("foresighta-creds");
-          localStorage.removeItem("currentUser");
-          localStorage.removeItem("user");
-          localStorage.removeItem("authToken");
+          this.cookieService.deleteCookie(this.authCookieName);
+          this.cookieService.deleteCookie(this.userCookieName);
+          this.cookieService.deleteCookie("user");
+          this.cookieService.deleteCookie("authToken");
           document.location.reload();
         }
       }),
@@ -247,7 +247,7 @@ export class AuthService implements OnDestroy {
         this.isLoadingSubject.next(false);
         const auth = new AuthModel();
         auth.authToken = response.data.token; 
-        this.setAuthFromLocalStorage(auth);
+        this.setAuthInCookie(auth);
         const user: UserType = {
           id: response.data.id,
           name: response.data.name,
@@ -256,7 +256,7 @@ export class AuthService implements OnDestroy {
           country: response.data.country,
         };
 
-        this.setUserInLocalStorage(user);
+        this.setUserInCookie(user);
         this.currentUserSubject.next(user);
       }),
       catchError((err) => {
@@ -274,22 +274,22 @@ export class AuthService implements OnDestroy {
   }
 
   // private methods
-  setAuthFromLocalStorage(auth: AuthModel): boolean {
-    // store auth authToken/refreshToken/epiresIn in local storage to keep user logged in between page refreshes
+  setAuthInCookie(auth: AuthModel): boolean {
+    // store auth authToken/refreshToken/epiresIn in cookie to keep user logged in between page refreshes
     if (auth && auth.authToken) {
-      localStorage.setItem(this.authLocalStorageToken, JSON.stringify(auth));
+      this.cookieService.setCookie(this.authCookieName, JSON.stringify(auth));
       return true;
     }
     return false;
   }
 
-  getAuthFromLocalStorage(): AuthModel | undefined {
+  getAuthFromCookie(): AuthModel | undefined {
     try {
-      const lsValue = localStorage.getItem(this.authLocalStorageToken);
-      if (!lsValue) {
+      const cookieValue = this.cookieService.getCookie(this.authCookieName);
+      if (!cookieValue) {
         return undefined;
       }
-      const authData = JSON.parse(lsValue);
+      const authData = JSON.parse(cookieValue);
       return authData;
     } catch (error) {
       console.error(error);

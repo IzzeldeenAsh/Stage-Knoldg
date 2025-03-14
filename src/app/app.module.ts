@@ -33,27 +33,39 @@ function appInitializer(authService: AuthService) {
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    AppRoutingModule,
     TranslateModule.forRoot(),
     HttpClientModule,
     ClipboardModule,
-    InlineSVGModule.forRoot(),
+    CoreModule,
     NgbModule,
+    InlineSVGModule.forRoot(),
     SweetAlert2Module.forRoot(),
-    RippleModule,
-    CoreModule
+    AppRoutingModule,
+    RippleModule
   ],
   providers: [
     MessageService,
-    PrimeNGConfig,
     {
       provide: APP_INITIALIZER,
       useFactory: appInitializer,
       multi: true,
       deps: [AuthService],
     },
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    provideClientHydration(),
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
+    // Make sure withCredentials is true for all HTTP requests
+    {
+      provide: 'XSRF_COOKIE_NAME',
+      useValue: 'XSRF-TOKEN'
+    },
+    {
+      provide: 'XSRF_HEADER_NAME',
+      useValue: 'X-XSRF-TOKEN'
+    },
+    provideClientHydration()
   ],
   bootstrap: [AppComponent],
 })
