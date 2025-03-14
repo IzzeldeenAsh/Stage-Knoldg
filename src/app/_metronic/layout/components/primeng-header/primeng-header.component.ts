@@ -191,7 +191,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
   }
 
   getIndustryUrl(industry: Industry): string {
-    return `https://knowrland-for-client.vercel.app/en/industry/${industry.id}/${industry.slug}`;
+    return `https://knoldg.com/en/industry/${industry.id}/${industry.slug}`;
   }
 
   initializeMenu() {
@@ -217,7 +217,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: 'https://knowrland-for-client.vercel.app/en/industries/report'
+        routerLink: 'https://knoldg.com/en/industries/report'
       },
       {
         label: this.translate.instant('MENU.INSIGHTS'),
@@ -225,7 +225,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: 'https://knowrland-for-client.vercel.app/en/industries/insight'
+        routerLink: 'https://knoldg.com/en/industries/insight'
       },
      
       {
@@ -234,7 +234,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: 'https://knowrland-for-client.vercel.app/en/industries/data'
+        routerLink: 'https://knoldg.com/en/industries/data'
       },
       {
         label: this.translate.instant('MENU.MANUAL'),
@@ -242,7 +242,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: 'https://knowrland-for-client.vercel.app/en/industries/manual'
+        routerLink: 'https://knoldg.com/en/industries/manual'
       },
       {
         label: this.translate.instant('MENU.COURSES'),
@@ -250,7 +250,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: 'https://knowrland-for-client.vercel.app/en/industries/course'
+        routerLink: 'https://knoldg.com/en/industries/course'
       }
     ];
 

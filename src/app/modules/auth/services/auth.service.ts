@@ -79,7 +79,7 @@ export class AuthService implements OnDestroy {
               const authtoken:any = localStorage.getItem('foresighta-creds');
               const token = JSON.parse(authtoken);
               if (token.authToken) {
-                window.location.href = `http://knowrland-for-client.vercel.app/en/callback/${token.authToken}`;
+                window.location.href = `http://knoldg.com/en/callback/${token.authToken}`;
               }
             }
             return profileResponse.data;

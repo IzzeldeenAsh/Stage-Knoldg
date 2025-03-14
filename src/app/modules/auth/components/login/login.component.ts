@@ -95,7 +95,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
         const authtoken:any = localStorage.getItem('foresighta-creds');
         const token = JSON.parse(authtoken);
         if (token.authToken) {
-          window.location.href = `http://knowrland-for-client.vercel.app/en/callback/${token.authToken}`;
+          window.location.href = `http://knoldg.com/en/callback/${token.authToken}`;
         }
       },
       error: (err) => {
@@ -124,7 +124,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
               const authtoken:any = localStorage.getItem('foresighta-creds');
               const token = JSON.parse(authtoken);
               if (token.authToken) {
-                window.location.href = `http://knowrland-for-client.vercel.app/en/callback/${token.authToken}`;
+                window.location.href = `http://knoldg.com/en/callback/${token.authToken}`;
               }
             }
           }
