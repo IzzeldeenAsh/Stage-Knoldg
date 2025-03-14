@@ -500,6 +500,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       GENERAL_INFO: 'General Info',
       COMPANY_NAME: 'Company Name:',
       WEBSITE: 'Website:',
+      ABOUT_COMPANY: 'About Company',
       FIRST_NAME: 'First Name:',
       LAST_NAME: 'Last Name:',
       EMAIL: 'Email:',
@@ -617,7 +618,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       "NAV": {
         "OVERVIEW": "Overview",
         "MY_REQUESTS": "My Requests",
-        "MY_KNOWLEDGE": "My Knowledge",
+        "MY_KNOWLEDGE": "Knowledge Base",
         "ACCOUNT_SETTINGS": "Account Settings",
         "MY_COMPANY": "My Company",
         "INVITING": "Inviting"
@@ -795,7 +796,7 @@ UPLOAD: 'Upload',
   NAME: "Name",
   VIEW: "View",
   KNOWLEDGE: {
-'TITLE': 'My Knowledge Base',
+'TITLE': 'Knowledge Base',
     'TOTAL': 'Total',
     'ITEMS': 'items',
     'SEARCH_PLACEHOLDER': 'Search Files & Folders',
@@ -817,7 +818,7 @@ UPLOAD: 'Upload',
     'SCHEDULE': 'Schedule',
     'CREATE_PACKAGE': 'Create Package',
     'TABS': {
-      'GENERAL': 'General',
+      'GENERAL': 'All Knowledge',
       'SCHEDULED': 'Scheduled',
       'POSTED': 'Posted',
       'PACKAGES': 'Packages'
@@ -839,7 +840,7 @@ UPLOAD: 'Upload',
     ENTER_DESCRIPTION: "Enter Description",
     DESCRIPTION_REQUIRED: "Description is required",
     DASHBOARD: "Dashboard",
-    MY_KNOWLEDGE_BASE: "My Knowledge Base",
+    MY_KNOWLEDGE_BASE: "Knowledge Base",
     COMING_SOON:"Coming Soon",
     VIEW_KNOWLEDGE: "View Knowledge",
     CLICK_TO_ADD_DOCUMENT: "Click to add document",
@@ -901,7 +902,7 @@ UPLOAD: 'Upload',
     VIEW_MY_KNOWLEDGE: {
       BREADCRUMB: {
         HOME: 'Home',
-        MY_KNOWLEDGE_BASE: 'My Knowledge Base',
+        MY_KNOWLEDGE_BASE: 'Knowledge Base',
         GENERAL: 'General'
       },
       KNOWLEDGE_DETAILS: 'Knowledge Details',

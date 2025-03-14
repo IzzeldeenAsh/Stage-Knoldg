@@ -6,7 +6,7 @@
     <div class="card-header p-0">
       <div class="card-title">
         <!--begin::Search-->
-        <div class="d-flex align-items-center position-relative my-1">
+        <div class="d-flex align-items-center position-relative my-1" >
           <i class="ki-outline ki-magnifier fs-1 position-absolute mx-2"></i>
           <input
             type="text"
@@ -23,17 +23,7 @@
 
     <!--begin::Table header-->
     <div class="d-flex flex-stack mb-6">
-      <!--begin::Title-->
-      <div class="badge badge-lg badge-light-info mt-2">
-        <div class="d-flex align-items-center flex-wrap">
-          <i class="ki-duotone ki-abstract-32 fs-2x text-info me-3">
-            <span class="path1"></span>
-            <span class="path2"></span>
-          </i>
-          <span class="fw-bold">{{'SCHEDULED_KNOWLEDGE' | translate}} </span>
-        </div>
-      </div>
-      <!--end::Title-->
+
 
       <!--begin::Items Counter-->
       <div class="badge badge-lg badge-primary">
@@ -125,7 +115,7 @@
     <!--end::Table-->
 
     <!--begin::Pagination-->
-    <div class="d-flex justify-content-end mt-6">
+    <div class="d-flex justify-content-end mt-6" *ngIf="knowledges && knowledges.length > 0">
       <ul class="pagination">
         <!-- Previous Button -->
         <li class="page-item" [ngClass]="{'disabled': currentPage === 1}">

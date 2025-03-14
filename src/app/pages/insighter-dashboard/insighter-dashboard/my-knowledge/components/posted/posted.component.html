@@ -21,7 +21,7 @@
       </div>
 
       <!--begin::Card toolbar-->
-      <div class="card-toolbar">
+      <div class="card-toolbar" *ngIf="knowledges && knowledges.length > 0">
         <!--begin::Toolbar-->
         <div class="d-flex justify-content-end">
           <!--begin::Generate Package-->
@@ -41,18 +41,7 @@
     <!--end::Card header-->
 
     <!--begin::Table header-->
-    <div class="d-flex flex-stack mb-6">
-      <!--begin::Title-->
-      <div class="badge badge-lg badge-light-success mt-2">
-        <div class="d-flex align-items-center flex-wrap">
-          <i class="ki-duotone ki-abstract-32 fs-2x text-success me-3">
-            <span class="path1"></span>
-            <span class="path2"></span>
-          </i>
-          <span class="fw-bold">{{'POSTED_KNOWLEDGE' | translate}} </span>
-        </div>
-      </div>
-      <!--end::Title-->
+    <div class="d-flex flex-stack mb-6" *ngIf="knowledges && knowledges.length > 0">
 
       <!--begin::Items Counter-->
       <div class="badge badge-lg badge-primary">
@@ -149,7 +138,7 @@
         <!--end::Table-->
 
         <!--begin::Pagination-->
-        <div class="d-flex justify-content-end mt-6">
+        <div class="d-flex justify-content-end mt-6" *ngIf="knowledges && knowledges.length > 0">
           <ul class="pagination">
             <!-- Previous Button -->
             <li class="page-item" [ngClass]="{'disabled': currentPage === 1}">

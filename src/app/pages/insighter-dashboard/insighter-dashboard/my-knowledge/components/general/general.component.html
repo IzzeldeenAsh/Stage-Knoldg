@@ -1,5 +1,5 @@
 <!--begin::Card header-->
-<div class="card-header p-0">
+<div class="card-header p-0" *ngIf="knowledges && knowledges.length > 0">
   <div class="card-title">
     <!--begin::Search and Filters-->
     <div class="d-flex align-items-center">
@@ -374,7 +374,7 @@
 
       <!-- Move pagination inside the content area -->
          <!--begin::Pagination-->
-    <div class="d-flex justify-content-end mt-6">
+    <div class="d-flex justify-content-end mt-6" *ngIf="knowledges && knowledges.length > 0">
       <ul class="pagination" *ngIf="!loading">
         <!-- Previous Button -->
         <li class="page-item" [ngClass]="{'disabled': currentPage === 1}">

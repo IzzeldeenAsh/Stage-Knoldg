@@ -43,6 +43,9 @@
     </div>
     <div class="text-dark fs-2 fw-bolder" *ngIf="profile.company?.legal_name">
       {{ profile.company?.legal_name }}
+      <span class="fs-4 fw-normal ms-2" *ngIf="profile.roles.includes('company-insighter')">
+        ({{profile.first_name}} {{profile.last_name}})
+      </span>
     </div>
     <!-- SVG Icon -->
   <ng-container *ngIf="profile.company">

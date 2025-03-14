@@ -154,7 +154,7 @@
 <div class="card-header">
   <h3 class="card-title">
     <ng-container *ngIf="profile.company && profile.company.about_us">
-      {{ 'PROFILE.ABOUT' | translate }}
+      {{ 'PROFILE.ABOUT_COMPANY' | translate }}
     </ng-container>
 
   </h3>
@@ -189,12 +189,7 @@
       {{ profile.bio }}
     </p>
   </div>
-  <!-- About Company Account-->
-  <div *ngIf="profile.company && profile.company.about_us" class="mb-6">
-    <p class="text-sm text-gray-800 leading-5.5">
-      {{ profile.company.about_us }}
-    </p>
-  </div>
+
 </div>
 </div>
 <div class="row">
