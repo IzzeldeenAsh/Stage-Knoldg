@@ -66,8 +66,16 @@ mode="indeterminate"
 
     <!--begin::Body-->
     <div class="mt-5">
+        <!--begin::No Requests State-->
+        <div *ngIf="filteredUserRequests.length === 0" class="text-center py-10 bg-light-secondary rounded">
+           
+            <h3 class="fw-bold text-gray-800 mb-2">{{ 'USER_REQUESTS.NO_REQUESTS.TITLE' | translate }}</h3>
+            <p class="text-gray-600 fs-6">{{ 'USER_REQUESTS.NO_REQUESTS.MESSAGE' | translate }}</p>
+        </div>
+        <!--end::No Requests State-->
+
         <!--begin::Table-->
-        <div class="table-responsive">
+        <div class="table-responsive" *ngIf="filteredUserRequests.length > 0">
             <table class="table align-middle table-row-dashed fs-6 gy-3">
                 <!--begin::Table head-->
                 <thead>

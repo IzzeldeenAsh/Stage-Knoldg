@@ -5,19 +5,89 @@
     <div class="header-container d-flex justify-content-between align-items-center w-100">
       <div class="header-logo">
         <a href="https://knowrland-for-client.vercel.app/en">
-          <img *ngIf="lang === 'en'" src="./assets/media/LOGO-KNOLD/KNOLDG-01.png" alt="Logo" class="h-40px" />
-          <img *ngIf="lang === 'ar'" src="./assets/media/LOGO-KNOLD/KNOLDG-LOGO-12.png" alt="Logo" class="h-40px" />
+          <ng-container *ngIf="!isDashboardRoute">
+            <img *ngIf="lang === 'en'" src="./assets/media/LOGO-KNOLD/KNOLDG-LOGO-26.png" alt="Logo"  />
+          <img *ngIf="lang === 'ar'" src="./assets/media/LOGO-KNOLD/KNOLDG- LOGO-12.png" alt="Logo"  />
+          </ng-container>
+          <ng-container *ngIf="isDashboardRoute">
+            <img *ngIf="lang === 'en'" src="./assets/media/LOGO-KNOLD/KNOLDG-03.png" alt="Logo" class="h-45px"  />
+          <img *ngIf="lang === 'ar'" src="./assets/media/LOGO-KNOLD/KNOLDG-16.png" alt="Logo" class="h-45px"   />
+          </ng-container>
         </a>
       </div>
       <div class="header-menu d-flex justify-content-center flex-grow-1">
-        <p-menubar [model]="items" [style]="{'border': 'none', 'background': 'transparent'}">
+        
+        <p-menubar [model]="items" [style]="{'border': 'none', 'background': 'transparent', 'font-size': '14px',paddingTop: '18px'}">
           <ng-template pTemplate="item" let-item>
-            <a [href]="item.routerLink">
-              <div class="d-flex align-items-center py-3 mx-8">
-             
+            <!-- Regular menu items -->
+            <a [href]="item.routerLink" *ngIf="!item.items" class="menu-item-link" [ngClass]="{'text-white': isDashboardRoute}">
+              <div class="d-flex align-items-center py-3 mx-6">
                 <span>{{ item.label }}</span>
               </div>
             </a>
+            
+            <!-- Industries dropdown item -->
+            <div *ngIf="item.items && item.label === translate.instant('MENU.INDUSTRIES')" class="position-relative industries-item">
+              <a href="#" class="menu-item-link industries-toggle" (click)="toggleIndustriesMenu($event)" [ngClass]="{'text-white': isDashboardRoute}">
+                <div class="d-flex align-items-center py-3 mx-8">
+                  <span>{{ item.label }}</span>
+                  <i class="ki-duotone ki-arrow-down fs-5 ms-2" [ngClass]="{'rotate-180': isIndustriesMenuOpen}"></i>
+                </div>
+              </a>
+              
+              <!-- Industries dropdown menu -->
+              <div *ngIf="isIndustriesMenuOpen" class="menu-sub menu-sub-dropdown industries-dropdown" 
+                  [ngClass]="{'show': isIndustriesMenuOpen, 'rtl': lang === 'ar'}"
+                  style="z-index: 108; position: absolute; top: 100%; min-width: 600px;">
+                <div class="padding-industries-menu">
+                  <!-- Header -->
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h3 class="fs-5 fw-semibold m-0">Featured Industries</h3>
+                    <a href="https://knowrland-for-client.vercel.app/en/all-industries" class="text-primary fs-7">View all industries</a>
+                  </div>
+                  
+                  <div class="separator mb-3"></div>
+                  
+                  <!-- Industries Grid -->
+                  <div class="row gx-5 gy-3">
+                    <!-- First Column -->
+                    <div class="col-6">
+                      <div *ngFor="let industry of industries.slice(0, Math.ceil(industries.length/2))" class="mb-3">
+                        <a [href]="getIndustryUrl(industry)" class="text-decoration-none">
+                          <h4 class="fs-6 fw-semibold text-dark mb-0">{{industry.name}}</h4>
+                          <p class="text-muted fs-7 mt-1 mb-0">Explore insights and trends</p>
+                        </a>
+                      </div>
+                    </div>
+                    
+                    <!-- Second Column -->
+                    <div class="col-6">
+                      <div *ngFor="let industry of industries.slice(Math.ceil(industries.length/2), industries.length)" class="mb-3">
+                        <a [href]="getIndustryUrl(industry)" class="text-decoration-none">
+                          <h4 class="fs-6 fw-semibold text-dark mb-0">{{industry.name}}</h4>
+                          <p class="text-muted fs-7 mt-1 mb-0">Explore insights and trends</p>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="separator my-3"></div>
+                  
+                  <!-- Footer -->
+                  <div class="bg-light p-3 rounded">
+                    <div class="row align-items-center">
+                      <div class="col-9">
+                        <h4 class="fs-6 fw-semibold text-dark mb-0">Explore All Industries</h4>
+                        <p class="text-muted fs-7 mt-1 mb-0">Discover comprehensive insights across various sectors</p>
+                      </div>
+                      <div class="col-3 text-end">
+                        <a href="https://knowrland-for-client.vercel.app/en/all-industries" class="btn btn-primary btn-sm px-3 fs-7">Browse All</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </ng-template>
         </p-menubar>
       </div>
@@ -36,16 +106,15 @@
               {{ notificationCount }}
             </div>  
           </div>
-          <div class="position-relative">
-            <app-notifications-inner 
-              *ngIf="isNotificationsOpen"
-              [parent]="'client'"
-              (notificationClicked)="handleNotificationClick($event)" 
-              [notifications]="notifications"
-              (clickOutside)="closeNotifications()"
-              class="notification-dropdown"
-            ></app-notifications-inner>
-          </div>
+          <!-- Notification dropdown -->
+          <app-notifications-inner 
+            *ngIf="isNotificationsOpen"
+            [parent]="'client'"
+            (notificationClicked)="handleNotificationClick($event)" 
+            [notifications]="notifications"
+            (clickOutside)="closeNotifications()"
+            class="notification-dropdown"
+          ></app-notifications-inner>
         </div>
 
         <!-- User dropdown toggle -->
@@ -54,13 +123,10 @@
             <div class="user-avatar" *ngIf="userProfileImage">
               <img [src]="userProfileImage" alt="User Avatar" />
             </div>
-            <!-- <div class="user-avatar user-initials" *ngIf="!userProfileImage">
+            <div class="user-avatar user-initials" *ngIf="!userProfileImage">
               {{ userInitials }}
             </div>
-            <div class="user-info">
-              <div class="user-name">{{ userName }}</div>
-              <div class="user-email">{{ userEmail }}</div>
-            </div> -->
+           
             <i class="ki-duotone ki-arrow-down fs-4 rotate-180" ></i>
           </a>
           
@@ -130,7 +196,7 @@
     (notificationClicked)="handleNotificationClick($event)" 
     [notifications]="notifications"
     (clickOutside)="closeNotifications()"
-    class="notification-dropdown"
+    class="notification-dropdown mobile-notification-dropdown"
   ></app-notifications-inner>
 </div>
 
@@ -143,13 +209,45 @@
   </ng-template>
   <div class="mobile-menu">
     <div *ngFor="let item of items" class="mobile-menu-item">
-      <a [routerLink]="item.routerLink" class="mobile-menu-link" *ngIf="!item.items" (click)="sidebarVisible = false">
+      <!-- Special handling for Industries menu item -->
+      <div *ngIf="item.label === translate.instant('MENU.INDUSTRIES')" class="mobile-submenu-container">
+        <a class="mobile-menu-link with-submenu" (click)="toggleSubmenu(item); $event.preventDefault()">
+          <app-keenicon [name]="item.iconName || 'element-11'" [type]="item.iconType || 'duotone'" class="fs-2"></app-keenicon>
+          <span class="menu-text">{{ item.label }}</span>
+          <i class="ki-duotone ki-arrow-down fs-4" [ngClass]="{'rotate-180': item.expanded}"></i>
+        </a>
+        
+        <div class="mobile-submenu" [ngClass]="{'expanded': item.expanded}">
+          <div *ngFor="let industry of industries" class="p-2 border-bottom">
+            <a [href]="getIndustryUrl(industry)" class="text-decoration-none" (click)="sidebarVisible = false">
+              <h5 class="fs-6 fw-semibold text-dark mb-0">{{ industry.name }}</h5>
+              <p class="text-muted fs-7 mt-1 mb-0">Explore insights and trends</p>
+            </a>
+          </div>
+          <div class="p-2 mt-1">
+            <div class="bg-light p-2 rounded">
+              <h5 class="fs-6 fw-semibold mb-0">Explore All Industries</h5>
+              <p class="text-muted fs-7 mt-1 mb-2">Discover comprehensive insights across various sectors</p>
+              <a href="https://knowrland-for-client.vercel.app/en/all-industries" class="btn btn-primary btn-sm w-100 fs-7" (click)="sidebarVisible = false">
+                Browse All
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Regular menu items without submenus -->
+      <a [routerLink]="item.routerLink" class="mobile-menu-link" 
+         [ngClass]="{'text-white': isDashboardRoute}"
+         *ngIf="!item.items && item.label !== translate.instant('MENU.INDUSTRIES')" 
+         (click)="sidebarVisible = false">
         <app-keenicon [name]="item.iconName" [type]="item.iconType || 'duotone'" class="fs-2"></app-keenicon>
         <span class="menu-text">{{ item.label }}</span>
       </a>
       
-      <div *ngIf="item.items" class="mobile-submenu-container">
-        <a  class="mobile-menu-link with-submenu" (click)="toggleSubmenu(item); $event.preventDefault()">
+      <!-- Regular menu items with submenus (not Industries) -->
+      <div *ngIf="item.items && item.label !== translate.instant('MENU.INDUSTRIES')" class="mobile-submenu-container">
+        <a class="mobile-menu-link with-submenu" (click)="toggleSubmenu(item); $event.preventDefault()">
           <app-keenicon [name]="item.iconName" [type]="item.iconType || 'duotone'" class="fs-2"></app-keenicon>
           <span class="menu-text">{{ item.label }}</span>
           <i class="ki-duotone ki-arrow-down fs-4 rotate-180" [ngClass]="{'rotate-180': !item.expanded}"></i>

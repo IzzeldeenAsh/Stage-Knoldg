@@ -1,8 +1,6 @@
 .primeng-header {
   width: 100%;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
-  background-color: #ffffff;
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
@@ -15,8 +13,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 0px 1.5rem;
-  background-color: #ffffff;
-  box-shadow: 0 0 20px 0 rgba(76, 87, 125, 0.1);
+  background-color:transparent;
+  box-shadow: none;
   position: relative;
   z-index: 100;
 }
@@ -24,12 +22,19 @@
 .header-logo {
   flex: 0 0 auto;
   margin-right: 2rem;
+  padding-top: 18px ;
+  padding-inline-start: 5px;
+  a img{
+    height: 36px;
+  }
 }
 
 .header-menu {
   flex: 1 1 auto;
 }
-
+.padding-industries-menu{
+  padding: 1.3rem 1.7rem;
+}
 .header-actions {
   display: flex;
   align-items: center;
@@ -531,24 +536,70 @@ app-user-inner {
 /* Notification Styles */
 .notification-item {
   margin-right: 1rem;
+  position: relative;
 }
 
 .notification-toggle {
   position: relative;
 }
 
+/* Position the notification dropdown properly */
+.position-relative {
+  position: relative;
+  
+  .notification-dropdown {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 0.5rem);
+    z-index: 1060;
+    width: 350px;
+    max-width: 90vw;
+    box-shadow: 0 0 50px 0 rgba(82, 63, 105, 0.15);
+    border-radius: 0.475rem;
+  }
+}
+
+/* RTL support for notification dropdown */
+:host-context([dir="rtl"]) {
+  .position-relative .notification-dropdown {
+    right: auto;
+    left: 0;
+  }
+}
+
 .mobile-notification-item {
   margin-right: 0.5rem;
 }
 
+/* Improve mobile notifications positioning */
 .mobile-notifications-container {
   position: fixed;
-  bottom: 1rem;
+  top: 60px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1060;
   width: 90%;
   max-width: 350px;
+  box-shadow: 0 0 50px 0 rgba(82, 63, 105, 0.15);
+  border-radius: 0.475rem;
+  
+  .mobile-notification-dropdown {
+    width: 100% !important;
+    position: relative !important;
+    top: 0 !important;
+    right: 0 !important;
+    left: 0 !important;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+}
+
+/* Media queries for responsive adjustments */
+@media (max-width: 767px) {
+  .notification-dropdown {
+    width: 300px !important;
+    max-width: 90vw !important;
+  }
 }
 
 /* RTL Support for notifications */
@@ -565,11 +616,135 @@ app-user-inner {
 }
 
 .desktop-header {
-  background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(4px);
 }
 
-[data-kt-app-theme="dark"] .desktop-header {
-  background: rgba(30, 30, 30, 0.7);
+/* Industries Dropdown Styles */
+.industries-item {
+  position: relative;
 }
+
+.industries-toggle {
+  cursor: pointer;
+  user-select: none;
+}
+
+.industries-dropdown {
+  background-color: #ffffff;
+  box-shadow: 0 0 20px 0 rgba(82, 63, 105, 0.1);
+  border-radius: 0.475rem;
+  overflow: hidden;
+  max-height: 650px;
+  left: 0;
+  z-index: 1200 !important;
+}
+
+.industries-dropdown a {
+  display: block;
+  padding: 4px 0;
+}
+
+.industries-dropdown a h4 {
+  transition: color 0.2s;
+  font-size: 0.9rem;
+}
+
+.industries-dropdown a:hover h4 {
+  color: #009ef7 !important;
+}
+
+.industries-dropdown a p {
+  font-size: 0.8rem;
+  color: #a1a5b7;
+}
+
+.industries-dropdown .row > div > div {
+  margin-bottom: 12px;
+}
+
+.industries-dropdown .row > div > div:last-child {
+  margin-bottom: 0;
+}
+
+.menu-sub-dropdown {
+  position: absolute;
+}
+
+.menu-sub-dropdown.show {
+  display: block;
+}
+
+/* RTL support for industries dropdown */
+:host-context([dir="rtl"]) {
+  .industries-dropdown {
+    left: auto;
+    right: 0;
+  }
+}
+
+/* Mobile Industries Menu Styling */
+.mobile-submenu-container .mobile-submenu {
+  background-color: #ffffff;
+  padding: 2px 0;
+}
+
+.mobile-submenu .border-bottom {
+  border-color: #f1f1f1 !important;
+}
+
+.mobile-submenu a {
+  display: block;
+  transition: all 0.2s ease;
+  padding: 2px 0;
+}
+
+.mobile-submenu a h5 {
+  font-size: 0.9rem;
+}
+
+.mobile-submenu a p {
+  font-size: 0.75rem;
+  color: #a1a5b7;
+}
+
+.mobile-submenu a:hover h5 {
+  color: #009ef7 !important;
+}
+
+.mobile-submenu .bg-light {
+  background-color: #f8f9fa !important;
+}
+
+/* Separator styling */
+.separator {
+  height: 1px;
+  background-color: #EBEDF3;
+  width: 100%;
+}
+
+/* Font size helper classes */
+.fs-7 {
+  font-size: 0.85rem !important;
+}
+
+/* Font weight classes */
+.fw-semibold {
+  font-weight: 500 !important;
+}
+
+/* Dashboard menu item hover fix - black text on hover */
+.menu-item-link.text-white:hover {
+  color: #181C32 !important; /* Dark text on hover */
+}
+
+/* For industries dropdown toggle */
+.industries-toggle.text-white:hover {
+  color: #181C32 !important; /* Dark text on hover */
+}
+
+/* Mobile menu items */
+.mobile-menu-link.text-white:hover {
+  color: #181C32 !important; /* Dark text on hover */
+}
+

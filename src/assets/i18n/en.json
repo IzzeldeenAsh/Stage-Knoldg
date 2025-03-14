@@ -1,0 +1,23 @@
+{
+  "MY_KNOWLEDGE": {
+    "NO_ITEMS": {
+      "TITLE": "No Knowledge Items Found",
+      "MESSAGE": "You don't have any knowledge items at the moment. New items will appear here once created.",
+      "FILTERED_MESSAGE": "No knowledge items match your current filter criteria. Try adjusting your filters or view all items."
+    },
+    "NO_SCHEDULED": {
+      "TITLE": "No Scheduled Items Found",
+      "MESSAGE": "You don't have any scheduled knowledge items at the moment.",
+      "FILTERED_MESSAGE": "No scheduled items match your search criteria. Try a different search term."
+    },
+    "NO_POSTED": {
+      "TITLE": "No Posted Items Found",
+      "MESSAGE": "You don't have any posted knowledge items at the moment.",
+      "FILTERED_MESSAGE": "No posted items match your search criteria. Try a different search term."
+    },
+    "NO_PACKAGES": {
+      "TITLE": "No Packages Found",
+      "MESSAGE": "You don't have any knowledge packages at the moment. Create a package by using the 'Generate Package' button."
+    }
+  }
+} 

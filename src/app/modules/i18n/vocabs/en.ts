@@ -1,7 +1,30 @@
 // en.ts
 export const locale = {
   lang: 'en',
+
   data: {
+  
+    "MY_KNOWLEDGE": {
+      "NO_ITEMS": {
+        "TITLE": "No Knowledge Items Found",
+        "MESSAGE": "You don't have any knowledge items at the moment. New items will appear here once created.",
+        "FILTERED_MESSAGE": "No knowledge items match your current filter criteria. Try adjusting your filters or view all items."
+      },
+      "NO_SCHEDULED": {
+        "TITLE": "No Scheduled Items Found",
+        "MESSAGE": "You don't have any scheduled knowledge items at the moment.",
+        "FILTERED_MESSAGE": "No scheduled items match your search criteria. Try a different search term."
+      },
+      "NO_POSTED": {
+        "TITLE": "No Posted Items Found",
+        "MESSAGE": "You don't have any posted knowledge items at the moment.",
+        "FILTERED_MESSAGE": "No posted items match your search criteria. Try a different search term."
+      },
+      "NO_PACKAGES": {
+        "TITLE": "No Packages Found",
+        "MESSAGE": "You don't have any knowledge packages at the moment. Create a package by using the 'Generate Package' button."
+      }
+    },
     "PROFILE_COMPLETION": {
       "ALMOST_THERE": "Almost there!",
       "TITLE": "Profile Completion",
@@ -532,6 +555,10 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       
     },
     USER_REQUESTS: {
+      "NO_REQUESTS": {
+        "TITLE": "No Requests Found",
+        "MESSAGE": "You don't have any requests at the moment. New requests will appear here once created."
+      },
       TITLE: 'User Requests',
       REQUEST_COUNT: 'Requests',
       FILTER: {
@@ -907,6 +934,22 @@ UPLOAD: 'Upload',
       "NO_INVITATION_QUESTION": "Don't have an invitation code?",
       "RETURN_TO_DASHBOARD": "Return to Dashboard"
     },
-  }
-  
+    "KNOWLEDGE_TYPES": {
+      "TITLE": "Knowledge Types Distribution",
+      "SUBTITLE": "Statistics of your knowledge content by type",
+      "LOAD_ERROR": "Failed to load knowledge type statistics. Please try again.",
+      "RETRY": "Retry",
+      "NO_DATA": "No knowledge type statistics available.",
+      "TOTAL": "Total",
+      "ITEMS": "items",
+      "REPORT": "Report",
+      "INSIGHT": "Insight",
+      "MANUAL": "Manual",
+      "DATA": "Data",
+      "COURSE": "Course",
+      "MEDIA": "Media"
+    },
+
+  },
+ 
 };

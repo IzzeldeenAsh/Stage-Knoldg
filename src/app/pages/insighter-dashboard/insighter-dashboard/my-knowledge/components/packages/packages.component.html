@@ -19,8 +19,15 @@
       </div>
       <!--end::Items Counter-->
     </div>  
+
+    <!-- No Packages State -->
+    <div *ngIf="packages.length === 0 && !(isLoading$ | async)" class="text-center py-10 bg-light-secondary rounded mb-6">
+      <h3 class="fw-bold text-gray-800 mb-2">{{ 'MY_KNOWLEDGE.NO_PACKAGES.TITLE' | translate }}</h3>
+      <p class="text-gray-600 fs-6">{{ 'MY_KNOWLEDGE.NO_PACKAGES.MESSAGE' | translate }}</p>
+    </div>
+    
     <!--begin::Table-->
-    <div class="table-responsive">
+    <div class="table-responsive" *ngIf="packages.length > 0">
       <table class="table align-middle table-row-dashed fs-6 gy-5">
         <!--begin::Table head-->
         <thead>
@@ -110,11 +117,6 @@
                 <span class="visually-hidden">Loading...</span>
               </div>
             </td>
-          </tr>
-
-          <!-- No data state -->
-          <tr *ngIf="packages.length === 0 && !(isLoading$ | async)">
-            <td colspan="6" class="text-center">No packages found</td>
           </tr>
         </tbody>
         <!--end::Table body-->

@@ -3,16 +3,29 @@ import { MenuItem } from 'primeng/api';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Subscription } from 'rxjs';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
-import {  Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { TranslationService } from 'src/app/modules/i18n';
 import { TranslateService } from '@ngx-translate/core';
 import { Notification, NotificationsService } from 'src/app/_fake/services/nofitications/notifications.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { filter } from 'rxjs/operators';
 
 interface CustomMenuItem extends MenuItem {
   expanded?: boolean;
   iconName: string;
   iconClass?: string;
   iconType?: string;
+}
+
+interface Industry {
+  id: number;
+  name: string;
+  slug: string;
+  children: any[];
+}
+
+interface IndustriesResponse {
+  data: Industry[];
 }
 
 @Component({
@@ -25,6 +38,9 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
   @ViewChild('mobileUserDropdown') mobileUserDropdown: ElementRef;
   @ViewChild('userDropdownMenu') userDropdownMenu: ElementRef;
   @ViewChild('userDropdownToggle') userDropdownToggle: ElementRef;
+
+  // Make Math available in the template
+  Math = Math;
 
   items: CustomMenuItem[] = [];
   profile: any;
@@ -48,14 +64,21 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
   isNotificationsOpen: boolean = false;
   notificationCount: number = 0;
   
+  // Industries dropdown
+  industries: Industry[] = [];
+  isIndustriesMenuOpen: boolean = false;
+  
+  isDashboardRoute: boolean = false;
+
   constructor(
     private breakpointObserver: BreakpointObserver,
     private profileService: ProfileService,
     private router: Router,
     private translationService: TranslationService,
-    private translate: TranslateService,
+    public translate: TranslateService,
     private renderer: Renderer2,
-    private notificationService: NotificationsService
+    private notificationService: NotificationsService,
+    private http: HttpClient
   ) {
     this.lang = this.translationService.getSelectedLanguage();
   }
@@ -67,11 +90,12 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
       Breakpoints.Small
     ]);
 
-    // Load profile first
+    // Load profile and fetch industries
     this.profileService.getProfile().subscribe({
       next: (profile) => {
         this.profile = profile;
         this.loadUserProfile();
+        this.fetchIndustries(); // Fetch industries
         this.initializeMenu(); // Initialize menu after getting profile
         this.onLanguageChange(); // Subscribe to language changes
         
@@ -85,6 +109,19 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         this.notificationService.startPolling();
       }
     });
+
+    // Subscribe to route changes
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event) => {
+      // Use type assertion here
+      const navEvent = event as NavigationEnd;
+      // Check if the current URL contains 'dashboard'
+      this.isDashboardRoute = navEvent.url.includes('dashboard');
+    });
+    
+    // Also check the initial route
+    this.isDashboardRoute = this.router.url.includes('dashboard');
   }
 
   ngOnDestroy() {
@@ -130,16 +167,50 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
     );
   }
 
+  fetchIndustries() {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Language': this.lang
+    });
+
+    const body = {
+      top_industry: 6,
+      top_sub_industry: 1
+    };
+
+    this.http.post<IndustriesResponse>('https://api.foresighta.co/api/industries/menu', body, { headers })
+      .subscribe({
+        next: (response) => {
+          this.industries = response.data;
+        },
+        error: (error) => {
+          console.error('Error fetching industries:', error);
+        }
+      });
+  }
+
+  getIndustryUrl(industry: Industry): string {
+    return `https://knowrland-for-client.vercel.app/en/industry/${industry.id}/${industry.slug}`;
+  }
+
   initializeMenu() {
+    // Create industries menu item with dropdown
+    const industriesMenuItem: CustomMenuItem = {
+      label: this.translate.instant('MENU.INDUSTRIES'),
+      iconName: 'element-11',
+      iconClass: 'text-primary',
+      iconType: 'outline',
+      expanded: false,
+      items: this.industries.map(industry => ({
+        label: industry.name,
+        url: this.getIndustryUrl(industry),
+        target: '_self'
+      }))
+    };
+
     const menuItems = [
-      {
-        label: this.translate.instant('MENU.INSIGHTS'),
-        iconName: '',
-        iconClass: 'text-primary',
-        iconType: 'outline',
-        expanded: false,
-        routerLink: 'https://knowrland-for-client.vercel.app/en/industries/insight'
-      },
+      industriesMenuItem, // Add Industries as first item
       {
         label: this.translate.instant('MENU.REPORTS'),
         iconName: '',
@@ -148,6 +219,15 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         expanded: false,
         routerLink: 'https://knowrland-for-client.vercel.app/en/industries/report'
       },
+      {
+        label: this.translate.instant('MENU.INSIGHTS'),
+        iconName: '',
+        iconClass: 'text-primary',
+        iconType: 'outline',
+        expanded: false,
+        routerLink: 'https://knowrland-for-client.vercel.app/en/industries/insight'
+      },
+     
       {
         label: this.translate.instant('MENU.DATA'),
         iconName: '',
@@ -278,6 +358,20 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
     });
   }
 
+  toggleIndustriesMenu(event: Event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isIndustriesMenuOpen = !this.isIndustriesMenuOpen;
+    // Close other open menus
+    this.isUserDropdownOpen = false;
+    this.isMobileUserDropdownOpen = false;
+    this.isNotificationsOpen = false;
+  }
+
+  closeIndustriesMenu() {
+    this.isIndustriesMenuOpen = false;
+  }
+
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     // Close user dropdown when clicking outside
@@ -304,6 +398,14 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         this.closeNotifications();
       }
     }
+
+    // Close industries dropdown when clicking outside
+    if (this.isIndustriesMenuOpen) {
+      const target = event.target as HTMLElement;
+      if (!target.closest('.industries-dropdown') && !target.closest('.industries-toggle')) {
+        this.closeIndustriesMenu();
+      }
+    }
   }
 
   onLanguageChange() {
@@ -318,5 +420,6 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
     this.isUserDropdownOpen = false;
     this.isMobileUserDropdownOpen = false;
     this.isNotificationsOpen = false;
+    this.isIndustriesMenuOpen = false;
   }
 }

@@ -63,15 +63,18 @@
   </label>
 
   <div class="selected-nodes-container" (click)="showDialog()">
-    <ng-container *ngIf="selectedNodesLabel()">
+    <ng-container *ngIf="getDisplayableSelectedNodes().length > 0">
       <p-chip
-        *ngFor="let value of selectedNodesLabel().split(',')"
-        [label]="value.trim()"
-        [styleClass]="'read-only-chip'"
+        *ngFor="let node of getDisplayableSelectedNodes()"
+        [label]="node.isOther ? (node.data.customInput || node.label) : node.label"
+        [removable]="true"
+        (onRemove)="onRemoveChip(node); $event.stopPropagation()"
+        (click)="$event.stopPropagation()"
+        [styleClass]="'selection-chip'"
         [style]="{'margin': '5px'}"
-      />
+      ></p-chip>
     </ng-container>
-    <div *ngIf="!selectedNodesLabel()" class="placeholder-text">
+    <div *ngIf="getDisplayableSelectedNodes().length === 0" class="placeholder-text">
       {{ placeholder }}
     </div>
   </div>

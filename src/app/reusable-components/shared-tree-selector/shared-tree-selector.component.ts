@@ -164,6 +164,33 @@ export class SharedTreeSelectorComponent implements OnInit, OnDestroy {
     this.updateSelectAllState();
   }
 
+  /**
+   * Returns filtered selected nodes that should be displayed as chips
+   * Excludes the "selectAll" node and provides display labels
+   */
+  getDisplayableSelectedNodes(): TreeNode[] {
+    if (!this.selectedNodes || this.selectedNodes.length === 0) {
+      return [];
+    }
+    
+    return this.selectedNodes.filter((node: TreeNode) => node.key !== "selectAll");
+  }
+
+  /**
+   * Removes a specific node from the selection when clicking a chip's remove icon
+   */
+  onRemoveChip(node: TreeNode): void {
+    if (!this.selectedNodes) return;
+    
+    this.selectedNodes = this.selectedNodes.filter(
+      (selectedNode: TreeNode) => selectedNode.key !== node.key
+    );
+    
+    this.updateSelectAllState();
+    // Emit the updated selection
+    this.nodesSelected.emit(this.selectedNodes);
+  }
+
   selectedNodesLabel(): string {
     if (this.selectedNodes && this.selectedNodes.length > 0) {
       const filteredNodes = this.selectedNodes.filter(
