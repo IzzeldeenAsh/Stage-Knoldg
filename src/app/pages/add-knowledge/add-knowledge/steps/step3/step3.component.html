@@ -115,7 +115,13 @@
               </div>
             </div>
             
-            <div *ngIf="doc.touched && doc.hasError" class="invalid-feedback">
+            <!-- AI Abstract Error Message -->
+            <div *ngIf="documentAbstractErrors[doc.id]" class="alert alert-warning mt-2 mb-2">
+              <i class="fas fa-exclamation-triangle me-2"></i>
+              Couldn't get AI Abstract. Please try again or enter description manually.
+            </div>
+            
+            <div *ngIf="doc.touched && doc.hasError" class="invalid-feedback d-block">
               {{ "DOCUMENT_DESCRIPTION_REQUIRED" | translate }}
             </div>
           </div>

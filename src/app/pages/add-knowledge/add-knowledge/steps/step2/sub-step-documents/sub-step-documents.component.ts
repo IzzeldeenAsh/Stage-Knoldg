@@ -303,6 +303,37 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       const isExistingDocument = currentDoc && currentDoc.fromServer;
       const wasErrorState = currentDoc && currentDoc.uploadStatus === 'error';
       
+      // Check for duplicate file names across all documents
+      const isDuplicate = this.isDuplicateFileName(fileName, index);
+      if (isDuplicate) {
+        // Set error message
+        docGroup.get('errorMessage')?.setValue('File name already exists. Please choose a different name.');
+        docGroup.get('uploadStatus')?.setValue('error');
+        
+        // Update documents array
+        if (this.documents[index]) {
+          this.documents[index].errorMessage = 'File name already exists. Please choose a different name.';
+          this.documents[index].uploadStatus = 'error';
+        }
+        
+        // Show error notification
+        this.showError('Duplicate File Name', 'A file with this name already exists. Please rename the file.');
+        
+        // We'll still update the file and preview, but will not allow upload until renamed
+        docGroup.patchValue({
+          file: file,
+          file_name: fileName,
+          filePreview: true,
+          fileIcon: this.getFileIconByExtension(extension),
+          file_extension: extension
+        });
+        
+        // Mark file_name as touched to show validation errors
+        docGroup.get('file_name')?.markAsTouched();
+        
+        return;
+      }
+      
       // Update form control WITH the file_name from the new file
       docGroup.patchValue({
         file: file,
@@ -375,6 +406,17 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
         this.updateParentModel({ documents: this.documents }, isValidOnTimeout);
       }, 0);
     }
+  }
+
+  // Helper method to check for duplicate file names
+  private isDuplicateFileName(fileName: string, currentIndex: number): boolean {
+    if (!fileName) return false;
+    
+    return this.documentControls.controls.some(
+      (control, index) => 
+        index !== currentIndex && 
+        control.get('file_name')?.value?.toLowerCase() === fileName.toLowerCase()
+    );
   }
 
   // New method to ensure error state is completely cleared when a file is replaced
@@ -942,6 +984,25 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
     
     if (!fileName || !file) {
       this.showError('', 'File name and file are required');
+      return;
+    }
+    
+    // Check for duplicate file names before uploading
+    if (this.isDuplicateFileName(fileName, index)) {
+      this.showError('Duplicate File Name', 'A file with this name already exists. Please rename the file.');
+      
+      // Update error state
+      docControl.get('errorMessage')?.setValue('File name already exists. Please choose a different name.');
+      docControl.get('uploadStatus')?.setValue('error');
+      
+      // Update documents array
+      if (this.documents[index]) {
+        this.documents[index].errorMessage = 'File name already exists. Please choose a different name.';
+        this.documents[index].uploadStatus = 'error';
+      }
+      
+      // Mark file_name as touched to show validation errors
+      docControl.get('file_name')?.markAsTouched();
       return;
     }
     

@@ -39,6 +39,9 @@ export class Step3Component extends BaseComponent implements OnInit {
   
   // Track loading state for each document
   documentLoadingStates: { [key: number]: boolean } = {};
+  
+  // Track error state for each document
+  documentAbstractErrors: { [key: number]: boolean } = {};
 
   constructor(
     injector: Injector,
@@ -56,6 +59,7 @@ export class Step3Component extends BaseComponent implements OnInit {
   // Function to handle Generate AI Abstract button click for a specific document
   generateAIAbstract(docId: number): void {
     this.documentLoadingStates[docId] = true;
+    this.documentAbstractErrors[docId] = false;
     
     // Wait 5 seconds before calling the API
     of(null).pipe(
@@ -74,20 +78,36 @@ export class Step3Component extends BaseComponent implements OnInit {
       .subscribe({
         next: (response: DocumentParserResponse) => {
           const index = this.documents.findIndex(doc => doc.id === docId);
-          if (index !== -1 && response.data && response.data.summary) {
-            // Update document description with AI summary
-            this.documents[index].description = response.data.summary;
-            this.documents[index].touched = true;
+          if (index !== -1 && response.data) {
+            // Check if data is a string (direct summary) or an object with summary property
+            const summary = typeof response.data === 'string' ? response.data : 
+                           (response.data.summary ? response.data.summary : null);
             
-            // Validate and update parent model
-            this.validateDocuments();
-            this.updateParentModelWithDocuments();
+            if (summary) {
+              // Update document description with AI summary
+              this.documents[index].description = summary;
+              this.documents[index].touched = true;
+              
+              // Validate and update parent model
+              this.validateDocuments();
+              this.updateParentModelWithDocuments();
+              this.documentAbstractErrors[docId] = false;
+            } else {
+              // No summary data returned
+              this.documentAbstractErrors[docId] = true;
+              console.error(`No summary data returned for document ${docId}`);
+            }
+          } else {
+            // No data returned or document not found
+            this.documentAbstractErrors[docId] = true;
+            console.error(`No data returned or document not found for document ${docId}`);
           }
           this.documentLoadingStates[docId] = false;
         },
         error: (error) => {
           console.error(`Error getting document summary for document ${docId}:`, error);
           this.documentLoadingStates[docId] = false;
+          this.documentAbstractErrors[docId] = true;
         }
       });
     

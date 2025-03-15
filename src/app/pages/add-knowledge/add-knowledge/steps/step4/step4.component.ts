@@ -1,6 +1,6 @@
-import { Component, Injector, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Injector, Input, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { Subscription, forkJoin, of } from 'rxjs';
+import { Subscription, forkJoin, of, delay, finalize } from 'rxjs';
 import { ICreateKnowldege } from '../../create-account.helper';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { LanguagesService, Language } from 'src/app/_fake/services/languages-list/languages.service';
@@ -13,7 +13,7 @@ import { EconomicBloc } from 'src/app/_fake/services/economic-block/economic-blo
 import { IsicCodesService } from 'src/app/_fake/services/isic-code/isic-codes.service';
 import { TagsService } from 'src/app/_fake/services/tags/tags.service';
 import { KnowledgeService } from 'src/app/_fake/services/knowledge/knowledge.service';
-import { ChangeDetectorRef } from '@angular/core';
+import { AddInsightStepsService, DocumentParserResponse } from 'src/app/_fake/services/add-insight-steps/add-insight-steps.service';
 
 interface Chip {
   id: number;
@@ -99,6 +99,9 @@ export class Step4Component extends BaseComponent implements OnInit {
   @ViewChild('regionSelector') regionSelector: any;
   @ViewChild('economicBlockSelector') economicBlockSelector: any;
 
+  isDescriptionLoading = false;
+  aiAbstractError = false;
+
   constructor(
     injector: Injector,
     private fb: FormBuilder,
@@ -109,6 +112,7 @@ export class Step4Component extends BaseComponent implements OnInit {
     private isicCodeService: IsicCodesService,
     private tagsService: TagsService,
     private knowledgeService: KnowledgeService,
+    private addInsightStepsService: AddInsightStepsService,
     private cdr: ChangeDetectorRef
   ) {
     super(injector);
@@ -138,6 +142,14 @@ export class Step4Component extends BaseComponent implements OnInit {
       }
     });
     this.unsubscribe.push(langChangeSub);
+    
+    // Auto-generate description if empty and knowledge ID exists
+    if (this.defaultValues.knowledgeId && (!this.form.get('description')?.value || !this.form.get('description')?.value?.trim())) {
+      // Wait a short delay before triggering to allow form to fully initialize
+      setTimeout(() => {
+        this.generateAIDescription();
+      }, 500);
+    }
   }
   
   private initForms() {
@@ -704,5 +716,71 @@ export class Step4Component extends BaseComponent implements OnInit {
       tag_ids: [], 
       keywords: [] 
     }, this.checkForm());
+  }
+
+  // Function to handle Generate AI Description button click
+  generateAIDescription(): void {
+    // Only proceed if we have a knowledge ID and description is empty or not filled
+    if (!this.defaultValues.knowledgeId || this.form.get('description')?.value?.trim()) {
+      return;
+    }
+
+    this.isDescriptionLoading = true;
+    
+    // Wait 5 seconds before calling the API to show animation
+    of(null).pipe(
+      delay(20000),
+      finalize(() => {
+        this.fetchKnowledgeDescription();
+      })
+    ).subscribe();
+  }
+
+  // Fetch knowledge description from AI parser API
+  fetchKnowledgeDescription(): void {
+    // Loading state is already set to true when this is called
+    if (!this.defaultValues.knowledgeId) {
+      this.isDescriptionLoading = false;
+      return;
+    }
+    
+    const summarySubscription = this.addInsightStepsService.getKnowledgeParserData(this.defaultValues.knowledgeId)
+      .subscribe({
+        next: (response: DocumentParserResponse) => {
+          if (response.data) {
+            // Check if data is a string (direct summary) or an object with summary property
+            const summary = typeof response.data === 'string' ? response.data : 
+                           (response.data.summary ? response.data.summary : null);
+            
+            if (summary) {
+              // Update knowledge description with AI summary
+              this.form.get('description')?.setValue(summary);
+              this.form.get('description')?.markAsTouched();
+              
+              // Update parent model
+              this.checkForm();
+              this.aiAbstractError = false;
+            } else {
+              // No summary data returned from AI parser
+              this.aiAbstractError = true;
+              console.error('No summary data returned from AI parser');
+            }
+          } else {
+            // No data returned from AI parser
+            this.aiAbstractError = true;
+            console.error('No data returned from AI parser');
+          }
+          this.isDescriptionLoading = false;
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          console.error(`Error getting knowledge description:`, error);
+          this.isDescriptionLoading = false;
+          this.aiAbstractError = true;
+          this.cdr.detectChanges();
+        }
+      });
+    
+    this.unsubscribe.push(summarySubscription);
   }
 } 
