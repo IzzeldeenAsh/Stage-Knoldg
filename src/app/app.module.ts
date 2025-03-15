@@ -56,7 +56,6 @@ function appInitializer(authService: AuthService) {
       useClass: AuthInterceptor,
       multi: true,
     },
-    // Make sure withCredentials is true for all HTTP requests
     {
       provide: 'XSRF_COOKIE_NAME',
       useValue: 'XSRF-TOKEN'

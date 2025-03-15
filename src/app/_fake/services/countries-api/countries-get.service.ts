@@ -27,7 +27,10 @@ export class CountryService {
       'lang': lang
     });
 
-    return this.http.get<any>(this.apiUrl, { headers }).pipe(
+    return this.http.get<any>(this.apiUrl, { 
+      headers, 
+      withCredentials: true 
+    }).pipe(
       map(res=>{
         return res
       }),

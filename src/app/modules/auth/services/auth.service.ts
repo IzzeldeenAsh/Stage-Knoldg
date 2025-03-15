@@ -25,8 +25,8 @@ export type UserType = InsightaUserModel | undefined;
 export class AuthService implements OnDestroy {
   // private fields
   private unsubscribe: Subscription[] = []; 
-  private authCookieName = `foresighta-creds`;
-  private userCookieName = `currentUser`;
+  private authLocalStorageKey = `foresighta-creds`;
+  private userLocalStorageKey = `currentUser`;
   // public fields
   currentUser$: Observable<UserType>;
   isLoading$: Observable<boolean>;
@@ -65,22 +65,26 @@ export class AuthService implements OnDestroy {
       map((response: any) => {
         const auth = new AuthModel();
         auth.authToken = response.data.token;
-        this.setAuthInCookie(auth);
+        this.setAuthInLocalStorage(auth);
         return response.data;
       }),
       switchMap(() => {
         const headers = new HttpHeaders({
           Accept: "application/json",
           "Accept-Language": this.currentLang,
+          "Authorization": `Bearer ${this.getAuthFromLocalStorage()?.authToken || ''}`,
         });
-        return this.http.get('https://api.foresighta.co/api/account/profile',{headers}).pipe(
+        return this.http.get('https://api.foresighta.co/api/account/profile', {
+          headers
+        }).pipe(
           map((profileResponse: any) => {
             if (profileResponse.data.roles.includes('admin')) {
               this.router.navigate(['/admin-dashboard']);
             } else {
-              const authData = this.getAuthFromCookie();
+              const authData = this.getAuthFromLocalStorage();
               if (authData && authData.authToken) {
-                window.location.href = `${environment.mainAppUrl}/en/callback/${authData.authToken}`;
+                // Pass token in URL instead of using cookies
+                window.location.href = `${environment.mainAppUrl}/en/callback?token=${authData.authToken}`;
               }
             }
             return profileResponse.data;
@@ -98,7 +102,7 @@ export class AuthService implements OnDestroy {
     });
     return this.http.get('https://api.foresighta.co/api/auth/provider/google', { 
       headers,
-      responseType: 'text' 
+      responseType: 'text'
     });
   }
   getLinkedInAuthRedirectUrl(): Observable<string> {
@@ -111,13 +115,13 @@ export class AuthService implements OnDestroy {
       responseType: 'text'
     });
   }
-  private setUserInCookie(user: UserType): void {
+  private setUserInLocalStorage(user: UserType): void {
     if (user) {
-      this.cookieService.setCookie(this.userCookieName, JSON.stringify(user));
+      localStorage.setItem(this.userLocalStorageKey, JSON.stringify(user));
     }
   }
-  private getUserFromCookie(): UserType | undefined {
-    const userJson = this.cookieService.getCookie(this.userCookieName);
+  private getUserFromLocalStorage(): UserType | undefined {
+    const userJson = localStorage.getItem(this.userLocalStorageKey);
     if (userJson) {
       return JSON.parse(userJson) as UserType;
     }
@@ -164,8 +168,11 @@ export class AuthService implements OnDestroy {
     const headers = new HttpHeaders({
       Accept: "application/json",
       "Accept-Language": this.currentLang,
+      "Authorization": `Bearer ${this.getAuthFromLocalStorage()?.authToken || ''}`,
     });
-    return this.http.get('https://api.foresighta.co/api/account/profile',{headers}).pipe(
+    return this.http.get('https://api.foresighta.co/api/account/profile', {
+      headers
+    }).pipe(
       map((response: any) => {
         this.isLoadingSubject.next(false);
         const user: UserType = {
@@ -175,7 +182,7 @@ export class AuthService implements OnDestroy {
           countryId: null,
           country: null,
         };
-        this.setUserInCookie(user);
+        this.setUserInLocalStorage(user);
         return response.data
       }),
       catchError((err) => {
@@ -189,7 +196,8 @@ export class AuthService implements OnDestroy {
   logout(): Observable<any> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
-      'Accept-Language': 'en'
+      'Accept-Language': 'en',
+      'Authorization': `Bearer ${this.getAuthFromLocalStorage()?.authToken || ''}`,
     });
     return this.http.post<any>(
       'https://api.foresighta.co/api/account/logout',
@@ -197,11 +205,12 @@ export class AuthService implements OnDestroy {
       { headers }
     );
   }
+  
   getUserByToken(): Observable<any> {
-    const authData = this.getAuthFromCookie();
+    const authData = this.getAuthFromLocalStorage();
     if (authData) { // Check if authData exists
       if (!this.isTokenExpired(authData.authToken)) {
-        const user = this.getUserFromCookie();
+        const user = this.getUserFromLocalStorage();
         if (user) {
           this.currentUserSubject.next(user);
           return of(user);
@@ -219,18 +228,18 @@ export class AuthService implements OnDestroy {
     return this.logout().pipe(first()).pipe(
       tap({
         next: () => {
-          this.cookieService.deleteCookie(this.authCookieName);
-          this.cookieService.deleteCookie(this.userCookieName);
-          this.cookieService.deleteCookie("user");
-          this.cookieService.deleteCookie("authToken");
+          localStorage.removeItem(this.authLocalStorageKey);
+          localStorage.removeItem(this.userLocalStorageKey);
+          localStorage.removeItem("user");
+          localStorage.removeItem("authToken");
           document.location.reload();
           
         },
         error: () => {
-          this.cookieService.deleteCookie(this.authCookieName);
-          this.cookieService.deleteCookie(this.userCookieName);
-          this.cookieService.deleteCookie("user");
-          this.cookieService.deleteCookie("authToken");
+          localStorage.removeItem(this.authLocalStorageKey);
+          localStorage.removeItem(this.userLocalStorageKey);
+          localStorage.removeItem("user");
+          localStorage.removeItem("authToken");
           document.location.reload();
         }
       }),
@@ -247,7 +256,7 @@ export class AuthService implements OnDestroy {
         this.isLoadingSubject.next(false);
         const auth = new AuthModel();
         auth.authToken = response.data.token; 
-        this.setAuthInCookie(auth);
+        this.setAuthInLocalStorage(auth);
         const user: UserType = {
           id: response.data.id,
           name: response.data.name,
@@ -256,7 +265,7 @@ export class AuthService implements OnDestroy {
           country: response.data.country,
         };
 
-        this.setUserInCookie(user);
+        this.setUserInLocalStorage(user);
         this.currentUserSubject.next(user);
       }),
       catchError((err) => {
@@ -274,28 +283,47 @@ export class AuthService implements OnDestroy {
   }
 
   // private methods
-  setAuthInCookie(auth: AuthModel): boolean {
-    // store auth authToken/refreshToken/epiresIn in cookie to keep user logged in between page refreshes
+  setAuthInLocalStorage(auth: AuthModel): boolean {
+    // store auth authToken/refreshToken/epiresIn in localStorage to keep user logged in between page refreshes
     if (auth && auth.authToken) {
-      this.cookieService.setCookie(this.authCookieName, JSON.stringify(auth));
+      localStorage.setItem(this.authLocalStorageKey, JSON.stringify(auth));
       return true;
     }
     return false;
   }
 
-  getAuthFromCookie(): AuthModel | undefined {
+  getAuthFromLocalStorage(): AuthModel | undefined {
     try {
-      const cookieValue = this.cookieService.getCookie(this.authCookieName);
-      if (!cookieValue) {
+      const authDataString = localStorage.getItem(this.authLocalStorageKey);
+      if (!authDataString) {
         return undefined;
       }
-      const authData = JSON.parse(cookieValue);
+      const authData = JSON.parse(authDataString);
       return authData;
     } catch (error) {
       console.error(error);
       return undefined;
     }
   }
+  
+  // Method to get token from URL (for the callback route)
+  getTokenFromUrl(): string | null {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('token');
+  }
+  
+  // Method to set token received from URL
+  setTokenFromUrl(): boolean {
+    const token = this.getTokenFromUrl();
+    if (token) {
+      const auth = new AuthModel();
+      auth.authToken = token;
+      this.setAuthInLocalStorage(auth);
+      return true;
+    }
+    return false;
+  }
+  
   checkUserRoleAndRedirect(user: any) {
     if (user) {
       if (
@@ -312,9 +340,13 @@ export class AuthService implements OnDestroy {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'Accept-Language': 'en'
+      'Accept-Language': 'en',
+      'Authorization': `Bearer ${this.getAuthFromLocalStorage()?.authToken || ''}`,
     });
-    return this.http.post('https://api.foresighta.co/api/account/email/resend',{ headers }).pipe(
+    return this.http.post('https://api.foresighta.co/api/account/email/resend', 
+      {}, // Fix: Add empty object as body
+      { headers }
+    ).pipe(
       map((res) => res), // Adjust this based on the API response structure
       catchError((error) => this.handleError(error))// Use the custom error handler
     );
@@ -330,5 +362,52 @@ export class AuthService implements OnDestroy {
 
   ngOnDestroy() {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
+  }
+
+  // Function to share auth token with another domain
+  shareAuthWithDomain(targetDomain: string): void {
+    const authData = this.getAuthFromLocalStorage();
+    if (!authData || !authData.authToken) {
+      console.error('No auth token to share');
+      return;
+    }
+    
+    // Approach 1: Using window.open with postMessage
+    const authWindow = window.open(`${targetDomain}/auth-receiver`, 'auth_window', 'width=800,height=600');
+    
+    const checkReadyInterval = setInterval(() => {
+      try {
+        // Send the token once we get the READY message or after a timeout
+        authWindow?.postMessage({ 
+          type: 'AUTH_TOKEN', 
+          token: authData.authToken 
+        }, targetDomain);
+      } catch (e) {
+        console.error('Error posting message:', e);
+      }
+    }, 1000);
+    
+    // Listen for success message from the popup
+    window.addEventListener('message', (event) => {
+      if (event.origin === targetDomain && event.data.type === 'AUTH_SUCCESS') {
+        clearInterval(checkReadyInterval);
+        authWindow?.close();
+      }
+    }, { once: true });
+    
+    // Cleanup if window closed
+    const checkClosedInterval = setInterval(() => {
+      if (authWindow?.closed) {
+        clearInterval(checkReadyInterval);
+        clearInterval(checkClosedInterval);
+      }
+    }, 500);
+    
+    // Fallback approach: direct URL with token
+    setTimeout(() => {
+      if (authWindow) {
+        authWindow.location.href = `${targetDomain}/auth-receiver?token=${authData.authToken}`;
+      }
+    }, 2000);
   }
 }

@@ -4,7 +4,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ForesightaGeneralUserModel, UserModel } from '../../models/user.model';
 import { environment } from '../../../../../environments/environment';
 import { AuthModel } from '../../models/auth.model';
-import { CookieService } from '../cookie.service';
 
 const API_USERS_URL = `auth`;
 const API_GENERALREGISTER= 'https://api.foresighta.co/api/auth/register'
@@ -13,11 +12,10 @@ const API_GENERALREGISTER= 'https://api.foresighta.co/api/auth/register'
   providedIn: 'root',
 })
 export class AuthHTTPService {
-  private authCookieName = 'foresighta-creds';
+  private authLocalStorageKey = 'foresighta-creds';
 
   constructor(
-    private http: HttpClient,
-    private cookieService: CookieService
+    private http: HttpClient
   ) {}
   
   private apiUrlLogin = 'https://api.foresighta.co/api/auth/login';
@@ -27,14 +25,12 @@ export class AuthHTTPService {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
       'Accept-Language': lang,
-      // Enable withCredentials to allow cookies to be sent and received
-      'withCredentials': 'true'
     });
     
     return this.http.post<any>(
       this.apiUrlLogin, 
       { email, password },
-      { headers, withCredentials: true }
+      { headers }
     );
   }
 
@@ -42,14 +38,13 @@ export class AuthHTTPService {
   createUser(user: ForesightaGeneralUserModel): Observable<any> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
-      'Accept-Language': 'en_us',
-      'withCredentials': 'true'
+      'Accept-Language': 'en_us'
     });
 
     return this.http.post<ForesightaGeneralUserModel>(
       API_GENERALREGISTER, 
       user,
-      { headers, withCredentials: true }
+      { headers }
     );
   }
 
@@ -57,22 +52,20 @@ export class AuthHTTPService {
   forgotPassword(email: string): Observable<boolean> {
     return this.http.post<boolean>(
       `${API_USERS_URL}/forgot-password`, 
-      { email },
-      { withCredentials: true }
+      { email }
     );
   }
 
-  // Get authentication token from cookie
+  // Get authentication token from localStorage
   getAuthToken(): string | null {
-    const authData = this.cookieService.getCookie(this.authCookieName);
-    if (authData) {
-      try {
+    try {
+      const authData = localStorage.getItem(this.authLocalStorageKey);
+      if (authData) {
         const parsedData = JSON.parse(authData);
         return parsedData.authToken || null;
-      } catch (error) {
-        console.error('Error parsing auth cookie:', error);
-        return null;
       }
+    } catch (error) {
+      console.error('Error parsing auth data from localStorage:', error);
     }
     return null;
   }
@@ -82,8 +75,7 @@ export class AuthHTTPService {
     const token = this.getAuthToken();
     let headers = new HttpHeaders({
       'Accept': 'application/json',
-      'Accept-Language': lang,
-      'withCredentials': 'true'
+      'Accept-Language': lang
     });
     
     if (token) {
@@ -97,7 +89,7 @@ export class AuthHTTPService {
     const headers = this.getAuthHeaders();
     return this.http.get<UserModel>(
       'https://api.foresighta.co/api/account/profile', 
-      { headers, withCredentials: true }
+      { headers }
     );
   }
 }
