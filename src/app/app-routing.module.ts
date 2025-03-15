@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { adminGuard } from './guards/admin-guard/admin.guard';
 import { authGuard } from './guards/auth-guard/auth.guard';
+import { CorsTestComponent } from './cors-test.component';
+import { CrossDomainAuthHelperComponent } from './shared/cross-domain-auth-helper.component';
 
 export const routes: Routes = [
 {
@@ -32,7 +34,14 @@ export const routes: Routes = [
   loadChildren: () =>
     import('./modules/errors/errors.module').then((m) => m.ErrorsModule),
 },
-
+{
+  path: 'cors-test',
+  component: CorsTestComponent
+},
+{
+  path: 'auth-receiver',
+  component: CrossDomainAuthHelperComponent
+},
 { path: '**', redirectTo: 'auth' },
 ];
 

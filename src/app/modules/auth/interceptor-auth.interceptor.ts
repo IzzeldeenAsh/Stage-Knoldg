@@ -16,26 +16,16 @@ export class AuthInterceptor implements HttpInterceptor {
   ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // For all requests to knoldg.com or app.knoldg.com domains,
-    // include credentials (cookies) in the request
-    if (req.url.includes('knoldg.com') || req.url.includes('foresighta.co')) {
-      req = req.clone({
-        withCredentials: true
+    // Get auth token from localStorage
+    const token = this.authService.getAuthFromLocalStorage()?.authToken;
+
+    // Clone the request and add the token if it exists
+    let clonedReq = req;
+    if (token) {
+      clonedReq = req.clone({
+        headers: req.headers.set('Authorization', `Bearer ${token}`)
       });
     }
-
-    // Get auth token from cookie using the AuthHTTPService
-    const token = this.authHttpService.getAuthToken();
-
-    // If no auth token is available, forward the request without modification
-    if (!token) {
-      return next.handle(req);
-    }
-
-    // Clone the request and add the authorization header
-    const clonedReq = req.clone({
-      headers: req.headers.set('Authorization', `Bearer ${token}`)
-    });
 
     return next.handle(clonedReq).pipe(
       catchError((error: HttpErrorResponse) => {
@@ -52,6 +42,9 @@ export class AuthInterceptor implements HttpInterceptor {
               console.error('Logout error:', err);
             }
           });
+        } else if (error.status === 0) {
+          // Status 0 often indicates CORS issues
+          console.error('Possible CORS issue:', error);
         }
         return throwError(() => error);
       })

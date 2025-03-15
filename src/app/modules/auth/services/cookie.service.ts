@@ -18,13 +18,13 @@ export class CookieService {
     // Use domain from environment config
     const domain = environment.cookieOptions.domain;
     
-    // Set secure flag based on environment
-    const secure = environment.cookieOptions.secure ? '; secure' : '';
+    // Cross-domain cookies must be secure when SameSite=None
+    const secure = '; secure';
     
-    // SameSite from environment config
-    const sameSite = environment.cookieOptions.sameSite;
+    // Cross-domain cookies need SameSite=None 
+    const sameSite = '; SameSite=None';
     
-    document.cookie = `${name}=${value}; ${expires}; path=${path}; domain=${domain}${secure}; SameSite=${sameSite}`;
+    document.cookie = `${name}=${value}; ${expires}; path=${path}; domain=${domain}${secure}${sameSite}`;
   }
 
   /**
@@ -47,6 +47,13 @@ export class CookieService {
   deleteCookie(name: string, path: string = '/'): void {
     // To delete a cookie, set its expiration date to the past
     const domain = environment.cookieOptions.domain;
-    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path}; domain=${domain}`;
+    
+    // Cross-domain cookies must be secure when SameSite=None
+    const secure = '; secure';
+    
+    // Cross-domain cookies need SameSite=None
+    const sameSite = '; SameSite=None';
+    
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path}; domain=${domain}${secure}${sameSite}`;
   }
 } 

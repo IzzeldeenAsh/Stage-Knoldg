@@ -6,6 +6,7 @@ import { IKnoldgProfile } from 'src/app/_fake/models/profile.interface';
 import { Router } from '@angular/router';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import { BaseComponent } from 'src/app/modules/base.component';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-user-inner',
@@ -165,14 +166,28 @@ export class UserInnerComponent extends BaseComponent implements OnInit, AfterVi
       first()
     ).subscribe({
       next: () => {
+        // Clear local storage
         localStorage.removeItem("foresighta-creds");
+        localStorage.removeItem("currentUser");
         localStorage.removeItem("user");
-        this.getProfileService.clearProfile()
-        window.location.href = '#/en/signout';
-       
+        localStorage.removeItem("authToken");
+        
+        // Clear the profile
+        this.getProfileService.clearProfile();
+        
+        // Redirect to Next.js signout page on the main domain
+        window.location.href = `${environment.mainAppUrl}/signout`;
       },
       error: (error) => {
         console.error('Logout error:', error);
+        
+        // Even on error, clear storage and redirect
+        localStorage.removeItem("foresighta-creds");
+        localStorage.removeItem("currentUser");
+        localStorage.removeItem("user");
+        localStorage.removeItem("authToken");
+        this.getProfileService.clearProfile();
+        window.location.href = `${environment.mainAppUrl}/signout`;
       }
     });
     

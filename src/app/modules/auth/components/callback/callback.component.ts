@@ -34,20 +34,31 @@ export class CallbackComponent
   }
 
   ngOnInit(): void {
-    // Extract query parameters from the URL
+    // First check for token in query parameters
     const routeSub = this.route.queryParamMap.subscribe((params) => {
       this.token = params.get("token");
       const rolesParam = params.get("roles");
       if (rolesParam) {
         this.roles = rolesParam.split(",").map((role) => role.trim());
       }
+      
       if (this.token) {
         const auth = new AuthModel();
         auth.authToken = this.token;
-        this.auth.setAuthInCookie(auth);
-        this.toApp()
+        this.auth.setAuthInLocalStorage(auth);
+        this.toApp();
       } else {
-        this.errorMessage = "Invalid callback parameters.";
+        // If no token in query params, check URL path for backward compatibility
+        this.route.params.subscribe(params => {
+          if (params['token']) {
+            const auth = new AuthModel();
+            auth.authToken = params['token'];
+            this.auth.setAuthInLocalStorage(auth);
+            this.toApp();
+          } else {
+            this.errorMessage = "Invalid callback parameters.";
+          }
+        });
       }
     });
     this.unsubscribe.push(routeSub);
@@ -64,9 +75,9 @@ export class CallbackComponent
             this.router.navigate(['/admin-dashboard']);
           }
           if(user.verified){
-            const authData = this.auth.getAuthFromCookie();
+            const authData = this.auth.getAuthFromLocalStorage();
             if (authData && authData.authToken) {
-              window.location.href = `${environment.mainAppUrl}/en/callback/${authData.authToken}`;
+              window.location.href = `${environment.mainAppUrl}/en/callback?token=${authData.authToken}`;
             }
           }else{
             this.errorMessage ="Verification Failed";

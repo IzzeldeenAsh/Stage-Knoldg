@@ -34,6 +34,7 @@ export class CountriesService {
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   currentLang: string = 'en';
+  private authLocalStorageKey = 'foresighta-creds';
 
   constructor(
     private http: HttpClient,
@@ -52,11 +53,26 @@ export class CountriesService {
     return throwError(error);
   }
 
+  private getAuthToken(): string | null {
+    try {
+      const authData = localStorage.getItem(this.authLocalStorageKey);
+      if (authData) {
+        const parsedData = JSON.parse(authData);
+        return parsedData.authToken || null;
+      }
+    } catch (error) {
+      console.error('Error parsing auth data from localStorage:', error);
+    }
+    return null;
+  }
+
   getCountries(): Observable<Country[]> {
+    const token = this.getAuthToken();
     const headers = new HttpHeaders({
-      Accept: 'application/json',
+      'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'Accept-Language': this.currentLang
+      'Accept-Language': this.currentLang,
+      ...(token ? { 'Authorization': `Bearer ${token}` } : {})
     });
   
     this.setLoading(true);
@@ -68,10 +84,12 @@ export class CountriesService {
   }
 
   createCountry(country: any): Observable<any> {
+    const token = this.getAuthToken();
     const headers = new HttpHeaders({
-      Accept: 'application/json',
+      'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'Accept-Language': this.currentLang
+      'Accept-Language': this.currentLang,
+      ...(token ? { 'Authorization': `Bearer ${token}` } : {})
     });
 
     this.setLoading(true);
@@ -83,10 +101,12 @@ export class CountriesService {
   }
 
   updateCountry(countryId: number, updatedData: any): Observable<Country> {
+    const token = this.getAuthToken();
     const headers = new HttpHeaders({
-      Accept: 'application/json',
+      'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'Accept-Language': this.currentLang
+      'Accept-Language': this.currentLang,
+      ...(token ? { 'Authorization': `Bearer ${token}` } : {})
     });
 
     this.setLoading(true);
@@ -98,10 +118,12 @@ export class CountriesService {
   }
 
   deleteCountry(countryId: number): Observable<any> {
+    const token = this.getAuthToken();
     const headers = new HttpHeaders({
-      Accept: 'application/json',
+      'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'Accept-Language': this.currentLang
+      'Accept-Language': this.currentLang,
+      ...(token ? { 'Authorization': `Bearer ${token}` } : {})
     });
 
     this.setLoading(true);
