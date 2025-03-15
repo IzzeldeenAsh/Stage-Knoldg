@@ -12,7 +12,7 @@ const Routing: Routes = [
   {
     path: 'insighter-register',
     loadChildren: () => import('./wizards/wizards.module').then((m) => m.WizardsModule),
-    canActivate: [NonInsightersAuthGuard], // Apply the guard here
+    canActivate: [NonInsightersAuthGuard], 
   },
   {
     path: 'profile',
