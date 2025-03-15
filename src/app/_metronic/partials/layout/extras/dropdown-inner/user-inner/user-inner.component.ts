@@ -166,7 +166,7 @@ export class UserInnerComponent extends BaseComponent implements OnInit, AfterVi
       first()
     ).subscribe({
       next: () => {
-        // Clear local storage
+        // Clear local storage in current domain
         localStorage.removeItem("foresighta-creds");
         localStorage.removeItem("currentUser");
         localStorage.removeItem("user");
@@ -175,8 +175,11 @@ export class UserInnerComponent extends BaseComponent implements OnInit, AfterVi
         // Clear the profile
         this.getProfileService.clearProfile();
         
-        // Redirect to Next.js signout page on the main domain
-        window.location.href = `${environment.mainAppUrl}/signout`;
+        // Calculate timestamp to prevent caching
+        const timestamp = new Date().getTime();
+        
+        // Redirect directly to the main domain with a parameter to indicate logout
+        window.location.href = `${environment.mainAppUrl}/en?logged_out=true&t=${timestamp}`;
       },
       error: (error) => {
         console.error('Logout error:', error);
@@ -187,7 +190,12 @@ export class UserInnerComponent extends BaseComponent implements OnInit, AfterVi
         localStorage.removeItem("user");
         localStorage.removeItem("authToken");
         this.getProfileService.clearProfile();
-        window.location.href = `${environment.mainAppUrl}/signout`;
+        
+        // Calculate timestamp to prevent caching
+        const timestamp = new Date().getTime();
+        
+        // Redirect directly to the main domain
+        window.location.href = `${environment.mainAppUrl}/en?logged_out=true&t=${timestamp}`;
       }
     });
     
