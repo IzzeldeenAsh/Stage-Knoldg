@@ -162,44 +162,14 @@ export class UserInnerComponent extends BaseComponent implements OnInit, AfterVi
   }
 
   logout() {
-    const authLogout = this.auth.logout().pipe(
-      first()
-    ).subscribe({
-      next: () => {
-        // Clear local storage in current domain
-        localStorage.removeItem("foresighta-creds");
-        localStorage.removeItem("currentUser");
-        localStorage.removeItem("user");
-        localStorage.removeItem("authToken");
-        
-        // Clear the profile
-        this.getProfileService.clearProfile();
-        
-        // Calculate timestamp to prevent caching
-        const timestamp = new Date().getTime();
-        
-        // Redirect directly to the main domain with a parameter to indicate logout
-        window.location.href = `${environment.mainAppUrl}/en?logged_out=true&t=${timestamp}`;
-      },
-      error: (error) => {
-        console.error('Logout error:', error);
-        
-        // Even on error, clear storage and redirect
-        localStorage.removeItem("foresighta-creds");
-        localStorage.removeItem("currentUser");
-        localStorage.removeItem("user");
-        localStorage.removeItem("authToken");
-        this.getProfileService.clearProfile();
-        
-        // Calculate timestamp to prevent caching
-        const timestamp = new Date().getTime();
-        
-        // Redirect directly to the main domain
-        window.location.href = `${environment.mainAppUrl}/en?logged_out=true&t=${timestamp}`;
-      }
-    });
+    // Calculate timestamp to prevent caching
+    const timestamp = new Date().getTime();
     
-    this.unsubscribe.push(authLogout);
+    // Create the redirect URI to the main domain
+    const redirectUri = encodeURIComponent(`${environment.mainAppUrl}/en?logged_out=true&t=${timestamp}`);
+    
+    // Navigate to the logout route with the redirect URI
+    window.location.href = `/auth/logout?redirect_uri=${redirectUri}`;
   }
 
   selectLanguage(lang: string) {
