@@ -168,11 +168,12 @@ getPasswordStrengthLabel(): string {
     event.preventDefault();
     this.authService.getGoogleAuthRedirectUrl().subscribe({
       next: (redirectUrl) => {
-        window.location.href = redirectUrl;
         const authtoken:any = localStorage.getItem('foresighta-creds');
         const token = JSON.parse(authtoken);
-        if (token.authToken) {
+        if (token && token.authToken) {
           window.location.href = `http://knoldg.com/en/callback/${token.authToken}`;
+        } else {
+          window.location.href = redirectUrl;
         }
       },
       error: (err) => {
@@ -186,12 +187,13 @@ getPasswordStrengthLabel(): string {
     event.preventDefault();
     this.authService.getLinkedInAuthRedirectUrl().subscribe({
       next: (redirectUrl) => {
-        window.location.href = redirectUrl;
         const authtoken:any = localStorage.getItem('foresighta-creds');
-              const token = JSON.parse(authtoken);
-              if (token.authToken) {
-                window.location.href = `http://knoldg.com/en/callback/${token.authToken}`;
-              }
+        const token = JSON.parse(authtoken);
+        if (token && token.authToken) {
+          window.location.href = `http://knoldg.com/en/callback/${token.authToken}`;
+        } else {
+          window.location.href = redirectUrl;
+        }
       },
       error: (err) => {
         console.error('Error getting LinkedIn auth redirect URL', err);
