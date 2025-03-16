@@ -726,18 +726,36 @@ export class Step4Component extends BaseComponent implements OnInit {
     }
 
     this.isDescriptionLoading = true;
+    this.aiAbstractError = false;
     
-    // Wait 5 seconds before calling the API to show animation
-    of(null).pipe(
-      delay(20000),
-      finalize(() => {
-        this.fetchKnowledgeDescription();
-      })
-    ).subscribe();
+    // Set maximum time to show loader (15 seconds)
+    const maxWaitTime = 15000;
+    const pollingInterval = 2000; // Check every 2 seconds
+    let elapsedTime = 0;
+    let polling: any;
+    
+    // Start polling
+    polling = setInterval(() => {
+      elapsedTime += pollingInterval;
+      
+      // Call the fetchKnowledgeDescription method to check for summary
+      this.fetchKnowledgeDescription(polling);
+      
+      // Stop polling if we've reached the max time
+      if (elapsedTime >= maxWaitTime) {
+        clearInterval(polling);
+        
+        // Ensure loading state is turned off after max time
+        if (this.isDescriptionLoading) {
+          this.isDescriptionLoading = false;
+          this.cdr.detectChanges();
+        }
+      }
+    }, pollingInterval);
   }
 
   // Fetch knowledge description from AI parser API
-  fetchKnowledgeDescription(): void {
+  fetchKnowledgeDescription(pollingIntervalId?: any): void {
     // Loading state is already set to true when this is called
     if (!this.defaultValues.knowledgeId) {
       this.isDescriptionLoading = false;
@@ -760,24 +778,41 @@ export class Step4Component extends BaseComponent implements OnInit {
               // Update parent model
               this.checkForm();
               this.aiAbstractError = false;
+              
+              // Clear polling interval if we have a valid summary
+              if (pollingIntervalId) {
+                clearInterval(pollingIntervalId);
+              }
+              
+              // Turn off loading
+              this.isDescriptionLoading = false;
             } else {
               // No summary data returned from AI parser
-              this.aiAbstractError = true;
+              // Don't set error yet - continue polling until timeout
               console.error('No summary data returned from AI parser');
             }
           } else {
             // No data returned from AI parser
-            this.aiAbstractError = true;
+            // Don't set error yet - continue polling until timeout
             console.error('No data returned from AI parser');
           }
-          this.isDescriptionLoading = false;
-          this.cdr.detectChanges();
+          
+          // Only update UI state and turn off loading if this was the final request
+          if (!pollingIntervalId) {
+            this.isDescriptionLoading = false;
+            this.aiAbstractError = true;
+            this.cdr.detectChanges();
+          }
         },
         error: (error) => {
           console.error(`Error getting knowledge description:`, error);
-          this.isDescriptionLoading = false;
-          this.aiAbstractError = true;
-          this.cdr.detectChanges();
+          
+          // Only update UI state and turn off loading if this was the final request
+          if (!pollingIntervalId) {
+            this.isDescriptionLoading = false;
+            this.aiAbstractError = true;
+            this.cdr.detectChanges();
+          }
         }
       });
     

@@ -97,7 +97,7 @@
               [options]="countries"
               formControlName="country"
               class="d-block"
-              optionLabel="name.en"
+              optionLabel="names.en"
               placeholder="{{ 'ACCOUNT_SETTINGS.SELECT_COUNTRY' | translate }}"
               [filter]="true"
               [showClear]="true"
@@ -108,10 +108,10 @@
                     *ngIf="country.showFlag"
                     [src]="country.flagPath"
                     (error)="onFlagError(country)"
-                    alt="{{ country.name.en }}"
+                    alt="{{ country.names.en }}"
                     class="flag-icon w-20px mx-2"
                   />
-                  <span>{{ country.name.en }}</span>
+                  <span>{{ country.names.en }}</span>
                 </div>
               </ng-template>
             </p-dropdown>

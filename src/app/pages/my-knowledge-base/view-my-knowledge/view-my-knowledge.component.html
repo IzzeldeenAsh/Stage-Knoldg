@@ -142,7 +142,7 @@
         >
           <div class="d-flex align-items-start flex-column gap-2 lg-max-width-700px">
             <span>
-              {{ knowledge.title }}
+              {{ knowledge.title || 'N/A' }}
               <button type="button" class="btn btn-icon btn-sm btn-light-success" [routerLink]="['/app/edit-knowledge/stepper', knowledge.id]">
                 <i class="ki-duotone ki-pencil fs-2">
                   <span class="path1"></span>
@@ -181,7 +181,7 @@
                 class="fas fa-video text-danger fs-3 mx-4"
                 *ngIf="knowledge.type === 'media'"
               ></i>
-              {{ knowledge.type }}
+              {{ knowledge.type || 'N/A' }}
             </span>
             <span class="bullet text-black h-6px w-6px mx-3"></span>
             <span class="d-flex align-items-center text-gray-700">
@@ -243,7 +243,7 @@
             <div
               class="tp-course-details2-widget-price d-flex justify-content-center align-items-center"
             >
-              <span class="fs-2x fw-bolder text-primary">{{ knowledge.total_price | currency }}</span>
+              <span class="fs-2x fw-bolder text-primary">{{ knowledge.total_price ? (knowledge.total_price | currency) : 'N/A' }}</span>
               <span class="text-muted fs-5 ms-3">{{ 'VIEW_MY_KNOWLEDGE.ONE_TIME_PURCHASE' | translate }}</span>
             </div>
             <div class="separator separator-dashed my-5"></div>
@@ -267,7 +267,7 @@
                       'text-danger': knowledge.status === 'unpublised'
                     }"
                   >
-                    {{ knowledge.publish_as === 'package' ? 'Published in Package only' : knowledge.status }}
+                    {{ knowledge.publish_as === 'package' ? 'Published in Package only' : (knowledge.status || 'N/A') }}
                   </span>
                 </div>
 
@@ -280,7 +280,7 @@
                     <i class="ki-outline ki-calendar fs-4 mx-4"></i>
                     {{ 'VIEW_MY_KNOWLEDGE.PUBLISH_DATE' | translate }}
                   </span>
-                  <span>{{ knowledge.published_at | date : "dd MMMM yyyy" }}</span>
+                  <span>{{ knowledge.published_at ? (knowledge.published_at | date : "dd MMMM yyyy") : 'N/A' }}</span>
                 </div>
 
                 <!-- Included in Package -->
@@ -303,12 +303,12 @@
                     <i class="ki-outline ki-message-text-2 fs-4 mx-4"></i>
                     {{ 'VIEW_MY_KNOWLEDGE.DOCUMENTS_LANGUAGE' | translate }}
                   </span>
-                  <span class="text-capitalize">{{ knowledge.language }}</span>
+                  <span class="text-capitalize">{{ knowledge.language || 'N/A' }}</span>
                 </div>
 
                 <!-- Industry -->
                 <div
-                  *ngIf="knowledge && knowledge.isic_code"
+                  *ngIf="knowledge && knowledge.industry"
                   class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
                 >
                   <span>
@@ -318,7 +318,7 @@
                   <span
                     class="badge badge-light-secondary text-primary fs-8 fw-bold pre-line text-right"
                   >
-                    {{ knowledge.industry.name }}
+                    {{ knowledge.industry?.name || 'N/A' }}
                   </span>
                 </div>
 
@@ -333,9 +333,9 @@
                   </span>
                   <span
                     class="badge badge-light-secondary text-primary fs-8 fw-bold"
-                    [ngbTooltip]="knowledge.isic_code.name"
+                    [ngbTooltip]="knowledge.isic_code?.name || 'N/A'"
                   >
-                    {{ knowledge.isic_code.key }}
+                    {{ knowledge.isic_code?.key || 'N/A' }}
                   </span>
                 </div>
 
@@ -348,7 +348,7 @@
                     <i class="ki-outline ki-check-circle fs-4 mx-4"></i>
                     {{ 'VIEW_MY_KNOWLEDGE.PUBLISHED_AT' | translate }}
                   </span>
-                  <span>{{ knowledge.published_at | date : "dd MMMM yyyy" }}</span>
+                  <span>{{ knowledge.published_at ? (knowledge.published_at | date : "dd MMMM yyyy") : 'N/A' }}</span>
                 </div>
 
                 <!-- Target Market -->
@@ -362,30 +362,36 @@
                   <div
                     class="max-w-100px d-flex flex-wrap gap-2 justify-content-end"
                   >
-                    <ng-container *ngIf="knowledge.economic_blocs.length > 0">
+                    <ng-container *ngIf="knowledge.economic_blocs && knowledge.economic_blocs.length > 0">
                       <span
                         class="badge badge-light-secondary text-gray-800 fs-8 fw-bold"
                         *ngFor="let bloc of knowledge.economic_blocs"
                       >
-                        {{ bloc.name }}
+                        {{ bloc.name || 'N/A' }}
                       </span>
                     </ng-container>
-                    <ng-container *ngIf="knowledge.regions.length > 0">
+                    <ng-container *ngIf="knowledge.regions && knowledge.regions.length > 0">
                       <span
                         class="badge badge-light-secondary text-gray-800 fs-8 fw-bold"
                         *ngFor="let region of knowledge.regions"
                       >
-                        {{ region.name }}
+                        {{ region.name || 'N/A' }}
                       </span>
                     </ng-container>
-                    <ng-container *ngIf="knowledge.countries.length > 0">
+                    <ng-container *ngIf="knowledge.countries && knowledge.countries.length > 0">
                       <span
                         class="badge badge-light-secondary text-gray-800 fs-8 fw-bold"
                         *ngFor="let country of knowledge.countries"
                       >
-                        {{ country.name }}
+                        {{ country.name || 'N/A' }}
                       </span>
                     </ng-container>
+                    <span *ngIf="(!knowledge.economic_blocs || knowledge.economic_blocs.length === 0) && 
+                                (!knowledge.regions || knowledge.regions.length === 0) && 
+                                (!knowledge.countries || knowledge.countries.length === 0)"
+                          class="badge badge-light-secondary text-gray-800 fs-8 fw-bold">
+                      N/A
+                    </span>
                   </div>
                 </div>
 
