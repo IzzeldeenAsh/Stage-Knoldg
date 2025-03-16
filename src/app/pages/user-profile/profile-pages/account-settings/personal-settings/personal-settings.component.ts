@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { catchError, forkJoin, Observable, of, tap } from "rxjs";
 import { IKnoldgProfile } from "src/app/_fake/models/profile.interface";
 import { ConsultingFieldTreeService } from "src/app/_fake/services/consulting-fields-tree/consulting-fields-tree.service";
-import { CountryService } from "src/app/_fake/services/countries-api/countries-get.service";
+import { CountriesService } from "src/app/_fake/services/countries/countries.service";
 import { ProfileService } from "src/app/_fake/services/get-profile/get-profile.service";
 import { IndustryService } from "src/app/_fake/services/industries/industry.service";
 import { InvitationService } from "src/app/_fake/services/invitation/invitation.service";
@@ -36,7 +36,7 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
     injector: Injector,
     private readonly _profileService: AuthService,
     private readonly fb: FormBuilder,
-    private _countryService: CountryService,
+    private _countryService: CountriesService,
     private _profilePost: UpdateProfileService,
     private getProfileService: ProfileService,
     private _consultingFieldService: ConsultingFieldTreeService,
@@ -68,7 +68,7 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
         this.socialNetworks = profile.social || [];
       })
     );
-    const countries$ = this._countryService.getCountries(this.lang ? this.lang : 'en').pipe(
+    const countries$ = this._countryService.getCountries().pipe(
       tap((countries) => {
         this.countries = countries.map((country: any) => ({
           ...country,

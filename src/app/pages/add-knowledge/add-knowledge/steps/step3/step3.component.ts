@@ -61,17 +61,34 @@ export class Step3Component extends BaseComponent implements OnInit {
     this.documentLoadingStates[docId] = true;
     this.documentAbstractErrors[docId] = false;
     
-    // Wait 5 seconds before calling the API
-    of(null).pipe(
-      delay(5000),
-      finalize(() => {
-        this.fetchDocumentSummary(docId);
-      })
-    ).subscribe();
+    // Set maximum time to show loader (15 seconds)
+    const maxWaitTime = 15000;
+    const pollingInterval = 2000; // Check every 2 seconds
+    let elapsedTime = 0;
+    let polling: any;
+    
+    // Start polling
+    polling = setInterval(() => {
+      elapsedTime += pollingInterval;
+      
+      // Call the fetchDocumentSummary method to check for summary
+      this.fetchDocumentSummary(docId, polling);
+      
+      // Stop polling if we've reached the max time
+      if (elapsedTime >= maxWaitTime) {
+        clearInterval(polling);
+        
+        // Ensure loading state is turned off after max time
+        if (this.documentLoadingStates[docId]) {
+          this.documentLoadingStates[docId] = false;
+          this.documentAbstractErrors[docId] = true; // Set error state if we couldn't get data after timeout
+        }
+      }
+    }, pollingInterval);
   }
 
   // Fetch document summary from AI parser API
-  fetchDocumentSummary(docId: number): void {
+  fetchDocumentSummary(docId: number, pollingIntervalId?: any): void {
     // Loading state is already set to true when this is called
     
     const summarySubscription = this.addInsightStepsService.getDocumentSummary(docId)
@@ -92,22 +109,45 @@ export class Step3Component extends BaseComponent implements OnInit {
               this.validateDocuments();
               this.updateParentModelWithDocuments();
               this.documentAbstractErrors[docId] = false;
+              
+              // Clear polling interval if we have a valid summary
+              if (pollingIntervalId) {
+                clearInterval(pollingIntervalId);
+              }
+              
+              // Turn off loading
+              this.documentLoadingStates[docId] = false;
             } else {
               // No summary data returned
-              this.documentAbstractErrors[docId] = true;
-              console.error(`No summary data returned for document ${docId}`);
+              // Don't set error yet - continue polling until timeout
+              if (!pollingIntervalId) {
+                this.documentAbstractErrors[docId] = true;
+                console.error(`No summary data returned for document ${docId}`);
+                this.documentLoadingStates[docId] = false;
+              }
             }
           } else {
             // No data returned or document not found
-            this.documentAbstractErrors[docId] = true;
-            console.error(`No data returned or document not found for document ${docId}`);
+            // Don't set error yet - continue polling until timeout
+            if (!pollingIntervalId) {
+              this.documentAbstractErrors[docId] = true;
+              console.error(`No data returned or document not found for document ${docId}`);
+              this.documentLoadingStates[docId] = false;
+            }
           }
-          this.documentLoadingStates[docId] = false;
         },
         error: (error) => {
           console.error(`Error getting document summary for document ${docId}:`, error);
-          this.documentLoadingStates[docId] = false;
-          this.documentAbstractErrors[docId] = true;
+          
+          // Check if this is the specific metadata error we want to ignore
+          const isMetadataError = error?.error?.message?.includes('Attempt to read property "metadata" on null');
+          
+          // Only update UI state if this was the final request OR if it's not the specific error we're ignoring
+          if (!pollingIntervalId && !isMetadataError) {
+            this.documentLoadingStates[docId] = false;
+            this.documentAbstractErrors[docId] = true;
+          }
+          // If it's the metadata error and we're polling, we just continue polling until timeout
         }
       });
     
@@ -159,6 +199,8 @@ export class Step3Component extends BaseComponent implements OnInit {
             
             // Initialize loading state for this document - start with false
             this.documentLoadingStates[doc.id] = false;
+            // Initialize error state for this document
+            this.documentAbstractErrors[doc.id] = false;
             
             return {
               ...doc,
@@ -188,16 +230,34 @@ export class Step3Component extends BaseComponent implements OnInit {
           this.validateDocuments();
           this.updateParentModelWithDocuments();
           
-          // Wait 5 seconds before calling the API for each document that needs it
-          of(null).pipe(
-            delay(20000)
-          ).subscribe(() => {
-            this.documents.forEach(doc => {
-              if (!doc.description || doc.description.trim() === '') {
-                // The loading state is already set to true above
-                this.fetchDocumentSummary(doc.id);
-              }
-            });
+          // For each document that needs a summary, start polling process
+          this.documents.forEach(doc => {
+            if (!doc.description || doc.description.trim() === '') {
+              // Set maximum time to show loader (15 seconds)
+              const maxWaitTime = 15000;
+              const pollingInterval = 2000; // Check every 2 seconds
+              let elapsedTime = 0;
+              let polling: any;
+              
+              // Start polling
+              polling = setInterval(() => {
+                elapsedTime += pollingInterval;
+                
+                // Call the API to check for summary
+                this.fetchDocumentSummary(doc.id, polling);
+                
+                // If we have a valid description now or reached max time, stop polling
+                if ((doc.description && doc.description.trim() !== '') || elapsedTime >= maxWaitTime) {
+                  clearInterval(polling);
+                  
+                  // Ensure loading state is turned off after max time
+                  if (elapsedTime >= maxWaitTime && this.documentLoadingStates[doc.id]) {
+                    this.documentLoadingStates[doc.id] = false;
+                    this.documentAbstractErrors[doc.id] = true; // Set error state if we couldn't get data after timeout
+                  }
+                }
+              }, pollingInterval);
+            }
           });
         },
         error: (error) => {
