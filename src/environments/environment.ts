@@ -10,7 +10,7 @@ export const environment = {
   apiUrl: 'api',
   
   // API configuration for sharing authentication between domains
-  apiBaseUrl: 'https://api.foresighta.co/api',
+  apiBaseUrl: 'https://api.knoldg.com/api',
   appDomain: '.knoldg.com',
   mainAppUrl: 'http://knoldg.com',
   subAppUrl: 'http://app.knoldg.com',
