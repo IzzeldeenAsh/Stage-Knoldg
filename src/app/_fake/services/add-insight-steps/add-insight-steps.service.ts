@@ -140,7 +140,7 @@ export interface DocumentParserResponse {
   providedIn: "root",
 })
 export class AddInsightStepsService {
-  private insightaHost = "https://api.foresighta.co";
+  private insightaHost = "https://api.knoldg.com";
   private apiUrl = `${this.insightaHost}/api/insighter/library/knowledge`;
   private suggestTopicUrl = `${this.insightaHost}/api/insighter/topic/suggest`;
 
@@ -494,7 +494,7 @@ export class AddInsightStepsService {
 
     this.setLoading(true);
     return this.http
-      .put(`https://api.foresighta.co/api/insighter/library/knowledge/abstract/document/${knowledgeId}`, request, {
+      .put(`https://api.knoldg.com/api/insighter/library/knowledge/abstract/document/${knowledgeId}`, request, {
         headers,
       })
       .pipe(
