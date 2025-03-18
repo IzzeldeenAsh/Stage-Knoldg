@@ -19,6 +19,7 @@ import { NgbDropdownModule, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { SharedModule } from 'src/app/_metronic/shared/shared.module';
 import { ScheduleDialogComponent } from './components/packages/schedule-dialog/schedule-dialog.component';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
+import { EditorModule } from '@tinymce/tinymce-angular';
 
 
 const routes: Routes = [
@@ -77,7 +78,8 @@ const routes: Routes = [
     InputTextModule,
     SharedModule,
     NgbDropdownModule,
-    DynamicDialogModule
+    DynamicDialogModule,
+    EditorModule
   ]
 })
 export class MyKnowledgeModule { } 

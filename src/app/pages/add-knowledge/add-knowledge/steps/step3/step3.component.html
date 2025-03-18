@@ -61,15 +61,11 @@
           </div>
           
           <div class="textarea-container">
-            <textarea 
-              class="form-control min-height-250px"
-              [ngClass]="{'is-invalid': doc.touched && doc.hasError}"
-              rows="3"
-              [value]="doc.description || ''"
-              (input)="updateDocumentDescription(doc.id, descInput.value)"
-              #descInput
-              placeholder="{{ 'ENTER_DOCUMENT_DESCRIPTION' | translate }}"
-            ></textarea>
+            <editor
+              apiKey="fovwl5u83es9vkiv7x6h34fynj0utg108qrb0edwwwlxevt9"
+              [ngClass]="{'is-invalid': doc.touched && doc.hasError}" 
+              [initialValue]="doc.description || ''"
+            ></editor>
             
             <!-- Fancy loading overlay -->
             <div *ngIf="documentLoadingStates[doc.id]" class="loading-overlay">

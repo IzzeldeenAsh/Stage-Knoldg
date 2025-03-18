@@ -5,7 +5,7 @@ mode="indeterminate"
 ></p-progressBar>
 <div class="mb-5 mb-xl-10" *ngIf="userProfile">
     <!--begin::Header-->
-    <div class="pt-7">
+    <div class="pt-7" *ngIf="filteredUserRequests.length > 0">
         <!--begin::Title-->
         <h3 class="align-items-start flex-column">
             <span class="fw-bold text-gray-900">{{ 'USER_REQUESTS.TITLE' | translate }}</span>
@@ -20,11 +20,10 @@ mode="indeterminate"
             <!--begin::Filters-->
             <div class="d-flex justify-content-end flex-wrap gap-4">
                 <!--begin::Request Type-->
-                <div class="d-flex fw-bold">
+                <div class="d-flex fw-bold" >
                     <!--begin::Label-->
                     <div class="text-muted fs-7 me-2">{{ 'USER_REQUESTS.FILTER.REQUEST_TYPE' | translate }}</div>
                     <!--end::Label-->
-
                     <!--begin::Select-->
                     <select class="form-select form-select-transparent text-gray-900 fs-7 lh-1 fw-bold py-0 ps-3 w-auto"
                             [(ngModel)]="selectedType"

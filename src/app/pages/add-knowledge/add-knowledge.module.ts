@@ -49,7 +49,6 @@ import { CalendarModule } from 'primeng/calendar';
     FormsModule,
     ReactiveFormsModule,
     TruncateTextPipe,
-
     EditorModule,
     DialogModule,
     FileSizePipe,
