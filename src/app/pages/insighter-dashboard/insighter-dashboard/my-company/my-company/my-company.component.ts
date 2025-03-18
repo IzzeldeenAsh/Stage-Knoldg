@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CompanyAccountService } from 'src/app/_fake/services/company-account/company-account.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
+import { ConfirmationService } from 'primeng/api';
 
 interface Insighter {
   id: number;
@@ -59,11 +60,15 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
   first: number = 0;
   paginationMeta: PaginationMeta | null = null;
   
+  // Current user ID
+  currentUserId: number | null = null;
+  
   constructor(
     injector: Injector,
     private fb: FormBuilder,
     private companyAccountService: CompanyAccountService,
-    private profileService: ProfileService
+    private profileService: ProfileService,
+    private confirmationService: ConfirmationService
   ) {
     super(injector);
     
@@ -83,6 +88,7 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     this.profileService.getProfile().subscribe((user)=>{
       this.industries = user.industries;
       this.consultingFields = user.consulting_field;
+      this.currentUserId = user.id;
     });
     
     // Load initial insighter data
@@ -290,5 +296,65 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
   // Get verification badge class
   getVerificationBadgeClass(verified: boolean): string {
     return verified ? 'badge-light-success' : 'badge-light-warning';
+  }
+  
+  // Activate insighter
+  activateInsighter(insighterId: number): void {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to activate this insighter?',
+      header: 'Confirm Activation',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.companyAccountService.activateInsighter(insighterId).subscribe({
+          next: () => {
+            this.showSuccess('Success', 'Insighter has been activated');
+            // Reload insighters maintaining the current page
+            const currentPage = this.paginationMeta?.current_page || 1;
+            this.loadInsighters(currentPage);
+          },
+          error: (error) => {
+            let errorMessage = 'An error occurred while activating the insighter';
+            
+            if (error.error && error.error.message) {
+              errorMessage = error.error.message;
+            } else if (error.error && error.error.errors && error.error.errors.common) {
+              errorMessage = error.error.errors.common[0];
+            }
+            
+            this.showError('Error', errorMessage);
+          }
+        });
+      }
+    });
+  }
+  
+  // Deactivate insighter
+  deactivateInsighter(insighterId: number): void {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to deactivate this insighter?',
+      header: 'Confirm Deactivation',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.companyAccountService.deactivateInsighter(insighterId).subscribe({
+          next: () => {
+            this.showSuccess('Success', 'Insighter has been deactivated');
+            // Reload insighters maintaining the current page
+            const currentPage = this.paginationMeta?.current_page || 1;
+            this.loadInsighters(currentPage);
+          },
+          error: (error) => {
+            let errorMessage = 'An error occurred while deactivating the insighter';
+            
+            if (error.error && error.error.message) {
+              errorMessage = error.error.message;
+            } else if (error.error && error.error.errors && error.error.errors.common) {
+              errorMessage = error.error.errors.common[0];
+            }
+            
+            this.showError('Error', errorMessage);
+          }
+        });
+      }
+    });
   }
 }

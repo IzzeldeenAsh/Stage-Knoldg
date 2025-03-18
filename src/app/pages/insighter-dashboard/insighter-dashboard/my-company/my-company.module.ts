@@ -13,6 +13,9 @@ import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { AvatarModule } from 'primeng/avatar';
 import { Paginator, PaginatorModule } from 'primeng/paginator';
+import { TooltipModule } from 'primeng/tooltip';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 
 @NgModule({
   declarations: [
@@ -30,7 +33,12 @@ import { Paginator, PaginatorModule } from 'primeng/paginator';
     PaginatorModule,
     ButtonModule,
     ToastModule,
-    AvatarModule
+    AvatarModule,
+    TooltipModule,
+    ConfirmDialogModule
+  ],
+  providers: [
+    ConfirmationService
   ]
 })
 export class MyCompanyModule { }

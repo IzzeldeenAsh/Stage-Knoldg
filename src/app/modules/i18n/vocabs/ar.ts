@@ -57,7 +57,8 @@ export const locale = {
         "EMAIL": "البريد الإلكتروني",
         "COUNTRY": "البلد",
         "STATUS": "الحالة",
-        "VERIFICATION": "التحقق"
+        "VERIFICATION": "التحقق",
+        "ACTIONS": "الإجراءات"
       },
       "VERIFIED": "تم التحقق",
       "PENDING": "قيد الانتظار",
@@ -76,7 +77,10 @@ export const locale = {
       "LAST_NAME_REQUIRED": "اسم العائلة مطلوب",
       "CANCEL": "إلغاء",
       "INVITE": "دعوة",
-      "INVITING": "جاري الدعوة..."
+      "INVITING": "جاري الدعوة...",
+      "ACTIVATE": "تفعيل",
+      "DEACTIVATE": "إلغاء التفعيل",
+      "CURRENT_USER": "أنت"
     },
     "NOTIFICATIONS": {
       TITLE: 'إشعارات',
