@@ -2,8 +2,9 @@
 <div class="card card-flush">
   <!--begin::Card body-->
   <div class="card-body">
+    <ng-container *ngIf="knowledges && knowledges.length > 0">
     <!-- Add search input -->
-    <div class="card-header p-0">
+    <div class="card-header p-0" >
       <div class="card-title">
         <!--begin::Search-->
         <div class="d-flex align-items-center position-relative my-1" >
@@ -32,7 +33,7 @@
       <!--end::Items Counter-->
     </div>
     <!--end::Table header-->
-
+  </ng-container>
     <!-- No Scheduled Items State -->
     <div *ngIf="knowledges && knowledges.length === 0" class="text-center py-10 bg-light-secondary rounded">
       <h3 class="fw-bold text-gray-800 mb-2">{{ 'MY_KNOWLEDGE.NO_SCHEDULED.TITLE' | translate }}</h3>

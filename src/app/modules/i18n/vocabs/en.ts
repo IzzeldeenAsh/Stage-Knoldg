@@ -618,10 +618,10 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     "INSIGHTER": {
     "DASHBOARD": {
       "TITLE": "Dashboard",
-      "OVERVIEW": "Overview",
+      "OVERVIEW": "Dashboard",
       "READ_MORE": "Read more about this step!",
       "NAV": {
-        "OVERVIEW": "Overview",
+        "OVERVIEW": "Dashboard",
         "MY_REQUESTS": "My Requests",
         "MY_KNOWLEDGE": "Knowledge Base",
         "ACCOUNT_SETTINGS": "Account Settings",
@@ -830,7 +830,7 @@ UPLOAD: 'Upload',
     }
   },
   DEACTIVATE_ACCOUNT_SUCCESS_MESSAGE: "Account deactivated successfully",
-  OVERVIEW: "Overview",
+  OVERVIEW: "Dashboard",
     "COURSE": "Course",
     "COURSE_DESCRIPTION": "Educational content with structured lessons and learning objectives",
     "MEDIA": "Media",

@@ -64,6 +64,11 @@
       {{ 'KNOWLEDGE.ADD_KNOWLEDGE' | translate }}
       <i class="ki-duotone ki-plus fs-5 me-2 text-info"><span class="path1"></span><span class="path2"></span></i>
     </a>
+    <div class="menu-item px-5">
+      <a [routerLink]="'/app/insighter-dashboard/my-knowledge'" class="menu-link px-5">
+        {{ 'INSIGHTER.DASHBOARD.NAV.MY_KNOWLEDGE' | translate }}
+      </a>
+    </div>
   </div>
 
 
@@ -87,11 +92,7 @@
     </a>
   </div>
 
-  <div class="menu-item px-5">
-    <a [routerLink]="'/app/insighter-dashboard/my-knowledge'" class="menu-link px-5">
-      {{ 'INSIGHTER.DASHBOARD.NAV.MY_KNOWLEDGE' | translate }}
-    </a>
-  </div>
+
 
   <div class="menu-item px-5" *ngIf="_user.roles.includes('company') ">
     <a [routerLink]="'/app/insighter-dashboard/my-company-settings'" class="menu-link px-5">

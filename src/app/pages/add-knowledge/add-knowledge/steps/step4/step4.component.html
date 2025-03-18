@@ -97,7 +97,11 @@
           </div>
           
           <div class="position-relative">
-            <textarea formControlName="description" class="form-control w-100" rows="5" placeholder="{{ 'ENTER_KNOWLEDGE_DESCRIPTION' | translate }}"></textarea>
+            <editor
+              apiKey="fovwl5u83es9vkiv7x6h34fynj0utg108qrb0edwwwlxevt9"
+              formControlName="description"
+              [init]="{min_height: 250, placeholder: ('ENTER_KNOWLEDGE_DESCRIPTION' | translate)}"
+            ></editor>
             
             <!-- Fancy loading overlay -->
             <div *ngIf="isDescriptionLoading" class="loading-overlay">

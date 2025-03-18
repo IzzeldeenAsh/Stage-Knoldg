@@ -1,7 +1,7 @@
 <!--begin::Card-->
 <div class="card card-flush">
   <!--begin::Card header-->
-  <div class="card-header align-items-center py-5 gap-2 gap-md-5">
+  <div class="card-header align-items-center py-5 gap-2 gap-md-5"  *ngIf="packages && packages.length > 0">
     <div class="card-title">
       <h3>{{'PACKAGES_KNOWLEDGE' | translate}}</h3>
     </div>
@@ -14,7 +14,7 @@
 
   
       <!--begin::Items Counter-->
-      <div class="badge badge-lg badge-primary">
+      <div class="badge badge-lg badge-primary "  *ngIf="packages && packages.length > 0">
         <span>{{ packages.length }} items</span>
       </div>
       <!--end::Items Counter-->
