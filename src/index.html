@@ -57,12 +57,16 @@
       img.src = './assets/media/logos/default-small.svg';
       
       // Animate progress bar
-      progressBar.style.width = '100%';
+      if (progressBar) {
+        progressBar.style.width = '100%';
+      }
       
       // Hide splash screen when everything is loaded
       window.addEventListener('load', function() {
         setTimeout(() => {
-          splashScreen.classList.add('hidden');
+          if (splashScreen) {
+            splashScreen.classList.add('hidden');
+          }
         }, 1000);
       });
     });
