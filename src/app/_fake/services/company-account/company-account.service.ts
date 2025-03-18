@@ -140,4 +140,34 @@ export class CompanyAccountService {
       finalize(() => this.setLoading(false))
     );
   }
+
+  // Activate insighter
+  activateInsighter(id: number): Observable<any> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+
+    this.setLoading(true);
+    return this.http.put(`${this.inviteInsighterApi}/activate/${id}`, {}, { headers }).pipe(
+      map(res => res),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  // Deactivate insighter
+  deactivateInsighter(id: number): Observable<any> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+
+    this.setLoading(true);
+    return this.http.put(`${this.inviteInsighterApi}/deactivate/${id}`, {}, { headers }).pipe(
+      map(res => res),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
 }

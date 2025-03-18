@@ -26,7 +26,7 @@ export const locale = {
       }
     },
     "PROFILE_COMPLETION": {
-      "ALMOST_THERE": "Almost there!",
+      "ALMOST_THERE": "Almost There!",
       "TITLE": "Profile Completion",
       "DESCRIPTION": "Complete your profile to unlock all features and get the most out of your account."
     },
@@ -48,7 +48,8 @@ export const locale = {
         "EMAIL": "Email",
         "COUNTRY": "Country",
         "STATUS": "Status",
-        "VERIFICATION": "Verification"
+        "VERIFICATION": "Verification",
+        "ACTIONS": "Actions"
       },
       "VERIFIED": "Verified",
       "PENDING": "Pending",
@@ -67,7 +68,10 @@ export const locale = {
       "LAST_NAME_REQUIRED": "Last name is required",
       "CANCEL": "Cancel",
       "INVITE": "Invite",
-      "INVITING": "Inviting..."
+      "INVITING": "Inviting...",
+      "ACTIVATE": "Activate",
+      "DEACTIVATE": "Deactivate",
+      "CURRENT_USER": "You"
     },
     INSIGHTER_DASHBOARD: {
       TITLE: 'Dashboard'
@@ -166,16 +170,16 @@ export const locale = {
       LOGIN: {
         BUTTON: 'Sign In',
         TITLE: "Sign In",
-        NEED_ACCOUNT: "Need an account?",
-        SIGN_UP: "Sign up",
-        USE_GOOGLE: "Use Google",
-        USE_LINKEDIN: "Use LinkedIn",
+        NEED_ACCOUNT: "Don't have an account?",
+        SIGN_UP: "Sign up here",
+        USE_GOOGLE: "Login with Google",
+        USE_LINKEDIN: "Login with LinkedIn",
         OR_WITH_EMAIL: "Or with email",
-        EMAIL_LABEL: "Email",
+        EMAIL_LABEL: "Enter Your Email",
         EMAIL_REQUIRED: "Email is required",
         WELCOME_LOGIN: "Welcome To Knoldg",
         EMAIL_INVALID: "Email is invalid",
-        PASSWORD_LABEL: "Password",
+        PASSWORD_LABEL: "Enter Your Password",
         PASSWORD_REQUIRED: "Password is required",
         FORGOT_PASSWORD: "Forgot Password?",
         PLEASE_WAIT: "Please wait...",
@@ -186,7 +190,7 @@ export const locale = {
         PASSWORD_MINLENGTH: "Password should have at least 3 symbols",
         PASSWORD_MAXLENGTH: "Password should have a maximum of 100 symbols",
         EMPOWER_INSIGHTS_TEXT: `
-        A revolutionary gateway to a world of research insights and advisors
+        Your gateway to expert data, research, insights, and advisory services.
         `
       },
       FORGOT: {
@@ -228,7 +232,7 @@ export const locale = {
         "EMAIL_REQUIRED": "Email is required",
         "EMAIL_INVALID": "Email is invalid",
         "PASSWORD_LABEL": "Password",
-        "PASSWORD_PLACEHOLDER": "Password",
+        "PASSWORD_PLACEHOLDER": "Create Password",
         "PASSWORD_REQUIRED": "Password is required",
         "PASSWORD_PATTERN": "Password must contain at least one letter, one number, and one special character.",
         "PASSWORD_MINLENGTH": "Password should have at least 3 characters",
@@ -302,12 +306,12 @@ Your wealth of knowledge is valued and many are eager to learn from it.
         INVALID_FIELD: 'Field is not valid',
       },
       VERIFY_EMAIL: {
-        TITLE: "Verify your email",
-        DESC: "You are one step ahead to unlock a world of knowledge and opportunities.",
-        DIDNT_RECEIVE_EMAIL: "Didn't receive an email?",
-        TRY_AGAIN: "Try Again",
+        TITLE: "Verify Your Email",
+        DESC: "You’re just one step away from unlocking expert data and insights.",
+        DIDNT_RECEIVE_EMAIL: "Didn’t receive the email?",
+        TRY_AGAIN: "Resend Verification Link",
         RESEND_EMAIL: "Resend Email",
-        EMAIL_SENT:"A verification link has been sent to your email.",
+        EMAIL_SENT:"A verification link has been sent to your email. Please check your inbox and click the link to activate your account.",
         COUNTER: "Resend again after",
 
         PLEASE_WAIT: "Please wait!",
@@ -335,8 +339,8 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     },
     "DEACTIVATE_ACCOUNT": {
       "TITLE_COMPANY": "Deactivate Company Account",
-      "TITLE_INSIGHTER": "Deactivate Insighter Account",
-      "DESCRIPTION": "Your account data will be preserved\nAccount will be inaccessible until reactivation\nYour insights remain visible on marketplace\nCannot upload new insights while deactivated",
+      "TITLE_INSIGHTER": "Deactivating Account",
+      "DESCRIPTION": "• Data will be saved\n• Account will be inactive until reactivation\n• Existing insights stay visible; no new uploads allowed",
       "BUTTON_TEXT_COMPANY": "Deactivate Company Account", 
       "BUTTON_TEXT_INSIGHTER": "Deactivate Insighter Account",
       "ILLUSTRATION_ALT": "Deactivate Company Account Illustration",
@@ -354,8 +358,8 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       "PENDING_REQUEST" : "Pending Request"
     },
     "DEACTIVATE_ACCOUNT_WITH_DELETE": {
-    "TITLE": "Delete Account Permanently",
-    "DESCRIPTION": "Your account will be deleted permanently\nAll data will be lost\nData will be removed and deleted from marketplace\nYour account will be unvisible anymore",
+    "TITLE": "Deleting Account Permanently",
+    "DESCRIPTION": "• Data will be permanently erased\n• Account will no longer be visible",
     "BUTTON_TEXT": "Request Account Deletion",
     "PENDING_REQUEST": "Deletion Request Pending",
     "ILLUSTRATION_ALT": "Account deletion illustration",
@@ -499,12 +503,13 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     PROFILE: {
       GENERAL_INFO: 'General Info',
       COMPANY_NAME: 'Company Name:',
+      SOCIAL_MEDIA: 'Social Profiles:',
       WEBSITE: 'Website:',
       ABOUT_COMPANY: 'About Company',
       FIRST_NAME: 'First Name:',
       LAST_NAME: 'Last Name:',
       EMAIL: 'Email:',
-      ROLES: 'Roles:',
+      ROLES: 'Account Type:',
       COUNTRY: 'Country:',
       ABOUT: 'About',
       CONSULTING_FIELDS: 'Consulting Fields',
@@ -530,7 +535,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       COUNTRY: 'Country',
       SELECT_COUNTRY: 'Select a country',
       COUNTRY_REQUIRED: 'Country is required.',
-      PHONE_NUMBER: 'Phone Number',
+      PHONE_NUMBER: 'Phone Number:',
       YOUR_PHONE_NUMBER: 'Your phone number',
       PHONE_NUMBER_INVALID: 'Phone number is required and must be 10 digits.',
       CONSULTING_FIELDS: 'Consulting Fields',
@@ -594,7 +599,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     },
     "UPGRADE_TO_COMPANY_ACCOUNT": {
       "TITLE": "Upgrade to a Company Account",
-      "DESCRIPTION": "Unlock premium features tailored for businesses.\nCollaborate with your team and manage your projects effortlessly.",
+      "DESCRIPTION": "Access premium business features and streamline team collaboration.",
       "BUTTON_TEXT": "Upgrade to Company Account",
       "ILLUSTRATION_ALT": "Upgrade Illustration",
       "UPGRADE_NOW": "Upgrade Now"

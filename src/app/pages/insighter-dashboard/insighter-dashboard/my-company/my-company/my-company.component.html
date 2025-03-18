@@ -38,6 +38,7 @@
               <th class="min-w-125px">{{ 'MY_COMPANY.TABLE.COUNTRY' | translate }}</th>
               <th class="min-w-125px">{{ 'MY_COMPANY.TABLE.STATUS' | translate }}</th>
               <th class="min-w-125px">{{ 'MY_COMPANY.TABLE.VERIFICATION' | translate }}</th>
+              <th class="min-w-125px text-end">{{ 'MY_COMPANY.TABLE.ACTIONS' | translate }}</th>
             </tr>
           </thead>
           <!-- Table Body -->
@@ -78,6 +79,30 @@
               <td>
                 <span [class]="'badge ' + getVerificationBadgeClass(insighter.verified_as_insighter)">
                   {{ (insighter.verified_as_insighter ? 'MY_COMPANY.VERIFIED' : 'MY_COMPANY.PENDING') | translate }}
+                </span>
+              </td>
+              
+              <!-- Actions -->
+              <td class="text-end">
+                <button *ngIf="insighter.insighter_status === 'inactive' && insighter.id !== currentUserId" 
+                        class="btn btn-icon btn-bg-light btn-active-color-success btn-sm me-1"
+                        (click)="activateInsighter(insighter.id)" 
+                        pTooltip="{{ 'MY_COMPANY.ACTIVATE' | translate }}" 
+                        tooltipPosition="top">
+                  <i class="ki-duotone ki-check fs-2"></i>
+                </button>
+                <button *ngIf="insighter.insighter_status === 'active' && insighter.id !== currentUserId" 
+                        class="btn btn-icon btn-bg-light btn-active-color-danger btn-sm me-1"
+                        (click)="deactivateInsighter(insighter.id)" 
+                        pTooltip="{{ 'MY_COMPANY.DEACTIVATE' | translate }}" 
+                        tooltipPosition="top">
+                  <i class="ki-duotone ki-cross fs-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                  </i>
+                </button>
+                <span *ngIf="insighter.id === currentUserId" class="badge badge-light-primary">
+                  {{ 'MY_COMPANY.CURRENT_USER' | translate }}
                 </span>
               </td>
             </tr>
@@ -254,3 +279,10 @@
     </button>
   </ng-template>
 </p-dialog>
+
+<!-- Confirmation Dialog for activate/deactivate actions -->
+<p-confirmDialog [style]="{width: '450px'}" 
+                 acceptButtonStyleClass="btn btn-primary" 
+                 rejectButtonStyleClass="btn btn-light-danger" 
+                 acceptIcon="ki-duotone ki-check" 
+                 rejectIcon="ki-duotone ki-cross"></p-confirmDialog>
