@@ -3,7 +3,7 @@ export const locale = {
   lang: 'en',
 
   data: {
-  
+    "WELCOME_BACK": "Welcome Back",
     "MY_KNOWLEDGE": {
       "NO_ITEMS": {
         "TITLE": "No Knowledge Items Found",
