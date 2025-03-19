@@ -3,6 +3,14 @@ export const locale = {
   lang: 'en',
 
   data: {
+    "SELECT_REGION": "Select Region...",
+    "SELECT_REGIONS": "Select Regions",
+    "SEARCH_COUNTRY": "Search country or region...",
+    "SELECTED": "selected",
+    "CLEAR_ALL": "Clear All",
+    "SELECT_ALL_COUNTRIES": "Select All Countries",
+    "CANCEL": "Cancel",
+    "CONFIRM": "Confirm",
     "WELCOME_BACK": "Welcome Back",
     "MY_KNOWLEDGE": {
       "NO_ITEMS": {
@@ -749,9 +757,6 @@ Your wealth of knowledge is valued and many are eager to learn from it.
   SAVE_AS_DRAFT_DESC: 'Save your content without publishing it.',
   VIEW_LIBRARY: 'View Library',
   CHOOSE_REGIONS: 'Choose Regions',
-  SELECT_ALL_COUNTRIES: 'Select All Countries',
-  CONFIRM: 'Confirm',
-  CANCEL: 'Cancel',
   CHOOSE_ECONOMIC_BLOCKS: 'Choose Economic Blocks',
   COUNTRIES_IN_SELECTED_BLOCKS: 'Countries in selected blocks',
   CHAPTER_NAME_REQUIRED: 'Chapter name is required.',
@@ -770,7 +775,6 @@ UPLOAD: 'Upload',
   UPLOAD_FILE_HERE: 'Upload file here or click to upload',
   SELECT_TAGS: "Select Tags",
   SELECT_ALL: "Select All",
-  CLEAR_ALL: "Clear All",
   ADD_CUSTOM_TAG: "Add Custom Tag",
   TAG_NAME: "Tag Name",
   TAG_NAME_REQUIRED: "Tag name is required",

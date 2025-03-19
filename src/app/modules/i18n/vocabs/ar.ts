@@ -1,7 +1,14 @@
 export const locale = {
   lang: "ar",
   data: {
-
+    "SELECT_REGION": "اختر المنطقة...",
+    "SELECT_REGIONS": "اختر المناطق",
+    "SEARCH_COUNTRY": "بحث عن دولة أو منطقة...",
+    "SELECTED": "محدد",
+    "CLEAR_ALL": "مسح الكل",
+    "SELECT_ALL_COUNTRIES": "تحديد جميع الدول",
+    "CANCEL": "إلغاء",
+    "CONFIRM": "تأكيد",
   "MY_KNOWLEDGE": {
     "NO_ITEMS": {
       "TITLE": "لا يوجد عناصر معرفة",
@@ -37,13 +44,9 @@ export const locale = {
       "DESCRIPTION": "أكمل ملفك الشخصي لفتح جميع الميزات والاستفادة القصوى من حسابك."
     },
     CHOOSE_REGIONS: 'اختر المناطق',
-    SELECT_ALL_COUNTRIES: 'اختر جميع البلدان',
-    CANCEL: 'إلغاء',
-    CONFIRM: 'تأكيد',
     KEYWORDS: 'الكلمات المفتاحية',
     SELECT_TAGS: 'اختر التصنيفات',
     SELECT_ALL: 'اختر الكل',
-    CLEAR_ALL: 'مسح الكل',
     ADD_CUSTOM_TAG: 'إضافة تصنيف خاص',
     TAG_NAME: 'اسم التصنيف',
     TAG_NAME_REQUIRED: 'اسم التصنيف مطلوب',
