@@ -83,7 +83,7 @@
                <!-- Description -->
                <div *ngIf="doc.description" class="mb-4">
                 <strong [ngClass]="{'text-info': activeDocumentId === doc.id}">Description:</strong>
-                 <p>{{doc.description}}</p>
+                 <p [innerHTML]="doc.description"></p>
                </div>
                <div *ngIf="!doc.description" class="mb-4">
                  <p class="lead fs-6">No description available.</p>

@@ -42,6 +42,9 @@ export class Step3Component extends BaseComponent implements OnInit {
   
   // Track error state for each document
   documentAbstractErrors: { [key: number]: boolean } = {};
+  
+  // Store TinyMCE editor instances
+  editorInstances: { [key: number]: any } = {};
 
   constructor(
     injector: Injector,
@@ -54,6 +57,17 @@ export class Step3Component extends BaseComponent implements OnInit {
   ngOnInit(): void {
     this.initForm();
     this.loadDocuments();
+  }
+  
+  // Store editor instance when initialized
+  handleEditorInit(event: any, docId: number): void {
+    this.editorInstances[docId] = event.editor;
+    
+    // Add change event listener to update document description on content change
+    event.editor.on('Change', () => {
+      const content = event.editor.getContent();
+      this.updateDocumentDescription(docId, content);
+    });
   }
 
   // Function to handle Generate AI Abstract button click for a specific document
@@ -104,6 +118,11 @@ export class Step3Component extends BaseComponent implements OnInit {
               // Update document description with AI summary
               this.documents[index].description = summary;
               this.documents[index].touched = true;
+              
+              // Update TinyMCE editor content if editor instance exists
+              if (this.editorInstances[docId]) {
+                this.editorInstances[docId].setContent(summary);
+              }
               
               // Validate and update parent model
               this.validateDocuments();
@@ -247,8 +266,14 @@ export class Step3Component extends BaseComponent implements OnInit {
                 this.fetchDocumentSummary(doc.id, polling);
                 
                 // If we have a valid description now or reached max time, stop polling
-                if ((doc.description && doc.description.trim() !== '') || elapsedTime >= maxWaitTime) {
+                const index = this.documents.findIndex(d => d.id === doc.id);
+                if ((index !== -1 && this.documents[index].description && this.documents[index].description.trim() !== '') || elapsedTime >= maxWaitTime) {
                   clearInterval(polling);
+                  
+                  // Update TinyMCE editor content if editor instance exists and we have content
+                  if (index !== -1 && this.documents[index].description && this.editorInstances[doc.id]) {
+                    this.editorInstances[doc.id].setContent(this.documents[index].description);
+                  }
                   
                   // Ensure loading state is turned off after max time
                   if (elapsedTime >= maxWaitTime && this.documentLoadingStates[doc.id]) {
