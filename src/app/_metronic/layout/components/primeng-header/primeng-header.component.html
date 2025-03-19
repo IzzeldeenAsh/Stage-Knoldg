@@ -84,6 +84,14 @@
         </p-menubar> -->
       </div>
       <div class="header-actions">
+        <!-- Add Knowledge button for desktop -->
+          <div class="app-navbar-item me-3">
+            <a routerLink="/app/add-knowledge/stepper" class="btn btn-sm btn-primary fw-bold">
+              <i class="ki-duotone ki-plus fs-5 "><span class="path1"></span><span class="path2"></span></i>
+              {{ 'KNOWLEDGE.ADD_KNOWLEDGE' | translate }}
+            </a>
+          </div>
+        
         <!-- Notification bell -->
         <div class="app-navbar-item position-relative notification-item">
           <div
@@ -145,6 +153,13 @@
       </div>
     </div>
     <div class="mobile-header-right">
+      <!-- Add Knowledge button for mobile - icon only to save space -->
+      <div class="app-navbar-item me-2">
+        <a routerLink="/app/add-knowledge/stepper" class="btn btn-icon btn-custom btn-icon-primary btn-active-light w-30px h-30px">
+          <i class="ki-outline ki-plus fs-2"></i>
+        </a>
+      </div>
+      
       <!-- Mobile Notification bell -->
       <div class="app-navbar-item position-relative mobile-notification-item">
         <div
@@ -200,6 +215,14 @@
     </div>
   </ng-template>
   <div class="mobile-menu">
+    <!-- Add Knowledge button in mobile menu -->
+    <div class="mobile-menu-item mb-3">
+      <a routerLink="/app/add-knowledge/stepper" class="mobile-menu-link" (click)="sidebarVisible = false">
+        <app-keenicon name="book" type="duotone" class="fs-2"></app-keenicon>
+        <span class="menu-text">Add Knowledge</span>
+      </a>
+    </div>
+    
     <div *ngFor="let item of items" class="mobile-menu-item">
       <!-- Special handling for Industries menu item -->
       <div *ngIf="item.label === translate.instant('MENU.INDUSTRIES')" class="mobile-submenu-container">
