@@ -1,10 +1,19 @@
 <div class="region-selector" (click)="showDialog()">
   <div class="chips-container">
     <ng-container *ngIf="hasSelections(); else placeholderTpl">
-      <p-chip *ngFor="let item of getSelectedDisplayItems()" [label]="item"></p-chip>
+      <div class="selected-items">
+        <p-chip 
+          *ngFor="let item of getSelectedDisplayItems()" 
+          [label]="item"
+          [removable]="true"
+          (onRemove)="removeItem(item)"
+        ></p-chip>
+      </div>
     </ng-container>
     <ng-template #placeholderTpl>
-      <div class="placeholder-text">{{placeholder}}</div>
+      <div class="placeholder-text">
+        <i class="pi pi-globe me-2"></i>{{placeholder}}
+      </div>
     </ng-template>
   </div>
 </div>
@@ -13,46 +22,87 @@
   [header]="title"
   [(visible)]="dialogVisible"
   [modal]="true"
-  [style]="{ width: '60vw' }"
+  [style]="{ width: '70vw', maxWidth: '1000px' }"
   appendTo="body"
-  [breakpoints]="{'960px': '75vw', '640px': '90vw'}"
+  [breakpoints]="{'960px': '90vw', '640px': '100vw'}"
   class="select-region-dialog"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="p-fluid"
 >
   <div class="region-dialog">
-    <p-accordion>
-      <p-accordionTab *ngFor="let region of regions" [header]="region.name">
-        <div class="select-all-container">
-          <input
-            type="checkbox"
-            [checked]="isRegionSelected(region)"
-            (change)="toggleSelectRegion(region, $event)"
-            id="select-region-{{ region.id }}"
-          />
-          <label for="select-region-{{ region.id }}">{{ 'SELECT_ALL_COUNTRIES' | translate }}</label>
+    <!-- Search input -->
+    <div class="search-container mb-3">
+      <span class="p-input-icon-left w-100">
+        <i class="pi pi-search"></i>
+        <input 
+          type="text" 
+          pInputText 
+          [(ngModel)]="searchQuery" 
+          (input)="filterRegions()" 
+          placeholder="{{'SEARCH_COUNTRY' | translate}}" 
+          class="w-100"
+        />
+      </span>
+    </div>
+
+    <!-- Selected count display -->
+    <div class="selected-count mb-3" *ngIf="getSelectedCount() > 0">
+      <span class="badge bg-light-info">
+        {{getSelectedCount()}} {{'SELECTED' | translate}}
+      </span>
+      <button class="btn btn-link btn-sm" (click)="clearAllSelections()">
+        {{'CLEAR_ALL' | translate}}
+      </button>
+    </div>
+
+    <!-- Region tabs -->
+    <p-tabView>
+      <p-tabPanel *ngFor="let region of filteredRegions" [header]="region.name">
+        <div class="region-header mb-3">
+          <div class="form-check">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              [checked]="isRegionSelected(region)"
+              (change)="toggleSelectRegion(region, $event)"
+              id="select-region-{{ region.id }}"
+            />
+            <label class="form-check-label fw-bold" for="select-region-{{ region.id }}">
+              {{ 'SELECT_ALL_COUNTRIES' | translate }}
+            </label>
+          </div>
         </div>
-        <div class="countries-container">
-        <div class="row">
-            <div class="country-item col-12 col-sm-4" *ngFor="let country of region.countries">
+        
+        <!-- Countries grid -->
+        <div class="countries-grid">
+          <div 
+            *ngFor="let country of filteredCountries(region)" 
+            class="country-item"
+            [class.highlighted]="isCountrySelected(country, region)"
+          >
+            <div class="form-check">
               <input
                 type="checkbox"
+                class="form-check-input"
                 [checked]="isCountrySelected(country, region)"
                 (change)="toggleSelectCountry(region, country, $event)"
                 id="select-country-{{ country.id }}"
               />
-                <div class="col-sm-6 col-md-4 col-12 mb-2 country-box">
-                  <img 
-                    [src]="getCountryFlagPath(country.flag)"
-                    (error)="onFlagError($event)"
-                    [alt]="country.name"
-                    class="country-flag"
-                  />
-                  <label for="select-country-{{ country.id }}">{{ country.name }}</label>
-                </div>
+              <label class="form-check-label" for="select-country-{{ country.id }}">
+                <img 
+                  [src]="getCountryFlagPath(country.flag)"
+                  (error)="onFlagError($event)"
+                  [alt]="country.name"
+                  class="country-flag me-2"
+                />
+                {{ country.name }}
+              </label>
             </div>
+          </div>
         </div>
-        </div>
-      </p-accordionTab>
-    </p-accordion>
+      </p-tabPanel>
+    </p-tabView>
   </div>
 
   <ng-template pTemplate="footer">
@@ -65,7 +115,14 @@
         class="btn btn-primary" 
         (click)="onConfirm()"
         [disabled]="!hasSelections()"
-      >{{ 'CONFIRM' | translate }}</button>
+      >
+        <span *ngIf="getSelectedCount() > 0">
+          {{ 'CONFIRM' | translate }} ({{getSelectedCount()}})
+        </span>
+        <span *ngIf="getSelectedCount() === 0">
+          {{ 'CONFIRM' | translate }}
+        </span>
+      </button>
     </div>
   </ng-template>
 </p-dialog>

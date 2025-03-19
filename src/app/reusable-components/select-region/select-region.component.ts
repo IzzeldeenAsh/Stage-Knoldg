@@ -8,32 +8,46 @@ import { TruncateTextPipe } from 'src/app/pipes/truncate-pipe/truncate-text.pipe
 import { AccordionModule } from 'primeng/accordion';
 import { TranslationModule } from 'src/app/modules/i18n';
 import { ChipModule } from 'primeng/chip';
+import { TabViewModule } from 'primeng/tabview';
+
 @Component({
   selector: 'app-select-region',
   standalone: true,
-  imports: [CommonModule, DialogModule, TranslationModule,TruncateTextPipe, FormsModule, InputTextModule,AccordionModule, ChipModule],
+  imports: [
+    CommonModule, 
+    DialogModule, 
+    TranslationModule,
+    TruncateTextPipe, 
+    FormsModule, 
+    InputTextModule,
+    AccordionModule, 
+    ChipModule,
+    TabViewModule
+  ],
   templateUrl: './select-region.component.html',
   styleUrls: ['./select-region.component.scss']
 })
 export class SelectRegionComponent implements OnInit {
   @Input() placeholder: string = 'Select Region...';
   @Input() title: string = 'Select Regions';
-  @Input() preSelectedRegions:any;
-  @Input() preSelectedCountries: any;
+  @Input() preSelectedRegions: any = [];
+  @Input() preSelectedCountries: any = [];
   @Output() regionsSelected = new EventEmitter<{ regions: number[], countries: number[] }>();
 
   dialogVisible: boolean = false;
   regions: Continent[] = [];
+  filteredRegions: Continent[] = [];
   selectedRegions: number[] = [];
   selectedCountries: number[] = [];
   displayValue: string = '';
+  searchQuery: string = '';
 
   constructor(private regionsService: RegionsService) {}
 
   ngOnInit() {
     this.loadRegions();
-    this.selectedRegions = [...this.preSelectedRegions];
-    this.selectedCountries = [...this.preSelectedCountries];
+    this.selectedRegions = this.preSelectedRegions ? [...this.preSelectedRegions] : [];
+    this.selectedCountries = this.preSelectedCountries ? [...this.preSelectedCountries] : [];
     this.updateDisplayValue();
   }
 
@@ -41,6 +55,7 @@ export class SelectRegionComponent implements OnInit {
     this.regionsService.getRegionsList().subscribe({
       next: (regions) => {
         this.regions = regions;
+        this.filteredRegions = [...this.regions];
       },
       error: (error) => {
         console.error('Error loading regions:', error);
@@ -50,6 +65,8 @@ export class SelectRegionComponent implements OnInit {
 
   showDialog() {
     this.dialogVisible = true;
+    this.searchQuery = '';
+    this.filteredRegions = [...this.regions];
   }
 
   /**
@@ -159,16 +176,8 @@ export class SelectRegionComponent implements OnInit {
   }
 
   /**
-   * Optionally, you can reset selections when dialog is closed without confirming
+   * Gets the selected display items for chips
    */
-  onCancel() {
-    this.dialogVisible = false;
-    // Optionally reset selections if needed
-    // this.selectedRegions = [];
-    // this.selectedCountries = [];
-    // this.displayValue = '';
-  }
-
   getSelectedDisplayItems(): string[] {
     const selectedItems: string[] = [];
     
@@ -187,5 +196,81 @@ export class SelectRegionComponent implements OnInit {
     });
 
     return selectedItems;
+  }
+
+  /**
+   * Filters regions and countries based on search query
+   */
+  filterRegions() {
+    if (!this.searchQuery || this.searchQuery.trim() === '') {
+      this.filteredRegions = [...this.regions];
+      return;
+    }
+
+    const query = this.searchQuery.toLowerCase().trim();
+    
+    // Filter regions whose names match the query
+    this.filteredRegions = this.regions.filter(region => 
+      region.name.toLowerCase().includes(query) || 
+      region.countries.some(country => country.name.toLowerCase().includes(query))
+    );
+  }
+
+  /**
+   * Filters countries within a region based on search query
+   */
+  filteredCountries(region: Continent): Country[] {
+    if (!this.searchQuery || this.searchQuery.trim() === '') {
+      return region.countries;
+    }
+
+    const query = this.searchQuery.toLowerCase().trim();
+    return region.countries.filter(country => 
+      country.name.toLowerCase().includes(query)
+    );
+  }
+
+  /**
+   * Gets the total count of selected regions and countries
+   */
+  getSelectedCount(): number {
+    let count = this.selectedRegions.length;
+    
+    // Count individually selected countries
+    count += this.selectedCountries.length;
+    
+    return count;
+  }
+
+  /**
+   * Clears all selections
+   */
+  clearAllSelections() {
+    this.selectedRegions = [];
+    this.selectedCountries = [];
+    this.updateDisplayValue();
+  }
+
+  /**
+   * Removes a specific item (region or country) from selection
+   */
+  removeItem(itemName: string) {
+    // Check if it's a region
+    const region = this.regions.find(r => r.name === itemName);
+    if (region) {
+      this.selectedRegions = this.selectedRegions.filter(id => id !== region.id);
+      this.updateDisplayValue();
+      return;
+    }
+
+    // Check if it's a country
+    for (const region of this.regions) {
+      const country = region.countries.find(c => c.name === itemName);
+      if (country) {
+        this.selectedCountries = this.selectedCountries.filter(id => id !== country.id);
+        this.updateDisplayValue();
+        return;
+      }
+    }
   }
 }
