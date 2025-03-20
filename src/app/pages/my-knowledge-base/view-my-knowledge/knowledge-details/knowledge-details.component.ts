@@ -854,6 +854,27 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
       return;
     }
     
+    // Check if there's existing content and confirm before overwriting
+    const currentContent = this.editorInstance?.getContent();
+    if (currentContent && currentContent.trim() !== '') {
+      Swal.fire({
+        title: 'Existing Content',
+        text: 'This will replace your current description. Continue?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, generate new',
+        cancelButtonText: 'Cancel'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.processAIAbstract();
+        }
+      });
+    } else {
+      this.processAIAbstract();
+    }
+  }
+
+  private processAIAbstract(): void {
     this.isGeneratingAbstract = true;
     this.abstractError = false;
     
