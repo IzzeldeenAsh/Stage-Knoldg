@@ -320,7 +320,7 @@ export class UpgradeToCompanyComponent
                 : "We will verify your account once the information is confirmed.",
             confirmButtonText: this.lang === "ar" ? "حسناً" : "OK",
           }).then(() => {
-            this.router.navigate(["/app/profile"]);
+            window.location.reload();
           });
         },
         error: (error) => {

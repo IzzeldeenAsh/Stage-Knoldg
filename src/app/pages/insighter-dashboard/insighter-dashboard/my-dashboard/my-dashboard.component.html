@@ -44,16 +44,27 @@
         
                     <!--begin::Text-->
                     <span class="text-gray-600 fw-semibold fs-6 mb-6 d-block mw-400px">
-                        {{'UPGRADE_TO_COMPANY_ACCOUNT.DESCRIPTION' | translate}}
-                  
+                        <ng-container *ngIf="hasPendingActivationRequest; else regularDescription">
+                            {{'UPGRADE_TO_COMPANY_ACCOUNT.PENDING_DESCRIPTION' | translate}}
+                        </ng-container>
+                        <ng-template #regularDescription>
+                            {{'UPGRADE_TO_COMPANY_ACCOUNT.DESCRIPTION' | translate}}
+                        </ng-template>
                     </span>
                     <!--end::Text-->
                 
                     <!--begin::Action--> 
                     <div class="mb-7">
-                        <a [routerLink]="['/app/insighter-dashboard/account-settings/company-account']" class="btn btn-sm btn-primary fw-semibold me-2" data-bs-toggle="modal" data-bs-target="#kt_modal_upgrade_plan">
-                            {{'UPGRADE_TO_COMPANY_ACCOUNT.UPGRADE_NOW' | translate}}
-                        </a> 
+                        <ng-container *ngIf="hasPendingActivationRequest; else upgradeButton">
+                            <button class="btn btn-sm btn-secondary fw-semibold me-2" disabled>
+                                {{'UPGRADE_TO_COMPANY_ACCOUNT.PENDING' | translate}}
+                            </button>
+                        </ng-container>
+                        <ng-template #upgradeButton>
+                            <a [routerLink]="['/app/insighter-dashboard/account-settings/company-account']" class="btn btn-sm btn-primary fw-semibold me-2" data-bs-toggle="modal" data-bs-target="#kt_modal_upgrade_plan">
+                                {{'UPGRADE_TO_COMPANY_ACCOUNT.UPGRADE_NOW' | translate}}
+                            </a>
+                        </ng-template>
                     </div>
                     <!--begin::Action--> 
                 </div>

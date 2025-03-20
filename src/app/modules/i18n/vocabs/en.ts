@@ -315,8 +315,8 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       },
       VERIFY_EMAIL: {
         TITLE: "Verify Your Email",
-        DESC: "You’re just one step away from unlocking expert data and insights.",
-        DIDNT_RECEIVE_EMAIL: "Didn’t receive the email?",
+        DESC: "You're just one step away from unlocking expert data and insights.",
+        DIDNT_RECEIVE_EMAIL: "Didn't receive the email?",
         TRY_AGAIN: "Resend Verification Link",
         RESEND_EMAIL: "Resend Email",
         EMAIL_SENT:"A verification link has been sent to your email. Please check your inbox and click the link to activate your account.",
@@ -608,6 +608,8 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     "UPGRADE_TO_COMPANY_ACCOUNT": {
       "TITLE": "Upgrade to a Company Account",
       "DESCRIPTION": "Access premium business features and streamline team collaboration.",
+      "PENDING_DESCRIPTION": "Your company account activation request is currently being processed. We will notify you once it is approved.",
+      "PENDING": "Request Pending",
       "BUTTON_TEXT": "Upgrade to Company Account",
       "ILLUSTRATION_ALT": "Upgrade Illustration",
       "UPGRADE_NOW": "Upgrade Now"
