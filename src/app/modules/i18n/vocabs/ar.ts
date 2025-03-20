@@ -840,6 +840,8 @@ export const locale = {
     },
     KNOWLEDGE_DETAILS: 'تفاصيل المعرفة',
     ANALYTICS: 'التحليلات',
+    CONTINUE: 'استمرار',
+    EDIT: 'تعديل',
     DOWNLOADS: 'التنزيلات',
     ONE_TIME_PURCHASE: 'شراء لمرة واحدة',
     STATUS: 'الحالة',
