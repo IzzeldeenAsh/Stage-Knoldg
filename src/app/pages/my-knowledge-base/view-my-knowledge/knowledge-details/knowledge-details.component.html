@@ -131,8 +131,8 @@
 
      <!-- Add Document Section -->
      <div class="mt-5" *ngIf="knowledge">
-       <div class="upload-area border-dashed border-gray-300 d-flex flex-column justify-content-center align-items-center p-7 cursor-pointer"
-            (click)="openNewDocumentDialog()"
+       <div *ngIf="!showDocumentStepper" class="upload-area border-dashed border-gray-300 d-flex flex-column justify-content-center align-items-center p-7 cursor-pointer"
+            (click)="openDocumentStepper()"
             [ngClass]="{'border-primary bg-light-info': isUploadAreaHovered}"
             (mouseenter)="isUploadAreaHovered = true"
             (mouseleave)="isUploadAreaHovered = false">
@@ -147,303 +147,329 @@
            {{ knowledge.type === 'insight' ? 'Upload new insight document' : 'Add new chapter or node' }}
          </div>
        </div>
+
+       <!-- Document Stepper Section -->
+       <div *ngIf="showDocumentStepper" class="card shadow-sm">
+         <div class="card-header">
+           <h3 class="card-title">
+             {{ editingDocument ? 'Edit Document' : 'Add New Document' }}
+           </h3>
+           <div class="card-toolbar">
+             <button type="button" class="btn btn-sm btn-icon btn-light-danger" (click)="closeDocumentStepper()">
+               <i class="ki-duotone ki-cross fs-2">
+                 <span class="path1"></span>
+                 <span class="path2"></span>
+               </i>
+             </button>
+           </div>
+         </div>
+         <div class="card-body p-0">
+           <!-- Stepper Header -->
+           <div class="stepper stepper-pills stepper-column d-flex flex-column">
+             <div class="d-flex flex-row justify-content-center mb-5 p-5 bg-light">
+               <div class="stepper-item me-5 me-md-15" [ngClass]="{'current': documentStep === 1, 'completed': documentStep > 1}">
+                 <div class="stepper-line w-40px"></div>
+                 <div class="stepper-icon w-40px h-40px">
+                   <i class="stepper-check fas fa-check"></i>
+                   <span class="stepper-number">1</span>
+                 </div>
+                 <div class="stepper-label">
+                   <h3 class="stepper-title">{{ "DOCUMENT_UPLOAD" | translate }}</h3>
+                   <div class="stepper-desc">{{ "UPLOAD_YOUR_DOCUMENT" | translate }}</div>
+                 </div>
+               </div>
+               <div class="stepper-item" [ngClass]="{'current': documentStep === 2, 'completed': documentStep > 2}">
+                 <div class="stepper-line w-40px"></div>
+                 <div class="stepper-icon w-40px h-40px">
+                   <i class="stepper-check fas fa-check"></i>
+                   <span class="stepper-number">2</span>
+                 </div>
+                 <div class="stepper-label">
+                   <h3 class="stepper-title">{{ "DOCUMENT_DETAILS" | translate }}</h3>
+                   <div class="stepper-desc">{{ "ADD_DESCRIPTION_AND_CHAPTERS" | translate }}</div>
+                 </div>
+               </div>
+             </div>
+
+             <!-- Step Content -->
+             <div class="px-7 py-5">
+               <!-- Step 1: Document Upload -->
+               <div *ngIf="documentStep === 1">
+                 <div class="form-group mb-6" [formGroup]="documentForm">
+                   <!-- File Upload -->
+                   <div class="mb-5">
+                     <label class="form-label required">{{ 'CHOOSE_FILE' | translate }}</label>
+                     <div class="">
+                       <input type="file" 
+                           id="documentFileInput" 
+                           (change)="onFileSelected($event)" 
+                           accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt"
+                           style="display: none" />
+                       <ng-container *ngIf="!selectedFile && !editingDocument?.docUrl">
+                         <button type="button" 
+                                 class="btn actions-btn border border-dashed border-info bg-light-info w-100 d-flex flex-column align-items-center justify-content-center" 
+                                 style="padding: 16px"
+                                 (click)="triggerFileInput()">
+                                 <i class="ki-duotone ki-plus text-info fs-1">
+                                     <span class="path1"></span>
+                                     <span class="path2"></span>
+                                 </i>
+                         </button>
+                       </ng-container>
+                       
+                       <ng-container *ngIf="selectedFile || editingDocument?.docUrl">
+                         <div class="d-flex align-items-center justify-content-start w-100 mb-2">
+                             <img [src]="selectedFileIcon ? selectedFileIcon : editingDocument?.fileIcon" 
+                                 alt="File Icon" 
+                                 style="width: 38px; height: 38px;"
+                                 class="cursor-pointer me-3"
+                                 (click)="triggerFileInput()" />
+                             <div>
+                               <div class="fw-bold fs-5">{{ selectedFileName || editingDocument?.file_name }}</div>
+                               <div class="text-muted fs-7" *ngIf="selectedFile">{{ formatFileSize(selectedFile.size) }}</div>
+                             </div>
+                         </div>
+                       </ng-container>
+                     </div>
+                   </div>
+
+                   <!-- File Name -->
+                   <div class="mb-5">
+                     <label class="form-label required">{{ 'FILE_NAME' | translate }}</label>
+                     <input formControlName="file_name" class="form-control" placeholder="{{ 'ENTER_FILE_NAME' | translate }}" />
+                     <div *ngIf="documentForm.get('file_name')?.invalid && documentForm.get('file_name')?.touched" class="text-danger small">
+                       {{ 'FILE_NAME_REQUIRED' | translate }}
+                     </div>
+                   </div>
+
+                   <!-- Price Column -->
+                   <div class="mb-5">   
+                     <label class="form-label required">{{ 'PRICE' | translate }}</label>
+                     <!-- Price Input (shown only when NOT charity) -->
+                     <div class="input-group" *ngIf="!documentForm.get('isCharity')?.value" style="direction: ltr !important;">
+                       <span class="input-group-text">
+                         <i class="ki-duotone ki-dollar fs-2">
+                           <span class="path1"></span>
+                           <span class="path2"></span>
+                           <span class="path3"></span>
+                         </i>
+                       </span>
+                       <input formControlName="price" type="number" min="0" class="form-control" placeholder="{{ 'ENTER_PRICE' | translate }}" />
+                     </div>
+                     
+                     <!-- Free Price Display (when charity is toggled) -->
+                     <div class="alert alert-success d-flex align-items-center p-2 mt-2" *ngIf="documentForm.get('isCharity')?.value">
+                       <i class="ki-duotone ki-information-5 fs-2hx text-success me-2"></i>
+                       <div class="d-flex flex-column">
+                         <small class="text-success py-1">{{ 'FREE_DOCUMENT' | translate }}</small>
+                       </div>
+                     </div>
+                     
+                     <!-- Price Validation Message -->
+                     <div *ngIf="documentForm.get('price')?.invalid && documentForm.get('price')?.touched && !documentForm.get('isCharity')?.value" class="text-danger small">
+                       {{ 'PRICE_REQUIRED' | translate }}
+                     </div>
+
+                     <!-- Charity toggle -->
+                     <div class="d-flex justify-content-start mt-2">
+                       <div class="form-check form-switch form-check-custom form-check-solid mb-2">
+                         <input class="form-check-input h-2 w-2" 
+                             type="checkbox" 
+                             formControlName="isCharity" 
+                             id="isCharityToggle" />
+                             <label class="form-check-label" for="isCharityToggle">
+                                 <span class="badge badge-light-success">{{ 'CHARITY_MODE' | translate }}</span>
+                             </label>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+
+               <!-- Step 2: Document Description and Chapters -->
+               <div *ngIf="documentStep === 2">
+                 <div class="mb-5" [formGroup]="documentForm">
+                   <div class="d-flex justify-content-between align-items-center mb-2">
+                     <label class="form-label mb-0">{{ "DOCUMENT_DESCRIPTION" | translate }}</label>
+                     
+                     <!-- Generate AI Abstract button -->
+                     <div *ngIf="!isGeneratingAbstract && (!documentForm.get('description')?.value || documentForm.get('description')?.value.trim() === '')" class="cursor-pointer border-none border-0">
+                       <div (click)="generateAIAbstract()" class="loader-container px-3" style="min-height: 30px; cursor: pointer;">
+                         <div class="steel-shining-text no-animation" style="font-size: 0.85rem;">
+                           <svg width="16" height="13" viewBox="0 0 18 15" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 5px;">
+                             <!-- SVG Stars code here -->
+                             <path class="star star-small" d="M14.4739 9.2714C14.5223 9.07456 14.8022 9.07456 14.8506 9.2714L14.9018 9.47927C15.1251 10.3869 15.8584 11.0801 16.7771 11.2523V11.2523C16.9622 11.287 16.9622 11.5523 16.7771 11.587V11.587C15.8584 11.7591 15.1251 12.4524 14.9018 13.36L14.8506 13.5679C14.8022 13.7647 14.5223 13.7647 14.4739 13.5679L14.4227 13.36C14.1994 12.4524 13.4661 11.7591 12.5475 11.587V11.587C12.3623 11.5523 12.3623 11.287 12.5475 11.2523V11.2523C13.4661 11.0801 14.1994 10.3869 14.4227 9.47927L14.4739 9.2714Z" fill="url(#paint0_linear_2012_9)"/>
+                             <path class="star star-large" d="M5.96007 2.04365C6.05608 1.63864 6.63242 1.63864 6.72843 2.04365L6.82277 2.44161C7.27408 4.34549 8.81369 5.79905 10.7403 6.14025V6.14025C11.126 6.20856 11.126 6.76196 10.7403 6.83026V6.83026C8.81369 7.17146 7.27408 8.62503 6.82277 10.5289L6.72843 10.9269C6.63242 11.3319 6.05608 11.3319 5.96007 10.9269L5.86573 10.5289C5.41442 8.62502 3.87481 7.17146 1.94815 6.83026V6.83026C1.56245 6.76196 1.56245 6.20856 1.94815 6.14025V6.14025C3.87481 5.79905 5.41442 4.34549 5.86573 2.44161L5.96007 2.04365Z" fill="url(#paint1_linear_2012_9)"/>
+                             <path class="star star-medium" d="M13.2439 1.92875C13.28 1.76954 13.5068 1.76954 13.5429 1.92875L13.5808 2.09614C13.7472 2.83083 14.3351 3.39591 15.0758 3.53318V3.53318C15.2226 3.56039 15.2226 3.77076 15.0758 3.79797V3.79797C14.3351 3.93524 13.7472 4.50032 13.5808 5.23502L13.5429 5.40241C13.5068 5.56161 13.28 5.56161 13.2439 5.40241L13.206 5.23502C13.0396 4.50032 12.4518 3.93524 11.7111 3.79797V3.79797C11.5642 3.77076 11.5642 3.56039 11.7111 3.53318V3.53318C12.4518 3.39591 13.0396 2.83083 13.206 2.09614L13.2439 1.92875Z" fill="url(#paint2_linear_2012_9)"/>
+                             <defs>
+                             <linearGradient id="paint0_linear_2012_9" x1="14.6623" y1="8.41199" x2="14.6623" y2="14.4273" gradientUnits="userSpaceOnUse">
+                             <stop stop-color="#FF9900"/>
+                             <stop offset="0.22" stop-color="#FFE4A6"/>
+                             <stop offset="1" stop-color="#FF9900"/>
+                             </linearGradient>
+                             <linearGradient id="paint1_linear_2012_9" x1="6.34425" y1="0.422974" x2="6.34425" y2="12.5475" gradientUnits="userSpaceOnUse">
+                             <stop stop-color="#FFBB3D"/>
+                             <stop offset="0.22" stop-color="#FFF2A0"/>
+                             <stop offset="1" stop-color="#FF9900"/>
+                             </linearGradient>
+                             <linearGradient id="paint2_linear_2012_9" x1="13.3934" y1="1.26886" x2="13.3934" y2="6.06229" gradientUnits="userSpaceOnUse">
+                             <stop stop-color="#FFCF3D"/>
+                             <stop offset="0.22" stop-color="#FFE4BD"/>
+                             <stop offset="1" stop-color="#FF9900"/>
+                             </linearGradient>
+                             </defs>
+                           </svg>
+                           Generate AI Abstract
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                   
+                   <div class="textarea-container">
+                     <editor
+                       apiKey="fovwl5u83es9vkiv7x6h34fynj0utg108qrb0edwwwlxevt9"
+                       [ngClass]="{'is-invalid': documentForm.get('description')?.invalid && documentForm.get('description')?.touched}" 
+                       [initialValue]="documentForm.get('description')?.value || ''"
+                       (onInit)="handleEditorInit($event)"
+                       [inline]="false"
+                     ></editor>
+                     
+                     <!-- Loading overlay for AI generation -->
+                     <div *ngIf="isGeneratingAbstract" class="loading-overlay">
+                       <div class="loading-content">
+                         <div class="loading-stars">
+                           <!-- Loading stars animation -->
+                         </div>
+                         <div class="loading-text">
+                           Generating AI Abstract
+                           <span class="loading-dots">
+                             <span class="dot"></span>
+                             <span class="dot"></span>
+                             <span class="dot"></span>
+                           </span>
+                         </div>
+                         
+                         <!-- Magical effect -->
+                         <div class="loading-magic-effect">
+                           <div class="magic-particle"></div>
+                           <div class="magic-particle"></div>
+                           <div class="magic-particle"></div>
+                           <div class="magic-particle"></div>
+                           <div class="magic-particle"></div>
+                           <div class="magic-particle"></div>
+                         </div>
+                       </div>
+                     </div>
+                     
+                     <!-- Error message -->
+                     <div *ngIf="abstractError" class="alert alert-warning mt-2 mb-2">
+                       <i class="fas fa-exclamation-triangle me-2"></i>
+                       Couldn't get AI Abstract. Please try again or enter description manually.
+                     </div>
+                     
+                     <div *ngIf="documentForm.get('description')?.invalid && documentForm.get('description')?.touched" class="invalid-feedback d-block">
+                       {{ "DOCUMENT_DESCRIPTION_REQUIRED" | translate }}
+                     </div>
+                   </div>
+                 
+                   <!-- Chapter toggle checkbox -->
+                   <div class="form-check form-switch mb-3 mt-5">
+                     <input class="form-check-input" 
+                            type="checkbox" 
+                            role="switch" 
+                            [checked]="showChapters"
+                            (change)="toggleChapters()"
+                            id="chapterToggle">
+                     <label class="form-check-label" for="chapterToggle">
+                       {{ "ADD_TABLE_OF_CONTENT" | translate }}
+                     </label>
+                   </div>
+                   
+                   <!-- Chapters section -->
+                   <div *ngIf="showChapters" class="ps-4 border-start border-3 border-light-primary mb-3">
+                     <div class="fs-6 fw-bold mb-3">{{ "TABLE_OF_CONTENT" | translate }}</div>
+                     
+                     <!-- List of chapters -->
+                     <div *ngIf="stepperChapters && stepperChapters.length > 0" class="mb-3">
+                       <table class="table table-row-dashed table-row-gray-300 align-middle">
+                         <thead>
+                           <tr class="fw-bold">
+                             <th class="w-50px">#</th>
+                             <th>{{ "CHAPTER_NAME" | translate }}</th>
+                             <th class="w-75px text-end">{{ "ACTIONS" | translate }}</th>
+                           </tr>
+                         </thead>
+                         <tbody>
+                           <tr *ngFor="let chapter of stepperChapters; let i = index">
+                             <td>{{ i + 1 }}</td>
+                             <td>{{ chapter.title }}</td>
+                             <td class="text-end">
+                               <button type="button" 
+                                       class="btn btn-sm btn-icon btn-light-danger" 
+                                       (click)="removeFormChapter(i)"
+                                       [disabled]="stepperChapters.length === 1"
+                                       title="{{ 'REMOVE_CHAPTER' | translate }}">
+                                 <i class="fas fa-times"></i>
+                               </button>
+                             </td>
+                           </tr>
+                         </tbody>
+                       </table>
+                     </div>
+                     
+                     <!-- Add new chapter form -->
+                     <div class="d-flex align-items-center">
+                       <div class="flex-grow-1 me-3">
+                         <input type="text" 
+                               class="form-control form-control-sm" 
+                               [(ngModel)]="newChapterTitle" 
+                               [ngModelOptions]="{standalone: true}"
+                               placeholder="{{ 'ENTER_CHAPTER_NAME' | translate }}"
+                               (keydown.enter)="addFormChapter()">
+                       </div>
+                       <button type="button" 
+                               class="btn btn-sm btn-primary" 
+                               (click)="addFormChapter()"
+                               [disabled]="!newChapterTitle || !newChapterTitle.trim()">
+                         {{ "ADD_CHAPTER" | translate }}
+                       </button>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+             </div>
+             
+             <!-- Stepper Navigation -->
+             <div class="d-flex justify-content-between p-5 bg-light">
+               <button type="button" 
+                       class="btn btn-light-primary" 
+                       *ngIf="documentStep === 2"
+                       (click)="prevDocumentStep()">
+                 <i class="ki-duotone ki-arrow-left fs-2 me-1"></i>
+                 Back
+               </button>
+               <div></div>
+               <button type="button" 
+                       class="btn btn-primary" 
+                       *ngIf="documentStep === 1"
+                       [disabled]="!isStep1Valid()"
+                       (click)="nextDocumentStep()">
+                 Next
+                 <i class="ki-duotone ki-arrow-right fs-2 ms-1"></i>
+               </button>
+               <button type="button" 
+                       class="btn btn-primary" 
+                       *ngIf="documentStep === 2"
+                       [disabled]="!isStep2Valid() || isSaving"
+                       (click)="saveDocumentFromStepper()">
+                 <span *ngIf="!isSaving">Save Document</span>
+                 <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-1"></span>
+                 <span *ngIf="isSaving">Saving...</span>
+               </button>
+             </div>
+           </div>
+         </div>
+       </div>
      </div>
     </div>
 </div>
-
-<!-- Dialog for Editing Document -->
-<p-dialog
-  [(visible)]="displayDocumentDialog"
-  [header]="headerTitle"
-  [modal]="true"
-  [style]="{width: '900px'}"
-  [dismissableMask]="true"
-  (onHide)="closeDialog()">
-
-  <div [formGroup]="docForm">
-    <!-- File Name -->
-    <div class="mb-3">
-      <label class="form-label required">
-        <ng-container *ngIf="knowledge?.type === 'data'">
-          {{'NODE_NAME' | translate}}
-        </ng-container>
-        <ng-container *ngIf="knowledge?.type !== 'data'">
-          {{'CHAPTER_NAME' | translate}}
-        </ng-container>
-      </label>
-      <input
-        type="text"
-        pInputText
-        formControlName="file_name"
-        class="form-control"
-        placeholder="Enter File Name"
-      />
-      <small
-        *ngIf="docForm.get('file_name')?.hasError('required') && docForm.get('file_name')?.touched"
-        class="text-danger"
-      >
-        <ng-container *ngIf="knowledge?.type === 'data'"> 
-          {{'NODE_NAME_REQUIRED' | translate}}
-        </ng-container>
-        <ng-container *ngIf="knowledge?.type !== 'data'">
-          {{'CHAPTER_NAME_REQUIRED' | translate}}
-        </ng-container>
-      </small>
-    </div>
-
-    <!-- Description -->
-    <div class="mb-3" *ngIf="knowledge?.type !== 'insight'">
-      <label class="form-label required">
-        {{'DESCRIPTION' | translate}}
-      </label>
-      <textarea
-        class="form-control"
-        formControlName="description"
-        rows="3"
-        placeholder="{{'ENTER_DESCRIPTION' | translate}}"
-      ></textarea>
-    </div>
-
-    <!-- Table of Content (for non-insight types) -->
-    <div class="col-12" *ngIf="knowledge?.type !== 'insight'">
-      <div class="form-group mb-5">
-        <label class="form-label required">{{ "TABLE_OF_CONTENT" | translate }}</label>
-        <div formArrayName="table_of_content">
-          <div *ngFor="let chapter of chapters.controls; let i = index" class="mb-3">
-            <div [formGroupName]="i">
-              <div class="input-group" formGroupName="chapter">
-                <input type="text" 
-                       class="form-control" 
-                       formControlName="title" 
-                       [placeholder]="'ENTER_SUB_CHAPTER_NAME' | translate"
-                       [class.is-invalid]="chapters.at(i).get('chapter.title')?.invalid && chapters.at(i).get('chapter.title')?.touched">
-                <button type="button" 
-                        class="btn btn-icon btn-light-danger" 
-                        (click)="removeChapter(i)"
-                        [disabled]="chapters.length === 1">
-                  <i class="ki-duotone ki-trash fs-2">
-                    <span class="path1"></span>
-                    <span class="path2"></span>
-                    <span class="path3"></span>
-                    <span class="path4"></span>
-                    <span class="path5"></span>
-                  </i>
-                </button>
-              </div>
-              <div *ngIf="chapters.at(i).get('chapter.title')?.invalid && chapters.at(i).get('chapter.title')?.touched" 
-                   class="invalid-feedback d-block">
-                <span *ngIf="chapters.at(i).get('chapter.title')?.errors?.['required']">
-                  {{ 'CHAPTER_TITLE_REQUIRED' | translate }}
-                </span>
-              </div>
-            </div>
-          </div>
-          <button type="button" class="btn btn-light-primary" (click)="addChapter()">
-            <i class="ki-duotone ki-plus fs-2"></i>
-            {{ "ADD_CHAPTER" | translate }}
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Price -->
-    <div class="mb-3 w-200px">
-      <label class="form-label required">{{'PRICE' | translate}}:</label>
-      <div class="input-group">
-        <span class="input-group-text">
-          <i class="ki-duotone ki-dollar fs-2">
-            <span class="path1"></span>
-            <span class="path2"></span>
-            <span class="path3"></span>
-          </i>
-        </span>
-        <input formControlName="price" type="number" min="0" class="form-control" placeholder="{{ 'ENTER_PRICE' | translate }}" />
-      </div>
-      <div *ngIf="docForm.get('price')?.invalid && docForm.get('price')?.touched" class="text-danger">
-        {{ 'PRICE_REQUIRED' | translate }}
-      </div>
-    </div>
-
-    <!-- File Upload -->
-    <div class="mb-3">
-      <label class="form-label">Upload File</label>
-
-      <div *ngIf="previewFilesDialog.length === 0">
-        <input
-          type="file"
-          (change)="onFilesSelectedDialog($event)"
-          class="form-control"
-          accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.jpg,.jpeg,.png,.gif"
-        />
-      </div>
-
-      <!-- File preview section -->
-      <div class="mt-3" *ngIf="previewFilesDialog.length > 0">
-        <div class="border p-3 d-flex align-items-center justify-content-between" *ngFor="let preview of previewFilesDialog">
-          <div>
-            <img [src]="preview.icon" 
-                 [alt]="preview.type" 
-                 style="width: 30px; margin-right: 10px; cursor: pointer;" 
-                 (click)="openPreview(preview)"
-                 [ngbTooltip]="'Click to open ' + preview.name">
-            {{ preview.name }}
-            <span *ngIf="preview.size" class="text-muted">{{ preview.size | number }} bytes</span>
-          </div>
-          <button
-            type="button"
-            class="btn btn-icon btn-sm btn-danger btn-active-danger"
-            (click)="removeFileDialog(preview)">
-            <i class="ki-duotone ki-trash fs-2">
-              <span class="path1"></span>
-              <span class="path2"></span>
-              <span class="path3"></span>
-              <span class="path4"></span>
-              <span class="path5"></span>
-            </i>
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <ng-template pTemplate="footer">
-    <button
-      type="button"
-      class="btn btn-light me-3"
-      (click)="closeDialog()">
-      <i class="ki-duotone ki-cross fs-2"></i>
-      Cancel
-    </button>
-    <button
-      type="button"
-      class="btn btn-primary"
-      [disabled]="docForm.invalid || isSaving"
-      (click)="saveDocument()">
-      <ng-container *ngIf="!isSaving">
-        <i class="ki-duotone ki-check fs-2"></i>
-        Save
-      </ng-container>
-      <ng-container *ngIf="isSaving">
-        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-        Saving...
-      </ng-container>
-    </button>
-  </ng-template>
-</p-dialog>
-
-<!-- Dialog for Insight Documents -->
-<p-dialog
-  [(visible)]="displayInsightDialog"
-  [header]="headerTitle"
-  [modal]="true"
-  [style]="{width: '900px'}"
-  [dismissableMask]="true"
-  (onHide)="closeInsightDialog()">
-
-  <form [formGroup]="insightDocForm">
-    <div class="form-group row mb-6">
-      <!-- File Name -->
-      <div class="col-md-7">
-        <label class="form-label required">{{ 'FILE_NAME' | translate }}</label>
-        <input formControlName="file_name" class="form-control" placeholder="{{ 'ENTER_FILE_NAME' | translate }}" />
-        <div *ngIf="insightDocForm.get('file_name')?.invalid && insightDocForm.get('file_name')?.touched" class="text-danger small">
-          <span *ngIf="insightDocForm.get('file_name')?.errors?.['required']">
-            {{ 'FILE_NAME_REQUIRED' | translate }}
-          </span>
-        </div>
-      </div>
-
-      <!-- Price -->
-      <div class="col-md-3">
-        <label class="form-label required">{{ 'PRICE' | translate }}</label>
-        <div class="input-group">
-          <span class="input-group-text">
-            <i class="ki-duotone ki-dollar fs-2">
-              <span class="path1"></span>
-              <span class="path2"></span>
-              <span class="path3"></span>
-            </i>
-          </span>
-          <input formControlName="price" type="number" min="0" class="form-control" placeholder="{{ 'ENTER_PRICE' | translate }}" />
-        </div>
-        <div *ngIf="insightDocForm.get('price')?.invalid && insightDocForm.get('price')?.touched" class="text-danger small">
-          {{ 'PRICE_REQUIRED' | translate }}
-        </div>
-      </div>
-
-      <!-- File Upload/Preview -->
-      <div class="col-md-2">
-        <label class="form-label required">{{ 'FILE' | translate }}</label>
-        <div class="d-flex align-items-center">
-          <input type="file" 
-                 #fileInput
-                 (change)="onInsightFileSelected($event)" 
-                 accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt"
-                 style="display: none" />
-          
-          <ng-container *ngIf="!insightDocForm.get('filePreview')?.value">
-            <button type="button" 
-                    class="btn actions-btn btn-light-success" 
-                    style="padding: 11px !important;"
-                    (click)="fileInput.click()">
-              <i class="ki-duotone ki-file-up fs-2 p-0">
-                <span class="path1"></span>
-                <span class="path2"></span>
-              </i>
-            </button>
-          </ng-container>
-          
-          <ng-container *ngIf="insightDocForm.get('filePreview')?.value">
-            <div class="d-flex align-items-center justify-content-center w-100">
-              <img [src]="insightDocForm.get('fileIcon')?.value" 
-                   [alt]="insightDocForm.get('file_extension')?.value" 
-                   style="width: 38px; height: 38px;"
-                   (click)="openPreview({ 
-                     fromServer: insightDocForm.get('fromServer')?.value,
-                     preview: insightDocForm.get('docUrl')?.value,
-                     docId: insightDocForm.get('docId')?.value,
-                     file: insightDocForm.get('file')?.value
-                   })"
-                   class="cursor-pointer"
-                   [ngbTooltip]="'Click to open document'" />
-              
-              <button type="button" 
-                      class="btn btn-icon btn-sm btn-light-primary ms-2"
-                      (click)="fileInput.click()"
-                      [ngbTooltip]="'Upload new file'">
-                <i class="ki-duotone ki-file-up fs-2">
-                  <span class="path1"></span>
-                  <span class="path2"></span>
-                </i>
-              </button>
-            </div>
-          </ng-container>
-        </div>
-      </div>
-    </div>
-  </form>
-
-  <ng-template pTemplate="footer">
-    <button
-      type="button"
-      class="btn btn-light me-3"
-      (click)="closeInsightDialog()">
-      <i class="ki-duotone ki-cross fs-2"></i>
-      {{ 'CANCEL' | translate }}
-    </button>
-    <button
-      type="button"
-      class="btn btn-primary"
-      [disabled]="insightDocForm.invalid || isSaving"
-      (click)="saveInsightDocument()">
-      <ng-container *ngIf="!isSaving">
-        <i class="ki-duotone ki-check fs-2"></i>
-        {{ 'SAVE' | translate }}
-      </ng-container>
-      <ng-container *ngIf="isSaving">
-        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-        {{ 'SAVING' | translate }}
-      </ng-container>
-    </button>
-  </ng-template>
-</p-dialog>

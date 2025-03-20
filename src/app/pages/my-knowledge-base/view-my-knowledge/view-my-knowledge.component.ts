@@ -1,5 +1,5 @@
 import { Component, Injector, OnInit } from "@angular/core";
-import { ActivatedRoute, Params } from "@angular/router";
+import { ActivatedRoute, Params, Router } from "@angular/router";
 import { forkJoin } from "rxjs";
 import { Breadcrumb } from "src/app/_fake/models/breadcrumb.model";
 import { IKnoldgProfile } from "src/app/_fake/models/profile.interface";
@@ -34,6 +34,7 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
     private knowledgeService: KnowledgeService,
     private knowledgeUpdateService: KnowledgeUpdateService,
     private route: ActivatedRoute,
+    private router: Router,
     private addInsightStepsService: AddInsightStepsService,
     private dialogService: DialogService,
   ) {
@@ -230,5 +231,31 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
           });
       }
     });
+  }
+
+  hasRequiredFields(): boolean {
+    if (!this.knowledge) return false;
+    if (!this.documents || !this.documents.data || this.documents.data.length === 0) return false;
+    
+    // Check for all required fields
+    return !!(
+      this.knowledge.title &&
+      this.knowledge.description &&
+      this.knowledge.topic &&
+      this.knowledge.industry &&
+      this.knowledge.language &&
+      (
+        (this.knowledge.countries && this.knowledge.countries.length > 0) ||
+        (this.knowledge.regions && this.knowledge.regions.length > 0) ||
+        (this.knowledge.economic_blocs && this.knowledge.economic_blocs.length > 0)
+      ) &&
+      this.knowledge.keywords &&
+      this.knowledge.tags && 
+      this.knowledge.tags.length > 0
+    );
+  }
+
+  navigateToEdit(): void {
+    this.router.navigate(['/app/edit-knowledge/stepper', this.knowledge.id]);
   }
 }

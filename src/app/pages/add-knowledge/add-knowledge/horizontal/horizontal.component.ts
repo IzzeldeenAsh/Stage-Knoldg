@@ -82,17 +82,17 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
             knowledgeId: this.knowledgeId,
             knowledgeType: knowledge.type,
             title: knowledge.title,
-            topicId: knowledge.topic.id,
-            industry: knowledge.industry.id,
+            topicId: knowledge.topic?.id || null,
+            industry: knowledge.industry?.id || null,
             isic_code: knowledge.isic_code?.id || null,
             hs_code: knowledge.hs_code?.id || null,
             language: knowledge.language,
-            regions: knowledge.regions.map((region: any) => region.id) || [],
-            countries: knowledge.countries.map((country: any) => country.id) || [],
+            regions: knowledge.regions?.map((region: any) => region.id) || [],
+            countries: knowledge.countries?.map((country: any) => country.id) || [],
             economic_bloc: knowledge.economic_blocs || [],
             description: knowledge.description,
             targetMarket: knowledge.economic_blocs && knowledge.economic_blocs.length > 0 ? '2' : '1',
-            keywords: knowledge.keywords.map((keyword: any) => ({ display: keyword, value: keyword })) || [],
+            keywords: knowledge.keywords?.map((keyword: any) => ({ display: keyword, value: keyword })) || [],
             customTopic: '',
             documents: [],
             publish_date_time: knowledge.published_at ? moment(knowledge.published_at).format('YYYY-MM-DD HH:mm:ss') : '',
@@ -175,6 +175,7 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
       this.handleStep3Submission(nextStep);
     } else if (this.currentStep$.value === 4) {
       // Handle step 4 submission (knowledge details, tags and keywords)
+      // For edit mode, redirecting will happen inside the handler after successful submission
       this.handleStep4Submission(nextStep);
     } else if (this.currentStep$.value === 5) {
       // Handle step 5 submission (publishing options)
@@ -268,7 +269,14 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
       .subscribe({
         next: (response) => {
           console.log('Knowledge details updated successfully', response);
-          this.currentStep$.next(nextStep);
+          
+          // In edit mode, redirect to details page when moving to step 5
+          if (this.isEditMode && nextStep === 5) {
+            this.router.navigate([`/app/my-knowledge-base/view-my-knowledge/${this.knowledgeId}/details`]);
+          } else {
+            this.currentStep$.next(nextStep);
+          }
+          
           this.isLoading = false;
         },
         error: (error) => {
@@ -298,7 +306,14 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
       .subscribe({
         next: (response) => {
           console.log('Knowledge publishing handled successfully', response);
-          this.currentStep$.next(nextStep);
+          
+          // If in edit mode and this is the final step, navigate back to knowledge details
+          if (this.isEditMode && nextStep > this.formsCount) {
+            this.router.navigate([`/app/my-knowledge-base/view-my-knowledge/${this.knowledgeId}/details`]);
+          } else {
+            this.currentStep$.next(nextStep);
+          }
+          
           this.isLoading = false;
         },
         error: (error) => {

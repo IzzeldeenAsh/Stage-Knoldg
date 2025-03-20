@@ -143,12 +143,6 @@
           <div class="d-flex align-items-start flex-column gap-2 lg-max-width-700px">
             <span>
               {{ knowledge.title || 'N/A' }}
-              <button type="button" class="btn btn-icon btn-sm btn-light-success" [routerLink]="['/app/edit-knowledge/stepper', knowledge.id]">
-                <i class="ki-duotone ki-pencil fs-2">
-                  <span class="path1"></span>
-                  <span class="path2"></span>
-                </i>
-              </button>
             </span>
           </div>
           <span class="page-desc fs-6 fw-bold d-flex align-items-center pt-4">
@@ -244,7 +238,7 @@
               class="tp-course-details2-widget-price d-flex justify-content-center align-items-center"
             >
               <span class="fs-2x fw-bolder text-primary">{{ knowledge.total_price ? (knowledge.total_price | currency) : 'N/A' }}</span>
-              <span class="text-muted fs-5 ms-3">{{ 'VIEW_MY_KNOWLEDGE.ONE_TIME_PURCHASE' | translate }}</span>
+              <span class="text-muted fs-5 ms-3">{{ 'ONE_TIME_PURCHASE' | translate }}</span>
             </div>
             <div class="separator separator-dashed my-5"></div>
 
@@ -396,14 +390,33 @@
                 </div>
 
                 <div class="d-flex flex-column gap-3 mb-4">
-                  <!-- Show publish button only if not package-only -->
+                  <!-- Edit button -->
+                  <button
+                    class="btn btn-light-success w-100"
+                    [routerLink]="['/app/edit-knowledge/stepper', knowledge.id]"
+                  >
+                    <i class="ki-outline ki-pencil fs-4 me-2"></i>
+                    {{ 'VIEW_MY_KNOWLEDGE.EDIT' | translate }}
+                  </button>
+                  
+                  <!-- Show publish button only if all required fields are present -->
                   <button
                     class="btn btn-primary w-100"
                     (click)="confirmPublish()"
-                    *ngIf="(knowledge.status === 'unpublished' || knowledge.status === 'scheduled') && knowledge.publish_as !== 'package'"
+                    *ngIf="(knowledge.status === 'unpublished' || knowledge.status === 'scheduled') && knowledge.publish_as !== 'package' && hasRequiredFields()"
                   >
                     <i class="ki-outline ki-cart fs-4 me-2"></i>
                     {{ 'VIEW_MY_KNOWLEDGE.PUBLISH' | translate }}
+                  </button>
+
+                  <!-- Show continue button if required fields are missing -->
+                  <button
+                    class="btn btn-primary w-100"
+                    (click)="navigateToEdit()"
+                    *ngIf="(knowledge.status === 'unpublished' || knowledge.status === 'scheduled') && knowledge.publish_as !== 'package' && !hasRequiredFields()"
+                  >
+                    <i class="ki-outline ki-arrow-right fs-4 me-2"></i>
+                    {{ 'VIEW_MY_KNOWLEDGE.CONTINUE' | translate }}
                   </button>
 
                   <!-- Package publishing options -->
@@ -434,7 +447,7 @@
                   <button
                     class="btn btn-light-warning w-100"
                     (click)="openScheduleDialog()"
-                    *ngIf="knowledge.status === 'unpublished' || knowledge.status === 'scheduled'"
+                    *ngIf="(knowledge.status === 'unpublished' || knowledge.status === 'scheduled') && hasRequiredFields()"
                   >
                     {{ 'VIEW_MY_KNOWLEDGE.CHANGE_SCHEDULE' | translate }}
                   </button>

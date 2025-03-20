@@ -1,6 +1,6 @@
-import { Component, Injector, OnInit } from '@angular/core';
+import { Component, Injector, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { DocumentInfo, AddInsightStepsService } from 'src/app/_fake/services/add-insight-steps/add-insight-steps.service';
+import { DocumentInfo, AddInsightStepsService, AddKnowledgeDocumentRequest, Chapter } from 'src/app/_fake/services/add-insight-steps/add-insight-steps.service';
 import { Knowledge, KnowledgeService } from 'src/app/_fake/services/knowledge/knowledge.service';
 import { KnowledgeUpdateService } from 'src/app/_fake/services/knowledge/knowledge-update.service';
 import { BaseComponent } from 'src/app/modules/base.component';
@@ -13,6 +13,16 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { MenuItem } from 'primeng/api';
 import { MenuModule } from 'primeng/menu';
+
+interface ChapterItem {
+  title: string;
+}
+
+// Create an extended interface
+interface ExtendedDocumentInfo extends DocumentInfo {
+  docUrl?: string;
+  fileIcon?: string;
+}
 
 @Component({
   selector: 'app-knowledge-details',
@@ -37,7 +47,7 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
   documents: DocumentInfo[] = [];
   isLoading: boolean = false;
   displayDocumentDialog = false;
-  editingDocument: DocumentInfo | null = null;
+  editingDocument: ExtendedDocumentInfo | null = null;
   docForm: FormGroup;
   previewFilesDialog: any[] = [];
   isSaving: boolean = false;
@@ -52,6 +62,20 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
   // Add new properties for insight documents
   insightDocForm: FormGroup;
   displayInsightDialog = false;
+
+  // Add new properties for the stepper approach
+  showDocumentStepper = false;
+  documentStep = 1;
+  documentForm: FormGroup;
+  selectedFile: File | null = null;
+  selectedFileName: string = '';
+  selectedFileIcon: string = '';
+  isGeneratingAbstract = false;
+  abstractError = false;
+  showChapters = false;
+  newChapterTitle = '';
+  stepperChapters: ChapterItem[] = [];
+  editorInstance: any;
 
   documentsDummy:any = [
     {
@@ -161,7 +185,7 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
       file_extension: ['']
     });
     this.previewFilesDialog = [];
-    this.addChapter(); // Add initial chapter
+    this.addFormChapter(); // Add initial chapter
   }
 
   private initInsightDocForm(): void {
@@ -186,17 +210,26 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
   private createChapter(): FormGroup {
     return this.fb.group({
       chapter: this.fb.group({
-        title: ['', Validators.required]
+        title: ['', Validators.required],
+        sub_child: this.fb.array([])
       })
     });
   }
 
-  addChapter(): void {
-    this.chapters.push(this.createChapter());
+  addFormChapter(): void {
+    if (!this.newChapterTitle || !this.newChapterTitle.trim()) {
+      return; // Don't add empty chapters
+    }
+    
+    this.stepperChapters.push({
+      title: this.newChapterTitle.trim()
+    });
+    
+    this.newChapterTitle = '';
   }
 
-  removeChapter(index: number): void {
-    this.chapters.removeAt(index);
+  removeFormChapter(index: number): void {
+    this.stepperChapters.splice(index, 1);
   }
 
   loadChapters(chaptersData: any[]) {
@@ -212,7 +245,7 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
         this.chapters.push(chapterGroup);
       });
     } else {
-      this.addChapter();
+      this.addFormChapter();
     }
   }
 
@@ -317,83 +350,7 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
   }
 
   editDocument(doc: DocumentInfo, event: Event): void {
-    event.stopPropagation();
-    this.editingDocument = doc;
-
-    if (this.knowledge?.type === 'insight') {
-      // Handle insight type documents
-      this.displayInsightDialog = true;
-      this.headerTitle = this.lang === 'en' ? 'Document Details' : 'تفاصيل المستند';
-
-      this.insightDocForm.patchValue({
-        file_name: doc.file_name,
-        description: doc.description || '',
-        price: doc.price || 0,
-        file_extension: doc.file_extension || '',
-        filePreview: true,
-        fileIcon: this.getFileIconByExtension(doc.file_extension),
-        fromServer: true,
-        docId: doc.id,
-        file_size: doc.file_size
-      });
-
-      // Get document URL
-      this.addInsightStepsService.getDocumentUrl(doc.id).subscribe({
-        next: (response) => {
-          this.insightDocForm.patchValue({
-            docUrl: response.data.url
-          });
-        },
-        error: (error) => {
-          console.error('Error getting document URL:', error);
-        }
-      });
-    } else {
-      // Handle other document types (existing logic)
-      this.displayDocumentDialog = true;
-      
-      if (this.knowledge?.type === 'data') {
-        this.headerTitle = this.lang === 'en' ? 'Node Details' : 'معلومات العقدة';
-      } else {
-        this.headerTitle = this.lang === 'en' ? 'Chapter Details' : 'تفاصيل الفصل';
-      }
-
-      this.docForm.patchValue({
-        file_name: doc.file_name,
-        description: doc.description || '',
-        price: doc.price || 0,
-        file_extension: doc.file_extension || ''
-      });
-
-      this.loadChapters(doc.table_of_content || []);
-
-      // Set file preview
-      this.addInsightStepsService.getDocumentUrl(doc.id).subscribe({
-        next: (response) => {
-          this.previewFilesDialog = [{
-            name: doc.file_name,
-            size: doc.file_size,
-            preview: response.data.url,
-            type: this.getFileTypeByExtension(doc.file_extension),
-            icon: this.getFileIconByExtension(doc.file_extension),
-            docId: doc.id,
-            fromServer: true
-          }];
-        },
-        error: (error) => {
-          console.error('Error getting document URL:', error);
-          this.previewFilesDialog = [{
-            name: doc.file_name,
-            size: doc.file_size,
-            preview: null,
-            type: this.getFileTypeByExtension(doc.file_extension),
-            icon: this.getFileIconByExtension(doc.file_extension),
-            docId: doc.id,
-            fromServer: true
-          }];
-        }
-      });
-    }
+    this.editDocumentWithStepper(doc, event);
   }
 
   saveDocument(): void {
@@ -724,18 +681,29 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
 
   openNewDocumentDialog(): void {
     this.editingDocument = null;
+    
+    // First initialize the form
     if (this.knowledge?.type === 'insight') {
-      this.displayInsightDialog = true;
-      this.headerTitle = this.lang === 'en' ? 'Add New Document' : 'إضافة مستند جديد';
       this.initInsightDocForm();
+      this.headerTitle = this.lang === 'en' ? 'Add New Document' : 'إضافة مستند جديد';
+      
+      // Then show dialog after a slight delay to ensure form is ready
+      setTimeout(() => {
+        this.displayInsightDialog = true;
+      }, 0);
     } else {
-      this.displayDocumentDialog = true;
+      this.initDocForm();
+      
       if (this.knowledge?.type === 'data') {
         this.headerTitle = this.lang === 'en' ? 'Add New Node' : 'إضافة عقدة جديدة';
       } else {
         this.headerTitle = this.lang === 'en' ? 'Add New Chapter' : 'إضافة فصل جديد';
       }
-      this.initDocForm();
+      
+      // Then show dialog after a slight delay to ensure form is ready
+      setTimeout(() => {
+        this.displayDocumentDialog = true;
+      }, 0);
     }
   }
 
@@ -745,5 +713,339 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
 
   isInsightType(): boolean {
     return this.knowledge?.type === 'insight';
+  }
+
+  editorInit = {
+    height: 300,
+    menubar: false,
+    plugins: [
+      'advlist autolink lists link image charmap print preview anchor',
+      'searchreplace visualblocks code fullscreen',
+      'insertdatetime media table paste code help wordcount'
+    ],
+    toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+    branding: false,
+    elementpath: false,
+    setup: (editor: any) => {
+      editor.on('init', () => {
+        setTimeout(() => {
+          editor.focus();
+        }, 500);
+      });
+    }
+  };
+
+  private initDocumentForm(): void {
+    this.documentForm = this.fb.group({
+      file_name: ['', Validators.required],
+      description: ['', Validators.required],
+      price: [0, [Validators.required, Validators.min(0)]],
+      isCharity: [false],
+      file: [null],
+      file_extension: [''],
+      fileIcon: [''],
+      docUrl: [''],
+      fromServer: [false],
+      id: [null]
+    });
+
+    // When isCharity changes, handle price validation
+    this.documentForm.get('isCharity')?.valueChanges.subscribe(isCharity => {
+      const priceControl = this.documentForm.get('price');
+      if (isCharity) {
+        priceControl?.setValue(0);
+        priceControl?.disable();
+      } else {
+        priceControl?.enable();
+      }
+    });
+  }
+
+  openDocumentStepper(): void {
+    this.showDocumentStepper = true;
+    this.documentStep = 1;
+    this.editingDocument = null;
+    this.initDocumentForm();
+    this.selectedFile = null;
+    this.selectedFileName = '';
+    this.selectedFileIcon = '';
+    this.showChapters = false;
+    this.stepperChapters = [];
+    this.newChapterTitle = '';
+  }
+
+  closeDocumentStepper(): void {
+    this.showDocumentStepper = false;
+    this.documentStep = 1;
+    this.editingDocument = null;
+    this.selectedFile = null;
+  }
+
+  triggerFileInput(): void {
+    document.getElementById('documentFileInput')?.click();
+  }
+
+  onFileSelected(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
+      this.selectedFileName = file.name;
+      const extension = this.getFileExtension(file.name);
+      this.selectedFileIcon = this.getFileIconByExtension(extension);
+      
+      // Update form values
+      this.documentForm.patchValue({
+        file: file,
+        file_name: this.selectedFileName.substring(0, this.selectedFileName.lastIndexOf('.')),
+        file_extension: extension
+      });
+    }
+  }
+
+  formatFileSize(size: number): string {
+    if (size < 1024) {
+      return size + ' bytes';
+    } else if (size < 1024 * 1024) {
+      return (size / 1024).toFixed(2) + ' KB';
+    } else {
+      return (size / (1024 * 1024)).toFixed(2) + ' MB';
+    }
+  }
+
+  nextDocumentStep(): void {
+    if (this.documentStep === 1 && this.isStep1Valid()) {
+      this.documentStep = 2;
+    }
+  }
+
+  prevDocumentStep(): void {
+    if (this.documentStep === 2) {
+      this.documentStep = 1;
+    }
+  }
+
+  isStep1Valid(): boolean {
+    // Check file name and file or editing existing
+    const fileNameValid = this.documentForm.get('file_name')?.valid;
+    const fileValid = !!this.selectedFile || !!this.editingDocument;
+    const priceValid = this.documentForm.get('isCharity')?.value || this.documentForm.get('price')?.valid;
+    
+    return !!fileNameValid && fileValid && !!priceValid;
+  }
+
+  isStep2Valid(): boolean {
+    return this.documentForm.get('description')?.valid === true;
+  }
+
+  handleEditorInit(event: any): void {
+    this.editorInstance = event.editor;
+    
+    // Set up content change listener
+    this.editorInstance.on('change', () => {
+      const content = this.editorInstance.getContent();
+      this.documentForm.patchValue({
+        description: content
+      });
+    });
+  }
+
+  generateAIAbstract(): void {
+    if (!this.selectedFile && !this.editingDocument) {
+      return;
+    }
+    
+    this.isGeneratingAbstract = true;
+    this.abstractError = false;
+    
+    const documentId = this.editingDocument?.id;
+    
+    // Call your AI abstract generation service
+    setTimeout(() => {
+      // Placeholder for actual implementation
+      // In real implementation, call your AI service and handle responses
+      const dummyAbstract = "This document provides a comprehensive analysis of the subject matter, including key insights, methodologies, and conclusions. It covers the main aspects relevant to the topic and offers valuable information for readers interested in this field.";
+      
+      // Update editor content
+      if (this.editorInstance) {
+        this.editorInstance.setContent(dummyAbstract);
+        this.documentForm.patchValue({
+          description: dummyAbstract
+        });
+      }
+      
+      this.isGeneratingAbstract = false;
+    }, 3000);
+  }
+
+  toggleChapters(): void {
+    this.showChapters = !this.showChapters;
+    
+    // If we're editing and chapters are empty, but there are chapters in the document,
+    // populate them from the editing document
+    if (this.showChapters && 
+        this.stepperChapters.length === 0 && 
+        this.editingDocument && 
+        this.editingDocument.table_of_content && 
+        this.editingDocument.table_of_content.length > 0) {
+      
+      this.stepperChapters = this.editingDocument!.table_of_content!.map((item: any) => ({
+        title: item.chapter?.title || ''
+      })).filter((ch: ChapterItem) => ch.title !== '');
+    }
+    
+    // Don't add an empty chapter by default
+  }
+
+  saveDocumentFromStepper(): void {
+    if (!this.isStep2Valid()) {
+      return;
+    }
+    
+    this.isSaving = true;
+    
+    // Prepare form data
+    const formData = new FormData();
+    
+    // Add basic info
+    formData.append('file_name', this.documentForm.get('file_name')?.value);
+    formData.append('description', this.documentForm.get('description')?.value);
+    formData.append('price', this.documentForm.get('isCharity')?.value ? '0' : this.documentForm.get('price')?.value);
+    
+    // Add file if there's a new one
+    if (this.selectedFile) {
+      formData.append('file', this.selectedFile);
+    }
+    
+    // Add chapters if any
+    if (this.stepperChapters.length > 0) {
+      this.stepperChapters.forEach((chapter, index) => {
+        formData.append(`table_of_content[${index}][chapter][title]`, chapter.title);
+      });
+    }
+    
+    // Call your API to save the document
+    if (this.editingDocument) {
+      // Update existing document - use AddInsightStepsService
+      formData.append('_method', 'PUT');
+      
+      const updateRequest: any = {
+        file_name: this.documentForm.get('file_name')?.value,
+        price: this.documentForm.get('price')?.value,
+        description: this.documentForm.get('description')?.value,
+        table_of_content: this.stepperChapters.map(ch => ({
+          chapter: {
+            title: ch.title,
+            sub_child: []
+          }
+        })),
+        _method: 'PUT'
+      };
+      
+      // Only add file if it exists
+      if (this.selectedFile) {
+        updateRequest.file = this.selectedFile;
+      }
+      
+      this.addInsightStepsService.step3AddKnowledgeDocument(
+        +this.knowledgeId, 
+        updateRequest, 
+        true
+      ).subscribe({
+        next: (response: any) => {
+          this.showSuccess('', 'Document updated successfully');
+          this.loadDocuments(); // Refresh documents list
+          this.closeDocumentStepper();
+          this.isSaving = false;
+        },
+        error: (error: any) => {
+          this.showError('', error?.error?.message || 'An error occurred');
+          this.isSaving = false;
+        }
+      });
+    } else {
+      // Create new document - use AddInsightStepsService
+      const createRequest: any = {
+        file_name: this.documentForm.get('file_name')?.value,
+        price: this.documentForm.get('price')?.value,
+        description: this.documentForm.get('description')?.value,
+        table_of_content: this.stepperChapters.map(ch => ({
+          chapter: {
+            title: ch.title,
+            sub_child: []
+          }
+        }))
+      };
+      
+      // Only add file if it exists
+      if (this.selectedFile) {
+        createRequest.file = this.selectedFile;
+      }
+      
+      this.addInsightStepsService.step3AddKnowledgeDocument(
+        +this.knowledgeId, 
+        createRequest,
+        false
+      ).subscribe({
+        next: (response: any) => {
+          this.showSuccess('', 'Document added successfully');
+          this.loadDocuments(); // Refresh documents list
+          this.closeDocumentStepper();
+          this.isSaving = false;
+        },
+        error: (error: any) => {
+          this.showError('', error?.error?.message || 'An error occurred');
+          this.isSaving = false;
+        }
+      });
+    }
+  }
+
+  // Edit an existing document using the stepper
+  editDocumentWithStepper(doc: DocumentInfo, event: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+    
+    // Cast to ExtendedDocumentInfo to add the custom properties
+    const extendedDoc: ExtendedDocumentInfo = {
+      ...doc,
+      fileIcon: this.getFileIconByExtension(doc.file_extension),
+      docUrl: '#' // Set a placeholder URL so the condition passes
+    };
+    
+    this.editingDocument = extendedDoc;
+    this.initDocumentForm();
+    
+    // Set initial values in the form
+    this.documentForm.patchValue({
+      id: doc.id,
+      file_name: doc.file_name,
+      description: doc.description || '',
+      price: doc.price || '0',
+      isCharity: doc.price === '0',
+      file_extension: doc.file_extension,
+      fileIcon: this.getFileIconByExtension(doc.file_extension),
+      docUrl: '#', // Add a placeholder URL
+      fromServer: true
+    });
+    
+    // Set selected file properties for display
+    this.selectedFileName = doc.file_name;
+    this.selectedFileIcon = this.getFileIconByExtension(doc.file_extension);
+    
+    // Load chapters if available
+    if (doc.table_of_content && doc.table_of_content.length > 0) {
+      this.showChapters = true;
+      this.stepperChapters = doc.table_of_content.map((item: any) => ({
+        title: item.chapter?.title || ''
+      })).filter((ch: ChapterItem) => ch.title !== '');
+    } else {
+      this.showChapters = false;
+      this.stepperChapters = [];
+    }
+    
+    // Show the stepper
+    this.showDocumentStepper = true;
+    this.documentStep = 1;
   }
 } 
