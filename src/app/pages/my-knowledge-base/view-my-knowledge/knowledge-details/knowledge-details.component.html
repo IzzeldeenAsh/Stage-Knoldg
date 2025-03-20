@@ -165,9 +165,9 @@
          </div>
          <div class="card-body p-0">
            <!-- Stepper Header -->
-           <div class="stepper stepper-pills stepper-column d-flex flex-column">
+           <div class="stepper stepper-pills stepper-column d-flex flex-column ">
              <div class="d-flex flex-row justify-content-center mb-5 p-5 bg-light">
-               <div class="stepper-item me-5 me-md-15" [ngClass]="{'current': documentStep === 1, 'completed': documentStep > 1}">
+               <div class="stepper-item me-5 me-md-15 d-flex flex-column align-items-center justify-content-start flex-md-row"  [ngClass]="{'current': documentStep === 1, 'completed': documentStep > 1}">
                  <div class="stepper-line w-40px"></div>
                  <div class="stepper-icon w-40px h-40px">
                    <i class="stepper-check fas fa-check"></i>
@@ -178,7 +178,7 @@
                    <div class="stepper-desc">{{ "UPLOAD_YOUR_DOCUMENT" | translate }}</div>
                  </div>
                </div>
-               <div class="stepper-item" [ngClass]="{'current': documentStep === 2, 'completed': documentStep > 2}">
+               <div class="stepper-item d-flex flex-column align-items-center justify-content-start flex-md-row" [ngClass]="{'current': documentStep === 2, 'completed': documentStep > 2}">
                  <div class="stepper-line w-40px"></div>
                  <div class="stepper-icon w-40px h-40px">
                    <i class="stepper-check fas fa-check"></i>
@@ -195,7 +195,7 @@
              <div class="px-7 py-5">
                <!-- Step 1: Document Upload -->
                <div *ngIf="documentStep === 1">
-                 <div class="form-group mb-6" [formGroup]="documentForm">
+                 <div class="form-group mb-6 d-flex flex-column flex-md-row justify-content-center gap-5" [formGroup]="documentForm">
                    <!-- File Upload -->
                    <div class="mb-5">
                      <label class="form-label required">{{ 'CHOOSE_FILE' | translate }}</label>
@@ -208,7 +208,7 @@
                        <ng-container *ngIf="!selectedFile && !editingDocument?.docUrl">
                          <button type="button" 
                                  class="btn actions-btn border border-dashed border-info bg-light-info w-100 d-flex flex-column align-items-center justify-content-center" 
-                                 style="padding: 16px"
+                                 style="padding: 9px"
                                  (click)="triggerFileInput()">
                                  <i class="ki-duotone ki-plus text-info fs-1">
                                      <span class="path1"></span>
@@ -293,7 +293,7 @@
                      <label class="form-label mb-0">{{ "DOCUMENT_DESCRIPTION" | translate }}</label>
                      
                      <!-- Generate AI Abstract button -->
-                     <div *ngIf="!isGeneratingAbstract && (!documentForm.get('description')?.value || documentForm.get('description')?.value.trim() === '')" class="cursor-pointer border-none border-0">
+                     <div *ngIf="!isGeneratingAbstract" class="cursor-pointer border-none border-0">
                        <div (click)="generateAIAbstract()" class="loader-container px-3" style="min-height: 30px; cursor: pointer;">
                          <div class="steel-shining-text no-animation" style="font-size: 0.85rem;">
                            <svg width="16" height="13" viewBox="0 0 18 15" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 5px;">

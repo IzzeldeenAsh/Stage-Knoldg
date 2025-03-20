@@ -766,31 +766,54 @@ export class Step4Component extends BaseComponent implements OnInit {
       .subscribe({
         next: (response: DocumentParserResponse) => {
           if (response.data) {
-            // Check if data is a string (direct summary) or an object with summary property
-            const summary = typeof response.data === 'string' ? response.data : 
-                           (response.data.summary ? response.data.summary : null);
+            // Extract data from response
+            const data = response.data;
             
-            if (summary) {
-              // Update knowledge description with AI summary
-              this.form.get('description')?.setValue(summary);
+            // Handle both string format and object format
+            if (typeof data === 'string') {
+              // If data is a string, it's just the summary
+              this.form.get('description')?.setValue(data);
               this.form.get('description')?.markAsTouched();
-              
-              // Update parent model
-              this.checkForm();
-              this.aiAbstractError = false;
-              
-              // Clear polling interval if we have a valid summary
-              if (pollingIntervalId) {
-                clearInterval(pollingIntervalId);
+            } else {
+              // Handle object format with multiple fields
+              // Update description if available
+              if (data.summary) {
+                this.form.get('description')?.setValue(data.summary);
+                this.form.get('description')?.markAsTouched();
               }
               
-              // Turn off loading
-              this.isDescriptionLoading = false;
-            } else {
-              // No summary data returned from AI parser
-              // Don't set error yet - continue polling until timeout
-              console.error('No summary data returned from AI parser');
+              // Update title if available from metadata
+              if (data.metadata && data.metadata.title) {
+                this.form.get('title')?.setValue(data.metadata.title);
+                this.form.get('title')?.markAsTouched();
+              }
+              
+              // Try to determine language (this might need customization based on actual API response)
+              // Since Language interface doesn't have code, we'll rely on name comparison
+              const languageName = this.determineLanguageFromMetadata(data);
+              if (languageName) {
+                const matchedLanguage = this.languages.find(lang => 
+                  lang.name.toLowerCase() === languageName.toLowerCase()
+                );
+                
+                if (matchedLanguage) {
+                  this.form.get('language')?.setValue(matchedLanguage.id);
+                  this.form.get('language')?.markAsTouched();
+                }
+              }
             }
+            
+            // Update parent model with all form values
+            this.updateParentModel(this.form.value, this.checkForm());
+            this.aiAbstractError = false;
+            
+            // Clear polling interval if we have valid data
+            if (pollingIntervalId) {
+              clearInterval(pollingIntervalId);
+            }
+            
+            // Turn off loading
+            this.isDescriptionLoading = false;
           } else {
             // No data returned from AI parser
             // Don't set error yet - continue polling until timeout
@@ -817,5 +840,22 @@ export class Step4Component extends BaseComponent implements OnInit {
       });
     
     this.unsubscribe.push(summarySubscription);
+  }
+  
+  // Helper method to determine language from metadata
+  private determineLanguageFromMetadata(data: any): string | null {
+    // Try to determine language from metadata or other fields
+    // This is a placeholder - adjust according to the actual API response structure
+    
+    // Check if metadata.subject or description contains language info
+    if (data.metadata && data.metadata.subject && data.metadata.subject.toLowerCase().includes('language:')) {
+      const match = data.metadata.subject.match(/language:\s*(\w+)/i);
+      if (match && match[1]) {
+        return match[1];
+      }
+    }
+    
+    // Default to English or current language if no language info found
+    return this.currentLang === 'en' ? 'English' : 'Arabic';
   }
 } 
