@@ -724,18 +724,29 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
 
   openNewDocumentDialog(): void {
     this.editingDocument = null;
+    
+    // First initialize the form
     if (this.knowledge?.type === 'insight') {
-      this.displayInsightDialog = true;
-      this.headerTitle = this.lang === 'en' ? 'Add New Document' : 'إضافة مستند جديد';
       this.initInsightDocForm();
+      this.headerTitle = this.lang === 'en' ? 'Add New Document' : 'إضافة مستند جديد';
+      
+      // Then show dialog after a slight delay to ensure form is ready
+      setTimeout(() => {
+        this.displayInsightDialog = true;
+      }, 0);
     } else {
-      this.displayDocumentDialog = true;
+      this.initDocForm();
+      
       if (this.knowledge?.type === 'data') {
         this.headerTitle = this.lang === 'en' ? 'Add New Node' : 'إضافة عقدة جديدة';
       } else {
         this.headerTitle = this.lang === 'en' ? 'Add New Chapter' : 'إضافة فصل جديد';
       }
-      this.initDocForm();
+      
+      // Then show dialog after a slight delay to ensure form is ready
+      setTimeout(() => {
+        this.displayDocumentDialog = true;
+      }, 0);
     }
   }
 
@@ -746,4 +757,24 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
   isInsightType(): boolean {
     return this.knowledge?.type === 'insight';
   }
+
+  editorInit = {
+    height: 300,
+    menubar: false,
+    plugins: [
+      'advlist autolink lists link image charmap print preview anchor',
+      'searchreplace visualblocks code fullscreen',
+      'insertdatetime media table paste code help wordcount'
+    ],
+    toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+    branding: false,
+    elementpath: false,
+    setup: (editor: any) => {
+      editor.on('init', () => {
+        setTimeout(() => {
+          editor.focus();
+        }, 500);
+      });
+    }
+  };
 } 

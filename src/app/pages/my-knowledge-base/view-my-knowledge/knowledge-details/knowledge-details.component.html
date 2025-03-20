@@ -196,12 +196,11 @@
       <label class="form-label required">
         {{'DESCRIPTION' | translate}}
       </label>
-      <textarea
-        class="form-control"
+      <editor
+      apiKey="fovwl5u83es9vkiv7x6h34fynj0utg108qrb0edwwwlxevt9"
         formControlName="description"
-        rows="3"
-        placeholder="{{'ENTER_DESCRIPTION' | translate}}"
-      ></textarea>
+        [init]="editorInit"
+      ></editor>
     </div>
 
     <!-- Table of Content (for non-insight types) -->
