@@ -390,10 +390,15 @@
                 </div>
 
                 <div class="d-flex flex-column gap-3 mb-4">
-                  <!-- Edit button -->
+                  <!-- Edit button - only show when we don't need to show Continue button -->
                   <button
                     class="btn btn-light-success w-100"
                     [routerLink]="['/app/edit-knowledge/stepper', knowledge.id]"
+                    *ngIf="!(
+                      (knowledge.status === 'unpublished' || knowledge.status === 'scheduled') && 
+                      knowledge.publish_as !== 'package' && 
+                      !hasRequiredFields()
+                    )"
                   >
                     <i class="ki-outline ki-pencil fs-4 me-2"></i>
                     {{ 'VIEW_MY_KNOWLEDGE.EDIT' | translate }}
