@@ -110,7 +110,7 @@ export class AuthService implements OnDestroy {
       'Accept': 'application/json', 
       'Accept-Language': 'en'
     });
-    return this.http.get('https://api.knoldg.com/api/auth/provider/linkedin', {
+    return this.http.get('https://api.knoldg.com/api/auth/provider/linkedin-openid', {
       headers,
       responseType: 'text'
     });

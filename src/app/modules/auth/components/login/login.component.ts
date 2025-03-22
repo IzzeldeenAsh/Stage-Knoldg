@@ -106,6 +106,25 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     });
   }
 
+  signInWithLinkedIn(event: Event): void {
+    event.preventDefault();
+    this.authService.getLinkedInAuthRedirectUrl().subscribe({
+      next: (redirectUrl) => {
+        const authtoken:any = localStorage.getItem('foresighta-creds');
+        const token = JSON.parse(authtoken);
+        if (token && token.authToken) {
+          window.location.href = `http://knoldg.com/en/callback/${token.authToken}`;
+        } else {
+          window.location.href = redirectUrl;
+        }
+      },
+      error: (err) => {
+        console.error('Error getting LinkedIn auth redirect URL', err);
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to initiate LinkedIn sign-in.' });
+      }
+    });
+  }
+
   togglePasswordVisibility(passwordField: HTMLInputElement): void {
     this.passwordVisible = !this.passwordVisible;
     passwordField.type = this.passwordVisible ? "text" : "password";
