@@ -76,7 +76,7 @@
       <!--begin::Form group-->
       <div class="fv-row mb-8">
         <label class="form-label fs-6  text-gray-900">{{ 'AUTH.LOGIN.EMAIL_LABEL' | translate }}</label>
-        <input class="form-control bg-transparent" type="email" name="email" formControlName="email" autocomplete="off"
+        <input class="form-control bg-transparent" type="email" name="email" placeholder="{{ 'AUTH.LOGIN.EMAIL_PLACEHOLDER' | translate }}" formControlName="email" autocomplete="off"
           [ngClass]="{
             'is-invalid': loginForm.controls['email'].invalid  &&
                  ( loginForm.controls['email'].dirty ||
@@ -103,7 +103,7 @@
       <!--end::Wrapper-->
      
       
-      <input class="form-control bg-transparent" type="password" name="password" autocomplete="off" 
+      <input class="form-control bg-transparent" type="password" name="password" placeholder="{{ 'AUTH.LOGIN.PASSWORD_PLACEHOLDER' | translate }}" autocomplete="off" 
         formControlName="password" #passwordField [ngClass]="{
             'is-invalid': loginForm.controls['password'].invalid &&
                   (loginForm.controls['password'].dirty ||

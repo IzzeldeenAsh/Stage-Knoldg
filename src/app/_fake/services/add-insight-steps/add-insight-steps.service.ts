@@ -136,6 +136,18 @@ export interface DocumentParserResponse {
   };
 }
 
+export interface DocumentDetailsRequest {
+  id: number;
+  file_name: string;
+  price: number | string;
+}
+
+export interface DocumentUploadResponse {
+  data: {
+    knowledge_document_id: number;
+  };
+}
+
 @Injectable({
   providedIn: "root",
 })
@@ -252,6 +264,43 @@ export class AddInsightStepsService {
     this.setLoading(true);
     return this.http
       .post<SuggestTopicResponse>(this.suggestTopicUrl, request, { headers })
+      .pipe(
+        map((res) => res),
+        catchError((error) => this.handleError(error)),
+        finalize(() => this.setLoading(false))
+      );
+  }
+
+  uploadKnowledgeDocument(knowledgeId: number, formData: FormData): Observable<DocumentUploadResponse> {
+    const headers = new HttpHeaders({
+      Accept: "application/json",
+      "Accept-Language": this.currentLang,
+    });
+
+    this.setLoading(true);
+    return this.http
+      .post<DocumentUploadResponse>(`${this.apiUrl}/document/upload/${knowledgeId}`, formData, {
+        headers,
+      })
+      .pipe(
+        map((res) => res),
+        catchError((error) => this.handleError(error)),
+        finalize(() => this.setLoading(false))
+      );
+  }
+
+  updateKnowledgeDocumentDetails(knowledgeId: number, documents: DocumentDetailsRequest[]): Observable<any> {
+    const headers = new HttpHeaders({
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "Accept-Language": this.currentLang,
+    });
+
+    this.setLoading(true);
+    return this.http
+      .put(`${this.apiUrl}/document/details/set/${knowledgeId}`, { documents }, {
+        headers,
+      })
       .pipe(
         map((res) => res),
         catchError((error) => this.handleError(error)),

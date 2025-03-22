@@ -1,10 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { KnowledgeService, Knowledge } from 'src/app/_fake/services/knowledge/knowledge.service';
+import { trigger, state, style, animate, transition } from '@angular/animations';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-scheduled',
   templateUrl: './scheduled.component.html',
+  styleUrls: ['./scheduled.component.scss'],
+  animations: [
+    trigger('columnResize', [
+      transition('* => *', [
+        animate('300ms ease-out')
+      ])
+    ])
+  ]
 })
 export class ScheduledComponent implements OnInit {
   knowledges: Knowledge[] = [];
@@ -13,6 +23,9 @@ export class ScheduledComponent implements OnInit {
   totalItems: number = 0;
   searchTerm: string = '';
   searchTimeout: any;
+  loading: boolean = false;
+  selectedType: 'grid' | 'list' = 'grid';
+  selectedKnowledgeType: string = '';
 
   constructor(
     private knowledgeService: KnowledgeService,
@@ -39,15 +52,30 @@ export class ScheduledComponent implements OnInit {
     }, 300); // 300ms debounce
   }
 
+  onTypeChange(event: any) {
+    this.selectedType = event.target.value;
+  }
+
   loadPage(page: number): void {
-    this.knowledgeService.getPaginatedKnowledges(page, 'scheduled', this.searchTerm).subscribe(
+    this.loading = true;
+    this.knowledgeService.getPaginatedKnowledges(page, 'scheduled', this.searchTerm, this.selectedKnowledgeType).subscribe(
       (response) => {
         this.knowledges = response.data;
         this.currentPage = response.meta.current_page;
         this.totalPages = response.meta.last_page;
         this.totalItems = response.meta.total;
+      },
+      (error) => {
+        console.error('Error fetching scheduled knowledges:', error);
+        Swal.fire({
+          title: 'Error',
+          text: 'Failed to load scheduled items. Please try again.',
+          icon: 'error'
+        });
       }
-    );
+    ).add(() => {
+      this.loading = false;
+    });
   }
 
   onPageClick(page: string | number): void {
@@ -113,5 +141,14 @@ export class ScheduledComponent implements OnInit {
 
   editKnowledge(knowledgeId: number): void {
     this.router.navigate(['/']);
+  }
+
+  // TrackBy functions for better rendering performance
+  trackById(index: number, item: Knowledge): number {
+    return item.id;
+  }
+  
+  trackByIndex(index: number, item: any): number {
+    return index;
   }
 } 
