@@ -13,7 +13,7 @@ import { EconomicBloc } from 'src/app/_fake/services/economic-block/economic-blo
 import { IsicCodesService } from 'src/app/_fake/services/isic-code/isic-codes.service';
 import { TagsService } from 'src/app/_fake/services/tags/tags.service';
 import { KnowledgeService } from 'src/app/_fake/services/knowledge/knowledge.service';
-import { AddInsightStepsService, DocumentParserResponse } from 'src/app/_fake/services/add-insight-steps/add-insight-steps.service';
+import { AddInsightStepsService } from 'src/app/_fake/services/add-insight-steps/add-insight-steps.service';
 
 interface Chip {
   id: number;
@@ -24,6 +24,16 @@ interface Chip {
 interface KeywordItem {
   display: string;
   value: string;
+}
+
+interface DocumentParserResponse {
+  summary?: string;
+  text?: string;
+  data?: any;
+  metadata?: {
+    title?: string;
+    language?: string;
+  };
 }
 
 @Component({
@@ -52,6 +62,13 @@ export class Step4Component extends BaseComponent implements OnInit {
   
   form: FormGroup;
   isLoading = false;
+  isDescriptionLoading = false;
+  isLanguageLoading = false;
+
+  // Combined loading state for easier template binding
+  get isLanguageFieldLoading(): boolean {
+    return this.isLanguageLoading || this.isDescriptionLoading;
+  }
   
   // Language related properties
   languages: Language[] = [];
@@ -99,7 +116,6 @@ export class Step4Component extends BaseComponent implements OnInit {
   @ViewChild('regionSelector') regionSelector: any;
   @ViewChild('economicBlockSelector') economicBlockSelector: any;
 
-  isDescriptionLoading = false;
   aiAbstractError = false;
 
   constructor(
@@ -119,7 +135,7 @@ export class Step4Component extends BaseComponent implements OnInit {
     this.currentLang = this.translationService.getSelectedLanguage();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.initForms();
     
     if (this.defaultValues.industry) {
@@ -142,6 +158,11 @@ export class Step4Component extends BaseComponent implements OnInit {
       }
     });
     this.unsubscribe.push(langChangeSub);
+    
+    // Subscribe to language service loading state
+    this.languagesService.isLoading$.subscribe(isLoading => {
+      this.isLanguageLoading = isLoading;
+    });
     
     // Auto-generate description if empty and knowledge ID exists
     if (this.defaultValues.knowledgeId && (!this.form.get('description')?.value || !this.form.get('description')?.value?.trim())) {
@@ -693,6 +714,277 @@ export class Step4Component extends BaseComponent implements OnInit {
     }
   }
   
+  generateAIDescription(): void {
+    // Only proceed if we have a knowledge ID
+    if (!this.defaultValues.knowledgeId) {
+      console.error('Cannot generate AI abstract without a knowledge ID');
+      return;
+    }
+
+    // Setup loading state
+    this.isDescriptionLoading = true;
+    this.aiAbstractError = false;
+    this.cdr.detectChanges(); // Force UI update immediately
+    
+    // Disable form controls while loading
+    const titleControl = this.form.get('title');
+    const languageControl = this.form.get('language');
+    if (titleControl) titleControl.disable();
+    if (languageControl) languageControl.disable();
+    
+    // Setup polling parameters
+    const maxWaitTime = 20000; // 20 seconds
+    const pollingInterval = 2000; // 2 seconds
+    let elapsedTime = 0;
+    let receivedValidData = false;
+    let polling: ReturnType<typeof setInterval>;
+    
+    // Define the check function that will be called repeatedly
+    const checkForDescription = () => {
+      // Ensure knowledgeId is a number (important for the API)
+      const knowledgeId = Number(this.defaultValues.knowledgeId);
+      
+      // Call the API to check for data
+      const subscription = this.addInsightStepsService.getKnowledgeParserData(knowledgeId)
+        .subscribe({
+          next: (response: DocumentParserResponse) => {
+            try {
+              const descriptionControl = this.form.get('description');
+              let dataProcessed = false;
+              
+              // Extract data from the response
+              if (response?.summary) {
+                // Parse the summary JSON from the response
+                let parsedData: { 
+                  title?: string; 
+                  abstract?: string; 
+                  language?: string; 
+                } | null = null;
+
+                try {
+                  // Try to extract JSON from markdown code blocks if present
+                  const jsonMatch = response.summary.match(/```json\s*([\s\S]*?)\s*```/);
+                  if (jsonMatch && jsonMatch[1]) {
+                    parsedData = JSON.parse(jsonMatch[1]);
+                  } else {
+                    // Otherwise try parsing the whole summary as JSON
+                    parsedData = JSON.parse(response.summary);
+                  }
+                  
+                  // Update form with the parsed data
+                  if (parsedData) {
+                    // Set the description field with the abstract
+                    if (parsedData.abstract && descriptionControl) {
+                      descriptionControl.setValue(parsedData.abstract);
+                      dataProcessed = true;
+                      receivedValidData = true;
+                    }
+                    
+                    // Set the title field if available and our title is empty
+                    if (parsedData.title && titleControl && (!titleControl.value || titleControl.value.trim() === '')) {
+                      titleControl.setValue(parsedData.title);
+                    }
+                    
+                    // Set the language field if available and our language is not set
+                    if (parsedData.language && languageControl && !languageControl.value) {
+                      // Find the language ID by name
+                      const languageObj = this.languages.find(lang => 
+                        lang.name.toLowerCase() === parsedData?.language?.toLowerCase());
+                      if (languageObj && languageControl) {
+                        languageControl.setValue(languageObj.id);
+                      }
+                    }
+                  }
+                } catch (error) {
+                  console.error('Error parsing JSON data:', error);
+                  // If JSON parsing fails, just use the summary as-is for description
+                  if (descriptionControl) {
+                    descriptionControl.setValue(response.summary);
+                    dataProcessed = true;
+                    receivedValidData = true;
+                  }
+                }
+              } else if (response?.text && descriptionControl) {
+                // Fallback to using text if summary is not available
+                descriptionControl.setValue(response.text);
+                dataProcessed = true;
+                receivedValidData = true;
+              }
+              
+              // Stop polling if we got valid data
+              if (receivedValidData) {
+                // Turn off loading and stop polling
+                this.isDescriptionLoading = false;
+                this.aiAbstractError = false;
+                clearInterval(polling);
+                
+                // Re-enable form controls
+                if (titleControl) titleControl.enable();
+                if (languageControl) languageControl.enable();
+                this.cdr.detectChanges();
+              }
+            } catch (error) {
+              console.error('Error processing response:', error);
+              // Continue polling - don't stop on error
+            }
+          },
+          error: (error) => {
+            console.error('Error fetching knowledge description:', error);
+            // Set error flag but continue polling
+            this.aiAbstractError = true;
+          }
+        });
+      
+      // Add to unsubscribe array to clean up on destroy
+      this.unsubscribe.push(subscription);
+    };
+    
+    // Make initial call immediately
+    checkForDescription();
+    
+    // Setup polling
+    polling = setInterval(() => {
+      elapsedTime += pollingInterval;
+      
+      // Stop if we already have data or reached max time
+      if (receivedValidData || elapsedTime >= maxWaitTime) {
+        clearInterval(polling);
+        
+        // Make sure to clean up if we time out
+        if (!receivedValidData && this.isDescriptionLoading) {
+          this.isDescriptionLoading = false;
+          this.aiAbstractError = true;
+          
+          // Re-enable form controls
+          if (titleControl) titleControl.enable();
+          if (languageControl) languageControl.enable();
+          this.cdr.detectChanges();
+        }
+        return;
+      }
+      
+      // Continue polling
+      checkForDescription();
+    }, pollingInterval);
+  }
+
+  private fetchKnowledgeDescription() {
+    // Original implementation kept for backward compatibility
+    if (!this.defaultValues.knowledgeId) {
+      return null;
+    }
+
+    this.isDescriptionLoading = true;
+    // Disable the fields while loading
+    const titleControl = this.form.get('title');
+    const languageControl = this.form.get('language');
+    const descriptionControl = this.form.get('description');
+    
+    if (titleControl) titleControl.disable();
+    if (languageControl) languageControl.disable();
+
+    // Subscribe to the service
+    const summarySubscription = this.addInsightStepsService.getKnowledgeParserData(this.defaultValues.knowledgeId)
+      .subscribe({
+        next: (response: DocumentParserResponse) => {
+          try {
+            let dataReceived = false;
+            
+            // Extract data from the response
+            if (response?.summary) {
+              // Parse the summary JSON from the response
+              let parsedData: { 
+                title?: string; 
+                abstract?: string; 
+                language?: string; 
+              } | null = null;
+
+              try {
+                // Try to extract JSON from markdown code blocks if present
+                const jsonMatch = response.summary.match(/```json\s*([\s\S]*?)\s*```/);
+                if (jsonMatch && jsonMatch[1]) {
+                  parsedData = JSON.parse(jsonMatch[1]);
+                } else {
+                  // Otherwise try parsing the whole summary as JSON
+                  parsedData = JSON.parse(response.summary);
+                }
+                
+                // Update form with the parsed data
+                if (parsedData) {
+                  // Set the description field with the abstract
+                  if (parsedData.abstract && descriptionControl) {
+                    descriptionControl.setValue(parsedData.abstract);
+                    dataReceived = true;
+                  }
+                  
+                  // Set the title field if available and our title is empty
+                  if (parsedData.title && titleControl && (!titleControl.value || titleControl.value.trim() === '')) {
+                    titleControl.setValue(parsedData.title);
+                  }
+                  
+                  // Set the language field if available and our language is not set
+                  if (parsedData.language && languageControl && !languageControl.value) {
+                    // Find the language ID by name
+                    const languageObj = this.languages.find(lang => 
+                      lang.name.toLowerCase() === parsedData?.language?.toLowerCase());
+                    if (languageObj && languageControl) {
+                      languageControl.setValue(languageObj.id);
+                    }
+                  }
+                }
+              } catch (error) {
+                console.error('Error parsing JSON data:', error);
+                // If JSON parsing fails, just use the summary as-is for description
+                if (descriptionControl) {
+                  descriptionControl.setValue(response.summary);
+                  dataReceived = true;
+                }
+              }
+            } else if (response?.text && descriptionControl) {
+              // Fallback to using text if summary is not available
+              descriptionControl.setValue(response.text);
+              dataReceived = true;
+            }
+            
+            // If we received valid data, turn off loading state and update UI
+            if (dataReceived) {
+              this.isDescriptionLoading = false;
+              this.aiAbstractError = false;
+              
+              // Re-enable the fields
+              if (titleControl) titleControl.enable();
+              if (languageControl) languageControl.enable();
+              
+              // Notify the user interface that the data has been loaded
+              this.cdr.detectChanges();
+            }
+          } catch (error) {
+            console.error('Error processing response:', error);
+          } finally {
+            // Always re-enable the fields and turn off loading state if not already done
+            if (this.isDescriptionLoading) {
+              this.isDescriptionLoading = false;
+              if (titleControl) titleControl.enable();
+              if (languageControl) languageControl.enable();
+            }
+          }
+        },
+        error: (error) => {
+          console.error('Error fetching knowledge description:', error);
+          this.aiAbstractError = true;
+          // Turn off loading and re-enable fields on error
+          this.isDescriptionLoading = false;
+          if (titleControl) titleControl.enable();
+          if (languageControl) languageControl.enable();
+        }
+      });
+
+    // Add to unsubscribe array to clean up on destroy
+    this.unsubscribe.push(summarySubscription);
+    
+    return summarySubscription;
+  }
+  
   // Getter for economic bloc IDs
   get selectedEconomicBlocIds(): string[] {
     return this.defaultValues.economic_bloc 
@@ -717,145 +1009,4 @@ export class Step4Component extends BaseComponent implements OnInit {
       keywords: [] 
     }, this.checkForm());
   }
-
-  // Function to handle Generate AI Description button click
-  generateAIDescription(): void {
-    // Only proceed if we have a knowledge ID and description is empty or not filled
-    if (!this.defaultValues.knowledgeId || this.form.get('description')?.value?.trim()) {
-      return;
-    }
-
-    this.isDescriptionLoading = true;
-    this.aiAbstractError = false;
-    
-    // Set maximum time to show loader (15 seconds)
-    const maxWaitTime = 15000;
-    const pollingInterval = 2000; // Check every 2 seconds
-    let elapsedTime = 0;
-    let polling: any;
-    
-    // Start polling
-    polling = setInterval(() => {
-      elapsedTime += pollingInterval;
-      
-      // Call the fetchKnowledgeDescription method to check for summary
-      this.fetchKnowledgeDescription(polling);
-      
-      // Stop polling if we've reached the max time
-      if (elapsedTime >= maxWaitTime) {
-        clearInterval(polling);
-        
-        // Ensure loading state is turned off after max time
-        if (this.isDescriptionLoading) {
-          this.isDescriptionLoading = false;
-          this.cdr.detectChanges();
-        }
-      }
-    }, pollingInterval);
-  }
-
-  // Fetch knowledge description from AI parser API
-  fetchKnowledgeDescription(pollingIntervalId?: any): void {
-    // Loading state is already set to true when this is called
-    if (!this.defaultValues.knowledgeId) {
-      this.isDescriptionLoading = false;
-      return;
-    }
-    
-    const summarySubscription = this.addInsightStepsService.getKnowledgeParserData(this.defaultValues.knowledgeId)
-      .subscribe({
-        next: (response: DocumentParserResponse) => {
-          if (response.data) {
-            // Extract data from response
-            const data = response.data;
-            
-            // Handle both string format and object format
-            if (typeof data === 'string') {
-              // If data is a string, it's just the summary
-              this.form.get('description')?.setValue(data);
-              this.form.get('description')?.markAsTouched();
-            } else {
-              // Handle object format with multiple fields
-              // Update description if available
-              if (data.summary) {
-                this.form.get('description')?.setValue(data.summary);
-                this.form.get('description')?.markAsTouched();
-              }
-              
-              // Update title if available from metadata
-              if (data.metadata && data.metadata.title) {
-                this.form.get('title')?.setValue(data.metadata.title);
-                this.form.get('title')?.markAsTouched();
-              }
-              
-              // Try to determine language (this might need customization based on actual API response)
-              // Since Language interface doesn't have code, we'll rely on name comparison
-              const languageName = this.determineLanguageFromMetadata(data);
-              if (languageName) {
-                const matchedLanguage = this.languages.find(lang => 
-                  lang.name.toLowerCase() === languageName.toLowerCase()
-                );
-                
-                if (matchedLanguage) {
-                  this.form.get('language')?.setValue(matchedLanguage.id);
-                  this.form.get('language')?.markAsTouched();
-                }
-              }
-            }
-            
-            // Update parent model with all form values
-            this.updateParentModel(this.form.value, this.checkForm());
-            this.aiAbstractError = false;
-            
-            // Clear polling interval if we have valid data
-            if (pollingIntervalId) {
-              clearInterval(pollingIntervalId);
-            }
-            
-            // Turn off loading
-            this.isDescriptionLoading = false;
-          } else {
-            // No data returned from AI parser
-            // Don't set error yet - continue polling until timeout
-            console.error('No data returned from AI parser');
-          }
-          
-          // Only update UI state and turn off loading if this was the final request
-          if (!pollingIntervalId) {
-            this.isDescriptionLoading = false;
-            this.aiAbstractError = true;
-            this.cdr.detectChanges();
-          }
-        },
-        error: (error) => {
-          console.error(`Error getting knowledge description:`, error);
-          
-          // Only update UI state and turn off loading if this was the final request
-          if (!pollingIntervalId) {
-            this.isDescriptionLoading = false;
-            this.aiAbstractError = true;
-            this.cdr.detectChanges();
-          }
-        }
-      });
-    
-    this.unsubscribe.push(summarySubscription);
-  }
-  
-  // Helper method to determine language from metadata
-  private determineLanguageFromMetadata(data: any): string | null {
-    // Try to determine language from metadata or other fields
-    // This is a placeholder - adjust according to the actual API response structure
-    
-    // Check if metadata.subject or description contains language info
-    if (data.metadata && data.metadata.subject && data.metadata.subject.toLowerCase().includes('language:')) {
-      const match = data.metadata.subject.match(/language:\s*(\w+)/i);
-      if (match && match[1]) {
-        return match[1];
-      }
-    }
-    
-    // Default to English or current language if no language info found
-    return this.currentLang === 'en' ? 'English' : 'Arabic';
-  }
-} 
+}

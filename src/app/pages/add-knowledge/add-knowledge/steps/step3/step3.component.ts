@@ -115,13 +115,56 @@ export class Step3Component extends BaseComponent implements OnInit {
                            (response.data.summary ? response.data.summary : null);
             
             if (summary) {
-              // Update document description with AI summary
-              this.documents[index].description = summary;
+              // Parse the summary if it's in JSON format
+              let formattedDescription = summary;
+              
+              try {
+                // Check if the summary contains JSON wrapped in markdown code blocks
+                if (summary.includes('```json') && summary.includes('```')) {
+                  // Extract the JSON string (remove the markdown code block syntax)
+                  const jsonMatch = summary.match(/```json\n([\s\S]*?)```/);
+                  if (jsonMatch && jsonMatch[1]) {
+                    // Parse the JSON string
+                    const summaryData = JSON.parse(jsonMatch[1]);
+                    
+                    // Extract title, abstract, and language
+                    let title = '';
+                    let abstract = '';
+                    let language = '';
+                    
+                    // Find and extract each component
+                    summaryData.forEach((item: any) => {
+                      if (item.title) title = item.title;
+                      if (item.abstract) abstract = item.abstract;
+                      if (item.language) language = item.language;
+                    });
+                    
+                    // Format the description with HTML tags for better presentation
+                    formattedDescription = '';
+                    if (title) {
+                      formattedDescription += `<h3>${title}</h3>`;
+                    }
+                    if (language) {
+                      formattedDescription += `<p><strong>Language:</strong> ${language}</p>`;
+                    }
+                    if (abstract) {
+                      formattedDescription += `<p>${abstract}</p>`;
+                    }
+                  }
+                }
+              } catch (e) {
+                console.error('Error parsing summary JSON:', e);
+                // If parsing fails, use the original summary
+                formattedDescription = summary;
+              }
+              
+              // Update document description with formatted content
+              this.documents[index].description = formattedDescription;
               this.documents[index].touched = true;
               
               // Update TinyMCE editor content if editor instance exists
               if (this.editorInstances[docId]) {
-                this.editorInstances[docId].setContent(summary);
+                this.editorInstances[docId].setContent(formattedDescription);
               }
               
               // Validate and update parent model
@@ -307,7 +350,7 @@ export class Step3Component extends BaseComponent implements OnInit {
         delete this.validationErrors[`documents.${index}.description`];
       } else {
         this.documents[index].hasError = true;
-        this.validationErrors[`documents.${index}.description`] = ["The description field is required."];
+        this.validationErrors[`documents.${index}.description`] = ["The document description field is required."];
       }
       
       this.validateDocuments();

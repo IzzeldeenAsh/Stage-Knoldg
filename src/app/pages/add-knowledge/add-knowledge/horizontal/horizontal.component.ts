@@ -187,29 +187,66 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
   }
 
   handleStep2Submission(nextStep: number) {
-    const currentAccount = this.account$.value;
-    
-    // Make sure the documents component is available
+    // No documents component means we can proceed
     if (!this.documentsComponent) {
-      console.error('Documents component not available');
+      this.currentStep$.next(nextStep);
       return;
     }
     
-    // Check if there are any upload errors
-    if (this.hasAnyDocumentUploadErrors()) {
-      this.showError('', 'Please fix upload errors before proceeding');
-      return;
-    }
+    // Log document status for debugging
+    this.documentsComponent.logDocumentStatus();
     
-    // Check if there are any documents with pending uploads
-    const pendingDocuments = this.documentsComponent.getPendingDocuments();
-    if (pendingDocuments.length > 0) {
-      this.showWarn('', 'Please upload all documents before proceeding');
-      return;
+    // BYPASS upload status check entirely and just validate document titles
+    const docs = this.documentsComponent.documents;
+    if (docs && docs.length > 0) {
+      // Check only for title validity - ignore upload status
+      const invalidDocuments = docs.filter(doc => !doc.file_name?.trim());
+      if (invalidDocuments.length > 0) {
+        this.showWarn('', 'All documents must have titles');
+        return;
+      }
+      
+      // Check for duplicate titles
+      const titles = new Set<string>();
+      const duplicateTitles = docs.filter(doc => {
+        const title = doc.file_name.toLowerCase();
+        if (titles.has(title)) return true;
+        titles.add(title);
+        return false;
+      });
+      
+      if (duplicateTitles.length > 0) {
+        this.showWarn('', 'All document titles must be unique');
+        return;
+      }
+      
+      // START LOADING STATE
+      this.isLoading = true;
+      
+      // First fetch the document IDs to ensure we have the correct ones
+      this.documentsComponent.getUploadedDocumentIds();
+      
+      // Add a slight delay to ensure document IDs are fetched
+      setTimeout(() => {
+        // All validations passed, proceed with updating document details
+        console.log('Updating document details with IDs:', this.documentsComponent.documents);
+        
+        this.documentsComponent.updateDocumentDetails()
+          .then(() => {
+            console.log('All document details updated successfully');
+            this.isLoading = false;
+            this.currentStep$.next(nextStep);
+          })
+          .catch(error => {
+            console.error('Error updating document details:', error);
+            this.isLoading = false;
+            this.showError('', 'Failed to update document details. Please try again.');
+          });
+      }, 1000); // 1 second delay to ensure IDs are fetched
+    } else {
+      // No documents to update, just proceed
+      this.currentStep$.next(nextStep);
     }
-    
-    // Just proceed to next step since uploads are now handled individually
-    this.currentStep$.next(nextStep);
   }
   
   private hasAnyDocumentUploadErrors(): boolean {

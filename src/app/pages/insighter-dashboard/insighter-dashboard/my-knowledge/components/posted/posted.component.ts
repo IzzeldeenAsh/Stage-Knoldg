@@ -60,6 +60,7 @@ export class PostedComponent extends BaseComponent implements OnInit {
   totalItems: number = 0;
   searchTerm: string = '';
   searchTimeout: any;
+  selectedType: string = 'grid'; // Default view type
 
   constructor(
     injector: Injector,
@@ -99,12 +100,18 @@ export class PostedComponent extends BaseComponent implements OnInit {
   }
 
   loadPage(page: number): void {
+    this.loading = true;
     this.knowledgeService.getPaginatedKnowledges(page, 'published', this.searchTerm).subscribe(
       (response) => {
         this.knowledges = response.data;
         this.currentPage = response.meta.current_page;
         this.totalPages = response.meta.last_page;
         this.totalItems = response.meta.total;
+        this.loading = false;
+      },
+      (error) => {
+        console.error('Error loading knowledge data:', error);
+        this.loading = false;
       }
     );
   }
@@ -131,6 +138,17 @@ export class PostedComponent extends BaseComponent implements OnInit {
     }
   }
 
+  trackById(index: number, item: Knowledge): number {
+    return item.id;
+  }
+
+  trackByIndex(index: number, item: any): number {
+    return index;
+  }
+
+  onTypeChange(event: any): void {
+    this.selectedType = event.target.value;
+  }
   
   getPages(): (number | string)[] {
     const totalPages = this.totalPages;
@@ -200,6 +218,52 @@ export class PostedComponent extends BaseComponent implements OnInit {
     this.router.navigate(['/app/edit-knowledge/stepper', knowledgeId]);
   }
 
+  onDragStart(event: DragEvent, knowledge: Knowledge): void {
+    this.draggedItem = knowledge;
+    if (event.dataTransfer) {
+      event.dataTransfer.setData('text', knowledge.id.toString());
+      event.dataTransfer.effectAllowed = 'move';
+    }
+  }
+
+  onDragEnd(event: DragEvent): void {
+    this.draggedItem = null;
+  }
+
+  togglePackageBuilder(): void {
+    this.showPackageBuilder = !this.showPackageBuilder;
+    
+    if (this.isSmallScreen && this.showPackageBuilder) {
+      this.showDialog = true;
+      this.showPackageBuilder = false;
+    }
+  }
+
+  onKnowledgeSelect(knowledge: any): void {
+    // Handle both direct Knowledge objects and Event objects from the template
+    if (knowledge && knowledge.id) {
+      // If a direct Knowledge object is passed
+      this.selectedKnowledge = knowledge;
+    } else if (knowledge && knowledge.target) {
+      // If an Event object is passed (from the template)
+      console.log('Event received, expected Knowledge object');
+      // You might need to extract the actual knowledge data from the event
+      // depending on how your component structure works
+    }
+  }
+
+  showEmittedPackage(data: any): void {
+    console.log('Package data:', data);
+  }
+
+  hideDialog(): void {
+    this.showDialog = false;
+  }
+
+  createPackage(): void {
+    // Implementation...
+  }
+
   unpublishKnowledge(knowledgeId: number): void {
     Swal.fire({
       title: 'Are you sure?',
@@ -223,42 +287,6 @@ export class PostedComponent extends BaseComponent implements OnInit {
         );
       }
     });
-  }
-
-  togglePackageBuilder() {
-    if (this.isSmallScreen) {
-      this.showDialog = !this.showDialog;
-      if (!this.showDialog) {
-        this.resetPackageBuilder();
-      }
-    } else {
-      this.showPackageBuilder = !this.showPackageBuilder;
-      if (!this.showPackageBuilder) {
-        this.resetPackageBuilder();
-      }
-    }
-  }
-
-  onDragStart(event: DragEvent, knowledge: Knowledge) {
-    if (event.dataTransfer) {
-      this.draggedItem = knowledge;
-      event.dataTransfer.setData('text', JSON.stringify(knowledge));
-    }
-  }
-
-  onDragEnd(event: DragEvent) {
-    this.draggedItem = null;
-  }
-
-  onKnowledgeSelect(event: any) {
-    if (event && !this.packages.some(pkg => pkg.id === event.id)) {
-      this.packages = [...this.packages, event];
-      this.selectedKnowledge = null;
-    }
-  }
-
-  showEmittedPackage(packageData: PackageData) {
-    this.savePackage(packageData);
   }
 
   savePackage(packageData: PackageData) {
@@ -319,10 +347,5 @@ export class PostedComponent extends BaseComponent implements OnInit {
     this.packages = [];
     this.packageName = '';
     this.discount = 0;
-  }
-
-  hideDialog() {
-    this.showDialog = false;
-    this.resetPackageBuilder();
   }
 }

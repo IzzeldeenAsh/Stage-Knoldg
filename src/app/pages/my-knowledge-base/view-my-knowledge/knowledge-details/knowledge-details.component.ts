@@ -1,6 +1,6 @@
 import { Component, Injector, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { DocumentInfo, AddInsightStepsService, AddKnowledgeDocumentRequest, Chapter } from 'src/app/_fake/services/add-insight-steps/add-insight-steps.service';
+import { DocumentInfo, AddInsightStepsService, AddKnowledgeDocumentRequest, Chapter, UpdateKnowledgeAbstractsRequest } from 'src/app/_fake/services/add-insight-steps/add-insight-steps.service';
 import { Knowledge, KnowledgeService } from 'src/app/_fake/services/knowledge/knowledge.service';
 import { KnowledgeUpdateService } from 'src/app/_fake/services/knowledge/knowledge-update.service';
 import { BaseComponent } from 'src/app/modules/base.component';
@@ -16,6 +16,8 @@ import { MenuModule } from 'primeng/menu';
 
 interface ChapterItem {
   title: string;
+  id?: number;
+  page_number?: number;
 }
 
 // Create an extended interface
@@ -799,7 +801,91 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
         file_name: this.selectedFileName.substring(0, this.selectedFileName.lastIndexOf('.')),
         file_extension: extension
       });
+
+      // If adding a new document (not editing), upload the file immediately
+      if (!this.editingDocument) {
+        this.uploadSelectedFile(file);
+      }
     }
+  }
+
+  uploadSelectedFile(file: File): void {
+    // Show loading indicator
+    this.isLoading = true;
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    this.addInsightStepsService.uploadKnowledgeDocument(+this.knowledgeId, formData)
+      .subscribe({
+        next: (response: any) => {
+          this.isLoading = false;
+          console.log('Upload response:', response); // Log the response for debugging
+          
+          // Handle both possible response structures
+          const documentId = response?.data?.document_id || response?.data?.knowledge_document_id;
+          
+          if (documentId) {
+            console.log('Document ID received:', documentId);
+            
+            // Store the document ID for later use
+            this.documentForm.patchValue({
+              id: documentId
+            });
+            
+            // Show success message
+            this.showSuccess('', 'File uploaded successfully. Please complete the document details.');
+            // Don't update document details here, wait for Next button
+          } else {
+            console.error('No document ID in the response:', response);
+            this.showError('', 'Error in server response: no document ID returned');
+          }
+        },
+        error: (error: any) => {
+          this.isLoading = false;
+          console.error('Upload error:', error);
+          this.showError('', error?.error?.message || 'Error uploading file');
+          // Reset the file input
+          this.selectedFile = null;
+          this.selectedFileName = '';
+          this.selectedFileIcon = '';
+          this.documentForm.patchValue({
+            file: null,
+            file_extension: ''
+          });
+        }
+      });
+  }
+
+  updateDocumentDetails(documentId: number): void {
+    // Show loading indicator
+    this.isSaving = true;
+    
+    // Update document details (title and price)
+    const documentDetailsRequest = {
+      documents: [{
+        id: documentId,
+        file_name: this.documentForm.get('file_name')?.value,
+        price: this.documentForm.get('isCharity')?.value ? '0' : this.documentForm.get('price')?.value,
+      }]
+    };
+    
+    console.log('Updating document details with request:', documentDetailsRequest);
+    
+    this.addInsightStepsService.updateKnowledgeDocumentDetails(
+      +this.knowledgeId,
+      documentDetailsRequest.documents
+    ).subscribe({
+      next: (response) => {
+        this.isSaving = false;
+        console.log('Document details updated successfully:', response);
+        this.showSuccess('', 'File uploaded and details saved. Please complete the document information.');
+      },
+      error: (error: any) => {
+        this.isSaving = false;
+        console.error('Error updating document details:', error);
+        this.showError('', error?.error?.message || 'Error updating document details');
+      }
+    });
   }
 
   formatFileSize(size: number): string {
@@ -814,7 +900,50 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
 
   nextDocumentStep(): void {
     if (this.documentStep === 1 && this.isStep1Valid()) {
-      this.documentStep = 2;
+      // If this is a new document, update document details before moving to step 2
+      if (!this.editingDocument) {
+        // Get the document ID from the form (set during file upload)
+        const documentId = this.documentForm.get('id')?.value;
+        
+        if (documentId) {
+          // Show loading indicator
+          this.isSaving = true;
+          
+          // Update document details (title and price)
+          const documentDetailsRequest = {
+            documents: [{
+              id: documentId,
+              file_name: this.documentForm.get('file_name')?.value,
+              price: this.documentForm.get('isCharity')?.value ? '0' : this.documentForm.get('price')?.value,
+            }]
+          };
+          
+          console.log('Updating document details with request:', documentDetailsRequest);
+          
+          this.addInsightStepsService.updateKnowledgeDocumentDetails(
+            +this.knowledgeId,
+            documentDetailsRequest.documents
+          ).subscribe({
+            next: (response) => {
+              this.isSaving = false;
+              console.log('Document details updated successfully:', response);
+              // Move to next step after successful update
+              this.documentStep = 2;
+            },
+            error: (error: any) => {
+              this.isSaving = false;
+              console.error('Error updating document details:', error);
+              this.showError('', error?.error?.message || 'Error updating document details');
+            }
+          });
+        } else {
+          // No document ID found, either file wasn't uploaded or upload failed
+          this.showError('', 'No document has been uploaded. Please select a file first.');
+        }
+      } else {
+        // For editing, just move to the next step
+        this.documentStep = 2;
+      }
     }
   }
 
@@ -921,100 +1050,134 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
     if (!this.isStep2Valid()) {
       return;
     }
-    
+
     this.isSaving = true;
     
-    // Prepare form data
-    const formData = new FormData();
-    
-    // Add basic info
-    formData.append('file_name', this.documentForm.get('file_name')?.value);
-    formData.append('description', this.documentForm.get('description')?.value);
-    formData.append('price', this.documentForm.get('isCharity')?.value ? '0' : this.documentForm.get('price')?.value);
-    
-    // Add file if there's a new one
-    if (this.selectedFile) {
-      formData.append('file', this.selectedFile);
-    }
-    
-    // Add chapters if any
-    if (this.stepperChapters.length > 0) {
-      this.stepperChapters.forEach((chapter, index) => {
-        formData.append(`table_of_content[${index}][chapter][title]`, chapter.title);
-      });
-    }
-    
-    // Call your API to save the document
+    // Different flow for editing vs. adding
     if (this.editingDocument) {
-      // Update existing document - use AddInsightStepsService
-      formData.append('_method', 'PUT');
+      // EDITING EXISTING DOCUMENT
+      // Use separate API calls for updating different aspects
       
-      const updateRequest: any = {
-        file_name: this.documentForm.get('file_name')?.value,
-        price: this.documentForm.get('price')?.value,
-        description: this.documentForm.get('description')?.value,
-        table_of_content: this.stepperChapters.map(ch => ({
-          chapter: {
-            title: ch.title,
-            sub_child: []
-          }
-        })),
-        _method: 'PUT'
+      // 1. Update document details (title and price)
+      const documentDetailsRequest = {
+        documents: [{
+          id: this.editingDocument.id,
+          file_name: this.documentForm.get('file_name')?.value,
+          price: this.documentForm.get('isCharity')?.value ? '0' : this.documentForm.get('price')?.value,
+        }]
       };
       
-      // Only add file if it exists
-      if (this.selectedFile) {
-        updateRequest.file = this.selectedFile;
-      }
-      
-      this.addInsightStepsService.step3AddKnowledgeDocument(
-        +this.knowledgeId, 
-        updateRequest, 
-        true
+      this.addInsightStepsService.updateKnowledgeDocumentDetails(
+        +this.knowledgeId,
+        documentDetailsRequest.documents
       ).subscribe({
-        next: (response: any) => {
-          this.showSuccess('', 'Document updated successfully');
-          this.loadDocuments(); // Refresh documents list
-          this.closeDocumentStepper();
-          this.isSaving = false;
+        next: () => {
+          // 2. Update document description if it was changed
+          const description = this.documentForm.get('description')?.value;
+          
+          // Create chapters array from stepperChapters if available
+          const chapters = this.stepperChapters.length > 0 ? 
+            this.stepperChapters.map(chapter => ({
+              id: chapter.id,
+              title: chapter.title,
+              page_number: chapter.page_number
+            })) : [];
+            
+          const abstractRequest: UpdateKnowledgeAbstractsRequest = {
+            documents: [{
+              id: this.editingDocument!.id,
+              description: description || '',
+              table_of_content: chapters // Use chapters if available, otherwise empty array
+            }]
+          };
+          
+          this.addInsightStepsService.updateKnowledgeAbstracts(
+            +this.knowledgeId,
+            abstractRequest
+          ).subscribe({
+            next: () => {
+              this.showSuccess('', 'Document updated successfully');
+              this.loadDocuments(); // Refresh documents list
+              this.closeDocumentStepper();
+              this.isSaving = false;
+            },
+            error: (error: any) => {
+              this.showError('', error?.error?.message || 'Error updating document description');
+              this.isSaving = false;
+            }
+          });
         },
         error: (error: any) => {
-          this.showError('', error?.error?.message || 'An error occurred');
+          this.showError('', error?.error?.message || 'Error updating document details');
           this.isSaving = false;
         }
       });
     } else {
-      // Create new document - use AddInsightStepsService
-      const createRequest: any = {
-        file_name: this.documentForm.get('file_name')?.value,
-        price: this.documentForm.get('price')?.value,
-        description: this.documentForm.get('description')?.value,
-        table_of_content: this.stepperChapters.map(ch => ({
-          chapter: {
-            title: ch.title,
-            sub_child: []
-          }
-        }))
-      };
+      // ADDING NEW DOCUMENT
+      // Since we now upload files immediately upon selection,
+      // we only need to update details and description here
       
-      // Only add file if it exists
-      if (this.selectedFile) {
-        createRequest.file = this.selectedFile;
+      // Get the document ID from the form (set during file upload)
+      const documentId = this.documentForm.get('id')?.value;
+      
+      if (!documentId) {
+        this.showError('', 'No document has been uploaded. Please select a file first.');
+        this.isSaving = false;
+        return;
       }
       
-      this.addInsightStepsService.step3AddKnowledgeDocument(
-        +this.knowledgeId, 
-        createRequest,
-        false
+      // 1. Set document details (title and price)
+      const documentDetailsRequest = {
+        documents: [{
+          id: documentId,
+          file_name: this.documentForm.get('file_name')?.value,
+          price: this.documentForm.get('isCharity')?.value ? '0' : this.documentForm.get('price')?.value,
+        }]
+      };
+      
+      this.addInsightStepsService.updateKnowledgeDocumentDetails(
+        +this.knowledgeId,
+        documentDetailsRequest.documents
       ).subscribe({
-        next: (response: any) => {
-          this.showSuccess('', 'Document added successfully');
-          this.loadDocuments(); // Refresh documents list
-          this.closeDocumentStepper();
-          this.isSaving = false;
+        next: () => {
+          // 2. Set document description
+          const description = this.documentForm.get('description')?.value;
+          
+          // Create chapters array from stepperChapters if available
+          const chapters = this.stepperChapters.length > 0 ? 
+            this.stepperChapters.map(chapter => ({
+              id: chapter.id,
+              title: chapter.title,
+              page_number: chapter.page_number
+            })) : [];
+            
+          const abstractRequest: UpdateKnowledgeAbstractsRequest = {
+            documents: [{
+              id: documentId,
+              description: description || '',
+              table_of_content: chapters // Use chapters if available, otherwise empty array
+            }]
+          };
+          
+          this.addInsightStepsService.updateKnowledgeAbstracts(
+            +this.knowledgeId,
+            abstractRequest
+          ).subscribe({
+            next: () => {
+              // 3. Set document chapters if applicable (placeholder for now)
+              this.showSuccess('', 'Document added successfully');
+              this.loadDocuments();
+              this.closeDocumentStepper();
+              this.isSaving = false;
+            },
+            error: (error: any) => {
+              this.showError('', error?.error?.message || 'Error setting document description');
+              this.isSaving = false;
+            }
+          });
         },
         error: (error: any) => {
-          this.showError('', error?.error?.message || 'An error occurred');
+          this.showError('', error?.error?.message || 'Error setting document details');
           this.isSaving = false;
         }
       });
@@ -1065,8 +1228,8 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
       this.stepperChapters = [];
     }
     
-    // Show the stepper
+    // Show the stepper on step 2 directly since we're editing and don't want to change the file
     this.showDocumentStepper = true;
-    this.documentStep = 1;
+    this.documentStep = 2;
   }
-} 
+}

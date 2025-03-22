@@ -10,7 +10,10 @@ interface IDocument {
   price: number;
   file_extension?: string;  
   description?: string;
+  id?: number; 
 }
+
+export { IDocument };
 
 interface ICreateKnowldege {
   knowledgeType: string;
