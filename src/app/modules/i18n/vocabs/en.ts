@@ -6,6 +6,7 @@ export const locale = {
     "SELECT_REGION": "Select Region...",
     "SELECT_REGIONS": "Select Regions",
     "SEARCH_COUNTRY": "Search country or region...",
+    "UPLOADS_IN_PROGRESS": "Uploads in progress",
     "SELECTED": "selected",
     "CLEAR_ALL": "Clear All",
     "SELECT_ALL_COUNTRIES": "Select All Countries",

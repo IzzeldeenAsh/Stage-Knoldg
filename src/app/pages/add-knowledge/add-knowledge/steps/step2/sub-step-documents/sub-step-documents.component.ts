@@ -260,7 +260,7 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
         
         // Immediately start uploading the file
         this.uploadFileOnly(docIndex);
-      }, idx * 2000); // 2-second delay between each file upload
+      }, idx * 1000); // 1-second delay between each file upload
     });
   }
 
@@ -655,6 +655,12 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   }
 
   private validateDocuments(): boolean {
+    // Don't allow proceeding if there are uploads in progress
+    if (this.pendingUploads > 0 || this.hasActiveUploads) {
+      console.log('Form invalid: uploads in progress');
+      return false;
+    }
+    
     // Allow proceeding with no documents if needed
     if (!this.documents.length) {
       console.log('No documents available');
@@ -707,7 +713,7 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   }
 
   hasUploadsInProgress(): boolean {
-    return this.uploadsInProgress || this.hasActiveUploads;
+    return this.pendingUploads > 0 || this.uploadsInProgress || this.hasActiveUploads;
   }
 
   // Method to check if any documents have upload errors
