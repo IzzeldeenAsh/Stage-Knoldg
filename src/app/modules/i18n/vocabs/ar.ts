@@ -4,6 +4,7 @@ export const locale = {
     "SELECT_REGION": "اختر المنطقة...",
     "SELECT_REGIONS": "اختر المناطق",
     "SEARCH_COUNTRY": "بحث عن دولة أو منطقة...",
+    "UPLOADS_IN_PROGRESS": "قيد الرفع",
     "SELECTED": "محدد",
     "CLEAR_ALL": "مسح الكل",
     "SELECT_ALL_COUNTRIES": "تحديد جميع الدول",

@@ -145,12 +145,18 @@
         
         <!-- Add Document Button -->
         <div class="form-group d-flex justify-content-start mb-5">
-            <button type="button" class="btn btn-primary px-6" (click)="addDocument()">
+            <button type="button" class="btn btn-primary px-6" (click)="addDocument()" [disabled]="hasUploadsInProgress()">
                 <i class="ki-duotone ki-plus fs-2 me-1"></i>
                 <ng-container *ngIf="defaultValues?.knowledgeType === 'insight'">{{ 'ADD_DOCUMENT' | translate }}</ng-container>
                 <ng-container *ngIf="defaultValues?.knowledgeType === 'data'">{{ 'ADD_NODE' | translate }}</ng-container>
                 <ng-container *ngIf="defaultValues?.knowledgeType === 'report' || defaultValues?.knowledgeType === 'manual' || defaultValues?.knowledgeType === 'course'">{{ 'ADD_CHAPTER' | translate }}</ng-container>
             </button>
+            
+            <!-- Upload progress indicator -->
+            <div *ngIf="hasUploadsInProgress()" class="d-flex align-items-center ms-4">
+                <span class="spinner-border spinner-border-sm text-primary me-2"></span>
+                <span class="text-muted">{{ 'UPLOADS_IN_PROGRESS' | translate }}</span>
+            </div>
         </div>
         
         <!-- Total Price -->
