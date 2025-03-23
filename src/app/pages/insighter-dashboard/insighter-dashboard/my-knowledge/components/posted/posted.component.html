@@ -107,15 +107,18 @@
            [class]="showPackageBuilder ? 'w-65' : 'w-100'">
         
         <!-- No Posted Items State -->
-        <div *ngIf="knowledges && knowledges.length === 0 && !loading" class="text-center py-10 bg-light-secondary rounded">
-          <i class="ki-outline ki-check-square fs-3x text-gray-500 mb-5"></i>
-          <h3 class="fw-bold text-gray-800 mb-2">{{ 'MY_KNOWLEDGE.NO_POSTED.TITLE' | translate }}</h3>
-          <p class="text-gray-600 fs-6">
-            {{ searchTerm ? 
-               ('MY_KNOWLEDGE.NO_POSTED.FILTERED_MESSAGE' | translate) : 
-               ('MY_KNOWLEDGE.NO_POSTED.MESSAGE' | translate) }}
-          </p>
-        </div>
+        <app-empty-state *ngIf="knowledges && knowledges.length === 0 && !loading"
+          [title]="'MY_KNOWLEDGE.NO_POSTED.TITLE' | translate"
+          [message]="searchTerm ? 
+             ('MY_KNOWLEDGE.NO_POSTED.FILTERED_MESSAGE' | translate) : 
+             ('MY_KNOWLEDGE.NO_POSTED.MESSAGE' | translate)"
+          [icon]="'ki-check-square'"
+          [svgPath]="'assets/media/svg/shapes/empty.svg'"
+          [showButton]="true"
+          [buttonText]="'KNOWLEDGE.ADD_KNOWLEDGE' | translate"
+          [buttonLink]="'/app/add-knowledge/stepper'"
+          [buttonIcon]="'ki-plus'"
+        ></app-empty-state>
         
         <!-- Loading Indicator -->
         <div *ngIf="loading" class="d-flex justify-content-center my-5">

@@ -1,0 +1,13 @@
+// Empty state component styling
+// The component uses mainly utility classes from the application's CSS framework
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.empty-state-svg {
+  max-width: 150px;
+  height: auto;
+  margin-bottom: 1.5rem;
+}

@@ -35,19 +35,16 @@
     </div>  
 
     <!-- No Packages State -->
-    <div *ngIf="packages.length === 0 && !(isLoading$ | async)" class="text-center py-10 bg-light-secondary rounded mb-6">
-      <h3 class="fw-bold text-gray-800 mb-2">{{ 'MY_KNOWLEDGE.NO_PACKAGES.TITLE' | translate }}</h3>
-      <p class="text-gray-600 fs-6">{{ 'MY_KNOWLEDGE.NO_PACKAGES.MESSAGE' | translate }}</p>
-      
-      <!-- Add Generate Package button when no packages exist -->
-      <button
-        type="button"
-        class="btn btn-primary mt-4"
-        (click)="togglePackageBuilder()"
-      >
-        <i class="ki-outline ki-folder-up fs-2"></i> {{ 'KNOWLEDGE.GENERATE_PACKAGE' | translate }}
-      </button>
-    </div>
+    <app-empty-state *ngIf="packages.length === 0 && !(isLoading$ | async)"
+      [title]="'MY_KNOWLEDGE.NO_PACKAGES.TITLE' | translate"
+      [message]="'MY_KNOWLEDGE.NO_PACKAGES.MESSAGE' | translate"
+      [icon]="'ki-folder-up'"
+      [svgPath]="'assets/media/svg/shapes/empty.svg'"
+      [showButton]="true"
+      [buttonText]="'KNOWLEDGE.GENERATE_PACKAGE' | translate"
+      [buttonIcon]="'ki-folder-up'"
+      (buttonClick)="togglePackageBuilder()"
+    ></app-empty-state>
     
     <div class="d-flex gap-4">
       <!-- Table Column -->
