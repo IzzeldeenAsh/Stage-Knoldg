@@ -118,6 +118,14 @@ export class Step4Component extends BaseComponent implements OnInit {
 
   aiAbstractError = false;
 
+  // Animation control properties
+  typingSpeed = 10; // ms per character
+  animationTimers: any;
+  animatedAbstract = false;
+  animatedAbstractText = '';
+  animatedAbstractComplete = false;
+  showEditor = true;
+
   constructor(
     injector: Injector,
     private fb: FormBuilder,
@@ -531,7 +539,7 @@ export class Step4Component extends BaseComponent implements OnInit {
           }));
           this.updateParentModel({ tag_ids: this.defaultValues.tag_ids }, this.checkForm());
         },
-        error: (error: any) => {
+        error: (error) => {
           console.error("Error fetching tags by topic:", error);
         },
       });
@@ -729,8 +737,10 @@ export class Step4Component extends BaseComponent implements OnInit {
     // Disable form controls while loading
     const titleControl = this.form.get('title');
     const languageControl = this.form.get('language');
+    const descriptionControl = this.form.get('description');
     if (titleControl) titleControl.disable();
     if (languageControl) languageControl.disable();
+    if (descriptionControl) descriptionControl.disable();
     
     // Setup polling parameters
     const maxWaitTime = 20000; // 20 seconds
@@ -749,68 +759,71 @@ export class Step4Component extends BaseComponent implements OnInit {
         .subscribe({
           next: (response: DocumentParserResponse) => {
             try {
-              const descriptionControl = this.form.get('description');
-              let dataProcessed = false;
-              
-              // Extract data from the response
-              if (response?.summary) {
-                // Parse the summary JSON from the response
-                let parsedData: { 
-                  title?: string; 
-                  abstract?: string; 
-                  language?: string; 
-                } | null = null;
-
-                try {
-                  // Try to extract JSON from markdown code blocks if present
-                  const jsonMatch = response.summary.match(/```json\s*([\s\S]*?)\s*```/);
-                  if (jsonMatch && jsonMatch[1]) {
-                    parsedData = JSON.parse(jsonMatch[1]);
+              // Process data from the new response format
+              if (response?.data) {
+                // The data is now structured in the 'data' property
+                const responseData = response.data;
+                
+                // Update description/abstract
+                if (responseData.abstract && descriptionControl) {
+                  // Set up animation instead of immediately setting the value
+                  const abstractText = responseData.abstract;
+                  
+                  // Enable animation for the abstract
+                  this.animatedAbstract = true;
+                  this.animatedAbstractText = ''; // Start empty for typing animation
+                  this.showEditor = false; // Hide editor initially
+                  
+                  // Store the complete text in the form control for later use
+                  descriptionControl.setValue(abstractText);
+                  
+                  // Start the typing animation
+                  this.startTypingAnimation(abstractText);
+                  
+                  receivedValidData = true;
+                }
+                
+                // Update title if it's empty
+                if (responseData.title && titleControl && (!titleControl.value || titleControl.value.trim() === '')) {
+                  titleControl.setValue(responseData.title);
+                }
+                
+                // Update language if it's not set
+                if (responseData.language && languageControl && !languageControl.value) {
+                  // Map language code to language ID
+                  const langCode = responseData.language.toLowerCase();
+                  let languageId: string | null = null;
+                  
+                  // Map common language codes to language IDs
+                  if (langCode === 'en') {
+                    languageId = 'english';
+                  } else if (langCode === 'ar') {
+                    languageId = 'arabic';
                   } else {
-                    // Otherwise try parsing the whole summary as JSON
-                    parsedData = JSON.parse(response.summary);
+                    // Try to find a matching language by name (fallback)
+                    const languageObj = this.languages.find(lang => 
+                      lang.name.toLowerCase().includes(langCode) || langCode.includes(lang.name.toLowerCase()));
+                    if (languageObj) {
+                      languageId = languageObj.id;
+                    }
                   }
                   
-                  // Update form with the parsed data
-                  if (parsedData) {
-                    // Set the description field with the abstract
-                    if (parsedData.abstract && descriptionControl) {
-                      descriptionControl.setValue(parsedData.abstract);
-                      dataProcessed = true;
-                      receivedValidData = true;
-                    }
-                    
-                    // Set the title field if available and our title is empty
-                    if (parsedData.title && titleControl && (!titleControl.value || titleControl.value.trim() === '')) {
-                      titleControl.setValue(parsedData.title);
-                    }
-                    
-                    // Set the language field if available and our language is not set
-                    if (parsedData.language && languageControl && !languageControl.value) {
-                      // Find the language ID by name
-                      const languageObj = this.languages.find(lang => 
-                        lang.name.toLowerCase() === parsedData?.language?.toLowerCase());
-                      if (languageObj && languageControl) {
-                        languageControl.setValue(languageObj.id);
-                      }
-                    }
-                  }
-                } catch (error) {
-                  console.error('Error parsing JSON data:', error);
-                  // If JSON parsing fails, just use the summary as-is for description
-                  if (descriptionControl) {
-                    descriptionControl.setValue(response.summary);
-                    dataProcessed = true;
-                    receivedValidData = true;
+                  // Set the language value if we found a match
+                  if (languageId && languageControl) {
+                    languageControl.setValue(languageId);
                   }
                 }
-              } else if (response?.text && descriptionControl) {
-                // Fallback to using text if summary is not available
-                descriptionControl.setValue(response.text);
-                dataProcessed = true;
-                receivedValidData = true;
+                
+                // Update industry if available
+                if (responseData.industry && responseData.industry.id) {
+                  this.selectedIndustryId = responseData.industry.id;
+                  
+                  // If we have a topic service, also fetch topics for this industry
+                  if (this.selectedIndustryId) {
+                    this.getTopics(this.selectedIndustryId);
+                  }
+                }
               }
-              
               // Stop polling if we got valid data
               if (receivedValidData) {
                 // Turn off loading and stop polling
@@ -821,6 +834,8 @@ export class Step4Component extends BaseComponent implements OnInit {
                 // Re-enable form controls
                 if (titleControl) titleControl.enable();
                 if (languageControl) languageControl.enable();
+                // Note: we don't enable the description control here because we want to show the animation first
+                
                 this.cdr.detectChanges();
               }
             } catch (error) {
@@ -858,131 +873,55 @@ export class Step4Component extends BaseComponent implements OnInit {
           // Re-enable form controls
           if (titleControl) titleControl.enable();
           if (languageControl) languageControl.enable();
+          if (descriptionControl) descriptionControl.enable();
           this.cdr.detectChanges();
         }
-        return;
+      } else {
+        // Only call the check function if we're still waiting for data
+        checkForDescription();
       }
-      
-      // Continue polling
-      checkForDescription();
     }, pollingInterval);
   }
 
-  private fetchKnowledgeDescription() {
-    // Original implementation kept for backward compatibility
-    if (!this.defaultValues.knowledgeId) {
-      return null;
-    }
-
-    this.isDescriptionLoading = true;
-    // Disable the fields while loading
-    const titleControl = this.form.get('title');
-    const languageControl = this.form.get('language');
+  // Show editor after animated abstract is displayed
+  showDescriptionEditor(): void {
+    // Enable the form control first
     const descriptionControl = this.form.get('description');
+    if (descriptionControl) {
+      descriptionControl.enable();
+    }
     
-    if (titleControl) titleControl.disable();
-    if (languageControl) languageControl.disable();
-
-    // Subscribe to the service
-    const summarySubscription = this.addInsightStepsService.getKnowledgeParserData(this.defaultValues.knowledgeId)
-      .subscribe({
-        next: (response: DocumentParserResponse) => {
-          try {
-            let dataReceived = false;
-            
-            // Extract data from the response
-            if (response?.summary) {
-              // Parse the summary JSON from the response
-              let parsedData: { 
-                title?: string; 
-                abstract?: string; 
-                language?: string; 
-              } | null = null;
-
-              try {
-                // Try to extract JSON from markdown code blocks if present
-                const jsonMatch = response.summary.match(/```json\s*([\s\S]*?)\s*```/);
-                if (jsonMatch && jsonMatch[1]) {
-                  parsedData = JSON.parse(jsonMatch[1]);
-                } else {
-                  // Otherwise try parsing the whole summary as JSON
-                  parsedData = JSON.parse(response.summary);
-                }
-                
-                // Update form with the parsed data
-                if (parsedData) {
-                  // Set the description field with the abstract
-                  if (parsedData.abstract && descriptionControl) {
-                    descriptionControl.setValue(parsedData.abstract);
-                    dataReceived = true;
-                  }
-                  
-                  // Set the title field if available and our title is empty
-                  if (parsedData.title && titleControl && (!titleControl.value || titleControl.value.trim() === '')) {
-                    titleControl.setValue(parsedData.title);
-                  }
-                  
-                  // Set the language field if available and our language is not set
-                  if (parsedData.language && languageControl && !languageControl.value) {
-                    // Find the language ID by name
-                    const languageObj = this.languages.find(lang => 
-                      lang.name.toLowerCase() === parsedData?.language?.toLowerCase());
-                    if (languageObj && languageControl) {
-                      languageControl.setValue(languageObj.id);
-                    }
-                  }
-                }
-              } catch (error) {
-                console.error('Error parsing JSON data:', error);
-                // If JSON parsing fails, just use the summary as-is for description
-                if (descriptionControl) {
-                  descriptionControl.setValue(response.summary);
-                  dataReceived = true;
-                }
-              }
-            } else if (response?.text && descriptionControl) {
-              // Fallback to using text if summary is not available
-              descriptionControl.setValue(response.text);
-              dataReceived = true;
-            }
-            
-            // If we received valid data, turn off loading state and update UI
-            if (dataReceived) {
-              this.isDescriptionLoading = false;
-              this.aiAbstractError = false;
-              
-              // Re-enable the fields
-              if (titleControl) titleControl.enable();
-              if (languageControl) languageControl.enable();
-              
-              // Notify the user interface that the data has been loaded
-              this.cdr.detectChanges();
-            }
-          } catch (error) {
-            console.error('Error processing response:', error);
-          } finally {
-            // Always re-enable the fields and turn off loading state if not already done
-            if (this.isDescriptionLoading) {
-              this.isDescriptionLoading = false;
-              if (titleControl) titleControl.enable();
-              if (languageControl) languageControl.enable();
-            }
-          }
-        },
-        error: (error) => {
-          console.error('Error fetching knowledge description:', error);
-          this.aiAbstractError = true;
-          // Turn off loading and re-enable fields on error
-          this.isDescriptionLoading = false;
-          if (titleControl) titleControl.enable();
-          if (languageControl) languageControl.enable();
-        }
-      });
-
-    // Add to unsubscribe array to clean up on destroy
-    this.unsubscribe.push(summarySubscription);
+    // Show the editor
+    this.showEditor = true;
+    this.cdr.detectChanges();
+  }
+  
+  // Start typing animation for abstract
+  startTypingAnimation(text: string): void {
+    if (!text) return;
     
-    return summarySubscription;
+    const chars = text.length;
+    let currentPos = 0;
+    this.animatedAbstractComplete = false;
+    
+    // Clear any existing animation timer
+    if (this.animationTimers) {
+      clearInterval(this.animationTimers);
+    }
+    
+    // Start animation interval
+    this.animationTimers = setInterval(() => {
+      if (currentPos < chars) {
+        // Add next character to the animated text
+        this.animatedAbstractText = text.substring(0, currentPos + 1);
+        currentPos++;
+      } else {
+        // Animation complete
+        clearInterval(this.animationTimers);
+        this.animatedAbstractComplete = true;
+        this.showDescriptionEditor();
+      }
+    }, this.typingSpeed);
   }
   
   // Getter for economic bloc IDs

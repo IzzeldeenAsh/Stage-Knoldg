@@ -9,6 +9,7 @@ export const locale = {
     "CLEAR_ALL": "مسح الكل",
     "SELECT_ALL_COUNTRIES": "تحديد جميع الدول",
     "CANCEL": "إلغاء",
+    "ENTER_TITLE": "أدخل العنوان",
     "CONFIRM": "تأكيد",
     SELECT_TOPIC: "اختر الموضوع",
     SELECT_TARGET_MARKET: "اختر السوق المستهدف",

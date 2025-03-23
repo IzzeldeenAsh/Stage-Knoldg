@@ -46,6 +46,10 @@ export class Step3Component extends BaseComponent implements OnInit {
   // Store TinyMCE editor instances
   editorInstances: { [key: number]: any } = {};
 
+  // Animation control properties
+  typingSpeed = 10; // ms per character
+  animationTimers: { [key: number]: any } = {};
+
   constructor(
     injector: Injector,
     private fb: FormBuilder,
@@ -110,62 +114,33 @@ export class Step3Component extends BaseComponent implements OnInit {
         next: (response: DocumentParserResponse) => {
           const index = this.documents.findIndex(doc => doc.id === docId);
           if (index !== -1 && response.data) {
-            // Check if data is a string (direct summary) or an object with summary property
-            const summary = typeof response.data === 'string' ? response.data : 
-                           (response.data.summary ? response.data.summary : null);
+            // Check if data has a summary object with abstract property
+            let summary = null;
+            const responseData: any = response.data;
+            
+            if (typeof responseData === 'object' && responseData.summary && typeof responseData.summary === 'object') {
+              summary = responseData.summary.abstract || null;
+            } else if (typeof responseData === 'string') {
+              summary = responseData;
+            } else if (responseData.summary && typeof responseData.summary === 'string') {
+              summary = responseData.summary;
+            }
             
             if (summary) {
-              // Parse the summary if it's in JSON format
-              let formattedDescription = summary;
-              
-              try {
-                // Check if the summary contains JSON wrapped in markdown code blocks
-                if (summary.includes('```json') && summary.includes('```')) {
-                  // Extract the JSON string (remove the markdown code block syntax)
-                  const jsonMatch = summary.match(/```json\n([\s\S]*?)```/);
-                  if (jsonMatch && jsonMatch[1]) {
-                    // Parse the JSON string
-                    const summaryData = JSON.parse(jsonMatch[1]);
-                    
-                    // Extract title, abstract, and language
-                    let title = '';
-                    let abstract = '';
-                    let language = '';
-                    
-                    // Find and extract each component
-                    summaryData.forEach((item: any) => {
-                      if (item.title) title = item.title;
-                      if (item.abstract) abstract = item.abstract;
-                      if (item.language) language = item.language;
-                    });
-                    
-                    // Format the description with HTML tags for better presentation
-                    formattedDescription = '';
-                    if (title) {
-                      formattedDescription += `<h3>${title}</h3>`;
-                    }
-                    if (language) {
-                      formattedDescription += `<p><strong>Language:</strong> ${language}</p>`;
-                    }
-                    if (abstract) {
-                      formattedDescription += `<p>${abstract}</p>`;
-                    }
-                  }
-                }
-              } catch (e) {
-                console.error('Error parsing summary JSON:', e);
-                // If parsing fails, use the original summary
-                formattedDescription = summary;
-              }
+              // We have a valid abstract, use it directly
+              const formattedDescription = summary;
               
               // Update document description with formatted content
               this.documents[index].description = formattedDescription;
               this.documents[index].touched = true;
               
-              // Update TinyMCE editor content if editor instance exists
-              if (this.editorInstances[docId]) {
-                this.editorInstances[docId].setContent(formattedDescription);
-              }
+              // Enable animation for this document
+              this.documents[index].animatedAbstract = true;
+              this.documents[index].animatedAbstractText = ''; // Start empty for typing animation
+              this.documents[index].showEditor = false; // Hide editor initially
+              
+              // Start typing animation
+              this.startTypingAnimation(docId, formattedDescription);
               
               // Validate and update parent model
               this.validateDocuments();
@@ -214,6 +189,47 @@ export class Step3Component extends BaseComponent implements OnInit {
       });
     
     this.unsubscribe.push(summarySubscription);
+  }
+  
+  // Show editor for a document with animated abstract
+  showEditor(docId: number): void {
+    const index = this.documents.findIndex(doc => doc.id === docId);
+    if (index !== -1) {
+      this.documents[index].showEditor = true;
+      
+      // Update TinyMCE editor content with the full description
+      if (this.editorInstances[docId]) {
+        this.editorInstances[docId].setContent(this.documents[index].description);
+      }
+    }
+  }
+  
+  // Start typing animation for abstract
+  startTypingAnimation(docId: number, text: string): void {
+    const index = this.documents.findIndex(doc => doc.id === docId);
+    if (index === -1) return;
+    
+    const chars = text.length;
+    let currentPos = 0;
+    this.documents[index].animatedAbstractComplete = false;
+    
+    // Clear any existing animation timer
+    if (this.animationTimers[docId]) {
+      clearInterval(this.animationTimers[docId]);
+    }
+    
+    // Start animation interval
+    this.animationTimers[docId] = setInterval(() => {
+      if (currentPos < chars) {
+        // Add next character to the animated text
+        this.documents[index].animatedAbstractText = text.substring(0, currentPos + 1);
+        currentPos++;
+      } else {
+        // Animation complete
+        clearInterval(this.animationTimers[docId]);
+        this.documents[index].animatedAbstractComplete = true;
+      }
+    }, this.typingSpeed);
   }
 
   initForm(): void {
@@ -275,7 +291,12 @@ export class Step3Component extends BaseComponent implements OnInit {
               // Track validation errors for each document
               hasError: false,
               // Track if the field has been touched
-              touched: false
+              touched: false,
+              // For animation control
+              animatedAbstract: false,
+              animatedAbstractText: '',
+              animatedAbstractComplete: false,
+              showEditor: false
             };
           });
           
@@ -283,6 +304,14 @@ export class Step3Component extends BaseComponent implements OnInit {
           this.documents.forEach(doc => {
             if (!doc.description || doc.description.trim() === '') {
               this.documentLoadingStates[doc.id] = true;
+            } else {
+              // For documents that already have descriptions, we'll still show animation
+              doc.animatedAbstract = true;
+              doc.showEditor = false;
+              // Start typing animation with a short delay to ensure UI is ready
+              setTimeout(() => {
+                this.startTypingAnimation(doc.id, doc.description);
+              }, 500);
             }
           });
           

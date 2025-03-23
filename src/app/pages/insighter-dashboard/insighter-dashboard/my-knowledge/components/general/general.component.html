@@ -468,14 +468,17 @@
   </div>
 
   <!-- No Knowledge Items State -->
-  <div *ngIf="!loading && knowledges && knowledges.length === 0" class="text-center py-10 bg-light-secondary rounded">
-    <i class="ki-outline ki-journal-text fs-3x text-gray-500 mb-5"></i>
-    <h3 class="fw-bold text-gray-800 mb-2">{{ 'MY_KNOWLEDGE.NO_ITEMS.TITLE' | translate }}</h3>
-    <p class="text-gray-600 fs-6">
-      {{ (searchTerm || selectedKnowledgeType !== 'all') ? 
-         ('MY_KNOWLEDGE.NO_ITEMS.FILTERED_MESSAGE' | translate) : 
-         ('MY_KNOWLEDGE.NO_ITEMS.MESSAGE' | translate) }}
-    </p>
-  </div>
+  <app-empty-state *ngIf="!loading && knowledges && knowledges.length === 0"
+    [title]="'MY_KNOWLEDGE.NO_ITEMS.TITLE' | translate"
+    [message]="(searchTerm || selectedKnowledgeType !== 'all') ? 
+       ('MY_KNOWLEDGE.NO_ITEMS.FILTERED_MESSAGE' | translate) : 
+       ('MY_KNOWLEDGE.NO_ITEMS.MESSAGE' | translate)"
+    [icon]="'ki-journal-text'"
+    [svgPath]="'assets/media/svg/shapes/empty.svg'"
+    [showButton]="true"
+    [buttonText]="'KNOWLEDGE.ADD_KNOWLEDGE' | translate"
+    [buttonLink]="'/app/add-knowledge/stepper'"
+    [buttonIcon]="'ki-plus'"
+  ></app-empty-state>
 </div>
 <!--end::Card body-->

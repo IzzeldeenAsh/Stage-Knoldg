@@ -344,3 +344,44 @@ textarea {
     opacity: 0;
   }
 }
+
+/* Typing animation for AI Abstract */
+.animated-abstract {
+  background: #f8f9fa;
+  border-radius: 6px;
+  position: relative;
+  min-height: 100px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.typing-text {
+  position: relative;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #212529;
+  padding: 5px;
+}
+
+.typing-text::after {
+  content: '|';
+  display: inline-block;
+  color: #009ef7;
+  font-weight: bold;
+  animation: cursor-blink 0.8s infinite;
+  transform: translateY(2px);
+}
+
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Add animation completion effect */
+.animated-abstract.complete .typing-text::after {
+  display: none;
+}
+
+/* Adjust editor when animated abstract is shown */
+.animated-abstract + editor {
+  margin-top: 15px;
+}
