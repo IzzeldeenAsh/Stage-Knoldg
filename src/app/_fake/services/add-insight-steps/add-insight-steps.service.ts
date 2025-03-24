@@ -460,7 +460,7 @@ export class AddInsightStepsService {
       );
   }
 
-  getKnowledgeParserData(knowledgeId: number): Observable<DocumentParserResponse> {
+  getKnowledgeParserData(knowledgeId: number): Observable<any> {
     const headers = new HttpHeaders({
       Accept: "application/json",
       "Accept-Language": this.currentLang,
