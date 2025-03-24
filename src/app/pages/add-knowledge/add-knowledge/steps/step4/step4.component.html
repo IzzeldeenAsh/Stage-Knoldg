@@ -127,8 +127,8 @@
                 <div class="position-relative">
                   <input pInputText formControlName="title" class="w-100" placeholder="{{ 'ENTER_KNOWLEDGE_TITLE' | translate }}" />
                   
-                  <!-- Loading indicator for title field -->
-                  <div *ngIf="isDescriptionLoading" class="field-loading-indicator">
+                  <!-- Only show field loading indicator when not showing the main loading UI -->
+                  <div *ngIf="isDescriptionLoading && !aiAbstractError" class="field-loading-indicator">
                     <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                   </div>
                   
@@ -154,17 +154,29 @@
                 <div class="position-relative">
                   <!-- Animated abstract display -->
                   <div *ngIf="animatedAbstract && !showEditor" class="animated-abstract p-3 border rounded mb-3">
-                    <div [innerHTML]="animatedAbstractText" class="typing-text"></div>
-                    <div *ngIf="animatedAbstractComplete" class="text-end mt-2">
-                      <button type="button" class="btn btn-sm btn-light" (click)="showDescriptionEditor()">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <h5 class="text-gray-800 mb-0">AI Generated Description</h5>
+                      <!-- Edit button - shows when we have animated abstract -->
+                      <button *ngIf="animatedAbstractComplete" 
+                            (click)="showDescriptionEditor()"
+                            class="btn btn-sm btn-light-primary">
                         <i class="fas fa-edit me-1"></i> Edit
                       </button>
                     </div>
+                    <div [innerHTML]="animatedAbstractText" class="typing-text mt-2"></div>
                   </div>
                   
-                  <!-- Editor (only shown when not in animation mode) -->
+                  <!-- Loading indicator -->
+                  <div *ngIf="isDescriptionLoading" class="d-flex align-items-center mb-3">
+                    <div class="spinner-border text-primary me-2" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <span>Generating AI description...</span>
+                  </div>
+                  
+                  <!-- Editor (only shown when edit is clicked or no animation) -->
                   <editor
-                    *ngIf="showEditor"
+                    *ngIf="showEditor && !isDescriptionLoading"
                     apiKey="fovwl5u83es9vkiv7x6h34fynj0utg108qrb0edwwwlxevt9"
                     formControlName="description"
                     [init]="{min_height: 250, placeholder: ('ENTER_KNOWLEDGE_DESCRIPTION' | translate)}"

@@ -1,6 +1,6 @@
 import { Component, Injector, Input, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { Subscription, forkJoin, of, delay, finalize } from 'rxjs';
+import { Subscription, forkJoin, of, delay, finalize, interval, timer, takeWhile, takeUntil, Subject } from 'rxjs';
 import { ICreateKnowldege } from '../../create-account.helper';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { LanguagesService, Language } from 'src/app/_fake/services/languages-list/languages.service';
@@ -26,15 +26,6 @@ interface KeywordItem {
   value: string;
 }
 
-interface DocumentParserResponse {
-  summary?: string;
-  text?: string;
-  data?: any;
-  metadata?: {
-    title?: string;
-    language?: string;
-  };
-}
 
 @Component({
   selector: 'app-step4',
@@ -124,7 +115,8 @@ export class Step4Component extends BaseComponent implements OnInit {
   animatedAbstract = false;
   animatedAbstractText = '';
   animatedAbstractComplete = false;
-  showEditor = true;
+  showEditor = false;
+  private stopPolling$ = new Subject<void>();
 
   constructor(
     injector: Injector,
@@ -153,6 +145,8 @@ export class Step4Component extends BaseComponent implements OnInit {
     
     if (this.defaultValues.knowledgeId) {
       this.fetchKnowledgeData(this.defaultValues.knowledgeId);
+      // Try to generate AI information when component initializes
+      this.generateAIInformation();
     }
     
     this.loadData();
@@ -171,14 +165,6 @@ export class Step4Component extends BaseComponent implements OnInit {
     this.languagesService.isLoading$.subscribe(isLoading => {
       this.isLanguageLoading = isLoading;
     });
-    
-    // Auto-generate description if empty and knowledge ID exists
-    if (this.defaultValues.knowledgeId && (!this.form.get('description')?.value || !this.form.get('description')?.value?.trim())) {
-      // Wait a short delay before triggering to allow form to fully initialize
-      setTimeout(() => {
-        this.generateAIDescription();
-      }, 500);
-    }
   }
   
   private initForms() {
@@ -722,167 +708,7 @@ export class Step4Component extends BaseComponent implements OnInit {
     }
   }
   
-  generateAIDescription(): void {
-    // Only proceed if we have a knowledge ID
-    if (!this.defaultValues.knowledgeId) {
-      console.error('Cannot generate AI abstract without a knowledge ID');
-      return;
-    }
-
-    // Setup loading state
-    this.isDescriptionLoading = true;
-    this.aiAbstractError = false;
-    this.cdr.detectChanges(); // Force UI update immediately
-    
-    // Disable form controls while loading
-    const titleControl = this.form.get('title');
-    const languageControl = this.form.get('language');
-    const descriptionControl = this.form.get('description');
-    if (titleControl) titleControl.disable();
-    if (languageControl) languageControl.disable();
-    if (descriptionControl) descriptionControl.disable();
-    
-    // Setup polling parameters
-    const maxWaitTime = 20000; // 20 seconds
-    const pollingInterval = 2000; // 2 seconds
-    let elapsedTime = 0;
-    let receivedValidData = false;
-    let polling: ReturnType<typeof setInterval>;
-    
-    // Define the check function that will be called repeatedly
-    const checkForDescription = () => {
-      // Ensure knowledgeId is a number (important for the API)
-      const knowledgeId = Number(this.defaultValues.knowledgeId);
-      
-      // Call the API to check for data
-      const subscription = this.addInsightStepsService.getKnowledgeParserData(knowledgeId)
-        .subscribe({
-          next: (response: DocumentParserResponse) => {
-            try {
-              // Process data from the new response format
-              if (response?.data) {
-                // The data is now structured in the 'data' property
-                const responseData = response.data;
-                
-                // Update description/abstract
-                if (responseData.abstract && descriptionControl) {
-                  // Set up animation instead of immediately setting the value
-                  const abstractText = responseData.abstract;
-                  
-                  // Enable animation for the abstract
-                  this.animatedAbstract = true;
-                  this.animatedAbstractText = ''; // Start empty for typing animation
-                  this.showEditor = false; // Hide editor initially
-                  
-                  // Store the complete text in the form control for later use
-                  descriptionControl.setValue(abstractText);
-                  
-                  // Start the typing animation
-                  this.startTypingAnimation(abstractText);
-                  
-                  receivedValidData = true;
-                }
-                
-                // Update title if it's empty
-                if (responseData.title && titleControl && (!titleControl.value || titleControl.value.trim() === '')) {
-                  titleControl.setValue(responseData.title);
-                }
-                
-                // Update language if it's not set
-                if (responseData.language && languageControl && !languageControl.value) {
-                  // Map language code to language ID
-                  const langCode = responseData.language.toLowerCase();
-                  let languageId: string | null = null;
-                  
-                  // Map common language codes to language IDs
-                  if (langCode === 'en') {
-                    languageId = 'english';
-                  } else if (langCode === 'ar') {
-                    languageId = 'arabic';
-                  } else {
-                    // Try to find a matching language by name (fallback)
-                    const languageObj = this.languages.find(lang => 
-                      lang.name.toLowerCase().includes(langCode) || langCode.includes(lang.name.toLowerCase()));
-                    if (languageObj) {
-                      languageId = languageObj.id;
-                    }
-                  }
-                  
-                  // Set the language value if we found a match
-                  if (languageId && languageControl) {
-                    languageControl.setValue(languageId);
-                  }
-                }
-                
-                // Update industry if available
-                if (responseData.industry && responseData.industry.id) {
-                  this.selectedIndustryId = responseData.industry.id;
-                  
-                  // If we have a topic service, also fetch topics for this industry
-                  if (this.selectedIndustryId) {
-                    this.getTopics(this.selectedIndustryId);
-                  }
-                }
-              }
-              // Stop polling if we got valid data
-              if (receivedValidData) {
-                // Turn off loading and stop polling
-                this.isDescriptionLoading = false;
-                this.aiAbstractError = false;
-                clearInterval(polling);
-                
-                // Re-enable form controls
-                if (titleControl) titleControl.enable();
-                if (languageControl) languageControl.enable();
-                // Note: we don't enable the description control here because we want to show the animation first
-                
-                this.cdr.detectChanges();
-              }
-            } catch (error) {
-              console.error('Error processing response:', error);
-              // Continue polling - don't stop on error
-            }
-          },
-          error: (error) => {
-            console.error('Error fetching knowledge description:', error);
-            // Set error flag but continue polling
-            this.aiAbstractError = true;
-          }
-        });
-      
-      // Add to unsubscribe array to clean up on destroy
-      this.unsubscribe.push(subscription);
-    };
-    
-    // Make initial call immediately
-    checkForDescription();
-    
-    // Setup polling
-    polling = setInterval(() => {
-      elapsedTime += pollingInterval;
-      
-      // Stop if we already have data or reached max time
-      if (receivedValidData || elapsedTime >= maxWaitTime) {
-        clearInterval(polling);
-        
-        // Make sure to clean up if we time out
-        if (!receivedValidData && this.isDescriptionLoading) {
-          this.isDescriptionLoading = false;
-          this.aiAbstractError = true;
-          
-          // Re-enable form controls
-          if (titleControl) titleControl.enable();
-          if (languageControl) languageControl.enable();
-          if (descriptionControl) descriptionControl.enable();
-          this.cdr.detectChanges();
-        }
-      } else {
-        // Only call the check function if we're still waiting for data
-        checkForDescription();
-      }
-    }, pollingInterval);
-  }
-
+  
   // Show editor after animated abstract is displayed
   showDescriptionEditor(): void {
     // Enable the form control first
@@ -919,7 +745,8 @@ export class Step4Component extends BaseComponent implements OnInit {
         // Animation complete
         clearInterval(this.animationTimers);
         this.animatedAbstractComplete = true;
-        this.showDescriptionEditor();
+        // Don't automatically show editor - user must click Edit button
+        this.cdr.detectChanges();
       }
     }, this.typingSpeed);
   }
@@ -947,5 +774,183 @@ export class Step4Component extends BaseComponent implements OnInit {
       tag_ids: [], 
       keywords: [] 
     }, this.checkForm());
+  }
+
+  generateAIDescription(): void {
+    this.generateAIInformation();
+  }
+  
+  // Simplified method to generate AI information
+  private generateAIInformation(): void {
+    if (!this.defaultValues.knowledgeId) {
+      // If no knowledge ID, just show the editor
+      this.showEditor = true;
+      return;
+    }
+    
+    // Set loading state
+    this.isDescriptionLoading = true;
+    this.showEditor = false;
+    this.aiAbstractError = false;
+    
+    // Clear any previous timers
+    if (this.stopPolling$) {
+      this.stopPolling$.next();
+      this.stopPolling$.complete();
+    }
+    this.stopPolling$ = new Subject<void>();
+    
+    // Time tracking
+    const startTime = Date.now();
+    const maxDuration = 20000; // 20 seconds
+    const pollInterval = 2000; // 2 seconds
+    let hasReceivedData = false;
+    
+    // Start polling timer - this will execute every 2 seconds
+    const polling = interval(pollInterval).pipe(
+      takeWhile(() => (Date.now() - startTime) < maxDuration), // Run for 20 seconds max
+      takeUntil(this.stopPolling$) // Or until manually stopped
+    ).subscribe(() => {
+      // Only make API call if we haven't received data yet
+      if (!hasReceivedData) {
+        console.log(`Polling API at ${new Date().toISOString()} - ${Math.floor((Date.now() - startTime) / 1000)}s elapsed`);
+        
+        // Make API call
+        this.addInsightStepsService.getKnowledgeParserData(this.defaultValues.knowledgeId as number)
+          .subscribe({
+            next: (response) => {
+              console.log('API Response:', response);
+              
+              // Check if we have valid data - use type assertion to fix TypeScript errors
+              const responseData = response?.data as any;
+              const hasValidData = responseData && (
+                (responseData.abstract && responseData.abstract.trim().length > 0)
+              );
+              
+              if (hasValidData) {
+                console.log('Valid data received, stopping poll');
+                hasReceivedData = true;
+                
+                // Update the form with received data
+                this.updateFormWithAIData(responseData);
+                
+                // Stop polling since we have data
+                if (this.stopPolling$) {
+                  this.stopPolling$.next();
+                }
+              } else {
+                console.log('No valid data yet, continuing to poll');
+              }
+            },
+            error: (error) => {
+              console.error('API error:', error);
+              // Continue polling on error
+            }
+          });
+      }
+    });
+    
+    // Run initial API call immediately
+    console.log(`Initial API call at ${new Date().toISOString()}`);
+    this.addInsightStepsService.getKnowledgeParserData(this.defaultValues.knowledgeId as number)
+      .subscribe({
+        next: (response) => {
+          console.log('Initial API Response:', response);
+          
+          // Check if we have valid data - use type assertion to fix TypeScript errors
+          const responseData = response?.data as any;
+          const hasValidData = responseData && (
+            (responseData.abstract && responseData.abstract.trim().length > 0)
+          );
+          
+          if (hasValidData) {
+            console.log('Valid data received on initial call');
+            hasReceivedData = true;
+            this.updateFormWithAIData(responseData);
+            
+            // Stop polling since we have data
+            if (this.stopPolling$) {
+              this.stopPolling$.next();
+            }
+          }
+        },
+        error: (error) => console.error('Initial API error:', error)
+      });
+    
+    // Safety timeout to stop everything after 20 seconds
+    // This ensures the loader is shown for full 20 seconds
+    timer(maxDuration).subscribe(() => {
+      console.log(`Max duration reached at ${new Date().toISOString()}`);
+      
+      // Clean up polling subscription
+      if (polling && !polling.closed) {
+        polling.unsubscribe();
+      }
+      
+      // Clean up stop polling subject
+      if (this.stopPolling$) {
+        this.stopPolling$.next();
+        this.stopPolling$.complete();
+      }
+      
+      // If we didn't get data, show error and editor
+      if (!hasReceivedData) {
+        console.log('No data received after timeout');
+        this.aiAbstractError = true;
+        this.showEditor = true;
+      }
+      
+      // Always turn off loading state after 20 seconds
+      this.isDescriptionLoading = false;
+      this.cdr.detectChanges();
+    });
+  }
+  
+  // Update form with AI data
+  private updateFormWithAIData(data: any): void {
+    console.log('Updating form with AI data:', data);
+    
+    // Update title if available
+    if (data.title) {
+      this.form.get('title')?.setValue(data.title);
+    }
+    
+    // Update description using abstract field
+    if (data.abstract) {
+      // Set form value first (even if not visible in the editor)
+      this.form.get('description')?.setValue(data.abstract);
+      
+      // Enable animation
+      this.animatedAbstract = true;
+      this.showEditor = false; // Ensure editor is hidden
+      this.startTypingAnimation(data.abstract);
+    }
+    
+    // Update language if available (convert from string to ID)
+    if (data.language) {
+      // Find the language ID by name
+      const languageName = data.language.toLowerCase();
+      const language = this.languages.find(lang => 
+        lang.name.toLowerCase() === languageName
+      );
+      
+      if (language) {
+        this.form.get('language')?.setValue(language.id);
+      }
+    }
+    
+    // Update industry if available
+    if (data.industry && data.industry.id) {
+      const industryId = parseInt(data.industry.id);
+      if (!isNaN(industryId)) {
+        this.form.get('industry')?.setValue(industryId);
+        // Also update topics if industry changes
+        this.getTopics(industryId);
+      }
+    }
+    
+    // Reset loading state
+    this.isDescriptionLoading = false;
+    this.cdr.detectChanges();
   }
 }
