@@ -53,7 +53,7 @@
  
         <div class="d-flex align-items-center gap-2 gap-lg-3">
          
-          <p-dialog [header]="isEditMode ? 'Edit Country' : 'Add Country'" class="scrollable-dialog" [modal]="true" [(visible)]="visible" [style]="{ width: '60rem'}">
+          <p-dialog appendTo="body" [header]="isEditMode ? 'Edit Country' : 'Add Country'" class="scrollable-dialog" [modal]="true" [(visible)]="visible" [style]="{ width: '60rem'}">
             <p-messages *ngIf="hasErrorMessage" [(value)]="messages" [enableService]="false"></p-messages>
             <span class="text-muted mb-3 d-block">{{ isEditMode ? 'Edit Country Details' : 'Add Country Details' }}.</span>
           
@@ -237,6 +237,7 @@
            
           <div class="d-flex gap-3">
             <p-dropdown
+            appendTo="body"
             id="statusFilter"
             [options]="statusOptions"
             [(ngModel)]="selectedStatus"
@@ -244,6 +245,7 @@
             (onChange)="filterCountries()"
           ></p-dropdown>
             <p-dropdown 
+            appendTo="body"
               id="regionFilter" 
               [options]="regionOptions" 
               [(ngModel)]="selectedRegionId" 

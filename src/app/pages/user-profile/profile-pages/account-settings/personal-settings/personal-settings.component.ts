@@ -169,11 +169,11 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
       bio: [""],
       industries: [],
       consulting_field: [],
-      linkedIn: [''],
-      facebook: [''],
-      twitter: [''],
-      instagram: [''],
-      youtube: ['']
+      linkedIn: ['', [Validators.pattern('^https://www\.linkedin\.com/.*$')]],
+      facebook: ['', [Validators.pattern('^https://www\.facebook\.com/.*$')]],
+      twitter: ['', [Validators.pattern('^https://www\.(twitter\.com|x\.com)/.*$')]],
+      instagram: ['', [Validators.pattern('^https://www\.instagram\.com/.*$')]],
+      youtube: ['', [Validators.pattern('^https://www\.youtube\.com/.*$')]]
     });
   }
 
@@ -400,7 +400,7 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
     
     if (form.get('twitter')?.value) {
       this.socialNetworks.push({
-        type: 'twitter',
+        type: 'x',
         link: form.get('twitter')?.value
       });
     }

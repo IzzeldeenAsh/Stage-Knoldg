@@ -154,6 +154,15 @@
                   formControlName="linkedIn"
                   placeholder="LinkedIn Profile URL"
                 />
+                <div
+                  *ngIf="
+                    personalInfoForm.get('linkedIn')?.invalid &&
+                    personalInfoForm.get('linkedIn')?.touched
+                  "
+                  class="invalid-feedback d-block"
+                >
+                  {{ "ACCOUNT_SETTINGS.SOCIAL_URL_FORMAT" | translate }}
+                </div>
               </div>
             </div>
 
@@ -169,6 +178,15 @@
                   formControlName="facebook"
                   placeholder="Facebook Profile URL"
                 />
+                <div
+                  *ngIf="
+                    personalInfoForm.get('facebook')?.invalid &&
+                    personalInfoForm.get('facebook')?.touched
+                  "
+                  class="invalid-feedback d-block"
+                >
+                  {{ "ACCOUNT_SETTINGS.SOCIAL_URL_FORMAT" | translate }}
+                </div>
               </div>
             </div>
 
@@ -184,6 +202,15 @@
                   formControlName="twitter"
                   placeholder="Twitter Profile URL"
                 />
+                <div
+                  *ngIf="
+                    personalInfoForm.get('twitter')?.invalid &&
+                    personalInfoForm.get('twitter')?.touched
+                  "
+                  class="invalid-feedback d-block"
+                >
+                  {{ "ACCOUNT_SETTINGS.SOCIAL_URL_FORMAT" | translate }}
+                </div>
               </div>
             </div>
 
@@ -199,6 +226,15 @@
                   formControlName="instagram"
                   placeholder="Instagram Profile URL"
                 />
+                <div
+                  *ngIf="
+                    personalInfoForm.get('instagram')?.invalid &&
+                    personalInfoForm.get('instagram')?.touched
+                  "
+                  class="invalid-feedback d-block"
+                >
+                  {{ "ACCOUNT_SETTINGS.SOCIAL_URL_FORMAT" | translate }}
+                </div>
               </div>
             </div>
 
@@ -214,6 +250,15 @@
                   formControlName="youtube"
                   placeholder="YouTube Channel URL"
                 />
+                <div
+                  *ngIf="
+                    personalInfoForm.get('youtube')?.invalid &&
+                    personalInfoForm.get('youtube')?.touched
+                  "
+                  class="invalid-feedback d-block"
+                >
+                  {{ "ACCOUNT_SETTINGS.SOCIAL_URL_FORMAT" | translate }}
+                </div>
               </div>
             </div>
           </div>
@@ -243,4 +288,3 @@
     </div>
   </div>
 </form>
-

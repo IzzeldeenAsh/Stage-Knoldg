@@ -18,7 +18,7 @@
             <i class="ki-outline ki-plus text-white fs-4"></i>
             Create
           </a>
-          <p-dialog [header]="isEditMode ? 'Edit Region' : 'Add Region'" [modal]="true" [(visible)]="visible" [style]="{ width: '30rem' }">
+          <p-dialog appendTo="body" [header]="isEditMode ? 'Edit Region' : 'Add Region'" [modal]="true" [(visible)]="visible" [style]="{ width: '30rem' }">
             <p-messages *ngIf="hasErrorMessage" [(value)]="messages" [enableService]="false"></p-messages>
             <span class="text-muted mb-3 d-block">{{ isEditMode ? 'Edit Region Details' : 'Add Region Details' }}.</span>
 

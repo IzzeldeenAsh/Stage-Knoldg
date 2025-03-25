@@ -30,13 +30,13 @@ export class ISICCodeManagmentComponent implements OnInit, OnDestroy {
     { label: 'Inactive', value: 'inactive' }
   ];
   isicForm!: FormGroup;
-  selectedParentId: number | null = null;
+  selectedParentId: number = 0;
   displayDialog: boolean = false;
   selectedNode: any;
   isUpdate: boolean = false;
   selectedNodeId: number | null = null;
   isLoading$: Observable<boolean>;
-  parentKey: number | null = null;
+  parentKey: number = 0;
 
   @ViewChild('tt') treeTable!: TreeTable; // Reference to the TreeTable
 
@@ -55,7 +55,7 @@ export class ISICCodeManagmentComponent implements OnInit, OnDestroy {
       nameEn: ['', Validators.required],
       nameAr: ['', Validators.required],
       status: ['', Validators.required],
-      parentId: [null],
+      parentId: [0],
     });
 
     this.loadIsicCodes();
@@ -103,7 +103,7 @@ export class ISICCodeManagmentComponent implements OnInit, OnDestroy {
   showDialog() {
     this.displayDialog = true;
     this.selectedNodeId = null; // Reset for create
-    this.parentKey = null;
+    this.parentKey = 0;
     this.selectedNode = null;
     this.isUpdate = false; // Set mode to create
     this.isicForm.reset();
@@ -114,7 +114,7 @@ export class ISICCodeManagmentComponent implements OnInit, OnDestroy {
     this.selectedNodeId = node.node.data.key; // Set the ID for update
     this.isUpdate = true; // Editing mode
     
-    const parentValue = node.node.parent ? node.node.parent.key : null;
+    const parentValue = node.node.parent ? node.node.parent.key : 0;
     this.parentKey = parentValue;
     this.selectedNode = this.findNodeByValue(this.isicTreeData, this.parentKey);
     this.isicForm.patchValue({
@@ -213,7 +213,7 @@ export class ISICCodeManagmentComponent implements OnInit, OnDestroy {
         ar: formValues.nameAr,
       },
       status: formValues.status,
-      parent_id: this.selectedNode ? this.selectedNode.value : null,
+      parent_id: this.selectedNode ? this.selectedNode.value : 0,
     };
 
     if (this.isUpdate && this.selectedNodeId !== null) {
@@ -226,7 +226,7 @@ export class ISICCodeManagmentComponent implements OnInit, OnDestroy {
           });
           this.loadIsicCodes();
           this.displayDialog = false;
-          this.parentKey = null;
+          this.parentKey = 0;
           this.selectedNode = null;
           this.isicForm.reset();
         },
@@ -245,7 +245,7 @@ export class ISICCodeManagmentComponent implements OnInit, OnDestroy {
           });
           this.loadIsicCodes();
           this.displayDialog = false;
-          this.parentKey = null;
+          this.parentKey = 0;
           this.selectedNode = null;
           this.isicForm.reset();
         },
@@ -288,15 +288,54 @@ export class ISICCodeManagmentComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Updated search using built-in TreeTable filtering
   applyFilter(event: any) {
-    const searchTerm = event.target.value;
-    this.treeTable.filterGlobal(searchTerm, 'contains');
+    const searchTerm = event.target.value.trim().toLowerCase();
+    
+    if (!searchTerm) {
+      // If search term is empty, restore original data
+      this.isicnodes = [...this.originalIsicNodes];
+      this.cdr.detectChanges();
+      return;
+    }
+    
+    // Clone the original data
+    const filteredNodes = this.filterNodes([...this.originalIsicNodes], searchTerm);
+    this.isicnodes = filteredNodes;
+    this.cdr.detectChanges();
+  }
+  
+  filterNodes(nodes: TreeNode[], searchTerm: string): TreeNode[] {
+    if (!nodes) return [];
+    
+    const result: TreeNode[] = [];
+    
+    for (const node of nodes) {
+      // Check if the current node matches the search criteria
+      const nameEn = node.data?.nameEn?.toLowerCase() || '';
+      const nameAr = node.data?.nameAr?.toLowerCase() || '';
+      const matchesSearch = nameEn.includes(searchTerm) || nameAr.includes(searchTerm);
+      
+      // Filter children recursively
+      const filteredChildren = this.filterNodes(node.children || [], searchTerm);
+      
+      // Include the node if it matches or has matching children
+      if (matchesSearch || filteredChildren.length > 0) {
+        // Create a copy of the node
+        const nodeCopy = { ...node };
+        // Add filtered children if any
+        if (filteredChildren.length > 0) {
+          nodeCopy.children = filteredChildren;
+        }
+        result.push(nodeCopy);
+      }
+    }
+    
+    return result;
   }
 
   onCancel() {
     this.displayDialog = false;
-    this.parentKey = null;
+    this.parentKey = 0;
     this.selectedNode = null;
     this.isicForm.reset();
   }

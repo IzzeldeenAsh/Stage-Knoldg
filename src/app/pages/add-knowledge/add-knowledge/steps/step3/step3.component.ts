@@ -456,7 +456,7 @@ export class Step3Component extends BaseComponent implements OnInit {
   }
 
   // Validate all documents and update form validity
-  private validateDocuments(): void {
+  validateDocuments(): boolean {
     this.validationErrors = {};
     let isValid = true;
     
@@ -467,13 +467,11 @@ export class Step3Component extends BaseComponent implements OnInit {
     
     // Then check each document's description
     this.documents.forEach((doc, index) => {
-      // Track error state regardless of touched state for form validity
+      // Check description requirement regardless of touched state
       if (!doc.description || !doc.description.trim()) {
-        // Only update visible error state if touched
-        if (doc.touched) {
-          doc.hasError = true;
-          this.validationErrors[`documents.${index}.description`] = ["The document description field is required."];
-        }
+        // Mark document as having an error
+        doc.hasError = true;
+        this.validationErrors[`documents.${index}.description`] = ["The document description field is required."];
         isValid = false;
       } else {
         doc.hasError = false;
@@ -481,11 +479,9 @@ export class Step3Component extends BaseComponent implements OnInit {
     });
     
     // Update the form's validity
-    if (this.form.valid && isValid) {
-      this.isCurrentFormValid = true;
-    } else {
-      this.isCurrentFormValid = false;
-    }
+    this.isCurrentFormValid = this.form.valid && isValid;
+    
+    return isValid; // Return validation result for external checks
   }
 
   // Update parent model with all document descriptions and table_of_content

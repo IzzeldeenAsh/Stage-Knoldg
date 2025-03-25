@@ -39,6 +39,7 @@
           </div>
           <div class="ms-3">
             <p-dropdown
+            appendTo="body"
               [options]="statusOptions"
               [(ngModel)]="selectedStatus"
               placeholder="Filter by Status"
@@ -129,6 +130,7 @@
 
 <!-- Dialog for Create/Update -->
 <p-dialog
+appendTo="body"
   [header]="isUpdate ? 'Edit Consulting Field' : 'Add Consulting Field'"
   [modal]="true"
   [(visible)]="displayDialog"
@@ -176,6 +178,7 @@
       <div class="col-sm-9">
         <p-dropdown
           id="status"
+          appendTo="body"
           formControlName="status"
           [options]="[
             {label: 'Active', value: 'active'},
@@ -200,6 +203,7 @@
       <label for="parentId" class="col-sm-3 col-form-label">Parent Consulting Field</label>
       <div class="col-sm-9">
         <p-treeSelect
+        appendTo="body"
         id="parentNode"
         formControlName="parentNode"
         [options]="parentsOnlyTreeData"

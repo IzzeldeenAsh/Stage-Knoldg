@@ -74,7 +74,7 @@
             <editor
               *ngIf="!doc.animatedAbstract || doc.showEditor"
               apiKey="fovwl5u83es9vkiv7x6h34fynj0utg108qrb0edwwwlxevt9"
-              [ngClass]="{'is-invalid': doc.touched && doc.hasError}" 
+              [ngClass]="{'is-invalid': doc.hasError}" 
               [initialValue]="doc.description || ''"
               (onInit)="handleEditorInit($event, doc.id)"
               [inline]="false"
@@ -130,7 +130,7 @@
               Couldn't get AI Abstract. Please try again or enter description manually.
             </div>
             
-            <div *ngIf="doc.touched && doc.hasError" class="invalid-feedback d-block">
+            <div *ngIf="doc.hasError" class="invalid-feedback d-block">
               {{ "DOCUMENT_DESCRIPTION_REQUIRED" | translate }}
             </div>
           </div>

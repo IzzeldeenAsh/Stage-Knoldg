@@ -51,41 +51,46 @@
   <!-- Scheduled Options -->
   <div *ngIf="publishForm.get('publishOption')?.value === 'scheduled'" class="mt-8" style="direction: ltr !important;">
     <div class="row g-5">
-      <div class="col-md-12">
-        <label class="form-label">{{ "SELECT_DATE_TIME" | translate }}</label>
-        <div class="p-calendar-container w-100">
-          <div class="input-group">
-             <div class="d-flex justify-content-center align-items-center mx-4 rounded-2" style="background-color: #F3F4F6;">
-                <app-keenicon name="calendar" class="fs-4 mx-3"></app-keenicon>
-             </div>
-            <p-calendar 
-              formControlName="publishDateTime"
-              [showTime]="true"
-              [showSeconds]="false"
-              [minDate]="minDate"
-              [dateFormat]="dateFormat"
-              [hourFormat]="timeFormat"
-              styleClass="w-100 p-calendar-custom"
-              inputStyleClass="form-control"
-              [showIcon]="false"
-              appendTo="body"
-              (onSelect)="onDateTimeChange()"
-              (onBlur)="onDateTimeChange()"
-              placeholder="{{ 'SELECT_DATE_AND_TIME' | translate }}"
-              required
-            ></p-calendar>
-          </div>
+      <div class="col-md-6">
+        <label class="form-label">{{ "SELECT_DATE" | translate }}</label>
+        <div class="p-field">
+          <p-calendar
+            formControlName="publishDate"
+            [minDate]="minDate"
+            [showIcon]="true"
+            dateFormat="yy-mm-dd"
+            (onSelect)="onDateSelect()"
+            [required]="true"
+            [appendTo]="'body'"
+            styleClass="w-100"
+          ></p-calendar>
+          <small class="p-error block" *ngIf="
+            publishForm.get('publishDate')?.invalid &&
+            publishForm.get('publishDate')?.touched
+          ">
+            {{ "VALID_DATE_REQUIRED" | translate }}
+          </small>
         </div>
-        <div
-          class="text-danger fs-7 mt-2"
-          *ngIf="
-            publishForm.get('publishDateTime')?.invalid &&
-            publishForm.get('publishDateTime')?.touched
-          "
-        >
-          {{ "VALID_DATE_TIME_REQUIRED" | translate }}
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">{{ "SELECT_TIME" | translate }}</label>
+        <div class="p-field">
+          <p-calendar
+            formControlName="publishTime"
+            [timeOnly]="true"
+            [showIcon]="true"
+            [required]="true"
+            [appendTo]="'body'"
+            styleClass="w-100"
+          ></p-calendar>
+          <small class="p-error block" *ngIf="
+            publishForm.get('publishTime')?.invalid &&
+            publishForm.get('publishTime')?.touched
+          ">
+            {{ "VALID_TIME_REQUIRED" | translate }}
+          </small>
+          <small class="p-error block" *ngIf="timeError">{{ timeError }}</small>
         </div>
-        <div class="error-message text-danger fs-7" *ngIf="timeError">{{ timeError }}</div>
       </div>
     </div>
   </div>

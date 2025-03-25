@@ -89,7 +89,7 @@
   </div>
 </div>
 
-<p-dialog [(visible)]="displayDialog" [header]="editMode ? 'Edit Economic Block' : 'Add Economic Block'" [modal]="true"
+<p-dialog appendTo="body" [(visible)]="displayDialog" [header]="editMode ? 'Edit Economic Block' : 'Add Economic Block'" [modal]="true"
   [style]="{width: '450px'}" [draggable]="false" [resizable]="false">
   <form [formGroup]="blockForm">
     <div class="field" formGroupName="name">

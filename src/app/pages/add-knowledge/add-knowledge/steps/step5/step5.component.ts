@@ -7,22 +7,29 @@ import { BaseComponent } from 'src/app/modules/base.component';
   selector: 'app-step5',
   templateUrl: './step5.component.html',
   styles: [`
-    .p-calendar-custom {
-      width: 100% !important;
+    ::ng-deep .p-calendar {
+      width: 100%;
     }
-    .p-calendar-custom .p-inputtext {
-      width: 100% !important;
-      border: none !important;
-      box-shadow: none !important;
+    ::ng-deep .p-calendar .p-inputtext {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      height: calc(1.5em + 1.5rem + 2px);
     }
-    .p-calendar-container .input-group {
-      flex-wrap: nowrap;
+    ::ng-deep .p-calendar .p-button {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      border-top-right-radius: 0.475rem;
+      border-bottom-right-radius: 0.475rem;
+      width: 3rem;
+      height: calc(1.5em + 1.5rem + 2px);
+      background: #FAFAFA;
+      border: 1px solid #DFDFDF;
+      color: #6E6E6E;
     }
-    :host ::ng-deep .p-datepicker {
-      min-width: 350px;
-    }
-    :host ::ng-deep .p-datepicker-timeonly {
-      padding: 1rem;
+    ::ng-deep .p-calendar .p-button:enabled:hover {
+      background: #FAFAFA;
+      border-color: #DFDFDF;
+      color: #6E6E6E;
     }
   `]
 })
@@ -72,20 +79,25 @@ export class Step5Component extends BaseComponent implements OnInit {
   ngOnInit(): void {
     this.publishForm = this.fb.group({
       publishOption: [this.defaultValues.publish_status || '', Validators.required],
-      publishDateTime: [null]
+      publishDate: [null],
+      publishTime: [null]
     });
 
     // Set validation rules for scheduled publishing
     this.publishForm.get('publishOption')?.valueChanges.subscribe(option => {
-      const publishDateTimeControl = this.publishForm.get('publishDateTime');
+      const publishDateControl = this.publishForm.get('publishDate');
+      const publishTimeControl = this.publishForm.get('publishTime');
 
       if (option === 'scheduled') {
-        publishDateTimeControl?.setValidators([Validators.required]);
+        publishDateControl?.setValidators([Validators.required]);
+        publishTimeControl?.setValidators([Validators.required]);
       } else {
-        publishDateTimeControl?.clearValidators();
+        publishDateControl?.clearValidators();
+        publishTimeControl?.clearValidators();
       }
 
-      publishDateTimeControl?.updateValueAndValidity();
+      publishDateControl?.updateValueAndValidity();
+      publishTimeControl?.updateValueAndValidity();
 
       // Update parent model with the selected option
       this.updateParentValues();
@@ -100,32 +112,51 @@ export class Step5Component extends BaseComponent implements OnInit {
     // Initialize validation
     const option = this.publishForm.get('publishOption')?.value;
     if (option === 'scheduled') {
-      this.publishForm.get('publishDateTime')?.setValidators([Validators.required]);
+      this.publishForm.get('publishDate')?.setValidators([Validators.required]);
+      this.publishForm.get('publishTime')?.setValidators([Validators.required]);
     }
 
     // Set defaults if we're in edit mode
     if (this.defaultValues.publish_status === 'scheduled' && this.defaultValues.publish_date_time) {
+      const date = new Date(this.defaultValues.publish_date_time);
       this.publishForm.patchValue({
         publishOption: 'scheduled',
-        publishDateTime: new Date(this.defaultValues.publish_date_time)
+        publishDate: date,
+        publishTime: date
       });
     }
   }
 
+  onDateSelect(): void {
+    const selectedDate = this.publishForm.get('publishDate')?.value;
+    const today = new Date();
+    
+    if (selectedDate && selectedDate < today && selectedDate.toDateString() !== today.toDateString()) {
+      this.publishForm.get('publishDate')?.setErrors({ 'pastDate': true });
+    }
+    
+    this.validateDateTime();
+  }
+
   private getFormattedDateTime(): string | undefined {
     try {
-      const dateTime = this.publishForm.get('publishDateTime')?.value;
+      const dateValue = this.publishForm.get('publishDate')?.value;
+      const timeValue = this.publishForm.get('publishTime')?.value;
       
-      if (!dateTime || !(dateTime instanceof Date)) {
+      if (!dateValue || !timeValue || !(dateValue instanceof Date) || !(timeValue instanceof Date)) {
         return undefined;
       }
       
+      // Create a new date combining the date and time values
+      const combinedDate = new Date(dateValue);
+      combinedDate.setHours(timeValue.getHours(), timeValue.getMinutes(), 0);
+      
       // Format as MySQL datetime (YYYY-MM-DD HH:MM:SS)
-      const year = dateTime.getFullYear();
-      const month = dateTime.getMonth() + 1;
-      const day = dateTime.getDate();
-      const hours = dateTime.getHours();
-      const minutes = dateTime.getMinutes();
+      const year = combinedDate.getFullYear();
+      const month = combinedDate.getMonth() + 1;
+      const day = combinedDate.getDate();
+      const hours = combinedDate.getHours();
+      const minutes = combinedDate.getMinutes();
       
       return `${year}-${this.padZero(month)}-${this.padZero(day)} ${this.padZero(hours)}:${this.padZero(minutes)}:00`;
     } catch (error) {
@@ -185,11 +216,6 @@ export class Step5Component extends BaseComponent implements OnInit {
     return true;
   }
 
-  onDateTimeChange() {
-    // When date/time changes, trigger datetime validation
-    this.validateDateTime();
-  }
-
   private validateDateTime() {
     // Clear previous errors
     this.timeError = '';
@@ -200,22 +226,28 @@ export class Step5Component extends BaseComponent implements OnInit {
       return;
     }
 
-    const dateTime = this.publishForm.get('publishDateTime')?.value;
+    const dateValue = this.publishForm.get('publishDate')?.value;
+    const timeValue = this.publishForm.get('publishTime')?.value;
     
-    if (!dateTime || !(dateTime instanceof Date)) {
+    if (!dateValue || !timeValue) {
       return;
     }
-
+    
     try {
+      // Create a combined date-time object
+      const scheduledDate = new Date(dateValue);
+      scheduledDate.setHours(timeValue.getHours(), timeValue.getMinutes(), 0);
+      
       const now = new Date();
       
-      // Check if the selected date is in the past
-      if (dateTime <= now) {
-        this.timeError = 'Selected date and time must be in the future';
+      if (scheduledDate <= now) {
+        this.timeError = 'Selected time must be in the future';
+        return;
       }
+      
     } catch (error) {
       console.error('Error validating date/time:', error);
-      this.timeError = 'Invalid date or time format';
+      this.timeError = 'Invalid date or time';
     }
   }
-} 
+}

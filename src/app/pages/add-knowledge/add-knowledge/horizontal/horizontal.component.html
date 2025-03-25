@@ -139,6 +139,7 @@
 
           <ng-container *ngIf="currentStep$.value === 3">
             <app-step3
+              #step3Component
               class="w-100"
               [updateParentModel]="updateAccount"
               [defaultValues]="account$.value"
@@ -148,6 +149,7 @@
 
           <ng-container *ngIf="currentStep$.value === 4">
             <app-step4
+              #step4Component
               class="w-100"
               [updateParentModel]="updateAccount"
               [defaultValues]="account$.value"
@@ -197,7 +199,6 @@
               <button
                 type="button"
                 class="btn btn-primary me-3"
-                [disabled]="!isCurrentFormValid$.value || isLoading"
                 (click)="nextStep()"
               >
                 <span class="indicator-label d-flex align-items-center">

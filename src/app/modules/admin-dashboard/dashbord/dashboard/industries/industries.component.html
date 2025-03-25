@@ -42,6 +42,7 @@
           </div>
           <div class="ms-3">
             <p-dropdown
+            appendTo="body"
               [options]="statusOptions"
               [(ngModel)]="selectedStatus"
               placeholder="Filter by Status"
@@ -141,6 +142,7 @@
 
 <!-- Dialog for Create/Update -->
 <p-dialog
+  appendTo="body"
   [header]="isUpdate ? 'Edit Industry' : 'Add Industry'"
   [modal]="true"
   [(visible)]="displayDialog"
@@ -187,6 +189,7 @@
       <label for="status" class="col-sm-3 col-form-label">Status</label>
       <div class="col-sm-9">
         <p-dropdown
+        appendTo="body"
           id="status"
           formControlName="status"
           [options]="statusOptions"
@@ -208,6 +211,7 @@
       <label for="parentNode" class="col-sm-3 col-form-label">Parent Industry</label>
       <div class="col-sm-9">
         <p-treeSelect
+          appendTo="body"
           id="parentNode"
           formControlName="parentNode"
           [options]="parentsOnlyTreeData"

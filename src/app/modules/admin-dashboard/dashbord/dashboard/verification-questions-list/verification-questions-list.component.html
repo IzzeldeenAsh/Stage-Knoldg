@@ -113,6 +113,7 @@
 </div>
 
 <p-dialog
+  appendTo="body"
   [header]="isUpdate ? 'Edit Question' : 'Add Question'"
   [(visible)]="displayDialog"
   [modal]="true"
@@ -128,6 +129,7 @@
     <div class="mb-3">
       <label class="form-label required">Type</label>
       <p-dropdown
+        appendTo="body"
         formControlName="type"
         [options]="[
           { label: 'Boolean', value: 'boolean' },
@@ -141,6 +143,7 @@
     <div class="mb-3">
       <label class="form-label required">Status</label>
       <p-dropdown
+        appendTo="body"
         formControlName="status"
         [options]="[
           { label: 'Active', value: 'active' },

@@ -65,7 +65,7 @@
               <th class="min-w-125px">ID</th>
               <th class="min-w-125px">Name (English)</th>
               <th class="min-w-125px">Name (Arabic)</th>
-              <th class="min-w-125px">Industry ID</th>
+              <th class="min-w-125px">Industry</th>
               <th class="min-w-125px">Status</th>
               <th class="text-end min-w-100px">Actions</th>
             </tr>
@@ -80,7 +80,7 @@
               <td>{{ topic.id }}</td>
               <td>{{ topic.names.en }}</td>
               <td>{{ topic.names.ar }}</td>
-              <td>{{ topic.industry_id }}</td>
+              <td>{{ getIndustryName(topic.industry_id) }}</td>
               <td>
                 <div [class]="'badge badge-light-' + (topic.status === 'active' ? 'success' : 'danger') + ' fw-bold'">
                   {{ topic.status }}
@@ -139,6 +139,7 @@
 
 <!-- Topic Dialog -->
 <p-dialog 
+  appendTo="body"
   [(visible)]="displayDialog" 
   [style]="{width: '500px'}" 
   [header]="isUpdate ? 'Update Topic' : 'Add Topic'"
@@ -180,18 +181,29 @@
       </div>
     </div>
 
-    <!-- Industry ID -->
+    <!-- Industry -->
     <div class="fv-row mb-7">
-      <label class="required fw-semibold fs-6 mb-2">Industry ID</label>
-      <input
-        type="number"
-        class="form-control form-control-solid mb-3 mb-lg-0"
-        placeholder="Enter Industry ID"
+      <label class="required fw-semibold fs-6 mb-2">Industry</label>
+      <p-treeSelect
+        appendTo="body"
         formControlName="industryId"
-      />
+        [options]="industries"
+        selectionMode="single"
+        placeholder="Select Industry"
+        [filter]="true"
+        [showClear]="true"
+        class="w-100"
+        optionLabel="label"
+        styleClass="full-width"
+      ></p-treeSelect>
       <div *ngIf="industryId?.touched && industryId?.invalid" class="fv-plugins-message-container">
         <div class="fv-help-block">
-          <span role="alert" class="text-danger">Industry ID is required</span>
+          <span role="alert" class="text-danger">Industry is required</span>
+        </div>
+      </div>
+      <div *ngIf="industryId?.touched && industryId?.errors?.['serverError']" class="fv-plugins-message-container">
+        <div class="fv-help-block">
+          <span role="alert" class="text-danger">{{ industryId?.errors?.['serverError'] }}</span>
         </div>
       </div>
     </div>
@@ -221,6 +233,11 @@
         formControlName="keywordsEn"
       />
       <div class="form-text">Enter keywords separated by commas</div>
+      <div *ngIf="keywordsEn?.touched && keywordsEn?.errors?.['serverError']" class="fv-plugins-message-container">
+        <div class="fv-help-block">
+          <span role="alert" class="text-danger">{{ keywordsEn?.errors?.['serverError'] }}</span>
+        </div>
+      </div>
     </div>
 
     <!-- Keywords Arabic -->
@@ -233,6 +250,21 @@
         formControlName="keywordsAr"
       />
       <div class="form-text">Enter keywords separated by commas</div>
+      <div *ngIf="keywordsAr?.touched && keywordsAr?.errors?.['serverError']" class="fv-plugins-message-container">
+        <div class="fv-help-block">
+          <span role="alert" class="text-danger">{{ keywordsAr?.errors?.['serverError'] }}</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Form-level validation errors -->
+    <div *ngIf="topicForm.errors && (topicForm.touched || topicForm.dirty)" class="alert alert-danger">
+      <div *ngIf="topicForm.errors['keywordsMismatch']" class="mb-2">
+        <span role="alert">Number of English and Arabic keywords must match</span>
+      </div>
+      <div *ngIf="topicForm.errors['keywordsRequired']" class="mb-2">
+        <span role="alert">At least one keyword is required in both languages</span>
+      </div>
     </div>
   </form>
 
