@@ -24,11 +24,18 @@ export class UsersListService {
     return throwError(error);
   }
 
+  private getHeaders(): HttpHeaders {
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Accept-Language': 'en'
+    });
+  }
+
   // Clients
   getClients(): Observable<IKnoldgProfile[]> {
     this.setLoading(true);
     const url = `${this.apiUrl}/client/list`;
-    return this.http.get<any>(url).pipe(
+    return this.http.get<any>(url, { headers: this.getHeaders() }).pipe(
       map(response => response.data),
       catchError(this.handleError),
       finalize(() => this.setLoading(false))
@@ -38,7 +45,7 @@ export class UsersListService {
   deleteClient(clientId: number): Observable<any> {
     this.setLoading(true);
     const url = `${this.apiUrl}/client/${clientId}`;
-    return this.http.delete(url).pipe(
+    return this.http.delete(url, { headers: this.getHeaders() }).pipe(
       map(response => response),
       catchError(this.handleError),
       finalize(() => this.setLoading(false))
@@ -49,10 +56,7 @@ export class UsersListService {
     this.setLoading(true);
     const url = `${this.apiUrl}/client/deactivate-delete/${clientId}`;
     const body = { staff_notes: staffNotes };
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-    return this.http.post(url, body, { headers }).pipe(
+    return this.http.post(url, body, { headers: this.getHeaders() }).pipe(
       map(response => response),
       catchError(this.handleError),
       finalize(() => this.setLoading(false))
@@ -63,7 +67,7 @@ export class UsersListService {
   getInsighters(): Observable<IKnoldgProfile[]> {
     this.setLoading(true);
     const url = `${this.apiUrl}/insighter/list`;
-    return this.http.get<any>(url).pipe(
+    return this.http.get<any>(url, { headers: this.getHeaders() }).pipe(
       map(response => response.data),
       catchError(this.handleError),
       finalize(() => this.setLoading(false))
@@ -73,21 +77,18 @@ export class UsersListService {
   deleteInsighter(insighterId: number): Observable<any> {
     this.setLoading(true);
     const url = `${this.apiUrl}/insighter/${insighterId}`;
-    return this.http.delete(url).pipe(
+    return this.http.delete(url, { headers: this.getHeaders() }).pipe(
       map(response => response),
       catchError(this.handleError),
       finalize(() => this.setLoading(false))
     );
   }
 
-activateInsighter(insighterId: number, staffNotes: string): Observable<any> {
+  activateInsighter(insighterId: number, staffNotes: string): Observable<any> {
     this.setLoading(true);
     const url = `${this.apiUrl}/insighter/activate/${insighterId}`;
-    const body = { staff_notes:staffNotes };
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-    return this.http.post(url, body, { headers }).pipe(
+    const body = { staff_notes: staffNotes };
+    return this.http.post(url, body, { headers: this.getHeaders() }).pipe(
       map(response => response),
       catchError(this.handleError),
       finalize(() => this.setLoading(false))
@@ -98,10 +99,7 @@ activateInsighter(insighterId: number, staffNotes: string): Observable<any> {
     this.setLoading(true);
     const url = `${this.apiUrl}/insighter/deactivate/${insighterId}`;
     const body = { staff_notes: staffNotes };
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-    return this.http.post(url, body, { headers }).pipe(
+    return this.http.post(url, body, { headers: this.getHeaders() }).pipe(
       map(response => response),
       catchError(this.handleError),
       finalize(() => this.setLoading(false))
@@ -112,10 +110,7 @@ activateInsighter(insighterId: number, staffNotes: string): Observable<any> {
     this.setLoading(true);
     const url = `${this.apiUrl}/insighter/deactivate-delete/${insighterId}`;
     const body = { staff_notes: staffNotes };
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-    return this.http.post(url, body, { headers }).pipe(
+    return this.http.post(url, body, { headers: this.getHeaders() }).pipe(
       map(response => response),
       catchError(this.handleError),
       finalize(() => this.setLoading(false))
@@ -126,7 +121,7 @@ activateInsighter(insighterId: number, staffNotes: string): Observable<any> {
   getCompanyInsighters(): Observable<IKnoldgProfile[]> {
     this.setLoading(true);
     const url = `${this.apiUrl}/company/list`;
-    return this.http.get<any>(url).pipe(
+    return this.http.get<any>(url, { headers: this.getHeaders() }).pipe(
       map(response => response.data),
       catchError(this.handleError),
       finalize(() => this.setLoading(false))
@@ -136,7 +131,7 @@ activateInsighter(insighterId: number, staffNotes: string): Observable<any> {
   deleteCompanyInsighter(insighterId: number): Observable<any> {
     this.setLoading(true);
     const url = `${this.apiUrl}/insighter/${insighterId}`;
-    return this.http.delete(url).pipe(
+    return this.http.delete(url, { headers: this.getHeaders() }).pipe(
       map(response => response),
       catchError(this.handleError),
       finalize(() => this.setLoading(false))
@@ -146,11 +141,8 @@ activateInsighter(insighterId: number, staffNotes: string): Observable<any> {
   activateCompanyInsighter(companyId: number, staffNotes: string): Observable<any> {
     this.setLoading(true);
     const url = `${this.apiUrl}/company/activate/${companyId}`;
-    const body = { staff_notes:staffNotes };
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-    return this.http.post(url, body, { headers }).pipe(
+    const body = { staff_notes: staffNotes };
+    return this.http.post(url, body, { headers: this.getHeaders() }).pipe(
       map(response => response),
       catchError(this.handleError),
       finalize(() => this.setLoading(false))
@@ -161,10 +153,7 @@ activateInsighter(insighterId: number, staffNotes: string): Observable<any> {
     this.setLoading(true);
     const url = `${this.apiUrl}/company/deactivate/${companyId}`;
     const body = { staff_notes: staffNotes };
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-    return this.http.post(url, body, { headers }).pipe(
+    return this.http.post(url, body, { headers: this.getHeaders() }).pipe(
       map(response => response),
       catchError(this.handleError),
       finalize(() => this.setLoading(false))
@@ -175,10 +164,7 @@ activateInsighter(insighterId: number, staffNotes: string): Observable<any> {
     this.setLoading(true);
     const url = `${this.apiUrl}/company/deactivate-delete/${companyId}`;
     const body = { staff_notes: staffNotes };
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-    return this.http.post(url, body, { headers }).pipe(
+    return this.http.post(url, body, { headers: this.getHeaders() }).pipe(
       map(response => response),
       catchError(this.handleError),
       finalize(() => this.setLoading(false))
@@ -189,10 +175,7 @@ activateInsighter(insighterId: number, staffNotes: string): Observable<any> {
     this.setLoading(true);
     const url = `${this.apiUrl}/company/verify/${companyId}`;
     const body = { status };
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-    return this.http.put(url, body, { headers }).pipe(
+    return this.http.put(url, body, { headers: this.getHeaders() }).pipe(
       map(response => response),
       catchError(this.handleError),
       finalize(() => this.setLoading(false))

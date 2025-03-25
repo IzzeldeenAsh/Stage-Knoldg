@@ -4,8 +4,13 @@ export const locale = {
     "SELECT_REGION": "اختر المنطقة...",
     "SELECT_REGIONS": "اختر المناطق",
     "SEARCH_COUNTRY": "بحث عن دولة أو منطقة...",
+    REGIONS_COUNTRIES_REQUIRED:'المناطق والدول مطلوبة',
+    INDUSTRY_REQUIRED: 'الصناعة مطلوبة',
+    ECONOMIC_BLOCKS_REQUIRED: 'التكتلات الاقتصادية مطلوبة',
+    KEYWORDS_REQUIRED: 'الكلمات المفتاحية مطلوبة',
     "UPLOADS_IN_PROGRESS": "قيد الرفع",
     "SELECTED": "محدد",
+    TAGS_REQUIRED: "الوسوم مطلوبة",
     "CLEAR_ALL": "مسح الكل",
     "SELECT_ALL_COUNTRIES": "تحديد جميع الدول",
     "CANCEL": "إلغاء",
@@ -132,7 +137,7 @@ export const locale = {
       PROFILE_SETTINGS: 'إعدادات الملف الشخصي',
       TUTORIALS: "الدروس",
       MASTER_ESSENTIALS: "وابدأ في إتقان الأساسيات اليوم!",
-      COPYRIGHT: "© 2024 إنسيتا",
+      COPYRIGHT: " 2024 إنسيتا",
       TERMS: "الشروط",
       PRIVACY: "الخصوصية",
       COOKIES: "الكوكيز",
@@ -154,7 +159,7 @@ export const locale = {
         ENTER_VERIFICATION_CODE: "أدخل رمز التحقق الذي أرسلناه إلى البريد الإلكتروني",
         ENTER_CODE: "أدخل رمز التحقق الخاص بك",
         DIDNT_RECEIVE_CODE: "لم تتلق رمز؟",
-        RESEND: "إعادة الإرسال",
+        RESEND_EMAIL: "إعادة إرسال البريد الإلكتروني",
         CONTINUE: "استمر",
         CODE_NOT_FOUND: "رمز التأكيد غير صحيح",
       },
@@ -299,7 +304,7 @@ export const locale = {
         GET_STARTED: "ابدأ الآن!",
         ALT_FAILED_VERIFICATION: "فشل التحقق",
         ALT_VERIFY_EMAIL: "تأكيد البريد الإلكتروني",
-        RESEND: "إعادة الإرسال",
+        VERIFICATION_RESEND: "إعادة الإرسال",
         VERIFYING_EMAIL: "جارٍ التحقق من بريدك الإلكتروني!",
         INVALID_VERIFICATION_LINK: "رابط التحقق غير صالح.",
         VERIFICATION_LINK_INVALID: "رابط التحقق غير صالح.",
@@ -341,6 +346,8 @@ export const locale = {
         "HEADING": "هل أنت متأكد أنك تريد إعادة تفعيل حسابك؟",
         "DESCRIPTION_COMPANY": "عند إعادة تفعيل حسابك، ستستعيد الوصول إلى جميع الميزات والخدمات. سيتم استعادة إعدادات وبيانات حسابك.",
         "DESCRIPTION_INSIGHTER": "عند إعادة تفعيل حسابك، ستستعيد الوصول إلى جميع الميزات والخدمات. سيتم استعادة إعدادات وبيانات حسابك.",
+        "DESCRIPTION": "أنت على وشك إلغاء تنشيط حسابك. لن يمكن الوصول إلى حسابك ولكن سيتم الاحتفاظ ببياناتك.",
+        "WARNING": "هذا الإجراء غير قابل للعكس. يرجى التأكد.",
         "CONFIRM_BUTTON_COMPANY": "نعم، إعادة التفعيل",
         "CONFIRM_BUTTON_INSIGHTER": "نعم، إعادة التفعيل",
         "SUCCESS_MESSAGE": "تم إعادة تفعيل حسابك بنجاح",
@@ -359,7 +366,11 @@ export const locale = {
       PLEASE_WAIT:"يرجى الانتظار...",
       CANCEL:"الغاء",
       SEARCH: "بحث...",
-      LOADING: "جاري التحميل..."
+      LOADING: "جاري التحميل...",
+      "UPLOAD": "رفع",
+      "UPLOADING": "جاري الرفع...",
+      "DELETE": "حذف",
+      "DELETING": "جاري الحذف..."
     },
     INSIGHTER_WIZARD: {
       ACCOUNT_TYPE: "نوع الحساب",
@@ -464,6 +475,14 @@ export const locale = {
       COMPANY_NAME: 'اسم الشركة:',
       WEBSITE: 'الموقع الإلكتروني:',
       FIRST_NAME: 'الاسم الأول:',
+      "MY_CERTIFICATES": "شهاداتي",
+      "ADD_CERTIFICATE": "إضافة شهادة",
+      "CERTIFICATE_TYPE": "نوع الشهادة",
+      "SELECT_CERTIFICATE_TYPE": "اختر نوع الشهادة",
+      "CERTIFICATE_FILE": "ملف الشهادة",
+      "SUPPORTED_FORMATS": "الصيغ المدعومة: PDF, DOC, DOCX, JPG, PNG",
+      "DELETE_CERTIFICATE": "حذف الشهادة",
+      "DELETE_CERTIFICATE_CONFIRMATION": "هل أنت متأكد من حذف هذه الشهادة؟",
       ABOUT_COMPANY: 'حول الشركة',
       LAST_NAME: 'اسم العائلة:',
       EMAIL: 'البريد الإلكتروني:',
@@ -516,7 +535,8 @@ export const locale = {
       "PASSWORD_RULES": "يجب أن تكون كلمة المرور 8 أحرف على الأقل وتحتوي على رموز.",
       "UPDATE_PASSWORD": "تحديث كلمة المرور",
       "CANCEL": "إلغاء",
-      PASSWORDS_DO_NOT_MATCH:"كلمتا السر غير متطابقتين"
+      PASSWORDS_DO_NOT_MATCH:"كلمتا السر غير متطابقتين",
+      SOCIAL_URL_FORMAT: "يجب أن يبدأ الرابط بـ https://www"
     },
     ADD_CERTIFICATE:'إضافة شهادة',
     HEADER: {
@@ -905,4 +925,3 @@ export const locale = {
 },
 
 }
-

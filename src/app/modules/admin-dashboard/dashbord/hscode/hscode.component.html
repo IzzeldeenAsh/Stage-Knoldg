@@ -27,6 +27,7 @@
 
       <div class="d-flex align-items-center gap-2 gap-lg-3">
         <p-dialog
+          appendTo="body"
           [header]="isEditMode ? 'Edit HSCode' : 'Add HSCode'"
           [modal]="true"
           [(visible)]="visible"
@@ -155,6 +156,7 @@
                 <label for="isic_code_id" class="col-sm-3 col-form-label">ISIC Code</label>
                 <div class="col-sm-9">
                   <p-treeSelect
+                    appendTo="body"
                     id="isic_code_id"
                     [options]="isicTreeData"
                     [(ngModel)]="selectedNode"
@@ -185,6 +187,7 @@
               >
               <div class="col-sm-9">
                 <p-dropdown 
+                
                 id="status" 
                 [options]="statusOptions" 
                 formControlName="status"

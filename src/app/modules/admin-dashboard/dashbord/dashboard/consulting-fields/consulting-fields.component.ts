@@ -35,7 +35,7 @@ export class ConsultingFieldsComponent implements OnInit, OnDestroy {
   searchTerm: string = '';
   isLoading$: Observable<boolean>;
   messages: any[] = [];
-  selectedParentNode: any;
+  selectedParentNode: TreeNode | number = 0;
   private unsubscribe: Subscription[] = [];
 
   @ViewChild('tt') treeTable!: TreeTable; 
@@ -55,7 +55,7 @@ export class ConsultingFieldsComponent implements OnInit, OnDestroy {
       nameEn:   ['', Validators.required],
       nameAr:   ['', Validators.required],
       status:   ['', Validators.required],
-      parentNode: [null],
+      parentNode: [0],
     });
 
     this.loadIsicCodes();
@@ -109,19 +109,20 @@ export class ConsultingFieldsComponent implements OnInit, OnDestroy {
   showDialog() {
     this.displayDialog = true;
     this.isUpdate = false;
+    this.selectedParentNode = 0;
     this.isicForm.reset();
   }
 
   editIsicCode(rowNode: any) {
     this.displayDialog = true;
-    this.selectedParentNode = null;
+    this.selectedParentNode = 0;
     this.isUpdate = true;
     // This is the node you clicked to edit
     const dataNode = rowNode.node.data;
     this.selectedNodeId = dataNode.key;
-    const parentValue = rowNode.node.parent ? rowNode.node.parent.data.key : null;
+    const parentValue = rowNode.node.parent ? rowNode.node.parent.data.key : 0;
     if(parentValue) {
-      this.selectedParentNode = this.parentsOnlyTreeData.find((node:any) => node.value === parentValue);
+      this.selectedParentNode = this.parentsOnlyTreeData.find((node:any) => node.value === parentValue) || 0;
     }
     this.isicForm.patchValue({
       nameEn: dataNode.nameEn,
@@ -274,6 +275,7 @@ export class ConsultingFieldsComponent implements OnInit, OnDestroy {
 
   onCancel() {
     this.displayDialog = false;
+    this.selectedParentNode = 0;
     this.isicForm.reset();
   }
 

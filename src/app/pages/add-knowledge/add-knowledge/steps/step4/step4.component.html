@@ -266,6 +266,10 @@
                 (nodeSelected)="onIndustrySelected($event)"
               >
               </app-industry-selector>
+              <!-- Industry validation error message -->
+              <div *ngIf="form.get('industry')?.hasError('required') && form.get('industry')?.touched" class="fv-plugins-message-container invalid-feedback mt-2">
+                {{ "INDUSTRY_REQUIRED" | translate }}
+              </div>
             </div>
     <!-- Topics -->
     <div [@fadeInMoveY] class="mb-10" *ngIf="topics && topics.length > 0">
@@ -381,6 +385,9 @@
           [preSelectedCountries]="defaultValues.countries"
           (regionsSelected)="onRegionsSelected($event)"
         ></app-select-region>
+        <div *ngIf="form.get('targetMarket')?.value === '1' && form.get('regions')?.hasError('required') && (form.get('regions')?.touched || form.get('countries')?.touched)" class="fv-plugins-message-container invalid-feedback mt-2">
+          {{ "REGIONS_COUNTRIES_REQUIRED" | translate }}
+        </div>
       </div>
     </div>
 
@@ -398,6 +405,9 @@
           [selectedBlockIds]="selectedEconomicBlocIds"
           (blocksSelected)="onEconomicBlocksSelected($event)"
         ></app-select-economic-block>
+        <div *ngIf="form.get('targetMarket')?.value === '2' && form.get('economicBlocks')?.hasError('required') && form.get('economicBlocks')?.touched" class="fv-plugins-message-container invalid-feedback mt-2">
+          {{ "ECONOMIC_BLOCKS_REQUIRED" | translate }}
+        </div>
       </div>
     </div>
 
@@ -471,10 +481,19 @@
           <span>{{ chip.label }}</span>
         </div>
       </div>
+      <!-- Tag selection error message -->
+      <div *ngIf="form.get('tag_ids')?.hasError('required') && form.get('tag_ids')?.touched" class="fv-plugins-message-container invalid-feedback mb-3">
+        {{ "TAGS_REQUIRED" | translate }}
+      </div>
+      <!-- Server error message for tags -->
+      <div *ngIf="tagIdError" class="fv-plugins-message-container invalid-feedback mb-3">
+        {{ tagIdError }}
+      </div>
     </div>
 
     <!-- Add Custom Tag Modal using PrimeNG Dialog -->
     <p-dialog
+      appendTo="body"
       header="{{ 'ADD_CUSTOM_TAG' | translate }}"
       [(visible)]="isAddingCustomTag"
       modal="true"
@@ -533,6 +552,9 @@
           [autocompleteItems]="availableKeywords"
         ></tag-input-dropdown>
       </tag-input>
+      <div *ngIf="form.get('keywords')?.hasError('required') && form.get('keywords')?.touched" class="fv-plugins-message-container invalid-feedback mb-3">
+        {{ "KEYWORDS_REQUIRED" | translate }}
+      </div>
     </div>
 
   

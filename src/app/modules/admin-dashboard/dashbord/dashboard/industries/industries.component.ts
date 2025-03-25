@@ -45,7 +45,7 @@ export class IndustriesComponent implements OnInit, OnDestroy {
   selectedStatus = '';
   searchTerm = '';
 
-  selectedParentNode: TreeNode | null = null;
+  selectedParentNode: TreeNode | number = 0;
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -62,7 +62,7 @@ export class IndustriesComponent implements OnInit, OnDestroy {
       nameEn: ['', Validators.required],
       nameAr: ['', Validators.required],
       status: ['', Validators.required],
-      parentNode: [null],
+      parentNode: [0],
     });
 
     this.loadIndustries();
@@ -116,23 +116,23 @@ export class IndustriesComponent implements OnInit, OnDestroy {
   showDialog() {
     this.displayDialog = true;
     this.isUpdate = false;
-    this.selectedParentNode = null;
+    this.selectedParentNode = 0;
     this.isicForm.reset();
   }
 
   editIsicCode(rowNode: any) {
     this.displayDialog = true;
     this.isUpdate = true;
-    this.selectedParentNode = null;
+    this.selectedParentNode = 0;
 
     const dataNode = rowNode.node.data;
     this.selectedNodeId = dataNode.key;
 
-    const parentValue = rowNode.node.parent ? rowNode.node.parent.data.key : null;
+    const parentValue = rowNode.node.parent ? rowNode.node.parent.data.key : 0;
     if (parentValue) {
       this.selectedParentNode = this.parentsOnlyTreeData.find(
         (node: any) => node.value === parentValue
-      ) || null;
+      ) || 0;
     }
 
     this.isicForm.patchValue({
@@ -289,6 +289,7 @@ export class IndustriesComponent implements OnInit, OnDestroy {
 
   onCancel() {
     this.displayDialog = false;
+    this.selectedParentNode = 0;
     this.isicForm.reset();
   }
 

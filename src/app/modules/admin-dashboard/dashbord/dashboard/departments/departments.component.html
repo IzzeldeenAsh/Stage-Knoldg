@@ -17,7 +17,7 @@ mode="indeterminate"
 
       <div class="d-flex align-items-center gap-2 gap-lg-3">
        
-        <p-dialog [header]="isEditMode ? 'Edit Department' : 'Add Department'" [modal]="true" [(visible)]="visible" [style]="{ width: '40rem' }">
+        <p-dialog appendTo="body" [header]="isEditMode ? 'Edit Department' : 'Add Department'" [modal]="true" [(visible)]="visible" [style]="{ width: '40rem' }">
           <p-messages *ngIf="hasErrorMessage" [(value)]="messages" [enableService]="false"></p-messages>
           <span class="text-muted mb-3 d-block">{{ isEditMode ? 'Edit Department Details' : 'Add Department Details' }}.</span>
         

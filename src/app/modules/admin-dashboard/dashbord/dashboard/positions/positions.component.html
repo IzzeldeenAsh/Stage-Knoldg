@@ -15,7 +15,7 @@
       </div>
 
       <div class="d-flex align-items-center gap-2 gap-lg-3">
-        <p-dialog [header]="isEditMode ? 'Edit Position' : 'Add Position'" [modal]="true" [(visible)]="visible" [style]="{ width: '40rem' }">
+        <p-dialog appendTo="body" [header]="isEditMode ? 'Edit Position' : 'Add Position'" [modal]="true" [(visible)]="visible" [style]="{ width: '40rem' }">
           <p-messages *ngIf="hasErrorMessage" [(value)]="messages" [enableService]="false"></p-messages>
           <span class="text-muted mb-3 d-block">{{ isEditMode ? 'Edit Position Details' : 'Add Position Details' }}.</span>
 

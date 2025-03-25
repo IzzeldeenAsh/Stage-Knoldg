@@ -100,6 +100,7 @@ export class Step4Component extends BaseComponent implements OnInit {
   chips: Chip[] = [];
   customTagForm: FormGroup;
   isAddingCustomTag: boolean = false;
+  tagIdError: string = '';
   
   // Keywords related properties
   availableKeywords: KeywordItem[] = [];
@@ -150,7 +151,13 @@ export class Step4Component extends BaseComponent implements OnInit {
     }
     
     this.loadData();
-    this.updateParentModel({}, this.checkForm());
+    
+    // Subscribe to form value changes to update parent model with validation status
+    this.form.valueChanges.subscribe(() => {
+      if (this.updateParentModel) {
+        this.updateParentModel({}, this.checkForm());
+      }
+    });
     
     // Subscribe to language changes
     const langChangeSub = this.translationService.onLanguageChange().subscribe(lang => {
@@ -182,7 +189,7 @@ export class Step4Component extends BaseComponent implements OnInit {
       countries: [this.defaultValues.countries || []],
       isic_code: [this.defaultValues.isic_code],
       hs_code: [this.defaultValues.hs_code],
-      tag_ids: [this.defaultValues.tag_ids || []],
+      tag_ids: [this.defaultValues.tag_ids || [], [Validators.required]],
       keywords: [this.defaultValues.keywords || []]
     });
     
@@ -217,14 +224,14 @@ export class Step4Component extends BaseComponent implements OnInit {
     const customTopicControl = this.form.get('customTopic');
     
     // Custom validator for regions/countries
-    const regionsCountriesValidator = (): ValidationErrors | null => {
+    this.regionsCountriesValidator = () => {
       const regions = this.form.get('regions')?.value || [];
       const countries = this.form.get('countries')?.value || [];
       return regions.length > 0 || countries.length > 0 ? null : { required: true };
     };
     
     // Custom validator for economic blocks
-    const economicBlocksValidator = (): ValidationErrors | null => {
+    this.economicBlocksValidator = () => {
       const blocks = this.form.get('economicBlocks')?.value || [];
       return blocks.length > 0 ? null : { required: true };
     };
@@ -232,7 +239,7 @@ export class Step4Component extends BaseComponent implements OnInit {
     // Setup target market change listener
     this.form.get('targetMarket')?.valueChanges.subscribe(value => {
       if (value === '1') {
-        regionsControl?.setValidators([regionsCountriesValidator]);
+        regionsControl?.setValidators([this.regionsCountriesValidator]);
         countriesControl?.clearValidators();
         economicBlocksControl?.clearValidators();
         
@@ -253,7 +260,7 @@ export class Step4Component extends BaseComponent implements OnInit {
           }
         }, 100);
       } else if (value === '2') {
-        economicBlocksControl?.setValidators([economicBlocksValidator]);
+        economicBlocksControl?.setValidators([this.economicBlocksValidator]);
         regionsControl?.clearValidators();
         countriesControl?.clearValidators();
         
@@ -279,9 +286,9 @@ export class Step4Component extends BaseComponent implements OnInit {
     // Set initial validators based on current target market
     const currentTargetMarket = this.form.get('targetMarket')?.value;
     if (currentTargetMarket === '1') {
-      regionsControl?.setValidators([regionsCountriesValidator]);
+      regionsControl?.setValidators([this.regionsCountriesValidator]);
     } else if (currentTargetMarket === '2') {
-      economicBlocksControl?.setValidators([economicBlocksValidator]);
+      economicBlocksControl?.setValidators([this.economicBlocksValidator]);
     }
     
     // Topic ID change listener for custom topic
@@ -383,6 +390,52 @@ export class Step4Component extends BaseComponent implements OnInit {
       .every(key => !this.form.get(key)?.errors);
     
     return targetMarketValid && otherControlsValid && keywords.length > 0;
+  }
+  
+  /**
+   * Validates the knowledge information form and marks fields with errors
+   * Ensures error messages are displayed even if fields have not been touched
+   * @returns boolean indicating whether the form is valid
+   */
+  validateForm(): boolean {
+    // Mark all form controls as touched to trigger validation messages
+    Object.keys(this.form.controls).forEach(key => {
+      const control = this.form.get(key);
+      control?.markAsTouched();
+    });
+
+    // Special validation for regions/countries based on target market
+    const targetMarket = this.form.get('targetMarket')?.value;
+    if (targetMarket === '1') {
+      const regions = this.form.get('regions')?.value || [];
+      const countries = this.form.get('countries')?.value || [];
+      
+      if (regions.length === 0 && countries.length === 0) {
+        // Apply custom validation error
+        this.form.get('regions')?.setErrors({ required: true });
+        this.form.get('countries')?.setErrors({ required: true });
+      }
+    } else if (targetMarket === '2') {
+      const economicBlocks = this.form.get('economicBlocks')?.value || [];
+      
+      if (economicBlocks.length === 0) {
+        // Apply custom validation error
+        this.form.get('economicBlocks')?.setErrors({ required: true });
+      }
+    }
+
+    // Special validation for keywords
+    const keywords = this.form.get('keywords')?.value || [];
+    if (keywords.length === 0) {
+      this.form.get('keywords')?.setErrors({ required: true });
+    }
+
+    // Update the parent model with the current form validity
+    if (this.updateParentModel) {
+      this.updateParentModel({}, this.checkForm());
+    }
+
+    return this.form.valid && this.checkForm();
   }
   
   // Custom Validator for Topic
@@ -695,12 +748,24 @@ export class Step4Component extends BaseComponent implements OnInit {
   
   // Helper methods
   private handleServerErrors(error: any) {
+    // Reset all error messages first
+    this.tagIdError = '';
+    
     if (error.error && error.error.errors) {
       const serverErrors = error.error.errors;
       for (const key in serverErrors) {
         if (serverErrors.hasOwnProperty(key)) {
           const messages = serverErrors[key];
-          this.showError('', messages.join(", "));
+          
+          // Handle specific field errors
+          if (key === 'tag_ids') {
+            this.tagIdError = messages.join(', ');
+            // Mark the tag_ids field as touched to show validation error
+            this.form.get('tag_ids')?.markAsTouched();
+          } else {
+            // Show general error toast for other fields
+            this.showError('', messages.join(', '));
+          }
         }
       }
     } else {
@@ -953,4 +1018,15 @@ export class Step4Component extends BaseComponent implements OnInit {
     this.isDescriptionLoading = false;
     this.cdr.detectChanges();
   }
+
+  regionsCountriesValidator = () => {
+    const regions = this.form.get('regions')?.value || [];
+    const countries = this.form.get('countries')?.value || [];
+    return regions.length > 0 || countries.length > 0 ? null : { required: true };
+  };
+  
+  economicBlocksValidator = () => {
+    const blocks = this.form.get('economicBlocks')?.value || [];
+    return blocks.length > 0 ? null : { required: true };
+  };
 }

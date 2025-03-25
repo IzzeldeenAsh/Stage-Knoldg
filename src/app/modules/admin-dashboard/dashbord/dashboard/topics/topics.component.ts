@@ -4,21 +4,23 @@ import {
   OnInit,
   ViewChild,
   OnDestroy,
+  AfterViewInit
 } from '@angular/core';
 import { TreeNode, MessageService, Message } from 'primeng/api';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, forkJoin } from 'rxjs';
 import Swal from 'sweetalert2';
 import { TreeTable } from 'primeng/treetable';
 import { TranslationService } from 'src/app/modules/i18n';
 import { TopicsService, Topic, PaginatedTopicResponse } from 'src/app/_fake/services/topic-service/topic.service';
+import { IndustryService } from 'src/app/_fake/services/industries/industry.service';
 
 @Component({
   selector: 'app-topics',
   templateUrl: './topics.component.html',
   styleUrls: ['./topics.component.scss'],
 })
-export class TopicsComponent implements OnInit, OnDestroy {
+export class TopicsComponent implements OnInit, OnDestroy, AfterViewInit {
   messages: Message[] = [];
   private unsubscribe: Subscription[] = [];
 
@@ -34,6 +36,9 @@ export class TopicsComponent implements OnInit, OnDestroy {
     { label: 'Inactive', value: 'inactive' },
   ];
 
+  industries: TreeNode[] = [];
+  industryMap: Map<number, string> = new Map<number, string>();
+
   topicForm!: FormGroup;
   displayDialog = false;
   isUpdate = false;
@@ -45,11 +50,12 @@ export class TopicsComponent implements OnInit, OnDestroy {
   searchTerm = '';
   debounceTimer: any;
 
-  Math = Math; // Make Math available in template
+  Math = Math; 
 
   constructor(
     private cdr: ChangeDetectorRef,
     private topicsService: TopicsService,
+    private industriesService: IndustryService,
     private fb: FormBuilder,
     private messageService: MessageService,
     private trans: TranslationService
@@ -59,7 +65,8 @@ export class TopicsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.initForm();
-    this.loadTopics();
+    // Load both topics and industries
+    this.loadInitialData();
   }
 
   private initForm() {
@@ -69,7 +76,117 @@ export class TopicsComponent implements OnInit, OnDestroy {
       status: ['', Validators.required],
       industryId: [null, Validators.required],
       keywordsEn: [''],
-      keywordsAr: ['']
+      keywordsAr: [''],
+    }, { validators: this.keywordsValidator });
+  }
+
+  /**
+   * After the view is initialized and when data is available,
+   * attempt to select the industry in edit mode
+   */
+  selectIndustryForEditMode() {
+    if (!this.isUpdate || !this.selectedTopicId || !this.industries || this.industries.length === 0) {
+      return;
+    }
+    
+    // Get the current topic we're editing
+    const topic = this.topics.find(t => t.id === this.selectedTopicId);
+    if (!topic) return;
+    
+    console.log('Looking for industry with ID:', topic.industry_id);
+    
+    // Find the matching industry node
+    const findNode = (nodes: TreeNode[], targetId: number): TreeNode | null => {
+      for (const node of nodes) {
+        console.log('Checking node:', node);
+        // Check if this is the node we're looking for (using any to access the value property)
+        if ((node as any).value === targetId) {
+          console.log('Found matching node:', node);
+          return node;
+        }
+        if (node.children && node.children.length) {
+          const found = findNode(node.children, targetId);
+          if (found) return found;
+        }
+      }
+      return null;
+    };
+    
+    const industryNode = findNode(this.industries, topic.industry_id);
+    
+    if (industryNode) {
+      // Force update the form control with the found node
+      console.log('Setting industry node:', industryNode);
+      this.topicForm.get('industryId')?.setValue(industryNode);
+      this.topicForm.get('industryId')?.updateValueAndValidity();
+      this.cdr.detectChanges();
+    } else {
+      console.log('No matching industry node found for ID:', topic.industry_id);
+    }
+  }
+
+  loadInitialData() {
+    const topicsRequest = this.topicsService.getAdminTopics(1, this.selectedStatus, this.searchTerm);
+    const industriesRequest = this.industriesService.getIsicCodesTree('en');
+
+    const combinedRequest = forkJoin([topicsRequest, industriesRequest]).subscribe({
+      next: ([topicsResponse, industriesResponse]) => {
+        // Handle topics data
+        this.paginatedTopics = topicsResponse;
+        this.topics = topicsResponse.data;
+        this.totalPages = Math.ceil(topicsResponse.meta.total / this.pageSize);
+
+        // Handle industries data
+        this.industries = this.prepareIndustriesForTreeSelect(industriesResponse);
+        this.buildIndustryMap(industriesResponse);
+
+        this.cdr.detectChanges();
+        
+        // If we're in edit mode, select the industry after data is loaded
+        this.selectIndustryForEditMode();
+      },
+      error: (error) => {
+        this.handleServerErrors(error);
+      }
+    });
+
+    this.unsubscribe.push(combinedRequest);
+  }
+
+  buildIndustryMap(nodes: TreeNode[]) {
+    for (const node of nodes) {
+      if (node.data && node.data.key !== undefined) {
+        this.industryMap.set(node.data.key, node.data.nameEn);
+      }
+      if (node.children && node.children.length > 0) {
+        this.buildIndustryMap(node.children);
+      }
+    }
+  }
+
+  getIndustryName(id: number): string {
+    return this.industryMap.get(id) || `ID: ${id}`;
+  }
+
+  prepareIndustriesForTreeSelect(nodes: TreeNode[]): TreeNode[] {
+    return nodes.map(node => {
+      // Convert to format compatible with PrimeNG TreeSelect
+      const treeNode: any = {
+        label: node.data.nameEn, // Label used for display
+        value: node.data.key,    // Value used for selection
+        key: node.data.key.toString(),  // Unique key as string
+        data: node.data,         // Original data
+        selectable: true
+      };
+      
+      // Handle children recursively
+      if (node.children && node.children.length > 0) {
+        treeNode.children = this.prepareIndustriesForTreeSelect(node.children);
+      } else {
+        treeNode.children = [];
+      }
+      
+      return treeNode;
     });
   }
 
@@ -126,24 +243,30 @@ export class TopicsComponent implements OnInit, OnDestroy {
     this.isUpdate = true;
     this.selectedTopicId = topic.id;
 
-    // Extract keywords if they exist
     const keywordsEn = topic.keywords?.map(k => k.en).join(', ') || '';
     const keywordsAr = topic.keywords?.map(k => k.ar).join(', ') || '';
-
+    
+    // First, set all other fields
     this.topicForm.patchValue({
       nameEn: topic.names.en,
       nameAr: topic.names.ar,
       status: topic.status,
-      industryId: topic.industry_id,
       keywordsEn: keywordsEn,
       keywordsAr: keywordsAr
     });
+    
+    // For debugging
+    console.log('Topic industry ID to select:', topic.industry_id);
+    console.log('Available industries:', this.industries);
+    
+    // If industries are already loaded, find and select the industry
+    if (this.industries && this.industries.length > 0) {
+      this.selectIndustryForEditMode();
+    }
   }
 
   submit() {
-    console.log('Submitting form...');
     if (this.topicForm.invalid) {
-      console.log('Form is invalid. Marking touched fields...');
       Object.keys(this.topicForm.controls).forEach(key => {
         const control = this.topicForm.get(key);
         if (control?.invalid) {
@@ -154,44 +277,29 @@ export class TopicsComponent implements OnInit, OnDestroy {
     }
 
     const formValues = this.topicForm.value;
-    console.log('Form values:', formValues);
     const topicData: any = {
       name: {
         en: formValues.nameEn,
         ar: formValues.nameAr,
       },
-      industry_id: formValues.industryId,
+      industry_id: this.getIndustryIdFromSelection(formValues.industryId),
       status: formValues.status,
       keywords: []
     };
 
     if (formValues.keywordsEn && formValues.keywordsAr) {
-      console.log('Processing keywords...');
       const keywordsEn = formValues.keywordsEn.split(',').map((k: string) => k.trim()).filter((k: string) => k);
       const keywordsAr = formValues.keywordsAr.split(',').map((k: string) => k.trim()).filter((k: string) => k);
       
-      if (keywordsEn.length === keywordsAr.length) {
-        topicData.keywords = keywordsEn.map((en: string, index: number) => ({
-          en,
-          ar: keywordsAr[index]
-        }));
-        console.log('Keywords processed:', topicData.keywords);
-      } else {
-        console.error('Keyword mismatch');
-        this.messages = [{
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Number of English and Arabic keywords must match'
-        }];
-        return;
-      }
+      topicData.keywords = keywordsEn.map((en: string, index: number) => ({
+        en,
+        ar: keywordsAr[index]
+      }));
     }
 
     if (this.isUpdate && this.selectedTopicId !== null) {
-      console.log('Updating topic...');
       this.topicsService.updateTopic(this.selectedTopicId, topicData).subscribe({
         next: () => {
-          console.log('Topic updated successfully');
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
@@ -201,15 +309,12 @@ export class TopicsComponent implements OnInit, OnDestroy {
           this.displayDialog = false;
         },
         error: (error) => {
-          console.error('Error updating topic:', error);
           this.handleServerErrors(error);
         }
       });
     } else {
-      console.log('Creating new topic...');
       this.topicsService.createTopic(topicData).subscribe({
         next: () => {
-          console.log('Topic created successfully');
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
@@ -219,11 +324,34 @@ export class TopicsComponent implements OnInit, OnDestroy {
           this.displayDialog = false;
         },
         error: (error) => {
-          console.error('Error creating topic:', error);
           this.handleServerErrors(error);
         }
       });
     }
+  }
+
+  /**
+   * Gets a numeric industry ID from the selection object
+   */
+  getIndustryIdFromSelection(selection: any): number {
+    if (!selection) return 0;
+    
+    // If it's a direct number
+    if (typeof selection === 'number') {
+      return selection;
+    }
+    
+    // If it's a TreeNode with key
+    if (selection.key !== undefined) {
+      return parseInt(selection.key);
+    }
+    
+    // If we have data with key property
+    if (selection.data && selection.data.key !== undefined) {
+      return selection.data.key;
+    }
+    
+    return 0; // Default fallback
   }
 
   deleteTopic(topic: Topic) {
@@ -263,13 +391,13 @@ export class TopicsComponent implements OnInit, OnDestroy {
     
     this.searchTerm = event.target.value.trim();
     this.debounceTimer = setTimeout(() => {
-      this.currentPage = 1; // Reset to first page when filtering
+      this.currentPage = 1; 
       this.loadTopics();
-    }, 300); // Debounce for 300ms
+    }, 300); 
   }
 
   applyStatusFilter() {
-    this.currentPage = 1; // Reset to first page when filtering
+    this.currentPage = 1; 
     this.loadTopics();
   }
 
@@ -288,6 +416,7 @@ export class TopicsComponent implements OnInit, OnDestroy {
         'name.ar': 'nameAr',
         'industry_id': 'industryId',
         status: 'status',
+        'keywords': 'keywordsEn', 
       };
 
       for (const key in serverErrors) {
@@ -300,15 +429,21 @@ export class TopicsComponent implements OnInit, OnDestroy {
               control.setErrors({ serverError: messages[0] });
               control.markAsTouched();
             }
-          } else {
-            this.messages.push({
-              severity: 'error',
-              summary: '',
-              detail: messages.join(', '),
-            });
           }
+          
+          this.messages.push({
+            severity: 'error',
+            summary: 'Validation Error',
+            detail: messages.join(', '),
+          });
         }
       }
+    } else if (error.error && error.error.message) {
+      this.messages.push({
+        severity: 'error',
+        summary: 'Error',
+        detail: error.error.message,
+      });
     } else {
       this.messages.push({
         severity: 'error',
@@ -316,6 +451,22 @@ export class TopicsComponent implements OnInit, OnDestroy {
         detail: 'An unexpected error occurred.',
       });
     }
+  }
+
+  ngAfterViewInit() {
+    // Give time for the component to initialize
+    setTimeout(() => {
+      if (this.isUpdate && this.selectedTopicId !== null) {
+        const industryId = this.topicForm.get('industryId')?.value;
+        if (industryId) {
+          console.log('Setting industry in AfterViewInit:', industryId);
+        }
+      }
+    }, 0);
+  }
+
+  getIndustryNodeById(id: number): any {
+    return id;
   }
 
   ngOnDestroy() {
@@ -334,11 +485,43 @@ export class TopicsComponent implements OnInit, OnDestroy {
   get industryId() {
     return this.topicForm.get('industryId');
   }
+  get keywordsEn() {
+    return this.topicForm.get('keywordsEn');
+  }
+  get keywordsAr() {
+    return this.topicForm.get('keywordsAr');
+  }
 
   get hasSuccessMessage() {
     return this.messages.some((msg: any) => msg.severity === 'success');
   }
   get hasErrorMessage() {
     return this.messages.some((msg: any) => msg.severity === 'error');
+  }
+
+  keywordsValidator(group: FormGroup) {
+    const keywordsEn = group.get('keywordsEn')?.value?.trim() || '';
+    const keywordsAr = group.get('keywordsAr')?.value?.trim() || '';
+    
+    if (!keywordsEn && !keywordsAr) {
+      return null;
+    }
+    
+    if ((keywordsEn && !keywordsAr) || (!keywordsEn && keywordsAr)) {
+      return { keywordsMismatch: true };
+    }
+    
+    const enItems = keywordsEn.split(',').map((k: string) => k.trim()).filter((k: string) => k);
+    const arItems = keywordsAr.split(',').map((k: string) => k.trim()).filter((k: string) => k);
+    
+    if (enItems.length !== arItems.length) {
+      return { keywordsMismatch: true };
+    }
+    
+    if (enItems.length === 0) {
+      return { keywordsRequired: true };
+    }
+    
+    return null;
   }
 }

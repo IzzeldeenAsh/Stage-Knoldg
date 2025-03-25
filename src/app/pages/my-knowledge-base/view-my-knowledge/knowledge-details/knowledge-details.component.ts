@@ -504,6 +504,10 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
           .subscribe({
             next: () => {
               this.loadDocuments(); // Refresh the documents list
+              
+              // Notify the parent component to update total_price
+              this.knowledgeUpdateService.notifyKnowledgeUpdate();
+              
               Swal.fire(
                 'Deleted!',
                 'Document has been deleted.',
@@ -1100,6 +1104,9 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
               this.loadDocuments(); // Refresh documents list
               this.closeDocumentStepper();
               this.isSaving = false;
+              
+              // Notify the parent component to update total_price
+              this.knowledgeUpdateService.notifyKnowledgeUpdate();
             },
             error: (error: any) => {
               this.showError('', error?.error?.message || 'Error updating document description');
@@ -1169,6 +1176,9 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
               this.loadDocuments();
               this.closeDocumentStepper();
               this.isSaving = false;
+              
+              // Notify the parent component to update total_price
+              this.knowledgeUpdateService.notifyKnowledgeUpdate();
             },
             error: (error: any) => {
               this.showError('', error?.error?.message || 'Error setting document description');

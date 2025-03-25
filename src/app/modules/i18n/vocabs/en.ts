@@ -7,6 +7,11 @@ export const locale = {
     "SELECT_REGIONS": "Select Regions",
     "SEARCH_COUNTRY": "Search country or region...",
     "UPLOADS_IN_PROGRESS": "Uploads in progress",
+    REGIONS_COUNTRIES_REQUIRED: "Regions and countries are required",
+    TAGS_REQUIRED: "Tags are required",
+    INDUSTRY_REQUIRED: "Industry is required",
+    ECONOMIC_BLOCKS_REQUIRED: "Economic blocks are required",
+    KEYWORDS_REQUIRED: "Keywords are required",
     ENTER_TITLE:'Enter Knowledge Title',
     "SELECTED": "selected",
     "CLEAR_ALL": "Clear All",
@@ -398,7 +403,11 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       PLEASE_WAIT:"Please wait...",
       CANCEL:"Cancel",
       "SEARCH": "Search...",
-      "LOADING": "Loading..."
+      "LOADING": "Loading...",
+      "UPLOAD": "Upload",
+      "UPLOADING": "Uploading...",
+      "DELETE": "Delete",
+      "DELETING": "Deleting..."
     },
     INSIGHTER_WIZARD: {
       ACCOUNT_TYPE: "Account Type",
@@ -514,6 +523,14 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     },
     PROFILE: {
       GENERAL_INFO: 'General Info',
+      "MY_CERTIFICATES": "My Certificates",
+      "ADD_CERTIFICATE": "Add Certificate",
+      "CERTIFICATE_TYPE": "Certificate Type",
+      "SELECT_CERTIFICATE_TYPE": "Select Certificate Type",
+      "CERTIFICATE_FILE": "Certificate File",
+      "SUPPORTED_FORMATS": "Supported formats: PDF, DOC, DOCX, JPG, PNG",
+      "DELETE_CERTIFICATE": "Delete Certificate",
+      "DELETE_CERTIFICATE_CONFIRMATION": "Are you sure you want to delete this certificate?",
       COMPANY_NAME: 'Company Name:',
       SOCIAL_MEDIA: 'Social Profiles:',
       WEBSITE: 'Website:',
@@ -569,7 +586,8 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       "PASSWORD_RULES": "Password must be at least 8 characters and contain symbols.",
       "UPDATE_PASSWORD": "Update Password",
       "CANCEL": "Cancel",
-      PASSWORDS_DO_NOT_MATCH:"Passwords do not match"
+      PASSWORDS_DO_NOT_MATCH:"Passwords do not match",
+      SOCIAL_URL_FORMAT: "URL must start with https://www"
       
     },
     USER_REQUESTS: {

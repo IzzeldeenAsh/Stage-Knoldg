@@ -4,6 +4,7 @@ import { Table } from 'primeng/table';
 import { Message } from 'primeng/api';
 import { Observable } from 'rxjs';
 import { QuestionsService, VerificationQuestion } from 'src/app/_fake/services/questions-CRUD/questions.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-verification-questions-list',
@@ -108,16 +109,29 @@ export class VerificationQuestionsListComponent implements OnInit {
   }
 
   deleteQuestion(question: VerificationQuestion) {
-    this.questionsService.deleteQuestion(question.id).subscribe({
-      next: () => {
-        this.messages = [{
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Question deleted successfully'
-        }];
-        this.loadQuestions();
-      },
-      error: (error) => this.handleError(error)
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you want to delete this question? This action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.questionsService.deleteQuestion(question.id).subscribe({
+          next: () => {
+            this.messages = [{
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Question deleted successfully'
+            }];
+            this.loadQuestions();
+          },
+          error: (error) => this.handleError(error)
+        });
+      }
     });
   }
 
