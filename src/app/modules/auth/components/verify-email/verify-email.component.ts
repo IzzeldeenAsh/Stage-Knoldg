@@ -25,7 +25,7 @@
     error: boolean = false;
     loading: boolean = true;
 
-    private insightaHost: string = "https://api.knoldg.com";
+    private insightaHost: string = "https://api.foresighta.co";
     verified: boolean = false;
     showSignUpButton: boolean = false;
 

@@ -165,7 +165,7 @@ mode="indeterminate"
           </div>
 
     </div>
-    <div *ngIf="selectedRequest?.final_status === 'declined'" class="mt-4">
+    <div *ngIf="selectedRequest?.final_status === 'declined' && !hasPendingRequestOfSameType" class="mt-4">
         <div class="mb-3">
           <label for="resendComments" class="form-label">Comments:</label>
           <textarea
@@ -184,5 +184,11 @@ mode="indeterminate"
         >
           Resend Request
         </button>
-      </div>
+    </div>
+    <div *ngIf="hasPendingRequestOfSameType" class="mt-4 alert alert-warning">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span>{{ 'USER_REQUESTS.DIALOG.PENDING_REQUEST_EXISTS' | translate }}</span>
+        </div>
+    </div>
 </p-dialog>

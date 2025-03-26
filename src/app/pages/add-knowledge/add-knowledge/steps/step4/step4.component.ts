@@ -51,6 +51,9 @@ export class Step4Component extends BaseComponent implements OnInit {
   
   @Input() defaultValues: Partial<ICreateKnowldege>;
   
+  // Flag to determine if we're in edit mode
+  isEditMode = false;
+  
   form: FormGroup;
   isLoading = false;
   isDescriptionLoading = false;
@@ -139,6 +142,9 @@ export class Step4Component extends BaseComponent implements OnInit {
   ngOnInit(): void {
     this.initForms();
     
+    // Set edit mode flag if we have a knowledge ID
+    this.isEditMode = !!this.defaultValues.knowledgeId;
+    
     if (this.defaultValues.industry) {
       this.selectedIndustryId = this.defaultValues.industry;
       this.getTopics(this.defaultValues.industry);
@@ -146,8 +152,13 @@ export class Step4Component extends BaseComponent implements OnInit {
     
     if (this.defaultValues.knowledgeId) {
       this.fetchKnowledgeData(this.defaultValues.knowledgeId);
-      // Try to generate AI information when component initializes
-      this.generateAIInformation();
+      // Only generate AI information when not in edit mode
+      if (!this.isEditMode) {
+        this.generateAIInformation();
+      } else {
+        // In edit mode, simply show the editor
+        this.showEditor = true;
+      }
     }
     
     this.loadData();
@@ -842,6 +853,12 @@ export class Step4Component extends BaseComponent implements OnInit {
   }
 
   generateAIDescription(): void {
+    // Do not generate AI information if in edit mode
+    if (this.isEditMode) {
+      // In edit mode, simply show the editor without generating AI content
+      this.showEditor = true;
+      return;
+    }
     this.generateAIInformation();
   }
   

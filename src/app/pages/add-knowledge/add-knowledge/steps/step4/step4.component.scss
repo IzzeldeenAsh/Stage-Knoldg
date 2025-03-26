@@ -565,3 +565,40 @@
     opacity: 1;
   }
 }
+
+/* Invalid form field styling */
+:host ::ng-deep {
+  .is-invalid,
+  .ng-invalid.ng-touched,
+  input.ng-invalid.ng-touched,
+  textarea.ng-invalid.ng-touched,
+  p-dropdown.ng-invalid.ng-touched .p-dropdown,
+  p-multiselect.ng-invalid.ng-touched .p-multiselect,
+  p-chips.ng-invalid.ng-touched .p-chips,
+  tag-input.ng-invalid.ng-touched .ng2-tag-input,
+  editor.ng-invalid.ng-touched .tox-tinymce {
+    border-color: #f64e60 !important;
+    box-shadow: none !important;
+  }
+
+  /* Override TinyMCE border */
+  editor.is-invalid .tox-tinymce,
+  editor.ng-invalid.ng-touched .tox-tinymce {
+    border: 1px solid #f64e60 !important;
+  }
+
+  /* Override PrimeNG components */
+  p-dropdown.is-invalid .p-dropdown,
+  p-multiselect.is-invalid .p-multiselect,
+  p-chips.is-invalid .p-chips {
+    border-color: #f64e60 !important;
+  }
+
+  /* Custom components with validation */
+  app-industry-selector.is-invalid .p-tree,
+  app-select-region.is-invalid .region-selector,
+  app-select-economic-block.is-invalid .economic-block-selector,
+  app-get-hs-code-by-isic.is-invalid .hs-code-selector {
+    border-color: #f64e60 !important;
+  }
+}

@@ -67,9 +67,14 @@
         </div>
         
         <div class="action-footer bg-light-danger">
-            <button class="btn btn-sm btn-danger" (click)="showDeleteDialog()">
+            <button *ngIf="!hasPendingDeactivationRequest" class="btn btn-sm btn-danger" (click)="showDeleteDialog()">
                 {{ 'DEACTIVATE_ACCOUNT_WITH_DELETE.BUTTON_TEXT' | translate }}
             </button>
+            <div *ngIf="hasPendingDeactivationRequest" class="pending-request">
+                <i class="bi bi-hourglass-split me-2"></i>
+                {{ 'DEACTIVATE_ACCOUNT_WITH_DELETE.PENDING_REQUEST' | translate }}
+            </div>
         </div>
     </div>
+
 </div>

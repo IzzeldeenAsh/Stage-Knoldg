@@ -146,35 +146,7 @@
             </span>
           </div>
           <span class="page-desc fs-6 fw-bold d-flex align-items-center pt-4">
-            <span class="custom-text me-3 lh-1 d-flex align-items-center">
-              <i
-                class="ki-duotone ki-document text-info fs-3 mx-4"
-                *ngIf="knowledge.type === 'report'"
-              >
-                <span class="path1"></span>
-                <span class="path2"></span>
-                <span class="path3"></span>
-              </i>
-              <i
-                class="fas fa-lightbulb text-success fs-3 mx-4"
-                *ngIf="knowledge.type === 'insight'"
-              ></i>
-              <i
-                class="fas fa-database text-primary fs-3 mx-4"
-                *ngIf="knowledge.type === 'data'"
-              ></i>
-              <i
-                class="fas fa-book text-warning fs-3 mx-4"
-                *ngIf="knowledge.type === 'manual'"
-              ></i>
-              <i
-                class="fas fa-graduation-cap text-success fs-3 mx-4"
-                *ngIf="knowledge.type === 'course'"
-              ></i>
-              <i
-                class="fas fa-video text-danger fs-3 mx-4"
-                *ngIf="knowledge.type === 'media'"
-              ></i>
+            <span class="custom-text me-3 lh-1 d-flex align-items-center text-capitalize">
               {{ knowledge.type || 'N/A' }}
             </span>
             <span class="bullet text-black h-6px w-6px mx-3"></span>
@@ -184,7 +156,7 @@
                 <span class="path2"></span>
                 <span class="path3"></span>
               </i>
-              7,834 Downloads
+            0 Downloads
             </span>
           </span>
         </h1>

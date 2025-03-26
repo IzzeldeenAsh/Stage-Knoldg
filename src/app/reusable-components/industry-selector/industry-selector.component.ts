@@ -103,6 +103,7 @@ import { TranslationModule } from "src/app/modules/i18n";
         [placeholder]="placeholder"
         (click)="showDialog()"
         [value]="selectedNodeLabel()"
+        [ngClass]="{'is-invalid': isRequired && !selectedNode}"
       />
     </div>
   `,

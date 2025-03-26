@@ -74,7 +74,7 @@ export class AuthService implements OnDestroy {
           "Accept-Language": this.currentLang,
           "Authorization": `Bearer ${this.getAuthFromLocalStorage()?.authToken || ''}`,
         });
-        return this.http.get('https://api.knoldg.com/api/account/profile', {
+        return this.http.get('https://api.foresighta.co/api/account/profile', {
           headers
         }).pipe(
           map((profileResponse: any) => {
@@ -100,7 +100,7 @@ export class AuthService implements OnDestroy {
       'Accept': 'application/json',
       'Accept-Language': 'en'
     });
-    return this.http.get('https://api.knoldg.com/api/auth/provider/google', { 
+    return this.http.get('https://api.foresighta.co/api/auth/provider/google', { 
       headers,
       responseType: 'text'
     });
@@ -110,7 +110,7 @@ export class AuthService implements OnDestroy {
       'Accept': 'application/json', 
       'Accept-Language': 'en'
     });
-    return this.http.get('https://api.knoldg.com/api/auth/provider/linkedin-openid', {
+    return this.http.get('https://api.foresighta.co/api/auth/provider/linkedin-openid', {
       headers,
       responseType: 'text'
     });
@@ -170,7 +170,7 @@ export class AuthService implements OnDestroy {
       "Accept-Language": this.currentLang,
       "Authorization": `Bearer ${this.getAuthFromLocalStorage()?.authToken || ''}`,
     });
-    return this.http.get('https://api.knoldg.com/api/account/profile', {
+    return this.http.get('https://api.foresighta.co/api/account/profile', {
       headers
     }).pipe(
       map((response: any) => {
@@ -200,7 +200,7 @@ export class AuthService implements OnDestroy {
       'Authorization': `Bearer ${this.getAuthFromLocalStorage()?.authToken || ''}`,
     });
     return this.http.post<any>(
-      'https://api.knoldg.com/api/account/logout',
+      'https://api.foresighta.co/api/account/logout',
       {},
       { headers }
     );
@@ -343,7 +343,7 @@ export class AuthService implements OnDestroy {
       'Accept-Language': 'en',
       'Authorization': `Bearer ${this.getAuthFromLocalStorage()?.authToken || ''}`,
     });
-    return this.http.post('https://api.knoldg.com/api/account/email/resend', 
+    return this.http.post('https://api.foresighta.co/api/account/email/resend', 
       {}, // Fix: Add empty object as body
       { headers }
     ).pipe(

@@ -333,7 +333,8 @@ export const locale = {
         "WARNING": "هذا الإجراء غير قابل للعكس. يرجى التأكد.",
         "REASON_LABEL": "سبب إلغاء التنشيط",
         "REASON_PLACEHOLDER": "يرجى توضيح سبب رغبتك في إلغاء تنشيط حسابك",
-        "CONFIRM_BUTTON": "حذف الحساب نهائياً"
+        "CONFIRM_BUTTON": "حذف الحساب نهائياً",
+        "SUCCESS_MESSAGE": "تم طلب حذف الحساب "
       }
     },
     "REACTIVATE_ACCOUNT": {
@@ -587,6 +588,7 @@ export const locale = {
         STATUS_BADGE: '{{status}}',
         STAFF_NOTES_LABEL: 'ملاحظات الموظفين',
         NO_STAFF_NOTES: 'لا توجد ملاحظات موظفين متاحة.',
+        PENDING_REQUEST_EXISTS: 'لديك بالفعل طلب معلق من هذا النوع. يرجى الانتظار حتى تتم معالجته قبل تقديم طلب جديد.'
       },
     },
     "UPGRADE_TO_COMPANY_ACCOUNT": {
