@@ -857,4 +857,25 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
         }
       });
   }
+
+  // Handle price input to prevent leading zeros
+  handlePriceInput(event: Event, index: number): void {
+    const inputElement = event.target as HTMLInputElement;
+    const value = inputElement.value;
+    
+    // Remove leading zeros
+    if (value.length > 1 && value.startsWith('0') && !value.startsWith('0.')) {
+      // Get the numeric value without leading zeros
+      const numericValue = parseInt(value, 10).toString();
+      
+      // Update the form control
+      const priceControl = this.documentControls.at(index).get('price');
+      if (priceControl) {
+        priceControl.setValue(numericValue, { emitEvent: false });
+      }
+      
+      // Set the input value directly to handle browser differences
+      inputElement.value = numericValue;
+    }
+  }
 }

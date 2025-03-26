@@ -1,4 +1,4 @@
-import { Component, Injector, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Injector, OnInit } from '@angular/core';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { IKnoldgProfile } from 'src/app/_fake/models/profile.interface';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
@@ -6,11 +6,12 @@ import { BaseComponent } from 'src/app/modules/base.component';
 import { DeactivateDialogComponent } from '../deactivate-dialog/deactivate-dialog.component';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
 import { TransferDialogComponent } from '../transfer-dialog/transfer-dialog.component';
+import { UserRequest, UserRequestsService } from 'src/app/_fake/services/user-requests/user-requests.service';
 
 @Component({
   selector: 'app-general-settings',
   templateUrl: './general-settings.component.html',
-  styleUrl: './general-settings.component.scss',
+  styleUrls: ['./general-settings.component.scss'],
   providers: [DialogService]
 })
 export class GeneralSettingsComponent extends BaseComponent implements OnInit {
@@ -19,17 +20,21 @@ export class GeneralSettingsComponent extends BaseComponent implements OnInit {
   isActive: boolean = true;
   isPrimaryKey: boolean = false;
   ref: DynamicDialogRef | undefined;
+  hasPendingDeactivationRequest: boolean = false;
 
   constructor(
     injector: Injector,
     private getProfileService: ProfileService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private userRequestsService: UserRequestsService,
+    private cdr: ChangeDetectorRef
   ) {
     super(injector);
   }
 
   ngOnInit(): void {
     this.getProfile();
+    this.checkPendingRequests();
   }
 
   getProfile() {
@@ -50,8 +55,80 @@ export class GeneralSettingsComponent extends BaseComponent implements OnInit {
             default:
               this.isActive = false;
           }
+          this.cdr.detectChanges();
         }
       )
+    this.unsubscribe.push(subscription);
+  }
+
+  checkPendingRequests() {
+    // Only proceed if user has insighter role
+    if (!this.hasRole(['insighter'])) {
+      console.log('User is not an insighter, skipping deactivation request check');
+      return;
+    }
+
+    const subscription = this.userRequestsService.getAllUserRequests(this.lang)
+      .subscribe({
+        next: (requests: UserRequest[]) => {
+          console.log('All user requests:', requests);
+          
+          if (!requests || requests.length === 0) {
+            console.log('No requests returned from API');
+            this.hasPendingDeactivationRequest = false;
+            this.cdr.detectChanges();
+            return;
+          }
+          
+          // For insighter accounts, check ALL requests to find any pending deactivation
+          this.hasPendingDeactivationRequest = requests.some(request => {
+            // Extract the needed values with safe checks
+            const typeKey = (request.type?.key || '').toLowerCase();
+            const typeName = (request.type?.label || '').toLowerCase();
+            const status = (request.status || '').toLowerCase();
+            const requestableType = (request.requestable_type || '').toLowerCase();
+            
+            console.log('Request data:', {
+              typeKey,
+              typeName,
+              status,
+              requestableType
+            });
+            
+            // Check if this is a deactivation/deletion request
+            const deactivationKeywords = ['deactivat', 'delet', 'remov', 'cancel'];
+            const isDeactivationRequest = deactivationKeywords.some(keyword => 
+              typeKey.includes(keyword) || typeName.includes(keyword)
+            );
+            
+            // Check if this request is related to insighter
+            const insighterKeywords = ['insighter', 'expert', 'consultant'];
+            const isInsighterRequest = insighterKeywords.some(keyword => 
+              typeKey.includes(keyword) || 
+              requestableType.includes(keyword) ||
+              typeName.includes(keyword)
+            );
+            
+            // Only check for 'pending' status specifically
+            const isPendingStatus = status === 'pending';
+            
+            const result = isDeactivationRequest && isInsighterRequest && isPendingStatus;
+                         
+            if (result) {
+              console.log('Found pending deactivation request:', request);
+            }
+            
+            return result;
+          });
+          
+          console.log('Final check result - Has pending deactivation request:', this.hasPendingDeactivationRequest);
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          console.error('Error fetching user requests:', error);
+          this.cdr.detectChanges();
+        }
+      });
     this.unsubscribe.push(subscription);
   }
 

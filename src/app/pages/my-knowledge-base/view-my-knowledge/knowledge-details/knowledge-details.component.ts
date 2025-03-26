@@ -1238,8 +1238,23 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
       this.stepperChapters = [];
     }
     
-    // Show the stepper on step 2 directly since we're editing and don't want to change the file
+    // Show the stepper starting at step 1 instead of jumping to step 2
     this.showDocumentStepper = true;
-    this.documentStep = 2;
+    this.documentStep = 1;
+  }
+
+  handlePriceInput(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    const value = inputElement.value;
+    
+    // Remove leading zeros
+    if (value.length > 1 && value.startsWith('0') && !value.startsWith('0.')) {
+      // Get the numeric value without leading zeros
+      const numericValue = parseInt(value, 10).toString();
+      // Update the form control
+      this.documentForm.get('price')?.setValue(numericValue, { emitEvent: false });
+      // Set the input value directly to handle browser differences
+      inputElement.value = numericValue;
+    }
   }
 }

@@ -44,8 +44,13 @@
                <div class="d-flex gap-1 align-items-center" >
               <div >
                 <span class="badge me-2 px-2 py-1" 
-                [ngClass]="{'bg-info text-white fs-4' : activeDocumentId === doc.id, 'bg-secondary fs-6': activeDocumentId !== doc.id}">
-                {{ doc.price ? (doc.price | currency) : 'N/A' }}
+                [ngClass]="{
+                  'bg-info text-white fs-4': activeDocumentId === doc.id && doc.price !== '0',
+                  'bg-secondary fs-6': activeDocumentId !== doc.id && doc.price !== '0',
+                  'bg-success text-success fs-4': activeDocumentId === doc.id && doc.price === '0',
+                  'bg-success text-white fs-6': activeDocumentId !== doc.id && doc.price === '0'
+                }">
+                {{ doc.price === '0' ? 'Free' : (doc.price | currency) }}
               </span>
               
               <!-- Expand/Collapse Arrow -->
@@ -254,7 +259,7 @@
                            <span class="path3"></span>
                          </i>
                        </span>
-                       <input formControlName="price" type="number" min="0" class="form-control" placeholder="{{ 'ENTER_PRICE' | translate }}" />
+                       <input formControlName="price" type="number" min="0" class="form-control" placeholder="{{ 'ENTER_PRICE' | translate }}" (input)="handlePriceInput($event)" />
                      </div>
                      
                      <!-- Free Price Display (when charity is toggled) -->
@@ -473,3 +478,4 @@
      </div>
     </div>
 </div>
+

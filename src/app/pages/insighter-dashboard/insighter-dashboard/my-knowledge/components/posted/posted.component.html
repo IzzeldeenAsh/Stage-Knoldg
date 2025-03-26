@@ -91,13 +91,7 @@
             </span>
           </label>
         </div>
-
-        <!--begin::Items Counter-->
-        <div class="badge badge-lg badge-primary">
-          <span>{{ totalItems }} {{ 'KNOWLEDGE.ITEMS' | translate }}</span>
-        </div>
       </div>
-      <!--end::Items Counter-->
     </div>
     <!--end::Table header-->
 
@@ -204,7 +198,10 @@
                 <!-- Title Section -->
                 <div class="title-section">
                   <a [routerLink]="['/app/my-knowledge-base/view-my-knowledge/', knowledge.id]" 
-                     class="knowledge-title text-hover-primary">{{ knowledge.title }}</a>
+                     class="knowledge-title text-hover-primary"
+>
+                    {{ knowledge.title.length > 45 ? (knowledge.title | slice:0:45) + '...' : knowledge.title }}
+                  </a>
                 </div>
 
                 <!-- Type Badge -->

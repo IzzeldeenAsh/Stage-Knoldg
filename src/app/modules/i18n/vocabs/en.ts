@@ -386,7 +386,8 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       "WARNING": "This action is not reversible. Please be certain.",
       "REASON_LABEL": "Deactivation Reason",
       "REASON_PLACEHOLDER": "Please explain why you want to deactivate your account",
-      "CONFIRM_BUTTON": "Delete Account Permanently"
+      "CONFIRM_BUTTON": "Delete Account Permanently",
+      "SUCCESS_MESSAGE": "Account deletion request successfully submitted"
     }
   },
     BUTTONS: {
@@ -427,6 +428,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       ADDRESS: "Company Address",
       ADDRESS_PLACEHOLDER: "Enter company address",
       ADDRESS_REQUIRED: "Company address is required",
+      KNOWLEDGE_TYPE_TOOLTIP_EXPLANATION: "Choose the type of knowledge based on the type of files you want to upload. You can choose from different types such as data (data), reports, insights, evidence (manuscript), and others. Select the type that best matches the content of your knowledge.",
       COMPANY_PHONE: "Company Phone",
       COMPANY_PHONE_PLACEHOLDER: "Enter company phone number",
       COMPANY_PHONE_REQUIRED: "Company phone number is required",
@@ -625,6 +627,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
         STATUS_BADGE: '{{status}}',
         STAFF_NOTES_LABEL: 'Staff Notes',
         NO_STAFF_NOTES: 'No staff notes available.',
+        PENDING_REQUEST_EXISTS: 'You already have a pending request of this type. Please wait for it to be processed before submitting a new one.'
       },
     },
     "UPGRADE_TO_COMPANY_ACCOUNT": {

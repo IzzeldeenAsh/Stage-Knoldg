@@ -255,16 +255,16 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
     ];
 
     // Add the "Add Knowledge" menu item only for specific roles
-    // if (this.profile?.roles?.some((role:string) => !['client'].includes(role))) {
-    //   menuItems.push({
-    //     label: this.translate.instant('MENU.ADD_KNOWLEDGE'),
-    //     iconName: 'plus-square',
-    //     iconClass: 'text-info fs-2 fw-bold',
-    //     iconType: 'duotone',
-    //     expanded: false,
-    //     routerLink: '/app/add-knowledge/stepper'
-    //   });
-    // }
+    if (this.profile?.roles?.some((role: string) => ['insighter', 'insighter-company', 'company'].includes(role))) {
+      menuItems.push({
+        label: this.translate.instant('MENU.ADD_KNOWLEDGE'),
+        iconName: 'plus-square',
+        iconClass: 'text-info fs-2 fw-bold',
+        iconType: 'duotone',
+        expanded: false,
+        routerLink: this.getAddKnowledgeRoute()
+      });
+    }
 
     this.items = menuItems;
 
@@ -296,6 +296,14 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         }
       }
     ] as CustomMenuItem[];
+  }
+
+  // Determines the correct route for the Add Knowledge button based on user roles
+  getAddKnowledgeRoute(): string {
+    if (this.profile?.roles?.some((role: string) => ['insighter', 'insighter-company', 'company'].includes(role))) {
+      return '/app/add-knowledge/stepper';
+    }
+    return '/app/insighter-register/vertical';
   }
 
   toggleSidebar() {

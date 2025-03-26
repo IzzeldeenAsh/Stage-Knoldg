@@ -27,7 +27,7 @@
       </div>
     </div>
     <div class="loading-text">
-      Generating AI Information
+      Knowledge Introduction AI Generation
       <span class="loading-dots">
         <span class="dot"></span>
         <span class="dot"></span>
@@ -64,7 +64,7 @@
    <!-- Generate AI Description button - only show if not loading and no description yet -->
   
     <div class="d-flex justify-content-end">
-      <div class="max-w-200px">
+      <div class="max-w-200px" *ngIf="!isEditMode">
         <div *ngIf="!isDescriptionLoading && (!form.get('description')?.value || !form.get('description')?.value?.trim())" class="cursor-pointer border-none border-0">
           <div (click)="generateAIDescription()" class="loader-container px-3" style="min-height: 30px; cursor: pointer;">
             <div class="steel-shining-text no-animation" style="font-size: 0.85rem;">
@@ -99,33 +99,42 @@
       <!-- Knowledge Title -->
       <div class="mb-10 fv-row">
         <div class="d-flex justify-content-between">
-        <label class="d-flex align-items-center form-label mb-3 required">
-          <ng-container *ngIf="defaultValues.knowledgeType === 'course'">
-            {{ "COURSE_TITLE" | translate }}
-          </ng-container>
-          <ng-container *ngIf="defaultValues.knowledgeType === 'media'">
-            {{ "MEDIA_TITLE" | translate }}
-          </ng-container>
-          <ng-container *ngIf="defaultValues.knowledgeType === 'data'">
-            {{ "DATA_TITLE" | translate }}
-          </ng-container>
-          <ng-container *ngIf="defaultValues.knowledgeType === 'report'">
-            {{ "REPORT_TITLE" | translate }}
-          </ng-container>
-          <ng-container *ngIf="defaultValues.knowledgeType === 'manual'">
-            {{ "MANUAL_TITLE" | translate }}
-          </ng-container>
-          <ng-container *ngIf="defaultValues.knowledgeType === 'insight'">
-            {{ "INSIGHT_TITLE" | translate }}
-          </ng-container>
-          <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'KNOWLEDGE_TITLE_TOOLTIP' | translate }}"></i>
-        </label>
+          <div
+           class="d-flex align-items-center">
+           <label class="d-flex align-items-center form-label mb-3 required">
+            <ng-container *ngIf="defaultValues.knowledgeType === 'course'">
+              {{ "COURSE_TITLE" | translate }}
+            </ng-container>
+            <ng-container *ngIf="defaultValues.knowledgeType === 'media'">
+              {{ "MEDIA_TITLE" | translate }}
+            </ng-container>
+            <ng-container *ngIf="defaultValues.knowledgeType === 'data'">
+              {{ "DATA_TITLE" | translate }}
+            </ng-container>
+            <ng-container *ngIf="defaultValues.knowledgeType === 'report'">
+              {{ "REPORT_TITLE" | translate }}
+            </ng-container>
+            <ng-container *ngIf="defaultValues.knowledgeType === 'manual'">
+              {{ "MANUAL_TITLE" | translate }}
+            </ng-container>
+            <ng-container *ngIf="defaultValues.knowledgeType === 'insight'">
+              {{ "INSIGHT_TITLE" | translate }}
+            </ng-container>
+            <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'KNOWLEDGE_TITLE_TOOLTIP' | translate }}"></i>
+       
+          </label>
+          <!-- AI Generated badge for title -->
+          <span *ngIf="aiGeneratedFields.title" class="ai-generated-badge ms-2 mb-2">
+            AI Generated
+          </span>
+          </div>
+     
        
         </div>
             <div class="row mb-2 mt-2">
               <div class="col-lg-12">
                 <div class="position-relative">
-                  <input pInputText formControlName="title" class="w-100" placeholder="{{ 'ENTER_KNOWLEDGE_TITLE' | translate }}" />
+                  <input pInputText formControlName="title" class="w-100" [ngClass]="{'is-invalid': form.get('title')?.hasError('required') && form.get('title')?.touched, 'border-red': form.get('title')?.hasError('required') && form.get('title')?.touched}" placeholder="{{ 'ENTER_KNOWLEDGE_TITLE' | translate }}" />
                   
                   <!-- Only show field loading indicator when not showing the main loading UI -->
                   <div *ngIf="isDescriptionLoading && !aiAbstractError" class="field-loading-indicator">
@@ -145,10 +154,19 @@
       
           <!-- Knowledge Description -->
           <div class="mb-10 fv-row">
-            <label class="d-flex align-items-center form-label mb-3 required">
-              {{ "KNOWLEDGE_DESCRIPTION" | translate }}
-              <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'KNOWLEDGE_DESCRIPTION_TOOLTIP' | translate }}"></i>
-            </label>
+            <div class="d-flex align-items-center  ">
+              <label class="form-label mb-3 required">
+                {{ "KNOWLEDGE_DESCRIPTION" | translate }}
+                <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'KNOWLEDGE_DESCRIPTION_TOOLTIP' | translate }}"></i>
+                
+                <!-- AI Generated badge for description -->
+               
+              </label>
+              <span *ngIf="aiGeneratedFields.description" class="ai-generated-badge ms-2 mb-2">
+                AI Generated
+              </span>
+            </div>
+       
             <div class="row mb-2">
               <div class="col-lg-12">
                 <div class="position-relative">
@@ -180,6 +198,7 @@
                     apiKey="fovwl5u83es9vkiv7x6h34fynj0utg108qrb0edwwwlxevt9"
                     formControlName="description"
                     [init]="{min_height: 250, placeholder: ('ENTER_KNOWLEDGE_DESCRIPTION' | translate)}"
+                    [ngClass]="{'is-invalid': form.get('description')?.hasError('required') && form.get('description')?.touched, 'border-red': form.get('description')?.hasError('required') && form.get('description')?.touched}"
                   ></editor>
                   
                   <!-- AI Abstract Error Message -->
@@ -201,11 +220,12 @@
       
           <!-- Knowledge Language -->
           <div class="mb-10 fv-row">
-            <label class="d-flex align-items-center form-label mb-3 required">
-              <ng-container *ngIf="defaultValues.knowledgeType === 'course'">
-                {{ "COURSE_LANGUAGE" | translate }}
-              </ng-container>
-              <ng-container *ngIf="defaultValues.knowledgeType === 'media'">
+            <div class="d-flex align-items-center">
+              <label class="d-flex align-items-center form-label mb-3 required">
+                <ng-container *ngIf="defaultValues.knowledgeType === 'course'">
+                  {{ "COURSE_LANGUAGE" | translate }}
+                </ng-container>
+                <ng-container *ngIf="defaultValues.knowledgeType === 'media'">
                 {{ "MEDIA_LANGUAGE" | translate }}
               </ng-container>
               <ng-container *ngIf="defaultValues.knowledgeType === 'data'">
@@ -221,7 +241,14 @@
                 {{ "INSIGHT_LANGUAGE" | translate }}
               </ng-container>
               <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'KNOWLEDGE_LANGUAGE_TOOLTIP' | translate }}"></i>
+              
+            
             </label>
+              <!-- AI Generated badge for language -->
+              <span *ngIf="aiGeneratedFields.language" class="ai-generated-badge ms-2 mb-2">
+                AI Generated
+              </span>
+            </div>
             <div class="row mb-2">
               <div class="col-lg-12">
                 <div class="position-relative">
@@ -236,6 +263,7 @@
                     optionValue="id"
                     styleClass="w-100"
                     [loading]="isLanguageFieldLoading"
+                    [ngClass]="{'is-invalid': form.get('language')?.hasError('required') && form.get('language')?.touched, 'border-red': form.get('language')?.hasError('required') && form.get('language')?.touched}"
                   >
                   </p-dropdown>
                   
@@ -264,6 +292,8 @@
                 [selectedIndustryId]="form.get('industry')?.value"
                 [isRequired]="true"
                 (nodeSelected)="onIndustrySelected($event)"
+                [ngClass]="{'is-invalid': form.get('industry')?.hasError('required') && form.get('industry')?.touched, 'border-red': form.get('industry')?.hasError('required') && form.get('industry')?.touched}"
+                [isAiGenerated]="aiGeneratedFields.industry"
               >
               </app-industry-selector>
               <!-- Industry validation error message -->
@@ -289,6 +319,7 @@
         filterPlaceholder="{{ 'SEARCH_TOPICS' | translate }}"
         class="w-100"
         (onChange)="onTopicSelected($event.value)"
+        [ngClass]="{'is-invalid': form.get('topicId')?.hasError('required') && form.get('topicId')?.touched, 'border-red': form.get('topicId')?.hasError('required') && form.get('topicId')?.touched}"
       ></p-dropdown>
       <div *ngIf="form.controls['topicId']?.invalid && form.controls['topicId']?.touched" class="text-danger">
         {{ "TOPIC_REQUIRED" | translate }}
@@ -306,6 +337,7 @@
         pInputText
         class="w-100"
         formControlName="customTopic"
+        [ngClass]="{'is-invalid': form.get('customTopic')?.hasError('required') && form.get('customTopic')?.touched, 'border-red': form.get('customTopic')?.hasError('required') && form.get('customTopic')?.touched}"
         placeholder="{{ 'ENTER_CUSTOM_TOPIC' | translate }}"
       />
       <!-- Duplicate Topic Error -->
@@ -368,6 +400,16 @@
       >
         {{ "TARGET_MARKET_REQUIRED" | translate }}
       </div>
+      <div
+        class="fv-plugins-message-container invalid-feedback"
+        *ngIf="form.get('targetMarket')?.invalid && form.get('targetMarket')?.touched"
+      >
+        <input
+          type="hidden"
+          formControlName="targetMarket"
+          [ngClass]="{'is-invalid': form.get('targetMarket')?.invalid && form.get('targetMarket')?.touched, 'border-red': form.get('targetMarket')?.invalid && form.get('targetMarket')?.touched}"
+        />
+      </div>
     </div>
 
     <!-- Region -->
@@ -384,6 +426,7 @@
           [preSelectedRegions]="defaultValues.regions"
           [preSelectedCountries]="defaultValues.countries"
           (regionsSelected)="onRegionsSelected($event)"
+          [ngClass]="{'is-invalid': form.get('targetMarket')?.value === '1' && form.get('regions')?.hasError('required') && (form.get('regions')?.touched || form.get('countries')?.touched), 'border-red': form.get('targetMarket')?.value === '1' && form.get('regions')?.hasError('required') && (form.get('regions')?.touched || form.get('countries')?.touched)}"
         ></app-select-region>
         <div *ngIf="form.get('targetMarket')?.value === '1' && form.get('regions')?.hasError('required') && (form.get('regions')?.touched || form.get('countries')?.touched)" class="fv-plugins-message-container invalid-feedback mt-2">
           {{ "REGIONS_COUNTRIES_REQUIRED" | translate }}
@@ -404,6 +447,7 @@
           title="{{ 'CHOOSE_ECONOMIC_BLOCKS' | translate }}"
           [selectedBlockIds]="selectedEconomicBlocIds"
           (blocksSelected)="onEconomicBlocksSelected($event)"
+          [ngClass]="{'is-invalid': form.get('targetMarket')?.value === '2' && form.get('economicBlocks')?.hasError('required') && form.get('economicBlocks')?.touched, 'border-red': form.get('targetMarket')?.value === '2' && form.get('economicBlocks')?.hasError('required') && form.get('economicBlocks')?.touched}"
         ></app-select-economic-block>
         <div *ngIf="form.get('targetMarket')?.value === '2' && form.get('economicBlocks')?.hasError('required') && form.get('economicBlocks')?.touched" class="fv-plugins-message-container invalid-feedback mt-2">
           {{ "ECONOMIC_BLOCKS_REQUIRED" | translate }}
@@ -427,6 +471,7 @@
         "
         (nodeSelected)="onIsicCodeSelected($event)"
         [isRequired]="false"
+        [ngClass]="{'is-invalid': form.get('isic_code')?.invalid && form.get('isic_code')?.touched, 'border-red': form.get('isic_code')?.invalid && form.get('isic_code')?.touched}"
       >
       </app-industry-selector>
     </div>
@@ -439,6 +484,7 @@
         [language]="currentLanguage"
         [preselectedHSCodeId]="form.get('hs_code')?.value"
         (hsCodeSelected)="onHSCodeSelected($event)"
+        [ngClass]="{'is-invalid': form.get('hs_code')?.invalid && form.get('hs_code')?.touched, 'border-red': form.get('hs_code')?.invalid && form.get('hs_code')?.touched}"
       >
       </app-get-hs-code-by-isic>
     </div>
@@ -489,6 +535,16 @@
       <div *ngIf="tagIdError" class="fv-plugins-message-container invalid-feedback mb-3">
         {{ tagIdError }}
       </div>
+      <p-multiSelect
+        [options]="tags"
+        formControlName="tag_ids"
+        optionLabel="name"
+        optionValue="id"
+        [ngClass]="{'is-invalid': form.get('tag_ids')?.hasError('required') && form.get('tag_ids')?.touched, 'border-red': form.get('tag_ids')?.hasError('required') && form.get('tag_ids')?.touched}"
+        placeholder="{{ 'SELECT_TAGS' | translate }}"
+        [maxSelectedLabels]="3"
+        selectedItemsLabel="{0} {{ 'TAGS_SELECTED' | translate }}"
+      ></p-multiSelect>
     </div>
 
     <!-- Add Custom Tag Modal using PrimeNG Dialog -->
@@ -504,7 +560,7 @@
         <div class="p-fluid">
           <div class="p-field">
             <label for="name">{{ "TAG_NAME" | translate }}</label>
-            <input id="name" type="text" pInputText formControlName="name" />
+            <input id="name" type="text" pInputText formControlName="name" [ngClass]="{'is-invalid': customTagForm.get('name')?.invalid && customTagForm.get('name')?.touched, 'border-red': customTagForm.get('name')?.invalid && customTagForm.get('name')?.touched}"/>
             <small
               *ngIf="customTagForm.get('name')?.invalid && customTagForm.get('name')?.touched"
               class="p-error"
@@ -546,6 +602,7 @@
         [placeholder]="'ENTER_KEYWORDS' | translate"
         (onAdd)="addKeyword($event)"
         (onRemove)="removeKeyword($event)"
+        [ngClass]="{'is-invalid': form.get('keywords')?.hasError('required') && form.get('keywords')?.touched, 'border-red': form.get('keywords')?.hasError('required') && form.get('keywords')?.touched}"
       >
         <tag-input-dropdown
           [showDropdownIfEmpty]="true"

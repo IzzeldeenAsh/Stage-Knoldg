@@ -74,10 +74,6 @@
           </label>
         </div>
 
-        <!--begin::Items Counter-->
-        <div class="badge badge-lg badge-primary">
-          <span>{{ totalItems }} {{ 'KNOWLEDGE.ITEMS' | translate }}</span>
-        </div>
       </div>
       <!--end::Items Counter-->
     </div>
@@ -119,7 +115,11 @@
           <tr *ngFor="let knowledge of knowledges; trackBy: trackById">
             <td>
               <div class="d-flex align-items-center">
-                <a [routerLink]="['/app/my-knowledge-base/view-my-knowledge/', knowledge.id]" class="text-gray-800 text-hover-primary">{{ knowledge.title }}</a>
+                <a [routerLink]="['/app/my-knowledge-base/view-my-knowledge/', knowledge.id]" 
+                   class="text-gray-800 text-hover-primary"
+                   >
+                  {{ knowledge.title.length > 45 ? (knowledge.title | slice:0:45) + '...' : knowledge.title }}
+                </a>
               </div>
             </td>
             <td>
@@ -180,7 +180,10 @@
             <!-- Title Section -->
             <div class="title-section">
               <a [routerLink]="['/app/my-knowledge-base/view-my-knowledge/', knowledge.id]" 
-                 class="knowledge-title text-hover-primary">{{ knowledge.title }}</a>
+                 class="knowledge-title text-hover-primary"
+                 [ngbTooltip]="knowledge.title.length > 45 ? knowledge.title : null">
+                {{ knowledge.title.length > 45 ? (knowledge.title | slice:0:45) + '...' : knowledge.title }}
+              </a>
             </div>
 
             <!-- Type Badge -->

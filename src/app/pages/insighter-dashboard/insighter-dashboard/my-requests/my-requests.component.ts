@@ -21,6 +21,8 @@ export class MyRequestsComponent extends BaseComponent implements OnInit {
   displayRequestDialog: boolean = false;
   selectedRequest: UserRequest | null = null;
   userProfile: IKnoldgProfile | null = null;
+  hasPendingRequestOfSameType: boolean = false;
+  
   constructor(
     injector: Injector,
     private userRequestsService: UserRequestsService,
@@ -59,6 +61,14 @@ export class MyRequestsComponent extends BaseComponent implements OnInit {
   openRequestDialog(request: UserRequest) {
     const latestRequest = this.getLatestChild(request);
     this.selectedRequest = latestRequest;
+    
+    // Check if there's already a pending request of the same type
+    this.hasPendingRequestOfSameType = this.userRequests.some(req => 
+      req.type.key === latestRequest.type.key && 
+      req.final_status === 'pending' &&
+      req.id !== latestRequest.id
+    );
+    
     this.displayRequestDialog = true;
   }
 

@@ -24,15 +24,7 @@
 
   <!--begin::Card body-->
   <div class="card-body pt-0">
-    <div class="d-flex flex-stack mb-6 pt-3">
-
   
-      <!--begin::Items Counter-->
-      <div class="badge badge-lg badge-primary "  *ngIf="packages && packages.length > 0">
-        <span>{{ packages.length }} items</span>
-      </div>
-      <!--end::Items Counter-->
-    </div>  
 
     <!-- No Packages State -->
     <app-empty-state *ngIf="packages.length === 0 && !(isLoading$ | async)"
