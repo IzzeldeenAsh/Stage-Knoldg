@@ -87,14 +87,21 @@ import { TranslationModule } from "src/app/modules/i18n";
     </p-dialog>
 
     <div class="w-100">
-    <label class="d-flex align-items-center form-label mb-3" [ngClass]="{'required': isRequired}">
+  <div class="d-flex align-items-center">
+  <label class="d-flex align-items-center form-label mb-3" [ngClass]="{'required': isRequired}">
       {{ title }}
        <i
       class="fas fa-exclamation-circle mx-2 fs-7"
       ngbTooltip="{{tip}}">
     </i>
     <span class="text-muted fs-8 mx-2" *ngIf="!isRequired"> ({{'OPTIONAL' | translate}}) </span>
+    <!-- AI Generated badge for industry -->
+   
     </label>
+    <span *ngIf="isAiGenerated" class="ai-generated-badge ms-2 mb-2">
+        AI Generated
+      </span>
+  </div>
       <input
         type="text"
         pInputText
@@ -137,6 +144,27 @@ import { TranslationModule } from "src/app/modules/i18n";
   .mb-3 {
     transition: all 300ms ease-in-out;
   } 
+  .ai-generated-badge {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    background: linear-gradient(135deg, rgba(255,209,0,0.1) 0%, rgba(255,145,0,0.1) 100%);
+    color: #FF9900;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    font-weight: 500;
+    border: 1px solid rgba(255,153,0,0.3);
+    animation: glow 1.5s ease-in-out infinite alternate;
+  }
+  
+  @keyframes glow {
+    from {
+      box-shadow: 0 0 0px rgba(255,153,0,0);
+    }
+    to {
+      box-shadow: 0 0 3px rgba(255,153,0,0.5);
+    }
+  }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -148,6 +176,7 @@ export class IndustrySelectorComponent implements OnInit, OnDestroy {
   @Input() cancelLabel: string = "Cancel";
   @Input() okLabel: string = "OK";
   @Input() tip: string = "";
+  @Input() isAiGenerated: boolean = false;
 
   private _selectedIndustryId: number | undefined;
 

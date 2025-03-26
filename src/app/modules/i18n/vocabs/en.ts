@@ -428,6 +428,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       ADDRESS: "Company Address",
       ADDRESS_PLACEHOLDER: "Enter company address",
       ADDRESS_REQUIRED: "Company address is required",
+      KNOWLEDGE_TYPE_TOOLTIP_EXPLANATION: "Choose the type of knowledge based on the type of files you want to upload. You can choose from different types such as data (data), reports, insights, evidence (manuscript), and others. Select the type that best matches the content of your knowledge.",
       COMPANY_PHONE: "Company Phone",
       COMPANY_PHONE_PLACEHOLDER: "Enter company phone number",
       COMPANY_PHONE_REQUIRED: "Company phone number is required",

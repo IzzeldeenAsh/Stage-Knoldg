@@ -26,7 +26,6 @@ interface KeywordItem {
   value: string;
 }
 
-
 @Component({
   selector: 'app-step4',
   templateUrl: './step4.component.html',
@@ -122,6 +121,14 @@ export class Step4Component extends BaseComponent implements OnInit {
   showEditor = false;
   private stopPolling$ = new Subject<void>();
 
+  // Add tracking for AI-generated fields
+  aiGeneratedFields: Record<string, boolean> = {
+    title: false,
+    description: false,
+    industry: false,
+    language: false
+  };
+
   constructor(
     injector: Injector,
     private fb: FormBuilder,
@@ -142,8 +149,10 @@ export class Step4Component extends BaseComponent implements OnInit {
   ngOnInit(): void {
     this.initForms();
     
-    // Set edit mode flag if we have a knowledge ID
-    this.isEditMode = !!this.defaultValues.knowledgeId;
+    // Set edit mode flag if we have a knowledge ID AND existing content (like title/description)
+    // This distinguishes between editing an existing document vs a newly uploaded document with an ID
+    this.isEditMode = !!this.defaultValues.knowledgeId && 
+                     (!!this.defaultValues.title || !!this.defaultValues.description);
     
     if (this.defaultValues.industry) {
       this.selectedIndustryId = this.defaultValues.industry;
@@ -169,6 +178,9 @@ export class Step4Component extends BaseComponent implements OnInit {
         this.updateParentModel({}, this.checkForm());
       }
     });
+    
+    // Add listeners for detecting manual user changes to remove AI Generated badges
+    this.setupFieldChangeListeners();
     
     // Subscribe to language changes
     const langChangeSub = this.translationService.onLanguageChange().subscribe(lang => {
@@ -465,6 +477,12 @@ export class Step4Component extends BaseComponent implements OnInit {
   onIndustrySelected(node: TreeNode) {
     this.form.get('industry')?.setValue(node.data.key);
     this.selectedIndustryId = node.data.key;
+    
+    // If user manually selected industry, it's no longer AI generated
+    if (this.aiGeneratedFields.industry) {
+      this.aiGeneratedFields.industry = false;
+    }
+    
     if (node.data && node.data.key) {
       this.getTopics(node.data.key);
       // Clear tags and keywords when industry changes
@@ -853,12 +871,8 @@ export class Step4Component extends BaseComponent implements OnInit {
   }
 
   generateAIDescription(): void {
-    // Do not generate AI information if in edit mode
-    if (this.isEditMode) {
-      // In edit mode, simply show the editor without generating AI content
-      this.showEditor = true;
-      return;
-    }
+    // Always allow AI generation regardless of having an ID
+    // The content check above will properly handle true edit mode cases
     this.generateAIInformation();
   }
   
@@ -995,12 +1009,14 @@ export class Step4Component extends BaseComponent implements OnInit {
     // Update title if available
     if (data.title) {
       this.form.get('title')?.setValue(data.title);
+      this.aiGeneratedFields.title = true;
     }
     
     // Update description using abstract field
     if (data.abstract) {
       // Set form value first (even if not visible in the editor)
       this.form.get('description')?.setValue(data.abstract);
+      this.aiGeneratedFields.description = true;
       
       // Enable animation
       this.animatedAbstract = true;
@@ -1018,6 +1034,7 @@ export class Step4Component extends BaseComponent implements OnInit {
       
       if (language) {
         this.form.get('language')?.setValue(language.id);
+        this.aiGeneratedFields.language = true;
       }
     }
     
@@ -1026,6 +1043,7 @@ export class Step4Component extends BaseComponent implements OnInit {
       const industryId = parseInt(data.industry.id);
       if (!isNaN(industryId)) {
         this.form.get('industry')?.setValue(industryId);
+        this.aiGeneratedFields.industry = true;
         // Also update topics if industry changes
         this.getTopics(industryId);
       }
@@ -1046,4 +1064,32 @@ export class Step4Component extends BaseComponent implements OnInit {
     const blocks = this.form.get('economicBlocks')?.value || [];
     return blocks.length > 0 ? null : { required: true };
   };
+
+  // Add method to listen for field changes to remove AI Generated badges
+  private setupFieldChangeListeners(): void {
+    // Title field
+    this.form.get('title')?.valueChanges.subscribe(value => {
+      // Only mark as non-AI if the value has changed and it was previously AI generated
+      if (this.aiGeneratedFields.title && value !== this.defaultValues.title) {
+        this.aiGeneratedFields.title = false;
+      }
+    });
+
+    // Description field - only when editor is visible (user edited)
+    this.form.get('description')?.valueChanges.subscribe(value => {
+      // Only consider changes when the editor is shown (user is editing)
+      if (this.showEditor && this.aiGeneratedFields.description) {
+        this.aiGeneratedFields.description = false;
+      }
+    });
+
+    // Language field
+    this.form.get('language')?.valueChanges.subscribe(value => {
+      if (this.aiGeneratedFields.language && value !== this.defaultValues.language) {
+        this.aiGeneratedFields.language = false;
+      }
+    });
+
+    // Industry field - handled separately in onIndustrySelected method
+  }
 }

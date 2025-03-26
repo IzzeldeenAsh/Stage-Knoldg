@@ -7,6 +7,7 @@ export const locale = {
     REGIONS_COUNTRIES_REQUIRED:'المناطق والدول مطلوبة',
     INDUSTRY_REQUIRED: 'الصناعة مطلوبة',
     ECONOMIC_BLOCKS_REQUIRED: 'التكتلات الاقتصادية مطلوبة',
+    KNOWLEDGE_TYPE_TOOLTIP_EXPLANATION: "اختر نوع المعرفة بناءً على نوع الملفات التي ترغب في رفعها. يمكنك اختيار من بين أنواع مختلفة مثل البيانات (داتا)، التقارير، الرؤى، الأدلة (مانيوال)، وغيرها. حدد النوع الذي يتناسب بشكل أفضل مع محتوى معرفتك.",
     KEYWORDS_REQUIRED: 'الكلمات المفتاحية مطلوبة',
     "UPLOADS_IN_PROGRESS": "قيد الرفع",
     "SELECTED": "محدد",

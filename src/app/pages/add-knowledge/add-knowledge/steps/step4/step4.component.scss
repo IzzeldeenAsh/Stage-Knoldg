@@ -602,3 +602,26 @@
     border-color: #f64e60 !important;
   }
 }
+
+/* Add AI Generated badge styles */
+.ai-generated-badge {
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  background: linear-gradient(135deg, rgba(255,209,0,0.1) 0%, rgba(255,145,0,0.1) 100%);
+  color: #FF9900;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  font-weight: 500;
+  border: 1px solid rgba(255,153,0,0.3);
+  animation: glow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 0px rgba(255,153,0,0);
+  }
+  to {
+    box-shadow: 0 0 3px rgba(255,153,0,0.5);
+  }
+}
