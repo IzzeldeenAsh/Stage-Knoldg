@@ -209,7 +209,7 @@ margin-bottom: 10px;
             
             <div class="row g-5 mb-8">
               <!-- Upload Insights Feature -->
-              <div class="col-md-6">
+              <div class="col-md-6" [ngClass]="userRoles.includes('company') ? 'col-md-6' : 'col-md-12'">
                 <div class="card card-bordered  h-100  overflow-hidden">
                   <div class="card-body p-5">
                     <div class="d-flex flex-column h-100">
@@ -238,7 +238,7 @@ margin-bottom: 10px;
               </div>
               
               <!-- Manage Insighters Feature -->
-              <div class="col-md-6">
+              <div class="col-md-6" *ngIf="userRoles.includes('company')">
                 <div class="card card-bordered  h-100  overflow-hidden">
                   <div class="card-body p-5">
                     <div class="d-flex flex-column h-100">

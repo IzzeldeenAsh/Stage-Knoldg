@@ -202,6 +202,14 @@ export class PostedComponent extends BaseComponent implements OnInit {
             this.packages = this.packages.filter(pkg => pkg.id !== knowledge.id);
             this.knowledges = this.knowledges.filter(k => k.id !== knowledge.id);
             this.totalItems--;
+            
+            // Check if current page is now empty and we're not on the first page
+            if (this.knowledges.length === 0 && this.currentPage > 1) {
+              // Calculate the new page to load
+              const newPage = this.totalItems > 0 ? Math.min(this.currentPage, Math.ceil(this.totalItems / 10)) : 1;
+              this.loadPage(newPage);
+            }
+            
             this.showSuccess('Knowledge has been deleted.', 'success');
           },
           (error) => {
