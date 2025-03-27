@@ -39,6 +39,7 @@ import { IndustriesComponent } from './dashboard/industries/industries.component
 import { RequestsListComponent } from './dashboard/requests-list/requests-list.component';
 import { EconomicBlocksComponent } from './dashboard/economic-blocks/economic-blocks.component';
 import { VerificationQuestionsListComponent } from './dashboard/verification-questions-list/verification-questions-list.component';
+import { TagInputModule } from 'ngx-chips';
 
 @NgModule({
   declarations: [
@@ -84,6 +85,7 @@ import { VerificationQuestionsListComponent } from './dashboard/verification-que
     MessagesModule,
     TableModule,
     ChipModule,
+    TagInputModule,
   ],
   providers: [NodeService]
 })

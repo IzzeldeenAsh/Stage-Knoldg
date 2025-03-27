@@ -226,12 +226,21 @@
     <!-- Keywords English -->
     <div class="fv-row mb-7">
       <label class="fw-semibold fs-6 mb-2">Keywords (English)</label>
-      <input
-        type="text"
-        class="form-control form-control-solid mb-3 mb-lg-0"
-        placeholder="Enter keywords in English (comma-separated)"
+      <tag-input
         formControlName="keywordsEn"
-      />
+        [secondaryPlaceholder]="'Enter keywords in English'"
+        [separatorKeyCodes]="[188, 13, 1548]"
+        [addOnBlur]="true"
+        [placeholder]="'Enter keywords in English'"
+        [displayBy]="'display'"
+        [identifyBy]="'value'"
+        [modelAsStrings]="false"
+      >
+        <tag-input-dropdown
+          [showDropdownIfEmpty]="true"
+          [autocompleteItems]="availableEnglishKeywords"
+        ></tag-input-dropdown>
+      </tag-input>
       <div class="form-text">Enter keywords separated by commas</div>
       <div *ngIf="keywordsEn?.touched && keywordsEn?.errors?.['serverError']" class="fv-plugins-message-container">
         <div class="fv-help-block">
@@ -243,12 +252,21 @@
     <!-- Keywords Arabic -->
     <div class="fv-row mb-7">
       <label class="fw-semibold fs-6 mb-2">Keywords (Arabic)</label>
-      <input
-        type="text"
-        class="form-control form-control-solid mb-3 mb-lg-0"
-        placeholder="Enter keywords in Arabic (comma-separated)"
+      <tag-input
         formControlName="keywordsAr"
-      />
+        [secondaryPlaceholder]="'Enter keywords in Arabic'"
+        [separatorKeyCodes]="[188, 13, 1548]"
+        [addOnBlur]="true"
+        [placeholder]="'Enter keywords in Arabic'"
+        [displayBy]="'display'"
+        [identifyBy]="'value'"
+        [modelAsStrings]="false"
+      >
+        <tag-input-dropdown
+          [showDropdownIfEmpty]="true"
+          [autocompleteItems]="availableArabicKeywords"
+        ></tag-input-dropdown>
+      </tag-input>
       <div class="form-text">Enter keywords separated by commas</div>
       <div *ngIf="keywordsAr?.touched && keywordsAr?.errors?.['serverError']" class="fv-plugins-message-container">
         <div class="fv-help-block">
@@ -259,7 +277,10 @@
     
     <!-- Form-level validation errors -->
     <div *ngIf="topicForm.errors && (topicForm.touched || topicForm.dirty)" class="alert alert-danger">
-      <!-- Removed keyword mismatch and keyword required messages since those validations have been removed -->
+      <div *ngIf="topicForm.errors?.['keywordsMismatch']" class="d-flex align-items-center">
+        <i class="ki-duotone ki-cross-circle fs-2 me-2"></i>
+        <span>The number of keywords in English and Arabic must match</span>
+      </div>
     </div>
   </form>
 
