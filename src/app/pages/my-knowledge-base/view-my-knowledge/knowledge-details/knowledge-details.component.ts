@@ -58,7 +58,7 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
 
   // Add animation states
   hoveredDocumentId: number | null = null;
-  activeDocumentId: number | null = 2;
+  activeDocumentId: number | null = null;
   animationStates: { [key: number]: string } = {};
 
   // Add new properties for insight documents
@@ -844,7 +844,7 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
             this.showError('', 'Error in server response: no document ID returned');
           }
         },
-        error: (error: any) => {
+        error: (error) => {
           this.isLoading = false;
           console.error('Upload error:', error);
           this.showError('', error?.error?.message || 'Error uploading file');

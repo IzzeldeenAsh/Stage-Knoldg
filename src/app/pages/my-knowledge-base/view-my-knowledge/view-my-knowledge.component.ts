@@ -28,6 +28,8 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
   documents: DocumentListResponse;
   isLoading: boolean = false;
   dialogRef: DynamicDialogRef | undefined;
+  isShareDialogVisible: boolean = false;
+  linkCopied: boolean = false;
 
   constructor(
     injector: Injector,
@@ -138,6 +140,43 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
         this.unpublishKnowledge();
       }
     });
+  }
+
+  confirmDelete(): void {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel',
+      customClass: {
+        confirmButton: 'btn btn-danger',
+        cancelButton: 'btn btn-light'
+      },
+      buttonsStyling: false
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.deleteKnowledge();
+      }
+    });
+  }
+
+  deleteKnowledge(): void {
+    this.isLoading = true;
+    this.knowledgeService.deleteKnowledge(Number(this.knowledgeId)).subscribe(
+      () => {
+        this.showSuccess('Knowledge has been deleted.', 'Success');
+        // Navigate back to the knowledge list
+        this.router.navigate(['/app/insighter-dashboard/my-knowledge/general']);
+      },
+      (error) => {
+        this.isLoading = false;
+        this.handleServerErrors(error);
+      }
+    );
   }
 
   publishKnowledge(): void {
@@ -257,5 +296,43 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
 
   navigateToEdit(): void {
     this.router.navigate(['/app/edit-knowledge/stepper', this.knowledge.id]);
+  }
+
+  openShareDialog(): void {
+    this.isShareDialogVisible = true;
+    this.linkCopied = false;
+  }
+
+  getSocialShareLink(platform: string): string {
+    const shareUrl = this.getShareableLink();
+    const title = encodeURIComponent(this.knowledge.title || 'Check out this knowledge');
+    
+    switch(platform) {
+      case 'facebook':
+        return `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+      case 'twitter':
+        return `https://twitter.com/intent/tweet?text=${title}&url=${encodeURIComponent(shareUrl)}`;
+      case 'linkedin':
+        return `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
+      default:
+        return '';
+    }
+  }
+
+  getShareableLink(): string {
+    const knowledgeType = this.knowledge.type?.toLowerCase() || 'insight';
+    const slug = this.knowledge.slug || '';
+    return `https://knoldg.com/en/knowledge/${knowledgeType}/${slug}`;
+  }
+
+  copyLink(inputElement: HTMLInputElement): void {
+    inputElement.select();
+    document.execCommand('copy');
+    this.linkCopied = true;
+    
+    // Reset the "copied" message after 3 seconds
+    setTimeout(() => {
+      this.linkCopied = false;
+    }, 3000);
   }
 }
