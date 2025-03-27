@@ -243,8 +243,27 @@ export class TopicsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isUpdate = true;
     this.selectedTopicId = topic.id;
 
-    const keywordsEn = topic.keywords?.map(k => k.en).join(', ') || '';
-    const keywordsAr = topic.keywords?.map(k => k.ar).join(', ') || '';
+    let keywordsEn = '';
+    let keywordsAr = '';
+    
+    // Handle different keyword formats from the API
+    if (topic.keywords) {
+      // Check if keywords is an object with en/ar arrays (newer format)
+      if (typeof topic.keywords === 'object' && !Array.isArray(topic.keywords) && 'en' in topic.keywords) {
+        keywordsEn = (topic.keywords as {en: string[], ar: string[]}).en.join(', ');
+        keywordsAr = (topic.keywords as {en: string[], ar: string[]}).ar.join(', ');
+      } 
+      // Check if keywords is an array of objects with en/ar properties (older format)
+      else if (Array.isArray(topic.keywords) && topic.keywords.length > 0) {
+        keywordsEn = topic.keywords.map(k => k.en).join(', ');
+        keywordsAr = topic.keywords.map(k => k.ar).join(', ');
+      }
+    }
+    // Check for flat keyword array (legacy format)
+    else if (topic.keyword && Array.isArray(topic.keyword)) {
+      keywordsEn = topic.keyword.join(', ');
+      // If no Arabic keywords, we'll just leave it blank
+    }
     
     // First, set all other fields
     this.topicForm.patchValue({
@@ -258,6 +277,7 @@ export class TopicsComponent implements OnInit, OnDestroy, AfterViewInit {
     // For debugging
     console.log('Topic industry ID to select:', topic.industry_id);
     console.log('Available industries:', this.industries);
+    console.log('Keywords format:', topic.keywords, topic.keyword);
     
     // If industries are already loaded, find and select the industry
     if (this.industries && this.industries.length > 0) {
@@ -287,14 +307,17 @@ export class TopicsComponent implements OnInit, OnDestroy, AfterViewInit {
       keywords: []
     };
 
-    if (formValues.keywordsEn && formValues.keywordsAr) {
-      const keywordsEn = formValues.keywordsEn.split(',').map((k: string) => k.trim()).filter((k: string) => k);
-      const keywordsAr = formValues.keywordsAr.split(',').map((k: string) => k.trim()).filter((k: string) => k);
-      
-      topicData.keywords = keywordsEn.map((en: string, index: number) => ({
-        en,
-        ar: keywordsAr[index]
-      }));
+    // Handle both regular and Arabic commas for keywords
+    const keywordsEn = formValues.keywordsEn ? formValues.keywordsEn.split(/[,،]/).map((k: string) => k.trim()).filter((k: string) => k) : [];
+    const keywordsAr = formValues.keywordsAr ? formValues.keywordsAr.split(/[,،]/).map((k: string) => k.trim()).filter((k: string) => k) : [];
+    
+    // Create keyword pairs - use empty string for missing translations
+    const maxLength = Math.max(keywordsEn.length, keywordsAr.length);
+    for (let i = 0; i < maxLength; i++) {
+      topicData.keywords.push({
+        en: i < keywordsEn.length ? keywordsEn[i] : '',
+        ar: i < keywordsAr.length ? keywordsAr[i] : ''
+      });
     }
 
     if (this.isUpdate && this.selectedTopicId !== null) {
@@ -507,20 +530,24 @@ export class TopicsComponent implements OnInit, OnDestroy, AfterViewInit {
       return null;
     }
     
-    if ((keywordsEn && !keywordsAr) || (!keywordsEn && keywordsAr)) {
-      return { keywordsMismatch: true };
-    }
+    // No longer requiring that both have keywords or that counts match
+    // if ((keywordsEn && !keywordsAr) || (!keywordsEn && keywordsAr)) {
+    //   return { keywordsMismatch: true };
+    // }
     
-    const enItems = keywordsEn.split(',').map((k: string) => k.trim()).filter((k: string) => k);
-    const arItems = keywordsAr.split(',').map((k: string) => k.trim()).filter((k: string) => k);
+    // Handle both regular and Arabic commas
+    const enItems = keywordsEn.split(/[,،]/).map((k: string) => k.trim()).filter((k: string) => k);
+    const arItems = keywordsAr.split(/[,،]/).map((k: string) => k.trim()).filter((k: string) => k);
     
-    if (enItems.length !== arItems.length) {
-      return { keywordsMismatch: true };
-    }
+    // No longer checking if counts match
+    // if (enItems.length !== arItems.length) {
+    //   return { keywordsMismatch: true };
+    // }
     
-    if (enItems.length === 0) {
-      return { keywordsRequired: true };
-    }
+    // We're not requiring keywords anymore
+    // if (enItems.length === 0) {
+    //   return { keywordsRequired: true };
+    // }
     
     return null;
   }

@@ -16,7 +16,11 @@ export interface Topic {
   keywords?: Array<{
     en: string;
     ar: string;
-  }>;
+  }> | {
+    en: string[];
+    ar: string[];
+  };
+  keyword?: string[];
   description?: string | null;
   descriptions?: any[];
 }
