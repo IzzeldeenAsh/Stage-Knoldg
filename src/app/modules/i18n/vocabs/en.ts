@@ -7,6 +7,7 @@ export const locale = {
     "SELECT_REGIONS": "Select Regions",
     "SEARCH_COUNTRY": "Search country or region...",
     "UPLOADS_IN_PROGRESS": "Uploads in progress",
+    INCLUDED_IN_PACKAGES: 'Included in Packages',
     REGIONS_COUNTRIES_REQUIRED: "Regions and countries are required",
     TAGS_REQUIRED: "Tags are required",
     INDUSTRY_REQUIRED: "Industry is required",
@@ -426,6 +427,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       PLEASE_WAIT: "Please wait...",
       ABOUT_COMPANY_REQUIRED:"About Company Required",
       ADDRESS: "Company Address",
+    
       ADDRESS_PLACEHOLDER: "Enter company address",
       ADDRESS_REQUIRED: "Company address is required",
       KNOWLEDGE_TYPE_TOOLTIP_EXPLANATION: "Choose the type of knowledge based on the type of files you want to upload. You can choose from different types such as data (data), reports, insights, evidence (manuscript), and others. Select the type that best matches the content of your knowledge.",
@@ -731,9 +733,12 @@ Your wealth of knowledge is valued and many are eager to learn from it.
   CUSTOM_TOPIC_MAX_LENGTH: "Custom topic cannot exceed 100 characters",
   SEARCH_TOPICS: "Search Topics",
   TARGET_MARKET: "Target Market",
+  SHARE_WITH: 'Share With',
+  COPY_LINK:'Copy link',
   SELECT_TARGET_MARKET: "Select Target Market",
   TARGET_MARKET_TOOLTIP: "Select the target market that best describes your knowledge",
   ECONOMIC_BLOCK: "Economic Block",
+  LINK_COPIED:'Link copied',
   ECONOMIC_BLOCK_TOOLTIP: "Select the economic block that best describes your knowledge",
   REGION: "Region",
   REGION_TOOLTIP: "Select the region that best describes your knowledge",
@@ -945,7 +950,7 @@ UPLOAD: 'Upload',
     CHOOSE_KNOWLEDGE_TYPE:'Choose Knowledge Type',
     FILE_NAME_DUPLICATE:'File name already exists',
     VIEW_MY_KNOWLEDGE: {
-      
+      SHARE: 'Share',
       BREADCRUMB: {
         HOME: 'Home',
         MY_KNOWLEDGE_BASE: 'Knowledge Base',

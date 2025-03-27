@@ -7,6 +7,7 @@ export const locale = {
     REGIONS_COUNTRIES_REQUIRED:'المناطق والدول مطلوبة',
     INDUSTRY_REQUIRED: 'الصناعة مطلوبة',
     ECONOMIC_BLOCKS_REQUIRED: 'التكتلات الاقتصادية مطلوبة',
+    INCLUDED_IN_PACKAGES: 'الحزم الخاصة',
     KNOWLEDGE_TYPE_TOOLTIP_EXPLANATION: "اختر نوع المعرفة بناءً على نوع الملفات التي ترغب في رفعها. يمكنك اختيار من بين أنواع مختلفة مثل البيانات (داتا)، التقارير، الرؤى، الأدلة (مانيوال)، وغيرها. حدد النوع الذي يتناسب بشكل أفضل مع محتوى معرفتك.",
     KEYWORDS_REQUIRED: 'الكلمات المفتاحية مطلوبة',
     "UPLOADS_IN_PROGRESS": "قيد الرفع",
@@ -737,8 +738,11 @@ export const locale = {
     ADD_DOCUMENT: "إضافة مستند",
     ADD_NODE: "إضافة عقدة",
     FILE:"الملف",
+    LINK_COPIED:'تم نسخ الرابط',  
     ADD_CHAPTER: "إضافة فصل",
     ADD_MEDIA_FILE: "إضافة ملف وسائط",
+    SHARE_WITH:'مشاركة مع',
+    COPY_LINK:'نسخ الرابط',
     UPLOAD_FILE: "رفع ملف",
     FILE_NAME: "اسم الملف",
     PRICE: "السعر",
@@ -873,6 +877,7 @@ export const locale = {
   FILE_NAME_DUPLICATE:'اسم الملف موجود بالفعل',
   SAVE_CHANGES: 'حفظ التغييرات',
   VIEW_MY_KNOWLEDGE: {
+    SHARE: 'مشاركة',
     BREADCRUMB: {
       HOME: 'الرئيسية',
       MY_KNOWLEDGE_BASE: 'قاعدة معرفتي',

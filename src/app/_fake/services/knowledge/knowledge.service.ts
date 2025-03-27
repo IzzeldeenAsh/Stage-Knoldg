@@ -40,6 +40,7 @@ export interface Knowledge {
   hs_code: any;
   language: string;
   total_price: string;
+  package?:any[];
   status: string;
   regions: any[];
   countries: any[];
