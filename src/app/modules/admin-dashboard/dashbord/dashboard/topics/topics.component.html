@@ -259,12 +259,7 @@
     
     <!-- Form-level validation errors -->
     <div *ngIf="topicForm.errors && (topicForm.touched || topicForm.dirty)" class="alert alert-danger">
-      <div *ngIf="topicForm.errors['keywordsMismatch']" class="mb-2">
-        <span role="alert">Number of English and Arabic keywords must match</span>
-      </div>
-      <div *ngIf="topicForm.errors['keywordsRequired']" class="mb-2">
-        <span role="alert">At least one keyword is required in both languages</span>
-      </div>
+      <!-- Removed keyword mismatch and keyword required messages since those validations have been removed -->
     </div>
   </form>
 
