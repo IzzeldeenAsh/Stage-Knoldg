@@ -459,7 +459,23 @@ export class AddInsightStepsService {
         finalize(() => this.setLoading(false))
       );
   }
+  runDocumentParser(documentId: number): Observable<any> {
+    const headers = new HttpHeaders({
+      Accept: "application/json",
+      "Accept-Language": this.currentLang,
+    });
 
+    this.setLoading(true);
+    return this.http
+      .post<any>(`${this.insightaHost}/api/insighter/library/knowledge/document/parser/${documentId}`, {}, {
+        headers,
+      })
+      .pipe(
+        map((res) => res),
+        catchError((error) => this.handleError(error)),
+        finalize(() => this.setLoading(false))
+      );
+  }
   getKnowledgeParserData(knowledgeId: number): Observable<any> {
     const headers = new HttpHeaders({
       Accept: "application/json",

@@ -898,7 +898,7 @@ export class Step4Component extends BaseComponent implements OnInit {
     
     // Time tracking
     const startTime = Date.now();
-    const maxDuration = 20000; // 20 seconds
+    const maxDuration = 25000; // 20 seconds
     const pollInterval = 2000; // 2 seconds
     let hasReceivedData = false;
     

@@ -3,7 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { ICreateKnowldege } from '../../create-account.helper';
 import { AddInsightStepsService, DocumentParserResponse } from 'src/app/_fake/services/add-insight-steps/add-insight-steps.service';
-import { delay, finalize, of } from 'rxjs';
+import { catchError, delay, finalize, map, Observable, of } from 'rxjs';
+import { HttpHeaders } from '@angular/common/http';
 
 // Add the Chapter interface
 export interface Chapter {
@@ -79,8 +80,27 @@ export class Step3Component extends BaseComponent implements OnInit {
     this.documentLoadingStates[docId] = true;
     this.documentAbstractErrors[docId] = false;
     
-    // Set maximum time to show loader (15 seconds)
-    const maxWaitTime = 15000;
+    // First trigger document parsing with POST request
+    const parserSubscription = this.addInsightStepsService.runDocumentParser(docId)
+      .subscribe({
+        next: () => {
+          // After successful parsing, start polling for results
+          this.startSummaryPolling(docId);
+        },
+        error: (error: any) => {
+          console.error(`Error starting document parsing for document ${docId}:`, error);
+          this.documentLoadingStates[docId] = false;
+          this.documentAbstractErrors[docId] = true;
+        }
+      });
+    
+    this.unsubscribe.push(parserSubscription);
+  }
+  
+  // Start polling for document summary
+  startSummaryPolling(docId: number): void {
+    // Set maximum time to show loader (25 seconds)
+    const maxWaitTime = 25000;
     const pollingInterval = 2000; // Check every 2 seconds
     let elapsedTime = 0;
     let polling: any;
@@ -303,7 +323,23 @@ export class Step3Component extends BaseComponent implements OnInit {
           // Set loading indicators immediately for documents without descriptions
           this.documents.forEach(doc => {
             if (!doc.description || doc.description.trim() === '') {
+              // Auto-trigger document parsing for documents without descriptions
               this.documentLoadingStates[doc.id] = true;
+              // Start parsing process (POST) followed by polling
+              const parserSubscription = this.addInsightStepsService.runDocumentParser(doc.id)
+                .subscribe({
+                  next: () => {
+                    // After successful parsing, start polling for results
+                    this.startSummaryPolling(doc.id);
+                  },
+                  error: (error:any) => {
+                    console.error(`Error starting document parsing for document ${doc.id}:`, error);
+                    this.documentLoadingStates[doc.id] = false;
+                    this.documentAbstractErrors[doc.id] = true;
+                  }
+                });
+              
+              this.unsubscribe.push(parserSubscription);
             } else {
               // For documents that already have descriptions, we'll still show animation
               doc.animatedAbstract = true;
@@ -320,42 +356,6 @@ export class Step3Component extends BaseComponent implements OnInit {
           // After loading documents, validate them and update the parent model
           this.validateDocuments();
           this.updateParentModelWithDocuments();
-          
-          // For each document that needs a summary, start polling process
-          this.documents.forEach(doc => {
-            if (!doc.description || doc.description.trim() === '') {
-              // Set maximum time to show loader (15 seconds)
-              const maxWaitTime = 15000;
-              const pollingInterval = 2000; // Check every 2 seconds
-              let elapsedTime = 0;
-              let polling: any;
-              
-              // Start polling
-              polling = setInterval(() => {
-                elapsedTime += pollingInterval;
-                
-                // Call the API to check for summary
-                this.fetchDocumentSummary(doc.id, polling);
-                
-                // If we have a valid description now or reached max time, stop polling
-                const index = this.documents.findIndex(d => d.id === doc.id);
-                if ((index !== -1 && this.documents[index].description && this.documents[index].description.trim() !== '') || elapsedTime >= maxWaitTime) {
-                  clearInterval(polling);
-                  
-                  // Update TinyMCE editor content if editor instance exists and we have content
-                  if (index !== -1 && this.documents[index].description && this.editorInstances[doc.id]) {
-                    this.editorInstances[doc.id].setContent(this.documents[index].description);
-                  }
-                  
-                  // Ensure loading state is turned off after max time
-                  if (elapsedTime >= maxWaitTime && this.documentLoadingStates[doc.id]) {
-                    this.documentLoadingStates[doc.id] = false;
-                    this.documentAbstractErrors[doc.id] = true; // Set error state if we couldn't get data after timeout
-                  }
-                }
-              }, pollingInterval);
-            }
-          });
         },
         error: (error) => {
           console.error('Error loading documents:', error);
@@ -533,4 +533,4 @@ export class Step3Component extends BaseComponent implements OnInit {
     };
     return iconMap[extension?.toLowerCase()] || './assets/media/svg/files/default.svg';
   }
-} 
+}
