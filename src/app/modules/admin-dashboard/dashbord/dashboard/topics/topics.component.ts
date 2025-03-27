@@ -52,6 +52,10 @@ export class TopicsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   Math = Math; 
 
+  // For tag input
+  availableEnglishKeywords: any[] = [];
+  availableArabicKeywords: any[] = [];
+
   constructor(
     private cdr: ChangeDetectorRef,
     private topicsService: TopicsService,
@@ -75,8 +79,8 @@ export class TopicsComponent implements OnInit, OnDestroy, AfterViewInit {
       nameAr: ['', Validators.required],
       status: ['', Validators.required],
       industryId: [null, Validators.required],
-      keywordsEn: [''],
-      keywordsAr: [''],
+      keywordsEn: [[]],
+      keywordsAr: [[]],
     }, { validators: this.keywordsValidator });
   }
 
@@ -243,35 +247,39 @@ export class TopicsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isUpdate = true;
     this.selectedTopicId = topic.id;
 
-    let keywordsEn = '';
-    let keywordsAr = '';
+    let keywordsEn: string[] = [];
+    let keywordsAr: string[] = [];
     
     // Handle different keyword formats from the API
     if (topic.keywords) {
       // Check if keywords is an object with en/ar arrays (newer format)
       if (typeof topic.keywords === 'object' && !Array.isArray(topic.keywords) && 'en' in topic.keywords) {
-        keywordsEn = (topic.keywords as {en: string[], ar: string[]}).en.join(', ');
-        keywordsAr = (topic.keywords as {en: string[], ar: string[]}).ar.join(', ');
+        keywordsEn = (topic.keywords as {en: string[], ar: string[]}).en;
+        keywordsAr = (topic.keywords as {en: string[], ar: string[]}).ar;
       } 
       // Check if keywords is an array of objects with en/ar properties (older format)
       else if (Array.isArray(topic.keywords) && topic.keywords.length > 0) {
-        keywordsEn = topic.keywords.map(k => k.en).join(', ');
-        keywordsAr = topic.keywords.map(k => k.ar).join(', ');
+        keywordsEn = topic.keywords.map(k => k.en);
+        keywordsAr = topic.keywords.map(k => k.ar);
       }
     }
     // Check for flat keyword array (legacy format)
     else if (topic.keyword && Array.isArray(topic.keyword)) {
-      keywordsEn = topic.keyword.join(', ');
+      keywordsEn = topic.keyword;
       // If no Arabic keywords, we'll just leave it blank
     }
+    
+    // Set available keywords for dropdowns from current keywords
+    this.availableEnglishKeywords = keywordsEn.map(k => ({ display: k, value: k }));
+    this.availableArabicKeywords = keywordsAr.map(k => ({ display: k, value: k }));
     
     // First, set all other fields
     this.topicForm.patchValue({
       nameEn: topic.names.en,
       nameAr: topic.names.ar,
       status: topic.status,
-      keywordsEn: keywordsEn,
-      keywordsAr: keywordsAr
+      keywordsEn: keywordsEn.map(k => ({ display: k, value: k })),
+      keywordsAr: keywordsAr.map(k => ({ display: k, value: k }))
     });
     
     // For debugging
@@ -307,16 +315,16 @@ export class TopicsComponent implements OnInit, OnDestroy, AfterViewInit {
       keywords: []
     };
 
-    // Handle both regular and Arabic commas for keywords
-    const keywordsEn = formValues.keywordsEn ? formValues.keywordsEn.split(/[,،]/).map((k: string) => k.trim()).filter((k: string) => k) : [];
-    const keywordsAr = formValues.keywordsAr ? formValues.keywordsAr.split(/[,،]/).map((k: string) => k.trim()).filter((k: string) => k) : [];
+    // Extract keywords from tag-input format
+    const keywordsEn = formValues.keywordsEn || [];
+    const keywordsAr = formValues.keywordsAr || [];
     
     // Create keyword pairs - use empty string for missing translations
     const maxLength = Math.max(keywordsEn.length, keywordsAr.length);
     for (let i = 0; i < maxLength; i++) {
       topicData.keywords.push({
-        en: i < keywordsEn.length ? keywordsEn[i] : '',
-        ar: i < keywordsAr.length ? keywordsAr[i] : ''
+        en: i < keywordsEn.length ? (typeof keywordsEn[i] === 'string' ? keywordsEn[i] : keywordsEn[i].value || keywordsEn[i].display) : '',
+        ar: i < keywordsAr.length ? (typeof keywordsAr[i] === 'string' ? keywordsAr[i] : keywordsAr[i].value || keywordsAr[i].display) : ''
       });
     }
 
@@ -523,31 +531,22 @@ export class TopicsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   keywordsValidator(group: FormGroup) {
-    const keywordsEn = group.get('keywordsEn')?.value?.trim() || '';
-    const keywordsAr = group.get('keywordsAr')?.value?.trim() || '';
+    const keywordsEn = group.get('keywordsEn')?.value || [];
+    const keywordsAr = group.get('keywordsAr')?.value || [];
     
-    if (!keywordsEn && !keywordsAr) {
+    if (!keywordsEn.length && !keywordsAr.length) {
       return null;
     }
     
-    // No longer requiring that both have keywords or that counts match
-    // if ((keywordsEn && !keywordsAr) || (!keywordsEn && keywordsAr)) {
-    //   return { keywordsMismatch: true };
-    // }
+    // Require that both arrays have keywords or both are empty
+    if ((keywordsEn.length && !keywordsAr.length) || (!keywordsEn.length && keywordsAr.length)) {
+      return { keywordsMismatch: true };
+    }
     
-    // Handle both regular and Arabic commas
-    const enItems = keywordsEn.split(/[,،]/).map((k: string) => k.trim()).filter((k: string) => k);
-    const arItems = keywordsAr.split(/[,،]/).map((k: string) => k.trim()).filter((k: string) => k);
-    
-    // No longer checking if counts match
-    // if (enItems.length !== arItems.length) {
-    //   return { keywordsMismatch: true };
-    // }
-    
-    // We're not requiring keywords anymore
-    // if (enItems.length === 0) {
-    //   return { keywordsRequired: true };
-    // }
+    // Check if the number of keywords in both languages match
+    if (keywordsEn.length !== keywordsAr.length) {
+      return { keywordsMismatch: true };
+    }
     
     return null;
   }
