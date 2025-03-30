@@ -734,6 +734,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
   SEARCH_TOPICS: "Search Topics",
   TARGET_MARKET: "Target Market",
   SHARE_WITH: 'Share With',
+  KNOWLEDGE_TYPE_TOOLTIP_EXPLANATION: "Choose the type of knowledge based on the type of files you want to upload. You can choose from different types such as data, reports, insights, manuals, and others. Select the type that best matches the content of your knowledge.",
   COPY_LINK:'Copy link',
   SELECT_TARGET_MARKET: "Select Target Market",
   TARGET_MARKET_TOOLTIP: "Select the target market that best describes your knowledge",
