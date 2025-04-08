@@ -1,9 +1,17 @@
 export const locale = {
   lang: "ar",
   data: {
+    'DRAFT_STATUS': 'مسودة',
     "SELECT_REGION": "اختر المنطقة...",
     "SELECT_REGIONS": "اختر المناطق",
     "SEARCH_COUNTRY": "بحث عن دولة أو منطقة...",
+     "NO_TAGS_AVAILABLE": "لا توجد علامات متاحة لهذا الموضوع.",
+  "ADD_CUSTOM_TAG_INSTRUCTION": "يمكنك إضافة علامات مخصصة باستخدام زر 'إضافة علامة مخصصة'.",
+    "STEP1_5": "الخطوة 1/5",
+    "STEP2_5": "الخطوة 2/5",
+    "STEP3_5": "الخطوة 3/5",
+    "STEP4_5": "الخطوة 4/5",
+    "STEP5_5": "الخطوة 5/5",
     REGIONS_COUNTRIES_REQUIRED:'المناطق والدول مطلوبة',
     INDUSTRY_REQUIRED: 'الصناعة مطلوبة',
     ECONOMIC_BLOCKS_REQUIRED: 'التكتلات الاقتصادية مطلوبة',
@@ -788,9 +796,18 @@ export const locale = {
     GO_TO_LIBRARY: "الذهاب إلى المكتبة",
     // ... rest of the existing code ...
   'KNOWLEDGE': {
+    "FILTER_BY_TYPE": "تصفية حسب النوع",
+    "ITEMS": "عناصر",
+    "ALL": "الكل",
+    "DATA": "بيانات",
+    "INSIGHT": "رؤى",
+    "REPORT": "تقرير",
+    "MANUAL": "دليل",
+    "COURSE": "دورة",
+    "MEDIA": "وسائط",
+    "CLEAR_FILTERS": "مسح التصفية",
    'TITLE': 'قاعدة معرفتي',
     'TOTAL': 'المجموع',
-    'ITEMS': 'عناصر',
     'SEARCH_PLACEHOLDER': 'البحث عن الملفات والمجلدات',
     'ADD_KNOWLEDGE': 'إضافة معرفة',
     'GENERATE_PACKAGE': 'إنشاء حزمة',
@@ -813,7 +830,8 @@ export const locale = {
       'GENERAL': 'عام',
       'SCHEDULED': 'مجدول',
       'POSTED': 'منشور',
-      'PACKAGES': 'الحزم'
+      'PACKAGES': 'الحزم',
+      'UNPUBLISHED': 'مسودة'
     }
   },
   DEACTIVATE_ACCOUNT_SUCCESS_MESSAGE: "تم إلغاء تنشيط حساب الانسايتر بنجاح",

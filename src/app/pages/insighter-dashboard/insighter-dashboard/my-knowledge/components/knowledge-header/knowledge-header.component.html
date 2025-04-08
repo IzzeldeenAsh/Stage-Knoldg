@@ -26,23 +26,6 @@
         </div>
     </div>
     <!--end::Title-->
-    
-    <!-- Add spacer to push statistics to the right -->
-    <div class="flex-grow-1"></div>
-    
-    <!--begin::Statistics-->
-    <div class="d-flex align-items-center flex-wrap gap-3 mt-3 mt-lg-0 px-6" *ngIf="statistics && statistics.data">
-      <ng-container *ngFor="let stat of statistics.data">
-        <div class="d-flex align-items-center rounded p-2 p-lg-3">
-          <app-keenicon [name]="getIconName(stat.type)" [class]="'text-' + getIconClass(stat.type) + ' fs-2 me-2'"></app-keenicon>
-          <div class="d-flex flex-column">
-            <span class="fw-bold fs-7 fs-lg-6">{{ getTypeLabel(stat.type) | translate }}</span>
-            <span class="fw-semibold fs-8 fs-lg-7">{{ stat.count }}</span>
-          </div>
-        </div>
-      </ng-container>
-    </div>
-    <!--end::Statistics-->
   </div>
 </div>
 <!--end::Card header-->
@@ -73,6 +56,17 @@
         routerLinkActive="active"
       >
         {{ 'KNOWLEDGE.TABS.SCHEDULED' | translate }}
+      </a>
+    </li>
+    <!--end::Nav item-->
+    <!--begin::Nav item-->
+    <li class="nav-item">
+      <a
+        class="nav-link text-active-primary me-6"
+        routerLink="unpublished"
+        routerLinkActive="active"
+      >
+        {{ 'KNOWLEDGE.TABS.UNPUBLISHED' | translate }}
       </a>
     </li>
     <!--end::Nav item-->

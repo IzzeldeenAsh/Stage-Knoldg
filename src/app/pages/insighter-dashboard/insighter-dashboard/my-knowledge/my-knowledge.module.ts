@@ -21,6 +21,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { ScheduleDialogComponent } from './components/packages/schedule-dialog/schedule-dialog.component';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { EditorModule } from '@tinymce/tinymce-angular';
+import { UnpublishedComponent } from './components/unpublished/unpublished.component';
 
 
 const routes: Routes = [
@@ -42,6 +43,10 @@ const routes: Routes = [
         component: ScheduledComponent
       },
       {
+        path: 'unpublished',
+        component: UnpublishedComponent
+      },
+      {
         path: 'posted',
         component: PostedComponent
       },
@@ -60,6 +65,7 @@ const routes: Routes = [
     KnowledgeHeaderComponent,
     GeneralComponent,
     ScheduledComponent,
+    UnpublishedComponent,
     PostedComponent,
     PackageBuilderContentComponent,
     PackagesComponent,

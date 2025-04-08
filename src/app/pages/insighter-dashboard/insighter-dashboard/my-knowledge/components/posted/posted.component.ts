@@ -62,6 +62,10 @@ export class PostedComponent extends BaseComponent implements OnInit {
   searchTimeout: any;
   selectedType: string = 'grid'; // Default view type
 
+  // Type filtering
+  selectedKnowledgeType: string = ''; // Empty means all types
+  typeCounts: { [key: string]: number } = {};
+
   constructor(
     injector: Injector,
     private knowledgeService: KnowledgeService,
@@ -95,18 +99,58 @@ export class PostedComponent extends BaseComponent implements OnInit {
     this.knowledgeService.getListKnowledge().subscribe(
       (knowledges) => {
         this.allKnowledges = knowledges.data.filter(k => k.status === 'published');
+        this.calculateTypeCounts();
       }
     );
   }
 
+  // Calculate the count of each knowledge type
+  calculateTypeCounts(): void {
+    // Reset counts
+    this.typeCounts = {};
+    
+    // Count each type
+    this.allKnowledges.forEach(knowledge => {
+      if (knowledge.type) {
+        if (!this.typeCounts[knowledge.type]) {
+          this.typeCounts[knowledge.type] = 0;
+        }
+        this.typeCounts[knowledge.type]++;
+      }
+    });
+  }
+
+  // Get the count for a specific type
+  getTypeCount(type: string): number {
+    return this.typeCounts[type] || 0;
+  }
+
+  // Filter knowledges by type
+  filterByType(type: string): void {
+    this.selectedKnowledgeType = type;
+    this.currentPage = 1; // Reset to first page when filtering
+    this.loadPage(this.currentPage);
+  }
+
   loadPage(page: number): void {
     this.loading = true;
-    this.knowledgeService.getPaginatedKnowledges(page, 'published', this.searchTerm).subscribe(
+    this.knowledgeService.getPaginatedKnowledges(
+      page, 
+      'published', 
+      this.searchTerm,
+      this.selectedKnowledgeType // Pass the type filter
+    ).subscribe(
       (response) => {
         this.knowledges = response.data;
         this.currentPage = response.meta.current_page;
         this.totalPages = response.meta.last_page;
         this.totalItems = response.meta.total;
+        
+        // Update type counts based on all published knowledges
+        if (page === 1 && !this.selectedKnowledgeType) {
+          this.calculateTypeCounts();
+        }
+        
         this.loading = false;
       },
       (error) => {
@@ -136,6 +180,7 @@ export class PostedComponent extends BaseComponent implements OnInit {
     if (typeof page === 'number') {
       this.loadPage(page);
     }
+    // If page is ellipsis ('...'), do nothing
   }
 
   trackById(index: number, item: Knowledge): number {
