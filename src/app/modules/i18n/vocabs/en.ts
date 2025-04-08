@@ -5,6 +5,13 @@ export const locale = {
   data: {
     "SELECT_REGION": "Select Region...",
     "SELECT_REGIONS": "Select Regions",
+    "NO_TAGS_AVAILABLE": "No tags are available for this topic.",
+  "ADD_CUSTOM_TAG_INSTRUCTION": "You can add custom tags using the 'Add Custom Tag' button.",
+    STEP1_5: "Step 1 out of 5",
+    STEP2_5: "Step 2 out of 5",
+    STEP3_5: "Step 3 out of 5",
+    STEP4_5: "Step 4 out of 5",
+    STEP5_5: "Step 5 out of 5",
     "SEARCH_COUNTRY": "Search country or region...",
     "UPLOADS_IN_PROGRESS": "Uploads in progress",
     INCLUDED_IN_PACKAGES: 'Included in Packages',

@@ -50,6 +50,7 @@
 <!-- Content Section -->
 <div *ngIf="!isLoading">
   <div class="pb-10 pb-lg-15">
+    <div class="text-gray-600 fw-light fs-6 pb-2 fs-7 text-uppercase" >{{"STEP4_5" | translate}}</div>
     <h2 class="fw-bolder text-gray-900">
       {{ "VIEW_MY_KNOWLEDGE.KNOWLEDGE_DETAILS" | translate }}
     </h2>
@@ -173,7 +174,6 @@
                   <!-- Animated abstract display -->
                   <div *ngIf="animatedAbstract && !showEditor" class="animated-abstract p-3 border rounded mb-3">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                      <h5 class="text-gray-800 mb-0">AI Generated Description</h5>
                       <!-- Edit button - shows when we have animated abstract -->
                       <button *ngIf="animatedAbstractComplete" 
                             (click)="showDescriptionEditor()"
@@ -496,20 +496,23 @@
           <span class="required">{{ "SELECT_TAGS" | translate }}</span>
         </label>
         <div class="d-flex gap-3">
-          <button
-            type="button"
-            class="btn btn-sm btn-light-info text-info text-hover-white text-active-white"
-            (click)="selectAll()"
-          >
-            {{ "SELECT_ALL" | translate }}
-          </button>
-          <button
-            type="button"
-            class="btn btn-sm btn-light-warning text-warning text-hover-white text-active-white"
-            (click)="clearAll()"
-          >
-            {{ "CLEAR_ALL" | translate }}
-          </button>
+          <!-- Only show Select All and Clear All buttons if tags are available -->
+          <ng-container *ngIf="tags && tags.length > 0">
+            <button
+              type="button"
+              class="btn btn-sm btn-light-info text-info text-hover-white text-active-white"
+              (click)="selectAll()"
+            >
+              {{ "SELECT_ALL" | translate }}
+            </button>
+            <button
+              type="button"
+              class="btn btn-sm btn-light-warning text-warning text-hover-white text-active-white"
+              (click)="clearAll()"
+            >
+              {{ "CLEAR_ALL" | translate }}
+            </button>
+          </ng-container>
           <button
             type="button"
             class="btn btn-sm btn-light-success text-success text-hover-white text-active-white"
@@ -519,7 +522,12 @@
           </button>
         </div>
       </div>
-      <div class="chip-group mb-5">
+      <!-- Show this message when there are no tags -->
+      <div *ngIf="!tags || tags.length === 0" class="alert alert-info mb-5">
+        {{ "NO_TAGS_AVAILABLE" | translate }} {{ "ADD_CUSTOM_TAG_INSTRUCTION" | translate }}
+      </div>
+      <!-- Only show chip group if there are tags -->
+      <div class="chip-group mb-5" *ngIf="chips && chips.length > 0">
         <div class="chip" *ngFor="let chip of chips" [class.selected]="chip.selected" (click)="toggleSelection(chip)">
           <span class="check-icon" *ngIf="chip.selected">
             <i class="pi pi-check" style="font-size: 1rem"></i>

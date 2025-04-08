@@ -314,6 +314,8 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
         return `https://twitter.com/intent/tweet?text=${title}&url=${encodeURIComponent(shareUrl)}`;
       case 'linkedin':
         return `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
+      case 'whatsapp':
+        return `https://api.whatsapp.com/send?text=${title}%20${encodeURIComponent(shareUrl)}`;
       default:
         return '';
     }
@@ -334,5 +336,18 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
     setTimeout(() => {
       this.linkCopied = false;
     }, 3000);
+  }
+
+  /**
+   * Copy text directly to clipboard without requiring an input element
+   * @param text Text to copy to clipboard
+   */
+  copyToClipboard(text: string): void {
+    navigator.clipboard.writeText(text).then(() => {
+      this.linkCopied = true;
+      setTimeout(() => {
+        this.linkCopied = false;
+      }, 3000);
+    });
   }
 }

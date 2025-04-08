@@ -229,17 +229,23 @@
         <router-outlet></router-outlet>
       </div>
       <div class="col-lg-4">
-        <!-- Added sticky sidebar with responsive behavior -->
-        <div
-          class="tp-course-details2-widget position-lg-sticky"
-          style="z-index: 1"
-        >
-          <div class="tp-course-details2-widget-content">
-            <div
-              class="tp-course-details2-widget-price d-flex justify-content-center align-items-center"
-            >
-              <span class="fs-2x fw-bolder text-primary">{{ knowledge.total_price ? (knowledge.total_price | currency) : 'N/A' }}</span>
-              <span class="text-muted fs-5 ms-3">{{ 'ONE_TIME_PURCHASE' | translate }}</span>
+        <!-- Sticky container for sidebar elements -->
+        <div class="position-lg-sticky" style="z-index: 1; top: 120px;">
+          <!-- Main knowledge details -->
+          <div class="tp-course-details2-widget">
+            <div class="tp-course-details2-widget-content">
+              <div
+                class="tp-course-details2-widget-price d-flex justify-content-center align-items-center"
+              >
+              <span class="fs-2x  fw-bolder" [ngClass]="(knowledge.total_price | currency) === '$0.00' ? 'text-success' : 'text-primary'">
+                <ng-container *ngIf="(knowledge.total_price | currency) === '$0.00'">
+                  <ng-container *ngIf="lang === 'ar'">صدقة جارية</ng-container>
+                  <ng-container *ngIf="lang !== 'ar'">Free</ng-container>
+                </ng-container>
+                <ng-container *ngIf="(knowledge.total_price | currency) !== '$0.00'">
+                  {{ knowledge.total_price ? (knowledge.total_price | currency) : 'N/A' }}
+                </ng-container>
+              </span>
             </div>
             <div class="separator separator-dashed my-5"></div>
 
@@ -468,13 +474,6 @@
                   *ngIf="knowledge.status === 'published'"
                 >
                   <button
-                    class="btn btn-light-primary w-100"
-                    (click)="openShareDialog()"
-                  >
-                    <i class="ki-outline ki-share fs-4 me-2"></i>
-                    {{ 'VIEW_MY_KNOWLEDGE.SHARE' | translate }}
-                  </button>
-                  <button
                     class="btn btn-light-danger w-100"
                     (click)="confirmUnpublish()"
                   >
@@ -484,8 +483,50 @@
                 </div>
               </div>
             </div>
+            </div>
+          </div>
+          
+          <!-- Share Box (Only visible for published items) -->
+          <div *ngIf="knowledge.status === 'published'"
+               class="tp-course-details2-widget mt-5">
+            <div class="tp-course-details2-widget-content">
+            <div class="p-4">
+              <h4 class="fs-6 fw-bold mb-4">{{ 'SHARE_KNOWLEDGE' | translate }}</h4>
+              
+              <!-- Social Share Icons -->
+              <div class="d-flex gap-3 justify-content-center mb-5">
+                <!-- Facebook -->
+                <a [href]="getSocialShareLink('facebook')" target="_blank" class="btn btn-icon btn-circle btn-facebook">
+                  <i class="fab fa-facebook-f fs-4"></i>
+                </a>
+                <!-- Twitter/X -->
+                <a [href]="getSocialShareLink('twitter')" target="_blank" class="btn btn-icon btn-circle btn-twitter">
+                  <i class="fab fa-twitter fs-4"></i>
+                </a>
+                <!-- LinkedIn -->
+                <a [href]="getSocialShareLink('linkedin')" target="_blank" class="btn btn-icon btn-circle btn-linkedin">
+                  <i class="fab fa-linkedin-in fs-4"></i>
+                </a>
+                <!-- WhatsApp (New) -->
+                <a [href]="getSocialShareLink('whatsapp')" target="_blank" class="btn btn-icon btn-circle btn-success">
+                  <i class="fab fa-whatsapp fs-4"></i>
+                </a>
+              </div>
+              
+              <!-- Copy Link Button -->
+              <button class="btn btn-light-info w-100" (click)="copyToClipboard(getShareableLink())">
+                <i class="ki-outline ki-copy fs-4 me-2"></i>
+                {{ 'COPY_LINK' | translate }}
+              </button>
+              
+              <!-- Link Copied Confirmation -->
+              <div *ngIf="linkCopied" class="text-success text-center mt-2 small">
+                <i class="ki-outline ki-check fs-6 me-1"></i> {{ 'LINK_COPIED' | translate }}
+              </div>
+            </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
 
@@ -497,43 +538,4 @@
 </div>
 
 <!-- Share Knowledge Dialog -->
-<p-dialog 
-  header="{{ 'SHARE_KNOWLEDGE' | translate }}"
-  [(visible)]="isShareDialogVisible"
-  [modal]="true"
-  [style]="{width: '450px'}"
-  [draggable]="false"
-  [resizable]="false">
-  <div class="p-fluid">
-    <div class="mb-4">
-      <label class="form-label fw-bold mb-2">{{ 'SHARE_WITH' | translate }}</label>
-      <div class="d-flex gap-3 justify-content-center mt-3">
-        <!-- Facebook -->
-        <a [href]="getSocialShareLink('facebook')" target="_blank" class="btn btn-icon btn-circle btn-facebook">
-          <i class="fab fa-facebook-f fs-4"></i>
-        </a>
-        <!-- Twitter/X -->
-        <a [href]="getSocialShareLink('twitter')" target="_blank" class="btn btn-icon btn-circle btn-twitter">
-          <i class="fab fa-twitter fs-4"></i>
-        </a>
-        <!-- LinkedIn -->
-        <a [href]="getSocialShareLink('linkedin')" target="_blank" class="btn btn-icon btn-circle btn-linkedin">
-          <i class="fab fa-linkedin-in fs-4"></i>
-        </a>
-      </div>
-    </div>
-    
-    <div class="mb-4">
-      <label class="form-label fw-bold mb-2">{{ 'COPY_LINK' | translate }}</label>
-      <div class="input-group">
-        <input type="text" class="form-control" [value]="getShareableLink()" readonly #shareLink>
-        <button class="btn btn-primary" type="button" (click)="copyLink(shareLink)">
-          <i class="ki-outline ki-copy fs-4"></i>
-        </button>
-      </div>
-      <div *ngIf="linkCopied" class="text-success mt-2 small">
-        <i class="ki-outline ki-check fs-6 me-1"></i> {{ 'LINK_COPIED' | translate }}
-      </div>
-    </div>
-  </div>
-</p-dialog>
+<!-- Share dialog removed as requested -->
