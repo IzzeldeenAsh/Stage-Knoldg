@@ -1,6 +1,7 @@
 export const locale = {
   lang: "ar",
   data: {
+    'DRAFT_STATUS': 'مسودة',
     "SELECT_REGION": "اختر المنطقة...",
     "SELECT_REGIONS": "اختر المناطق",
     "SEARCH_COUNTRY": "بحث عن دولة أو منطقة...",
@@ -795,9 +796,18 @@ export const locale = {
     GO_TO_LIBRARY: "الذهاب إلى المكتبة",
     // ... rest of the existing code ...
   'KNOWLEDGE': {
+    "FILTER_BY_TYPE": "تصفية حسب النوع",
+    "ITEMS": "عناصر",
+    "ALL": "الكل",
+    "DATA": "بيانات",
+    "INSIGHT": "رؤى",
+    "REPORT": "تقرير",
+    "MANUAL": "دليل",
+    "COURSE": "دورة",
+    "MEDIA": "وسائط",
+    "CLEAR_FILTERS": "مسح التصفية",
    'TITLE': 'قاعدة معرفتي',
     'TOTAL': 'المجموع',
-    'ITEMS': 'عناصر',
     'SEARCH_PLACEHOLDER': 'البحث عن الملفات والمجلدات',
     'ADD_KNOWLEDGE': 'إضافة معرفة',
     'GENERATE_PACKAGE': 'إنشاء حزمة',
@@ -820,7 +830,8 @@ export const locale = {
       'GENERAL': 'عام',
       'SCHEDULED': 'مجدول',
       'POSTED': 'منشور',
-      'PACKAGES': 'الحزم'
+      'PACKAGES': 'الحزم',
+      'UNPUBLISHED': 'مسودة'
     }
   },
   DEACTIVATE_ACCOUNT_SUCCESS_MESSAGE: "تم إلغاء تنشيط حساب الانسايتر بنجاح",

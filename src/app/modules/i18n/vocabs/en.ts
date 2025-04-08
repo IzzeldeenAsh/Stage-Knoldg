@@ -3,6 +3,7 @@ export const locale = {
   lang: 'en',
 
   data: {
+    'DRAFT_STATUS': 'Draft',
     "SELECT_REGION": "Select Region...",
     "SELECT_REGIONS": "Select Regions",
     "NO_TAGS_AVAILABLE": "No tags are available for this topic.",
@@ -855,9 +856,18 @@ UPLOAD: 'Upload',
   NAME: "Name",
   VIEW: "View",
   KNOWLEDGE: {
+    "FILTER_BY_TYPE": "Filter by type",
+    "ITEMS": "items",
+    "ALL": "All",
+    "DATA": "Data",
+    "INSIGHT": "Insight",
+    "REPORT": "Report",
+    "MANUAL": "Manual",
+    "COURSE": "Course",
+    "MEDIA": "Media",
+    "CLEAR_FILTERS": "Clear filters",
 'TITLE': 'Knowledge Base',
     'TOTAL': 'Total',
-    'ITEMS': 'items',
     'SEARCH_PLACEHOLDER': 'Search Files & Folders',
     'ADD_KNOWLEDGE': 'Add Knowledge',
     'GENERATE_PACKAGE': 'Generate Package',
@@ -880,7 +890,8 @@ UPLOAD: 'Upload',
       'GENERAL': 'All Knowledge',
       'SCHEDULED': 'Scheduled',
       'POSTED': 'Posted',
-      'PACKAGES': 'Packages'
+      'PACKAGES': 'Packages',
+      'UNPUBLISHED': 'Draft'
     }
   },
   DEACTIVATE_ACCOUNT_SUCCESS_MESSAGE: "Account deactivated successfully",

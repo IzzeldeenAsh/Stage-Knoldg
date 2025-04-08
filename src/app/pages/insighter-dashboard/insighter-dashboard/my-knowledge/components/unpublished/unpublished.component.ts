@@ -5,9 +5,9 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-scheduled',
-  templateUrl: './scheduled.component.html',
-  styleUrls: ['./scheduled.component.scss'],
+  selector: 'app-unpublished',
+  templateUrl: './unpublished.component.html',
+  styleUrls: ['./unpublished.component.scss'],
   animations: [
     trigger('columnResize', [
       transition('* => *', [
@@ -16,7 +16,7 @@ import Swal from 'sweetalert2';
     ])
   ]
 })
-export class ScheduledComponent implements OnInit {
+export class UnpublishedComponent implements OnInit {
   knowledges: Knowledge[] = [];
   allKnowledges: Knowledge[] = [];
   currentPage: number = 1;
@@ -42,7 +42,7 @@ export class ScheduledComponent implements OnInit {
   loadAllKnowledges() {
     this.knowledgeService.getListKnowledge().subscribe(
       (knowledges) => {
-        this.allKnowledges = knowledges.data.filter(k => k.status === 'scheduled');
+        this.allKnowledges = knowledges.data.filter(k => k.status === 'unpublished');
         this.calculateTypeCounts();
       }
     );
@@ -98,23 +98,37 @@ export class ScheduledComponent implements OnInit {
 
   loadPage(page: number): void {
     this.loading = true;
-    this.knowledgeService.getPaginatedKnowledges(page, 'scheduled', this.searchTerm, this.selectedKnowledgeType).subscribe(
+    this.knowledgeService.getPaginatedKnowledges(page, 'unpublished', this.searchTerm, this.selectedKnowledgeType).subscribe(
       (response) => {
         this.knowledges = response.data;
+        console.log('Knowledge objects:', this.knowledges); // Debug log
+        
+        // Check if title is available
+        if (this.knowledges.length > 0) {
+          const firstItem = this.knowledges[0];
+          console.log('First knowledge item:', {
+            id: firstItem.id,
+            title: firstItem.title,
+            type: firstItem.type,
+            status: firstItem.status,
+            total_price: firstItem.total_price
+          });
+        }
+        
         this.currentPage = response.meta.current_page;
         this.totalPages = response.meta.last_page;
         this.totalItems = response.meta.total;
         
-        // Update type counts based on all scheduled knowledges
+        // Update type counts based on all unpublished knowledges
         if (page === 1 && !this.selectedKnowledgeType) {
           this.calculateTypeCounts();
         }
       },
       (error) => {
-        console.error('Error fetching scheduled knowledges:', error);
+        console.error('Error fetching unpublished knowledges:', error);
         Swal.fire({
           title: 'Error',
-          text: 'Failed to load scheduled items. Please try again.',
+          text: 'Failed to load unpublished items. Please try again.',
           icon: 'error'
         });
       }
@@ -129,7 +143,6 @@ export class ScheduledComponent implements OnInit {
     }
   }
 
-  
   getPages(): (number | string)[] {
     const totalPages = this.totalPages;
     const currentPage = this.currentPage;
@@ -194,7 +207,7 @@ export class ScheduledComponent implements OnInit {
   }
 
   editKnowledge(knowledgeId: number): void {
-    this.router.navigate(['/']);
+    this.router.navigate(['/app/edit-knowledge/stepper', knowledgeId]);
   }
 
   // TrackBy functions for better rendering performance
