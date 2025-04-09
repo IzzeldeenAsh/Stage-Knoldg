@@ -31,7 +31,7 @@
                   [routerLink]="['/app/insighter-dashboard/my-knowledge/general']"
                   class="text-gray-700 text-hover-info"
                 >
-                  My Knowledge Base
+                {{ 'VIEW_MY_KNOWLEDGE.BREADCRUMB.MY_KNOWLEDGE_BASE' | translate }}
                 </a>
                 <i
                   class="ki-outline {{
@@ -203,7 +203,7 @@
           <!-- Description -->
           <div class="mb-4">
             <strong [ngClass]="{'text-info': activeKnowledgeId === item.id}">Description:</strong>
-            <p>{{ item.description || 'No description provided' }}</p>
+            <p [innerHTML]="item.description || 'No description provided'"></p>
           </div>
   
           <!-- Additional Info -->

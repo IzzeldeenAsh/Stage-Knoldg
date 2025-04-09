@@ -458,8 +458,8 @@
     <!-- ISIC Code -->
     <div class="mb-10 fv-row">
       <app-industry-selector
-        [title]="currentLanguage == 'ar' ? 'اختر الرمز الصناعي' : 'Choose an ISIC Code'"
-        [placeholder]="currentLanguage == 'ar' ? 'اختر الرمز الصناعي' : 'Choose an ISIC Code'"
+        [title]="currentLanguage == 'ar' ? 'اختر الرمز الصناعي' : 'Select industry code '"
+        [placeholder]="currentLanguage == 'ar' ? 'اختر الرمز الصناعي' : 'Industry classification (ISIC)'"
         [fetchedData]="isicCodeNodes"
         [cancelLabel]="currentLanguage == 'ar' ? 'الغاء' : 'Cancel'"
         [selectedIndustryId]="form.get('isic_code')?.value"
