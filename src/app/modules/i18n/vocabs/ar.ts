@@ -798,6 +798,9 @@ export const locale = {
   'KNOWLEDGE': {
     "FILTER_BY_TYPE": "تصفية حسب النوع",
     "ITEMS": "عناصر",
+    NAME: "اسم المعرفة",
+    PRICE: "السعر",
+    AVAILABLE_KNOWLEDGE: "المعارف المتاحة",
     "ALL": "الكل",
     "DATA": "بيانات",
     "INSIGHT": "رؤى",
