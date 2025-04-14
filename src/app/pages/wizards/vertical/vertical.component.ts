@@ -1,4 +1,4 @@
-import { Component, Injector, OnInit } from "@angular/core";
+import { Component, Injector, OnInit, ViewChild } from "@angular/core";
 import { BehaviorSubject, Observable, Subscription, first, of } from "rxjs";
 import { ICreateAccount, inits } from "../create-account.helper";
 import Swal from "sweetalert2";
@@ -10,18 +10,23 @@ import { TranslationService } from "src/app/modules/i18n";
 import { AuthService } from "src/app/modules/auth";
 import { IKnoldgProfile } from "src/app/_fake/models/profile.interface";
 import { ProfileService } from "src/app/_fake/services/get-profile/get-profile.service";
+import { CommonService } from "src/app/_fake/services/common/common.service";
+import { Step3Component } from "../steps/step3/step3.component";
+import { Step5Component } from "../steps/step5/step5.component";
+
 @Component({
   selector: "app-vertical",
   templateUrl: "./vertical.component.html",
 })
 export class VerticalComponent extends BaseComponent implements OnInit {
-  private baseFormsCount = 4;
-  formsCount$ = new BehaviorSubject<number>(this.baseFormsCount);
+  @ViewChild(Step3Component) step3Component: Step3Component;
+  @ViewChild(Step5Component) step5Component: Step5Component;
+  
+  formsCount$ = new BehaviorSubject<number>(3); // Default to 3 steps (for personal)
   onSuccessMessage: boolean = false;
   onPendingMessage: boolean = false;
   user: IKnoldgProfile;
   userRoles: string[] = [];
-  formsCount = 4;
   messages: Message[] = [];
   account$: BehaviorSubject<ICreateAccount> =
     new BehaviorSubject<ICreateAccount>(inits);
@@ -31,13 +36,15 @@ export class VerticalComponent extends BaseComponent implements OnInit {
   );
   isLoadingSubmit$: Observable<boolean> = of(false);
   lang: string = "en";
+
   constructor(
     private insighterRegistraionService: InsighterRegistraionService,
     private router: Router,
     private translateService: TranslationService,
     private auth: AuthService,
+    private commonService: CommonService,
     injector: Injector,
-      private getProfileService: ProfileService,
+    private getProfileService: ProfileService,
   ) {
     super(injector);
     this.isLoadingSubmit$ = this.insighterRegistraionService.isLoading$;
@@ -69,40 +76,59 @@ export class VerticalComponent extends BaseComponent implements OnInit {
     const updatedAccount = { ...currentAccount, ...part };
     this.account$.next(updatedAccount);
     this.isCurrentFormValid$.next(isFormValid);
+    
+    // Update the forms count based on account type
     if (part.accountType) {
+      // For corporate accounts, we have 4 steps total (last step is verification)
+      // For personal accounts, we have 3 steps total (last step is certifications)
       if (part.accountType === "corporate") {
-        this.formsCount$.next(this.baseFormsCount + 1); // 5 steps
+        this.formsCount$.next(4); // 4 steps total for corporate (step 4 is verification)
       } else {
-        this.formsCount$.next(this.baseFormsCount); // 4 steps
+        this.formsCount$.next(3); // 3 steps total for personal
       }
     }
   };
 
   nextStep() {
     const currentStep = this.currentStep$.value;
-    const nextStep = currentStep + 1;
+    const accountType = this.account$.value.accountType;
     const formsCount = this.formsCount$.value;
-    if (nextStep === formsCount) {
-      Swal.fire({
-        title: this.lang == "en" ? "Are you sure?" : "هل انت متأكد ؟",
-        text:
-          this.lang == "en"
-            ? "Do you want to submit the data?"
-            : "هل تريد اعتماد البيانات ؟",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText:
-          this.lang == "en" ? "Yes, submit it!" : "نعم ، أرسل الطلب",
-        cancelButtonText: this.lang == "en" ? "No, cancel" : "لا ، تراجع",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.submit();
-        } else {
-          // User canceled, do nothing
-        }
-      });
+    
+    // Check if we're at the last step for account type
+    if (currentStep === 3 && accountType === 'personal') {
+      // For personal accounts, step 3 is the final step, so submit instead of navigating
+      this.submit();
+      return;
+    } else if (currentStep === 4 && accountType === 'corporate') {
+      // For corporate accounts, step 4 is the final step, so submit instead of navigating
+      this.submit();
       return;
     }
+    
+    // Validate the current step before proceeding
+    if (currentStep === 3 && this.step3Component) {
+      // For step 3, check if agreement is valid but only for personal accounts
+      if (accountType === 'personal' && !this.step3Component.prepareForSubmit()) {
+        return; // Stop if validation fails for personal accounts
+      } else if (accountType === 'corporate') {
+        // For corporate accounts, just check form validity without agreement
+        if (!this.step3Component.form.valid) {
+          return; // Stop if form validation fails
+        }
+      }
+    } else if (currentStep === 4 && this.step5Component) {
+      // For step 4 (which uses step5 component for corporate account), check if agreement is valid
+      if (!this.step5Component.prepareForSubmit()) {
+        return; // Stop if validation fails
+      }
+    }
+    
+    const nextStep = currentStep + 1;
+    
+    if (nextStep > formsCount) {
+      return; // Don't exceed the maximum number of steps
+    }
+    
     this.currentStep$.next(nextStep);
   }
 
@@ -175,6 +201,10 @@ export class VerticalComponent extends BaseComponent implements OnInit {
         );
       });
     }
+
+    // Add insighter agreement 
+    formData.append("insighter_agreement", "true");
+
     const formDataEntries: Array<{ key: string; value: string }> = [];
     formData.forEach((value, key) => {
       formDataEntries.push({ key, value: value.toString() });
@@ -253,6 +283,10 @@ export class VerticalComponent extends BaseComponent implements OnInit {
         );
       });
     }
+
+    // Add company agreement
+    formData.append("company_agreement", "true");
+
     const formDataEntries: Array<{ key: string; value: string }> = [];
     formData.forEach((value, key) => {
       formDataEntries.push({ key, value: value.toString() });
@@ -260,8 +294,38 @@ export class VerticalComponent extends BaseComponent implements OnInit {
     return formData
   }
   submit() {
+    // Check if the current step is valid before submitting
+    if (this.currentStep$.value === 3 && this.step3Component) {
+      // For personal accounts (step 3)
+      if (!this.step3Component.prepareForSubmit()) {
+        return; // Stop if validation fails
+      }
+    } else if (this.currentStep$.value === 4 && this.step5Component) {
+      // For corporate accounts (step 5 component)
+      if (!this.step5Component.prepareForSubmit()) {
+        return; // Stop if validation fails
+      }
+    }
+    
     this.account$.pipe(first()).subscribe((account) => {
       const user = account;
+      
+      // Check for appropriate agreement based on account type
+      const hasAgreed = user.accountType === "personal" 
+        ? user.insighterAgreement 
+        : user.companyAgreement;
+      
+      if (!hasAgreed) {
+        this.messageService.add({ 
+          severity: 'error', 
+          summary: 'Error', 
+          detail: user.accountType === "personal" 
+            ? 'You must agree to the Insighter Terms of Service to proceed.' 
+            : 'You must agree to the Company Terms of Service to proceed.' 
+        });
+        return;
+      }
+      
       if (user.accountType === "personal") {
         const formData = this.preparePersonalData(user)
         // Call the service
@@ -302,7 +366,6 @@ export class VerticalComponent extends BaseComponent implements OnInit {
         this.unsubscribe.push(insigheterSub);
       }
     });
-
   }
 
   private handleServerErrors(error: any) {

@@ -29,7 +29,7 @@
             value="websiteEmail" 
             id="verificationMethod1"  
             data-gtm-form-interact-field-id="1">
-          <span class="btn btn-sm btn-color-muted btn-active btn-active-primary fw-bold px-4">
+          <span class="btn btn-sm btn-color-muted btn-active btn-active-info fw-bold px-4">
             {{ 'INSIGHTER_WIZARD.BY_WEBSITE_COMPANY_EMAIL' | translate }}
           </span>
         </label>
@@ -43,7 +43,7 @@
             value="uploadDocument" 
             id="verificationMethod2" 
             data-gtm-form-interact-field-id="0">
-          <span class="btn btn-sm btn-color-muted btn-active btn-active-primary fw-bold px-4">
+          <span class="btn btn-sm btn-color-muted btn-active btn-active-info fw-bold px-4">
             {{ 'INSIGHTER_WIZARD.BY_UPLOADING_REGISTRY_DOCUMENT' | translate }}
           </span>
         </label>
@@ -203,6 +203,92 @@
     </div>
 
   </ng-container>
+
+  <!-- Add agreement checkbox at bottom of form -->
+  <div class="mb-10 mt-8">
+    <div class="separator separator-dashed my-5"></div>
+    
+    <div class="d-flex align-items-start mb-3">
+      <div class="form-check form-check-custom form-check-solid me-5">
+        <input class="form-check-input" type="checkbox" [(ngModel)]="agreementChecked" 
+          [ngModelOptions]="{standalone: true}" id="corporateAgreement" (click)="openAgreementDialog($event)"/>
+        <label class="form-check-label" for="corporateAgreement">
+          {{ 'I agree to the' | translate }}
+          <span class="ms-1 text-primary">{{ 'Corporate Terms of Service' | translate }}</span>
+        </label>
+      </div>
+    </div>
+    <div *ngIf="showAgreementError && !agreementChecked" class="text-danger fs-7 mt-2">
+      {{ 'You must agree to the terms before continuing' | translate }}
+    </div>
+  </div>
 </div>
+
+<!-- Agreement Dialog -->
+<p-dialog 
+  [(visible)]="showAgreementDialog" 
+  [modal]="true" 
+  [style]="{width: '550px'}" 
+  [closable]="true"
+  [closeOnEscape]="false"
+  [dismissableMask]="false"
+  [draggable]="false"
+  [resizable]="false"
+  [focusOnShow]="true"
+  [blockScroll]="true"
+  appendTo="body"
+  styleClass="terms-dialog"
+>
+  <ng-template pTemplate="header">
+    <div class="d-flex justify-content-between align-items-center w-100">
+      <h5 class="m-0">{{ agreementContent?.name || 'Company Terms of Service' | translate }}</h5>
+      <div class="d-flex">
+        <button class="btn btn-sm btn-icon me-2" (click)="printTerms()">
+          <i class="ki-outline ki-printer fs-3"></i>
+        </button>
+        <button class="btn btn-sm btn-icon" (click)="saveTerms()">
+          <i class="ki-outline ki-save-2 fs-3"></i>
+        </button>
+      </div>
+    </div>
+  </ng-template>
+  
+  <div *ngIf="isLoadingAgreement" class="d-flex justify-content-center py-4">
+    <span class="spinner-border spinner-border-lg text-primary"></span>
+  </div>
+  
+  <div class="terms-content-wrapper">
+ 
+    
+    <div *ngIf="!isLoadingAgreement && agreementContent" 
+         class="agreement-content custom-scrollbar" 
+         [style.max-height]="'400px'" 
+         [style.overflow-y]="'auto'">
+      <div [innerHTML]="agreementContent.guideline"></div>
+    </div>
+    
+    <div *ngIf="!isLoadingAgreement && !agreementContent" class="text-center text-danger py-4">
+      {{ 'Failed to load agreement content. Please try again later.' | translate }}
+    </div>
+  </div>
+  
+  <ng-template pTemplate="footer">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+      <div class="text-muted fs-7">{{ 'Please read the terms carefully before proceeding' | translate }}</div>
+      <div class="d-flex gap-2">
+        <button 
+          class="btn btn-light" 
+          (click)="declineAgreement()">
+          {{ 'Decline' | translate }}
+        </button>
+        <button 
+          class="btn btn-primary" 
+          (click)="acceptAgreement()">
+          {{ 'Accept' | translate }}
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</p-dialog>
 
 

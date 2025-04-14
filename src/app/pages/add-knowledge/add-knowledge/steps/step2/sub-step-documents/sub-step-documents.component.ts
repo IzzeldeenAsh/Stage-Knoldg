@@ -92,6 +92,9 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       this.fetchDocumentsFromServer();
     } else if (this.defaultValues?.documents?.length) {
       this.loadDocuments(this.defaultValues.documents);
+    } else {
+      // Make sure parent model is updated even with empty document array
+      this.updateParentModel({ documents: [] }, false);
     }
   }
 

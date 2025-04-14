@@ -16,9 +16,12 @@ import { TranslationService } from "src/app/modules/i18n";
 
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { BaseComponent } from "src/app/modules/base.component";
+import { CommonService } from "src/app/_fake/services/common/common.service";
+
 @Component({
   selector: "app-step5",
   templateUrl: "./step5.component.html",
+  styleUrls: ["./step5.component.scss"]
 })
 export class Step5Component extends BaseComponent implements OnInit {
   lang: string;
@@ -36,6 +39,14 @@ export class Step5Component extends BaseComponent implements OnInit {
   isGetCodeDisabled: boolean = false;
   getCodeCountdown$ = new BehaviorSubject<number | null>(null);
 
+  // Agreement properties
+  agreementChecked: boolean = false;
+  showAgreementError: boolean = false;
+  agreementContent: any = null;
+  isLoadingAgreement: boolean = false;
+  showAgreementDialog: boolean = false;
+  attemptedSubmit: boolean = false; // Track if user has attempted to submit
+
   private readonly MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB in bytes
 
   constructor(
@@ -43,7 +54,7 @@ export class Step5Component extends BaseComponent implements OnInit {
     private fb: FormBuilder,
     private _translateion: TranslationService,
     private http: HttpClient,
- 
+    private commonService: CommonService
   ) {
     super(injector);
     this.lang = this._translateion.getSelectedLanguage();
@@ -52,20 +63,146 @@ export class Step5Component extends BaseComponent implements OnInit {
   ngOnInit() {
     this.windowResize();
     this.initForm();
-    this.updateParentModel({}, this.checkForm());
     this._translateion.onLanguageChange().subscribe((lang) => {
       this.lang = lang;
     });
+    
+    // Initialize from default values
     if (this.defaultValues?.registerDocument) {
       this.form.patchValue({
         registerDocument: this.defaultValues?.registerDocument,
       });
       this.form.get("registerDocument")?.markAsTouched();
-      this.updateParentModel(
-        { registerDocument: this.defaultValues?.registerDocument },
-        this.checkForm()
-      );
     }
+    
+    // Initialize agreement checkbox if available in default values
+    if (this.defaultValues?.companyAgreement) {
+      this.agreementChecked = true;
+    }
+    
+    // Update parent model initially without showing error
+    this.updateParentModel(
+      { 
+        registerDocument: this.defaultValues?.registerDocument,
+        companyAgreement: this.agreementChecked 
+      },
+      this.form.valid && this.agreementChecked
+    );
+  }
+
+  // Open the agreement dialog to view the full terms
+  openAgreementDialog(event?: MouseEvent) {
+    // If event exists, it's a click on the checkbox, so prevent immediate toggling
+    if (event) {
+      event.preventDefault();
+    }
+    
+    this.isLoadingAgreement = true;
+    this.showAgreementDialog = true;
+    
+    this.commonService.getClientAgreement('company-agreement').subscribe({
+      next: (response) => {
+        this.agreementContent = response.data;
+        this.isLoadingAgreement = false;
+      },
+      error: (error) => {
+        console.error('Error loading agreement:', error);
+        this.isLoadingAgreement = false;
+        this.messageService.add({ 
+          severity: 'error', 
+          summary: 'Error', 
+          detail: 'Failed to load agreement. Please try again.' 
+        });
+      }
+    });
+  }
+  
+  // Accept the agreement terms
+  acceptAgreement() {
+    this.agreementChecked = true;
+    this.showAgreementDialog = false;
+    this.updateParentModel({ companyAgreement: true }, this.form.valid);
+  }
+
+  // Decline the agreement terms
+  declineAgreement() {
+    this.agreementChecked = false;
+    this.showAgreementDialog = false;
+    this.showAgreementError = true; // Show error on explicit decline
+    this.updateParentModel({ companyAgreement: false }, false);
+  }
+
+  // Print terms document in a new window
+  printTerms(): void {
+    // Create a new window for printing
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      // Prepare content for printing
+      const termsTitle = this.agreementContent?.name || 'Company Terms of Service';
+      const termsContent = this.agreementContent?.guideline || '';
+      const printContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>${termsTitle}</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; }
+            h1 { color: #333; text-align: center; margin-bottom: 20px; }
+            .content { margin: 0 auto; max-width: 800px; }
+          </style>
+        </head>
+        <body>
+          <h1>${termsTitle}</h1>
+          <div class="content">${termsContent}</div>
+        </body>
+        </html>
+      `;
+      
+      printWindow.document.open();
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+      
+      setTimeout(() => {
+        printWindow.print();
+      }, 500);
+    } else {
+      this.messageService.add({ 
+        severity: 'error', 
+        summary: 'Error', 
+        detail: 'Could not open print window. Please check your browser settings.' 
+      });
+    }
+  }
+
+  // Save terms as a text file
+  saveTerms(): void {
+    if (this.agreementContent) {
+      const termsTitle = this.agreementContent.name || 'Company-Terms-of-Service';
+      const termsText = this.stripHtmlTags(this.agreementContent.guideline);
+      
+      // Create a Blob with the text content
+      const blob = new Blob([termsText], { type: 'text/plain' });
+      
+      // Create a download link and trigger the download
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${termsTitle.replace(/\s+/g, '-')}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      
+      // Clean up
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    }
+  }
+
+  // Helper method to strip HTML tags from content
+  private stripHtmlTags(html: string): string {
+    // Create a temporary element to extract text from HTML
+    const tempElement = document.createElement('div');
+    tempElement.innerHTML = html;
+    return tempElement.textContent || tempElement.innerText || '';
   }
 
   windowResize() {
@@ -250,8 +387,24 @@ export class Step5Component extends BaseComponent implements OnInit {
     }
   }
   checkForm() {
-    return this.form.valid;
+    // Don't change attemptedSubmit value here
+    // Update the parent with the agreement status
+    this.updateParentModel({ companyAgreement: this.agreementChecked }, this.form.valid && this.agreementChecked);
+    
+    // Only show error after attempted submit or explicit decline
+    if (!this.agreementChecked && this.attemptedSubmit) {
+      this.showAgreementError = true;
+    }
+    
+    return this.form.valid && this.agreementChecked;
   }
 
-
+  // Call this before submitting the form - used by the parent component
+  prepareForSubmit() {
+    this.attemptedSubmit = true;
+    if (!this.agreementChecked) {
+      this.showAgreementError = true;
+    }
+    return this.checkForm();
+  }
 }

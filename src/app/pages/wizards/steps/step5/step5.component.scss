@@ -1,0 +1,97 @@
+/* Terms Dialog Styling */
+.terms-dialog {
+  .p-dialog-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #eee;
+  }
+
+  .p-dialog-content {
+    padding: 0;
+  }
+
+  .terms-content-wrapper {
+    padding: 1.5rem;
+  }
+
+  .terms-header-image {
+    display: flex;
+    justify-content: center;
+    img {
+      max-height: 120px;
+    }
+  }
+
+  .agreement-content {
+    padding-right: 10px;
+    line-height: 1.6;
+  }
+
+  .custom-scrollbar {
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 4px;
+    }
+    
+    &::-webkit-scrollbar-thumb:hover {
+      background: #aaa;
+    }
+  }
+
+  .p-dialog-footer {
+    border-top: 1px solid #eee;
+    padding: 1rem 1.5rem;
+  }
+}
+
+/* Dropzone Styling */
+.dropzone {
+  border: 2px dashed #0095e8;
+  border-radius: 0.75rem;
+  padding: 3rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background-color: rgba(0, 149, 232, 0.05);
+    cursor: pointer;
+  }
+  
+  .dz-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* Form Styling */
+.form-check {
+  cursor: pointer;
+  
+  .form-check-input {
+    cursor: pointer;
+  }
+}
+
+/* Corporate Account Verification Form */
+.nav-group {
+  .btn-check:checked + .btn {
+    background-color: rgba(0, 149, 232, 0.1);
+    color: #0095e8;
+    font-weight: 600;
+  }
+}
+
+.approval-note {
+  font-size: 0.875rem;
+  color: #666;
+  font-style: italic;
+} 

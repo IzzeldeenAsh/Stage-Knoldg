@@ -69,7 +69,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #009ef7;
+  background-color: #ffffff;
   color: #ffffff;
   font-weight: 600;
 }
@@ -78,6 +78,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: 100% 30%;
 }
 
 .user-info {
@@ -746,5 +747,17 @@ app-user-inner {
 /* Mobile menu items */
 .mobile-menu-link.text-white:hover {
   color: #181C32 !important; /* Dark text on hover */
+}
+
+/* Add styling for user initials to make them visible */
+.user-initials {
+  background-color: #009ef7 !important; /* Primary blue background */
+  color: #ffffff !important; /* White text */
+  font-weight: 700;
+  font-size: 1rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 

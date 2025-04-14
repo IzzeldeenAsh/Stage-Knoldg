@@ -48,6 +48,7 @@ export interface Type {
 })
 export class UserRequestsService {
   private apiUrl = 'https://api.knoldg.com/api/account/request';
+  private insighterRequestsUrl = 'https://api.knoldg.com/api/company/insighter/request';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   currentLang: string = 'en';
@@ -79,6 +80,25 @@ export class UserRequestsService {
 
     this.setLoading(true);
     return this.http.get<any>(this.apiUrl, { headers }).pipe(
+      map(response => response.data),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  /**
+   * Fetch all insighter requests.
+   * @returns Observable of UserRequest array
+   */
+  getInsighterRequests(lang: string): Observable<UserRequest[]> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Language': lang
+    });
+
+    this.setLoading(true);
+    return this.http.get<any>(this.insighterRequestsUrl, { headers }).pipe(
       map(response => response.data),
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))
@@ -198,6 +218,32 @@ export class UserRequestsService {
     this.setLoading(true);
     return this.http.post(url, {}, { headers }).pipe(
       catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  /**
+   * Update insighter request status (approve or decline)
+   * @param requestId ID of the request to update
+   * @param status New status ('approved' or 'declined')
+   * @param staffNotes Staff notes for the decision
+   * @returns Observable of the request response
+   */
+  updateInsighterRequestStatus(requestId: string, status: string, staffNotes: string): Observable<any> {
+    const url = `${this.insighterRequestsUrl}/${requestId}/accept`;
+    
+    const formData = new FormData();
+    formData.append('status', status);
+    formData.append('staff_notes', staffNotes);
+    
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+    
+    this.setLoading(true);
+    return this.http.post(url, formData, { headers }).pipe(
+      catchError((error: any) => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );
   }

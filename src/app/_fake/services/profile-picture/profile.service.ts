@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 export class ProfileService {
   private uploadUrl = 'https://api.knoldg.com/api/account/profile/photo';
   private removeUrl = 'https://api.knoldg.com/api/account/profile/photo/remove';
-  private updateLogo ='https://api.knoldg.com/api/account/profile/company/logo'
+  private updateLogo = 'https://api.knoldg.com/api/account/profile/company/logo';
 
   constructor(private http: HttpClient) {}
 

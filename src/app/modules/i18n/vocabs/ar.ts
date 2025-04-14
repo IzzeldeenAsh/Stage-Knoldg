@@ -2,6 +2,23 @@ export const locale = {
   lang: "ar",
   data: {
     'DRAFT_STATUS': 'مسودة',
+    'REGIONS': 'القارات',
+    REVIEW_KNOWLEDGE: 'مراجعة المعرفة',
+    STAFF_NOTES: 'ملاحظات الموظف',
+    PENDING_REVIEW: 'قيد المراجعة',
+    ENTER_NOTES_FOR_INSIGHTER: 'أدخل ملاحظات للانسايتر',
+    NOTES_WILL_BE_VISIBLE_TO_INSIGHTER: 'سيكون الملاحظات متاحًا للانسايتر',
+    STATUS: 'الحالة',
+    APPROVE: 'موافق',
+    REJECT: 'مرفوض',
+    INDUSTRY: "الصناعة",
+    'COUNTRIES': 'الدول',
+    DOCUMENTS_LANGUAGE: 'لغة الملفات',
+    ISIC_CODE: 'كود ISIC',
+    'WORLDWIDE': 'جميع أنحاء العالم',
+    WORLDWIDE_DESCRIPTION: 'جميع المناطق والدول',
+    WORLDWIDE_TOOLTIP: 'سيكون محتواك متاحًا لجميع الزوار',
+    INVITING: 'جاري الدعوة...',
     "SELECT_REGION": "اختر المنطقة...",
     "SELECT_REGIONS": "اختر المناطق",
     "SEARCH_COUNTRY": "بحث عن دولة أو منطقة...",
@@ -13,6 +30,8 @@ export const locale = {
     "STEP4_5": "الخطوة 4/5",
     "STEP5_5": "الخطوة 5/5",
     REGIONS_COUNTRIES_REQUIRED:'المناطق والدول مطلوبة',
+    UPLOAD_BY_CHAPTRE_OR_ALL:'رفع بالفصل أو (مقسم الأسعار) أو كملف كامل',
+    SELECT_COUNTRIES: 'اختر الدول',
     INDUSTRY_REQUIRED: 'الصناعة مطلوبة',
     ECONOMIC_BLOCKS_REQUIRED: 'التكتلات الاقتصادية مطلوبة',
     INCLUDED_IN_PACKAGES: 'الحزم الخاصة',
@@ -72,6 +91,11 @@ export const locale = {
     ADD_CUSTOM_TAG: 'إضافة تصنيف خاص',
     TAG_NAME: 'اسم التصنيف',
     TAG_NAME_REQUIRED: 'اسم التصنيف مطلوب',
+    EMPTY_DASHBOARD:{
+      "TITLE": "لا يوجد عناصر حالياً",
+      "DESCRIPTION": "قم بإنشاء معرفة جديدة لبدء الاستفادة من جميع مزايا المنصة",
+      "ADD_BUTTON": "إضافة معرفة"
+    },
     "MY_COMPANY": {
       "TITLE": "شركتي",
       "SUBTITLE": "إدارة موظفي شركتك",
@@ -105,7 +129,7 @@ export const locale = {
       "INVITING": "جاري الدعوة...",
       "ACTIVATE": "تفعيل",
       "DEACTIVATE": "إلغاء التفعيل",
-      "CURRENT_USER": "أنت"
+      "CURRENT_USER": "المدير التنفيذي"
     },
     "NOTIFICATIONS": {
       TITLE: 'إشعارات',
@@ -204,7 +228,11 @@ export const locale = {
  
       },
       REGISTRATION: {
+        DECLINE: "إلغاء",
+        APPROVE: "موافق",
+        AGREEMENT_REQUIRED: "الموافقة مطلوبة",
         TITLE: "التسجيل",
+        TERMS_AGREEMENT: "أنا أوافق على الشروط والأحكام",
         ISIC_CODES_REQUIRED:"كود ISIC مطلوب",
         PASSWORD_PATTERN_ERROR:"يجب أن تحتوي كلمة المرور على حرف واحد ورقم واحد ورمز خاص على الأقل.",
         SUBTITLE: "ادخل معلوماتك لإنشاء حسابك",
@@ -780,6 +808,9 @@ export const locale = {
     SCHEDULE_DESC: "اختر تاريخًا ووقتًا لنشر معرفتك",
     SAVE_AS_DRAFT: "حفظ كمسودة",
     SAVE_AS_DRAFT_DESC: "احفظ معرفتك كمسودة لإنهائها لاحقًا",
+    SEND_TO_CEO_REVIEW: "إرسال للمراجعة من المدير",
+    SEND_TO_CEO_REVIEW_DESC: "ارسال المحتوى للمراجعة من المدير التنفيذي قبل النشر",
+    PENDING_CEO_REVIEW: "قيد مراجعة المدير التنفيذي",
     PUBLISH_OPTION_REQUIRED: "الرجاء اختيار خيار النشر",
     SELECT_DATE_TIME: "اختر التاريخ والوقت",
     SELECT_DATE_AND_TIME: "اختر تاريخًا ووقتًا للنشر",

@@ -26,6 +26,7 @@ import { ToastModule } from 'primeng/toast';
 import { PasswordResetComponent } from './components/password-reset/password-reset.component';
 import { VerifyEmailComponent } from './components/verify-email/verify-email.component';
 import { CallbackComponent } from './components/callback/callback.component';
+import { CheckboxModule } from 'primeng/checkbox';
 @NgModule({
   declarations: [
     LoginComponent,
@@ -57,6 +58,7 @@ import { CallbackComponent } from './components/callback/callback.component';
     MultiSelectModule,
     DropdownModule,
     HttpClientModule,
+    CheckboxModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]  // Add this line
 })

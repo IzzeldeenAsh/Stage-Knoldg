@@ -32,7 +32,7 @@
 >
   <div class="region-dialog">
     <!-- Search input -->
-    <div class="search-container mb-3">
+    <div class="search-container mb-4">
       <span class="p-input-icon-left w-100">
         <i class="pi pi-search"></i>
         <input 
@@ -41,23 +41,91 @@
           [(ngModel)]="searchQuery" 
           (input)="filterRegions()" 
           placeholder="{{'SEARCH_COUNTRY' | translate}}" 
-          class="w-100"
+          class="w-100 search-input"
         />
       </span>
     </div>
 
     <!-- Selected count display -->
-    <div class="selected-count mb-3" *ngIf="getSelectedCount() > 0">
-      <span class="badge bg-light-info">
+    <div class="selected-count mb-4" *ngIf="getSelectedCount() > 0">
+      <span class="badge badge-pill bg-light-info text-info px-3 py-2">
+        <i class="pi pi-check-circle me-1"></i>
         {{getSelectedCount()}} {{'SELECTED' | translate}}
       </span>
-      <button class="btn btn-link btn-sm" (click)="clearAllSelections()">
+      <button class="btn btn-link btn-sm text-danger" (click)="clearAllSelections()">
+        <i class="pi pi-trash me-1"></i>
         {{'CLEAR_ALL' | translate}}
       </button>
     </div>
 
-    <!-- Region tabs -->
-    <p-tabView>
+    <!-- Only Regions Mode - Enhanced Design -->
+    <div *ngIf="displayMode === 'onlyRegions' || !displayMode" class="mb-4">
+      <div class="regions-cards">
+        <div 
+          *ngFor="let region of filteredRegions" 
+          class="region-card"
+          [class.selected]="isRegionSelected(region)"
+          (click)="toggleSelectRegion(region, {target: {checked: !isRegionSelected(region)}})"
+        >
+          <div class="region-card-content">
+            <div class="form-check">
+              <input
+                type="checkbox"
+                class="form-check-input"
+                [checked]="isRegionSelected(region)"
+                (change)="toggleSelectRegion(region, $event)"
+                (click)="$event.stopPropagation()"
+                id="select-region-{{ region.id }}"
+              />
+              <label class="form-check-label fw-bold" for="select-region-{{ region.id }}">
+                {{ region.name }}
+              </label>
+            </div>
+            <div class="region-card-icon" *ngIf="isRegionSelected(region)">
+              <i class="pi pi-check-circle text-success"></i>
+            </div>
+          </div>
+          <div class="region-card-footer">
+            <span class="text-muted">
+              <small>{{ region.countries?.length || 0 }} {{'COUNTRIES' | translate}}</small>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Only Countries Mode -->
+    <div *ngIf="displayMode === 'onlyCountries'" class="countries-container">
+      <div class="countries-grid">
+        <div 
+          *ngFor="let country of allCountries" 
+          class="country-item"
+          [class.highlighted]="isCountrySelectedFlat(country)"
+        >
+          <div class="form-check" >
+            <input
+              type="checkbox"
+              class="form-check-input"
+              [checked]="isCountrySelectedFlat(country)"
+              (change)="toggleSelectCountryFlat(country, $event)"
+              id="select-country-flat-{{ country.id }}"
+            />
+            <label class="form-check-label" for="select-country-flat-{{ country.id }}">
+              <img 
+                [src]="getCountryFlagPath(country.flag)"
+                (error)="onFlagError($event)"
+                [alt]="country.name"
+                class="country-flag me-2"
+              />
+              {{ country.name }}
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Default Mode - Tabbed Regions & Countries -->
+    <p-tabView *ngIf="displayMode === 'default'">
       <p-tabPanel *ngFor="let region of filteredRegions" [header]="region.name">
         <div class="region-header mb-3">
           <div class="form-check">
@@ -117,6 +185,7 @@
         [disabled]="!hasSelections()"
       >
         <span *ngIf="getSelectedCount() > 0">
+          <i class="pi pi-check me-1"></i>
           {{ 'CONFIRM' | translate }} ({{getSelectedCount()}})
         </span>
         <span *ngIf="getSelectedCount() === 0">

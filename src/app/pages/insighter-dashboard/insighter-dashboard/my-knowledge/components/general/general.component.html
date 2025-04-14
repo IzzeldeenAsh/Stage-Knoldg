@@ -373,7 +373,7 @@
 
               <!-- Footer -->
               <div *ngIf="!showPackageBuilder" class="d-flex justify-content-between align-items-center">
-                <span [ngClass]="getStatusClass(knowledge.status)" class="text-capitalize">{{ knowledge.status === 'unpublished' ? 'Draft' : knowledge.status }}</span>
+                <span [ngClass]="getStatusClass(knowledge.status)" class="text-capitalize">{{ knowledge.status === 'unpublished' ? 'Draft' : knowledge.status === 'in_review' ? 'In Review' : knowledge.status }}</span>
                 
                 <div class="d-flex gap-2">
                   <a [routerLink]="['/app/my-knowledge-base/view-my-knowledge/', knowledge.id]" 

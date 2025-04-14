@@ -131,4 +131,16 @@ export class RegionsService {
       finalize(() => this.setLoading(false))
     );
   }
+
+  /**
+   * Gets all region IDs from the API
+   * Used for worldwide selection
+   */
+  getAllRegionIds(): Observable<number[]> {
+    return this.getRegionsList().pipe(
+      map((regions: Continent[]) => {
+        return regions.map(region => region.id);
+      })
+    );
+  }
 }

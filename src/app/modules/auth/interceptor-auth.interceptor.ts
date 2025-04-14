@@ -5,6 +5,7 @@ import { AuthService } from './services/auth.service';
 import { Router } from '@angular/router';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import { AuthHTTPService } from './services/auth-http/auth-http.service';
+import { ToastService } from 'src/app/_fake/services/toast-service/toast.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -12,7 +13,8 @@ export class AuthInterceptor implements HttpInterceptor {
     private authService: AuthService,
     private router: Router,
     private getProfileService: ProfileService,
-    private authHttpService: AuthHTTPService
+    private authHttpService: AuthHTTPService,
+    private toastService: ToastService
   ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -42,6 +44,25 @@ export class AuthInterceptor implements HttpInterceptor {
               console.error('Logout error:', err);
             }
           });
+        } else if (error.status === 403) {
+          // Check for email verification error
+          if (error.error && error.error.message === "Your email address is not verified.") {
+            this.toastService.error(error.error.message, "Account Issue");
+            
+            // Perform logout
+            this.authService.handleLogout().subscribe({
+              next: () => {
+                this.getProfileService.clearProfile();
+                this.router.navigate(['/auth']).then(() => {
+                  // Optional: Reload the page after navigation if needed
+                  window.location.reload();
+                });
+              },
+              error: (err) => {
+                console.error('Logout error:', err);
+              }
+            });
+          }
         } else if (error.status === 0) {
           // Status 0 often indicates CORS issues
           console.error('Possible CORS issue:', error);

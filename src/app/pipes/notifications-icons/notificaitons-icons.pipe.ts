@@ -15,6 +15,8 @@ export class NotificationsIconsPipe implements PipeTransform {
       case 'activate_company':
       case 'activate_insighter':
         return 'duotune/arrows/arr086.svg';
+      case 'accept_knowledge':
+        return 'duotune/files/fil025.svg';
       default:
         return 'duotune/general/gen047.svg';
     }

@@ -23,6 +23,9 @@ export interface ICreateAccount {
   code?: string;
   // Step 3: Documents
   certifications?: { type: string; file: File }[];
+  // Agreement flags
+  insighterAgreement?: boolean;
+  companyAgreement?: boolean;
 }
 
 export const inits: ICreateAccount = {
@@ -42,5 +45,7 @@ export const inits: ICreateAccount = {
   certifications: [],
   verificationMethod: 'websiteEmail',
   companyEmail: '',
-  code: ''
+  code: '',
+  insighterAgreement: false,
+  companyAgreement: false
 };

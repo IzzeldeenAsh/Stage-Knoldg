@@ -10,7 +10,7 @@
 <form [formGroup]="publishForm">
   <div class="fv-row" >
     <div class="row g-5">
-      <div class="col-lg-4" *ngFor="let option of publishOptions">
+      <div [ngClass]="{'col-lg-4': !isCompanyInsighter, 'col-lg-6': isCompanyInsighter}" *ngFor="let option of publishOptions">
         <input
           formControlName="publishOption"
           name="publishOption"
@@ -26,8 +26,12 @@
           <div class="d-flex align-items-center w-100">
             <div class="mx-3">
               <app-keenicon 
-                [name]="option.icon" 
-                class="fs-2 text-{{ option.value === 'published' ? 'info' : (option.value === 'scheduled' ? 'warning' : 'success') }}"
+                [name]="option.icon"
+                [class]="'fs-2 text-' + (
+                  option.value === 'published' ? 'info' : 
+                  option.value === 'scheduled' || option.value === 'in_review' ? 'warning' : 
+                  'success'
+                )"
               ></app-keenicon>
             </div>
             <div class="d-flex flex-column">

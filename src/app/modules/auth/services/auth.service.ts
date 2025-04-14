@@ -344,11 +344,11 @@ export class AuthService implements OnDestroy {
       'Authorization': `Bearer ${this.getAuthFromLocalStorage()?.authToken || ''}`,
     });
     return this.http.post('https://api.knoldg.com/api/account/email/resend', 
-      {}, // Fix: Add empty object as body
+      {}, 
       { headers }
     ).pipe(
-      map((res) => res), // Adjust this based on the API response structure
-      catchError((error) => this.handleError(error))// Use the custom error handler
+      map((res) => res),
+      catchError((error) => this.handleError(error))
     );
   }
 

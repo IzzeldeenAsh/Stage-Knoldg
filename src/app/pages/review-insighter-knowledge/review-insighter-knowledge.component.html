@@ -1,0 +1,366 @@
+<p-toast></p-toast>
+
+<div class="bg-custom"></div>
+<div class="content-wrapper">
+  <div class="breadcrumb-bg" *ngIf="knowledge">
+    <div class="container">
+      <!-- Breadcrumb -->
+      <div class="d-flex align-items-center justify-content-between pt-10 mb-70">
+        <ul
+          class="breadcrumb breadcrumb-separatorless d-flex align-items-center gap-2"
+        >
+          <li
+            class="breadcrumb-item text-gray-800 lh-1 d-flex align-items-center"
+          >
+            <a
+              [routerLink]="['/']"
+              class="text-gray-700 text-hover-info d-flex align-items-center gap-2"
+            >
+              <i class="ki-outline ki-home text-gray-700 fs-3"></i>
+              {{ 'VIEW_MY_KNOWLEDGE.BREADCRUMB.HOME' | translate }}
+            </a>
+            <i
+              class="ki-outline {{
+                lang === 'ar' ? 'ki-left' : 'ki-right'
+              }} fs-4 text-gray-700 ms-2"
+            ></i>
+          </li>
+          <li
+            class="breadcrumb-item text-gray-800 lh-1 d-flex align-items-center"
+          >
+            <a
+              [routerLink]="['/app/insighter-dashboard/my-requests']"
+              class="text-gray-700 text-hover-info"
+            >
+              {{ 'INSIGHTER.DASHBOARD.NAV.MY_REQUESTS' | translate }}
+            </a>
+            <i
+              class="ki-outline {{
+                lang === 'ar' ? 'ki-left' : 'ki-right'
+              }} fs-4 text-gray-700 ms-2"
+            ></i>
+          </li>
+          <li
+            class="breadcrumb-item text-gray-800 lh-1 d-flex align-items-center"
+          >
+            <span class="text-gray-700">
+              {{ 'REVIEW_KNOWLEDGE' | translate }}
+            </span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Title -->
+      <div class="page-title d-flex align-items-start me-3 mb-4 mb-lg-15">
+        <div
+          class="btn btn-icon btn-custom bg-white h-70px w-70px me-6"
+          *ngIf="knowledge.type === 'report'"
+        >
+          <svg
+            width="35"
+            height="32"
+            viewBox="0 0 35 32"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              opacity="0.4"
+              d="M31.5876 15.225L30.1584 21.3208C28.9334 26.5854 26.5126 28.7146 21.9626 28.2771C21.2334 28.2187 20.4459 28.0875 19.6001 27.8833L17.1501 27.3C11.0688 25.8562 9.1876 22.8521 10.6168 16.7562L12.0459 10.6458C12.3376 9.40624 12.6876 8.32707 13.1251 7.43749C14.8313 3.90832 17.7334 2.96041 22.6043 4.11249L25.0397 4.68124C31.1501 6.11041 33.0168 9.12916 31.5876 15.225Z"
+              fill="#699DDE"
+            />
+            <path
+              d="M21.9623 28.2771C21.0581 28.8896 19.9206 29.4 18.5352 29.8521L16.231 30.6104C10.4414 32.4771 7.39352 30.9167 5.51227 25.1271L3.6456 19.3667C1.77893 13.5771 3.32476 10.5146 9.11435 8.64792L11.4185 7.88958C12.0164 7.7 12.5852 7.53958 13.1248 7.4375C12.6873 8.32708 12.3373 9.40625 12.0456 10.6458L10.6164 16.7563C9.18727 22.8521 11.0685 25.8562 17.1498 27.3L19.5998 27.8833C20.4456 28.0875 21.2331 28.2187 21.9623 28.2771Z"
+              fill="#0778B9"
+            />
+            <path
+              d="M25.5065 15.3271C25.419 15.3271 25.3315 15.3125 25.2294 15.298L18.1565 13.5042C17.5732 13.3584 17.2232 12.7605 17.369 12.1771C17.5148 11.5938 18.1127 11.2438 18.6961 11.3896L25.769 13.1834C26.3523 13.3292 26.7023 13.9271 26.5565 14.5105C26.4398 14.9917 25.9877 15.3271 25.5065 15.3271Z"
+              fill="white"
+            />
+            <path
+              d="M21.2335 20.2562C21.146 20.2562 21.0585 20.2416 20.9564 20.2271L16.7126 19.1479C16.1293 19.0021 15.7793 18.4041 15.9251 17.8208C16.071 17.2375 16.6689 16.8875 17.2522 17.0333L21.496 18.1125C22.0793 18.2583 22.4293 18.8562 22.2835 19.4396C22.1668 19.9354 21.7293 20.2562 21.2335 20.2562Z"
+              fill="white"
+            />
+          </svg>
+        </div>
+        <div
+          class="btn btn-icon btn-custom bg-white h-70px w-70px me-6"
+          *ngIf="knowledge.type === 'insight'"
+        >
+          <app-keenicon
+            name="chart-line"
+            class="fs-3x mx-5 text-success"
+          ></app-keenicon>
+        </div>
+        <div
+          class="btn btn-icon btn-custom bg-white h-70px w-70px me-6"
+          *ngIf="knowledge.type === 'data'"
+        >
+          <app-keenicon
+            name="data"
+            class="fs-3x mx-5 text-primary"
+            *ngIf="knowledge.type === 'data'"
+          ></app-keenicon>
+        </div>
+        <div
+          class="btn btn-icon btn-custom bg-white h-70px w-70px me-6"
+          *ngIf="knowledge.type === 'manual'"
+        >
+          <app-keenicon
+            name="book"
+            class="fs-3x mx-5 text-warning"
+          ></app-keenicon>
+        </div>
+        <div
+          class="btn btn-icon btn-custom bg-white h-70px w-70px me-6"
+          *ngIf="knowledge.type === 'course'"
+        >
+          <app-keenicon
+            name="teacher"
+            class="fs-3x mx-5 text-success"
+          ></app-keenicon>
+        </div>
+        <div
+          class="btn btn-icon btn-custom bg-white h-70px w-70px me-6"
+          *ngIf="knowledge.type === 'media'"
+        >
+          <app-keenicon
+            name="video"
+            class="fs-3x mx-5 text-danger"
+          ></app-keenicon>
+        </div>
+
+        <h1
+          class="page-heading d-flex text-black fw-bolder fs-lg-rem flex-column justify-content-center my-0 max-w-800px"
+        >
+          <div class="d-flex align-items-start flex-column gap-2 lg-max-width-700px">
+            <span>
+              {{ knowledge.title || 'N/A' }}
+            </span>
+          </div>
+          <span class="page-desc fs-6 fw-bold d-flex align-items-center pt-4">
+            <span class="custom-text me-3 lh-1 d-flex align-items-center text-capitalize">
+              {{ knowledge.type || 'N/A' }}
+            </span>
+            <span class="bullet text-black h-6px w-6px mx-3"></span>
+            <span class="d-flex align-items-center text-gray-700">
+              <i class="ki-duotone ki-tag text-warning fs-3 mx-4">
+                <span class="path1"></span>
+                <span class="path2"></span>
+                <span class="path3"></span>
+              </i>
+              <span class="badge badge-info">{{ 'PENDING_REVIEW' | translate }}</span>
+            </span>
+          </span>
+        </h1>
+      </div>
+
+      <!-- Tabs -->
+      <div class="">
+        <div class="pt-9 pb-0">
+          <div class="d-flex overflow-auto h-55px">
+            <ul
+              class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bold flex-nowrap"
+            >
+              <li class="nav-item">
+                <a
+                  class="nav-link text-active-info me-6"
+                  routerLink="details"
+                  routerLinkActive="active"
+                >
+                {{ 'VIEW_MY_KNOWLEDGE.KNOWLEDGE_DETAILS' | translate }}
+                </a>
+              </li>
+            
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container" *ngIf="knowledge">
+    <div class="row py-10">
+      <div class="col-lg-8 p-n-10">
+        <router-outlet></router-outlet>
+      </div>
+      <div class="col-lg-4">
+        <!-- Sticky container for sidebar elements -->
+        <div class="position-lg-sticky" style="z-index: 1; top: 120px;">
+          <!-- Review Action Card -->
+          <div class="tp-course-details2-widget">
+            <div class="tp-course-details2-widget-content p-5">
+              <h4 class="fs-4 fw-bold mb-4">{{ 'REVIEW_KNOWLEDGE' | translate }}</h4>
+              
+              <!-- Notes Textarea -->
+              <div class="mb-5">
+                <label class="form-label fw-bold">{{ 'STAFF_NOTES' | translate }}</label>
+                <textarea 
+                  class="form-control" 
+                  rows="6" 
+                  [(ngModel)]="staffNotes" 
+                  placeholder="{{ 'ENTER_NOTES_FOR_INSIGHTER' | translate }}"></textarea>
+                <small class="text-muted">{{ 'NOTES_WILL_BE_VISIBLE_TO_INSIGHTER' | translate }}</small>
+              </div>
+              
+              <!-- Action Buttons -->
+              <div class="d-flex gap-3">
+                <button 
+                  class="btn btn-success flex-grow-1" 
+                  (click)="approveKnowledge()"
+                  [disabled]="isLoading">
+                  <i class="ki-duotone ki-check fs-2 me-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                  </i>
+                  {{ 'APPROVE' | translate }}
+                </button>
+                <button 
+                  class="btn btn-danger flex-grow-1" 
+                  (click)="rejectKnowledge()"
+                  [disabled]="isLoading">
+                  <i class="ki-duotone ki-cross fs-2 me-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                  </i>
+                  {{ 'REJECT' | translate }}
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Knowledge Information Card -->
+          <div class="tp-course-details2-widget mt-5">
+            <div class="tp-course-details2-widget-content">
+              <div class="tp-course-details2-widget-price d-flex justify-content-center align-items-center">
+                <span class="fs-2x fw-bolder" [ngClass]="(knowledge.total_price | currency) === '$0.00' ? 'text-success' : 'text-primary'">
+                  <ng-container *ngIf="(knowledge.total_price | currency) === '$0.00'">
+                    <ng-container *ngIf="lang === 'ar'">صدقة جارية</ng-container>
+                    <ng-container *ngIf="lang !== 'ar'">Free</ng-container>
+                  </ng-container>
+                  <ng-container *ngIf="(knowledge.total_price | currency) !== '$0.00'">
+                    {{ knowledge.total_price ? (knowledge.total_price | currency) : 'N/A' }}
+                  </ng-container>
+                </span>
+              </div>
+              <div class="separator separator-dashed my-5"></div>
+
+              <!-- Report details section -->
+              <div class="tp-course-details2-widget-list p-4">
+                <div class="tp-course-details2-widget-list-item-wrapper">
+                  <!-- status -->
+                  <div
+                    class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
+                  >
+                    <span>
+                      <i class="ki-outline ki-message-text-2 fs-4 mx-4"></i>
+                      {{ 'STATUS' | translate }}
+                    </span>
+                    <span class="badge badge-info text-white">
+                      {{ 'PENDING_REVIEW' | translate }}
+                    </span>
+                  </div>
+
+                  <!-- Language -->
+                  <div
+                    class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
+                  >
+                    <span>
+                      <i class="ki-outline ki-message-text-2 fs-4 mx-4"></i>
+                      {{ 'DOCUMENTS_LANGUAGE' | translate }}
+                    </span>
+                    <span class="text-capitalize">{{ knowledge.language || 'N/A' }}</span>
+                  </div>
+
+                  <!-- Industry -->
+                  <div
+                    *ngIf="knowledge && knowledge.industry"
+                    class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
+                  >
+                    <span>
+                      <i class="ki-outline ki-file fs-4 mx-4"></i>
+                      {{ 'INDUSTRY' | translate }}
+                    </span>
+                    <span
+                      class="badge badge-light-secondary text-primary fs-8 fw-bold pre-line text-right"
+                    >
+                      {{ knowledge.industry?.name || 'N/A' }}
+                    </span>
+                  </div>
+
+                  <!-- ISIC Code -->
+                  <div
+                    *ngIf="knowledge && knowledge.isic_code"
+                    class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
+                  >
+                    <span>
+                      <i class="ki-outline ki-file fs-4 mx-4"></i>
+                      {{ 'ISIC_CODE' | translate }}
+                    </span>
+                    <span
+                      class="badge badge-light-secondary text-primary fs-8 fw-bold"
+                      [ngbTooltip]="knowledge.isic_code?.name || 'N/A'"
+                    >
+                      {{ knowledge.isic_code?.key || 'N/A' }}
+                    </span>
+                  </div>
+
+                  <!-- Target Market -->
+                  <div
+                    class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
+                  >
+                    <span>
+                      <i class="ki-outline ki-icon fs-4 mx-4"></i>
+                      {{ 'TARGET_MARKET' | translate }}
+                    </span>
+                    <div
+                      class="max-w-100px d-flex flex-wrap gap-2 justify-content-end"
+                    >
+                      <!-- Show "Worldwide" if all 6 regions are selected -->
+                      <ng-container *ngIf="knowledge.regions && knowledge.regions.length === 6">
+                        <span class="badge badge-light-secondary text-gray-800 fs-8 fw-bold">
+                          Worldwide
+                        </span>
+                      </ng-container>
+                      
+                      <!-- Show individual regions only if not all 6 regions are selected -->
+                      <ng-container *ngIf="knowledge.economic_blocs && knowledge.economic_blocs.length > 0 && !(knowledge.regions && knowledge.regions.length === 6)">
+                        <span
+                          class="badge badge-light-secondary text-gray-800 fs-8 fw-bold"
+                          *ngFor="let bloc of knowledge.economic_blocs"
+                        >
+                          {{ bloc.name || 'N/A' }}
+                        </span>
+                      </ng-container>
+                      <ng-container *ngIf="knowledge.regions && knowledge.regions.length > 0 && knowledge.regions.length < 6">
+                        <span
+                          class="badge badge-light-secondary text-gray-800 fs-8 fw-bold"
+                          *ngFor="let region of knowledge.regions"
+                        >
+                          {{ region.name || 'N/A' }}
+                        </span>
+                      </ng-container>
+                      <ng-container *ngIf="knowledge.countries && knowledge.countries.length > 0 && !(knowledge.regions && knowledge.regions.length === 6)">
+                        <span
+                          class="badge badge-light-secondary text-gray-800 fs-8 fw-bold"
+                          *ngFor="let country of knowledge.countries"
+                        >
+                          {{ country.name || 'N/A' }}
+                        </span>
+                      </ng-container>
+                      <span *ngIf="(!knowledge.economic_blocs || knowledge.economic_blocs.length === 0) && 
+                                  (!knowledge.regions || knowledge.regions.length === 0) && 
+                                  (!knowledge.countries || knowledge.countries.length === 0)"
+                            class="badge badge-light-secondary text-gray-800 fs-8 fw-bold">
+                        N/A
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

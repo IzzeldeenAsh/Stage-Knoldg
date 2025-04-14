@@ -1,0 +1,116 @@
+<div class="container">
+    <div class="py-lg-10">
+        <!-- Knowledge Description -->
+        <div class=" p-3 bg-none rounded mb-3" *ngIf="knowledge && knowledge.description">
+            <p class="lead" [innerHTML]="knowledge.description || 'N/A'"></p>
+        </div>
+        <div class=" p-3 bg-none rounded mb-3" *ngIf="knowledge && !knowledge.description">
+            <p class="lead">N/A</p>
+        </div>
+        
+        <!-- knowledge documents -->
+        <div class="documents-container">
+            <div
+                class="document-card d-flex flex-row align-items-center p-10 cursor-pointer position-relative"
+                *ngFor="let doc of documents"
+                [ngClass]="{ 'active': activeDocumentId === doc.id }"
+                (click)="toggleCollapse(doc.id, $event)"
+            >
+                <!-- Icon -->
+                <div class="file-icon me-3">
+                    <img
+                        [src]="getFileIconByExtension(doc.file_extension)"
+                        alt="file icon" 
+                        width="40"
+                        height="40"
+                        [ngClass]="{'animate__animated animate__pulse': activeDocumentId === doc.id}"/>
+                </div>
+        
+                <!-- Main Info -->
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <div>
+                                <h5 class="mb-1" [ngClass]="{'text-info fw-bold': activeDocumentId === doc.id}">{{ doc.file_name || 'N/A' }}</h5>
+                                <small class="text-muted">{{ doc.file_size ? (doc.file_size | fileSize) + ' bytes' : 'N/A' }}</small>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex gap-1 align-items-center" >
+                            <div >
+                                <span class="badge me-2 px-2 py-1" 
+                                [ngClass]="{
+                                    'bg-info text-white fs-4': activeDocumentId === doc.id && doc.price !== '0',
+                                    'bg-secondary fs-6': activeDocumentId !== doc.id && doc.price !== '0',
+                                    'bg-success text-success fs-4': activeDocumentId === doc.id && doc.price === '0',
+                                    'bg-success text-white fs-6': activeDocumentId !== doc.id && doc.price === '0'
+                                }">
+                                    {{ doc.price === '0' ? 'Free' : (doc.price | currency) }}
+                                </span>
+                                
+                                <!-- Expand/Collapse Arrow -->
+                                <button
+                                    class="btn btn-sm btn-link p-0"
+                                    (click)="toggleCollapse(doc.id, $event)"
+                                    [ngClass]="{'text-info': activeDocumentId === doc.id}"
+                                    [ngbTooltip]="activeDocumentId === doc.id ? 'Collapse' : 'Expand'"
+                                    placement="top">
+                                    <i class="bi" [ngClass]="activeDocumentId === doc.id ? 'bi-caret-up-fill' : 'bi-caret-down-fill'"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+            
+                    <!-- Collapsible section -->
+                    <div
+                        class="collapse-content mt-3"
+                        [ngClass]="{ 'collapse': activeDocumentId !== doc.id }"
+                    >
+                        <!-- Description -->
+                        <div *ngIf="doc.description" class="mb-4">
+                            <strong [ngClass]="{'text-info': activeDocumentId === doc.id}">Description:</strong>
+                            <p [innerHTML]="doc.description"></p>
+                        </div>
+                        <div *ngIf="!doc.description" class="mb-4">
+                            <p class="lead fs-6">No description available.</p>
+                        </div>
+
+                        <!-- Table of Contents for non-insight types -->
+                        <div *ngIf="shouldShowTableOfContents(doc) && doc.table_of_content && doc.table_of_content.length > 0" class="mt-4">
+                            <div class="d-flex align-items-start mb-3">
+                                <strong [ngClass]="{'text-info': activeDocumentId === doc.id}">Table of Contents:</strong>
+                            </div>
+                            
+                            <table class="table table-hover-info table-rounded table-striped border gy-4 gs-4">
+                                <thead>
+                                    <tr class="fw-bold fs-6 text-gray-800 border-bottom-2 border-gray-200">
+                                        <th class="min-w-50px">#</th>
+                                        <th class="min-w-200px">Chapter Title</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of doc.table_of_content; let i = index" 
+                                        class="hover-elevate-up" 
+                                        [@fadeInMoveY]>
+                                        <td class="text-gray-600 fw-semibold">{{i + 1}}</td>
+                                        <td class="fw-bold text-dark">
+                                            <div class="d-flex align-items-center">
+                                                {{item.chapter?.title || 'N/A'}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div *ngIf="shouldShowTableOfContents(doc) && (!doc.table_of_content || doc.table_of_content.length === 0)" class="mt-4">
+                            <div class="d-flex align-items-start mb-3">
+                                <strong [ngClass]="{'text-info': activeDocumentId === doc.id}">Table of Contents:</strong>
+                            </div>
+                            <p class="lead fs-6">No table of contents available.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

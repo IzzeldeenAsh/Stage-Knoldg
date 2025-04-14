@@ -50,7 +50,9 @@ export class JoinCompanyComponent extends BaseComponent implements OnInit {
         this.showSuccess("", message);
         this.invitationForm.reset();
         // Reload to reflect changes
-        this.router.navigate(['/app/profile/overview']);
+        this.router.navigate(['/app/profile/overview']).then(() => {
+          window.location.reload();
+        });
       },
       error: (error) => {
         this.handleServerErrors(error);

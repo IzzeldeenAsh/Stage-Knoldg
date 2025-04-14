@@ -158,7 +158,11 @@ margin-bottom: 10px;
         </div>
         
         <!-- Continue/Submit Button Section -->
-        <ng-container *ngIf="(currentStep$ | async) !== (formsCount$ | async)">
+        <ng-container *ngIf="
+          ((currentStep$ | async) !== (formsCount$ | async)) && 
+          !(currentStep$.value === 3 && account$.value.accountType === 'personal') && 
+          !(currentStep$.value === 4 && account$.value.accountType === 'corporate')
+        ">
           <div>
             <button
               type="button"
@@ -172,7 +176,11 @@ margin-bottom: 10px;
             </button>
           </div>
         </ng-container>
-        <ng-container *ngIf="(currentStep$| async) === (formsCount$ | async) ">
+        <ng-container *ngIf="
+          (currentStep$| async) === (formsCount$ | async) || 
+          (currentStep$.value === 3 && account$.value.accountType === 'personal') || 
+          (currentStep$.value === 4 && account$.value.accountType === 'corporate')
+        ">
           <div>
             <button
               type="button"

@@ -81,42 +81,23 @@
   }
   
   .region-selector {
-    border: 1px solid #dee2e6;
-    border-radius: 6px;
-    padding: 8px 12px;
-    min-height: 42px;
-    display: flex;
-    align-items: center;
-    background-color: #fff;
     cursor: pointer;
-    transition: border-color 0.2s, box-shadow 0.2s;
-
+    border: 1px solid #e4e6ef;
+    border-radius: 0.475rem;
+    padding: 0.75rem 1rem;
+    width: 100%;
+    transition: border-color 0.15s ease;
+    background-color: #fff;
+    
     &:hover {
-      border-color: #6366f1;
-    }
-
-    &:focus, &:active {
-      border-color: #6366f1;
-      box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
-      outline: none;
+      border-color: #b5b5c3;
     }
   }
 
   .chips-container {
-    width: 100%;
-    
-    .selected-items {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      width: 100%;
-    }
-    
-    .placeholder-text {
-      color: #6c757d;
-      display: flex;
-      align-items: center;
-    }
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
   }
 
   :host ::ng-deep {
@@ -152,7 +133,7 @@
       border-radius: 16px;
       padding: 0 12px;
       background-color: #f5f5f5;
-      
+      margin: 3px;
       .p-chip-text {
         padding: 0 0.5rem;
       }
@@ -178,13 +159,8 @@
   .selected-count {
     display: flex;
     align-items: center;
-    gap: 8px;
-    
-    .badge {
-      padding: 6px 10px;
-      border-radius: 16px;
-      font-size: 0.9rem;
-    }
+    justify-content: space-between;
+    padding: 0.5rem 0;
   }
 
   // Region header
@@ -198,43 +174,34 @@
   // Countries grid
   .countries-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
     margin-top: 1rem;
     
     .country-item {
-      padding: 8px 12px;
-      border: 1px solid transparent;
-      border-radius: 4px;
-      transition: background-color 0.2s;
+      padding: 0.5rem;
+      border-radius: 0.475rem;
+      transition: background-color 0.2s ease;
       
       &:hover {
-        background-color: #f8f9fa;
+        background-color: rgba(245, 248, 250, 0.8);
       }
       
       &.highlighted {
-        background-color: #e0f3ff;
-        border-color: #a4d4ff;
+        background-color: rgba(80, 205, 137, 0.1);
       }
       
       .form-check {
         display: flex;
         align-items: center;
-        
-        label {
-          display: flex;
-          align-items: center;
-          margin-left: 8px;
-          cursor: pointer;
-        }
       }
       
       .country-flag {
-        width: 20px;
-        height: 15px;
+        width: 24px;
+        height: 16px;
         object-fit: cover;
         border-radius: 2px;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
       }
     }
   }
@@ -243,9 +210,157 @@
   .dialog-footer {
     display: flex;
     justify-content: flex-end;
+    gap: 0.5rem;
     padding-top: 1rem;
+  }
+
+  // Placeholder text
+  .placeholder-text {
+    color: #a1a5b7;
+    display: flex;
+    align-items: center;
+  }
+
+  // Enhanced Regions Grid - Card Layout
+  .regions-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
     
-    button {
-      min-width: 100px;
+    .region-card {
+      border: 1px solid #e4e6ef;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background-color: #fff;
+      box-shadow: 0 0.1rem 0.7rem rgba(0, 0, 0, 0.03);
+      position: relative;
+      overflow: hidden;
+      
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(114, 57, 234, 0.03);
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        pointer-events: none;
+        z-index: 1;
+      }
+      
+      &:hover {
+        border-color: #397aea;
+        transform: translateY(-2px);
+        box-shadow: 0 0.3rem 1rem rgba(114, 57, 234, 0.15);
+        
+        &::after {
+          opacity: 1;
+        }
+      }
+      
+      &:active {
+        transform: translateY(0);
+        transition: transform 0.1s ease;
+      }
+      
+      &.selected {
+        border-color: #50cd89;
+        background-color: rgba(80, 205, 137, 0.05);
+        
+        &::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 4px;
+          height: 100%;
+          background-color: #50cd89;
+          border-top-left-radius: 0.75rem;
+          border-bottom-left-radius: 0.75rem;
+        }
+      }
+      
+      .region-card-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+        
+        .form-check-label {
+          font-size: 1rem;
+          color: #181c32;
+          cursor: pointer;
+        }
+        
+        .region-card-icon {
+          font-size: 1.2rem;
+        }
+      }
+      
+      .region-card-footer {
+        padding-top: 0.5rem;
+        border-top: 1px dashed #e4e6ef;
+        margin-top: 0.5rem;
+      }
+      
+      .form-check-input {
+        width: 1.25rem;
+        height: 1.25rem;
+        margin-top: 0.25rem;
+        cursor: pointer;
+        
+        &:checked {
+          background-color: #50cd89;
+          border-color: #50cd89;
+        }
+      }
+    }
+  }
+
+  // Countries grid
+  .countries-container {
+    margin-top: 1rem;
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background-color: #f1f1f1;
+      border-radius: 10px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background-color: #c1c1c1;
+      border-radius: 10px;
+    }
+  }
+
+  // Ensure proper form check styling
+  .form-check {
+    .form-check-input {
+      &:checked {
+        background-color: #394eea;
+        border-color: #394eea;
+      }
+    }
+  }
+
+  // Responsive adjustments
+  @media (max-width: 768px) {
+    .regions-cards {
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+    
+    .countries-grid {
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     }
   }

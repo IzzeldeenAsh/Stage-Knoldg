@@ -101,3 +101,57 @@
     font-size: 0.875rem;
   }
   
+  /* Terms Dialog Styling */
+  .terms-dialog {
+    .p-dialog-header {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid #eee;
+    }
+
+    .p-dialog-content {
+      padding: 0;
+    }
+
+    .terms-content-wrapper {
+      padding: 1.5rem;
+    }
+
+    .terms-header-image {
+      display: flex;
+      justify-content: center;
+      img {
+        max-height: 120px;
+      }
+    }
+
+    .agreement-content {
+      padding-right: 10px;
+      line-height: 1.6;
+    }
+
+    .custom-scrollbar {
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+      
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+      }
+      
+      &::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 4px;
+      }
+      
+      &::-webkit-scrollbar-thumb:hover {
+        background: #aaa;
+      }
+    }
+
+    .p-dialog-footer {
+      border-top: 1px solid #eee;
+      padding: 1rem 1.5rem;
+    }
+  }
+  
