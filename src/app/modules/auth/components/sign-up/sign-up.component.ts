@@ -10,6 +10,8 @@ import { AuthService } from "../../services/auth.service";
 import { BaseComponent } from "src/app/modules/base.component";
 import zxcvbn from 'zxcvbn';
 import { trigger, transition, style, animate } from "@angular/animations";
+import { CommonService } from "src/app/_fake/services/common/common.service";
+
 @Component({
   selector: "app-sign-up",
   templateUrl: "./sign-up.component.html",
@@ -40,13 +42,22 @@ export class SignUpComponent extends BaseComponent implements OnInit {
     feedback: ''
   };
 
+  // Client agreement related properties
+  showAgreementDialog: boolean = false;
+  clientAgreementContent: any = null;
+  isLoadingAgreement: boolean = false;
+  userScrolledToBottom: boolean = false;
+  agreementDialogScrollable: boolean = true;
+
+  // Add a new property to track which social auth method was selected
+  private socialAuthPending: 'google' | 'linkedin' | null = null;
 
   constructor(
     private fb: FormBuilder,
     private _countriesGet: CountriesService,
     private authService: AuthService,
-    private adminCountreis:CountriesService,
-
+    private adminCountreis: CountriesService,
+    private commonService: CommonService,
     injector: Injector
   ) {
     super(injector);
@@ -63,6 +74,7 @@ export class SignUpComponent extends BaseComponent implements OnInit {
         ],
       ],
       country: [null], // Optional
+      client_agreement: [false, [Validators.requiredTrue]] // Required and must be true
     });
     this.isLoadingCountries$ = this._countriesGet.isLoading$;
   }
@@ -73,6 +85,122 @@ export class SignUpComponent extends BaseComponent implements OnInit {
     this.registrationForm.get('password')?.valueChanges.subscribe(password => {
       this.evaluatePasswordStrength(password);
     });
+    // Fetch client agreement on initialization
+    this.loadClientAgreement();
+  }
+
+  loadClientAgreement(): void {
+    this.isLoadingAgreement = true;
+    this.commonService.getClientAgreement('client-agreement').subscribe({
+      next: (response) => {
+        this.clientAgreementContent = response.data;
+        this.isLoadingAgreement = false;
+      },
+      error: (error) => {
+        console.error('Error loading client agreement:', error);
+        this.isLoadingAgreement = false;
+        this.messageService.add({ 
+          severity: 'error', 
+          summary: 'Error', 
+          detail: 'Failed to load client agreement' 
+        });
+      }
+    });
+  }
+
+  openAgreementDialog(): void {
+    // Always show the dialog when triggered
+    this.showAgreementDialog = true;
+  }
+
+  closeAgreementDialog(approved: boolean): void {
+    this.showAgreementDialog = false;
+    
+    if (approved) {
+      this.registrationForm.get('client_agreement')?.setValue(true);
+      
+      // If this was triggered by a social auth button, proceed with that auth method
+      if (this.socialAuthPending === 'google') {
+        this.proceedWithGoogleAuth();
+      } else if (this.socialAuthPending === 'linkedin') {
+        this.proceedWithLinkedInAuth();
+      }
+    } else {
+      this.registrationForm.get('client_agreement')?.setValue(false);
+    }
+    
+    // Reset the pending social auth
+    this.socialAuthPending = null;
+  }
+
+  printTerms(): void {
+    // Create a new window for printing
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      // Prepare content for printing
+      const termsTitle = this.clientAgreementContent?.name || 'Terms of Service';
+      const termsContent = this.clientAgreementContent?.guideline || '';
+      const printContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>${termsTitle}</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; }
+            h1 { color: #333; text-align: center; margin-bottom: 20px; }
+            .content { margin: 0 auto; max-width: 800px; }
+          </style>
+        </head>
+        <body>
+          <h1>${termsTitle}</h1>
+          <div class="content">${termsContent}</div>
+        </body>
+        </html>
+      `;
+      
+      printWindow.document.open();
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+      
+      setTimeout(() => {
+        printWindow.print();
+      }, 500);
+    } else {
+      this.messageService.add({ 
+        severity: 'error', 
+        summary: 'Error', 
+        detail: 'Could not open print window. Please check your browser settings.' 
+      });
+    }
+  }
+
+  saveTerms(): void {
+    if (this.clientAgreementContent) {
+      const termsTitle = this.clientAgreementContent.name || 'Terms-of-Service';
+      const termsText = this.stripHtmlTags(this.clientAgreementContent.guideline);
+      
+      // Create a Blob with the text content
+      const blob = new Blob([termsText], { type: 'text/plain' });
+      
+      // Create a download link and trigger the download
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${termsTitle.replace(/\s+/g, '-')}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      
+      // Clean up
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    }
+  }
+
+  private stripHtmlTags(html: string): string {
+    // Create a temporary element to extract text from HTML
+    const tempElement = document.createElement('div');
+    tempElement.innerHTML = html;
+    return tempElement.textContent || tempElement.innerText || '';
   }
 
   evaluatePasswordStrength(password: string): void {
@@ -85,58 +213,57 @@ export class SignUpComponent extends BaseComponent implements OnInit {
       this.passwordStrength.feedback = '';
     }
   }
-// Add these methods inside your RegistrationComponent class
 
-passwordStrengthClass(): string {
-  switch (this.passwordStrength.score) {
-    case 0:
-      return 'bg-danger';
-    case 1:
-      return 'bg-warning';
-    case 2:
-      return 'bg-info';
-    case 3:
-      return 'bg-success';
-    case 4:
-      return 'bg-success';
-    default:
-      return 'bg-danger';
+  passwordStrengthClass(): string {
+    switch (this.passwordStrength.score) {
+      case 0:
+        return 'bg-danger';
+      case 1:
+        return 'bg-warning';
+      case 2:
+        return 'bg-info';
+      case 3:
+        return 'bg-success';
+      case 4:
+        return 'bg-success';
+      default:
+        return 'bg-danger';
+    }
   }
-}
 
-getPasswordStrengthLabel(): string {
- if(this.lang==='en'){
-  switch (this.passwordStrength.score) {
-    case 0:
-      return 'Very Weak';
-    case 1:
-      return 'Weak';
-    case 2:
-      return 'Fair';
-    case 3:
-      return 'Good';
-    case 4:
-      return 'Strong';
-    default:
-      return '';
+  getPasswordStrengthLabel(): string {
+    if(this.lang==='en'){
+      switch (this.passwordStrength.score) {
+        case 0:
+          return 'Very Weak';
+        case 1:
+          return 'Weak';
+        case 2:
+          return 'Fair';
+        case 3:
+          return 'Good';
+        case 4:
+          return 'Strong';
+        default:
+          return '';
+      }
+    }else{
+      switch (this.passwordStrength.score) {
+        case 0:
+          return 'ضعيف جداً ';
+        case 1:
+          return 'ضعيف';
+        case 2:
+          return 'معتدل';
+        case 3:
+          return 'جيد';
+        case 4:
+          return 'قوي';
+        default:
+          return '';
+      }
+    }
   }
- }else{
-  switch (this.passwordStrength.score) {
-    case 0:
-      return 'ضعيف جداً ';
-    case 1:
-      return 'ضعيف';
-    case 2:
-      return 'معتدل';
-    case 3:
-      return 'جيد';
-    case 4:
-      return 'قوي';
-    default:
-      return '';
-  }
- }
-}
 
   getListOfCountries() {
     const getCountriesSub = this._countriesGet.getCountries().subscribe({
@@ -159,13 +286,25 @@ getPasswordStrengthLabel(): string {
     country.showFlag = false; // Hide the image if it fails to load
   }
 
-
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
 
   signInWithGoogle(event: Event): void {
     event.preventDefault();
+    // Show agreement dialog first
+    this.socialAuthPending = 'google';
+    this.showAgreementDialog = true;
+  }
+  
+  signInWithLinkedIn(event: Event): void {
+    event.preventDefault();
+    // Show agreement dialog first
+    this.socialAuthPending = 'linkedin';
+    this.showAgreementDialog = true;
+  }
+
+  private proceedWithGoogleAuth(): void {
     this.authService.getGoogleAuthRedirectUrl().subscribe({
       next: (redirectUrl) => {
         const authtoken:any = localStorage.getItem('foresighta-creds');
@@ -183,8 +322,7 @@ getPasswordStrengthLabel(): string {
     });
   }
   
-  signInWithLinkedIn(event: Event): void {
-    event.preventDefault();
+  private proceedWithLinkedInAuth(): void {
     this.authService.getLinkedInAuthRedirectUrl().subscribe({
       next: (redirectUrl) => {
         const authtoken:any = localStorage.getItem('foresighta-creds');
@@ -201,6 +339,7 @@ getPasswordStrengthLabel(): string {
       }
     });
   }
+
   private handleServerErrors(error: any): void {
     if (error.error && error.error.errors) {
       const serverErrors = error.error.errors;
@@ -210,7 +349,8 @@ getPasswordStrengthLabel(): string {
         'first_name': 'firstName',
         'last_name': 'lastName',
         'email': 'email',
-        'password_confirmation': 'password'
+        'password_confirmation': 'password',
+        'client_agreement': 'client_agreement'
         // Add other mappings as necessary
       };
   
@@ -239,6 +379,7 @@ getPasswordStrengthLabel(): string {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: generalErrorMsg });
     }
   }
+
   onSubmit(): void {
     if (this.registrationForm.invalid) {
       this.registrationForm.markAllAsTouched();
@@ -249,11 +390,12 @@ getPasswordStrengthLabel(): string {
     const formData = this.registrationForm.value;
     const user = {
       first_name: formData.firstName,
-      last_name: formData.lastName ,
+      last_name: formData.lastName,
       email: formData.email,
       password: formData.password,
       password_confirmation: formData.password,
-      country_id: formData.country.id 
+      country_id: formData.country?.id,
+      client_agreement: formData.client_agreement
     };
  
     this.authService.registration(user).subscribe({
@@ -269,7 +411,6 @@ getPasswordStrengthLabel(): string {
       }
     });
   }
- 
   
   resendVerificationEmail(): void {
     this.isResendDisabled = true; // Disable immediately
@@ -320,5 +461,4 @@ getPasswordStrengthLabel(): string {
       this.unsubscribe.push(resendTimerSubscription)
     }
   }
-  
 }

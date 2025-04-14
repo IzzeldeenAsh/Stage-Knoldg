@@ -32,6 +32,7 @@ export class SelectRegionComponent implements OnInit {
   @Input() title: string = 'Select Regions';
   @Input() preSelectedRegions: any = [];
   @Input() preSelectedCountries: any = [];
+  @Input() displayMode: 'default' | 'onlyRegions' | 'onlyCountries' = 'default';
   @Output() regionsSelected = new EventEmitter<{ regions: number[], countries: number[] }>();
 
   dialogVisible: boolean = false;
@@ -41,6 +42,7 @@ export class SelectRegionComponent implements OnInit {
   selectedCountries: number[] = [];
   displayValue: string = '';
   searchQuery: string = '';
+  allCountries: Country[] = [];
 
   constructor(private regionsService: RegionsService) {}
 
@@ -56,6 +58,13 @@ export class SelectRegionComponent implements OnInit {
       next: (regions) => {
         this.regions = regions;
         this.filteredRegions = [...this.regions];
+        
+        // Extract all countries for "onlyCountries" view
+        if (this.displayMode === 'onlyCountries') {
+          this.allCountries = this.regions.reduce((acc, region) => {
+            return [...acc, ...region.countries];
+          }, [] as Country[]);
+        }
       },
       error: (error) => {
         console.error('Error loading regions:', error);
@@ -67,6 +76,13 @@ export class SelectRegionComponent implements OnInit {
     this.dialogVisible = true;
     this.searchQuery = '';
     this.filteredRegions = [...this.regions];
+    
+    // Reset filtered countries when in onlyCountries mode
+    if (this.displayMode === 'onlyCountries') {
+      this.allCountries = this.regions.reduce((acc, region) => {
+        return [...acc, ...region.countries];
+      }, [] as Country[]);
+    }
   }
 
   /**
@@ -80,7 +96,14 @@ export class SelectRegionComponent implements OnInit {
    * Toggles the selection of an entire region
    */
   toggleSelectRegion(region: Continent, event: any) {
-    const checked = event.target.checked;
+    // Get the checked state - either from a checkbox event or from the card click event
+    let checked = event.target.checked;
+    
+    // If it's from the card click, we're passing the inverse of current selection state
+    if (event.target.checked === undefined && event.target.type !== 'checkbox') {
+      checked = !this.isRegionSelected(region);
+    }
+    
     if (checked) {
       if (!this.selectedRegions.includes(region.id)) {
         this.selectedRegions.push(region.id);
@@ -98,6 +121,15 @@ export class SelectRegionComponent implements OnInit {
    */
   isCountrySelected(country: Country, region: Continent): boolean {
     return this.selectedCountries.includes(country.id) || this.selectedRegions.includes(region.id);
+  }
+
+  /**
+   * Checks if a country is selected in the flat list view
+   */
+  isCountrySelectedFlat(country: Country): boolean {
+    // Find the region the country belongs to
+    const region = this.regions.find(r => r.countries.some(c => c.id === country.id));
+    return this.selectedCountries.includes(country.id) || (region !== undefined && this.selectedRegions.includes(region.id));
   }
 
   /**
@@ -119,6 +151,53 @@ export class SelectRegionComponent implements OnInit {
       // If any country is deselected, ensure the region is not selected
       if (this.selectedRegions.includes(region.id)) {
         this.selectedRegions = this.selectedRegions.filter(id => id !== region.id);
+      }
+    }
+    this.updateDisplayValue();
+  }
+
+  /**
+   * Toggles selection of a country in the flat list view
+   */
+  toggleSelectCountryFlat(country: Country, event: any) {
+    const checked = event.target.checked;
+    const regionOfCountry = this.regions.find(r => r.countries.some(c => c.id === country.id));
+    
+    if (!regionOfCountry) return;
+    
+    if (checked) {
+      // If the region is already selected, do nothing
+      if (this.selectedRegions.includes(regionOfCountry.id)) {
+        return;
+      }
+      
+      this.selectedCountries.push(country.id);
+      
+      // Check if all countries in this region are now selected
+      const allRegionCountriesSelected = regionOfCountry.countries.every(c => 
+        this.selectedCountries.includes(c.id)
+      );
+      
+      if (allRegionCountriesSelected) {
+        this.selectedRegions.push(regionOfCountry.id);
+        // Remove individual selections as the entire region is selected
+        this.selectedCountries = this.selectedCountries.filter(id => 
+          !regionOfCountry.countries.some(c => c.id === id)
+        );
+      }
+    } else {
+      // If the region is selected, deselect it and select all other countries
+      if (this.selectedRegions.includes(regionOfCountry.id)) {
+        this.selectedRegions = this.selectedRegions.filter(id => id !== regionOfCountry.id);
+        // Select all other countries in the region except this one
+        regionOfCountry.countries.forEach(c => {
+          if (c.id !== country.id) {
+            this.selectedCountries.push(c.id);
+          }
+        });
+      } else {
+        // Just remove this country from selection
+        this.selectedCountries = this.selectedCountries.filter(id => id !== country.id);
       }
     }
     this.updateDisplayValue();
@@ -182,16 +261,18 @@ export class SelectRegionComponent implements OnInit {
     const selectedItems: string[] = [];
     
     this.regions.forEach(region => {
-      const selectedCountries = region.countries.filter(country => 
-        this.isCountrySelected(country, region)
-      );
-      
-      if (selectedCountries.length === region.countries.length) {
-        // If all countries in a region are selected, show region name
+      if (this.selectedRegions.includes(region.id)) {
+        // If region is selected, show region name
         selectedItems.push(region.name);
-      } else if (selectedCountries.length > 0) {
+      } else {
         // Otherwise show selected country names
-        selectedItems.push(...selectedCountries.map(country => country.name));
+        const selectedCountries = region.countries.filter(country => 
+          this.selectedCountries.includes(country.id)
+        );
+        
+        if (selectedCountries.length > 0) {
+          selectedItems.push(...selectedCountries.map(country => country.name));
+        }
       }
     });
 
@@ -204,6 +285,11 @@ export class SelectRegionComponent implements OnInit {
   filterRegions() {
     if (!this.searchQuery || this.searchQuery.trim() === '') {
       this.filteredRegions = [...this.regions];
+      if (this.displayMode === 'onlyCountries') {
+        this.allCountries = this.regions.reduce((acc, region) => {
+          return [...acc, ...region.countries];
+        }, [] as Country[]);
+      }
       return;
     }
 
@@ -214,6 +300,15 @@ export class SelectRegionComponent implements OnInit {
       region.name.toLowerCase().includes(query) || 
       region.countries.some(country => country.name.toLowerCase().includes(query))
     );
+    
+    // Filter countries if in onlyCountries mode
+    if (this.displayMode === 'onlyCountries') {
+      this.allCountries = this.regions.reduce((acc, region) => {
+        return [...acc, ...region.countries.filter(country => 
+          country.name.toLowerCase().includes(query)
+        )];
+      }, [] as Country[]);
+    }
   }
 
   /**

@@ -363,266 +363,335 @@
         <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'TARGET_MARKET_TOOLTIP' | translate }}"></i>
       </label>
 
-   <div class="d-flex justify-content-start gap-4 pt-10">
-    <div class="form-check mb-3">
-      <input
-        type="radio"
-        class="form-check-input"
-        formControlName="targetMarket"
-        name="targetMarket"
-        value="1"
-        id="targetMarket2"
-        [checked]="true"
-      />
-      <label class="form-check-label text-gray-700" for="targetMarket2">
-        {{ "COUNTRIES_AND_REGIONS" | translate }}
-      </label>
-    </div>
-
-    <div class="form-check">
-      <input
-        type="radio"
-        class="form-check-input"
-        formControlName="targetMarket"
-        name="targetMarket"
-        value="2"
-        id="targetMarket1"
-      />
-      <label class="form-check-label text-gray-700" for="targetMarket1">
-        {{ "ECONOMIC_BLOCK" | translate }}
-      </label>
-    </div>
-
-   </div>
-      <div
-        class="fv-plugins-message-container invalid-feedback"
-        *ngIf="form.get('targetMarket')?.invalid && form.get('targetMarket')?.touched"
-      >
-        {{ "TARGET_MARKET_REQUIRED" | translate }}
-      </div>
-      <div
-        class="fv-plugins-message-container invalid-feedback"
-        *ngIf="form.get('targetMarket')?.invalid && form.get('targetMarket')?.touched"
-      >
+     <div class="d-flex justify-content-start gap-4 pt-10">
+      <div class="form-check mb-3">
         <input
-          type="hidden"
+          type="radio"
+          class="form-check-input"
           formControlName="targetMarket"
-          [ngClass]="{'is-invalid': form.get('targetMarket')?.invalid && form.get('targetMarket')?.touched, 'border-red': form.get('targetMarket')?.invalid && form.get('targetMarket')?.touched}"
+          name="targetMarket"
+          value="1"
+          id="targetMarket1"
+          [checked]="true"
         />
-      </div>
-    </div>
-
-    <!-- Region -->
-    <div class="mb-10">
-      <div *ngIf="form.get('targetMarket')?.value === '1'">
-        <label class="d-flex align-items-center form-label mb-3 required">
-          {{ "COUNTRIES_AND_REGIONS" | translate }}
-          <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'REGION_TOOLTIP' | translate }}"></i>
+        <label class="form-check-label text-gray-700" for="targetMarket1">
+          {{ "REGIONS" | translate }}
         </label>
-        <app-select-region
-          #regionSelector
-          placeholder="{{ 'ENTER_REGION' | translate }}"
-          title="{{ 'CHOOSE_REGIONS' | translate }}"
-          [preSelectedRegions]="defaultValues.regions"
-          [preSelectedCountries]="defaultValues.countries"
-          (regionsSelected)="onRegionsSelected($event)"
-          [ngClass]="{'is-invalid': form.get('targetMarket')?.value === '1' && form.get('regions')?.hasError('required') && (form.get('regions')?.touched || form.get('countries')?.touched), 'border-red': form.get('targetMarket')?.value === '1' && form.get('regions')?.hasError('required') && (form.get('regions')?.touched || form.get('countries')?.touched)}"
-        ></app-select-region>
-        <div *ngIf="form.get('targetMarket')?.value === '1' && form.get('regions')?.hasError('required') && (form.get('regions')?.touched || form.get('countries')?.touched)" class="fv-plugins-message-container invalid-feedback mt-2">
-          {{ "REGIONS_COUNTRIES_REQUIRED" | translate }}
-        </div>
       </div>
-    </div>
 
-    <!-- Economic Block -->
-    <div class="mb-10">
-      <div *ngIf="form.get('targetMarket')?.value === '2'">
-        <label class="d-flex align-items-center form-label mb-3 required">
+      <div class="form-check mb-3">
+        <input
+          type="radio"
+          class="form-check-input"
+          formControlName="targetMarket"
+          name="targetMarket"
+          value="4"
+          id="targetMarket4"
+        />
+        <label class="form-check-label text-gray-700" for="targetMarket4">
+          {{ "COUNTRIES" | translate }}
+        </label>
+      </div>
+
+      <div class="form-check">
+        <input
+          type="radio"
+          class="form-check-input"
+          formControlName="targetMarket"
+          name="targetMarket"
+          value="2"
+          id="targetMarket2"
+        />
+        <label class="form-check-label text-gray-700" for="targetMarket2">
           {{ "ECONOMIC_BLOCK" | translate }}
-          <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'ECONOMIC_BLOCK_TOOLTIP' | translate }}"></i>
         </label>
-        <app-select-economic-block
-          #economicBlockSelector
-          placeholder="{{ 'ENTER_ECONOMIC_BLOCK' | translate }}"
-          title="{{ 'CHOOSE_ECONOMIC_BLOCKS' | translate }}"
-          [selectedBlockIds]="selectedEconomicBlocIds"
-          (blocksSelected)="onEconomicBlocksSelected($event)"
-          [ngClass]="{'is-invalid': form.get('targetMarket')?.value === '2' && form.get('economicBlocks')?.hasError('required') && form.get('economicBlocks')?.touched, 'border-red': form.get('targetMarket')?.value === '2' && form.get('economicBlocks')?.hasError('required') && form.get('economicBlocks')?.touched}"
-        ></app-select-economic-block>
-        <div *ngIf="form.get('targetMarket')?.value === '2' && form.get('economicBlocks')?.hasError('required') && form.get('economicBlocks')?.touched" class="fv-plugins-message-container invalid-feedback mt-2">
-          {{ "ECONOMIC_BLOCKS_REQUIRED" | translate }}
-        </div>
       </div>
-    </div>
 
-    <!-- ISIC Code -->
-    <div class="mb-10 fv-row">
-      <app-industry-selector
-        [title]="currentLanguage == 'ar' ? 'اختر الرمز الصناعي' : 'Select industry code '"
-        [placeholder]="currentLanguage == 'ar' ? 'اختر الرمز الصناعي' : 'Industry classification (ISIC)'"
-        [fetchedData]="isicCodeNodes"
-        [cancelLabel]="currentLanguage == 'ar' ? 'الغاء' : 'Cancel'"
-        [selectedIndustryId]="form.get('isic_code')?.value"
-        [okLabel]="currentLanguage == 'ar' ? 'تأكيد' : 'Ok'"
-        [tip]="
-          currentLanguage == 'ar'
-            ? 'اختر الرمز الصناعي الأفضل لمعرفتك'
-            : 'Select the ISIC code related to your knowledge'
-        "
-        (nodeSelected)="onIsicCodeSelected($event)"
-        [isRequired]="false"
-        [ngClass]="{'is-invalid': form.get('isic_code')?.invalid && form.get('isic_code')?.touched, 'border-red': form.get('isic_code')?.invalid && form.get('isic_code')?.touched}"
-      >
-      </app-industry-selector>
-    </div>
-
-    <!-- HS Code -->
-    <div class="mb-10 fv-row" [@fadeInMoveY] *ngIf="selectedIsicId">
-      <app-get-hs-code-by-isic
-        [isicCodeId]="selectedIsicId"
-        [isRequired]="false"
-        [language]="currentLanguage"
-        [preselectedHSCodeId]="form.get('hs_code')?.value"
-        (hsCodeSelected)="onHSCodeSelected($event)"
-        [ngClass]="{'is-invalid': form.get('hs_code')?.invalid && form.get('hs_code')?.touched, 'border-red': form.get('hs_code')?.invalid && form.get('hs_code')?.touched}"
-      >
-      </app-get-hs-code-by-isic>
-    </div>
-
-    <!-- Tags Section -->
-    <div class="mt-10 mb-8" *ngIf="form.get('topicId')?.value && form.get('topicId')?.value !== ''">
-      <div class="d-flex justify-content-between align-items-center mb-5">
-        <label class="d-flex align-items-center fs-5 fw-semibold">
-          <span class="required">{{ "SELECT_TAGS" | translate }}</span>
+      <div class="form-check">
+        <input
+          type="radio"
+          class="form-check-input"
+          formControlName="targetMarket"
+          name="targetMarket"
+          value="3"
+          id="targetMarket3"
+        />
+        <label class="form-check-label text-gray-700" for="targetMarket3">
+          {{ "WORLDWIDE" | translate }}
         </label>
-        <div class="d-flex gap-3">
-          <!-- Only show Select All and Clear All buttons if tags are available -->
-          <ng-container *ngIf="tags && tags.length > 0">
-            <button
-              type="button"
-              class="btn btn-sm btn-light-info text-info text-hover-white text-active-white"
-              (click)="selectAll()"
-            >
-              {{ "SELECT_ALL" | translate }}
-            </button>
-            <button
-              type="button"
-              class="btn btn-sm btn-light-warning text-warning text-hover-white text-active-white"
-              (click)="clearAll()"
-            >
-              {{ "CLEAR_ALL" | translate }}
-            </button>
-          </ng-container>
-          <button
-            type="button"
-            class="btn btn-sm btn-light-success text-success text-hover-white text-active-white"
-            (click)="openAddCustomTag()"
-          >
-            {{ "ADD_CUSTOM_TAG" | translate }}
-          </button>
-        </div>
       </div>
-      <!-- Show this message when there are no tags -->
-      <div *ngIf="!tags || tags.length === 0" class="alert alert-info mb-5">
-        {{ "NO_TAGS_AVAILABLE" | translate }} {{ "ADD_CUSTOM_TAG_INSTRUCTION" | translate }}
-      </div>
-      <!-- Only show chip group if there are tags -->
-      <div class="chip-group mb-5" *ngIf="chips && chips.length > 0">
-        <div class="chip" *ngFor="let chip of chips" [class.selected]="chip.selected" (click)="toggleSelection(chip)">
-          <span class="check-icon" *ngIf="chip.selected">
-            <i class="pi pi-check" style="font-size: 1rem"></i>
-          </span>
-          <span>{{ chip.label }}</span>
-        </div>
-      </div>
-      <!-- Tag selection error message -->
-      <div *ngIf="form.get('tag_ids')?.hasError('required') && form.get('tag_ids')?.touched" class="fv-plugins-message-container invalid-feedback mb-3">
-        {{ "TAGS_REQUIRED" | translate }}
-      </div>
-      <!-- Server error message for tags -->
-      <div *ngIf="tagIdError" class="fv-plugins-message-container invalid-feedback mb-3">
-        {{ tagIdError }}
-      </div>
-      <p-multiSelect
-        [options]="tags"
-        formControlName="tag_ids"
-        optionLabel="name"
-        optionValue="id"
-        [ngClass]="{'is-invalid': form.get('tag_ids')?.hasError('required') && form.get('tag_ids')?.touched, 'border-red': form.get('tag_ids')?.hasError('required') && form.get('tag_ids')?.touched}"
-        placeholder="{{ 'SELECT_TAGS' | translate }}"
-        [maxSelectedLabels]="3"
-        selectedItemsLabel="{0} {{ 'TAGS_SELECTED' | translate }}"
-      ></p-multiSelect>
-    </div>
 
-    <!-- Add Custom Tag Modal using PrimeNG Dialog -->
-    <p-dialog
-      appendTo="body"
-      header="{{ 'ADD_CUSTOM_TAG' | translate }}"
-      [(visible)]="isAddingCustomTag"
-      modal="true"
-      [closable]="false"
-      [style]="{ width: '400px' }"
-    >
-      <form [formGroup]="customTagForm" (ngSubmit)="submitCustomTag()">
-        <div class="p-fluid">
-          <div class="p-field">
-            <label for="name">{{ "TAG_NAME" | translate }}</label>
-            <input id="name" type="text" pInputText formControlName="name" [ngClass]="{'is-invalid': customTagForm.get('name')?.invalid && customTagForm.get('name')?.touched, 'border-red': customTagForm.get('name')?.invalid && customTagForm.get('name')?.touched}"/>
-            <small
-              *ngIf="customTagForm.get('name')?.invalid && customTagForm.get('name')?.touched"
-              class="p-error"
-            >
-              {{ "TAG_NAME_REQUIRED" | translate }}
-            </small>
+     </div>
+        <div
+          class="fv-plugins-message-container invalid-feedback"
+          *ngIf="form.get('targetMarket')?.invalid && form.get('targetMarket')?.touched"
+        >
+          {{ "TARGET_MARKET_REQUIRED" | translate }}
+        </div>
+        <div
+          class="fv-plugins-message-container invalid-feedback"
+          *ngIf="form.get('targetMarket')?.invalid && form.get('targetMarket')?.touched"
+        >
+          <input
+            type="hidden"
+            formControlName="targetMarket"
+            [ngClass]="{'is-invalid': form.get('targetMarket')?.invalid && form.get('targetMarket')?.touched, 'border-red': form.get('targetMarket')?.invalid && form.get('targetMarket')?.touched}"
+          />
+        </div>
+      </div>
+
+      <!-- Region Selector -->
+      <div class="mb-10">
+        <!-- Regions Only -->
+        <div *ngIf="form.get('targetMarket')?.value === '1'">
+          <label class="d-flex align-items-center form-label mb-3 required">
+            {{ "REGIONS" | translate }}
+            <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'REGION_TOOLTIP' | translate }}"></i>
+          </label>
+          <app-select-region
+            #regionSelector
+            placeholder="{{ 'SELECT_REGIONS' | translate }}"
+            title="{{ 'CHOOSE_REGIONS' | translate }}"
+            [preSelectedRegions]="defaultValues.regions"
+            [preSelectedCountries]="defaultValues.countries"
+            (regionsSelected)="onRegionsSelected($event)"
+            displayMode="onlyRegions"
+            [ngClass]="{'is-invalid': form.get('targetMarket')?.value === '1' && form.get('regions')?.hasError('required') && (form.get('regions')?.touched || form.get('countries')?.touched), 'border-red': form.get('targetMarket')?.value === '1' && form.get('regions')?.hasError('required') && (form.get('regions')?.touched || form.get('countries')?.touched)}"
+          ></app-select-region>
+          <div *ngIf="form.get('targetMarket')?.value === '1' && form.get('regions')?.hasError('required') && (form.get('regions')?.touched || form.get('countries')?.touched)" class="fv-plugins-message-container invalid-feedback mt-2">
+            {{ "REGIONS_REQUIRED" | translate }}
           </div>
         </div>
-        <div class="p-dialog-footer d-flex justify-content-end gap-3 mt-5">
-          <button
-            type="button"
-            class="btn btn-light-danger btn-sm px-6"
-            (click)="closeAddCustomTag()"
-          >
-            <span class="indicator-label">{{ "CANCEL" | translate }}</span>
-          </button>
-          <button
-            type="submit"
-            class="btn btn-primary btn-sm px-6"
-            [disabled]="customTagForm.invalid"
-          >
-            <span class="indicator-label">{{ "ADD_TAG" | translate }}</span>
-          </button>
+
+        <!-- Countries Only -->
+        <div *ngIf="form.get('targetMarket')?.value === '4'">
+          <label class="d-flex align-items-center form-label mb-3 required">
+            {{ "COUNTRIES" | translate }}
+            <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'COUNTRIES_TOOLTIP' | translate }}"></i>
+          </label>
+          <app-select-region
+            #regionSelector
+            placeholder="{{ 'SELECT_COUNTRIES' | translate }}"
+            title="{{ 'CHOOSE_COUNTRIES' | translate }}"
+            [preSelectedRegions]="defaultValues.regions"
+            [preSelectedCountries]="defaultValues.countries"
+            (regionsSelected)="onRegionsSelected($event)"
+            displayMode="onlyCountries"
+            [ngClass]="{'is-invalid': form.get('targetMarket')?.value === '4' && form.get('regions')?.hasError('required') && (form.get('regions')?.touched || form.get('countries')?.touched), 'border-red': form.get('targetMarket')?.value === '4' && form.get('regions')?.hasError('required') && (form.get('regions')?.touched || form.get('countries')?.touched)}"
+          ></app-select-region>
+          <div *ngIf="form.get('targetMarket')?.value === '4' && form.get('regions')?.hasError('required') && (form.get('regions')?.touched || form.get('countries')?.touched)" class="fv-plugins-message-container invalid-feedback mt-2">
+            {{ "COUNTRIES_REQUIRED" | translate }}
+          </div>
         </div>
-      </form>
-    </p-dialog>
-
-    <!-- Keywords Section -->
-    <div class="mt-10 mb-10" *ngIf="form.get('topicId')?.value && form.get('topicId')?.value !== ''">
-      <label class="d-flex align-items-center fs-5 fw-semibold mb-5">
-        <span class="required">{{ "KEYWORDS" | translate }}</span>
-      </label>
-      <tag-input
-        formControlName="keywords"
-        [secondaryPlaceholder]="'ENTER_KEYWORDS' | translate"
-        [separatorKeyCodes]="[188, 13]"
-        [addOnBlur]="true"
-        [required]="true"
-        [placeholder]="'ENTER_KEYWORDS' | translate"
-        (onAdd)="addKeyword($event)"
-        (onRemove)="removeKeyword($event)"
-        [ngClass]="{'is-invalid': form.get('keywords')?.hasError('required') && form.get('keywords')?.touched, 'border-red': form.get('keywords')?.hasError('required') && form.get('keywords')?.touched}"
-      >
-        <tag-input-dropdown
-          [showDropdownIfEmpty]="true"
-          [autocompleteItems]="availableKeywords"
-        ></tag-input-dropdown>
-      </tag-input>
-      <div *ngIf="form.get('keywords')?.hasError('required') && form.get('keywords')?.touched" class="fv-plugins-message-container invalid-feedback mb-3">
-        {{ "KEYWORDS_REQUIRED" | translate }}
       </div>
-    </div>
 
-  
+      <!-- Economic Block -->
+      <div class="mb-10">
+        <div *ngIf="form.get('targetMarket')?.value === '2'">
+          <label class="d-flex align-items-center form-label mb-3 required">
+            {{ "ECONOMIC_BLOCK" | translate }}
+            <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'ECONOMIC_BLOCK_TOOLTIP' | translate }}"></i>
+          </label>
+          <app-select-economic-block
+            #economicBlockSelector
+            placeholder="{{ 'ENTER_ECONOMIC_BLOCK' | translate }}"
+            title="{{ 'CHOOSE_ECONOMIC_BLOCKS' | translate }}"
+            [selectedBlockIds]="selectedEconomicBlocIds"
+            (blocksSelected)="onEconomicBlocksSelected($event)"
+            [ngClass]="{'is-invalid': form.get('targetMarket')?.value === '2' && form.get('economicBlocks')?.hasError('required') && form.get('economicBlocks')?.touched, 'border-red': form.get('targetMarket')?.value === '2' && form.get('economicBlocks')?.hasError('required') && form.get('economicBlocks')?.touched}"
+          ></app-select-economic-block>
+          <div *ngIf="form.get('targetMarket')?.value === '2' && form.get('economicBlocks')?.hasError('required') && form.get('economicBlocks')?.touched" class="fv-plugins-message-container invalid-feedback mt-2">
+            {{ "ECONOMIC_BLOCKS_REQUIRED" | translate }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Worldwide -->
+      <div class="mb-10">
+        <div *ngIf="form.get('targetMarket')?.value === '3'">
+          <div class="d-flex align-items-center">
+            <label class="form-label mb-3">
+              {{ "WORLDWIDE" | translate }}
+              <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'WORLDWIDE_TOOLTIP' | translate }}"></i>
+            </label>
+          </div>
+          <div class="alert alert-info">
+            <div class="d-flex align-items-center">
+              <i class="ki-duotone ki-globe fs-2 me-2"></i>
+              <div>{{ "WORLDWIDE_DESCRIPTION" | translate }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ISIC Code -->
+      <div class="mb-10 fv-row">
+        <app-industry-selector
+          [title]="currentLanguage == 'ar' ? 'اختر الرمز الصناعي' : 'Select industry code '"
+          [placeholder]="currentLanguage == 'ar' ? 'اختر الرمز الصناعي' : 'Industry classification (ISIC)'"
+          [fetchedData]="isicCodeNodes"
+          [cancelLabel]="currentLanguage == 'ar' ? 'الغاء' : 'Cancel'"
+          [selectedIndustryId]="form.get('isic_code')?.value"
+          [okLabel]="currentLanguage == 'ar' ? 'تأكيد' : 'Ok'"
+          [tip]="
+            currentLanguage == 'ar'
+              ? 'اختر الرمز الصناعي الأفضل لمعرفتك'
+              : 'Select the ISIC code related to your knowledge'
+          "
+          (nodeSelected)="onIsicCodeSelected($event)"
+          [isRequired]="false"
+          [ngClass]="{'is-invalid': form.get('isic_code')?.invalid && form.get('isic_code')?.touched, 'border-red': form.get('isic_code')?.invalid && form.get('isic_code')?.touched}"
+        >
+        </app-industry-selector>
+      </div>
+
+      <!-- HS Code -->
+      <div class="mb-10 fv-row" [@fadeInMoveY] *ngIf="selectedIsicId">
+        <app-get-hs-code-by-isic
+          [isicCodeId]="selectedIsicId"
+          [isRequired]="false"
+          [language]="currentLanguage"
+          [preselectedHSCodeId]="form.get('hs_code')?.value"
+          (hsCodeSelected)="onHSCodeSelected($event)"
+          [ngClass]="{'is-invalid': form.get('hs_code')?.invalid && form.get('hs_code')?.touched, 'border-red': form.get('hs_code')?.invalid && form.get('hs_code')?.touched}"
+        >
+        </app-get-hs-code-by-isic>
+      </div>
+
+      <!-- Tags Section -->
+      <div class="mt-10 mb-8" *ngIf="form.get('topicId')?.value && form.get('topicId')?.value !== ''">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+          <label class="d-flex align-items-center fs-5 fw-semibold">
+            <span class="required">{{ "SELECT_TAGS" | translate }}</span>
+          </label>
+          <div class="d-flex gap-3">
+            <!-- Only show Select All and Clear All buttons if tags are available -->
+            <ng-container *ngIf="tags && tags.length > 0">
+              <button
+                type="button"
+                class="btn btn-sm btn-light-info text-info text-hover-white text-active-white"
+                (click)="selectAll()"
+              >
+                {{ "SELECT_ALL" | translate }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-sm btn-light-warning text-warning text-hover-white text-active-white"
+                (click)="clearAll()"
+              >
+                {{ "CLEAR_ALL" | translate }}
+              </button>
+            </ng-container>
+            <button
+              type="button"
+              class="btn btn-sm btn-light-success text-success text-hover-white text-active-white"
+              (click)="openAddCustomTag()"
+            >
+              {{ "ADD_CUSTOM_TAG" | translate }}
+            </button>
+          </div>
+        </div>
+        <!-- Show this message when there are no tags -->
+        <div *ngIf="!tags || tags.length === 0" class="alert alert-info mb-5">
+          {{ "NO_TAGS_AVAILABLE" | translate }} {{ "ADD_CUSTOM_TAG_INSTRUCTION" | translate }}
+        </div>
+        <!-- Only show chip group if there are tags -->
+        <div class="chip-group mb-5" *ngIf="chips && chips.length > 0">
+          <div class="chip" *ngFor="let chip of chips" [class.selected]="chip.selected" (click)="toggleSelection(chip)">
+            <span class="check-icon" *ngIf="chip.selected">
+              <i class="pi pi-check" style="font-size: 1rem"></i>
+            </span>
+            <span>{{ chip.label }}</span>
+          </div>
+        </div>
+        <!-- Tag selection error message -->
+        <div *ngIf="form.get('tag_ids')?.hasError('required') && form.get('tag_ids')?.touched" class="fv-plugins-message-container invalid-feedback mb-3">
+          {{ "TAGS_REQUIRED" | translate }}
+        </div>
+        <!-- Server error message for tags -->
+        <div *ngIf="tagIdError" class="fv-plugins-message-container invalid-feedback mb-3">
+          {{ tagIdError }}
+        </div>
+        <p-multiSelect
+          [options]="tags"
+          formControlName="tag_ids"
+          optionLabel="name"
+          optionValue="id"
+          [ngClass]="{'is-invalid': form.get('tag_ids')?.hasError('required') && form.get('tag_ids')?.touched, 'border-red': form.get('tag_ids')?.hasError('required') && form.get('tag_ids')?.touched}"
+          placeholder="{{ 'SELECT_TAGS' | translate }}"
+          [maxSelectedLabels]="3"
+          selectedItemsLabel="{0} {{ 'TAGS_SELECTED' | translate }}"
+        ></p-multiSelect>
+      </div>
+
+      <!-- Add Custom Tag Modal using PrimeNG Dialog -->
+      <p-dialog
+        appendTo="body"
+        header="{{ 'ADD_CUSTOM_TAG' | translate }}"
+        [(visible)]="isAddingCustomTag"
+        modal="true"
+        [closable]="false"
+        [style]="{ width: '400px' }"
+      >
+        <form [formGroup]="customTagForm" (ngSubmit)="submitCustomTag()">
+          <div class="p-fluid">
+            <div class="p-field">
+              <label for="name">{{ "TAG_NAME" | translate }}</label>
+              <input id="name" type="text" pInputText formControlName="name" [ngClass]="{'is-invalid': customTagForm.get('name')?.invalid && customTagForm.get('name')?.touched, 'border-red': customTagForm.get('name')?.invalid && customTagForm.get('name')?.touched}"/>
+              <small
+                *ngIf="customTagForm.get('name')?.invalid && customTagForm.get('name')?.touched"
+                class="p-error"
+              >
+                {{ "TAG_NAME_REQUIRED" | translate }}
+              </small>
+            </div>
+          </div>
+          <div class="p-dialog-footer d-flex justify-content-end gap-3 mt-5">
+            <button
+              type="button"
+              class="btn btn-light-danger btn-sm px-6"
+              (click)="closeAddCustomTag()"
+            >
+              <span class="indicator-label">{{ "CANCEL" | translate }}</span>
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary btn-sm px-6"
+              [disabled]="customTagForm.invalid"
+            >
+              <span class="indicator-label">{{ "ADD_TAG" | translate }}</span>
+            </button>
+          </div>
+        </form>
+      </p-dialog>
+
+      <!-- Keywords Section -->
+      <div class="mt-10 mb-10" *ngIf="form.get('topicId')?.value && form.get('topicId')?.value !== ''">
+        <label class="d-flex align-items-center fs-5 fw-semibold mb-5">
+          <span class="required">{{ "KEYWORDS" | translate }}</span>
+        </label>
+        <tag-input
+          formControlName="keywords"
+          [secondaryPlaceholder]="'ENTER_KEYWORDS' | translate"
+          [separatorKeyCodes]="[188, 13]"
+          [addOnBlur]="true"
+          [required]="true"
+          [placeholder]="'ENTER_KEYWORDS' | translate"
+          (onAdd)="addKeyword($event)"
+          (onRemove)="removeKeyword($event)"
+          [ngClass]="{'is-invalid': form.get('keywords')?.hasError('required') && form.get('keywords')?.touched, 'border-red': form.get('keywords')?.hasError('required') && form.get('keywords')?.touched}"
+        >
+          <tag-input-dropdown
+            [showDropdownIfEmpty]="true"
+            [autocompleteItems]="availableKeywords"
+          ></tag-input-dropdown>
+        </tag-input>
+        <div *ngIf="form.get('keywords')?.hasError('required') && form.get('keywords')?.touched" class="fv-plugins-message-container invalid-feedback mb-3">
+          {{ "KEYWORDS_REQUIRED" | translate }}
+        </div>
+      </div>
+
+    
 
 
   </form>

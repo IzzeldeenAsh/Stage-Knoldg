@@ -41,6 +41,7 @@ interface ICreateKnowldege {
     id: number;
     description: string; 
   }[];
+  isWorldwide?: boolean;
 }
 
 const inits: ICreateKnowldege = {
@@ -67,7 +68,8 @@ const inits: ICreateKnowldege = {
   publish_status: 'draft',
   publish_date_time: '',
   economic_bloc: [],
-  documentDescriptions: []
+  documentDescriptions: [],
+  isWorldwide: false
 };
 
 export { ICreateKnowldege, inits };

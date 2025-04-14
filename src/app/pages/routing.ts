@@ -51,6 +51,12 @@ const Routing: Routes = [
     data: { roles: [ 'insighter','company','company-insighter'] } 
   },
   {
+    path: 'review-insighter-knowledge',
+    loadChildren: () => import('./review-insighter-knowledge/review-insighter-knowledge.module').then((m) => m.ReviewInsighterKnowledgeModule),
+    canActivate:[authGuard,RolesGuard],
+    data: { roles: ['company'] } 
+  },
+  {
     path: '**',
     redirectTo: 'error/404',
   },

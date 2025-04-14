@@ -28,6 +28,8 @@ export class NotificationsNamesPipe implements PipeTransform {
         return 'Verified Company';
       case 'verified_insighter':
         return 'Verified Insighter';
+      case 'accept_knowledge':
+        return 'Knowledge Request';
       default:
         return value;
     }

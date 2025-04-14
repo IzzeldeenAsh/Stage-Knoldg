@@ -6,14 +6,14 @@ import { environment } from '../../../../../environments/environment';
 import { AuthModel } from '../../models/auth.model';
 
 const API_USERS_URL = `auth`;
-const API_GENERALREGISTER= 'https://api.knoldg.com/api/auth/register'
+const API_GENERALREGISTER= 'https://api.knoldg.com/api/auth/register';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthHTTPService {
   private authLocalStorageKey = 'foresighta-creds';
-
+  
   constructor(
     private http: HttpClient
   ) {}
@@ -88,7 +88,7 @@ export class AuthHTTPService {
   getUserByToken(): Observable<any> {
     const headers = this.getAuthHeaders();
     return this.http.get<UserModel>(
-      'https://api.knoldg.com/api/account/profile', 
+      `${environment.apiBaseUrl}/account/profile`, 
       { headers }
     );
   }

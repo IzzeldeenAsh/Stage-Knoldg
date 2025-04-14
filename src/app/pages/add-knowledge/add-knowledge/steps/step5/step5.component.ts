@@ -2,6 +2,7 @@ import { Component, Injector, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ICreateKnowldege } from '../../create-account.helper';
 import { BaseComponent } from 'src/app/modules/base.component';
+import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 
 @Component({
   selector: 'app-step5',
@@ -43,40 +44,79 @@ export class Step5Component extends BaseComponent implements OnInit {
 
   publishForm: FormGroup;
   minDate: Date = new Date();
-  publishOptions = [
-    {
-      id: 'publish',
-      value: 'published',
-      label: 'PUBLISH_NOW',
-      description: 'PUBLISH_NOW_DESC',
-      icon: 'send'
-    },
-    {
-      id: 'schedule',
-      value: 'scheduled',
-      label: 'SCHEDULE',
-      description: 'SCHEDULE_DESC',
-      icon: 'time'
-    },
-    {
-      id: 'draft',
-      value: 'unpublished',
-      label: 'SAVE_AS_DRAFT',
-      description: 'SAVE_AS_DRAFT_DESC',
-      icon: 'document'
-    }
-  ];
+  publishOptions: Array<{
+    id: string;
+    value: string;
+    label: string;
+    description: string;
+    icon: string;
+  }> = [];
+  isCompanyInsighter: boolean = false;
   timeError: string = '';
   
   // Calendar configuration for PrimeNG
   timeFormat: string = '24';
   dateFormat: string = 'yy-mm-dd';
 
-  constructor(injector: Injector, private fb: FormBuilder) {
+  constructor(injector: Injector, private fb: FormBuilder, private profileService: ProfileService) {
     super(injector);
   }
 
   ngOnInit(): void {
+    // First, check if user is a company-insighter
+    this.profileService.getProfile().subscribe(profile => {
+      this.isCompanyInsighter = profile.roles?.includes('company-insighter') || false;
+      this.initializePublishOptions();
+      this.initializeForm();
+    });
+  }
+
+  private initializePublishOptions() {
+    if (this.isCompanyInsighter) {
+      this.publishOptions = [
+        {
+          id: 'review',
+          value: 'in_review',
+          label: 'SEND_TO_CEO_REVIEW',
+          description: 'SEND_TO_CEO_REVIEW_DESC',
+          icon: 'send'
+        },
+        {
+          id: 'draft',
+          value: 'unpublished',
+          label: 'SAVE_AS_DRAFT',
+          description: 'SAVE_AS_DRAFT_DESC',
+          icon: 'document'
+        }
+      ];
+    } else {
+      this.publishOptions = [
+        {
+          id: 'publish',
+          value: 'published',
+          label: 'PUBLISH_NOW',
+          description: 'PUBLISH_NOW_DESC',
+          icon: 'send'
+        },
+        {
+          id: 'schedule',
+          value: 'scheduled',
+          label: 'SCHEDULE',
+          description: 'SCHEDULE_DESC',
+          icon: 'time'
+        },
+        {
+          id: 'draft',
+          value: 'unpublished',
+          label: 'SAVE_AS_DRAFT',
+          description: 'SAVE_AS_DRAFT_DESC',
+          icon: 'document'
+        }
+      ];
+    }
+  }
+  
+  private initializeForm() {
     this.publishForm = this.fb.group({
       publishOption: [this.defaultValues.publish_status || '', Validators.required],
       publishDate: [null],
@@ -108,13 +148,6 @@ export class Step5Component extends BaseComponent implements OnInit {
       this.validateDateTime();
       this.updateParentValues();
     });
-
-    // Initialize validation
-    const option = this.publishForm.get('publishOption')?.value;
-    if (option === 'scheduled') {
-      this.publishForm.get('publishDate')?.setValidators([Validators.required]);
-      this.publishForm.get('publishTime')?.setValidators([Validators.required]);
-    }
 
     // Set defaults if we're in edit mode
     if (this.defaultValues.publish_status === 'scheduled' && this.defaultValues.publish_date_time) {

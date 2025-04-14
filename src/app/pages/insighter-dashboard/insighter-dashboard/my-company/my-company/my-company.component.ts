@@ -1,3 +1,4 @@
+import { Knowledge } from 'src/app/_fake/services/knowledge/knowledge.service';
 import { Component, Injector, OnInit } from '@angular/core';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -16,7 +17,15 @@ interface Insighter {
   profile_photo_url: string | null;
   country: string;
   insighter_status: string;
+  Knowledge_id?: number;
   verified_as_insighter: boolean;
+  knowledge_type_statistics?: {
+    report?: number;
+    data?: number;
+    insight?: number;
+    manual?: number;
+    course?: number;
+  };
 }
 
 interface PaginationMeta {
@@ -62,6 +71,9 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
   
   // Current user ID
   currentUserId: number | null = null;
+  
+  // Track expanded rows
+  expandedRows: {[key: number]: boolean} = {};
   
   constructor(
     injector: Injector,
@@ -126,14 +138,6 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
         console.error('Error loading insighters:', error);
       }
     });
-  }
-  
-  // Handle page change event
-  onPageChange(event: any): void {
-    this.first = event.first;
-    this.rows = event.rows;
-    const page = Math.floor(event.first / event.rows) + 1;
-    this.loadInsighters(page);
   }
   
   // Open the add employee modal
@@ -298,6 +302,25 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     return verified ? 'badge-light-success' : 'badge-light-warning';
   }
   
+  // Calculate total knowledge count for an insighter
+  getTotalKnowledgeCount(insighter: Insighter): number {
+    if (!insighter.knowledge_type_statistics) {
+      return 0;
+    }
+    
+    let total = 0;
+    const stats = insighter.knowledge_type_statistics;
+    
+    // Sum all the knowledge types
+    if (stats.report) total += stats.report;
+    if (stats.data) total += stats.data;
+    if (stats.insight) total += stats.insight;
+    if (stats.manual) total += stats.manual;
+    if (stats.course) total += stats.course;
+    
+    return total;
+  }
+  
   // Activate insighter
   activateInsighter(insighterId: number): void {
     this.confirmationService.confirm({
@@ -356,5 +379,13 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
         });
       }
     });
+  }
+  
+  // Handle page change event
+  onPageChange(event: any): void {
+    this.first = event.first;
+    this.rows = event.rows;
+    const page = Math.floor(event.first / event.rows) + 1;
+    this.loadInsighters(page);
   }
 }

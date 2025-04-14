@@ -2,33 +2,7 @@
     <app-knowledge-types-statistics></app-knowledge-types-statistics>
 </ng-container>
 <div class="row">
-    <!-- <div class="col-xl-4 mb-5 mb-xl-10">
-        <div class="card card-flush h-md-100 mb-xl-10">
-            <div class="card-header pt-5">
-                <div class="card-title d-flex w-100 flex-column">   
-                    <div class="d-flex flex-column w-100    ">
-                        <div class="position-relative text-gray-800 fs-1 z-index-2 fw-bold mb-5">
-                            {{ 'PROFILE_COMPLETION.ALMOST_THERE' | translate }}                      
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center flex-column mt-3 w-100">
-                        <div class="d-flex justify-content-between w-100 mt-auto mb-2">
-                            <span class="fw-bolder fs-6 text-gray-900">{{ 'PROFILE_COMPLETION.TITLE' | translate }}</span>
-                            <span class="fw-bold fs-6 text-gray-500">90%</span>
-                        </div>
-            
-                        <div class="h-8px mx-3 w-100 bg-light-success rounded">
-                            <div class="bg-success rounded h-8px" role="progressbar" style="width: 90%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card-body d-flex flex-column pt-4">
-                <span class="text-gray-500 pt-1 fw-semibold fs-6">Complete your profile to unlock all features and get the most out of your account.</span>
-                <a [routerLink]="['/app/profile/settings/personal-info']" class="text-info pt-2 fw-semibold fs-6">Add socials accounts!</a>           
-            </div>
-        </div>
-    </div> -->
+
     <!-- Upgrade to company account -->
     <div class="col-12 mb-5 mb-xl-10" *ngIf="hasRole('insighter')">
         <div class="card card-custom bg-body border-1 h-md-100">
@@ -73,6 +47,38 @@
                 <!--begin::Illustration-->
                 <img src="./assets/media/auth/upgrade-to-corporate.png" class="h-175px me-15" alt=""> 
                 <!--end::Illustration-->
+            </div>
+            <!--end::Body-->
+        </div>
+    </div>
+
+    <!-- Empty state - start building knowledge base -->
+    <div class="col-12 mb-5 mb-xl-10" *ngIf="!hasRole('insighter') && !hasStatistics()">
+        <div class="card card-custom bg-body border-1 h-md-100">
+            <!--begin::Body-->
+            <div class="card-body d-flex justify-content-center flex-column align-items-center py-15">
+                <!--begin::Illustration-->
+                <img src="./assets/media/illustrations/misc/buildup_dashboard.svg" class="h-200px mb-5" alt="Empty Dashboard"> 
+                <!--end::Illustration-->
+                
+                <!--begin::Title-->
+                <div class="position-relative text-gray-800 fs-1 z-index-2 fw-bold mb-5 text-center">
+                    {{ 'EMPTY_DASHBOARD.TITLE' | translate }}
+                </div>
+                <!--end::Title-->
+                
+                <!--begin::Text-->
+                <span class="text-gray-600 fw-semibold fs-6 mb-7 text-center mw-500px">
+                    {{ 'EMPTY_DASHBOARD.DESCRIPTION' | translate }}
+                </span>
+                <!--end::Text-->
+                
+                <!--begin::Action-->
+                <a [routerLink]="['/app/add-knowledge/stepper']" class="btn btn-primary fw-bold">
+                    <i class="fas fa-plus me-2"></i>
+                    {{ 'EMPTY_DASHBOARD.ADD_BUTTON' | translate }}
+                </a>
+                <!--end::Action-->
             </div>
             <!--end::Body-->
         </div>

@@ -7,7 +7,7 @@
       <span class="text-muted mt-1 fw-semibold fs-7">{{ 'MY_COMPANY.SUBTITLE' | translate }}</span>
     </h3>
     <div class="card-toolbar">
-      <button type="button" class="btn btn-sm btn-light-primary" (click)="openAddEmployeeModal()">
+      <button type="button" class="btn btn-sm btn-light-info" (click)="openAddEmployeeModal()">
         <i class="ki-duotone ki-plus fs-2"></i>
         {{ 'MY_COMPANY.ADD_EMPLOYEE' | translate }}
       </button>
@@ -33,6 +33,7 @@
           <!-- Table Header -->
           <thead>
             <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
+              <th class="min-w-50px"></th>
               <th class="min-w-125px">{{ 'MY_COMPANY.TABLE.INSIGHTER' | translate }}</th>
               <th class="min-w-125px">{{ 'MY_COMPANY.TABLE.EMAIL' | translate }}</th>
               <th class="min-w-125px">{{ 'MY_COMPANY.TABLE.COUNTRY' | translate }}</th>
@@ -43,69 +44,155 @@
           </thead>
           <!-- Table Body -->
           <tbody class="text-gray-600 fw-semibold">
-            <tr *ngFor="let insighter of insighters">
-              <!-- Insighter Name & Avatar -->
-              <td>
-                <div class="d-flex align-items-center">
-                  <div class="symbol symbol-45px mx-5">
-                    <p-avatar 
-                      [label]="getUserInitials(insighter.name)"
-                      styleClass="bg-light-primary"
-                      [style]="{'font-size': '1rem', 'height': '45px', 'width': '45px'}"
-                      *ngIf="!insighter.profile_photo_url">
-                    </p-avatar>
-                    <img *ngIf="insighter.profile_photo_url" [src]="insighter.profile_photo_url" alt="insighter" class="h-45px w-45px rounded-circle" />
+            <ng-container *ngFor="let insighter of insighters">
+              <!-- Main Row -->
+              <tr>
+                <!-- Expand/Collapse Button -->
+                <td>
+                  <button 
+                    type="button" 
+                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm expand-button" 
+                    [ngClass]="{'expanded': expandedRows[insighter.id]}"
+                    (click)="expandedRows[insighter.id] = !expandedRows[insighter.id]">
+                    <i class="ki-duotone ki-arrow-down fs-2" *ngIf="!expandedRows[insighter.id]">
+                      <span class="path1"></span>
+                    </i>
+                    <i class="ki-duotone ki-arrow-up fs-2" *ngIf="expandedRows[insighter.id]">
+                      <span class="path1"></span>
+                    </i>
+                  </button>
+                </td>
+                <!-- Insighter Name & Avatar -->
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="symbol symbol-45px mx-5">
+                      <p-avatar 
+                        [label]="getUserInitials(insighter.name)"
+                        styleClass="bg-light-primary"
+                        [style]="{'font-size': '1rem', 'height': '45px', 'width': '45px'}"
+                        *ngIf="!insighter.profile_photo_url">
+                      </p-avatar>
+                      <img *ngIf="insighter.profile_photo_url" [src]="insighter.profile_photo_url" alt="insighter" class="h-45px w-45px rounded-circle" />
+                    </div>
+                    <div class="d-flex flex-column">
+                      <a  class="text-gray-800 text-hover-primary mb-1">{{ insighter.name }}</a>
+                      <span *ngIf="insighter.id === currentUserId" class=" text-info ">
+                        {{ 'MY_COMPANY.CURRENT_USER' | translate }}
+                      </span>
+                    </div>
                   </div>
-                  <div class="d-flex flex-column">
-                    <a href="javascript:;" class="text-gray-800 text-hover-primary mb-1">{{ insighter.name }}</a>
+                </td>
+                
+                <!-- Email -->
+                <td>{{ insighter.email }}</td>
+                
+                <!-- Country -->
+                <td>{{ insighter.country }}</td>
+                
+                <!-- Status -->
+                <td>
+                  <span [class]="'badge ' + getStatusBadgeClass(insighter.insighter_status)">
+                    {{ insighter.insighter_status | titlecase }}
+                  </span>
+                </td>
+                
+                <!-- Verification -->
+                <td>
+                  <span [class]="'badge ' + getVerificationBadgeClass(insighter.verified_as_insighter)">
+                    {{ (insighter.verified_as_insighter ? 'MY_COMPANY.VERIFIED' : 'MY_COMPANY.PENDING') | translate }}
+                  </span>
+                </td>
+                
+                <!-- Actions -->
+                <td class="text-end">
+                  <button *ngIf="insighter.insighter_status === 'inactive' && insighter.id !== currentUserId" 
+                          class="btn btn-icon btn-bg-light btn-active-color-success btn-sm me-1"
+                          (click)="activateInsighter(insighter.id)" 
+                          pTooltip="{{ 'MY_COMPANY.ACTIVATE' | translate }}" 
+                          tooltipPosition="top">
+                    <i class="ki-duotone ki-check fs-2"></i>
+                  </button>
+                  <button *ngIf="insighter.insighter_status === 'active' && insighter.id !== currentUserId" 
+                          class="btn btn-icon btn-bg-light btn-active-color-danger btn-sm me-1"
+                          (click)="deactivateInsighter(insighter.id)" 
+                          pTooltip="{{ 'MY_COMPANY.DEACTIVATE' | translate }}" 
+                          tooltipPosition="top">
+                    <i class="ki-duotone ki-cross fs-2">
+                      <span class="path1"></span>
+                      <span class="path2"></span>
+                    </i>
+                  </button>
+                  <span *ngIf="insighter.id === currentUserId">
+                 
+                  </span>
+                </td>
+              </tr>
+              
+              <!-- Expanded Row for Knowledge Statistics -->
+              <tr *ngIf="expandedRows[insighter.id]" class="expanded-row">
+                <td colspan="7">
+                  <div class="px-8 py-5 rounded my-3 statistics-container">
+                    <!-- Header with user name and total count -->
+                    <div class="d-flex align-items-center justify-content-between mb-5">
+                      <h4 class="fw-bolder m-0">
+                        <i class="fas fa-chart-bar text-primary me-2"></i>
+                        {{ insighter.name }}'s Published Knowledge
+                      </h4>
+                      <span class="badge badge-light-primary px-4 py-2 fs-6" *ngIf="getTotalKnowledgeCount(insighter)">
+                        Total: {{ getTotalKnowledgeCount(insighter) }}
+                      </span>
+                    </div>
+                    
+                    <!-- Statistics cards -->
+                    <div class="row g-4">
+                      <div *ngIf="insighter.knowledge_type_statistics?.report !== undefined" class="col-6 col-sm-4 col-md-3 col-xl-2 mb-3">
+                        <div class="knowledge-stat report">
+                          <i class="fas fa-file-alt text-primary fs-2"></i>
+                          <div class="stat-label">Reports</div>
+                          <div class="stat-value">{{ insighter.knowledge_type_statistics?.report || 0 }}</div>
+                        </div>
+                      </div>
+                      <div *ngIf="insighter.knowledge_type_statistics?.data !== undefined" class="col-6 col-sm-4 col-md-3 col-xl-2 mb-3">
+                        <div class="knowledge-stat data">
+                          <i class="fas fa-database text-info fs-2"></i>
+                          <div class="stat-label">Data</div>
+                          <div class="stat-value">{{ insighter.knowledge_type_statistics?.data || 0 }}</div>
+                        </div>
+                      </div>
+                      <div *ngIf="insighter.knowledge_type_statistics?.insight !== undefined" class="col-6 col-sm-4 col-md-3 col-xl-2 mb-3">
+                        <div class="knowledge-stat insight">
+                          <i class="fas fa-lightbulb text-success fs-2"></i>
+                          <div class="stat-label">Insights</div>
+                          <div class="stat-value">{{ insighter.knowledge_type_statistics?.insight || 0 }}</div>
+                        </div>
+                      </div>
+                      <div *ngIf="insighter.knowledge_type_statistics?.manual !== undefined" class="col-6 col-sm-4 col-md-3 col-xl-2 mb-3">
+                        <div class="knowledge-stat manual">
+                          <i class="fas fa-book text-warning fs-2"></i>
+                          <div class="stat-label">Manuals</div>
+                          <div class="stat-value">{{ insighter.knowledge_type_statistics?.manual || 0 }}</div>
+                        </div>
+                      </div>
+                      <div *ngIf="insighter.knowledge_type_statistics?.course !== undefined" class="col-6 col-sm-4 col-md-3 col-xl-2 mb-3">
+                        <div class="knowledge-stat course">
+                          <i class="fas fa-graduation-cap text-danger fs-2"></i>
+                          <div class="stat-label">Courses</div>
+                          <div class="stat-value">{{ insighter.knowledge_type_statistics?.course || 0 }}</div>
+                        </div>
+                      </div>
+                      
+                      <!-- If no statistics are available -->
+                      <div *ngIf="!insighter.knowledge_type_statistics || getTotalKnowledgeCount(insighter) === 0" class="col-12 text-center py-5">
+                        <div class="d-flex flex-column align-items-center">
+                          <i class="fas fa-folder-open text-muted fs-2x mb-3"></i>
+                          <span class="text-muted fs-6">No knowledge published yet by this insighter</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </td>
-              
-              <!-- Email -->
-              <td>{{ insighter.email }}</td>
-              
-              <!-- Country -->
-              <td>{{ insighter.country }}</td>
-              
-              <!-- Status -->
-              <td>
-                <span [class]="'badge ' + getStatusBadgeClass(insighter.insighter_status)">
-                  {{ insighter.insighter_status | titlecase }}
-                </span>
-              </td>
-              
-              <!-- Verification -->
-              <td>
-                <span [class]="'badge ' + getVerificationBadgeClass(insighter.verified_as_insighter)">
-                  {{ (insighter.verified_as_insighter ? 'MY_COMPANY.VERIFIED' : 'MY_COMPANY.PENDING') | translate }}
-                </span>
-              </td>
-              
-              <!-- Actions -->
-              <td class="text-end">
-                <button *ngIf="insighter.insighter_status === 'inactive' && insighter.id !== currentUserId" 
-                        class="btn btn-icon btn-bg-light btn-active-color-success btn-sm me-1"
-                        (click)="activateInsighter(insighter.id)" 
-                        pTooltip="{{ 'MY_COMPANY.ACTIVATE' | translate }}" 
-                        tooltipPosition="top">
-                  <i class="ki-duotone ki-check fs-2"></i>
-                </button>
-                <button *ngIf="insighter.insighter_status === 'active' && insighter.id !== currentUserId" 
-                        class="btn btn-icon btn-bg-light btn-active-color-danger btn-sm me-1"
-                        (click)="deactivateInsighter(insighter.id)" 
-                        pTooltip="{{ 'MY_COMPANY.DEACTIVATE' | translate }}" 
-                        tooltipPosition="top">
-                  <i class="ki-duotone ki-cross fs-2">
-                    <span class="path1"></span>
-                    <span class="path2"></span>
-                  </i>
-                </button>
-                <span *ngIf="insighter.id === currentUserId" class="badge badge-light-primary">
-                  {{ 'MY_COMPANY.CURRENT_USER' | translate }}
-                </span>
-              </td>
-            </tr>
+                </td>
+              </tr>
+            </ng-container>
           </tbody>
         </table>
       </div>
@@ -275,7 +362,7 @@
     >
       <span *ngIf="isInviting" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
       <i *ngIf="!isInviting" class="ki-duotone ki-check fs-2"></i>
-      {{ isInviting ? 'MY_COMPANY.INVITING' : 'MY_COMPANY.INVITE' | translate }}
+      {{ isInviting ? 'INVITING' : 'MY_COMPANY.INVITE' | translate }}
     </button>
   </ng-template>
 </p-dialog>

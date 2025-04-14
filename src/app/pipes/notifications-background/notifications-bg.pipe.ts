@@ -19,6 +19,8 @@ export class NotificationsBgPipe implements PipeTransform {
       case 'deactivate_insighter_with_delete':
       case 'deactivate_delete_insighter':
         return 'danger';
+      case 'accept_knowledge':
+        return 'info';
       default:
         return 'info';
     }

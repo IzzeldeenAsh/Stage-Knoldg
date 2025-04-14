@@ -19,5 +19,10 @@
       "TITLE": "No Packages Found",
       "MESSAGE": "You don't have any knowledge packages at the moment. Create a package by using the 'Generate Package' button."
     }
+  },
+  "EMPTY_DASHBOARD": {
+    "TITLE": "Start Building Your Knowledge Base",
+    "DESCRIPTION": "Begin creating valuable knowledge content that can be shared within your organization. Add your first knowledge item to get started.",
+    "ADD_BUTTON": "Add Knowledge"
   }
 } 

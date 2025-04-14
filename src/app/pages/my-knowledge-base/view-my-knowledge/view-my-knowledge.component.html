@@ -59,7 +59,8 @@
           <div
             class="breadcrumb-item text-gray-800 lh-1 d-flex align-items-center gap-2"
           >
-          <button class="btn btn-xs btn-danger d-flex align-items-center" (click)="confirmDelete()">
+          <!-- Only show delete button if not in review -->
+          <button class="btn btn-xs btn-danger d-flex align-items-center" (click)="confirmDelete()" *ngIf="knowledge.status !== 'in_review'">
             <i class="ki-duotone ki-trash fs-6 me-1">
               <span class="path1"></span>
               <span class="path2"></span>
@@ -69,9 +70,11 @@
             </i>
             Delete
           </button>
+            <!-- Only show edit button if not in review -->
             <button class="btn btn-xs btn-success d-flex align-items-center" 
             [routerLink]="['/app/edit-knowledge/stepper', knowledge.id]"
-            *ngIf="!(
+            *ngIf="knowledge.status !== 'in_review' && 
+              !(
               (knowledge.status === 'unpublished' || knowledge.status === 'scheduled') && 
               knowledge.publish_as !== 'package' && 
               !hasRequiredFields()
@@ -265,10 +268,11 @@
                     [ngClass]="{
                       'text-success': knowledge.status === 'published',
                       'text-warning': knowledge.status === 'scheduled',
+                      'text-info': knowledge.status === 'in_review',
                       'text-danger': knowledge.status === 'unpublised'
                     }"
                   >
-                    {{ knowledge.publish_as === 'package' ? 'Published in Package only' : (knowledge.status || 'N/A') }}
+                    {{ knowledge.status === 'in_review' ? 'In Review' : (knowledge.publish_as === 'package' ? 'Published in Package only' : (knowledge.status || 'N/A')) }}
                   </span>
                 </div>
 
@@ -363,7 +367,15 @@
                   <div
                     class="max-w-100px d-flex flex-wrap gap-2 justify-content-end"
                   >
-                    <ng-container *ngIf="knowledge.economic_blocs && knowledge.economic_blocs.length > 0">
+                    <!-- Show "Worldwide" if all 6 regions are selected -->
+                    <ng-container *ngIf="knowledge.regions && knowledge.regions.length === 6">
+                      <span class="badge badge-light-secondary text-gray-800 fs-8 fw-bold">
+                        Worldwide
+                      </span>
+                    </ng-container>
+                    
+                    <!-- Show individual regions only if not all 6 regions are selected -->
+                    <ng-container *ngIf="knowledge.economic_blocs && knowledge.economic_blocs.length > 0 && !(knowledge.regions && knowledge.regions.length === 6)">
                       <span
                         class="badge badge-light-secondary text-gray-800 fs-8 fw-bold"
                         *ngFor="let bloc of knowledge.economic_blocs"
@@ -371,7 +383,7 @@
                         {{ bloc.name || 'N/A' }}
                       </span>
                     </ng-container>
-                    <ng-container *ngIf="knowledge.regions && knowledge.regions.length > 0">
+                    <ng-container *ngIf="knowledge.regions && knowledge.regions.length > 0 && knowledge.regions.length < 6">
                       <span
                         class="badge badge-light-secondary text-gray-800 fs-8 fw-bold"
                         *ngFor="let region of knowledge.regions"
@@ -379,7 +391,7 @@
                         {{ region.name || 'N/A' }}
                       </span>
                     </ng-container>
-                    <ng-container *ngIf="knowledge.countries && knowledge.countries.length > 0">
+                    <ng-container *ngIf="knowledge.countries && knowledge.countries.length > 0 && !(knowledge.regions && knowledge.regions.length === 6)">
                       <span
                         class="badge badge-light-secondary text-gray-800 fs-8 fw-bold"
                         *ngFor="let country of knowledge.countries"
@@ -399,31 +411,41 @@
                 <div class="d-flex flex-column gap-3 mb-4">
                   <!-- Edit button - only show when we don't need to show Continue button -->
               
-                  <!-- Show publish button only if all required fields are present -->
+                  <!-- Show pending review status -->
+                  <button
+                    class="btn btn-secondary w-100 disabled opacity-75"
+                    *ngIf="knowledge.status === 'in_review'"
+                    disabled
+                  >
+                    <i class="ki-outline ki-time fs-4 me-2"></i>
+                    {{ 'PENDING_CEO_REVIEW' | translate }}
+                  </button>
+
+                  <!-- Show publish button only if all required fields are present and not in review -->
                   <button
                     class="btn btn-primary w-100"
                     (click)="confirmPublish()"
-                    *ngIf="(knowledge.status === 'unpublished' || knowledge.status === 'scheduled') && knowledge.publish_as !== 'package' && hasRequiredFields()"
+                    *ngIf="knowledge.status !== 'in_review' && (knowledge.status === 'unpublished' || knowledge.status === 'scheduled') && knowledge.publish_as !== 'package' && hasRequiredFields()"
                   >
                     <i class="ki-outline ki-cart fs-4 me-2"></i>
                     {{ 'VIEW_MY_KNOWLEDGE.PUBLISH' | translate }}
                   </button>
 
-                  <!-- Show continue button if required fields are missing -->
+                  <!-- Show continue button if required fields are missing and not in review -->
                   <button
                     class="btn btn-primary w-100"
                     (click)="navigateToEdit()"
-                    *ngIf="(knowledge.status === 'unpublished' || knowledge.status === 'scheduled') && knowledge.publish_as !== 'package' && !hasRequiredFields()"
+                    *ngIf="knowledge.status !== 'in_review' && (knowledge.status === 'unpublished' || knowledge.status === 'scheduled') && knowledge.publish_as !== 'package' && !hasRequiredFields()"
                   >
                     <i class="ki-outline ki-arrow-right fs-4 me-2"></i>
                     {{ 'VIEW_MY_KNOWLEDGE.CONTINUE' | translate }}
                   </button>
 
-                  <!-- Package publishing options -->
+                  <!-- Package publishing options - don't show if in review -->
                   <button
                     class="btn btn-info w-100"
                     (click)="publishAs('package')"
-                    *ngIf="knowledge.publish_as === 'both'"
+                    *ngIf="knowledge.status !== 'in_review' && knowledge.publish_as === 'both'"
                   >
                     <i class="ki-duotone ki-package fs-4 me-2">
                       <span class="path1"></span>
@@ -435,7 +457,7 @@
                   <button
                     class="btn btn-info w-100"
                     (click)="publishAs('both')"
-                    *ngIf="knowledge.publish_as === 'package' && (knowledge.status === 'published')"
+                    *ngIf="knowledge.status !== 'in_review' && knowledge.publish_as === 'package' && (knowledge.status === 'published')"
                   >
                     <i class="ki-duotone ki-package fs-4 me-2">
                       <span class="path1"></span>
@@ -447,7 +469,7 @@
                   <button
                     class="btn btn-light-warning w-100"
                     (click)="openScheduleDialog()"
-                    *ngIf="(knowledge.status === 'unpublished' || knowledge.status === 'scheduled') && hasRequiredFields()"
+                    *ngIf="knowledge.status !== 'in_review' && (knowledge.status === 'unpublished' || knowledge.status === 'scheduled') && hasRequiredFields()"
                   >
                     {{ 'VIEW_MY_KNOWLEDGE.CHANGE_SCHEDULE' | translate }}
                   </button>

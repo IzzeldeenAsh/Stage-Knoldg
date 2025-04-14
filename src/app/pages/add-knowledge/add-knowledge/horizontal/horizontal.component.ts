@@ -1,11 +1,12 @@
 import { Component, Injector, OnInit, ViewChild, ViewContainerRef, QueryList, ViewChildren } from '@angular/core';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { ICreateKnowldege, inits } from '../create-account.helper';
-import { BehaviorSubject, concatMap, from, Observable } from 'rxjs';
+import { BehaviorSubject, concatMap, from, Observable, map } from 'rxjs';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { KnowledgeService } from 'src/app/_fake/services/knowledge/knowledge.service';
 import { AddInsightStepsService, UpdateKnowledgeAbstractsRequest } from 'src/app/_fake/services/add-insight-steps/add-insight-steps.service';
+import { RegionsService } from 'src/app/_fake/services/region/regions.service';
 import * as moment from 'moment';
 import { SubStepDocumentsComponent } from '../steps/step2/sub-step-documents/sub-step-documents.component';
 
@@ -36,7 +37,8 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
     private knowledgeService: KnowledgeService,
     private addInsightStepsService: AddInsightStepsService,
     private router: Router,
-    private viewContainerRef: ViewContainerRef
+    private viewContainerRef: ViewContainerRef,
+    private regionsService: RegionsService
    ) {
     super(injector);
   }
@@ -71,41 +73,52 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
         next: (response) => {
           const knowledge = response.data;
           
-          // Determine targetMarket based on the rules
-          let targetMarket = '1';
-          if (!knowledge.economic_blocs || knowledge.economic_blocs.length === 0) {
-            if (!knowledge.countries || knowledge.countries.length === 0) {
+          // Check if this knowledge has all regions selected (worldwide case)
+          this.checkIfWorldwide(knowledge.regions).subscribe(isWorldwide => {
+            // Determine targetMarket based on the rules
+            let targetMarket = '1';
+            
+            if (isWorldwide) {
+              // If all regions are selected, mark as worldwide
+              targetMarket = '3';
+            } else if (knowledge.economic_blocs && knowledge.economic_blocs.length > 0) {
+              // If economic blocs are set, use economic blocks option
               targetMarket = '2';
+            } else if (!knowledge.regions || knowledge.regions.length === 0) {
+              if (!knowledge.countries || knowledge.countries.length === 0) {
+                // If no regions or countries are set, default to regions/countries
+                targetMarket = '1';
+              }
             }
-          }
 
-          // Update the account with fetched data
-          const updatedAccount: any = {
-            ...this.account$.value,
-            knowledgeId: this.knowledgeId,
-            knowledgeType: knowledge.type,
-            title: knowledge.title,
-            topicId: knowledge.topic?.id || null,
-            industry: knowledge.industry?.id || null,
-            isic_code: knowledge.isic_code?.id || null,
-            hs_code: knowledge.hs_code?.id || null,
-            language: knowledge.language,
-            regions: knowledge.regions?.map((region: any) => region.id) || [],
-            countries: knowledge.countries?.map((country: any) => country.id) || [],
-            economic_bloc: knowledge.economic_blocs || [],
-            description: knowledge.description,
-            targetMarket: knowledge.economic_blocs && knowledge.economic_blocs.length > 0 ? '2' : '1',
-            keywords: knowledge.keywords?.map((keyword: any) => ({ display: keyword, value: keyword })) || [],
-            customTopic: '',
-            documents: [],
-            publish_date_time: knowledge.published_at ? moment(knowledge.published_at).format('YYYY-MM-DD HH:mm:ss') : '',
-            publish_status: knowledge.status === 'published' ? 'draft' : knowledge.status
-          };
+            // Update the account with fetched data
+            const updatedAccount: any = {
+              ...this.account$.value,
+              knowledgeId: this.knowledgeId,
+              knowledgeType: knowledge.type,
+              title: knowledge.title,
+              topicId: knowledge.topic?.id || null,
+              industry: knowledge.industry?.id || null,
+              isic_code: knowledge.isic_code?.id || null,
+              hs_code: knowledge.hs_code?.id || null,
+              language: knowledge.language,
+              regions: knowledge.regions?.map((region: any) => region.id) || [],
+              countries: knowledge.countries?.map((country: any) => country.id) || [],
+              economic_bloc: knowledge.economic_blocs || [],
+              description: knowledge.description,
+              targetMarket: targetMarket,
+              keywords: knowledge.keywords?.map((keyword: any) => ({ display: keyword, value: keyword })) || [],
+              customTopic: '',
+              documents: [],
+              publish_date_time: knowledge.published_at ? moment(knowledge.published_at).format('YYYY-MM-DD HH:mm:ss') : '',
+              publish_status: knowledge.status === 'published' ? 'draft' : knowledge.status
+            };
 
-          this.account$.next(updatedAccount);
-          this.updateAccount(updatedAccount, true);
-          this.isCurrentFormValid$.next(true);
-          this.isLoading = false;
+            this.account$.next(updatedAccount);
+            this.updateAccount(updatedAccount, true);
+            this.isCurrentFormValid$.next(true);
+            this.isLoading = false;
+          });
         },
         error: (error) => {
           this.handleServerErrors(error);
@@ -169,8 +182,26 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
       return;
     }
 
-    // Handle step-specific submissions
+    // Validate Step 1 - Knowledge Type must be selected
+    if (this.currentStep$.value === 1) {
+      const currentAccount = this.account$.value;
+      if (!currentAccount.knowledgeType) {
+        this.showWarn('', 'Please select a knowledge type before proceeding.');
+        return;
+      }
+    }
+
+    // Validate Step 2 - At least one document must be uploaded
     if (this.currentStep$.value === 2) {
+      // Get the current account to check for documents
+      const currentAccount = this.account$.value;
+      
+      // Check if the documents array exists and has at least one document
+      if (!currentAccount.documents || currentAccount.documents.length === 0) {
+        this.showWarn('', 'Please add at least one document before proceeding.');
+        return;
+      }
+      
       // Handle step 2 submission (documents)
       this.handleStep2Submission(nextStep);
     } else if (this.currentStep$.value === 3) {
@@ -371,12 +402,20 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
           this.showWarn('', 'Please select at least one region or country');
           return; // Don't advance to next step
         }
+      } else if (currentAccount.targetMarket === '4') {
+        // Countries-only validation
+        if (!currentAccount.countries || currentAccount.countries.length === 0) {
+          this.showWarn('', 'Please select at least one country');
+          return; // Don't advance to next step
+        }
       } else if (currentAccount.targetMarket === '2') {
         // Economic blocks validation
         if (!currentAccount.economic_blocs || currentAccount.economic_blocs.length === 0) {
           this.showWarn('', 'Please select at least one economic block');
           return; // Don't advance to next step
         }
+      } else if (currentAccount.targetMarket === '3') {
+        // Worldwide option is valid by default
       } else {
         this.showWarn('', 'Please select a target market option');
         return; // Don't advance to next step
@@ -536,5 +575,26 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
       return this.step4Component;
     }
     return null;
+  }
+
+  /**
+   * Checks if the selected regions represent all possible regions (worldwide)
+   */
+  private checkIfWorldwide(selectedRegions: any[]): Observable<boolean> {
+    if (!selectedRegions || selectedRegions.length === 0) {
+      return new Observable<boolean>(observer => {
+        observer.next(false);
+        observer.complete();
+      });
+    }
+    
+    return this.regionsService.getAllRegionIds().pipe(
+      map((allRegionIds: number[]) => {
+        // If the count matches and every region ID is included
+        const selectedRegionIds = selectedRegions.map((region: any) => region.id);
+        return allRegionIds.length === selectedRegionIds.length && 
+               allRegionIds.every(regionId => selectedRegionIds.includes(regionId));
+      })
+    );
   }
 }

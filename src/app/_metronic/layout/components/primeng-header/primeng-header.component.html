@@ -121,7 +121,7 @@
         <div class="user-dropdown-container">
           <a  class="user-dropdown-toggle" (click)="toggleUserDropdown($event)" #userDropdownToggle>
             <div class="user-avatar" *ngIf="userProfileImage">
-              <img [src]="userProfileImage" alt="User Avatar" />
+              <img  [src]="userProfileImage" alt="User Avatar" />
             </div>
             <div class="user-avatar user-initials" *ngIf="!userProfileImage">
               {{ userInitials }}
