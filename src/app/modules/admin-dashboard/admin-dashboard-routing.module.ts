@@ -37,6 +37,13 @@ const routes: Routes = [ {
           (m) => m.StaffSettingsModule
         ),
     },
+    {
+      path: 'website-settings',
+      loadChildren: () =>
+        import('./website-settings/website-settings.module').then(
+          (m) => m.WebsiteSettingsModule
+        ),
+    },
     { path: '**', redirectTo: 'auth' },
   ],
   
