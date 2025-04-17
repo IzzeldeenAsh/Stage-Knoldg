@@ -418,7 +418,7 @@
                     disabled
                   >
                     <i class="ki-outline ki-time fs-4 me-2"></i>
-                    {{ 'PENDING_CEO_REVIEW' | translate }}
+                    {{ 'PENDING_Manager_REVIEW' | translate }}
                   </button>
 
                   <!-- Show publish button only if all required fields are present and not in review -->
@@ -510,29 +510,61 @@
           
           <!-- Share Box (Only visible for published items) -->
           <div *ngIf="knowledge.status === 'published'"
-               class="tp-course-details2-widget mt-5">
-            <div class="tp-course-details2-widget-content">
+               class="tp-course-details2-widget-2 mt-5">
             <div class="p-4">
-              <h4 class="fs-6 fw-bold mb-4">{{ 'SHARE_KNOWLEDGE' | translate }}</h4>
-              
-              <!-- Social Share Icons -->
-              <div class="d-flex gap-3 justify-content-center mb-5">
-                <!-- Facebook -->
-                <a [href]="getSocialShareLink('facebook')" target="_blank" class="btn btn-icon btn-circle btn-facebook">
-                  <i class="fab fa-facebook-f fs-4"></i>
-                </a>
-                <!-- Twitter/X -->
-                <a [href]="getSocialShareLink('twitter')" target="_blank" class="btn btn-icon btn-circle btn-twitter">
-                  <i class="fab fa-twitter fs-4"></i>
-                </a>
-                <!-- LinkedIn -->
-                <a [href]="getSocialShareLink('linkedin')" target="_blank" class="btn btn-icon btn-circle btn-linkedin">
-                  <i class="fab fa-linkedin-in fs-4"></i>
-                </a>
-                <!-- WhatsApp (New) -->
-                <a [href]="getSocialShareLink('whatsapp')" target="_blank" class="btn btn-icon btn-circle btn-success">
-                  <i class="fab fa-whatsapp fs-4"></i>
-                </a>
+              <!-- New Social Share Animation Container -->
+              <div class="btn-share">
+                <span class="btn-text">{{ 'SHARE' | translate }}</span>
+                <span class="btn-icon">
+                  <svg
+                    viewBox="0 0 1024 1024"
+                    version="1.1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                  >
+                    <path
+                      d="M767.99994 585.142857q75.995429 0 129.462857 53.394286t53.394286 129.462857-53.394286 129.462857-129.462857 53.394286-129.462857-53.394286-53.394286-129.462857q0-6.875429 1.170286-19.456l-205.677714-102.838857q-52.589714 49.152-124.562286 49.152-75.995429 0-129.462857-53.394286t-53.394286-129.462857 53.394286-129.462857 129.462857-53.394286q71.972571 0 124.562286 49.152l205.677714-102.838857q-1.170286-12.580571-1.170286-19.456 0-75.995429 53.394286-129.462857t129.462857-53.394286 129.462857 53.394286 53.394286 129.462857-53.394286 129.462857-129.462857 53.394286q-71.972571 0-124.562286-49.152l-205.677714 102.838857q1.170286 12.580571 1.170286 19.456t-1.170286 19.456l205.677714 102.838857q52.589714-49.152 124.562286-49.152z"
+                      fill="#ffffff"
+                    ></path>
+                  </svg>
+                </span>
+                <ul class="social-icons">
+                  <!-- Facebook -->
+                  <li>
+                    <a [href]="getSocialShareLink('facebook')" target="_blank">
+                      <i class="fab fa-facebook-f"></i>
+                    </a>
+                  </li>
+                  <!-- Twitter/X -->
+                  <li>
+                    <a [href]="getSocialShareLink('twitter')" target="_blank">
+                    
+                      <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.98 20" width="18" height="18">
+                        <defs>
+                          <style>
+                            .cls-1 {
+                              fill: #fff;
+                            }
+                          </style>
+                        </defs>
+                        <path class="cls-1" d="M11.89,8.47L19.34,0h-1.76l-6.46,7.35L5.95,0H0l7.8,11.12L0,20h1.76l6.82-7.77,5.45,7.77h5.95M2.4,1.3h2.71l12.46,17.46h-2.71"/>
+                      </svg>
+                    </a>
+                  </li>
+                  <!-- LinkedIn -->
+                  <li>
+                    <a [href]="getSocialShareLink('linkedin')" target="_blank">
+                      <i class="fab fa-linkedin-in" style="font-size: 20px"></i>
+                    </a>
+                  </li>
+                  <!-- WhatsApp -->
+                  <li>
+                    <a [href]="getSocialShareLink('whatsapp')" target="_blank">
+                      <i class="fab fa-whatsapp"></i>
+                    </a>
+                  </li>
+                </ul>
               </div>
               
               <!-- Copy Link Button -->
@@ -546,8 +578,8 @@
                 <i class="ki-outline ki-check fs-6 me-1"></i> {{ 'LINK_COPIED' | translate }}
               </div>
             </div>
+            
           </div>
-        </div>
       </div>
       </div>
     </div>

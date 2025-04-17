@@ -364,18 +364,18 @@
       </label>
 
      <div class="d-flex justify-content-start gap-4 pt-10">
-      <div class="form-check mb-3">
+      <div class="form-check">
         <input
           type="radio"
           class="form-check-input"
           formControlName="targetMarket"
           name="targetMarket"
-          value="1"
-          id="targetMarket1"
+          value="3"
+          id="targetMarket3"
           [checked]="true"
         />
-        <label class="form-check-label text-gray-700" for="targetMarket1">
-          {{ "REGIONS" | translate }}
+        <label class="form-check-label text-gray-700" for="targetMarket3">
+          {{ "WORLDWIDE" | translate }}
         </label>
       </div>
 
@@ -392,6 +392,20 @@
           {{ "COUNTRIES" | translate }}
         </label>
       </div>
+      <div class="form-check mb-3">
+        <input
+          type="radio"
+          class="form-check-input"
+          formControlName="targetMarket"
+          name="targetMarket"
+          value="1"
+          id="targetMarket1"
+        />
+        <label class="form-check-label text-gray-700" for="targetMarket1">
+          {{ "REGIONS" | translate }}
+        </label>
+      </div>
+
 
       <div class="form-check">
         <input
@@ -407,20 +421,7 @@
         </label>
       </div>
 
-      <div class="form-check">
-        <input
-          type="radio"
-          class="form-check-input"
-          formControlName="targetMarket"
-          name="targetMarket"
-          value="3"
-          id="targetMarket3"
-        />
-        <label class="form-check-label text-gray-700" for="targetMarket3">
-          {{ "WORLDWIDE" | translate }}
-        </label>
-      </div>
-
+   
      </div>
         <div
           class="fv-plugins-message-container invalid-feedback"

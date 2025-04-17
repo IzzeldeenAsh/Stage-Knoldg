@@ -1,6 +1,7 @@
 export const locale = {
   lang: "ar",
   data: {
+
     'DRAFT_STATUS': 'مسودة',
     'REGIONS': 'القارات',
     REVIEW_KNOWLEDGE: 'مراجعة المعرفة',
@@ -16,7 +17,7 @@ export const locale = {
     DOCUMENTS_LANGUAGE: 'لغة الملفات',
     ISIC_CODE: 'كود ISIC',
     'WORLDWIDE': 'جميع أنحاء العالم',
-    WORLDWIDE_DESCRIPTION: 'جميع المناطق والدول',
+    WORLDWIDE_DESCRIPTION: 'جميع الدول',
     WORLDWIDE_TOOLTIP: 'سيكون محتواك متاحًا لجميع الزوار',
     INVITING: 'جاري الدعوة...',
     "SELECT_REGION": "اختر المنطقة...",
@@ -51,6 +52,11 @@ export const locale = {
     SELECT_TOPIC: "اختر الموضوع",
     SELECT_TARGET_MARKET: "اختر السوق المستهدف",
   "MY_KNOWLEDGE": {
+    NO_UNPUBLISHED: {
+      TITLE: 'لا توجد معرفة غير منشورة',
+      MESSAGE: "لا توجد معرفة غير منشورة حاليًا.",
+      FILTERED_MESSAGE: 'لا توجد معرفة تطابق معايير التصفية الحالية. حاول تعديل عوامل التصفية أو عرض كل المعرفة.'
+    },
     "NO_ITEMS": {
       "TITLE": "لا يوجد عناصر معرفة",
       "MESSAGE": "لا يوجد عناصر معرفة حاليًا. سيظهرون عناصر جديدة على الفور بمجرد إنشائها.",
@@ -69,6 +75,10 @@ export const locale = {
     "NO_PACKAGES": {
       "TITLE": "لا يوجد حزم معرفة",
       "MESSAGE": "لا يوجد حزم معرفة حاليًا. قم بإنشاء حزمة باستخدام زر 'إنشاء حزمة'."
+    },
+    "NO_KNOWLEDGE": {
+      "TITLE": "لا توجد عناصر معرفة",
+      "FILTERED_MESSAGE": "لا توجد عناصر معرفة تطابق معايير التصفية الحالية. حاول تعديل عوامل التصفية أو عرض كل المعرفة."
     }
   },
     KNOWLEDGE_DOCUMENTS_INFO:'معلومات الملفات',
@@ -596,7 +606,7 @@ export const locale = {
         "MESSAGE": "You don't have any requests at the moment. New requests will appear here once created.",
         "FILTERED_MESSAGE": "No requests match your current filter criteria. Try adjusting your filters or view all requests."
       },
-      TITLE: 'طلبات المستخدم',
+      TITLE: 'طلباتي',
       REQUEST_COUNT: 'طلبات',
       FILTER: {
         REQUEST_TYPE: 'نوع الطلب',
@@ -808,9 +818,9 @@ export const locale = {
     SCHEDULE_DESC: "اختر تاريخًا ووقتًا لنشر معرفتك",
     SAVE_AS_DRAFT: "حفظ كمسودة",
     SAVE_AS_DRAFT_DESC: "احفظ معرفتك كمسودة لإنهائها لاحقًا",
-    SEND_TO_CEO_REVIEW: "إرسال للمراجعة من المدير",
-    SEND_TO_CEO_REVIEW_DESC: "ارسال المحتوى للمراجعة من المدير التنفيذي قبل النشر",
-    PENDING_CEO_REVIEW: "قيد مراجعة المدير التنفيذي",
+    SEND_TO_Manager_REVIEW: "إرسال للمراجعة من المدير",
+    SEND_TO_Manager_REVIEW_DESC: "ارسال المحتوى للمراجعة من المدير التنفيذي قبل النشر",
+    PENDING_Manager_REVIEW: "قيد مراجعة المدير التنفيذي",
     PUBLISH_OPTION_REQUIRED: "الرجاء اختيار خيار النشر",
     SELECT_DATE_TIME: "اختر التاريخ والوقت",
     SELECT_DATE_AND_TIME: "اختر تاريخًا ووقتًا للنشر",

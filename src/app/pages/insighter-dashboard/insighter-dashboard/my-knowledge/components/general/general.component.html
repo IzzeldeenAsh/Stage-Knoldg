@@ -1,5 +1,5 @@
 <!--begin::Card header-->
-<div class="card-header p-0" *ngIf="knowledges && knowledges.length > 0">
+<div class="card-header p-0">
   <!--begin::Search and Filters-->
   <div class="d-flex justify-content-between align-items-center w-100">
     <!--begin::Search section-->
@@ -38,7 +38,8 @@
            [ngClass]="{'active': selectedKnowledgeType === 'data'}"
            (click)="filterByType('data')">
         <i class="fas fa-database fs-6"></i>
-        <span>{{ 'KNOWLEDGE.DATA' | translate }} ({{ getTypeCount('data') }})</span>
+        <span>{{ 'KNOWLEDGE.DATA' | translate }}</span>
+        <span class="count-badge">{{ getTypeCount('data') }}</span>
       </div>
       
       <!-- Insight type chip - only show if count > 0 -->
@@ -46,7 +47,8 @@
            [ngClass]="{'active': selectedKnowledgeType === 'insight'}"
            (click)="filterByType('insight')">
         <i class="fas fa-lightbulb fs-6"></i>
-        <span>{{ 'KNOWLEDGE.INSIGHT' | translate }} ({{ getTypeCount('insight') }})</span>
+        <span>{{ 'KNOWLEDGE.INSIGHT' | translate }}</span>
+        <span class="count-badge">{{ getTypeCount('insight') }}</span>
       </div>
       
       <!-- Report type chip - only show if count > 0 -->
@@ -54,7 +56,8 @@
            [ngClass]="{'active': selectedKnowledgeType === 'report'}"
            (click)="filterByType('report')">
         <i class="fas fa-file-alt fs-6"></i>
-        <span>{{ 'KNOWLEDGE.REPORT' | translate }} ({{ getTypeCount('report') }})</span>
+        <span>{{ 'KNOWLEDGE.REPORT' | translate }}</span>
+        <span class="count-badge">{{ getTypeCount('report') }}</span>
       </div>
       
       <!-- Manual type chip - only show if count > 0 -->
@@ -62,7 +65,8 @@
            [ngClass]="{'active': selectedKnowledgeType === 'manual'}"
            (click)="filterByType('manual')">
         <i class="fas fa-book fs-6"></i>
-        <span>{{ 'KNOWLEDGE.MANUAL' | translate }} ({{ getTypeCount('manual') }})</span>
+        <span>{{ 'KNOWLEDGE.MANUAL' | translate }}</span>
+        <span class="count-badge">{{ getTypeCount('manual') }}</span>
       </div>
       
       <!-- Course type chip - only show if count > 0 -->
@@ -70,7 +74,8 @@
            [ngClass]="{'active': selectedKnowledgeType === 'course'}"
            (click)="filterByType('course')">
         <i class="fas fa-graduation-cap fs-6"></i>
-        <span>{{ 'KNOWLEDGE.COURSE' | translate }} ({{ getTypeCount('course') }})</span>
+        <span>{{ 'KNOWLEDGE.COURSE' | translate }}</span>
+        <span class="count-badge">{{ getTypeCount('course') }}</span>
       </div>
       
       <!-- Media type chip - only show if count > 0 -->
@@ -78,7 +83,8 @@
            [ngClass]="{'active': selectedKnowledgeType === 'media'}"
            (click)="filterByType('media')">
         <i class="fas fa-play-circle fs-6"></i>
-        <span>{{ 'KNOWLEDGE.MEDIA' | translate }} ({{ getTypeCount('media') }})</span>
+        <span>{{ 'KNOWLEDGE.MEDIA' | translate }}</span>
+        <span class="count-badge">{{ getTypeCount('media') }}</span>
       </div>
     </div>
     <!-- End::Knowledge Type Filter Chips -->
@@ -86,7 +92,7 @@
   <!--end::Search and Filters-->
 
   <!--begin::Card toolbar-->
-  <div class="card-toolbar">
+  <div class="card-toolbar" *ngIf="knowledges && knowledges.length > 0">
     <!--begin::Toolbar-->
     <div
       class="d-flex justify-content-end"
@@ -143,8 +149,27 @@
 </div>
 <!--end::Card header-->
 
-<!--begin::Card body-->
-<div class="card-body p-0">
+<!-- No Results State -->
+<app-empty-state *ngIf="knowledges && knowledges.length === 0 && !loading"
+  [title]="'MY_KNOWLEDGE.NO_KNOWLEDGE.TITLE' | translate"
+  [message]="searchTerm ? ('MY_KNOWLEDGE.NO_KNOWLEDGE.FILTERED_MESSAGE' | translate) : ('MY_KNOWLEDGE.NO_ITEMS.MESSAGE' | translate)"
+  [icon]="'ki-journal-text'"
+  [svgPath]="'assets/media/svg/shapes/empty.svg'"
+  [showButton]="true"
+  [buttonText]="'KNOWLEDGE.ADD_KNOWLEDGE' | translate"
+  [buttonLink]="'/app/add-knowledge/stepper'"
+  [buttonIcon]="'ki-plus'"
+></app-empty-state>
+
+<!-- Loading indicator -->
+<div *ngIf="loading" class="d-flex justify-content-center my-5">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+
+<!--begin::Card body with conditional content-->
+<div *ngIf="knowledges && knowledges.length > 0 && !loading">
   <!--begin::Table header-->
   <div class="d-flex justify-content-end mb-6 pt-3">
    <div class="d-flex gap-1">
@@ -502,26 +527,5 @@
       (onKnowledgeSelect)="onKnowledgeSelect($event)">
     </app-package-builder-content>
   </p-dialog>
-
-  <!-- Add loading indicator -->
-  <div *ngIf="loading" class="d-flex justify-content-center my-5">
-    <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Loading...</span>
-    </div>
-  </div>
-
-  <!-- No Knowledge Items State -->
-  <app-empty-state *ngIf="!loading && knowledges && knowledges.length === 0"
-    [title]="'MY_KNOWLEDGE.NO_ITEMS.TITLE' | translate"
-    [message]="(searchTerm || selectedKnowledgeType !== 'all') ? 
-       ('MY_KNOWLEDGE.NO_ITEMS.FILTERED_MESSAGE' | translate) : 
-       ('MY_KNOWLEDGE.NO_ITEMS.MESSAGE' | translate)"
-    [icon]="'ki-journal-text'"
-    [svgPath]="'assets/media/svg/shapes/empty.svg'"
-    [showButton]="true"
-    [buttonText]="'KNOWLEDGE.ADD_KNOWLEDGE' | translate"
-    [buttonLink]="'/app/add-knowledge/stepper'"
-    [buttonIcon]="'ki-plus'"
-  ></app-empty-state>
 </div>
 <!--end::Card body-->

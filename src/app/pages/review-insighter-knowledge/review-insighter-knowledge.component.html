@@ -148,7 +148,9 @@
                 <span class="path2"></span>
                 <span class="path3"></span>
               </i>
-              <span class="badge badge-info">{{ 'PENDING_REVIEW' | translate }}</span>
+              <span class="badge" [ngClass]="knowledge.status === 'published' ? 'badge-success' : 'badge-info'">
+                {{ knowledge.status === 'published' ? ('PUBLISHED' | translate) : ('PENDING_REVIEW' | translate) }}
+              </span>
             </span>
           </span>
         </h1>
@@ -187,7 +189,7 @@
         <!-- Sticky container for sidebar elements -->
         <div class="position-lg-sticky" style="z-index: 1; top: 120px;">
           <!-- Review Action Card -->
-          <div class="tp-course-details2-widget">
+          <div class="tp-course-details2-widget" *ngIf="knowledge.status !== 'published'">
             <div class="tp-course-details2-widget-content p-5">
               <h4 class="fs-4 fw-bold mb-4">{{ 'REVIEW_KNOWLEDGE' | translate }}</h4>
               
@@ -255,8 +257,8 @@
                       <i class="ki-outline ki-message-text-2 fs-4 mx-4"></i>
                       {{ 'STATUS' | translate }}
                     </span>
-                    <span class="badge badge-info text-white">
-                      {{ 'PENDING_REVIEW' | translate }}
+                    <span class="badge" [ngClass]="knowledge.status === 'published' ? 'badge-success text-white' : 'badge-info text-white'">
+                      {{ knowledge.status === 'published' ? ('PUBLISHED' | translate) : ('PENDING_REVIEW' | translate) }}
                     </span>
                   </div>
 

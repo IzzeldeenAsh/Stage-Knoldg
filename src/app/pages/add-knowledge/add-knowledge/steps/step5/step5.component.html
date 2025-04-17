@@ -7,10 +7,24 @@
     {{ "SELECT_PUBLISH_METHOD" | translate }}
   </div>
 </div>
+
+<!-- Information alert for inactive accounts -->
+<div *ngIf="hasOnlyTwoOptions" class="alert alert-info d-flex align-items-center p-5 mb-5">
+  <i class="ki-duotone ki-information-5 fs-2 me-2">
+    <span class="path1"></span>
+    <span class="path2"></span>
+    <span class="path3"></span>
+  </i>
+  <div class="d-flex flex-column">
+    <h4 class="mb-1 text-info">{{ "ACCOUNT_STATUS_NOTICE" | translate }}</h4>
+    <span>{{ "ACTIVE_ACCOUNT_REQUIRED_MESSAGE" | translate }}</span>
+  </div>
+</div>
+
 <form [formGroup]="publishForm">
   <div class="fv-row" >
     <div class="row g-5">
-      <div [ngClass]="{'col-lg-4': !isCompanyInsighter, 'col-lg-6': isCompanyInsighter}" *ngFor="let option of publishOptions">
+      <div [ngClass]="{'col-lg-4': !hasOnlyTwoOptions, 'col-lg-6': hasOnlyTwoOptions}" *ngFor="let option of publishOptions">
         <input
           formControlName="publishOption"
           name="publishOption"

@@ -24,7 +24,7 @@ export const locale = {
     'SELECT_COUNTRIES': 'Select Countries',
     'REGIONS': 'Regions',
     'COUNTRIES': 'Countries',
-    WORLDWIDE_DESCRIPTION: 'All regions and countries',
+    WORLDWIDE_DESCRIPTION: 'All countries',
     WORLDWIDE_TOOLTIP: 'Your knowledge will be available to all visitors of the platform',
     INVITING: 'Inviting...',
     "SELECT_REGION": "Select Region...",
@@ -52,8 +52,13 @@ export const locale = {
     "CONFIRM": "Confirm",
     "WELCOME_BACK": "Welcome Back",
     "MY_KNOWLEDGE": {
+      NO_UNPUBLISHED: {
+        TITLE: 'No Unpublished Knowledge',
+        MESSAGE: "You don't have any unpublished knowledge items at the moment.",
+        FILTERED_MESSAGE: 'No knowledge items match your current filter criteria. Try adjusting your filters or view all items.'
+      },
       "NO_ITEMS": {
-        "TITLE": "No Knowledge Items Found",
+        "TITLE": "No Knowledge Items Found", 
         "MESSAGE": "You don't have any knowledge items at the moment. New items will appear here once created.",
         "FILTERED_MESSAGE": "No knowledge items match your current filter criteria. Try adjusting your filters or view all items."
       },
@@ -70,6 +75,10 @@ export const locale = {
       "NO_PACKAGES": {
         "TITLE": "No Packages Found",
         "MESSAGE": "You don't have any knowledge packages at the moment. Create a package by using the 'Generate Package' button."
+      },
+      "NO_KNOWLEDGE": {
+        "TITLE": "No Knowledge Found",
+        "FILTERED_MESSAGE": "No knowledge items match your current filter criteria. Try adjusting your filters or view all items."
       }
     },
     "PROFILE_COMPLETION": {
@@ -118,7 +127,7 @@ export const locale = {
       "INVITING": "Inviting...",
       "ACTIVATE": "Activate",
       "DEACTIVATE": "Deactivate",
-      "CURRENT_USER": "CEO"
+      "CURRENT_USER": "Manager"
     },
     INSIGHTER_DASHBOARD: {
       TITLE: 'Dashboard'
@@ -634,7 +643,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
         "TITLE": "No Requests Found",
         "MESSAGE": "You don't have any requests at the moment. New requests will appear here once created."
       },
-      TITLE: 'User Requests',
+      TITLE: 'My Requests',
       REQUEST_COUNT: 'Requests',
       FILTER: {
         REQUEST_TYPE: 'Request Type',
@@ -833,9 +842,9 @@ Your wealth of knowledge is valued and many are eager to learn from it.
   DRAFT: 'Save as Draft',
   SAVE_AS_DRAFT: 'Save as Draft',
   SAVE_AS_DRAFT_DESC: 'Save your content without publishing it.',
-  SEND_TO_CEO_REVIEW: 'Send to CEO Review',
-  SEND_TO_CEO_REVIEW_DESC: 'Submit your content for review by your CEO before publishing.',
-  PENDING_CEO_REVIEW: 'Pending CEO Review',
+  SEND_TO_Manager_REVIEW: 'Send to Manager Review',
+  SEND_TO_Manager_REVIEW_DESC: 'Submit your content for review by your Manager before publishing.',
+  PENDING_Manager_REVIEW: 'Pending Manager Review',
   VIEW_LIBRARY: 'View Library',
   CHOOSE_REGIONS: 'Choose Regions',
   CHOOSE_ECONOMIC_BLOCKS: 'Choose Economic Blocks',

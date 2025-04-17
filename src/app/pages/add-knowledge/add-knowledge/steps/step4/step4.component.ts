@@ -162,7 +162,7 @@ export class Step4Component extends BaseComponent implements OnInit {
     // Load initial data
     this.loadData();
     
-    // Check if worldwide is initially selected
+    // Check if worldwide is initially selected and update regions
     if (this.isWorldwide()) {
       this.updateForWorldwide();
     }
@@ -226,7 +226,7 @@ export class Step4Component extends BaseComponent implements OnInit {
       industry: [this.defaultValues.industry, [Validators.required]],
       topicId: [this.defaultValues.topicId, [Validators.required]],
       customTopic: [this.defaultValues.customTopic],
-      targetMarket: [this.defaultValues.targetMarket || '1', [Validators.required]],
+      targetMarket: ['3', [Validators.required]],
       economicBlocks: [this.defaultValues.economic_blocs || []],
       regions: [this.defaultValues.regions || []],
       countries: [this.defaultValues.countries || []],
@@ -257,6 +257,9 @@ export class Step4Component extends BaseComponent implements OnInit {
     if (this.defaultValues.isic_code) {
       this.selectedIsicId = this.defaultValues.isic_code;
     }
+
+    // For worldwide target market, get all region IDs
+    this.updateForWorldwide();
   }
   
   private setupConditionalValidators() {
