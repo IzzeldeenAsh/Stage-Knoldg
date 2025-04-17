@@ -112,4 +112,190 @@
    min-height: 100vh;
  }
  
+ // Social share button animation styles
+.btn-share {
+  --btn-color: #0095e8;
+  position: relative;
+  padding: 14px 30px;
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1;
+  color: white;
+  background: none;
+  border: none;
+  outline: none;
+  overflow: hidden;
+  cursor: pointer;
+  filter: drop-shadow(0 2px 8px rgba(0, 149, 232, 0.3));
+  transition: 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: none;
+  text-align: center;
+  margin-bottom: 15px;
+  height: 50px;
+  
+  &::before {
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    background: var(--btn-color);
+    border-radius: 8px;
+    transition: 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+
+  .btn-text,
+  .btn-icon {
+    display: inline-flex;
+    vertical-align: middle;
+    transition: 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+
+  .btn-text {
+    transition-delay: 0.05s;
+    font-weight: 600;
+  }
+
+  .btn-icon {
+    margin-left: 8px;
+    transition-delay: 0.1s;
+  }
+
+  .social-icons {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    transform: translateY(-50%);
+    justify-content: center;
+
+    li {
+      flex: 1;
+      text-align: center;
+      max-width: 50px; // Limit width to ensure proper spacing
+
+      a {
+        display: inline-flex;
+        vertical-align: middle;
+        transform: translateY(55px);
+        transition: 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
+        color: white;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        align-items: center;
+
+        &:hover {
+          opacity: 0.7;
+          transform: translateY(0) scale(1.2);
+        }
+        
+        i {
+          font-size: 18px;
+          color: #ffffff;
+        }
+      }
+    }
+  }
+
+  &:hover {
+    &::before {
+      transform: scale(1.05);
+      background: darken(#0095e8, 5%);
+    }
+
+    .btn-text,
+    .btn-icon {
+      transform: translateY(-55px);
+    }
+
+    .social-icons li {
+      a {
+        transform: translateY(0);
+      }
+
+      &:nth-child(1) a {
+        transition-delay: 0.15s;
+      }
+      
+      &:nth-child(2) a {
+        transition-delay: 0.2s;
+      }
+      
+      &:nth-child(3) a {
+        transition-delay: 0.25s;
+      }
+      
+      &:nth-child(4) a {
+        transition-delay: 0.3s;
+      }
+    }
+  }
+}
+
+// Add color classes for the social icons
+.social-icons {
+  li {
+    &:nth-child(1) a { // Facebook
+      color: #fff;
+      i { color: #fff; }
+      text-shadow: 0 1px 3px rgba(59, 89, 152, 0.5);
+    }
+    
+    &:nth-child(2) a { // Twitter/X
+      color: #fff;
+      i { color: #fff; }
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+      
+      // X logo specific styling
+      i.fa-x {
+        font-weight: bold;
+        font-size: 16px;
+      }
+    }
+    
+    &:nth-child(3) a { // LinkedIn
+      color: #fff;
+      i { color: #fff; }
+      text-shadow: 0 1px 3px rgba(0, 119, 181, 0.5);
+    }
+    
+    &:nth-child(4) a { // WhatsApp
+      color: #fff;
+      i { color: #fff; }
+      text-shadow: 0 1px 3px rgba(37, 211, 102, 0.5);
+    }
+  }
+}
+
+// Add tp-course-details2-widget-2 style for the new container
+.tp-course-details2-widget-2 {
+  padding: 15px;
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: 0 0 24px 0 rgba(3, 31, 66, 0.05);
+  margin-top: 20px;
+  border: 1px solid #DFDFDF;
+  z-index: 1;
+  
+  @media (max-width: 991px) {
+    position: relative;
+    top: 0;
+    margin-top: 0;
+    box-shadow: none
+  }
+}
+ 
  

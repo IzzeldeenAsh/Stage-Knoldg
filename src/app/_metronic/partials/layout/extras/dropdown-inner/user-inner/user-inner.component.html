@@ -4,7 +4,7 @@
     <div class="menu-content d-flex align-items-center px-3">
       <div class="symbol symbol-50px mx-4">
        <ng-container *ngIf="!_user.company else companyLogo">
-        <img alt="Logo" *ngIf="_user.profile_photo_url" [src]="_user.profile_photo_url" class="object-fit-cover object-position-100-30" />
+        <img alt="Logo" *ngIf="_user.profile_photo_url" [src]="_user.profile_photo_url" class="object-fit-contain " />
        </ng-container>
        <ng-template #companyLogo>
         <img alt="Logo" [src]="_user.company?.logo" class="object-fit-cover object-position-100-30" />

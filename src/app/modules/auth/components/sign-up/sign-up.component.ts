@@ -310,7 +310,7 @@ export class SignUpComponent extends BaseComponent implements OnInit {
         const authtoken:any = localStorage.getItem('foresighta-creds');
         const token = JSON.parse(authtoken);
         if (token && token.authToken) {
-          window.location.href = `http://knoldg.com/en/callback/${token.authToken}`;
+          window.location.href = `https://knoldg.com/en/callback/${token.authToken}`;
         } else {
           window.location.href = redirectUrl;
         }
@@ -328,7 +328,7 @@ export class SignUpComponent extends BaseComponent implements OnInit {
         const authtoken:any = localStorage.getItem('foresighta-creds');
         const token = JSON.parse(authtoken);
         if (token && token.authToken) {
-          window.location.href = `http://knoldg.com/en/callback/${token.authToken}`;
+          window.location.href = `https://knoldg.com/en/callback/${token.authToken}`;
         } else {
           window.location.href = redirectUrl;
         }

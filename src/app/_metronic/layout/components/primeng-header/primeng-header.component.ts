@@ -84,11 +84,18 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Check initial screen size
-    this.isSmallScreen = this.breakpointObserver.isMatched([
-      Breakpoints.XSmall,
-      Breakpoints.Small
-    ]);
+    // Check initial screen size and subscribe to changes
+    this.breakpointSubscription = this.breakpointObserver
+      .observe([Breakpoints.XSmall, Breakpoints.Small])
+      .subscribe(result => {
+        const wasSmallScreen = this.isSmallScreen;
+        this.isSmallScreen = result.matches;
+        
+        // If transitioning from small to large screen, close mobile sidebar
+        if (wasSmallScreen && !this.isSmallScreen) {
+          this.sidebarVisible = false;
+        }
+      });
 
     // Load profile and fetch industries
     this.profileService.getProfile().subscribe({
@@ -378,6 +385,19 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
 
   closeIndustriesMenu() {
     this.isIndustriesMenuOpen = false;
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event) {
+    // Update isSmallScreen based on window width
+    const wasSmallScreen = this.isSmallScreen;
+    this.isSmallScreen = window.innerWidth < 992;
+    
+    // If transitioning from small to large screen, close mobile sidebar and dropdowns
+    if (wasSmallScreen && !this.isSmallScreen) {
+      this.sidebarVisible = false;
+      this.closeAllDropdowns();
+    }
   }
 
   @HostListener('document:click', ['$event'])

@@ -198,6 +198,7 @@ mode="indeterminate"
                 <!--begin::Table head-->
                 <thead>
                     <tr class="text-linline-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
+                        <th class="min-w-200px">Insighter</th>
                         <th class="min-w-150px">Request Type</th>
                         <th class="min-w-150px">Status</th>
                         <th class="min-w-150px">Comments</th>
@@ -209,6 +210,26 @@ mode="indeterminate"
                 <!--begin::Table body-->
                 <tbody class="fw-bold text-gray-600">
                     <tr *ngFor="let request of filteredInsighterRequests">
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <!-- Profile Image or Initials Circle -->
+                                <div *ngIf="request.insighter" class="me-3">
+                                    <div *ngIf="request.insighter.profile_photo_url" class="symbol symbol-40px overflow-hidden">
+                                        <img [src]="request.insighter.profile_photo_url" alt="Profile" class="w-100">
+                                    </div>
+                                    <div *ngIf="!request.insighter.profile_photo_url" class="w-40px h-40px" 
+                                        [ngStyle]="{'background-color': '#f1f1f1', 'color': '#000', 'border-radius': '50%', 
+                                        'display': 'flex', 'align-items': 'center', 'justify-content': 'center'}">
+                                        {{ request.insighter.name | slice:0:1 }}{{ (request.insighter.name.indexOf(' ') > -1 ? 
+                                          request.insighter.name.split(' ')[1] : '') | slice:0:1 }}
+                                    </div>
+                                </div>
+                                <!-- Name -->
+                                <div class="d-flex flex-column">
+                                    <span>{{ request.insighter?.name || 'Unknown' }}</span>
+                                </div>
+                            </div>
+                        </td>
                         <td>
                             {{ request.type.label }}
                         </td>

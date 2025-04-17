@@ -11,6 +11,11 @@ import { BaseComponent } from 'src/app/modules/base.component';
 interface ExtendedUserRequest extends UserRequest {
   knowledge_id?: number;
   parent_id?: number;
+  insighter?: {
+    uuid: string;
+    name: string;
+    profile_photo_url: string | null;
+  };
 }
 
 @Component({
@@ -125,6 +130,14 @@ export class MyRequestsComponent extends BaseComponent implements OnInit {
   openInsighterRequestDialog(request: ExtendedUserRequest) {
     const latestRequest = this.getLatestChild(request);
     
+    // If it's an accept_knowledge request with a knowledge_id, navigate directly
+    if (latestRequest.type?.key === 'accept_knowledge' && latestRequest.knowledge_id) {
+      this.selectedRequest = latestRequest;
+      this.navigateToReview();
+      return;
+    }
+    
+    // Otherwise, show the dialog as usual
     this.selectedRequest = latestRequest;
     this.isInsighterRequest = true;
     
