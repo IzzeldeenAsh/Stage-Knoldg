@@ -17,6 +17,8 @@ import {
   Observable,
   take,
   map,
+  fromEvent,
+  startWith,
 } from "rxjs";
 import { TranslationService } from "src/app/modules/i18n";
 import { HttpClient } from "@angular/common/http";
@@ -25,6 +27,7 @@ import { ScrollAnimsService } from "src/app/_fake/services/scroll-anims/scroll-a
 import Swal from "sweetalert2";
 import { Router } from "@angular/router";
 import { BaseComponent } from "src/app/modules/base.component";
+import { CommonService } from "src/app/_fake/services/common/common.service";
 
 @Component({
   selector: "app-upgrade-to-company",
@@ -41,16 +44,26 @@ export class UpgradeToCompanyComponent
   isGetCodeDisabled = false;
   getCodeCountdown$ = new BehaviorSubject<number | null>(null);
   updateProfile$: Observable<boolean>;
+  dialogWidth: string = "50vw";
   @ViewChild("logoInput") logoInput: ElementRef<HTMLInputElement>;
   @ViewChild("fileInput") fileInput: ElementRef<HTMLInputElement>;
   defaultImage =
     "https://au.eragroup.com/wp-content/uploads/2018/02/logo-placeholder.png";
+
+  // Agreement properties
+  agreementChecked: boolean = false;
+  showAgreementError: boolean = false;
+  agreementContent: any = null;
+  isLoadingAgreement: boolean = false;
+  showAgreementDialog: boolean = false;
+  attemptedSubmit: boolean = false;
 
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
     private insighterAsCompany: InsighterAsCompany,
     private router: Router,
+    private commonService: CommonService,
     injector: Injector
   ) {
     super(injector);
@@ -59,6 +72,7 @@ export class UpgradeToCompanyComponent
 
   ngOnInit(): void {
     this.initForm();
+    this.windowResize();
 
     const verificationMethodSub = this.form
       .get("verificationMethod")
@@ -75,6 +89,141 @@ export class UpgradeToCompanyComponent
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }
 
+  windowResize() {
+    const screenwidth$ = fromEvent(window, "resize").pipe(
+      map(() => window.innerWidth),
+      startWith(window.innerWidth)
+    );
+
+    const resizeSubscription = screenwidth$.subscribe((width) => {
+      this.dialogWidth = width < 768 ? "100vw" : "70vw";
+    });
+    
+    this.unsubscribe.push(resizeSubscription);
+  }
+
+  // Open the agreement dialog to view the full terms
+  openAgreementDialog(event?: any) {
+    // If event exists but not from p-checkbox, it's a click on the checkbox, so prevent immediate toggling
+    if (event && event.originalEvent) {
+      // This is from p-checkbox onChange, skip the dialog if it's checked/unchecked directly
+      // Only show dialog when unchecking
+      if (!event.checked) {
+        this.form.get('agreement')?.setValue(false);
+        this.showAgreementError = this.attemptedSubmit;
+        return;
+      }
+    }
+    
+    this.isLoadingAgreement = true;
+    this.showAgreementDialog = true;
+    
+    this.commonService.getClientAgreement('company-agreement').subscribe({
+      next: (response) => {
+        this.agreementContent = response.data;
+        this.isLoadingAgreement = false;
+      },
+      error: (error) => {
+        console.error('Error loading agreement:', error);
+        this.isLoadingAgreement = false;
+        this.messageService.add({ 
+          severity: 'error', 
+          summary: 'Error', 
+          detail: 'Failed to load agreement. Please try again.' 
+        });
+      }
+    });
+  }
+  
+  // Accept the agreement terms
+  acceptAgreement() {
+    this.form.get('agreement')?.setValue(true);
+    this.form.get('agreement')?.markAsTouched();
+    this.showAgreementDialog = false;
+    this.showAgreementError = false;
+  }
+
+  // Decline the agreement terms
+  declineAgreement() {
+    this.form.get('agreement')?.setValue(false);
+    this.form.get('agreement')?.markAsTouched();
+    this.showAgreementDialog = false;
+    this.showAgreementError = true;
+  }
+
+  // Print terms document in a new window
+  printTerms(): void {
+    // Create a new window for printing
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      // Prepare content for printing
+      const termsTitle = this.agreementContent?.name || 'Company Terms of Service';
+      const termsContent = this.agreementContent?.guideline || '';
+      const printContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>${termsTitle}</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; }
+            h1 { color: #333; text-align: center; margin-bottom: 20px; }
+            .content { margin: 0 auto; max-width: 800px; }
+          </style>
+        </head>
+        <body>
+          <h1>${termsTitle}</h1>
+          <div class="content">${termsContent}</div>
+        </body>
+        </html>
+      `;
+      
+      printWindow.document.open();
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+      
+      setTimeout(() => {
+        printWindow.print();
+      }, 500);
+    } else {
+      this.messageService.add({ 
+        severity: 'error', 
+        summary: 'Error', 
+        detail: 'Could not open print window. Please check your browser settings.' 
+      });
+    }
+  }
+
+  // Save terms as a text file
+  saveTerms(): void {
+    if (this.agreementContent) {
+      const termsTitle = this.agreementContent.name || 'Company-Terms-of-Service';
+      const termsText = this.stripHtmlTags(this.agreementContent.guideline);
+      
+      // Create a Blob with the text content
+      const blob = new Blob([termsText], { type: 'text/plain' });
+      
+      // Create a download link and trigger the download
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${termsTitle.replace(/\s+/g, '-')}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      
+      // Clean up
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    }
+  }
+
+  // Helper method to strip HTML tags from content
+  private stripHtmlTags(html: string): string {
+    // Create a temporary element to extract text from HTML
+    const tempElement = document.createElement('div');
+    tempElement.innerHTML = html;
+    return tempElement.textContent || tempElement.innerText || '';
+  }
+
   initForm() {
     this.form = this.fb.group({
       legalName: ["", Validators.required],
@@ -87,6 +236,7 @@ export class UpgradeToCompanyComponent
       companyEmail: ["", Validators.email],
       code: [""],
       registerDocument: [null],
+      agreement: [false, Validators.requiredTrue]
     });
   }
 
@@ -142,12 +292,40 @@ export class UpgradeToCompanyComponent
         this.form.get("logo")?.setErrors({ maxSizeExceeded: true });
         return;
       }
-      this.form.patchValue({ logo: file });
-      this.form.get("logo")?.updateValueAndValidity();
+
+      // Check image dimensions for high quality
+      const img = new Image();
       const reader = new FileReader();
-      reader.onload = () => {
-        this.logoPreview = reader.result;
+      
+      reader.onload = (e) => {
+        if (e.target) {
+          img.src = e.target.result as string;
+          img.onload = () => {
+            const minWidth = 500; // Minimum width in pixels
+            const minHeight = 300; // Minimum height in pixels
+            
+            if (img.width < minWidth || img.height < minHeight) {
+              this.messageService.add({
+                severity: "error",
+                summary: "Low Resolution Image",
+                detail: `Logo must be at least ${minWidth}x${minHeight} pixels for high quality.`,
+              });
+              this.form.get("logo")?.setErrors({ lowResolution: true });
+              this.logoPreview = null;
+              if (this.logoInput) {
+                this.logoInput.nativeElement.value = "";
+              }
+              return;
+            }
+            
+            // Image passed all quality checks
+            this.form.patchValue({ logo: file });
+            this.form.get("logo")?.updateValueAndValidity();
+            this.logoPreview = img.src;
+          };
+        }
       };
+      
       reader.readAsDataURL(file);
     }
   }
@@ -169,7 +347,7 @@ export class UpgradeToCompanyComponent
     if (email) {
       this.gettingCodeLoader = true;
       const getCodeSub = this.http
-        .post("https://api.knoldg.com/api/auth/company/code/send", {
+        .post("https://api.foresighta.co/api/auth/company/code/send", {
           verified_email: email,
         }, {
           headers: {
@@ -275,6 +453,8 @@ export class UpgradeToCompanyComponent
   }
 
   onSubmit() {
+    this.attemptedSubmit = true;
+    
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
@@ -286,6 +466,7 @@ export class UpgradeToCompanyComponent
     formData.append("logo", this.form.get("logo")?.value);
     formData.append("address", this.form.get("address")?.value);
     formData.append("company_phone", this.form.get("company_phone")?.value);
+    formData.append("company_agreement", "true"); // Add company agreement
 
     const verificationMethod = this.form.get("verificationMethod")?.value;
 
@@ -319,8 +500,11 @@ export class UpgradeToCompanyComponent
                 ? "سنقوم بالتحقق من حسابك بمجرد تأكيد المعلومات."
                 : "We will verify your account once the information is confirmed.",
             confirmButtonText: this.lang === "ar" ? "حسناً" : "OK",
+            allowOutsideClick: false,
+            allowEscapeKey: false
           }).then(() => {
-            window.location.reload();
+            // Force reload to ensure fresh page state
+            window.location.href = window.location.href;
           });
         },
         error: (error) => {

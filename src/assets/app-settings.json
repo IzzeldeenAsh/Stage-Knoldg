@@ -1,4 +1,4 @@
 {
-  "clientBaseUrl": "https://knoldg.com",
-  "backendUrl": "https://api.knoldg.com"
+  "clientBaseUrl": "http://localhost:3000",
+  "backendUrl": "https://api.foresighta.co"
 }

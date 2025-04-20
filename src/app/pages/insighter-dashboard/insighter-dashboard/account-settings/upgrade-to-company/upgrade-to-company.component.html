@@ -23,7 +23,7 @@
         <input
           formControlName="legalName"
           type="text"
-          class="form-control form-control-lg"
+          class="form-control "
           placeholder="{{ 'ACCOUNT_SETTINGS.COMPANY_LEGAL_NAME' | translate }}"
         />
         <div
@@ -41,7 +41,7 @@
         </label>
         <textarea
           formControlName="aboutCompany"
-          class="form-control form-control-lg"
+          class="form-control "
           rows="4"
         ></textarea>
         <div
@@ -60,7 +60,7 @@
         <input
           formControlName="address"
           type="text"
-          class="form-control form-control-lg"
+          class="form-control "
           placeholder="{{ 'INSIGHTER_WIZARD.ADDRESS_PLACEHOLDER' | translate }}"
         />
         <div
@@ -80,8 +80,9 @@
         [dir]="lang == 'ar' ? 'rtl' : 'ltr'"
           formControlName="company_phone"
           type="tel"
-          class="form-control form-control-lg"
+          class="form-control "
           placeholder="{{ 'INSIGHTER_WIZARD.COMPANY_PHONE_PLACEHOLDER' | translate }}"
+          [class.is-invalid]="form.get('company_phone')?.invalid && form.get('company_phone')?.touched"
         />
         <div
           *ngIf="form.get('company_phone')?.invalid && form.get('company_phone')?.touched"
@@ -154,7 +155,7 @@
               value="websiteEmail"
               id="verificationMethod1"
             />
-            <span class="btn btn-outline  btn-active-primary p-6 d-flex align-items-center w-100">
+            <span class="btn btn-outline  btn-active-info p-6 d-flex align-items-center w-100  h-25px">
               {{ 'INSIGHTER_WIZARD.BY_WEBSITE_COMPANY_EMAIL' | translate }}
             </span>
           </label>
@@ -168,7 +169,7 @@
               value="uploadDocument"
               id="verificationMethod2"
             />
-            <span class="btn btn-outline  btn-active-primary p-6 d-flex align-items-center w-100">
+            <span class="btn btn-outline  btn-active-info p-6 d-flex align-items-center w-100 h-25px">
               {{ 'INSIGHTER_WIZARD.BY_UPLOADING_REGISTRY_DOCUMENT' | translate }}
             </span>
           </label>
@@ -184,7 +185,7 @@
           <input
             formControlName="website"
             type="text"
-            class="form-control form-control-lg"
+            class="form-control "
             placeholder="{{ 'INSIGHTER_WIZARD.WEBSITE_DOMAIN' | translate }}"
           />
           <div
@@ -196,7 +197,7 @@
         </div>
 
         <div class="row g-5">
-          <div class="col-lg-6">
+          <div class="col-lg-9">
             <label class="form-label required fw-bold">
               {{ 'INSIGHTER_WIZARD.COMPANY_EMAIL' | translate }}
             </label>
@@ -204,12 +205,12 @@
               <input
                 formControlName="companyEmail"
                 type="email"
-                class="form-control form-control-lg"
+                class="form-control"
                 placeholder="{{ 'INSIGHTER_WIZARD.COMPANY_EMAIL' | translate }}"
               />
               <button
                 type="button"
-                class="btn btn-lg btn-primary min-w-100px"
+                class="btn  btn-info min-w-200px"
                 (click)="getCode()"
                 [disabled]="!form.get('companyEmail')?.valid || gettingCodeLoader || isGetCodeDisabled"
               >
@@ -234,14 +235,14 @@
             </div>
           </div>
 
-          <div class="col-lg-6">
+          <div class="col-lg-3">
             <label class="form-label required fw-bold">
               {{ 'INSIGHTER_WIZARD.CODE' | translate }}
             </label>
             <input
               formControlName="code"
               type="text"
-              class="form-control form-control-lg"
+              class="form-control "
               placeholder="{{ 'INSIGHTER_WIZARD.ENTER_CODE' | translate }}"
             />
             <div
@@ -258,7 +259,7 @@
       <div *ngIf="form.get('verificationMethod')?.value === 'uploadDocument'" class="mb-8">
         <div class="fv-row">
           <div
-            class="dropzone dz-clickable border-2 border-dashed rounded p-8 text-center"
+            class="dropzone dz-clickable border-2 border-dashed border-info rounded p-8 text-center"
             *ngIf="!form.get('registerDocument')?.value"
             (click)="onDropzoneClick()"
             (drop)="onFileDrop($event)"
@@ -318,17 +319,107 @@
           {{ 'INSIGHTER_WIZARD.REGISTER_DOCUMENT_REQUIRED' | translate }}
         </div>
       </div>
+      <div class="mb-5">
+        <div class="d-flex align-items-start">
+          <p-checkbox 
+            [binary]="true" 
+            formControlName="agreement"
+            (onChange)="openAgreementDialog()"
+            inputId="companyAgreement"
+          ></p-checkbox>
+          <label for="companyAgreement" class="ms-2 fs-6 text-gray-800 cursor-pointer" (click)="openAgreementDialog()">
+            {{ 'INSIGHTER_WIZARD.I_ACCEPT_THE' | translate }}
+            <a href="javascript:void(0)" class="ms-1 link-primary">
+              {{ 'INSIGHTER_WIZARD.COMPANY_TERMS' | translate }}
+            </a>
+          </label>
+        </div>
+        <div
+          *ngIf="form.get('agreement')?.invalid && (form.get('agreement')?.touched || attemptedSubmit)"
+          class="fv-plugins-message-container invalid-feedback d-block mt-2"
+        >
+          {{ 'INSIGHTER_WIZARD.COMPANY_AGREEMENT_REQUIRED' | translate }}
+        </div>
+      </div>
     </div>
+  
   </div>
+
+
 
   <!-- Submit Button -->
   <div class="d-flex justify-content-end">
     <button 
       type="submit" 
-      class="btn btn-lg btn-primary min-w-200px"
+      class="btn btn-lg btn-info min-w-200px"
       [disabled]="form.invalid"
     >
       {{ 'INSIGHTER_WIZARD.UPGRADE_TO_CORPORATE_ACCOUNT' | translate }}
     </button>
   </div>
 </form>
+
+<!-- Agreement Dialog -->
+<p-dialog 
+  [(visible)]="showAgreementDialog" 
+  [modal]="true" 
+  [style]="{width: '550px'}" 
+  [closable]="true"
+  [closeOnEscape]="true"
+  [dismissableMask]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [focusOnShow]="true"
+  [blockScroll]="true"
+  appendTo="body"
+  styleClass="terms-dialog"
+>
+  <ng-template pTemplate="header">
+    <div class="d-flex justify-content-between align-items-center w-100">
+      <h5 class="m-0">{{ agreementContent?.name || 'Company Terms of Service' }}</h5>
+      <div class="d-flex">
+        <button class="btn btn-sm btn-icon me-2" (click)="printTerms()">
+          <i class="ki-outline ki-printer fs-3"></i>
+        </button>
+        <button class="btn btn-sm btn-icon" (click)="saveTerms()">
+          <i class="ki-outline ki-save-2 fs-3"></i>
+        </button>
+      </div>
+    </div>
+  </ng-template>
+  
+  <div *ngIf="isLoadingAgreement" class="d-flex justify-content-center py-4">
+    <span class="spinner-border spinner-border-lg text-primary"></span>
+  </div>
+  
+  <div class="terms-content-wrapper">
+    <div *ngIf="!isLoadingAgreement && agreementContent" 
+         class="agreement-content custom-scrollbar" 
+         [style.max-height]="'400px'" 
+         [style.overflow-y]="'auto'">
+      <div [innerHTML]="agreementContent.guideline"></div>
+    </div>
+    
+    <div *ngIf="!isLoadingAgreement && !agreementContent" class="text-center text-danger py-4">
+      Failed to load agreement content. Please try again later.
+    </div>
+  </div>
+  
+  <ng-template pTemplate="footer">
+    <div class="d-flex flex-column justify-content-between align-items-center gap-3">
+      <div class="text-muted fs-7">{{ 'INSIGHTER_WIZARD.DOCUMENT_REGISTRY_APPROVAL_NOTE' | translate }}</div>
+      <div class="d-flex gap-2">
+        <button 
+          class="btn btn-light" 
+          (click)="declineAgreement()">
+          {{ 'INSIGHTER_WIZARD.DECLINE' | translate }}
+        </button>
+        <button 
+          class="btn btn-info" 
+          (click)="acceptAgreement()">
+          {{ 'INSIGHTER_WIZARD.ACCEPT' | translate }}
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</p-dialog>

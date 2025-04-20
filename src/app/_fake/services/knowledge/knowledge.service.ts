@@ -102,7 +102,7 @@ export interface KnowledgeTypeStatisticsResponse {
   providedIn: 'root'
 })
 export class KnowledgeService {
-  private baseUrl = 'https://api.knoldg.com';
+  private baseUrl = 'https://api.foresighta.co';
   private apiUrl = `${this.baseUrl}/api/insighter/library/knowledge`;
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();

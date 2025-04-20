@@ -18,6 +18,7 @@ import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
 import { ActivateAccountComponent } from './activate-account/activate-account.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { TooltipModule } from 'primeng/tooltip';
+import { CheckboxModule } from 'primeng/checkbox';
 
 const routes: Routes = [
   {
@@ -65,7 +66,8 @@ const routes: Routes = [
     DialogModule,
     DynamicDialogModule,
     ToastModule,
-    ProgressBarModule
+    ProgressBarModule,
+    CheckboxModule
   ]
 })
 export class AccountSettingsModule { } 

@@ -186,7 +186,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
       top_sub_industry: 1
     };
 
-    this.http.post<IndustriesResponse>('https://api.knoldg.com/api/industries/menu', body, { headers })
+    this.http.post<IndustriesResponse>('https://api.foresighta.co/api/platform/industries/menu', body, { headers })
       .subscribe({
         next: (response) => {
           this.industries = response.data;
@@ -198,7 +198,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
   }
 
   getIndustryUrl(industry: Industry): string {
-    return `https://knoldg.com/en/industry/${industry.id}/${industry.slug}`;
+    return `http://localhost:3000/en/industry/${industry.id}/${industry.slug}`;
   }
 
   initializeMenu() {
@@ -224,7 +224,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: 'https://knoldg.com/en/industries/report'
+        routerLink: 'http://localhost:3000/en/industries/report'
       },
       {
         label: this.translate.instant('MENU.INSIGHTS'),
@@ -232,7 +232,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: 'https://knoldg.com/en/industries/insight'
+        routerLink: 'http://localhost:3000/en/industries/insight'
       },
      
       {
@@ -241,7 +241,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: 'https://knoldg.com/en/industries/data'
+        routerLink: 'http://localhost:3000/en/industries/data'
       },
       {
         label: this.translate.instant('MENU.MANUAL'),
@@ -249,7 +249,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: 'https://knoldg.com/en/industries/manual'
+        routerLink: 'http://localhost:3000/en/industries/manual'
       },
       {
         label: this.translate.instant('MENU.COURSES'),
@@ -257,7 +257,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: 'https://knoldg.com/en/industries/course'
+        routerLink: 'http://localhost:3000/en/industries/course'
       }
     ];
 
