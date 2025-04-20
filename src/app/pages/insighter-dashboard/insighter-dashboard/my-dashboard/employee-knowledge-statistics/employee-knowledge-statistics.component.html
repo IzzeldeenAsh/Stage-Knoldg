@@ -1,3 +1,4 @@
+<ng-container *ngIf="employees && employees.length > 1">
 <div class="card card-flush h-md-100 mb-5 mb-xl-10">
   <!-- Header -->
   <div class="card-header pt-5">
@@ -46,7 +47,7 @@
     </div>
     
     <!-- Chart -->
-    <div *ngIf="!loading && !error && employees && employees.length > 0">
+    <div *ngIf="!loading && !error">
       <div id="barChart">
         <apx-chart
           [series]="barChartOptions.series!"
@@ -65,4 +66,5 @@
       </div>
     </div>
   </div>
-</div> 
+</div>
+</ng-container> 

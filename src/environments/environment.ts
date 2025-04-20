@@ -13,7 +13,7 @@ export const environment = {
   apiBaseUrl: 'https://api.knoldg.com/api',
   appDomain: '.knoldg.com',
   mainAppUrl: 'https://knoldg.com',
-  subAppUrl: 'http://localhost:4200',
+  subAppUrl: 'https://app.knoldg.com',
   
   // Cookie configuration
   cookieOptions: {

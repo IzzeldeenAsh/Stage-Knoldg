@@ -132,7 +132,7 @@
           
           <!-- User dropdown menu -->
           <div class="user-dropdown-menu" [ngClass]="{'show': isUserDropdownOpen, 'rtl': lang === 'ar'}" #userDropdownMenu>
-            <app-user-inner></app-user-inner>
+            <app-user-inner (closeDropdown)="isUserDropdownOpen = false"></app-user-inner>
           </div>
         </div>
       </div>
@@ -191,7 +191,7 @@
         
         <!-- Mobile User dropdown menu -->
         <div class="mobile-user-dropdown-menu" [ngClass]="{'show': isMobileUserDropdownOpen, 'rtl': lang === 'ar'}" #userDropdown>
-          <app-user-inner></app-user-inner>
+          <app-user-inner (closeDropdown)="isMobileUserDropdownOpen = false"></app-user-inner>
         </div>
       </div>
     </div>

@@ -456,6 +456,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       "DELETING": "Deleting..."
     },
     INSIGHTER_WIZARD: {
+      
       ACCOUNT_TYPE: "Account Type",
       ACCOUNT_DETAILS_DESC: "Setup Your Account Details",
       ACCOUNT_INFO: "Account Info",
@@ -540,17 +541,19 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       "GET_CODE": "Get Code",
       "CODE": "Verification Code",
       "ENTER_CODE": "Enter the code you received",
-
+      DECLINE: "Decline",
+      ACCEPT: "Accept",
       UPGRADE_TO_CORPORATE_ACCOUNT: "Upgrade to Corporate Account", // Heading for the form
-  COMPANY_LOGO_REQUIRED: "Company logo is required.", // Error message for logo
-  WEBSITE_REQUIRED: "Website domain is required.", // Error message for website domain
-  COMPANY_EMAIL_REQUIRED: "Company email is required.", // Error message for company email
-  CODE_REQUIRED: "Verification code is required.", // Error message for verification code
-  DELETE_FILE: "Delete File", // Tooltip for delete file buttonA
+      COMPANY_LOGO_REQUIRED: "Company logo is required.", // Error message for logo
+      WEBSITE_REQUIRED: "Website domain is required.", // Error message for website domain
+      COMPANY_EMAIL_REQUIRED: "Company email is required.", // Error message for company email
+      CODE_REQUIRED: "Verification code is required.", // Error message for verification code
+      DELETE_FILE: "Delete File", // Tooltip for delete file buttonA
       
-  OTHER_FIELD_PLACEHOLDER: "Enter your other field",
-  "DOCUMENT_REGISTRY_APPROVAL_NOTE": "Please note that uploading a registry document requires approval. You will be notified once your document has been reviewed.",
-  
+      OTHER_FIELD_PLACEHOLDER: "Enter your other field",
+      "DOCUMENT_REGISTRY_APPROVAL_NOTE": "Please note that uploading a registry document requires approval. You will be notified once your document has been reviewed.",
+      I_ACCEPT_THE: "I accept the",
+      COMPANY_TERMS: "Company Terms"
     },
     CONGRATS_CARD:{
       TITLE: "Congratulations!",

@@ -1,4 +1,4 @@
-import { Component, HostBinding, Injector, OnInit, AfterViewInit, ElementRef, Renderer2 } from '@angular/core';
+import { Component, HostBinding, Injector, OnInit, AfterViewInit, ElementRef, Renderer2, Output, EventEmitter } from '@angular/core';
 import { Observable, Subscription, first } from 'rxjs';
 import { TranslationService } from '../../../../../../modules/i18n';
 import { AuthService, UserType } from '../../../../../../modules/auth';
@@ -77,6 +77,7 @@ import { environment } from 'src/environments/environment';
 })
 export class UserInnerComponent extends BaseComponent implements OnInit, AfterViewInit {
   @HostBinding('attr.data-kt-menu') dataKtMenu = 'true';
+  @Output() closeDropdown = new EventEmitter<void>();
 
   language: LanguageFlag;
   user$: Observable<IKnoldgProfile>;

@@ -186,7 +186,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
       top_sub_industry: 1
     };
 
-    this.http.post<IndustriesResponse>('https://api.knoldg.com/api/industries/menu', body, { headers })
+    this.http.post<IndustriesResponse>('https://api.knoldg.com/api/platform/industries/menu', body, { headers })
       .subscribe({
         next: (response) => {
           this.industries = response.data;
