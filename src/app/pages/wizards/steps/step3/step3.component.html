@@ -9,47 +9,22 @@
   <!-- Content (shown when loading is complete) -->
   <div class="w-100" *ngIf="!(isLoading$ | async)">
     <!-- Heading -->
-    <div class="pb-10 pb-lg-12">
+    <div class="pb-8">
       <h1 class="fw-bold text-gray-900">
         {{ 'INSIGHTER_WIZARD.UPLOAD_FILES' | translate }}
       </h1>
-      <div class="text-muted fw-semibold fs-4">
+      <div class="text-muted fw-semibold fs-6">
         {{ 'INSIGHTER_WIZARD.IF_NEED_MORE_INFO' | translate }}
         <a href="#" class="link-primary">
           {{ 'INSIGHTER_WIZARD.CAMPAIGN_GUIDELINES' | translate }}
         </a>
       </div>
+      <div class="text-muted fw-semibold fs-6">
+        {{ 'INSIGHTER_WIZARD.DOCUMENT_SIZE' | translate }}
+      </div>
     </div>
     <!-- Dropzone -->
-    <div class="fv-row mb-10">
-      <div
-        class="dropzone dz-clickable border border-dashed border-info rounded p-7"
-        (click)="onDropzoneClick()"
-        (drop)="onFileDrop($event)"
-        (dragover)="onDragOver($event)"
-      >
-        <div class="dz-message needsclick d-flex flex-column align-items-center">
-          <img src="https://res.cloudinary.com/dsiku9ipv/image/upload/v1743008797/Group_nhwhvn.png" alt="Upload Icon" width="100" height="100" class="mb-3">
-          <div class="text-center">
-            <h3 class="dfs-3 fw-bold text-gray-900 mb-2">
-              {{ 'INSIGHTER_WIZARD.DROP_FILES_HERE_OR_CLICK' | translate }}
-            </h3>
-            <span class="fw-semibold fs-5 text-muted">
-              {{ 'INSIGHTER_WIZARD.UPLOAD_UP_TO_FILES' | translate }}
-            </span>
-          </div>
-        </div>
-      </div>
-      <!-- Hidden File Input -->
-      <input
-        type="file"
-        #fileInput
-        (change)="onFileSelected($event)"
-        multiple
-        accept=".png, .jpg, .jpeg, .pdf"
-        style="display: none;"
-      />
-    </div>
+    
     <!-- Uploaded Files List -->
     <div class="mb-10">
       <label class="fs-6 fw-semibold mb-2" *ngIf="certifications.controls.length > 0">
@@ -112,6 +87,29 @@
         </div>
       </div>
     </div>
+    <div class="fv-row mb-10 text-start">
+      <button 
+        type="button"
+        class="btn btn-lg btn-primary"
+        (click)="onDropzoneClick()"
+      >
+        <i class="bi bi-upload me-2"></i>
+        {{ 'INSIGHTER_WIZARD.DROP_FILES_HERE_OR_CLICK' | translate }}
+      </button>
+    
+      <div class="mt-2 text-muted fs-6">
+        {{ 'INSIGHTER_WIZARD.UPLOAD_UP_TO_FILES' | translate }}
+      </div>
+        <input
+          type="file"
+          #fileInput
+          (change)="onFileSelected($event)"
+          multiple
+          accept=".png, .jpg, .jpeg, .pdf"
+          style="display: none;"
+        />
+    </div>
+    
     <!-- Only show agreement section for personal account type -->
     <div class="mb-10 mt-5" *ngIf="defaultValues?.accountType === 'personal'">
       <div class="separator separator-dashed my-5"></div>
@@ -121,7 +119,8 @@
           <input class="form-check-input" type="checkbox" [(ngModel)]="agreementChecked" 
             [ngModelOptions]="{standalone: true}" id="personalAgreement" (click)="openAgreementDialog($event)"/>
           <label class="form-check-label" for="personalAgreement">
-            {{ 'I agree to the' | translate }}
+            <!-- {{ 'I agree to the' | translate }} -->
+            {{ 'INSIGHTER_WIZARD.TERMS_AGREEMENT' | translate }}
             <span class="ms-1 text-primary">{{ 'Insighter Terms of Service' | translate }}</span>
           </label>
         </div>
@@ -193,7 +192,7 @@
         <button 
           class="btn btn-primary" 
           (click)="acceptAgreement()">
-          {{ 'Accept' | translate }}
+          {{ 'SUBMIT' | translate }}
         </button>
       </div>
     </div>

@@ -170,4 +170,92 @@ export class CompanyAccountService {
       finalize(() => this.setLoading(false))
     );
   }
+
+  // Get insighter statistics by status
+  getEmployeeStatusStatistics(): Observable<any> {
+    this.setLoading(true);
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+
+    return this.http.get<InsighterResponse>(this.inviteInsighterApi, { headers }).pipe(
+      map(response => {
+        // Aggregate insighters by status
+        const statusCounts: { [key: string]: number } = {
+          active: 0,
+          pending: 0,
+          inactive: 0
+        };
+        
+        response.data.forEach(insighter => {
+          const status = insighter.insighter_status as string;
+          if (status in statusCounts) {
+            statusCounts[status]++;
+          }
+        });
+        
+        // Format for chart
+        return {
+          data: [
+            { type: 'active', count: statusCounts.active },
+            { type: 'pending', count: statusCounts.pending },
+            { type: 'inactive', count: statusCounts.inactive }
+          ]
+        };
+      }),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  // Get employee knowledge statistics
+  getEmployeeKnowledgeStatistics(): Observable<any> {
+    this.setLoading(true);
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+
+    return this.http.get<InsighterResponse>(this.inviteInsighterApi, { headers }).pipe(
+      map(response => {
+        // Extract insighters with their knowledge statistics
+        const insightersWithKnowledge = response.data
+          .filter(insighter => insighter.knowledge_type_statistics)
+          .map(insighter => {
+            const stats = insighter.knowledge_type_statistics || {};
+            
+            // Calculate total knowledge items
+            const totalKnowledge = Object.values(stats).reduce(
+              (sum: number, count: any) => sum + (typeof count === 'number' ? count : 0), 
+              0
+            );
+            
+            return {
+              id: insighter.id,
+              name: insighter.name,
+              profile_photo_url: insighter.profile_photo_url,
+              statistics: {
+                report: stats.report || 0,
+                data: stats.data || 0,
+                insight: stats.insight || 0,
+                manual: stats.manual || 0,
+                course: stats.course || 0
+              },
+              totalKnowledge: totalKnowledge as number
+            };
+          })
+          // Sort by total knowledge count in descending order
+          .sort((a, b) => (b.totalKnowledge as number) - (a.totalKnowledge as number))
+          // Take top contributors (limit to 10)
+          .slice(0, 10);
+        
+        return {
+          data: insightersWithKnowledge
+        };
+      }),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
 }

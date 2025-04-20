@@ -1,0 +1,68 @@
+<div class="card card-flush h-md-100 mb-5 mb-xl-10">
+  <!-- Header -->
+  <div class="card-header pt-5">
+    <!-- Title -->
+    <div class="card-title d-flex flex-column">
+      <span class="fs-2 fw-bold text-gray-800">{{ 'EMPLOYEE_KNOWLEDGE.TITLE' | translate }}</span>
+      <span class="text-gray-500 pt-1 fw-semibold fs-6">{{ 'EMPLOYEE_KNOWLEDGE.SUBTITLE' | translate }}</span>
+    </div>
+    
+    <!-- Toolbar -->
+    <div class="card-toolbar">
+      <button type="button" class="btn btn-sm btn-icon btn-color-primary btn-active-light-primary" 
+              (click)="refresh()" [disabled]="loading"
+              title="{{ 'EMPLOYEE_KNOWLEDGE.REFRESH' | translate }}">
+        <i class="ki-duotone ki-arrows-circle fs-2">
+          <span class="path1"></span>
+          <span class="path2"></span>
+        </i>
+      </button>
+    </div>
+  </div>
+  
+  <!-- Body -->
+  <div class="card-body pt-0">
+    <!-- Loading spinner -->
+    <div *ngIf="loading" class="d-flex justify-content-center align-items-center" style="height: 320px;">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
+      </div>
+    </div>
+    
+    <!-- Error message -->
+    <div *ngIf="error && !loading" class="alert alert-danger">
+      <i class="fas fa-exclamation-triangle me-2"></i>
+      <span>{{ 'EMPLOYEE_KNOWLEDGE.LOAD_ERROR' | translate }}</span>
+      <button type="button" class="btn btn-sm btn-danger ms-2" (click)="refresh()">
+        <span>{{ 'EMPLOYEE_KNOWLEDGE.RETRY' | translate }}</span>
+      </button>
+    </div>
+    
+    <!-- Empty state -->
+    <div *ngIf="!loading && !error && (!employees || employees.length === 0)" class="text-center py-10">
+      <img src="./assets/media/illustrations/sigma-1/4.png" class="mw-200px mb-5" alt="No data">
+      <h3 class="fs-4 fw-bold mb-2">{{ 'EMPLOYEE_KNOWLEDGE.NO_DATA_TITLE' | translate }}</h3>
+      <p class="text-gray-600 fs-6">{{ 'EMPLOYEE_KNOWLEDGE.NO_DATA_DESCRIPTION' | translate }}</p>
+    </div>
+    
+    <!-- Chart -->
+    <div *ngIf="!loading && !error && employees && employees.length > 0">
+      <div id="barChart">
+        <apx-chart
+          [series]="barChartOptions.series!"
+          [chart]="barChartOptions.chart!"
+          [dataLabels]="barChartOptions.dataLabels!"
+          [plotOptions]="barChartOptions.plotOptions!"
+          [xaxis]="barChartOptions.xaxis!"
+          [yaxis]="barChartOptions.yaxis!"
+          [stroke]="barChartOptions.stroke!"
+          [fill]="barChartOptions.fill!"
+          [tooltip]="barChartOptions.tooltip!"
+          [colors]="barChartOptions.colors!"
+          [grid]="barChartOptions.grid!"
+          [legend]="barChartOptions.legend!"
+        ></apx-chart>
+      </div>
+    </div>
+  </div>
+</div> 

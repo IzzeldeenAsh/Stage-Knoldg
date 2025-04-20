@@ -376,7 +376,7 @@ mode="indeterminate"
           Resend Request
         </button>
     </div>
-    <div *ngIf="hasPendingRequestOfSameType" class="mt-4 alert alert-warning">
+    <div *ngIf="hasPendingRequestOfSameType && selectedRequest?.final_status !== 'approved'" class="mt-4 alert alert-warning">
         <div class="d-flex align-items-center">
             <i class="bi bi-exclamation-triangle-fill me-2"></i>
             <span>{{ 'USER_REQUESTS.DIALOG.PENDING_REQUEST_EXISTS' | translate }}</span>

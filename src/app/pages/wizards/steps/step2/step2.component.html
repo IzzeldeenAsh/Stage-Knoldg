@@ -39,6 +39,7 @@
           [cancelLabel]="'BUTTONS.CANCEL' | translate"
           [okLabel]="'BUTTONS.OK' | translate"
           (nodesSelected)="onConsultingNodesSelected($event)"
+          [isRequired]="true"
         ></shared-tree-selector>
      
 
@@ -69,6 +70,7 @@
           [initialSelectedNodes]="form.value.isicCodes" 
           [okLabel]="'BUTTONS.OK' | translate"
           (nodesSelected)="onIndustrySelected($event)"
+          [isRequired]="true"
         ></shared-tree-selector>
 
         </div>

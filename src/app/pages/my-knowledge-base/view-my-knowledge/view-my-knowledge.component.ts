@@ -30,6 +30,7 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
   dialogRef: DynamicDialogRef | undefined;
   isShareDialogVisible: boolean = false;
   linkCopied: boolean = false;
+  userProfile: IKnoldgProfile;
 
   constructor(
     injector: Injector,
@@ -39,6 +40,7 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
     private router: Router,
     private addInsightStepsService: AddInsightStepsService,
     private dialogService: DialogService,
+    private profileService: ProfileService
   ) {
     super(injector);
   }
@@ -54,6 +56,7 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
       this.knowledgeId = params["id"];
       if (this.knowledgeId) {
         this.loadKnowledgeData();
+        this.loadUserProfile();
       }
     });
     
@@ -63,6 +66,15 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
     });
     
     this.unsubscribe.push(paramsSubscription, updateSubscription);
+  }
+
+  private loadUserProfile(): void {
+    const profileSubscription = this.profileService.getProfile().subscribe(
+      (profile: IKnoldgProfile) => {
+        this.userProfile = profile;
+      }
+    );
+    this.unsubscribe.push(profileSubscription);
   }
 
   public loadKnowledgeData(): void {
@@ -100,6 +112,51 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
     } else {
       this.showError('','An unexpected error occurred.');
     }
+  }
+
+  isCompanyInsighter(): boolean {
+    if (!this.userProfile || !this.userProfile.roles) {
+      return false;
+    }
+    return this.userProfile.roles.includes('company-insighter');
+  }
+
+  needsReview(): boolean {
+    return this.knowledge && this.knowledge.need_to_review === true;
+  }
+
+  sendToReview(): void {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You are about to send this knowledge for review",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, send for review!',
+      cancelButtonText: 'Cancel',
+      customClass: {
+        confirmButton: 'btn btn-primary',
+        cancelButton: 'btn btn-light'
+      },
+      buttonsStyling: false
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const request: PublishKnowledgeRequest = {
+          status: 'in_review',
+          published_at: ''
+        };
+        
+        this.addInsightStepsService.publishKnowledge(Number(this.knowledgeId), request)
+          .subscribe({
+            next: () => {
+              this.loadKnowledgeData();
+              this.showSuccess('Knowledge has been sent for review', 'Success');
+            },
+            error: (error) => {
+              this.handleServerErrors(error);
+            }
+          });
+      }
+    });
   }
 
   confirmPublish(): void {

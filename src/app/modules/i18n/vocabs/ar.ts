@@ -160,8 +160,8 @@ export const locale = {
     },
     HOME: {
       INSIGHTER_DASHBOARD: 'لوحة التحكم',
-      COMPANY_INSIGHTER: 'شركة insighter',
-      BECOME_INSIGHTER: 'كن insighter',
+      COMPANY_INSIGHTER: 'شركة إنسايتر',
+      BECOME_INSIGHTER: 'كن إنسايتر',
       LATEST_INSIGHTS: "أحدث الرؤى",
       TRENDING: "الشائع",
       REGION_PLACEHOLDER: "المنطقة",
@@ -209,12 +209,12 @@ export const locale = {
       },
       LOGIN: {
         TITLE: "تسجيل الدخول",
-        NEED_ACCOUNT: "هل تحتاج إلى حساب؟",
+        NEED_ACCOUNT: "إنشاء حساب جديد؟",
         SIGN_UP: "سجل الآن",
         EMAIL_PLACEHOLDER: "أدخل البريد الإلكتروني",
         PASSWORD_PLACEHOLDER: "أدخل كلمة المرور",
-        USE_GOOGLE: "استخدم جوجل",
-        USE_LINKEDIN: "استخدم لينكدإن",
+        USE_GOOGLE: "تسجيل الدخول باستخدام جوجل",
+        USE_LINKEDIN: "تسجيل الدخول باستخدام لينكدإن",
         OR_WITH_EMAIL: "أو بالبريد الإلكتروني",
         EMAIL_LABEL: "البريد الإلكتروني",
         EMAIL_REQUIRED: "البريد الإلكتروني مطلوب",
@@ -229,12 +229,9 @@ export const locale = {
         EMAIL_MAXLENGTH:
           "يجب أن يحتوي البريد الإلكتروني على 360 حرفًا كحد أقصى",
         PASSWORD_MINLENGTH: "يجب أن تحتوي كلمة المرور على 3 أحرف على الأقل",
-        WELCOME_LOGIN: "أهلاً بكم في نولج",
+        WELCOME_LOGIN: "أهلاً بكم في نولدج",
         PASSWORD_MAXLENGTH: "يجب أن تحتوي كلمة المرور على 100 حرف كحد أقصى",
-        EMPOWER_INSIGHTS_TEXT: `
-        البوابة العصرية لعالم من الرؤى الاستشارية
-   
-  `,
+        EMPOWER_INSIGHTS_TEXT: "البوابة العصرية لعالم المعرفة المتخصصة",
  
       },
       REGISTRATION: {
@@ -253,9 +250,9 @@ export const locale = {
         ABOUT_DESCRIPTION_LABEL: "نبذة عنك",
         ABOUT_DESCRIPTION_PLACEHOLDER: "التعريف عن نفسك",
         SIGN_UP: "سجل الآن",
-        USE_GOOGLE: "استخدم جوجل",
+        USE_GOOGLE: "تسجيل الدخول باستخدام جوجل",
         SIGNIN_LINK: "تسجيل الدخول",
-        USE_LINKEDIN: "استخدم لينكدإن",
+        USE_LINKEDIN: "تسجيل الدخول باستخدام لينكدإن",
         OR_WITH_EMAIL: "أو بالبريد الإلكتروني",
         ERROR: "تفاصيل التسجيل غير صحيحة",
         LASTNAME_LABEL: "اسم العائلة",
@@ -296,20 +293,20 @@ export const locale = {
         COUNTRY_LABEL: "البلد",
         INDUSTRY_REQUIRED:"الصناعة مطلوبة ",
         COUNTRY_PLACEHOLDER: "اختر بلدك",
-        INDUSTRY_PLACEHOLDER: "اختر الصناعة",
+        INDUSTRY_PLACEHOLDER: "أختر القطاعات المناسبة التي تتوافق وخبراتك",
         COUNTRY_REQUIRED: "البلد مطلوب",
         CONSULTING_FIELD_LABEL: "التخصص الاستشاري",
-        CONSULTING_FIELD_PLACEHOLDER: "اختر تخصصك الاستشاري",
+        CONSULTING_FIELD_PLACEHOLDER: "اختر مجالاتك الاستشارية والتخصصية",
         CONSULTING_FIELD_REQUIRED: "التخصص الاستشاري مطلوب",
         OTHER_FIELD_LABEL: "تخصص آخر",
         OTHER_FIELD_PLACEHOLDER: "أدخل تخصصك الآخر",
         OTHER_FIELD_REQUIRED: "التخصص الآخر مطلوب",
-        INDUSTRY: "الصناعة",
+        INDUSTRY: "القطاع",
         HSCODE: "HS-Code",
         THANK_YOU_TITLE: "شكراً لك!",
         SUCCESS_JOURNEY_TITLE: "رحلتك نحو النجاح أوشكت على البدء !",
         THANK_YOU_MESSAGE: `
-          تهانينا على التسجيل المسبق في <span class="text-dark font-weight-bolder">نولج</span>، حيث تلتقي القرارات القائمة على البيانات بالابتكار.
+          تهانينا على التسجيل المسبق في <span class="text-dark font-weight-bolder">نولدج</span>، حيث تلتقي القرارات القائمة على البيانات بالابتكار.
           لقد اقتربت خطوة أخرى من اكتساب رؤى قوية ترفع استراتيجيات عملك. <br/><br/>
           سنخطرك بمجرد أن تكون منصتنا جاهزة، لتكون من بين أوائل الذين يستفيدون من الإمكانيات الكاملة لاستشارات الخبراء.
         `,
@@ -425,7 +422,7 @@ export const locale = {
       ACCOUNT_TYPE: "نوع الحساب",
       ACCOUNT_DETAILS_DESC: "إعداد تفاصيل حسابك",
       ACCOUNT_INFO: "معلومات الحساب",
-      ACCOUNT_INFO_DESC: "إعداد معلومات Insighter الخاصة بك",
+      ACCOUNT_INFO_DESC: "إعداد معلومات إنسايتر الخاصة بك",
       CERTIFICATES: "الشهادات",
       CERTIFICATES_DESC: "تحميل مؤهلاتك",
       VERIFY_ACCOUNT: "تحقق من الحساب",
@@ -433,7 +430,7 @@ export const locale = {
       BACK: "رجوع",
       GET_STARTED: "ابدأ",
       CONTINUE: "متابعة",
-      SUBMIT: "إرسال",
+      SUBMIT: "إستمرار",
       PLEASE_WAIT: "يرجى الانتظار...",
       ABOUT_COMPANY_REQUIRED:"معلومات حول الشركة مطلوبة",
       ADDRESS: "عنوان الشركة",
@@ -454,10 +451,12 @@ export const locale = {
       HELP_PAGE: "صفحة المساعدة",
       PERSONAL_ACCOUNT: "حساب شخصي",
       PERSONAL_ACCOUNT_DESC: "إذا كنت بحاجة إلى مزيد من المعلومات، يرجى الاطلاع عليه",
+      REPORTS_CHAPTERS_DETAILS: "تحميل حسب الفصل (يتم تسعيره بشكل منفصل) أو كتقرير كامل",
       CORPORATE_ACCOUNT: "حساب تجاري",
+      TERMS_AGREEMENT:"أقر بانني قد قرأت وأوافق على كل تتضمنه الشروط والأحكام وسياسة الخصوصية واتفاقية ترخيص البيانات و سياسة ملفات تعريف الارتباط",
       CORPORATE_ACCOUNT_DESC: "إنشاء حساب تجاري لإدارة المستخدمين",
-      INSIGHTER_INFO: "معلومات Insighter",
-      CONSULTING_FIELDS: "مجالات الاستشارات",
+      INSIGHTER_INFO: "معلومات إنسايتر",
+      CONSULTING_FIELDS: "المجالات الاستشارية",
       CONSULTING_FIELDS_REQUIRED: "مجالات الاستشارة مطلوبة",
       ABOUT_YOU: "معلومات عنك",
       PHONE_NUMBER: "رقم الهاتف",
@@ -468,9 +467,9 @@ export const locale = {
       ABOUT_COMPANY: "معلومات عن الشركة",
       COUNTRY_PLACEHOLDER: "اختر الدولة",
       IF_NEED_MORE_INFO: "إذا كنت بحاجة إلى مزيد من المعلومات، يرجى زيارة",
-      UPLOAD_FILES: "تحميل الملفات",
+      UPLOAD_FILES: "إرفاق الشهادات",
       CAMPAIGN_GUIDELINES: "إرشادات الشهادات",
-      DROP_FILES_HERE_OR_CLICK: "قم بإسقاط ملفات هنا أو انقر للتحميل.",
+      DROP_FILES_HERE_OR_CLICK: "اضغط هنا لإرفاق الملف (الشهادة)",
       UPLOAD_UP_TO_FILES: "قم بتحميل ما يصل إلى 10 ملفات",
       UPLOADED_FILES: "الملفات المرفوعة",
       DOCUMENT_TYPE: "نوع المستند",
@@ -483,6 +482,7 @@ export const locale = {
       CORPORATE_ACCOUNT_VERIFICATION: "تحقق من الحساب التجاري",
       VERIFY_YOUR_COMPANY_WITH: "تحقق من شركتك باستخدام",
       IF_NEED_MORE_INFO_VERIFICATION: "إذا كنت بحاجة إلى مزيد من المعلومات، يرجى زيارة",
+      DOCUMENT_SIZE: "حجم الملف يجب أن لا يتجاوز 2 ميجا",
       DROP_OR_UPLOAD_REGISTRY_DOCUMENT: "قم بإسقاط أو تحميل وثيقة التسجيل",
       VERIFY_COMPANY_ACCOUNT_BY_UPLOADING_REGISTRY_DOC: "تحقق من حساب الشركة عن طريق تحميل وثيقة تسجيل الشركة",
       WEBSITE_URL: "عنوان الموقع الإلكتروني",
@@ -689,7 +689,7 @@ export const locale = {
         "NAV": {
           "OVERVIEW": "نظرة عامة",
           "MY_REQUESTS": "طلباتي",
-          "MY_KNOWLEDGE": "قاعدة المعرفة + " ,
+          "MY_KNOWLEDGE": "قاعدة المعرفة" ,
           "ACCOUNT_SETTINGS": "إعدادات الحساب",
           "MY_COMPANY": "شركتي"
         },
@@ -939,6 +939,7 @@ export const locale = {
   FILE_NAME_DUPLICATE:'اسم الملف موجود بالفعل',
   SAVE_CHANGES: 'حفظ التغييرات',
   VIEW_MY_KNOWLEDGE: {
+    SEND_TO_REVIEW: 'إرسال للمراجعة من المدير',
     SHARE: 'مشاركة',
     BREADCRUMB: {
       HOME: 'الرئيسية',
@@ -991,6 +992,28 @@ export const locale = {
     "DATA": "بيانات",
     "COURSE": "دورة",
     "MEDIA": "وسائط"
+  },
+  "EMPLOYEE_STATUS": {
+    "TITLE": "توزيع حالة الموظفين",
+    "SUBTITLE": "نظرة عامة على حالة الموظفين في شركتك",
+    "TOTAL": "إجمالي الموظفين",
+    "EMPLOYEES": "موظفين",
+    "ACTIVE": "نشط",
+    "PENDING": "معلق",
+    "INACTIVE": "غير نشط",
+    "LOAD_ERROR": "فشل في تحميل إحصائيات الموظفين",
+    "RETRY": "إعادة المحاولة"
+  },
+  "EMPLOYEE_KNOWLEDGE": {
+    "TITLE": "مساهمات معرفة الموظفين",
+    "SUBTITLE": "نظرة عامة على المحتوى المعرفي المنشور من قبل كل موظف",
+    "EMPLOYEES": "الموظفين",
+    "ITEMS": "عناصر",
+    "LOAD_ERROR": "فشل في تحميل إحصائيات معرفة الموظفين",
+    "RETRY": "إعادة المحاولة",
+    "REFRESH": "تحديث",
+    "NO_DATA_TITLE": "لم يتم نشر أي معرفة بعد",
+    "NO_DATA_DESCRIPTION": "لم ينشر موظفوك أي عناصر معرفية حتى الآن."
   },
 },
 
