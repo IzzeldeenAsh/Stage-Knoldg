@@ -22,36 +22,32 @@
 
       <div class="d-flex flex-column">
         <div class="fw-bolder d-flex align-items-center fs-5">
-          <ng-container *ngIf="!_user.company else companyName">
+          <ng-container>
           {{_user.first_name}} {{_user.last_name}}
         </ng-container>
-        <ng-template #companyName>
-          {{_user.company?.legal_name}} 
-        </ng-template>
-          <ng-container *ngIf="_user.roles.includes('client') && !_user.roles.includes('insighter') && !_user.roles.includes('company') && !_user.roles.includes('company-insighter')">
-            <span class="badge badge-light-success fw-bolder fs-8 px-2 py-1 mx-2">
-              {{ 'HOME.CLIENT' | translate }}
-            </span>
-            </ng-container>
-            <ng-container *ngIf="_user.roles.includes('insighter') && !_user.roles.includes('company')">
-              <span class="badge badge-light-info fw-bolder fs-8 px-2 py-1 mx-2">
-              {{ 'HOME.INSIGHTER' | translate }}
-            </span>
-            </ng-container>
-            <ng-container *ngIf="!_user.roles.includes('insighter') && _user.roles.includes('company')">
-              <span class="badge badge-light-warning fw-bolder fs-8 px-2 py-1 mx-2">
-              {{ 'HOME.COMPANY' | translate }}
-            </span>
-            </ng-container>
-            <ng-container *ngIf="!_user.roles.includes('insighter') && _user.roles.includes('company-insighter')">
-              <span class="badge badge-light-warning fw-bolder fs-8 px-2 py-1 mx-2">
-              {{ 'HOME.COMPANY_INSIGHTER' | translate }}
-            </span>
-            </ng-container>
         </div>
-        <a class="fw-bold text-muted text-hover-primary fs-7 cursor-pointer">
-          {{ _user.email }}
-        </a>
+      <div>
+        <ng-container *ngIf="_user.roles.includes('client') && !_user.roles.includes('insighter') && !_user.roles.includes('company') && !_user.roles.includes('company-insighter')">
+          <span class="badge badge-light-success fw-bolder fs-8 px-2 py-1 ">
+            {{ 'HOME.CLIENT' | translate }}
+          </span>
+          </ng-container>
+          <ng-container *ngIf="_user.roles.includes('insighter') && !_user.roles.includes('company')">
+            <span class="badge badge-light-info fw-bolder fs-8 px-2 py-1 ">
+            {{ 'HOME.INSIGHTER' | translate }}
+          </span>
+          </ng-container>
+          <ng-container *ngIf="!_user.roles.includes('insighter') && _user.roles.includes('company')">
+            <span class="badge badge-light-warning fw-bolder fs-8 px-2 py-1 ">
+            {{ 'HOME.COMPANY' | translate }}
+          </span>
+          </ng-container>
+          <ng-container *ngIf="!_user.roles.includes('insighter') && _user.roles.includes('company-insighter')">
+            <span class="badge badge-light-warning fw-bolder fs-8 px-2 py-1 ">
+            {{ _user.company?.legal_name }}  {{ 'HOME.INSIGHTER' | translate }}
+          </span>
+          </ng-container>
+      </div>
       </div>
     </div>
   </div>

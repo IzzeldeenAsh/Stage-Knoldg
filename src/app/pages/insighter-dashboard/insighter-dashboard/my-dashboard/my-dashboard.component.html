@@ -1,6 +1,13 @@
-<ng-container *ngIf="roles.includes('insighter') || roles.includes('company') || roles.includes('company-insighter')">
-    <app-knowledge-types-statistics></app-knowledge-types-statistics>
-</ng-container>
+<div class="row">
+
+    <div *ngIf="roles.includes('insighter') || roles.includes('company') || roles.includes('company-insighter')" [ngClass]="{'col-12 col-lg-6': roles.includes('company')}">
+        <app-knowledge-types-statistics></app-knowledge-types-statistics>
+    </div>
+    <div *ngIf="roles.includes('company')" [ngClass]="{'col-12 col-lg-6': roles.includes('company')}">
+        <app-employee-knowledge-statistics></app-employee-knowledge-statistics>
+    </div>
+</div>
+
 <div class="row">
 
     <!-- Upgrade to company account -->

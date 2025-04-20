@@ -421,11 +421,30 @@
                     {{ 'PENDING_Manager_REVIEW' | translate }}
                   </button>
 
-                  <!-- Show publish button only if all required fields are present and not in review -->
+                  <!-- Show send to review button for company-insighter when need_to_review is true -->
+                  <button
+                    class="btn btn-primary w-100"
+                    (click)="sendToReview()"
+                    *ngIf="knowledge.status !== 'in_review' && 
+                          (knowledge.status === 'unpublished' || knowledge.status === 'scheduled') && 
+                          knowledge.publish_as !== 'package' && 
+                          hasRequiredFields() && 
+                          isCompanyInsighter() && 
+                          needsReview()"
+                  >
+                    <i class="ki-outline ki-check-square fs-4 me-2"></i>
+                    {{ 'VIEW_MY_KNOWLEDGE.SEND_TO_REVIEW' | translate }}
+                  </button>
+
+                  <!-- Show publish button when not needing review or user is not company-insighter -->
                   <button
                     class="btn btn-primary w-100"
                     (click)="confirmPublish()"
-                    *ngIf="knowledge.status !== 'in_review' && (knowledge.status === 'unpublished' || knowledge.status === 'scheduled') && knowledge.publish_as !== 'package' && hasRequiredFields()"
+                    *ngIf="knowledge.status !== 'in_review' && 
+                          (knowledge.status === 'unpublished' || knowledge.status === 'scheduled') && 
+                          knowledge.publish_as !== 'package' && 
+                          hasRequiredFields() && 
+                          (!isCompanyInsighter() || !needsReview())"
                   >
                     <i class="ki-outline ki-cart fs-4 me-2"></i>
                     {{ 'VIEW_MY_KNOWLEDGE.PUBLISH' | translate }}
@@ -466,10 +485,14 @@
                     {{ 'VIEW_MY_KNOWLEDGE.MAKE_AVAILABLE' | translate }}
                   </button>
 
+                  <!-- Show change schedule button only when not needing review or user is not company-insighter -->
                   <button
                     class="btn btn-light-warning w-100"
                     (click)="openScheduleDialog()"
-                    *ngIf="knowledge.status !== 'in_review' && (knowledge.status === 'unpublished' || knowledge.status === 'scheduled') && hasRequiredFields()"
+                    *ngIf="knowledge.status !== 'in_review' && 
+                          (knowledge.status === 'unpublished' || knowledge.status === 'scheduled') && 
+                          hasRequiredFields() && 
+                          (!isCompanyInsighter() || !needsReview())"
                   >
                     {{ 'VIEW_MY_KNOWLEDGE.CHANGE_SCHEDULE' | translate }}
                   </button>

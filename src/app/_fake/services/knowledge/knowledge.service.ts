@@ -47,6 +47,7 @@ export interface Knowledge {
   economic_blocs: any[];
   published_at?: string;
   publish_as?: 'both' | 'package' | 'standalone';
+  need_to_review?:boolean;
 }
 
 export interface KnowledgeResponse {
