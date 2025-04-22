@@ -99,16 +99,39 @@
 
       </div>
       <!--end::Wrapper-->
-     
-      
-      <input class="form-control bg-transparent" type="password" name="password" placeholder="{{ 'AUTH.LOGIN.PASSWORD_PLACEHOLDER' | translate }}" autocomplete="off" 
-        formControlName="password" #passwordField [ngClass]="{
-            'is-invalid': loginForm.controls['password'].invalid &&
-                  (loginForm.controls['password'].dirty ||
-                    loginForm.controls['password'].touched),
-          }" />
-      
-   
+          <div class="fv-row mb-3 position-relative">
+            <!-- input -->
+            <input
+              class="form-control bg-transparent"
+              [class.ps-10]="selectedLang === 'ar'"
+              [type]="passwordVisible ? 'text' : 'password'"
+              name="password"
+              placeholder="{{ 'AUTH.LOGIN.PASSWORD_PLACEHOLDER' | translate }}"
+              autocomplete="off"
+              formControlName="password"
+              #passwordField
+              [ngClass]="{
+                'is-invalid': loginForm.controls['password'].invalid &&
+                              (loginForm.controls['password'].dirty || loginForm.controls['password'].touched)
+              }"
+            />
+            <button
+              type="button"
+              (click)="passwordVisible = !passwordVisible"
+              class="btn btn-icon position-absolute top-50 translate-middle-y p-0 border-0 bg-transparent shadow-none"
+              [ngClass]="{
+                'end-0 me-3': selectedLang !== 'ar',
+                'start-0 ms-3': selectedLang === 'ar'
+              }"
+            >
+              <img
+                [src]="passwordVisible ? 'assets/media/svg/password-icon/eye-show.svg' : 'assets/media/svg/password-icon/eye-off.svg'"
+                width="15"
+                height="15"
+                alt="Toggle password visibility"
+              />
+            </button>
+          </div>
         </div>
         <!--begin::Link-->
         <a routerLink="/auth/password-reset" class="link-primary fs-base fw-semibold py-3 d-inline-block">
