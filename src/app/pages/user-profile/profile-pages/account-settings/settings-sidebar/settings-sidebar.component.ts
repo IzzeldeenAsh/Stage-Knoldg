@@ -7,6 +7,7 @@ interface MenuItem {
   route: string;
   roles?: string[];
   isActive?: boolean;
+  iconSource?: string;
 }
 
 @Component({
@@ -67,12 +68,14 @@ export class SettingsSidebarComponent extends BaseComponent implements OnInit {
         title: this.lang === 'ar' ? 'البيانات الشخصية' : 'Personal Info',
         route: '/app/profile/settings/personal-info',
         roles: ['company', 'insighter', 'client'],
+        iconSource: 'assets/media/svg/profile-icons/profileInfoIcon.svg',
         // isActive: this.isActive
       },
       {
         title: this.lang === 'ar' ? 'بيانات الشركة' : 'Company Info',
         route: '/app/profile/settings/company-settings',
         roles: ['company'],
+        iconSource: 'assets/media/svg/profile-icons/companyInfoIcon.svg',
         // isActive: this.isActive
       }
     ];
@@ -83,6 +86,7 @@ export class SettingsSidebarComponent extends BaseComponent implements OnInit {
         title: this.lang === 'ar' ? 'تغيير كلمة المرور' : 'Reset Password',
         route: '/app/profile/settings/reset-password',
         roles: ['client'],
+        iconSource: 'assets/media/svg/profile-icons/resetPassIcon.svg',
       });
     }
 

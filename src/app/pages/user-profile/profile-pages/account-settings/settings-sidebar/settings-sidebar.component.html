@@ -5,8 +5,8 @@
     <a class="menu-link"
     [routerLink]="[item.route]"
     routerLinkActive="active">
-
-   <span class="menu-title fs-5">{{item.title}}</span>
+    <img [src]="item.iconSource" alt="" class="iconInfo" />
+    <span class="menu-title fs-5">{{item.title}}</span>
  </a>
    </ng-container>
   </div>
