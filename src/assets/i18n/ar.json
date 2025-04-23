@@ -24,5 +24,47 @@
     "TITLE": "ابدأ في بناء قاعدة المعرفة الخاصة بك",
     "DESCRIPTION": "ابدأ في إنشاء محتوى معرفي قيم يمكن مشاركته داخل مؤسستك. أضف أول عنصر معرفي للبدء.",
     "ADD_BUTTON": "إضافة معرفة"
-  }
+  },
+  "PROFILE": {
+    "GENERAL_INFO": "المعلومات العامة",
+    "COMPANY_NAME": "اسم الشركة",
+    "WEBSITE": "الموقع الإلكتروني",
+    "FIRST_NAME": "الاسم الأول",
+    "LAST_NAME": "اسم العائلة",
+    "EMAIL": "البريد الإلكتروني",
+    "ROLES": "الأدوار",
+    "COUNTRY": "الدولة",
+    "SOCIAL_MEDIA": "وسائل التواصل الاجتماعي",
+    "ABOUT_COMPANY": "عن الشركة",
+    "CONSULTING_FIELDS": "مجالات الاستشارة",
+    "INDUSTRIES": "الصناعات",
+    "MY_CERTIFICATES": "شهاداتي",
+    "ADD_CERTIFICATE": "إضافة شهادة",
+    "CERTIFICATE_TYPE": "نوع الشهادة",
+    "SELECT_CERTIFICATE_TYPE": "اختر نوع الشهادة",
+    "CERTIFICATE_FILE": "ملف الشهادة",
+    "SUPPORTED_FORMATS": "الصيغ المدعومة: PDF، DOC، DOCX، JPG، PNG",
+    "DELETE_CERTIFICATE": "حذف الشهادة",
+    "DELETE_CERTIFICATE_CONFIRMATION": "هل أنت متأكد أنك تريد حذف هذه الشهادة؟ لا يمكن التراجع عن هذا الإجراء."
+  },
+  "ACCOUNT_SETTINGS": {
+    "PHONE_NUMBER": "رقم الهاتف",
+    "BIO": "نبذة عني"
+  },
+  "COMMON": {
+    "CANCEL": "إلغاء",
+    "UPLOAD": "رفع",
+    "UPLOADING": "جاري الرفع...",
+    "DELETE": "حذف",
+    "DELETING": "جاري الحذف..."
+  },
+  "CLIENT": "عميل",
+  "VERIFIED": "موثق",
+  "COMPANY_PHONE": "هاتف الشركة",
+  "ADDRESS": "العنوان",
+  "NO_SOCIAL_MEDIA": "لا توجد روابط وسائل تواصل اجتماعي متاحة",
+  "COMPANY_INDUSTRIES": "صناعات الشركة",
+  "COMPANY_CONSULTING_FIELDS": "مجالات استشارات الشركة",
+  "CERTIFICATIONS": "الشهادات",
+  "COMPANY_CERTIFICATIONS": "شهادات الشركة"
 }

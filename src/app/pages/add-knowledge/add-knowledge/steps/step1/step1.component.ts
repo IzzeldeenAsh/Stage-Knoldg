@@ -59,7 +59,7 @@ export class Step1Component extends BaseComponent implements OnInit, OnChanges {
     {
       id: 'kt_create_account_form_type_course',
       value: 'course',
-      label: 'COURSE',
+      label: 'BUSINESS_COURSES',
       iconName: 'teacher',
       iconClass: 'text-success',
       icon: 'fas fa-graduation-cap text-success mx-2 fs-6',

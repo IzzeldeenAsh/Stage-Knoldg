@@ -24,5 +24,47 @@
     "TITLE": "Start Building Your Knowledge Base",
     "DESCRIPTION": "Begin creating valuable knowledge content that can be shared within your organization. Add your first knowledge item to get started.",
     "ADD_BUTTON": "Add Knowledge"
-  }
+  },
+  "PROFILE": {
+    "GENERAL_INFO": "General Information",
+    "COMPANY_NAME": "Company Name",
+    "WEBSITE": "Website",
+    "FIRST_NAME": "First Name",
+    "LAST_NAME": "Last Name",
+    "EMAIL": "Email",
+    "ROLES": "Roles",
+    "COUNTRY": "Country",
+    "SOCIAL_MEDIA": "Social Media",
+    "ABOUT_COMPANY": "About Company",
+    "CONSULTING_FIELDS": "Consulting Fields",
+    "INDUSTRIES": "Industries",
+    "MY_CERTIFICATES": "My Certificates",
+    "ADD_CERTIFICATE": "Add Certificate",
+    "CERTIFICATE_TYPE": "Certificate Type",
+    "SELECT_CERTIFICATE_TYPE": "Select Certificate Type",
+    "CERTIFICATE_FILE": "Certificate File",
+    "SUPPORTED_FORMATS": "Supported formats: PDF, DOC, DOCX, JPG, PNG",
+    "DELETE_CERTIFICATE": "Delete Certificate",
+    "DELETE_CERTIFICATE_CONFIRMATION": "Are you sure you want to delete this certificate? This action cannot be undone."
+  },
+  "ACCOUNT_SETTINGS": {
+    "PHONE_NUMBER": "Phone Number",
+    "BIO": "Bio"
+  },
+  "COMMON": {
+    "CANCEL": "Cancel",
+    "UPLOAD": "Upload",
+    "UPLOADING": "Uploading...",
+    "DELETE": "Delete",
+    "DELETING": "Deleting..."
+  },
+  "CLIENT": "Client",
+  "VERIFIED": "Verified",
+  "COMPANY_PHONE": "Company Phone",
+  "ADDRESS": "Address",
+  "NO_SOCIAL_MEDIA": "No social media links available",
+  "COMPANY_INDUSTRIES": "Company Industries",
+  "COMPANY_CONSULTING_FIELDS": "Company Consulting Fields",
+  "CERTIFICATIONS": "Certifications",
+  "COMPANY_CERTIFICATIONS": "Company Certifications"
 } 
