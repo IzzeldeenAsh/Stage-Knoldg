@@ -20,6 +20,8 @@ export class CertificatesComponent extends BaseComponent implements OnInit {
   loadingProfile: boolean = false;
   documentTypes: Document[];
   isLoadingDocumentTypes: boolean = false;
+  
+  // Personal certificate properties
   displayAddCertDialog: boolean = false;
   displayDeleteDialog: boolean = false;
   selectedDocType: string;
@@ -27,6 +29,15 @@ export class CertificatesComponent extends BaseComponent implements OnInit {
   isUploading: boolean = false;
   isDeleting: boolean = false;
   selectedCertificate: any = null;
+  
+  // Company certificate properties
+  displayAddCompanyCertDialog: boolean = false;
+  displayCompanyDeleteDialog: boolean = false;
+  selectedCompanyDocType: string;
+  selectedCompanyFile: File | null = null;
+  isUploadingCompany: boolean = false;
+  isDeletingCompany: boolean = false;
+  selectedCompanyCertificate: any = null;
 
   constructor(
     private documentsService: DocumentsService,
@@ -88,6 +99,7 @@ export class CertificatesComponent extends BaseComponent implements OnInit {
     return doc ? doc.name : "Other";
   }
 
+  // Personal Certificate Form Data
   private createFormData(): FormData {
     const formData = new FormData();
     formData.append("first_name", this.profile.first_name);
@@ -112,8 +124,7 @@ export class CertificatesComponent extends BaseComponent implements OnInit {
         formData.append("consulting_field[]", field.id);
       });
     }
-    // Append regular consulting fields
- 
+    // Add company information if user has company role
     if (this.profile.roles.includes("company") && this.profile.company?.legal_name) {
       formData.append("legal_name", this.profile.company.legal_name);
       formData.append("about_us", this.profile.company.about_us);
@@ -124,6 +135,43 @@ export class CertificatesComponent extends BaseComponent implements OnInit {
     return formData;
   }
 
+  // Company Certificate Form Data
+  private createCompanyFormData(): FormData {
+    const formData = new FormData();
+    
+    if (this.profile.company?.legal_name) {
+      formData.append("legal_name", this.profile.company.legal_name);
+    }
+    
+    if (this.profile.company?.about_us) {
+      formData.append("about_us", this.profile.company.about_us);
+    }
+    
+    if (this.profile.company?.website) {
+      formData.append("website", this.profile.company.website);
+    }
+    
+    // We don't need to send existing certificate IDs
+    // This was causing the certification[0][id] parameter
+    
+    // Add company industries if any
+    if (this.profile.company && this.profile.company.industries && this.profile.company.industries.length > 0) {
+      this.profile.company.industries.forEach((industry: any) => {
+        formData.append("industries[]", industry.id);
+      });
+    }
+    
+    // Add company consulting fields if any
+    if (this.profile.company && this.profile.company.consulting_field && this.profile.company.consulting_field.length > 0) {
+      this.profile.company.consulting_field.forEach((field: any) => {
+        formData.append("consulting_field[]", field.id);
+      });
+    }
+    
+    return formData;
+  }
+
+  // Personal Certificate Methods
   showAddCertDialog() {
     this.displayAddCertDialog = true;
     this.selectedDocType = '';
@@ -172,13 +220,32 @@ export class CertificatesComponent extends BaseComponent implements OnInit {
         this.getProfileService.clearProfile();
         this.getProfile(); // Refresh the profile to show new certificate
       },
-      error: (error: Error) => {
+      error: (error: any) => {
+        // Handle detailed API errors
+        let errorMessage = 'Failed to upload certificate';
+        
+        if (error.error && error.error.message) {
+          errorMessage = error.error.message;
+        }
+        
+        // Check for specific validation errors
+        if (error.error && error.error.errors) {
+          const errorKeys = Object.keys(error.error.errors);
+          if (errorKeys.length > 0) {
+            const firstError = error.error.errors[errorKeys[0]];
+            if (Array.isArray(firstError) && firstError.length > 0) {
+              errorMessage = firstError[0];
+            }
+          }
+        }
+        
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Failed to upload certificate'
+          detail: errorMessage
         });
-        this.isUploading = false; // Reset loading state on error
+        
+        this.isUploading = false;
       },
       complete: () => {
         this.isUploading = false;
@@ -219,6 +286,128 @@ export class CertificatesComponent extends BaseComponent implements OnInit {
       },
       complete: () => {
         this.isDeleting = false;
+      }
+    });
+
+    this.unsubscribe.push(deleteSub);
+  }
+  
+  // Company Certificate Methods
+  showAddCompanyCertDialog() {
+    this.displayAddCompanyCertDialog = true;
+    this.selectedCompanyDocType = '';
+    this.selectedCompanyFile = null;
+    this.isUploadingCompany = false;
+  }
+  
+  onCompanyFileSelect(event: any) {
+    if (event.target.files && event.target.files.length > 0) {
+      const file = event.target.files[0];
+      // Check file type
+      const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png'];
+      if (allowedTypes.includes(file.type)) {
+        this.selectedCompanyFile = file;
+      } else {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Invalid file type. Please upload PDF, DOC, DOCX, JPG or PNG files only.'
+        });
+        event.target.value = '';
+      }
+    }
+  }
+  
+  uploadCompanyCertificate() {
+    if (!this.selectedCompanyDocType || !this.selectedCompanyFile) {
+      return;
+    }
+
+    this.isUploadingCompany = true;
+    const formData = this.createCompanyFormData();
+    
+    // Always use index 0 for company certificate upload
+    formData.append('certification[0][type]', this.selectedCompanyDocType);
+    formData.append('certification[0][file]', this.selectedCompanyFile);
+
+    const uploadSub = this._profilePost.updateCompanyInfo(formData).subscribe({
+      next: (response: any) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Company certificate uploaded successfully'
+        });
+        this.displayAddCompanyCertDialog = false;
+        this.getProfileService.clearProfile();
+        this.getProfile(); // Refresh the profile to show new certificate
+      },
+      error: (error: any) => {
+        // Handle detailed API errors
+        let errorMessage = 'Failed to upload company certificate';
+        
+        if (error.error && error.error.message) {
+          errorMessage = error.error.message;
+        }
+        
+        // Check for specific validation errors
+        if (error.error && error.error.errors) {
+          const errorKeys = Object.keys(error.error.errors);
+          if (errorKeys.length > 0) {
+            const firstError = error.error.errors[errorKeys[0]];
+            if (Array.isArray(firstError) && firstError.length > 0) {
+              errorMessage = firstError[0];
+            }
+          }
+        }
+        
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: errorMessage
+        });
+        
+        this.isUploadingCompany = false;
+      },
+      complete: () => {
+        this.isUploadingCompany = false;
+      }
+    });
+
+    this.unsubscribe.push(uploadSub);
+  }
+  
+  confirmCompanyDelete(cert: any) {
+    this.selectedCompanyCertificate = cert;
+    this.displayCompanyDeleteDialog = true;
+  }
+  
+  deleteCompanyCertificate() {
+    if (!this.selectedCompanyCertificate) {
+      return;
+    }
+
+    this.isDeletingCompany = true;
+    // Use the dedicated company certificate deletion method
+    const deleteSub = this._profilePost.deleteCompanyCertificate(this.selectedCompanyCertificate.id).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Company certificate deleted successfully'
+        });
+        this.displayCompanyDeleteDialog = false;
+        this.getProfileService.clearProfile();
+        this.getProfile(); // Refresh the profile to update the certificates list
+      },
+      error: (error: any) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to delete company certificate'
+        });
+      },
+      complete: () => {
+        this.isDeletingCompany = false;
       }
     });
 

@@ -263,8 +263,10 @@
                   </div>
                 </td>
                 <td>
-                  <div class="d-flex align-items-center"   *ngIf=" knowledge.title">
-                    <a [routerLink]="['/app/my-knowledge-base/view-my-knowledge/', knowledge.id]" class="text-gray-800 text-hover-primary">{{ knowledge.title }}</a>
+                  <div class="d-flex align-items-center">
+                    <a [routerLink]="['/app/my-knowledge-base/view-my-knowledge/', knowledge.id]" class="text-gray-800 text-hover-primary">
+                      {{ knowledge.title && knowledge.title.trim() ? knowledge.title : ('Untitled knowledge' | translate) }}
+                    </a>
                   </div>
                 </td>
                 <td >
@@ -352,10 +354,10 @@
           <div class="card knowledge-card h-100 min-h-220px" draggable="true" (dragstart)="onDragStart($event, knowledge)" (dragend)="onDragEnd($event)">
             <div class="card-body">
               <!-- Title Section -->
-              <div class="title-section" *ngIf=" knowledge.title">
+              <div class="title-section">
                 <a [routerLink]="['/app/my-knowledge-base/view-my-knowledge/', knowledge.id]" 
                    class="knowledge-title text-hover-primary">
-                  {{ knowledge.title.length > 45 ? (knowledge.title | slice:0:45) + '...' : knowledge.title }}
+                  {{ (knowledge.title && knowledge.title.trim()) ? (knowledge.title.length > 45 ? (knowledge.title | slice:0:45) + '...' : knowledge.title) : ('Untitled knowledge' | translate) }}
                 </a>
               </div>
 

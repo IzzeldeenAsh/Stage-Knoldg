@@ -89,4 +89,7 @@ export interface Company {
   company_phone:string;
   verified:boolean;
   social?: SocialNetwork[];
+  industries?:any;
+  consulting_field?:any;
+  certifications?:any;
 }

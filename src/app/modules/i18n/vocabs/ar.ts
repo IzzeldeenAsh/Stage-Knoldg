@@ -1,7 +1,9 @@
 export const locale = {
   lang: "ar",
   data: {
-
+    COMPANY_INDUSTRIES: 'الصناعات التي ينتمي إليها الشركة',
+    COMPANY_CONSULTING_FIELDS: 'المجالات الاستشارية التي ينتمي إليها الشركة',
+    COMPANY_CERTIFICATIONS: 'الشهادات التي ينتمي إليها الشركة',
     'DRAFT_STATUS': 'مسودة',
     'REGIONS': 'القارات',
     REVIEW_KNOWLEDGE: 'مراجعة المعرفة',
@@ -229,7 +231,7 @@ export const locale = {
         EMAIL_MAXLENGTH:
           "يجب أن يحتوي البريد الإلكتروني على 360 حرفًا كحد أقصى",
         PASSWORD_MINLENGTH: "يجب أن تحتوي كلمة المرور على 3 أحرف على الأقل",
-        WELCOME_LOGIN: "أهلاً بكم في نولدج",
+        WELCOME_LOGIN: "أهلاً بكم في نولج",
         PASSWORD_MAXLENGTH: "يجب أن تحتوي كلمة المرور على 100 حرف كحد أقصى",
         EMPOWER_INSIGHTS_TEXT: "البوابة العصرية لعالم المعرفة المتخصصة",
  
@@ -306,7 +308,7 @@ export const locale = {
         THANK_YOU_TITLE: "شكراً لك!",
         SUCCESS_JOURNEY_TITLE: "رحلتك نحو النجاح أوشكت على البدء !",
         THANK_YOU_MESSAGE: `
-          تهانينا على التسجيل المسبق في <span class="text-dark font-weight-bolder">نولدج</span>، حيث تلتقي القرارات القائمة على البيانات بالابتكار.
+          تهانينا على التسجيل المسبق في <span class="text-dark font-weight-bolder">نولج</span>، حيث تلتقي القرارات القائمة على البيانات بالابتكار.
           لقد اقتربت خطوة أخرى من اكتساب رؤى قوية ترفع استراتيجيات عملك. <br/><br/>
           سنخطرك بمجرد أن تكون منصتنا جاهزة، لتكون من بين أوائل الذين يستفيدون من الإمكانيات الكاملة لاستشارات الخبراء.
         `,
@@ -525,22 +527,19 @@ export const locale = {
     },
     PROFILE: {
       GENERAL_INFO: 'المعلومات العامة',
-      COMPANY_NAME: 'اسم الشركة:',
-      WEBSITE: 'الموقع الإلكتروني:',
-      FIRST_NAME: 'الاسم الأول:',
-      "MY_CERTIFICATES": "شهاداتي",
-      "ADD_CERTIFICATE": "إضافة شهادة",
-      "CERTIFICATE_TYPE": "نوع الشهادة",
-      "SELECT_CERTIFICATE_TYPE": "اختر نوع الشهادة",
-      "CERTIFICATE_FILE": "ملف الشهادة",
-      "SUPPORTED_FORMATS": "الصيغ المدعومة: PDF, DOC, DOCX, JPG, PNG",
-      "DELETE_CERTIFICATE": "حذف الشهادة",
-      "DELETE_CERTIFICATE_CONFIRMATION": "هل أنت متأكد من حذف هذه الشهادة؟",
+      COMPANY_NAME: 'اسم الشركة',
+      COMPANY_CERTIFICATES: 'شهادات الشركة',
+      ADD_COMPANY_CERTIFICATE: 'إضافة شهادة شركة',
+      WEBSITE: 'الموقع الإلكتروني',
+      SOCIAL_MEDIA: 'وسائل التواصل الاجتماعي',
+      DELETE_COMPANY_CERTIFICATE_CONFIRMATION:'حذف الشهادة',
+      DELETE_COMPANY_CERTIFICATE:'حذف شهادة الشركة',
       ABOUT_COMPANY: 'حول الشركة',
-      LAST_NAME: 'اسم العائلة:',
-      EMAIL: 'البريد الإلكتروني:',
-      ROLES: 'الأدوار:',
-      COUNTRY: 'البلد:',
+      FIRST_NAME: 'الاسم الأول',
+      LAST_NAME: 'اسم العائلة',
+      EMAIL: 'البريد الإلكتروني',
+      ROLES: 'الأدوار',
+      COUNTRY: 'البلد',
       ABOUT: 'حول',
       CONSULTING_FIELDS: 'مجالات الاستشارة',
       INDUSTRIES: 'الصناعات',
@@ -553,6 +552,7 @@ export const locale = {
     ACCOUNT_SETTINGS: {
       PERSONAL_INFO: 'البيانات الشخصية',
       COMPANY_INFO: 'بيانات الشركة',
+      ADDRESS: 'العنوان',
       RESET_PASSWORD: 'إعادة تعيين كلمة المرور',
       SETTINGS: 'الإعدادات',
       TITLE: 'إعدادات الحساب',
@@ -835,6 +835,7 @@ export const locale = {
     KNOWLEDGE_DRAFT_MESSAGE: "تم حفظ معرفتك كمسودة. يمكنك متابعة تحريرها لاحقًا.",
     KNOWLEDGE_PUBLISHED_MESSAGE: "تم نشر معرفتك بنجاح وهي الآن متاحة للمستخدمين.",
     KNOWLEDGE_SCHEDULED_MESSAGE: "تمت جدولة معرفتك للنشر في التاريخ والوقت المحددين.",
+    BUSINESS_COURSES:'دورات الأعمال',
     WHATS_NEXT: "ما التالي؟",
     VISIT_DASHBOARD_MESSAGE: "يمكنك عرض معرفتك أو الانتقال إلى مكتبة المعرفة الخاصة بك لإدارة جميع المحتويات الخاصة بك.",
     VIEW_KNOWLEDGE: "عرض المعرفة",
@@ -913,7 +914,7 @@ export const locale = {
   TOTAL_REVENUE:'اجمالي الايرادات',
   ABOUT:'عن المنصة',
   SUPPORT:'الدعم',
-  KNOLDG:'نولدج',
+  KNOLDG:'نولج',
   CLICK_TO_ADD:'اضغط لإضافة معرفة جديدة',
   POSTED_KNOWLEDGE:'المعارف المنشورة',
   PUBLISHED_KNOWLEDGE:'المعارف المنشورة',
@@ -994,7 +995,7 @@ export const locale = {
     "INSIGHT": "رؤية",
     "MANUAL": "دليل",
     "DATA": "بيانات",
-    "COURSE": "دورة",
+    "BUSINESS_COURSES": "دورات الأعمال",
     "MEDIA": "وسائط"
   },
   "EMPLOYEE_STATUS": {
@@ -1019,6 +1020,12 @@ export const locale = {
     "NO_DATA_TITLE": "لم يتم نشر أي معرفة بعد",
     "NO_DATA_DESCRIPTION": "لم ينشر موظفوك أي عناصر معرفية حتى الآن."
   },
+  "CLIENT": "عميل",
+  "VERIFIED": "موثق",
+  "COMPANY_PHONE": "هاتف الشركة",
+  "ADDRESS": "العنوان",
+  "NO_SOCIAL_MEDIA": "لا توجد روابط وسائل تواصل اجتماعي متاحة",
+  "CERTIFICATIONS": "الشهادات",
 },
 
 }

@@ -60,11 +60,9 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
         this.profile = profile;
         this.roles = profile.roles;
         console.log('Current roles:', this.roles);
-        console.log('Is insighter:', this.hasRole(['insighter']));
-        if(this.hasRole(['insighter'])){
-          this.callConsultingFields();
-          this.callIndustries();
-        }
+        // Load consulting fields and industries for all roles
+        this.callConsultingFields();
+        this.callIndustries();
         this.socialNetworks = profile.social || [];
       })
     );
@@ -112,32 +110,31 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
     let transformedIndustries;
     let transformedConsultingFields;
     
-    if(this.profile.roles.includes('insighter')){
-      const transformNodes = (nodes: any[]): any[] => {
-        return nodes.map(node => ({
+    const transformNodes = (nodes: any[]): any[] => {
+      if (!nodes || !Array.isArray(nodes)) return [];
+      return nodes.map(node => ({
+        key: node.id,
+        label: node.name,
+        data: { 
           key: node.id,
-          label: node.name,
-          data: { 
-            key: node.id,
-            nameEn: node.name,
-            nameAr: node.name,
-          },
-          children: node.children ? transformNodes(node.children) : []
-        }));
-      };
-      transformedIndustries = transformNodes(this.profile.industries);
-      transformedConsultingFields = transformNodes(this.profile.consulting_field);
-    }
-
+          nameEn: node.name,
+          nameAr: node.name,
+        },
+        children: node.children ? transformNodes(node.children) : []
+      }));
+    };
+    
+    // Transform industries and consulting fields for all roles
+    transformedIndustries = transformNodes(this.profile.industries || []);
+    transformedConsultingFields = transformNodes(this.profile.consulting_field || []);
+    
     this.personalInfoForm.patchValue({
       first_name: this.profile.first_name,
       last_name: this.profile.last_name,
       country: this.countries.find((country: any) => country.id === this.profile.country_id),
       bio: this.profile.bio,
-      ...(this.profile.roles.includes('insighter') ? {
-        industries: transformedIndustries,
-        consulting_field: transformedConsultingFields
-      } : {}),
+      industries: transformedIndustries,
+      consulting_field: transformedConsultingFields,
       linkedIn: this.getSocialLink('linkedin'),
       facebook: this.getSocialLink('facebook'),
       twitter: this.getSocialLink('twitter'),

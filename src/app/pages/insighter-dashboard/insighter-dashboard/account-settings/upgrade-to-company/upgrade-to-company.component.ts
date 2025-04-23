@@ -9,7 +9,7 @@ import {
   ElementRef,
   Injector,
 } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { FormBuilder, FormGroup, Validators, FormArray } from "@angular/forms";
 import {
   Subscription,
   BehaviorSubject,
@@ -19,6 +19,8 @@ import {
   map,
   fromEvent,
   startWith,
+  of,
+  forkJoin,
 } from "rxjs";
 import { TranslationService } from "src/app/modules/i18n";
 import { HttpClient } from "@angular/common/http";
@@ -28,6 +30,13 @@ import Swal from "sweetalert2";
 import { Router } from "@angular/router";
 import { BaseComponent } from "src/app/modules/base.component";
 import { CommonService } from "src/app/_fake/services/common/common.service";
+import { TreeNode } from 'src/app/reusable-components/shared-tree-selector/TreeNode';
+import { ConsultingFieldTreeService } from "src/app/_fake/services/consulting-fields-tree/consulting-fields-tree.service";
+import { IsicCodesService } from "src/app/_fake/services/isic-code/isic-codes.service";
+import { IndustryService } from "src/app/_fake/services/industries/industry.service";
+import { Document, DocumentsService } from "src/app/_fake/services/douments-types/documents-types.service.spec";
+import { phoneNumbers } from "src/app/pages/wizards/phone-keys";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "app-upgrade-to-company",
@@ -47,6 +56,7 @@ export class UpgradeToCompanyComponent
   dialogWidth: string = "50vw";
   @ViewChild("logoInput") logoInput: ElementRef<HTMLInputElement>;
   @ViewChild("fileInput") fileInput: ElementRef<HTMLInputElement>;
+  @ViewChild("certFileInput") certFileInput: ElementRef<HTMLInputElement>;
   defaultImage =
     "https://au.eragroup.com/wp-content/uploads/2018/02/logo-placeholder.png";
 
@@ -58,21 +68,56 @@ export class UpgradeToCompanyComponent
   showAgreementDialog: boolean = false;
   attemptedSubmit: boolean = false;
 
+  // Consulting fields and industries
+  listOfConsultingFields: TreeNode[] = [];
+  nodes: TreeNode[] = [];
+  allConsultingFieldSelected: any[] = [];
+  allIndustriesSelected: any[] = [];
+  isLoadingFields: boolean = false;
+  phoneNumbers = phoneNumbers;
+  isLoading$: Observable<boolean> = of(false);
+  lang: string = 'en';
+  
+  // Document types for certifications
+  documentTypes: Document[] = [];
+  isLoadingDocumentTypes: boolean = false;
+  documentTypesError: string = "";
+  fizeSizeMessages: Message[] = [];
+  
+  // API error handling
+  apiErrorMessages: string[] = [];
+  showApiErrors: boolean = false;
+
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
     private insighterAsCompany: InsighterAsCompany,
     private router: Router,
     private commonService: CommonService,
+    private _KnoldgFieldsService: ConsultingFieldTreeService,
+    private _isicService: IndustryService,
+    private documentsService: DocumentsService,
+    private translationService: TranslationService,
     injector: Injector
   ) {
     super(injector);
     this.updateProfile$ = this.insighterAsCompany.isLoading$;
+    this.lang = this.translationService.getSelectedLanguage();
   }
 
   ngOnInit(): void {
     this.initForm();
     this.windowResize();
+    this.initApiCalls();
+    this.loadDocumentTypes();
+
+    // Subscribe to language changes
+    const langSub = this.translationService.onLanguageChange().subscribe((lang) => {
+      this.lang = lang;
+      // Reload data when language changes
+      this.initApiCalls();
+    });
+    this.unsubscribe.push(langSub);
 
     const verificationMethodSub = this.form
       .get("verificationMethod")
@@ -83,6 +128,51 @@ export class UpgradeToCompanyComponent
 
     // Initialize validators based on the default verification method
     this.setVerificationValidators(this.form.get("verificationMethod")?.value);
+  }
+
+  initApiCalls() {
+    this.isLoadingFields = true;
+    // Set observable to show loading state
+    this.isLoading$ = of(true);
+
+    const apiCalls = forkJoin({
+      consultingFields: this._KnoldgFieldsService.getConsultingCodesTree(this.lang || 'en'),
+      isicCodes: this._isicService.getIsicCodesTree(this.lang || 'en')
+    }).subscribe({
+      next: (results) => {
+        this.listOfConsultingFields = results.consultingFields;
+        this.nodes = results.isicCodes;
+        this.isLoadingFields = false;
+        this.isLoading$ = of(false);
+      },
+      error: (err) => {
+        console.error('Error loading fields:', err);
+        this.messageService.add({ 
+          severity: 'error', 
+          summary: 'Error', 
+          detail: 'Failed to load consulting fields or industries.' 
+        });
+        this.isLoadingFields = false;
+        this.isLoading$ = of(false);
+      }
+    });
+    this.unsubscribe.push(apiCalls);
+  }
+
+  loadDocumentTypes() {
+    this.isLoadingDocumentTypes = true;
+    const docTypesSub = this.documentsService.getDocumentsTypes().subscribe({
+      next: (types) => {
+        this.documentTypes = types;
+        this.isLoadingDocumentTypes = false;
+      },
+      error: (error) => {
+        this.documentTypesError = "Failed to load document types.";
+        this.isLoadingDocumentTypes = false;
+        console.error(error);
+      },
+    });
+    this.unsubscribe.push(docTypesSub);
   }
 
   ngOnDestroy(): void {
@@ -224,6 +314,22 @@ export class UpgradeToCompanyComponent
     return tempElement.textContent || tempElement.innerText || '';
   }
 
+  // Consulting fields selection handler
+  onConsultingNodesSelected(event: any) {
+    this.allConsultingFieldSelected = event && event.length > 0 ? event : [];
+    this.form.get('consultingFields')?.setValue(this.allConsultingFieldSelected);
+    this.form.get('consultingFields')?.markAsTouched();
+    this.form.get('consultingFields')?.updateValueAndValidity();
+  }
+
+  // Industry selection handler
+  onIndustrySelected(event: any) {
+    this.allIndustriesSelected = event && event.length > 0 ? event : [];
+    this.form.get('isicCodes')?.setValue(this.allIndustriesSelected);
+    this.form.get('isicCodes')?.markAsTouched();
+    this.form.get('isicCodes')?.updateValueAndValidity();
+  }
+
   initForm() {
     this.form = this.fb.group({
       legalName: ["", Validators.required],
@@ -231,13 +337,104 @@ export class UpgradeToCompanyComponent
       logo: [null, Validators.required],
       address: ["", Validators.required],
       company_phone: ["", Validators.required],
+      phoneCountryCode: ["", Validators.required],
       verificationMethod: ["websiteEmail", Validators.required],
       website: [""],
       companyEmail: ["", Validators.email],
       code: [""],
       registerDocument: [null],
-      agreement: [false, Validators.requiredTrue]
+      agreement: [false, Validators.requiredTrue],
+      // New fields
+      consultingFields: [[], [Validators.required]],
+      isicCodes: [[], [Validators.required]],
+      certifications: this.fb.array([])
     });
+  }
+
+  // Get certifications form array
+  get certifications(): FormArray {
+    return this.form.get("certifications") as FormArray;
+  }
+
+  // Get certification controls for template iteration
+  get certificationControls(): FormGroup[] {
+    return this.certifications.controls as FormGroup[];
+  }
+
+  // Add certification
+  addCertification(cert?: { type?: string; file?: File }) {
+    const certForm = this.fb.group({
+      type: [cert?.type || "", [Validators.required]],
+      file: [cert?.file || null, [Validators.required]],
+    });
+    this.certifications.push(certForm);
+  }
+
+  // Remove certification
+  removeCertification(index: number) {
+    this.certifications.removeAt(index);
+  }
+
+  // Handle certification file selection
+  onCertFileSelected(event: any) {
+    const files: FileList = event.target.files;
+    this.handleCertFiles(files);
+    
+    // Reset the file input to allow re-uploading the same file if needed
+    if (this.certFileInput) {
+      this.certFileInput.nativeElement.value = "";
+    }
+  }
+
+  // Open file input for certification
+  onCertDropzoneClick() {
+    if (this.certFileInput) {
+      this.certFileInput.nativeElement.click();
+    }
+  }
+
+  // Process certification files
+  handleCertFiles(files: FileList) {
+    const MAX_SIZE_MB = 2;
+    const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files.item(i);
+      if (file) {
+        if (file.size > MAX_SIZE_BYTES) {
+          this.messageService.add({
+            severity: "error",
+            summary: "File Too Large",
+            detail: `File "${file.name}" exceeds the 2MB size limit.`,
+          });
+          continue; // Skip adding this file
+        }
+        this.addCertification({ file });
+      }
+    }
+  }
+
+  // Get file icon based on extension
+  getFileIcon(file: File) {
+    if (file) {
+      const extension = file.name.split(".").pop()?.toLowerCase();
+      const iconPath = `./assets/media/svg/files/${extension}.svg`;
+      return iconPath;
+    }
+    return "./assets/media/svg/files/default.svg";
+  }
+
+  // Optional: Additional handling to sanitize phone input
+  onPhoneNumberInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    // Remove any non-digit characters
+    let sanitizedValue = input.value.replace(/\D/g, '');
+    // Limit to 10 digits
+    if (sanitizedValue.length > 10) {
+      sanitizedValue = sanitizedValue.slice(0, 10);
+    }
+    // Update the input value without triggering another event
+    this.form.controls['company_phone'].setValue(sanitizedValue, { emitEvent: false });
   }
 
   setVerificationValidators(method: string) {
@@ -446,17 +643,13 @@ export class UpgradeToCompanyComponent
     }
   }
 
-  getFileIcon(file: File): string {
-    const extension = file.name.split(".").pop()?.toLowerCase();
-    const iconPath = `./assets/media/svg/files/${extension}.svg`;
-    return iconPath;
-  }
-
   onSubmit() {
     this.attemptedSubmit = true;
     
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      // Scroll to the top to show validation errors
+      window.scrollTo({top: 0, behavior: 'smooth'});
       return;
     }
 
@@ -465,7 +658,14 @@ export class UpgradeToCompanyComponent
     formData.append("about_us", this.form.get("aboutCompany")?.value);
     formData.append("logo", this.form.get("logo")?.value);
     formData.append("address", this.form.get("address")?.value);
-    formData.append("company_phone", this.form.get("company_phone")?.value);
+    
+    // Add phone with country code
+    if (this.form.get("company_phone")?.value) {
+      const phoneCode = this.form.get("phoneCountryCode")?.value?.code || '';
+      const phoneNumber = this.form.get("company_phone")?.value;
+      formData.append("company_phone", phoneCode + phoneNumber);
+    }
+    
     formData.append("company_agreement", "true"); // Add company agreement
 
     const verificationMethod = this.form.get("verificationMethod")?.value;
@@ -479,6 +679,72 @@ export class UpgradeToCompanyComponent
         "register_document",
         this.form.get("registerDocument")?.value
       );
+    }
+
+    // Add consulting fields - standard fields and custom 'other' fields
+    const consultingFieldList = this.form.get('consultingFields')?.value.filter((node: any) => 
+      typeof node.key === 'number'
+    );
+    
+    const otherConsultingFields = this.form.get('consultingFields')?.value.filter((node: any) => 
+      typeof node.key === 'string' && 
+      node.key !== 'selectAll' && 
+      node.data && 
+      node.data.customInput !== undefined && 
+      node.data.customInput !== null
+    );
+    
+    if(consultingFieldList && consultingFieldList.length > 0){
+      consultingFieldList.forEach((field: any) => {
+        formData.append("consulting_field[]", field.key.toString());
+      });
+    }
+    
+    if(otherConsultingFields && otherConsultingFields.length > 0){
+      otherConsultingFields.forEach((field: any, index: number) => {
+        formData.append(`suggest_consulting_fields[${index}][parent_id]`, 
+          field.parent && field.parent.key ? (field.parent.key === "selectAll" ? "0" : field.parent.key) : "0");
+        formData.append(`suggest_consulting_fields[${index}][name][en]`, field.data.customInput);
+        formData.append(`suggest_consulting_fields[${index}][name][ar]`, field.data.customInput);
+      });
+    }
+    
+    // Add industries - standard fields and custom 'other' fields
+    const industriesList = this.form.get('isicCodes')?.value.filter((node: any) => 
+      typeof node.key === 'number'
+    );
+    
+    const otherIndustriesFields = this.form.get('isicCodes')?.value.filter((node: any) => 
+      typeof node.key === 'string' && 
+      node.key !== 'selectAll' && 
+      node.data && 
+      node.data.customInput !== undefined && 
+      node.data.customInput !== null
+    );
+    
+    if(industriesList && industriesList.length > 0){
+      industriesList.forEach((code: any) => {
+        formData.append("industries[]", code.key.toString());
+      });
+    }
+    
+    if(otherIndustriesFields && otherIndustriesFields.length > 0){
+      otherIndustriesFields.forEach((field: any, index: number) => {
+        formData.append(`suggest_industries[${index}][parent_id]`, 
+          field.parent && field.parent.key ? (field.parent.key === "selectAll" ? "0" : field.parent.key) : "0");
+        formData.append(`suggest_industries[${index}][name][en]`, field.data.customInput);
+        formData.append(`suggest_industries[${index}][name][ar]`, field.data.customInput);
+      });
+    }
+    
+    // Add certifications
+    if (this.certifications.controls.length > 0) {
+      this.certifications.controls.forEach((control: any, index: number) => {
+        if (control.valid) {
+          formData.append(`certification[${index}][type]`, control.value.type);
+          formData.append(`certification[${index}][file]`, control.value.file);
+        }
+      });
     }
 
     this.apiPost(formData);
@@ -515,12 +781,42 @@ export class UpgradeToCompanyComponent
   }
 
   private handleServerErrors(error: any) {
-    if (error.error && error.error.errors) {
-      const serverErrors = error.error.errors;
-      for (const key in serverErrors) {
-        if (serverErrors.hasOwnProperty(key)) {
-          const messages = serverErrors[key];
-          this.form.get(key)?.setErrors({ serverError: messages.join(", ") });
+    // Clear previous API errors
+    this.apiErrorMessages = [];
+    
+    if (error.error) {
+      // Check for message property
+      if (error.error.message) {
+        this.messageService.add({
+          severity: "error",
+          summary: "Error",
+          detail: error.error.message,
+        });
+      }
+      
+      // Check for errors object
+      if (error.error.errors) {
+        const serverErrors = error.error.errors;
+        for (const key in serverErrors) {
+          if (serverErrors.hasOwnProperty(key)) {
+            const messages = serverErrors[key];
+            
+            // Handle 'common' errors or general errors not tied to a specific field
+            if (key === 'common') {
+              this.apiErrorMessages = messages;
+              this.showApiErrors = true;
+            } else {
+              // Form field specific errors
+              const formField = this.form.get(key);
+              if (formField) {
+                formField.setErrors({ serverError: messages.join(", ") });
+              } else {
+                // If field not found, show as general error
+                this.apiErrorMessages.push(`${key}: ${messages.join(", ")}`);
+                this.showApiErrors = true;
+              }
+            }
+          }
         }
       }
     } else {
@@ -529,6 +825,11 @@ export class UpgradeToCompanyComponent
         summary: "Error",
         detail: "An unexpected error occurred.",
       });
+    }
+    
+    // Scroll to the top to show validation errors
+    if (this.showApiErrors) {
+      window.scrollTo({top: 0, behavior: 'smooth'});
     }
   }
 }

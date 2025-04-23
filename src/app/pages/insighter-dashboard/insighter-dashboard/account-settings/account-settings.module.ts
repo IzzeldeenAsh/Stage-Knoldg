@@ -19,6 +19,10 @@ import { ActivateAccountComponent } from './activate-account/activate-account.co
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { TooltipModule } from 'primeng/tooltip';
 import { CheckboxModule } from 'primeng/checkbox';
+import { SharedTreeSelectorComponent } from 'src/app/reusable-components/shared-tree-selector/shared-tree-selector.component';
+import { TruncateTextPipe } from 'src/app/pipes/truncate-pipe/truncate-text.pipe';
+import { DropdownModule } from 'primeng/dropdown';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 const routes: Routes = [
   {
@@ -67,7 +71,11 @@ const routes: Routes = [
     DynamicDialogModule,
     ToastModule,
     ProgressBarModule,
-    CheckboxModule
-  ]
+    CheckboxModule,
+    SharedTreeSelectorComponent,
+    TruncateTextPipe,
+    DropdownModule
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AccountSettingsModule { } 

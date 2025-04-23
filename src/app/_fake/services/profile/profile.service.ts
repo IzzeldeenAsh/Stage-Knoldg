@@ -11,6 +11,8 @@ export class UpdateProfileService {
   private insighterSocialUrl = 'https://api.knoldg.com/api/insighter/social';
   private companySocialUrl = 'https://api.knoldg.com/api/company/social';
   private deleteCertificateUrl = 'https://api.knoldg.com/api/account/profile/certification';
+  private updateCompanyInfoUrl = 'https://api.knoldg.com/api/account/profile/company/info';
+  private deleteCompanyCertificateUrl = 'https://api.knoldg.com/api/account/profile/company/certification';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   currentLang:string = "en"
@@ -33,6 +35,7 @@ export class UpdateProfileService {
   private handleError(error: any) {
     return throwError(error);
   }
+  
 
   postProfile(profile: FormData): Observable<any> {
     const headers = new HttpHeaders({
@@ -76,6 +79,19 @@ export class UpdateProfileService {
     );
   }
 
+  updateCompanyInfo(formData:any): Observable<any> {
+    const headers = new HttpHeaders({
+      'Accept-Language': this.currentLang
+    });
+
+    this.setLoading(true);
+    return this.http.post<any>(this.updateCompanyInfoUrl, formData, { headers }).pipe(
+      map((res) => res),
+      catchError((error) => this.handleError(error)), 
+      finalize(() => this.setLoading(false))
+    );
+  }
+
   deleteCertificate(id: number): Observable<any> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
@@ -84,6 +100,20 @@ export class UpdateProfileService {
 
     this.setLoading(true);
     return this.http.delete<any>(`${this.deleteCertificateUrl}/${id}`, { headers }).pipe(
+      map((res) => res),
+      catchError((error) => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  deleteCompanyCertificate(id: number): Observable<any> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+
+    this.setLoading(true);
+    return this.http.delete<any>(`${this.deleteCompanyCertificateUrl}/${id}`, { headers }).pipe(
       map((res) => res),
       catchError((error) => this.handleError(error)),
       finalize(() => this.setLoading(false))

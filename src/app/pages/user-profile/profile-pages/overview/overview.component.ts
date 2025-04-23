@@ -44,6 +44,15 @@ export class OverviewComponent extends BaseComponent implements OnInit {
       next: (profile) => {
         this.profile = profile;
         this.loadingProfile = false;
+        
+        // Debug logs to check social data
+        console.log('Profile roles:', this.profile?.roles);
+        console.log('Profile social:', this.profile?.social);
+        console.log('Company social:', this.profile?.company?.social);
+        if (this.profile?.company?.social) {
+          console.log('Company social length:', this.profile.company.social.length);
+          console.log('Company social is array:', Array.isArray(this.profile.company.social));
+        }
       },
       error: (error) => {
         this.loadingProfile = false;
@@ -88,5 +97,32 @@ export class OverviewComponent extends BaseComponent implements OnInit {
 
   getLogoBackgroundImage(){
     return this.profile.profile_photo_url ? `url(${this.profile.profile_photo_url})` : 'url(../../../assets/media/svg/avatars/blank.svg)';
+  }
+
+  hasCompanySocial(): boolean {
+    // More defensive check to ensure the social array exists and has items
+    return !!this.profile?.company?.social && Array.isArray(this.profile?.company?.social) && this.profile?.company?.social?.length > 0;
+  }
+
+  // Combine both personal and company social links
+  getSocialLinks(): any[] {
+    let socialLinks: any[] = [];
+    
+    // Add user's personal social links if available
+    if (this.profile?.social && Array.isArray(this.profile.social)) {
+      socialLinks = [...this.profile.social];
+    }
+    
+    // Add company social links if available
+    if (this.profile?.company?.social && Array.isArray(this.profile.company.social)) {
+      socialLinks = [...socialLinks, ...this.profile.company.social];
+    }
+    
+    return socialLinks;
+  }
+
+  // Debug method to check company social data in console
+  logCompanySocial(): void {
+    console.log('Company social data:', this.profile?.company?.social);
   }
 }
