@@ -13,6 +13,8 @@ import { KnowledgeService } from 'src/app/_fake/services/knowledge/knowledge.ser
 export class MyDashboardComponent extends BaseComponent {
   roles: any[] = [];
   hasPendingActivationRequest: boolean = false;
+  hasPendingInsighterRequests: boolean = false;
+  pendingInsighterRequestsCount: number = 0;
   private statisticsLoaded: boolean = false;
   hasMultipleEmployees: boolean = false;
 
@@ -28,6 +30,11 @@ constructor(
 ngOnInit(){
   const profileSub = this.profileService.getProfile().subscribe((res: any) => {
     this.roles = res.roles;
+    
+    // Check for pending insighter requests only for company role
+    if (this.roles.includes('company')) {
+      this.checkPendingInsighterRequests();
+    }
   });
   this.unsubscribe.push(profileSub);
 
@@ -62,6 +69,18 @@ hasRole(role: string){
 
 hasStatistics(): boolean {
   return this.statisticsLoaded;
+}
+
+/**
+ * Check if there are pending insighter requests for company users
+ */
+checkPendingInsighterRequests(): void {
+  const insighterRequestsSub = this.userRequestsService.getInsighterRequests(this.lang).subscribe((requests) => {
+    const pendingRequests = requests.filter(request => request.status === 'pending');
+    this.pendingInsighterRequestsCount = pendingRequests.length;
+    this.hasPendingInsighterRequests = this.pendingInsighterRequestsCount > 0;
+  });
+  this.unsubscribe.push(insighterRequestsSub);
 }
 
 }
