@@ -70,6 +70,18 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
   
   isDashboardRoute: boolean = false;
 
+  /**
+   * Check if the user has any of the specified roles
+   * @param roles Array of role names to check against
+   * @returns boolean indicating if the user has any of the specified roles
+   */
+  hasRole(roles: string[]): boolean {
+    if (!this.profile || !this.profile.roles) {
+      return false;
+    }
+    return roles.some(role => this.profile.roles.includes(role));
+  }
+
   constructor(
     private breakpointObserver: BreakpointObserver,
     private profileService: ProfileService,

@@ -28,14 +28,7 @@ export class AppComponent implements OnInit {
     private loaderService: LoaderService,
   ) {
     // register translations
-    this.translationService.loadTranslations(
-      enLang,
-      chLang,
-      esLang,
-      jpLang,
-      deLang,
-      frLang
-    );
+
 
     // Setup router events to show loader
     this.router.events.subscribe((event: Event) => {

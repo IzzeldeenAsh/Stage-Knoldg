@@ -191,41 +191,130 @@
           <!-- Review Action Card -->
           <div class="tp-course-details2-widget" *ngIf="knowledge.status !== 'published'">
             <div class="tp-course-details2-widget-content p-5">
-              <h4 class="fs-4 fw-bold mb-4">{{ 'REVIEW_KNOWLEDGE' | translate }}</h4>
-              
-              <!-- Notes Textarea -->
-              <div class="mb-5">
-                <label class="form-label fw-bold">{{ 'STAFF_NOTES' | translate }}</label>
-                <textarea 
-                  class="form-control" 
-                  rows="6" 
-                  [(ngModel)]="staffNotes" 
-                  placeholder="{{ 'ENTER_NOTES_FOR_INSIGHTER' | translate }}"></textarea>
-                <small class="text-muted">{{ 'NOTES_WILL_BE_VISIBLE_TO_INSIGHTER' | translate }}</small>
+              <!-- Review Header -->
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="fs-4 fw-bold mb-0">{{ 'REVIEW_KNOWLEDGE' | translate }}</h4>
+                <span class="badge badge-light-info" *ngIf="hasChildRequest">Resubmission</span>
               </div>
               
-              <!-- Action Buttons -->
-              <div class="d-flex gap-3">
-                <button 
-                  class="btn btn-success flex-grow-1" 
-                  (click)="approveKnowledge()"
-                  [disabled]="isLoading">
-                  <i class="ki-duotone ki-check fs-2 me-2">
-                    <span class="path1"></span>
-                    <span class="path2"></span>
-                  </i>
-                  {{ 'APPROVE' | translate }}
-                </button>
-                <button 
-                  class="btn btn-danger flex-grow-1" 
-                  (click)="rejectKnowledge()"
-                  [disabled]="isLoading">
-                  <i class="ki-duotone ki-cross fs-2 me-2">
-                    <span class="path1"></span>
-                    <span class="path2"></span>
-                  </i>
-                  {{ 'REJECT' | translate }}
-                </button>
+              <!-- Conversation Box - Always show if requestUser exists -->
+              <div class="chat-container border rounded mb-5" *ngIf="requestUser">
+                <!-- Requestor Header -->
+                <div class="d-flex align-items-center p-4 border-bottom">
+                  <!-- Profile Image or Initials Circle -->
+                  <div class="me-3">
+                    <div *ngIf="requestUser.profile_photo_url" class="symbol symbol-45px overflow-hidden">
+                      <img [src]="requestUser.profile_photo_url" alt="Profile" class="w-100">
+                    </div>
+                    <div *ngIf="!requestUser.profile_photo_url && requestUser.name" class="symbol h-40px w-40px d-flex align-items-center justify-content-center bg-light-info text-info"
+                      [ngStyle]="{'color': '#009ef7'}">
+                      {{ requestUser.name | slice:0:1 }}{{ (requestUser.name && requestUser.name.indexOf(' ') > -1 ? 
+                        requestUser.name.split(' ')[1] : '') | slice:0:1 }}
+                    </div>
+                  </div>
+                  
+                  <!-- Name and Role -->
+                  <div class="d-flex flex-column">
+                    <span class="text-gray-900 fw-bolder fs-5">{{ requestUser.name || 'Unknown User' }}</span>
+                    <span class="text-muted fs-7">Company Insighter</span>
+                  </div>
+                </div>
+                
+                <!-- Conversation Messages -->
+                <div class="chat-messages p-4" style="max-height: 400px; overflow-y: auto;">
+                  <!-- 1. Original Submission -->
+                  <div class="chat-message-row d-flex mb-4" *ngIf="currentRequest && currentRequest.comments">
+                    <div class="chat-bubble-left bg-light-primary text-gray-800 p-4 rounded-3 mw-400px">
+                      <div class="text-gray-800 mb-1">{{ currentRequest.comments }}</div>
+                      <div class="text-muted fs-7 text-end">Initial submission</div>
+                    </div>
+                  </div>
+                  
+                  <!-- 2. First Manager Response -->
+                  <div class="chat-message-row d-flex justify-content-end mb-4" *ngIf="currentRequest && currentRequest.staff_notes">
+                    <div class="chat-bubble-right bg-light-danger text-gray-800 p-4 rounded-3 mw-400px">
+                      <div class="fw-bold text-danger mb-1">Your Review</div>
+                      <div class="text-gray-800">{{ currentRequest.staff_notes }}</div>
+                      <div class="text-muted fs-7 text-end">First response</div>
+                    </div>
+                  </div>
+                  
+                  <!-- Recursive Conversation Flow - For all children in the request tree -->
+                  <ng-container *ngIf="currentRequest && currentRequest.children">
+                    <ng-container *ngTemplateOutlet="recursiveMessages; context:{ $implicit: currentRequest.children }"></ng-container>
+                  </ng-container>
+                  
+                  <!-- Template for recursive rendering of messages -->
+                  <ng-template #recursiveMessages let-requests>
+                    <ng-container *ngFor="let request of requests; let i = index">
+                      <!-- Resubmission Message -->
+                      <div class="chat-message-row d-flex mb-4" *ngIf="request.comments">
+                        <div class="chat-bubble-left bg-light-info text-gray-800 p-4 rounded-3 mw-400px">
+                          <div class="fw-bold text-info mb-1">Resubmission</div>
+                          <div class="text-gray-800 mb-1">{{ request.comments }}</div>
+                          <div class="text-muted fs-7 text-end">{{ request.created_at | date:'medium' }}</div>
+                        </div>
+                      </div>
+
+                      <!-- Manager Response -->
+                      <div class="chat-message-row d-flex justify-content-end mb-4" *ngIf="request.staff_notes">
+                        <div class="chat-bubble-right bg-light-danger text-gray-800 p-4 rounded-3 mw-400px">
+                          <div class="fw-bold text-danger mb-1">Your Review</div>
+                          <div class="text-gray-800">{{ request.staff_notes }}</div>
+                          <div class="text-muted fs-7 text-end">
+                            {{ request.status === 'declined' ? 'Rejection' : 'Response' }} 
+                            {{ request.handel_at | date:'medium' }}
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <!-- Process children recursively -->
+                      <ng-container *ngIf="request.children && request.children.length > 0">
+                        <ng-container *ngTemplateOutlet="recursiveMessages; context:{ $implicit: request.children }"></ng-container>
+                      </ng-container>
+                    </ng-container>
+                  </ng-template>
+
+            
+                </div>
+              </div>
+              
+              <!-- Notes Textarea and Action Buttons - Only show if request is pending (showReviewBox = true) -->
+              <div *ngIf="showReviewBox">
+                <!-- Notes Textarea -->
+                <div class="mb-5">
+                  <label class="form-label fw-bold">{{ 'ADD_NOTE' | translate }}</label>
+                  <textarea 
+                    class="form-control" 
+                    rows="6" 
+                    [(ngModel)]="staffNotes" 
+                    placeholder="{{ 'ENTER_NOTES_FOR_INSIGHTER' | translate }}"></textarea>
+                  <small class="text-muted">{{ 'NOTES_WILL_BE_VISIBLE_TO_INSIGHTER' | translate }}</small>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="d-flex gap-3">
+                  <button 
+                    class="btn btn-outline text-success flex-grow-1 hover-bg-light-success" 
+                    (click)="approveKnowledge()"
+                    [disabled]="isLoading">
+                    <i class="ki-duotone ki-check fs-2 me-2">
+                      <span class="path1"></span>
+                      <span class="path2"></span>
+                    </i>
+                    {{ 'APPROVE' | translate }}
+                  </button>
+                  <button 
+                    class="btn btn-outline text-danger flex-grow-1 hover-bg-light-danger" 
+                    (click)="rejectKnowledge()"
+                    [disabled]="isLoading">
+                    <i class="ki-duotone ki-cross fs-2 me-2">
+                      <span class="path1"></span>
+                      <span class="path2"></span>
+                    </i>
+                    {{ 'REJECT' | translate }}
+                  </button>
+                </div>
               </div>
             </div>
           </div>

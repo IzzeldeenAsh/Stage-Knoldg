@@ -131,7 +131,7 @@ export class MyRequestsComponent extends BaseComponent implements OnInit {
     const latestRequest = this.getLatestChild(request);
     
     // If it's an accept_knowledge request with a knowledge_id, navigate directly
-    if (latestRequest.type?.key === 'accept_knowledge' && latestRequest.knowledge_id) {
+    if (latestRequest.type?.key === 'accept_knowledge' && latestRequest.identity) {
       this.selectedRequest = latestRequest;
       this.navigateToReview();
       return;
@@ -300,7 +300,7 @@ export class MyRequestsComponent extends BaseComponent implements OnInit {
             },
           });
         this.unsubscribe.push(sub);
-      }else if(this.selectedRequest?.type.key === 'deactivate_delete_insighter'){
+      } else if(this.selectedRequest?.type.key === 'deactivate_delete_insighter'){
         const sub = this.userRequestsService
           .sendDeactivateAndDeleteRequestInsighter(this.resendComments, this.selectedRequest.id.toString())
           .subscribe({
@@ -312,16 +312,48 @@ export class MyRequestsComponent extends BaseComponent implements OnInit {
             },
           });
         this.unsubscribe.push(sub);
+      } else if(this.selectedRequest?.type.key === 'accept_knowledge' && this.selectedRequest.identity) {
+        // Handle knowledge review requests
+        const sub = this.userRequestsService
+          .sendKnowledgeReviewRequest(
+            this.resendComments, 
+            this.selectedRequest.id.toString(),
+            this.selectedRequest.identity
+          )
+          .subscribe({
+            next: () => {
+              this.showSuccess('Success', 'Knowledge review request sent successfully.');
+              this.loadData();
+              this.loadInsighterRequests();
+              this.displayRequestDialog = false;
+              this.resendComments = '';
+            },
+            error: (error) => {
+              console.error('Error sending knowledge review request:', error);
+              this.showError('Error', 'Failed to send knowledge review request.');
+            },
+          });
+        this.unsubscribe.push(sub);
       }
     }
   }
 
   // Navigate to review page for knowledge
   navigateToReview(): void {
-    if (this.selectedRequest?.knowledge_id) {
-      this.router.navigate(['/app/review-insighter-knowledge/review', this.selectedRequest.knowledge_id], {
+    if (this.selectedRequest?.identity) {
+      this.router.navigate(['/app/review-insighter-knowledge/review', this.selectedRequest.identity], {
         queryParams: { requestId: this.selectedRequest.id }
       });
+      this.displayRequestDialog = false;
+    }
+  }
+
+  /**
+   * Navigate to view knowledge page
+   */
+  viewKnowledge(): void {
+    if (this.selectedRequest?.identity) {
+      this.router.navigate(['/app/my-knowledge-base/view-my-knowledge/', parseInt(this.selectedRequest.identity), 'details']);
       this.displayRequestDialog = false;
     }
   }

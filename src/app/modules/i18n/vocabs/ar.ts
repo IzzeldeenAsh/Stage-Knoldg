@@ -14,6 +14,7 @@ export const locale = {
     STATUS: 'الحالة',
     APPROVE: 'موافق',
     REJECT: 'مرفوض',
+    ADD_NOTE:'إضافة ملاحظة',
     INDUSTRY: "الصناعة",
     'COUNTRIES': 'الدول',
     DOCUMENTS_LANGUAGE: 'لغة الملفات',
@@ -109,6 +110,7 @@ export const locale = {
       "ADD_BUTTON": "إضافة معرفة"
     },
     "MY_COMPANY": {
+      "DELETE": "حذف الموظف",
       "TITLE": "شركتي",
       "SUBTITLE": "إدارة موظفي شركتك",
       "ADD_EMPLOYEE": "إضافة موظف",
@@ -984,6 +986,7 @@ export const locale = {
     "RETURN_TO_DASHBOARD": "العودة إلى لوحة التحكم"
   },
   "KNOWLEDGE_TYPES": {
+    "COURSE": "دورة تدريبية",
     "TITLE": "توزيع أنواع المعرفة",
     "SUBTITLE": "إحصائيات محتوى المعرفة حسب النوع",
     "LOAD_ERROR": "فشل في تحميل إحصائيات نوع المعرفة. يرجى المحاولة مرة أخرى.",

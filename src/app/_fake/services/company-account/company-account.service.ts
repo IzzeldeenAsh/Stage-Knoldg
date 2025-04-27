@@ -171,6 +171,21 @@ export class CompanyAccountService {
     );
   }
 
+  // Delete insighter
+  deleteInsighter(id: number): Observable<any> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+
+    this.setLoading(true);
+    return this.http.delete(`${this.inviteInsighterApi}/${id}`, { headers }).pipe(
+      map(res => res),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
   // Get insighter statistics by status
   getEmployeeStatusStatistics(): Observable<any> {
     this.setLoading(true);

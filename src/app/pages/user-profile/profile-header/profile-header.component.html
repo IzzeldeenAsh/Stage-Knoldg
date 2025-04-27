@@ -63,11 +63,17 @@
     >{{profile.insighter_status}}</div>
    }
 
-   @if (hasRole(['company']) || hasRole(['company-insighter'])) {
+   @if (hasRole(['company']) ) {
     <div class="fw-bold text-uppercase"
     [class.text-success]="profile.company?.status === 'active'" 
     [class.text-danger]="profile.company?.status === 'inactive'"
     >{{profile.company?.status}}</div>
+   }
+   @if (hasRole(['company-insighter'])) {
+    <div class="fw-bold text-uppercase"
+    [class.text-success]="profile.insighter_status === 'active'"
+    [class.text-danger]="profile.insighter_status === 'inactive'"
+    >{{profile.insighter_status}}</div>
    }
   </div>
 </div>

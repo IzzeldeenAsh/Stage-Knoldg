@@ -196,7 +196,11 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   }
 
   triggerFileInput(index: number): void {
-    document.getElementById('fileInput' + index)?.click();
+    // iOS Safari often requires a small delay
+    // This helps ensure the click event fires correctly on iPad
+    setTimeout(() => {
+      document.getElementById('fileInput' + index)?.click();
+    }, 0);
   }
 
   triggerMultipleFileInput(): void {
@@ -205,6 +209,15 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
     fileInput.multiple = true;
     fileInput.accept = '.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt';
     
+    // Add capture attribute for iOS devices
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                 (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    
+    if (isIOS) {
+      // Use the environment capture for iOS devices
+      fileInput.setAttribute('capture', 'environment');
+    }
+    
     fileInput.onchange = (event: any) => {
       const files = event.target.files;
       if (files && files.length > 0) {
@@ -212,59 +225,90 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       }
     };
     
-    fileInput.click();
+    // Ensure click event triggers properly on iOS
+    setTimeout(() => {
+      fileInput.click();
+    }, 0);
   }
 
+  // Queue to store files for sequential upload
+  private fileUploadQueue: File[] = [];
+  private isUploadInProgress = false;
+  
   handleMultipleFiles(files: FileList): void {
-    // Create and upload each file with a 2-second delay between uploads
-    Array.from(files).forEach((file, idx) => {
-      setTimeout(() => {
-        const extension = this.getFileExtension(file.name);
-        const fileName = file.name.replace(`.${extension}`, ''); // Remove extension from filename
-        
-        // Create new document form group
-        const newDocGroup = this.createDocument();
-        
-        // Set initial values based on the file
-        newDocGroup.patchValue({
-          file_name: fileName,
-          file: file,
-          filePreview: true,
-          fileIcon: this.getFileIconByExtension(extension),
-          file_extension: extension,
-          fromServer: false,
-          file_size: file.size,
-          uploadStatus: 'pending',
-          uploadProgress: 0,
-          errorMessage: ''
-        });
-        
-        const docIndex = this.documentControls.length;
-        this.documentControls.push(newDocGroup);
-        
-        // Add to documents array
-        const localDoc: DocumentInfo = {
-          id: 0,
-          file_name: fileName,
-          file_extension: extension,
-          price: Number(newDocGroup.get('price')?.value) || 0,
-          file: file,
-          fromServer: false,
-          file_size: file.size,
-          status: 'active',
-          uploadStatus: 'pending',
-          uploadProgress: 0,
-          errorMessage: '',
-          isCharity: false,
-          table_of_content: [] // Initialize empty table_of_content
-        };
-        
-        this.documents.push(localDoc);
-        
-        // Immediately start uploading the file
-        this.uploadFileOnly(docIndex);
-      }, idx * 1000); // 1-second delay between each file upload
+    // Convert FileList to array and add to upload queue
+    const filesArray = Array.from(files);
+    this.fileUploadQueue.push(...filesArray);
+    
+    console.log(`Added ${filesArray.length} files to upload queue. Queue size: ${this.fileUploadQueue.length}`);
+    
+    // Start sequential upload process if not already in progress
+    if (!this.isUploadInProgress) {
+      this.processNextFileInQueue();
+    }
+  }
+  
+  private processNextFileInQueue(): void {
+    if (this.fileUploadQueue.length === 0) {
+      this.isUploadInProgress = false;
+      console.log('File upload queue is empty. All uploads complete.');
+      return;
+    }
+    
+    this.isUploadInProgress = true;
+    const file = this.fileUploadQueue.shift();
+    
+    if (!file) {
+      this.isUploadInProgress = false;
+      return;
+    }
+    
+    console.log(`Processing next file in queue: ${file.name}`);
+    
+    const extension = this.getFileExtension(file.name);
+    const fileName = file.name.replace(`.${extension}`, ''); // Remove extension from filename
+    
+    // Create new document form group
+    const newDocGroup = this.createDocument();
+    
+    // Set initial values based on the file
+    newDocGroup.patchValue({
+      file_name: fileName,
+      file: file,
+      filePreview: true,
+      fileIcon: this.getFileIconByExtension(extension),
+      file_extension: extension,
+      fromServer: false,
+      file_size: file.size,
+      uploadStatus: 'pending',
+      uploadProgress: 0,
+      errorMessage: ''
     });
+    
+    const docIndex = this.documentControls.length;
+    this.documentControls.push(newDocGroup);
+    
+    // Add to documents array
+    const localDoc: DocumentInfo = {
+      id: 0,
+      file_name: fileName,
+      file_extension: extension,
+      price: Number(newDocGroup.get('price')?.value) || 0,
+      file: file,
+      fromServer: false,
+      file_size: file.size,
+      status: 'active',
+      uploadStatus: 'pending',
+      uploadProgress: 0,
+      errorMessage: '',
+      isCharity: false,
+      table_of_content: [] // Initialize empty table_of_content
+    };
+    
+    this.documents.push(localDoc);
+    
+    // Start uploading the file
+    this.uploadFileOnly(docIndex, true);
   }
 
   onFileSelected(event: any, index: number): void {
@@ -346,12 +390,15 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   }
 
   // New method to upload just the file
-  uploadFileOnly(index: number): void {
+  uploadFileOnly(index: number, isFromQueue: boolean = false): void {
     // Get the document and form control
     const doc = this.documents[index];
     const control = this.documentControls.at(index);
     if (!doc || !control || !doc.file) {
       console.error('Missing required data for file upload');
+      if (isFromQueue) {
+        this.processNextFileInQueue(); // Move to next file in queue
+      }
       return;
     }
 
@@ -386,6 +433,9 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
             const currentDoc = this.documents[index];
             if (!currentDoc) {
               console.error(`Document at index ${index} no longer exists`);
+              if (isFromQueue) {
+                this.processNextFileInQueue(); // Move to next file in queue
+              }
               return;
             }
             
@@ -423,15 +473,38 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
 
           let errorMessage = 'Failed to upload file';
           if (error.error && error.error.message) {
-            errorMessage += `: ${error.error.message}`;
+            // Check for language mismatch error
+            if (error.error.message.includes('language mismatch') || error.error.message.toLowerCase().includes('document language')) {
+              errorMessage = 'Document language mismatch: All knowledge documents must use the same language. Please upload documents in a consistent language.';
+            } else {
+              errorMessage += `: ${error.error.message}`;
+            }
           } else if (error.message) {
-            errorMessage += `: ${error.message}`;
+            // Also check the regular error message
+            if (error.message.includes('language mismatch') || error.message.toLowerCase().includes('document language')) {
+              errorMessage = 'Document language mismatch: All knowledge documents must use the same language. Please upload documents in a consistent language.';
+            } else {
+              errorMessage += `: ${error.message}`;
+            }
           }
 
           control.get('uploadStatus')?.setValue('error');
           control.get('errorMessage')?.setValue(errorMessage);
           doc.uploadStatus = 'error';
           doc.errorMessage = errorMessage;
+          
+          // Immediately reset upload in progress indicators for language mismatch errors
+          if (errorMessage.includes('language mismatch') || errorMessage.includes('Document language mismatch')) {
+            this.pendingUploads = 0;
+            this.uploadsInProgress = false;
+            this.hasActiveUploads = false;
+            
+            // Clear any remaining files in the queue if this is a language error
+            if (isFromQueue) {
+              this.fileUploadQueue = [];
+              this.isUploadInProgress = false;
+            }
+          }
 
           this.showError('Upload Error', errorMessage);
         },
@@ -441,6 +514,11 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
           if (this.pendingUploads === 0) {
             this.uploadsInProgress = false;
             this.hasActiveUploads = false;
+          }
+          
+          // Process next file in queue if this was from the queue
+          if (isFromQueue) {
+            this.processNextFileInQueue();
           }
         }
       });

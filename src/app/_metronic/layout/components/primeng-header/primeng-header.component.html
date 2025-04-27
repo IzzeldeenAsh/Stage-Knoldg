@@ -126,7 +126,31 @@
             <div class="user-avatar user-initials" *ngIf="!userProfileImage">
               {{ userInitials }}
             </div>
-           
+            
+            <!-- User status indicators for desktop -->            
+            <div class="d-flex flex-column align-items-end me-2">
+              <!-- Status indicator for insighter (not company) -->
+              @if (hasRole(['insighter']) && !hasRole(['company']) && profile.insighter_status !== 'active') {
+                <div class="fw-bold text-uppercase fs-8 lh-1 ms-1 text-danger">
+                  {{profile.insighter_status}}
+                </div>
+              }
+              
+              <!-- Status indicator for company -->
+              @if (hasRole(['company']) && profile.company?.status !== 'active') {
+                <div class="fw-bold text-uppercase fs-8 lh-1 ms-1 text-danger">
+                  {{profile.company?.status}}
+                </div>
+              }
+              
+              <!-- Status indicator for company-insighter -->
+              @if (hasRole(['company-insighter']) && profile.insighter_status !== 'active') {
+                <div class="fw-bold text-uppercase fs-8 lh-1 ms-1 text-danger">
+                  {{profile.insighter_status}}
+                </div>
+              }
+            </div>
+            
             <i class="ki-duotone ki-arrow-down fs-4 rotate-180" ></i>
           </a>
           
@@ -180,14 +204,34 @@
 
       <!-- Mobile User dropdown toggle -->
       <div class="mobile-user-dropdown-container">
-        <a class="mobile-user-dropdown-toggle" (click)="toggleMobileUserDropdown($event)" #mobileUserDropdown>
-          <div class="user-avatar" *ngIf="userProfileImage">
-            <img [src]="userProfileImage" alt="User Avatar" />
+        <div class="position-relative">
+          <a class="mobile-user-dropdown-toggle" (click)="toggleMobileUserDropdown($event)" #mobileUserDropdown>
+            <div class="user-avatar" *ngIf="userProfileImage">
+              <img [src]="userProfileImage" alt="User Avatar" />
+            </div>
+            <div class="user-avatar user-initials" *ngIf="!userProfileImage">
+              {{ userInitials }}
+            </div>
+          </a>
+          
+          <!-- User status indicators for mobile -->
+          <div class="position-absolute" style="top: -8px; right: -8px;">
+            <!-- Status indicator for insighter (not company) -->
+            @if (hasRole(['insighter']) && !hasRole(['company']) && profile.insighter_status !== 'active') {
+              <div class="badge badge-circle fs-9 p-1 bg-danger"></div>
+            }
+            
+            <!-- Status indicator for company -->
+            @if (hasRole(['company']) && profile.company?.status !== 'active') {
+              <div class="badge badge-circle fs-9 p-1 bg-danger"></div>
+            }
+            
+            <!-- Status indicator for company-insighter -->
+            @if (hasRole(['company-insighter']) && profile.insighter_status !== 'active') {
+              <div class="badge badge-circle fs-9 p-1 bg-danger"></div>
+            }
           </div>
-          <div class="user-avatar user-initials" *ngIf="!userProfileImage">
-            {{ userInitials }}
-          </div>
-        </a>
+        </div>
         
         <!-- Mobile User dropdown menu -->
         <div class="mobile-user-dropdown-menu" [ngClass]="{'show': isMobileUserDropdownOpen, 'rtl': lang === 'ar'}" #userDropdown>

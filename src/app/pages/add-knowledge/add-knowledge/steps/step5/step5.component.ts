@@ -133,25 +133,47 @@ export class Step5Component extends BaseComponent implements OnInit {
     // Check for company-insighter role first
     if (isCompanyInsighter) {
       console.log('Setting company-insighter options');
-      // For company-insighter role, show only two options
-      this.publishOptions = [
-        {
-          id: 'draft',
-          value: 'unpublished',
-          label: 'SAVE_AS_DRAFT',
-          description: 'SAVE_AS_DRAFT_DESC',
-          icon: 'document'
-        },
-        {
-          id: 'review',
-          value: 'in_review',
-          label: 'SEND_TO_MANAGER',
-          description: 'SEND_TO_MANAGER_DESC',
-          icon: 'eye'
-        }
-      ];
       
-      this.hasOnlyTwoOptions = false;
+      // Check if the company-insighter has active status
+      const isCompanyInsighterActive = this.userProfile?.insighter_status === 'active';
+      console.log('Company-Insighter active status:', isCompanyInsighterActive);
+      
+      if (isCompanyInsighterActive) {
+        // For active company-insighter, show both options
+        this.publishOptions = [
+          {
+            id: 'draft',
+            value: 'unpublished',
+            label: 'SAVE_AS_DRAFT',
+            description: 'SAVE_AS_DRAFT_DESC',
+            icon: 'document'
+          },
+          {
+            id: 'review',
+            value: 'in_review',
+            label: 'SEND_TO_MANAGER',
+            description: 'SEND_TO_MANAGER_DESC',
+            icon: 'eye'
+          }
+        ];
+        
+        this.hasOnlyTwoOptions = false;
+      } else {
+        // For inactive company-insighter, show only draft option
+        this.publishOptions = [
+          {
+            id: 'draft',
+            value: 'unpublished',
+            label: 'SAVE_AS_DRAFT',
+            description: 'SAVE_AS_DRAFT_DESC',
+            icon: 'document'
+          }
+        ];
+        
+        // Set to true to show the alert for inactive accounts
+        this.hasOnlyTwoOptions = true;
+      }
+      
       console.log('Final publish options for company-insighter:', this.publishOptions);
       return;
     }

@@ -14,6 +14,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { SchedulePublishDialogComponent } from "./schedule-publish-dialog/schedule-publish-dialog.component";
 import Swal from 'sweetalert2';
 import { KnowledgeUpdateService } from "src/app/_fake/services/knowledge/knowledge-update.service";
+import { UserRequestsService } from "src/app/_fake/services/user-requests/user-requests.service";
 
 @Component({
   selector: "app-view-my-knowledge",
@@ -31,6 +32,8 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
   isShareDialogVisible: boolean = false;
   linkCopied: boolean = false;
   userProfile: IKnoldgProfile;
+  isResendReviewDialogVisible: boolean = false;
+  reviewComments: string = "";
 
   constructor(
     injector: Injector,
@@ -40,7 +43,8 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
     private router: Router,
     private addInsightStepsService: AddInsightStepsService,
     private dialogService: DialogService,
-    private profileService: ProfileService
+    private profileService: ProfileService,
+    private userRequestsService: UserRequestsService
   ) {
     super(injector);
   }
@@ -122,7 +126,20 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
   }
 
   needsReview(): boolean {
-    return this.knowledge && this.knowledge.need_to_review === true;
+    return this.knowledge && this.knowledge.account_manager_process.need_to_review === true;
+  }
+  
+  hasReviewRequest(): boolean {
+    return this.knowledge && 
+           this.knowledge.account_manager_process.need_to_review === true && 
+           this.knowledge.account_manager_process.action === 'resend_review';
+  }
+  
+  isPendingResendReview(): boolean {
+    return this.knowledge && 
+           this.knowledge.account_manager_process.need_to_review === true && 
+           this.knowledge.account_manager_process.action === 'resend_review' && 
+           this.knowledge.account_manager_process.request_status === 'pending';
   }
 
   sendToReview(): void {
@@ -155,6 +172,46 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
               this.handleServerErrors(error);
             }
           });
+      }
+    });
+  }
+  
+  openResendReviewDialog(): void {
+    this.isResendReviewDialogVisible = true;
+    this.reviewComments = '';
+  }
+  
+  closeResendReviewDialog(): void {
+    this.isResendReviewDialogVisible = false;
+  }
+  
+  resendReview(): void {
+    if (!this.reviewComments) {
+      this.showWarn('', 'Please enter comments before submitting');
+      return;
+    }
+    
+    if (!this.knowledge?.account_manager_process?.request_id) {
+      this.showError('', 'No request ID found');
+      return;
+    }
+    
+    this.isLoading = true;
+    
+    this.userRequestsService.sendKnowledgeReviewRequest(
+      this.reviewComments,
+      this.knowledge.account_manager_process.request_id.toString(),
+      this.knowledgeId
+    ).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.isResendReviewDialogVisible = false;
+        this.showSuccess('', 'Review request has been sent');
+        this.router.navigate(['/app/insighter-dashboard/my-requests']);
+      },
+      error: (error) => {
+        this.isLoading = false;
+        this.handleServerErrors(error);
       }
     });
   }
