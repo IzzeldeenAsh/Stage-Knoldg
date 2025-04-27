@@ -10,20 +10,24 @@ export interface Type {
   
   // models/requestable.model.ts
   export interface Requestable {
-    id: number;
-    legal_name: string;
-    website: string | null;
-    verified_email: string | null;
-    about_us: string;
-    register_document: string;
-    logo: string;
-    status: string;
-    verified: boolean;
-    address: string;
-    company_phone: string;
+    id?: number;
+    uuid?: string;
+    legal_name?: string;
+    website?: string | null;
+    verified_email?: string | null;
+    about_us?: string;
+    register_document?: string;
+    logo?: string;
+    status?: string;
+    verified?: boolean;
+    address?: string;
+    company_phone?: string;
     first_name?: string;
     last_name?: string;
     roles?: string[];
+    // Properties for insighter requestable objects
+    name?: string;
+    profile_photo_url?: string | null;
   }
   
   // models/data-item.model.ts
@@ -39,6 +43,7 @@ export interface Type {
     requestable: Requestable;
     final_status: string;
     children: UserRequest[];
+    identity?:string;
   }
   
 
@@ -235,6 +240,33 @@ export class UserRequestsService {
     const formData = new FormData();
     formData.append('status', status);
     formData.append('staff_notes', staffNotes);
+    
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+    
+    this.setLoading(true);
+    return this.http.post(url, formData, { headers }).pipe(
+      catchError((error: any) => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  /**
+   * Send knowledge review request
+   * @param comments User comments for the request
+   * @param parentId Parent request ID
+   * @param knowledgeId Knowledge ID to review
+   * @returns Observable of the request response
+   */
+  sendKnowledgeReviewRequest(comments: string, parentId: string, knowledgeId: string): Observable<any> {
+    const url = 'https://api.knoldg.com/api/insighter/request/knowledge/review';
+    
+    const formData = new FormData();
+    formData.append('comments', comments);
+    formData.append('parent_id', parentId);
+    formData.append('knowledge_id', knowledgeId);
     
     const headers = new HttpHeaders({
       'Accept': 'application/json',

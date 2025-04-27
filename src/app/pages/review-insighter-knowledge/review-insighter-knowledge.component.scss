@@ -15,6 +15,15 @@
 .pre-line {
   white-space: pre-line;
 }
+  .btn {
+    &.hover-bg-light-success:hover {
+      background-color: rgba(80, 205, 137, 0.1) !important;
+    }
+
+    &.hover-bg-light-danger:hover {
+      background-color: rgba(241, 65, 108, 0.1) !important;
+    }
+  }
 
 .lg-max-width-700px {
   @media screen and (min-width: 768px) {

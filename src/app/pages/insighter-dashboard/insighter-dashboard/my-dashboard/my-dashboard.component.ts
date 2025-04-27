@@ -14,6 +14,7 @@ export class MyDashboardComponent extends BaseComponent {
   roles: any[] = [];
   hasPendingActivationRequest: boolean = false;
   private statisticsLoaded: boolean = false;
+  hasMultipleEmployees: boolean = false;
 
 constructor(
   injector: Injector,
@@ -48,6 +49,11 @@ ngOnInit(){
     }
   );
   this.unsubscribe.push(statsSub);
+}
+
+// Handle the event when the number of employees is determined
+onHasMultipleEmployees(hasMultiple: boolean): void {
+  this.hasMultipleEmployees = hasMultiple;
 }
 
 hasRole(role: string){

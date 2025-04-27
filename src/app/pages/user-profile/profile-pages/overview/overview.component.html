@@ -2,7 +2,7 @@
 <ng-container *ngIf="!loadingProfile">
   <div class="container-fluid p-0" *ngIf="profile">
     <!-- Header Card with Photo -->
-    <div class="card border-0 rounded-4 mb-4 overflow-hidden" *ngIf="profile.roles.includes('company')">
+    <div class="card border-0 rounded-4 mb-4 overflow-hidden" *ngIf="profile.roles.includes('company') || profile.roles.includes('company-insighter')">
       <div class="card-body p-0">
         <div class="bg-light p-5 d-flex flex-column flex-md-row align-items-center gap-4">
           <div class="image-input image-input-circle mb-3 mb-md-0">

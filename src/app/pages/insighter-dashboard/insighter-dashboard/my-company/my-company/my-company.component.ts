@@ -381,6 +381,36 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     });
   }
   
+  // Delete insighter
+  deleteInsighter(insighterId: number): void {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete this insighter? This action cannot be undone.',
+      header: 'Confirm Deletion',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.companyAccountService.deleteInsighter(insighterId).subscribe({
+          next: () => {
+            this.showSuccess('Success', 'Insighter has been deleted');
+            // Reload insighters maintaining the current page
+            const currentPage = this.paginationMeta?.current_page || 1;
+            this.loadInsighters(currentPage);
+          },
+          error: (error) => {
+            let errorMessage = 'An error occurred while deleting the insighter';
+            
+            if (error.error && error.error.message) {
+              errorMessage = error.error.message;
+            } else if (error.error && error.error.errors && error.error.errors.common) {
+              errorMessage = error.error.errors.common[0];
+            }
+            
+            this.showError('Error', errorMessage);
+          }
+        });
+      }
+    });
+  }
+  
   // Handle page change event
   onPageChange(event: any): void {
     this.first = event.first;

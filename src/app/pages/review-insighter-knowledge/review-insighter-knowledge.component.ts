@@ -8,6 +8,7 @@ import { BaseComponent } from "src/app/modules/base.component";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import Swal from 'sweetalert2';
 import { TranslationService } from "src/app/modules/i18n";
+import { UserRequestsService, UserRequest } from "src/app/_fake/services/user-requests/user-requests.service";
 
 @Component({
   selector: "app-review-insighter-knowledge",
@@ -22,13 +23,21 @@ export class ReviewInsighterKnowledgeComponent extends BaseComponent implements 
   documents: DocumentListResponse;
   isLoading: boolean = false;
   staffNotes: string = '';
+  showReviewBox: boolean = true;
+  knowledgeRequests: UserRequest[] = [];
+  currentRequest: any = null;
+  hasChildRequest: boolean = false;
+  childRequest: any = null;
+  requestUser: any = null;
+  pendingRequest: any = null;
 
   constructor(
     injector: Injector,
     private knowledgeService: KnowledgeService,
     private route: ActivatedRoute,
     private router: Router,
-    private http: HttpClient
+    private http: HttpClient,
+    private userRequestsService: UserRequestsService
   ) {
     super(injector);
   }
@@ -44,6 +53,7 @@ export class ReviewInsighterKnowledgeComponent extends BaseComponent implements 
       this.knowledgeId = params["id"];
       if (this.knowledgeId) {
         this.loadKnowledgeData();
+        this.checkRequestStatus();
       }
     });
     
@@ -54,6 +64,70 @@ export class ReviewInsighterKnowledgeComponent extends BaseComponent implements 
     });
     
     this.unsubscribe.push(paramsSubscription);
+  }
+
+  checkRequestStatus(): void {
+    this.userRequestsService.getInsighterRequests(this.lang)
+      .subscribe({
+        next: (requests: UserRequest[]) => {
+          // Filter requests for the current knowledge ID and accept_knowledge type
+          const relevantRequests = requests.filter(request => 
+            request.identity === this.knowledgeId && 
+            request.type && 
+            request.type.key === 'accept_knowledge'
+          );
+          
+          if (relevantRequests.length > 0) {
+            // Store the current request for reference
+            this.currentRequest = relevantRequests[0];
+            this.requestUser = this.currentRequest.requestable;
+            this.hasChildRequest = this.hasChildrenRequests(this.currentRequest);
+            
+            // Find the pending request in the entire tree
+            this.pendingRequest = this.findPendingRequest(this.currentRequest);
+            
+            // Only show the review box if there is a pending request
+            this.showReviewBox = !!this.pendingRequest;
+            
+            console.log('Root request:', this.currentRequest);
+            console.log('Pending request:', this.pendingRequest);
+            console.log('Show review box:', this.showReviewBox);
+          }
+        },
+        error: (error) => {
+          this.handleServerErrors(error);
+        }
+      });
+  }
+
+  /**
+   * Recursively check if a request has any children requests
+   */
+  private hasChildrenRequests(request: any): boolean {
+    return request && request.children && request.children.length > 0;
+  }
+
+  /**
+   * Recursively find a pending request in the tree
+   */
+  private findPendingRequest(request: any): any {
+    // Check if the current request is pending
+    if (request.status === 'pending') {
+      return request;
+    }
+    
+    // If this request has children, check each child
+    if (this.hasChildrenRequests(request)) {
+      for (const child of request.children) {
+        const pendingChild = this.findPendingRequest(child);
+        if (pendingChild) {
+          return pendingChild;
+        }
+      }
+    }
+    
+    // No pending request found in this branch
+    return null;
   }
 
   public loadKnowledgeData(): void {
@@ -156,9 +230,18 @@ export class ReviewInsighterKnowledgeComponent extends BaseComponent implements 
       'Accept-Language': this.lang,
     });
 
-    if (!this.requestId) { return; }
+    // Determine which request ID to use
+    let targetRequestId = this.requestId;
+    
+    // If we have a child request that's pending, use its ID instead
+    if (this.hasChildRequest && this.childRequest && this.childRequest.status === 'pending') {
+      targetRequestId = this.childRequest.id.toString();
+    }
+
+    if (!targetRequestId) { return; }
+    
     // Use request ID instead of knowledge ID if available
-    const apiEndpoint = `https://api.knoldg.com/api/company/insighter/request/knowledge/accept/${this.requestId}`;
+    const apiEndpoint = `https://api.knoldg.com/api/company/insighter/request/knowledge/accept/${targetRequestId}`;
 
     this.http.post(apiEndpoint, body, { headers })
       .subscribe({

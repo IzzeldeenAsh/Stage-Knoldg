@@ -414,14 +414,14 @@
                   <!-- Show pending review status -->
                   <button
                     class="btn btn-secondary w-100 disabled opacity-75"
-                    *ngIf="knowledge.status === 'in_review'"
+                    *ngIf="(knowledge.status === 'in_review' && !hasReviewRequest()) || isPendingResendReview()"
                     disabled
                   >
                     <i class="ki-outline ki-time fs-4 me-2"></i>
                     {{ 'PENDING_Manager_REVIEW' | translate }}
                   </button>
 
-                  <!-- Show send to review button for company-insighter when need_to_review is true -->
+                  <!-- Show send to review button for company-insighter when need_to_review is true but no request_id -->
                   <button
                     class="btn btn-primary w-100"
                     (click)="sendToReview()"
@@ -430,10 +430,21 @@
                           knowledge.publish_as !== 'package' && 
                           hasRequiredFields() && 
                           isCompanyInsighter() && 
-                          needsReview()"
+                          needsReview() &&
+                          !hasReviewRequest()"
                   >
                     <i class="ki-outline ki-check-square fs-4 me-2"></i>
                     {{ 'VIEW_MY_KNOWLEDGE.SEND_TO_REVIEW' | translate }}
+                  </button>
+                  
+                  <!-- Show resend to review button when action is 'resend_review' and request_status is not pending -->
+                  <button
+                    class="btn btn-primary w-100"
+                    (click)="openResendReviewDialog()"
+                    *ngIf="hasReviewRequest() && isCompanyInsighter() && !isPendingResendReview()"
+                  >
+                    <i class="ki-outline ki-check-square fs-4 me-2"></i>
+                    Resend To Review
                   </button>
 
                   <!-- Show publish button when not needing review or user is not company-insighter -->
@@ -616,3 +627,53 @@
 
 <!-- Share Knowledge Dialog -->
 <!-- Share dialog removed as requested -->
+
+<!-- Resend Review Dialog -->
+<p-dialog 
+  [(visible)]="isResendReviewDialogVisible" 
+  [modal]="true"
+  [draggable]="false" 
+  [resizable]="false"
+  [style]="{width: '500px'}"
+  styleClass="p-0"
+  appendTo="body"
+  [showHeader]="false">
+  <div class="modal-content">
+    <!-- Modal header -->
+    <div class="modal-header p-5 border-bottom">
+      <h2 class="fw-bold">Resend Knowledge For Review</h2>
+      <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" (click)="closeResendReviewDialog()">
+        <i class="ki-duotone ki-cross fs-2x"><span class="path1"></span><span class="path2"></span></i>
+      </div>
+    </div>
+
+    <!-- Modal body -->
+    <div class="modal-body py-5 px-8">
+      <div class="my-3">
+ 
+        <textarea 
+          id="reviewComments" 
+          class="form-control form-control-solid" 
+          [(ngModel)]="reviewComments" 
+          rows="6" 
+          placeholder="Please provide additional notes for the review...">
+        </textarea>
+      </div>
+    </div>
+
+    <!-- Modal footer -->
+    <div class="modal-footer flex-center py-5 px-8 border-top">
+      <button type="button" class="btn btn-light me-3" (click)="closeResendReviewDialog()">
+        Cancel
+      </button>
+      <button type="button" 
+              class="btn btn-primary" 
+              [disabled]="!reviewComments"
+              [class.disabled]="isLoading"
+              (click)="resendReview()">
+        <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+        {{ isLoading ? 'Sending...' : 'Send' }}
+      </button>
+    </div>
+  </div>
+</p-dialog>

@@ -1,10 +1,14 @@
 <div class="row">
 
-    <div *ngIf="roles.includes('insighter') || roles.includes('company') || roles.includes('company-insighter')" [ngClass]="{'col-12 col-lg-6': roles.includes('company')}">
+    <div *ngIf="roles.includes('insighter') || roles.includes('company') || roles.includes('company-insighter')" 
+         [ngClass]="{'col-12': !hasMultipleEmployees && roles.includes('company'), 
+                   'col-12 col-lg-6': hasMultipleEmployees && roles.includes('company')}">
         <app-knowledge-types-statistics></app-knowledge-types-statistics>
     </div>
-    <div *ngIf="roles.includes('company')" [ngClass]="{'col-12 col-lg-6': roles.includes('company')}">
-        <app-employee-knowledge-statistics></app-employee-knowledge-statistics>
+    <div *ngIf="roles.includes('company')" 
+         [ngClass]="{'col-12': !hasMultipleEmployees, 
+                   'col-12 col-lg-6': hasMultipleEmployees}">
+        <app-employee-knowledge-statistics (hasMultipleEmployees)="onHasMultipleEmployees($event)"></app-employee-knowledge-statistics>
     </div>
 </div>
 

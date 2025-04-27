@@ -90,7 +90,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.notificationService.startPolling();
     
     // Subscribe to language changes
-    this.translationService.getSelectedLanguage().subscribe((lang:string) => {
+    this.translationService.onLanguageChange().subscribe((lang:string) => {
       this.lang = lang;
       this.direction = this.lang === 'ar' ? 'rtl' : 'ltr';
     });

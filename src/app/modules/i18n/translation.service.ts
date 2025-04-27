@@ -8,77 +8,139 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root',
 })
 export class TranslationService {
-  private langIds: any = [];
-  private currentLang: BehaviorSubject<string> = new BehaviorSubject<string>(this.getSelectedLanguage());
+  private readonly COOKIE_NAME = 'preferred_language';
+  private readonly COOKIE_DOMAIN = '.knoldg.com';
+  private readonly COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // one year in seconds
+  private readonly STORAGE_KEY = 'language';
+
+  // Initialize currentLang from storage or cookie
+  private currentLang = new BehaviorSubject<string>(this.getSelectedLanguage());
 
   constructor(private translate: TranslateService) {
     this.translate.addLangs(['en', 'ar']);
     this.translate.setDefaultLang('en');
     this.loadTranslations(enLang, arLang);
+
+    const initial = this.getSelectedLanguage();
+    this.translate.use(initial);
+    this.updateDirection(initial);
   }
 
-  loadTranslations(...args: any[]): void {
-    const locales = [...args];
-    locales.forEach((locale) => {
+  private loadTranslations(...locales: any[]): void {
+    locales.forEach(locale => {
       this.translate.setTranslation(locale.lang, locale.data, true);
-      this.langIds.push(locale.lang);
     });
-    this.translate.addLangs(this.langIds);
-    this.translate.use(this.getSelectedLanguage());
-    this.updateDirection(this.getSelectedLanguage());
   }
 
-  setLanguage(lang: string) {
-    if (lang) {
-      this.translate.use(lang);
-      localStorage.setItem('language', lang);
-      this.updateDirection(lang);
-      this.currentLang.next(lang);
+  /**
+   * Switches language in ngx-translate, writes both to localStorage and cookie,
+   * updates page dir/font, and notifies observers.
+   */
+  setLanguage(lang: string): void {
+    if (!lang) {
+      return;
     }
+
+    // ngx-translate switch
+    this.translate.use(lang);
+
+    // persist in localStorage
+    localStorage.setItem(this.STORAGE_KEY, lang);
+
+    // persist in cookie (cross-subdomain)
+    this.setCookie(this.COOKIE_NAME, lang, {
+      domain: this.COOKIE_DOMAIN,
+      path: '/',
+      maxAge: this.COOKIE_MAX_AGE,
+      sameSite: 'Lax',
+      secure: true
+    });
+
+    // update direction/font
+    this.updateDirection(lang);
+
+    // notify subscribers
+    this.currentLang.next(lang);
   }
 
+  /** Observable for other components to react to language changes */
   onLanguageChange() {
-    return this.currentLang.asObservable(); // Expose an observable for global subscriptions
+    return this.currentLang.asObservable();
   }
 
-  getSelectedLanguage(): any {
-    return localStorage.getItem('language') || 'en';
+  /**
+   * Reads preferred language: first from localStorage, then from cookie, else 'en'
+   */
+  getSelectedLanguage(): string {
+    const fromStorage = localStorage.getItem(this.STORAGE_KEY);
+    if (fromStorage) {
+      return fromStorage;
+    }
+    const fromCookie = this.getCookie(this.COOKIE_NAME);
+    return fromCookie || 'en';
   }
 
-  updateDirection(lang: string) {
-    const htmlElement = document.documentElement;
+  /** Utility to set a cookie with options */
+  private setCookie(
+    name: string,
+    value: string,
+    opts: { domain: string; path: string; maxAge: number; sameSite: 'Lax' | 'Strict' | 'None'; secure: boolean }
+  ) {
+    const parts = [
+      `${encodeURIComponent(name)}=${encodeURIComponent(value)}`,
+      `Domain=${opts.domain}`,
+      `Path=${opts.path}`,
+      `Max-Age=${opts.maxAge}`,
+      `SameSite=${opts.sameSite}`
+    ];
+    if (opts.secure) {
+      parts.push('Secure');
+    }
+    document.cookie = parts.join('; ');
+  }
 
+  /** Utility to read a cookie by name */
+  private getCookie(name: string): string | null {
+    const match = document.cookie.match(
+      new RegExp('(^|; )' + name.replace(/([.*+?^${}()|[\]\\])/g, '\\$1') + '=([^;]*)')
+    );
+    return match ? decodeURIComponent(match[2]) : null;
+  }
+
+  /** Update HTML dir/lang attributes and load/remove Arabic font */
+  private updateDirection(lang: string) {
+    const html = document.documentElement;
     if (lang === 'ar') {
-      htmlElement.setAttribute('dir', 'rtl');
-      htmlElement.setAttribute('lang', 'ar');
+      html.setAttribute('dir', 'rtl');
+      html.setAttribute('lang', 'ar');
       this.loadArabicFont();
-      htmlElement.style.fontFamily = '"Tajawal", sans-serif'; // Apply the Tajawal font
+      html.style.fontFamily = '"Tajawal", sans-serif';
     } else {
-      htmlElement.setAttribute('dir', 'ltr');
-      htmlElement.setAttribute('lang', 'en');
+      html.setAttribute('dir', 'ltr');
+      html.setAttribute('lang', 'en');
       this.removeArabicFont();
-      htmlElement.style.fontFamily = ''; // Revert to the default font family
+      html.style.fontFamily = '';
     }
   }
 
   private loadArabicFont() {
     if (!document.getElementById('arabicFontLink')) {
-      const linkElement = document.createElement('link');
-      linkElement.id = 'arabicFontLink';
-      linkElement.rel = 'stylesheet';
-      linkElement.href = 'https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900&display=swap';
-      document.head.appendChild(linkElement);
+      const link = document.createElement('link');
+      link.id = 'arabicFontLink';
+      link.rel = 'stylesheet';
+      link.href = 'https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900&display=swap';
+      document.head.appendChild(link);
     }
   }
 
   private removeArabicFont() {
-    const linkElement = document.getElementById('arabicFontLink');
-    if (linkElement) {
-      document.head.removeChild(linkElement);
+    const link = document.getElementById('arabicFontLink');
+    if (link) {
+      document.head.removeChild(link);
     }
   }
 
-  // **Add this method**
+  /** Helper to instantly fetch a translation key */
   getTranslation(key: string): string {
     return this.translate.instant(key);
   }

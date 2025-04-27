@@ -11,12 +11,14 @@
                             [id]="'fileInput' + i" 
                             (change)="onFileSelected($event, i)" 
                             accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt"
-                            style="display: none" />
+                            style="display: none" 
+                            capture="environment" />
                         <ng-container *ngIf="!doc.get('filePreview')?.value">
                             <button type="button" 
                                     class="btn actions-btn border border-dashed border-info bg-light-info w-100  d-flex flex-column align-items-center justify-content-center" 
                                     style="padding: 16px"
-                                    (click)="triggerFileInput(i)">
+                                    (click)="triggerFileInput(i)"
+                                    (touchend)="triggerFileInput(i)">
                                     <i class="ki-duotone ki-plus text-info fs-1 ">
                                         <span class="path1"></span>
                                         <span class="path2"></span>
@@ -72,12 +74,13 @@
                                 {{ 'FILE_NAME_DUPLICATE' | translate }}
                             </span>
                         </div>
-                        <!-- Error message for error state -->
-                        <div *ngIf="doc.get('uploadStatus')?.value === 'error' && doc.get('errorMessage')?.value" 
-                             class="alert alert-danger mt-2 p-2">
-                            <small>{{ doc.get('errorMessage')?.value }}</small>
-                        </div>
+
                     </div>
+                              <!-- Error message for error state -->
+            <div  *ngIf="doc.get('uploadStatus')?.value === 'error' && doc.get('errorMessage')?.value" 
+            class="mt-2" style="max-width: 300px;">
+           <small class="text-danger">{{ doc.get('errorMessage')?.value }}</small>
+       </div>
                 </div>
                 <!-- Price Column -->
                 <div class=" w-150px d-flex flex-column">
@@ -141,6 +144,8 @@
                     </div>
                 </div>
             </div>
+            
+  
         </div>
         
         <!-- Add Document Button -->

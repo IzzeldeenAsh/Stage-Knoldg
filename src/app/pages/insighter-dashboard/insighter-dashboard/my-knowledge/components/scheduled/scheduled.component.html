@@ -2,8 +2,8 @@
 <div class="card card-flush">
   <!--begin::Card body-->
   <div class="card-body">
-    <!-- Search and filters section - always visible -->
-    <div class="card-header p-0">
+    <!-- Search and filters section - only visible when there's data -->
+    <div class="card-header p-0" *ngIf="knowledges && knowledges.length > 0 && !loading">
       <div class="d-flex justify-content-between align-items-center flex-column flex-md-row w-100">
         <div class="card-title">
           <!--begin::Search-->

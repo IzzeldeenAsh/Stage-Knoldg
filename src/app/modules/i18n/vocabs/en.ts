@@ -3,7 +3,7 @@ export const locale = {
   lang: 'en',
 
   data: {
-  
+    ISIC_CODE:'ISIC Code',
     COMPANY_INDUSTRIES: 'Company Industries',
     COMPANY_CONSULTING_FIELDS: 'Company Consulting Fields',
     COMPANY_CERTIFICATIONS: 'Company Certifications',
@@ -100,6 +100,7 @@ export const locale = {
     ENTER_KNOWLEDGE_DESCRIPTION: 'Enter detailed description here',
     DESCRIPTION_HELP_TEXT: 'A good description helps users find and understand your content',
     "MY_COMPANY": {
+      'DELETE': 'Delete Employee',
       "TITLE": "My Company",
       "SUBTITLE": "Manage your company employees",
       "ADD_EMPLOYEE": "Add Employee",
@@ -853,6 +854,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
   PUBLISH_NOW: 'Publish Now',
   PUBLISH_NOW_DESC: 'Your content will go live immediately.',  
   SCHEDULE: 'Schedule for Later',
+  ADD_NOTE:'Add Note',
   SCHEDULE_DESC: 'Set a custom date and time for automatic publishing.',
   DRAFT: 'Save as Draft',
   SAVE_AS_DRAFT: 'Save as Draft',
@@ -1069,6 +1071,7 @@ UPLOAD: 'Upload',
       "RETURN_TO_DASHBOARD": "Return to Dashboard"
     },
     "KNOWLEDGE_TYPES": {
+      "COURSE": "Course",
       "TITLE":"Uploaded Knowledge Content Breakdown",
       "SUBTITLE": "Statistics of your knowledge content by type",
       "LOAD_ERROR": "Failed to load knowledge type statistics. Please try again.",

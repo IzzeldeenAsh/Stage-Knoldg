@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
 import { CompanyAccountService } from 'src/app/_fake/services/company-account/company-account.service';
 import { TranslationService } from 'src/app/modules/i18n';
 import {
@@ -53,6 +53,7 @@ interface EmployeeKnowledgeStatistic {
 })
 export class EmployeeKnowledgeStatisticsComponent implements OnInit {
   @ViewChild("chart") chart: ChartComponent;
+  @Output() hasMultipleEmployees = new EventEmitter<boolean>();
   
   public barChartOptions: Partial<BarChartOptions> = {
     series: [],
@@ -262,8 +263,18 @@ export class EmployeeKnowledgeStatisticsComponent implements OnInit {
     this.companyAccountService.getEmployeeKnowledgeStatistics().subscribe(
       (response) => {
         this.employees = response.data;
-        this.initChart();
         this.loading = false;
+        this.error = false;
+        
+        // Only emit true if there are multiple employees (more than just the manager)
+        // This ensures we don't show the component when there's only data for the manager
+        const hasEnoughData = this.employees.length > 1;
+        this.hasMultipleEmployees.emit(hasEnoughData);
+        
+        // Only initialize chart if we have enough data to display
+        if (hasEnoughData) {
+          this.initChart();
+        }
       },
       (error) => {
         console.error('Error loading employee knowledge statistics', error);

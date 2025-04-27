@@ -48,6 +48,12 @@ export interface Knowledge {
   published_at?: string;
   publish_as?: 'both' | 'package' | 'standalone';
   need_to_review?:boolean;
+  account_manager_process: {
+  need_to_review: boolean;
+  action: string | null;
+  request_id: number | null;
+  request_status: string | null;
+}
 }
 
 export interface KnowledgeResponse {
