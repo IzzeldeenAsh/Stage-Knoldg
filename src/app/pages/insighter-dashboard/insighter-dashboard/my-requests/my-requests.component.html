@@ -14,9 +14,9 @@ styleClass=""
     </div>
 </div>
 
-<div class="mb-5 mb-xl-10 card " *ngIf="userProfile">
+<div class="mb-5 mb-xl-10 card " *ngIf="userProfile && filteredUserRequests.length > 0">
     <!--begin::Header-->
-    <div class="card-header pt-7 border-0" *ngIf="filteredUserRequests.length > 0">
+    <div class="card-header pt-7 border-0">
         <!--begin::Title-->
         <h3 class="card-title align-items-start flex-column">
             <span class="fw-bolder text-dark">{{ 'USER_REQUESTS.TITLE' | translate }}</span>

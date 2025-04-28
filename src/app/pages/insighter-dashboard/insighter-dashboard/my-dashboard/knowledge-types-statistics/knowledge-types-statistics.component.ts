@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { KnowledgeService, KnowledgeTypeStatistic } from 'src/app/_fake/services/knowledge/knowledge.service';
 import { TranslationService } from 'src/app/modules/i18n';
 import {
@@ -29,7 +29,7 @@ export type PieChartOptions = {
   templateUrl: './knowledge-types-statistics.component.html',
   styleUrl: './knowledge-types-statistics.component.scss'
 })
-export class KnowledgeTypesStatisticsComponent implements OnInit {
+export class KnowledgeTypesStatisticsComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild("chart") chart: ChartComponent;
   
   public pieChartOptions: Partial<PieChartOptions> = {
@@ -113,6 +113,8 @@ export class KnowledgeTypesStatisticsComponent implements OnInit {
   statistics: KnowledgeTypeStatistic[] = [];
   loading = false;
   error = false;
+  private resizeListener: any;
+  private chartInitialized = false;
 
   constructor(
     private knowledgeService: KnowledgeService,
@@ -130,6 +132,14 @@ export class KnowledgeTypesStatisticsComponent implements OnInit {
         this.initChart();
       }
     });
+    
+    // Add window resize listener to redraw chart
+    this.resizeListener = () => {
+      if (this.chartInitialized && this.statistics.length > 0) {
+        setTimeout(() => this.initChart(), 100);
+      }
+    };
+    window.addEventListener('resize', this.resizeListener);
   }
 
   updateChartTranslations() {
@@ -191,6 +201,12 @@ export class KnowledgeTypesStatisticsComponent implements OnInit {
 
   initChart() {
     if (!this.statistics || this.statistics.length === 0) return;
+    
+    // Ensure the chart container is ready before initialization
+    if (!document.getElementById('pieChart')) {
+      setTimeout(() => this.initChart(), 50);
+      return;
+    }
 
     const typeColors = {
       report: "#009EF7", // Primary blue
@@ -216,9 +232,32 @@ export class KnowledgeTypesStatisticsComponent implements OnInit {
       labels: labels,
       colors: colors
     };
+    
+    this.chartInitialized = true;
+    
+    // Force chart redraw if it's already initialized
+    if (this.chart) {
+      setTimeout(() => {
+        this.chart.render();
+      }, 0);
+    }
   }
 
   refresh() {
     this.loadStatistics();
+  }
+  
+  ngAfterViewInit() {
+    // Initialize chart after view is fully initialized
+    if (this.statistics.length > 0 && !this.chartInitialized) {
+      setTimeout(() => this.initChart(), 100);
+    }
+  }
+  
+  ngOnDestroy() {
+    // Clean up event listener
+    if (this.resizeListener) {
+      window.removeEventListener('resize', this.resizeListener);
+    }
   }
 }
