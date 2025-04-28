@@ -126,3 +126,18 @@ tr.expanded-row {
     justify-content: center;
   }
 }
+
+.thead-spacing {
+  tr {
+    th {
+      padding-bottom: 1.5rem; // Increase bottom padding for headers
+    }
+  }
+}
+
+// Add gap between thead and tbody
+thead::after {
+  content: "";
+  display: block;
+  height: 0.75rem;
+}

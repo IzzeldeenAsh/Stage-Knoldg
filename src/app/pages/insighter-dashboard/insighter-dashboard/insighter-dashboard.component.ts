@@ -67,7 +67,7 @@ export class InsighterDashboardComponent implements OnInit {
 
     if (hasCompanyRole) {
       this.items.push({
-        label: 'My Company',
+        label: 'My Team',
         icon: 'pi pi-building',
         command: () => {
           this.router.navigate(['my-company-settings']);

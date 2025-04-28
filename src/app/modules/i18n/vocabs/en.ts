@@ -4,7 +4,11 @@ export const locale = {
 
   data: {
     ISIC_CODE:'ISIC Code',
+    "MANAGER_CERTIFICATES": "Manager Certificates",
     COMPANY_INDUSTRIES: 'Company Industries',
+    ADD_MANAGER_CERTIFICATE:'Add Manager Certificates',
+    COMPANY_PHONE: "Company Phone",
+    ADDRESS: "Address",
     COMPANY_CONSULTING_FIELDS: 'Company Consulting Fields',
     COMPANY_CERTIFICATIONS: 'Company Certifications',
     NO_SOCIAL_MEDIA: 'No social media',
@@ -101,7 +105,7 @@ export const locale = {
     DESCRIPTION_HELP_TEXT: 'A good description helps users find and understand your content',
     "MY_COMPANY": {
       'DELETE': 'Delete Employee',
-      "TITLE": "My Company",
+      "TITLE": "My Team",
       "SUBTITLE": "Manage your company employees",
       "ADD_EMPLOYEE": "Add Employee",
       "EMPTY_STATE_MESSAGE": "Build up your team by adding employees to your company",
@@ -583,6 +587,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       GENERAL_INFO: 'General Information',
       COMPANY_CERTIFICATES: 'Company Certificates',
       "MY_CERTIFICATES": "My Certificates",
+     
       "ADD_CERTIFICATE": "Add Certificate",
       "ADD_COMPANY_CERTIFICATE": "Add Company Certificate",
       "DELETE_COMPANY_CERTIFICATE_CONFIRMATION": "Delete Company Certificate",
@@ -721,7 +726,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
         "MY_REQUESTS": "My Requests",
         "MY_KNOWLEDGE": "My Knowledge Base",
         "ACCOUNT_SETTINGS": "Account Settings",
-        "MY_COMPANY": "My Company",
+        "MY_COMPANY": "My Team",
         "INVITING": "Inviting"
       },
       REQUESTS: {

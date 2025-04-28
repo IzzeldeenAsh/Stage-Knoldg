@@ -333,34 +333,48 @@
         <label class="form-label required fw-bold mb-4">
           {{ 'INSIGHTER_WIZARD.CHOOSE_VERIFICATION_METHOD' | translate }}
         </label>
-        <div class="nav-group nav-group-fluid d-flex gap-3">
-          <label class="flex-grow-1">
-            <input
-              type="radio"
-              class="btn-check"
-              formControlName="verificationMethod"
-              name="verificationMethod"
-              value="websiteEmail"
-              id="verificationMethod1"
-            />
-            <span class="btn btn-outline  btn-active-info p-6 d-flex align-items-center w-100  h-25px">
-              {{ 'INSIGHTER_WIZARD.BY_WEBSITE_COMPANY_EMAIL' | translate }}
-            </span>
-          </label>
+        <div class="radio-options-container">
+          <div class="radio-option">
+            <div class="form-check form-check-custom form-check-solid">
+              <input
+                type="radio"
+                class="form-check-input"
+                formControlName="verificationMethod"
+                name="verificationMethod"
+                value="websiteEmail"
+                id="verificationMethod1"
+              />
+              <label class="form-check-label" for="verificationMethod1">
+                <span class="radio-icon">
+              
+                  <i class="ki-duotone ki-icon  fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                </span>
+                <span class="radio-text">{{ 'INSIGHTER_WIZARD.BY_WEBSITE_COMPANY_EMAIL' | translate }}</span>
+              </label>
+            </div>
+          </div>
 
-          <label class="flex-grow-1">
-            <input
-              type="radio"
-              class="btn-check"
-              formControlName="verificationMethod"
-              name="verificationMethod"
-              value="uploadDocument"
-              id="verificationMethod2"
-            />
-            <span class="btn btn-outline  btn-active-info p-6 d-flex align-items-center w-100 h-25px">
-              {{ 'INSIGHTER_WIZARD.BY_UPLOADING_REGISTRY_DOCUMENT' | translate }}
-            </span>
-          </label>
+          <div class="radio-option">
+            <div class="form-check form-check-custom form-check-solid">
+              <input
+                type="radio"
+                class="form-check-input"
+                formControlName="verificationMethod"
+                name="verificationMethod"
+                value="uploadDocument"
+                id="verificationMethod2"
+              />
+              <label class="form-check-label" for="verificationMethod2">
+                <span class="radio-icon">
+                  <i class="ki-duotone ki-document fs-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                  </i>
+                </span>
+                <span class="radio-text">{{ 'INSIGHTER_WIZARD.BY_UPLOADING_REGISTRY_DOCUMENT' | translate }}</span>
+              </label>
+            </div>
+          </div>
         </div>
       </div>
 
