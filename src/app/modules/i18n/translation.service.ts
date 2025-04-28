@@ -69,13 +69,9 @@ export class TranslationService {
   }
 
   /**
-   * Reads preferred language: first from localStorage, then from cookie, else 'en'
+   * Reads preferred language from cookie only, else 'en'
    */
   getSelectedLanguage(): string {
-    const fromStorage = localStorage.getItem(this.STORAGE_KEY);
-    if (fromStorage) {
-      return fromStorage;
-    }
     const fromCookie = this.getCookie(this.COOKIE_NAME);
     return fromCookie || 'en';
   }
