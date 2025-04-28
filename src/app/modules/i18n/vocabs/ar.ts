@@ -7,8 +7,10 @@ export const locale = {
     'DRAFT_STATUS': 'مسودة',
     'REGIONS': 'القارات',
     REVIEW_KNOWLEDGE: 'مراجعة المعرفة',
+    MANAGER_CERTIFICATES: 'شهادات المدير',
     STAFF_NOTES: 'ملاحظات الموظف',
     PENDING_REVIEW: 'قيد المراجعة',
+    ADD_MANAGER_CERTIFICATE:'أضف شهادات المدير',
     ENTER_NOTES_FOR_INSIGHTER: 'أدخل ملاحظات للانسايتر',
     NOTES_WILL_BE_VISIBLE_TO_INSIGHTER: 'سيكون الملاحظات متاحًا للانسايتر',
     STATUS: 'الحالة',
@@ -111,7 +113,7 @@ export const locale = {
     },
     "MY_COMPANY": {
       "DELETE": "حذف الموظف",
-      "TITLE": "شركتي",
+      "TITLE": "فريقي",
       "SUBTITLE": "إدارة موظفي شركتك",
       "ADD_EMPLOYEE": "إضافة موظف",
       "EMPTY_STATE_MESSAGE": "قم ببناء فريقك عن طريق إضافة موظفين إلى شركتك",
@@ -697,7 +699,7 @@ export const locale = {
           "MY_REQUESTS": "طلباتي",
           "MY_KNOWLEDGE": "قاعدة المعرفة" ,
           "ACCOUNT_SETTINGS": "إعدادات الحساب",
-          "MY_COMPANY": "شركتي"
+          "MY_COMPANY": "فريقي"
         },
         "REQUESTS": {
           APPROVED: "الطلبات المقبولة",

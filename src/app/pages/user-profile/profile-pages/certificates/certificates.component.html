@@ -5,7 +5,8 @@
   <div class="d-flex flex-wrap flex-stack mb-6">
     <!--begin::Title-->
     <h3 class="fw-bold my-2">
-      {{ 'PROFILE.MY_CERTIFICATES' | translate }}
+     <ng-container *ngIf="profile && profile.roles && profile.roles.includes('company')"> {{ 'MANAGER_CERTIFICATES' | translate }}</ng-container>
+     <ng-container *ngIf="!profile || !profile.roles || !profile.roles.includes('company')"> {{ 'MY_CERTIFICATES' | translate }}</ng-container>
       <span class="fs-6 text-gray-500 fw-semibold ms-1" *ngIf="profile && profile.certifications">{{profile.certifications.length}}</span>
     </h3>
     <!--end::Title-->
@@ -13,7 +14,8 @@
     <!--begin::Add button-->
     <div class="d-flex my-2">
       <button class="btn btn-sm btn-primary" (click)="showAddCertDialog()">
-        <i class="fas fa-plus"></i> {{ 'PROFILE.ADD_CERTIFICATE' | translate }}  
+     <ng-container *ngIf="profile && profile.roles && profile.roles.includes('company')"> <i class="fas fa-plus"></i> {{ 'ADD_MANAGER_CERTIFICATE' | translate }}</ng-container>
+     <ng-container *ngIf="!profile || !profile.roles || !profile.roles.includes('company')"> <i class="fas fa-plus"></i> {{ 'ADD_CERTIFICATE' | translate }}</ng-container>
       </button>
     </div>
     <!--end::Add button-->
