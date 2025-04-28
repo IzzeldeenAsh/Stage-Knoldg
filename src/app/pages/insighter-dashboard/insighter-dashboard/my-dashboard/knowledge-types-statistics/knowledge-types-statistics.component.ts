@@ -40,7 +40,9 @@ export class KnowledgeTypesStatisticsComponent implements OnInit, AfterViewInit,
       fontFamily: "Poppins, sans-serif",
       toolbar: {
         show: false
-      }
+      },
+      redrawOnParentResize: true,
+      redrawOnWindowResize: true
     },
     labels: [],
     colors: [],

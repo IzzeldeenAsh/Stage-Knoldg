@@ -27,8 +27,8 @@
       </button>
     </div>
 
-    <div *ngIf="!loading && !error && statistics.length > 0">
-      <div id="pieChart">
+    <div *ngIf="!loading && !error && statistics.length > 0" class="d-flex justify-content-center">
+      <div id="pieChart" class="chart-container" style="width: 100%; max-width: 500px; margin: 0 auto;">
         <apx-chart
           [series]="pieChartOptions.series!"
           [chart]="pieChartOptions.chart!"
