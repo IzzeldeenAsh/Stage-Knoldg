@@ -38,10 +38,25 @@
 
 #pieChart {
   height: 300px;
-  margin: 0;
+  margin: 0 auto;
+  position: relative;
+  transition: width 0.3s ease, height 0.3s ease;
   
   apx-chart {
     display: block;
+    margin: 0 auto;
+  }
+  
+  ::ng-deep .apexcharts-canvas {
+    margin: 0 auto !important;
+  }
+  
+  ::ng-deep .apexcharts-legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100% !important;
+    left: 0 !important;
   }
 }
 
