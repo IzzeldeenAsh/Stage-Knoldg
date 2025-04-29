@@ -9,6 +9,7 @@ import { ActionButtonsComponent } from './action-buttons/action-buttons.componen
 import { NavigationTabsComponent } from './navigation-tabs/navigation-tabs.component';
 import { TranslationModule } from 'src/app/modules/i18n';
 import { OverviewComponent } from './profile-pages/overview/overview.component';
+import { CompanyComponent } from './profile-pages/company/company.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { DropdownModule } from 'primeng/dropdown';
@@ -20,6 +21,7 @@ import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { FileUploadModule } from 'primeng/fileupload';
 import { CertificatesComponent } from './profile-pages/certificates/certificates.component';
+import { CompanyCertificatesComponent } from './profile-pages/company-certificates/company-certificates.component';
 import { DocumentsComponent } from './profile-pages/documents/documents.component';
 import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 import { TooltipModule } from 'primeng/tooltip';
@@ -49,9 +51,11 @@ import { JoinCompanyComponent } from './profile-pages/join-company/join-company.
       SettingsSidebarComponent,
       SettingsDashboardComponent,
       OverviewComponent,
+      CompanyComponent,
       ReactivateModalComponent,
       ResetPasswordComponent,
       CertificatesComponent,
+      CompanyCertificatesComponent,
     ],
     imports: [
       CommonModule,

@@ -1,30 +1,30 @@
-<p-progressBar *ngIf="loadingProfile" mode="indeterminate" [style]="{ height: '4px' }"></p-progressBar>
+<div *ngIf="loadingProfile" class="pt-3">
+  <p-progressBar mode="indeterminate" [style]="{ height: '4px' }" class="bg-primary"></p-progressBar>
+</div>
+
 <ng-container *ngIf="!loadingProfile">
   <div class="container-fluid p-0" *ngIf="profile">
     <!-- Header Card with Photo -->
     <div class="card border-0 rounded-4 mb-4 overflow-hidden" *ngIf="profile.roles.includes('company') || profile.roles.includes('company-insighter')">
       <div class="card-body p-0">
-        <div class="bg-light p-5 d-flex flex-column flex-md-row align-items-center gap-4">
+        <div class=" p-5 d-flex flex-column flex-md-row align-items-center gap-4">
           <div class="image-input image-input-circle mb-3 mb-md-0">
             <div class="image-input-wrapper border-2 border-primary w-125px h-125px" [style.backgroundImage]="getLogoBackgroundImage()"></div>
             <label 
               class="btn btn-icon btn-circle btn-light btn-active-light w-25px h-25px position-absolute bottom-0 end-0"
               title="Change avatar">
-              <i class="ki-duotone ki-pencil fs-6">
-                <span class="path1"></span>
-                <span class="path2"></span>
-              </i>
+              <i class="bi bi-pencil fs-6"></i>
               <input type="file" name="avatar" accept=".png, .jpg, .jpeg" (change)="onFileSelected($event)" class="d-none" />
             </label>
           </div>
           <div class="d-flex flex-column" >
             <h2 class="fs-1 fw-bold mb-1">{{ profile.first_name }} {{ profile.last_name }}</h2>
             <div class="d-flex align-items-center gap-2">
-              <span *ngFor="let role of profile.roles" [ngClass]="{'badge rounded-pill px-3 py-2 fs-7 fw-semibold': true, 'bg-info text-white': role === 'insighter', 'bg-warning text-white': role === 'company'}">
-                <ng-container *ngIf="role === 'insighter'">{{ "HOME.INSIGHTER" | translate }}</ng-container>
-                <ng-container *ngIf="role === 'company'">{{ "HOME.COMPANY" | translate }}</ng-container>
+              <span  [ngClass]="{'badge rounded-pill py-2 fs-7 fw-semibold d-flex align-items-center': true, 'bg-info text-white': profile.roles.includes('insighter'), 'bg-warning text-white': profile.roles.includes('company')}">
+                <ng-container *ngIf="profile.roles.includes('insighter')">{{ "HOME.INSIGHTER" | translate }}</ng-container>
+                <ng-container *ngIf="profile.roles.includes('company')">{{ "HOME.COMPANY" | translate }}</ng-container>
               </span>
-              <span *ngIf="profile.verified" class="badge bg-success rounded-pill px-3 py-2 fs-7 fw-semibold text-white">{{ "VERIFIED" | translate }}</span>
+           
             </div>
           </div>
         </div>
@@ -36,60 +36,52 @@
       <!-- Left Column -->
       <div class="col-12 col-lg-8">
         <!-- General Info -->
-        <div class="card rounded-4 border mb-4">
+        <div class="card rounded-4 border border-light mb-4">
           <div class="card-header border-0 bg-white py-3">
-            <h3 class="card-title fs-3 fw-bolder">{{ 'PROFILE.GENERAL_INFO' | translate }}</h3>
+            <div class="d-flex align-items-center">
+              <span class="bg-info bg-opacity-10 p-2 rounded-3 me-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                <i class="bi bi-person-vcard fs-1 text-info"></i>
+              </span>
+              <h3 class="card-title fs-3 fw-bolder mb-0">{{ 'PROFILE.GENERAL_INFO' | translate }}</h3>
+            </div>
           </div>
-          <div class="card-body">
-            <div class="row mb-3" *ngIf="profile?.company && profile?.company?.legal_name">
-              <div class="col-12 col-md-4 text-muted">{{ 'PROFILE.COMPANY_NAME' | translate }}</div>
-              <div class="col-12 col-md-8 text-dark fw-semibold">{{ profile?.company?.legal_name }}</div>
-            </div>
-            <div class="row mb-3" *ngIf="profile?.company && profile?.company?.website">
-              <div class="col-12 col-md-4 text-muted">{{ 'PROFILE.WEBSITE' | translate }}</div>
-              <div class="col-12 col-md-8 text-dark">
-                <a [href]="profile?.company?.website?.startsWith('http') ? profile?.company?.website : 'https://' + profile?.company?.website" 
-                   target="_blank" class="text-primary text-decoration-none">
-                  {{ profile?.company?.website }}
-                </a>
+          <div class="card-body pt-0">
+            <div class="row mb-3 py-2 border-bottom border-light">
+              <div class="col-12 col-md-4 text-muted d-flex align-items-center">
+                <i class="bi bi-envelope fs-4 text-info me-2"></i>
+                <span>{{ 'PROFILE.EMAIL' | translate }}</span>
               </div>
+              <div class="col-12 col-md-8 text-dark">{{ profile.email }}</div>
             </div>
-            <div class="row mb-3">
-              <div class="col-12 col-md-4 text-muted">{{ 'PROFILE.EMAIL' | translate }}</div>
-              <div class="col-12 col-md-8 text-dark">{{ profile?.email }}</div>
+            <div class="row mb-3 py-2 border-bottom border-light" *ngIf="profile.phone">
+              <div class="col-12 col-md-4 text-muted d-flex align-items-center">
+                <i class="bi bi-telephone fs-4 text-success me-2"></i>
+                <span>{{ 'ACCOUNT_SETTINGS.PHONE_NUMBER' | translate }}</span>
+              </div>
+              <div class="col-12 col-md-8 text-dark">{{ profile.phone }}</div>
             </div>
-            <div class="row mb-3" *ngIf="profile?.phone">
-              <div class="col-12 col-md-4 text-muted">{{ 'ACCOUNT_SETTINGS.PHONE_NUMBER' | translate }}</div>
-              <div class="col-12 col-md-8 text-dark">{{ profile?.phone }}</div>
-            </div>
-            <div class="row mb-3" *ngIf="profile?.company && profile?.company?.company_phone">
-              <div class="col-12 col-md-4 text-muted">{{ 'COMPANY_PHONE' | translate }}</div>
-              <div class="col-12 col-md-8 text-dark">{{ profile?.company?.company_phone }}</div>
-            </div>
-            <div class="row mb-3" *ngIf="profile?.company && profile?.company?.address">
-              <div class="col-12 col-md-4 text-muted">{{ 'ADDRESS' | translate }}</div>
-              <div class="col-12 col-md-8 text-dark">{{ profile?.company?.address }}</div>
-            </div>
-            <div class="row mb-3">
-              <div class="col-12 col-md-4 text-muted">{{ 'PROFILE.COUNTRY' | translate }}</div>
-              <div class="col-12 col-md-8 text-dark">{{ profile?.country }}</div>
+            <div class="row mb-0 py-2" >
+              <div class="col-12 col-md-4 text-muted d-flex align-items-center">
+                <i class="bi bi-globe fs-4 text-warning me-2"></i>
+                <span>{{ 'PROFILE.COUNTRY' | translate }}</span>
+              </div>
+              <div class="col-12 col-md-8 text-dark">{{ profile.country }}</div>
             </div>
           </div>
         </div>
         
-        <!-- Bio/About Company -->
-        <div class="card rounded-4 border mb-4" *ngIf="profile?.bio || (profile?.company && profile?.company?.about_us)">
+        <!-- Bio -->
+        <div class="card rounded-4 border border-light mb-4" *ngIf="profile?.bio">
           <div class="card-header border-0 bg-white py-3">
-            <h3 class="card-title fs-3 fw-bolder">
-              <ng-container *ngIf="profile?.company && profile?.company?.about_us">{{ 'PROFILE.ABOUT_COMPANY' | translate }}</ng-container>
-              <ng-container *ngIf="!profile?.company && profile?.bio">{{ 'ACCOUNT_SETTINGS.BIO' | translate }}</ng-container>
-            </h3>
+            <div class="d-flex align-items-center">
+              <span class="bg-info bg-opacity-10 p-2 rounded-3 me-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                <i class="bi bi-chat-quote fs-1 text-info"></i>
+              </span>
+              <h3 class="card-title fs-3 fw-bolder mb-0">{{ 'ACCOUNT_SETTINGS.BIO' | translate }}</h3>
+            </div>
           </div>
-          <div class="card-body">
-            <p class="text-gray-800 mb-0" *ngIf="profile?.company && profile?.company?.about_us">
-              {{ profile?.company?.about_us }}
-            </p>
-            <p class="text-gray-800 mb-0" *ngIf="profile?.bio">
+          <div class="card-body pt-0">
+            <p class="text-gray-800 mb-0 p-2">
               {{ profile?.bio }}
             </p>
           </div>
@@ -99,27 +91,33 @@
       <!-- Right Column -->
       <div class="col-12 col-lg-4">
         <!-- Social Media -->
-        <div class="card rounded-4 border mb-4" *ngIf="profile?.roles?.includes('insighter') || profile?.roles?.includes('company')">
-  <div class="card-header border-0 bg-white py-3">
-    <h3 class="card-title fs-3 fw-bolder">{{ 'PROFILE.SOCIAL_MEDIA' | translate }}</h3>
-  </div>
-  <div class="card-body p-4">
-    <div class="d-flex flex-wrap align-items-center justify-content-center">
-      <ng-container *ngFor="let social of getSocialLinks()">
-        <a [href]="social.link" target="_blank" class="btn btn-light btn-icon btn-lg m-2 shadow-sm" style="z-index: 1; position: relative;">
-          <img [src]="'assets/media/svg/social-logos/' + social.type + '.svg'"
-               [alt]="social.type"
-               class="p-2"
-               width="36"
-               height="36">
-        </a>
-      </ng-container>
-      <div *ngIf="!getSocialLinks().length" class="text-muted">
-        {{ 'NO_SOCIAL_MEDIA' | translate }}
-      </div>
-    </div>
-  </div>
-</div>
+        <div class="card rounded-4 border border-light mb-4" *ngIf="profile.social && profile.social.length > 0">
+          <div class="card-header border-0 bg-white py-3">
+            <div class="d-flex align-items-center">
+              <span class="bg-info bg-opacity-10 p-2 rounded-3 me-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                <i class="bi bi-share fs-1 text-info"></i>
+              </span>
+              <h3 class="card-title fs-3 fw-bolder mb-0">{{ 'PROFILE.SOCIAL_MEDIA' | translate }}</h3>
+            </div>
+          </div>
+          <div class="card-body pt-0 p-4">
+            <div class="d-flex flex-wrap align-items-center justify-content-center">
+              <ng-container *ngFor="let social of profile.social">
+                <a [href]="social.link" target="_blank" class="btn btn-light btn-icon btn-lg m-2" style="z-index: 1; position: relative;">
+                  <img [src]="'assets/media/svg/social-logos/' + social.type + '.svg'"
+                       [alt]="social.type"
+                       class="p-2"
+                       width="36"
+                       height="36">
+                </a>
+              </ng-container>
+              <div *ngIf="!profile.social.length" class="text-muted d-flex align-items-center">
+                <i class="bi bi-info-circle fs-2 me-2 text-info"></i>
+                {{ 'NO_SOCIAL_MEDIA' | translate }}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -127,36 +125,20 @@
     <div class="row g-4 mt-2">
       <!-- User Industries -->
       <div class="col-12 col-md-6" *ngIf="profile.industries && profile.industries.length > 0">
-        <div class="card rounded-4 border h-100">
+        <div class="card rounded-4 border border-light h-100">
           <div class="card-header border-0 bg-white py-3">
-            <h3 class="card-title fs-3 fw-bolder">{{ 'PROFILE.INDUSTRIES' | translate }}</h3>
-          </div>
-          <div class="card-body">
-            <div class="d-flex flex-wrap gap-2">
-              <span *ngFor="let industry of profile.industries"
-                    class="badge bg-light text-dark rounded-pill px-3 py-2 fs-7 fw-medium">
-                <ng-container *ngIf="lang === 'ar'">
-                  {{ industry.name }}
-                </ng-container>
-                <ng-container *ngIf="lang === 'en'">
-                  {{ industry.name }}
-                </ng-container>
+            <div class="d-flex align-items-center">
+              <span class="bg-warning bg-opacity-10 p-2 rounded-3 me-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                <i class="bi bi-pie-chart fs-1 text-warning"></i>
               </span>
+              <h3 class="card-title fs-3 fw-bolder mb-0">{{ 'PROFILE.INDUSTRIES' | translate }}</h3>
             </div>
           </div>
-        </div>
-      </div>
-
-      <!-- Company Industries -->
-      <div class="col-12 col-md-6" *ngIf="profile.company && profile.company['industries'] && profile.company['industries'].length > 0">
-        <div class="card rounded-4 border h-100">
-          <div class="card-header border-0 bg-white py-3">
-            <h3 class="card-title fs-3 fw-bolder">{{ 'COMPANY_INDUSTRIES' | translate }}</h3>
-          </div>
-          <div class="card-body">
+          <div class="card-body pt-0">
             <div class="d-flex flex-wrap gap-2">
-              <span *ngFor="let industry of profile.company['industries']"
-                    class="badge bg-light text-dark rounded-pill px-3 py-2 fs-7 fw-medium">
+              <span *ngFor="let industry of profile.industries"
+                    class="badge bg-light text-dark rounded-pill px-3 py-2 fs-6 fw-medium d-flex align-items-center">
+                <i class="bi bi-arrow-right-circle fs-6 text-warning me-1"></i>
                 <ng-container *ngIf="lang === 'ar'">
                   {{ industry.name }}
                 </ng-container>
@@ -171,36 +153,20 @@
 
       <!-- User Consulting Fields -->
       <div class="col-12 col-md-6" *ngIf="profile.consulting_field && profile.consulting_field.length > 0">
-        <div class="card rounded-4 border h-100">
+        <div class="card rounded-4 border border-light h-100">
           <div class="card-header border-0 bg-white py-3">
-            <h3 class="card-title fs-3 fw-bolder">{{ 'PROFILE.CONSULTING_FIELDS' | translate }}</h3>
-          </div>
-          <div class="card-body">
-            <div class="d-flex flex-wrap gap-2">
-              <span *ngFor="let field of profile.consulting_field"
-                    class="badge bg-light text-dark rounded-pill px-3 py-2 fs-7 fw-medium">
-                <ng-container *ngIf="lang === 'ar' && field.names && field.names.ar">
-                  {{ field.names.ar }}
-                </ng-container>
-                <ng-container *ngIf="lang === 'en' || !field.names || !field.names.ar">
-                  {{ field.name }}
-                </ng-container>
+            <div class="d-flex align-items-center">
+              <span class="bg-success bg-opacity-10 p-2 rounded-3 me-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                <i class="bi bi-briefcase fs-1 text-success"></i>
               </span>
+              <h3 class="card-title fs-3 fw-bolder mb-0">{{ 'PROFILE.CONSULTING_FIELDS' | translate }}</h3>
             </div>
           </div>
-        </div>
-      </div>
-
-      <!-- Company Consulting Fields -->
-      <div class="col-12 col-md-6" *ngIf="profile.company && profile.company['consulting_field'] && profile.company['consulting_field'].length > 0">
-        <div class="card rounded-4 border h-100">
-          <div class="card-header border-0 bg-white py-3">
-            <h3 class="card-title fs-3 fw-bolder">{{ 'COMPANY_CONSULTING_FIELDS' | translate }}</h3>
-          </div>
-          <div class="card-body">
+          <div class="card-body pt-0">
             <div class="d-flex flex-wrap gap-2">
-              <span *ngFor="let field of profile.company['consulting_field']"
-                    class="badge bg-light text-dark rounded-pill px-3 py-2 fs-7 fw-medium">
+              <span *ngFor="let field of profile.consulting_field"
+                    class="badge bg-light text-dark rounded-pill px-3 py-2 fs-6 fw-medium d-flex align-items-center">
+                <i class="bi bi-check-circle fs-6 text-success me-1"></i>
                 <ng-container *ngIf="lang === 'ar' && field.names && field.names.ar">
                   {{ field.names.ar }}
                 </ng-container>

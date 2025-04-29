@@ -16,15 +16,15 @@ import { KnowledgeService } from 'src/app/_fake/services/knowledge/knowledge.ser
 import { AddInsightStepsService } from 'src/app/_fake/services/add-insight-steps/add-insight-steps.service';
 import { RegionsService } from 'src/app/_fake/services/region/regions.service';
 
-interface Chip {
-  id: number;
-  label: string;
-  selected: boolean;
-}
-
 interface KeywordItem {
   display: string;
   value: string;
+}
+
+interface TagItem {
+  display: string;
+  value: string;
+  id?: number;
 }
 
 @Component({
@@ -100,9 +100,7 @@ export class Step4Component extends BaseComponent implements OnInit {
   
   // Tags related properties
   tags: { id: number; name: string }[] = [];
-  chips: Chip[] = [];
-  customTagForm: FormGroup;
-  isAddingCustomTag: boolean = false;
+  availableTags: TagItem[] = [];
   tagIdError: string = '';
   
   // Keywords related properties
@@ -233,12 +231,8 @@ export class Step4Component extends BaseComponent implements OnInit {
       isic_code: [this.defaultValues.isic_code],
       hs_code: [this.defaultValues.hs_code],
       tag_ids: [this.defaultValues.tag_ids || [], [Validators.required]],
+      tagItems: [[]],  // New control for tag-input component
       keywords: [this.defaultValues.keywords || []]
-    });
-    
-    // Initialize custom tag form
-    this.customTagForm = this.fb.group({
-      name: ['', Validators.required]
     });
     
     // Setup form change subscription
@@ -598,16 +592,21 @@ export class Step4Component extends BaseComponent implements OnInit {
 
     this.form.get('topicId')?.setValue(topicId);
     
-    // Clear existing tags and keywords
-    this.clearTagsAndKeywords();
+    // Clear existing tags and keywords immediately when topic changes
+    this.form.get('tagItems')?.setValue([]);
+    this.form.get('tag_ids')?.setValue([]);
+    this.form.get('keywords')?.setValue([]);
+    this.availableTags = [];
+    this.availableKeywords = [];
     
     // Fetch tags and keywords based on the new topic
     if (topicId && topicId !== 'other') {
+      // fetchTagsByTopic will auto-select all tags
       this.fetchTagsByTopic(topicId);
       this.fetchSuggestedKeywordsByTopic(topicId);
     }
     
-    this.updateParentModel({ topicId: topicId }, this.checkForm());
+    this.updateParentModel({ topicId: topicId, tag_ids: [], keywords: [] }, this.checkForm());
   }
   
   // Target market related methods
@@ -705,12 +704,31 @@ export class Step4Component extends BaseComponent implements OnInit {
       .subscribe({
         next: (tags: { id: number; name: string }[]) => {
           this.tags = tags;
-          this.chips = this.tags.map((tag) => ({
-            id: tag.id,
-            label: tag.name,
-            selected: this.defaultValues.tag_ids?.includes(tag.id) || false,
+          
+          // Convert tags to the format expected by tag-input
+          this.availableTags = this.tags.map((tag) => ({
+            display: tag.name,
+            value: tag.name,
+            id: tag.id
           }));
-          this.updateParentModel({ tag_ids: this.defaultValues.tag_ids }, this.checkForm());
+          
+          // Important: Auto-select ALL tags when they are fetched
+          if (this.availableTags.length > 0) {
+            // Set all tags as selected in the tagItems control
+            this.form.get('tagItems')?.setValue([...this.availableTags]);
+            
+            // Also update the tag_ids control with all tag IDs
+            const allTagIds = this.availableTags.map(tag => tag.id as number);
+            this.form.get('tag_ids')?.setValue(allTagIds);
+            
+            // Update parent model with all tags selected
+            this.updateParentModel({ tag_ids: allTagIds }, this.checkForm());
+          } else {
+            // If no tags are available, clear the selection
+            this.form.get('tagItems')?.setValue([]);
+            this.form.get('tag_ids')?.setValue([]);
+            this.updateParentModel({ tag_ids: [] }, this.checkForm());
+          }
         },
         error: (error) => {
           console.error("Error fetching tags by topic:", error);
@@ -718,47 +736,54 @@ export class Step4Component extends BaseComponent implements OnInit {
       });
   }
   
-  toggleSelection(chip: Chip): void {
-    chip.selected = !chip.selected;
-    const selectedTagIds = this.chips
-      .filter((c) => c.selected)
-      .map((c) => c.id);
-
-    this.form.patchValue({ tag_ids: selectedTagIds });
-    this.updateParentModel({ tag_ids: selectedTagIds }, this.checkForm());
+  addTag(event: any): void {
+    const tagValue = typeof event.value === 'string' ? event.value : event.value?.value;
+    if (!tagValue?.trim()) return;
+    
+    // Check if this is one of our existing tags
+    const existingTag = this.availableTags.find(t => t.value === tagValue);
+    let tagId: number | undefined;
+    
+    if (existingTag && existingTag.id) {
+      // This is an existing tag, use its ID
+      tagId = existingTag.id;
+    } else {
+      // This is a new custom tag, need to create it on the server
+      this.createNewTag(tagValue);
+      return; // The update will happen after the tag is created
+    }
+    
+    // Update tag_ids form control
+    this.updateTagIds(tagId);
   }
   
-  selectAll(): void {
-    this.chips.forEach((chip) => (chip.selected = true));
-    const selectedTagIds = this.chips.map((chip) => chip.id);
-
-    this.form.patchValue({ tag_ids: selectedTagIds });
-    this.updateParentModel({ tag_ids: selectedTagIds }, this.checkForm());
+  removeTag(event: any): void {
+    const removedTagValue = typeof event.value === 'string' ? event.value : event.value?.value;
+    if (!removedTagValue) return;
+    
+    // Find the tag ID from available tags
+    const removedTag = this.availableTags.find(t => t.value === removedTagValue);
+    if (!removedTag || !removedTag.id) return;
+    
+    // Get current tag IDs and remove the one that was removed
+    const currentTagIds = this.form.get('tag_ids')?.value || [];
+    const updatedTagIds = currentTagIds.filter((id: number) => id !== removedTag.id);
+    
+    // Update the tag_ids form control
+    this.form.patchValue({ tag_ids: updatedTagIds });
+    this.updateParentModel({ tag_ids: updatedTagIds }, this.checkForm());
   }
   
-  clearAll(): void {
-    this.chips.forEach((chip) => (chip.selected = false));
-
-    this.form.patchValue({ tag_ids: [] });
-    this.updateParentModel({ tag_ids: [] }, this.checkForm());
-  }
-  
-  openAddCustomTag() {
-    this.isAddingCustomTag = true;
-  }
-  
-  closeAddCustomTag() {
-    this.isAddingCustomTag = false;
-    this.customTagForm.reset();
-  }
-  
-  submitCustomTag() {
-    if (this.customTagForm.invalid || !this.defaultValues.industry) {
-      this.customTagForm.markAllAsTouched();
+  /**
+   * Create a new custom tag
+   * @param tagName The name of the new tag
+   */
+  private createNewTag(tagName: string): void {
+    if (!this.defaultValues.industry) {
+      this.showError('', 'Industry must be selected before adding custom tags');
       return;
     }
-
-    const tagName = this.customTagForm.value.name.trim();
+    
     const tagRequest = {
       industry_id: this.defaultValues.industry,
       name: {
@@ -770,37 +795,42 @@ export class Step4Component extends BaseComponent implements OnInit {
     this.tagsService.createSuggestTag(tagRequest).subscribe({
       next: (response) => {
         const newTagId = response.data.tag_id;
-        this.closeAddCustomTag();
-        this.fetchTagsAndSelectNewTag(newTagId);
+        
+        // Add new tag to available tags
+        this.availableTags.push({
+          display: tagName,
+          value: tagName,
+          id: newTagId
+        });
+        
+        // Update tag_ids form control
+        this.updateTagIds(newTagId);
+        
+        // Show success message
+        this.showSuccess('', 'Custom tag added successfully');
       },
       error: (error) => {
-       this.handleServerErrors(error);
+        this.handleServerErrors(error);
       },
     });
   }
   
-  private fetchTagsAndSelectNewTag(newTagId: number) {
-    if (!this.defaultValues.industry) return;
-
-    this.tagsService.getTagsByIndustry(this.defaultValues.industry, this.currentLanguage).subscribe({
-      next: (tags) => {
-        this.tags = tags;
-        this.chips = this.tags.map((tag) => ({
-          id: tag.id,
-          label: tag.name,
-          selected: tag.id === newTagId || (this.defaultValues.tag_ids?.includes(tag.id) ?? false),
-        }));
-        const selectedTagIds = this.chips
-          .filter((c) => c.selected)
-          .map((c) => c.id);
-
-        this.form.patchValue({ tag_ids: selectedTagIds });
-        this.updateParentModel({ tag_ids: selectedTagIds }, this.checkForm());
-      },
-      error: (error) => {
-        this.handleServerErrors(error);
-        },
-    });
+  /**
+   * Update tag_ids form control when a tag is added or removed
+   * @param tagId The tag ID to add (if adding a tag)
+   */
+  private updateTagIds(tagId?: number): void {
+    if (!tagId) return;
+    
+    // Get current tag IDs
+    const currentTagIds = this.form.get('tag_ids')?.value || [];
+    
+    // Add new tag ID if it doesn't already exist
+    if (!currentTagIds.includes(tagId)) {
+      const updatedTagIds = [...currentTagIds, tagId];
+      this.form.patchValue({ tag_ids: updatedTagIds });
+      this.updateParentModel({ tag_ids: updatedTagIds }, this.checkForm());
+    }
   }
   
   // Keywords related methods
@@ -964,10 +994,11 @@ export class Step4Component extends BaseComponent implements OnInit {
   
   // Clear tags and keywords
   private clearTagsAndKeywords() {
-    this.chips = [];
     this.tags = [];
+    this.availableTags = [];
     this.availableKeywords = [];
     this.form.get('tag_ids')?.setValue([]);
+    this.form.get('tagItems')?.setValue([]);
     this.form.get('keywords')?.setValue([]);
     this.updateParentModel({ 
       tag_ids: [], 

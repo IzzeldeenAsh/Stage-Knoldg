@@ -6,15 +6,11 @@
     {{ 'INSIGHTER_WIZARD.CHOOSE_ACCOUNT_TYPE' | translate }}
     <i
       class="fas fa-exclamation-circle mx-2 fs-7"
-      ngbTooltip="Billing is issued based on your selected account type"
+      [ngbTooltip]="'CHOOSE_ACCOUNT_TYPE_TIP_DESC' | translate"
     ></i>
   </h2>
 
-  <div class="text-gray-500 fw-bold fs-6">
-    {{ 'INSIGHTER_WIZARD.MORE_INFO' | translate }}
-    <a href="#" class="link-primary fw-bolder"> {{ 'INSIGHTER_WIZARD.HELP_PAGE' | translate }} </a>
-    .
-  </div>
+
 </div>
 
 <div class="fv-row" [formGroup]="form">

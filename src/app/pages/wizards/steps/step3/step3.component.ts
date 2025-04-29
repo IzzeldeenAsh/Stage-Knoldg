@@ -74,6 +74,18 @@ export class Step3Component extends BaseComponent implements OnInit, OnDestroy {
     );
   }
 
+  // This lifecycle hook is called when the component becomes visible
+  ngAfterViewInit() {
+    // Use setTimeout to avoid ExpressionChangedAfterItHasBeenCheckedError
+    setTimeout(() => {
+      // Re-evaluate form validity when navigating back to this step
+      this.updateParentModel(
+        { insighterAgreement: this.agreementChecked },
+        this.checkForm()
+      );
+    });
+  }
+
   initForm() {
     this.form = this.fb.group({
       certifications: this.fb.array([]),

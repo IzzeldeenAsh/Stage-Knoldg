@@ -1,4 +1,5 @@
 <form [formGroup]="documentsForm">
+    
     <div formArrayName="documents">
         <div *ngFor="let doc of documentControls.controls; let i = index" [formGroupName]="i" class="form-group mb-6" [@fadeInMoveY]>
             <!-- Document form - simplified UI -->
@@ -28,6 +29,22 @@
                         
                         <ng-container *ngIf="doc.get('filePreview')?.value">
                             <div class="d-flex align-items-center justify-content-start w-100">
+                                <span *ngIf="doc.get('uploadStatus')?.value === 'success'" class="mx-2">
+                                    <div class="symbol symbol-20px">
+                                    <i class="ki-duotone ki-check-circle fs-1 text-success">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                      </i>
+                                    </div>
+                                </span>
+                                <span *ngIf="doc.get('uploadStatus')?.value === 'error'" class="mx-2">
+                                    <div class="symbol symbol-20px">
+                                    <i class="ki-duotone ki-cross-circle fs-1 text-danger">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                      </i>
+                                    </div>
+                                </span>
                                 <img [src]="doc.get('fileIcon')?.value" 
                                     [alt]="doc.get('file_extension')?.value" 
                                     style="width: 38px; height: 38px;"
@@ -45,18 +62,7 @@
                                     <span class="spinner-border spinner-border-sm text-primary me-1"></span>
                                     <span class="text-primary">{{ 'UPLOADING' | translate }}</span>
                                 </span>
-                                <span *ngIf="doc.get('uploadStatus')?.value === 'success'" class="badge badge-success mx-2">
-                                    <i class="ki-duotone ki-check fs-2 text-white">
-                                        <span class="path1"></span>
-                                        <span class="path2"></span>
-                                    </i>
-                                </span>
-                                <span *ngIf="doc.get('uploadStatus')?.value === 'error'" class="badge badge-danger mx-2">
-                                    <i class="ki-duotone ki-cross fs-2 text-white">
-                                        <span class="path1"></span>
-                                        <span class="path2"></span>
-                                    </i>
-                                </span>
+                          
                             </div>
                         </ng-container>
                     </div>
@@ -133,13 +139,7 @@
                         <button type="button" class="btn d-flex align-items-center justify-content-center bg-light-danger"
                                 style="padding: 11px !important;"
                                 (click)="removeDocument(i)">
-                            <i class="ki-duotone ki-cross fs-2 p-0 m-0 text-danger">
-                                <span class="path1"></span>
-                                <span class="path2"></span>
-                                <span class="path3"></span>
-                                <span class="path4"></span>
-                                <span class="path5"></span>
-                            </i>
+                            <span class="fs-8 text-danger">{{'REMOVE' | translate}}</span>
                         </button>
                     </div>
                 </div>
@@ -147,23 +147,29 @@
             
   
         </div>
-        
+        <!-- Error Warning Message -->
+        <div *ngIf="hasFilesWithErrors()" class="alert alert-danger d-flex align-items-center mb-4" role="alert">
+            <i class="ki-duotone ki-shield-cross fs-2hx text-danger me-4">
+                <span class="path1"></span>
+                <span class="path2"></span>
+            </i>
+            <div class="d-flex flex-column">
+                <h4 class="mb-1 text-danger">{{ 'ERROR_FILES_DETECTED' | translate }}</h4>
+                <span>{{ 'REMOVE_ERROR_FILES_MESSAGE' | translate }}</span>
+            </div>
+        </div>
+
         <!-- Add Document Button -->
         <div class="form-group d-flex justify-content-start mb-5">
-            <button type="button" class="btn btn-primary px-6" (click)="addDocument()" [disabled]="hasUploadsInProgress()">
+            <button type="button" class="btn btn-primary px-6" (click)="addDocument()" [disabled]="hasUploadsInProgress() || hasFilesWithErrors()">
                 <i class="ki-duotone ki-plus fs-2 me-1"></i>
                 <ng-container *ngIf="defaultValues?.knowledgeType === 'insight'">{{ 'ADD_DOCUMENT' | translate }}</ng-container>
                 <ng-container *ngIf="defaultValues?.knowledgeType === 'data'">{{ 'ADD_NODE' | translate }}</ng-container>
                 <ng-container *ngIf="defaultValues?.knowledgeType === 'report' || defaultValues?.knowledgeType === 'manual' || defaultValues?.knowledgeType === 'course'">{{ 'ADD_CHAPTER' | translate }}</ng-container>
             </button>
             
-            <!-- Upload progress indicator -->
-            <div *ngIf="hasUploadsInProgress()" class="d-flex align-items-center ms-4">
-                <span class="spinner-border spinner-border-sm text-primary me-2"></span>
-                <span class="text-muted">{{ 'UPLOADS_IN_PROGRESS' | translate }}</span>
-            </div>
+     
         </div>
-        
         <!-- Total Price -->
         <div class="border-top border-gray-300 pt-4">
             <div class="d-flex justify-content-end align-items-center">

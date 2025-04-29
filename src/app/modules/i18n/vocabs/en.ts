@@ -4,8 +4,18 @@ export const locale = {
 
   data: {
     ISIC_CODE:'ISIC Code',
+    REMOVE:'Remove',
+    ERROR_FILES_DETECTED: 'Error Files Detected',
+    ENTER_TAGS:'Enter Tag',
+    MY_CERTIFICATES:'My Certificates',
+    VERIFICATION_STATUS:'Verification Status',
+    VERIFIED:'Verified',
+    COMPANY_VERIFIED_MESSAGE: 'Your company has been successfully verified.',
+    REMOVE_ERROR_FILES_MESSAGE: 'Please remove all files with errors before proceeding.',
     "MANAGER_CERTIFICATES": "Manager Certificates",
+    EMAIL_DOMAIN_MATCH:'Your email domain must match your website domain',
     COMPANY_INDUSTRIES: 'Company Industries',
+    CHOOSE_ACCOUNT_TYPE_TIP_DESC:"Individual and Company. The Individual account is intended for a single person, while the Company account is suitable if you wish to create a team.",
     ADD_MANAGER_CERTIFICATE:'Add Manager Certificates',
     COMPANY_PHONE: "Company Phone",
     ADDRESS: "Address",

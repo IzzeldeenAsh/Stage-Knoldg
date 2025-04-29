@@ -1,21 +1,17 @@
-   <!-- src/app/pages/user-profile/profile-pages/certificates/certificates.component.html -->
 <p-progressBar *ngIf="loadingProfile" mode="indeterminate" [style]="{ height: '4px' }"></p-progressBar>
-<ng-container *ngIf="!loadingProfile">
-  <!-- Personal Certificates Section -->
+<ng-container *ngIf="!loadingProfile && profile && profile.roles && profile.roles.includes('company') && profile.company">
   <div class="d-flex flex-wrap flex-stack mb-6">
     <!--begin::Title-->
     <h3 class="fw-bold my-2">
-     <ng-container *ngIf="profile && profile.roles && profile.roles.includes('company')"> {{ 'MANAGER_CERTIFICATES' | translate }}</ng-container>
-     <ng-container *ngIf="!profile || !profile.roles || !profile.roles.includes('company')"> {{ 'MY_CERTIFICATES' | translate }}</ng-container>
-      <span class="fs-6 text-gray-500 fw-semibold ms-1" *ngIf="profile && profile.certifications">{{profile.certifications.length}}</span>
+      {{ 'PROFILE.COMPANY_CERTIFICATES' | translate }}
+      <span class="fs-6 text-gray-500 fw-semibold ms-1" *ngIf="profile.company && profile.company.certifications">{{profile.company.certifications.length}}</span>
     </h3>
     <!--end::Title-->
     
     <!--begin::Add button-->
     <div class="d-flex my-2">
-      <button class="btn btn-sm btn-primary" (click)="showAddCertDialog()">
-     <ng-container *ngIf="profile && profile.roles && profile.roles.includes('company')"> <i class="fas fa-plus"></i> {{ 'ADD_MANAGER_CERTIFICATE' | translate }}</ng-container>
-     <ng-container *ngIf="!profile || !profile.roles || !profile.roles.includes('company')"> <i class="fas fa-plus"></i> {{ 'ADD_CERTIFICATE' | translate }}</ng-container>
+      <button class="btn btn-sm btn-primary" (click)="showAddCompanyCertDialog()">
+        <i class="fas fa-plus"></i> {{ 'PROFILE.ADD_COMPANY_CERTIFICATE' | translate }}  
       </button>
     </div>
     <!--end::Add button-->
@@ -23,12 +19,12 @@
 
   <div
     class="row g-6 g-xl-9 mb-6 mb-xl-9"
-    *ngIf="profile && profile.certifications && !isLoadingDocumentTypes"
+    *ngIf="profile.company && profile.company.certifications && !isLoadingDocumentTypes"
   >
     <!--begin::Col-->
     <div
       class="col-md-6 col-lg-4 col-xl-3"
-      *ngFor="let cert of profile.certifications"
+      *ngFor="let cert of profile.company.certifications"
     >
       <!--begin::Card-->
       <div class="card h-100">
@@ -53,7 +49,7 @@
           <!--end::Name-->
           
           <!-- Add Delete Button -->
-          <button class="btn btn-sm btn-light-danger mt-3" (click)="confirmDelete(cert)">
+          <button class="btn btn-sm btn-light-danger mt-3" (click)="confirmCompanyDelete(cert)">
             <i class="fas fa-trash"></i> {{ 'COMMON.DELETE' | translate }}
           </button>
         </div>
@@ -63,27 +59,25 @@
     </div>
     <!--end::Col-->
   </div>
-
-
 </ng-container>
 
-<!--begin::Add Certificate Dialog-->
+<!--begin::Add Company Certificate Dialog-->
 <p-dialog 
-  [(visible)]="displayAddCertDialog" 
+  [(visible)]="displayAddCompanyCertDialog" 
   [style]="{width: '450px'}" 
-  [header]="'PROFILE.ADD_CERTIFICATE' | translate" 
+  [header]="'PROFILE.ADD_COMPANY_CERTIFICATE' | translate" 
   [modal]="true"
   [draggable]="false"
   [resizable]="false"
-  (onHide)="isUploading = false">
+  (onHide)="isUploadingCompany = false">
   
   <div class="p-fluid">
     <div class="field mb-4">
-      <label for="documentType" class="block mb-2">{{ 'PROFILE.CERTIFICATE_TYPE' | translate }}</label>
+      <label for="companyDocumentType" class="block mb-2">{{ 'PROFILE.CERTIFICATE_TYPE' | translate }}</label>
       <p-dropdown 
-        id="documentType"
+        id="companyDocumentType"
         [options]="documentTypes"
-        [(ngModel)]="selectedDocType"
+        [(ngModel)]="selectedCompanyDocType"
         optionLabel="name"
         optionValue="id"
         [placeholder]="'PROFILE.SELECT_CERTIFICATE_TYPE' | translate"
@@ -94,55 +88,55 @@
     </div>
 
     <div class="field mb-4">
-      <label for="certificate" class="block mb-2">{{ 'PROFILE.CERTIFICATE_FILE' | translate }}</label>
+      <label for="companyCertificate" class="block mb-2">{{ 'PROFILE.CERTIFICATE_FILE' | translate }}</label>
       <input 
         type="file" 
         class="form-control"
-        (change)="onFileSelect($event)"
+        (change)="onCompanyFileSelect($event)"
         accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
       <small class="text-muted">{{ 'PROFILE.SUPPORTED_FORMATS' | translate }}</small>
     </div>
   </div>
 
   <ng-template pTemplate="footer">
-    <button class="btn btn-secondary me-2" (click)="displayAddCertDialog = false" [disabled]="isUploading">
+    <button class="btn btn-secondary me-2" (click)="displayAddCompanyCertDialog = false" [disabled]="isUploadingCompany">
       {{ 'COMMON.CANCEL' | translate }}
     </button>
-    <button class="btn btn-primary" (click)="uploadCertificate()" [disabled]="!selectedDocType || !selectedFile || isUploading">
-      <ng-container *ngIf="!isUploading">
+    <button class="btn btn-primary" (click)="uploadCompanyCertificate()" [disabled]="!selectedCompanyDocType || !selectedCompanyFile || isUploadingCompany">
+      <ng-container *ngIf="!isUploadingCompany">
         {{ 'COMMON.UPLOAD' | translate }}
       </ng-container>
-      <ng-container *ngIf="isUploading">
+      <ng-container *ngIf="isUploadingCompany">
         <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
         {{ 'COMMON.UPLOADING' | translate }}
       </ng-container>
     </button>
   </ng-template>
 </p-dialog>
-<!--end::Add Certificate Dialog-->
-  
-<!-- Delete Confirmation Dialog -->
+<!--end::Add Company Certificate Dialog-->
+
+<!-- Company Delete Confirmation Dialog -->
 <p-dialog 
-  [(visible)]="displayDeleteDialog" 
+  [(visible)]="displayCompanyDeleteDialog" 
   [style]="{width: '450px'}" 
-  [header]="'PROFILE.DELETE_CERTIFICATE' | translate" 
+  [header]="'PROFILE.DELETE_COMPANY_CERTIFICATE' | translate" 
   [modal]="true"
   [draggable]="false"
   [resizable]="false">
   
   <div class="p-fluid">
-    <p>{{ 'PROFILE.DELETE_CERTIFICATE_CONFIRMATION' | translate }}</p>
+    <p>{{ 'PROFILE.DELETE_COMPANY_CERTIFICATE_CONFIRMATION' | translate }}</p>
   </div>
 
   <ng-template pTemplate="footer">
-    <button class="btn btn-secondary me-2" (click)="displayDeleteDialog = false" [disabled]="isDeleting">
+    <button class="btn btn-secondary me-2" (click)="displayCompanyDeleteDialog = false" [disabled]="isDeletingCompany">
       {{ 'COMMON.CANCEL' | translate }}
     </button>
-    <button class="btn btn-danger" (click)="deleteCertificate()" [disabled]="isDeleting">
-      <ng-container *ngIf="!isDeleting">
+    <button class="btn btn-danger" (click)="deleteCompanyCertificate()" [disabled]="isDeletingCompany">
+      <ng-container *ngIf="!isDeletingCompany">
         {{ 'COMMON.DELETE' | translate }}
       </ng-container>
-      <ng-container *ngIf="isDeleting">
+      <ng-container *ngIf="isDeletingCompany">
         <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
         {{ 'COMMON.DELETING' | translate }}
       </ng-container>

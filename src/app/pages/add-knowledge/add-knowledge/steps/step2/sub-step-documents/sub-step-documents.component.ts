@@ -4,6 +4,8 @@ import { BaseComponent } from 'src/app/modules/base.component';
 import { ICreateKnowldege, IDocument } from '../../../create-account.helper';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { AddInsightStepsService } from 'src/app/_fake/services/add-insight-steps/add-insight-steps.service';
+import { Subscription } from 'rxjs';
+import { HorizontalComponent } from '../../../horizontal/horizontal.component';
 
 // Define DocumentInfo as a type that matches our requirements
 interface DocumentInfo {
@@ -48,12 +50,16 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   ) => void;
 
   @Input('defaultValues') defaultValues: ICreateKnowldege;
+  @Input() parentComponent: HorizontalComponent;
   documentsForm: FormGroup;
   totalPrice: number = 0;
   documents: DocumentInfo[] = [];
   uploadsInProgress: boolean = false;
   hasActiveUploads = false;
   pendingUploads: number = 0;
+  
+  // Track active upload subscriptions
+  private activeUploadSubscriptions: { [index: number]: Subscription } = {};
 
   constructor(
     injector: Injector,
@@ -96,6 +102,15 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       // Make sure parent model is updated even with empty document array
       this.updateParentModel({ documents: [] }, false);
     }
+    
+    // Set up a timer to periodically check document status and update parent model
+    // This ensures the parent component always has the latest validation state
+    setInterval(() => {
+      if (this.documents.length > 0) {
+        const isValid = this.validateDocuments();
+        this.updateParentModel({ documents: this.documents as IDocument[] }, isValid);
+      }
+    }, 1000); // Check every second
   }
 
   get documentControls(): FormArray {
@@ -143,6 +158,32 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
     if (doc) {
       console.log(`Removing document at index ${index}:`, doc);
       
+      // Check if there's an active upload for this document
+      if ((doc.uploadStatus === 'uploading' || doc.uploadStatus === 'pending') && this.activeUploadSubscriptions[index]) {
+        console.log(`Cancelling active upload for document at index ${index}`);
+        // Cancel the upload subscription
+        this.activeUploadSubscriptions[index].unsubscribe();
+        delete this.activeUploadSubscriptions[index];
+        
+        // Decrement the pending uploads counter
+        this.pendingUploads = Math.max(0, this.pendingUploads - 1);
+        
+        // Reset upload in progress flag to allow new uploads
+        this.isUploadInProgress = false;
+        
+        // Force update of upload status indicators
+        this.updateUploadStatusIndicators();
+        
+        // Remove document locally without server call
+        this.documents.splice(index, 1);
+        this.documentControls.removeAt(index);
+        this.calculateTotalPrice();
+        this.updateParentModel({ documents: this.documents as IDocument[] }, this.validateDocuments());
+        
+        this.showInfo('', 'Upload cancelled and document removed');
+        return;
+      }
+      
       // Get the document ID either from id or docId property
       const documentId = doc.id || (this.documentControls.at(index)?.get('docId')?.value);
       console.log(`Document ID: ${documentId}, Upload Status: ${doc.uploadStatus}`);
@@ -151,6 +192,10 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       // Since we're now auto-uploading files, they all get IDs
       if (documentId) {
         console.log(`Deleting document from server with ID: ${documentId}`);
+        
+        // Set a local flag to track this specific deletion
+        const deletionIndex = index;
+        const isDeletionInProgress = true;
         
         // Delete from server first
         this.addInsightStepsService.deleteKnowledgeDocument(documentId)
@@ -162,6 +207,9 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
               this.calculateTotalPrice();
               this.updateParentModel({ documents: this.documents as IDocument[] }, this.validateDocuments());
               this.showSuccess('', 'Document deleted successfully');
+              
+              // Make sure all status indicators are updated
+              this.updateUploadStatusIndicators();
             },
             error: (error) => {
               console.error('Error deleting document from server:', error);
@@ -182,6 +230,13 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
               this.documentControls.removeAt(index);
               this.calculateTotalPrice();
               this.updateParentModel({ documents: this.documents as IDocument[] }, this.validateDocuments());
+              
+              // Force reset of all upload status indicators
+              this.pendingUploads = 0;
+              this.uploadsInProgress = false;
+              this.hasActiveUploads = false;
+              this.isUploadInProgress = false; // Reset upload in progress flag
+              this.updateUploadStatusIndicators();
             }
           });
       } else {
@@ -191,6 +246,9 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
         this.documentControls.removeAt(index);
         this.calculateTotalPrice();
         this.updateParentModel({ documents: this.documents as IDocument[] }, this.validateDocuments());
+        
+        // Make sure all status indicators are updated
+        this.updateUploadStatusIndicators();
       }
     }
   }
@@ -235,6 +293,9 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   private fileUploadQueue: File[] = [];
   private isUploadInProgress = false;
   
+  // Flag to track if knowledge type has been created
+  private knowledgeTypeCreated = false;
+  
   handleMultipleFiles(files: FileList): void {
     // Convert FileList to array and add to upload queue
     const filesArray = Array.from(files);
@@ -246,6 +307,11 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
     if (!this.isUploadInProgress) {
       this.processNextFileInQueue();
     }
+  }
+  
+  // Reset knowledge type creation flag when switching to a new knowledge
+  resetKnowledgeTypeCreationFlag(): void {
+    this.knowledgeTypeCreated = false;
   }
   
   private processNextFileInQueue(): void {
@@ -337,7 +403,7 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
         }
         
         // Show error notification
-        this.showError('Duplicate File Name', 'A file with this name already exists. Please rename the file.');
+        this.showError('Duplicate File Name', 'A file with this name already exists. Please rename the file or remove this file.');
         
         // We'll still update the file and preview, but will not allow upload until renamed
         docGroup.patchValue({
@@ -350,6 +416,9 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
         
         // Mark file_name as touched to show validation errors
         docGroup.get('file_name')?.markAsTouched();
+        
+        // Update parent model to disable next button
+        this.updateParentModel({ documents: this.documents as IDocument[] }, false);
         
         return;
       }
@@ -384,13 +453,15 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
         this.documents[index] = localDoc;
       }
       
-      // Immediately start uploading the file
-      this.uploadFileOnly(index);
+      // Immediately start uploading the file - now the method is async
+      this.uploadFileOnly(index).catch(error => {
+        console.error('Error during file upload:', error);
+      });
     }
   }
 
   // New method to upload just the file
-  uploadFileOnly(index: number, isFromQueue: boolean = false): void {
+  async uploadFileOnly(index: number, isFromQueue: boolean = false): Promise<void> {
     // Get the document and form control
     const doc = this.documents[index];
     const control = this.documentControls.at(index);
@@ -419,9 +490,41 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
 
     console.log(`Starting upload for document: ${doc.file_name}`);
     
+    // Check if we need to create the knowledge type first
+    let knowledgeId = this.defaultValues.knowledgeId;
+    if (!knowledgeId && !this.knowledgeTypeCreated && this.parentComponent) {
+      try {
+        console.log('Creating knowledge type before uploading the first file');
+        this.showInfo('', 'Creating knowledge...');
+        
+        // Call the parent component's method to create knowledge type
+        knowledgeId = await this.parentComponent.createKnowledgeType();
+        console.log(`Knowledge type created successfully with ID: ${knowledgeId}`);
+        this.knowledgeTypeCreated = true;
+      } catch (error) {
+        console.error('Error creating knowledge type:', error);
+        this.showError('', 'Failed to create knowledge. Please try again.');
+        
+        // Update document status to error
+        control.get('uploadStatus')?.setValue('error');
+        control.get('errorMessage')?.setValue('Failed to create knowledge type');
+        doc.uploadStatus = 'error';
+        doc.errorMessage = 'Failed to create knowledge type';
+        
+        // Decrement the pending uploads counter
+        this.pendingUploads = Math.max(0, this.pendingUploads - 1);
+        this.updateUploadStatusIndicators();
+        
+        if (isFromQueue) {
+          this.processNextFileInQueue(); // Move to next file in queue
+        }
+        return;
+      }
+    }
+    
     // Call the first API to upload just the file
-    // Use the new API endpoint
-    this.addInsightStepsService.uploadKnowledgeDocument(this.defaultValues.knowledgeId, formData)
+    // Use the new API endpoint and the knowledgeId we just obtained if necessary
+    const subscription = this.addInsightStepsService.uploadKnowledgeDocument(knowledgeId || this.defaultValues.knowledgeId, formData)
       .subscribe({
         next: (response) => {
           if (response && response.data && response.data.knowledge_document_id) {
@@ -455,6 +558,9 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
 
             // Update parent with latest data
             this.updateParentModel({ documents: this.documents as IDocument[] }, this.validateDocuments());
+            
+            // Update upload status indicators
+            this.updateUploadStatusIndicators();
             
             // Log all documents after update
             this.logDocumentStatus();
@@ -510,11 +616,13 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
         },
         complete: () => {
           // Decrement the pending uploads counter
-          this.pendingUploads--;
-          if (this.pendingUploads === 0) {
-            this.uploadsInProgress = false;
-            this.hasActiveUploads = false;
-          }
+          this.pendingUploads = Math.max(0, this.pendingUploads - 1);
+          
+          // Update all upload status indicators
+          this.updateUploadStatusIndicators();
+          
+          // Remove from active subscriptions
+          delete this.activeUploadSubscriptions[index];
           
           // Process next file in queue if this was from the queue
           if (isFromQueue) {
@@ -522,6 +630,9 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
           }
         }
       });
+      
+    // Store the subscription so we can cancel it if needed
+    this.activeUploadSubscriptions[index] = subscription;
   }
 
   // Method to update document details (title, price) - This will be called by the parent component
@@ -742,6 +853,12 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       return false;
     }
     
+    // Check for any files with errors - BLOCK ANY ACTION until they are removed
+    if (this.hasFilesWithErrors()) {
+      console.log('Form invalid: documents with errors must be removed before proceeding');
+      return false;
+    }
+    
     // Allow proceeding with no documents if needed
     if (!this.documents.length) {
       console.log('No documents available');
@@ -771,7 +888,8 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
 
       // Don't check control errors as we handle each field separately
       
-      // Only check for upload errors, pending/uploading status is now allowed
+      // We already checked for errors at the beginning, so this check is redundant
+      // but we'll keep it for safety
       if (doc.uploadStatus === 'error') {
         console.log(`Form invalid: document ${i} has error status`);
         return false;
@@ -794,11 +912,47 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   }
 
   hasUploadsInProgress(): boolean {
-    return this.pendingUploads > 0 || this.uploadsInProgress || this.hasActiveUploads;
+    // Check if there are any documents with 'uploading' status only
+    // We specifically exclude 'pending' status for documents that have been successfully uploaded
+    const uploadsInProgress = this.documents.some(doc => {
+      return doc.uploadStatus === 'uploading';
+    });
+    
+    // Also check the pendingUploads counter, but only if it's greater than 0
+    // This helps prevent false positives
+    return uploadsInProgress || (this.pendingUploads > 0 && this.uploadsInProgress);
+  }
+  
+  // Method to update upload status indicators
+  private updateUploadStatusIndicators(): void {
+    // Count actual uploads in progress - only count documents that are actually uploading or pending
+    const hasActiveUploads = this.documents.some(doc => {
+      return (doc.uploadStatus === 'uploading' || doc.uploadStatus === 'pending');
+    });
+    
+    // Update status flags
+    this.uploadsInProgress = hasActiveUploads;
+    this.hasActiveUploads = hasActiveUploads;
+    
+    // If no active uploads, reset pending counter and upload in progress flag
+    if (!hasActiveUploads) {
+      this.pendingUploads = 0;
+      // Also reset the upload in progress flag to allow new uploads
+      if (this.fileUploadQueue.length === 0) {
+        this.isUploadInProgress = false;
+      }
+    }
+    
+    console.log(`Upload status indicators updated: uploadsInProgress=${this.uploadsInProgress}, hasActiveUploads=${this.hasActiveUploads}, pendingUploads=${this.pendingUploads}, isUploadInProgress=${this.isUploadInProgress}`);
   }
 
   // Method to check if any documents have upload errors
   hasUploadErrors(): boolean {
+    return this.documents.some(doc => doc.uploadStatus === 'error');
+  }
+  
+  // Method to check if there are any files with errors that need to be removed
+  hasFilesWithErrors(): boolean {
     return this.documents.some(doc => doc.uploadStatus === 'error');
   }
 
@@ -818,11 +972,51 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
     console.log(`Found ${pendingDocs.length} pending documents`);
     return pendingDocs;
   }
+  
+  // Method to cancel all active uploads
+  cancelAllActiveUploads(): void {
+    console.log('Cancelling all active uploads');
+    
+    // Unsubscribe from all active upload subscriptions
+    Object.keys(this.activeUploadSubscriptions).forEach(indexStr => {
+      const index = parseInt(indexStr, 10);
+      if (this.activeUploadSubscriptions[index]) {
+        console.log(`Cancelling upload subscription at index ${index}`);
+        this.activeUploadSubscriptions[index].unsubscribe();
+        delete this.activeUploadSubscriptions[index];
+      }
+    });
+    
+    // Reset all upload status indicators
+    this.pendingUploads = 0;
+    this.uploadsInProgress = false;
+    this.hasActiveUploads = false;
+    this.isUploadInProgress = false; // Reset upload in progress flag
+    this.fileUploadQueue = []; // Clear the upload queue
+    
+    // Update document statuses
+    this.documents.forEach((doc, index) => {
+      if (doc.uploadStatus === 'uploading' || doc.uploadStatus === 'pending') {
+        doc.uploadStatus = 'error';
+        doc.errorMessage = 'Upload cancelled';
+        
+        // Update form control
+        const control = this.documentControls.at(index);
+        if (control) {
+          control.get('uploadStatus')?.setValue('error');
+          control.get('errorMessage')?.setValue('Upload cancelled');
+        }
+      }
+    });
+  }
 
   // Call this method to manually validate and update the parent
   validateAndUpdateParent(): void {
     const isValid = this.validateDocuments();
     this.updateParentModel({ documents: this.documents as IDocument[] }, isValid);
+    
+    // Also ensure upload status indicators are updated
+    this.updateUploadStatusIndicators();
   }
 
   // Add debugging method to help identify document status issues

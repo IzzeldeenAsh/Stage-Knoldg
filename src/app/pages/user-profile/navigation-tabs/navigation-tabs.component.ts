@@ -13,8 +13,10 @@ export class NavigationTabsComponent implements OnInit, OnChanges {
   roles: string[] = [];
   filteredTabs:any;
   tabs = [
-    { labelen: 'Overview', labelar: 'ملخص', link: '/app/profile/overview', activeInfo: true, activePrimary: false, roles: ['client', 'insighter', 'company', 'company-insighter'] },
-    { labelen: 'Certificates', labelar: 'شهاداتي', link: '/app/profile/certificates', activeInfo: false, activePrimary: true, roles: ['insighter', 'company', 'company-insighter'] },
+    { labelen: 'Personal Info', labelar: 'معلوماتي', link: '/app/profile/overview', activeInfo: true, activePrimary: false, roles: ['client', 'insighter', 'company', 'company-insighter'] },
+    { labelen: 'My Certificates', labelar: 'شهاداتي', link: '/app/profile/certificates', activeInfo: false, activePrimary: true, roles: ['insighter', 'company', 'company-insighter'] },
+    { labelen: 'My Company Info', labelar: 'معلومات شركتي', link: '/app/profile/company', activeInfo: false, activePrimary: true, roles: ['company'] },
+    { labelen: 'Company Certificates', labelar: 'شهادات الشركة', link: '/app/profile/company-certificates', activeInfo: false, activePrimary: true, roles: ['company'] },
     { labelen: 'Documents', labelar: 'وثائقي', link: '/app/profile/documents', activeInfo: false, activePrimary: true, roles: ['company'] },
     { labelen: 'Profile Settings', labelar: 'إعدادات الملف الشخصي', link: '/app/profile/settings', activeInfo: false, activePrimary: true, roles: ['client', 'insighter', 'company', 'company-insighter'] },
   ];
