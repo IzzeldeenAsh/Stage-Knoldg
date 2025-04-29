@@ -556,110 +556,45 @@
 
       <!-- Tags Section -->
       <div class="mt-10 mb-8" *ngIf="form.get('topicId')?.value && form.get('topicId')?.value !== ''">
-        <div class="d-flex justify-content-between align-items-center mb-5">
-          <label class="d-flex align-items-center fs-5 fw-semibold">
-            <span class="required">{{ "SELECT_TAGS" | translate }}</span>
-          </label>
-          <div class="d-flex gap-3">
-            <!-- Only show Select All and Clear All buttons if tags are available -->
-            <ng-container *ngIf="tags && tags.length > 0">
-              <button
-                type="button"
-                class="btn btn-sm btn-light-info text-info text-hover-white text-active-white"
-                (click)="selectAll()"
-              >
-                {{ "SELECT_ALL" | translate }}
-              </button>
-              <button
-                type="button"
-                class="btn btn-sm btn-light-warning text-warning text-hover-white text-active-white"
-                (click)="clearAll()"
-              >
-                {{ "CLEAR_ALL" | translate }}
-              </button>
-            </ng-container>
-            <button
-              type="button"
-              class="btn btn-sm btn-light-success text-success text-hover-white text-active-white"
-              (click)="openAddCustomTag()"
-            >
-              {{ "ADD_CUSTOM_TAG" | translate }}
-            </button>
-          </div>
-        </div>
+        <label class="d-flex align-items-center fs-5 fw-semibold mb-5">
+          <span class="required">{{ "SELECT_TAGS" | translate }}</span>
+        </label>
+        
         <!-- Show this message when there are no tags -->
-        <div *ngIf="!tags || tags.length === 0" class="alert alert-info mb-5">
-          {{ "NO_TAGS_AVAILABLE" | translate }} {{ "ADD_CUSTOM_TAG_INSTRUCTION" | translate }}
+        <div *ngIf="!availableTags || availableTags.length === 0" class="alert alert-info mb-5">
+          {{ "NO_TAGS_AVAILABLE" | translate }}
         </div>
-        <!-- Only show chip group if there are tags -->
-        <div class="chip-group mb-5" *ngIf="chips && chips.length > 0">
-          <div class="chip" *ngFor="let chip of chips" [class.selected]="chip.selected" (click)="toggleSelection(chip)">
-            <span class="check-icon" *ngIf="chip.selected">
-              <i class="pi pi-check" style="font-size: 1rem"></i>
-            </span>
-            <span>{{ chip.label }}</span>
-          </div>
-        </div>
+        
         <!-- Tag selection error message -->
         <div *ngIf="form.get('tag_ids')?.hasError('required') && form.get('tag_ids')?.touched" class="fv-plugins-message-container invalid-feedback mb-3">
           {{ "TAGS_REQUIRED" | translate }}
         </div>
+        
         <!-- Server error message for tags -->
         <div *ngIf="tagIdError" class="fv-plugins-message-container invalid-feedback mb-3">
           {{ tagIdError }}
         </div>
-        <p-multiSelect
-          [options]="tags"
-          formControlName="tag_ids"
-          optionLabel="name"
-          optionValue="id"
+        
+        <!-- Tag input for selecting and adding tags -->
+        <tag-input
+          formControlName="tagItems"
+          [secondaryPlaceholder]="'ENTER_TAGS' | translate"
+          [separatorKeyCodes]="[188, 13]"
+          [addOnBlur]="true"
+          [required]="true"
+          [placeholder]="'ENTER_TAGS' | translate"
+          (onAdd)="addTag($event)"
+          (onRemove)="removeTag($event)"
           [ngClass]="{'is-invalid': form.get('tag_ids')?.hasError('required') && form.get('tag_ids')?.touched, 'border-red': form.get('tag_ids')?.hasError('required') && form.get('tag_ids')?.touched}"
-          placeholder="{{ 'SELECT_TAGS' | translate }}"
-          [maxSelectedLabels]="3"
-          selectedItemsLabel="{0} {{ 'TAGS_SELECTED' | translate }}"
-        ></p-multiSelect>
+        >
+          <tag-input-dropdown
+            [showDropdownIfEmpty]="true"
+            [autocompleteItems]="availableTags"
+          ></tag-input-dropdown>
+        </tag-input>
       </div>
 
-      <!-- Add Custom Tag Modal using PrimeNG Dialog -->
-      <p-dialog
-        appendTo="body"
-        header="{{ 'ADD_CUSTOM_TAG' | translate }}"
-        [(visible)]="isAddingCustomTag"
-        modal="true"
-        [closable]="false"
-        [style]="{ width: '400px' }"
-      >
-        <form [formGroup]="customTagForm" (ngSubmit)="submitCustomTag()">
-          <div class="p-fluid">
-            <div class="p-field">
-              <label for="name">{{ "TAG_NAME" | translate }}</label>
-              <input id="name" type="text" pInputText formControlName="name" [ngClass]="{'is-invalid': customTagForm.get('name')?.invalid && customTagForm.get('name')?.touched, 'border-red': customTagForm.get('name')?.invalid && customTagForm.get('name')?.touched}"/>
-              <small
-                *ngIf="customTagForm.get('name')?.invalid && customTagForm.get('name')?.touched"
-                class="p-error"
-              >
-                {{ "TAG_NAME_REQUIRED" | translate }}
-              </small>
-            </div>
-          </div>
-          <div class="p-dialog-footer d-flex justify-content-end gap-3 mt-5">
-            <button
-              type="button"
-              class="btn btn-light-danger btn-sm px-6"
-              (click)="closeAddCustomTag()"
-            >
-              <span class="indicator-label">{{ "CANCEL" | translate }}</span>
-            </button>
-            <button
-              type="submit"
-              class="btn btn-primary btn-sm px-6"
-              [disabled]="customTagForm.invalid"
-            >
-              <span class="indicator-label">{{ "ADD_TAG" | translate }}</span>
-            </button>
-          </div>
-        </form>
-      </p-dialog>
+      <!-- Tag dialog removed - tags are now added directly through the tag input -->
 
       <!-- Keywords Section -->
       <div class="mt-10 mb-10" *ngIf="form.get('topicId')?.value && form.get('topicId')?.value !== ''">

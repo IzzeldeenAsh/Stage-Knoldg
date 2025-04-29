@@ -344,6 +344,17 @@ export class Step5Component extends BaseComponent implements OnInit {
     });
     this.unsubscribe.push(formChangesSubscr);
     
+    // Add listeners for website and email fields to validate domain matching
+    const websiteChangesSubscr = this.form.get('website')?.valueChanges.subscribe(() => {
+      this.validateDomainMatching();
+    });
+    
+    const emailChangesSubscr = this.form.get('companyEmail')?.valueChanges.subscribe(() => {
+      this.validateDomainMatching();
+    });
+    
+    if (websiteChangesSubscr) this.unsubscribe.push(websiteChangesSubscr);
+    if (emailChangesSubscr) this.unsubscribe.push(emailChangesSubscr);
   }
 
   verificationMethodValidator(){
@@ -399,6 +410,62 @@ export class Step5Component extends BaseComponent implements OnInit {
     return this.form.valid && this.agreementChecked;
   }
 
+  // Validates if the email domain matches the website domain
+  validateDomainMatching(): boolean {
+    if (this.form.get('verificationMethod')?.value !== 'websiteEmail') {
+      return true; // Not using website/email verification method
+    }
+    
+    const website = this.form.get('website')?.value;
+    const email = this.form.get('companyEmail')?.value;
+    
+    if (!website || !email) {
+      return false; // Missing required fields
+    }
+    
+    const websiteDomain = this.extractDomainFromWebsite(website);
+    const emailDomain = this.extractDomainFromEmail(email);
+    
+    return !!(websiteDomain && emailDomain && emailDomain.endsWith(websiteDomain));
+  }
+  
+  // Extract domain from website URL, handling various formats
+  extractDomainFromWebsite(website: string): string | null {
+    if (!website) return null;
+    
+    // Clean up the website input
+    let domain = website.trim().toLowerCase();
+    
+    // Remove protocol (http://, https://)
+    domain = domain.replace(/^(https?:\/\/)/i, '');
+    
+    // Remove www. prefix if present
+    domain = domain.replace(/^www\./i, '');
+    
+    // Remove path, query parameters, and hash
+    domain = domain.split('/')[0];
+    domain = domain.split('?')[0];
+    domain = domain.split('#')[0];
+    
+    // Remove port if present
+    domain = domain.split(':')[0];
+    
+    return domain || null;
+  }
+  
+  // Extract domain from email address
+  extractDomainFromEmail(email: string): string | null {
+    if (!email || !email.includes('@')) return null;
+    
+    return email.split('@')[1].toLowerCase();
+  }
+  
+  // Check if email contains @ symbol for early validation
+  hasEmailAtSymbol(): boolean {
+    const email = this.form.get('companyEmail')?.value;
+    return email && email.includes('@');
+  }
+  
   // Call this before submitting the form - used by the parent component
   prepareForSubmit() {
     this.attemptedSubmit = true;

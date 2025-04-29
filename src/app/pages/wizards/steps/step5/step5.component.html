@@ -91,7 +91,7 @@
             type="button"
             class="btn flex-1 btn-primary"
             (click)="getCode()"
-            [disabled]="!form.get('companyEmail')?.valid || gettingCodeLoader || isGetCodeDisabled"
+            [disabled]="!form.get('companyEmail')?.valid || gettingCodeLoader || isGetCodeDisabled || !validateDomainMatching()"
           >
             <ng-container *ngIf="!gettingCodeLoader && !isGetCodeDisabled">
               <span class="indicator-label">{{ 'INSIGHTER_WIZARD.GET_CODE' | translate }}</span>
@@ -109,6 +109,9 @@
               </span>
             </ng-container>
           </button>
+        </div>
+        <div *ngIf="form.get('companyEmail')?.value && form.get('website')?.value && hasEmailAtSymbol() && !validateDomainMatching()" class="text-danger fs-7 mt-2">
+          {{ 'EMAIL_DOMAIN_MATCH' | translate }}
         </div>
       </div>
       <div class="mb-10">

@@ -142,6 +142,7 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
   };
 
   handleKnowledgeTypeChange(knowledgeType: string) {
+    // Only handle update case here, creation is delayed until document upload
     if (this.isEditMode && this.knowledgeId) {
       // Update existing knowledge type
       this.addInsightStepsService.updateKnowledgeType(this.knowledgeId, knowledgeType)
@@ -155,8 +156,22 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
             this.handleServerErrors(error);
           }
         });
-    } else {
-      // Create new knowledge type
+    }
+    // In the creation case, we just update the local model, but don't call API
+    // The API call will be made in the SubStepDocumentsComponent during first file upload
+  }
+
+  // New method to create knowledge type and get ID
+  // Will be called by SubStepDocumentsComponent when uploading first file
+  createKnowledgeType(): Promise<number> {
+    return new Promise((resolve, reject) => {
+      const knowledgeType = this.account$.value.knowledgeType;
+      
+      if (!knowledgeType) {
+        reject(new Error('Knowledge type is not selected'));
+        return;
+      }
+
       this.addInsightStepsService.step1HandleKnowledgeType(knowledgeType)
         .subscribe({
           next: (response) => {
@@ -165,15 +180,23 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
             if (response.data && response.data.knowledge_id) {
               this.knowledgeId = response.data.knowledge_id;
               this.updateAccount({ knowledgeId: response.data.knowledge_id }, true);
+              resolve(response.data.knowledge_id);
+            } else {
+              reject(new Error('Failed to get knowledge ID from response'));
             }
-            // The next step will be triggered by the step1 component's goToNextStep event
           },
           error: (error) => {
             console.error('Error creating knowledge type', error);
             this.handleServerErrors(error);
+            reject(error);
           }
         });
-    }
+    });
+  }
+
+  // Getter for current account state - useful for child components
+  getCurrentAccount(): ICreateKnowldege {
+    return this.account$.value;
   }
 
   nextStep() {

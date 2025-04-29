@@ -9,16 +9,11 @@
   <!-- Content (shown when loading is complete) -->
   <div class="w-100" *ngIf="!(isLoading$ | async)">
     <!-- Heading -->
-    <div class="pb-8">
+    <div >
       <h1 class="fw-bold text-gray-900">
         {{ 'INSIGHTER_WIZARD.UPLOAD_FILES' | translate }}
       </h1>
-      <div class="text-muted fw-semibold fs-6">
-        {{ 'INSIGHTER_WIZARD.IF_NEED_MORE_INFO' | translate }}
-        <a href="#" class="link-primary">
-          {{ 'INSIGHTER_WIZARD.CAMPAIGN_GUIDELINES' | translate }}
-        </a>
-      </div>
+
       <div class="text-muted fw-semibold fs-6">
         {{ 'INSIGHTER_WIZARD.DOCUMENT_SIZE' | translate }}
       </div>
@@ -37,10 +32,18 @@
           class="d-flex flex-stack py-4 border border-top-0 border-left-0 border-right-0 border-dashed"
         >
           <div class="d-flex align-items-center gap-3">
+                <!-- Success Icon -->
+                <div class="symbol symbol-20px">
+                  <i class="ki-duotone ki-check-circle fs-1 text-success">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                  </i>
+                </div>
             <!-- File Icon -->
             <div class="symbol symbol-35px">
               <img [src]="getFileIcon(fileControl.value.file)" alt="icon" />
             </div>
+        
             <!-- File Details -->
             <div class="ms-6 w-200px">
               <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2">

@@ -2,7 +2,9 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ProfileComponent } from './profile.component';
 import { OverviewComponent } from './profile-pages/overview/overview.component';
+import { CompanyComponent } from './profile-pages/company/company.component';
 import { CertificatesComponent } from './profile-pages/certificates/certificates.component';
+import { CompanyCertificatesComponent } from './profile-pages/company-certificates/company-certificates.component';
 import { RolesGuard } from 'src/app/guards/roles-guard/roles-gurad.gurad';
 import { DocumentsComponent } from './profile-pages/documents/documents.component';
 import { SettingsDashboardComponent } from './profile-pages/account-settings/settings-dashboard/settings-dashboard.component';
@@ -27,6 +29,12 @@ const routes: Routes = [
       component:OverviewComponent
     },
     {
+      path:'company',
+      component:CompanyComponent,
+      canActivate:[RolesGuard],
+      data: { roles: ['company'] }
+    },
+    {
       path:'documents',
       component:DocumentsComponent,
       canActivate:[RolesGuard],
@@ -38,6 +46,12 @@ const routes: Routes = [
       component:CertificatesComponent,
       canActivate:[RolesGuard],
       data: { roles: ['insighter', 'company', 'company-insighter'] } 
+    },
+    {
+      path:'company-certificates',
+      component:CompanyCertificatesComponent,
+      canActivate:[RolesGuard],
+      data: { roles: ['company'] } 
     },
     {
       path: 'settings',
