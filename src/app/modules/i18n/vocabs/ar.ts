@@ -1,12 +1,26 @@
 export const locale = {
   lang: "ar",
   data: {
+INSIGHTER_REQUESTS: {
+      TITLE: 'طلبات الإنسايتر',
+      REQUEST_COUNT: 'الطلبات',
+      FILTER: {
+        REQUEST_TYPE: 'نوع الطلب',
+        SHOW_ALL: 'عرض الكل',
+        ACCEPT_KNOWLEDGE: 'قبول المعرفة',
+        STATUS: 'الحالة',
+        PENDING: 'قيد الانتظار',
+        APPROVED: 'تمت الموافقة',
+        REJECTED: 'مرفوض'
+      },
+    },
+
     COMPANY_INDUSTRIES: 'الصناعات التي ينتمي إليها الشركة',
     CHOOSE_ACCOUNT_TYPE_TIP_DESC: ' الحساب الفردي مخصص للشخص الواحد، بينما حساب الشركة مناسب إذا كنت ترغب في إنشاء فريق.',
     EMAIL_DOMAIN_MATCH:'البريد الالكتروني يجب أن يتطابق مع نطاق الموقع',
     COMPANY_CONSULTING_FIELDS: 'المجالات الاستشارية التي ينتمي إليها الشركة',
     COMPANY_CERTIFICATIONS: 'الشهادات التي ينتمي إليها الشركة',
-    'DRAFT_STATUS': 'مسودة',
+    'DRAFT_STATUS': 'المكتبة',
     'REGIONS': 'القارات',
     MY_CERTIFICATES:'شهاداتي',
     VERIFICATION_STATUS:'موثوقية الحساب',
@@ -17,12 +31,12 @@ export const locale = {
     STAFF_NOTES: 'ملاحظات الموظف',
     PENDING_REVIEW: 'قيد المراجعة',
     ADD_MANAGER_CERTIFICATE:'أضف شهادات المدير',
-    ENTER_NOTES_FOR_INSIGHTER: 'أدخل ملاحظات للانسايتر',
-    NOTES_WILL_BE_VISIBLE_TO_INSIGHTER: 'سيكون الملاحظات متاحًا للانسايتر',
+    ENTER_NOTES_FOR_INSIGHTER: 'أدخل ملاحظات للإنسايتر',
+    NOTES_WILL_BE_VISIBLE_TO_INSIGHTER: 'سيكون الملاحظات متاحًا للإنسايتر',
     STATUS: 'الحالة',
     APPROVE: 'موافق',
     REJECT: 'مرفوض',
-    ADD_NOTE:'إضافة ملاحظة',
+    ADD_NOTE:'أدخل هنا ملاحظاتك للإنسايتر',
     REMOVE:'حذف',
     ERROR_FILES_DETECTED: 'تم اكتشاف ملفات بها أخطاء',
     REMOVE_ERROR_FILES_MESSAGE: 'يرجى إزالة جميع الملفات التي تحتوي على أخطاء قبل المتابعة.',
@@ -121,6 +135,10 @@ export const locale = {
       "ADD_BUTTON": "إضافة معرفة"
     },
     "MY_COMPANY": {
+      STATUS:{
+        ACTIVE: 'مفعل',
+        INACTIVE: 'غير مفعل'
+      },
       "DELETE": "حذف الموظف",
       "TITLE": "فريقي",
       "SUBTITLE": "إدارة موظفي شركتك",
@@ -618,6 +636,11 @@ export const locale = {
       MANUAL: 'الدليل'
     },
     USER_REQUESTS: {
+      STATUS: {
+        PENDING: 'قيد الانتظار',
+        APPROVED: 'تمت الموافقة',
+        DECLINED: 'مرفوض'
+      },
       "NO_REQUESTS": {
         "TITLE": "No Requests Found",
         "MESSAGE": "You don't have any requests at the moment. New requests will appear here once created.",
@@ -628,6 +651,7 @@ export const locale = {
       FILTER: {
         REQUEST_TYPE: 'نوع الطلب',
         SHOW_ALL: 'عرض الكل',
+        ACCEPT_KNOWLEDGE: 'قبول المعرفة',
         ACTIVATE_COMPANY_ACCOUNT: 'تفعيل حساب الشركة',
         DEACTIVATE_COMPANY_ACCOUNT: 'تعطيل حساب الشركة',
         VERIFY_COMPANY: 'تحقق من الشركة',
@@ -650,6 +674,8 @@ export const locale = {
       DIALOG: {
         HEADER: 'تفاصيل الطلب',
         REQUEST_TYPE_LABEL: 'نوع الطلب',
+        VIEW: 'عرض',
+        RESEND_REQUEST: 'إعادة طلب',
         STATUS_BADGE: '{{status}}',
         STAFF_NOTES_LABEL: 'ملاحظات الموظفين',
         NO_STAFF_NOTES: 'لا توجد ملاحظات موظفين متاحة.',
@@ -725,7 +751,7 @@ export const locale = {
     IF_NEED_MORE_INFO: "إذا كنت بحاجة إلى مزيد من المعلومات، يرجى زيارة",
     HELP_PAGE: "صفحة المساعدة",
     DATA: "بيانات",
-    INSIGHTS: "رؤى",
+    INSIGHTS: "الرؤى",
     REPORTS: "تقارير",
     DOCUMENT_DETAILS: "تفاصيل الملف",
     ADD_DESCRIPTION_AND_CHAPTERS: "أضف الوصف والفصول",
@@ -862,7 +888,7 @@ export const locale = {
     AVAILABLE_KNOWLEDGE: "المعارف المتاحة",
     "ALL": "الكل",
     "DATA": "بيانات",
-    "INSIGHT": "رؤى",
+    "INSIGHT": "الرؤى",
     "REPORT": "تقرير",
     "MANUAL": "دليل",
     "COURSE": "دورة",
@@ -923,8 +949,9 @@ export const locale = {
   INSIGHTER_DASHBOARD_POSTED: "المُنشَر",
   INSIGHTER_DASHBOARD_PACKAGES: "الحزم",
   KNOWLEDGES:'المعارف',
-  SELLINGS:'المبيعات',
-  TOTAL_REVENUE:'اجمالي الايرادات',
+  PUBLISHED:'منشور',
+  SELLINGS:'مباع',
+  TOTAL_REVENUE:'الإيرادات',
   ABOUT:'عن المنصة',
   SUPPORT:'الدعم',
   KNOLDG:'نولج',
@@ -998,7 +1025,7 @@ export const locale = {
   },
   "KNOWLEDGE_TYPES": {
     "COURSE": "دورة تدريبية",
-    "TITLE": "توزيع أنواع المعرفة",
+    "TITLE": "المعارف المرفوعة" ,
     "SUBTITLE": "إحصائيات محتوى المعرفة حسب النوع",
     "LOAD_ERROR": "فشل في تحميل إحصائيات نوع المعرفة. يرجى المحاولة مرة أخرى.",
     "RETRY": "إعادة المحاولة",
@@ -1006,7 +1033,7 @@ export const locale = {
     "TOTAL": "المجموع",
     "ITEMS": "عناصر",
     "REPORT": "تقرير",
-    "INSIGHT": "رؤية",
+    "INSIGHT": "الرؤى",
     "MANUAL": "دليل",
     "DATA": "بيانات",
     "BUSINESS_COURSES": "دورات الأعمال",
@@ -1024,7 +1051,7 @@ export const locale = {
     "RETRY": "إعادة المحاولة"
   },
   "EMPLOYEE_KNOWLEDGE": {
-    "TITLE": "مساهمات معرفة الموظفين",
+    "TITLE": "مساهمات الموظفين",
     "SUBTITLE": "نظرة عامة على المحتوى المعرفي المنشور من قبل كل موظف",
     "EMPLOYEES": "الموظفين",
     "ITEMS": "عناصر",

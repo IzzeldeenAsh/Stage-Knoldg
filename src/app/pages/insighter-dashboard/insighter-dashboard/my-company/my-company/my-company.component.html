@@ -32,7 +32,7 @@
         <table class="table align-middle table-row-dashed fs-6 gy-5">
           <!-- Table Header -->
           <thead class="thead-spacing">
-            <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
+            <tr class="text-inline-start text-muted fw-bold fs-7 text-uppercase gs-0">
               <th class="min-w-50px"></th>
               <th class="min-w-125px">{{ 'MY_COMPANY.TABLE.INSIGHTER' | translate }}</th>
               <th class="min-w-125px">{{ 'MY_COMPANY.TABLE.EMAIL' | translate }}</th>
@@ -92,7 +92,9 @@
                 <!-- Status -->
                 <td>
                   <span [class]="'badge ' + getStatusBadgeClass(insighter.insighter_status)">
-                    {{ insighter.insighter_status | titlecase }}
+                    {{ (insighter.insighter_status === 'active' ? 'MY_COMPANY.STATUS.ACTIVE' : 
+                        insighter.insighter_status === 'inactive' ? 'MY_COMPANY.STATUS.INACTIVE' : 
+                        insighter.insighter_status) | translate | titlecase }}
                   </span>
                 </td>
                 
@@ -255,7 +257,7 @@
     <form [formGroup]="emailForm">
       <div class="mb-3">
         <label class="form-label required">{{ 'MY_COMPANY.EMAIL_ADDRESS' | translate }}</label>
-        <div class="input-group">
+        <div class="input-group flex-row-reverse flex-row-reverse-lg">
           <span class="input-group-text">
             <i class="ki-duotone ki-sms fs-4">
               <span class="path1"></span>
@@ -264,14 +266,15 @@
           </span>
           <input 
             type="email" 
-            class="form-control" 
+            class="form-control text-start" 
             [placeholder]="'MY_COMPANY.ENTER_EMAIL' | translate" 
             formControlName="email"
             pInputText
+            dir="ltr"
           />
         </div>
         <!-- Validation messages -->
-        <div *ngIf="emailForm.get('email')?.touched">
+        <div *ngIf="emailForm.get('email')?.touched" class="text-end">
           <div *ngIf="emailForm.get('email')?.hasError('required')" class="fv-plugins-message-container">
             <div class="fv-help-block">{{ 'MY_COMPANY.EMAIL_REQUIRED' | translate }}</div>
           </div>
@@ -355,7 +358,7 @@
   <ng-template pTemplate="footer">
     <button 
       type="button"
-      class="btn btn-light-primary me-3 btn-sm"
+      class="btn btn-light-primary mx-3 btn-sm"
       (click)="closeAddEmployeeModal()"
       [disabled]="isInviting"
     >
