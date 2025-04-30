@@ -94,7 +94,7 @@ export class MyRequestsComponent extends BaseComponent implements OnInit {
   filterRequests() {
     this.filteredUserRequests = this.userRequests.filter((request) => {
       const matchesType = this.selectedType ? request.type.key === this.selectedType : true;
-      const matchesStatus = this.selectedStatus ? request.status === this.selectedStatus : true;
+      const matchesStatus = this.selectedStatus ? request.final_status === this.selectedStatus : true;
       return matchesType && matchesStatus;
     });
   }
@@ -110,6 +110,35 @@ export class MyRequestsComponent extends BaseComponent implements OnInit {
     });
     
     console.log('Filtered insighter requests count:', this.filteredInsighterRequests.length);
+  }
+  
+  // Check if any filters are active (either user or insighter)
+  hasActiveFilters(): boolean {
+    return this.hasUserFilters() || this.hasInsighterFilters();
+  }
+  
+  // Check if user request filters are active
+  hasUserFilters(): boolean {
+    return !!this.selectedType || !!this.selectedStatus;
+  }
+  
+  // Check if insighter request filters are active
+  hasInsighterFilters(): boolean {
+    return !!this.selectedInsighterType || !!this.selectedInsighterStatus;
+  }
+  
+  // Clear user request filters
+  clearUserFilters(): void {
+    this.selectedType = '';
+    this.selectedStatus = '';
+    this.filterRequests();
+  }
+  
+  // Clear insighter request filters
+  clearInsighterFilters(): void {
+    this.selectedInsighterType = '';
+    this.selectedInsighterStatus = '';
+    this.filterInsighterRequests();
   }
 
   openRequestDialog(request: ExtendedUserRequest) {

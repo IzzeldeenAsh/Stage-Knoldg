@@ -1,27 +1,26 @@
 <!--begin::Card header-->
 <div class="card-header p-0">
   <!--begin::Search and Filters-->
-  <div class="d-flex justify-content-between align-items-center w-100" *ngIf="knowledges && knowledges.length > 0 && !loading">
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center w-100 gap-3" *ngIf="knowledges && knowledges.length > 0 && !loading">
     <!--begin::Search section-->
-    <div class="d-flex align-items-center">
+    <div class="d-flex align-items-center w-100 w-md-auto">
       <!--begin::Search-->
-      <div class="d-flex align-items-center position-relative my-1">
+      <div class="d-flex align-items-center position-relative my-1 w-100">
         <i class="ki-outline ki-magnifier fs-1 position-absolute mx-2"></i>
         <input
           type="text"
           data-kt-filemanager-table-filter="search"
-          class="form-control form-control-solid w-250px px-10"
+          class="form-control form-control-solid px-10 w-100"
           placeholder="{{ 'KNOWLEDGE.SEARCH_PLACEHOLDER' | translate }}"
           [(ngModel)]="searchTerm"
           (input)="onSearch($event)"
         />
       </div>
       <!--end::Search-->
-
     </div>
     
     <!-- Begin::Knowledge Type Filter Chips -->
-    <div class="filter-chips-container d-flex flex-wrap align-items-center">
+    <div class="filter-chips-container d-flex flex-wrap align-items-center justify-content-start justify-content-md-end gap-2 mt-2 mt-md-0 w-100 w-md-auto overflow-auto pb-2">
       <!-- All type chip -->
       <div class="filter-chip chip-all"
            [ngClass]="{'active': selectedKnowledgeType === ''}"
@@ -92,7 +91,7 @@
   <!--end::Search and Filters-->
 
   <!--begin::Card toolbar-->
-  <div class="card-toolbar" *ngIf="knowledges && knowledges.length > 0">
+  <div class="card-toolbar mt-3 mt-md-0" *ngIf="knowledges && knowledges.length > 0">
     <!--begin::Toolbar-->
     <div
       class="d-flex justify-content-end"
@@ -103,7 +102,7 @@
         type="button"
         class="btn btn-primary mx-3"
       >
-      <i class="ki-outline ki-plus-square fs-2 text-white">
+      <i class="ki-outline ki-plus-square fs-2 text-white d-none d-sm-inline-block">
         <span class="path1"></span>
         <span class="path2"></span>
         <span class="path3"></span>
@@ -126,11 +125,11 @@
 
     <!--begin::Group actions-->
     <div
-      class="d-flex justify-content-end align-items-center"
+      class="d-flex flex-column flex-sm-row justify-content-end align-items-center gap-2"
       [class.d-none]="selectedKnowledges.size === 0"
       data-kt-filemanager-table-toolbar="selected"
     >
-      <div class="fw-bold mx-5">
+      <div class="fw-bold text-center text-sm-start">
         <span class="mx-2">{{ selectedKnowledges.size }}</span>
         {{ 'KNOWLEDGE.SELECTED' | translate }}
       </div>

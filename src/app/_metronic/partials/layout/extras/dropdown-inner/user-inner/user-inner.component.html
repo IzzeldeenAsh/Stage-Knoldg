@@ -136,58 +136,6 @@
 
   <div class="separator my-2"></div>
 
-  <div
-    class="menu-item px-5"
-    data-kt-menu-trigger="click"
-    data-kt-menu-placement="left-start"
-    data-kt-menu-flip="bottom"
-    data-submenu-id="language"
-  >
-    <a class="menu-link px-5 cursor-pointer">
-      <span class="menu-title position-relative">
-        {{ 'HOME.LANGUAGE' | translate }}
-        <span
-          class="
-            fs-8
-            rounded
-            bg-light
-            px-3
-            py-2
-            position-absolute
-            translate-middle-y
-            top-50
-            end-0
-          "
-        >
-          {{ language.name }}{{ " " }}
-          <img
-            class="w-15px h-15px rounded-1 mx-2"
-            [src]="language.flag"
-            alt="metronic"
-          />
-        </span>
-      </span>
-    </a>
-
-    <div class="menu-sub menu-sub-dropdown w-175px py-4" [ngClass]="{'show': submenuStates['language'], 'ltr': !isRTL, 'rtl': isRTL}" [style.display]="submenuStates['language'] ? 'block' : 'none'">
-      <div
-        *ngFor="let l of langs"
-        class="menu-item px-3 cursor-pointer"
-        (click)="selectLanguage(l.lang); closeDropdown.emit()"
-      >
-        <a
-          class="menu-link d-flex px-5"
-          [ngClass]="l.lang === language.lang ? 'active' : ''"
-        >
-          <span class="symbol symbol-20px mx-4">
-            <img class="rounded-1" [src]="l.flag" alt="metronic" />
-          </span>
-          {{ l.name }}
-        </a>
-      </div>
-    </div>
-  </div>
-
 
 
   <div class="menu-item px-5">

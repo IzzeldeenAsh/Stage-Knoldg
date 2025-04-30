@@ -380,6 +380,7 @@
 
       <!-- Website Email Verification -->
       <div *ngIf="form.get('verificationMethod')?.value === 'websiteEmail'" class="mb-8">
+        <!-- Website Domain Field -->
         <div class="mb-8">
           <label class="form-label required fw-bold">
             {{ 'INSIGHTER_WIZARD.WEBSITE_DOMAIN' | translate }}
@@ -387,7 +388,7 @@
           <input
             formControlName="website"
             type="text"
-            class="form-control "
+            class="form-control"
             placeholder="{{ 'INSIGHTER_WIZARD.WEBSITE_DOMAIN' | translate }}"
           />
           <div
@@ -398,36 +399,42 @@
           </div>
         </div>
 
-        <div class="row g-5">
-          <div class="col-lg-9">
+        <!-- Email and Code Section -->
+        <div class="row g-4">
+          <!-- Company Email Field -->
+          <div class="col-12 col-lg-9">
             <label class="form-label required fw-bold">
               {{ 'INSIGHTER_WIZARD.COMPANY_EMAIL' | translate }}
             </label>
-            <div class="d-flex gap-3">
-              <input
-                formControlName="companyEmail"
-                type="email"
-                class="form-control"
-                placeholder="{{ 'INSIGHTER_WIZARD.COMPANY_EMAIL' | translate }}"
-              />
-              <button
-                type="button"
-                class="btn  btn-info min-w-200px"
-                (click)="getCode()"
-                [disabled]="!form.get('companyEmail')?.valid || gettingCodeLoader || isGetCodeDisabled"
-              >
-                <ng-container *ngIf="!gettingCodeLoader && !isGetCodeDisabled">
-                  {{ 'INSIGHTER_WIZARD.GET_CODE' | translate }}
-                </ng-container>
-                <ng-container *ngIf="gettingCodeLoader">
-                  {{ 'AUTH.REGISTRATION.PLEASE_WAIT' | translate }}
-                  <span class="spinner-border spinner-border-sm ms-2"></span>
-                </ng-container>
-                <ng-container *ngIf="isGetCodeDisabled && !gettingCodeLoader">
-                  {{ 'INSIGHTER_WIZARD.PLEASE_WAIT' | translate }}
-                  ({{ getCodeCountdown$ | async }}s)
-                </ng-container>
-              </button>
+            <div class="d-flex flex-column flex-sm-row gap-2 gap-sm-3 mb-2">
+              <div class="flex-grow-1">
+                <input
+                  formControlName="companyEmail"
+                  type="email"
+                  class="form-control"
+                  placeholder="{{ 'INSIGHTER_WIZARD.COMPANY_EMAIL' | translate }}"
+                />
+              </div>
+              <div class="d-grid d-sm-block">
+                <button
+                  type="button"
+                  class="btn btn-info w-100"
+                  (click)="getCode()"
+                  [disabled]="!form.get('companyEmail')?.valid || gettingCodeLoader || isGetCodeDisabled"
+                >
+                  <ng-container *ngIf="!gettingCodeLoader && !isGetCodeDisabled">
+                    {{ 'INSIGHTER_WIZARD.GET_CODE' | translate }}
+                  </ng-container>
+                  <ng-container *ngIf="gettingCodeLoader">
+                    {{ 'AUTH.REGISTRATION.PLEASE_WAIT' | translate }}
+                    <span class="spinner-border spinner-border-sm ms-2"></span>
+                  </ng-container>
+                  <ng-container *ngIf="isGetCodeDisabled && !gettingCodeLoader">
+                    {{ 'INSIGHTER_WIZARD.PLEASE_WAIT' | translate }}
+                    ({{ getCodeCountdown$ | async }}s)
+                  </ng-container>
+                </button>
+              </div>
             </div>
             <div
               *ngIf="form.get('companyEmail')?.invalid && form.get('companyEmail')?.touched"
@@ -437,14 +444,15 @@
             </div>
           </div>
 
-          <div class="col-lg-3">
+          <!-- Verification Code Field -->
+          <div class="col-12 col-sm-6 col-lg-3">
             <label class="form-label required fw-bold">
               {{ 'INSIGHTER_WIZARD.CODE' | translate }}
             </label>
             <input
               formControlName="code"
               type="text"
-              class="form-control "
+              class="form-control"
               placeholder="{{ 'INSIGHTER_WIZARD.ENTER_CODE' | translate }}"
             />
             <div

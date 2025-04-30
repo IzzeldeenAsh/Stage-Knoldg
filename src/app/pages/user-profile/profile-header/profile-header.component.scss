@@ -27,3 +27,9 @@
         border-radius: 50%; /* Make it circular if desired */
         object-fit: cover; /* Ensure the image covers the container */
       }
+
+      @media screen and (max-width: 768px) {
+        .profile-image {
+        padding-top: 100px !important;
+        }
+      }

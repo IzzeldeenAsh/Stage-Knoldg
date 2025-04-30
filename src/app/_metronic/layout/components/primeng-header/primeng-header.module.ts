@@ -13,6 +13,7 @@ import { TranslationModule } from 'src/app/modules/i18n';
 import { ExtrasModule } from '../../../partials/layout/extras/extras.module';
 import { SharedModule } from 'src/app/_metronic/shared/shared.module';
 import { LayoutModule } from '@angular/cdk/layout';
+import { LanguageSwitchModule } from 'src/app/reusable-components/language-switch/language-switch.module';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { LayoutModule } from '@angular/cdk/layout';
     RippleModule,
     TranslationModule,
     ExtrasModule,
-    LayoutModule
+    LayoutModule,
+    LanguageSwitchModule
   ],
   exports: [
     PrimengHeaderComponent

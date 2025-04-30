@@ -1,5 +1,5 @@
 <div class="container">
-    <div class="py-lg-10">
+    <div class="py-3 py-lg-10">
         <!-- Knowledge Description -->
      <div class="description-box p-3 bg-none rounded mb-3" *ngIf="knowledge && knowledge.description">
        <p class="lead" [innerHTML]="knowledge.description || 'N/A'"></p>
@@ -9,28 +9,28 @@
      </div>
     <!-- knowledge documents -->
      <div class="documents-container">
-         <div
-           class="document-card d-flex flex-row align-items-center p-10 cursor-pointer position-relative"
-           *ngFor="let doc of documents"
-           [ngClass]="{ 'active': activeDocumentId === doc.id }"
-           (mouseenter)="onDocumentMouseEnter(doc.id)"
-           (mouseleave)="onDocumentMouseLeave(doc.id)"
-           (click)="toggleCollapse(doc.id, $event)"
-         >
+          <div
+            class="document-card d-flex flex-column flex-sm-row align-items-start align-items-sm-center p-4 p-sm-10 cursor-pointer position-relative"
+            *ngFor="let doc of documents"
+            [ngClass]="{ 'active': activeDocumentId === doc.id }"
+            (mouseenter)="onDocumentMouseEnter(doc.id)"
+            (mouseleave)="onDocumentMouseLeave(doc.id)"
+            (click)="toggleCollapse(doc.id, $event)"
+          >
          <!--  [attr.data-label]="doc.highlighted ? 'Best Match' : ''" -->
            <!-- Icon -->
-           <div class="file-icon me-3">
-             <img
-               [src]="getFileIconByExtension(doc.file_extension)"
-               alt="file icon" 
-               width="40"
-               height="40"
-               [ngClass]="{'animate__animated animate__pulse': activeDocumentId === doc.id}"/>
-           </div>
+            <div class="file-icon me-3 mb-2 mb-sm-0">
+              <img
+                [src]="getFileIconByExtension(doc.file_extension)"
+                alt="file icon" 
+                width="40"
+                height="40"
+                [ngClass]="{'animate__animated animate__pulse': activeDocumentId === doc.id}"/>
+            </div>
        
            <!-- Main Info -->
            <div class="flex-grow-1">
-             <div class="d-flex justify-content-between align-items-center">
+              <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center">
                <div class="d-flex align-items-center">
                  <div>
                    <h5 class="mb-1" [ngClass]="{'text-info fw-bold': activeDocumentId === doc.id}">{{ doc.file_name || 'N/A' }}</h5>
@@ -40,15 +40,14 @@
                  <!-- Action Buttons moved here -->
                 
                </div>
-               
-               <div class="d-flex gap-1 align-items-center" >
+                              <div class="d-flex flex-wrap gap-1 align-items-center mt-2 mt-sm-0" >
               <div >
                 <span class="badge me-2 px-2 py-1" 
                 [ngClass]="{
-                  'bg-info text-white fs-4': activeDocumentId === doc.id && doc.price !== '0',
-                  'bg-secondary fs-6': activeDocumentId !== doc.id && doc.price !== '0',
-                  'bg-success text-success fs-4': activeDocumentId === doc.id && doc.price === '0',
-                  'bg-success text-white fs-6': activeDocumentId !== doc.id && doc.price === '0'
+                  'bg-info text-white fs-6 fs-sm-4': activeDocumentId === doc.id && doc.price !== '0',
+                  'bg-secondary fs-7 fs-sm-6': activeDocumentId !== doc.id && doc.price !== '0',
+                  'bg-success text-success fs-6 fs-sm-4': activeDocumentId === doc.id && doc.price === '0',
+                  'bg-success text-white fs-7 fs-sm-6': activeDocumentId !== doc.id && doc.price === '0'
                 }">
                 {{ doc.price === '0' ? 'Free' : (doc.price | currency) }}
               </span>
@@ -65,7 +64,7 @@
             </div>
               <div class="ms-3">
                 <p-menu #menu [popup]="true" [model]="docActions" [appendTo]="'body'"></p-menu>
-                <button class="btn btn-icon btn-sm btn-outline"
+                <button class="btn btn-icon btn-sm btn-outline btn-active-light-primary"
                         (click)="$event.stopPropagation(); menu.toggle($event); setMenuData(doc)"
                         placement="top">
                   <i class="ki-duotone ki-gear text-gray-800">
@@ -101,7 +100,8 @@
                    <strong [ngClass]="{'text-info': activeDocumentId === doc.id}">Table of Contents:</strong>
                  </div>
                  
-                 <table class="table table-hover-info table-rounded table-striped border gy-4 gs-4">
+                 <div class="table-responsive">
+                  <table class="table table-hover-info table-rounded table-striped border gy-4 gs-4">
                    <thead>
                      <tr class="fw-bold fs-6 text-gray-800 border-bottom-2 border-gray-200">
                        <th class="min-w-50px">#</th>
@@ -136,7 +136,7 @@
 
      <!-- Add Document Section -->
      <div class="mt-5" *ngIf="knowledge">
-       <div *ngIf="!showDocumentStepper" class="upload-area border-dashed border-gray-300 d-flex flex-column justify-content-center align-items-center p-7 cursor-pointer"
+        <div *ngIf="!showDocumentStepper" class="upload-area border-dashed border-gray-300 d-flex flex-column justify-content-center align-items-center p-4 p-sm-7 cursor-pointer"
             (click)="openDocumentStepper()"
             [ngClass]="{'border-primary bg-light-info': isUploadAreaHovered}"
             (mouseenter)="isUploadAreaHovered = true"
@@ -145,10 +145,10 @@
            <span class="path1"></span>
            <span class="path2"></span>
          </i>
-         <div class="text-gray-600 fw-bold fs-4 mb-1" [ngClass]="{'text-primary': isUploadAreaHovered}">
+          <div class="text-gray-600 fw-bold fs-6 fs-sm-4 mb-1 text-center" [ngClass]="{'text-primary': isUploadAreaHovered}">
            {{ 'CLICK_TO_ADD_DOCUMENT' | translate }}
          </div>
-         <div class="text-gray-400 fs-6">
+          <div class="text-gray-400 fs-7 fs-sm-6 text-center">
            {{ knowledge.type === 'insight' ? 'Upload new insight document' : 'Add new chapter or node' }}
          </div>
        </div>
@@ -171,7 +171,7 @@
          <div class="card-body p-0">
            <!-- Stepper Header -->
            <div class="stepper stepper-pills stepper-column d-flex flex-column ">
-             <div class="d-flex flex-row justify-content-center mb-5 p-5 bg-light">
+              <div class="d-flex flex-column flex-sm-row justify-content-center mb-5 p-3 p-sm-5 bg-light">
                <div class="stepper-item me-5 me-md-15 d-flex flex-column align-items-center justify-content-start flex-md-row"  [ngClass]="{'current': documentStep === 1, 'completed': documentStep > 1}">
                  <div class="stepper-line w-40px"></div>
                  <div class="stepper-icon w-40px h-40px">
@@ -197,10 +197,10 @@
              </div>
 
              <!-- Step Content -->
-             <div class="px-7 py-5">
+              <div class="px-3 px-sm-7 py-5">
                <!-- Step 1: Document Upload -->
                <div *ngIf="documentStep === 1">
-                 <div class="form-group mb-6 d-flex flex-column flex-md-row justify-content-center gap-5" [formGroup]="documentForm">
+                  <div class="form-group mb-6 d-flex flex-column flex-lg-row justify-content-center gap-3 gap-lg-5" [formGroup]="documentForm">
                    <!-- File Upload -->
                    <div class="mb-5">
                      <label class="form-label required">{{ 'CHOOSE_FILE' | translate }}</label>
@@ -212,9 +212,9 @@
                            style="display: none" />
                        <ng-container *ngIf="!selectedFile && !editingDocument?.docUrl">
                          <button type="button" 
-                                 class="btn actions-btn border border-dashed border-info bg-light-info w-100 d-flex flex-column align-items-center justify-content-center" 
-                                 style="padding: 9px"
-                                 (click)="triggerFileInput()">
+                                  class="btn actions-btn border border-dashed border-info bg-light-info w-100 d-flex flex-column align-items-center justify-content-center" 
+                                  style="padding: 9px; min-width: 150px;"
+                                  (click)="triggerFileInput()">
                                  <i class="ki-duotone ki-plus text-info fs-1">
                                      <span class="path1"></span>
                                      <span class="path2"></span>
@@ -294,7 +294,7 @@
                <!-- Step 2: Document Description and Chapters -->
                <div *ngIf="documentStep === 2">
                  <div class="mb-5" [formGroup]="documentForm">
-                   <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-2 gap-2">
                      <label class="form-label mb-0">{{ "DOCUMENT_DESCRIPTION" | translate }}</label>
                      
                      <!-- Generate AI Abstract button -->
@@ -396,7 +396,8 @@
                      
                      <!-- List of chapters -->
                      <div *ngIf="stepperChapters && stepperChapters.length > 0" class="mb-3">
-                       <table class="table table-row-dashed table-row-gray-300 align-middle">
+                        <div class="table-responsive">
+                          <table class="table table-row-dashed table-row-gray-300 align-middle">
                          <thead>
                            <tr class="fw-bold">
                              <th class="w-50px">#</th>
@@ -419,12 +420,13 @@
                              </td>
                            </tr>
                          </tbody>
-                       </table>
+                        </table>
+                        </div>
                      </div>
                      
                      <!-- Add new chapter form -->
-                     <div class="d-flex align-items-center">
-                       <div class="flex-grow-1 me-3">
+                     <div class="d-flex flex-wrap align-items-center">
+                        <div class="flex-grow-1 me-0 me-sm-3 mb-2 mb-sm-0">
                          <input type="text" 
                                class="form-control form-control-sm" 
                                [(ngModel)]="newChapterTitle" 
@@ -445,7 +447,7 @@
              </div>
              
              <!-- Stepper Navigation -->
-             <div class="d-flex justify-content-between p-5 bg-light">
+              <div class="d-flex justify-content-between p-3 p-sm-5 bg-light">
                <button type="button" 
                        class="btn btn-light-primary" 
                        *ngIf="documentStep === 2"

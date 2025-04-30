@@ -15,6 +15,7 @@
           </ng-container>
         </a>
       </div>
+      
       <div class="header-menu d-flex justify-content-center flex-grow-1">
         
         <!-- <p-menubar [model]="items" [style]="{'border': 'none', 'background': 'transparent', 'font-size': '14px',paddingTop: '18px'}">
@@ -92,6 +93,11 @@
             </a>
           </div>
         
+        <!-- Language Switch Button -->
+        <div class="app-navbar-item me-3">
+          <app-lang-switch-button [isInsighterDashboard]="isDashboardRoute"></app-lang-switch-button>
+        </div>
+
         <!-- Notification bell -->
         <div class="app-navbar-item position-relative notification-item">
           <div
@@ -186,6 +192,11 @@
         </a>
       </div>
       
+      <!-- Mobile Language Switch -->
+      <div class="app-navbar-item me-2">
+        <app-lang-switch-button [isInsighterDashboard]="isDashboardRoute"></app-lang-switch-button>
+      </div>
+      
       <!-- Mobile Notification bell -->
       <div class="app-navbar-item position-relative mobile-notification-item">
         <div
@@ -275,7 +286,6 @@
       <!-- Special handling for Industries menu item -->
       <div *ngIf="item.label === translate.instant('MENU.INDUSTRIES')" class="mobile-submenu-container">
         <a class="mobile-menu-link with-submenu" (click)="toggleSubmenu(item); $event.preventDefault()">
-          <app-keenicon [name]="item.iconName || 'element-11'" [type]="item.iconType || 'duotone'" class="fs-2"></app-keenicon>
           <span class="menu-text">{{ item.label }}</span>
           <i class="ki-duotone ki-arrow-down fs-4" [ngClass]="{'rotate-180': item.expanded}"></i>
         </a>
@@ -304,21 +314,18 @@
          [ngClass]="{'text-white': isDashboardRoute}"
          *ngIf="!item.items && item.label !== translate.instant('MENU.INDUSTRIES')" 
          (click)="sidebarVisible = false">
-        <app-keenicon [name]="item.iconName" [type]="item.iconType || 'duotone'" class="fs-2"></app-keenicon>
         <span class="menu-text">{{ item.label }}</span>
       </a>
       
       <!-- Regular menu items with submenus (not Industries) -->
       <div *ngIf="item.items && item.label !== translate.instant('MENU.INDUSTRIES')" class="mobile-submenu-container">
         <a class="mobile-menu-link with-submenu" (click)="toggleSubmenu(item); $event.preventDefault()">
-          <app-keenicon [name]="item.iconName" [type]="item.iconType || 'duotone'" class="fs-2"></app-keenicon>
           <span class="menu-text">{{ item.label }}</span>
           <i class="ki-duotone ki-arrow-down fs-4 rotate-180" [ngClass]="{'rotate-180': !item.expanded}"></i>
         </a>
         
         <div class="mobile-submenu" [ngClass]="{'expanded': item.expanded}">
           <a *ngFor="let subitem of item.items" [routerLink]="subitem.routerLink" class="mobile-submenu-link" (click)="sidebarVisible = false">
-            <app-keenicon [name]="subitem.iconName || 'abstract-14'" [type]="subitem.iconType || 'outline'" class="fs-5 mx-2"></app-keenicon>
             <span class="submenu-text">{{ subitem.label }}</span>
           </a>
         </div>

@@ -13,11 +13,11 @@
                 </div>
                 <!-- Warning Text -->
                 <div class="flex-grow-1">
-                    <h5 class="mb-0">{{ 'You Have ( ' + pendingInsighterRequestsCount + ' ) Accept Knowledge Pending For Approval' }}</h5>
+                    <h5 class="mb-0">{{ 'INSIGHTER_REQUESTS.PENDING_KNOWLEDGE_APPROVAL' | translate: {count: pendingInsighterRequestsCount} }}</h5>
                 </div>
                 <!-- Pending Badge -->
                 <div class="d-flex align-items-center">
-                    <span class="badge badge-light-warning me-2">Pending</span>
+                    <span class="badge badge-light-warning me-2">{{ 'INSIGHTER_REQUESTS.FILTER.PENDING' | translate }}</span>
                     <i class="fas fa-chevron-right text-muted"></i>
                 </div>
             </div>

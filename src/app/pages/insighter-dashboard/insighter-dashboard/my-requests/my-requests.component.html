@@ -5,8 +5,8 @@ mode="indeterminate"
 styleClass=""
 ></p-progressBar>
 
-<!-- Shared No Requests State - Only show when BOTH tables are empty -->
-<div *ngIf="filteredUserRequests.length === 0 && filteredInsighterRequests.length === 0" class="text-center py-10 bg-light-secondary rounded mb-5  border border-1 border-light">
+<!-- Shared No Requests State - Only show when BOTH tables are empty and no filters are applied -->
+<div *ngIf="filteredUserRequests.length === 0 && filteredInsighterRequests.length === 0 && !hasActiveFilters()" class="text-center py-10 bg-light-secondary rounded mb-5 border border-1 border-light">
     <div class="my-5">
         <i class="bi bi-inbox fs-1 text-gray-400 mb-3 d-block"></i>
         <h3 class="fw-bold text-gray-800 mb-2">No Requests Found</h3>
@@ -14,7 +14,7 @@ styleClass=""
     </div>
 </div>
 
-<div class="mb-5 mb-xl-10 card " *ngIf="userProfile && filteredUserRequests.length > 0">
+<div class="mb-5 mb-xl-10 card" *ngIf="userProfile && userRequests.length > 0">
     <!--begin::Header-->
     <div class="card-header pt-7 border-0">
         <!--begin::Title-->
@@ -43,6 +43,7 @@ styleClass=""
                         <option value="activate_company">{{ 'USER_REQUESTS.FILTER.ACTIVATE_COMPANY_ACCOUNT' | translate }}</option>
                         <option value="deactivate_company">{{ 'USER_REQUESTS.FILTER.DEACTIVATE_COMPANY_ACCOUNT' | translate }}</option>
                         <option value="verified_company">{{ 'USER_REQUESTS.FILTER.VERIFY_COMPANY' | translate }}</option>
+                        <option value="deactivate_delete_company">{{ 'USER_REQUESTS.FILTER.DEACTIVATE_DELETE_COMPANY' | translate }}</option>
                         <!-- Add more options as needed -->
                     </select>
                     <!--end::Select-->
@@ -85,7 +86,7 @@ styleClass=""
                             <!-- Left: Icon + Entity name -->
                             <div class="d-flex align-items-center">
                                 <!-- Icon/Avatar based on request type -->
-                                <div class="symbol symbol-40px me-4 h-40px w-40px bg-light-primary d-flex align-items-center justify-content-center rounded-circle">
+                                <div class="symbol symbol-40px me-4 h-40px w-40px bg-light-info d-flex align-items-center justify-content-center rounded-circle">
                                     <i class="bi fs-4" [ngClass]="{'bi-building': request.requestable_type === 'company', 'bi-person': request.requestable_type === 'userinsighter'}"></i>
                                 </div>
                                 
@@ -131,6 +132,18 @@ styleClass=""
             </div>
         </div>
         <!-- End User Requests Cards -->
+        
+        <!-- No Results Message for User Requests when filters are applied -->
+        <div *ngIf="filteredUserRequests.length === 0 && hasUserFilters()" class="text-center py-8 bg-light-secondary rounded">
+            <div class="my-3">
+                <i class="bi bi-funnel fs-1 text-gray-400 mb-3 d-block"></i>
+                <h4 class="fw-bold text-gray-800 mb-2">No Matching Requests</h4>
+                <p class="text-gray-600 fs-6 px-3">No requests match your current filter criteria.</p>
+                <button class="btn btn-sm btn-light-info mt-2" (click)="clearUserFilters()">
+                    <i class="bi bi-x-circle me-1"></i> Clear Filters
+                </button>
+            </div>
+        </div>
     </div>
     <!--end::Body-->
 </div>
@@ -251,6 +264,18 @@ styleClass=""
             </div>
         </div>
         <!-- End Insighter Requests Cards -->
+        
+        <!-- No Results Message for Insighter Requests when filters are applied -->
+        <div *ngIf="filteredInsighterRequests.length === 0 && hasInsighterFilters()" class="text-center py-8 bg-light-secondary rounded">
+            <div class="my-3">
+                <i class="bi bi-funnel fs-1 text-gray-400 mb-3 d-block"></i>
+                <h4 class="fw-bold text-gray-800 mb-2">No Matching Requests</h4>
+                <p class="text-gray-600 fs-6 px-3">No insighter requests match your current filter criteria.</p>
+                <button class="btn btn-sm btn-light-primary mt-2" (click)="clearInsighterFilters()">
+                    <i class="bi bi-x-circle me-1"></i> Clear Filters
+                </button>
+            </div>
+        </div>
         <!--end::Table-->
     </div>
     <!--end::Body-->

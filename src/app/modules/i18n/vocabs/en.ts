@@ -4,10 +4,11 @@ export const locale = {
 
   data: {
 
-
+    CHOOSE_COUNTTRIES:'Choose Countries',
     INSIGHTER_REQUESTS: {
       TITLE: 'Insighter Requests',
       REQUEST_COUNT: 'Requests',
+      PENDING_KNOWLEDGE_APPROVAL: 'You Have ( {{count}} ) Accept Knowledge Pending For Approval',
       FILTER: {
         REQUEST_TYPE: 'Request Type',
         SHOW_ALL: 'Show All',
@@ -704,6 +705,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       FILTER: {
         REQUEST_TYPE: 'Request Type',
         SHOW_ALL: 'Show All',
+        DEACTIVATE_DELETE_COMPANY:'Deactivate Delete Company',
         ACTIVATE_COMPANY_ACCOUNT: 'Activate Company Account',
         DEACTIVATE_COMPANY_ACCOUNT: 'Deactivate Company Account',
         VERIFY_COMPANY: 'Verify Company',
