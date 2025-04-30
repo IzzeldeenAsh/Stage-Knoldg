@@ -455,6 +455,8 @@ INSIGHTER_REQUESTS: {
     },
     INSIGHTER_WIZARD: {
       ACCOUNT_TYPE: "نوع الحساب",
+      COMPANY_AGREEMENT_REQUIRED:"الموافقة مطلوبة",
+      INDUSTRY_REQUIRED:"الصناعة مطلوبة",
       ACCOUNT_DETAILS_DESC: "إعداد تفاصيل حسابك",
       ACCOUNT_INFO: "معلومات الحساب",
       ACCOUNT_INFO_DESC: "إعداد معلومات إنسايتر الخاصة بك",

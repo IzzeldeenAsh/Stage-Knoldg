@@ -646,8 +646,10 @@ export class UpgradeToCompanyComponent
   onSubmit() {
     this.attemptedSubmit = true;
     
+    // Mark all form controls as touched to display validation errors
+    this.markFormGroupTouched(this.form);
+    
     if (this.form.invalid) {
-      this.form.markAllAsTouched();
       // Scroll to the top to show validation errors
       window.scrollTo({top: 0, behavior: 'smooth'});
       return;
@@ -830,6 +832,33 @@ export class UpgradeToCompanyComponent
     // Scroll to the top to show validation errors
     if (this.showApiErrors) {
       window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+  }
+  
+  /**
+   * Recursively marks all controls in a form group as touched
+   * @param formGroup - The form group to process
+   */
+  private markFormGroupTouched(formGroup: FormGroup | FormArray) {
+    if (formGroup instanceof FormGroup) {
+      Object.keys(formGroup.controls).forEach(key => {
+        const control = formGroup.get(key);
+        if (control) {
+          if (control instanceof FormGroup || control instanceof FormArray) {
+            this.markFormGroupTouched(control);
+          } else {
+            control.markAsTouched();
+          }
+        }
+      });
+    } else if (formGroup instanceof FormArray) {
+      formGroup.controls.forEach(control => {
+        if (control instanceof FormGroup || control instanceof FormArray) {
+          this.markFormGroupTouched(control);
+        } else {
+          control.markAsTouched();
+        }
+      });
     }
   }
 }
