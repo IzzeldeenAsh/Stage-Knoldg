@@ -498,8 +498,9 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       "DELETING": "Deleting..."
     },
     INSIGHTER_WIZARD: {
-      
+      COMPANY_AGREEMENT_REQUIRED:"Company Agreement Required",
       ACCOUNT_TYPE: "Account Type",
+      INDUSTRY_REQUIRED:"Industry Required",
       ACCOUNT_DETAILS_DESC: "Setup Your Account Details",
       ACCOUNT_INFO: "Account Info",
       ACCOUNT_INFO_DESC: "Setup Your Insighter Information",

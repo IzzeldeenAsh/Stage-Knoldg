@@ -85,6 +85,8 @@
         </p-menubar> -->
       </div>
       <div class="header-actions">
+        <!-- Language Switch Button -->
+    
         <!-- Add Knowledge button for desktop -->
           <div class="app-navbar-item me-3">
             <a [routerLink]="getAddKnowledgeRoute()" class="btn btn-sm btn-primary fw-bold">
@@ -92,12 +94,9 @@
               {{ 'KNOWLEDGE.ADD_KNOWLEDGE' | translate }}
             </a>
           </div>
-        
-        <!-- Language Switch Button -->
-        <div class="app-navbar-item me-3">
-          <app-lang-switch-button [isInsighterDashboard]="isDashboardRoute"></app-lang-switch-button>
-        </div>
-
+          <div class="app-navbar-item me-3">
+            <app-lang-switch-button [isInsighterDashboard]="isDashboardRoute"></app-lang-switch-button>
+          </div>
         <!-- Notification bell -->
         <div class="app-navbar-item position-relative notification-item">
           <div
@@ -122,7 +121,7 @@
             class="notification-dropdown"
           ></app-notifications-inner>
         </div>
-
+      
         <!-- User dropdown toggle -->
         <div class="user-dropdown-container">
           <a  class="user-dropdown-toggle" (click)="toggleUserDropdown($event)" #userDropdownToggle>
@@ -165,6 +164,7 @@
             <app-user-inner (closeDropdown)="isUserDropdownOpen = false"></app-user-inner>
           </div>
         </div>
+
       </div>
     </div>
   </div>
