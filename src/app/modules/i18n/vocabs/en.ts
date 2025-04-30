@@ -3,11 +3,27 @@ export const locale = {
   lang: 'en',
 
   data: {
+
+
+    INSIGHTER_REQUESTS: {
+      TITLE: 'Insighter Requests',
+      REQUEST_COUNT: 'Requests',
+      FILTER: {
+        REQUEST_TYPE: 'Request Type',
+        SHOW_ALL: 'Show All',
+        ACCEPT_KNOWLEDGE: 'Accept Knowledge',
+        STATUS: 'Status',
+        PENDING: 'Pending',
+        APPROVED: 'Approved',
+        REJECTED: 'Rejected'
+      },
+    },
     ISIC_CODE:'ISIC Code',
     REMOVE:'Remove',
     ERROR_FILES_DETECTED: 'Error Files Detected',
     ENTER_TAGS:'Enter Tag',
     MY_CERTIFICATES:'My Certificates',
+    PUBLISHED:'Published',
     VERIFICATION_STATUS:'Verification Status',
     VERIFIED:'Verified',
     COMPANY_VERIFIED_MESSAGE: 'Your company has been successfully verified.',
@@ -114,6 +130,10 @@ export const locale = {
     ENTER_KNOWLEDGE_DESCRIPTION: 'Enter detailed description here',
     DESCRIPTION_HELP_TEXT: 'A good description helps users find and understand your content',
     "MY_COMPANY": {
+      STATUS: {
+        ACTIVE: 'Active',
+        INACTIVE: 'Inactive'
+      },
       'DELETE': 'Delete Employee',
       "TITLE": "My Team",
       "SUBTITLE": "Manage your company employees",
@@ -207,6 +227,7 @@ export const locale = {
       INSIGHTER: 'Insighter',
       COMPANY: 'Company'
     },
+   
     "REACTIVATE_ACCOUNT": {
       "TITLE": "Reactivate Account",
       "DESCRIPTION": "Your account is currently deactivated. Reactivate it to regain full access to all features and services.",
@@ -669,6 +690,11 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       
     },
     USER_REQUESTS: {
+      STATUS: {
+        PENDING: 'Pending',
+        APPROVED: 'Approved',
+        DECLINED: 'Declined'
+      },
       "NO_REQUESTS": {
         "TITLE": "No Requests Found",
         "MESSAGE": "You don't have any requests at the moment. New requests will appear here once created."
@@ -684,6 +710,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
         STATUS_TITLE: 'Status',
         PENDING: 'Pending',
         APPROVED: 'Approved',
+        ACCEPT_KNOWLEDGE: 'Accept Knowledge',
         REJECTED: 'Rejected',
       },
       TABLE_HEADERS: {
@@ -700,8 +727,10 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       DIALOG: {
         HEADER: 'Request Details',
         REQUEST_TYPE_LABEL: 'Request Type',
+        RESEND_REQUEST: 'Resend Request',
         STATUS_BADGE: '{{status}}',
         STAFF_NOTES_LABEL: 'Staff Notes',
+        VIEW: 'View',
         NO_STAFF_NOTES: 'No staff notes available.',
         PENDING_REQUEST_EXISTS: 'You already have a pending request of this type. Please wait for it to be processed before submitting a new one.'
       },
@@ -869,7 +898,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
   PUBLISH_NOW: 'Publish Now',
   PUBLISH_NOW_DESC: 'Your content will go live immediately.',  
   SCHEDULE: 'Schedule for Later',
-  ADD_NOTE:'Add Note',
+  ADD_NOTE:'Notes to Insighter',
   SCHEDULE_DESC: 'Set a custom date and time for automatic publishing.',
   DRAFT: 'Save as Draft',
   SAVE_AS_DRAFT: 'Save as Draft',

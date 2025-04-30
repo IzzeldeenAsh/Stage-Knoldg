@@ -21,7 +21,7 @@ styleClass=""
         <h3 class="card-title align-items-start flex-column">
             <span class="fw-bolder text-dark">{{ 'USER_REQUESTS.TITLE' | translate }}</span>
             <span class="text-muted mt-1 fw-semibold fs-6">
-                <span class="badge badge-light-info me-2">{{ userRequests.length }}</span> {{ 'USER_REQUESTS.REQUEST_COUNT' | translate }}
+                <span class="badge badge-light-info mx-2">{{ userRequests.length }}</span> {{ 'USER_REQUESTS.REQUEST_COUNT' | translate }}
             </span>
         </h3>
         <!--end::Title-->
@@ -33,7 +33,7 @@ styleClass=""
                 <!--begin::Request Type-->
                 <div class="d-flex align-items-center fw-bold" >
                     <!--begin::Label-->
-                    <div class="text-muted fs-7 me-2"><i class="bi bi-filter-square me-1"></i>{{ 'USER_REQUESTS.FILTER.REQUEST_TYPE' | translate }}</div>
+                    <div class="text-muted fs-7 mx-2"><i class="bi bi-filter-square mx-1"></i>{{ 'USER_REQUESTS.FILTER.REQUEST_TYPE' | translate }}</div>
                     <!--end::Label-->
                     <!--begin::Select-->
                     <select class="form-select form-select-sm form-select-solid text-gray-800 fs-7 lh-1 fw-bold py-1 ps-3 w-auto"
@@ -51,7 +51,7 @@ styleClass=""
                 <!--begin::Status-->
                 <div class="d-flex align-items-center fw-bold">
                     <!--begin::Label-->
-                    <div class="text-muted fs-7 me-2"><i class="bi bi-check-circle me-1"></i>{{ 'USER_REQUESTS.FILTER.STATUS_TITLE' | translate }}</div>
+                    <div class="text-muted fs-7 mx-2"><i class="bi bi-check-circle mx-1"></i>{{ 'USER_REQUESTS.FILTER.STATUS_TITLE' | translate }}</div>
                     <!--end::Label-->
 
                     <!--begin::Select-->
@@ -115,14 +115,14 @@ styleClass=""
                                     'badge-light-success': request.final_status === 'approved',
                                     'badge-light-danger': request.final_status === 'declined'
                                 }">
-                                    {{ request.final_status | titlecase }}
+                                    {{ 'USER_REQUESTS.FILTER.' + (request.final_status | uppercase) | translate }}
                                 </div>
                             </div>
                             
                             <!-- Action Buttons -->
                             <div class="d-flex align-items-center">
                                 <button class="btn btn-sm btn-primary" (click)="openRequestDialog(request); $event.stopPropagation();">
-                                    <i class="bi bi-eye-fill me-1"></i> View
+                                    <i class="bi bi-eye-fill mx-1"></i> {{'USER_REQUESTS.DIALOG.VIEW' | translate}}
                                 </button>
                             </div>
                         </div>
@@ -141,9 +141,9 @@ styleClass=""
     <div class="card-header pt-7 border-0">
         <!--begin::Title-->
         <h3 class="card-title align-items-start flex-column">
-            <span class="fw-bolder text-dark">Insighter Requests</span>
+            <span class="fw-bolder text-dark">{{ 'INSIGHTER_REQUESTS.TITLE' | translate }}</span>
             <span class="text-muted mt-1 fw-semibold fs-6">
-                <span class="badge badge-light-info me-2">{{ insighterRequests.length }}</span> requests
+                <span class="badge badge-light-info mx-2">{{ insighterRequests.length }}</span> {{ 'INSIGHTER_REQUESTS.REQUEST_COUNT' | translate }}
             </span>
         </h3>
         <!--end::Title-->
@@ -155,14 +155,14 @@ styleClass=""
                 <!--begin::Request Type-->
                 <div class="d-flex align-items-center fw-bold" >
                     <!--begin::Label-->
-                    <div class="text-muted fs-7 me-2"><i class="bi bi-filter-square me-1"></i>Request Type</div>
+                    <div class="text-muted fs-7 mx-2"><i class="bi bi-filter-square mx-1"></i>{{ 'INSIGHTER_REQUESTS.FILTER.REQUEST_TYPE' | translate }}</div>
                     <!--end::Label-->
                     <!--begin::Select-->
                     <select class="form-select form-select-sm form-select-solid text-gray-800 fs-7 lh-1 fw-bold py-1 ps-3 w-auto"
                             [(ngModel)]="selectedInsighterType"
                             (change)="filterInsighterRequests()">
-                        <option value="">Show All</option>
-                        <option value="accept_knowledge">Accept Knowledge</option>
+                        <option value="">{{ 'USER_REQUESTS.FILTER.SHOW_ALL' | translate }}</option>
+                        <option value="accept_knowledge">{{ 'USER_REQUESTS.FILTER.ACCEPT_KNOWLEDGE' | translate }}</option>
                         <!-- Add more options as needed -->
                     </select>
                     <!--end::Select-->
@@ -171,17 +171,17 @@ styleClass=""
                 <!--begin::Status-->
                 <div class="d-flex align-items-center fw-bold">
                     <!--begin::Label-->
-                    <div class="text-muted fs-7 me-2"><i class="bi bi-check-circle me-1"></i>Status</div>
+                    <div class="text-muted fs-7 mx-2"><i class="bi bi-check-circle mx-1"></i>{{ 'INSIGHTER_REQUESTS.FILTER.STATUS' | translate }}</div>
                     <!--end::Label-->
 
                     <!--begin::Select-->
                     <select class="form-select form-select-sm form-select-solid text-gray-800 fs-7 lh-1 fw-bold py-1 ps-3 w-auto"
                             [(ngModel)]="selectedInsighterStatus"
                             (change)="filterInsighterRequests()">
-                        <option value="">Show All</option>
-                        <option value="pending">Pending</option>
-                        <option value="approved">Approved</option>
-                        <option value="rejected">Rejected</option>
+                        <option value="">{{ 'USER_REQUESTS.FILTER.SHOW_ALL' | translate }}</option>
+                        <option value="pending">{{ 'USER_REQUESTS.FILTER.PENDING' | translate }}</option>
+                        <option value="approved">{{ 'USER_REQUESTS.FILTER.APPROVED' | translate }}</option>
+                        <option value="rejected">{{ 'USER_REQUESTS.FILTER.REJECTED' | translate }}</option>
                         <!-- Add more options as needed -->
                     </select>
                     <!--end::Select-->
@@ -236,14 +236,13 @@ styleClass=""
                                     'badge-light-success': request.final_status === 'approved',
                                     'badge-light-danger': request.final_status === 'declined'
                                 }">
-                                    {{ request.final_status | titlecase }}
+                                    {{ 'USER_REQUESTS.STATUS.' + (request.final_status | uppercase) | translate }}
                                 </div>
                             </div>
-                            
                             <!-- Action Button -->
                             <div class="d-flex flex-shrink-0">
                                 <button class="btn btn-sm btn-primary" (click)="openInsighterRequestDialog(request); $event.stopPropagation();">
-                                    <i class="bi bi-eye-fill me-1"></i> View
+                                    <i class="bi bi-eye-fill mx-1"></i> {{ 'USER_REQUESTS.DIALOG.VIEW' | translate }}
                                 </button>
                             </div>
                         </div>
@@ -298,7 +297,7 @@ styleClass=""
                     class="btn btn-primary btn-lg btn-icon-primary w-75 mb-2 " 
                     (click)="navigateToReview()"
                 >
-                    <i class="bi bi-file-earmark-text fs-4 me-2"></i>
+                    <i class="bi bi-file-earmark-text fs-4 mx-2"></i>
                     Review Knowledge
                 </button>
             </div>
@@ -310,7 +309,7 @@ styleClass=""
                     class="btn btn-light-success btn-lg px-6 py-3 " 
                     (click)="onApproveRequest()"
                 >
-                    <i class="bi bi-check-circle-fill fs-4 me-2"></i>
+                    <i class="bi bi-check-circle-fill fs-4 mx-2"></i>
                     Approve
                 </button>
                 <button 
@@ -318,7 +317,7 @@ styleClass=""
                     class="btn btn-light-danger btn-lg px-6 py-3 " 
                     (click)="onDeclineRequest()"
                 >
-                    <i class="bi bi-x-circle-fill fs-4 me-2"></i>
+                    <i class="bi bi-x-circle-fill fs-4 mx-2"></i>
                     Decline
                 </button>
             </div>
@@ -328,7 +327,7 @@ styleClass=""
         <div class="w-100 mt-5" *ngIf="selectedRequest.final_status === 'pending' && isInsighterRequest && (isApproving || isDeclining)">
                 <div class="card-header border-0 ps-0 pt-0">
                     <h5 class="card-title fw-semibold text-dark">
-                        <i class="bi bi-pencil-square me-2"></i>
+                        <i class="bi bi-pencil-square mx-2"></i>
                         Staff Notes
                     </h5>
                 </div>
@@ -349,7 +348,7 @@ styleClass=""
                             (click)="confirmAction()"
                             [disabled]="!staffNotes"
                         >
-                            <i class="bi fs-6 me-2" [ngClass]="isApproving ? 'bi-check-lg' : 'bi-x-lg'"></i>
+                            <i class="bi fs-6 mx-2" [ngClass]="isApproving ? 'bi-check-lg' : 'bi-x-lg'"></i>
                             {{ isApproving ? 'Confirm Approval' : 'Confirm Decline' }}
                         </button>
                         <button
@@ -357,8 +356,8 @@ styleClass=""
                             class="btn btn-light btn-active-light-secondary "
                             (click)="cancelAction()"
                         >
-                            <i class="bi bi-arrow-left fs-6 me-2"></i>
-                            Cancel
+                            <i class="bi bi-arrow-left fs-6 mx-2"></i>
+                            {{'CANCEL' | translate}}
                         </button>
                     </div>
                 </div>
@@ -370,7 +369,7 @@ styleClass=""
     <div *ngIf="selectedRequest?.final_status === 'declined' && !hasPendingRequestOfSameType && !isInsighterRequest" class="mt-5 w-100">
             <div class="card-header border-0 ps-0 pt-0">
                 <h5 class="card-title fw-semibold text-dark">
-                    Resend Request
+                    {{'USER_REQUESTS.DIALOG.RESEND_REQUEST' | translate}}
                 </h5>
             </div>
             <div class="card-body px-0">
@@ -405,7 +404,7 @@ styleClass=""
     </div>
     <div *ngIf="hasPendingRequestOfSameType && selectedRequest?.final_status !== 'approved'" class="mt-4 alert alert-warning  border">
         <div class="d-flex align-items-center">
-            <i class="bi bi-exclamation-triangle-fill me-2 fs-4 text-warning"></i>
+            <i class="bi bi-exclamation-triangle-fill mx-2 fs-4 text-warning"></i>
             <span>{{ 'USER_REQUESTS.DIALOG.PENDING_REQUEST_EXISTS' | translate }}</span>
         </div>
     </div>
