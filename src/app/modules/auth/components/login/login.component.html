@@ -1,13 +1,15 @@
 
-<div class="row h-100vh gap pt-res-100 justify-content-center bg-light">
-  <div class="  first-block rounded ">
-    <div class="d-flex    ms-auto flex-column p-4 mil-up">
-      <a href="https://knoldg.com" class="w-100px">
-        <img
-          class="h-100 w-60px"
-          src="assets/media/logos/light-logo-sm.svg"
-        />
-      </a>
+<div class="row h-100vh small-gap pt-res-100 justify-content-center align-items-center bg-light">
+  <div class="first-block rounded">
+    <div class="d-flex flex-column p-4 mil-up text-center text-md-start">
+      <div class="d-flex justify-content-center justify-content-md-start">
+        <a href="https://knoldg.com" class="w-100px">
+          <img
+            class="h-100 w-60px"
+            src="assets/media/logos/light-logo-sm.svg"
+          />
+        </a>
+      </div>
       <div class="mt-4">
         <h3 class="h4 font-weight-bolder text-dark fs-1 fw-bold py-2">
           {{ 'AUTH.LOGIN.WELCOME_LOGIN' | translate }}
@@ -18,9 +20,7 @@
     </div>
   </div>
   
-  <div
-    class=" second-block "
-  >
+  <div class="second-block">
     <div class="w-lg-500px mil-up">
     
       <form class="form w-100 " [formGroup]="loginForm" novalidate="novalidate" id="kt_login_signin_form"

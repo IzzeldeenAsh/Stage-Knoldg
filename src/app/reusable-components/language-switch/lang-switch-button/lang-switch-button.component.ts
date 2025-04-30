@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 import { FontService } from 'src/app/_fake/services/font-change/font.service';
 import { TranslationService } from 'src/app/modules/i18n/translation.service';
@@ -10,45 +12,51 @@ import { TranslationService } from 'src/app/modules/i18n/translation.service';
 })
 export class LangSwitchButtonComponent implements OnInit {
   selectedLang = 'en'; // Default language
-  isMenuVisible = false;
-  selectedFlag = '../../../../assets/media/flags/united-states.svg'; // Default flag
+  @Input() isInsighterDashboard = false; // Flag to check if we're in insighter-dashboard routes
   
   constructor(
     private translationService: TranslationService,
-    private fontService: FontService // Inject the FontService
+    private fontService: FontService, // Inject the FontService
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     // Get the selected language from the translation service
     this.selectedLang = this.translationService.getSelectedLanguage();
     
-    // Update flag and font based on the language
-    this.updateFlag();
+    // Update font based on the language
     this.fontService.updateFont(this.selectedLang);
+
+    // Check if we're in insighter-dashboard routes
+    this.checkInsighterDashboardRoute(this.router.url);
+
+    // Subscribe to router events to update the flag when the route changes
+    this.router.events.pipe(
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd)
+    ).subscribe((event) => {
+      this.checkInsighterDashboardRoute(event.urlAfterRedirects);
+    });
   }
 
-  toggleMenu(): void {
-    this.isMenuVisible = !this.isMenuVisible;
-  }
-
-  changeLanguage(lang: string): void {
-    // Change the language in the app
-    this.selectedLang = lang;
-    this.translationService.setLanguage(lang);
+  switchLanguage(): void {
+    // Toggle between English and Arabic
+    const newLang = this.selectedLang === 'en' ? 'ar' : 'en';
     
-    // Update the flag and font based on the new language
-    this.updateFlag();
+    // Change the language in the app
+    this.selectedLang = newLang;
+    this.translationService.setLanguage(newLang);
+    
+    // Update font based on the new language
     this.fontService.updateFont(this.selectedLang);
 
-    // Hide the menu after the language is selected
-    this.isMenuVisible = false;
+    // Reload the page to apply language changes
     window.location.reload();
   }
 
-  updateFlag(): void {
-    // Update the flag based on the selected language
-    this.selectedFlag = this.selectedLang === 'ar'
-      ? '../../../../assets/media/flags/saudi-arabia.svg'
-      : '../../../../assets/media/flags/uk.svg';
+
+
+  checkInsighterDashboardRoute(url: string): void {
+    // Check if the current route is in the insighter-dashboard
+    this.isInsighterDashboard = url.includes('/app/insighter-dashboard');
   }
 }

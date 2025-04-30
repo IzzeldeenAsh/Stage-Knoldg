@@ -4,6 +4,7 @@ export const locale = {
 INSIGHTER_REQUESTS: {
       TITLE: 'طلبات الإنسايتر',
       REQUEST_COUNT: 'الطلبات',
+      PENDING_KNOWLEDGE_APPROVAL: 'لديك ( {{count}} ) طلب قبول معرفة بانتظار الموافقة',
       FILTER: {
         REQUEST_TYPE: 'نوع الطلب',
         SHOW_ALL: 'عرض الكل',
@@ -14,7 +15,8 @@ INSIGHTER_REQUESTS: {
         REJECTED: 'مرفوض'
       },
     },
-
+    WELCOME_BACK:'مرحبا بك',
+    CHOOSE_COUNTTRIES:'اختر الدول',
     COMPANY_INDUSTRIES: 'الصناعات التي ينتمي إليها الشركة',
     CHOOSE_ACCOUNT_TYPE_TIP_DESC: ' الحساب الفردي مخصص للشخص الواحد، بينما حساب الشركة مناسب إذا كنت ترغب في إنشاء فريق.',
     EMAIL_DOMAIN_MATCH:'البريد الالكتروني يجب أن يتطابق مع نطاق الموقع',
@@ -651,6 +653,7 @@ INSIGHTER_REQUESTS: {
       FILTER: {
         REQUEST_TYPE: 'نوع الطلب',
         SHOW_ALL: 'عرض الكل',
+        DEACTIVATE_DELETE_COMPANY:'تعطيل وحذف الشركة',
         ACCEPT_KNOWLEDGE: 'قبول المعرفة',
         ACTIVATE_COMPANY_ACCOUNT: 'تفعيل حساب الشركة',
         DEACTIVATE_COMPANY_ACCOUNT: 'تعطيل حساب الشركة',
