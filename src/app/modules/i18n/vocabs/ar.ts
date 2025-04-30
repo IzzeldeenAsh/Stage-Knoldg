@@ -4,7 +4,7 @@ export const locale = {
 INSIGHTER_REQUESTS: {
       TITLE: 'طلبات الإنسايتر',
       REQUEST_COUNT: 'الطلبات',
-      PENDING_KNOWLEDGE_APPROVAL: 'لديك ( {{count}} ) طلب قبول معرفة بانتظار الموافقة',
+      PENDING_KNOWLEDGE_APPROVAL: 'لديك ( {{count}} ) طلب "قبول معرفة" بانتظار الموافقة',
       FILTER: {
         REQUEST_TYPE: 'نوع الطلب',
         SHOW_ALL: 'عرض الكل',
@@ -22,7 +22,7 @@ INSIGHTER_REQUESTS: {
     EMAIL_DOMAIN_MATCH:'البريد الالكتروني يجب أن يتطابق مع نطاق الموقع',
     COMPANY_CONSULTING_FIELDS: 'المجالات الاستشارية التي ينتمي إليها الشركة',
     COMPANY_CERTIFICATIONS: 'الشهادات التي ينتمي إليها الشركة',
-    'DRAFT_STATUS': 'المكتبة',
+    'DRAFT_STATUS': 'مسودة',
     'REGIONS': 'القارات',
     MY_CERTIFICATES:'شهاداتي',
     VERIFICATION_STATUS:'موثوقية الحساب',
