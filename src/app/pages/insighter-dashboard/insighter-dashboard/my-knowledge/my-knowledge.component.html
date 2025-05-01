@@ -3,7 +3,7 @@
 <!-- Show loading spinner when checking for knowledge items -->
 <div class="card min-vh-50 d-flex justify-content-center align-items-center" *ngIf="loading">
   <div class="spinner-border text-primary" role="status">
-    <span class="visually-hidden">Loading...</span>
+    <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
   </div>
 </div>
 
@@ -17,12 +17,12 @@
   <div class="card-body d-flex flex-column align-items-center justify-content-center py-15">
     <!-- Empty state illustration -->
     <div class="text-center">
-      <img src="assets/media/illustrations/misc/upload_knowledge.svg" width="350" height="350" alt="Upload knowledge illustration">
+      <img src="assets/media/illustrations/misc/upload_knowledge.svg" width="350" height="350" alt="{{ 'KNOWLEDGE.UPLOAD_ILLUSTRATION_ALT' | translate }}">
     </div>
     
     <!-- Message -->
-    <h1 class="text-dark mb-3 fs-2">You don't have any knowledge items yet</h1>
-    <p class="text-muted fs-5 text-center mb-10 max-w-500px">Start by creating your first knowledge item. You can add data, insights, reports, manuals, courses, or media.</p>
+    <h1 class="text-dark mb-3 fs-2">{{ 'KNOWLEDGE.NO_ITEMS_YET' | translate }}</h1>
+    <p class="text-muted fs-5 text-center mb-10 max-w-500px">{{ 'KNOWLEDGE.START_CREATING' | translate }}</p>
     
     <!-- Add Knowledge button -->
     <a [routerLink]="['/app/add-knowledge']" class="btn btn-primary btn-lg px-8">
@@ -31,7 +31,7 @@
         <span class="path2"></span>
         <span class="path3"></span>
       </i>
-      Add Knowledge
+      {{ 'KNOWLEDGE.ADD_KNOWLEDGE' | translate }}
     </a>
   </div>
 </div>

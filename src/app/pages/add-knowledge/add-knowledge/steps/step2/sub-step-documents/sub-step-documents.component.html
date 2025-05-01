@@ -30,7 +30,7 @@
                         
                         <!-- File Preview (when file exists) -->
                         <ng-container *ngIf="doc.get('filePreview')?.value">
-                            <div class="d-flex align-items-center justify-content-start w-100 bg-light p-3 rounded">
+                            <div class="d-flex align-items-center justify-content-start w-100 rounded">
                                 <!-- Success icon -->
                                 <span *ngIf="doc.get('uploadStatus')?.value === 'success'" class="me-2">
                                     <div class="symbol symbol-20px">
@@ -68,7 +68,6 @@
                                 </span>
                                 <span *ngIf="doc.get('uploadStatus')?.value === 'uploading'" class="badge badge-light-primary ms-2 d-flex align-items-center">
                                     <span class="spinner-border spinner-border-sm text-primary me-1"></span>
-                                    <span class="text-primary">{{ 'UPLOADING' | translate }}</span>
                                 </span>
                             </div>
                             
@@ -145,6 +144,8 @@
                                 <span class="path1"></span>
                                 <span class="path2"></span>
                                 <span class="path3"></span>
+                                <span class="path4"></span>
+                                <span class="path5"></span>
                             </i>
                         </button>
                     </div>
@@ -179,7 +180,7 @@
         <!-- Total Price -->
         <div class="border-top border-gray-300 pt-4">
             <div class="d-flex flex-column flex-sm-row justify-content-end align-items-center">
-                <div class="fs-7 text-muted mb-2 mb-sm-0 me-sm-2">{{ 'TOTAL_KNOWLEDGE_PRICE' | translate }}</div>
+                <div class="fs-7 text-muted mb-2 mb-sm-0 mx-sm-2">{{ 'TOTAL_KNOWLEDGE_PRICE' | translate }}</div>
                 <div class="fs-1 text-gray-600 fw-bolder">${{ totalPrice.toFixed(2) }}</div>
             </div>
         </div>

@@ -574,11 +574,11 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
       for (const key in serverErrors) {
         if (serverErrors.hasOwnProperty(key)) {
           const messages = serverErrors[key];
-          console.error(`${key}: ${messages.join(', ')}`);
+          this.showError(key, messages.join(', '));
         }
       }
     } else {
-      console.error('An unexpected error occurred.');
+      this.showError('Error', 'An unexpected error occurred.');
     }
   }
 

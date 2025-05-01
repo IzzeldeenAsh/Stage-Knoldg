@@ -9,6 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
   selector: 'app-step5',
   templateUrl: './step5.component.html',
   styles: [`
+    /* Calendar styles */
     ::ng-deep .p-calendar {
       width: 100%;
     }
@@ -32,6 +33,29 @@ import { TranslateService } from '@ngx-translate/core';
       background: #FAFAFA;
       border-color: #DFDFDF;
       color: #6E6E6E;
+    }
+    
+    /* Radio button selection styles */
+    :host ::ng-deep .btn-check:checked + .btn-outline {
+      background-color: #f1faff !important;
+      color: #009ef7 !important;
+      border: 1px solid #009ef7 !important;
+      box-shadow: 0 0 10px rgba(0, 158, 247, 0.1);
+    }
+    
+    :host ::ng-deep .btn-check:checked + .btn-outline .text-gray-800 {
+      color: #009ef7 !important;
+      font-weight: 600 !important;
+    }
+    
+    :host ::ng-deep .btn-check:checked + .btn-outline .text-gray-600 {
+      color: #0095e8 !important;
+    }
+    
+    /* Hover effect for options */
+    :host ::ng-deep .btn-outline:hover {
+      background-color: #f8f8f8;
+      transition: all 0.3s ease;
     }
   `]
 })
