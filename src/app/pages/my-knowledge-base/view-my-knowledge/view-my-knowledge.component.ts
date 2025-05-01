@@ -146,12 +146,12 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
 
   sendToReview(): void {
     Swal.fire({
-      title: 'Are you sure?',
-      text: "You are about to send this knowledge for review",
+      title: this.lang === 'ar' ? 'هل أنت متأكد؟' : 'Are you sure?',
+      text: this.lang === 'ar' ? "أنت على وشك إرسال هذه المعرفة للمراجعة" : "You are about to send this knowledge for review",
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Yes, send for review!',
-      cancelButtonText: 'Cancel',
+      confirmButtonText: this.lang === 'ar' ? 'نعم، أرسل للمراجعة!' : 'Yes, send for review!',
+      cancelButtonText: this.lang === 'ar' ? 'إلغاء' : 'Cancel',
       customClass: {
         confirmButton: 'btn btn-primary',
         cancelButton: 'btn btn-light'
@@ -220,12 +220,12 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
 
   confirmPublish(): void {
     Swal.fire({
-      title: 'Are you sure?',
-      text: "You are about to publish this knowledge",
+      title: this.lang === 'ar' ? 'هل أنت متأكد؟' : 'Are you sure?',
+      text: this.lang === 'ar' ? "أنت على وشك نشر هذه المعرفة" : "You are about to publish this knowledge",
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Yes, publish it!',
-      cancelButtonText: 'Cancel',
+      confirmButtonText: this.lang === 'ar' ? 'نعم، انشرها!' : 'Yes, publish it!',
+      cancelButtonText: this.lang === 'ar' ? 'إلغاء' : 'Cancel',
       customClass: {
         confirmButton: 'btn btn-primary',
         cancelButton: 'btn btn-light'
@@ -240,12 +240,12 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
 
   confirmUnpublish(): void {
     Swal.fire({
-      title: 'Are you sure?',
-      text: "You are about to unpublish this knowledge",
+      title: this.lang === 'ar' ? 'هل أنت متأكد؟' : 'Are you sure?',
+      text: this.lang === 'ar' ? "أنت على وشك إلغاء نشر هذه المعرفة" : "You are about to unpublish this knowledge",
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Yes, unpublish it!',
-      cancelButtonText: 'Cancel',
+      confirmButtonText: this.lang === 'ar' ? 'نعم، قم بإلغاء نشرها!' : 'Yes, unpublish it!',
+      cancelButtonText: this.lang === 'ar' ? 'إلغاء' : 'Cancel',
       customClass: {
         confirmButton: 'btn btn-danger',
         cancelButton: 'btn btn-light'
@@ -260,14 +260,14 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
 
   confirmDelete(): void {
     Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
+      title: this.lang === 'ar' ? 'هل أنت متأكد؟' : 'Are you sure?',
+      text: this.lang === 'ar' ? "لن تتمكن من استعادة هذا!" : "You won't be able to revert this!",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!',
-      cancelButtonText: 'Cancel',
+      confirmButtonText: this.lang === 'ar' ? 'نعم، احذفها!' : 'Yes, delete it!',
+      cancelButtonText: this.lang === 'ar' ? 'إلغاء' : 'Cancel',
       customClass: {
         confirmButton: 'btn btn-danger',
         cancelButton: 'btn btn-light'
@@ -361,12 +361,14 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
 
   publishAs(type: 'both' | 'package'): void {
     Swal.fire({
-      title: 'Are you sure?',
-      text: type === 'package' ? 'This will make the knowledge available in packages only' : 'This will make the knowledge available both standalone and in packages',
+      title: this.lang === 'ar' ? 'هل أنت متأكد؟' : 'Are you sure?',
+      text: type === 'package' ? 
+        (this.lang === 'ar' ? 'سيجعل هذا المعرفة متاحة في الحزم فقط' : 'This will make the knowledge available in packages only') : 
+        (this.lang === 'ar' ? 'سيجعل هذا المعرفة متاحة بشكل مستقل وفي الحزم' : 'This will make the knowledge available both standalone and in packages'),
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Yes, proceed!',
-      cancelButtonText: 'Cancel',
+      confirmButtonText: this.lang === 'ar' ? 'نعم، تابع!' : 'Yes, proceed!',
+      cancelButtonText: this.lang === 'ar' ? 'إلغاء' : 'Cancel',
       customClass: {
         confirmButton: 'btn btn-primary',
         cancelButton: 'btn btn-light'

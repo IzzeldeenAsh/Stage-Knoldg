@@ -166,8 +166,18 @@
   }
 
   .btn-icon {
+    // Default LTR styling
     margin-left: 8px;
+    margin-right: 0;
     transition-delay: 0.1s;
+  }
+  
+  // RTL specific styling
+  [dir="rtl"] & {
+    .btn-icon {
+      margin-left: 0;
+      margin-right: 8px;
+    }
   }
 
   .social-icons {
@@ -181,12 +191,20 @@
     list-style-type: none;
     transform: translateY(-50%);
     justify-content: center;
+    // Ensure direction matches current language direction
+    direction: inherit;
 
     li {
       flex: 1;
       text-align: center;
       max-width: 50px; // Limit width to ensure proper spacing
-
+      
+      // Add hover transition effect that works in both RTL and LTR
+      transition: transform 0.2s ease;
+      &:hover {
+        transform: scale(1.1);
+      }
+      
       a {
         display: inline-flex;
         vertical-align: middle;
@@ -213,8 +231,7 @@
 
   &:hover {
     &::before {
-      transform: scale(1.05);
-      background: linear-gradient(135deg, #2f6bc0 0%, #209488 100%) !important;
+      transform: scale(1.2);
     }
 
     .btn-text,
@@ -241,6 +258,21 @@
       
       &:nth-child(4) a {
         transition-delay: 0.3s;
+      }
+    }
+  }
+  
+  // Additional RTL specific styling
+  [dir="rtl"] & {
+    // Ensure the hover animations still work correctly in RTL
+    &:hover {
+      .btn-text,
+      .btn-icon {
+        transform: translateY(-55px);
+      }
+      
+      .social-icons li a {
+        transform: translateY(0);
       }
     }
   }
@@ -299,4 +331,14 @@
   }
 }
  
- 
+ @media (max-width: 1200px) {
+  .max-w-80-per{
+    max-width: 80% ;
+  }
+ }
+
+ @media screen and (max-width: 575px) {
+  .max-w-80-per{
+    max-width: 100% ;
+  }
+ }

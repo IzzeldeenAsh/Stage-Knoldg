@@ -199,7 +199,7 @@
                   <!-- AI Abstract Error Message -->
                   <div *ngIf="aiAbstractError" class="alert alert-warning mt-2 mb-2">
                     <i class="fas fa-exclamation-triangle me-2"></i>
-                    Couldn't get AI Abstract. Please try again or enter description manually.
+                   {{ "COULD_NOT_GET_AI_ABSTRACT" | translate }}
                   </div>
                   
                   <div
@@ -545,6 +545,8 @@
       <div class="mb-10 fv-row" [@fadeInMoveY] *ngIf="selectedIsicId">
         <app-get-hs-code-by-isic
           [isicCodeId]="selectedIsicId"
+          [placeholder]="currentLanguage == 'ar' ? 'اختر رمز الـ HS' : 'Select HS code'"
+          [title]="currentLanguage == 'ar' ? 'اختر رمز الـ HS' : 'Select HS code'"
           [isRequired]="false"
           [language]="currentLanguage"
           [preselectedHSCodeId]="form.get('hs_code')?.value"

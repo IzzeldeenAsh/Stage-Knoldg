@@ -926,14 +926,22 @@ export class Step4Component extends BaseComponent implements OnInit {
             this.tagIdError = messages.join(', ');
             // Mark the tag_ids field as touched to show validation error
             this.form.get('tag_ids')?.markAsTouched();
+          } else if (key === 'language') {
+            // Special handling for language errors
+            this.showError('Language Error', messages.join(', '));
+            // Mark the language field as touched to show validation error
+            this.form.get('language')?.markAsTouched();
           } else {
             // Show general error toast for other fields
-            this.showError('', messages.join(', '));
+            this.showError(key.charAt(0).toUpperCase() + key.slice(1) + ' Error', messages.join(', '));
           }
         }
       }
+    } else if (error.error && error.error.message) {
+      // Handle case where error has a single message
+      this.showError('Error', error.error.message);
     } else {
-      this.showError('', 'An unexpected error occurred.');
+      this.showError('Error', 'An unexpected error occurred.');
     }
   }
   

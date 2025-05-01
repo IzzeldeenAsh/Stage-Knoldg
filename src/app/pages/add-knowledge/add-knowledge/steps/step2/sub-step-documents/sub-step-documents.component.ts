@@ -103,12 +103,20 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       this.updateParentModel({ documents: [] }, false);
     }
     
+    // Track previous validation state to avoid excessive logging
+    let previousValidState: boolean | null = null;
+    
     // Set up a timer to periodically check document status and update parent model
     // This ensures the parent component always has the latest validation state
     setInterval(() => {
       if (this.documents.length > 0) {
-        const isValid = this.validateDocuments();
-        this.updateParentModel({ documents: this.documents as IDocument[] }, isValid);
+        const isValid = this.validateDocuments(false); // Pass false to suppress logging
+        
+        // Only update parent model if validation state has changed
+        if (previousValidState === null || previousValidState !== isValid) {
+          this.updateParentModel({ documents: this.documents as IDocument[] }, isValid);
+          previousValidState = isValid;
+        }
       }
     }, 1000); // Check every second
   }
@@ -846,22 +854,22 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
     };
   }
 
-  private validateDocuments(): boolean {
+  private validateDocuments(enableLogging: boolean = true): boolean {
     // Don't allow proceeding if there are uploads in progress
     if (this.pendingUploads > 0 || this.hasActiveUploads) {
-      console.log('Form invalid: uploads in progress');
+      if (enableLogging) console.log('Form invalid: uploads in progress');
       return false;
     }
     
     // Check for any files with errors - BLOCK ANY ACTION until they are removed
     if (this.hasFilesWithErrors()) {
-      console.log('Form invalid: documents with errors must be removed before proceeding');
+      if (enableLogging) console.log('Form invalid: documents with errors must be removed before proceeding');
       return false;
     }
     
     // Allow proceeding with no documents if needed
     if (!this.documents.length) {
-      console.log('No documents available');
+      if (enableLogging) console.log('No documents available');
       return true; // Allow continuing with no documents
     }
 
@@ -874,14 +882,14 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       
       // Check if file name exists and is not empty
       if (!doc.file_name?.trim()) {
-        console.log(`Form invalid: document ${i} has no file name`);
+        if (enableLogging) console.log(`Form invalid: document ${i} has no file name`);
         return false;
       }
 
       // Check for duplicate file names (case insensitive)
       const lowerFileName = doc.file_name.toLowerCase();
       if (fileNames.has(lowerFileName)) {
-        console.log(`Form invalid: document ${i} has duplicate file name "${doc.file_name}"`);
+        if (enableLogging) console.log(`Form invalid: document ${i} has duplicate file name "${doc.file_name}"`);
         return false;
       }
       fileNames.add(lowerFileName);
@@ -891,13 +899,13 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       // We already checked for errors at the beginning, so this check is redundant
       // but we'll keep it for safety
       if (doc.uploadStatus === 'error') {
-        console.log(`Form invalid: document ${i} has error status`);
+        if (enableLogging) console.log(`Form invalid: document ${i} has error status`);
         return false;
       }
     }
 
     // Form is valid - all documents either uploaded or in progress
-    console.log('Documents validated successfully');
+    if (enableLogging) console.log('Documents validated successfully');
     return true;
   }
 

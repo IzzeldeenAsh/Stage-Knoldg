@@ -49,7 +49,7 @@
                   'bg-success text-success fs-6 fs-sm-4': activeDocumentId === doc.id && doc.price === '0',
                   'bg-success text-white fs-7 fs-sm-6': activeDocumentId !== doc.id && doc.price === '0'
                 }">
-                {{ doc.price === '0' ? 'Free' : (doc.price | currency) }}
+                {{ doc.price === '0' ? (this.lang=="ar"? 'مجاني' : 'Free') : (doc.price | currency) }}
               </span>
               
               <!-- Expand/Collapse Arrow -->
@@ -148,9 +148,7 @@
           <div class="text-gray-600 fw-bold fs-6 fs-sm-4 mb-1 text-center" [ngClass]="{'text-primary': isUploadAreaHovered}">
            {{ 'CLICK_TO_ADD_DOCUMENT' | translate }}
          </div>
-          <div class="text-gray-400 fs-7 fs-sm-6 text-center">
-           {{ knowledge.type === 'insight' ? 'Upload new insight document' : 'Add new chapter or node' }}
-         </div>
+         
        </div>
 
        <!-- Document Stepper Section -->
@@ -369,7 +367,7 @@
                      <!-- Error message -->
                      <div *ngIf="abstractError" class="alert alert-warning mt-2 mb-2">
                        <i class="fas fa-exclamation-triangle me-2"></i>
-                       Couldn't get AI Abstract. Please try again or enter description manually.
+                       {{ "COULD_NOT_GET_AI_ABSTRACT" | translate }}
                      </div>
                      
                      <div *ngIf="documentForm.get('description')?.invalid && documentForm.get('description')?.touched" class="invalid-feedback d-block">

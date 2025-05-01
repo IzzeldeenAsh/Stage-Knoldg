@@ -34,6 +34,9 @@ export class SelectRegionComponent implements OnInit {
   @Input() preSelectedCountries: any = [];
   @Input() displayMode: 'default' | 'onlyRegions' | 'onlyCountries' = 'default';
   @Output() regionsSelected = new EventEmitter<{ regions: number[], countries: number[] }>();
+  
+  // Reference to document for RTL detection
+  document: Document = document;
 
   dialogVisible: boolean = false;
   regions: Continent[] = [];

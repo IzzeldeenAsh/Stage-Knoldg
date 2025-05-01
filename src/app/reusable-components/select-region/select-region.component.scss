@@ -23,6 +23,42 @@
       border: 1px solid #f2f8ff;
       border-radius: 7px;
   }
+  
+  .rtl-country-item {
+      direction: rtl;
+  }
+  
+  .country-checkbox-container {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      
+      .form-check-input {
+          margin-right: 8px;
+          flex-shrink: 0;
+      }
+      
+      .form-check-label {
+          display: flex;
+          align-items: center;
+          margin-bottom: 0;
+          cursor: pointer;
+      }
+  }
+  
+  .rtl-checkbox-container {
+      flex-direction: row-reverse;
+      text-align: right;
+      
+      .form-check-input {
+          margin-right: 0;
+          margin-left: 8px;
+      }
+      
+      .form-check-label {
+          justify-content: flex-end;
+      }
+  }
   .country-box{
     padding: 5px;
     display: flex;
@@ -194,6 +230,12 @@
       .form-check {
         display: flex;
         align-items: center;
+        width: 100%;
+        
+        [dir="rtl"] & {
+          flex-direction: row-reverse;
+          justify-content: flex-start;
+        }
       }
       
       .country-flag {
