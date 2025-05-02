@@ -11,8 +11,7 @@
                             [id]="'fileInput' + i" 
                             (change)="onFileSelected($event, i)" 
                             accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt"
-                            style="display: none" 
-                            capture="environment" />
+                            style="display: none" />
                         
                         <!-- File Upload Button (when no file) -->
                         <ng-container *ngIf="!doc.get('filePreview')?.value">
