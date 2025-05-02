@@ -12,10 +12,12 @@
   }
   
   &.insighter-dashboard {
-    color: white;
-    
-    &:hover {
-      background-color: #2a4cad;
+    @media (min-width: 992px) {
+      color: white;
+      
+      &:hover {
+        background-color: #2a4cad;
+      }
     }
   }
 }
@@ -29,7 +31,9 @@
 }
 
 .stroke-white {
-  stroke: white;
+  @media (min-width: 992px) {
+    stroke: white;
+  }
 }
 
 .lang-text {
