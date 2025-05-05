@@ -225,23 +225,7 @@
             </div>
           </a>
           
-          <!-- User status indicators for mobile -->
-          <div class="position-absolute" style="top: -8px; right: -8px;">
-            <!-- Status indicator for insighter (not company) -->
-            @if (hasRole(['insighter']) && !hasRole(['company']) && profile.insighter_status !== 'active') {
-              <div class="badge badge-circle fs-9 p-1 bg-danger"></div>
-            }
-            
-            <!-- Status indicator for company -->
-            @if (hasRole(['company']) && profile.company?.status !== 'active') {
-              <div class="badge badge-circle fs-9 p-1 bg-danger"></div>
-            }
-            
-            <!-- Status indicator for company-insighter -->
-            @if (hasRole(['company-insighter']) && profile.insighter_status !== 'active') {
-              <div class="badge badge-circle fs-9 p-1 bg-danger"></div>
-            }
-          </div>
+        
         </div>
         
         <!-- Mobile User dropdown menu -->
