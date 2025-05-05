@@ -34,6 +34,7 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
   userProfile: IKnoldgProfile;
   isResendReviewDialogVisible: boolean = false;
   reviewComments: string = "";
+  showAllMarkets: boolean = false;
 
   constructor(
     injector: Injector,
@@ -467,5 +468,41 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
         this.linkCopied = false;
       }, 3000);
     });
+  }
+
+  /**
+   * Get total number of target market items across all categories
+   */
+  getTotalMarketItems(): number {
+    let total = 0;
+    if (this.knowledge) {
+      total += this.knowledge.economic_blocs?.length || 0;
+      // Only count regions if we don't have "Worldwide" selected
+      if (!(this.knowledge.regions && this.knowledge.regions.length === 6)) {
+        total += this.knowledge.regions?.length || 0;
+      }
+      total += this.knowledge.countries?.length || 0;
+    }
+    return total;
+  }
+
+  /**
+   * Calculate how many market items are visible in the collapsed state
+   */
+  getVisibleMarketItemsCount(): number {
+    let count = 0;
+    if (this.knowledge) {
+      // For economic blocs, show up to 2 in collapsed state
+      count += Math.min(this.knowledge.economic_blocs?.length || 0, 2);
+      
+      // For regions, show 1 if we have economic blocs, otherwise 2
+      const regionsToShow = this.knowledge.economic_blocs?.length ? 1 : 2;
+      count += Math.min(this.knowledge.regions?.length || 0, regionsToShow);
+      
+      // For countries, show 1 if we have either economic blocs or regions, otherwise 2
+      const countriesToShow = (this.knowledge.economic_blocs?.length || this.knowledge.regions?.length) ? 1 : 2;
+      count += Math.min(this.knowledge.countries?.length || 0, countriesToShow);
+    }
+    return count;
   }
 }

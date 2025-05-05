@@ -257,13 +257,7 @@
     <form [formGroup]="emailForm">
       <div class="mb-3">
         <label class="form-label required">{{ 'MY_COMPANY.EMAIL_ADDRESS' | translate }}</label>
-        <div class="input-group flex-row-reverse flex-row-reverse-lg">
-          <span class="input-group-text">
-            <i class="ki-duotone ki-sms fs-4">
-              <span class="path1"></span>
-              <span class="path2"></span>
-            </i>
-          </span>
+        <div class="input-group" dir="ltr">
           <input 
             type="email" 
             class="form-control text-start" 
@@ -272,6 +266,12 @@
             pInputText
             dir="ltr"
           />
+          <span class="input-group-text">
+            <i class="ki-duotone ki-sms fs-4">
+              <span class="path1"></span>
+              <span class="path2"></span>
+            </i>
+          </span>
         </div>
         <!-- Validation messages -->
         <div *ngIf="emailForm.get('email')?.touched" class="text-end">

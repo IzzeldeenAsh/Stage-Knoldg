@@ -365,7 +365,7 @@
                     {{ 'VIEW_MY_KNOWLEDGE.TARGET_MARKET' | translate }}
                   </span>
                   <div
-                    class="max-w-100px d-flex flex-wrap gap-2 justify-content-end"
+                    class="max-w-100px d-flex flex-wrap gap-2 justify-content-end position-relative"
                   >
                     <!-- Show "Worldwide" if all 6 regions are selected -->
                     <ng-container *ngIf="knowledge.regions && knowledge.regions.length === 6">
@@ -374,31 +374,60 @@
                       </span>
                     </ng-container>
                     
-                    <!-- Show individual regions only if not all 6 regions are selected -->
-                    <ng-container *ngIf="knowledge.economic_blocs && knowledge.economic_blocs.length > 0 && !(knowledge.regions && knowledge.regions.length === 6)">
-                      <span
-                        class="badge badge-light-secondary text-gray-800 fs-8 fw-bold"
-                        *ngFor="let bloc of knowledge.economic_blocs"
-                      >
-                        {{ bloc.name || 'N/A' }}
-                      </span>
+                    <!-- For markets other than Worldwide, show limited items with More option -->
+                    <ng-container *ngIf="!(knowledge.regions && knowledge.regions.length === 6)">
+                      <!-- Economic blocs (limited) -->
+                      <ng-container *ngIf="knowledge.economic_blocs && knowledge.economic_blocs.length > 0">
+                        <span
+                          class="badge badge-light-secondary text-gray-800 fs-8 fw-bold"
+                          *ngFor="let bloc of knowledge.economic_blocs.slice(0, !showAllMarkets ? 2 : knowledge.economic_blocs.length)"
+                        >
+                          {{ bloc.name || 'N/A' }}
+                        </span>
+                      </ng-container>
+                      
+                      <!-- Regions (limited) -->
+                      <ng-container *ngIf="knowledge.regions && knowledge.regions.length > 0 && knowledge.regions.length < 6">
+                        <span
+                          class="badge badge-light-secondary text-gray-800 fs-8 fw-bold"
+                          *ngFor="let region of knowledge.regions.slice(0, !showAllMarkets ? (knowledge.economic_blocs && knowledge.economic_blocs.length > 0 ? 1 : 2) : knowledge.regions.length)"
+                        >
+                          {{ region.name || 'N/A' }}
+                        </span>
+                      </ng-container>
+                      
+                      <!-- Countries (limited) -->
+                      <ng-container *ngIf="knowledge.countries && knowledge.countries.length > 0">
+                        <span
+                          class="badge badge-light-secondary text-gray-800 fs-8 fw-bold"
+                          *ngFor="let country of knowledge.countries.slice(0, !showAllMarkets ? ((knowledge.economic_blocs && knowledge.economic_blocs.length > 0) || (knowledge.regions && knowledge.regions.length > 0) ? 1 : 2) : knowledge.countries.length)"
+                        >
+                          {{ country.name || 'N/A' }}
+                        </span>
+                      </ng-container>
+                      
+                      <!-- More indicator with count -->
+                      <ng-container *ngIf="!showAllMarkets && getTotalMarketItems() > getVisibleMarketItemsCount()">
+                        <span 
+                          class="badge badge-light-primary text-primary fs-8 fw-bold cursor-pointer"
+                          (click)="showAllMarkets = true"
+                        >
+                          +{{ getTotalMarketItems() - getVisibleMarketItemsCount() }} {{ 'MORE' | translate }}
+                        </span>
+                      </ng-container>
+                      
+                      <!-- Show less button when expanded -->
+                      <ng-container *ngIf="showAllMarkets && getTotalMarketItems() > 3">
+                        <span 
+                          class="badge badge-light-primary text-primary fs-8 fw-bold cursor-pointer mt-1"
+                          (click)="showAllMarkets = false"
+                        >
+                          {{ 'SHOW_LESS' | translate }}
+                        </span>
+                      </ng-container>
                     </ng-container>
-                    <ng-container *ngIf="knowledge.regions && knowledge.regions.length > 0 && knowledge.regions.length < 6">
-                      <span
-                        class="badge badge-light-secondary text-gray-800 fs-8 fw-bold"
-                        *ngFor="let region of knowledge.regions"
-                      >
-                        {{ region.name || 'N/A' }}
-                      </span>
-                    </ng-container>
-                    <ng-container *ngIf="knowledge.countries && knowledge.countries.length > 0 && !(knowledge.regions && knowledge.regions.length === 6)">
-                      <span
-                        class="badge badge-light-secondary text-gray-800 fs-8 fw-bold"
-                        *ngFor="let country of knowledge.countries"
-                      >
-                        {{ country.name || 'N/A' }}
-                      </span>
-                    </ng-container>
+                    
+                    <!-- Show N/A if no markets are specified -->
                     <span *ngIf="(!knowledge.economic_blocs || knowledge.economic_blocs.length === 0) && 
                                 (!knowledge.regions || knowledge.regions.length === 0) && 
                                 (!knowledge.countries || knowledge.countries.length === 0)"

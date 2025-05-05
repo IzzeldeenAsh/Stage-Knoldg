@@ -17,6 +17,8 @@ export class MyDashboardComponent extends BaseComponent {
   pendingInsighterRequestsCount: number = 0;
   private statisticsLoaded: boolean = false;
   hasMultipleEmployees: boolean = false;
+  hasEmployeeData: boolean = false;
+  private knowledgeTypesLoaded: boolean = false;
 
 constructor(
   injector: Injector,
@@ -50,9 +52,11 @@ ngOnInit(){
   const statsSub = this.knowledgeService.getKnowledgeTypeStatistics().subscribe(
     (response) => {
       this.statisticsLoaded = response.data && response.data.length > 0;
+      this.knowledgeTypesLoaded = this.statisticsLoaded;
     },
     () => {
       this.statisticsLoaded = false;
+      this.knowledgeTypesLoaded = false;
     }
   );
   this.unsubscribe.push(statsSub);
@@ -61,6 +65,7 @@ ngOnInit(){
 // Handle the event when the number of employees is determined
 onHasMultipleEmployees(hasMultiple: boolean): void {
   this.hasMultipleEmployees = hasMultiple;
+  this.hasEmployeeData = hasMultiple;
 }
 
 hasRole(role: string){
@@ -69,6 +74,21 @@ hasRole(role: string){
 
 hasStatistics(): boolean {
   return this.statisticsLoaded;
+}
+
+/**
+ * Check if knowledge types statistics are available
+ */
+hasKnowledgeTypes(): boolean {
+  return this.knowledgeTypesLoaded;
+}
+
+/**
+ * Determine if the empty state message should be shown
+ * Only show empty state when there are no statistics, no employee data, and no pending insighter requests
+ */
+shouldShowEmptyState(): boolean {
+  return !this.hasStatistics() && !this.hasEmployeeData && !this.hasPendingInsighterRequests;
 }
 
 /**

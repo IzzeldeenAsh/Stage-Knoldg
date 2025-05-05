@@ -3,7 +3,8 @@ export const locale = {
   lang: 'en',
 
   data: {
-
+    SHOW_LESS:'Show Less',
+    SHOW_MORE:'Show More',
     CHOOSE_COUNTTRIES:'Choose Countries',
     INSIGHTER_REQUESTS: {
       TITLE: 'Insighter Requests',
@@ -180,7 +181,8 @@ export const locale = {
       TITLE: 'Notifications',
       NO_NEW: 'No new notifications',
       VIEW: 'View',
-      REQUESTS: 'Requests'
+      REQUESTS: 'Requests',
+      KNOWLEDGE:'Knowledge'
     },
     MENU: {
       TITLE: 'Menu',

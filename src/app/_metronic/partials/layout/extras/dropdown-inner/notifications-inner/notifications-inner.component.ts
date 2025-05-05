@@ -40,6 +40,26 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
   activeTabId: NotificationsTabsType = 'kt_topbar_notifications_1';
   alerts: Array<AlertModel> = defaultAlerts;
   logs: Array<LogModel> = defaultLogs;
+  
+  get knowledgeNotifications(): Notification[] {
+    return this.notifications.filter(notification => notification.type === 'knowledge');
+  }
+  
+  get hasKnowledgeNotifications(): boolean {
+    return this.knowledgeNotifications.length > 0;
+  }
+  
+  get knowledgeNotificationsCount(): number {
+    return this.knowledgeNotifications.length;
+  }
+  
+  get requestNotifications(): Notification[] {
+    return this.notifications.filter(notification => notification.type === 'request');
+  }
+  
+  get requestNotificationsCount(): number {
+    return this.requestNotifications.length;
+  }
 
   constructor(injector: Injector) {
     super(injector);

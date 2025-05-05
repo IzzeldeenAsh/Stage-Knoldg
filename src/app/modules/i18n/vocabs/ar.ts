@@ -15,6 +15,8 @@ INSIGHTER_REQUESTS: {
         REJECTED: 'مرفوض'
       },
     },
+    SHOW_LESS:'عرض أقل',
+    SHOW_MORE:'عرض المزيد',
     WELCOME_BACK:'مرحبا بك',
     SUBMIT:'إرسال',
     CHOOSE_COUNTTRIES:'اختر الدول',
@@ -182,7 +184,8 @@ INSIGHTER_REQUESTS: {
       TITLE: 'إشعارات',
       NO_NEW: 'لا توجد إشعارات جديدة',
       VIEW: 'عرض',
-      REQUESTS: 'الطلبات'
+      REQUESTS: 'الطلبات',
+      KNOWLEDGE: 'المعرفة'
     },
     MENU: {
       TITLE: 'القائمة',

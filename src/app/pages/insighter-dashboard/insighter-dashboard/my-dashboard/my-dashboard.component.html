@@ -25,13 +25,13 @@
     </div>
 
     <div *ngIf="roles.includes('insighter') || roles.includes('company') || roles.includes('company-insighter')" 
-         [ngClass]="{'col-12': !hasMultipleEmployees && roles.includes('company'), 
+         [ngClass]="{'col-12': !hasMultipleEmployees || !roles.includes('company'), 
                    'col-12 col-lg-6': hasMultipleEmployees && roles.includes('company')}">
         <app-knowledge-types-statistics></app-knowledge-types-statistics>
     </div>
-    <div *ngIf="roles.includes('company')" 
-         [ngClass]="{'col-12': !hasMultipleEmployees, 
-                   'col-12 col-lg-6': hasMultipleEmployees}">
+    <div *ngIf="roles.includes('company') && hasEmployeeData" 
+         [ngClass]="{'col-12': !hasKnowledgeTypes(), 
+                   'col-12 col-lg-6': hasKnowledgeTypes()}">
         <app-employee-knowledge-statistics (hasMultipleEmployees)="onHasMultipleEmployees($event)"></app-employee-knowledge-statistics>
     </div>
 </div>
@@ -88,7 +88,7 @@
     </div>
 
     <!-- Empty state - start building knowledge base -->
-    <div class="col-12 mb-5 mb-xl-10" *ngIf="!hasRole('insighter') && !hasStatistics()">
+    <div class="col-12 mb-5 mb-xl-10" *ngIf="!hasRole('insighter') && shouldShowEmptyState()">
         <div class="card card-custom bg-body border-1 h-md-100">
             <!--begin::Body-->
             <div class="card-body d-flex justify-content-center flex-column align-items-center py-15">
