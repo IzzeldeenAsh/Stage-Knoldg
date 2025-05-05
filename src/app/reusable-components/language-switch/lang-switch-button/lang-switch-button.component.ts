@@ -13,6 +13,7 @@ import { TranslationService } from 'src/app/modules/i18n/translation.service';
 export class LangSwitchButtonComponent implements OnInit {
   selectedLang = 'en'; // Default language
   @Input() isInsighterDashboard = false; // Flag to check if we're in insighter-dashboard routes
+  isMobileView = false; // Flag to check if we're in mobile view
   
   constructor(
     private translationService: TranslationService,
@@ -26,6 +27,10 @@ export class LangSwitchButtonComponent implements OnInit {
     
     // Update font based on the language
     this.fontService.updateFont(this.selectedLang);
+
+    // Check if we're in mobile view (< 992px according to Bootstrap)
+    this.checkMobileView();
+    window.addEventListener('resize', () => this.checkMobileView());
 
     // Check if we're in insighter-dashboard routes
     this.checkInsighterDashboardRoute(this.router.url);
@@ -53,10 +58,13 @@ export class LangSwitchButtonComponent implements OnInit {
     window.location.reload();
   }
 
+  // Helper method to check if we're in insighter-dashboard routes
+  private checkInsighterDashboardRoute(url: string): void {
+    this.isInsighterDashboard = this.isInsighterDashboard || url.includes('insighter-dashboard');
+  }
 
-
-  checkInsighterDashboardRoute(url: string): void {
-    // Check if the current route is in the insighter-dashboard
-    this.isInsighterDashboard = url.includes('/app/insighter-dashboard');
+  // Helper method to check if we're in mobile view
+  private checkMobileView(): void {
+    this.isMobileView = window.innerWidth < 992;
   }
 }

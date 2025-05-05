@@ -1,6 +1,8 @@
 import { Component, HostBinding, Input, OnInit, Output, EventEmitter, OnDestroy, Injector } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Notification } from 'src/app/_fake/services/nofitications/notifications.service';
 import { BaseComponent } from 'src/app/modules/base.component';
+import { TranslationService } from 'src/app/modules/i18n';
 
 export type NotificationsTabsType =
   | 'kt_topbar_notifications_1'
@@ -50,7 +52,8 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
   }
   
   get knowledgeNotificationsCount(): number {
-    return this.knowledgeNotifications.length;
+    // Count only unread knowledge notifications (where read_at is null or undefined)
+    return this.knowledgeNotifications.filter(n => !n.read_at).length;
   }
   
   get requestNotifications(): Notification[] {
@@ -58,11 +61,17 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
   }
   
   get requestNotificationsCount(): number {
-    return this.requestNotifications.length;
+    // Count only unread request notifications (where read_at is null or undefined)
+    return this.requestNotifications.filter(n => !n.read_at).length;
   }
+
+  private http: HttpClient;
+  private translationService: TranslationService;
 
   constructor(injector: Injector) {
     super(injector);
+    this.http = injector.get(HttpClient);
+    this.translationService = injector.get(TranslationService);
   }
 
   ngOnInit(): void {
@@ -82,6 +91,31 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
 
   setActiveTabId(tabId: NotificationsTabsType) {
     this.activeTabId = tabId;
+    
+    // Mark all notifications as read when a tab is clicked
+    // We'll update the UI immediately but also call the API to persist the changes
+    
+    // Get the current language
+    const lang = this.translationService.getSelectedLanguage() || 'en';
+    
+    // Create headers
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Language': lang
+    });
+    
+    // Call API to mark all as read
+    this.http.put('https://api.knoldg.com/api/account/notification/read', {}, { headers })
+      .subscribe({
+        next: () => {
+          // Success - notifications have been marked as read on the server
+          // We'll let the parent component handle refreshing the notifications list
+        },
+        error: (error: any) => {
+          console.error('Error marking notifications as read:', error);
+        }
+      });
   }
 
   onNotificationClick(notificationId: string) {
