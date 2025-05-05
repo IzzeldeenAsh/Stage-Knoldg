@@ -4,10 +4,7 @@ import { Notification } from 'src/app/_fake/services/nofitications/notifications
 import { BaseComponent } from 'src/app/modules/base.component';
 import { TranslationService } from 'src/app/modules/i18n';
 
-export type NotificationsTabsType =
-  | 'kt_topbar_notifications_1'
-  | 'kt_topbar_notifications_2'
-  | 'kt_topbar_notifications_3';
+// No longer need tab types since we consolidated to a single view
 
 @Component({
   selector: 'app-notifications-inner',
@@ -39,30 +36,13 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
   @Output() notificationClicked = new EventEmitter<string>();
   @Output() clickOutside = new EventEmitter<void>();
 
-  activeTabId: NotificationsTabsType = 'kt_topbar_notifications_1';
+  // Removed activeTabId since tabs are no longer used
   alerts: Array<AlertModel> = defaultAlerts;
   logs: Array<LogModel> = defaultLogs;
   
-  get knowledgeNotifications(): Notification[] {
-    return this.notifications.filter(notification => notification.type === 'knowledge');
-  }
-  
-  get hasKnowledgeNotifications(): boolean {
-    return this.knowledgeNotifications.length > 0;
-  }
-  
-  get knowledgeNotificationsCount(): number {
-    // Count only unread knowledge notifications (where read_at is null or undefined)
-    return this.knowledgeNotifications.filter(n => !n.read_at).length;
-  }
-  
-  get requestNotifications(): Notification[] {
-    return this.notifications.filter(notification => notification.type === 'request');
-  }
-  
-  get requestNotificationsCount(): number {
-    // Count only unread request notifications (where read_at is null or undefined)
-    return this.requestNotifications.filter(n => !n.read_at).length;
+  get unreadNotificationsCount(): number {
+    // Count all unread notifications (where read_at is null or undefined)
+    return this.notifications.filter(n => !n.read_at).length;
   }
 
   private http: HttpClient;
@@ -77,6 +57,9 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
   ngOnInit(): void {
     // Add click outside listener
     document.addEventListener('click', this.onClickOutside.bind(this));
+    
+    // Mark all notifications as read when the component is initialized
+    this.markAllNotificationsAsRead();
   }
 
   ngOnDestroy(): void {
@@ -89,12 +72,10 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
     }
   }
 
-  setActiveTabId(tabId: NotificationsTabsType) {
-    this.activeTabId = tabId;
-    
-    // Mark all notifications as read when a tab is clicked
-    // We'll update the UI immediately but also call the API to persist the changes
-    
+  /**
+   * Mark all notifications as read
+   */
+  markAllNotificationsAsRead() {
     // Get the current language
     const lang = this.translationService.getSelectedLanguage() || 'en';
     

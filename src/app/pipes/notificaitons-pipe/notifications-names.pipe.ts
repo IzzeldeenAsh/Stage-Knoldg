@@ -30,6 +30,8 @@ export class NotificationsNamesPipe implements PipeTransform {
         return 'Verified Insighter';
       case 'accept_knowledge':
         return 'Knowledge Request';
+      case 'question_received':
+        return 'Question Received';
       default:
         return value;
     }
