@@ -121,7 +121,8 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         // Subscribe to notifications
         this.notificationService.notifications$.subscribe((notifications) => {
           this.notifications = notifications;
-          this.notificationCount = this.notifications.length;
+          // Count only unread notifications (where read_at is null or undefined)
+          this.notificationCount = this.notifications.filter(n => !n.read_at).length;
         });
 
         // Start polling for notifications
@@ -358,6 +359,32 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
     this.isNotificationsOpen = !this.isNotificationsOpen;
     this.isUserDropdownOpen = false;
     this.isMobileUserDropdownOpen = false;
+
+    // If opening the notifications dropdown, mark all as read
+    if (this.isNotificationsOpen && this.notificationCount > 0) {
+      // Immediately set notification count to 0 for UI feedback
+      this.notificationCount = 0;
+      
+      const headers = new HttpHeaders({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Accept-Language': this.lang || 'en'
+      });
+
+      // Call the API to mark all notifications as read
+      this.http.put('https://api.knoldg.com/api/account/notification/read', {}, { headers })
+        .subscribe({
+          next: () => {
+            // Refresh notifications from API
+            this.notificationService.getNotifications(this.lang || 'en').subscribe(notifications => {
+              this.notifications = notifications;
+            });
+          },
+          error: (error) => {
+            console.error('Error marking all notifications as read:', error);
+          }
+        });
+    }
   }
 
   // Close notifications dropdown
@@ -376,7 +403,8 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         // Refresh notifications from API
         this.notificationService.getNotifications(this.lang ? this.lang : 'en').subscribe(notifications => {
           this.notifications = notifications;
-          this.notificationCount = notifications.length;
+          // Count only unread notifications (where read_at is null or undefined)
+          this.notificationCount = notifications.filter(n => !n.read_at).length;
         });
       },
       error: (error) => {
