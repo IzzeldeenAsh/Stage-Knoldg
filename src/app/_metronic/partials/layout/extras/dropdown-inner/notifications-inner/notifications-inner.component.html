@@ -35,7 +35,7 @@
         </div>
       </div>
 
-      <a [routerLink]="alert.type | notificationsLinks:parent" (click)="onNotificationClick(alert.id)">
+      <a [routerLink]="alert.sub_type === 'question_received' && alert.sub_page ? null : (alert.type | notificationsLinks:parent)" (click)="onNotificationClick(alert)">
         <span class="badge badge-light-info fs-8 badge-hover-primary">{{ 'NOTIFICATIONS.VIEW' | translate }}</span>
       </a>
     </div>

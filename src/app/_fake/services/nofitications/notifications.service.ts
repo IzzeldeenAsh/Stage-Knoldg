@@ -16,6 +16,7 @@ export interface Notification {
   sub_type: string;
   redirect_page : boolean;
   read_at? : string;
+  sub_page?: string;
 }
 
 
