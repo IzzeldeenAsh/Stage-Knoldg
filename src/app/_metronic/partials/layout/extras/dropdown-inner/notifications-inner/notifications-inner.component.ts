@@ -99,8 +99,18 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
       });
   }
 
-  onNotificationClick(notificationId: string) {
-    this.notificationClicked.emit(notificationId);
+  onNotificationClick(notification: Notification) {
+    // Check if this is a question_received notification with a sub_page
+    if (notification.sub_type === 'question_received' && notification.sub_page) {
+      // Construct the URL for knowledge page with sub_page and param
+      const knowledgeUrl = `https://knoldg.com/en/knowledge/${notification.sub_page}/${notification.param || ''}`;
+      
+      // Navigate to the external URL
+      window.open(knowledgeUrl, '_blank');
+    } else {
+      // For other notifications, just emit the ID as before
+      this.notificationClicked.emit(notification.id);
+    }
   }
 }
 
