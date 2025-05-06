@@ -70,10 +70,8 @@
                                 </span>
                             </div>
                             
-                            <!-- Error message -->
-                            <div *ngIf="doc.get('uploadStatus')?.value === 'error' && doc.get('errorMessage')?.value" class="mt-2">
-                                <small class="text-danger">{{ doc.get('errorMessage')?.value }}</small>
-                            </div>
+                            <!-- Error message placeholder - empty div to maintain structure -->
+                            <div *ngIf="doc.get('uploadStatus')?.value === 'error' && doc.get('errorMessage')?.value" class="mt-2"></div>
                         </ng-container>
                     </div>
                     
@@ -147,6 +145,19 @@
                                 <span class="path5"></span>
                             </i>
                         </button>
+                    </div>
+                    
+                    <!-- Document Error Message - Full Width Row -->
+                    <div *ngIf="doc.get('uploadStatus')?.value === 'error' && doc.get('errorMessage')?.value" class="col-12 mt-3">
+                        <div class="alert alert-danger d-flex align-items-center p-3">
+                            <i class="ki-duotone ki-shield-cross fs-2 me-3">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                            <div class="d-flex flex-column">
+                                <span>{{ doc.get('errorMessage')?.value }}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

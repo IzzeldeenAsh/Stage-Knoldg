@@ -83,7 +83,7 @@ export class EmployeeKnowledgeStatisticsComponent implements OnInit {
         enabled: false
       }
     },
-    colors: ["#0095e8", "#864ffc", "#35b573", "#ec365b", "#ffa800"],
+    colors: ["#0095E8", "#1E90FF", "#0070C0", "#4682B4", "#104E8B", "#000080", "#0047AB"],
     plotOptions: {
       bar: {
         horizontal: true,

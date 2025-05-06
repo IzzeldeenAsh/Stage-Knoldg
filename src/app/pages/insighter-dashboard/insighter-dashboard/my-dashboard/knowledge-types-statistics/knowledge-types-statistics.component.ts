@@ -211,12 +211,13 @@ export class KnowledgeTypesStatisticsComponent implements OnInit, AfterViewInit,
     }
 
     const typeColors = {
-      report: "#009EF7", // Primary blue
-      insight: "#50CD89", // Success green
-      manual: "#F1416C", // Danger red
-      data: "#7239EA", // Purple
-      course: "#FFC700", // Warning yellow
-      media: "#181C32"  // Dark
+      report: "#0095E8", // Light blue
+      insight: "#0070C0", // Medium blue
+      manual: "#104E8B", // Dark blue
+      data: "#1E90FF", // Dodger blue
+      course: "#4682B4", // Steel blue
+      media: "#000080", // Navy blue
+      other: "#0047AB"  // Cobalt blue
     };
 
     const seriesData = this.statistics.map(stat => stat.count);
