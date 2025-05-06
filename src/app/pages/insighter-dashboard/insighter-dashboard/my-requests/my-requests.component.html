@@ -8,7 +8,8 @@ styleClass=""
 <!-- Shared No Requests State - Only show when BOTH tables are empty and no filters are applied -->
 <div *ngIf="filteredUserRequests.length === 0 && filteredInsighterRequests.length === 0 && !hasActiveFilters()" class="text-center py-10 bg-light-secondary rounded mb-5 border border-1 border-light">
     <div class="my-5">
-        <i class="bi bi-inbox fs-1 text-gray-400 mb-3 d-block"></i>
+        <img src="assets/media/illustrations/dozzy-1/7117863_3369471.svg" alt="No Requests Illustration" class="mb-4" style="max-width: 300px;">
+      
         <h3 class="fw-bold text-gray-800 mb-2">No Requests Found</h3>
         <p class="text-gray-600 fs-6 px-3">You don't have any requests at the moment. New requests will appear here once created.</p>
     </div>

@@ -561,13 +561,7 @@
         <label class="d-flex align-items-center fs-5 fw-semibold mb-5">
           <span class="required">{{ "SELECT_TAGS" | translate }}</span>
         </label>
-        
-        <!-- Show this message when there are no tags -->
-        <div *ngIf="!availableTags || availableTags.length === 0" class="alert alert-info mb-5">
-          {{ "NO_TAGS_AVAILABLE" | translate }}
-        </div>
-        
-        <!-- Tag selection error message -->
+                <!-- Tag selection error message -->
         <div *ngIf="form.get('tag_ids')?.hasError('required') && form.get('tag_ids')?.touched" class="fv-plugins-message-container invalid-feedback mb-3">
           {{ "TAGS_REQUIRED" | translate }}
         </div>
