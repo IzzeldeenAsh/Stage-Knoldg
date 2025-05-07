@@ -66,25 +66,30 @@ export class AuthService implements OnDestroy {
         const auth = new AuthModel();
         auth.authToken = response.data.token;
         this.setAuthInLocalStorage(auth);
+        
+        // Also store token in Next.js format for better compatibility
+        localStorage.setItem('token', response.data.token);
+        
         return response.data;
       }),
       switchMap(() => {
         const headers = new HttpHeaders({
           Accept: "application/json",
           "Accept-Language": this.currentLang,
-          "Authorization": `Bearer ${this.getAuthFromLocalStorage()?.authToken || ''}`,
+          "Authorization": `Bearer ${this.getAuthFromLocalStorage()?.authToken || ''}`
         });
         return this.http.get('https://api.knoldg.com/api/account/profile', {
           headers
         }).pipe(
           map((profileResponse: any) => {
-            if (profileResponse.data.roles.includes('admin')) {
+            if (profileResponse.data.roles.includes('admin') || profileResponse.data.roles.includes('staff')) {
               this.router.navigate(['/admin-dashboard']);
             } else {
               const authData = this.getAuthFromLocalStorage();
               if (authData && authData.authToken) {
-                // Pass token in URL instead of using cookies
-                window.location.href = `${environment.mainAppUrl}/en/callback?token=${authData.authToken}`;
+                // Use path parameter format for consistency and improved security
+                // This will go to the Next.js [locale]/callback/[token] route
+                window.location.href = `${environment.mainAppUrl}/en/callback/${authData.authToken}`;
               }
             }
             return profileResponse.data;

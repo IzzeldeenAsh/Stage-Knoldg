@@ -3,11 +3,11 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Observable } from "rxjs";
 import { first } from "rxjs/operators";
 import { AuthService } from "../../services/auth.service";
-import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { TranslationService } from "src/app/modules/i18n/translation.service";
-import { ScrollAnimsService } from "src/app/_fake/services/scroll-anims/scroll-anims.service";
-import { Message, MessageService } from "primeng/api";
+import { Message } from "primeng/api";
 import {BaseComponent} from "src/app/modules/base.component"
+import { environment } from "src/environments/environment";
 @Component({
   selector: "app-login",
   templateUrl: "./login.component.html",
@@ -94,7 +94,10 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
         const authtoken:any = localStorage.getItem('foresighta-creds');
         const token = JSON.parse(authtoken);
         if (token && token.authToken) {
-          window.location.href = `https://knoldg.com/en/callback/${token.authToken}`;
+          // Store token in Next.js format for better compatibility
+          localStorage.setItem('token', token.authToken);
+          // Use the imported environment variable for the main app URL
+          window.location.href = `${environment.mainAppUrl}/en/callback/${token.authToken}`;
         } else {
           window.location.href = redirectUrl;
         }
@@ -113,7 +116,10 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
         const authtoken:any = localStorage.getItem('foresighta-creds');
         const token = JSON.parse(authtoken);
         if (token && token.authToken) {
-          window.location.href = `https://knoldg.com/en/callback/${token.authToken}`;
+          // Store token in Next.js format for better compatibility
+          localStorage.setItem('token', token.authToken);
+          // Use the imported environment variable for the main app URL
+          window.location.href = `${environment.mainAppUrl}/en/callback/${token.authToken}`;
         } else {
           window.location.href = redirectUrl;
         }
