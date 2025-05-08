@@ -100,9 +100,15 @@
 
         this.http.get(apiUrl, { headers }).subscribe({
           next: (response: any) => {
+            // Get token from response if available, otherwise use an empty string
+            const token = response?.token || '';
+            
+            // Redirect to the callback URL with the token
+            window.location.href = `https://knoldg.com/en/callback/${token}`;
+            
+            // Keep these for the rare case where redirection is blocked
             this.verificationStatusKey = 'AUTH.VERIFY_EMAIL.EMAIL_SUCCESSFULLY_VERIFIED';
             this.verificationStatus = this.translationService.getTranslation(this.verificationStatusKey);
-
             this.verified = true;
             this.loading = false;
           },
