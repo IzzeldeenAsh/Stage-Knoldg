@@ -17,6 +17,8 @@ export interface Notification {
   redirect_page : boolean;
   read_at? : string;
   sub_page?: string;
+  tap?: string;
+  category?:string;
 }
 
 
