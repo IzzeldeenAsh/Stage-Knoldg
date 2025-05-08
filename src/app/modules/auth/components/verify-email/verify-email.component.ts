@@ -121,6 +121,17 @@
           },
           error: (error: HttpErrorResponse) => {
             console.error("Verification Error:", error);
+            
+            if (error.status === 401) {
+              // Handle unauthorized error - redirect to login page
+              localStorage.removeItem("foresighta-creds");
+              localStorage.removeItem("currentUser");
+              localStorage.removeItem("authToken");
+              localStorage.removeItem("token");
+              this.router.navigateByUrl("/auth/login");
+              return;
+            }
+            
             if (error.status === 400) {
               this.errorMessageKey = 'AUTH.VERIFY_EMAIL.INVALID_OR_EXPIRED_VERIFICATION_LINK';
               this.errorMessage = this.translationService.getTranslation(this.errorMessageKey);
@@ -133,6 +144,7 @@
             localStorage.removeItem("foresighta-creds");
             localStorage.removeItem("currentUser");
             localStorage.removeItem("authToken");
+            localStorage.removeItem("token");
             this.error = true;
             this.loading = false;
           },
