@@ -56,6 +56,10 @@
       if (this.langChangeSubscription) {
         this.langChangeSubscription.unsubscribe();
       }
+      
+      if (this.routeSubscription) {
+        this.routeSubscription.unsubscribe();
+      }
     }
 
     updateTranslations() {
@@ -69,12 +73,19 @@
         this.resendErrorMessage = this.translationService.getTranslation(this.resendErrorMessageKey);
       }
     }
-    verify() {
+    private routeSubscription: Subscription;
+
+  verify() {
       this.showSignUpButton = false;
       this.error = false;
       this.loading = true;
 
-      this.route.queryParamMap.subscribe((paramMap) => {
+      // Store the subscription to unsubscribe later
+      if (this.routeSubscription) {
+        this.routeSubscription.unsubscribe();
+      }
+      
+      this.routeSubscription = this.route.queryParamMap.subscribe((paramMap) => {
         let paramsValue = paramMap.get("params");
 
         if (!paramsValue) {
@@ -89,8 +100,6 @@
           return;
         }
 
-        // ... rest of your verification logic, storing keys and messages ...
-
         const apiUrl = `${this.insightaHost}/api/account/email/verify/${paramsValue}`;
 
         const headers = new HttpHeaders({
@@ -100,11 +109,8 @@
 
         this.http.get(apiUrl, { headers }).subscribe({
           next: (response: any) => {
-            // Get token from response if available, otherwise use an empty string
-            const token = response?.token || '';
-            
             // Redirect to the callback URL with the token
-            window.location.href = `https://knoldg.com/en/callback/${token}`;
+            window.location.href = `https://knoldg.com/en/callback/${paramsValue}`;
             
             // Keep these for the rare case where redirection is blocked
             this.verificationStatusKey = 'AUTH.VERIFY_EMAIL.EMAIL_SUCCESSFULLY_VERIFIED';
