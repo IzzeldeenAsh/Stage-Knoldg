@@ -19,6 +19,7 @@ export class MyDashboardComponent extends BaseComponent {
   hasMultipleEmployees: boolean = false;
   hasEmployeeData: boolean = false;
   private knowledgeTypesLoaded: boolean = false;
+  insighterStatus: string = '';
 
 constructor(
   injector: Injector,
@@ -32,6 +33,7 @@ constructor(
 ngOnInit(){
   const profileSub = this.profileService.getProfile().subscribe((res: any) => {
     this.roles = res.roles;
+    this.insighterStatus = res.insighter_status || '';
     
     // Check for pending insighter requests only for company role
     if (this.roles.includes('company')) {
@@ -70,6 +72,13 @@ onHasMultipleEmployees(hasMultiple: boolean): void {
 
 hasRole(role: string){
   return this.roles.includes(role);
+}
+
+/**
+ * Check if user is an active insighter
+ */
+isActiveInsighter(): boolean {
+  return this.hasRole('insighter') && this.insighterStatus === 'active';
 }
 
 hasStatistics(): boolean {
