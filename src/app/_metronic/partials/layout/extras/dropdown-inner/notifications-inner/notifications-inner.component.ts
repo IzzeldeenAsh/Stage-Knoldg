@@ -101,9 +101,12 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
 
   onNotificationClick(notification: Notification) {
     // Check if this is a question_received notification with a sub_page
-    if (notification.sub_type === 'question_received' && notification.sub_page) {
+    if (notification.type === 'knowledge' && notification.category) {
       // Construct the URL for knowledge page with sub_page and param
-      const knowledgeUrl = `https://knoldg.com/en/knowledge/${notification.sub_page}/${notification.param || ''}`;
+      const baseUrl = 'https://knoldg.com';
+      const lang = this.translationService.getSelectedLanguage() || 'en';
+      const tabParam = notification.param && notification.tap ? `?tab=${notification.tap}` : '';
+      const knowledgeUrl = `${baseUrl}/${lang}/knowledge/${notification.category}/${notification.param || ''}${tabParam}`;
       
       // Navigate to the external URL
       window.open(knowledgeUrl, '_blank');

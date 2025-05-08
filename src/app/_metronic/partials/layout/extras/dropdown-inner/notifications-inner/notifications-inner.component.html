@@ -7,7 +7,7 @@
   </h3>
 </div>
 
-<div class="scroll-y mh-325px my-5 px-8">
+<div class="scroll-y mh-325px my-5 ">
   <!-- Show message when no notifications are available -->
   <div *ngIf="notifications.length === 0" class="text-center py-4">
     <div class="text-gray-500">{{ 'NOTIFICATIONS.NO_NEW' | translate }}</div>
@@ -15,29 +15,33 @@
 
   <!-- All Notifications -->
   <ng-container *ngIf="notifications.length > 0">
-    <div *ngFor="let alert of notifications" class="d-flex flex-stack py-4">
-      <div class="d-flex align-items-center">
-        <div class="symbol symbol-35px me-4">
-          <span class="symbol-label" [ngClass]="'bg-light-' + (alert.sub_type | notificationsBg)">
-            <span
-              [inlineSVG]="'./assets/media/icons/' + (alert.sub_type | notificationsIcons)"
-              class="svg-icon fs-3"
-              [ngClass]="'svg-icon-' + (alert.sub_type | notificationsBg)"
-            ></span>
-          </span>
+    <ng-container *ngFor="let alert of notifications">
+      <a [routerLink]="alert.type === 'knowledge' && alert.category ? null : (alert.type | notificationsLinks:parent)" (click)="onNotificationClick(alert)">
+      <div  class="d-flex flex-stack py-4 cursor-pointer bg-hover-light-info px-8">
+        
+        <div class="d-flex align-items-center">
+          <div class="symbol symbol-35px me-4">
+            <span class="symbol-label" [ngClass]="'bg-light-' + (alert.sub_type | notificationsBg)">
+              <span
+                [inlineSVG]="'./assets/media/icons/' + (alert.sub_type | notificationsIcons)"
+                class="svg-icon fs-3"
+                [ngClass]="'svg-icon-' + (alert.sub_type | notificationsBg)"
+              ></span>
+            </span>
+          </div>
+  
+          <div class="mb-0 me-2">
+            <a href="#" class="fs-6 text-gray-800 text-hover-primary fw-bolder">
+              {{ alert.sub_type | notificationsNames }}
+            </a>
+            <div class="text-gray-500 fs-7">{{ alert.message }}</div>
+          </div>
         </div>
-
-        <div class="mb-0 me-2">
-          <a href="#" class="fs-6 text-gray-800 text-hover-primary fw-bolder">
-            {{ alert.sub_type | notificationsNames }}
-          </a>
-          <div class="text-gray-500 fs-7">{{ alert.message }}</div>
-        </div>
+          <span class="badge badge-light-info fs-8 badge-hover-primary ">{{ 'NOTIFICATIONS.VIEW' | translate }}</span>
+      
       </div>
-
-      <a [routerLink]="alert.sub_type === 'question_received' && alert.sub_page ? null : (alert.type | notificationsLinks:parent)" (click)="onNotificationClick(alert)">
-        <span class="badge badge-light-info fs-8 badge-hover-primary">{{ 'NOTIFICATIONS.VIEW' | translate }}</span>
-      </a>
-    </div>
+    </a>
+    </ng-container>
+  
   </ng-container>
 </div>
