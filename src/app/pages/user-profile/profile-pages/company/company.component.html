@@ -120,8 +120,8 @@
         <div class="card rounded-4 border border-light mb-4" *ngIf="profile.company">
           <div class="card-header border-0 bg-white py-3">
             <div class="d-flex align-items-center">
-              <span class="bg-info bg-opacity-10 p-2 rounded-3 me-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
-                <i class="bi bi-shield-check fs-1 text-info"></i>
+              <span class="bg-success bg-opacity-10 p-2 rounded-3 me-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                <app-keenicon name="check" class="fs-1 text-success"></app-keenicon>
               </span>
               <h3 class="card-title fs-3 fw-bolder mb-0">{{ 'VERIFICATION_STATUS' | translate }}</h3>
             </div>
@@ -129,9 +129,7 @@
           <div class="card-body pt-0">
             <div class="d-flex align-items-center p-3 rounded-4" [ngClass]="profile.company.verified ? 'bg-success bg-opacity-10' : 'bg-warning bg-opacity-10'">
               <div class="symbol symbol-45px me-3">
-                <span *ngIf="profile.company.verified" class="symbol-label bg-success d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
-                  <i class="bi bi-check-lg fs-1 text-white"></i>
-                </span>
+            
                 <span *ngIf="!profile.company.verified" class="symbol-label bg-warning d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
                   <i class="bi bi-clock fs-1 text-white"></i>
                 </span>
@@ -167,7 +165,7 @@
             <div class="d-flex flex-wrap gap-2">
               <span *ngFor="let industry of profile.company['industries']"
                     class="badge bg-light text-dark rounded-pill px-3 py-2 fs-6 fw-medium d-flex align-items-center">
-                <i class="bi bi-arrow-right-circle fs-6 text-warning me-1"></i>
+                
                 <ng-container *ngIf="lang === 'ar'">
                   {{ industry.name }}
                 </ng-container>
@@ -195,7 +193,7 @@
             <div class="d-flex flex-wrap gap-2">
               <span *ngFor="let field of profile.company['consulting_field']"
                     class="badge bg-light text-dark rounded-pill px-3 py-2 fs-6 fw-medium d-flex align-items-center">
-                <i class="bi bi-check-circle fs-6 text-success me-1"></i>
+                
                 <ng-container *ngIf="lang === 'ar' && field.names && field.names.ar">
                   {{ field.names.ar }}
                 </ng-container>
