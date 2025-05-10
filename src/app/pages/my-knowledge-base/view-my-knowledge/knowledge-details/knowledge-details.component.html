@@ -10,7 +10,7 @@
     <!-- knowledge documents -->
      <div class="documents-container">
           <div
-            class="document-card d-flex flex-column flex-sm-row align-items-start align-items-sm-center p-4 p-sm-10 cursor-pointer position-relative"
+            class="document-card d-flex flex-column flex-sm-row align-items-start p-4 p-sm-10 cursor-pointer position-relative"
             *ngFor="let doc of documents"
             [ngClass]="{ 'active': activeDocumentId === doc.id }"
             (mouseenter)="onDocumentMouseEnter(doc.id)"

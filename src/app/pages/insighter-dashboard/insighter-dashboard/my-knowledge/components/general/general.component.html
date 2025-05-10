@@ -98,17 +98,7 @@
       data-kt-filemanager-table-toolbar="base"
     >
       <!--begin::Add Knowledge-->
-      <a [routerLink]="['/app/add-knowledge']" *ngIf="selectedType !== 'grid'"
-        type="button"
-        class="btn btn-primary mx-3"
-      >
-      <i class="ki-outline ki-plus-square fs-2 text-white d-none d-sm-inline-block">
-        <span class="path1"></span>
-        <span class="path2"></span>
-        <span class="path3"></span>
-      </i>
-       {{ 'KNOWLEDGE.ADD_KNOWLEDGE' | translate }}
-      </a>
+     
       <!--end::Add Knowledge-->
 
       <!--begin::Generate Package-->
@@ -124,24 +114,6 @@
     <!--end::Toolbar-->
 
     <!--begin::Group actions-->
-    <div
-      class="d-flex flex-column flex-sm-row justify-content-end align-items-center gap-2"
-      [class.d-none]="selectedKnowledges.size === 0"
-      data-kt-filemanager-table-toolbar="selected"
-    >
-      <div class="fw-bold text-center text-sm-start">
-        <span class="mx-2">{{ selectedKnowledges.size }}</span>
-        {{ 'KNOWLEDGE.SELECTED' | translate }}
-      </div>
-
-      <button
-        type="button"
-        class="btn btn-sm btn-danger"
-        (click)="deleteSelectedKnowledges()"
-      >
-        {{ 'KNOWLEDGE.DELETE_SELECTED' | translate }}
-      </button>
-    </div>
     <!--end::Group actions-->
   </div>
   <!--end::Card toolbar-->
@@ -171,7 +143,41 @@
 <div *ngIf="knowledges && knowledges.length > 0 && !loading">
   <!--begin::Table header-->
   <div class="d-flex justify-content-end mb-6 pt-3">
-   <div class="d-flex gap-1">
+   <div class="d-flex gap-1 justify-content-between"
+   [ngClass]="selectedType !== 'grid' || selectedKnowledges.size !== 0 ? 'w-100' : 'w-0'"
+    >
+    <div class="d-flex">
+        <a [routerLink]="['/app/add-knowledge']" *ngIf="selectedType !== 'grid'"
+        type="button"
+        class="btn btn-primary"
+      >
+      <i class="ki-outline ki-plus-square fs-2 text-white d-none d-sm-inline-block">
+        <span class="path1"></span>
+        <span class="path2"></span>
+        <span class="path3"></span>
+      </i>
+      {{ 'KNOWLEDGE.ADD_KNOWLEDGE' | translate }}
+      </a>
+      <div
+      class="d-flex flex-column flex-sm-row justify-content-end align-items-center gap-2"
+      [class.d-none]="selectedKnowledges.size === 0"
+      data-kt-filemanager-table-toolbar="selected"
+    >
+      <div class="fw-bold text-center text-sm-start">
+        <span class="mx-2">{{ selectedKnowledges.size }}</span>
+        {{ 'KNOWLEDGE.SELECTED' | translate }}
+      </div>
+    
+      <button
+        type="button"
+        class="btn btn-sm btn-danger"
+        (click)="deleteSelectedKnowledges()"
+      >
+        {{ 'KNOWLEDGE.DELETE_SELECTED' | translate }}
+      </button>
+      </div>
+    </div>
+
      <!-- Add View Toggle -->
      <div class="nav-group nav-group-fluid ms-3">
       <label>
@@ -237,8 +243,8 @@
           <table class="table align-middle table-row-dashed fs-6 gy-5" *ngIf="!loading">
             <thead>
               <tr class="text-inline-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
-                <th class="w-10px pe-2" *ngIf="!showPackageBuilder">
-                  <div class="form-check form-check-sm form-check-custom form-check-solid mx-3">
+                <th *ngIf="!showPackageBuilder">
+                  <div class="form-check form-check-sm form-check-custom form-check-solid">
                     <input class="form-check-input" type="checkbox" [checked]="allSelected" (change)="toggleSelectAll()">
                   </div>
                 </th>

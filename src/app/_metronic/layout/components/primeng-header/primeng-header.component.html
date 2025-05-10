@@ -136,21 +136,21 @@
             <div class="d-flex flex-column align-items-end me-2">
               <!-- Status indicator for insighter (not company) -->
               @if (hasRole(['insighter']) && !hasRole(['company']) && profile.insighter_status !== 'active') {
-                <div class="fw-bold text-uppercase fs-8 lh-1 ms-1 text-danger">
+                <div class="ms-2 badge badge-light-danger fs-8 px-2 py-1 text-capitalize">
                   {{profile.insighter_status}}
                 </div>
               }
               
               <!-- Status indicator for company -->
               @if (hasRole(['company']) && profile.company?.status !== 'active') {
-                <div class="fw-bold text-uppercase fs-8 lh-1 ms-1 text-danger">
+                <div class="ms-2 badge badge-light-danger fs-8 px-2 py-1 text-capitalize">
                   {{profile.company?.status}}
                 </div>
               }
               
               <!-- Status indicator for company-insighter -->
               @if (hasRole(['company-insighter']) && profile.insighter_status !== 'active') {
-                <div class="fw-bold text-uppercase fs-8 lh-1 ms-1 text-danger">
+                <div class="ms-2 badge badge-light-danger fs-8 px-2 py-1 text-capitalize">
                   {{profile.insighter_status}}
                 </div>
               }

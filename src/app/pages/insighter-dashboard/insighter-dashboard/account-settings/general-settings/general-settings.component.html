@@ -7,7 +7,7 @@
         <div class="col-12">
             <div class="action-section border-1 border-light w-100">
                 <div class="p-24px">
-                    <div class="fs-2 fw-bolder">
+                    <div class="fs-2 fw-bolder mb-2">
                         {{ 'TRANSFER_COMPANY_ACCOUNT.TITLE' | translate }}
                     </div>
                     <span class="text-gray-600 fw-semibold fs-6 mb-6 d-block">
@@ -27,8 +27,8 @@
 
     <!-- Deactivate Account Section -->
     <div class="delete-section border-1 border-light-danger w-100 mb-10" *ngIf="(hasRole(['company']) || hasRole(['insighter'])) && isActive">
-        <div class="p-24px">
-            <div class="fs-2 fw-bolder">
+        <div class="p-24px ">
+            <div class="fs-2 fw-bolder mb-2">
                 <ng-container *ngIf="hasRole(['company']) || hasRole(['company-insighter'])">
                     {{ 'DEACTIVATE_ACCOUNT.TITLE_COMPANY' | translate }}
                 </ng-container>
@@ -58,7 +58,7 @@
     <!-- Delete Account Section -->
     <div class="delete-section border-1 border-light-danger w-100" *ngIf="(!hasRole(['company-insighter']) )">
         <div class="p-24px">
-            <div class="fs-2 fw-bolder">{{ 'DEACTIVATE_ACCOUNT_WITH_DELETE.TITLE' | translate }}</div>
+            <div class="fs-2 fw-bolder mb-2">{{ 'DEACTIVATE_ACCOUNT_WITH_DELETE.TITLE' | translate }}</div>
             
             <p class="warning-text" [innerHTML]="'DEACTIVATE_ACCOUNT_WITH_DELETE.DESCRIPTION' | translate">
             </p>
