@@ -451,7 +451,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     "DEACTIVATE_ACCOUNT": {
       "TITLE_COMPANY": "Deactivate Company Account",
       "TITLE_INSIGHTER": "Deactivating Account",
-      "DESCRIPTION": "• Data will be saved\n• Account will be inactive until reactivation\n• Existing insights stay visible; no new uploads allowed",
+      "DESCRIPTION": "<div class='d-flex align-items-center'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Your account data will be retained</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Account will be inaccessible until reactivation</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Your company's insights will remain visible in the marketplace</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>New insights cannot be uploaded during deactivation</span></div>",
       "BUTTON_TEXT_COMPANY": "Deactivate Company Account", 
       "BUTTON_TEXT_INSIGHTER": "Deactivate Insighter Account",
       "ILLUSTRATION_ALT": "Deactivate Company Account Illustration",
@@ -470,7 +470,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     },
     "DEACTIVATE_ACCOUNT_WITH_DELETE": {
     "TITLE": "Deleting Account Permanently",
-    "DESCRIPTION": "• Data will be permanently erased\n• Account will no longer be visible",
+    "DESCRIPTION": "<div class='d-flex align-items-center'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Data will be permanently erased</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Account will no longer be visible</span></div>",
     "BUTTON_TEXT": "Request Account Deletion",
     "PENDING_REQUEST": "Deletion Request Pending",
     "ILLUSTRATION_ALT": "Account deletion illustration",

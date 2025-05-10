@@ -98,7 +98,24 @@
     <ng-container *ngIf="knowledges && knowledges.length > 0">
       <!--begin::Table header-->
       <div class="d-flex justify-content-end mb-6 pt-3">
-        <div class="d-flex gap-1">
+        <div class="d-flex gap-1 justify-content-between"
+        [ngClass]="selectedType !== 'grid' ? 'w-100' : 'w-0'"
+        >
+        <div class="d-flex justify-content-end">
+          <!--begin::Add Knowledge-->
+          <a [routerLink]="['/app/add-knowledge']" *ngIf="selectedType !== 'grid'"
+            type="button"
+            class="btn btn-primary mx-3"
+          >
+          <i class="ki-outline ki-plus-square fs-2 text-white d-none d-sm-inline-block">
+            <span class="path1"></span>
+            <span class="path2"></span>
+            <span class="path3"></span>
+          </i>
+           {{ 'KNOWLEDGE.ADD_KNOWLEDGE' | translate }}
+          </a>
+          <!--end::Add Knowledge-->
+        </div>
           <!-- Add View Toggle -->
           <div class="nav-group nav-group-fluid ms-3">
             <label>
@@ -152,25 +169,6 @@
       <!--end::Table header-->
       
       <!--begin::Card toolbar-->
-      <div class="card-toolbar mt-3 mt-md-0">
-        <!--begin::Toolbar-->
-        <div class="d-flex justify-content-end">
-          <!--begin::Add Knowledge-->
-          <a [routerLink]="['/app/add-knowledge']" *ngIf="selectedType !== 'grid'"
-            type="button"
-            class="btn btn-primary mx-3"
-          >
-          <i class="ki-outline ki-plus-square fs-2 text-white d-none d-sm-inline-block">
-            <span class="path1"></span>
-            <span class="path2"></span>
-            <span class="path3"></span>
-          </i>
-           {{ 'KNOWLEDGE.ADD_KNOWLEDGE' | translate }}
-          </a>
-          <!--end::Add Knowledge-->
-        </div>
-        <!--end::Toolbar-->
-      </div>
       <!--end::Card toolbar-->
     </ng-container>
     

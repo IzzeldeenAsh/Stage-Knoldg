@@ -25,19 +25,6 @@
           <ng-container>
           {{_user.first_name}} {{_user.last_name}}
         </ng-container>
-          
-          <!-- Status indicators - only shown when not active -->
-          <ng-container *ngIf="_user.roles.includes('insighter') && !_user.roles.includes('company') && _user.insighter_status !== 'active'">
-            <div class="ms-2 badge badge-light-danger fs-8 px-2 py-1 text-capitalize">{{_user.insighter_status}} User</div>
-          </ng-container>
-          
-          <ng-container *ngIf="_user.roles.includes('company') && _user.company?.status !== 'active'">
-            <div class="ms-2 badge badge-light-danger fs-8 px-2 py-1 text-capitalize">{{_user.company?.status}} User</div>
-          </ng-container>
-          
-          <ng-container *ngIf="_user.roles.includes('company-insighter') && _user.insighter_status !== 'active'">
-            <div class="ms-2 badge badge-light-danger fs-8 px-2 py-1 text-capitalize">{{_user.insighter_status}} User</div>
-          </ng-container>
         </div>
       <div>
         <ng-container *ngIf="_user.roles.includes('client') && !_user.roles.includes('insighter') && !_user.roles.includes('company') && !_user.roles.includes('company-insighter')">
@@ -59,6 +46,18 @@
             <span class="badge badge-light-warning fw-bolder fs-8 px-2 py-1 ">
             {{ _user.company?.legal_name }}  {{ 'HOME.INSIGHTER' | translate }}
           </span>
+          </ng-container>
+           <!-- Status indicators - only shown when not active -->
+           <ng-container *ngIf="_user.roles.includes('insighter') && !_user.roles.includes('company') && _user.insighter_status !== 'active'">
+            <div class="ms-2 badge badge-light-danger fs-8 px-2 py-1 text-capitalize">{{_user.insighter_status}}</div>
+          </ng-container>
+          
+          <ng-container *ngIf="_user.roles.includes('company') && _user.company?.status !== 'active'">
+            <div class="ms-2 badge badge-light-danger fs-8 px-2 py-1 text-capitalize">{{_user.company?.status}}</div>
+          </ng-container>
+          
+          <ng-container *ngIf="_user.roles.includes('company-insighter') && _user.insighter_status !== 'active'">
+            <div class="ms-2 badge badge-light-danger fs-8 px-2 py-1 text-capitalize">{{_user.insighter_status}}</div>
           </ng-container>
       </div>
       </div>
