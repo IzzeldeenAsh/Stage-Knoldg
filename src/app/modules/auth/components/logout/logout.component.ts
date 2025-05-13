@@ -22,12 +22,39 @@ export class LogoutComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       const redirectUri = params['redirect_uri'];
       
-      // Clear storage first
-      localStorage.removeItem("foresighta-creds");
-      localStorage.removeItem("currentUser");
-      localStorage.removeItem("user");
-      localStorage.removeItem("authToken");
+      // Clear ALL possible localStorage keys from both apps
+      localStorage.removeItem('foresighta-creds');  // Angular format
+      localStorage.removeItem('currentUser');        // Angular user data
+      localStorage.removeItem('user');              // Next.js user data
+      localStorage.removeItem('token');             // Next.js format
+      localStorage.removeItem('authToken');         // Possible direct token storage
+      
+      // Clear service caches
       this.getProfileService.clearProfile();
+      
+      // Clear auth cookies
+      this.clearAuthCookies();
+      
+      // Check if we also need to notify the Next.js app about logout
+      const shouldNotifyNextJsApp = !redirectUri?.includes(environment.mainAppUrl);
+      
+      // If logout originated from Angular and no redirect is specified, notify Next.js app
+      if (shouldNotifyNextJsApp && !redirectUri) {
+        // Create an iframe to silently trigger logout on Next.js app
+        const nextJsLogoutFrame = document.createElement('iframe');
+        nextJsLogoutFrame.style.display = 'none';
+        nextJsLogoutFrame.src = `${environment.mainAppUrl}/en/signout`;
+        document.body.appendChild(nextJsLogoutFrame);
+        
+        // Remove iframe after 2 seconds
+        setTimeout(() => {
+          try {
+            document.body.removeChild(nextJsLogoutFrame);
+          } catch (e) {
+            console.log('Frame already removed');
+          }
+        }, 2000);
+      }
       
       // If we have a redirect URI, use it
       if (redirectUri) {
@@ -41,6 +68,22 @@ export class LogoutComponent implements OnInit {
         error: () => this.redirectToMainDomain()
       });
     });
+  }
+  
+  private clearAuthCookies(): void {
+    // Helper function to remove cookies properly from all possible domains
+    const removeCookie = (name: string) => {
+      // Remove from current domain
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+      
+      // Remove from root domain with same settings as creation
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; Domain=.knoldg.com; Secure; SameSite=None;`;
+    };
+    
+    // Clear all possible auth cookies
+    removeCookie('token');
+    removeCookie('auth_token');
+    removeCookie('auth_user');
   }
   
   private redirectToMainDomain(): void {
