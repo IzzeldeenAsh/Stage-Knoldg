@@ -139,18 +139,42 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     this.hasError = false;
 
     const loginSubscr = this.authService
-      .login(this.f.email.value, this.f.password.value , this.selectedLang ? this.selectedLang :'en')
+      .login(this.f.email.value, this.f.password.value, this.selectedLang ? this.selectedLang : 'en')
       .pipe(first())
       .subscribe({
         next: (res) => {
           if (res && res?.roles) {
             if (res.roles.includes("admin") || res.roles.includes("staff")) {
+              // Admin/staff users stay in the Angular app
               this.router.navigate(["/admin-dashboard"]);
             } else {
-              const authtoken:any = localStorage.getItem('foresighta-creds');
-              const token = JSON.parse(authtoken);
-              if (token.authToken) {
-                window.location.href = `https://knoldg.com/en/callback/${token.authToken}`;
+              // For regular users, ensure token is properly stored before redirecting
+              try {
+                const authtoken = localStorage.getItem('foresighta-creds');
+                if (!authtoken) {
+                  throw new Error('Auth token not found');
+                }
+                
+                const token = JSON.parse(authtoken);
+                if (!token || !token.authToken) {
+                  throw new Error('Invalid auth token format');
+                }
+                
+                // Ensure token is also stored in Next.js format
+                localStorage.setItem('token', token.authToken);
+                
+                // Set token in cookie for SSR functions
+                this.setAuthCookie(token.authToken);
+                
+                // Redirect to Next.js callback page (centralizes user profile fetching)
+                window.location.href = `${environment.mainAppUrl}/en/callback/${token.authToken}`;
+              } catch (err) {
+                console.error('Error processing auth token:', err);
+                this.messages.push({
+                  severity: "error",
+                  summary: "Authentication Error",
+                  detail: "There was a problem with your login. Please try again.",
+                });
               }
             }
           }
@@ -171,6 +195,36 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
         },
       });
     this.unsubscribe.push(loginSubscr);
+  }
+  
+  private setAuthCookie(token: string): void {
+    // Set token in a cookie with proper cross-domain settings
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    
+    // Build cookie settings based on environment
+    let cookieSettings;
+    
+    if (isLocalhost) {
+      // For localhost: Use Lax SameSite without Secure flag
+      cookieSettings = [
+        `token=${token}`,
+        `Path=/`,               // send on all paths
+        `Max-Age=${60 * 60 * 24}`, // expires in 24 hours
+        `SameSite=Lax`          // default value, works on same site
+      ];
+    } else {
+      // For production: Use None SameSite with Secure flag and domain
+      cookieSettings = [
+        `token=${token}`,
+        `Path=/`,
+        `Max-Age=${60 * 60 * 24}`,
+        `SameSite=None`,        // works across domains
+        `Domain=.knoldg.com`,   // leading dot = include subdomains
+        `Secure`                // HTTPS only
+      ];
+    }
+    
+    document.cookie = cookieSettings.join('; ');
   }
 
 
