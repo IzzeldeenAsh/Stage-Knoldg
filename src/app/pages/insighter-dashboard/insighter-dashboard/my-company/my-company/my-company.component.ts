@@ -26,6 +26,9 @@ interface Insighter {
     manual?: number;
     course?: number;
   };
+  company?: {
+    status: string;
+  };
 }
 
 interface PaginationMeta {
@@ -109,11 +112,12 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     // Listen for email changes to trigger account check
     this.emailForm.get('email')?.valueChanges
       .pipe(
-        debounceTime(500), // Wait for 500ms pause in typing
+        debounceTime(2000), // Wait for 500ms pause in typing
         distinctUntilChanged() // Only emit when value changes
       )
       .subscribe(email => {
         if (this.emailForm.get('email')?.valid && email) {
+          this.isCheckingAccount = true; // Only show loading after debounce
           this.checkAccountExist(email);
         } else {
           // Reset form states when email is invalid
@@ -169,7 +173,7 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
   
   // Check if account exists
   checkAccountExist(email: string): void {
-    this.isCheckingAccount = true;
+    // Loading indicator is now set before this method is called
     this.accountExistError = null;
     this.apiCheckCompleted = false;
     
@@ -285,6 +289,23 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
   
   // Get status badge class
   getStatusBadgeClass(status: string): string {
+    // Check if insighter has 'company' in roles and use company.status if available
+    const insighter = this.insighters.find(ins => ins.insighter_status === status);
+    
+    if (insighter && insighter.roles && insighter.roles.includes('company') && insighter.company && insighter.company.status) {
+      switch (insighter.company.status) {
+        case 'active':
+          return 'badge-light-success';
+        case 'pending':
+          return 'badge-light-warning';
+        case 'inactive':
+          return 'badge-light-danger';
+        default:
+          return 'badge-light-info';
+      }
+    }
+    
+    // If no company role or company status, use the regular insighter_status
     switch (status) {
       case 'active':
         return 'badge-light-success';
@@ -323,20 +344,31 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
   
   // Activate insighter
   activateInsighter(insighterId: number): void {
+    // Find the insighter to check if they have a company role
+    const insighter = this.insighters.find(ins => ins.id === insighterId);
+    
+    const confirmMessage = insighter && insighter.roles && insighter.roles.includes('company') 
+      ? 'Are you sure you want to activate this company account?'
+      : 'Are you sure you want to activate this insighter?';
+    
     this.confirmationService.confirm({
-      message: 'Are you sure you want to activate this insighter?',
+      message: confirmMessage,
       header: 'Confirm Activation',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.companyAccountService.activateInsighter(insighterId).subscribe({
           next: () => {
-            this.showSuccess('Success', 'Insighter has been activated');
+            const successMessage = insighter && insighter.roles && insighter.roles.includes('company')
+              ? 'Company has been activated'
+              : 'Insighter has been activated';
+            
+            this.showSuccess('Success', successMessage);
             // Reload insighters maintaining the current page
             const currentPage = this.paginationMeta?.current_page || 1;
             this.loadInsighters(currentPage);
           },
           error: (error) => {
-            let errorMessage = 'An error occurred while activating the insighter';
+            let errorMessage = 'An error occurred while activating';
             
             if (error.error && error.error.message) {
               errorMessage = error.error.message;
@@ -353,20 +385,31 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
   
   // Deactivate insighter
   deactivateInsighter(insighterId: number): void {
+    // Find the insighter to check if they have a company role
+    const insighter = this.insighters.find(ins => ins.id === insighterId);
+    
+    const confirmMessage = insighter && insighter.roles && insighter.roles.includes('company') 
+      ? 'Are you sure you want to deactivate this company account?'
+      : 'Are you sure you want to deactivate this insighter?';
+    
     this.confirmationService.confirm({
-      message: 'Are you sure you want to deactivate this insighter?',
+      message: confirmMessage,
       header: 'Confirm Deactivation',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.companyAccountService.deactivateInsighter(insighterId).subscribe({
           next: () => {
-            this.showSuccess('Success', 'Insighter has been deactivated');
+            const successMessage = insighter && insighter.roles && insighter.roles.includes('company')
+              ? 'Company has been deactivated'
+              : 'Insighter has been deactivated';
+            
+            this.showSuccess('Success', successMessage);
             // Reload insighters maintaining the current page
             const currentPage = this.paginationMeta?.current_page || 1;
             this.loadInsighters(currentPage);
           },
           error: (error) => {
-            let errorMessage = 'An error occurred while deactivating the insighter';
+            let errorMessage = 'An error occurred while deactivating';
             
             if (error.error && error.error.message) {
               errorMessage = error.error.message;

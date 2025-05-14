@@ -342,3 +342,55 @@
     max-width: 100% ;
   }
  }
+
+// Conversation Box Styles
+.chat-container {
+  border-radius: 0.475rem;
+  background-color: #fff;
+  overflow: hidden;
+}
+
+.chat-messages {
+  padding: 1rem;
+}
+
+.chat-message-row {
+  margin-bottom: 1rem;
+  display: flex;
+}
+
+.chat-bubble-left {
+  border-radius: 0.475rem;
+  position: relative;
+  max-width: 80%;
+  margin-right: auto;
+}
+
+.chat-bubble-right {
+  border-radius: 0.475rem;
+  position: relative;
+  max-width: 80%;
+  margin-left: auto;
+}
+
+.mw-400px {
+  max-width: 400px;
+}
+
+.symbol {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: #f3f6f9;
+  &.h-40px {
+    height: 40px;
+  }
+  &.w-40px {
+    width: 40px;
+  }
+  &.symbol-45px {
+    height: 45px;
+    width: 45px;
+  }
+}

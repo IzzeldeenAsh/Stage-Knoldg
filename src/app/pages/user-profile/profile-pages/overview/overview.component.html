@@ -9,7 +9,10 @@
       <div class="card-body p-0">
         <div class=" p-5 d-flex flex-column flex-md-row align-items-center gap-4">
           <div class="image-input image-input-circle mb-3 mb-md-0">
-            <div class="image-input-wrapper border-2 border-primary w-125px h-125px" [style.backgroundImage]="getLogoBackgroundImage()"></div>
+            <div class="image-input-wrapper border-2 border-primary w-125px h-125px" [style.backgroundImage]="getLogoBackgroundImage()">
+              <!-- Fallback image if background-image doesn't work -->
+              <img *ngIf="profile?.profile_photo_url" [src]="profile.profile_photo_url" alt="Profile Photo" class="w-100 h-100" style="object-fit: cover; opacity: 0;">
+            </div>
             <label 
               class="btn btn-icon btn-circle btn-light btn-active-light w-25px h-25px position-absolute bottom-0 end-0"
               title="Change avatar">

@@ -137,7 +137,7 @@
         >
           <app-keenicon
             name="data"
-            class="fs-3x mx-5 text-primary"
+            class="fs-3x mx-5 text-info"
             *ngIf="knowledge.type === 'data'"
           ></app-keenicon>
         </div>
@@ -240,7 +240,7 @@
               <div
                 class="tp-course-details2-widget-price d-flex justify-content-center align-items-center"
               >
-              <span class="fs-2x  fw-bolder" [ngClass]="(knowledge.total_price | currency) === '$0.00' ? 'text-success' : 'text-primary'">
+              <span class="fs-2x  fw-bolder" [ngClass]="(knowledge.total_price | currency) === '$0.00' ? 'text-success' : 'text-info'">
                 <ng-container *ngIf="(knowledge.total_price | currency) === '$0.00'">
                   <ng-container *ngIf="lang === 'ar'">صدقة جارية</ng-container>
                   <ng-container *ngIf="lang !== 'ar'">Free</ng-container>
@@ -321,7 +321,7 @@
                     {{ 'VIEW_MY_KNOWLEDGE.INDUSTRY' | translate }}
                   </span>
                   <span
-                    class="badge badge-light-secondary text-primary fs-8 fw-bold pre-line text-right"
+                    class="badge badge-light-secondary text-info fs-8 fw-bold pre-line text-right"
                   >
                     {{ knowledge.industry?.name || 'N/A' }}
                   </span>
@@ -337,7 +337,7 @@
                     {{ 'VIEW_MY_KNOWLEDGE.ISIC_CODE' | translate }}
                   </span>
                   <span
-                    class="badge badge-light-secondary text-primary fs-8 fw-bold"
+                    class="badge badge-light-secondary text-info fs-8 fw-bold"
                     [ngbTooltip]="knowledge.isic_code?.name || 'N/A'"
                   >
                     {{ knowledge.isic_code?.key || 'N/A' }}
@@ -409,7 +409,7 @@
                       <!-- More indicator with count -->
                       <ng-container *ngIf="!showAllMarkets && getTotalMarketItems() > getVisibleMarketItemsCount()">
                         <span 
-                          class="badge badge-light-primary text-primary fs-8 fw-bold cursor-pointer"
+                          class="badge badge-light-info text-info fs-8 fw-bold cursor-pointer"
                           (click)="showAllMarkets = true"
                         >
                           +{{ getTotalMarketItems() - getVisibleMarketItemsCount() }} {{ 'MORE' | translate }}
@@ -419,7 +419,7 @@
                       <!-- Show less button when expanded -->
                       <ng-container *ngIf="showAllMarkets && getTotalMarketItems() > 3">
                         <span 
-                          class="badge badge-light-primary text-primary fs-8 fw-bold cursor-pointer mt-1"
+                          class="badge badge-light-info text-info fs-8 fw-bold cursor-pointer mt-1"
                           (click)="showAllMarkets = false"
                         >
                           {{ 'SHOW_LESS' | translate }}
@@ -435,6 +435,111 @@
                       N/A
                     </span>
                   </div>
+                </div>
+
+                <!-- Conversation Box Section - Only for company insighters -->
+                <div *ngIf="isCompanyInsighter() && currentRequest" class="tp-course-details2-widget-list-item">
+                  <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="d-flex align-items-center">
+                      <i class="ki-outline ki-message-text-2 fs-4 mx-4"></i>
+                      Review Conversation
+                    </span>
+                    <button 
+                      class="btn btn-sm btn-icon btn-info" 
+                      (click)="toggleConversation()"
+                      [ngbTooltip]="showConversation ? 'Hide Conversation' : 'Show Conversation'">
+                      <i class="ki-duotone" [ngClass]="showConversation ? 'ki-minus' : 'ki-plus'">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                      </i>
+                    </button>
+                  </div>
+                  
+                  <!-- Conversation Box -->
+                  <div *ngIf="showConversation" class="chat-container border rounded mb-5">
+                    <!-- Requestor Header -->
+                    <div class="d-flex align-items-center p-4 border-bottom">
+                      <!-- Profile Image or Initials Circle -->
+                      <div class="me-3">
+                        <div *ngIf="requestUser && requestUser.profile_photo_url" class="symbol symbol-45px overflow-hidden">
+                          <img [src]="requestUser.profile_photo_url" alt="Profile" class="w-100">
+                        </div>
+                        <div *ngIf="requestUser && requestUser.name && !requestUser.profile_photo_url" 
+                          class="symbol h-40px w-40px d-flex align-items-center justify-content-center bg-light-info text-info"
+                          [ngStyle]="{'color': '#009ef7'}">
+                          {{ requestUser.name | slice:0:1 }}{{ (requestUser.name && requestUser.name.indexOf(' ') > -1 ? 
+                            requestUser.name.split(' ')[1] : '') | slice:0:1 }}
+                        </div>
+                      </div>
+                      
+                      <!-- Name and Role -->
+                      <div class="d-flex flex-column">
+                        <span class="text-gray-900 fw-bolder fs-5">{{ requestUser?.name || 'Unknown User' }}</span>
+                        <span class="text-muted fs-7">Company Insighter</span>
+                      </div>
+                      
+                      <!-- Resubmission Badge if applicable -->
+                      <div class="ms-auto">
+                        <span class="badge badge-light-info" *ngIf="hasChildRequest">Resubmission</span>
+                      </div>
+                    </div>
+                    
+                    <!-- Conversation Messages -->
+                    <div class="chat-messages p-4" style="max-height: 400px; overflow-y: auto;">
+                      <!-- 1. Original Submission -->
+                      <div class="chat-message-row d-flex mb-4" *ngIf="currentRequest && currentRequest.comments">
+                        <div class="chat-bubble-left bg-light-primary text-gray-800 p-4 rounded-3 mw-400px">
+                          <div class="text-gray-800 mb-1">{{ currentRequest.comments }}</div>
+                          <div class="text-muted fs-7 text-end">Initial submission</div>
+                        </div>
+                      </div>
+                      
+                      <!-- 2. First Manager Response -->
+                      <div class="chat-message-row d-flex justify-content-end mb-4" *ngIf="currentRequest && currentRequest.staff_notes">
+                        <div class="chat-bubble-right bg-light-danger text-gray-800 p-4 rounded-3 mw-400px">
+                          <div class="fw-bold text-danger mb-1">Review</div>
+                          <div class="text-gray-800">{{ currentRequest.staff_notes }}</div>
+                          <div class="text-muted fs-7 text-end">First response</div>
+                        </div>
+                      </div>
+                      
+                      <!-- Recursive Conversation Flow - For all children in the request tree -->
+                      <ng-container *ngIf="currentRequest && currentRequest.children">
+                        <ng-container *ngTemplateOutlet="recursiveMessages; context:{ $implicit: currentRequest.children }"></ng-container>
+                      </ng-container>
+                    </div>
+                  </div>
+                  
+                  <!-- Template for recursive rendering of messages -->
+                  <ng-template #recursiveMessages let-requests>
+                    <ng-container *ngFor="let request of requests; let i = index">
+                      <!-- Resubmission Message -->
+                      <div class="chat-message-row d-flex mb-4" *ngIf="request.comments">
+                        <div class="chat-bubble-left bg-light-info text-gray-800 p-4 rounded-3 mw-400px">
+                          <div class="fw-bold text-info mb-1">Resubmission</div>
+                          <div class="text-gray-800 mb-1">{{ request.comments }}</div>
+                          <div class="text-muted fs-7 text-end">{{ request.created_at | date:'medium' }}</div>
+                        </div>
+                      </div>
+
+                      <!-- Manager Response -->
+                      <div class="chat-message-row d-flex justify-content-end mb-4" *ngIf="request.staff_notes">
+                        <div class="chat-bubble-right bg-light-danger text-gray-800 p-4 rounded-3 mw-400px">
+                          <div class="fw-bold text-danger mb-1">Review</div>
+                          <div class="text-gray-800">{{ request.staff_notes }}</div>
+                          <div class="text-muted fs-7 text-end">
+                            {{ request.status === 'declined' ? 'Rejection' : 'Response' }} 
+                            {{ request.handel_at | date:'medium' }}
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <!-- Process children recursively -->
+                      <ng-container *ngIf="request.children && request.children.length > 0">
+                        <ng-container *ngTemplateOutlet="recursiveMessages; context:{ $implicit: request.children }"></ng-container>
+                      </ng-container>
+                    </ng-container>
+                  </ng-template>
                 </div>
 
                 <div class="d-flex flex-column gap-3 mb-4">

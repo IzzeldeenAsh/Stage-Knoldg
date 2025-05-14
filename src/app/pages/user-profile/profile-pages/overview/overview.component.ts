@@ -96,7 +96,15 @@ export class OverviewComponent extends BaseComponent implements OnInit {
   }
 
   getLogoBackgroundImage(){
-    return this.profile.profile_photo_url ? `url(${this.profile.profile_photo_url})` : 'url(../../../assets/media/svg/avatars/blank.svg)';
+    // Always use the personal profile photo URL with proper encoding
+    if (this.profile?.profile_photo_url) {
+      // Encode the URL to handle spaces and special characters
+      const encodedUrl = encodeURI(this.profile.profile_photo_url);
+      console.log('Encoded profile photo URL:', encodedUrl); // Debug log
+      return `url('${encodedUrl}')`;
+    } else {
+      return 'url(../../../assets/media/svg/avatars/blank.svg)';
+    }
   }
 
   hasCompanySocial(): boolean {

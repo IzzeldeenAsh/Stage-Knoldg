@@ -165,6 +165,9 @@ export class TopbarComponent implements OnInit {
     // Close the notifications menu when a notification is clicked
     this.closeNotificationsMenu();
     
+    // Find the notification by ID
+    const notification = this.notifications.find(n => n.id === notificationId);
+    
     // Mark notification as read
     this.notificationService.markAsRead(notificationId,'en').subscribe({
       next: () => {
@@ -179,7 +182,7 @@ export class TopbarComponent implements OnInit {
       }
     });
 
-    // Handle any other notification click logic (navigation, etc.)
-    // ... existing notification click handling code ...
+    // For admin, all notification types go to requests dashboard
+    this.router.navigate(['/admin-dashboard/admin/dashboard/main-dashboard/requests']);
   }
 }

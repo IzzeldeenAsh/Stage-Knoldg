@@ -397,6 +397,9 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
     // Close notifications dropdown when clicked
     this.closeNotifications();
     
+    // Find the notification by ID
+    const notification = this.notifications.find(n => n.id === notificationId);
+    
     // Mark notification as read
     this.notificationService.markAsRead(notificationId, this.lang).subscribe({
       next: () => {
@@ -411,6 +414,40 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         console.error('Error marking notification as read:', error);
       }
     });
+    
+    // Handle routing for knowledge notifications
+    if (notification && notification.type === 'knowledge') {
+      if (notification.sub_type === 'accept_knowledge' || notification.sub_type === 'declined') {
+        // Check user role and route accordingly
+        this.profileService.getProfile().subscribe(user => {
+          if (user && user.roles.includes('company-insighter')) {
+            // Navigate to knowledge view page for company insighter
+            this.router.navigate(['/app/my-knowledge-base/view-my-knowledge/', notification.param, 'details']);
+          } else {
+            // For others, navigate to my-requests page
+            this.router.navigate(['/app/insighter-dashboard/my-requests']);
+          }
+        });
+      } else if (notification.category) {
+        // External knowledge page with category
+        const baseUrl = window.location.origin;
+        const lang = this.translationService.getSelectedLanguage() || 'en';
+        const tabParam = notification.param && notification.tap ? `?tab=${notification.tap}` : '';
+        const knowledgeUrl = `${baseUrl}/${lang}/knowledge/${notification.category}/${notification.param || ''}${tabParam}`;
+        
+        // Navigate to the external URL
+        window.open(knowledgeUrl, '_blank');
+      } else {
+        // Default for other knowledge notifications
+        this.router.navigate(['/app/insighter-dashboard/my-requests']);
+      }
+    } else if (notification && notification.type === 'requests') {
+      // Handle request notifications
+      this.router.navigate(['/app/insighter-dashboard/my-requests']);
+    } else {
+      // Default route for other notification types
+      this.router.navigate(['/app/insighter-dashboard/my-dashboard']);
+    }
   }
 
   toggleIndustriesMenu(event: Event) {

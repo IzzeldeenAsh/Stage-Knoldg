@@ -14,7 +14,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { SchedulePublishDialogComponent } from "./schedule-publish-dialog/schedule-publish-dialog.component";
 import Swal from 'sweetalert2';
 import { KnowledgeUpdateService } from "src/app/_fake/services/knowledge/knowledge-update.service";
-import { UserRequestsService } from "src/app/_fake/services/user-requests/user-requests.service";
+import { UserRequestsService, UserRequest } from "src/app/_fake/services/user-requests/user-requests.service";
 
 @Component({
   selector: "app-view-my-knowledge",
@@ -35,6 +35,12 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
   isResendReviewDialogVisible: boolean = false;
   reviewComments: string = "";
   showAllMarkets: boolean = false;
+
+  // Request conversation properties
+  currentRequest: any = null;
+  requestUser: any = null;
+  hasChildRequest: boolean = false;
+  showConversation: boolean = false;
 
   constructor(
     injector: Injector,
@@ -62,6 +68,9 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
       if (this.knowledgeId) {
         this.loadKnowledgeData();
         this.loadUserProfile();
+        if (this.isCompanyInsighter()) {
+          this.loadRequestData();
+        }
       }
     });
     
@@ -77,9 +86,56 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
     const profileSubscription = this.profileService.getProfile().subscribe(
       (profile: IKnoldgProfile) => {
         this.userProfile = profile;
+        // Load request data if company insighter
+        if (this.isCompanyInsighter() && this.knowledgeId) {
+          this.loadRequestData();
+        }
       }
     );
     this.unsubscribe.push(profileSubscription);
+  }
+
+  loadRequestData(): void {
+    this.userRequestsService.getAllUserRequests(this.lang)
+      .subscribe({
+        next: (requests: UserRequest[]) => {
+          // Filter requests for the current knowledge ID and accept_knowledge type
+          const relevantRequests = requests.filter(request => 
+            request.identity === this.knowledgeId && 
+            request.type && 
+            request.type.key === 'accept_knowledge'
+          );
+          
+          if (relevantRequests.length > 0) {
+            // Store the current request for reference
+            this.currentRequest = relevantRequests[0];
+            this.requestUser = this.currentRequest.requestable;
+            this.hasChildRequest = this.hasChildrenRequests(this.currentRequest);
+            this.showConversation = true;
+            
+            console.log('Request found:', this.currentRequest);
+          } else {
+            this.currentRequest = null;
+            this.requestUser = null;
+            this.hasChildRequest = false;
+            this.showConversation = false;
+          }
+        },
+        error: (error) => {
+          this.handleServerErrors(error);
+        }
+      });
+  }
+
+  /**
+   * Recursively check if a request has any children requests
+   */
+  private hasChildrenRequests(request: any): boolean {
+    return request && request.children && request.children.length > 0;
+  }
+
+  toggleConversation(): void {
+    this.showConversation = !this.showConversation;
   }
 
   public loadKnowledgeData(): void {

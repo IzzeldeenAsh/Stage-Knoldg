@@ -12,7 +12,7 @@
     <!--end::Title-->
     
     <!--begin::Add button-->
-    <div class="d-flex my-2">
+    <div class="d-flex my-2" *ngIf="profile && profile.certifications && profile.certifications.length > 0">
       <button class="btn btn-sm btn-primary" (click)="showAddCertDialog()">
      <ng-container *ngIf="profile && profile.roles && profile.roles.includes('company')"> <i class="fas fa-plus"></i> {{ 'ADD_MANAGER_CERTIFICATE' | translate }}</ng-container>
      <ng-container *ngIf="!profile || !profile.roles || !profile.roles.includes('company')"> <i class="fas fa-plus"></i> {{ 'ADD_CERTIFICATE' | translate }}</ng-container>
@@ -21,9 +21,29 @@
     <!--end::Add button-->
   </div>
 
+  <!-- Empty State (No Certificates) -->
+  <div 
+    class="text-center py-10 my-5" 
+    *ngIf="profile && profile.certifications && profile.certifications.length === 0 && !isLoadingDocumentTypes">
+    <img src="assets/media/illustrations/Add_certificate.svg" alt="Add Certificate" class="mw-100 mh-300px mb-5" />
+    <h3 class="fs-2 fw-bold mb-3">
+      <ng-container *ngIf="profile && profile.roles && profile.roles.includes('company')">{{ 'NO_MANAGER_CERTIFICATES' | translate }}</ng-container>
+      <ng-container *ngIf="!profile || !profile.roles || !profile.roles.includes('company')">{{ 'NO_CERTIFICATES' | translate }}</ng-container>
+    </h3>
+    <p class="text-gray-500 mb-5">
+      <ng-container *ngIf="profile && profile.roles && profile.roles.includes('company')">{{ 'ADD_MANAGER_CERTIFICATE_PROMPT' | translate }}</ng-container>
+      <ng-container *ngIf="!profile || !profile.roles || !profile.roles.includes('company')">{{ 'ADD_CERTIFICATE_PROMPT' | translate }}</ng-container>
+    </p>
+    <button class="btn btn-primary" (click)="showAddCertDialog()">
+      <i class="fas fa-plus me-2"></i>
+      <ng-container *ngIf="profile && profile.roles && profile.roles.includes('company')">{{ 'ADD_MANAGER_CERTIFICATE' | translate }}</ng-container>
+      <ng-container *ngIf="!profile || !profile.roles || !profile.roles.includes('company')">{{ 'ADD_CERTIFICATE' | translate }}</ng-container>
+    </button>
+  </div>
+
   <div
     class="row g-6 g-xl-9 mb-6 mb-xl-9"
-    *ngIf="profile && profile.certifications && !isLoadingDocumentTypes"
+    *ngIf="profile && profile.certifications && profile.certifications.length > 0 && !isLoadingDocumentTypes"
   >
     <!--begin::Col-->
     <div
