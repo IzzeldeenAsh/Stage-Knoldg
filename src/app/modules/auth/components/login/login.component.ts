@@ -89,6 +89,10 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
 
   signInWithGoogle(event: Event): void {
     event.preventDefault();
+    // Store return URL in a cross-domain cookie before redirecting
+    const prevUrl = this.getReturnUrl();
+    this.setReturnUrlCookie(prevUrl);
+    
     this.authService.getGoogleAuthRedirectUrl().subscribe({
       next: (redirectUrl) => {
         const authtoken:any = localStorage.getItem('foresighta-creds');
@@ -97,7 +101,6 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
           // Store token in Next.js format for better compatibility
           localStorage.setItem('token', token.authToken);
           // Use the imported environment variable for the main app URL with returnUrl as query param
-          const prevUrl = this.getReturnUrl();
           window.location.href = `${environment.mainAppUrl}/en/callback/${token.authToken}?returnUrl=${encodeURIComponent(prevUrl)}`;
         } else {
           window.location.href = redirectUrl;
@@ -112,6 +115,10 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
 
   signInWithLinkedIn(event: Event): void {
     event.preventDefault();
+    // Store return URL in a cross-domain cookie before redirecting
+    const prevUrl = this.getReturnUrl();
+    this.setReturnUrlCookie(prevUrl);
+    
     this.authService.getLinkedInAuthRedirectUrl().subscribe({
       next: (redirectUrl) => {
         const authtoken:any = localStorage.getItem('foresighta-creds');
@@ -120,7 +127,6 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
           // Store token in Next.js format for better compatibility
           localStorage.setItem('token', token.authToken);
           // Use the imported environment variable for the main app URL with returnUrl as query param
-          const prevUrl = this.getReturnUrl();
           window.location.href = `${environment.mainAppUrl}/en/callback/${token.authToken}?returnUrl=${encodeURIComponent(prevUrl)}`;
         } else {
           window.location.href = redirectUrl;
@@ -241,6 +247,36 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
         `token=${token}`,
         `Path=/`,
         `Max-Age=${60 * 60 * 24}`,
+        `SameSite=None`,        // works across domains
+        `Domain=.knoldg.com`,   // leading dot = include subdomains
+        `Secure`                // HTTPS only
+      ];
+    }
+    
+    document.cookie = cookieSettings.join('; ');
+  }
+
+  // Helper to set cross-domain cookie for return URL
+  private setReturnUrlCookie(url: string): void {
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    
+    // Build cookie settings based on environment
+    let cookieSettings;
+    
+    if (isLocalhost) {
+      // For localhost: Use Lax SameSite without Secure flag
+      cookieSettings = [
+        `auth_return_url=${encodeURIComponent(url)}`,
+        `Path=/`,               // send on all paths
+        `Max-Age=${60 * 60}`,   // expires in 1 hour
+        `SameSite=Lax`          // default value, works on same site
+      ];
+    } else {
+      // For production: Use None SameSite with Secure flag and domain
+      cookieSettings = [
+        `auth_return_url=${encodeURIComponent(url)}`,
+        `Path=/`,
+        `Max-Age=${60 * 60}`,   // expires in 1 hour
         `SameSite=None`,        // works across domains
         `Domain=.knoldg.com`,   // leading dot = include subdomains
         `Secure`                // HTTPS only
