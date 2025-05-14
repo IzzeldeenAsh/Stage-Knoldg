@@ -64,6 +64,18 @@ export class CallbackComponent
     this.unsubscribe.push(routeSub);
   }
 
+  // Get return URL from cookie
+  private getReturnUrlFromCookie(): string | null {
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+      const [name, value] = cookie.trim().split('=');
+      if (name === 'auth_return_url') {
+        return decodeURIComponent(value);
+      }
+    }
+    return null;
+  }
+
   toApp(): void {
     this.isSubmitting = true;
     this.getProfileService
@@ -77,7 +89,14 @@ export class CallbackComponent
           if(user.verified){
             const authData = this.auth.getAuthFromLocalStorage();
             if (authData && authData.authToken) {
-              window.location.href = `${environment.mainAppUrl}/en/callback?token=${authData.authToken}`;
+              // Check for return URL in cookie
+              const returnUrl = this.getReturnUrlFromCookie();
+              // Build the redirect URL including the returnUrl if available
+              let redirectUrl = `${environment.mainAppUrl}/en/callback?token=${authData.authToken}`;
+              if (returnUrl) {
+                redirectUrl += `&returnUrl=${encodeURIComponent(returnUrl)}`;
+              }
+              window.location.href = redirectUrl;
             }
           }else{
             this.errorMessage ="Verification Failed";
