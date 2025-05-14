@@ -69,6 +69,7 @@ html[dir="rtl"] .fas * {
 }
 // Add Knowledge card specific styles
 .add-knowledge-card {
+  min-height: 215px;
     .card-body {
       background: linear-gradient(135deg, #f1faff 0%, #ffffff 100%);
       border-radius: 0.475rem;

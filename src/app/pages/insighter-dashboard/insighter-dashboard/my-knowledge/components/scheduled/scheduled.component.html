@@ -289,7 +289,7 @@
             <!-- Title Section -->
             <div class="title-section">
               <a [routerLink]="['/app/my-knowledge-base/view-my-knowledge/', knowledge.id]" 
-                 class="knowledge-title text-hover-primary"
+                 class="knowledge-title text-hover-primary min-h-50px"
                  [ngbTooltip]="knowledge.title.length > 45 ? knowledge.title : null">
                 {{ knowledge.title.length > 45 ? (knowledge.title | slice:0:45) + '...' : knowledge.title }}
               </a>

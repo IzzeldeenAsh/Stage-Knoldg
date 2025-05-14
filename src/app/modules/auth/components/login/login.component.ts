@@ -96,8 +96,9 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
         if (token && token.authToken) {
           // Store token in Next.js format for better compatibility
           localStorage.setItem('token', token.authToken);
-          // Use the imported environment variable for the main app URL
-          window.location.href = `${environment.mainAppUrl}/en/callback/${token.authToken}`;
+          // Use the imported environment variable for the main app URL with returnUrl as query param
+          const prevUrl = this.getReturnUrl();
+          window.location.href = `${environment.mainAppUrl}/en/callback/${token.authToken}?returnUrl=${encodeURIComponent(prevUrl)}`;
         } else {
           window.location.href = redirectUrl;
         }
@@ -118,8 +119,9 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
         if (token && token.authToken) {
           // Store token in Next.js format for better compatibility
           localStorage.setItem('token', token.authToken);
-          // Use the imported environment variable for the main app URL
-          window.location.href = `${environment.mainAppUrl}/en/callback/${token.authToken}`;
+          // Use the imported environment variable for the main app URL with returnUrl as query param
+          const prevUrl = this.getReturnUrl();
+          window.location.href = `${environment.mainAppUrl}/en/callback/${token.authToken}?returnUrl=${encodeURIComponent(prevUrl)}`;
         } else {
           window.location.href = redirectUrl;
         }
@@ -135,6 +137,26 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     this.passwordVisible = !this.passwordVisible;
     passwordField.type = this.passwordVisible ? "text" : "password";
   }
+  
+  // Get the URL to return to after login
+  private getReturnUrl(): string {
+    // Use the return URL from route params or document.referrer if available
+    let returnUrl = this.returnUrl !== "/" ? this.returnUrl : document.referrer;
+    
+    // Check if returnUrl is a full URL from knoldg.com
+    if (returnUrl && (returnUrl.includes('knoldg.com') || returnUrl.includes('localhost'))) {
+      // Keep full URLs from knoldg.com domains or localhost
+      return returnUrl;
+    }
+    
+    // Don't return to login or auth pages
+    if (!returnUrl || returnUrl === "/" || returnUrl.includes("/login") || returnUrl.includes("/auth/")) {
+      return "/";
+    }
+    
+    return returnUrl;
+  }
+  
   submit() {
     this.hasError = false;
 
@@ -166,8 +188,9 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
                 // Set token in cookie for SSR functions
                 this.setAuthCookie(token.authToken);
                 
-                // Redirect to Next.js callback page (centralizes user profile fetching)
-                window.location.href = `${environment.mainAppUrl}/en/callback/${token.authToken}`;
+                // Get the return URL and redirect to Next.js callback with it as a query param
+                const prevUrl = this.getReturnUrl();
+                window.location.href = `${environment.mainAppUrl}/en/callback/${token.authToken}?returnUrl=${encodeURIComponent(prevUrl)}`;
               } catch (err) {
                 console.error('Error processing auth token:', err);
                 this.messages.push({
@@ -226,6 +249,4 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     
     document.cookie = cookieSettings.join('; ');
   }
-
-
 }

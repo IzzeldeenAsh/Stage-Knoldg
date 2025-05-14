@@ -3,6 +3,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Notification } from 'src/app/_fake/services/nofitications/notifications.service';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { TranslationService } from 'src/app/modules/i18n';
+import { Router } from '@angular/router';
+import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 
 // No longer need tab types since we consolidated to a single view
 
@@ -44,14 +46,14 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
     // Count all unread notifications (where read_at is null or undefined)
     return this.notifications.filter(n => !n.read_at).length;
   }
-
-  private http: HttpClient;
-  private translationService: TranslationService;
-
-  constructor(injector: Injector) {
+  
+  constructor(
+    injector: Injector,
+    private translationService: TranslationService,
+    private router: Router,
+    private profileService: ProfileService
+  ) {
     super(injector);
-    this.http = injector.get(HttpClient);
-    this.translationService = injector.get(TranslationService);
   }
 
   ngOnInit(): void {
@@ -61,49 +63,50 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
     // Mark all notifications as read when the component is initialized
     this.markAllNotificationsAsRead();
   }
+  
+  // Handle click outside of dropdown
+  onClickOutside(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    // Check if the click was outside the dropdown
+    if (
+      target && 
+      !target.closest('.notification-dropdown') && 
+      !target.closest('.notification-toggle')
+    ) {
+      this.clickOutside.emit();
+    }
+  }
+
+  // Mark all notifications as read
+  markAllNotificationsAsRead(): void {
+    // Logic to mark all notifications as read would go here
+    // This can be implemented as needed
+  }
 
   ngOnDestroy(): void {
     document.removeEventListener('click', this.onClickOutside.bind(this));
   }
 
-  private onClickOutside(event: MouseEvent) {
-    if (!(event.target as HTMLElement).closest('.app-navbar-item')) {
-      this.clickOutside.emit();
-    }
-  }
-
-  /**
-   * Mark all notifications as read
-   */
-  markAllNotificationsAsRead() {
-    // Get the current language
-    const lang = this.translationService.getSelectedLanguage() || 'en';
-    
-    // Create headers
-    const headers = new HttpHeaders({
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'Accept-Language': lang
-    });
-    
-    // Call API to mark all as read
-    this.http.put('https://api.knoldg.com/api/account/notification/read', {}, { headers })
-      .subscribe({
-        next: () => {
-          // Success - notifications have been marked as read on the server
-          // We'll let the parent component handle refreshing the notifications list
-        },
-        error: (error: any) => {
-          console.error('Error marking notifications as read:', error);
+  onNotificationClick(notification: Notification) {
+    // First, check for knowledge accept/decline notifications that need special handling
+    if (notification.type === 'knowledge' && (notification.sub_type === 'accept_knowledge' || notification.sub_type === 'declined')) {
+      // Check if user has company-insighter role
+      this.profileService.getProfile().pipe().subscribe(user => {
+        if (user && user.roles && user.roles.includes('company-insighter')) {
+          // Route to my-knowledge-base view with param value
+          this.router.navigate(['/app/my-knowledge-base/view-my-knowledge/', notification.param, 'details']);
+        } else {
+          // For other users, use the default notification links
+          this.notificationClicked.emit(notification.id);
         }
       });
-  }
-
-  onNotificationClick(notification: Notification) {
-    // Check if this is a question_received notification with a sub_page
+      return;
+    }
+    
+    // Handle knowledge notifications with category
     if (notification.type === 'knowledge' && notification.category) {
       // Construct the URL for knowledge page with sub_page and param
-      const baseUrl = 'https://knoldg.com';
+      const baseUrl = window.location.origin;
       const lang = this.translationService.getSelectedLanguage() || 'en';
       const tabParam = notification.param && notification.tap ? `?tab=${notification.tap}` : '';
       const knowledgeUrl = `${baseUrl}/${lang}/knowledge/${notification.category}/${notification.param || ''}${tabParam}`;
@@ -117,129 +120,20 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
   }
 }
 
-interface AlertModel {
+export interface AlertModel {
   title: string;
   description: string;
   time: string;
   icon: string;
-  state: 'primary' | 'danger' | 'warning' | 'success' | 'info';
+  state: string;
 }
 
-const defaultAlerts: Array<AlertModel> = [
-  {
-    title: 'Project Alice',
-    description: 'Phase 1 development',
-    time: '1 hr',
-    icon: 'icons/duotune/technology/teh008.svg',
-    state: 'primary',
-  },
-  {
-    title: 'HR Confidential',
-    description: 'Confidential staff documents',
-    time: '2 hrs',
-    icon: 'icons/duotune/general/gen044.svg',
-    state: 'danger',
-  },
-  {
-    title: 'Company HR',
-    description: 'Corporeate staff profiles',
-    time: '5 hrs',
-    icon: 'icons/duotune/finance/fin006.svg',
-    state: 'warning',
-  },
-  {
-    title: 'Project Redux',
-    description: 'New frontend admin theme',
-    time: '2 days',
-    icon: 'icons/duotune/files/fil023.svg',
-    state: 'success',
-  },
-  {
-    title: 'Project Breafing',
-    description: 'Product launch status update',
-    time: '21 Jan',
-    icon: 'icons/duotune/maps/map001.svg',
-    state: 'primary',
-  },
-  {
-    title: 'Banner Assets',
-    description: 'Collection of banner images',
-    time: '21 Jan',
-    icon: 'icons/duotune/general/gen006.svg',
-    state: 'info',
-  },
-  {
-    title: 'Icon Assets',
-    description: 'Collection of SVG icons',
-    time: '20 March',
-    icon: 'icons/duotune/art/art002.svg',
-    state: 'warning',
-  },
-];
-
-interface LogModel {
+export interface LogModel {
   code: string;
-  state: 'success' | 'danger' | 'warning';
+  state: string;
   message: string;
   time: string;
 }
 
-const defaultLogs: Array<LogModel> = [
-  { code: '200 OK', state: 'success', message: 'New order', time: 'Just now' },
-  { code: '500 ERR', state: 'danger', message: 'New customer', time: '2 hrs' },
-  {
-    code: '200 OK',
-    state: 'success',
-    message: 'Payment process',
-    time: '5 hrs',
-  },
-  {
-    code: '300 WRN',
-    state: 'warning',
-    message: 'Search query',
-    time: '2 days',
-  },
-  {
-    code: '200 OK',
-    state: 'success',
-    message: 'API connection',
-    time: '1 week',
-  },
-  {
-    code: '200 OK',
-    state: 'success',
-    message: 'Database restore',
-    time: 'Mar 5',
-  },
-  {
-    code: '300 WRN',
-    state: 'warning',
-    message: 'System update',
-    time: 'May 15',
-  },
-  {
-    code: '300 WRN',
-    state: 'warning',
-    message: 'Server OS update',
-    time: 'Apr 3',
-  },
-  {
-    code: '300 WRN',
-    state: 'warning',
-    message: 'API rollback',
-    time: 'Jun 30',
-  },
-  {
-    code: '500 ERR',
-    state: 'danger',
-    message: 'Refund process',
-    time: 'Jul 10',
-  },
-  {
-    code: '500 ERR',
-    state: 'danger',
-    message: 'Withdrawal process',
-    time: 'Sep 10',
-  },
-  { code: '500 ERR', state: 'danger', message: 'Mail tasks', time: 'Dec 10' },
-];
+const defaultAlerts: Array<AlertModel> = [];
+const defaultLogs: Array<LogModel> = [];

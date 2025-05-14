@@ -92,9 +92,13 @@
                 <!-- Status -->
                 <td>
                   <span [class]="'badge ' + getStatusBadgeClass(insighter.insighter_status)">
-                    {{ (insighter.insighter_status === 'active' ? 'MY_COMPANY.STATUS.ACTIVE' : 
-                        insighter.insighter_status === 'inactive' ? 'MY_COMPANY.STATUS.INACTIVE' : 
-                        insighter.insighter_status) | translate | titlecase }}
+                    {{ (insighter.roles && insighter.roles.includes('company') && insighter.company ? 
+                        (insighter.company.status === 'active' ? 'MY_COMPANY.STATUS.ACTIVE' : 
+                         insighter.company.status === 'inactive' ? 'MY_COMPANY.STATUS.INACTIVE' : 
+                         insighter.company.status) :
+                        (insighter.insighter_status === 'active' ? 'MY_COMPANY.STATUS.ACTIVE' : 
+                         insighter.insighter_status === 'inactive' ? 'MY_COMPANY.STATUS.INACTIVE' : 
+                         insighter.insighter_status)) | translate | titlecase }}
                   </span>
                 </td>
                 
@@ -107,14 +111,18 @@
                 
                 <!-- Actions -->
                 <td class="text-end">
-                  <button *ngIf="insighter.insighter_status === 'inactive' && insighter.id !== currentUserId" 
+                  <button *ngIf="(insighter.roles && insighter.roles.includes('company') && insighter.company && insighter.company.status === 'inactive' || 
+                            (!insighter.roles || !insighter.roles.includes('company')) && insighter.insighter_status === 'inactive') 
+                            && insighter.id !== currentUserId" 
                           class="btn btn-icon btn-bg-light btn-active-color-success btn-sm me-1"
                           (click)="activateInsighter(insighter.id)" 
                           pTooltip="{{ 'MY_COMPANY.ACTIVATE' | translate }}" 
                           tooltipPosition="top">
                     <i class="ki-duotone ki-check fs-2"></i>
                   </button>
-                  <button *ngIf="insighter.insighter_status === 'active' && insighter.id !== currentUserId" 
+                  <button *ngIf="(insighter.roles && insighter.roles.includes('company') && insighter.company && insighter.company.status === 'active' || 
+                            (!insighter.roles || !insighter.roles.includes('company')) && insighter.insighter_status === 'active') 
+                            && insighter.id !== currentUserId" 
                           class="btn btn-icon btn-bg-light btn-active-color-danger btn-sm me-1"
                           (click)="deactivateInsighter(insighter.id)" 
                           pTooltip="{{ 'MY_COMPANY.DEACTIVATE' | translate }}" 
@@ -252,106 +260,118 @@
   (onHide)="closeAddEmployeeModal()"
   >
   
-  <!-- Email input form -->
-  <div class="mb-5">
-    <form [formGroup]="emailForm">
-      <div class="mb-3">
-        <label class="form-label required">{{ 'MY_COMPANY.EMAIL_ADDRESS' | translate }}</label>
-        <div class="input-group" dir="ltr">
-          <input 
-            type="email" 
-            class="form-control text-start" 
-            [placeholder]="'MY_COMPANY.ENTER_EMAIL' | translate" 
-            formControlName="email"
-            pInputText
-            dir="ltr"
-          />
-          <span class="input-group-text">
-            <i class="ki-duotone ki-sms fs-4">
-              <span class="path1"></span>
-              <span class="path2"></span>
-            </i>
-          </span>
-        </div>
-        <!-- Validation messages -->
-        <div *ngIf="emailForm.get('email')?.touched" class="text-end">
-          <div *ngIf="emailForm.get('email')?.hasError('required')" class="fv-plugins-message-container">
-            <div class="fv-help-block">{{ 'MY_COMPANY.EMAIL_REQUIRED' | translate }}</div>
+  <!-- Add a container with fixed height -->
+  <div class="modal-content-container" style="min-height: 400px; max-height: 520px; overflow-y: auto;">
+    <!-- Email input form -->
+    <div class="mb-5">
+      <form [formGroup]="emailForm">
+        <div class="mb-3">
+          <label class="form-label required">{{ 'MY_COMPANY.EMAIL_ADDRESS' | translate }}</label>
+          <div class="input-group" dir="ltr">
+            <input 
+              type="email" 
+              class="form-control text-start" 
+              [placeholder]="'MY_COMPANY.ENTER_EMAIL' | translate" 
+              formControlName="email"
+              pInputText
+              dir="ltr"
+            />
+            <span class="input-group-text">
+              <i class="ki-duotone ki-sms fs-4">
+                <span class="path1"></span>
+                <span class="path2"></span>
+              </i>
+            </span>
           </div>
-          <div *ngIf="emailForm.get('email')?.hasError('email')" class="fv-plugins-message-container">
-            <div class="fv-help-block">{{ 'MY_COMPANY.EMAIL_INVALID' | translate }}</div>
+          <!-- Validation messages -->
+          <div *ngIf="emailForm.get('email')?.touched" class="text-end">
+            <div *ngIf="emailForm.get('email')?.hasError('required')" class="fv-plugins-message-container">
+              <div class="fv-help-block">{{ 'MY_COMPANY.EMAIL_REQUIRED' | translate }}</div>
+            </div>
+            <div *ngIf="emailForm.get('email')?.hasError('email')" class="fv-plugins-message-container">
+              <div class="fv-help-block">{{ 'MY_COMPANY.EMAIL_INVALID' | translate }}</div>
+            </div>
           </div>
         </div>
-      </div>
-    </form>
-  </div>
-  
-  <!-- Processing indicator -->
-  <div *ngIf="isCheckingAccount" class="d-flex justify-content-center mb-5">
-    <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">{{ 'MY_COMPANY.LOADING' | translate }}</span>
+      </form>
     </div>
-    <span class="ms-2">{{ 'MY_COMPANY.CHECKING_ACCOUNT' | translate }}</span>
-  </div>
-  
-  <!-- Error message -->
-  <div *ngIf="accountExistError" class="alert alert-danger mb-5">
-    {{ accountExistError }}
-  </div>
-  
-  <!-- Account exists - show user info -->
-  <div *ngIf="accountExists && accountInfo && !accountExistError && !isCheckingAccount" class="mb-5">
-    <div class="d-flex flex-center my-10 mb-5">
-        <div class="symbol symbol-60px symbol-circle me-3">
-          <p-avatar 
-            [label]="getUserInitials(accountInfo.name)"
-            styleClass="bg-light-info"
-            size="large"
-            [style]="{'font-size': '1.2rem', 'height': '40px', 'width': '40px'}">
-          </p-avatar>
-        </div>
-        <div class="d-flex flex-column">
-          <span class="fs-4 fw-bold text-gray-800 mb-0">{{ accountInfo.name }}</span>
-          <span class="fs-6 fw-semibold text-muted">{{ accountInfo.email }}</span>
-        </div>
+    
+    <!-- Empty state illustration - show when nothing else is displayed -->
+    <div *ngIf="!isCheckingAccount && !accountExistError && 
+               !(accountExists && accountInfo) && 
+               !(emailForm.get('email')?.valid && emailForm.get('email')?.dirty && apiCheckCompleted)" 
+          class="d-flex flex-column align-items-center justify-content-center my-10">
+      <img src="./assets/media/illustrations/employee_search.svg" alt="Search employees" style="max-width: 300px;" />
+      <div class="text-muted fs-6 mt-4 text-center">Enter an email address to search for existing account or create new employee</div>
+    </div>
+    
+    <!-- Processing indicator -->
+    <div *ngIf="isCheckingAccount" class="d-flex justify-content-center mb-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">{{ 'MY_COMPANY.LOADING' | translate }}</span>
       </div>
-  </div>
-  
-  <!-- Account doesn't exist - show create form -->
-  <div *ngIf="!accountExists && !accountExistError && !isCheckingAccount && emailForm.get('email')?.valid && emailForm.get('email')?.dirty && apiCheckCompleted" class="mb-5">
-    <form [formGroup]="employeeForm">
-      <!-- First Name -->
-      <div class="mb-3">
-        <label class="form-label required">{{ 'MY_COMPANY.FIRST_NAME' | translate }}</label>
-        <input 
-          type="text" 
-          class="form-control" 
-          [placeholder]="'MY_COMPANY.ENTER_FIRST_NAME' | translate" 
-          formControlName="firstName"
-          pInputText
-        />
-        <!-- Validation messages -->
-        <div *ngIf="employeeForm.get('firstName')?.touched && employeeForm.get('firstName')?.hasError('required')" class="fv-plugins-message-container">
-          <div class="fv-help-block">{{ 'MY_COMPANY.FIRST_NAME_REQUIRED' | translate }}</div>
+      <span class="ms-2">{{ 'MY_COMPANY.CHECKING_ACCOUNT' | translate }}</span>
+    </div>
+    
+    <!-- Error message -->
+    <div *ngIf="accountExistError" class="alert alert-danger mb-5">
+      {{ accountExistError }}
+    </div>
+    
+    <!-- Account exists - show user info -->
+    <div *ngIf="accountExists && accountInfo && !accountExistError && !isCheckingAccount" class="mb-5">
+      <div class="d-flex flex-center my-10 mb-5">
+          <div class="symbol symbol-60px symbol-circle me-3">
+            <p-avatar 
+              [label]="getUserInitials(accountInfo.name)"
+              styleClass="bg-light-info"
+              size="large"
+              [style]="{'font-size': '1.2rem', 'height': '40px', 'width': '40px'}">
+            </p-avatar>
+          </div>
+          <div class="d-flex flex-column">
+            <span class="fs-4 fw-bold text-gray-800 mb-0">{{ accountInfo.name }}</span>
+            <span class="fs-6 fw-semibold text-muted">{{ accountInfo.email }}</span>
+          </div>
         </div>
-      </div>
-      
-      <!-- Last Name -->
-      <div class="mb-3">
-        <label class="form-label required">{{ 'MY_COMPANY.LAST_NAME' | translate }}</label>
-        <input 
-          type="text" 
-          class="form-control" 
-          [placeholder]="'MY_COMPANY.ENTER_LAST_NAME' | translate" 
-          formControlName="lastName"
-          pInputText
-        />
-        <!-- Validation messages -->
-        <div *ngIf="employeeForm.get('lastName')?.touched && employeeForm.get('lastName')?.hasError('required')" class="fv-plugins-message-container">
-          <div class="fv-help-block">{{ 'MY_COMPANY.LAST_NAME_REQUIRED' | translate }}</div>
+    </div>
+    
+    <!-- Account doesn't exist - show create form -->
+    <div *ngIf="!accountExists && !accountExistError && !isCheckingAccount && emailForm.get('email')?.valid && emailForm.get('email')?.dirty && apiCheckCompleted" class="mb-5">
+      <form [formGroup]="employeeForm">
+        <!-- First Name -->
+        <div class="mb-3">
+          <label class="form-label required">{{ 'MY_COMPANY.FIRST_NAME' | translate }}</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            [placeholder]="'MY_COMPANY.ENTER_FIRST_NAME' | translate" 
+            formControlName="firstName"
+            pInputText
+          />
+          <!-- Validation messages -->
+          <div *ngIf="employeeForm.get('firstName')?.touched && employeeForm.get('firstName')?.hasError('required')" class="fv-plugins-message-container">
+            <div class="fv-help-block">{{ 'MY_COMPANY.FIRST_NAME_REQUIRED' | translate }}</div>
+          </div>
         </div>
-      </div>
-    </form>
+        
+        <!-- Last Name -->
+        <div class="mb-3">
+          <label class="form-label required">{{ 'MY_COMPANY.LAST_NAME' | translate }}</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            [placeholder]="'MY_COMPANY.ENTER_LAST_NAME' | translate" 
+            formControlName="lastName"
+            pInputText
+          />
+          <!-- Validation messages -->
+          <div *ngIf="employeeForm.get('lastName')?.touched && employeeForm.get('lastName')?.hasError('required')" class="fv-plugins-message-container">
+            <div class="fv-help-block">{{ 'MY_COMPANY.LAST_NAME_REQUIRED' | translate }}</div>
+          </div>
+        </div>
+      </form>
+    </div>
   </div>
   
   <!-- Footer buttons -->

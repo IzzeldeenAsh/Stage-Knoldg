@@ -36,7 +36,7 @@ export class FileUploaderComponent {
   @Input() maxFiles: number = 1;
   @Input() maxFileSize: number = 10; // MB
   @Input() acceptedFiles: string = '';
-  @Input() uploadUrl: string = 'https://keenthemes.com/scripts/void.php';
+  @Input() uploadUrl: string = 'https://knoldg.com/en';
   @Output() onFileUploaded = new EventEmitter<File[]>();
   @Output() onFileRemoved = new EventEmitter<File>();
 

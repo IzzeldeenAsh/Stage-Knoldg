@@ -42,6 +42,7 @@ interface ICreateKnowldege {
     description: string; 
   }[];
   isWorldwide?: boolean;
+  filesWithErrors?: any[];
 }
 
 const inits: ICreateKnowldege = {

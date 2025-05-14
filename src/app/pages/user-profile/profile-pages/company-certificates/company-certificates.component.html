@@ -9,7 +9,7 @@
     <!--end::Title-->
     
     <!--begin::Add button-->
-    <div class="d-flex my-2">
+    <div class="d-flex my-2" *ngIf="profile.company && profile.company.certifications && profile.company.certifications.length > 0">
       <button class="btn btn-sm btn-primary" (click)="showAddCompanyCertDialog()">
         <i class="fas fa-plus"></i> {{ 'PROFILE.ADD_COMPANY_CERTIFICATE' | translate }}  
       </button>
@@ -17,9 +17,21 @@
     <!--end::Add button-->
   </div>
 
+  <!-- Empty State (No Company Certificates) -->
+  <div 
+    class="text-center py-10 my-5" 
+    *ngIf="profile.company && profile.company.certifications && profile.company.certifications.length === 0 && !isLoadingDocumentTypes">
+    <img src="assets/media/illustrations/Add_certificate.svg" alt="Add Company Certificate" class="mw-100 mh-300px mb-5" />
+    <h3 class="fs-2 fw-bold mb-3">{{ 'NO_COMPANY_CERTIFICATES' | translate }}</h3>
+    <p class="text-gray-500 mb-5">{{ 'ADD_COMPANY_CERTIFICATE_PROMPT' | translate }}</p>
+    <button class="btn btn-primary" (click)="showAddCompanyCertDialog()">
+      <i class="fas fa-plus me-2"></i> {{ 'ADD_COMPANY_CERTIFICATE' | translate }}
+    </button>
+  </div>
+
   <div
     class="row g-6 g-xl-9 mb-6 mb-xl-9"
-    *ngIf="profile.company && profile.company.certifications && !isLoadingDocumentTypes"
+    *ngIf="profile.company && profile.company.certifications && profile.company.certifications.length > 0 && !isLoadingDocumentTypes"
   >
     <!--begin::Col-->
     <div
