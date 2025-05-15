@@ -3,11 +3,10 @@
 <div class="app-navbar-item ms-1 d-flex align-items-center gap-2" *ngIf="user">
 
         <!--begin::Notifications-->
-        <div class="app-navbar-item transition-all position-relative" [ngClass]="itemClass">
+        <div class="app-navbar-item position-relative notification-item">
           <div
-          class="transition-all"
-            [ngClass]="btnClass"
-            (click)="toggleNotificationsMenu()"
+          class="btn btn-icon btn-custom btn-icon-muted btn-active-light btn-active-color-primary w-35px h-35px w-md-40px h-md-40px cursor-pointer notification-toggle"
+            (click)="toggleNotificationsMenu($event)"
           >
             <i class="ki-outline ki-notification-on fs-1"></i>
             <div
@@ -23,6 +22,7 @@
           (notificationClicked)="handleNotificationClick($event)" 
           (clickOutside)="handleNotificationsClickOutside()"
           [notifications]="notifications"
+          class="notification-dropdown"
           ></app-notifications-inner>
         </div>
     <!-- Menu Wrapper -->

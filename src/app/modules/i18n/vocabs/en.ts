@@ -6,6 +6,7 @@ export const locale = {
     SHOW_LESS:'Show Less',
     SHOW_MORE:'Show More',
     CHOOSE_COUNTTRIES:'Choose Countries',
+   
     INSIGHTER_REQUESTS: {
       TITLE: 'Insighter Requests',
       REQUEST_COUNT: 'Requests',
@@ -633,6 +634,12 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       BUTTON: "Contact Support"
     },
     PROFILE: {
+      COMPANY_STATUS: "Company status",
+      INSIGHTER_STATUS: "Insighter status",
+      STATUS: {
+        ACTIVE: "active",
+        INACTIVE: "inactive"
+      },
       GENERAL_INFO: 'General Information',
       COMPANY_CERTIFICATES: 'Company Certificates',
       "MY_CERTIFICATES": "My Certificates",

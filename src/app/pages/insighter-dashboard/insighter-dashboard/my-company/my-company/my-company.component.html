@@ -92,13 +92,10 @@
                 <!-- Status -->
                 <td>
                   <span [class]="'badge ' + getStatusBadgeClass(insighter.insighter_status)">
-                    {{ (insighter.roles && insighter.roles.includes('company') && insighter.company ? 
-                        (insighter.company.status === 'active' ? 'MY_COMPANY.STATUS.ACTIVE' : 
-                         insighter.company.status === 'inactive' ? 'MY_COMPANY.STATUS.INACTIVE' : 
-                         insighter.company.status) :
+                    {{ 
                         (insighter.insighter_status === 'active' ? 'MY_COMPANY.STATUS.ACTIVE' : 
                          insighter.insighter_status === 'inactive' ? 'MY_COMPANY.STATUS.INACTIVE' : 
-                         insighter.insighter_status)) | translate | titlecase }}
+                         insighter.insighter_status) | translate | titlecase }}
                   </span>
                 </td>
                 

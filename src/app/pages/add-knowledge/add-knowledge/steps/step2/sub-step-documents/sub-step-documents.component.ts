@@ -262,11 +262,11 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   }
 
   triggerFileInput(index: number): void {
-    // iOS Safari often requires a small delay
-    // This helps ensure the click event fires correctly on iPad
+    // Use a longer timeout for Safari browsers
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
     setTimeout(() => {
       document.getElementById('fileInput' + index)?.click();
-    }, 0);
+    }, isSafari ? 100 : 0);
   }
 
   triggerMultipleFileInput(): void {
@@ -275,12 +275,12 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
     fileInput.multiple = true;
     fileInput.accept = '.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt';
     
-    // Add capture attribute for iOS devices
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
-                 (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    // Only add capture attribute for mobile iOS devices, not desktop Safari
+    const isMobileIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && 
+                       !(navigator.platform === 'MacIntel' && navigator.maxTouchPoints <= 1);
     
-    if (isIOS) {
-      // Use the environment capture for iOS devices
+    if (isMobileIOS) {
+      // Use the environment capture for mobile iOS devices only
       fileInput.setAttribute('capture', 'environment');
     }
     
@@ -291,10 +291,11 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       }
     };
     
-    // Ensure click event triggers properly on iOS
+    // Use a longer timeout for Safari to ensure the click event is properly processed
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
     setTimeout(() => {
       fileInput.click();
-    }, 0);
+    }, isSafari ? 100 : 0);
   }
 
   // Queue to store files for sequential upload

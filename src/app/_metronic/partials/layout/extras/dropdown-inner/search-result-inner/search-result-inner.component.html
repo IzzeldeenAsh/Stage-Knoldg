@@ -59,7 +59,7 @@
       <!--begin::Item-->
       <a href="#" *ngFor="let item of resultModels" class="d-flex text-gray-900 text-hover-primary align-items-center mb-5">
         <!--begin::Symbol-->
-        <div class="symbol symbol-40px me-4">
+        <div class="symbol symbol-40px me-4 w-40px h-40px overflow-hidden">
           <img src="{{ item.image }}" alt=""/>
         </div>
         <!--end::Symbol-->
@@ -90,7 +90,7 @@
       <!--begin::Item-->
       <a href="#" *ngFor="let item of recentlySearchedModels" class="d-flex text-gray-900 text-hover-primary align-items-center mb-5">
         <!--begin::Symbol-->
-        <div class="symbol symbol-40px me-4">
+        <div class="symbol symbol-40px me-4 w-40px h-40px overflow-hidden">
           <img *ngIf="item.image" src="{{ item.image }}" alt=""/>
 
           <span class="symbol-label bg-light">

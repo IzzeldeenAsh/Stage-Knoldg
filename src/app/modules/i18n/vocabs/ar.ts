@@ -577,6 +577,12 @@ INSIGHTER_REQUESTS: {
       BUTTON: "اتصل بالدعم"
     },
     PROFILE: {
+        COMPANY_STATUS: "حالة الشركة",
+        INSIGHTER_STATUS: "حالة الانسايتر",
+        STATUS: {
+          ACTIVE: "فعال",
+          INACTIVE: "غير فعال"
+        },
       GENERAL_INFO: 'المعلومات العامة',
       COMPANY_NAME: 'اسم الشركة',
       COMPANY_CERTIFICATES: 'شهادات الشركة',

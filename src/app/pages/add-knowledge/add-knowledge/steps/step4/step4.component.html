@@ -520,41 +520,6 @@
         </div>
       </div>
 
-      <!-- ISIC Code -->
-      <div class="mb-10 fv-row">
-        <app-industry-selector
-          [title]="currentLanguage == 'ar' ? 'اختر الرمز الصناعي' : 'Select industry code '"
-          [placeholder]="currentLanguage == 'ar' ? 'اختر الرمز الصناعي' : 'Industry classification (ISIC)'"
-          [fetchedData]="isicCodeNodes"
-          [cancelLabel]="currentLanguage == 'ar' ? 'الغاء' : 'Cancel'"
-          [selectedIndustryId]="form.get('isic_code')?.value"
-          [okLabel]="currentLanguage == 'ar' ? 'تأكيد' : 'Ok'"
-          [tip]="
-            currentLanguage == 'ar'
-              ? 'اختر الرمز الصناعي الأفضل لمعرفتك'
-              : 'Select the ISIC code related to your knowledge'
-          "
-          (nodeSelected)="onIsicCodeSelected($event)"
-          [isRequired]="false"
-          [ngClass]="{'is-invalid': form.get('isic_code')?.invalid && form.get('isic_code')?.touched, 'border-red': form.get('isic_code')?.invalid && form.get('isic_code')?.touched}"
-        >
-        </app-industry-selector>
-      </div>
-
-      <!-- HS Code -->
-      <div class="mb-10 fv-row" [@fadeInMoveY] *ngIf="selectedIsicId">
-        <app-get-hs-code-by-isic
-          [isicCodeId]="selectedIsicId"
-          [placeholder]="currentLanguage == 'ar' ? 'اختر رمز الـ HS' : 'Select HS code'"
-          [title]="currentLanguage == 'ar' ? 'اختر رمز الـ HS' : 'Select HS code'"
-          [isRequired]="false"
-          [language]="currentLanguage"
-          [preselectedHSCodeId]="form.get('hs_code')?.value"
-          (hsCodeSelected)="onHSCodeSelected($event)"
-          [ngClass]="{'is-invalid': form.get('hs_code')?.invalid && form.get('hs_code')?.touched, 'border-red': form.get('hs_code')?.invalid && form.get('hs_code')?.touched}"
-        >
-        </app-get-hs-code-by-isic>
-      </div>
 
       <!-- Tags Section -->
       <div class="mt-10 mb-8" *ngIf="form.get('topicId')?.value && form.get('topicId')?.value !== ''">
@@ -618,6 +583,41 @@
         </div>
       </div>
 
+      <!-- ISIC Code -->
+      <div class="mb-10 fv-row">
+        <app-industry-selector
+          [title]="currentLanguage == 'ar' ? 'اختر الرمز الصناعي' : 'Select industry code '"
+          [placeholder]="currentLanguage == 'ar' ? 'اختر الرمز الصناعي' : 'Industry classification (ISIC)'"
+          [fetchedData]="isicCodeNodes"
+          [cancelLabel]="currentLanguage == 'ar' ? 'الغاء' : 'Cancel'"
+          [selectedIndustryId]="form.get('isic_code')?.value"
+          [okLabel]="currentLanguage == 'ar' ? 'تأكيد' : 'Ok'"
+          [tip]="
+            currentLanguage == 'ar'
+              ? 'اختر الرمز الصناعي الأفضل لمعرفتك'
+              : 'Select the ISIC code related to your knowledge'
+          "
+          (nodeSelected)="onIsicCodeSelected($event)"
+          [isRequired]="false"
+          [ngClass]="{'is-invalid': form.get('isic_code')?.invalid && form.get('isic_code')?.touched, 'border-red': form.get('isic_code')?.invalid && form.get('isic_code')?.touched}"
+        >
+        </app-industry-selector>
+      </div>
+
+      <!-- HS Code -->
+      <div class="mb-10 fv-row" [@fadeInMoveY] *ngIf="selectedIsicId">
+        <app-get-hs-code-by-isic
+          [isicCodeId]="selectedIsicId"
+          [placeholder]="currentLanguage == 'ar' ? 'اختر رمز الـ HS' : 'Select HS code'"
+          [title]="currentLanguage == 'ar' ? 'اختر رمز الـ HS' : 'Select HS code'"
+          [isRequired]="false"
+          [language]="currentLanguage"
+          [preselectedHSCodeId]="form.get('hs_code')?.value"
+          (hsCodeSelected)="onHSCodeSelected($event)"
+          [ngClass]="{'is-invalid': form.get('hs_code')?.invalid && form.get('hs_code')?.touched, 'border-red': form.get('hs_code')?.invalid && form.get('hs_code')?.touched}"
+        >
+        </app-get-hs-code-by-isic>
+      </div>
     
 
 

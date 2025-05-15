@@ -100,6 +100,8 @@ export class CertificatesComponent extends BaseComponent implements OnInit {
     }
     if (this.profile.bio) {
       formData.append("bio", this.profile.bio);
+    } else {
+      formData.append("bio", this.generateDummyBio());
     }
     if (this.profile.phone) {
       formData.append("phone", this.profile.phone);
@@ -126,7 +128,47 @@ export class CertificatesComponent extends BaseComponent implements OnInit {
     return formData;
   }
 
-
+  private generateDummyBio(): string {
+    const fullName = `${this.profile.first_name} ${this.profile.last_name}`;
+    let bio = `${fullName} is a professional`;
+    
+    // Add industry information if available
+    if (this.profile.industries && this.profile.industries.length > 0) {
+      bio += ` with experience in ${this.profile.industries.length > 1 ? 'various industries' : 'the industry'}`;
+      
+      // Add specific industry names if not too many
+      if (this.profile.industries.length <= 3) {
+        const industryNames = this.profile.industries.map((ind: any) => ind.name || 'specialized sector').filter(Boolean);
+        if (industryNames.length > 0) {
+          bio += ` including ${industryNames.join(', ')}`;
+        }
+      }
+    }
+    
+    // Add consulting information if available
+    if (this.profile.consulting_field && this.profile.consulting_field.length > 0) {
+      bio += `. Provides consulting services`;
+      
+      // Add specific consulting fields if not too many
+      if (this.profile.consulting_field.length <= 3) {
+        const fieldNames = this.profile.consulting_field.map((field: any) => field.name || 'specialized areas').filter(Boolean);
+        if (fieldNames.length > 0) {
+          bio += ` in ${fieldNames.join(', ')}`;
+        }
+      }
+    }
+    
+    // Add company information if user has company role
+    if (this.profile.roles && this.profile.roles.includes("company") && this.profile.company) {
+      bio += `. Associated with ${this.profile.company.legal_name || 'a company'}`;
+      if (this.profile.company.website) {
+        bio += ` (${this.profile.company.website})`;
+      }
+    }
+    
+    bio += '.';
+    return bio;
+  }
 
   // Personal Certificate Methods
   showAddCertDialog() {
