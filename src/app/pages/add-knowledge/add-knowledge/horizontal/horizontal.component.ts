@@ -309,7 +309,7 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
           .catch(error => {
             console.error('Error updating document details:', error);
             this.isLoading = false;
-            this.showError('', 'Failed to update document details. Please try again.');
+            this.handleServerErrors(error);
           });
       }, 1000); // 1 second delay to ensure IDs are fetched
     } else {
@@ -574,7 +574,29 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
       for (const key in serverErrors) {
         if (serverErrors.hasOwnProperty(key)) {
           const messages = serverErrors[key];
-          this.showError(key, messages.join(', '));
+          
+          // Check if the key follows the 'documents.ID' pattern
+          const documentsRegex = /^documents\.(\d+)$/;
+          const match = key.match(documentsRegex);
+          
+          if (match && match[1]) {
+            // Extract the document ID
+            const documentId = parseInt(match[1], 10);
+            
+            // Find the document with this ID in the documents array
+            const document = this.account$.value.documents?.find((doc: any) => doc.id === documentId);
+            
+            if (document) {
+              // Show error with document name instead of key
+              this.showError(`${document.file_name}`, messages.join(', '));
+            } else {
+              // Fallback if document not found
+              this.showError(`Document ID ${documentId}`, messages.join(', '));
+            }
+          } else {
+            // For other keys, show the normal error
+            this.showError(key, messages.join(', '));
+          }
         }
       }
     } else {

@@ -115,19 +115,23 @@ export class ToastService {
     this.toastInstance.show();
   }
 
-  success(message: string, title: string = 'Success', delay?: number) {
+  success(message: string='Success', title: string = 'Success', delay?: number) {
+    title =='' ? title = 'Success' : title;
     this.show(message, title, 'success', delay);
   }
 
-  error(message: string, title: string = 'Error', delay?: number) {
+  error(message: string='Error', title: string = 'Error', delay?: number) {
+    title =='' ? title = 'Error' : title;
     this.show(message, title, 'danger', delay);
   }
 
-  warning(message: string, title: string = 'Warning', delay?: number) {
+  warning(message: string='Warning', title: string = 'Warning', delay?: number) {
+    title =='' ? title = 'Warning' : title;
     this.show(message, title, 'warning', delay);
   }
 
-  info(message: string, title: string = 'Information', delay?: number) {
+  info(message: string='Information', title: string = 'Information', delay?: number) {
+    title =='' ? title = 'Information' : title;
     this.show(message, title, 'info', delay);
   }
 }

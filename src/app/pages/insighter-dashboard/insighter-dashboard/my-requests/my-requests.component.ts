@@ -1,6 +1,6 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { first, Observable } from 'rxjs';
+import { BehaviorSubject, first, Observable } from 'rxjs';
 import { IKnoldgProfile } from 'src/app/_fake/models/profile.interface';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import { UserRequestsService } from 'src/app/_fake/services/user-requests/user-requests.service';
@@ -28,7 +28,8 @@ export class MyRequestsComponent extends BaseComponent implements OnInit {
   filteredUserRequests: ExtendedUserRequest[] = [];
   insighterRequests: ExtendedUserRequest[] = [];
   filteredInsighterRequests: ExtendedUserRequest[] = [];
-  isLoading$!: Observable<boolean>;
+  isLoading$: Observable<boolean>;
+  private loadingSubject = new BehaviorSubject<boolean>(true);
   selectedType: string = '';
   selectedStatus: string = '';
   selectedInsighterType: string = '';
@@ -38,6 +39,11 @@ export class MyRequestsComponent extends BaseComponent implements OnInit {
   selectedRequest: ExtendedUserRequest | null = null;
   userProfile: IKnoldgProfile | null = null;
   hasPendingRequestOfSameType: boolean = false;
+  
+  // Loading state trackers
+  private profileLoaded = false;
+  private userRequestsLoaded = false;
+  private insighterRequestsLoaded = false;
   
   // Added properties for approve/decline functionality
   isInsighterRequest: boolean = false;
@@ -52,28 +58,47 @@ export class MyRequestsComponent extends BaseComponent implements OnInit {
     private router: Router
   ) {
     super(injector);
-    this.isLoading$ = this.userRequestsService.isLoading$;
+    this.isLoading$ = this.loadingSubject.asObservable();
   }
 
   ngOnInit(): void {
+    this.loadingSubject.next(true);
     this.loadData();
     this.getProfile();
   }
 
   getProfile() {
-    this.getProfileService.getProfile().pipe(first()).subscribe((user)=>{
-      console.log('User profile loaded:', user);
-      console.log('User roles:', user?.roles);
-      this.userProfile=user
-      // Load insighter requests for all users for now
-      this.loadInsighterRequests();
-    })
+    this.getProfileService.getProfile().pipe(first()).subscribe({
+      next: (user) => {
+        console.log('User profile loaded:', user);
+        console.log('User roles:', user?.roles);
+        this.userProfile = user;
+        this.profileLoaded = true;
+        // Load insighter requests for all users for now
+        this.loadInsighterRequests();
+        this.checkLoadingComplete();
+      },
+      error: (error) => {
+        console.error('Error loading profile:', error);
+        this.profileLoaded = true;
+        this.checkLoadingComplete();
+      }
+    });
   }
 
   loadData() {
-    this.userRequestsService.getAllUserRequests(this.lang).subscribe((requests) => {
-      this.userRequests = requests;
-      this.filterRequests();
+    this.userRequestsService.getAllUserRequests(this.lang).subscribe({
+      next: (requests) => {
+        this.userRequests = requests;
+        this.filterRequests();
+        this.userRequestsLoaded = true;
+        this.checkLoadingComplete();
+      },
+      error: (error) => {
+        console.error('Error loading user requests:', error);
+        this.userRequestsLoaded = true;
+        this.checkLoadingComplete();
+      }
     });
   }
 
@@ -84,11 +109,24 @@ export class MyRequestsComponent extends BaseComponent implements OnInit {
         console.log('Insighter requests loaded:', requests);
         this.insighterRequests = requests;
         this.filterInsighterRequests();
+        this.insighterRequestsLoaded = true;
+        this.checkLoadingComplete();
       },
       error: (error) => {
         console.error('Error loading insighter requests:', error);
+        this.insighterRequestsLoaded = true;
+        this.checkLoadingComplete();
       }
     });
+  }
+  
+  /**
+   * Check if all data has loaded and update loading state
+   */
+  private checkLoadingComplete() {
+    if (this.profileLoaded && this.userRequestsLoaded && this.insighterRequestsLoaded) {
+      this.loadingSubject.next(false);
+    }
   }
 
   filterRequests() {
@@ -220,6 +258,8 @@ export class MyRequestsComponent extends BaseComponent implements OnInit {
 
     const requestId = this.selectedRequest.id.toString();
     const status = "approved";
+    
+    this.loadingSubject.next(true);
 
     this.userRequestsService.updateInsighterRequestStatus(requestId, status, this.staffNotes).subscribe({
       next: () => {
@@ -231,6 +271,7 @@ export class MyRequestsComponent extends BaseComponent implements OnInit {
       error: (error: any) => {
         console.error('Error approving request:', error);
         this.showError('Error', 'Failed to approve request');
+        this.loadingSubject.next(false);
       }
     });
   }
@@ -240,6 +281,8 @@ export class MyRequestsComponent extends BaseComponent implements OnInit {
 
     const requestId = this.selectedRequest.id.toString();
     const status = "declined";
+    
+    this.loadingSubject.next(true);
 
     this.userRequestsService.updateInsighterRequestStatus(requestId, status, this.staffNotes).subscribe({
       next: () => {
@@ -251,6 +294,7 @@ export class MyRequestsComponent extends BaseComponent implements OnInit {
       error: (error: any) => {
         console.error('Error declining request:', error);
         this.showError('Error', 'Failed to decline request');
+        this.loadingSubject.next(false);
       }
     });
   }
@@ -283,6 +327,8 @@ export class MyRequestsComponent extends BaseComponent implements OnInit {
 
   onResendRequest() {
     if (this.selectedRequest?.id && this.resendComments.trim()) {
+      this.loadingSubject.next(true);
+      
       // Use sendVerificationRequest if the request type is 'activate_company'
       if (this.selectedRequest.type.key === 'activate_company') {
         const sub = this.userRequestsService
@@ -297,6 +343,7 @@ export class MyRequestsComponent extends BaseComponent implements OnInit {
             error: (error) => {
               console.error('Error resending verification request:', error);
               this.showError('Error', 'Failed to resend verification request.');
+              this.loadingSubject.next(false);
             },
           });
         this.unsubscribe.push(sub);
@@ -314,6 +361,7 @@ export class MyRequestsComponent extends BaseComponent implements OnInit {
             error: (error) => {
               console.error('Error resending activation request:', error);
               this.showError('Error', 'Failed to resend activation request.');
+              this.loadingSubject.next(false);
             },
           });
         this.unsubscribe.push(sub);
@@ -327,6 +375,9 @@ export class MyRequestsComponent extends BaseComponent implements OnInit {
               this.displayRequestDialog = false;
               this.resendComments = '';
             },
+            error: (error) => {
+              this.loadingSubject.next(false);
+            }
           });
         this.unsubscribe.push(sub);
       } else if(this.selectedRequest?.type.key === 'deactivate_delete_insighter'){
@@ -339,6 +390,9 @@ export class MyRequestsComponent extends BaseComponent implements OnInit {
               this.displayRequestDialog = false;
               this.resendComments = '';
             },
+            error: (error) => {
+              this.loadingSubject.next(false);
+            }
           });
         this.unsubscribe.push(sub);
       } else if(this.selectedRequest?.type.key === 'accept_knowledge' && this.selectedRequest.identity) {
@@ -360,6 +414,7 @@ export class MyRequestsComponent extends BaseComponent implements OnInit {
             error: (error) => {
               console.error('Error sending knowledge review request:', error);
               this.showError('Error', 'Failed to send knowledge review request.');
+              this.loadingSubject.next(false);
             },
           });
         this.unsubscribe.push(sub);

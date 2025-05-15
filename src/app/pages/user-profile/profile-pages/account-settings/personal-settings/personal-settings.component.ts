@@ -156,6 +156,7 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
       : [];
     this.allIndustriesSelected = filteredNodes;
     this.personalInfoForm.get('industries')?.setValue(filteredNodes);
+    console.log('Selected Industries:', filteredNodes);
   }
 
   initForm() {
@@ -251,7 +252,6 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
       }
     });
   }
-
   private createFormData(): FormData {
     const formData = new FormData();
     const form = this.personalInfoForm;
@@ -264,109 +264,70 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
     if (form.get("country")?.value) {
       formData.append("country_id", form.get("country")?.value.id);
     }
-
-    // Only add additional fields for non-client roles
-    if (!this.isClientOnly()) {
-      formData.append("bio", form.get("bio")?.value);
-      
-      // Add phone if exists
-      if (this.profile.phone) {
-        formData.append("phone", this.profile.phone);
-      }
-
-      if(this.profile.roles.includes('insighter') ){
-           // Handle industries
-      const industries = form.get('industries')?.value || [];
-      
-      // Regular industries (with numeric keys)
-      const industriesList = industries.filter((node: any) => 
-        typeof node.data.key === 'number' && node.data.key !== 'selectAll'
-      );
-      
-      // Other industries (with custom input)
-      const otherIndustriesFields = industries.filter((node: any) => 
-        typeof node.data.key === 'string' && 
-        node.data.key !== 'selectAll' && 
-        node.data.customInput !== undefined && 
-        node.data.customInput !== null
-      );
-
-      // Append regular industries
-      if (industriesList.length > 0) {
-        industriesList.forEach((industry: any) => {
-          formData.append("industries[]", industry.data.key.toString());
-        });
-      }
-
-      // Append other industries with custom input
-      if (otherIndustriesFields.length > 0) {
-        otherIndustriesFields.forEach((field: any, index: number) => {
-          formData.append(
-            `suggest_industries[${index}][parent_id]`, 
-            field.parent?.key === "selectAll" ? "0" : field.parent?.key
-          );
-          formData.append(`suggest_industries[${index}][name][en]`, field.data.customInput);
-          formData.append(`suggest_industries[${index}][name][ar]`, field.data.customInput);
-        });
-      }
-      }else{
-       this.profile.industries.forEach((industry: any) => {
-        formData.append("industries[]", industry.id.toString());
-       })
-      }
    
-      if(this.hasRole(['insighter'])){
-
-      // Handle consulting fields
-      const consultingFields = form.get('consulting_field')?.value || [];
-      
-      // Regular consulting fields (with numeric keys)
-      const consultingFieldList = consultingFields.filter((node: any) => 
-        typeof node.data.key === 'number' && node.data.key !== 'selectAll'
-      );
-      
-      // Other consulting fields (with custom input)
-      const otherConsultingFields = consultingFields.filter((node: any) => 
-        typeof node.data.key === 'string' && 
-        node.data.key !== 'selectAll' && 
-        node.data.customInput !== undefined && 
-        node.data.customInput !== null
-      );
-
-      // Append regular consulting fields
-      if (consultingFieldList.length > 0) {
-        consultingFieldList.forEach((field: any) => {
-          formData.append("consulting_field[]", field.data.key.toString());
-        });
-      }
-
-      // Append other consulting fields with custom input
-      if (otherConsultingFields.length > 0) {
-        otherConsultingFields.forEach((field: any, index: number) => {
-          formData.append(
-            `suggest_consulting_fields[${index}][parent_id]`, 
-            field.parent?.key === "selectAll" ? "0" : field.parent?.key
-          );
-          formData.append(`suggest_consulting_fields[${index}][name][en]`, field.data.customInput);
-          formData.append(`suggest_consulting_fields[${index}][name][ar]`, field.data.customInput);
-        });
-      }
-      }else{
-        this.profile.consulting_field.forEach((field: any) => {
-          formData.append("consulting_field[]", field.id.toString());
-         })
-      }
-
-      if(this.hasRole(['company']) && this.profile.company?.legal_name){
-        formData.append("legal_name", this.profile.company.legal_name);
-        formData.append("about_us", this.profile.company.about_us);
-      }
-      if(this.hasRole(['company']) && this.profile.company?.website){
-        formData.append("website", this.profile.company.website);
-      }
+    if (!this.isClientOnly()) {
+      this.appendNonClientFields(formData, form);
     }
 
     return formData;
+  }
+
+  private appendNonClientFields(formData: FormData, form: any): void {
+    formData.append("bio", form.get("bio")?.value);
+    
+    if (this.profile.phone) {
+      formData.append("phone", this.profile.phone);
+    }
+
+    this.appendIndustries(formData, form.get('industries')?.value || []);
+    this.appendConsultingFields(formData, form.get('consulting_field')?.value || []);
+  }
+
+  private appendIndustries(formData: FormData, industries: any[]): void {
+    const regularIndustries = this.filterRegularNodes(industries);
+    const otherIndustries = this.filterCustomNodes(industries);
+
+    regularIndustries.forEach((industry: any) => {
+      formData.append("industries[]", industry.data.key.toString());
+    });
+
+    otherIndustries.forEach((field: any, index: number) => {
+      const parentId = field.parent?.key === "selectAll" ? "0" : field.parent?.key;
+      formData.append(`suggest_industries[${index}][parent_id]`, parentId);
+      formData.append(`suggest_industries[${index}][name][en]`, field.data.customInput);
+      formData.append(`suggest_industries[${index}][name][ar]`, field.data.customInput);
+    });
+  }
+
+  private appendConsultingFields(formData: FormData, consultingFields: any[]): void {
+    const regularFields = this.filterRegularNodes(consultingFields);
+    const otherFields = this.filterCustomNodes(consultingFields);
+
+    regularFields.forEach((field: any) => {
+      formData.append("consulting_field[]", field.data.key.toString());
+    });
+
+    otherFields.forEach((field: any, index: number) => {
+      const parentId = field.parent?.key === "selectAll" ? "0" : field.parent?.key;
+      formData.append(`suggest_consulting_fields[${index}][parent_id]`, parentId);
+      formData.append(`suggest_consulting_fields[${index}][name][en]`, field.data.customInput);
+      formData.append(`suggest_consulting_fields[${index}][name][ar]`, field.data.customInput);
+    });
+  }
+
+  private filterRegularNodes(nodes: any[]): any[] {
+    return nodes.filter(node => 
+      typeof node.data.key === 'number' && node.data.key !== 'selectAll'
+    );
+  }
+
+  private filterCustomNodes(nodes: any[]): any[] {
+    return nodes.filter(node => 
+      typeof node.data.key === 'string' && 
+      node.data.key !== 'selectAll' && 
+      node.data.customInput !== undefined && 
+      node.data.customInput !== null
+    );
   }
 
   private isClientOnly(): boolean {

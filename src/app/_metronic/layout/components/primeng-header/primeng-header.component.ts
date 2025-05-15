@@ -320,10 +320,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
 
   // Determines the correct route for the Add Knowledge button based on user roles
   getAddKnowledgeRoute(): string {
-    if (this.profile?.roles?.some((role: string) => ['insighter', 'company-insighter', 'company'].includes(role))) {
-      return '/app/add-knowledge/stepper';
-    }
-    return '/app/insighter-register/vertical';
+    return '/app/add-knowledge/stepper';
   }
 
   toggleSidebar() {

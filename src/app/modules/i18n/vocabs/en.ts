@@ -549,7 +549,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       CORPORATE_ACCOUNT_DESC: "Create corporate account to manage users",
       IF_NEED_MORE_INFO: "Need more information? Visit our",
       DOCUMENT_SIZE: "File size must not exceed 2MB",
-      INSIGHTER_INFO: "Insighter Info",
+      INSIGHTER_INFO: "Account Info",
       CONSULTING_FIELDS: "Consulting Fields",
       CONSULTING_FIELDS_REQUIRED: "Consulting Fields are required",
       ABOUT_YOU: "About You",

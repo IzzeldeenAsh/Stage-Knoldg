@@ -52,7 +52,7 @@
             </div>
           </div>
         </div>
-        <div class="row">
+        <div class="row" *ngIf="hasRole(['insighter']) || hasRole(['company']) || hasRole(['company-insighter'])">
           <!-- Consulting Field -->
           <div class="col-lg-6 mb-6 fv-row">
             <shared-tree-selector *ngIf="consultingFields"
@@ -87,7 +87,7 @@
             ></shared-tree-selector>
           </div>
         </div>
-        <div class="row">
+        <div class="row" >
           <div class="col-lg-6 mb-6 fv-row">
             <label for="country" class="form-label">
               {{ "ACCOUNT_SETTINGS.COUNTRY" | translate }}

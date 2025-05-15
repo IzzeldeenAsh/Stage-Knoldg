@@ -34,20 +34,20 @@ export abstract class BaseComponent implements OnDestroy, AfterViewInit {
     }, 100);
   }
 
-  showInfo(summary:string ='Info',detail: string) {
-    this.messageService.add({ severity: 'info', summary, detail });
+  showInfo(summary:string ='Info',detail: string='Info' ) {
+    this.toastService.info(detail, summary);
   }
 
-  showWarn(summary:string ='Warning',detail: string) {
-    this.messageService.add({ severity: 'warn', summary, detail });
+  showWarn(summary:string ='Warning',detail: string='Warning' ) {
+    this.toastService.warning(detail, summary);
   }
 
-  showSuccess(summary:string ='Success',detail: string) {
-    this.messageService.add({ severity: 'success', summary, detail, life: 5000 }); // 5 seconds
+  showSuccess(summary:string ='Success',detail: string='Success' ) {
+    this.toastService.success(detail, summary);
   }
 
-  showError(summary:string ='Error',detail: string ,life:number=5000) {
-    this.messageService.add({ severity: 'error', summary, detail, life });
+  showError(summary:string ='Error',detail: string='Error' ,life:number=5000) {
+    this.toastService.error(detail, summary, life);
   }
 
   ngOnDestroy(): void {

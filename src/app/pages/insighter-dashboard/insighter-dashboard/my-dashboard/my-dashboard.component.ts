@@ -20,6 +20,13 @@ export class MyDashboardComponent extends BaseComponent {
   hasEmployeeData: boolean = false;
   private knowledgeTypesLoaded: boolean = false;
   insighterStatus: string = '';
+  isLoading: boolean = true;
+  
+  // Loading state trackers
+  private profileLoaded: boolean = false;
+  private requestsLoaded: boolean = false;
+  private statisticsApiLoaded: boolean = false;
+  private insighterRequestsLoaded: boolean = false;
 
 constructor(
   injector: Injector,
@@ -31,14 +38,22 @@ constructor(
 }
 
 ngOnInit(){
+  this.isLoading = true;
+
   const profileSub = this.profileService.getProfile().subscribe((res: any) => {
     this.roles = res.roles;
     this.insighterStatus = res.insighter_status || '';
+    this.profileLoaded = true;
     
     // Check for pending insighter requests only for company role
     if (this.roles.includes('company')) {
       this.checkPendingInsighterRequests();
+    } else {
+      this.insighterRequestsLoaded = true; // Skip this check for non-company users
+      this.checkLoadingComplete();
     }
+    
+    this.checkLoadingComplete();
   });
   this.unsubscribe.push(profileSub);
 
@@ -47,6 +62,8 @@ ngOnInit(){
     this.hasPendingActivationRequest = requests.some(
       request => request.type.key === 'activate_company' && request.status === 'pending'
     );
+    this.requestsLoaded = true;
+    this.checkLoadingComplete();
   });
   this.unsubscribe.push(requestsSub);
 
@@ -55,19 +72,35 @@ ngOnInit(){
     (response) => {
       this.statisticsLoaded = response.data && response.data.length > 0;
       this.knowledgeTypesLoaded = this.statisticsLoaded;
+      this.statisticsApiLoaded = true;
+      this.checkLoadingComplete();
     },
     () => {
       this.statisticsLoaded = false;
       this.knowledgeTypesLoaded = false;
+      this.statisticsApiLoaded = true;
+      this.checkLoadingComplete();
     }
   );
   this.unsubscribe.push(statsSub);
+}
+
+/**
+ * Check if all data loading is complete
+ */
+private checkLoadingComplete(): void {
+  // Only mark loading as complete when all required data has been loaded
+  if (this.profileLoaded && this.requestsLoaded && 
+      this.statisticsApiLoaded && this.insighterRequestsLoaded) {
+    this.isLoading = false;
+  }
 }
 
 // Handle the event when the number of employees is determined
 onHasMultipleEmployees(hasMultiple: boolean): void {
   this.hasMultipleEmployees = hasMultiple;
   this.hasEmployeeData = hasMultiple;
+  this.checkLoadingComplete();
 }
 
 hasRole(role: string){
@@ -95,9 +128,10 @@ hasKnowledgeTypes(): boolean {
 /**
  * Determine if the empty state message should be shown
  * Only show empty state when there are no statistics, no employee data, and no pending insighter requests
+ * AND loading is complete
  */
 shouldShowEmptyState(): boolean {
-  return !this.hasStatistics() && !this.hasEmployeeData && !this.hasPendingInsighterRequests;
+  return !this.isLoading && !this.hasStatistics() && !this.hasEmployeeData && !this.hasPendingInsighterRequests;
 }
 
 /**
@@ -108,6 +142,8 @@ checkPendingInsighterRequests(): void {
     const pendingRequests = requests.filter(request => request.status === 'pending');
     this.pendingInsighterRequestsCount = pendingRequests.length;
     this.hasPendingInsighterRequests = this.pendingInsighterRequestsCount > 0;
+    this.insighterRequestsLoaded = true;
+    this.checkLoadingComplete();
   });
   this.unsubscribe.push(insighterRequestsSub);
 }

@@ -334,9 +334,14 @@ export class VerticalComponent extends BaseComponent implements OnInit {
           .subscribe({
             next: (response) => {
               this.onSuccessMessage = true;
-              const profileSub = this.getProfileService.getProfile(true).subscribe();
+              // Refresh profile to get updated roles
+              const profileSub = this.getProfileService.refreshProfile().subscribe({
+                next: (profile) => {
+                  // Update userRoles with the new roles 
+                  this.userRoles = profile.roles || [];
+                }
+              });
               this.unsubscribe.push(profileSub);
-              this.getProfileService.clearProfile()
             },
             error: (error) => {
               this.handleServerErrors(error);
@@ -353,10 +358,15 @@ export class VerticalComponent extends BaseComponent implements OnInit {
                 this.onPendingMessage=true
               }else{
                 this.onSuccessMessage=true;
-                const profileSub = this.getProfileService.getProfile(true).subscribe();
+                // Refresh profile to get updated roles
+                const profileSub = this.getProfileService.refreshProfile().subscribe({
+                  next: (profile) => {
+                    // Update userRoles with the new roles 
+                    this.userRoles = profile.roles || [];
+                  }
+                });
                 this.unsubscribe.push(profileSub);
               }
-              this.getProfileService.clearProfile()
             },
             error: (error) => {
               this.handleServerErrors(error);

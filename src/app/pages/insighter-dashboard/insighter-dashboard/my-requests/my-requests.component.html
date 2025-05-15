@@ -5,8 +5,19 @@ mode="indeterminate"
 styleClass=""
 ></p-progressBar>
 
-<!-- Shared No Requests State - Only show when BOTH tables are empty and no filters are applied -->
-<div *ngIf="filteredUserRequests.length === 0 && filteredInsighterRequests.length === 0 && !hasActiveFilters()" class="text-center py-10 bg-light-secondary rounded mb-5 border border-1 border-light">
+<!-- Loading state - full page loader -->
+<div *ngIf="isLoading$ | async" class="text-center py-10 bg-light rounded mb-5 border border-1 border-light">
+    <div class="my-5">
+        <div class="spinner-border text-primary mb-4" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <h3 class="fw-bold text-gray-800 mb-2">Loading Requests</h3>
+        <p class="text-gray-600 fs-6 px-3">Please wait while we fetch your requests...</p>
+    </div>
+</div>
+
+<!-- Shared No Requests State - Only show when BOTH tables are empty and no filters are applied AND loading is complete -->
+<div *ngIf="!(isLoading$ | async) && filteredUserRequests.length === 0 && filteredInsighterRequests.length === 0 && !hasActiveFilters()" class="text-center py-10 bg-light-secondary rounded mb-5 border border-1 border-light">
     <div class="my-5">
         <img src="assets/media/illustrations/dozzy-1/7117863_3369471.svg" alt="No Requests Illustration" class="mb-4" style="max-width: 300px;">
       
@@ -15,7 +26,7 @@ styleClass=""
     </div>
 </div>
 
-<div class="mb-5 mb-xl-10 card" *ngIf="userProfile && userRequests.length > 0">
+<div class="mb-5 mb-xl-10 card" *ngIf="!(isLoading$ | async) && userProfile && userRequests.length > 0">
     <!--begin::Header-->
     <div class="card-header pt-7 border-0">
         <!--begin::Title-->
@@ -135,7 +146,7 @@ styleClass=""
         <!-- End User Requests Cards -->
         
         <!-- No Results Message for User Requests when filters are applied -->
-        <div *ngIf="filteredUserRequests.length === 0 && hasUserFilters()" class="text-center py-8 bg-light-secondary rounded">
+        <div *ngIf="!(isLoading$ | async) && filteredUserRequests.length === 0 && hasUserFilters()" class="text-center py-8 bg-light-secondary rounded">
             <div class="my-3">
                 <i class="bi bi-funnel fs-1 text-gray-400 mb-3 d-block"></i>
                 <h4 class="fw-bold text-gray-800 mb-2">No Matching Requests</h4>
@@ -150,7 +161,7 @@ styleClass=""
 </div>
 
 <!-- Insighter Requests Section -->
-<div class="mb-5 mb-xl-10 mt-10 card" *ngIf="insighterRequests.length > 0">
+<div class="mb-5 mb-xl-10 mt-10 card" *ngIf="!(isLoading$ | async) && insighterRequests.length > 0">
     <!--begin::Header-->
     <div class="card-header pt-7 border-0">
         <!--begin::Title-->
@@ -267,7 +278,7 @@ styleClass=""
         <!-- End Insighter Requests Cards -->
         
         <!-- No Results Message for Insighter Requests when filters are applied -->
-        <div *ngIf="filteredInsighterRequests.length === 0 && hasInsighterFilters()" class="text-center py-8 bg-light-secondary rounded">
+        <div *ngIf="!(isLoading$ | async) && filteredInsighterRequests.length === 0 && hasInsighterFilters()" class="text-center py-8 bg-light-secondary rounded">
             <div class="my-3">
                 <i class="bi bi-funnel fs-1 text-gray-400 mb-3 d-block"></i>
                 <h4 class="fw-bold text-gray-800 mb-2">No Matching Requests</h4>
