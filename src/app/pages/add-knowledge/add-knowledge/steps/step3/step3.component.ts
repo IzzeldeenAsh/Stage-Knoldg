@@ -324,22 +324,7 @@ export class Step3Component extends BaseComponent implements OnInit {
           this.documents.forEach(doc => {
             if (!doc.description || doc.description.trim() === '') {
               // Auto-trigger document parsing for documents without descriptions
-              this.documentLoadingStates[doc.id] = true;
-              // Start parsing process (POST) followed by polling
-              const parserSubscription = this.addInsightStepsService.runDocumentParser(doc.id)
-                .subscribe({
-                  next: () => {
-                    // After successful parsing, start polling for results
-                    this.startSummaryPolling(doc.id);
-                  },
-                  error: (error:any) => {
-                    console.error(`Error starting document parsing for document ${doc.id}:`, error);
-                    this.documentLoadingStates[doc.id] = false;
-                    this.documentAbstractErrors[doc.id] = true;
-                  }
-                });
-              
-              this.unsubscribe.push(parserSubscription);
+              this.startSummaryPolling(doc.id);
             } else {
               // For documents that already have descriptions, we'll still show animation
               doc.animatedAbstract = true;

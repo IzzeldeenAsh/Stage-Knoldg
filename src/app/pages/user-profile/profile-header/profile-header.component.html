@@ -64,11 +64,29 @@
    }
 
    @if (hasRole(['company']) ) {
-    <div class="fw-bold text-uppercase"
-    [class.text-success]="profile.company?.status === 'active'" 
-    [class.text-danger]="profile.company?.status === 'inactive'"
-    >{{profile.company?.status}}</div>
+    <div class="d-flex gap-4">
+      <!-- Company Status Box -->
+      <div class="border rounded p-3 bg-light">
+        <div class="text-gray-600 mb-1">{{'PROFILE.COMPANY_STATUS' | translate}}</div>
+        <div class="fw-bold text-uppercase"
+          [class.text-success]="profile.company?.status === 'active'" 
+          [class.text-danger]="profile.company?.status === 'inactive'">
+          {{'PROFILE.STATUS.' + (profile.company?.status | uppercase) | translate}}
+        </div>
+      </div>
+
+      <!-- Insighter Status Box -->
+      <div class="border rounded p-3 bg-light">
+        <div class="text-gray-600 mb-1">{{'PROFILE.INSIGHTER_STATUS' | translate}}</div>
+        <div class="fw-bold text-uppercase"
+          [class.text-success]="profile.insighter_status === 'active'" 
+          [class.text-danger]="profile.insighter_status === 'inactive'">
+          {{'PROFILE.STATUS.' + (profile.insighter_status | uppercase) | translate}}
+        </div>
+      </div>
+    </div>
    }
+
    @if (hasRole(['company-insighter'])) {
     <div class="fw-bold text-uppercase"
     [class.text-success]="profile.insighter_status === 'active'"

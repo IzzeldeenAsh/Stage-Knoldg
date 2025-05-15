@@ -239,6 +239,7 @@ export class Step5Component extends BaseComponent implements OnInit {
             summary: 'Success', 
             detail: 'Verification email resent successfully.' 
           });
+          this.showSuccess('Success','Verification email resent successfully.');
           this.gettingCodeLoader = false;
           this.startGetCodeCooldown();
         },

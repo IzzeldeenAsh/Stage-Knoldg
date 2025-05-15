@@ -75,8 +75,12 @@ export class MyRequestsComponent extends BaseComponent implements OnInit {
         this.userProfile = user;
         this.profileLoaded = true;
         // Load insighter requests for all users for now
-        this.loadInsighterRequests();
-        this.checkLoadingComplete();
+        if(user?.roles.includes('company')){
+          this.loadInsighterRequests();
+        } else {
+          this.insighterRequestsLoaded = true;
+          this.checkLoadingComplete();
+        }
       },
       error: (error) => {
         console.error('Error loading profile:', error);

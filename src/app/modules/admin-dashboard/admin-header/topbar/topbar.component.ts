@@ -13,6 +13,7 @@ import { ProfileService } from "src/app/_fake/services/get-profile/get-profile.s
 import { FileUploadService } from "src/app/_fake/services/upload-picture/upload-picture";
 import { AuthService, UserType } from "src/app/modules/auth";
 import { Notification, NotificationsService } from 'src/app/_fake/services/notifications/notifications.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 @Component({
   selector: "app-topbar",
   templateUrl: "./topbar.component.html",
@@ -33,7 +34,8 @@ export class TopbarComponent implements OnInit {
     private fileUploadService: FileUploadService,
     private messageService: MessageService,
     private getProfileService: ProfileService,
-    private notificationService: NotificationsService
+    private notificationService: NotificationsService,
+    private http: HttpClient
   ) {}
   ngOnInit(): void {
     this.getProfile();
@@ -41,7 +43,8 @@ export class TopbarComponent implements OnInit {
     // Subscribe to the notifications$ observable to receive updates from polling
     this.notificationService.notifications$.subscribe((notifications) => {
       this.notifications = notifications;
-      this.notificationCount = this.notifications.length;
+      // Count only unread notifications (where read_at is null or undefined)
+      this.notificationCount = this.notifications.filter(n => !n.read_at).length;
     });
 
     // Start polling for notifications
@@ -133,16 +136,55 @@ export class TopbarComponent implements OnInit {
     this.isMenuOpen = false;
   }
   @HostListener("document:click", ["$event"])
-  handleClickOutside(event: Event): void {
-    const clickedInside = this.elRef.nativeElement.contains(event.target);
-    if (!clickedInside) {
+  handleClickOutside(event: MouseEvent): void {
+    // Close user dropdown when clicking outside
+    const target = event.target as HTMLElement;
+    const clickedInside = this.elRef.nativeElement.contains(target);
+    
+    // Check if clicked in notifications area
+    const clickedInNotification = target.closest('.notification-dropdown') || target.closest('.notification-toggle');
+    
+    // Only close menus if clicked outside
+    if (!clickedInside && !clickedInNotification) {
       this.closeMenu();
+      this.closeNotificationsMenu();
     }
   }
 
   // Toggle notifications menu
-  toggleNotificationsMenu(): void {
+  toggleNotificationsMenu(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
     this.notificationsMenuOpen = !this.notificationsMenuOpen;
+    console.log('Notifications menu toggled:', this.notificationsMenuOpen);
+    
+    // If opening the notifications dropdown, mark all as read
+    if (this.notificationsMenuOpen && this.notificationCount > 0) {
+      // Immediately set notification count to 0 for UI feedback
+      this.notificationCount = 0;
+      
+      const headers = new HttpHeaders({
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Accept-Language': 'en'
+      });
+      
+      // Call API to mark all notifications as read - using same endpoint as in primeng-header
+      this.http.put('https://api.knoldg.com/api/account/notification/read', {}, { headers })
+        .subscribe({
+          next: () => {
+            // Refresh notifications from API
+            this.notificationService.getNotifications('en').subscribe(notifications => {
+              this.notifications = notifications;
+              // Only count unread notifications
+              this.notificationCount = notifications.filter(n => !n.read_at).length;
+            });
+          },
+          error: (error) => {
+            console.error('Error marking all notifications as read:', error);
+          }
+        });
+    }
   }
 
   // Close notifications menu
@@ -172,9 +214,10 @@ export class TopbarComponent implements OnInit {
     this.notificationService.markAsRead(notificationId,'en').subscribe({
       next: () => {
         // Refresh notifications from API
-        this.notificationService.getNotifications( 'en').subscribe(notifications => {
+        this.notificationService.getNotifications('en').subscribe(notifications => {
           this.notifications = notifications;
-          this.notificationCount = notifications.length;
+          // Count only unread notifications
+          this.notificationCount = notifications.filter(n => !n.read_at).length;
         });
       },
       error: (error) => {
