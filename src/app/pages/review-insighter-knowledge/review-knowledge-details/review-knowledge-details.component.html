@@ -11,7 +11,7 @@
         <!-- knowledge documents -->
         <div class="documents-container">
             <div
-                class="document-card d-flex flex-row align-items-center p-10 cursor-pointer position-relative"
+                class="document-card d-flex flex-row align-items-start p-10 cursor-pointer position-relative"
                 *ngFor="let doc of documents"
                 [ngClass]="{ 'active': activeDocumentId === doc.id }"
                 (click)="toggleCollapse(doc.id, $event)"
