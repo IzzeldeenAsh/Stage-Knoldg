@@ -54,6 +54,17 @@ export class LangSwitchButtonComponent implements OnInit {
     // Update font based on the new language
     this.fontService.updateFont(this.selectedLang);
 
+    // Set the language preference in a cookie that works across subdomains
+    // This matches the cookie set in the NextJS app
+    document.cookie = [
+      `preferred_language=${newLang}`,
+      `Domain=.knoldg.com`,           // leading dot = include subdomains
+      `Path=/`,                       // send on all paths
+      `Max-Age=${60 * 60 * 24 * 365}`,// one year
+      `SameSite=Lax`,                 // prevent CSRF, still send on top-level nav
+      `Secure`                        // HTTPS only
+    ].join('; ');
+
     // Reload the page to apply language changes
     window.location.reload();
   }

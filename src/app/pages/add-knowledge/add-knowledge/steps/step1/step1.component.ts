@@ -62,7 +62,7 @@ export class Step1Component extends BaseComponent implements OnInit, OnChanges {
       label: 'BUSINESS_COURSES',
       iconName: 'teacher',
       iconClass: 'text-success',
-      icon: 'fas fa-graduation-cap text-success mx-2 fs-6',
+      icon: 'fas fa-certificate text-success mx-2 fs-6',
       description: 'COURSE_DESCRIPTION'
     },
     {

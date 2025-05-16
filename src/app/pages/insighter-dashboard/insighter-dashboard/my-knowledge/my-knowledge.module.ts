@@ -22,6 +22,7 @@ import { ScheduleDialogComponent } from './components/packages/schedule-dialog/s
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { EditorModule } from '@tinymce/tinymce-angular';
 import { UnpublishedComponent } from './components/unpublished/unpublished.component';
+import { InlineSVGModule } from 'ng-inline-svg-2';
 
 
 const routes: Routes = [
@@ -79,6 +80,7 @@ const routes: Routes = [
     TranslationModule,
     DropdownModule,
     DialogModule,
+    InlineSVGModule,
     FormsModule,
     DragDropModule,
     NgbTooltip,
