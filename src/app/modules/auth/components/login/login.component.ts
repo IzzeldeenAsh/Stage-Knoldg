@@ -49,6 +49,11 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     }, 100); // Delay to ensure DOM elements are fully loaded
   }
 
+  getHomeUrl(): string {
+    const url= 'https://knoldg.com/' + this.lang;
+    return url;
+  }
+
   ngOnInit(): void {
 
     this.initForm();

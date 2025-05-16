@@ -144,6 +144,11 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
     this.isDashboardRoute = this.router.url.includes('dashboard');
   }
 
+  getHomeUrl(): string {
+    const url= 'https://knoldg.com/' + this.lang;
+    return url;
+  }
+
   ngOnDestroy() {
     // Clean up subscriptions to prevent memory leaks
     if (this.breakpointSubscription) {
