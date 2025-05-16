@@ -113,6 +113,11 @@ export class SignUpComponent extends BaseComponent implements OnInit {
     this.showAgreementDialog = true;
   }
 
+  getHomeUrl(): string {
+    const url= 'https://knoldg.com/' + this.lang;
+    return url;
+  }
+
   closeAgreementDialog(approved: boolean): void {
     this.showAgreementDialog = false;
     
