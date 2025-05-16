@@ -281,13 +281,13 @@ export class Step3Component extends BaseComponent implements OnInit {
     if (!this.knowledgeId) return;
     
     this.isLoading = true;
+    
     const loadSub = this.addInsightStepsService.getListDocumentsInfo(this.knowledgeId)
       .subscribe({
         next: (response) => {
           this.documents = response.data.map(doc => {
             // Check if there's existing table_of_content data
             const hasTableOfContent = doc.table_of_content && Array.isArray(doc.table_of_content) && doc.table_of_content.length > 0;
-            
             // Initialize chapters array from table_of_content if it exists
             const chapters = hasTableOfContent 
               ? doc.table_of_content.map((item: any) => ({ 
@@ -323,6 +323,9 @@ export class Step3Component extends BaseComponent implements OnInit {
           // Set loading indicators immediately for documents without descriptions
           this.documents.forEach(doc => {
             if (!doc.description || doc.description.trim() === '') {
+              // Set loading state to true before auto-triggering document parsing
+              this.documentLoadingStates[doc.id] = true;
+              this.documentAbstractErrors[doc.id] = false;
               // Auto-trigger document parsing for documents without descriptions
               this.startSummaryPolling(doc.id);
             } else {
