@@ -1,6 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, Injector, Input } from '@angular/core';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ReactivateDialogComponent } from './reactivate-dialog/reactivate-dialog.component';
+import { BaseComponent } from 'src/app/modules/base.component';
 
 @Component({
   selector: 'app-activate-account',
@@ -8,10 +9,12 @@ import { ReactivateDialogComponent } from './reactivate-dialog/reactivate-dialog
   styleUrl: './activate-account.component.scss',
   providers: [DialogService]
 })
-export class ActivateAccountComponent {
+export class ActivateAccountComponent extends BaseComponent {
   ref: DynamicDialogRef | undefined;
   @Input() role: string = 'company';
-  constructor(private dialogService: DialogService) {}
+  constructor(private dialogService: DialogService, injector: Injector) {
+    super(injector);
+  }
 
   showReactivateDialog() {
     this.ref = this.dialogService.open(ReactivateDialogComponent, {

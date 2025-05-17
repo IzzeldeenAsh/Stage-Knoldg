@@ -6,7 +6,7 @@ export const locale = {
     SHOW_LESS:'Show Less',
     SHOW_MORE:'Show More',
     CHOOSE_COUNTTRIES:'Choose Countries',
-   
+   ACCOUNT: 'Account',
     INSIGHTER_REQUESTS: {
       TITLE: 'Insighter Requests',
       REQUEST_COUNT: 'Requests',
@@ -246,7 +246,7 @@ export const locale = {
     },
    
     "REACTIVATE_ACCOUNT": {
-      "TITLE": "Reactivate Account",
+      "TITLE": "Reactivate",
       "DESCRIPTION": "Your account is currently deactivated. Reactivate it to regain full access to all features and services.",
       "BUTTON_TEXT": "Reactivate Account",
       "ILLUSTRATION_ALT": "Reactivate account illustration",
@@ -460,8 +460,16 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     "DEACTIVATE_ACCOUNT": {
       "TITLE_COMPANY": "Deactivate Company Account",
       "TITLE_INSIGHTER": "Deactivating Account",
+      "TITLE_USER_ONLY": "Deactivate User Account",
+      "TITLE_ACCOUNT":"Deactivating Account",
+      "TITLE_COMPANY_ONLY": "Deactivate Company Account",
       "DESCRIPTION": "<div class='d-flex align-items-center'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Your account data will be retained</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Account will be inaccessible until reactivation</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Your company's insights will remain visible in the marketplace</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>New insights cannot be uploaded during deactivation</span></div>",
+      "DESCRIPTION_COMPANY_COMBINED": "<div class='d-flex align-items-center'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Both your company account and user account will be deactivated</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>All account data will be retained</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Both accounts will be inaccessible until reactivation</span></div>",
+      "DESCRIPTION_USER_ONLY": "<div class='d-flex align-items-center'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Only your user account will be deactivated</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Your account data will be retained</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Your account will be inaccessible until reactivation</span></div>",
+      "DESCRIPTION_COMPANY_ONLY": "<div class='d-flex align-items-center'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Only your company account will be deactivated</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Company account data will be retained</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Company account will be inaccessible until reactivation</span></div>",
       "BUTTON_TEXT_COMPANY": "Deactivate Company Account", 
+      "BUTTON_TEXT_USER": "Deactivate User Account",
+      "BUTTON_TEXT_BOTH": "Deactivate Both Accounts",
       "BUTTON_TEXT_INSIGHTER": "Deactivate Insighter Account",
       "ILLUSTRATION_ALT": "Deactivate Company Account Illustration",
       "MODAL": {
@@ -473,7 +481,13 @@ Your wealth of knowledge is valued and many are eager to learn from it.
         "REASON_LABEL": "Deactivation Reason",
         "REASON_PLACEHOLDER": "Please explain why you want to deactivate your account",
         "CONFIRM_BUTTON_COMPANY": "Deactivate Company Account",
-        "CONFIRM_BUTTON_INSIGHTER": "Deactivate Insighter Account"
+        "CONFIRM_BUTTON_USER": "Deactivate User Account",
+        "CONFIRM_BUTTON_BOTH": "Deactivate Both Accounts",
+        "CONFIRM_BUTTON_INSIGHTER": "Deactivate Insighter Account",
+        "DEACTIVATION_TYPE": "What would you like to deactivate?",
+        "DEACTIVATE_USER_ONLY": "Deactivate User Account Only",
+        "DEACTIVATE_COMPANY_ONLY": "Deactivate Company Account Only",
+        "DEACTIVATE_BOTH": "Deactivate Both User and Company Accounts"
       },
       "PENDING_REQUEST" : "Pending Request"
     },

@@ -23,6 +23,7 @@ INSIGHTER_REQUESTS: {
     ADD_CERTIFICATE_PROMPT:"ارفع من مستوى ملفك الشخصي بإضافات شهادات تظهر خبرتك",
     ADD_MANAGER_CERTIFICATE_PROMPT:'إضافة شهادة المدير',
     SUBMIT:'إرسال',
+    ACCOUNT: 'الحساب',
     PENDING_VERIFICATION:'قيد التحقق',
     ADD_COMPANY_CERTIFICATE:'إضافة شهادة الشركة',
     ADD_COMPANY_CERTIFICATE_PROMPT:'ارفع شهادات الشركة لتظهر خبرتك',
@@ -432,7 +433,7 @@ INSIGHTER_REQUESTS: {
       }
     },
     "REACTIVATE_ACCOUNT": {
-      "TITLE": "إعادة تفعيل الحساب",
+      "TITLE": "إعادة تفعيل",
       "DESCRIPTION": "حسابك معطل حالياً. قم بإعادة تفعيله لاستعادة الوصول الكامل إلى جميع الميزات والخدمات.",
       "BUTTON_TEXT": "إعادة تفعيل الحساب",
       "ILLUSTRATION_ALT": "صورة توضيحية لإعادة تفعيل الحساب",
@@ -723,8 +724,16 @@ INSIGHTER_REQUESTS: {
     "DEACTIVATE_ACCOUNT": {
       "TITLE_COMPANY": "إلغاء تنشيط حساب الشركة",
       "TITLE_INSIGHTER": "إلغاء تنشيط حساب الانسايتر",
+      "TITLE_ACCOUNT":"إلغاء تنشيط الحساب",
+      "TITLE_USER_ONLY": "إلغاء تنشيط حساب المستخدم",
+      "TITLE_COMPANY_ONLY": "إلغاء تنشيط حساب الشركة",
       "DESCRIPTION": "<i class='fa-sharp fa-solid fa-circle fs-10'></i> سيتم الاحتفاظ ببيانات حسابك<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> لن يمكن الوصول إلى الحساب حتى إعادة التنشيط<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> ستظل رؤى شركتك مرئية في السوق<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> لا يمكن تحميل رؤى جديدة أثناء إلغاء التنشيط",
+      "DESCRIPTION_COMPANY_COMBINED": "<i class='fa-sharp fa-solid fa-circle fs-10'></i> سيتم إلغاء تنشيط حساب الشركة وحساب المستخدم الخاص بك<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> سيتم الاحتفاظ بجميع بيانات الحساب<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> لن يمكن الوصول إلى كلا الحسابين حتى إعادة التنشيط",
+      "DESCRIPTION_USER_ONLY": "<i class='fa-sharp fa-solid fa-circle fs-10'></i> سيتم إلغاء تنشيط حساب المستخدم الخاص بك فقط<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> سيتم الاحتفاظ ببيانات حسابك<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> لن يمكن الوصول إلى حسابك حتى إعادة التنشيط",
+      "DESCRIPTION_COMPANY_ONLY": "<i class='fa-sharp fa-solid fa-circle fs-10'></i> سيتم إلغاء تنشيط حساب الشركة فقط<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> سيتم الاحتفاظ ببيانات حساب الشركة<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> لن يمكن الوصول إلى حساب الشركة حتى إعادة التنشيط",
       "BUTTON_TEXT_COMPANY": "إلغاء تنشيط حساب الشركة",
+      "BUTTON_TEXT_USER": "إلغاء تنشيط حساب المستخدم",
+      "BUTTON_TEXT_BOTH": "إلغاء تنشيط كلا الحسابين",
       "BUTTON_TEXT_INSIGHTER": "إلغاء تنشيط حساب الانسايتر",
       "ILLUSTRATION_ALT": "صورة إلغاء تنشيط حساب الشركة",
       "MODAL": {
@@ -737,7 +746,13 @@ INSIGHTER_REQUESTS: {
         "REASON_LABEL": "سبب إلغاء التنشيط",
         "REASON_PLACEHOLDER": "يرجى توضيح سبب رغبتك في إلغاء تنشيط حسابك",
         "CONFIRM_BUTTON_COMPANY": "إلغاء تنشيط حساب الشركة",
-        "CONFIRM_BUTTON_INSIGHTER": "إلغاء تنشيط حساب الانسايتر"
+        "CONFIRM_BUTTON_USER": "إلغاء تنشيط حساب المستخدم",
+        "CONFIRM_BUTTON_BOTH": "إلغاء تنشيط كلا الحسابين",
+        "CONFIRM_BUTTON_INSIGHTER": "إلغاء تنشيط حساب الانسايتر",
+        "DEACTIVATION_TYPE": "ماذا تريد إلغاء تنشيطه؟",
+        "DEACTIVATE_USER_ONLY": "إلغاء تنشيط حساب المستخدم فقط",
+        "DEACTIVATE_COMPANY_ONLY": "إلغاء تنشيط حساب الشركة فقط",
+        "DEACTIVATE_BOTH": "إلغاء تنشيط حساب الشركة وحساب المستخدم"
       },
       "PENDING_REQUEST" : "طلب قيد المراجعة"
     },
@@ -1062,7 +1077,7 @@ INSIGHTER_REQUESTS: {
   },
   "KNOWLEDGE_TYPES": {
     "COURSE": "دورة تدريبية",
-    "TITLE": "المعارف المرفوعة" ,
+    "TITLE": "المعارف المرفوعة" ,
     "SUBTITLE": "إحصائيات محتوى المعرفة حسب النوع",
     "LOAD_ERROR": "فشل في تحميل إحصائيات نوع المعرفة. يرجى المحاولة مرة أخرى.",
     "RETRY": "إعادة المحاولة",

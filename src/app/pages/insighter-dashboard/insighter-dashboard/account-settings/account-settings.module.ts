@@ -19,6 +19,7 @@ import { ActivateAccountComponent } from './activate-account/activate-account.co
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { TooltipModule } from 'primeng/tooltip';
 import { CheckboxModule } from 'primeng/checkbox';
+import { RadioButtonModule } from 'primeng/radiobutton';
 import { SharedTreeSelectorComponent } from 'src/app/reusable-components/shared-tree-selector/shared-tree-selector.component';
 import { TruncateTextPipe } from 'src/app/pipes/truncate-pipe/truncate-text.pipe';
 import { DropdownModule } from 'primeng/dropdown';
@@ -72,6 +73,7 @@ const routes: Routes = [
     ToastModule,
     ProgressBarModule,
     CheckboxModule,
+    RadioButtonModule,
     SharedTreeSelectorComponent,
     TruncateTextPipe,
     DropdownModule

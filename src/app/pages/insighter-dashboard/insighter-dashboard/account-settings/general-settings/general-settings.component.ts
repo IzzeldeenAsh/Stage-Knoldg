@@ -149,13 +149,14 @@ export class GeneralSettingsComponent extends BaseComponent implements OnInit {
     });
   }
 
-  showDeactivateDialog() {
+  showDeactivateDialog(deactivationType?: 'user' | 'company' | 'both') {
     this.ref = this.dialogService.open(DeactivateDialogComponent, {
       width: '650px',
       contentStyle: { overflow: 'auto' },
       baseZIndex: 10000,
       maximizable: false,
-      closable: true
+      closable: true,
+      data: { deactivationType, insighter_status: this.profile.insighter_status, company_status: this.profile.company?.status }
     });
 
     this.ref.onClose.subscribe((success: boolean) => {

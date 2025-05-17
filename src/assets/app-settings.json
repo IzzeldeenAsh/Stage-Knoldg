@@ -1,4 +1,4 @@
 {
-  "clientBaseUrl": "https://knoldg.com",
+  "clientBaseUrl": "http://localhost:3000",
   "backendUrl": "https://api.knoldg.com"
 }

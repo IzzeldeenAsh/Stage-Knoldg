@@ -12,8 +12,8 @@ export const environment = {
   // API configuration for sharing authentication between domains
   apiBaseUrl: 'https://api.knoldg.com/api',
   appDomain: '.knoldg.com',
-  mainAppUrl: 'https://knoldg.com',
-  subAppUrl: 'https://app.knoldg.com',
+  mainAppUrl: 'http://localhost:3000',
+  subAppUrl: 'http://localhost:4200',
   
   // Cookie configuration
   cookieOptions: {
