@@ -22,6 +22,22 @@
        
       </div>
       
+      <!-- Deactivation options for company users -->
+      <div class="form-group mb-4" *ngIf="hasRole(['company'])">
+        <label class="form-label">{{ 'DEACTIVATE_ACCOUNT.MODAL.DEACTIVATION_TYPE' | translate }}</label>
+        <div class="d-flex flex-column gap-2 mt-2">
+          <div class="p-field-radiobutton" *ngIf="config.data.insighter_status === 'active'">
+            <p-radioButton name="deactivationType" value="user" [(ngModel)]="deactivationType" [inputId]="'user'"></p-radioButton>
+            <label [for]="'user'" class="ms-2">{{ 'DEACTIVATE_ACCOUNT.MODAL.DEACTIVATE_USER_ONLY' | translate }}</label>
+          </div>
+          <div class="p-field-radiobutton" *ngIf="config.data.company_status === 'active'">
+            <p-radioButton name="deactivationType" value="company" [(ngModel)]="deactivationType" [inputId]="'company'"></p-radioButton>
+            <label [for]="'company'" class="ms-2">{{ 'DEACTIVATE_ACCOUNT.MODAL.DEACTIVATE_COMPANY_ONLY' | translate }}</label>
+          </div>
+     
+        </div>
+      </div>
+      
       <div class="form-group">
         <label class="form-label required">{{ 'DEACTIVATE_ACCOUNT.MODAL.REASON_LABEL' | translate }}</label>
         <textarea 
@@ -40,7 +56,18 @@
           (click)="deactivateAccount()"
         >
           <ng-container *ngIf="!isLoading">
-            <ng-container *ngIf="hasRole(['company']) || hasRole(['company-insighter'])">
+            <ng-container *ngIf="hasRole(['company'])">
+              <ng-container *ngIf="deactivationType === 'user'">
+                {{ 'DEACTIVATE_ACCOUNT.MODAL.CONFIRM_BUTTON_USER' | translate }}
+              </ng-container>
+              <ng-container *ngIf="deactivationType === 'company'">
+                {{ 'DEACTIVATE_ACCOUNT.MODAL.CONFIRM_BUTTON_COMPANY' | translate }}
+              </ng-container>
+              <ng-container *ngIf="deactivationType === 'both'">
+                {{ 'DEACTIVATE_ACCOUNT.MODAL.CONFIRM_BUTTON_BOTH' | translate }}
+              </ng-container>
+            </ng-container>
+            <ng-container *ngIf="hasRole(['company-insighter'])">
               {{ 'DEACTIVATE_ACCOUNT.MODAL.CONFIRM_BUTTON_COMPANY' | translate }}
             </ng-container>
             <ng-container *ngIf="hasRole(['insighter'])">

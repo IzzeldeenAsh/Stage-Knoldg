@@ -1,5 +1,5 @@
 import { Component, Injector } from '@angular/core';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { DeactivateAccountService } from 'src/app/_fake/services/deactivate-account/deactivate-account.service';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
@@ -13,21 +13,32 @@ export class DeactivateDialogComponent extends BaseComponent {
   step: number = 1;
   roles: string[] = [];
   isLoading: boolean = false;
+  deactivationType: 'user' | 'company' | 'both' = 'both';
 
   constructor(
     injector: Injector,
     private deactivateService: DeactivateAccountService,
     private getProfileService: ProfileService,
-    public ref: DynamicDialogRef
+    public ref: DynamicDialogRef,
+    public config: DynamicDialogConfig
   ) {
     super(injector);
   }
 
   ngOnInit(): void {
+    // Check if deactivationType was passed in dialog data
+    if (this.config.data && this.config.data.deactivationType) {
+      this.deactivationType = this.config.data.deactivationType;
+    }
+
     const profile = this.getProfileService.getProfile()
       .subscribe({
         next: (profile) => {
           this.roles = profile.roles;
+          // Set default deactivation type based on role if not already set
+          if (this.hasRole(['company']) && !this.config.data?.deactivationType) {
+            this.deactivationType = 'both';
+          }
         },
       });
     this.unsubscribe.push(profile);
@@ -77,7 +88,25 @@ export class DeactivateDialogComponent extends BaseComponent {
     if (this.hasRole(['insighter'])) {
       this.deactivateInsighter();
     } else if (this.hasRole(['company'])) {
-      this.deactivateCompany();
+      // Handle based on selected deactivation type
+      if (this.deactivationType === 'user') {
+        this.deactivateInsighter();
+      } else if (this.deactivationType === 'company') {
+        this.deactivateCompany();
+      } else if (this.deactivationType === 'both') {
+        // First deactivate company, then deactivate the user account
+        const deactivateCompanySub = this.deactivateService.deactivateCompanyWithoutDelete(this.deactivationReason, '0', this.lang).subscribe({
+          next: () => {
+            // After company is deactivated, deactivate the user account
+            this.deactivateInsighter();
+          },
+          error: (err) => {
+            this.handleServerErrors(err);
+            this.isLoading = false;
+          }
+        });
+        this.unsubscribe.push(deactivateCompanySub);
+      }
     }
   }
 
