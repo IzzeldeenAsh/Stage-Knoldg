@@ -53,6 +53,7 @@ const routes: Routes = [
       canActivate:[RolesGuard],
       data: { roles: ['company'] } 
     },
+    // Old settings path kept for backward compatibility
     {
       path: 'settings',
       component: SettingsDashboardComponent,
@@ -85,11 +86,28 @@ const routes: Routes = [
           canActivate:[RolesGuard],
           data: { roles: ['company'] } 
         }
-       
       ],
       data: { roles: ['insighter', 'company', 'client'] } 
     },
-   
+    // Direct access to settings pages
+    {
+      path: 'settings/personal-info',
+      component: PersonalSettingsComponent,
+      canActivate: [authGuard, RolesGuard],
+      data: { roles: ['company', 'insighter', 'client'] }
+    },
+    {
+      path: 'settings/company-settings',
+      component: CompanySettingsComponent,
+      canActivate: [authGuard, RolesGuard],
+      data: { roles: ['company', 'company-insighter'] }
+    },
+    {
+      path: 'settings/reset-password',
+      component: ResetPasswordComponent,
+      canActivate: [authGuard, RolesGuard],
+      data: { roles: ['client'] }
+    },
    ]
   },
  {

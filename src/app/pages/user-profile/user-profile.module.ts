@@ -37,6 +37,7 @@ import { ReactivateModalComponent } from './profile-pages/account-settings/react
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ResetPasswordComponent } from './profile-pages/account-settings/reset-password/reset-password.component';
 import { JoinCompanyComponent } from './profile-pages/join-company/join-company.component';
+import { MenuModule } from 'primeng/menu';
 
   @NgModule({
     declarations: [
@@ -80,7 +81,8 @@ import { JoinCompanyComponent } from './profile-pages/join-company/join-company.
       TreeSelectModule,
       MultiSelectModule,
       TranslationModule,
-      DropdownMenusModule
+      DropdownMenusModule,
+      MenuModule
     ],
     providers: [ DialogService, NgbActiveModal, MessageService],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]  // Add this line

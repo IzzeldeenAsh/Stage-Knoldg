@@ -1,5 +1,7 @@
 <div class="d-flex gap-3 gap-lg-8 flex-wrap" >
-    <div class="d-flex align-items-center gap-2" *ngFor="let notification of adminNotificationList">
+    <div class="d-flex align-items-center gap-2 cursor-pointer" 
+         *ngFor="let notification of adminNotificationList"
+         (click)="navigateToPage(notification)">
     <div class="rounded d-flex flex-center w-40px h-40px flex-shrink-0 text-white fw-boldest" [class]="notification.bgColor">
       {{notification.notificationNumber}}			</div>
     <div class="d-flex flex-column">

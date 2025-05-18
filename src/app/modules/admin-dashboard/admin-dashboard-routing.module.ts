@@ -44,6 +44,13 @@ const routes: Routes = [ {
           (m) => m.WebsiteSettingsModule
         ),
     },
+    {
+      path: 'contact-messages',
+      loadChildren: () =>
+        import('./contact-messages/contact-messages.module').then(
+          (m) => m.ContactMessagesModule
+        ),
+    },
     { path: '**', redirectTo: 'auth' },
   ],
   
