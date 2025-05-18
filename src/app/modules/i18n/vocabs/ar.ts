@@ -293,7 +293,7 @@ INSIGHTER_REQUESTS: {
         ISIC_CODES_REQUIRED:"كود ISIC مطلوب",
         PASSWORD_PATTERN_ERROR:"يجب أن تحتوي كلمة المرور على حرف واحد ورقم واحد ورمز خاص على الأقل.",
         SUBTITLE: "ادخل معلوماتك لإنشاء حسابك",
-        GOOGLE_SIGNUP: "عن طريق قوقل",
+        GOOGLE_SIGNUP: "عن طريق جوجل",
         LINKEDIN_SIGNUP: "عن طريق لكندان",
         OPTIONAL: "اختياري",
         PREREGISTERATION: "سجل الآن",
@@ -457,7 +457,7 @@ INSIGHTER_REQUESTS: {
        DELETE_FILE: "حذف الملف",
     },
     COMMON: {
-      SLOGAN: "أفقًا جديدًا لعالم الرؤى",
+      SLOGAN: "أفقًا جديدًا لعالم من البيانات والتقارير والرؤى",
       "SELECISCIC":"اختر رمز الISIC",
       OR:"أو",
       PLEASE_WAIT:"يرجى الانتظار...",
