@@ -109,7 +109,7 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
       const baseUrl = window.location.origin;
       const lang = this.translationService.getSelectedLanguage() || 'en';
       const tabParam = notification.param && notification.tap ? `?tab=${notification.tap}` : '';
-      const knowledgeUrl = `${baseUrl}/${lang}/knowledge/${notification.category}/${notification.param || ''}${tabParam}`;
+      const knowledgeUrl = `https://knoldg.com/${lang}/knowledge/${notification.category}/${notification.param || ''}${tabParam}`;
       
       // Navigate to the external URL
       window.open(knowledgeUrl, '_blank');
