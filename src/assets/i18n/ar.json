@@ -37,7 +37,7 @@
     "SOCIAL_MEDIA": "وسائل التواصل الاجتماعي",
     "ABOUT_COMPANY": "عن الشركة",
     "CONSULTING_FIELDS": "مجالات الاستشارة",
-    "INDUSTRIES": "الصناعات",
+    "INDUSTRIES": "المجالات",
     "MY_CERTIFICATES": "شهاداتي",
     "ADD_CERTIFICATE": "إضافة شهادة",
     "CERTIFICATE_TYPE": "نوع الشهادة",
@@ -63,7 +63,7 @@
   "COMPANY_PHONE": "هاتف الشركة",
   "ADDRESS": "العنوان",
   "NO_SOCIAL_MEDIA": "لا توجد روابط وسائل تواصل اجتماعي متاحة",
-  "COMPANY_INDUSTRIES": "صناعات الشركة",
+  "COMPANY_INDUSTRIES": "مجالات الشركة",
   "COMPANY_CONSULTING_FIELDS": "مجالات استشارات الشركة",
   "CERTIFICATIONS": "الشهادات",
   "COMPANY_CERTIFICATIONS": "شهادات الشركة"
