@@ -4,6 +4,7 @@ import { ICreateKnowldege } from '../../create-account.helper';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import { TranslateService } from '@ngx-translate/core';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-step5',
@@ -75,6 +76,7 @@ export class Step5Component extends BaseComponent implements OnInit {
     label: string;
     description: string;
     icon: string;
+    disabled: boolean;
   }> = [];
   userProfile: any = null;
   timeError: string = '';
@@ -162,84 +164,59 @@ export class Step5Component extends BaseComponent implements OnInit {
       const isCompanyInsighterActive = this.userProfile?.insighter_status === 'active';
       console.log('Company-Insighter active status:', isCompanyInsighterActive);
       
-      if (isCompanyInsighterActive) {
-        // For active company-insighter, show both options
-        this.publishOptions = [
-          {
-            id: 'draft',
-            value: 'unpublished',
-            label: 'SAVE_AS_DRAFT',
-            description: 'SAVE_AS_DRAFT_DESC',
-            icon: 'document'
-          },
-          {
-            id: 'review',
-            value: 'in_review',
-            label: 'SEND_TO_MANAGER',
-            description: 'SEND_TO_MANAGER_DESC',
-            icon: 'eye'
-          }
-        ];
-        
-        this.hasOnlyTwoOptions = false;
-      } else {
-        // For inactive company-insighter, show only draft option
-        this.publishOptions = [
-          {
-            id: 'draft',
-            value: 'unpublished',
-            label: 'SAVE_AS_DRAFT',
-            description: 'SAVE_AS_DRAFT_DESC',
-            icon: 'document'
-          }
-        ];
-        
-        // Set to true to show the alert for inactive accounts
-        this.hasOnlyTwoOptions = true;
-      }
+      // Always show both options, but disable review if inactive
+      this.publishOptions = [
+        {
+          id: 'draft',
+          value: 'unpublished',
+          label: 'SAVE_AS_DRAFT',
+          description: 'SAVE_AS_DRAFT_DESC',
+          icon: 'document',
+          disabled: false
+        },
+        {
+          id: 'review',
+          value: 'in_review',
+          label: 'SEND_TO_MANAGER',
+          description: 'SEND_TO_MANAGER_DESC',
+          icon: 'eye',
+          disabled: !isCompanyInsighterActive
+        }
+      ];
       
-      console.log('Final publish options for company-insighter:', this.publishOptions);
+      this.hasOnlyTwoOptions = !isCompanyInsighterActive;
       return;
     }
     
-    // Always have "Save as Draft" option
+    // Always show all options, but disable publish and schedule if inactive
     this.publishOptions = [
+      {
+        id: 'publish',
+        value: 'published',
+        label: 'PUBLISH_NOW',
+        description: 'PUBLISH_NOW_DESC',
+        icon: 'send',
+        disabled: !isActive
+      },
+      {
+        id: 'schedule',
+        value: 'scheduled',
+        label: 'SCHEDULE',
+        description: 'SCHEDULE_DESC',
+        icon: 'time',
+        disabled: !isActive
+      },
       {
         id: 'draft',
         value: 'unpublished',
         label: 'SAVE_AS_DRAFT',
         description: 'SAVE_AS_DRAFT_DESC',
-        icon: 'document'
+        icon: 'document',
+        disabled: false
       }
     ];
     
-    // Only add other options if user is active
-    if (isActive) {
-      // Add Schedule option
-      this.publishOptions.unshift({
-        id: 'schedule',
-        value: 'scheduled',
-        label: 'SCHEDULE',
-        description: 'SCHEDULE_DESC',
-        icon: 'time'
-      });
-      
-      // Add Publish Now option
-      this.publishOptions.unshift({
-        id: 'publish',
-        value: 'published',
-        label: 'PUBLISH_NOW',
-        description: 'PUBLISH_NOW_DESC',
-        icon: 'send'
-      });
-      
-      this.hasOnlyTwoOptions = false;
-    } else {
-      // If user is not active, we only have one option, but still set hasOnlyTwoOptions flag
-      // This will make the option take full width
-      this.hasOnlyTwoOptions = true;
-    }
-    
+    this.hasOnlyTwoOptions = !isActive;
     console.log('Final publish options:', this.publishOptions);
   }
   

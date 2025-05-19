@@ -31,6 +31,7 @@ import { Step4Component } from './add-knowledge/steps/step4/step4.component';
 import { Step5Component } from './add-knowledge/steps/step5/step5.component';
 import { Step6Component } from './add-knowledge/steps/step6/step6.component';
 import { CalendarModule } from 'primeng/calendar';
+import { TooltipModule } from 'primeng/tooltip';
 @NgModule({
   declarations: [
     AddKnowledgeComponent,
@@ -68,7 +69,8 @@ import { CalendarModule } from 'primeng/calendar';
     SelectRegionComponent,
     SelectButtonModule,
     ToastModule,
-    CalendarModule
+    CalendarModule,
+    TooltipModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]  // Add this line
 })

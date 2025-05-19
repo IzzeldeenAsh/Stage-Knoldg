@@ -8,14 +8,14 @@
 </div>
 
 <!-- Information alert for inactive accounts -->
-<div *ngIf="hasOnlyTwoOptions" class="alert alert-info d-flex align-items-center p-5 mb-5">
+<div *ngIf="hasOnlyTwoOptions" class="alert alert-danger d-flex align-items-center p-5 mb-5">
   <i class="ki-duotone ki-information-5 fs-2 me-2">
     <span class="path1"></span>
     <span class="path2"></span>
     <span class="path3"></span>
   </i>
   <div class="d-flex flex-column">
-    <h4 class="mb-1 text-info">{{ "ACCOUNT_STATUS_NOTICE" | translate }}</h4>
+    <h4 class="mb-1 text-danger">{{ "ACCOUNT_STATUS_NOTICE" | translate }}</h4>
     <span>{{ "ACTIVE_ACCOUNT_REQUIRED_MESSAGE" | translate }}</span>
   </div>
 </div>
@@ -23,7 +23,7 @@
 <form [formGroup]="publishForm">
   <div class="fv-row" >
     <div class="row g-5">
-      <div [ngClass]="{'col-lg-4': !hasOnlyTwoOptions, 'col-lg-6': hasOnlyTwoOptions}" *ngFor="let option of publishOptions">
+      <div class="col-lg-4" *ngFor="let option of publishOptions">
         <input
           formControlName="publishOption"
           name="publishOption"
@@ -31,10 +31,14 @@
           class="btn-check"
           [id]="option.id"
           [value]="option.value"
+          [disabled]="option.disabled"
         />
         <label
           [for]="option.id"
           class="btn btn-outline btn-outline-dashed btn-outline-default border-dashed border-gray-300 p-5 d-flex align-items-center position-relative rounded-2 transition h-100"
+          [class.opacity-50]="option.disabled"
+          [pTooltip]="option.disabled ? ('ACTIVE_ACCOUNT_REQUIRED_MESSAGE' | translate) : ''"
+          tooltipPosition="top"
         >
           <div class="d-flex align-items-center w-100">
             <div class="mx-3">

@@ -250,9 +250,6 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
       return;
     }
     
-    // Log document status for debugging
-    this.documentsComponent.logDocumentStatus();
-    
     // Validate document titles
     const docs = this.documentsComponent.documents;
     if (docs && docs.length > 0) {
@@ -571,36 +568,76 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
   private handleServerErrors(error: any) {
     if (error.error && error.error.errors) {
       const serverErrors = error.error.errors;
-      for (const key in serverErrors) {
-        if (serverErrors.hasOwnProperty(key)) {
-          const messages = serverErrors[key];
-          
-          // Check if the key follows the 'documents.ID' pattern
-          const documentsRegex = /^documents\.(\d+)$/;
-          const match = key.match(documentsRegex);
-          
-          if (match && match[1]) {
-            // Extract the document ID
-            const documentId = parseInt(match[1], 10);
-            
-            // Find the document with this ID in the documents array
-            const document = this.account$.value.documents?.find((doc: any) => doc.id === documentId);
-            
-            if (document) {
-              // Show error with document name instead of key
-              this.showError(`${document.file_name}`, messages.join(', '));
-            } else {
-              // Fallback if document not found
-              this.showError(`Document ID ${documentId}`, messages.join(', '));
+      
+      // Check for document-related errors first
+      const hasDocumentErrors = Object.keys(serverErrors).some(key => key.startsWith('documents.'));
+      
+      if (hasDocumentErrors && this.knowledgeId && this.documentsComponent) {
+        // Get fresh document information from the server
+        this.knowledgeService.getListDocumentsInfo(this.knowledgeId)
+          .subscribe({
+            next: (response) => {
+              const documentsInfo = response.data;
+              
+              // Now process errors with updated document information
+              this.processServerErrors(serverErrors, documentsInfo);
+            },
+            error: (err) => {
+              // Fallback to regular error processing if document info can't be fetched
+              this.processServerErrors(serverErrors);
             }
-          } else {
-            // For other keys, show the normal error
-            this.showError(key, messages.join(', '));
-          }
-        }
+          });
+      } else {
+        // Process errors normally if no document errors or no document component
+        this.processServerErrors(serverErrors);
       }
     } else {
       this.showError('Error', 'An unexpected error occurred.');
+    }
+  }
+  
+  private processServerErrors(serverErrors: any, documentsInfo?: any[]) {
+    for (const key in serverErrors) {
+      if (serverErrors.hasOwnProperty(key)) {
+        const messages = serverErrors[key];
+        
+        // Check if the key follows the 'documents.ID' pattern
+        const documentsRegex = /^documents\.(\d+)$/;
+        const match = key.match(documentsRegex);
+        
+        if (match && match[1]) {
+          // Extract the document ID
+          const documentId = parseInt(match[1], 10);
+          
+          // Try to find document in the updated documents list first
+          let documentName = "";
+          if (documentsInfo) {
+            const serverDoc = documentsInfo.find(doc => doc.id === documentId);
+            if (serverDoc) {
+              documentName = serverDoc.file_name;
+            }
+          }
+          
+          // If not found in server documents, try the component's documents array
+          if (!documentName && this.documentsComponent?.documents) {
+            const document = this.documentsComponent.documents.find((doc: any) => doc.id === documentId);
+            if (document) {
+              documentName = document.file_name;
+            }
+          }
+          
+          if (documentName) {
+            // Show error with document name
+            this.showError(`${documentName}`, messages.join(', '));
+          } else {
+            // Fallback if document not found
+            this.showError(`Document ID ${documentId}`, messages.join(', '));
+          }
+        } else {
+          // For other keys, show the normal error
+          this.showError(key, messages.join(', '));
+        }
+      }
     }
   }
 

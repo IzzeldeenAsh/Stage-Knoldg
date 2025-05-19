@@ -30,7 +30,7 @@
        
            <!-- Main Info -->
            <div class="flex-grow-1">
-              <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center">
+              <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center  gap-6">
                <div class="d-flex align-items-center">
                  <div>
                    <h5 class="mb-1" [ngClass]="{'text-info fw-bold': activeDocumentId === doc.id}">{{ doc.file_name || 'N/A' }}</h5>
@@ -40,7 +40,7 @@
                  <!-- Action Buttons moved here -->
                 
                </div>
-                              <div class="d-flex flex-wrap gap-1 align-items-center mt-2 mt-sm-0" >
+               <div class="d-flex gap-1 align-items-center mt-2 mt-sm-0 flex-nowarp" >
               <div >
                 <span class="badge me-2 px-2 py-1" 
                 [ngClass]="{
@@ -52,15 +52,7 @@
                 {{ doc.price === '0' ? (this.lang=="ar"? 'مجاني' : 'Free') : (doc.price | currency) }}
               </span>
               
-              <!-- Expand/Collapse Arrow -->
-              <button
-                class="btn btn-sm btn-link p-0"
-                (click)="toggleCollapse(doc.id, $event)"
-                [ngClass]="{'text-info': activeDocumentId === doc.id}"
-                [ngbTooltip]="activeDocumentId === doc.id ? 'Collapse' : 'Expand'"
-                placement="top">
-                <i class="bi" [ngClass]="activeDocumentId === doc.id ? 'bi-caret-up-fill' : 'bi-caret-down-fill'"></i>
-              </button>
+          
             </div>
               <div class="ms-3">
                 <p-menu #menu [popup]="true" [model]="docActions" [appendTo]="'body'"></p-menu>
@@ -73,11 +65,17 @@
                   </i>
                 </button>
               </div>
-                </div>
-              
-             
-          
-             </div>
+               <!-- Expand/Collapse Arrow -->
+               <button
+               class="btn btn-sm btn-link p-0"
+               (click)="toggleCollapse(doc.id, $event)"
+               [ngClass]="{'text-info': activeDocumentId === doc.id}"
+               [ngbTooltip]="activeDocumentId === doc.id ? 'Collapse' : 'Expand'"
+               placement="top">
+               <i class="bi" [ngClass]="activeDocumentId === doc.id ? 'bi-caret-up-fill' : 'bi-caret-down-fill'"></i>
+             </button>
+              </div>
+            </div>
        
              <!-- Collapsible section -->
              <div
