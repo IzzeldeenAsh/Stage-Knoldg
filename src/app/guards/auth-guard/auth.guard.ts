@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { AuthService } from '../../modules/auth/services/auth.service';
 import { first, map } from 'rxjs';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
@@ -16,8 +16,13 @@ export class authGuard  {
           return true;
         }else{
           localStorage.removeItem('foresighta-creds');
-           this.router.createUrlTree(['/auth']);
-           return false
+          // Save the URL the user is trying to access
+          const url = state.url;
+          console.log('Auth Guard - Redirecting to login with returnUrl:', url);
+          // Return the router URL tree with the returnUrl query parameter
+          return this.router.createUrlTree(['/auth/login'], { 
+            queryParams: { returnUrl: url } 
+          });
         }
       })
     )

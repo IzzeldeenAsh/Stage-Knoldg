@@ -77,9 +77,14 @@ export class ProfileService {
           localStorage.removeItem("foresighta-creds");
           localStorage.removeItem("user");
           this.clearProfile();
-          this.router.navigate(["/auth"]).then(() => {
-            // Optional: Reload the page after navigation if needed
-            window.location.reload();
+          
+          // Save current URL before redirecting
+          const currentUrl = window.location.pathname;
+          console.log('401 error - Saving return URL:', currentUrl);
+          
+          // Navigate to auth with returnUrl parameter
+          this.router.navigate(['/auth/login'], { 
+            queryParams: { returnUrl: currentUrl } 
           });
         }
         return throwError(err);
