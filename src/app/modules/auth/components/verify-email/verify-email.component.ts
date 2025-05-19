@@ -111,7 +111,7 @@
           next: (response: any) => {
             // Redirect to the callback URL with the token
             const token = localStorage.getItem('token');
-            window.location.href = `http://localhost:3000/en/callback/${token}`;
+            window.location.href = `https://knoldg.com/en/callback/${token}`;
             this.verificationStatusKey = 'AUTH.VERIFY_EMAIL.EMAIL_SUCCESSFULLY_VERIFIED';
             this.verificationStatus = this.translationService.getTranslation(this.verificationStatusKey);
             this.verified = true;

@@ -50,7 +50,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
   }
 
   getHomeUrl(): string {
-    const url= 'http://localhost:3000/' + this.lang;
+    const url= 'https://knoldg.com/' + this.lang;
     return url;
   }
 

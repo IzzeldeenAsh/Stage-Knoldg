@@ -114,7 +114,7 @@ export class SignUpComponent extends BaseComponent implements OnInit {
   }
 
   getHomeUrl(): string {
-    const url= 'http://localhost:3000/' + this.lang;
+    const url= 'https://knoldg.com/' + this.lang;
     return url;
   }
 
@@ -315,7 +315,7 @@ export class SignUpComponent extends BaseComponent implements OnInit {
         const authtoken:any = localStorage.getItem('foresighta-creds');
         const token = JSON.parse(authtoken);
         if (token && token.authToken) {
-          window.location.href = `http://localhost:3000/en/callback/${token.authToken}`;
+          window.location.href = `https://knoldg.com/en/callback/${token.authToken}`;
         } else {
           window.location.href = redirectUrl;
         }
@@ -333,7 +333,7 @@ export class SignUpComponent extends BaseComponent implements OnInit {
         const authtoken:any = localStorage.getItem('foresighta-creds');
         const token = JSON.parse(authtoken);
         if (token && token.authToken) {
-          window.location.href = `http://localhost:3000/en/callback/${token.authToken}`;
+          window.location.href = `https://knoldg.com/en/callback/${token.authToken}`;
         } else {
           window.location.href = redirectUrl;
         }
