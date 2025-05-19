@@ -50,16 +50,18 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
   }
 
   getHomeUrl(): string {
-    const url= 'https://knoldg.com/' + this.lang;
+    const url= 'http://localhost:3000/' + this.lang;
     return url;
   }
 
   ngOnInit(): void {
-
     this.initForm();
+    
     // get return url from route parameters or default to '/'
-    this.returnUrl =
-      this.route.snapshot.queryParams["returnUrl".toString()] || "/";
+    this.returnUrl = this.route.snapshot.queryParams["returnUrl"] || "/";
+    
+    // Log the captured return URL for debugging
+    console.log('Login component initialized with returnUrl:', this.returnUrl);
 
     this.translationService.onLanguageChange().subscribe((lang) => {
       this.selectedLang = lang;
@@ -202,7 +204,16 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
                 
                 // Get the return URL and redirect to Next.js callback with it as a query param
                 const prevUrl = this.getReturnUrl();
-                window.location.href = `${environment.mainAppUrl}/en/callback/${token.authToken}?returnUrl=${encodeURIComponent(prevUrl)}`;
+                
+                // Special handling for client role trying to access join-company
+                if (res.roles.includes("client") && (this.returnUrl.includes('profile/join-company') || prevUrl.includes('profile/join-company'))) {
+                  // Ensure the return URL is preserved for client role specifically
+                  const joinCompanyUrl = '/profile/join-company';
+                  window.location.href = `${environment.mainAppUrl}/en/callback/${token.authToken}?returnUrl=${encodeURIComponent(joinCompanyUrl)}`;
+                } else {
+                  // Default behavior for other roles or routes
+                  window.location.href = `${environment.mainAppUrl}/en/callback/${token.authToken}?returnUrl=${encodeURIComponent(prevUrl)}`;
+                }
               } catch (err) {
                 console.error('Error processing auth token:', err);
                 this.messages.push({
