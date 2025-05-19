@@ -512,10 +512,19 @@
                       
                       <!-- 2. First Manager Response -->
                       <div class="chat-message-row d-flex justify-content-end mb-4" *ngIf="currentRequest && currentRequest.staff_notes">
-                        <div class="chat-bubble-right bg-light-danger text-gray-800 p-4 rounded-3 mw-400px">
-                          <div class="fw-bold text-danger mb-1">Review</div>
+                        <div class="chat-bubble-right p-4 rounded-3 mw-400px"
+                             [ngClass]="currentRequest.status === 'approved' || currentRequest.final_status === 'approved' ? 
+                                        'bg-light-success' : 'bg-light-danger'">
+                          <div class="fw-bold mb-1" 
+                               [ngClass]="currentRequest.status === 'approved' || currentRequest.final_status === 'approved' ? 
+                                         'text-success' : 'text-danger'">
+                            {{ currentRequest.status === 'approved' || currentRequest.final_status === 'approved' ? 'Approved' : 'Review' }}
+                          </div>
                           <div class="text-gray-800">{{ currentRequest.staff_notes }}</div>
-                          <div class="text-muted fs-7 text-end">First response</div>
+                          <div class="text-muted fs-7 text-end">
+                            {{ currentRequest.status === 'declined' ? 'Rejection' : 'Response' }} 
+                            {{ currentRequest.handel_at | date:'medium' }}
+                          </div>
                         </div>
                       </div>
                       
@@ -540,8 +549,14 @@
 
                       <!-- Manager Response -->
                       <div class="chat-message-row d-flex justify-content-end mb-4" *ngIf="request.staff_notes">
-                        <div class="chat-bubble-right bg-light-danger text-gray-800 p-4 rounded-3 mw-400px">
-                          <div class="fw-bold text-danger mb-1">Review</div>
+                        <div class="chat-bubble-right p-4 rounded-3 mw-400px"
+                             [ngClass]="request.status === 'approved' || request.final_status === 'approved' ? 
+                                        'bg-light-success' : 'bg-light-danger'">
+                          <div class="fw-bold mb-1" 
+                               [ngClass]="request.status === 'approved' || request.final_status === 'approved' ? 
+                                         'text-success' : 'text-danger'">
+                            {{ request.status === 'approved' || request.final_status === 'approved' ? 'Approved' : 'Review' }}
+                          </div>
                           <div class="text-gray-800">{{ request.staff_notes }}</div>
                           <div class="text-muted fs-7 text-end">
                             {{ request.status === 'declined' ? 'Rejection' : 'Response' }} 
