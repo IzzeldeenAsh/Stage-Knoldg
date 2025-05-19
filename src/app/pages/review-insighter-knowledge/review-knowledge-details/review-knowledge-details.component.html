@@ -28,7 +28,7 @@
         
                 <!-- Main Info -->
                 <div class="flex-grow-1">
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex justify-content-between align-items-center gap-6">
                         <div class="d-flex align-items-center">
                             <div>
                                 <h5 class="mb-1" [ngClass]="{'text-info fw-bold': activeDocumentId === doc.id}">{{ doc.file_name || 'N/A' }}</h5>
@@ -36,7 +36,7 @@
                             </div>
                         </div>
                         
-                        <div class="d-flex gap-1 align-items-center" >
+                        <div class="d-flex gap-1 align-items-center flex-nowrap" >
                             <div >
                                 <span class="badge me-2 px-2 py-1" 
                                 [ngClass]="{
@@ -48,16 +48,17 @@
                                     {{ doc.price === '0' ? 'Free' : (doc.price | currency) }}
                                 </span>
                                 
-                                <!-- Expand/Collapse Arrow -->
-                                <button
-                                    class="btn btn-sm btn-link p-0"
-                                    (click)="toggleCollapse(doc.id, $event)"
-                                    [ngClass]="{'text-info': activeDocumentId === doc.id}"
-                                    [ngbTooltip]="activeDocumentId === doc.id ? 'Collapse' : 'Expand'"
-                                    placement="top">
-                                    <i class="bi" [ngClass]="activeDocumentId === doc.id ? 'bi-caret-up-fill' : 'bi-caret-down-fill'"></i>
-                                </button>
+                             
                             </div>
+                               <!-- Expand/Collapse Arrow -->
+                               <button
+                               class="btn btn-sm btn-link p-0"
+                               (click)="toggleCollapse(doc.id, $event)"
+                               [ngClass]="{'text-info': activeDocumentId === doc.id}"
+                               [ngbTooltip]="activeDocumentId === doc.id ? 'Collapse' : 'Expand'"
+                               placement="top">
+                               <i class="bi" [ngClass]="activeDocumentId === doc.id ? 'bi-caret-up-fill' : 'bi-caret-down-fill'"></i>
+                           </button>
                         </div>
                     </div>
             
