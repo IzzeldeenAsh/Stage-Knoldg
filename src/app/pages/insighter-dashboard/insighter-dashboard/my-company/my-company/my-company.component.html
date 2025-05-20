@@ -118,7 +118,7 @@
                     <i class="ki-duotone ki-check fs-2"></i>
                   </button>
                   <button *ngIf="(insighter.roles && insighter.roles.includes('company') && insighter.company && insighter.company.status === 'active' || 
-                            (!insighter.roles || !insighter.roles.includes('company')) && insighter.insighter_status === 'active') 
+                            (!insighter.roles || !insighter.roles.includes('company')) && insighter.insighter_status === 'active' && insighter.verified_as_insighter)   
                             && insighter.id !== currentUserId" 
                           class="btn btn-icon btn-bg-light btn-active-color-danger btn-sm me-1"
                           (click)="deactivateInsighter(insighter.id)" 
