@@ -3,7 +3,8 @@
   <div class="menu-item px-3">
     <div class="menu-content d-flex align-items-center px-3">
       <div class="symbol symbol-50px rounded-full mx-4">
-        <img alt="Logo" *ngIf="_user.profile_photo_url" [src]="_user.profile_photo_url" class="object-fit-cover " />
+        <img alt="Logo" *ngIf="_user.profile_photo_url && (_user.roles.includes('insighter') || _user.roles.includes('company-insighter'))" [src]="_user.profile_photo_url" class="object-fit-cover " />
+        <img alt="Logo" *ngIf="_user.company?.logo && _user.roles.includes('company')" [src]="_user.company?.logo" class="object-fit-cover " />
        <span *ngIf="(_user && !_user.profile_photo_url ) " class="symbol-label bg-primary fs-4 text-white">
         <span> {{ _user.first_name.charAt(0) }} </span>
         <span style="padding: 0 -20px;"> {{ _user.last_name.charAt(0) }} </span>
@@ -14,10 +15,12 @@
 
         <div class="fw-bolder d-flex align-items-center fs-5">
           <span class="text-truncate">{{_user.first_name}} {{_user.last_name}}</span>
+
         </div>
-        <div class="fw-bolder d-flex align-items-center fs-8 mb-1 text-muted">
-          <span class="text-truncate">{{_user.email}}</span>
+        <div class="text-info fw-bold mb-2">
+          <span *ngIf="_user.roles.includes('company')">{{lang==='ar'? 'مدير': 'Manager'}}</span>
         </div>
+    
         <div class="d-flex flex-wrap">
           <ng-container *ngIf="_user.roles.includes('client') && !_user.roles.includes('insighter') && !_user.roles.includes('company') && !_user.roles.includes('company-insighter')">
             <span class="badge badge-light-success fw-bolder fs-8 px-2 py-1 me-1 mb-1">

@@ -141,6 +141,116 @@
   }
 }
 
+// Navigation Cards Layout
+.navigation-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  
+  @media (min-width: 768px) {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .navigation-card {
+    flex: 1;
+    min-width: 250px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-bottom: 1rem;
+    
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    }
+    
+    .p-card-header {
+      padding: 1rem;
+      background-color: #f8f9fa;
+      border-bottom: 1px solid #e9ecef;
+      
+      h3 {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #495057;
+      }
+    }
+    
+    .p-card-body {
+      padding: 0;
+    }
+    
+    .nav-item {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      border-bottom: 1px solid #f1f1f1;
+      
+      &:last-child {
+        border-bottom: none;
+      }
+      
+      &:hover {
+        background-color: #f8f9fa;
+      }
+      
+      &.active {
+        background-color: #eef5ff;
+        color: #4096ff;
+        border-left: 3px solid #4096ff;
+      }
+      
+      .item-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: #f0f2f5;
+        margin-right: 12px;
+        
+        i {
+          font-size: 1rem;
+          color: #4096ff;
+        }
+      }
+      
+      .item-label {
+        font-size: 0.9rem;
+        color: #495057;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+// RTL Support
+:host-context([dir="rtl"]) {
+  .navigation-cards {
+    .navigation-card {
+      .nav-item {
+        .item-icon {
+          margin-right: 0;
+          margin-left: 12px;
+        }
+        
+        &.active {
+          border-left: none;
+          border-right: 3px solid #4096ff;
+        }
+      }
+    }
+  }
+}
+
+// Legacy styles for backward compatibility
 .modern-sidebar {
   border-radius: 12px;
   background-color: #fff;

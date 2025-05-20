@@ -1,21 +1,56 @@
-<!-- Enhanced PrimeNG sidebar without shadows -->
-<div class="modern-sidebar">
-  <!-- Navigation Items -->
-  <div class="sidebar-items">
-    <div *ngFor="let tab of filteredTabs" class="parent-item" [routerLink]="tab.link" routerLinkActive="active">
-      <div class="item-icon">
-        <i class="pi pi-{{ getPrimeIcon(tab.icon) }}"></i>
+<!-- Reorganized navigation with three cards -->
+<div class="navigation-cards">
+  <!-- Personal Info Card -->
+  <div class="p-card navigation-card" *ngIf="personalTabs.length > 0">
+    <div class="p-card-header">
+      <h3>{{ lang === 'en' ? 'Personal' : 'شخصي' }}</h3>
+    </div>
+    <div class="p-card-body">
+      <div *ngFor="let tab of personalTabs" class="nav-item" [routerLink]="tab.link" routerLinkActive="active">
+        <div class="item-icon">
+          <i class="pi pi-{{ getPrimeIcon(tab.icon) }}"></i>
+        </div>
+        <div class="item-label">
+          <ng-container *ngIf="lang === 'en'">{{ tab.labelen }}</ng-container>
+          <ng-container *ngIf="lang === 'ar'">{{ tab.labelar }}</ng-container>
+        </div>
       </div>
-      <div class="item-label">
-        <ng-container *ngIf="lang === 'en'">{{ tab.labelen }}</ng-container>
-        <ng-container *ngIf="lang === 'ar'">{{ tab.labelar }}</ng-container>
-      </div>
-     
     </div>
   </div>
 
-  <!-- Action Buttons -->
-  <!-- <div class="sidebar-actions">
-    <app-action-buttons [profile]="profile"></app-action-buttons>
-  </div> -->
+  <!-- Company Card -->
+  <div class="p-card navigation-card" *ngIf="companyTabs.length > 0">
+    <div class="p-card-header">
+      <h3>{{ lang === 'en' ? 'Company' : 'الشركة' }}</h3>
+    </div>
+    <div class="p-card-body">
+      <div *ngFor="let tab of companyTabs" class="nav-item" [routerLink]="tab.link" routerLinkActive="active">
+        <div class="item-icon">
+          <i class="pi pi-{{ getPrimeIcon(tab.icon) }}"></i>
+        </div>
+        <div class="item-label">
+          <ng-container *ngIf="lang === 'en'">{{ tab.labelen }}</ng-container>
+          <ng-container *ngIf="lang === 'ar'">{{ tab.labelar }}</ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Card -->
+  <div class="p-card navigation-card" *ngIf="settingsTabs.length > 0">
+    <div class="p-card-header">
+      <h3>{{ lang === 'en' ? 'Settings' : 'الإعدادات' }}</h3>
+    </div>
+    <div class="p-card-body">
+      <div *ngFor="let tab of settingsTabs" class="nav-item" [routerLink]="tab.link" routerLinkActive="active">
+        <div class="item-icon">
+          <i class="pi pi-{{ getPrimeIcon(tab.icon) }}"></i>
+        </div>
+        <div class="item-label">
+          <ng-container *ngIf="lang === 'en'">{{ tab.labelen }}</ng-container>
+          <ng-container *ngIf="lang === 'ar'">{{ tab.labelar }}</ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
