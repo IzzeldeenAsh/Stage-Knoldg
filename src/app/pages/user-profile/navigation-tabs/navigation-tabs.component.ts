@@ -12,6 +12,7 @@ interface NavigationTab {
   activePrimary: boolean;
   roles: string[];
   icon: string;
+  category: 'personal' | 'company' | 'settings';  // Added category property
 }
 
 @Component({
@@ -24,18 +25,21 @@ export class NavigationTabsComponent implements OnInit, OnChanges {
   lang: string = 'en';
   roles: string[] = [];
   filteredTabs: NavigationTab[] = [];
+  personalTabs: NavigationTab[] = [];  // For personal category tabs
+  companyTabs: NavigationTab[] = [];   // For company category tabs
+  settingsTabs: NavigationTab[] = [];  // For settings category tabs
   menuItems: MenuItem[] = [];
   isSocialLogin: boolean = false;
   
   tabs: NavigationTab[] = [
-    { labelen: 'Personal Info', labelar: 'معلوماتي', link: '/app/profile/overview', activeInfo: true, activePrimary: false, roles: ['client', 'insighter', 'company', 'company-insighter'], icon: 'user' },
-    { labelen: 'My Certificates', labelar: 'شهاداتي', link: '/app/profile/certificates', activeInfo: false, activePrimary: true, roles: ['insighter', 'company', 'company-insighter'], icon: 'certificate' },
-    { labelen: 'My Company Info', labelar: 'معلومات شركتي', link: '/app/profile/company', activeInfo: false, activePrimary: true, roles: ['company'], icon: 'building' },
-    { labelen: 'Company Certificates', labelar: 'شهادات الشركة', link: '/app/profile/company-certificates', activeInfo: false, activePrimary: true, roles: ['company'], icon: 'award' },
-    { labelen: 'Documents', labelar: 'وثائقي', link: '/app/profile/documents', activeInfo: false, activePrimary: true, roles: ['company'], icon: 'file-text' },
+    { labelen: 'Personal Info', labelar: 'معلوماتي', link: '/app/profile/overview', activeInfo: true, activePrimary: false, roles: ['client', 'insighter', 'company', 'company-insighter'], icon: 'user', category: 'personal' },
+    { labelen: 'My Certificates', labelar: 'شهاداتي', link: '/app/profile/certificates', activeInfo: false, activePrimary: true, roles: ['insighter', 'company', 'company-insighter'], icon: 'certificate', category: 'personal' },
+    { labelen: 'My Company Info', labelar: 'معلومات شركتي', link: '/app/profile/company', activeInfo: false, activePrimary: true, roles: ['company'], icon: 'building', category: 'company' },
+    { labelen: 'Company Certificates', labelar: 'شهادات الشركة', link: '/app/profile/company-certificates', activeInfo: false, activePrimary: true, roles: ['company'], icon: 'award', category: 'company' },
+    { labelen: 'Documents', labelar: 'وثائقي', link: '/app/profile/documents', activeInfo: false, activePrimary: true, roles: ['company'], icon: 'file-text', category: 'company' },
     // Settings tabs moved from settings-sidebar
-    { labelen: 'Personal Settings', labelar: 'البيانات الشخصية', link: '/app/profile/settings/personal-info', activeInfo: false, activePrimary: true, roles: ['company', 'insighter', 'client'], icon: 'id-card' },
-    { labelen: 'Company Settings', labelar: 'بيانات الشركة', link: '/app/profile/settings/company-settings', activeInfo: false, activePrimary: true, roles: ['company'], icon: 'cog' },
+    { labelen: 'Personal Settings', labelar: 'البيانات الشخصية', link: '/app/profile/settings/personal-info', activeInfo: false, activePrimary: true, roles: ['company', 'insighter', 'client'], icon: 'id-card', category: 'settings' },
+    { labelen: 'Company Settings', labelar: 'بيانات الشركة', link: '/app/profile/settings/company-settings', activeInfo: false, activePrimary: true, roles: ['company'], icon: 'cog', category: 'settings' },
   ];
 
   constructor(
@@ -83,7 +87,8 @@ export class NavigationTabsComponent implements OnInit, OnChanges {
           activeInfo: false,
           activePrimary: true,
           roles: ['client'],
-          icon: 'lock'
+          icon: 'lock',
+          category: 'settings'  // Add category property
         });
       }
     }
@@ -91,6 +96,11 @@ export class NavigationTabsComponent implements OnInit, OnChanges {
 
   filterTabs() {
     this.filteredTabs = this.tabs.filter(tab => this.hasRole(tab.roles));
+    
+    // Categorize tabs into their respective groups
+    this.personalTabs = this.filteredTabs.filter(tab => tab.category === 'personal');
+    this.companyTabs = this.filteredTabs.filter(tab => tab.category === 'company');
+    this.settingsTabs = this.filteredTabs.filter(tab => tab.category === 'settings');
   }
 
   buildMenu() {
