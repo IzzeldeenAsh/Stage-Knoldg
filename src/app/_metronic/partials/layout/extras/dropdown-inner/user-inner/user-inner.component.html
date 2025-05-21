@@ -3,8 +3,8 @@
   <div class="menu-item px-3">
     <div class="menu-content d-flex align-items-center px-3">
       <div class="symbol symbol-50px rounded-full mx-4">
-        <img alt="Logo" *ngIf="_user.profile_photo_url && (_user.roles.includes('insighter') || _user.roles.includes('company-insighter'))" [src]="_user.profile_photo_url" class="object-fit-cover " />
-        <img alt="Logo" *ngIf="_user.company?.logo && _user.roles.includes('company')" [src]="_user.company?.logo" class="object-fit-cover " />
+        <img alt="Logo" *ngIf="_user.profile_photo_url && (_user.roles.includes('insighter') || _user.roles.includes('company-insighter'))" [src]="_user.profile_photo_url" class="object-fit-cover" style="object-position: top;" />
+        <img alt="Logo" *ngIf="_user.company?.logo && _user.roles.includes('company')" [src]="_user.company?.logo" class="object-fit-cover" style="object-position: top;" />
        <span *ngIf="(_user && !_user.profile_photo_url ) " class="symbol-label bg-primary fs-4 text-white">
         <span> {{ _user.first_name.charAt(0) }} </span>
         <span style="padding: 0 -20px;"> {{ _user.last_name.charAt(0) }} </span>
