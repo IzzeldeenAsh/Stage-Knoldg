@@ -126,7 +126,7 @@
         <div class="user-dropdown-container">
           <a  class="user-dropdown-toggle" (click)="toggleUserDropdown($event)" #userDropdownToggle>
             <div class="user-avatar" *ngIf="userProfileImage">
-              <img  [src]="userProfileImage" alt="User Avatar" />
+              <img  [src]="userProfileImage" alt="User Avatar" style="object-position: top;" />
             </div>
             <div class="user-avatar user-initials" *ngIf="!userProfileImage">
               {{ userInitials }}
@@ -218,7 +218,7 @@
         <div class="position-relative">
           <a class="mobile-user-dropdown-toggle" (click)="toggleMobileUserDropdown($event)" #mobileUserDropdown>
             <div class="user-avatar" *ngIf="userProfileImage">
-              <img [src]="userProfileImage" alt="User Avatar" />
+              <img [src]="userProfileImage" alt="User Avatar" style="object-position: top;" />
             </div>
             <div class="user-avatar user-initials" *ngIf="!userProfileImage">
               {{ userInitials }}
