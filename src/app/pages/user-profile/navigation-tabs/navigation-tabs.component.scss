@@ -49,6 +49,13 @@
   }
 }
 
+// Fix for PrimeNG icons in RTL mode
+.icon-fixed-font {
+  font-family: 'primeicons' !important;
+  color: var(--primary-color);
+  font-size: 1.2rem;
+}
+
 .profile-navigation-container {
   height: 100%;
 }

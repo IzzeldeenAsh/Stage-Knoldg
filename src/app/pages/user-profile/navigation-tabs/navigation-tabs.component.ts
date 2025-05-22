@@ -106,12 +106,12 @@ export class NavigationTabsComponent implements OnInit, OnChanges {
   buildMenu() {
     this.menuItems = this.filteredTabs.map((tab: NavigationTab) => ({
       label: this.lang === 'en' ? tab.labelen : tab.labelar,
-      icon: `pi pi-${this.getPrimeIcon(tab.icon)}`,
+      icon: this.getDuotuneIconPath(tab.icon),
       routerLink: tab.link
     }));
   }
 
-  // Map Metronic icons to PrimeNG icons
+  // Map icon names to PrimeNG icons
   getPrimeIcon(icon: string): string {
     const iconMap: {[key: string]: string} = {
       'user': 'user',
@@ -124,6 +124,21 @@ export class NavigationTabsComponent implements OnInit, OnChanges {
       'cog': 'cog'
     };
     return iconMap[icon] || 'circle';
+  }
+  
+  // Map icon names to duotune SVG paths (keeping for future reference)
+  getDuotuneIconPath(icon: string): string {
+    const iconMap: {[key: string]: string} = {
+      'user': 'duotune/general/gen049.svg',
+      'certificate': 'duotune/general/gen026.svg',
+      'building': 'duotune/general/gen055.svg',
+      'award': 'duotune/general/gen047.svg',
+      'file-text': 'duotune/files/fil003.svg',
+      'id-card': 'duotune/general/gen046.svg',
+      'lock': 'duotune/general/gen048.svg',
+      'cog': 'duotune/general/gen054.svg'
+    };
+    return iconMap[icon] || 'duotune/general/gen051.svg';
   }
 
   // Roles
