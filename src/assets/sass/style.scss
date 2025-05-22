@@ -23,7 +23,7 @@
 /* Apply 'Tajawal'  ki-outline to body and its descendants, excluding .ki-duotone and its descendants */
 /* 1. Apply 'Tajawal' to all elements within RTL, excluding specific classes and their descendants */
 /* 1. Apply 'Tajawal' to all elements within RTL, excluding specific classes and their descendants */
-html[dir="rtl"] *:not(.ki-duotone):not(.ki-duotone *):not(.ki-outline):not(.ki-outline *):not(.ki-solid):not(.ki-solid *):not(.fa-classic):not(.fa-classic *):not(.fa-regular):not(.fa-regular *):not(.fa-solid):not(.fa-solid *):not(.far):not(.far *):not(.fas):not(.fas *) {
+html[dir="rtl"] *:not(.ki-duotone):not(.ki-duotone *):not(.ki-outline):not(.ki-outline *):not(.ki-solid):not(.ki-solid *):not(.fa-classic):not(.fa-classic *):not(.fa-regular):not(.fa-regular *):not(.fa-solid):not(.fa-solid *):not(.far):not(.far *):not(.fas):not(.fas *):not(.pi):not(.pi *) {
     font-family: 'Tajawal', sans-serif !important;
 }
 
@@ -57,6 +57,12 @@ html[dir="rtl"] .far *,
 html[dir="rtl"] .fas,
 html[dir="rtl"] .fas * {
     font-family: "Font Awesome 6 Free" !important;
+}
+
+/* 6. Assign 'primeicons' to PrimeNG icons and their descendants */
+html[dir="rtl"] .pi,
+html[dir="rtl"] .pi * {
+    font-family: 'primeicons' !important;
 }
 .object-fit-cover{
     object-fit: cover;
