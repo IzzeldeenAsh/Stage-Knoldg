@@ -28,7 +28,7 @@ export class AppComponent implements OnInit {
     private loaderService: LoaderService,
   ) {
     // register translations
-
+    // this.translationService.setLanguage('ar');
 
     // Setup router events to show loader
     this.router.events.subscribe((event: Event) => {

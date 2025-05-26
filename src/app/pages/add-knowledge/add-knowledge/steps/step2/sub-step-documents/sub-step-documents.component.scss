@@ -10,3 +10,16 @@
 .w-2{
     width: 40px !important;
 }
+.tooltip-inner {
+  white-space: normal;
+}
+.tooltip-list {
+  padding-left: 1rem;
+  margin: 0;
+  list-style-position: inside;
+  text-align: start;
+}
+
+.tooltip-list li {
+  margin-bottom: 0.3rem;
+}

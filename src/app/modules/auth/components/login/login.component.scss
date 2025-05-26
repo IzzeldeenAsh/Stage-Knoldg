@@ -43,22 +43,21 @@
 .h-100vh{
   min-height: 100vh;
 }
-.first-block{
-  width: 40%;
-  display: flex;
-  justify-content: center;
+.auth-card {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  border-radius: 10px;
+  overflow: hidden;
 
-  @media screen and (max-width:700px) {
-    width: 100%;
-    padding:20px;
+  @media screen and (max-width: 576px) {
+    max-width: 90%;
+    margin: 0 auto;
   }
 }
-.second-block{
-  width: 40%;
-  @media screen and (max-width:700px) {
-    width: 100%;
-    padding: 40px;
-  }
+
+.auth-form-container {
+  width: 100%;
 }
 
 .gap{

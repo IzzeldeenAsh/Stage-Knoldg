@@ -32,6 +32,7 @@ import { Step5Component } from './add-knowledge/steps/step5/step5.component';
 import { Step6Component } from './add-knowledge/steps/step6/step6.component';
 import { CalendarModule } from 'primeng/calendar';
 import { TooltipModule } from 'primeng/tooltip';
+import { FormatTooltipPipe } from 'src/app/shared/tooltip-module/format-tooltip.pipe';
 @NgModule({
   declarations: [
     AddKnowledgeComponent,
@@ -42,7 +43,8 @@ import { TooltipModule } from 'primeng/tooltip';
     Step3Component,
     Step4Component,
     Step5Component,
-    Step6Component
+    Step6Component,
+    FormatTooltipPipe
   ],
   imports: [
     CommonModule,

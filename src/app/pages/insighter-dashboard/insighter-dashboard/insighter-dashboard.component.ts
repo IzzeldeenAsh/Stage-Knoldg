@@ -50,7 +50,7 @@ export class InsighterDashboardComponent implements OnInit {
         }
       },
       {
-        label: 'My Requests',
+        label: 'Requests',
         icon: 'pi pi-list',
         command: () => {
           this.router.navigate(['my-requests']);
