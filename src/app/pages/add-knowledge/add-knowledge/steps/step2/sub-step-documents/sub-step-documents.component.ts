@@ -1162,4 +1162,7 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       inputElement.value = numericValue;
     }
   }
+  get documentsControls(): FormArray {
+  return this.documentsForm.get('documents') as FormArray;
+}
 }

@@ -121,7 +121,11 @@
                         
                         <!-- Charity toggle -->
                         <div class="d-flex justify-content-start mt-2">
-                            <div class="form-check form-switch form-check-custom form-check-solid">
+                            <div class="form-check form-switch form-check-custom form-check-solid"
+                                 [ngbTooltip]="tooltipContent"
+                                 container="body"
+                                 placement="top"
+                                >
                                 <input class="form-check-input h-2 w-2" 
                                     type="checkbox" 
                                     formControlName="isCharity" 
@@ -129,6 +133,13 @@
                                 <label class="form-check-label" [for]="'isCharity' + i">
                                     <span class="badge badge-light-success">{{ 'CHARITY_MODE' | translate }}</span>
                                 </label>
+                                <ng-template #tooltipContent>
+                                    <ul class="tooltip-list">
+                                        <li>{{ 'TOOLTIP_POINT_1' | translate }}</li>
+                                        <li>{{ 'TOOLTIP_POINT_2' | translate }}</li>
+                                        <li>{{ 'TOOLTIP_POINT_3' | translate }}</li>
+                                    </ul>
+                                </ng-template>
                             </div>
                         </div>
                     </div>
@@ -181,10 +192,19 @@
                 (click)="addDocument()" 
                 [disabled]="hasUploadsInProgress() || hasFilesWithErrors()">
                 <i class="ki-duotone ki-plus fs-2 me-1"></i>
-                <ng-container *ngIf="defaultValues?.knowledgeType === 'insight'">{{ 'ADD_DOCUMENT' | translate }}</ng-container>
-                <ng-container *ngIf="defaultValues?.knowledgeType === 'data'">{{ 'ADD_NODE' | translate }}</ng-container>
-                <ng-container *ngIf="defaultValues?.knowledgeType === 'report' || defaultValues?.knowledgeType === 'manual' || defaultValues?.knowledgeType === 'course'">{{ 'ADD_CHAPTER' | translate }}</ng-container>
+                    <ng-container *ngIf="defaultValues?.knowledgeType === 'insight'">
+                        {{ (documentsControls.length > 0 ? 'ADD_ANOTHER_DOCUMENT' : 'ADD_DOCUMENT') | translate }}
+                    </ng-container>
+
+                    <ng-container *ngIf="defaultValues?.knowledgeType === 'data'">
+                        {{ (documentsControls.length > 0 ? 'ADD_ANOTHER_NODE' : 'ADD_NODE') | translate }}
+                    </ng-container>
+
+                    <ng-container *ngIf="defaultValues?.knowledgeType && ['report', 'manual', 'course'].includes(defaultValues.knowledgeType)">
+                        {{ (documentsControls.length > 0 ? 'ADD_ANOTHER_CHAPTER' : 'ADD_CHAPTER') | translate }}
+                    </ng-container>
             </button>
+
         </div>
         
         <!-- Total Price -->

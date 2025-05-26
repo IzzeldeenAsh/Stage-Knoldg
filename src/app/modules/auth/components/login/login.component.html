@@ -1,27 +1,21 @@
 
-<div class="row h-100vh small-gap pt-res-100 justify-content-center align-items-center bg-light">
-  <div class="first-block rounded">
-    <div class="d-flex flex-column p-4 mil-up text-center text-md-start">
-      <div class="d-flex justify-content-center justify-content-md-start">
-        <a [href]="getHomeUrl()" class="w-100px">
-          <img
-            class="h-100 w-60px"
-            src="assets/media/logos/light-logo-sm.svg"
-          />
-        </a>
-      </div>
-      <div class="mt-4">
-        <h3 class="h4 font-weight-bolder text-dark fs-1 fw-bold py-2">
-          {{ 'AUTH.LOGIN.WELCOME_LOGIN' | translate }}
-        </h3>
-        <p class="text-gray-600 fs-4" [innerHTML]="'AUTH.LOGIN.EMPOWER_INSIGHTS_TEXT' | translate">
-        </p>
-      </div>
+<div class="row h-100vh pt-res-100 justify-content-center align-items-center bg-light">
+  <div class="auth-card rounded  p-4">
+    <div class="text-center mb-15">
+      <a [href]="getHomeUrl()" class="d-inline-block mb-4">
+        <img
+          class="w-60px"
+          src="assets/media/logos/light-logo-sm.svg"
+        />
+      </a>
+      <h2 class="h2 font-weight-bolder text-dark fs-1 fw-bold">
+        {{ 'AUTH.LOGIN.WELCOME_LOGIN' | translate }}
+      </h2>
+      <p class="text-gray-800 fs-4" [innerHTML]="'AUTH.LOGIN.EMPOWER_INSIGHTS_TEXT' | translate">
+      </p>
     </div>
-  </div>
-  
-  <div class="second-block">
-    <div class="w-lg-500px mil-up">
+    
+    <div class="auth-form-container">
     
       <form class="form w-100 " [formGroup]="loginForm" novalidate="novalidate" id="kt_login_signin_form"
       (ngSubmit)="submit()">
@@ -185,7 +179,6 @@
         </div>
       </ng-container>
       </ng-template>
-    </div>
+        </div>
   </div>
-
 </div>
