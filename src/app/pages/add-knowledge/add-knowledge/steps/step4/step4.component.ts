@@ -853,6 +853,19 @@ export class Step4Component extends BaseComponent implements OnInit {
             display: keyword,
             value: keyword
           }));
+          
+          // Set availableKeywords as default values for the keywords form control
+          // Only set if the form control is empty or not set
+          const currentKeywords = this.form.get('keywords')?.value || [];
+          if (currentKeywords.length === 0) {
+            this.form.get('keywords')?.setValue(this.availableKeywords);
+            
+            // Update parent model
+            this.updateParentModel(
+              { keywords: this.availableKeywords },
+              this.checkForm()
+            );
+          }
         },
         error: (error: any) => {
           console.error("Error fetching suggested keywords:", error);
