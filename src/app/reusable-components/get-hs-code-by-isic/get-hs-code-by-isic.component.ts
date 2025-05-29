@@ -21,7 +21,6 @@ import { DialogModule } from "primeng/dialog";
 import { FormsModule } from "@angular/forms";
 import { InputTextModule } from "primeng/inputtext";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
-import { DropdownModule } from 'primeng/dropdown';
 import { HSCode, HSCodeService } from 'src/app/_fake/services/hs-code-management/hscode.service';
 
 @Component({
@@ -32,8 +31,7 @@ import { HSCode, HSCodeService } from 'src/app/_fake/services/hs-code-management
     DialogModule,
     FormsModule,
     InputTextModule,
-    NgbTooltipModule,
-    DropdownModule
+    NgbTooltipModule
   ],
   template: `
     <p-dialog
@@ -44,39 +42,54 @@ import { HSCode, HSCodeService } from 'src/app/_fake/services/hs-code-management
       [contentStyle]="{ 'max-height': 'calc(90vh - 100px)', overflow: 'auto' }"
       appendTo="body"
     >
-      <div class="hs-code-container">
-        <p-dropdown
+      <div class="list-container">
+        <!-- Search Input -->
+        <div class="search-container mb-3">
+          <input
+            type="text"
+            pInputText
+            class="w-100"
+            placeholder="Search HS Codes..."
+            [(ngModel)]="searchText"
+            (input)="filterCodes()"
+          />
+        </div>
         
-          [options]="hsCodes"
-          [(ngModel)]="selectedHSCode"
-          [filter]="true"
-          filterBy="code,name"
-          [showClear]="true"
-          placeholder="Search HS Code"
-          optionLabel="name"
-          [loading]="(isLoading$ | async) || false"
-          appendTo="body"
-          [style]="{width:'90%',maxWidth:'90%'}"
-        >
-          <ng-template pTemplate="selectedItem">
-            <div class="hs-code-item" *ngIf="selectedHSCode">
-              <div>
-                <span class="font-bold">{{selectedHSCode.code}}</span> - 
-                {{selectedHSCode.name}}
+        <!-- Loading indicator -->
+        <div *ngIf="isLoading$ | async" class="text-center p-4">
+          <i class="pi pi-spinner pi-spin"></i>
+          <div>Loading HS Codes...</div>
+        </div>
+        
+        <!-- List Items -->
+        <div *ngIf="!(isLoading$ | async)" class="list-items">
+          <div 
+            *ngFor="let code of filteredCodes; trackBy: trackByKey" 
+            class="list-item cursor-pointer"
+            [class.selected]="code.id === selectedHSCode?.id"
+            (click)="selectCode(code)"
+          >
+            <div class="d-flex align-items-start">
+              <span class="fw-bold text-primary me-2 flex-shrink-0">[{{code.code}}]</span>
+              <div class="flex-grow-1">
+                <div class="fw-semibold">{{code.name}}</div>
+                <small class="text-muted">Code: {{code.code}}</small>
               </div>
+              <i *ngIf="code.id === selectedHSCode?.id" class="fas fa-check text-success ms-2"></i>
             </div>
-          </ng-template>
-          <ng-template let-code pTemplate="item">
-            <div class="hs-code-item">
-              <div>
-                <span class="font-bold">{{code.code}}</span> - 
-                {{code.name}}
-              </div>
-            </div>
-          </ng-template>
-        </p-dropdown>
-        <div *ngIf="hsCodes.length === 0 && !(isLoading$ | async)" class="text-center p-3">
-          No HS Codes available for this ISIC code
+          </div>
+          
+          <!-- No results message -->
+          <div *ngIf="filteredCodes.length === 0 && hsCodes.length > 0" class="text-center p-4 text-muted">
+            <i class="fas fa-search mb-2"></i>
+            <div>No results found</div>
+          </div>
+          
+          <!-- No HS codes available -->
+          <div *ngIf="hsCodes.length === 0" class="text-center p-4 text-muted">
+            <i class="fas fa-info-circle mb-2"></i>
+            <div>No HS Codes available for this ISIC code</div>
+          </div>
         </div>
       </div>
       <p-footer>
@@ -123,18 +136,42 @@ import { HSCode, HSCodeService } from 'src/app/_fake/services/hs-code-management
     </div>
   `,
   styles: [`
-    .hs-code-container {
-      min-height: 100px;
-      padding: 1rem;
+    .list-container {
+      min-height: 400px;
+      max-height: calc(80vh - 100px);
     }
-    .hs-code-item {
-      display: flex;
-      align-items: center;
-      padding: 0.5rem;
-      white-space:pre-line;
+    
+    .search-container {
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 10;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #e9ecef;
     }
-    .font-bold {
-      font-weight: bold;
+    
+    .list-items {
+      max-height: calc(80vh - 180px);
+      overflow-y: auto;
+    }
+    
+    .list-item {
+      padding: 12px;
+      border-bottom: 1px solid #f1f1f1;
+      transition: all 0.2s ease;
+    }
+    
+    .list-item:hover {
+      background-color: #f8f9fa;
+    }
+    
+    .list-item.selected {
+      background-color: #e3f2fd;
+      border-left: 4px solid #2196f3;
+    }
+    
+    .list-item:last-child {
+      border-bottom: none;
     }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -156,7 +193,9 @@ export class GetHsCodeByIsicComponent implements OnDestroy,OnChanges {
   dialogWidth: string = "80vw";
   isLoading$ = new BehaviorSubject<boolean>(false);
   hsCodes: HSCode[] = [];
+  filteredCodes: HSCode[] = [];
   selectedHSCode: HSCode | null = null;
+  searchText: string = '';
   private unsubscribe: Subscription[] = [];
 
   constructor(private hsCodeService: HSCodeService) {}
@@ -164,6 +203,7 @@ export class GetHsCodeByIsicComponent implements OnDestroy,OnChanges {
   ngOnDestroy() {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }
+  
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isicCodeId']) {
       this.loadHSCodes().then(() => {
@@ -187,7 +227,8 @@ export class GetHsCodeByIsicComponent implements OnDestroy,OnChanges {
       const sub = this.hsCodeService.getHSCodeByISIC(this.isicCodeId, this.language).subscribe({
         next: (codes) => {
           console.log('Received HS Codes:', codes);
-          this.hsCodes = codes;
+          this.hsCodes = codes.sort((a, b) => a.code.localeCompare(b.code));
+          this.filteredCodes = [...this.hsCodes];
           this.isLoading$.next(false);
           resolve();
         },
@@ -201,14 +242,31 @@ export class GetHsCodeByIsicComponent implements OnDestroy,OnChanges {
     });
   }
 
+  filterCodes() {
+    this.filteredCodes = this.hsCodes.filter(code =>
+      code.name.toLowerCase().includes(this.searchText.toLowerCase()) ||
+      code.code.toLowerCase().includes(this.searchText.toLowerCase())
+    );
+  }
+
+  selectCode(code: HSCode) {
+    this.selectedHSCode = code;
+  }
+
+  trackByKey(index: number, item: HSCode) {
+    return item.id;
+  }
+
   selectedHSCodeLabel(): string {
     if (this.selectedHSCode) {
-      return `${this.selectedHSCode.code} - ${this.selectedHSCode.name}`;
+      return `[${this.selectedHSCode.code}] ${this.selectedHSCode.name}`;
     }
     return "";
   }
 
   showDialog() {
+    this.searchText = ''; // Reset search when opening dialog
+    this.filteredCodes = [...this.hsCodes]; // Reset filtered codes
     this.dialogVisible = true;
     this.loadHSCodes();
   }
@@ -222,7 +280,6 @@ export class GetHsCodeByIsicComponent implements OnDestroy,OnChanges {
 
   onCancel() {
     this.dialogVisible = false;
-    this.selectedHSCode = null;
   }
 
   isValidSelection(): boolean {

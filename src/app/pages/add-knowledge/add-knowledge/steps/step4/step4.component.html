@@ -599,6 +599,7 @@
           "
           (nodeSelected)="onIsicCodeSelected($event)"
           [isRequired]="false"
+          [showCode]="true"
           [ngClass]="{'is-invalid': form.get('isic_code')?.invalid && form.get('isic_code')?.touched, 'border-red': form.get('isic_code')?.invalid && form.get('isic_code')?.touched}"
         >
         </app-industry-selector>
