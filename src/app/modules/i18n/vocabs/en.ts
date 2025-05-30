@@ -1138,7 +1138,7 @@ UPLOAD: 'Upload',
       KNOWLEDGE_DETAILS: 'Knowledge Details',
       ANALYTICS: 'Analytics',
       DOWNLOADS: 'Downloads',
-      CONTINUE: "Next",
+      CONTINUE: "Continue",
       DOCUMENT_UPLOAD: 'Upload new chapter or node',
    
       STATUS: 'Status',
