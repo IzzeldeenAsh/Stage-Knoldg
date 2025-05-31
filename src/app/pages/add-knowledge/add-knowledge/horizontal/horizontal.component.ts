@@ -9,6 +9,7 @@ import { AddInsightStepsService, UpdateKnowledgeAbstractsRequest } from 'src/app
 import { RegionsService } from 'src/app/_fake/services/region/regions.service';
 import * as moment from 'moment';
 import { SubStepDocumentsComponent } from '../steps/step2/sub-step-documents/sub-step-documents.component';
+import { TopicsService } from 'src/app/_fake/services/topic-service/topic.service';
 
 @Component({
   selector: 'app-horizontal',
@@ -38,7 +39,8 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
     private addInsightStepsService: AddInsightStepsService,
     private router: Router,
     private viewContainerRef: ViewContainerRef,
-    private regionsService: RegionsService
+    private regionsService: RegionsService,
+    private topicService: TopicsService,
    ) {
     super(injector);
   }
@@ -450,23 +452,89 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
     
     this.isLoading = true;
     
-    // Prepare the request payload
-    const updateRequest = {
-      title: currentAccount.title || '',
-      description: currentAccount.description || '',
-      topic_id: currentAccount.topicId || 0,
-      industry_id: currentAccount.industry || 0,
-      isic_code_id: currentAccount.isic_code || null,
-      hs_code_id: currentAccount.hs_code || null,
-      language: currentAccount.language || '',
-      region: currentAccount.regions || [],
-      country: currentAccount.countries || [],
-      economic_bloc: currentAccount.economic_blocs || [],
-      keywords: currentAccount.keywords?.map((k: any) => k.value || k) || [],
-      tag_ids: currentAccount.tag_ids || []
-    };
+    // Check if a custom topic needs to be created
+    if (currentAccount.topicId === 'other' && step4Component) {
+      // Get the custom topic name from the Step4Component
+      const customTopicName = step4Component.form.get('customTopic')?.value;
+      
+      if (!customTopicName) {
+        this.showWarn('', 'Please enter a custom topic name');
+        this.isLoading = false;
+        return; // Don't advance to next step
+      }
+      
+      // Create a topic suggestion request
+      if (!currentAccount.industry) {
+        this.showWarn('', 'Industry is required for creating a custom topic');
+        this.isLoading = false;
+        return; // Don't proceed if industry is missing
+      }
+      
+      const suggestTopicRequest = {
+        industry_id: currentAccount.industry as number, // Cast to number to satisfy TypeScript
+        name: {
+          en: customTopicName,
+          ar: customTopicName // Use the same value for both languages
+        }
+      };
+      
+      // Call API to create the suggested topic
+      this.addInsightStepsService.createSuggestTopic(suggestTopicRequest, step4Component.currentLanguage)
+        .subscribe({
+          next: (response) => {
+            console.log('New topic created successfully', response);
+            
+            // Use the new topic ID for the knowledge details update
+            const newTopicId = response.data.topic_id;
+            
+            // Prepare the request payload with the new topic ID
+            const updateRequest = {
+              title: currentAccount.title || '',
+              description: currentAccount.description || '',
+              topic_id: newTopicId, // Use the newly created topic ID
+              industry_id: currentAccount.industry || 0,
+              isic_code_id: currentAccount.isic_code || null,
+              hs_code_id: currentAccount.hs_code || null,
+              language: currentAccount.language || '',
+              region: currentAccount.regions || [],
+              country: currentAccount.countries || [],
+              economic_bloc: currentAccount.economic_blocs || [],
+              keywords: currentAccount.keywords?.map((k: any) => k.value || k) || [],
+              tag_ids: currentAccount.tag_ids || []
+            };
+            
+            // Now update knowledge details with the new topic ID
+            this.updateKnowledgeDetailsAndProceed(updateRequest, nextStep);
+          },
+          error: (error) => {
+            this.handleServerErrors(error);
+            this.isLoading = false;
+          }
+        });
+    } else {
+      // No custom topic, proceed with regular update
+      // Prepare the request payload
+      const updateRequest = {
+        title: currentAccount.title || '',
+        description: currentAccount.description || '',
+        topic_id: currentAccount.topicId || 0,
+        industry_id: currentAccount.industry || 0,
+        isic_code_id: currentAccount.isic_code || null,
+        hs_code_id: currentAccount.hs_code || null,
+        language: currentAccount.language || '',
+        region: currentAccount.regions || [],
+        country: currentAccount.countries || [],
+        economic_bloc: currentAccount.economic_blocs || [],
+        keywords: currentAccount.keywords?.map((k: any) => k.value || k) || [],
+        tag_ids: currentAccount.tag_ids || []
+      };
 
-    // Call the API to update knowledge details
+      this.updateKnowledgeDetailsAndProceed(updateRequest, nextStep);
+    }
+  }
+
+  // Helper method to update knowledge details and proceed to next step
+  private updateKnowledgeDetailsAndProceed(updateRequest: any, nextStep: number) {
     this.addInsightStepsService.updateKnowledgeDetails(this.knowledgeId, updateRequest)
       .subscribe({
         next: (response) => {
