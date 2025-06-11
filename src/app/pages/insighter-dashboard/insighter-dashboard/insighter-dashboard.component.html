@@ -12,6 +12,7 @@
         <app-overview-statistics *ngIf="isRouteActive('my-dashboard')"></app-overview-statistics>
         <app-requests-statistics *ngIf="isRouteActive('my-requests')"></app-requests-statistics>
         <app-knowledge-statistics *ngIf="isRouteActive('my-knowledge')"></app-knowledge-statistics>
+        <app-downloads-statistics *ngIf="isRouteActive('my-downloads')"></app-downloads-statistics>
         <app-account-settings-header *ngIf="isRouteActive('account-settings')"></app-account-settings-header>
         <app-company-statistics *ngIf="isRouteActive('my-company-settings') && (hasCompanyRole$ | async)"></app-company-statistics>
       </div>
@@ -61,6 +62,7 @@
                     <span class="fs-6">{{ 'INSIGHTER.DASHBOARD.NAV.MY_KNOWLEDGE' | translate }}</span>
                   </a>
                 </li>
+         
                 <li class="nav-item" *ngIf="hasCompanyRole$ | async">
                   <a
                     class="nav-link text-active-primary mx-6"
@@ -69,6 +71,16 @@
                   >
                     <i class="ki-duotone ki-office-bag mx-2 fs-2"><span class="path1"></span><span class="path2"></span></i>
                     <span class="fs-6">{{ 'INSIGHTER.DASHBOARD.NAV.MY_COMPANY' | translate }}</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a
+                    class="nav-link text-active-primary mx-6"
+                    [routerLink]="['my-downloads']"
+                    routerLinkActive="active"
+                  >
+                  <i class="ki-duotone ki-file-down  fs-2 mx-2"><span class="path1"></span><span class="path2"></span></i>
+                    <span class="fs-6">{{ 'INSIGHTER.DASHBOARD.NAV.MY_DOWNLOADS' | translate }}</span>
                   </a>
                 </li>
                 <li class="nav-item">

@@ -26,6 +26,10 @@ const routes: Routes = [
         loadChildren: () => import('./insighter-dashboard/my-knowledge/my-knowledge.module').then(m => m.MyKnowledgeModule)
       },
       {
+        path: 'my-downloads',
+        loadChildren: () => import('./insighter-dashboard/my-downloads/my-downloads.module').then(m => m.MyDownloadsModule)
+      },
+      {
         path: 'account-settings',
         loadChildren: () => import('./insighter-dashboard/account-settings/account-settings.module').then(m => m.AccountSettingsModule)
       },

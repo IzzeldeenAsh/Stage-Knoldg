@@ -22,6 +22,7 @@ export const locale = {
       },
     },
     ISIC_CODE:'ISIC Code',
+    WHAT_HAS_BEEN_PURCHASED:'What has been purchased',
     REMOVE:'Remove',
     ERROR_FILES_DETECTED: 'Error Files Detected',
     ENTER_TAGS:'Enter Tag',
@@ -146,6 +147,8 @@ export const locale = {
     ENTER_KNOWLEDGE_DESCRIPTION: 'Enter detailed description here',
     DESCRIPTION_HELP_TEXT: 'A good description helps users find and understand your content',
     "MY_COMPANY": {
+        "PUBLISHED_KNOWLEDGE": "{{name}}'s Published Knowledge",
+        "TOTAL": "Total",
       STATUS: {
         ACTIVE: 'Active',
         INACTIVE: 'Inactive'
@@ -807,7 +810,8 @@ Your wealth of knowledge is valued and many are eager to learn from it.
         "MY_KNOWLEDGE": "My knowledge library",
         "ACCOUNT_SETTINGS": "Account Settings",
         "MY_COMPANY": "My Team",
-        "INVITING": "Inviting"
+        "INVITING": "Inviting",
+        "MY_DOWNLOADS": "My Downloads"
       },
       REQUESTS: {
         APPROVED: "Approved Requests",
