@@ -16,6 +16,7 @@ INSIGHTER_REQUESTS: {
       },
     },
     SHOW_LESS:'عرض أقل',
+    WHAT_HAS_BEEN_PURCHASED:'المعارف التي تم شراؤها',
     SHOW_MORE:'عرض المزيد',
     WELCOME_BACK:'مرحبا بك',
     NO_CERTIFICATES:'لا يوجد شهادات',
@@ -151,6 +152,8 @@ INSIGHTER_REQUESTS: {
       "ADD_BUTTON": "إضافة معرفة"
     },
     "MY_COMPANY": {
+       "PUBLISHED_KNOWLEDGE": "المعرفة المنشورة لـ {{name}}",
+    "TOTAL": "المجموع",
       STATUS:{
         ACTIVE: 'مفعل',
         INACTIVE: 'غير مفعل'
@@ -778,7 +781,8 @@ INSIGHTER_REQUESTS: {
           "MY_REQUESTS": "الطلبات",
           "MY_KNOWLEDGE": "مكتبة المعرفة" ,
           "ACCOUNT_SETTINGS": "إعدادات الحساب",
-          "MY_COMPANY": "فريقي"
+          "MY_COMPANY": "فريقي",
+          "MY_DOWNLOADS": "التحميلات"
         },
         "REQUESTS": {
           APPROVED: "الطلبات المقبولة",

@@ -62,6 +62,13 @@ export class InsighterDashboardComponent implements OnInit {
         command: () => {
           this.router.navigate(['my-knowledge']);
         }
+      },
+      {
+        label: 'My Downloads',
+        icon: 'pi pi-download',
+        command: () => {
+          this.router.navigate(['my-downloads']);
+        }
       }
     ];
 
@@ -87,7 +94,7 @@ export class InsighterDashboardComponent implements OnInit {
   }
 
   setActiveTabFromRoute(url: string) {
-    const routes = ['my-dashboard', 'my-requests', 'my-knowledge', 'my-company-settings', 'account-settings'];
+    const routes = ['my-dashboard', 'my-requests', 'my-knowledge', 'my-downloads', 'my-company-settings', 'account-settings'];
     const index = routes.findIndex(route => url.includes(route));
     if (index !== -1) {
       this.activeTabIndex = index;

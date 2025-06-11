@@ -1,0 +1,28 @@
+// My Downloads Component Styles
+.card {
+  border: none;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card-header {
+  background-color: transparent;
+  border-bottom: 1px solid #e5e5e5;
+  padding: 1.5rem;
+}
+
+.card-title {
+  margin-bottom: 0;
+  font-weight: 600;
+}
+
+.text-center {
+  &.py-5 {
+    padding: 3rem 0;
+  }
+}
+
+.ki-duotone {
+  &.fs-3x {
+    font-size: 3rem;
+  }
+} 
