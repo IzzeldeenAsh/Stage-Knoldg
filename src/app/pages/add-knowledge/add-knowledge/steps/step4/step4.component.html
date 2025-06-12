@@ -547,6 +547,7 @@
           (onAdd)="addTag($event)"
           (onRemove)="removeTag($event)"
           [ngClass]="{'is-invalid': form.get('tag_ids')?.hasError('required') && form.get('tag_ids')?.touched, 'border-red': form.get('tag_ids')?.hasError('required') && form.get('tag_ids')?.touched}"
+          style="width: 100%; max-width: none;"
         >
           <tag-input-dropdown
             [showDropdownIfEmpty]="true"
@@ -572,6 +573,7 @@
           (onAdd)="addKeyword($event)"
           (onRemove)="removeKeyword($event)"
           [ngClass]="{'is-invalid': form.get('keywords')?.hasError('required') && form.get('keywords')?.touched, 'border-red': form.get('keywords')?.hasError('required') && form.get('keywords')?.touched}"
+          style="width: 100%; max-width: none;"
         >
           <tag-input-dropdown
             [showDropdownIfEmpty]="true"
