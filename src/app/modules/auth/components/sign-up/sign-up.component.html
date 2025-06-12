@@ -56,7 +56,7 @@
             
               <!-- Heading -->
               <div class="text-center mb-11">
-                <h1 class="text-gray-900 fw-bolder mb-3">Sign Up</h1>
+                <h1 class="text-gray-900 fw-bolder mb-3">{{'AUTH.REGISTRATION.TITLE' | translate}}</h1>
                 <div class="text-gray-500 fw-semibold fs-6">
                   {{ 'AUTH.REGISTRATION.SUBTITLE' | translate }}
                 </div>
@@ -283,26 +283,40 @@
                   *ngIf="(isLoadingCountries$ | async) === false"
                   [options]="countries"
                   formControlName="country"
-                  class="d-block form-p-control"
+                  [class]="'d-block form-p-control' + (lang === 'ar' ? ' rtl-dropdown' : '')"
                   [optionLabel]="lang=='en' ? 'names.en' : 'names.ar'"
                   placeholder="{{ 'AUTH.REGISTRATION.COUNTRY_PLACEHOLDER' | translate }}"
                   [filter]="true"
                   [showClear]="true"
+                  [dir]="lang === 'ar' ? 'rtl' : 'ltr'"
                 >
                   <ng-template pTemplate="item" let-country>
-                    <div class="country-option">
+                    <div class="country-option" [class]="lang === 'ar' ? 'rtl-country-option' : 'ltr-country-option'">
                       <img *ngIf="country.showFlag"
                         [src]="country.flagPath"
                         (error)="onFlagError(country)"
                         alt="{{ country.names.en }}"
-                        class="flag-icon w-20px mx-2" />
-                      <span *ngIf="lang=='en'">{{ country.names.en }}</span>
-                      <span *ngIf="lang=='ar'">{{ country.names.ar }}</span>
+                        [class]="'flag-icon w-20px ' + (lang === 'ar' ? 'ms-2' : 'me-2')" />
+                      <span *ngIf="lang=='en'" class="country-name">{{ country.names.en }}</span>
+                      <span *ngIf="lang=='ar'" class="country-name">{{ country.names.ar }}</span>
+                    </div>
+                  </ng-template>
+                  
+                  <ng-template pTemplate="selectedItem" let-country>
+                    <div class="selected-country-option" [class]="lang === 'ar' ? 'rtl-selected-option' : 'ltr-selected-option'" *ngIf="country">
+                      <img *ngIf="country.showFlag"
+                        [src]="country.flagPath"
+                        (error)="onFlagError(country)"
+                        alt="{{ country.names.en }}"
+                        [class]="'flag-icon w-20px ' + (lang === 'ar' ? 'ms-2' : 'me-2')" />
+                      <span *ngIf="lang=='en'" class="country-name">{{ country.names.en }}</span>
+                      <span *ngIf="lang=='ar'" class="country-name">{{ country.names.ar }}</span>
                     </div>
                   </ng-template>
                 </p-dropdown>
                 <!-- Server-Side Validation Error (if any for country) -->
-                <div *ngIf="registrationForm.controls['country'].errors?.serverError && (registrationForm.controls['country'].touched || registrationForm.controls['country'].dirty)" class="text-danger mt-1">
+                <div *ngIf="registrationForm.controls['country'].errors?.serverError && (registrationForm.controls['country'].touched || registrationForm.controls['country'].dirty)" 
+                     [class]="'text-danger mt-1 ' + (lang === 'ar' ? 'text-end' : 'text-start')">
                   {{ registrationForm.controls['country'].errors?.serverError }}
                 </div>
               </div>

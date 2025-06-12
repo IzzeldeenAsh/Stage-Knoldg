@@ -339,7 +339,7 @@ INSIGHTER_REQUESTS: {
         CONFIRM_PASSWORD_MAXLENGTH:
           "يجب أن تحتوي كلمة المرور المؤكدة على 100 حرف كحد أقصى",
         PASSWORD_MISMATCH: "كلمة المرور وتأكيد كلمة المرور غير متطابقين.",
-        SUBMIT: "إرسال",
+        SUBMIT: "تسجيل",
         PLEASE_WAIT: "يرجى الانتظار...",
         ALREADY_HAVE_ACCOUNT: "لديك حساب؟",
         SIGN_IN: "تسجيل الدخول",
@@ -560,7 +560,7 @@ INSIGHTER_REQUESTS: {
       "GET_CODE": "اطلب رمز التأكيد",
       "CODE": "رمز التأكيد ",
       "ENTER_CODE": "ادخل الرمز المرسل",
-      OTHER_FIELD_PLACEHOLDER: "أدخل تخصصك الآخر",
+      OTHER_FIELD_PLACEHOLDER: "أدخل قطاعك الآخر",
       DOCUMENT_REGISTRY_APPROVAL_NOTE: "يرجى ملاحظة أن تحميل وثيقة التسجيل يتطلب الموافقة. سيتم إشعارك بمجرد مراجعة وثيقتك.",
     },
     REPORTS_CHAPTERS_DETAILS: "يمكنك تحميل معرفتك كملف كامل، أو تقسيمها إلى بأسعار منفصلة، وذلك لتوفير وصول مرن وميسر للمستخدمين",

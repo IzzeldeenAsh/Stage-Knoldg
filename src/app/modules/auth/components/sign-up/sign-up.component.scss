@@ -154,4 +154,105 @@
       padding: 1rem 1.5rem;
     }
   }
+
+  /* RTL Support for Country Dropdown */
+  .rtl-dropdown {
+    direction: rtl;
+    
+    ::ng-deep {
+      .p-dropdown {
+        text-align: right;
+        
+        .p-dropdown-trigger {
+          left: 0.75rem;
+          right: auto;
+        }
+        
+        .p-dropdown-clear-icon {
+          right: auto;
+          left: 2.5rem;
+        }
+      }
+      
+      .p-dropdown-panel {
+        .p-dropdown-filter-container {
+          .p-dropdown-filter {
+            text-align: right;
+            padding-right: 1.75rem;
+            padding-left: 0.75rem;
+          }
+          
+          .p-dropdown-filter-icon {
+            right: auto;
+            left: 0.75rem;
+          }
+        }
+      }
+    }
+  }
+
+  .rtl-country-option,
+  .rtl-selected-option {
+    display: flex;
+    align-items: center;
+    direction: rtl;
+    text-align: right;
+    
+    .country-name {
+      flex: 1;
+      text-align: right;
+    }
+    
+    .flag-icon {
+      order: 2;
+      margin-right: 0;
+      margin-left: 0.5rem;
+    }
+  }
+
+  .ltr-country-option,
+  .ltr-selected-option {
+    display: flex;
+    align-items: center;
+    direction: ltr;
+    text-align: left;
+    
+    .country-name {
+      flex: 1;
+      text-align: left;
+    }
+    
+    .flag-icon {
+      order: 1;
+      margin-left: 0;
+      margin-right: 0.5rem;
+    }
+  }
+
+  /* RTL specific adjustments for PrimeNG dropdown */
+  [dir="rtl"] {
+    ::ng-deep {
+      .p-dropdown-panel .p-dropdown-items .p-dropdown-item {
+        text-align: right;
+      }
+      
+      .p-dropdown .p-dropdown-label {
+        text-align: right;
+      }
+      
+      .p-dropdown-filter {
+        text-align: right;
+      }
+    }
+  }
+
+  /* Custom scrollbar for RTL in terms dialog */
+  [dir="rtl"] .terms-dialog .agreement-content {
+    padding-left: 10px;
+    padding-right: 0;
+    
+    &.custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+  }
   

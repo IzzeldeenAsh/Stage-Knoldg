@@ -1,17 +1,66 @@
 import { Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { BaseComponent } from 'src/app/modules/base.component';
 declare var bootstrap: any;
 
 @Injectable({
   providedIn: 'root'
 })
-export class ToastService {
+export class ToastService  {
   private toastElement: HTMLElement | null = null;
   private toastHeaderIcon: HTMLElement | null = null;
   private toastTitle: HTMLElement | null = null;
   private toastBody: HTMLElement | null = null;
   private toastTime: HTMLElement | null = null;
+  private lang: string = 'en';
+  
+  // Arabic translations
+  private arabicTexts = {
+    success: 'نجح',
+    error: 'خطأ', 
+    warning: 'تحذير',
+    information: 'معلومات',
+    justNow: ''
+  };
+  
+  private englishTexts = {
+    success: 'Success',
+    error: 'Error',
+    warning: 'Warning', 
+    information: 'Information',
+    justNow: 'Just now'
+  };
 
-  constructor() {
+  constructor(private translateService: TranslateService) {
+    this.lang = this.translateService.currentLang;
+    this.initializeToastElement();
+    
+    // Subscribe to language changes to update RTL settings
+    this.translateService.onLangChange.subscribe((event) => {
+      this.lang = event.lang;
+      this.updateRTLSettings();
+    });
+  }
+
+  private getLocalizedText(key: keyof typeof this.arabicTexts): string {
+    return this.lang === 'ar' ? this.arabicTexts[key] : this.englishTexts[key];
+  }
+
+  private updateRTLSettings() {
+    // Remove existing toast container to recreate with new RTL settings
+    const existingContainer = document.querySelector('.toast-container');
+    if (existingContainer) {
+      existingContainer.remove();
+    }
+    
+    // Reset toast elements
+    this.toastElement = null;
+    this.toastHeaderIcon = null;
+    this.toastTitle = null;
+    this.toastBody = null;
+    this.toastTime = null;
+    
+    // Reinitialize with new language settings
     this.initializeToastElement();
   }
 
@@ -20,26 +69,30 @@ export class ToastService {
     let toastContainer = document.querySelector('.toast-container');
     if (!toastContainer) {
       toastContainer = document.createElement('div');
-      toastContainer.className = 'position-fixed top-0 end-0 p-3 z-index-1000 toast-container';
+      // Adjust positioning based on language direction
+      const containerClass = this.lang === 'ar' 
+        ? 'position-fixed top-0 start-0 p-3 z-index-1000 toast-container' 
+        : 'position-fixed top-0 end-0 p-3 z-index-1000 toast-container';
+      toastContainer.className = containerClass;
       document.body.appendChild(toastContainer);
     }
 
     // Create toast element if it doesn't exist
     if (!this.toastElement) {
       const toastHtml = `
-        <div class="toast fade" role="alert" aria-live="assertive" aria-atomic="true">
-          <div class="toast-header">
+        <div class="toast fade" role="alert" aria-live="assertive" aria-atomic="true" dir="${this.lang === 'ar' ? 'rtl' : 'ltr'}">
+          <div class="toast-header" style="text-align: ${this.lang === 'ar' ? 'right' : 'left'};">
             <i class="ki-duotone ki-notification-status fs-2 me-3">
               <span class="path1"></span>
               <span class="path2"></span>
               <span class="path3"></span>
               <span class="path4"></span>
             </i>
-            <strong class="me-auto"></strong>
-            <small class="toast-time"></small>
+            <strong class="me-auto" style="direction: ${this.lang === 'ar' ? 'rtl' : 'ltr'}; text-align: ${this.lang === 'ar' ? 'right' : 'left'};"></strong>
+            <small class="toast-time" style="direction: ${this.lang === 'ar' ? 'rtl' : 'ltr'}; text-align: ${this.lang === 'ar' ? 'right' : 'left'};"></small>
             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
           </div>
-          <div class="toast-body"></div>
+          <div class="toast-body" style="direction: ${this.lang === 'ar' ? 'rtl' : 'ltr'}; text-align: ${this.lang === 'ar' ? 'right' : 'left'};"></div>
         </div>
       `;
 
@@ -104,7 +157,7 @@ export class ToastService {
     // Set content
     this.toastTitle.textContent = title;
     this.toastBody.textContent = message;
-    this.toastTime.textContent = 'Just now';
+    this.toastTime.textContent = this.getLocalizedText('justNow');
 
     // Update delay if provided
     if (this.toastInstance) {
@@ -115,23 +168,23 @@ export class ToastService {
     this.toastInstance.show();
   }
 
-  success(message: string='Success', title: string = 'Success', delay?: number) {
-    title =='' ? title = 'Success' : title;
+  success(message: string = this.getLocalizedText('success'), title: string = this.getLocalizedText('success'), delay?: number) {
+    title == '' ? title = this.getLocalizedText('success') : title;
     this.show(message, title, 'success', delay);
   }
 
-  error(message: string='Error', title: string = 'Error', delay?: number) {
-    title =='' ? title = 'Error' : title;
+  error(message: string = this.getLocalizedText('error'), title: string = this.getLocalizedText('error'), delay?: number) {
+    title == '' ? title = this.getLocalizedText('error') : title;
     this.show(message, title, 'danger', delay);
   }
 
-  warning(message: string='Warning', title: string = 'Warning', delay?: number) {
-    title =='' ? title = 'Warning' : title;
+  warning(message: string = this.getLocalizedText('warning'), title: string = this.getLocalizedText('warning'), delay?: number) {
+    title == '' ? title = this.getLocalizedText('warning') : title;
     this.show(message, title, 'warning', delay);
   }
 
-  info(message: string='Information', title: string = 'Information', delay?: number) {
-    title =='' ? title = 'Information' : title;
+  info(message: string = this.getLocalizedText('information'), title: string = this.getLocalizedText('information'), delay?: number) {
+    title == '' ? title = this.getLocalizedText('information') : title;
     this.show(message, title, 'info', delay);
   }
 }

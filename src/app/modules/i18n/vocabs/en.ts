@@ -283,7 +283,6 @@ export const locale = {
         LEGAL: 'Legal',
         CONTACT: 'Contact',
       },
-     
       LOGIN: {
         BUTTON: 'Sign In',
         TITLE: "Sign In",
@@ -330,7 +329,7 @@ export const locale = {
         APPROVE: "Approve",
         AGREEMENT_REQUIRED: "Agreement is required",
         TERMS_AGREEMENT: "I agree to the Terms & Conditions",
-        "TITLE": "Sign Up",
+        TITLE: "Sign Up",
         ISIC_CODES_REQUIRED:"ISIC Code is required",
         "SUBTITLE": "Enter your details to create your account",
         "GOOGLE_SIGNIN": "Sign in with Google",
@@ -367,7 +366,7 @@ export const locale = {
         "CONFIRM_PASSWORD_MAXLENGTH": "Confirm Password should have a maximum of 100 characters",
         "PASSWORD_MISMATCH": "Password and Confirm Password do not match.",
         "RESEND_EMAIL": "Resend Email",
-        "SUBMIT": "Submit",
+        "SUBMIT": "Sign Up",
         "PLEASE_WAIT": "Please wait...",
         "ALREADY_HAVE_ACCOUNT": "Already have an account?",
         "SIGNIN_LINK": "Sign in",

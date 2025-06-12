@@ -40,12 +40,39 @@
 
 :host ::ng-deep {
   tag-input {
+    width: 100% !important;
+    max-width: none !important;
+    
+    // Dropdown styles
+    tag-input-dropdown {
+      width: 100% !important;
+      max-width: none !important;
+      
+      .ng2-dropdown-menu {
+        min-width: 100% !important;
+        max-width: none !important;
+        width: auto !important;
+        
+        .ng2-dropdown-menu-item {
+          white-space: normal !important;
+          word-wrap: break-word !important;
+          overflow: visible !important;
+          text-overflow: clip !important;
+          padding: 0.5rem 1rem !important;
+          line-height: 1.4 !important;
+        }
+      }
+    }
+    
     .ng2-tag-input {
       border-bottom: 1px solid #e4e6ef !important;
       padding: 0.75rem 1rem !important;
       border-radius: 0.475rem !important;
       background-color: #f5f8fa !important;
       border: 1px solid #e4e6ef !important;
+      width: 100% !important;
+      max-width: none !important;
+      min-width: 100% !important;
       
       &.ng2-tag-input--focused {
         border-color: #c3e2fd !important;
@@ -56,18 +83,51 @@
     
     .ng2-tag-input__text-input {
       height: 32px !important;
+      width: 100% !important;
+      max-width: none !important;
+      min-width: 200px !important;
+      flex-grow: 1 !important;
     }
     
     .ng2-tags-container {
-      .ng2-tag {
-        background-color: #e1f5fe !important;
-        color: #0dcaf0 !important;
-        border-radius: 0.475rem !important;
-        
-        .ng2-tag__remove-button {
+      width: 100% !important;
+      max-width: none !important;
+      flex-wrap: wrap !important;
+      
+              .ng2-tag {
+          background-color: #e1f5fe !important;
           color: #0dcaf0 !important;
+          border-radius: 0.475rem !important;
+          max-width: 100% !important;
+          width: auto !important;
+          min-width: fit-content !important;
+          white-space: normal !important;
+          overflow: visible !important;
+          text-overflow: clip !important;
+          word-wrap: break-word !important;
+          flex-shrink: 0 !important;
+          display: inline-flex !important;
+          align-items: center !important;
+          padding: 0.25rem 0.5rem !important;
+          margin: 0.125rem !important;
+          
+          .ng2-tag__text {
+            max-width: none !important;
+            width: auto !important;
+            white-space: normal !important;
+            overflow: visible !important;
+            text-overflow: clip !important;
+            word-break: break-word !important;
+            hyphens: auto !important;
+            line-height: 1.4 !important;
+          }
+          
+          .ng2-tag__remove-button {
+            color: #0dcaf0 !important;
+            flex-shrink: 0 !important;
+            margin-left: 0.25rem !important;
+          }
         }
-      }
     }
   }
 }
