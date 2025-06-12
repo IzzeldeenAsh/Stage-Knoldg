@@ -369,8 +369,10 @@ export class IndustrySelectorComponent implements OnInit, OnDestroy {
   }
 
   filterNodes() {
+    const searchTerm = this.searchText.toLowerCase();
     this.filteredNodes = this.flatLeafNodes.filter(node =>
-      node.label.toLowerCase().includes(this.searchText.toLowerCase())
+      node.label.toLowerCase().includes(searchTerm) ||
+      (node.code && node.code.toLowerCase().includes(searchTerm))
     );
   }
 
