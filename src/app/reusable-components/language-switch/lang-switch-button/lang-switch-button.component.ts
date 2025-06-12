@@ -13,6 +13,7 @@ import { TranslationService } from 'src/app/modules/i18n/translation.service';
 export class LangSwitchButtonComponent implements OnInit {
   selectedLang = 'en'; // Default language
   @Input() isInsighterDashboard = false; // Flag to check if we're in insighter-dashboard routes
+  isAuthPage = false; // Flag to check if we're in auth routes
   isMobileView = false; // Flag to check if we're in mobile view
   
   constructor(
@@ -34,12 +35,16 @@ export class LangSwitchButtonComponent implements OnInit {
 
     // Check if we're in insighter-dashboard routes
     this.checkInsighterDashboardRoute(this.router.url);
+    
+    // Check if we're in auth routes
+    this.checkAuthRoute(this.router.url);
 
     // Subscribe to router events to update the flag when the route changes
     this.router.events.pipe(
       filter((event): event is NavigationEnd => event instanceof NavigationEnd)
     ).subscribe((event) => {
       this.checkInsighterDashboardRoute(event.urlAfterRedirects);
+      this.checkAuthRoute(event.urlAfterRedirects);
     });
   }
 
@@ -72,6 +77,11 @@ export class LangSwitchButtonComponent implements OnInit {
   // Helper method to check if we're in insighter-dashboard routes
   private checkInsighterDashboardRoute(url: string): void {
     this.isInsighterDashboard = this.isInsighterDashboard || url.includes('insighter-dashboard');
+  }
+
+  // Helper method to check if we're in auth routes
+  private checkAuthRoute(url: string): void {
+    this.isAuthPage = url.includes('/auth/sign-up');
   }
 
   // Helper method to check if we're in mobile view

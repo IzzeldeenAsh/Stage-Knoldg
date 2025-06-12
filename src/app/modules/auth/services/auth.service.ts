@@ -262,6 +262,7 @@ export class AuthService implements OnDestroy {
         const auth = new AuthModel();
         auth.authToken = response.data.token; 
         this.setAuthInLocalStorage(auth);
+        localStorage.setItem('token', response.data.token);
         const user: UserType = {
           id: response.data.id,
           name: response.data.name,
