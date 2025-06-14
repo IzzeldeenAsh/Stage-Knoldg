@@ -211,7 +211,11 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
     if (this.currentStep$.value === 1) {
       const currentAccount = this.account$.value;
       if (!currentAccount.knowledgeType) {
+       if( this.lang === 'ar' ) {
+        this.showWarn('', 'يرجى اختيار نوع المعرفة قبل المتابعة.');
+       } else {
         this.showWarn('', 'Please select a knowledge type before proceeding.');
+       }
         return;
       }
     }
@@ -223,7 +227,11 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
       
       // Check if the documents array exists and has at least one document
       if (!currentAccount.documents || currentAccount.documents.length === 0) {
-        this.showWarn('', 'Please add at least one document before proceeding.');
+        if( this.lang === 'ar' ) {
+          this.showWarn('', 'يرجى إضافة على الأقل واحد أو أكثر من المستندات قبل المتابعة.');
+         } else {
+          this.showWarn('', 'Please add at least one document before proceeding.');
+         }
         return;
       }
       
@@ -258,7 +266,11 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
       // Check for empty titles
       const invalidDocuments = docs.filter(doc => !doc.file_name?.trim());
       if (invalidDocuments.length > 0) {
-        this.showWarn('', 'All documents must have titles');
+        if( this.lang === 'ar' ) {
+          this.showWarn('', 'يرجى إدخال عنوان لكل مستند');
+         } else {
+          this.showWarn('', 'All documents must have titles');
+         }
         return; // Don't advance to next step
       }
       
@@ -272,19 +284,31 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
       });
       
       if (duplicateTitles.length > 0) {
-        this.showWarn('', 'All document titles must be unique');
+        if( this.lang === 'ar' ) {
+          this.showWarn('', 'يرجى إدخال عنوان مختلف لكل مستند');
+         } else {
+          this.showWarn('', 'All document titles must be unique');
+         }
         return; // Don't advance to next step
       }
       
       // Check for upload errors
       if (this.hasAnyDocumentUploadErrors()) {
-        this.showWarn('', 'Please fix the upload errors before continuing');
+        if( this.lang === 'ar' ) {
+          this.showWarn('', 'يرجى إصلاح أخطاء التحميل قبل المتابعة.');
+         } else {
+          this.showWarn('', 'Please fix the upload errors before continuing');
+         }
         return; // Don't advance to next step
       }
       
       // Check for pending uploads
       if (this.documentsComponent.hasUploadsInProgress()) {
-        this.showWarn('', 'Please wait for all uploads to complete before continuing');
+        if( this.lang === 'ar' ) {
+          this.showWarn('', 'يرجى الإنتظار حتى ينتهي تحميل جميع المستندات قبل المتابعة.');
+         } else {
+          this.showWarn('', 'Please wait for all uploads to complete before continuing');
+         }
         return; // Don't advance to next step
       }
       
@@ -334,21 +358,33 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
       // Use the component's own validation method
       const isValid = step3Component.validateDocuments();
       if (!isValid) {
-        this.showWarn('', 'All documents must have descriptions');
+        if( this.lang === 'ar' ) {
+          this.showWarn('', 'يرجى إدخال وصف لكل مستند');
+         } else {
+          this.showWarn('', 'All documents must have descriptions');
+         }
         return; // Don't advance to next step
       }
     } else {
       // Fallback validation if component reference is not available
       // Validate that abstracts exist before submission
       if (!currentAccount.documentDescriptions || currentAccount.documentDescriptions.length === 0) {
-        this.showWarn('', 'Please generate or enter abstracts for all documents before continuing');
+        if( this.lang === 'ar' ) {
+          this.showWarn('', 'يرجى إدخال وصف لكل مستند');
+         } else {
+          this.showWarn('', 'Please generate or enter abstracts for all documents before continuing');
+         }
         return; // Don't advance to next step
       }
       
       // Check for empty abstracts
       const emptyAbstracts = currentAccount.documentDescriptions.filter(doc => !doc.description?.trim());
       if (emptyAbstracts.length > 0) {
-        this.showWarn('', 'All documents must have descriptions');
+        if( this.lang === 'ar' ) {
+          this.showWarn('', 'يرجى إدخال وصف لكل مستند');
+         } else {
+          this.showWarn('', 'All documents must have descriptions');
+         }
         return; // Don't advance to next step
       }
     }
@@ -392,27 +428,47 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
       // Fallback validation if component reference is not available
       // Validate required fields
       if (!currentAccount.title) {
-        this.showWarn('', 'Please enter a title for your knowledge');
+        if( this.lang === 'ar' ) {
+          this.showWarn('', 'يرجى إدخال عنوان للمعرفة');
+         } else {
+          this.showWarn('', 'Please enter a title for your knowledge');
+         }
         return; // Don't advance to next step
       }
       
       if (!currentAccount.description) {
-        this.showWarn('', 'Please enter a description for your knowledge');
+        if( this.lang === 'ar' ) {
+          this.showWarn('', 'يرجى إدخال وصف للمعرفة');
+         } else {
+          this.showWarn('', 'Please enter a description for your knowledge');
+         }
         return; // Don't advance to next step
       }
       
       if (!currentAccount.language) {
-        this.showWarn('', 'Please select a language for your knowledge');
+        if( this.lang === 'ar' ) {
+          this.showWarn('', 'يرجى اختيار اللغة للمعرفة');
+         } else {
+          this.showWarn('', 'Please select a language for your knowledge');
+         }
         return; // Don't advance to next step
       }
       
       if (!currentAccount.industry) {
-        this.showWarn('', 'Please select an industry for your knowledge');
+        if( this.lang === 'ar' ) {
+          this.showWarn('', 'يرجى اختيار الصناعة للمعرفة');
+         } else {
+          this.showWarn('', 'Please select an industry for your knowledge');
+         }
         return; // Don't advance to next step
       }
       
       if (!currentAccount.topicId) {
-        this.showWarn('', 'Please select a topic for your knowledge');
+        if( this.lang === 'ar' ) {
+          this.showWarn('', 'يرجى اختيار الموضوع للمعرفة');
+         } else {
+          this.showWarn('', 'Please select a topic for your knowledge');
+         }
         return; // Don't advance to next step
       }
       
@@ -421,31 +477,51 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
         // Region/country validation
         if ((!currentAccount.regions || currentAccount.regions.length === 0) && 
             (!currentAccount.countries || currentAccount.countries.length === 0)) {
-          this.showWarn('', 'Please select at least one region or country');
+          if( this.lang === 'ar' ) {
+            this.showWarn('', 'يرجى اختيار على الأقل واحد أو أكثر من المناطق أو الدول');
+           } else {
+            this.showWarn('', 'Please select at least one region or country');
+           }
           return; // Don't advance to next step
         }
       } else if (currentAccount.targetMarket === '4') {
         // Countries-only validation
         if (!currentAccount.countries || currentAccount.countries.length === 0) {
-          this.showWarn('', 'Please select at least one country');
+          if( this.lang === 'ar' ) {
+            this.showWarn('', 'يرجى اختيار على الأقل واحد أو أكثر من الدول');
+           } else {
+            this.showWarn('', 'Please select at least one country');
+           }
           return; // Don't advance to next step
         }
       } else if (currentAccount.targetMarket === '2') {
         // Economic blocks validation
         if (!currentAccount.economic_blocs || currentAccount.economic_blocs.length === 0) {
-          this.showWarn('', 'Please select at least one economic block');
+          if( this.lang === 'ar' ) {
+            this.showWarn('', 'يرجى اختيار على الأقل واحد أو أكثر من المناطق الاقتصادية');
+           } else {
+            this.showWarn('', 'Please select at least one economic block');
+           }
           return; // Don't advance to next step
         }
       } else if (currentAccount.targetMarket === '3') {
         // Worldwide option is valid by default
       } else {
-        this.showWarn('', 'Please select a target market option');
+        if( this.lang === 'ar' ) {
+          this.showWarn('', 'يرجى اختيار خيار حدد المركز الاقتصادي');
+         } else {
+          this.showWarn('', 'Please select a target market option');
+         }
         return; // Don't advance to next step
       }
       
       // Validate keywords
       if (!currentAccount.keywords || currentAccount.keywords.length === 0) {
-        this.showWarn('', 'Please add at least one keyword');
+        if( this.lang === 'ar' ) {
+          this.showWarn('', 'يرجى إضافة على الأقل واحد أو أكثر من الكلمات الرئيسية');
+         } else {
+          this.showWarn('', 'Please add at least one keyword');
+         }
         return; // Don't advance to next step
       }
     }
@@ -458,14 +534,22 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
       const customTopicName = step4Component.form.get('customTopic')?.value;
       
       if (!customTopicName) {
-        this.showWarn('', 'Please enter a custom topic name');
+        if( this.lang === 'ar' ) {
+          this.showWarn('', 'يرجى إدخال عنوان مخصص للمعرفة');
+         } else {
+          this.showWarn('', 'Please enter a custom topic name');
+         }
         this.isLoading = false;
         return; // Don't advance to next step
       }
       
       // Create a topic suggestion request
       if (!currentAccount.industry) {
-        this.showWarn('', 'Industry is required for creating a custom topic');
+        if( this.lang === 'ar' ) {
+          this.showWarn('', 'يرجى اختيار الصناعة للمعرفة');
+         } else {
+          this.showWarn('', 'Industry is required for creating a custom topic');
+         }
         this.isLoading = false;
         return; // Don't proceed if industry is missing
       }
@@ -561,13 +645,21 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
     
     // Validate publish status selection
     if (!currentAccount.publish_status) {
-      this.showWarn('', 'Please select a publishing option');
+      if( this.lang === 'ar' ) {
+        this.showWarn('', 'يرجى اختيار خيار النشر');
+       } else {
+        this.showWarn('', 'Please select a publishing option');
+       }
       return; // Don't advance to next step
     }
     
     // If scheduled publish is selected, validate the publish date
     if (currentAccount.publish_status === 'scheduled' && !currentAccount.publish_date_time) {
-      this.showWarn('', 'Please select a publish date and time');
+      if( this.lang === 'ar' ) {
+        this.showWarn('', 'يرجى اختيار تاريخ ووقت النشر');
+       } else {
+        this.showWarn('', 'Please select a publish date and time');
+       }
       return; // Don't advance to next step
     }
     

@@ -34,6 +34,7 @@ export class TopicsComponent implements OnInit, OnDestroy, AfterViewInit {
     { label: 'All', value: '' },
     { label: 'Active', value: 'active' },
     { label: 'Inactive', value: 'inactive' },
+    { label: 'Suggestion', value: 'suggestion' },
   ];
 
   industries: TreeNode[] = [];

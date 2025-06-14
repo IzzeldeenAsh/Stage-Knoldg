@@ -37,6 +37,7 @@
               <option value="">All Status</option>
               <option value="active">Active</option>
               <option value="inactive">Inactive</option>
+              <option value="suggestion">Suggestion</option>
             </select>
           </div>
           <!--end::Status filter-->
@@ -57,11 +58,7 @@
         <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_table_topics">
           <thead>
             <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
-              <th class="w-10px pe-2">
-                <div class="form-check form-check-sm form-check-custom form-check-solid me-3">
-                  <input class="form-check-input" type="checkbox" data-kt-check="true" data-kt-check-target="#kt_table_topics .form-check-input">
-                </div>
-              </th>
+           
               <th class="min-w-125px">ID</th>
               <th class="min-w-125px">Name (English)</th>
               <th class="min-w-125px">Name (Arabic)</th>
@@ -72,17 +69,13 @@
           </thead>
           <tbody class="text-gray-600 fw-semibold">
             <tr *ngFor="let topic of topics">
-              <td>
-                <div class="form-check form-check-sm form-check-custom form-check-solid">
-                  <input class="form-check-input" type="checkbox" [value]="topic.id">
-                </div>
-              </td>
+            
               <td>{{ topic.id }}</td>
               <td>{{ topic.names.en }}</td>
               <td>{{ topic.names.ar }}</td>
               <td>{{ getIndustryName(topic.industry_id) }}</td>
               <td>
-                <div [class]="'badge badge-light-' + (topic.status === 'active' ? 'success' : 'danger') + ' fw-bold'">
+                <div [class]="'badge badge-light-' + (topic.status === 'active' ? 'success' : topic.status === 'suggestion' ? 'warning' : 'danger') + ' fw-bold'">
                   {{ topic.status }}
                 </div>
               </td>
@@ -160,7 +153,8 @@
       />
       <div *ngIf="nameEn?.touched && nameEn?.invalid" class="fv-plugins-message-container">
         <div class="fv-help-block">
-          <span role="alert" class="text-danger">English name is required</span>
+          <span role="alert" class="text-danger" *ngIf="nameEn?.errors?.['required']">English name is required</span>
+          <span role="alert" class="text-danger" *ngIf="nameEn?.errors?.['serverError']">{{ nameEn?.errors?.['serverError'] }}</span>
         </div>
       </div>
     </div>
@@ -176,7 +170,8 @@
       />
       <div *ngIf="nameAr?.touched && nameAr?.invalid" class="fv-plugins-message-container">
         <div class="fv-help-block">
-          <span role="alert" class="text-danger">Arabic name is required</span>
+          <span role="alert" class="text-danger" *ngIf="nameAr?.errors?.['required']">Arabic name is required</span>
+          <span role="alert" class="text-danger" *ngIf="nameAr?.errors?.['serverError']">{{ nameAr?.errors?.['serverError'] }}</span>
         </div>
       </div>
     </div>
@@ -215,10 +210,12 @@
         <option value="">Select Status</option>
         <option value="active">Active</option>
         <option value="inactive">Inactive</option>
+        <option value="suggestion">Suggestion</option>
       </select>
       <div *ngIf="status?.touched && status?.invalid" class="fv-plugins-message-container">
         <div class="fv-help-block">
-          <span role="alert" class="text-danger">Status is required</span>
+          <span role="alert" class="text-danger" *ngIf="status?.errors?.['required']">Status is required</span>
+          <span role="alert" class="text-danger" *ngIf="status?.errors?.['serverError']">{{ status?.errors?.['serverError'] }}</span>
         </div>
       </div>
     </div>
