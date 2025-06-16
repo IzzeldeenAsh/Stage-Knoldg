@@ -320,20 +320,26 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
       
       // Add a slight delay to ensure document IDs are fetched
       setTimeout(() => {
-        // All validations passed, proceed with updating document details
-        console.log('Updating document details with IDs:', this.documentsComponent.documents);
-        
-        this.documentsComponent.updateDocumentDetails()
-          .then(() => {
+              // All validations passed, proceed with updating document details
+      console.log('Updating document details with IDs:', this.documentsComponent.documents);
+      
+      this.documentsComponent.updateDocumentDetails()
+        .then((success: boolean) => {
+          if (success) {
             console.log('All document details updated successfully');
             this.isLoading = false;
             this.currentStep$.next(nextStep);
-          })
-          .catch(error => {
-            console.error('Error updating document details:', error);
+          } else {
+            console.log('User chose not to proceed (language mismatch - edit option chosen)');
             this.isLoading = false;
-            this.handleServerErrors(error);
-          });
+            // Don't proceed to next step - user wants to edit
+          }
+        })
+        .catch(error => {
+          console.error('Error updating document details:', error);
+          this.isLoading = false;
+          this.handleServerErrors(error);
+        });
       }, 1000); // 1 second delay to ensure IDs are fetched
     } else {
       // No documents to update, just proceed

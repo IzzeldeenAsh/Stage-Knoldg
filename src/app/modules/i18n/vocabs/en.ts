@@ -52,6 +52,13 @@ export const locale = {
     ADDRESS: "Address",
     COMPANY_CONSULTING_FIELDS: 'Company Consulting Fields',
     LANGUAGE_MISMATCH_HINT:'File name not match document language',
+    LANGUAGE_MISMATCH_DETECTED: 'Language Mismatch Detected',
+    LANGUAGE_MISMATCH_MESSAGE: 'These files title and content uses different language. It\'s better to have a unified language',
+    LANGUAGE_MISMATCH_AFFECTED_DOCUMENTS: 'Affected Documents',
+    LANGUAGE_MISMATCH_RECOMMENDATION: 'Recommendation',
+    LANGUAGE_MISMATCH_RECOMMENDATION_TEXT: 'For the best user experience, we recommend using documents in the same language. You can either edit the document titles to match the content language or proceed anyway',
+    LANGUAGE_MISMATCH_EDIT: 'Edit Documents',
+    LANGUAGE_MISMATCH_IGNORE: 'Ignore & Continue',
     COMPANY_CERTIFICATIONS: 'Company Certifications',
     NO_SOCIAL_MEDIA: 'No social media',
     "EMPTY_DASHBOARD":{
@@ -189,7 +196,14 @@ export const locale = {
       "CURRENT_USER": "Manager"
     },
     INSIGHTER_DASHBOARD: {
-      TITLE: 'Dashboard'
+      TITLE: 'Dashboard',
+      "MY_KNOWLEDGE": "My knowledge library",
+      "ACCOUNT_SETTINGS": "Account Settings",
+      "MY_COMPANY": "My Team",
+      "INVITING": "Inviting",
+      "MY_DOWNLOADS": "My Downloads",
+      "MY_CONSULTING_SCHEDULE": "My Consulting Schedule",
+      "DASHBOARD": "Dashboard"
     },
     NOTIFICATIONS: {
       TITLE: 'Notifications',
@@ -527,7 +541,9 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       "UPLOAD": "Upload",
       "UPLOADING": "Uploading...",
       "DELETE": "Delete",
-      "DELETING": "Deleting..."
+      "DELETING": "Deleting...",
+      "SAVE": "Save",
+      "SAVING": "Saving..."
     },
     INSIGHTER_WIZARD: {
       COMPANY_AGREEMENT_REQUIRED:"Company Agreement Required",
@@ -810,7 +826,9 @@ Your wealth of knowledge is valued and many are eager to learn from it.
         "ACCOUNT_SETTINGS": "Account Settings",
         "MY_COMPANY": "My Team",
         "INVITING": "Inviting",
-        "MY_DOWNLOADS": "My Downloads"
+        "MY_DOWNLOADS": "My Downloads",
+        "MY_CONSULTING_SCHEDULE": "My Consulting Schedule",
+        "DASHBOARD": "Dashboard"
       },
       REQUESTS: {
         APPROVED: "Approved Requests",
@@ -1209,6 +1227,37 @@ UPLOAD: 'Upload',
       "NO_DATA_TITLE": "No Knowledge Published Yet",
       "NO_DATA_DESCRIPTION": "Your employees haven't published any knowledge items yet."
     },
+    "CONSULTING_SCHEDULE": {
+      "TITLE": "My Consulting Schedule",
+      "DESCRIPTION": "Set your availability for consulting sessions. Define your weekly schedule and add exception days when needed.",
+      "AVAILABLE_DAYS": "Available Days",
+      "EXCEPTION_DAYS": "Exception Days",
+      "DAYS": {
+        "MONDAY": "Monday",
+        "TUESDAY": "Tuesday", 
+        "WEDNESDAY": "Wednesday",
+        "THURSDAY": "Thursday",
+        "FRIDAY": "Friday",
+        "SATURDAY": "Saturday",
+        "SUNDAY": "Sunday"
+      },
+      "FROM": "From",
+      "TO": "to",
+      "DATE": "Date",
+      "ADD_TIME_SLOT": "Add Time Slot",
+      "ADD_EXCEPTION": "Add Exception Day",
+      "NO_EXCEPTIONS": "No exception days added yet",
+      "NO_EXCEPTIONS_DESC": "Add exception days for times when your regular schedule doesn't apply",
+      "SAVE": "Save Schedule",
+      "SAVING": "Saving...",
+      "SUCCESS": "Schedule updated successfully",
+      "ERROR": "Failed to update schedule",
+      "VALIDATION": {
+        "REQUIRED": "This field is required",
+        "TIME_REQUIRED": "Time is required",
+        "DATE_REQUIRED": "Date is required"
+      }
+    },
   },
   "CLIENT": "Client",
   "VERIFIED": "Verified",
@@ -1219,4 +1268,5 @@ UPLOAD: 'Upload',
   "COMPANY_CONSULTING_FIELDS": "Company Consulting Fields",
   "CERTIFICATIONS": "Certifications",
   "COMPANY_CERTIFICATIONS": "Company Certifications",
+ 
 };

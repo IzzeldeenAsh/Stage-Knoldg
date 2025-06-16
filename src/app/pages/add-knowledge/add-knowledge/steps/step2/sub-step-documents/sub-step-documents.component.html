@@ -216,3 +216,95 @@
         </div>
     </div>
 </form>
+
+<!-- Language Mismatch Dialog -->
+<p-dialog
+    [header]="languageMismatchTitle"
+    [(visible)]="showLanguageMismatchDialog"
+    [modal]="true"
+    [style]="{ width: '600px' }"
+    [contentStyle]="{ padding: '20px' }"
+    [closable]="false"
+    appendTo="body"
+>
+    <div class="language-mismatch-content">
+        <!-- Warning Icon -->
+        <div class="text-center mb-4">
+            <i class="ki-duotone ki-shield-cross fs-3x text-warning mb-3">
+                <span class="path1"></span>
+                <span class="path2"></span>
+            </i>
+        </div>
+        
+        <!-- Message -->
+        <div class="text-center mb-4">
+            <p class="fs-6 text-gray-600 mb-4">{{ languageMismatchMessage }}</p>
+        </div>
+        
+        <!-- Affected Documents List -->
+        <div class="bg-light-warning p-4 rounded mb-4" *ngIf="languageMismatchDocuments.length > 0">
+            <h6 class="text-warning mb-3">
+                <i class="ki-duotone ki-information-5 fs-2 text-warning me-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                    <span class="path3"></span>
+                </i>
+                {{ 'LANGUAGE_MISMATCH_AFFECTED_DOCUMENTS' | translate }}:
+            </h6>
+            <ul class="list-unstyled mb-0">
+                <li *ngFor="let document of languageMismatchDocuments" class="d-flex align-items-center mb-2">
+                    <i class="ki-duotone ki-document fs-3 text-warning mx-3">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                    <span class="fw-semibold text-gray-700">{{ document }}</span>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Recommendation -->
+        <div class="bg-light-info p-4 rounded mb-4">
+            <div class="d-flex align-items-start">
+                <i class="ki-duotone ki-information fs-2 text-info me-3 mt-1">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                    <span class="path3"></span>
+                </i>
+                <div>
+                    <h6 class="text-info mb-2">{{ 'LANGUAGE_MISMATCH_RECOMMENDATION' | translate }}:</h6>
+                    <p class="text-gray-600 mb-0 fs-7">
+                        {{ 'LANGUAGE_MISMATCH_RECOMMENDATION_TEXT' | translate }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer with buttons -->
+    <ng-template pTemplate="footer">
+        <div class="d-flex justify-content-between w-100">
+            <button 
+                type="button" 
+                class="btn btn-light-warning"
+                (click)="onLanguageMismatchCancel()"
+            >
+                <i class="ki-duotone ki-pencil fs-2 me-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                </i>
+                {{ 'LANGUAGE_MISMATCH_EDIT' | translate }}
+            </button>
+            <button 
+                type="button" 
+                class="btn btn-primary"
+                (click)="onLanguageMismatchConfirm()"
+            >
+                <i class="ki-duotone ki-check fs-2 me-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                </i>
+                {{ 'LANGUAGE_MISMATCH_IGNORE' | translate }}
+            </button>
+        </div>
+    </ng-template>
+</p-dialog>

@@ -30,6 +30,10 @@ const routes: Routes = [
         loadChildren: () => import('./insighter-dashboard/my-downloads/my-downloads.module').then(m => m.MyDownloadsModule)
       },
       {
+        path: 'my-consulting-schedule',
+        loadChildren: () => import('./insighter-dashboard/my-consulting-schedule/my-consulting-schedule.module').then(m => m.MyConsultingScheduleModule)
+      },
+      {
         path: 'account-settings',
         loadChildren: () => import('./insighter-dashboard/account-settings/account-settings.module').then(m => m.AccountSettingsModule)
       },

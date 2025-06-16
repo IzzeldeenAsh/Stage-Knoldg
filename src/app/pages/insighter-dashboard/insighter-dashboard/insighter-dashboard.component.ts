@@ -4,6 +4,7 @@ import { filter, map, take } from 'rxjs/operators';
 import { MenuItem } from 'primeng/api';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import { Observable } from 'rxjs';
+import { TranslationService } from 'src/app/modules/i18n';
 
 @Component({
   selector: 'app-insighter-dashboard',
@@ -15,18 +16,24 @@ export class InsighterDashboardComponent implements OnInit {
   items: MenuItem[] = [];
   activeItem: MenuItem | undefined;
   hasCompanyRole$: Observable<boolean>;
+  panelMenuItems: MenuItem[] = [];
+  lang: string = 'en';
   
   constructor(
     private router: Router,
-    private profileService: ProfileService
+    private profileService: ProfileService,
+    private translationService: TranslationService
   ) {
     this.hasCompanyRole$ = this.profileService.hasRole(['company']);
   }
 
   ngOnInit() {
+    this.handleLanguage();
+    
     // Initialize menu items after checking roles
     this.hasCompanyRole$.pipe(take(1)).subscribe(hasCompanyRole => {
       this.initializeMenuItems(hasCompanyRole);
+      this.buildPanelMenu(hasCompanyRole);
       
       // Set initial active tab based on current route
       this.setActiveTabFromRoute(this.router.url);
@@ -37,6 +44,82 @@ export class InsighterDashboardComponent implements OnInit {
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
       this.setActiveTabFromRoute(event.url);
+    });
+  }
+
+  handleLanguage() {
+    this.lang = this.translationService.getSelectedLanguage();
+    this.translationService.onLanguageChange().subscribe((lang) => {
+      this.lang = lang;
+      // Rebuild menu when language changes
+      this.hasCompanyRole$.pipe(take(1)).subscribe(hasCompanyRole => {
+        this.buildPanelMenu(hasCompanyRole);
+      });
+    });
+  }
+
+  buildPanelMenu(hasCompanyRole: boolean) {
+    this.panelMenuItems = [
+      {
+        label: this.translationService.getTranslation('INSIGHTER.DASHBOARD.NAV.DASHBOARD') || 'Dashboard',
+        icon: 'pi pi-home',
+        items: [
+          {
+            label: this.translationService.getTranslation('INSIGHTER.DASHBOARD.NAV.OVERVIEW') || 'Overview',
+            icon: 'pi pi-chart-line',
+            routerLink: '/app/dashboard/my-dashboard'
+          }
+        ]
+      },
+      {
+        label: this.translationService.getTranslation('INSIGHTER.DASHBOARD.NAV.REQUESTS') || 'Requests & Knowledge',
+        icon: 'pi pi-file',
+        items: [
+          {
+            label: this.translationService.getTranslation('INSIGHTER.DASHBOARD.NAV.MY_REQUESTS') || 'My Requests',
+            icon: 'pi pi-list',
+            routerLink: '/app/dashboard/my-requests'
+          },
+          {
+            label: this.translationService.getTranslation('INSIGHTER.DASHBOARD.NAV.MY_KNOWLEDGE') || 'My Knowledge',
+            icon: 'pi pi-book',
+            routerLink: '/app/dashboard/my-knowledge'
+          },
+          {
+            label: this.translationService.getTranslation('INSIGHTER.DASHBOARD.NAV.MY_DOWNLOADS') || 'My Downloads',
+            icon: 'pi pi-download',
+            routerLink: '/app/dashboard/my-downloads'
+          }
+        ]
+      }
+    ];
+
+    // Add company section if user has company role
+    if (hasCompanyRole) {
+      this.panelMenuItems.push({
+        label: this.translationService.getTranslation('INSIGHTER.DASHBOARD.NAV.COMPANY') || 'Company',
+        icon: 'pi pi-building',
+        items: [
+          {
+            label: this.translationService.getTranslation('INSIGHTER.DASHBOARD.NAV.MY_COMPANY') || 'My Company',
+            icon: 'pi pi-users',
+            routerLink: '/app/dashboard/my-company-settings'
+          }
+        ]
+      });
+    }
+
+    // Add settings section
+    this.panelMenuItems.push({
+      label: this.translationService.getTranslation('INSIGHTER.DASHBOARD.NAV.SETTINGS') || 'Settings',
+      icon: 'pi pi-cog',
+      items: [
+        {
+          label: this.translationService.getTranslation('INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS') || 'Account Settings',
+          icon: 'pi pi-user-edit',
+          routerLink: '/app/dashboard/account-settings'
+        }
+      ]
     });
   }
 

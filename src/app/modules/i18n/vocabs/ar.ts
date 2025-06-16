@@ -37,6 +37,13 @@ INSIGHTER_REQUESTS: {
     CHOOSE_ACCOUNT_TYPE_TIP_DESC: ' الحساب الفردي مخصص للشخص الواحد، بينما حساب الشركة مناسب إذا كنت ترغب في إنشاء فريق.',
     EMAIL_DOMAIN_MATCH:'البريد الالكتروني يجب أن يتطابق مع نطاق الموقع',
     COMPANY_CONSULTING_FIELDS: 'المجالات الاستشارية التي ينتمي إليها الشركة',
+    LANGUAGE_MISMATCH_DETECTED: 'تم اكتشاف عدم تطابق اللغة',
+    LANGUAGE_MISMATCH_MESSAGE: 'عناوين وملفات هذه المستندات تستخدم لغات مختلفة. من الأفضل استخدام لغة موحدة',
+    LANGUAGE_MISMATCH_AFFECTED_DOCUMENTS: 'المستندات المتأثرة',
+    LANGUAGE_MISMATCH_RECOMMENDATION: 'التوصية',
+    LANGUAGE_MISMATCH_RECOMMENDATION_TEXT: 'للحصول على أفضل تجربة للمستخدم، نوصي باستخدام مستندات بالغة نفسها. يمكنك إما تعديل عناوين المستندات لتطابق لغة المحتوى أو المتابعة على أي حال',
+    LANGUAGE_MISMATCH_EDIT: 'تعديل المستندات',
+    LANGUAGE_MISMATCH_IGNORE: 'تجاهل ومتابعة',
     COMPANY_CERTIFICATIONS: 'الشهادات التي ينتمي إليها الشركة',
     'DRAFT_STATUS': 'محفوظ',
     'REGIONS': 'القارات',
@@ -470,7 +477,9 @@ INSIGHTER_REQUESTS: {
       "UPLOAD": "رفع",
       "UPLOADING": "جاري الرفع...",
       "DELETE": "حذف",
-      "DELETING": "جاري الحذف..."
+      "DELETING": "جاري الحذف...",
+      "SAVE": "حفظ",
+      "SAVING": "جاري الحفظ..."
     },
     INSIGHTER_WIZARD: {
       ACCOUNT_TYPE: "نوع الحساب",
@@ -782,7 +791,9 @@ INSIGHTER_REQUESTS: {
           "MY_KNOWLEDGE": "مكتبة المعرفة" ,
           "ACCOUNT_SETTINGS": "إعدادات الحساب",
           "MY_COMPANY": "فريقي",
-          "MY_DOWNLOADS": "التحميلات"
+          "MY_DOWNLOADS": "التحميلات",
+          "MY_CONSULTING_SCHEDULE": "جدولة الاستشارات",
+          "DASHBOARD": "لوحة المعلومات"
         },
         "REQUESTS": {
           APPROVED: "الطلبات المقبولة",
@@ -1130,6 +1141,37 @@ INSIGHTER_REQUESTS: {
   "ADDRESS": "العنوان",
   "NO_SOCIAL_MEDIA": "لا توجد روابط وسائل تواصل اجتماعي متاحة",
   "CERTIFICATIONS": "الشهادات",
+  "CONSULTING_SCHEDULE": {
+    "TITLE": "جدول الاستشارات",
+    "DESCRIPTION": "حدد مواعيد توفرك لجلسات الاستشارة. قم بتعيين جدولك الأسبوعي وأضف أيام غير متاح فيها عند الحاجة.",
+    "AVAILABLE_DAYS": "الأيام المتاحة",
+    "EXCEPTION_DAYS": "أيام عدم التوفر",
+    "DAYS": {
+      "MONDAY": "الاثنين",
+      "TUESDAY": "الثلاثاء",
+      "WEDNESDAY": "الأربعاء", 
+      "THURSDAY": "الخميس",
+      "FRIDAY": "الجمعة",
+      "SATURDAY": "السبت",
+      "SUNDAY": "الأحد"
+    },
+    "FROM": "من",
+    "TO": "إلى",
+    "DATE": "التاريخ",
+    "ADD_TIME_SLOT": "إضافة فترة زمنية",
+    "ADD_EXCEPTION": "إضافة يوم غير متاح",
+    "NO_EXCEPTIONS": "لم يتم إضافة أيام غير متاحة بعد",
+    "NO_EXCEPTIONS_DESC": "أضف الأيام التي لن تكون متاحاً فيها للاستشارات خارج جدولك المعتاد",
+    "SAVE": "حفظ الجدول",
+    "SAVING": "جاري الحفظ...",
+    "SUCCESS": "تم تحديث الجدول بنجاح",
+    "ERROR": "فشل في تحديث الجدول",
+    "VALIDATION": {
+      "REQUIRED": "هذا الحقل مطلوب",
+      "TIME_REQUIRED": "الوقت مطلوب",
+      "DATE_REQUIRED": "التاريخ مطلوب"
+    }
+  },
 },
 
 }
