@@ -38,7 +38,6 @@
 .header-actions {
   display: flex;
   align-items: center;
-  margin-left: 2.7rem;
 }
 
 /* User Dropdown Styles */
@@ -759,5 +758,120 @@ app-user-inner {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Header Search Styles */
+.header-search {
+  .search-input {
+    width: 250px;
+    height: 36px;
+    background-color: #ffffff !important;
+    border: 1px solid #d1d5db !important;
+    color: #1f2937 !important;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+
+    &::placeholder {
+      color: #6b7280 !important;
+    }
+
+    &:focus {
+      background-color: #ffffff !important;
+      border-color: #3B8AEF !important;
+      box-shadow: 0 0 0 0.2rem rgba(59, 138, 239, 0.25) !important;
+      outline: none;
+      color: #1f2937 !important;
+    }
+
+    &:hover {
+      background-color: #ffffff !important;
+      border-color: #9ca3af !important;
+    }
+  }
+
+  .search-icon-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    color: #6b7280 !important;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #374151 !important;
+      background: transparent;
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: none;
+      background: transparent;
+    }
+
+    &.search-icon-right {
+      right: 8px;
+    }
+
+    &.search-icon-left {
+      left: 8px;
+    }
+  }
+}
+
+/* Dashboard route specific styles */
+.desktop-header {
+  .header-search {
+    .search-input {
+      background-color: rgba(0, 0, 0, 0.1);
+      border-color: rgba(0, 0, 0, 0.2);
+      color: #e8e8e8; // Light gray close to white
+
+      &::placeholder {
+        color: #d0d0d0; // Light gray for placeholder
+      }
+
+      &:focus {
+        background-color: rgba(0, 0, 0, 0.05);
+        border-color: #3B8AEF;
+        color: #e8e8e8; // Light gray close to white
+      }
+
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.08);
+      }
+    }
+
+    .search-icon-btn {
+      color: #d0d0d0; // Light gray for icon
+
+      &:hover {
+        color: #e8e8e8; // Lighter on hover
+      }
+    }
+  }
+}
+
+/* Mobile responsive styles */
+@media (max-width: 991.98px) {
+  .header-search {
+    display: none !important;
+  }
+}
+
+/* RTL support */
+[dir="rtl"] {
+  .header-search {
+    .search-input {
+      text-align: right;
+    }
+  }
 }
 

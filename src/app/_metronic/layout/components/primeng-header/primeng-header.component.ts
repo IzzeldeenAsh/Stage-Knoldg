@@ -69,6 +69,53 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
   isIndustriesMenuOpen: boolean = false;
   
   isDashboardRoute: boolean = false;
+  
+  // Search functionality
+  searchQuery: string = '';
+  
+  /**
+   * Handle search submission
+   * @param query Search query string
+   * @param searchType Type of search (knowledge or insighter)
+   */
+  handleSearch(query: string = this.searchQuery, searchType: 'knowledge' | 'insighter' = 'knowledge') {
+    const searchParams = new URLSearchParams();
+    if (query.trim()) {
+      searchParams.set('keyword', query.trim());
+    }
+    searchParams.set('search_type', searchType);
+    
+    // Navigate to the React app's search page
+    const searchUrl = `https://knoldg.com/${this.lang}/home?${searchParams.toString()}`;
+    window.location.href = searchUrl;
+  }
+  
+  /**
+   * Handle search form submission
+   * @param event Form submit event
+   */
+  onSearchSubmit(event: Event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.handleSearch();
+  }
+  
+  /**
+   * Handle search input click - just focus, don't redirect immediately
+   */
+  onSearchInputClick() {
+    // Don't redirect immediately on click, let user type first
+    // Redirect only happens on form submit or search icon click
+  }
+  
+  /**
+   * Handle search input change
+   * @param event Input event
+   */
+  onSearchInput(event: Event) {
+    const target = event.target as HTMLInputElement;
+    this.searchQuery = target.value;
+  }
 
   /**
    * Check if the user has any of the specified roles
@@ -80,6 +127,20 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
       return false;
     }
     return roles.some(role => this.profile.roles.includes(role));
+  }
+
+  /**
+   * Check if the Add Knowledge button should be shown
+   * @returns boolean indicating if the button should be displayed
+   */
+  shouldShowAddKnowledgeButton(): boolean {
+    const currentUrl = this.router.url;
+    const excludedRoutes = [
+      '/app/insighter-register/vertical',
+      '/app/add-knowledge/stepper'
+    ];
+    
+    return !excludedRoutes.some(route => currentUrl.includes(route));
   }
 
   constructor(
