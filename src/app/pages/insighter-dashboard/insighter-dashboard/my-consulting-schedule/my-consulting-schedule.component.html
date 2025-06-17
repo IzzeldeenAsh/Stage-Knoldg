@@ -1,0 +1,151 @@
+<div class="schedule-container">
+  <div class="header">
+    <h2>{{ 'CONSULTING_SCHEDULE.TITLE' | translate }}</h2>
+    <p>{{ 'CONSULTING_SCHEDULE.DESCRIPTION' | translate }}</p>
+    <p>{{ 'CONSULTING_SCHEDULE.DESCRIPTION' | translate }}</p>
+  </div>
+  <form [formGroup]="scheduleForm" (ngSubmit)="onSave()">
+    <div class="sections-row">
+      <!-- Available Days Section -->
+      <div class="section available-days-section">
+        <h3>{{ 'CONSULTING_SCHEDULE.AVAILABLE_DAYS' | translate }}</h3>
+        
+        <div formArrayName="availability">
+          <div 
+            *ngFor="let dayGroup of availabilityFormArray.controls; let dayIndex = index" 
+            class="day-row"
+            [formGroupName]="dayIndex"
+          >
+            <div class="day-checkbox">
+              <p-checkbox 
+                formControlName="active"
+                [binary]="true"
+                (onChange)="onDayToggle(dayIndex)"
+                [inputId]="'day-' + dayIndex"
+              ></p-checkbox>
+              <label [for]="'day-' + dayIndex">
+                {{ (weekDays[dayIndex]?.label || 'CONSULTING_SCHEDULE.DAYS.MONDAY') | translate }}
+              </label>
+            </div>
+            
+            <div *ngIf="dayGroup.get('active')?.value" class="time-slots" formArrayName="times">
+              <div 
+                *ngFor="let timeSlot of getTimesFormArray(dayIndex).controls; let timeIndex = index"
+                class="time-slot"
+                [formGroupName]="timeIndex"
+              >
+                <p-calendar
+                  formControlName="start_time"
+                  [timeOnly]="true"
+                  [showTime]="true"
+                  hourFormat="24"
+                  placeholder="Start Time"
+                ></p-calendar>
+                
+                <span class="time-separator">{{ 'CONSULTING_SCHEDULE.TO' | translate }}</span>
+                
+                <p-calendar
+                  formControlName="end_time"
+                  [timeOnly]="true"
+                  [showTime]="true"
+                  hourFormat="24"
+                  placeholder="End Time"
+                ></p-calendar>
+                
+                <button 
+                  *ngIf="getTimesFormArray(dayIndex).length > 1"
+                  type="button" 
+                  class="btn-remove"
+                  (click)="removeTimeSlot(dayIndex, timeIndex)"
+                >
+                  <i class="pi pi-trash"></i>
+                </button>
+                
+                <button 
+                  type="button" 
+                  class="btn-add"
+                  (click)="addTimeSlot(dayIndex)"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Exception Days Section -->
+      <div class="section exception-days-section">
+        <h3>{{ 'CONSULTING_SCHEDULE.EXCEPTION_DAYS' | translate }}</h3>
+        
+        <div formArrayName="exceptions" *ngIf="exceptionsFormArray.length > 0">
+          <div 
+            *ngFor="let exceptionGroup of exceptionsFormArray.controls; let exceptionIndex = index" 
+            class="exception-row"
+            [formGroupName]="exceptionIndex"
+          >
+            <p-calendar
+              formControlName="exception_date"
+              dateFormat="yy-mm-dd"
+              placeholder="Select Date"
+              styleClass="date-calendar"
+            ></p-calendar>
+            
+            <p-calendar
+              formControlName="start_time"
+              [timeOnly]="true"
+              [showTime]="true"
+              hourFormat="24"
+              placeholder="Start Time"
+            ></p-calendar>
+            
+            <span class="time-separator">{{ 'CONSULTING_SCHEDULE.TO' | translate }}</span>
+            
+            <p-calendar
+              formControlName="end_time"
+              [timeOnly]="true"
+              [showTime]="true"
+              hourFormat="24"
+              placeholder="End Time"
+            ></p-calendar>
+            
+            <button 
+              type="button" 
+              class="btn-remove"
+              (click)="removeException(exceptionIndex)"
+            >
+              <i class="pi pi-trash"></i>
+            </button>
+          </div>
+        </div>
+        
+        <button 
+          type="button" 
+          class="btn-add-exception"
+          (click)="addException()"
+        >
+          {{ 'CONSULTING_SCHEDULE.ADD_EXCEPTION' | translate }}
+        </button>
+        
+        <div *ngIf="exceptionsFormArray.length === 0" class="no-exceptions">
+          {{ 'CONSULTING_SCHEDULE.NO_EXCEPTIONS_DESC' | translate }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Save Button -->
+    <button 
+      type="submit" 
+      class="btn-save"
+      [disabled]="saving() || !scheduleForm.valid"
+    >
+      <span *ngIf="!saving()">{{ 'CONSULTING_SCHEDULE.SAVE' | translate }}</span>
+      <span *ngIf="saving()">{{ 'CONSULTING_SCHEDULE.SAVING' | translate }}</span>
+    </button>
+  </form>
+
+  <!-- Loading Overlay -->
+  <div *ngIf="loading()" class="loading">
+    <span>{{ 'COMMON.LOADING' | translate }}</span>
+  </div>
+</div> 

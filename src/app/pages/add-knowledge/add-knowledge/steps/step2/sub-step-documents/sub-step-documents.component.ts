@@ -60,6 +60,13 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   
   // Track active upload subscriptions
   private activeUploadSubscriptions: { [index: number]: Subscription } = {};
+  
+  // Language mismatch dialog properties
+  showLanguageMismatchDialog = false;
+  languageMismatchTitle = '';
+  languageMismatchMessage = '';
+  languageMismatchDocuments: string[] = [];
+  private languageMismatchResolver: ((value: boolean) => void) | null = null;
 
   constructor(
     injector: Injector,
@@ -650,6 +657,10 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       return Promise.resolve(true); // No documents to update
     }
 
+    return this.performDocumentUpdate(false); // Start with ignore_mismatch: false
+  }
+
+  private performDocumentUpdate(ignoreMismatch: boolean): Promise<boolean> {
     // Prepare the documents data using IDs from form controls
     const documentsData = this.documentControls.controls.map((control, index) => {
       const docIdFromControl = control.get('docId')?.value;
@@ -659,7 +670,8 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       return {
         id: docIdFromControl || doc.id,
         file_name: doc.file_name,
-        price: doc.isCharity ? 0 : doc.price
+        price: doc.isCharity ? 0 : doc.price,
+        ignore_mismatch: ignoreMismatch
       };
     });
     
@@ -673,8 +685,29 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
             this.showSuccess('', 'Document details updated successfully');
             resolve(true);
           },
-          error: (error) => {
-            console.error('Error updating document details:', error);
+                  error: (error) => {
+          console.error('Error updating document details:', error);
+          
+          // Check if this is a language mismatch error
+          if (this.isLanguageMismatchError(error)) {
+            this.handleLanguageMismatchError(error)
+              .then((shouldIgnore) => {
+                if (shouldIgnore) {
+                  // Retry with ignore_mismatch: true
+                  this.performDocumentUpdate(true)
+                    .then(resolve)
+                    .catch(reject);
+                } else {
+                  // User chose to edit, don't proceed
+                  resolve(false);
+                }
+              })
+              .catch(() => {
+                // User cancelled or error occurred
+                resolve(false);
+              });
+          } else {
+            // Handle other errors normally
             let errorMessage = 'Failed to update document details';
             if (error.error && error.error.message) {
               errorMessage += `: ${error.error.message}`;
@@ -684,8 +717,157 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
             this.showError('Update Error', errorMessage);
             reject(error);
           }
+        }
         });
     });
+  }
+
+  private isLanguageMismatchError(error: any): boolean {
+    return error.error && 
+           error.error.message && 
+           (error.error.message.includes('File name not match document language') ||
+            error.error.message.includes('اسم الملف غير متطابق مع لغة المستند')) &&
+           error.error.errors;
+  }
+
+  private handleLanguageMismatchError(error: any): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      try {
+        console.log('Language mismatch error details:', {
+          error: error.error,
+          currentDocuments: this.documents.map(doc => ({ id: doc.id, file_name: doc.file_name })),
+          formControlDocIds: this.documentControls.controls.map((control, index) => ({
+            index,
+            docId: control.get('docId')?.value,
+            fileName: control.get('file_name')?.value
+          }))
+        });
+        
+        // Extract document indices from error
+        const errorKeys = Object.keys(error.error.errors);
+        const documentIndices: number[] = [];
+        const affectedDocumentNames: string[] = [];
+
+        errorKeys.forEach(key => {
+          // Extract index from keys like "documents.55", "documents.44"
+          const match = key.match(/documents\.(\d+)/);
+          if (match) {
+            const serverIndex = parseInt(match[1], 10);
+            documentIndices.push(serverIndex);
+            
+            // The number in the error might be the document ID or server index, not local array index
+            // Try multiple approaches to find the document name
+            let documentFound = false;
+            let documentName = '';
+            
+            // Approach 1: Find by document ID in our documents array
+            const docById = this.documents.find(doc => doc.id === serverIndex);
+            if (docById) {
+              documentName = docById.file_name;
+              documentFound = true;
+            }
+            
+            // Approach 2: Find by docId in form controls
+            if (!documentFound) {
+              for (let i = 0; i < this.documentControls.controls.length; i++) {
+                const control = this.documentControls.at(i);
+                const docId = control.get('docId')?.value;
+                if (docId === serverIndex) {
+                  documentName = control.get('file_name')?.value || this.documents[i]?.file_name || '';
+                  if (documentName) {
+                    documentFound = true;
+                    break;
+                  }
+                }
+              }
+            }
+            
+            // Approach 3: Check if serverIndex is actually an array index
+            if (!documentFound && serverIndex < this.documents.length && this.documents[serverIndex]) {
+              documentName = this.documents[serverIndex].file_name;
+              if (documentName) {
+                documentFound = true;
+              }
+            }
+            
+            // Approach 4: Search through all documents for any matching ID
+            if (!documentFound) {
+              const docWithMatchingId = this.documents.find(doc => 
+                doc.id && (doc.id.toString() === serverIndex.toString())
+              );
+              if (docWithMatchingId) {
+                documentName = docWithMatchingId.file_name;
+                documentFound = true;
+              }
+            }
+            
+            // Final fallback: Use a more descriptive generic name
+            if (!documentFound || !documentName.trim()) {
+              documentName = `Document (ID: ${serverIndex})`;
+            }
+            
+            affectedDocumentNames.push(documentName);
+          }
+        });
+
+        // Always show the dialog even if we couldn't extract specific document names
+        if (affectedDocumentNames.length === 0) {
+          affectedDocumentNames.push('One or more documents');
+        }
+        
+        // Store the affected documents for the modal
+        this.languageMismatchDocuments = affectedDocumentNames;
+        
+        const message = this.translate.getTranslation('LANGUAGE_MISMATCH_MESSAGE');
+
+        // Show confirmation dialog
+        this.showConfirmationDialog(
+          this.translate.getTranslation('LANGUAGE_MISMATCH_DETECTED'),
+          message,
+          this.translate.getTranslation('LANGUAGE_MISMATCH_EDIT'),
+          this.translate.getTranslation('LANGUAGE_MISMATCH_IGNORE')
+        ).then((result) => {
+          if (result) {
+            // User clicked "Ignore"
+            resolve(true);
+          } else {
+            // User clicked "Edit" or cancelled
+            resolve(false);
+          }
+        }).catch(() => {
+          resolve(false);
+        });
+
+      } catch (parseError) {
+        console.error('Error parsing language mismatch error:', parseError);
+        resolve(false);
+      }
+    });
+  }
+
+  private showConfirmationDialog(title: string, message: string, cancelText: string, confirmText: string): Promise<boolean> {
+    return new Promise((resolve) => {
+      this.languageMismatchTitle = title;
+      this.languageMismatchMessage = message;
+      this.showLanguageMismatchDialog = true;
+      this.languageMismatchResolver = resolve;
+    });
+  }
+
+  onLanguageMismatchConfirm(): void {
+    this.showLanguageMismatchDialog = false;
+    if (this.languageMismatchResolver) {
+      this.languageMismatchResolver(true); // User clicked "Ignore"
+      this.languageMismatchResolver = null;
+    }
+  }
+
+  onLanguageMismatchCancel(): void {
+    this.showLanguageMismatchDialog = false;
+    if (this.languageMismatchResolver) {
+      this.languageMismatchResolver(false); // User clicked "Edit"
+      this.languageMismatchResolver = null;
+    }
   }
 
   // Helper method to check for duplicate file names

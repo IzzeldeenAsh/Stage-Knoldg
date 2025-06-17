@@ -1,6 +1,6 @@
 <p-toast></p-toast>
 <div class="flex-column flex-row-fluid" id="kt_app_wrapper" > 
-  <div id="kt_app_toolbar" class="app-toolbar"  style="padding-top: 60px;">
+  <div id="kt_app_toolbar" class="app-toolbar"  style="padding-top: 90px;">
     <div
       id="kt_app_toolbar_container"
       class="app-container container-xxl d-flex align-items-start"
@@ -13,95 +13,100 @@
         <app-requests-statistics *ngIf="isRouteActive('my-requests')"></app-requests-statistics>
         <app-knowledge-statistics *ngIf="isRouteActive('my-knowledge')"></app-knowledge-statistics>
         <app-downloads-statistics *ngIf="isRouteActive('my-downloads')"></app-downloads-statistics>
+        <app-consulting-schedule-header *ngIf="isRouteActive('my-consulting-schedule')"></app-consulting-schedule-header>
         <app-account-settings-header *ngIf="isRouteActive('account-settings')"></app-account-settings-header>
         <app-company-statistics *ngIf="isRouteActive('my-company-settings') && (hasCompanyRole$ | async)"></app-company-statistics>
       </div>
     </div>
   </div>
 
-  <div class="app-container container-xxl">
+  <div class="app-container w-100 ">
     <div class="app-main flex-column flex-row-fluid">
       <div class="d-flex flex-column flex-column-fluid">
-        <div class="card">
+        <div class="d-flex flex-lg-row flex-column">
           
-          <!-- Metronic Style Navigation Tabs -->
-          <div class="px-10">
-            <nav
-              class="d-flex flex-column flex-md-row justify-content-between border-bottom border-gray-200 pt-6 pb-4 px-6 overflow-auto"
-            >
-              <ul
-                class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bolder flex-nowrap py-3"
-              >
-                <li class="nav-item">
-                  <a
-                    class="nav-link text-active-primary mx-6"
-                    [routerLink]="['my-dashboard']"
-                    routerLinkActive="active"
-                  >
-                    <i class="ki-duotone ki-abstract-28  fs-2 mx-2"><span class="path1"></span><span class="path2"></span></i>
-                    <span class="fs-6">{{ 'INSIGHTER.DASHBOARD.NAV.OVERVIEW' | translate }}</span>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a
-                    class="nav-link text-active-primary mx-6"
-                    [routerLink]="['my-requests']"
-                    routerLinkActive="active"
-                  >
-                    <i class="ki-duotone ki-document mx-2 fs-2"><span class="path1"></span><span class="path2"></span></i>
-                    <span class="fs-6">{{ 'INSIGHTER.DASHBOARD.NAV.MY_REQUESTS' | translate }}</span>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a
-                    class="nav-link text-active-primary mx-6"
-                    [routerLink]="['my-knowledge']"
-                    routerLinkActive="active"
-                  >
-                    <i class="ki-duotone ki-book mx-2 fs-2"><span class="path1"></span><span class="path2"></span></i>
-                    <span class="fs-6">{{ 'INSIGHTER.DASHBOARD.NAV.MY_KNOWLEDGE' | translate }}</span>
-                  </a>
-                </li>
-         
-                <li class="nav-item" *ngIf="hasCompanyRole$ | async">
-                  <a
-                    class="nav-link text-active-primary mx-6"
-                    [routerLink]="['my-company-settings']"
-                    routerLinkActive="active"
-                  >
-                    <i class="ki-duotone ki-office-bag mx-2 fs-2"><span class="path1"></span><span class="path2"></span></i>
-                    <span class="fs-6">{{ 'INSIGHTER.DASHBOARD.NAV.MY_COMPANY' | translate }}</span>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a
-                    class="nav-link text-active-primary mx-6"
-                    [routerLink]="['my-downloads']"
-                    routerLinkActive="active"
-                  >
-                  <i class="ki-duotone ki-file-down  fs-2 mx-2"><span class="path1"></span><span class="path2"></span></i>
-                    <span class="fs-6">{{ 'INSIGHTER.DASHBOARD.NAV.MY_DOWNLOADS' | translate }}</span>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a
-                    class="nav-link text-active-primary"
-                    [routerLink]="['account-settings']"
-                    routerLinkActive="active"
-                  >
-                    <i class="ki-duotone ki-setting-2 mx-2 fs-2"><span class="path1"></span><span class="path2"></span></i>
-                    <span class="fs-6">{{ 'INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS' | translate }}</span>
-                  </a>
-                </li>
-              </ul>
-            </nav>
-            
+          <!-- Side Navigation -->
+          <div class="side-nav-container ">
+            <div class="navigation-cards">
+              <!-- Dashboard Card -->
+              <div class="p-card navigation-card">
+                <div class="p-card-header">
+                  <h3>{{ 'INSIGHTER.DASHBOARD.NAV.DASHBOARD' | translate }}</h3>
+                </div>
+                <div class="p-card-body">
+                  <div class="nav-item" [routerLink]="['my-dashboard']" routerLinkActive="active">
+                    <div class="item-icon">
+                      <i class="ki-duotone ki-abstract-28"><span class="path1"></span><span class="path2"></span></i>
+                    </div>
+                    <div class="item-label">
+                      {{ 'INSIGHTER.DASHBOARD.NAV.OVERVIEW' | translate }}
+                    </div>
+                  </div>
+                  <div class="nav-item" [routerLink]="['my-requests']" routerLinkActive="active">
+                    <div class="item-icon">
+                      <i class="ki-duotone ki-document"><span class="path1"></span><span class="path2"></span></i>
+                    </div>
+                    <div class="item-label">
+                      {{ 'INSIGHTER.DASHBOARD.NAV.MY_REQUESTS' | translate }}
+                    </div>
+                  </div>
+                  <div class="nav-item" [routerLink]="['my-knowledge']" routerLinkActive="active">
+                    <div class="item-icon">
+                      <i class="ki-duotone ki-book"><span class="path1"></span><span class="path2"></span></i>
+                    </div>
+                    <div class="item-label">
+                      {{ 'INSIGHTER.DASHBOARD.NAV.MY_KNOWLEDGE' | translate }}
+                    </div>
+                  </div>
+                  <div class="nav-item" [routerLink]="['my-downloads']" routerLinkActive="active">
+                    <div class="item-icon">
+                      <i class="ki-duotone ki-file-down"><span class="path1"></span><span class="path2"></span></i>
+                    </div>
+                    <div class="item-label">
+                      {{ 'INSIGHTER.DASHBOARD.NAV.MY_DOWNLOADS' | translate }}
+                    </div>
+                  </div>
+                  <!-- <div class="nav-item" [routerLink]="['my-consulting-schedule']" routerLinkActive="active">
+                    <div class="item-icon">
+                      <i class="ki-duotone ki-calendar"><span class="path1"></span><span class="path2"></span></i>
+                    </div>
+                    <div class="item-label">
+                      {{ 'INSIGHTER.DASHBOARD.NAV.MY_CONSULTING_SCHEDULE' | translate }}
+                    </div>
+                  </div> -->
+                  <div class="nav-item" [routerLink]="['my-company-settings']" routerLinkActive="active">
+                    <div class="item-icon">
+                      <i class="ki-duotone ki-office-bag"><span class="path1"></span><span class="path2"></span></i>
+                    </div>
+                    <div class="item-label">
+                      {{ 'INSIGHTER.DASHBOARD.NAV.MY_COMPANY' | translate }}
+                    </div>
+                  </div>
+                  <div class="nav-item" [routerLink]="['account-settings']" routerLinkActive="active">
+                    <div class="item-icon">
+                      <i class="ki-duotone ki-setting-2"><span class="path1"></span><span class="path2"></span></i>
+                    </div>
+                    <div class="item-label">
+                      {{ 'INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS' | translate }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+             
+            </div>
           </div>
 
-          <!-- Router Outlet -->
-          <div class="card-body">
-            <router-outlet></router-outlet>
+          <!-- Main Content Area -->
+          <div class="main-content-area flex-fill pe-5">
+            <div class="card">
+              <div class="card-body">
+                <router-outlet></router-outlet>
+              </div>
+            </div>
           </div>
+          
         </div>
       </div>
     </div>
