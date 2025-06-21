@@ -877,6 +877,7 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
         id: documentId,
         file_name: this.documentForm.get('file_name')?.value,
         price: this.documentForm.get('isCharity')?.value ? '0' : this.documentForm.get('price')?.value,
+        ignore_mismatch: false
       }]
     };
     
@@ -1121,20 +1122,13 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
         return;
       }
       
-      // 1. Set document details (title and price)
-      const documentDetailsRequest = {
-        documents: [{
-          id: documentId,
-          file_name: this.documentForm.get('file_name')?.value,
-          price: this.documentForm.get('isCharity')?.value ? '0' : this.documentForm.get('price')?.value,
-        }]
-      };
-      
-      this.addInsightStepsService.updateKnowledgeDocumentDetails(
-        +this.knowledgeId,
-        documentDetailsRequest.documents
-      ).subscribe({
-        next: () => {
+      // 1. Set document details (title and price) with language mismatch handling
+      this.updateDocumentDetailsWithMismatchHandling(documentId, false)
+        .then((success: boolean) => {
+          if (!success) {
+            this.isSaving = false;
+            return;
+          }
           // 2. Set document description
           const description = this.documentForm.get('description')?.value;
           
@@ -1173,12 +1167,11 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
               this.isSaving = false;
             }
           });
-        },
-        error: (error: any) => {
+        })
+        .catch((error: any) => {
           this.showError('', error?.error?.message || 'Error setting document details');
           this.isSaving = false;
-        }
-      });
+        });
     }
   }
 
