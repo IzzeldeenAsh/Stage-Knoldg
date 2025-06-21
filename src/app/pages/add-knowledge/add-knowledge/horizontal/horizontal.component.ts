@@ -86,14 +86,23 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
             } else if (knowledge.economic_blocs && knowledge.economic_blocs.length > 0) {
               // If economic blocs are set, use economic blocks option
               targetMarket = '2';
-            } else if (!knowledge.regions || knowledge.regions.length === 0) {
-              if (!knowledge.countries || knowledge.countries.length === 0) {
-                // If no regions or countries are set, default to regions/countries
-                targetMarket = '1';
-              }
+            } else if (knowledge.countries && knowledge.countries.length > 0 && 
+                      (!knowledge.regions || knowledge.regions.length === 0)) {
+              // If only countries are selected (no regions), use countries only option
+              targetMarket = '4';
+            } else if (knowledge.regions && knowledge.regions.length > 0) {
+              // If regions are selected (with or without countries), use regions/countries option
+              targetMarket = '1';
+            } else {
+              // Default fallback to regions/countries option
+              targetMarket = '1';
             }
 
             // Update the account with fetched data
+            const economicBlocIds = knowledge.economic_blocs?.map((bloc: any) => bloc.id) || [];
+            console.log('Horizontal Component - Raw economic_blocs from API:', knowledge.economic_blocs);
+            console.log('Horizontal Component - Mapped economic bloc IDs:', economicBlocIds);
+            
             const updatedAccount: any = {
               ...this.account$.value,
               knowledgeId: this.knowledgeId,
@@ -106,14 +115,16 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
               language: knowledge.language,
               regions: knowledge.regions?.map((region: any) => region.id) || [],
               countries: knowledge.countries?.map((country: any) => country.id) || [],
-              economic_bloc: knowledge.economic_blocs || [],
+              economic_blocs: economicBlocIds,
               description: knowledge.description,
               targetMarket: targetMarket,
               keywords: knowledge.keywords?.map((keyword: any) => ({ display: keyword, value: keyword })) || [],
               customTopic: '',
               documents: [],
               publish_date_time: knowledge.published_at ? moment(knowledge.published_at).format('YYYY-MM-DD HH:mm:ss') : '',
-              publish_status: knowledge.status === 'published' ? 'draft' : knowledge.status
+              publish_status: knowledge.status === 'published' ? 'draft' : knowledge.status,
+              // Also store the full economic blocks data for the step4 component
+              economic_blocs_data: knowledge.economic_blocs || []
             };
 
             this.account$.next(updatedAccount);

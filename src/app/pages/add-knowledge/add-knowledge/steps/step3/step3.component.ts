@@ -329,13 +329,24 @@ export class Step3Component extends BaseComponent implements OnInit {
               // Auto-trigger document parsing for documents without descriptions
               this.startSummaryPolling(doc.id);
             } else {
-              // For documents that already have descriptions, we'll still show animation
-              doc.animatedAbstract = true;
-              doc.showEditor = false;
-              // Start typing animation with a short delay to ensure UI is ready
-              setTimeout(() => {
-                this.startTypingAnimation(doc.id, doc.description);
-              }, 500);
+              // Check if we're in edit mode or user is going back to this step
+              const isEditMode = this.isEditMode();
+              const hasSubmittedValues = this.hasSubmittedValues();
+              
+              if (isEditMode || hasSubmittedValues) {
+                // Skip animation and show editor directly
+                doc.animatedAbstract = false;
+                doc.showEditor = true;
+                doc.animatedAbstractComplete = true;
+              } else {
+                // For new documents, show animation
+                doc.animatedAbstract = true;
+                doc.showEditor = false;
+                // Start typing animation with a short delay to ensure UI is ready
+                setTimeout(() => {
+                  this.startTypingAnimation(doc.id, doc.description);
+                }, 500);
+              }
             }
           });
           
@@ -520,5 +531,22 @@ export class Step3Component extends BaseComponent implements OnInit {
       rar: './assets/media/svg/new-files/zip.svg'
     };
     return iconMap[extension?.toLowerCase()] || './assets/media/svg/files/default.svg';
+  }
+
+  // Check if we're in edit mode (knowledge has existing content)
+  private isEditMode(): boolean {
+    return !!this.knowledgeId && !!this.defaultValues && (
+      !!this.defaultValues.title || 
+      !!this.defaultValues.description ||
+      !!this.defaultValues.industry ||
+      !!this.defaultValues.topicId
+    );
+  }
+
+  // Check if user has submitted values (navigating back to this step)
+  private hasSubmittedValues(): boolean {
+    return !!this.defaultValues?.documentDescriptions && 
+           this.defaultValues.documentDescriptions.length > 0 &&
+           this.defaultValues.documentDescriptions.some(doc => doc.description && doc.description.trim() !== '');
   }
 }

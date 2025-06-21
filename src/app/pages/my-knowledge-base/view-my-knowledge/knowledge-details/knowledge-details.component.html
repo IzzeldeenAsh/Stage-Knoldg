@@ -477,3 +477,54 @@
     </div>
 </div>
 
+<!-- Language Mismatch Dialog -->
+<p-dialog 
+  [(visible)]="showLanguageMismatchDialog" 
+  [modal]="true" 
+  [closable]="false" 
+  [draggable]="false" 
+  [resizable]="false"
+  styleClass="p-fluid"
+  [style]="{width: '450px'}">
+  
+  <ng-template pTemplate="header">
+    <h4 class="text-warning">
+      <i class="fas fa-exclamation-triangle me-2"></i>
+      {{ languageMismatchTitle }}
+    </h4>
+  </ng-template>
+  
+  <div class="p-3">
+    <p class="mb-3">{{ languageMismatchMessage }}</p>
+    
+    <div *ngIf="languageMismatchDocuments.length > 0" class="mb-3">
+      <strong>Affected Documents:</strong>
+      <ul class="list-unstyled ms-3 mt-2">
+        <li *ngFor="let docName of languageMismatchDocuments" class="mb-1">
+          <i class="fas fa-file me-2 text-muted"></i>
+          {{ docName }}
+        </li>
+      </ul>
+    </div>
+  </div>
+  
+  <ng-template pTemplate="footer">
+    <div class="d-flex justify-content-end gap-2">
+      <button 
+        type="button" 
+        class="btn btn-outline-secondary" 
+        (click)="onLanguageMismatchCancel()">
+        <i class="fas fa-edit me-2"></i>
+        {{ 'LANGUAGE_MISMATCH_EDIT' | translate }}
+      </button>
+      <button 
+        type="button" 
+        class="btn btn-warning" 
+        (click)="onLanguageMismatchConfirm()">
+        <i class="fas fa-check me-2"></i>
+        {{ 'LANGUAGE_MISMATCH_IGNORE' | translate }}
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>
+
