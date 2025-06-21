@@ -79,6 +79,13 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
   stepperChapters: ChapterItem[] = [];
   editorInstance: any;
 
+  // Language mismatch dialog properties
+  showLanguageMismatchDialog = false;
+  languageMismatchTitle = '';
+  languageMismatchMessage = '';
+  languageMismatchDocuments: string[] = [];
+  private languageMismatchResolver: ((value: boolean) => void) | null = null;
+
   documentsDummy:any = [
     {
       id: 1,
@@ -913,33 +920,21 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
           // Show loading indicator
           this.isSaving = true;
           
-          // Update document details (title and price)
-          const documentDetailsRequest = {
-            documents: [{
-              id: documentId,
-              file_name: this.documentForm.get('file_name')?.value,
-              price: this.documentForm.get('isCharity')?.value ? '0' : this.documentForm.get('price')?.value,
-            }]
-          };
-          
-          console.log('Updating document details with request:', documentDetailsRequest);
-          
-          this.addInsightStepsService.updateKnowledgeDocumentDetails(
-            +this.knowledgeId,
-            documentDetailsRequest.documents
-          ).subscribe({
-            next: (response) => {
+          // Update document details (title and price) with language mismatch handling
+          this.updateDocumentDetailsWithMismatchHandling(documentId, false)
+            .then((success) => {
               this.isSaving = false;
-              console.log('Document details updated successfully:', response);
-              // Move to next step after successful update
-              this.documentStep = 2;
-            },
-            error: (error: any) => {
+              if (success) {
+                console.log('Document details updated successfully');
+                // Move to next step after successful update
+                this.documentStep = 2;
+              }
+            })
+            .catch((error: any) => {
               this.isSaving = false;
               console.error('Error updating document details:', error);
               this.showError('', error?.error?.message || 'Error updating document details');
-            }
-          });
+            });
         } else {
           // No document ID found, either file wasn't uploaded or upload failed
           this.showError('', 'No document has been uploaded. Please select a file first.');
@@ -1062,20 +1057,14 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
       // EDITING EXISTING DOCUMENT
       // Use separate API calls for updating different aspects
       
-      // 1. Update document details (title and price)
-      const documentDetailsRequest = {
-        documents: [{
-          id: this.editingDocument.id,
-          file_name: this.documentForm.get('file_name')?.value,
-          price: this.documentForm.get('isCharity')?.value ? '0' : this.documentForm.get('price')?.value,
-        }]
-      };
-      
-      this.addInsightStepsService.updateKnowledgeDocumentDetails(
-        +this.knowledgeId,
-        documentDetailsRequest.documents
-      ).subscribe({
-        next: () => {
+      // 1. Update document details (title and price) with language mismatch handling
+      this.updateDocumentDetailsWithMismatchHandling(this.editingDocument.id, false)
+        .then((success: boolean) => {
+          if (!success) {
+            this.isSaving = false;
+            return;
+          }
+          
           // 2. Update document description if it was changed
           const description = this.documentForm.get('description')?.value;
           
@@ -1113,12 +1102,11 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
               this.isSaving = false;
             }
           });
-        },
-        error: (error: any) => {
+        })
+        .catch((error: any) => {
           this.showError('', error?.error?.message || 'Error updating document details');
           this.isSaving = false;
-        }
-      });
+        });
     } else {
       // ADDING NEW DOCUMENT
       // Since we now upload files immediately upon selection,
@@ -1255,6 +1243,152 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
       this.documentForm.get('price')?.setValue(numericValue, { emitEvent: false });
       // Set the input value directly to handle browser differences
       inputElement.value = numericValue;
+    }
+  }
+
+  // Language mismatch handling methods
+  private updateDocumentDetailsWithMismatchHandling(documentId: number, ignoreMismatch: boolean): Promise<boolean> {
+    const documentDetailsRequest = {
+      documents: [{
+        id: documentId,
+        file_name: this.documentForm.get('file_name')?.value,
+        price: this.documentForm.get('isCharity')?.value ? '0' : this.documentForm.get('price')?.value,
+        ignore_mismatch: ignoreMismatch
+      }]
+    };
+    
+    console.log('Updating document details with request:', documentDetailsRequest);
+
+    return new Promise((resolve, reject) => {
+      this.addInsightStepsService.updateKnowledgeDocumentDetails(
+        +this.knowledgeId,
+        documentDetailsRequest.documents
+      ).subscribe({
+        next: (response) => {
+          console.log('Document details updated successfully:', response);
+          resolve(true);
+        },
+        error: (error) => {
+          console.error('Error updating document details:', error);
+          
+          // Check if this is a language mismatch error
+          if (this.isLanguageMismatchError(error)) {
+            this.handleLanguageMismatchError(error)
+              .then((shouldIgnore) => {
+                if (shouldIgnore) {
+                  // Retry with ignore_mismatch: true
+                  this.updateDocumentDetailsWithMismatchHandling(documentId, true)
+                    .then(resolve)
+                    .catch(reject);
+                } else {
+                  // User chose to edit, don't proceed
+                  resolve(false);
+                }
+              })
+              .catch(() => {
+                // User cancelled or error occurred
+                resolve(false);
+              });
+          } else {
+            // Handle other errors normally
+            reject(error);
+          }
+        }
+      });
+    });
+  }
+
+  private isLanguageMismatchError(error: any): boolean {
+    return error.error && 
+           error.error.message && 
+           (error.error.message.includes('File name not match document language') ||
+            error.error.message.includes('اسم الملف غير متطابق مع لغة المستند')) &&
+           error.error.errors;
+  }
+
+  private handleLanguageMismatchError(error: any): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      try {
+        console.log('Language mismatch error details:', {
+          error: error.error,
+          currentDocument: {
+            id: this.editingDocument?.id || this.documentForm.get('id')?.value,
+            file_name: this.documentForm.get('file_name')?.value
+          }
+        });
+        
+        // Extract document names from error
+        const errorKeys = Object.keys(error.error.errors);
+        const affectedDocumentNames: string[] = [];
+
+        errorKeys.forEach(key => {
+          // Extract index from keys like "documents.55", "documents.44"
+          const match = key.match(/documents\.(\d+)/);
+          if (match) {
+            const fileName = this.documentForm.get('file_name')?.value;
+            if (fileName) {
+              affectedDocumentNames.push(fileName);
+            }
+          }
+        });
+
+        // Always show the dialog even if we couldn't extract specific document names
+        if (affectedDocumentNames.length === 0) {
+          affectedDocumentNames.push('Document');
+        }
+        
+        // Store the affected documents for the modal
+        this.languageMismatchDocuments = affectedDocumentNames;
+        
+        const message = this.translate.getTranslation('LANGUAGE_MISMATCH_MESSAGE');
+
+        // Show confirmation dialog
+        this.showConfirmationDialog(
+          this.translate.getTranslation('LANGUAGE_MISMATCH_DETECTED'),
+          message,
+          this.translate.getTranslation('LANGUAGE_MISMATCH_EDIT'),
+          this.translate.getTranslation('LANGUAGE_MISMATCH_IGNORE')
+        ).then((result) => {
+          if (result) {
+            // User clicked "Ignore"
+            resolve(true);
+          } else {
+            // User clicked "Edit" or cancelled
+            resolve(false);
+          }
+        }).catch(() => {
+          resolve(false);
+        });
+
+      } catch (parseError) {
+        console.error('Error parsing language mismatch error:', parseError);
+        resolve(false);
+      }
+    });
+  }
+
+  private showConfirmationDialog(title: string, message: string, cancelText: string, confirmText: string): Promise<boolean> {
+    return new Promise((resolve) => {
+      this.languageMismatchTitle = title;
+      this.languageMismatchMessage = message;
+      this.showLanguageMismatchDialog = true;
+      this.languageMismatchResolver = resolve;
+    });
+  }
+
+  onLanguageMismatchConfirm(): void {
+    this.showLanguageMismatchDialog = false;
+    if (this.languageMismatchResolver) {
+      this.languageMismatchResolver(true); // User clicked "Ignore"
+      this.languageMismatchResolver = null;
+    }
+  }
+
+  onLanguageMismatchCancel(): void {
+    this.showLanguageMismatchDialog = false;
+    if (this.languageMismatchResolver) {
+      this.languageMismatchResolver(false); // User clicked "Edit"
+      this.languageMismatchResolver = null;
     }
   }
 }

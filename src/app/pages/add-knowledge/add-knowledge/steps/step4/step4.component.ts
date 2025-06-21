@@ -213,6 +213,8 @@ export class Step4Component extends BaseComponent implements OnInit {
     this.languagesService.isLoading$.subscribe(isLoading => {
       this.isLanguageLoading = isLoading;
     });
+    
+
   }
   
   private initForms() {
@@ -224,7 +226,7 @@ export class Step4Component extends BaseComponent implements OnInit {
       industry: [this.defaultValues.industry, [Validators.required]],
       topicId: [this.defaultValues.topicId, [Validators.required]],
       customTopic: [this.defaultValues.customTopic],
-      targetMarket: ['3', [Validators.required]],
+      targetMarket: [this.defaultValues.targetMarket || '1', [Validators.required]],
       economicBlocks: [this.defaultValues.economic_blocs || []],
       regions: [this.defaultValues.regions || []],
       countries: [this.defaultValues.countries || []],
@@ -342,21 +344,29 @@ export class Step4Component extends BaseComponent implements OnInit {
         regionsControl?.updateValueAndValidity();
         countriesControl?.updateValueAndValidity();
         
-        // Reset economic blocks as well
-        economicBlocksControl?.setValue([]);
+        // Don't reset economic blocks if we have preselected values
+        if (!this.defaultValues.economic_blocs || this.defaultValues.economic_blocs.length === 0) {
+          economicBlocksControl?.setValue([]);
+        } else {
+          // Set the preselected economic blocks
+          economicBlocksControl?.setValue(this.defaultValues.economic_blocs);
+        }
         
         this.updateParentModel({ 
           regions: [], 
           countries: [],
-          economic_blocs: [] 
+          economic_blocs: this.defaultValues.economic_blocs || [] 
         }, this.checkForm());
         
-        // Open economic blocks dialog with a slight delay to ensure component is rendered
-        setTimeout(() => {
-          if (this.economicBlockSelector) {
-            this.economicBlockSelector.showDialog();
-          }
-        }, 100);
+        // Only open dialog if no preselected values
+        if (!this.defaultValues.economic_blocs || this.defaultValues.economic_blocs.length === 0) {
+          // Open economic blocks dialog with a slight delay to ensure component is rendered
+          setTimeout(() => {
+            if (this.economicBlockSelector) {
+              this.economicBlockSelector.showDialog();
+            }
+          }, 100);
+        }
       } else if (value === '3') {
         // Worldwide option - clear all validators and data
         regionsControl?.clearValidators();
@@ -474,7 +484,7 @@ export class Step4Component extends BaseComponent implements OnInit {
       // For countries-only option, only validate countries
       targetMarketValid = countries.length > 0;
     } else if (targetMarket === '2') {
-      targetMarketValid = economicBlocks.length > 0 || (this.defaultValues.economic_bloc?.length || 0) > 0;
+      targetMarketValid = economicBlocks.length > 0;
     } else if (targetMarket === '3') {
       // Worldwide option is always valid for target market validation
       targetMarketValid = true;
@@ -517,6 +527,9 @@ export class Step4Component extends BaseComponent implements OnInit {
       if (economicBlocks.length === 0) {
         // Apply custom validation error
         this.form.get('economicBlocks')?.setErrors({ required: true });
+      } else {
+        // Clear error if we have economic blocks selected
+        this.form.get('economicBlocks')?.setErrors(null);
       }
     }
     // For targetMarket === '3' (Worldwide), no special validation needed
@@ -1009,10 +1022,10 @@ export class Step4Component extends BaseComponent implements OnInit {
   }
   
   // Getter for economic bloc IDs
-  get selectedEconomicBlocIds(): string[] {
-    return this.defaultValues.economic_bloc 
-      ? this.defaultValues.economic_bloc.map((block: any) => block.id) 
-      : [];
+  get selectedEconomicBlocIds(): number[] {
+    const result = this.defaultValues.economic_blocs || [];
+    console.log('Step4 selectedEconomicBlocIds getter - returning:', result);
+    return result;
   }
   
   // Getter for language

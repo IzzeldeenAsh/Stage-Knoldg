@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { MultiSelectModule } from 'primeng/multiselect';
@@ -16,7 +16,7 @@ import { ChipModule } from 'primeng/chip';
   templateUrl: './select-economic-block.component.html',
   styleUrls: ['./select-economic-block.component.scss']
 })
-export class SelectEconomicBlockComponent implements OnInit {
+export class SelectEconomicBlockComponent implements OnInit, OnChanges {
   @Input() placeholder: string = 'Select Economic Block...';
   @Input() title: string = 'Select Economic Blocks';
   @Output() blocksSelected = new EventEmitter<EconomicBloc[]>();
@@ -33,21 +33,43 @@ export class SelectEconomicBlockComponent implements OnInit {
     this.loadEconomicBlocks();
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['selectedBlockIds'] && this.economicBlocks.length > 0) {
+      this.updateSelectedBlocks();
+    }
+  }
+
   loadEconomicBlocks() {
     this.economicBlockService.getEconomicBlocs().subscribe({
       next: (blocks) => {
         this.economicBlocks = blocks;
-        if (this.selectedBlockIds && this.selectedBlockIds.length > 0) {
-          this.selectedBlocks = this.economicBlocks.filter(block => 
-            this.selectedBlockIds!.includes(block.id)
-          );
-          this.displayValue = this.selectedBlocks.map(block => block.name).join(', ');
-        }
+        this.updateSelectedBlocks();
       },
       error: (error) => {
         console.error('Error loading economic blocks:', error);
       }
     });
+  }
+
+  private updateSelectedBlocks() {
+    if (this.selectedBlockIds && this.selectedBlockIds.length > 0 && this.economicBlocks.length > 0) {
+      console.log('Updating selected blocks. SelectedBlockIds:', this.selectedBlockIds);
+      console.log('Available economic blocks:', this.economicBlocks);
+      
+      this.selectedBlocks = this.economicBlocks.filter(block => {
+        // Convert both to numbers for comparison to handle any type mismatches
+        const blockId = Number(block.id);
+        const isSelected = this.selectedBlockIds!.some(selectedId => Number(selectedId) === blockId);
+        console.log(`Block ${block.name} (ID: ${blockId}) selected: ${isSelected}`);
+        return isSelected;
+      });
+      
+      console.log('Final selected blocks:', this.selectedBlocks);
+      this.displayValue = this.selectedBlocks.map(block => block.name).join(', ');
+    } else {
+      this.selectedBlocks = [];
+      this.displayValue = '';
+    }
   }
 
   showDialog() {
