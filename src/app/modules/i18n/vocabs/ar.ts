@@ -989,7 +989,7 @@ INSIGHTER_REQUESTS: {
       'SCHEDULED': 'مجدول',
       'POSTED': 'منشور',
       'PACKAGES': 'الحزم',
-      'UNPUBLISHED': 'مسودة'
+      'UNPUBLISHED': 'محفوظ'
     }
   },
   DEACTIVATE_ACCOUNT_SUCCESS_MESSAGE: "تم إلغاء تنشيط حساب الانسايتر بنجاح",

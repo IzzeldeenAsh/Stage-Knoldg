@@ -286,6 +286,10 @@ export class Step4Component extends BaseComponent implements OnInit {
     
     // Setup target market change listener
     this.form.get('targetMarket')?.valueChanges.subscribe(value => {
+      // Reset regions and countries values when target market changes
+      regionsControl?.setValue([]);
+      countriesControl?.setValue([]);
+
       if (value === '1') {
         regionsControl?.setValidators([this.regionsCountriesValidator]);
         countriesControl?.clearValidators();
@@ -297,13 +301,13 @@ export class Step4Component extends BaseComponent implements OnInit {
         
         this.updateParentModel({ 
           economic_blocs: [],
-          regions: regionsControl?.value,
-          countries: countriesControl?.value 
+          regions: [],
+          countries: [] 
         }, this.checkForm());
         
         // Open region dialog with a slight delay to ensure component is rendered
         setTimeout(() => {
-          if (this.regionSelector && (!regionsControl?.value?.length && !countriesControl?.value?.length)) {
+          if (this.regionSelector) {
             this.regionSelector.showDialog();
           }
         }, 100);
@@ -319,13 +323,13 @@ export class Step4Component extends BaseComponent implements OnInit {
         
         this.updateParentModel({ 
           economic_blocs: [],
-          regions: [], // Clear regions for countries-only option
-          countries: countriesControl?.value 
+          regions: [], 
+          countries: [] 
         }, this.checkForm());
         
         // Open region dialog (countries tab) with a slight delay
         setTimeout(() => {
-          if (this.regionSelector && (!countriesControl?.value?.length)) {
+          if (this.regionSelector) {
             this.regionSelector.showDialog();
           }
         }, 100);
@@ -338,15 +342,18 @@ export class Step4Component extends BaseComponent implements OnInit {
         regionsControl?.updateValueAndValidity();
         countriesControl?.updateValueAndValidity();
         
+        // Reset economic blocks as well
+        economicBlocksControl?.setValue([]);
+        
         this.updateParentModel({ 
           regions: [], 
           countries: [],
-          economic_blocs: economicBlocksControl?.value 
+          economic_blocs: [] 
         }, this.checkForm());
         
         // Open economic blocks dialog with a slight delay to ensure component is rendered
         setTimeout(() => {
-          if (this.economicBlockSelector && (!economicBlocksControl?.value?.length)) {
+          if (this.economicBlockSelector) {
             this.economicBlockSelector.showDialog();
           }
         }, 100);
