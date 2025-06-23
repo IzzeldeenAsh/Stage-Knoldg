@@ -122,7 +122,7 @@ import { HSCode, HSCodeService } from 'src/app/_fake/services/hs-code-management
         Loading HS Codes...
       </div>
 
-      <div *ngIf="!(isLoading$ | async)">
+      <div *ngIf="!(isLoading$ | async)" class="position-relative">
         <input
           type="text"
           pInputText
@@ -132,6 +132,13 @@ import { HSCode, HSCodeService } from 'src/app/_fake/services/hs-code-management
           (click)="showDialog()"
           [value]="selectedHSCodeLabel()"
         />
+        <!-- Clear icon -->
+        <i 
+          *ngIf="selectedHSCode" 
+          class="fas fa-times clear-icon position-absolute"
+          (click)="clearSelection($event)"
+          title="Clear selection"
+        ></i>
       </div>
     </div>
   `,
@@ -172,6 +179,24 @@ import { HSCode, HSCodeService } from 'src/app/_fake/services/hs-code-management
     
     .list-item:last-child {
       border-bottom: none;
+    }
+    
+    .clear-icon {
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #6c757d;
+      font-size: 0.875rem;
+      z-index: 10;
+      padding: 4px;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+    }
+    
+    .clear-icon:hover {
+      color: #dc3545;
+      background-color: rgba(220, 53, 69, 0.1);
     }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -296,5 +321,24 @@ export class GetHsCodeByIsicComponent implements OnDestroy,OnChanges {
       this.dialogWidth = width < 768 ? "100vw" : "50vw";
     });
     this.unsubscribe.push(sub);
+  }
+
+  clearSelection(event: Event) {
+    event.stopPropagation(); // Prevent triggering the input click event
+    this.selectedHSCode = null;
+    
+    // Emit a clear event - create a mock HSCode with null/undefined id
+    const clearCode: HSCode = {
+      id: null as any,
+      code: '',
+      name: '',
+      isic_code_id: 0,
+      status: '',
+      names: {
+        en: '',
+        ar: ''
+      }
+    };
+    this.hsCodeSelected.emit(clearCode);
   }
 }

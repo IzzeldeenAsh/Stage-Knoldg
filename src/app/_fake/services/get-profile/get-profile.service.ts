@@ -132,4 +132,13 @@ export class ProfileService {
     const userStr = localStorage.getItem("user");
     return userStr ? JSON.parse(userStr) : null;
   }
+
+   isClient():Observable<any>{
+    return this.getProfile().pipe(
+      map(profile => {
+        const userRoles = profile.roles || [];
+        return userRoles.includes("client") && userRoles.length ==1;
+      })
+    );
+  }
 }

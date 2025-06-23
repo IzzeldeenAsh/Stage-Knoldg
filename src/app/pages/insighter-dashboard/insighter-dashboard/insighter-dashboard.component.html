@@ -42,7 +42,7 @@
                       {{ 'INSIGHTER.DASHBOARD.NAV.OVERVIEW' | translate }}
                     </div>
                   </div>
-                  <div class="nav-item" [routerLink]="['my-requests']" routerLinkActive="active">
+                  <div class="nav-item" [routerLink]="['my-requests']" routerLinkActive="active" *ngIf="!(isClient$ | async)">
                     <div class="item-icon">
                       <i class="ki-duotone ki-document"><span class="path1"></span><span class="path2"></span></i>
                     </div>
@@ -50,7 +50,7 @@
                       {{ 'INSIGHTER.DASHBOARD.NAV.MY_REQUESTS' | translate }}
                     </div>
                   </div>
-                  <div class="nav-item" [routerLink]="['my-knowledge']" routerLinkActive="active">
+                  <div class="nav-item" [routerLink]="['my-knowledge']" routerLinkActive="active"  *ngIf="!(isClient$ | async)">
                     <div class="item-icon">
                       <i class="ki-duotone ki-book"><span class="path1"></span><span class="path2"></span></i>
                     </div>
@@ -82,7 +82,7 @@
                       {{ 'INSIGHTER.DASHBOARD.NAV.MY_COMPANY' | translate }}
                     </div>
                   </div>
-                  <div class="nav-item" [routerLink]="['account-settings']" routerLinkActive="active">
+                  <div class="nav-item" [routerLink]="['account-settings']" routerLinkActive="active"  *ngIf="!(isClient$ | async)"s>
                     <div class="item-icon">
                       <i class="ki-duotone ki-setting-2"><span class="path1"></span><span class="path2"></span></i>
                     </div>

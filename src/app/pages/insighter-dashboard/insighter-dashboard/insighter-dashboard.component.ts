@@ -16,9 +16,9 @@ export class InsighterDashboardComponent implements OnInit {
   items: MenuItem[] = [];
   activeItem: MenuItem | undefined;
   hasCompanyRole$: Observable<boolean>;
+  isClient$: Observable<any>;
   panelMenuItems: MenuItem[] = [];
   lang: string = 'en';
-  
   constructor(
     private router: Router,
     private profileService: ProfileService,
@@ -29,7 +29,6 @@ export class InsighterDashboardComponent implements OnInit {
 
   ngOnInit() {
     this.handleLanguage();
-    
     // Initialize menu items after checking roles
     this.hasCompanyRole$.pipe(take(1)).subscribe(hasCompanyRole => {
       this.initializeMenuItems(hasCompanyRole);
@@ -38,7 +37,8 @@ export class InsighterDashboardComponent implements OnInit {
       // Set initial active tab based on current route
       this.setActiveTabFromRoute(this.router.url);
     });
-
+   this.isClient$ = this.profileService.isClient()
+    
     // Subscribe to route changes
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)

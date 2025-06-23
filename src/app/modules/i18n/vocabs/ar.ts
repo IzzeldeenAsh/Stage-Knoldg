@@ -930,6 +930,7 @@ INSIGHTER_REQUESTS: {
     PUBLISH_OPTION_REQUIRED: "الرجاء اختيار خيار النشر",
     SELECT_DATE_TIME: "اختر التاريخ والوقت",
     CHOOSE_COUNTRIES:'اختر الدول',
+    REGIONS_REQUIRED:'الاقاليم مطلوبة',
     COULD_NOT_GET_AI_ABSTRACT: "تعذر الحصول على ملخص الذكاء الاصطناعي. يرجى المحاولة مرة أخرى أو إدخال الوصف يدويًا.",
     SELECT_DATE_AND_TIME: "اختر تاريخًا ووقتًا للنشر",
   ENTER_KEYWORDS:"ادخل الكلمات المفتاحية",

@@ -4,6 +4,7 @@ import { BaseComponent } from 'src/app/modules/base.component';
 import { UserRequestsService } from 'src/app/_fake/services/user-requests/user-requests.service';
 import { KnowledgeTypesStatisticsComponent } from './knowledge-types-statistics/knowledge-types-statistics.component';
 import { KnowledgeService } from 'src/app/_fake/services/knowledge/knowledge.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-my-dashboard',
@@ -21,7 +22,7 @@ export class MyDashboardComponent extends BaseComponent {
   private knowledgeTypesLoaded: boolean = false;
   insighterStatus: string = '';
   isLoading: boolean = true;
-  
+  isClientOnly:Observable<any>;
   // Loading state trackers
   private profileLoaded: boolean = false;
   private requestsLoaded: boolean = false;
@@ -39,7 +40,7 @@ constructor(
 
 ngOnInit(){
   this.isLoading = true;
-
+  this.isClientOnly= this.profileService.isClient();
   const profileSub = this.profileService.getProfile().subscribe((res: any) => {
     this.roles = res.roles;
     this.insighterStatus = res.insighter_status || '';
