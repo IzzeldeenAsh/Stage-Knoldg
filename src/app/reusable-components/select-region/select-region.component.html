@@ -48,15 +48,8 @@
       </span>
     </div>
 
-    <!-- Selected count display -->
-    <div class="selected-count mb-4" *ngIf="getSelectedCount() > 0">
-      <span class="badge badge-pill bg-light-info text-info px-3 py-2">
-        <span
-          ><i class="ki-duotone ki-check-circle me-1"
-            ><span class="path1"></span><span class="path2"></span></i
-        ></span>
-        {{ getSelectedCount() }} {{ "SELECTED" | translate }}
-      </span>
+    <!-- Clear all button -->
+    <div class="selected-count mb-4" *ngIf="hasSelections()">
       <button
         class="btn btn-link btn-sm text-danger"
         (click)="clearAllSelections()"
@@ -256,16 +249,11 @@
         (click)="onConfirm()"
         [disabled]="!hasSelections()"
       >
-        <span *ngIf="getSelectedCount() > 0">
-          <span
-            ><i class="ki-duotone ki-check me-1"
-              ><span class="path1"></span><span class="path2"></span></i
-          ></span>
-          {{ "CONFIRM" | translate }} ({{ getSelectedCount() }})
-        </span>
-        <span *ngIf="getSelectedCount() === 0">
-          {{ "CONFIRM" | translate }}
-        </span>
+        <span
+          ><i class="ki-duotone ki-check me-1"
+            ><span class="path1"></span><span class="path2"></span></i
+        ></span>
+        {{ "CONFIRM" | translate }}
       </button>
     </div>
   </ng-template>

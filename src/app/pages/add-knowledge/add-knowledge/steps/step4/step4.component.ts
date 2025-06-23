@@ -651,22 +651,22 @@ export class Step4Component extends BaseComponent implements OnInit {
     const uniqueCountries = regions.countries ? [...new Set(regions.countries)] : [];
 
     if (targetMarket === '1') {
-      // Regions only - set regions and clear countries
+      // Regions mode - we accept both regions and individual countries
       this.form.patchValue({
         regions: uniqueRegions,
-        countries: []
+        countries: uniqueCountries
       });
       
-      // Update parent model for regions only
+      // Update parent model with both
       this.updateParentModel(
         { 
           regions: uniqueRegions, 
-          countries: [] 
+          countries: uniqueCountries 
         }, 
         this.checkForm()
       );
     } else if (targetMarket === '4') {
-      // Countries only - set countries and clear regions
+      // Countries only mode - only use countries, ignore regions
       this.form.patchValue({
         regions: [],
         countries: uniqueCountries

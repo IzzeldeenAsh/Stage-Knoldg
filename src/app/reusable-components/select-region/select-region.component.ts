@@ -141,7 +141,10 @@ export class SelectRegionComponent implements OnInit {
   toggleSelectCountry(region: Continent, country: Country, event: any) {
     const checked = event.target.checked;
     if (checked) {
-      this.selectedCountries.push(country.id);
+      // Add country only if not already selected (prevent duplicates)
+      if (!this.selectedCountries.includes(country.id)) {
+        this.selectedCountries.push(country.id);
+      }
       // If all countries in the region are selected, select the entire region
       const allSelected = region.countries.every(c => this.isCountrySelected(c, region));
       if (allSelected && !this.selectedRegions.includes(region.id)) {
@@ -174,7 +177,10 @@ export class SelectRegionComponent implements OnInit {
         return;
       }
       
-      this.selectedCountries.push(country.id);
+      // Add country only if not already selected (prevent duplicates)
+      if (!this.selectedCountries.includes(country.id)) {
+        this.selectedCountries.push(country.id);
+      }
       
       // Check if all countries in this region are now selected
       const allRegionCountriesSelected = regionOfCountry.countries.every(c => 
@@ -192,9 +198,9 @@ export class SelectRegionComponent implements OnInit {
       // If the region is selected, deselect it and select all other countries
       if (this.selectedRegions.includes(regionOfCountry.id)) {
         this.selectedRegions = this.selectedRegions.filter(id => id !== regionOfCountry.id);
-        // Select all other countries in the region except this one
+        // Select all other countries in the region except this one (prevent duplicates)
         regionOfCountry.countries.forEach(c => {
-          if (c.id !== country.id) {
+          if (c.id !== country.id && !this.selectedCountries.includes(c.id)) {
             this.selectedCountries.push(c.id);
           }
         });
