@@ -37,7 +37,6 @@
 </div>
 
 <div class="row">
-
     <!-- Upgrade to company account -->
     <div class="col-12 mb-5 mb-xl-10" *ngIf="isActiveInsighter()">
         <div class="card card-custom bg-body border-1 h-md-100">
@@ -100,6 +99,7 @@
     </div>
 
     <!-- Empty state - start building knowledge library -->
+     <ng-container *ngIf="!(isClientOnly | async)">
     <div class="col-12 mb-5 mb-xl-10" *ngIf="!hasRole('insighter') && shouldShowEmptyState()">
         <div class="card card-custom bg-body border-1 h-md-100">
             <!--begin::Body-->
@@ -130,4 +130,5 @@
             <!--end::Body-->
         </div>
     </div>
+</ng-container>
 </div>

@@ -128,16 +128,25 @@ interface FlatNode {
           AI Generated
         </span>
       </div>
-      <input
-        type="text"
-        pInputText
-        class="w-100"
-        [readonly]="true"
-        [placeholder]="placeholder"
-        (click)="showDialog()"
-        [value]="selectedNodeLabel()"
-        [ngClass]="{'is-invalid': isRequired && !selectedNode}"
-      />
+      <div class="position-relative">
+        <input
+          type="text"
+          pInputText
+          class="w-100"
+          [readonly]="true"
+          [placeholder]="placeholder"
+          (click)="showDialog()"
+          [value]="selectedNodeLabel()"
+          [ngClass]="{'is-invalid': isRequired && !selectedNode}"
+        />
+        <!-- Clear icon -->
+        <i 
+          *ngIf="selectedFlatNode" 
+          class="fas fa-times clear-icon position-absolute"
+          (click)="clearSelection($event)"
+          title="Clear selection"
+        ></i>
+      </div>
     </div>
   `,
   styles: [`
@@ -229,6 +238,24 @@ interface FlatNode {
       to {
         box-shadow: 0 0 3px rgba(255,153,0,0.5);
       }
+    }
+    
+    .clear-icon {
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #6c757d;
+      font-size: 0.875rem;
+      z-index: 10;
+      padding: 4px;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+    }
+    
+    .clear-icon:hover {
+      color: #dc3545;
+      background-color: rgba(220, 53, 69, 0.1);
     }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -383,5 +410,19 @@ export class IndustrySelectorComponent implements OnInit, OnDestroy {
 
   trackByKey(index: number, item: FlatNode) {
     return item.key;
+  }
+
+  clearSelection(event: Event) {
+    event.stopPropagation(); // Prevent triggering the input click event
+    this.selectedFlatNode = null;
+    this.selectedNode = null;
+    this._selectedIndustryId = undefined;
+    
+    // Emit a clear event - we need to create a mock TreeNode with null/undefined data
+    const clearNode: TreeNode = {
+      label: '',
+      data: { key: null }
+    };
+    this.nodeSelected.emit(clearNode);
   }
 }

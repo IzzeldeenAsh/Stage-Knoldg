@@ -562,6 +562,15 @@ export class Step4Component extends BaseComponent implements OnInit {
   
   // Industry related methods
   onIndustrySelected(node: TreeNode) {
+    // Handle clear selection
+    if (!node.data || node.data.key === null || node.data.key === undefined) {
+      this.form.get('industry')?.setValue(null);
+      this.selectedIndustryId = 0;
+      this.topics = [];
+      this.clearTagsAndKeywords();
+      return;
+    }
+    
     this.form.get('industry')?.setValue(node.data.key);
     this.selectedIndustryId = node.data.key;
     
@@ -637,24 +646,60 @@ export class Step4Component extends BaseComponent implements OnInit {
     // Get the current target market selection (1=Regions, 4=Countries, 2=Economic blocks, 3=Worldwide)
     const targetMarket = this.form.get('targetMarket')?.value;
 
-    // Set the form values based on selection
-    this.form.patchValue({
-      regions: regions.regions,
-      countries: regions.countries
-    });
+    // Remove duplicates from the incoming data
+    const uniqueRegions = regions.regions ? [...new Set(regions.regions)] : [];
+    const uniqueCountries = regions.countries ? [...new Set(regions.countries)] : [];
+
+    if (targetMarket === '1') {
+      // Regions only - set regions and clear countries
+      this.form.patchValue({
+        regions: uniqueRegions,
+        countries: []
+      });
+      
+      // Update parent model for regions only
+      this.updateParentModel(
+        { 
+          regions: uniqueRegions, 
+          countries: [] 
+        }, 
+        this.checkForm()
+      );
+    } else if (targetMarket === '4') {
+      // Countries only - set countries and clear regions
+      this.form.patchValue({
+        regions: [],
+        countries: uniqueCountries
+      });
+      
+      // Update parent model for countries only
+      this.updateParentModel(
+        { 
+          regions: [], 
+          countries: uniqueCountries 
+        }, 
+        this.checkForm()
+      );
+    } else {
+      // For other cases (shouldn't happen with current logic), set both
+      this.form.patchValue({
+        regions: uniqueRegions,
+        countries: uniqueCountries
+      });
+      
+      // Update parent model
+      this.updateParentModel(
+        { 
+          regions: uniqueRegions, 
+          countries: uniqueCountries 
+        }, 
+        this.checkForm()
+      );
+    }
 
     // Trigger validation
     this.form.get('regions')?.updateValueAndValidity();
     this.form.get('countries')?.updateValueAndValidity();
-    
-    // Update parent model
-    this.updateParentModel(
-      { 
-        regions: regions.regions, 
-        countries: regions.countries 
-      }, 
-      this.checkForm()
-    );
   }
   
   onEconomicBlocksSelected(blocks: EconomicBloc[]) {
@@ -696,12 +741,28 @@ export class Step4Component extends BaseComponent implements OnInit {
   
   // ISIC and HS code methods
   onIsicCodeSelected(node: any) {
+    // Handle clear selection
+    if (!node.data || node.data.key === null || node.data.key === undefined) {
+      this.selectedIsicId = 0;
+      this.form.get('isic_code')?.setValue(null);
+      this.form.get('hs_code')?.setValue(null); // Clear HS code when ISIC is cleared
+      this.updateParentModel({ isic_code: null, hs_code: null }, this.checkForm());
+      return;
+    }
+    
     this.selectedIsicId = node.data.key;
     this.form.get('isic_code')?.setValue(node.data.key);
     this.updateParentModel({ isic_code: node.data.key }, this.checkForm());
   }
   
   onHSCodeSelected(node: any) {
+    // Handle clear selection
+    if (!node || node.id === null || node.id === undefined) {
+      this.form.get('hs_code')?.setValue(null);
+      this.updateParentModel({ hs_code: null }, this.checkForm());
+      return;
+    }
+    
     this.form.get('hs_code')?.setValue(node.id);
     this.updateParentModel({ hs_code: node.id }, this.checkForm());
   }
