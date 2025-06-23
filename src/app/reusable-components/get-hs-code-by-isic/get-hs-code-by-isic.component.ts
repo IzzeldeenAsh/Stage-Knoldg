@@ -198,6 +198,14 @@ import { HSCode, HSCodeService } from 'src/app/_fake/services/hs-code-management
       color: #dc3545;
       background-color: rgba(220, 53, 69, 0.1);
     }
+    
+    /* RTL support */
+    :host-context([dir="rtl"]) .clear-icon,
+    :host-context(.rtl) .clear-icon,
+    :host-context(html[lang="ar"]) .clear-icon {
+      right: auto;
+      left: 12px;
+    }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
