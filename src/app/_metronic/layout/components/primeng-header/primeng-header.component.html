@@ -202,78 +202,55 @@
 
   <!-- Mobile Header -->
   <div class="mobile-header" *ngIf="isSmallScreen">
-    <div class="mobile-header-left">
-      <button class="menu-toggle" (click)="sidebarVisible = true">
-        <app-keenicon [name]="'abstract-14'" [type]="'outline'" class="fs-2"></app-keenicon>
-      </button>
-      <div class="mobile-logo">
-        <a [href]="getHomeUrl()">
-          <img *ngIf="lang === 'en'" src="./assets/media/LOGO-KNOLD/KNOLDG-01.png" alt="Logo" class="h-25px" />
-          <img *ngIf="lang === 'ar'" src="./assets/media/LOGO-KNOLD/KNOLDG-LOGO-12.png" alt="Logo" class="h-25px" />
-        </a>
-      </div>
-    </div>
-    <div class="mobile-header-right">
-      <!-- Add Knowledge button for mobile - icon only to save space -->
-      <div class="app-navbar-item me-2" *ngIf="shouldShowAddKnowledgeButton()">
-        <a 
-          [routerLink]="getAddKnowledgeRoute()" 
-          class="btn btn-icon btn-custom btn-icon-primary btn-active-light w-30px h-30px">
-          <i class="ki-outline ki-plus fs-2"></i>
-        </a>
-      </div>
-      
-      <!-- Mobile Search Button -->
-      <div class="app-navbar-item me-2">
-        <button 
-          type="button"
-          class="btn btn-icon btn-custom btn-icon-muted btn-active-light btn-active-color-primary w-30px h-30px cursor-pointer"
-          (click)="handleSearch('')"
-          title="{{ lang === 'ar' ? 'بحث' : 'Search' }}"
-        >
-          <i class="ki-outline ki-magnifier fs-2"></i>
+    <div class="mobile-header-container d-flex justify-content-between align-items-center w-100">
+      <div class="mobile-header-left d-flex align-items-center">
+        <button class="menu-toggle btn btn-icon btn-sm me-2" (click)="sidebarVisible = true">
+          <app-keenicon [name]="'abstract-14'" [type]="'outline'" class="fs-2"></app-keenicon>
         </button>
-      </div>
-      
-      <!-- Mobile Language Switch -->
-      <div class="app-navbar-item me-2">
-        <app-lang-switch-button [isInsighterDashboard]="isDashboardRoute"></app-lang-switch-button>
-      </div>
-      
-      <!-- Mobile Notification bell -->
-      <div class="app-navbar-item position-relative mobile-notification-item">
-        <div
-          class="btn btn-icon btn-custom btn-icon-muted btn-active-light btn-active-color-primary w-30px h-30px cursor-pointer notification-toggle"
-          (click)="toggleNotifications($event)"
-        >
-          <i class="ki-outline ki-notification-on fs-2"></i>
-          <div
-            *ngIf="notificationCount > 0"
-            class="badge badge-circle badge-danger position-absolute translate-middle bottom-0 ms-10 mt-7 h-15px w-15px fs-9"
-          >
-            {{ notificationCount }}
-          </div>  
+        <div class="mobile-logo">
+          <a [href]="getHomeUrl()">
+            <img src="./assets/media/logos/custom-2.svg" alt="Logo" class="h-30px" />
+          </a>
         </div>
       </div>
+      
+      <div class="mobile-header-right d-flex align-items-center">
+        <!-- Mobile Language Switch -->
+        <div class="me-3">
+          <app-lang-switch-button [isInsighterDashboard]="isDashboardRoute"></app-lang-switch-button>
+        </div>
+        
+        <!-- Mobile Notification bell -->
+        <div class="position-relative me-3">
+          <button
+            class="btn btn-icon btn-sm btn-light d-flex align-items-center justify-content-center position-relative"
+            (click)="toggleNotifications($event)"
+            style="width: 32px; height: 32px;">
+            <i class="ki-outline ki-notification-on fs-3"></i>
+            <span
+              *ngIf="notificationCount > 0"
+              class="badge badge-circle badge-danger position-absolute translate-middle top-0 start-100 fs-8"
+              style="font-size: 10px !important; min-width: 16px; height: 16px; line-height: 14px;">
+              {{ notificationCount > 9 ? '9+' : notificationCount }}
+            </span>  
+          </button>
+        </div>
 
-      <!-- Mobile User dropdown toggle -->
-      <div class="mobile-user-dropdown-container">
-        <div class="position-relative">
-          <a class="mobile-user-dropdown-toggle" (click)="toggleMobileUserDropdown($event)" #mobileUserDropdown>
-            <div class="user-avatar" *ngIf="userProfileImage">
-              <img [src]="userProfileImage" alt="User Avatar" style="object-position: top;" />
+        <!-- Mobile User dropdown toggle -->
+        <div class="mobile-user-dropdown-container position-relative">
+          <a class="mobile-user-dropdown-toggle d-flex align-items-center" (click)="toggleMobileUserDropdown($event)" #mobileUserDropdown>
+            <div class="user-avatar" *ngIf="userProfileImage" style="width: 36px; height: 36px;">
+              <img [src]="userProfileImage" alt="User Avatar" style="object-position: top; width: 100%; height: 100%; border-radius: 50%;" />
             </div>
-            <div class="user-avatar user-initials" *ngIf="!userProfileImage">
+            <div class="user-avatar user-initials" *ngIf="!userProfileImage" style="width: 36px; height: 36px; font-size: 14px;">
               {{ userInitials }}
             </div>
           </a>
           
-        
-        </div>
-        
-        <!-- Mobile User dropdown menu -->
-        <div class="mobile-user-dropdown-menu" [ngClass]="{'show': isMobileUserDropdownOpen, 'rtl': lang === 'ar'}" #userDropdown>
-          <app-user-inner (closeDropdown)="isMobileUserDropdownOpen = false"></app-user-inner>
+          <!-- Mobile User dropdown menu -->
+          <div class="mobile-user-dropdown-menu" [ngClass]="{'show': isMobileUserDropdownOpen, 'rtl': lang === 'ar'}" #userDropdown>
+            <app-user-inner (closeDropdown)="isMobileUserDropdownOpen = false"></app-user-inner>
+          </div>
         </div>
       </div>
     </div>
@@ -299,16 +276,6 @@
     </div>
   </ng-template>
   <div class="mobile-menu">
-    <!-- Add Knowledge button in mobile menu -->
-    <div class="mobile-menu-item mb-3" *ngIf="shouldShowAddKnowledgeButton()">
-      <a 
-        [routerLink]="getAddKnowledgeRoute()" 
-        class="mobile-menu-link" (click)="sidebarVisible = false">
-        <app-keenicon name="book" type="duotone" class="fs-2"></app-keenicon>
-        <span class="menu-text">Add Knowledge</span>
-      </a>
-    </div>
-    
     <div *ngFor="let item of items" class="mobile-menu-item">
       <!-- Special handling for Industries menu item -->
       <div *ngIf="item.label === translate.instant('MENU.INDUSTRIES')" class="mobile-submenu-container">

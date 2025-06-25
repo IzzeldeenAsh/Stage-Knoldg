@@ -888,7 +888,11 @@ export class Step4Component extends BaseComponent implements OnInit {
         this.updateTagIds(newTagId);
         
         // Show success message
-        this.showSuccess('', 'Custom tag added successfully');
+        if(this.lang=='ar'){
+          this.showSuccess('', 'تم إضافة الوسم المخصص بنجاح');
+        }else{
+          this.showSuccess('', 'Custom tag added successfully');
+        }
       },
       error: (error) => {
         this.handleServerErrors(error);

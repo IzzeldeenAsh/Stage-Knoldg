@@ -13,6 +13,7 @@
         <app-requests-statistics *ngIf="isRouteActive('my-requests')"></app-requests-statistics>
         <app-knowledge-statistics *ngIf="isRouteActive('my-knowledge')"></app-knowledge-statistics>
         <app-downloads-statistics *ngIf="isRouteActive('my-downloads')"></app-downloads-statistics>
+        <app-meetings-statistics *ngIf="isRouteActive('my-meetings')"></app-meetings-statistics>
         <app-consulting-schedule-header *ngIf="isRouteActive('my-consulting-schedule')"></app-consulting-schedule-header>
         <app-account-settings-header *ngIf="isRouteActive('account-settings')"></app-account-settings-header>
         <app-company-statistics *ngIf="isRouteActive('my-company-settings') && (hasCompanyRole$ | async)"></app-company-statistics>
@@ -66,14 +67,49 @@
                       {{ 'INSIGHTER.DASHBOARD.NAV.MY_DOWNLOADS' | translate }}
                     </div>
                   </div>
-                  <!-- <div class="nav-item" [routerLink]="['my-consulting-schedule']" routerLinkActive="active">
+                  <!-- Meetings Expandable Item -->
+                  <div class="nav-item expandable" [class.expanded]="isMeetingsExpanded" *ngIf="!(isClient$ | async)">
+                    <div class="nav-item-main" (click)="toggleMeetings()">
+                      <div class="item-icon">
+                        <i class="ki-duotone ki-calendar"><span class="path1"></span><span class="path2"></span></i>
+                      </div>
+                      <div class="item-label">
+                        {{ 'INSIGHTER.DASHBOARD.NAV.MEETINGS' | translate }}
+                      </div>
+                      <div class="expand-icon">
+                        <i class="ki-duotone ki-down" [class.rotated]="isMeetingsExpanded">
+                          <span class="path1"></span>
+                          <span class="path2"></span>
+                        </i>
+                      </div>
+                    </div>
+                    <div class="sub-nav" [class.show]="isMeetingsExpanded">
+                      <div class="sub-nav-item" [routerLink]="['my-meetings/received']" routerLinkActive="active">
+                        <div class="sub-item-icon">
+                          <i class="ki-duotone ki-message-text-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                        </div>
+                        <div class="sub-item-label">
+                          {{ 'INSIGHTER.MEETINGS.TABS.RECEIVED' | translate }}
+                        </div>
+                      </div>
+                      <div class="sub-nav-item" [routerLink]="['my-meetings/sent']" routerLinkActive="active">
+                        <div class="sub-item-icon">
+                          <i class="ki-duotone ki-send"><span class="path1"></span><span class="path2"></span></i>
+                        </div>
+                        <div class="sub-item-label">
+                          {{ 'INSIGHTER.MEETINGS.TABS.SENT' | translate }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="nav-item" [routerLink]="['my-consulting-schedule']" routerLinkActive="active">
                     <div class="item-icon">
                       <i class="ki-duotone ki-calendar"><span class="path1"></span><span class="path2"></span></i>
                     </div>
                     <div class="item-label">
                       {{ 'INSIGHTER.DASHBOARD.NAV.MY_CONSULTING_SCHEDULE' | translate }}
                     </div>
-                  </div> -->
+                  </div>
                   <div class="nav-item" [routerLink]="['my-company-settings']" routerLinkActive="active" *ngIf="hasCompanyRole$ | async">
                     <div class="item-icon">
                       <i class="ki-duotone ki-office-bag"><span class="path1"></span><span class="path2"></span></i>

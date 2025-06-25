@@ -22,6 +22,7 @@ import { FormsModule } from "@angular/forms";
 import { InputTextModule } from "primeng/inputtext";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { HSCode, HSCodeService } from 'src/app/_fake/services/hs-code-management/hscode.service';
+import { TranslateModule } from "@ngx-translate/core";
 
 @Component({
   selector: "app-get-hs-code-by-isic",
@@ -31,7 +32,8 @@ import { HSCode, HSCodeService } from 'src/app/_fake/services/hs-code-management
     DialogModule,
     FormsModule,
     InputTextModule,
-    NgbTooltipModule
+    NgbTooltipModule,
+    TranslateModule
   ],
   template: `
     <p-dialog
@@ -49,7 +51,7 @@ import { HSCode, HSCodeService } from 'src/app/_fake/services/hs-code-management
             type="text"
             pInputText
             class="w-100"
-            placeholder="Search HS Codes..."
+            placeholder="{{ 'SEARCH' | translate }}..."
             [(ngModel)]="searchText"
             (input)="filterCodes()"
           />

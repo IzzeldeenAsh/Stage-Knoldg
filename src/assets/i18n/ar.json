@@ -1,4 +1,51 @@
 {
+  "INSIGHTER": {
+    "DASHBOARD": {
+      "NAV": {
+        "DASHBOARD": "لوحة القيادة",
+        "OVERVIEW": "نظرة عامة",
+        "MY_REQUESTS": "طلباتي",
+        "MY_KNOWLEDGE": "معرفتي", 
+        "MY_DOWNLOADS": "تحميلاتي",
+        "MEETINGS": "الاجتماعات",
+        "MY_CONSULTING_SCHEDULE": "جدولي الاستشاري",
+        "MY_COMPANY": "شركتي",
+        "ACCOUNT_SETTINGS": "إعدادات الحساب"
+      }
+    },
+    "MEETINGS": {
+      "TABS": {
+        "RECEIVED": "المستلمة",
+        "SENT": "المرسلة"
+      },
+      "FILTERS": {
+        "ALL": "الكل",
+        "PENDING": "في الانتظار",
+        "APPROVED": "مقبولة",
+        "POSTPONED": "مؤجلة"
+      },
+      "STATUS": {
+        "PENDING": "في الانتظار",
+        "APPROVED": "مقبولة",
+        "POSTPONED": "مؤجلة"
+      },
+      "NO_MEETINGS": "لا توجد اجتماعات",
+      "NO_MEETINGS_DESC": "ليس لديك أي اجتماعات مجدولة في الوقت الحالي.",
+      "NO_DESCRIPTION": "لا يوجد وصف",
+      "INSIGHTER": "المستشار"
+    }
+  },
+  "COMMON": {
+    "SHOWING": "عرض",
+    "TO": "إلى",
+    "OF": "من",
+    "RESULTS": "نتائج",
+    "CANCEL": "إلغاء",
+    "UPLOAD": "رفع",
+    "UPLOADING": "جاري الرفع...",
+    "DELETE": "حذف",
+    "DELETING": "جاري الحذف..."
+  },
   "MY_KNOWLEDGE": {
     "NO_ITEMS": {
       "TITLE": "لم يتم العثور على عناصر معرفية",
@@ -51,13 +98,7 @@
     "PHONE_NUMBER": "رقم الهاتف",
     "BIO": "نبذة عني"
   },
-  "COMMON": {
-    "CANCEL": "إلغاء",
-    "UPLOAD": "رفع",
-    "UPLOADING": "جاري الرفع...",
-    "DELETE": "حذف",
-    "DELETING": "جاري الحذف..."
-  },
+
   "CLIENT": "عميل",
   "VERIFIED": "موثق",
   "COMPANY_PHONE": "هاتف الشركة",

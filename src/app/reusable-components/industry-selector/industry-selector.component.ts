@@ -58,7 +58,7 @@ interface FlatNode {
             type="text"
             pInputText
             class="w-100"
-            placeholder="Search..."
+            placeholder="{{ 'SEARCH' | translate }}..."
             [(ngModel)]="searchText"
             (input)="filterNodes()"
           />

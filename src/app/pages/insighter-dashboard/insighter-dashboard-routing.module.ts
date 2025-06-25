@@ -38,6 +38,12 @@ const routes: Routes = [
         data: { roles: [ 'insighter','company','company-insighter','client'] }
       },
       {
+        path: 'my-meetings',
+        loadChildren: () => import('./insighter-dashboard/my-meetings/my-meetings.module').then(m => m.MyMeetingsModule),
+        canActivate:[authGuard,RolesGuard],
+        data: { roles: [ 'insighter','company','company-insighter'] }
+      },
+      {
         path: 'my-consulting-schedule',
         loadChildren: () => import('./insighter-dashboard/my-consulting-schedule/my-consulting-schedule.module').then(m => m.MyConsultingScheduleModule),
         canActivate:[authGuard,RolesGuard],

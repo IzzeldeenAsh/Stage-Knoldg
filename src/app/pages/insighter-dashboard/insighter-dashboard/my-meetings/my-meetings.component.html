@@ -1,0 +1,363 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <!-- Filter Tabs -->
+      <div class="row mb-5">
+        <div class="col-12">
+          <div class="filter-tabs">
+            <div class="nav nav-pills nav-pills-custom">
+              <a class="nav-link" 
+                 [class.active]="selectedTab === 'all'"
+                 (click)="onTabChange('all')">
+                {{ 'MEETINGS.TABS.ALL' | translate }}
+              </a>
+              <a class="nav-link" 
+                 [class.active]="selectedTab === 'pending'"
+                 (click)="onTabChange('pending')">
+                {{ 'MEETINGS.TABS.PENDING' | translate }}
+              </a>
+              <a class="nav-link" 
+                 [class.active]="selectedTab === 'approved'"
+                 (click)="onTabChange('approved')">
+                {{ 'MEETINGS.TABS.APPROVED' | translate }}
+              </a>
+              <a class="nav-link" 
+                 [class.active]="selectedTab === 'postponed'"
+                 (click)="onTabChange('postponed')">
+                {{ 'MEETINGS.TABS.POSTPONED' | translate }}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div class="text-center py-5" *ngIf="loading">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+
+      <!-- Meetings List -->
+      <div class="meetings-container" *ngIf="!loading">
+        <!-- Meeting Card -->
+        <div class="meeting-card card mb-4" 
+             *ngFor="let meeting of getFilteredMeetings(); let i = index">
+          <div class="card-body p-6">
+            <div class="row align-items-start justify-content-start">
+              <!-- Date Column -->
+              <div class="col-auto">
+                <div class="date-container text-center">
+                  <div class="month-name fw-bold" 
+                       [class.text-orange]="isClosestMeeting(meeting, i)">
+                    {{ formatMonth(meeting.date) }}
+                  </div>
+                  <div class="day-number fw-bold" 
+                       [class.text-orange]="isClosestMeeting(meeting, i)">
+                    {{ formatDay(meeting.date) }}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Time and Client Info Column -->
+              <div class="col-auto">
+                <!-- Time Info -->
+                <div class="time-info d-flex align-items-center mb-3">
+                  <i class="ki-duotone ki-time fs-2 text-muted mx-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                  </i>
+                  <div>
+                    <div class="fw-bold fs-6">
+                      {{ formatTime(meeting.start_time) }} - {{ formatTime(meeting.end_time) }}
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Client Info -->
+                <div class="client-info d-flex align-items-center">
+                  <!-- Profile Image or Initials -->
+                  <div class="symbol symbol-40px me-3">
+                    <img *ngIf="meeting.client.profile_photo_url" 
+                         [src]="meeting.client.profile_photo_url" 
+                         [alt]="meeting.client.name"
+                         class="symbol-label">
+                    <div *ngIf="!meeting.client.profile_photo_url" 
+                         class="symbol-label bg-primary text-white fs-6 fw-bold">
+                      {{ getInitials(meeting.client.first_name, meeting.client.last_name) }}
+                    </div>
+                  </div>
+                  <div>
+                    <div class="fw-bold fs-6" 
+                         [pTooltip]="meeting.client.name" 
+                         tooltipPosition="top"
+                         [style.cursor]="meeting.client.name && meeting.client.name.length > 25 ? 'help' : 'default'">
+                      {{ meeting.client.name | truncateText:25:true }}
+                    </div>
+                    <div class="text-muted fs-7" 
+                         [pTooltip]="meeting.client.email" 
+                         tooltipPosition="top"
+                         [style.cursor]="meeting.client.email && meeting.client.email.length > 30 ? 'help' : 'default'">
+                      {{ meeting.client.email | truncateText:30 }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Meeting Details -->
+              <div class="col">
+                <div class="meeting-details ">
+                  <div class="fw-bold fs-6 mb-1" 
+                      [pTooltip]="meeting.title" 
+                      tooltipPosition="top"
+                      [style.cursor]="meeting.title && meeting.title.length > 20 ? 'help' : 'default'">
+                    {{ meeting.title | truncateText:20 }}
+                  </div>
+                  <div class="text-muted fs-7 mb-0 description-text" 
+                     [class.collapsed]="true"
+                     [pTooltip]="meeting.description" 
+                     tooltipPosition="top"
+                     [style.cursor]="meeting.description && meeting.description.length > 50 ? 'help' : 'default'">
+                    {{ meeting.description | truncateText:50 }}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Status Badge and Actions -->
+              <div class="col-auto">
+                <div class="d-flex align-items-center gap-2">
+                  <!-- Action Buttons for Pending Meetings -->
+                  <div *ngIf="meeting.status === 'pending'" class="d-flex gap-2 me-3">
+                    <button class="btn btn-sm btn-success d-flex align-items-center px-3 py-2"
+                            (click)="openApproveModal(meeting)">
+                      <i class="ki-duotone ki-check fs-4 me-1">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                      </i>
+                      Approve
+                    </button>
+                    <button class="btn btn-sm btn-warning d-flex align-items-center  px-3 py-2"
+                            (click)="openPostponeModal(meeting)">
+                      <i class="ki-duotone ki-time fs-4 me-1">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                      </i>
+                      Postpone
+                    </button>
+                  </div>
+                  
+                  <!-- Status Badge -->
+                  <span class="badge fs-7 fw-bold"  *ngIf="meeting.status !== 'pending'"
+                        [ngClass]="getStatusClass(meeting.status)">
+                    {{ ('MEETINGS.STATUS.' + meeting.status.toUpperCase()) | translate }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="text-center py-10" *ngIf="getFilteredMeetings().length === 0">
+          <i class="ki-duotone ki-calendar fs-3x text-muted mb-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+          </i>
+          <h4 class="text-muted">{{ 'MEETINGS.NO_MEETINGS' | translate }}</h4>
+          <p class="text-muted">{{ 'MEETINGS.NO_MEETINGS_DESC' | translate }}</p>
+        </div>
+
+        <!-- Pagination -->
+        <div class="d-flex justify-content-between align-items-center mt-6" 
+             *ngIf="totalPages > 1">
+          <div class="fs-6 fw-semibold text-gray-700">
+            {{ 'MEETINGS.SHOWING' | translate }} 
+            {{ (currentPage - 1) * perPage + 1 }} - 
+            {{ Math.min(currentPage * perPage, totalItems) }} 
+            {{ 'MEETINGS.OF' | translate }} {{ totalItems }} 
+            {{ 'MEETINGS.MEETINGS' | translate }}
+          </div>
+          
+          <div class="d-flex align-items-center">
+            <button class="btn btn-sm btn-icon btn-outline btn-outline-default me-2" 
+                    [disabled]="currentPage === 1"
+                    (click)="onPageChange(currentPage - 1)">
+              <i class="ki-duotone ki-black-left fs-3"></i>
+            </button>
+            
+            <span class="btn btn-sm btn-primary me-2">{{ currentPage }}</span>
+            
+            <button class="btn btn-sm btn-icon btn-outline btn-outline-default" 
+                    [disabled]="currentPage === totalPages"
+                    (click)="onPageChange(currentPage + 1)">
+              <i class="ki-duotone ki-black-right fs-3"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Approve Meeting Dialog -->
+<p-dialog 
+  header="Approve Meeting" 
+  [(visible)]="showApproveDialog" 
+  [modal]="true" 
+  [style]="{width: '500px'}"
+  [draggable]="false"
+  [resizable]="false"
+  appendTo="body"
+  styleClass="custom-dialog">
+  
+  <div class="dialog-content">
+    <div class="meeting-details mb-4">
+      <h6 class="fw-bold mb-3">Meeting Details:</h6>
+      <div class="detail-item">
+        <strong>Title:</strong> 
+        <span [pTooltip]="selectedMeeting?.title || ''" 
+              tooltipPosition="top"
+              [style.cursor]="(selectedMeeting?.title?.length || 0) > 50 ? 'help' : 'default'">
+          {{ (selectedMeeting?.title || '') | truncateText:50:true }}
+        </span>
+      </div>
+      <div class="detail-item">
+        <strong>Client:</strong> 
+        <span [pTooltip]="selectedMeeting?.client?.name || ''" 
+              tooltipPosition="top"
+              [style.cursor]="(selectedMeeting?.client?.name?.length || 0) > 30 ? 'help' : 'default'">
+          {{ (selectedMeeting?.client?.name || '') | truncateText:30:true }}
+        </span>
+      </div>
+      <div class="detail-item">
+        <strong>Date:</strong> {{ selectedMeeting?.date | date:'fullDate' }}
+      </div>
+      <div class="detail-item">
+        <strong>Time:</strong> {{ formatTime(selectedMeeting?.start_time || '') }} - {{ formatTime(selectedMeeting?.end_time || '') }}
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label for="approveNotes" class="form-label fw-bold">Approval Notes</label>
+      <textarea 
+        pInputTextarea 
+        id="approveNotes" 
+        [(ngModel)]="approveNotes"
+        placeholder="Enter approval notes for the client..."
+        rows="4"
+        class="w-100">
+      </textarea>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <button 
+      type="button"
+      class="btn btn-light me-3"
+      (click)="closeApproveDialog()">
+      <i class="ki-duotone ki-cross fs-2">
+        <span class="path1"></span>
+        <span class="path2"></span>
+      </i>
+      Cancel
+    </button>
+    <button 
+      type="button"
+      class="btn btn-success"
+      [disabled]="actionLoading"
+      (click)="approveMeeting()">
+      <ng-container *ngIf="!actionLoading">
+        <i class="ki-duotone ki-check fs-2">
+          <span class="path1"></span>
+          <span class="path2"></span>
+        </i>
+        Approve Meeting
+      </ng-container>
+      <ng-container *ngIf="actionLoading">
+        <span class="spinner-border spinner-border-sm spinner-border-xs" role="status"></span>
+      </ng-container>
+    </button>
+  </ng-template>
+</p-dialog>
+
+<!-- Postpone Meeting Dialog -->
+<p-dialog 
+  header="Postpone Meeting" 
+  [(visible)]="showPostponeDialog" 
+  [modal]="true" 
+  [style]="{width: '500px'}"
+  [draggable]="false"
+  [resizable]="false"
+  appendTo="body"
+  styleClass="custom-dialog">
+  
+  <div class="dialog-content">
+    <div class="meeting-details mb-4">
+      <h6 class="fw-bold mb-3">Meeting Details:</h6>
+      <div class="detail-item">
+        <strong>Title:</strong> 
+        <span [pTooltip]="selectedMeeting?.title || ''" 
+              tooltipPosition="top"
+              [style.cursor]="(selectedMeeting?.title?.length || 0) > 50 ? 'help' : 'default'">
+          {{ (selectedMeeting?.title || '') | truncateText:50:true }}
+        </span>
+      </div>
+      <div class="detail-item">
+        <strong>Client:</strong> 
+        <span [pTooltip]="selectedMeeting?.client?.name || ''" 
+              tooltipPosition="top"
+              [style.cursor]="(selectedMeeting?.client?.name?.length || 0) > 30 ? 'help' : 'default'">
+          {{ (selectedMeeting?.client?.name || '') | truncateText:30:true }}
+        </span>
+      </div>
+      <div class="detail-item">
+        <strong>Date:</strong> {{ selectedMeeting?.date | date:'fullDate' }}
+      </div>
+      <div class="detail-item">
+        <strong>Time:</strong> {{ formatTime(selectedMeeting?.start_time || '') }} - {{ formatTime(selectedMeeting?.end_time || '') }}
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label for="postponeNotes" class="form-label fw-bold">Postponement Notes</label>
+      <textarea 
+        pInputTextarea 
+        id="postponeNotes" 
+        [(ngModel)]="postponeNotes"
+        placeholder="Enter postponement reason and any additional information for the client..."
+        rows="4"
+        class="w-100">
+      </textarea>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <button 
+      type="button"
+      class="btn btn-light me-3"
+      (click)="closePostponeDialog()">
+      <i class="ki-duotone ki-cross fs-2">
+        <span class="path1"></span>
+        <span class="path2"></span>
+      </i>
+      Cancel
+    </button>
+    <button 
+      type="button"
+      class="btn btn-warning"
+      (click)="postponeMeeting()"
+      [disabled]="actionLoading">
+      <ng-container *ngIf="!actionLoading">
+        <i class="ki-duotone ki-time fs-2">
+          <span class="path1"></span>
+          <span class="path2"></span>
+        </i>
+        Postpone Meeting
+      </ng-container>
+      <ng-container *ngIf="actionLoading">
+        <span class="spinner-border spinner-border-sm spinner-border-xs" role="status" aria-hidden="true"></span>
+        Please wait...
+      </ng-container>
+    </button>
+  </ng-template>
+</p-dialog> 

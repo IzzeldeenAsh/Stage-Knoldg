@@ -89,11 +89,22 @@
   flex: 1;
 }
 
+.time-slot-container {
+  margin-bottom: 8px;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
 .time-slot {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 8px;
+}
+
+.exception-container {
+  margin-bottom: 12px;
   
   &:last-child {
     margin-bottom: 0;
@@ -104,14 +115,9 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 12px;
   padding: 8px;
   background: #f9f9f9;
   border-radius: 4px;
-  
-  &:last-child {
-    margin-bottom: 0;
-  }
 }
 
 // Native HTML input styling
@@ -191,6 +197,25 @@
   cursor: pointer;
   margin-bottom: 12px;
   margin-top: 12px;
+}
+
+.validation-error-row {
+  margin-top: 4px;
+  width: 100%;
+}
+
+.validation-error {
+  padding: 4px 8px;
+  background-color: #ffebee;
+  border: 1px solid #ffcdd2;
+  border-radius: 4px;
+  
+  .error-message {
+    color: #d32f2f;
+    font-size: 12px;
+    font-weight: 500;
+    display: block;
+  }
 }
 
 .btn-save {

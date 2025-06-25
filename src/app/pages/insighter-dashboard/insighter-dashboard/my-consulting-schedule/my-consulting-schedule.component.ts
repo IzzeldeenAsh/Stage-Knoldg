@@ -1,5 +1,5 @@
 import { Component, OnInit, signal, computed, inject, Injector } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { ConsultingScheduleService, DayAvailability, AvailabilityException, TimeSlot } from 'src/app/services/consulting-schedule.service';
@@ -38,6 +38,42 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
   ) {
     super(injector);
     this.initializeForm();
+  }
+
+  // RTL support method
+  isRtl(): boolean {
+    return document.documentElement.getAttribute('dir') === 'rtl';
+  }
+
+  // Custom validator for 1-hour time span
+  private oneHourSpanValidator(control: AbstractControl): ValidationErrors | null {
+    const group = control as FormGroup;
+    const startTime = group.get('start_time')?.value;
+    const endTime = group.get('end_time')?.value;
+
+    if (!startTime || !endTime) {
+      return null; // Let required validators handle empty values
+    }
+
+    const startDate = new Date(startTime);
+    const endDate = new Date(endTime);
+    
+    // Calculate difference in milliseconds
+    const diffMs = endDate.getTime() - startDate.getTime();
+    
+    // Convert to minutes
+    const diffMinutes = diffMs / (1000 * 60);
+    
+    // Check if exactly 60 minutes
+    if (diffMinutes !== 60) {
+      return { 'oneHourSpan': { 
+        actual: diffMinutes, 
+        expected: 60,
+        message: 'Time span must be exactly 1 hour'
+      }};
+    }
+
+    return null;
   }
 
   ngOnInit(): void {
@@ -117,7 +153,7 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
     return this.fb.group({
       start_time: [this.parseTimeString(timeSlot.start_time), Validators.required],
       end_time: [this.parseTimeString(timeSlot.end_time), Validators.required]
-    });
+    }, { validators: this.oneHourSpanValidator.bind(this) });
   }
 
   private createExceptionFormGroup(exception: AvailabilityException): FormGroup {
@@ -125,7 +161,7 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
       exception_date: [exception.exception_date, Validators.required],
       start_time: [this.parseTimeString(exception.start_time), Validators.required],
       end_time: [this.parseTimeString(exception.end_time), Validators.required]
-    });
+    }, { validators: this.oneHourSpanValidator.bind(this) });
   }
 
   // Helper method to parse time string to Date object for PrimeNG Calendar

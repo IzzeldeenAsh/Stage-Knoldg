@@ -19,6 +19,7 @@ export class InsighterDashboardComponent implements OnInit {
   isClient$: Observable<any>;
   panelMenuItems: MenuItem[] = [];
   lang: string = 'en';
+  isMeetingsExpanded: boolean = false;
   constructor(
     private router: Router,
     private profileService: ProfileService,
@@ -36,6 +37,9 @@ export class InsighterDashboardComponent implements OnInit {
       
       // Set initial active tab based on current route
       this.setActiveTabFromRoute(this.router.url);
+      
+      // Check if we're on a meetings route to expand the meetings section
+      this.checkMeetingsRoute(this.router.url);
     });
    this.isClient$ = this.profileService.isClient()
     
@@ -44,6 +48,7 @@ export class InsighterDashboardComponent implements OnInit {
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
       this.setActiveTabFromRoute(event.url);
+      this.checkMeetingsRoute(event.url);
     });
   }
 
@@ -187,5 +192,16 @@ export class InsighterDashboardComponent implements OnInit {
 
   isRouteActive(route: string): boolean {
     return this.router.url.includes(route);
+  }
+
+  toggleMeetings(): void {
+    this.isMeetingsExpanded = !this.isMeetingsExpanded;
+  }
+
+  checkMeetingsRoute(url: string): void {
+    // Auto-expand meetings section if we're on a meetings route
+    if (url.includes('my-meetings')) {
+      this.isMeetingsExpanded = true;
+    }
   }
 }
