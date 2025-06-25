@@ -979,6 +979,8 @@ INSIGHTER_REQUESTS: {
     KNOWLEDGE_PUBLISHED_MESSAGE: "تم نشر معرفتك بنجاح وهي الآن متاحة للمستخدمين.",
     KNOWLEDGE_SCHEDULED_MESSAGE: "تمت جدولة معرفتك للنشر في التاريخ والوقت المحددين.",
     BUSINESS_COURSES:'دورات الأعمال',
+    SENT_MEETINGS:'الاجتماعات المرسلة',
+    RECEIVED_MEETINGS:'الاجتماعات المستلمة',
     WHATS_NEXT: "ما التالي؟",
     VISIT_DASHBOARD_MESSAGE: "يمكنك عرض معرفتك أو الانتقال إلى مكتبة المعرفة الخاصة بك لإدارة جميع المحتويات الخاصة بك.",
     VIEW_KNOWLEDGE: "عرض المعرفة",
@@ -1015,6 +1017,7 @@ INSIGHTER_REQUESTS: {
     'TYPE': 'النوع',
     'TOTAL_PRICE': 'السعر الإجمالي',
     'STATUS': 'الحالة',
+
     'EDIT': 'تعديل',
     'DELETE': 'حذف',
     'PUBLISH': 'نشر',

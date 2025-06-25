@@ -8,6 +8,8 @@ import { FormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { TooltipModule } from 'primeng/tooltip';
 import { TruncateTextPipe } from 'src/app/pipes/truncate-pipe/truncate-text.pipe';
+import { RolesGuard } from 'src/app/guards/roles-guard/roles-gurad.gurad';
+import { authGuard } from 'src/app/guards/auth-guard/auth.guard';
 
 const routes: Routes = [
   {
@@ -17,11 +19,15 @@ const routes: Routes = [
   },
   {
     path: 'received',
-    component: MyMeetingsComponent
+    component: MyMeetingsComponent,
+    canActivate:[authGuard,RolesGuard],
+    data: { roles: [ 'insighter','company','company-insighter'] }
   },
   {
     path: 'sent',
-    component: SentMeetingsComponent
+    component: SentMeetingsComponent,
+    canActivate:[authGuard,RolesGuard],
+    data: { roles: [ 'insighter','company','company-insighter','client'] }
   }
 ];
 

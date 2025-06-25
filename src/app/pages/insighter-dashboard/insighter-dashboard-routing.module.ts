@@ -41,7 +41,7 @@ const routes: Routes = [
         path: 'my-meetings',
         loadChildren: () => import('./insighter-dashboard/my-meetings/my-meetings.module').then(m => m.MyMeetingsModule),
         canActivate:[authGuard,RolesGuard],
-        data: { roles: [ 'insighter','company','company-insighter'] }
+        data: { roles: [ 'insighter','company','company-insighter','client'] }
       },
       {
         path: 'my-consulting-schedule',

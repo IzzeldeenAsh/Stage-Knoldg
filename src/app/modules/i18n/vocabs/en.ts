@@ -25,6 +25,8 @@ export const locale = {
     WHAT_HAS_BEEN_PURCHASED:'What has been purchased',
     REMOVE:'Remove',
     ERROR_FILES_DETECTED: 'Error Files Detected',
+    SENT_MEETINGS:'Sent Meetings',
+    RECEIVED_MEETINGS:'Received Meetings',
     ENTER_TAGS:'Enter Tag',
     MY_CERTIFICATES:'My Certificates',
     NO_CERTIFICATES:'No Certificates Uploaded',
