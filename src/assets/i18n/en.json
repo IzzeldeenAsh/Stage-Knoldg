@@ -1,4 +1,51 @@
 {
+  "INSIGHTER": {
+    "DASHBOARD": {
+      "NAV": {
+        "DASHBOARD": "Dashboard",
+        "OVERVIEW": "Overview",
+        "MY_REQUESTS": "My Requests",
+        "MY_KNOWLEDGE": "My Knowledge", 
+        "MY_DOWNLOADS": "My Downloads",
+        "MEETINGS": "Meetings",
+        "MY_CONSULTING_SCHEDULE": "My Consulting Schedule",
+        "MY_COMPANY": "My Company",
+        "ACCOUNT_SETTINGS": "Account Settings"
+      }
+    },
+    "MEETINGS": {
+      "TABS": {
+        "RECEIVED": "Received",
+        "SENT": "Sent"
+      },
+      "FILTERS": {
+        "ALL": "All",
+        "PENDING": "Pending",
+        "APPROVED": "Approved",
+        "POSTPONED": "Postponed"
+      },
+      "STATUS": {
+        "PENDING": "Pending",
+        "APPROVED": "Approved",
+        "POSTPONED": "Postponed"
+      },
+      "NO_MEETINGS": "No Meetings Found",
+      "NO_MEETINGS_DESC": "You don't have any meetings scheduled at this time.",
+      "NO_DESCRIPTION": "No description provided",
+      "INSIGHTER": "Insighter"
+    }
+  },
+  "COMMON": {
+    "SHOWING": "Showing",
+    "TO": "to",
+    "OF": "of",
+    "RESULTS": "results",
+    "CANCEL": "Cancel",
+    "UPLOAD": "Upload",
+    "UPLOADING": "Uploading...",
+    "DELETE": "Delete",
+    "DELETING": "Deleting..."
+  },
   "MY_KNOWLEDGE": {
     "NO_ITEMS": {
       "TITLE": "No Knowledge Items Found",
@@ -51,13 +98,7 @@
     "PHONE_NUMBER": "Phone Number",
     "BIO": "Bio"
   },
-  "COMMON": {
-    "CANCEL": "Cancel",
-    "UPLOAD": "Upload",
-    "UPLOADING": "Uploading...",
-    "DELETE": "Delete",
-    "DELETING": "Deleting..."
-  },
+
   "CLIENT": "Client",
   "VERIFIED": "Verified",
   "COMPANY_PHONE": "Company Phone",

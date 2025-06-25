@@ -19,6 +19,9 @@ INSIGHTER_REQUESTS: {
     WHAT_HAS_BEEN_PURCHASED:'المعارف التي تم شراؤها',
     SHOW_MORE:'عرض المزيد',
     WELCOME_BACK:'مرحبا بك',
+    KNOWLEDGE_INTRODUCTION_AI_GENERATION:'إنشاء مقدمة المعرفة بواسطة الذكاء الاصطناعي',
+    GENERATING_AI_DESCRIPTION:'إنشاء وصف المعرفة بواسطة الذكاء الاصطناعي...',
+    SEARCH:'بحث',
     NO_CERTIFICATES:'لا يوجد شهادات',
     NO_MANAGER_CERTIFICATES:'لايوجد شهادات للمدير',
     ADD_CERTIFICATE_PROMPT:"ارفع من مستوى ملفك الشخصي بإضافات شهادات تظهر خبرتك",
@@ -199,6 +202,16 @@ INSIGHTER_REQUESTS: {
       "ACTIVATE": "تفعيل",
       "DEACTIVATE": "إلغاء التفعيل",
       "CURRENT_USER": "المدير التنفيذي"
+    },
+    INSIGHTER_DASHBOARD: {
+      TITLE: 'لوحة المعلومات',
+      "MY_KNOWLEDGE": "مكتبة المعرفة",
+      "ACCOUNT_SETTINGS": "إعدادات الحساب",
+      "MY_COMPANY": "فريقي",
+      "INVITING": "جاري الدعوة",
+      "MY_DOWNLOADS": "التحميلات",
+      "MY_CONSULTING_SCHEDULE": "جدولة الاستشارات",
+      "DASHBOARD": "لوحة المعلومات"
     },
     "NOTIFICATIONS": {
       TITLE: 'إشعارات',
@@ -792,6 +805,8 @@ INSIGHTER_REQUESTS: {
           "ACCOUNT_SETTINGS": "إعدادات الحساب",
           "MY_COMPANY": "فريقي",
           "MY_DOWNLOADS": "التحميلات",
+          "MEETINGS": "الاجتماعات",
+          "MY_MEETINGS": "اجتماعاتي",
           "MY_CONSULTING_SCHEDULE": "جدولة الاستشارات",
           "DASHBOARD": "لوحة المعلومات"
         },
@@ -800,7 +815,29 @@ INSIGHTER_REQUESTS: {
           PENDING: "الطلبات قيد الانتظار",
           DECLINED: "الطلبات المرفوضة"
         }
-      }
+      },
+      "MEETINGS": {
+        "TABS": {
+          "RECEIVED": "المستقبلة",
+          "SENT": "المرسلة"
+        },
+        "FILTERS": {
+          "ALL": "الكل",
+          "PENDING": "قيد الانتظار",
+          "APPROVED": "موافق عليه",
+          "POSTPONED": "مؤجل"
+        },
+        "NO_MEETINGS": "لا يوجد اجتماعات",
+        "NO_MEETINGS_DESC": "لا يوجد اجتماعات متاحة",
+        "NO_MEETINGS_DESC_2": "يمكنك إنشاء اجتماعات جديدة عن طريق الضغط على زر 'إنشاء اجتماع' في القائمة أعلاه."
+        ,
+        "STATUS": {
+          "PENDING": "قيد الانتظار",
+          "APPROVED": "موافق عليه",
+          "POSTPONED": "مؤجل"
+        }
+      },
+    
     },
     BECOME_INSIHGER_HEADER:'سجل كانسايتر',
     BECOME_INSIGHTER_DESCRIPTION:"مشاركة المعرفة تمكّننا جميعًا من النمو والابتكار معًا!",
@@ -1014,7 +1051,6 @@ INSIGHTER_REQUESTS: {
   SCHEDULE_PUBLICATION: "جدولة النشر",  
   EDIT_KNOWLEDGE: "إدارة المعرفة",
   SELECT_KNOWLEDGE_TYPE: "تحديد نوع المعرفة",
-  INSIGHTER_DASHBOARD: "لوحة معلومات المحلل",
   INSIGHTER_DASHBOARD_GENERAL: "الكل",
   INSIGHTER_DASHBOARD_SCHEDULED: "المجدولة",
   INSIGHTER_DASHBOARD_POSTED: "المُنشَر",
@@ -1144,6 +1180,9 @@ INSIGHTER_REQUESTS: {
   "CERTIFICATIONS": "الشهادات",
   "CONSULTING_SCHEDULE": {
     "TITLE": "جدول الاستشارات",
+    "TIME_SPAN_ERROR": "يجب أن يكون فترة الوقت  ساعة واحدة  ",
+    "CURRENT_SPAN": "الفترة الحالية",
+    "MINUTES": "دقائق",
     "DESCRIPTION": "حدد مواعيد توفرك لجلسات الاستشارة. قم بتعيين جدولك الأسبوعي وأضف أيام غير متاح فيها عند الحاجة.",
     "AVAILABLE_DAYS": "الأيام المتاحة",
     "EXCEPTION_DAYS": "أيام عدم التوفر",
@@ -1167,12 +1206,47 @@ INSIGHTER_REQUESTS: {
     "SAVING": "جاري الحفظ...",
     "SUCCESS": "تم تحديث الجدول بنجاح",
     "ERROR": "فشل في تحديث الجدول",
-    "VALIDATION": {
-      "REQUIRED": "هذا الحقل مطلوب",
-      "TIME_REQUIRED": "الوقت مطلوب",
-      "DATE_REQUIRED": "التاريخ مطلوب"
+          "VALIDATION": {
+        "REQUIRED": "هذا الحقل مطلوب",
+        "TIME_REQUIRED": "الوقت مطلوب",
+        "DATE_REQUIRED": "التاريخ مطلوب"
+      }
+    },
+    "MEETINGS": {
+      "TITLE": "اجتماعاتي",  
+      "FILTERS": {
+        "ALL": "الكل",
+        "PENDING": "قيد الانتظار",
+        "APPROVED": "موافق عليه",
+        "POSTPONED": "مؤجل"
+      },
+      "TABS": {
+        "ALL": "الكل",
+        "PENDING": "قيد الانتظار",
+        "APPROVED": "موافق عليه",
+        "POSTPONED": "مؤجل",
+        "RECEIVED": "المستلمة",
+        "SENT": "المرسلة"
+      },
+      "STATUS": {
+        "PENDING": "قيد الانتظار",
+        "APPROVED": "موافق عليه",
+        "POSTPONED": "مؤجل"
+      },
+      "STATS": {
+        "TOTAL_MEETINGS": "إجمالي الاجتماعات",
+        "PENDING": "قيد الانتظار",
+        "APPROVED": "موافق عليه", 
+        "POSTPONED": "مؤجل"
+      },
+      "NO_MEETINGS": "لم يتم العثور على اجتماعات",
+      "NO_MEETINGS_DESC": "ليس لديك أي اجتماعات مجدولة في الوقت الحالي.",
+      "NO_DESCRIPTION": "لا يوجد وصف متاح",
+      "INSIGHTER": "المستشار",
+      "SHOWING": "عرض",
+      "OF": "من",
+      "MEETINGS": "اجتماعات"
     }
-  },
 },
 
 }

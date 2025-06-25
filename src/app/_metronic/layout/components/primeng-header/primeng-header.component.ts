@@ -159,14 +159,21 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Check initial screen size and subscribe to changes
     this.breakpointSubscription = this.breakpointObserver
-      .observe([Breakpoints.XSmall, Breakpoints.Small])
+      .observe([Breakpoints.XSmall, Breakpoints.Small, Breakpoints.Medium])
       .subscribe(result => {
         const wasSmallScreen = this.isSmallScreen;
+        // Consider XSmall and Small as mobile, Medium and above as desktop
         this.isSmallScreen = result.matches;
         
-        // If transitioning from small to large screen, close mobile sidebar
+        // If transitioning from small to large screen, close mobile sidebar and dropdowns
         if (wasSmallScreen && !this.isSmallScreen) {
           this.sidebarVisible = false;
+          this.closeAllDropdowns();
+        }
+        
+        // Close dropdowns when switching to mobile to prevent overlap issues
+        if (!wasSmallScreen && this.isSmallScreen) {
+          this.closeAllDropdowns();
         }
       });
 
@@ -199,10 +206,23 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
       const navEvent = event as NavigationEnd;
       // Check if the current URL contains 'dashboard'
       this.isDashboardRoute = navEvent.url.includes('dashboard');
+      
+      // Close mobile sidebar on route change
+      if (this.isSmallScreen) {
+        this.sidebarVisible = false;
+      }
     });
     
     // Also check the initial route
     this.isDashboardRoute = this.router.url.includes('dashboard');
+    
+    // Initialize screen size on component load
+    this.checkScreenSize();
+  }
+
+  // Add method to check screen size manually
+  private checkScreenSize() {
+    this.isSmallScreen = window.innerWidth <= 991.98; // Bootstrap lg breakpoint
   }
 
   getHomeUrl(): string {
@@ -417,6 +437,29 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
     this.isMobileUserDropdownOpen = !this.isMobileUserDropdownOpen;
     this.isUserDropdownOpen = false;
     this.isNotificationsOpen = false;
+    
+    // Handle mobile dropdown positioning to prevent off-screen issues
+    if (this.isMobileUserDropdownOpen) {
+      setTimeout(() => {
+        const dropdown = document.querySelector('.mobile-user-dropdown-menu.show') as HTMLElement;
+        if (dropdown) {
+          const rect = dropdown.getBoundingClientRect();
+          const viewportWidth = window.innerWidth;
+          
+          // If dropdown goes off-screen to the right, adjust position
+          if (rect.right > viewportWidth) {
+            dropdown.style.right = '0.5rem';
+            dropdown.style.left = 'auto';
+          }
+          
+          // If dropdown goes off-screen to the left (for RTL)
+          if (rect.left < 0) {
+            dropdown.style.left = '0.5rem';
+            dropdown.style.right = 'auto';
+          }
+        }
+      }, 10);
+    }
   }
   
   // Toggle notifications dropdown
@@ -535,11 +578,16 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
   onResize(event: Event) {
     // Update isSmallScreen based on window width
     const wasSmallScreen = this.isSmallScreen;
-    this.isSmallScreen = window.innerWidth < 992;
+    this.checkScreenSize();
     
     // If transitioning from small to large screen, close mobile sidebar and dropdowns
     if (wasSmallScreen && !this.isSmallScreen) {
       this.sidebarVisible = false;
+      this.closeAllDropdowns();
+    }
+    
+    // If transitioning from large to small screen, close desktop dropdowns
+    if (!wasSmallScreen && this.isSmallScreen) {
       this.closeAllDropdowns();
     }
   }

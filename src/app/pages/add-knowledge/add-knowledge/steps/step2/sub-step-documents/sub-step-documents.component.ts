@@ -569,8 +569,11 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
             this.documents = [...this.documents];
             
             console.log(`Document state after update: id=${currentDoc.id}, status=${currentDoc.uploadStatus}`);
-
+           if(this.lang=='ar'){
+            this.showSuccess('', 'تم رفع الملف بنجاح');
+           }else{
             this.showSuccess('', 'File uploaded successfully');
+           }
 
             // Update parent with latest data
             this.updateParentModel({ documents: this.documents as IDocument[] }, this.validateDocuments());
@@ -682,7 +685,11 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
         .subscribe({
           next: (response) => {
             console.log('Document details updated successfully:', response);
-            this.showSuccess('', 'Document details updated successfully');
+            if(this.lang=='ar'){
+              this.showSuccess('', 'تم تحديث تفاصيل المستند بنجاح');
+            }else{
+              this.showSuccess('', 'Document details updated successfully');
+            }
             resolve(true);
           },
                   error: (error) => {

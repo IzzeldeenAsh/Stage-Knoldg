@@ -33,6 +33,9 @@ export const locale = {
     ADD_MANAGER_CERTIFICATE_PROMPT:"Empower your profile with certificates to showcase your expertise and credibility.",
     SUBMIT:'Submit',
     PUBLISHED:'Published',
+    KNOWLEDGE_INTRODUCTION_AI_GENERATION:'Knowledge Introduction AI Generation',
+    GENERATING_AI_DESCRIPTION:'Generating AI description...',
+    SEARCH:'Search',
     DECLINE:'Decline',
     VERIFICATION_STATUS:'Verification Status',
     PENDING_VERIFICATION:'Pending Verification',
@@ -825,8 +828,10 @@ Your wealth of knowledge is valued and many are eager to learn from it.
         "MY_KNOWLEDGE": "My knowledge library",
         "ACCOUNT_SETTINGS": "Account Settings",
         "MY_COMPANY": "My Team",
+        "MEETINGS": "Meetings",
         "INVITING": "Inviting",
         "MY_DOWNLOADS": "My Downloads",
+        "MY_MEETINGS": "My Meetings",
         "MY_CONSULTING_SCHEDULE": "My Consulting Schedule",
         "DASHBOARD": "Dashboard"
       },
@@ -835,7 +840,32 @@ Your wealth of knowledge is valued and many are eager to learn from it.
         PENDING: "Pending Requests",
         DECLINED: "Declined Requests"
       }
-    }
+    },
+    "MEETINGS": {
+      "TABS": {
+        "RECEIVED": "Received",
+        "SENT": "Sent"
+      },
+      "FILTERS": {
+        "ALL": "All",
+        "PENDING": "Pending",
+        "APPROVED": "Approved", 
+        "POSTPONED": "Postponed"
+      },
+      "NO_MEETINGS": "No meetings found",
+      "NO_MEETINGS_DESC": "You don't have any meetings scheduled at the moment.",
+      "NO_DESCRIPTION": "No description available",
+      "INSIGHTER": "Insighter",
+      "SHOWING": "Showing",
+      "OF": "of",
+      "MEETINGS": "meetings",
+      "STATUS": {
+        "PENDING": "Pending",
+        "APPROVED": "Approved",
+        "POSTPONED": "Postponed"
+      }
+    },
+   
   },
   CHOOSE_ACCOUNT_TYPE: "Choose Account Type",
   BILLING_TOOLTIP: "Billing is issued based on your selected account type",
@@ -1230,6 +1260,9 @@ UPLOAD: 'Upload',
     },
     "CONSULTING_SCHEDULE": {
       "TITLE": "My Consulting Schedule",
+      "TIME_SPAN_ERROR": "Time slot must be at least 1 hour apart",
+      "CURRENT_SPAN": "Current span",
+      "MINUTES": "minutes",
       "DESCRIPTION": "Set your availability for consulting sessions. Define your weekly schedule and add exception days when needed.",
       "AVAILABLE_DAYS": "Available Days",
       "EXCEPTION_DAYS": "Exception Days",
@@ -1258,6 +1291,39 @@ UPLOAD: 'Upload',
         "TIME_REQUIRED": "Time is required",
         "DATE_REQUIRED": "Date is required"
       }
+    },
+    "MEETINGS": {
+      "TITLE": "My Meetings",  
+      "FILTERS": {
+        "ALL": "All",
+        "PENDING": "Pending",
+        "APPROVED": "Approved",
+        "POSTPONED": "Postponed"
+      },
+      "TABS": {
+        "ALL": "All",
+        "PENDING": "Pending",
+        "APPROVED": "Approved",
+        "POSTPONED": "Postponed"
+      },
+      "STATUS": {
+        "PENDING": "Pending",
+        "APPROVED": "Approved",
+        "POSTPONED": "Postponed"
+      },
+      "STATS": {
+        "TOTAL_MEETINGS": "Total Meetings",
+        "PENDING": "Pending",
+        "APPROVED": "Approved", 
+        "POSTPONED": "Postponed"
+      },
+      "NO_MEETINGS": "No meetings found",
+      "NO_MEETINGS_DESC": "You don't have any meetings scheduled at the moment.",
+      "NO_DESCRIPTION": "No description available",
+      "INSIGHTER": "Insighter",
+      "SHOWING": "Showing",
+      "OF": "of",
+      "MEETINGS": "meetings"
     },
   },
   "CLIENT": "Client",

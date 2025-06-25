@@ -844,7 +844,11 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
             });
             
             // Show success message
-            this.showSuccess('', 'File uploaded successfully. Please complete the document details.');
+            if(this.lang=='ar'){
+              this.showSuccess('', 'تم رفع الملف بنجاح. يرجى إكمال تفاصيل المستند.');
+            }else{
+              this.showSuccess('', 'File uploaded successfully. Please complete the document details.');
+            }
             // Don't update document details here, wait for Next button
           } else {
             console.error('No document ID in the response:', response);

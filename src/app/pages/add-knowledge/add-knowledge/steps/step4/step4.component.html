@@ -27,7 +27,7 @@
       </div>
     </div>
     <div class="loading-text">
-      Knowledge Introduction AI Generation
+      {{ "KNOWLEDGE_INTRODUCTION_AI_GENERATION" | translate }}
       <span class="loading-dots">
         <span class="dot"></span>
         <span class="dot"></span>
@@ -184,7 +184,7 @@
                     <div class="spinner-border text-primary me-2" role="status">
                       <span class="visually-hidden">Loading...</span>
                     </div>
-                    <span>Generating AI description...</span>
+                    <span>{{ "GENERATING_AI_DESCRIPTION" | translate }}</span>
                   </div>
                   
                   <!-- Editor (only shown when edit is clicked or no animation) -->
@@ -615,6 +615,8 @@
           [title]="currentLanguage == 'ar' ? 'اختر رمز الـ HS' : 'Select HS code'"
           [isRequired]="false"
           [language]="currentLanguage"
+          [cancelLabel]="currentLanguage == 'ar' ? 'الغاء' : 'Cancel'"
+          [okLabel]="currentLanguage == 'ar' ? 'تأكيد' : 'Ok'"
           [preselectedHSCodeId]="form.get('hs_code')?.value"
           (hsCodeSelected)="onHSCodeSelected($event)"
           [ngClass]="{'is-invalid': form.get('hs_code')?.invalid && form.get('hs_code')?.touched, 'border-red': form.get('hs_code')?.invalid && form.get('hs_code')?.touched}"

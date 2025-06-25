@@ -13,6 +13,7 @@ import { CountUpDirective } from 'src/app/directives/countup/count-up.directive'
 import { CompanyStatisticsComponent } from './insighter-dashboard/statistics/company-statistics/company-statistics.component';
 import { DownloadsStatisticsComponent } from './insighter-dashboard/statistics/downloads-statistics/downloads-statistics.component';
 import { ConsultingScheduleHeaderComponent } from './insighter-dashboard/statistics/consulting-schedule-header/consulting-schedule-header.component';
+import { MeetingsStatisticsComponent } from './insighter-dashboard/my-meetings/meetings-statistics/meetings-statistics.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { ConsultingScheduleHeaderComponent } from './insighter-dashboard/statist
     AccountSettingsHeaderComponent,
     CompanyStatisticsComponent,
     DownloadsStatisticsComponent,
-    ConsultingScheduleHeaderComponent
+    ConsultingScheduleHeaderComponent,
+    MeetingsStatisticsComponent
   ],
   imports: [
     CommonModule,

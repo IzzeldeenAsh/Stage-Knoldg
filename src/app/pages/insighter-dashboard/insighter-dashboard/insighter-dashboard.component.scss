@@ -126,6 +126,96 @@
         color: #4096ff;
         border-left: 3px solid #4096ff;
       }
+
+      // Expandable navigation styles
+      &.expandable {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 0;
+        
+        .nav-item-main {
+          display: flex;
+          align-items: center;
+          padding: 0.75rem 1rem;
+          cursor: pointer;
+          transition: background-color 0.2s;
+          
+          &:hover {
+            background-color: #f8f9fa;
+          }
+          
+          .expand-icon {
+            margin-left: auto;
+            
+            i {
+              transition: transform 0.3s ease;
+              
+              &.rotated {
+                transform: rotate(180deg);
+              }
+            }
+          }
+        }
+        
+        .sub-nav {
+          max-height: 0;
+          overflow: hidden;
+          transition: max-height 0.3s ease;
+          background-color: #f8f9fa;
+          
+          &.show {
+            max-height: 200px;
+          }
+          
+          .sub-nav-item {
+            display: flex;
+            align-items: center;
+            padding: 0.6rem 1rem 0.6rem 3rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-bottom: 1px solid #e9ecef;
+            text-decoration: none;
+            color: inherit;
+            
+            &:last-child {
+              border-bottom: none;
+            }
+            
+            &:hover {
+              background-color: #e9ecef;
+              text-decoration: none;
+            }
+            
+            &.active {
+              background-color: #EDF5FF;
+              color: #152557;
+              border-left: 3px solid #3F96FE;
+            }
+            
+            .sub-item-icon {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 28px;
+              height: 28px;
+              border-radius: 50%;
+              background-color: #ffffff;
+              margin-right: 8px;
+              
+              i {
+                font-size: 0.8rem;
+                color: #6c757d;
+              }
+            }
+            
+            .sub-item-label {
+              font-size: 0.85rem;
+              color: #495057;
+              font-weight: 400;
+            }
+          }
+        }
+      }
       
       .item-icon {
         display: flex;

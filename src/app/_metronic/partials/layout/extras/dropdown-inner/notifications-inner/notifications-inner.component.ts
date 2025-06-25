@@ -118,6 +118,16 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
       this.notificationClicked.emit(notification.id);
     }
   }
+  // if(notification.type === 'meeting'){
+  //   const baseUrl = window.location.origin;
+  //   const lang = this.translationService.getSelectedLanguage() || 'en';
+  //   // const tabParam = notification.param && notification.tap ? `?tab=${notification.tap}` : '';
+  //   const knowledgeUrl = `https://knoldg.com/${lang}/knowledge/${notification.category}/${notification.param || ''}?`;
+    
+  //   // Navigate to the external URL
+  //   window.open(knowledgeUrl, '_blank');
+  // }
+
 }
 
 export interface AlertModel {
