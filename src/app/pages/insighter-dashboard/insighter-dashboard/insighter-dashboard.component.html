@@ -68,7 +68,7 @@
                     </div>
                   </div>
                   <!-- Meetings Expandable Item -->
-                  <div class="nav-item expandable" [class.expanded]="isMeetingsExpanded" *ngIf="!(isClient$ | async)">
+                  <div class="nav-item expandable" [class.expanded]="isMeetingsExpanded">
                     <div class="nav-item-main" (click)="toggleMeetings()">
                       <div class="item-icon">
                         <i class="ki-duotone ki-calendar"><span class="path1"></span><span class="path2"></span></i>
@@ -84,7 +84,7 @@
                       </div>
                     </div>
                     <div class="sub-nav" [class.show]="isMeetingsExpanded">
-                      <div class="sub-nav-item" [routerLink]="['my-meetings/received']" routerLinkActive="active">
+                      <div class="sub-nav-item" [routerLink]="['my-meetings/received']" routerLinkActive="active"  *ngIf="!(isClient$ | async)">
                         <div class="sub-item-icon">
                           <i class="ki-duotone ki-message-text-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
                         </div>
@@ -102,7 +102,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="nav-item" [routerLink]="['my-consulting-schedule']" routerLinkActive="active">
+                  <div class="nav-item" [routerLink]="['my-consulting-schedule']" routerLinkActive="active" *ngIf="!(isClient$ | async)">
                     <div class="item-icon">
                       <i class="ki-duotone ki-calendar"><span class="path1"></span><span class="path2"></span></i>
                     </div>
