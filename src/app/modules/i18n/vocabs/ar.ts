@@ -1098,6 +1098,7 @@ INSIGHTER_REQUESTS: {
   SAVE_CHANGES: 'حفظ التغييرات',
   VIEW_MY_KNOWLEDGE: {
     HS_CODE: 'رمز HS',
+    REVIEW_AND_COMPLETE: 'مراجعة وإكمال',
     SEND_TO_REVIEW: 'إرسال للمراجعة من المدير',
     SHARE: 'مشاركة',
     BREADCRUMB: {

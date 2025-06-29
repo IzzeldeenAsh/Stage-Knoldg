@@ -40,6 +40,8 @@ import { RequestsListComponent } from './dashboard/requests-list/requests-list.c
 import { EconomicBlocksComponent } from './dashboard/economic-blocks/economic-blocks.component';
 import { VerificationQuestionsListComponent } from './dashboard/verification-questions-list/verification-questions-list.component';
 import { TagInputModule } from 'ngx-chips';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { PaginatorModule } from 'primeng/paginator';
 
 @NgModule({
   declarations: [
@@ -86,6 +88,8 @@ import { TagInputModule } from 'ngx-chips';
     TableModule,
     ChipModule,
     TagInputModule,
+    MultiSelectModule,
+    PaginatorModule,
   ],
   providers: [NodeService]
 })

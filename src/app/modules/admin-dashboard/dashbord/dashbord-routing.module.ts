@@ -31,6 +31,7 @@ const routes: Routes = [
       { path: 'main-dashboard/consulting-fields', component: ConsultingFieldsComponent },
       { path: 'main-dashboard/ISIC-code', component: ISICCodeManagmentComponent },
       { path: 'main-dashboard/industries', component: IndustriesComponent },
+      { path: 'main-dashboard/tags', component: TagsComponent },
       { path: 'main-dashboard/hscode', component: HSCodeComponent },
       { path: 'main-dashboard/guidelines', component: GuidelineComponent },
       { path: 'main-dashboard/economic-blocks', component: EconomicBlocksComponent },
