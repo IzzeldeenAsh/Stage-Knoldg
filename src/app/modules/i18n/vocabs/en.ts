@@ -1263,7 +1263,7 @@ UPLOAD: 'Upload',
     },
     "CONSULTING_SCHEDULE": {
       "TITLE": "My Consulting Schedule",
-      "TIME_SPAN_ERROR": "Time slot must be at least 1 hour apart",
+      "TIME_SPAN_ERROR": "Time slot must 1 hour apart",
       "CURRENT_SPAN": "Current span",
       "MINUTES": "minutes",
       "DESCRIPTION": "Set your availability for consulting sessions. Define your weekly schedule and add exception days when needed.",
