@@ -232,7 +232,7 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
     } else {
       // Add a default time slot when day is activated
       if (timesArray.length === 0) {
-        const newTimeSlot = this.createTimeSlotFormGroup({ start_time: '09:00', end_time: '17:00' });
+        const newTimeSlot = this.createTimeSlotFormGroup({ start_time: '09:00', end_time: '10:00' });
         timesArray.push(newTimeSlot);
       }
     }
