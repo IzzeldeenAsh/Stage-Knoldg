@@ -1,110 +1,138 @@
-
 <div id="kt_app_toolbar" class="app-toolbar pt-10 mb-0">
   <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex align-items-stretch">
     <div class="app-toolbar-wrapper d-flex flex-stack flex-wrap gap-4 w-100">
       <div class="page-title d-flex flex-column justify-content-center gap-1 me-3">
         <h1 class="page-heading d-flex flex-column justify-content-center text-gray-900 fw-bold fs-3 m-0">
-          Tags
+          Tags Management
         </h1>
-        <div class="fw-semibold fs-7 my-0 text-muted">{{tagsWithIndustries.length}} Tag(s)</div>
+        <div class="fw-semibold fs-7 my-0 text-muted">
+          {{ paginationData?.totalRecords || 0 }} Tag(s) 
+          <span *ngIf="paginationData?.totalRecords > 0">
+            (Page {{ paginationData?.currentPage }} of {{ paginationData?.totalPages }})
+          </span>
+        </div>
       </div>
 
+      <!-- Add/Edit Tag Dialog -->
       <div class="d-flex align-items-center gap-2 gap-lg-3">
-        <p-dialog appendTo="body" (onHide)="handleDialogClose()" [header]="isEditMode ? 'Edit Tag' : 'Add Tag'" [modal]="true" [(visible)]="visible" [style]="{ width: '90%' }">
-          <p-messages *ngIf="hasErrorMessage" [(value)]="messages" [enableService]="false"></p-messages>
-          <span class="text-muted mb-3 d-block">{{ isEditMode ? 'Edit Tag Details' : 'Add Tag Details' }}.</span>
-
-          <form [formGroup]="tagForm">
-            <div class="mb-3 row">
-              <label for="arabicName" class="col-sm-3 col-form-label">Arabic Name</label>
-              <div class="col-sm-9">
-                <input pInputText id="arabicName" class="form-control" formControlName="arabicName" autocomplete="off" />
-                <div *ngIf="arabicName?.errors?.required && arabicName?.touched" class="text-danger">
-                  Arabic Name is required.
-                </div>
-                <div *ngIf="arabicName?.errors?.serverError" class="text-danger">
-                  {{ arabicName?.errors?.serverError }}
-                </div>
-              </div>
-            </div>
+        <p-dialog 
+          appendTo="body" 
+          (onHide)="onCancel()" 
+          [header]="isEditMode ? 'Edit Tag' : 'Add Tag'" 
+          [modal]="true" 
+          [(visible)]="visible" 
+          [style]="{ width: '90%', maxWidth: '800px' }">
           
+          <p-messages *ngIf="hasErrorMessage" [(value)]="messages" [enableService]="false"></p-messages>
+          <span class="text-muted mb-3 d-block">
+            {{ isEditMode ? 'Edit Tag Details' : 'Add Tag Details' }}.
+          </span>
+
+          <form [formGroup]="tagForm" (ngSubmit)="submit()">
+            <!-- English Name -->
             <div class="mb-3 row">
-              <label for="englishName" class="col-sm-3 col-form-label">English Name</label>
+              <label for="englishName" class="col-sm-3 col-form-label">English Name <span class="text-danger">*</span></label>
               <div class="col-sm-9">
-                <input pInputText id="englishName" class="form-control" formControlName="englishName" autocomplete="off" />
-                <div *ngIf="englishName?.errors?.required && englishName?.touched" class="text-danger">
+                <input 
+                  pInputText 
+                  id="englishName" 
+                  class="form-control" 
+                  formControlName="englishName" 
+                  autocomplete="off" 
+                  placeholder="Enter English name"
+                />
+                <div *ngIf="englishName?.errors?.required && englishName?.touched" class="text-danger mt-1">
                   English Name is required.
                 </div>
-                <div *ngIf="englishName?.errors?.serverError" class="text-danger">
+                <div *ngIf="englishName?.errors?.serverError" class="text-danger mt-1">
                   {{ englishName?.errors?.serverError }}
                 </div>
               </div>
             </div>
-          
+
+            <!-- Arabic Name -->
             <div class="mb-3 row">
-              <label for="status" class="col-sm-3 col-form-label">Status</label>
+              <label for="arabicName" class="col-sm-3 col-form-label">Arabic Name <span class="text-danger">*</span></label>
               <div class="col-sm-9">
-                <select id="status" class="form-control" formControlName="status">
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                </select>
-                <div *ngIf="status?.errors?.required && status?.touched" class="text-danger">
+                <input 
+                  pInputText 
+                  id="arabicName" 
+                  class="form-control" 
+                  formControlName="arabicName" 
+                  autocomplete="off" 
+                  placeholder="Enter Arabic name"
+                />
+                <div *ngIf="arabicName?.errors?.required && arabicName?.touched" class="text-danger mt-1">
+                  Arabic Name is required.
+                </div>
+                <div *ngIf="arabicName?.errors?.serverError" class="text-danger mt-1">
+                  {{ arabicName?.errors?.serverError }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Status -->
+            <div class="mb-3 row">
+              <label for="status" class="col-sm-3 col-form-label">Status <span class="text-danger">*</span></label>
+              <div class="col-sm-9">
+                <p-dropdown 
+                  id="status"
+                  formControlName="status"
+                  [options]="[
+                    { label: 'Active', value: 'active' },
+                    { label: 'Inactive', value: 'inactive' },
+                    { label: 'Suggestion', value: 'suggestion' }
+                  ]"
+                  optionLabel="label"
+                  optionValue="value"
+                  placeholder="Select Status"
+                  styleClass="w-100"
+                ></p-dropdown>
+                <div *ngIf="status?.errors?.required && status?.touched" class="text-danger mt-1">
                   Status is required.
                 </div>
-                <div *ngIf="status?.errors?.serverError" class="text-danger">
+                <div *ngIf="status?.errors?.serverError" class="text-danger mt-1">
                   {{ status?.errors?.serverError }}
                 </div>
               </div>
             </div>
-          
-        
-          </form>
-          <div class="mb-3 row">
-            <label for="category" class="col-sm-3 col-form-label">Industries</label>
-            <div class="col-sm-9">
-              <p-tree
-              class="tag"
-              [value]="nodes"
-              selectionMode="checkbox"
-              [(selection)]="selectedNodes"
-              [metaKeySelection]="false"
-              [filter]="true"
-              [filterMode]="'strict'"
-              [loading]="isLoading$ | async"
-              [style]="{ 'max-height': '300px', 'overflow': 'auto' }"
-              (onNodeSelect)="onNodeSelect($event)"
-              (onNodeUnselect)="onNodeUnselect($event)"
-            >
-              <ng-template let-node pTemplate="default">
-                <span 
-                  [ngClass]="{'disabled-node': !node.selectable}" 
-                  [attr.title]="!node.selectable ? 'This category cannot be selected' : ''"
 
-                >
-                  {{ node.label }}
-                </span>
-              </ng-template>
-            </p-tree>
-            
-            
-              <div *ngIf="category?.errors?.minSelected && category?.touched" class="text-danger">
-                Please select at least one sub-industry.
-              </div>
-              <div *ngIf="category?.errors?.serverError" class="text-danger">
-                {{ category?.errors?.serverError }}
+            <!-- Industries -->
+            <div class="mb-3 row">
+              <label for="industries" class="col-sm-3 col-form-label">Industries</label>
+              <div class="col-sm-9">
+                <p-multiSelect
+                  id="industries"
+                  [(ngModel)]="selectedIndustries"
+                  [ngModelOptions]="{standalone: true}"
+                  [options]="industriesList"
+                  optionLabel="name"
+                  appendTo="body"
+                  placeholder="Select Industries"
+                  [showToggleAll]="true"
+                  [filter]="true"
+                  filterPlaceholder="Search industries..."
+                  styleClass="w-100"
+                  [maxSelectedLabels]="3"
+                  selectedItemsLabel="{0} industries selected"
+                ></p-multiSelect>
+                <div *ngIf="industries?.errors?.serverError" class="text-danger mt-1">
+                  {{ industries?.errors?.serverError }}
+                </div>
               </div>
             </div>
-          </div>
+          </form>
 
-          <div class="d-flex justify-content-end gap-2">
+          <!-- Dialog Footer -->
+          <div class="d-flex justify-content-end gap-2 mt-4">
             <button
-              type="submit"
-              [disabled]="tagForm.invalid || (isLoading$ | async) "
+              type="button"
+              [disabled]="tagForm.invalid || (isLoading$ | async)"
               (click)="submit()"
               class="btn btn-primary btn-sm"
             >
               <ng-container *ngIf="!(isLoading$ | async)">
-                <span class="indicator-label">Save</span>
+                <span class="indicator-label">{{ isEditMode ? 'Update' : 'Create' }}</span>
               </ng-container>
               <ng-container *ngIf="isLoading$ | async">
                 <span class="indicator-progress" style="display: block;">
@@ -126,86 +154,177 @@
 <div id="kt_app_content" class="app-content flex-column-fluid">
   <div id="kt_app_content_container" class="app-container container-fluid">
     <div class="card">
+      <!-- Card Header with Filters -->
       <div class="card-header border-0 pt-6">
         <div class="card-title">
-          <div class="d-flex align-items-center position-relative my-1">
-            <i class="pi pi-search fs-3 position-absolute ms-5"></i>
-            <input type="text" pInputText class="form-control w-250px ps-12"
-              placeholder="Search Tags" (input)="applyFilter($event)" />
+          <div class="d-flex align-items-center gap-3">
+            <!-- Search Input -->
+            <div class="position-relative">
+              <i class="pi pi-search fs-3 position-absolute ms-3 mt-2"></i>
+              <input 
+                type="text" 
+                pInputText 
+                class="form-control w-250px ps-12"
+                placeholder="Search tags by name..." 
+                [(ngModel)]="searchKeyword"
+                (keyup.enter)="onSearch()"
+              />
+            </div>
+            
+            <!-- Status Filter -->
+            <p-dropdown 
+              [(ngModel)]="statusFilter"
+              [options]="statusOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Filter by Status"
+              (onChange)="onStatusFilterChange()"
+              styleClass="w-200px"
+            ></p-dropdown>
+
+            <!-- Search Button -->
+            <button 
+              type="button" 
+              class="btn btn-light btn-sm" 
+              (click)="onSearch()"
+              [disabled]="isLoading$ | async"
+            >
+              <i class="pi pi-search"></i> Search
+            </button>
           </div>
         </div>
 
         <div class="card-toolbar">
           <a (click)="showDialog()" class="btn btn-md btn-flex btn-primary">
             <i class="ki-outline ki-plus text-white fs-4"></i>
-            Create
+            Create Tag
           </a>
         </div>
       </div>
+
+      <!-- Card Body with Table -->
       <div class="card-body pt-0">
         <ng-container *ngIf="!(isLoading$ | async) && tagsWithIndustries.length > 0">
-          <p-messages *ngIf="hasSuccessMessage || hasErrorMessage" [(value)]="messages" [enableService]="false"></p-messages>
-          <p-table #dt [value]="tagsWithIndustries" [paginator]="false" [rows]="10" [globalFilterFields]="['names.en', 'names.ar']" class="table-p">
+          <p-table 
+            #dt 
+            [value]="tagsWithIndustries" 
+            [paginator]="false" 
+            [rows]="10" 
+            class="table-p"
+            responsiveLayout="scroll"
+          >
             <ng-template pTemplate="header">
               <tr>
-                <th>Tag Name (English)</th>
-                <th>Tag Name (Arabic)</th>
-                <th>Status</th>
-                <th>Industries</th>
-                <th>Action</th>
+                <th style="width: 20%">English Name</th>
+                <th style="width: 20%">Arabic Name</th>
+                <th style="width: 10%">Status</th>
+                <th style="width: 35%">Associated Industries</th>
+                <th style="width: 15%">Actions</th>
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-tag>
               <tr>
-                <td>{{ tag.names.en }}</td>
-                <td>{{ tag.names.ar }}</td>
+                <td>
+                  <span class="fw-bold">{{ tag.names.en }}</span>
+                </td>
+                <td>
+                  <span>{{ tag.names.ar }}</span>
+                </td>
                 <td>
                   <div class="badge fs-8 fw-bold" [ngClass]="{
-                        'badge-light-success': tag.status === 'active',
-                        'badge-light-danger': tag.status === 'inactive'
-                      }">
+                    'badge-light-success': tag.status === 'active',
+                    'badge-light-danger': tag.status === 'inactive',
+                    'badge-light-warning': tag.status === 'suggestion'
+                  }">
                     {{ tag.status | titlecase }}
                   </div>
                 </td>
+                                 <td>
+                   <div class="d-flex flex-wrap gap-1" *ngIf="tag.industryNames.length > 0; else noIndustries">
+                     <p-chip 
+                       *ngFor="let industryName of tag.industryNames.slice(0, 4)" 
+                       [label]="industryName" 
+                       styleClass="p-chip-sm"
+                     ></p-chip>
+                     <span 
+                       *ngIf="tag.industryNames.length > 4" 
+                       class="badge badge-light-info fs-8 align-self-center"
+                       [pTooltip]="tag.industryNames.slice(4).join(', ')"
+                       tooltipPosition="top"
+                     >
+                       +{{ tag.industryNames.length - 4 }} more
+                     </span>
+                   </div>
+                   <ng-template #noIndustries>
+                     <span class="text-muted">No industries assigned</span>
+                   </ng-template>
+                 </td>
                 <td>
-                 <div class="d-flex flex-wrap">
-                  <p-chip *ngFor="let industry of tag.associatedIndustries" 
-                  label="{{ industry.en }} | {{ industry.ar }}" 
-                  class="m-1">
-          </p-chip>
-                 </div>
-                </td>
-                <td>
-                  <a pTooltip="Edit Tag" tooltipPosition="top" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" (click)="editTag(tag)">
-                    <i class="ki-duotone ki-pencil fs-2">
-                      <span class="path1"></span><span class="path2"></span>
-                    </i>
-                  </a>
-                  <a pTooltip="Delete Tag" tooltipPosition="top" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm" (click)="deleteTag(tag.id)">
-                    <i class="ki-duotone ki-trash fs-2">
-                      <span class="path1"></span><span class="path2"></span>
-                      <span class="path3"></span><span class="path4"></span>
-                      <span class="path5"></span>
-                    </i>
-                  </a>
+                  <div class="d-flex gap-1">
+                    <a 
+                      pTooltip="Edit Tag" 
+                      tooltipPosition="top" 
+                      class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm" 
+                      (click)="editTag(tag)"
+                    >
+                      <i class="ki-duotone ki-pencil fs-2">
+                        <span class="path1"></span><span class="path2"></span>
+                      </i>
+                    </a>
+                    <a 
+                      pTooltip="Delete Tag" 
+                      tooltipPosition="top" 
+                      class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm" 
+                      (click)="deleteTag(tag.id)"
+                    >
+                      <i class="ki-duotone ki-trash fs-2">
+                        <span class="path1"></span><span class="path2"></span>
+                        <span class="path3"></span><span class="path4"></span>
+                        <span class="path5"></span>
+                      </i>
+                    </a>
+                  </div>
                 </td>
               </tr>
             </ng-template>
           </p-table>
-        </ng-container>
 
-        <ng-container *ngIf="!(isLoading$ | async) && tagsWithIndustries.length === 0">
-          <div class="d-flex align-items-center justify-content-center h-400px text-muted">
-            No Available Data
+          <!-- Pagination -->
+          <div class="d-flex justify-content-between align-items-center mt-4" *ngIf="paginationData?.totalPages > 1">
+            <div class="text-muted">
+              Showing {{ (paginationData.currentPage - 1) * paginationData.perPage + 1 }} to 
+              {{ Math.min(paginationData.currentPage * paginationData.perPage, paginationData.totalRecords) }} 
+              of {{ paginationData.totalRecords }} entries
+            </div>
+            <p-paginator 
+              [rows]="paginationData.perPage"
+              [totalRecords]="paginationData.totalRecords"
+              [first]="(paginationData.currentPage - 1) * paginationData.perPage"
+              (onPageChange)="onPageChange($event)"
+            ></p-paginator>
           </div>
         </ng-container>
+
+        <!-- No Data State -->
+        <ng-container *ngIf="!(isLoading$ | async) && tagsWithIndustries.length === 0">
+          <div class="d-flex align-items-center justify-content-center h-400px text-muted">
+            <div class="text-center">
+              <i class="ki-duotone ki-file-deleted fs-3x mb-3">
+                <span class="path1"></span><span class="path2"></span>
+              </i>
+              <div class="fs-5">No tags found</div>
+              <div class="fs-7 text-muted">Try adjusting your search criteria or create a new tag</div>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- Loading State -->
+        <p-progressBar
+          *ngIf="isLoading$ | async"
+          mode="indeterminate"
+          [style]="{ height: '4px' }"
+        ></p-progressBar>
       </div>
     </div>
-    <p-progressBar
-  *ngIf="isLoading$ | async"
-  mode="indeterminate"
-  [style]="{ height: '4px' }"
-></p-progressBar>
-
   </div>
 </div>

@@ -84,7 +84,12 @@
                 <span class="path1"></span>
                 <span class="path2"></span>
               </i>
-              {{ 'VIEW_MY_KNOWLEDGE.EDIT' | translate }}
+              <ng-container *ngIf="!knowledge.description">
+                {{ 'VIEW_MY_KNOWLEDGE.REVIEW_AND_COMPLETE' | translate }}
+              </ng-container>
+              <ng-container *ngIf="knowledge.description">
+                {{ 'VIEW_MY_KNOWLEDGE.EDIT' | translate }}
+              </ng-container>
             </button>
           
           </div>
@@ -164,15 +169,6 @@
             <span class="custom-text me-3 lh-1 d-flex align-items-center text-capitalize">
               {{ knowledge.type || 'N/A' }}
             </span>
-            <span class="bullet text-black h-6px w-6px mx-3"></span>
-            <span class="d-flex align-items-center text-gray-700">
-              <i class="ki-duotone ki-tag text-warning fs-3 mx-4">
-                <span class="path1"></span>
-                <span class="path2"></span>
-                <span class="path3"></span>
-              </i>
-            0 Downloads
-            </span>
           </span>
         </h1>
       </div>
@@ -242,8 +238,12 @@
                 <div
                   class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
                 >
-                  <span>
-                    <i class="ki-outline ki-message-text-2 fs-4 mx-4"></i>
+                  <span class="d-flex align-items-center">
+                    <div class="bg-light-info p-2 rounded-circle me-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="16" height="16" class="text-info">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
                     {{ 'VIEW_MY_KNOWLEDGE.STATUS' | translate }}
                   </span>
                   <span
@@ -264,8 +264,12 @@
                   *ngIf="knowledge.status === 'scheduled'"
                   class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
                 >
-                  <span>
-                    <i class="ki-outline ki-calendar fs-4 mx-4"></i>
+                  <span class="d-flex align-items-center">
+                    <div class="bg-light-info p-2 rounded-circle me-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="16" height="16" class="text-info">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"></path>
+                      </svg>
+                    </div>
                     {{ 'VIEW_MY_KNOWLEDGE.PUBLISH_DATE' | translate }}
                   </span>
                   <span>{{ knowledge.published_at ? (knowledge.published_at | date : "dd MMMM yyyy") : 'N/A' }}</span>
@@ -276,8 +280,12 @@
                   *ngIf="knowledge.publish_as === 'both'"
                   class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
                 >
-                  <span>
-                    <i class="ki-outline ki-package fs-4 mx-4"></i>
+                  <span class="d-flex align-items-center">
+                    <div class="bg-light-info p-2 rounded-circle me-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="16" height="16" class="text-info">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                      </svg>
+                    </div>
                     {{ 'VIEW_MY_KNOWLEDGE.INCLUDED_IN_PACKAGE' | translate }}
                   </span>
                   <span>Yes</span>
@@ -287,15 +295,16 @@
                 <div
                   class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
                 >
-                  <span>
-                    <svg class="mx-4" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M9 16.5C13.1421 16.5 16.5 13.1421 16.5 9C16.5 4.85786 13.1421 1.5 9 1.5C4.85786 1.5 1.5 4.85786 1.5 9C1.5 13.1421 4.85786 16.5 9 16.5Z" stroke="#4E5157" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round"/>
-                      <path d="M6.0002 2.25H6.7502C5.2877 6.63 5.2877 11.37 6.7502 15.75H6.0002" stroke="#4E5157" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round"/>
-                      <path d="M11.25 2.25C12.7125 6.63 12.7125 11.37 11.25 15.75" stroke="#4E5157" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round"/>
-                      <path d="M2.25 12V11.25C6.63 12.7125 11.37 12.7125 15.75 11.25V12" stroke="#4E5157" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round"/>
-                      <path d="M2.25 6.7502C6.63 5.2877 11.37 5.2877 15.75 6.7502" stroke="#4E5157" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round"/>
+                  <span class="d-flex align-items-center">
+                    <div class="bg-light-info p-2 rounded-circle me-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-info">
+                        <path d="M4 5h7"></path>
+                        <path d="M9 3v2c0 4.418 -2.239 8 -5 8"></path>
+                        <path d="M5 9c0 2.144 2.952 3.908 6.7 4"></path>
+                        <path d="M12 20l4 -9l4 9"></path>
+                        <path d="M19.1 18h-6.2"></path>
                       </svg>
-                      
+                    </div>
                     {{ 'VIEW_MY_KNOWLEDGE.DOCUMENTS_LANGUAGE' | translate }}
                   </span>
                   <span class="text-capitalize">{{ knowledge.language || 'N/A' }}</span>
@@ -306,8 +315,12 @@
                   *ngIf="knowledge && knowledge.industry"
                   class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
                 >
-                  <span>
-                    <i class="ki-outline ki-file fs-4 mx-4"></i>
+                  <span class="d-flex align-items-center">
+                    <div class="bg-light-info p-2 rounded-circle me-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="16" height="16" class="text-info">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"></path>
+                      </svg>
+                    </div>
                     {{ 'VIEW_MY_KNOWLEDGE.INDUSTRY' | translate }}
                   </span>
                   <span
@@ -322,8 +335,14 @@
                   *ngIf="knowledge && knowledge.isic_code"
                   class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
                 >
-                  <span>
-                    <i class="ki-outline ki-file fs-4 mx-4"></i>
+                  <span class="d-flex align-items-center">
+                    <div class="bg-light-info p-2 rounded-circle me-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-info">
+                        <path d="M7 8l-4 4l4 4"></path>
+                        <path d="M17 8l4 4l-4 4"></path>
+                        <path d="M14 4l-4 16"></path>
+                      </svg>
+                    </div>
                     {{ 'VIEW_MY_KNOWLEDGE.ISIC_CODE' | translate }}
                   </span>
                   <span
@@ -339,8 +358,15 @@
                   *ngIf="knowledge && knowledge.hs_code"
                   class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
                 >
-                  <span>
-                    <i class="ki-outline ki-file fs-4 mx-4"></i>
+                  <span class="d-flex align-items-center">
+                    <div class="bg-light-info p-2 rounded-circle me-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-info">
+                        <path d="M6 21h6"></path>
+                        <path d="M9 21v-18l-6 6h18"></path>
+                        <path d="M9 3l10 6"></path>
+                        <path d="M17 9v4a2 2 0 1 1 -2 2"></path>
+                      </svg>
+                    </div>
                     {{ 'VIEW_MY_KNOWLEDGE.HS_CODE' | translate }}
                   </span>
                   <span
@@ -356,17 +382,12 @@
                   class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
                   *ngIf="knowledge.published_at && knowledge.status !== 'scheduled'"
                 >
-                  <span>
-                    <svg class="mx-4" width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M5.66669 1.41663V3.54163" stroke="#4E5157" stroke-width="1.0625" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                      <path d="M11.3333 1.41663V3.54163" stroke="#4E5157" stroke-width="1.0625" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                      <path opacity="0.4" d="M2.47919 6.43872H14.5209" stroke="#4E5157" stroke-width="1.0625" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                      <path d="M14.875 6.02079V12.0416C14.875 14.1666 13.8125 15.5833 11.3333 15.5833H5.66667C3.1875 15.5833 2.125 14.1666 2.125 12.0416V6.02079C2.125 3.89579 3.1875 2.47913 5.66667 2.47913H11.3333C13.8125 2.47913 14.875 3.89579 14.875 6.02079Z" stroke="#4E5157" stroke-width="1.0625" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                      <path opacity="0.4" d="M8.49682 9.70414H8.50318" stroke="#4E5157" stroke-width="1.41667" stroke-linecap="round" stroke-linejoin="round"/>
-                      <path opacity="0.4" d="M5.87512 9.70414H5.88148" stroke="#4E5157" stroke-width="1.41667" stroke-linecap="round" stroke-linejoin="round"/>
-                      <path opacity="0.4" d="M5.87524 11.8291H5.88161" stroke="#4E5157" stroke-width="1.41667" stroke-linecap="round" stroke-linejoin="round"/>
+                  <span class="d-flex align-items-center">
+                    <div class="bg-light-info p-2 rounded-circle me-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="16" height="16" class="text-info">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"></path>
                       </svg>
-                      
+                    </div>
                     {{ 'VIEW_MY_KNOWLEDGE.PUBLISHED_AT' | translate }}
                   </span>
                   <span>{{ knowledge.published_at ? (knowledge.published_at | date : "dd MMMM yyyy") : 'N/A' }}</span>
@@ -376,8 +397,16 @@
                 <div
                   class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
                 >
-                  <span>
-                    <i class="ki-outline ki-icon fs-4 mx-4"></i>
+                  <span class="d-flex align-items-center">
+                    <div class="bg-light-info p-2 rounded-circle me-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-info">
+                        <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
+                        <path d="M3.6 9h16.8"></path>
+                        <path d="M3.6 15h16.8"></path>
+                        <path d="M11.5 3a17 17 0 0 0 0 18"></path>
+                        <path d="M12.5 3a17 17 0 0 1 0 18"></path>
+                      </svg>
+                    </div>
                     {{ 'VIEW_MY_KNOWLEDGE.TARGET_MARKET' | translate }}
                   </span>
                   <div
@@ -504,7 +533,7 @@
                     <div class="chat-messages p-4" style="max-height: 400px; overflow-y: auto;">
                       <!-- 1. Original Submission -->
                       <div class="chat-message-row d-flex mb-4" *ngIf="currentRequest && currentRequest.comments">
-                        <div class="chat-bubble-left bg-light-primary text-gray-800 p-4 rounded-3 mw-400px">
+                        <div class="chat-bubble-left bg-light-info text-gray-800 p-4 rounded-3 mw-400px">
                           <div class="text-gray-800 mb-1">{{ currentRequest.comments }}</div>
                           <div class="text-muted fs-7 text-end">Initial submission</div>
                         </div>
@@ -588,7 +617,7 @@
 
                   <!-- Show send to review button for company-insighter when need_to_review is true but no request_id -->
                   <button
-                    class="btn btn-primary w-100"
+                    class="btn btn-info w-100"
                     (click)="sendToReview()"
                     *ngIf="knowledge.status !== 'in_review' && 
                           (knowledge.status === 'unpublished' || knowledge.status === 'scheduled') && 
@@ -604,7 +633,7 @@
                   
                   <!-- Show resend to review button when action is 'resend_review' and request_status is not pending -->
                   <button
-                    class="btn btn-primary w-100"
+                    class="btn btn-info w-100"
                     (click)="openResendReviewDialog()"
                     *ngIf="hasReviewRequest() && isCompanyInsighter() && !isPendingResendReview()"
                   >
@@ -614,7 +643,7 @@
 
                   <!-- Show publish button when not needing review or user is not company-insighter -->
                   <button
-                    class="btn btn-primary w-100"
+                    class="btn btn-info w-100"
                     (click)="confirmPublish()"
                     *ngIf="knowledge.status !== 'in_review' && 
                           (knowledge.status === 'unpublished' || knowledge.status === 'scheduled') && 
@@ -677,7 +706,7 @@
                         <span class="path1"></span>
                         <span class="path2"></span>
                       </i>
-                      <span class="text-hover-primary">{{ pkg.name }}</span>
+                      <span class="text-hover-info">{{ pkg.name }}</span>
                     </a>
                   </div>
                 </div>
@@ -798,7 +827,7 @@
     <!-- Modal header -->
     <div class="modal-header p-5 border-bottom">
       <h2 class="fw-bold">Resend Knowledge For Review</h2>
-      <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" (click)="closeResendReviewDialog()">
+      <div class="btn btn-icon btn-sm btn-active-light-info ms-2" (click)="closeResendReviewDialog()">
         <i class="ki-duotone ki-cross fs-2x"><span class="path1"></span><span class="path2"></span></i>
       </div>
     </div>
@@ -823,7 +852,7 @@
         Cancel
       </button>
       <button type="button" 
-              class="btn btn-primary" 
+              class="btn btn-info" 
               [disabled]="!reviewComments"
               [class.disabled]="isLoading"
               (click)="resendReview()">

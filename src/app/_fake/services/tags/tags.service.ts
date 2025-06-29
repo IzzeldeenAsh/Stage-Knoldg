@@ -44,6 +44,14 @@ export interface PaginatedTagResponse {
   };
 }
 
+export interface Industry {
+  id: number;
+  name: string;
+  slug: string;
+  weight: number;
+  image: string | null;
+}
+
 export interface IndustryTagResponse {
   data: {
     id: number;
@@ -112,18 +120,39 @@ export class TagsService {
     );
   }
 
-  // Get admin tags with pagination
-  getAdminTags(page: number = 1): Observable<PaginatedTagResponse> {
+  // Get admin tags with pagination and filters
+  getAdminTags(page: number = 1, keyword?: string, status?: string): Observable<PaginatedTagResponse> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
       'Content-Type': 'application/json',
       'Accept-Language': this.currentLang
     });
 
+    let params = `?page=${page}`;
+    if (keyword) {
+      params += `&keyword=${encodeURIComponent(keyword)}`;
+    }
+    if (status) {
+      params += `&status=${status}`;
+    }
+
     this.setLoading(true);
-    return this.http.get<PaginatedTagResponse>(`${this.updateDeleteApi}?page=${page}`, { headers }).pipe(
+    return this.http.get<PaginatedTagResponse>(`${this.updateDeleteApi}${params}`, { headers }).pipe(
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))
+    );
+  }
+
+  // Get industries list
+  getIndustriesList(): Observable<{ data: Industry[] }> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+
+    return this.http.get<{ data: Industry[] }>(`${this.insightaHost}/api/common/setting/industry/list`, { headers }).pipe(
+      catchError(error => this.handleError(error))
     );
   }
 

@@ -1182,6 +1182,7 @@ UPLOAD: 'Upload',
     FILE_NAME_DUPLICATE:'File name already exists',
     VIEW_MY_KNOWLEDGE: {
       SHARE: 'Share',
+      REVIEW_AND_COMPLETE: 'Review and Complete',
       HS_CODE: 'HS Code',
       SEND_TO_REVIEW: 'Send to Review',
       BREADCRUMB: {
