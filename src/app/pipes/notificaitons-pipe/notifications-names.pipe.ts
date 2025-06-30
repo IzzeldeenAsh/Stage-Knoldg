@@ -32,6 +32,14 @@ export class NotificationsNamesPipe implements PipeTransform {
         return 'Knowledge Request';
       case 'question_received':
         return 'Question Received';
+      case 'client_meeting_new':
+        return 'New Meeting Request';
+      case 'insighter_meeting_client_new':
+        return 'New Meeting Request';
+      case 'insighter_meeting_approved':
+        return 'Meeting Approved';
+      case 'client_meeting_insighter_approved':
+        return 'Meeting Approved';
       default:
         return value;
     }
