@@ -113,11 +113,16 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
       
       // Navigate to the external URL
       window.open(knowledgeUrl, '_blank');
+    } else if (notification.sub_type.startsWith('client_')) {
+     this.router.navigate(['/app/insighter-dashboard/my-meetings/sent']);
+    } else if (notification.sub_type.startsWith('insighter_')) {
+      this.router.navigate(['/app/insighter-dashboard/my-meetings/received']);
     } else {
       // For other notifications, just emit the ID as before
       this.notificationClicked.emit(notification.id);
     }
   }
+  
   // if(notification.type === 'meeting'){
   //   const baseUrl = window.location.origin;
   //   const lang = this.translationService.getSelectedLanguage() || 'en';

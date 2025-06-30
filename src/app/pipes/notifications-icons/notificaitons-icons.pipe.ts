@@ -17,6 +17,12 @@ export class NotificationsIconsPipe implements PipeTransform {
         return 'duotune/arrows/arr086.svg';
       case 'accept_knowledge':
         return 'duotune/files/fil025.svg';
+      case 'client_meeting_insighter_approved':
+      case 'client_meeting_new':
+        return 'duotune/general/gen014';
+      case 'insighter_meeting_client_new':
+      case 'insighter_meeting_approved':
+        return 'duotune/general/gen014';
       default:
         return 'duotune/general/gen007.svg';
     }
