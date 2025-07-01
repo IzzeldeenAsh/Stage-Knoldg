@@ -43,57 +43,107 @@
         </div>
       </div>
 
-      <!-- Meetings List -->
-      <div class="meetings-container" *ngIf="!loading">
-        <!-- Meeting Card -->
-        <div class="meeting-card card mb-4" 
-             *ngFor="let meeting of getFilteredMeetings(); let i = index">
-          <div class="card-body p-6">
-            <div class="row align-items-start justify-content-start">
-              <!-- Date Column -->
-              <div class="col-auto">
-                <div class="date-container text-center">
-                  <div class="month-name fw-bold" 
-                       [class.text-orange]="isClosestMeeting(meeting, i)">
-                    {{ formatMonth(meeting.date) }}
-                  </div>
-                  <div class="day-number fw-bold" 
-                       [class.text-orange]="isClosestMeeting(meeting, i)">
-                    {{ formatDay(meeting.date) }}
+      <!-- Meetings Grid -->
+      <div *ngIf="!loading" class="row g-4">
+        <div class="col-12" *ngIf="getFilteredMeetings().length === 0">
+          <div class="text-center py-5">
+            <i class="ki-duotone ki-calendar-8 fs-3x text-gray-400 mb-3">
+              <span class="path1"></span>
+              <span class="path2"></span>
+              <span class="path3"></span>
+              <span class="path4"></span>
+              <span class="path5"></span>
+              <span class="path6"></span>
+            </i>
+            <h4 class="text-gray-700 mb-2">{{ 'MEETINGS.NO_MEETINGS' | translate }}</h4>
+            <p class="text-gray-500">{{ 'MEETINGS.NO_MEETINGS_DESC' | translate }}</p>
+          </div>
+        </div>
+
+        <div class="col-xl-4 col-lg-6 col-md-6" *ngFor="let meeting of getFilteredMeetings(); let i = index">
+          <div class="card meeting-card h-100" 
+               [class.closest-meeting]="isClosestMeeting(meeting, i)">
+            <div class="card-body d-flex flex-column">
+              <!-- Meeting Header -->
+              <div class="d-flex align-items-center mb-4">
+                <div class="meeting-date-badge me-3">
+                  <div class="month">{{ formatMonth(meeting.date) }}</div>
+                  <div class="day">{{ formatDay(meeting.date) }}</div>
+                </div>
+                <div class="flex-grow-1">
+                  <h5 class="card-title mb-1" 
+                      [pTooltip]="meeting.title" 
+                      tooltipPosition="top"
+                      [style.cursor]="meeting.title && meeting.title.length > 30 ? 'help' : 'default'">
+                    {{ meeting.title | truncateText:30 }}
+                  </h5>
+                  <div class="meeting-time text-muted">
+                    <i class="ki-duotone ki-time me-1">
+                      <span class="path1"></span>
+                      <span class="path2"></span>
+                    </i>
+                    {{ formatTime(meeting.start_time) }} - {{ formatTime(meeting.end_time) }}
                   </div>
                 </div>
               </div>
 
-              <!-- Time and Client Info Column -->
-              <div class="col-auto">
-                <!-- Time Info -->
-                <div class="time-info d-flex align-items-center mb-3">
-                  <i class="ki-duotone ki-time fs-2 text-muted mx-2">
-                    <span class="path1"></span>
-                    <span class="path2"></span>
-                  </i>
-                  <div>
-                    <div class="fw-bold fs-6">
-                      {{ formatTime(meeting.start_time) }} - {{ formatTime(meeting.end_time) }}
-                    </div>
-                  </div>
+              <!-- Meeting Status and Action Buttons -->
+              <div class="mb-3 d-flex align-items-center justify-content-between">
+                <span class="badge" [ngClass]="getStatusClass(meeting.status)" *ngIf="meeting.status !== 'pending'">
+                  {{ ('MEETINGS.STATUS.' + meeting.status.toUpperCase()) | translate }}
+                </span>
+                
+                <!-- Action Buttons for Pending Meetings -->
+                <div *ngIf="meeting.status === 'pending' && selectedTab !== 'past'" class="d-flex gap-2">
+                  <button class="btn btn-sm btn-success d-flex align-items-center px-2 py-1"
+                          (click)="openApproveModal(meeting)"
+                          [pTooltip]="'Approve Meeting'"
+                          tooltipPosition="top">
+                    <i class="ki-duotone ki-check fs-4">
+                      <span class="path1"></span>
+                      <span class="path2"></span>
+                    </i>
+                  </button>
+                  <button class="btn btn-sm btn-warning d-flex align-items-center px-2 py-1"
+                          (click)="openPostponeModal(meeting)"
+                          [pTooltip]="'Postpone Meeting'"
+                          tooltipPosition="top">
+                    <i class="ki-duotone ki-time fs-4">
+                      <span class="path1"></span>
+                      <span class="path2"></span>
+                    </i>
+                  </button>
                 </div>
+              </div>
 
-                <!-- Client Info -->
-                <div class="client-info d-flex align-items-center">
-                  <!-- Profile Image or Initials -->
+              <!-- Meeting Description -->
+              <div class="meeting-description mb-4 flex-grow-1">
+                <p class="text-gray-600 mb-0" 
+                   [pTooltip]="meeting.description ? meeting.description : 'No description available'" 
+                   tooltipPosition="top"
+                   [style.cursor]="meeting.description && meeting.description.length > 100 ? 'help' : 'default'">
+                  {{ (meeting.description || 'No description available') | truncateText:100:true }}
+                </p>
+              </div>
+
+              <!-- Client Info -->
+              <div class="meeting-participant">
+                <div class="d-flex align-items-center">
                   <div class="symbol symbol-40px me-3">
+                  <a (click)="goToClientProfile(meeting)">
                     <img *ngIf="meeting.client.profile_photo_url" 
-                         [src]="meeting.client.profile_photo_url" 
-                         [alt]="meeting.client.name"
-                         class="symbol-label">
-                    <div *ngIf="!meeting.client.profile_photo_url" 
-                         class="symbol-label bg-primary text-white fs-6 fw-bold">
-                      {{ getInitials(meeting.client.first_name, meeting.client.last_name) }}
-                    </div>
+                    [src]="meeting.client.profile_photo_url" 
+                    [alt]="meeting.client.name" 
+                    class="rounded-circle">
+               <div *ngIf="!meeting.client.profile_photo_url" 
+                    class="symbol-label bg-primary text-white">
+                 {{ getInitials(meeting.client.first_name, meeting.client.last_name) }}
+               </div>
+                  </a>
                   </div>
-                  <div>
-                    <div class="fw-bold fs-6" 
+                  <div class="flex-grow-1">
+                    <a (click)="goToClientProfile(meeting)">
+                    <div class="fw-bold text-gray-800" 
                          [pTooltip]="meeting.client.name" 
                          tooltipPosition="top"
                          [style.cursor]="meeting.client.name && meeting.client.name.length > 25 ? 'help' : 'default'">
@@ -105,98 +155,56 @@
                          [style.cursor]="meeting.client.email && meeting.client.email.length > 30 ? 'help' : 'default'">
                       {{ meeting.client.email | truncateText:30 }}
                     </div>
+                  </a>
                   </div>
-                </div>
-              </div>
-
-              <!-- Meeting Details -->
-              <div class="col">
-                <div class="meeting-details ">
-                  <div class="fw-bold fs-6 mb-1" 
-                      [pTooltip]="meeting.title" 
-                      tooltipPosition="top"
-                      [style.cursor]="meeting.title && meeting.title.length > 20 ? 'help' : 'default'">
-                    {{ meeting.title | truncateText:20 }}
-                  </div>
-                  <div class="text-muted fs-7 mb-0 description-text" 
-                     [class.collapsed]="true"
-                     [pTooltip]="meeting.description" 
-                     tooltipPosition="top"
-                     [style.cursor]="meeting.description && meeting.description.length > 50 ? 'help' : 'default'">
-                    {{ meeting.description | truncateText:50 }}
-                  </div>
-                </div>
-              </div>
-
-              <!-- Status Badge and Actions -->
-              <div class="col-auto">
-                <div class="d-flex align-items-center gap-2">
-                  <!-- Action Buttons for Pending Meetings (excluding past meetings) -->
-                  <div *ngIf="meeting.status === 'pending' && selectedTab !== 'past'" class="d-flex gap-2 me-3">
-                    <button class="btn btn-sm btn-success d-flex align-items-center px-3 py-2"
-                            (click)="openApproveModal(meeting)">
-                      <i class="ki-duotone ki-check fs-4 me-1">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                      </i>
-                      Approve
-                    </button>
-                    <button class="btn btn-sm btn-warning d-flex align-items-center  px-3 py-2"
-                            (click)="openPostponeModal(meeting)">
-                      <i class="ki-duotone ki-time fs-4 me-1">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                      </i>
-                      Postpone
-                    </button>
-                  </div>
-                  
-                  <!-- Status Badge -->
-                  <span class="badge fs-7 fw-bold"  *ngIf="meeting.status !== 'pending'"
-                        [ngClass]="getStatusClass(meeting.status)">
-                    {{ ('MEETINGS.STATUS.' + meeting.status.toUpperCase()) | translate }}
-                  </span>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Empty State -->
-        <div class="text-center py-10" *ngIf="getFilteredMeetings().length === 0">
-          <i class="ki-duotone ki-calendar fs-3x text-muted mb-4">
-            <span class="path1"></span>
-            <span class="path2"></span>
-          </i>
-          <h4 class="text-muted">{{ 'MEETINGS.NO_MEETINGS' | translate }}</h4>
-          <p class="text-muted">{{ 'MEETINGS.NO_MEETINGS_DESC' | translate }}</p>
-        </div>
-
         <!-- Pagination -->
-        <div class="d-flex justify-content-between align-items-center mt-6" 
-             *ngIf="totalPages > 1">
-          <div class="fs-6 fw-semibold text-gray-700">
-            {{ 'MEETINGS.SHOWING' | translate }} 
-            {{ (currentPage - 1) * perPage + 1 }} - 
-            {{ Math.min(currentPage * perPage, totalItems) }} 
-            {{ 'MEETINGS.OF' | translate }} {{ totalItems }} 
-            {{ 'MEETINGS.MEETINGS' | translate }}
-          </div>
-          
-          <div class="d-flex align-items-center">
-            <button class="btn btn-sm btn-icon btn-outline btn-outline-default me-2" 
-                    [disabled]="currentPage === 1"
-                    (click)="onPageChange(currentPage - 1)">
-              <i class="ki-duotone ki-black-left fs-3"></i>
-            </button>
-            
-            <span class="btn btn-sm btn-primary me-2">{{ currentPage }}</span>
-            
-            <button class="btn btn-sm btn-icon btn-outline btn-outline-default" 
-                    [disabled]="currentPage === totalPages"
-                    (click)="onPageChange(currentPage + 1)">
-              <i class="ki-duotone ki-black-right fs-3"></i>
-            </button>
+        <div class="row mt-5" *ngIf="!loading && totalPages > 1">
+          <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="pagination-info text-muted">
+                {{ 'MEETINGS.SHOWING' | translate }} 
+                {{ (currentPage - 1) * perPage + 1 }} 
+                {{ 'MEETINGS.TO' | translate }} 
+                {{ Math.min(currentPage * perPage, totalItems) }} 
+                {{ 'MEETINGS.OF' | translate }} 
+                {{ totalItems }} 
+                {{ 'MEETINGS.RESULTS' | translate }}
+              </div>
+              
+              <nav aria-label="Pagination">
+                <ul class="pagination pagination-outline">
+                  <li class="page-item" [class.disabled]="currentPage === 1">
+                    <a class="page-link" (click)="onPageChange(currentPage - 1)" *ngIf="currentPage > 1">
+                      <i class="ki-duotone ki-black-left">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                      </i>
+                    </a>
+                  </li>
+                  
+                  <li class="page-item" 
+                      *ngFor="let page of [].constructor(totalPages); let i = index"
+                      [class.active]="currentPage === i + 1">
+                    <a class="page-link" (click)="onPageChange(i + 1)">{{ i + 1 }}</a>
+                  </li>
+                  
+                  <li class="page-item" [class.disabled]="currentPage === totalPages">
+                    <a class="page-link" (click)="onPageChange(currentPage + 1)" *ngIf="currentPage < totalPages">
+                      <i class="ki-duotone ki-black-right">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                      </i>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
           </div>
         </div>
       </div>
