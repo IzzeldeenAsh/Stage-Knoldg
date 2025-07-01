@@ -492,7 +492,11 @@ INSIGHTER_REQUESTS: {
       "DELETE": "حذف",
       "DELETING": "جاري الحذف...",
       "SAVE": "حفظ",
-      "SAVING": "جاري الحفظ..."
+      "SAVING": "جاري الحفظ...",
+      "SHOWING": "عرض",
+      "TO": "إلى",
+      "OF": "من",
+      "RESULTS": "نتائج"
     },
     INSIGHTER_WIZARD: {
       ACCOUNT_TYPE: "نوع الحساب",
@@ -821,11 +825,29 @@ INSIGHTER_REQUESTS: {
           "RECEIVED": "المستقبلة",
           "SENT": "المرسلة"
         },
+        "JOIN_MEETING": "انضم إلى الاجتماع",
+        "JOIN": "انضم",
+        "RESCHEDULE": "إعادة جدولة",
+        "RESCHEDULE_MEETING": "إعادة جدولة الاجتماع",
+        "CURRENT_TIME": "الوقت الحالي",
+        "SELECT_NEW_TIME": "اختر الوقت الجديد",
+        "SELECT_DATE": "اختر التاريخ",
+        "SELECT_DATE_PLACEHOLDER": "اختر تاريخاً",
+        "AVAILABLE_TIMES": "الوقت المتاح",
+        "AVAILABLE_DATES": "التواريخ المتاحة",
+        "SLOTS": "فترات",
+        "LOADING_AVAILABLE_TIMES": "جاري تحميل الأوقات المتاحة...",
+        "NO_AVAILABLE_TIMES": "لا توجد أوقات متاحة",
+        "NO_AVAILABLE_TIMES_DESC": "لا يوجد لدى الانسايتر أوقات متاحة في الوقت الحالي. يرجى المحاولة مرة أخرى لاحقاً.",
+        "SAME_TIME_WARNING": "لقد اخترت نفس الوقت للاجتماع الحالي. يرجى اختيار وقت مختلف.",
+        "CALENDAR_HELP_TEXT": "اختر تاريخاً من التقويم لعرض الفترات الزمنية المتاحة.",
         "FILTERS": {
           "ALL": "الكل",
           "PENDING": "قيد الانتظار",
           "APPROVED": "موافق عليه",
-          "POSTPONED": "مؤجل"
+          "POSTPONED": "مؤجل",
+          "UPCOMING": "القادمة",
+          "PAST": "السابقة"
         },
         "NO_MEETINGS": "لا يوجد اجتماعات",
         "NO_MEETINGS_DESC": "لا يوجد اجتماعات متاحة",
@@ -1218,16 +1240,21 @@ INSIGHTER_REQUESTS: {
     },
     "MEETINGS": {
       "TITLE": "اجتماعاتي",  
+      "POSTPONE_NOTES_REQUIRED": "ملاحظات التؤجيل مطلوبة",
       "FILTERS": {
         "ALL": "الكل",
         "PENDING": "قيد الانتظار",
         "APPROVED": "موافق عليه",
-        "POSTPONED": "مؤجل"
+        "POSTPONED": "مؤجل",
+        "UPCOMING": "القادمة",
+        "PAST": "السابقة"
       },
       "TABS": {
         "ALL": "الكل",
         "PENDING": "قيد الانتظار",
         "APPROVED": "موافق عليه",
+        "UPCOMING": "القادمة",
+        "PAST": "السابقة",
         "POSTPONED": "مؤجل",
         "RECEIVED": "المستلمة",
         "SENT": "المرسلة"

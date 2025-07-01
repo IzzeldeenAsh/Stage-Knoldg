@@ -4,12 +4,14 @@ import { BehaviorSubject, Observable, throwError, map, catchError, finalize } fr
 import { TranslationService } from 'src/app/modules/i18n';
 
 export interface SentMeeting {
+  uuid: string;
   date: string;
   start_time: string;
   end_time: string;
   status: 'approved' | 'pending' | 'postponed';
   title: string;
   description: string;
+  meeting_url: string;
   insighter: {
     uuid: string;
     name: string;
@@ -41,6 +43,28 @@ export interface SentMeetingResponse {
     to: number;
     total: number;
   };
+}
+
+export interface AvailableTime {
+  start_time: string;
+  end_time: string;
+}
+
+export interface AvailableDay {
+  date: string;
+  day: string;
+  active: boolean;
+  times: AvailableTime[];
+}
+
+export interface AvailableHoursResponse {
+  data: AvailableDay[];
+}
+
+export interface RescheduleRequest {
+  meeting_date: string;
+  start_time: string;
+  end_time: string;
 }
 
 @Injectable({
@@ -79,12 +103,16 @@ export class SentMeetingsService {
     });
   }
 
-  getSentMeetings(page: number = 1, perPage: number = 10): Observable<SentMeetingResponse> {
+  getSentMeetings(page: number = 1, perPage: number = 10, dateStatus?: string): Observable<SentMeetingResponse> {
     const headers = this.getHeaders();
     
     let params = new HttpParams()
       .set('page', page.toString())
       .set('per_page', perPage.toString());
+
+    if (dateStatus) {
+      params = params.set('date_status', dateStatus);
+    }
 
     this.setLoading(true);
     return this.http.get<SentMeetingResponse>(this.apiUrl, { headers, params }).pipe(
@@ -101,5 +129,46 @@ export class SentMeetingsService {
       return nameParts[0].charAt(0).toUpperCase() + nameParts[1].charAt(0).toUpperCase();
     }
     return name.charAt(0).toUpperCase();
+  }
+
+  // Get available hours for rescheduling
+  getAvailableHours(insighterUuid: string): Observable<AvailableHoursResponse> {
+    const headers = this.getHeaders();
+    const url = `https://api.knoldg.com/api/account/meeting/available/hours/${insighterUuid}`;
+    
+    // Calculate date range - from tomorrow to 3 months from tomorrow
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const endDate = new Date(tomorrow);
+    endDate.setMonth(endDate.getMonth() + 3);
+    
+    const body = {
+      start_date: tomorrow.toISOString().split('T')[0],
+      end_date: endDate.toISOString().split('T')[0]
+    };
+
+    this.setLoading(true);
+    return this.http.post<AvailableHoursResponse>(url, body, { headers }).pipe(
+      map(response => response),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  // Reschedule meeting
+  rescheduleMeeting(meetingUuid: string, rescheduleData: RescheduleRequest): Observable<any> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json', 
+      'Accept-Language': this.currentLang
+    });
+    const url = `https://api.knoldg.com/api/account/meeting/reschedule/${meetingUuid}`;
+
+    this.setLoading(true);
+    return this.http.post(url, rescheduleData, { headers }).pipe(
+      map(response => response),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
   }
 } 

@@ -16,7 +16,7 @@ export class MyMeetingsComponent implements OnInit, OnDestroy {
   perPage = 10;
   
   // Filter tabs
-  selectedTab: 'all' | 'pending' | 'approved' | 'postponed' = 'all';
+  selectedTab: 'pending' | 'approved' | 'postponed' | 'upcoming' | 'past' = 'upcoming';
   
   // Dialog properties
   selectedMeeting: Meeting | null = null;
@@ -49,7 +49,8 @@ export class MyMeetingsComponent implements OnInit, OnDestroy {
 
   loadMeetings(page: number = 1): void {
     this.currentPage = page;
-    this.meetingsService.getMeetings(page, this.perPage)
+    const dateStatus = this.getDateStatusFilter();
+    this.meetingsService.getMeetings(page, this.perPage, dateStatus)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response: MeetingResponse) => {
@@ -64,17 +65,29 @@ export class MyMeetingsComponent implements OnInit, OnDestroy {
       });
   }
 
-  onTabChange(tab: 'all' | 'pending' | 'approved' | 'postponed'): void {
+  onTabChange(tab: 'pending' | 'approved' | 'postponed' | 'upcoming' | 'past'): void {
     this.selectedTab = tab;
-    // In a real implementation, you might want to filter on the backend
-    // For now, we'll filter on the frontend
+    // Reload meetings with the new filter
+    this.loadMeetings(1);
+  }
+
+  getDateStatusFilter(): string | undefined {
+    if (this.selectedTab === 'upcoming') {
+      return 'upcoming';
+    } else if (this.selectedTab === 'past') {
+      return 'past';
+    }
+    return undefined;
   }
 
   getFilteredMeetings(): Meeting[] {
     let filteredMeetings: Meeting[] = [];
-    if (this.selectedTab === 'all') {
+    
+    // For date-based tabs (upcoming/past), the filtering is done on the backend
+    if (this.selectedTab === 'upcoming' || this.selectedTab === 'past') {
       filteredMeetings = this.meetings;
     } else {
+      // For status-based tabs (pending, approved, postponed)
       filteredMeetings = this.meetings.filter(meeting => meeting.status === this.selectedTab);
     }
     
@@ -143,12 +156,16 @@ export class MyMeetingsComponent implements OnInit, OnDestroy {
   }
 
   openApproveModal(meeting: Meeting): void {
+    console.log('Opening approve modal for meeting:', meeting);
+    console.log('Meeting UUID:', meeting.uuid);
     this.selectedMeeting = meeting;
     this.approveNotes = '';
     this.showApproveDialog = true;
   }
 
   openPostponeModal(meeting: Meeting): void {
+    console.log('Opening postpone modal for meeting:', meeting);
+    console.log('Meeting UUID:', meeting.uuid);
     this.selectedMeeting = meeting;
     this.postponeNotes = '';
     this.showPostponeDialog = true;
@@ -171,9 +188,12 @@ export class MyMeetingsComponent implements OnInit, OnDestroy {
       return;
     }
 
+    console.log('Approving meeting - selectedMeeting:', this.selectedMeeting);
+    console.log('Meeting UUID being sent:', this.selectedMeeting.uuid);
+
     this.actionLoading = true;
     this.meetingsService.updateMeetingStatus(
-      this.selectedMeeting.id,
+      this.selectedMeeting.uuid,
       'approved',
       this.approveNotes.trim()
     ).pipe(takeUntil(this.destroy$))
@@ -181,7 +201,7 @@ export class MyMeetingsComponent implements OnInit, OnDestroy {
       next: () => {
         this.actionLoading = false;
         // Update the meeting status in the local array
-        const meetingIndex = this.meetings.findIndex(m => m.id === this.selectedMeeting!.id);
+        const meetingIndex = this.meetings.findIndex(m => m.uuid === this.selectedMeeting!.uuid);
         if (meetingIndex !== -1) {
           this.meetings[meetingIndex].status = 'approved';
         }
@@ -209,9 +229,12 @@ export class MyMeetingsComponent implements OnInit, OnDestroy {
       return;
     }
 
+    console.log('Postponing meeting - selectedMeeting:', this.selectedMeeting);
+    console.log('Meeting UUID being sent:', this.selectedMeeting.uuid);
+
     this.actionLoading = true;
     this.meetingsService.updateMeetingStatus(
-      this.selectedMeeting.id,
+      this.selectedMeeting.uuid,
       'postponed',
       this.postponeNotes.trim()
     ).pipe(takeUntil(this.destroy$))
@@ -219,7 +242,7 @@ export class MyMeetingsComponent implements OnInit, OnDestroy {
       next: () => {
         this.actionLoading = false;
         // Update the meeting status in the local array
-        const meetingIndex = this.meetings.findIndex(m => m.id === this.selectedMeeting!.id);
+        const meetingIndex = this.meetings.findIndex(m => m.uuid === this.selectedMeeting!.uuid);
         if (meetingIndex !== -1) {
           this.meetings[meetingIndex].status = 'postponed';
         }

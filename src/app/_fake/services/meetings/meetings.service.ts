@@ -4,13 +4,14 @@ import { BehaviorSubject, Observable, throwError, map, catchError, finalize } fr
 import { TranslationService } from 'src/app/modules/i18n';
 
 export interface Meeting {
-  id: number;
+  uuid: string;
   date: string;
   start_time: string;
   end_time: string;
   status: 'approved' | 'pending' | 'postponed';
   title: string;
   description: string;
+  meeting_url: string;
   client: {
     name: string;
     first_name: string;
@@ -81,12 +82,16 @@ export class MeetingsService {
     });
   }
 
-  getMeetings(page: number = 1, perPage: number = 10): Observable<MeetingResponse> {
+  getMeetings(page: number = 1, perPage: number = 10, dateStatus?: string): Observable<MeetingResponse> {
     const headers = this.getHeaders();
     
     let params = new HttpParams()
       .set('page', page.toString())
       .set('per_page', perPage.toString());
+
+    if (dateStatus) {
+      params = params.set('date_status', dateStatus);
+    }
 
     this.setLoading(true);
     return this.http.get<MeetingResponse>(this.apiUrl, { headers, params }).pipe(
@@ -97,8 +102,10 @@ export class MeetingsService {
   }
 
   // Update meeting status (approve/postpone)
-  updateMeetingStatus(meetingId: number, status: 'approved' | 'postponed', notes: string): Observable<any> {
-    const url = `https://api.knoldg.com/api/insighter/meeting/action/${meetingId}`;
+  updateMeetingStatus(meetingUuid: string, status: 'approved' | 'postponed', notes: string): Observable<any> {
+    console.log('MeetingsService.updateMeetingStatus called with meetingUuid:', meetingUuid, 'status:', status, 'notes:', notes);
+    const url = `https://api.knoldg.com/api/insighter/meeting/action/${meetingUuid}`;
+    console.log('API URL being called:', url);
     const headers = this.getHeaders();
     
     const body = {
