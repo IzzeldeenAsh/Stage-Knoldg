@@ -15,6 +15,7 @@ export interface Meeting {
   client: {
     name: string;
     first_name: string;
+    uuid: string;
     last_name: string;
     email: string;
     profile_photo_url: string | null;

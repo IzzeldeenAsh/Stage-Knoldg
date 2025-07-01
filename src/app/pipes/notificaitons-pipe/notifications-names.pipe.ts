@@ -42,6 +42,10 @@ export class NotificationsNamesPipe implements PipeTransform {
         return 'Meeting Approved';
       case 'client_meeting_insighter_postponed':
         return 'Meeting Postponed';
+      case 'client_meeting_reschedule':
+        return 'Meeting Rescheduled';
+      case 'insighter_meeting_client_reschedule':
+        return 'Meeting Rescheduled';
       default:
         return value;
     }

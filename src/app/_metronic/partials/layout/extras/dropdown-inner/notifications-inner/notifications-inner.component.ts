@@ -119,6 +119,10 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
       this.router.navigate(['/app/insighter-dashboard/my-meetings/received']);
     }else if(notification.sub_type.startsWith('client_meeting_insighter_postponed')){
       this.router.navigate(['/app/insighter-dashboard/my-meetings/sent']);
+    }else if(notification.sub_type.startsWith('insighter_meeting_client_reschedule')){
+      this.router.navigate(['/app/insighter-dashboard/my-meetings/received']);
+    }else if(notification.sub_type.startsWith('client_meeting_reschedule')){
+      this.router.navigate(['/app/insighter-dashboard/my-meetings/sent']);
     }
      else {
       // For other notifications, just emit the ID as before

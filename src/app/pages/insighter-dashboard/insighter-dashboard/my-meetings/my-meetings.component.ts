@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { MeetingsService, Meeting, MeetingResponse } from '../../../../_fake/services/meetings/meetings.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-my-meetings',
@@ -31,7 +32,7 @@ export class MyMeetingsComponent implements OnInit, OnDestroy {
   
   private destroy$ = new Subject<void>();
 
-  constructor(private meetingsService: MeetingsService) { }
+  constructor(private meetingsService: MeetingsService, private router: Router) { }
 
   ngOnInit(): void {
     this.loadMeetings();
@@ -45,6 +46,11 @@ export class MyMeetingsComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+  goToClientProfile(meeting: Meeting): void {
+  if (meeting.client.uuid) {
+    this.router.navigate(['/app/insighter-dashboard/client-profile', meeting.client.uuid]);
+  } 
   }
 
   loadMeetings(page: number = 1): void {
@@ -184,7 +190,7 @@ export class MyMeetingsComponent implements OnInit, OnDestroy {
   }
 
   approveMeeting(): void {
-    if (!this.selectedMeeting || !this.approveNotes.trim()) {
+    if (!this.selectedMeeting ) {
       return;
     }
 
