@@ -7,9 +7,14 @@
           <div class="filter-tabs">
             <div class="nav nav-pills nav-pills-custom">
               <a class="nav-link" 
-                 [class.active]="selectedTab === 'all'"
-                 (click)="onTabChange('all')">
-                {{ 'MEETINGS.TABS.ALL' | translate }}
+                 [class.active]="selectedTab === 'upcoming'"
+                 (click)="onTabChange('upcoming')">
+                {{ 'MEETINGS.TABS.UPCOMING' | translate }}
+              </a>
+              <a class="nav-link" 
+                 [class.active]="selectedTab === 'past'"
+                 (click)="onTabChange('past')">
+                {{ 'MEETINGS.TABS.PAST' | translate }}
               </a>
               <a class="nav-link" 
                  [class.active]="selectedTab === 'pending'"
@@ -126,8 +131,8 @@
               <!-- Status Badge and Actions -->
               <div class="col-auto">
                 <div class="d-flex align-items-center gap-2">
-                  <!-- Action Buttons for Pending Meetings -->
-                  <div *ngIf="meeting.status === 'pending'" class="d-flex gap-2 me-3">
+                  <!-- Action Buttons for Pending Meetings (excluding past meetings) -->
+                  <div *ngIf="meeting.status === 'pending' && selectedTab !== 'past'" class="d-flex gap-2 me-3">
                     <button class="btn btn-sm btn-success d-flex align-items-center px-3 py-2"
                             (click)="openApproveModal(meeting)">
                       <i class="ki-duotone ki-check fs-4 me-1">
@@ -319,15 +324,21 @@
     </div>
     
     <div class="form-group">
-      <label for="postponeNotes" class="form-label fw-bold">Postponement Notes</label>
+      <label for="postponeNotes" class="form-label fw-bold">
+        Postponement Notes <span class="text-danger">*</span>
+      </label>
       <textarea 
         pInputTextarea 
         id="postponeNotes" 
         [(ngModel)]="postponeNotes"
         placeholder="Enter postponement reason and any additional information for the client..."
         rows="4"
-        class="w-100">
+        class="w-100"
+        required>
       </textarea>
+      <div class="text-muted fs-7 mt-1" *ngIf="!postponeNotes || postponeNotes.trim() === ''">
+        <small>{{ 'MEETINGS.POSTPONE_NOTES_REQUIRED' | translate }}</small>
+      </div>
     </div>
   </div>
 
@@ -346,7 +357,7 @@
       type="button"
       class="btn btn-warning"
       (click)="postponeMeeting()"
-      [disabled]="actionLoading">
+      [disabled]="actionLoading || !postponeNotes || postponeNotes.trim() === ''">
       <ng-container *ngIf="!actionLoading">
         <i class="ki-duotone ki-time fs-2">
           <span class="path1"></span>
@@ -355,8 +366,8 @@
         Postpone Meeting
       </ng-container>
       <ng-container *ngIf="actionLoading">
-        <span class="spinner-border spinner-border-sm spinner-border-xs" role="status" aria-hidden="true"></span>
-        Please wait...
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      
       </ng-container>
     </button>
   </ng-template>

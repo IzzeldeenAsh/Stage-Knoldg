@@ -61,8 +61,8 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
     // Calculate difference in milliseconds
     const diffMs = endDate.getTime() - startDate.getTime();
     
-    // Convert to minutes
-    const diffMinutes = diffMs / (1000 * 60);
+    // Convert to minutes and round to avoid floating point precision issues
+    const diffMinutes = Math.round(diffMs / (1000 * 60));
     
     // Check if exactly 60 minutes
     if (diffMinutes !== 60) {

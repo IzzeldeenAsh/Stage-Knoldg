@@ -548,7 +548,11 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       "DELETE": "Delete",
       "DELETING": "Deleting...",
       "SAVE": "Save",
-      "SAVING": "Saving..."
+      "SAVING": "Saving...",
+      "SHOWING": "Showing",
+      "TO": "to",
+      "OF": "of",
+      "RESULTS": "results"
     },
     INSIGHTER_WIZARD: {
       COMPANY_AGREEMENT_REQUIRED:"Company Agreement Required",
@@ -848,11 +852,29 @@ Your wealth of knowledge is valued and many are eager to learn from it.
         "RECEIVED": "Received",
         "SENT": "Sent"
       },
+      "RESCHEDULE": "Reschedule",
+      "RESCHEDULE_MEETING": "Reschedule Meeting",
+      "CURRENT_TIME": "Current Time",
+      "SELECT_NEW_TIME": "Select New Time",
+      "SELECT_DATE": "Select Date",
+      "SELECT_DATE_PLACEHOLDER": "Choose a date",
+      "AVAILABLE_TIMES": "Available Times",
+      "AVAILABLE_DATES": "Available Dates",
+      "SLOTS": "slots",
+      "LOADING_AVAILABLE_TIMES": "Loading available times...",
+      "NO_AVAILABLE_TIMES": "No Available Times",
+      "NO_AVAILABLE_TIMES_DESC": "The insighter has no available time slots at the moment. Please try again later.",
+      "SAME_TIME_WARNING": "You have selected the same time as the current meeting. Please choose a different time.",
+      "CALENDAR_HELP_TEXT": "Select a date from the calendar to view available time slots.",
+      "JOIN_MEETING": "Join Meeting",
+      "JOIN": "Join",
       "FILTERS": {
         "ALL": "All",
         "PENDING": "Pending",
         "APPROVED": "Approved", 
-        "POSTPONED": "Postponed"
+        "POSTPONED": "Postponed",
+        "UPCOMING": "Upcoming",
+        "PAST": "Past"
       },
       "NO_MEETINGS": "No meetings found",
       "NO_MEETINGS_DESC": "You don't have any meetings scheduled at the moment.",
@@ -1301,12 +1323,16 @@ UPLOAD: 'Upload',
         "ALL": "All",
         "PENDING": "Pending",
         "APPROVED": "Approved",
-        "POSTPONED": "Postponed"
+        "POSTPONED": "Postponed",
+        "UPCOMING": "Upcoming",
+        "PAST": "Past"
       },
       "TABS": {
         "ALL": "All",
         "PENDING": "Pending",
         "APPROVED": "Approved",
+        "UPCOMING": "Upcoming",
+        "PAST": "Past",
         "POSTPONED": "Postponed"
       },
       "STATUS": {
@@ -1326,7 +1352,8 @@ UPLOAD: 'Upload',
       "INSIGHTER": "Insighter",
       "SHOWING": "Showing",
       "OF": "of",
-      "MEETINGS": "meetings"
+      "MEETINGS": "meetings",
+      "POSTPONE_NOTES_REQUIRED": "Postponement notes are required"
     },
   },
   "CLIENT": "Client",
