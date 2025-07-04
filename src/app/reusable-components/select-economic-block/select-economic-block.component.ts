@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
-import { MultiSelectModule } from 'primeng/multiselect';
 import { FormsModule } from '@angular/forms';
 import { EconomicBloc, EconomicBlockService } from '../../_fake/services/economic-block/economic-block.service';
 import { InputTextModule } from 'primeng/inputtext';
@@ -12,7 +11,7 @@ import { ChipModule } from 'primeng/chip';
 @Component({
   selector: 'app-select-economic-block',
   standalone: true,
-  imports: [CommonModule, TranslationModule, DialogModule, MultiSelectModule, TruncateTextPipe, FormsModule, InputTextModule, ChipModule],
+  imports: [CommonModule, TranslationModule, DialogModule, TruncateTextPipe, FormsModule, InputTextModule, ChipModule],
   templateUrl: './select-economic-block.component.html',
   styleUrls: ['./select-economic-block.component.scss']
 })
@@ -24,8 +23,10 @@ export class SelectEconomicBlockComponent implements OnInit, OnChanges {
   
   dialogVisible: boolean = false;
   economicBlocks: EconomicBloc[] = [];
+  filteredBlocks: EconomicBloc[] = [];
   selectedBlocks: EconomicBloc[] = [];
   displayValue: string = '';
+  searchQuery: string = '';
 
   constructor(private economicBlockService: EconomicBlockService) {}
 
@@ -43,6 +44,7 @@ export class SelectEconomicBlockComponent implements OnInit, OnChanges {
     this.economicBlockService.getEconomicBlocs().subscribe({
       next: (blocks) => {
         this.economicBlocks = blocks;
+        this.filteredBlocks = [...this.economicBlocks];
         this.updateSelectedBlocks();
       },
       error: (error) => {
@@ -65,20 +67,81 @@ export class SelectEconomicBlockComponent implements OnInit, OnChanges {
       });
       
       console.log('Final selected blocks:', this.selectedBlocks);
-      this.displayValue = this.selectedBlocks.map(block => block.name).join(', ');
+      this.updateDisplayValue();
     } else {
       this.selectedBlocks = [];
-      this.displayValue = '';
+      this.updateDisplayValue();
     }
   }
 
   showDialog() {
     this.dialogVisible = true;
+    this.searchQuery = '';
+    this.filteredBlocks = [...this.economicBlocks];
   }
 
-  onBlocksSelect(blocks: EconomicBloc[]) {
-    this.selectedBlocks = blocks;
+  /**
+   * Checks if a block is selected
+   */
+  isBlockSelected(block: EconomicBloc): boolean {
+    return this.selectedBlocks.some(selectedBlock => selectedBlock.id === block.id);
+  }
+
+  /**
+   * Toggles the selection of a block
+   */
+  toggleSelectBlock(block: EconomicBloc, event: any) {
+    const checked = event.target.checked;
+    
+    if (checked) {
+      if (!this.selectedBlocks.some(selectedBlock => selectedBlock.id === block.id)) {
+        this.selectedBlocks.push(block);
+      }
+    } else {
+      this.selectedBlocks = this.selectedBlocks.filter(selectedBlock => selectedBlock.id !== block.id);
+    }
+    this.updateDisplayValue();
+  }
+
+  /**
+   * Updates the display value shown in the input field
+   */
+  updateDisplayValue() {
     this.displayValue = this.selectedBlocks.map(block => block.name).join(', ');
+  }
+
+  /**
+   * Filters blocks based on search query
+   */
+  filterBlocks() {
+    if (!this.searchQuery || this.searchQuery.trim() === '') {
+      this.filteredBlocks = [...this.economicBlocks];
+      return;
+    }
+
+    const query = this.searchQuery.toLowerCase().trim();
+    this.filteredBlocks = this.economicBlocks.filter(block => 
+      block.name.toLowerCase().includes(query)
+    );
+  }
+
+  /**
+   * Clears all selections
+   */
+  clearAllSelections() {
+    this.selectedBlocks = [];
+    this.updateDisplayValue();
+  }
+
+  /**
+   * Removes a specific block from selection
+   */
+  removeItem(itemName: string) {
+    const block = this.economicBlocks.find(b => b.name === itemName);
+    if (block) {
+      this.selectedBlocks = this.selectedBlocks.filter(selectedBlock => selectedBlock.id !== block.id);
+      this.updateDisplayValue();
+    }
   }
 
   onConfirm() {
@@ -88,31 +151,7 @@ export class SelectEconomicBlockComponent implements OnInit, OnChanges {
     this.dialogVisible = false;
   }
 
-  getCountryFlagPath(flag: string): string {
-   
-    try { 
-      return `../../../assets/media/flags/${flag}.svg`;
-    } catch {
-      return `../../../assets/media/flags/default.svg`;
-    }
-  }
 
-  getCountryCode(countryName: string): string {
-    // Implement a method to convert country name to country code
-    // This can be a lookup from a predefined list or an API call
-    // For example purposes, returning a placeholder
-    const countryCodes: { [key: string]: string } = {
-      'United States': 'US',
-      'Canada': 'CA',
-      'Germany': 'DE',
-      // Add more mappings as needed
-    };
-    return countryCodes[countryName] || 'un';
-  }
-
-  onFlagError(event: any) {
-    event.target.src = `../../../../assets/media/flags/default.svg`;
-  }
 
   hasSelections(): boolean {
     return this.selectedBlocks && this.selectedBlocks.length > 0;

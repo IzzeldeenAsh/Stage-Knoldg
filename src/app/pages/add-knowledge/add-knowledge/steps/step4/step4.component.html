@@ -296,60 +296,7 @@
                 {{ "INDUSTRY_REQUIRED" | translate }}
               </div>
             </div>
-    <!-- Topics -->
-    <div [@fadeInMoveY] class="mb-10" *ngIf="topics && topics.length > 0">
-      <label class="d-flex align-items-center form-label mb-3 required">
-        {{ "SELECT_TOPIC" | translate }}
-        <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'TOPIC_TOOLTIP' | translate }}"></i>
-      </label>
-      <p-dropdown
-        id="topicId"
-        formControlName="topicId"
-        [options]="topics"
-        optionLabel="name"
-        optionValue="id"
-        placeholder="{{ 'ENTER_TOPIC' | translate }}"
-        [showClear]="true"
-        [filter]="true"
-        filterPlaceholder="{{ 'SEARCH_TOPICS' | translate }}"
-        class="w-100"
-        (onChange)="onTopicSelected($event.value)"
-        [ngClass]="{'is-invalid': form.get('topicId')?.hasError('required') && form.get('topicId')?.touched, 'border-red': form.get('topicId')?.hasError('required') && form.get('topicId')?.touched}"
-      ></p-dropdown>
-      <div *ngIf="form.controls['topicId']?.invalid && form.controls['topicId']?.touched" class="text-danger">
-        {{ "TOPIC_REQUIRED" | translate }}
-      </div>
-    </div>
-
-    <!-- Custom Topic Input -->
-    <div [@fadeInMoveY] class="mb-10" *ngIf="form.get('topicId')?.value === 'other'">
-      <label class="d-flex align-items-center form-label mb-3 required">
-        {{ "SPECIFY_OTHER_TOPIC" | translate }}
-        <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'TOPIC_TOOLTIP' | translate }}"></i>
-      </label>
-      <input
-        type="text"
-        pInputText
-        class="w-100"
-        formControlName="customTopic"
-        [ngClass]="{'is-invalid': form.get('customTopic')?.hasError('required') && form.get('customTopic')?.touched, 'border-red': form.get('customTopic')?.hasError('required') && form.get('customTopic')?.touched}"
-        placeholder="{{ 'ENTER_CUSTOM_TOPIC' | translate }}"
-      />
-      <!-- Duplicate Topic Error -->
-      <div
-        class="invalid-feedback d-block"
-        *ngIf="form.get('customTopic')?.errors?.['duplicateTopic'] && form.get('customTopic')?.touched"
-      >
-        {{ "DUPLICATE_TOPIC" | translate }}
-      </div>
-      <!-- Required Field Error -->
-      <div
-        class="fv-plugins-message-container invalid-feedback"
-        *ngIf="form.get('customTopic')?.errors?.['required'] && form.get('customTopic')?.touched"
-      >
-        {{ "CUSTOM_TOPIC_REQUIRED" | translate }}
-      </div>
-    </div>
+ 
 
     <!-- Target Market -->
     <div class="mb-10">
@@ -503,7 +450,7 @@
       </div>
 
       <!-- Worldwide -->
-      <div class="mb-10">
+      <!-- <div class="mb-10">
         <div *ngIf="form.get('targetMarket')?.value === '3'">
           <div class="d-flex align-items-center">
             <label class="form-label mb-3">
@@ -518,8 +465,61 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
+   <!-- Topics -->
+   <div [@fadeInMoveY] class="mb-10" *ngIf="topics && topics.length > 0">
+    <label class="d-flex align-items-center form-label mb-3 required">
+      {{ "SELECT_TOPIC" | translate }}
+      <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'TOPIC_TOOLTIP' | translate }}"></i>
+    </label>
+    <p-dropdown
+      id="topicId"
+      formControlName="topicId"
+      [options]="topics"
+      optionLabel="name"
+      optionValue="id"
+      placeholder="{{ 'ENTER_TOPIC' | translate }}"
+      [showClear]="true"
+      [filter]="true"
+      filterPlaceholder="{{ 'SEARCH_TOPICS' | translate }}"
+      class="w-100"
+      (onChange)="onTopicSelected($event.value)"
+      [ngClass]="{'is-invalid': form.get('topicId')?.hasError('required') && form.get('topicId')?.touched, 'border-red': form.get('topicId')?.hasError('required') && form.get('topicId')?.touched}"
+    ></p-dropdown>
+    <div *ngIf="form.controls['topicId']?.invalid && form.controls['topicId']?.touched" class="text-danger">
+      {{ "TOPIC_REQUIRED" | translate }}
+    </div>
+  </div>
 
+  <!-- Custom Topic Input -->
+  <div [@fadeInMoveY] class="mb-10" *ngIf="form.get('topicId')?.value === 'other'">
+    <label class="d-flex align-items-center form-label mb-3 required">
+      {{ "SPECIFY_OTHER_TOPIC" | translate }}
+      <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'TOPIC_TOOLTIP' | translate }}"></i>
+    </label>
+    <input
+      type="text"
+      pInputText
+      class="w-100"
+      formControlName="customTopic"
+      [ngClass]="{'is-invalid': form.get('customTopic')?.hasError('required') && form.get('customTopic')?.touched, 'border-red': form.get('customTopic')?.hasError('required') && form.get('customTopic')?.touched}"
+      placeholder="{{ 'ENTER_CUSTOM_TOPIC' | translate }}"
+    />
+    <!-- Duplicate Topic Error -->
+    <div
+      class="invalid-feedback d-block"
+      *ngIf="form.get('customTopic')?.errors?.['duplicateTopic'] && form.get('customTopic')?.touched"
+    >
+      {{ "DUPLICATE_TOPIC" | translate }}
+    </div>
+    <!-- Required Field Error -->
+    <div
+      class="fv-plugins-message-container invalid-feedback"
+      *ngIf="form.get('customTopic')?.errors?.['required'] && form.get('customTopic')?.touched"
+    >
+      {{ "CUSTOM_TOPIC_REQUIRED" | translate }}
+    </div>
+  </div>
 
       <!-- Tags Section -->
       <div class="mt-10 mb-8" *ngIf="form.get('topicId')?.value && form.get('topicId')?.value !== ''">

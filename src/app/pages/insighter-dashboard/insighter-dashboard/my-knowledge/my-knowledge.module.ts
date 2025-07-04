@@ -23,6 +23,7 @@ import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { EditorModule } from '@tinymce/tinymce-angular';
 import { UnpublishedComponent } from './components/unpublished/unpublished.component';
 import { InlineSVGModule } from 'ng-inline-svg-2';
+import { TruncateTextPipe } from 'src/app/pipes/truncate-pipe/truncate-text.pipe';
 
 
 const routes: Routes = [
@@ -89,7 +90,8 @@ const routes: Routes = [
     SharedModule,
     NgbDropdownModule,
     DynamicDialogModule,
-    EditorModule
+    EditorModule,
+    TruncateTextPipe
   ]
 })
 export class MyKnowledgeModule { } 

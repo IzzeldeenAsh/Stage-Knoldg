@@ -89,24 +89,24 @@
       {{ 'OVERVIEW' | translate }}
     </a>
   </div>
-    <div class="menu-item px-5">
+    <!-- <div class="menu-item px-5">
       <a [routerLink]="'/app/insighter-dashboard/my-consulting-schedule'" class="menu-link px-5" (click)="closeDropdown.emit()">
         {{ 'INSIGHTER_DASHBOARD.MY_CONSULTING_SCHEDULE' | translate }}
       </a>
-    </div>
-  <div class="menu-item px-5">
+    </div> -->
+  <!-- <div class="menu-item px-5">
     <a [routerLink]="'/app/insighter-dashboard/my-requests'" class="menu-link px-5" (click)="closeDropdown.emit()">
       {{ 'INSIGHTER.DASHBOARD.NAV.MY_REQUESTS' | translate }}
     </a>
-  </div>
+  </div> -->
 
 
 
-  <div class="menu-item px-5" *ngIf="_user.roles.includes('company') ">
+  <!-- <div class="menu-item px-5" *ngIf="_user.roles.includes('company') ">
     <a [routerLink]="'/app/insighter-dashboard/my-company-settings'" class="menu-link px-5" (click)="closeDropdown.emit()">
       {{ 'MY_COMPANY.TITLE' | translate }}
     </a>
-  </div>
+  </div> -->
 
 
 </ng-container>
@@ -133,13 +133,13 @@
     </a>
   </div>
 
-  <div class="menu-item px-5" *ngIf="_user.roles.includes('insighter') || _user.roles.includes('company') || _user.roles.includes('company-insighter')">
+  <!-- <div class="menu-item px-5" *ngIf="_user.roles.includes('insighter') || _user.roles.includes('company') || _user.roles.includes('company-insighter')">
     <a [routerLink]="'/app/insighter-dashboard/my-meetings/received'" class="menu-link px-5" (click)="closeDropdown.emit()">
       {{ 'RECEIVED_MEETINGS' | translate }}
     </a>
-  </div>
+  </div> -->
 
-  <div class="menu-item px-5">
+  <div class="menu-item px-5" *ngIf="_user.roles.includes('client') && !_user.roles.includes('insighter') && !_user.roles.includes('company') && !_user.roles.includes('company-insighter')">
     <a [routerLink]="'/app/insighter-dashboard/my-meetings/sent'" class="menu-link px-5" (click)="closeDropdown.emit()">
       {{ 'SENT_MEETINGS' | translate }}
     </a>
