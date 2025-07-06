@@ -1,52 +1,73 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import { Component, OnInit, OnDestroy, inject, DestroyRef, signal } from '@angular/core';
+import { Subject, take, takeUntil } from 'rxjs';
 import { MeetingsService, Meeting, MeetingResponse } from '../../../../_fake/services/meetings/meetings.service';
 import { Router } from '@angular/router';
-
+import { CommonModule, DatePipe } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DialogModule } from 'primeng/dialog';
+import { TooltipModule } from 'primeng/tooltip';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { TruncateTextPipe } from 'src/app/pipes/truncate-pipe/truncate-text.pipe';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TranslationModule } from 'src/app/modules/i18n';
+import { BaseComponent } from 'src/app/modules/base.component';
+type TabType = 'pending' | 'approved' | 'postponed' | 'upcoming' | 'past';
 @Component({
   selector: 'app-my-meetings',
   templateUrl: './my-meetings.component.html',
-  styleUrls: ['./my-meetings.component.scss']
+  styleUrls: ['./my-meetings.component.scss'],
+  standalone: true,
+  imports : [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    DialogModule,
+    TooltipModule,
+    InputTextareaModule,
+    TruncateTextPipe,
+    TranslationModule,
+    DatePipe
+  ]
 })
-export class MyMeetingsComponent implements OnInit, OnDestroy {
-  meetings: Meeting[] = [];
-  loading = false;
-  currentPage = 1;
-  totalPages = 1;
-  totalItems = 0;
-  perPage = 10;
+export class MyMeetingsComponent extends BaseComponent implements OnInit {
+[x: string]: any;
+  meetings = signal<Meeting[]>([]); 
+  loading = signal<boolean>(false);
+  currentPage=signal<number>(1);
+  totalPages = signal<number>(1);
+  totalItems = signal<number>(0);
+  perPage = signal<number>(10);
   
   // Filter tabs
-  selectedTab: 'pending' | 'approved' | 'postponed' | 'upcoming' | 'past' = 'upcoming';
+  selectedTab = signal<TabType>('upcoming');
+
   
   // Dialog properties
-  selectedMeeting: Meeting | null = null;
-  approveNotes = '';
-  postponeNotes = '';
-  actionLoading = false;
-  showApproveDialog = false;
-  showPostponeDialog = false;
+  selectedMeeting = signal<Meeting | null> (null);
+  approveNotes= signal<string>('');
+  postponeNotes = signal<string>('');
+  actionLoading = signal<boolean>(false);
+  showApproveDialog = signal<boolean>(false);
+  showPostponeDialog = signal<boolean>(false);
   
   // Math reference for template
   Math = Math;
-  
-  private destroy$ = new Subject<void>();
 
-  constructor(private meetingsService: MeetingsService, private router: Router) { }
+  private meetingsService= inject(MeetingsService);
+  private router=inject(Router);
+  private destroyRef = inject(DestroyRef);
+
+
 
   ngOnInit(): void {
     this.loadMeetings();
     
     // Subscribe to loading state
     this.meetingsService.isLoading$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(loading => this.loading = loading);
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(loading => this.loading.set(loading));
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
   goToClientProfile(meeting: Meeting): void {
   if (meeting.client.uuid) {
     this.router.navigate(['/app/insighter-dashboard/client-profile', meeting.client.uuid]);
@@ -54,33 +75,33 @@ export class MyMeetingsComponent implements OnInit, OnDestroy {
   }
 
   loadMeetings(page: number = 1): void {
-    this.currentPage = page;
+    this.currentPage.set(page);
     const dateStatus = this.getDateStatusFilter();
-    this.meetingsService.getMeetings(page, this.perPage, dateStatus)
-      .pipe(takeUntil(this.destroy$))
+    this.meetingsService.getMeetings(page, this.perPage(), dateStatus)
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (response: MeetingResponse) => {
-          this.meetings = response.data;
-          this.totalPages = response.meta.last_page;
-          this.totalItems = response.meta.total;
-          this.currentPage = response.meta.current_page;
+          this.meetings.set(response.data);
+          this.currentPage.set(response.meta.current_page);
+          this.totalPages.set(response.meta.last_page);
+          this.totalItems.set(response.meta.total)
         },
         error: (error) => {
           console.error('Error loading meetings:', error);
+          this.handleServerErrors(error);
         }
       });
   }
 
-  onTabChange(tab: 'pending' | 'approved' | 'postponed' | 'upcoming' | 'past'): void {
-    this.selectedTab = tab;
-    // Reload meetings with the new filter
-    this.loadMeetings(1);
+  onTabChange(tab: TabType): void {
+     this.selectedTab.set(tab);
+     this.loadMeetings(1);
   }
 
   getDateStatusFilter(): string | undefined {
-    if (this.selectedTab === 'upcoming') {
+    if (this.selectedTab() === 'upcoming') {
       return 'upcoming';
-    } else if (this.selectedTab === 'past') {
+    } else if (this.selectedTab() === 'past') {
       return 'past';
     }
     return undefined;
@@ -89,20 +110,20 @@ export class MyMeetingsComponent implements OnInit, OnDestroy {
   getFilteredMeetings(): Meeting[] {
     let filteredMeetings: Meeting[] = [];
     
-    // For date-based tabs (upcoming/past), the filtering is done on the backend
-    if (this.selectedTab === 'upcoming' || this.selectedTab === 'past') {
-      filteredMeetings = this.meetings;
-    } else {
-      // For status-based tabs (pending, approved, postponed)
-      filteredMeetings = this.meetings.filter(meeting => meeting.status === this.selectedTab);
+    //date based (upcoming,past) // backend filter
+    if(this.selectedTab() === 'upcoming' || this.selectedTab() === 'past'){
+      filteredMeetings = this.meetings();
+    }else{
+      // status-based tabs ( pending , approved , postponed)
+      filteredMeetings = this.meetings().filter((meeting:Meeting)=>(meeting.status === this.selectedTab()))
     }
-    
-    // Sort by date (closest meetings first)
-    return filteredMeetings.sort((a, b) => {
-      const dateA = new Date(a.date).getTime();
-      const dateB = new Date(b.date).getTime();
-      return dateA - dateB;
-    });
+   //sort by date closest meeting first
+   return filteredMeetings.sort((a,b)=>{
+    const dateA = new Date(a.date).getTime();
+    const dateB = new Date(b.date).getTime();
+    return dateA-dateB
+   })
+   
   }
 
   onPageChange(page: number): void {
@@ -162,112 +183,125 @@ export class MyMeetingsComponent implements OnInit, OnDestroy {
   }
 
   openApproveModal(meeting: Meeting): void {
-    console.log('Opening approve modal for meeting:', meeting);
-    console.log('Meeting UUID:', meeting.uuid);
-    this.selectedMeeting = meeting;
-    this.approveNotes = '';
-    this.showApproveDialog = true;
+    this.selectedMeeting.set(meeting);
+    this.approveNotes.set('')
+    this.showApproveDialog.set(true);
   }
 
   openPostponeModal(meeting: Meeting): void {
-    console.log('Opening postpone modal for meeting:', meeting);
-    console.log('Meeting UUID:', meeting.uuid);
-    this.selectedMeeting = meeting;
-    this.postponeNotes = '';
-    this.showPostponeDialog = true;
+   
+    this.selectedMeeting.set(meeting);
+    this.postponeNotes.set('')
+    this.showPostponeDialog.set(true);
   }
 
   closeApproveDialog(): void {
-    this.showApproveDialog = false;
-    this.selectedMeeting = null;
-    this.approveNotes = '';
+    this.showApproveDialog.set(false)
+    this.selectedMeeting.set(null);
+    this.approveNotes.set('')
   }
 
   closePostponeDialog(): void {
-    this.showPostponeDialog = false;
-    this.selectedMeeting = null;
-    this.postponeNotes = '';
+    this.showPostponeDialog.set(false);
+    this.selectedMeeting.set(null);
+    this.postponeNotes.set('')
   }
 
   approveMeeting(): void {
-    if (!this.selectedMeeting ) {
+    const meeting = this.selectedMeeting();
+    if (!meeting ) {
       return;
     }
-
-    console.log('Approving meeting - selectedMeeting:', this.selectedMeeting);
-    console.log('Meeting UUID being sent:', this.selectedMeeting.uuid);
-
-    this.actionLoading = true;
+    this.actionLoading.set(true);
     this.meetingsService.updateMeetingStatus(
-      this.selectedMeeting.uuid,
+      meeting.uuid,
       'approved',
-      this.approveNotes.trim()
-    ).pipe(takeUntil(this.destroy$))
+      this.approveNotes().trim()
+    ).pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe({
       next: () => {
-        this.actionLoading = false;
-        // Update the meeting status in the local array
-        const meetingIndex = this.meetings.findIndex(m => m.uuid === this.selectedMeeting!.uuid);
+        this.actionLoading.set(false);
+        // Update the meeting status in the local array;
+        const updatedMeetings = [...this.meetings()];
+        const meetingIndex = updatedMeetings.findIndex(m => m.uuid === meeting.uuid);
         if (meetingIndex !== -1) {
-          this.meetings[meetingIndex].status = 'approved';
+          updatedMeetings[meetingIndex] = {
+            ...updatedMeetings[meetingIndex],
+            status:'approved'
+          }
+          this.meetings.set(updatedMeetings);
         }
         
         // Close dialog
-        this.showApproveDialog = false;
+    this.showApproveDialog.set(false);
         
         // Reset form
-        this.selectedMeeting = null;
-        this.approveNotes = '';
-        
-        // Show success message (you can add a toast notification here)
-        console.log('Meeting approved successfully');
+        this.selectedMeeting.set(null);
+        this.approveNotes.set('');
       },
       error: (error: any) => {
-        this.actionLoading = false;
-        console.error('Error approving meeting:', error);
-        // Show error message (you can add a toast notification here)
+        this.actionLoading.set(false);
+        this.handleServerErrors(error);
       }
     });
   }
 
   postponeMeeting(): void {
-    if (!this.selectedMeeting || !this.postponeNotes.trim()) {
+    const meeting = this.selectedMeeting();
+    const notes = this.postponeNotes();
+
+    if (!meeting || !notes.trim()) {
       return;
+      //show warning toast message
     }
 
-    console.log('Postponing meeting - selectedMeeting:', this.selectedMeeting);
-    console.log('Meeting UUID being sent:', this.selectedMeeting.uuid);
-
-    this.actionLoading = true;
+    this.actionLoading.set(true);
     this.meetingsService.updateMeetingStatus(
-      this.selectedMeeting.uuid,
+      meeting.uuid,
       'postponed',
-      this.postponeNotes.trim()
-    ).pipe(takeUntil(this.destroy$))
+      notes.trim()
+    ).pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe({
       next: () => {
-        this.actionLoading = false;
+        this.actionLoading.set(false);
         // Update the meeting status in the local array
-        const meetingIndex = this.meetings.findIndex(m => m.uuid === this.selectedMeeting!.uuid);
+        const updatedMeetings = [...this.meetings()];
+        const meetingIndex = updatedMeetings.findIndex(m => m.uuid === meeting.uuid);
         if (meetingIndex !== -1) {
-          this.meetings[meetingIndex].status = 'postponed';
+          updatedMeetings[meetingIndex] = {
+            ...updatedMeetings[meetingIndex],
+            status:'postponed'
+          };
+          this.meetings.set(updatedMeetings);
         }
         
         // Close dialog
-        this.showPostponeDialog = false;
+        this.showPostponeDialog.set(false);
         
         // Reset form
-        this.selectedMeeting = null;
-        this.postponeNotes = '';
-        
+        this.selectedMeeting.set(null);
+        this.postponeNotes.set('')
         // Show success message (you can add a toast notification here)
-        console.log('Meeting postponed successfully');
       },
       error: (error: any) => {
-        this.actionLoading = false;
-        console.error('Error postponing meeting:', error);
-        // Show error message (you can add a toast notification here)
+        this.actionLoading.set(false)
+        this.handleServerErrors(error);
       }
     });
   }
-} 
+
+
+  private handleServerErrors(error: any) {
+    if (error.error && error.error.errors) {
+      const serverErrors = error.error.errors;
+      for (const key in serverErrors) {
+        if (serverErrors.hasOwnProperty(key)) {
+          const messages = serverErrors[key];
+          this.showError('', messages.join(", "));
+        }
+      }
+    } else {
+      this.showError('','An unexpected error occurred.');
+    }
+  }
+}

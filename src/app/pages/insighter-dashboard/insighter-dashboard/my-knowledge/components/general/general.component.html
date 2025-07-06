@@ -394,7 +394,6 @@
                   <span class="path3"></span>
                 </i>
                 <h3 class="fs-3 fw-bold text-info mb-2">{{ 'KNOWLEDGE.ADD_KNOWLEDGE' | translate }}</h3>
-                <div class="fs-7 text-gray-600">{{'CLICK_TO_ADD' | translate}}</div>
               </div>
             </a>
           </div>
@@ -408,7 +407,7 @@
               <div class="title-section">
                 <a [routerLink]="['/app/my-knowledge-base/view-my-knowledge/', knowledge.id]" 
                    class="knowledge-title text-hover-primary min-h-45px">
-                  {{ (knowledge.title && knowledge.title.trim()) ? (knowledge.title | truncateText:44) : ('Untitled knowledge' | translate) }}
+                  {{ (knowledge.title && knowledge.title.trim()) ? (knowledge.title | truncateText:36) : ('Untitled knowledge' | translate) }}
                 </a>
               </div>
 
