@@ -2,10 +2,10 @@
 <div class="card card-flush">
   <!--begin::Card body-->
   <div class="card-body">
-    <!-- Search and filters section - only visible when there's data -->
-    <div class="card-header p-0" *ngIf="knowledges && knowledges.length > 0 && !loading">
-      <div class="d-flex justify-content-between align-items-start flex-column flex-md-row w-100 gap-3">
-        <div class="card-title w-100 w-md-auto">
+    <!-- Search and filters section - visible when there's data or after search -->
+    <div class="card-header p-0 mb-4" *ngIf="(knowledges && knowledges.length > 0) || searchTerm || selectedKnowledgeType">
+      <div class="d-flex justify-content-between align-items-center flex-column flex-md-row w-100 gap-3">
+        <div class="card-title" [ngClass]="allKnowledges && allKnowledges.length > 0 ? 'w-100 w-md-auto' : 'w-100'">
           <!--begin::Search-->
           <div class="d-flex align-items-center position-relative my-1 w-100">
             <i class="ki-outline ki-magnifier fs-1 position-absolute mx-2"></i>
@@ -22,7 +22,7 @@
         </div>
 
         <!-- Begin::Knowledge Type Filter Chips -->
-        <div class="knowledge-type-stats mt-2 mt-md-0 w-100 w-md-auto">
+        <div class="knowledge-type-stats mt-2 mt-md-0 w-100 w-md-auto" *ngIf="allKnowledges && allKnowledges.length > 0">
           <div class="filter-chips-container d-flex flex-wrap justify-content-start justify-content-md-end gap-2 overflow-auto pb-2">
             <!-- All type chip -->
             <div class="filter-chip chip-all"
@@ -132,16 +132,16 @@
     ></app-empty-state>
     
     <!-- Loading Indicator -->
-    <div *ngIf="loading" class="d-flex justify-content-center my-5">
+    <div *ngIf="loading" class="d-flex justify-content-center py-5">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Loading...</span>
       </div>
     </div>
 
-    <!-- View toggle and content - only visible with results -->
+    <!-- View toggle and content - visible when there's data -->
     <ng-container *ngIf="knowledges && knowledges.length > 0 && !loading">
       <!--begin::Table header-->
-      <div class="d-flex justify-content-end mb-6 pt-3">
+      <div class="d-flex justify-content-end mb-4">
         <div class="d-flex gap-1 justify-content-between"
         [ngClass]="selectedType !== 'grid' ? 'w-100' : 'w-0'"
         >
@@ -211,9 +211,6 @@
         </div>
       </div>
       <!--end::Table header-->
-    
-      <!--begin::Card toolbar-->
-      <!--end::Card toolbar-->
       
       <div class="d-flex gap-4">
         <!-- Table Column -->
@@ -324,7 +321,6 @@
                       <span class="path3"></span>
                     </i>
                     <h3 class="fs-3 fw-bold text-info mb-2">{{ 'KNOWLEDGE.ADD_KNOWLEDGE' | translate }}</h3>
-                    <div class="fs-7 text-gray-600">{{'CLICK_TO_ADD' | translate}}</div>
                   </div>
                 </a>
               </div>
@@ -339,7 +335,7 @@
                     <a [routerLink]="['/app/my-knowledge-base/view-my-knowledge/', knowledge.id]" 
                        class="knowledge-title text-hover-primary min-h-45px"
 >
-                      {{ knowledge.title.length > 45 ? (knowledge.title | slice:0:45) + '...' : knowledge.title }}
+                      {{ knowledge.title | truncateText:36 }}
                     </a>
                   </div>
 
@@ -414,7 +410,7 @@
           </div>
 
           <!--begin::Pagination-->
-          <div class="d-flex justify-content-end mt-6">
+          <div class="d-flex justify-content-end mt-4">
             <ul class="pagination">
               <!-- Previous Button -->
               <li class="page-item" [ngClass]="{'disabled': currentPage === 1}">

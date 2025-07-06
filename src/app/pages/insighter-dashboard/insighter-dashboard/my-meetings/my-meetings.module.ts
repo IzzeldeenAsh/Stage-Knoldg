@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { TranslationModule } from 'src/app/modules/i18n';
-import { MyMeetingsComponent } from './my-meetings.component';
 import { SentMeetingsComponent } from './sent-meetings/sent-meetings.component';
 import { FormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
@@ -10,6 +9,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { TruncateTextPipe } from 'src/app/pipes/truncate-pipe/truncate-text.pipe';
 import { RolesGuard } from 'src/app/guards/roles-guard/roles-gurad.gurad';
 import { authGuard } from 'src/app/guards/auth-guard/auth.guard';
+import { MyMeetingsComponent } from './my-meetings.component';
 
 const routes: Routes = [
   {
@@ -33,8 +33,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
-    MyMeetingsComponent,
-    SentMeetingsComponent,
+    SentMeetingsComponent
   ],
   imports: [
     CommonModule,

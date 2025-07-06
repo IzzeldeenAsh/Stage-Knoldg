@@ -71,7 +71,7 @@ INSIGHTER_REQUESTS: {
     'COUNTRIES': 'الدول',
     DOCUMENTS_LANGUAGE: 'لغة الملفات',
     ISIC_CODE: 'كود ISIC',
-    'WORLDWIDE': 'جميع أنحاء العالم',
+    'WORLDWIDE': 'العالم',
     WORLDWIDE_DESCRIPTION: 'جميع الدول',
     WORLDWIDE_TOOLTIP: 'سيكون محتواك متاحًا لجميع الزوار',
     INVITING: 'جاري الدعوة...',
@@ -213,6 +213,7 @@ INSIGHTER_REQUESTS: {
       "MY_CONSULTING_SCHEDULE": "جدولة الاستشارات",
       "DASHBOARD": "لوحة المعلومات"
     },
+    "SEARCH_ECONOMIC_BLOCK": "التكتلات الاقتصادية ",
     "NOTIFICATIONS": {
       TITLE: 'إشعارات',
       NO_NEW: 'لا توجد إشعارات جديدة',

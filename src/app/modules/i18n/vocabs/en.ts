@@ -207,7 +207,7 @@ export const locale = {
       "MY_COMPANY": "My Team",
       "INVITING": "Inviting",
       "MY_DOWNLOADS": "My Downloads",
-      "MY_CONSULTING_SCHEDULE": "My Consulting Schedule",
+      "MY_CONSULTING_SCHEDULE": "My Schedule",
       "DASHBOARD": "Dashboard"
     },
     NOTIFICATIONS: {
@@ -838,7 +838,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
         "INVITING": "Inviting",
         "MY_DOWNLOADS": "My Downloads",
         "MY_MEETINGS": "My Meetings",
-        "MY_CONSULTING_SCHEDULE": "My Consulting Schedule",
+        "MY_CONSULTING_SCHEDULE": "My Schedule",
         "DASHBOARD": "Dashboard"
       },
       REQUESTS: {
@@ -898,6 +898,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
   DATA: "Data",
   INSIGHTS: "Insights",
   REPORTS: "Reports",
+  "SEARCH_ECONOMIC_BLOCK": "Economic Blocks",
   MANUAL: "Manuals",
   DATA_DESCRIPTION: "Structured datasets, statistics, and digital information for analysis and informed decision-making.",
   INSIGHTS_DESCRIPTION: "Analytical content that delivers deep understanding of market trends, opportunities, and risks.",
@@ -1284,7 +1285,7 @@ UPLOAD: 'Upload',
       "NO_DATA_DESCRIPTION": "Your employees haven't published any knowledge items yet."
     },
     "CONSULTING_SCHEDULE": {
-      "TITLE": "My Consulting Schedule",
+      "TITLE": "My Schedule",
       "TIME_SPAN_ERROR": "Time slot must 1 hour apart",
       "CURRENT_SPAN": "Current span",
       "MINUTES": "minutes",

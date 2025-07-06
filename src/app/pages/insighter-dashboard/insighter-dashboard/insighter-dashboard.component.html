@@ -84,6 +84,14 @@
                       </div>
                     </div>
                     <div class="sub-nav" [class.show]="isMeetingsExpanded">
+                      <div class="sub-nav-item"  [routerLink]="['my-consulting-schedule']" routerLinkActive="active" *ngIf="!(isClient$ | async)">
+                        <div class="sub-item-icon">
+                          <i class="ki-duotone ki-calendar"><span class="path1"></span><span class="path2"></span></i>
+                        </div>
+                        <div class="sub-item-label">
+                          {{ 'INSIGHTER.DASHBOARD.NAV.MY_CONSULTING_SCHEDULE' | translate }}
+                        </div>
+                      </div>
                       <div class="sub-nav-item" [routerLink]="['my-meetings/received']" routerLinkActive="active"  *ngIf="!(isClient$ | async)">
                         <div class="sub-item-icon">
                           <i class="ki-duotone ki-message-text-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
@@ -100,16 +108,10 @@
                           {{ 'INSIGHTER.MEETINGS.TABS.SENT' | translate }}
                         </div>
                       </div>
+                     
                     </div>
                   </div>
-                  <div class="nav-item" [routerLink]="['my-consulting-schedule']" routerLinkActive="active" *ngIf="!(isClient$ | async)">
-                    <div class="item-icon">
-                      <i class="ki-duotone ki-calendar"><span class="path1"></span><span class="path2"></span></i>
-                    </div>
-                    <div class="item-label">
-                      {{ 'INSIGHTER.DASHBOARD.NAV.MY_CONSULTING_SCHEDULE' | translate }}
-                    </div>
-                  </div>
+                 
                   <div class="nav-item" [routerLink]="['my-company-settings']" routerLinkActive="active" *ngIf="hasCompanyRole$ | async">
                     <div class="item-icon">
                       <i class="ki-duotone ki-office-bag"><span class="path1"></span><span class="path2"></span></i>

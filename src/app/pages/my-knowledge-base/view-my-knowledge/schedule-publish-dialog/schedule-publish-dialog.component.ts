@@ -48,6 +48,7 @@ export class SchedulePublishDialogComponent implements OnInit {
   publishForm: FormGroup;
   minDate = new Date();
   timeError: string = '';
+  minTime: Date = new Date();
 
   constructor(
     private fb: FormBuilder,
@@ -61,12 +62,56 @@ export class SchedulePublishDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Set minTime to be 1 hour after current time
+    this.updateMinTime();
+
     if (this.config.data?.published_at) {
       const date = new Date(this.config.data.published_at);
       this.publishForm.patchValue({
         publishDate: date,
         publishTime: date
       });
+    }
+    
+    // Add value change listeners for real-time validation
+    this.publishForm.get('publishTime')?.valueChanges.subscribe(() => {
+      this.validateCurrentTimeSelection();
+    });
+  }
+  
+  /**
+   * Updates the minimum allowed time to be 1 hour after current time
+   */
+  private updateMinTime(): void {
+    const now = new Date();
+    this.minTime = new Date();
+    this.minTime.setHours(now.getHours() + 1);
+    this.minTime.setMinutes(now.getMinutes());
+    
+    // Update time error message if there's a time already selected
+    this.validateCurrentTimeSelection();
+  }
+  
+  /**
+   * Validates the current time selection and sets appropriate error message
+   */
+  private validateCurrentTimeSelection(): void {
+    const selectedTime = this.publishForm.get('publishTime')?.value;
+    const selectedDate = this.publishForm.get('publishDate')?.value;
+    
+    if (selectedTime && selectedDate) {
+      const now = new Date();
+      const oneHourFromNow = new Date(now);
+      oneHourFromNow.setHours(now.getHours() + 1);
+      
+      const publishDateTime = new Date(selectedDate);
+      publishDateTime.setHours(selectedTime.getHours(), selectedTime.getMinutes());
+      
+      if (publishDateTime < oneHourFromNow) {
+        this.timeError = 'Selected time must be at least one hour from now';
+      } else {
+        this.timeError = '';
+      }
     }
   }
 
@@ -79,10 +124,42 @@ export class SchedulePublishDialogComponent implements OnInit {
   onDateSelect(): void {
     const selectedDate = this.publishForm.get('publishDate')?.value;
     const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set to beginning of today
     
-    if (selectedDate < today) {
-      this.publishForm.get('publishDate')?.setErrors({ 'pastDate': true });
+    // Clear previous time errors
+    this.timeError = '';
+    
+    // Update time validation based on selected date
+    if (this.isSameDay(selectedDate, new Date())) {
+      // If today is selected, enforce the minimum time constraint
+      this.updateMinTime();
+    } else {
+      // If future date is selected, any time is valid
+      this.minTime = new Date(selectedDate);
+      this.minTime.setHours(0, 0, 0, 0);
     }
+    
+    // Update time field if it's now invalid with the new date selection
+    const selectedTime = this.publishForm.get('publishTime')?.value;
+    if (selectedTime && this.isSameDay(selectedDate, new Date())) {
+      const now = new Date();
+      if ((selectedTime.getHours() < now.getHours() + 1) || 
+          (selectedTime.getHours() === now.getHours() + 1 && selectedTime.getMinutes() < now.getMinutes())) {
+        // Instead of resetting to null, set the minimum valid time 
+        // This is more user-friendly as it shows a valid time instead of an empty field
+        this.publishForm.get('publishTime')?.setValue(this.minTime);
+        this.timeError = 'Time has been adjusted to the minimum allowed (1 hour from now)';
+      }
+    }
+  }
+  
+  /**
+   * Checks if two dates are on the same calendar day
+   */
+  private isSameDay(date1: Date, date2: Date): boolean {
+    return date1.getFullYear() === date2.getFullYear() &&
+           date1.getMonth() === date2.getMonth() &&
+           date1.getDate() === date2.getDate();
   }
 
   onSubmit(): void {
@@ -95,8 +172,11 @@ export class SchedulePublishDialogComponent implements OnInit {
       publishDate.setHours(time.getHours(), time.getMinutes());
 
       const now = new Date();
-      if (publishDate <= now) {
-        this.timeError = 'Selected time must be in the future';
+      const oneHourFromNow = new Date(now);
+      oneHourFromNow.setHours(now.getHours() + 1);
+      
+      if (publishDate < oneHourFromNow) {
+        this.timeError = 'Selected time must be at least one hour from now';
         return;
       }
 
