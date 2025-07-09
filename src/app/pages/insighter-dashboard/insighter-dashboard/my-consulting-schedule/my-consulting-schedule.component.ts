@@ -161,14 +161,19 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
   private convertAvailabilityObjectToArray(availabilityObj: {[key: string]: DayAvailability}): DayAvailability[] {
     if (!availabilityObj) return [];
     
-    return Object.keys(availabilityObj).map(dayKey => {
-      const dayData = availabilityObj[dayKey];
+    // Create an array matching the weekDays order
+    const result: DayAvailability[] = this.weekDays.map(dayConfig => {
+      const dayKey = dayConfig.key;
+      const dayData = availabilityObj[dayKey] || { day: dayKey, active: false, times: [] };
+      
       return {
-        day: dayData.day,
+        day: dayKey,
         active: dayData.active,
         times: dayData.times || []
       };
     });
+    
+    return result;
   }
 
   private buildForm(): void {
