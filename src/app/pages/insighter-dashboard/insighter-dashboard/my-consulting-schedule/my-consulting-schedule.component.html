@@ -165,16 +165,7 @@
                   ></p-calendar>
               </div>
               
-              <div class="rate-input">
-                <span class="currency-symbol">$</span>
-                <input 
-                  type="number" 
-                  formControlName="rate" 
-                  placeholder="Rate"
-                  step="0.01"
-                  class="rate-field"
-                />
-              </div>
+              <!-- Rate input hidden and defaulted to 0 in component -->
               
               <button 
                 type="button" 
@@ -201,14 +192,7 @@
               </div>
             </div>
             
-            <!-- Validation Error Message for Exception Rate - New Row -->
-            <div *ngIf="exceptionGroup.get('rate')?.errors?.['required']" class="validation-error-row">
-              <div class="validation-error">
-                <small class="error-message">
-                  {{ 'CONSULTING_SCHEDULE.RATE_REQUIRED' | translate }}
-                </small>
-              </div>
-            </div>
+            <!-- Rate validation removed as rate is now hidden and defaulted to 0 -->
           </div>
         </div>
         
