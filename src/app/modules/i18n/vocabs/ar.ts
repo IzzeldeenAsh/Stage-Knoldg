@@ -822,6 +822,7 @@ INSIGHTER_REQUESTS: {
         }
       },
       "MEETINGS": {
+        "RATE":"التكلفة",
         "TABS": {
           "RECEIVED": "المستقبلة",
           "SENT": "المرسلة"
@@ -1208,7 +1209,9 @@ INSIGHTER_REQUESTS: {
   "CONSULTING_SCHEDULE": {
     "TITLE": "جدول الاستشارات",
     "TIME_SPAN_ERROR": "يجب أن يكون فترة الوقت  ساعة واحدة  ",
+    "PERFECT_HOUR_ERROR" : "يجب أن تكون الفترة الزمنية ساعات كاملة",
     "CURRENT_SPAN": "الفترة الحالية",
+    "RATE_MIN_ERROR": "يجب أن يكون السعر أكبر من 0",
     "MINUTES": "دقائق",
     "DESCRIPTION": "حدد مواعيد توفرك لجلسات الاستشارة. قم بتعيين جدولك الأسبوعي وأضف أيام غير متاح فيها عند الحاجة.",
     "AVAILABLE_DAYS": "الأيام المتاحة",
@@ -1241,6 +1244,7 @@ INSIGHTER_REQUESTS: {
     },
     "MEETINGS": {
       "TITLE": "اجتماعاتي",  
+      "RATE":"التكلفة",
       "POSTPONE_NOTES_REQUIRED": "ملاحظات التؤجيل مطلوبة",
       "FILTERS": {
         "ALL": "الكل",

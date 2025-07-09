@@ -4,7 +4,6 @@
     <p>{{ 'CONSULTING_SCHEDULE.DESCRIPTION' | translate }}</p>
   </div>
   <form [formGroup]="scheduleForm" (ngSubmit)="onSave()">
-    <div class="sections-row">
       <!-- Available Days Section -->
       <div class="section available-days-section">
         <h3>{{ 'CONSULTING_SCHEDULE.AVAILABLE_DAYS' | translate }}</h3>
@@ -23,7 +22,7 @@
                 [inputId]="'day-' + dayIndex"
               ></p-checkbox>
               <label [for]="'day-' + dayIndex">
-                {{ (weekDays[dayIndex]?.label || 'CONSULTING_SCHEDULE.DAYS.MONDAY') | translate }}
+                {{ (weekDays[dayIndex].label || 'CONSULTING_SCHEDULE.DAYS.MONDAY') | translate }}
               </label>
             </div>
             
@@ -34,27 +33,44 @@
                 [formGroupName]="timeIndex"
               >
                 <div class="time-slot">
-                  <p-calendar
-                    formControlName="start_time"
-                    [timeOnly]="true"
-                    [showTime]="true"
-                    hourFormat="24"
-                    placeholder="Start Time"
-                    dir="ltr"
-                    [style]="{'direction': 'ltr'}"
-                  ></p-calendar>
+                  <div class="time-inputs">
+                    <p-calendar
+                      formControlName="start_time"
+                      [timeOnly]="true"
+                      [showTime]="true"
+                      hourFormat="24"
+                      placeholder="Start Time"
+                      dir="ltr"
+                      [style]="{'direction': 'ltr'}"
+                      appendTo="body"
+                    ></p-calendar>
+                    
+                    <span class="time-separator">{{ 'CONSULTING_SCHEDULE.TO' | translate }}</span>
+                    
+                    <p-calendar
+                      formControlName="end_time"
+                      [timeOnly]="true"
+                      [showTime]="true"
+                      [showSeconds]="false"
+                      [stepMinute]="60"
+                      hourFormat="24"
+                      placeholder="End Time"
+                      dir="ltr"
+                      [style]="{'direction': 'ltr'}"
+                      appendTo="body"
+                      ></p-calendar>
+                  </div>
                   
-                  <span class="time-separator">{{ 'CONSULTING_SCHEDULE.TO' | translate }}</span>
-                  
-                  <p-calendar
-                    formControlName="end_time"
-                    [timeOnly]="true"
-                    [showTime]="true"
-                    hourFormat="24"
-                    placeholder="End Time"
-                    dir="ltr"
-                    [style]="{'direction': 'ltr'}"
-                  ></p-calendar>
+                  <div class="rate-input">
+                    <span class="currency-symbol">$</span>
+                    <input 
+                      type="number" 
+                      formControlName="rate" 
+                      placeholder="Rate"
+                      step="0.01"
+                      class="rate-field"
+                    />
+                  </div>
                   
                   <button 
                     *ngIf="getTimesFormArray(dayIndex).length > 1"
@@ -67,14 +83,23 @@
                 </div>
                 
                 <!-- Validation Error Message for Time Slot - New Row -->
-                <div *ngIf="timeSlot.errors?.['oneHourSpan']" class="validation-error-row">
+                <div *ngIf="timeSlot.errors?.['perfectHour']" class="validation-error-row">
                   <div class="validation-error">
                     <small class="error-message">
-                      {{ 'CONSULTING_SCHEDULE.TIME_SPAN_ERROR' | translate }}
-                      ({{ 'CONSULTING_SCHEDULE.CURRENT_SPAN' | translate }}: {{timeSlot.errors?.['oneHourSpan'].actual}} {{ 'CONSULTING_SCHEDULE.MINUTES' | translate }})
+                      {{ 'CONSULTING_SCHEDULE.PERFECT_HOUR_ERROR' | translate }}
                     </small>
                   </div>
                 </div>
+                <div *ngIf="timeSlot.errors?.['invalidTimeRange']" class="validation-error-row">
+                  <div class="validation-error">
+                    <small class="error-message">
+                      {{ 'CONSULTING_SCHEDULE.INVALID_RANGE_ERROR' | translate }}
+                    </small>
+                  </div>
+                </div>
+                
+                <!-- Validation Error Message for Rate - New Row -->
+              
               </div>
               
               <!-- Add Time Slot Button - placed after all time slots for the day -->
@@ -93,7 +118,7 @@
       </div>
 
       <!-- Exception Days Section -->
-      <div class="section exception-days-section">
+      <div class="section exception-days-section mt-3">
         <h3>{{ 'CONSULTING_SCHEDULE.EXCEPTION_DAYS' | translate }}</h3>
         
         <div formArrayName="exceptions" *ngIf="exceptionsFormArray.length > 0">
@@ -108,29 +133,47 @@
                 dateFormat="yy-mm-dd"
                 placeholder="Select Date"
                 styleClass="date-calendar"
+                appendTo="body"
               ></p-calendar>
               
-              <p-calendar
-                formControlName="start_time"
-                [timeOnly]="true"
-                [showTime]="true"
-                hourFormat="24"
-                placeholder="Start Time"
-                dir="ltr"
-                [style]="{'direction': 'ltr'}"
-              ></p-calendar>
+              <div class="time-inputs">
+                <p-calendar
+                  formControlName="start_time"
+                  [timeOnly]="true"
+                  [showTime]="true"
+                  hourFormat="24"
+                  placeholder="Start Time"
+                  dir="ltr"
+                  [style]="{'direction': 'ltr'}"
+                  appendTo="body"
+                ></p-calendar>
+                
+                <span class="time-separator">{{ 'CONSULTING_SCHEDULE.TO' | translate }}</span>
+                
+                <p-calendar
+                  formControlName="end_time"
+                  [timeOnly]="true"
+                  [showTime]="true"
+                  [showSeconds]="false"
+                  [stepMinute]="60"
+                  hourFormat="24"
+                  placeholder="End Time"
+                  dir="ltr"
+                  [style]="{'direction': 'ltr'}"  
+                  appendTo="body"
+                  ></p-calendar>
+              </div>
               
-              <span class="time-separator">{{ 'CONSULTING_SCHEDULE.TO' | translate }}</span>
-              
-              <p-calendar
-                formControlName="end_time"
-                [timeOnly]="true"
-                [showTime]="true"
-                hourFormat="24"
-                placeholder="End Time"
-                dir="ltr"
-                [style]="{'direction': 'ltr'}"
-              ></p-calendar>
+              <div class="rate-input">
+                <span class="currency-symbol">$</span>
+                <input 
+                  type="number" 
+                  formControlName="rate" 
+                  placeholder="Rate"
+                  step="0.01"
+                  class="rate-field"
+                />
+              </div>
               
               <button 
                 type="button" 
@@ -142,11 +185,26 @@
             </div>
             
             <!-- Validation Error Message for Exception - New Row -->
-            <div *ngIf="exceptionGroup.errors?.['oneHourSpan']" class="validation-error-row">
+            <div *ngIf="exceptionGroup.errors?.['perfectHour']" class="validation-error-row">
               <div class="validation-error">
                 <small class="error-message">
-                  Time span must be exactly 1 hour
-                  (Current span: {{exceptionGroup.errors?.['oneHourSpan'].actual}} minutes)
+                  {{ 'CONSULTING_SCHEDULE.PERFECT_HOUR_ERROR' | translate }}
+                </small>
+              </div>
+            </div>
+            <div *ngIf="exceptionGroup.errors?.['invalidTimeRange']" class="validation-error-row">
+              <div class="validation-error">
+                <small class="error-message">
+                  {{ 'CONSULTING_SCHEDULE.INVALID_RANGE_ERROR' | translate }}
+                </small>
+              </div>
+            </div>
+            
+            <!-- Validation Error Message for Exception Rate - New Row -->
+            <div *ngIf="exceptionGroup.get('rate')?.errors?.['required']" class="validation-error-row">
+              <div class="validation-error">
+                <small class="error-message">
+                  {{ 'CONSULTING_SCHEDULE.RATE_REQUIRED' | translate }}
                 </small>
               </div>
             </div>
@@ -165,7 +223,6 @@
           {{ 'CONSULTING_SCHEDULE.NO_EXCEPTIONS_DESC' | translate }}
         </div>
       </div>
-    </div>
 
     <!-- Save Button -->
     <button 

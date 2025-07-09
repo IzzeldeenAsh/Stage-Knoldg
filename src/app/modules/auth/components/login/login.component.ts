@@ -8,6 +8,7 @@ import { TranslationService } from "src/app/modules/i18n/translation.service";
 import { Message } from "primeng/api";
 import {BaseComponent} from "src/app/modules/base.component"
 import { environment } from "src/environments/environment";
+import { HttpClient } from "@angular/common/http";
 @Component({
   selector: "app-login",
   templateUrl: "./login.component.html",
@@ -35,6 +36,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private translationService: TranslationService,
+    private http: HttpClient,
     injector: Injector
   ) {
     super(injector);
@@ -43,6 +45,18 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     this.selectedLang = this.translationService.getSelectedLanguage();
     this.isRTL = this.selectedLang === "ar"; // Set RTL based on the selected language
   }
+  // Send user timezone to backend before redirecting
+  private setUserTimezone(): void {
+    try {
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      this.http.post('https://api.knoldg.com/api/account/timezone/set', { timezone }).subscribe({
+        error: (err) => console.error('Failed to set timezone', err)
+      });
+    } catch (err) {
+      console.error('Unable to detect timezone', err);
+    }
+  }
+
   ngAfterViewInit(): void {
     setTimeout(() => {
       this.scrollAnims.scrollAnimations();
@@ -103,6 +117,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     
     this.authService.getGoogleAuthRedirectUrl().subscribe({
       next: (redirectUrl) => {
+        this.setUserTimezone();
         const authtoken:any = localStorage.getItem('foresighta-creds');
         const token = JSON.parse(authtoken);
         if (token && token.authToken) {
@@ -129,6 +144,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     
     this.authService.getLinkedInAuthRedirectUrl().subscribe({
       next: (redirectUrl) => {
+        this.setUserTimezone();
         const authtoken:any = localStorage.getItem('foresighta-creds');
         const token = JSON.parse(authtoken);
         if (token && token.authToken) {
@@ -209,10 +225,12 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
                 if (res.roles.includes("client") && (this.returnUrl.includes('profile/join-company') || prevUrl.includes('profile/join-company'))) {
                   // Ensure the return URL is preserved for client role specifically
                   const joinCompanyUrl = '/profile/join-company';
+                  this.setUserTimezone();
                   window.location.href = `${environment.mainAppUrl}/en/callback/${token.authToken}?returnUrl=${encodeURIComponent(joinCompanyUrl)}`;
                 } else {
                   // Default behavior for other roles or routes
-                  window.location.href = `${environment.mainAppUrl}/en/callback/${token.authToken}?returnUrl=${encodeURIComponent(prevUrl)}`;
+                  this.setUserTimezone();
+                   window.location.href = `${environment.mainAppUrl}/en/callback/${token.authToken}?returnUrl=${encodeURIComponent(prevUrl)}`;
                 }
               } catch (err) {
                 console.error('Error processing auth token:', err);

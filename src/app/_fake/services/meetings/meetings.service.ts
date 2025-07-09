@@ -21,6 +21,7 @@ export interface Meeting {
     profile_photo_url: string | null;
     country: string | null;
   };
+  rate: string;
 }
 
 export interface MeetingResponse {

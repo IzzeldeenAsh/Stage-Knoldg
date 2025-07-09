@@ -7,6 +7,7 @@ import { TranslationService } from '../modules/i18n';
 export interface TimeSlot {
   start_time: string;
   end_time: string;
+  rate: number | string;
 }
 
 export interface DayAvailability {
@@ -19,6 +20,7 @@ export interface AvailabilityException {
   exception_date: string;
   start_time: string;
   end_time: string;
+  rate: number | string;
 }
 
 export interface ScheduleAvailability {

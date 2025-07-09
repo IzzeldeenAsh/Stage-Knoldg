@@ -848,6 +848,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       }
     },
     "MEETINGS": {
+      "RATE":"Rate",
       "TABS": {
         "RECEIVED": "Received",
         "SENT": "Sent"
@@ -1168,6 +1169,7 @@ UPLOAD: 'Upload',
     FREE_DOCUMENT_MESSAGE_INSIGHT:'Free Document',
     "DOCUMENT_DESCRIPTION_REQUIRED": "Document description is required",
     FREE: 'Free',
+    
     CHARITY_MODE: 'Make it Free!',
     TOOLTIP_POINT_1: "Reach far more people",
     TOOLTIP_POINT_2: "Build your reputation",
@@ -1286,8 +1288,10 @@ UPLOAD: 'Upload',
     },
     "CONSULTING_SCHEDULE": {
       "TITLE": "My Schedule",
+      "PERFECT_HOUR_ERROR":"Time slot must be 1 hour apart",
       "TIME_SPAN_ERROR": "Time slot must 1 hour apart",
       "CURRENT_SPAN": "Current span",
+      "RATE_MIN_ERROR": "Rate must be greater than 0",
       "MINUTES": "minutes",
       "DESCRIPTION": "Set your availability for consulting sessions. Define your weekly schedule and add exception days when needed.",
       "AVAILABLE_DAYS": "Available Days",
@@ -1320,6 +1324,7 @@ UPLOAD: 'Upload',
     },
     "MEETINGS": {
       "TITLE": "My Meetings",  
+      "RATE":"Rate",
       "FILTERS": {
         "ALL": "All",
         "PENDING": "Pending",

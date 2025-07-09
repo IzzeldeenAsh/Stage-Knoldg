@@ -185,8 +185,8 @@
                           <div class="text-muted fs-7" 
                                [pTooltip]="meeting.client.email" 
                                tooltipPosition="top"
-                               [style.cursor]="meeting.client.email && meeting.client.email.length > 30 ? 'help' : 'default'">
-                            {{ meeting.client.email | truncateText:30 }}
+                               [style.cursor]="meeting.client.email && meeting.client.email.length > 25 ? 'help' : 'default'">
+                            {{ meeting.client.email | truncateText:25 }}
                           </div>
                         </a>
                       </div>
