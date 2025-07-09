@@ -1207,6 +1207,7 @@ INSIGHTER_REQUESTS: {
   "NO_SOCIAL_MEDIA": "لا توجد روابط وسائل تواصل اجتماعي متاحة",
   "CERTIFICATIONS": "الشهادات",
   "CONSULTING_SCHEDULE": {
+    "INVALID_RANGE_ERROR": "يجب أن يكون الوقت الأول أقل من الوقت الثاني",
     "TITLE": "جدول الاستشارات",
     "TIME_SPAN_ERROR": "يجب أن يكون فترة الوقت  ساعة واحدة  ",
     "PERFECT_HOUR_ERROR" : "يجب أن تكون الفترة الزمنية ساعات كاملة",
