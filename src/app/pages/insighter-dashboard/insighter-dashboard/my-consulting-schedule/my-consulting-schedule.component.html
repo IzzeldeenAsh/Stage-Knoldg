@@ -4,8 +4,9 @@
     <p>{{ 'CONSULTING_SCHEDULE.DESCRIPTION' | translate }}</p>
   </div>
   <form [formGroup]="scheduleForm" (ngSubmit)="onSave()">
-      <!-- Available Days Section -->
-      <div class="section available-days-section">
+     <div class="sections-row">
+       <!-- Available Days Section -->
+       <div class="section available-days-section">
         <h3>{{ 'CONSULTING_SCHEDULE.AVAILABLE_DAYS' | translate }}</h3>
         
         <div formArrayName="availability">
@@ -224,6 +225,7 @@
         </div>
       </div>
 
+     </div>
     <!-- Save Button -->
     <button 
       type="submit" 
