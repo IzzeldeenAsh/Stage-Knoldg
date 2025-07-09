@@ -227,7 +227,7 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
       exception_date: [exception.exception_date, Validators.required],
       start_time: [this.parseTimeString(exception.start_time), Validators.required],
       end_time: [this.parseTimeString(exception.end_time), Validators.required],
-      rate: [exception.rate || 0, Validators.required]
+      rate: [0] // Default to 0 and remove required validator as it's hidden in UI
     }, { validators: this.perfectHourValidator.bind(this) });
     
     // Add subscription to start_time changes to synchronize end_time minutes
@@ -339,7 +339,7 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
       exception_date: '',
       start_time: '09:00',
       end_time: '10:00',
-      rate: 50
+      rate: 0 // Set rate to 0 by default for new exceptions
     });
     this.exceptionsFormArray.push(newException);
   }
