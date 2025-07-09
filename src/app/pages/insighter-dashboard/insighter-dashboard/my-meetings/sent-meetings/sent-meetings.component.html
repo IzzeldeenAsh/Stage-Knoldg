@@ -85,10 +85,13 @@
             </div>
           </div>
 
-          <!-- Meeting Status -->
-          <div class="mb-3">
+          <!-- Meeting Status and Rate -->
+          <div class="mb-3 d-flex align-items-center">
             <span class="badge" [ngClass]="getStatusClass(meeting.status)">
               {{ ('INSIGHTER.MEETINGS.STATUS.' + meeting.status.toUpperCase()) | translate }}
+            </span>
+            <span *ngIf="meeting.rate !== '0'" class="ms-2 badge badge-light-info">
+              {{ 'INSIGHTER.MEETINGS.RATE' | translate  }}: {{ meeting.rate | currency }}
             </span>
           </div>
 

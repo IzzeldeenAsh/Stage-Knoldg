@@ -294,8 +294,8 @@
                      <label class="form-label mb-0">{{ "DOCUMENT_DESCRIPTION" | translate }}</label>
                      
                      <!-- Generate AI Abstract button -->
-                     <div *ngIf="!isGeneratingAbstract" class="cursor-pointer border-none border-0">
-                       <div (click)="generateAIAbstract()" class="loader-container px-3" style="min-height: 30px; cursor: pointer;">
+                      <div *ngIf="!isGeneratingAbstract" class="cursor-pointer border-none border-0">
+                        <div (click)="generateAIAbstract(documentForm.get('id')?.value)" class="loader-container px-3" style="min-height: 30px; cursor: pointer;">
                          <div class="steel-shining-text no-animation" style="font-size: 0.85rem;">
                            <svg width="16" height="13" viewBox="0 0 18 15" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 5px;">
                              <!-- SVG Stars code here -->

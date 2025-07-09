@@ -170,9 +170,7 @@ export class SentMeetingsComponent implements OnInit, OnDestroy {
   // Navigate to insighter profile
   goToInsighterProfile(insighterUuid: string): void {
     const currentLocale = localStorage.getItem('language') || 'en';
-    this.router.navigate([`/${currentLocale}/profile/${insighterUuid}`], {
-      queryParams: { entity: 'insighter' }
-    });
+   window.location.href = `https://knoldg.com/${currentLocale}/profile/${insighterUuid}?entity=insighter&tab=meet`;
   }
 
   // Join meeting

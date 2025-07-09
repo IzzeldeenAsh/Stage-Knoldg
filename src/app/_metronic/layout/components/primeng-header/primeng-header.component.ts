@@ -473,27 +473,26 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
     // If opening the notifications dropdown, mark all as read
     if (this.isNotificationsOpen && this.notificationCount > 0) {
       // Immediately set notification count to 0 for UI feedback
-      this.notificationCount = 0;
+      // this.notificationCount = 0;
       
-      const headers = new HttpHeaders({
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Accept-Language': this.lang || 'en'
-      });
+      // const headers = new HttpHeaders({
+      //   'Accept': 'application/json',
+      //   'Content-Type': 'application/json',
+      //   'Accept-Language': this.lang || 'en'
+      // });
 
-      // Call the API to mark all notifications as read
-      this.http.put('https://api.knoldg.com/api/account/notification/read', {}, { headers })
-        .subscribe({
-          next: () => {
-            // Refresh notifications from API
-            this.notificationService.getNotifications(this.lang || 'en').subscribe(notifications => {
-              this.notifications = notifications;
-            });
-          },
-          error: (error) => {
-            console.error('Error marking all notifications as read:', error);
-          }
-        });
+      // this.http.put('https://api.knoldg.com/api/account/notification/read', {}, { headers })
+      //   .subscribe({
+      //     next: () => {
+      //       // Refresh notifications from API
+      //       this.notificationService.getNotifications(this.lang || 'en').subscribe(notifications => {
+      //         this.notifications = notifications;
+      //       });
+      //     },
+      //     error: (error) => {
+      //       console.error('Error marking all notifications as read:', error);
+      //     }
+      //   });
     }
   }
 

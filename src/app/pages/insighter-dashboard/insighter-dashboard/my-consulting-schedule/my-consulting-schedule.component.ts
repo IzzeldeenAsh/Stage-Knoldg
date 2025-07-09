@@ -15,6 +15,7 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
   loading = signal(false);
   saving = signal(false);
   availability = signal<DayAvailability[]>([]);
+  availabilityObject = signal<{[key: string]: DayAvailability}>({});
   exceptions = signal<AvailabilityException[]>([]);
 
   // Form
@@ -45,8 +46,8 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
     return document.documentElement.getAttribute('dir') === 'rtl';
   }
 
-  // Custom validator for 1-hour time span
-  private oneHourSpanValidator(control: AbstractControl): ValidationErrors | null {
+  // Custom validator for time slots - ensures minutes match between start and end times
+  private perfectHourValidator(control: AbstractControl): ValidationErrors | null {
     const group = control as FormGroup;
     const startTime = group.get('start_time')?.value;
     const endTime = group.get('end_time')?.value;
@@ -58,22 +59,46 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
     const startDate = new Date(startTime);
     const endDate = new Date(endTime);
     
-    // Calculate difference in milliseconds
-    const diffMs = endDate.getTime() - startDate.getTime();
+    // Check if end time minutes match start time minutes
+    if (startDate.getMinutes() !== endDate.getMinutes()) {
+      return { 'perfectHour': { 
+        message: 'Start time and end time minutes must match',
+        startMinutes: startDate.getMinutes(),
+        endMinutes: endDate.getMinutes()
+      }};
+    }
     
-    // Convert to minutes and round to avoid floating point precision issues
-    const diffMinutes = Math.round(diffMs / (1000 * 60));
-    
-    // Check if exactly 60 minutes
-    if (diffMinutes !== 60) {
-      return { 'oneHourSpan': { 
-        actual: diffMinutes, 
-        expected: 60,
-        message: 'Time span must be exactly 1 hour'
+    // Check if end time is after start time
+    if (endDate <= startDate) {
+      return { 'invalidTimeRange': { 
+        message: 'End time must be after start time'
       }};
     }
 
     return null;
+  }
+
+  // Synchronize end time minutes with start time minutes
+  synchronizeEndTimeMinutes(control: FormGroup): void {
+    const startTimeControl = control.get('start_time');
+    const endTimeControl = control.get('end_time');
+    
+    if (!startTimeControl || !endTimeControl || !startTimeControl.value) return;
+    
+    const startDate = new Date(startTimeControl.value);
+    let endDate = endTimeControl.value ? new Date(endTimeControl.value) : new Date();
+    
+    // Set end time minutes to match start time minutes
+    endDate.setMinutes(startDate.getMinutes());
+    
+    // If end time is now before or equal to start time, add one hour
+    if (endDate <= startDate) {
+      endDate = new Date(startDate);
+      endDate.setHours(endDate.getHours() + 1);
+    }
+    
+    // Update end time value
+    endTimeControl.setValue(endDate);
   }
 
   ngOnInit(): void {
@@ -101,7 +126,16 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
     
     this.consultingScheduleService.getScheduleAvailability().subscribe({
       next: (response) => {
-        this.availability.set(response.data.availability);
+        // Check if response.data.availability is an array or an object
+        if (Array.isArray(response.data.availability)) {
+          this.availability.set(response.data.availability);
+        } else {
+          // If it's an object, convert it to an array for backward compatibility
+          this.availabilityObject.set(response.data.availability);
+          const availabilityArray: DayAvailability[] = this.convertAvailabilityObjectToArray(response.data.availability);
+          this.availability.set(availabilityArray);
+        }
+        
         this.exceptions.set(response.data.availability_exceptions);
         this.buildForm();
         this.loading.set(false);
@@ -116,6 +150,24 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
         // });
         this.loading.set(false);
       }
+    });
+  }
+  
+  /**
+   * Converts the availability object format to an array format
+   * @param availabilityObj The availability object with days as keys
+   * @returns Array of day availability objects
+   */
+  private convertAvailabilityObjectToArray(availabilityObj: {[key: string]: DayAvailability}): DayAvailability[] {
+    if (!availabilityObj) return [];
+    
+    return Object.keys(availabilityObj).map(dayKey => {
+      const dayData = availabilityObj[dayKey];
+      return {
+        day: dayData.day,
+        active: dayData.active,
+        times: dayData.times || []
+      };
     });
   }
 
@@ -150,18 +202,36 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
   }
 
   private createTimeSlotFormGroup(timeSlot: TimeSlot): FormGroup {
-    return this.fb.group({
+    const group = this.fb.group({
       start_time: [this.parseTimeString(timeSlot.start_time), Validators.required],
-      end_time: [this.parseTimeString(timeSlot.end_time), Validators.required]
-    }, { validators: this.oneHourSpanValidator.bind(this) });
+      end_time: [this.parseTimeString(timeSlot.end_time), Validators.required],
+      rate: [timeSlot.rate || 0, Validators.required]
+    }, { validators: this.perfectHourValidator.bind(this) });
+    
+    // Add subscription to start_time changes to synchronize end_time minutes
+    const startTimeControl = group.get('start_time');
+    startTimeControl?.valueChanges.subscribe(() => {
+      this.synchronizeEndTimeMinutes(group);
+    });
+    
+    return group;
   }
 
   private createExceptionFormGroup(exception: AvailabilityException): FormGroup {
-    return this.fb.group({
+    const group = this.fb.group({
       exception_date: [exception.exception_date, Validators.required],
       start_time: [this.parseTimeString(exception.start_time), Validators.required],
-      end_time: [this.parseTimeString(exception.end_time), Validators.required]
-    }, { validators: this.oneHourSpanValidator.bind(this) });
+      end_time: [this.parseTimeString(exception.end_time), Validators.required],
+      rate: [exception.rate || 0, Validators.required]
+    }, { validators: this.perfectHourValidator.bind(this) });
+    
+    // Add subscription to start_time changes to synchronize end_time minutes
+    const startTimeControl = group.get('start_time');
+    startTimeControl?.valueChanges.subscribe(() => {
+      this.synchronizeEndTimeMinutes(group);
+    });
+    
+    return group;
   }
 
   // Helper method to parse time string to Date object for PrimeNG Calendar
@@ -212,7 +282,8 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
       if (slotStart !== slotEnd) {
         slots.push({
           start_time: slotStart,
-          end_time: slotEnd
+          end_time: slotEnd,
+          rate: 0 // Will be set from the form data
         });
       }
     }
@@ -232,7 +303,7 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
     } else {
       // Add a default time slot when day is activated
       if (timesArray.length === 0) {
-        const newTimeSlot = this.createTimeSlotFormGroup({ start_time: '09:00', end_time: '10:00' });
+        const newTimeSlot = this.createTimeSlotFormGroup({ start_time: '09:00', end_time: '10:00', rate: 50 });
         timesArray.push(newTimeSlot);
       }
     }
@@ -242,7 +313,7 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
     const dayGroup = this.availabilityFormArray.at(dayIndex) as FormGroup;
     const timesArray = dayGroup.get('times') as FormArray;
     
-    const newTimeSlot = this.createTimeSlotFormGroup({ start_time: '09:00', end_time: '10:00' });
+    const newTimeSlot = this.createTimeSlotFormGroup({ start_time: '09:00', end_time: '10:00', rate: 50 });
     timesArray.push(newTimeSlot);
   }
 
@@ -262,7 +333,8 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
     const newException = this.createExceptionFormGroup({
       exception_date: '',
       start_time: '09:00',
-      end_time: '10:00'
+      end_time: '10:00',
+      rate: 50
     });
     this.exceptionsFormArray.push(newException);
   }
@@ -298,7 +370,7 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
       if(this.lang === 'en'){
         this.showError('Error','Please fill in all required fields');
       }else{
-        this.showError('Error','يرجى إدخال جميع الحقول المطلوبة');
+        this.showError('يرجى إدخال جميع الحقول المطلوبة');
       }
     }
   }
@@ -332,50 +404,74 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
 
   // Process form data to convert dates to time strings and split into hourly slots
   private processFormData(formValue: any): any {
-    const processedData = {
+    const processedData: {
+      availability: DayAvailability[],
+      availability_exceptions: AvailabilityException[]
+    } = {
       availability: [],
       availability_exceptions: []
     };
 
-    // Process availability
+    // Process availability - convert to array format expected by the API
     if (formValue.availability) {
-      processedData.availability = formValue.availability.map((day: any) => {
-        if (!day.active || !day.times || day.times.length === 0) {
-          return {
-            day: day.day,
-            active: day.active,
-            times: []
-          };
-        }
-
-        const processedTimes: TimeSlot[] = [];
-        
-        day.times.forEach((timeSlot: any) => {
-          const startTime = this.formatTimeString(timeSlot.start_time);
-          const endTime = this.formatTimeString(timeSlot.end_time);
-          
-          if (startTime && endTime) {
-            // Split the time range into hourly slots
-            const hourlySlots = this.splitTimeRangeIntoHours(startTime, endTime);
-            processedTimes.push(...hourlySlots);
-          }
-        });
-
-        return {
+      formValue.availability.forEach((day: any) => {
+        // Create the day entry with its data
+        const dayEntry: DayAvailability = {
           day: day.day,
           active: day.active,
-          times: processedTimes
+          times: [] as TimeSlot[]
         };
+        
+        // Process times if the day is active and has time slots
+        if (day.active && day.times && day.times.length > 0) {
+          const processedTimes: TimeSlot[] = [];
+          
+          day.times.forEach((timeSlot: any) => {
+            const startTime = this.formatTimeString(timeSlot.start_time);
+            const endTime = this.formatTimeString(timeSlot.end_time);
+            const rate = timeSlot.rate || 0;
+            
+            if (startTime && endTime) {
+              // Add the time slot with rate
+              processedTimes.push({
+                start_time: startTime,
+                end_time: endTime,
+                rate: rate
+              });
+            }
+          });
+          
+          dayEntry.times = processedTimes;
+        }
+        
+        // Add to the availability array
+        processedData.availability.push(dayEntry);
       });
     }
 
     // Process exceptions
     if (formValue.exceptions) {
       processedData.availability_exceptions = formValue.exceptions.map((exception: any) => {
+        // Format the date as YYYY-MM-DD with no time component
+        let formattedDate;
+        if (exception.exception_date instanceof Date) {
+          // Format date as YYYY-MM-DD
+          const year = exception.exception_date.getFullYear();
+          const month = String(exception.exception_date.getMonth() + 1).padStart(2, '0');
+          const day = String(exception.exception_date.getDate()).padStart(2, '0');
+          formattedDate = `${year}-${month}-${day}`;
+        } else {
+          // If it's already a string, make sure it's just the date part
+          formattedDate = typeof exception.exception_date === 'string' 
+            ? exception.exception_date.split('T')[0] 
+            : exception.exception_date;
+        }
+        
         return {
-          exception_date: exception.exception_date,
+          exception_date: formattedDate,
           start_time: this.formatTimeString(exception.start_time),
-          end_time: this.formatTimeString(exception.end_time)
+          end_time: this.formatTimeString(exception.end_time),
+          rate: exception.rate || 0
         };
       });
     }

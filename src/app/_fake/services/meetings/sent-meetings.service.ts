@@ -19,6 +19,7 @@ export interface SentMeeting {
     roles: string[];
     company: any;
   };
+  rate: string;
 }
 
 export interface SentMeetingResponse {

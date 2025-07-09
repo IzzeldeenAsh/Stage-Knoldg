@@ -21,11 +21,21 @@ export class AuthInterceptor implements HttpInterceptor {
     // Get auth token from localStorage
     const token = this.authService.getAuthFromLocalStorage()?.authToken;
 
+    // Get user's timezone
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
     // Clone the request and add the token if it exists
     let clonedReq = req;
     if (token) {
       clonedReq = req.clone({
-        headers: req.headers.set('Authorization', `Bearer ${token}`)
+        headers: req.headers
+          .set('Authorization', `Bearer ${token}`)
+          .set('X-Timezone', timezone)
+      });
+    } else {
+      // Even if no token, still add timezone header
+      clonedReq = req.clone({
+        headers: req.headers.set('X-Timezone', timezone)
       });
     }
 

@@ -1,6 +1,6 @@
 import { Component, Injector, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { DocumentInfo, AddInsightStepsService, AddKnowledgeDocumentRequest, Chapter, UpdateKnowledgeAbstractsRequest } from 'src/app/_fake/services/add-insight-steps/add-insight-steps.service';
+import { DocumentInfo, AddInsightStepsService, AddKnowledgeDocumentRequest, Chapter, UpdateKnowledgeAbstractsRequest, DocumentParserResponse } from 'src/app/_fake/services/add-insight-steps/add-insight-steps.service';
 import { Knowledge, KnowledgeService } from 'src/app/_fake/services/knowledge/knowledge.service';
 import { KnowledgeUpdateService } from 'src/app/_fake/services/knowledge/knowledge-update.service';
 import { BaseComponent } from 'src/app/modules/base.component';
@@ -982,8 +982,10 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
     });
   }
 
-  generateAIAbstract(): void {
-    if (!this.selectedFile && !this.editingDocument) {
+  generateAIAbstract(docId: number): void {
+    // Early return if no document ID is provided
+    if (!docId) {
+      console.error('No document ID provided for AI abstract generation');
       return;
     }
     
@@ -999,36 +1001,140 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
         cancelButtonText: 'Cancel'
       }).then((result) => {
         if (result.isConfirmed) {
-          this.processAIAbstract();
+          this.processAIAbstract(docId);
         }
       });
     } else {
-      this.processAIAbstract();
+      this.processAIAbstract(docId);
     }
   }
 
-  private processAIAbstract(): void {
+  private processAIAbstract(docId: number): void {
+    if (!docId) return;
+    
     this.isGeneratingAbstract = true;
     this.abstractError = false;
     
-    const documentId = this.editingDocument?.id;
+    // First trigger document parsing with POST request
+    const parserSubscription = this.addInsightStepsService.runDocumentParser(docId)
+      .subscribe({
+        next: () => {
+          // After successful parsing, start polling for results
+          this.startSummaryPolling(docId);
+        },
+        error: (error: any) => {
+          console.error(`Error starting document parsing for document ${docId}:`, error);
+          this.isGeneratingAbstract = false;
+          this.abstractError = true;
+        }
+      });
     
-    // Call your AI abstract generation service
-    setTimeout(() => {
-      // Placeholder for actual implementation
-      // In real implementation, call your AI service and handle responses
-      const dummyAbstract = "This document provides a comprehensive analysis of the subject matter, including key insights, methodologies, and conclusions. It covers the main aspects relevant to the topic and offers valuable information for readers interested in this field.";
+    this.unsubscribe.push(parserSubscription);
+  }
+  
+  // Start polling for document summary
+  private startSummaryPolling(docId: number): void {
+    // Set maximum time to show loader (25 seconds)
+    const maxWaitTime = 25000;
+    const pollingInterval = 2000; // Check every 2 seconds
+    let elapsedTime = 0;
+    let polling: any;
+    
+    // Start polling
+    polling = setInterval(() => {
+      elapsedTime += pollingInterval;
       
-      // Update editor content
-      if (this.editorInstance) {
-        this.editorInstance.setContent(dummyAbstract);
-        this.documentForm.patchValue({
-          description: dummyAbstract
-        });
+      // Call the fetchDocumentSummary method to check for summary
+      this.fetchDocumentSummary(docId, polling);
+      
+      // Stop polling if we've reached the max time
+      if (elapsedTime >= maxWaitTime) {
+        clearInterval(polling);
+        
+        // Ensure loading state is turned off after max time
+        if (this.isGeneratingAbstract) {
+          this.isGeneratingAbstract = false;
+          this.abstractError = true; // Set error state if we couldn't get data after timeout
+        }
       }
-      
-      this.isGeneratingAbstract = false;
-    }, 3000);
+    }, pollingInterval);
+  }
+
+  // Fetch document summary from AI parser API
+  private fetchDocumentSummary(docId: number, pollingIntervalId?: any): void {
+    // Loading state is already set to true when this is called
+    
+    const summarySubscription = this.addInsightStepsService.getDocumentSummary(docId)
+      .subscribe({
+        next: (response: DocumentParserResponse) => {
+          if (response.data) {
+            // Check if data has a summary object with abstract property
+            let summary = null;
+            const responseData: any = response.data;
+            
+            if (typeof responseData === 'object' && responseData.summary && typeof responseData.summary === 'object') {
+              summary = responseData.summary.abstract || null;
+            } else if (typeof responseData === 'string') {
+              summary = responseData;
+            } else if (responseData.summary && typeof responseData.summary === 'string') {
+              summary = responseData.summary;
+            }
+            
+            if (summary) {
+              // We have a valid abstract, use it directly
+              const formattedDescription = summary;
+              
+              // Update editor content with the generated abstract
+              if (this.editorInstance) {
+                this.editorInstance.setContent(formattedDescription);
+                this.documentForm.patchValue({
+                  description: formattedDescription
+                });
+              }
+              
+              // Clear polling interval if we have a valid summary
+              if (pollingIntervalId) {
+                clearInterval(pollingIntervalId);
+              }
+              
+              // Turn off loading
+              this.isGeneratingAbstract = false;
+              this.abstractError = false;
+            } else {
+              // No summary data returned
+              // Don't set error yet - continue polling until timeout
+              if (!pollingIntervalId) {
+                this.abstractError = true;
+                console.error(`No summary data returned for document ${docId}`);
+                this.isGeneratingAbstract = false;
+              }
+            }
+          } else {
+            // No data returned
+            // Don't set error yet - continue polling until timeout
+            if (!pollingIntervalId) {
+              this.abstractError = true;
+              console.error(`No data returned for document ${docId}`);
+              this.isGeneratingAbstract = false;
+            }
+          }
+        },
+        error: (error) => {
+          console.error(`Error getting document summary for document ${docId}:`, error);
+          
+          // Check if this is the specific metadata error we want to ignore
+          const isMetadataError = error?.error?.message?.includes('Attempt to read property "metadata" on null');
+          
+          // Only update UI state if this was the final request OR if it's not the specific error we're ignoring
+          if (!pollingIntervalId || !isMetadataError) {
+            this.isGeneratingAbstract = false;
+            this.abstractError = true;
+          }
+          // If it's the metadata error and we're polling, we just continue polling until timeout
+        }
+      });
+    
+    this.unsubscribe.push(summarySubscription);
   }
 
   toggleChapters(): void {
