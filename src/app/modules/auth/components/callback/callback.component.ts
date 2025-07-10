@@ -142,7 +142,8 @@ export class CallbackComponent
         const headers = new HttpHeaders({
           'Authorization': `Bearer ${authData.authToken}`,
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          'Accept': 'application/json',
+          'Accept-Language': 'en',
         });
         
         return this.http.post('https://api.knoldg.com/api/account/timezone/set', 
