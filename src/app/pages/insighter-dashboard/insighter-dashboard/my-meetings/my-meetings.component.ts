@@ -148,12 +148,9 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
   }
 
   formatTime(time: string): string {
-    // Convert 24-hour time to 12-hour format
+    // Use 24-hour format
     const [hours, minutes] = time.split(':');
-    const hour = parseInt(hours, 10);
-    const ampm = hour >= 12 ? 'PM' : 'AM';
-    const displayHour = hour % 12 || 12;
-    return `${displayHour}:${minutes} ${ampm}`;
+    return `${hours}:${minutes}`;
   }
 
   formatDate(dateString: string): string {

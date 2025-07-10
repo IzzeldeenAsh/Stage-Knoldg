@@ -231,4 +231,14 @@
   <div *ngIf="loading()" class="loading">
     <span>{{ 'COMMON.LOADING' | translate }}</span>
   </div>
-</div> 
+</div>
+
+<!-- PrimeNG Confirmation Dialog -->
+<p-confirmDialog 
+  appendTo="body" 
+  [style]="{width: '450px'}" 
+  [baseZIndex]="10000" 
+  acceptButtonStyleClass="btn btn-sm btn-primary rounded mx-2" 
+  rejectButtonStyleClass="btn btn-sm btn-light-danger rounded"
+  styleClass="custom-confirm-dialog">
+</p-confirmDialog>

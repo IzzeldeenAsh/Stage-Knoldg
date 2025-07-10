@@ -3,9 +3,7 @@
 .schedule-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background-color: #f9f9f9;
 
   .header {
     margin-bottom: 2rem;
@@ -316,10 +314,7 @@
 
 // Mobile responsive
 @media (max-width: 768px) {
-  .schedule-container {
-    padding: 12px;
-  }
-  
+
   .day-row {
     flex-direction: column;
     align-items: flex-start;
@@ -604,7 +599,6 @@
 }
 
 .schedule-container {
-  padding: 20px;
   overflow-x: auto;
   
   @media (max-width: 768px) {
