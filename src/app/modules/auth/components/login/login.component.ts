@@ -8,7 +8,7 @@ import { TranslationService } from "src/app/modules/i18n/translation.service";
 import { Message } from "primeng/api";
 import {BaseComponent} from "src/app/modules/base.component"
 import { environment } from "src/environments/environment";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 @Component({
   selector: "app-login",
   templateUrl: "./login.component.html",
@@ -112,6 +112,8 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
         if (token && token.authToken) {
           // Store token in Next.js format for better compatibility
           localStorage.setItem('token', token.authToken);
+
+          this.callTimeZone();
           // Use the imported environment variable for the main app URL with returnUrl as query param
           window.location.href = `${environment.mainAppUrl}/en/callback/${token.authToken}?returnUrl=${encodeURIComponent(prevUrl)}`;
         } else {
@@ -138,6 +140,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
         if (token && token.authToken) {
           // Store token in Next.js format for better compatibility
           localStorage.setItem('token', token.authToken);
+          this.callTimeZone();
           // Use the imported environment variable for the main app URL with returnUrl as query param
           window.location.href = `${environment.mainAppUrl}/en/callback/${token.authToken}?returnUrl=${encodeURIComponent(prevUrl)}`;
         } else {
@@ -149,6 +152,35 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to initiate LinkedIn sign-in.' });
       }
     });
+  }
+
+  callTimeZone(): void {
+    try {
+      const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      console.log('Setting user timezone:', userTimezone);
+      
+      const authtoken: any = localStorage.getItem('foresighta-creds');
+      const token = JSON.parse(authtoken);
+      
+      if (token && token.authToken) {
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token.authToken}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          
+        });
+        
+        this.http.post('https://api.knoldg.com/api/account/timezone/set', 
+          { timezone: userTimezone }, 
+          { headers }
+        ).subscribe({
+          next: () => console.log('Timezone set successfully'),
+          error: (error) => console.error('Failed to set timezone:', error)
+        });
+      }
+    } catch (error) {
+      console.error('Error setting timezone:', error);
+    }
   }
 
   togglePasswordVisibility(passwordField: HTMLInputElement): void {

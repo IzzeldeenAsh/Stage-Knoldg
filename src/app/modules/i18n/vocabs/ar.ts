@@ -1246,6 +1246,8 @@ INSIGHTER_REQUESTS: {
     "MEETINGS": {
       "TITLE": "اجتماعاتي",  
       "RATE":"التكلفة",
+      "JOIN":"انضم",
+      "JOINING":"جاري الانضمام",
       "POSTPONE_NOTES_REQUIRED": "ملاحظات التؤجيل مطلوبة",
       "FILTERS": {
         "ALL": "الكل",

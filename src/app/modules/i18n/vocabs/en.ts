@@ -1325,6 +1325,8 @@ UPLOAD: 'Upload',
     },
     "MEETINGS": {
       "TITLE": "My Meetings",  
+      "JOIN":"Join",
+      "JOINING":"Joining",
       "RATE":"Rate",
       "FILTERS": {
         "ALL": "All",

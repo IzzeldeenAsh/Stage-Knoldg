@@ -304,4 +304,13 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
       this.showError('','An unexpected error occurred.');
     }
   }
+
+  /**
+   * Open the meeting URL in a new tab
+   */
+  joinMeeting(meetingUrl: string): void {
+    if (meetingUrl && meetingUrl !== '?pwd=') {
+      window.open(meetingUrl, '_blank');
+    }
+  }
 }
