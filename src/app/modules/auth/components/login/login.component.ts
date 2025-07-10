@@ -113,9 +113,19 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
           // Store token in Next.js format for better compatibility
           localStorage.setItem('token', token.authToken);
 
-          this.callTimeZone();
-          // Use the imported environment variable for the main app URL with returnUrl as query param
-          window.location.href = `${environment.mainAppUrl}/en/callback/${token.authToken}?returnUrl=${encodeURIComponent(prevUrl)}`;
+          // Wait for timezone setting to complete before redirecting
+          this.callTimeZone().subscribe({
+            next: () => {
+              console.log('Timezone set successfully, proceeding with redirect');
+              // Use the imported environment variable for the main app URL with returnUrl as query param
+              window.location.href = `${environment.mainAppUrl}/en/callback/${token.authToken}?returnUrl=${encodeURIComponent(prevUrl)}`;
+            },
+            error: (error) => {
+              console.error('Failed to set timezone:', error);
+              // Still redirect even if timezone setting fails
+              window.location.href = `${environment.mainAppUrl}/en/callback/${token.authToken}?returnUrl=${encodeURIComponent(prevUrl)}`;
+            }
+          });
         } else {
           window.location.href = redirectUrl;
         }
@@ -140,9 +150,20 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
         if (token && token.authToken) {
           // Store token in Next.js format for better compatibility
           localStorage.setItem('token', token.authToken);
-          this.callTimeZone();
-          // Use the imported environment variable for the main app URL with returnUrl as query param
-          window.location.href = `${environment.mainAppUrl}/en/callback/${token.authToken}?returnUrl=${encodeURIComponent(prevUrl)}`;
+          
+          // Wait for timezone setting to complete before redirecting
+          this.callTimeZone().subscribe({
+            next: () => {
+              console.log('Timezone set successfully, proceeding with redirect');
+              // Use the imported environment variable for the main app URL with returnUrl as query param
+              window.location.href = `${environment.mainAppUrl}/en/callback/${token.authToken}?returnUrl=${encodeURIComponent(prevUrl)}`;
+            },
+            error: (error) => {
+              console.error('Failed to set timezone:', error);
+              // Still redirect even if timezone setting fails
+              window.location.href = `${environment.mainAppUrl}/en/callback/${token.authToken}?returnUrl=${encodeURIComponent(prevUrl)}`;
+            }
+          });
         } else {
           window.location.href = redirectUrl;
         }
@@ -154,7 +175,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     });
   }
 
-  callTimeZone(): void {
+  callTimeZone(): Observable<any> {
     try {
       const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       console.log('Setting user timezone:', userTimezone);
@@ -167,19 +188,23 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
           'Authorization': `Bearer ${token.authToken}`,
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          
         });
         
-        this.http.post('https://api.knoldg.com/api/account/timezone/set', 
+        return this.http.post('https://api.knoldg.com/api/account/timezone/set', 
           { timezone: userTimezone }, 
           { headers }
-        ).subscribe({
-          next: () => console.log('Timezone set successfully'),
-          error: (error) => console.error('Failed to set timezone:', error)
-        });
+        );
       }
+      return new Observable(observer => {
+        observer.next(null);
+        observer.complete();
+      });
     } catch (error) {
       console.error('Error setting timezone:', error);
+      return new Observable(observer => {
+        observer.next(null);
+        observer.complete();
+      });
     }
   }
 
