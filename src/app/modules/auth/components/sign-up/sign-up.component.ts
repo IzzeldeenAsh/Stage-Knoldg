@@ -11,6 +11,7 @@ import { BaseComponent } from "src/app/modules/base.component";
 import zxcvbn from 'zxcvbn';
 import { trigger, transition, style, animate } from "@angular/animations";
 import { CommonService } from "src/app/_fake/services/common/common.service";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 @Component({
   selector: "app-sign-up",
@@ -56,6 +57,7 @@ export class SignUpComponent extends BaseComponent implements OnInit {
     private fb: FormBuilder,
     private _countriesGet: CountriesService,
     private authService: AuthService,
+    private http: HttpClient,
     private adminCountreis: CountriesService,
     private commonService: CommonService,
     injector: Injector
@@ -308,6 +310,34 @@ export class SignUpComponent extends BaseComponent implements OnInit {
     this.socialAuthPending = 'linkedin';
     this.showAgreementDialog = true;
   }
+callTimeZone(): void {
+    try {
+      const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      console.log('Setting user timezone:', userTimezone);
+      
+      const authtoken: any = localStorage.getItem('foresighta-creds');
+      const token = JSON.parse(authtoken);
+      
+      if (token && token.authToken) {
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${token.authToken}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          
+        });
+        
+        this.http.post('https://api.knoldg.com/api/account/timezone/set', 
+          { timezone: userTimezone }, 
+          { headers }
+        ).subscribe({
+          next: () => console.log('Timezone set successfully'),
+          error: (error) => console.error('Failed to set timezone:', error)
+        });
+      }
+    } catch (error) {
+      console.error('Error setting timezone:', error);
+    }
+  }
 
   private proceedWithGoogleAuth(): void {
     this.authService.getGoogleAuthRedirectUrl().subscribe({
@@ -315,6 +345,7 @@ export class SignUpComponent extends BaseComponent implements OnInit {
         const authtoken:any = localStorage.getItem('foresighta-creds');
         const token = JSON.parse(authtoken);
         if (token && token.authToken) {
+          this.callTimeZone();
           window.location.href = `https://knoldg.com/en/callback/${token.authToken}`;
         } else {
           window.location.href = redirectUrl;
@@ -333,6 +364,7 @@ export class SignUpComponent extends BaseComponent implements OnInit {
         const authtoken:any = localStorage.getItem('foresighta-creds');
         const token = JSON.parse(authtoken);
         if (token && token.authToken) {
+          this.callTimeZone();
           window.location.href = `https://knoldg.com/en/callback/${token.authToken}`;
         } else {
           window.location.href = redirectUrl;

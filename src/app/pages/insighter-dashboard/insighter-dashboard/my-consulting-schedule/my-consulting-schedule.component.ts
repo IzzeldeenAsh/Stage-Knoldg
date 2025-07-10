@@ -318,7 +318,27 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
     const dayGroup = this.availabilityFormArray.at(dayIndex) as FormGroup;
     const timesArray = dayGroup.get('times') as FormArray;
     
-    const newTimeSlot = this.createTimeSlotFormGroup({ start_time: '09:00', end_time: '10:00', rate: 50 });
+    let startTime = '09:00';
+    let endTime = '10:00';
+    
+    // If there are existing time slots, use the end time of the last one as the start time
+    if (timesArray.length > 0) {
+      const lastTimeSlot = timesArray.at(timesArray.length - 1) as FormGroup;
+      const lastEndTime = lastTimeSlot.get('end_time')?.value;
+      
+      if (lastEndTime) {
+        // Use the last end time as the new start time
+        startTime = this.formatTimeString(lastEndTime);
+        
+        // Calculate the new end time (one hour later)
+        const startDate = new Date(lastEndTime);
+        const endDate = new Date(startDate);
+        endDate.setHours(endDate.getHours() + 1);
+        endTime = this.formatTimeString(endDate);
+      }
+    }
+    
+    const newTimeSlot = this.createTimeSlotFormGroup({ start_time: startTime, end_time: endTime, rate: 50 });
     timesArray.push(newTimeSlot);
   }
 
@@ -326,6 +346,60 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
     const dayGroup = this.availabilityFormArray.at(dayIndex) as FormGroup;
     const timesArray = dayGroup.get('times') as FormArray;
     timesArray.removeAt(timeIndex);
+  }
+
+  /**
+   * Format rate value to remove unnecessary leading zeros
+   * @param dayIndex - Index of the day in the availability array
+   * @param timeIndex - Index of the time slot in the times array
+   */
+  formatRateValue(dayIndex: number, timeIndex: number): void {
+    const dayGroup = this.availabilityFormArray.at(dayIndex) as FormGroup;
+    const timesArray = dayGroup.get('times') as FormArray;
+    const timeSlot = timesArray.at(timeIndex) as FormGroup;
+    const rateControl = timeSlot.get('rate');
+    
+    if (rateControl && rateControl.value !== null && rateControl.value !== undefined) {
+      // Parse as float and then format back to string to remove leading zeros
+      const parsedValue = parseFloat(rateControl.value);
+      
+      // Only update if it's a valid number
+      if (!isNaN(parsedValue)) {
+        // Format the number without unnecessary leading zeros
+        rateControl.setValue(parsedValue, { emitEvent: false });
+      }
+    }
+  }
+
+  /**
+   * Format rate value on input to immediately remove leading zeros as the user types
+   * @param dayIndex - Index of the day in the availability array
+   * @param timeIndex - Index of the time slot in the times array
+   * @param event - Input event from the rate field
+   */
+  formatRateValueOnInput(dayIndex: number, timeIndex: number, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const value = input.value;
+    
+    // If the input starts with a '0' followed by a non-decimal digit, remove the leading zero
+    if (value.match(/^0[1-9]/)) {
+      // Get the form control and update it
+      const dayGroup = this.availabilityFormArray.at(dayIndex) as FormGroup;
+      const timesArray = dayGroup.get('times') as FormArray;
+      const timeSlot = timesArray.at(timeIndex) as FormGroup;
+      const rateControl = timeSlot.get('rate');
+      
+      if (rateControl) {
+        // Remove the leading zero and set the value
+        const newValue = parseFloat(value);
+        rateControl.setValue(newValue, { emitEvent: true });
+        
+        // This ensures the cursor position is maintained after the update
+        setTimeout(() => {
+          input.setSelectionRange(input.value.length, input.value.length);
+        }, 0);
+      }
+    }
   }
 
   getTimesFormArray(dayIndex: number): FormArray {

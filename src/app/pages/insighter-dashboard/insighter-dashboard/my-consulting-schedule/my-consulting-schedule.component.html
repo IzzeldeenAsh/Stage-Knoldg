@@ -44,6 +44,7 @@
                       dir="ltr"
                       [style]="{'direction': 'ltr'}"
                       appendTo="body"
+                      [readonlyInput]="true"
                     ></p-calendar>
                     
                     <span class="time-separator">{{ 'CONSULTING_SCHEDULE.TO' | translate }}</span>
@@ -59,6 +60,7 @@
                       dir="ltr"
                       [style]="{'direction': 'ltr'}"
                       appendTo="body"
+                      [readonlyInput]="true"
                       ></p-calendar>
                   </div>
                   
@@ -70,6 +72,7 @@
                       placeholder="Rate"
                       step="0.01"
                       class="rate-field"
+                      (input)="formatRateValueOnInput(dayIndex, timeIndex, $event)"
                     />
                   </div>
                   
@@ -135,6 +138,7 @@
                 placeholder="Select Date"
                 styleClass="date-calendar"
                 appendTo="body"
+                [readonlyInput]="true"
               ></p-calendar>
               
               <div class="time-inputs">
@@ -147,6 +151,7 @@
                   dir="ltr"
                   [style]="{'direction': 'ltr'}"
                   appendTo="body"
+                  [readonlyInput]="true"
                 ></p-calendar>
                 
                 <span class="time-separator">{{ 'CONSULTING_SCHEDULE.TO' | translate }}</span>
@@ -162,6 +167,7 @@
                   dir="ltr"
                   [style]="{'direction': 'ltr'}"  
                   appendTo="body"
+                  [readonlyInput]="true"
                   ></p-calendar>
               </div>
               
