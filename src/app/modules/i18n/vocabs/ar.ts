@@ -1283,6 +1283,7 @@ INSIGHTER_REQUESTS: {
       "NO_DESCRIPTION": "لا يوجد وصف متاح",
       "INSIGHTER": "المستشار",
       "SHOWING": "عرض",
+      "JOINT_MEETING":"انضم للاجتماع",
       "OF": "من",
       "MEETINGS": "اجتماعات"
     }

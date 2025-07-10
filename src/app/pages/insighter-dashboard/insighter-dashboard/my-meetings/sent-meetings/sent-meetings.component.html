@@ -114,7 +114,8 @@
                 <img *ngIf="meeting.insighter.profile_photo_url" 
                      [src]="meeting.insighter.profile_photo_url" 
                      [alt]="meeting.insighter.name" 
-                     class="rounded-circle">
+                     class="rounded-circle"
+                     style="object-position: top;">
                 <div *ngIf="!meeting.insighter.profile_photo_url" 
                      class="symbol-label bg-primary text-white">
                   {{ getInitials(meeting.insighter.name) }}

@@ -1,15 +1,19 @@
-import { Component, OnInit, signal, computed, inject, Injector } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, Injector, HostListener, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-import { MessageService } from 'primeng/api';
+import { MessageService, ConfirmationService } from 'primeng/api';
 import { BaseComponent } from 'src/app/modules/base.component';
+import { Observable, Subject, Subscription } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { Router, NavigationEnd } from '@angular/router';
 import { ConsultingScheduleService, DayAvailability, AvailabilityException, TimeSlot } from 'src/app/services/consulting-schedule.service';
 
 @Component({
   selector: 'app-my-consulting-schedule',
   templateUrl: './my-consulting-schedule.component.html',
-  styleUrls: ['./my-consulting-schedule.component.scss']
+  styleUrls: ['./my-consulting-schedule.component.scss'],
+  providers: [ConfirmationService]
 })
-export class MyConsultingScheduleComponent extends BaseComponent implements OnInit {
+export class MyConsultingScheduleComponent extends BaseComponent implements OnInit, OnDestroy {
   
   // Signals
   loading = signal(false);
@@ -17,6 +21,11 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
   availability = signal<DayAvailability[]>([]);
   availabilityObject = signal<{[key: string]: DayAvailability}>({});
   exceptions = signal<AvailabilityException[]>([]);
+  formDirty = signal(false);
+
+  // For cleanup
+  private destroy$ = new Subject<void>();
+  private formSubscription: Subscription | null = null;
 
   // Form
   scheduleForm!: FormGroup;
@@ -35,6 +44,8 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
   constructor(
     private fb: FormBuilder,
     private consultingScheduleService: ConsultingScheduleService,
+    private router: Router,
+    private confirmationService: ConfirmationService,
     injector: Injector,
   ) {
     super(injector);
@@ -46,7 +57,7 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
     return document.documentElement.getAttribute('dir') === 'rtl';
   }
 
-  // Custom validator for time slots - ensures minutes match between start and end times
+  // Custom validator for time slots - ensures minutes match and exactly 60 minutes span between start and end times
   private perfectHourValidator(control: AbstractControl): ValidationErrors | null {
     const group = control as FormGroup;
     const startTime = group.get('start_time')?.value;
@@ -72,6 +83,15 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
     if (endDate <= startDate) {
       return { 'invalidTimeRange': { 
         message: 'End time must be after start time'
+      }};
+    }
+    
+    // Check if the time span is exactly 60 minutes (1 hour)
+    const timeDiffMinutes = (endDate.getTime() - startDate.getTime()) / (1000 * 60);
+    if (timeDiffMinutes !== 60) {
+      return { 'perfectHour': {
+        message: this.lang === 'ar' ? 'يجب أن تكون المدة الزمنية ساعة واحدة بالضبط' : 'Time span must be exactly 60 minutes (1 hour)',
+        timeDiffMinutes: timeDiffMinutes
       }};
     }
 
@@ -104,7 +124,66 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
   ngOnInit(): void {
     this.initializeWithDefaultDays();
     this.loadScheduleData();
+    this.setupFormChangeTracking();
   }
+
+  ngOnDestroy(): void {
+    // Clean up subscriptions
+    this.destroy$.next();
+    this.destroy$.complete();
+    if (this.formSubscription) {
+      this.formSubscription.unsubscribe();
+    }
+  }
+
+  // Track form changes to detect if there are unsaved changes
+  private setupFormChangeTracking(): void {
+    this.formSubscription = this.scheduleForm.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        if (!this.formDirty()) {
+          this.formDirty.set(true);
+        }
+      });
+  }
+
+  // Check if can deactivate component (used by Angular's guard)
+  canDeactivate(): boolean | Observable<boolean> {
+    if (this.formDirty()) {
+      // Return an observable that resolves when the user makes a choice
+      return new Observable<boolean>(observer => {
+        this.confirmationService.confirm({
+          header: this.lang === 'ar' ? 'تغييرات غير محفوظة' : 'Unsaved Changes',
+          message: this.lang === 'ar' 
+            ? 'لديك تغييرات غير محفوظة. هل أنت متأكد من رغبتك في المغادرة؟' 
+            : 'You have unsaved changes. Are you sure you want to leave?',
+          icon: 'pi pi-exclamation-triangle',
+          accept: () => {
+            // User confirmed navigation
+            observer.next(true);
+            observer.complete();
+          },
+          reject: () => {
+            // User canceled navigation
+            observer.next(false);
+            observer.complete();
+          }
+        });
+      });
+    }
+    return true; // No unsaved changes, allow navigation
+  }
+
+  // Browser beforeunload event handler for page refresh/close
+  @HostListener('window:beforeunload', ['$event'])
+  onBeforeUnload(event: BeforeUnloadEvent): void {
+    if (this.formDirty()) {
+      event.preventDefault();
+      event.returnValue = '';
+    }
+  }
+
+
 
   private initializeForm(): void {
     this.scheduleForm = this.fb.group({
@@ -320,11 +399,14 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
     
     let startTime = '09:00';
     let endTime = '10:00';
+    let rate = 50; // Default rate if no previous time slot exists
     
     // If there are existing time slots, use the end time of the last one as the start time
+    // and also get the last entered rate value
     if (timesArray.length > 0) {
       const lastTimeSlot = timesArray.at(timesArray.length - 1) as FormGroup;
       const lastEndTime = lastTimeSlot.get('end_time')?.value;
+      const lastRate = lastTimeSlot.get('rate')?.value;
       
       if (lastEndTime) {
         // Use the last end time as the new start time
@@ -336,9 +418,14 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
         endDate.setHours(endDate.getHours() + 1);
         endTime = this.formatTimeString(endDate);
       }
+      
+      // Use the last rate value if available
+      if (lastRate !== undefined && lastRate !== null) {
+        rate = lastRate;
+      }
     }
     
-    const newTimeSlot = this.createTimeSlotFormGroup({ start_time: startTime, end_time: endTime, rate: 50 });
+    const newTimeSlot = this.createTimeSlotFormGroup({ start_time: startTime, end_time: endTime, rate: rate });
     timesArray.push(newTimeSlot);
   }
 
@@ -432,11 +519,12 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
       
       this.consultingScheduleService.updateScheduleAvailability(processedData).subscribe({
         next: (response) => {
-        if(this.lang === 'en'){
-          this.showSuccess('Success','Schedule updated successfully');
-        }else{
-          this.showSuccess('Success','تم تحديث الجدول بنجاح');
-        }
+          if(this.lang === 'en'){
+            this.showSuccess('Success','Schedule updated successfully');
+          }else{
+            this.showSuccess('Success','تم تحديث الجدول بنجاح');
+          }
+          this.formDirty.set(false);
           this.saving.set(false);
         },
         error: (error) => {

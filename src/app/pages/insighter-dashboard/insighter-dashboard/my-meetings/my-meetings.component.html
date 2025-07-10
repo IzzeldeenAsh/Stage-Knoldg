@@ -119,21 +119,6 @@
                       <span class="badge" [ngClass]="getStatusClass(meeting.status)">
                         {{ ('MEETINGS.STATUS.' + meeting.status.toUpperCase()) | translate }}
                       </span>
-                      
-                      <!-- Join Button for Approved Meetings with valid URL -->
-                      @if (meeting.status === 'approved' && meeting.meeting_url && meeting.meeting_url !== '?pwd=') {
-                        <button type="button" 
-                                class="btn btn-sm btn-secondary"
-                                (click)="joinMeeting(meeting.meeting_url)"
-                                [pTooltip]="'MEETINGS.JOIN_MEETING' | translate"
-                                tooltipPosition="top">
-                          <i class="ki-duotone ki-entrance-right me-1">
-                            <span class="path1"></span>
-                            <span class="path2"></span>
-                          </i>
-                          {{ 'MEETINGS.JOIN' | translate }}
-                        </button>
-                      }
                     }
                     
                     <!-- Action Buttons for Pending Meetings -->
@@ -181,7 +166,8 @@
                         @if (meeting.client.profile_photo_url) {
                           <img [src]="meeting.client.profile_photo_url" 
                                [alt]="meeting.client.name" 
-                               class="rounded-circle">
+                               class="rounded-circle"
+                               style="object-position: top;">
                         } @else {
                           <div class="symbol-label bg-primary text-white">
                             {{ getInitials(meeting.client.first_name, meeting.client.last_name) }}
@@ -205,6 +191,22 @@
                           </div>
                         </a>
                       </div>
+                      <!-- Join Button for Approved Meetings with valid URL -->
+                      @if (meeting.status === 'approved' && meeting.meeting_url && meeting.meeting_url !== '?pwd=') {
+                        <div class="ms-2">
+                          <button type="button" 
+                                  class="btn btn-sm btn-secondary"
+                                  (click)="joinMeeting(meeting.meeting_url)"
+                                  [pTooltip]="'MEETINGS.JOIN_MEETING' | translate"
+                                  tooltipPosition="top">
+                            <i class="ki-duotone ki-entrance-right me-1">
+                              <span class="path1"></span>
+                              <span class="path2"></span>
+                            </i>
+                            {{ 'MEETINGS.JOIN' | translate }}
+                          </button>
+                        </div>
+                      }
                     </div>
                   </div>
                 </div>

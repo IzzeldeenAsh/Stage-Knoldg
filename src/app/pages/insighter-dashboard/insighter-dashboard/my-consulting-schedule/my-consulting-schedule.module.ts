@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { MessageService } from 'primeng/api';
 
 // Translation Module
@@ -27,6 +28,7 @@ import { CalendarModule } from 'primeng/calendar';
     CalendarModule,
     ButtonModule,
     ToastModule,
+    ConfirmDialogModule,
     TranslationModule,
     MyConsultingScheduleRoutingModule
   ],
