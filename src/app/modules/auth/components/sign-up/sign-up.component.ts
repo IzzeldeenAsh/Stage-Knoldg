@@ -310,38 +310,7 @@ export class SignUpComponent extends BaseComponent implements OnInit {
     this.socialAuthPending = 'linkedin';
     this.showAgreementDialog = true;
   }
-callTimeZone(): Observable<any> {
-    try {
-      const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      console.log('Setting user timezone:', userTimezone);
-      
-      const authtoken: any = localStorage.getItem('foresighta-creds');
-      const token = JSON.parse(authtoken);
-      
-      if (token && token.authToken) {
-        const headers = new HttpHeaders({
-          'Authorization': `Bearer ${token.authToken}`,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        });
-        
-        return this.http.post('https://api.knoldg.com/api/account/timezone/set', 
-          { timezone: userTimezone }, 
-          { headers }
-        );
-      }
-      return new Observable(observer => {
-        observer.next(null);
-        observer.complete();
-      });
-    } catch (error) {
-      console.error('Error setting timezone:', error);
-      return new Observable(observer => {
-        observer.next(null);
-        observer.complete();
-      });
-    }
-  }
+
 
   private proceedWithGoogleAuth(): void {
     this.authService.getGoogleAuthRedirectUrl().subscribe({
@@ -349,18 +318,7 @@ callTimeZone(): Observable<any> {
         const authtoken:any = localStorage.getItem('foresighta-creds');
         const token = JSON.parse(authtoken);
         if (token && token.authToken) {
-          // Wait for timezone setting to complete before redirecting
-          this.callTimeZone().subscribe({
-            next: () => {
-              console.log('Timezone set successfully, proceeding with redirect');
-              window.location.href = `https://knoldg.com/en/callback/${token.authToken}`;
-            },
-            error: (error) => {
-              console.error('Failed to set timezone:', error);
-              // Still redirect even if timezone setting fails
-              window.location.href = `https://knoldg.com/en/callback/${token.authToken}`;
-            }
-          });
+          window.location.href = `https://knoldg.com/en/callback/${token.authToken}`;
         } else {
           window.location.href = redirectUrl;
         }
@@ -378,18 +336,7 @@ callTimeZone(): Observable<any> {
         const authtoken:any = localStorage.getItem('foresighta-creds');
         const token = JSON.parse(authtoken);
         if (token && token.authToken) {
-          // Wait for timezone setting to complete before redirecting
-          this.callTimeZone().subscribe({
-            next: () => {
-              console.log('Timezone set successfully, proceeding with redirect');
-              window.location.href = `https://knoldg.com/en/callback/${token.authToken}`;
-            },
-            error: (error) => {
-              console.error('Failed to set timezone:', error);
-              // Still redirect even if timezone setting fails
-              window.location.href = `https://knoldg.com/en/callback/${token.authToken}`;
-            }
-          });
+          window.location.href = `https://knoldg.com/en/callback/${token.authToken}`;
         } else {
           window.location.href = redirectUrl;
         }

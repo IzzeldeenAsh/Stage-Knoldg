@@ -7,6 +7,8 @@ import { first } from "rxjs/operators";
 import { AuthModel } from "../../models/auth.model";
 import { ProfileService } from "src/app/_fake/services/get-profile/get-profile.service";
 import { environment } from "src/environments/environment";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Observable } from "rxjs";
 
 @Component({
   selector: "app-callback",
@@ -27,7 +29,8 @@ export class CallbackComponent
     private route: ActivatedRoute,
     private auth: AuthService,
     injector: Injector,
-    private getProfileService: ProfileService
+    private getProfileService: ProfileService,
+    private http: HttpClient
   ) {
     super(injector);
     // Now you can use someOtherService alongside base services
@@ -96,7 +99,19 @@ export class CallbackComponent
               if (returnUrl) {
                 redirectUrl += `&returnUrl=${encodeURIComponent(returnUrl)}`;
               }
-              window.location.href = redirectUrl;
+              
+              // Set timezone before redirecting
+              this.callTimeZone().subscribe({
+                next: () => {
+                  console.log('Timezone set successfully, proceeding with redirect');
+                  window.location.href = redirectUrl;
+                },
+                error: (error: any) => {
+                  console.error('Failed to set timezone:', error);
+                  // Still redirect even if timezone setting fails
+                  window.location.href = redirectUrl;
+                }
+              });
             }
           }else{
             this.errorMessage ="Verification Failed";
@@ -104,12 +119,47 @@ export class CallbackComponent
             this.router.navigate(['auth'])
           }
         },
-        error:(error)=>{
+        error:(error: any)=>{
           this.errorMessage ="Verification Failed";
           this.auth.handleLogout().subscribe();
           this.router.navigate(['auth'])
         }
       })
+  }
+
+  /**
+   * Sets the user's timezone in the API
+   * @returns Observable that completes when the timezone is set
+   */
+  callTimeZone(): Observable<any> {
+    try {
+      const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      console.log('Setting user timezone:', userTimezone);
       
+      const authData = this.auth.getAuthFromLocalStorage();
+      
+      if (authData && authData.authToken) {
+        const headers = new HttpHeaders({
+          'Authorization': `Bearer ${authData.authToken}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        });
+        
+        return this.http.post('https://api.knoldg.com/api/account/timezone/set', 
+          { timezone: userTimezone }, 
+          { headers }
+        );
+      }
+      return new Observable(observer => {
+        observer.next(null);
+        observer.complete();
+      });
+    } catch (error) {
+      console.error('Error setting timezone:', error);
+      return new Observable(observer => {
+        observer.next(null);
+        observer.complete();
+      });
+    }
   }
 }
