@@ -155,16 +155,19 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
         this.confirmationService.confirm({
           header: this.lang === 'ar' ? 'تغييرات غير محفوظة' : 'Unsaved Changes',
           message: this.lang === 'ar' 
-            ? 'لديك تغييرات غير محفوظة. هل أنت متأكد من رغبتك في المغادرة؟' 
-            : 'You have unsaved changes. Are you sure you want to leave?',
+            ? 'لديك تغييرات غير محفوظة.' 
+            : 'You have unsaved changes.',
           icon: 'pi pi-exclamation-triangle',
+          acceptLabel: this.lang === 'ar' ? 'حفظ التغييرات' : 'Save changes',
+          rejectLabel: this.lang === 'ar' ? 'إلغاء' : 'Cancel',
           accept: () => {
-            // User confirmed navigation
+            // Save changes and then navigate
+            this.onSave();
             observer.next(true);
             observer.complete();
           },
           reject: () => {
-            // User canceled navigation
+            // User canceled navigation (stays on page)
             observer.next(false);
             observer.complete();
           }
@@ -310,7 +313,7 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
     const group = this.fb.group({
       start_time: [this.parseTimeString(timeSlot.start_time), Validators.required],
       end_time: [this.parseTimeString(timeSlot.end_time), Validators.required],
-      rate: [timeSlot.rate || 0, Validators.required]
+      rate: [timeSlot.rate || 0]
     }, { validators: this.perfectHourValidator.bind(this) });
     
     // Add subscription to start_time changes to synchronize end_time minutes
@@ -327,7 +330,7 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
       exception_date: [exception.exception_date, Validators.required],
       start_time: [this.parseTimeString(exception.start_time), Validators.required],
       end_time: [this.parseTimeString(exception.end_time), Validators.required],
-      rate: [0] // Default to 0 and remove required validator as it's hidden in UI
+      rate: [0] // Default to 0 as it's hidden in UI
     }, { validators: this.perfectHourValidator.bind(this) });
     
     // Add subscription to start_time changes to synchronize end_time minutes
@@ -655,11 +658,11 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
             : exception.exception_date;
         }
         
+        // Do not include rate with exception days
         return {
           exception_date: formattedDate,
           start_time: this.formatTimeString(exception.start_time),
-          end_time: this.formatTimeString(exception.end_time),
-          rate: exception.rate || 0
+          end_time: this.formatTimeString(exception.end_time)
         };
       });
     }

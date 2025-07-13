@@ -398,6 +398,12 @@
       &:invalid {
         border-color: #dc3545;
       }
+      
+      &.no-validation-border {
+        &:invalid, &.ng-invalid {
+          border-color: #ddd;
+        }
+      }
     }
   }
 
