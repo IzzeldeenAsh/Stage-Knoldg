@@ -140,8 +140,9 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
       const lang = this.translationService.getSelectedLanguage() || 'en';
       const knowledgeUrl = `https://knoldg.com/${lang}/knowledge/${notification.category}/${notification.param || ''}?tab=ask`;
       
-      // Navigate to the external URL
+      // Navigate to the external URL and prevent further navigation
       window.open(knowledgeUrl, '_blank');
+      return; // Add return statement to prevent further navigation
     }
     // For meeting-related notifications, refresh profile first to ensure roles are current
     else if(notification.type === 'meeting' || notification.sub_type.includes('meeting')) {
