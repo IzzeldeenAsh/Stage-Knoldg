@@ -77,7 +77,7 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
   }
 
   // Mark a single notification as read by its ID
-  markAsRead(notificationId: string): void {
+  markAsRead(notificationId: string, callback?: () => void): void {
     const token = localStorage.getItem('token');
     if (!token) {
       console.error('Authentication token not found');
@@ -105,11 +105,20 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
               
               // Emit notification count change
               this.notificationClicked.emit(notificationId);
+              
+              // Execute callback if provided
+              if (callback) {
+                callback();
+              }
             }
           }
         },
         (error: any) => {
           console.error(`Error marking notification ${notificationId} as read:`, error);
+          // Still execute callback even if there was an error
+          if (callback) {
+            callback();
+          }
         }
       );
   }
@@ -117,11 +126,21 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
     document.removeEventListener('click', this.onClickOutside.bind(this));
   }
 
-  onNotificationClick(notification: Notification) {
-    // First, mark this notification as read
-    this.markAsRead(notification.id);
+  onNotificationClick(notification: Notification, event?: MouseEvent) {
+    // If event exists, prevent default to ensure we can complete the mark-as-read operation
+    if (event) {
+      event.preventDefault();
+    }
     
-    // Then handle notification navigation
+    // Always mark the notification as read first and ensure it completes
+    this.markAsRead(notification.id, () => {
+      // After marking as read is complete, handle navigation if needed
+      this.handleNotificationNavigation(notification);
+    });
+  }
+  
+  // Separate navigation logic to make it cleaner
+  private handleNotificationNavigation(notification: Notification): void {
     // First, check for knowledge accept/decline notifications that need special handling
     if (notification.type === 'knowledge' && (notification.sub_type === 'accept_knowledge' || notification.sub_type === 'declined')) {
       // Check if user has company-insighter role
@@ -140,46 +159,58 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
       const lang = this.translationService.getSelectedLanguage() || 'en';
       const knowledgeUrl = `https://knoldg.com/${lang}/knowledge/${notification.category}/${notification.param || ''}?tab=ask`;
       
-      // Navigate to the external URL and prevent further navigation
+      // Navigate to the external URL
       window.open(knowledgeUrl, '_blank');
-      return; // Add return statement to prevent further navigation
+      return;
     }
+    
     // For meeting-related notifications, refresh profile first to ensure roles are current
-    else if(notification.type === 'meeting' || notification.sub_type.includes('meeting')) {
+    if(notification.type === 'meeting' || notification.sub_type.includes('meeting')) {
       console.log('Meeting notification clicked:', notification);
       
       // Force refresh the profile before navigating
       this.profileService.refreshProfile().subscribe(user => {
         console.log('Profile refreshed, user roles:', user.roles);
         
+        let targetRoute: string[] = [];
+        
         if(notification.sub_type === 'insighter_meeting_reminder') {
-          console.log('Navigating to received meetings');
-          this.router.navigate(['/app/insighter-dashboard/my-meetings/received']);
+          targetRoute = ['/app/insighter-dashboard/my-meetings/received'];
         } 
         else if (notification.sub_type.startsWith('client_')) {
-          this.router.navigate(['/app/insighter-dashboard/my-meetings/sent']);
+          targetRoute = ['/app/insighter-dashboard/my-meetings/sent'];
         } 
         else if (notification.sub_type.startsWith('insighter_')) {
-          this.router.navigate(['/app/insighter-dashboard/my-meetings/received']);
+          targetRoute = ['/app/insighter-dashboard/my-meetings/received'];
         } 
         else if(notification.sub_type.startsWith('client_meeting_insighter_postponed')) {
-          this.router.navigate(['/app/insighter-dashboard/my-meetings/sent']);
+          targetRoute = ['/app/insighter-dashboard/my-meetings/sent'];
         } 
         else if(notification.sub_type.startsWith('insighter_meeting_client_reschedule')) {
-          this.router.navigate(['/app/insighter-dashboard/my-meetings/received']);
+          targetRoute = ['/app/insighter-dashboard/my-meetings/received'];
         } 
         else if(notification.sub_type.startsWith('client_meeting_reschedule')) {
-          this.router.navigate(['/app/insighter-dashboard/my-meetings/sent']);
+          targetRoute = ['/app/insighter-dashboard/my-meetings/sent'];
         } 
         else if(notification.sub_type.startsWith('insighter_meeting_reminder')) {
-          this.router.navigate(['/app/insighter-dashboard/my-meetings/received']);
+          targetRoute = ['/app/insighter-dashboard/my-meetings/received'];
         } 
         else if(notification.sub_type.startsWith('client_meeting_reminder')) {
-          this.router.navigate(['/app/insighter-dashboard/my-meetings/sent']);
+          targetRoute = ['/app/insighter-dashboard/my-meetings/sent'];
+        }
+        
+        // Check if we're already on this route before navigating
+        if (targetRoute.length > 0) {
+          const currentUrl = this.router.url;
+          const targetUrl = targetRoute.join('/');
+          
+          // Only navigate if we're not already on the target page
+          if (!currentUrl.includes(targetUrl)) {
+            this.router.navigate(targetRoute);
+          }
         }
       });
     }
-    // No need for else block with notificationClicked.emit since we're already emitting in markAsRead
   }
   
   // if(notification.type === 'meeting'){
