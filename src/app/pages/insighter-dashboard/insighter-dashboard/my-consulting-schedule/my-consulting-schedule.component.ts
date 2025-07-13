@@ -183,6 +183,27 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
     }
   }
 
+  // Limit rate value to maximum of 999
+  limitRateValueTo999(dayIndex: number, timeIndex: number, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    let value = parseInt(input.value, 10);
+    
+    // Check if value exceeds maximum
+    if (value > 10000) {
+      // Limit to 10000
+      value = 10000;
+      
+      // Update input field value
+      input.value = value.toString();
+      
+      // Update form control value
+      const dayGroup = this.availabilityFormArray.at(dayIndex) as FormGroup;
+      const timesArray = dayGroup.get('times') as FormArray;
+      const timeGroup = timesArray.at(timeIndex) as FormGroup;
+      timeGroup.get('rate')?.setValue(value, { emitEvent: false });
+    }
+  }
+
 
 
   private initializeForm(): void {

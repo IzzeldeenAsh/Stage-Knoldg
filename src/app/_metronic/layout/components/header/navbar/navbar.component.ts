@@ -146,14 +146,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
           }
         });
       } else if (notification.category) {
-        // External knowledge page with category
-        const baseUrl = window.location.origin;
-        const lang = this.translationService.getSelectedLanguage() || 'en';
-        const tabParam = notification.param && notification.tap ? `?tab=${notification.tap}` : '';
-        const knowledgeUrl = `${baseUrl}/${lang}/knowledge/${notification.category}/${notification.param || ''}${tabParam}`;
-        
-        // Navigate to the external URL
-        window.open(knowledgeUrl, '_blank');
+        // External knowledge page with category is already handled in the notifications-inner component
+        // Don't do any additional navigation here to prevent duplicate windows
+        return;
       } else {
         // Default for other knowledge notifications
         this.router.navigate(['/app/insighter-dashboard/my-requests']);

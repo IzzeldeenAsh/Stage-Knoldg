@@ -70,9 +70,11 @@
                       type="number" 
                       formControlName="rate" 
                       placeholder="Rate"
-                      step="0.01"
+                      max="999"
+                      min="0"
+                      step="10"
                       class="rate-field"
-                      (input)="formatRateValueOnInput(dayIndex, timeIndex, $event)"
+                      (input)="limitRateValueTo999(dayIndex, timeIndex, $event)"
                     />
                   </div>
                   
