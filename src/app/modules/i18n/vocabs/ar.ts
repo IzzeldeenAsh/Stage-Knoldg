@@ -1270,6 +1270,7 @@ INSIGHTER_REQUESTS: {
       "RATE":"التكلفة",
       "JOIN":"انضم",
       "JOINING":"جاري الانضمام",
+      "NOTE_ONE_YEAR":"سيكون الجدول متاحًا لمدة سنة من اليوم",
       "POSTPONE_NOTES_REQUIRED": "ملاحظات التؤجيل مطلوبة",
       "FILTERS": {
         "ALL": "الكل",
@@ -1298,7 +1299,9 @@ INSIGHTER_REQUESTS: {
         "TOTAL_MEETINGS": "إجمالي الاجتماعات",
         "PENDING": "قيد الانتظار",
         "APPROVED": "موافق عليه", 
-        "POSTPONED": "مؤجل"
+        "POSTPONED": "مؤجل",
+        "UPCOMING": "القادمة",
+        "PAST": "السابقة"
       },
       "NO_MEETINGS": "لم يتم العثور على اجتماعات",
       "NO_MEETINGS_DESC": "ليس لديك أي اجتماعات مجدولة في الوقت الحالي.",
