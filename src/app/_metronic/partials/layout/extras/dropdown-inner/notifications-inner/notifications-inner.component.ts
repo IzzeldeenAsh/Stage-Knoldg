@@ -78,14 +78,7 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
 
   // Mark a single notification as read by its ID
   markAsRead(notificationId: string, callback?: () => void): void {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      console.error('Authentication token not found');
-      return;
-    }
-    
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'Accept-Language': this.translationService.getSelectedLanguage()
@@ -165,7 +158,7 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
     }
     
     // For meeting-related notifications, refresh profile first to ensure roles are current
-    if(notification.type === 'meeting' || notification.sub_type.includes('meeting')) {
+    if(notification.type === 'meeting') {
       console.log('Meeting notification clicked:', notification);
       
       // Force refresh the profile before navigating
@@ -176,7 +169,13 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
         
         if(notification.sub_type === 'insighter_meeting_reminder') {
           targetRoute = ['/app/insighter-dashboard/my-meetings/received'];
-        } 
+        } else if(notification.sub_type === 'insighter_meeting_client_new')
+        {
+          targetRoute = ['/app/insighter-dashboard/my-meetings/received'];
+        }
+        else if(notification.sub_type === 'insighter_meeting_client_approved'){
+          targetRoute = ['/app/insighter-dashboard/my-meetings/received'];
+        }
         else if (notification.sub_type.startsWith('client_')) {
           targetRoute = ['/app/insighter-dashboard/my-meetings/sent'];
         } 

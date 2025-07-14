@@ -3,8 +3,10 @@ export const locale = {
   lang: 'en',
 
   data: {
+    COUNTRIES_REQUIRED: 'Countries are required',
     SHOW_LESS:'Show Less',
     SHOW_MORE:'Show More',
+    RESET:'Reset',
     CHOOSE_COUNTTRIES:'Choose Countries',
    ACCOUNT: 'Account',
     INSIGHTER_REQUESTS: {
@@ -282,6 +284,26 @@ export const locale = {
       },
     },
     AUTH: {
+      "EMAIL_RECONFIRM": {
+        "TITLE": "Email Verification Required",
+        "DESCRIPTION": "Please verify your email address to access all features",
+        "FORM_TITLE": "Verify Your Email",
+        "FORM_SUBTITLE": "We need to verify your email address before you can continue",
+        "EMAIL_NOT_VERIFIED": "Email address not verified",
+        "SUCCESS_TITLE": "Email Sent!",
+        "SUCCESS_MESSAGE": "Verification email sent successfully. Please check your inbox and spam folder.",
+        "ERROR_MESSAGE": "Failed to send verification email. Please try again.",
+        "RESEND_BUTTON": "Resend Verification Email",
+        "RESEND_COOLDOWN": "Wait",
+        "LOGOUT": "Logout",
+        "VERIFIED_SUCCESS": "Your email has been verified successfully!",
+        "AUTH_ERROR": "Authentication error. Please log in again.",
+        "VERIFICATION_REQUIRED": "Please verify your email address to continue.",
+        "PROFILE_ERROR": "Unable to load profile information. You can still try to resend the verification email.",
+        "SENDING": "Sending...",
+        "BACK_TO_LOGIN": "Back to Login",
+        "OR": "or",
+      },
       TWO_FA: {
         VERIFY_PHONE: "Verify your email",
         ENTER_VERIFICATION_CODE: "Enter the verification code we sent to email",
@@ -875,7 +897,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
         "APPROVED": "Approved", 
         "POSTPONED": "Postponed",
         "UPCOMING": "Upcoming",
-        "PAST": "Past"
+        "PAST": "Passed"
       },
       "NO_MEETINGS": "No meetings found",
       "NO_MEETINGS_DESC": "You don't have any meetings scheduled at the moment.",
@@ -1011,6 +1033,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
   SELECT_PUBLISH_METHOD: 'Select your preferred publish method:',
   PUBLISH_OPTION_REQUIRED: 'Please select a publish option.',
   SCHEDULE_PUBLISHING: 'Schedule Publishing',
+  PAST_DATE_ERROR: 'Please select a date in the future.',
   SELECT_DATE: 'Select Date',
   VALID_DATE_REQUIRED: 'Please enter a valid date.',
   SELECT_TIME: 'Select Time',
@@ -1335,14 +1358,14 @@ UPLOAD: 'Upload',
         "APPROVED": "Approved",
         "POSTPONED": "Postponed",
         "UPCOMING": "Upcoming",
-        "PAST": "Past"
+        "PAST": "Passed"
       },
       "TABS": {
         "ALL": "All",
         "PENDING": "Pending",
         "APPROVED": "Approved",
         "UPCOMING": "Upcoming",
-        "PAST": "Past",
+        "PAST": "Passed",
         "POSTPONED": "Postponed"
       },
       "STATUS": {
@@ -1350,11 +1373,16 @@ UPLOAD: 'Upload',
         "APPROVED": "Approved",
         "POSTPONED": "Postponed"
       },
-      "STATS": {
-        "TOTAL_MEETINGS": "Total Meetings",
-        "PENDING": "Pending",
-        "APPROVED": "Approved", 
-        "POSTPONED": "Postponed"
+      "SENT":{
+        "TITLE": "Sent Meetings",
+        "STATS": {
+          "TOTAL_MEETINGS": "Total Meetings",
+          "PENDING": "Pending",
+          "APPROVED": "Approved", 
+          "POSTPONED": "Postponed",
+          "UPCOMING": "Upcoming",
+          "PAST": "Passed"
+        }
       },
       "NO_MEETINGS": "No meetings found",
       "NO_MEETINGS_DESC": "You don't have any meetings scheduled at the moment.",
@@ -1365,6 +1393,7 @@ UPLOAD: 'Upload',
       "MEETINGS": "meetings",
       "POSTPONE_NOTES_REQUIRED": "Postponement notes are required"
     },
+    
   },
   "CLIENT": "Client",
   "VERIFIED": "Verified",

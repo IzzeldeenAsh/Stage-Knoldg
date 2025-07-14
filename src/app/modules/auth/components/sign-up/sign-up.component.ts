@@ -1,9 +1,5 @@
 import { Component, Injector, OnInit } from "@angular/core";
-import {
-  FormBuilder,
-  FormGroup,
-  Validators
-} from "@angular/forms";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { BehaviorSubject, Observable, Subscription, of, take, timer } from "rxjs";
 import { CountriesService, Country } from "src/app/_fake/services/countries/countries.service";
 import { AuthService } from "../../services/auth.service";
@@ -11,13 +7,13 @@ import { BaseComponent } from "src/app/modules/base.component";
 import zxcvbn from 'zxcvbn';
 import { trigger, transition, style, animate } from "@angular/animations";
 import { CommonService } from "src/app/_fake/services/common/common.service";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { environment } from "src/environments/environment";
 
 @Component({
   selector: "app-sign-up",
   templateUrl: "./sign-up.component.html",
   styleUrls: ["./sign-up.component.scss"],
-   animations: [
+  animations: [
     trigger('fadeInMoveY', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateY(-20px)' }),
@@ -50,19 +46,27 @@ export class SignUpComponent extends BaseComponent implements OnInit {
   userScrolledToBottom: boolean = false;
   agreementDialogScrollable: boolean = true;
 
-  // Add a new property to track which social auth method was selected
   private socialAuthPending: 'google' | 'linkedin' | null = null;
 
   constructor(
     private fb: FormBuilder,
-    private _countriesGet: CountriesService,
+    private countriesService: CountriesService,
     private authService: AuthService,
-    private http: HttpClient,
-    private adminCountreis: CountriesService,
     private commonService: CommonService,
     injector: Injector
   ) {
     super(injector);
+    this.initializeForm();
+    this.isLoadingCountries$ = this.countriesService.isLoading$;
+  }
+
+  ngOnInit(): void {
+    this.loadCountries();
+    this.setupPasswordStrengthValidation();
+    this.loadClientAgreement();
+  }
+
+  private initializeForm(): void {
     this.registrationForm = this.fb.group({
       firstName: ["", [Validators.maxLength(50)]],
       lastName: ["", [Validators.maxLength(50)]],
@@ -75,23 +79,35 @@ export class SignUpComponent extends BaseComponent implements OnInit {
           Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z\d])[A-Za-z\d\W_]{8,}$/),
         ],
       ],
-      country: [null], // Optional
-      client_agreement: [false, [Validators.requiredTrue]] // Required and must be true
+      country: [null],
+      client_agreement: [false, [Validators.requiredTrue]]
     });
-    this.isLoadingCountries$ = this._countriesGet.isLoading$;
   }
 
-  ngOnInit(): void {
-    this.adminCountreis.getCountries().subscribe()
-    this.getListOfCountries();
+  private setupPasswordStrengthValidation(): void {
     this.registrationForm.get('password')?.valueChanges.subscribe(password => {
       this.evaluatePasswordStrength(password);
     });
-    // Fetch client agreement on initialization
-    this.loadClientAgreement();
   }
 
-  loadClientAgreement(): void {
+  private loadCountries(): void {
+    this.countriesService.getCountries().subscribe({
+      next: (countries) => {
+        this.countries = countries.map((country: Country) => ({
+          ...country,
+          flagPath: `../../../../../assets/media/flags/${country.flag}.svg`,
+          showFlag: true,
+        }));
+        this.isLoadingCountries$ = of(false);
+      },
+      error: (error) => {
+        console.error('Error loading countries:', error);
+        this.isLoadingCountries$ = of(false);
+      }
+    });
+  }
+
+  private loadClientAgreement(): void {
     this.isLoadingAgreement = true;
     this.commonService.getClientAgreement('client-agreement').subscribe({
       next: (response) => {
@@ -110,14 +126,13 @@ export class SignUpComponent extends BaseComponent implements OnInit {
     });
   }
 
-  openAgreementDialog(): void {
-    // Always show the dialog when triggered
-    this.showAgreementDialog = true;
+  getHomeUrl(): string {
+    return `${environment.mainAppUrl}/${this.lang}`;
   }
 
-  getHomeUrl(): string {
-    const url= 'https://knoldg.com/' + this.lang;
-    return url;
+  // Client agreement dialog methods
+  openAgreementDialog(): void {
+    this.showAgreementDialog = true;
   }
 
   closeAgreementDialog(approved: boolean): void {
@@ -136,15 +151,12 @@ export class SignUpComponent extends BaseComponent implements OnInit {
       this.registrationForm.get('client_agreement')?.setValue(false);
     }
     
-    // Reset the pending social auth
     this.socialAuthPending = null;
   }
 
   printTerms(): void {
-    // Create a new window for printing
     const printWindow = window.open('', '_blank');
     if (printWindow) {
-      // Prepare content for printing
       const termsTitle = this.clientAgreementContent?.name || 'Terms of Service';
       const termsContent = this.clientAgreementContent?.guideline || '';
       const printContent = `
@@ -186,10 +198,7 @@ export class SignUpComponent extends BaseComponent implements OnInit {
       const termsTitle = this.clientAgreementContent.name || 'Terms-of-Service';
       const termsText = this.stripHtmlTags(this.clientAgreementContent.guideline);
       
-      // Create a Blob with the text content
       const blob = new Blob([termsText], { type: 'text/plain' });
-      
-      // Create a download link and trigger the download
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -197,19 +206,18 @@ export class SignUpComponent extends BaseComponent implements OnInit {
       document.body.appendChild(a);
       a.click();
       
-      // Clean up
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
     }
   }
 
   private stripHtmlTags(html: string): string {
-    // Create a temporary element to extract text from HTML
     const tempElement = document.createElement('div');
     tempElement.innerHTML = html;
     return tempElement.textContent || tempElement.innerText || '';
   }
 
+  // Password strength evaluation
   evaluatePasswordStrength(password: string): void {
     if (password) {
       const evaluation = zxcvbn(password);
@@ -222,110 +230,54 @@ export class SignUpComponent extends BaseComponent implements OnInit {
   }
 
   passwordStrengthClass(): string {
-    switch (this.passwordStrength.score) {
-      case 0:
-        return 'bg-danger';
-      case 1:
-        return 'bg-warning';
-      case 2:
-        return 'bg-info';
-      case 3:
-        return 'bg-success';
-      case 4:
-        return 'bg-success';
-      default:
-        return 'bg-danger';
-    }
+    const classes = ['bg-danger', 'bg-warning', 'bg-info', 'bg-success', 'bg-success'];
+    return classes[this.passwordStrength.score] || 'bg-danger';
   }
 
   getPasswordStrengthLabel(): string {
-    if(this.lang==='en'){
-      switch (this.passwordStrength.score) {
-        case 0:
-          return 'Very Weak';
-        case 1:
-          return 'Weak';
-        case 2:
-          return 'Fair';
-        case 3:
-          return 'Good';
-        case 4:
-          return 'Strong';
-        default:
-          return '';
-      }
-    }else{
-      switch (this.passwordStrength.score) {
-        case 0:
-          return 'ضعيف جداً ';
-        case 1:
-          return 'ضعيف';
-        case 2:
-          return 'معتدل';
-        case 3:
-          return 'جيد';
-        case 4:
-          return 'قوي';
-        default:
-          return '';
-      }
-    }
+    const labels = {
+      en: ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong'],
+      ar: ['ضعيف جداً', 'ضعيف', 'معتدل', 'جيد', 'قوي']
+    };
+    
+    const langLabels = labels[this.lang as 'en' | 'ar'] || labels.en;
+    return langLabels[this.passwordStrength.score] || '';
   }
 
-  getListOfCountries() {
-    const getCountriesSub = this._countriesGet.getCountries().subscribe({
-      next: (res) => {
-        this.countries = res.map((country: Country) => ({
-          ...country,
-          flagPath: `../../../../../assets/media/flags/${country.flag}.svg`,
-          showFlag: true, // Default to showing the flag
-        }));
-        this.isLoadingCountries$ = of(false);
-      },
-      error: (err) => {
-        this.isLoadingCountries$ = of(false);
-      },
-    });
-    this.unsubscribe.push(getCountriesSub);
-  }
-
+  // UI methods
   onFlagError(country: any): void {
-    country.showFlag = false; // Hide the image if it fails to load
+    country.showFlag = false;
   }
 
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
 
+  // Social authentication methods
   signInWithGoogle(event: Event): void {
     event.preventDefault();
-    // Show agreement dialog first
     this.socialAuthPending = 'google';
     this.showAgreementDialog = true;
   }
   
   signInWithLinkedIn(event: Event): void {
     event.preventDefault();
-    // Show agreement dialog first
     this.socialAuthPending = 'linkedin';
     this.showAgreementDialog = true;
   }
 
-
   private proceedWithGoogleAuth(): void {
     this.authService.getGoogleAuthRedirectUrl().subscribe({
       next: (redirectUrl) => {
-        const authtoken:any = localStorage.getItem('foresighta-creds');
-        const token = JSON.parse(authtoken);
-        if (token && token.authToken) {
-          window.location.href = `https://knoldg.com/en/callback/${token.authToken}`;
-        } else {
-          window.location.href = redirectUrl;
-        }
+        window.location.href = redirectUrl;
       },
       error: (err) => {
         console.error('Error getting Google auth redirect URL', err);
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to initiate Google sign-in.' });
+        this.messageService.add({ 
+          severity: 'error', 
+          summary: 'Error', 
+          detail: 'Failed to initiate Google sign-in.' 
+        });
       }
     });
   }
@@ -333,61 +285,20 @@ export class SignUpComponent extends BaseComponent implements OnInit {
   private proceedWithLinkedInAuth(): void {
     this.authService.getLinkedInAuthRedirectUrl().subscribe({
       next: (redirectUrl) => {
-        const authtoken:any = localStorage.getItem('foresighta-creds');
-        const token = JSON.parse(authtoken);
-        if (token && token.authToken) {
-          window.location.href = `https://knoldg.com/en/callback/${token.authToken}`;
-        } else {
-          window.location.href = redirectUrl;
-        }
+        window.location.href = redirectUrl;
       },
       error: (err) => {
         console.error('Error getting LinkedIn auth redirect URL', err);
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to initiate LinkedIn sign-in.' });
+        this.messageService.add({ 
+          severity: 'error', 
+          summary: 'Error', 
+          detail: 'Failed to initiate LinkedIn sign-in.' 
+        });
       }
     });
   }
 
-  private handleServerErrors(error: any): void {
-    if (error.error && error.error.errors) {
-      const serverErrors = error.error.errors;
-      
-      // Map server error keys to form control names
-      const errorKeyToFormControlName: { [key: string]: string } = {
-        'first_name': 'firstName',
-        'last_name': 'lastName',
-        'email': 'email',
-        'password_confirmation': 'password',
-        'client_agreement': 'client_agreement'
-        // Add other mappings as necessary
-      };
-  
-      for (const key in serverErrors) {
-        if (serverErrors.hasOwnProperty(key)) {
-          const messages: string[] = serverErrors[key];
-          const formControlName = errorKeyToFormControlName[key];
-  
-          if (formControlName) {
-            const control = this.registrationForm.get(formControlName);
-            if (control) {
-              // Set the server error on the control
-              control.setErrors({ serverError: messages[0] }); // Use the first error message
-              control.markAsTouched(); // Mark as touched to display the error
-            }
-          } else {
-            // If the error doesn't map to a form control, display it as a general message
-            const generalErrorMsg = error.error.message || messages.join(', ');
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: generalErrorMsg });
-          }
-        }
-      }
-    } else {
-      // Handle non-validation errors
-      const generalErrorMsg = error.error?.message || 'An unexpected error occurred.';
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: generalErrorMsg });
-    }
-  }
-
+  // Registration form submission
   onSubmit(): void {
     if (this.registrationForm.invalid) {
       this.registrationForm.markAllAsTouched();
@@ -396,6 +307,7 @@ export class SignUpComponent extends BaseComponent implements OnInit {
 
     this.isLoadingSubmit$ = of(true);
     const formData = this.registrationForm.value;
+    
     const user = {
       first_name: formData.firstName,
       last_name: formData.lastName,
@@ -409,9 +321,13 @@ export class SignUpComponent extends BaseComponent implements OnInit {
     this.authService.registration(user).subscribe({
       next: (response) => {
         this.isLoadingSubmit$ = of(false);
-        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Registration successful! Verification email sent.' });
-        this.step = 2; // Move to Email Verification step
-        this.startResendCooldown()
+        this.messageService.add({ 
+          severity: 'success', 
+          summary: 'Success', 
+          detail: 'Registration successful! Verification email sent.' 
+        });
+        this.step = 2;
+        this.startResendCooldown();
       },
       error: (error) => {
         this.isLoadingSubmit$ = of(false);
@@ -419,9 +335,52 @@ export class SignUpComponent extends BaseComponent implements OnInit {
       }
     });
   }
+
+  private handleServerErrors(error: any): void {
+    if (error.validationMessages) {
+      // Display validation messages using the message service
+      error.validationMessages.forEach((msg: any) => {
+        this.messageService.add({
+          severity: msg.severity,
+          summary: msg.summary,
+          detail: msg.detail
+        });
+      });
+    }
+
+    // Also set form control errors for specific fields
+    if (error.error?.errors) {
+      const serverErrors = error.error.errors;
+      const errorKeyMapping: { [key: string]: string } = {
+        'first_name': 'firstName',
+        'last_name': 'lastName',
+        'email': 'email',
+        'password': 'password',
+        'password_confirmation': 'password',
+        'client_agreement': 'client_agreement'
+      };
   
+      for (const key in serverErrors) {
+        if (serverErrors.hasOwnProperty(key)) {
+          const messages: string[] = serverErrors[key];
+          const formControlName = errorKeyMapping[key];
+  
+          if (formControlName) {
+            const control = this.registrationForm.get(formControlName);
+            if (control) {
+              control.setErrors({ serverError: messages[0] });
+              control.markAsTouched();
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Email verification methods
   resendVerificationEmail(): void {
-    this.isResendDisabled = true; // Disable immediately
+    this.isResendDisabled = true;
+    
     this.authService.resendVerificationEmail().subscribe({
       next: (response: any) => {
         this.messageService.add({ 
@@ -432,13 +391,23 @@ export class SignUpComponent extends BaseComponent implements OnInit {
         this.startResendCooldown();
       },
       error: (error: any) => {
-        this.isResendDisabled = false; // Re-enable on error
-        const errorMsg = error?.error?.message || 'Failed to resend verification email.';
-        this.messageService.add({ 
-          severity: 'error', 
-          summary: 'Error', 
-          detail: errorMsg 
-        });
+        this.isResendDisabled = false;
+        
+        if (error.validationMessages) {
+          error.validationMessages.forEach((msg: any) => {
+            this.messageService.add({
+              severity: msg.severity,
+              summary: msg.summary,
+              detail: msg.detail
+            });
+          });
+        } else {
+          this.messageService.add({ 
+            severity: 'error', 
+            summary: 'Error', 
+            detail: 'Failed to resend verification email.' 
+          });
+        }
       }
     });
   }
@@ -447,9 +416,8 @@ export class SignUpComponent extends BaseComponent implements OnInit {
     this.resendVerificationEmail();
   }
 
-  startResendCooldown(): void {
+  private startResendCooldown(): void {
     const countdownTime = 30; // seconds
-
     this.resendCountdown$.next(countdownTime);
     
     const resendTimerSubscription = timer(1, 1000).pipe(
@@ -465,8 +433,6 @@ export class SignUpComponent extends BaseComponent implements OnInit {
       }
     });
 
-    if (resendTimerSubscription) {
-      this.unsubscribe.push(resendTimerSubscription)
-    }
+    this.unsubscribe.push(resendTimerSubscription);
   }
 }

@@ -7,6 +7,7 @@ import { SignUpComponent } from './components/sign-up/sign-up.component';
 import { PasswordResetComponent } from './components/password-reset/password-reset.component';
 import { VerifyEmailComponent } from './components/verify-email/verify-email.component';
 import { CallbackComponent } from './components/callback/callback.component';
+import { EmailReconfirmComponent } from './components/email-reconfirm/email-reconfirm.component';
 import { UnAuthGuard } from '../../guards/unauth-guard/un-auth.guard';
 
 const routes: Routes = [
@@ -28,6 +29,10 @@ const routes: Routes = [
       {
         path:'verify-email',
         component:VerifyEmailComponent,
+      },
+      {
+        path: 'email-reconfirm',
+        component: EmailReconfirmComponent,
       },
       {
         path: 'password-reset',

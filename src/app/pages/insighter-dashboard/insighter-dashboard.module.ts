@@ -14,6 +14,7 @@ import { CompanyStatisticsComponent } from './insighter-dashboard/statistics/com
 import { DownloadsStatisticsComponent } from './insighter-dashboard/statistics/downloads-statistics/downloads-statistics.component';
 import { ConsultingScheduleHeaderComponent } from './insighter-dashboard/statistics/consulting-schedule-header/consulting-schedule-header.component';
 import { MeetingsStatisticsComponent } from './insighter-dashboard/my-meetings/meetings-statistics/meetings-statistics.component';
+import { SentMeetingsStatisticsComponent } from './insighter-dashboard/my-meetings/sent-meetings-statistics/sent-meetings-statistics.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { MeetingsStatisticsComponent } from './insighter-dashboard/my-meetings/m
     CompanyStatisticsComponent,
     DownloadsStatisticsComponent,
     ConsultingScheduleHeaderComponent,
-    MeetingsStatisticsComponent
+    MeetingsStatisticsComponent,
+    SentMeetingsStatisticsComponent
   ],
   imports: [
     CommonModule,

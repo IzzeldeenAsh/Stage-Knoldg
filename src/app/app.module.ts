@@ -21,6 +21,15 @@ import { CoreModule } from './core/core.module';
 function appInitializer(authService: AuthService) {
   return () => {
     return new Promise((resolve) => {
+      // Check if we're on auth routes - if so, don't call getUserByToken
+      // as it might cause redirects during email verification flow
+      const currentPath = window.location.pathname;
+      if (currentPath.includes('/auth/')) {
+        console.log('On auth route, skipping getUserByToken in app initializer');
+        resolve(true);
+        return;
+      }
+      
       //@ts-ignore
       authService.getUserByToken().subscribe().add(resolve);
       //tets

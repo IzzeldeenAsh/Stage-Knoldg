@@ -275,7 +275,7 @@
                     </div>
                     {{ 'VIEW_MY_KNOWLEDGE.PUBLISH_DATE' | translate }}
                   </span>
-                  <span>{{ knowledge.published_at ? (knowledge.published_at | date : "dd MMMM yyyy") : 'N/A' }}</span>
+                  <span>{{ knowledge.published_at ? (knowledge.published_at | date : "dd MMMM yyyy HH:mm") : 'N/A' }}</span>
                 </div>
 
                 <!-- Included in Package -->

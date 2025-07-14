@@ -14,7 +14,7 @@
               
               </h1>
             
-              <ng-container *ngIf="!errorMessage else error">
+              <ng-container *ngIf="!errorMessage && !isProcessing else errorOrProcessing">
                 <!--begin::Sub-title-->
                 <div class="text-muted fw-semibold fs-5 mb-5">{{ 'AUTH.VERIFY_EMAIL.ALL_SET' | translate }}</div>
                 <!--end::Sub-title-->
@@ -33,27 +33,42 @@
                 <!--end::Success Animation-->
   
                 <div class="d-flex flex-center mt-10">
-                  <button type="button" (click)="toApp()" [disabled]="isSubmitting" class="btn btn-lg btn-primary fw-bold">
-                    <ng-container *ngIf="!isSubmitting">
-                      <span class="indicator-label">   {{ 'AUTH.VERIFY_EMAIL.GET_STARTED' | translate }}</span>
-                    </ng-container>
-                    <ng-container *ngIf="isSubmitting">
-                      <span class="indicator-progress" [style.display]="'block'">
-                        {{ "AUTH.REGISTRATION.PLEASE_WAIT" | translate }}
-                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
-                      </span>
-                    </ng-container>
-           
+                  <button type="button" (click)="retryAuth()" class="btn btn-lg btn-primary fw-bold">
+                    <span class="indicator-label">{{ 'AUTH.VERIFY_EMAIL.GET_STARTED' | translate }}</span>
                   </button>
                 </div>
               </ng-container>
-              <ng-template #error>
-                <h1 class="text-gray-900 mb-3 max-width-350px">
-               {{errorMessage}}
-                </h1>
-                  <div class="m-auto">
+              
+              <ng-template #errorOrProcessing>
+                <ng-container *ngIf="isProcessing && !errorMessage">
+                  <!--begin::Processing-->
+                  <div class="text-muted fw-semibold fs-5 mb-5">Processing authentication...</div>
+                  <div class="my-10">
+                    <div class="spinner-border text-primary" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
+                  </div>
+                  <!--end::Processing-->
+                </ng-container>
+                
+                <ng-container *ngIf="errorMessage">
+                  <!--begin::Error-->
+                  <h1 class="text-gray-900 mb-3 max-width-350px">
+                    {{ errorMessage }}
+                  </h1>
+                  <div class="m-auto mb-5">
                     <img [alt]="'AUTH.VERIFY_EMAIL.ALT_FAILED_VERIFICATION' | translate" src="../../../../../assets/media/auth/faild-verify.svg">
                   </div>
+                                     <div class="d-flex flex-center mt-10">
+                     <button type="button" (click)="retryAuth()" class="btn btn-lg btn-primary fw-bold me-3">
+                       <span class="indicator-label">Retry</span>
+                     </button>
+                     <button type="button" (click)="goToLogin()" class="btn btn-lg btn-light fw-bold">
+                       <span class="indicator-label">Back to Login</span>
+                     </button>
+                   </div>
+                  <!--end::Error-->
+                </ng-container>
               </ng-template>
             </div>
           </div>

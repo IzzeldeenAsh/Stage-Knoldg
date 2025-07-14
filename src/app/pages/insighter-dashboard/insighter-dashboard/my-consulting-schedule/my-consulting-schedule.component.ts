@@ -124,7 +124,7 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
   ngOnInit(): void {
     this.initializeWithDefaultDays();
     this.loadScheduleData();
-    this.setupFormChangeTracking();
+    // Remove setupFormChangeTracking from here - it will be called after form is built
   }
 
   ngOnDestroy(): void {
@@ -138,6 +138,11 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
 
   // Track form changes to detect if there are unsaved changes
   private setupFormChangeTracking(): void {
+    // Clean up existing subscription if it exists
+    if (this.formSubscription) {
+      this.formSubscription.unsubscribe();
+    }
+    
     this.formSubscription = this.scheduleForm.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
@@ -155,11 +160,11 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
         this.confirmationService.confirm({
           header: this.lang === 'ar' ? 'تغييرات غير محفوظة' : 'Unsaved Changes',
           message: this.lang === 'ar' 
-            ? 'لديك تغييرات غير محفوظة.' 
-            : 'You have unsaved changes.',
+            ? 'لديك تغييرات غير محفوظة. هل تريد حفظ التغييرات أم المتابعة بدون حفظ؟' 
+            : 'You have unsaved changes. Do you want to save the changes or continue without saving?',
           icon: 'pi pi-exclamation-triangle',
-          acceptLabel: this.lang === 'ar' ? 'حفظ التغييرات' : 'Save changes',
-          rejectLabel: this.lang === 'ar' ? 'إلغاء' : 'Cancel',
+          acceptLabel: this.lang === 'ar' ? 'حفظ التغييرات' : 'Save Changes',
+          rejectLabel: this.lang === 'ar' ? 'المتابعة بدون حفظ' : 'Continue Redirecting',
           accept: () => {
             // Save changes and then navigate
             this.onSave();
@@ -167,8 +172,8 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
             observer.complete();
           },
           reject: () => {
-            // User canceled navigation (stays on page)
-            observer.next(false);
+            // Continue without saving (allow navigation)
+            observer.next(true);
             observer.complete();
           }
         });
@@ -295,6 +300,11 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
       const exceptionGroup = this.createExceptionFormGroup(exception);
       this.exceptionsFormArray.push(exceptionGroup);
     });
+
+    // Setup form change tracking after form is built and populated
+    // Reset the formDirty flag first to prevent false positives
+    this.formDirty.set(false);
+    this.setupFormChangeTracking();
   }
 
   private createDayFormGroup(day: DayAvailability): FormGroup {
@@ -548,7 +558,7 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
           }else{
             this.showSuccess('Success','تم تحديث الجدول بنجاح');
           }
-          this.formDirty.set(false);
+          this.formDirty.set(false); // Reset dirty flag after successful save
           this.saving.set(false);
         },
         error: (error) => {

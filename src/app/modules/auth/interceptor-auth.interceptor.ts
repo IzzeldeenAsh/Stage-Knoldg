@@ -1,31 +1,28 @@
 import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
-import { catchError, first, Observable, throwError } from 'rxjs';
-import { AuthService } from './services/auth.service';
+import { catchError, Observable, throwError } from 'rxjs';
 import { Router } from '@angular/router';
-import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
-import { AuthHTTPService } from './services/auth-http/auth-http.service';
 import { ToastService } from 'src/app/_fake/services/toast-service/toast.service';
+import { CookieService } from './services/cookie.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   constructor(
-    private authService: AuthService,
     private router: Router,
-    private getProfileService: ProfileService,
-    private authHttpService: AuthHTTPService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private cookieService: CookieService
   ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // Get auth token from localStorage
-    const token = this.authService.getAuthFromLocalStorage()?.authToken;
+    // Get auth token from cookie using the cookie service
+    const token = this.cookieService.getCookie('token');
 
     // Get user's timezone
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-    // Clone the request and add the token if it exists
+    // Clone the request and add the token and timezone if available
     let clonedReq = req;
+    
     if (token) {
       clonedReq = req.clone({
         headers: req.headers
@@ -42,43 +39,68 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(clonedReq).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
-          this.authService.handleLogout().subscribe({
-            next: () => {
-              this.getProfileService.clearProfile();
-              this.router.navigate(['/auth']).then(() => {
-                // Optional: Reload the page after navigation if needed
-                window.location.reload();
-              });
-            },
-            error: (err) => {
-              console.error('Logout error:', err);
-            }
-          });
+          // Handle unauthorized - token expired or invalid
+          this.handleUnauthorized();
         } else if (error.status === 403) {
-          // Check for email verification error
-          if (error.error && error.error.message === "Your email address is not verified.") {
-            this.toastService.error(error.error.message, "Account Issue");
-            
-            // Perform logout
-            this.authService.handleLogout().subscribe({
-              next: () => {
-                this.getProfileService.clearProfile();
-                this.router.navigate(['/auth']).then(() => {
-                  // Optional: Reload the page after navigation if needed
-                  window.location.reload();
-                });
-              },
-              error: (err) => {
-                console.error('Logout error:', err);
-              }
-            });
-          }
+          // Handle forbidden - check for email verification error
+          this.handleForbidden(error);
         } else if (error.status === 0) {
           // Status 0 often indicates CORS issues
           console.error('Possible CORS issue:', error);
         }
+        
         return throwError(() => error);
       })
     );
+  }
+
+  private handleUnauthorized(): void {
+    console.log('Unauthorized access - redirecting to login');
+    
+    // Clear auth data directly without making HTTP calls
+    this.clearAuthData();
+    
+    // Navigate to login
+    this.router.navigate(['/auth/login']).then(() => {
+      // Optional: Show message to user
+      this.toastService.warning('Your session has expired. Please log in again.', 'Session Expired');
+    });
+  }
+
+  private handleForbidden(error: HttpErrorResponse): void {
+    // Check for email verification error
+    if (error.error && error.error.message === "Your email address is not verified.") {
+      const currentUrl = this.router.url;
+      
+      // Don't redirect if user is already on auth-related routes
+      if (currentUrl.includes('/auth/verify-email') || 
+          currentUrl.includes('/auth/email-reconfirm') || 
+          currentUrl.includes('/auth/callback')) {
+        console.log('User is on auth route, not redirecting for email verification error');
+        // Just show the error message, don't redirect
+        this.toastService.error(error.error.message, "Account Issue");
+        return;
+      }
+      
+      this.toastService.error(error.error.message, "Account Issue");
+      
+      // Navigate to email verification page only if not already on auth route
+      this.router.navigate(['/auth/email-reconfirm']);
+    } else {
+      // For other forbidden errors, show generic message
+      this.toastService.error('Access denied. You do not have permission to perform this action.', 'Access Denied');
+    }
+  }
+
+  private clearAuthData(): void {
+    // Clear the token cookie
+    this.cookieService.deleteCookie('token');
+    
+    // Clear localStorage data
+    localStorage.removeItem('foresighta-creds');
+    localStorage.removeItem('currentUser');
+    
+    // Clear any other auth-related data
+    sessionStorage.clear();
   }
 }

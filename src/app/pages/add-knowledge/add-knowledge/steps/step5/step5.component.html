@@ -88,9 +88,17 @@
           ></p-calendar>
           <small class="p-error block" *ngIf="
             publishForm.get('publishDate')?.invalid &&
-            publishForm.get('publishDate')?.touched
+            publishForm.get('publishDate')?.touched &&
+            publishForm.get('publishDate')?.errors?.['required']
           ">
             {{ "VALID_DATE_REQUIRED" | translate }}
+          </small>
+          <small class="p-error block" *ngIf="
+            publishForm.get('publishDate')?.invalid &&
+            publishForm.get('publishDate')?.touched &&
+            publishForm.get('publishDate')?.errors?.['pastDate']
+          ">
+            {{ "PAST_DATE_ERROR" | translate }}
           </small>
         </div>
       </div>
@@ -107,9 +115,31 @@
           ></p-calendar>
           <small class="p-error block" *ngIf="
             publishForm.get('publishTime')?.invalid &&
-            publishForm.get('publishTime')?.touched
+            publishForm.get('publishTime')?.touched &&
+            publishForm.get('publishTime')?.errors?.['required']
           ">
             {{ "VALID_TIME_REQUIRED" | translate }}
+          </small>
+          <small class="p-error block" *ngIf="
+            publishForm.get('publishTime')?.invalid &&
+            publishForm.get('publishTime')?.touched &&
+            publishForm.get('publishTime')?.errors?.['pastDateTime']
+          ">
+            {{ "PAST_TIME_ERROR" | translate }}
+          </small>
+          <small class="p-error block" *ngIf="
+            publishForm.get('publishTime')?.invalid &&
+            publishForm.get('publishTime')?.touched &&
+            publishForm.get('publishTime')?.errors?.['tooSoon']
+          ">
+            {{ "SCHEDULE_TIME_MIN_ERROR" | translate }}
+          </small>
+          <small class="p-error block" *ngIf="
+            publishForm.get('publishTime')?.invalid &&
+            publishForm.get('publishTime')?.touched &&
+            publishForm.get('publishTime')?.errors?.['invalidDateTime']
+          ">
+            Invalid date or time
           </small>
           <small class="p-error block" *ngIf="timeError">{{ timeError }}</small>
         </div>

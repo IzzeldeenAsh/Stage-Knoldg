@@ -8,8 +8,10 @@ export class UnAuthGuard {
   constructor(private authService: AuthService, private router: Router) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    const authData = this.authService.getAuthFromLocalStorage();
-    if (authData && !this.authService.isTokenExpired(authData.authToken)) {
+    // Check if user has a valid token using the updated auth service
+    const token = this.authService['getTokenFromCookie']();
+    
+    if (token && !this.authService['isTokenExpired'](token)) {
       // Valid token exists, redirect to '/app'
       return this.router.createUrlTree(['/app']);
     }

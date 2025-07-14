@@ -160,6 +160,7 @@
 
           <ng-container *ngIf="currentStep$.value === 5 && !isEditMode">
             <app-step5
+              #step5Component
               class="w-100"
               [updateParentModel]="updateAccount"
               [defaultValues]="account$.value"
@@ -201,7 +202,9 @@
               <button
                 type="button"
                 class="btn btn-primary me-3"
+                [class.disabled]="(currentStep$.value === 5 && !isCurrentFormValid$.value) || isLoading"
                 (click)="nextStep()"
+                [disabled]="(currentStep$.value === 5 && !isCurrentFormValid$.value) || isLoading"
               >
                 <span class="indicator-label d-flex align-items-center">
                   <ng-container *ngIf="(!isEditMode && currentStep$.value < 5) || (isEditMode && currentStep$.value < 4)">
@@ -224,6 +227,16 @@
                   </ng-container>
                 </span>
               </button>
+              
+              <!-- Step 5 Form Validation Warning - Only show on Step 5 when form is invalid -->
+              <div *ngIf="currentStep$.value === 5 && !isCurrentFormValid$.value" class="d-flex align-items-center mt-2">
+                <span class="badge badge-light-warning me-2">
+                  <i class="ki-duotone ki-warning-2 fs-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                  </i>
+                </span>
+              </div>
               
               <!-- Upload Error Warning - Only show on Step 2 when there are errors -->
               <div *ngIf="currentStep$.value === 2 && hasAnyUploadErrors()" class="d-flex align-items-center mt-2">

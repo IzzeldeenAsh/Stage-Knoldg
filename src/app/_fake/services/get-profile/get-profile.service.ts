@@ -73,6 +73,7 @@ export class ProfileService {
       }),
       catchError((err) => {
         this.profileCache$ = null; // Clear cache on error
+        
         if (err.status === 401) {
           localStorage.removeItem("foresighta-creds");
           localStorage.removeItem("user");
@@ -86,7 +87,28 @@ export class ProfileService {
           this.router.navigate(['/auth/login'], { 
             queryParams: { returnUrl: currentUrl } 
           });
+        } else if (err.status === 403) {
+          // Handle email verification errors
+          const errorMessage = err.error?.message || '';
+          if (errorMessage.includes('verified') || errorMessage.includes('verification')) {
+            console.log('403 error - Email verification required, letting guard handle redirect');
+            // Don't redirect here - let the auth guard handle it
+            // Just clear the cache so it doesn't retry indefinitely
+          } else {
+            // Other 403 errors should clear auth and redirect
+            localStorage.removeItem("foresighta-creds");
+            localStorage.removeItem("user");
+            this.clearProfile();
+            
+            const currentUrl = window.location.pathname;
+            console.log('403 error - Access denied, redirecting to login');
+            
+            this.router.navigate(['/auth/login'], { 
+              queryParams: { returnUrl: currentUrl } 
+            });
+          }
         }
+        
         return throwError(err);
       }),
       finalize(() => this.isLoadingSubject.next(false)),

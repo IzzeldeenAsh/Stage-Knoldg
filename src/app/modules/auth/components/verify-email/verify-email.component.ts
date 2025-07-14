@@ -109,8 +109,8 @@
 
         this.http.get(apiUrl, { headers }).subscribe({
           next: (response: any) => {
-            // Redirect to the callback URL with the token
-            const token = localStorage.getItem('token');
+            // Redirect to the callback URL with the token from cookies
+            const token = this.getTokenFromCookie();
             window.location.href = `https://knoldg.com/en/callback/${token}`;
             this.verificationStatusKey = 'AUTH.VERIFY_EMAIL.EMAIL_SUCCESSFULLY_VERIFIED';
             this.verificationStatus = this.translationService.getTranslation(this.verificationStatusKey);
@@ -157,10 +157,31 @@
     }
 
     toApp() {
-      this.router.navigate(['/app']);
+      // After successful verification, redirect to the callback route
+      // which will handle the proper authentication flow
+      const token = this.getTokenFromCookie();
+      if (token) {
+        this.router.navigate(['/auth/callback'], { queryParams: { token: token } });
+      } else {
+        // If no token, redirect to login
+        this.router.navigate(['/auth/login']);
+      }
     }
 
     signuppath() {
       this.router.navigateByUrl("/auth/sign-up");
+    }
+
+    private getTokenFromCookie(): string | null {
+      if (typeof document === 'undefined') return null;
+      
+      const cookies = document.cookie.split(';');
+      for (let cookie of cookies) {
+        const [name, value] = cookie.trim().split('=');
+        if (name === 'token') {
+          return value;
+        }
+      }
+      return null;
     }
   }

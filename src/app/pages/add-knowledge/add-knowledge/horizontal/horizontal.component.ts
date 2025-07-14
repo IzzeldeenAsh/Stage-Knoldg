@@ -31,6 +31,7 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
   @ViewChild(SubStepDocumentsComponent) documentsComponent: SubStepDocumentsComponent;
   @ViewChild('step3Component') step3Component: any;
   @ViewChild('step4Component') step4Component: any;
+  @ViewChild('step5Component') step5Component: any;
   
   constructor(
     injector: Injector,
@@ -660,6 +661,28 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
   handleStep5Submission(nextStep: number) {
     const currentAccount = this.account$.value;
     
+    // Get the Step 5 component instance and validate it
+    const step5Component = this.getCurrentStepComponent(5);
+    
+    // Use validateForm method if available to show all validation errors
+    if (step5Component && typeof step5Component.validateForm === 'function') {
+      const isValid = step5Component.validateForm();
+      if (!isValid) {
+        // Errors are now visible in the UI, no need for toast message
+        return; // Don't advance to next step
+      }
+    } else {
+      // Fallback: Check if the current form is valid from the step5 component
+      if (!this.isCurrentFormValid$.value) {
+        if( this.lang === 'ar' ) {
+          this.showWarn('', 'يرجى تصحيح الأخطاء في النموذج قبل المتابعة');
+         } else {
+          this.showWarn('', 'Please correct the form errors before proceeding');
+         }
+        return; // Don't advance to next step
+      }
+    }
+    
     // Validate publish status selection
     if (!currentAccount.publish_status) {
       if( this.lang === 'ar' ) {
@@ -832,6 +855,10 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
     // For step 4, we need to access its validation method
     if (stepNumber === 4) {
       return this.step4Component;
+    }
+    // For step 5, we need to access its validation method
+    if (stepNumber === 5) {
+      return this.step5Component;
     }
     return null;
   }
