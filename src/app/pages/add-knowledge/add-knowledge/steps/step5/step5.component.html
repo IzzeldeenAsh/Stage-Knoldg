@@ -120,27 +120,6 @@
           ">
             {{ "VALID_TIME_REQUIRED" | translate }}
           </small>
-          <small class="p-error block" *ngIf="
-            publishForm.get('publishTime')?.invalid &&
-            publishForm.get('publishTime')?.touched &&
-            publishForm.get('publishTime')?.errors?.['pastDateTime']
-          ">
-            {{ "PAST_TIME_ERROR" | translate }}
-          </small>
-          <small class="p-error block" *ngIf="
-            publishForm.get('publishTime')?.invalid &&
-            publishForm.get('publishTime')?.touched &&
-            publishForm.get('publishTime')?.errors?.['tooSoon']
-          ">
-            {{ "SCHEDULE_TIME_MIN_ERROR" | translate }}
-          </small>
-          <small class="p-error block" *ngIf="
-            publishForm.get('publishTime')?.invalid &&
-            publishForm.get('publishTime')?.touched &&
-            publishForm.get('publishTime')?.errors?.['invalidDateTime']
-          ">
-            Invalid date or time
-          </small>
           <small class="p-error block" *ngIf="timeError">{{ timeError }}</small>
         </div>
       </div>
