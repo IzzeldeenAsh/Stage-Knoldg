@@ -1351,7 +1351,16 @@ UPLOAD: 'Upload',
       "JOIN":"Join",
       "JOINING":"Joining",
       "JOINT_MEETING":"Join Meeting",
+      "NOTE_ONE_YEAR":"The Schedule will be available for one year span from the today",
       "RATE":"Rate",
+      "STATS":{
+        "TOTAL_MEETINGS": "Total Meetings",
+        "PENDING": "Pending",
+        "APPROVED": "Approved",
+        "POSTPONED": "Postponed",
+        "UPCOMING": "Upcoming",
+        "PAST": "Passed"
+      },
       "FILTERS": {
         "ALL": "All",
         "PENDING": "Pending",
