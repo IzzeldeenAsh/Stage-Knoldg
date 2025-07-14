@@ -194,6 +194,10 @@ export class InsighterDashboardComponent implements OnInit {
     return this.router.url.includes(route);
   }
 
+  isSubRouteActive(route: string, subRoute: string): boolean {
+    return this.router.url.includes(route) && this.router.url.includes(subRoute);
+  }
+
   toggleMeetings(): void {
     this.isMeetingsExpanded = !this.isMeetingsExpanded;
   }

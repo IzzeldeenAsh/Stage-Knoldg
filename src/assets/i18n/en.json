@@ -107,5 +107,27 @@
   "COMPANY_INDUSTRIES": "Company Industries",
   "COMPANY_CONSULTING_FIELDS": "Company Consulting Fields",
   "CERTIFICATIONS": "Certifications",
-  "COMPANY_CERTIFICATIONS": "Company Certifications"
+  "COMPANY_CERTIFICATIONS": "Company Certifications",
+  "AUTH": {
+    "EMAIL_RECONFIRM": {
+      "TITLE": "Email Verification Required",
+      "DESCRIPTION": "Please verify your email address to access all features",
+      "FORM_TITLE": "Verify Your Email",
+      "FORM_SUBTITLE": "We need to verify your email address before you can continue",
+      "EMAIL_NOT_VERIFIED": "Email address not verified",
+      "SUCCESS_TITLE": "Email Sent!",
+      "SUCCESS_MESSAGE": "Verification email sent successfully. Please check your inbox and spam folder.",
+      "ERROR_MESSAGE": "Failed to send verification email. Please try again.",
+      "RESEND_BUTTON": "Resend Verification Email",
+      "RESEND_COOLDOWN": "Wait",
+      "SENDING": "Sending...",
+      "BACK_TO_LOGIN": "Back to Login",
+      "OR": "or",
+      "LOGOUT": "Logout",
+      "VERIFIED_SUCCESS": "Your email has been verified successfully!",
+      "AUTH_ERROR": "Authentication error. Please log in again.",
+      "VERIFICATION_REQUIRED": "Please verify your email address to continue.",
+      "PROFILE_ERROR": "Unable to load profile information. You can still try to resend the verification email."
+    }
+  }
 } 

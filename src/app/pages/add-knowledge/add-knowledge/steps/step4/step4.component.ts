@@ -288,6 +288,9 @@ export class Step4Component extends BaseComponent implements OnInit {
     
     // Setup target market change listener
     this.form.get('targetMarket')?.valueChanges.subscribe(value => {
+      // Reset target market default values to prevent interference
+      this.resetTargetMarketDefaults();
+      
       // Reset regions and countries values when target market changes
       regionsControl?.setValue([]);
       countriesControl?.setValue([]);
@@ -344,29 +347,21 @@ export class Step4Component extends BaseComponent implements OnInit {
         regionsControl?.updateValueAndValidity();
         countriesControl?.updateValueAndValidity();
         
-        // Don't reset economic blocks if we have preselected values
-        if (!this.defaultValues.economic_blocs || this.defaultValues.economic_blocs.length === 0) {
-          economicBlocksControl?.setValue([]);
-        } else {
-          // Set the preselected economic blocks
-          economicBlocksControl?.setValue(this.defaultValues.economic_blocs);
-        }
+        // Reset economic blocks value
+        economicBlocksControl?.setValue([]);
         
         this.updateParentModel({ 
           regions: [], 
           countries: [],
-          economic_blocs: this.defaultValues.economic_blocs || [] 
+          economic_blocs: [] 
         }, this.checkForm());
         
-        // Only open dialog if no preselected values
-        if (!this.defaultValues.economic_blocs || this.defaultValues.economic_blocs.length === 0) {
-          // Open economic blocks dialog with a slight delay to ensure component is rendered
-          setTimeout(() => {
-            if (this.economicBlockSelector) {
-              this.economicBlockSelector.showDialog();
-            }
-          }, 100);
-        }
+        // Open economic blocks dialog with a slight delay to ensure component is rendered
+        setTimeout(() => {
+          if (this.economicBlockSelector) {
+            this.economicBlockSelector.showDialog();
+          }
+        }, 100);
       } else if (value === '3') {
         // Worldwide option - clear all validators and data
         regionsControl?.clearValidators();
@@ -476,26 +471,52 @@ export class Step4Component extends BaseComponent implements OnInit {
     const economicBlocks = this.form.get('economicBlocks')?.value || [];
     const keywords = this.form.get('keywords')?.value || [];
     
+    console.log('checkForm called with:', {
+      targetMarket,
+      regions: regions.length,
+      countries: countries.length,
+      economicBlocks: economicBlocks.length,
+      keywords: keywords.length
+    });
+    
     // Check target market specific validation
     let targetMarketValid = false;
     if (targetMarket === '1') {
+      // Regions mode - need at least one region OR country
       targetMarketValid = regions.length > 0 || countries.length > 0;
     } else if (targetMarket === '4') {
-      // For countries-only option, only validate countries
+      // Countries only mode - need at least one country
       targetMarketValid = countries.length > 0;
     } else if (targetMarket === '2') {
+      // Economic blocks mode - need at least one economic block
       targetMarketValid = economicBlocks.length > 0;
     } else if (targetMarket === '3') {
-      // Worldwide option is always valid for target market validation
+      // Worldwide is always valid
       targetMarketValid = true;
     }
     
-    // Check all other form controls and keyword requirement
-    const otherControlsValid = Object.keys(this.form.controls)
-      .filter(key => !['regions', 'countries', 'economicBlocks', 'keywords'].includes(key))
-      .every(key => !this.form.get(key)?.errors);
+    // Check other required fields
+    const title = this.form.get('title')?.value;
+    const description = this.form.get('description')?.value;
+    const language = this.form.get('language')?.value;
+    const industry = this.form.get('industry')?.value;
+    const topicId = this.form.get('topicId')?.value;
+    const tagIds = this.form.get('tag_ids')?.value || [];
     
-    return targetMarketValid && otherControlsValid && keywords.length > 0;
+    const otherControlsValid = !!(title && description && language && industry && topicId && tagIds.length > 0);
+    const isKeywordsValid = keywords.length > 0;
+    const isFormValid = this.form.valid;
+    
+    const result = {
+      targetMarketValid,
+      otherControlsValid,
+      isKeywordsValid,
+      isFormValid: isFormValid && targetMarketValid && otherControlsValid && isKeywordsValid
+    };
+    
+    console.log('checkForm result:', result);
+    
+    return result.isFormValid;
   }
   
   /**
@@ -510,29 +531,8 @@ export class Step4Component extends BaseComponent implements OnInit {
       control?.markAsTouched();
     });
 
-    // Special validation for regions/countries based on target market
-    const targetMarket = this.form.get('targetMarket')?.value;
-    if (targetMarket === '1') {
-      const regions = this.form.get('regions')?.value || [];
-      const countries = this.form.get('countries')?.value || [];
-      
-      if (regions.length === 0 && countries.length === 0) {
-        // Apply custom validation error
-        this.form.get('regions')?.setErrors({ required: true });
-        this.form.get('countries')?.setErrors({ required: true });
-      }
-    } else if (targetMarket === '2') {
-      const economicBlocks = this.form.get('economicBlocks')?.value || [];
-      
-      if (economicBlocks.length === 0) {
-        // Apply custom validation error
-        this.form.get('economicBlocks')?.setErrors({ required: true });
-      } else {
-        // Clear error if we have economic blocks selected
-        this.form.get('economicBlocks')?.setErrors(null);
-      }
-    }
-    // For targetMarket === '3' (Worldwide), no special validation needed
+    // Use the centralized target market validation method
+    this.forceTargetMarketValidation();
 
     // Special validation for keywords
     const keywords = this.form.get('keywords')?.value || [];
@@ -540,14 +540,100 @@ export class Step4Component extends BaseComponent implements OnInit {
       this.form.get('keywords')?.setErrors({ required: true });
     }
 
-    // Update the parent model with the current form validity
-    if (this.updateParentModel) {
-      this.updateParentModel({}, this.checkForm());
-    }
+    // Force full synchronization between form and parent model
+    this.forceFullSync();
 
-    return this.form.valid && this.checkForm();
+    const isValid = this.form.valid && this.checkForm();
+    
+    console.log('validateForm result:', {
+      formValid: this.form.valid,
+      checkFormValid: this.checkForm(),
+      overallValid: isValid
+    });
+    
+    return isValid;
   }
   
+  /**
+   * Force full synchronization between form and parent model
+   */
+  private forceFullSync() {
+    const formValue = this.form.value;
+    const updateData = {
+      title: formValue.title,
+      description: formValue.description,
+      language: formValue.language,
+      industry: formValue.industry,
+      topicId: formValue.topicId,
+      regions: formValue.regions || [],
+      countries: formValue.countries || [],
+      economic_blocs: formValue.economicBlocks || [],
+      keywords: formValue.keywords || [],
+      tag_ids: formValue.tag_ids || [],
+      isic_code: formValue.isic_code,
+      hs_code: formValue.hs_code,
+      targetMarket: formValue.targetMarket
+    };
+    
+    console.log('Force full sync - updating parent model with:', updateData);
+    this.updateParentModel(updateData, this.checkForm());
+  }
+  
+  /**
+   * Force validation and synchronization of target market fields
+   */
+  private forceTargetMarketValidation() {
+    const targetMarket = this.form.get('targetMarket')?.value;
+    const regions = this.form.get('regions')?.value || [];
+    const countries = this.form.get('countries')?.value || [];
+    const economicBlocks = this.form.get('economicBlocks')?.value || [];
+    
+    // Mark all target market related fields as touched
+    this.form.get('targetMarket')?.markAsTouched();
+    this.form.get('regions')?.markAsTouched();
+    this.form.get('countries')?.markAsTouched();
+    this.form.get('economicBlocks')?.markAsTouched();
+    
+    // Apply appropriate validation based on target market
+    if (targetMarket === '1') {
+      if (regions.length === 0 && countries.length === 0) {
+        this.form.get('regions')?.setErrors({ required: true });
+        this.form.get('countries')?.setErrors({ required: true });
+      } else {
+        this.form.get('regions')?.setErrors(null);
+        this.form.get('countries')?.setErrors(null);
+      }
+    } else if (targetMarket === '4') {
+      if (countries.length === 0) {
+        this.form.get('countries')?.setErrors({ required: true });
+      } else {
+        this.form.get('countries')?.setErrors(null);
+      }
+      this.form.get('regions')?.setErrors(null);
+    } else if (targetMarket === '2') {
+      if (economicBlocks.length === 0) {
+        this.form.get('economicBlocks')?.setErrors({ required: true });
+      } else {
+        this.form.get('economicBlocks')?.setErrors(null);
+      }
+      this.form.get('regions')?.setErrors(null);
+      this.form.get('countries')?.setErrors(null);
+    } else if (targetMarket === '3') {
+      // Worldwide - clear all errors
+      this.form.get('regions')?.setErrors(null);
+      this.form.get('countries')?.setErrors(null);
+      this.form.get('economicBlocks')?.setErrors(null);
+    }
+    
+    // Update all field validities
+    this.form.get('regions')?.updateValueAndValidity();
+    this.form.get('countries')?.updateValueAndValidity();
+    this.form.get('economicBlocks')?.updateValueAndValidity();
+    
+    // Force change detection
+    this.cdr.detectChanges();
+  }
+
   // Custom Validator for Topic
   private duplicateTopicValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
@@ -640,6 +726,15 @@ export class Step4Component extends BaseComponent implements OnInit {
   
   // Target market related methods
   /**
+   * Reset target market default values to prevent interference
+   */
+  private resetTargetMarketDefaults() {
+    this.defaultValues.regions = [];
+    this.defaultValues.countries = [];
+    this.defaultValues.economic_blocs = [];
+  }
+
+  /**
    * Handles the selection of regions and countries
    */
   onRegionsSelected(regions: any) {
@@ -650,6 +745,8 @@ export class Step4Component extends BaseComponent implements OnInit {
     const uniqueRegions = regions.regions ? [...new Set(regions.regions)] : [];
     const uniqueCountries = regions.countries ? [...new Set(regions.countries)] : [];
 
+    console.log('onRegionsSelected called with:', { uniqueRegions, uniqueCountries, targetMarket });
+
     if (targetMarket === '1') {
       // Regions mode - we accept both regions and individual countries
       this.form.patchValue({
@@ -658,13 +755,23 @@ export class Step4Component extends BaseComponent implements OnInit {
       });
       
       // Update parent model with both
-      this.updateParentModel(
-        { 
-          regions: uniqueRegions, 
-          countries: uniqueCountries 
-        }, 
-        this.checkForm()
-      );
+      const updateData = { 
+        regions: uniqueRegions, 
+        countries: uniqueCountries,
+        economic_blocs: [] // Clear economic blocks
+      };
+      
+      console.log('Updating parent model (regions mode):', updateData);
+      this.updateParentModel(updateData, this.checkForm());
+      
+      // Set validation errors if both are empty
+      if (uniqueRegions.length === 0 && uniqueCountries.length === 0) {
+        this.form.get('regions')?.setErrors({ required: true });
+        this.form.get('countries')?.setErrors({ required: true });
+      } else {
+        this.form.get('regions')?.setErrors(null);
+        this.form.get('countries')?.setErrors(null);
+      }
     } else if (targetMarket === '4') {
       // Countries only mode - only use countries, ignore regions
       this.form.patchValue({
@@ -673,13 +780,22 @@ export class Step4Component extends BaseComponent implements OnInit {
       });
       
       // Update parent model for countries only
-      this.updateParentModel(
-        { 
-          regions: [], 
-          countries: uniqueCountries 
-        }, 
-        this.checkForm()
-      );
+      const updateData = { 
+        regions: [], 
+        countries: uniqueCountries,
+        economic_blocs: [] // Clear economic blocks
+      };
+      
+      console.log('Updating parent model (countries mode):', updateData);
+      this.updateParentModel(updateData, this.checkForm());
+      
+      // Set validation errors if countries are empty
+      if (uniqueCountries.length === 0) {
+        this.form.get('countries')?.setErrors({ required: true });
+      } else {
+        this.form.get('countries')?.setErrors(null);
+      }
+      this.form.get('regions')?.setErrors(null); // Clear regions errors for countries-only mode
     } else {
       // For other cases (shouldn't happen with current logic), set both
       this.form.patchValue({
@@ -688,26 +804,68 @@ export class Step4Component extends BaseComponent implements OnInit {
       });
       
       // Update parent model
-      this.updateParentModel(
-        { 
-          regions: uniqueRegions, 
-          countries: uniqueCountries 
-        }, 
-        this.checkForm()
-      );
+      const updateData = { 
+        regions: uniqueRegions, 
+        countries: uniqueCountries,
+        economic_blocs: [] // Clear economic blocks
+      };
+      
+      console.log('Updating parent model (other mode):', updateData);
+      this.updateParentModel(updateData, this.checkForm());
     }
 
-    // Trigger validation
+    // Trigger validation and mark as touched to show errors immediately
+    this.form.get('regions')?.markAsTouched();
+    this.form.get('countries')?.markAsTouched();
     this.form.get('regions')?.updateValueAndValidity();
     this.form.get('countries')?.updateValueAndValidity();
+    
+    // Force change detection
+    this.cdr.detectChanges();
+    
+    console.log('Form values after update:', {
+      regions: this.form.get('regions')?.value,
+      countries: this.form.get('countries')?.value,
+      parentModel: {
+        regions: uniqueRegions,
+        countries: uniqueCountries
+      }
+    });
   }
   
   onEconomicBlocksSelected(blocks: EconomicBloc[]) {
     const selectedBlocks = blocks.map(block => block.id);
+    
+    console.log('onEconomicBlocksSelected called with:', { blocks: selectedBlocks });
+    
     this.form.get('economicBlocks')?.setValue(selectedBlocks);
-    // Force validation check
+    // Force validation check and mark as touched
+    this.form.get('economicBlocks')?.markAsTouched();
     this.form.get('economicBlocks')?.updateValueAndValidity();
-    this.updateParentModel({ economic_blocs: selectedBlocks }, this.checkForm());
+    
+    // Set validation errors if no blocks are selected
+    if (selectedBlocks.length === 0) {
+      this.form.get('economicBlocks')?.setErrors({ required: true });
+    } else {
+      this.form.get('economicBlocks')?.setErrors(null);
+    }
+    
+    // Update parent model with cleared regions and countries
+    this.updateParentModel({ 
+      economic_blocs: selectedBlocks,
+      regions: [],
+      countries: []
+    }, this.checkForm());
+    
+    // Force change detection
+    this.cdr.detectChanges();
+    
+    console.log('Economic blocks form values after update:', {
+      economicBlocks: this.form.get('economicBlocks')?.value,
+      parentModel: {
+        economic_blocs: selectedBlocks
+      }
+    });
   }
   
   // Worldwide helper methods
@@ -734,7 +892,11 @@ export class Step4Component extends BaseComponent implements OnInit {
           regions: allRegionIds
         });
         // Update the parent model with all regions
-        this.checkForm();
+        this.updateParentModel({
+          regions: allRegionIds,
+          countries: [],
+          economic_blocs: []
+        }, this.checkForm());
       });
     }
   }
@@ -1317,49 +1479,6 @@ export class Step4Component extends BaseComponent implements OnInit {
 
   // Add method to listen for field changes to remove AI Generated badges
   private setupFieldChangeListeners(): void {
-    // Listen for targetMarket changes to apply the correct validators
-    this.form.get('targetMarket')?.valueChanges.subscribe(value => {
-      if (value === '1') {
-        this.form.get('regions')?.setValidators([Validators.required]);
-        this.form.get('economicBlocks')?.clearValidators();
-        this.form.get('economicBlocks')?.updateValueAndValidity();
-        // Reset economic blocks when switching to regions/countries
-        this.form.get('economicBlocks')?.setValue([]);
-      } else if (value === '4') {
-        // Countries only option
-        this.form.get('regions')?.clearValidators();
-        this.form.get('regions')?.updateValueAndValidity();
-        this.form.get('countries')?.setValidators([Validators.required]);
-        this.form.get('countries')?.updateValueAndValidity();
-        this.form.get('economicBlocks')?.clearValidators();
-        this.form.get('economicBlocks')?.updateValueAndValidity();
-        
-        // Reset regions and economic blocks when switching to countries only
-        this.form.get('regions')?.setValue([]);
-        this.form.get('economicBlocks')?.setValue([]);
-      } else if (value === '2') {
-        this.form.get('regions')?.clearValidators();
-        this.form.get('regions')?.updateValueAndValidity();
-        this.form.get('countries')?.clearValidators();
-        this.form.get('countries')?.updateValueAndValidity();
-        this.form.get('economicBlocks')?.setValidators([Validators.required]);
-        // Reset regions and countries when switching to economic blocks
-        this.form.get('regions')?.setValue([]);
-        this.form.get('countries')?.setValue([]);
-      } else if (value === '3') {
-        // For worldwide, clear all validators
-        this.form.get('regions')?.clearValidators();
-        this.form.get('regions')?.updateValueAndValidity();
-        this.form.get('countries')?.clearValidators();
-        this.form.get('countries')?.updateValueAndValidity();
-        this.form.get('economicBlocks')?.clearValidators();
-        this.form.get('economicBlocks')?.updateValueAndValidity();
-        
-        // Update for worldwide (get all regions)
-        this.updateForWorldwide();
-      }
-    });
-
     // Title field
     this.form.get('title')?.valueChanges.subscribe(value => {
       // Only mark as non-AI if the value has changed and it was previously AI generated

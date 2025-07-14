@@ -1,13 +1,22 @@
 <div class="economic-block-selector" (click)="showDialog()">
   <div class="chips-container">
     <ng-container *ngIf="hasSelections(); else placeholderTpl">
-      <div class="selected-items">
+      <div class="selected-items" (click)="$event.stopPropagation()">
         <p-chip
           *ngFor="let item of getSelectedDisplayItems()"
           [label]="item"
           [removable]="true"
           (onRemove)="removeItem(item)"
+          (click)="$event.stopPropagation()"
         ></p-chip>
+        <!-- Add button -->
+        <span 
+          class="add-button text-info fw-bold ms-2"
+          (click)="showDialog()"
+          style="cursor: pointer; font-size: 14px;"
+        >
+          Add
+        </span>
       </div>
     </ng-container>
     <ng-template #placeholderTpl>
@@ -71,11 +80,8 @@
         *ngFor="let block of filteredBlocks"
         class="block-card"
         [class.selected]="isBlockSelected(block)"
-        (click)="
-          toggleSelectBlock(block, {
-            target: { checked: !isBlockSelected(block) }
-          })
-        "
+        (click)="toggleBlockSelection(block)"
+        style="cursor: pointer;"
       >
         <div class="block-card-content">
           <div class="form-check">
@@ -83,9 +89,8 @@
               type="checkbox"
               class="form-check-input"
               [checked]="isBlockSelected(block)"
-              (change)="toggleSelectBlock(block, $event)"
-              (click)="$event.stopPropagation()"
               id="select-block-{{ block.id }}"
+              readonly
             />
             <label
               class="form-check-label fw-bold"

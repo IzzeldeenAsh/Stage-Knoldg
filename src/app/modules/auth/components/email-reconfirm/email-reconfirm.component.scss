@@ -1,0 +1,192 @@
+// Email Reconfirm Component Styles
+.email-reconfirm-container {
+  min-height: 100vh;
+  
+  .email-display {
+    background: rgba(#3f8cff, 0.1);
+    border: 1px solid rgba(#3f8cff, 0.2);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    
+    .email-icon {
+      color: #3f8cff;
+      font-size: 2rem;
+    }
+    
+    .email-text {
+      .email-address {
+        font-weight: 600;
+        color: #181c32;
+        font-size: 1rem;
+      }
+      
+      .email-status {
+        color: #a1a5b7;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+      }
+    }
+  }
+  
+  .success-alert {
+    background: rgba(#50cd89, 0.1);
+    border: 1px solid rgba(#50cd89, 0.2);
+    color: #0d2818;
+    
+    .success-icon {
+      color: #50cd89;
+    }
+  }
+  
+  .error-alert {
+    background: rgba(#f1416c, 0.1);
+    border: 1px solid rgba(#f1416c, 0.2);
+    color: #2d0a0a;
+    
+    .error-icon {
+      color: #f1416c;
+    }
+  }
+  
+  .cooldown-button {
+    position: relative;
+    overflow: hidden;
+    
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    
+    .cooldown-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: rgba(#ffffff, 0.1);
+      transition: width 1s ease-in-out;
+    }
+  }
+  
+  .resend-actions {
+    gap: 1rem;
+    
+    .btn {
+      min-width: 120px;
+      
+      &.btn-primary {
+        background: #3f8cff;
+        border-color: #3f8cff;
+        
+        &:hover:not(:disabled) {
+          background: #2b7ce8;
+          border-color: #2b7ce8;
+        }
+        
+        &:disabled {
+          background: #e1e3ea;
+          border-color: #e1e3ea;
+          color: #a1a5b7;
+        }
+      }
+      
+      &.btn-light-primary {
+        background: rgba(#3f8cff, 0.1);
+        border-color: rgba(#3f8cff, 0.2);
+        color: #3f8cff;
+        
+        &:hover {
+          background: rgba(#3f8cff, 0.2);
+          border-color: rgba(#3f8cff, 0.3);
+        }
+      }
+      
+      &.btn-light-danger {
+        background: rgba(#f1416c, 0.1);
+        border-color: rgba(#f1416c, 0.2);
+        color: #f1416c;
+        
+        &:hover {
+          background: rgba(#f1416c, 0.2);
+          border-color: rgba(#f1416c, 0.3);
+        }
+      }
+    }
+  }
+  
+  .separator {
+    position: relative;
+    margin: 2rem 0;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: #e1e3ea;
+      z-index: 1;
+    }
+    
+    span {
+      background: #ffffff;
+      padding: 0 1rem;
+      position: relative;
+      z-index: 2;
+      display: inline-block;
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 991.98px) {
+  .email-reconfirm-container {
+    .aside-content {
+      padding: 2rem 1rem;
+      
+      h1 {
+        font-size: 2rem !important;
+      }
+    }
+    
+    .form-wrapper {
+      padding: 1rem;
+    }
+    
+    .resend-actions {
+      flex-direction: column;
+      
+      .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+}
+
+// Animation for loading states
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.loading-pulse {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+// Custom spinner for resend button
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+}

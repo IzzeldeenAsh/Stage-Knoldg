@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { FormsModule } from '@angular/forms';
@@ -27,7 +27,7 @@ import { TabViewModule } from 'primeng/tabview';
   templateUrl: './select-region.component.html',
   styleUrls: ['./select-region.component.scss']
 })
-export class SelectRegionComponent implements OnInit {
+export class SelectRegionComponent implements OnInit, OnChanges {
   @Input() placeholder: string = 'Select Region...';
   @Input() title: string = 'Select Regions';
   @Input() preSelectedRegions: any = [];
@@ -54,6 +54,30 @@ export class SelectRegionComponent implements OnInit {
     this.selectedRegions = this.preSelectedRegions ? [...this.preSelectedRegions] : [];
     this.selectedCountries = this.preSelectedCountries ? [...this.preSelectedCountries] : [];
     this.updateDisplayValue();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['preSelectedRegions'] || changes['preSelectedCountries']) {
+      // Handle preSelectedRegions changes
+      if (changes['preSelectedRegions']) {
+        const newRegions = changes['preSelectedRegions'].currentValue;
+        this.selectedRegions = Array.isArray(newRegions) ? [...newRegions] : [];
+      }
+      
+      // Handle preSelectedCountries changes
+      if (changes['preSelectedCountries']) {
+        const newCountries = changes['preSelectedCountries'].currentValue;
+        this.selectedCountries = Array.isArray(newCountries) ? [...newCountries] : [];
+      }
+      
+      // Update display value after changes
+      this.updateDisplayValue();
+      
+      console.log('Select-region component updated selections:', {
+        selectedRegions: this.selectedRegions,
+        selectedCountries: this.selectedCountries
+      });
+    }
   }
 
   loadRegions() {
@@ -347,34 +371,62 @@ export class SelectRegionComponent implements OnInit {
   }
 
   /**
-   * Clears all selections
+   * Removes a specific item (region or country) from selection
+   */
+  removeItem(itemName: string) {
+    console.log('removeItem called with:', itemName);
+    console.log('Before removal - selectedRegions:', this.selectedRegions, 'selectedCountries:', this.selectedCountries);
+    
+    let itemRemoved = false;
+    
+    // Check if it's a region
+    const region = this.regions.find(r => r.name === itemName);
+    if (region) {
+      console.log('Removing region:', region.name, 'ID:', region.id);
+      this.selectedRegions = this.selectedRegions.filter(id => id !== region.id);
+      itemRemoved = true;
+    } else {
+      // Check if it's a country
+      for (const regionItem of this.regions) {
+        const country = regionItem.countries.find(c => c.name === itemName);
+        if (country) {
+          console.log('Removing country:', country.name, 'ID:', country.id);
+          this.selectedCountries = this.selectedCountries.filter(id => id !== country.id);
+          itemRemoved = true;
+          break;
+        }
+      }
+    }
+    
+    console.log('After removal - selectedRegions:', this.selectedRegions, 'selectedCountries:', this.selectedCountries);
+    
+    // Update display value after removal
+    this.updateDisplayValue();
+    
+    // Emit changes immediately after removal
+    if (itemRemoved) {
+      console.log('Emitting changes from removeItem');
+      this.regionsSelected.emit({
+        regions: this.selectedRegions,
+        countries: this.selectedCountries
+      });
+    } else {
+      console.log('No item was removed for:', itemName);
+    }
+  }
+
+  /**
+   * Clear all selections and emit changes
    */
   clearAllSelections() {
     this.selectedRegions = [];
     this.selectedCountries = [];
     this.updateDisplayValue();
-  }
-
-  /**
-   * Removes a specific item (region or country) from selection
-   */
-  removeItem(itemName: string) {
-    // Check if it's a region
-    const region = this.regions.find(r => r.name === itemName);
-    if (region) {
-      this.selectedRegions = this.selectedRegions.filter(id => id !== region.id);
-      this.updateDisplayValue();
-      return;
-    }
-
-    // Check if it's a country
-    for (const region of this.regions) {
-      const country = region.countries.find(c => c.name === itemName);
-      if (country) {
-        this.selectedCountries = this.selectedCountries.filter(id => id !== country.id);
-        this.updateDisplayValue();
-        return;
-      }
-    }
+    
+    // Emit the cleared state
+    this.regionsSelected.emit({
+      regions: this.selectedRegions,
+      countries: this.selectedCountries
+    });
   }
 }

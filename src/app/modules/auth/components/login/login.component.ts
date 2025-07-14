@@ -6,29 +6,28 @@ import { AuthService } from "../../services/auth.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslationService } from "src/app/modules/i18n/translation.service";
 import { Message } from "primeng/api";
-import {BaseComponent} from "src/app/modules/base.component"
+import { BaseComponent } from "src/app/modules/base.component";
 import { environment } from "src/environments/environment";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+
 @Component({
   selector: "app-login",
   templateUrl: "./login.component.html",
   styleUrls: ["./login.component.scss"],
 })
 export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
-  // KeenThemes mock, change it to:
   defaultAuth: any = {
     email: null,
     password: null,
   };
+  
   loginForm: FormGroup;
-  hasError: boolean;
+  hasError: boolean = false;
   returnUrl: string;
   isLoading$: Observable<boolean>;
   selectedLang: string = "en";
-  messages: Message[] = []; // Array to hold error messages
-  isRTL: boolean = false; // Added for RTL logic
+  messages: Message[] = [];
+  isRTL: boolean = false;
   passwordVisible: boolean = false;
-  // private fields
 
   constructor(
     private fb: FormBuilder,
@@ -36,43 +35,39 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private translationService: TranslationService,
-    private http: HttpClient,
     injector: Injector
   ) {
     super(injector);
-    // Now you can use someOtherService alongside base services
     this.isLoading$ = this.authService.isLoading$;
     this.selectedLang = this.translationService.getSelectedLanguage();
-    this.isRTL = this.selectedLang === "ar"; // Set RTL based on the selected language
+    this.isRTL = this.selectedLang === "ar";
   }
-
 
   ngAfterViewInit(): void {
     setTimeout(() => {
       this.scrollAnims.scrollAnimations();
-    }, 100); // Delay to ensure DOM elements are fully loaded
+    }, 100);
   }
 
   getHomeUrl(): string {
-    const url= 'https://knoldg.com/' + this.lang;
-    return url;
+    return `${environment.mainAppUrl}/${this.lang}`;
   }
 
   ngOnInit(): void {
     this.initForm();
     
-    // get return url from route parameters or default to '/'
+    // Get return URL from route parameters
     this.returnUrl = this.route.snapshot.queryParams["returnUrl"] || "/";
     
-    // Log the captured return URL for debugging
     console.log('Login component initialized with returnUrl:', this.returnUrl);
 
+    // Subscribe to language changes
     this.translationService.onLanguageChange().subscribe((lang) => {
       this.selectedLang = lang;
+      this.isRTL = lang === "ar";
     });
   }
 
-  // convenience getter for easy access to form fields
   get f() {
     return this.loginForm.controls;
   }
@@ -85,7 +80,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
           Validators.required,
           Validators.email,
           Validators.minLength(3),
-          Validators.maxLength(320), // https://stackoverflow.com/questions/386294/what-is-the-maximum-length-of-a-valid-email-address
+          Validators.maxLength(320),
         ]),
       ],
       password: [
@@ -101,73 +96,49 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
 
   signInWithGoogle(event: Event): void {
     event.preventDefault();
-    // Store return URL in a cross-domain cookie before redirecting
-    const prevUrl = this.getReturnUrl();
-    this.setReturnUrlCookie(prevUrl);
-    
-    this.authService.getGoogleAuthRedirectUrl().subscribe({
-      next: (redirectUrl) => {
-        const authtoken:any = localStorage.getItem('foresighta-creds');
-        const token = JSON.parse(authtoken);
-        if (token && token.authToken) {
-          // Store token in Next.js format for better compatibility
-          localStorage.setItem('token', token.authToken);
-
-          // Use the imported environment variable for the main app URL with returnUrl as query param
-          window.location.href = `${environment.mainAppUrl}/en/callback/${token.authToken}?returnUrl=${encodeURIComponent(prevUrl)}`;
-        } else {
-          window.location.href = redirectUrl;
-        }
-      },
-      error: (err) => {
-        console.error('Error getting Google auth redirect URL', err);
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to initiate Google sign-in.' });
-      }
-    });
+    this.performSocialAuth('google');
   }
 
   signInWithLinkedIn(event: Event): void {
     event.preventDefault();
-    // Store return URL in a cross-domain cookie before redirecting
-    const prevUrl = this.getReturnUrl();
-    this.setReturnUrlCookie(prevUrl);
+    this.performSocialAuth('linkedin');
+  }
+
+  private performSocialAuth(provider: 'google' | 'linkedin'): void {
+    const returnUrl = this.getReturnUrl();
     
-    this.authService.getLinkedInAuthRedirectUrl().subscribe({
+    // Store return URL in cookie
+    this.setReturnUrlCookie(returnUrl);
+    
+    const authMethod = provider === 'google' 
+      ? this.authService.getGoogleAuthRedirectUrl()
+      : this.authService.getLinkedInAuthRedirectUrl();
+
+    authMethod.subscribe({
       next: (redirectUrl) => {
-        const authtoken:any = localStorage.getItem('foresighta-creds');
-        const token = JSON.parse(authtoken);
-        if (token && token.authToken) {
-          // Store token in Next.js format for better compatibility
-          localStorage.setItem('token', token.authToken);
-          
-          // Use the imported environment variable for the main app URL with returnUrl as query param
-          window.location.href = `${environment.mainAppUrl}/en/callback/${token.authToken}?returnUrl=${encodeURIComponent(prevUrl)}`;
-        } else {
-          window.location.href = redirectUrl;
-        }
+        window.location.href = redirectUrl;
       },
       error: (err) => {
-        console.error('Error getting LinkedIn auth redirect URL', err);
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to initiate LinkedIn sign-in.' });
+        console.error(`Error getting ${provider} auth redirect URL`, err);
+        this.messageService.add({ 
+          severity: 'error', 
+          summary: 'Error', 
+          detail: `Failed to initiate ${provider} sign-in.` 
+        });
       }
     });
   }
-
-
 
   togglePasswordVisibility(passwordField: HTMLInputElement): void {
     this.passwordVisible = !this.passwordVisible;
     passwordField.type = this.passwordVisible ? "text" : "password";
   }
   
-  // Get the URL to return to after login
   private getReturnUrl(): string {
-    // Use the return URL from route params or document.referrer if available
     let returnUrl = this.returnUrl !== "/" ? this.returnUrl : document.referrer;
     
-    // Check if returnUrl is a full URL from knoldg.com
+    // Check if returnUrl is a full URL from allowed domains
     if (returnUrl && (returnUrl.includes('knoldg.com') || returnUrl.includes('localhost'))) {
-      // Keep full URLs from knoldg.com domains or localhost
       return returnUrl;
     }
     
@@ -180,131 +151,107 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
   }
   
   submit() {
-    this.hasError = false;
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
+    }
 
+    this.hasError = false;
+    this.messages = [];
+
+    const returnUrl = this.getReturnUrl();
+    
     const loginSubscr = this.authService
-      .login(this.f.email.value, this.f.password.value, this.selectedLang ? this.selectedLang : 'en')
+      .login(this.f.email.value, this.f.password.value, this.selectedLang, returnUrl)
       .pipe(first())
       .subscribe({
-        next: (res) => {
-          if (res && res?.roles) {
-            if (res.roles.includes("admin") || res.roles.includes("staff")) {
-              // Admin/staff users stay in the Angular app
-              this.router.navigate(["/admin-dashboard"]);
-            } else {
-              // For regular users, ensure token is properly stored before redirecting
-              try {
-                const authtoken = localStorage.getItem('foresighta-creds');
-                if (!authtoken) {
-                  throw new Error('Auth token not found');
-                }
-                
-                const token = JSON.parse(authtoken);
-                if (!token || !token.authToken) {
-                  throw new Error('Invalid auth token format');
-                }
-                
-                // Ensure token is also stored in Next.js format
-                localStorage.setItem('token', token.authToken);
-                
-                // Set token in cookie for SSR functions
-                this.setAuthCookie(token.authToken);
-                
-                // Get the return URL and redirect to Next.js callback with it as a query param
-                const prevUrl = this.getReturnUrl();
-                
-                // Special handling for client role trying to access join-company
-                if (res.roles.includes("client") && (this.returnUrl.includes('profile/join-company') || prevUrl.includes('profile/join-company'))) {
-                  // Ensure the return URL is preserved for client role specifically
-                  const joinCompanyUrl = '/profile/join-company';
-                  window.location.href = `${environment.mainAppUrl}/en/callback/${token.authToken}?returnUrl=${encodeURIComponent(joinCompanyUrl)}`;
-                } else {
-                  // Default behavior for other roles or routes
-                  window.location.href = `${environment.mainAppUrl}/en/callback/${token.authToken}?returnUrl=${encodeURIComponent(prevUrl)}`;
-                }
-              } catch (err) {
-                console.error('Error processing auth token:', err);
-                this.messages.push({
-                  severity: "error",
-                  summary: "Authentication Error",
-                  detail: "There was a problem with your login. Please try again.",
-                });
-              }
-            }
-          }
+        next: (loginResponse) => {
+          this.handleLoginSuccess(loginResponse.userData, loginResponse.token);
         },
         error: (error) => {
-          this.messages = [];
-
-          // Check if the error contains validation messages
-          if (error.validationMessages) {
-            this.messages = error.validationMessages; // Set the messages array
-          } else {
-            this.messages.push({
-              severity: "error",
-              summary: "Error",
-              detail: "An unexpected error occurred.",
-            });
-          }
+          this.handleLoginError(error);
         },
       });
+    
     this.unsubscribe.push(loginSubscr);
   }
-  
-  private setAuthCookie(token: string): void {
-    // Set token in a cookie with proper cross-domain settings
-    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+  private handleLoginSuccess(userData: any, token: string): void {
+    console.log('Login successful for user:', userData.email, 'with token:', token.substring(0, 20) + '...');
     
-    // Build cookie settings based on environment
-    let cookieSettings;
-    
-    if (isLocalhost) {
-      // For localhost: Use Lax SameSite without Secure flag
-      cookieSettings = [
-        `token=${token}`,
-        `Path=/`,               // send on all paths
-        `Max-Age=${60 * 60 * 24}`, // expires in 24 hours
-        `SameSite=Lax`          // default value, works on same site
-      ];
-    } else {
-      // For production: Use None SameSite with Secure flag and domain
-      cookieSettings = [
-        `token=${token}`,
-        `Path=/`,
-        `Max-Age=${60 * 60 * 24}`,
-        `SameSite=None`,        // works across domains
-        `Domain=.knoldg.com`,   // leading dot = include subdomains
-        `Secure`                // HTTPS only
-      ];
+    // Check if user needs email verification
+    if (userData.verified === false) {
+      this.router.navigate(["/auth/email-reconfirm"]);
+      return;
     }
-    
-    document.cookie = cookieSettings.join('; ');
+
+    // Check user roles and redirect accordingly
+    if (userData.roles && (userData.roles.includes("admin") || userData.roles.includes("staff"))) {
+      // Admin/staff users stay in the Angular app
+      this.router.navigate(["/admin-dashboard"]);
+    } else {
+      // Regular users redirect to Next.js app
+      this.redirectToMainApp(token);
+    }
   }
 
-  // Helper to set cross-domain cookie for return URL
+  private handleLoginError(error: any): void {
+    this.hasError = true;
+    this.messages = [];
+
+    if (error.validationMessages) {
+      this.messages = error.validationMessages;
+    } else if (error.error?.message === 'Your email address is not verified.') {
+      this.router.navigate(['/auth/email-reconfirm']);
+    } else {
+      this.messages.push({
+        severity: "error",
+        summary: "Authentication Error",
+        detail: error.error?.message || "An unexpected error occurred.",
+      });
+    }
+  }
+
+  private redirectToMainApp(token: string): void {
+    const returnUrl = this.getReturnUrl();
+    
+    console.log('Redirecting to Next.js with token:', token.substring(0, 20) + '...', 'and returnUrl:', returnUrl);
+    
+    // Build the redirect URL with token
+    let redirectUrl = `${environment.mainAppUrl}/en/callback/${token}`;
+    
+    // Add return URL as query parameter if it exists
+    if (returnUrl && returnUrl !== '/') {
+      redirectUrl += `?returnUrl=${encodeURIComponent(returnUrl)}`;
+    }
+    
+    console.log('Final redirect URL:', redirectUrl);
+    
+    // Add a small delay to ensure any pending operations complete
+    setTimeout(() => {
+      window.location.href = redirectUrl;
+    }, 100);
+  }
+
   private setReturnUrlCookie(url: string): void {
     const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
     
-    // Build cookie settings based on environment
     let cookieSettings;
-    
     if (isLocalhost) {
-      // For localhost: Use Lax SameSite without Secure flag
-      cookieSettings = [
-        `auth_return_url=${encodeURIComponent(url)}`,
-        `Path=/`,               // send on all paths
-        `Max-Age=${60 * 60}`,   // expires in 1 hour
-        `SameSite=Lax`          // default value, works on same site
-      ];
-    } else {
-      // For production: Use None SameSite with Secure flag and domain
       cookieSettings = [
         `auth_return_url=${encodeURIComponent(url)}`,
         `Path=/`,
-        `Max-Age=${60 * 60}`,   // expires in 1 hour
-        `SameSite=None`,        // works across domains
-        `Domain=.knoldg.com`,   // leading dot = include subdomains
-        `Secure`                // HTTPS only
+        `Max-Age=${60 * 60}`, // 1 hour
+        `SameSite=Lax`
+      ];
+    } else {
+      cookieSettings = [
+        `auth_return_url=${encodeURIComponent(url)}`,
+        `Path=/`,
+        `Max-Age=${60 * 60}`, // 1 hour
+        `SameSite=None`,
+        `Domain=.knoldg.com`,
+        `Secure`
       ];
     }
     

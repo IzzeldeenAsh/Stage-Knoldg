@@ -1,13 +1,22 @@
 <div class="region-selector" (click)="showDialog()">
   <div class="chips-container">
     <ng-container *ngIf="hasSelections(); else placeholderTpl">
-      <div class="selected-items">
+      <div class="selected-items" (click)="$event.stopPropagation()">
         <p-chip
           *ngFor="let item of getSelectedDisplayItems()"
           [label]="item"
           [removable]="true"
           (onRemove)="removeItem(item)"
+          (click)="$event.stopPropagation()"
         ></p-chip>
+        <!-- Add button -->
+        <span 
+          class="add-button text-info fw-bold ms-2"
+          (click)="showDialog()"
+          style="cursor: pointer; font-size: 14px;"
+        >
+          Add
+        </span>
       </div>
     </ng-container>
     <ng-template #placeholderTpl>

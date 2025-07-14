@@ -1,5 +1,5 @@
 import { Component, Injector, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ICreateKnowldege } from '../../create-account.helper';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
@@ -105,13 +105,19 @@ export class Step5Component extends BaseComponent implements OnInit {
         'ACCOUNT_STATUS_NOTICE': 'Account Status Notice',
         'ACTIVE_ACCOUNT_REQUIRED_MESSAGE': 'You need an active account to publish or schedule your knowledge. In the meantime, you can save it as a draft.',
         'SEND_TO_MANAGER': 'Send to Manager',
-        'SEND_TO_MANAGER_DESC': 'Submit your knowledge for manager review before publishing.'
+        'SEND_TO_MANAGER_DESC': 'Submit your knowledge for manager review before publishing.',
+        'SCHEDULE_TIME_MIN_ERROR': 'Scheduled time must be at least 1 hour from now',
+        'PAST_DATE_ERROR': 'Selected date cannot be in the past',
+        'PAST_TIME_ERROR': 'Selected time must be at least 1 hour from now'
       },
       'ar': {
         'ACCOUNT_STATUS_NOTICE': 'إشعار حالة الحساب',
         'ACTIVE_ACCOUNT_REQUIRED_MESSAGE': 'تحتاج إلى حساب نشط لنشر أو جدولة المعرفة الخاصة بك. في غضون ذلك، يمكنك حفظها كمسودة.',
         'SEND_TO_MANAGER': 'إرسال إلى المدير',
-        'SEND_TO_MANAGER_DESC': 'أرسل المعرفة الخاصة بك للمراجعة من قبل المدير قبل النشر.'
+        'SEND_TO_MANAGER_DESC': 'أرسل المعرفة الخاصة بك للمراجعة من قبل المدير قبل النشر.',
+        'SCHEDULE_TIME_MIN_ERROR': 'يجب أن يكون وقت الجدولة ساعة واحدة على الأقل من الآن',
+        'PAST_DATE_ERROR': 'لا يمكن أن يكون التاريخ المحدد في الماضي',
+        'PAST_TIME_ERROR': 'يجب أن يكون الوقت المحدد ساعة واحدة على الأقل من الآن'
       }
     };
     
@@ -219,6 +225,94 @@ export class Step5Component extends BaseComponent implements OnInit {
     this.hasOnlyTwoOptions = !isActive;
     console.log('Final publish options:', this.publishOptions);
   }
+
+  // Custom validator for date - must be today or future
+  private dateValidator = (control: AbstractControl): ValidationErrors | null => {
+    const publishOption = this.publishForm?.get('publishOption')?.value;
+    
+    if (publishOption !== 'scheduled' || !control.value) {
+      return null;
+    }
+
+    // Check if value is a valid Date object
+    if (!(control.value instanceof Date)) {
+      return null;
+    }
+    
+    // Check if date is valid (not Invalid Date)
+    if (isNaN(control.value.getTime())) {
+      return null;
+    }
+
+    const selectedDate = new Date(control.value);
+    const today = new Date();
+    
+    // Reset hours to compare dates properly
+    selectedDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+    
+    if (selectedDate < today) {
+      return { pastDate: true };
+    }
+    
+    return null;
+  };
+
+  // Custom validator for datetime combination - must be at least 1 hour from now
+  private dateTimeValidator = (control: AbstractControl): ValidationErrors | null => {
+    const publishOption = this.publishForm?.get('publishOption')?.value;
+    
+    if (publishOption !== 'scheduled') {
+      return null;
+    }
+
+    const dateValue = this.publishForm?.get('publishDate')?.value;
+    const timeValue = control.value;
+    
+    if (!dateValue || !timeValue) {
+      return null;
+    }
+    
+    // Check if values are valid Date objects
+    if (!(dateValue instanceof Date) || !(timeValue instanceof Date)) {
+      return null;
+    }
+    
+    // Check if dates are valid (not Invalid Date)
+    if (isNaN(dateValue.getTime()) || isNaN(timeValue.getTime())) {
+      return null;
+    }
+    
+    try {
+      // Create a combined date-time object
+      const scheduledDate = new Date(dateValue);
+      scheduledDate.setHours(timeValue.getHours(), timeValue.getMinutes(), 0, 0);
+      
+      // Check if combined date is valid
+      if (isNaN(scheduledDate.getTime())) {
+        return { invalidDateTime: true };
+      }
+      
+      const now = new Date();
+      
+      // Check if the scheduled date is in the past
+      if (scheduledDate <= now) {
+        return { pastDateTime: true };
+      }
+      
+      // Check if the scheduled time is at least 1 hour from now
+      const oneHourFromNow = new Date(now.getTime() + (60 * 60 * 1000));
+      
+      if (scheduledDate < oneHourFromNow) {
+        return { tooSoon: true };
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Error validating date/time:', error);
+      return { invalidDateTime: true };
+    }
+  };
   
   private initializeForm() {
     this.publishForm = this.fb.group({
@@ -233,8 +327,8 @@ export class Step5Component extends BaseComponent implements OnInit {
       const publishTimeControl = this.publishForm.get('publishTime');
 
       if (option === 'scheduled') {
-        publishDateControl?.setValidators([Validators.required]);
-        publishTimeControl?.setValidators([Validators.required]);
+        publishDateControl?.setValidators([Validators.required, this.dateValidator]);
+        publishTimeControl?.setValidators([Validators.required, this.dateTimeValidator]);
       } else {
         publishDateControl?.clearValidators();
         publishTimeControl?.clearValidators();
@@ -242,6 +336,11 @@ export class Step5Component extends BaseComponent implements OnInit {
 
       publishDateControl?.updateValueAndValidity();
       publishTimeControl?.updateValueAndValidity();
+      
+      // Clear timeError when switching away from scheduled
+      if (option !== 'scheduled') {
+        this.timeError = '';
+      }
 
       // Update parent model with the selected option
       this.updateParentValues();
@@ -249,8 +348,18 @@ export class Step5Component extends BaseComponent implements OnInit {
 
     // React to form value changes
     this.publishForm.valueChanges.subscribe(() => {
-      this.validateDateTime();
+      this.updateTimeError();
       this.updateParentValues();
+    });
+
+    // Add subscription for date changes to trigger time validation (since time depends on date)
+    this.publishForm.get('publishDate')?.valueChanges.subscribe(() => {
+      if (this.publishForm.get('publishOption')?.value === 'scheduled') {
+        // Only re-validate time field when date changes (time validation depends on date)
+        if (this.publishForm.get('publishTime')?.value) {
+          this.publishForm.get('publishTime')?.updateValueAndValidity();
+        }
+      }
     });
 
     // Set defaults if we're in edit mode
@@ -265,14 +374,50 @@ export class Step5Component extends BaseComponent implements OnInit {
   }
 
   onDateSelect(): void {
-    const selectedDate = this.publishForm.get('publishDate')?.value;
-    const today = new Date();
+    // Trigger validation when date is selected
+    const publishDateControl = this.publishForm.get('publishDate');
+    const publishTimeControl = this.publishForm.get('publishTime');
     
-    if (selectedDate && selectedDate < today && selectedDate.toDateString() !== today.toDateString()) {
-      this.publishForm.get('publishDate')?.setErrors({ 'pastDate': true });
+    // Re-validate both date and time when date changes
+    publishDateControl?.updateValueAndValidity();
+    
+    // Important: Re-validate time when date changes since time validator depends on date
+    if (publishTimeControl?.value) {
+      publishTimeControl?.updateValueAndValidity();
     }
     
-    this.validateDateTime();
+    this.updateTimeError();
+  }
+
+  private updateTimeError(): void {
+    const publishOption = this.publishForm.get('publishOption')?.value;
+    
+    if (publishOption !== 'scheduled') {
+      this.timeError = '';
+      return;
+    }
+
+    const publishDateControl = this.publishForm.get('publishDate');
+    const publishTimeControl = this.publishForm.get('publishTime');
+    
+    // Check for date errors
+    if (publishDateControl?.errors?.['pastDate']) {
+      this.timeError = this.translateService.instant('PAST_DATE_ERROR');
+    }
+    // Check for time errors
+    else if (publishTimeControl?.errors?.['pastDateTime']) {
+      this.timeError = this.translateService.instant('PAST_TIME_ERROR');
+    }
+    else if (publishTimeControl?.errors?.['tooSoon']) {
+      this.timeError = this.translateService.instant('SCHEDULE_TIME_MIN_ERROR');
+    }
+    else if (publishTimeControl?.errors?.['invalidDateTime']) {
+      this.timeError = 'Invalid date or time';
+    }
+    else {
+      // Clear error if no validation errors
+      this.timeError = '';
+    }
   }
 
   private getFormattedDateTime(): string | undefined {
@@ -280,13 +425,29 @@ export class Step5Component extends BaseComponent implements OnInit {
       const dateValue = this.publishForm.get('publishDate')?.value;
       const timeValue = this.publishForm.get('publishTime')?.value;
       
-      if (!dateValue || !timeValue || !(dateValue instanceof Date) || !(timeValue instanceof Date)) {
+      // Check if both values exist and are valid Date objects
+      if (!dateValue || !timeValue) {
+        return undefined;
+      }
+      
+      // Ensure both values are Date objects
+      if (!(dateValue instanceof Date) || !(timeValue instanceof Date)) {
+        return undefined;
+      }
+      
+      // Check if dates are valid (not Invalid Date)
+      if (isNaN(dateValue.getTime()) || isNaN(timeValue.getTime())) {
         return undefined;
       }
       
       // Create a new date combining the date and time values
       const combinedDate = new Date(dateValue);
-      combinedDate.setHours(timeValue.getHours(), timeValue.getMinutes(), 0);
+      combinedDate.setHours(timeValue.getHours(), timeValue.getMinutes(), 0, 0);
+      
+      // Final check that combined date is valid
+      if (isNaN(combinedDate.getTime())) {
+        return undefined;
+      }
       
       // Format as MySQL datetime (YYYY-MM-DD HH:MM:SS)
       const year = combinedDate.getFullYear();
@@ -308,7 +469,12 @@ export class Step5Component extends BaseComponent implements OnInit {
 
   private updateParentValues() {
     const publishOption = this.publishForm.get('publishOption')?.value;
-    const publishDateTime = this.getFormattedDateTime();
+    let publishDateTime: string | undefined = undefined;
+
+    // Only format date/time if scheduled option is selected
+    if (publishOption === 'scheduled') {
+      publishDateTime = this.getFormattedDateTime();
+    }
 
     this.updateParentModel({
       publish_status: publishOption,
@@ -318,7 +484,7 @@ export class Step5Component extends BaseComponent implements OnInit {
 
   confirmSchedule() {
     // Final validation before confirming scheduled publish
-    if (this.publishForm.valid && this.timeError === '') {
+    if (this.publishForm.valid) {
       const publishOption = this.publishForm.get('publishOption')?.value;
       const publishDateTime = this.getFormattedDateTime();
 
@@ -345,46 +511,52 @@ export class Step5Component extends BaseComponent implements OnInit {
       return false;
     }
 
-    // Additional validation for scheduled option
+    // For scheduled option, check if form is valid (includes custom validators)
     if (publishOption === 'scheduled') {
-      return this.publishForm.valid && this.timeError === '';
+      // Check if both date and time are required and valid
+      const publishDateControl = this.publishForm.get('publishDate');
+      const publishTimeControl = this.publishForm.get('publishTime');
+      
+      // Both date and time must be selected
+      if (!publishDateControl?.value || !publishTimeControl?.value) {
+        return false;
+      }
+      
+      // Check for validation errors
+      if (publishDateControl?.errors || publishTimeControl?.errors) {
+        return false;
+      }
+      
+      // Form is valid for scheduled option
+      return this.publishForm.valid;
     }
 
-    return true;
+    // For other options, just check if publish option is selected
+    return this.publishForm.get('publishOption')?.valid || false;
   }
 
   private validateDateTime() {
-    // Clear previous errors
-    this.timeError = '';
-    
-    const publishOption = this.publishForm.get('publishOption')?.value;
-    
-    if (publishOption !== 'scheduled') {
-      return;
-    }
+    // This method is kept for backward compatibility but functionality moved to validators
+    this.updateTimeError();
+  }
 
-    const dateValue = this.publishForm.get('publishDate')?.value;
-    const timeValue = this.publishForm.get('publishTime')?.value;
+  /**
+   * Validates the form and marks all fields as touched to show validation errors
+   * @returns boolean indicating whether the form is valid
+   */
+  validateForm(): boolean {
+    // Mark all controls as touched to show validation errors
+    Object.keys(this.publishForm.controls).forEach(key => {
+      this.publishForm.get(key)?.markAsTouched();
+    });
     
-    if (!dateValue || !timeValue) {
-      return;
-    }
+    // Update time error display
+    this.updateTimeError();
     
-    try {
-      // Create a combined date-time object
-      const scheduledDate = new Date(dateValue);
-      scheduledDate.setHours(timeValue.getHours(), timeValue.getMinutes(), 0);
-      
-      const now = new Date();
-      
-      if (scheduledDate <= now) {
-        this.timeError = 'Selected time must be in the future';
-        return;
-      }
-      
-    } catch (error) {
-      console.error('Error validating date/time:', error);
-      this.timeError = 'Invalid date or time';
-    }
+    // Update parent values after validation
+    this.updateParentValues();
+    
+    // Return form validity
+    return this.checkForm();
   }
 }

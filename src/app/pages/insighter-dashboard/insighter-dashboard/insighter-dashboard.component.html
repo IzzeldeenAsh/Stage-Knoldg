@@ -13,7 +13,8 @@
         <app-requests-statistics *ngIf="isRouteActive('my-requests')"></app-requests-statistics>
         <app-knowledge-statistics *ngIf="isRouteActive('my-knowledge')"></app-knowledge-statistics>
         <app-downloads-statistics *ngIf="isRouteActive('my-downloads')"></app-downloads-statistics>
-        <app-meetings-statistics *ngIf="isRouteActive('my-meetings')"></app-meetings-statistics>
+        <app-meetings-statistics *ngIf="isRouteActive('my-meetings') && !isSubRouteActive('my-meetings', 'sent')"></app-meetings-statistics>
+        <app-sent-meetings-statistics *ngIf="isSubRouteActive('my-meetings', 'sent')"></app-sent-meetings-statistics>
         <app-consulting-schedule-header *ngIf="isRouteActive('my-consulting-schedule')"></app-consulting-schedule-header>
         <app-account-settings-header *ngIf="isRouteActive('account-settings')"></app-account-settings-header>
         <app-company-statistics *ngIf="isRouteActive('my-company-settings') && (hasCompanyRole$ | async)"></app-company-statistics>

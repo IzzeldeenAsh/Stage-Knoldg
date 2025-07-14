@@ -16,9 +16,17 @@
           ></p-calendar>
           <small class="p-error block" *ngIf="
             publishForm.get('publishDate')?.invalid &&
-            publishForm.get('publishDate')?.touched
+            publishForm.get('publishDate')?.touched &&
+            publishForm.get('publishDate')?.errors?.['required']
           ">
             {{ "VALID_DATE_REQUIRED" | translate }}
+          </small>
+          <small class="p-error block" *ngIf="
+            publishForm.get('publishDate')?.invalid &&
+            publishForm.get('publishDate')?.touched &&
+            publishForm.get('publishDate')?.errors?.['pastDate']
+          ">
+            Selected date cannot be in the past
           </small>
         </div>
       </div>
@@ -30,15 +38,36 @@
             [timeOnly]="true"
             [showIcon]="true"
             [required]="true"
-            [minDate]="minTime"
             [appendTo]="'body'"
             styleClass="w-100"
           ></p-calendar>
           <small class="p-error block" *ngIf="
             publishForm.get('publishTime')?.invalid &&
-            publishForm.get('publishTime')?.touched
+            publishForm.get('publishTime')?.touched &&
+            publishForm.get('publishTime')?.errors?.['required']
           ">
             {{ "VALID_TIME_REQUIRED" | translate }}
+          </small>
+          <small class="p-error block" *ngIf="
+            publishForm.get('publishTime')?.invalid &&
+            publishForm.get('publishTime')?.touched &&
+            publishForm.get('publishTime')?.errors?.['pastDateTime']
+          ">
+            Selected time cannot be in the past
+          </small>
+          <small class="p-error block" *ngIf="
+            publishForm.get('publishTime')?.invalid &&
+            publishForm.get('publishTime')?.touched &&
+            publishForm.get('publishTime')?.errors?.['tooSoon']
+          ">
+            Selected time must be at least one hour from now
+          </small>
+          <small class="p-error block" *ngIf="
+            publishForm.get('publishTime')?.invalid &&
+            publishForm.get('publishTime')?.touched &&
+            publishForm.get('publishTime')?.errors?.['invalidDateTime']
+          ">
+            Invalid date or time
           </small>
           <small class="p-error block" *ngIf="timeError">{{ timeError }}</small>
         </div>

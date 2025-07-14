@@ -395,8 +395,8 @@
             #regionSelector
             placeholder="{{ 'SELECT_REGIONS' | translate }}"
             title="{{ 'CHOOSE_REGIONS' | translate }}"
-            [preSelectedRegions]="defaultValues.regions"
-            [preSelectedCountries]="defaultValues.countries"
+            [preSelectedRegions]="form.get('regions')?.value || []"
+            [preSelectedCountries]="form.get('countries')?.value || []"
             (regionsSelected)="onRegionsSelected($event)"
             displayMode="onlyRegions"
             [ngClass]="{'is-invalid': form.get('targetMarket')?.value === '1' && form.get('regions')?.hasError('required') && (form.get('regions')?.touched || form.get('countries')?.touched), 'border-red': form.get('targetMarket')?.value === '1' && form.get('regions')?.hasError('required') && (form.get('regions')?.touched || form.get('countries')?.touched)}"
@@ -416,13 +416,13 @@
             #regionSelector
             placeholder="{{ 'SELECT_COUNTRIES' | translate }}"
             title="{{ 'CHOOSE_COUNTRIES' | translate }}"
-            [preSelectedRegions]="defaultValues.regions"
-            [preSelectedCountries]="defaultValues.countries"
+            [preSelectedRegions]="form.get('regions')?.value || []"
+            [preSelectedCountries]="form.get('countries')?.value || []"
             (regionsSelected)="onRegionsSelected($event)"
             displayMode="onlyCountries"
-            [ngClass]="{'is-invalid': form.get('targetMarket')?.value === '4' && form.get('regions')?.hasError('required') && (form.get('regions')?.touched || form.get('countries')?.touched), 'border-red': form.get('targetMarket')?.value === '4' && form.get('regions')?.hasError('required') && (form.get('regions')?.touched || form.get('countries')?.touched)}"
+            [ngClass]="{'is-invalid': form.get('targetMarket')?.value === '4' && form.get('countries')?.hasError('required') && (form.get('regions')?.touched || form.get('countries')?.touched), 'border-red': form.get('targetMarket')?.value === '4' && form.get('countries')?.hasError('required') && (form.get('regions')?.touched || form.get('countries')?.touched)}"
           ></app-select-region>
-          <div *ngIf="form.get('targetMarket')?.value === '4' && form.get('regions')?.hasError('required') && (form.get('regions')?.touched || form.get('countries')?.touched)" class="fv-plugins-message-container invalid-feedback mt-2">
+          <div *ngIf="form.get('targetMarket')?.value === '4' && form.get('countries')?.hasError('required') && (form.get('regions')?.touched || form.get('countries')?.touched)" class="fv-plugins-message-container invalid-feedback mt-2">
             {{ "COUNTRIES_REQUIRED" | translate }}
           </div>
         </div>
