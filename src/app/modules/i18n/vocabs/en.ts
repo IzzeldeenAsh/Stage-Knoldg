@@ -7,6 +7,8 @@ export const locale = {
     SHOW_LESS:'Show Less',
     SHOW_MORE:'Show More',
     RESET:'Reset',
+    GENERATE_AI_INFORMATION: "Generate AI Information",
+    REGENERATE_AI_INFORMATION: "Regenerate AI Information", 
     CHOOSE_COUNTTRIES:'Choose Countries',
    ACCOUNT: 'Account',
     INSIGHTER_REQUESTS: {
@@ -1257,6 +1259,7 @@ UPLOAD: 'Upload',
       PUBLISH_IN_PACKAGE: 'Publish in Package only',
       MAKE_AVAILABLE: 'Make Available Standalone & in Package',
       CHANGE_SCHEDULE: 'Change Schedule',
+      SCHEDULE: 'Schedule',
       UNPUBLISH: 'Unpublish'
     },
     "JOIN_COMPANY": {

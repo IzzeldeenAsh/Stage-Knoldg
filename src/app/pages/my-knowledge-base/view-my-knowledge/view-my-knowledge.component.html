@@ -275,7 +275,12 @@
                     </div>
                     {{ 'VIEW_MY_KNOWLEDGE.PUBLISH_DATE' | translate }}
                   </span>
-                  <span>{{ knowledge.published_at ? (knowledge.published_at | date : "dd MMMM yyyy HH:mm") : 'N/A' }}</span>
+                  <span>
+                    <div class="d-flex align-items-center gap-2">
+                      <span>       {{ knowledge.published_at ? (knowledge.published_at | date:'yyyy-MM-dd') : 'N/A' }}</span>
+                      <span class="badge badge-light-warning text-warning">{{ knowledge.published_at ? (knowledge.published_at | date:'HH:mm') : '' }}</span>
+                    </div>
+                  </span>
                 </div>
 
                 <!-- Included in Package -->
@@ -410,7 +415,7 @@
                     </div>
                     {{ 'VIEW_MY_KNOWLEDGE.PUBLISHED_AT' | translate }}
                   </span>
-                  <span>{{ knowledge.published_at ? (knowledge.published_at | date : "dd MMMM yyyy") : 'N/A' }}</span>
+                  <span>{{ knowledge.published_at ? (knowledge.published_at | date:'yyyy-MM-dd') : 'N/A' }}</span>
                 </div>
 
                 <!-- Target Market -->
@@ -711,7 +716,11 @@
                           hasRequiredFields() && 
                           (!isCompanyInsighter() || !needsReview())"
                   >
+                   @if(knowledge.status === 'scheduled'){
                     {{ 'VIEW_MY_KNOWLEDGE.CHANGE_SCHEDULE' | translate }}
+                   }@else{
+                    {{ 'VIEW_MY_KNOWLEDGE.SCHEDULE' | translate }}
+                   }
                   </button>
                 </div>
 

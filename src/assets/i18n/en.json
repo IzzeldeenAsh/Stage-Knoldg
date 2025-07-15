@@ -129,5 +129,7 @@
       "VERIFICATION_REQUIRED": "Please verify your email address to continue.",
       "PROFILE_ERROR": "Unable to load profile information. You can still try to resend the verification email."
     }
-  }
+  },
+  "GENERATE_AI_INFORMATION": "Generate AI Information",
+  "REGENERATE_AI_INFORMATION": "Regenerate AI Information"
 } 
