@@ -2,6 +2,8 @@ export const locale = {
   lang: "ar",
   data: {
     COUNTRIES_REQUIRED: 'الدول مطلوبة',
+    GENERATE_AI_INFORMATION: "إنشاء معلومات المعرفة بواسطة الذكاء الاصطناعي",
+    REGENERATE_AI_INFORMATION: "إعادة إنشاء معلومات المعرفة بواسطة الذكاء الاصطناعي",
     RESET:'إعادة تعيين',
 INSIGHTER_REQUESTS: {
       TITLE: 'طلبات الإنسايتر',
@@ -1170,6 +1172,7 @@ INSIGHTER_REQUESTS: {
     PUBLISH_IN_PACKAGE: 'نشر في الحزمة فقط',
     MAKE_AVAILABLE: 'جعله متاحًا بشكل مستقل وفي الحزمة',
     CHANGE_SCHEDULE: 'تعديل الجدولة',
+    SCHEDULE: 'جدولة',
     UNPUBLISH: 'إلغاء النشر'
   },
   "JOIN_COMPANY": {

@@ -1281,7 +1281,7 @@ export class Step4Component extends BaseComponent implements OnInit {
   }
   
   // Simplified method to generate AI information
-  private generateAIInformation(): void {
+  public generateAIInformation(): void {
     if (!this.defaultValues.knowledgeId) {
       // If no knowledge ID, just show the editor
       this.showEditor = true;
