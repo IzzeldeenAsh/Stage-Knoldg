@@ -15,6 +15,8 @@ import { DownloadsStatisticsComponent } from './insighter-dashboard/statistics/d
 import { ConsultingScheduleHeaderComponent } from './insighter-dashboard/statistics/consulting-schedule-header/consulting-schedule-header.component';
 import { MeetingsStatisticsComponent } from './insighter-dashboard/my-meetings/meetings-statistics/meetings-statistics.component';
 import { SentMeetingsStatisticsComponent } from './insighter-dashboard/my-meetings/sent-meetings-statistics/sent-meetings-statistics.component';
+import { SidebarModule } from 'primeng/sidebar';
+import { ButtonModule } from 'primeng/button';
 
 @NgModule({
   declarations: [
@@ -34,6 +36,8 @@ import { SentMeetingsStatisticsComponent } from './insighter-dashboard/my-meetin
     AppFooterComponent,
     CountUpDirective,
     InsighterDashboardRoutingModule,
+    SidebarModule,
+    ButtonModule,
     TranslationModule,
     ToastModule
   ]

@@ -11,6 +11,8 @@ import { AuthService } from "src/app/modules/auth";
 import { IKnoldgProfile } from "src/app/_fake/models/profile.interface";
 import { ProfileService } from "src/app/_fake/services/get-profile/get-profile.service";
 import { CommonService } from "src/app/_fake/services/common/common.service";
+import { Step1Component } from "../steps/step1/step1.component";
+import { Step2Component } from "../steps/step2/step2.component";
 import { Step3Component } from "../steps/step3/step3.component";
 import { Step5Component } from "../steps/step5/step5.component";
 
@@ -19,6 +21,8 @@ import { Step5Component } from "../steps/step5/step5.component";
   templateUrl: "./vertical.component.html",
 })
 export class VerticalComponent extends BaseComponent implements OnInit {
+  @ViewChild(Step1Component) step1Component: Step1Component;
+  @ViewChild(Step2Component) step2Component: Step2Component;
   @ViewChild(Step3Component) step3Component: Step3Component;
   @ViewChild(Step5Component) step5Component: Step5Component;
   
@@ -106,21 +110,28 @@ export class VerticalComponent extends BaseComponent implements OnInit {
     }
     
     // Validate the current step before proceeding
-    if (currentStep === 3 && this.step3Component) {
-      // For step 3, check if agreement is valid but only for personal accounts
-      if (accountType === 'personal' && !this.step3Component.prepareForSubmit()) {
-        return; // Stop if validation fails for personal accounts
-      } else if (accountType === 'corporate') {
-        // For corporate accounts, just check form validity without agreement
-        if (!this.step3Component.form.valid) {
-          return; // Stop if form validation fails
-        }
+    let isValid = false;
+    
+    if (currentStep === 1 && this.step1Component) {
+      isValid = this.step1Component.validateAndMarkTouched();
+    } else if (currentStep === 2 && this.step2Component) {
+      isValid = this.step2Component.validateAndMarkTouched();
+    } else if (currentStep === 3 && this.step3Component) {
+      if (accountType === 'personal') {
+        // For personal accounts, step 3 includes agreement validation
+        isValid = this.step3Component.prepareForSubmit();
+      } else {
+        // For corporate accounts, just validate the form (certificates are optional)
+        isValid = this.step3Component.form.valid;
       }
     } else if (currentStep === 4 && this.step5Component) {
-      // For step 4 (which uses step5 component for corporate account), check if agreement is valid
-      if (!this.step5Component.prepareForSubmit()) {
-        return; // Stop if validation fails
-      }
+      // For corporate accounts (step 5 component for verification)
+      isValid = this.step5Component.prepareForSubmit();
+    }
+    
+    // If validation fails, don't proceed
+    if (!isValid) {
+      return;
     }
     
     const nextStep = currentStep + 1;

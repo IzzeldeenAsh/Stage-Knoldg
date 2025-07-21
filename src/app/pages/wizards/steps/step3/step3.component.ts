@@ -127,8 +127,8 @@ export class Step3Component extends BaseComponent implements OnInit, OnDestroy {
   }
   addCertification(cert?: { type?: string; file?: File }) {
     const certForm = this.fb.group({
-      type: [cert?.type || "", [Validators.required]],
-      file: [cert?.file || null, [Validators.required]],
+      type: [cert?.type || ""],
+      file: [cert?.file || null],
     });
     this.certifications.push(certForm);
     this.updateParentModel(this.form.value, this.checkForm());

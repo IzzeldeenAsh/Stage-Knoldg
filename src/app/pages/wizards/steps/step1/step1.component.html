@@ -79,7 +79,16 @@
     </div>
 
     <div class="fv-plugins-message-container invalid-feedback">
-      <!-- <ErrorMessage name='accountType' /> -->
+      <div 
+        class="fv-plugins-message-container" 
+        *ngIf="form.get('accountType')?.invalid && form.get('accountType')?.touched"
+      >
+        <div class="fv-help-block">
+          <span role="alert" class="text-danger">
+            {{ 'ACCOUNT_TYPE_REQUIRED' | translate }}
+          </span>
+        </div>
+      </div>
     </div>
   </div>
 </div>
