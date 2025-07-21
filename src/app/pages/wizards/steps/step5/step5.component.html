@@ -62,6 +62,16 @@
         </div>
       </div>
       
+      <!-- Validation error for verification method -->
+      <div
+        *ngIf="
+          form.get('verificationMethod')?.invalid &&
+          form.get('verificationMethod')?.touched
+        "
+        class="fv-plugins-message-container invalid-feedback"
+      >
+        {{ "INSIGHTER_WIZARD.VERIFICATION_METHOD_REQUIRED" | translate }}
+      </div>
     </div>
 
     <div *ngIf="form.get('verificationMethod')?.value === 'websiteEmail'">
@@ -75,6 +85,16 @@
           class="form-control"
           placeholder="{{ 'INSIGHTER_WIZARD.WEBSITE_DOMAIN' | translate }}"
         />
+        <div
+          *ngIf="
+            form.get('website')?.invalid &&
+            form.get('website')?.touched &&
+            form.get('verificationMethod')?.value === 'websiteEmail'
+          "
+          class="fv-plugins-message-container invalid-feedback"
+        >
+          {{ "INSIGHTER_WIZARD.WEBSITE_REQUIRED" | translate }}
+        </div>
       </div>
       <div class="mb-10">
         <label class="form-label required">
@@ -113,6 +133,16 @@
         <div *ngIf="form.get('companyEmail')?.value && form.get('website')?.value && hasEmailAtSymbol() && !validateDomainMatching()" class="text-danger fs-7 mt-2">
           {{ 'EMAIL_DOMAIN_MATCH' | translate }}
         </div>
+        <div
+          *ngIf="
+            form.get('companyEmail')?.invalid &&
+            form.get('companyEmail')?.touched &&
+            form.get('verificationMethod')?.value === 'websiteEmail'
+          "
+          class="fv-plugins-message-container invalid-feedback"
+        >
+          {{ "INSIGHTER_WIZARD.COMPANY_EMAIL_REQUIRED" | translate }}
+        </div>
       </div>
       <div class="mb-10">
         <label class="form-label required">
@@ -124,6 +154,16 @@
           class="form-control"
           placeholder="{{ 'INSIGHTER_WIZARD.ENTER_CODE' | translate }}"
         />
+        <div
+          *ngIf="
+            form.get('code')?.invalid &&
+            form.get('code')?.touched &&
+            form.get('verificationMethod')?.value === 'websiteEmail'
+          "
+          class="fv-plugins-message-container invalid-feedback"
+        >
+          {{ "INSIGHTER_WIZARD.CODE_REQUIRED" | translate }}
+        </div>
       </div>
     </div>
 
@@ -215,6 +255,18 @@
         accept=".png, .jpg, .jpeg, .pdf"
         style="display: none"
       />
+      
+      <!-- Validation error for register document -->
+      <div
+        *ngIf="
+          form.get('registerDocument')?.invalid &&
+          form.get('registerDocument')?.touched &&
+          form.get('verificationMethod')?.value === 'uploadDocument'
+        "
+        class="fv-plugins-message-container invalid-feedback"
+      >
+        {{ "INSIGHTER_WIZARD.REGISTER_DOCUMENT_REQUIRED" | translate }}
+      </div>
     </div>
     </div>
 
@@ -229,8 +281,7 @@
         <input class="form-check-input" type="checkbox" [(ngModel)]="agreementChecked" 
           [ngModelOptions]="{standalone: true}" id="corporateAgreement" (click)="openAgreementDialog($event)"/>
         <label class="form-check-label" for="corporateAgreement">
-          {{ 'I agree to the' | translate }}
-          <span class="ms-1 text-primary">{{ 'Corporate Terms of Service' | translate }}</span>
+          <span class="ms-1 text-primary"> {{ 'AUTH.REGISTRATION.TERMS_AGREEMENT' | translate }}</span>
         </label>
       </div>
     </div>
@@ -290,17 +341,16 @@
   
   <ng-template pTemplate="footer">
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
-      <div class="text-muted fs-7">{{ 'Please read the terms carefully before proceeding' | translate }}</div>
       <div class="d-flex gap-2">
         <button 
           class="btn btn-light" 
           (click)="declineAgreement()">
-          {{ 'Decline' | translate }}
+          {{ 'DECLINE' | translate }}
         </button>
         <button 
           class="btn btn-primary" 
           (click)="acceptAgreement()">
-          {{ 'Accept' | translate }}
+          {{ 'ACCEPT' | translate }}
         </button>
       </div>
     </div>

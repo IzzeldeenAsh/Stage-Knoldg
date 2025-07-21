@@ -49,17 +49,34 @@
     min-width: 280px;
     max-width: 280px;
     margin-right: 1.5rem;
+    transition: width 0.3s ease, min-width 0.3s ease, max-width 0.3s ease;
+    position: relative;
 
     [dir="rtl"] & {
         margin-right: 0;
         margin-left: 1.5rem;
     }
+    
+    // Collapsed state
+    &.collapsed {
+      width: 80px;
+      min-width: 80px;
+      max-width: 80px;
+    }
+    
     @media screen and (max-width: 992px) {
       width: 90%;
-     margin: 0 auto;
-     padding-top: 30px;
+      margin: 0 auto;
+      padding-top: 30px;
+      
+      &.collapsed {
+        width: 80px;
+        margin: 30px auto 0;
+      }
     }
 }
+
+
 
 .main-content-area {
     min-height: 500px;
@@ -81,6 +98,12 @@
     transition: transform 0.2s, box-shadow 0.2s;
     margin-bottom: 1rem;
     
+    // Collapsed state
+    .side-nav-container.collapsed & {
+      min-width: 60px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+    
     &:hover {
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
     }
@@ -89,12 +112,27 @@
       padding: 1rem;
       background-color: #f8f9fa;
       border-bottom: 1px solid #e9ecef;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       
       h3 {
         margin: 0;
         font-size: 1.25rem;
         font-weight: 600;
         color: #495057;
+        flex: 1;
+      }
+      
+      // Collapse Toggle Button
+   
+      // When collapsed, center the button
+      .side-nav-container.collapsed & {
+        justify-content: center;
+        
+        .nav-toggle-btn {
+          margin: 0;
+        }
       }
     }
     
@@ -107,10 +145,56 @@
       align-items: center;
       padding: 0.75rem 1rem;
       cursor: pointer;
-      transition: background-color 0.2s;
+      transition: background-color 0.2s, padding 0.3s ease;
       border-bottom: 1px solid #f1f1f1;
       text-decoration: none;
       color: inherit;
+      
+      // Collapsed state styling
+      .side-nav-container.collapsed & {
+        padding: 0.75rem 0;
+        justify-content: center;
+        border-bottom: 1px solid #f1f1f1;
+        position: relative;
+        
+        // Show tooltip on hover when collapsed
+        &:hover::after {
+          content: attr(title);
+          position: absolute;
+          left: 100%;
+          top: 50%;
+          transform: translateY(-50%);
+          background: #2c3e50;
+          color: white;
+          padding: 0.5rem 0.75rem;
+          border-radius: 6px;
+          white-space: nowrap;
+          z-index: 1000;
+          font-size: 0.875rem;
+          font-weight: 500;
+          margin-left: 0.75rem;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+          pointer-events: none;
+          opacity: 0;
+          animation: tooltipFadeIn 0.2s ease forwards;
+        }
+        
+        // Add arrow to tooltip
+        &:hover::before {
+          content: '';
+          position: absolute;
+          left: 100%;
+          top: 50%;
+          transform: translateY(-50%);
+          border: 6px solid transparent;
+          border-right-color: #2c3e50;
+          z-index: 1001;
+          margin-left: -6px;
+          pointer-events: none;
+          opacity: 0;
+          animation: tooltipFadeIn 0.2s ease forwards;
+        }
+      }
       
       &:last-child {
         border-bottom: none;
@@ -125,9 +209,19 @@
         background-color: #eef5ff;
         color: #4096ff;
         border-left: 3px solid #4096ff;
+        
+        .side-nav-container.collapsed & {
+          border-left: none;
+          border-right: 3px solid #4096ff;
+          
+          [dir="rtl"] & {
+            border-right: none;
+            border-left: 3px solid #4096ff;
+          }
+        }
       }
 
-      // Expandable navigation styles
+      // Expandable navigation styles (hidden when collapsed)
       &.expandable {
         flex-direction: column;
         align-items: stretch;
@@ -226,6 +320,12 @@
         border-radius: 50%;
         background-color: #f0f2f5;
         margin-right: 12px;
+        transition: margin 0.3s ease;
+        
+        .side-nav-container.collapsed & {
+          margin-right: 0;
+          margin-left: 0;
+        }
         
         i {
           font-size: 1rem;
@@ -237,6 +337,9 @@
         font-size: 0.9rem;
         color: #495057;
         font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        transition: opacity 0.2s ease;
       }
     }
   }
@@ -244,17 +347,51 @@
 
 // RTL Support
 :host-context([dir="rtl"]) {
+  .side-nav-container {
+    margin-right: 1.5rem;
+    margin-left: 0;
+  }
+  
   .navigation-cards {
     .navigation-card {
       .nav-item {
         .item-icon {
-          margin-right: 0;
           margin-left: 12px;
+          margin-right: 0;
+          
+          .side-nav-container.collapsed & {
+            margin-left: 0;
+            margin-right: 0;
+          }
         }
         
         &.active {
           border-left: none;
           border-right: 3px solid #4096ff;
+          
+          .side-nav-container.collapsed & {
+            border-right: none;
+            border-left: 3px solid #4096ff;
+          }
+        }
+        
+        // RTL tooltip positioning for collapsed state
+        .side-nav-container.collapsed & {
+          &:hover::after {
+            left: auto;
+            right: 100%;
+            margin-left: 0;
+            margin-right: 0.75rem;
+          }
+          
+          &:hover::before {
+            left: auto;
+            right: 100%;
+            margin-left: 0;
+            margin-right: -6px;
+            border-right-color: transparent;
+            border-left-color: #2c3e50;
+          }
         }
       }
     }
@@ -267,4 +404,130 @@
 
 [dir="rtl"] .content-container {
     margin: 2rem;
+}
+
+// Tooltip Animation
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+}
+
+// Mobile Sidebar Styles
+.mobile-sidebar {
+  .p-sidebar-content {
+    padding: 0;
+    height: 100%;
+    overflow-y: auto;
+  }
+  
+  .mobile-nav-content {
+    height: 100%;
+    padding: 1rem;
+    
+    .navigation-cards {
+      height: 100%;
+      
+      .navigation-card {
+        height: 100%;
+        margin-bottom: 0;
+        
+        .p-card-header {
+          background-color: #f8f9fa;
+          border-bottom: 1px solid #e9ecef;
+          padding: 1rem;
+          
+          h3 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #495057;
+          }
+        }
+        
+        .p-card-body {
+          padding: 0;
+          height: calc(100% - 60px);
+          overflow-y: auto;
+        }
+      }
+    }
+  }
+}
+.item-icon{
+  margin-inline-end: 10px !important;
+}
+// Mobile Menu Toggle Button
+.mobile-menu-toggle {
+  position: fixed;
+  top: -100px;
+  left: 1rem;
+  z-index: 1000;
+  
+  .btn {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    &:hover {
+      background: #f8f9fa;
+      border-color: #d0d3d6;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(64, 150, 255, 0.25);
+    }
+  }
+}
+
+// Responsive adjustments for mobile
+@media screen and (max-width: 575px) {
+  .side-nav-container {
+    display: none;
+  }
+  
+  .main-content-area {
+    padding-left: 0;
+    padding-right: 0;
+    
+    .card {
+      margin: 0 1rem;
+      border-radius: 8px;
+    }
+  }
+  
+  // Adjust toolbar for mobile
+  .app-toolbar {
+    padding-top: 70px;
+    
+    .app-container {
+      transform: translate(0, -30px);
+    }
+  }
+  
+  // Mobile menu toggle positioning
+  .mobile-menu-toggle {
+    top: -100px;
+    left: 0.5rem;
+  }
+}
+
+// Desktop styles (screens > 575px)
+@media screen and (min-width: 576px) {
+  .mobile-menu-toggle {
+    display: none;
+  }
 }

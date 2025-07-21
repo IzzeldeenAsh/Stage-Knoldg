@@ -77,4 +77,18 @@ export class Step1Component implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
   }
+
+  /**
+   * Validates the form and marks all fields as touched to show validation errors
+   * @returns boolean indicating if the form is valid
+   */
+  validateAndMarkTouched(): boolean {
+    // Mark all fields as touched to show validation errors
+    Object.keys(this.form.controls).forEach(key => {
+      const control = this.form.get(key);
+      control?.markAsTouched();
+    });
+    
+    return this.form.valid;
+  }
 }

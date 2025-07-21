@@ -167,7 +167,7 @@ margin-bottom: 10px;
             <button
               type="button"
               class="btn btn-lg btn-primary me-3"
-              [disabled]="!isCurrentFormValid$.value || (isLoadingSubmit$ | async)"
+              [disabled]="(isLoadingSubmit$ | async)"
               (click)="nextStep()"
             >
               <span class="indicator-label">
@@ -185,7 +185,7 @@ margin-bottom: 10px;
             <button
               type="button"
               class="btn btn-lg btn-primary me-3"
-              [disabled]="!isCurrentFormValid$.value || (isLoadingSubmit$ | async)"
+              [disabled]="(isLoadingSubmit$ | async)"
               (click)="submit()"
             >
               <span class="indicator-label">

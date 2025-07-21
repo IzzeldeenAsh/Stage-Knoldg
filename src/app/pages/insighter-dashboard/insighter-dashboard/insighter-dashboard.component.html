@@ -1,4 +1,124 @@
 <p-toast></p-toast>
+
+<!-- Mobile Sidebar -->
+<p-sidebar [(visible)]="isMobileSidebarVisible" position="left" [modal]="true" [showCloseIcon]="true" 
+           [style]="{width: '280px'}" (onHide)="closeMobileSidebar()" 
+           [class]="'mobile-sidebar'">
+  <div class="mobile-nav-content">
+    <div class="navigation-cards">
+      <!-- Dashboard Card -->
+      <div class="p-card navigation-card">
+        <div class="p-card-header">
+          <h3>{{ 'INSIGHTER.DASHBOARD.NAV.DASHBOARD' | translate }}</h3>
+        </div>
+        <div class="p-card-body">
+          <div class="nav-item" [routerLink]="['my-dashboard']" routerLinkActive="active" 
+               (click)="closeMobileSidebar()">
+            <div class="item-icon">
+              <i class="ki-duotone ki-abstract-28"><span class="path1"></span><span class="path2"></span></i>
+            </div>
+            <div class="item-label">
+              {{ 'INSIGHTER.DASHBOARD.NAV.OVERVIEW' | translate }}
+            </div>
+          </div>
+          <div class="nav-item" [routerLink]="['my-requests']" routerLinkActive="active" *ngIf="!(isClient$ | async)"
+               (click)="closeMobileSidebar()">
+            <div class="item-icon">
+              <i class="ki-duotone ki-document"><span class="path1"></span><span class="path2"></span></i>
+            </div>
+            <div class="item-label">
+              {{ 'INSIGHTER.DASHBOARD.NAV.MY_REQUESTS' | translate }}
+            </div>
+          </div>
+          <div class="nav-item" [routerLink]="['my-knowledge']" routerLinkActive="active"  *ngIf="!(isClient$ | async)"
+               (click)="closeMobileSidebar()">
+            <div class="item-icon">
+              <i class="ki-duotone ki-book"><span class="path1"></span><span class="path2"></span></i>
+            </div>
+            <div class="item-label">
+              {{ 'INSIGHTER.DASHBOARD.NAV.MY_KNOWLEDGE' | translate }}
+            </div>
+          </div>
+          <div class="nav-item" [routerLink]="['my-downloads']" routerLinkActive="active"
+               (click)="closeMobileSidebar()">
+            <div class="item-icon">
+              <i class="ki-duotone ki-file-down"><span class="path1"></span><span class="path2"></span></i>
+            </div>
+            <div class="item-label">
+              {{ 'INSIGHTER.DASHBOARD.NAV.MY_DOWNLOADS' | translate }}
+            </div>
+          </div>
+          <!-- Meetings Expandable Item -->
+          <div class="nav-item expandable" [class.expanded]="isMeetingsExpanded">
+            <div class="nav-item-main" (click)="toggleMeetings()">
+              <div class="item-icon">
+                <i class="ki-duotone ki-calendar"><span class="path1"></span><span class="path2"></span></i>
+              </div>
+              <div class="item-label">
+                {{ 'INSIGHTER.DASHBOARD.NAV.MEETINGS' | translate }}
+              </div>
+              <div class="expand-icon">
+                <i class="ki-duotone ki-down" [class.rotated]="isMeetingsExpanded">
+                  <span class="path1"></span>
+                  <span class="path2"></span>
+                </i>
+              </div>
+            </div>
+            <div class="sub-nav" [class.show]="isMeetingsExpanded">
+              <div class="sub-nav-item"  [routerLink]="['my-consulting-schedule']" routerLinkActive="active" *ngIf="!(isClient$ | async)"
+                   (click)="closeMobileSidebar()">
+                <div class="sub-item-icon">
+                  <i class="ki-duotone ki-calendar"><span class="path1"></span><span class="path2"></span></i>
+                </div>
+                <div class="sub-item-label">
+                  {{ 'INSIGHTER.DASHBOARD.NAV.MY_CONSULTING_SCHEDULE' | translate }}
+                </div>
+              </div>
+              <div class="sub-nav-item" [routerLink]="['my-meetings/received']" routerLinkActive="active"  *ngIf="!(isClient$ | async)"
+                   (click)="closeMobileSidebar()">
+                <div class="sub-item-icon">
+                  <i class="ki-duotone ki-message-text-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                </div>
+                <div class="sub-item-label">
+                  {{ 'INSIGHTER.MEETINGS.TABS.RECEIVED' | translate }}
+                </div>
+              </div>
+              <div class="sub-nav-item" [routerLink]="['my-meetings/sent']" routerLinkActive="active"
+                   (click)="closeMobileSidebar()">
+                <div class="sub-item-icon">
+                  <i class="ki-duotone ki-send"><span class="path1"></span><span class="path2"></span></i>
+                </div>
+                <div class="sub-item-label">
+                  {{ 'INSIGHTER.MEETINGS.TABS.SENT' | translate }}
+                </div>
+              </div>
+            </div>
+          </div>
+         
+          <div class="nav-item" [routerLink]="['my-company-settings']" routerLinkActive="active" *ngIf="hasCompanyRole$ | async"
+               (click)="closeMobileSidebar()">
+            <div class="item-icon">
+              <i class="ki-duotone ki-office-bag"><span class="path1"></span><span class="path2"></span></i>
+            </div>
+            <div class="item-label">
+              {{ 'INSIGHTER.DASHBOARD.NAV.MY_COMPANY' | translate }}
+            </div>
+          </div>
+          <div class="nav-item" [routerLink]="['account-settings']" routerLinkActive="active"  *ngIf="!(isClient$ | async)"
+               (click)="closeMobileSidebar()">
+            <div class="item-icon">
+              <i class="ki-duotone ki-setting-2"><span class="path1"></span><span class="path2"></span></i>
+            </div>
+            <div class="item-label">
+              {{ 'INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS' | translate }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</p-sidebar>
+
 <div class="flex-column flex-row-fluid" id="kt_app_wrapper" > 
   <div id="kt_app_toolbar" class="app-toolbar"  style="padding-top: 90px;">
     <div
@@ -25,51 +145,60 @@
   <div class="app-container w-100 ">
     <div class="app-main flex-column flex-row-fluid">
       <div class="d-flex flex-column flex-column-fluid">
-        <div class="d-flex flex-lg-row flex-column">
+        <div class="d-flex flex-column flex-sm-row">
           
-          <!-- Side Navigation -->
-          <div class="side-nav-container ">
+          <!-- Desktop Side Navigation (hidden on mobile) -->
+          <div class="side-nav-container" [class.collapsed]="isNavCollapsed" *ngIf="!isMobileView">
             <div class="navigation-cards">
               <!-- Dashboard Card -->
               <div class="p-card navigation-card">
                 <div class="p-card-header">
-                  <h3>{{ 'INSIGHTER.DASHBOARD.NAV.DASHBOARD' | translate }}</h3>
+                  <h3 *ngIf="!isNavCollapsed">{{ 'INSIGHTER.DASHBOARD.NAV.DASHBOARD' | translate }}</h3>
+                  <!-- Collapse Toggle Button -->
+                  <button type="button" class="nav-toggle-btn btn btn-sm btn-icon btn-active-color-primary" (click)="toggleNavCollapse()" 
+                          [attr.title]="isNavCollapsed ? 'Expand Menu' : 'Collapse Menu'">
+                    <i class="ki-duotone ki-burger-menu fs-2  text-info"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                  </button>
                 </div>
                 <div class="p-card-body">
-                  <div class="nav-item" [routerLink]="['my-dashboard']" routerLinkActive="active">
+                  <div class="nav-item" [routerLink]="['my-dashboard']" routerLinkActive="active" 
+                       [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.OVERVIEW' | translate) : null">
                     <div class="item-icon">
                       <i class="ki-duotone ki-abstract-28"><span class="path1"></span><span class="path2"></span></i>
                     </div>
-                    <div class="item-label">
+                    <div class="item-label" *ngIf="!isNavCollapsed">
                       {{ 'INSIGHTER.DASHBOARD.NAV.OVERVIEW' | translate }}
                     </div>
                   </div>
-                  <div class="nav-item" [routerLink]="['my-requests']" routerLinkActive="active" *ngIf="!(isClient$ | async)">
+                  <div class="nav-item" [routerLink]="['my-requests']" routerLinkActive="active" *ngIf="!(isClient$ | async)"
+                       [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_REQUESTS' | translate) : null">
                     <div class="item-icon">
                       <i class="ki-duotone ki-document"><span class="path1"></span><span class="path2"></span></i>
                     </div>
-                    <div class="item-label">
+                    <div class="item-label" *ngIf="!isNavCollapsed">
                       {{ 'INSIGHTER.DASHBOARD.NAV.MY_REQUESTS' | translate }}
                     </div>
                   </div>
-                  <div class="nav-item" [routerLink]="['my-knowledge']" routerLinkActive="active"  *ngIf="!(isClient$ | async)">
+                  <div class="nav-item" [routerLink]="['my-knowledge']" routerLinkActive="active"  *ngIf="!(isClient$ | async)"
+                       [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_KNOWLEDGE' | translate) : null">
                     <div class="item-icon">
                       <i class="ki-duotone ki-book"><span class="path1"></span><span class="path2"></span></i>
                     </div>
-                    <div class="item-label">
+                    <div class="item-label" *ngIf="!isNavCollapsed">
                       {{ 'INSIGHTER.DASHBOARD.NAV.MY_KNOWLEDGE' | translate }}
                     </div>
                   </div>
-                  <div class="nav-item" [routerLink]="['my-downloads']" routerLinkActive="active">
+                  <div class="nav-item" [routerLink]="['my-downloads']" routerLinkActive="active"
+                       [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_DOWNLOADS' | translate) : null">
                     <div class="item-icon">
                       <i class="ki-duotone ki-file-down"><span class="path1"></span><span class="path2"></span></i>
                     </div>
-                    <div class="item-label">
+                    <div class="item-label" *ngIf="!isNavCollapsed">
                       {{ 'INSIGHTER.DASHBOARD.NAV.MY_DOWNLOADS' | translate }}
                     </div>
                   </div>
                   <!-- Meetings Expandable Item -->
-                  <div class="nav-item expandable" [class.expanded]="isMeetingsExpanded">
+                  <div class="nav-item expandable" [class.expanded]="isMeetingsExpanded" *ngIf="!isNavCollapsed">
                     <div class="nav-item-main" (click)="toggleMeetings()">
                       <div class="item-icon">
                         <i class="ki-duotone ki-calendar"><span class="path1"></span><span class="path2"></span></i>
@@ -112,29 +241,62 @@
                      
                     </div>
                   </div>
+                  
+                  <!-- Collapsed Meeting Items (shown as separate items when collapsed) -->
+                  <div *ngIf="isNavCollapsed">
+                    <div class="nav-item" [routerLink]="['my-consulting-schedule']" routerLinkActive="active" 
+                         *ngIf="!(isClient$ | async)" [attr.title]="('INSIGHTER.DASHBOARD.NAV.MY_CONSULTING_SCHEDULE' | translate)">
+                      <div class="item-icon">
+                        <i class="ki-duotone ki-calendar"><span class="path1"></span><span class="path2"></span></i>
+                      </div>
+                    </div>
+                    <div class="nav-item" [routerLink]="['my-meetings/received']" routerLinkActive="active" 
+                         *ngIf="!(isClient$ | async)" [attr.title]="('INSIGHTER.MEETINGS.TABS.RECEIVED' | translate)">
+                      <div class="item-icon">
+                        <i class="ki-duotone ki-message-text-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                      </div>
+                    </div>
+                    <div class="nav-item" [routerLink]="['my-meetings/sent']" routerLinkActive="active"
+                         [attr.title]="('INSIGHTER.MEETINGS.TABS.SENT' | translate)">
+                      <div class="item-icon">
+                        <i class="ki-duotone ki-send"><span class="path1"></span><span class="path2"></span></i>
+                      </div>
+                    </div>
+                  </div>
                  
-                  <div class="nav-item" [routerLink]="['my-company-settings']" routerLinkActive="active" *ngIf="hasCompanyRole$ | async">
+                  <div class="nav-item" [routerLink]="['my-company-settings']" routerLinkActive="active" *ngIf="hasCompanyRole$ | async"
+                       [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_COMPANY' | translate) : null">
                     <div class="item-icon">
                       <i class="ki-duotone ki-office-bag"><span class="path1"></span><span class="path2"></span></i>
                     </div>
-                    <div class="item-label">
+                    <div class="item-label" *ngIf="!isNavCollapsed">
                       {{ 'INSIGHTER.DASHBOARD.NAV.MY_COMPANY' | translate }}
                     </div>
                   </div>
-                  <div class="nav-item" [routerLink]="['account-settings']" routerLinkActive="active"  *ngIf="!(isClient$ | async)"s>
+                  <div class="nav-item" [routerLink]="['account-settings']" routerLinkActive="active"  *ngIf="!(isClient$ | async)"
+                       [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS' | translate) : null">
                     <div class="item-icon">
                       <i class="ki-duotone ki-setting-2"><span class="path1"></span><span class="path2"></span></i>
                     </div>
-                    <div class="item-label">
+                    <div class="item-label" *ngIf="!isNavCollapsed">
                       {{ 'INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS' | translate }}
                     </div>
                   </div>
                 </div>
               </div>
-
-
-             
             </div>
+          </div>
+
+          <!-- Mobile Menu Toggle Button (visible only on mobile) -->
+          <div class="mobile-menu-toggle" *ngIf="isMobileView">
+            <button type="button" class="btn btn-icon btn-active-color-primary" (click)="toggleNavCollapse()">
+              <i class="ki-duotone ki-burger-menu fs-2 text-info">
+                <span class="path1"></span>
+                <span class="path2"></span>
+                <span class="path3"></span>
+                <span class="path4"></span>
+              </i>
+            </button>
           </div>
 
           <!-- Main Content Area -->

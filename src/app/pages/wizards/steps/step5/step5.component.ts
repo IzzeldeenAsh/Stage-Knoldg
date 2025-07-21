@@ -1,3 +1,4 @@
+
 import {
   Component,
   ElementRef,
@@ -337,8 +338,13 @@ export class Step5Component extends BaseComponent implements OnInit {
         registerDocument: [null],
 
       },
-      { validators:this.verificationMethodValidator() }
+      { validators: this.verificationMethodValidator() }
     );
+
+    // Add conditional validators based on verification method changes
+    this.form.get('verificationMethod')?.valueChanges.subscribe(value => {
+      this.updateConditionalValidators(value);
+    });
 
     const formChangesSubscr = this.form.valueChanges.subscribe((val) => {
       this.updateParentModel(val, this.checkForm());
@@ -356,6 +362,31 @@ export class Step5Component extends BaseComponent implements OnInit {
     
     if (websiteChangesSubscr) this.unsubscribe.push(websiteChangesSubscr);
     if (emailChangesSubscr) this.unsubscribe.push(emailChangesSubscr);
+
+    // Initialize with default verification method
+    this.updateConditionalValidators('websiteEmail');
+  }
+
+  updateConditionalValidators(verificationMethod: string) {
+    if (verificationMethod === 'websiteEmail') {
+      // Make website, companyEmail, and code required
+      this.form.get('website')?.setValidators([Validators.required]);
+      this.form.get('companyEmail')?.setValidators([Validators.required, Validators.email]);
+      this.form.get('code')?.setValidators([Validators.required]);
+      this.form.get('registerDocument')?.setValidators([]);
+    } else if (verificationMethod === 'uploadDocument') {
+      // Make registerDocument required, others optional
+      this.form.get('website')?.setValidators([]);
+      this.form.get('companyEmail')?.setValidators([]);
+      this.form.get('code')?.setValidators([]);
+      this.form.get('registerDocument')?.setValidators([Validators.required]);
+    }
+
+    // Update validity for all controls
+    this.form.get('website')?.updateValueAndValidity();
+    this.form.get('companyEmail')?.updateValueAndValidity();
+    this.form.get('code')?.updateValueAndValidity();
+    this.form.get('registerDocument')?.updateValueAndValidity();
   }
 
   verificationMethodValidator(){
@@ -470,9 +501,43 @@ export class Step5Component extends BaseComponent implements OnInit {
   // Call this before submitting the form - used by the parent component
   prepareForSubmit() {
     this.attemptedSubmit = true;
+    
+    // Mark all relevant fields as touched to show validation errors
+    this.validateAndMarkTouched();
+    
     if (!this.agreementChecked) {
       this.showAgreementError = true;
     }
     return this.checkForm();
+  }
+
+  /**
+   * Validates the form and marks all relevant fields as touched to show validation errors
+   * @returns boolean indicating if the form is valid
+   */
+  validateAndMarkTouched(): boolean {
+    // Always mark verification method as touched
+    this.form.get('verificationMethod')?.markAsTouched();
+    this.form.get('verificationMethod')?.updateValueAndValidity();
+
+    const verificationMethod = this.form.get('verificationMethod')?.value;
+
+    if (verificationMethod === 'websiteEmail') {
+      // Mark website, email, and code fields as touched
+      this.form.get('website')?.markAsTouched();
+      this.form.get('website')?.updateValueAndValidity();
+      
+      this.form.get('companyEmail')?.markAsTouched();
+      this.form.get('companyEmail')?.updateValueAndValidity();
+      
+      this.form.get('code')?.markAsTouched();
+      this.form.get('code')?.updateValueAndValidity();
+    } else if (verificationMethod === 'uploadDocument') {
+      // Mark register document field as touched
+      this.form.get('registerDocument')?.markAsTouched();
+      this.form.get('registerDocument')?.updateValueAndValidity();
+    }
+
+    return this.form.valid;
   }
 }

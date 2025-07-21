@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter, map, take } from 'rxjs/operators';
 import { MenuItem } from 'primeng/api';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { TranslationService } from 'src/app/modules/i18n';
 
 @Component({
@@ -11,7 +11,7 @@ import { TranslationService } from 'src/app/modules/i18n';
   templateUrl: './insighter-dashboard.component.html',
   styleUrls: ['./insighter-dashboard.component.scss']
 })
-export class InsighterDashboardComponent implements OnInit {
+export class InsighterDashboardComponent implements OnInit, OnDestroy {
   activeTabIndex: number = 0;
   items: MenuItem[] = [];
   activeItem: MenuItem | undefined;
@@ -20,18 +20,45 @@ export class InsighterDashboardComponent implements OnInit {
   panelMenuItems: MenuItem[] = [];
   lang: string = 'en';
   isMeetingsExpanded: boolean = false;
+  isNavCollapsed: boolean = false;
+  isMobileSidebarVisible: boolean = false;
+  isMobileView: boolean = false;
+  private subscriptions: Subscription[] = [];
+
   constructor(
     private router: Router,
     private profileService: ProfileService,
     private translationService: TranslationService
   ) {
     this.hasCompanyRole$ = this.profileService.hasRole(['company']);
+    // Auto-collapse on smaller screens initially
+    this.checkScreenSize();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.checkScreenSize();
+  }
+
+  private checkScreenSize() {
+    if (typeof window !== 'undefined') {
+      const isMobile = window.innerWidth <= 575;
+      this.isMobileView = isMobile;
+      
+      if (isMobile) {
+        // On mobile, always show sidebar when opened
+        this.isNavCollapsed = false;
+      } else {
+        // On desktop, auto-collapse on smaller screens
+        this.isNavCollapsed = window.innerWidth <= 992;
+      }
+    }
   }
 
   ngOnInit() {
     this.handleLanguage();
     // Initialize menu items after checking roles
-    this.hasCompanyRole$.pipe(take(1)).subscribe(hasCompanyRole => {
+    const hasCompanyRoleSub = this.hasCompanyRole$.pipe(take(1)).subscribe(hasCompanyRole => {
       this.initializeMenuItems(hasCompanyRole);
       this.buildPanelMenu(hasCompanyRole);
       
@@ -41,15 +68,26 @@ export class InsighterDashboardComponent implements OnInit {
       // Check if we're on a meetings route to expand the meetings section
       this.checkMeetingsRoute(this.router.url);
     });
-   this.isClient$ = this.profileService.isClient()
+    this.subscriptions.push(hasCompanyRoleSub);
+
+    this.isClient$ = this.profileService.isClient()
     
     // Subscribe to route changes
-    this.router.events.pipe(
+    const routerSub = this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
       this.setActiveTabFromRoute(event.url);
       this.checkMeetingsRoute(event.url);
+      // Close mobile sidebar after navigation
+      if (this.isMobileView) {
+        this.isMobileSidebarVisible = false;
+      }
     });
+    this.subscriptions.push(routerSub);
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   handleLanguage() {
@@ -207,5 +245,17 @@ export class InsighterDashboardComponent implements OnInit {
     if (url.includes('my-meetings')) {
       this.isMeetingsExpanded = true;
     }
+  }
+
+  toggleNavCollapse(): void {
+    if (this.isMobileView) {
+      this.isMobileSidebarVisible = !this.isMobileSidebarVisible;
+    } else {
+      this.isNavCollapsed = !this.isNavCollapsed;
+    }
+  }
+
+  closeMobileSidebar(): void {
+    this.isMobileSidebarVisible = false;
   }
 }

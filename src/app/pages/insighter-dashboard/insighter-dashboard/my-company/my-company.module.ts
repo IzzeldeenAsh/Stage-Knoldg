@@ -18,6 +18,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { NgApexchartsModule } from 'ng-apexcharts';
+import { TableModule } from 'primeng/table';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { NgApexchartsModule } from 'ng-apexcharts';
     AvatarModule,
     TooltipModule,
     ConfirmDialogModule,
-    NgApexchartsModule
+    NgApexchartsModule,
+    TableModule
   ],
   providers: [
     ConfirmationService

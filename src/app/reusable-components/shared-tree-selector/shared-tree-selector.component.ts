@@ -59,11 +59,14 @@ export class SharedTreeSelectorComponent implements OnInit, OnDestroy {
   dialogWidth: string = "50vw";
   isLoading$ = new BehaviorSubject<boolean>(false);
   nodes: TreeNode[] = [];
-  selectedNodes: any;
+  selectedNodes: any; // Working state for dialog selections
+  committedNodes: TreeNode[] = []; // Committed state for displaying chips
   private unsubscribe: Subscription[] = [];
   private isSelectAllProcessing: boolean = false;
 
   ngOnInit(): void {
+    // Initialize committed state with initial selected nodes first
+    this.committedNodes = [...(this.initialSelectedNodes || [])];
     this.loadData();
     this.handleWindowResize();
   }
@@ -88,7 +91,7 @@ export class SharedTreeSelectorComponent implements OnInit, OnDestroy {
     };
     this.nodes = this.addOtherOption([selectAllNode]);
 
-    // Re-apply any previous selections
+    // Initialize working state from committed state
     this.reApplySelection();
   }
 
@@ -120,26 +123,25 @@ export class SharedTreeSelectorComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Re-apply previously selected nodes (and any custom "Other" inputs) when returning to this step.
+   * Re-apply committed nodes to working state (used when dialog opens or cancels)
    */
   reApplySelection(): void {
-    if (!this.initialSelectedNodes || this.initialSelectedNodes.length === 0) {
+    if (!this.committedNodes || this.committedNodes.length === 0) {
+      this.selectedNodes = [];
       return;
     }
 
     // Flatten the entire tree (including "Select All") to easily find nodes by key
     const allNodes = this.flattenTree(this.nodes[0]);
 
-    const initialSelectedKeys = new Set(this.initialSelectedNodes.map(n => n.key));
-
-    // For each initially selected node, try to find it in the current tree
+    // For each committed node, try to find it in the current tree
     const reSelectedNodes: TreeNode[] = [];
-    for (const initNode of this.initialSelectedNodes) {
-      const match = allNodes.find(n => n.key === initNode.key);
+    for (const committedNode of this.committedNodes) {
+      const match = allNodes.find(n => n.key === committedNode.key);
       if (match) {
         // If it's an "Other" node with custom input, restore that input
-        if (match.isOther && initNode.data?.customInput) {
-          match.data.customInput = initNode.data.customInput;
+        if (match.isOther && committedNode.data?.customInput) {
+          match.data.customInput = committedNode.data.customInput;
         }
         reSelectedNodes.push(match);
       }
@@ -165,35 +167,42 @@ export class SharedTreeSelectorComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Returns filtered selected nodes that should be displayed as chips
+   * Returns filtered committed nodes that should be displayed as chips
    * Excludes the "selectAll" node and provides display labels
    */
   getDisplayableSelectedNodes(): TreeNode[] {
-    if (!this.selectedNodes || this.selectedNodes.length === 0) {
+    if (!this.committedNodes || this.committedNodes.length === 0) {
       return [];
     }
     
-    return this.selectedNodes.filter((node: TreeNode) => node.key !== "selectAll");
+    return this.committedNodes.filter((node: TreeNode) => node.key !== "selectAll");
   }
 
   /**
-   * Removes a specific node from the selection when clicking a chip's remove icon
+   * Removes a specific node from the committed selection when clicking a chip's remove icon
    */
   onRemoveChip(node: TreeNode): void {
-    if (!this.selectedNodes) return;
+    if (!this.committedNodes) return;
     
-    this.selectedNodes = this.selectedNodes.filter(
-      (selectedNode: TreeNode) => selectedNode.key !== node.key
+    this.committedNodes = this.committedNodes.filter(
+      (committedNode: TreeNode) => committedNode.key !== node.key
     );
     
-    this.updateSelectAllState();
-    // Emit the updated selection
-    this.nodesSelected.emit(this.selectedNodes);
+    // Check if we have any actual selections left (excluding selectAll)
+    const actualSelections = this.committedNodes.filter(n => n.key !== "selectAll");
+    
+    // If no actual selections left, also remove the selectAll node
+    if (actualSelections.length === 0) {
+      this.committedNodes = this.committedNodes.filter(n => n.key !== "selectAll");
+    }
+    
+    // Emit the updated committed selection
+    this.nodesSelected.emit(this.committedNodes);
   }
 
   selectedNodesLabel(): string {
-    if (this.selectedNodes && this.selectedNodes.length > 0) {
-      const filteredNodes = this.selectedNodes.filter(
+    if (this.committedNodes && this.committedNodes.length > 0) {
+      const filteredNodes = this.committedNodes.filter(
         (node: TreeNode) => node.key !== "selectAll"
       );
       return filteredNodes
@@ -211,16 +220,22 @@ export class SharedTreeSelectorComponent implements OnInit, OnDestroy {
   }
 
   showDialog() {
+    // Initialize working state with committed state when opening dialog
+    this.reApplySelection();
     this.dialogVisible = true;
   }
 
   onOk() {
     this.dialogVisible = false;
-    this.nodesSelected.emit(this.selectedNodes);
+    // Commit the working state to committed state
+    this.committedNodes = [...(this.selectedNodes || [])];
+    this.nodesSelected.emit(this.committedNodes);
   }
 
   onCancel() {
     this.dialogVisible = false;
+    // Reset working state to the committed state (don't emit since nothing committed)
+    this.reApplySelection();
   }
 
   onNodeSelect(event: any) {

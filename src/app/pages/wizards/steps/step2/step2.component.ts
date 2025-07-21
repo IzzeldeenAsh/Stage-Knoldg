@@ -1,15 +1,15 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild,AfterViewInit    } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl, ValidationErrors, FormControl } from '@angular/forms';
 import { Observable, Subscription, fromEvent, map, startWith, forkJoin, of } from 'rxjs';
 import { ICreateAccount } from '../../create-account.helper';
 import { ConsultingField, ConsultingFieldsService } from 'src/app/_fake/services/admin-consulting-fields/consulting-fields.service';
 import { Message } from 'primeng/api';
 import { TranslationService } from 'src/app/modules/i18n';
 import { IsicCodesService } from 'src/app/_fake/services/isic-code/isic-codes.service';
-import { phoneNumbers } from 'src/app/pages/wizards/phone-keys';
 import { IndustryService } from 'src/app/_fake/services/industries/industry.service';
 import { ConsultingFieldTreeService } from 'src/app/_fake/services/consulting-fields-tree/consulting-fields-tree.service';
 import { TreeNode } from 'src/app/reusable-components/shared-tree-selector/TreeNode';
+import { CountriesService, Country } from 'src/app/_fake/services/countries/countries.service';
 @Component({
   selector: 'app-step2',
   templateUrl: './step2.component.html',
@@ -21,7 +21,7 @@ export class Step2Component implements OnInit, OnDestroy  {
   messages: Message[] = [];
   optionLabel: string = 'name.en';
   lang:string;
-  phoneNumbers = phoneNumbers;
+  countries: Country[] = [];
   nodes: TreeNode[] = [];
   selectedNodes: any;
   logoPreview: string | ArrayBuffer | null = null;
@@ -37,11 +37,32 @@ export class Step2Component implements OnInit, OnDestroy  {
 
   allConsultingFieldSelected  = []
   allIndustriesSelected  = []
+
+  // Custom validator for arrays to ensure at least one item is selected
+  arrayRequiredValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+      
+      if (!value || !Array.isArray(value) || value.length === 0) {
+        return { required: true };
+      }
+      
+      // Filter out the "selectAll" node - only count actual selections
+      const actualSelections = value.filter((node: any) => node.key !== "selectAll");
+      
+      if (actualSelections.length === 0) {
+        return { required: true };
+      }
+      
+      return null;
+    };
+  }
   constructor(
     private fb: FormBuilder,
     private _KnoldgFieldsService: ConsultingFieldTreeService,
     private _translateion:TranslationService,
-    private _isicService: IndustryService // Add this line
+    private _isicService: IndustryService,
+    private _countriesService: CountriesService
   ) {
     this.lang=this._translateion.getSelectedLanguage();
   }
@@ -69,11 +90,16 @@ export class Step2Component implements OnInit, OnDestroy  {
     this.isLoading$=of(true);
     const apiCalls = forkJoin({
       consultingFields: this._KnoldgFieldsService.getConsultingCodesTree(this.lang || 'en'),
-      isicCodes: this._isicService.getIsicCodesTree(this.lang || 'en')
+      isicCodes: this._isicService.getIsicCodesTree(this.lang || 'en'),
+      countries: this._countriesService.getCountries()
     }).subscribe({
       next: (results) => {
         this.listOfConsultingFields = results.consultingFields;
         this.nodes = results.isicCodes;
+        this.countries = results.countries.map(country => ({
+          ...country,
+          showFlag: true
+        }));
         this.isLoading$=of(false);
       },
       error: (err) => {
@@ -214,14 +240,22 @@ getFileIcon(file: File): string {
 
   onConsultingNodesSelected(event:any){
    this.allConsultingFieldSelected=event && event.length >0 ? event : [];
-   this.form.get('consultingFields')?.setValue(this.allConsultingFieldSelected);
+   const consultingFieldsControl = this.form.get('consultingFields');
+   consultingFieldsControl?.setValue(this.allConsultingFieldSelected);
+   consultingFieldsControl?.markAsTouched();
+   consultingFieldsControl?.updateValueAndValidity();
+   
    this.updateParentModel({consultingFields:this.allConsultingFieldSelected}, this.checkForm());
  
   }
 
   onIndustrySelected(event: any) {
     this.allIndustriesSelected = event && event.length > 0 ? event : [];
-    this.form.get('isicCodes')?.setValue(this.allIndustriesSelected);
+    const isicCodesControl = this.form.get('isicCodes');
+    isicCodesControl?.setValue(this.allIndustriesSelected);
+    isicCodesControl?.markAsTouched();
+    isicCodesControl?.updateValueAndValidity();
+    
     this.updateParentModel({isicCodes:this.allIndustriesSelected}, this.checkForm());
    
   }
@@ -238,8 +272,8 @@ getFileIcon(file: File): string {
           [
           ],
         ],
-        consultingFields: [this.defaultValues.consultingFields || [], [Validators.required]],
-        isicCodes: [this.defaultValues.isicCodes  || [], [Validators.required]],
+        consultingFields: [this.defaultValues.consultingFields || [], [this.arrayRequiredValidator()]],
+        isicCodes: [this.defaultValues.isicCodes  || [], [this.arrayRequiredValidator()]],
       });
     } else {
       this.form = this.fb.group(
@@ -254,8 +288,8 @@ getFileIcon(file: File): string {
               Validators.required
             ],
           ],
-          consultingFields: [this.defaultValues.consultingFields || [], [Validators.required]],
-          isicCodes: [this.defaultValues.isicCodes || [], [Validators.required]],
+          consultingFields: [this.defaultValues.consultingFields || [], [this.arrayRequiredValidator()]],
+          isicCodes: [this.defaultValues.isicCodes || [], [this.arrayRequiredValidator()]],
           logo: [this.defaultValues.logo || null, [Validators.required]],
         }
       );
@@ -284,8 +318,26 @@ onFileChange(event: any) {
     return this.messages.filter((message) => message.id === 'fizeSize');
   }
 
+  onFlagError(country: any) {
+    country.showFlag = false;
+  }
+
   ngOnDestroy() {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }
 
+  /**
+   * Validates the form and marks all fields as touched to show validation errors
+   * @returns boolean indicating if the form is valid
+   */
+  validateAndMarkTouched(): boolean {
+    // Mark all fields as touched to show validation errors
+    Object.keys(this.form.controls).forEach(key => {
+      const control = this.form.get(key);
+      control?.markAsTouched();
+      control?.updateValueAndValidity();
+    });
+    
+    return this.form.valid;
+  }
 }

@@ -28,227 +28,247 @@
     
     <!-- Insighters Table - only show if there are insighters -->
     <div *ngIf="insighters && insighters.length > 0">
-      <div class="table-responsive  min-h-400px ">
-        <table class="table align-middletable-row-dashed fs-6 gy-5">
-          <!-- Table Header -->
-          <thead class="thead-spacing">
-            <tr class="text-inline-start text-muted fw-bold fs-7 text-uppercase gs-0">
-              <th class="min-w-50px"></th>
-              <th class="min-w-125px">{{ 'MY_COMPANY.TABLE.INSIGHTER' | translate }}</th>
-              <th class="min-w-125px">{{ 'MY_COMPANY.TABLE.EMAIL' | translate }}</th>
-              <th class="min-w-125px">{{ 'MY_COMPANY.TABLE.COUNTRY' | translate }}</th>
-              <th class="min-w-125px">{{ 'MY_COMPANY.TABLE.STATUS' | translate }}</th>
-              <th class="min-w-125px">{{ 'MY_COMPANY.TABLE.VERIFICATION' | translate }}</th>
-              <th class="min-w-125px text-end">{{ 'MY_COMPANY.TABLE.ACTIONS' | translate }}</th>
-            </tr>
-          </thead>
-          <!-- Table Body -->
-          <tbody class="text-gray-600 fw-semibold">
-            <ng-container *ngFor="let insighter of insighters">
-              <!-- Main Row -->
-              <tr>
-                <!-- Expand/Collapse Button -->
-                <td>
-                  <button 
-                    type="button" 
-                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm expand-button" 
-                    [ngClass]="{'expanded': expandedRows[insighter.id]}"
-                    (click)="expandedRows[insighter.id] = !expandedRows[insighter.id]">
-                    <i class="ki-duotone ki-arrow-down fs-2" *ngIf="!expandedRows[insighter.id]">
-                      <span class="path1"></span>
-                    </i>
-                    <i class="ki-duotone ki-arrow-up fs-2" *ngIf="expandedRows[insighter.id]">
-                      <span class="path1"></span>
-                    </i>
-                  </button>
-                </td>
-                <!-- Insighter Name & Avatar -->
-                <td>
-                  <div class="d-flex align-items-center">
-                    <div class="symbol symbol-45px mx-5">
-                      <p-avatar 
-                        [label]="getUserInitials(insighter.name)"
-                        styleClass="bg-light-primary"
-                        [style]="{'font-size': '1rem', 'height': '45px', 'width': '45px'}"
-                        *ngIf="!insighter.profile_photo_url">
-                      </p-avatar>
-                      <img *ngIf="insighter.profile_photo_url" [src]="insighter.profile_photo_url" alt="insighter" class="h-45px w-45px rounded-circle" />
-                    </div>
-                    <div class="d-flex flex-column">
-                      <a  class="text-gray-800 text-hover-primary mb-1">{{ insighter.name }}</a>
-                      <span *ngIf="insighter.id === currentUserId" class=" text-info ">
-                        {{ 'MY_COMPANY.CURRENT_USER' | translate }}
-                      </span>
+      <div class="table-container">
+        <p-table 
+          [value]="insighters" 
+          [loading]="loading"
+          [paginator]="false"
+          [showCurrentPageReport]="false"
+          styleClass="p-datatable-sm p-datatable-gridlines"
+          [tableStyle]="{'min-width': '50rem', 'border-collapse': 'separate', 'border-spacing': '0', 'width': '100%'}"
+          [rowHover]="true"
+          [resizableColumns]="true"
+          [scrollable]="true"
+          class="company-table">
+        
+                 <!-- Expand/Collapse Column -->
+         <ng-template pTemplate="header">
+           <tr>
+             <th style="width: 80px; min-width: 80px; text-align: center;">
+               <i class="ki-duotone ki-arrow-down fs-4 text-muted"></i>
+             </th>
+             <th style="width: 220px; min-width: 220px;">{{ 'MY_COMPANY.TABLE.INSIGHTER' | translate }}</th>
+             <th style="width: 200px; min-width: 200px;">{{ 'MY_COMPANY.TABLE.EMAIL' | translate }}</th>
+             <th style="width: 140px; min-width: 140px;">{{ 'MY_COMPANY.TABLE.COUNTRY' | translate }}</th>
+             <th style="width: 140px; min-width: 140px;">{{ 'MY_COMPANY.TABLE.STATUS' | translate }}</th>
+             <th style="width: 160px; min-width: 160px;">{{ 'MY_COMPANY.TABLE.VERIFICATION' | translate }}</th>
+             <th style="width: 140px; min-width: 140px; text-align: center;">{{ 'MY_COMPANY.TABLE.ACTIONS' | translate }}</th>
+           </tr>
+         </ng-template>
+        
+        <ng-template pTemplate="body" let-insighter>
+          <!-- Main Row -->
+          <tr [class.expanded-row]="expandedRows[insighter.id]">
+                         <!-- Expand/Collapse Button -->
+             <td style="text-align: center; width: 80px; min-width: 80px;">
+               <button 
+                 type="button" 
+                 class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm expand-button" 
+                 [ngClass]="{'expanded': expandedRows[insighter.id]}"
+                 (click)="expandedRows[insighter.id] = !expandedRows[insighter.id]">
+                 <i class="ki-duotone ki-arrow-down fs-2" *ngIf="!expandedRows[insighter.id]">
+                   <span class="path1"></span>
+                 </i>
+                 <i class="ki-duotone ki-arrow-up fs-2" *ngIf="expandedRows[insighter.id]">
+                   <span class="path1"></span>
+                 </i>
+               </button>
+             </td>
+            
+                         <!-- Insighter Name & Avatar -->
+             <td style="width: 220px; min-width: 220px; text-align: start;">
+               <div class="d-flex align-items-center">
+                 <div class="symbol symbol-45px me-3">
+                   <p-avatar 
+                     [label]="getUserInitials(insighter.name)"
+                     styleClass="bg-light-primary"
+                     [style]="{'font-size': '1rem', 'height': '45px', 'width': '45px'}"
+                     *ngIf="!insighter.profile_photo_url">
+                   </p-avatar>
+                   <img *ngIf="insighter.profile_photo_url" [src]="insighter.profile_photo_url" alt="insighter" class="h-45px w-45px rounded-circle object-fit-cover" style="object-position: top;" />
+                 </div>
+                 <div class="d-flex flex-column">
+                   <span class="text-gray-800 text-hover-primary mb-1 fw-semibold">{{ insighter.name }}</span>
+                   <span *ngIf="insighter.id === currentUserId" class="text-info fs-7">
+                     {{ 'MY_COMPANY.CURRENT_USER' | translate }}
+                   </span>
+                 </div>
+               </div>
+             </td>
+            
+                         <!-- Email -->
+             <td style="width: 200px; min-width: 200px; text-align: start;">
+               <span class="text-gray-600">{{ insighter.email }}</span>
+             </td>
+             
+             <!-- Country -->
+             <td style="width: 140px; min-width: 140px; text-align: start;">
+               <span class="text-gray-600">{{ insighter.country }}</span>
+             </td>
+             
+             <!-- Status -->
+             <td style="width: 140px; min-width: 140px; text-align: start;">
+               <span [class]="'badge ' + getStatusBadgeClass(insighter.insighter_status)">
+                 {{ 
+                     (insighter.insighter_status === 'active' ? 'MY_COMPANY.STATUS.ACTIVE' : 
+                      insighter.insighter_status === 'inactive' ? 'MY_COMPANY.STATUS.INACTIVE' : 
+                      insighter.insighter_status) | translate | titlecase }}
+               </span>
+             </td>
+             
+             <!-- Verification -->
+             <td style="width: 160px; min-width: 160px; text-align: start;">
+               <span [class]="'badge ' + getVerificationBadgeClass(insighter.verified_as_insighter)">
+                 {{ (insighter.verified_as_insighter ? 'MY_COMPANY.VERIFIED' : 'MY_COMPANY.PENDING') | translate }}
+               </span>
+             </td>
+             
+             <!-- Actions -->
+             <td style="text-align: center; width: 140px; min-width: 140px;">
+               <div class="d-flex justify-content-center gap-1">
+                <button *ngIf="(insighter.roles && insighter.roles.includes('company') && insighter.company && insighter.company.status === 'inactive' || 
+                          (!insighter.roles || !insighter.roles.includes('company')) && insighter.insighter_status === 'inactive') 
+                          && insighter.id !== currentUserId" 
+                        class="btn btn-icon btn-bg-light btn-active-color-success btn-sm"
+                        (click)="activateInsighter(insighter.id)" 
+                        pTooltip="{{ 'MY_COMPANY.ACTIVATE' | translate }}" 
+                        tooltipPosition="top">
+                  <i class="ki-duotone ki-check fs-2"></i>
+                </button>
+                <button *ngIf="(insighter.roles && insighter.roles.includes('company') && insighter.company && insighter.company.status === 'active' || 
+                          (!insighter.roles || !insighter.roles.includes('company')) && insighter.insighter_status === 'active' && insighter.verified_as_insighter)   
+                          && insighter.id !== currentUserId" 
+                        class="btn btn-icon btn-bg-light btn-active-color-danger btn-sm"
+                        (click)="deactivateInsighter(insighter.id)" 
+                        pTooltip="{{ 'MY_COMPANY.DEACTIVATE' | translate }}" 
+                        tooltipPosition="top">
+                  <i class="ki-duotone ki-shield-slash fs-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                    <span class="path3"></span>
+                    <span class="path4"></span>
+                  </i>
+                </button>
+                <button *ngIf="insighter.id !== currentUserId" 
+                        class="btn btn-icon btn-bg-light btn-active-color-danger btn-sm"
+                        (click)="deleteInsighter(insighter.id)" 
+                        pTooltip="{{ 'MY_COMPANY.DELETE' | translate }}" 
+                        tooltipPosition="top">
+                  <i class="ki-duotone ki-trash fs-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                    <span class="path3"></span>
+                    <span class="path4"></span>
+                    <span class="path5"></span>
+                  </i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          
+          <!-- Expanded Row for Knowledge Statistics -->
+          <tr *ngIf="expandedRows[insighter.id]" class="expanded-row">
+            <td colspan="7">
+              <div class="px-4 py-4 rounded my-3 statistics-container">
+                <!-- Header with user name and total count -->
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                  <h5 class="fw-bolder m-0">
+                    <i class="fas fa-chart-bar text-primary me-2"></i>
+                    {{ 'MY_COMPANY.PUBLISHED_KNOWLEDGE' | translate:{ name: insighter.name } }}
+                  </h5>
+                  <span class="badge badge-light-primary px-3 py-2 fs-7" *ngIf="getTotalKnowledgeCount(insighter)">
+                    {{ 'MY_COMPANY.TOTAL' | translate }}: {{ getTotalKnowledgeCount(insighter) }}
+                  </span>
+                </div>
+                
+                <!-- Statistics cards -->
+                <div class="row g-3">
+                  <div *ngIf="insighter.knowledge_type_statistics?.report !== undefined" class="col-6 col-sm-4 col-md-3 col-xl-2">
+                    <div class="knowledge-stat report">
+                      <svg width="28" height="28" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path opacity="0.4" d="M41.515 20.01L39.6367 28.0217C38.0267 34.9409 34.845 37.7392 28.865 37.1642C27.9067 37.0875 26.8717 36.915 25.76 36.6467L22.54 35.88C14.5475 33.9825 12.075 30.0342 13.9533 22.0225L15.8317 13.9917C16.215 12.3625 16.675 10.9442 17.25 9.77504C19.4925 5.1367 23.3067 3.89087 29.7083 5.40504L32.9092 6.15254C40.94 8.03087 43.3933 11.9984 41.515 20.01Z" fill="#699DDE"/>
+                        <path d="M28.865 37.1642C27.6767 37.9692 26.1817 38.64 24.3608 39.2342L21.3325 40.2309C13.7233 42.6842 9.71748 40.6334 7.24498 33.0242L4.79165 25.4534C2.33832 17.8442 4.36998 13.8192 11.9791 11.3659L15.0075 10.3692C15.7933 10.12 16.5408 9.90919 17.25 9.77502C16.675 10.9442 16.215 12.3625 15.8316 13.9917L13.9533 22.0225C12.075 30.0342 14.5475 33.9825 22.54 35.88L25.76 36.6467C26.8716 36.915 27.9067 37.0875 28.865 37.1642Z" fill="#009EF7"/>
+                        <path d="M33.5225 20.1442C33.4075 20.1442 33.2925 20.1251 33.1583 20.1059L23.8625 17.7484C23.0958 17.5567 22.6358 16.7709 22.8275 16.0042C23.0192 15.2376 23.805 14.7776 24.5717 14.9692L33.8675 17.3267C34.6342 17.5184 35.0942 18.3042 34.9025 19.0709C34.7492 19.7034 34.155 20.1442 33.5225 20.1442Z" fill="white"/>
+                        <path d="M27.9067 26.6225C27.7917 26.6225 27.6767 26.6034 27.5425 26.5842L21.965 25.1659C21.1983 24.9742 20.7383 24.1884 20.93 23.4217C21.1217 22.655 21.9075 22.195 22.6742 22.3867L28.2517 23.805C29.0183 23.9967 29.4783 24.7825 29.2867 25.5492C29.1333 26.2009 28.5583 26.6225 27.9067 26.6225Z" fill="white"/>
+                      </svg>
+                      <div class="stat-label">Reports</div>
+                      <div class="stat-value">{{ insighter.knowledge_type_statistics?.report || 0 }}</div>
                     </div>
                   </div>
-                </td>
-                
-                <!-- Email -->
-                <td>{{ insighter.email }}</td>
-                
-                <!-- Country -->
-                <td>{{ insighter.country }}</td>
-                
-                <!-- Status -->
-                <td>
-                  <span [class]="'badge ' + getStatusBadgeClass(insighter.insighter_status)">
-                    {{ 
-                        (insighter.insighter_status === 'active' ? 'MY_COMPANY.STATUS.ACTIVE' : 
-                         insighter.insighter_status === 'inactive' ? 'MY_COMPANY.STATUS.INACTIVE' : 
-                         insighter.insighter_status) | translate | titlecase }}
-                  </span>
-                </td>
-                
-                <!-- Verification -->
-                <td>
-                  <span [class]="'badge ' + getVerificationBadgeClass(insighter.verified_as_insighter)">
-                    {{ (insighter.verified_as_insighter ? 'MY_COMPANY.VERIFIED' : 'MY_COMPANY.PENDING') | translate }}
-                  </span>
-                </td>
-                
-                <!-- Actions -->
-                <td class="text-end">
-                  <button *ngIf="(insighter.roles && insighter.roles.includes('company') && insighter.company && insighter.company.status === 'inactive' || 
-                            (!insighter.roles || !insighter.roles.includes('company')) && insighter.insighter_status === 'inactive') 
-                            && insighter.id !== currentUserId" 
-                          class="btn btn-icon btn-bg-light btn-active-color-success btn-sm me-1"
-                          (click)="activateInsighter(insighter.id)" 
-                          pTooltip="{{ 'MY_COMPANY.ACTIVATE' | translate }}" 
-                          tooltipPosition="top">
-                    <i class="ki-duotone ki-check fs-2"></i>
-                  </button>
-                  <button *ngIf="(insighter.roles && insighter.roles.includes('company') && insighter.company && insighter.company.status === 'active' || 
-                            (!insighter.roles || !insighter.roles.includes('company')) && insighter.insighter_status === 'active' && insighter.verified_as_insighter)   
-                            && insighter.id !== currentUserId" 
-                          class="btn btn-icon btn-bg-light btn-active-color-danger btn-sm me-1"
-                          (click)="deactivateInsighter(insighter.id)" 
-                          pTooltip="{{ 'MY_COMPANY.DEACTIVATE' | translate }}" 
-                          tooltipPosition="top">
-                    <i class="ki-duotone ki-shield-slash fs-2">
-                      <span class="path1"></span>
-                      <span class="path2"></span>
-                      <span class="path3"></span>
-                      <span class="path4"></span>
-                    </i>
-                  </button>
-                  <button *ngIf="insighter.id !== currentUserId" 
-                          class="btn btn-icon btn-bg-light btn-active-color-danger btn-sm me-1"
-                          (click)="deleteInsighter(insighter.id)" 
-                          pTooltip="{{ 'MY_COMPANY.DELETE' | translate }}" 
-                          tooltipPosition="top">
-                    <i class="ki-duotone ki-trash fs-2">
-                      <span class="path1"></span>
-                      <span class="path2"></span>
-                      <span class="path3"></span>
-                      <span class="path4"></span>
-                      <span class="path5"></span>
-                    </i>
-                  </button>
-                  <span *ngIf="insighter.id === currentUserId">
-                 
-                  </span>
-                </td>
-              </tr>
-              
-              <!-- Expanded Row for Knowledge Statistics -->
-              <tr *ngIf="expandedRows[insighter.id]" class="expanded-row">
-                <td colspan="7">
-                  <div class="px-8 py-5 rounded my-3 statistics-container">
-                    <!-- Header with user name and total count -->
-                    <div class="d-flex align-items-center justify-content-between mb-5">
-                      <h4 class="fw-bolder m-0">
-                        <i class="fas fa-chart-bar text-primary me-2"></i>
-                        {{ 'MY_COMPANY.PUBLISHED_KNOWLEDGE' | translate:{ name: insighter.name } }}
-                      </h4>
-                      <span class="badge badge-light-primary px-4 py-2 fs-6" *ngIf="getTotalKnowledgeCount(insighter)">
-                        {{ 'MY_COMPANY.TOTAL' | translate }}: {{ getTotalKnowledgeCount(insighter) }}
-                      </span>
-                    </div>
-                    
-                    <!-- Statistics cards -->
-                    <div class="row g-4">
-                      <div *ngIf="insighter.knowledge_type_statistics?.report !== undefined" class="col-6 col-sm-4 col-md-3 col-xl-2 mb-3">
-                        <div class="knowledge-stat report">
-                          <svg width="28" height="28" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path opacity="0.4" d="M41.515 20.01L39.6367 28.0217C38.0267 34.9409 34.845 37.7392 28.865 37.1642C27.9067 37.0875 26.8717 36.915 25.76 36.6467L22.54 35.88C14.5475 33.9825 12.075 30.0342 13.9533 22.0225L15.8317 13.9917C16.215 12.3625 16.675 10.9442 17.25 9.77504C19.4925 5.1367 23.3067 3.89087 29.7083 5.40504L32.9092 6.15254C40.94 8.03087 43.3933 11.9984 41.515 20.01Z" fill="#699DDE"/>
-                            <path d="M28.865 37.1642C27.6767 37.9692 26.1817 38.64 24.3608 39.2342L21.3325 40.2309C13.7233 42.6842 9.71748 40.6334 7.24498 33.0242L4.79165 25.4534C2.33832 17.8442 4.36998 13.8192 11.9791 11.3659L15.0075 10.3692C15.7933 10.12 16.5408 9.90919 17.25 9.77502C16.675 10.9442 16.215 12.3625 15.8316 13.9917L13.9533 22.0225C12.075 30.0342 14.5475 33.9825 22.54 35.88L25.76 36.6467C26.8716 36.915 27.9067 37.0875 28.865 37.1642Z" fill="#009EF7"/>
-                            <path d="M33.5225 20.1442C33.4075 20.1442 33.2925 20.1251 33.1583 20.1059L23.8625 17.7484C23.0958 17.5567 22.6358 16.7709 22.8275 16.0042C23.0192 15.2376 23.805 14.7776 24.5717 14.9692L33.8675 17.3267C34.6342 17.5184 35.0942 18.3042 34.9025 19.0709C34.7492 19.7034 34.155 20.1442 33.5225 20.1442Z" fill="white"/>
-                            <path d="M27.9067 26.6225C27.7917 26.6225 27.6767 26.6034 27.5425 26.5842L21.965 25.1659C21.1983 24.9742 20.7383 24.1884 20.93 23.4217C21.1217 22.655 21.9075 22.195 22.6742 22.3867L28.2517 23.805C29.0183 23.9967 29.4783 24.7825 29.2867 25.5492C29.1333 26.2009 28.5583 26.6225 27.9067 26.6225Z" fill="white"/>
-                          </svg>
-                          <div class="stat-label">Reports</div>
-                          <div class="stat-value">{{ insighter.knowledge_type_statistics?.report || 0 }}</div>
-                        </div>
-                      </div>
-                      <div *ngIf="insighter.knowledge_type_statistics?.data !== undefined" class="col-6 col-sm-4 col-md-3 col-xl-2 mb-3">
-                        <div class="knowledge-stat data">
-                          <svg width="24" height="26" viewBox="0 0 26 29" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12.5596 0C9.13931 0 5.92618 0.608334 3.51251 1.71279C1.28038 2.73511 0 4.08721 0 5.42527C0 6.76332 1.28038 8.11584 3.51251 9.13766C5.92618 10.2421 9.13923 10.8504 12.5596 10.8504C15.98 10.8504 19.1935 10.2421 21.6064 9.13766C23.8388 8.11584 25.1196 6.7634 25.1196 5.42527C25.1196 4.08713 23.8388 2.73511 21.6064 1.71279C19.1931 0.608334 15.9799 0 12.5596 0Z" fill="black"/>
-                            <path d="M0 8.1631C0.70931 8.93133 1.72436 9.627 3.01754 10.2193C5.58309 11.3931 8.97215 12.0398 12.56 12.0398C16.1479 12.0398 19.5365 11.3927 22.1021 10.2193C23.3953 9.627 24.4103 8.93158 25.1196 8.1631V11.6126C25.1196 12.9547 23.8416 14.3088 21.614 15.3283C19.2055 16.43 15.99 17.0375 12.5596 17.0375C9.12923 17.0375 5.91329 16.43 3.50532 15.3283C1.27757 14.3088 0 12.9547 0 11.6126V8.1631Z" fill="black"/>
-                            <path d="M25.1196 14.3506C22.9929 16.656 18.2281 18.2269 12.5596 18.2269C6.89107 18.2269 2.12636 16.656 0 14.3506V17.3878C0 18.729 1.27757 20.084 3.50532 21.1034C5.91329 22.2054 9.12923 22.813 12.5596 22.813C15.99 22.813 19.2055 22.2054 21.6144 21.1034C23.8421 20.084 25.1196 18.729 25.1196 17.3878V14.3506Z" fill="black"/>
-                            <path d="M3.50532 27.2908C1.27757 26.2713 0 24.9165 0 23.5748V20.1256C2.12636 22.4314 6.89107 24.0024 12.5596 24.0024C18.2281 24.0024 22.9929 22.4314 25.1196 20.1256V23.5748C25.1196 24.9165 23.8416 26.2713 21.614 27.2908C19.2055 28.3929 15.99 29 12.5596 29C9.12923 29 5.91329 28.3929 3.50532 27.2908Z" fill="black"/>
-                          </svg>
-                          <div class="stat-label">Data</div>
-                          <div class="stat-value">{{ insighter.knowledge_type_statistics?.data || 0 }}</div>
-                        </div>
-                      </div>
-                      <div *ngIf="insighter.knowledge_type_statistics?.insight !== undefined" class="col-6 col-sm-4 col-md-3 col-xl-2 mb-3">
-                        <div class="knowledge-stat insight">
-                          <svg width="26" height="26" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M22.0048 0C27.6547 0 31 3.34532 31 8.9952V22.0048C31 27.6547 27.6547 31 22.0048 31H8.9952C3.34532 31 0 27.5803 0 21.9305V8.9952C0 3.34532 3.34532 0 8.9952 0H22.0048ZM8.84652 15.9832C7.95444 15.9832 7.28537 16.6523 7.28537 17.5444V21.9305C7.28537 22.8225 7.95444 23.4916 8.84652 23.4916C9.73861 23.4916 10.4077 22.8225 10.4077 21.9305V17.5444C10.4077 16.6523 9.73861 15.9832 8.84652 15.9832ZM14.8681 9.06954C13.976 9.06954 13.307 9.73861 13.307 10.6307V21.9305C13.307 22.8225 13.976 23.4916 14.8681 23.4916C15.7602 23.4916 16.4293 22.8225 16.4293 21.9305V10.6307C16.4293 9.73861 15.7602 9.06954 14.8681 9.06954ZM20.5923 6.54197C19.7002 6.54197 18.9568 7.35971 18.9568 8.40048V21.5588C18.9568 22.5995 19.7002 23.4173 20.5923 23.4173C21.4844 23.4173 22.2278 22.5995 22.2278 21.5588V8.40048C22.2278 7.35971 21.4844 6.54197 20.5923 6.54197Z" fill="#16C653"/>
-                          </svg>
-                          <div class="stat-label">Insights</div>
-                          <div class="stat-value">{{ insighter.knowledge_type_statistics?.insight || 0 }}</div>
-                        </div>
-                      </div>
-                      <div *ngIf="insighter.knowledge_type_statistics?.manual !== undefined" class="col-6 col-sm-4 col-md-3 col-xl-2 mb-3">
-                        <div class="knowledge-stat manual">
-                          <svg width="28" height="28" viewBox="0 0 37 37" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M31.6042 10.7916V23.125H9.78958C7.36916 23.125 5.39583 25.0983 5.39583 27.5187V10.7916C5.39583 4.62498 6.93749 3.08331 13.1042 3.08331H23.8958C30.0625 3.08331 31.6042 4.62498 31.6042 10.7916Z" fill="#F6C001"/>
-                            <path d="M31.6042 23.125V28.5208C31.6042 31.4963 29.1837 33.9167 26.2083 33.9167H10.7917C7.81624 33.9167 5.39583 31.4963 5.39583 28.5208V27.5188C5.39583 25.0983 7.36916 23.125 9.78958 23.125H31.6042Z" fill="#FFDEB2"/>
-                            <path d="M24.6667 11.9479H12.3333C11.7012 11.9479 11.1771 11.4238 11.1771 10.7917C11.1771 10.1596 11.7012 9.63544 12.3333 9.63544H24.6667C25.2987 9.63544 25.8229 10.1596 25.8229 10.7917C25.8229 11.4238 25.2987 11.9479 24.6667 11.9479Z" fill="white"/>
-                            <path d="M20.0417 17.3437H12.3333C11.7012 17.3437 11.1771 16.8196 11.1771 16.1875C11.1771 15.5554 11.7012 15.0312 12.3333 15.0312H20.0417C20.6737 15.0312 21.1979 15.5554 21.1979 16.1875C21.1979 16.8196 20.6737 17.3437 20.0417 17.3437Z" fill="white"/>
-                          </svg>
-                          <div class="stat-label">Manuals</div>
-                          <div class="stat-value">{{ insighter.knowledge_type_statistics?.manual || 0 }}</div>
-                        </div>
-                      </div>
-                      <div *ngIf="insighter.knowledge_type_statistics?.course !== undefined" class="col-6 col-sm-4 col-md-3 col-xl-2 mb-3">
-                        <div class="knowledge-stat course">
-                          <svg width="26" height="26" viewBox="0 0 39 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M31.9898 26.8163C31.9898 24.1788 29.8518 22.0408 27.2143 22.0408C24.5767 22.0408 22.4388 24.1788 22.4388 26.8163C22.4388 28.1696 23.0037 29.3885 23.9081 30.2576V36L27.2143 33.7959L30.5204 36V30.2576C31.4248 29.3885 31.9898 28.1696 31.9898 26.8163Z" fill="#C3D8F2"/>
-                            <path d="M37.1327 0H1.86734C1.05624 0 0.397949 0.657551 0.397949 1.46939V30.8572C0.397949 31.6683 1.05624 32.3265 1.86734 32.3265H20.9694V31.3443C20.0143 30.0372 19.5 28.4694 19.5 26.8163C19.5 22.5625 22.9604 19.102 27.2143 19.102C31.4682 19.102 34.9286 22.5625 34.9286 26.8163C34.9286 28.4701 34.4143 30.038 33.4592 31.345V32.3265H37.1327C37.9438 32.3265 38.6021 31.6683 38.6021 30.8572V1.46939C38.6021 0.657551 37.9438 0 37.1327 0ZM20.9694 13.2245H8.47959V10.2857H20.9694V13.2245ZM30.5204 7.34694H8.47959V4.40816H30.5204V7.34694Z" fill="#0ABB87"/>
-                          </svg>
-                          <div class="stat-label">Courses</div>
-                          <div class="stat-value">{{ insighter.knowledge_type_statistics?.course || 0 }}</div>
-                        </div>
-                      </div>
-                      
-                      <!-- If no statistics are available -->
-                      <div *ngIf="!insighter.knowledge_type_statistics || getTotalKnowledgeCount(insighter) === 0" class="col-12 text-center py-5">
-                        <div class="d-flex flex-column align-items-center">
-                          <i class="fas fa-folder-open text-muted fs-2x mb-3"></i>
-                          <span class="text-muted fs-6">No knowledge published yet by this insighter</span>
-                        </div>
-                      </div>
+                  <div *ngIf="insighter.knowledge_type_statistics?.data !== undefined" class="col-6 col-sm-4 col-md-3 col-xl-2">
+                    <div class="knowledge-stat data">
+                      <svg width="24" height="26" viewBox="0 0 26 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12.5596 0C9.13931 0 5.92618 0.608334 3.51251 1.71279C1.28038 2.73511 0 4.08721 0 5.42527C0 6.76332 1.28038 8.11584 3.51251 9.13766C5.92618 10.2421 9.13923 10.8504 12.5596 10.8504C15.98 10.8504 19.1935 10.2421 21.6064 9.13766C23.8388 8.11584 25.1196 6.7634 25.1196 5.42527C25.1196 4.08713 23.8388 2.73511 21.6064 1.71279C19.1931 0.608334 15.9799 0 12.5596 0Z" fill="black"/>
+                        <path d="M0 8.1631C0.70931 8.93133 1.72436 9.627 3.01754 10.2193C5.58309 11.3931 8.97215 12.0398 12.56 12.0398C16.1479 12.0398 19.5365 11.3927 22.1021 10.2193C23.3953 9.627 24.4103 8.93158 25.1196 8.1631V11.6126C25.1196 12.9547 23.8416 14.3088 21.614 15.3283C19.2055 16.43 15.99 17.0375 12.5596 17.0375C9.12923 17.0375 5.91329 16.43 3.50532 15.3283C1.27757 14.3088 0 12.9547 0 11.6126V8.1631Z" fill="black"/>
+                        <path d="M25.1196 14.3506C22.9929 16.656 18.2281 18.2269 12.5596 18.2269C6.89107 18.2269 2.12636 16.656 0 14.3506V17.3878C0 18.729 1.27757 20.084 3.50532 21.1034C5.91329 22.2054 9.12923 22.813 12.5596 22.813C15.99 22.813 19.2055 22.2054 21.6144 21.1034C23.8421 20.084 25.1196 18.729 25.1196 17.3878V14.3506Z" fill="black"/>
+                        <path d="M3.50532 27.2908C1.27757 26.2713 0 24.9165 0 23.5748V20.1256C2.12636 22.4314 6.89107 24.0024 12.5596 24.0024C18.2281 24.0024 22.9929 22.4314 25.1196 20.1256V23.5748C25.1196 24.9165 23.8416 26.2713 21.614 27.2908C19.2055 28.3929 15.99 29 12.5596 29C9.12923 29 5.91329 28.3929 3.50532 27.2908Z" fill="black"/>
+                      </svg>
+                      <div class="stat-label">Data</div>
+                      <div class="stat-value">{{ insighter.knowledge_type_statistics?.data || 0 }}</div>
                     </div>
                   </div>
-                </td>
-              </tr>
-            </ng-container>
-          </tbody>
-        </table>
-      </div>
-      
-      <!-- Loading Indicator -->
-      <div *ngIf="loading" class="d-flex justify-content-center my-5">
-        <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">{{ 'MY_COMPANY.LOADING' | translate }}</span>
-        </div>
+                  <div *ngIf="insighter.knowledge_type_statistics?.insight !== undefined" class="col-6 col-sm-4 col-md-3 col-xl-2">
+                    <div class="knowledge-stat insight">
+                      <svg width="26" height="26" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22.0048 0C27.6547 0 31 3.34532 31 8.9952V22.0048C31 27.6547 27.6547 31 22.0048 31H8.9952C3.34532 31 0 27.5803 0 21.9305V8.9952C0 3.34532 3.34532 0 8.9952 0H22.0048ZM8.84652 15.9832C7.95444 15.9832 7.28537 16.6523 7.28537 17.5444V21.9305C7.28537 22.8225 7.95444 23.4916 8.84652 23.4916C9.73861 23.4916 10.4077 22.8225 10.4077 21.9305V17.5444C10.4077 16.6523 9.73861 15.9832 8.84652 15.9832ZM14.8681 9.06954C13.976 9.06954 13.307 9.73861 13.307 10.6307V21.9305C13.307 22.8225 13.976 23.4916 14.8681 23.4916C15.7602 23.4916 16.4293 22.8225 16.4293 21.9305V10.6307C16.4293 9.73861 15.7602 9.06954 14.8681 9.06954ZM20.5923 6.54197C19.7002 6.54197 18.9568 7.35971 18.9568 8.40048V21.5588C18.9568 22.5995 19.7002 23.4173 20.5923 23.4173C21.4844 23.4173 22.2278 22.5995 22.2278 21.5588V8.40048C22.2278 7.35971 21.4844 6.54197 20.5923 6.54197Z" fill="#16C653"/>
+                      </svg>
+                      <div class="stat-label">Insights</div>
+                      <div class="stat-value">{{ insighter.knowledge_type_statistics?.insight || 0 }}</div>
+                    </div>
+                  </div>
+                  <div *ngIf="insighter.knowledge_type_statistics?.manual !== undefined" class="col-6 col-sm-4 col-md-3 col-xl-2">
+                    <div class="knowledge-stat manual">
+                      <svg width="28" height="28" viewBox="0 0 37 37" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M31.6042 10.7916V23.125H9.78958C7.36916 23.125 5.39583 25.0983 5.39583 27.5187V10.7916C5.39583 4.62498 6.93749 3.08331 13.1042 3.08331H23.8958C30.0625 3.08331 31.6042 4.62498 31.6042 10.7916Z" fill="#F6C001"/>
+                        <path d="M31.6042 23.125V28.5208C31.6042 31.4963 29.1837 33.9167 26.2083 33.9167H10.7917C7.81624 33.9167 5.39583 31.4963 5.39583 28.5208V27.5188C5.39583 25.0983 7.36916 23.125 9.78958 23.125H31.6042Z" fill="#FFDEB2"/>
+                        <path d="M24.6667 11.9479H12.3333C11.7012 11.9479 11.1771 11.4238 11.1771 10.7917C11.1771 10.1596 11.7012 9.63544 12.3333 9.63544H24.6667C25.2987 9.63544 25.8229 10.1596 25.8229 10.7917C25.8229 11.4238 25.2987 11.9479 24.6667 11.9479Z" fill="white"/>
+                        <path d="M20.0417 17.3437H12.3333C11.7012 17.3437 11.1771 16.8196 11.1771 16.1875C11.1771 15.5554 11.7012 15.0312 12.3333 15.0312H20.0417C20.6737 15.0312 21.1979 15.5554 21.1979 16.1875C21.1979 16.8196 20.6737 17.3437 20.0417 17.3437Z" fill="white"/>
+                      </svg>
+                      <div class="stat-label">Manuals</div>
+                      <div class="stat-value">{{ insighter.knowledge_type_statistics?.manual || 0 }}</div>
+                    </div>
+                  </div>
+                  <div *ngIf="insighter.knowledge_type_statistics?.course !== undefined" class="col-6 col-sm-4 col-md-3 col-xl-2">
+                    <div class="knowledge-stat course">
+                      <svg width="26" height="26" viewBox="0 0 39 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M31.9898 26.8163C31.9898 24.1788 29.8518 22.0408 27.2143 22.0408C24.5767 22.0408 22.4388 24.1788 22.4388 26.8163C22.4388 28.1696 23.0037 29.3885 23.9081 30.2576V36L27.2143 33.7959L30.5204 36V30.2576C31.4248 29.3885 31.9898 28.1696 31.9898 26.8163Z" fill="#C3D8F2"/>
+                        <path d="M37.1327 0H1.86734C1.05624 0 0.397949 0.657551 0.397949 1.46939V30.8572C0.397949 31.6683 1.05624 32.3265 1.86734 32.3265H20.9694V31.3443C20.0143 30.0372 19.5 28.4694 19.5 26.8163C19.5 22.5625 22.9604 19.102 27.2143 19.102C31.4682 19.102 34.9286 22.5625 34.9286 26.8163C34.9286 28.4701 34.4143 30.038 33.4592 31.345V32.3265H37.1327C37.9438 32.3265 38.6021 31.6683 38.6021 30.8572V1.46939C38.6021 0.657551 37.9438 0 37.1327 0ZM20.9694 13.2245H8.47959V10.2857H20.9694V13.2245ZM30.5204 7.34694H8.47959V4.40816H30.5204V7.34694Z" fill="#0ABB87"/>
+                      </svg>
+                      <div class="stat-label">Courses</div>
+                      <div class="stat-value">{{ insighter.knowledge_type_statistics?.course || 0 }}</div>
+                    </div>
+                  </div>
+                  
+                  <!-- If no statistics are available -->
+                  <div *ngIf="!insighter.knowledge_type_statistics || getTotalKnowledgeCount(insighter) === 0" class="col-12 text-center py-4">
+                    <div class="d-flex flex-column align-items-center">
+                      <i class="fas fa-folder-open text-muted fs-2x mb-3"></i>
+                      <span class="text-muted fs-6">No knowledge published yet by this insighter</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        
+        <!-- Empty Message -->
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="7" class="text-center py-5">
+              <div class="d-flex flex-column align-items-center">
+                <i class="fas fa-users text-muted fs-2x mb-3"></i>
+                <span class="text-muted fs-6">{{ 'MY_COMPANY.NO_EMPLOYEES' | translate }}</span>
+              </div>
+            </td>
+          </tr>
+                 </ng-template>
+       </p-table>
       </div>
       
       <!-- Pagination -->
-      <div class="d-flex justify-content-between align-items-center flex-wrap mt-5">
-        <div class="d-flex flex-wrap py-2 mr-3">
+      <div class="d-flex justify-content-between align-items-center flex-wrap mt-4">
+        <div class="d-flex flex-wrap py-2">
           <p-paginator 
             [rows]="rows" 
             [totalRecords]="totalRecords" 
@@ -258,7 +278,6 @@
             (onPageChange)="onPageChange($event)">
           </p-paginator>
         </div>
-        
       </div>
     </div>
   </div>

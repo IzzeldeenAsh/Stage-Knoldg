@@ -49,7 +49,7 @@
           </div>
         </div>
 
-        <!-- ISIC Codes -->
+        <!-- Industry -->
         <div class=" col-12">
           <shared-tree-selector
           [title]="'AUTH.REGISTRATION.INDUSTRY' | translate"
@@ -68,6 +68,15 @@
           [isRequired]="true"
         ></shared-tree-selector>
 
+          <div
+            *ngIf="
+              form.get('isicCodes')?.hasError('required') &&
+              form.get('isicCodes')?.touched
+            "
+            class="fv-plugins-message-container invalid-feedback"
+          >
+            {{ "INSIGHTER_WIZARD.INDUSTRY_REQUIRED" | translate }}
+          </div>
         </div>
       </div>
 
@@ -86,6 +95,15 @@
             ></textarea>
           </div>
         </div>
+        <div
+          *ngIf="
+            form.get('bio')?.hasError('required') &&
+            form.get('bio')?.touched
+          "
+          class="fv-plugins-message-container invalid-feedback"
+        >
+          {{ "INSIGHTER_WIZARD.BIO_REQUIRED" | translate }}
+        </div>
       </div>
 
       <!-- Phone Number -->
@@ -99,16 +117,40 @@
         <div class="input-group">
           <div class="max-width-200px">
             <p-dropdown
-              [options]="phoneNumbers"
+              [options]="countries"
               formControlName="phoneCountryCode"
               class="d-block form-p-control no-border-radius-start-end"
-              optionLabel="text"
+              optionValue="international_code"
               placeholder="{{
                 'INSIGHTER_WIZARD.COUNTRY_PLACEHOLDER' | translate
               }}"
               [filter]="true"
               [showClear]="true"
-            ></p-dropdown>
+            >
+              <ng-template pTemplate="item" let-country>
+                <div class="country-option" [class]="lang === 'ar' ? 'rtl-country-option' : 'ltr-country-option'">
+                  <img *ngIf="country.showFlag"
+                    [src]="'../../../../assets/media/flags/' + country.flag + '.svg'"
+                    (error)="onFlagError(country)"
+                    alt="{{ country.names.en }}"
+                    [class]="'flag-icon w-20px ' + (lang === 'ar' ? 'ms-2' : 'me-2')" />
+                  <span class="country-code">(+{{ country.international_code }})</span>
+                  <span *ngIf="lang=='en'" class="country-name ms-2">{{ country.names.en }}</span>
+                  <span *ngIf="lang=='ar'" class="country-name ms-2">{{ country.names.ar }}</span>
+                </div>
+              </ng-template>
+              
+              <ng-template pTemplate="selectedItem" let-country>
+                <div class="selected-country-option" [class]="lang === 'ar' ? 'rtl-selected-option' : 'ltr-selected-option'" *ngIf="country">
+                  <img *ngIf="country.showFlag"
+                    [src]="'../../../../assets/media/flags/' + country.flag + '.svg'"
+                    (error)="onFlagError(country)"
+                    alt="{{ country.names.en }}"
+                    [class]="'flag-icon w-20px ' + (lang === 'ar' ? 'ms-2' : 'me-2')" />
+                  <span class="country-code">(+{{ country.international_code }})</span>
+                </div>
+              </ng-template>
+            </p-dropdown>
           </div>
           <input
             formControlName="phoneNumber"
@@ -300,16 +342,40 @@
         <div class="input-group">
           <div class="max-width-200px">
             <p-dropdown
-              [options]="phoneNumbers"
+              [options]="countries"
               formControlName="phoneCountryCode"
               class="d-block form-p-control no-border-radius-start-end"
-              optionLabel="text"
+              optionValue="international_code"
               placeholder="{{
                 'INSIGHTER_WIZARD.COUNTRY_PLACEHOLDER' | translate
               }}"
               [filter]="true"
               [showClear]="true"
-            ></p-dropdown>
+            >
+              <ng-template pTemplate="item" let-country>
+                <div class="country-option" [class]="lang === 'ar' ? 'rtl-country-option' : 'ltr-country-option'">
+                  <img *ngIf="country.showFlag"
+                    [src]="'../../../../assets/media/flags/' + country.flag + '.svg'"
+                    (error)="onFlagError(country)"
+                    alt="{{ country.names.en }}"
+                    [class]="'flag-icon w-20px ' + (lang === 'ar' ? 'ms-2' : 'me-2')" />
+                  <span class="country-code">(+{{ country.international_code }})</span>
+                  <span *ngIf="lang=='en'" class="country-name ms-2">{{ country.names.en }}</span>
+                  <span *ngIf="lang=='ar'" class="country-name ms-2">{{ country.names.ar }}</span>
+                </div>
+              </ng-template>
+              
+              <ng-template pTemplate="selectedItem" let-country>
+                <div class="selected-country-option" [class]="lang === 'ar' ? 'rtl-selected-option' : 'ltr-selected-option'" *ngIf="country">
+                  <img *ngIf="country.showFlag"
+                    [src]="'../../../../assets/media/flags/' + country.flag + '.svg'"
+                    (error)="onFlagError(country)"
+                    alt="{{ country.names.en }}"
+                    [class]="'flag-icon w-20px ' + (lang === 'ar' ? 'ms-2' : 'me-2')" />
+                  <span class="country-code">(+{{ country.international_code }})</span>
+                </div>
+              </ng-template>
+            </p-dropdown>
           </div>
           <input
             formControlName="phoneCompanyNumber"
@@ -317,7 +383,7 @@
             maxlength="10"
             class="form-control no-rtl-b-radius"
             placeholder="{{
-              'INSIGHTER_WIZARD.COMPANY_PHONE_NUMBER' | translate
+              'INSIGHTER_WIZARD.PHONE_NUMBER_PLACEHOLDER' | translate
             }}"
             (input)="onPhoneNumberInput($event)"
           />
@@ -362,21 +428,34 @@
       <!-- Consulting Fied + Industry -->
       <div class="mb-10 row">
         <!-- Consulting Fields -->
-        <shared-tree-selector
-          [title]="'INSIGHTER_WIZARD.CONSULTING_FIELDS' | translate"
-          [placeholder]="
-            'AUTH.REGISTRATION.CONSULTING_FIELD_PLACEHOLDER' | translate
-          "
-          [otherFieldPlaceholder]="
-            'INSIGHTER_WIZARD.OTHER_FIELD_PLACEHOLDER' | translate
-          "
-          [selectAllLabel]="this.lang === 'ar' ? 'اختر الكل' : 'Select All'"
-          [fetchedData]="listOfConsultingFields"
-          [cancelLabel]="'BUTTONS.CANCEL' | translate"
-          [initialSelectedNodes]="form.value.consultingFields" 
-          [okLabel]="'BUTTONS.OK' | translate"
-          (nodesSelected)="onConsultingNodesSelected($event)"
-        ></shared-tree-selector>
+        <div class="col-12">
+          <shared-tree-selector
+            [title]="'INSIGHTER_WIZARD.CONSULTING_FIELDS' | translate"
+            [placeholder]="
+              'AUTH.REGISTRATION.CONSULTING_FIELD_PLACEHOLDER' | translate
+            "
+            [otherFieldPlaceholder]="
+              'INSIGHTER_WIZARD.OTHER_FIELD_PLACEHOLDER' | translate
+            "
+            [selectAllLabel]="this.lang === 'ar' ? 'اختر الكل' : 'Select All'"
+            [fetchedData]="listOfConsultingFields"
+            [cancelLabel]="'BUTTONS.CANCEL' | translate"
+            [initialSelectedNodes]="form.value.consultingFields" 
+            [okLabel]="'BUTTONS.OK' | translate"
+            (nodesSelected)="onConsultingNodesSelected($event)"
+            [isRequired]="true"
+          ></shared-tree-selector>
+
+          <div
+            *ngIf="
+              form.get('consultingFields')?.hasError('required') &&
+              form.get('consultingFields')?.touched
+            "
+            class="fv-plugins-message-container invalid-feedback"
+          >
+            {{ "INSIGHTER_WIZARD.CONSULTING_FIELDS_REQUIRED" | translate }}
+          </div>
+        </div>
      
         <!-- ISIC Codes -->
         <div class="col-12">
@@ -394,9 +473,18 @@
           [initialSelectedNodes]="form.value.isicCodes" 
           [okLabel]="'BUTTONS.OK' | translate"
           (nodesSelected)="onIndustrySelected($event)"
+          [isRequired]="true"
         ></shared-tree-selector>
-         
 
+          <div
+            *ngIf="
+              form.get('isicCodes')?.hasError('required') &&
+              form.get('isicCodes')?.touched
+            "
+            class="fv-plugins-message-container invalid-feedback"
+          >
+            {{ "INSIGHTER_WIZARD.INDUSTRY_REQUIRED" | translate }}
+          </div>
         </div>
       </div>
       <!-- About Company -->

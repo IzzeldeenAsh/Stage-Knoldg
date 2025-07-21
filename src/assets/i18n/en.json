@@ -44,7 +44,9 @@
     "UPLOAD": "Upload",
     "UPLOADING": "Uploading...",
     "DELETE": "Delete",
-    "DELETING": "Deleting..."
+    "DELETING": "Deleting...",
+    "FREE": "Free",
+    "LOADING": "Loading"
   },
   "MY_KNOWLEDGE": {
     "NO_ITEMS": {
@@ -66,6 +68,21 @@
       "TITLE": "No Packages Found",
       "MESSAGE": "You don't have any knowledge packages at the moment. Create a package by using the 'Generate Package' button."
     }
+  },
+  "MY_DOWNLOADS": {
+    "STATISTICS": "Download Statistics",
+    "TOTAL_SPENT": "Total Spent",
+    "TOTAL_DOCUMENTS": "Total Documents",
+    "KNOWLEDGE_ITEMS": "Knowledge Items",
+    "NO_DOWNLOADS": "No downloads available",
+    "SELECT_KNOWLEDGE": "Select a knowledge item to view documents",
+    "SELECT_ITEM_DETAILS": "Select an item to view details",
+    "NO_DOCUMENTS": "No documents available",
+    "DOCUMENTS": "Documents",
+    "DOWNLOAD_KNOWLEDGE": "Download Knowledge",
+    "DOWNLOAD_DOCUMENT": "Download Document",
+    "PUBLISHER": "Publisher",
+    "PURCHASE_DATE": "Purchase Date"
   },
   "EMPTY_DASHBOARD": {
     "TITLE": "Start Building Your knowledge library",
