@@ -262,13 +262,19 @@ export class EmployeeKnowledgeStatisticsComponent implements OnInit {
     
     this.companyAccountService.getEmployeeKnowledgeStatistics().subscribe(
       (response) => {
+        console.log('Raw employee statistics response:', response); // Debug log
         this.employees = response.data;
         this.loading = false;
         this.error = false;
         
+        // Debug logs
+        console.log('Total employees with knowledge:', this.employees.length);
+        console.log('Employee knowledge data:', this.employees);
+        
         // Only emit true if there are multiple employees (more than just the manager)
         // This ensures we don't show the component when there's only data for the manager
         const hasEnoughData = this.employees.length > 1;
+        console.log('Has enough data to show component:', hasEnoughData); // Debug log
         this.hasMultipleEmployees.emit(hasEnoughData);
         
         // Only initialize chart if we have enough data to display

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, DestroyRef, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, DestroyRef, signal, computed } from '@angular/core';
 import { Subject, take, takeUntil } from 'rxjs';
 import { MeetingsService, Meeting, MeetingResponse } from '../../../../_fake/services/meetings/meetings.service';
 import { Router } from '@angular/router';
@@ -37,6 +37,15 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
   totalPages = signal<number>(1);
   totalItems = signal<number>(0);
   perPage = signal<number>(10);
+  
+  // Computed signal for page numbers
+  pageNumbers = computed(() => {
+    const pages: number[] = [];
+    for (let i = 1; i <= this.totalPages(); i++) {
+      pages.push(i);
+    }
+    return pages;
+  });
   
   // Filter tabs
   selectedTab = signal<TabType>('upcoming');

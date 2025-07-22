@@ -43,11 +43,8 @@ styleClass=""
             <!--begin::Filters-->
             <div class="d-flex justify-content-end flex-wrap gap-4">
                 <!--begin::Request Type-->
-                <div class="d-flex align-items-center fw-bold" >
-                    <!--begin::Label-->
+                <!-- <div class="d-flex align-items-center fw-bold" >
                     <div class="text-muted fs-7 mx-2"><i class="bi bi-filter-square mx-1"></i>{{ 'USER_REQUESTS.FILTER.REQUEST_TYPE' | translate }}</div>
-                    <!--end::Label-->
-                    <!--begin::Select-->
                     <select class="form-select form-select-sm form-select-solid text-gray-800 fs-7 lh-1 fw-bold py-1 ps-3 w-auto"
                             [(ngModel)]="selectedType"
                             (change)="filterRequests()">
@@ -56,10 +53,8 @@ styleClass=""
                         <option value="deactivate_company">{{ 'USER_REQUESTS.FILTER.DEACTIVATE_COMPANY_ACCOUNT' | translate }}</option>
                         <option value="verified_company">{{ 'USER_REQUESTS.FILTER.VERIFY_COMPANY' | translate }}</option>
                         <option value="deactivate_delete_company">{{ 'USER_REQUESTS.FILTER.DEACTIVATE_DELETE_COMPANY' | translate }}</option>
-                        <!-- Add more options as needed -->
                     </select>
-                    <!--end::Select-->
-                </div>
+                </div> -->
                 <!--end::Request Type-->
                 <!--begin::Status-->
                 <div class="d-flex align-items-center fw-bold">
@@ -177,25 +172,18 @@ styleClass=""
         <div class="card-toolbar" *ngIf="insighterRequests.length > 0">
             <!--begin::Filters-->
             <div class="d-flex justify-content-end flex-wrap gap-4">
-                <!--begin::Request Type-->
-                <div class="d-flex align-items-center fw-bold" >
-                    <!--begin::Label-->
+                <!-- <div class="d-flex align-items-center fw-bold" >
                     <div class="text-muted fs-7 mx-2"><i class="bi bi-filter-square mx-1"></i>{{ 'INSIGHTER_REQUESTS.FILTER.REQUEST_TYPE' | translate }}</div>
-                    <!--end::Label-->
-                    <!--begin::Select-->
                     <select class="form-select form-select-sm form-select-solid text-gray-800 fs-7 lh-1 fw-bold py-1 ps-3 w-auto"
                             [(ngModel)]="selectedInsighterType"
                             (change)="filterInsighterRequests()">
                         <option value="">{{ 'USER_REQUESTS.FILTER.SHOW_ALL' | translate }}</option>
                         <option value="accept_knowledge">{{ 'USER_REQUESTS.FILTER.ACCEPT_KNOWLEDGE' | translate }}</option>
-                        <!-- Add more options as needed -->
+                       
                     </select>
-                    <!--end::Select-->
-                </div>
+                </div> -->
                 <!--end::Request Type-->
-                <!--begin::Status-->
                 <div class="d-flex align-items-center fw-bold">
-                    <!--begin::Label-->
                     <div class="text-muted fs-7 mx-2"><i class="bi bi-check-circle mx-1"></i>{{ 'INSIGHTER_REQUESTS.FILTER.STATUS' | translate }}</div>
                     <!--end::Label-->
 

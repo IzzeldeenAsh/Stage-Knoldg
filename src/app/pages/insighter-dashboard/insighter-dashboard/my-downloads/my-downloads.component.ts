@@ -1,5 +1,7 @@
 import { Component, OnInit, signal, computed, inject, DestroyRef, Injector, Inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormControl } from '@angular/forms';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
 
 import { BaseComponent } from 'src/app/modules/base.component';
 
@@ -28,6 +30,10 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit {
   totalPages = signal<number>(1);
   totalItems = signal<number>(0);
   perPage = signal<number>(15);
+
+  // Search state
+  searchControl = new FormControl('');
+  currentSearchTerm = signal<string>('');
 
   // UI state
   selectedColumn = signal<'knowledge' | 'document' | 'details'>('knowledge');
@@ -72,11 +78,26 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit {
     this._mydownloads.isLoading$
     .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe(loading => this.loading.set(loading));
+
+    // Setup search with debounce
+    this.searchControl.valueChanges
+      .pipe(
+        debounceTime(500), // Wait 500ms after user stops typing
+        distinctUntilChanged(), // Only trigger if value actually changed
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(searchTerm => {
+        this.currentSearchTerm.set(searchTerm || '');
+        this.currentPage.set(1); // Reset to first page when searching
+        this.selectedKnowledge.set(null); // Clear selection when searching
+        this.selectedDocument.set(null);
+        this.loadMyDownloads(1, searchTerm || '');
+      });
    
   }
 
-  loadMyDownloads(page:number =1):void{
-    this._mydownloads.getMyDownloads(page)
+  loadMyDownloads(page: number = 1, searchTerm: string = ''): void {
+    this._mydownloads.getMyDownloads(page, searchTerm || undefined)
     .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe({
       next:(response) =>{
@@ -194,7 +215,7 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit {
     // Pagination methods
     onPageChange(page: number): void {
       if (page >= 1 && page <= this.totalPages() && page !== this.currentPage()) {
-        this.loadMyDownloads(page);
+        this.loadMyDownloads(page, this.currentSearchTerm());
       }
     }
 
@@ -236,6 +257,10 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit {
     }
   }
 
+  clearSearch(): void {
+    this.searchControl.setValue('');
+  }
+
   trackByKnowledgeUuid(index: number, item: KnowledgeItem): string {
     return item.uuid;
   }
@@ -246,6 +271,23 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit {
 
   trackByPageIndex(index: number, item: number | string): number | string {
     return item;
+  }
+
+  getFileIconByExtension(fileExtension: string): string {
+    const iconMap: { [key: string]: string } = {
+      pdf: './assets/media/svg/new-files/pdf.svg',
+      doc: './assets/media/svg/new-files/doc.svg',
+      docx: './assets/media/svg/new-files/docx.svg',
+      xls: './assets/media/svg/new-files/xls.svg',
+      ppt: './assets/media/svg/new-files/ppt.svg',
+      pptx: './assets/media/svg/new-files/pptx.svg',
+      txt: './assets/media/svg/new-files/txt.svg',
+      zip: './assets/media/svg/new-files/zip.svg',
+      xlsx: './assets/media/svg/new-files/xlsx.svg',
+      default: './assets/media/svg/new-files/default.svg',
+    };
+    const ext = fileExtension?.toLowerCase() || '';
+    return iconMap[ext] || iconMap.default;
   }
 
 } 

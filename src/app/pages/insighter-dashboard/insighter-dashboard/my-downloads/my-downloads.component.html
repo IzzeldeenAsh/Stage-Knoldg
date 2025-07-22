@@ -1,6 +1,39 @@
-<div class="container-fluid">
+<div class="card">
+<div class="card-body">
   <div class="row">
     <div class="col-12">
+      
+      <!-- Search Bar -->
+      <div class="row mb-6">
+        <div class="col-12">
+          <div class="d-flex align-items-center">
+            <div class="position-relative flex-grow-1 me-3">
+              <i class="ki-duotone ki-magnifier fs-3 text-gray-500 position-absolute top-50 translate-middle-y ms-6">
+                <span class="path1"></span>
+                <span class="path2"></span>
+              </i>
+              <input 
+                type="text" 
+                class="form-control form-solid ps-15" 
+                [formControl]="searchControl"
+                [placeholder]="'MY_DOWNLOADS.SEARCH_PLACEHOLDER' | translate"
+                autocomplete="off">
+            </div>
+            @if (currentSearchTerm()) {
+              <button 
+                type="button" 
+                class="btn btn-sm btn-light-danger" 
+                (click)="clearSearch()"
+                [attr.title]="'COMMON.CLEAR_SEARCH' | translate">
+                <i class="ki-duotone ki-cross fs-2">
+                  <span class="path1"></span>
+                  <span class="path2"></span>
+                </i>
+              </button>
+            }
+          </div>
+        </div>
+      </div>
           
           <!-- Loading State -->
           @if (loading()) {
@@ -15,20 +48,32 @@
             <div class="row" style="min-height: 500px;">
               
               <!-- Column 1: Knowledge Items -->
-              <div class="col-md-4 border-end">
+              <div class="col-lg-4 border-end">
                 <div class="d-flex align-items-center gap-2  mb-4">
                   <h5 class="mb-0">{{ 'MY_DOWNLOADS.KNOWLEDGE_ITEMS' | translate }}</h5>
                   <span class="badge badge-light-info">{{ totalItems() }}</span>
+            
                 </div>
                 
                 <div class="knowledge-list" style="max-height: 400px; overflow-y: auto;">
                   @if (knowledgeItems().length === 0) {
                     <div class="text-center py-5">
-                      <i class="ki-duotone ki-folder-down fs-3x text-muted mb-3">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                      </i>
-                      <p class="text-muted">{{ 'MY_DOWNLOADS.NO_DOWNLOADS' | translate }}</p>
+                      @if (currentSearchTerm()) {
+                        <i class="ki-duotone ki-magnifier fs-3x text-muted mb-3">
+                          <span class="path1"></span>
+                          <span class="path2"></span>
+                        </i>
+                        <p class="text-muted">{{ 'COMMON.NO_SEARCH_RESULTS' | translate }}</p>
+                        <button class="btn btn-sm btn-light-info" (click)="clearSearch()">
+                          {{ 'COMMON.CLEAR' | translate }}
+                        </button>
+                      } @else {
+                        <i class="ki-duotone ki-folder-down fs-3x text-muted mb-3">
+                          <span class="path1"></span>
+                          <span class="path2"></span>
+                        </i>
+                        <p class="text-muted">{{ 'MY_DOWNLOADS.NO_DOWNLOADS' | translate }}</p>
+                      }
                     </div>
                   } @else {
                     @for (knowledge of knowledgeItems(); track trackByKnowledgeUuid($index, knowledge)) {
@@ -101,7 +146,7 @@
               </div>
               
               <!-- Column 2: Documents -->
-              <div class="col-md-4 border-end">
+              <div class="col-lg-4 border-end">
                 <div class="d-flex align-items-center mb-4">
                   <h5 class="mb-0">{{ 'MY_DOWNLOADS.DOCUMENTS' | translate }}</h5>
                   @if (selectedKnowledge()) {
@@ -135,10 +180,12 @@
                         
                         <!-- Document Icon -->
                         <div class="me-3">
-                          <i class="ki-duotone ki-document fs-4 text-info">
-                            <span class="path1"></span>
-                            <span class="path2"></span>
-                          </i>
+                          <img
+                            [src]="getFileIconByExtension(document.file_extension)"
+                            [alt]="document.file_extension + ' file'"
+                            width="32"
+                            height="32"
+                            class="file-icon"/>
                         </div>
                         
                         <!-- Document Name -->
@@ -174,7 +221,10 @@
               </div>
               
               <!-- Column 3: Details -->
-              <div class="col-md-4">
+              <div class="col-lg-4">
+                <div class="d-flex align-items-center gap-2  mb-4">
+                  <h5 class="mb-0">{{ 'MY_DOWNLOADS.KNOWLEDGE_SOURCE' | translate }}</h5>
+                </div>
                 <div class="details-panel">
                   @if (!selectedKnowledge()) {
                     <div class="text-center py-5">
@@ -191,7 +241,7 @@
                       @if (currentKnowledgeDetails(); as details) {
                         <div class="type-label">{{ details.type | uppercase }}</div>
                         <a (click)="viewKnowledge(selectedKnowledge()!); $event.stopPropagation()" class="cursor-pointer">
-                        <h2 class="knowledge-title">{{ selectedKnowledge()?.title }}</h2>
+                        <h2 class="knowledge-title">{{ (selectedKnowledge()?.title || '') | truncateText:40 }}</h2>
                       </a>
                       }
                     </div>
@@ -200,8 +250,49 @@
                     <div class="details-content">
                       @if (currentKnowledgeDetails(); as details) {
                         <div class="publisher-info">
-                          <div class="text-muted fs-8 title-label">{{'MY_DOWNLOADS.PUBLISHER' | translate}}</div>
-                          <h4 class="publisher-name">{{ details.publisher }}</h4>
+                          <div class="publisher-content">
+                            <!-- Profile/Company Image Container -->
+                            <div class="publisher-image-container">
+                              @if (selectedKnowledge()?.company) {
+                                <!-- Company logo with insighter photo overlay -->
+                                <div class="company-logo-container">
+                                  <img 
+                                    [src]="selectedKnowledge()?.company?.logo" 
+                                    [alt]="selectedKnowledge()?.company?.legal_name"
+                                    class="company-logo rounded-circle"
+                                    style="object-fit: cover; object-position: top;"
+                                    onerror="this.src='assets/images/default-company.png'">
+                                  @if (selectedKnowledge()?.insighter_photo) {
+                                    <img 
+                                      [src]="selectedKnowledge()?.insighter_photo" 
+                                      [alt]="selectedKnowledge()?.insighter"
+                                      class="insighter-overlay"
+                                      style="object-fit: cover; object-position: top;"
+                                      onerror="this.src='assets/images/default-avatar.png'">
+                                  }
+                                </div>
+                              } @else if (selectedKnowledge()?.insighter_photo) {
+                                <!-- Only insighter photo -->
+                                <img 
+                                  [src]="selectedKnowledge()?.insighter_photo" 
+                                  [alt]="selectedKnowledge()?.insighter"
+                                  class="insighter-photo"
+                                  style="object-fit: cover; object-position: top;"
+                                  onerror="this.src='assets/images/default-avatar.png'">
+                              }
+                            </div>
+                            
+                            <!-- Publisher Name and Company Info -->
+                            <div class="publisher-text">
+                              <h4 class="publisher-name">{{ details.publisher }}</h4>
+                              @if (selectedKnowledge()?.company) {
+                                <div class="company-info">
+                                  <span class="company-prefix text-warning">&#64;</span>
+                                  <span class="company-name bg-light-warning text-warning">{{ selectedKnowledge()?.company?.legal_name }}</span>
+                                </div>
+                              }
+                            </div>
+                          </div>
                         </div>
                         
                         <div class="purchase-info">
@@ -219,4 +310,5 @@
           }
     </div>
   </div>
+</div>
 </div>

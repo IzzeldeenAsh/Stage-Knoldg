@@ -9,6 +9,15 @@ export interface Document {
   uuid: string;
   file_name: string;
   price: number;
+  file_extension: string;
+  file_size: number;
+}
+
+export interface Company {
+  uuid: string;
+  legal_name: string;
+  logo: string;
+  verified: boolean;
 }
 
 export interface KnowledgeItem {
@@ -17,8 +26,10 @@ export interface KnowledgeItem {
   title: string;
   type: string;
   insighter: string;
+  insighter_photo: string | null;
   purchase_date: string;
   documents: Document[];
+  company: Company | null;
 }
 
 export interface PaginationLinks {
@@ -102,8 +113,14 @@ export class MyDownloadsService {
     return throwError(() => error);
   }
 
-  getMyDownloads(page: number = 1): Observable<MyDownloadsResponse> {
-    const url = `${this.API_URL}?page=${page}`;
+  getMyDownloads(page: number = 1, title?: string): Observable<MyDownloadsResponse> {
+    let url = `${this.API_URL}?page=${page}`;
+    
+    // Add title query parameter if provided
+    if (title && title.trim()) {
+      url += `&title=${encodeURIComponent(title.trim())}`;
+    }
+    
     const headers = this.getHeaders();
     
     this.setLoading(true);

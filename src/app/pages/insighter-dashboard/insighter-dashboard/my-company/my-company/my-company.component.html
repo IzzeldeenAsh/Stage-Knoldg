@@ -1,4 +1,5 @@
 <!-- Company Management Page -->
+<div class="my-company-container">
 <div class="card mb-5 mb-xl-10">
   <!-- Header -->
   <div class="card-header border-0 pt-5">
@@ -35,10 +36,10 @@
           [paginator]="false"
           [showCurrentPageReport]="false"
           styleClass="p-datatable-sm p-datatable-gridlines"
-          [tableStyle]="{'min-width': '50rem', 'border-collapse': 'separate', 'border-spacing': '0', 'width': '100%'}"
+          [tableStyle]="{'border-collapse': 'separate', 'border-spacing': '0', 'width': '100%'}"
           [rowHover]="true"
-          [resizableColumns]="true"
-          [scrollable]="true"
+          [resizableColumns]="false"
+          [scrollable]="false"
           class="company-table">
         
                  <!-- Expand/Collapse Column -->
@@ -448,3 +449,5 @@
                  appendTo="body"
                  acceptIcon="ki-duotone ki-check" 
                  rejectIcon="ki-duotone ki-cross"></p-confirmDialog>
+
+</div>

@@ -300,12 +300,8 @@
           </div>
 
           <!-- Main Content Area -->
-          <div class="main-content-area flex-fill pe-5">
-            <div class="card">
-              <div class="card-body">
+          <div class="main-content-area flex-fill" [ngClass]="{'pe-5': !isRouteActive('my-company-settings'), 'pe-2': isRouteActive('my-company-settings')}">
                 <router-outlet></router-outlet>
-              </div>
-            </div>
           </div>
           
         </div>
