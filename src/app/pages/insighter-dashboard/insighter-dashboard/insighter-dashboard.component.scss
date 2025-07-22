@@ -80,6 +80,13 @@
 
 .main-content-area {
     min-height: 500px;
+    
+    // Special handling for my-company route to give more horizontal space
+    &.pe-2 {
+      // Ensure full width usage for table components
+      max-width: 100%;
+      overflow: hidden;
+    }
 }
 
 // Navigation Cards Layout - Same as Profile Navigation
@@ -507,6 +514,16 @@
       margin: 0 1rem;
       border-radius: 8px;
     }
+    
+    // Special handling for my-company route on mobile
+    &.pe-2 {
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      
+      .card {
+        margin: 0 0.5rem;
+      }
+    }
   }
   
   // Adjust toolbar for mobile
@@ -520,8 +537,22 @@
   
   // Mobile menu toggle positioning
   .mobile-menu-toggle {
-    top: -100px;
+    top: -51px;
     left: 0.5rem;
+  }
+}
+
+// Tablet adjustments for my-company route
+@media screen and (max-width: 991px) and (min-width: 576px) {
+  .main-content-area {
+    &.pe-2 {
+      padding-right: 1rem !important;
+      
+      .card {
+        margin-left: 0;
+        margin-right: 0;
+      }
+    }
   }
 }
 

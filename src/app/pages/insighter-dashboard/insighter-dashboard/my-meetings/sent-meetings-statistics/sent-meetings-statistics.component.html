@@ -61,7 +61,7 @@ flex-column pt-6 pb-lg-10 pt-lg-20"
       <!-- Upcoming Meetings -->
       <div class="d-flex flex-column rounded p-6 hover-scale">           
         <div class="d-flex align-items-center mb-2">
-          <i class="ki-solid ki-calendar-2 text-primary mx-2 fs-2"></i>
+          <i class="ki-solid ki-calendar-2 text-info mx-2 fs-2"></i>
           <span class="text-white fw-bolder fs-2x" 
                 [appCountUp]="upcomingMeetings">
             {{ upcomingMeetings }}
@@ -75,7 +75,7 @@ flex-column pt-6 pb-lg-10 pt-lg-20"
       <!-- Past Meetings -->
       <div class="d-flex flex-column rounded p-6 hover-scale">           
         <div class="d-flex align-items-center mb-2">
-          <i class="ki-solid ki-calendar-tick text-info mx-2 fs-2"></i>
+          <i class="ki-solid ki-calendar-tick text-danger mx-2 fs-2"></i>
           <span class="text-white fw-bolder fs-2x" 
                 [appCountUp]="pastMeetings">
             {{ pastMeetings }}

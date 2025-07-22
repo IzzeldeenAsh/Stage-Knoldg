@@ -268,7 +268,7 @@
   border: 1px solid #e4e6ef;
   background-color: #ffffff;
   box-shadow: 0px 0px 20px rgba(76, 87, 125, 0.02);
-  
+
   &:hover {
     transform: translateY(-5px);
     box-shadow: 0px 10px 30px rgba(76, 87, 125, 0.1);
@@ -397,6 +397,41 @@
     
     &:hover {
       background-color: #f5f8fa;
+    }
+  }
+}
+// Grid view styles
+.card {
+  transition: all 0.3s ease;
+  border: 1px solid #e4e6ef;
+  background-color: #ffffff;
+  box-shadow: 0px 0px 20px rgba(76, 87, 125, 0.02);
+  height: auto !important;
+  padding: 10px;
+
+
+  .card-body {
+    position: relative;
+    overflow: hidden;
+    padding: 1.5rem;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-image: url('https://res.cloudinary.com/dsiku9ipv/image/upload/v1739196782/bg-5-ol_2_zquwnb.png');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.1;
+      z-index: 0;
+    }
+
+    & > * {
+      position: relative;
+      z-index: 1;
     }
   }
 }

@@ -1,6 +1,7 @@
 import { Component, Injector } from '@angular/core';
 import { UserRequestsService } from 'src/app/_fake/services/user-requests/user-requests.service';
 import { BaseComponent } from 'src/app/modules/base.component';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-requests-statistics',
@@ -20,27 +21,44 @@ public approvedRequests: number = 0;
 public declinedRequests: number = 0;
 
 getRequestsStatistics(){
-  const sub=this.requests.getAllUserRequests(this.lang? this.lang : 'en').subscribe((res: any) => {
-    // Reset counters
-    this.pendingRequests = 0;
-    this.approvedRequests = 0;
-    this.declinedRequests = 0;
+  // Use forkJoin to fetch both user requests and insighter requests simultaneously
+  const sub = forkJoin({
+    userRequests: this.requests.getAllUserRequests(this.lang ? this.lang : 'en'),
+    insighterRequests: this.requests.getInsighterRequests(this.lang ? this.lang : 'en')
+  }).subscribe({
+    next: (response: any) => {
+      // Reset counters
+      this.pendingRequests = 0;
+      this.approvedRequests = 0;
+      this.declinedRequests = 0;
 
-    // Count requests by status
-    res.forEach((request: any) => {
-      switch (request.status?.toLowerCase()) {
-        case 'pending':
-          this.pendingRequests++;
-          break;
-        case 'approved':
-          this.approvedRequests++;
-          break;
-        case 'declined':
-          this.declinedRequests++;
-          break;
-      }
-    });
+      // Combine both arrays of requests
+      const allRequests = [...(response.userRequests || []), ...(response.insighterRequests || [])];
+
+      // Count requests by status
+      allRequests.forEach((request: any) => {
+        switch (request.status?.toLowerCase()) {
+          case 'pending':
+            this.pendingRequests++;
+            break;
+          case 'approved':
+            this.approvedRequests++;
+            break;
+          case 'declined':
+            this.declinedRequests++;
+            break;
+        }
+      });
+    },
+    error: (error) => {
+      console.error('Error fetching requests statistics:', error);
+      // Reset counters on error
+      this.pendingRequests = 0;
+      this.approvedRequests = 0;
+      this.declinedRequests = 0;
+    }
   });
+  
   this.unsubscribe.push(sub);
 }
 

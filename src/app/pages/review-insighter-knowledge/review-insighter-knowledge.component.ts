@@ -194,13 +194,49 @@ export class ReviewInsighterKnowledgeComponent extends BaseComponent implements 
     const actionIcon = status === 'approve' ? 'success' : 'warning';
     const actionButtonClass = status === 'approve' ? 'btn btn-success fw-bold px-10' : 'btn btn-danger fw-bold px-10';
     
+    // Arabic translations
+    const arMessages = {
+      approve: {
+        title: 'هل أنت متأكد أنك تريد الموافقة على هذه المعرفة؟',
+        text: 'أنت على وشك الموافقة على تقديم هذه المعرفة.',
+        confirmButton: 'نعم، وافق عليها!',
+        cancelButton: 'إلغاء'
+      },
+      reject: {
+        title: 'هل أنت متأكد أنك تريد رفض هذه المعرفة؟',
+        text: 'أنت على وشك رفض تقديم هذه المعرفة.',
+        confirmButton: 'نعم، ارفضها!',
+        cancelButton: 'إلغاء'
+      }
+    };
+
+    // English messages
+    const enMessages = {
+      approve: {
+        title: 'Are you sure you want to approve this knowledge?',
+        text: 'You are about to approve this knowledge submission.',
+        confirmButton: 'Yes, approve it!',
+        cancelButton: 'Cancel'
+      },
+      reject: {
+        title: 'Are you sure you want to reject this knowledge?',
+        text: 'You are about to reject this knowledge submission.',
+        confirmButton: 'Yes, reject it!',
+        cancelButton: 'Cancel'
+      }
+    };
+
+    // Select messages based on language
+    const messages = this.lang === 'ar' ? arMessages : enMessages;
+    const currentMessages = status === 'approve' ? messages.approve : messages.reject;
+    
     Swal.fire({
-      title: `Are you sure you want to ${actionText} this knowledge?`,
-      text: `You are about to ${actionText} this knowledge submission.`,
+      title: currentMessages.title,
+      text: currentMessages.text,
       icon: actionIcon as any,
       showCancelButton: true,
-      confirmButtonText: `Yes, ${actionText} it!`,
-      cancelButtonText: 'Cancel',
+      confirmButtonText: currentMessages.confirmButton,
+      cancelButtonText: currentMessages.cancelButton,
       customClass: {
         confirmButton: actionButtonClass,
         cancelButton: 'btn btn-light-primary fw-bold px-10'
@@ -247,11 +283,23 @@ export class ReviewInsighterKnowledgeComponent extends BaseComponent implements 
       .subscribe({
         next: (response) => {
           this.isLoading = false;
-          Swal.fire({
+          
+          // Success messages based on language
+          const successMessages = this.lang === 'ar' ? {
+            title: 'تم بنجاح!',
+            text: status === 'approve' ? 'تمت الموافقة على المعرفة بنجاح.' : 'تم رفض المعرفة بنجاح.',
+            confirmButton: 'حسناً'
+          } : {
             title: 'Success!',
             text: `Knowledge has been ${status === 'approve' ? 'approved' : 'rejected'} successfully.`,
+            confirmButton: 'OK'
+          };
+
+          Swal.fire({
+            title: successMessages.title,
+            text: successMessages.text,
             icon: 'success',
-            confirmButtonText: 'OK',
+            confirmButtonText: successMessages.confirmButton,
             customClass: {
               confirmButton: 'btn btn-primary fw-bold px-10'
             },

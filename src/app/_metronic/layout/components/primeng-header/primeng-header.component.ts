@@ -261,11 +261,12 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         }
 
         // Check if profile has a profile_photo_url
-     if(profile.roles.includes('company') || profile.roles.includes('company-insighter')){
-      this.userProfileImage = profile.company?.logo || null;
-     }else{
-      this.userProfileImage = profile.profile_photo_url || null;
-     }
+        this.userProfileImage = profile.profile_photo_url || null;
+    //  if(profile.roles.includes('company') || profile.roles.includes('company-insighter')){
+    //   this.userProfileImage = profile.company?.logo || null;
+    //  }else{
+    //   this.userProfileImage = profile.profile_photo_url || null;
+    //  }
       },
       (error) => {
         console.error('Error loading user profile:', error);

@@ -19,6 +19,10 @@
   .cursor-pointer {
     cursor: pointer;
   }
+  
+  .file-icon {
+    object-fit: contain;
+  }
 }
 
 .knowledge-list, .documents-list {
@@ -42,7 +46,7 @@
 }
 
 .details-panel {
-  border-radius: 12px;
+  border-radius: 4px;
   position: relative;
   overflow: hidden;
   display: flex;
@@ -55,10 +59,11 @@
     padding: 2rem;
     color: #ffffff;
     position: relative;
+    min-height: 200px;
     flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: start;
+    justify-content: flex-start;
 
   
     > * {
@@ -87,7 +92,7 @@
   .details-content {
     background: #ffffff;
     padding: 1rem;
-    border-radius: 0 0 12px 12px;
+    border-radius: 0 0 4px 4px;
     border: 1px solid #DFDFDF;
     height: fit-content;
     display: flex;
@@ -97,11 +102,81 @@
       .title-label {
         color: #64748b !important;
       }
-      .publisher-name {
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: #1e293b;
-        margin: 0;
+      
+      .publisher-content {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      
+      .publisher-image-container {
+        flex-shrink: 0;
+        
+        .company-logo-container {
+          position: relative;
+          width: 60px;
+          height: 60px;
+          
+          .company-logo {
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 2px solid #e5e7eb;
+          }
+          
+          .insighter-overlay {
+            position: absolute;
+            bottom: -8px;
+            right: -8px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          }
+        }
+        
+        .insighter-photo {
+          width: 60px;
+          height: 60px;
+          border-radius: 50%;
+          object-fit: cover;
+          border: 2px solid #e5e7eb;
+        }
+      }
+      
+      .publisher-text {
+        flex: 1;
+        min-width: 0;
+        
+        .publisher-name {
+          font-size: 1.1rem;
+          font-weight: 600;
+          color: #1e293b;
+          margin: 0 0 0.5rem 0;
+        }
+        
+        .company-info {
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+          
+          .company-prefix {
+            font-size: 0.875rem;
+            color: #64748b;
+            font-weight: 500;
+          }
+          
+          .company-name {
+            font-size: 0.875rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 500;
+            display: inline-block;
+          }
+        }
       }
     }
 
@@ -163,5 +238,15 @@
   .ms-2 {
     margin-left: 0 !important;
     margin-right: 0.5rem !important;
+  }
+  
+  .publisher-image-container {
+    .company-logo-container {
+      .insighter-overlay {
+        bottom: -8px;
+        right: auto;
+        left: -8px;
+      }
+    }
   }
 }
