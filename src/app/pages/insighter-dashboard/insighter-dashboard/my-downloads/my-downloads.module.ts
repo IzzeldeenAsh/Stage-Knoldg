@@ -7,6 +7,7 @@ import { InlineSVGModule } from 'ng-inline-svg-2';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TruncateTextPipe } from 'src/app/pipes/truncate-pipe/truncate-text.pipe';
+import { FileSizePipe } from 'src/app/pipes/file-size-pipe/file-size.pipe';
 const routes: Routes = [
   {
     path: '',
@@ -26,7 +27,8 @@ const routes: Routes = [
     TranslateModule,
     FormsModule,
     ReactiveFormsModule,
-    TruncateTextPipe
+    TruncateTextPipe,
+    FileSizePipe
   ]
 })
 export class MyDownloadsModule { } 

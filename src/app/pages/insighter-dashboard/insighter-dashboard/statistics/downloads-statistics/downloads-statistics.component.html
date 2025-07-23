@@ -68,6 +68,21 @@ gap-lg-10  align-items-center">
   </div>
   <!--end::Item-->
 
+  <!--begin::Item - Knowledge Items-->
+  <div class="d-flex flex-column rounded p-6 hover-scale">           
+    <div class="d-flex align-items-center mb-2">
+      <i class="ki-solid ki-book text-info mx-2 fs-2"></i>
+      @if (loading()) {
+        <span class="spinner-border spinner-border-sm text-white mx-2"></span>
+      } @else {
+        <span class="text-white fw-bolder fs-2x">{{ totalPublishedKnowledge() | number }}</span>
+      }
+    </div>
+    <div class="text-white opacity-75 fw-bold fs-6">
+      {{'MY_DOWNLOADS.KNOWLEDGE_ITEMS' | translate}}
+    </div>                   
+  </div>
+  <!--end::Item-->
   <!--begin::Item - Total Documents-->
   <div class="d-flex flex-column rounded p-6 hover-scale">           
     <div class="d-flex align-items-center mb-2">
@@ -84,21 +99,6 @@ gap-lg-10  align-items-center">
   </div>
   <!--end::Item-->
 
-  <!--begin::Item - Knowledge Items-->
-  <div class="d-flex flex-column rounded p-6 hover-scale">           
-    <div class="d-flex align-items-center mb-2">
-      <i class="ki-solid ki-book text-info mx-2 fs-2"></i>
-      @if (loading()) {
-        <span class="spinner-border spinner-border-sm text-white mx-2"></span>
-      } @else {
-        <span class="text-white fw-bolder fs-2x">{{ totalPublishedKnowledge() | number }}</span>
-      }
-    </div>
-    <div class="text-white opacity-75 fw-bold fs-6">
-      {{'MY_DOWNLOADS.KNOWLEDGE_ITEMS' | translate}}
-    </div>                   
-  </div>
-  <!--end::Item-->
 </div>
 </div>
 

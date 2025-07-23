@@ -8,6 +8,7 @@ import { BaseComponent } from 'src/app/modules/base.component';
 import { Router } from '@angular/router';
 
 import { Document, KnowledgeItem, MyDownloadsService } from './my-downloads.service';
+import { FileSizePipe } from 'src/app/pipes/file-size-pipe/file-size.pipe';
 
 
 @Component({
@@ -108,9 +109,9 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit {
         this.perPage.set(response.meta.per_page);
 
         //Auto-Select first item if available
-        if(response.data.length>0 && !this.selectedKnowledge()){
-          this.selectedKnowledge.set(response.data[0])
-        }
+        // if(response.data.length>0 && !this.selectedKnowledge()){
+        //   this.selectedKnowledge.set(response.data[0])
+        // }
       },
       error: (error)=>{
         console.error('Error loading downloads:', error);
