@@ -228,7 +228,7 @@ export class Step5Component extends BaseComponent implements OnInit {
     });
     if (email) {
       this.gettingCodeLoader = true;
-      this.http.post('https://api.foresighta.co/api/auth/company/code/send', {
+      this.http.post('https://api.knoldg.comm/api/auth/company/code/send', {
         verified_email: email,
       }, {
         headers: headers

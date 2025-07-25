@@ -63,7 +63,7 @@ export class LangSwitchButtonComponent implements OnInit {
     // This matches the cookie set in the NextJS app
     document.cookie = [
       `preferred_language=${newLang}`,
-      `Domain=.foresighta.com`,           // leading dot = include subdomains
+      `Domain=.knoldg.com`,           // leading dot = include subdomains
       `Path=/`,                       // send on all paths
       `Max-Age=${60 * 60 * 24 * 365}`,// one year
       `SameSite=Lax`,                 // prevent CSRF, still send on top-level nav

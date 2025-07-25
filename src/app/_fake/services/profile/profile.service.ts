@@ -7,12 +7,12 @@ import { TranslationService } from 'src/app/modules/i18n/translation.service';
   providedIn: 'root'
 })
 export class UpdateProfileService {
-  private postProfileUrl = 'https://api.foresighta.co/api/account/profile';
-  private insighterSocialUrl = 'https://api.foresighta.co/api/insighter/social';
-  private companySocialUrl = 'https://api.foresighta.co/api/company/social';
-  private deleteCertificateUrl = 'https://api.foresighta.co/api/account/profile/certification';
-  private updateCompanyInfoUrl = 'https://api.foresighta.co/api/account/profile/company/info';
-  private deleteCompanyCertificateUrl = 'https://api.foresighta.co/api/account/profile/company/certification';
+  private postProfileUrl = 'https://api.knoldg.comm/api/account/profile';
+  private insighterSocialUrl = 'https://api.knoldg.comm/api/insighter/social';
+  private companySocialUrl = 'https://api.knoldg.comm/api/company/social';
+  private deleteCertificateUrl = 'https://api.knoldg.comm/api/account/profile/certification';
+  private updateCompanyInfoUrl = 'https://api.knoldg.comm/api/account/profile/company/info';
+  private deleteCompanyCertificateUrl = 'https://api.knoldg.comm/api/account/profile/company/certification';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   currentLang:string = "en"
