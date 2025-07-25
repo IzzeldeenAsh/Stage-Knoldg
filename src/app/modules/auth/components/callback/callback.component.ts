@@ -183,7 +183,7 @@ export class CallbackComponent extends BaseComponent implements OnInit, OnDestro
         'Path=/',
         'Max-Age=-1',
         'SameSite=None',
-        'Domain=.knoldg.com',
+        'Domain=.foresighta.com',
         'Secure'
       ];
     }

@@ -7,7 +7,7 @@
             "type": "chrome",
             "request": "launch",
             "name": "Launch Chrome against localhost",
-            "url": "https://app.knoldg.com",
+            "url": "https://app.foresighta.com",
             "webRoot": "${workspaceFolder}"
         }
     ]

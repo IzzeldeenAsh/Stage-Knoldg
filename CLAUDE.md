@@ -76,7 +76,7 @@ npm run serve:ssr          # Serve SSR build
 - User expertise and consulting services
 
 **Cross-Domain Authentication**: 
-- Configured for `*.knoldg.com` domain with cookie sharing
+- Configured for `*.foresighta.com` domain with cookie sharing
 - Cross-domain authentication helper component for subdomain integration
 - Environment-specific API endpoints (dev: localhost, prod: api.foresighta.co)
 
