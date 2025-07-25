@@ -17,31 +17,33 @@
           <span class="text-truncate">{{_user.first_name}} {{_user.last_name}}</span>
 
         </div>
-        <div class="text-info fw-bold mb-2">
-          <span *ngIf="_user.roles.includes('company')">{{lang==='ar'? 'مدير': 'Manager'}}</span>
-        </div>
+     
     
         <div class="d-flex flex-wrap">
           <ng-container *ngIf="_user.roles.includes('client') && !_user.roles.includes('insighter') && !_user.roles.includes('company') && !_user.roles.includes('company-insighter')">
-            <span class="badge badge-light-success fw-bolder fs-8 px-2 py-1 me-1 mb-1">
+            <span class="badge badge-light-secondary fw-bolder fs-8 px-2 py-1 me-1 mb-1">
               {{ 'HOME.CLIENT' | translate }}
             </span>
           </ng-container>
           <ng-container *ngIf="_user.roles.includes('insighter') && !_user.roles.includes('company')">
-            <span class="badge badge-light-info fw-bolder fs-8 px-2 py-1 me-1 mb-1">
+            <span class="badge badge-light-success mt-1 fw-bolder fs-8 px-2 py-1 me-1 mb-1">
               {{ 'HOME.INSIGHTER' | translate }}
             </span>
           </ng-container>
           <ng-container *ngIf="!_user.roles.includes('insighter') && _user.roles.includes('company')">
-            <span class="badge badge-light-warning fw-bolder fs-8 px-2 py-1 me-1 mb-1">
-              {{ 'HOME.COMPANY' | translate }}
+          <div class="d-flex gap-1 pt-2">
+            <span class="badge badge-light-info fw-bolder fs-8 px-2 py-1 me-1 mb-1 text-truncate" style="max-width: 150px;">
+              {{_user.company?.legal_name}}
             </span>
+            <span class="badge badge-light-info fw-bolder fs-8 px-2 py-1 me-1 mb-1 text-truncate" style="max-width: 150px;">{{lang==='ar'? 'مدير': 'Manager'}}</span>
+          </div>
           </ng-container>
          
           <ng-container *ngIf="!_user.roles.includes('insighter') && _user.roles.includes('company-insighter')">
-            <span class="badge badge-light-warning fw-bolder fs-8 px-2 py-1 me-1 mb-1 text-truncate" style="max-width: 150px;">
+            <span class="badge badge-light-info fw-bolder fs-8 px-2 py-1 me-1 mb-1 text-truncate" style="max-width: 150px;">
               {{ _user.company?.legal_name }} {{ 'HOME.INSIGHTER' | translate }}
             </span>
+            
           </ng-container>
            <!-- Status indicators - only shown when not active -->
            <ng-container *ngIf="_user.roles.includes('insighter') && !_user.roles.includes('company') && _user.insighter_status !== 'active'">

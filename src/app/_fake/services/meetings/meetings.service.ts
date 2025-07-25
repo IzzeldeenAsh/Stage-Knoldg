@@ -52,7 +52,7 @@ export interface MeetingResponse {
   providedIn: 'root'
 })
 export class MeetingsService {
-  private apiUrl = 'https://api.knoldg.com/api/insighter/meeting/list';
+  private apiUrl = 'https://api.foresighta.co/api/insighter/meeting/list';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   currentLang: string = 'en';
@@ -106,7 +106,7 @@ export class MeetingsService {
   // Update meeting status (approve/postpone)
   updateMeetingStatus(meetingUuid: string, status: 'approved' | 'postponed', notes: string): Observable<any> {
     console.log('MeetingsService.updateMeetingStatus called with meetingUuid:', meetingUuid, 'status:', status, 'notes:', notes);
-    const url = `https://api.knoldg.com/api/insighter/meeting/action/${meetingUuid}`;
+    const url = `https://api.foresighta.co/api/insighter/meeting/action/${meetingUuid}`;
     console.log('API URL being called:', url);
     const headers = this.getHeaders();
     

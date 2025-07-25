@@ -251,6 +251,7 @@ INSIGHTER_REQUESTS: {
       "MY_COMPANY": "فريقي",
       "INVITING": "جاري الدعوة",
       "MY_DOWNLOADS": "التحميلات",
+      "READ_LATER": "قراءة لاحقة",
       "MY_CONSULTING_SCHEDULE": "جدولة الاستشارات",
       "DASHBOARD": "لوحة المعلومات"
     },
@@ -566,7 +567,13 @@ INSIGHTER_REQUESTS: {
       "SHOWING": "عرض",
       "TO": "إلى",
       "OF": "من",
-      "RESULTS": "نتائج"
+      "RESULTS": "نتائج",
+      "BY": "بواسطة",
+      "PRICE": "السعر",
+      "PUBLISHED": "منشور",
+      "VIEW": "عرض",
+      "NEXT": "التالي",
+      "PREVIOUS": "السابق"
     },
     INSIGHTER_WIZARD: {
       ACCOUNT_TYPE: "نوع الحساب",
@@ -935,6 +942,12 @@ INSIGHTER_REQUESTS: {
           "POSTPONED": "مؤجل"
         }
       },
+      "READ_LATER": {
+        "TITLE": "قراءة لاحقة",
+        "ITEMS": "عنصر",
+        "EMPTY_TITLE": "لا توجد عناصل محفوظة بعد",
+        "EMPTY_MESSAGE": "العناصل التي تضعها في المفضلة ستظهر هنا للوصول إليها لاحقاً."
+      }
     
     },
     BECOME_INSIHGER_HEADER:'سجل كانسايتر',
@@ -1379,7 +1392,34 @@ INSIGHTER_REQUESTS: {
         }
     },
  
-    }
+    },
+    "READ_LATER": {
+  "TITLE": "قراءة لاحقة",
+  "ITEMS": "عنصر",
+  "EMPTY_TITLE": "لا توجد عناصر محفوظة بعد",
+  "EMPTY_MESSAGE": "العناصر التي تضعها في المفضلة ستظهر هنا للوصول إليها لاحقاً.",
+  "POSTED_ABOUT": "نُشر منذ حوالي",
+  "MONTH_AGO": "شهر",
+  "MONTHS_AGO": "أشهر",
+  "DAY_AGO": "يوم",
+  "DAYS_AGO": "أيام",
+  "WEEK_AGO": "أسبوع",
+  "WEEKS_AGO": "أسابيع",
+  "YEAR_AGO": "سنة",
+  "YEARS_AGO": "سنوات",
+  "STATISTICS": {
+    "TITLE": "مجموعة القراءة اللاحقة",
+    "SUBTITLE": "معرفتك المحفوظة للقراءة المستقبلية",
+    "TOTAL_SAVED": "إجمالي المحفوظ",
+    "NEW_THIS_MONTH": "جديد هذا الشهر",
+    "QUICK_ACTIONS": "إجراءات سريعة",
+    "MANAGE_FAVORITES": "إدارة المفضلة",
+    "BROWSE_KNOWLEDGE": "تصفح المعرفة",
+    "DISCOVER_NEW": "اكتشف رؤى جديدة",
+    "ORGANIZE_COLLECTION": "نظم مجموعتك"
+  }
+}
 },
+
 
 }

@@ -2,6 +2,8 @@ import { Component, Injector } from '@angular/core';
 import { UserRequestsService } from 'src/app/_fake/services/user-requests/user-requests.service';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { forkJoin } from 'rxjs';
+import { IKnoldgProfile } from 'src/app/_fake/models/profile.interface';
+import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 
 @Component({
   selector: 'app-requests-statistics',
@@ -9,11 +11,19 @@ import { forkJoin } from 'rxjs';
   styleUrl: './requests-statistics.component.scss'
 })
 export class RequestsStatisticsComponent extends BaseComponent {
-constructor(injector: Injector, private requests:UserRequestsService){
+constructor(injector: Injector, private requests:UserRequestsService, private profileService:ProfileService){
   super(injector);
 }
+userProfile:IKnoldgProfile | null = null;
 ngOnInit(){
+  this.getProfile();
   this.getRequestsStatistics();
+}
+
+getProfile(){
+  this.profileService.getProfile().subscribe((profile:IKnoldgProfile)=>{
+    this.userProfile = profile;
+  });
 }
 
 public pendingRequests: number = 0;
@@ -24,7 +34,7 @@ getRequestsStatistics(){
   // Use forkJoin to fetch both user requests and insighter requests simultaneously
   const sub = forkJoin({
     userRequests: this.requests.getAllUserRequests(this.lang ? this.lang : 'en'),
-    insighterRequests: this.requests.getInsighterRequests(this.lang ? this.lang : 'en')
+    insighterRequests: this.userProfile?.roles.includes('company') ? this.requests.getInsighterRequests(this.lang ? this.lang : 'en') : []
   }).subscribe({
     next: (response: any) => {
       // Reset counters
