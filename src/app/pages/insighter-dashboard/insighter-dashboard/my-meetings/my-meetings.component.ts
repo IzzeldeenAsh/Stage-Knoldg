@@ -227,23 +227,11 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
     .subscribe({
       next: () => {
         this.actionLoading.set(false);
-        // Update the meeting status in the local array;
-        const updatedMeetings = [...this.meetings()];
-        const meetingIndex = updatedMeetings.findIndex(m => m.uuid === meeting.uuid);
-        if (meetingIndex !== -1) {
-          updatedMeetings[meetingIndex] = {
-            ...updatedMeetings[meetingIndex],
-            status:'approved'
-          }
-          this.meetings.set(updatedMeetings);
-        }
-        
-        // Close dialog
-    this.showApproveDialog.set(false);
-        
-        // Reset form
+        // Always reload meetings from backend after status change
+        this.showApproveDialog.set(false);
         this.selectedMeeting.set(null);
         this.approveNotes.set('');
+        this.reloadMeetingsAfterAction();
       },
       error: (error: any) => {
         this.actionLoading.set(false);
@@ -270,24 +258,10 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
     .subscribe({
       next: () => {
         this.actionLoading.set(false);
-        // Update the meeting status in the local array
-        const updatedMeetings = [...this.meetings()];
-        const meetingIndex = updatedMeetings.findIndex(m => m.uuid === meeting.uuid);
-        if (meetingIndex !== -1) {
-          updatedMeetings[meetingIndex] = {
-            ...updatedMeetings[meetingIndex],
-            status:'postponed'
-          };
-          this.meetings.set(updatedMeetings);
-        }
-        
-        // Close dialog
         this.showPostponeDialog.set(false);
-        
-        // Reset form
         this.selectedMeeting.set(null);
-        this.postponeNotes.set('')
-        // Show success message (you can add a toast notification here)
+        this.postponeNotes.set('');
+        this.reloadMeetingsAfterAction();
       },
       error: (error: any) => {
         this.actionLoading.set(false)
@@ -296,6 +270,19 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
     });
   }
 
+  /**
+   * Reload meetings after an action (approve/postpone). If the current page becomes empty and is not the first page, go to the previous page.
+   */
+  private reloadMeetingsAfterAction(): void {
+    // Reload meetings for the current page
+    this.loadMeetings(this.currentPage());
+    // After loading, check if the current page is empty and not the first page
+    setTimeout(() => {
+      if (this.getFilteredMeetings().length === 0 && this.currentPage() > 1) {
+        this.loadMeetings(this.currentPage() - 1);
+      }
+    }, 500); // Wait for meetings to reload
+  }
 
   private handleServerErrors(error: any) {
     if (error.error && error.error.errors) {

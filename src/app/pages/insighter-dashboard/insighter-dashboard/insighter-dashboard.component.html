@@ -48,6 +48,15 @@
               {{ 'INSIGHTER.DASHBOARD.NAV.MY_DOWNLOADS' | translate }}
             </div>
           </div>
+          <div class="nav-item" [routerLink]="['read-later']" routerLinkActive="active"
+               (click)="closeMobileSidebar()">
+            <div class="item-icon">
+              <i class="ki-duotone ki-bookmark"><span class="path1"></span><span class="path2"></span></i>
+            </div>
+            <div class="item-label">
+              {{ 'INSIGHTER.DASHBOARD.NAV.READ_LATER' | translate }}
+            </div>
+          </div>
           <!-- Meetings Expandable Item -->
           <div class="nav-item expandable" [class.expanded]="isMeetingsExpanded">
             <div class="nav-item-main" (click)="toggleMeetings()">
@@ -133,6 +142,7 @@
         <app-requests-statistics *ngIf="isRouteActive('my-requests')"></app-requests-statistics>
         <app-knowledge-statistics *ngIf="isRouteActive('my-knowledge')"></app-knowledge-statistics>
         <app-downloads-statistics *ngIf="isRouteActive('my-downloads')"></app-downloads-statistics>
+        <app-read-later-statistics *ngIf="isRouteActive('read-later')"></app-read-later-statistics>
         <app-meetings-statistics *ngIf="isRouteActive('my-meetings') && !isSubRouteActive('my-meetings', 'sent')"></app-meetings-statistics>
         <app-sent-meetings-statistics *ngIf="isSubRouteActive('my-meetings', 'sent')"></app-sent-meetings-statistics>
         <app-consulting-schedule-header *ngIf="isRouteActive('my-consulting-schedule')"></app-consulting-schedule-header>
@@ -162,7 +172,10 @@
                 </div>
                 <div class="p-card-body">
                   <div class="nav-item" [routerLink]="['my-dashboard']" routerLinkActive="active" 
-                       [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.OVERVIEW' | translate) : null">
+                       [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.OVERVIEW' | translate) : null"
+                       pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.OVERVIEW' | translate) : '' }}"
+                       tooltipPosition="right"
+                       appendTo="body">
                     <div class="item-icon">
                       <i class="ki-duotone ki-abstract-28"><span class="path1"></span><span class="path2"></span></i>
                     </div>
@@ -171,7 +184,10 @@
                     </div>
                   </div>
                   <div class="nav-item" [routerLink]="['my-requests']" routerLinkActive="active" *ngIf="!(isClient$ | async)"
-                       [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_REQUESTS' | translate) : null">
+                       [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_REQUESTS' | translate) : null"
+                       pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_REQUESTS' | translate) : '' }}"
+                       tooltipPosition="right"
+                       appendTo="body">
                     <div class="item-icon">
                       <i class="ki-duotone ki-document"><span class="path1"></span><span class="path2"></span></i>
                     </div>
@@ -180,7 +196,10 @@
                     </div>
                   </div>
                   <div class="nav-item" [routerLink]="['my-knowledge']" routerLinkActive="active"  *ngIf="!(isClient$ | async)"
-                       [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_KNOWLEDGE' | translate) : null">
+                       [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_KNOWLEDGE' | translate) : null"
+                       pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_KNOWLEDGE' | translate) : '' }}"
+                       tooltipPosition="right"
+                       appendTo="body">
                     <div class="item-icon">
                       <i class="ki-duotone ki-book"><span class="path1"></span><span class="path2"></span></i>
                     </div>
@@ -189,12 +208,27 @@
                     </div>
                   </div>
                   <div class="nav-item" [routerLink]="['my-downloads']" routerLinkActive="active"
-                       [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_DOWNLOADS' | translate) : null">
+                       [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_DOWNLOADS' | translate) : null"
+                       pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_DOWNLOADS' | translate) : '' }}"
+                       tooltipPosition="right"
+                       appendTo="body">
                     <div class="item-icon">
                       <i class="ki-duotone ki-file-down"><span class="path1"></span><span class="path2"></span></i>
                     </div>
                     <div class="item-label" *ngIf="!isNavCollapsed">
                       {{ 'INSIGHTER.DASHBOARD.NAV.MY_DOWNLOADS' | translate }}
+                    </div>
+                  </div>
+                  <div class="nav-item" [routerLink]="['read-later']" routerLinkActive="active"
+                       [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.READ_LATER' | translate) : null"
+                       pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.READ_LATER' | translate) : '' }}"
+                       tooltipPosition="right"
+                       appendTo="body">
+                    <div class="item-icon">
+                      <i class="ki-duotone ki-bookmark"><span class="path1"></span><span class="path2"></span></i>
+                    </div>
+                    <div class="item-label" *ngIf="!isNavCollapsed">
+                      {{ 'INSIGHTER.DASHBOARD.NAV.READ_LATER' | translate }}
                     </div>
                   </div>
                   <!-- Meetings Expandable Item -->
@@ -214,7 +248,10 @@
                       </div>
                     </div>
                     <div class="sub-nav" [class.show]="isMeetingsExpanded">
-                      <div class="sub-nav-item"  [routerLink]="['my-consulting-schedule']" routerLinkActive="active" *ngIf="!(isClient$ | async)">
+                      <div class="sub-nav-item"  [routerLink]="['my-consulting-schedule']" routerLinkActive="active" *ngIf="!(isClient$ | async)"
+                      pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_CONSULTING_SCHEDULE' | translate) : '' }}"
+                      tooltipPosition="right"
+                      appendTo="body">
                         <div class="sub-item-icon">
                           <i class="ki-duotone ki-calendar"><span class="path1"></span><span class="path2"></span></i>
                         </div>
@@ -222,7 +259,10 @@
                           {{ 'INSIGHTER.DASHBOARD.NAV.MY_CONSULTING_SCHEDULE' | translate }}
                         </div>
                       </div>
-                      <div class="sub-nav-item" [routerLink]="['my-meetings/received']" routerLinkActive="active"  *ngIf="!(isClient$ | async)">
+                      <div class="sub-nav-item" [routerLink]="['my-meetings/received']" routerLinkActive="active"  *ngIf="!(isClient$ | async)"
+                      pTooltip="{{ isNavCollapsed ? ('INSIGHTER.MEETINGS.TABS.RECEIVED' | translate) : '' }}"
+                      tooltipPosition="right"
+                      appendTo="body">
                         <div class="sub-item-icon">
                           <i class="ki-duotone ki-message-text-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
                         </div>
@@ -230,7 +270,10 @@
                           {{ 'INSIGHTER.MEETINGS.TABS.RECEIVED' | translate }}
                         </div>
                       </div>
-                      <div class="sub-nav-item" [routerLink]="['my-meetings/sent']" routerLinkActive="active">
+                      <div class="sub-nav-item" [routerLink]="['my-meetings/sent']" routerLinkActive="active"
+                      pTooltip="{{ isNavCollapsed ? ('INSIGHTER.MEETINGS.TABS.SENT' | translate) : '' }}"
+                      tooltipPosition="right"
+                      appendTo="body">
                         <div class="sub-item-icon">
                           <i class="ki-duotone ki-send"><span class="path1"></span><span class="path2"></span></i>
                         </div>
@@ -245,19 +288,28 @@
                   <!-- Collapsed Meeting Items (shown as separate items when collapsed) -->
                   <div *ngIf="isNavCollapsed">
                     <div class="nav-item" [routerLink]="['my-consulting-schedule']" routerLinkActive="active" 
-                         *ngIf="!(isClient$ | async)" [attr.title]="('INSIGHTER.DASHBOARD.NAV.MY_CONSULTING_SCHEDULE' | translate)">
+                         *ngIf="!(isClient$ | async)" [attr.title]="('INSIGHTER.DASHBOARD.NAV.MY_CONSULTING_SCHEDULE' | translate)"
+                         pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_CONSULTING_SCHEDULE' | translate) : '' }}"
+                         tooltipPosition="right"
+                         appendTo="body">
                       <div class="item-icon">
                         <i class="ki-duotone ki-calendar"><span class="path1"></span><span class="path2"></span></i>
                       </div>
                     </div>
                     <div class="nav-item" [routerLink]="['my-meetings/received']" routerLinkActive="active" 
-                         *ngIf="!(isClient$ | async)" [attr.title]="('INSIGHTER.MEETINGS.TABS.RECEIVED' | translate)">
+                         *ngIf="!(isClient$ | async)" [attr.title]="('INSIGHTER.MEETINGS.TABS.RECEIVED' | translate)"
+                         pTooltip="{{ isNavCollapsed ? ('INSIGHTER.MEETINGS.TABS.RECEIVED' | translate) : '' }}"
+                         tooltipPosition="right"
+                         appendTo="body">
                       <div class="item-icon">
                         <i class="ki-duotone ki-message-text-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
                       </div>
                     </div>
                     <div class="nav-item" [routerLink]="['my-meetings/sent']" routerLinkActive="active"
-                         [attr.title]="('INSIGHTER.MEETINGS.TABS.SENT' | translate)">
+                         [attr.title]="('INSIGHTER.MEETINGS.TABS.SENT' | translate)"
+                         pTooltip="{{ isNavCollapsed ? ('INSIGHTER.MEETINGS.TABS.SENT' | translate) : '' }}"
+                         tooltipPosition="right"
+                         appendTo="body">
                       <div class="item-icon">
                         <i class="ki-duotone ki-send"><span class="path1"></span><span class="path2"></span></i>
                       </div>
@@ -265,7 +317,10 @@
                   </div>
                  
                   <div class="nav-item" [routerLink]="['my-company-settings']" routerLinkActive="active" *ngIf="hasCompanyRole$ | async"
-                       [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_COMPANY' | translate) : null">
+                       [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_COMPANY' | translate) : null"
+                       pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_COMPANY' | translate) : '' }}"
+                       tooltipPosition="right"
+                       appendTo="body">
                     <div class="item-icon">
                       <i class="ki-duotone ki-office-bag"><span class="path1"></span><span class="path2"></span></i>
                     </div>
@@ -274,7 +329,10 @@
                     </div>
                   </div>
                   <div class="nav-item" [routerLink]="['account-settings']" routerLinkActive="active"  *ngIf="!(isClient$ | async)"
-                       [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS' | translate) : null">
+                       [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS' | translate) : null"
+                       pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS' | translate) : '' }}"
+                       tooltipPosition="right"
+                       appendTo="body">
                     <div class="item-icon">
                       <i class="ki-duotone ki-setting-2"><span class="path1"></span><span class="path2"></span></i>
                     </div>

@@ -581,7 +581,13 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       "SHOWING": "Showing",
       "TO": "to",
       "OF": "of",
-      "RESULTS": "results"
+      "RESULTS": "results",
+      "BY": "By",
+      "PRICE": "Price",
+      "PUBLISHED": "Published",
+      "VIEW": "View",
+      "NEXT": "Next",
+      "PREVIOUS": "Previous"
     },
     MY_DOWNLOADS: {
       TITLE: "My Downloads",
@@ -901,6 +907,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
         "MEETINGS": "Meetings",
         "INVITING": "Inviting",
         "MY_DOWNLOADS": "My Downloads",
+        "READ_LATER": "Read Later",
         "MY_MEETINGS": "My Meetings",
         "MY_CONSULTING_SCHEDULE": "My Schedule",
         "DASHBOARD": "Dashboard"
@@ -954,7 +961,21 @@ Your wealth of knowledge is valued and many are eager to learn from it.
         "POSTPONED": "Postponed"
       }
     },
-   
+   "READ_LATER": {
+    "TITLE": "Read Later",
+    "ITEMS": "Items",
+    "EMPTY_TITLE": "No items saved yet",
+    "EMPTY_MESSAGE": "Items you save will appear here for later access.",
+    "POSTED_ABOUT": "Posted about",
+    "MONTH_AGO": "month ago",
+    "MONTHS_AGO": "months ago",
+    "DAY_AGO": "day ago",
+    "DAYS_AGO": "days ago",
+    "WEEK_AGO": "week ago",
+    "WEEKS_AGO": "weeks ago",
+    "YEAR_AGO": "year ago",
+    "YEARS_AGO": "years ago"
+   }
   },
   CHOOSE_ACCOUNT_TYPE: "Choose Account Type",
   BILLING_TOOLTIP: "Billing is issued based on your selected account type",
@@ -1448,8 +1469,25 @@ UPLOAD: 'Upload',
       "MEETINGS": "meetings",
       "POSTPONE_NOTES_REQUIRED": "Postponement notes are required"
     },
-    
+    "READ_LATER": {
+      "TITLE": "Read Later",
+      "ITEMS": "items",
+      "EMPTY_TITLE": "No saved items yet",
+      "EMPTY_MESSAGE": "Items you bookmark will appear here for easy access later.",
+      "STATISTICS": {
+        "TITLE": "Read Later Collection",
+        "SUBTITLE": "Your saved knowledge for future reading",
+        "TOTAL_SAVED": "Total Saved",
+        "NEW_THIS_MONTH": "New This Month",
+        "QUICK_ACTIONS": "Quick Actions",
+        "MANAGE_FAVORITES": "Manage Your Favorites",
+        "BROWSE_KNOWLEDGE": "Browse Knowledge",
+        "DISCOVER_NEW": "Discover new insights",
+        "ORGANIZE_COLLECTION": "Organize your collection"
+      }
+    },
   },
+ 
   "CLIENT": "Client",
   "VERIFIED": "Verified",
   "COMPANY_PHONE": "Company Phone",

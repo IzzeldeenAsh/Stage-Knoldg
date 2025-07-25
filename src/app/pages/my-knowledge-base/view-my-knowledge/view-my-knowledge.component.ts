@@ -499,7 +499,7 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
   getShareableLink(): string {
     const knowledgeType = this.knowledge.type?.toLowerCase() || 'insight';
     const slug = this.knowledge.slug || '';
-    return `https://knoldg.com/en/knowledge/${knowledgeType}/${slug}`;
+    return `https://foresighta.co/en/knowledge/${knowledgeType}/${slug}`;
   }
 
   copyLink(inputElement: HTMLInputElement): void {

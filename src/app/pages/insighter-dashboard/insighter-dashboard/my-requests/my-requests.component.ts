@@ -269,7 +269,11 @@ export class MyRequestsComponent extends BaseComponent implements OnInit {
       next: () => {
         this.showSuccess('Success', 'Request approved successfully');
         this.displayRequestDialog = false;
-        this.loadInsighterRequests(); // Reload the data
+        if(this.userProfile?.roles.includes('company')){
+          this.loadInsighterRequests();
+        } else {
+          this.loadData();
+        }
         this.resetActionState();
       },
       error: (error: any) => {
@@ -292,7 +296,11 @@ export class MyRequestsComponent extends BaseComponent implements OnInit {
       next: () => {
         this.showSuccess('Success', 'Request declined successfully');
         this.displayRequestDialog = false;
-        this.loadInsighterRequests(); // Reload the data
+        if(this.userProfile?.roles.includes('company')){
+          this.loadInsighterRequests();
+        } else {
+          this.loadData();
+        }
         this.resetActionState();
       },
       error: (error: any) => {
@@ -411,7 +419,11 @@ export class MyRequestsComponent extends BaseComponent implements OnInit {
             next: () => {
               this.showSuccess('Success', 'Knowledge review request sent successfully.');
               this.loadData();
-              this.loadInsighterRequests();
+              if(this.userProfile?.roles.includes('company')){
+                this.loadInsighterRequests();
+              } else {
+                this.loadData();
+              }
               this.displayRequestDialog = false;
               this.resendComments = '';
             },

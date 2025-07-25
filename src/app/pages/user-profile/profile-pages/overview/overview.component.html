@@ -23,7 +23,7 @@
           <div class="d-flex flex-column" >
             <h2 class="fs-1 fw-bold mb-1">{{ profile.first_name }} {{ profile.last_name }}</h2>
             <div class="d-flex align-items-center gap-2">
-              <span  [ngClass]="{'badge rounded-pill py-2 fs-7 fw-semibold d-flex align-items-center': true, 'bg-info text-white': profile.roles.includes('insighter'), 'bg-warning text-white': profile.roles.includes('company')}">
+              <span  class="badge badge-light-info fw-bolder fs-6 px-3 py-2 me-1 mb-1 text-truncate" style="max-width: 150px;">
                 <ng-container *ngIf="profile.roles.includes('insighter')">{{ "HOME.INSIGHTER" | translate }}</ng-container>
                 <ng-container *ngIf="profile.roles.includes('company')">{{ "HOME.COMPANY" | translate }}</ng-container>
               </span>
@@ -132,7 +132,7 @@
           <div class="card-header border-0 bg-white py-3">
             <div class="d-flex align-items-center">
               <span class="bg-warning bg-opacity-10 p-2 rounded-3 me-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
-                <i class="bi bi-pie-chart fs-1 text-warning"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-building-factory text-warning fs-1"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 21c1.147 -4.02 1.983 -8.027 2 -12h6c.017 3.973 .853 7.98 2 12" /><path d="M12.5 13h4.5c.025 2.612 .894 5.296 2 8" /><path d="M9 5a2.4 2.4 0 0 1 2 -1a2.4 2.4 0 0 1 2 1a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2 -1a2.4 2.4 0 0 1 2 -1a2.4 2.4 0 0 1 2 1" /><path d="M3 21l19 0" /></svg>
               </span>
               <h3 class="card-title fs-3 fw-bolder mb-0">{{ 'PROFILE.INDUSTRIES' | translate }}</h3>
             </div>

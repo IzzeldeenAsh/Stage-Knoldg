@@ -1,8 +1,8 @@
 // RESPONSIVE TABLE THAT FILLS CARD WIDTH
 .my-company-container {
   // Ensure the whole component stays within bounds
-  width: 100%;
-  max-width: 100%;
+  // width: 100%;
+  // max-width: 100%;
   overflow: hidden;
   
   // Constrain the card to viewport
@@ -24,8 +24,9 @@
   .table-container {
     overflow-x: auto !important;
     overflow-y: visible !important;
-    width: 100% !important;
-    max-width: 100% !important;
+    // width: 100% !important;
+    // max-width: 100% !important;
+   
     border-radius: 0.75rem;
     border: 1px solid var(--kt-gray-200);
     background: white;
@@ -54,24 +55,24 @@
 
   // Table fills available width with responsive columns
   .company-table {
-    width: 100% !important;
-    min-width: 100% !important;
+    // width: 100% !important;
+    // min-width: 100% !important;
     
     // Override ALL PrimeNG containers to be responsive
     ::ng-deep .p-datatable {
-      width: 100% !important;
-      min-width: 100% !important;
+      // width: 100% !important;
+      // min-width: 100% !important;
       overflow: visible !important;
       
       .p-datatable-wrapper {
-        width: 100% !important;
-        min-width: 100% !important;
+        // width: 100% !important;
+        // min-width: 100% !important;
         overflow: visible !important;
       }
       
       .p-datatable-table {
-        width: 100% !important;
-        min-width: 800px !important; // Minimum width to trigger horizontal scroll
+        // width: 100% !important;
+        // min-width: 800px !important; // Minimum width to trigger horizontal scroll
         table-layout: auto !important;
       }
       
