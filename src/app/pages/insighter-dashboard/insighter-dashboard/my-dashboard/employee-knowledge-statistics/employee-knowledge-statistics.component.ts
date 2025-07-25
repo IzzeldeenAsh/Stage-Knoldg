@@ -67,7 +67,6 @@ export class EmployeeKnowledgeStatisticsComponent implements OnInit {
       },
       animations: {
         enabled: true,
-        easing: 'easeinout',
         speed: 800,
         animateGradually: {
           enabled: true,
@@ -159,9 +158,6 @@ export class EmployeeKnowledgeStatisticsComponent implements OnInit {
       fontSize: '11px',
       fontWeight: 500,
       markers: {
-        width: 10,
-        height: 10,
-        radius: 50
       },
       itemMargin: {
         horizontal: 8,
