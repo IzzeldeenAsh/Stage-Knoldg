@@ -6,9 +6,9 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class ProfileService {
-  private uploadUrl = 'https://api.knoldg.comm/api/account/profile/photo';
-  private removeUrl = 'https://api.knoldg.comm/api/account/profile/photo/remove';
-  private updateLogo = 'https://api.knoldg.comm/api/account/profile/company/logo';
+  private uploadUrl = 'https://api.foresighta.co/api/account/profile/photo';
+  private removeUrl = 'https://api.foresighta.co/api/account/profile/photo/remove';
+  private updateLogo = 'https://api.foresighta.co/api/account/profile/company/logo';
 
   constructor(private http: HttpClient) {}
 

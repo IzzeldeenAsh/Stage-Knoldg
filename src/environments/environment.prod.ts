@@ -10,15 +10,15 @@ export const environment = {
   apiUrl: 'api',
   
   // API configuration for sharing authentication between domains
-  apiBaseUrl: 'https://api.knoldg.comm/api',
-  appDomain: '.knoldg.com',
-  mainAppUrl: 'https://knoldg.com',
-  subAppUrl: 'https://app.knoldg.com',
+  apiBaseUrl: 'https://api.foresighta.co/api',
+  appDomain: '.foresighta.com',
+  mainAppUrl: 'https://foresighta.co',
+  subAppUrl: 'https://app.foresighta.co',
   
   // Cookie configuration
   cookieOptions: {
     secure: true, // Require HTTPS in production
-    domain: '.knoldg.com',
+    domain: '.foresighta.com',
     path: '/',
     sameSite: 'Lax'
   },

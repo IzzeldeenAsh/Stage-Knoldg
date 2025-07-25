@@ -41,7 +41,7 @@ export interface InsighterResponse {
   providedIn: 'root'
 })
 export class CompanyAccountService {
-  private insightaHost = 'https://api.knoldg.comm';
+  private insightaHost = 'https://api.foresighta.co';
   private accountExistApi = `${this.insightaHost}/api/company/account/exist`;
   private inviteInsighterApi = `${this.insightaHost}/api/company/insighter`;
 
