@@ -17,10 +17,10 @@ export interface Role {
   providedIn: 'root'
 })
 export class RolesService {
-  private apiUrl = 'https://api.knoldg.co/api/admin/account/role/list';
-  private userRoleUrl = 'https://api.knoldg.co/api/admin/account/role/user';
-  private rolePermissionsApi = 'https://api.knoldg.co/api/admin/account/permission/role';
-  private syncRolePermissionsApi = 'https://api.knoldg.co/api/admin/account/permission/role/sync';
+  private apiUrl = 'https://api.knoldg.com/api/admin/account/role/list';
+  private userRoleUrl = 'https://api.knoldg.com/api/admin/account/role/user';
+  private rolePermissionsApi = 'https://api.knoldg.com/api/admin/account/permission/role';
+  private syncRolePermissionsApi = 'https://api.knoldg.com/api/admin/account/permission/role/sync';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   currentLang: string = 'en';
@@ -117,7 +117,7 @@ export class RolesService {
     });
 
     this.setLoading(true);
-    const url = `https://api.knoldg.co/api/admin/account/role/user/sync/${userId}`;
+    const url = `https://api.knoldg.com/api/admin/account/role/user/sync/${userId}`;
     return this.http.put<any>(url, { roles }, { headers }).pipe(
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))

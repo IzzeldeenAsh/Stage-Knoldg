@@ -8,7 +8,7 @@ import { Observable, throwError } from 'rxjs';
   providedIn: 'root',
 })
 export class FileUploadService {
-  private uploadUrl = 'https://api.knoldg.co/api/account/profile/photo';
+  private uploadUrl = 'https://api.knoldg.com/api/account/profile/photo';
 
   constructor(private http: HttpClient) {}
 

@@ -39,8 +39,8 @@ export interface GuidelineResponse {
   providedIn: 'root',
 })
 export class GuidelinesService {
-  private apiUrl = 'https://api.knoldg.co/api/common/setting/guideline/list';
-  private createUpdateApi = 'https://api.knoldg.co/api/admin/setting/guideline';
+  private apiUrl = 'https://api.knoldg.com/api/common/setting/guideline/list';
+  private createUpdateApi = 'https://api.knoldg.com/api/admin/setting/guideline';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
 

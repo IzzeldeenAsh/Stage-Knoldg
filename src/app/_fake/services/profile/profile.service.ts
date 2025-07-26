@@ -7,12 +7,12 @@ import { TranslationService } from 'src/app/modules/i18n/translation.service';
   providedIn: 'root'
 })
 export class UpdateProfileService {
-  private postProfileUrl = 'https://api.knoldg.co/api/account/profile';
-  private insighterSocialUrl = 'https://api.knoldg.co/api/insighter/social';
-  private companySocialUrl = 'https://api.knoldg.co/api/company/social';
-  private deleteCertificateUrl = 'https://api.knoldg.co/api/account/profile/certification';
-  private updateCompanyInfoUrl = 'https://api.knoldg.co/api/account/profile/company/info';
-  private deleteCompanyCertificateUrl = 'https://api.knoldg.co/api/account/profile/company/certification';
+  private postProfileUrl = 'https://api.knoldg.com/api/account/profile';
+  private insighterSocialUrl = 'https://api.knoldg.com/api/insighter/social';
+  private companySocialUrl = 'https://api.knoldg.com/api/company/social';
+  private deleteCertificateUrl = 'https://api.knoldg.com/api/account/profile/certification';
+  private updateCompanyInfoUrl = 'https://api.knoldg.com/api/account/profile/company/info';
+  private deleteCompanyCertificateUrl = 'https://api.knoldg.com/api/account/profile/company/certification';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   currentLang:string = "en"

@@ -60,7 +60,7 @@ export interface ReadLaterResponse {
   providedIn: 'root'
 })
 export class ReadLaterService {
-  private readonly API_URL = 'https://api.knoldg.co/api/account/favorite/knowledge';
+  private readonly API_URL = 'https://api.knoldg.com/api/account/favorite/knowledge';
   
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$ = this.isLoadingSubject.asObservable();

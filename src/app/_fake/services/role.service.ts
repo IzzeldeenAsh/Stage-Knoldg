@@ -16,9 +16,9 @@ export interface Role {
   providedIn: 'root'
 })
 export class RolesService {
-  private apiUrl = 'https://api.knoldg.co/api/admin/account/role/list';
-  private createApi = 'https://api.knoldg.co/api/admin/account/role';
-  private updateDeleteApi = 'https://api.knoldg.co/api/admin/account/role';
+  private apiUrl = 'https://api.knoldg.com/api/admin/account/role/list';
+  private createApi = 'https://api.knoldg.com/api/admin/account/role';
+  private updateDeleteApi = 'https://api.knoldg.com/api/admin/account/role';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   currentLang: string = 'en';

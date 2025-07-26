@@ -8,7 +8,7 @@ import { catchError, finalize, map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class WebsiteSettingsService {
-  private baseUrl = 'https://api.knoldg.co/api/admin/setting';
+  private baseUrl = 'https://api.knoldg.com/api/admin/setting';
   private authLocalStorageKey = 'foresighta-creds';
   private currentLang = 'en';
 

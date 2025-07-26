@@ -18,9 +18,9 @@ export interface VerificationQuestionResponse {
   providedIn: 'root'
 })
 export class QuestionsService {
-  private apiUrl = 'https://api.knoldg.co/api/common/setting/verification-question/list';
-  private createApi = 'https://api.knoldg.co/api/admin/setting/verification-question';
-  private updateDeleteApi = 'https://api.knoldg.co/api/admin/setting/verification-question';
+  private apiUrl = 'https://api.knoldg.com/api/common/setting/verification-question/list';
+  private createApi = 'https://api.knoldg.com/api/admin/setting/verification-question';
+  private updateDeleteApi = 'https://api.knoldg.com/api/admin/setting/verification-question';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   currentLang: string = 'en';
