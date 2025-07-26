@@ -35,10 +35,10 @@ export interface AdminEconomicBlocResponse {
   providedIn: 'root'
 })
 export class EconomicBlockService {
-  private apiUrl = 'https://api.foresighta.co/api/common/setting/economic-bloc/list';
-  private adminApiUrl = 'https://api.foresighta.co/api/admin/setting/economic-bloc';
-  private createApi = 'https://api.foresighta.co/api/admin/setting/economic-bloc';
-  private updateDeleteApi = 'https://api.foresighta.co/api/admin/setting/economic-bloc';
+  private apiUrl = 'https://api.knoldg.co/api/common/setting/economic-bloc/list';
+  private adminApiUrl = 'https://api.knoldg.co/api/admin/setting/economic-bloc';
+  private createApi = 'https://api.knoldg.co/api/admin/setting/economic-bloc';
+  private updateDeleteApi = 'https://api.knoldg.co/api/admin/setting/economic-bloc';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   currentLang: string = 'en';

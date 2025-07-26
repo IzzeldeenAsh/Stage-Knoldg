@@ -170,7 +170,7 @@ export class SentMeetingsComponent implements OnInit, OnDestroy {
   // Navigate to insighter profile
   goToInsighterProfile(insighterUuid: string): void {
     const currentLocale = localStorage.getItem('language') || 'en';
-   window.location.href = `https://foresighta.co/${currentLocale}/profile/${insighterUuid}?entity=insighter&tab=meet`;
+   window.location.href = `https://knoldg.com/${currentLocale}/profile/${insighterUuid}?entity=insighter&tab=meet`;
   }
 
   // Join meeting
