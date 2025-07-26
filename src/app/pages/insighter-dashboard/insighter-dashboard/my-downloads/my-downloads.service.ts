@@ -114,7 +114,7 @@ export class MyDownloadsService {
   }
 
   getMyDownloads(page: number = 1, title?: string): Observable<MyDownloadsResponse> {
-    let url = `${this.API_URL}?page=${page}`;
+    let url = `${this.API_URL}?page=${page}&per_page=10`;
     
     // Add title query parameter if provided
     if (title && title.trim()) {
