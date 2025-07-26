@@ -157,7 +157,7 @@
             <div class="publisher-text flex-grow-1">
               <div *ngIf="item.insighter.company" class="company-info">
                 <div class="publisher-name">{{ item.insighter.company.legal_name }}</div>
-                <span class="insighter-name">{{ item.insighter.name }}</span>
+                <span class="insighter-name">{{'COMMON.BY' | translate}} {{ item.insighter.name }}</span>
               </div>
               <div *ngIf="!item.insighter.company" class="publisher-name">{{ item.insighter.name }}</div>
               
@@ -165,9 +165,7 @@
               <div class="role-text">
                 <ng-container *ngIf="item.insighter.roles && item.insighter.roles.length">
                   <ng-container *ngIf="item.insighter.roles.includes('company'); else notCompany">
-                    <span class="badge badge-light-info me-2">
-                      {{ item.insighter.company?.legal_name || 'Company' }}
-                    </span>
+                   
                   </ng-container>
                   <ng-template #notCompany>
                   
