@@ -42,7 +42,7 @@ export interface ContactMessagesResponse {
   providedIn: 'root'
 })
 export class ContactMessageService {
-  private apiUrl = 'https://api.knoldg.co/api/admin/setting/contact-us';
+  private apiUrl = 'https://api.knoldg.com/api/admin/setting/contact-us';
   private headers = new HttpHeaders({
     'Content-Type': 'application/json',
     'Accept': 'application/json',

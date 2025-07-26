@@ -559,7 +559,7 @@ export class AddInsightStepsService {
 
     this.setLoading(true);
     return this.http
-      .put(`https://api.knoldg.co/api/insighter/library/knowledge/abstract/document/${knowledgeId}`, request, {
+      .put(`https://api.knoldg.com/api/insighter/library/knowledge/abstract/document/${knowledgeId}`, request, {
         headers,
       })
       .pipe(

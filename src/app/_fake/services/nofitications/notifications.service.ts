@@ -27,7 +27,7 @@ export interface Notification {
   providedIn: 'root'
 })
 export class NotificationsService {
-  private apiUrl = 'https://api.knoldg.co/api/account/notification';
+  private apiUrl = 'https://api.knoldg.com/api/account/notification';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   currentLang: string = 'en';

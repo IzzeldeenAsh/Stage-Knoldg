@@ -36,7 +36,7 @@ export interface ScheduleResponse {
   providedIn: 'root'
 })
 export class ConsultingScheduleService {
-  private readonly baseUrl = 'https://api.knoldg.co'
+  private readonly baseUrl = 'https://api.knoldg.com'
   private currentLang = signal('en');
 
   constructor(

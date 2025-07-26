@@ -207,7 +207,7 @@ export class CallbackComponent extends BaseComponent implements OnInit, OnDestro
           'Accept-Language': 'en',
         });
         
-        return this.http.post('https://api.knoldg.co/api/account/timezone/set', 
+        return this.http.post('https://api.knoldg.com/api/account/timezone/set', 
           { timezone: userTimezone }, 
           { headers }
         );

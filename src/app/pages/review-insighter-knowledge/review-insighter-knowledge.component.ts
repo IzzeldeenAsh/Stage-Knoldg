@@ -141,7 +141,7 @@ export class ReviewInsighterKnowledgeComponent extends BaseComponent implements 
     });
     
     // Using the company API endpoint for getting knowledge
-    const knowledgeSubscription = this.http.get<any>(`https://api.knoldg.co/api/company/library/knowledge/${this.knowledgeId}`, { headers })
+    const knowledgeSubscription = this.http.get<any>(`https://api.knoldg.com/api/company/library/knowledge/${this.knowledgeId}`, { headers })
       .subscribe({
         next: (response) => {
           this.knowledge = response.data;
@@ -277,7 +277,7 @@ export class ReviewInsighterKnowledgeComponent extends BaseComponent implements 
     if (!targetRequestId) { return; }
     
     // Use request ID instead of knowledge ID if available
-    const apiEndpoint = `https://api.knoldg.co/api/company/insighter/request/knowledge/accept/${targetRequestId}`;
+    const apiEndpoint = `https://api.knoldg.com/api/company/insighter/request/knowledge/accept/${targetRequestId}`;
 
     this.http.post(apiEndpoint, body, { headers })
       .subscribe({

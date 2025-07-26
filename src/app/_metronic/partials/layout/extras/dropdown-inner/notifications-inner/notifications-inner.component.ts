@@ -84,7 +84,7 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
       'Accept-Language': this.translationService.getSelectedLanguage()
     });
     
-    this.http.put(`https://api.knoldg.co/api/account/notification/read/${notificationId}`, {}, { headers })
+    this.http.put(`https://api.knoldg.com/api/account/notification/read/${notificationId}`, {}, { headers })
       .subscribe(
         () => {
           // Update local state to mark this notification as read
