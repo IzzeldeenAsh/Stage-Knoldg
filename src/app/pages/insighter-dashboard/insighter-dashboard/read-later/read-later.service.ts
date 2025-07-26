@@ -102,7 +102,7 @@ export class ReadLaterService {
   }
 
   getReadLaterItems(page: number = 1): Observable<ReadLaterResponse> {
-    const url = `${this.API_URL}?page=${page}`;
+    const url = `${this.API_URL}?page=${page}&per_page=10`;
     const headers = this.getHeaders();
     
     this.setLoading(true);
