@@ -1,0 +1,314 @@
+// Grid View Styles for My Company Component
+// Import this file in the main component SCSS
+
+// ===============================================================
+// GRID VIEW STYLES
+// ===============================================================
+
+.grid-view {
+  .insighter-card {
+    border: 1px solid #64beff;
+    box-shadow: none;
+    transition: all 0.2s ease-in-out;
+    border-radius: 12px;
+    background-color: #ffffff;
+
+    &:hover {
+      box-shadow: 0 0.125rem 0.25rem rgba(0, 158, 247, 0.15);
+      border-color: #009ef7;
+      transform: translateY(-2px);
+    }
+
+    .card-body {
+      padding: 24px;
+    }
+
+    .card-title {
+      color: #181c32 !important;
+      font-size: 16px !important;
+      font-weight: 600 !important;
+      margin-bottom: 6px !important;
+      line-height: 1.3;
+    }
+
+    .symbol {
+      .symbol-label {
+        border-radius: 50%;
+        
+        &.bg-light-info {
+          background-color: #f1faff !important;
+          color: #009ef7 !important;
+        }
+      }
+
+      img {
+        border-radius: 50%;
+        object-fit: cover;
+      }
+    }
+
+    .knowledge-summary {
+      background-color: #f1faff;
+      border-radius: 8px;
+      padding: 12px;
+      border: 1px solid #c8e6fc;
+      
+      .knowledge-mini-stats {
+        flex-wrap: wrap;
+        
+        .mini-stat-item {
+          font-size: 11px;
+          color: #7e8299;
+          background-color: #ffffff;
+          padding: 6px 10px;
+          border-radius: 6px;
+          border: 1px solid #c8e6fc;
+          white-space: nowrap;
+          display: flex;
+          align-items: center;
+          transition: all 0.2s ease-in-out;
+          
+          &:hover {
+            border-color: #009ef7;
+            background-color: #f1faff;
+          }
+          
+          svg {
+            flex-shrink: 0;
+          }
+        }
+      }
+    }
+
+    .card-actions {
+      border-top: 1px solid #c8e6fc;
+      padding-top: 16px;
+      
+      .btn {
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        padding: 8px 16px !important;
+        border-radius: 6px !important;
+        transition: all 0.2s ease-in-out;
+        text-transform: none !important;
+
+        &.btn-success {
+          background-color: #50cd89 !important;
+          border-color: #50cd89 !important;
+          color: #ffffff !important;
+
+          &:hover {
+            background-color: #47be7d !important;
+            border-color: #47be7d !important;
+            transform: translateY(-1px);
+          }
+        }
+
+        &.btn-warning {
+          background-color: #ffc700 !important;
+          border-color: #ffc700 !important;
+          color: #1e2129 !important;
+
+          &:hover {
+            background-color: #f1bc00 !important;
+            border-color: #f1bc00 !important;
+            transform: translateY(-1px);
+          }
+        }
+
+        &.btn-light-danger {
+          background-color: #fff5f8 !important;
+          border-color: #fff5f8 !important;
+          color: #f1416c !important;
+
+          &:hover {
+            background-color: #f1416c !important;
+            border-color: #f1416c !important;
+            color: #ffffff !important;
+            transform: translateY(-1px);
+          }
+        }
+
+        .ki-duotone {
+          width: 16px;
+          height: 16px;
+          margin-right: 4px;
+        }
+      }
+    }
+
+    .badge {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 11px !important;
+      font-weight: 600 !important;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+      z-index: 1;
+    }
+    
+    // Status badge in top right corner
+    .position-absolute .badge {
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+  }
+}
+
+// View toggle button styles
+.btn-group {
+  .btn {
+    border-radius: 6px !important;
+    
+    &:not(:last-child) {
+      margin-right: 2px;
+    }
+    
+    &.btn-light-info {
+      background-color: #f1faff !important;
+      border-color: #f1faff !important;
+      color: #009ef7 !important;
+      
+      .ki-duotone {
+        color: #009ef7 !important;
+        
+        .path1, .path2, .path3, .path4 {
+          fill: #009ef7 !important;
+        }
+      }
+    }
+    
+    &.btn-light {
+      background-color: #f8f9fa !important;
+      border-color: #f8f9fa !important;
+      color: #7e8299 !important;
+      
+      .ki-duotone {
+        color: #7e8299 !important;
+        
+        .path1, .path2, .path3, .path4 {
+          fill: #7e8299 !important;
+        }
+      }
+      
+      &:hover {
+        background-color: #f1faff !important;
+        border-color: #f1faff !important;
+        color: #009ef7 !important;
+        
+        .ki-duotone {
+          color: #009ef7 !important;
+          
+          .path1, .path2, .path3, .path4 {
+            fill: #009ef7 !important;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive grid view
+@media (max-width: 1199px) {
+  .grid-view {
+    .insighter-card {
+      .card-body {
+        padding: 20px;
+      }
+    }
+  }
+}
+
+@media (max-width: 991px) {
+  .grid-view {
+    .insighter-card {
+      .card-body {
+        padding: 16px;
+      }
+      
+      .card-actions {
+        .btn {
+          font-size: 11px !important;
+          padding: 6px 12px !important;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .grid-view {
+    .row {
+      margin: 0 -8px;
+      
+      [class*="col-"] {
+        padding: 0 8px;
+        margin-bottom: 16px;
+      }
+    }
+    
+    .insighter-card {
+      .card-body {
+        padding: 12px;
+      }
+      
+      // Status badge positioning for mobile
+      .position-absolute {
+        top: 8px !important;
+        right: 8px !important;
+        
+        .badge {
+          padding: 4px 8px;
+          font-size: 10px !important;
+        }
+      }
+      
+      .symbol {
+        width: 40px !important;
+        height: 40px !important;
+        
+        img {
+          width: 40px !important;
+          height: 40px !important;
+        }
+      }
+      
+      .card-title {
+        font-size: 14px !important;
+      }
+      
+      .knowledge-summary {
+        padding: 8px;
+        
+        .knowledge-mini-stats {
+          .mini-stat-item {
+            font-size: 10px;
+            padding: 4px 8px;
+            border: 1px solid #c8e6fc;
+            
+            svg {
+              width: 7px;
+              height: 7px;
+              flex-shrink: 0;
+            }
+          }
+        }
+      }
+      
+      .card-actions {
+        padding-top: 12px;
+        
+        .btn {
+          font-size: 10px !important;
+          padding: 4px 8px !important;
+          
+          .ki-duotone {
+            width: 14px;
+            height: 14px;
+            margin-right: 2px;
+          }
+        }
+      }
+    }
+  }
+}

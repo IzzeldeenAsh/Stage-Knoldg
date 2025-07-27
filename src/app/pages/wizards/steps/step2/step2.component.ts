@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild,AfterViewInit    } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, OnChanges, SimpleChanges, ViewChild,AfterViewInit    } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl, ValidationErrors, FormControl } from '@angular/forms';
 import { Observable, Subscription, fromEvent, map, startWith, forkJoin, of } from 'rxjs';
 import { ICreateAccount } from '../../create-account.helper';
@@ -15,7 +15,7 @@ import { CountriesService, Country } from 'src/app/_fake/services/countries/coun
   templateUrl: './step2.component.html',
   styleUrl: './step2.component.scss'
 })
-export class Step2Component implements OnInit, OnDestroy  {
+export class Step2Component implements OnInit, OnChanges, OnDestroy  {
   isLoading$: Observable<boolean>;
   listOfConsultingFields: TreeNode[] = [];
   messages: Message[] = [];
@@ -76,6 +76,16 @@ export class Step2Component implements OnInit, OnDestroy  {
       this.lang =lang;
       this.initApiCalls();
     });
+    this.handleDefaultValues();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['defaultValues'] && !changes['defaultValues'].firstChange) {
+      this.handleDefaultValues();
+    }
+  }
+
+  private handleDefaultValues() {
     if (this.defaultValues?.registerDocument) {
       this.form.patchValue({ registerDocument: this.defaultValues?.registerDocument });
       this.form.get('registerDocument')?.markAsTouched();
@@ -83,6 +93,12 @@ export class Step2Component implements OnInit, OnDestroy  {
     }
     if(this.defaultValues?.logo){
       this.logoPreview =URL.createObjectURL(this.defaultValues.logo);
+    }
+    
+    // Handle pre-selected country from profile
+    if (this.defaultValues?.country && this.form) {
+      this.form.patchValue({ country: this.defaultValues.country });
+      this.updateParentModel({ country: this.defaultValues.country }, this.checkForm());
     }
   }
 
@@ -266,6 +282,7 @@ getFileIcon(file: File): string {
     if (accountType === 'personal') {
       this.form = this.fb.group({
         bio: [this.defaultValues.bio || '', [Validators.required]],
+        country: [this.defaultValues.country || '', [Validators.required]],
         phoneCountryCode: [this.defaultValues.phoneCountryCode || ''],
         phoneNumber: [
           this.defaultValues.phoneNumber || '',
@@ -281,6 +298,7 @@ getFileIcon(file: File): string {
           legalName: [this.defaultValues.legalName || '', [Validators.required]],
           companyAddress: [this.defaultValues.companyAddress || '', [Validators.required]],
           aboutCompany: [this.defaultValues.aboutCompany || '', [Validators.required]],
+          country: [this.defaultValues.country || '', [Validators.required]],
           phoneCountryCode: [this.defaultValues.phoneCountryCode || ''],
           phoneCompanyNumber: [
             this.defaultValues.phoneCompanyNumber || '',
@@ -320,6 +338,22 @@ onFileChange(event: any) {
 
   onFlagError(country: any) {
     country.showFlag = false;
+  }
+
+  // Custom filter function for country dropdown
+  customCountryFilter(event: any) {
+    const query = event.filter.toLowerCase();
+    const filtered: any[] = [];
+    
+    for (let i = 0; i < this.countries.length; i++) {
+      const country = this.countries[i];
+      if (country.names.en.toLowerCase().indexOf(query) !== -1 || 
+          country.names.ar.toLowerCase().indexOf(query) !== -1) {
+        filtered.push(country);
+      }
+    }
+    
+    return filtered;
   }
 
   ngOnDestroy() {

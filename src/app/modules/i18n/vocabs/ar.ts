@@ -26,7 +26,8 @@ INSIGHTER_REQUESTS: {
       NO_DOWNLOADS: "لا يوجد تحميلات بعد",
       DOWNLOAD_KNOWLEDGE: "تحميل مستندات المعرفة",
       DOWNLOAD_DOCUMENT: "تحميل المستند",
-      
+      TOTAL_DOCUMENTS:"إجمالي الملفات",
+      TOTAL_SPENT:"إجمالي الدفع" ,
       SELECT_KNOWLEDGE: "اختر المعرفة",
       SELECT_ITEM_DETAILS: "اختر تفاصيل العنصر",
       DOCUMENTS: "المستندات",
@@ -237,10 +238,14 @@ INSIGHTER_REQUESTS: {
       "LAST_NAME": "اسم العائلة",
       "ENTER_LAST_NAME": "أدخل اسم العائلة",
       "LAST_NAME_REQUIRED": "اسم العائلة مطلوب",
+      "COUNTRY_REQUIRED": "الدولة مطلوبة",  
+      "COUNTRY_PLACEHOLDER": "اختر الدولة",
+      "COUNTRY": "الدولة",  
       "CANCEL": "إلغاء",
       "INVITE": "دعوة",
       "INVITING": "جاري الدعوة...",
       "ACTIVATE": "تفعيل",
+      "SEARCH_COUNTRIES": "البحث عن دول",
       "DEACTIVATE": "إلغاء التفعيل",
       "CURRENT_USER": "المدير التنفيذي"
     },
@@ -583,6 +588,9 @@ INSIGHTER_REQUESTS: {
       ACCOUNT_DETAILS_DESC: "إعداد تفاصيل حسابك",
       ACCOUNT_INFO: "معلومات الحساب",
       ACCOUNT_INFO_DESC: "إعداد معلومات إنسايتر الخاصة بك",
+      COUNTRY_REQUIRED: "الدولة مطلوبة",
+      COUNTRY_PLACEHOLDER: "اختر الدولة",
+      COUNTRY: "الدولة",
       CERTIFICATES: "الشهادات",
       CERTIFICATES_DESC: "تحميل مؤهلاتك",
       BIO_REQUIRED:"معلوماتك مطلوبة",
@@ -634,7 +642,6 @@ INSIGHTER_REQUESTS: {
       COMPANY_ADDRESS:"عنوان الشركة",
       LEGAL_NAME_REQUIRED: "الاسم القانوني لشركتك مطلوب.",
       ABOUT_COMPANY: "معلومات عن الشركة",
-      COUNTRY_PLACEHOLDER: "اختر الدولة",
       IF_NEED_MORE_INFO: "إذا كنت بحاجة إلى مزيد من المعلومات، يرجى زيارة",
       UPLOAD_FILES: "إرفاق الشهادات",
       CAMPAIGN_GUIDELINES: "إرشادات الشهادات",
@@ -890,6 +897,7 @@ INSIGHTER_REQUESTS: {
           "MY_KNOWLEDGE": "مكتبة المعرفة" ,
           "ACCOUNT_SETTINGS": "إعدادات الحساب",
           "MY_COMPANY": "فريقي",
+          "READ_LATER":"قراءاتي لاحقًا",
           "MY_DOWNLOADS": "التحميلات",
           "MEETINGS": "الاجتماعات",
           "MY_MEETINGS": "اجتماعاتي",
@@ -946,7 +954,8 @@ INSIGHTER_REQUESTS: {
         "TITLE": "قراءة لاحقة",
         "ITEMS": "عنصر",
         "EMPTY_TITLE": "لا توجد عناصل محفوظة بعد",
-        "EMPTY_MESSAGE": "العناصل التي تضعها في المفضلة ستظهر هنا للوصول إليها لاحقاً."
+        "EMPTY_MESSAGE": "العناصل التي تضعها في المفضلة ستظهر هنا للوصول إليها لاحقاً.",
+        "POSTED_ABOUT":'نشر قبل'
       }
     
     },

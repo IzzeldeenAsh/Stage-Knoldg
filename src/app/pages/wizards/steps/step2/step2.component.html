@@ -106,6 +106,32 @@
         </div>
       </div>
 
+      <!-- Country -->
+      <div class="mb-10 fv-row">
+        <label class="form-label mb-3 required">
+          {{ "INSIGHTER_WIZARD.COUNTRY" | translate }}
+        </label>
+        <app-country-dropdown
+          [countries]="countries"
+          formControlName="country"
+          [placeholder]="'INSIGHTER_WIZARD.COUNTRY_PLACEHOLDER' | translate"
+          [searchPlaceholder]="'Search countries...'"
+          [enableSearch]="true"
+          [showClear]="true"
+          [lang]="lang"
+          [isInvalid]="!!(form.get('country')?.hasError('required') && form.get('country')?.touched)"
+        ></app-country-dropdown>
+        <div
+          *ngIf="
+            form.get('country')?.hasError('required') &&
+            form.get('country')?.touched
+          "
+          class="fv-plugins-message-container invalid-feedback"
+        >
+          {{ "INSIGHTER_WIZARD.COUNTRY_REQUIRED" | translate }}
+        </div>
+      </div>
+
       <!-- Phone Number -->
       <div class="mb-10 fv-row">
         <label class="form-label mb-3">
@@ -121,11 +147,14 @@
               formControlName="phoneCountryCode"
               class="d-block form-p-control no-border-radius-start-end"
               optionValue="international_code"
+              [dataKey]="'international_code'"
               placeholder="{{
                 'INSIGHTER_WIZARD.COUNTRY_PLACEHOLDER' | translate
               }}"
               [filter]="true"
               [showClear]="true"
+              [filterFields]="['names.en', 'names.ar', 'international_code']"
+              filterPlaceholder="Search countries..."
             >
               <ng-template pTemplate="item" let-country>
                 <div class="country-option" [class]="lang === 'ar' ? 'rtl-country-option' : 'ltr-country-option'">
@@ -334,6 +363,32 @@
           </div>
         </div>
       </div>
+      <!-- Country -->
+      <div class="mb-10 fv-row">
+        <label class="form-label mb-3 required">
+          {{ "INSIGHTER_WIZARD.COUNTRY" | translate }}
+        </label>
+        <app-country-dropdown
+          [countries]="countries"
+          formControlName="country"
+          [placeholder]="'INSIGHTER_WIZARD.COUNTRY_PLACEHOLDER' | translate"
+          [searchPlaceholder]="'Search countries...'"
+          [enableSearch]="true"
+          [showClear]="true"
+          [lang]="lang"
+          [isInvalid]="!!(form.get('country')?.hasError('required') && form.get('country')?.touched)"
+        ></app-country-dropdown>
+        <div
+          *ngIf="
+            form.get('country')?.hasError('required') &&
+            form.get('country')?.touched
+          "
+          class="fv-plugins-message-container invalid-feedback"
+        >
+          {{ "INSIGHTER_WIZARD.COUNTRY_REQUIRED" | translate }}
+        </div>
+      </div>
+
       <!-- Phone Number -->
       <div class="mb-10 fv-row">
         <label class="form-label mb-3 required">
@@ -346,11 +401,14 @@
               formControlName="phoneCountryCode"
               class="d-block form-p-control no-border-radius-start-end"
               optionValue="international_code"
+              [dataKey]="'international_code'"
               placeholder="{{
                 'INSIGHTER_WIZARD.COUNTRY_PLACEHOLDER' | translate
               }}"
               [filter]="true"
               [showClear]="true"
+              [filterFields]="['names.en', 'names.ar', 'international_code']"
+              filterPlaceholder="Search countries..."
             >
               <ng-template pTemplate="item" let-country>
                 <div class="country-option" [class]="lang === 'ar' ? 'rtl-country-option' : 'ltr-country-option'">

@@ -7,6 +7,7 @@ export interface ICreateAccount {
   isicCodes:any; // Array of IDs
   phoneCountryCode?:any;
   companyAddress?:string;
+  country?: number | null; // Country ID
   // Personal account fields
   bio?: string;
 
@@ -34,6 +35,7 @@ export const inits: ICreateAccount = {
   phoneNumber: null,
   consultingFields: [],
   isicCodes: [],
+  country: null,
   bio: '',
   phoneCompanyNumber:'',
   legalName: '',

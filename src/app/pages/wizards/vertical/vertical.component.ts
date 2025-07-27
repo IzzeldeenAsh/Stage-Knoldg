@@ -63,7 +63,15 @@ export class VerticalComponent extends BaseComponent implements OnInit {
 
   checkUserRoleAndVerificaiton() {
     const authSub = this.getProfileService.getProfile().subscribe({
-      next: (res) => {},
+      next: (profile) => {
+        this.user = profile;
+        // If user already has a country, pre-populate it in the account data
+        if (profile.country_id) {
+          const currentAccount = this.account$.value;
+          const updatedAccount = { ...currentAccount, country: profile.country_id };
+          this.account$.next(updatedAccount);
+        }
+      },
       error: (error) => {
         this.messages.push({
           severity: "error",
@@ -170,6 +178,9 @@ export class VerticalComponent extends BaseComponent implements OnInit {
     );
     const formData = new FormData();
     formData.append("bio", user.bio ? user.bio : "");
+    if (user.country) {
+      formData.append("country_id", user.country.toString());
+    }
     if (user.phoneNumber) {
       const userPhoneNumber = user.phoneCountryCode.code + user.phoneNumber;
       formData.append("phone", userPhoneNumber);
@@ -230,6 +241,9 @@ export class VerticalComponent extends BaseComponent implements OnInit {
     formData.append("legal_name", user.legalName ? user.legalName : "");
     formData.append("address", user.companyAddress ? user.companyAddress : "");
     formData.append("logo", user.logo!);
+    if (user.country) {
+      formData.append("country_id", user.country.toString());
+    }
     if (user.verificationMethod === "websiteEmail") {
       formData.append("website", user.website ? user.website : "");
       formData.append(
