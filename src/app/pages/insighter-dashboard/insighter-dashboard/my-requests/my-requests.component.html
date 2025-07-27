@@ -220,8 +220,8 @@ styleClass=""
                             <div class="d-flex align-items-center">
                                 <!-- Insighter Avatar -->
                                 <div *ngIf="request.requestable" class="me-4">
-                                    <div *ngIf="request.requestable.profile_photo_url" class="symbol symbol-40px w-40px h-40px overflow-hidden">
-                                        <img [src]="request.requestable.profile_photo_url" alt="Profile" class="w-100">
+                                    <div *ngIf="request.requestable.profile_photo_url" class="symbol symbol-40px w-40px h-40px overflow-hidden rounded-circle">
+                                        <img [src]="request.requestable.profile_photo_url" alt="Profile" class="w-100 object-fit-cover" style="object-position: top;">
                                     </div>
                                     <div *ngIf="!request.requestable.profile_photo_url && request.requestable.name" class="symbol symbol-40px d-flex align-items-center h-40px w-40px justify-content-center rounded-circle" 
                                         [ngStyle]="{'background-color': '#EEF6FF', 'color': '#3E97FF'}">
