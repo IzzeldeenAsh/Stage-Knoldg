@@ -2,6 +2,8 @@ import { Knowledge } from 'src/app/_fake/services/knowledge/knowledge.service';
 import { Component, Injector, OnInit } from '@angular/core';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CountryDropdownComponent, Country as DropdownCountry } from 'src/app/reusable-components/country-dropdown/country-dropdown.component';
+import { CountriesService, Country as ServiceCountry } from 'src/app/_fake/services/countries/countries.service';
 import { CompanyAccountService } from 'src/app/_fake/services/company-account/company-account.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
@@ -72,18 +74,26 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
   first: number = 0;
   paginationMeta: PaginationMeta | null = null;
   
-  // Current user ID
+  // Current user ID and profile info
   currentUserId: number | null = null;
+  currentUserCountryId: number | null = null;
   
   // Track expanded rows
   expandedRows: {[key: number]: boolean} = {};
+  
+  // View mode for toggle between table and grid
+  viewMode: 'table' | 'grid' = 'grid';
+  
+  // Countries data
+  availableCountries: DropdownCountry[] = [];
   
   constructor(
     injector: Injector,
     private fb: FormBuilder,
     private companyAccountService: CompanyAccountService,
     private profileService: ProfileService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private countriesService: CountriesService
   ) {
     super(injector);
     
@@ -95,7 +105,8 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     this.employeeForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]]
+      email: ['', [Validators.required, Validators.email]],
+      country: [null, Validators.required]
     });
   }
 
@@ -104,7 +115,16 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
       this.industries = user.industries;
       this.consultingFields = user.consulting_field;
       this.currentUserId = user.id;
+      this.currentUserCountryId = user.country_id || null;
+      
+      // Set default country in employee form
+      this.employeeForm.patchValue({
+        country: this.currentUserCountryId
+      });
     });
+    
+    // Load countries first, then load insighters
+    this.loadCountries();
     
     // Load initial insighter data
     this.loadInsighters(1);
@@ -160,6 +180,12 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
   resetForms(): void {
     this.emailForm.reset();
     this.employeeForm.reset();
+    
+    // Set default country to current user's country
+    this.employeeForm.patchValue({
+      country: this.currentUserCountryId
+    });
+    
     this.resetAccountState();
   }
   
@@ -183,30 +209,88 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
           this.isCheckingAccount = false;
           this.apiCheckCompleted = true;
           
-          if (response.data) {
-            // Account exists and is valid for invitation
-            this.accountExists = true;
-            this.accountExistError = null;
-            this.accountInfo = response.data;
-            
-            // Update employee form with existing data
-            this.employeeForm.patchValue({
-              email: email,
-              firstName: response.data.first_name,
-              lastName: response.data.last_name
-            });
-          } else {
+          // Handle the new API response structure
+          // Case 1: Empty array means no user found
+          if (Array.isArray(response) && response.length === 0) {
             // Account doesn't exist - show form to create one
             this.accountExists = false;
             this.accountExistError = null;
             this.accountInfo = null;
             
-            // Only set email in the employee form
+            // Set email and default country in the employee form
             this.employeeForm.patchValue({
               email: email,
               firstName: '',
-              lastName: ''
+              lastName: '',
+              country: this.currentUserCountryId
             });
+            
+            console.log('No user found - set default country for new account:', this.currentUserCountryId);
+          } 
+          // Case 2: Object with data property means user found
+          else if (response && typeof response === 'object' && response.data) {
+            // Account exists and is valid for invitation
+            this.accountExists = true;
+            this.accountExistError = null;
+            this.accountInfo = response.data;
+            
+            // Check if country_id has a value
+            let countryId: number | null = null;
+            
+            // Type assertion to access country_id property
+            const userData = response.data as any;
+            
+            if (userData.country_id !== null && userData.country_id !== undefined) {
+              // Case 2a: country_id has a value - use it
+              countryId = userData.country_id;
+              console.log('User found with country_id:', countryId);
+            } else {
+              // Case 2b: country_id has no value - use profile country_id as default
+              countryId = this.currentUserCountryId;
+              console.log('User found but no country_id - using profile default:', countryId);
+            }
+            
+            // Update employee form with existing data
+            this.employeeForm.patchValue({
+              email: email,
+              firstName: userData.first_name,
+              lastName: userData.last_name,
+              country: countryId
+            });
+            
+            console.log('Set country for existing account:', countryId);
+            console.log('Available countries at this time:', this.availableCountries.length);
+            console.log('Form country value after patch:', this.employeeForm.get('country')?.value);
+            
+            // If countries haven't loaded yet, wait for them and then update the form
+            if (this.availableCountries.length === 0) {
+              console.log('Countries not loaded yet, waiting...');
+              // Wait for countries to be loaded and then update the form
+              const checkCountries = () => {
+                if (this.availableCountries.length > 0) {
+                  console.log('Countries now loaded, updating form...');
+                  this.employeeForm.patchValue({ country: countryId });
+                } else {
+                  setTimeout(checkCountries, 100);
+                }
+              };
+              checkCountries();
+            }
+          } else {
+            // Unexpected response format
+            this.accountExists = false;
+            this.accountExistError = 'Unexpected response format from server';
+            this.accountInfo = null;
+            
+            // Set default values
+            this.employeeForm.patchValue({
+              email: email,
+              firstName: '',
+              lastName: '',
+              country: this.currentUserCountryId
+            });
+            
+            console.log('Unexpected response format - set default country:', this.currentUserCountryId);
           }
         },
         error: (error) => {
@@ -237,6 +321,21 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     const firstName = this.accountExists ? this.accountInfo.first_name : this.employeeForm.get('firstName')?.value;
     const lastName = this.accountExists ? this.accountInfo.last_name : this.employeeForm.get('lastName')?.value;
     
+    // For existing accounts: use their country_id if exists, otherwise use form value (which defaults to profile country)
+    // For new accounts: use form value (which defaults to profile country)
+    let countryId: number | undefined = undefined;
+    
+    if (this.accountExists) {
+      // Type assertion to access country_id property
+      const userData = this.accountInfo as any;
+      countryId = userData.country_id !== null && userData.country_id !== undefined ? 
+        userData.country_id : 
+        this.employeeForm.get('country')?.value;
+    } else {
+      // For new accounts: use form value (which defaults to profile country)
+      countryId = this.employeeForm.get('country')?.value;
+    }
+    
     // Convert industry and consulting field IDs to strings
     const industryIds = this.industries.map(industry => industry.id.toString());
     const consultingFieldIds = this.consultingFields.map(field => field.id.toString());
@@ -246,6 +345,7 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
       email: email,
       first_name: firstName,
       last_name: lastName,
+      country_id: countryId,
       industries: industryIds,
       consulting_field: consultingFieldIds
     }).subscribe({
@@ -461,4 +561,47 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     const page = Math.floor(event.first / event.rows) + 1;
     this.loadInsighters(page);
   }
+  
+  // Load countries data
+  loadCountries(): void {
+    this.countriesService.getCountries().subscribe({
+      next: (countries) => {
+        if (countries && Array.isArray(countries) && countries.length > 0) {
+          this.availableCountries = countries.map(country => ({ 
+            ...country, 
+            showFlag: true 
+          } as DropdownCountry));
+          console.log('Countries loaded successfully:', this.availableCountries.length);
+          
+          // Force the country dropdown to re-evaluate the selected country
+          // This ensures the country dropdown shows the correct country name after countries are loaded
+          const currentCountryId = this.employeeForm.get('country')?.value;
+          console.log('Countries loaded, current country ID in form:', currentCountryId);
+          if (currentCountryId) {
+            // Trigger a change detection by temporarily setting the value to null and back
+            this.employeeForm.get('country')?.setValue(null);
+            setTimeout(() => {
+              this.employeeForm.get('country')?.setValue(currentCountryId);
+              console.log('Re-set country ID after countries loaded:', currentCountryId);
+            }, 0);
+          }
+        } else {
+          console.warn('Countries API returned empty array or null');
+          this.availableCountries = [];
+          this.showWarn('Warning', 'No countries available');
+        }
+      },
+      error: (error) => {
+        console.error('Error loading countries:', error);
+        this.availableCountries = [];
+        this.showError('Error', 'Failed to load countries');
+      }
+    });
+  }
+  
+  // Toggle view mode between table and grid
+  toggleViewMode(mode: 'table' | 'grid'): void {
+    this.viewMode = mode;
+  }
+  
 }

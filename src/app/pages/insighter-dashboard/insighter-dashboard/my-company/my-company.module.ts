@@ -6,6 +6,7 @@ import { MyCompanyRoutingModule } from './my-company-routing.module';
 import { MyCompanyComponent } from './my-company/my-company.component';
 import { TranslationModule } from 'src/app/modules/i18n';
 import { EmployeeStatusStatisticsComponent } from './employee-status-statistics/employee-status-statistics.component';
+import { CountryDropdownComponent } from 'src/app/reusable-components/country-dropdown/country-dropdown.component';
 
 // PrimeNG Modules
 import { DialogModule } from 'primeng/dialog';
@@ -41,7 +42,8 @@ import { TableModule } from 'primeng/table';
     TooltipModule,
     ConfirmDialogModule,
     NgApexchartsModule,
-    TableModule
+    TableModule,
+    CountryDropdownComponent
   ],
   providers: [
     ConfirmationService

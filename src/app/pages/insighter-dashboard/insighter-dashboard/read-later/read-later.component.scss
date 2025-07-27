@@ -233,11 +233,20 @@
 }
 
 // RTL Support
+:host-context([dir="rtl"]) {
+  .read-later-container {
+    .knowledge-card .card-header-bg .delete-btn.position-absolute {
+      right: auto !important;
+      left: 0.75rem !important;
+    }
+  }
+}
+
 [dir="rtl"] {
   .read-later-container {
-    .delete-btn {
-      right: auto;
-      left: 0.75rem;
+    .knowledge-card .card-header-bg .delete-btn.position-absolute {
+      right: auto !important;
+      left: 0.75rem !important;
     }
     
     .publisher-section {

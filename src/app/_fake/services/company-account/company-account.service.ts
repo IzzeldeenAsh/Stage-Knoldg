@@ -106,6 +106,7 @@ export class CompanyAccountService {
     email: string;
     first_name: string;
     last_name: string;
+    country_id?: number;
     industries: string[];
     consulting_field: string[];
   }): Observable<any> {
@@ -118,6 +119,11 @@ export class CompanyAccountService {
     formData.append('email', data.email);
     formData.append('first_name', data.first_name);
     formData.append('last_name', data.last_name);
+    
+    // Add country_id if provided
+    if (data.country_id) {
+      formData.append('country_id', data.country_id.toString());
+    }
     
     // Add industries as array
     if (data.industries && data.industries.length > 0) {
