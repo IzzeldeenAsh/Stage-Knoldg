@@ -1,14 +1,8 @@
-@import './grid-view-styles.scss';
-@import './my-company-rtl.scss';
+@import './my-company-rtl.scss';\n\n// Essential grid view styles (inline)\n.grid-view .insighter-card {\n  border: 1px solid #64beff;\n  box-shadow: none;\n  transition: all 0.2s ease-in-out;\n  border-radius: 12px;\n  background-color: #ffffff;\n  \n  &:hover {\n    box-shadow: 0 0.125rem 0.25rem rgba(0, 158, 247, 0.15);\n    border-color: #009ef7;\n    transform: translateY(-2px);\n  }\n}
 
-// RESPONSIVE TABLE THAT FILLS CARD WIDTH
 .my-company-container {
-  // Ensure the whole component stays within bounds
-  // width: 100%;
-  // max-width: 100%;
   overflow: hidden;
   
-  // Constrain the card to viewport
   .card {
     width: 100% !important;
     max-width: 100% !important;
@@ -23,20 +17,15 @@
     padding: 1.5rem !important;
   }
   
-  // Table container with horizontal scroll capability
   .table-container {
     overflow-x: auto !important;
     overflow-y: visible !important;
-    // width: 100% !important;
-    // max-width: 100% !important;
-   
     border-radius: 0.75rem;
     border: 1px solid var(--kt-gray-200);
     background: white;
     position: relative !important;
     -webkit-overflow-scrolling: touch;
     
-    // Scrollbar styling
     &::-webkit-scrollbar {
       height: 8px;
     }
@@ -56,30 +45,11 @@
     }
   }
 
-  // Table fills available width with responsive columns
   .company-table {
-    // width: 100% !important;
-    // min-width: 100% !important;
-    
-    // Override ALL PrimeNG containers to be responsive
     ::ng-deep .p-datatable {
-      // width: 100% !important;
-      // min-width: 100% !important;
       overflow: visible !important;
       
-      .p-datatable-wrapper {
-        // width: 100% !important;
-        // min-width: 100% !important;
-        overflow: visible !important;
-      }
-      
-      .p-datatable-table {
-        // width: 100% !important;
-        // min-width: 800px !important; // Minimum width to trigger horizontal scroll
-        table-layout: auto !important;
-      }
-      
-      // Override any scrollable wrappers
+      .p-datatable-wrapper, 
       .p-datatable-scrollable-wrapper,
       .p-datatable-scrollable-view,
       .p-datatable-scrollable-header,
@@ -88,11 +58,14 @@
         overflow: visible !important;
         width: 100% !important;
       }
+      
+      .p-datatable-table {
+        table-layout: auto !important;
+      }
     }
     
-    // Header styling with grey background and responsive widths
     ::ng-deep .p-datatable-thead > tr > th {
-      background: #f8f9fa !important; // Grey background
+      background: #f8f9fa !important;
       border-bottom: 1px solid #d1d5d9 !important;
       padding: 1.25rem 0.75rem !important;
       font-weight: 600 !important;
@@ -102,17 +75,15 @@
       letter-spacing: 0.025em !important;
       white-space: nowrap !important;
       
-      // Responsive column widths (will scale with container)
-      &:nth-child(1) { width: 60px; min-width: 60px; } // Expand
-      &:nth-child(2) { width: 25%; min-width: 180px; } // Name
-      &:nth-child(3) { width: 20%; min-width: 160px; } // Email
-      &:nth-child(4) { width: 15%; min-width: 120px; } // Country
-      &:nth-child(5) { width: 15%; min-width: 120px; } // Status
-      &:nth-child(6) { width: 15%; min-width: 140px; } // Verification
-      &:nth-child(7) { width: 10%; min-width: 100px; text-align: center; } // Actions
+      &:nth-child(1) { width: 60px; min-width: 60px; }
+      &:nth-child(2) { width: 25%; min-width: 180px; }
+      &:nth-child(3) { width: 20%; min-width: 160px; }
+      &:nth-child(4) { width: 15%; min-width: 120px; }
+      &:nth-child(5) { width: 15%; min-width: 120px; }
+      &:nth-child(6) { width: 15%; min-width: 140px; }
+      &:nth-child(7) { width: 10%; min-width: 100px; text-align: center; }
     }
     
-    // Body cells with responsive widths
     ::ng-deep .p-datatable-tbody > tr > td {
       padding: 1.25rem 0.75rem !important;
       vertical-align: middle !important;
@@ -122,7 +93,6 @@
       overflow: hidden !important;
       text-overflow: ellipsis !important;
       
-      // Matching widths with headers
       &:nth-child(1) { width: 60px; min-width: 60px; text-align: center !important; }
       &:nth-child(2) { width: 25%; min-width: 180px; }
       &:nth-child(3) { width: 20%; min-width: 160px; }
@@ -136,7 +106,6 @@
       }
     }
     
-    // Row borders
     ::ng-deep .p-datatable-tbody > tr {
       border-bottom: 1px solid #e1e5e9 !important;
       
@@ -145,7 +114,6 @@
       }
     }
     
-    // Expanded rows
     ::ng-deep .expanded-row {
       background-color: var(--kt-gray-50) !important;
       border-bottom: 2px solid var(--kt-gray-300) !important;
@@ -157,8 +125,7 @@
     }
   }
 
-  // Button styling
-  .expand-button {
+  .expand-button, .btn-icon {
     width: 32px;
     height: 32px;
     border-radius: 0.5rem;
@@ -169,25 +136,12 @@
     
     &:hover {
       background-color: rgba(var(--kt-primary-rgb), 0.1);
-    }
-    
-    &.expanded {
-      background-color: rgba(var(--kt-primary-rgb), 0.15);
-    }
-  }
-
-  .btn-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 0.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-    
-    &:hover {
       transform: translateY(-1px);
     }
+  }
+  
+  .expand-button.expanded {
+    background-color: rgba(var(--kt-primary-rgb), 0.15);
   }
 
   .symbol-45px {
@@ -204,7 +158,6 @@
     white-space: nowrap !important;
   }
 
-  // Statistics styling
   .statistics-container {
     background-color: var(--kt-gray-100);
     border-radius: 0.75rem;
@@ -222,14 +175,9 @@
     justify-content: center;
     min-height: 120px;
     
-    &:hover {
-      transform: translateY(-2px);
-    }
+    &:hover { transform: translateY(-2px); }
     
-    svg {
-      margin-bottom: 0.5rem;
-      flex-shrink: 0;
-    }
+    svg { margin-bottom: 0.5rem; flex-shrink: 0; }
     
     .stat-label {
       font-size: 0.75rem;
@@ -239,306 +187,85 @@
       white-space: nowrap;
     }
     
-    .stat-value {
-      font-size: 1.5rem;
-      font-weight: 700;
-    }
+    .stat-value { font-size: 1.5rem; font-weight: 700; }
     
-    &.report {
-      border-left: 3px solid var(--kt-primary);
-      .stat-value { color: var(--kt-primary); }
-    }
-    
-    &.data {
-      border-left: 3px solid var(--kt-info);
-      .stat-value { color: var(--kt-info); }
-    }
-    
-    &.insight {
-      border-left: 3px solid var(--kt-success);
-      .stat-value { color: var(--kt-success); }
-    }
-    
-    &.manual {
-      border-left: 3px solid var(--kt-warning);
-      .stat-value { color: var(--kt-warning); }
-    }
-    
-    &.course {
-      border-left: 3px solid var(--kt-danger);
-      .stat-value { color: var(--kt-danger); }
-    }
+    &.report { border-left: 3px solid var(--kt-primary); .stat-value { color: var(--kt-primary); } }
+    &.data { border-left: 3px solid var(--kt-info); .stat-value { color: var(--kt-info); } }
+    &.insight { border-left: 3px solid var(--kt-success); .stat-value { color: var(--kt-success); } }
+    &.manual { border-left: 3px solid var(--kt-warning); .stat-value { color: var(--kt-warning); } }
+    &.course { border-left: 3px solid var(--kt-danger); .stat-value { color: var(--kt-danger); } }
   }
 }
 
-// RESPONSIVE BREAKPOINTS - MAINTAIN HORIZONTAL SCROLL WHEN NEEDED
-// ===============================================================
-
-// Large screens - full responsive width
 @media (min-width: 1200px) {
-  .my-company-container {
-    .company-table {
-      ::ng-deep .p-datatable-table {
-        min-width: 900px !important; // Ensures scroll if needed
-      }
-      
-      ::ng-deep .p-datatable-thead > tr > th,
-      ::ng-deep .p-datatable-tbody > tr > td {
-        padding: 1.5rem 1rem !important;
-      }
-    }
+  .my-company-container .company-table ::ng-deep {
+    .p-datatable-table { min-width: 900px !important; }
+    .p-datatable-thead > tr > th, .p-datatable-tbody > tr > td { padding: 1.5rem 1rem !important; }
   }
 }
 
-// Desktop screens - responsive with minimum width
 @media (max-width: 1199px) and (min-width: 992px) {
-  .my-company-container {
-    .company-table {
-      ::ng-deep .p-datatable-table {
-        min-width: 850px !important;
-      }
-      
-      ::ng-deep .p-datatable-thead > tr > th,
-      ::ng-deep .p-datatable-tbody > tr > td {
-        padding: 1.25rem 0.875rem !important;
-      }
-    }
+  .my-company-container .company-table ::ng-deep {
+    .p-datatable-table { min-width: 850px !important; }
+    .p-datatable-thead > tr > th, .p-datatable-tbody > tr > td { padding: 1.25rem 0.875rem !important; }
   }
 }
 
-// Tablet screens - force minimum width for horizontal scroll with better name spacing
 @media (max-width: 991px) and (min-width: 768px) {
   .my-company-container {
-    .card-body {
-      padding: 0.75rem !important;
-    }
-    
-    .table-container {
-      margin: 0 -0.75rem !important;
-      max-width: calc(100% + 1.5rem) !important;
-    }
+    .card-body { padding: 0.75rem !important; }
+    .table-container { margin: 0 -0.75rem !important; max-width: calc(100% + 1.5rem) !important; }
     
     .company-table {
-      ::ng-deep .p-datatable-table {
-        min-width: 850px !important; // Increased from 800px for better spacing
+      ::ng-deep .p-datatable-table { min-width: 850px !important; }
+      ::ng-deep .p-datatable-thead > tr > th, ::ng-deep .p-datatable-tbody > tr > td { 
+        padding: 0.875rem 0.5rem !important; font-size: 0.8rem !important; 
       }
-      
-      // Tablet specific column widths for better name display
-      ::ng-deep .p-datatable-thead > tr > th {
-        padding: 0.875rem 0.5rem !important;
-        font-size: 0.8rem !important;
-        
-        // Optimized tablet column widths
-        &:nth-child(1) { width: 55px; min-width: 55px; } // Expand
-        &:nth-child(2) { width: 28%; min-width: 200px; } // Name - more space
-        &:nth-child(3) { width: 22%; min-width: 170px; } // Email
-        &:nth-child(4) { width: 15%; min-width: 125px; } // Country
-        &:nth-child(5) { width: 15%; min-width: 125px; } // Status
-        &:nth-child(6) { width: 15%; min-width: 145px; } // Verification
-        &:nth-child(7) { width: 10%; min-width: 95px; text-align: center; } // Actions
-      }
-      
-      ::ng-deep .p-datatable-tbody > tr > td {
-        padding: 0.875rem 0.5rem !important;
-        font-size: 0.8rem !important;
-        
-        // Matching tablet column widths
-        &:nth-child(1) { width: 55px; min-width: 55px; text-align: center !important; }
-        &:nth-child(2) { width: 28%; min-width: 200px; } // Name - more space
-        &:nth-child(3) { width: 22%; min-width: 170px; } // Email
-        &:nth-child(4) { width: 15%; min-width: 125px; }
-        &:nth-child(5) { width: 15%; min-width: 125px; }
-        &:nth-child(6) { width: 15%; min-width: 145px; }
-        &:nth-child(7) { width: 10%; min-width: 95px; text-align: center !important; }
-      }
-      
-      .btn-icon, .expand-button {
-        width: 28px;
-        height: 28px;
-      }
-      
-      .badge {
-        font-size: 0.65rem !important;
-        padding: 0.25rem 0.5rem !important;
-      }
-      
-      // Tablet avatar and image sizing
-      ::ng-deep p-avatar {
-        .p-avatar {
-          width: 35px !important;
-          height: 35px !important;
-          font-size: 0.85rem !important;
-        }
-      }
-      
-      // Profile photo images
-      img.h-45px.w-45px {
-        width: 35px !important;
-        height: 35px !important;
-      }
+      .btn-icon, .expand-button { width: 28px; height: 28px; }
+      .badge { font-size: 0.65rem !important; padding: 0.25rem 0.5rem !important; }
+      ::ng-deep p-avatar .p-avatar, img.h-45px.w-45px { width: 35px !important; height: 35px !important; }
+      ::ng-deep p-avatar .p-avatar { font-size: 0.85rem !important; }
     }
   }
 }
 
-// Mobile screens - force minimum width for horizontal scroll with more space
 @media (max-width: 767px) {
   .my-company-container {
-    .card-body {
-      padding: 0.5rem !important;
-    }
-    
-    .table-container {
-      margin: 0 -0.5rem !important;
-      max-width: calc(100% + 1rem) !important;
-      border-radius: 0.375rem !important;
-    }
+    .card-body { padding: 0.5rem !important; }
+    .table-container { margin: 0 -0.5rem !important; max-width: calc(100% + 1rem) !important; border-radius: 0.375rem !important; }
     
     .company-table {
-      ::ng-deep .p-datatable-table {
-        min-width: 900px !important; // Increased from 720px for more space
+      ::ng-deep .p-datatable-table { min-width: 900px !important; }
+      ::ng-deep .p-datatable-thead > tr > th, ::ng-deep .p-datatable-tbody > tr > td { 
+        padding: 0.75rem 0.375rem !important; font-size: 0.75rem !important; 
       }
-      
-      // Mobile specific column widths for better space distribution
-      ::ng-deep .p-datatable-thead > tr > th {
-        padding: 0.75rem 0.375rem !important;
-        font-size: 0.75rem !important;
-        
-        // More generous column widths for mobile
-        &:nth-child(1) { width: 50px; min-width: 50px; } // Expand - smaller
-        &:nth-child(2) { width: 30%; min-width: 220px; } // Name - more space
-        &:nth-child(3) { width: 25%; min-width: 180px; } // Email - more space
-        &:nth-child(4) { width: 15%; min-width: 130px; } // Country
-        &:nth-child(5) { width: 15%; min-width: 130px; } // Status
-        &:nth-child(6) { width: 15%; min-width: 150px; } // Verification
-        &:nth-child(7) { width: 10%; min-width: 90px; text-align: center; } // Actions
-      }
-      
-      ::ng-deep .p-datatable-tbody > tr > td {
-        padding: 0.75rem 0.375rem !important;
-        font-size: 0.75rem !important;
-        
-        // Matching mobile column widths
-        &:nth-child(1) { width: 50px; min-width: 50px; text-align: center !important; }
-        &:nth-child(2) { width: 30%; min-width: 220px; } // Name - more space
-        &:nth-child(3) { width: 25%; min-width: 180px; } // Email - more space
-        &:nth-child(4) { width: 15%; min-width: 130px; }
-        &:nth-child(5) { width: 15%; min-width: 130px; }
-        &:nth-child(6) { width: 15%; min-width: 150px; }
-        &:nth-child(7) { width: 10%; min-width: 90px; text-align: center !important; }
-      }
-      
-      .btn-icon, .expand-button {
-        width: 24px;
-        height: 24px;
-      }
-      
-      .badge {
-        font-size: 0.6rem !important;
-        padding: 0.2rem 0.4rem !important;
-      }
-      
-      .symbol-45px {
-        width: 35px !important;
-        height: 35px !important;
-      }
-      
-      // Mobile avatar and image sizing
-      ::ng-deep p-avatar {
-        .p-avatar {
-          width: 35px !important;
-          height: 35px !important;
-          font-size: 0.85rem !important;
-        }
-      }
-      
-      // Profile photo images
-      img.h-45px.w-45px {
-        width: 35px !important;
-        height: 35px !important;
-      }
+      .btn-icon, .expand-button { width: 24px; height: 24px; }
+      .badge { font-size: 0.6rem !important; padding: 0.2rem 0.4rem !important; }
+      .symbol-45px, ::ng-deep p-avatar .p-avatar, img.h-45px.w-45px { width: 35px !important; height: 35px !important; }
+      ::ng-deep p-avatar .p-avatar { font-size: 0.85rem !important; }
       
       .knowledge-stat {
-        padding: 0.5rem;
-        min-height: 90px;
-        
-        svg {
-          width: 16px;
-          height: 16px;
-        }
-        
-        .stat-value {
-          font-size: 1rem;
-        }
-        
-        .stat-label {
-          font-size: 0.6rem;
-        }
+        padding: 0.5rem; min-height: 90px;
+        svg { width: 16px; height: 16px; }
+        .stat-value { font-size: 1rem; }
+        .stat-label { font-size: 0.6rem; }
       }
     }
   }
 }
 
-// Small mobile - minimum width for horizontal scroll with improved spacing
 @media (max-width: 575px) {
   .my-company-container {
-    .card-body {
-      padding: 0.25rem !important;
-    }
-    
-    .table-container {
-      margin: 0 -0.25rem !important;
-      max-width: calc(100% + 0.5rem) !important;
-      border-radius: 0.25rem !important;
-    }
+    .card-body { padding: 0.25rem !important; }
+    .table-container { margin: 0 -0.25rem !important; max-width: calc(100% + 0.5rem) !important; border-radius: 0.25rem !important; }
     
     .company-table {
-      ::ng-deep .p-datatable-table {
-        min-width: 800px !important; // Increased from 650px for better readability
+      ::ng-deep .p-datatable-table { min-width: 800px !important; }
+      ::ng-deep .p-datatable-thead > tr > th, ::ng-deep .p-datatable-tbody > tr > td { 
+        padding: 0.5rem 0.3rem !important; font-size: 0.7rem !important; 
       }
-      
-      // Small mobile specific column widths
-      ::ng-deep .p-datatable-thead > tr > th {
-        padding: 0.5rem 0.3rem !important;
-        font-size: 0.7rem !important;
-        
-        // Optimized column widths for small mobile
-        &:nth-child(1) { width: 45px; min-width: 45px; } // Expand - compact
-        &:nth-child(2) { width: 32%; min-width: 200px; } // Name - maximum space
-        &:nth-child(3) { width: 28%; min-width: 170px; } // Email - good space
-        &:nth-child(4) { width: 12%; min-width: 100px; } // Country - compact
-        &:nth-child(5) { width: 12%; min-width: 100px; } // Status - compact
-        &:nth-child(6) { width: 16%; min-width: 130px; } // Verification
-        &:nth-child(7) { width: 8%; min-width: 70px; text-align: center; } // Actions - minimal
-      }
-      
-      ::ng-deep .p-datatable-tbody > tr > td {
-        padding: 0.5rem 0.3rem !important;
-        font-size: 0.7rem !important;
-        
-        // Matching small mobile column widths
-        &:nth-child(1) { width: 45px; min-width: 45px; text-align: center !important; }
-        &:nth-child(2) { width: 32%; min-width: 200px; } // Name - maximum space
-        &:nth-child(3) { width: 28%; min-width: 170px; } // Email - good space
-        &:nth-child(4) { width: 12%; min-width: 100px; }
-        &:nth-child(5) { width: 12%; min-width: 100px; }
-        &:nth-child(6) { width: 16%; min-width: 130px; }
-        &:nth-child(7) { width: 8%; min-width: 70px; text-align: center !important; }
-      }
-      
-      // Small mobile avatar and image sizing
-      ::ng-deep p-avatar {
-        .p-avatar {
-          width: 35px !important;
-          height: 35px !important;
-          font-size: 0.8rem !important;
-        }
-      }
-      
-      // Profile photo images
-      img.h-45px.w-45px {
-        width: 35px !important;
-        height: 35px !important;
-      }
+      ::ng-deep p-avatar .p-avatar, img.h-45px.w-45px { width: 35px !important; height: 35px !important; }
+      ::ng-deep p-avatar .p-avatar { font-size: 0.8rem !important; }
     }
   }
 }

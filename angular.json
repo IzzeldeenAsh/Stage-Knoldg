@@ -22,7 +22,7 @@
           "options": {
             "outputPath": "dist/demo1/browser",
             "allowedCommonJsDependencies": [
-              "object-path",
+              "object-path", 
               "apexcharts",
               "clipboard.js",
               "prismjs",
