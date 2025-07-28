@@ -101,8 +101,22 @@ export class ReadLaterService {
     return throwError(() => error);
   }
 
-  getReadLaterItems(page: number = 1): Observable<ReadLaterResponse> {
-    const url = `${this.API_URL}?page=${page}&per_page=10`;
+  getReadLaterItems(page: number = 1, filters?: { title?: string; type?: string; language?: string }): Observable<ReadLaterResponse> {
+    let url = `${this.API_URL}?page=${page}&per_page=10`;
+    
+    // Add filter parameters if provided
+    if (filters) {
+      if (filters.title && filters.title.trim()) {
+        url += `&title=${encodeURIComponent(filters.title.trim())}`;
+      }
+      if (filters.type && filters.type.trim()) {
+        url += `&type=${encodeURIComponent(filters.type.trim())}`;
+      }
+      if (filters.language && filters.language.trim()) {
+        url += `&language=${encodeURIComponent(filters.language.trim())}`;
+      }
+    }
+    
     const headers = this.getHeaders();
     
     this.setLoading(true);

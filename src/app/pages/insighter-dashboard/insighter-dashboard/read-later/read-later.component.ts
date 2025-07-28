@@ -14,6 +14,14 @@ export class ReadLaterComponent extends BaseComponent implements OnInit {
   totalPages = signal<number>(1);
   totalItems = signal<number>(0);
   isLoading = signal<boolean>(false);
+  
+  filters = {
+    title: '',
+    type: '',
+    language: ''
+  };
+
+  private filterTimeout: any;
 
   constructor(
     injector:Injector,
@@ -27,7 +35,13 @@ export class ReadLaterComponent extends BaseComponent implements OnInit {
   }
 
   loadReadLaterItems(page: number = 1): void {
-    this._readLater.getReadLaterItems(page).subscribe({
+    const filtersToApply = this.hasActiveFilters() ? {
+      title: this.filters.title,
+      type: this.filters.type,
+      language: this.filters.language
+    } : undefined;
+
+    this._readLater.getReadLaterItems(page, filtersToApply).subscribe({
       next: (response: ReadLaterResponse) => {
         this.readLaterItems.set(response.data);
         this.currentPage.set(response.meta.current_page);
@@ -195,5 +209,27 @@ export class ReadLaterComponent extends BaseComponent implements OnInit {
         }
       });
     }
+  }
+
+  onFilterChange(): void {
+    clearTimeout(this.filterTimeout);
+    this.filterTimeout = setTimeout(() => {
+      this.currentPage.set(1);
+      this.loadReadLaterItems(1);
+    }, 500);
+  }
+
+  hasActiveFilters(): boolean {
+    return !!(this.filters.title?.trim() || this.filters.type || this.filters.language);
+  }
+
+  clearFilters(): void {
+    this.filters = {
+      title: '',
+      type: '',
+      language: ''
+    };
+    this.currentPage.set(1);
+    this.loadReadLaterItems(1);
   }
 }

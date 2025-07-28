@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ReadLaterRoutingModule } from './read-later-routing.module';
 import { ReadLaterComponent } from './read-later.component';
 import { TranslationModule } from 'src/app/modules/i18n';
@@ -13,6 +14,7 @@ import { ButtonModule } from 'primeng/button';
   ],
   imports: [
     CommonModule,
+    FormsModule,
     ReadLaterRoutingModule,
     TranslationModule,
     ButtonModule,

@@ -46,7 +46,7 @@ interface PaginationMeta {
 @Component({
   selector: 'app-my-company',
   templateUrl: './my-company.component.html',
-  styleUrls: ['./my-company.component.scss']
+  styleUrls: ['./my-company.component.scss', './grid-view-styles.scss']
 })
 export class MyCompanyComponent extends BaseComponent implements OnInit {
   // Modal state
