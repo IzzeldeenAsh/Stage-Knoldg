@@ -7,17 +7,25 @@
       <div class="row mb-10">
         <div class="col-12">
           <div class="d-flex align-items-center">
-            <div class="position-relative flex-grow-1 me-3">
-              <i class="ki-duotone ki-magnifier fs-3 text-gray-500 position-absolute top-50 translate-middle-y ms-6">
-                <span class="path1"></span>
-                <span class="path2"></span>
-              </i>
-              <input 
-                type="text" 
-                class="form-control form-solid "  style="padding-inline-start: 20px;"
-                [formControl]="searchControl"
-                [placeholder]="'MY_DOWNLOADS.SEARCH_PLACEHOLDER' | translate"
-                autocomplete="off">
+            <div class="flex-grow-1 me-3">
+              <div class="input-group" [class.flex-row-reverse]="lang === 'ar'">
+                <span class="input-group-text bg-light" [class.border-end-0]="lang !== 'ar'" [class.border-start-0]="lang === 'ar'">
+                  <i class="ki-duotone ki-magnifier fs-4">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                  </i>
+                </span>
+                <input 
+                  type="text" 
+                  class="form-control"
+                  [class.border-start-0]="lang !== 'ar'"
+                  [class.border-end-0]="lang === 'ar'"
+                  [formControl]="searchControl"
+                  [placeholder]="'MY_DOWNLOADS.SEARCH_PLACEHOLDER' | translate"
+                  [style.text-align]="lang === 'ar' ? 'right' : 'left'"
+                  [style.direction]="lang === 'ar' ? 'rtl' : 'ltr'"
+                  autocomplete="off">
+              </div>
             </div>
             @if (currentSearchTerm()) {
               <button 

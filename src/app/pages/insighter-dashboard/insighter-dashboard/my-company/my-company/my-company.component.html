@@ -9,37 +9,51 @@
     </h3>
     <div class="card-toolbar d-flex align-items-center">
       <!-- View Toggle -->
-      <div class="me-3" *ngIf="insighters && insighters.length > 0">
-        <div class="btn-group" role="group">
-          <button 
-            type="button" 
-            class="btn btn-sm"
-            [class.btn-light-info]="viewMode === 'table'"
-            [class.btn-light]="viewMode !== 'table'"
-            (click)="toggleViewMode('table')"
-            pTooltip="Table View"
-            tooltipPosition="top">
-            <i class="ki-duotone ki-row-horizontal fs-2">
-              <span class="path1"></span>
-              <span class="path2"></span>
-            </i>
-          </button>
-          <button 
-            type="button" 
-            class="btn btn-sm"
-            [class.btn-light-info]="viewMode === 'grid'"
-            [class.btn-light]="viewMode !== 'grid'"
-            (click)="toggleViewMode('grid')"
-            pTooltip="Grid View"
-            tooltipPosition="top">
-            <i class="ki-duotone ki-element-11 fs-2">
-              <span class="path1"></span>
-              <span class="path2"></span>
-              <span class="path3"></span>
-              <span class="path4"></span>
-            </i>
-          </button>
-        </div>
+      <div class="nav-group nav-group-fluid me-3" *ngIf="insighters && insighters.length > 0">
+        <label>
+          <input
+            type="radio"
+            class="btn-check"
+            name="viewMode"
+            value="table"
+            [(ngModel)]="viewMode"
+            (change)="toggleViewMode('table')"
+          />
+          <span
+            class="radio h-30px fw-bold px-4"
+            [class.radio-active]="viewMode === 'table'"
+          >
+            <i
+              class="ki-outline ki-row-horizontal"
+              [ngClass]="{
+                'text-gray-700': viewMode === 'table',
+                'text-gray-500': viewMode !== 'table'
+              }"
+            ></i>
+          </span>
+        </label>
+        <label>
+          <input
+            type="radio"
+            class="btn-check"
+            name="viewMode"
+            value="grid"
+            [(ngModel)]="viewMode"
+            (change)="toggleViewMode('grid')"
+          />
+          <span
+            class="radio h-30px fw-bold px-4"
+            [class.radio-active]="viewMode === 'grid'"
+          >
+            <i
+              class="ki-outline ki-element-11"
+              [ngClass]="{
+                'text-gray-700': viewMode === 'grid',
+                'text-gray-500': viewMode !== 'grid'
+              }"
+            ></i>
+          </span>
+        </label>
       </div>
       
       <button type="button" class="btn btn-sm btn-light-info" (click)="openAddEmployeeModal()">
@@ -323,7 +337,7 @@
       <div *ngIf="viewMode === 'grid'" class="grid-view">
         <div class="row g-4">
           <div *ngFor="let insighter of insighters" class="col-xl-4 col-lg-6 col-md-6">
-            <div class="card insighter-card h-100">
+            <div class="card insighter-card h-100 ">
               <div class="card-body d-flex flex-column position-relative">
                 <!-- Status Badge - Top Right -->
                 <div class="position-absolute" style="top: 16px; right: 16px;">
@@ -379,9 +393,9 @@
                   <!-- Knowledge Stats Summary -->
                   <div class="knowledge-summary" *ngIf="getTotalKnowledgeCount(insighter) > 0">
                     <div class="text-inline-start mb-3">
-                      <span class="text-muted fs-8">{{ 'MY_COMPANY.PUBLISHED_KNOWLEDGE' | translate:{ name: insighter.name } }}</span>
+                      <span class="text-muted fs-8">{{ 'COMMON.PUBLISHED' | translate:{ name: insighter.name } }}</span>
                     </div>
-                    <div class="knowledge-big-stats d-flex justify-content-start gap-3">
+                    <div class="knowledge-big-stats d-flex justify-content-center gap-3">
                       <div *ngIf="insighter.knowledge_type_statistics?.report" 
                            class="big-stat-item text-center"
                            pTooltip="{{ 'KNOWLEDGE_TYPES.REPORT' | translate }}"
@@ -439,6 +453,25 @@
                           <path d="M37.1327 0H1.86734C1.05624 0 0.397949 0.657551 0.397949 1.46939V30.8572C0.397949 31.6683 1.05624 32.3265 1.86734 32.3265H20.9694V31.3443C20.0143 30.0372 19.5 28.4694 19.5 26.8163C19.5 22.5625 22.9604 19.102 27.2143 19.102C31.4682 19.102 34.9286 22.5625 34.9286 26.8163C34.9286 28.4701 34.4143 30.038 33.4592 31.345V32.3265H37.1327C37.9438 32.3265 38.6021 31.6683 38.6021 30.8572V1.46939C38.6021 0.657551 37.9438 0 37.1327 0ZM20.9694 13.2245H8.47959V10.2857H20.9694V13.2245ZM30.5204 7.34694H8.47959V4.40816H30.5204V7.34694Z" fill="#589AEA"/>
                         </svg>
                         <div class="stat-number fw-bold fs-5 text-info">{{ insighter.knowledge_type_statistics?.course }}</div>
+                      </div>
+                    </div>
+                    <!-- Total Knowledge Count -->
+                    <div class="text-center mt-3">
+                      <span class="badge badge-light-info px-4 py-2 fs-6 fw-bold w-100">
+                        {{ 'MY_COMPANY.TOTAL' | translate }}: {{ getTotalKnowledgeCount(insighter) }}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <!-- Empty State for No Knowledge -->
+                  <div class="knowledge-empty-state" *ngIf="getTotalKnowledgeCount(insighter) === 0">
+                    <div class="text-center py-4">
+                      <i class="ki-duotone ki-folder-open fs-2x text-muted mb-3">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                      </i>
+                      <div class="text-muted fs-7">
+                        {{ 'MY_COMPANY.NO_KNOWLEDGE_PUBLISHED' | translate }}
                       </div>
                     </div>
                   </div>

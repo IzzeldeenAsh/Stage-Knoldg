@@ -193,6 +193,7 @@ export const locale = {
       "EMAIL_ADDRESS": "Email Address",
       "ENTER_EMAIL": "Enter email address",
       "EMAIL_REQUIRED": "Email is required",
+      "NO_KNOWLEDGE_PUBLISHED": "No knowledge published",
       "EMAIL_INVALID": "Email is invalid",
       "CHECKING_ACCOUNT": "Checking account...",
       "FIRST_NAME": "First Name",
@@ -981,7 +982,14 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     "WEEK_AGO": "week ago",
     "WEEKS_AGO": "weeks ago",
     "YEAR_AGO": "year ago",
-    "YEARS_AGO": "years ago"
+    "YEARS_AGO": "years ago",
+    "SEARCH_TITLE": "Search by title",
+    "ALL_TYPES": "All Types",
+    "TYPE_FILTER": "Filter by Type",
+    "ALL_LANGUAGES": "All Languages",
+    "LANGUAGE_FILTER": "Filter by Language",
+    "ARABIC": "Arabic",
+    "ENGLISH": "English"
    }
   },
   CHOOSE_ACCOUNT_TYPE: "Choose Account Type",
