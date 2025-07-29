@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit, OnChanges, SimpleChanges, ViewChild,AfterViewInit    } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, OnChanges, SimpleChanges, ViewChild,AfterViewInit, ChangeDetectorRef    } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl, ValidationErrors, FormControl } from '@angular/forms';
 import { Observable, Subscription, fromEvent, map, startWith, forkJoin, of } from 'rxjs';
 import { ICreateAccount } from '../../create-account.helper';
@@ -62,7 +62,8 @@ export class Step2Component implements OnInit, OnChanges, OnDestroy  {
     private _KnoldgFieldsService: ConsultingFieldTreeService,
     private _translateion:TranslationService,
     private _isicService: IndustryService,
-    private _countriesService: CountriesService
+    private _countriesService: CountriesService,
+    private cdr: ChangeDetectorRef
   ) {
     this.lang=this._translateion.getSelectedLanguage();
   }
@@ -92,7 +93,19 @@ export class Step2Component implements OnInit, OnChanges, OnDestroy  {
       this.updateParentModel({ registerDocument: this.defaultValues?.registerDocument }, this.checkForm());
     }
     if(this.defaultValues?.logo){
-      this.logoPreview =URL.createObjectURL(this.defaultValues.logo);
+      if (this.defaultValues.logo instanceof File) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          this.logoPreview = reader.result;
+          this.cdr.detectChanges();
+          this.updateBackgroundImage();
+        };
+        reader.readAsDataURL(this.defaultValues.logo);
+      } else if (typeof this.defaultValues.logo === 'string') {
+        this.logoPreview = this.defaultValues.logo;
+        this.cdr.detectChanges();
+        this.updateBackgroundImage();
+      }
     }
     
     // Handle pre-selected country from profile
@@ -155,7 +168,15 @@ export class Step2Component implements OnInit, OnChanges, OnDestroy  {
       }
   }
   getBackgroundImage(){
-    return `url(${this.logoPreview || this.defaultImage})`;
+    if (this.logoPreview) {
+      return `url(${this.logoPreview})`;
+    }
+    return `url(${this.defaultImage})`;
+  }
+
+  // Method to force update the background image
+  updateBackgroundImage() {
+    this.cdr.detectChanges();
   }
   onLogoSelected(event:Event){
     const input  =event.target as HTMLInputElement;
@@ -193,6 +214,11 @@ export class Step2Component implements OnInit, OnChanges, OnDestroy  {
       const reader = new FileReader();
       reader.onload = () => {
         this.logoPreview = reader.result;
+        this.cdr.detectChanges();
+        this.updateBackgroundImage();
+      };
+      reader.onerror = (error) => {
+        console.error('Error reading file:', error);
       };
       reader.readAsDataURL(file);
     }
@@ -204,6 +230,8 @@ export class Step2Component implements OnInit, OnChanges, OnDestroy  {
     if (this.fileInput) {
       this.fileInput.nativeElement.value = '';
     }
+    this.cdr.detectChanges();
+    this.updateBackgroundImage();
   }
   
   onDropzoneClick() {

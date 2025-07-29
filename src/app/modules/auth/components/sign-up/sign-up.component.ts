@@ -68,8 +68,8 @@ export class SignUpComponent extends BaseComponent implements OnInit {
 
   private initializeForm(): void {
     this.registrationForm = this.fb.group({
-      firstName: ["", [Validators.maxLength(50)]],
-      lastName: ["", [Validators.maxLength(50)]],
+      firstName: ["", [Validators.required, Validators.maxLength(50)]],
+      lastName: ["", [Validators.required, Validators.maxLength(50)]],
       email: ["", [Validators.required, Validators.email]],
       password: [
         "",
@@ -79,7 +79,7 @@ export class SignUpComponent extends BaseComponent implements OnInit {
           Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z\d])[A-Za-z\d\W_]{8,}$/),
         ],
       ],
-      country: [null],
+      country: [null, [Validators.required]],
       client_agreement: [false, [Validators.requiredTrue]]
     });
   }

@@ -314,8 +314,18 @@
                     </div>
                   </ng-template>
                 </p-dropdown>
+                <!-- Client-Side Required Validation Error -->
+                <ng-container
+                  [ngTemplateOutlet]="formError"
+                  [ngTemplateOutletContext]="{
+                    validation: 'required',
+                    message: 'AUTH.REGISTRATION.COUNTRY_REQUIRED' | translate,
+                    control: registrationForm.controls['country']
+                  }"
+                ></ng-container>
+                
                 <!-- Server-Side Validation Error (if any for country) -->
-                <div *ngIf="registrationForm.controls['country'].errors?.serverError && (registrationForm.controls['country'].touched || registrationForm.controls['country'].dirty)" 
+                <div *ngIf="registrationForm.controls['country'].errors?.serverError && (registrationForm.controls['country'].touched || registrationForm.controls['country'].dirty)"
                      [class]="'text-danger mt-1 ' + (lang === 'ar' ? 'text-end' : 'text-start')">
                   {{ registrationForm.controls['country'].errors?.serverError }}
                 </div>

@@ -8,6 +8,7 @@ import {
   ViewChild,
   ElementRef,
   Injector,
+  ChangeDetectorRef,
 } from "@angular/core";
 import { FormBuilder, FormGroup, Validators, FormArray } from "@angular/forms";
 import {
@@ -37,6 +38,8 @@ import { IndustryService } from "src/app/_fake/services/industries/industry.serv
 import { Document, DocumentsService } from "src/app/_fake/services/douments-types/documents-types.service.spec";
 import { phoneNumbers } from "src/app/pages/wizards/phone-keys";
 import { TranslateService } from "@ngx-translate/core";
+import { CountriesService, Country } from "src/app/_fake/services/countries/countries.service";
+import { ProfileService } from "src/app/_fake/services/get-profile/get-profile.service";
 
 @Component({
   selector: "app-upgrade-to-company",
@@ -77,6 +80,7 @@ export class UpgradeToCompanyComponent
   phoneNumbers = phoneNumbers;
   isLoading$: Observable<boolean> = of(false);
   lang: string = 'en';
+  countries: Country[] = [];
   
   // Document types for certifications
   documentTypes: Document[] = [];
@@ -88,6 +92,7 @@ export class UpgradeToCompanyComponent
   apiErrorMessages: string[] = [];
   showApiErrors: boolean = false;
 
+  currentUser: any;
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
@@ -98,6 +103,9 @@ export class UpgradeToCompanyComponent
     private _isicService: IndustryService,
     private documentsService: DocumentsService,
     private translationService: TranslationService,
+    private _countriesService: CountriesService,
+    private profileService: ProfileService,
+    private cdr: ChangeDetectorRef,
     injector: Injector
   ) {
     super(injector);
@@ -106,19 +114,32 @@ export class UpgradeToCompanyComponent
   }
 
   ngOnInit(): void {
+    // Initialize form first
     this.initForm();
+    
+    // Setup window resize handling
     this.windowResize();
+    
+    // Load all required data
     this.initApiCalls();
     this.loadDocumentTypes();
 
-    // Subscribe to language changes
+    // Setup subscriptions
+    this.setupSubscriptions();
+
+    // Initialize validators
+    this.setVerificationValidators(this.form.get("verificationMethod")?.value);
+  }
+
+  private setupSubscriptions(): void {
+    // Language change subscription
     const langSub = this.translationService.onLanguageChange().subscribe((lang) => {
       this.lang = lang;
-      // Reload data when language changes
-      this.initApiCalls();
+      this.initApiCalls(); // Reload data when language changes
     });
     this.unsubscribe.push(langSub);
 
+    // Verification method change subscription
     const verificationMethodSub = this.form
       .get("verificationMethod")
       ?.valueChanges.subscribe((method) => {
@@ -126,32 +147,57 @@ export class UpgradeToCompanyComponent
       });
     if (verificationMethodSub) this.unsubscribe.push(verificationMethodSub);
 
-    // Initialize validators based on the default verification method
-    this.setVerificationValidators(this.form.get("verificationMethod")?.value);
+    // Domain matching validation subscriptions
+    this.setupDomainValidationSubscriptions();
+  }
+
+  private setupDomainValidationSubscriptions(): void {
+    const websiteChangesSubscr = this.form.get('website')?.valueChanges.subscribe(() => {
+      this.validateDomainMatching();
+    });
+    
+    const emailChangesSubscr = this.form.get('companyEmail')?.valueChanges.subscribe(() => {
+      this.validateDomainMatching();
+    });
+    
+    if (websiteChangesSubscr) this.unsubscribe.push(websiteChangesSubscr);
+    if (emailChangesSubscr) this.unsubscribe.push(emailChangesSubscr);
   }
 
   initApiCalls() {
     this.isLoadingFields = true;
-    // Set observable to show loading state
     this.isLoading$ = of(true);
 
     const apiCalls = forkJoin({
       consultingFields: this._KnoldgFieldsService.getConsultingCodesTree(this.lang || 'en'),
-      isicCodes: this._isicService.getIsicCodesTree(this.lang || 'en')
+      isicCodes: this._isicService.getIsicCodesTree(this.lang || 'en'),
+      countries: this._countriesService.getCountries(),
+      profile: this.profileService.getProfile()
     }).subscribe({
       next: (results) => {
+        // Process consulting fields and industries
         this.listOfConsultingFields = results.consultingFields;
         this.nodes = results.isicCodes;
+        
+        // Process countries with error handling
+        this.countries = results.countries.map(country => ({
+          ...country,
+          showFlag: true
+        }));
+        
+        // Set loading states
         this.isLoadingFields = false;
         this.isLoading$ = of(false);
+        
+        // Set default country from profile in a controlled manner
+        this.setDefaultCountryFromProfile(results.profile);
+        
+        // Force change detection after all data is set
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error loading fields:', err);
-        this.messageService.add({ 
-          severity: 'error', 
-          summary: 'Error', 
-          detail: 'Failed to load consulting fields or industries.' 
-        });
+        this.handleApiError('Failed to load consulting fields or industries.');
         this.isLoadingFields = false;
         this.isLoading$ = of(false);
       }
@@ -159,8 +205,17 @@ export class UpgradeToCompanyComponent
     this.unsubscribe.push(apiCalls);
   }
 
-  loadDocumentTypes() {
+  private handleApiError(message: string): void {
+    this.messageService.add({ 
+      severity: 'error', 
+      summary: 'Error', 
+      detail: message
+    });
+  }
+
+  private loadDocumentTypes() {
     this.isLoadingDocumentTypes = true;
+    
     const docTypesSub = this.documentsService.getDocumentsTypes().subscribe({
       next: (types) => {
         this.documentTypes = types;
@@ -169,17 +224,24 @@ export class UpgradeToCompanyComponent
       error: (error) => {
         this.documentTypesError = "Failed to load document types.";
         this.isLoadingDocumentTypes = false;
+        this.handleApiError("Failed to load document types.");
         console.error(error);
       },
     });
+    
     this.unsubscribe.push(docTypesSub);
   }
 
   ngOnDestroy(): void {
-    this.unsubscribe.forEach((sb) => sb.unsubscribe());
+    // Unsubscribe from all subscriptions
+    this.unsubscribe.forEach((sub) => {
+      if (sub && !sub.closed) {
+        sub.unsubscribe();
+      }
+    });
   }
 
-  windowResize() {
+  private windowResize() {
     const screenwidth$ = fromEvent(window, "resize").pipe(
       map(() => window.innerWidth),
       startWith(window.innerWidth)
@@ -338,6 +400,7 @@ export class UpgradeToCompanyComponent
       address: ["", Validators.required],
       company_phone: ["", Validators.required],
       phoneCountryCode: ["", Validators.required],
+      country: [null, Validators.required],
       verificationMethod: ["websiteEmail", Validators.required],
       website: [""],
       companyEmail: ["", Validators.email],
@@ -439,7 +502,7 @@ export class UpgradeToCompanyComponent
 
   setVerificationValidators(method: string) {
     if (method === "websiteEmail") {
-      this.form.get("website")?.setValidators([Validators.required]);
+      this.form.get("website")?.setValidators([Validators.required, this.websiteValidator()]);
       this.form
         .get("companyEmail")
         ?.setValidators([Validators.required, Validators.email]);
@@ -660,6 +723,7 @@ export class UpgradeToCompanyComponent
     formData.append("about_us", this.form.get("aboutCompany")?.value);
     formData.append("logo", this.form.get("logo")?.value);
     formData.append("address", this.form.get("address")?.value);
+    formData.append("country", this.form.get("country")?.value);
     
     // Add phone with country code
     if (this.form.get("company_phone")?.value) {
@@ -860,5 +924,113 @@ export class UpgradeToCompanyComponent
         }
       });
     }
+  }
+
+  private setDefaultCountryFromProfile(profile: any): void {
+    if (!profile || !this.countries?.length) {
+      return;
+    }
+
+    // Extract country ID from profile with better error handling
+    const countryId = profile?.data?.country_id || profile?.country_id;
+    
+    if (!countryId) {
+      return;
+    }
+
+    // Find the country in the list
+    const userCountry = this.countries.find(country => country.id === countryId);
+    
+    if (userCountry) {
+      // Set the country value directly without multiple timeouts
+      const countryControl = this.form.get('country');
+      if (countryControl) {
+        countryControl.setValue(userCountry.id);
+        countryControl.markAsTouched();
+        
+        // Trigger change detection only once
+        this.cdr.markForCheck();
+      }
+    }
+  }
+
+  onFlagError(country: any) {
+    country.showFlag = false;
+  }
+
+  // Website URL validator
+  websiteValidator() {
+    return (control: any) => {
+      if (!control.value) {
+        return null; // Don't validate empty values (required validator handles that)
+      }
+      
+      const website = control.value.trim();
+      
+      // Basic URL format validation
+      const urlPattern = /^(https?:\/\/)?(www\.)?[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,})?(\S*)?$/;
+      
+      if (!urlPattern.test(website)) {
+        return { invalidWebsite: true };
+      }
+      
+      return null;
+    };
+  }
+
+  // Validates if the email domain matches the website domain
+  validateDomainMatching(): boolean {
+    if (this.form.get('verificationMethod')?.value !== 'websiteEmail') {
+      return true; // Not using website/email verification method
+    }
+    
+    const website = this.form.get('website')?.value;
+    const email = this.form.get('companyEmail')?.value;
+    
+    if (!website || !email) {
+      return false; // Missing required fields
+    }
+    
+    const websiteDomain = this.extractDomainFromWebsite(website);
+    const emailDomain = this.extractDomainFromEmail(email);
+    
+    return !!(websiteDomain && emailDomain && emailDomain.endsWith(websiteDomain));
+  }
+  
+  // Extract domain from website URL, handling various formats
+  extractDomainFromWebsite(website: string): string | null {
+    if (!website) return null;
+    
+    // Clean up the website input
+    let domain = website.trim().toLowerCase();
+    
+    // Remove protocol (http://, https://)
+    domain = domain.replace(/^(https?:\/\/)/i, '');
+    
+    // Remove www. prefix if present
+    domain = domain.replace(/^www\./i, '');
+    
+    // Remove path, query parameters, and hash
+    domain = domain.split('/')[0];
+    domain = domain.split('?')[0];
+    domain = domain.split('#')[0];
+    
+    // Remove port if present
+    domain = domain.split(':')[0];
+    
+    return domain || null;
+  }
+  
+  // Extract domain from email address
+  extractDomainFromEmail(email: string): string | null {
+    if (!email || !email.includes('@')) return null;
+    
+    return email.split('@')[1].toLowerCase();
+  }
+  
+  // Check if email contains @ symbol for early validation
+  hasEmailAtSymbol(): boolean {
+    const email = this.form.get('companyEmail')?.value;
+    return email && email.includes('@');
   }
 }

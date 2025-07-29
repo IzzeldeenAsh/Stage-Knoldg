@@ -146,6 +146,12 @@ export class EmployeeKnowledgeStatisticsComponent implements OnInit {
       theme: 'light',
       marker: {
         show: true
+      },
+      fixed: {
+        enabled: true,
+        position: 'topRight',
+        offsetX: 0,
+        offsetY: 0
       }
     },
     fill: {

@@ -15,6 +15,7 @@ interface Insighter {
   first_name: string;
   last_name: string;
   email: string;
+  uuid: string;
   roles: string[];
   profile_photo_url: string | null;
   country: string;
@@ -132,7 +133,7 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     // Listen for email changes to trigger account check
     this.emailForm.get('email')?.valueChanges
       .pipe(
-        debounceTime(2000), // Wait for 500ms pause in typing
+        debounceTime(500), // Wait for 500ms pause in typing
         distinctUntilChanged() // Only emit when value changes
       )
       .subscribe(email => {
@@ -195,6 +196,74 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     this.accountExistError = null;
     this.accountInfo = null;
     this.apiCheckCompleted = false;
+  }
+
+  // Validate forms before invite
+  validateFormsBeforeInvite(): boolean {
+    let isValid = true;
+
+    // Check if account exists error
+    if (this.accountExistError !== null) {
+      this.showError('Error', this.accountExistError);
+      return false;
+    }
+
+    // Check if still checking account
+    if (this.isCheckingAccount) {
+      this.showError('Error', 'Please wait while we check the account');
+      return false;
+    }
+
+    // Validate email form
+    if (!this.emailForm.valid) {
+      this.emailForm.markAllAsTouched();
+      if (this.emailForm.get('email')?.hasError('required')) {
+        this.showError('Error', 'Email address is required');
+      } else if (this.emailForm.get('email')?.hasError('email')) {
+        this.showError('Error', 'Please enter a valid email address');
+      }
+      return false;
+    }
+
+    // For existing accounts, check if account info is loaded
+    if (this.accountExists && !this.accountInfo) {
+      this.showError('Error', 'Account information is not loaded properly');
+      return false;
+    }
+
+    // For new accounts or existing accounts without country, validate employee form
+    if (!this.accountExists || (this.accountExists && !(this.accountInfo as any)?.country_id)) {
+      if (this.employeeForm.invalid) {
+        this.employeeForm.markAllAsTouched();
+        
+        if (this.employeeForm.get('firstName')?.hasError('required')) {
+          this.showError('Error', 'First name is required');
+          return false;
+        }
+        
+        if (this.employeeForm.get('lastName')?.hasError('required')) {
+          this.showError('Error', 'Last name is required');
+          return false;
+        }
+        
+        if (this.employeeForm.get('email')?.hasError('required')) {
+          this.showError('Error', 'Email address is required');
+          return false;
+        } else if (this.employeeForm.get('email')?.hasError('email')) {
+          this.showError('Error', 'Please enter a valid email address');
+          return false;
+        }
+        
+        if (this.employeeForm.get('country')?.hasError('required') || !this.employeeForm.get('country')?.value) {
+          this.showError('Error', 'Country selection is required');
+          return false;
+        }
+        
+        return false;
+      }
+    }
+
+    return isValid;
   }
   
   // Check if account exists
@@ -314,6 +383,11 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
   
   // Invite employee (this would be connected to a real API in the future)
   inviteEmployee(): void {
+    // Validate forms before proceeding
+    if (!this.validateFormsBeforeInvite()) {
+      return;
+    }
+    
     this.isInviting = true;
     
     // Prepare data for API
@@ -440,6 +514,14 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     if (stats.course) total += stats.course;
     
     return total;
+  }
+
+  navigateToInsighterProfile(insighterId: string, verified: boolean): void {
+    if(verified){
+      window.open(`https://knoldg.com/${this.lang}/profile/${insighterId}?entity=insighter`, '_blank');
+    }else{
+      this.showError('Error', 'This insighter is not verified');
+    }
   }
   
   // Activate insighter

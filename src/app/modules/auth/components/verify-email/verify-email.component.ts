@@ -153,7 +153,7 @@
     }
 
     signup() {
-      this.router.navigateByUrl("/auth/sign-up");
+      this.router.navigateByUrl("/auth/login");
     }
 
     toApp() {

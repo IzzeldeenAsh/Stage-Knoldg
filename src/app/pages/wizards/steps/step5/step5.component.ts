@@ -62,26 +62,17 @@ export class Step5Component extends BaseComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.windowResize();
+    // Initialize core components
     this.initForm();
-    this._translateion.onLanguageChange().subscribe((lang) => {
-      this.lang = lang;
-    });
+    this.windowResize();
+    
+    // Setup subscriptions
+    this.setupSubscriptions();
     
     // Initialize from default values
-    if (this.defaultValues?.registerDocument) {
-      this.form.patchValue({
-        registerDocument: this.defaultValues?.registerDocument,
-      });
-      this.form.get("registerDocument")?.markAsTouched();
-    }
+    this.initializeFromDefaults();
     
-    // Initialize agreement checkbox if available in default values
-    if (this.defaultValues?.companyAgreement) {
-      this.agreementChecked = true;
-    }
-    
-    // Update parent model initially without showing error
+    // Update parent model initially
     this.updateParentModel(
       { 
         registerDocument: this.defaultValues?.registerDocument,
@@ -89,6 +80,27 @@ export class Step5Component extends BaseComponent implements OnInit {
       },
       this.form.valid && this.agreementChecked
     );
+  }
+
+  private setupSubscriptions(): void {
+    // Language change subscription
+    const langSub = this._translateion.onLanguageChange().subscribe((lang) => {
+      this.lang = lang;
+    });
+    this.unsubscribe.push(langSub);
+  }
+
+  private initializeFromDefaults(): void {
+    if (this.defaultValues?.registerDocument) {
+      this.form.patchValue({
+        registerDocument: this.defaultValues.registerDocument,
+      });
+      this.form.get("registerDocument")?.markAsTouched();
+    }
+    
+    if (this.defaultValues?.companyAgreement) {
+      this.agreementChecked = true;
+    }
   }
 
   // Open the agreement dialog to view the full terms
@@ -206,7 +218,7 @@ export class Step5Component extends BaseComponent implements OnInit {
     return tempElement.textContent || tempElement.innerText || '';
   }
 
-  windowResize() {
+  private windowResize() {
     const screenwidth$ = fromEvent(window, "resize").pipe(
       map(() => window.innerWidth),
       startWith(window.innerWidth)
@@ -216,56 +228,69 @@ export class Step5Component extends BaseComponent implements OnInit {
       this.dialogWidth = width < 768 ? "100vw" : "70vw";
     });
   }
+
+  ngOnDestroy(): void {
+    if (this.resizeSubscription) {
+      this.resizeSubscription.unsubscribe();
+    }
+    
+    // Unsubscribe from all subscriptions
+    this.unsubscribe.forEach(sub => {
+      if (sub && !sub.closed) {
+        sub.unsubscribe();
+      }
+    });
+  }
   onDropzoneClick() {
     this.fileInput.nativeElement.click();
   }
   getCode() {
     const email = this.form.get('companyEmail')?.value;
+    
+    if (!email || !this.form.get('companyEmail')?.valid) {
+      return;
+    }
+
+    this.gettingCodeLoader = true;
+    
     const headers = new HttpHeaders({
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'Accept-Language': 'en'
+      'Accept-Language': this.lang || 'en'
     });
-    if (email) {
-      this.gettingCodeLoader = true;
-      this.http.post('https://api.knoldg.com/api/auth/company/code/send', {
-        verified_email: email,
-      }, {
-        headers: headers
-      }).subscribe({
-        next: (response) => {
-          // Handle success (e.g., show a success message)
-          this.messageService.add({ 
-            severity: 'success', 
-            summary: 'Success', 
-            detail: 'Verification email resent successfully.' 
-          });
-          this.showSuccess('Success','Verification email resent successfully.');
-          this.gettingCodeLoader = false;
-          this.startGetCodeCooldown();
-        },
-        error: (error) => {
-          // Handle error (e.g., show an error message)
-          console.error('Error sending code:', error);
-          const errorMsg = error?.error?.message || 'Failed to resend verification code.';
+
+    const getCodeSub = this.http.post('https://api.knoldg.com/api/auth/company/code/send', {
+      verified_email: email,
+    }, { headers })
+    .subscribe({
+      next: () => {
+        this.showSuccess('Success', 'Verification email sent successfully.');
+        this.gettingCodeLoader = false;
+        this.startGetCodeCooldown();
+      },
+      error: (error) => {
+        console.error('Error sending code:', error);
+        const errorMsg = error?.error?.message || 'Failed to send verification code.';
+        this.showError('Error', errorMsg);
+        this.gettingCodeLoader = false;
+      }
+    });
     
-          this.showError('', errorMsg);
-          this.gettingCodeLoader = false;
-        }
-      });
-    }
+    this.unsubscribe.push(getCodeSub);
   }
   startGetCodeCooldown(): void {
-    const countdownTime = 30; // seconds
+    const countdownTime = 30;
 
     this.isGetCodeDisabled = true;
     this.getCodeCountdown$.next(countdownTime);
     
-    const resendTimerSubscription = timer(0, 1000).pipe(
-      take(countdownTime)
-    ).subscribe({
-      next: (elapsedTime) => {
-        const remainingTime = countdownTime - elapsedTime - 1;
+    const countdown$ = timer(0, 1000).pipe(
+      take(countdownTime + 1),
+      map(value => countdownTime - value)
+    );
+
+    const resendTimerSubscription = countdown$.subscribe({
+      next: (remainingTime) => {
         this.getCodeCountdown$.next(remainingTime >= 0 ? remainingTime : 0);
       },
       complete: () => {
@@ -274,22 +299,30 @@ export class Step5Component extends BaseComponent implements OnInit {
       }
     });
 
-    if (resendTimerSubscription) {
-      this.unsubscribe.push(resendTimerSubscription)
-    }
+    this.unsubscribe.push(resendTimerSubscription);
   }
   // Handle file selection from the file input
   onFileSelected(event: any) {
     const file = event.target.files[0];
-    if (file) {
-      if (file.size > this.MAX_FILE_SIZE) {
-        this.showError('File Size Exceeded', 'The uploaded document exceeds the 2MB size limit.');
-        return;
-      }
-      this.form.patchValue({ registerDocument: file });
-      this.form.get("registerDocument")?.markAsTouched();
-      this.updateParentModel({ registerDocument: file }, this.checkForm());
+    if (!file) {
+      return;
     }
+
+    if (!this.validateFileSize(file)) {
+      return;
+    }
+
+    this.form.patchValue({ registerDocument: file });
+    this.form.get("registerDocument")?.markAsTouched();
+    this.updateParentModel({ registerDocument: file }, this.checkForm());
+  }
+
+  private validateFileSize(file: File): boolean {
+    if (file.size > this.MAX_FILE_SIZE) {
+      this.showError('File Size Exceeded', 'The uploaded document exceeds the 2MB size limit.');
+      return false;
+    }
+    return true;
   }
 
   // Prevent default drag over behavior
@@ -301,16 +334,23 @@ export class Step5Component extends BaseComponent implements OnInit {
   onFileDrop(event: DragEvent) {
     event.preventDefault();
     const files = event.dataTransfer?.files;
-    if (files && files.length > 0) {
-      const file = files.item(0);
-      if (file && file.size > this.MAX_FILE_SIZE) {
-        this.showError('File Size Exceeded', 'The uploaded document exceeds the 2MB size limit.');
-        return;
-      }
-      this.form.patchValue({ registerDocument: file });
-      this.form.get("registerDocument")?.markAsTouched();
-      this.updateParentModel({ registerDocument: file }, this.checkForm());
+    
+    if (!files || files.length === 0) {
+      return;
     }
+
+    const file = files.item(0);
+    if (!file) {
+      return;
+    }
+
+    if (!this.validateFileSize(file)) {
+      return;
+    }
+
+    this.form.patchValue({ registerDocument: file });
+    this.form.get("registerDocument")?.markAsTouched();
+    this.updateParentModel({ registerDocument: file }, this.checkForm());
   }
 
   // Remove the uploaded register document
@@ -329,42 +369,50 @@ export class Step5Component extends BaseComponent implements OnInit {
   }
 
   initForm() {
-    this.form = this.fb.group(
-      {
-        verificationMethod: ['websiteEmail', Validators.required],
-        website: [''],
-        companyEmail: [''],
-        code: [''],
-        registerDocument: [null],
-
-      },
-      { validators: this.verificationMethodValidator() }
-    );
-
-    // Add conditional validators based on verification method changes
-    this.form.get('verificationMethod')?.valueChanges.subscribe(value => {
-      this.updateConditionalValidators(value);
+    this.form = this.fb.group({
+      verificationMethod: ['websiteEmail', Validators.required],
+      website: [''],
+      companyEmail: [''],
+      code: [''],
+      registerDocument: [null]
+    }, { 
+      validators: this.verificationMethodValidator() 
     });
 
-    const formChangesSubscr = this.form.valueChanges.subscribe((val) => {
+    this.setupFormSubscriptions();
+    this.updateConditionalValidators('websiteEmail');
+  }
+
+  private setupFormSubscriptions(): void {
+    // Verification method changes
+    const verificationMethodSub = this.form.get('verificationMethod')?.valueChanges
+      .subscribe(value => {
+        this.updateConditionalValidators(value);
+      });
+    
+    if (verificationMethodSub) {
+      this.unsubscribe.push(verificationMethodSub);
+    }
+
+    // Form value changes
+    const formChangesSub = this.form.valueChanges.subscribe((val) => {
       this.updateParentModel(val, this.checkForm());
     });
-    this.unsubscribe.push(formChangesSubscr);
+    this.unsubscribe.push(formChangesSub);
     
-    // Add listeners for website and email fields to validate domain matching
-    const websiteChangesSubscr = this.form.get('website')?.valueChanges.subscribe(() => {
-      this.validateDomainMatching();
-    });
-    
-    const emailChangesSubscr = this.form.get('companyEmail')?.valueChanges.subscribe(() => {
-      this.validateDomainMatching();
-    });
-    
-    if (websiteChangesSubscr) this.unsubscribe.push(websiteChangesSubscr);
-    if (emailChangesSubscr) this.unsubscribe.push(emailChangesSubscr);
+    // Domain matching validation
+    this.setupDomainValidationSubscriptions();
+  }
 
-    // Initialize with default verification method
-    this.updateConditionalValidators('websiteEmail');
+  private setupDomainValidationSubscriptions(): void {
+    const websiteChangesSub = this.form.get('website')?.valueChanges
+      .subscribe(() => this.validateDomainMatching());
+    
+    const emailChangesSub = this.form.get('companyEmail')?.valueChanges
+      .subscribe(() => this.validateDomainMatching());
+    
+    if (websiteChangesSub) this.unsubscribe.push(websiteChangesSub);
+    if (emailChangesSub) this.unsubscribe.push(emailChangesSub);
   }
 
   updateConditionalValidators(verificationMethod: string) {
@@ -420,26 +468,27 @@ export class Step5Component extends BaseComponent implements OnInit {
   }
   onFileChange(event: any) {
     const file = event.target.files[0];
-    if (file) {
-      if (file.size > this.MAX_FILE_SIZE) {
-        this.showError('File Size Exceeded', 'The uploaded document exceeds the 2MB size limit.');
-        return;
-      }
-      this.form.patchValue({ registerDocument: file });
-      this.updateParentModel({ registerDocument: file }, this.checkForm());
+    if (!file) {
+      return;
     }
+
+    if (!this.validateFileSize(file)) {
+      return;
+    }
+
+    this.form.patchValue({ registerDocument: file });
+    this.updateParentModel({ registerDocument: file }, this.checkForm());
   }
-  checkForm() {
-    // Don't change attemptedSubmit value here
+  checkForm(): boolean {
+    const isValid = this.form.valid && this.agreementChecked;
+    
     // Update the parent with the agreement status
-    this.updateParentModel({ companyAgreement: this.agreementChecked }, this.form.valid && this.agreementChecked);
+    this.updateParentModel({ companyAgreement: this.agreementChecked }, isValid);
     
-    // Only show error after attempted submit or explicit decline
-    if (!this.agreementChecked && this.attemptedSubmit) {
-      this.showAgreementError = true;
-    }
+    // Show agreement error only after attempted submit or explicit decline
+    this.showAgreementError = !this.agreementChecked && this.attemptedSubmit;
     
-    return this.form.valid && this.agreementChecked;
+    return isValid;
   }
 
   // Validates if the email domain matches the website domain
