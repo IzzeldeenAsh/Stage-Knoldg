@@ -591,6 +591,7 @@ INSIGHTER_REQUESTS: {
       ACCOUNT_INFO_DESC: "إعداد معلومات إنسايتر الخاصة بك",
       COUNTRY_REQUIRED: "الدولة مطلوبة",
       COUNTRY_PLACEHOLDER: "اختر الدولة",
+      WEBSITE_INVALID_FORMAT: "يجب أن يكون عنوان الموقع الإلكتروني بالصيغة مثل example.com",
       COUNTRY: "الدولة",
       CERTIFICATES: "الشهادات",
       CERTIFICATES_DESC: "تحميل مؤهلاتك",

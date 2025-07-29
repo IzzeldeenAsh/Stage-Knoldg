@@ -24,6 +24,7 @@ import { SharedTreeSelectorComponent } from 'src/app/reusable-components/shared-
 import { TruncateTextPipe } from 'src/app/pipes/truncate-pipe/truncate-text.pipe';
 import { DropdownModule } from 'primeng/dropdown';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CountryDropdownComponent } from 'src/app/reusable-components/country-dropdown/country-dropdown.component';
 
 const routes: Routes = [
   {
@@ -76,7 +77,8 @@ const routes: Routes = [
     RadioButtonModule,
     SharedTreeSelectorComponent,
     TruncateTextPipe,
-    DropdownModule
+    DropdownModule,
+    CountryDropdownComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

@@ -140,7 +140,7 @@
                      <img *ngIf="insighter.profile_photo_url" [src]="insighter.profile_photo_url" alt="insighter" class="h-45px w-45px rounded-circle object-fit-cover" style="object-position: top;" />
                    </div>
                    <div class="d-flex flex-column">
-                     <span class="text-gray-800 text-hover-primary mb-1 fw-semibold">{{ insighter.name }}</span>
+                    <a [ngClass]="{'cursor-pointer': insighter.verified_as_insighter}" (click)="navigateToInsighterProfile(insighter.uuuid, insighter.verified_as_insighter)"> <span class="text-gray-800 text-hover-primary mb-1 fw-semibold">{{ insighter.name }}</span></a>
                      <span *ngIf="insighter.id === currentUserId" class="text-info fs-7">
                        {{ 'MY_COMPANY.CURRENT_USER' | translate }}
                      </span>
@@ -337,7 +337,7 @@
       <div *ngIf="viewMode === 'grid'" class="grid-view">
         <div class="row g-4">
           <div *ngFor="let insighter of insighters" class="col-xl-4 col-lg-6 col-md-6">
-            <div class="card insighter-card h-100 ">
+            <div class="card insighter-card h-100 " [ngClass]="{'border-orange': insighter.id === currentUserId}">
               <div class="card-body d-flex flex-column position-relative">
                 <!-- Status Badge - Top Right -->
                 <div class="position-absolute" style="top: 16px; right: 16px;">
@@ -350,28 +350,32 @@
                 </div>
                 
                 <!-- Header -->
-                <div class="d-flex align-items-center mb-4">
-                  <div class="symbol symbol-50px me-3">
-                    <p-avatar 
-                      [label]="getUserInitials(insighter.name)"
-                      styleClass="bg-light-info"
-                      [style]="{'font-size': '1.1rem', 'height': '50px', 'width': '50px'}"
-                      *ngIf="!insighter.profile_photo_url">
-                    </p-avatar>
-                    <img 
-                      *ngIf="insighter.profile_photo_url" 
-                      [src]="insighter.profile_photo_url" 
-                      alt="insighter" 
-                      class="h-50px w-50px rounded-circle object-fit-cover" 
-                      style="object-position: top;" />
-                  </div>
-                  <div class="flex-grow-1">
-                    <h5 class="card-title mb-1 text-gray-800 fw-bold">{{ insighter.name }}</h5>
-                    <div class="text-muted fs-7" *ngIf="insighter.id === currentUserId">
-                      {{ 'MY_COMPANY.CURRENT_USER' | translate }}
+              
+                  <a (click)="navigateToInsighterProfile(insighter.uuid, insighter.verified_as_insighter)" [ngClass]="{'cursor-pointer': insighter.verified_as_insighter}">
+                    <div class="d-flex align-items-center mb-4">
+                    <div class="symbol symbol-50px me-3">
+                      <p-avatar 
+                        [label]="getUserInitials(insighter.name)"
+                        styleClass="bg-light-info rounded-circle"
+                        [style]="{'font-size': '1.1rem', 'height': '50px', 'width': '50px'}"
+                        *ngIf="!insighter.profile_photo_url">
+                      </p-avatar>
+                      <img 
+                        *ngIf="insighter.profile_photo_url" 
+                        [src]="insighter.profile_photo_url" 
+                        alt="insighter" 
+                        class="h-50px w-50px rounded-circle object-fit-cover" 
+                        style="object-position: top;" />
+                    </div>
+                    <div class="flex-grow-1">
+                      <h5 class="card-title mb-1 text-gray-800 fw-bold cursor-pointer" >{{ insighter.name }}</h5>
+                      <div class="text-info fs-7" *ngIf="insighter.id === currentUserId">
+                        {{ 'MY_COMPANY.CURRENT_USER' | translate }}
+                      </div>
                     </div>
                   </div>
-                </div>
+                  </a>
+                
                 
                 <!-- Email and Country -->
                 <div class="mb-4 flex-grow-1">
@@ -438,8 +442,8 @@
                         <svg width="24" height="24" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" class="mb-1">
                           <path d="M42.7083 14.5834V31.25H13.2292C9.95834 31.25 7.29167 33.9167 7.29167 37.1875V14.5834C7.29167 6.25002 9.37501 4.16669 17.7083 4.16669H32.2917C40.625 4.16669 42.7083 6.25002 42.7083 14.5834Z" fill="#589AEA"/>
                           <path d="M42.7083 31.25V38.5417C42.7083 42.5625 39.4375 45.8333 35.4167 45.8333H14.5833C10.5625 45.8333 7.29167 42.5625 7.29167 38.5417V37.1875C7.29167 33.9167 9.95834 31.25 13.2292 31.25H42.7083Z" fill="#589AEA"/>
-                          <path d="M33.3333 16.1458H16.6667C15.8125 16.1458 15.1042 15.4375 15.1042 14.5833C15.1042 13.7291 15.8125 13.0208 16.6667 13.0208H33.3333C34.1875 13.0208 34.8958 13.7291 34.8958 14.5833C34.8958 15.4375 34.1875 16.1458 33.3333 16.1458Z" fill="#0179FE"/>
-                          <path d="M27.0833 23.4375H16.6667C15.8125 23.4375 15.1042 22.7292 15.1042 21.875C15.1042 21.0208 15.8125 20.3125 16.6667 20.3125H27.0833C27.9375 20.3125 28.6458 21.0208 28.6458 21.875C28.6458 22.7292 27.9375 23.4375 27.0833 23.4375Z" fill="#0179FE"/>
+                          <path d="M33.3333 16.1458H16.6667C15.8125 16.1458 15.1042 15.4375 15.1042 14.5833C15.1042 13.7291 15.8125 13.0208 16.6667 13.0208H33.3333C34.1875 13.0208 34.8958 13.7291 34.8958 14.5833C34.8958 15.4375 34.1875 16.1458 33.3333 16.1458Z" fill="#ffffff"/>
+                          <path d="M27.0833 23.4375H16.6667C15.8125 23.4375 15.1042 22.7292 15.1042 21.875C15.1042 21.0208 15.8125 20.3125 16.6667 20.3125H27.0833C27.9375 20.3125 28.6458 21.0208 28.6458 21.875C28.6458 22.7292 27.9375 23.4375 27.0833 23.4375Z" fill="#ffffff"/>
                         </svg>
                         <div class="stat-number fw-bold fs-5 text-info ">{{ insighter.knowledge_type_statistics?.manual }}</div>
                       </div>
@@ -626,6 +630,7 @@
               [label]="getUserInitials(accountInfo.name)"
               styleClass="bg-light-info"
               size="large"
+              rounded="true"
               [style]="{'font-size': '1.2rem', 'height': '40px', 'width': '40px'}">
             </p-avatar>
           </div>
@@ -731,14 +736,7 @@
     <button 
       type="button"
       class="btn btn-primary btn-sm"
-      [disabled]="
-        (accountExists && !accountInfo) || 
-        (!accountExists && employeeForm.invalid) || 
-        (accountExists && !accountInfo.country_id && employeeForm.get('country')?.invalid) ||
-        accountExistError !== null || 
-        isCheckingAccount || 
-        !emailForm.valid ||
-        isInviting"
+      [disabled]="isInviting"
       (click)="inviteEmployee()"
     >
       <span *ngIf="isInviting" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
