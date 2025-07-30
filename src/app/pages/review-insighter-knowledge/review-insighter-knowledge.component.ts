@@ -23,6 +23,7 @@ export class ReviewInsighterKnowledgeComponent extends BaseComponent implements 
   documents: DocumentListResponse;
   isLoading: boolean = false;
   staffNotes: string = '';
+  staffNotesInvalid: boolean = false;
   showReviewBox: boolean = true;
   knowledgeRequests: UserRequest[] = [];
   currentRequest: any = null;
@@ -185,6 +186,33 @@ export class ReviewInsighterKnowledgeComponent extends BaseComponent implements 
   }
 
   rejectKnowledge(): void {
+    // Check if notes are provided when rejecting
+    if (!this.staffNotes || this.staffNotes.trim() === '') {
+      // Show error message based on language
+      const errorMessage = this.lang === 'ar' 
+        ? 'يرجى إضافة ملاحظات للمستبصر قبل الرفض.'
+        : 'Please add notes to the Insighter before rejecting.';
+      
+      this.showError('', errorMessage);
+      
+      // Set the validation flag to true
+      this.staffNotesInvalid = true;
+      
+      // Focus on the textarea
+      setTimeout(() => {
+        const textareaElement = document.querySelector('.notes-textarea') as HTMLElement;
+        if (textareaElement) {
+          textareaElement.focus();
+        }
+      }, 100);
+      
+      return;
+    }
+    
+    // Reset validation flag
+    this.staffNotesInvalid = false;
+    
+    // Proceed with rejection if notes are provided
     this.confirmAction('decline');
   }
 

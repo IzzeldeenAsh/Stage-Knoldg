@@ -115,6 +115,15 @@
                   <ng-container
                     [ngTemplateOutlet]="formError"
                     [ngTemplateOutletContext]="{
+                      validation: 'minlength',
+                      message: 'First name must be at least 2 characters',
+                      control: registrationForm.controls['firstName']
+                    }"
+                  ></ng-container>
+                  
+                  <ng-container
+                    [ngTemplateOutlet]="formError"
+                    [ngTemplateOutletContext]="{
                       validation: 'maxlength',
                       message: 'AUTH.REGISTRATION.FIRSTNAME_MAXLENGTH' | translate,
                       control: registrationForm.controls['firstName']
@@ -157,7 +166,7 @@
                     [ngTemplateOutlet]="formError"
                     [ngTemplateOutletContext]="{
                       validation: 'minlength',
-                      message: 'AUTH.REGISTRATION.LASTNAME_MINLENGTH' | translate,
+                      message: 'Last name must be at least 2 characters',
                       control: registrationForm.controls['lastName']
                     }"
                   ></ng-container>
@@ -270,9 +279,9 @@
       {{ passwordStrength.feedback }}
     </div>
   </div>
-  <div *ngIf="registrationForm.get('password')?.hasError('pattern') && (registrationForm.get('password')?.dirty || registrationForm.get('password')?.touched)" class="text-danger fs-8">
+  <!-- <div *ngIf="registrationForm.get('password')?.hasError('pattern') && (registrationForm.get('password')?.dirty || registrationForm.get('password')?.touched)" class="text-danger fs-8">
     {{ 'AUTH.REGISTRATION.PASSWORD_PATTERN_ERROR' | translate }}
-  </div>
+  </div> -->
 </div>
 
      
@@ -292,7 +301,7 @@
                 >
                   <ng-template pTemplate="item" let-country>
                     <div class="country-option" [class]="lang === 'ar' ? 'rtl-country-option' : 'ltr-country-option'">
-                      <img *ngIf="country.showFlag"
+                      <img *ngIf="country.showFlag" style="width: 40px; height: 20px;"
                         [src]="country.flagPath"
                         (error)="onFlagError(country)"
                         alt="{{ country.names.en }}"
@@ -358,7 +367,7 @@
                 <button
                   type="submit"
                   id="kt_sign_up_submit"
-                  [disabled]="registrationForm.invalid || (isLoadingSubmit$ | async)"
+                  [disabled]="(isLoadingSubmit$ | async)"
                   class="btn btn-primary"
                 >
                   <ng-container *ngIf="(isLoadingSubmit$ | async) === false">

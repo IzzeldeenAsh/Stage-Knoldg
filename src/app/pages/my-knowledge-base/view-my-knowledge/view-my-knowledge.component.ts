@@ -35,6 +35,7 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
   isResendReviewDialogVisible: boolean = false;
   reviewComments: string = "";
   showAllMarkets: boolean = false;
+  private hasShownLanguageMismatchToast: boolean = false;
 
   // Request conversation properties
   currentRequest: any = null;
@@ -152,6 +153,9 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
         this.knowledge = response.knowledge.data;
         this.documents = response.documents;
         this.isLoading = false;
+        
+        // Check for language mismatch after knowledge is loaded
+        this.checkLanguageMismatch();
       },
       error: (error) => {
         this.handleServerErrors(error);
@@ -560,5 +564,37 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
       count += Math.min(this.knowledge.countries?.length || 0, countriesToShow);
     }
     return count;
+  }
+
+  /**
+   * Check if knowledge language matches current locale and show toast if different
+   */
+  private checkLanguageMismatch(): void {
+    if (!this.knowledge || !this.knowledge.language || this.hasShownLanguageMismatchToast) {
+      return;
+    }
+
+    const knowledgeLanguage = this.knowledge.language.toLowerCase();
+    const currentLocale = this.lang.toLowerCase();
+    
+    // Map knowledge language to locale format
+    const languageMap: { [key: string]: string } = {
+      'arabic': 'ar',
+      'english': 'en',
+      'ar': 'ar',
+      'en': 'en'
+    };
+    
+    const mappedKnowledgeLanguage = languageMap[knowledgeLanguage] || knowledgeLanguage;
+    
+    if (mappedKnowledgeLanguage !== currentLocale) {
+      const targetLanguage = mappedKnowledgeLanguage === 'ar' ? 'Arabic' : 'English';
+      const message = this.lang === 'ar' 
+        ? `للحصول على قراءة أفضل، يُفضل التبديل إلى اللغة ${mappedKnowledgeLanguage === 'ar' ? 'العربية' : 'الإنجليزية'}`
+        : `For better readability, it's recommended to switch to ${targetLanguage}`;
+      
+      this.showInfo('', message);
+      this.hasShownLanguageMismatchToast = true;
+    }
   }
 }

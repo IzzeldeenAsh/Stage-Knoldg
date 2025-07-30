@@ -240,7 +240,6 @@ export class EmailReconfirmComponent extends BaseComponent implements OnInit, On
   }
 
   goToLogin(): void {
-    console.log('User manually navigating to login');
     this.router.navigate(['/auth/login']);
   }
 

@@ -22,14 +22,15 @@ export class MyDashboardComponent extends BaseComponent implements OnDestroy {
   private knowledgeTypesLoaded: boolean = false;
   insighterStatus: string = '';
   isLoading: boolean = true;
-  isClientOnly:Observable<any>;
+  isClientOnly: Observable<any>;
+  hasMultipleEmployeesDonut: boolean = false;
+  
   // Loading state trackers
   private profileLoaded: boolean = false;
   private requestsLoaded: boolean = false;
   private statisticsApiLoaded: boolean = false;
   private insighterRequestsLoaded: boolean = false;
   private loadingTimeout: any;
-
 constructor(
   injector: Injector,
   private profileService: ProfileService,
@@ -67,10 +68,6 @@ ngOnInit(){
       // This allows the employee statistics component to load and determine if there's enough data
       this.hasEmployeeData = this.roles.includes('company');
       
-      // Debug logs
-      console.log('Profile loaded. Roles:', this.roles);
-      console.log('Has company role:', this.roles.includes('company'));
-      console.log('Has employee data:', this.hasEmployeeData);
       
       // Check for pending insighter requests only for company role
       if (this.roles.includes('company')) {
@@ -141,18 +138,10 @@ ngOnDestroy(): void {
  * Check if all data loading is complete
  */
 private checkLoadingComplete(): void {
-  console.log('Checking loading complete. States:', {
-    profileLoaded: this.profileLoaded,
-    requestsLoaded: this.requestsLoaded,
-    statisticsApiLoaded: this.statisticsApiLoaded,
-    insighterRequestsLoaded: this.insighterRequestsLoaded,
-    currentIsLoading: this.isLoading
-  });
 
   // Only mark loading as complete when all required data has been loaded
   if (this.profileLoaded && this.requestsLoaded && 
       this.statisticsApiLoaded && this.insighterRequestsLoaded) {
-    console.log('All data loaded - stopping loading spinner');
     this.isLoading = false;
     
     // Clear the safety timeout
@@ -165,16 +154,19 @@ private checkLoadingComplete(): void {
 
 // Handle the event when the number of employees is determined
 onHasMultipleEmployees(hasMultiple: boolean): void {
-  console.log('onHasMultipleEmployees called with:', hasMultiple); // Debug log
   this.hasMultipleEmployees = hasMultiple;
   // Only update hasEmployeeData if there's not enough data
   // This prevents hiding the component if there's not enough data
   if (!hasMultiple) {
     this.hasEmployeeData = false;
   }
-  console.log('Updated hasEmployeeData:', this.hasEmployeeData); // Debug log
   this.checkLoadingComplete();
 
+}
+
+onHasMultipleEmployeesDonut(hasMultiple: boolean): void {
+  this.hasMultipleEmployeesDonut = hasMultiple;
+  this.checkLoadingComplete();
 }
 
 hasRole(role: string){
@@ -197,6 +189,51 @@ hasStatistics(): boolean {
  */
 hasKnowledgeTypes(): boolean {
   return this.knowledgeTypesLoaded;
+}
+
+/**
+ * Check if user can view knowledge types statistics (insighter or company-insighter roles)
+ */
+canViewKnowledgeTypesStatistics(): boolean {
+  return this.hasRole('insighter') || this.hasRole('company-insighter');
+}
+
+/**
+ * Check if user can view donut employee chart (company role only)
+ */
+canViewDonutEmployeeChart(): boolean {
+  return this.hasRole('company');
+}
+
+/**
+ * Check if user can view employee knowledge statistics (company role + has employee data)
+ */
+canViewEmployeeKnowledgeStatistics(): boolean {
+  return this.hasRole('company') && this.hasEmployeeData;
+}
+
+/**
+ * Get column classes for knowledge types statistics
+ */
+getStatisticsColClass(): string {
+  const hasCompanyCharts = this.canViewDonutEmployeeChart() || this.canViewEmployeeKnowledgeStatistics();
+  return hasCompanyCharts ? 'col-12 col-lg-6' : 'col-12';
+}
+
+/**
+ * Get column classes for employee statistics
+ */
+getEmployeeStatsColClass(): string {
+  const hasOtherComponents = this.canViewKnowledgeTypesStatistics() || this.canViewDonutEmployeeChart();
+  return hasOtherComponents ? 'col-12 col-lg-6' : 'col-12';
+}
+
+/**
+ * Get column classes for donut chart
+ */
+getDonutChartColClass(): string {
+  const hasOtherComponents = this.canViewKnowledgeTypesStatistics() || this.canViewEmployeeKnowledgeStatistics();
+  return hasOtherComponents ? 'col-12 col-lg-6' : 'col-12';
 }
 
 /**
