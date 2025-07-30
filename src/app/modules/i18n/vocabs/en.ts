@@ -6,6 +6,7 @@ export const locale = {
     COUNTRIES_REQUIRED: 'Countries are required',
     SHOW_LESS:'Show Less',
     SHOW_MORE:'Show More',
+    NOTES_REQUIRED_FOR_REJECTION:'Notes are required for rejection',
     RESET:'Reset',
     GENERATE_AI_INFORMATION: "Generate AI Information",
     REGENERATE_AI_INFORMATION: "Regenerate AI Information", 

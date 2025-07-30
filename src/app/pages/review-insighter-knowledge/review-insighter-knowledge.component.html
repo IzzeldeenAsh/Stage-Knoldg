@@ -267,10 +267,14 @@
                 <div class="mb-5">
                   <label class="form-label fw-bold">{{ 'ADD_NOTE' | translate }}</label>
                   <textarea 
-                    class="form-control" 
+                    class="form-control notes-textarea" 
                     rows="6" 
                     [(ngModel)]="staffNotes" 
-                    placeholder="{{ 'ENTER_NOTES_FOR_INSIGHTER' | translate }}"></textarea>
+                    placeholder="{{ 'ENTER_NOTES_FOR_INSIGHTER' | translate }}"
+                    [ngClass]="{'is-invalid': staffNotesInvalid}"></textarea>
+                  <div class="invalid-feedback" *ngIf="staffNotesInvalid">
+                    {{ 'NOTES_REQUIRED_FOR_REJECTION' | translate }}
+                  </div>
                   <small class="text-muted">{{ 'NOTES_WILL_BE_VISIBLE_TO_INSIGHTER' | translate }}</small>
                 </div>
                 

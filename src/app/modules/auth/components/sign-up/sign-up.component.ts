@@ -68,8 +68,8 @@ export class SignUpComponent extends BaseComponent implements OnInit {
 
   private initializeForm(): void {
     this.registrationForm = this.fb.group({
-      firstName: ["", [Validators.required, Validators.maxLength(50)]],
-      lastName: ["", [Validators.required, Validators.maxLength(50)]],
+      firstName: ["", [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
+      lastName: ["", [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
       email: ["", [Validators.required, Validators.email]],
       password: [
         "",
@@ -221,8 +221,21 @@ export class SignUpComponent extends BaseComponent implements OnInit {
   evaluatePasswordStrength(password: string): void {
     if (password) {
       const evaluation = zxcvbn(password);
-      this.passwordStrength.score = evaluation.score;
-      this.passwordStrength.feedback = evaluation.feedback.warning || evaluation.feedback.suggestions.join(' ');
+      
+      // Check if password meets validation requirements
+      const passwordControl = this.registrationForm.get('password');
+      const isPasswordValid = passwordControl && !passwordControl.hasError('pattern') && !passwordControl.hasError('minlength');
+      
+      // If password doesn't meet validation requirements, force score to be low (0 or 1)
+      if (!isPasswordValid) {
+        this.passwordStrength.score = password.length < 8 ? 0 : 1;
+        this.passwordStrength.feedback = evaluation.feedback.warning || 
+          evaluation.feedback.suggestions.join(' ') || 
+          'Password must be at least 8 characters with letters, numbers, and special characters.';
+      } else {
+        this.passwordStrength.score = evaluation.score;
+        this.passwordStrength.feedback = evaluation.feedback.warning || evaluation.feedback.suggestions.join(' ');
+      }
     } else {
       this.passwordStrength.score = 0;
       this.passwordStrength.feedback = '';
@@ -300,8 +313,10 @@ export class SignUpComponent extends BaseComponent implements OnInit {
 
   // Registration form submission
   onSubmit(): void {
+    // Mark all fields as touched to trigger validation display
+    this.registrationForm.markAllAsTouched();
+    
     if (this.registrationForm.invalid) {
-      this.registrationForm.markAllAsTouched();
       return;
     }
 

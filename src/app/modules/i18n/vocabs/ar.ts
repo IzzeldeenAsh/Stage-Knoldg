@@ -3,6 +3,7 @@ export const locale = {
   data: {
     COUNTRIES_REQUIRED: 'الدول مطلوبة',
     GENERATE_AI_INFORMATION: "إنشاء معلومات المعرفة بواسطة الذكاء الاصطناعي",
+    NOTES_REQUIRED_FOR_REJECTION:'ملاحظات مطلوبة في حال الرفض',
     REGENERATE_AI_INFORMATION: "إعادة إنشاء معلومات المعرفة بواسطة الذكاء الاصطناعي",
     RESET:'إعادة تعيين',
 INSIGHTER_REQUESTS: {

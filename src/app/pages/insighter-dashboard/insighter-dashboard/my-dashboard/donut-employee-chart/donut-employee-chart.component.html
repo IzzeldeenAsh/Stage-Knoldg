@@ -1,0 +1,40 @@
+<div class="card">
+  <div class="card-header pt-5">
+    <!--begin::Title-->
+    <div class="card-title d-flex flex-column">
+      <span class="fs-2 fw-bold text-gray-800">{{ 'KNOWLEDGE_TYPES.TITLE' | translate }}</span>
+      <span class="text-gray-500 pt-1 fw-semibold fs-6">{{ 'KNOWLEDGE_TYPES.SUBTITLE' | translate }}</span>
+    </div>
+    <!--end::Title-->
+  </div>
+  <div class="card-body">
+
+    <!--end::Header-->
+    <div *ngIf="loading" class="text-center py-5">
+      <div class="spinner-border text-info" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    
+    <div *ngIf="error && !loading" class="text-center py-5">
+      <div class="text-muted">
+        <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+        Error loading statistics
+      </div>
+    </div>
+    
+    <div *ngIf="!loading && !error && chartOptions" class="chart-container">
+      <apx-chart
+        #chart
+        [series]="chartOptions.series!"
+        [chart]="chartOptions.chart!"
+        [dataLabels]="chartOptions.dataLabels!"
+        [plotOptions]="chartOptions.plotOptions!"
+        [legend]="chartOptions.legend!"
+        [responsive]="chartOptions.responsive!"
+        [labels]="chartOptions.labels!"
+        [colors]="chartOptions.colors!">
+      </apx-chart>
+    </div>
+  </div>
+</div>

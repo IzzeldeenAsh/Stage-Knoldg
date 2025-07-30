@@ -32,10 +32,16 @@ public declinedRequests: number = 0;
 
 getRequestsStatistics(){
   // Use forkJoin to fetch both user requests and insighter requests simultaneously
-  const sub = forkJoin({
-    userRequests: this.requests.getAllUserRequests(this.lang ? this.lang : 'en'),
-    insighterRequests: this.userProfile?.roles.includes('company') ? this.requests.getInsighterRequests(this.lang ? this.lang : 'en') : []
-  }).subscribe({
+  const requestsToFetch: any = {
+    userRequests: this.requests.getAllUserRequests(this.lang ? this.lang : 'en')
+  };
+  
+  // Only fetch insighter requests if user has company role
+  if (this.userProfile?.roles.includes('company')) {
+    requestsToFetch.insighterRequests = this.requests.getInsighterRequests(this.lang ? this.lang : 'en');
+  }
+  
+  const sub = forkJoin(requestsToFetch).subscribe({
     next: (response: any) => {
       // Reset counters
       this.pendingRequests = 0;
@@ -45,18 +51,21 @@ getRequestsStatistics(){
       // Combine both arrays of requests
       const allRequests = [...(response.userRequests || []), ...(response.insighterRequests || [])];
 
-      // Count requests by status
+      // Count only parent requests (parent_id === 0 or undefined)
       allRequests.forEach((request: any) => {
-        switch (request.status?.toLowerCase()) {
-          case 'pending':
-            this.pendingRequests++;
-            break;
-          case 'approved':
-            this.approvedRequests++;
-            break;
-          case 'declined':
-            this.declinedRequests++;
-            break;
+        // Only count parent requests, not children
+        if (request.parent_id === 0 || request.parent_id === null || request.parent_id === undefined) {
+          switch (request.final_status?.toLowerCase()) {
+            case 'pending':
+              this.pendingRequests++;
+              break;
+            case 'approved':
+              this.approvedRequests++;
+              break;
+            case 'declined':
+              this.declinedRequests++;
+              break;
+          }
         }
       });
     },

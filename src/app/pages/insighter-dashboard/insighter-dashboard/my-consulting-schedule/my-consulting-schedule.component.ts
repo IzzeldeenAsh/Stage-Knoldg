@@ -244,7 +244,11 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
           this.availability.set(availabilityArray);
         }
         
-        this.exceptions.set(response.data.availability_exceptions);
+        // Debug log to check what we're getting from the API
+        console.log('API Response:', response);
+        console.log('Availability exceptions:', response.data.availability_exceptions);
+        
+        this.exceptions.set(response.data.availability_exceptions || []);
         this.buildForm();
         this.loading.set(false);
       },
@@ -336,8 +340,19 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
   }
 
   private createExceptionFormGroup(exception: AvailabilityException): FormGroup {
+    // Parse the exception date - handle both string date and ISO date format
+    let parsedDate = null;
+    if (exception.exception_date) {
+      if (typeof exception.exception_date === 'string') {
+        // Handle ISO date format or date string
+        parsedDate = new Date(exception.exception_date);
+      } else {
+        parsedDate = exception.exception_date;
+      }
+    }
+
     const group = this.fb.group({
-      exception_date: [exception.exception_date, Validators.required],
+      exception_date: [parsedDate, Validators.required],
       start_time: [this.parseTimeString(exception.start_time), Validators.required],
       end_time: [this.parseTimeString(exception.end_time), Validators.required],
       rate: [0] // Default to 0 as it's hidden in UI
