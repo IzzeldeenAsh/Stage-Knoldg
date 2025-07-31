@@ -219,16 +219,29 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
   hasRole(requiredRoles: string[]): boolean {
     return requiredRoles.some((role) => this.roles.includes(role));
   }
-  get isSubmitDisabled(): boolean {
-    if (this.corporateInfoForm.invalid) {
-      return true;
-    }
 
+  getFieldError(fieldName: string): string {
+    const field = this.corporateInfoForm.get(fieldName);
+    if (field && field.invalid && field.touched) {
+      if (field.errors?.['required']) {
+        return this.lang === 'ar' ? 'هذا الحقل مطلوب' : 'This field is required';
+      }
+    }
+    return '';
+  }
+
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.corporateInfoForm.get(fieldName);
+    return field ? field.invalid && field.touched : false;
+  }
+  get isSubmitDisabled(): boolean {
     return false;
   }
   onSubmit(){
-    if (this.isSubmitDisabled) {
-      // Optionally, display a message or handle the disabled state
+    // Mark all fields as touched to show validation errors
+    this.corporateInfoForm.markAllAsTouched();
+    
+    if (this.corporateInfoForm.invalid) {
       return;
     }
     const formData = new FormData();

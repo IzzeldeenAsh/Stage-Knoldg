@@ -132,7 +132,7 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
       first_name: this.profile.first_name,
       last_name: this.profile.last_name,
       country: this.countries.find((country: any) => country.id === this.profile.country_id),
-      bio: this.profile.bio,
+      bio: this.profile.bio || '',
       industries: transformedIndustries,
       consulting_field: transformedConsultingFields,
       linkedIn: this.getSocialLink('linkedin'),
@@ -163,10 +163,10 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
     this.personalInfoForm = this.fb.group({
       first_name: ["", Validators.required],
       last_name: ["", Validators.required],
-      country: [""],
+      country: ["", Validators.required],
       bio: [""],
-      industries: [],
-      consulting_field: [],
+      industries: [[], Validators.required],
+      consulting_field: [[], Validators.required],
       linkedIn: ['', [Validators.pattern('^https://www\.linkedin\.com/.*$')]],
       facebook: ['', [Validators.pattern('^https://www\.facebook\.com/.*$')]],
       twitter: ['', [Validators.pattern('^https://www\.(twitter\.com|x\.com)/.*$')]],
@@ -190,6 +190,9 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
   }
 
   onSubmit() {
+    // Mark all fields as touched to show validation errors
+    this.personalInfoForm.markAllAsTouched();
+    
     if (this.personalInfoForm.invalid) {
       return;
     }
@@ -231,6 +234,9 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
   }
 
   onSubmitInvitation() {
+    // Mark all fields as touched to show validation errors
+    this.invitationForm.markAllAsTouched();
+    
     if (this.invitationForm.invalid) {
       return;
     }
@@ -404,5 +410,44 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
   private getSocialLink(type: string): string {
     const social = this.socialNetworks.find(s => s.type === type);
     return social ? social.link : '';
+  }
+
+  getFieldError(fieldName: string): string {
+    const field = this.personalInfoForm.get(fieldName);
+    if (field && field.invalid && field.touched) {
+      if (field.errors?.['required']) {
+        return this.lang === 'ar' ? 'هذا الحقل مطلوب' : 'This field is required';
+      }
+      if (field.errors?.['pattern']) {
+        return this.lang === 'ar' ? 'الرابط غير صحيح' : 'Invalid URL format';
+      }
+    }
+    return '';
+  }
+
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.personalInfoForm.get(fieldName);
+    return field ? field.invalid && field.touched : false;
+  }
+
+  getInvitationFieldError(fieldName: string): string {
+    const field = this.invitationForm.get(fieldName);
+    if (field && field.invalid && field.touched) {
+      if (field.errors?.['required']) {
+        return this.lang === 'ar' ? 'هذا الحقل مطلوب' : 'This field is required';
+      }
+      if (field.errors?.['minlength'] || field.errors?.['maxlength']) {
+        return this.lang === 'ar' ? 'يجب أن يكون الرمز 6 أرقام' : 'Code must be 6 digits';
+      }
+      if (field.errors?.['pattern']) {
+        return this.lang === 'ar' ? 'يجب أن يحتوي على أرقام فقط' : 'Only numbers allowed';
+      }
+    }
+    return '';
+  }
+
+  isInvitationFieldInvalid(fieldName: string): boolean {
+    const field = this.invitationForm.get(fieldName);
+    return field ? field.invalid && field.touched : false;
   }
 }
