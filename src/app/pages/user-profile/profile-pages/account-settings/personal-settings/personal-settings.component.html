@@ -15,19 +15,14 @@
             </label>
             <input
               class="d-block w-100"
+              [class.is-invalid]="isFieldInvalid('first_name')"
               pInputText
               id="first_name"
               type="text"
               formControlName="first_name"
             />
-            <div
-              *ngIf="
-                personalInfoForm.get('first_name')?.invalid &&
-                personalInfoForm.get('first_name')?.touched
-              "
-              class="invalid-feedback"
-            >
-              {{ "ACCOUNT_SETTINGS.FIRST_NAME_REQUIRED" | translate }}
+            <div *ngIf="isFieldInvalid('first_name')" class="invalid-feedback">
+              {{ getFieldError('first_name') }}
             </div>
           </div>
           <div class="col-lg-6 mb-6 fv-row">
@@ -40,15 +35,10 @@
               pInputText
               formControlName="last_name"
               class="d-block w-100"
+              [class.is-invalid]="isFieldInvalid('last_name')"
             />
-            <div
-              *ngIf="
-                personalInfoForm.get('last_name')?.invalid &&
-                personalInfoForm.get('last_name')?.touched
-              "
-              class="invalid-feedback"
-            >
-              {{ "ACCOUNT_SETTINGS.LAST_NAME_REQUIRED" | translate }}
+            <div *ngIf="isFieldInvalid('last_name')" class="invalid-feedback">
+              {{ getFieldError('last_name') }}
             </div>
           </div>
         </div>
@@ -58,6 +48,7 @@
             <shared-tree-selector *ngIf="consultingFields"
               [title]="'INSIGHTER_WIZARD.CONSULTING_FIELDS' | translate"
               [placeholder]="'AUTH.REGISTRATION.CONSULTING_FIELD_PLACEHOLDER' | translate"
+              [isRequired]="true"
               [otherFieldPlaceholder]="'INSIGHTER_WIZARD.OTHER_FIELD_PLACEHOLDER' | translate"
               [selectAllLabel]="lang === 'ar' ? 'اختر الكل' : 'Select All'"
               [fetchedData]="consultingFields"
@@ -66,6 +57,9 @@
               [okLabel]="'BUTTONS.OK' | translate"
               (nodesSelected)="onConsultingNodesSelected($event)"
             ></shared-tree-selector>
+            <div *ngIf="isFieldInvalid('consulting_field')" class="invalid-feedback d-block">
+              {{ getFieldError('consulting_field') }}
+            </div>
           </div>
           <!-- Industry -->
           <div class="col-lg-6 mb-6 fv-row">
@@ -76,6 +70,7 @@
             <shared-tree-selector 
               *ngIf="industries && industries.length > 0"
               [title]="'AUTH.REGISTRATION.INDUSTRY' | translate"
+              [isRequired]="true"
               [placeholder]="'AUTH.REGISTRATION.INDUSTRY_PLACEHOLDER' | translate"
               [otherFieldPlaceholder]="'INSIGHTER_WIZARD.OTHER_FIELD_PLACEHOLDER' | translate"
               [selectAllLabel]="lang === 'ar' ? 'اختر الكل' : 'Select All'"
@@ -85,11 +80,14 @@
               [okLabel]="'BUTTONS.OK' | translate"
               (nodesSelected)="onIndustrySelected($event)"
             ></shared-tree-selector>
+            <div *ngIf="isFieldInvalid('industries')" class="invalid-feedback d-block">
+              {{ getFieldError('industries') }}
+            </div>
           </div>
         </div>
         <div class="row" >
           <div class="col-lg-6 mb-6 fv-row">
-            <label for="country" class="form-label">
+            <label for="country" class="form-label required">
               {{ "ACCOUNT_SETTINGS.COUNTRY" | translate }}
             </label>
         
@@ -97,6 +95,7 @@
               [options]="countries"
               formControlName="country"
               class="d-block"
+              [class.ng-invalid]="isFieldInvalid('country')"
               optionLabel="names.en"
               placeholder="{{ 'ACCOUNT_SETTINGS.SELECT_COUNTRY' | translate }}"
               [filter]="true"
@@ -115,14 +114,8 @@
                 </div>
               </ng-template>
             </p-dropdown>
-            <div
-              *ngIf="
-                personalInfoForm.get('country')?.invalid &&
-                personalInfoForm.get('country')?.touched
-              "
-              class="invalid-feedback"
-            >
-              {{ "ACCOUNT_SETTINGS.COUNTRY_REQUIRED" | translate }}
+            <div *ngIf="isFieldInvalid('country')" class="invalid-feedback">
+              {{ getFieldError('country') }}
             </div>
           </div>
         </div>
@@ -154,14 +147,8 @@
                   formControlName="linkedIn"
                   placeholder="LinkedIn Profile URL"
                 />
-                <div
-                  *ngIf="
-                    personalInfoForm.get('linkedIn')?.invalid &&
-                    personalInfoForm.get('linkedIn')?.touched
-                  "
-                  class="invalid-feedback d-block"
-                >
-                  {{ "ACCOUNT_SETTINGS.SOCIAL_URL_FORMAT" | translate }}
+                <div *ngIf="isFieldInvalid('linkedIn')" class="invalid-feedback d-block">
+                  {{ getFieldError('linkedIn') }}
                 </div>
               </div>
             </div>
@@ -178,14 +165,8 @@
                   formControlName="facebook"
                   placeholder="Facebook Profile URL"
                 />
-                <div
-                  *ngIf="
-                    personalInfoForm.get('facebook')?.invalid &&
-                    personalInfoForm.get('facebook')?.touched
-                  "
-                  class="invalid-feedback d-block"
-                >
-                  {{ "ACCOUNT_SETTINGS.SOCIAL_URL_FORMAT" | translate }}
+                <div *ngIf="isFieldInvalid('facebook')" class="invalid-feedback d-block">
+                  {{ getFieldError('facebook') }}
                 </div>
               </div>
             </div>
@@ -202,14 +183,8 @@
                   formControlName="twitter"
                   placeholder="Twitter Profile URL"
                 />
-                <div
-                  *ngIf="
-                    personalInfoForm.get('twitter')?.invalid &&
-                    personalInfoForm.get('twitter')?.touched
-                  "
-                  class="invalid-feedback d-block"
-                >
-                  {{ "ACCOUNT_SETTINGS.SOCIAL_URL_FORMAT" | translate }}
+                <div *ngIf="isFieldInvalid('twitter')" class="invalid-feedback d-block">
+                  {{ getFieldError('twitter') }}
                 </div>
               </div>
             </div>
@@ -226,14 +201,8 @@
                   formControlName="instagram"
                   placeholder="Instagram Profile URL"
                 />
-                <div
-                  *ngIf="
-                    personalInfoForm.get('instagram')?.invalid &&
-                    personalInfoForm.get('instagram')?.touched
-                  "
-                  class="invalid-feedback d-block"
-                >
-                  {{ "ACCOUNT_SETTINGS.SOCIAL_URL_FORMAT" | translate }}
+                <div *ngIf="isFieldInvalid('instagram')" class="invalid-feedback d-block">
+                  {{ getFieldError('instagram') }}
                 </div>
               </div>
             </div>
@@ -250,14 +219,8 @@
                   formControlName="youtube"
                   placeholder="YouTube Channel URL"
                 />
-                <div
-                  *ngIf="
-                    personalInfoForm.get('youtube')?.invalid &&
-                    personalInfoForm.get('youtube')?.touched
-                  "
-                  class="invalid-feedback d-block"
-                >
-                  {{ "ACCOUNT_SETTINGS.SOCIAL_URL_FORMAT" | translate }}
+                <div *ngIf="isFieldInvalid('youtube')" class="invalid-feedback d-block">
+                  {{ getFieldError('youtube') }}
                 </div>
               </div>
             </div>
@@ -267,7 +230,7 @@
           <button
             type="submit"
             class="btn btn-primary"
-            [disabled]="this.personalInfoForm.invalid || (isUpdatingProfile$ | async)"
+[disabled]="(isUpdatingProfile$ | async)"
           >
             <ng-container *ngIf="(isUpdatingProfile$ | async) === false">
               <span class="indicator-label">

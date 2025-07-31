@@ -20,7 +20,11 @@
         type="text"
         formControlName="companyLegalName"
         class="form-control"
+        [class.is-invalid]="isFieldInvalid('companyLegalName')"
       />
+      <div *ngIf="isFieldInvalid('companyLegalName')" class="invalid-feedback">
+        {{ getFieldError('companyLegalName') }}
+      </div>
     </div>
     <div class="col-lg-6 mb-6 fv-row">
       <label class="form-label">{{
@@ -41,10 +45,14 @@
           type="text"
           formControlName="companyPhoneNumber"
           class="form-control no-rtl-b-radius"
+          [class.is-invalid]="isFieldInvalid('companyPhoneNumber')"
           placeholder="{{
             'ACCOUNT_SETTINGS.YOUR_PHONE_NUMBER' | translate
           }}"
         />
+      </div>
+      <div *ngIf="isFieldInvalid('companyPhoneNumber')" class="invalid-feedback">
+        {{ getFieldError('companyPhoneNumber') }}
       </div>
     </div>
     
@@ -57,10 +65,14 @@
         type="text"
         formControlName="companyAddress"
         class="form-control"
+        [class.is-invalid]="isFieldInvalid('companyAddress')"
         placeholder="{{
           'ACCOUNT_SETTINGS.COMPANY_ADDRESS' | translate
         }}"
       />
+      <div *ngIf="isFieldInvalid('companyAddress')" class="invalid-feedback">
+        {{ getFieldError('companyAddress') }}
+      </div>
     </div>
   </div>
 
@@ -78,6 +90,9 @@
       [okLabel]="'BUTTONS.OK' | translate"
       (nodesSelected)="onIndustrySelected($event)"
     ></shared-tree-selector>
+    <div *ngIf="isFieldInvalid('companyIndustries')" class="invalid-feedback d-block">
+      {{ getFieldError('companyIndustries') }}
+    </div>
     </div>
   </div>
 
@@ -95,6 +110,9 @@
       [okLabel]="'BUTTONS.OK' | translate"
       (nodesSelected)="onConsultingNodesSelected($event)"
     ></shared-tree-selector>
+    <div *ngIf="isFieldInvalid('companyConsultingFields')" class="invalid-feedback d-block">
+      {{ getFieldError('companyConsultingFields') }}
+    </div>
     </div>
   </div>
 
@@ -103,7 +121,10 @@
     <label class="form-label">{{
       "ACCOUNT_SETTINGS.ABOUT_COMPANY" | translate
     }}</label>
-    <textarea formControlName="companyAboutUs" class="form-control  min-h-300px"></textarea>
+    <textarea formControlName="companyAboutUs" class="form-control min-h-300px" [class.is-invalid]="isFieldInvalid('companyAboutUs')"></textarea>
+    <div *ngIf="isFieldInvalid('companyAboutUs')" class="invalid-feedback">
+      {{ getFieldError('companyAboutUs') }}
+    </div>
   </div>
 
   <div class="row mb-6">
@@ -192,7 +213,6 @@
     <button
       type="submit"
       class="btn btn-primary"
-      [disabled]="isSubmitDisabled"
     >
       <ng-container *ngIf="(isUpdatingProfile$ | async) === false">
         <span class="indicator-label">
