@@ -23,7 +23,7 @@
       </div>
     </div>
     
-    <div *ngIf="!loading && !error && chartOptions" class="chart-container">
+    <div *ngIf="!loading && !error && chartOptions && chartOptions.series && chartOptions.series.length > 0" class="chart-container">
       <apx-chart
         #chart
         [series]="chartOptions.series!"
@@ -35,6 +35,29 @@
         [labels]="chartOptions.labels!"
         [colors]="chartOptions.colors!">
       </apx-chart>
+    </div>
+    
+    <div *ngIf="!loading && !error && (!chartOptions || !chartOptions.series || chartOptions.series.length === 0)" class="text-center py-5">
+      <div class="text-muted">
+        <div class="card card-custom bg-body border-1 h-md-100">
+          <div class="card-body d-flex justify-content-center flex-column align-items-center py-15">
+              <img src="./assets/media/illustrations/misc/buildup_dashboard.svg" 
+                   class="h-200px mb-5" alt="Empty Dashboard"> 
+              
+              <div class="position-relative text-gray-800 fs-1 z-index-2 fw-bold mb-5 text-center">
+                  {{ 'EMPTY_DASHBOARD.NO_PUBLISHED_KNOWLEDGE' | translate }}
+              </div>
+              
+              <span class="text-gray-600 fw-semibold fs-6 mb-7 text-center mw-500px">
+                  {{ 'EMPTY_DASHBOARD.DESCRIPTION' | translate }}
+              </span>
+              
+              <a [routerLink]="['/app/add-knowledge/stepper']" class="btn btn-primary fw-bold">
+                  <i class="fas fa-plus me-2"></i>
+                  {{ 'EMPTY_DASHBOARD.ADD_BUTTON' | translate }}
+              </a>
+          </div>
+      </div>
     </div>
   </div>
 </div>

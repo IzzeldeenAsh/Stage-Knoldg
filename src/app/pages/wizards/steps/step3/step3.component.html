@@ -55,13 +55,17 @@
             <div class="mt-2 w-200px">
               <label class="form-label">
                 {{ 'INSIGHTER_WIZARD.DOCUMENT_TYPE' | translate }}
+                <span class="text-danger" *ngIf="fileControl.value.file">*</span>
               </label>
-              <select class="form-select" formControlName="type">
+              <select class="form-select" formControlName="type" [class.is-invalid]="fileControl.get('type')?.invalid && fileControl.get('type')?.touched">
                 <option value="">{{ 'INSIGHTER_WIZARD.SELECT_DOCUMENT_TYPE' | translate }}</option>
                 <option *ngFor="let docType of documentTypes" [value]="docType.id">
                   {{ docType.name }}
                 </option>
               </select>
+              <div *ngIf="fileControl.get('type')?.invalid && fileControl.get('type')?.touched" class="invalid-feedback d-block">
+                {{ 'Please select a document type' | translate }}
+              </div>
             </div>
           </div>
           <!-- Delete Button -->

@@ -7,6 +7,7 @@
                     <!-- File Upload/Preview -->
                     <div class="col-12 col-md-3 col-lg-2">
                         <label class="form-label required">{{ 'FILE' | translate }}</label>
+                   
                         <input type="file" 
                             [id]="'fileInput' + i" 
                             (change)="onFileSelected($event, i)" 
@@ -65,9 +66,26 @@
                                     </i>
                                     <span class="text-warning">{{ 'PENDING' | translate }}</span>
                                 </span>
-                                <span *ngIf="doc.get('uploadStatus')?.value === 'uploading'" class="badge badge-light-primary ms-2 d-flex align-items-center">
-                                    <span class="spinner-border spinner-border-sm text-primary me-1"></span>
+                                <span *ngIf="doc.get('uploadStatus')?.value === 'uploading'" class="badge badge-light-info ms-2 d-flex align-items-center">
+                                    <span class="spinner-border spinner-border-sm text-info me-1"></span>
                                 </span>
+                            </div>
+                            
+                            <!-- Progress Bar -->
+                            <div *ngIf="doc.get('uploadStatus')?.value === 'uploading'" class="mt-3">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="text-muted small">{{ 'UPLOADING' | translate }}...</span>
+                                    <span class="text-info small fw-bold">{{ doc.get('uploadProgress')?.value || 0 }}%</span>
+                                </div>
+                                <div class="progress" style="height: 6px;">
+                                    <div class="progress-bar bg-info" 
+                                         role="progressbar" 
+                                         [style.width.%]="doc.get('uploadProgress')?.value || 0"
+                                         [attr.aria-valuenow]="doc.get('uploadProgress')?.value || 0"
+                                         aria-valuemin="0" 
+                                         aria-valuemax="100">
+                                    </div>
+                                </div>
                             </div>
                             
                             <!-- Error message placeholder - empty div to maintain structure -->
@@ -188,7 +206,7 @@
 
         <!-- Add Document Button -->
         <div class="form-group d-flex justify-content-start mb-5">
-            <button type="button" class="btn btn-primary px-6" 
+            <button type="button" class="btn btn-info px-6" 
                 (click)="addDocument()" 
                 [disabled]="hasUploadsInProgress() || hasFilesWithErrors()">
                 <i class="ki-duotone ki-plus fs-2 me-1"></i>
@@ -206,7 +224,14 @@
             </button>
 
         </div>
-        
+        <div class="text-muted fs-6  mb-2">
+              <i class="ki-duotone ki-information-5 fs-3 text-info me-1">
+                <span class="path1"></span>
+                <span class="path2"></span>
+                <span class="path3"></span>
+            </i>
+            {{ lang === 'ar' ? 'الحد الأقصى: 100 ميجابايت' : 'Max size: 100MB' }}
+        </div>
         <!-- Total Price -->
         <div class="border-top border-gray-300 pt-4">
             <div class="d-flex flex-column flex-sm-row justify-content-end align-items-center">
@@ -296,7 +321,7 @@
             </button>
             <button 
                 type="button" 
-                class="btn btn-primary"
+                class="btn btn-info"
                 (click)="onLanguageMismatchConfirm()"
             >
                 <i class="ki-duotone ki-check fs-2 me-2">

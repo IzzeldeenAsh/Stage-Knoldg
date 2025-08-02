@@ -141,13 +141,11 @@ export class CountryDropdownComponent implements OnInit, OnChanges, ControlValue
   private onTouched = () => {};
 
   ngOnInit() {
-    console.log('Component initialized with countries:', this.countries.length); // Debug log
     this.prepareCountriesData();
   }
 
   ngOnChanges() {
     if (this.countries && this.countries.length > 0) {
-      console.log('Countries updated:', this.countries.length); // Debug log
       this.prepareCountriesData();
       
       // Re-evaluate selected country if we have a value but no selected country yet
@@ -155,11 +153,6 @@ export class CountryDropdownComponent implements OnInit, OnChanges, ControlValue
         const numericValue = typeof this.currentValue === 'string' ? parseInt(this.currentValue, 10) : this.currentValue;
         this.selectedCountry = this.countries.find(country => country.id === numericValue) || null;
         this.selectedCountryId = this.selectedCountry?.id || null;
-        console.log('Re-evaluated selected country:', this.selectedCountry);
-        
-        if (!this.selectedCountry) {
-          console.warn('Country not found in ngOnChanges for ID:', numericValue);
-        }
       }
     }
   }
@@ -167,22 +160,13 @@ export class CountryDropdownComponent implements OnInit, OnChanges, ControlValue
   // ControlValueAccessor implementation
   writeValue(value: any): void {
     this.currentValue = value;
-    console.log('writeValue called with:', value, 'type:', typeof value);
-    console.log('Available countries:', this.countries.map(c => ({ id: c.id, name: c.names?.en })));
     
     if (value) {
       // Ensure value is a number for comparison
       const numericValue = typeof value === 'string' ? parseInt(value, 10) : value;
-      console.log('Looking for country with ID:', numericValue);
       
       this.selectedCountry = this.countries.find(country => country.id === numericValue) || null;
       this.selectedCountryId = this.selectedCountry?.id || null;
-      console.log('Selected country after writeValue:', this.selectedCountry);
-      
-      if (!this.selectedCountry) {
-        console.warn('Country not found for ID:', numericValue);
-        console.log('Available country IDs:', this.countries.map(c => c.id));
-      }
     } else {
       this.selectedCountry = null;
       this.selectedCountryId = null;

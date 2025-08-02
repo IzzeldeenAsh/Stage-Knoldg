@@ -54,6 +54,7 @@
               [fetchedData]="consultingFields"
               [initialSelectedNodes]="personalInfoForm.value.consulting_field" 
               [cancelLabel]="'BUTTONS.CANCEL' | translate"
+              [currentLang]="this.lang"
               [okLabel]="'BUTTONS.OK' | translate"
               (nodesSelected)="onConsultingNodesSelected($event)"
             ></shared-tree-selector>

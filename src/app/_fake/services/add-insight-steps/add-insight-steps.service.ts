@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpEventType, HttpEvent } from "@angular/common/http";
 import { BehaviorSubject, Observable, throwError } from "rxjs";
 import { catchError, finalize, map } from "rxjs/operators";
 import { TranslationService } from "src/app/modules/i18n";
@@ -284,6 +284,35 @@ export class AddInsightStepsService {
       })
       .pipe(
         map((res) => res),
+        catchError((error) => this.handleError(error)),
+        finalize(() => this.setLoading(false))
+      );
+  }
+
+  uploadKnowledgeDocumentWithProgress(knowledgeId: number, formData: FormData): Observable<{ type: string; progress?: number; response?: DocumentUploadResponse }> {
+    const headers = new HttpHeaders({
+      Accept: "application/json",
+      "Accept-Language": this.currentLang,
+    });
+    this.setLoading(true);
+    return this.http
+      .post<DocumentUploadResponse>(`${this.apiUrl}/document/upload/${knowledgeId}`, formData, {
+        headers,
+        reportProgress: true,
+        observe: 'events'
+      })
+      .pipe(
+        map((event: HttpEvent<DocumentUploadResponse>) => {
+          switch (event.type) {
+            case HttpEventType.UploadProgress:
+              const progress = event.total ? Math.round((100 * event.loaded) / event.total) : 0;
+              return { type: 'progress', progress };
+            case HttpEventType.Response:
+              return { type: 'response', response: event.body! };
+            default:
+              return { type: 'other' };
+          }
+        }),
         catchError((error) => this.handleError(error)),
         finalize(() => this.setLoading(false))
       );
