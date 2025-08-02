@@ -74,7 +74,8 @@ export const locale = {
     "EMPTY_DASHBOARD":{
       "TITLE": "No elements currently",
       "DESCRIPTION": "Create a new knowledge to start benefiting from all platform features",
-      "ADD_BUTTON": "Add Knowledge"
+      "ADD_BUTTON": "Add Knowledge",
+      "NO_PUBLISHED_KNOWLEDGE":"No published knowledge"
     },
     'DRAFT_STATUS': 'Draft',
     DOCUMENTS_LANGUAGE: 'Documents Language',
@@ -669,7 +670,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       CORPORATE_ACCOUNT: "Corporate Account",
       CORPORATE_ACCOUNT_DESC: "Create corporate account to manage users",
       IF_NEED_MORE_INFO: "Need more information? Visit our",
-      DOCUMENT_SIZE: "File size must not exceed 2MB",
+      DOCUMENT_SIZE: "File size must not exceed 5MB",
       INSIGHTER_INFO: "Account Info",
       CONSULTING_FIELDS: "Consulting Fields",
       CONSULTING_FIELDS_REQUIRED: "Consulting Fields are required",
@@ -972,7 +973,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       }
     },
    "READ_LATER": {
-    "TITLE": "Read Later",
+    "TITLE": "My Read Later",
     "ITEMS": "Items",
     "EMPTY_TITLE": "No items saved yet",
     "EMPTY_MESSAGE": "Items you save will appear here for later access.",
@@ -1487,7 +1488,7 @@ UPLOAD: 'Upload',
       "POSTPONE_NOTES_REQUIRED": "Postponement notes are required"
     },
     "READ_LATER": {
-      "TITLE": "Read Later",
+      "TITLE": "My Read Later",
       "ITEMS": "items",
       "EMPTY_TITLE": "No saved items yet",
       "EMPTY_MESSAGE": "Items you bookmark will appear here for easy access later.",

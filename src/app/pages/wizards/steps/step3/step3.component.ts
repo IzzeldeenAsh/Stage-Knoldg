@@ -127,7 +127,7 @@ export class Step3Component extends BaseComponent implements OnInit, OnDestroy {
   }
   addCertification(cert?: { type?: string; file?: File }) {
     const certForm = this.fb.group({
-      type: [cert?.type || ""],
+      type: [cert?.type || "", cert?.file ? [Validators.required] : []],
       file: [cert?.file || null],
     });
     this.certifications.push(certForm);
@@ -159,14 +159,14 @@ export class Step3Component extends BaseComponent implements OnInit, OnDestroy {
     }
   }
   handleFiles(files: FileList) {
-    const MAX_SIZE_MB = 2;
+    const MAX_SIZE_MB = 5;
     const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
 
     for (let i = 0; i < files.length; i++) {
       const file = files.item(i);
       if (file) {
         if (file.size > MAX_SIZE_BYTES) {
-          this.showError('', `File "${file.name}" exceeds the 2MB size limit.`);
+          this.showError('', `File "${file.name}" exceeds the 5MB size limit.`);
           continue; // Skip adding this file
         }
         this.addCertification({ file });
@@ -299,7 +299,9 @@ export class Step3Component extends BaseComponent implements OnInit, OnDestroy {
   }
   
   checkForm() {
-    // Don't change this.attemptedSubmit value here
+    // Mark all form controls as touched to trigger validation display
+    this.form.markAllAsTouched();
+    
     // Only require agreement for personal account type
     if (this.defaultValues?.accountType === 'personal') {
       // Update the parent with the agreement status

@@ -36,11 +36,6 @@ export class SelectEconomicBlockComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['selectedBlockIds']) {
-      console.log('ngOnChanges - selectedBlockIds changed:', {
-        previousValue: changes['selectedBlockIds'].previousValue,
-        currentValue: changes['selectedBlockIds'].currentValue,
-        economicBlocksLoaded: this.economicBlocks.length > 0
-      });
       
       if (this.economicBlocks.length > 0) {
         this.updateSelectedBlocks();
@@ -62,25 +57,18 @@ export class SelectEconomicBlockComponent implements OnInit, OnChanges {
   }
 
   private updateSelectedBlocks() {
-    console.log('updateSelectedBlocks called with selectedBlockIds:', this.selectedBlockIds);
-    console.log('Available economic blocks:', this.economicBlocks.length);
     
     if (this.selectedBlockIds && this.selectedBlockIds.length > 0 && this.economicBlocks.length > 0) {
-      console.log('Updating selected blocks. SelectedBlockIds:', this.selectedBlockIds);
-      console.log('Available economic blocks:', this.economicBlocks);
       
       this.selectedBlocks = this.economicBlocks.filter(block => {
         // Convert both to numbers for comparison to handle any type mismatches
         const blockId = Number(block.id);
         const isSelected = this.selectedBlockIds!.some(selectedId => Number(selectedId) === blockId);
-        console.log(`Block ${block.name} (ID: ${blockId}) selected: ${isSelected}`);
         return isSelected;
       });
       
-      console.log('Final selected blocks:', this.selectedBlocks);
       this.updateDisplayValue();
     } else {
-      console.log('No blocks to select or no economic blocks loaded');
       this.selectedBlocks = [];
       this.updateDisplayValue();
     }
@@ -119,25 +107,17 @@ export class SelectEconomicBlockComponent implements OnInit, OnChanges {
    * Toggles the selection of a block when clicking on the card
    */
   toggleBlockSelection(block: EconomicBloc) {
-    console.log('toggleBlockSelection called for block:', block.name);
-    console.log('Before toggle - selectedBlocks:', this.selectedBlocks);
-    
     const isCurrentlySelected = this.isBlockSelected(block);
-    console.log('Block currently selected:', isCurrentlySelected);
     
     if (isCurrentlySelected) {
       // Remove from selection
       this.selectedBlocks = this.selectedBlocks.filter(selectedBlock => selectedBlock.id !== block.id);
-      console.log('Block deselected');
     } else {
       // Add to selection
       if (!this.selectedBlocks.some(selectedBlock => selectedBlock.id === block.id)) {
         this.selectedBlocks.push(block);
-        console.log('Block selected');
       }
     }
-    
-    console.log('After toggle - selectedBlocks:', this.selectedBlocks);
     this.updateDisplayValue();
     
     // Emit changes immediately for better responsiveness
@@ -170,14 +150,8 @@ export class SelectEconomicBlockComponent implements OnInit, OnChanges {
    * Clears all selections
    */
   clearAllSelections() {
-    console.log('clearAllSelections called');
-    console.log('Before clear - selectedBlocks:', this.selectedBlocks);
-    
     this.selectedBlocks = [];
     this.updateDisplayValue();
-    
-    console.log('After clear - selectedBlocks:', this.selectedBlocks);
-    console.log('Emitting changes from clearAllSelections');
     
     // Emit the cleared state
     this.blocksSelected.emit(this.selectedBlocks);
@@ -187,22 +161,13 @@ export class SelectEconomicBlockComponent implements OnInit, OnChanges {
    * Removes a specific block from selection
    */
   removeItem(itemName: string) {
-    console.log('removeItem called with:', itemName);
-    console.log('Before removal - selectedBlocks:', this.selectedBlocks);
-    
     const block = this.economicBlocks.find(b => b.name === itemName);
     if (block) {
-      console.log('Removing block:', block.name, 'ID:', block.id);
       this.selectedBlocks = this.selectedBlocks.filter(selectedBlock => selectedBlock.id !== block.id);
       this.updateDisplayValue();
       
-      console.log('After removal - selectedBlocks:', this.selectedBlocks);
-      console.log('Emitting changes from removeItem');
-      
       // Emit changes immediately after removal
       this.blocksSelected.emit(this.selectedBlocks);
-    } else {
-      console.log('No block found to remove for:', itemName);
     }
   }
 

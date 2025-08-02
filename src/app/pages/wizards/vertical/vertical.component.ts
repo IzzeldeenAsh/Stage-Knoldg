@@ -105,7 +105,7 @@ export class VerticalComponent extends BaseComponent implements OnInit {
     const currentStep = this.currentStep$.value;
     const accountType = this.account$.value.accountType;
     const formsCount = this.formsCount$.value;
-    
+    console.log(this.account$.value)
     // Check if we're at the last step for account type
     if (currentStep === 3 && accountType === 'personal') {
       // For personal accounts, step 3 is the final step, so submit instead of navigating
@@ -182,7 +182,7 @@ export class VerticalComponent extends BaseComponent implements OnInit {
       formData.append("country_id", user.country.toString());
     }
     if (user.phoneNumber) {
-      const userPhoneNumber = user.phoneCountryCode.code + user.phoneNumber;
+      const userPhoneNumber = (user.phoneCountryCode?.code || '') + user.phoneNumber;
       formData.append("phone", userPhoneNumber);
     }
     if(industriesList && industriesList.length>0){
@@ -245,10 +245,10 @@ export class VerticalComponent extends BaseComponent implements OnInit {
       formData.append("country_id", user.country.toString());
     }
     if (user.verificationMethod === "websiteEmail") {
-      formData.append("website", user.website ? user.website : "");
+      formData.append("website", user.website?.toLowerCase() ? user.website.toLocaleLowerCase() : "");
       formData.append(
         "verified_email",
-        user.companyEmail ? user.companyEmail : ""
+        user.companyEmail?.toLocaleLowerCase() ? user.companyEmail.toLocaleLowerCase() : ""
       );
       formData.append("code", user.code ? user.code : "");
     } else if (user.verificationMethod === "uploadDocument") {
@@ -318,6 +318,7 @@ export class VerticalComponent extends BaseComponent implements OnInit {
     });
     return formData
   }
+
   submit() {
     // Check if the current step is valid before submitting
     if (this.currentStep$.value === 3 && this.step3Component) {

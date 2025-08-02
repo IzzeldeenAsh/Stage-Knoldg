@@ -24,7 +24,7 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
   roles: string[] = [];
   consultingFields: any[] = [];
   industries: any[] = [];
-  isUpdatingProfile$: Observable<boolean> = of(false);
+  isUpdatingProfile$: Observable<boolean>;
   isLoading$: Observable<boolean> = of(false);
   isProcessingInvitation$: Observable<boolean>;
   profile: IKnoldgProfile;
@@ -45,6 +45,7 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
   ) {
     super(injector);
     this.isProcessingInvitation$ = this._invitationService.isLoading$;
+    this.isUpdatingProfile$ = this._profilePost.isLoading$;
   }
 
   ngOnInit(): void {
@@ -81,6 +82,7 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
 
     forkJoin([profile$, countries$]).subscribe({
       next: () => {
+        this.updateFormValidators();
         this.populateForm();
         this.isLoading$ = of(false);
       },
@@ -106,6 +108,20 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
     });
     this.unsubscribe.push(sub);
   }
+  updateFormValidators() {
+    // Only add required validators for industries and consulting_field if user is not client-only
+    if (!this.isClientOnly()) {
+      this.personalInfoForm.get('industries')?.setValidators([Validators.required]);
+      this.personalInfoForm.get('consulting_field')?.setValidators([Validators.required]);
+    } else {
+      // Remove any existing validators for client-only users
+      this.personalInfoForm.get('industries')?.clearValidators();
+      this.personalInfoForm.get('consulting_field')?.clearValidators();
+    }
+    this.personalInfoForm.get('industries')?.updateValueAndValidity();
+    this.personalInfoForm.get('consulting_field')?.updateValueAndValidity();
+  }
+
   populateForm(){
     let transformedIndustries;
     let transformedConsultingFields;
@@ -165,14 +181,17 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
       last_name: ["", Validators.required],
       country: ["", Validators.required],
       bio: [""],
-      industries: [[], Validators.required],
-      consulting_field: [[], Validators.required],
+      industries: [[]],
+      consulting_field: [[]],
       linkedIn: ['', [Validators.pattern('^https://www\.linkedin\.com/.*$')]],
       facebook: ['', [Validators.pattern('^https://www\.facebook\.com/.*$')]],
       twitter: ['', [Validators.pattern('^https://www\.(twitter\.com|x\.com)/.*$')]],
       instagram: ['', [Validators.pattern('^https://www\.instagram\.com/.*$')]],
       youtube: ['', [Validators.pattern('^https://www\.youtube\.com/.*$')]]
     });
+    
+    // Add required validators for non-client users after form initialization
+    this.updateFormValidators();
   }
 
   initInvitationForm() {

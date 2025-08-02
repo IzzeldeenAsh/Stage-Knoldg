@@ -16,9 +16,10 @@ const routes: Routes = [
       },
       {
         path: 'my-dashboard',
-        loadChildren: () => import('./insighter-dashboard/my-dashboard/my-dashboard.module').then(m => m.MyDashboardModule)
-        
-      },
+        loadChildren: () => import('./insighter-dashboard/my-dashboard/my-dashboard.module').then(m => m.MyDashboardModule),
+        canActivate:[authGuard,RolesGuard],
+        data: { roles: [ 'insighter','company','company-insighter'] }
+        },
       {
         path: 'my-requests',
         loadChildren: () => import('./insighter-dashboard/my-requests/my-requests.module').then(m => m.MyRequestsModule),

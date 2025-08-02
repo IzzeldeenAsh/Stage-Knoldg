@@ -22,6 +22,7 @@ import { FormsModule } from "@angular/forms";
 import { InputTextModule } from "primeng/inputtext";
 import { TreeNode } from "./TreeNode";
 import { ChipModule } from 'primeng/chip';
+import { TranslateService } from "@ngx-translate/core";
 @Component({
   selector: "shared-tree-selector",
   standalone: true,
@@ -46,6 +47,7 @@ export class SharedTreeSelectorComponent implements OnInit, OnDestroy {
   @Input() fetchedData: TreeNode[] = [];
   @Input() cancelLabel: string = "Cancel";
   @Input() okLabel: string = "OK";
+  @Input() currentLang: string = "en";
 
   /**
    * Previously selected nodes that should be reselected when the dialog is shown again.
@@ -64,11 +66,14 @@ export class SharedTreeSelectorComponent implements OnInit, OnDestroy {
   private unsubscribe: Subscription[] = [];
   private isSelectAllProcessing: boolean = false;
 
+  constructor(private translate: TranslateService) {} 
   ngOnInit(): void {
     // Initialize committed state with initial selected nodes first
     this.committedNodes = [...(this.initialSelectedNodes || [])];
     this.loadData();
     this.handleWindowResize();
+    this.currentLang = this.translate.currentLang;
+    console.log(this.currentLang);
   }
 
   ngOnDestroy() {
@@ -149,6 +154,34 @@ export class SharedTreeSelectorComponent implements OnInit, OnDestroy {
 
     this.selectedNodes = reSelectedNodes;
     this.updateSelectAllState();
+  }
+
+  onKeyPress(event: KeyboardEvent): boolean {
+    const char = event.key;
+    
+    // Allow backspace, delete, arrow keys, etc.
+    if (event.ctrlKey || event.metaKey || char.length > 1) {
+      return true;
+    }
+    
+    // Check if character is valid for current language
+    if (this.currentLang === 'ar') {
+      // Allow Arabic letters and spaces
+      const isValidArabic = /[\u0600-\u06FF\s]/.test(char);
+      if (!isValidArabic) {
+        event.preventDefault();
+        return false;
+      }
+    } else {
+      // Allow English letters and spaces
+      const isValidEnglish = /[a-zA-Z\s]/.test(char);
+      if (!isValidEnglish) {
+        event.preventDefault();
+        return false;
+      }
+    }
+    
+    return true;
   }
 
   onOtherInput(node: TreeNode): void {

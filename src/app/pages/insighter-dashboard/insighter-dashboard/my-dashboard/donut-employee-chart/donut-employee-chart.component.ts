@@ -35,12 +35,7 @@ export class DonutEmployeeChartComponent implements OnInit {
       series: [],
       chart: {
         type: "donut",
-        height: 350,
-        events: {
-          mounted: (chart) => {
-            chart.toggleDataPointSelection(0);
-          }
-        }
+        height: 350
       },
       labels: [],
       colors: ["#0095E8", "#1E90FF", "#0070C0", "#4682B4", "#104E8B"],
@@ -137,9 +132,9 @@ export class DonutEmployeeChartComponent implements OnInit {
         this.employees = response.data;
         this.loading = false;
         this.error = false;
-        
+        console.log(this.employees);
         // Only emit true if there are multiple employees (more than just the manager)
-        const hasEnoughData = this.employees.length > 1;
+        const hasEnoughData = this.employees.length > 0;
         this.hasMultipleEmployeesDonut.emit(hasEnoughData);
         
         // Only initialize chart if we have enough data to display
@@ -155,11 +150,17 @@ export class DonutEmployeeChartComponent implements OnInit {
             stats.byType.course || 0
           ];
           
-          this.chartOptions = {
-            ...this.chartOptions,
-            series,
-            labels: ['Reports', 'Data', 'Insights', 'Manual', 'Courses']
-          };
+          // Only update chart if we have valid data
+          if (series.some(value => value > 0)) {
+            this.chartOptions = {
+              ...this.chartOptions,
+              series,
+              labels: ['Reports', 'Data', 'Insights', 'Manual', 'Courses']
+            };
+          } else {
+            // If no data, don't render the chart
+            this.hasMultipleEmployeesDonut.emit(false);
+          }
         }
       },
       error: (error) => {

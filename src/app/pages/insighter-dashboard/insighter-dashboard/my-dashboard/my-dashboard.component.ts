@@ -202,7 +202,7 @@ canViewKnowledgeTypesStatistics(): boolean {
  * Check if user can view donut employee chart (company role only)
  */
 canViewDonutEmployeeChart(): boolean {
-  return this.hasRole('company');
+  return this.hasRole('company') 
 }
 
 /**

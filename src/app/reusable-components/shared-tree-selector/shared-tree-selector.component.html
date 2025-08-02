@@ -27,14 +27,20 @@
         </ng-container>
         <ng-container *ngIf="node.isOther">
           <span>{{ node.label }}</span>
-          <input
-            pInputText
-            type="text"
-            [(ngModel)]="node.data.customInput"
-            [placeholder]="otherFieldPlaceholder"
-            (input)="onOtherInput(node)"
-            style="margin:0px 10px; width: 70%;"
-          />
+          <div style="display: flex; flex-direction: column; width: 70%; margin-left: 10px;">
+            <input
+              pInputText
+              type="text"
+              [(ngModel)]="node.data.customInput"
+              [placeholder]="otherFieldPlaceholder"
+              (input)="onOtherInput(node)"
+              (keypress)="onKeyPress($event)"
+              style="width: 100%;"
+            />
+            <small class="text-muted" style="font-size: 0.75rem; margin-top: 2px;">
+              {{ currentLang === 'ar' ? 'يجب الكتابة بالعربية فقط' : 'Please write in English only' }}
+            </small>
+          </div>
         </ng-container>
       </ng-template>
     </p-tree>

@@ -202,7 +202,8 @@ INSIGHTER_REQUESTS: {
     EMPTY_DASHBOARD:{
       "TITLE": "لا يوجد عناصر حالياً",
       "DESCRIPTION": "قم بإنشاء معرفة جديدة لبدء الاستفادة من جميع مزايا المنصة",
-      "ADD_BUTTON": "إضافة معرفة"
+      "ADD_BUTTON": "إضافة معرفة",
+      "NO_PUBLISHED_KNOWLEDGE": "لا يوجد معرفة منشورة"
     },
     "MY_COMPANY": {
        "PUBLISHED_KNOWLEDGE": "المعرفة المنشورة لـ {{name}}",
@@ -661,7 +662,7 @@ INSIGHTER_REQUESTS: {
       CORPORATE_ACCOUNT_VERIFICATION: "تحقق من الحساب التجاري",
       VERIFY_YOUR_COMPANY_WITH: "تحقق من شركتك باستخدام",
       IF_NEED_MORE_INFO_VERIFICATION: "إذا كنت بحاجة إلى مزيد من المعلومات، يرجى زيارة",
-      DOCUMENT_SIZE: "حجم الملف يجب أن لا يتجاوز 2 ميجا",
+      DOCUMENT_SIZE: "حجم الملف يجب أن لا يتجاوز 5 ميجا",
       DROP_OR_UPLOAD_REGISTRY_DOCUMENT: "قم بإسقاط أو تحميل وثيقة التسجيل",
       VERIFY_COMPANY_ACCOUNT_BY_UPLOADING_REGISTRY_DOC: "تحقق من حساب الشركة عن طريق تحميل وثيقة تسجيل الشركة",
       WEBSITE_URL: "عنوان الموقع الإلكتروني",

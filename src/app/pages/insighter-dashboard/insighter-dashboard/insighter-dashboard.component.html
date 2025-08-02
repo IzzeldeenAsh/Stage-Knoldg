@@ -12,7 +12,7 @@
           <h3>{{ 'INSIGHTER.DASHBOARD.NAV.DASHBOARD' | translate }}</h3>
         </div>
         <div class="p-card-body">
-          <div class="nav-item" [routerLink]="['my-dashboard']" routerLinkActive="active" 
+          <div class="nav-item" [routerLink]="['my-dashboard']" *ngIf="!(isClient$ | async)" routerLinkActive="active" 
                (click)="closeMobileSidebar()">
             <div class="item-icon">
               <i class="ki-duotone ki-abstract-28"><span class="path1"></span><span class="path2"></span></i>
@@ -171,7 +171,7 @@
                   </button>
                 </div>
                 <div class="p-card-body">
-                  <div class="nav-item" [routerLink]="['my-dashboard']" routerLinkActive="active" 
+                  <div class="nav-item"  *ngIf="!(isClient$ | async)" [routerLink]="['my-dashboard']" routerLinkActive="active" 
                        [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.OVERVIEW' | translate) : null"
                        pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.OVERVIEW' | translate) : '' }}"
                        tooltipPosition="right"

@@ -255,13 +255,11 @@ export class GetHsCodeByIsicComponent implements OnDestroy,OnChanges {
       return;
     }
 
-    console.log('Loading HS Codes for ISIC:', this.isicCodeId);
     this.isLoading$.next(true);
     
     return new Promise<void>((resolve) => {
       const sub = this.hsCodeService.getHSCodeByISIC(this.isicCodeId, this.language).subscribe({
         next: (codes) => {
-          console.log('Received HS Codes:', codes);
           this.hsCodes = codes.sort((a, b) => a.code.localeCompare(b.code));
           this.filteredCodes = [...this.hsCodes];
           this.isLoading$.next(false);

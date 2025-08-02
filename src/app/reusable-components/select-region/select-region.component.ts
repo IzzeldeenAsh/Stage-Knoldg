@@ -72,11 +72,6 @@ export class SelectRegionComponent implements OnInit, OnChanges {
       
       // Update display value after changes
       this.updateDisplayValue();
-      
-      console.log('Select-region component updated selections:', {
-        selectedRegions: this.selectedRegions,
-        selectedCountries: this.selectedCountries
-      });
     }
   }
 
@@ -374,15 +369,11 @@ export class SelectRegionComponent implements OnInit, OnChanges {
    * Removes a specific item (region or country) from selection
    */
   removeItem(itemName: string) {
-    console.log('removeItem called with:', itemName);
-    console.log('Before removal - selectedRegions:', this.selectedRegions, 'selectedCountries:', this.selectedCountries);
-    
     let itemRemoved = false;
     
     // Check if it's a region
     const region = this.regions.find(r => r.name === itemName);
     if (region) {
-      console.log('Removing region:', region.name, 'ID:', region.id);
       this.selectedRegions = this.selectedRegions.filter(id => id !== region.id);
       itemRemoved = true;
     } else {
@@ -390,7 +381,6 @@ export class SelectRegionComponent implements OnInit, OnChanges {
       for (const regionItem of this.regions) {
         const country = regionItem.countries.find(c => c.name === itemName);
         if (country) {
-          console.log('Removing country:', country.name, 'ID:', country.id);
           this.selectedCountries = this.selectedCountries.filter(id => id !== country.id);
           itemRemoved = true;
           break;
@@ -398,20 +388,15 @@ export class SelectRegionComponent implements OnInit, OnChanges {
       }
     }
     
-    console.log('After removal - selectedRegions:', this.selectedRegions, 'selectedCountries:', this.selectedCountries);
-    
     // Update display value after removal
     this.updateDisplayValue();
     
     // Emit changes immediately after removal
     if (itemRemoved) {
-      console.log('Emitting changes from removeItem');
       this.regionsSelected.emit({
         regions: this.selectedRegions,
         countries: this.selectedCountries
       });
-    } else {
-      console.log('No item was removed for:', itemName);
     }
   }
 

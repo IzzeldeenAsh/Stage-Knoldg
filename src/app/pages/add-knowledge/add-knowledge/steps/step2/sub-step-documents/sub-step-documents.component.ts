@@ -58,6 +58,9 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   hasActiveUploads = false;
   pendingUploads: number = 0;
   
+  // File size limit constant (100MB in bytes)
+  private readonly MAX_FILE_SIZE = 100 * 1024 * 1024;
+  
   // Track active upload subscriptions
   private activeUploadSubscriptions: { [index: number]: Subscription } = {};
   
@@ -313,15 +316,42 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   private knowledgeTypeCreated = false;
   
   handleMultipleFiles(files: FileList): void {
-    // Convert FileList to array and add to upload queue
+    // Convert FileList to array and validate file sizes
     const filesArray = Array.from(files);
-    this.fileUploadQueue.push(...filesArray);
+    const validFiles: File[] = [];
+    const invalidFiles: File[] = [];
     
-    console.log(`Added ${filesArray.length} files to upload queue. Queue size: ${this.fileUploadQueue.length}`);
+    // Check each file size
+    filesArray.forEach(file => {
+      if (file.size > this.MAX_FILE_SIZE) {
+        invalidFiles.push(file);
+      } else {
+        validFiles.push(file);
+      }
+    });
     
-    // Start sequential upload process if not already in progress
-    if (!this.isUploadInProgress) {
-      this.processNextFileInQueue();
+    // Show error message for files that exceed size limit
+    if (invalidFiles.length > 0) {
+      const fileNames = invalidFiles.map(f => f.name).join(', ');
+      const errorMessage = this.lang === 'ar' 
+        ? `الملفات التالية تتجاوز الحد الأقصى للحجم (100 ميجابايت): ${fileNames}`
+        : `The following files exceed the maximum size limit (100MB): ${fileNames}`;
+      
+      this.showError(
+        this.lang === 'ar' ? 'حجم الملف كبير جداً' : 'File Size Too Large',
+        errorMessage
+      );
+    }
+    
+    // Only add valid files to upload queue
+    if (validFiles.length > 0) {
+      this.fileUploadQueue.push(...validFiles);
+      console.log(`Added ${validFiles.length} valid files to upload queue. Queue size: ${this.fileUploadQueue.length}`);
+      
+      // Start sequential upload process if not already in progress
+      if (!this.isUploadInProgress) {
+        this.processNextFileInQueue();
+      }
     }
   }
   
@@ -396,6 +426,22 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   onFileSelected(event: any, index: number): void {
     const file = event.target.files[0];
     if (file) {
+      // Check file size before processing
+      if (file.size > this.MAX_FILE_SIZE) {
+        const errorMessage = this.lang === 'ar' 
+          ? `الملف "${file.name}" يتجاوز الحد الأقصى للحجم (100 ميجابايت)`
+          : `File "${file.name}" exceeds the maximum size limit (100MB)`;
+        
+        this.showError(
+          this.lang === 'ar' ? 'حجم الملف كبير جداً' : 'File Size Too Large',
+          errorMessage
+        );
+        
+        // Reset the file input
+        event.target.value = '';
+        return;
+      }
+      
       const extension = this.getFileExtension(file.name);
       const fileName = file.name.replace(`.${extension}`, ''); // Extract file name without extension
       const docGroup = this.documentControls.at(index);
@@ -538,14 +584,18 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       }
     }
     
-    // Call the first API to upload just the file
+    // Call the first API to upload just the file with progress tracking
     // Use the new API endpoint and the knowledgeId we just obtained if necessary
-    const subscription = this.addInsightStepsService.uploadKnowledgeDocument(knowledgeId || this.defaultValues.knowledgeId, formData)
+    const subscription = this.addInsightStepsService.uploadKnowledgeDocumentWithProgress(knowledgeId || this.defaultValues.knowledgeId, formData)
       .subscribe({
-        next: (response) => {
-          if (response && response.data && response.data.knowledge_document_id) {
+        next: (event) => {
+          if (event.type === 'progress') {
+            // Update progress
+            control.get('uploadProgress')?.setValue(event.progress);
+            doc.uploadProgress = event.progress;
+          } else if (event.type === 'response' && event.response && event.response.data && event.response.data.knowledge_document_id) {
             // Store the document ID returned by the API
-            const docId = response.data.knowledge_document_id;
+            const docId = event.response.data.knowledge_document_id;
             console.log(`Upload successful - Document ID received: ${docId}`);
             
             // Make sure we're using the current document object
@@ -561,10 +611,12 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
             // Update form control
             control.get('docId')?.setValue(docId);
             control.get('uploadStatus')?.setValue('success');
+            control.get('uploadProgress')?.setValue(100);
             
             // Update document object - ensure these changes actually persist
             currentDoc.id = docId;
             currentDoc.uploadStatus = 'success';
+            currentDoc.uploadProgress = 100;
             // Force array update to ensure change detection
             this.documents = [...this.documents];
             
@@ -583,7 +635,7 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
             
             // Log all documents after update
             this.logDocumentStatus();
-          } else {
+          } else if (event.type === 'response') {
             // Handle unexpected response format
             control.get('uploadStatus')?.setValue('error');
             control.get('errorMessage')?.setValue('Server response format is unexpected');
@@ -592,6 +644,7 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
 
             this.showError('Upload Error', 'Server returned an unexpected response format');
           }
+          // Ignore 'other' type events
         },
         error: (error) => {
           console.error('File upload error:', error);
