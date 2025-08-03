@@ -1,10 +1,7 @@
-<!-- Main Dashboard Content -->
-<div class="row">
-    <!-- Warning card for pending insighter requests -->
+<!-- <div class="row">
     <div *ngIf="hasPendingInsighterRequests && hasRole('company')" class="col-12 mb-5">
         <div class="card card-flush h-md-100 cursor-pointer" routerLink="/app/insighter-dashboard/my-requests">
             <div class="card-body d-flex align-items-center py-3">
-                <!-- Warning Icon -->
                 <div class="me-3">
                     <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <rect width="34" height="34" rx="17" fill="#FFFCDF"/>
@@ -12,11 +9,9 @@
                         <path d="M15 14H19V25H15V14Z" fill="#F9B300"/>
                     </svg>
                 </div>
-                <!-- Warning Text -->
                 <div class="flex-grow-1">
                     <h5 class="mb-0">{{ 'INSIGHTER_REQUESTS.PENDING_KNOWLEDGE_APPROVAL' | translate: {count: pendingInsighterRequestsCount} }}</h5>
                 </div>
-                <!-- Pending Badge -->
                 <div class="d-flex align-items-center">
                     <span class="badge badge-light-warning me-2">{{ 'INSIGHTER_REQUESTS.FILTER.PENDING' | translate }}</span>
                     <i class="fas fa-chevron-right text-muted"></i>
@@ -25,28 +20,23 @@
         </div>
     </div>
 
-    <!-- Knowledge Types Statistics - Insighter & Company-Insighter Only -->
     <div *ngIf="canViewKnowledgeTypesStatistics()" 
         [ngClass]="getStatisticsColClass()">
         <app-knowledge-types-statistics></app-knowledge-types-statistics>
     </div>
 
-    <!-- Employee Knowledge Statistics - Company Role Only -->
     <div *ngIf="canViewEmployeeKnowledgeStatistics()" 
          [ngClass]="getEmployeeStatsColClass()">
         <app-employee-knowledge-statistics (hasMultipleEmployees)="onHasMultipleEmployees($event)"></app-employee-knowledge-statistics>
     </div>
 
-    <!-- Donut Employee Chart - Company Role Only -->
     <div *ngIf="canViewDonutEmployeeChart()" 
          [ngClass]="getDonutChartColClass()">
         <app-donut-employee-chart (hasMultipleEmployeesDonut)="onHasMultipleEmployeesDonut($event)"></app-donut-employee-chart>
     </div>
 </div>
 
-<!-- Additional Content Row -->
 <div class="row">
-    <!-- Upgrade to company account -->
     <div class="col-12 mb-5 mb-xl-10" *ngIf="isActiveInsighter()">
         <div class="card card-custom bg-body border-1 h-md-100">
             <div class="card-body d-flex justify-content-center flex-wrap px-xl-15 px-5">          
@@ -84,7 +74,6 @@
         </div>
     </div>
 
-    <!-- Loading spinner -->
     <div class="col-12 mb-5 mb-xl-10" *ngIf="isLoading">
         <div class="card card-custom bg-body border-1 h-md-100">
             <div class="card-body d-flex justify-content-center flex-column align-items-center py-15">
@@ -96,7 +85,6 @@
         </div>
     </div>
 
-    <!-- Empty state - start building knowledge library -->
     <ng-container *ngIf="!hasRole('company')">
         <div class="col-12 mb-5 mb-xl-10" *ngIf="!hasRole('insighter') && shouldShowEmptyState()">
             <div class="card card-custom bg-body border-1 h-md-100">
@@ -120,4 +108,27 @@
             </div>
         </div>
     </ng-container>
-</div>
+</div> -->
+
+<!-- @if(isClient() | async){
+  <app-client-my-dashboard></app-client-my-dashboard>
+
+} @else if(isInsighter() || isCompanyInsighter() | async){
+  <app-insighter-my-dashboard></app-insighter-my-dashboard>
+} @else if(isCompany() | async){
+  <app-company-my-dashboard></app-company-my-dashboard>
+} 
+   -->
+
+
+    <div class="card card-custom bg-light-primary shadow-sm mb-5" style="height: 250px;">
+        <div class="card-body d-flex align-items-center justify-content-center">
+            <div class="text-center">
+                <app-keenicon name="exclamation-circle" class="text-warning fs-5x mb-5"></app-keenicon>
+                <h2 class="fw-bold mb-5">We'll be back soon</h2>
+                <p class="fs-5">
+                    This component is currently under refactor.
+                </p>
+            </div>
+        </div>
+    </div>

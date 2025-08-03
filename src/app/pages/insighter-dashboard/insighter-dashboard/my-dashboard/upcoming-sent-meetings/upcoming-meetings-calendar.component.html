@@ -1,0 +1,156 @@
+<!-- Weekly Calendar Header -->
+<div class="card card-flush h-lg-100">
+  <div class="card-header pt-5">
+    <div class="d-flex align-items-center">
+      <div class="me-3">
+        <i class="fas fa-calendar-alt text-info fs-2x"></i>
+      </div>
+      <div class="flex-grow-1">
+        <h3 class="card-title text-gray-800 fw-bold mb-1">
+          {{ getCurrentMonth() }}
+        </h3>
+        <div class="d-flex align-items-center">
+          <span class="badge badge-light-info me-2">
+            <i class="fas fa-calendar-week me-1"></i>
+            {{ 'CALENDAR.WEEK_VIEW' | translate }}
+          </span>
+          <span class="text-muted fs-7">
+            {{ getTotalMeetingsThisWeek() }} {{ 'MEETINGS.MEETINGS' | translate }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="d-flex justify-content-center align-items-center py-10">
+      <div class="spinner-border text-info" role="status">
+        <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
+      </div>
+    </div>
+
+    <!-- Calendar Grid -->
+    <div *ngIf="!isLoading" class="row g-2">
+      <!-- Time Column -->
+      <div class="col-1 d-none d-lg-block">
+        <div class="text-center text-muted fw-semibold mb-3 fs-8">
+          {{ 'CALENDAR.TIME' | translate }}
+        </div>
+        <div class="d-flex flex-column gap-2">
+          <div class="text-center text-muted fs-8 py-2" style="height: 60px; line-height: 60px;">09 AM</div>
+          <div class="text-center text-muted fs-8 py-2" style="height: 60px; line-height: 60px;">10 AM</div>
+          <div class="text-center text-muted fs-8 py-2" style="height: 60px; line-height: 60px;">11 AM</div>
+          <div class="text-center text-muted fs-8 py-2" style="height: 60px; line-height: 60px;">12 PM</div>
+          <div class="text-center text-muted fs-8 py-2" style="height: 60px; line-height: 60px;">01 PM</div>
+          <div class="text-center text-muted fs-8 py-2" style="height: 60px; line-height: 60px;">02 PM</div>
+        </div>
+      </div>
+
+      <!-- Days Columns -->
+      <div 
+        *ngFor="let day of weekDays; let i = index" 
+        [ngClass]="'col-12 col-sm-6 col-lg-' + (12 / (weekDays.length - (weekDays.length > 3 ? 1 : 0)))"
+        class="calendar-day-column">
+        
+        <!-- Day Header -->
+        <div class="text-center mb-3 p-3 rounded" 
+             [ngClass]="day.isToday ? 'bg-light-info' : 'bg-light border border-light-gray'">
+          <div class="fw-bold fs-6" [ngClass]="day.isToday ? 'text-info' : 'text-gray-600'">
+            {{ day.dayNumber }}
+          </div>
+          <div class="fs-8 text-muted">
+            {{ day.dayName }}
+          </div>
+        </div>
+
+        <!-- Meetings for this day -->
+        <div class="d-flex flex-column gap-2" style="min-height: 200px;">
+          <div 
+            *ngFor="let meeting of day.meetings; trackBy: trackByMeetingId" 
+            class="meeting-card p-3 rounded border border-light-gray cursor-pointer"
+            [ngClass]="'bg-light-' + getMeetingTypeColor(meeting)"
+            (click)="openMeetingUrl(meeting)">
+            
+            <!-- Meeting Header -->
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <div class="fw-bold fs-7 text-gray-800">
+                {{ meeting.title }}
+              </div>
+              <span 
+                class="badge fs-8"
+                [ngClass]="'badge-light-' + getMeetingTypeColor(meeting)">
+                {{ isSentMeeting(meeting) ? 'MEETINGS.SENT' : 'MEETINGS.RECEIVED' | translate }}
+              </span>
+            </div>
+
+            <!-- Time -->
+            <div class="d-flex align-items-center mb-2">
+              <i class="fas fa-clock text-muted me-2 fs-8"></i>
+              <span class="fs-8 text-gray-600">
+                {{ meeting.start_time }} - {{ meeting.end_time }}
+              </span>
+            </div>
+
+            <!-- Participant -->
+            <div class="d-flex align-items-center">
+              <div class="symbol symbol-25px me-2">
+                <img 
+                  *ngIf="getParticipantAvatar(meeting); else initialsTemplate" 
+                  [src]="getParticipantAvatar(meeting)" 
+                  class="rounded-circle" 
+                  [alt]="getParticipantName(meeting)">
+                <ng-template #initialsTemplate>
+                  <div class="symbol-label fs-8 fw-bold" 
+                       [ngClass]="'bg-light-' + getMeetingTypeColor(meeting) + ' text-' + getMeetingTypeColor(meeting)">
+                    {{ getParticipantInitials(meeting) }}
+                  </div>
+                </ng-template>
+              </div>
+              <div class="flex-grow-1">
+                <div class="fs-8 fw-semibold text-gray-700">
+                  {{ getParticipantName(meeting) }}
+                </div>
+              </div>
+
+              <!-- Join Button -->
+              <div *ngIf="canJoinMeeting(meeting)" class="ms-2">
+                <i class="fas fa-video text-info fs-7" 
+                   [title]="'MEETINGS.JOIN_MEETING' | translate"></i>
+              </div>
+            </div>
+
+            <!-- Meeting URL Indicator -->
+            <div *ngIf="!canJoinMeeting(meeting)" class="mt-2">
+              <span class="fs-8 text-muted">
+                <i class="fas fa-clock me-1"></i>
+                {{ 'MEETINGS.WAITING_FOR_LINK' | translate }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Empty State for day -->
+          <div *ngIf="day.meetings.length === 0" 
+               class="d-flex flex-column align-items-center justify-content-center py-5 text-center">
+            <i class="fas fa-calendar-day text-muted fs-3x mb-3 opacity-25"></i>
+            <span class="text-muted fs-8">
+              {{ 'MEETINGS.NO_MEETINGS' | translate }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State for entire week -->
+    <div *ngIf="!isLoading && getTotalMeetingsThisWeek() === 0" 
+         class="d-flex flex-column align-items-center justify-content-center py-10 text-center">
+      <i class="fas fa-calendar-alt text-muted fs-3x mb-5 opacity-25"></i>
+      <h4 class="text-muted mb-3">
+        {{ 'MEETINGS.NO_MEETINGS_THIS_WEEK' | translate }}
+      </h4>
+      <span class="text-muted fs-6">
+        {{ 'MEETINGS.NO_MEETINGS_DESCRIPTION' | translate }}
+      </span>
+    </div>
+  </div>
+</div>

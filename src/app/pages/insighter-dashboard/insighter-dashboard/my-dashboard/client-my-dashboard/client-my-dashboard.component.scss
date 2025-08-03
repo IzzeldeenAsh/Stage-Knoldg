@@ -1,0 +1,11 @@
+.border-0{
+    border: none !important;
+}
+
+.transition-arrow {
+    transition: transform 0.3s ease;
+}
+
+.card:hover .transition-arrow {
+    transform: translateX(5px);
+}
