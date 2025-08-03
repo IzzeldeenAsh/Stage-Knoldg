@@ -2,6 +2,8 @@ export const locale = {
   lang: "ar",
   data: {
     COUNTRIES_REQUIRED: 'الدول مطلوبة',
+    DISCOVER:'استكشف',
+    START_NOW:'بدء الآن',
     GENERATE_AI_INFORMATION: "إنشاء معلومات المعرفة بواسطة الذكاء الاصطناعي",
     NOTES_REQUIRED_FOR_REJECTION:'ملاحظات مطلوبة في حال الرفض',
     REGENERATE_AI_INFORMATION: "إعادة إنشاء معلومات المعرفة بواسطة الذكاء الاصطناعي",
@@ -1350,6 +1352,11 @@ INSIGHTER_REQUESTS: {
       "RATE":"التكلفة",
       "JOIN":"انضم",
       "JOINING":"جاري الانضمام",
+      "WEEK_VIEW": "عرض الأسبوع",
+      "TIME": "الوقت",
+      "NO_MEETINGS_THIS_WEEK": "لا توجد اجتماعات هذا الأسبوع",
+      "NO_MEETINGS_DESCRIPTION": "ليس لديك اجتماعات مجدولة لهذا الأسبوع.",
+      "WAITING_FOR_LINK": "في انتظار رابط الاجتماع",
      
       "POSTPONE_NOTES_REQUIRED": "ملاحظات التؤجيل مطلوبة",
       "FILTERS": {
@@ -1441,5 +1448,9 @@ INSIGHTER_REQUESTS: {
 }
 },
 
+"CALENDAR": {
+  "WEEK_VIEW": "عرض الأسبوع",
+  "TIME": "الوقت"
+}
 
 }

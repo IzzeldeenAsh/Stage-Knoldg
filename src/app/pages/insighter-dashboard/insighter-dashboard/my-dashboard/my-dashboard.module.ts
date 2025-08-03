@@ -7,6 +7,10 @@ import { KnowledgeTypesStatisticsComponent } from './knowledge-types-statistics/
 import { EmployeeKnowledgeStatisticsComponent } from './employee-knowledge-statistics/employee-knowledge-statistics.component';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { DonutEmployeeChartComponent } from './donut-employee-chart/donut-employee-chart.component';
+import { ClientMyDashboardComponent } from './client-my-dashboard/client-my-dashboard.component';
+import { CompanyMyDashboardComponent } from './company-my-dashboard/company-my-dashboard.component';
+import { InsighterMyDashboardComponent } from './insighter-my-dashboard/insighter-my-dashboard.component';
+import { UpcomingMeetingsCalendarComponent } from './upcoming-sent-meetings/upcoming-meetings-calendar.component';
 
 const routes: Routes = [
   {
@@ -20,7 +24,11 @@ const routes: Routes = [
     MyDashboardComponent,
     KnowledgeTypesStatisticsComponent,
     EmployeeKnowledgeStatisticsComponent,
-    DonutEmployeeChartComponent
+    DonutEmployeeChartComponent,
+    ClientMyDashboardComponent,
+    CompanyMyDashboardComponent,
+    InsighterMyDashboardComponent,
+    UpcomingMeetingsCalendarComponent
   ],
   imports: [
     CommonModule,

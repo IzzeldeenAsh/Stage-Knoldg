@@ -4,6 +4,8 @@ export const locale = {
 
   data: {
     COUNTRIES_REQUIRED: 'Countries are required',
+    DISCOVER:'Discover',
+    START_NOW:'Start Now',
     SHOW_LESS:'Show Less',
     SHOW_MORE:'Show More',
     NOTES_REQUIRED_FOR_REJECTION:'Notes are required for rejection',
@@ -960,7 +962,10 @@ Your wealth of knowledge is valued and many are eager to learn from it.
         "PAST": "Passed"
       },
       "NO_MEETINGS": "No meetings found",
-      "NO_MEETINGS_DESC": "You don't have any meetings scheduled at the moment.",
+      "NO_MEETINGS_DESC": "You don't have any meetings scheduled at the moment.", 
+      "NO_MEETINGS_THIS_WEEK": "No meetings this week",
+      "NO_MEETINGS_DESCRIPTION": "You have no upcoming meetings scheduled for this week.",
+      "WAITING_FOR_LINK": "Meeting link pending",
       "NO_DESCRIPTION": "No description available",
       "INSIGHTER": "Insighter",
       "SHOWING": "Showing",
@@ -1515,5 +1520,10 @@ UPLOAD: 'Upload',
   "COMPANY_CONSULTING_FIELDS": "Company Consulting Fields",
   "CERTIFICATIONS": "Certifications",
   "COMPANY_CERTIFICATIONS": "Company Certifications",
+  
+  "CALENDAR": {
+    "WEEK_VIEW": "Week View",
+    "TIME": "Time"
+  }
  
 };

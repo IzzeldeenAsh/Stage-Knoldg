@@ -155,11 +155,38 @@ export class ProfileService {
     return userStr ? JSON.parse(userStr) : null;
   }
 
-   isClient():Observable<any>{
+  isClient():Observable<any>{
     return this.getProfile().pipe(
       map(profile => {
         const userRoles = profile.roles || [];
         return userRoles.includes("client") && userRoles.length ==1;
+      })
+    );
+  }
+
+  isInsighter():Observable<any>{
+    return this.getProfile().pipe(
+      map(profile => {
+        const userRoles = profile.roles || [];
+        return userRoles.includes("insighter") 
+      })
+    );
+  }
+
+  isCompanyInsighter():Observable<any>{
+    return this.getProfile().pipe(
+      map(profile => {
+        const userRoles = profile.roles || [];
+        return userRoles.includes("company-insighter") 
+      })
+    );
+  }
+
+  isCompany():Observable<any>{
+    return this.getProfile().pipe(
+      map(profile => {
+        const userRoles = profile.roles || [];
+        return userRoles.includes("company") 
       })
     );
   }
