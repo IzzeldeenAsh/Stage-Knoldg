@@ -171,7 +171,7 @@
                   </button>
                 </div>
                 <div class="p-card-body">
-                  <div class="nav-item"  *ngIf="!(isClient$ | async)" [routerLink]="['my-dashboard']" routerLinkActive="active" 
+                  <div class="nav-item"   [routerLink]="['my-dashboard']" routerLinkActive="active" 
                        [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.OVERVIEW' | translate) : null"
                        pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.OVERVIEW' | translate) : '' }}"
                        tooltipPosition="right"
