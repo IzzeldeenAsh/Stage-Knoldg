@@ -97,7 +97,7 @@
     </div>
 
     <!-- Empty state - start building knowledge library -->
-    <ng-container *ngIf="!(isClientOnly | async)">
+    <ng-container *ngIf="!hasRole('company')">
         <div class="col-12 mb-5 mb-xl-10" *ngIf="!hasRole('insighter') && shouldShowEmptyState()">
             <div class="card card-custom bg-body border-1 h-md-100">
                 <div class="card-body d-flex justify-content-center flex-column align-items-center py-15">
