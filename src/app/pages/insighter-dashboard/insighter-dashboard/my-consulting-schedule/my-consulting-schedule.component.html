@@ -200,6 +200,13 @@
                 </small>
               </div>
             </div>
+            <div *ngIf="exceptionGroup.errors?.['duplicateException']" class="validation-error-row">
+              <div class="validation-error">
+                <small class="error-message" style="color: #f44336;">
+                  {{ lang === 'ar' ? 'لا يمكن إضافة يوم استثناء بنفس التاريخ والوقت' : 'Cannot add duplicate exception days at the same time' }}
+                </small>
+              </div>
+            </div>
             
             <!-- Rate validation removed as rate is now hidden and defaulted to 0 -->
           </div>

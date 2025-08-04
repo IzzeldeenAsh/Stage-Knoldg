@@ -1,9 +1,9 @@
-<div class="card">
+<div class="card card-flush h-md-100 mb-5 mb-xl-10">
   <div class="card-header pt-5">
     <!--begin::Title-->
     <div class="card-title d-flex flex-column">
-      <span class="fs-2 fw-bold text-gray-800">{{ 'KNOWLEDGE_TYPES.TITLE' | translate }}</span>
-      <span class="text-gray-500 pt-1 fw-semibold fs-6">{{ 'KNOWLEDGE_TYPES.SUBTITLE' | translate }}</span>
+      <span class="fs-5 fw-bold text-gray-800">{{ 'KNOWLEDGE_TYPES.TITLE' | translate }}</span>
+      <span class="text-gray-500 pt-1 fw-semibold fs-7">{{ 'KNOWLEDGE_TYPES.SUBTITLE' | translate }}</span>
     </div>
     <!--end::Title-->
   </div>
@@ -37,27 +37,5 @@
       </apx-chart>
     </div>
     
-    <div *ngIf="!loading && !error && (!chartOptions || !chartOptions.series || chartOptions.series.length === 0)" class="text-center py-5">
-      <div class="text-muted">
-        <div class="card card-custom bg-body border-1 h-md-100">
-          <div class="card-body d-flex justify-content-center flex-column align-items-center py-15">
-              <img src="./assets/media/illustrations/misc/buildup_dashboard.svg" 
-                   class="h-200px mb-5" alt="Empty Dashboard"> 
-              
-              <div class="position-relative text-gray-800 fs-1 z-index-2 fw-bold mb-5 text-center">
-                  {{ 'EMPTY_DASHBOARD.NO_PUBLISHED_KNOWLEDGE' | translate }}
-              </div>
-              
-              <span class="text-gray-600 fw-semibold fs-6 mb-7 text-center mw-500px">
-                  {{ 'EMPTY_DASHBOARD.DESCRIPTION' | translate }}
-              </span>
-              
-              <a [routerLink]="['/app/add-knowledge/stepper']" class="btn btn-primary fw-bold">
-                  <i class="fas fa-plus me-2"></i>
-                  {{ 'EMPTY_DASHBOARD.ADD_BUTTON' | translate }}
-              </a>
-          </div>
-      </div>
-    </div>
-  </div>
+ 
 </div>

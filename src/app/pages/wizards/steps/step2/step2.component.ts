@@ -1,6 +1,8 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit, OnChanges, SimpleChanges, ViewChild,AfterViewInit, ChangeDetectorRef    } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl, ValidationErrors, FormControl } from '@angular/forms';
-import { Observable, Subscription, fromEvent, map, startWith, forkJoin, of } from 'rxjs';
+import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl, ValidationErrors, FormControl, AsyncValidatorFn } from '@angular/forms';
+import { Observable, Subscription, fromEvent, map, startWith, forkJoin, of, timer } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { debounceTime, switchMap, catchError } from 'rxjs/operators';
 import { ICreateAccount } from '../../create-account.helper';
 import { ConsultingField, ConsultingFieldsService } from 'src/app/_fake/services/admin-consulting-fields/consulting-fields.service';
 import { Message } from 'primeng/api';
@@ -57,13 +59,46 @@ export class Step2Component implements OnInit, OnChanges, OnDestroy  {
       return null;
     };
   }
+
+  // Async validator to check if legal name already exists
+  legalNameExistsValidator(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      if (!control.value || control.value.trim() === '') {
+        return of(null); // Don't validate empty values
+      }
+
+      return timer(500).pipe( // Debounce for 500ms
+        switchMap(() => {
+          return this.http.post<{exists: boolean}>('https://api.knoldg.com/api/account/insighter/company/name-exists', {
+            legal_name: control.value.trim()
+          }, {
+            headers: new HttpHeaders({
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              'Accept-Language': this.lang,
+              'X-Timezone': Intl.DateTimeFormat().resolvedOptions().timeZone,
+            })
+          }).pipe(
+            map(response => {
+              return response.exists ? { legalNameExists: true } : null;
+            }),
+            catchError(() => {
+              // In case of API error, don't block the form
+              return of(null);
+            })
+          );
+        })
+      );
+    };
+  }
   constructor(
     private fb: FormBuilder,
     private _KnoldgFieldsService: ConsultingFieldTreeService,
     private _translateion:TranslationService,
     private _isicService: IndustryService,
     private _countriesService: CountriesService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private http: HttpClient
   ) {
     this.lang=this._translateion.getSelectedLanguage();
   }
@@ -323,7 +358,7 @@ getFileIcon(file: File): string {
     } else {
       this.form = this.fb.group(
         {
-          legalName: [this.defaultValues.legalName || '', [Validators.required]],
+          legalName: [this.defaultValues.legalName || '', [Validators.required], [this.legalNameExistsValidator()]],
           companyAddress: [this.defaultValues.companyAddress || '', [Validators.required]],
           aboutCompany: [this.defaultValues.aboutCompany || '', [Validators.required]],
           country: [this.defaultValues.country || '', [Validators.required]],
@@ -397,9 +432,10 @@ onFileChange(event: any) {
     Object.keys(this.form.controls).forEach(key => {
       const control = this.form.get(key);
       control?.markAsTouched();
-      control?.updateValueAndValidity();
+      // Don't call updateValueAndValidity() as it triggers async validators unnecessarily
     });
     
-    return this.form.valid;
+    // Check if form is valid and not pending (important for async validators)
+    return this.form.valid && !this.form.pending;
   }
 }
