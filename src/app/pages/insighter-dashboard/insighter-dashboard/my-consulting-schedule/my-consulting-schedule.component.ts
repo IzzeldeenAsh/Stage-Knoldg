@@ -217,8 +217,78 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
   private initializeForm(): void {
     this.scheduleForm = this.fb.group({
       availability: this.fb.array([]),
-      exceptions: this.fb.array([])
+      exceptions: this.fb.array([], { validators: this.duplicateExceptionValidator.bind(this) })
     });
+  }
+  
+  // Custom validator to check for duplicate exceptions on the same date and time
+  private duplicateExceptionValidator(control: AbstractControl): ValidationErrors | null {
+    const exceptions = control as FormArray;
+    
+    if (!exceptions || exceptions.length <= 1) {
+      return null; // No duplicates possible with 0 or 1 item
+    }
+    
+    const duplicates: { [key: string]: number[] } = {};
+    
+    // Check each exception against others
+    for (let i = 0; i < exceptions.length; i++) {
+      const exceptionGroup = exceptions.at(i) as FormGroup;
+      
+      const exceptionDate = exceptionGroup.get('exception_date')?.value;
+      const startTime = exceptionGroup.get('start_time')?.value;
+      const endTime = exceptionGroup.get('end_time')?.value;
+      
+      // Skip invalid or incomplete entries
+      if (!exceptionDate || !startTime || !endTime) {
+        continue;
+      }
+      
+      // Create a unique key based on date and times
+      const dateStr = exceptionDate instanceof Date 
+        ? exceptionDate.toISOString().split('T')[0]
+        : typeof exceptionDate === 'string' 
+          ? exceptionDate.split('T')[0]
+          : '';
+          
+      const startTimeStr = startTime instanceof Date
+        ? `${startTime.getHours().toString().padStart(2, '0')}:${startTime.getMinutes().toString().padStart(2, '0')}`
+        : '';
+        
+      const endTimeStr = endTime instanceof Date
+        ? `${endTime.getHours().toString().padStart(2, '0')}:${endTime.getMinutes().toString().padStart(2, '0')}`
+        : '';
+        
+      const key = `${dateStr}_${startTimeStr}_${endTimeStr}`;
+      
+      if (!duplicates[key]) {
+        duplicates[key] = [];
+      }
+      
+      duplicates[key].push(i);
+    }
+    
+    // Find duplicates
+    const errors: { [index: number]: { duplicateException: true } } = {};
+    let hasDuplicates = false;
+    
+    for (const key in duplicates) {
+      if (duplicates[key].length > 1) {
+        // Mark all duplicates after the first one
+        for (let i = 1; i < duplicates[key].length; i++) {
+          const index = duplicates[key][i];
+          errors[index] = { duplicateException: true };
+          
+          // Set the error on the form group for this exception
+          const exceptionGroup = exceptions.at(index) as FormGroup;
+          exceptionGroup.setErrors({ duplicateException: true });
+          
+          hasDuplicates = true;
+        }
+      }
+    }
+    
+    return hasDuplicates ? { duplicateExceptions: errors } : null;
   }
 
   get availabilityFormArray(): FormArray {

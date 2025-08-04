@@ -4,6 +4,7 @@ import { BaseComponent } from 'src/app/modules/base.component';
 import { ICreateKnowldege, IDocument } from '../../../create-account.helper';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { AddInsightStepsService } from 'src/app/_fake/services/add-insight-steps/add-insight-steps.service';
+import { KnowledgeService } from 'src/app/_fake/services/knowledge/knowledge.service';
 import { Subscription } from 'rxjs';
 import { HorizontalComponent } from '../../../horizontal/horizontal.component';
 
@@ -74,7 +75,8 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   constructor(
     injector: Injector,
     private fb: FormBuilder,
-    private addInsightStepsService: AddInsightStepsService
+    private addInsightStepsService: AddInsightStepsService,
+    private knowledgeService: KnowledgeService
   ) {
     super(injector);
     this.documentsForm = this.fb.group({
@@ -198,6 +200,9 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
         this.calculateTotalPrice();
         this.updateParentModel({ documents: this.documents as IDocument[] }, this.validateDocuments());
         
+        // Check if this was the last document and handle knowledge deletion
+        this.checkAndHandleEmptyDocuments();
+        
         this.showInfo('', 'Upload cancelled and document removed');
         return;
       }
@@ -228,6 +233,9 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
               
               // Make sure all status indicators are updated
               this.updateUploadStatusIndicators();
+              
+              // Check if this was the last document and handle knowledge deletion
+              this.checkAndHandleEmptyDocuments();
             },
             error: (error) => {
               console.error('Error deleting document from server:', error);
@@ -255,6 +263,9 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
               this.hasActiveUploads = false;
               this.isUploadInProgress = false; // Reset upload in progress flag
               this.updateUploadStatusIndicators();
+              
+              // Check if this was the last document and handle knowledge deletion
+              this.checkAndHandleEmptyDocuments();
             }
           });
       } else {
@@ -267,6 +278,9 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
         
         // Make sure all status indicators are updated
         this.updateUploadStatusIndicators();
+        
+        // Check if this was the last document and handle knowledge deletion
+        this.checkAndHandleEmptyDocuments();
       }
     }
   }
@@ -1407,4 +1421,77 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   get documentsControls(): FormArray {
   return this.documentsForm.get('documents') as FormArray;
 }
+
+  // Method to check if all documents are deleted and handle knowledge deletion
+  private checkAndHandleEmptyDocuments(): void {
+    console.log('checkAndHandleEmptyDocuments called - Conditions check:');
+    console.log('documents.length:', this.documents.length);
+    console.log('defaultValues?.knowledgeId:', this.defaultValues?.knowledgeId);
+    console.log('knowledgeTypeCreated:', this.knowledgeTypeCreated);
+    
+    // Check if we have a knowledgeId either from defaultValues or parent component
+    const knowledgeId = this.defaultValues?.knowledgeId || this.parentComponent?.getCurrentAccount()?.knowledgeId;
+    console.log('Resolved knowledgeId:', knowledgeId);
+    
+    // Only proceed if there are no documents left and we have a knowledgeId and knowledge was created
+    if (this.documents.length === 0 && knowledgeId && knowledgeId !== 0) {
+      console.log('All conditions met - deleting knowledge with ID:', knowledgeId);
+      
+      // Call the deleteKnowledge API
+      this.knowledgeService.deleteKnowledge(knowledgeId)
+        .subscribe({
+          next: (response) => {
+            console.log('Knowledge deleted successfully:', response);
+            
+            // Reset the knowledge creation flag so user can start fresh
+            this.knowledgeTypeCreated = false;
+            
+            // Clear the knowledgeId from defaultValues locally
+            if (this.defaultValues) {
+              this.defaultValues.knowledgeId = 0;
+            }
+            
+            // Clear the knowledgeId from parent component
+            if (this.parentComponent) {
+              this.parentComponent.updateAccount({ knowledgeId: 0 }, true);
+            }
+            
+            // Show success message
+            if (this.lang === 'ar') {
+              this.showInfo('', 'تم حذف المعرفة بنجاح');
+            } else {
+              this.showInfo('', 'Knowledge deleted successfully');
+            }
+          },
+          error: (error) => {
+            console.error('Error deleting knowledge:', error);
+            
+            // Even if deletion fails, reset the flag so user can re-upload
+            this.knowledgeTypeCreated = false;
+            
+            // Clear the knowledgeId from defaultValues locally
+            if (this.defaultValues) {
+              this.defaultValues.knowledgeId = 0;
+            }
+            
+            // Clear the knowledgeId from parent component
+            if (this.parentComponent) {
+              this.parentComponent.updateAccount({ knowledgeId: 0 }, true);
+            }
+            
+            // Show error message
+            let errorMessage = 'Failed to delete knowledge';
+            if (error.error && error.error.message) {
+              errorMessage += `: ${error.error.message}`;
+            } else if (error.message) {
+              errorMessage += `: ${error.message}`;
+            }
+            
+            this.showError('', errorMessage);
+          }
+        });
+    } else {
+      console.log('Conditions not met for knowledge deletion - skipping');
+    }
+  }
 }

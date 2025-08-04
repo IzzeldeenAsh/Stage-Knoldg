@@ -339,6 +339,15 @@
           >
             {{ "INSIGHTER_WIZARD.LEGAL_NAME_REQUIRED" | translate }}
           </div>
+          <div
+            *ngIf="
+              form.get('legalName')?.hasError('legalNameExists') &&
+              form.get('legalName')?.touched
+            "
+            class="fv-plugins-message-container invalid-feedback"
+          >
+            {{ "INSIGHTER_WIZARD.LEGAL_NAME_EXISTS" | translate }}
+          </div>
         </div>
       </div>
       <!-- Legal Name -->

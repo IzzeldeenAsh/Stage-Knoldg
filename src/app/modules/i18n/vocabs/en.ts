@@ -6,6 +6,8 @@ export const locale = {
     COUNTRIES_REQUIRED: 'Countries are required',
     DISCOVER:'Discover',
     START_NOW:'Start Now',
+    START_UPLOADING:'Start Uploading!',
+    START_UPLOADING_DESRIPTION:'Share your knowledge with the world! Start uploading now!',
     SHOW_LESS:'Show Less',
     SHOW_MORE:'Show More',
     NOTES_REQUIRED_FOR_REJECTION:'Notes are required for rejection',
