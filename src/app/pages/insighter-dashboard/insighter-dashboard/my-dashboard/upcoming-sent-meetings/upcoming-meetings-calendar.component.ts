@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, Injector } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subject, combineLatest, Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MeetingsService, Meeting } from 'src/app/_fake/services/meetings/meetings.service';
@@ -40,6 +41,7 @@ export class UpcomingMeetingsCalendarComponent extends BaseComponent implements 
 
   constructor(
     injector: Injector,
+    private router: Router,
     private meetingsService: MeetingsService,
     private sentMeetingsService: SentMeetingsService,
     private profileService: ProfileService
@@ -76,21 +78,20 @@ export class UpcomingMeetingsCalendarComponent extends BaseComponent implements 
 
   private initializeWeek() {
     const today = new Date();
-    const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - today.getDay());
-    this.currentWeekStart = startOfWeek;
+    // Start from today instead of Sunday
+    this.currentWeekStart = new Date(today);
     
     this.weekDays = [];
     for (let i = 0; i < 7; i++) {
-      const date = new Date(startOfWeek);
-      date.setDate(startOfWeek.getDate() + i);
+      const date = new Date(today);
+      date.setDate(today.getDate() + i);
       
       this.weekDays.push({
         date: date,
-        dayName: date.toLocaleDateString(this.lang === 'ar' ? 'ar-EG' : 'en-US', { weekday: 'long' }),
+        dayName: date.toLocaleDateString(this.lang === 'ar' ? 'ar-EG' : 'en-US', { weekday: 'short' }),
         dayNumber: date.getDate(),
         meetings: [],
-        isToday: this.isSameDay(date, today)
+        isToday: i === 0 // First day is always today
       });
     }
   }
@@ -212,10 +213,23 @@ export class UpcomingMeetingsCalendarComponent extends BaseComponent implements 
   }
 
   getCurrentMonth(): string {
-    return this.currentWeekStart.toLocaleDateString(this.lang === 'ar' ? 'ar-EG' : 'en-US', { 
+    const today = new Date();
+    return today.toLocaleDateString(this.lang === 'ar' ? 'ar-EG' : 'en-US', { 
       month: 'long', 
       year: 'numeric' 
     });
+  }
+
+  getWeekDateRange(): string {
+    const startDate = this.weekDays[0]?.date;
+    const endDate = this.weekDays[6]?.date;
+    if (!startDate || !endDate) return '';
+    
+    const formatOptions: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
+    const start = startDate.toLocaleDateString(this.lang === 'ar' ? 'ar-EG' : 'en-US', formatOptions);
+    const end = endDate.toLocaleDateString(this.lang === 'ar' ? 'ar-EG' : 'en-US', formatOptions);
+    
+    return `${start} - ${end}, ${startDate.getFullYear()}`;
   }
 
   getTotalMeetingsThisWeek(): number {
@@ -223,8 +237,11 @@ export class UpcomingMeetingsCalendarComponent extends BaseComponent implements 
   }
 
   openMeetingUrl(meeting: Meeting | SentMeeting) {
-    if (meeting.meeting_url && meeting.meeting_url !== '?pwd=') {
-      window.open(meeting.meeting_url, '_blank');
+    // Navigate to appropriate meetings page based on meeting type
+    if (this.isSentMeeting(meeting)) {
+      this.router.navigate(['/app/insighter-dashboard/my-meetings/sent']);
+    } else {
+      this.router.navigate(['/app/insighter-dashboard/my-meetings/received']);
     }
   }
 

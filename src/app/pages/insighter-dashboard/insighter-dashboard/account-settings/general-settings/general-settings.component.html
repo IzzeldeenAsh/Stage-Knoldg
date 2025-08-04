@@ -12,7 +12,7 @@
     </app-activate-account>
 
     <!-- Transfer Account Section -->
-    <div class="mt-5 border border-1 border-gray-300 rounded-2 mb-10" *ngIf="(hasRole(['company']) ) && isActive">
+    <div class="mt-5 border border-1 border-gray-300 rounded-2 mb-10 bg-white" *ngIf="(hasRole(['company']) ) && isActive">
         <div class="col-12">
             <div class="action-section border-1 border-light w-100">
                 <div class="p-24px">
@@ -35,7 +35,7 @@
     </div>
 
     <!-- Deactivate Account Section -->
-    <div class="delete-section border-1 border-light-danger w-100 mb-10" *ngIf="(hasRole(['insighter'])) && isActive && !hasRole(['company'])">
+    <div class="delete-section border-1 border-light-danger w-100 mb-10 bg-white" *ngIf="(hasRole(['insighter'])) && isActive && !hasRole(['company'])">
         <div class="p-24px ">
             <div class="fs-2 fw-bolder mb-2">
                 {{ 'DEACTIVATE_ACCOUNT.TITLE_INSIGHTER' | translate }}
@@ -53,7 +53,7 @@
 
 
     <!-- Company Accounts - User Deactivation Option -->
-    <div class="delete-section border-1 border-light-danger w-100 mb-10" *ngIf="hasRole(['company'])">
+    <div class="delete-section border-1 border-light-danger w-100 mb-10 bg-white" *ngIf="hasRole(['company'])">
         <div class="p-24px ">
             <div class="fs-2 fw-bolder mb-2">
                 {{ 'DEACTIVATE_ACCOUNT.TITLE_ACCOUNT' | translate }}
@@ -71,7 +71,7 @@
 
 
     <!-- Delete Account Section -->
-    <div class="delete-section border-1 border-light-danger w-100" *ngIf="(!hasRole(['company-insighter']) )">
+    <div class="delete-section border-1 border-light-danger w-100 bg-white" *ngIf="(!hasRole(['company-insighter']) )">
         <div class="p-24px">
             <div class="fs-2 fw-bolder mb-2">{{ 'DEACTIVATE_ACCOUNT_WITH_DELETE.TITLE' | translate }}</div>
             

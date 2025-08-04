@@ -93,9 +93,15 @@ styleClass=""
                             <!-- Left: Icon + Entity name -->
                             <div class="d-flex align-items-center">
                                 <!-- Icon/Avatar based on request type -->
+                              @if(request.requestable.profile_photo_url){
+                                <div class="symbol symbol-40px me-4 h-40px w-40px bg-light-info d-flex align-items-center justify-content-center rounded-circle">
+                                    <img src="{{ request.requestable.profile_photo_url }}" alt="User Image" class="h-100 w-100 rounded-circle" style="object-fit: cover; object-position: top;">
+                                </div>
+                              }@else{
                                 <div class="symbol symbol-40px me-4 h-40px w-40px bg-light-info d-flex align-items-center justify-content-center rounded-circle">
                                     <i class="bi fs-4" [ngClass]="{'bi-building': request.requestable_type === 'company', 'bi-person': request.requestable_type === 'userinsighter'}"></i>
                                 </div>
+                              }
                                 
                                 <!-- Entity details -->
                                 <div>

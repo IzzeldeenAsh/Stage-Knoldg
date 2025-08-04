@@ -78,6 +78,11 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
   newChapterTitle = '';
   stepperChapters: ChapterItem[] = [];
   editorInstance: any;
+  
+  // File upload properties
+  uploadProgress: number = 0;
+  isUploading: boolean = false;
+  private readonly MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB in bytes
 
   // Language mismatch dialog properties
   showLanguageMismatchDialog = false;
@@ -801,6 +806,22 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
   onFileSelected(event: any): void {
     const file = event.target.files[0];
     if (file) {
+      // Check file size before processing
+      if (file.size > this.MAX_FILE_SIZE) {
+        const errorMessage = this.lang === 'ar' 
+          ? `الملف "${file.name}" يتجاوز الحد الأقصى للحجم (100 ميجابايت)`
+          : `File "${file.name}" exceeds the maximum size limit (100MB)`;
+        
+        this.showError(
+          this.lang === 'ar' ? 'حجم الملف كبير جداً' : 'File Size Too Large',
+          errorMessage
+        );
+        
+        // Reset the file input
+        event.target.value = '';
+        return;
+      }
+      
       this.selectedFile = file;
       this.selectedFileName = file.name;
       const extension = this.getFileExtension(file.name);
@@ -821,52 +842,75 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
   }
 
   uploadSelectedFile(file: File): void {
-    // Show loading indicator
-    this.isLoading = true;
+    // Initialize upload state
+    this.isUploading = true;
+    this.uploadProgress = 0;
+    
     const formData = new FormData();
     formData.append('file', file);
     
-    this.addInsightStepsService.uploadKnowledgeDocument(+this.knowledgeId, formData)
+    // Use the progress-enabled upload method
+    this.addInsightStepsService.uploadKnowledgeDocumentWithProgress(+this.knowledgeId, formData)
       .subscribe({
-        next: (response: any) => {
-          this.isLoading = false;
-          console.log('Upload response:', response); // Log the response for debugging
-          
-          // Handle both possible response structures
-          const documentId = response?.data?.document_id || response?.data?.knowledge_document_id;
-          
-          if (documentId) {
-            console.log('Document ID received:', documentId);
+        next: (event) => {
+          if (event.type === 'progress') {
+            // Update progress
+            this.uploadProgress = event.progress || 0;
+          } else if (event.type === 'response' && event.response && event.response.data) {
+            // Handle both possible response structures
+            const documentId = event.response.data.knowledge_document_id;
             
-            // Store the document ID for later use
-            this.documentForm.patchValue({
-              id: documentId
-            });
-            
-            // Show success message
-            if(this.lang=='ar'){
-              this.showSuccess('', 'تم رفع الملف بنجاح. يرجى إكمال تفاصيل المستند.');
-            }else{
-              this.showSuccess('', 'File uploaded successfully. Please complete the document details.');
+            if (documentId) {
+              console.log('Document ID received:', documentId);
+              
+              // Store the document ID for later use
+              this.documentForm.patchValue({
+                id: documentId
+              });
+              
+              // Show success message
+              if(this.lang=='ar'){
+                this.showSuccess('', 'تم رفع الملف بنجاح. يرجى إكمال تفاصيل المستند.');
+              }else{
+                this.showSuccess('', 'File uploaded successfully. Please complete the document details.');
+              }
+              
+              // Upload completed successfully
+              this.uploadProgress = 100;
+            } else {
+              console.error('No document ID in the response:', event.response);
+              this.showError('', 'Error in server response: no document ID returned');
             }
-            // Don't update document details here, wait for Next button
-          } else {
-            console.error('No document ID in the response:', response);
-            this.showError('', 'Error in server response: no document ID returned');
           }
         },
         error: (error) => {
-          this.isLoading = false;
           console.error('Upload error:', error);
-          this.showError('', error?.error?.message || 'Error uploading file');
-          // Reset the file input
+          
+          let errorMessage = 'Error uploading file';
+          if (error.error && error.error.message) {
+            // Check for language mismatch error
+            if (error.error.message.includes('language mismatch') || error.error.message.toLowerCase().includes('document language')) {
+              errorMessage = 'Document language mismatch: All knowledge documents must use the same language.';
+            } else {
+              errorMessage = error.error.message;
+            }
+          }
+          
+          this.showError('Upload Error', errorMessage);
+          
+          // Reset the file input and upload state
           this.selectedFile = null;
           this.selectedFileName = '';
           this.selectedFileIcon = '';
+          this.uploadProgress = 0;
           this.documentForm.patchValue({
             file: null,
             file_extension: ''
           });
+        },
+        complete: () => {
+          // Reset upload state
+          this.isUploading = false;
         }
       });
   }

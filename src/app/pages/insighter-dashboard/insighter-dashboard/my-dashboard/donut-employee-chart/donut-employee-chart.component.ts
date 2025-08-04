@@ -35,7 +35,7 @@ export class DonutEmployeeChartComponent implements OnInit {
       series: [],
       chart: {
         type: "donut",
-        height: 350
+        height: 250,
       },
       labels: [],
       colors: ["#0095E8", "#1E90FF", "#0070C0", "#4682B4", "#104E8B"],
@@ -44,7 +44,7 @@ export class DonutEmployeeChartComponent implements OnInit {
           breakpoint: 480,
           options: {
             chart: {
-              width: 200
+              width: 100
             },
             legend: {
               position: "bottom"
@@ -59,7 +59,7 @@ export class DonutEmployeeChartComponent implements OnInit {
       plotOptions: {
         pie: {
           donut: {
-            size: '65%',
+            size: '70%',
             labels: {
               show: true,
               name: {

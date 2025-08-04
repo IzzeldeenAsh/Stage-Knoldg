@@ -230,6 +230,23 @@
                                <div class="text-muted fs-7" *ngIf="selectedFile">{{ formatFileSize(selectedFile.size) }}</div>
                              </div>
                          </div>
+                         
+                         <!-- Progress Bar -->
+                         <div *ngIf="isUploading" class="mt-3">
+                           <div class="d-flex justify-content-between align-items-center mb-1">
+                             <span class="text-muted small">{{ 'UPLOADING' | translate }}...</span>
+                             <span class="text-info small fw-bold">{{ uploadProgress }}%</span>
+                           </div>
+                           <div class="progress" style="height: 6px;">
+                             <div class="progress-bar bg-info" 
+                                  role="progressbar" 
+                                  [style.width.%]="uploadProgress"
+                                  [attr.aria-valuenow]="uploadProgress"
+                                  aria-valuemin="0" 
+                                  aria-valuemax="100">
+                             </div>
+                           </div>
+                         </div>
                        </ng-container>
                      </div>
                    </div>
@@ -284,6 +301,16 @@
                        </div>
                      </div>
                    </div>
+                 </div>
+                 
+                 <!-- File size limit info -->
+                 <div class="text-muted fs-6 mb-2">
+                   <i class="ki-duotone ki-information-5 fs-3 text-info me-1">
+                     <span class="path1"></span>
+                     <span class="path2"></span>
+                     <span class="path3"></span>
+                   </i>
+                   {{ lang === 'ar' ? 'الحد الأقصى: 100 ميجابايت' : 'Max size: 100MB' }}
                  </div>
                </div>
 

@@ -72,9 +72,13 @@ export class Step5Component extends BaseComponent implements OnInit {
     // Initialize from default values
     this.initializeFromDefaults();
     
-    // Update parent model initially
+    // Update parent model initially with all step 5 data
     this.updateParentModel(
       { 
+        verificationMethod: this.form.get('verificationMethod')?.value,
+        website: this.form.get('website')?.value,
+        companyEmail: this.form.get('companyEmail')?.value,
+        code: this.form.get('code')?.value,
         registerDocument: this.defaultValues?.registerDocument,
         companyAgreement: this.agreementChecked 
       },
@@ -96,6 +100,38 @@ export class Step5Component extends BaseComponent implements OnInit {
         registerDocument: this.defaultValues.registerDocument,
       });
       this.form.get("registerDocument")?.markAsTouched();
+    }
+    
+    // Initialize verification method from default values
+    if (this.defaultValues?.verificationMethod) {
+      this.form.patchValue({
+        verificationMethod: this.defaultValues.verificationMethod,
+      });
+      this.updateConditionalValidators(this.defaultValues.verificationMethod);
+    }
+    
+    // Initialize website input from default values
+    if (this.defaultValues?.website) {
+      this.form.patchValue({
+        website: this.defaultValues.website,
+      });
+      this.form.get("website")?.markAsTouched();
+    }
+    
+    // Initialize company email from default values
+    if (this.defaultValues?.companyEmail) {
+      this.form.patchValue({
+        companyEmail: this.defaultValues.companyEmail,
+      });
+      this.form.get("companyEmail")?.markAsTouched();
+    }
+    
+    // Initialize verification code from default values
+    if (this.defaultValues?.code) {
+      this.form.patchValue({
+        code: this.defaultValues.code,
+      });
+      this.form.get("code")?.markAsTouched();
     }
     
     if (this.defaultValues?.companyAgreement) {
@@ -388,6 +424,16 @@ export class Step5Component extends BaseComponent implements OnInit {
     const verificationMethodSub = this.form.get('verificationMethod')?.valueChanges
       .subscribe(value => {
         this.updateConditionalValidators(value);
+        // Update parent model when verification method changes
+        const updateData = {
+          verificationMethod: value,
+          website: this.form.get('website')?.value,
+          companyEmail: this.form.get('companyEmail')?.value,
+          code: this.form.get('code')?.value,
+          registerDocument: this.form.get('registerDocument')?.value,
+          companyAgreement: this.agreementChecked
+        };
+        this.updateParentModel(updateData, this.checkForm());
       });
     
     if (verificationMethodSub) {
@@ -396,7 +442,16 @@ export class Step5Component extends BaseComponent implements OnInit {
 
     // Form value changes
     const formChangesSub = this.form.valueChanges.subscribe((val) => {
-      this.updateParentModel(val, this.checkForm());
+      // Create a comprehensive update object with all form values
+      const updateData = {
+        verificationMethod: val.verificationMethod,
+        website: val.website,
+        companyEmail: val.companyEmail,
+        code: val.code,
+        registerDocument: val.registerDocument,
+        companyAgreement: this.agreementChecked
+      };
+      this.updateParentModel(updateData, this.checkForm());
     });
     this.unsubscribe.push(formChangesSub);
     
