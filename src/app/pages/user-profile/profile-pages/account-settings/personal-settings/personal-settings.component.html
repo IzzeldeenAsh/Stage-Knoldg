@@ -119,6 +119,23 @@
               {{ getFieldError('country') }}
             </div>
           </div>
+          <div class="col-lg-6 mb-6 fv-row">
+            <label for="phone" class="form-label">
+              {{ "ACCOUNT_SETTINGS.PHONE" | translate }}
+            </label>
+            <input
+              class="d-block w-100"
+              [class.is-invalid]="isFieldInvalid('phone')"
+              pInputText
+              id="phone"
+              type="tel"
+              formControlName="phone"
+              placeholder="{{ 'ACCOUNT_SETTINGS.PHONE_PLACEHOLDER' | translate }}"
+            />
+            <div *ngIf="isFieldInvalid('phone')" class="invalid-feedback">
+              {{ getFieldError('phone') }}
+            </div>
+          </div>
         </div>
         <div class="row">
           <div class="col-12">
