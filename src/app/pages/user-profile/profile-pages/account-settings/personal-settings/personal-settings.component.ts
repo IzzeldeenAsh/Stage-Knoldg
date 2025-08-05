@@ -148,6 +148,7 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
       first_name: this.profile.first_name,
       last_name: this.profile.last_name,
       country: this.countries.find((country: any) => country.id === this.profile.country_id),
+      phone: this.profile.phone || '',
       bio: this.profile.bio || '',
       industries: transformedIndustries,
       consulting_field: transformedConsultingFields,
@@ -180,6 +181,7 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
       first_name: ["", Validators.required],
       last_name: ["", Validators.required],
       country: ["", Validators.required],
+      phone: [""],
       bio: [""],
       industries: [[]],
       consulting_field: [[]],
@@ -285,6 +287,11 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
     formData.append("first_name", form.get("first_name")?.value);
     formData.append("last_name", form.get("last_name")?.value);
 
+    // Add phone if provided
+    if (form.get("phone")?.value) {
+      formData.append("phone", form.get("phone")?.value);
+    }
+
     // Add country if selected
     if (form.get("country")?.value) {
       formData.append("country_id", form.get("country")?.value.id);
@@ -300,10 +307,6 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
   private appendNonClientFields(formData: FormData, form: any): void {
     formData.append("bio", form.get("bio")?.value);
     
-    if (this.profile.phone) {
-      formData.append("phone", this.profile.phone);
-    }
-
     this.appendIndustries(formData, form.get('industries')?.value || []);
     this.appendConsultingFields(formData, form.get('consulting_field')?.value || []);
   }

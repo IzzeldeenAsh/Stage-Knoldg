@@ -811,6 +811,8 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     ACCOUNT_SETTINGS: {
       PERSONAL_INFO: 'Personal Info',
       ADDRESS: 'Address',
+      PHONE: 'Phone',
+      PHONE_PLACEHOLDER: 'Phone',
       COMPANY_INFO: 'Company Info',
       RESET_PASSWORD: 'Reset Password',
       SETTINGS: 'Settings',
