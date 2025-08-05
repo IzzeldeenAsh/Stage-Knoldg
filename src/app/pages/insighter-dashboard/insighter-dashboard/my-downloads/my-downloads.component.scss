@@ -268,6 +268,38 @@
   }
 }
 
+// Scroll buttons
+.scroll-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background-color: #e1f5fe;
+  color: #009ef7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 158, 247, 0.15);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background-color: #009ef7;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(0, 158, 247, 0.3);
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  i {
+    font-size: 16px !important;
+    color: inherit;
+  }
+}
+
 // RTL Support
 [dir="rtl"] {
   .border-end {
@@ -294,4 +326,5 @@
       }
     }
   }
+  
 }

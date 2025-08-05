@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed, inject, DestroyRef, Injector, Inject } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, DestroyRef, Injector, Inject, HostListener, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
@@ -16,7 +16,7 @@ import { FileSizePipe } from 'src/app/pipes/file-size-pipe/file-size.pipe';
   templateUrl: './my-downloads.component.html',
   styleUrls: ['./my-downloads.component.scss']
 })
-export class MyDownloadsComponent extends BaseComponent implements OnInit {
+export class MyDownloadsComponent extends BaseComponent implements OnInit, AfterViewInit {
 
   //Signals
   knowledgeItems = signal<KnowledgeItem[]>([]);
@@ -38,6 +38,22 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit {
 
   // UI state
   selectedColumn = signal<'knowledge' | 'document' | 'details'>('knowledge');
+  
+  // Scroll state
+  canScrollUp = signal<boolean>(false);
+  canScrollDown = signal<boolean>(false);
+  showScrollButton = computed(() => {
+    const up = this.canScrollUp();
+    const down = this.canScrollDown();
+    
+    // Priority: show down button when both are possible (user likely wants to see more content)
+    // Only show up button when can't scroll down anymore
+    if (down) return 'down';
+    if (up) return 'up';
+    return null;
+  });
+  
+  @ViewChild('knowledgeList', { static: false }) knowledgeListElement!: ElementRef;
   
   //Computed Properties
   currentKnowledgeDocuments = computed(()=>{
@@ -63,6 +79,7 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit {
   private myDownloadsService = inject(MyDownloadsService);
   private destroyRef = inject(DestroyRef);
   private router = inject(Router);
+  private elementRef = inject(ElementRef);
 
   Math = Math;
 
@@ -97,6 +114,13 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit {
    
   }
 
+  ngAfterViewInit(): void {
+    // Check scroll state after view initializes
+    setTimeout(() => {
+      this.checkScrollState();
+    }, 100);
+  }
+
   loadMyDownloads(page: number = 1, searchTerm: string = ''): void {
     this._mydownloads.getMyDownloads(page, searchTerm || undefined)
     .pipe(takeUntilDestroyed(this.destroyRef))
@@ -112,6 +136,11 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit {
         // if(response.data.length>0 && !this.selectedKnowledge()){
         //   this.selectedKnowledge.set(response.data[0])
         // }
+        
+        // Check scroll state after data loads
+        setTimeout(() => {
+          this.checkScrollState();
+        }, 100);
       },
       error: (error)=>{
         console.error('Error loading downloads:', error);
@@ -289,6 +318,71 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit {
     };
     const ext = fileExtension?.toLowerCase() || '';
     return iconMap[ext] || iconMap.default;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event): void {
+    const target = event.target as Element;
+    const componentElement = this.elementRef.nativeElement;
+    
+    // Check if the click was outside the component
+    if (!componentElement.contains(target)) {
+      this.resetKnowledgeSelection();
+    }
+  }
+
+  private resetKnowledgeSelection(): void {
+    this.selectedKnowledge.set(null);
+    this.selectedDocument.set(null);
+  }
+
+  onKnowledgeColumnClick(): void {
+    // Reset knowledge selection when clicking anywhere in the knowledge column
+    // except on knowledge items (which have stopPropagation)
+    this.resetKnowledgeSelection();
+  }
+
+  checkScrollState(): void {
+    if (!this.knowledgeListElement) return;
+    
+    const element = this.knowledgeListElement.nativeElement;
+    const scrollTop = element.scrollTop;
+    const scrollHeight = element.scrollHeight;
+    const clientHeight = element.clientHeight;
+    
+    // Add buffer to prevent flickering near boundaries
+    const buffer = 5;
+    
+    this.canScrollUp.set(scrollTop > buffer);
+    this.canScrollDown.set(scrollTop < scrollHeight - clientHeight - buffer);
+  }
+
+  scrollUp(): void {
+    if (!this.knowledgeListElement) return;
+    
+    const element = this.knowledgeListElement.nativeElement;
+    element.scrollBy({
+      top: -100,
+      behavior: 'smooth'
+    });
+    
+    setTimeout(() => this.checkScrollState(), 300);
+  }
+
+  scrollDown(): void {
+    if (!this.knowledgeListElement) return;
+    
+    const element = this.knowledgeListElement.nativeElement;
+    element.scrollBy({
+      top: 100,
+      behavior: 'smooth'
+    });
+    
+    setTimeout(() => this.checkScrollState(), 300);
+  }
+
+  onKnowledgeListScroll(): void {
+    this.checkScrollState();
   }
 
 } 

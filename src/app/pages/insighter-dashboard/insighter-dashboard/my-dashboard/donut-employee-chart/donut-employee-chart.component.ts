@@ -21,6 +21,7 @@ export type ChartOptions = {
 export class DonutEmployeeChartComponent implements OnInit {
   loading = false;
   error = false;
+  hasEnoughData = false;
   employees: any[] = [];
   @Output() hasMultipleEmployeesDonut = new EventEmitter<boolean>();
   @ViewChild("chart") chart: any;
@@ -35,7 +36,7 @@ export class DonutEmployeeChartComponent implements OnInit {
       series: [],
       chart: {
         type: "donut",
-        height: 250,
+        height: 180
       },
       labels: [],
       colors: ["#0095E8", "#1E90FF", "#0070C0", "#4682B4", "#104E8B"],
@@ -53,11 +54,14 @@ export class DonutEmployeeChartComponent implements OnInit {
         }
       ],
       legend: {
-        position: 'bottom',
-        horizontalAlign: 'center'
+        position: 'right',
+        horizontalAlign: 'start',
+        offsetY: 20
       },
       plotOptions: {
         pie: {
+          startAngle: 0,
+          offsetX: -10, // Moves the pie chart to the left
           donut: {
             size: '70%',
             labels: {
@@ -133,12 +137,16 @@ export class DonutEmployeeChartComponent implements OnInit {
         this.loading = false;
         this.error = false;
         console.log(this.employees);
-        // Only emit true if there are multiple employees (more than just the manager)
-        const hasEnoughData = this.employees.length > 0;
-        this.hasMultipleEmployeesDonut.emit(hasEnoughData);
+        // Only emit true if there are employees and they have meaningful statistics
+        this.hasEnoughData = this.employees.length > 0 && 
+          this.employees.some(employee => {
+            const stats = employee.statistics;
+            return stats && (stats.report > 0 || stats.data > 0 || stats.insight > 0 || stats.manual > 0 || stats.course > 0);
+          });
+        this.hasMultipleEmployeesDonut.emit(this.hasEnoughData);
         
         // Only initialize chart if we have enough data to display
-        if (hasEnoughData) {
+        if (this.hasEnoughData) {
           const stats = this.extractKnowledgeStatistics(this.employees);
           
           // Update chart data
