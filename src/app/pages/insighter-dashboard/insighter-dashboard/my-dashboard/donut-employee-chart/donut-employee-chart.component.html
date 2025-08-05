@@ -1,41 +1,45 @@
-<div class="card card-flush h-md-100 mb-5 mb-xl-10">
-  <div class="card-header pt-5">
-    <!--begin::Title-->
-    <div class="card-title d-flex flex-column">
-      <span class="fs-5 fw-bold text-gray-800">{{ 'KNOWLEDGE_TYPES.TITLE' | translate }}</span>
-      <span class="text-gray-500 pt-1 fw-semibold fs-7">{{ 'KNOWLEDGE_TYPES.SUBTITLE' | translate }}</span>
-    </div>
-    <!--end::Title-->
-  </div>
-  <div class="card-body">
 
-    <!--end::Header-->
-    <div *ngIf="loading" class="text-center py-5">
-      <div class="spinner-border text-info" role="status">
-        <span class="visually-hidden">Loading...</span>
+@if(hasEnoughData){
+  <div class="card card-flush">
+    <div class="card-header pt-5">
+      <!--begin::Title-->
+      <div class="card-title d-flex flex-column">
+        <span class="fs-1 fw-bold text-gray-800">{{ 'KNOWLEDGE_TYPES.TITLE' | translate }}</span>
+        <span class="text-gray-500 pt-1 fw-semibold fs-5">{{ 'KNOWLEDGE_TYPES.SUBTITLE' | translate }}</span>
       </div>
+      <!--end::Title-->
     </div>
-    
-    <div *ngIf="error && !loading" class="text-center py-5">
-      <div class="text-muted">
-        <i class="fas fa-exclamation-triangle text-warning me-2"></i>
-        Error loading statistics
+    <div class="card-body">
+  
+      <!--end::Header-->
+      <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border text-info" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
       </div>
-    </div>
-    
-    <div *ngIf="!loading && !error && chartOptions && chartOptions.series && chartOptions.series.length > 0" class="chart-container">
-      <apx-chart
-        #chart
-        [series]="chartOptions.series!"
-        [chart]="chartOptions.chart!"
-        [dataLabels]="chartOptions.dataLabels!"
-        [plotOptions]="chartOptions.plotOptions!"
-        [legend]="chartOptions.legend!"
-        [responsive]="chartOptions.responsive!"
-        [labels]="chartOptions.labels!"
-        [colors]="chartOptions.colors!">
-      </apx-chart>
-    </div>
-    
- 
+      
+      <div *ngIf="error && !loading" class="text-center py-5">
+        <div class="text-muted">
+          <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+          Error loading statistics
+        </div>
+      </div>
+      
+      <div *ngIf="!loading && !error && chartOptions && chartOptions.series && chartOptions.series.length > 0" class="chart-container" style="display: flex; justify-content: flex-start; margin-left: 20px;">
+        <apx-chart
+          #chart
+          [series]="chartOptions.series!"
+          [chart]="chartOptions.chart!"
+          [dataLabels]="chartOptions.dataLabels!"
+          [plotOptions]="chartOptions.plotOptions!"
+          [legend]="chartOptions.legend!"
+          [responsive]="chartOptions.responsive!"
+          [labels]="chartOptions.labels!"
+          [colors]="chartOptions.colors!">
+        </apx-chart>
+      </div>
+      
+   
+  </div>
 </div>
+}

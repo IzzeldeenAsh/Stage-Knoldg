@@ -10,8 +10,8 @@ export class CompanyMyDashboardComponent extends BaseComponent {
   constructor(injector :Injector){
     super(injector);
   }
-    showDonutChart = false;
-    showEmployeeStats = false;
+    showDonutChart = true;
+    showEmployeeStats = true;
     onHasMultipleEmployees($event: boolean) {
     this.showEmployeeStats = $event;
     console.log('hasMultipleEmployees',$event);

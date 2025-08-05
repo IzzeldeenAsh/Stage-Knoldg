@@ -505,7 +505,23 @@
       class="w-100"
       (onChange)="onTopicSelected($event.value)"
       [ngClass]="{'is-invalid': form.get('topicId')?.hasError('required') && form.get('topicId')?.touched, 'border-red': form.get('topicId')?.hasError('required') && form.get('topicId')?.touched}"
-    ></p-dropdown>
+    >
+      <ng-template pTemplate="emptyfilter">
+        <div class="p-3 text-center">
+          <div class="text-muted mb-2">{{ 'COMMON.NO_RESULTS_FOUND' | translate }}</div>
+          <button 
+            type="button" 
+            class="btn btn-sm btn-light-info"
+            (click)="selectOtherOption()">
+            <i class="ki-duotone ki-plus fs-6 me-1">
+              <span class="path1"></span>
+              <span class="path2"></span>
+            </i>
+            {{ 'COMMON.ADD_YOUR_TOPIC' | translate }}
+          </button>
+        </div>
+      </ng-template>
+    </p-dropdown>
     <div *ngIf="form.controls['topicId']?.invalid && form.controls['topicId']?.touched" class="text-danger">
       {{ "TOPIC_REQUIRED" | translate }}
     </div>

@@ -1,51 +1,102 @@
 
 
 <div class="row">
-    <div class="col-md-6 col-12">
+    <div class="d-flex flex-column gap-6" [ngClass]="{'col-12 col-md-5': showDonutChart, 'col-12 col-md-6': !showDonutChart}">
+        @if(showDonutChart){
+            <app-donut-employee-chart (hasMultipleEmployeesDonut)="onHasMultipleEmployeesDonut($event)"></app-donut-employee-chart>
+            <div class="card card-xl-stretch border-0"
+            [ngClass]="{'rtl-bg-flip': lang === 'ar'}"
+            [ngStyle]="{
+              'background-image': 'url(./assets/media/illustrations/misc/buildup_dashboard.svg)',
+              'background-size': '40%',
+              'background-repeat': 'no-repeat',
+              'background-position':'100% 40%',
+              'border-radius': '10px',
+              'flex-grow': '1'
+            }"
+            >
+            <!--begin::Body-->
+            <div class="card-body d-flex flex-column   flex-wrap" >
+                    <div class="d-flex flex-column align-items-start">
+                        <h1 class="fs-2x fw-bolder text-gray-800 pb-3 m-0 p-0">   {{ 'START_UPLOADING' | translate }}</h1>
+                        <p class="text-start text-gray-800 pb-4 fw-semibold fs-5" [innerHTML]="'START_UPLOADING_DESRIPTION' | translate">
+                            
+                        </p>
+                    </div>
+                    <div >
+                        <a [routerLink]="['/app/add-knowledge/stepper']" class="btn btn-info fw-semibold px-6 py-3" data-bs-toggle="modal" data-bs-target="#kt_modal_create_campaign">
+                        {{"MENU.MY_LIBRARY" | translate}}
+                        </a> 
+                    </div>
+            </div>
+            <!--end::Body-->
+            </div>
+        } @else{
+                <!--begin::Tiles Widget 4-->
+                <div class="card  card-xl-stretch border-0"
+                [ngClass]="{'rtl-bg-flip': lang === 'ar'}"
+                [ngStyle]="{
+                  'background-image': 'url(./assets/media/illustrations/misc/buildup_dashboard.svg)',
+                  'background-size': '40%',
+                  'background-repeat': 'no-repeat',
+                  'background-position':'100% 40%',
+                  'border-radius': '10px',
+                }"
+                >
+                <!--begin::Body-->
+                <div class="card-body d-flex flex-column   flex-wrap" >
+                        <div class="d-flex flex-column align-items-start">
+                            <h1 class="fs-2x fw-bolder text-gray-800 pb-3 m-0 p-0">   {{ 'START_UPLOADING' | translate }}</h1>
+                            <p class="text-start text-gray-800 pb-4 fw-semibold fs-5" [innerHTML]="'START_UPLOADING_DESRIPTION' | translate">
+                                
+                            </p>
+                        </div>
+                        <div >
+                            <a [routerLink]="['/app/add-knowledge/stepper']" class="btn btn-info fw-semibold px-6 py-3" data-bs-toggle="modal" data-bs-target="#kt_modal_create_campaign">
+                            {{"MENU.MY_LIBRARY" | translate}}
+                            </a> 
+                        </div>
+                </div>
+                <!--end::Body-->
+                </div>
+              
+                <!--end::Tiles Widget 4-->
+        }
+    </div>
+    <div [ngClass]="{'col-12 col-md-7': showDonutChart, 'col-12 col-md-6': !showDonutChart}">
+        @if(showEmployeeStats){
+            <app-employee-knowledge-statistics (hasMultipleEmployees)="onHasMultipleEmployees($event)"></app-employee-knowledge-statistics>
+        } @else{
+
         <!--begin::Tiles Widget 4-->
-        <div class="card h-300px card-xl-stretch border-0"
-        style="
-        background-image: url('./assets/media/illustrations/misc/buildup_dashboard.svg');
-        background-size: 50%;
-        background-repeat: no-repeat;
-        background-position: 80% 80%;
-        border-radius: 10px;
-        margin-bottom: 10px;
-        "
+        <div class="card card-xl-stretch border-0"
+        [ngClass]="{'rtl-bg-flip': lang === 'ar'}"
+        [ngStyle]="{
+          'background-image': 'url(./assets/media/illustrations/misc/buildup_team.svg)',
+          'background-size': 'cover',
+          'background-repeat': 'no-repeat',
+          'background-position': 'center',
+          'border-radius': '10px',
+          'margin-bottom': '10px'
+        }"
         >
         <!--begin::Body-->
         <div class="card-body d-flex flex-column   flex-wrap" >
                 <div class="d-flex flex-column align-items-start">
-                    <h1 class="fs-2x fw-bolder text-gray-800 m-0 p-0">   {{ 'START_UPLOADING' | translate }}</h1>
-                    <p class="text-start text-gray-800 fw-semibold fs-5">
-                        {{ 'START_UPLOADING_DESRIPTION' | translate }}
+                    <h1 class="fs-2x fw-bolder text-gray-800 pb-3 m-0 p-0">   {{ 'BUILD_YOUR_TEAM' | translate }}</h1>
+                    <p class="text-start text-gray-800 pb-4 fw-semibold fs-5" [innerHTML]="'BUILD_YOUR_TEAM_DESCRIPTION' | translate">
+                        
                     </p>
                 </div>
                 <div >
-                    <a [routerLink]="['/app/insighter-register/vertical']" class="btn btn-info fw-semibold px-6 py-3" data-bs-toggle="modal" data-bs-target="#kt_modal_create_campaign">
-                    {{"START_NOW" | translate}}
+                    <a [routerLink]="['/app/insighter-dashboard/my-company-settings']" class="btn btn-info fw-semibold px-6 py-3" data-bs-toggle="modal" data-bs-target="#kt_modal_create_campaign">
+                    {{"MY_COMPANY.ADD_EMPLOYEE" | translate}}
                     </a> 
                 </div>
         </div>
         <!--end::Body-->
         </div>
         <!--end::Tiles Widget 4-->
-    </div>
-    <div class="col-md-8 col-12">
-     
-    </div>
-  
-</div>
-
-<div class="row">
-    <div class="col-12 col-md-4">
-        @if(showDonutChart){
-            <app-donut-employee-chart (hasMultipleEmployeesDonut)="onHasMultipleEmployeesDonut($event)"></app-donut-employee-chart>
-        }
-    </div>
-    <div class="col-12 col-md-8">
-        @if(showEmployeeStats){
-            <app-employee-knowledge-statistics (hasMultipleEmployees)="onHasMultipleEmployees($event)"></app-employee-knowledge-statistics>
         }
     </div>
 
