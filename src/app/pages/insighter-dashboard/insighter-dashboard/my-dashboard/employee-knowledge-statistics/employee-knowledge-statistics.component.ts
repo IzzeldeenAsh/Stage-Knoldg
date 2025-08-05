@@ -59,7 +59,7 @@ export class EmployeeKnowledgeStatisticsComponent implements OnInit {
     series: [],
     chart: {
       type: "bar",
-      height: 300,
+      height: 400,
       fontFamily: "Poppins, sans-serif",
       stacked: true,
       toolbar: {
@@ -85,9 +85,8 @@ export class EmployeeKnowledgeStatisticsComponent implements OnInit {
     colors: ["#0095E8", "#1E90FF", "#0070C0", "#4682B4", "#104E8B", "#000080", "#0047AB"],
     plotOptions: {
       bar: {
-        horizontal: true,
-        columnWidth: "50%",
-        barHeight: "40%",
+        horizontal: false,
+        columnWidth: "30px",
         borderRadius: 6,
         distributed: false,
         dataLabels: {
@@ -110,7 +109,11 @@ export class EmployeeKnowledgeStatisticsComponent implements OnInit {
           fontSize: '12px',
           fontWeight: 500,
           colors: "#555555"
-        }
+        },
+        rotate: -45,
+        hideOverlappingLabels: true,
+        trim: true,
+        maxHeight: 120
       },
       axisBorder: {
         show: false
@@ -177,18 +180,18 @@ export class EmployeeKnowledgeStatisticsComponent implements OnInit {
       position: 'back',
       xaxis: {
         lines: {
-          show: true
+          show: false
         }
       },
       yaxis: {
         lines: {
-          show: false
+          show: true
         }
       },
       padding: {
         top: 0,
         right: 0,
-        bottom: 0,
+        bottom: 10,
         left: 10
       }
     },
@@ -240,8 +243,8 @@ export class EmployeeKnowledgeStatisticsComponent implements OnInit {
     // Update any translations in chart options
     this.barChartOptions = {
       ...this.barChartOptions,
-      yaxis: {
-        ...this.barChartOptions.yaxis,
+      xaxis: {
+        ...this.barChartOptions.xaxis,
         title: {
           text: this.translationService.getTranslation('EMPLOYEE_KNOWLEDGE.EMPLOYEES')
         }

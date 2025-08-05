@@ -1,0 +1,9 @@
+.rtl-bg-flip {
+  /* Flip only the background image horizontally, not the content */
+  transform: scaleX(-1);
+
+  /* Counter-flip the content back to normal */
+  .card-body {
+    transform: scaleX(-1);
+  }
+}

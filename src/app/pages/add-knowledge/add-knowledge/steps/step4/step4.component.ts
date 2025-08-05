@@ -723,6 +723,12 @@ export class Step4Component extends BaseComponent implements OnInit {
     
     this.updateParentModel({ topicId: topicId, tag_ids: [], keywords: [] }, this.checkForm());
   }
+
+  selectOtherOption() {
+    // Set the form value to 'other' and trigger the topic selection logic
+    this.form.get('topicId')?.setValue('other');
+    this.onTopicSelected('other');
+  }
   
   // Target market related methods
   /**

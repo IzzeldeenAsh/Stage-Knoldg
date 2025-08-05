@@ -55,15 +55,19 @@
             <div class="row" style="min-height: 500px;">
 
               <!-- Column 1: Knowledge Items -->
-              <div class="col-lg-4 border-end">
+              <div class="col-lg-4 border-end" (click)="onKnowledgeColumnClick()">
                 <div class="d-flex align-items-center gap-2 mb-4 bg-light-gray px-4 py-4">
                   <h5 class="mb-0 fw-bold text-dark">{{ 'MY_DOWNLOADS.KNOWLEDGE_ITEMS' | translate }}</h5>
                   <span class="badge badge-light-info">{{ totalItems() }}</span>
             
                 </div>
                 
-                <div class="knowledge-list" style="max-height: 400px; overflow-y: auto;">
-                  @if (knowledgeItems().length === 0) {
+                <div 
+                  #knowledgeList
+                  class="knowledge-list" 
+                  style="max-height: 400px; overflow-y: auto;"
+                  (scroll)="onKnowledgeListScroll()">
+                    @if (knowledgeItems().length === 0) {
                     <div class="text-center py-5">
                       @if (currentSearchTerm()) {
                         <i class="ki-duotone ki-magnifier fs-3x text-muted mb-3">
@@ -87,7 +91,7 @@
                       <div 
                         class="knowledge-item d-flex align-items-center px-4 py-2 mb-2 border rounded cursor-pointer"
                         [class.active]="selectedKnowledge()?.uuid === knowledge.uuid"
-                        (click)="selectKnowledge(knowledge)">
+                        (click)="selectKnowledge(knowledge); $event.stopPropagation()">
                         
                         <!-- Folder Icon -->
                         <div class="me-3">
@@ -124,6 +128,33 @@
                         </div>
                       </div>
                     }
+                  }
+                </div>
+                
+                <!-- Scroll Controls -->
+                <div class="d-flex justify-content-center mt-3">
+                  @if (showScrollButton() === 'up') {
+                    <button 
+                      class="scroll-button"
+                      (click)="scrollUp(); $event.stopPropagation()"
+                      [attr.title]="'Scroll Up'">
+                      <i class="ki-duotone ki-up fs-4">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                      </i>
+                    </button>
+                  }
+                  
+                  @if (showScrollButton() === 'down') {
+                    <button 
+                      class="scroll-button"
+                      (click)="scrollDown(); $event.stopPropagation()"
+                      [attr.title]="'Scroll Down'">
+                      <i class="ki-duotone ki-down fs-4">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                      </i>
+                    </button>
                   }
                 </div>
                 
