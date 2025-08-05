@@ -744,6 +744,8 @@ INSIGHTER_REQUESTS: {
       PERSONAL_INFO: 'البيانات الشخصية',
       COMPANY_INFO: 'بيانات الشركة',
       ADDRESS: 'العنوان',
+      PHONE: 'الهاتف',
+      PHONE_PLACEHOLDER: 'الهاتف',
       RESET_PASSWORD: 'إعادة تعيين كلمة المرور',
       SETTINGS: 'الإعدادات',
       TITLE: 'إعدادات الحساب',

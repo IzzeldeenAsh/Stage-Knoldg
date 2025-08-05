@@ -182,7 +182,7 @@ export class VerticalComponent extends BaseComponent implements OnInit {
       formData.append("country_id", user.country.toString());
     }
     if (user.phoneNumber) {
-      const userPhoneNumber = (user.phoneCountryCode?.code || '') + user.phoneNumber;
+      const userPhoneNumber = "+" + (user.phoneCountryCode || '') + user.phoneNumber;
       formData.append("phone", userPhoneNumber);
     }
     if(industriesList && industriesList.length>0){
@@ -257,7 +257,7 @@ export class VerticalComponent extends BaseComponent implements OnInit {
       }
     }
     if (user.phoneCompanyNumber) {
-      const userPhoneNumber = user.phoneCountryCode.code + user.phoneCompanyNumber;
+      const userPhoneNumber = "+" + user.phoneCountryCode + user.phoneCompanyNumber;
       formData.append("company_phone", userPhoneNumber);
     }
     
