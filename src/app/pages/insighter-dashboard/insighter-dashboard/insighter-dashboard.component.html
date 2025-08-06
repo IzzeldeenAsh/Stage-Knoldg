@@ -231,8 +231,20 @@
                       {{ 'INSIGHTER.DASHBOARD.NAV.READ_LATER' | translate }}
                     </div>
                   </div>
+                  <div class="nav-item" [routerLink]="['my-meetings/sent']" routerLinkActive="active" *ngIf="!isNavCollapsed && (isClient$ | async)"
+                       [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.SENT' | translate) : null"
+                       pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.SENT' | translate) : '' }}"
+                       tooltipPosition="right"
+                       appendTo="body">
+                    <div class="item-icon">
+                      <i class="ki-duotone ki-calendar"><span class="path1"></span><span class="path2"></span></i>
+                    </div>
+                    <div class="item-label" >
+                        {{ 'INSIGHTER.DASHBOARD.NAV.MEETINGS' | translate }}
+                    </div>
+                  </div>
                   <!-- Meetings Expandable Item -->
-                  <div class="nav-item expandable" [class.expanded]="isMeetingsExpanded" *ngIf="!isNavCollapsed">
+                  <div class="nav-item expandable" [class.expanded]="isMeetingsExpanded" *ngIf="!isNavCollapsed && !(isClient$ | async)">
                     <div class="nav-item-main" (click)="toggleMeetings()">
                       <div class="item-icon">
                         <i class="ki-duotone ki-calendar"><span class="path1"></span><span class="path2"></span></i>

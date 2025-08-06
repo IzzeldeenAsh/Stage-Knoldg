@@ -17,15 +17,6 @@
               </a>
               <a class="nav-link" 
                  role="tab"
-                 [class.active]="selectedTab() === 'past'"
-                 (click)="onTabChange('past')"
-                 tabindex="0"
-                 aria-selected="selectedTab() === 'past'"
-                 (keydown.enter)="onTabChange('past')">
-                {{ 'MEETINGS.TABS.PAST' | translate }}
-              </a>
-              <a class="nav-link" 
-                 role="tab"
                  [class.active]="selectedTab() === 'pending'"
                  (click)="onTabChange('pending')"
                  tabindex="0"
@@ -35,21 +26,30 @@
               </a>
               <a class="nav-link" 
                  role="tab"
-                 [class.active]="selectedTab() === 'approved'"
-                 (click)="onTabChange('approved')"
-                 tabindex="0"
-                 aria-selected="selectedTab() === 'approved'"
-                 (keydown.enter)="onTabChange('approved')">
-                {{ 'MEETINGS.TABS.APPROVED' | translate }}
-              </a>
-              <a class="nav-link" 
-                 role="tab"
                  [class.active]="selectedTab() === 'postponed'"
                  (click)="onTabChange('postponed')"
                  tabindex="0"
                  aria-selected="selectedTab() === 'postponed'"
                  (keydown.enter)="onTabChange('postponed')">
                 {{ 'MEETINGS.TABS.POSTPONED' | translate }}
+              </a>
+              <a class="nav-link" 
+                 role="tab"
+                 [class.active]="selectedTab() === 'past'"
+                 (click)="onTabChange('past')"
+                 tabindex="0"
+                 aria-selected="selectedTab() === 'past'"
+                 (keydown.enter)="onTabChange('past')">
+                {{ 'MEETINGS.TABS.PAST' | translate }}
+              </a>
+              <a class="nav-link" 
+                 role="tab"
+                 [class.active]="selectedTab() === 'approved'"
+                 (click)="onTabChange('approved')"
+                 tabindex="0"
+                 aria-selected="selectedTab() === 'approved'"
+                 (keydown.enter)="onTabChange('approved')">
+                {{ 'MEETINGS.TABS.APPROVED' | translate }}
               </a>
             </div>
           </div>

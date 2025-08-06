@@ -243,6 +243,7 @@ export const locale = {
     HOME: {
       COMPANY_INSIGHTER: 'Company Insighter',
       BECOME_INSIGHTER: 'Become an Insighter',
+      BECOME_INSIGHTER_DESC: "Register as a knowledge provider and start uploading reports and data on the platform",
       INSIGHTER_DASHBOARD: 'Dashboard',
       LATEST_INSIGHTS: 'Latest Insights',
       TRENDING: 'Trending',
@@ -666,9 +667,10 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       MORE_INFO: "Need more information? Visit our",
       HELP_PAGE: "Help Page",
       PERSONAL_ACCOUNT: "Personal Account",
-      PERSONAL_ACCOUNT_DESC: "Need more information? Visit our",
-      CORPORATE_ACCOUNT: "Corporate Account",
-      CORPORATE_ACCOUNT_DESC: "Create corporate account to manage users",
+      PERSONAL_ACCOUNT_DESC: "Register as an Insighter to upload knowledge",
+      MORE: 'More...',
+      CORPORATE_ACCOUNT: "Company Account",
+      CORPORATE_ACCOUNT_DESC: "Start managing your team of Insighters",
       IF_NEED_MORE_INFO: "Need more information? Visit our",
       DOCUMENT_SIZE: "File size must not exceed 5MB",
       INSIGHTER_INFO: "Account Info",
@@ -918,7 +920,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
         "MEETINGS": "Meetings",
         "INVITING": "Inviting",
         "MY_DOWNLOADS": "My Downloads",
-        "READ_LATER": "My Read Later",
+        "READ_LATER": "Bookmarks",
         "MY_MEETINGS": "My Meetings",
         "MY_CONSULTING_SCHEDULE": "My Schedule",
         "DASHBOARD": "Dashboard"
@@ -957,7 +959,8 @@ Your wealth of knowledge is valued and many are eager to learn from it.
         "APPROVED": "Approved", 
         "POSTPONED": "Postponed",
         "UPCOMING": "Upcoming",
-        "PAST": "Passed"
+        "PAST": "Past",
+        "COMING": "Coming"
       },
       "NO_MEETINGS": "No meetings found",
       "NO_MEETINGS_DESC": "You don't have any meetings scheduled at the moment.",
@@ -973,7 +976,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       }
     },
    "READ_LATER": {
-    "TITLE": "My Read Later",
+    "TITLE": "Bookmarks",
     "ITEMS": "Items",
     "EMPTY_TITLE": "No items saved yet",
     "EMPTY_MESSAGE": "Items you save will appear here for later access.",
@@ -1442,7 +1445,7 @@ UPLOAD: 'Upload',
         "APPROVED": "Approved",
         "POSTPONED": "Postponed",
         "UPCOMING": "Upcoming",
-        "PAST": "Passed"
+        "PAST": "Past"
       },
       "FILTERS": {
         "ALL": "All",
@@ -1450,15 +1453,17 @@ UPLOAD: 'Upload',
         "APPROVED": "Approved",
         "POSTPONED": "Postponed",
         "UPCOMING": "Upcoming",
-        "PAST": "Passed"
+        "PAST": "Past",
+        "COMING": "Coming"
       },
       "TABS": {
         "ALL": "All",
         "PENDING": "Pending",
         "APPROVED": "Approved",
         "UPCOMING": "Upcoming",
-        "PAST": "Passed",
-        "POSTPONED": "Postponed"
+        "PAST": "Past",
+        "POSTPONED": "Postponed",
+        "COMING": "Coming"
       },
       "STATUS": {
         "PENDING": "Pending",
@@ -1466,14 +1471,15 @@ UPLOAD: 'Upload',
         "POSTPONED": "Postponed"
       },
       "SENT":{
-        "TITLE": "Sent Meetings",
+        "TITLE": "My Advisory Meetings",
         "STATS": {
           "TOTAL_MEETINGS": "Total Meetings",
           "PENDING": "Pending",
           "APPROVED": "Approved", 
           "POSTPONED": "Postponed",
           "UPCOMING": "Upcoming",
-          "PAST": "Passed"
+          "PAST": "Past",
+          "COMING": "Coming"
         }
       },
       "NO_MEETINGS": "No meetings found",
@@ -1488,7 +1494,7 @@ UPLOAD: 'Upload',
       "POSTPONE_NOTES_REQUIRED": "Postponement notes are required"
     },
     "READ_LATER": {
-      "TITLE": "My Read Later",
+      "TITLE": "Bookmarks",
       "ITEMS": "items",
       "EMPTY_TITLE": "No saved items yet",
       "EMPTY_MESSAGE": "Items you bookmark will appear here for easy access later.",

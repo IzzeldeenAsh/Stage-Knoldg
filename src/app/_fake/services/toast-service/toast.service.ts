@@ -70,29 +70,28 @@ export class ToastService  {
     if (!toastContainer) {
       toastContainer = document.createElement('div');
       // Adjust positioning based on language direction
-      const containerClass = this.lang === 'ar' 
-        ? 'position-fixed top-0 start-0 p-3 z-index-1000 toast-container' 
-        : 'position-fixed top-0 end-0 p-3 z-index-1000 toast-container';
-      toastContainer.className = containerClass;
+      toastContainer.className = 'position-fixed top-0 start-50 translate-middle-x p-3 z-index-1000 toast-container';
       document.body.appendChild(toastContainer);
     }
 
     // Create toast element if it doesn't exist
     if (!this.toastElement) {
       const toastHtml = `
-        <div class="toast fade" role="alert" aria-live="assertive" aria-atomic="true" dir="${this.lang === 'ar' ? 'rtl' : 'ltr'}">
-          <div class="toast-header" style="text-align: ${this.lang === 'ar' ? 'right' : 'left'};">
-            <i class="ki-duotone ki-notification-status fs-2 me-3">
+        <div class="toast fade" role="alert" aria-live="assertive" aria-atomic="true" dir="${this.lang === 'ar' ? 'rtl' : 'ltr'}" style="width: 100%; max-width: 420px; margin: 0 auto;">
+          <div class="toast-header d-flex justify-content-between align-items-center" style="text-align: ${this.lang === 'ar' ? 'right' : 'left'};">
+           <div class="d-flex ${this.lang === 'ar' ? 'flex-row-reverse' : 'flex-row'} align-items-center gap-2">
+            <i class="ki-duotone ki-notification-status fs-2 ${this.lang === 'ar' ? 'ms-3' : 'me-3'} text-warning">
               <span class="path1"></span>
               <span class="path2"></span>
               <span class="path3"></span>
               <span class="path4"></span>
             </i>
-            <strong class="me-auto" style="direction: ${this.lang === 'ar' ? 'rtl' : 'ltr'}; text-align: ${this.lang === 'ar' ? 'right' : 'left'};"></strong>
+            <strong class="me-auto" style="font-size: 18px; direction: ${this.lang === 'ar' ? 'rtl' : 'ltr'}; text-align: ${this.lang === 'ar' ? 'right' : 'left'};"></strong>
             <small class="toast-time" style="direction: ${this.lang === 'ar' ? 'rtl' : 'ltr'}; text-align: ${this.lang === 'ar' ? 'right' : 'left'};"></small>
+            </div>
             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
           </div>
-          <div class="toast-body" style="direction: ${this.lang === 'ar' ? 'rtl' : 'ltr'}; text-align: ${this.lang === 'ar' ? 'right' : 'left'};"></div>
+          <div class="toast-body" style="font-size: 16px; direction: ${this.lang === 'ar' ? 'rtl' : 'ltr'}; text-align: ${this.lang === 'ar' ? 'right' : 'left'};"></div>
         </div>
       `;
 
