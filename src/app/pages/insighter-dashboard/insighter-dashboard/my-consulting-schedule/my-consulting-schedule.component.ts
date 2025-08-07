@@ -166,6 +166,8 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
           acceptLabel: this.lang === 'ar' ? 'حفظ التغييرات' : 'Save Changes',
           rejectLabel: this.lang === 'ar' ? 'المتابعة بدون حفظ' : 'Continue Redirecting',
           accept: () => {
+            // Remove duplicates before saving
+            this.removeDuplicateExceptions();
             // Save changes and then navigate
             this.onSave();
             observer.next(true);
@@ -628,8 +630,77 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
     this.exceptionsFormArray.removeAt(index);
   }
 
+  // Remove duplicate exceptions from the form, keeping only the first occurrence
+  private removeDuplicateExceptions(): void {
+    // First, manually run validation to ensure errors are up to date
+    this.exceptionsFormArray.updateValueAndValidity();
+    
+    const duplicates: { [key: string]: number[] } = {};
+    const indicesToRemove: number[] = [];
+    
+    // Find duplicates using the same logic as the validator
+    for (let i = 0; i < this.exceptionsFormArray.length; i++) {
+      const exceptionGroup = this.exceptionsFormArray.at(i) as FormGroup;
+      
+      const exceptionDate = exceptionGroup.get('exception_date')?.value;
+      const startTime = exceptionGroup.get('start_time')?.value;
+      const endTime = exceptionGroup.get('end_time')?.value;
+      
+      // Skip invalid or incomplete entries
+      if (!exceptionDate || !startTime || !endTime) {
+        continue;
+      }
+      
+      // Create a unique key based on date and times (same as validator)
+      const dateStr = exceptionDate instanceof Date 
+        ? exceptionDate.toISOString().split('T')[0]
+        : typeof exceptionDate === 'string' 
+          ? exceptionDate.split('T')[0]
+          : '';
+          
+      const startTimeStr = startTime instanceof Date
+        ? `${startTime.getHours().toString().padStart(2, '0')}:${startTime.getMinutes().toString().padStart(2, '0')}`
+        : '';
+        
+      const endTimeStr = endTime instanceof Date
+        ? `${endTime.getHours().toString().padStart(2, '0')}:${endTime.getMinutes().toString().padStart(2, '0')}`
+        : '';
+        
+      const key = `${dateStr}_${startTimeStr}_${endTimeStr}`;
+      
+      if (!duplicates[key]) {
+        duplicates[key] = [];
+      }
+      
+      duplicates[key].push(i);
+    }
+    
+    // Find indices to remove (all duplicates except the first occurrence)
+    for (const key in duplicates) {
+      if (duplicates[key].length > 1) {
+        // Keep the first one, remove the rest
+        for (let i = 1; i < duplicates[key].length; i++) {
+          indicesToRemove.push(duplicates[key][i]);
+        }
+      }
+    }
+    
+    // Sort in descending order to maintain correct indices during removal
+    indicesToRemove.sort((a, b) => b - a);
+    
+    // Remove the duplicates
+    indicesToRemove.forEach(index => {
+      this.exceptionsFormArray.removeAt(index);
+    });
+    
+    console.log(`Removed ${indicesToRemove.length} duplicate exceptions`);
+  }
+
   // Save method
   onSave(): void {
+    // Remove duplicates before validation and saving
+    this.removeDuplicateExceptions();
+    
     if (this.scheduleForm.valid) {
       this.saving.set(true);
       
@@ -643,6 +714,7 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
           }else{
             this.showSuccess('Success','تم تحديث الجدول بنجاح');
           }
+          
           this.formDirty.set(false); // Reset dirty flag after successful save
           this.saving.set(false);
         },
@@ -735,7 +807,7 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
       });
     }
 
-    // Process exceptions
+    // Process exceptions (duplicates already removed before calling this method)
     if (formValue.exceptions) {
       processedData.availability_exceptions = formValue.exceptions.map((exception: any) => {
         // Format the date as YYYY-MM-DD with no time component
