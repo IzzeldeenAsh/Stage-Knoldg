@@ -468,7 +468,7 @@ export class DocumentModalComponent extends BaseComponent implements OnInit, OnC
             setTimeout(() => {
               if (this.editorInstance) {
                 // Clear editor first
-                this.editorInstance.setContents([]);
+                this.editorInstance.setText('');
                 // Set the new content using proper Quill Delta format
                 this.editorInstance.clipboard.dangerouslyPasteHTML(0, summary);
                 // Trigger form control update

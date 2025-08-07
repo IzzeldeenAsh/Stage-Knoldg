@@ -353,7 +353,7 @@
                     <span
                       class="badge badge-light-secondary text-primary fs-8 fw-bold pre-line text-right"
                     >
-                      {{ knowledge.industry?.name || 'N/A' }}
+                      {{ knowledge.industry.name || 'N/A' }}
                     </span>
                   </div>
 
@@ -368,9 +368,9 @@
                     </span>
                     <span
                       class="badge badge-light-secondary text-primary fs-8 fw-bold"
-                      [ngbTooltip]="knowledge.isic_code?.name || 'N/A'"
+                      [ngbTooltip]="knowledge.isic_code.name || 'N/A'"
                     >
-                      {{ knowledge.isic_code?.key || 'N/A' }}
+                      {{ knowledge.isic_code.key || 'N/A' }}
                     </span>
                   </div>
 
