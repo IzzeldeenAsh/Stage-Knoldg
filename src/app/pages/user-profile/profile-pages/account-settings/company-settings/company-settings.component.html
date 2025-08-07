@@ -34,47 +34,6 @@
     </div>
   </div>
 
-<!-- Phone Number (Visible to 'insighter' and 'company') -->
-  <div class="row">
-    <div class="col-lg-6 mb-6 fv-row">
-      <label class="form-label">{{
-        "ACCOUNT_SETTINGS.PHONE_NUMBER" | translate
-      }}</label>
-      <div class="input-group">
-        <input
-          type="text"
-          formControlName="companyPhoneNumber"
-          class="form-control no-rtl-b-radius"
-          [class.is-invalid]="isFieldInvalid('companyPhoneNumber')"
-          placeholder="{{
-            'ACCOUNT_SETTINGS.YOUR_PHONE_NUMBER' | translate
-          }}"
-        />
-      </div>
-      <div *ngIf="isFieldInvalid('companyPhoneNumber')" class="invalid-feedback">
-        {{ getFieldError('companyPhoneNumber') }}
-      </div>
-    </div>
-    
-    <!-- Company Address -->
-    <div class="col-lg-6 mb-6 fv-row">
-      <label class="form-label">{{
-        "ACCOUNT_SETTINGS.ADDRESS" | translate
-      }}</label>
-      <input
-        type="text"
-        formControlName="companyAddress"
-        class="form-control"
-        [class.is-invalid]="isFieldInvalid('companyAddress')"
-        placeholder="{{
-          'ACCOUNT_SETTINGS.COMPANY_ADDRESS' | translate
-        }}"
-      />
-      <div *ngIf="isFieldInvalid('companyAddress')" class="invalid-feedback">
-        {{ getFieldError('companyAddress') }}
-      </div>
-    </div>
-  </div>
 
 <!-- Industry -->
   <div class="row">

@@ -153,7 +153,7 @@
       [(visible)]="showDocumentModal"
       [knowledgeId]="knowledgeId ? +knowledgeId : null"
       [editingDocument]="editingDocumentForModal"
-      [knowledgeType]="knowledge.type || ''"
+      [knowledgeType]="knowledge?.type || ''"
       [preSelectedFile]="preSelectedFile"
       (documentSaved)="onDocumentSaved()"
       (visibleChange)="onModalVisibilityChanged($event)">
