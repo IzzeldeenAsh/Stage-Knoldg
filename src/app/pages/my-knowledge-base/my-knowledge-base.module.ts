@@ -23,7 +23,8 @@ import { FileSizePipe } from "src/app/reusable-components/file-uploader/file-siz
 import { SelectRegionComponent } from "src/app/reusable-components/select-region/select-region.component";
 import { SelectEconomicBlockComponent } from "src/app/reusable-components/select-economic-block/select-economic-block.component";
 import { ViewMyPackagesComponent } from "./view-my-packages/view-my-packages.component";
-
+import { DocumentModalComponent } from "./view-my-knowledge/knowledge-details/document-modal/document-modal.component";
+import { QuillModule } from 'ngx-quill';
 @NgModule({
   declarations: [
     ViewMyKnowledgeComponent,
@@ -31,6 +32,7 @@ import { ViewMyPackagesComponent } from "./view-my-packages/view-my-packages.com
     KnowledgeAnalyticsComponent,
     ViewMyPackagesComponent,
     SchedulePublishDialogComponent,
+    DocumentModalComponent,
   ],
   imports: [
     CommonModule,
@@ -53,7 +55,7 @@ import { ViewMyPackagesComponent } from "./view-my-packages/view-my-packages.com
     FileSizePipe,
     SelectRegionComponent,
     SelectEconomicBlockComponent,
-  ],
+    QuillModule.forRoot()  ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class MyKnowledgeBaseModule { }

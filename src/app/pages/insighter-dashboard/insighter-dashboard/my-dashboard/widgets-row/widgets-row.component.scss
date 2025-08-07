@@ -1,0 +1,59 @@
+.dashboard-widgets-flex {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem; /* 20px to match Bootstrap's spacing */
+    margin-bottom: 2.5rem;
+}
+
+.dashboard-card {
+    flex: 0 0 calc(20% - 1rem); /* 5 equal columns with gap consideration */
+    min-width: 0; /* Prevents flex items from overflowing */
+    
+    /* Responsive adjustments */
+    @media (max-width: 1400px) { /* XXL breakpoint */
+        flex: 0 0 calc(25% - 1rem); /* 4 columns */
+        
+        &:last-child {
+            flex: 0 0 calc(50% - 1rem); /* Make last card wider */
+            margin-left: auto;
+            margin-right: auto;
+        }
+    }
+    
+    @media (max-width: 1200px) { /* XL breakpoint */
+        flex: 0 0 calc(33.333% - 1rem); /* 3 columns */
+        
+        &:nth-child(4), &:nth-child(5) {
+            flex: 0 0 calc(50% - 1rem); /* Last two cards take 50% width each */
+        }
+    }
+    
+    @media (max-width: 992px) { /* LG breakpoint */
+        flex: 0 0 calc(50% - 0.625rem); /* 2 columns */
+    }
+    
+    @media (max-width: 576px) { /* SM breakpoint */
+        flex: 0 0 100%; /* Full width on small screens */
+    }
+}
+
+.light-meetning-gradient-bg{
+    background-image: linear-gradient(to bottom right, #fff , #ecfdec);
+    color: #0bbc2f;
+}
+.light-requests-gradient-bg{
+    background-image: linear-gradient(to bottom right, #fff , #fdf8ec);
+    color: #ed8e28;
+}
+.light-knowledge-gradient-bg{
+    background-image: linear-gradient(to bottom right, #fff , #ecfdfa);
+    color: #28a1ed;
+}
+.light-wallet-gradient-bg{
+    background-image: linear-gradient(to bottom right, #fff , #eceefd);
+    color: #4f28ed;
+}
+.light-published-gradient-bg{
+    background-image: linear-gradient(to bottom right, #fff , #f8ecfd);
+    color: #a128ed;
+}
