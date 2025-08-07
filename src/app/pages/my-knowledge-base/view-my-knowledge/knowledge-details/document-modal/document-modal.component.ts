@@ -296,6 +296,31 @@ export class DocumentModalComponent extends BaseComponent implements OnInit, OnC
   private handleUploadError(error: any): void {
     console.log('Upload error details:', error); // Debug log
     
+    // Check for 413 Content Too Large error
+    if (error.status === 413) {
+      console.log('413 Content Too Large detected, closing modal'); // Debug log
+      
+      // Close the modal first
+      this.closeModal();
+      
+      // Show content too large dialog
+      setTimeout(() => {
+        Swal.fire({
+          title: this.lang === 'ar' ? 'الملف كبير جداً' : 'File Too Large',
+          text: this.lang === 'ar' 
+                      ? 'حجم الملف كبير جداً ولا يمكن رفعه. يرجى اختيار ملف أصغر حجماً.'
+                      : 'The file is too large to upload. Please select a smaller file.',
+          icon: 'error',
+          confirmButtonText: this.lang === 'ar' ? 'حسناً' : 'OK',
+          confirmButtonColor: '#d33',
+          customClass: {
+            container: 'swal-high-z-index'
+          }
+        });
+      }, 300);
+      return;
+    }
+    
     // Check for language mismatch error
     if (this.isLanguageMismatchError(error)) {
       console.log('Language mismatch detected, closing modal'); // Debug log

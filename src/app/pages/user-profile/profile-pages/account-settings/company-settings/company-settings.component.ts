@@ -88,7 +88,7 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
   initForm(){
     if(this.profile.roles.includes("company")){
       this.corporateInfoForm = this.fb.group({
-        companyPhoneNumber: ["", Validators.required],
+     
         companyAddress: ["", Validators.required],
         companyIndustries: [[], Validators.required],
         companyConsultingFields: [[], Validators.required],
@@ -161,7 +161,6 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
       companyWebsite: this.profile.company?.website,
       companyRegisterDocument: this.profile.company?.register_document,
       companyAboutUs: this.profile.company?.about_us,
-      companyPhoneNumber: this.profile.company?.company_phone,
       companyAddress: this.profile.company?.address,
     });
 
@@ -250,7 +249,7 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
     if(this.profile.country_id){
       formData.append("country_id", this.profile.country_id.toString());
     }
-    formData.append("company_phone", this.corporateInfoForm.get("companyPhoneNumber")?.value);
+
     formData.append("address", this.corporateInfoForm.get("companyAddress")?.value);
     formData.append("legal_name", this.corporateInfoForm.get("companyLegalName")?.value);
     formData.append("website", this.corporateInfoForm.get("companyWebsite")?.value);
