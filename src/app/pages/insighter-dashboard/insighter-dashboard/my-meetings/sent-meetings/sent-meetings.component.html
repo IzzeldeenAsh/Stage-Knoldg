@@ -4,31 +4,36 @@
     <div class="col-12">
       <div class="filter-tabs">
         <div class="nav nav-pills nav-pills-custom">
-          <a class="nav-link" 
+            <a class="nav-link" 
+              [class.active]="selectedTab === 'coming'"
+              (click)="onTabChange('coming')">
+              {{ 'INSIGHTER.MEETINGS.FILTERS.COMING' | translate }}
+            </a>
+          <!-- <a class="nav-link" 
              [class.active]="selectedTab === 'upcoming'"
              (click)="onTabChange('upcoming')">
             {{ 'INSIGHTER.MEETINGS.FILTERS.UPCOMING' | translate }}
-          </a>
-          <a class="nav-link" 
-             [class.active]="selectedTab === 'past'"
-             (click)="onTabChange('past')">
-            {{ 'INSIGHTER.MEETINGS.FILTERS.PAST' | translate }}
-          </a>
+          </a> -->
           <a class="nav-link" 
              [class.active]="selectedTab === 'pending'"
              (click)="onTabChange('pending')">
             {{ 'INSIGHTER.MEETINGS.FILTERS.PENDING' | translate }}
           </a>
           <a class="nav-link" 
-             [class.active]="selectedTab === 'approved'"
-             (click)="onTabChange('approved')">
-            {{ 'INSIGHTER.MEETINGS.FILTERS.APPROVED' | translate }}
-          </a>
-          <a class="nav-link" 
              [class.active]="selectedTab === 'postponed'"
              (click)="onTabChange('postponed')">
             {{ 'INSIGHTER.MEETINGS.FILTERS.POSTPONED' | translate }}
           </a>
+          <a class="nav-link" 
+             [class.active]="selectedTab === 'past'"
+             (click)="onTabChange('past')">
+            {{ 'INSIGHTER.MEETINGS.FILTERS.PAST' | translate }}
+          </a>
+          <!-- <a class="nav-link" 
+             [class.active]="selectedTab === 'approved'"
+             (click)="onTabChange('approved')">
+            {{ 'INSIGHTER.MEETINGS.FILTERS.APPROVED' | translate }}
+          </a> -->
         </div>
       </div>
     </div>

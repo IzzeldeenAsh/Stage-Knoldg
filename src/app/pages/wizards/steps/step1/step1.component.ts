@@ -4,12 +4,14 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ICreateAccount } from '../../create-account.helper';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-step1',
   templateUrl: './step1.component.html',
 })
 export class Step1Component implements OnInit, OnDestroy {
+  insighterLink: string = '';
   @Input('updateParentModel') updateParentModel: (
     part: Partial<ICreateAccount>,
     isFormValid: boolean
@@ -20,12 +22,16 @@ export class Step1Component implements OnInit, OnDestroy {
   form: FormGroup;
   private subscriptions: Subscription = new Subscription();
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private translateService: TranslateService) {}
 
   ngOnInit() {
     this.initForm();
     // Initial update to parent with default values
     this.updateParentModel(this.defaultValues, this.form.valid);
+    const lang = this.translateService.currentLang;
+    this.insighterLink = lang === 'ar'
+      ? 'https://knoldg.com/ar/insighter'
+      : 'https://knoldg.com/en/insighter';
   }
 
   initForm() {

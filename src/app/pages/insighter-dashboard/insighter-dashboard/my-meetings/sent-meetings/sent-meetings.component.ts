@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
+import { forkJoin, Subject, takeUntil } from 'rxjs';
 import { SentMeetingsService, SentMeeting, SentMeetingResponse, AvailableHoursResponse, AvailableDay, AvailableTime, RescheduleRequest } from '../../../../../_fake/services/meetings/sent-meetings.service';
 
 @Component({
@@ -17,7 +17,7 @@ export class SentMeetingsComponent implements OnInit, OnDestroy {
   perPage = 10;
   
   // Filter tabs
-  selectedTab: 'pending' | 'approved' | 'postponed' | 'upcoming' | 'past' = 'upcoming';
+  selectedTab: 'pending' | 'approved' | 'postponed' | 'upcoming' | 'past' | 'coming'= 'coming';
   
   // Reschedule modal
   showRescheduleModal = false;
@@ -63,24 +63,52 @@ export class SentMeetingsComponent implements OnInit, OnDestroy {
   }
 
   loadMeetings(page: number = 1): void {
-    this.currentPage = page;
-    const dateStatus = this.getDateStatusFilter();
-    this.sentMeetingsService.getSentMeetings(page, this.perPage, dateStatus)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (response: SentMeetingResponse) => {
-          this.meetings = response.data;
-          this.totalPages = response.meta.last_page;
-          this.totalItems = response.meta.total;
-          this.currentPage = response.meta.current_page;
-        },
-        error: (error) => {
-          console.error('Error loading sent meetings:', error);
-        }
-      });
-  }
+  this.currentPage = page;
+  if (this.selectedTab === 'coming') {
+      this.loading = true;
 
-  onTabChange(tab: 'pending' | 'approved' | 'postponed' | 'upcoming' | 'past'): void {
+      const upcoming$ = this.sentMeetingsService.getSentMeetings(page, this.perPage, 'upcoming');
+      const approved$ = this.sentMeetingsService.getSentMeetings(page, this.perPage, undefined); 
+
+      // Combine both results
+      forkJoin([upcoming$, approved$])
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: ([upcomingRes, approvedRes]) => {
+            console.log("UPCOMINGR RES --->",upcomingRes)
+            console.log("approvedRes RES --->",approvedRes)
+            const approvedMeetings = approvedRes.data.filter(m => m.status === 'approved');
+            this.meetings = [...upcomingRes.data, ...approvedMeetings];
+
+            this.totalPages = upcomingRes.meta.last_page;
+            this.totalItems = upcomingRes.meta.total + approvedMeetings.length;
+            this.currentPage = upcomingRes.meta.current_page;
+            this.loading = false;
+          },
+          error: (error) => {
+            console.error('Error loading coming meetings:', error);
+            this.loading = false;
+          }
+        });
+
+    } else {
+      const dateStatus = this.getDateStatusFilter();
+      this.sentMeetingsService.getSentMeetings(page, this.perPage, dateStatus)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (response: SentMeetingResponse) => {
+            this.meetings = response.data;
+            this.totalPages = response.meta.last_page;
+            this.totalItems = response.meta.total;
+            this.currentPage = response.meta.current_page;
+          },
+          error: (error) => {
+            console.error('Error loading sent meetings:', error);
+          }
+        });
+    }
+  }
+  onTabChange(tab: 'pending' | 'approved' | 'postponed' | 'upcoming' | 'past' | 'coming'): void {
     this.selectedTab = tab;
     // Reload meetings with the new filter
     this.loadMeetings(1);
@@ -99,7 +127,7 @@ export class SentMeetingsComponent implements OnInit, OnDestroy {
     let filteredMeetings: SentMeeting[] = [];
     
     // For date-based tabs (upcoming/past), the filtering is done on the backend
-    if (this.selectedTab === 'upcoming' || this.selectedTab === 'past') {
+    if (this.selectedTab === 'upcoming' || this.selectedTab === 'past' || this.selectedTab === 'coming') {
       filteredMeetings = this.meetings;
     } else {
       // For status-based tabs (pending, approved, postponed)

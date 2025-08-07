@@ -16,6 +16,7 @@ export class SentMeetingsStatisticsComponent extends BaseComponent implements On
   upcomingMeetings = 0;
   pastMeetings = 0;
   loading = false;
+  comingMeetings = 0;
 
   private destroy$ = new Subject<void>();
 
@@ -41,16 +42,29 @@ export class SentMeetingsStatisticsComponent extends BaseComponent implements On
   }
 
   private loadStatistics(): void {
-    // Load a larger page to get all meetings for statistics
     this.sentMeetingsService.getSentMeetings(1, 100)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
           this.totalMeetings = response.meta.total;
           this.calculateStatistics(response.data);
-          
-          // Also load upcoming and past meetings separately for more accurate counts
-          this.loadUpcomingMeetings();
+
+          // Load upcoming meetings
+          this.sentMeetingsService.getSentMeetings(1, 100, 'upcoming')
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+              next: (upcomingResponse) => {
+                this.upcomingMeetings = upcomingResponse.meta.total;
+
+                // Calculate coming meetings as pending + upcoming
+                this.comingMeetings = this.upcomingMeetings + this.approvedMeetings;
+              },
+              error: (error) => {
+                console.error('Error loading upcoming meetings:', error);
+              }
+            });
+
+          // Load past meetings
           this.loadPastMeetings();
         },
         error: (error) => {
@@ -89,5 +103,7 @@ export class SentMeetingsStatisticsComponent extends BaseComponent implements On
     this.pendingMeetings = meetings.filter(m => m.status === 'pending').length;
     this.approvedMeetings = meetings.filter(m => m.status === 'approved').length;
     this.postponedMeetings = meetings.filter(m => m.status === 'postponed').length;
+    
+    this.comingMeetings = this.approvedMeetings + this.upcomingMeetings;
   }
 } 

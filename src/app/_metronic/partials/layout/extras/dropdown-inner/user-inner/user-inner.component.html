@@ -129,11 +129,6 @@
     </a>
   </div>
 
-  <div class="menu-item px-5" *ngIf="_user.roles.includes('client') && !_user.roles.includes('insighter') && !_user.roles.includes('company') && !_user.roles.includes('company-insighter')">
-    <a [routerLink]="'/app/insighter-register/vertical'" class="menu-link px-5 fw-boldest gradient-text-insighter" (click)="closeDropdown.emit()">
-      {{ 'HOME.BECOME_INSIGHTER' | translate }}
-    </a>
-  </div>
 
   <!-- <div class="menu-item px-5" *ngIf="_user.roles.includes('insighter') || _user.roles.includes('company') || _user.roles.includes('company-insighter')">
     <a [routerLink]="'/app/insighter-dashboard/my-meetings/received'" class="menu-link px-5" (click)="closeDropdown.emit()">
@@ -156,8 +151,18 @@
       {{ 'MY_DOWNLOADS.TITLE' | translate }}
     </a>
   </div>
-  <div class="separator my-2"></div>
+  <div class="menu-item px-5" *ngIf="_user.roles.includes('client') && !_user.roles.includes('insighter') && !_user.roles.includes('company') && !_user.roles.includes('company-insighter')">
+    <a [routerLink]="'/app/insighter-register/vertical'" class="menu-link px-5 fw-boldest gradient-text-insighter" (click)="closeDropdown.emit()">
+      {{ 'HOME.BECOME_INSIGHTER' | translate }}
+    </a>
+  </div>
+  <div class="px-5" *ngIf="_user.roles.includes('client') && !_user.roles.includes('insighter') && !_user.roles.includes('company') && !_user.roles.includes('company-insighter')">
+    <p class="pe-5" style="font-size: 12px; line-height: 1.4; color: grey;" >
+      {{ 'HOME.BECOME_INSIGHTER_DESC' | translate }}
+    </p>
+  </div>
 
+  <div class="separator my-2"></div>
 
 
   <div class="menu-item px-5">

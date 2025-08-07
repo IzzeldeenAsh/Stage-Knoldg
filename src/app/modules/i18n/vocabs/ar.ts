@@ -40,7 +40,7 @@ INSIGHTER_REQUESTS: {
       TOTAL_SPENT:"إجمالي الدفع" ,
       SELECT_KNOWLEDGE: "اختر المعرفة",
       SELECT_ITEM_DETAILS: "اختر تفاصيل العنصر",
-      DOCUMENTS: "المستندات",
+      DOCUMENTS: "الملفات",
       DETAILS: "التفاصيل",
       KNOWLEDGE: "المعرفة",
       TYPE: "النوع",
@@ -268,7 +268,7 @@ INSIGHTER_REQUESTS: {
       "MY_COMPANY": "فريقي",
       "INVITING": "جاري الدعوة",
       "MY_DOWNLOADS": "التحميلات",
-      "READ_LATER": "قراءة لاحقة",
+      "READ_LATER": "المحفوظات",
       "MY_CONSULTING_SCHEDULE": "جدولة الاستشارات",
       "DASHBOARD": "لوحة المعلومات"
     },
@@ -295,7 +295,8 @@ INSIGHTER_REQUESTS: {
     HOME: {
       INSIGHTER_DASHBOARD: 'لوحة المعلومات',
       COMPANY_INSIGHTER: 'شركة إنسايتر',
-      BECOME_INSIGHTER: 'كن إنسايتر',
+      BECOME_INSIGHTER: 'سجل كإنسايتر',
+      BECOME_INSIGHTER_DESC:  "سجل كمزود للمعرفة وابدأ برفع التقارير والبيانات على المنصة",
       LATEST_INSIGHTS: "أحدث الرؤى",
       TRENDING: "الشائع",
       REGION_PLACEHOLDER: "المنطقة",
@@ -642,13 +643,14 @@ INSIGHTER_REQUESTS: {
       MORE_INFO: "إذا كنت بحاجة إلى مزيد من المعلومات، يرجى زيارة",
       HELP_PAGE: "صفحة المساعدة",
       PERSONAL_ACCOUNT: "حساب شخصي",
-      PERSONAL_ACCOUNT_DESC: "إذا كنت بحاجة إلى مزيد من المعلومات، يرجى الاطلاع عليه",
+      PERSONAL_ACCOUNT_DESC: "سجل كـ إنسايتر (Insighter) وابدأ بنشر معارفك.",
+      MORE: 'المزيد...',
       REPORTS_CHAPTERS_DETAILS: "يمكنك تحميل معرفتك كملف كامل، أو تقسيمها إلى بأسعار منفصلة، وذلك لتوفير وصول مرن وميسر للمستخدمين",
-      CORPORATE_ACCOUNT: "حساب تجاري",
+      CORPORATE_ACCOUNT: "حساب شركة",
       I_ACCEPT_THE: "أوافق على",
       COMPANY_TERMS: "شروط الشركة",
       TERMS_AGREEMENT:"أقر بانني قد قرأت وأوافق على كل تتضمنه الشروط والأحكام وسياسة الخصوصية واتفاقية ترخيص البيانات و سياسة ملفات تعريف الارتباط",
-      CORPORATE_ACCOUNT_DESC: "إنشاء حساب تجاري لإدارة المستخدمين",
+      CORPORATE_ACCOUNT_DESC: "ابدأ بإدارة فريقك من مزودي المعرفة (Insighters).",
       INSIGHTER_INFO: "معلومات إنسايتر",
       CONSULTING_FIELDS: "المجالات الاستشارية",
       CONSULTING_FIELDS_REQUIRED: "مجالات الاستشارة مطلوبة",
@@ -782,7 +784,7 @@ INSIGHTER_REQUESTS: {
       "NEW_PASSWORD": "كلمة المرور الجديدة",
       "CONFIRM_NEW_PASSWORD": "تأكيد كلمة المرور الجديدة",
       "PASSWORD_RULES": "يجب أن تكون كلمة المرور 8 أحرف على الأقل وتحتوي على رموز.",
-      "UPDATE_PASSWORD": "تحديث كلمة المرور",
+      "UPDATE_PASSWORD": "تغيير كلمة المرور",
       "CANCEL": "إلغاء",
       PASSWORDS_DO_NOT_MATCH:"كلمتا السر غير متطابقتين",
       SOCIAL_URL_FORMAT: "يجب أن يبدأ الرابط بـ https://www"
@@ -916,9 +918,9 @@ INSIGHTER_REQUESTS: {
           "MY_KNOWLEDGE": "مكتبة المعرفة" ,
           "ACCOUNT_SETTINGS": "إعدادات الحساب",
           "MY_COMPANY": "فريقي",
-          "READ_LATER":"قراءاتي لاحقًا",
+          "READ_LATER":"المحفوظات",
           "MY_DOWNLOADS": "التحميلات",
-          "MEETINGS": "الاجتماعات",
+          "MEETINGS": "الجلسات الاستشارية",
           "MY_MEETINGS": "اجتماعاتي",
           "MY_CONSULTING_SCHEDULE": "جدولة الاستشارات",
           "DASHBOARD": "لوحة المعلومات"
@@ -955,9 +957,10 @@ INSIGHTER_REQUESTS: {
           "ALL": "الكل",
           "PENDING": "قيد الانتظار",
           "APPROVED": "موافق عليه",
-          "POSTPONED": "مؤجل",
+          "POSTPONED": "مؤجلة",
           "UPCOMING": "القادمة",
-          "PAST": "السابقة"
+          "PAST": "السابقة",
+          "COMING": "القادمة"
         },
         "NO_MEETINGS": "لا يوجد اجتماعات",
         "NO_MEETINGS_DESC": "لا يوجد اجتماعات متاحة",
@@ -966,11 +969,11 @@ INSIGHTER_REQUESTS: {
         "STATUS": {
           "PENDING": "قيد الانتظار",
           "APPROVED": "موافق عليه",
-          "POSTPONED": "مؤجل"
+          "POSTPONED": "مؤجلة"
         }
       },
       "READ_LATER": {
-        "TITLE": "قراءة لاحقة",
+        "TITLE": "المحفوظات",
         "ITEMS": "عنصر",
         "EMPTY_TITLE": "لا توجد عناصل محفوظة بعد",
         "EMPTY_MESSAGE": "العناصل التي تضعها في المفضلة ستظهر هنا للوصول إليها لاحقاً.",
@@ -1118,7 +1121,7 @@ INSIGHTER_REQUESTS: {
     KNOWLEDGE_PUBLISHED_MESSAGE: "تم نشر معرفتك بنجاح وهي الآن متاحة للمستخدمين.",
     KNOWLEDGE_SCHEDULED_MESSAGE: "تمت جدولة معرفتك للنشر في التاريخ والوقت المحددين.",
     BUSINESS_COURSES:'دورات الأعمال',
-    SENT_MEETINGS:'الاجتماعات المرسلة',
+    SENT_MEETINGS:'جلساتي الإستشارية',
     RECEIVED_MEETINGS:'الاجتماعات المستلمة',
     WHATS_NEXT: "ما التالي؟",
     VISIT_DASHBOARD_MESSAGE: "يمكنك عرض معرفتك أو الانتقال إلى مكتبة المعرفة الخاصة بك لإدارة جميع المحتويات الخاصة بك.",
@@ -1376,9 +1379,10 @@ INSIGHTER_REQUESTS: {
         "ALL": "الكل",
         "PENDING": "قيد الانتظار",
         "APPROVED": "موافق عليه",
-        "POSTPONED": "مؤجل",
+        "POSTPONED": "مؤجلة",
         "UPCOMING": "القادمة",
-        "PAST": "السابقة"
+        "PAST": "السابقة",
+        "COMING": "القادمة"
       },
       "TABS": {
         "ALL": "الكل",
@@ -1386,22 +1390,24 @@ INSIGHTER_REQUESTS: {
         "APPROVED": "موافق عليه",
         "UPCOMING": "القادمة",
         "PAST": "السابقة",
-        "POSTPONED": "مؤجل",
+        "POSTPONED": "مؤجلة",
         "RECEIVED": "المستلمة",
-        "SENT": "المرسلة"
+        "SENT": "المرسلة",
+        "COMING": "القادمة"
       },
       "STATUS": {
         "PENDING": "قيد الانتظار",
         "APPROVED": "موافق عليه",
-        "POSTPONED": "مؤجل"
+        "POSTPONED": "مؤجلة"
       },
       "STATS": {
         "TOTAL_MEETINGS": "إجمالي الاجتماعات",
         "PENDING": "قيد الانتظار",
         "APPROVED": "موافق عليه", 
-        "POSTPONED": "مؤجل",
+        "POSTPONED": "مؤجلة",
         "UPCOMING": "القادمة",
-        "PAST": "السابقة"
+        "PAST": "السابقة",
+        "COMING": "القادمة"
       },
       "NO_MEETINGS": "لم يتم العثور على اجتماعات",
       "NO_MEETINGS_DESC": "ليس لديك أي اجتماعات مجدولة في الوقت الحالي.",
@@ -1414,20 +1420,21 @@ INSIGHTER_REQUESTS: {
       "RESULTS": "النتائج",
       "MEETINGS": "اجتماعات",
       "SENT":{
-        "TITLE": "الاجتماعات المرسلة",
+        "TITLE": "جلساتي الإستشارية",
         "STATS":{
           "TOTAL_MEETINGS": "إجمالي الاجتماعات",
           "UPCOMING": "القادمة",
           "PAST": "السابقة",
           "PENDING": "قيد الانتظار",
           "APPROVED": "موافق عليه",
-          "POSTPONED": "مؤجل"
+          "POSTPONED": "مؤجلة",
+          "COMING": "القادمة"
         }
     },
  
     },
     "READ_LATER": {
-  "TITLE": "قراءة لاحقة",
+  "TITLE": "المحفوظات",
   "ITEMS": "عنصر",
   "EMPTY_TITLE": "لا توجد عناصر محفوظة بعد",
   "EMPTY_MESSAGE": "العناصر التي تضعها في المفضلة ستظهر هنا للوصول إليها لاحقاً.",
@@ -1448,7 +1455,7 @@ INSIGHTER_REQUESTS: {
   "YEAR_AGO": "سنة",
   "YEARS_AGO": "سنوات",
   "STATISTICS": {
-    "TITLE": "مجموعة القراءة اللاحقة",
+    "TITLE": "مجموعة المعارف المحفوظة",
     "SUBTITLE": "معرفتك المحفوظة للقراءة المستقبلية",
     "TOTAL_SAVED": "إجمالي المحفوظ",
     "NEW_THIS_MONTH": "جديد هذا الشهر",

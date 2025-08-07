@@ -59,7 +59,7 @@ flex-column pt-6 pb-lg-10 pt-lg-20"
       </div>
 
       <!-- Upcoming Meetings -->
-      <div class="d-flex flex-column rounded p-6 hover-scale">           
+      <!-- <div class="d-flex flex-column rounded p-6 hover-scale">           
         <div class="d-flex align-items-center mb-2">
           <i class="ki-solid ki-calendar-2 text-info mx-2 fs-2"></i>
           <span class="text-white fw-bolder fs-2x" 
@@ -69,6 +69,20 @@ flex-column pt-6 pb-lg-10 pt-lg-20"
         </div>
         <div class="text-white opacity-75 fw-bold fs-6">
           {{ 'MEETINGS.SENT.STATS.UPCOMING' | translate }}
+        </div>                   
+      </div> -->
+
+       <!-- Coming Meetings -->
+      <div class="d-flex flex-column rounded p-6 hover-scale">           
+        <div class="d-flex align-items-center mb-2">
+          <i class="ki-solid ki-calendar-clock text-warning mx-2 fs-2"></i>
+          <span class="text-white fw-bolder fs-2x" 
+                [appCountUp]="comingMeetings">
+            {{ comingMeetings }}
+          </span>
+        </div>
+        <div class="text-white opacity-75 fw-bold fs-6">
+          {{ 'MEETINGS.SENT.STATS.COMING' | translate }}
         </div>                   
       </div>
 
@@ -101,7 +115,7 @@ flex-column pt-6 pb-lg-10 pt-lg-20"
       </div>
 
       <!-- Approved Meetings -->
-      <div class="d-flex flex-column rounded p-6 hover-scale">           
+      <!-- <div class="d-flex flex-column rounded p-6 hover-scale">           
         <div class="d-flex align-items-center mb-2">
           <i class="ki-solid ki-check text-success mx-2 fs-2"></i>
           <span class="text-white fw-bolder fs-2x" 
@@ -112,7 +126,7 @@ flex-column pt-6 pb-lg-10 pt-lg-20"
         <div class="text-white opacity-75 fw-bold fs-6">
           {{ 'MEETINGS.SENT.STATS.APPROVED' | translate }}
         </div>                   
-      </div>
+      </div> -->
 
       <!-- Postponed Meetings -->
       <div class="d-flex flex-column rounded p-6 hover-scale">           
