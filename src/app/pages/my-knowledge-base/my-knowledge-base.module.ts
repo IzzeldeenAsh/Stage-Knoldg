@@ -24,7 +24,6 @@ import { SelectRegionComponent } from "src/app/reusable-components/select-region
 import { SelectEconomicBlockComponent } from "src/app/reusable-components/select-economic-block/select-economic-block.component";
 import { ViewMyPackagesComponent } from "./view-my-packages/view-my-packages.component";
 import { DocumentModalComponent } from "./view-my-knowledge/knowledge-details/document-modal/document-modal.component";
-import { QuillModule } from 'ngx-quill';
 @NgModule({
   declarations: [
     ViewMyKnowledgeComponent,
@@ -54,8 +53,7 @@ import { QuillModule } from 'ngx-quill';
     ToastModule,
     FileSizePipe,
     SelectRegionComponent,
-    SelectEconomicBlockComponent,
-    QuillModule.forRoot()  ],
+    SelectEconomicBlockComponent ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class MyKnowledgeBaseModule { }

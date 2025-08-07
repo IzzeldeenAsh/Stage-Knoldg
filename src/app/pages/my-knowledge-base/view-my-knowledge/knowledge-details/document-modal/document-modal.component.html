@@ -139,22 +139,31 @@
             </div>
           </div>
           
-          <!-- Quill Editor -->
+          <!-- TinyMCE Editor -->
           <div class="position-relative">
-            <quill-editor
-              *ngIf="visible && !isGeneratingAbstract"
-              #quillEditor
-              [modules]="quillModules"
-              [styles]="quillStyles"
-              formControlName="description"
-              [ngClass]="{'is-invalid': documentForm.get('description')?.invalid && documentForm.get('description')?.touched}"
-              (onEditorCreated)="onEditorCreated($event)"
-              (onContentChanged)="onContentChanged()"
-              placeholder="Enter document description...">
-            </quill-editor>
+            <div [ngClass]="{'editor-blur': isGeneratingAbstract}">
+              <editor
+                *ngIf="visible"
+                apiKey="fovwl5u83es9vkiv7x6h34fynj0utg108qrb0edwwwlxevt9"
+                formControlName="description"
+                [ngClass]="{'is-invalid': documentForm.get('description')?.invalid && documentForm.get('description')?.touched}"
+                [init]="{
+                  height: 300,
+                  menubar: false,
+                  plugins: [
+                    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                    'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                    'insertdatetime', 'media', 'table', 'help', 'wordcount'
+                  ],
+                  toolbar: 'undo redo | blocks | bold italic forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+                  content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+                }"
+                placeholder="Enter document description...">
+              </editor>
+            </div>
             
             <!-- Loading Overlay for AI Generation -->
-            <div *ngIf="isGeneratingAbstract" class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-white bg-opacity-90 rounded border">
+            <div *ngIf="isGeneratingAbstract" class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(255, 255, 255, 0.9); z-index: 10; border-radius: 8px;">
               <div class="text-center p-4">
                 <div class="loading-animation mb-3">
                   <div class="loading-dot"></div>
