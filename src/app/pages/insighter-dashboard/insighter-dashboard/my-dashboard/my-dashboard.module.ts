@@ -11,6 +11,7 @@ import { ClientMyDashboardComponent } from './client-my-dashboard/client-my-dash
 import { CompanyMyDashboardComponent } from './company-my-dashboard/company-my-dashboard.component';
 import { InsighterMyDashboardComponent } from './insighter-my-dashboard/insighter-my-dashboard.component';
 import { UpcomingMeetingsCalendarComponent } from './upcoming-sent-meetings/upcoming-meetings-calendar.component';
+import { WidgetsRowComponent } from './widgets-row/widgets-row.component';
 
 const routes: Routes = [
   {
@@ -28,6 +29,7 @@ const routes: Routes = [
     ClientMyDashboardComponent,
     CompanyMyDashboardComponent,
     InsighterMyDashboardComponent,
+    WidgetsRowComponent,
     UpcomingMeetingsCalendarComponent
   ],
   imports: [

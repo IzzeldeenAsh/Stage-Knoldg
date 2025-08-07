@@ -97,6 +97,7 @@
               formControlName="country"
               class="d-block"
               [class.ng-invalid]="isFieldInvalid('country')"
+              [class.is-invalid]="isFieldInvalid('country')"
               optionLabel="names.en"
               placeholder="{{ 'ACCOUNT_SETTINGS.SELECT_COUNTRY' | translate }}"
               [filter]="true"
@@ -115,7 +116,7 @@
                 </div>
               </ng-template>
             </p-dropdown>
-            <div *ngIf="isFieldInvalid('country')" class="invalid-feedback">
+            <div *ngIf="isFieldInvalid('country')" class="invalid-feedback d-block">
               {{ getFieldError('country') }}
             </div>
           </div>

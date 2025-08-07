@@ -65,19 +65,9 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
   insightDocForm: FormGroup;
   displayInsightDialog = false;
 
-  // Add new properties for the stepper approach
-  showDocumentStepper = false;
-  documentStep = 1;
-  documentForm: FormGroup;
-  selectedFile: File | null = null;
-  selectedFileName: string = '';
-  selectedFileIcon: string = '';
-  isGeneratingAbstract = false;
-  abstractError = false;
-  showChapters = false;
-  newChapterTitle = '';
-  stepperChapters: ChapterItem[] = [];
-  editorInstance: any;
+  // Add new properties for the modal approach
+  showDocumentModal = false;
+  editingDocumentForModal: DocumentInfo | null = null;
   
   // File upload properties
   uploadProgress: number = 0;
@@ -231,19 +221,12 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
   }
 
   addFormChapter(): void {
-    if (!this.newChapterTitle || !this.newChapterTitle.trim()) {
-      return; // Don't add empty chapters
-    }
-    
-    this.stepperChapters.push({
-      title: this.newChapterTitle.trim()
-    });
-    
-    this.newChapterTitle = '';
+    const newChapter = this.createChapter();
+    this.chapters.push(newChapter);
   }
 
   removeFormChapter(index: number): void {
-    this.stepperChapters.splice(index, 1);
+    this.chapters.removeAt(index);
   }
 
   loadChapters(chaptersData: any[]) {
@@ -364,7 +347,8 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
   }
 
   editDocument(doc: DocumentInfo, event: Event): void {
-    this.editDocumentWithStepper(doc, event);
+    this.editingDocumentForModal = doc;
+    this.showDocumentModal = true;
   }
 
   saveDocument(): void {
@@ -753,201 +737,6 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
     }
   };
 
-  private initDocumentForm(): void {
-    this.documentForm = this.fb.group({
-      file_name: ['', Validators.required],
-      description: ['', Validators.required],
-      price: [0, [Validators.required, Validators.min(0)]],
-      isCharity: [false],
-      file: [null],
-      file_extension: [''],
-      fileIcon: [''],
-      docUrl: [''],
-      fromServer: [false],
-      id: [null]
-    });
-
-    // When isCharity changes, handle price validation
-    this.documentForm.get('isCharity')?.valueChanges.subscribe(isCharity => {
-      const priceControl = this.documentForm.get('price');
-      if (isCharity) {
-        priceControl?.setValue(0);
-        priceControl?.disable();
-      } else {
-        priceControl?.enable();
-      }
-    });
-  }
-
-  openDocumentStepper(): void {
-    this.showDocumentStepper = true;
-    this.documentStep = 1;
-    this.editingDocument = null;
-    this.initDocumentForm();
-    this.selectedFile = null;
-    this.selectedFileName = '';
-    this.selectedFileIcon = '';
-    this.showChapters = false;
-    this.stepperChapters = [];
-    this.newChapterTitle = '';
-  }
-
-  closeDocumentStepper(): void {
-    this.showDocumentStepper = false;
-    this.documentStep = 1;
-    this.editingDocument = null;
-    this.selectedFile = null;
-  }
-
-  triggerFileInput(): void {
-    document.getElementById('documentFileInput')?.click();
-  }
-
-  onFileSelected(event: any): void {
-    const file = event.target.files[0];
-    if (file) {
-      // Check file size before processing
-      if (file.size > this.MAX_FILE_SIZE) {
-        const errorMessage = this.lang === 'ar' 
-          ? `الملف "${file.name}" يتجاوز الحد الأقصى للحجم (100 ميجابايت)`
-          : `File "${file.name}" exceeds the maximum size limit (100MB)`;
-        
-        this.showError(
-          this.lang === 'ar' ? 'حجم الملف كبير جداً' : 'File Size Too Large',
-          errorMessage
-        );
-        
-        // Reset the file input
-        event.target.value = '';
-        return;
-      }
-      
-      this.selectedFile = file;
-      this.selectedFileName = file.name;
-      const extension = this.getFileExtension(file.name);
-      this.selectedFileIcon = this.getFileIconByExtension(extension);
-      
-      // Update form values
-      this.documentForm.patchValue({
-        file: file,
-        file_name: this.selectedFileName.substring(0, this.selectedFileName.lastIndexOf('.')),
-        file_extension: extension
-      });
-
-      // If adding a new document (not editing), upload the file immediately
-      if (!this.editingDocument) {
-        this.uploadSelectedFile(file);
-      }
-    }
-  }
-
-  uploadSelectedFile(file: File): void {
-    // Initialize upload state
-    this.isUploading = true;
-    this.uploadProgress = 0;
-    
-    const formData = new FormData();
-    formData.append('file', file);
-    
-    // Use the progress-enabled upload method
-    this.addInsightStepsService.uploadKnowledgeDocumentWithProgress(+this.knowledgeId, formData)
-      .subscribe({
-        next: (event) => {
-          if (event.type === 'progress') {
-            // Update progress
-            this.uploadProgress = event.progress || 0;
-          } else if (event.type === 'response' && event.response && event.response.data) {
-            // Handle both possible response structures
-            const documentId = event.response.data.knowledge_document_id;
-            
-            if (documentId) {
-              console.log('Document ID received:', documentId);
-              
-              // Store the document ID for later use
-              this.documentForm.patchValue({
-                id: documentId
-              });
-              
-              // Show success message
-              if(this.lang=='ar'){
-                this.showSuccess('', 'تم رفع الملف بنجاح. يرجى إكمال تفاصيل المستند.');
-              }else{
-                this.showSuccess('', 'File uploaded successfully. Please complete the document details.');
-              }
-              
-              // Upload completed successfully
-              this.uploadProgress = 100;
-            } else {
-              console.error('No document ID in the response:', event.response);
-              this.showError('', 'Error in server response: no document ID returned');
-            }
-          }
-        },
-        error: (error) => {
-          console.error('Upload error:', error);
-          
-          let errorMessage = 'Error uploading file';
-          if (error.error && error.error.message) {
-            // Check for language mismatch error
-            if (error.error.message.includes('language mismatch') || error.error.message.toLowerCase().includes('document language')) {
-              errorMessage = 'Document language mismatch: All knowledge documents must use the same language.';
-            } else {
-              errorMessage = error.error.message;
-            }
-          }
-          
-          this.showError('Upload Error', errorMessage);
-          
-          // Reset the file input and upload state
-          this.selectedFile = null;
-          this.selectedFileName = '';
-          this.selectedFileIcon = '';
-          this.uploadProgress = 0;
-          this.documentForm.patchValue({
-            file: null,
-            file_extension: ''
-          });
-        },
-        complete: () => {
-          // Reset upload state
-          this.isUploading = false;
-        }
-      });
-  }
-
-  updateDocumentDetails(documentId: number): void {
-    // Show loading indicator
-    this.isSaving = true;
-    
-    // Update document details (title and price)
-    const documentDetailsRequest = {
-      documents: [{
-        id: documentId,
-        file_name: this.documentForm.get('file_name')?.value,
-        price: this.documentForm.get('isCharity')?.value ? '0' : this.documentForm.get('price')?.value,
-        ignore_mismatch: false
-      }]
-    };
-    
-    console.log('Updating document details with request:', documentDetailsRequest);
-    
-    this.addInsightStepsService.updateKnowledgeDocumentDetails(
-      +this.knowledgeId,
-      documentDetailsRequest.documents
-    ).subscribe({
-      next: (response) => {
-        this.isSaving = false;
-        console.log('Document details updated successfully:', response);
-        this.showSuccess('', 'File uploaded and details saved. Please complete the document information.');
-      },
-      error: (error: any) => {
-        this.isSaving = false;
-        console.error('Error updating document details:', error);
-        this.showError('', error?.error?.message || 'Error updating document details');
-      }
-    });
-  }
-
   formatFileSize(size: number): string {
     if (size < 1024) {
       return size + ' bytes';
@@ -956,571 +745,6 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
     } else {
       return (size / (1024 * 1024)).toFixed(2) + ' MB';
     }
-  }
-
-  nextDocumentStep(): void {
-    if (this.documentStep === 1 && this.isStep1Valid()) {
-      // If this is a new document, update document details before moving to step 2
-      if (!this.editingDocument) {
-        // Get the document ID from the form (set during file upload)
-        const documentId = this.documentForm.get('id')?.value;
-        
-        if (documentId) {
-          // Show loading indicator
-          this.isSaving = true;
-          
-          // Update document details (title and price) with language mismatch handling
-          this.updateDocumentDetailsWithMismatchHandling(documentId, false)
-            .then((success) => {
-              this.isSaving = false;
-              if (success) {
-                console.log('Document details updated successfully');
-                // Move to next step after successful update
-                this.documentStep = 2;
-              }
-            })
-            .catch((error: any) => {
-              this.isSaving = false;
-              console.error('Error updating document details:', error);
-              this.showError('', error?.error?.message || 'Error updating document details');
-            });
-        } else {
-          // No document ID found, either file wasn't uploaded or upload failed
-          this.showError('', 'No document has been uploaded. Please select a file first.');
-        }
-      } else {
-        // For editing, just move to the next step
-        this.documentStep = 2;
-      }
-    }
-  }
-
-  prevDocumentStep(): void {
-    if (this.documentStep === 2) {
-      this.documentStep = 1;
-    }
-  }
-
-  isStep1Valid(): boolean {
-    // Check file name and file or editing existing
-    const fileNameValid = this.documentForm.get('file_name')?.valid;
-    const fileValid = !!this.selectedFile || !!this.editingDocument;
-    const priceValid = this.documentForm.get('isCharity')?.value || this.documentForm.get('price')?.valid;
-    
-    return !!fileNameValid && fileValid && !!priceValid;
-  }
-
-  isStep2Valid(): boolean {
-    return this.documentForm.get('description')?.valid === true;
-  }
-
-  handleEditorInit(event: any): void {
-    this.editorInstance = event.editor;
-    
-    // Set up content change listener
-    this.editorInstance.on('change', () => {
-      const content = this.editorInstance.getContent();
-      this.documentForm.patchValue({
-        description: content
-      });
-    });
-  }
-
-  generateAIAbstract(docId: number): void {
-    // Early return if no document ID is provided
-    if (!docId) {
-      console.error('No document ID provided for AI abstract generation');
-      return;
-    }
-    
-    // Check if there's existing content and confirm before overwriting
-    const currentContent = this.editorInstance?.getContent();
-    if (currentContent && currentContent.trim() !== '') {
-      Swal.fire({
-        title: 'Existing Content',
-        text: 'This will replace your current description. Continue?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, generate new',
-        cancelButtonText: 'Cancel'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.processAIAbstract(docId);
-        }
-      });
-    } else {
-      this.processAIAbstract(docId);
-    }
-  }
-
-  private processAIAbstract(docId: number): void {
-    if (!docId) return;
-    
-    this.isGeneratingAbstract = true;
-    this.abstractError = false;
-    
-    // First trigger document parsing with POST request
-    const parserSubscription = this.addInsightStepsService.runDocumentParser(docId)
-      .subscribe({
-        next: () => {
-          // After successful parsing, start polling for results
-          this.startSummaryPolling(docId);
-        },
-        error: (error: any) => {
-          console.error(`Error starting document parsing for document ${docId}:`, error);
-          this.isGeneratingAbstract = false;
-          this.abstractError = true;
-        }
-      });
-    
-    this.unsubscribe.push(parserSubscription);
-  }
-  
-  // Start polling for document summary
-  private startSummaryPolling(docId: number): void {
-    // Set maximum time to show loader (25 seconds)
-    const maxWaitTime = 25000;
-    const pollingInterval = 2000; // Check every 2 seconds
-    let elapsedTime = 0;
-    let polling: any;
-    
-    // Start polling
-    polling = setInterval(() => {
-      elapsedTime += pollingInterval;
-      
-      // Call the fetchDocumentSummary method to check for summary
-      this.fetchDocumentSummary(docId, polling);
-      
-      // Stop polling if we've reached the max time
-      if (elapsedTime >= maxWaitTime) {
-        clearInterval(polling);
-        
-        // Ensure loading state is turned off after max time
-        if (this.isGeneratingAbstract) {
-          this.isGeneratingAbstract = false;
-          this.abstractError = true; // Set error state if we couldn't get data after timeout
-        }
-      }
-    }, pollingInterval);
-  }
-
-  // Fetch document summary from AI parser API
-  private fetchDocumentSummary(docId: number, pollingIntervalId?: any): void {
-    // Loading state is already set to true when this is called
-    
-    const summarySubscription = this.addInsightStepsService.getDocumentSummary(docId)
-      .subscribe({
-        next: (response: DocumentParserResponse) => {
-          if (response.data) {
-            // Check if data has a summary object with abstract property
-            let summary = null;
-            const responseData: any = response.data;
-            
-            if (typeof responseData === 'object' && responseData.summary && typeof responseData.summary === 'object') {
-              summary = responseData.summary.abstract || null;
-            } else if (typeof responseData === 'string') {
-              summary = responseData;
-            } else if (responseData.summary && typeof responseData.summary === 'string') {
-              summary = responseData.summary;
-            }
-            
-            if (summary) {
-              // We have a valid abstract, use it directly
-              const formattedDescription = summary;
-              
-              // Update editor content with the generated abstract
-              if (this.editorInstance) {
-                this.editorInstance.setContent(formattedDescription);
-                this.documentForm.patchValue({
-                  description: formattedDescription
-                });
-              }
-              
-              // Clear polling interval if we have a valid summary
-              if (pollingIntervalId) {
-                clearInterval(pollingIntervalId);
-              }
-              
-              // Turn off loading
-              this.isGeneratingAbstract = false;
-              this.abstractError = false;
-            } else {
-              // No summary data returned
-              // Don't set error yet - continue polling until timeout
-              if (!pollingIntervalId) {
-                this.abstractError = true;
-                console.error(`No summary data returned for document ${docId}`);
-                this.isGeneratingAbstract = false;
-              }
-            }
-          } else {
-            // No data returned
-            // Don't set error yet - continue polling until timeout
-            if (!pollingIntervalId) {
-              this.abstractError = true;
-              console.error(`No data returned for document ${docId}`);
-              this.isGeneratingAbstract = false;
-            }
-          }
-        },
-        error: (error) => {
-          console.error(`Error getting document summary for document ${docId}:`, error);
-          
-          // Check if this is the specific metadata error we want to ignore
-          const isMetadataError = error?.error?.message?.includes('Attempt to read property "metadata" on null');
-          
-          // Only update UI state if this was the final request OR if it's not the specific error we're ignoring
-          if (!pollingIntervalId || !isMetadataError) {
-            this.isGeneratingAbstract = false;
-            this.abstractError = true;
-          }
-          // If it's the metadata error and we're polling, we just continue polling until timeout
-        }
-      });
-    
-    this.unsubscribe.push(summarySubscription);
-  }
-
-  toggleChapters(): void {
-    this.showChapters = !this.showChapters;
-    
-    // If we're editing and chapters are empty, but there are chapters in the document,
-    // populate them from the editing document
-    if (this.showChapters && 
-        this.stepperChapters.length === 0 && 
-        this.editingDocument && 
-        this.editingDocument.table_of_content && 
-        this.editingDocument.table_of_content.length > 0) {
-      
-      this.stepperChapters = this.editingDocument!.table_of_content!.map((item: any) => ({
-        title: item.chapter?.title || ''
-      })).filter((ch: ChapterItem) => ch.title !== '');
-    }
-    
-    // Don't add an empty chapter by default
-  }
-
-  saveDocumentFromStepper(): void {
-    if (!this.isStep2Valid()) {
-      return;
-    }
-
-    this.isSaving = true;
-    
-    // Different flow for editing vs. adding
-    if (this.editingDocument) {
-      // EDITING EXISTING DOCUMENT
-      // Use separate API calls for updating different aspects
-      
-      // 1. Update document details (title and price) with language mismatch handling
-      this.updateDocumentDetailsWithMismatchHandling(this.editingDocument.id, false)
-        .then((success: boolean) => {
-          if (!success) {
-            this.isSaving = false;
-            return;
-          }
-          
-          // 2. Update document description if it was changed
-          const description = this.documentForm.get('description')?.value;
-          
-          // Create chapters array from stepperChapters if available
-          const chapters = this.stepperChapters.length > 0 ? 
-            this.stepperChapters.map(chapter => ({
-              id: chapter.id,
-              title: chapter.title,
-              page_number: chapter.page_number
-            })) : [];
-            
-          const abstractRequest: UpdateKnowledgeAbstractsRequest = {
-            documents: [{
-              id: this.editingDocument!.id,
-              description: description || '',
-              table_of_content: chapters // Use chapters if available, otherwise empty array
-            }]
-          };
-          
-          this.addInsightStepsService.updateKnowledgeAbstracts(
-            +this.knowledgeId,
-            abstractRequest
-          ).subscribe({
-            next: () => {
-              this.showSuccess('', 'Document updated successfully');
-              this.loadDocuments(); // Refresh documents list
-              this.closeDocumentStepper();
-              this.isSaving = false;
-              
-              // Notify the parent component to update total_price
-              this.knowledgeUpdateService.notifyKnowledgeUpdate();
-            },
-            error: (error: any) => {
-              this.showError('', error?.error?.message || 'Error updating document description');
-              this.isSaving = false;
-            }
-          });
-        })
-        .catch((error: any) => {
-          this.showError('', error?.error?.message || 'Error updating document details');
-          this.isSaving = false;
-        });
-    } else {
-      // ADDING NEW DOCUMENT
-      // Since we now upload files immediately upon selection,
-      // we only need to update details and description here
-      
-      // Get the document ID from the form (set during file upload)
-      const documentId = this.documentForm.get('id')?.value;
-      
-      if (!documentId) {
-        this.showError('', 'No document has been uploaded. Please select a file first.');
-        this.isSaving = false;
-        return;
-      }
-      
-      // 1. Set document details (title and price) with language mismatch handling
-      this.updateDocumentDetailsWithMismatchHandling(documentId, false)
-        .then((success: boolean) => {
-          if (!success) {
-            this.isSaving = false;
-            return;
-          }
-          // 2. Set document description
-          const description = this.documentForm.get('description')?.value;
-          
-          // Create chapters array from stepperChapters if available
-          const chapters = this.stepperChapters.length > 0 ? 
-            this.stepperChapters.map(chapter => ({
-              id: chapter.id,
-              title: chapter.title,
-              page_number: chapter.page_number
-            })) : [];
-            
-          const abstractRequest: UpdateKnowledgeAbstractsRequest = {
-            documents: [{
-              id: documentId,
-              description: description || '',
-              table_of_content: chapters // Use chapters if available, otherwise empty array
-            }]
-          };
-          
-          this.addInsightStepsService.updateKnowledgeAbstracts(
-            +this.knowledgeId,
-            abstractRequest
-          ).subscribe({
-            next: () => {
-              // 3. Set document chapters if applicable (placeholder for now)
-              this.showSuccess('', 'Document added successfully');
-              this.loadDocuments();
-              this.closeDocumentStepper();
-              this.isSaving = false;
-              
-              // Notify the parent component to update total_price
-              this.knowledgeUpdateService.notifyKnowledgeUpdate();
-            },
-            error: (error: any) => {
-              this.showError('', error?.error?.message || 'Error setting document description');
-              this.isSaving = false;
-            }
-          });
-        })
-        .catch((error: any) => {
-          this.showError('', error?.error?.message || 'Error setting document details');
-          this.isSaving = false;
-        });
-    }
-  }
-
-  // Edit an existing document using the stepper
-  editDocumentWithStepper(doc: DocumentInfo, event: Event): void {
-    if (event) {
-      event.stopPropagation();
-    }
-    
-    // Cast to ExtendedDocumentInfo to add the custom properties
-    const extendedDoc: ExtendedDocumentInfo = {
-      ...doc,
-      fileIcon: this.getFileIconByExtension(doc.file_extension),
-      docUrl: '#' // Set a placeholder URL so the condition passes
-    };
-    
-    this.editingDocument = extendedDoc;
-    this.initDocumentForm();
-    
-    // Set initial values in the form
-    this.documentForm.patchValue({
-      id: doc.id,
-      file_name: doc.file_name,
-      description: doc.description || '',
-      price: doc.price || '0',
-      isCharity: doc.price === '0',
-      file_extension: doc.file_extension,
-      fileIcon: this.getFileIconByExtension(doc.file_extension),
-      docUrl: '#', // Add a placeholder URL
-      fromServer: true
-    });
-    
-    // Set selected file properties for display
-    this.selectedFileName = doc.file_name;
-    this.selectedFileIcon = this.getFileIconByExtension(doc.file_extension);
-    
-    // Load chapters if available
-    if (doc.table_of_content && doc.table_of_content.length > 0) {
-      this.showChapters = true;
-      this.stepperChapters = doc.table_of_content.map((item: any) => ({
-        title: item.chapter?.title || ''
-      })).filter((ch: ChapterItem) => ch.title !== '');
-    } else {
-      this.showChapters = false;
-      this.stepperChapters = [];
-    }
-    
-    // Show the stepper starting at step 1 instead of jumping to step 2
-    this.showDocumentStepper = true;
-    this.documentStep = 1;
-  }
-
-  handlePriceInput(event: Event): void {
-    const inputElement = event.target as HTMLInputElement;
-    const value = inputElement.value;
-    
-    // Remove leading zeros
-    if (value.length > 1 && value.startsWith('0') && !value.startsWith('0.')) {
-      // Get the numeric value without leading zeros
-      const numericValue = parseInt(value, 10).toString();
-      // Update the form control
-      this.documentForm.get('price')?.setValue(numericValue, { emitEvent: false });
-      // Set the input value directly to handle browser differences
-      inputElement.value = numericValue;
-    }
-  }
-
-  // Language mismatch handling methods
-  private updateDocumentDetailsWithMismatchHandling(documentId: number, ignoreMismatch: boolean): Promise<boolean> {
-    const documentDetailsRequest = {
-      documents: [{
-        id: documentId,
-        file_name: this.documentForm.get('file_name')?.value,
-        price: this.documentForm.get('isCharity')?.value ? '0' : this.documentForm.get('price')?.value,
-        ignore_mismatch: ignoreMismatch
-      }]
-    };
-    
-    console.log('Updating document details with request:', documentDetailsRequest);
-
-    return new Promise((resolve, reject) => {
-      this.addInsightStepsService.updateKnowledgeDocumentDetails(
-        +this.knowledgeId,
-        documentDetailsRequest.documents
-      ).subscribe({
-        next: (response) => {
-          console.log('Document details updated successfully:', response);
-          resolve(true);
-        },
-        error: (error) => {
-          console.error('Error updating document details:', error);
-          
-          // Check if this is a language mismatch error
-          if (this.isLanguageMismatchError(error)) {
-            this.handleLanguageMismatchError(error)
-              .then((shouldIgnore) => {
-                if (shouldIgnore) {
-                  // Retry with ignore_mismatch: true
-                  this.updateDocumentDetailsWithMismatchHandling(documentId, true)
-                    .then(resolve)
-                    .catch(reject);
-                } else {
-                  // User chose to edit, don't proceed
-                  resolve(false);
-                }
-              })
-              .catch(() => {
-                // User cancelled or error occurred
-                resolve(false);
-              });
-          } else {
-            // Handle other errors normally
-            reject(error);
-          }
-        }
-      });
-    });
-  }
-
-  private isLanguageMismatchError(error: any): boolean {
-    return error.error && 
-           error.error.message && 
-           (error.error.message.includes('File name not match document language') ||
-            error.error.message.includes('اسم الملف غير متطابق مع لغة المستند')) &&
-           error.error.errors;
-  }
-
-  private handleLanguageMismatchError(error: any): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      try {
-        console.log('Language mismatch error details:', {
-          error: error.error,
-          currentDocument: {
-            id: this.editingDocument?.id || this.documentForm.get('id')?.value,
-            file_name: this.documentForm.get('file_name')?.value
-          }
-        });
-        
-        // Extract document names from error
-        const errorKeys = Object.keys(error.error.errors);
-        const affectedDocumentNames: string[] = [];
-
-        errorKeys.forEach(key => {
-          // Extract index from keys like "documents.55", "documents.44"
-          const match = key.match(/documents\.(\d+)/);
-          if (match) {
-            const fileName = this.documentForm.get('file_name')?.value;
-            if (fileName) {
-              affectedDocumentNames.push(fileName);
-            }
-          }
-        });
-
-        // Always show the dialog even if we couldn't extract specific document names
-        if (affectedDocumentNames.length === 0) {
-          affectedDocumentNames.push('Document');
-        }
-        
-        // Store the affected documents for the modal
-        this.languageMismatchDocuments = affectedDocumentNames;
-        
-        const message = this.translate.getTranslation('LANGUAGE_MISMATCH_MESSAGE');
-
-        // Show confirmation dialog
-        this.showConfirmationDialog(
-          this.translate.getTranslation('LANGUAGE_MISMATCH_DETECTED'),
-          message,
-          this.translate.getTranslation('LANGUAGE_MISMATCH_EDIT'),
-          this.translate.getTranslation('LANGUAGE_MISMATCH_IGNORE')
-        ).then((result) => {
-          if (result) {
-            // User clicked "Ignore"
-            resolve(true);
-          } else {
-            // User clicked "Edit" or cancelled
-            resolve(false);
-          }
-        }).catch(() => {
-          resolve(false);
-        });
-
-      } catch (parseError) {
-        console.error('Error parsing language mismatch error:', parseError);
-        resolve(false);
-      }
-    });
-  }
-
-  private showConfirmationDialog(title: string, message: string, cancelText: string, confirmText: string): Promise<boolean> {
-    return new Promise((resolve) => {
-      this.languageMismatchTitle = title;
-      this.languageMismatchMessage = message;
-      this.showLanguageMismatchDialog = true;
-      this.languageMismatchResolver = resolve;
-    });
   }
 
   onLanguageMismatchConfirm(): void {
@@ -1536,6 +760,66 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
     if (this.languageMismatchResolver) {
       this.languageMismatchResolver(false); // User clicked "Edit"
       this.languageMismatchResolver = null;
+    }
+  }
+
+  // Modal methods
+  openDocumentModal(): void {
+    // Instead of opening modal directly, trigger file input first
+    this.triggerFileInputForModal();
+  }
+
+  private triggerFileInputForModal(): void {
+    // Create a temporary file input
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt';
+    fileInput.style.display = 'none';
+    
+    fileInput.onchange = (event: any) => {
+      const file = event.target.files[0];
+      if (file) {
+        // File selected, now open modal with pre-loaded file
+        this.openDocumentModalWithFile(file);
+      }
+      // Clean up
+      document.body.removeChild(fileInput);
+    };
+    
+    // Add to DOM and trigger click
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  }
+
+  private openDocumentModalWithFile(file: File): void {
+    this.editingDocumentForModal = null;
+    this.showDocumentModal = true;
+    
+    // Pass the selected file to modal (we'll need to add this functionality)
+    setTimeout(() => {
+      // Use setTimeout to ensure modal is rendered
+      this.preSelectedFile = file;
+    }, 100);
+  }
+
+  preSelectedFile: File | null = null;
+
+  onDocumentSaved(): void {
+    // Refresh the documents list when a document is saved
+    this.loadDocuments();
+    
+    // Notify parent component to update total_price
+    this.knowledgeUpdateService.notifyKnowledgeUpdate();
+    
+    // Clear the pre-selected file
+    this.preSelectedFile = null;
+  }
+
+  onModalVisibilityChanged(visible: boolean): void {
+    this.showDocumentModal = visible;
+    if (!visible) {
+      // Clear the pre-selected file when modal is closed
+      this.preSelectedFile = null;
     }
   }
 }
