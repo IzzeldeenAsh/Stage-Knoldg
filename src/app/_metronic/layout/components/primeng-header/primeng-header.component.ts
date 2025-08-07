@@ -86,7 +86,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
     searchParams.set('search_type', searchType);
     
     // Navigate to the React app's search page
-    const searchUrl = `https://knoldg.com/${this.lang}/home?${searchParams.toString()}`;
+    const searchUrl = `http://localhost:3000/${this.lang}/home?${searchParams.toString()}`;
     window.location.href = searchUrl;
   }
   
@@ -226,7 +226,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
   }
 
   getHomeUrl(): string {
-    const url= 'https://knoldg.com/' + this.lang;
+    const url= 'http://localhost:3000/' + this.lang;
     return url;
   }
 
@@ -298,7 +298,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
   }
 
   getIndustryUrl(industry: Industry): string {
-    return `https://knoldg.com/en/industry/${industry.id}/${industry.slug}`;
+    return `http://localhost:3000/en/industry/${industry.id}/${industry.slug}`;
   }
 
   initializeMenu() {
@@ -324,7 +324,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: 'https://knoldg.com/en/industries/report'
+        routerLink: 'http://localhost:3000/en/industries/report'
       },
       {
         label: this.translate.instant('MENU.INSIGHTS'),
@@ -332,7 +332,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: 'https://knoldg.com/en/industries/insight'
+        routerLink: 'http://localhost:3000/en/industries/insight'
       },
      
       {
@@ -341,7 +341,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: 'https://knoldg.com/en/industries/data'
+        routerLink: 'http://localhost:3000/en/industries/data'
       },
       {
         label: this.translate.instant('MENU.MANUAL'),
@@ -349,7 +349,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: 'https://knoldg.com/en/industries/manual'
+        routerLink: 'http://localhost:3000/en/industries/manual'
       },
       {
         label: this.translate.instant('MENU.COURSES'),
@@ -357,7 +357,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: 'https://knoldg.com/en/industries/course'
+        routerLink: 'http://localhost:3000/en/industries/course'
       }
     ];
 

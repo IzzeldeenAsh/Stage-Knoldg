@@ -212,7 +212,12 @@
                     *ngIf="showEditor && !isDescriptionLoading"
                     apiKey="fovwl5u83es9vkiv7x6h34fynj0utg108qrb0edwwwlxevt9"
                     formControlName="description"
-                    [init]="{min_height: 250, placeholder: ('ENTER_KNOWLEDGE_DESCRIPTION' | translate)}"
+                    [init]="{
+                      plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                      toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+                      min_height: 250,
+                      placeholder: ('ENTER_KNOWLEDGE_DESCRIPTION' | translate)
+                    }"
                     [ngClass]="{'is-invalid': form.get('description')?.hasError('required') && form.get('description')?.touched, 'border-red': form.get('description')?.hasError('required') && form.get('description')?.touched}"
                   ></editor>
                   
