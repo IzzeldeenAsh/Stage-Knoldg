@@ -316,3 +316,10 @@
   width: 1rem;
   height: 1rem;
 }
+
+// Editor blur effect during AI generation
+.editor-blur {
+  filter: blur(2px);
+  pointer-events: none;
+  transition: filter 0.3s ease;
+}

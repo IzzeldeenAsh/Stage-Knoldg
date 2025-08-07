@@ -70,28 +70,29 @@ export class ToastService  {
     if (!toastContainer) {
       toastContainer = document.createElement('div');
       // Adjust positioning based on language direction
-      toastContainer.className = 'position-fixed top-0 start-50 translate-middle-x p-3 z-index-1000 toast-container';
+      const containerClass = this.lang === 'ar' 
+        ? 'position-fixed top-0 start-0 p-3 z-index-99999 toast-container' 
+        : 'position-fixed top-0 end-0 p-3 z-index-99999 toast-container';
+      toastContainer.className = containerClass;
       document.body.appendChild(toastContainer);
     }
 
     // Create toast element if it doesn't exist
     if (!this.toastElement) {
       const toastHtml = `
-        <div class="toast fade" role="alert" aria-live="assertive" aria-atomic="true" dir="${this.lang === 'ar' ? 'rtl' : 'ltr'}" style="width: 100%; max-width: 420px; margin: 0 auto;">
-          <div class="toast-header d-flex justify-content-between align-items-center" style="text-align: ${this.lang === 'ar' ? 'right' : 'left'};">
-           <div class="d-flex ${this.lang === 'ar' ? 'flex-row-reverse' : 'flex-row'} align-items-center gap-2">
-            <i class="ki-duotone ki-notification-status fs-2 ${this.lang === 'ar' ? 'ms-3' : 'me-3'} text-warning">
+        <div class="toast fade" role="alert" aria-live="assertive" aria-atomic="true" dir="${this.lang === 'ar' ? 'rtl' : 'ltr'}" style="min-width: 350px; max-width: 500px;">
+          <div class="toast-header" style="text-align: ${this.lang === 'ar' ? 'right' : 'left'}; padding: 16px;">
+            <i class="ki-duotone ki-notification-status fs-1 me-3">
               <span class="path1"></span>
               <span class="path2"></span>
               <span class="path3"></span>
               <span class="path4"></span>
             </i>
-            <strong class="me-auto" style="font-size: 18px; direction: ${this.lang === 'ar' ? 'rtl' : 'ltr'}; text-align: ${this.lang === 'ar' ? 'right' : 'left'};"></strong>
-            <small class="toast-time" style="direction: ${this.lang === 'ar' ? 'rtl' : 'ltr'}; text-align: ${this.lang === 'ar' ? 'right' : 'left'};"></small>
-            </div>
-            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            <strong class="me-auto fs-4" style="direction: ${this.lang === 'ar' ? 'rtl' : 'ltr'}; text-align: ${this.lang === 'ar' ? 'right' : 'left'};"></strong>
+            <small class="toast-time fs-6" style="direction: ${this.lang === 'ar' ? 'rtl' : 'ltr'}; text-align: ${this.lang === 'ar' ? 'right' : 'left'};"></small>
+            <button type="button" class="btn-close fs-5" data-bs-dismiss="toast" aria-label="Close"></button>
           </div>
-          <div class="toast-body" style="font-size: 16px; direction: ${this.lang === 'ar' ? 'rtl' : 'ltr'}; text-align: ${this.lang === 'ar' ? 'right' : 'left'};"></div>
+          <div class="toast-body fs-5" style="direction: ${this.lang === 'ar' ? 'rtl' : 'ltr'}; text-align: ${this.lang === 'ar' ? 'right' : 'left'}; padding: 16px;"></div>
         </div>
       `;
 
@@ -137,19 +138,19 @@ export class ToastService  {
     let iconClass = '';
     switch(type) {
       case 'success':
-        iconClass = 'ki-duotone ki-check-circle fs-2 me-3';
+        iconClass = 'ki-duotone ki-check-circle fs-1 me-3';
         break;
       case 'danger':
-        iconClass = 'ki-duotone ki-cross-circle fs-2 me-3';
+        iconClass = 'ki-duotone ki-cross-circle fs-1 me-3';
         break;
       case 'warning':
-        iconClass = 'ki-duotone ki-information-5 fs-2 me-3';
+        iconClass = 'ki-duotone ki-information-5 fs-1 me-3';
         break;
       case 'info':
-        iconClass = 'ki-duotone ki-information-5 fs-2 me-3';
+        iconClass = 'ki-duotone ki-information-5 fs-1 me-3';
         break;
       default:
-        iconClass = 'ki-duotone ki-notification-status fs-2 me-3';
+        iconClass = 'ki-duotone ki-notification-status fs-1 me-3';
     }
     this.toastHeaderIcon.className = `${iconClass} text-${type}`;
 
