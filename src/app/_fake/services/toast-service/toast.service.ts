@@ -14,6 +14,26 @@ export class ToastService  {
   private toastTime: HTMLElement | null = null;
   private lang: string = 'en';
   
+  // Toast styling configurations
+  private toastStyles = {
+    info: {
+      background: '#F0F7FF',
+      border: '#BFDBFE'
+    },
+    success: {
+      background: '#E9F6EE',
+      border: '#BBF7D0'
+    },
+    warning: {
+      background: '#FFFCEA',
+      border: '#FEF08A'
+    },
+    error: {
+      background: '#FFF2F3',
+      border: '#FECACA'
+    }
+  };
+  
   // Arabic translations
   private arabicTexts = {
     success: 'نجح',
@@ -26,7 +46,7 @@ export class ToastService  {
   private englishTexts = {
     success: 'Success',
     error: 'Error',
-    warning: 'Warning', 
+    warning: 'Warning',   
     information: 'Information',
     justNow: 'Just now'
   };
@@ -80,8 +100,8 @@ export class ToastService  {
     // Create toast element if it doesn't exist
     if (!this.toastElement) {
       const toastHtml = `
-        <div class="toast fade" role="alert" aria-live="assertive" aria-atomic="true" dir="${this.lang === 'ar' ? 'rtl' : 'ltr'}" style="min-width: 350px; max-width: 500px;">
-          <div class="toast-header" style="text-align: ${this.lang === 'ar' ? 'right' : 'left'}; padding: 16px;">
+        <div class="toast fade" role="alert" aria-live="assertive" aria-atomic="true" dir="${this.lang === 'ar' ? 'rtl' : 'ltr'}" style="min-width: 350px; max-width: 500px; border-width: 2px !important; border-style: solid !important;">
+          <div class="toast-header" style="text-align: ${this.lang === 'ar' ? 'right' : 'left'}; padding: 16px; border-bottom: none;">
             <i class="ki-duotone ki-notification-status fs-1 me-3">
               <span class="path1"></span>
               <span class="path2"></span>
@@ -136,23 +156,47 @@ export class ToastService  {
 
     // Set icon and color based on type
     let iconClass = '';
+    // Apply background and border colors based on type
+    const toastHeader = this.toastElement?.querySelector('.toast-header') as HTMLElement;
+    
     switch(type) {
       case 'success':
         iconClass = 'ki-duotone ki-check-circle fs-1 me-3';
+        this.toastElement.style.backgroundColor = this.toastStyles.success.background;
+        this.toastElement.style.borderColor = this.toastStyles.success.border;
+        if (toastHeader) toastHeader.style.backgroundColor = this.toastStyles.success.background;
         break;
       case 'danger':
         iconClass = 'ki-duotone ki-cross-circle fs-1 me-3';
+        this.toastElement.style.backgroundColor = this.toastStyles.error.background;
+        this.toastElement.style.borderColor = this.toastStyles.error.border;
+        if (toastHeader) toastHeader.style.backgroundColor = this.toastStyles.error.background;
         break;
       case 'warning':
         iconClass = 'ki-duotone ki-information-5 fs-1 me-3';
+        this.toastElement.style.backgroundColor = this.toastStyles.warning.background;
+        this.toastElement.style.borderColor = this.toastStyles.warning.border;
+        if (toastHeader) toastHeader.style.backgroundColor = this.toastStyles.warning.background;
         break;
       case 'info':
         iconClass = 'ki-duotone ki-information-5 fs-1 me-3';
+        this.toastElement.style.backgroundColor = this.toastStyles.info.background;
+        this.toastElement.style.borderColor = this.toastStyles.info.border;
+        if (toastHeader) toastHeader.style.backgroundColor = this.toastStyles.info.background;
         break;
       default:
         iconClass = 'ki-duotone ki-notification-status fs-1 me-3';
+        this.toastElement.style.backgroundColor = this.toastStyles.info.background;
+        this.toastElement.style.borderColor = this.toastStyles.info.border;
+        if (toastHeader) toastHeader.style.backgroundColor = this.toastStyles.info.background;
     }
     this.toastHeaderIcon.className = `${iconClass} text-${type}`;
+    
+    // Ensure border is visible
+    this.toastElement.style.borderWidth = '2px';
+    this.toastElement.style.borderStyle = 'solid';
+    this.toastElement.style.setProperty('border-width', '2px', 'important');
+    this.toastElement.style.setProperty('border-style', 'solid', 'important');
 
     // Set content
     this.toastTitle.textContent = title;
