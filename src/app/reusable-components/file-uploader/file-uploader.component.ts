@@ -36,7 +36,7 @@ export class FileUploaderComponent {
   @Input() maxFiles: number = 1;
   @Input() maxFileSize: number = 10; // MB
   @Input() acceptedFiles: string = '';
-  @Input() uploadUrl: string = 'https://knoldg.com/en';
+  @Input() uploadUrl: string = 'http://localhost:3000/en';
   @Output() onFileUploaded = new EventEmitter<File[]>();
   @Output() onFileRemoved = new EventEmitter<File>();
 

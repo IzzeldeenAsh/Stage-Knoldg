@@ -240,7 +240,7 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
       // Check if the documents array exists and has at least one document
       if (!currentAccount.documents || currentAccount.documents.length === 0) {
         if( this.lang === 'ar' ) {
-          this.showWarn('', 'يرجى إضافة على الأقل واحد أو أكثر من المستندات قبل المتابعة.');
+          this.showWarn('', 'يرجى اختيار الملف المراد تحميلة على المنصة');
          } else {
           this.showWarn('', 'Please add at least one document before proceeding.');
          }
