@@ -24,7 +24,7 @@ interface KeywordItem {
 interface TagItem {
   display: string;
   value: string;
-  id?: number;
+  id: number;
 }
 
 @Component({
@@ -102,6 +102,9 @@ export class Step4Component extends BaseComponent implements OnInit {
   tags: { id: number; name: string }[] = [];
   availableTags: TagItem[] = [];
   tagIdError: string = '';
+  selectedTagItems: TagItem[] = [];
+  selectedTagIds: number[] = [];
+  selectedTagForAdding: number | null = null;
   
   // Keywords related properties
   availableKeywords: KeywordItem[] = [];
@@ -180,6 +183,7 @@ export class Step4Component extends BaseComponent implements OnInit {
     if (this.defaultValues.industry) {
       this.selectedIndustryId = this.defaultValues.industry;
       this.getTopics(this.defaultValues.industry);
+      this.fetchTagsByIndustry(this.defaultValues.industry);
     }
     
     if (this.defaultValues.knowledgeId) {
@@ -233,7 +237,7 @@ export class Step4Component extends BaseComponent implements OnInit {
       isic_code: [this.defaultValues.isic_code],
       hs_code: [this.defaultValues.hs_code],
       tag_ids: [this.defaultValues.tag_ids || [], [Validators.required]],
-      tagItems: [[]],  // New control for tag-input component
+      tagItems: [[]],  // For displaying selected tags in tag-input
       keywords: [this.defaultValues.keywords || []]
     });
     
@@ -252,6 +256,9 @@ export class Step4Component extends BaseComponent implements OnInit {
     }
     if (this.defaultValues.isic_code) {
       this.selectedIsicId = this.defaultValues.isic_code;
+    }
+    if (this.defaultValues.tag_ids) {
+      this.selectedTagIds = [...this.defaultValues.tag_ids];
     }
 
     // For worldwide target market, get all region IDs
@@ -445,15 +452,21 @@ export class Step4Component extends BaseComponent implements OnInit {
           }));
         }
         
-        // Update form controls
+        // Update form controls and selectedTagIds
         this.form.get('tag_ids')?.setValue(this.defaultValues.tag_ids || []);
+        this.selectedTagIds = [...(this.defaultValues.tag_ids || [])];
         this.form.get('keywords')?.setValue(this.defaultValues.keywords || []);
         
+        // Update tag items for display
+        this.updateTagItems();
+        
         this.cdr.detectChanges();
-        // Initialize tags if topic is selected
+        // Initialize tags and keywords if industry/topic are selected
+        if (this.defaultValues.industry) {
+          this.fetchTagsByIndustry(this.defaultValues.industry);
+        }
         const topicId = this.form.get('topicId')?.value;
         if (topicId && topicId !== 'other') {
-          this.fetchTagsByTopic(topicId);
           this.fetchSuggestedKeywordsByTopic(topicId);
         }
       },
@@ -667,8 +680,11 @@ export class Step4Component extends BaseComponent implements OnInit {
     
     if (node.data && node.data.key) {
       this.getTopics(node.data.key);
-      // Clear tags and keywords when industry changes
-      this.clearTagsAndKeywords();
+      // Fetch tags for the new industry
+      this.fetchTagsByIndustry(node.data.key);
+      // Clear keywords when industry changes
+      this.form.get('keywords')?.setValue([]);
+      this.updateParentModel({ keywords: [] }, this.checkForm());
     }
   }
   
@@ -707,21 +723,16 @@ export class Step4Component extends BaseComponent implements OnInit {
 
     this.form.get('topicId')?.setValue(topicId);
     
-    // Clear existing tags and keywords immediately when topic changes
-    this.form.get('tagItems')?.setValue([]);
-    this.form.get('tag_ids')?.setValue([]);
+    // Clear keywords when topic changes
     this.form.get('keywords')?.setValue([]);
-    this.availableTags = [];
     this.availableKeywords = [];
     
-    // Fetch tags and keywords based on the new topic
+    // Fetch keywords based on the new topic
     if (topicId && topicId !== 'other') {
-      // fetchTagsByTopic will auto-select all tags
-      this.fetchTagsByTopic(topicId);
       this.fetchSuggestedKeywordsByTopic(topicId);
     }
     
-    this.updateParentModel({ topicId: topicId, tag_ids: [], keywords: [] }, this.checkForm());
+    this.updateParentModel({ topicId: topicId, keywords: [] }, this.checkForm());
   }
 
   selectOtherOption() {
@@ -937,11 +948,33 @@ export class Step4Component extends BaseComponent implements OnInit {
   
   // Tags related methods
   private fetchTags() {
-    // Only fetch tags if a topic is selected
-    const topicId = this.form.get('topicId')?.value;
-    if (this.defaultValues.industry && topicId && topicId !== 'other') {
-      this.fetchTagsByTopic(topicId);
+    // Fetch tags if industry is selected
+    if (this.defaultValues.industry) {
+      this.fetchTagsByIndustry(this.defaultValues.industry);
     }
+  }
+  
+  private fetchTagsByIndustry(industryId: number) {
+    // Fetch all available tags for the industry
+    this.tagsService.getTagsByIndustry(industryId, this.currentLanguage)
+      .subscribe({
+        next: (tags: { id: number; name: string }[]) => {
+          this.tags = tags;
+          
+          // Convert tags to the format expected by PrimeNG multiselect
+          this.availableTags = this.tags.map((tag) => ({
+            display: tag.name,
+            value: tag.name,
+            id: tag.id
+          }));
+          
+          // Update tag items for display
+          this.updateTagItems();
+        },
+        error: (error) => {
+          console.error("Error fetching tags by industry:", error);
+        },
+      });
   }
   
   private fetchTagsByTopic(topicId: number | string) {
@@ -954,30 +987,15 @@ export class Step4Component extends BaseComponent implements OnInit {
         next: (tags: { id: number; name: string }[]) => {
           this.tags = tags;
           
-          // Convert tags to the format expected by tag-input
+          // Convert tags to the format expected by PrimeNG multiselect
           this.availableTags = this.tags.map((tag) => ({
             display: tag.name,
             value: tag.name,
             id: tag.id
           }));
           
-          // Important: Auto-select ALL tags when they are fetched
-          if (this.availableTags.length > 0) {
-            // Set all tags as selected in the tagItems control
-            this.form.get('tagItems')?.setValue([...this.availableTags]);
-            
-            // Also update the tag_ids control with all tag IDs
-            const allTagIds = this.availableTags.map(tag => tag.id as number);
-            this.form.get('tag_ids')?.setValue(allTagIds);
-            
-            // Update parent model with all tags selected
-            this.updateParentModel({ tag_ids: allTagIds }, this.checkForm());
-          } else {
-            // If no tags are available, clear the selection
-            this.form.get('tagItems')?.setValue([]);
-            this.form.get('tag_ids')?.setValue([]);
-            this.updateParentModel({ tag_ids: [] }, this.checkForm());
-          }
+          // Update tag items display
+          this.updateTagItems();
         },
         error: (error) => {
           console.error("Error fetching tags by topic:", error);
@@ -985,28 +1003,23 @@ export class Step4Component extends BaseComponent implements OnInit {
       });
   }
   
-  addTag(event: any): void {
-    const tagValue = typeof event.value === 'string' ? event.value : event.value?.value;
-    if (!tagValue?.trim()) return;
+  // New methods for dropdown + tag-input approach
+  onTagSelectedFromDropdown(event: any): void {
+    const tagId = event.value;
+    if (!tagId) return;
     
-    // Check if this is one of our existing tags
-    const existingTag = this.availableTags.find(t => t.value === tagValue);
-    let tagId: number | undefined;
-    
-    if (existingTag && existingTag.id) {
-      // This is an existing tag, use its ID
-      tagId = existingTag.id;
-    } else {
-      // This is a new custom tag, need to create it on the server
-      this.createNewTag(tagValue);
-      return; // The update will happen after the tag is created
+    // Add to selected tags if not already selected
+    if (!this.selectedTagIds.includes(tagId)) {
+      this.selectedTagIds.push(tagId);
+      this.updateTagItems();
+      this.updateFormAndParent();
     }
     
-    // Update tag_ids form control
-    this.updateTagIds(tagId);
+    // Clear dropdown selection
+    this.selectedTagForAdding = null;
   }
   
-  removeTag(event: any): void {
+  onTagRemoved(event: any): void {
     const removedTagValue = typeof event.value === 'string' ? event.value : event.value?.value;
     if (!removedTagValue) return;
     
@@ -1014,20 +1027,48 @@ export class Step4Component extends BaseComponent implements OnInit {
     const removedTag = this.availableTags.find(t => t.value === removedTagValue);
     if (!removedTag || !removedTag.id) return;
     
-    // Get current tag IDs and remove the one that was removed
-    const currentTagIds = this.form.get('tag_ids')?.value || [];
-    const updatedTagIds = currentTagIds.filter((id: number) => id !== removedTag.id);
-    
-    // Update the tag_ids form control
-    this.form.patchValue({ tag_ids: updatedTagIds });
-    this.updateParentModel({ tag_ids: updatedTagIds }, this.checkForm());
+    // Remove from selected tag IDs
+    this.selectedTagIds = this.selectedTagIds.filter(id => id !== removedTag.id);
+    this.updateTagItems();
+    this.updateFormAndParent();
   }
   
-  /**
-   * Create a new custom tag
-   * @param tagName The name of the new tag
-   */
-  private createNewTag(tagName: string): void {
+  updateTagItems(): void {
+    // Convert selected tag IDs to TagItem format for tag-input display
+    const selectedTagItems = this.availableTags.filter(tag => 
+      this.selectedTagIds.includes(tag.id)
+    );
+    this.form.get('tagItems')?.setValue(selectedTagItems);
+  }
+  
+  updateFormAndParent(): void {
+    // Update tag_ids form control
+    this.form.get('tag_ids')?.setValue(this.selectedTagIds);
+    
+    // Update parent model
+    this.updateParentModel({ tag_ids: this.selectedTagIds }, this.checkForm());
+  }
+  
+  onTagAddedViaTagInput(event: any): void {
+    const tagValue = typeof event.value === 'string' ? event.value : event.value?.value;
+    if (!tagValue?.trim()) return;
+    
+    // Check if this is one of our existing tags
+    const existingTag = this.availableTags.find(t => t.value === tagValue || t.display === tagValue);
+    
+    if (existingTag && existingTag.id) {
+      // This is an existing tag, add it to selected if not already selected
+      if (!this.selectedTagIds.includes(existingTag.id)) {
+        this.selectedTagIds.push(existingTag.id);
+        this.updateFormAndParent();
+      }
+    } else {
+      // This is a new custom tag, create it via API
+      this.createCustomTagViaAPI(tagValue.trim());
+    }
+  }
+  
+  createCustomTagViaAPI(tagName: string): void {
     if (!this.defaultValues.industry) {
       this.showError('', 'Industry must be selected before adding custom tags');
       return;
@@ -1046,14 +1087,19 @@ export class Step4Component extends BaseComponent implements OnInit {
         const newTagId = response.data.tag_id;
         
         // Add new tag to available tags
-        this.availableTags.push({
+        const newTag: TagItem = {
           display: tagName,
           value: tagName,
           id: newTagId
-        });
+        };
+        this.availableTags.push(newTag);
         
-        // Update tag_ids form control
-        this.updateTagIds(newTagId);
+        // Add to selected tags
+        this.selectedTagIds = [...this.selectedTagIds, newTagId];
+        
+        // Update tag items and form
+        this.updateTagItems();
+        this.updateFormAndParent();
         
         // Show success message
         if(this.lang=='ar'){
@@ -1068,23 +1114,7 @@ export class Step4Component extends BaseComponent implements OnInit {
     });
   }
   
-  /**
-   * Update tag_ids form control when a tag is added or removed
-   * @param tagId The tag ID to add (if adding a tag)
-   */
-  private updateTagIds(tagId?: number): void {
-    if (!tagId) return;
-    
-    // Get current tag IDs
-    const currentTagIds = this.form.get('tag_ids')?.value || [];
-    
-    // Add new tag ID if it doesn't already exist
-    if (!currentTagIds.includes(tagId)) {
-      const updatedTagIds = [...currentTagIds, tagId];
-      this.form.patchValue({ tag_ids: updatedTagIds });
-      this.updateParentModel({ tag_ids: updatedTagIds }, this.checkForm());
-    }
-  }
+  
   
   // Keywords related methods
   private fetchSuggestedKeywords() {
@@ -1266,13 +1296,12 @@ export class Step4Component extends BaseComponent implements OnInit {
     return this.currentLang;
   }
   
-  // Clear tags and keywords
+  // Clear tags and keywords (but keep available tags since they depend on industry)
   private clearTagsAndKeywords() {
-    this.tags = [];
-    this.availableTags = [];
     this.availableKeywords = [];
     this.form.get('tag_ids')?.setValue([]);
     this.form.get('tagItems')?.setValue([]);
+    this.selectedTagIds = [];
     this.form.get('keywords')?.setValue([]);
     this.updateParentModel({ 
       tag_ids: [], 
