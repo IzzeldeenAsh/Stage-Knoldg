@@ -9,3 +9,12 @@
 .card:hover .transition-arrow {
     transform: translateX(5px);
 }
+
+.light-meetning-gradient-bg{
+    background-image: linear-gradient(to bottom right, #fff , #ecfdec);
+    color: #0bbc2f !important;
+}
+.light-wallet-gradient-bg{
+    background-image: linear-gradient(to bottom right, #fff , #eceefd);
+    color: #4f28ed;
+}

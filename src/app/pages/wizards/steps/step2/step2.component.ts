@@ -186,22 +186,6 @@ export class Step2Component implements OnInit, OnChanges, OnDestroy  {
     this.unsubscribe.push(apiCalls);
   }
 
-  // Optional: Additional handling to sanitize input
-  onPhoneNumberInput(event: Event) {
-      const input = event.target as HTMLInputElement;
-      // Remove any non-digit characters
-      let sanitizedValue = input.value.replace(/\D/g, '');
-      // Limit to 10 digits
-      if (sanitizedValue.length > 10) {
-        sanitizedValue = sanitizedValue.slice(0, 10);
-      }
-      // Update the input value without triggering another event
-      if(this.defaultValues.accountType==='corporate'){
-          this.form.controls.phoneCompanyNumber.setValue(sanitizedValue, { emitEvent: false });
-      }else{
-        this.form.controls.phoneNumber.setValue(sanitizedValue, { emitEvent: false });
-      }
-  }
   getBackgroundImage(){
     if (this.logoPreview) {
       return `url(${this.logoPreview})`;

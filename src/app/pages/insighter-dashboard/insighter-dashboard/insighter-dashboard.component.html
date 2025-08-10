@@ -15,7 +15,7 @@
           <div class="nav-item" [routerLink]="['my-dashboard']" *ngIf="!(isClient$ | async)" routerLinkActive="active" 
                (click)="closeMobileSidebar()">
             <div class="item-icon">
-              <i class="ki-duotone ki-abstract-28"><span class="path1"></span><span class="path2"></span></i>
+              <i class="ki-outline ki-abstract-28"></i>
             </div>
             <div class="item-label">
               {{ 'INSIGHTER.DASHBOARD.NAV.OVERVIEW' | translate }}
@@ -24,7 +24,7 @@
           <div class="nav-item" [routerLink]="['my-requests']" routerLinkActive="active" *ngIf="!(isClient$ | async)"
                (click)="closeMobileSidebar()">
             <div class="item-icon">
-              <i class="ki-duotone ki-document"><span class="path1"></span><span class="path2"></span></i>
+              <i class="ki-outline ki-question-2"></i>
             </div>
             <div class="item-label">
               {{ 'INSIGHTER.DASHBOARD.NAV.MY_REQUESTS' | translate }}
@@ -33,7 +33,18 @@
           <div class="nav-item" [routerLink]="['my-knowledge']" routerLinkActive="active"  *ngIf="!(isClient$ | async)"
                (click)="closeMobileSidebar()">
             <div class="item-icon">
-              <i class="ki-duotone ki-book"><span class="path1"></span><span class="path2"></span></i>
+            <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M1.23926 0.25H4.78125C5.32661 0.25 5.77033 0.693936 5.77051 1.23926V15.7607C5.77033 16.3061 5.32661 16.75 4.78125 16.75H1.23926C0.694045 16.7498 0.250177 16.306 0.25 15.7607V1.23926C0.250177 0.694045 0.694045 0.250177 1.23926 0.25Z" stroke="#3799FF" stroke-width="0.5"/>
+  <path d="M7.2601 3.79175H10.4476C10.993 3.79175 11.4377 4.23568 11.4378 4.78101V15.7605C11.4378 16.306 10.9931 16.7498 10.4476 16.7498H7.2601C6.71478 16.7496 6.27084 16.3059 6.27084 15.7605V4.78101C6.27102 4.23579 6.71489 3.79192 7.2601 3.79175Z" stroke="#3799FF" stroke-width="0.5"/>
+  <path d="M12.9268 8.04175H15.7607C16.306 8.04192 16.7498 8.48579 16.75 9.03101V15.7605C16.75 16.3059 16.3061 16.7496 15.7607 16.7498H12.9268C12.3814 16.7496 11.9375 16.3059 11.9375 15.7605V9.03101C11.9377 8.48579 12.3815 8.04192 12.9268 8.04175Z" stroke="#3799FF" stroke-width="0.5"/>
+  <path d="M3.01041 2.375C3.16559 2.375 3.29166 2.50107 3.29166 2.65625V12.2188C3.29166 12.3739 3.16559 12.5 3.01041 12.5C2.85523 12.5 2.72916 12.3739 2.72916 12.2188V2.65625C2.72916 2.50107 2.85523 2.375 3.01041 2.375Z" stroke="#3799FF" stroke-width="0.5"/>
+  <path d="M2.47916 14.0625H3.54166C3.69684 14.0625 3.82291 14.1886 3.82291 14.3438C3.82291 14.4989 3.69684 14.625 3.54166 14.625H2.47916C2.32398 14.625 2.19791 14.4989 2.19791 14.3438C2.19791 14.1886 2.32398 14.0625 2.47916 14.0625Z" stroke="#3799FF" stroke-width="0.5"/>
+  <path d="M8.85416 5.91675C9.00934 5.91675 9.13541 6.04282 9.13541 6.198V12.2185C9.13541 12.3737 9.00934 12.4998 8.85416 12.4998C8.69898 12.4998 8.57291 12.3737 8.57291 12.2185V6.198C8.57291 6.04282 8.69898 5.91675 8.85416 5.91675Z" stroke="#3799FF" stroke-width="0.5"/>
+  <path d="M8.32291 14.0625H9.38541C9.54059 14.0625 9.66666 14.1886 9.66666 14.3438C9.66666 14.4989 9.54059 14.625 9.38541 14.625H8.32291C8.16773 14.625 8.04166 14.4989 8.04166 14.3438C8.04166 14.1886 8.16773 14.0625 8.32291 14.0625Z" stroke="#3799FF" stroke-width="0.5"/>
+  <path d="M14.3438 10.1667C14.4989 10.1667 14.625 10.2928 14.625 10.448V12.2185C14.625 12.3737 14.4989 12.4998 14.3438 12.4998C14.1886 12.4998 14.0625 12.3737 14.0625 12.2185V10.448C14.0625 10.2928 14.1886 10.1667 14.3438 10.1667Z" stroke="#3799FF" stroke-width="0.5"/>
+  <path d="M13.8125 14.0625H14.875C15.0302 14.0625 15.1562 14.1886 15.1562 14.3438C15.1562 14.4989 15.0302 14.625 14.875 14.625H13.8125C13.6573 14.625 13.5313 14.4989 13.5312 14.3438C13.5312 14.1886 13.6573 14.0625 13.8125 14.0625Z" stroke="#3799FF" stroke-width="0.5"/>
+  </svg>
+
             </div>
             <div class="item-label">
               {{ 'INSIGHTER.DASHBOARD.NAV.MY_KNOWLEDGE' | translate }}
@@ -42,7 +53,7 @@
           <div class="nav-item" [routerLink]="['my-downloads']" routerLinkActive="active"
                (click)="closeMobileSidebar()">
             <div class="item-icon">
-              <i class="ki-duotone ki-file-down"><span class="path1"></span><span class="path2"></span></i>
+              <i class="ki-outline ki-file-down"></i>
             </div>
             <div class="item-label">
               {{ 'INSIGHTER.DASHBOARD.NAV.MY_DOWNLOADS' | translate }}
@@ -51,7 +62,7 @@
           <div class="nav-item" [routerLink]="['read-later']" routerLinkActive="active"
                (click)="closeMobileSidebar()">
             <div class="item-icon">
-              <i class="ki-duotone ki-bookmark"><span class="path1"></span><span class="path2"></span></i>
+              <i class="ki-outline ki-bookmark"></i>
             </div>
             <div class="item-label">
               {{ 'INSIGHTER.DASHBOARD.NAV.READ_LATER' | translate }}
@@ -61,23 +72,20 @@
           <div class="nav-item expandable" [class.expanded]="isMeetingsExpanded">
             <div class="nav-item-main" (click)="toggleMeetings()">
               <div class="item-icon">
-                <i class="ki-duotone ki-calendar"><span class="path1"></span><span class="path2"></span></i>
+                <i class="ki-outline ki-calendar"></i>
               </div>
               <div class="item-label">
                 {{ 'INSIGHTER.DASHBOARD.NAV.MEETINGS' | translate }}
               </div>
               <div class="expand-icon">
-                <i class="ki-duotone ki-down" [class.rotated]="isMeetingsExpanded">
-                  <span class="path1"></span>
-                  <span class="path2"></span>
-                </i>
+                <i class="ki-outline ki-down"></i>
               </div>
             </div>
             <div class="sub-nav" [class.show]="isMeetingsExpanded">
               <div class="sub-nav-item"  [routerLink]="['my-consulting-schedule']" routerLinkActive="active" *ngIf="!(isClient$ | async)"
                    (click)="closeMobileSidebar()">
                 <div class="sub-item-icon">
-                  <i class="ki-duotone ki-calendar"><span class="path1"></span><span class="path2"></span></i>
+                  <i class="ki-outline ki-calendar"></i>
                 </div>
                 <div class="sub-item-label">
                   {{ 'INSIGHTER.DASHBOARD.NAV.MY_CONSULTING_SCHEDULE' | translate }}
@@ -86,7 +94,7 @@
               <div class="sub-nav-item" [routerLink]="['my-meetings/received']" routerLinkActive="active"  *ngIf="!(isClient$ | async)"
                    (click)="closeMobileSidebar()">
                 <div class="sub-item-icon">
-                  <i class="ki-duotone ki-message-text-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                  <i class="ki-outline ki-message-text-2"></i>
                 </div>
                 <div class="sub-item-label">
                   {{ 'INSIGHTER.MEETINGS.TABS.RECEIVED' | translate }}
@@ -95,7 +103,7 @@
               <div class="sub-nav-item" [routerLink]="['my-meetings/sent']" routerLinkActive="active"
                    (click)="closeMobileSidebar()">
                 <div class="sub-item-icon">
-                  <i class="ki-duotone ki-send"><span class="path1"></span><span class="path2"></span></i>
+                  <i class="ki-outline ki-send"></i>
                 </div>
                 <div class="sub-item-label">
                   {{ 'INSIGHTER.MEETINGS.TABS.SENT' | translate }}
@@ -107,7 +115,7 @@
           <div class="nav-item" [routerLink]="['my-company-settings']" routerLinkActive="active" *ngIf="hasCompanyRole$ | async"
                (click)="closeMobileSidebar()">
             <div class="item-icon">
-              <i class="ki-duotone ki-office-bag"><span class="path1"></span><span class="path2"></span></i>
+              <i class="ki-outline ki-people"></i>
             </div>
             <div class="item-label">
               {{ 'INSIGHTER.DASHBOARD.NAV.MY_COMPANY' | translate }}
@@ -116,7 +124,7 @@
           <div class="nav-item" [routerLink]="['account-settings']" routerLinkActive="active"  *ngIf="!(isClient$ | async)"
                (click)="closeMobileSidebar()">
             <div class="item-icon">
-              <i class="ki-duotone ki-setting-2"><span class="path1"></span><span class="path2"></span></i>
+              <i class="ki-outline ki-setting-2"></i>
             </div>
             <div class="item-label">
               {{ 'INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS' | translate }}
@@ -167,7 +175,7 @@
                   <!-- Collapse Toggle Button -->
                   <button type="button" class="nav-toggle-btn btn btn-sm btn-icon btn-active-color-primary" (click)="toggleNavCollapse()" 
                           [attr.title]="isNavCollapsed ? 'Expand Menu' : 'Collapse Menu'">
-                    <i class="ki-duotone ki-burger-menu fs-2  text-info"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                    <i class="ki-outline ki-burger-menu fs-2 text-info"></i>
                   </button>
                 </div>
                 <div class="p-card-body">
@@ -177,7 +185,7 @@
                        tooltipPosition="right"
                        appendTo="body">
                     <div class="item-icon">
-                      <i class="ki-duotone ki-abstract-28"><span class="path1"></span><span class="path2"></span></i>
+                      <i class="ki-outline ki-abstract-28"></i>
                     </div>
                     <div class="item-label" *ngIf="!isNavCollapsed">
                       {{ 'INSIGHTER.DASHBOARD.NAV.OVERVIEW' | translate }}
@@ -189,7 +197,7 @@
                        tooltipPosition="right"
                        appendTo="body">
                     <div class="item-icon">
-                      <i class="ki-duotone ki-document"><span class="path1"></span><span class="path2"></span></i>
+                      <i class="ki-outline ki-question-2"></i>
                     </div>
                     <div class="item-label" *ngIf="!isNavCollapsed">
                       {{ 'INSIGHTER.DASHBOARD.NAV.MY_REQUESTS' | translate }}
@@ -201,7 +209,18 @@
                        tooltipPosition="right"
                        appendTo="body">
                     <div class="item-icon">
-                      <i class="ki-duotone ki-book"><span class="path1"></span><span class="path2"></span></i>
+                    <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M1.23926 0.25H4.78125C5.32661 0.25 5.77033 0.693936 5.77051 1.23926V15.7607C5.77033 16.3061 5.32661 16.75 4.78125 16.75H1.23926C0.694045 16.7498 0.250177 16.306 0.25 15.7607V1.23926C0.250177 0.694045 0.694045 0.250177 1.23926 0.25Z" stroke="#3799FF" stroke-width="0.5"/>
+  <path d="M7.2601 3.79175H10.4476C10.993 3.79175 11.4377 4.23568 11.4378 4.78101V15.7605C11.4378 16.306 10.9931 16.7498 10.4476 16.7498H7.2601C6.71478 16.7496 6.27084 16.3059 6.27084 15.7605V4.78101C6.27102 4.23579 6.71489 3.79192 7.2601 3.79175Z" stroke="#3799FF" stroke-width="0.5"/>
+  <path d="M12.9268 8.04175H15.7607C16.306 8.04192 16.7498 8.48579 16.75 9.03101V15.7605C16.75 16.3059 16.3061 16.7496 15.7607 16.7498H12.9268C12.3814 16.7496 11.9375 16.3059 11.9375 15.7605V9.03101C11.9377 8.48579 12.3815 8.04192 12.9268 8.04175Z" stroke="#3799FF" stroke-width="0.5"/>
+  <path d="M3.01041 2.375C3.16559 2.375 3.29166 2.50107 3.29166 2.65625V12.2188C3.29166 12.3739 3.16559 12.5 3.01041 12.5C2.85523 12.5 2.72916 12.3739 2.72916 12.2188V2.65625C2.72916 2.50107 2.85523 2.375 3.01041 2.375Z" stroke="#3799FF" stroke-width="0.5"/>
+  <path d="M2.47916 14.0625H3.54166C3.69684 14.0625 3.82291 14.1886 3.82291 14.3438C3.82291 14.4989 3.69684 14.625 3.54166 14.625H2.47916C2.32398 14.625 2.19791 14.4989 2.19791 14.3438C2.19791 14.1886 2.32398 14.0625 2.47916 14.0625Z" stroke="#3799FF" stroke-width="0.5"/>
+  <path d="M8.85416 5.91675C9.00934 5.91675 9.13541 6.04282 9.13541 6.198V12.2185C9.13541 12.3737 9.00934 12.4998 8.85416 12.4998C8.69898 12.4998 8.57291 12.3737 8.57291 12.2185V6.198C8.57291 6.04282 8.69898 5.91675 8.85416 5.91675Z" stroke="#3799FF" stroke-width="0.5"/>
+  <path d="M8.32291 14.0625H9.38541C9.54059 14.0625 9.66666 14.1886 9.66666 14.3438C9.66666 14.4989 9.54059 14.625 9.38541 14.625H8.32291C8.16773 14.625 8.04166 14.4989 8.04166 14.3438C8.04166 14.1886 8.16773 14.0625 8.32291 14.0625Z" stroke="#3799FF" stroke-width="0.5"/>
+  <path d="M14.3438 10.1667C14.4989 10.1667 14.625 10.2928 14.625 10.448V12.2185C14.625 12.3737 14.4989 12.4998 14.3438 12.4998C14.1886 12.4998 14.0625 12.3737 14.0625 12.2185V10.448C14.0625 10.2928 14.1886 10.1667 14.3438 10.1667Z" stroke="#3799FF" stroke-width="0.5"/>
+  <path d="M13.8125 14.0625H14.875C15.0302 14.0625 15.1562 14.1886 15.1562 14.3438C15.1562 14.4989 15.0302 14.625 14.875 14.625H13.8125C13.6573 14.625 13.5313 14.4989 13.5312 14.3438C13.5312 14.1886 13.6573 14.0625 13.8125 14.0625Z" stroke="#3799FF" stroke-width="0.5"/>
+  </svg>
+
                     </div>
                     <div class="item-label" *ngIf="!isNavCollapsed">
                       {{ 'INSIGHTER.DASHBOARD.NAV.MY_KNOWLEDGE' | translate }}
@@ -213,7 +232,7 @@
                        tooltipPosition="right"
                        appendTo="body">
                     <div class="item-icon">
-                      <i class="ki-duotone ki-file-down"><span class="path1"></span><span class="path2"></span></i>
+                      <i class="ki-outline ki-file-down"></i>
                     </div>
                     <div class="item-label" *ngIf="!isNavCollapsed">
                       {{ 'INSIGHTER.DASHBOARD.NAV.MY_DOWNLOADS' | translate }}
@@ -225,7 +244,7 @@
                        tooltipPosition="right"
                        appendTo="body">
                     <div class="item-icon">
-                      <i class="ki-duotone ki-bookmark"><span class="path1"></span><span class="path2"></span></i>
+                      <i class="ki-outline ki-bookmark"></i>
                     </div>
                     <div class="item-label" *ngIf="!isNavCollapsed">
                       {{ 'INSIGHTER.DASHBOARD.NAV.READ_LATER' | translate }}
@@ -237,7 +256,7 @@
                        tooltipPosition="right"
                        appendTo="body">
                     <div class="item-icon">
-                      <i class="ki-duotone ki-calendar"><span class="path1"></span><span class="path2"></span></i>
+                      <i class="ki-outline ki-calendar"></i>
                     </div>
                     <div class="item-label" >
                         {{ 'INSIGHTER.DASHBOARD.NAV.MEETINGS' | translate }}
@@ -247,16 +266,13 @@
                   <div class="nav-item expandable" [class.expanded]="isMeetingsExpanded" *ngIf="!isNavCollapsed && !(isClient$ | async)">
                     <div class="nav-item-main" (click)="toggleMeetings()">
                       <div class="item-icon">
-                        <i class="ki-duotone ki-calendar"><span class="path1"></span><span class="path2"></span></i>
+                        <i class="ki-outline ki-calendar"></i>
                       </div>
                       <div class="item-label">
                         {{ 'INSIGHTER.DASHBOARD.NAV.MEETINGS' | translate }}
                       </div>
                       <div class="expand-icon">
-                        <i class="ki-duotone ki-down" [class.rotated]="isMeetingsExpanded">
-                          <span class="path1"></span>
-                          <span class="path2"></span>
-                        </i>
+                        <i class="ki-outline ki-down"></i>
                       </div>
                     </div>
                     <div class="sub-nav" [class.show]="isMeetingsExpanded">
@@ -265,7 +281,7 @@
                       tooltipPosition="right"
                       appendTo="body">
                         <div class="sub-item-icon">
-                          <i class="ki-duotone ki-calendar"><span class="path1"></span><span class="path2"></span></i>
+                          <i class="ki-outline ki-calendar"></i>
                         </div>
                         <div class="sub-item-label">
                           {{ 'INSIGHTER.DASHBOARD.NAV.MY_CONSULTING_SCHEDULE' | translate }}
@@ -276,7 +292,7 @@
                       tooltipPosition="right"
                       appendTo="body">
                         <div class="sub-item-icon">
-                          <i class="ki-duotone ki-message-text-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                          <i class="ki-outline ki-message-text-2"></i>
                         </div>
                         <div class="sub-item-label">
                           {{ 'INSIGHTER.MEETINGS.TABS.RECEIVED' | translate }}
@@ -287,7 +303,7 @@
                       tooltipPosition="right"
                       appendTo="body">
                         <div class="sub-item-icon">
-                          <i class="ki-duotone ki-send"><span class="path1"></span><span class="path2"></span></i>
+                          <i class="ki-outline ki-send"></i>
                         </div>
                         <div class="sub-item-label">
                           {{ 'INSIGHTER.MEETINGS.TABS.SENT' | translate }}
@@ -305,7 +321,7 @@
                          tooltipPosition="right"
                          appendTo="body">
                       <div class="item-icon">
-                        <i class="ki-duotone ki-calendar"><span class="path1"></span><span class="path2"></span></i>
+                        <i class="ki-outline ki-calendar"></i>
                       </div>
                     </div>
                     <div class="nav-item" [routerLink]="['my-meetings/received']" routerLinkActive="active" 
@@ -314,7 +330,7 @@
                          tooltipPosition="right"
                          appendTo="body">
                       <div class="item-icon">
-                        <i class="ki-duotone ki-message-text-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                        <i class="ki-outline ki-message-text-2"></i>
                       </div>
                     </div>
                     <div class="nav-item" [routerLink]="['my-meetings/sent']" routerLinkActive="active"
@@ -323,7 +339,7 @@
                          tooltipPosition="right"
                          appendTo="body">
                       <div class="item-icon">
-                        <i class="ki-duotone ki-send"><span class="path1"></span><span class="path2"></span></i>
+                        <i class="ki-outline ki-send"></i>
                       </div>
                     </div>
                   </div>
@@ -334,7 +350,7 @@
                        tooltipPosition="right"
                        appendTo="body">
                     <div class="item-icon">
-                      <i class="ki-duotone ki-office-bag"><span class="path1"></span><span class="path2"></span></i>
+                      <i class="ki-outline ki-people"></i>
                     </div>
                     <div class="item-label" *ngIf="!isNavCollapsed">
                       {{ 'INSIGHTER.DASHBOARD.NAV.MY_COMPANY' | translate }}
@@ -346,7 +362,7 @@
                        tooltipPosition="right"
                        appendTo="body">
                     <div class="item-icon">
-                      <i class="ki-duotone ki-setting-2"><span class="path1"></span><span class="path2"></span></i>
+                      <i class="ki-outline ki-setting-2"></i>
                     </div>
                     <div class="item-label" *ngIf="!isNavCollapsed">
                       {{ 'INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS' | translate }}
@@ -360,12 +376,7 @@
           <!-- Mobile Menu Toggle Button (visible only on mobile) -->
           <div class="mobile-menu-toggle" *ngIf="isMobileView">
             <button type="button" class="btn btn-icon btn-active-color-primary" (click)="toggleNavCollapse()">
-              <i class="ki-duotone ki-burger-menu fs-2 text-info">
-                <span class="path1"></span>
-                <span class="path2"></span>
-                <span class="path3"></span>
-                <span class="path4"></span>
-              </i>
+              <i class="ki-outline ki-burger-menu fs-2 text-info"></i>
             </button>
           </div>
 
