@@ -142,92 +142,18 @@
             "INSIGHTER_WIZARD.PHONE_NUMBER_OPTIONAL" | translate
           }}</span>
         </label>
-        <div class="input-group">
-          <div class="max-width-200px">
-            <p-dropdown
-              [options]="countries"
-              formControlName="phoneCountryCode"
-              class="d-block form-p-control no-border-radius-start-end"
-              optionValue="international_code"
-              [dataKey]="'international_code'"
-              placeholder="{{
-                'INSIGHTER_WIZARD.COUNTRY_PLACEHOLDER' | translate
-              }}"
-              [filter]="true"
-              [showClear]="true"
-              [filterFields]="['names.en', 'names.ar', 'international_code']"
-              filterPlaceholder="Search countries..."
-            >
-              <ng-template pTemplate="item" let-country>
-                <div class="country-option" [class]="lang === 'ar' ? 'rtl-country-option' : 'ltr-country-option'">
-                  <img *ngIf="country.showFlag"
-                    [src]="'../../../../assets/media/flags/' + country.flag + '.svg'"
-                    (error)="onFlagError(country)"
-                    alt="{{ country.names.en }}"
-                    [class]="'flag-icon w-20px ' + (lang === 'ar' ? 'ms-2' : 'me-2')" />
-                  <span class="country-code">(+{{ country.international_code }})</span>
-                  <span *ngIf="lang=='en'" class="country-name ms-2">{{ country.names.en }}</span>
-                  <span *ngIf="lang=='ar'" class="country-name ms-2">{{ country.names.ar }}</span>
-                </div>
-              </ng-template>
-              
-              <ng-template pTemplate="selectedItem" let-country>
-                <div class="selected-country-option" [class]="lang === 'ar' ? 'rtl-selected-option' : 'ltr-selected-option'" *ngIf="country">
-                  <img *ngIf="country.showFlag"
-                    [src]="'../../../../assets/media/flags/' + country.flag + '.svg'"
-                    (error)="onFlagError(country)"
-                    alt="{{ country.names.en }}"
-                    [class]="'flag-icon w-20px ' + (lang === 'ar' ? 'ms-2' : 'me-2')" />
-                  <span class="country-code">(+{{ country.international_code }})</span>
-                </div>
-              </ng-template>
-            </p-dropdown>
-          </div>
-          <input
-            formControlName="phoneNumber"
-            type="text"
-            maxlength="10"
-            class="form-control no-rtl-b-radius"
-            placeholder="{{ 'INSIGHTER_WIZARD.YOUR_PHONE_NUMBER' | translate }}"
-            (input)="onPhoneNumberInput($event)"
-          />
-        </div>
-
-        <!-- Validation Messages -->
-        <div class="fv-plugins-message-container">
-          <!-- Country Code Required -->
-          <div
-            *ngIf="
-              form.get('phoneCountryCode')?.hasError('required') &&
-              form.get('phoneCountryCode')?.touched
-            "
-            class="invalid-feedback d-block"
-          >
-            {{ "INSIGHTER_WIZARD.COUNTRY_CODE_REQUIRED" | translate }}
-          </div>
-
-          <!-- Phone Number Required -->
-          <div
-            *ngIf="
-              form.get('phoneNumber')?.hasError('required') &&
-              form.get('phoneNumber')?.touched
-            "
-            class="invalid-feedback d-block"
-          >
-            {{ "INSIGHTER_WIZARD.PHONE_NUMBER_REQUIRED" | translate }}
-          </div>
-
-          <!-- Phone Number Pattern (Exact 10 Digits) -->
-          <div
-            *ngIf="
-              form.get('phoneNumber')?.hasError('pattern') &&
-              form.get('phoneNumber')?.touched
-            "
-            class="invalid-feedback d-block"
-          >
-            {{ "INSIGHTER_WIZARD.PHONE_NUMBER_PATTERN" | translate }}
-          </div>
-        </div>
+        <app-phone-number-input
+          [countries]="countries"
+          [placeholder]="'INSIGHTER_WIZARD.YOUR_PHONE_NUMBER' | translate"
+          [searchPlaceholder]="'Search countries...'"
+          [lang]="lang"
+          [showValidationErrors]="true"
+          [countryCodeError]="(form.get('phoneCountryCode')?.hasError('required') && form.get('phoneCountryCode')?.touched) ? ('INSIGHTER_WIZARD.COUNTRY_CODE_REQUIRED' | translate) : ''"
+          [phoneNumberError]="(form.get('phoneNumber')?.hasError('required') && form.get('phoneNumber')?.touched) ? ('INSIGHTER_WIZARD.PHONE_NUMBER_REQUIRED' | translate) : (form.get('phoneNumber')?.hasError('pattern') && form.get('phoneNumber')?.touched) ? ('INSIGHTER_WIZARD.PHONE_NUMBER_PATTERN' | translate) : ''"
+          (countryCodeChange)="form.get('phoneCountryCode')?.setValue($event)"
+          (phoneNumberChange)="form.get('phoneNumber')?.setValue($event)"
+          (flagError)="onFlagError($event)"
+        ></app-phone-number-input>
       </div>
     </ng-container>
 
@@ -404,94 +330,19 @@
         <label class="form-label mb-3 required">
           {{ "INSIGHTER_WIZARD.PHONE_NUMBER" | translate }}
         </label>
-        <div class="input-group">
-          <div class="max-width-200px">
-            <p-dropdown
-              [options]="countries"
-              formControlName="phoneCountryCode"
-              class="d-block form-p-control no-border-radius-start-end"
-              optionValue="international_code"
-              [dataKey]="'international_code'"
-              placeholder="{{
-                'INSIGHTER_WIZARD.COUNTRY_PLACEHOLDER' | translate
-              }}"
-              [filter]="true"
-              [showClear]="true"
-              [filterFields]="['names.en', 'names.ar', 'international_code']"
-              filterPlaceholder="Search countries..."
-            >
-              <ng-template pTemplate="item" let-country>
-                <div class="country-option" [class]="lang === 'ar' ? 'rtl-country-option' : 'ltr-country-option'">
-                  <img *ngIf="country.showFlag"
-                    [src]="'../../../../assets/media/flags/' + country.flag + '.svg'"
-                    (error)="onFlagError(country)"
-                    alt="{{ country.names.en }}"
-                    [class]="'flag-icon w-20px ' + (lang === 'ar' ? 'ms-2' : 'me-2')" />
-                  <span class="country-code">(+{{ country.international_code }})</span>
-                  <span *ngIf="lang=='en'" class="country-name ms-2">{{ country.names.en }}</span>
-                  <span *ngIf="lang=='ar'" class="country-name ms-2">{{ country.names.ar }}</span>
-                </div>
-              </ng-template>
-              
-              <ng-template pTemplate="selectedItem" let-country>
-                <div class="selected-country-option" [class]="lang === 'ar' ? 'rtl-selected-option' : 'ltr-selected-option'" *ngIf="country">
-                  <img *ngIf="country.showFlag"
-                    [src]="'../../../../assets/media/flags/' + country.flag + '.svg'"
-                    (error)="onFlagError(country)"
-                    alt="{{ country.names.en }}"
-                    [class]="'flag-icon w-20px ' + (lang === 'ar' ? 'ms-2' : 'me-2')" />
-                  <span class="country-code">(+{{ country.international_code }})</span>
-                </div>
-              </ng-template>
-            </p-dropdown>
-          </div>
-          <input
-            formControlName="phoneCompanyNumber"
-            type="text"
-            maxlength="10"
-            class="form-control no-rtl-b-radius"
-            placeholder="{{
-              'INSIGHTER_WIZARD.PHONE_NUMBER_PLACEHOLDER' | translate
-            }}"
-            (input)="onPhoneNumberInput($event)"
-          />
-        </div>
-
-        <!-- Validation Messages -->
-        <div class="fv-plugins-message-container">
-          <!-- Country Code Required -->
-          <div
-            *ngIf="
-              form.get('phoneCompanyNumber')?.hasError('required') &&
-              form.get('phoneCompanyNumber')?.touched
-            "
-            class="invalid-feedback d-block"
-          >
-            {{ "INSIGHTER_WIZARD.COUNTRY_CODE_REQUIRED" | translate }}
-          </div>
-
-          <!-- Phone Number Required -->
-          <div
-            *ngIf="
-              form.get('phoneCompanyNumber')?.hasError('required') &&
-              form.get('phoneCompanyNumber')?.touched
-            "
-            class="invalid-feedback d-block"
-          >
-            {{ "INSIGHTER_WIZARD.PHONE_NUMBER_REQUIRED" | translate }}
-          </div>
-
-          <!-- Phone Number Pattern (Exact 10 Digits) -->
-          <div
-            *ngIf="
-              form.get('phoneCompanyNumber')?.hasError('pattern') &&
-              form.get('phoneCompanyNumber')?.touched
-            "
-            class="invalid-feedback d-block"
-          >
-            {{ "INSIGHTER_WIZARD.PHONE_NUMBER_PATTERN" | translate }}
-          </div>
-        </div>
+        <app-phone-number-input
+          [countries]="countries"
+          [placeholder]="'INSIGHTER_WIZARD.PHONE_NUMBER_PLACEHOLDER' | translate"
+          [searchPlaceholder]="'Search countries...'"
+          [lang]="lang"
+          [isRequired]="true"
+          [showValidationErrors]="true"
+          [countryCodeError]="(form.get('phoneCountryCode')?.hasError('required') && form.get('phoneCountryCode')?.touched) ? ('INSIGHTER_WIZARD.COUNTRY_CODE_REQUIRED' | translate) : ''"
+          [phoneNumberError]="(form.get('phoneCompanyNumber')?.hasError('required') && form.get('phoneCompanyNumber')?.touched) ? ('INSIGHTER_WIZARD.PHONE_NUMBER_REQUIRED' | translate) : (form.get('phoneCompanyNumber')?.hasError('pattern') && form.get('phoneCompanyNumber')?.touched) ? ('INSIGHTER_WIZARD.PHONE_NUMBER_PATTERN' | translate) : ''"
+          (countryCodeChange)="form.get('phoneCountryCode')?.setValue($event)"
+          (phoneNumberChange)="form.get('phoneCompanyNumber')?.setValue($event)"
+          (flagError)="onFlagError($event)"
+        ></app-phone-number-input>
       </div>
       <!-- Consulting Fied + Industry -->
       <div class="mb-10 row">

@@ -156,7 +156,8 @@
       [knowledgeType]="knowledge?.type || ''"
       [preSelectedFile]="preSelectedFile"
       (documentSaved)="onDocumentSaved()"
-      (visibleChange)="onModalVisibilityChanged($event)">
+      (visibleChange)="onModalVisibilityChanged($event)"
+      (tryAnotherFileRequest)="handleTryAnotherFile()">
     </app-document-modal>
    </div>
 </div>

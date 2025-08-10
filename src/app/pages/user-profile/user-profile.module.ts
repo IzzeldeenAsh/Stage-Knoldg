@@ -26,6 +26,7 @@ import { DocumentsComponent } from './profile-pages/documents/documents.componen
 import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 import { TooltipModule } from 'primeng/tooltip';
 import { SharedTreeSelectorComponent } from 'src/app/reusable-components/shared-tree-selector/shared-tree-selector.component';
+import { PhoneNumberInputModule } from 'src/app/reusable-components/phone-number-input/phone-number-input.module';
 import { InputTextModule } from 'primeng/inputtext';
 import { SettingsDashboardComponent } from './profile-pages/account-settings/settings-dashboard/settings-dashboard.component';
 import { SettingsSidebarComponent } from './profile-pages/account-settings/settings-sidebar/settings-sidebar.component';
@@ -80,6 +81,7 @@ import { MenuModule } from 'primeng/menu';
       DialogModule,
       TreeSelectModule,
       MultiSelectModule,
+      PhoneNumberInputModule,
       TranslationModule,
       DropdownMenusModule,
       MenuModule

@@ -769,6 +769,14 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
     this.triggerFileInputForModal();
   }
 
+  /**
+   * Public method to handle the tryAnotherFileRequest event from document-modal
+   */
+  handleTryAnotherFile(): void {
+    // This public method can be accessed from the template
+    this.triggerFileInputForModal();
+  }
+
   private triggerFileInputForModal(): void {
     // Create a temporary file input
     const fileInput = document.createElement('input');

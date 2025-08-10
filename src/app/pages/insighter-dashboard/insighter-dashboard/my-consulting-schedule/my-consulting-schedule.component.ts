@@ -227,19 +227,35 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
   private duplicateExceptionValidator(control: AbstractControl): ValidationErrors | null {
     const exceptions = control as FormArray;
     
-    if (!exceptions || exceptions.length <= 1) {
-      return null; // No duplicates possible with 0 or 1 item
+    if (!exceptions || exceptions.length === 0) {
+      return null; // No validation needed if no exceptions
     }
     
     const duplicates: { [key: string]: number[] } = {};
+    const existingExceptionsKeys = new Set<string>();
     
-    // Check each exception against others
+    // First, create keys for all existing exceptions from backend
+    const existingExceptions = this.exceptions();
+    
+    for (const existingException of existingExceptions) {
+      const dateStr = typeof existingException.exception_date === 'string' 
+        ? existingException.exception_date.split('T')[0]
+        : '';
+        
+      const startTimeStr = existingException.start_time;
+      const endTimeStr = existingException.end_time;
+      const key = `${dateStr}_${startTimeStr}_${endTimeStr}`;
+      existingExceptionsKeys.add(key);
+    }
+    
+    // Check for duplicates within form exceptions and against backend exceptions (for new exceptions only)
     for (let i = 0; i < exceptions.length; i++) {
       const exceptionGroup = exceptions.at(i) as FormGroup;
       
       const exceptionDate = exceptionGroup.get('exception_date')?.value;
       const startTime = exceptionGroup.get('start_time')?.value;
       const endTime = exceptionGroup.get('end_time')?.value;
+      const isNew = exceptionGroup.get('isNew')?.value;
       
       // Skip invalid or incomplete entries
       if (!exceptionDate || !startTime || !endTime) {
@@ -247,8 +263,9 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
       }
       
       // Create a unique key based on date and times
+      // Use local timezone date instead of UTC to avoid timezone issues
       const dateStr = exceptionDate instanceof Date 
-        ? exceptionDate.toISOString().split('T')[0]
+        ? `${exceptionDate.getFullYear()}-${String(exceptionDate.getMonth() + 1).padStart(2, '0')}-${String(exceptionDate.getDate()).padStart(2, '0')}`
         : typeof exceptionDate === 'string' 
           ? exceptionDate.split('T')[0]
           : '';
@@ -263,6 +280,14 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
         
       const key = `${dateStr}_${startTimeStr}_${endTimeStr}`;
       
+      // Only check new exceptions against backend exceptions
+      if (isNew && existingExceptionsKeys.has(key)) {
+        // Mark this form exception as duplicate with existing backend data
+        const exceptionGroup = exceptions.at(i) as FormGroup;
+        exceptionGroup.setErrors({ duplicateException: true });
+        return { duplicateExceptions: { [i]: { duplicateException: true } } };
+      }
+      
       if (!duplicates[key]) {
         duplicates[key] = [];
       }
@@ -270,7 +295,7 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
       duplicates[key].push(i);
     }
     
-    // Find duplicates
+    // Find duplicates within form exceptions
     const errors: { [index: number]: { duplicateException: true } } = {};
     let hasDuplicates = false;
     
@@ -411,7 +436,7 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
     return group;
   }
 
-  private createExceptionFormGroup(exception: AvailabilityException): FormGroup {
+  private createExceptionFormGroup(exception: AvailabilityException, isNewException: boolean = false): FormGroup {
     // Parse the exception date - handle both string date and ISO date format
     let parsedDate = null;
     if (exception.exception_date) {
@@ -427,7 +452,8 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
       exception_date: [parsedDate, Validators.required],
       start_time: [this.parseTimeString(exception.start_time), Validators.required],
       end_time: [this.parseTimeString(exception.end_time), Validators.required],
-      rate: [0] // Default to 0 as it's hidden in UI
+      rate: [0], // Default to 0 as it's hidden in UI
+      isNew: [isNewException] // Track if this is a new exception
     }, { validators: this.perfectHourValidator.bind(this) });
     
     // Add subscription to start_time changes to synchronize end_time minutes
@@ -615,6 +641,46 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
     return dayGroup.get('times') as FormArray;
   }
 
+  // Check if a new exception would conflict with existing backend exceptions
+  private checkNewExceptionAgainstBackend(exceptionDate: Date | string, startTime: Date | string, endTime: Date | string): boolean {
+    const existingExceptions = this.exceptions();
+    
+    // Create key for the new exception
+    // Use local timezone date instead of UTC to avoid timezone issues
+    const dateStr = exceptionDate instanceof Date 
+      ? `${exceptionDate.getFullYear()}-${String(exceptionDate.getMonth() + 1).padStart(2, '0')}-${String(exceptionDate.getDate()).padStart(2, '0')}`
+      : typeof exceptionDate === 'string' 
+        ? exceptionDate.split('T')[0]
+        : '';
+        
+    const startTimeStr = startTime instanceof Date
+      ? `${startTime.getHours().toString().padStart(2, '0')}:${startTime.getMinutes().toString().padStart(2, '0')}`
+      : typeof startTime === 'string' ? startTime : '';
+      
+    const endTimeStr = endTime instanceof Date
+      ? `${endTime.getHours().toString().padStart(2, '0')}:${endTime.getMinutes().toString().padStart(2, '0')}`
+      : typeof endTime === 'string' ? endTime : '';
+      
+    const newKey = `${dateStr}_${startTimeStr}_${endTimeStr}`;
+    
+    // Check against existing backend exceptions
+    for (const existingException of existingExceptions) {
+      const existingDateStr = typeof existingException.exception_date === 'string' 
+        ? existingException.exception_date.split('T')[0]
+        : '';
+        
+      const existingStartTimeStr = existingException.start_time;
+      const existingEndTimeStr = existingException.end_time;
+      const existingKey = `${existingDateStr}_${existingStartTimeStr}_${existingEndTimeStr}`;
+      
+      if (newKey === existingKey) {
+        return true; // Conflict found
+      }
+    }
+    
+    return false; // No conflict
+  }
+
   // Exception methods
   addException(): void {
     const newException = this.createExceptionFormGroup({
@@ -622,7 +688,7 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
       start_time: '09:00',
       end_time: '10:00',
       rate: 0 // Set rate to 0 by default for new exceptions
-    });
+    }, true); // Mark as new exception
     this.exceptionsFormArray.push(newException);
   }
 
@@ -631,12 +697,27 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
   }
 
   // Remove duplicate exceptions from the form, keeping only the first occurrence
+  // Priority: Keep existing backend exceptions, remove only new duplicates
   private removeDuplicateExceptions(): void {
     // First, manually run validation to ensure errors are up to date
     this.exceptionsFormArray.updateValueAndValidity();
     
     const duplicates: { [key: string]: number[] } = {};
     const indicesToRemove: number[] = [];
+    const existingExceptionsKeys = new Set<string>();
+    
+    // First, create keys for all existing exceptions from backend
+    const existingExceptions = this.exceptions();
+    for (const existingException of existingExceptions) {
+      const dateStr = typeof existingException.exception_date === 'string' 
+        ? existingException.exception_date.split('T')[0]
+        : '';
+        
+      const startTimeStr = existingException.start_time;
+      const endTimeStr = existingException.end_time;
+      const key = `${dateStr}_${startTimeStr}_${endTimeStr}`;
+      existingExceptionsKeys.add(key);
+    }
     
     // Find duplicates using the same logic as the validator
     for (let i = 0; i < this.exceptionsFormArray.length; i++) {
@@ -645,6 +726,7 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
       const exceptionDate = exceptionGroup.get('exception_date')?.value;
       const startTime = exceptionGroup.get('start_time')?.value;
       const endTime = exceptionGroup.get('end_time')?.value;
+      const isNew = exceptionGroup.get('isNew')?.value;
       
       // Skip invalid or incomplete entries
       if (!exceptionDate || !startTime || !endTime) {
@@ -652,8 +734,9 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
       }
       
       // Create a unique key based on date and times (same as validator)
+      // Use local timezone date instead of UTC to avoid timezone issues
       const dateStr = exceptionDate instanceof Date 
-        ? exceptionDate.toISOString().split('T')[0]
+        ? `${exceptionDate.getFullYear()}-${String(exceptionDate.getMonth() + 1).padStart(2, '0')}-${String(exceptionDate.getDate()).padStart(2, '0')}`
         : typeof exceptionDate === 'string' 
           ? exceptionDate.split('T')[0]
           : '';
@@ -668,6 +751,12 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
         
       const key = `${dateStr}_${startTimeStr}_${endTimeStr}`;
       
+      // If this is a NEW exception that duplicates backend data, remove it
+      if (isNew && existingExceptionsKeys.has(key)) {
+        indicesToRemove.push(i);
+        continue;
+      }
+      
       if (!duplicates[key]) {
         duplicates[key] = [];
       }
@@ -675,12 +764,43 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
       duplicates[key].push(i);
     }
     
-    // Find indices to remove (all duplicates except the first occurrence)
+    // Find indices to remove from form duplicates
+    // Priority: Keep existing exceptions over new ones, then keep the first occurrence
     for (const key in duplicates) {
       if (duplicates[key].length > 1) {
-        // Keep the first one, remove the rest
-        for (let i = 1; i < duplicates[key].length; i++) {
-          indicesToRemove.push(duplicates[key][i]);
+        const indices = duplicates[key];
+        
+        // Separate existing vs new exceptions
+        const existingIndices: number[] = [];
+        const newIndices: number[] = [];
+        
+        indices.forEach(index => {
+          const exceptionGroup = this.exceptionsFormArray.at(index) as FormGroup;
+          const isNew = exceptionGroup.get('isNew')?.value;
+          
+          if (isNew) {
+            newIndices.push(index);
+          } else {
+            existingIndices.push(index);
+          }
+        });
+        
+        // If we have existing exceptions, remove all new ones for this key
+        if (existingIndices.length > 0) {
+          indicesToRemove.push(...newIndices);
+          
+          // If there are multiple existing exceptions (shouldn't happen but just in case),
+          // keep only the first existing one
+          if (existingIndices.length > 1) {
+            for (let i = 1; i < existingIndices.length; i++) {
+              indicesToRemove.push(existingIndices[i]);
+            }
+          }
+        } else {
+          // All are new exceptions, keep the first one, remove the rest
+          for (let i = 1; i < newIndices.length; i++) {
+            indicesToRemove.push(newIndices[i]);
+          }
         }
       }
     }
@@ -825,7 +945,7 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
             : exception.exception_date;
         }
         
-        // Do not include rate with exception days
+        // Do not include rate or isNew with exception days
         return {
           exception_date: formattedDate,
           start_time: this.formatTimeString(exception.start_time),
