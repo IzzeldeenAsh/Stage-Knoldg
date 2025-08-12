@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ICreateAccount } from '../../create-account.helper';
 import { TranslateService } from '@ngx-translate/core';
+import { CommonService } from 'src/app/_fake/services/common/common.service';
 
 @Component({
   selector: 'app-step1',
@@ -22,7 +23,8 @@ export class Step1Component implements OnInit, OnDestroy {
   form: FormGroup;
   private subscriptions: Subscription = new Subscription();
 
-  constructor(private fb: FormBuilder, private translateService: TranslateService) {}
+  constructor(private fb: FormBuilder, private translateService: TranslateService, private commonService: CommonService
+  ) {}
 
   ngOnInit() {
     this.initForm();
@@ -30,8 +32,8 @@ export class Step1Component implements OnInit, OnDestroy {
     this.updateParentModel(this.defaultValues, this.form.valid);
     const lang = this.translateService.currentLang;
     this.insighterLink = lang === 'ar'
-      ? 'http://localhost:3000/ar/insighter'
-      : 'http://localhost:3000/en/insighter';
+      ? 'https://knoldg.com/ar/insighter'
+      : 'https://knoldg.com/en/insighter';
   }
 
   initForm() {
@@ -96,5 +98,11 @@ export class Step1Component implements OnInit, OnDestroy {
     });
     
     return this.form.valid;
+  }
+  getCompanySection() {
+    this.commonService.getCompanySection();
+  }
+  getInsighterSection(){
+    this.commonService.resetCompanySection();
   }
 }

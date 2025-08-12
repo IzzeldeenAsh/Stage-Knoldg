@@ -268,7 +268,7 @@ INSIGHTER_REQUESTS: {
       "MY_COMPANY": "فريقي",
       "INVITING": "جاري الدعوة",
       "MY_DOWNLOADS": "التحميلات",
-      "READ_LATER": "المحفوظات",
+      "READ_LATER": "قائمة المعاينة",
       "MY_CONSULTING_SCHEDULE": "جدولة الاستشارات",
       "DASHBOARD": "لوحة المعلومات"
     },
@@ -865,7 +865,7 @@ INSIGHTER_REQUESTS: {
     "DEACTIVATE_ACCOUNT": {
       "TITLE_COMPANY": "إلغاء تنشيط حساب الشركة",
       "TITLE_INSIGHTER": "إلغاء تنشيط حساب الانسايتر",
-      "TITLE_ACCOUNT":"إلغاء تنشيط الحساب",
+      "TITLE_ACCOUNT":"إيقاف الحساب",
       "TITLE_USER_ONLY": "إلغاء تنشيط حساب المستخدم",
       "TITLE_COMPANY_ONLY": "إلغاء تنشيط حساب الشركة",
       "DESCRIPTION": "<i class='fa-sharp fa-solid fa-circle fs-10'></i> سيتم الاحتفاظ ببيانات حسابك<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> لن يمكن الوصول إلى الحساب حتى إعادة التنشيط<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> ستظل رؤى شركتك مرئية في السوق<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> لا يمكن تحميل رؤى جديدة أثناء إلغاء التنشيط",
@@ -915,15 +915,15 @@ INSIGHTER_REQUESTS: {
         "READ_MORE": "اقرأ المزيد عن هذه الخطوة!",
         "NAV": {
           "OVERVIEW": "لوحة المعلومات",
-          "MY_REQUESTS": "الطلبات",
+          "MY_REQUESTS": "إشعارات",
           "MY_KNOWLEDGE": "مكتبة المعرفة" ,
           "ACCOUNT_SETTINGS": "إعدادات الحساب",
           "MY_COMPANY": "فريقي",
-          "READ_LATER":"المحفوظات",
+          "READ_LATER":"قائمة المعاينة",
           "MY_DOWNLOADS": "التحميلات",
           "MEETINGS": "الجلسات الاستشارية",
           "MY_MEETINGS": "اجتماعاتي",
-          "MY_CONSULTING_SCHEDULE": "جدولة الاستشارات",
+          "MY_CONSULTING_SCHEDULE": "إدارة مواعيد العملاء",
           "DASHBOARD": "لوحة المعلومات"
         },
         "REQUESTS": {
@@ -935,8 +935,8 @@ INSIGHTER_REQUESTS: {
       "MEETINGS": {
         "RATE":"التكلفة",
         "TABS": {
-          "RECEIVED": "المستقبلة",
-          "SENT": "المرسلة"
+          "RECEIVED": "حجوزات العملاء",
+          "SENT": "اجتماعاتي"
         },
         "JOIN_MEETING": "انضم إلى الاجتماع",
         "JOIN": "انضم",
@@ -974,7 +974,7 @@ INSIGHTER_REQUESTS: {
         }
       },
       "READ_LATER": {
-        "TITLE": "المحفوظات",
+        "TITLE": "قائمة المعاينة",
         "ITEMS": "عنصر",
         "EMPTY_TITLE": "لا توجد عناصل محفوظة بعد",
         "EMPTY_MESSAGE": "العناصل التي تضعها في المفضلة ستظهر هنا للوصول إليها لاحقاً.",
@@ -983,6 +983,7 @@ INSIGHTER_REQUESTS: {
     
     },
     BECOME_INSIHGER_HEADER:'سجل كانسايتر',
+    BECOME_COMPANY_HEADER:'ترقية لحساب شركة',
     BECOME_INSIGHTER_DESCRIPTION:"مشاركة المعرفة تمكّننا جميعًا من النمو والابتكار معًا!",
     CHAPTER_TITLE_REQUIRED:'العنوان مطلوب',
     CHOOSE_ACCOUNT_TYPE: "اختر نوع الحساب",
@@ -1334,10 +1335,10 @@ INSIGHTER_REQUESTS: {
     "CURRENT_SPAN": "الفترة الحالية",
     "RATE_MIN_ERROR": "يجب أن يكون السعر أكبر من 0",
     "MINUTES": "دقائق",
-    "DESCRIPTION": "حدد مواعيد توفرك لجلسات الاستشارة. قم بتعيين جدولك الأسبوعي وأضف أيام غير متاح فيها عند الحاجة.",
+    "DESCRIPTION": "الرجاء تحديد موعد الجلسات الاستشارية",
     "AVAILABLE_DAYS": "الأيام المتاحة",
     "EXCEPTION_DAYS": "أيام عدم التوفر",
-    "NOTE_ONE_YEAR":"سيكون الجدول متاحًا لمدة سنة من اليوم",
+    "NOTE_ONE_YEAR":"",
     "DAYS": {
       "MONDAY": "الاثنين",
       "TUESDAY": "الثلاثاء",
@@ -1435,7 +1436,7 @@ INSIGHTER_REQUESTS: {
  
     },
     "READ_LATER": {
-  "TITLE": "المحفوظات",
+  "TITLE": "قائمة المعاينة",
   "ITEMS": "عنصر",
   "EMPTY_TITLE": "لا توجد عناصر محفوظة بعد",
   "EMPTY_MESSAGE": "العناصر التي تضعها في المفضلة ستظهر هنا للوصول إليها لاحقاً.",
@@ -1456,7 +1457,7 @@ INSIGHTER_REQUESTS: {
   "YEAR_AGO": "سنة",
   "YEARS_AGO": "سنوات",
   "STATISTICS": {
-    "TITLE": "مجموعة المعارف المحفوظة",
+    "TITLE": "قائمة المعاينة المحفوظة",
     "SUBTITLE": "معرفتك المحفوظة للقراءة المستقبلية",
     "TOTAL_SAVED": "إجمالي المحفوظ",
     "NEW_THIS_MONTH": "جديد هذا الشهر",

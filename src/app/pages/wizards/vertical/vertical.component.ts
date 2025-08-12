@@ -40,6 +40,7 @@ export class VerticalComponent extends BaseComponent implements OnInit {
   );
   isLoadingSubmit$: Observable<boolean> = of(false);
   lang: string = "en";
+  companySelected = false;
 
   constructor(
     private insighterRegistraionService: InsighterRegistraionService,
@@ -59,6 +60,9 @@ export class VerticalComponent extends BaseComponent implements OnInit {
       this.lang = lang;
     });
     this.checkUserRoleAndVerificaiton();
+    this.commonService.companySectionSelected$.subscribe(selected => {
+      this.companySelected = selected;
+    });
   }
 
   checkUserRoleAndVerificaiton() {

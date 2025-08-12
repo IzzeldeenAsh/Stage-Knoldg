@@ -36,7 +36,7 @@
         for="kt_create_account_form_account_type_personal"
       >
         <app-keenicon name="address-book" class=" fs-1 me-5"></app-keenicon>
-        <span class="d-block fw-bold text-inline-start">
+        <span class="d-block fw-bold text-inline-start" (click)="getInsighterSection()">
           <span class="text-gray-900 text-inline-start fw-bolder d-block fs-4 mb-2">
             {{ 'INSIGHTER_WIZARD.PERSONAL_ACCOUNT' | translate }}
           </span>
@@ -70,7 +70,7 @@
         for="kt_create_account_form_account_type_corporate"
       >
         <app-keenicon name="briefcase" class="fs-1 mx-2"></app-keenicon>
-        <span class="d-block fw-bold text-inline-start">
+        <span class="d-block fw-bold text-inline-start" (click)="getCompanySection()">
           <span class="text-gray-900  text-inline-start fw-bolder d-block fs-4 mb-2"
             > {{ 'INSIGHTER_WIZARD.CORPORATE_ACCOUNT' | translate }} </span
           >

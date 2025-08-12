@@ -7,10 +7,12 @@ import { TranslationService } from 'src/app/modules/i18n';
   providedIn: 'root'
 })
 export class CommonService {
-  private apiUrl = 'https://api.foresighta.co/api/common/setting';
+  private apiUrl = 'https://api.knoldg.com/api/common/setting';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   currentLang: string = 'en';
+  private companySectionSelected = new BehaviorSubject<boolean>(false);
+  companySectionSelected$ = this.companySectionSelected.asObservable();
 
   constructor(
     private http: HttpClient,
@@ -62,5 +64,12 @@ export class CommonService {
     } else {
       return this.getInsighterAgreement(); // Default to insighter/personal
     }
+  }
+  getCompanySection() {
+    this.companySectionSelected.next(true);
+  }
+
+  resetCompanySection() {
+    this.companySectionSelected.next(false);
   }
 } 
