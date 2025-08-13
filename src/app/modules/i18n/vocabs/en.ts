@@ -229,9 +229,9 @@ export const locale = {
     },
     INSIGHTER_DASHBOARD: {
       TITLE: 'Dashboard',
-      "MY_KNOWLEDGE": "My knowledge library",
+      "MY_KNOWLEDGE": "Knowledge library",
       "ACCOUNT_SETTINGS": "Account Settings",
-      "MY_COMPANY": "My Team",
+      "MY_COMPANY": "My Insighters",
       "INVITING": "Inviting",
       "MY_DOWNLOADS": "My Downloads",
       "MY_CONSULTING_SCHEDULE": "My Schedule",
@@ -530,9 +530,9 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     },
     "DEACTIVATE_ACCOUNT": {
       "TITLE_COMPANY": "Deactivate Company Account",
-      "TITLE_INSIGHTER": "Deactivating Account",
+      "TITLE_INSIGHTER": "Suspend Account",
       "TITLE_USER_ONLY": "Deactivate User Account",
-      "TITLE_ACCOUNT":"Deactivating Account",
+      "TITLE_ACCOUNT":"Suspend Account",
       "TITLE_COMPANY_ONLY": "Deactivate Company Account",
       "DESCRIPTION": "<div class='d-flex align-items-center'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Your account data will be retained</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Account will be inaccessible until reactivation</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Your company's insights will remain visible in the marketplace</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>New insights cannot be uploaded during deactivation</span></div>",
       "DESCRIPTION_COMPANY_COMBINED": "<div class='d-flex align-items-center'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Both your company account and user account will be deactivated</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>All account data will be retained</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Both accounts will be inaccessible until reactivation</span></div>",
@@ -563,13 +563,13 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       "PENDING_REQUEST" : "Pending Request"
     },
     "DEACTIVATE_ACCOUNT_WITH_DELETE": {
-    "TITLE": "Deleting Account Permanently",
+    "TITLE": "Deleting Account",
     "DESCRIPTION": "<div class='d-flex align-items-center'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Data will be permanently erased</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Account will no longer be visible</span></div>",
     "BUTTON_TEXT": "Request Account Deletion",
     "PENDING_REQUEST": "Deletion Request Pending",
     "ILLUSTRATION_ALT": "Account deletion illustration",
     "MODAL": {
-      "TITLE": "Delete Account Permanently",
+      "TITLE": "Delete Account",
       "DESCRIPTION": "Request permanent account deletion. This action will deactivate your account and delete all associated data after the review process.",
       "WARNING": "This action is not reversible. Please be certain.",
       "REASON_LABEL": "Deactivation Reason",
@@ -655,7 +655,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       COMPANY_AGREEMENT_REQUIRED:"Company Agreement Required",
       ACCOUNT_TYPE: "Account Type",
       COUNTRY_REQUIRED: "Country is required",
-      COUNTRY_PLACEHOLDER: "Select Country",
+      COUNTRY_PLACEHOLDER: "Country Code",
       COUNTRY: "Country",
       WEBSITE_INVALID_FORMAT: "Website domain must be in the format of example.com",
       LOADING_FIELDS:"Loading...",
@@ -663,7 +663,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       ACCOUNT_DETAILS_DESC: "Setup Your Account Details",
       ACCOUNT_INFO: "Account Info",
       ACCOUNT_INFO_DESC: "Setup Your Insighter Information",
-      CERTIFICATES: "Certificates",
+      CERTIFICATES: "Supporting Documents",
       CERTIFICATES_DESC: "Upload Your Qualifications",
       VERIFY_ACCOUNT: "Verify Account",
       VERIFY_ACCOUNT_DESC: "Verify Corporate Account",
@@ -755,6 +755,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       DELETE_FILE: "Delete File", // Tooltip for delete file buttonA
       
       OTHER_FIELD_PLACEHOLDER: "Enter your other field",
+      OTHER_FIELD_PLACEHOLDER2: "Enter your other field",
       "DOCUMENT_REGISTRY_APPROVAL_NOTE": "Please note that uploading a registry document requires approval. You will be notified once your document has been reviewed.",
       I_ACCEPT_THE: "I accept the",
       COMPANY_TERMS: "Company Terms"
@@ -935,16 +936,16 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       "READ_MORE": "Read more about this step!",
       "NAV": {
         "OVERVIEW": "Dashboard",
-        "MY_REQUESTS": "Requests",
+        "MY_REQUESTS": "Notifications",
         "MY_KNOWLEDGE": "My knowledge library",
         "ACCOUNT_SETTINGS": "Account Settings",
-        "MY_COMPANY": "My Team",
-        "MEETINGS": "Meetings",
+        "MY_COMPANY": "My Insighters",
+        "MEETINGS": "Advisory Sessions",
         "INVITING": "Inviting",
         "MY_DOWNLOADS": "My Downloads",
-        "READ_LATER": "Bookmarks",
+        "READ_LATER": "Preview list",
         "MY_MEETINGS": "My Meetings",
-        "MY_CONSULTING_SCHEDULE": "My Schedule",
+        "MY_CONSULTING_SCHEDULE": "Session Scheduler",
         "DASHBOARD": "Dashboard"
       },
       REQUESTS: {
@@ -956,8 +957,8 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     "MEETINGS": {
       "RATE":"Rate",
       "TABS": {
-        "RECEIVED": "Received",
-        "SENT": "Sent"
+        "RECEIVED": "Client Sessions",
+        "SENT": "My Meetings"
       },
       "RESCHEDULE": "Reschedule",
       "RESCHEDULE_MEETING": "Reschedule Meeting",
@@ -1001,7 +1002,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       }
     },
    "READ_LATER": {
-    "TITLE": "Bookmarks",
+    "TITLE": "Preview list",
     "ITEMS": "Items",
     "EMPTY_TITLE": "No items saved yet",
     "EMPTY_MESSAGE": "Items you save will appear here for later access.",
@@ -1112,12 +1113,12 @@ Your wealth of knowledge is valued and many are eager to learn from it.
   MEDIA_DOCUMENTS: "Upload File",
   COURSE_DOCUMENTS: "Upload File",
   REPORT_DOCUMENTS: "Upload File",
-  REPORTS_CHAPTERS_DETAILS: "Upload your knowledge as a full file or break it into smaller, priced segments to make access more flexible and affordable for users.",
+  REPORTS_CHAPTERS_DETAILS: "Upload knowledge as a single file or split it into smaller, priced parts for flexible, affordable client access",
   MANUAL_DOCUMENTS: "Upload File",
   INSIGHT_DOCUMENTS: "Upload File",
   ADD_DOCUMENT: "Add File",
   ADD_NODE: "Add File",
-  UPLOAD_BY_CHAPTRE_OR_ALL:"Upload your knowledge as a full file or break it into smaller, priced segments to make access more flexible and affordable for users.",
+  UPLOAD_BY_CHAPTRE_OR_ALL:"Upload knowledge as a single file or split it into smaller, priced parts for flexible, affordable client access",
   ADD_MEDIA_FILE: "Add File",
   ADD_ANOTHER_DOCUMENT: "Click to upload another file",
   ADD_ANOTHER_NODE: "Click to upload another file",
@@ -1200,7 +1201,7 @@ UPLOAD: 'Upload',
   KNOWLEDGE_PUBLISHED_MESSAGE: "Your knowledge has been published successfully and is now live. Users can access and interact with your content.",
   KNOWLEDGE_SCHEDULED_MESSAGE: "Your knowledge has been scheduled for publication. It will automatically go live at the specified date and time.",
   BUSINESS_COURSES:'Business Courses',
-  WHATS_NEXT: "What's next?",
+  WHATS_NEXT: "What would you like to do next?",
   VISIT_DASHBOARD_MESSAGE: "Visit your dashboard to manage your knowledge, track analytics, and make updates. You can also create new content or modify existing ones.",
   MANAGE_CONTENT: "Manage Content",
   VIEW_ANALYTICS: "View Analytics", 
@@ -1307,6 +1308,7 @@ UPLOAD: 'Upload',
     TOOLTIP_POINT_2: "Build your reputation",
     TOOLTIP_POINT_3: "Gain unexpected opportunities",
     BECOME_INSIHGER_HEADER:'Become an Insighter',
+    BECOME_COMPANY_HEADER:'Upgrade to a Company Account',
     BECOME_INSIGHTER_DESCRIPTION:"Sharing knowledge empowers us all to grow and innovate together!",
     CHAPTER_TITLE_REQUIRED: "Chapter Title is required",
     HEADER: {
@@ -1383,7 +1385,7 @@ UPLOAD: 'Upload',
     },
     "KNOWLEDGE_TYPES": {
       "COURSE": "Course",
-      "TITLE":"Uploaded Knowledge Content Breakdown",
+      "TITLE":"Uploaded Knowledge",
       "SUBTITLE": "Statistics of your knowledge content by type",
       "LOAD_ERROR": "Failed to load knowledge type statistics. Please try again.",
       "RETRY": "Retry",
@@ -1519,12 +1521,12 @@ UPLOAD: 'Upload',
       "POSTPONE_NOTES_REQUIRED": "Postponement notes are required"
     },
     "READ_LATER": {
-      "TITLE": "Bookmarks",
+      "TITLE": "Preview list",
       "ITEMS": "items",
       "EMPTY_TITLE": "No saved items yet",
       "EMPTY_MESSAGE": "Items you bookmark will appear here for easy access later.",
       "STATISTICS": {
-        "TITLE": "Read Later Collection",
+        "TITLE": "Preview list Collection",
         "SUBTITLE": "Your saved knowledge for future reading",
         "TOTAL_SAVED": "Total Saved",
         "NEW_THIS_MONTH": "New This Month",

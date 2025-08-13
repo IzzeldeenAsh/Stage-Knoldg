@@ -11,6 +11,8 @@ export class CommonService {
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   currentLang: string = 'en';
+  private companySectionSelected = new BehaviorSubject<boolean>(false);
+  companySectionSelected$ = this.companySectionSelected.asObservable();
 
   constructor(
     private http: HttpClient,
@@ -62,5 +64,12 @@ export class CommonService {
     } else {
       return this.getInsighterAgreement(); // Default to insighter/personal
     }
+  }
+  getCompanySection() {
+    this.companySectionSelected.next(true);
+  }
+
+  resetCompanySection() {
+    this.companySectionSelected.next(false);
   }
 } 
