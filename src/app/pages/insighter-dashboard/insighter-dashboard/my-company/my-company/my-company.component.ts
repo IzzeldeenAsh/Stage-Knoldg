@@ -531,7 +531,7 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     
     const confirmMessage = insighter && insighter.roles && insighter.roles.includes('company') 
       ? 'Are you sure you want to activate this company account?'
-      : 'Are you sure you want to activate this insighter?';
+      : 'Are you sure you want to activate this Insighter?';
     
     this.confirmationService.confirm({
       message: confirmMessage,

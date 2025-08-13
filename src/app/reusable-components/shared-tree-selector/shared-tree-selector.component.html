@@ -26,8 +26,15 @@
           <span>{{ node.label }}</span>
         </ng-container>
         <ng-container *ngIf="node.isOther">
-          <span>{{ node.label }}</span>
-          <div style="display: flex; flex-direction: column; width: 70%; margin-left: 10px;">
+          <div style="display: flex; gap: 5px;"
+        [ngStyle]="{'flex-direction':  currentLang === 'ar' ? 'row-reverse' : 'row'}">
+          <span style="margin-top: 10px;">{{ currentLang === 'ar' ? 'أخرى' : 'Other' }}</span>
+          <div
+            style="display: flex; flex-direction: column; width: 70%;"
+            [attr.dir]="currentLang === 'ar' ? 'rtl' : 'ltr'"
+            [style.margin-right.px]="currentLang === 'ar' ? 10 : 0"
+            [style.margin-left.px]="currentLang !== 'ar' ? 10 : 0"
+          >
             <input
               pInputText
               type="text"
@@ -37,9 +44,11 @@
               (keypress)="onKeyPress($event)"
               style="width: 100%;"
             />
-            <small class="text-muted" style="font-size: 0.75rem; margin-top: 2px;">
+            <small class="text-muted" style="font-size: 0.75rem; margin-top: 2px;" 
+            [ngStyle]="{'text-align':  currentLang === 'ar' ? 'right' : 'left'}">
               {{ currentLang === 'ar' ? 'يجب الكتابة بالعربية فقط' : 'Please write in English only' }}
             </small>
+           </div>
           </div>
         </ng-container>
       </ng-template>
