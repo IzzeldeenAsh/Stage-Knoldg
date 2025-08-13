@@ -563,7 +563,7 @@
   </div>
 
       <!-- Tags Section -->
-      <div class="mt-10 mb-8" *ngIf="form.get('topicId')?.value && form.get('topicId')?.value !== ''">
+      <div class="mt-10 mb-8" *ngIf="form.get('industry')?.value && form.get('industry')?.value !== ''">
         <label class="d-flex align-items-center fs-5 fw-semibold mb-5">
           <span class="required">{{ "SELECT_TAGS" | translate }}</span>
         </label>
@@ -577,18 +577,36 @@
           {{ tagIdError }}
         </div>
         
-        <!-- Tag input for selecting and adding tags -->
+        <!-- PrimeNG Dropdown for selecting tags -->
+        <!-- <div class="mb-3">
+          <p-dropdown
+            [options]="availableTags"
+            [(ngModel)]="selectedTagForAdding"
+            [ngModelOptions]="{standalone: true}"
+            name="tagSelector"
+            optionLabel="display"
+            optionValue="id"
+            [filter]="true"
+            filterBy="display"
+            placeholder="{{ 'SELECT_TAGS' | translate }}"
+            [showClear]="true"
+            styleClass="w-100"
+            (onChange)="onTagSelectedFromDropdown($event)"
+          >
+          </p-dropdown>
+        </div> -->
+
+        <!-- Tag-input for displaying selected tags and adding new ones -->
         <tag-input
           formControlName="tagItems"
           [secondaryPlaceholder]="'ENTER_TAGS' | translate"
           [separatorKeyCodes]="[13]"
           [addOnBlur]="true"
-          [required]="true"
           [placeholder]="'ENTER_TAGS' | translate"
-          (onAdd)="addTag($event)"
-          (onRemove)="removeTag($event)"
           [ngClass]="{'is-invalid': form.get('tag_ids')?.hasError('required') && form.get('tag_ids')?.touched, 'border-red': form.get('tag_ids')?.hasError('required') && form.get('tag_ids')?.touched}"
           style="width: 100%; max-width: none;"
+          (onAdd)="onTagAddedViaTagInput($event)"
+          (onRemove)="onTagRemoved($event)"
         >
           <tag-input-dropdown
             [showDropdownIfEmpty]="true"

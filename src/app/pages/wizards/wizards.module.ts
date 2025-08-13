@@ -27,6 +27,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { SharedTreeSelectorComponent } from 'src/app/reusable-components/shared-tree-selector/shared-tree-selector.component';
 import { TruncateTextPipe } from 'src/app/pipes/truncate-pipe/truncate-text.pipe';
 import { CountryDropdownComponent } from 'src/app/reusable-components/country-dropdown/country-dropdown.component';
+import { PhoneNumberInputModule } from 'src/app/reusable-components/phone-number-input/phone-number-input.module';
 @NgModule({
   declarations: [
     HorizontalComponent,
@@ -58,6 +59,7 @@ import { CountryDropdownComponent } from 'src/app/reusable-components/country-dr
     MultiSelectModule,
     MessagesModule,
     NgbTooltipModule,
+    PhoneNumberInputModule,
     SharedModule
   ],
   providers:[NodeService],

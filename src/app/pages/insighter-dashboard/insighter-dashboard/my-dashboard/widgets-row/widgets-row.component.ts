@@ -38,6 +38,7 @@ export class WidgetsRowComponent extends BaseComponent implements OnInit {
   ngOnInit(): void {
     this.getProfile();
     this.loadAllMeetings();
+
   }
   
   ngOnDestroy(): void {

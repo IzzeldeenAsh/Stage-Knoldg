@@ -47,7 +47,7 @@ export abstract class BaseComponent implements OnDestroy, AfterViewInit {
   }
 
   showError(summary:string ='Error',detail: string='Error' ,life:number=5000) {
-    this.toastService.warning(detail, summary, life);
+    this.toastService.error(detail, summary, life);
   }
 
   ngOnDestroy(): void {

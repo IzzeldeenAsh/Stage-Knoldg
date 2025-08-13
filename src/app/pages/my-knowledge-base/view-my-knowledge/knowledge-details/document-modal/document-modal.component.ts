@@ -24,6 +24,7 @@ export class DocumentModalComponent extends BaseComponent implements OnInit, OnC
 
   @Output() visibleChange = new EventEmitter<boolean>();
   @Output() documentSaved = new EventEmitter<void>();
+  @Output() tryAnotherFileRequest = new EventEmitter<void>();
 
   documentForm: FormGroup;
   selectedFile: File | null = null;
@@ -298,7 +299,7 @@ export class DocumentModalComponent extends BaseComponent implements OnInit, OnC
       // Close the modal first
       this.closeModal();
       
-      // Show language mismatch dialog
+      // Show language mismatch dialog with Try Another File and Cancel options
       setTimeout(() => {
         Swal.fire({
           title: this.lang === 'ar' ? 'عدم تطابق اللغة' : 'Language Mismatch',
@@ -306,11 +307,20 @@ export class DocumentModalComponent extends BaseComponent implements OnInit, OnC
                       ? 'هناك عدم تطابق في اللغة بين هذا المستند والمستندات الأخرى. يرجى التأكد من أن جميع المستندات بنفس اللغة.'
           : 'There is language mismatch between this document and other documents. Please make sure all documents are in the same language.',
           icon: 'warning',
-          confirmButtonText: this.lang === 'ar' ? 'حسناً' : 'OK',
+          showCancelButton: true,
+          confirmButtonText: this.lang === 'ar' ? 'جرب ملفًا آخر' : 'Try Another File',
+          cancelButtonText: this.lang === 'ar' ? 'إلغاء' : 'Cancel',
           confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#6c757d',
           customClass: {
             container: 'swal-high-z-index'
           }
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Try Another File - Trigger file selection from knowledge-details component
+            this.tryAnotherFile();
+          }
+          // If dismissed (cancel), do nothing - modal is already closed
         });
       }, 300);
       return;
@@ -837,6 +847,15 @@ export class DocumentModalComponent extends BaseComponent implements OnInit, OnC
       // For edit mode, only reset temporary states but keep the form data
       this.resetTemporaryStates();
     }
+  }
+
+  /**
+   * Emits an event to request trying another file upload
+   * This is called when the user clicks "Try Another File" in the language mismatch dialog
+   */
+  tryAnotherFile(): void {
+    console.log('Requesting to try another file');
+    this.tryAnotherFileRequest.emit();
   }
 
   private resetForm(): void {
