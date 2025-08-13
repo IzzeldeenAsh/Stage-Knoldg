@@ -1,0 +1,165 @@
+  <app-payment-header 
+  [title]="lang === 'ar' ? 'إعداد محفظة الدفع' : 'Setup Payment Wallet'"
+  [subtitle]="lang === 'ar' ? 'اختر طريقة الدفع المناسبة لك وقم بإعداد محفظتك الإلكترونية بسهولة وأمان' : 'Choose your preferred payment method and setup your digital wallet easily and securely'">
+</app-payment-header>
+
+<div style="padding-top:50px" class="gradient-background ">
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12 mx-auto col-md-6">
+        <div >
+ 
+            <!-- Step 1: Payment Type Selection -->
+            <div class="mb-8">
+              <div class="d-flex align-items-center mb-4">
+                <span class="badge badge-circle badge-info me-3">1</span>
+                <h4 class="mb-0 text-gray-800 fw-bold">
+                  {{ lang === 'ar' ? 'اختر نوع الدفع' : 'Select Payment Type' }}
+                </h4>
+              </div>
+              <p class="text-muted mb-4">
+                {{ lang === 'ar' ? 'اختر طريقة الدفع المفضلة لديك' : 'Choose your preferred payment method' }}
+              </p>
+              
+              <div class="row g-4">
+                <div class="col-md-6" *ngFor="let type of paymentTypes">
+                  <div 
+                    class="payment-type-card"
+                    [class.selected]="selectedPaymentType === type.id"
+                    (click)="selectPaymentType(type.id)">
+                    
+                    <div class="payment-type-content">
+                      <div class="payment-type-icon">
+                        <img [src]="type.imageUrl" alt="Payment method icon" class="payment-icon" />
+                      </div>
+                      <div class="payment-type-name">
+                        {{ lang === 'ar' ? type.name.ar : type.name.en }}
+                      </div>
+                    </div>
+                    
+                    <!-- Blue check icon for selected -->
+                    <div class="payment-type-check" *ngIf="selectedPaymentType === type.id">
+                      <i class="fas fa-check"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Validation error for payment type -->
+              <div 
+                *ngIf="showValidationErrors && !selectedPaymentType" 
+                class="text-danger mt-3 fs-7 d-flex align-items-center">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                {{ lang === 'ar' ? 'يرجى اختيار نوع الدفع' : 'Please select a payment type' }}
+              </div>
+            </div>
+    
+            <!-- Step 2: Country Selection -->
+            <div *ngIf="selectedPaymentType" class="mb-8">
+              <div class="d-flex align-items-center mb-4">
+                <span class="badge badge-circle badge-info me-3">2</span>
+                <h4 class="mb-0 text-gray-800 fw-bold">
+                  {{ lang === 'ar' ? 'اختر الدولة' : 'Select Country' }}
+                </h4>
+              </div>
+              <p class="text-muted mb-4">
+                {{ lang === 'ar' ? 'اختر الدولة التي تريد إجراء المعاملات منها' : 'Select the country you want to transact from' }}
+              </p>
+    
+              <!-- Search Bar -->
+              <div class="search-container position-relative mb-4">
+                <i class="fas fa-search position-absolute" 
+                   style="left: 16px; top: 50%; transform: translateY(-50%); color: #a1a5b7; z-index: 2;"></i>
+                <input 
+                  type="text" 
+                  class="form-control ps-10"
+                  [(ngModel)]="searchTerm"
+                  (input)="filterCountries()"
+                  [placeholder]="lang === 'ar' ? 'البحث عن دولة...' : 'Search for a country...'"
+                  style="padding-left: 45px;">
+                <span class="position-absolute" style="right: 16px; top: 50%; transform: translateY(-50%); color: #a1a5b7;">
+                  <small class="text-muted">{{ filteredCountries.length }} {{ lang === 'ar' ? 'دولة' : 'countries' }}</small>
+                </span>
+              </div>
+    
+              <!-- Countries Grid -->
+              <div class="countries-grid">
+                <div 
+                  *ngFor="let country of filteredCountries" 
+                  class="country-card"
+                  [class.selected]="selectedCountry?.id === country.id"
+                  (click)="selectCountry(country)">
+                  
+                  <div class="country-card-content">
+                    <div class="country-flag-option">
+                      <img 
+                        [src]="getFlagUrl(country.flag)" 
+                        [alt]="getCountryName(country)"
+                        class="flag-image"
+                        onerror="this.src='assets/media/flags/default.svg'">
+                    </div>
+                    <div class="country-name">
+                      {{ getCountryName(country) }}
+                    </div>
+                  </div>
+                  
+                  <!-- Blue check icon for selected -->
+                  <div class="country-check" *ngIf="selectedCountry?.id === country.id">
+                    <i class="fas fa-check"></i>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- No results message -->
+              <div 
+                *ngIf="filteredCountries.length === 0 && searchTerm" 
+                class="text-center py-5 text-muted">
+                <i class="fas fa-search fs-2x mb-3 text-gray-400"></i>
+                <p>{{ lang === 'ar' ? 'لم يتم العثور على نتائج' : 'No countries found' }}</p>
+                <button class="btn btn-sm btn-light-info mt-2" (click)="searchTerm = ''; filterCountries()">
+                  <i class="fas fa-times me-1"></i>
+                  {{ lang === 'ar' ? 'مسح البحث' : 'Clear search' }}
+                </button>
+              </div>
+              
+              <!-- Validation error for country -->
+              <div 
+                *ngIf="showValidationErrors && !selectedCountry" 
+                class="text-danger mt-3 fs-7 d-flex align-items-center">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                {{ lang === 'ar' ? 'يرجى اختيار الدولة' : 'Please select a country' }}
+              </div>
+            </div>
+          </div>
+    
+          <!-- Footer with Next Button -->
+          <div class="card-footer">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="text-muted small">
+                <i class="fas fa-shield-alt text-info me-1"></i>
+                {{ lang === 'ar' ? 'معلوماتك آمنة ومشفرة' : 'Your information is secure and encrypted' }}
+              </div>
+              <button 
+                type="button"
+                class="btn btn-info"
+                [disabled]="paymentService.isLoading$ | async"
+                (click)="onNext()">
+                
+                <span 
+                  *ngIf="paymentService.isLoading$ | async"
+                  class="spinner-border spinner-border-sm text-white me-2" 
+                  role="status" 
+                  aria-hidden="true"
+                  style="width: 1rem; height: 1rem;">
+                </span>
+                
+                {{ lang === 'ar' ? 'التالي' : 'Next' }}
+                <i class="fas fa-arrow-right ms-2"></i>
+              </button>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>

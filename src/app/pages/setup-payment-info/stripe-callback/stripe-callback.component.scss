@@ -1,0 +1,160 @@
+// Card styling
+.card {
+  border: none;
+  box-shadow: 0 0.1rem 1rem rgba(0, 0, 0, 0.07);
+}
+
+// Loading container
+.loading-container {
+  .spinner-border {
+    width: 3rem;
+    height: 3rem;
+  }
+  
+  h4 {
+    color: #181c32;
+    font-weight: 600;
+  }
+}
+
+// Success container
+.success-container {
+  .success-icon {
+    i {
+      font-size: 4rem;
+      color: #50cd89 !important;
+    }
+  }
+  
+  h4 {
+    color: #50cd89 !important;
+    font-weight: 600;
+  }
+}
+
+// Completion container
+.completion-container {
+  .warning-icon {
+    i {
+      font-size: 4rem;
+      color: #ffc700 !important;
+    }
+  }
+  
+  h4 {
+    color: #ffc700 !important;
+    font-weight: 600;
+  }
+}
+
+// Error container
+.error-container {
+  .error-icon {
+    i {
+      font-size: 4rem;
+      color: #f1416c !important;
+    }
+  }
+  
+  h4 {
+    color: #f1416c !important;
+    font-weight: 600;
+  }
+}
+
+// Button styling
+.btn-info {
+  background-color: #0978B9;
+  border-color: #0978B9;
+  
+  &:hover {
+    background-color: #085a8a;
+    border-color: #085a8a;
+  }
+  
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+.btn-light {
+  background-color: #f5f8fa;
+  border-color: #e4e6ef;
+  color: #7e8299;
+  
+  &:hover {
+    background-color: #e9ecef;
+    border-color: #d3d6db;
+    color: #5e6278;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .d-flex.justify-content-center.gap-3 {
+    flex-direction: column;
+    gap: 1rem !important;
+    
+    .btn {
+      width: 100%;
+    }
+  }
+  
+  .loading-container,
+  .success-container,
+  .completion-container,
+  .error-container {
+    .spinner-border {
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+    
+    i {
+      font-size: 3rem !important;
+    }
+    
+    h4 {
+      font-size: 1.25rem;
+    }
+  }
+}
+
+// Loading states
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+// Text styling
+.text-muted {
+  color: #a1a5b7 !important;
+}
+
+.text-success {
+  color: #50cd89 !important;
+}
+
+.text-warning {
+  color: #ffc700 !important;
+}
+
+.text-danger {
+  color: #f1416c !important;
+}
+
+.text-info {
+  color: #0978B9 !important;
+}
