@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 import { NonInsightersAuthGuard } from '../guards/non-insighter-guard/non-insighters.guard';
 import { authGuard } from '../guards/auth-guard/auth.guard';
 import { RolesGuard } from '../guards/roles-guard/roles-gurad.gurad';
+import { PaymentGuard } from '../guards/payment-guard/payment.guard';
+import { SetupPaymentGuard } from '../guards/setup-payment-guard/setup-payment.guard';
 //dsds
 const Routing: Routes = [
   {
@@ -23,13 +25,13 @@ const Routing: Routes = [
   {
     path: 'add-knowledge',
     loadChildren: () => import('./add-knowledge/add-knowledge.module').then((m) => m.AddKnowledgeModule),
-    canActivate:[authGuard,RolesGuard],
+    canActivate:[authGuard,RolesGuard,PaymentGuard],
     data: { roles: [ 'insighter','company','company-insighter'] }
   },
   {
     path: 'edit-knowledge',
     loadChildren: () => import('./add-knowledge/add-knowledge.module').then((m) => m.AddKnowledgeModule),
-    canActivate:[authGuard,RolesGuard],
+    canActivate:[authGuard,RolesGuard,PaymentGuard],
     data: { roles: [ 'insighter','company','company-insighter'] }
   },
   {
@@ -55,6 +57,11 @@ const Routing: Routes = [
     loadChildren: () => import('./review-insighter-knowledge/review-insighter-knowledge.module').then((m) => m.ReviewInsighterKnowledgeModule),
     canActivate:[authGuard,RolesGuard],
     data: { roles: ['company'] } 
+  },
+  {
+    path: 'setup-payment-info',
+    loadChildren: () => import('./setup-payment-info/setup-payment-info.module').then((m) => m.SetupPaymentInfoModule),
+     canActivate:[authGuard],
   },
   {
     path: '**',

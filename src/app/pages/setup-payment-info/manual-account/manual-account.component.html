@@ -1,0 +1,94 @@
+<app-payment-header 
+  [title]="lang === 'ar' ? 'إعداد الحساب اليدوي' : 'Manual Account Setup'"
+  [subtitle]="lang === 'ar' ? 'أدخل معلومات حسابك البنكي لاستقبال المدفوعات' : 'Enter your bank account details to receive payments'">
+</app-payment-header>
+
+<div style="padding-top:50px" class="container-fluid  gradient-background">
+  <div class="row justify-content-center">
+    <div class="col-lg-6 col-xl-5">
+
+        
+        <form [formGroup]="manualAccountForm" (ngSubmit)="onSubmit()">
+            <!-- Account Name Field -->
+            <div class="mb-6">
+              <label class="form-label required">
+                {{ lang === 'ar' ? 'اسم الحساب' : 'Account Name' }}
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                [class.is-invalid]="getFieldError('accountName')"
+                formControlName="accountName"
+                [placeholder]="lang === 'ar' ? 'أدخل اسم الحساب' : 'Enter account name'"
+              />
+              <div class="invalid-feedback" *ngIf="getFieldError('accountName')">
+                {{ getFieldError('accountName') }}
+              </div>
+            </div>
+
+            <!-- IBAN Field -->
+            <div class="mb-6">
+              <label class="form-label required">
+                {{ lang === 'ar' ? 'رقم الآيبان (IBAN)' : 'IBAN Number' }}
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                [class.is-invalid]="getFieldError('iban')"
+                formControlName="iban"
+                [placeholder]="lang === 'ar' ? 'أدخل رقم الآيبان' : 'Enter IBAN number'"
+              />
+              <div class="invalid-feedback" *ngIf="getFieldError('iban')">
+                {{ getFieldError('iban') }}
+              </div>
+              <div class="form-text text-muted">
+                {{ lang === 'ar' ? 'مثال: SA03 8000 0000 6080 1016 7519' : 'Example: SA03 8000 0000 6080 1016 7519' }}
+              </div>
+            </div>
+
+            <!-- Info Box -->
+            <div class="alert alert-light-info mb-0">
+              <div class="d-flex align-items-center">
+                <i class="fas fa-info-circle text-info fs-2 me-3"></i>
+                <div>
+                  <p class="mb-1 fw-bold">
+                    {{ lang === 'ar' ? 'معلومات هامة' : 'Important Information' }}
+                  </p>
+                  <p class="mb-0 text-muted">
+                    {{ lang === 'ar' 
+                      ? 'تأكد من صحة المعلومات المدخلة. سيتم استخدام هذه المعلومات لتحويل المدفوعات إليك.' 
+                      : 'Please ensure the information is correct. These details will be used to transfer payments to you.' 
+                    }}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between pt-5">
+              <button 
+                type="button" 
+                class="btn btn-light"
+                (click)="goBack()">
+                <i class="fas fa-arrow-left me-2"></i>
+                {{ lang === 'ar' ? 'السابق' : 'Back' }}
+              </button>
+              
+              <button 
+                type="submit"
+                class="btn btn-info"
+                [disabled]="paymentService.isLoading$ | async">
+                
+                <span 
+                  *ngIf="paymentService.isLoading$ | async"
+                  class="spinner-border spinner-border-sm me-2" 
+                  role="status" 
+                  aria-hidden="true">
+                </span>
+                
+                {{ lang === 'ar' ? 'إنشاء الحساب' : 'Create Account' }}
+              </button>
+            </div>
+        </form>
+    </div>
+  </div>
+</div>

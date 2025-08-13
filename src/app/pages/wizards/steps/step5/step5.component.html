@@ -65,7 +65,7 @@
       <!-- Validation error for verification method -->
       <div
         *ngIf="
-          form.get('verificationMethod')?.invalid &&
+          form && form.get('verificationMethod')?.invalid &&
           form.get('verificationMethod')?.touched
         "
         class="fv-plugins-message-container invalid-feedback"
@@ -74,7 +74,7 @@
       </div>
     </div>
 
-    <div *ngIf="form.get('verificationMethod')?.value === 'websiteEmail'">
+    <div *ngIf="form && form.get('verificationMethod')?.value === 'websiteEmail'">
       <div class="mb-10">
         <label class="form-label required">
           {{ 'INSIGHTER_WIZARD.WEBSITE_DOMAIN' | translate }}
@@ -87,7 +87,7 @@
         />
         <div
           *ngIf="
-            form.get('website')?.invalid &&
+            form && form.get('website')?.invalid &&
             form.get('website')?.touched &&
             form.get('verificationMethod')?.value === 'websiteEmail'
           "
@@ -111,7 +111,7 @@
             type="button"
             class="btn flex-1 btn-primary"
             (click)="getCode()"
-            [disabled]="!form.get('companyEmail')?.valid || gettingCodeLoader || isGetCodeDisabled || !validateDomainMatching()"
+            [disabled]="!form || !form.get('companyEmail')?.valid || gettingCodeLoader || isGetCodeDisabled || !validateDomainMatching()"
           >
             <ng-container *ngIf="!gettingCodeLoader && !isGetCodeDisabled">
               <span class="indicator-label">{{ 'INSIGHTER_WIZARD.GET_CODE' | translate }}</span>
@@ -130,12 +130,12 @@
             </ng-container>
           </button>
         </div>
-        <div *ngIf="form.get('companyEmail')?.value && form.get('website')?.value && hasEmailAtSymbol() && !validateDomainMatching()" class="text-danger fs-7 mt-2">
+        <div *ngIf="form && form.get('companyEmail')?.value && form.get('website')?.value && hasEmailAtSymbol() && !validateDomainMatching()" class="text-danger fs-7 mt-2">
           {{ 'EMAIL_DOMAIN_MATCH' | translate }}
         </div>
         <div
           *ngIf="
-            form.get('companyEmail')?.invalid &&
+            form && form.get('companyEmail')?.invalid &&
             form.get('companyEmail')?.touched &&
             form.get('verificationMethod')?.value === 'websiteEmail'
           "
@@ -156,7 +156,7 @@
         />
         <div
           *ngIf="
-            form.get('code')?.invalid &&
+            form && form.get('code')?.invalid &&
             form.get('code')?.touched &&
             form.get('verificationMethod')?.value === 'websiteEmail'
           "
@@ -167,13 +167,13 @@
       </div>
     </div>
 
-    <div *ngIf="form.get('verificationMethod')?.value === 'uploadDocument'">
+    <div *ngIf="form && form.get('verificationMethod')?.value === 'uploadDocument'">
        <!-- Dropzone for Registry Document -->
     <div class="fv-row mb-10">
       <!-- Show dropzone only if no file has been uploaded -->
       <div
         class="dropzone dz-clickable"
-        *ngIf="!form.get('registerDocument')?.value"
+        *ngIf="!form || !form.get('registerDocument')?.value"
         (click)="onDropzoneClick()"
         (drop)="onFileDrop($event)"
         (dragover)="onDragOver($event)"
@@ -197,7 +197,7 @@
       </div>
       
       <!-- Display uploaded file if a file has been uploaded -->
-      <div *ngIf="form.get('registerDocument')?.value">
+      <div *ngIf="form && form.get('registerDocument')?.value">
         <!-- Uploaded File Details -->
         <div
           class="d-flex flex-stack py-4 border border-top-0 border-left-0 border-right-0 border-dashed"
@@ -206,7 +206,7 @@
             <!-- File Icon -->
             <div class="symbol symbol-35px">
               <img
-                [src]="getFileIcon(form.get('registerDocument')?.value)"
+                [src]="getFileIcon(form?.get('registerDocument')?.value)"
                 alt="icon"
               />
             </div>
@@ -216,11 +216,11 @@
                 href="#"
                 class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2"
               >
-                {{ form.get("registerDocument")?.value.name }}
+                {{ form?.get("registerDocument")?.value?.name }}
               </a>
               <div class="fw-semibold text-muted">
                 {{
-                  (form.get("registerDocument")?.value.size / 1000) | number : "1.0-2"
+                  (form?.get("registerDocument")?.value?.size / 1000) | number : "1.0-2"
                 }}
                 KB
               </div>
@@ -259,7 +259,7 @@
       <!-- Validation error for register document -->
       <div
         *ngIf="
-          form.get('registerDocument')?.invalid &&
+          form && form.get('registerDocument')?.invalid &&
           form.get('registerDocument')?.touched &&
           form.get('verificationMethod')?.value === 'uploadDocument'
         "

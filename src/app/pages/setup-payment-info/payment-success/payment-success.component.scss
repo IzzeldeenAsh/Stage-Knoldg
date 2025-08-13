@@ -1,0 +1,151 @@
+// Success card styling
+.success-card {
+  border: none;
+  box-shadow: 0 0.2rem 2rem rgba(80, 205, 137, 0.15);
+  border-top: 4px solid #50cd89;
+  
+  .card-body {
+    padding: 3rem 2rem;
+  }
+}
+
+// Simple fade up animation for smooth entry
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Success animation container
+.success-animation {
+  position: relative;
+  display: inline-block;
+  animation: fadeUp 0.6s ease-out both;
+}
+
+// Lottie player container
+.success-animation lottie-player {
+  margin: 0 auto;
+  display: block;
+}
+
+// Payment type badge
+.payment-type-badge {
+  .badge {
+    border: 1px solid rgba(80, 205, 137, 0.3);
+  }
+}
+
+// Success content
+.success-content {
+  h2 {
+    font-size: 1.8rem;
+  }
+  
+  h5 {
+    font-weight: 500;
+  }
+}
+
+// Features list
+.features-list {
+  .feature-item {
+    padding: 1rem;
+    
+    .feature-icon {
+      i {
+        font-size: 2rem;
+      }
+    }
+    
+    h6 {
+      font-weight: 600;
+      color: #181c32;
+    }
+  }
+}
+
+// Action buttons
+.action-buttons {
+  .btn-success {
+    background-color: #50cd89;
+    border-color: #50cd89;
+    padding: 0.75rem 2rem;
+    
+    &:hover {
+      background-color: #47b881;
+      border-color: #47b881;
+    }
+  }
+  
+  .countdown-text {
+    margin-top: 1rem;
+  }
+}
+
+// Animations for enhanced effects only
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .success-card .card-body {
+    padding: 2rem 1.5rem;
+  }
+  
+  .success-animation lottie-player {
+    width: 120px !important;
+    height: 120px !important;
+  }
+  
+  .success-content {
+    h2 {
+      font-size: 1.5rem;
+    }
+  }
+  
+  .features-list {
+    .feature-item {
+      margin-bottom: 1rem;
+      
+      .feature-icon i {
+        font-size: 1.5rem;
+      }
+    }
+  }
+  
+  .action-buttons {
+    .btn-success {
+      width: 100%;
+      margin-right: 0 !important;
+    }
+  }
+}
+
+// Text colors
+.text-success {
+  color: #50cd89 !important;
+}
+
+.text-gray-600 {
+  color: #7e8299 !important;
+}
+
+.text-muted {
+  color: #a1a5b7 !important;
+}
+
+.text-primary {
+  color: #635bff !important;
+}
+
+.text-info {
+  color: #0978B9 !important;
+}
+
+.text-warning {
+  color: #ffc700 !important;
+}
