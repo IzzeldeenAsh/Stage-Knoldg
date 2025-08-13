@@ -8,10 +8,87 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-12 mx-auto col-md-6">
-        <div >
+        
+        <!-- Loading Spinner -->
+        <div *ngIf="isLoadingPaymentInfo" class="text-center py-5">
+          <div class="spinner-border text-info" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <div class="mt-3">
+            <h5 class="text-gray-700">
+              {{ lang === 'ar' ? 'جاري تحميل معلومات الدفع...' : 'Loading payment information...' }}
+            </h5>
+            <p class="text-muted">
+              {{ lang === 'ar' ? 'يرجى الانتظار' : 'Please wait' }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div *ngIf="!isLoadingPaymentInfo">
  
+            <!-- Existing Payment Warning -->
+            <div *ngIf="hasExistingPayment && paymentInfo && !isEditing" class="mb-8">
+              <div class="payment-warning-card">
+                <div class="text-center mb-4">
+                  <i class="fas fa-info-circle text-primary fs-1 mb-3"></i>
+                  <h4 class="mb-2">
+                    {{ lang === 'ar' ? 'لديك حساب دفع نشط بالفعل' : 'You have an active payment account' }}
+                  </h4>
+                  <p class="text-muted mb-3">
+                    {{ lang === 'ar' ? 'أي تغيير سيؤثر على الإعدادات الحالية' : 'Any changes will override your current settings' }}
+                  </p>
+                  <div class="payment-type-info">
+                    <span class="badge bg-light text-dark">
+                      {{ paymentInfo.type === 'manual' ? (lang === 'ar' ? 'حساب يدوي' : 'Manual Account') : 'Stripe Account' }}
+                      <span class="status-dot ms-2" [class]="paymentInfo.status === 'active' ? 'active' : 'inactive'"></span>
+                    </span>
+                  </div>
+                </div>
+                
+                <div class="text-center">
+                  <!-- Manual Account Actions -->
+                  <div *ngIf="paymentInfo.type === 'manual'" class="d-flex justify-content-center gap-3 flex-wrap">
+                    <button class="btn btn-primary" (click)="onEditManual()">
+                      <i class="fas fa-edit me-2"></i>
+                      {{ lang === 'ar' ? 'تعديل الحساب' : 'Edit Account' }}
+                    </button>
+                    <button class="btn btn-outline-info" (click)="onChangeToStripe()">
+                      <i class="fas fa-exchange-alt me-2"></i>
+                      {{ lang === 'ar' ? 'تغيير إلى Stripe' : 'Switch to Stripe' }}
+                    </button>
+                  </div>
+                  
+                  <!-- Stripe Account Actions -->
+                  <div *ngIf="paymentInfo.type === 'stripe'">
+                    <div *ngIf="paymentInfo.status === 'active'" class="d-flex justify-content-center gap-3 flex-wrap">
+                      <button class="btn btn-primary" (click)="onCompleteStripe()">
+                        <i class="fas fa-edit me-2"></i>
+                        {{ lang === 'ar' ? 'تعديل Stripe' : 'Edit Stripe' }}
+                      </button>
+                      <button class="btn btn-outline-info" (click)="onChangeToManual()">
+                        <i class="fas fa-exchange-alt me-2"></i>
+                        {{ lang === 'ar' ? 'تغيير إلى يدوي' : 'Switch to Manual' }}
+                      </button>
+                    </div>
+                    
+                    <div *ngIf="paymentInfo.status === 'inactive'" class="d-flex justify-content-center gap-3 flex-wrap">
+                      <button class="btn btn-success" (click)="onCompleteStripe()">
+                        <i class="fas fa-check me-2"></i>
+                        {{ lang === 'ar' ? 'إكمال Stripe' : 'Complete Stripe Setup' }}
+                      </button>
+                      <button class="btn btn-outline-info" (click)="onChangeToManual()">
+                        <i class="fas fa-exchange-alt me-2"></i>
+                        {{ lang === 'ar' ? 'تغيير إلى يدوي' : 'Switch to Manual' }}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <!-- Step 1: Payment Type Selection -->
-            <div class="mb-8">
+            <div class="mb-8" *ngIf="!hasExistingPayment || isEditing">
               <div class="d-flex align-items-center mb-4">
                 <span class="badge badge-circle badge-info me-3">1</span>
                 <h4 class="mb-0 text-gray-800 fw-bold">
@@ -56,7 +133,7 @@
             </div>
     
             <!-- Step 2: Country Selection -->
-            <div *ngIf="selectedPaymentType" class="mb-8">
+            <div *ngIf="selectedPaymentType && (!hasExistingPayment || isEditing)" class="mb-8">
               <div class="d-flex align-items-center mb-4">
                 <span class="badge badge-circle badge-info me-3">2</span>
                 <h4 class="mb-0 text-gray-800 fw-bold">
@@ -66,61 +143,85 @@
               <p class="text-muted mb-4">
                 {{ lang === 'ar' ? 'اختر الدولة التي تريد إجراء المعاملات منها' : 'Select the country you want to transact from' }}
               </p>
-    
-              <!-- Search Bar -->
-              <div class="search-container position-relative mb-4">
-                <i class="fas fa-search position-absolute" 
-                   style="left: 16px; top: 50%; transform: translateY(-50%); color: #a1a5b7; z-index: 2;"></i>
-                <input 
-                  type="text" 
-                  class="form-control ps-10"
-                  [(ngModel)]="searchTerm"
-                  (input)="filterCountries()"
-                  [placeholder]="lang === 'ar' ? 'البحث عن دولة...' : 'Search for a country...'"
-                  style="padding-left: 45px;">
-                <span class="position-absolute" style="right: 16px; top: 50%; transform: translateY(-50%); color: #a1a5b7;">
-                  <small class="text-muted">{{ filteredCountries.length }} {{ lang === 'ar' ? 'دولة' : 'countries' }}</small>
-                </span>
-              </div>
-    
-              <!-- Countries Grid -->
-              <div class="countries-grid">
-                <div 
-                  *ngFor="let country of filteredCountries" 
-                  class="country-card"
-                  [class.selected]="selectedCountry?.id === country.id"
-                  (click)="selectCountry(country)">
-                  
-                  <div class="country-card-content">
-                    <div class="country-flag-option">
-                      <img 
-                        [src]="getFlagUrl(country.flag)" 
-                        [alt]="getCountryName(country)"
-                        class="flag-image"
-                        onerror="this.src='assets/media/flags/default.svg'">
+
+              <!-- Selected Country Display -->
+              <div *ngIf="selectedCountry" class="mb-4">
+                <div class="selected-country-display">
+                  <div class="country-card selected" (click)="unselectCountry()" style="cursor: pointer;">
+                    <div class="country-card-content">
+                      <div class="country-flag-option">
+                        <img 
+                          [src]="getFlagUrl(selectedCountry.flag)" 
+                          [alt]="getCountryName(selectedCountry)"
+                          class="flag-image"
+                          onerror="this.src='assets/media/flags/default.svg'">
+                      </div>
+                      <div class="country-name">
+                        {{ getCountryName(selectedCountry) }}
+                      </div>
                     </div>
-                    <div class="country-name">
-                      {{ getCountryName(country) }}
+                    <div class="country-check">
+                      <i class="fas fa-check"></i>
                     </div>
                   </div>
-                  
-                  <!-- Blue check icon for selected -->
-                  <div class="country-check" *ngIf="selectedCountry?.id === country.id">
-                    <i class="fas fa-check"></i>
-                  </div>
+                  <button class="btn btn-sm btn-light-info mt-2" (click)="unselectCountry()">
+                    <i class="fas fa-edit me-1"></i>
+                    {{ lang === 'ar' ? 'تغيير الدولة' : 'Change Country' }}
+                  </button>
                 </div>
               </div>
-              
-              <!-- No results message -->
-              <div 
-                *ngIf="filteredCountries.length === 0 && searchTerm" 
-                class="text-center py-5 text-muted">
-                <i class="fas fa-search fs-2x mb-3 text-gray-400"></i>
-                <p>{{ lang === 'ar' ? 'لم يتم العثور على نتائج' : 'No countries found' }}</p>
-                <button class="btn btn-sm btn-light-info mt-2" (click)="searchTerm = ''; filterCountries()">
-                  <i class="fas fa-times me-1"></i>
-                  {{ lang === 'ar' ? 'مسح البحث' : 'Clear search' }}
-                </button>
+
+              <!-- Country Selection Interface (shown when no country is selected) -->
+              <div *ngIf="!selectedCountry">
+                <!-- Search Bar -->
+                <div class="search-container position-relative mb-4">
+                  <i class="fas fa-search position-absolute" 
+                     style="left: 16px; top: 50%; transform: translateY(-50%); color: #a1a5b7; z-index: 2;"></i>
+                  <input 
+                    type="text" 
+                    class="form-control ps-10"
+                    [(ngModel)]="searchTerm"
+                    (input)="filterCountries()"
+                    [placeholder]="lang === 'ar' ? 'البحث عن دولة...' : 'Search for a country...'"
+                    style="padding-left: 45px;">
+                  <span class="position-absolute" style="right: 16px; top: 50%; transform: translateY(-50%); color: #a1a5b7;">
+                    <small class="text-muted">{{ filteredCountries.length }} {{ lang === 'ar' ? 'دولة' : 'countries' }}</small>
+                  </span>
+                </div>
+      
+                <!-- Countries Grid -->
+                <div class="countries-grid">
+                  <div 
+                    *ngFor="let country of filteredCountries" 
+                    class="country-card"
+                    (click)="selectCountry(country)">
+                    
+                    <div class="country-card-content">
+                      <div class="country-flag-option">
+                        <img 
+                          [src]="getFlagUrl(country.flag)" 
+                          [alt]="getCountryName(country)"
+                          class="flag-image"
+                          onerror="this.src='assets/media/flags/default.svg'">
+                      </div>
+                      <div class="country-name">
+                        {{ getCountryName(country) }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- No results message -->
+                <div 
+                  *ngIf="filteredCountries.length === 0 && searchTerm" 
+                  class="text-center py-5 text-muted">
+                  <i class="fas fa-search fs-2x mb-3 text-gray-400"></i>
+                  <p>{{ lang === 'ar' ? 'لم يتم العثور على نتائج' : 'No countries found' }}</p>
+                  <button class="btn btn-sm btn-light-info mt-2" (click)="searchTerm = ''; filterCountries()">
+                    <i class="fas fa-times me-1"></i>
+                    {{ lang === 'ar' ? 'مسح البحث' : 'Clear search' }}
+                  </button>
+                </div>
               </div>
               
               <!-- Validation error for country -->
@@ -134,7 +235,7 @@
           </div>
     
           <!-- Footer with Next Button -->
-          <div class="card-footer">
+          <div class="card-footer" *ngIf="!hasExistingPayment || isEditing">
             <div class="d-flex justify-content-between align-items-center">
               <div class="text-muted small">
                 <i class="fas fa-shield-alt text-info me-1"></i>
@@ -143,23 +244,29 @@
               <button 
                 type="button"
                 class="btn btn-info"
-                [disabled]="paymentService.isLoading$ | async"
+                [disabled]="(paymentService.isLoading$ | async) || isCreatingStripeAccount"
                 (click)="onNext()">
                 
                 <span 
-                  *ngIf="paymentService.isLoading$ | async"
+                  *ngIf="(paymentService.isLoading$ | async) || isCreatingStripeAccount"
                   class="spinner-border spinner-border-sm text-white me-2" 
                   role="status" 
                   aria-hidden="true"
                   style="width: 1rem; height: 1rem;">
                 </span>
                 
-                {{ lang === 'ar' ? 'التالي' : 'Next' }}
-                <i class="fas fa-arrow-right ms-2"></i>
+                <span *ngIf="!isCreatingStripeAccount">
+                  {{ lang === 'ar' ? 'التالي' : 'Next' }}
+                  <i class="fas fa-arrow-right ms-2"></i>
+                </span>
+                
+                <span *ngIf="isCreatingStripeAccount">
+                  {{ lang === 'ar' ? 'جاري إنشاء حساب Stripe...' : 'Creating Stripe account...' }}
+                </span>
               </button>
             </div>
           </div>
+        </div>
       </div>
     </div>
   </div>
-</div>

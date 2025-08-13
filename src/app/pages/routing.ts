@@ -61,7 +61,7 @@ const Routing: Routes = [
   {
     path: 'setup-payment-info',
     loadChildren: () => import('./setup-payment-info/setup-payment-info.module').then((m) => m.SetupPaymentInfoModule),
-     canActivate:[authGuard,SetupPaymentGuard],
+     canActivate:[authGuard],
   },
   {
     path: '**',

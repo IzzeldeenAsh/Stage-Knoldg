@@ -654,6 +654,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     INSIGHTER_WIZARD: {
       COMPANY_AGREEMENT_REQUIRED:"Company Agreement Required",
       ACCOUNT_TYPE: "Account Type",
+      LEGAL_NAME_EXISTS:"Legal Name Already Exists",
       COUNTRY_REQUIRED: "Country is required",
       COUNTRY_PLACEHOLDER: "Select Country",
       COUNTRY: "Country",
@@ -1535,6 +1536,23 @@ UPLOAD: 'Upload',
         "ORGANIZE_COLLECTION": "Organize your collection"
       }
     },
+
+  "PAYMENT_ACCOUNT": {
+    "TITLE": "Payment Account Information",
+    "ADD_TITLE": "Add Payment Account",
+    "DESCRIPTION": "View and manage your payment account details for receiving payments.",
+    "ADD_DESCRIPTION": "Set up your payment account to start receiving payments from your knowledge sales.",
+    "TYPE": "Account Type",
+    "STATUS": "Status",
+    "COUNTRY": "Country",
+    "ACCOUNT_NAME": "Account Name",
+    "IBAN": "IBAN",
+    "DETAILS_SUBMITTED": "Details Submitted",
+    "CHARGES_ENABLED": "Charges Enabled",
+    "ERROR_TITLE": "Unable to Load Payment Details",
+    "EDIT_BUTTON": "Edit Payment Info",
+    "ADD_DETAILS_BUTTON": "Add Payment Details"
+  }
   },
  
   "CLIENT": "Client",
@@ -1550,6 +1568,7 @@ UPLOAD: 'Upload',
   "CALENDAR": {
     "WEEK_VIEW": "Week View",
     "TIME": "Time"
-  }
+  },
+
  
 };

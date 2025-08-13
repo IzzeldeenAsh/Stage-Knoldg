@@ -67,7 +67,7 @@ export class PaymentGuard implements CanActivate {
           if (paymentData.type === 'stripe' && 
               !paymentData.details_submitted_at) {
             console.log('Payment Guard - Stripe account incomplete, redirecting to stripe-callback');
-            return this.router.createUrlTree(['/app/setup-payment-info/stripe-callback']);
+            return this.router.createUrlTree(['/app/setup-payment-info/stripe-callback/refresh']);
           }
           
           // Payment info is complete, allow access

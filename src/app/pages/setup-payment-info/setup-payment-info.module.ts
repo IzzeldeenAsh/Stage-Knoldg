@@ -8,6 +8,7 @@ import { ManualAccountComponent } from './manual-account/manual-account.componen
 import { StripeCallbackComponent } from './stripe-callback/stripe-callback.component';
 import { PaymentSuccessComponent } from './payment-success/payment-success.component';
 import { PaymentHeaderComponent } from '../../reusable-components/payment-header/payment-header.component';
+import { PaymentTypeGuard } from './guards/payment-type.guard';
 
 @NgModule({
   declarations: [
@@ -28,11 +29,25 @@ import { PaymentHeaderComponent } from '../../reusable-components/payment-header
       },
       {
         path: 'manual-account',
-        component: ManualAccountComponent
+        component: ManualAccountComponent,
+        canActivate: [PaymentTypeGuard]
       },
       {
         path: 'stripe-callback',
-        component: StripeCallbackComponent
+        component: StripeCallbackComponent,
+        canActivate: [PaymentTypeGuard]
+      },
+      {
+        path: 'stripe-callback/return',
+        component: StripeCallbackComponent,
+        canActivate: [PaymentTypeGuard],
+        data: { action: 'return' }
+      },
+      {
+        path: 'stripe-callback/refresh',
+        component: StripeCallbackComponent,
+        canActivate: [PaymentTypeGuard],
+        data: { action: 'refresh' }
       },
       {
         path: 'success',

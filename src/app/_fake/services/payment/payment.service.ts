@@ -33,6 +33,33 @@ export interface StripeCompleteResponse {
     success: boolean;
   };
 }
+export interface StripeAccountDetailsResponse {
+  data: {
+    type: string;
+    status: string;
+    details_submitted_at: string | null;
+    charges_enable_at: string | null;
+    country: {
+      id: number;
+      name: string;
+      flag: string;
+    };
+  };
+}
+
+export interface ManualAccountDetailsResponse {
+  data: {
+    type: string;
+    status: string;
+    iban: string;
+    account_name: string;
+    country: {
+      id: number;
+      name: string;
+      flag: string;
+    };
+  };
+}
 
 @Injectable({
   providedIn: 'root'
@@ -44,6 +71,7 @@ export class PaymentService {
   private stripeCreateApiUrl = 'https://api.knoldg.com/api/account/insighter/payment/account/stripe/onboarding/create';
   private stripeCompleteApiUrl = 'https://api.knoldg.com/api/account/insighter/payment/account/stripe/onboarding/complete';
   private stripeLinkApiUrl = 'https://api.knoldg.com/api/account/insighter/payment/account/stripe/onboarding/link';
+  private accountDetailsApiUrl = 'https://api.knoldg.com/api/account/insighter/payment/account/details';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   currentLang: string = 'en';
@@ -138,6 +166,24 @@ export class PaymentService {
   getStripeLink(): Observable<StripeAccountResponse> {
     this.setLoading(true);
     return this.http.post<StripeAccountResponse>(this.stripeLinkApiUrl, {}, { headers: this.getHeaders() }).pipe(
+      map(res => res),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  getStripeAccountDetails(): Observable<StripeAccountDetailsResponse> {
+    this.setLoading(true);
+    return this.http.get<StripeAccountDetailsResponse>(this.accountDetailsApiUrl, { headers: this.getHeaders() }).pipe(
+      map(res => res),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  getManualAccountDetails(): Observable<ManualAccountDetailsResponse> {
+    this.setLoading(true);
+    return this.http.get<ManualAccountDetailsResponse>(this.accountDetailsApiUrl, { headers: this.getHeaders() }).pipe(
       map(res => res),
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))

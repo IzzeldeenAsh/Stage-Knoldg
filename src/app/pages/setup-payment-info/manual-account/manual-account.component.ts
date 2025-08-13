@@ -12,6 +12,8 @@ import { PaymentService, ManualAccountRequest } from 'src/app/_fake/services/pay
 export class ManualAccountComponent extends BaseComponent implements OnInit {
   manualAccountForm: FormGroup;
   showValidationErrors: boolean = false;
+  isEditing: boolean = false;
+  existingData: any = null;
 
   constructor(
     injector: Injector,
@@ -26,7 +28,28 @@ export class ManualAccountComponent extends BaseComponent implements OnInit {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.loadExistingData();
+  }
+
+  loadExistingData() {
+    this.paymentService.getManualAccountDetails().subscribe({
+      next: (response) => {
+        this.existingData = response.data;
+        this.isEditing = true;
+        
+        // Pre-fill form with existing data
+        this.manualAccountForm.patchValue({
+          accountName: this.existingData.account_name || '',
+          iban: this.existingData.iban || ''
+        });
+      },
+      error: () => {
+        // No existing data - this is fine for new setup
+        this.isEditing = false;
+      }
+    });
+  }
 
   onSubmit() {
     if (this.manualAccountForm.valid) {
@@ -37,9 +60,13 @@ export class ManualAccountComponent extends BaseComponent implements OnInit {
 
       this.paymentService.createManualAccount(formData).subscribe({
         next: () => {
+          const successMessage = this.isEditing 
+            ? (this.lang === 'ar' ? 'تم تحديث الحساب اليدوي بنجاح' : 'Manual account updated successfully')
+            : (this.lang === 'ar' ? 'تم إنشاء الحساب اليدوي بنجاح' : 'Manual account created successfully');
+          
           this.showSuccess(
             this.lang === 'ar' ? 'تم الحفظ' : 'Success',
-            this.lang === 'ar' ? 'تم إنشاء الحساب اليدوي بنجاح' : 'Manual account created successfully'
+            successMessage
           );
           this.router.navigate(['/app/setup-payment-info/success'], { 
             queryParams: { type: 'manual' } 

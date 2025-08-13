@@ -32,6 +32,13 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
   searchTerm: string = '';
   selectedCountry: any = null;
   showValidationErrors: boolean = false;
+  
+  // Payment status properties
+  paymentInfo: any = null;
+  hasExistingPayment: boolean = false;
+  isEditing: boolean = false;
+  isLoadingPaymentInfo: boolean = true;
+  isCreatingStripeAccount: boolean = false;
 
   constructor(
     injector: Injector,
@@ -49,6 +56,7 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
 
   ngOnInit() {
     this.loadAllCountries();
+    this.loadExistingPaymentInfo();
   }
 
   loadAllCountries() {
@@ -92,6 +100,13 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
   selectCountry(country: any) {
     this.selectedCountry = country;
     this.paymentForm.patchValue({ countryId: country.id });
+  }
+
+  unselectCountry() {
+    this.selectedCountry = null;
+    this.paymentForm.patchValue({ countryId: '' });
+    this.searchTerm = '';
+    this.filterCountries();
   }
 
   filterCountries() {
@@ -164,8 +179,10 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
   }
 
   private initiateStripeOnboarding() {
+    this.isCreatingStripeAccount = true;
     this.paymentService.createStripeAccount().subscribe({
       next: (response) => {
+        this.isCreatingStripeAccount = false;
         if (response.data.stripe_account_link.url) {
           // Redirect to Stripe onboarding
           window.location.href = response.data.stripe_account_link.url;
@@ -177,14 +194,114 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
         }
       },
       error: (error) => {
+        this.isCreatingStripeAccount = false;
         // Handle specific case of existing Stripe account (422 error)
         if (error.status === 422 && error.error && error.error.message === "Stripe account exists") {
-          this.router.navigate(['/app/setup-payment-info/stripe-callback']);
+          this.router.navigate(['/app/setup-payment-info/stripe-callback/refresh']);
           return;
         }
         this.handleServerErrors(error);
       }
     });
+  }
+
+  loadExistingPaymentInfo() {
+    this.isLoadingPaymentInfo = true;
+    // Try to load payment details to check if user has existing setup
+    this.paymentService.getStripeAccountDetails().subscribe({
+      next: (response) => {
+        // Check if response has data - API returns 201 with no data for new accounts
+        if (response && response.data) {
+          this.paymentInfo = response.data;
+          this.hasExistingPayment = true;
+          this.preSelectExistingInfo();
+        } else {
+          this.hasExistingPayment = false;
+        }
+        this.isLoadingPaymentInfo = false;
+      },
+      error: (error) => {
+        // If status is 201 with no response, consider as new account
+        if (error.status === 201) {
+          this.hasExistingPayment = false;
+          this.isLoadingPaymentInfo = false;
+          return;
+        }
+        
+        // If stripe fails, try manual account
+        this.paymentService.getManualAccountDetails().subscribe({
+          next: (response) => {
+            // Check if response has data - API returns 201 with no data for new accounts
+            if (response && response.data) {
+              this.paymentInfo = response.data;
+              this.hasExistingPayment = true;
+              this.preSelectExistingInfo();
+            } else {
+              this.hasExistingPayment = false;
+            }
+            this.isLoadingPaymentInfo = false;
+          },
+          error: (manualError) => {
+            // If status is 201 with no response, consider as new account
+            if (manualError.status === 201) {
+              this.hasExistingPayment = false;
+            } else {
+              // No existing payment setup found - this is fine
+              this.hasExistingPayment = false;
+            }
+            this.isLoadingPaymentInfo = false;
+          }
+        });
+      }
+    });
+  }
+
+  preSelectExistingInfo() {
+    if (this.paymentInfo) {
+      this.selectedPaymentType = this.paymentInfo.type;
+      this.paymentForm.patchValue({ paymentType: this.paymentInfo.type });
+      
+      if (this.paymentInfo.country) {
+        this.selectedCountry = this.paymentInfo.country;
+        this.paymentForm.patchValue({ countryId: this.paymentInfo.country.id });
+      }
+      
+      // Load appropriate countries
+      if (this.paymentInfo.type === 'stripe') {
+        this.loadStripeCountries();
+      } else {
+        this.filteredCountries = [...this.allCountries];
+      }
+    }
+  }
+
+  onEditManual() {
+    this.isEditing = true;
+    // Stay on this page to allow country selection, don't navigate to manual-account
+  }
+
+  onChangeToStripe() {
+    // Reset selected info and show stripe setup
+    this.selectedPaymentType = 'stripe';
+    this.paymentForm.patchValue({ paymentType: 'stripe' });
+    this.selectedCountry = null;
+    this.paymentForm.patchValue({ countryId: '' });
+    this.loadStripeCountries();
+    this.isEditing = true;
+  }
+
+  onChangeToManual() {
+    // Reset selected info and show manual setup
+    this.selectedPaymentType = 'manual';
+    this.paymentForm.patchValue({ paymentType: 'manual' });
+    this.selectedCountry = null;
+    this.paymentForm.patchValue({ countryId: '' });
+    this.filteredCountries = [...this.allCountries];
+    this.isEditing = true;
+  }
+
+  onCompleteStripe() {
+    this.router.navigate(['/app/setup-payment-info/stripe-callback/refresh']);
   }
 
   private handleServerErrors(error: any) {

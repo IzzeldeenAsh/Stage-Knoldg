@@ -25,8 +25,7 @@
           <!-- Payment Type Badge -->
           <div class="payment-type-badge mb-4">
             <span class="badge badge-light-success fs-6 px-4 py-2">
-              <i [class]="getPaymentTypeIcon()" [class.text-primary]="paymentType === 'stripe'" [class.text-info]="paymentType === 'manual'"></i>
-              <span class="ms-2">
+              <span class="mx-2">
                 {{ paymentType === 'stripe' 
                   ? (lang === 'ar' ? 'Stripe' : 'Stripe')
                   : (lang === 'ar' ? 'حساب يدوي' : 'Manual Account')

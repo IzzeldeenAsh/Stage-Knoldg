@@ -604,6 +604,7 @@ INSIGHTER_REQUESTS: {
     },
     INSIGHTER_WIZARD: {
       ACCOUNT_TYPE: "نوع الحساب",
+      LEGAL_NAME_EXISTS:"الاسم القانوني موجود",
       LOADING_FIELDS:"جاري التحميل...",
       COMPANY_AGREEMENT_REQUIRED:"الموافقة مطلوبة",
       INDUSTRY_REQUIRED:"الصناعة مطلوبة",
@@ -1438,6 +1439,23 @@ INSIGHTER_REQUESTS: {
     },
  
     },
+
+"PAYMENT_ACCOUNT": {
+  "TITLE": "معلومات حساب الدفع",
+  "ADD_TITLE": "إضافة حساب دفع",
+  "DESCRIPTION": "عرض وإدارة تفاصيل حساب الدفع لتلقي المدفوعات.",
+  "ADD_DESCRIPTION": "قم بإعداد حساب الدفع الخاص بك لبدء تلقي المدفوعات من مبيعات معرفتك.",
+  "TYPE": "نوع الحساب",
+  "STATUS": "الحالة",
+  "COUNTRY": "الدولة",
+  "ACCOUNT_NAME": "اسم الحساب",
+  "IBAN": "رقم الآيبان",
+  "DETAILS_SUBMITTED": "تم إرسال التفاصيل",
+  "CHARGES_ENABLED": "تم تفعيل الرسوم",
+  "ERROR_TITLE": "تعذر تحميل تفاصيل الدفع",
+  "EDIT_BUTTON": "تعديل معلومات الدفع",
+  "ADD_DETAILS_BUTTON": "إضافة تفاصيل الدفع"
+},
     "READ_LATER": {
   "TITLE": "المحفوظات",
   "ITEMS": "عنصر",
@@ -1476,6 +1494,7 @@ INSIGHTER_REQUESTS: {
 "CALENDAR": {
   "WEEK_VIEW": "عرض الأسبوع",
   "TIME": "الوقت"
-}
+},
+
 
 }
