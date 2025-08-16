@@ -106,7 +106,7 @@
                [pTooltip]="meeting.description ? meeting.description : ('INSIGHTER.MEETINGS.NO_DESCRIPTION' | translate)" 
                tooltipPosition="top"
                [style.cursor]="meeting.description && meeting.description.length > 100 ? 'help' : 'default'">
-              {{ (meeting.description || ('INSIGHTER.MEETINGS.NO_DESCRIPTION' | translate)) | truncateText:100:true }}
+              {{ ( (meeting.description == "No description provided" || meeting.description == "No description available") ? ('INSIGHTER.MEETINGS.NO_DESCRIPTION' | translate) : meeting.description || ('INSIGHTER.MEETINGS.NO_DESCRIPTION' | translate) ) | truncateText:100:true }}
             </p>
           </div>
 
