@@ -4,7 +4,6 @@
     <div class="menu-content d-flex align-items-center px-3">
       <div class="symbol symbol-50px rounded-full mx-4">
         <img alt="Logo" *ngIf="_user.profile_photo_url" [src]="_user.profile_photo_url" class="object-fit-cover" style="object-position: top;" />
-        <!-- <img alt="Logo" *ngIf="_user.company?.logo && _user.roles.includes('company')" [src]="_user.company?.logo" class="object-fit-cover" style="object-position: top;" /> -->
        <span *ngIf="(_user && !_user.profile_photo_url ) " class="symbol-label bg-primary fs-4 text-white">
         <span> {{ _user.first_name.charAt(0) }} </span>
         <span style="padding: 0 -20px;"> {{ _user.last_name.charAt(0) }} </span>
@@ -12,50 +11,33 @@
       </div>
 
       <div class="d-flex flex-column overflow-hidden">
-
         <div class="fw-bolder d-flex align-items-center fs-5">
           <span class="text-truncate">{{_user.first_name}} {{_user.last_name}}</span>
-
         </div>
-     
-    
+        
         <div class="d-flex flex-wrap">
+          <ng-container *ngIf="_user.roles.includes('insighter') && !_user.roles.includes('company')">
+            <span class="badge badge-light-success fw-bolder fs-8 px-2 py-1 me-1 mb-1">
+              {{ 'HOME.INSIGHTER' | translate }}
+            </span>
+          </ng-container>
+          <ng-container *ngIf="_user.roles.includes('company-insighter')">
+            <span class="badge badge-light-info fw-bolder fs-8 px-2 py-1 me-1 mb-1 text-truncate" style="max-width: 150px;">
+              {{ _user.company?.legal_name }} {{ 'HOME.INSIGHTER' | translate }}
+            </span>
+          </ng-container>
+          <ng-container *ngIf="_user.roles.includes('company') && !_user.roles.includes('company-insighter')">
+            <div class="d-flex gap-1 pt-1">
+              <span class="badge badge-light-info fw-bolder fs-8 px-2 py-1 me-1 mb-1 text-truncate" style="max-width: 150px;">
+                {{_user.company?.legal_name}}
+              </span>
+              <span class="badge badge-light-info fw-bolder fs-8 px-2 py-1 me-1 mb-1 text-truncate" style="max-width: 150px;">{{lang==='ar'? 'مدير': 'Manager'}}</span>
+            </div>
+          </ng-container>
           <ng-container *ngIf="_user.roles.includes('client') && !_user.roles.includes('insighter') && !_user.roles.includes('company') && !_user.roles.includes('company-insighter')">
             <span class="badge badge-light-secondary fw-bolder fs-8 px-2 py-1 me-1 mb-1">
               {{ 'HOME.CLIENT' | translate }}
             </span>
-          </ng-container>
-          <ng-container *ngIf="_user.roles.includes('insighter') && !_user.roles.includes('company')">
-            <span class="badge badge-light-success mt-1 fw-bolder fs-8 px-2 py-1 me-1 mb-1">
-              {{ 'HOME.INSIGHTER' | translate }}
-            </span>
-          </ng-container>
-          <ng-container *ngIf="!_user.roles.includes('insighter') && _user.roles.includes('company')">
-          <div class="d-flex gap-1 pt-2">
-            <span class="badge badge-light-info fw-bolder fs-8 px-2 py-1 me-1 mb-1 text-truncate" style="max-width: 150px;">
-              {{_user.company?.legal_name}}
-            </span>
-            <span class="badge badge-light-info fw-bolder fs-8 px-2 py-1 me-1 mb-1 text-truncate" style="max-width: 150px;">{{lang==='ar'? 'مدير': 'Manager'}}</span>
-          </div>
-          </ng-container>
-         
-          <ng-container *ngIf="!_user.roles.includes('insighter') && _user.roles.includes('company-insighter')">
-            <span class="badge badge-light-info fw-bolder fs-8 px-2 py-1 me-1 mb-1 text-truncate" style="max-width: 150px;">
-              {{ _user.company?.legal_name }} {{ 'HOME.INSIGHTER' | translate }}
-            </span>
-            
-          </ng-container>
-           <!-- Status indicators - only shown when not active -->
-           <ng-container *ngIf="_user.roles.includes('insighter') && !_user.roles.includes('company') && _user.insighter_status !== 'active'">
-            <div class="badge badge-light-danger fs-8 px-2 py-1 me-1 mb-1 text-capitalize">{{_user.insighter_status}}</div>
-          </ng-container>
-          
-          <ng-container *ngIf="_user.roles.includes('company') && _user.company?.status !== 'active'">
-            <div class="badge badge-light-danger fs-8 px-2 py-1 me-1 mb-1 text-capitalize">{{_user.company?.status}}</div>
-          </ng-container>
-          
-          <ng-container *ngIf="_user.roles.includes('company-insighter') && _user.insighter_status !== 'active'">
-            <div class="badge badge-light-danger fs-8 px-2 py-1 me-1 mb-1 text-capitalize">{{_user.insighter_status}}</div>
           </ng-container>
         </div>
       </div>
@@ -64,106 +46,52 @@
 
   <div class="separator my-2"></div>
 
-
   <div class="menu-item px-5" *ngIf="_user.roles.includes('insighter') || _user.roles.includes('company') || _user.roles.includes('company-insighter')">
     <a [routerLink]="'/app/add-knowledge/stepper'" class="menu-link px-5 text-info" (click)="closeDropdown.emit()">
       {{ 'KNOWLEDGE.ADD_KNOWLEDGE' | translate }}
       <i class="ki-duotone ki-plus fs-5 me-2 text-info"><span class="path1"></span><span class="path2"></span></i>
     </a>
-   
   </div>
-<div class="menu-item px-5" *ngIf="_user.roles.includes('insighter') || _user.roles.includes('company') || _user.roles.includes('company-insighter')">
-  <a [routerLink]="'/app/insighter-dashboard/my-knowledge'" class="menu-link px-5" (click)="closeDropdown.emit()">
-    {{ 'INSIGHTER.DASHBOARD.NAV.MY_KNOWLEDGE' | translate }}
-  </a>
-</div>
+
+  <div class="menu-item px-5" *ngIf="_user.roles.includes('insighter') || _user.roles.includes('company') || _user.roles.includes('company-insighter')">
+    <a [routerLink]="'/app/insighter-dashboard/my-knowledge/general'" class="menu-link px-5" (click)="closeDropdown.emit()">
+      {{ 'INSIGHTER.DASHBOARD.NAV.MY_KNOWLEDGE' | translate }}
+    </a>
+  </div>
 
   <div class="menu-item px-5">
-    <a [routerLink]="'/app/profile/'" class="menu-link px-5" (click)="closeDropdown.emit()">
+    <a [routerLink]="'/app/profile/overview'" class="menu-link px-5" (click)="closeDropdown.emit()">
       {{ 'HOME.MY_PROFILE' | translate }}
     </a>
   </div>
 
-<ng-container *ngIf="_user.roles.includes('insighter') || _user.roles.includes('company') || _user.roles.includes('company-insighter')">
-  
   <div class="menu-item px-5">
     <a [routerLink]="'/app/insighter-dashboard/my-dashboard'" class="menu-link px-5" (click)="closeDropdown.emit()">
       {{ 'OVERVIEW' | translate }}
     </a>
   </div>
-    <!-- <div class="menu-item px-5">
-      <a [routerLink]="'/app/insighter-dashboard/my-consulting-schedule'" class="menu-link px-5" (click)="closeDropdown.emit()">
-        {{ 'INSIGHTER_DASHBOARD.MY_CONSULTING_SCHEDULE' | translate }}
+
+  <ng-container *ngIf="!(_user.roles.includes('client') && !_user.roles.includes('insighter') && !_user.roles.includes('company') && !_user.roles.includes('company-insighter'))">
+    <div class="menu-item px-5">
+      <a [routerLink]="'/app/insighter-dashboard/account-settings/general-settings'" class="menu-link px-5" (click)="closeDropdown.emit()">
+        <span class="menu-title">{{ 'HOME.ACCOUNT_SETTINGS' | translate }}</span>
       </a>
-    </div> -->
-  <!-- <div class="menu-item px-5">
-    <a [routerLink]="'/app/insighter-dashboard/my-requests'" class="menu-link px-5" (click)="closeDropdown.emit()">
-      {{ 'INSIGHTER.DASHBOARD.NAV.MY_REQUESTS' | translate }}
-    </a>
-  </div> -->
+    </div>
+  </ng-container>
 
-
-
-  <!-- <div class="menu-item px-5" *ngIf="_user.roles.includes('company') ">
-    <a [routerLink]="'/app/insighter-dashboard/my-company-settings'" class="menu-link px-5" (click)="closeDropdown.emit()">
-      {{ 'MY_COMPANY.TITLE' | translate }}
-    </a>
-  </div> -->
-
-
-</ng-container>
- 
-
-
-
-  <div
-    class="menu-item px-5"
-    data-kt-menu-trigger="click"
-    data-kt-menu-placement="left-start"
-    data-kt-menu-flip="bottom"
-    data-submenu-id="accountSettings"
-  >
-  
-    <a *ngIf="_user.roles.includes('insighter') || _user.roles.includes('company') || _user.roles.includes('company-insighter')" class="menu-link px-5 cursor-pointer" [routerLink]="'/app/insighter-dashboard/account-settings/general-settings'" (click)="closeDropdown.emit()">
-      <span class="menu-title">{{ 'HOME.ACCOUNT_SETTINGS' | translate }}</span>
-    </a>
-  </div>
-
-
-  <!-- <div class="menu-item px-5" *ngIf="_user.roles.includes('insighter') || _user.roles.includes('company') || _user.roles.includes('company-insighter')">
-    <a [routerLink]="'/app/insighter-dashboard/my-meetings/received'" class="menu-link px-5" (click)="closeDropdown.emit()">
-      {{ 'RECEIVED_MEETINGS' | translate }}
-    </a>
-  </div> -->
-
-  <div class="menu-item px-5" *ngIf="_user.roles.includes('client') && !_user.roles.includes('insighter') && !_user.roles.includes('company') && !_user.roles.includes('company-insighter')">
-    <a [routerLink]="'/app/insighter-dashboard/my-meetings/sent'" class="menu-link px-5" (click)="closeDropdown.emit()">
-      {{ 'SENT_MEETINGS' | translate }}
-    </a>
-  </div>
-  <div class="menu-item px-5" *ngIf="_user.roles.includes('client') && !_user.roles.includes('insighter') && !_user.roles.includes('company') && !_user.roles.includes('company-insighter')">
-    <a [routerLink]="'/app/insighter-dashboard/my-meetings/sent'" class="menu-link px-5" (click)="closeDropdown.emit()">
-      {{ 'READ_LATER.TITLE' | translate }}
-    </a>
-  </div>
-  <div class="menu-item px-5" *ngIf="_user.roles.includes('client') && !_user.roles.includes('insighter') && !_user.roles.includes('company') && !_user.roles.includes('company-insighter')">
-    <a [routerLink]="'/app/insighter-dashboard/my-meetings/sent'" class="menu-link px-5" (click)="closeDropdown.emit()">
-      {{ 'MY_DOWNLOADS.TITLE' | translate }}
-    </a>
-  </div>
   <div class="menu-item px-5" *ngIf="_user.roles.includes('client') && !_user.roles.includes('insighter') && !_user.roles.includes('company') && !_user.roles.includes('company-insighter')">
     <a [routerLink]="'/app/insighter-register/vertical'" class="menu-link px-5 fw-boldest gradient-text-insighter" (click)="closeDropdown.emit()">
       {{ 'HOME.BECOME_INSIGHTER' | translate }}
     </a>
   </div>
+
   <div class="px-5" *ngIf="_user.roles.includes('client') && !_user.roles.includes('insighter') && !_user.roles.includes('company') && !_user.roles.includes('company-insighter')">
-    <p class="pe-5" style="font-size: 12px; line-height: 1.4; color: grey;" >
+    <p class="pe-5" style="font-size: 12px; line-height: 1.4; color: grey;    padding-inline-start: 16px;">
       {{ 'HOME.BECOME_INSIGHTER_DESC' | translate }}
     </p>
   </div>
 
   <div class="separator my-2"></div>
-
 
   <div class="menu-item px-5">
     <a (click)="logout(); closeDropdown.emit()" class="menu-link px-5 cursor-pointer">

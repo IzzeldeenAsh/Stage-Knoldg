@@ -700,14 +700,6 @@ export class GeneralComponent extends BaseComponent implements OnInit, OnDestroy
     this.filterChange.next(this.filterState);
   }
   
-  // Get count of knowledge items by type
-  getTypeCount(type: string): number {
-    if (!this.allKnowledges || this.allKnowledges.length === 0) {
-      return 0;
-    }
-    return this.allKnowledges.filter(knowledge => knowledge.type === type).length;
-  }
-  
   // Method to filter knowledge items by type when a chip is clicked
   filterByType(type: string): void {
     // Update the selected type
