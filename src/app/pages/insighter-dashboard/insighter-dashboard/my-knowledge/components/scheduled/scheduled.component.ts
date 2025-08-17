@@ -27,7 +27,6 @@ export class ScheduledComponent implements OnInit {
   loading: boolean = false;
   selectedType: 'grid' | 'list' = 'grid';
   selectedKnowledgeType: string = '';
-  typeCounts: { [key: string]: number } = {};
 
   constructor(
     private knowledgeService: KnowledgeService,
@@ -43,30 +42,8 @@ export class ScheduledComponent implements OnInit {
     this.knowledgeService.getListKnowledge().subscribe(
       (knowledges) => {
         this.allKnowledges = knowledges.data.filter(k => k.status === 'scheduled');
-        this.calculateTypeCounts();
       }
     );
-  }
-
-  // Calculate the count of each knowledge type
-  calculateTypeCounts(): void {
-    // Reset counts
-    this.typeCounts = {};
-    
-    // Count each type
-    this.allKnowledges.forEach(knowledge => {
-      if (knowledge.type) {
-        if (!this.typeCounts[knowledge.type]) {
-          this.typeCounts[knowledge.type] = 0;
-        }
-        this.typeCounts[knowledge.type]++;
-      }
-    });
-  }
-
-  // Get the count for a specific type
-  getTypeCount(type: string): number {
-    return this.typeCounts[type] || 0;
   }
 
   // Filter knowledges by type
@@ -105,10 +82,6 @@ export class ScheduledComponent implements OnInit {
         this.totalPages = response.meta.last_page;
         this.totalItems = response.meta.total;
         
-        // Update type counts based on all scheduled knowledges
-        if (page === 1 && !this.selectedKnowledgeType) {
-          this.calculateTypeCounts();
-        }
       },
       (error) => {
         console.error('Error fetching scheduled knowledges:', error);
