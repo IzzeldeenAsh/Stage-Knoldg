@@ -12,7 +12,7 @@
     </app-activate-account>
 
     <!-- Payment Account Info Section -->
-    <div class="mt-5 border border-1 border-gray-300 rounded-2 mb-10 bg-white" *ngIf="isActive && (hasRole(['insighter']) || hasRole(['company']))">
+    <!-- <div class="mt-5 border border-1 border-gray-300 rounded-2 mb-10 bg-white" *ngIf="isActive && (hasRole(['insighter']) || hasRole(['company']))">
         <div class="col-12">
             <div class="action-section border-1 border-light w-100">
                 <div class="p-24px">
@@ -24,7 +24,6 @@
                             {{ !paymentAccountDetails ? ('PAYMENT_ACCOUNT.ADD_DESCRIPTION' | translate) : ('PAYMENT_ACCOUNT.DESCRIPTION' | translate) }}
                         </span>
                     </div>
-                    <!-- Row with Description and Image -->
                     <div class="row align-items-center mb-4">
                         <div class="col-md-4">
                             <div class="text-center">
@@ -44,7 +43,6 @@
                     </div>
 
                     <div *ngIf="!paymentAccountLoading && paymentAccountDetails">
-                        <!-- Status and Type Cards -->
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <div class="d-flex align-items-center p-3 rounded" 
@@ -78,7 +76,6 @@
                             </div>
                         </div>
 
-                        <!-- Detailed Information -->
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="mb-3">
@@ -93,7 +90,6 @@
                                 </div>
                             </div>
                             
-                            <!-- Manual Account Specific Fields -->
                             <div *ngIf="isManualAccount()" class="col-12">
                                 <div class="row">
                                     <div class="col-md-6">
@@ -111,7 +107,6 @@
                                 </div>
                             </div>
                             
-                            <!-- Stripe Account Specific Fields -->
                             <div *ngIf="isStripeAccount()" class="col-12">
                                 <div class="row">
                                     <div class="col-md-6" *ngIf="getStripeAccountDetails()?.details_submitted_at">
@@ -152,7 +147,7 @@
                 {{ 'PAYMENT_ACCOUNT.EDIT_BUTTON' | translate }}
             </button>
         </div>
-    </div>
+    </div> -->
 
     <!-- Transfer Account Section -->
     <div class="mt-5 border border-1 border-gray-300 rounded-2 mb-10 bg-white" *ngIf="(hasRole(['company']) ) && isActive">

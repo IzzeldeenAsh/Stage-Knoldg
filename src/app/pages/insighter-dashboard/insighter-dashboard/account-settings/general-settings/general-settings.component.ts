@@ -42,7 +42,7 @@ export class GeneralSettingsComponent extends BaseComponent implements OnInit {
   ngOnInit(): void {
     this.getProfile();
     this.checkPendingRequests();
-    this.loadPaymentAccountDetails();
+    // this.loadPaymentAccountDetails();
   }
 
   getProfile() {
