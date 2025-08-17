@@ -7,43 +7,6 @@
   </div>
 </div>
 
-<!-- Information alert for missing payment account -->
-<div *ngIf="hasOnlyTwoOptions && !isStripeAccountUnderVerification" class="alert alert-light-warning d-flex align-items-center p-5 mb-5">
-  <i class="bi bi-exclamation-triangle fs-2hx text-warning me-4"></i>
-  <div class="d-flex flex-column">
-    <h4 class="mb-1 text-warning">{{ "ACCOUNT_STATUS_NOTICE" | translate }}</h4>
-    <span>{{ "ACTIVE_ACCOUNT_REQUIRED_MESSAGE" | translate }}</span>
-  </div>
-</div>
-
-<!-- Stripe account under verification alert -->
-<div *ngIf="isStripeAccountUnderVerification" class="alert alert-light-info d-flex align-items-center p-5 mb-5">
-  <i class="bi bi-clock fs-2hx text-info me-4"></i>
-  <div class="d-flex flex-column">
-    <h4 class="mb-1 text-info">{{ "STRIPE_VERIFICATION_NOTICE" | translate }}</h4>
-    <span>{{ "STRIPE_VERIFICATION_MESSAGE" | translate }}</span>
-  </div>
-</div>
-
-<!-- Loading state for payment account check -->
-<div *ngIf="paymentAccountLoading" class="alert alert-light-info d-flex align-items-center p-5 mb-5">
-  <div class="spinner-border spinner-border-sm text-info me-3" role="status">
-    <span class="visually-hidden">Loading...</span>
-  </div>
-  <div>
-    <span>{{ lang === 'ar' ? 'جاري التحقق من حساب الدفع...' : 'Checking payment account...' }}</span>
-  </div>
-</div>
-
-<!-- Error state for payment account check -->
-<div *ngIf="paymentAccountError" class="alert alert-light-danger d-flex align-items-center p-5 mb-5">
-  <i class="bi bi-exclamation-triangle fs-2hx text-danger me-4"></i>
-  <div class="d-flex flex-column">
-    <h4 class="mb-1 text-danger">{{ lang === 'ar' ? 'خطأ في التحقق من الدفع' : 'Payment Verification Error' }}</h4>
-    <span>{{ paymentAccountError }}</span>
-  </div>
-</div>
-
 <form [formGroup]="publishForm">
   <div class="fv-row" >
     <div class="row g-5">
@@ -61,7 +24,7 @@
           [for]="option.id"
           class="btn btn-outline btn-outline-dashed btn-outline-default border-dashed border-gray-300 p-5 d-flex align-items-center position-relative rounded-2 transition h-100"
           [class.opacity-50]="option.disabled"
-          [pTooltip]="option.disabled && hasOnlyTwoOptions ? ('ACTIVE_ACCOUNT_REQUIRED_MESSAGE' | translate) : ''"
+          [pTooltip]="option.disabled ? ('ACTIVE_ACCOUNT_REQUIRED_MESSAGE' | translate) : ''"
           tooltipPosition="top"
         >
           <div class="d-flex align-items-center w-100">
