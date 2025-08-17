@@ -1,7 +1,8 @@
 import { Component, inject, Injector, OnInit, OnDestroy } from '@angular/core';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { SentMeetingsService, SentMeeting } from '../../../../../_fake/services/meetings/sent-meetings.service';
-import { Subject, takeUntil } from 'rxjs';
+import { Observable, Subject, takeUntil } from 'rxjs';
+import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 
 @Component({
   selector: 'app-sent-meetings-statistics',
@@ -17,19 +18,22 @@ export class SentMeetingsStatisticsComponent extends BaseComponent implements On
   pastMeetings = 0;
   loading = false;
   comingMeetings = 0;
+  isClient$: Observable<any>;
 
   private destroy$ = new Subject<void>();
 
   constructor(
     injector: Injector,
-    private sentMeetingsService: SentMeetingsService
+    private sentMeetingsService: SentMeetingsService,
+    private profileService: ProfileService,
   ) { 
     super(injector);
   }
 
   ngOnInit(): void {
     this.loadStatistics();
-    
+    this.isClient$ = this.profileService.isClient()
+
     // Subscribe to loading state
     this.sentMeetingsService.isLoading$
       .pipe(takeUntil(this.destroy$))

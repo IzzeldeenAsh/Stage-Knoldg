@@ -231,7 +231,7 @@ export const locale = {
       TITLE: 'Dashboard',
       "MY_KNOWLEDGE": "Knowledge library",
       "ACCOUNT_SETTINGS": "Account Settings",
-      "MY_COMPANY": "My Insighters",
+      "MY_COMPANY": "My Team",
       "INVITING": "Inviting",
       "MY_DOWNLOADS": "My Downloads",
       "MY_CONSULTING_SCHEDULE": "My Schedule",
@@ -534,10 +534,10 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       "TITLE_USER_ONLY": "Deactivate User Account",
       "TITLE_ACCOUNT":"Suspend Account",
       "TITLE_COMPANY_ONLY": "Deactivate Company Account",
-      "DESCRIPTION": "<div class='d-flex align-items-center'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Your account data will be retained</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Account will be inaccessible until reactivation</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Your company's insights will remain visible in the marketplace</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>New insights cannot be uploaded during deactivation</span></div>",
-      "DESCRIPTION_COMPANY_COMBINED": "<div class='d-flex align-items-center'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Both your company account and user account will be deactivated</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>All account data will be retained</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Both accounts will be inaccessible until reactivation</span></div>",
-      "DESCRIPTION_USER_ONLY": "<div class='d-flex align-items-center'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Only your user account will be deactivated</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Your account data will be retained</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Your account will be inaccessible until reactivation</span></div>",
-      "DESCRIPTION_COMPANY_ONLY": "<div class='d-flex align-items-center'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Only your company account will be deactivated</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Company account data will be retained</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Company account will be inaccessible until reactivation</span></div>",
+      "DESCRIPTION": "<div class='d-flex align-items-center'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Manage your knowledge privately (upload, download, delete) without publishing</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Only you can access your knowledge</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Your data will not be visible to others on the platform</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>You can continue to add and manage your data at any time</span></div>",
+      "DESCRIPTION_COMPANY_COMBINED": "<div class='d-flex align-items-center'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Manage your knowledge privately (upload, download, delete) without publishing</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Only you can access your knowledge</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Your data will not be visible to others on the platform</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>You can continue to add and manage your data at any time</span></div>",
+      "DESCRIPTION_USER_ONLY": "<div class='d-flex align-items-center'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Manage your knowledge privately (upload, download, delete) without publishing</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Only you can access your knowledge</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Your data will not be visible to others on the platform</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>You can continue to add and manage your data at any time</span></div>",
+      "DESCRIPTION_COMPANY_ONLY": "<div class='d-flex align-items-center'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Manage your knowledge privately (upload, download, delete) without publishing</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Only you can access your knowledge</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Your data will not be visible to others on the platform</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>You can continue to add and manage your data at any time</span></div>",
       "BUTTON_TEXT_COMPANY": "Deactivate Company Account", 
       "BUTTON_TEXT_USER": "Deactivate User Account",
       "BUTTON_TEXT_BOTH": "Deactivate Both Accounts",
@@ -563,7 +563,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       "PENDING_REQUEST" : "Pending Request"
     },
     "DEACTIVATE_ACCOUNT_WITH_DELETE": {
-    "TITLE": "Deleting Account",
+    "TITLE": "Delete Account",
     "DESCRIPTION": "<div class='d-flex align-items-center'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Data will be permanently erased</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Account will no longer be visible</span></div>",
     "BUTTON_TEXT": "Request Account Deletion",
     "PENDING_REQUEST": "Deletion Request Pending",
@@ -810,7 +810,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       ROLES: 'Roles',
       COUNTRY: 'Country',
       ABOUT: 'About',
-      CONSULTING_FIELDS: 'Consultation Fields',
+      CONSULTING_FIELDS: 'Expertise and Specialties',
       INDUSTRIES: 'Industries',
       CERTIFICATIONS: 'Certifications',
       CERTIFICATIONS_TYPE: 'Type',
@@ -940,13 +940,14 @@ Your wealth of knowledge is valued and many are eager to learn from it.
         "MY_REQUESTS": "Notifications",
         "MY_KNOWLEDGE": "My knowledge library",
         "ACCOUNT_SETTINGS": "Account Settings",
-        "MY_COMPANY": "My Insighters",
-        "MEETINGS": "Advisory Sessions",
+        "MY_COMPANY": "My Team",
+        "MEETINGS": "Meetings",
+        "MEETINGS-CLIENT": "Meetings",
         "INVITING": "Inviting",
         "MY_DOWNLOADS": "My Downloads",
-        "READ_LATER": "Preview list",
+        "READ_LATER": "Bookmarks",
         "MY_MEETINGS": "My Meetings",
-        "MY_CONSULTING_SCHEDULE": "Session Scheduler",
+        "MY_CONSULTING_SCHEDULE": "Meeting Planner",
         "DASHBOARD": "Dashboard"
       },
       REQUESTS: {
@@ -958,7 +959,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     "MEETINGS": {
       "RATE":"Rate",
       "TABS": {
-        "RECEIVED": "Client Sessions",
+        "RECEIVED": "Client Meetings",
         "SENT": "My Meetings"
       },
       "RESCHEDULE": "Reschedule",
@@ -1003,7 +1004,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       }
     },
    "READ_LATER": {
-    "TITLE": "Preview list",
+    "TITLE": "Bookmarks",
     "ITEMS": "Items",
     "EMPTY_TITLE": "No items saved yet",
     "EMPTY_MESSAGE": "Items you save will appear here for later access.",
@@ -1423,7 +1424,7 @@ UPLOAD: 'Upload',
       "NO_DATA_DESCRIPTION": "Your employees haven't published any knowledge items yet."
     },
     "CONSULTING_SCHEDULE": {
-      "TITLE": "My Schedule",
+      "TITLE": "Meeting Planner",
       "PERFECT_HOUR_ERROR":"Time slot must be 1 hour apart",
       "TIME_SPAN_ERROR": "Time slot must 1 hour apart",
       "INVALID_RANGE_ERROR": "Start time must be less than end time",
@@ -1461,7 +1462,7 @@ UPLOAD: 'Upload',
       }
     },
     "MEETINGS": {
-      "TITLE": "My Meetings",  
+      "TITLE": "Client Meetings",  
       "JOIN":"Join",
       "JOINING":"Joining",
       "JOINT_MEETING":"Join Meeting",
@@ -1499,7 +1500,7 @@ UPLOAD: 'Upload',
         "POSTPONED": "Postponed"
       },
       "SENT":{
-        "TITLE": "My Advisory Meetings",
+        "TITLE": "My Meetings",
         "STATS": {
           "TOTAL_MEETINGS": "Total Meetings",
           "PENDING": "Pending",
@@ -1522,12 +1523,12 @@ UPLOAD: 'Upload',
       "POSTPONE_NOTES_REQUIRED": "Postponement notes are required"
     },
     "READ_LATER": {
-      "TITLE": "Preview list",
+      "TITLE": "Bookmarks",
       "ITEMS": "items",
       "EMPTY_TITLE": "No saved items yet",
       "EMPTY_MESSAGE": "Items you bookmark will appear here for easy access later.",
       "STATISTICS": {
-        "TITLE": "Preview list Collection",
+        "TITLE": "Bookmarks",
         "SUBTITLE": "Your saved knowledge for future reading",
         "TOTAL_SAVED": "Total Saved",
         "NEW_THIS_MONTH": "New This Month",
@@ -1571,6 +1572,6 @@ UPLOAD: 'Upload',
     "WEEK_VIEW": "Week View",
     "TIME": "Time"
   },
-
+    "NO_DESCRIPTION": "No description available"
  
 };

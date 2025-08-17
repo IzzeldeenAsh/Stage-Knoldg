@@ -744,7 +744,7 @@ INSIGHTER_REQUESTS: {
       ROLES: 'الأدوار',
       COUNTRY: 'البلد',
       ABOUT: 'حول',
-      CONSULTING_FIELDS: 'مجالات الاستشارة',
+      CONSULTING_FIELDS: 'الخبرات و التخصصات',
       INDUSTRIES: 'المجالات',
       CERTIFICATIONS: 'الشهادات',
       CERTIFICATIONS_TYPE: 'النوع',
@@ -874,10 +874,10 @@ INSIGHTER_REQUESTS: {
       "TITLE_ACCOUNT":"إيقاف الحساب",
       "TITLE_USER_ONLY": "إلغاء تنشيط حساب المستخدم",
       "TITLE_COMPANY_ONLY": "إلغاء تنشيط حساب الشركة",
-      "DESCRIPTION": "<i class='fa-sharp fa-solid fa-circle fs-10'></i> سيتم الاحتفاظ ببيانات حسابك<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> لن يمكن الوصول إلى الحساب حتى إعادة التنشيط<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> ستظل رؤى شركتك مرئية في السوق<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> لا يمكن تحميل رؤى جديدة أثناء إلغاء التنشيط",
-      "DESCRIPTION_COMPANY_COMBINED": "<i class='fa-sharp fa-solid fa-circle fs-10'></i> سيتم إلغاء تنشيط حساب الشركة وحساب المستخدم الخاص بك<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> سيتم الاحتفاظ بجميع بيانات الحساب<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> لن يمكن الوصول إلى كلا الحسابين حتى إعادة التنشيط",
-      "DESCRIPTION_USER_ONLY": "<i class='fa-sharp fa-solid fa-circle fs-10'></i> سيتم إلغاء تنشيط حساب المستخدم الخاص بك فقط<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> سيتم الاحتفاظ ببيانات حسابك<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> لن يمكن الوصول إلى حسابك حتى إعادة التنشيط",
-      "DESCRIPTION_COMPANY_ONLY": "<i class='fa-sharp fa-solid fa-circle fs-10'></i> سيتم إلغاء تنشيط حساب الشركة فقط<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> سيتم الاحتفاظ ببيانات حساب الشركة<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> لن يمكن الوصول إلى حساب الشركة حتى إعادة التنشيط",
+     "DESCRIPTION": "<i class='fa-sharp fa-solid fa-circle fs-10'></i> يمكنك إدارة معرفتك بشكل كامل (رفع، تنزيل، حذف) بدون نشر<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> ستبقى معرفتك خاصة ولا يمكن الوصول إليها إلا من قبلك<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> بياناتك لن تكون مرئية للآخرين على المنصة<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> يمكنك الاستمرار في رفع وإدارة بياناتك في أي وقت",
+      "DESCRIPTION_COMPANY_COMBINED": "<i class='fa-sharp fa-solid fa-circle fs-10'></i> يمكنك إدارة بيانات الشركة والمستخدم (رفع، تنزيل، حذف) بدون نشر<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> ستبقى كل المعرفة خاصة ولا يمكن الوصول إليها إلا من قبلك<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> لن تكون أي من بياناتك مرئية للآخرين على المنصة<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> يمكنك الاستمرار في رفع وإدارة بيانات الشركة والمستخدم في أي وقت",
+      "DESCRIPTION_USER_ONLY": "<i class='fa-sharp fa-solid fa-circle fs-10'></i> سيتم تعطيل نشر معرفتك كمستخدم فقط<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> لا يزال بإمكانك رفع وتنزيل وحذف معرفتك بشكل خاص<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> ستبقى معرفتك خاصة وغير مرئية للآخرين<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> ستتمكن من رفع وإدارة بياناتك في أي وقت",
+      "DESCRIPTION_COMPANY_ONLY": "<i class='fa-sharp fa-solid fa-circle fs-10'></i> سيتم تعطيل نشر معرفة الشركة فقط<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> لا يزال بإمكانك إدارة بيانات الشركة (رفع، تنزيل، حذف) بشكل خاص<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> معرفة الشركة لن تكون مرئية للآخرين على المنصة<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> يمكنك الاستمرار في رفع وإدارة بيانات الشركة في أي وقت",
       "BUTTON_TEXT_COMPANY": "إلغاء تنشيط حساب الشركة",
       "BUTTON_TEXT_USER": "إلغاء تنشيط حساب المستخدم",
       "BUTTON_TEXT_BOTH": "إلغاء تنشيط كلا الحسابين",
@@ -969,10 +969,10 @@ INSIGHTER_REQUESTS: {
           "PAST": "السابقة",
           "COMING": "القادمة"
         },
+        "NO_DESCRIPTION": "لا يوجد وصف",
         "NO_MEETINGS": "لا يوجد اجتماعات",
         "NO_MEETINGS_DESC": "لا يوجد اجتماعات متاحة",
-        "NO_MEETINGS_DESC_2": "يمكنك إنشاء اجتماعات جديدة عن طريق الضغط على زر 'إنشاء اجتماع' في القائمة أعلاه."
-        ,
+        "NO_MEETINGS_DESC_2": "يمكنك إنشاء اجتماعات جديدة عن طريق الضغط على زر 'إنشاء اجتماع' في القائمة أعلاه.",
         "STATUS": {
           "PENDING": "قيد الانتظار",
           "APPROVED": "موافق عليه",
@@ -1381,7 +1381,7 @@ INSIGHTER_REQUESTS: {
       "NO_MEETINGS_THIS_WEEK": "لا توجد اجتماعات هذا الأسبوع",
       "NO_MEETINGS_DESCRIPTION": "ليس لديك اجتماعات مجدولة لهذا الأسبوع.",
       "WAITING_FOR_LINK": "في انتظار رابط الاجتماع",
-     
+      "NO_DESCRIPTION": "لا يوجد وصف",
       "POSTPONE_NOTES_REQUIRED": "ملاحظات التؤجيل مطلوبة",
       "FILTERS": {
         "ALL": "الكل",
@@ -1419,7 +1419,6 @@ INSIGHTER_REQUESTS: {
       },
       "NO_MEETINGS": "لم يتم العثور على اجتماعات",
       "NO_MEETINGS_DESC": "ليس لديك أي اجتماعات مجدولة في الوقت الحالي.",
-      "NO_DESCRIPTION": "لا يوجد وصف متاح",
       "INSIGHTER": "المستشار",
       "SHOWING": "عرض",
       "JOINT_MEETING":"انضم للاجتماع",
@@ -1497,6 +1496,6 @@ INSIGHTER_REQUESTS: {
   "WEEK_VIEW": "عرض الأسبوع",
   "TIME": "الوقت"
 },
-
+  "NO_DESCRIPTION": "لا يوجد وصف"
 
 }
