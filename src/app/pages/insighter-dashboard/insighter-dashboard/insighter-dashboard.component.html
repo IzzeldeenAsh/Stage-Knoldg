@@ -136,14 +136,14 @@
   </div>
 </p-sidebar>
 
-<div class="flex-column flex-row-fluid" id="kt_app_wrapper" > 
-  <div id="kt_app_toolbar" class="app-toolbar"  style="padding-top: 90px;">
+<div class="flex-column flex-row-fluid pt-sm-160px" id="kt_app_wrapper" > 
+  <div id="kt_app_toolbar" class="app-toolbar d-none d-sm-block"  style="padding-top: 90px;">
     <div
       id="kt_app_toolbar_container"
       class="app-container container-xxl d-flex align-items-start"
      
     >
-      <div class="d-flex flex-column flex-row-fluid">
+      <div class=" flex-column flex-row-fluid d-flex">
    
         <!-- here header or statistics -->
         <app-overview-statistics *ngIf="isRouteActive('my-dashboard')"></app-overview-statistics>
@@ -160,7 +160,7 @@
     </div>
   </div>
 
-  <div class="app-container w-100 ">
+  <div class="app-container w-100 pt-sm-30px">
     <div class="app-main flex-column flex-row-fluid">
       <div class="d-flex flex-column flex-column-fluid">
         <div class="d-flex flex-column flex-sm-row">

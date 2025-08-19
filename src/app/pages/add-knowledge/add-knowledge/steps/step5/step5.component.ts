@@ -5,7 +5,7 @@ import { BaseComponent } from 'src/app/modules/base.component';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import { TranslateService } from '@ngx-translate/core';
 import { TooltipModule } from 'primeng/tooltip';
-// import { PaymentService, StripeAccountDetailsResponse, ManualAccountDetailsResponse } from 'src/app/_fake/services/payment/payment.service';
+import { PaymentService, StripeAccountDetailsResponse, ManualAccountDetailsResponse } from 'src/app/_fake/services/payment/payment.service';
 
 @Component({
   selector: 'app-step5',
@@ -82,29 +82,28 @@ export class Step5Component extends BaseComponent implements OnInit {
   userProfile: any = null;
   timeError: string = '';
   hasOnlyTwoOptions: boolean = false;
-  // paymentAccountDetails: StripeAccountDetailsResponse['data'] | ManualAccountDetailsResponse['data'] | null = null;
-  // paymentAccountLoading: boolean = false;
-  // paymentAccountError: string | null = null;
-  // hasActivePaymentAccount: boolean = false;
+  paymentAccountDetails: StripeAccountDetailsResponse['data'] | ManualAccountDetailsResponse['data'] | null = null;
+  paymentAccountLoading: boolean = false;
+  paymentAccountError: string | null = null;
+  hasActivePaymentAccount: boolean = false;
   
   // Calendar configuration for PrimeNG
   timeFormat: string = '24';
   dateFormat: string = 'yy-mm-dd';
 
-  // Getter to check if Stripe account is inactive and under verification
-  // get isStripeAccountUnderVerification(): boolean {
-  //   return this.paymentAccountDetails?.type === 'stripe' && 
-  //          this.paymentAccountDetails?.status === 'inactive' && 
-  //          (this.paymentAccountDetails as StripeAccountDetailsResponse['data'])?.details_submitted_at !== null &&
-  //          (this.paymentAccountDetails as StripeAccountDetailsResponse['data'])?.charges_enable_at === null;
-  // }
+  get isStripeAccountUnderVerification(): boolean {
+    return this.paymentAccountDetails?.type === 'stripe' && 
+           this.paymentAccountDetails?.status === 'inactive' && 
+           (this.paymentAccountDetails as StripeAccountDetailsResponse['data'])?.details_submitted_at !== null &&
+           (this.paymentAccountDetails as StripeAccountDetailsResponse['data'])?.charges_enable_at === null;
+  }
 
   constructor(
     injector: Injector, 
     private fb: FormBuilder, 
     private profileService: ProfileService,
     private translateService: TranslateService,
-    // private paymentService: PaymentService,
+    private paymentService: PaymentService,
     private cdr: ChangeDetectorRef
   ) {
     super(injector);
@@ -159,68 +158,68 @@ export class Step5Component extends BaseComponent implements OnInit {
     });
   }
 
-  // private checkPaymentAccount(callback: () => void) {
-  //   const roles = this.userProfile?.roles || [];
-  //   const isInsighter = Array.isArray(roles) && roles.includes('insighter');
-  //   const isCompany = Array.isArray(roles) && roles.includes('company');
-  //   
-  //   // Check if user status is active first
-  //   let isActive = false;
-  //   
-  //   if (isCompany && this.userProfile?.company?.status === 'active') {
-  //     isActive = true;
-  //   }
-  //   
-  //   if (isInsighter && this.userProfile?.insighter_status === 'active') {
-  //     isActive = true;
-  //   }
-  //   
-  //   // Only check payment account for insighter/company roles with active status
-  //   if (!isActive || (!isInsighter && !isCompany)) {
-  //     this.hasActivePaymentAccount = false;
-  //     callback();
-  //     return;
-  //   }
+  private checkPaymentAccount(callback: () => void) {
+    const roles = this.userProfile?.roles || [];
+    const isInsighter = Array.isArray(roles) && roles.includes('insighter');
+    const isCompany = Array.isArray(roles) && roles.includes('company');
+    
+    // Check if user status is active first
+    let isActive = false;
+    
+    if (isCompany && this.userProfile?.company?.status === 'active') {
+      isActive = true;
+    }
+    
+    if (isInsighter && this.userProfile?.insighter_status === 'active') {
+      isActive = true;
+    }
+    
+    // Only check payment account for insighter/company roles with active status
+    if (!isActive || (!isInsighter && !isCompany)) {
+      this.hasActivePaymentAccount = false;
+      callback();
+      return;
+    }
 
-  //   this.paymentAccountLoading = true;
-  //   this.paymentAccountError = null;
+    this.paymentAccountLoading = true;
+    this.paymentAccountError = null;
 
-  //   const subscription = this.paymentService.getStripeAccountDetails().subscribe({
-  //     next: (response: StripeAccountDetailsResponse) => {
-  //       this.paymentAccountDetails = response.data;
-  //       this.hasActivePaymentAccount = response.data.status === 'active';
-  //       this.paymentAccountLoading = false;
-  //       this.cdr.detectChanges();
-  //       callback();
-  //     },
-  //     error: (stripeError) => {
-  //       // If stripe fails, try manual account
-  //       const manualSubscription = this.paymentService.getManualAccountDetails().subscribe({
-  //         next: (response: ManualAccountDetailsResponse) => {
-  //           this.paymentAccountDetails = response.data;
-  //           this.hasActivePaymentAccount = response.data.status === 'active';
-  //           this.paymentAccountLoading = false;
-  //           this.cdr.detectChanges();
-  //           callback();
-  //         },
-  //         error: (manualError) => {
-  //           if (stripeError.status === 404 && manualError.status === 404) {
-  //             this.paymentAccountDetails = null;
-  //             this.hasActivePaymentAccount = false;
-  //           } else {
-  //             this.paymentAccountError = this.lang === 'ar' ? 'فشل في تحميل بيانات حساب الدفع' : 'Failed to load payment account details';
-  //             this.hasActivePaymentAccount = false;
-  //           }
-  //           this.paymentAccountLoading = false;
-  //           this.cdr.detectChanges();
-  //           callback();
-  //         }
-  //       });
-  //       this.unsubscribe.push(manualSubscription);
-  //     }
-  //   });
-  //   this.unsubscribe.push(subscription);
-  // }
+    const subscription = this.paymentService.getStripeAccountDetails().subscribe({
+      next: (response: StripeAccountDetailsResponse) => {
+        this.paymentAccountDetails = response.data;
+        this.hasActivePaymentAccount = response.data.status === 'active';
+        this.paymentAccountLoading = false;
+        this.cdr.detectChanges();
+        callback();
+      },
+      error: (stripeError: any) => {
+        // If stripe fails, try manual account
+        const manualSubscription = this.paymentService.getManualAccountDetails().subscribe({
+          next: (response: ManualAccountDetailsResponse) => {
+            this.paymentAccountDetails = response.data;
+            this.hasActivePaymentAccount = response.data.status === 'active';
+            this.paymentAccountLoading = false;
+            this.cdr.detectChanges();
+            callback();
+          },
+          error: (manualError: any) => {
+            if (stripeError.status === 404 && manualError.status === 404) {
+              this.paymentAccountDetails = null;
+              this.hasActivePaymentAccount = false;
+            } else {
+              this.paymentAccountError = this.lang === 'ar' ? 'فشل في تحميل بيانات حساب الدفع' : 'Failed to load payment account details';
+              this.hasActivePaymentAccount = false;
+            }
+            this.paymentAccountLoading = false;
+            this.cdr.detectChanges();
+            callback();
+          }
+        });
+        this.unsubscribe.push(manualSubscription);
+      }
+    });
+    this.unsubscribe.push(subscription);
+  }
 
   private initializePublishOptions() {
     // Check if roles array exists and contains specific roles
@@ -313,7 +312,7 @@ export class Step5Component extends BaseComponent implements OnInit {
     ];
     
     // Show notice if user is insighter/company but doesn't have active payment account
-    // this.hasOnlyTwoOptions = (isInsighter || isCompany) && isActive && !this.hasActivePaymentAccount;
+   this.hasOnlyTwoOptions = (isInsighter || isCompany) && isActive && !this.hasActivePaymentAccount;
     // Temporarily disable payment account restrictions
     this.hasOnlyTwoOptions = false;
     console.log('Final publish options:', this.publishOptions);
