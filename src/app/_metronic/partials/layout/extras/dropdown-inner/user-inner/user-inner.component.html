@@ -35,7 +35,10 @@
             </div>
           </ng-container>
           <ng-container *ngIf="_user.roles.includes('client') && !_user.roles.includes('insighter') && !_user.roles.includes('company') && !_user.roles.includes('company-insighter')">
-            <span class="badge badge-light-secondary fw-bolder fs-8 px-2 py-1 me-1 mb-1">
+            <span class="client-badge fw-bolder fs-8 px-2 py-1 me-1 mb-1" style="background-color: #dafdff !important;
+            color: #06a2b2 !important;
+            padding: 2px 6px !important;
+            border-radius: 6px !important;">
               {{ 'HOME.CLIENT' | translate }}
             </span>
           </ng-container>

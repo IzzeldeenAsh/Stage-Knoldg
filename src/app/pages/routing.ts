@@ -25,13 +25,13 @@ const Routing: Routes = [
   {
     path: 'add-knowledge',
     loadChildren: () => import('./add-knowledge/add-knowledge.module').then((m) => m.AddKnowledgeModule),
-    canActivate:[authGuard,RolesGuard,PaymentGuard],
+    canActivate:[authGuard,RolesGuard],
     data: { roles: [ 'insighter','company','company-insighter'] }
   },
   {
     path: 'edit-knowledge',
     loadChildren: () => import('./add-knowledge/add-knowledge.module').then((m) => m.AddKnowledgeModule),
-     canActivate:[authGuard,RolesGuard,PaymentGuard],
+     canActivate:[authGuard,RolesGuard],
     data: { roles: [ 'insighter','company','company-insighter'] }
   },
   {

@@ -929,7 +929,9 @@ INSIGHTER_REQUESTS: {
           "MY_DOWNLOADS": "التحميلات",
           "MEETINGS": "الجلسات الاستشارية",
           "MY_MEETINGS": "اجتماعاتي",
+          "PAYMENT_SETTINGS": "إعدادات الدفع",
           "MY_CONSULTING_SCHEDULE": "إدارة مواعيد العملاء",
+          "SETTINGS": "الإعدادات",
           "DASHBOARD": "لوحة المعلومات"
         },
         "REQUESTS": {

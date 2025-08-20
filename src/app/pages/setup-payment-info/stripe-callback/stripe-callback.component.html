@@ -1,3 +1,4 @@
+<p-toast></p-toast>
 <app-payment-header 
   [title]="lang === 'ar' ? 'معالج Stripe' : 'Stripe Processing'"
   [subtitle]="lang === 'ar' ? 'جاري معالجة إعداد حساب Stripe الخاص بك' : 'Processing your Stripe account setup'">
@@ -122,3 +123,89 @@
     </div>
   </div>
 </div>
+
+<!-- OTP Verification Dialog -->
+<p-dialog 
+  [(visible)]="showOtpDialog" 
+  [modal]="true" 
+  [closable]="true" 
+  [draggable]="false" 
+  [resizable]="false"
+  [style]="{width: '90vw', maxWidth: '500px'}"
+  header="{{ lang === 'ar' ? 'تحقق من هويتك' : 'Verify Your Identity' }}">
+
+  <div class="otp-content">
+    <div class="text-center mb-4">
+      <i class="fas fa-shield-check text-info fs-2 mb-3"></i>
+      <h5 class="mb-2">
+        {{ lang === 'ar' ? 'أدخل رمز التحقق' : 'Enter Verification Code' }}
+      </h5>
+      <p class="text-muted">
+        {{ lang === 'ar' ? 'لقد أرسلنا رمز التحقق إلى بريدك الإلكتروني' : 'We sent a verification code to your email' }}
+      </p>
+    </div>
+
+    <div class="mb-4">
+      <label class="form-label required">
+        {{ lang === 'ar' ? 'رمز التحقق' : 'Verification Code' }}
+      </label>
+      <input
+        type="text"
+        class="form-control text-center"
+        [(ngModel)]="otpCode"
+        [placeholder]="lang === 'ar' ? 'أدخل الرمز' : 'Enter code'"
+        maxlength="10"
+        (keypress)="$event.key === 'Enter' && submitOtp()"
+      />
+      <div class="form-text text-muted mt-2">
+        <i class="fas fa-envelope me-1"></i>
+        {{ lang === 'ar' ? 'تحقق من بريدك الإلكتروني ومجلد الرسائل المزعجة' : 'Check your email and spam folder' }}
+      </div>
+    </div>
+
+    <div class="text-center mb-3">
+      <span 
+        *ngIf="canResendOtp"
+        class="text-info text-decoration-underline"
+        style="cursor: pointer;"
+        (click)="resendOtp()"
+      >
+        <i class="fas fa-paper-plane me-1"></i>
+        {{ lang === 'ar' ? 'إعادة إرسال الرمز' : 'Resend Code' }}
+      </span>
+      <span 
+        *ngIf="!canResendOtp"
+        class="text-muted"
+      >
+        <i class="fas fa-clock me-1"></i>
+        {{ lang === 'ar' ? 'إعادة الإرسال متاحة خلال' : 'Resend available in' }} {{ resendCooldown }}{{ lang === 'ar' ? 'ث' : 's' }}
+      </span>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="d-flex justify-content-between">
+      <button 
+        type="button" 
+        class="btn btn-outline-secondary"
+        (click)="closeOtpDialog()">
+        {{ lang === 'ar' ? 'إلغاء' : 'Cancel' }}
+      </button>
+      <button 
+        type="button" 
+        class="btn btn-info"
+        [disabled]="isSubmittingOtp || !otpCode.trim()"
+        (click)="submitOtp()">
+        
+        <span 
+          *ngIf="isSubmittingOtp"
+          class="spinner-border spinner-border-sm me-2" 
+          role="status" 
+          aria-hidden="true">
+        </span>
+        
+        {{ lang === 'ar' ? 'تأكيد' : 'Verify' }}
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>

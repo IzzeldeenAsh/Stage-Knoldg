@@ -1,4 +1,5 @@
-  <app-payment-header 
+<p-toast></p-toast>
+<app-payment-header 
   [title]="lang === 'ar' ? 'إعداد محفظة الدفع' : 'Setup Payment Wallet'"
   [subtitle]="lang === 'ar' ? 'اختر طريقة الدفع المناسبة لك وقم بإعداد محفظتك الإلكترونية بسهولة وأمان' : 'Choose your preferred payment method and setup your digital wallet easily and securely'">
 </app-payment-header>
@@ -234,6 +235,39 @@
             </div>
           </div>
     
+          <!-- Terms & Conditions Agreement -->
+          <div class="mb-4" *ngIf="selectedCountry && (!hasExistingPayment || isEditing)">
+            <div class="form-check d-flex align-items-start">
+              <input 
+                class="form-check-input me-3 mt-1" 
+                type="checkbox" 
+                id="termsAgreement"
+                [(ngModel)]="termsAgreed">
+              <label class="form-check-label" for="termsAgreement">
+                <span *ngIf="lang === 'ar'">
+                  أوافق على إنشاء حساب دفع وأقرّ أني قرأت وفهمت 
+                  <a href="javascript:void(0)" 
+                     class="text-decoration-underline fw-bold text-info" 
+                     (click)="openTermsDialog()">شروط وأحكام الاتفاقية</a>.
+                </span>
+                <span *ngIf="lang !== 'ar'">
+                  I agree to create a Payment Account and acknowledge that I have read and understood the 
+                  <a href="javascript:void(0)" 
+                     class="text-decoration-underline fw-bold text-info" 
+                     (click)="openTermsDialog()">Terms & Conditions</a>.
+                </span>
+              </label>
+            </div>
+            
+            <!-- Validation error for terms agreement -->
+            <div 
+              *ngIf="showValidationErrors && !termsAgreed" 
+              class="text-danger mt-2 fs-7 d-flex align-items-center">
+              <i class="fas fa-exclamation-circle me-2"></i>
+              {{ lang === 'ar' ? 'يجب الموافقة على شروط وأحكام الاتفاقية' : 'You must agree to the Terms & Conditions' }}
+            </div>
+          </div>
+
           <!-- Footer with Next Button -->
           <div class="card-footer" *ngIf="!hasExistingPayment || isEditing">
             <div class="d-flex justify-content-between align-items-center">
@@ -270,3 +304,132 @@
       </div>
     </div>
   </div>
+
+  <!-- Terms & Conditions Dialog -->
+  <p-dialog 
+    [(visible)]="showTermsDialog" 
+    [modal]="true" 
+    [closable]="true" 
+    [draggable]="false" 
+    [resizable]="false"
+    [style]="{width: '90vw', maxWidth: '800px'}"
+    header="{{ lang === 'ar' ? 'شروط وأحكام الاتفاقية' : 'Terms & Conditions' }}">
+
+    <div class="terms-content" style="max-height: 60vh; overflow-y: auto;">
+      <div *ngIf="isLoadingTerms" class="text-center py-4">
+        <div class="spinner-border text-info" role="status">
+          <span class="visually-hidden">{{ lang === 'ar' ? 'جاري التحميل...' : 'Loading...' }}</span>
+        </div>
+      </div>
+      
+      <div *ngIf="!isLoadingTerms && termsContent" [innerHTML]="termsContent"></div>
+      
+      <div *ngIf="!isLoadingTerms && !termsContent" class="text-center py-4 text-muted">
+        <i class="fas fa-exclamation-triangle fs-2x mb-3"></i>
+        <p>{{ lang === 'ar' ? 'لا يمكن تحميل الشروط والأحكام' : 'Unable to load Terms & Conditions' }}</p>
+      </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+      <div class="d-flex justify-content-end gap-3">
+        <button 
+          type="button" 
+          class="btn btn-outline-secondary"
+          (click)="declineTerms()">
+          {{ lang === 'ar' ? 'رفض' : 'Decline' }}
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-info"
+          (click)="acceptTerms()">
+          {{ lang === 'ar' ? 'قبول' : 'Accept' }}
+        </button>
+      </div>
+    </ng-template>
+  </p-dialog>
+
+  <!-- OTP Verification Dialog -->
+  <p-dialog 
+    [(visible)]="showOtpDialog" 
+    [modal]="true" 
+    [closable]="true" 
+    [draggable]="false" 
+    [resizable]="false"
+    [style]="{width: '90vw', maxWidth: '500px'}"
+    header="{{ lang === 'ar' ? 'تحقق من هويتك' : 'Verify Your Identity' }}">
+
+    <div class="otp-content">
+      <div class="text-center mb-4">
+        <i class="fas fa-shield-check text-info fs-2 mb-3"></i>
+        <h5 class="mb-2">
+          {{ lang === 'ar' ? 'أدخل رمز التحقق' : 'Enter Verification Code' }}
+        </h5>
+        <p class="text-muted">
+          {{ lang === 'ar' ? 'لقد أرسلنا رمز التحقق إلى بريدك الإلكتروني' : 'We sent a verification code to your email' }}
+        </p>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label required">
+          {{ lang === 'ar' ? 'رمز التحقق' : 'Verification Code' }}
+        </label>
+        <input
+          type="text"
+          class="form-control text-center"
+          [(ngModel)]="otpCode"
+          [placeholder]="lang === 'ar' ? 'أدخل الرمز' : 'Enter code'"
+          maxlength="10"
+          (keypress)="$event.key === 'Enter' && submitOtp()"
+        />
+        <div class="form-text text-muted mt-2">
+          <i class="fas fa-envelope me-1"></i>
+          {{ lang === 'ar' ? 'تحقق من بريدك الإلكتروني ومجلد الرسائل المزعجة' : 'Check your email and spam folder' }}
+        </div>
+      </div>
+
+      <div class="text-center mb-3">
+        <span 
+          *ngIf="canResendOtp"
+          class="text-info text-decoration-underline"
+          style="cursor: pointer;"
+          (click)="resendOtp()"
+        >
+          <i class="fas fa-paper-plane me-1"></i>
+          {{ lang === 'ar' ? 'إعادة إرسال الرمز' : 'Resend Code' }}
+        </span>
+        <span 
+          *ngIf="!canResendOtp"
+          class="text-muted"
+        >
+          <i class="fas fa-clock me-1"></i>
+          {{ lang === 'ar' ? 'إعادة الإرسال متاحة خلال' : 'Resend available in' }} {{ resendCooldown }}{{ lang === 'ar' ? 'ث' : 's' }}
+        </span>
+      </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+      <div class="d-flex justify-content-between">
+        <button 
+          type="button" 
+          class="btn btn-outline-secondary"
+          (click)="closeOtpDialog()">
+          {{ lang === 'ar' ? 'إلغاء' : 'Cancel' }}
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-info"
+          [disabled]="isSubmittingOtp || !otpCode.trim()"
+          (click)="submitOtp()">
+          
+          <span 
+            *ngIf="isSubmittingOtp"
+            class="spinner-border spinner-border-sm me-2" 
+            role="status" 
+            aria-hidden="true">
+          </span>
+          
+          {{ lang === 'ar' ? 'تأكيد' : 'Verify' }}
+        </button>
+      </div>
+    </ng-template>
+  </p-dialog>

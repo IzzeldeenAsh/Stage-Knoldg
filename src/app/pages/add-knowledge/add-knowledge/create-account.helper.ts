@@ -33,7 +33,7 @@ interface ICreateKnowldege {
   knowledgeId: number;
   tag_ids: any[];
   keywords: any[];
-  publish_status: 'draft'|'now'|'scheduled';
+  publish_status: 'unpublished'|'published'|'scheduled'|'in_review';
   publish_date_time: string;
   status?: string;
   economic_bloc?: number[];
@@ -66,7 +66,7 @@ const inits: ICreateKnowldege = {
   knowledgeId: 0,
   keywords: [],
   tag_ids: [],
-  publish_status: 'draft',
+  publish_status: 'unpublished',
   publish_date_time: '',
   economic_bloc: [],
   documentDescriptions: [],

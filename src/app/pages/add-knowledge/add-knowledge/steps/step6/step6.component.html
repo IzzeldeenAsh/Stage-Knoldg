@@ -1,8 +1,8 @@
 <div class="pb-8 pb-lg-10">
-  <h2 class="fw-bolder text-gray-900" *ngIf="defaultValues.publish_status === 'draft'">
+  <h2 class="fw-bolder text-gray-900" *ngIf="defaultValues.publish_status === 'unpublished'">
     {{'KNOWLEDGE_SAVED_AS_DRAFT' | translate}}
   </h2>
-  <h2 class="fw-bolder text-gray-900" *ngIf="defaultValues.publish_status === 'now'">
+  <h2 class="fw-bolder text-gray-900" *ngIf="defaultValues.publish_status === 'published'">
     {{'KNOWLEDGE_PUBLISHED' | translate}}
   </h2>
   <h2 class="fw-bolder text-gray-900" *ngIf="defaultValues.publish_status === 'scheduled'">
@@ -10,10 +10,10 @@
   </h2>
 </div>
 <div class="mb-0">
-  <div class="fs-6 text-gray-600 mb-5" *ngIf="defaultValues.publish_status === 'draft'">
+  <div class="fs-6 text-gray-600 mb-5" *ngIf="defaultValues.publish_status === 'unpublished'">
     {{'KNOWLEDGE_DRAFT_MESSAGE' | translate}}
   </div>
-  <div class="fs-6 text-gray-600 mb-5" *ngIf="defaultValues.publish_status === 'now'">
+  <div class="fs-6 text-gray-600 mb-5" *ngIf="defaultValues.publish_status === 'published'">
     {{'KNOWLEDGE_PUBLISHED_MESSAGE' | translate}}
   </div>
   <div class="fs-6 text-gray-600 mb-5" *ngIf="defaultValues.publish_status === 'scheduled'">

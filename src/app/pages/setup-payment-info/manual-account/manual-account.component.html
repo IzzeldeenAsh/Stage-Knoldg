@@ -1,3 +1,4 @@
+<p-toast></p-toast>
 <app-payment-header 
   [title]="lang === 'ar' ? 'إعداد الحساب اليدوي' : 'Manual Account Setup'"
   [subtitle]="lang === 'ar' ? 'أدخل معلومات حسابك البنكي لاستقبال المدفوعات' : 'Enter your bank account details to receive payments'">
@@ -12,17 +13,26 @@
             <!-- Account Name Field -->
             <div class="mb-6">
               <label class="form-label required">
-                {{ lang === 'ar' ? 'اسم الحساب' : 'Account Name' }}
+                {{ getAccountNameLabel() }}
               </label>
               <input
                 type="text"
                 class="form-control"
                 [class.is-invalid]="getFieldError('accountName')"
                 formControlName="accountName"
-                [placeholder]="lang === 'ar' ? 'أدخل اسم الحساب' : 'Enter account name'"
+                [placeholder]="isCompanyAccount 
+                  ? (lang === 'ar' ? 'أدخل الاسم القانوني للشركة' : 'Enter company legal name')
+                  : (lang === 'ar' ? 'أدخل الاسم الكامل' : 'Enter full name')"
               />
               <div class="invalid-feedback" *ngIf="getFieldError('accountName')">
                 {{ getFieldError('accountName') }}
+              </div>
+              <div class="form-text text-muted">
+                <i class="fas fa-info-circle me-1"></i>
+                {{ lang === 'ar' 
+                  ? 'يجب أن يكون الاسم مطابقاً تماماً لاسم الحساب البنكي' 
+                  : 'Should be exactly as the name of the bank account' 
+                }}
               </div>
             </div>
 
@@ -43,6 +53,98 @@
               </div>
               <div class="form-text text-muted">
                 {{ lang === 'ar' ? 'مثال: SA03 8000 0000 6080 1016 7519' : 'Example: SA03 8000 0000 6080 1016 7519' }}
+              </div>
+            </div>
+
+            <!-- Address Field -->
+            <div class="mb-6">
+              <label class="form-label required">
+                {{ lang === 'ar' ? 'العنوان' : 'Address' }}
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                [class.is-invalid]="getFieldError('address')"
+                formControlName="address"
+                [placeholder]="lang === 'ar' ? 'أدخل العنوان' : 'Enter address'"
+              />
+              <div class="invalid-feedback" *ngIf="getFieldError('address')">
+                {{ getFieldError('address') }}
+              </div>
+            </div>
+
+            <!-- SWIFT Code Field -->
+            <div class="mb-6">
+              <label class="form-label">
+                {{ lang === 'ar' ? 'رمز السويفت (SWIFT)' : 'SWIFT Code' }}
+                <span class="text-gray-500">{{ lang === 'ar' ? '(اختياري)' : '(Optional)' }}</span>
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                [class.is-invalid]="getFieldError('swift_code')"
+                formControlName="swift_code"
+                [placeholder]="lang === 'ar' ? 'أدخل رمز السويفت' : 'Enter SWIFT code'"
+              />
+              <div class="invalid-feedback" *ngIf="getFieldError('swift_code')">
+                {{ getFieldError('swift_code') }}
+              </div>
+            </div>
+
+            <!-- Phone Field -->
+            <div class="mb-6">
+              <label class="form-label required">
+                {{ lang === 'ar' ? 'رقم الهاتف' : 'Phone Number' }}
+              </label>
+              <app-phone-number-input
+                [countries]="countries"
+                [placeholder]="lang === 'ar' ? 'رقم هاتفك' : 'Your phone number'"
+                [searchPlaceholder]="'Search countries...'"
+                [lang]="lang"
+                [isRequired]="true"
+                [showValidationErrors]="true"
+                [countryCodeError]="getFieldError('phoneCountryCode')"
+                [phoneNumberError]="getFieldError('phoneNumber')"
+                (countryCodeChange)="onCountryCodeChange($event)"
+                (phoneNumberChange)="onPhoneNumberChange($event)"
+                (flagError)="onFlagError($event)"
+              ></app-phone-number-input>
+            </div>
+
+            <!-- OTP Code Field -->
+            <div class="mb-6">
+              <label class="form-label required">
+                {{ lang === 'ar' ? 'رمز التحقق' : 'Verification Code' }}
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                [class.is-invalid]="getFieldError('code')"
+                formControlName="code"
+                [placeholder]="lang === 'ar' ? 'أدخل رمز التحقق' : 'Enter verification code'"
+              />
+              <div class="invalid-feedback" *ngIf="getFieldError('code')">
+                {{ getFieldError('code') }}
+              </div>
+              <div class="form-text text-muted">
+                <i class="fas fa-envelope me-1"></i>
+                {{ lang === 'ar' ? 'لقد أرسلنا رمز التحقق إلى بريدك الإلكتروني' : 'We sent an OTP code to your email' }}
+                <span class="d-block mt-1">
+                  <span 
+                    *ngIf="canResendOtp"
+                    class="text-info text-decoration-underline"
+                    style="cursor: pointer;"
+                    (click)="resendOtp()"
+                  >
+                    {{ lang === 'ar' ? 'إعادة إرسال الرمز' : 'Resend OTP' }}
+                  </span>
+                  <span 
+                    *ngIf="!canResendOtp"
+                    class="text-muted"
+                  >
+                    {{ lang === 'ar' ? 'إعادة الإرسال متاحة خلال' : 'Resend available in' }} {{ resendCooldown }}{{ lang === 'ar' ? 'ث' : 's' }}
+                  </span>
+                </span>
               </div>
             </div>
 

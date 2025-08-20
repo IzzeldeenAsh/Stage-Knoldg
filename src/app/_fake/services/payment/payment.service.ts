@@ -13,11 +13,16 @@ export interface StripeCountry {
 export interface SetPaymentTypeRequest {
   type: 'manual' | 'stripe';
   country_id: number;
+  accept_terms:boolean
 }
 
 export interface ManualAccountRequest {
   account_name: string;
   iban: string;
+  address: string;
+  swift_code: string;
+  phone: string;
+  code: string;
 }
 
 export interface StripeAccountResponse {
@@ -47,6 +52,15 @@ export interface StripeAccountDetailsResponse {
   };
 }
 
+export interface StripeOnboardingStatusResponse {
+  data: {
+    account: boolean;
+    details_submitted_at: string | null;
+    charges_enable_at: string | null;
+    [key: string]: boolean | string | null;
+  };
+}
+
 export interface ManualAccountDetailsResponse {
   data: {
     type: string;
@@ -65,13 +79,15 @@ export interface ManualAccountDetailsResponse {
   providedIn: 'root'
 })
 export class PaymentService {
-  private stripeCountriesApiUrl = 'https://api.knoldg.com/api/account/insighter/payment/account/stripe/onboarding/countries';
-  private setPaymentTypeApiUrl = 'https://api.knoldg.com/api/account/insighter/payment/account/type';
-  private manualAccountApiUrl = 'https://api.knoldg.com/api/account/insighter/payment/account/manual';
-  private stripeCreateApiUrl = 'https://api.knoldg.com/api/account/insighter/payment/account/stripe/onboarding/create';
-  private stripeCompleteApiUrl = 'https://api.knoldg.com/api/account/insighter/payment/account/stripe/onboarding/complete';
-  private stripeLinkApiUrl = 'https://api.knoldg.com/api/account/insighter/payment/account/stripe/onboarding/link';
-  private accountDetailsApiUrl = 'https://api.knoldg.com/api/account/insighter/payment/account/details';
+  private stripeCountriesApiUrl = 'https://api.knoldg.com/api/insighter/payment/account/stripe/onboarding/countries';
+  private setPaymentTypeApiUrl = 'https://api.knoldg.com/api/insighter/payment/account/type';
+  private manualAccountApiUrl = 'https://api.knoldg.com/api/insighter/payment/account/manual';
+  private stripeCreateApiUrl = 'https://api.knoldg.com/api/insighter/payment/account/stripe/onboarding/create';
+  private stripeCompleteApiUrl = 'https://api.knoldg.com/api/insighter/payment/account/stripe/onboarding/complete';
+  private stripeLinkApiUrl = 'https://api.knoldg.com/api/insighter/payment/account/stripe/onboarding/link';
+  private stripeStatusApiUrl = 'https://api.knoldg.com/api/insighter/payment/account/stripe/onboarding/status';
+  private accountDetailsApiUrl = 'https://api.knoldg.com/api/insighter/payment/account/details';
+  private resendOtpApiUrl = 'https://api.knoldg.com/api/insighter/payment/account/otp/resend';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   currentLang: string = 'en';
@@ -145,9 +161,10 @@ export class PaymentService {
     );
   }
 
-  createStripeAccount(): Observable<StripeAccountResponse> {
+  createStripeAccount(code?: string): Observable<StripeAccountResponse> {
     this.setLoading(true);
-    return this.http.post<StripeAccountResponse>(this.stripeCreateApiUrl, {}, { headers: this.getHeaders() }).pipe(
+    const body = code ? { code } : {};
+    return this.http.post<StripeAccountResponse>(this.stripeCreateApiUrl, body, { headers: this.getHeaders() }).pipe(
       map(res => res),
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))
@@ -163,9 +180,19 @@ export class PaymentService {
     );
   }
 
-  getStripeLink(): Observable<StripeAccountResponse> {
+  getStripeLink(code: string): Observable<StripeAccountResponse> {
     this.setLoading(true);
-    return this.http.post<StripeAccountResponse>(this.stripeLinkApiUrl, {}, { headers: this.getHeaders() }).pipe(
+    const body = { code };
+    return this.http.post<StripeAccountResponse>(this.stripeLinkApiUrl, body, { headers: this.getHeaders() }).pipe(
+      map(res => res),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  checkStripeOnboardingStatus(): Observable<StripeOnboardingStatusResponse> {
+    this.setLoading(true);
+    return this.http.get<StripeOnboardingStatusResponse>(this.stripeStatusApiUrl, { headers: this.getHeaders() }).pipe(
       map(res => res),
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))
@@ -184,6 +211,15 @@ export class PaymentService {
   getManualAccountDetails(): Observable<ManualAccountDetailsResponse> {
     this.setLoading(true);
     return this.http.get<ManualAccountDetailsResponse>(this.accountDetailsApiUrl, { headers: this.getHeaders() }).pipe(
+      map(res => res),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  resendOtp(): Observable<any> {
+    this.setLoading(true);
+    return this.http.post<any>(this.resendOtpApiUrl, {}, { headers: this.getHeaders() }).pipe(
       map(res => res),
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))

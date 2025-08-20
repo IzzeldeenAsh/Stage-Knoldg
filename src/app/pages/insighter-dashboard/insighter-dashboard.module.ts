@@ -32,7 +32,8 @@ import { TooltipModule } from 'primeng/tooltip';
     ConsultingScheduleHeaderComponent,
     MeetingsStatisticsComponent,
     SentMeetingsStatisticsComponent,
-    ReadLaterStatisticsComponent
+    ReadLaterStatisticsComponent,
+    
   ],
   imports: [
     CommonModule,

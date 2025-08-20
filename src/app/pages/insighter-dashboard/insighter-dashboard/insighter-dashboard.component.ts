@@ -20,9 +20,12 @@ export class InsighterDashboardComponent implements OnInit, OnDestroy {
   panelMenuItems: MenuItem[] = [];
   lang: string = 'en';
   isMeetingsExpanded: boolean = false;
+  isSettingsExpanded: boolean = false;
   isNavCollapsed: boolean = false;
   isMobileSidebarVisible: boolean = false;
   isMobileView: boolean = false;
+  isInsighter$: Observable<boolean>;
+  isCompany$: Observable<boolean>;
   private subscriptions: Subscription[] = [];
 
   constructor(
@@ -67,10 +70,15 @@ export class InsighterDashboardComponent implements OnInit, OnDestroy {
       
       // Check if we're on a meetings route to expand the meetings section
       this.checkMeetingsRoute(this.router.url);
+      
+      // Check if we're on a settings route to expand the settings section
+      this.checkSettingsRoute(this.router.url);
     });
     this.subscriptions.push(hasCompanyRoleSub);
 
     this.isClient$ = this.profileService.isClient()
+    this.isInsighter$ = this.profileService.isInsighter()
+    this.isCompany$ = this.profileService.isCompany()
     
     // Subscribe to route changes
     const routerSub = this.router.events.pipe(
@@ -78,6 +86,7 @@ export class InsighterDashboardComponent implements OnInit, OnDestroy {
     ).subscribe((event: any) => {
       this.setActiveTabFromRoute(event.url);
       this.checkMeetingsRoute(event.url);
+      this.checkSettingsRoute(event.url);
       // Close mobile sidebar after navigation
       if (this.isMobileView) {
         this.isMobileSidebarVisible = false;
@@ -244,6 +253,17 @@ export class InsighterDashboardComponent implements OnInit, OnDestroy {
     // Auto-expand meetings section if we're on a meetings route
     if (url.includes('my-meetings')) {
       this.isMeetingsExpanded = true;
+    }
+  }
+
+  toggleSettings(): void {
+    this.isSettingsExpanded = !this.isSettingsExpanded;
+  }
+
+  checkSettingsRoute(url: string): void {
+    // Auto-expand settings section if we're on a settings route
+    if (url.includes('account-settings')) {
+      this.isSettingsExpanded = true;
     }
   }
 
