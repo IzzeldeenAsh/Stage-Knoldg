@@ -96,3 +96,10 @@ h2 {
     opacity: 0.5;
   }
 }
+.payment-card-illustration{
+    max-width: 300px;
+    height: auto;
+    @media screen and (max-width: 576px) {
+        max-width: 200px;
+    }
+}

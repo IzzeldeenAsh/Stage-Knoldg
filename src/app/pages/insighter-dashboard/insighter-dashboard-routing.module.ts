@@ -59,14 +59,16 @@ const routes: Routes = [
         path: 'account-settings',
         loadChildren: () => import('./insighter-dashboard/account-settings/account-settings.module').then(m => m.AccountSettingsModule),
         canActivate:[authGuard,RolesGuard],
-        data: { roles: [ 'insighter','company','company-insighter'] }
+        data: { roles: [ 'insighter','company','company-insighter'] },
+        
       },
       {
         path: 'my-company-settings',
         loadChildren: () => import('./insighter-dashboard/my-company/my-company.module').then(m => m.MyCompanyModule),
         canActivate: [RolesGuard],
         data: { roles: ['company'] }
-      }
+      },
+      
     
     
     ]

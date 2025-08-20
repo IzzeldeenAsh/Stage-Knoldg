@@ -52,7 +52,7 @@ export class PaymentGuard implements CanActivate {
       'Accept-Language': 'en'
     });
 
-    return this.http.get<any>('https://api.knoldg.com/api/account/insighter/payment/account/details', { headers }).pipe(
+    return this.http.get<any>('https://api.knoldg.com/api/insighter/payment/account/details', { headers }).pipe(
       map(response => {
         if (response && response.data) {
           const paymentData = response.data;

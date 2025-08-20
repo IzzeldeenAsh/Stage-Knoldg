@@ -1,0 +1,27 @@
+.p-24px{
+    padding: 24px;
+}
+
+.action-footer {
+  padding:12px 24px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.payment-card-illustration{
+    max-width: 300px;
+    height: auto;
+    @media screen and (max-width: 576px) {
+        max-width: 200px;
+    }
+}
+
+.action-section {
+  border-radius: 6px;
+}
+
+h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+}

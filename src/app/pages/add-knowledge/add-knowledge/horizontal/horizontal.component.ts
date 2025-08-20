@@ -123,7 +123,7 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
               customTopic: '',
               documents: [],
               publish_date_time: knowledge.published_at ? moment(knowledge.published_at).format('YYYY-MM-DD HH:mm:ss') : '',
-              publish_status: knowledge.status === 'published' ? 'draft' : knowledge.status,
+              publish_status: knowledge.status === 'published' ? 'unpublished' : knowledge.status,
               // Also store the full economic blocks data for the step4 component
               economic_blocs_data: knowledge.economic_blocs || []
             };
@@ -707,12 +707,12 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
     
     // Prepare the publish request based on the selected option
     const publishRequest = {
-      status: currentAccount.publish_status || 'draft',
+      status: currentAccount.publish_status || 'unpublished',
       published_at: currentAccount.publish_date_time || this.getCurrentDateTime()
     };
     
     // Only set published_at for scheduled or immediate publish
-    if (publishRequest.status === 'draft') {
+    if (publishRequest.status === 'unpublished') {
       publishRequest.published_at = '';
     }
 

@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { PaymentService, ManualAccountRequest } from 'src/app/_fake/services/payment/payment.service';
+import { CountriesService, Country } from 'src/app/_fake/services/countries/countries.service';
+import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 
 @Component({
   selector: 'app-manual-account',
@@ -14,22 +16,62 @@ export class ManualAccountComponent extends BaseComponent implements OnInit {
   showValidationErrors: boolean = false;
   isEditing: boolean = false;
   existingData: any = null;
+  countries: Country[] = [];
+  userRoles: string[] = [];
+  isCompanyAccount: boolean = false;
+  resendCooldown: number = 0;
+  canResendOtp: boolean = true;
 
   constructor(
     injector: Injector,
     private fb: FormBuilder,
     private router: Router,
-    public paymentService: PaymentService
+    public paymentService: PaymentService,
+    private countriesService: CountriesService,
+    private profileService: ProfileService
   ) {
     super(injector);
     this.manualAccountForm = this.fb.group({
       accountName: ['', [Validators.required, Validators.minLength(2)]],
-      iban: ['', [Validators.required, Validators.minLength(10)]]
+      iban: ['', [Validators.required, Validators.minLength(10)]],
+      address: ['', [Validators.required, Validators.minLength(5)]],
+      swift_code: [''],
+      phoneCountryCode: ['', [Validators.required]],
+      phoneNumber: ['', [Validators.required, Validators.minLength(7)]],
+      code: ['', [Validators.required, Validators.minLength(4)]]
     });
   }
 
   ngOnInit() {
+    this.loadUserProfile();
+    this.loadCountries();
     this.loadExistingData();
+  }
+
+  loadUserProfile() {
+    this.profileService.getProfile().subscribe({
+      next: (profile) => {
+        this.userRoles = profile?.roles || [];
+        this.isCompanyAccount = this.userRoles.includes('company');
+      },
+      error: (error) => {
+        console.error('Error loading user profile:', error);
+      }
+    });
+  }
+
+  loadCountries() {
+    this.countriesService.getCountries().subscribe({
+      next: (countries) => {
+        this.countries = countries.map(country => ({
+          ...country,
+          showFlag: true
+        }));
+      },
+      error: (error) => {
+        console.error('Error loading countries:', error);
+      }
+    });
   }
 
   loadExistingData() {
@@ -41,7 +83,12 @@ export class ManualAccountComponent extends BaseComponent implements OnInit {
         // Pre-fill form with existing data
         this.manualAccountForm.patchValue({
           accountName: this.existingData.account_name || '',
-          iban: this.existingData.iban || ''
+          iban: this.existingData.iban || '',
+          address: this.existingData.address || '',
+          swift_code: this.existingData.swift_code || '',
+          phoneCountryCode: this.existingData.phone_country_code || '',
+          phoneNumber: this.existingData.phone_number || '',
+          code: this.existingData.code || ''
         });
       },
       error: () => {
@@ -55,7 +102,11 @@ export class ManualAccountComponent extends BaseComponent implements OnInit {
     if (this.manualAccountForm.valid) {
       const formData: ManualAccountRequest = {
         account_name: this.manualAccountForm.value.accountName,
-        iban: this.manualAccountForm.value.iban.replace(/\s+/g, '') // Remove all spaces from IBAN
+        iban: this.manualAccountForm.value.iban.replace(/\s+/g, ''), // Remove all spaces from IBAN
+        address: this.manualAccountForm.value.address,
+        swift_code: this.manualAccountForm.value.swift_code,
+        phone: `${this.manualAccountForm.value.phoneCountryCode}${this.manualAccountForm.value.phoneNumber}`,
+        code: this.manualAccountForm.value.code
       };
 
       this.paymentService.createManualAccount(formData).subscribe({
@@ -93,6 +144,56 @@ export class ManualAccountComponent extends BaseComponent implements OnInit {
     this.router.navigate(['/setup-payment-info']);
   }
 
+  onCountryCodeChange(countryCode: string) {
+    this.manualAccountForm.get('phoneCountryCode')?.setValue(countryCode);
+  }
+
+  onPhoneNumberChange(phoneNumber: string) {
+    this.manualAccountForm.get('phoneNumber')?.setValue(phoneNumber);
+  }
+
+  onFlagError(country: any) {
+    country.showFlag = false;
+  }
+
+  resendOtp() {
+    if (!this.canResendOtp) return;
+
+    this.paymentService.resendOtp().subscribe({
+      next: (response) => {
+        this.showSuccess(
+          this.lang === 'ar' ? 'تم الإرسال بنجاح' : 'Successfully Sent',
+          this.lang === 'ar' ? 'تم إرسال رمز التحقق الجديد إلى بريدك الإلكتروني' : 'New verification code sent to your email'
+        );
+        this.startCooldown();
+      },
+      error: (error) => {
+        this.handleServerErrors(error);
+      }
+    });
+  }
+
+  private startCooldown() {
+    this.canResendOtp = false;
+    this.resendCooldown = 30;
+    
+    const timer = setInterval(() => {
+      this.resendCooldown--;
+      if (this.resendCooldown <= 0) {
+        this.canResendOtp = true;
+        clearInterval(timer);
+      }
+    }, 1000);
+  }
+
+  getAccountNameLabel(): string {
+    if (this.isCompanyAccount) {
+      return this.lang === 'ar' ? 'الاسم القانوني للشركة' : 'Company Legal Name';
+    } else {
+      return this.lang === 'ar' ? 'الاسم الكامل' : 'Full Name';
+    }
+  }
+
   getFieldError(fieldName: string): string {
     const control = this.manualAccountForm.get(fieldName);
     if (control?.errors && (control.dirty || control.touched || this.showValidationErrors)) {
@@ -113,23 +214,47 @@ export class ManualAccountComponent extends BaseComponent implements OnInit {
 
   private getFieldLabel(fieldName: string): string {
     const labels: { [key: string]: { en: string, ar: string } } = {
-      accountName: { en: 'Account Name', ar: 'اسم الحساب' },
-      iban: { en: 'IBAN', ar: 'رقم الآيبان' }
+      accountName: this.isCompanyAccount 
+        ? { en: 'Company Legal Name', ar: 'الاسم القانوني للشركة' }
+        : { en: 'Full Name', ar: 'الاسم الكامل' },
+      iban: { en: 'IBAN', ar: 'رقم الآيبان' },
+      address: { en: 'Address', ar: 'العنوان' },
+      swift_code: { en: 'SWIFT Code', ar: 'رمز السويفت' },
+      phoneCountryCode: { en: 'Country Code', ar: 'رمز البلد' },
+      phoneNumber: { en: 'Phone Number', ar: 'رقم الهاتف' },
+      code: { en: 'Verification Code', ar: 'رمز التحقق' }
     };
     return this.lang === 'ar' ? labels[fieldName].ar : labels[fieldName].en;
   }
 
   private handleServerErrors(error: any) {
-    if (error.error && error.error.errors) {
-      const serverErrors = error.error.errors;
-      for (const key in serverErrors) {
-        if (serverErrors.hasOwnProperty(key)) {
-          const messages = serverErrors[key];
-          this.showError(
-            this.lang === "ar" ? "حدث خطأ" : "An error occurred",
-            messages.join(", ")
-          );
+    if (error?.error) {
+      // Handle new error format: {"message":"Invalid Code","errors":{"common":["Invalid Code"]}}
+      if (error.error.errors) {
+        const serverErrors = error.error.errors;
+        for (const key in serverErrors) {
+          if (serverErrors.hasOwnProperty(key)) {
+            const messages = serverErrors[key];
+            this.showError(
+              this.lang === "ar" ? "حدث خطأ" : "An error occurred",
+              Array.isArray(messages) ? messages.join(", ") : messages
+            );
+          }
         }
+      } 
+      // Handle simple message format
+      else if (error.error.message) {
+        this.showError(
+          this.lang === "ar" ? "حدث خطأ" : "An error occurred",
+          error.error.message
+        );
+      }
+      // Fallback for other error formats
+      else {
+        this.showError(
+          this.lang === "ar" ? "حدث خطأ" : "An error occurred",
+          this.lang === "ar" ? "حدث خطأ غير متوقع" : "An unexpected error occurred."
+        );
       }
     } else {
       this.showError(

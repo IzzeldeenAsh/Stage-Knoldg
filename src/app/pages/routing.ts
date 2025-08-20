@@ -26,14 +26,12 @@ const Routing: Routes = [
     path: 'add-knowledge',
     loadChildren: () => import('./add-knowledge/add-knowledge.module').then((m) => m.AddKnowledgeModule),
     canActivate:[authGuard,RolesGuard],
-        //   canActivate:[authGuard,RolesGuard,PaymentGuard],
     data: { roles: [ 'insighter','company','company-insighter'] }
   },
   {
     path: 'edit-knowledge',
     loadChildren: () => import('./add-knowledge/add-knowledge.module').then((m) => m.AddKnowledgeModule),
-    canActivate:[authGuard,RolesGuard],
-    //   canActivate:[authGuard,RolesGuard,PaymentGuard],
+     canActivate:[authGuard,RolesGuard],
     data: { roles: [ 'insighter','company','company-insighter'] }
   },
   {
@@ -60,11 +58,11 @@ const Routing: Routes = [
     canActivate:[authGuard,RolesGuard],
     data: { roles: ['company'] } 
   },
-  // {
-  //   path: 'setup-payment-info',
-  //   loadChildren: () => import('./setup-payment-info/setup-payment-info.module').then((m) => m.SetupPaymentInfoModule),
-  //    canActivate:[authGuard],
-  // },
+  {
+    path: 'setup-payment-info',
+    loadChildren: () => import('./setup-payment-info/setup-payment-info.module').then((m) => m.SetupPaymentInfoModule),
+     canActivate:[authGuard],
+  },
   {
     path: '**',
     redirectTo: 'error/404',

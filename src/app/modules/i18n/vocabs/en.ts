@@ -939,6 +939,8 @@ Your wealth of knowledge is valued and many are eager to learn from it.
         "OVERVIEW": "Dashboard",
         "MY_REQUESTS": "Notifications",
         "MY_KNOWLEDGE": "My knowledge library",
+        "PAYMENT_SETTINGS": "Payment Settings",
+        "SETTINGS": "Settings",
         "ACCOUNT_SETTINGS": "Account Settings",
         "MY_COMPANY": "My Team",
         "MEETINGS": "Meetings",

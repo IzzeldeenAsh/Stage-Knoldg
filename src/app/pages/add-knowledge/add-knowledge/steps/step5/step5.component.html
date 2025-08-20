@@ -113,4 +113,49 @@
     </div>
   </div>
   
+  <!-- Payment Account Warnings -->
+  <div *ngIf="shouldShowPaymentWarning" class="mt-8">
+    <!-- Manual Account Inactive Warning -->
+    <div *ngIf="isManualAccountInactive" class="alert alert-warning d-flex align-items-center p-5">
+      <div class="flex-grow-1">
+        <h5 class="text-warning mb-2">
+          <i class="ki-duotone ki-information fs-2 me-2">
+            <span class="path1"></span>
+            <span class="path2"></span>
+            <span class="path3"></span>
+          </i>
+          {{ 'MANUAL_ACCOUNT_INACTIVE_NOTICE' | translate }}
+        </h5>
+        <div class="text-gray-700 fs-6">
+          {{ 'MANUAL_ACCOUNT_INACTIVE_MESSAGE' | translate }}
+        </div>
+        <div class="mt-4">
+          <a 
+            href="javascript:void(0)" 
+            (click)="saveAsDraftAndRedirect()" 
+            class="text-info text-decoration-underline cursor-pointer">
+            {{ 'SAVE_DRAFT_AND_SETUP_ACCOUNT' | translate }}
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Stripe Account Under Verification -->
+    <div *ngIf="isStripeAccountUnderVerification" class="alert alert-info d-flex align-items-center p-5">
+      <div class="flex-grow-1">
+        <h5 class="text-info mb-2">
+          <i class="ki-duotone ki-information fs-2 me-2">
+            <span class="path1"></span>
+            <span class="path2"></span>
+            <span class="path3"></span>
+          </i>
+          {{ 'STRIPE_VERIFICATION_NOTICE' | translate }}
+        </h5>
+        <div class="text-gray-700 fs-6">
+          {{ 'STRIPE_VERIFICATION_MESSAGE' | translate }}
+        </div>
+      </div>
+    </div>
+  </div>
+  
 </form>

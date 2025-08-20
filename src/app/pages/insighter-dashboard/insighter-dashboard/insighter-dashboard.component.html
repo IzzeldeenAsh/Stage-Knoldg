@@ -121,13 +121,39 @@
               {{ 'INSIGHTER.DASHBOARD.NAV.MY_COMPANY' | translate }}
             </div>
           </div>
-          <div class="nav-item" [routerLink]="['account-settings']" routerLinkActive="active"  *ngIf="!(isClient$ | async)"
-               (click)="closeMobileSidebar()">
-            <div class="item-icon">
-              <i class="ki-outline ki-setting-2"></i>
+          
+          <!-- Settings Expandable Item -->
+          <div class="nav-item expandable" [class.expanded]="isSettingsExpanded">
+            <div class="nav-item-main" (click)="toggleSettings()">
+              <div class="item-icon">
+                <i class="ki-outline ki-setting-2"></i>
+              </div>
+              <div class="item-label">
+                {{ 'INSIGHTER.DASHBOARD.NAV.SETTINGS' | translate }}
+              </div>
+              <div class="expand-icon">
+                <i class="ki-outline ki-down"></i>
+              </div>
             </div>
-            <div class="item-label">
-              {{ 'INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS' | translate }}
+            <div class="sub-nav" [class.show]="isSettingsExpanded">
+              <div class="sub-nav-item" [routerLink]="['account-settings/payment-settings']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+                   (click)="closeMobileSidebar()">
+                <div class="sub-item-icon">
+                  <i class="ki-outline ki-credit-cart"></i>
+                </div>
+                <div class="sub-item-label">
+                  {{ 'INSIGHTER.DASHBOARD.NAV.PAYMENT_SETTINGS' | translate }}
+                </div>
+              </div>
+              <div class="sub-nav-item" [routerLink]="['account-settings/general-settings']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" *ngIf="!(isClient$ | async)"
+                   (click)="closeMobileSidebar()">
+                <div class="sub-item-icon">
+                  <i class="ki-outline ki-user-edit"></i>
+                </div>
+                <div class="sub-item-label">
+                  {{ 'INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS' | translate }}
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -136,14 +162,14 @@
   </div>
 </p-sidebar>
 
-<div class="flex-column flex-row-fluid" id="kt_app_wrapper" > 
-  <div id="kt_app_toolbar" class="app-toolbar"  style="padding-top: 90px;">
+<div class="flex-column flex-row-fluid pt-sm-160px" id="kt_app_wrapper" > 
+  <div id="kt_app_toolbar" class="app-toolbar d-none d-sm-block"  style="padding-top: 90px;">
     <div
       id="kt_app_toolbar_container"
       class="app-container container-xxl d-flex align-items-start"
      
     >
-      <div class="d-flex flex-column flex-row-fluid">
+      <div class=" flex-column flex-row-fluid d-flex">
    
         <!-- here header or statistics -->
         <app-overview-statistics *ngIf="isRouteActive('my-dashboard')"></app-overview-statistics>
@@ -160,7 +186,7 @@
     </div>
   </div>
 
-  <div class="app-container w-100 ">
+  <div class="app-container w-100 pt-sm-30px">
     <div class="app-main flex-column flex-row-fluid">
       <div class="d-flex flex-column flex-column-fluid">
         <div class="d-flex flex-column flex-sm-row">
@@ -367,16 +393,65 @@
                       {{ 'INSIGHTER.DASHBOARD.NAV.MY_COMPANY' | translate }}
                     </div>
                   </div>
-                  <div class="nav-item" [routerLink]="['account-settings']" routerLinkActive="active"  *ngIf="!(isClient$ | async)"
-                       [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS' | translate) : null"
-                       pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS' | translate) : '' }}"
-                       tooltipPosition="right"
-                       appendTo="body">
-                    <div class="item-icon">
-                      <i class="ki-outline ki-setting-2"></i>
+                  
+                  <!-- Settings Expandable Item -->
+                  <div class="nav-item expandable" [class.expanded]="isSettingsExpanded" *ngIf="!isNavCollapsed">
+                    <div class="nav-item-main" (click)="toggleSettings()">
+                      <div class="item-icon">
+                        <i class="ki-outline ki-setting-2"></i>
+                      </div>
+                      <div class="item-label">
+                        {{ 'INSIGHTER.DASHBOARD.NAV.SETTINGS' | translate }}
+                      </div>
+                      <div class="expand-icon">
+                        <i class="ki-outline ki-down"></i>
+                      </div>
                     </div>
-                    <div class="item-label" *ngIf="!isNavCollapsed">
-                      {{ 'INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS' | translate }}
+                    <div class="sub-nav" [class.show]="isSettingsExpanded">
+                      <div *ngIf="(isInsighter$ | async) || (isCompany$ | async)" class="sub-nav-item" [routerLink]="['account-settings/payment-settings']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+                      pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.PAYMENT_SETTINGS' | translate) : '' }}"
+                      tooltipPosition="right"
+                      appendTo="body">
+                        <div class="sub-item-icon">
+                          <i class="ki-outline ki-credit-cart"></i>
+                        </div>
+                        <div class="sub-item-label">
+                          {{ 'INSIGHTER.DASHBOARD.NAV.PAYMENT_SETTINGS' | translate }}
+                        </div>
+                      </div>
+                      <div class="sub-nav-item" [routerLink]="['account-settings/general-settings']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" *ngIf="!(isClient$ | async)"
+                      pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS' | translate) : '' }}"
+                      tooltipPosition="right"
+                      appendTo="body">
+                        <div class="sub-item-icon">
+                          <i class="ki-outline ki-user-edit"></i>
+                        </div>
+                        <div class="sub-item-label">
+                          {{ 'INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS' | translate }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Collapsed Settings Items (shown as separate items when collapsed) -->
+                  <div *ngIf="isNavCollapsed">
+                    <div class="nav-item" [routerLink]="['account-settings/payment-settings']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+                         [attr.title]="('INSIGHTER.DASHBOARD.NAV.PAYMENT_SETTINGS' | translate)"
+                         pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.PAYMENT_SETTINGS' | translate) : '' }}"
+                         tooltipPosition="right"
+                         appendTo="body">
+                      <div class="item-icon">
+                        <i class="ki-outline ki-credit-cart"></i>
+                      </div>
+                    </div>
+                    <div class="nav-item" [routerLink]="['account-settings/general-settings']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+                         *ngIf="!(isClient$ | async)" [attr.title]="('INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS' | translate)"
+                         pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS' | translate) : '' }}"
+                         tooltipPosition="right"
+                         appendTo="body">
+                      <div class="item-icon">
+                        <i class="ki-outline ki-setting-2"></i>
+                      </div>
                     </div>
                   </div>
                 </div>

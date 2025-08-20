@@ -14,6 +14,13 @@ export class StripeCallbackComponent extends BaseComponent implements OnInit {
   needsCompletion: boolean = false;
   error: string = '';
   action: string = '';
+  
+  // OTP properties
+  showOtpDialog: boolean = false;
+  otpCode: string = '';
+  resendCooldown: number = 0;
+  canResendOtp: boolean = true;
+  isSubmittingOtp: boolean = false;
 
   constructor(
     injector: Injector,
@@ -69,8 +76,8 @@ export class StripeCallbackComponent extends BaseComponent implements OnInit {
         this.isLoading = false;
         this.isCompleted = true;
         this.showSuccess(
-          this.lang === 'ar' ? 'تم الإكمال' : 'Success',
-          this.lang === 'ar' ? 'تم إعداد حساب Stripe بنجاح' : 'Stripe account setup completed successfully'
+          this.lang === 'ar' ? 'تم الإكمال بنجاح' : 'Successfully Completed',
+          this.lang === 'ar' ? 'تم إعداد حساب Stripe بنجاح وهو جاهز للاستخدام' : 'Stripe account setup completed successfully and ready to use'
         );
         setTimeout(() => {
           this.router.navigate(['/app/setup-payment-info/success'], { 
@@ -90,10 +97,25 @@ export class StripeCallbackComponent extends BaseComponent implements OnInit {
   }
 
   completeAccount() {
-    this.paymentService.getStripeLink().subscribe({
+    // Show OTP dialog
+    this.showOtpDialog = true;
+  }
+
+  private completeAccountWithOtp(code: string) {
+    this.isSubmittingOtp = true;
+    this.paymentService.getStripeLink(code).subscribe({
       next: (response) => {
+        this.isSubmittingOtp = false;
+        this.showOtpDialog = false;
         if (response?.data?.stripe_account_link?.url) {
-          window.location.href = response.data.stripe_account_link.url;
+          this.showSuccess(
+            this.lang === 'ar' ? 'تم التحقق بنجاح' : 'Successfully Verified',
+            this.lang === 'ar' ? 'سيتم توجيهك إلى Stripe لإكمال إعداد الحساب' : 'Redirecting to Stripe to complete account setup'
+          );
+          // Small delay to show success message before redirect
+          setTimeout(() => {
+            window.location.href = response.data.stripe_account_link.url;
+          }, 1500);
         } else {
           this.showError(
             this.lang === 'ar' ? 'حدث خطأ' : 'Error',
@@ -102,6 +124,7 @@ export class StripeCallbackComponent extends BaseComponent implements OnInit {
         }
       },
       error: (error) => {
+        this.isSubmittingOtp = false;
         this.handleServerErrors(error);
       }
     });
@@ -123,17 +146,81 @@ export class StripeCallbackComponent extends BaseComponent implements OnInit {
     this.router.navigate(['/setup-payment-info']);
   }
 
+  // OTP Dialog methods
+  closeOtpDialog() {
+    this.showOtpDialog = false;
+    this.otpCode = '';
+  }
+  
+  submitOtp() {
+    if (this.otpCode.trim().length >= 4) {
+      this.completeAccountWithOtp(this.otpCode.trim());
+    } else {
+      this.showError(
+        this.lang === 'ar' ? 'خطأ في التحقق' : 'Verification Error',
+        this.lang === 'ar' ? 'يرجى إدخال رمز التحقق' : 'Please enter the verification code'
+      );
+    }
+  }
+  
+  resendOtp() {
+    if (!this.canResendOtp) return;
+
+    this.paymentService.resendOtp().subscribe({
+      next: (response) => {
+        this.showSuccess(
+          this.lang === 'ar' ? 'تم الإرسال بنجاح' : 'Successfully Sent',
+          this.lang === 'ar' ? 'تم إرسال رمز التحقق الجديد إلى بريدك الإلكتروني' : 'New verification code sent to your email'
+        );
+        this.startCooldown();
+      },
+      error: (error) => {
+        this.handleServerErrors(error);
+      }
+    });
+  }
+  
+  private startCooldown() {
+    this.canResendOtp = false;
+    this.resendCooldown = 30;
+    
+    const timer = setInterval(() => {
+      this.resendCooldown--;
+      if (this.resendCooldown <= 0) {
+        this.canResendOtp = true;
+        clearInterval(timer);
+      }
+    }, 1000);
+  }
+
   private handleServerErrors(error: any) {
-    if (error.error && error.error.errors) {
-      const serverErrors = error.error.errors;
-      for (const key in serverErrors) {
-        if (serverErrors.hasOwnProperty(key)) {
-          const messages = serverErrors[key];
-          this.showError(
-            this.lang === "ar" ? "حدث خطأ" : "An error occurred",
-            messages.join(", ")
-          );
+    if (error?.error) {
+      // Handle new error format: {"message":"Invalid Code","errors":{"common":["Invalid Code"]}}
+      if (error.error.errors) {
+        const serverErrors = error.error.errors;
+        for (const key in serverErrors) {
+          if (serverErrors.hasOwnProperty(key)) {
+            const messages = serverErrors[key];
+            this.showError(
+              this.lang === "ar" ? "حدث خطأ" : "An error occurred",
+              Array.isArray(messages) ? messages.join(", ") : messages
+            );
+          }
         }
+      } 
+      // Handle simple message format
+      else if (error.error.message) {
+        this.showError(
+          this.lang === "ar" ? "حدث خطأ" : "An error occurred",
+          error.error.message
+        );
+      }
+      // Fallback for other error formats
+      else {
+        this.showError(
+          this.lang === "ar" ? "حدث خطأ" : "An error occurred",
+          this.lang === "ar" ? "حدث خطأ غير متوقع" : "An unexpected error occurred."
+        );
       }
     } else {
       this.showError(

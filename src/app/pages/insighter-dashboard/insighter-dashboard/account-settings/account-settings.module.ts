@@ -25,6 +25,7 @@ import { TruncateTextPipe } from 'src/app/pipes/truncate-pipe/truncate-text.pipe
 import { DropdownModule } from 'primeng/dropdown';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CountryDropdownComponent } from 'src/app/reusable-components/country-dropdown/country-dropdown.component';
+import { PaymentSettingsComponent } from './payment-settings/payment-settings.component';
 
 const routes: Routes = [
   {
@@ -45,6 +46,10 @@ const routes: Routes = [
       {
         path: 'general-settings',
         component: GeneralSettingsComponent
+      },
+      {
+        path: 'payment-settings',
+        component: PaymentSettingsComponent
       }
     ]
   }
@@ -56,6 +61,7 @@ const routes: Routes = [
     UpgradeToCompanyComponent,
     GeneralSettingsComponent,
     ReactivateDialogComponent,
+    PaymentSettingsComponent,
     TransferDialogComponent,
     DeactivateDialogComponent,
     DeleteDialogComponent,

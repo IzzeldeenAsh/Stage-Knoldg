@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { PaymentService, StripeCountry } from 'src/app/_fake/services/payment/payment.service';
 import { CountriesService, Country } from 'src/app/_fake/services/countries/countries.service';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-setup-payment-info',
@@ -39,13 +41,31 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
   isEditing: boolean = false;
   isLoadingPaymentInfo: boolean = true;
   isCreatingStripeAccount: boolean = false;
+  
+  // Terms & Conditions properties
+  termsAgreed: boolean = false;
+  showTermsDialog: boolean = false;
+  termsContent: string = '';
+  isLoadingTerms: boolean = false;
+  
+  // OTP properties
+  showOtpDialog: boolean = false;
+  otpCode: string = '';
+  resendCooldown: number = 0;
+  canResendOtp: boolean = true;
+  isSubmittingOtp: boolean = false;
+  isOtpForLinkAccount: boolean = false;
+
+  // Stripe onboarding status
+  stripeOnboardingStatus: any = null;
 
   constructor(
     injector: Injector,
     private fb: FormBuilder,
     private router: Router,
     public paymentService: PaymentService,
-    private countriesService: CountriesService
+    private countriesService: CountriesService,
+    private http: HttpClient
   ) {
     super(injector);
     this.paymentForm = this.fb.group({
@@ -90,6 +110,7 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
     
     if (type === 'stripe') {
       this.loadStripeCountries();
+      this.checkStripeOnboardingStatus();
     } else {
       this.filteredCountries = [...this.allCountries];
     }
@@ -137,16 +158,17 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
   }
 
   onNext() {
-    if (this.paymentForm.valid) {
+    if (this.paymentForm.valid && this.termsAgreed) {
       const formData = {
         type: this.selectedPaymentType as 'manual' | 'stripe',
-        country_id: this.selectedCountry.id
+        country_id: this.selectedCountry.id,
+        accept_terms: this.termsAgreed
       };
 
       this.paymentService.setPaymentType(formData).subscribe({
-        next: () => {
+        next: (response) => {
           this.showSuccess(
-            this.lang === 'ar' ? 'تم الحفظ' : 'Success',
+            this.lang === 'ar' ? 'تم الحفظ بنجاح' : 'Successfully Saved',
             this.lang === 'ar' ? 'تم حفظ نوع الدفع بنجاح' : 'Payment type saved successfully'
           );
           
@@ -174,18 +196,44 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
           this.lang === 'ar' ? 'حدث خطأ' : 'Validation Error',
           this.lang === 'ar' ? 'يرجى اختيار الدولة' : 'Please select a country'
         );
+      } else if (!this.termsAgreed) {
+        this.showError(
+          this.lang === 'ar' ? 'حدث خطأ' : 'Validation Error',
+          this.lang === 'ar' ? 'يجب الموافقة على شروط وأحكام الاتفاقية' : 'You must agree to the Terms & Conditions'
+        );
       }
     }
   }
 
   private initiateStripeOnboarding() {
-    this.isCreatingStripeAccount = true;
-    this.paymentService.createStripeAccount().subscribe({
+    // Check if we should use link account API or create account API
+    if (this.stripeOnboardingStatus && this.stripeOnboardingStatus.account && !this.stripeOnboardingStatus.details_submitted_at) {
+      // Use link account API - set flag for OTP dialog
+      this.isOtpForLinkAccount = true;
+    } else {
+      // Use create account API 
+      this.isOtpForLinkAccount = false;
+    }
+    
+    // Show OTP dialog
+    this.showOtpDialog = true;
+  }
+  
+  private createStripeAccountWithOtp(code: string) {
+    this.isSubmittingOtp = true;
+    this.paymentService.createStripeAccount(code).subscribe({
       next: (response) => {
-        this.isCreatingStripeAccount = false;
+        this.isSubmittingOtp = false;
+        this.showOtpDialog = false;
         if (response.data.stripe_account_link.url) {
-          // Redirect to Stripe onboarding
-          window.location.href = response.data.stripe_account_link.url;
+          this.showSuccess(
+            this.lang === 'ar' ? 'تم التحقق بنجاح' : 'Successfully Verified',
+            this.lang === 'ar' ? 'سيتم توجيهك إلى Stripe لإكمال الإعداد' : 'Redirecting to Stripe to complete setup'
+          );
+          // Small delay to show success message before redirect
+          setTimeout(() => {
+            window.location.href = response.data.stripe_account_link.url;
+          }, 1500);
         } else {
           this.showError(
             this.lang === 'ar' ? 'حدث خطأ' : 'Error',
@@ -194,12 +242,42 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
         }
       },
       error: (error) => {
-        this.isCreatingStripeAccount = false;
+        this.isSubmittingOtp = false;
         // Handle specific case of existing Stripe account (422 error)
         if (error.status === 422 && error.error && error.error.message === "Stripe account exists") {
+          this.showOtpDialog = false;
           this.router.navigate(['/app/setup-payment-info/stripe-callback/refresh']);
           return;
         }
+        this.handleServerErrors(error);
+      }
+    });
+  }
+
+  private linkStripeAccountWithOtp(code: string) {
+    this.isSubmittingOtp = true;
+    this.paymentService.getStripeLink(code).subscribe({
+      next: (response) => {
+        this.isSubmittingOtp = false;
+        this.showOtpDialog = false;
+        if (response.data.stripe_account_link.url) {
+          this.showSuccess(
+            this.lang === 'ar' ? 'تم التحقق بنجاح' : 'Successfully Verified',
+            this.lang === 'ar' ? 'سيتم توجيهك إلى Stripe لإكمال الإعداد' : 'Redirecting to Stripe to complete setup'
+          );
+          // Small delay to show success message before redirect
+          setTimeout(() => {
+            window.location.href = response.data.stripe_account_link.url;
+          }, 1500);
+        } else {
+          this.showError(
+            this.lang === 'ar' ? 'حدث خطأ' : 'Error',
+            this.lang === 'ar' ? 'لم يتم العثور على رابط Stripe' : 'Stripe link not found'
+          );
+        }
+      },
+      error: (error) => {
+        this.isSubmittingOtp = false;
         this.handleServerErrors(error);
       }
     });
@@ -213,7 +291,11 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
         // Check if response has data - API returns 201 with no data for new accounts
         if (response && response.data) {
           this.paymentInfo = response.data;
-          this.hasExistingPayment = true;
+          if(response.data.type === 'manual' && response.data.status === 'inactive'){
+            this.hasExistingPayment = false;
+          }else{  
+            this.hasExistingPayment = true;
+          }
           this.preSelectExistingInfo();
         } else {
           this.hasExistingPayment = false;
@@ -288,6 +370,9 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
     this.paymentForm.patchValue({ countryId: '' });
     this.loadStripeCountries();
     this.isEditing = true;
+    
+    // Check existing Stripe onboarding status
+    this.checkStripeOnboardingStatus();
   }
 
   onChangeToManual() {
@@ -304,23 +389,171 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
     this.router.navigate(['/app/setup-payment-info/stripe-callback/refresh']);
   }
 
-  private handleServerErrors(error: any) {
-    if (error.error && error.error.errors) {
-      const serverErrors = error.error.errors;
-      for (const key in serverErrors) {
-        if (serverErrors.hasOwnProperty(key)) {
-          const messages = serverErrors[key];
+  // Terms & Conditions methods
+  openTermsDialog() {
+    console.log('Opening Terms Dialog'); // Debug log
+    this.showTermsDialog = true;
+    this.loadTermsAndConditions();
+  }
+
+  closeTermsDialog() {
+    this.showTermsDialog = false;
+  }
+
+  acceptTerms() {
+    this.termsAgreed = true;
+    this.closeTermsDialog();
+  }
+
+  declineTerms() {
+    this.termsAgreed = false;
+    this.closeTermsDialog();
+  }
+
+  private loadTermsAndConditions() {
+    this.isLoadingTerms = true;
+    this.termsContent = '';
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Accept-Language': this.lang || 'en',
+      'X-Timezone': Intl.DateTimeFormat().resolvedOptions().timeZone
+    };
+
+    this.http.get<any>('https://api.knoldg.com/api/common/setting/guideline/slug/payment-terms-and-conditions', { headers })
+      .subscribe({
+        next: (response) => {
+          this.isLoadingTerms = false;
+          if (response && response.data && response.data.guideline) {
+            this.termsContent = response.data.guideline;
+          } else {
+            this.showError(
+              this.lang === 'ar' ? 'خطأ' : 'Error',
+              this.lang === 'ar' ? 'لا يمكن تحميل الشروط والأحكام' : 'Unable to load Terms & Conditions'
+            );
+          }
+        },
+        error: (error) => {
+          this.isLoadingTerms = false;
           this.showError(
-            this.lang === "ar" ? "حدث خطأ" : "An error occurred",
-            messages.join(", ")
+            this.lang === 'ar' ? 'خطأ' : 'Error',
+            this.lang === 'ar' ? 'فشل في تحميل الشروط والأحكام' : 'Failed to load Terms & Conditions'
           );
         }
+      });
+  }
+
+  private handleServerErrors(error: any) {
+    if (error?.error) {
+      // Handle new error format: {"message":"Invalid Code","errors":{"common":["Invalid Code"]}}
+      if (error.error.errors) {
+        const serverErrors = error.error.errors;
+        for (const key in serverErrors) {
+          if (serverErrors.hasOwnProperty(key)) {
+            const messages = serverErrors[key];
+            this.showError(
+              this.lang === "ar" ? "حدث خطأ" : "An error occurred",
+              Array.isArray(messages) ? messages.join(", ") : messages
+            );
+          }
+        }
+      } 
+      // Handle simple message format
+      else if (error.error.message) {
+        this.showError(
+          this.lang === "ar" ? "حدث خطأ" : "An error occurred",
+          error.error.message
+        );
+      }
+      // Fallback for other error formats
+      else {
+        this.showError(
+          this.lang === "ar" ? "حدث خطأ" : "An error occurred",
+          this.lang === "ar" ? "حدث خطأ غير متوقع" : "An unexpected error occurred."
+        );
       }
     } else {
       this.showError(
         this.lang === "ar" ? "حدث خطأ" : "An error occurred",
-        this.lang === "ar" ? "حدث خطأ" : "An unexpected error occurred."
+        this.lang === "ar" ? "حدث خطأ غير متوقع" : "An unexpected error occurred."
       );
     }
+  }
+
+  // OTP Dialog methods
+  closeOtpDialog() {
+    this.showOtpDialog = false;
+    this.otpCode = '';
+  }
+  
+  submitOtp() {
+    if (this.otpCode.trim().length >= 4) {
+      if (this.isOtpForLinkAccount) {
+        this.linkStripeAccountWithOtp(this.otpCode.trim());
+      } else {
+        this.createStripeAccountWithOtp(this.otpCode.trim());
+      }
+    } else {
+      this.showError(
+        this.lang === 'ar' ? 'خطأ في التحقق' : 'Verification Error',
+        this.lang === 'ar' ? 'يرجى إدخال رمز التحقق' : 'Please enter the verification code'
+      );
+    }
+  }
+  
+  resendOtp() {
+    if (!this.canResendOtp) return;
+
+    this.paymentService.resendOtp().subscribe({
+      next: (response) => {
+        this.showSuccess(
+          this.lang === 'ar' ? 'تم الإرسال بنجاح' : 'Successfully Sent',
+          this.lang === 'ar' ? 'تم إرسال رمز التحقق الجديد إلى بريدك الإلكتروني' : 'New verification code sent to your email'
+        );
+        this.startCooldown();
+      },
+      error: (error) => {
+        this.handleServerErrors(error);
+      }
+    });
+  }
+  
+  private startCooldown() {
+    this.canResendOtp = false;
+    this.resendCooldown = 30;
+    
+    const timer = setInterval(() => {
+      this.resendCooldown--;
+      if (this.resendCooldown <= 0) {
+        this.canResendOtp = true;
+        clearInterval(timer);
+      }
+    }, 1000);
+  }
+
+  checkStripeOnboardingStatus() {
+    this.paymentService.checkStripeOnboardingStatus().subscribe({
+      next: (response) => {
+        this.stripeOnboardingStatus = response.data;
+        
+        // Check if account exists but details are not submitted
+        if (response.data.account && !response.data.details_submitted_at) {
+          // Account exists but not complete - show option to complete
+          this.showInfo(
+            this.lang === 'ar' ? 'حساب Stripe موجود' : 'Stripe Account Found',
+            this.lang === 'ar' ? 'تم العثور على حساب Stripe غير مكتمل. يمكنك إكمال الإعداد.' : 'Found incomplete Stripe account. You can complete the setup.'
+          );
+        }
+      },
+      error: (error) => {
+        // If 404 or account doesn't exist, that's fine
+        if (error.status === 404) {
+          this.stripeOnboardingStatus = null;
+        } else {
+          console.error('Error checking Stripe status:', error);
+        }
+      }
+    });
   }
 }
