@@ -1,6 +1,6 @@
 <p-toast></p-toast>
 <app-payment-header 
-  [title]="lang === 'ar' ? 'إعداد الحساب اليدوي' : 'Manual Account Setup'"
+  [title]="lang === 'ar' ? 'إعداد حسابك البنكي' : 'Bank Account Setup'"
   [subtitle]="lang === 'ar' ? 'أدخل معلومات حسابك البنكي لاستقبال المدفوعات' : 'Enter your bank account details to receive payments'">
 </app-payment-header>
 
@@ -71,6 +71,13 @@
               <div class="invalid-feedback" *ngIf="getFieldError('address')">
                 {{ getFieldError('address') }}
               </div>
+              <div class="form-text text-muted">
+                <i class="fas fa-info-circle me-1"></i>
+                {{ lang === 'ar' 
+                  ? 'يجب أن يكون العنوان مطابقاً تماماً للعنوان المذكور في الحساب البنكي' 
+                  : 'Should be exactly as the address of the bank account' 
+                }}
+              </div>
             </div>
 
             <!-- SWIFT Code Field -->
@@ -97,6 +104,7 @@
                 {{ lang === 'ar' ? 'رقم الهاتف' : 'Phone Number' }}
               </label>
               <app-phone-number-input
+                #phoneInput
                 [countries]="countries"
                 [placeholder]="lang === 'ar' ? 'رقم هاتفك' : 'Your phone number'"
                 [searchPlaceholder]="'Search countries...'"
@@ -105,8 +113,11 @@
                 [showValidationErrors]="true"
                 [countryCodeError]="getFieldError('phoneCountryCode')"
                 [phoneNumberError]="getFieldError('phoneNumber')"
+                [initialCountryCode]="manualAccountForm.get('phoneCountryCode')?.value"
+                [initialPhoneNumber]="manualAccountForm.get('phoneNumber')?.value"
                 (countryCodeChange)="onCountryCodeChange($event)"
                 (phoneNumberChange)="onPhoneNumberChange($event)"
+                (formattedPhoneNumberChange)="onFormattedPhoneNumberChange($event)"
                 (flagError)="onFlagError($event)"
               ></app-phone-number-input>
             </div>
@@ -128,7 +139,7 @@
               </div>
               <div class="form-text text-muted">
                 <i class="fas fa-envelope me-1"></i>
-                {{ lang === 'ar' ? 'لقد أرسلنا رمز التحقق إلى بريدك الإلكتروني' : 'We sent an OTP code to your email' }}
+                {{ lang === 'ar' ? 'لقد أرسلنا رمز التحقق إلى بريدك الإلكتروني (تنتهي فعالية الكود في 10 دقائق)' : 'We sent an OTP code to your email (Code expires in 10 minutes)' }}
                 <span class="d-block mt-1">
                   <span 
                     *ngIf="canResendOtp"
@@ -187,7 +198,7 @@
                   aria-hidden="true">
                 </span>
                 
-                {{ lang === 'ar' ? 'إنشاء الحساب' : 'Create Account' }}
+                {{ lang === 'ar' ? 'تعديل الإعدادات' : 'Update Settings' }}
               </button>
             </div>
         </form>

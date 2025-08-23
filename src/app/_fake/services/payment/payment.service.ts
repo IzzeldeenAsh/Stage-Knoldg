@@ -11,7 +11,7 @@ export interface StripeCountry {
 }
 
 export interface SetPaymentTypeRequest {
-  type: 'manual' | 'stripe';
+  type: 'manual' | 'provider';
   country_id: number;
   accept_terms:boolean
 }
@@ -40,14 +40,39 @@ export interface StripeCompleteResponse {
 }
 export interface StripeAccountDetailsResponse {
   data: {
-    type: string;
-    status: string;
-    details_submitted_at: string | null;
-    charges_enable_at: string | null;
-    country: {
-      id: number;
-      name: string;
-      flag: string;
+    primary: {
+      type: string;
+      status: string;
+      country: {
+        id: number;
+        name: string;
+        flag: string;
+      };
+      account_name?: string;
+      swift_code?: string;
+      iban?: string;
+      address?: string;
+      phone?: string | null;
+      stripe_account?: boolean;
+      details_submitted_at?: string | null;
+      charges_enable_at?: string | null;
+    };
+    secondary: {
+      type: string;
+      stripe_account?: boolean;
+      details_submitted_at?: string | null;
+      charges_enable_at?: string | null;
+      status: string;
+      account_name?: string;
+      swift_code?: string;
+      iban?: string;
+      address?: string;
+      phone?: string | null;
+      country?: {
+        id: number;
+        name: string;
+        flag: string;
+      };
     };
   };
 }
@@ -61,16 +86,41 @@ export interface StripeOnboardingStatusResponse {
   };
 }
 
-export interface ManualAccountDetailsResponse {
+export interface AccountDetailsResponse {
   data: {
-    type: string;
-    status: string;
-    iban: string;
-    account_name: string;
-    country: {
-      id: number;
-      name: string;
-      flag: string;
+    primary: {
+      type: string;
+      status: string;
+      country: {
+        id: number;
+        name: string;
+        flag: string;
+      };
+      account_name?: string;
+      swift_code?: string;
+      iban?: string;
+      address?: string;
+      phone?: string | null;
+      stripe_account?: boolean;
+      details_submitted_at?: string | null;
+      charges_enable_at?: string | null;
+    };
+    secondary: {
+      type: string;
+      stripe_account?: boolean;
+      details_submitted_at?: string | null;
+      charges_enable_at?: string | null;
+      status: string;
+      account_name?: string;
+      swift_code?: string;
+      iban?: string;
+      address?: string;
+      phone?: string | null;
+      country?: {
+        id: number;
+        name: string;
+        flag: string;
+      };
     };
   };
 }
@@ -199,22 +249,21 @@ export class PaymentService {
     );
   }
 
-  getStripeAccountDetails(): Observable<StripeAccountDetailsResponse> {
+  getAccountDetails(): Observable<AccountDetailsResponse> {
     this.setLoading(true);
-    return this.http.get<StripeAccountDetailsResponse>(this.accountDetailsApiUrl, { headers: this.getHeaders() }).pipe(
+    return this.http.get<AccountDetailsResponse>(this.accountDetailsApiUrl, { headers: this.getHeaders() }).pipe(
       map(res => res),
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );
   }
 
-  getManualAccountDetails(): Observable<ManualAccountDetailsResponse> {
-    this.setLoading(true);
-    return this.http.get<ManualAccountDetailsResponse>(this.accountDetailsApiUrl, { headers: this.getHeaders() }).pipe(
-      map(res => res),
-      catchError(error => this.handleError(error)),
-      finalize(() => this.setLoading(false))
-    );
+  getStripeAccountDetails(): Observable<AccountDetailsResponse> {
+    return this.getAccountDetails();
+  }
+
+  getManualAccountDetails(): Observable<AccountDetailsResponse> {
+    return this.getAccountDetails();
   }
 
   resendOtp(): Observable<any> {

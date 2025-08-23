@@ -57,13 +57,13 @@ export class SetupPaymentGuard implements CanActivate {
 
     return this.http.get<any>('https://api.knoldg.com/api/insighter/payment/account/details', { headers }).pipe(
       map(response => {
-        if (response && response.data) {
-          const paymentData = response.data;
+        if (response && response.data && response.data.primary) {
+          const primaryData = response.data.primary;
+          const secondaryData = response.data.secondary;
           
           // Check if payment setup is complete
-          const isManualComplete = paymentData.type === 'manual' && paymentData.iban && paymentData.status === 'active';
-          const isStripeComplete = paymentData.type === 'stripe' && ((paymentData.details_submitted_at ) || (   paymentData.status === 'active' && paymentData.charges_enable_at))
-;
+          const isManualComplete = primaryData.type === 'manual' && primaryData.iban && primaryData.status === 'active';
+          const isStripeComplete = primaryData.type === 'provider' && ((secondaryData.details_submitted_at) || (primaryData.status === 'active' && secondaryData.charges_enable_at));
           
           if (isManualComplete || isStripeComplete) {
             // Payment is already complete

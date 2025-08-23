@@ -82,6 +82,12 @@
     </div>
   </ng-container>
 
+  <div class="menu-item px-5" *ngIf="_user.roles.includes('insighter') || _user.roles.includes('company')">
+    <a [routerLink]="'/app/insighter-dashboard/account-settings/payment-settings'" class="menu-link px-5" (click)="closeDropdown.emit()">
+      {{ 'INSIGHTER.DASHBOARD.NAV.PAYMENT_SETTINGS' | translate }}
+    </a>
+  </div>
+
   <div class="menu-item px-5" *ngIf="_user.roles.includes('client') && !_user.roles.includes('insighter') && !_user.roles.includes('company') && !_user.roles.includes('company-insighter')">
     <a [routerLink]="'/app/insighter-register/vertical'" class="menu-link px-5 fw-boldest gradient-text-insighter" (click)="closeDropdown.emit()">
       {{ 'HOME.BECOME_INSIGHTER' | translate }}

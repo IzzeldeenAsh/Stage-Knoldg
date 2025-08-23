@@ -5,125 +5,218 @@
             <div class="action-section border-1 border-light w-100">
                 <div class="p-24px">
                     <div class="fs-2 fw-bolder mb-2 d-flex flex-column">
-                        <span >
+                        <span>
                             {{ !paymentAccountDetails ? ('PAYMENT_ACCOUNT.ADD_TITLE' | translate) : ('PAYMENT_ACCOUNT.TITLE' | translate) }}
                         </span>
                         <span class="text-gray-600 fw-semibold fs-6">
                             {{ !paymentAccountDetails ? ('PAYMENT_ACCOUNT.ADD_DESCRIPTION' | translate) : ('PAYMENT_ACCOUNT.DESCRIPTION' | translate) }}
                         </span>
                     </div>
-                    <div class="row align-items-center mb-4">
-                        <div class="col-md-4">
-                            <div class="text-center">
-                                <img src="https://firebasestorage.googleapis.com/v0/b/webartpath.appspot.com/o/eurekxay-videos%2Fcard.png?alt=media&token=19ec10b4-3718-440f-b217-18a3a903dd3b" 
-                                     alt="Payment Card Illustration"
-                                    class="payment-card-illustration">
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <div *ngIf="paymentAccountLoading" class="text-center p-4">
-                                <div class="spinner-border spinner-border-sm text-info" role="status">
-                                    <span class="visually-hidden">Loading...</span>
-                                </div>
-                            </div>
 
-                            <div *ngIf="!paymentAccountLoading && paymentAccountDetails">
-                                <div class="row mb-3">
-                                    <div class="col-md-6">
-                                        <div class="d-flex align-items-center p-3 rounded" 
-                                             [class]="paymentAccountDetails.type === 'stripe' ? 'bg-light-info' : 'bg-light-success'">
-                                            <div class="me-3">
-                                                <i [class]="paymentAccountDetails.type === 'stripe' ? 'bi bi-credit-card text-info fs-3' : 'bi bi-bank text-success fs-3'"></i>
-                                            </div>
-                                            <div>
-                                                <div class="fs-7 fw-bold text-gray-600 mb-1">{{ 'PAYMENT_ACCOUNT.TYPE' | translate }}</div>
-                                                <div class="fs-6 fw-bolder" 
-                                                     [class]="paymentAccountDetails.type === 'stripe' ? 'text-info' : 'text-success'">
-                                                    {{ paymentAccountDetails.type === 'stripe' ? 'Stripe' : 'Manual' }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="d-flex align-items-center p-3 rounded" 
-                                             [class]="paymentAccountDetails.status === 'active' ? 'bg-light-success' : 'bg-light-warning'">
-                                            <div class="me-3">
-                                                <i [class]="paymentAccountDetails.status === 'active' ? 'bi bi-check-circle text-success fs-3' : 'bi bi-clock text-warning fs-3'"></i>
-                                            </div>
-                                            <div>
-                                                <div class="fs-7 fw-bold text-gray-600 mb-1">{{ 'PAYMENT_ACCOUNT.STATUS' | translate }}</div>
-                                                <div class="fs-6 fw-bolder text-capitalize" 
-                                                     [class]="paymentAccountDetails.status === 'active' ? 'text-success' : 'text-warning'">
-                                                    {{ paymentAccountDetails.status }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="mb-3">
-                                            <label class="fs-6 fw-bold text-gray-800">{{ 'PAYMENT_ACCOUNT.COUNTRY' | translate }}:</label>
-                                            <div class="d-flex align-items-center mt-2 p-2 bg-light rounded">
-                                                <img [src]="getCountryFlagPath(paymentAccountDetails.country.name)" 
-                                                     [alt]="paymentAccountDetails.country.name"
-                                                     class="me-2" 
-                                                     style="width: 24px; height: 18px;">
-                                                <span class="fs-6 fw-semibold text-gray-700">{{ paymentAccountDetails.country.name }}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div *ngIf="isManualAccount()" class="col-12">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="mb-3">
-                                                    <label class="fs-6 fw-bold text-gray-800">{{ 'PAYMENT_ACCOUNT.ACCOUNT_NAME' | translate }}:</label>
-                                                    <div class="text-gray-600 mt-1">{{ getManualAccountDetails()?.account_name }}</div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="mb-3">
-                                                    <label class="fs-6 fw-bold text-gray-800">{{ 'PAYMENT_ACCOUNT.IBAN' | translate }}:</label>
-                                                    <div class="text-gray-600 mt-1">{{ getManualAccountDetails()?.iban }}</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div *ngIf="isStripeAccount()" class="col-12">
-                                        <div class="row">
-                                            <div class="col-md-6" *ngIf="getStripeAccountDetails()?.details_submitted_at">
-                                                <div class="mb-3">
-                                                    <label class="fs-6 fw-bold text-gray-800">{{ 'PAYMENT_ACCOUNT.DETAILS_SUBMITTED' | translate }}:</label>
-                                                    <div class="text-gray-600 mt-1">{{ getStripeAccountDetails()?.details_submitted_at | date:'short' }}</div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6" *ngIf="getStripeAccountDetails()?.charges_enable_at">
-                                                <div class="mb-3">
-                                                    <label class="fs-6 fw-bold text-gray-800">{{ 'PAYMENT_ACCOUNT.CHARGES_ENABLED' | translate }}:</label>
-                                                    <div class="text-gray-600 mt-1">{{ getStripeAccountDetails()?.charges_enable_at | date:'short' }}</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div *ngIf="!paymentAccountLoading && paymentAccountError" class="alert alert-light-danger d-flex align-items-center p-5">
-                                <i class="bi bi-exclamation-triangle fs-2hx text-danger me-4"></i>
-                                <div class="d-flex flex-column">
-                                    <h4 class="mb-1 text-danger">{{ 'PAYMENT_ACCOUNT.ERROR_TITLE' | translate }}</h4>
-                                    <span>{{ paymentAccountError }}</span>
-                                </div>
-                            </div>
+                    <div *ngIf="paymentAccountLoading" class="text-center p-4">
+                        <div class="spinner-border spinner-border-sm text-info" role="status">
+                            <span class="visually-hidden">Loading...</span>
                         </div>
                     </div>
 
+                    <!-- Inactive Primary Account Warning -->
+                    <div *ngIf="!paymentAccountLoading && paymentAccountDetails && isPrimaryAccountInactive()" 
+                         class="alert alert-warning d-flex align-items-center mb-4" role="alert">
+                        <i class="bi bi-exclamation-triangle fs-4 text-warning me-3"></i>
+                        <div>
+                            <strong class="d-block mb-1">{{ lang === 'ar' ? 'تحذير' : 'Warning' }}</strong>
+                            <span>{{ getInactiveAccountMessage() }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Payment Cards Section -->
+                    <div *ngIf="!paymentAccountLoading && paymentAccountDetails" class="row g-3 g-md-4 p-2 p-md-3">
+                        <!-- Primary Account Card -->
+                        <div class="col-12 col-lg-6 col-xxl-5 offset-xxl-1">
+                            <div class="payment-card primary-card">
+                                <!-- Selected Indicator -->
+                                <div class="card-selected-indicator">
+                                    <i class="bi bi-check-circle-fill text-info fs-4"></i>
+                                </div>
+                                
+                                <!-- Card Top Section -->
+                                <div class="card-top">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="account-type-section d-flex align-items-start">
+                                            <img *ngIf="paymentAccountDetails.primary.type === 'manual'" 
+                                                 src="/assets/media/logos/custom-2.svg" 
+                                                 alt="Manual Account" 
+                                                 class="account-type-logo me-3">
+                                            <img *ngIf="paymentAccountDetails.primary.type === 'provider'" 
+                                                 src="https://logos-world.net/wp-content/uploads/2022/12/Stripe-Emblem.png" 
+                                                 alt="Stripe Provider" 
+                                                 class="account-type-logo me-3">
+                                            <div>
+                                                <h6 class="account-title text-info fw-bold mb-1">
+                                                    {{ lang === 'ar' ? 'الحساب الأساسي' : 'Primary Account' }}
+                                                </h6>
+                                                <div class="account-type">
+                                                    <i [class]="getAccountTypeIcon(paymentAccountDetails.primary.type)" class="text-info me-2"></i>
+                                                    <span class="text-info fw-semibold">{{ getAccountTypeText(paymentAccountDetails.primary.type) }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="status-badges">
+                                            <span class="status-badge" [class]="getStatusBadgeClass(paymentAccountDetails.primary)">
+                                                {{ getStatusText(paymentAccountDetails.primary) }}
+                                            </span>
+                                            <div *ngIf="shouldShowFormSubmittedBadge(paymentAccountDetails.primary)" 
+                                                 class="form-submitted-badge">
+                                                {{ lang === 'ar' ? 'تم الإرسال' : 'Form Submitted' }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Card Divider Lines -->
+                                <div class="card-lines">
+                                    <div class="card-line"></div>
+                                    <div class="card-line"></div>
+                                </div>
+
+                                <!-- Card Content -->
+                                <div class="card-content">
+                                    <!-- Country Info -->
+                                    <div class="country-info">
+                                        <img [src]="getCountryFlagPath(paymentAccountDetails.primary.country.name)" 
+                                             [alt]="paymentAccountDetails.primary.country.name"
+                                             class="country-flag">
+                                        <span class="country-name">{{ paymentAccountDetails.primary.country.name }}</span>
+                                    </div>
+
+                                    <!-- Account Details -->
+                                    <div *ngIf="paymentAccountDetails.primary.type === 'manual'" class="account-details">
+                                        <div class="detail-row">
+                                            <span class="detail-label">{{ lang === 'ar' ? 'اسم الحساب' : 'Account Name' }}</span>
+                                            <span class="detail-value" [class.placeholder-value]="!paymentAccountDetails.primary.account_name">
+                                                {{ paymentAccountDetails.primary.account_name || 'XXXX XXXX XXXX' }}
+                                            </span>
+                                        </div>
+                                        <div class="detail-row">
+                                            <span class="detail-label">{{ lang === 'ar' ? 'رقم الايبان' : 'IBAN' }}</span>
+                                            <span class="detail-value card-number" [class.placeholder-value]="!paymentAccountDetails.primary.iban">
+                                                {{ paymentAccountDetails.primary.iban || 'XXXX XXXX XXXX XXXX XXXX' }}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div *ngIf="paymentAccountDetails.primary.type === 'provider'" class="account-details">
+                                        <div class="provider-status-info">
+                                            <div class="provider-status-item">
+                                                <i [class]="getProviderStatusIcon(paymentAccountDetails.primary)" 
+                                                   [class.text-info]="paymentAccountDetails.primary.charges_enable_at"
+                                                   [class.text-warning]="paymentAccountDetails.primary.details_submitted_at && !paymentAccountDetails.primary.charges_enable_at"
+                                                   [class.text-danger]="!paymentAccountDetails.primary.details_submitted_at"
+                                                   class="me-2"></i>
+                                                <span class="provider-status-text">{{ getProviderStatusExplanation(paymentAccountDetails.primary) }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Secondary Account Card -->
+                        <div class="col-12 col-lg-6 col-xxl-5" *ngIf="paymentAccountDetails.secondary">
+                            <div class="payment-card secondary-card" (click)="onSecondaryCardClick()">
+                                <!-- Card Top Section -->
+                                <div class="card-top">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="account-type-section d-flex align-items-start">
+                                            <img *ngIf="paymentAccountDetails.secondary.type === 'manual'" 
+                                                 src="/assets/media/logos/custom-2.svg" 
+                                                 alt="Manual Account" 
+                                                 class="account-type-logo me-3">
+                                            <img *ngIf="paymentAccountDetails.secondary.type === 'provider'" 
+                                                 src="https://logos-world.net/wp-content/uploads/2022/12/Stripe-Emblem.png" 
+                                                 alt="Stripe Provider" 
+                                                 class="account-type-logo me-3">
+                                            <div>
+                                                <h6 class="account-title text-gray-700 fw-bold mb-1">
+                                                    {{ lang === 'ar' ? 'الحساب الثانوي' : 'Secondary Account' }}
+                                                </h6>
+                                                <div class="account-type">
+                                                    <i [class]="getAccountTypeIcon(paymentAccountDetails.secondary.type)" class="text-gray-600 me-2"></i>
+                                                    <span class="text-gray-600 fw-semibold">{{ getAccountTypeText(paymentAccountDetails.secondary.type) }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="status-badges">
+                                            <span class="status-badge" [class]="getStatusBadgeClass(paymentAccountDetails.secondary)">
+                                                {{ getStatusText(paymentAccountDetails.secondary) }}
+                                            </span>
+                                            <div *ngIf="shouldShowFormSubmittedBadge(paymentAccountDetails.secondary)" 
+                                                 class="form-submitted-badge">
+                                                {{ lang === 'ar' ? 'تم الإرسال' : 'Form Submitted' }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Card Divider Lines -->
+                                <div class="card-lines">
+                                    <div class="card-line secondary"></div>
+                                    <div class="card-line secondary"></div>
+                                </div>
+
+                                <!-- Card Content -->
+                                <div class="card-content">
+                                    <!-- Provider Account Details -->
+                                    <div *ngIf="paymentAccountDetails.secondary.type === 'provider'" class="account-details">
+                                        <div class="provider-status-info">
+                                            <div class="provider-status-item">
+                                                <i [class]="getProviderStatusIcon(paymentAccountDetails.secondary)" 
+                                                   [class.text-success]="paymentAccountDetails.secondary.charges_enable_at"
+                                                   [class.text-warning]="paymentAccountDetails.secondary.details_submitted_at && !paymentAccountDetails.secondary.charges_enable_at"
+                                                   [class.text-danger]="!paymentAccountDetails.secondary.details_submitted_at"
+                                                   class="me-2"></i>
+                                                <span class="provider-status-text">{{ getProviderStatusExplanation(paymentAccountDetails.secondary) }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Manual Account Details -->
+                                    <div *ngIf="paymentAccountDetails.secondary.type === 'manual'" class="account-details">
+                                        <div class="detail-row">
+                                            <span class="detail-label">{{ lang === 'ar' ? 'رمز سويفت' : 'SWIFT' }}</span>
+                                            <span class="detail-value card-number" [class.placeholder-value]="!paymentAccountDetails.secondary.swift_code">
+                                                {{ paymentAccountDetails.secondary.swift_code || 'XXXX XXXX XXX' }}
+                                            </span>
+                                        </div>
+                                        <div class="detail-row">
+                                            <span class="detail-label">{{ lang === 'ar' ? 'رقم الايبان' : 'IBAN' }}</span>
+                                            <span class="detail-value card-number" [class.placeholder-value]="!paymentAccountDetails.secondary.iban">
+                                                {{ paymentAccountDetails.secondary.iban || 'XXXX XXXX XXXX XXXX XXXX' }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Click to Switch Action -->
+                                <div class="switch-action">
+                                    <span class="switch-text">{{ lang === 'ar' ? 'انقر للتبديل' : 'Click to Switch' }}</span>
+                                    <i class="bi bi-arrow-right-circle text-info"></i>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="col-xxl-1"></div>
+                    </div>
+
+                    <div *ngIf="!paymentAccountLoading && paymentAccountError" class="alert alert-light-danger d-flex align-items-center p-5 mt-4">
+                        <i class="bi bi-exclamation-triangle fs-2hx text-danger me-4"></i>
+                        <div class="d-flex flex-column">
+                            <h4 class="mb-1 text-danger">{{ 'PAYMENT_ACCOUNT.ERROR_TITLE' | translate }}</h4>
+                            <span>{{ paymentAccountError }}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+        
         <div class="action-footer bg-light">
             <button class="btn btn-sm btn-info" *ngIf="!paymentAccountLoading && !paymentAccountDetails" (click)="navigateToSetupPayment()">
                 {{ 'PAYMENT_ACCOUNT.ADD_DETAILS_BUTTON' | translate }}

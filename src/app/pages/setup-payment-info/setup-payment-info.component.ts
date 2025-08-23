@@ -17,12 +17,20 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
   paymentTypes = [
     {
       id: 'manual',
-      name: { en: 'Manual', ar: 'يدوي' },
-      imageUrl: 'https://res.cloudinary.com/dsiku9ipv/image/upload/v1754912766/payment-method_4689897_zrev9z.png'
+      name: { en: 'Bank Account Setup', ar: 'إعداد حساب بنكي' },
+      description: { 
+        en: 'Set up direct bank transfers with manual verification and processing', 
+        ar: 'إعداد التحويلات البنكية المباشرة مع التحقق والمعالجة اليدوية' 
+      },
+      imageUrl: 'https://res.cloudinary.com/dsiku9ipv/image/upload/v1755933067/bank-account_18410123_jbdogp.png'
     },
     {
-      id: 'stripe', 
-      name: { en: 'Stripe', ar: 'Stripe' },
+      id: 'provider', 
+      name: { en: 'Stripe Provider', ar: "مزود سترايب" },
+      description: { 
+        en: 'Automated payment processing with instant transfers via Stripe platform', 
+        ar: 'معالجة المدفوعات الآلية مع التحويلات الفورية عبر منصة سترايب' 
+      },
       imageUrl: 'https://res.cloudinary.com/dsiku9ipv/image/upload/v1754902439/New_Project_12_jmtvd6.png'
     }
   ];
@@ -55,6 +63,7 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
   canResendOtp: boolean = true;
   isSubmittingOtp: boolean = false;
   isOtpForLinkAccount: boolean = false;
+  isWaitingForRedirect: boolean = false;
 
   // Stripe onboarding status
   stripeOnboardingStatus: any = null;
@@ -108,7 +117,7 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
     this.selectedCountry = null;
     this.paymentForm.patchValue({ countryId: '' });
     
-    if (type === 'stripe') {
+    if (type === 'provider') {
       this.loadStripeCountries();
       this.checkStripeOnboardingStatus();
     } else {
@@ -132,13 +141,13 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
 
   filterCountries() {
     if (!this.searchTerm) {
-      this.filteredCountries = this.selectedPaymentType === 'stripe' 
+      this.filteredCountries = this.selectedPaymentType === 'provider' 
         ? [...this.stripeCountries] 
         : [...this.allCountries];
       return;
     }
 
-    const countries = this.selectedPaymentType === 'stripe' ? this.stripeCountries : this.allCountries;
+    const countries = this.selectedPaymentType === 'provider' ? this.stripeCountries : this.allCountries;
     this.filteredCountries = countries.filter(country => {
       const name = this.getCountryName(country).toLowerCase();
       return name.includes(this.searchTerm.toLowerCase());
@@ -146,7 +155,7 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
   }
 
   getCountryName(country: any): string {
-    if (this.selectedPaymentType === 'stripe') {
+    if (this.selectedPaymentType === 'provider') {
       return country.name;
     } else {
       return this.lang === 'ar' ? country.names?.ar : country.names?.en;
@@ -160,7 +169,7 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
   onNext() {
     if (this.paymentForm.valid && this.termsAgreed) {
       const formData = {
-        type: this.selectedPaymentType as 'manual' | 'stripe',
+        type: this.selectedPaymentType as 'manual' | 'provider',
         country_id: this.selectedCountry.id,
         accept_terms: this.termsAgreed
       };
@@ -175,7 +184,7 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
           // Navigate to appropriate next step
           if (this.selectedPaymentType === 'manual') {
             this.router.navigate(['/app/setup-payment-info/manual-account']);
-          } else if (this.selectedPaymentType === 'stripe') {
+          } else if (this.selectedPaymentType === 'provider') {
             this.initiateStripeOnboarding();
           }
         },
@@ -206,17 +215,43 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
   }
 
   private initiateStripeOnboarding() {
-    // Check if we should use link account API or create account API
-    if (this.stripeOnboardingStatus && this.stripeOnboardingStatus.account && !this.stripeOnboardingStatus.details_submitted_at) {
-      // Use link account API - set flag for OTP dialog
-      this.isOtpForLinkAccount = true;
-    } else {
-      // Use create account API 
-      this.isOtpForLinkAccount = false;
-    }
-    
-    // Show OTP dialog
-    this.showOtpDialog = true;
+    // First check account details to see if primary account type is stripe
+    this.paymentService.getAccountDetails().subscribe({
+      next: (response) => {
+        if (response?.data?.primary?.type === 'stripe') {
+          // Primary account is stripe, check stripe_account boolean in secondary
+          const stripeAccount = response.data.secondary?.stripe_account;
+          if (stripeAccount === false) {
+            // Need to create stripe account first
+            this.isOtpForLinkAccount = false;
+          } else {
+            // Can use link account API
+            this.isOtpForLinkAccount = true;
+          }
+        } else {
+          // Check existing onboarding status logic
+          if (this.stripeOnboardingStatus && this.stripeOnboardingStatus.account && !this.stripeOnboardingStatus.details_submitted_at) {
+            // Use link account API - set flag for OTP dialog
+            this.isOtpForLinkAccount = true;
+          } else {
+            // Use create account API 
+            this.isOtpForLinkAccount = false;
+          }
+        }
+        
+        // Show OTP dialog
+        this.showOtpDialog = true;
+      },
+      error: (error) => {
+        // Fallback to existing logic if account details not available
+        if (this.stripeOnboardingStatus && this.stripeOnboardingStatus.account && !this.stripeOnboardingStatus.details_submitted_at) {
+          this.isOtpForLinkAccount = true;
+        } else {
+          this.isOtpForLinkAccount = false;
+        }
+        this.showOtpDialog = true;
+      }
+    });
   }
   
   private createStripeAccountWithOtp(code: string) {
@@ -230,10 +265,10 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
             this.lang === 'ar' ? 'تم التحقق بنجاح' : 'Successfully Verified',
             this.lang === 'ar' ? 'سيتم توجيهك إلى Stripe لإكمال الإعداد' : 'Redirecting to Stripe to complete setup'
           );
+          this.isWaitingForRedirect = true;
           // Small delay to show success message before redirect
-          setTimeout(() => {
-            window.location.href = response.data.stripe_account_link.url;
-          }, 1500);
+          window.location.href = response.data.stripe_account_link.url;
+       
         } else {
           this.showError(
             this.lang === 'ar' ? 'حدث خطأ' : 'Error',
@@ -265,10 +300,9 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
             this.lang === 'ar' ? 'تم التحقق بنجاح' : 'Successfully Verified',
             this.lang === 'ar' ? 'سيتم توجيهك إلى Stripe لإكمال الإعداد' : 'Redirecting to Stripe to complete setup'
           );
+          this.isWaitingForRedirect = true;
           // Small delay to show success message before redirect
-          setTimeout(() => {
-            window.location.href = response.data.stripe_account_link.url;
-          }, 1500);
+          window.location.href = response.data.stripe_account_link.url;
         } else {
           this.showError(
             this.lang === 'ar' ? 'حدث خطأ' : 'Error',
@@ -286,14 +320,14 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
   loadExistingPaymentInfo() {
     this.isLoadingPaymentInfo = true;
     // Try to load payment details to check if user has existing setup
-    this.paymentService.getStripeAccountDetails().subscribe({
+    this.paymentService.getAccountDetails().subscribe({
       next: (response) => {
         // Check if response has data - API returns 201 with no data for new accounts
-        if (response && response.data) {
-          this.paymentInfo = response.data;
-          if(response.data.type === 'manual' && response.data.status === 'inactive'){
+        if (response && response.data && response.data.primary) {
+          this.paymentInfo = response.data.primary;
+          if(response.data.primary.type === 'manual' && response.data.primary.status === 'inactive'){
             this.hasExistingPayment = false;
-          }else{  
+          } else {  
             this.hasExistingPayment = true;
           }
           this.preSelectExistingInfo();
@@ -306,34 +340,11 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
         // If status is 201 with no response, consider as new account
         if (error.status === 201) {
           this.hasExistingPayment = false;
-          this.isLoadingPaymentInfo = false;
-          return;
+        } else {
+          // No existing payment setup found - this is fine
+          this.hasExistingPayment = false;
         }
-        
-        // If stripe fails, try manual account
-        this.paymentService.getManualAccountDetails().subscribe({
-          next: (response) => {
-            // Check if response has data - API returns 201 with no data for new accounts
-            if (response && response.data) {
-              this.paymentInfo = response.data;
-              this.hasExistingPayment = true;
-              this.preSelectExistingInfo();
-            } else {
-              this.hasExistingPayment = false;
-            }
-            this.isLoadingPaymentInfo = false;
-          },
-          error: (manualError) => {
-            // If status is 201 with no response, consider as new account
-            if (manualError.status === 201) {
-              this.hasExistingPayment = false;
-            } else {
-              // No existing payment setup found - this is fine
-              this.hasExistingPayment = false;
-            }
-            this.isLoadingPaymentInfo = false;
-          }
-        });
+        this.isLoadingPaymentInfo = false;
       }
     });
   }
@@ -349,7 +360,7 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
       }
       
       // Load appropriate countries
-      if (this.paymentInfo.type === 'stripe') {
+      if (this.paymentInfo.type === 'provider') {
         this.loadStripeCountries();
       } else {
         this.filteredCountries = [...this.allCountries];
@@ -364,8 +375,8 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
 
   onChangeToStripe() {
     // Reset selected info and show stripe setup
-    this.selectedPaymentType = 'stripe';
-    this.paymentForm.patchValue({ paymentType: 'stripe' });
+    this.selectedPaymentType = 'provider';
+    this.paymentForm.patchValue({ paymentType: 'provider' });
     this.selectedCountry = null;
     this.paymentForm.patchValue({ countryId: '' });
     this.loadStripeCountries();
@@ -387,6 +398,14 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
 
   onCompleteStripe() {
     this.router.navigate(['/app/setup-payment-info/stripe-callback/refresh']);
+  }
+
+  onCompleteStripeRedirect() {
+    this.isWaitingForRedirect = true;
+    // Small delay to show spinner before redirect
+    setTimeout(() => {
+      this.router.navigate(['/app/setup-payment-info/stripe-callback/refresh']);
+    }, 500);
   }
 
   // Terms & Conditions methods
@@ -442,6 +461,67 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
           );
         }
       });
+  }
+
+  printTerms(): void {
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      const termsTitle = this.lang === 'ar' ? 'شروط وأحكام الاتفاقية' : 'Terms & Conditions';
+      const printContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>${termsTitle}</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; }
+            h1 { color: #333; text-align: center; margin-bottom: 20px; }
+            .content { margin: 0 auto; max-width: 800px; }
+          </style>
+        </head>
+        <body>
+          <h1>${termsTitle}</h1>
+          <div class="content">${this.termsContent}</div>
+        </body>
+        </html>
+      `;
+      
+      printWindow.document.open();
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+      
+      setTimeout(() => {
+        printWindow.print();
+      }, 500);
+    } else {
+      this.showError(
+        this.lang === 'ar' ? 'خطأ' : 'Error',
+        this.lang === 'ar' ? 'لا يمكن فتح نافذة الطباعة. يرجى التحقق من إعدادات المتصفح.' : 'Could not open print window. Please check your browser settings.'
+      );
+    }
+  }
+
+  saveTerms(): void {
+    if (this.termsContent) {
+      const termsTitle = this.lang === 'ar' ? 'شروط-وأحكام-الاتفاقية' : 'Terms-and-Conditions';
+      const termsText = this.stripHtmlTags(this.termsContent);
+      
+      const blob = new Blob([termsText], { type: 'text/plain' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${termsTitle}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    }
+  }
+
+  private stripHtmlTags(html: string): string {
+    const tempElement = document.createElement('div');
+    tempElement.innerHTML = html;
+    return tempElement.textContent || tempElement.innerText || '';
   }
 
   private handleServerErrors(error: any) {

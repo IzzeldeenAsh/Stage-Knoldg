@@ -25,9 +25,9 @@ export class PaymentTypeGuard implements CanActivate {
     }
 
     // Try to get account details to check the type
-    return this.paymentService.getStripeAccountDetails().pipe(
+    return this.paymentService.getAccountDetails().pipe(
       map(response => {
-        if (response.data.type === expectedType) {
+        if (response.data.primary.type === expectedType) {
           return true;
         } else {
           // Redirect to the main setup payment page if type doesn't match
@@ -36,32 +36,18 @@ export class PaymentTypeGuard implements CanActivate {
         }
       }),
       catchError(() => {
-        // If stripe account details fail, try manual account details
-        return this.paymentService.getManualAccountDetails().pipe(
-          map(response => {
-            if (response.data.type === expectedType) {
-              return true;
-            } else {
-              // Redirect to the main setup payment page if type doesn't match
-              this.router.navigate(['/setup-payment-info']);
-              return false;
-            }
-          }),
-          catchError(() => {
-            // If both fail, redirect to main setup page
-            this.router.navigate(['/setup-payment-info']);
-            return of(false);
-          })
-        );
+        // If API call fails, redirect to main setup page
+        this.router.navigate(['/setup-payment-info']);
+        return of(false);
       })
     );
   }
 
-  private getExpectedTypeFromRoute(url: string): 'manual' | 'stripe' | null {
+  private getExpectedTypeFromRoute(url: string): 'manual' | 'provider' | null {
     if (url.includes('manual-account')) {
       return 'manual';
     } else if (url.includes('stripe-callback')) {
-      return 'stripe';
+      return 'provider';
     }
     return null;
   }

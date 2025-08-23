@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { KnowledgeService, KnowledgeTypeStatistic } from 'src/app/_fake/services/knowledge/knowledge.service';
 import { TranslationService } from 'src/app/modules/i18n';
 import {
@@ -31,7 +31,7 @@ export type PieChartOptions = {
 })
 export class KnowledgeTypesStatisticsComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild("chart") chart: ChartComponent;
-  
+  @Output() hasStatistics = new EventEmitter<boolean>();
   public pieChartOptions: Partial<PieChartOptions> = {
     series: [],
     chart: {
@@ -183,6 +183,11 @@ export class KnowledgeTypesStatisticsComponent implements OnInit, AfterViewInit,
     this.knowledgeService.getKnowledgeTypeStatistics().subscribe(
       (response) => {
         this.statistics = response.data;
+        if(!this.statistics.length){
+          this.hasStatistics.emit(false);
+        }else{
+          this.hasStatistics.emit(true);
+        }
         this.initChart();
         this.loading = false;
       },
@@ -193,6 +198,8 @@ export class KnowledgeTypesStatisticsComponent implements OnInit, AfterViewInit,
       }
     );
   }
+
+ 
 
   getTotalCount(): number {
     if (!this.statistics || this.statistics.length === 0) {

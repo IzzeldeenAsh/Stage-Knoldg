@@ -12,15 +12,31 @@
         <!-- Loading State -->
         <div *ngIf="isLoading" class="card-body text-center py-10">
           <div class="loading-container">
-            <div class="spinner-border text-info mb-4" role="status">
+            <div class="spinner-border text-info mb-4" role="status" style="width: 3rem; height: 3rem;">
               <span class="visually-hidden">Loading...</span>
             </div>
-            <h4 class="mb-3">
-              {{ lang === 'ar' ? 'جاري التحقق من حالة الحساب...' : 'Checking account status...' }}
-            </h4>
-            <p class="text-muted">
-              {{ lang === 'ar' ? 'يرجى الانتظار قليلاً' : 'Please wait a moment' }}
-            </p>
+            
+            <!-- Different messages based on action -->
+            <div *ngIf="action === 'refresh'">
+              <h4 class="mb-3">
+                {{ lang === 'ar' ? 'جاري إعداد حساب Stripe...' : 'Setting up Stripe account...' }}
+              </h4>
+              <p class="text-muted mb-2">
+                {{ lang === 'ar' ? 'تم إرسال رمز التحقق إلى بريدك الإلكتروني' : 'Verification code sent to your email' }}
+              </p>
+              <p class="text-muted">
+                {{ lang === 'ar' ? 'يرجى الانتظار قليلاً' : 'Please wait a moment' }}
+              </p>
+            </div>
+            
+            <div *ngIf="action !== 'refresh'">
+              <h4 class="mb-3">
+                {{ lang === 'ar' ? 'جاري التحقق من حالة الحساب...' : 'Checking account status...' }}
+              </h4>
+              <p class="text-muted">
+                {{ lang === 'ar' ? 'يرجى الانتظار قليلاً' : 'Please wait a moment' }}
+              </p>
+            </div>
           </div>
         </div>
 
@@ -159,7 +175,7 @@
       />
       <div class="form-text text-muted mt-2">
         <i class="fas fa-envelope me-1"></i>
-        {{ lang === 'ar' ? 'تحقق من بريدك الإلكتروني ومجلد الرسائل المزعجة' : 'Check your email and spam folder' }}
+        {{ lang === 'ar' ? 'تحقق من بريدك الإلكتروني ومجلد الرسائل المزعجة (تنتهي فعالية الكود في 1 ساعة)' : 'Check your email and spam folder (Code expires in 1 hour)' }}
       </div>
     </div>
 
