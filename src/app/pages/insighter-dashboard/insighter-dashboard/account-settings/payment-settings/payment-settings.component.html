@@ -32,7 +32,7 @@
                     <!-- Payment Cards Section -->
                     <div *ngIf="!paymentAccountLoading && paymentAccountDetails" class="row g-3 g-md-4 p-2 p-md-3">
                         <!-- Primary Account Card -->
-                        <div class="col-12 col-lg-6 col-xxl-5 offset-xxl-1">
+                        <div class="col-12 col-lg-6 ">
                             <div class="payment-card primary-card">
                                 <!-- Selected Indicator -->
                                 <div class="card-selected-indicator">
@@ -121,7 +121,7 @@
                             </div>
                         </div>
                         <!-- Secondary Account Card -->
-                        <div class="col-12 col-lg-6 col-xxl-5" *ngIf="paymentAccountDetails.secondary">
+                        <div class="col-12 col-lg-6" *ngIf="paymentAccountDetails.secondary">
                             <div class="payment-card secondary-card" (click)="onSecondaryCardClick()">
                                 <!-- Card Top Section -->
                                 <div class="card-top">
@@ -203,7 +203,6 @@
                                 </div>
                             </div>
                         </div>
-                         <div class="col-xxl-1"></div>
                     </div>
 
                     <div *ngIf="!paymentAccountLoading && paymentAccountError" class="alert alert-light-danger d-flex align-items-center p-5 mt-4">
