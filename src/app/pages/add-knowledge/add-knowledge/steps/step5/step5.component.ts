@@ -6,7 +6,7 @@ import { BaseComponent } from 'src/app/modules/base.component';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import { TranslateService } from '@ngx-translate/core';
 import { TooltipModule } from 'primeng/tooltip';
-import { PaymentService, StripeAccountDetailsResponse, ManualAccountDetailsResponse } from 'src/app/_fake/services/payment/payment.service';
+import { PaymentService, AccountDetailsResponse } from 'src/app/_fake/services/payment/payment.service';
 
 @Component({
   selector: 'app-step5',
@@ -83,7 +83,7 @@ export class Step5Component extends BaseComponent implements OnInit {
   userProfile: any = null;
   timeError: string = '';
   hasOnlyTwoOptions: boolean = false;
-  paymentAccountDetails: StripeAccountDetailsResponse['data'] | ManualAccountDetailsResponse['data'] | null = null;
+  paymentAccountDetails: AccountDetailsResponse['data'] | null = null;
   paymentAccountLoading: boolean = false;
   paymentAccountError: string | null = null;
   hasActivePaymentAccount: boolean = false;
@@ -93,14 +93,20 @@ export class Step5Component extends BaseComponent implements OnInit {
   dateFormat: string = 'yy-mm-dd';
 
   get isStripeAccountUnderVerification(): boolean {
-    return this.paymentAccountDetails?.type === 'stripe' && 
-           this.paymentAccountDetails?.status === 'inactive' && 
-           (this.paymentAccountDetails as StripeAccountDetailsResponse['data'])?.details_submitted_at !== null &&
-           (this.paymentAccountDetails as StripeAccountDetailsResponse['data'])?.charges_enable_at === null;
+    return this.paymentAccountDetails?.primary?.type === 'provider' && 
+           this.paymentAccountDetails?.primary?.status === 'inactive' && 
+           this.paymentAccountDetails?.secondary?.details_submitted_at !== null &&
+           this.paymentAccountDetails?.secondary?.charges_enable_at === null;
+  }
+
+  get isStripeAccountIncomplete(): boolean {
+    return this.paymentAccountDetails?.primary?.type === 'provider' && 
+           this.paymentAccountDetails?.primary?.status === 'inactive' && 
+           this.paymentAccountDetails?.secondary?.details_submitted_at === null;
   }
 
   get isManualAccountInactive(): boolean {
-    return this.paymentAccountDetails?.type === 'manual' && this.paymentAccountDetails?.status === 'inactive';
+    return this.paymentAccountDetails?.primary?.type === 'manual' && this.paymentAccountDetails?.primary?.status === 'inactive';
   }
 
   get shouldShowPaymentWarning(): boolean {
@@ -120,7 +126,7 @@ export class Step5Component extends BaseComponent implements OnInit {
     }, true);
     
     // Redirect to setup payment info
-    this.router.navigate(['/app/setup-payment-info']);
+    this.router.navigate(['/app/insighter-dashboard/account-settings/payment-settings']);
   }
 
   constructor(
@@ -146,9 +152,11 @@ export class Step5Component extends BaseComponent implements OnInit {
         'ACTIVE_ACCOUNT_REQUIRED_MESSAGE': 'You need an active payment account to publish or schedule your knowledge. Please set up your payment account first. In the meantime, you can save it as a draft.',
         'STRIPE_VERIFICATION_NOTICE': 'Account Under Verification',
         'STRIPE_VERIFICATION_MESSAGE': 'Your Stripe payment account is currently under verification. Once verified, you will be able to publish and schedule your knowledge. In the meantime, you can save it as a draft.',
+        'STRIPE_INCOMPLETE_NOTICE': 'Payment Account Setup Required',
+        'STRIPE_INCOMPLETE_MESSAGE': 'You need to complete your payment account setup to publish or schedule your knowledge. Please complete the account creation process first. In the meantime, you can save it as a draft.',
         'MANUAL_ACCOUNT_INACTIVE_NOTICE': 'Payment Account Required for Revenue',
-        'MANUAL_ACCOUNT_INACTIVE_MESSAGE': 'You do not have an active payment account. You can still build and publish your library but in order to get revenues or money you need to have an active account.',
-        'SAVE_DRAFT_AND_SETUP_ACCOUNT': 'Save as draft and go to Account creation',
+        'MANUAL_ACCOUNT_INACTIVE_MESSAGE': 'You do not have an active payment account. You can still build and publish your knowledge library, but to receive any revenue or payments, you need to set up an active payment account first.',
+        'SAVE_DRAFT_AND_SETUP_ACCOUNT': 'Save as draft and go to Payment Account creation',
         'SEND_TO_MANAGER': 'Send to Manager',
         'SEND_TO_MANAGER_DESC': 'Submit your knowledge for manager review before publishing.',
         'SCHEDULE_TIME_MIN_ERROR': 'Scheduled time must be at least 1 hour from now',
@@ -160,9 +168,11 @@ export class Step5Component extends BaseComponent implements OnInit {
         'ACTIVE_ACCOUNT_REQUIRED_MESSAGE': 'تحتاج إلى حساب دفع نشط لنشر أو جدولة المعرفة الخاصة بك. يرجى إعداد حساب الدفع الخاص بك أولاً. في غضون ذلك، يمكنك حفظها كمسودة.',
         'STRIPE_VERIFICATION_NOTICE': 'الحساب قيد التحقق',
         'STRIPE_VERIFICATION_MESSAGE': 'حساب الدفع الخاص بك عبر Stripe قيد التحقق حالياً. بمجرد التحقق منه، ستتمكن من نشر وجدولة المعرفة الخاصة بك. في غضون ذلك، يمكنك حفظها كمسودة.',
+        'STRIPE_INCOMPLETE_NOTICE': 'مطلوب إعداد حساب الدفع',
+        'STRIPE_INCOMPLETE_MESSAGE': 'تحتاج إلى إكمال إعداد حساب الدفع الخاص بك لنشر أو جدولة المعرفة الخاصة بك. يرجى إكمال عملية إنشاء الحساب أولاً. في غضون ذلك، يمكنك حفظها كمسودة.',
         'MANUAL_ACCOUNT_INACTIVE_NOTICE': 'مطلوب حساب دفع للإيرادات',
-        'MANUAL_ACCOUNT_INACTIVE_MESSAGE': 'ليس لديك حساب دفع نشط. لا يزال بإمكانك بناء ونشر مكتبتك ولكن للحصول على إيرادات أو أموال تحتاج إلى حساب نشط.',
-        'SAVE_DRAFT_AND_SETUP_ACCOUNT': 'حفظ كمسودة والانتقال إلى إنشاء الحساب',
+        'MANUAL_ACCOUNT_INACTIVE_MESSAGE': 'ليس لديك حساب دفع نشط. لا يزال بإمكانك بناء ونشر مكتبتك ولكن للحصول على إيرادات أو أموال تحتاج إلى حساب دفع نشط.',
+        'SAVE_DRAFT_AND_SETUP_ACCOUNT': 'حفظ كمسودة والانتقال إلى إنشاء معلومات الدفع',
         'SEND_TO_MANAGER': 'إرسال إلى المدير',
         'SEND_TO_MANAGER_DESC': 'أرسل المعرفة الخاصة بك للمراجعة من قبل المدير قبل النشر.',
         'SCHEDULE_TIME_MIN_ERROR': 'يجب أن يكون وقت الجدولة ساعة واحدة على الأقل من الآن',
@@ -219,38 +229,25 @@ export class Step5Component extends BaseComponent implements OnInit {
     this.paymentAccountLoading = true;
     this.paymentAccountError = null;
 
-    const subscription = this.paymentService.getStripeAccountDetails().subscribe({
-      next: (response: StripeAccountDetailsResponse) => {
+    const subscription = this.paymentService.getAccountDetails().subscribe({
+      next: (response: AccountDetailsResponse) => {
         this.paymentAccountDetails = response.data;
-        this.hasActivePaymentAccount = response.data.status === 'active';
+        this.hasActivePaymentAccount = response.data.primary.status === 'active';
         this.paymentAccountLoading = false;
         this.cdr.detectChanges();
         callback();
       },
-      error: (stripeError: any) => {
-        // If stripe fails, try manual account
-        const manualSubscription = this.paymentService.getManualAccountDetails().subscribe({
-          next: (response: ManualAccountDetailsResponse) => {
-            this.paymentAccountDetails = response.data;
-            this.hasActivePaymentAccount = response.data.status === 'active';
-            this.paymentAccountLoading = false;
-            this.cdr.detectChanges();
-            callback();
-          },
-          error: (manualError: any) => {
-            if (stripeError.status === 404 && manualError.status === 404) {
-              this.paymentAccountDetails = null;
-              this.hasActivePaymentAccount = false;
-            } else {
-              this.paymentAccountError = this.lang === 'ar' ? 'فشل في تحميل بيانات حساب الدفع' : 'Failed to load payment account details';
-              this.hasActivePaymentAccount = false;
-            }
-            this.paymentAccountLoading = false;
-            this.cdr.detectChanges();
-            callback();
-          }
-        });
-        this.unsubscribe.push(manualSubscription);
+      error: (error: any) => {
+        if (error.status === 404) {
+          this.paymentAccountDetails = null;
+          this.hasActivePaymentAccount = false;
+        } else {
+          this.paymentAccountError = this.lang === 'ar' ? 'فشل في تحميل بيانات حساب الدفع' : 'Failed to load payment account details';
+          this.hasActivePaymentAccount = false;
+        }
+        this.paymentAccountLoading = false;
+        this.cdr.detectChanges();
+        callback();
       }
     });
     this.unsubscribe.push(subscription);
@@ -659,10 +656,6 @@ export class Step5Component extends BaseComponent implements OnInit {
     return this.publishForm.get('publishOption')?.valid || false;
   }
 
-  private validateDateTime() {
-    // This method is kept for backward compatibility but functionality moved to validators
-    this.updateTimeError();
-  }
 
   /**
    * Validates the form and marks all fields as touched to show validation errors

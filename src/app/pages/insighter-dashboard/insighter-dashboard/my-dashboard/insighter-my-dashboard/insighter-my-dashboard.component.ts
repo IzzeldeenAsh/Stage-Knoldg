@@ -10,7 +10,7 @@ import { BaseComponent } from 'src/app/modules/base.component';
 export class InsighterMyDashboardComponent extends BaseComponent {
   profile: IKnoldgProfile;
   hasPendingActivationRequest: boolean = false;
-  
+  userHasStatistics: boolean = false;
   constructor(injector: Injector, private profileService: ProfileService) {
     super(injector);
   }
@@ -26,4 +26,8 @@ export class InsighterMyDashboardComponent extends BaseComponent {
   isActiveInsighter(): boolean {
     return this.profile.status === 'active';
   }
+
+  hasStatistics(event: boolean) {
+    this.userHasStatistics = event;
+}
 }

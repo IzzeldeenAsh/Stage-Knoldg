@@ -1,17 +1,18 @@
-import { Component, Injector, OnInit } from '@angular/core';
+import { Component, Injector, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { PaymentService, ManualAccountRequest } from 'src/app/_fake/services/payment/payment.service';
 import { CountriesService, Country } from 'src/app/_fake/services/countries/countries.service';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
+import { PhoneNumberInputComponent } from 'src/app/reusable-components/phone-number-input/phone-number-input.component';
 
 @Component({
   selector: 'app-manual-account',
   templateUrl: './manual-account.component.html',
   styleUrls: ['./manual-account.component.scss']
 })
-export class ManualAccountComponent extends BaseComponent implements OnInit {
+export class ManualAccountComponent extends BaseComponent implements OnInit, AfterViewInit {
   manualAccountForm: FormGroup;
   showValidationErrors: boolean = false;
   isEditing: boolean = false;
@@ -21,6 +22,9 @@ export class ManualAccountComponent extends BaseComponent implements OnInit {
   isCompanyAccount: boolean = false;
   resendCooldown: number = 0;
   canResendOtp: boolean = true;
+  formattedPhoneNumber: string = ''; // Store the formatted phone number
+
+  @ViewChild('phoneInput') phoneInput!: PhoneNumberInputComponent;
 
   constructor(
     injector: Injector,
@@ -46,6 +50,15 @@ export class ManualAccountComponent extends BaseComponent implements OnInit {
     this.loadUserProfile();
     this.loadCountries();
     this.loadExistingData();
+  }
+
+  ngAfterViewInit() {
+    // Update phone input component after data is loaded
+    if (this.isEditing && this.phoneInput) {
+      setTimeout(() => {
+        this.updatePhoneInputDisplay();
+      });
+    }
   }
 
   loadUserProfile() {
@@ -77,8 +90,24 @@ export class ManualAccountComponent extends BaseComponent implements OnInit {
   loadExistingData() {
     this.paymentService.getManualAccountDetails().subscribe({
       next: (response) => {
-        this.existingData = response.data;
+        this.existingData = response.data?.primary || response.data;
         this.isEditing = true;
+        
+        // Parse phone number to extract country code and number
+        let countryCode = '';
+        let phoneNumber = '';
+        
+        if (this.existingData.phone) {
+          // Parse formatted phone like "(+212)543-534-5353"
+          const phoneMatch = this.existingData.phone.match(/\(\+(\d+)\)(.+)/);
+          if (phoneMatch) {
+            countryCode = phoneMatch[1]; // Extract country code without +
+            phoneNumber = phoneMatch[2]; // Extract the formatted number part
+          }
+        }
+        
+        // Store the original formatted phone for submission
+        this.formattedPhoneNumber = this.existingData.phone || '';
         
         // Pre-fill form with existing data
         this.manualAccountForm.patchValue({
@@ -86,9 +115,14 @@ export class ManualAccountComponent extends BaseComponent implements OnInit {
           iban: this.existingData.iban || '',
           address: this.existingData.address || '',
           swift_code: this.existingData.swift_code || '',
-          phoneCountryCode: this.existingData.phone_country_code || '',
-          phoneNumber: this.existingData.phone_number || '',
+          phoneCountryCode: countryCode,
+          phoneNumber: phoneNumber.replace(/\D/g, ''), // Clean digits only for form
           code: this.existingData.code || ''
+        });
+
+        // Update phone input component after form is patched
+        setTimeout(() => {
+          this.updatePhoneInputDisplay();
         });
       },
       error: () => {
@@ -105,7 +139,7 @@ export class ManualAccountComponent extends BaseComponent implements OnInit {
         iban: this.manualAccountForm.value.iban.replace(/\s+/g, ''), // Remove all spaces from IBAN
         address: this.manualAccountForm.value.address,
         swift_code: this.manualAccountForm.value.swift_code,
-        phone: `${this.manualAccountForm.value.phoneCountryCode}${this.manualAccountForm.value.phoneNumber}`,
+        phone: this.formattedPhoneNumber || `${this.manualAccountForm.value.phoneCountryCode}${this.manualAccountForm.value.phoneNumber}`,
         code: this.manualAccountForm.value.code
       };
 
@@ -152,6 +186,27 @@ export class ManualAccountComponent extends BaseComponent implements OnInit {
     this.manualAccountForm.get('phoneNumber')?.setValue(phoneNumber);
   }
 
+  onFormattedPhoneNumberChange(formattedPhone: string) {
+    this.formattedPhoneNumber = formattedPhone;
+  }
+
+  updatePhoneInputDisplay() {
+    if (this.phoneInput) {
+      const countryCode = this.manualAccountForm.get('phoneCountryCode')?.value;
+      const phoneNumber = this.manualAccountForm.get('phoneNumber')?.value;
+      
+      if (countryCode) {
+        this.phoneInput.countryCode = countryCode;
+        this.phoneInput.updateMask();
+        this.phoneInput.updatePlaceholder();
+      }
+      
+      if (phoneNumber) {
+        this.phoneInput.value = phoneNumber;
+      }
+    }
+  }
+
   onFlagError(country: any) {
     country.showFlag = false;
   }
@@ -160,7 +215,7 @@ export class ManualAccountComponent extends BaseComponent implements OnInit {
     if (!this.canResendOtp) return;
 
     this.paymentService.resendOtp().subscribe({
-      next: (response) => {
+      next: () => {
         this.showSuccess(
           this.lang === 'ar' ? 'تم الإرسال بنجاح' : 'Successfully Sent',
           this.lang === 'ar' ? 'تم إرسال رمز التحقق الجديد إلى بريدك الإلكتروني' : 'New verification code sent to your email'

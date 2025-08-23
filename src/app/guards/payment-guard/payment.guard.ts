@@ -54,18 +54,19 @@ export class PaymentGuard implements CanActivate {
 
     return this.http.get<any>('https://api.knoldg.com/api/insighter/payment/account/details', { headers }).pipe(
       map(response => {
-        if (response && response.data) {
-          const paymentData = response.data;
+        if (response && response.data && response.data.primary) {
+          const primaryData = response.data.primary;
+          const secondaryData = response.data.secondary;
           
           // Check if manual account is incomplete (missing IBAN)
-          if (paymentData.type === 'manual' &&  (paymentData.status === 'inactive' || !paymentData.iban)) {
+          if (primaryData.type === 'manual' && (primaryData.status === 'inactive' || !primaryData.iban)) {
             console.log('Payment Guard - Manual account incomplete, redirecting to manual-account setup');
             return this.router.createUrlTree(['/app/setup-payment-info/manual-account']);
           }
           
           // Check if stripe account is incomplete (status inactive and no charges_enable_at)
-          if (paymentData.type === 'stripe' && 
-              !paymentData.details_submitted_at) {
+          if (primaryData.type === 'provider' && 
+              !secondaryData.details_submitted_at) {
             console.log('Payment Guard - Stripe account incomplete, redirecting to stripe-callback');
             return this.router.createUrlTree(['/app/setup-payment-info/stripe-callback/refresh']);
           }

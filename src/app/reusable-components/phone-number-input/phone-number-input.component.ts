@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, forwardRef, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, forwardRef, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 interface PhoneMaskConfig {
@@ -18,7 +18,7 @@ interface PhoneMaskConfig {
     }
   ]
 })
-export class PhoneNumberInputComponent implements ControlValueAccessor, OnInit {
+export class PhoneNumberInputComponent implements ControlValueAccessor, OnInit, OnChanges {
   @Input() countries: any[] = [];
   @Input() placeholder: string = 'Your phone number';
   @Input() searchPlaceholder: string = 'Search countries...';
@@ -28,9 +28,12 @@ export class PhoneNumberInputComponent implements ControlValueAccessor, OnInit {
   @Input() showValidationErrors: boolean = true;
   @Input() countryCodeError: string = '';
   @Input() phoneNumberError: string = '';
+  @Input() initialCountryCode: string = '';
+  @Input() initialPhoneNumber: string = '';
 
   @Output() countryCodeChange = new EventEmitter<string>();
   @Output() phoneNumberChange = new EventEmitter<string>();
+  @Output() formattedPhoneNumberChange = new EventEmitter<string>();
   @Output() flagError = new EventEmitter<any>();
 
   value: string = '';
@@ -72,8 +75,28 @@ export class PhoneNumberInputComponent implements ControlValueAccessor, OnInit {
   constructor() {}
 
   ngOnInit(): void {
+    this.setInitialValues();
     this.updateMask();
     this.updatePlaceholder();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['initialCountryCode'] || changes['initialPhoneNumber']) {
+      this.setInitialValues();
+      if (changes['initialCountryCode']) {
+        this.updateMask();
+        this.updatePlaceholder();
+      }
+    }
+  }
+
+  private setInitialValues(): void {
+    if (this.initialCountryCode) {
+      this.countryCode = this.initialCountryCode;
+    }
+    if (this.initialPhoneNumber) {
+      this.value = this.initialPhoneNumber;
+    }
   }
 
   // ControlValueAccessor implementation
@@ -105,9 +128,13 @@ export class PhoneNumberInputComponent implements ControlValueAccessor, OnInit {
     const cleanValue = value.replace(/\D/g, '');
     this.value = cleanValue;
     
+    // Emit the formatted phone number with country code
+    const fullFormattedPhone = `(+${this.countryCode})${value}`;
+    
     // Emit changes
     this.onChange(cleanValue);
     this.phoneNumberChange.emit(cleanValue);
+    this.formattedPhoneNumberChange.emit(fullFormattedPhone);
     this.onTouched();
   }
 
@@ -115,11 +142,11 @@ export class PhoneNumberInputComponent implements ControlValueAccessor, OnInit {
     this.flagError.emit(country);
   }
 
-  private updateMask(): void {
+  updateMask(): void {
     this.currentMask = this.phoneMasks[this.countryCode]?.mask || this.phoneMasks['default'].mask;
   }
 
-  private updatePlaceholder(): void {
+  updatePlaceholder(): void {
     this.currentPlaceholder = this.placeholderExamples[this.countryCode] || this.placeholderExamples['default'];
   }
 

@@ -1555,7 +1555,7 @@ UPLOAD: 'Upload',
     "DETAILS_SUBMITTED": "Details Submitted",
     "CHARGES_ENABLED": "Charges Enabled",
     "ERROR_TITLE": "Unable to Load Payment Details",
-    "EDIT_BUTTON": "Edit Payment Info",
+    "EDIT_BUTTON": "Update Payment Info",
     "ADD_DETAILS_BUTTON": "Add Payment Details"
   }
   },

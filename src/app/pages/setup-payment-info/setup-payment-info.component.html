@@ -1,7 +1,7 @@
 <p-toast></p-toast>
 <app-payment-header 
-  [title]="lang === 'ar' ? 'إعداد محفظة الدفع' : 'Setup Payment Wallet'"
-  [subtitle]="lang === 'ar' ? 'اختر طريقة الدفع المناسبة لك وقم بإعداد محفظتك الإلكترونية بسهولة وأمان' : 'Choose your preferred payment method and setup your digital wallet easily and securely'">
+  [title]="lang === 'ar' ? 'إعداد حساب الدفع' : 'Setup Payment Account'"
+  [subtitle]="lang === 'ar' ? 'اختر طريقة الدفع المناسبة لك وقم بإعداد حسابك البنكي بسهولة وأمان' : 'Choose your preferred payment method and setup your digital wallet easily and securely'">
 </app-payment-header>
 
 <div style="padding-top:50px" class="gradient-background ">
@@ -33,12 +33,29 @@
               <div class="payment-warning-card">
                 <div class="text-center mb-4">
                   <i class="fas fa-info-circle text-primary fs-1 mb-3"></i>
-                  <h4 class="mb-2">
-                    {{ lang === 'ar' ? 'لديك حساب دفع نشط بالفعل' : 'You have an active payment account' }}
-                  </h4>
-                  <p class="text-muted mb-3">
-                    {{ lang === 'ar' ? 'أي تغيير سيؤثر على الإعدادات الحالية' : 'Any changes will override your current settings' }}
-                  </p>
+                  
+                  <!-- Active account message -->
+                  <div *ngIf="paymentInfo.status === 'active'">
+                    <h4 class="mb-2">
+                      {{ lang === 'ar' ? 'لديك حساب دفع نشط بالفعل' : 'You have an active payment account' }}
+                    </h4>
+                    <p class="text-muted mb-3">
+                      {{ lang === 'ar' ? 'أي تغيير سيؤثر على الإعدادات الحالية' : 'Any changes will override your current settings' }}
+                    </p>
+                  </div>
+                  
+                  <!-- Inactive Stripe account message -->
+                  <div *ngIf="paymentInfo.type === 'provider' && paymentInfo.status === 'inactive'">
+                    <h4 class="mb-2">
+                      {{ lang === 'ar' ? 'لديك حساب Stripe غير مكتمل' : 'You have an incomplete Stripe account' }}
+                    </h4>
+                    <p class="text-muted mb-3" *ngIf="paymentInfo.details_submitted_at === null">
+                      {{ lang === 'ar' ? 'يجب إكمال إعداد حساب Stripe الخاص بك' : 'You need to complete your Stripe account setup' }}
+                    </p>
+                    <p class="text-muted mb-3" *ngIf="paymentInfo.details_submitted_at !== null">
+                      {{ lang === 'ar' ? 'حسابك قيد المراجعة من قبل Stripe' : 'Your account is under review by Stripe' }}
+                    </p>
+                  </div>
                   <div class="payment-type-info">
                     <span class="badge bg-light text-dark">
                       {{ paymentInfo.type === 'manual' ? (lang === 'ar' ? 'حساب يدوي' : 'Manual Account') : 'Stripe Account' }}
@@ -61,7 +78,7 @@
                   </div>
                   
                   <!-- Stripe Account Actions -->
-                  <div *ngIf="paymentInfo.type === 'stripe'">
+                  <div *ngIf="paymentInfo.type === 'provider'">
                     <div *ngIf="paymentInfo.status === 'active'" class="d-flex justify-content-center gap-3 flex-wrap">
                       <button class="btn btn-primary" (click)="onCompleteStripe()">
                         <i class="fas fa-edit me-2"></i>
@@ -73,11 +90,38 @@
                       </button>
                     </div>
                     
-                    <div *ngIf="paymentInfo.status === 'inactive'" class="d-flex justify-content-center gap-3 flex-wrap">
-                      <button class="btn btn-success" (click)="onCompleteStripe()">
-                        <i class="fas fa-check me-2"></i>
-                        {{ lang === 'ar' ? 'إكمال Stripe' : 'Complete Stripe Setup' }}
-                      </button>
+                    <!-- Show Complete Stripe Setup if details not submitted -->
+                    <div *ngIf="paymentInfo.status === 'inactive' && paymentInfo.details_submitted_at === null">
+                      <!-- Redirect Spinner -->
+                      <div *ngIf="isWaitingForRedirect" class="text-center py-4">
+                        <div class="spinner-border text-success" role="status" style="width: 3rem; height: 3rem;">
+                          <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <div class="mt-3">
+                          <h5 class="text-gray-700">
+                            {{ lang === 'ar' ? 'جاري التوجيه لإكمال Stripe...' : 'Redirecting to complete Stripe...' }}
+                          </h5>
+                          <p class="text-muted">
+                            {{ lang === 'ar' ? 'يرجى الانتظار' : 'Please wait' }}
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <!-- Action Buttons -->
+                      <div *ngIf="!isWaitingForRedirect" class="d-flex justify-content-center gap-3 flex-wrap">
+                        <button class="btn btn-success" (click)="onCompleteStripeRedirect()">
+                          <i class="fas fa-check me-2"></i>
+                          {{ lang === 'ar' ? 'إكمال Stripe' : 'Complete Stripe' }}
+                        </button>
+                        <button class="btn btn-outline-info" (click)="onChangeToManual()">
+                          <i class="fas fa-exchange-alt me-2"></i>
+                          {{ lang === 'ar' ? 'تغيير إلى يدوي' : 'Switch to Manual' }}
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <!-- Show waiting for approval message if details submitted but account inactive -->
+                    <div *ngIf="paymentInfo.status === 'inactive' && paymentInfo.details_submitted_at !== null" class="text-center">
                       <button class="btn btn-outline-info" (click)="onChangeToManual()">
                         <i class="fas fa-exchange-alt me-2"></i>
                         {{ lang === 'ar' ? 'تغيير إلى يدوي' : 'Switch to Manual' }}
@@ -100,27 +144,38 @@
                 {{ lang === 'ar' ? 'اختر طريقة الدفع المفضلة لديك' : 'Choose your preferred payment method' }}
               </p>
               
-              <div class="row g-4">
-                <div class="col-md-6" *ngFor="let type of paymentTypes">
-                  <div 
-                    class="payment-type-card"
-                    [class.selected]="selectedPaymentType === type.id"
-                    (click)="selectPaymentType(type.id)">
-                    
-                    <div class="payment-type-content">
-                      <div class="payment-type-icon">
-                        <img [src]="type.imageUrl" alt="Payment method icon" class="payment-icon" />
-                      </div>
-                      <div class="payment-type-name">
-                        {{ lang === 'ar' ? type.name.ar : type.name.en }}
-                      </div>
+              <div class="row">
+                <div class="col-lg-6 mb-4" *ngFor="let type of paymentTypes">
+                  <input 
+                    name="paymentType"
+                    type="radio"
+                    class="btn-check"
+                    [id]="type.id"
+                    [value]="type.id"
+                    [checked]="selectedPaymentType === type.id"
+                    (change)="selectPaymentType(type.id)"
+                  />
+                  <label
+                    class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center position-relative hover-elevate-up shadow-sm rounded-3 transition h-100"
+                    [for]="type.id"
+                    style="cursor: pointer"
+                  >
+                    <!-- Payment type icon -->
+                    <div class="mx-5 my-5">
+                      <img [src]="type.imageUrl" alt="Payment method icon" style="width: 38px; height: 38px; object-fit: contain;" />
                     </div>
                     
-                    <!-- Blue check icon for selected -->
-                    <div class="payment-type-check" *ngIf="selectedPaymentType === type.id">
-                      <i class="fas fa-check"></i>
-                    </div>
-                  </div>
+                    <span class="d-block fw-bold text-inline-start">
+                      <div class="d-flex justify-content-between">
+                        <span class="text-gray-900 fw-bolder d-block fs-4 mb-2">
+                          {{ lang === 'ar' ? type.name.ar : type.name.en }}
+                        </span>
+                      </div>
+                      <span class="text-gray-500 fw-bold fs-6">
+                        {{ lang === 'ar' ? type.description.ar : type.description.en }}
+                      </span>
+                    </span>
+                  </label>
                 </div>
               </div>
               
@@ -312,8 +367,21 @@
     [closable]="true" 
     [draggable]="false" 
     [resizable]="false"
-    [style]="{width: '90vw', maxWidth: '800px'}"
-    header="{{ lang === 'ar' ? 'شروط وأحكام الاتفاقية' : 'Terms & Conditions' }}">
+    [style]="{width: '90vw', maxWidth: '800px'}">
+    
+    <ng-template pTemplate="header">
+      <div class="d-flex justify-content-between align-items-center w-100">
+        <h5 class="m-0">{{ lang === 'ar' ? 'شروط وأحكام الاتفاقية' : 'Terms & Conditions' }}</h5>
+        <div class="d-flex">
+          <button class="btn btn-sm btn-icon me-2" (click)="printTerms()">
+            <i class="ki-outline ki-printer fs-3"></i>
+          </button>
+          <button class="btn btn-sm btn-icon" (click)="saveTerms()">
+            <i class="ki-outline ki-save-2 fs-3"></i>
+          </button>
+        </div>
+      </div>
+    </ng-template>
 
     <div class="terms-content" style="max-height: 60vh; overflow-y: auto;">
       <div *ngIf="isLoadingTerms" class="text-center py-4">
@@ -359,56 +427,74 @@
     header="{{ lang === 'ar' ? 'تحقق من هويتك' : 'Verify Your Identity' }}">
 
     <div class="otp-content">
-      <div class="text-center mb-4">
-        <i class="fas fa-shield-check text-info fs-2 mb-3"></i>
-        <h5 class="mb-2">
-          {{ lang === 'ar' ? 'أدخل رمز التحقق' : 'Enter Verification Code' }}
-        </h5>
-        <p class="text-muted">
-          {{ lang === 'ar' ? 'لقد أرسلنا رمز التحقق إلى بريدك الإلكتروني' : 'We sent a verification code to your email' }}
-        </p>
-      </div>
-
-      <div class="mb-4">
-        <label class="form-label required">
-          {{ lang === 'ar' ? 'رمز التحقق' : 'Verification Code' }}
-        </label>
-        <input
-          type="text"
-          class="form-control text-center"
-          [(ngModel)]="otpCode"
-          [placeholder]="lang === 'ar' ? 'أدخل الرمز' : 'Enter code'"
-          maxlength="10"
-          (keypress)="$event.key === 'Enter' && submitOtp()"
-        />
-        <div class="form-text text-muted mt-2">
-          <i class="fas fa-envelope me-1"></i>
-          {{ lang === 'ar' ? 'تحقق من بريدك الإلكتروني ومجلد الرسائل المزعجة' : 'Check your email and spam folder' }}
+      <!-- Redirect Loader -->
+      <div *ngIf="isWaitingForRedirect" class="text-center py-5">
+        <div class="spinner-border text-info" role="status" style="width: 3rem; height: 3rem;">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <div class="mt-3">
+          <h5 class="text-gray-700">
+            {{ lang === 'ar' ? 'جاري التوجيه إلى Stripe...' : 'Redirecting to Stripe...' }}
+          </h5>
+          <p class="text-muted">
+            {{ lang === 'ar' ? 'يرجى الانتظار' : 'Please wait' }}
+          </p>
         </div>
       </div>
 
-      <div class="text-center mb-3">
-        <span 
-          *ngIf="canResendOtp"
-          class="text-info text-decoration-underline"
-          style="cursor: pointer;"
-          (click)="resendOtp()"
-        >
-          <i class="fas fa-paper-plane me-1"></i>
-          {{ lang === 'ar' ? 'إعادة إرسال الرمز' : 'Resend Code' }}
-        </span>
-        <span 
-          *ngIf="!canResendOtp"
-          class="text-muted"
-        >
-          <i class="fas fa-clock me-1"></i>
-          {{ lang === 'ar' ? 'إعادة الإرسال متاحة خلال' : 'Resend available in' }} {{ resendCooldown }}{{ lang === 'ar' ? 'ث' : 's' }}
-        </span>
+      <!-- OTP Form (hidden when redirecting) -->
+      <div *ngIf="!isWaitingForRedirect">
+        <div class="text-center mb-4">
+          <i class="fas fa-shield-check text-info fs-2 mb-3"></i>
+          <h5 class="mb-2">
+            {{ lang === 'ar' ? 'أدخل رمز التحقق' : 'Enter Verification Code' }}
+          </h5>
+          <p class="text-muted">
+            {{ lang === 'ar' ? 'لقد أرسلنا رمز التحقق إلى بريدك الإلكتروني' : 'We sent a verification code to your email' }}
+          </p>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label required">
+            {{ lang === 'ar' ? 'رمز التحقق' : 'Verification Code' }}
+          </label>
+          <input
+            type="text"
+            class="form-control text-center"
+            [(ngModel)]="otpCode"
+            [placeholder]="lang === 'ar' ? 'أدخل الرمز' : 'Enter code'"
+            maxlength="10"
+            (keypress)="$event.key === 'Enter' && submitOtp()"
+          />
+          <div class="form-text text-muted mt-2">
+            <i class="fas fa-envelope me-1"></i>
+            {{ lang === 'ar' ? 'تحقق من بريدك الإلكتروني ومجلد الرسائل المزعجة (تنتهي فعالية الكود في 1 ساعة)' : 'Check your email and spam folder (Code expires in 1 hour)' }}
+          </div>
+        </div>
+
+        <div class="text-center mb-3">
+          <span 
+            *ngIf="canResendOtp"
+            class="text-info text-decoration-underline"
+            style="cursor: pointer;"
+            (click)="resendOtp()"
+          >
+            <i class="fas fa-paper-plane me-1"></i>
+            {{ lang === 'ar' ? 'إعادة إرسال الرمز' : 'Resend Code' }}
+          </span>
+          <span 
+            *ngIf="!canResendOtp"
+            class="text-muted"
+          >
+            <i class="fas fa-clock me-1"></i>
+            {{ lang === 'ar' ? 'إعادة الإرسال متاحة خلال' : 'Resend available in' }} {{ resendCooldown }}{{ lang === 'ar' ? 'ث' : 's' }}
+          </span>
+        </div>
       </div>
     </div>
 
     <ng-template pTemplate="footer">
-      <div class="d-flex justify-content-between">
+      <div class="d-flex justify-content-between" *ngIf="!isWaitingForRedirect">
         <button 
           type="button" 
           class="btn btn-outline-secondary"

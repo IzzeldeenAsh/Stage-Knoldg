@@ -53,7 +53,7 @@ export class PaymentSuccessComponent extends BaseComponent implements OnInit {
   }
 
   getSuccessMessage(): { title: string; subtitle: string; description: string } {
-    if (this.paymentType === 'stripe') {
+    if (this.paymentType === 'provider') {
       return {
         title: this.lang === 'ar' ? 'تم إعداد حساب Stripe بنجاح!' : 'Stripe Account Setup Complete!',
         subtitle: this.lang === 'ar' ? 'مبروك! تم ربط حسابك بنجاح' : 'Congratulations! Your account has been successfully linked',
@@ -63,7 +63,7 @@ export class PaymentSuccessComponent extends BaseComponent implements OnInit {
       };
     } else {
       return {
-        title: this.lang === 'ar' ? 'تم إعداد الحساب اليدوي بنجاح!' : 'Manual Account Setup Complete!',
+        title: this.lang === 'ar' ? 'تم إعداد حسابك البنكي بنجاح!' : 'Bank Account Setup Complete!',
         subtitle: this.lang === 'ar' ? 'مبروك! تم حفظ معلومات حسابك' : 'Congratulations! Your account information has been saved',
         description: this.lang === 'ar' 
           ? 'تم حفظ معلومات الحساب اليدوي الخاص بك بنجاح. سيتم استخدام هذه المعلومات لتحويل المدفوعات إليك.'
@@ -72,12 +72,25 @@ export class PaymentSuccessComponent extends BaseComponent implements OnInit {
     }
   }
 
+  getVerificationMessage(): string {
+    if (this.paymentType === 'provider') {
+      return this.lang === 'ar' 
+        ? 'حسابك الآن قيد المراجعة من قبل مقدم الخدمة. قد تستغرق عملية التحقق من 1-7 أيام عمل لتفعيل جميع الميزات.'
+        : 'Your account is now under verification by the provider. The verification process may take 1-7 business days to activate all features.';
+    }
+    return '';
+  }
+
   getPaymentTypeIcon(): string {
-    return this.paymentType === 'stripe' ? 'fab fa-stripe-s' : 'fas fa-university';
+    return this.paymentType === 'provider' ? 'fab fa-stripe-s' : 'fas fa-university';
+  }
+
+  showVerificationMessage(): boolean {
+    return this.paymentType === 'provider';
   }
 
   getPaymentTypeColor(): string {
-    return this.paymentType === 'stripe' ? 'text-primary' : 'text-info';
+    return this.paymentType === 'provider' ? 'text-primary' : 'text-info';
   }
 
   getCountdownText(): string {
