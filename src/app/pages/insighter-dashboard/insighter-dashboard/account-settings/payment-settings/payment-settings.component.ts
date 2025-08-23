@@ -18,6 +18,7 @@ export class PaymentSettingsComponent extends BaseComponent implements OnInit {
   paymentAccountDetails: AccountDetailsResponse['data'] | null = null;
   paymentAccountLoading: boolean = false;
   paymentAccountError: string | null = null;
+  switchingAccount: boolean = false;
 
   constructor(
     injector: Injector,
@@ -164,8 +165,12 @@ export class PaymentSettingsComponent extends BaseComponent implements OnInit {
       accept_terms: true
     };
 
+    this.switchingAccount = true;
+    this.cdr.detectChanges();
+
     const subscription = this.paymentService.setPaymentType(request).subscribe({
       next: () => {
+        this.switchingAccount = false;
         this.showSuccess(
           this.lang === 'ar' ? 'نجح' : 'Success',
           this.lang === 'ar' ? 'تم تغيير حساب الدفع الأساسي بنجاح' : 'Primary payment account changed successfully'
@@ -173,6 +178,8 @@ export class PaymentSettingsComponent extends BaseComponent implements OnInit {
         this.loadPaymentAccountDetails();
       },
       error: (error: any) => {
+        this.switchingAccount = false;
+        this.cdr.detectChanges();
         this.handleServerErrors(error);
       }
     });

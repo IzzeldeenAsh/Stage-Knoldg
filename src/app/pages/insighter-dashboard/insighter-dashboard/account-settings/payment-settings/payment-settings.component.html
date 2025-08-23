@@ -205,6 +205,23 @@
                         </div>
                     </div>
 
+                    <!-- Switch Account Progress Bar -->
+                    <div *ngIf="switchingAccount" class="mt-4">
+                        <div class="d-flex align-items-center justify-content-center p-3">
+                            <div class="flex-grow-1">
+                                <p-progressBar mode="indeterminate" 
+                                               [style]="{'height': '6px'}"
+                                               styleClass="custom-progress-bar">
+                                </p-progressBar>
+                                <div class="text-center mt-2">
+                                    <small class="text-muted">
+                                        {{ lang === 'ar' ? 'جاري تبديل الحساب الأساسي...' : 'Switching primary account...' }}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div *ngIf="!paymentAccountLoading && paymentAccountError" class="alert alert-light-danger d-flex align-items-center p-5 mt-4">
                         <i class="bi bi-exclamation-triangle fs-2hx text-danger me-4"></i>
                         <div class="d-flex flex-column">
