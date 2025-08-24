@@ -12,7 +12,6 @@ export interface StripeCountry {
 
 export interface SetPaymentTypeRequest {
   type: 'manual' | 'provider';
-  country_id: number;
   accept_terms:boolean
 }
 
@@ -23,6 +22,7 @@ export interface ManualAccountRequest {
   swift_code: string;
   phone: string;
   code: string;
+  country_id: number;
 }
 
 export interface StripeAccountResponse {
@@ -211,9 +211,11 @@ export class PaymentService {
     );
   }
 
-  createStripeAccount(code?: string): Observable<StripeAccountResponse> {
+  createStripeAccount(code?: string, country_id?: number): Observable<StripeAccountResponse> {
     this.setLoading(true);
-    const body = code ? { code } : {};
+    const body: any = {};
+    if (code) body.code = code;
+    if (country_id) body.country_id = country_id;
     return this.http.post<StripeAccountResponse>(this.stripeCreateApiUrl, body, { headers: this.getHeaders() }).pipe(
       map(res => res),
       catchError(error => this.handleError(error)),
@@ -230,9 +232,10 @@ export class PaymentService {
     );
   }
 
-  getStripeLink(code: string): Observable<StripeAccountResponse> {
+  getStripeLink(code: string, country_id?: number): Observable<StripeAccountResponse> {
     this.setLoading(true);
-    const body = { code };
+    const body: any = { code };
+    if (country_id) body.country_id = country_id;
     return this.http.post<StripeAccountResponse>(this.stripeLinkApiUrl, body, { headers: this.getHeaders() }).pipe(
       map(res => res),
       catchError(error => this.handleError(error)),

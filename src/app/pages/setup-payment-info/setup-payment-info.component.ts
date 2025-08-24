@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { PaymentService, StripeCountry } from 'src/app/_fake/services/payment/payment.service';
+import { PaymentCountryService } from 'src/app/_fake/services/payment/payment-country.service';
 import { CountriesService, Country } from 'src/app/_fake/services/countries/countries.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
@@ -73,6 +74,7 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     public paymentService: PaymentService,
+    private paymentCountryService: PaymentCountryService,
     private countriesService: CountriesService,
     private http: HttpClient
   ) {
@@ -130,6 +132,8 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
   selectCountry(country: any) {
     this.selectedCountry = country;
     this.paymentForm.patchValue({ countryId: country.id });
+    // Store the selected country ID for later use
+    this.paymentCountryService.setCountryId(country.id);
   }
 
   unselectCountry() {
@@ -170,7 +174,6 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
     if (this.paymentForm.valid && this.termsAgreed) {
       const formData = {
         type: this.selectedPaymentType as 'manual' | 'provider',
-        country_id: this.selectedCountry.id,
         accept_terms: this.termsAgreed
       };
 
@@ -256,7 +259,8 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
   
   private createStripeAccountWithOtp(code: string) {
     this.isSubmittingOtp = true;
-    this.paymentService.createStripeAccount(code).subscribe({
+    const countryId = this.paymentCountryService.getCountryId();
+    this.paymentService.createStripeAccount(code, countryId || undefined).subscribe({
       next: (response) => {
         this.isSubmittingOtp = false;
         this.showOtpDialog = false;
@@ -291,7 +295,8 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
 
   private linkStripeAccountWithOtp(code: string) {
     this.isSubmittingOtp = true;
-    this.paymentService.getStripeLink(code).subscribe({
+    const countryId = this.paymentCountryService.getCountryId();
+    this.paymentService.getStripeLink(code, countryId || undefined).subscribe({
       next: (response) => {
         this.isSubmittingOtp = false;
         this.showOtpDialog = false;
@@ -357,6 +362,8 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
       if (this.paymentInfo.country) {
         this.selectedCountry = this.paymentInfo.country;
         this.paymentForm.patchValue({ countryId: this.paymentInfo.country.id });
+        // Store the existing country ID in the service
+        this.paymentCountryService.setCountryId(this.paymentInfo.country.id);
       }
       
       // Load appropriate countries
@@ -397,10 +404,40 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
   }
 
   onCompleteStripe() {
+    // Check if country is selected for existing Stripe accounts
+    if (!this.selectedCountry || !this.paymentForm.get('countryId')?.value) {
+      // Show country selection by enabling editing mode
+      this.isEditing = true;
+      this.selectedPaymentType = 'provider';
+      this.paymentForm.patchValue({ paymentType: 'provider' });
+      this.loadStripeCountries();
+      
+      this.showError(
+        this.lang === 'ar' ? 'خطأ في التحقق' : 'Validation Error',
+        this.lang === 'ar' ? 'يرجى اختيار الدولة أولاً لإدارة إعدادات Stripe' : 'Please select a country first to manage Stripe settings'
+      );
+      return;
+    }
+
     this.router.navigate(['/app/setup-payment-info/stripe-callback/refresh']);
   }
 
   onCompleteStripeRedirect() {
+    // Check if country is selected for existing Stripe accounts
+    if (!this.selectedCountry || !this.paymentForm.get('countryId')?.value) {
+      // Show country selection by enabling editing mode
+      this.isEditing = true;
+      this.selectedPaymentType = 'provider';
+      this.paymentForm.patchValue({ paymentType: 'provider' });
+      this.loadStripeCountries();
+      
+      this.showError(
+        this.lang === 'ar' ? 'خطأ في التحقق' : 'Validation Error',
+        this.lang === 'ar' ? 'يرجى اختيار الدولة أولاً لإكمال إعداد Stripe' : 'Please select a country first to complete Stripe setup'
+      );
+      return;
+    }
+
     this.isWaitingForRedirect = true;
     // Small delay to show spinner before redirect
     setTimeout(() => {
