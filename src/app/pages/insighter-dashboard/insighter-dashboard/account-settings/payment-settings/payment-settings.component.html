@@ -82,7 +82,7 @@
                                 <!-- Card Content -->
                                 <div class="card-content">
                                     <!-- Country Info -->
-                                    <div class="country-info">
+                                    <div class="country-info" *ngIf="paymentAccountDetails.primary.country">
                                         <img [src]="getCountryFlagPath(paymentAccountDetails.primary.country.name)" 
                                              [alt]="paymentAccountDetails.primary.country.name"
                                              class="country-flag">
@@ -165,6 +165,14 @@
 
                                 <!-- Card Content -->
                                 <div class="card-content">
+                                    <!-- Country Info -->
+                                    <div class="country-info" *ngIf="paymentAccountDetails.secondary.country">
+                                        <img [src]="getCountryFlagPath(paymentAccountDetails.secondary.country.name)" 
+                                             [alt]="paymentAccountDetails.secondary.country.name"
+                                             class="country-flag">
+                                        <span class="country-name">{{ paymentAccountDetails.secondary.country.name }}</span>
+                                    </div>
+
                                     <!-- Provider Account Details -->
                                     <div *ngIf="paymentAccountDetails.secondary.type === 'provider'" class="account-details">
                                         <div class="provider-status-info">

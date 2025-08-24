@@ -2,6 +2,7 @@ import { Component, Injector, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { PaymentService, AccountDetailsResponse } from 'src/app/_fake/services/payment/payment.service';
+import { PaymentCountryService } from 'src/app/_fake/services/payment/payment-country.service';
 
 @Component({
   selector: 'app-stripe-callback',
@@ -30,7 +31,8 @@ export class StripeCallbackComponent extends BaseComponent implements OnInit {
     injector: Injector,
     private router: Router,
     private route: ActivatedRoute,
-    public paymentService: PaymentService
+    public paymentService: PaymentService,
+    private paymentCountryService: PaymentCountryService
   ) {
     super(injector);
   }
@@ -142,11 +144,12 @@ export class StripeCallbackComponent extends BaseComponent implements OnInit {
 
   private completeAccountWithOtp(code: string) {
     this.isSubmittingOtp = true;
+    const countryId = this.paymentCountryService.getCountryId();
     
     // Check stripe_account value to determine which API to call
     if (this.stripeAccountExists === true) {
       // Call getStripeLink API when stripe_account is true
-      this.paymentService.getStripeLink(code).subscribe({
+      this.paymentService.getStripeLink(code, countryId || undefined).subscribe({
         next: (response) => {
           this.isSubmittingOtp = false;
           this.showOtpDialog = false;
@@ -170,7 +173,7 @@ export class StripeCallbackComponent extends BaseComponent implements OnInit {
       });
     } else {
       // Call createStripeAccount API when stripe_account is false or null
-      this.paymentService.createStripeAccount(code).subscribe({
+      this.paymentService.createStripeAccount(code, countryId || undefined).subscribe({
         next: (response) => {
           this.isSubmittingOtp = false;
           this.showOtpDialog = false;

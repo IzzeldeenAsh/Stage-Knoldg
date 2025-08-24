@@ -161,7 +161,6 @@ export class PaymentSettingsComponent extends BaseComponent implements OnInit {
   private switchToSecondaryAccount() {
     const request: SetPaymentTypeRequest = {
       type: this.paymentAccountDetails?.secondary?.type as 'manual' | 'provider',
-      country_id: this.paymentAccountDetails?.primary?.country?.id || 0,
       accept_terms: true
     };
 

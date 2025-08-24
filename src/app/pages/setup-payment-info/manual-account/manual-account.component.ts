@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { PaymentService, ManualAccountRequest } from 'src/app/_fake/services/payment/payment.service';
+import { PaymentCountryService } from 'src/app/_fake/services/payment/payment-country.service';
 import { CountriesService, Country } from 'src/app/_fake/services/countries/countries.service';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import { PhoneNumberInputComponent } from 'src/app/reusable-components/phone-number-input/phone-number-input.component';
@@ -31,6 +32,7 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
     private fb: FormBuilder,
     private router: Router,
     public paymentService: PaymentService,
+    private paymentCountryService: PaymentCountryService,
     private countriesService: CountriesService,
     private profileService: ProfileService
   ) {
@@ -134,13 +136,23 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
 
   onSubmit() {
     if (this.manualAccountForm.valid) {
+      const countryId = this.paymentCountryService.getCountryId();
+      if (!countryId) {
+        this.showError(
+          this.lang === 'ar' ? 'خطأ' : 'Error',
+          this.lang === 'ar' ? 'يرجى اختيار الدولة من الصفحة السابقة' : 'Please select country from previous page'
+        );
+        return;
+      }
+
       const formData: ManualAccountRequest = {
         account_name: this.manualAccountForm.value.accountName,
         iban: this.manualAccountForm.value.iban.replace(/\s+/g, ''), // Remove all spaces from IBAN
         address: this.manualAccountForm.value.address,
         swift_code: this.manualAccountForm.value.swift_code,
         phone: this.formattedPhoneNumber || `${this.manualAccountForm.value.phoneCountryCode}${this.manualAccountForm.value.phoneNumber}`,
-        code: this.manualAccountForm.value.code
+        code: this.manualAccountForm.value.code,
+        country_id: countryId
       };
 
       this.paymentService.createManualAccount(formData).subscribe({
