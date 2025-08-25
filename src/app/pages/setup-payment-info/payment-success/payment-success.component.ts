@@ -52,6 +52,13 @@ export class PaymentSuccessComponent extends BaseComponent implements OnInit {
     this.router.navigate(['/app/add-knowledge/stepper']);
   }
 
+  navigateToLibrary() {
+    if (this.countdownInterval) {
+      clearInterval(this.countdownInterval);
+    }
+    this.router.navigate(['/app/insighter-dashboard/my-knowledge/general']);
+  }
+
   getSuccessMessage(): { title: string; subtitle: string; description: string } {
     if (this.paymentType === 'provider') {
       return {
