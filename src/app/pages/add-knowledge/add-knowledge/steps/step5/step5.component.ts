@@ -437,7 +437,7 @@ export class Step5Component extends BaseComponent implements OnInit {
   
   private initializeForm() {
     this.publishForm = this.fb.group({
-      publishOption: [this.defaultValues.publish_status || '', Validators.required],
+      publishOption: ['', Validators.required],
       publishDate: [null],
       publishTime: [null]
     });
