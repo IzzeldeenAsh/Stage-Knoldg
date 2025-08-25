@@ -442,7 +442,7 @@ export class Step5Component extends BaseComponent implements OnInit {
       publishTime: [null]
     });
 
-    // Set validation rules for scheduled publishing
+    // Set validation rules for scheduled publishingx
     this.publishForm.get('publishOption')?.valueChanges.subscribe(option => {
       const publishDateControl = this.publishForm.get('publishDate');
       const publishTimeControl = this.publishForm.get('publishTime');
