@@ -26,11 +26,12 @@ import { DropdownModule } from 'primeng/dropdown';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CountryDropdownComponent } from 'src/app/reusable-components/country-dropdown/country-dropdown.component';
 import { PaymentSettingsComponent } from './payment-settings/payment-settings.component';
+import { SettingsTabsComponent } from './settings-tabs/settings-tabs.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: AccountSettingsComponent,
+    component: SettingsTabsComponent,
     children: [
       {
         path: '',
@@ -58,6 +59,7 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     AccountSettingsComponent,
+    SettingsTabsComponent,
     UpgradeToCompanyComponent,
     GeneralSettingsComponent,
     ReactivateDialogComponent,

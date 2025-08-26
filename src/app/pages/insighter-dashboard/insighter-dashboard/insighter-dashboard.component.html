@@ -124,27 +124,18 @@
           
           <!-- Settings Expandable Item -->
           <div class="nav-item expandable" [class.expanded]="isSettingsExpanded">
-            <div class="nav-item-main" (click)="toggleSettings()">
+            <div class="nav-item-main" (click)="navigateToSettings()">
               <div class="item-icon">
                 <i class="ki-outline ki-setting-2"></i>
               </div>
               <div class="item-label">
                 {{ 'INSIGHTER.DASHBOARD.NAV.SETTINGS' | translate }}
               </div>
-              <div class="expand-icon">
+              <div class="expand-icon" (click)="toggleSettings(); $event.stopPropagation()">
                 <i class="ki-outline ki-down"></i>
               </div>
             </div>
             <div class="sub-nav" [class.show]="isSettingsExpanded">
-              <div class="sub-nav-item" [routerLink]="['account-settings/payment-settings']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
-                   (click)="closeMobileSidebar()">
-                <div class="sub-item-icon">
-                  <i class="ki-outline ki-credit-cart"></i>
-                </div>
-                <div class="sub-item-label">
-                  {{ 'INSIGHTER.DASHBOARD.NAV.PAYMENT_SETTINGS' | translate }}
-                </div>
-              </div>
               <div class="sub-nav-item" [routerLink]="['account-settings/general-settings']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" *ngIf="!(isClient$ | async)"
                    (click)="closeMobileSidebar()">
                 <div class="sub-item-icon">
@@ -154,6 +145,15 @@
                   {{ 'INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS' | translate }}
                 </div>
               </div>
+              <div class="sub-nav-item" [routerLink]="['account-settings/payment-settings']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+              (click)="closeMobileSidebar()" *ngIf="(isInsighter$ | async) || (isCompany$ | async)">
+           <div class="sub-item-icon">
+             <i class="ki-outline ki-credit-cart"></i>
+           </div>
+           <div class="sub-item-label">
+             {{ 'INSIGHTER.DASHBOARD.NAV.PAYMENT_SETTINGS' | translate }}
+           </div>
+         </div>
             </div>
           </div>
         </div>
@@ -397,29 +397,19 @@
                   
                   <!-- Settings Expandable Item -->
                   <div class="nav-item expandable" [class.expanded]="isSettingsExpanded" *ngIf="!isNavCollapsed">
-                    <div class="nav-item-main" (click)="toggleSettings()">
+                    <div class="nav-item-main" (click)="navigateToSettings()">
                       <div class="item-icon">
                         <i class="ki-outline ki-setting-2"></i>
                       </div>
                       <div class="item-label">
                         {{ 'INSIGHTER.DASHBOARD.NAV.SETTINGS' | translate }}
                       </div>
-                      <div class="expand-icon">
+                      <div class="expand-icon" (click)="toggleSettings(); $event.stopPropagation()">
                         <i class="ki-outline ki-down"></i>
                       </div>
                     </div>
                     <div class="sub-nav" [class.show]="isSettingsExpanded">
-                      <div *ngIf="(isInsighter$ | async) || (isCompany$ | async)" class="sub-nav-item" [routerLink]="['account-settings/payment-settings']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
-                      pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.PAYMENT_SETTINGS' | translate) : '' }}"
-                      tooltipPosition="right"
-                      appendTo="body">
-                        <div class="sub-item-icon">
-                          <i class="ki-outline ki-credit-cart"></i>
-                        </div>
-                        <div class="sub-item-label">
-                          {{ 'INSIGHTER.DASHBOARD.NAV.PAYMENT_SETTINGS' | translate }}
-                        </div>
-                      </div>
+                     
                       <div class="sub-nav-item" [routerLink]="['account-settings/general-settings']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" *ngIf="!(isClient$ | async)"
                       pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS' | translate) : '' }}"
                       tooltipPosition="right"
@@ -431,6 +421,17 @@
                           {{ 'INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS' | translate }}
                         </div>
                       </div>
+                      <div *ngIf="(isInsighter$ | async) || (isCompany$ | async)" class="sub-nav-item" [routerLink]="['account-settings/payment-settings']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+                      pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.PAYMENT_SETTINGS' | translate) : '' }}"
+                      tooltipPosition="right"
+                      appendTo="body">
+                        <div class="sub-item-icon">
+                          <i class="ki-outline ki-credit-cart"></i>
+                        </div>
+                        <div class="sub-item-label">
+                          {{ 'INSIGHTER.DASHBOARD.NAV.PAYMENT_SETTINGS' | translate }}
+                        </div>
+                      </div>
                     </div>
                   </div>
                   
@@ -440,7 +441,7 @@
                          [attr.title]="('INSIGHTER.DASHBOARD.NAV.PAYMENT_SETTINGS' | translate)"
                          pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.PAYMENT_SETTINGS' | translate) : '' }}"
                          tooltipPosition="right"
-                         appendTo="body">
+                         appendTo="body" *ngIf="(isInsighter$ | async) || (isCompany$ | async)">
                       <div class="item-icon">
                         <i class="ki-outline ki-credit-cart"></i>
                       </div>
@@ -451,7 +452,7 @@
                          tooltipPosition="right"
                          appendTo="body">
                       <div class="item-icon">
-                        <i class="ki-outline ki-setting-2"></i>
+                        <i class="ki-outline ki-user-edit"></i>
                       </div>
                     </div>
                   </div>
