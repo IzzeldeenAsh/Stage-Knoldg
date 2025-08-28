@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { PaymentService } from '../../../_fake/services/payment/payment.service';
+import { PaymentService, PaymentDetailsResponse } from '../../../_fake/services/payment/payment.service';
 
 @Injectable({
   providedIn: 'root'
@@ -24,20 +24,26 @@ export class PaymentTypeGuard implements CanActivate {
       return of(true); // Allow access if we can't determine expected type
     }
 
-    // Try to get account details to check the type
-    return this.paymentService.getAccountDetails().pipe(
-      map(response => {
-        if (response.data.primary.type === expectedType) {
+    // For stripe-callback routes, always allow access without any checks
+    if (expectedType === 'provider') {
+      return of(true);
+    }
+
+    // For manual account routes, check if user has manual account
+    return this.paymentService.getPaymentAccountDetails().pipe(
+      map((response: PaymentDetailsResponse) => {
+        const primaryAccount = response.data.find(account => account.primary);
+        if (primaryAccount?.type === expectedType) {
           return true;
-        } else {
-          // Redirect to the main setup payment page if type doesn't match
-          this.router.navigate(['/setup-payment-info']);
-          return false;
         }
+        
+        // Redirect to the main setup payment page if type doesn't match
+        this.router.navigate(['/app/setup-payment-info']);
+        return false;
       }),
       catchError(() => {
         // If API call fails, redirect to main setup page
-        this.router.navigate(['/setup-payment-info']);
+        this.router.navigate(['/app/setup-payment-info']);
         return of(false);
       })
     );

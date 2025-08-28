@@ -8,120 +8,82 @@ export interface StripeCountry {
   id: number;
   name: string;
   flag: string;
+  showFlag?: boolean;
 }
 
-export interface SetPaymentTypeRequest {
+export interface PaymentMethod {
   type: 'manual' | 'provider';
-  accept_terms:boolean
+  account_name?: string;
+  swift_code?: string;
+  iban?: string;
+  address?: string;
+  phone?: string;
+  country?: {
+    id: number;
+    name: string;
+    flag: string;
+  };
+  accept_agreement: boolean;
+  status: 'active' | 'inactive';
+  primary: boolean;
+  stripe_account?: boolean;
+  details_submitted_at?: string | null;
+  charges_enable_at?: string | null;
+}
+
+export interface PaymentDetailsResponse {
+  data: PaymentMethod[];
+}
+
+export interface SetPrimaryRequest {
+  type: 'manual' | 'provider';
 }
 
 export interface ManualAccountRequest {
+  country_id: number;
   account_name: string;
   iban: string;
   address: string;
   swift_code: string;
   phone: string;
   code: string;
+  accept_terms?: boolean;
+}
+
+export interface UpdateManualAccountRequest {
   country_id: number;
+  account_name: string;
+  iban: string;
+  address: string;
+  swift_code: string;
+  phone: string;
+  code: string;
+}
+
+export interface StripeAccountRequest {
+  country_id: number;
+  code: string;
+  accept_terms: boolean;
 }
 
 export interface StripeAccountResponse {
   data: {
     stripe_account_link: {
+      object: string;
+      created: number;
+      expires_at: number;
       url: string;
     };
   };
 }
 
-export interface StripeCompleteResponse {
+export interface TermsResponse {
   data: {
-    success: boolean;
-  };
-}
-export interface StripeAccountDetailsResponse {
-  data: {
-    primary: {
-      type: string;
-      status: string;
-      country: {
-        id: number;
-        name: string;
-        flag: string;
-      };
-      account_name?: string;
-      swift_code?: string;
-      iban?: string;
-      address?: string;
-      phone?: string | null;
-      stripe_account?: boolean;
-      details_submitted_at?: string | null;
-      charges_enable_at?: string | null;
-    };
-    secondary: {
-      type: string;
-      stripe_account?: boolean;
-      details_submitted_at?: string | null;
-      charges_enable_at?: string | null;
-      status: string;
-      account_name?: string;
-      swift_code?: string;
-      iban?: string;
-      address?: string;
-      phone?: string | null;
-      country?: {
-        id: number;
-        name: string;
-        flag: string;
-      };
-    };
-  };
-}
-
-export interface StripeOnboardingStatusResponse {
-  data: {
-    account: boolean;
-    details_submitted_at: string | null;
-    charges_enable_at: string | null;
-    [key: string]: boolean | string | null;
-  };
-}
-
-export interface AccountDetailsResponse {
-  data: {
-    primary: {
-      type: string;
-      status: string;
-      country: {
-        id: number;
-        name: string;
-        flag: string;
-      };
-      account_name?: string;
-      swift_code?: string;
-      iban?: string;
-      address?: string;
-      phone?: string | null;
-      stripe_account?: boolean;
-      details_submitted_at?: string | null;
-      charges_enable_at?: string | null;
-    };
-    secondary: {
-      type: string;
-      stripe_account?: boolean;
-      details_submitted_at?: string | null;
-      charges_enable_at?: string | null;
-      status: string;
-      account_name?: string;
-      swift_code?: string;
-      iban?: string;
-      address?: string;
-      phone?: string | null;
-      country?: {
-        id: number;
-        name: string;
-        flag: string;
-      };
-    };
+    slug: string;
+    name: string;
+    guideline: string;
+    version: string;
+    file: string | null;
   };
 }
 
@@ -129,15 +91,19 @@ export interface AccountDetailsResponse {
   providedIn: 'root'
 })
 export class PaymentService {
-  private stripeCountriesApiUrl = 'https://api.knoldg.com/api/insighter/payment/account/stripe/onboarding/countries';
-  private setPaymentTypeApiUrl = 'https://api.knoldg.com/api/insighter/payment/account/type';
-  private manualAccountApiUrl = 'https://api.knoldg.com/api/insighter/payment/account/manual';
-  private stripeCreateApiUrl = 'https://api.knoldg.com/api/insighter/payment/account/stripe/onboarding/create';
-  private stripeCompleteApiUrl = 'https://api.knoldg.com/api/insighter/payment/account/stripe/onboarding/complete';
-  private stripeLinkApiUrl = 'https://api.knoldg.com/api/insighter/payment/account/stripe/onboarding/link';
-  private stripeStatusApiUrl = 'https://api.knoldg.com/api/insighter/payment/account/stripe/onboarding/status';
+  private stripeCountriesApiUrl = 'https://api.knoldg.com/api/insighter/payment/account/stripe/countries';
+  private setPrimaryApiUrl = 'https://api.knoldg.com/api/insighter/payment/account/primary/set';
+  private generateOtpApiUrl = 'https://api.knoldg.com/api/insighter/payment/account/otp/generate';
   private accountDetailsApiUrl = 'https://api.knoldg.com/api/insighter/payment/account/details';
-  private resendOtpApiUrl = 'https://api.knoldg.com/api/insighter/payment/account/otp/resend';
+  private setManualAccountApiUrl = 'https://api.knoldg.com/api/insighter/payment/account/manual/set';
+  private updateManualAccountApiUrl = 'https://api.knoldg.com/api/insighter/payment/account/manual/update';
+  private deleteManualAccountApiUrl = 'https://api.knoldg.com/api/insighter/payment/account/manual/delete';
+  private stripeCreateApiUrl = 'https://api.knoldg.com/api/insighter/payment/account/stripe/create';
+  private stripeLinkApiUrl = 'https://api.knoldg.com/api/insighter/payment/account/stripe/link';
+  private stripeCompleteApiUrl = 'https://api.knoldg.com/api/insighter/payment/account/stripe/complete';
+  private deleteStripeApiUrl = 'https://api.knoldg.com/api/insighter/payment/account/stripe/delete';
+  private manualTermsApiUrl = 'https://api.knoldg.com/api/common/setting/guideline/slug/wallet-payment-terms-and-conditions';
+  private stripeTermsApiUrl = 'https://api.knoldg.com/api/common/setting/guideline/slug/stripe-payment-terms-and-conditions';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   currentLang: string = 'en';
@@ -184,6 +150,108 @@ export class PaymentService {
     });
   }
 
+  // 1. Set payment as primary
+  setPrimaryPaymentMethod(type: 'provider' | 'manual'): Observable<any> {
+    this.setLoading(true);
+    const request: SetPrimaryRequest = { type };
+    return this.http.post<any>(this.setPrimaryApiUrl, request, { headers: this.getHeaders() }).pipe(
+      map(res => res),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  // 2. Generate payment OTP
+  generatePaymentOTP(): Observable<any> {
+    this.setLoading(true);
+    return this.http.post<any>(this.generateOtpApiUrl, {}, { headers: this.getHeaders() }).pipe(
+      map(res => res),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  // 3. Get payment account details
+  getPaymentAccountDetails(): Observable<PaymentDetailsResponse> {
+    this.setLoading(true);
+    return this.http.get<PaymentDetailsResponse>(this.accountDetailsApiUrl, { headers: this.getHeaders() }).pipe(
+      map(res => res),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  // 4. Set manual account (create)
+  setManualAccount(request: ManualAccountRequest): Observable<any> {
+    this.setLoading(true);
+    return this.http.post<any>(this.setManualAccountApiUrl, request, { headers: this.getHeaders() }).pipe(
+      map(res => res),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  // 5. Update manual account
+  updateManualAccount(request: UpdateManualAccountRequest): Observable<any> {
+    this.setLoading(true);
+    return this.http.post<any>(this.updateManualAccountApiUrl, request, { headers: this.getHeaders() }).pipe(
+      map(res => res),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  // 6. Delete manual account
+  deleteManualAccount(): Observable<any> {
+    this.setLoading(true);
+    return this.http.delete<any>(this.deleteManualAccountApiUrl, { headers: this.getHeaders() }).pipe(
+      map(res => res),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  // 7. Create Stripe (Provider) Account
+  createStripeAccount(request: StripeAccountRequest): Observable<StripeAccountResponse> {
+    this.setLoading(true);
+    return this.http.post<StripeAccountResponse>(this.stripeCreateApiUrl, request, { headers: this.getHeaders() }).pipe(
+      map(res => res),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  // 8. Link Stripe Account
+  linkStripeAccount(request: StripeAccountRequest): Observable<StripeAccountResponse> {
+    this.setLoading(true);
+    return this.http.post<StripeAccountResponse>(this.stripeLinkApiUrl, request, { headers: this.getHeaders() }).pipe(
+      map(res => res),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  // 9. Complete Stripe account
+  completeStripeAccount(): Observable<any> {
+    this.setLoading(true);
+    return this.http.post<any>(this.stripeCompleteApiUrl, {}, { headers: this.getHeaders() }).pipe(
+      map(res => res),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  // 10. Delete provider account (stripe)
+  deleteStripeAccount(): Observable<any> {
+    this.setLoading(true);
+    return this.http.delete<any>(this.deleteStripeApiUrl, { headers: this.getHeaders() }).pipe(
+      map(res => res),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  // 11. Get stripe countries
   getStripeCountries(): Observable<StripeCountry[]> {
     this.setLoading(true);
     return this.http.get<any>(this.stripeCountriesApiUrl, { headers: this.getHeaders() }).pipe(
@@ -193,88 +261,40 @@ export class PaymentService {
     );
   }
 
-  setPaymentType(request: SetPaymentTypeRequest): Observable<any> {
+  // Get terms and conditions for manual payment
+  getManualPaymentTerms(): Observable<TermsResponse> {
     this.setLoading(true);
-    return this.http.post<any>(this.setPaymentTypeApiUrl, request, { headers: this.getHeaders() }).pipe(
+    return this.http.get<TermsResponse>(this.manualTermsApiUrl, { headers: this.getHeaders() }).pipe(
       map(res => res),
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );
   }
 
-  createManualAccount(request: ManualAccountRequest): Observable<any> {
+  // Get terms and conditions for stripe payment
+  getStripePaymentTerms(): Observable<TermsResponse> {
     this.setLoading(true);
-    return this.http.post<any>(this.manualAccountApiUrl, request, { headers: this.getHeaders() }).pipe(
+    return this.http.get<TermsResponse>(this.stripeTermsApiUrl, { headers: this.getHeaders() }).pipe(
       map(res => res),
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );
   }
 
-  createStripeAccount(code?: string, country_id?: number): Observable<StripeAccountResponse> {
-    this.setLoading(true);
-    const body: any = {};
-    if (code) body.code = code;
-    if (country_id) body.country_id = country_id;
-    return this.http.post<StripeAccountResponse>(this.stripeCreateApiUrl, body, { headers: this.getHeaders() }).pipe(
-      map(res => res),
-      catchError(error => this.handleError(error)),
-      finalize(() => this.setLoading(false))
-    );
+  // Helper methods to get specific payment account types
+  getPrimaryAccount(methods: PaymentMethod[]): PaymentMethod | null {
+    return methods.find(m => m.primary) || null;
   }
 
-  completeStripeOnboarding(): Observable<StripeCompleteResponse> {
-    this.setLoading(true);
-    return this.http.post<StripeCompleteResponse>(this.stripeCompleteApiUrl, {}, { headers: this.getHeaders() }).pipe(
-      map(res => res),
-      catchError(error => this.handleError(error)),
-      finalize(() => this.setLoading(false))
-    );
+  getManualAccount(methods: PaymentMethod[]): PaymentMethod | null {
+    return methods.find(m => m.type === 'manual') || null;
   }
 
-  getStripeLink(code: string, country_id?: number): Observable<StripeAccountResponse> {
-    this.setLoading(true);
-    const body: any = { code };
-    if (country_id) body.country_id = country_id;
-    return this.http.post<StripeAccountResponse>(this.stripeLinkApiUrl, body, { headers: this.getHeaders() }).pipe(
-      map(res => res),
-      catchError(error => this.handleError(error)),
-      finalize(() => this.setLoading(false))
-    );
+  getProviderAccount(methods: PaymentMethod[]): PaymentMethod | null {
+    return methods.find(m => m.type === 'provider') || null;
   }
 
-  checkStripeOnboardingStatus(): Observable<StripeOnboardingStatusResponse> {
-    this.setLoading(true);
-    return this.http.get<StripeOnboardingStatusResponse>(this.stripeStatusApiUrl, { headers: this.getHeaders() }).pipe(
-      map(res => res),
-      catchError(error => this.handleError(error)),
-      finalize(() => this.setLoading(false))
-    );
-  }
-
-  getAccountDetails(): Observable<AccountDetailsResponse> {
-    this.setLoading(true);
-    return this.http.get<AccountDetailsResponse>(this.accountDetailsApiUrl, { headers: this.getHeaders() }).pipe(
-      map(res => res),
-      catchError(error => this.handleError(error)),
-      finalize(() => this.setLoading(false))
-    );
-  }
-
-  getStripeAccountDetails(): Observable<AccountDetailsResponse> {
-    return this.getAccountDetails();
-  }
-
-  getManualAccountDetails(): Observable<AccountDetailsResponse> {
-    return this.getAccountDetails();
-  }
-
-  resendOtp(): Observable<any> {
-    this.setLoading(true);
-    return this.http.post<any>(this.resendOtpApiUrl, {}, { headers: this.getHeaders() }).pipe(
-      map(res => res),
-      catchError(error => this.handleError(error)),
-      finalize(() => this.setLoading(false))
-    );
+  getProviderAccounts(methods: PaymentMethod[]): PaymentMethod[] {
+    return methods.filter(m => m.type === 'provider');
   }
 }

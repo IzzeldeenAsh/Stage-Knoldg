@@ -328,10 +328,11 @@
   }
 }
 
-// Button styling
+// Button styling using -info colors and clean design
 .btn-info {
-  background-color: #0978B9;
-  border-color: #0978B9;
+  background-color: #EBF3FE;
+  border-color: #EBF3FE;
+  color: #0978B9;
   border-radius: 0.75rem;
   padding: 0.75rem 2rem;
   font-weight: 500;
@@ -339,39 +340,83 @@
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 10px rgba(9, 120, 185, 0.2);
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
-    transition: all 0.6s ease;
-  }
   
   &:hover {
-    background-color: #0866a0;
-    border-color: #0866a0;
+    background-color: #d4e8fc;
+    border-color: #d4e8fc;
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(9, 120, 185, 0.3);
-    
-    &::before {
-      left: 100%;
-    }
   }
   
   &:active {
     transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(9, 120, 185, 0.3);
   }
   
   &:disabled {
     opacity: 0.65;
     cursor: not-allowed;
-    box-shadow: none;
+  }
+}
+
+.btn-light-info {
+  background-color: #EBF3FE;
+  border-color: #EBF3FE;
+  color: #0978B9;
+  
+  &:hover {
+    background-color: #d4e8fc;
+    border-color: #d4e8fc;
+  }
+}
+
+// Country selection styling
+.selected-country-card .card {
+  border-color: #0978B9 !important;
+  border-width: 2px;
+}
+
+.country-item {
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background-color: #EBF3FE;
+    transform: translateX(4px);
+  }
+}
+
+.hover-light-info:hover {
+  background-color: #EBF3FE !important;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+// Badge styles
+.badge {
+  &.badge-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    
+    &.badge-info {
+      background-color: #0978B9;
+      color: white;
+    }
+  }
+  
+  &.badge-light-success {
+    background-color: #e8f5e9;
+    color: #4caf50;
+  }
+  
+  &.badge-light-warning {
+    background-color: #fff8e1;
+    color: #ff9800;
   }
 }
 

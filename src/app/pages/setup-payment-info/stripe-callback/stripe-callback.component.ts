@@ -1,7 +1,7 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BaseComponent } from 'src/app/modules/base.component';
-import { PaymentService, AccountDetailsResponse } from 'src/app/_fake/services/payment/payment.service';
+import { PaymentService, PaymentDetailsResponse, PaymentMethod, StripeAccountRequest } from 'src/app/_fake/services/payment/payment.service';
 import { PaymentCountryService } from 'src/app/_fake/services/payment/payment-country.service';
 
 @Component({
@@ -56,14 +56,14 @@ export class StripeCallbackComponent extends BaseComponent implements OnInit {
   }
 
   private performStripeStatusCheck() {
-    this.paymentService.getAccountDetails().subscribe({
-      next: (response: AccountDetailsResponse) => {
+    this.paymentService.getPaymentAccountDetails().subscribe({
+      next: (response: PaymentDetailsResponse) => {
         this.isLoading = false;
         
-        // Store the stripe account status for later use (use primary account data)
-        this.stripeAccountExists = response?.data?.primary?.stripe_account || false;
+        const providerAccount = this.paymentService.getProviderAccount(response.data);
+        this.stripeAccountExists = providerAccount?.stripe_account || false;
         
-        if (response?.data?.primary?.details_submitted_at) {
+        if (providerAccount?.details_submitted_at) {
           this.completeStripeOnboarding();
         } else {
           this.needsCompletion = true;
@@ -81,7 +81,7 @@ export class StripeCallbackComponent extends BaseComponent implements OnInit {
 
   private completeStripeOnboarding() {
     this.isLoading = true;
-    this.paymentService.completeStripeOnboarding().subscribe({
+    this.paymentService.completeStripeAccount().subscribe({
       next: (response) => {
         this.isLoading = false;
         this.isCompleted = true;
@@ -90,9 +90,7 @@ export class StripeCallbackComponent extends BaseComponent implements OnInit {
           this.lang === 'ar' ? 'تم إعداد حساب Stripe بنجاح وهو جاهز للاستخدام' : 'Stripe account setup completed successfully and ready to use'
         );
         setTimeout(() => {
-          this.router.navigate(['/app/setup-payment-info/success'], { 
-            queryParams: { type: 'provider' } 
-          });
+          this.router.navigate(['/app/setup-payment-info/success'], { queryParams: { type: 'provider' } });
         }, 2000);
       },
       error: (error) => {
@@ -118,9 +116,10 @@ export class StripeCallbackComponent extends BaseComponent implements OnInit {
       }
     } else {
       // Fetch account details to determine if we need to create or link
-      this.paymentService.getAccountDetails().subscribe({
+      this.paymentService.getPaymentAccountDetails().subscribe({
         next: (response) => {
-          this.stripeAccountExists = response?.data?.primary?.stripe_account || false;
+          const providerAccount = this.paymentService.getProviderAccount(response.data);
+          this.stripeAccountExists = providerAccount?.stripe_account || false;
           this.showOtpDialog = true;
           // Auto-trigger OTP resend for refresh scenario
           if (this.isRefreshScenario) {
@@ -144,57 +143,76 @@ export class StripeCallbackComponent extends BaseComponent implements OnInit {
 
   private completeAccountWithOtp(code: string) {
     this.isSubmittingOtp = true;
-    const countryId = this.paymentCountryService.getCountryId();
     
-    // Check stripe_account value to determine which API to call
-    if (this.stripeAccountExists === true) {
-      // Call getStripeLink API when stripe_account is true
-      this.paymentService.getStripeLink(code, countryId || undefined).subscribe({
-        next: (response) => {
-          this.isSubmittingOtp = false;
-          this.showOtpDialog = false;
-          if (response?.data?.stripe_account_link?.url) {
-            this.showSuccess(
-              this.lang === 'ar' ? 'تم التحقق بنجاح' : 'Successfully Verified',
-              this.lang === 'ar' ? 'سيتم توجيهك إلى Stripe لإكمال إعداد الحساب' : 'Redirecting to Stripe to complete account setup'
-            );
-            window.location.href = response.data.stripe_account_link.url;
-          } else {
-            this.showError(
-              this.lang === 'ar' ? 'حدث خطأ' : 'Error',
-              this.lang === 'ar' ? 'لم يتم العثور على رابط الحساب' : 'Account link not found'
-            );
-          }
-        },
-        error: (error) => {
-          this.isSubmittingOtp = false;
-          this.handleServerErrors(error);
+    // Get country ID from existing provider account or use a default
+    let countryId = 148; // Default to US
+    
+    this.paymentService.getPaymentAccountDetails().subscribe({
+      next: (response) => {
+        const providerAccount = this.paymentService.getProviderAccount(response.data);
+        if (providerAccount?.country?.id) {
+          countryId = providerAccount.country.id;
         }
-      });
+        
+        const request: StripeAccountRequest = { country_id: countryId, code, accept_terms: true };
+        
+        // Check stripe_account value to determine which API to call
+        if (this.stripeAccountExists === true) {
+          // Call linkStripeAccount API when stripe_account is true
+          this.paymentService.linkStripeAccount(request).subscribe({
+            next: (response) => {
+              this.handleStripeResponse(response);
+            },
+            error: (error) => {
+              this.isSubmittingOtp = false;
+              this.handleServerErrors(error);
+            }
+          });
+        } else {
+          // Call createStripeAccount API when stripe_account is false or null
+          this.paymentService.createStripeAccount(request).subscribe({
+            next: (response) => {
+              this.handleStripeResponse(response);
+            },
+            error: (error) => {
+              this.isSubmittingOtp = false;
+              this.handleServerErrors(error);
+            }
+          });
+        }
+      },
+      error: () => {
+        // Use default country if can't get account details
+        const request: StripeAccountRequest = { country_id: countryId, code, accept_terms: true };
+        
+        this.paymentService.createStripeAccount(request).subscribe({
+          next: (response) => {
+            this.handleStripeResponse(response);
+          },
+          error: (error) => {
+            this.isSubmittingOtp = false;
+            this.handleServerErrors(error);
+          }
+        });
+      }
+    });
+  }
+  
+  private handleStripeResponse(response: any) {
+    this.isSubmittingOtp = false;
+    this.showOtpDialog = false;
+    
+    if (response?.data?.stripe_account_link?.url) {
+      this.showSuccess(
+        this.lang === 'ar' ? 'تم التحقق بنجاح' : 'Successfully Verified',
+        this.lang === 'ar' ? 'سيتم توجيهك إلى Stripe لإكمال إعداد الحساب' : 'Redirecting to Stripe to complete account setup'
+      );
+      window.location.href = response.data.stripe_account_link.url;
     } else {
-      // Call createStripeAccount API when stripe_account is false or null
-      this.paymentService.createStripeAccount(code, countryId || undefined).subscribe({
-        next: (response) => {
-          this.isSubmittingOtp = false;
-          this.showOtpDialog = false;
-          if (response?.data?.stripe_account_link?.url) {
-            this.showSuccess(
-              this.lang === 'ar' ? 'تم التحقق بنجاح' : 'Successfully Verified',
-              this.lang === 'ar' ? 'سيتم توجيهك إلى Stripe لإكمال إعداد الحساب' : 'Redirecting to Stripe to complete account setup'
-            );
-            window.location.href = response.data.stripe_account_link.url;
-          } else {
-            this.showError(
-              this.lang === 'ar' ? 'حدث خطأ' : 'Error',
-              this.lang === 'ar' ? 'لم يتم العثور على رابط الحساب' : 'Account link not found'
-            );
-          }
-        },
-        error: (error) => {
-          this.isSubmittingOtp = false;
-          this.handleServerErrors(error);
-        }
-      });
+      this.showError(
+        this.lang === 'ar' ? 'حدث خطأ' : 'Error',
+        this.lang === 'ar' ? 'لم يتم العثور على رابط الحساب' : 'Account link not found'
+      );
     }
   }
 
@@ -209,16 +227,16 @@ export class StripeCallbackComponent extends BaseComponent implements OnInit {
     this.error = '';
     this.isRefreshScenario = true;
     
-    this.paymentService.getAccountDetails().subscribe({
-      next: (response: AccountDetailsResponse) => {
+    this.paymentService.getPaymentAccountDetails().subscribe({
+      next: (response: PaymentDetailsResponse) => {
         this.isLoading = false;
         
-        // Store the stripe account status for later use (use primary account data)
-        this.stripeAccountExists = response?.data?.primary?.stripe_account || false;
+        const providerAccount = this.paymentService.getProviderAccount(response.data);
+        this.stripeAccountExists = providerAccount?.stripe_account || false;
         
         // Check if details_submitted_at and charges_enable_at are null
-        const detailsSubmitted = response?.data?.primary?.details_submitted_at;
-        const chargesEnabled = response?.data?.primary?.charges_enable_at;
+        const detailsSubmitted = providerAccount?.details_submitted_at;
+        const chargesEnabled = providerAccount?.charges_enable_at;
         
         if (detailsSubmitted === null && chargesEnabled === null) {
           // Show completion needed for refresh scenario
@@ -240,7 +258,7 @@ export class StripeCallbackComponent extends BaseComponent implements OnInit {
   }
 
   private autoResendOtp() {
-    this.paymentService.resendOtp().subscribe({
+    this.paymentService.generatePaymentOTP().subscribe({
       next: (response) => {
         this.showSuccess(
           this.lang === 'ar' ? 'تم الإرسال بنجاح' : 'Successfully Sent',
@@ -278,7 +296,7 @@ export class StripeCallbackComponent extends BaseComponent implements OnInit {
   resendOtp() {
     if (!this.canResendOtp) return;
 
-    this.paymentService.resendOtp().subscribe({
+    this.paymentService.generatePaymentOTP().subscribe({
       next: (response) => {
         this.showSuccess(
           this.lang === 'ar' ? 'تم الإرسال بنجاح' : 'Successfully Sent',

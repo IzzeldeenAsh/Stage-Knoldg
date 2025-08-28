@@ -2,11 +2,15 @@ import { Component, Injector, OnInit, ViewChild, AfterViewInit } from '@angular/
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BaseComponent } from 'src/app/modules/base.component';
-import { PaymentService, ManualAccountRequest } from 'src/app/_fake/services/payment/payment.service';
+import { PaymentService, ManualAccountRequest, UpdateManualAccountRequest, PaymentDetailsResponse, PaymentMethod, TermsResponse } from 'src/app/_fake/services/payment/payment.service';
 import { PaymentCountryService } from 'src/app/_fake/services/payment/payment-country.service';
 import { CountriesService, Country } from 'src/app/_fake/services/countries/countries.service';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import { PhoneNumberInputComponent } from 'src/app/reusable-components/phone-number-input/phone-number-input.component';
+
+interface ExtendedCountry extends Country {
+  showFlag?: boolean;
+}
 
 @Component({
   selector: 'app-manual-account',
@@ -17,13 +21,19 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
   manualAccountForm: FormGroup;
   showValidationErrors: boolean = false;
   isEditing: boolean = false;
-  existingData: any = null;
-  countries: Country[] = [];
+  existingData: PaymentMethod | null = null;
+  hasExistingManualAccount: boolean = false;
+  countries: ExtendedCountry[] = [];
   userRoles: string[] = [];
   isCompanyAccount: boolean = false;
   resendCooldown: number = 0;
   canResendOtp: boolean = true;
-  formattedPhoneNumber: string = ''; // Store the formatted phone number
+  formattedPhoneNumber: string = '';
+  selectedCountry: ExtendedCountry | null = null;
+  termsAccepted: boolean = false;
+  showTermsDialog: boolean = false;
+  termsContent: string = '';
+  isLoadingTerms: boolean = false;
 
   @ViewChild('phoneInput') phoneInput!: PhoneNumberInputComponent;
 
@@ -38,20 +48,21 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
   ) {
     super(injector);
     this.manualAccountForm = this.fb.group({
+      countryId: ['', [Validators.required]],
       accountName: ['', [Validators.required, Validators.minLength(2)]],
       iban: ['', [Validators.required, Validators.minLength(10)]],
       address: ['', [Validators.required, Validators.minLength(5)]],
-      swift_code: [''],
+      swift_code: ['', [Validators.required]],
       phoneCountryCode: ['', [Validators.required]],
       phoneNumber: ['', [Validators.required, Validators.minLength(7)]],
-      code: ['', [Validators.required, Validators.minLength(4)]]
+      code: ['', [Validators.required, Validators.minLength(4)]],
+      termsAccepted: [false, [Validators.requiredTrue]]
     });
   }
 
   ngOnInit() {
     this.loadUserProfile();
     this.loadCountries();
-    this.loadExistingData();
   }
 
   ngAfterViewInit() {
@@ -81,101 +92,191 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
         this.countries = countries.map(country => ({
           ...country,
           showFlag: true
-        }));
+        } as ExtendedCountry));
+        // Load existing data after countries are loaded
+        this.loadExistingData();
       },
       error: (error) => {
         console.error('Error loading countries:', error);
+        // Still try to load existing data even if countries fail
+        this.loadExistingData();
       }
     });
   }
 
   loadExistingData() {
-    this.paymentService.getManualAccountDetails().subscribe({
-      next: (response) => {
-        this.existingData = response.data?.primary || response.data;
-        this.isEditing = true;
+    // Always check payment account details to determine if manual account exists
+    this.paymentService.getPaymentAccountDetails().subscribe({
+      next: (response: PaymentDetailsResponse) => {
+        const manualAccount = this.paymentService.getManualAccount(response.data);
         
-        // Parse phone number to extract country code and number
-        let countryCode = '';
-        let phoneNumber = '';
+        // Check if manual account exists in the response
+        this.hasExistingManualAccount = manualAccount !== null;
         
-        if (this.existingData.phone) {
-          // Parse formatted phone like "(+212)543-534-5353"
-          const phoneMatch = this.existingData.phone.match(/\(\+(\d+)\)(.+)/);
-          if (phoneMatch) {
-            countryCode = phoneMatch[1]; // Extract country code without +
-            phoneNumber = phoneMatch[2]; // Extract the formatted number part
+        // Check for edit mode
+        const urlParams = new URLSearchParams(window.location.search);
+        const isEditMode = urlParams.get('edit') === 'true';
+        
+        if (isEditMode && manualAccount) {
+          // Edit mode - populate form with existing data
+          this.isEditing = true;
+          this.existingData = manualAccount;
+          
+          // Parse phone number
+          let countryCode = '';
+          let phoneNumber = '';
+          
+          if (this.existingData.phone) {
+            const phoneMatch = this.existingData.phone.match(/\(\+(\d+)\)(.+)/);
+            if (phoneMatch) {
+              countryCode = phoneMatch[1];
+              phoneNumber = phoneMatch[2];
+            }
           }
+          
+          this.formattedPhoneNumber = this.existingData.phone || '';
+          
+          // Set selected country
+          if (this.existingData.country) {
+            this.setSelectedCountry(this.existingData.country);
+          }
+          
+          // Pre-fill form
+          this.manualAccountForm.patchValue({
+            countryId: this.existingData.country?.id || '',
+            accountName: this.existingData.account_name || '',
+            iban: this.existingData.iban || '',
+            address: this.existingData.address || '',
+            swift_code: this.existingData.swift_code || '',
+            phoneCountryCode: countryCode,
+            phoneNumber: phoneNumber.replace(/\D/g, ''),
+            termsAccepted: true
+          });
+
+          setTimeout(() => {
+            this.updatePhoneInputDisplay();
+          });
+        } else if (manualAccount?.country) {
+          // Not in edit mode but manual account exists - set country from existing data
+          this.setSelectedCountry(manualAccount.country);
+          this.manualAccountForm.patchValue({ countryId: manualAccount.country.id });
         }
         
-        // Store the original formatted phone for submission
-        this.formattedPhoneNumber = this.existingData.phone || '';
-        
-        // Pre-fill form with existing data
-        this.manualAccountForm.patchValue({
-          accountName: this.existingData.account_name || '',
-          iban: this.existingData.iban || '',
-          address: this.existingData.address || '',
-          swift_code: this.existingData.swift_code || '',
-          phoneCountryCode: countryCode,
-          phoneNumber: phoneNumber.replace(/\D/g, ''), // Clean digits only for form
-          code: this.existingData.code || ''
-        });
-
-        // Update phone input component after form is patched
-        setTimeout(() => {
-          this.updatePhoneInputDisplay();
-        });
+        // Load terms for new accounts (not in edit mode)
+        if (!isEditMode) {
+          this.loadManualPaymentTerms();
+        }
       },
       error: () => {
-        // No existing data - this is fine for new setup
+        console.log('No existing payment details');
+        this.hasExistingManualAccount = false;
         this.isEditing = false;
+        // Load terms for new accounts
+        this.loadManualPaymentTerms();
       }
     });
   }
 
+  private setSelectedCountry(countryData: any) {
+    // Find the matching country from the full countries list
+    const matchingCountry = this.countries.find(c => c.id === countryData.id);
+    if (matchingCountry) {
+      this.selectedCountry = matchingCountry;
+    } else {
+      // If country not found in the full list, create from API data
+      this.selectedCountry = {
+        ...countryData,
+        region_id: 0,
+        iso2: '',
+        iso3: '',
+        nationality: '',
+        nationalities: { en: '', ar: '' },
+        international_code: '',
+        names: { en: countryData.name, ar: countryData.name },
+        status: 'active',
+        showFlag: true
+      } as ExtendedCountry;
+    }
+  }
+
+  onCountryChange(event: any) {
+    const selectedCountryId = event.value;
+    if (selectedCountryId) {
+      this.selectedCountry = this.countries.find(c => c.id === selectedCountryId) || null;
+    } else {
+      this.selectedCountry = null;
+    }
+  }
+
   onSubmit() {
+    this.showValidationErrors = true;
+    this.markFormGroupTouched();
+    
     if (this.manualAccountForm.valid) {
-      const countryId = this.paymentCountryService.getCountryId();
+      const countryId = this.selectedCountry?.id || this.manualAccountForm.value.countryId;
       if (!countryId) {
         this.showError(
           this.lang === 'ar' ? 'خطأ' : 'Error',
-          this.lang === 'ar' ? 'يرجى اختيار الدولة من الصفحة السابقة' : 'Please select country from previous page'
+          this.lang === 'ar' ? 'يرجى اختيار البلد' : 'Please select a country'
         );
         return;
       }
 
-      const formData: ManualAccountRequest = {
-        account_name: this.manualAccountForm.value.accountName,
-        iban: this.manualAccountForm.value.iban.replace(/\s+/g, ''), // Remove all spaces from IBAN
-        address: this.manualAccountForm.value.address,
-        swift_code: this.manualAccountForm.value.swift_code,
-        phone: this.formattedPhoneNumber || `${this.manualAccountForm.value.phoneCountryCode}${this.manualAccountForm.value.phoneNumber}`,
-        code: this.manualAccountForm.value.code,
-        country_id: countryId
-      };
+      if (this.hasExistingManualAccount) {
+        // Update existing manual account
+        const updateData: UpdateManualAccountRequest = {
+          country_id: countryId,
+          account_name: this.manualAccountForm.value.accountName,
+          iban: this.manualAccountForm.value.iban.replace(/\s+/g, ''),
+          address: this.manualAccountForm.value.address,
+          swift_code: this.manualAccountForm.value.swift_code,
+          phone: this.formattedPhoneNumber || `${this.manualAccountForm.value.phoneCountryCode}${this.manualAccountForm.value.phoneNumber}`,
+          code: this.manualAccountForm.value.code
+        };
 
-      this.paymentService.createManualAccount(formData).subscribe({
-        next: () => {
-          const successMessage = this.isEditing 
-            ? (this.lang === 'ar' ? 'تم تحديث الحساب اليدوي بنجاح' : 'Manual account updated successfully')
-            : (this.lang === 'ar' ? 'تم إنشاء الحساب اليدوي بنجاح' : 'Manual account created successfully');
-          
-          this.showSuccess(
-            this.lang === 'ar' ? 'تم الحفظ' : 'Success',
-            successMessage
-          );
-          this.router.navigate(['/app/setup-payment-info/success'], { 
-            queryParams: { type: 'manual' } 
-          });
-        },
-        error: (error) => {
-          this.handleServerErrors(error);
-        }
-      });
-    } else {
-      this.showValidationErrors = true;
-      this.markFormGroupTouched();
+        this.paymentService.updateManualAccount(updateData).subscribe({
+          next: () => {
+            this.showSuccess(
+              this.lang === 'ar' ? 'تم الحفظ' : 'Success',
+              this.lang === 'ar' ? 'تم تحديث الحساب بنجاح' : 'Account updated successfully'
+            );
+            // Navigate based on whether we're in edit mode or not
+            if (this.isEditing) {
+              this.router.navigate(['/app/insighter-dashboard/account-settings/payment-settings']);
+            } else {
+              this.router.navigate(['/app/setup-payment-info/payment-success']);
+            }
+          },
+          error: (error) => {
+            this.handleServerErrors(error);
+          }
+        });
+      } else {
+        // Create new manual account
+        const createData: ManualAccountRequest = {
+          country_id: countryId,
+          account_name: this.manualAccountForm.value.accountName,
+          iban: this.manualAccountForm.value.iban.replace(/\s+/g, ''),
+          address: this.manualAccountForm.value.address,
+          swift_code: this.manualAccountForm.value.swift_code,
+          phone: this.formattedPhoneNumber || `${this.manualAccountForm.value.phoneCountryCode}${this.manualAccountForm.value.phoneNumber}`,
+          code: this.manualAccountForm.value.code,
+          accept_terms: this.termsAccepted
+        };
+
+        this.paymentService.setManualAccount(createData).subscribe({
+          next: () => {
+            this.showSuccess(
+              this.lang === 'ar' ? 'تم الحفظ' : 'Success',
+              this.lang === 'ar' ? 'تم إنشاء الحساب بنجاح' : 'Account created successfully'
+            );
+            this.router.navigate(['/app/setup-payment-info/payment-success']);
+          },
+          error: (error) => {
+            this.handleServerErrors(error);
+          }
+        });
+      }
     }
   }
 
@@ -226,7 +327,7 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
   resendOtp() {
     if (!this.canResendOtp) return;
 
-    this.paymentService.resendOtp().subscribe({
+    this.paymentService.generatePaymentOTP().subscribe({
       next: () => {
         this.showSuccess(
           this.lang === 'ar' ? 'تم الإرسال بنجاح' : 'Successfully Sent',
@@ -238,6 +339,101 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
         this.handleServerErrors(error);
       }
     });
+  }
+
+
+  getFlagUrl(flagName: string): string {
+    return `assets/media/flags/${flagName}.svg`;
+  }
+
+  // Terms and conditions methods
+  openTermsDialog() {
+    this.showTermsDialog = true;
+  }
+
+  closeTermsDialog() {
+    this.showTermsDialog = false;
+  }
+
+  acceptTerms() {
+    this.termsAccepted = true;
+    this.manualAccountForm.patchValue({ termsAccepted: true });
+    this.closeTermsDialog();
+  }
+
+  declineTerms() {
+    this.termsAccepted = false;
+    this.manualAccountForm.patchValue({ termsAccepted: false });
+    this.closeTermsDialog();
+  }
+
+  private loadManualPaymentTerms() {
+    this.isLoadingTerms = true;
+    this.paymentService.getManualPaymentTerms().subscribe({
+      next: (response: TermsResponse) => {
+        this.termsContent = response.data.guideline;
+        this.isLoadingTerms = false;
+      },
+      error: () => {
+        this.isLoadingTerms = false;
+      }
+    });
+  }
+
+  printTerms(): void {
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      const termsTitle = this.lang === 'ar' ? 'شروط وأحكام محفظة الدفع' : 'Wallet Payment Terms & Conditions';
+      const printContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>${termsTitle}</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; }
+            h1 { color: #333; text-align: center; margin-bottom: 20px; }
+            .content { margin: 0 auto; max-width: 800px; }
+          </style>
+        </head>
+        <body>
+          <h1>${termsTitle}</h1>
+          <div class="content">${this.termsContent}</div>
+        </body>
+        </html>
+      `;
+      
+      printWindow.document.open();
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+      
+      setTimeout(() => {
+        printWindow.print();
+      }, 500);
+    }
+  }
+
+  saveTerms(): void {
+    if (this.termsContent) {
+      const termsTitle = this.lang === 'ar' ? 'شروط-وأحكام-محفظة-الدفع' : 'Wallet-Payment-Terms-and-Conditions';
+      const termsText = this.stripHtmlTags(this.termsContent);
+      
+      const blob = new Blob([termsText], { type: 'text/plain' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${termsTitle}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    }
+  }
+
+  private stripHtmlTags(html: string): string {
+    const tempElement = document.createElement('div');
+    tempElement.innerHTML = html;
+    return tempElement.textContent || tempElement.innerText || '';
   }
 
   private startCooldown() {
@@ -264,7 +460,12 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
   getFieldError(fieldName: string): string {
     const control = this.manualAccountForm.get(fieldName);
     if (control?.errors && (control.dirty || control.touched || this.showValidationErrors)) {
-      if (control.errors['required']) {
+      if (control.errors['required'] || control.errors['requiredTrue']) {
+        if (fieldName === 'termsAccepted') {
+          return this.lang === 'ar' 
+            ? 'يجب الموافقة على الشروط والأحكام' 
+            : 'You must agree to the Terms & Conditions';
+        }
         return this.lang === 'ar' 
           ? `${this.getFieldLabel(fieldName)} مطلوب` 
           : `${this.getFieldLabel(fieldName)} is required`;
@@ -281,6 +482,7 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
 
   private getFieldLabel(fieldName: string): string {
     const labels: { [key: string]: { en: string, ar: string } } = {
+      countryId: { en: 'Country', ar: 'البلد' },
       accountName: this.isCompanyAccount 
         ? { en: 'Company Legal Name', ar: 'الاسم القانوني للشركة' }
         : { en: 'Full Name', ar: 'الاسم الكامل' },
@@ -289,7 +491,8 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
       swift_code: { en: 'SWIFT Code', ar: 'رمز السويفت' },
       phoneCountryCode: { en: 'Country Code', ar: 'رمز البلد' },
       phoneNumber: { en: 'Phone Number', ar: 'رقم الهاتف' },
-      code: { en: 'Verification Code', ar: 'رمز التحقق' }
+      code: { en: 'Verification Code', ar: 'رمز التحقق' },
+      termsAccepted: { en: 'Terms & Conditions', ar: 'الشروط والأحكام' }
     };
     return this.lang === 'ar' ? labels[fieldName].ar : labels[fieldName].en;
   }
