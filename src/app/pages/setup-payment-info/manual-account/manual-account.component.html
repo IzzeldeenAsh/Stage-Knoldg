@@ -10,6 +10,57 @@
 
         
         <form [formGroup]="manualAccountForm" (ngSubmit)="onSubmit()">
+            <!-- Country Selection Field -->
+            <div class="mb-6">
+              <label class="form-label required">
+                {{ lang === 'ar' ? 'البلد' : 'Country' }}
+              </label>
+              <p-dropdown 
+                [options]="countries"
+                formControlName="countryId"
+                optionLabel="name"
+                optionValue="id"
+                [filter]="true"
+                [filterBy]="'name'"
+                [showClear]="true"
+                [placeholder]="lang === 'ar' ? 'اختر البلد' : 'Select Country'"
+                [filterPlaceholder]="lang === 'ar' ? 'ابحث عن بلد...' : 'Search for a country...'"
+                [class.p-invalid]="getFieldError('countryId')"
+                styleClass="w-100"
+                (onChange)="onCountryChange($event)"
+              >
+                <ng-template pTemplate="item" let-country>
+                  <div class="d-flex align-items-center">
+                    <img 
+                      *ngIf="country.showFlag"
+                      [src]="getFlagUrl(country.flag)" 
+                      [alt]="country.name"
+                      class="me-3"
+                      style="width: 24px; height: 16px; object-fit: cover;"
+                      (error)="onFlagError(country)"
+                    />
+                    <span>{{ country.name }}</span>
+                  </div>
+                </ng-template>
+                <ng-template pTemplate="selectedItem" let-country>
+                  <div class="d-flex align-items-center" *ngIf="country">
+                    <img 
+                      *ngIf="country.showFlag"
+                      [src]="getFlagUrl(country.flag)" 
+                      [alt]="country.name"
+                      class="me-3"
+                      style="width: 24px; height: 16px; object-fit: cover;"
+                      (error)="onFlagError(country)"
+                    />
+                    <span>{{ country.name }}</span>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+              <div class="invalid-feedback d-block" *ngIf="getFieldError('countryId')">
+                {{ getFieldError('countryId') }}
+              </div>
+            </div>
+
             <!-- Account Name Field -->
             <div class="mb-6">
               <label class="form-label required">
@@ -127,18 +178,65 @@
               <label class="form-label required">
                 {{ lang === 'ar' ? 'رمز التحقق' : 'Verification Code' }}
               </label>
-              <input
-                type="text"
-                class="form-control"
-                [class.is-invalid]="getFieldError('code')"
-                formControlName="code"
-                [placeholder]="lang === 'ar' ? 'أدخل رمز التحقق' : 'Enter verification code'"
-              />
+              <div class="input-group">
+                <!-- For Arabic: Button first, then Input -->
+                <ng-container *ngIf="lang === 'ar'">
+                  <input
+                  type="text"
+                  class="form-control text-end"
+                  [class.is-invalid]="getFieldError('code')"
+                  style="border-radius: 0 0.375rem 0.375rem 0;"
+                  formControlName="code"
+                  placeholder="أدخل رمز التحقق"
+                  dir="rtl"
+                />
+                  <button 
+                    type="button" 
+                    class="btn btn-outline-info"
+                    style="border-radius: 0.375rem 0 0 0.375rem;"
+                    (click)="resendOtp()"
+                    [disabled]="!canResendOtp">
+                    <span *ngIf="canResendOtp">
+                      {{ 'الحصول على الرمز' }}
+                    </span>
+                    <span *ngIf="!canResendOtp">
+                      {{ resendCooldown }}{{ 'ث' }}
+                    </span>
+                  </button>
+                
+                </ng-container>
+                
+                <!-- For English: Input first, then Button -->
+                <ng-container *ngIf="lang === 'en'">
+                  <input
+                    type="text"
+                    class="form-control"
+                    [class.is-invalid]="getFieldError('code')"
+                    style="border-radius: 0.375rem 0 0 0.375rem;"
+                    formControlName="code"
+                    placeholder="Enter verification code"
+                    dir="ltr"
+                  />
+                  <button 
+                    type="button" 
+                    class="btn btn-outline-info"
+                    style="border-radius: 0 0.375rem 0.375rem 0;"
+                    (click)="resendOtp()"
+                    [disabled]="!canResendOtp">
+                    <span *ngIf="canResendOtp">
+                      {{ 'Get Code' }}
+                    </span>
+                    <span *ngIf="!canResendOtp">
+                      {{ resendCooldown }}{{ 's' }}
+                    </span>
+                  </button>
+                </ng-container>
+              </div>
               <div class="invalid-feedback" *ngIf="getFieldError('code')">
                 {{ getFieldError('code') }}
               </div>
-              <div class="form-text text-muted">
-                <i class="fas fa-envelope me-1"></i>
+              <div class="form-text text-muted" [class.text-end]="lang === 'ar'" [dir]="lang === 'ar' ? 'rtl' : 'ltr'">
+                <i [class]="lang === 'ar' ? 'fas fa-envelope ms-1' : 'fas fa-envelope me-1'"></i>
                 {{ lang === 'ar' ? 'لقد أرسلنا رمز التحقق إلى بريدك الإلكتروني (تنتهي فعالية الكود في 10 دقائق)' : 'We sent an OTP code to your email (Code expires in 10 minutes)' }}
                 <span class="d-block mt-1">
                   <span 
@@ -156,6 +254,37 @@
                     {{ lang === 'ar' ? 'إعادة الإرسال متاحة خلال' : 'Resend available in' }} {{ resendCooldown }}{{ lang === 'ar' ? 'ث' : 's' }}
                   </span>
                 </span>
+              </div>
+            </div>
+
+            <!-- Terms and Conditions Checkbox (only for new accounts) -->
+            <div *ngIf="!isEditing" class="mb-6">
+              <div class="form-check">
+                <input 
+                  class="form-check-input" 
+                  type="checkbox" 
+                  id="termsAccepted"
+                  formControlName="termsAccepted"
+                  [class.is-invalid]="getFieldError('termsAccepted')"
+                  [disabled]="termsAccepted"
+                />
+                <label class="form-check-label required" for="termsAccepted">
+                  {{ lang === 'ar' ? 'أوافق على' : 'I agree to the' }}
+                  <a 
+                    href="javascript:void(0)" 
+                    class="text-info text-decoration-underline"
+                    (click)="openTermsDialog()"
+                  >
+                    {{ lang === 'ar' ? 'الشروط والأحكام' : 'Terms & Conditions' }}
+                  </a>
+                </label>
+                <div class="invalid-feedback" *ngIf="getFieldError('termsAccepted')">
+                  {{ getFieldError('termsAccepted') }}
+                </div>
+                <div *ngIf="termsAccepted" class="form-text text-success mt-1">
+                  <i class="fas fa-check-circle me-1"></i>
+                  {{ lang === 'ar' ? 'تم قبول الشروط والأحكام' : 'Terms & Conditions accepted' }}
+                </div>
               </div>
             </div>
 
@@ -182,7 +311,6 @@
                 type="button" 
                 class="btn btn-light"
                 (click)="goBack()">
-                <i class="fas fa-arrow-left me-2"></i>
                 {{ lang === 'ar' ? 'السابق' : 'Back' }}
               </button>
               
@@ -205,3 +333,70 @@
     </div>
   </div>
 </div>
+
+<!-- Terms & Conditions Dialog -->
+<p-dialog 
+  [(visible)]="showTermsDialog" 
+  [modal]="true" 
+  [closable]="true" 
+  [draggable]="false" 
+  [resizable]="false"
+  [style]="{width: '90vw', maxWidth: '800px'}"
+>
+  <ng-template pTemplate="header">
+    <div class="d-flex justify-content-between align-items-center w-100">
+      <h5 class="m-0">{{ lang === 'ar' ? 'شروط وأحكام محفظة الدفع' : 'Wallet Payment Terms & Conditions' }}</h5>
+      <div class="d-flex">
+        <button 
+          class="btn btn-sm btn-icon me-2" 
+          (click)="printTerms()"
+          [disabled]="isLoadingTerms"
+        >
+          <i class="ki-outline ki-printer fs-3"></i>
+        </button>
+        <button 
+          class="btn btn-sm btn-icon" 
+          (click)="saveTerms()"
+          [disabled]="isLoadingTerms"
+        >
+          <i class="ki-outline ki-save-2 fs-3"></i>
+        </button>
+      </div>
+    </div>
+  </ng-template>
+
+  <div class="terms-content" style="max-height: 60vh; overflow-y: auto;">
+    <div *ngIf="isLoadingTerms" class="text-center py-4">
+      <div class="spinner-border text-info" role="status">
+        <span class="visually-hidden">{{ lang === 'ar' ? 'جاري التحميل...' : 'Loading...' }}</span>
+      </div>
+    </div>
+    
+    <div *ngIf="!isLoadingTerms && termsContent" [innerHTML]="termsContent"></div>
+    
+    <div *ngIf="!isLoadingTerms && !termsContent" class="text-center py-4 text-muted">
+      <i class="fas fa-exclamation-triangle fs-2x mb-3"></i>
+      <p>{{ lang === 'ar' ? 'لا يمكن تحميل الشروط والأحكام' : 'Unable to load Terms & Conditions' }}</p>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="d-flex justify-content-end gap-3">
+      <button 
+        type="button" 
+        class="btn btn-outline-secondary"
+        (click)="declineTerms()"
+      >
+        {{ lang === 'ar' ? 'رفض' : 'Decline' }}
+      </button>
+      <button 
+        type="button" 
+        class="btn btn-info"
+        (click)="acceptTerms()"
+        [disabled]="isLoadingTerms"
+      >
+        {{ lang === 'ar' ? 'أوافق' : 'I Agree' }}
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>

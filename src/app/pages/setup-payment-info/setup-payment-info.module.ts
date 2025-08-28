@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { DialogModule } from 'primeng/dialog';
+import { DropdownModule } from 'primeng/dropdown';
 
 import { SetupPaymentInfoComponent } from './setup-payment-info.component';
 import { ManualAccountComponent } from './manual-account/manual-account.component';
@@ -26,6 +27,7 @@ import { ToastModule } from 'primeng/toast';
     ReactiveFormsModule,
     ToastModule,
     DialogModule,
+    DropdownModule,
     PhoneNumberInputModule,
     RouterModule.forChild([
       {

@@ -278,4 +278,9 @@ export class InsighterDashboardComponent implements OnInit, OnDestroy {
   closeMobileSidebar(): void {
     this.isMobileSidebarVisible = false;
   }
+
+  navigateToSettings(): void {
+    this.router.navigate(['/app/insighter-dashboard/account-settings/general-settings']);
+    this.closeMobileSidebar();
+  }
 }

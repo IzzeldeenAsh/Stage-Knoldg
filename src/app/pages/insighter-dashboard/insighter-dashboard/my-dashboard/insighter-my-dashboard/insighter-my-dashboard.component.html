@@ -1,7 +1,7 @@
 <app-widgets-row></app-widgets-row>
 <div class="row">
     <div class="col-12 col-md-6" *ngIf="userHasStatistics"><app-knowledge-types-statistics (hasStatistics)="hasStatistics($event)"></app-knowledge-types-statistics></div>
-    <div class="col-12" [ngClass]="{'col-md-12':!userHasStatistics , 'col-md-6':userHasStatistics}">
+    <div class="col-12" [ngClass]="{'col-md-12':!userHasStatistics , 'col-md-6':userHasStatistics}" *ngIf="!(isCompanyInsight | async)">
         <div class="card light-upgrade-gradient-bg h-md-100 "  style="border: 1px solid #e3f2fd">
             <div class="card-body d-flex justify-content-center flex-wrap px-xl-15 px-5">          
                 <div class="flex-grow-1 mt-2 me-9 me-md-0">

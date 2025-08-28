@@ -1,0 +1,29 @@
+<div class="settings-tabs-container">
+  <!-- Tab Navigation -->
+  <div class="tab-navigation">
+    <div class="nav-tabs">
+      <button 
+        type="button" 
+        class="tab-btn" 
+        [class.active]="activeTab === 'general-settings'"
+        (click)="switchTab('general-settings')"
+        *ngIf="!(isClient$ | async)">
+        <i class="ki-outline ki-user-edit me-2"></i>
+        {{ 'INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS' | translate }}
+      </button>
+      <button 
+        type="button" 
+        class="tab-btn" 
+        [class.active]="activeTab === 'payment-settings'"
+        (click)="switchTab('payment-settings')"
+        *ngIf="(isInsighter$ | async) || (isCompany$ | async)">
+        <i class="ki-outline ki-credit-cart me-2"></i>
+        {{ 'INSIGHTER.DASHBOARD.NAV.PAYMENT_SETTINGS' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Tab Content -->
+  <div class="tab-content">
+    <router-outlet></router-outlet>
+</div>

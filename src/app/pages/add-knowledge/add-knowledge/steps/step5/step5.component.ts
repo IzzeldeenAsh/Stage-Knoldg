@@ -6,7 +6,7 @@ import { BaseComponent } from 'src/app/modules/base.component';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import { TranslateService } from '@ngx-translate/core';
 import { TooltipModule } from 'primeng/tooltip';
-import { PaymentService, AccountDetailsResponse } from 'src/app/_fake/services/payment/payment.service';
+import { PaymentService, PaymentDetailsResponse } from 'src/app/_fake/services/payment/payment.service';
 
 @Component({
   selector: 'app-step5',
@@ -83,7 +83,7 @@ export class Step5Component extends BaseComponent implements OnInit {
   userProfile: any = null;
   timeError: string = '';
   hasOnlyTwoOptions: boolean = false;
-  paymentAccountDetails: AccountDetailsResponse['data'] | null = null;
+  paymentAccountDetails: PaymentDetailsResponse['data'] | null = null;
   paymentAccountLoading: boolean = false;
   paymentAccountError: string | null = null;
   hasActivePaymentAccount: boolean = false;
@@ -93,20 +93,27 @@ export class Step5Component extends BaseComponent implements OnInit {
   dateFormat: string = 'yy-mm-dd';
 
   get isStripeAccountUnderVerification(): boolean {
-    return this.paymentAccountDetails?.primary?.type === 'provider' && 
-           this.paymentAccountDetails?.primary?.status === 'inactive' && 
-           this.paymentAccountDetails?.secondary?.details_submitted_at !== null &&
-           this.paymentAccountDetails?.secondary?.charges_enable_at === null;
+    const primaryAccount = this.getPrimaryAccount();
+    return primaryAccount?.type === 'provider' && 
+           primaryAccount?.status !== 'active' && 
+           primaryAccount?.details_submitted_at !== null &&
+           primaryAccount?.charges_enable_at === null;
   }
 
   get isStripeAccountIncomplete(): boolean {
-    return this.paymentAccountDetails?.primary?.type === 'provider' && 
-           this.paymentAccountDetails?.primary?.status === 'inactive' && 
-           this.paymentAccountDetails?.secondary?.details_submitted_at === null;
+    const primaryAccount = this.getPrimaryAccount();
+    return primaryAccount?.type === 'provider' && 
+           primaryAccount?.status !== 'active' && 
+           primaryAccount?.details_submitted_at === null;
   }
 
   get isManualAccountInactive(): boolean {
-    return this.paymentAccountDetails?.primary?.type === 'manual' && this.paymentAccountDetails?.primary?.status === 'inactive';
+    const primaryAccount = this.getPrimaryAccount();
+    return primaryAccount?.type === 'manual' && primaryAccount?.status !== 'active';
+  }
+
+  private getPrimaryAccount() {
+    return this.paymentAccountDetails?.find(account => account.primary) || null;
   }
 
   get shouldShowPaymentWarning(): boolean {
@@ -229,10 +236,11 @@ export class Step5Component extends BaseComponent implements OnInit {
     this.paymentAccountLoading = true;
     this.paymentAccountError = null;
 
-    const subscription = this.paymentService.getAccountDetails().subscribe({
-      next: (response: AccountDetailsResponse) => {
+    const subscription = this.paymentService.getPaymentAccountDetails().subscribe({
+      next: (response: PaymentDetailsResponse) => {
         this.paymentAccountDetails = response.data;
-        this.hasActivePaymentAccount = response.data.primary.status === 'active';
+        const primaryAccount = this.getPrimaryAccount();
+        this.hasActivePaymentAccount = primaryAccount?.status === 'active' || false;
         this.paymentAccountLoading = false;
         this.cdr.detectChanges();
         callback();

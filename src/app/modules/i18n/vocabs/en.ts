@@ -261,7 +261,7 @@ export const locale = {
       BECOME_INSIGHTER: 'Become an Insighter',
       BECOME_INSIGHTER_DESC: "Register as a knowledge provider and start uploading reports and data on the platform",
       INSIGHTER_DASHBOARD: 'Dashboard',
-      
+      SETTINGS: 'Settings',
       LATEST_INSIGHTS: 'Latest Insights',
       TRENDING: 'Trending',
       REGION_PLACEHOLDER: "Region",

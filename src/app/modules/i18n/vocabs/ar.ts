@@ -299,6 +299,7 @@ INSIGHTER_REQUESTS: {
     },
     HOME: {
       INSIGHTER_DASHBOARD: 'لوحة المعلومات',
+      SETTINGS: 'الإعدادات',
       COMPANY_INSIGHTER: 'شركة إنسايتر',
       BECOME_INSIGHTER: 'سجل كإنسايتر',
       BECOME_INSIGHTER_DESC:  "سجل كمزود للمعرفة وابدأ برفع التقارير والبيانات على المنصة",
