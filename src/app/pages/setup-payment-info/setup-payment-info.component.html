@@ -385,8 +385,6 @@
             [ngModelOptions]="{standalone: true}"
             [placeholder]="lang === 'ar' ? 'أدخل الرمز' : 'Enter code'"
             maxlength="10"
-            (keypress)="$event.key === 'Enter' && submitOtp()"
-            autocomplete="off"
             [disabled]="isSubmittingOtp"
           />
           <div class="form-text text-muted mt-2">
