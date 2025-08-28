@@ -240,12 +240,7 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
               this.lang === 'ar' ? 'تم الحفظ' : 'Success',
               this.lang === 'ar' ? 'تم تحديث الحساب بنجاح' : 'Account updated successfully'
             );
-            // Navigate based on whether we're in edit mode or not
-            if (this.isEditing) {
-              this.router.navigate(['/app/insighter-dashboard/account-settings/payment-settings']);
-            } else {
-              this.router.navigate(['/app/setup-payment-info/payment-success']);
-            }
+            this.router.navigate(['/app/insighter-dashboard/account-settings/payment-settings']);
           },
           error: (error) => {
             this.handleServerErrors(error);
@@ -270,7 +265,7 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
               this.lang === 'ar' ? 'تم الحفظ' : 'Success',
               this.lang === 'ar' ? 'تم إنشاء الحساب بنجاح' : 'Account created successfully'
             );
-            this.router.navigate(['/app/setup-payment-info/payment-success']);
+            this.router.navigate(['/app/insighter-dashboard/account-settings/payment-settings']);
           },
           error: (error) => {
             this.handleServerErrors(error);
