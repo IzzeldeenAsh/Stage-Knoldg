@@ -52,7 +52,7 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
       accountName: ['', [Validators.required, Validators.minLength(2)]],
       iban: ['', [Validators.required, Validators.minLength(10)]],
       address: ['', [Validators.required, Validators.minLength(5)]],
-      swift_code: ['', [Validators.required]],
+      swift_code: [''],
       phoneCountryCode: ['', [Validators.required]],
       phoneNumber: ['', [Validators.required, Validators.minLength(7)]],
       code: ['', [Validators.required, Validators.minLength(4)]],

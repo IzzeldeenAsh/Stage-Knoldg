@@ -140,7 +140,6 @@
               <input
                 type="text"
                 class="form-control"
-                [class.is-invalid]="getFieldError('swift_code')"
                 formControlName="swift_code"
                 [placeholder]="lang === 'ar' ? 'أدخل رمز السويفت' : 'Enter SWIFT code'"
               />
@@ -219,7 +218,7 @@
                   />
                   <button 
                     type="button" 
-                    class="btn btn-outline-info"
+                    class="btn btn-info"
                     style="border-radius: 0 0.375rem 0.375rem 0;"
                     (click)="resendOtp()"
                     [disabled]="!canResendOtp">
@@ -234,26 +233,6 @@
               </div>
               <div class="invalid-feedback" *ngIf="getFieldError('code')">
                 {{ getFieldError('code') }}
-              </div>
-              <div class="form-text text-muted" [class.text-end]="lang === 'ar'" [dir]="lang === 'ar' ? 'rtl' : 'ltr'">
-                <i [class]="lang === 'ar' ? 'fas fa-envelope ms-1' : 'fas fa-envelope me-1'"></i>
-                {{ lang === 'ar' ? 'لقد أرسلنا رمز التحقق إلى بريدك الإلكتروني (تنتهي فعالية الكود في 10 دقائق)' : 'We sent an OTP code to your email (Code expires in 10 minutes)' }}
-                <span class="d-block mt-1">
-                  <span 
-                    *ngIf="canResendOtp"
-                    class="text-info text-decoration-underline"
-                    style="cursor: pointer;"
-                    (click)="resendOtp()"
-                  >
-                    {{ lang === 'ar' ? 'إعادة إرسال الرمز' : 'Resend OTP' }}
-                  </span>
-                  <span 
-                    *ngIf="!canResendOtp"
-                    class="text-muted"
-                  >
-                    {{ lang === 'ar' ? 'إعادة الإرسال متاحة خلال' : 'Resend available in' }} {{ resendCooldown }}{{ lang === 'ar' ? 'ث' : 's' }}
-                  </span>
-                </span>
               </div>
             </div>
 
