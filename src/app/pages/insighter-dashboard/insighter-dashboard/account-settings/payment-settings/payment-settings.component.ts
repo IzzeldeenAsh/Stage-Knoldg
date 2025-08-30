@@ -318,6 +318,53 @@ export class PaymentSettingsComponent extends BaseComponent implements OnInit {
     this.router.navigate(['/app/setup-payment-info']);
   }
 
+  formatIban(iban: string | undefined): string {
+    if (!iban) return 'Not Available';
+    // Format IBAN with spaces for better readability (groups of 4)
+    return iban.replace(/(.{4})/g, '$1 ').trim();
+  }
+
+  copyToClipboard(text: string) {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(() => {
+        this.showSuccess(
+          this.lang === 'ar' ? 'تم النسخ' : 'Copied',
+          this.lang === 'ar' ? 'تم نسخ IBAN بنجاح' : 'IBAN copied to clipboard'
+        );
+      }).catch(() => {
+        this.fallbackCopyToClipboard(text);
+      });
+    } else {
+      this.fallbackCopyToClipboard(text);
+    }
+  }
+
+  private fallbackCopyToClipboard(text: string) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    textArea.style.top = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    try {
+      document.execCommand('copy');
+      this.showSuccess(
+        this.lang === 'ar' ? 'تم النسخ' : 'Copied',
+        this.lang === 'ar' ? 'تم نسخ IBAN بنجاح' : 'IBAN copied to clipboard'
+      );
+    } catch (err) {
+      this.showError(
+        this.lang === 'ar' ? 'خطأ' : 'Error',
+        this.lang === 'ar' ? 'فشل في نسخ النص' : 'Failed to copy text'
+      );
+    } finally {
+      document.body.removeChild(textArea);
+    }
+  }
+
   private handleServerErrors(error: any) {
     if (error.error && error.error.errors) {
       const serverErrors = error.error.errors;
