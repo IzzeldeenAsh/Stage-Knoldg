@@ -55,3 +55,24 @@
     background-image: linear-gradient(to bottom right, #fff , #f8ecfd);
     color: #a128ed;
 }
+
+// Wallet card takes 2 slots width
+.wallet-card {
+    flex: 0 0 calc(40% - 0.75rem) !important; /* 2x width (20% x 2) */
+    
+    @media (max-width: 1400px) and (min-width: 1201px) {
+        flex: 0 0 calc(40% - 0.75rem) !important;
+    }
+    
+    @media (max-width: 1300px) and (min-width: 1201px) {
+        flex: 0 0 calc(38% - 0.6rem) !important;
+    }
+    
+    @media (max-width: 1200px) {
+        flex: 0 0 calc(66.666% - 1rem) !important; /* 2/3 width on medium screens */
+    }
+    
+    @media (max-width: 992px) {
+        flex: 0 0 100% !important; /* Full width on smaller screens */
+    }
+}

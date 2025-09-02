@@ -44,6 +44,12 @@ const routes: Routes = [
         canActivate:[authGuard]
       },
       {
+        path: 'my-orders',
+        loadChildren: () => import('./insighter-dashboard/my-orders/my-orders.module').then(m => m.MyOrdersModule),
+        canActivate:[authGuard,RolesGuard],
+        data: { roles: ['client','insighter','company','company-insighter'] }
+      },
+      {
         path: 'my-meetings',
         loadChildren: () => import('./insighter-dashboard/my-meetings/my-meetings.module').then(m => m.MyMeetingsModule),
         canActivate:[authGuard,RolesGuard],

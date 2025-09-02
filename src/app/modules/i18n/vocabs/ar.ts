@@ -273,6 +273,7 @@ INSIGHTER_REQUESTS: {
       "MY_COMPANY": "فريقي",
       "INVITING": "جاري الدعوة",
       "MY_DOWNLOADS": "التحميلات",
+      "MY_ORDERS": "طلباتي",
       "READ_LATER": "قائمة المعاينة",
       "MY_CONSULTING_SCHEDULE": "جدولة الاستشارات",
       "DASHBOARD": "لوحة المعلومات"
@@ -927,6 +928,7 @@ INSIGHTER_REQUESTS: {
           "ACCOUNT_SETTINGS": "إعدادات الحساب",
           "MY_COMPANY": "فريقي",
           "READ_LATER":"قائمة المعاينة",
+          "MY_ORDERS": "طلباتي",
           "MY_DOWNLOADS": "التحميلات",
           "MEETINGS": "الجلسات الاستشارية",
           "MY_MEETINGS": "اجتماعاتي",
@@ -1491,6 +1493,32 @@ INSIGHTER_REQUESTS: {
     "BROWSE_KNOWLEDGE": "تصفح المعرفة",
     "DISCOVER_NEW": "اكتشف رؤى جديدة",
     "ORGANIZE_COLLECTION": "نظم مجموعتك"
+  }
+},
+"MY_ORDERS": {
+  "TITLE": "طلباتي",
+  "ORDERS": "طلب",
+  "EMPTY_TITLE": "لا توجد طلبات",
+  "EMPTY_MESSAGE": "لم تقم بأي طلبات بعد.",
+  "ORDER_DETAILS": "تفاصيل الطلب",
+  "ORDER_UUID": "رقم الطلب",
+  "AMOUNT": "المبلغ",
+  "STATUS": "الحالة",
+  "DATE": "التاريخ",
+  "DOCUMENTS": "المستندات",
+  "COPY_UUID": "نسخ رقم الطلب",
+  "UUID_COPIED": "تم نسخ رقم الطلب",
+  "COPY_FAILED": "فشل في نسخ رقم الطلب",
+  "STATISTICS": {
+    "TITLE": "طلباتي",
+    "SUBTITLE": "تاريخ مشترياتك من المعرفة",
+    "TOTAL_ORDERS": "إجمالي الطلبات",
+    "THIS_MONTH": "هذا الشهر",
+    "QUICK_ACTIONS": "إجراءات سريعة",
+    "VIEW_ORDERS": "عرض جميع الطلبات",
+    "BROWSE_KNOWLEDGE": "تصفح المعرفة",
+    "DISCOVER_NEW": "اكتشف رؤى جديدة",
+    "TRACK_PURCHASES": "تتبع مشترياتك"
   }
 }
 },

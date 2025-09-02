@@ -1,0 +1,212 @@
+<div class="container-fluid">
+  <div class="row g-4">
+    <!-- Loading State -->
+    <div *ngIf="isLoading$ | async" class="col-12">
+      <div class="d-flex justify-content-center align-items-center" style="min-height: 200px;">
+        <div class="spinner-border text-info" role="status" style="width: 3rem; height: 3rem;">
+          <span class="visually-hidden">{{ lang === 'ar' ? 'جاري التحميل...' : 'Loading...' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Orders Cards -->
+    <div *ngFor="let order of orders$ | async" class="col-12">
+      <div class="card card-custom gutter-b">
+        <div class="card-body p-6">
+          <!-- Order Header -->
+          <div class="d-flex justify-content-between align-items-start mb-4">
+            <div class="d-flex align-items-center">
+              <div class="symbol symbol-40px me-3">
+                <div class="symbol-label bg-light-info">
+                  <i class="pi pi-shopping-bag text-info fs-2"></i>
+                </div>
+              </div>
+              <div>
+                <div class="d-flex align-items-center mb-1">
+                  <h6 class="mb-0 fw-bold me-2">
+                    {{ lang === 'ar' ? 'طلب رقم' : 'Order no' }} #{{ order.uuid }}
+                  </h6>
+                  <button 
+                    type="button" 
+                    class="btn btn-sm btn-light-info p-1"
+                    (click)="copyOrderUuid(order.uuid)"
+                    [title]="lang === 'ar' ? 'نسخ رقم الطلب' : 'Copy Order UUID'">
+                    <i class="ki-outline ki-copy fs-6"></i>
+                  </button>
+                </div>
+                <div class="text-muted fs-7">{{ order.amount === 0 ? (lang === 'ar' ? 'مجاني' : 'Free') : '$' + order.amount }}</div>
+              </div>
+            </div>
+            <div class="d-flex gap-2">
+              <button 
+                type="button" 
+                class="btn btn-info btn-sm"
+                (click)="openOrderDetails(order)">
+                {{ lang === 'ar' ? 'تفاصيل الطلب' : 'Order Details' }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Order Status -->
+          <!-- <div class="mb-3">
+            <span [class]="getStatusBadgeClass(order.status)" class="text-uppercase">
+              {{ order.status  }}
+            </span>
+          </div> -->
+
+          <!-- Knowledge Items -->
+          <div *ngFor="let suborder of order.suborders" class="mb-3">
+            <div *ngFor="let knowledge of suborder.knowledge" class="mb-2">
+              <div class="d-flex align-items-center ">
+                <div >
+                  <a 
+                  [pTooltip]="lang ==='ar' ? 'عرض في التحميلات' : 'View in downloads'"
+                  (click)="navigateToDownloads(knowledge.title)"
+                    target="_blank"
+                    class="text-info text-decoration-none fw-bold fs-6 cursor-pointer">
+                    {{ knowledge.title }}
+                  </a>
+                </div>
+                <!-- <button 
+                  type="button" 
+                  class="btn btn-xs btn-light-info ms-2"
+                  (click)="navigateToDownloads(knowledge.title)"
+                  [title]="lang === 'ar' ? 'عرض في المعرفة' : 'View in Knowledge'">
+                  <i class="ki-outline ki-eye fs-6"></i>
+                  {{ lang === 'ar' ? 'عرض في المعرفة' : 'View in Knowledge' }}
+                </button> -->
+              </div>
+              
+              <!-- Documents Preview -->
+              <div *ngIf="suborder.knowledge_documents && suborder.knowledge_documents.length > 0" class="mt-2">
+                <div class="d-flex flex-wrap gap-2">
+                  <div *ngFor="let extension of getUniqueExtensions(suborder)" class="d-flex align-items-center">
+                    <span class="badge badge-light-secondary me-1">({{ getDocumentCountByExtension(suborder, extension) }})</span>
+                    <img 
+                      [src]="getFileIconByExtension(extension)" 
+                      [alt]="extension"
+                      class="me-2"
+                      style="width: 24px; height: 24px;"
+                      onerror="this.style.display='none'">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Order Info -->
+          <div class="border-top pt-3 mt-3">
+            <div class="text-muted fs-7">
+              {{ lang === 'ar' ? 'تاريخ الطلب' : 'Ordered' }} {{ order.date | date:'short' }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="(orders$ | async)?.length === 0 && !(isLoading$ | async)" class="col-12">
+      <div class="text-center py-10">
+        <div class="symbol symbol-100px mx-auto mb-4">
+          <div class="symbol-label bg-light-info">
+            <i class="pi pi-shopping-bag text-info fs-1"></i>
+          </div>
+        </div>
+        <h5 class="mb-3">{{ lang === 'ar' ? 'لا توجد طلبات' : 'No Orders Found' }}</h5>
+        <p class="text-muted">
+          {{ lang === 'ar' ? 'لم تقم بأي طلبات بعد' : 'You haven\'t placed any orders yet.' }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="(totalPages$ | async)! > 1" class="d-flex justify-content-center mt-6">
+    <p-paginator 
+      [rows]="10" 
+      [totalRecords]="(totalPages$ | async)! * 10"
+      [first]="(currentPage - 1) * 10"
+      (onPageChange)="onPageChange(($event.page || 0) + 1)"
+      [showCurrentPageReport]="true"
+      [currentPageReportTemplate]="lang === 'ar' ? 'عرض {first} إلى {last} من {totalRecords} طلب' : 'Showing {first} to {last} of {totalRecords} orders'">
+    </p-paginator>
+  </div>
+</div>
+
+<!-- Order Details Dialog -->
+<p-dialog 
+  [(visible)]="showOrderDetails" 
+  [header]="lang === 'ar' ? 'تفاصيل الطلب' : 'Order Details'"
+  [modal]="true" 
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '50vw', minWidth: '300px' }"
+  [contentStyle]="{ 'max-height': '70vh', 'overflow-y': 'auto' }"
+  appendTo="body">
+  
+  <div *ngIf="selectedOrder" class="order-details">
+    <!-- Order Header -->
+    <div class="mb-4">
+      <h6 class="fw-bold mb-2">
+        {{ lang === 'ar' ? 'طلب رقم' : 'Order' }} #{{ selectedOrder.uuid }}
+      </h6>
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="text-muted">{{ lang === 'ar' ? 'المبلغ:' : 'Amount:' }}</span>
+        <span class="fw-bold">{{ selectedOrder.amount === 0 ? (lang === 'ar' ? 'مجاني' : 'Free') : '$'+ selectedOrder.amount }}</span>
+      </div>
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="text-muted">{{ lang === 'ar' ? 'الحالة:' : 'Status:' }}</span>
+        <span [class]="getStatusBadgeClass(selectedOrder.status)" class="text-uppercase">{{ selectedOrder.status }}</span>
+      </div>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="text-muted">{{ lang === 'ar' ? 'التاريخ:' : 'Date:' }}</span>
+        <span>{{ selectedOrder.date | date:'medium' }}</span>
+      </div>
+    </div>
+
+    <!-- Knowledge Items -->
+    <div *ngFor="let suborder of selectedOrder.suborders" class="mb-4">
+      <div *ngFor="let knowledge of suborder.knowledge" class="border rounded p-3 mb-3">
+        <h6 class="mb-3 text-info">
+          <a 
+            [href]="getKnowledgeUrl(knowledge)" 
+            target="_blank"
+            class="text-info text-decoration-none">
+            {{ knowledge.title }}
+          </a>
+        </h6>
+        
+        <!-- Documents -->
+        <div *ngIf="suborder.knowledge_documents && suborder.knowledge_documents.length > 0">
+          <h6 class="fs-7 text-muted mb-2">{{ lang === 'ar' ? 'المستندات:' : 'Documents:' }}</h6>
+          <div class="row g-2">
+            <ng-container *ngFor="let docGroup of suborder.knowledge_documents">
+              <div *ngFor="let doc of docGroup" class="col-md-12">
+                <div class="card card-flush border border-gray-300">
+                  <div class="card-body p-3">
+                    <div class="d-flex align-items-center">
+                      <img 
+                        [src]="getFileIconByExtension(doc.file_extension)" 
+                        [alt]="doc.file_extension"
+                        class="me-3"
+                        style="width: 32px; height: 32px;"
+                        onerror="this.style.display='none'">
+                      <div class="flex-grow-1">
+                        <div class="fw-bold fs-6">{{ doc.file_name }}</div>
+                        <div class="text-muted fs-7">{{ doc.file_extension.toUpperCase() }}</div>
+                      </div>
+                      <div class="text-end">
+                        <div class="fw-bold text-info">{{ doc.price === 0 ? (lang === 'ar' ? 'مجاني' : 'Free') : '$' + doc.price }}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</p-dialog>

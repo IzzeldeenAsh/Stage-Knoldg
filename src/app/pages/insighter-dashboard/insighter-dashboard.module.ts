@@ -16,6 +16,7 @@ import { ConsultingScheduleHeaderComponent } from './insighter-dashboard/statist
 import { MeetingsStatisticsComponent } from './insighter-dashboard/my-meetings/meetings-statistics/meetings-statistics.component';
 import { SentMeetingsStatisticsComponent } from './insighter-dashboard/my-meetings/sent-meetings-statistics/sent-meetings-statistics.component';
 import { ReadLaterStatisticsComponent } from './insighter-dashboard/statistics/read-later-statistics/read-later-statistics.component';
+import { MyOrdersStatisticsComponent } from './insighter-dashboard/statistics/my-orders-statistics/my-orders-statistics.component';
 import { PaymentSettingsHeaderComponent } from './insighter-dashboard/statistics/payment-settings-header/payment-settings-header.component';
 import { SidebarModule } from 'primeng/sidebar';
 import { ButtonModule } from 'primeng/button';
@@ -34,6 +35,7 @@ import { TooltipModule } from 'primeng/tooltip';
     MeetingsStatisticsComponent,
     SentMeetingsStatisticsComponent,
     ReadLaterStatisticsComponent,
+    MyOrdersStatisticsComponent,
     PaymentSettingsHeaderComponent,
     
   ],
