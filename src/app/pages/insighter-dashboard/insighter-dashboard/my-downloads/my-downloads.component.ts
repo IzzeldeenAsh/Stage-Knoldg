@@ -5,7 +5,7 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
 
 import { BaseComponent } from 'src/app/modules/base.component';
 
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { Document, KnowledgeItem, MyDownloadsService } from './my-downloads.service';
 import { FileSizePipe } from 'src/app/pipes/file-size-pipe/file-size.pipe';
@@ -79,6 +79,7 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
   private myDownloadsService = inject(MyDownloadsService);
   private destroyRef = inject(DestroyRef);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private elementRef = inject(ElementRef);
 
   Math = Math;
@@ -90,7 +91,18 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
     super(injector)
    }
   ngOnInit(): void {
-    this.loadMyDownloads();
+    // Check for search query param first
+    this.route.queryParams
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(params => {
+        if (params['search']) {
+          this.searchControl.setValue(params['search'], { emitEvent: false });
+          this.currentSearchTerm.set(params['search']);
+          this.loadMyDownloads(1, params['search']);
+        } else {
+          this.loadMyDownloads();
+        }
+      });
 
     //loading states
     this._mydownloads.isLoading$
@@ -132,10 +144,10 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
         this.totalItems.set(response.meta.total);
         this.perPage.set(response.meta.per_page);
 
-        //Auto-Select first item if available
-        // if(response.data.length>0 && !this.selectedKnowledge()){
-        //   this.selectedKnowledge.set(response.data[0])
-        // }
+        // Auto-select first item if search term is provided and matches
+        if (searchTerm && response.data.length > 0 && !this.selectedKnowledge()) {
+          this.selectedKnowledge.set(response.data[0]);
+        }
         
         // Check scroll state after data loads
         setTimeout(() => {

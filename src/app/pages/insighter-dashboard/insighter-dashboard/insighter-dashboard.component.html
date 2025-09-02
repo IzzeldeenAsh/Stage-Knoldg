@@ -68,6 +68,15 @@
               {{ 'INSIGHTER.DASHBOARD.NAV.READ_LATER' | translate }}
             </div>
           </div>
+          <div class="nav-item" [routerLink]="['my-orders']" routerLinkActive="active"
+               (click)="closeMobileSidebar()">
+            <div class="item-icon">
+              <i class="pi pi-shopping-bag"></i>
+            </div>
+            <div class="item-label">
+              {{ 'INSIGHTER.DASHBOARD.NAV.MY_ORDERS' | translate }}
+            </div>
+          </div>
           <!-- Meetings Expandable Item -->
           <div class="nav-item expandable" [class.expanded]="isMeetingsExpanded">
             <div class="nav-item-main" (click)="toggleMeetings()">
@@ -177,6 +186,7 @@
         <app-knowledge-statistics *ngIf="isRouteActive('my-knowledge')"></app-knowledge-statistics>
         <app-downloads-statistics *ngIf="isRouteActive('my-downloads')"></app-downloads-statistics>
         <app-read-later-statistics *ngIf="isRouteActive('read-later')"></app-read-later-statistics>
+        <app-my-orders-statistics *ngIf="isRouteActive('my-orders')"></app-my-orders-statistics>
         <app-meetings-statistics *ngIf="isRouteActive('my-meetings') && !isSubRouteActive('my-meetings', 'sent')"></app-meetings-statistics>
         <app-sent-meetings-statistics *ngIf="isSubRouteActive('my-meetings', 'sent')"></app-sent-meetings-statistics>
         <app-consulting-schedule-header *ngIf="isRouteActive('my-consulting-schedule')"></app-consulting-schedule-header>
@@ -275,6 +285,18 @@
                     </div>
                     <div class="item-label" *ngIf="!isNavCollapsed">
                       {{ 'INSIGHTER.DASHBOARD.NAV.READ_LATER' | translate }}
+                    </div>
+                  </div>
+                  <div class="nav-item" [routerLink]="['my-orders']" routerLinkActive="active"
+                       [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_ORDERS' | translate) : null"
+                       pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_ORDERS' | translate) : '' }}"
+                       tooltipPosition="right"
+                       appendTo="body">
+                    <div class="item-icon">
+                      <i class="pi pi-shopping-bag"></i>
+                    </div>
+                    <div class="item-label" *ngIf="!isNavCollapsed">
+                      {{ 'INSIGHTER.DASHBOARD.NAV.MY_ORDERS' | translate }}
                     </div>
                   </div>
                   <div class="nav-item" [routerLink]="['my-meetings/sent']" routerLinkActive="active" *ngIf="!isNavCollapsed && (isClient$ | async)"

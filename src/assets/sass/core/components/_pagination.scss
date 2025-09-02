@@ -25,7 +25,7 @@
 			&:hover:not(.disabled),
 		    &.active {
 			    .page-link {
-			        border-color: var(--#{$prefix}primary-light);
+			        border-color: var(--#{$prefix}info-light);
 				}	
 			}
 		}

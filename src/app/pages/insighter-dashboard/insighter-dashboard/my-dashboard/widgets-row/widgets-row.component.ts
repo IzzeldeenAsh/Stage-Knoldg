@@ -6,6 +6,7 @@ import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.s
 import { IKnoldgProfile } from 'src/app/_fake/models/profile.interface';
 import { SentMeetingsService, SentMeeting, SentMeetingResponse } from 'src/app/_fake/services/meetings/sent-meetings.service';
 import { MeetingsService, Meeting, MeetingResponse } from 'src/app/_fake/services/meetings/meetings.service';
+import { WalletService } from 'src/app/_fake/services/wallet/wallet.service';
 
 @Component({
   selector: 'app-widgets-row',
@@ -25,12 +26,16 @@ export class WidgetsRowComponent extends BaseComponent implements OnInit {
   sentMeetings: SentMeeting[] = [];
   receivedMeetings: Meeting[] = [];
   
+  // Wallet balance
+  walletBalance: number = 0;
+  
   constructor(
     injector: Injector, 
     private requestsService: UserRequestsService,
     private profileService: ProfileService,
     private sentMeetingsService: SentMeetingsService,
-    private meetingsService: MeetingsService
+    private meetingsService: MeetingsService,
+    private walletService: WalletService
   ) {
     super(injector)
   }
@@ -38,7 +43,7 @@ export class WidgetsRowComponent extends BaseComponent implements OnInit {
   ngOnInit(): void {
     this.getProfile();
     this.loadAllMeetings();
-
+    this.loadWalletBalance();
   }
   
   ngOnDestroy(): void {
@@ -146,5 +151,20 @@ export class WidgetsRowComponent extends BaseComponent implements OnInit {
         },
       });
     }
+  }
+  
+  loadWalletBalance(): void {
+    this.walletService.getBalance()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (balance: number) => {
+          this.walletBalance = balance;
+          console.log('Wallet balance loaded:', this.walletBalance);
+        },
+        error: (error) => {
+          console.error('Error loading wallet balance:', error);
+          this.walletBalance = 0;
+        }
+      });
   }
 }

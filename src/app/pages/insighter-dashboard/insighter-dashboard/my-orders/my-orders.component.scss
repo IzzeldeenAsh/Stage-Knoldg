@@ -1,0 +1,48 @@
+.order-card {
+  transition: all 0.3s ease;
+  border: 1px solid #f1f1f2;
+  
+  &:hover {
+    border-color: #3799ff;
+    transform: translateY(-2px);
+  }
+}
+
+.order-details {
+  .card-flush {
+    border: 1px solid #e1e3ea !important;
+  }
+}
+
+.symbol-label {
+  background-color: rgba(55, 153, 255, 0.1);
+}
+
+.text-info {
+  color: #3799ff !important;
+}
+
+.bg-light-info {
+  background-color: rgba(55, 153, 255, 0.1) !important;
+}
+
+.btn-light-info {
+  background-color: rgba(55, 153, 255, 0.1);
+  border-color: transparent;
+  color: #3799ff;
+  
+  &:hover {
+    background-color: rgba(55, 153, 255, 0.2);
+    color: #3799ff;
+  }
+}
+
+.btn-info {
+  background-color: #3799ff;
+  border-color: #3799ff;
+  
+  &:hover {
+    background-color: #2d7ae0;
+    border-color: #2d7ae0;
+  }
+}

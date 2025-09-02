@@ -947,6 +947,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
         "MEETINGS-CLIENT": "Meetings",
         "INVITING": "Inviting",
         "MY_DOWNLOADS": "My Downloads",
+        "MY_ORDERS": "My Orders",
         "READ_LATER": "Bookmarks",
         "MY_MEETINGS": "My Meetings",
         "MY_CONSULTING_SCHEDULE": "Meeting Planner",
@@ -1539,6 +1540,32 @@ UPLOAD: 'Upload',
         "BROWSE_KNOWLEDGE": "Browse Knowledge",
         "DISCOVER_NEW": "Discover new insights",
         "ORGANIZE_COLLECTION": "Organize your collection"
+      }
+    },
+    "MY_ORDERS": {
+      "TITLE": "My Orders",
+      "ORDERS": "orders",
+      "EMPTY_TITLE": "No Orders Found",
+      "EMPTY_MESSAGE": "You haven't placed any orders yet.",
+      "ORDER_DETAILS": "Order Details",
+      "ORDER_UUID": "Order UUID",
+      "AMOUNT": "Amount",
+      "STATUS": "Status",
+      "DATE": "Date",
+      "DOCUMENTS": "Documents",
+      "COPY_UUID": "Copy Order UUID",
+      "UUID_COPIED": "Order UUID copied to clipboard",
+      "COPY_FAILED": "Failed to copy order UUID",
+      "STATISTICS": {
+        "TITLE": "My Orders",
+        "SUBTITLE": "Your knowledge purchase history",
+        "TOTAL_ORDERS": "Total Orders",
+        "THIS_MONTH": "This Month",
+        "QUICK_ACTIONS": "Quick Actions",
+        "VIEW_ORDERS": "View All Orders",
+        "BROWSE_KNOWLEDGE": "Browse Knowledge",
+        "DISCOVER_NEW": "Discover new insights",
+        "TRACK_PURCHASES": "Track your purchases"
       }
     },
 
