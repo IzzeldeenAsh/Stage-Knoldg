@@ -14,7 +14,7 @@ export interface WalletBalanceResponse {
   providedIn: "root",
 })
 export class WalletService {
-  private readonly API_URL = "https://api.knoldg.com/api/account/wallet/balance";
+  private readonly API_URL = "https://api.foresighta.co/api/account/wallet/balance";
   currentLang: string = "";
 
   constructor(

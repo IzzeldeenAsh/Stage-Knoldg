@@ -15,6 +15,7 @@ export class PositionsComponent implements OnInit, OnDestroy {
   messages: Message[] = [];
   private unsubscribe: Subscription[] = [];
   listOfPositions: Position[] = [];
+  filteredPositions: Position[] = [];
   isEditMode: boolean = false;
   isLoading$: Observable<boolean>;
   selectedPositionId: number | null = null;
@@ -37,6 +38,7 @@ export class PositionsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.filteredPositions = [];
     this.positionForm = this.fb.group({
       arabicName: ['', Validators.required],
       englishName: ['', Validators.required]
@@ -72,6 +74,7 @@ export class PositionsComponent implements OnInit, OnDestroy {
     const listSub = this.positionsService.getPositions(this.paginator.page, this.paginator.pageSize).subscribe({
       next: (response) => {
         this.listOfPositions = response.data;
+        this.filteredPositions = response.data;
         this.paginator.total = response.meta.total;
         this.cdr.detectChanges();
       },
@@ -107,11 +110,23 @@ export class PositionsComponent implements OnInit, OnDestroy {
   }
 
   applyFilter(event: any) {
-    this.searchTerm = event.target.value;
-    if (this.searchTerm.length >= 3 || this.searchTerm.length === 0) {
-      this.paginator.page = 1; // Reset to first page when searching
-      this.getPositionsList();
+    const filterValue = (event.target as HTMLInputElement).value.toLowerCase();
+    if (!filterValue) {
+      this.filteredPositions = this.listOfPositions;
+      return;
     }
+
+    this.filteredPositions = this.listOfPositions.filter(position => 
+      position.name?.toLowerCase().includes(filterValue) ||
+      position.names?.en?.toLowerCase().includes(filterValue) ||
+      position.names?.ar?.toLowerCase().includes(filterValue)
+    );
+  }
+
+  onLazyLoad(event: any) {
+    this.paginator.page = Math.floor(event.first / event.rows) + 1;
+    this.paginator.pageSize = event.rows;
+    this.getPositionsList();
   }
 
   get arabicName() {

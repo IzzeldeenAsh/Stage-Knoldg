@@ -18,7 +18,8 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
     answer: string;
   }> = [];
 
-  requestsList: any;
+  requestsList: any[] = [];
+  filteredRequests: any[] = [];
   paginatedRequests: any;
   currentPage: number = 1;
   totalPages: number = 1;
@@ -57,6 +58,7 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.filteredRequests = [];
     this.loadData();
     this.loadVerificationQuestions();
   }
@@ -67,6 +69,7 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
       next: (result) => {
         this.paginatedRequests = result;
         this.requestsList = result.data;
+        this.filteredRequests = result.data;
         this.totalPages = Math.ceil(result.meta.total / this.pageSize);
         this.cdr.detectChanges();
         this.loading = false;
@@ -387,5 +390,36 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
     this.selectedRequest = null;
     this.selectedChain = [];
     this.staffNotes = '';
+  }
+
+  // PrimeNG table filter method
+  applyFilter(event: any) {
+    const filterValue = (event.target as HTMLInputElement).value.toLowerCase();
+    if (!filterValue) {
+      this.filteredRequests = this.requestsList;
+      return;
+    }
+
+    this.filteredRequests = this.requestsList.filter(request => 
+      (request.requestable?.legal_name?.toLowerCase().includes(filterValue)) ||
+      (request.requestable?.name?.toLowerCase().includes(filterValue)) ||
+      (request.type?.label?.toLowerCase().includes(filterValue)) ||
+      (request.final_status?.toLowerCase().includes(filterValue))
+    );
+  }
+
+  // PrimeNG lazy loading event handler
+  onLazyLoad(event: any) {
+    this.currentPage = Math.floor(event.first / event.rows) + 1;
+    this.pageSize = event.rows;
+    this.loadData();
+  }
+
+  // Helper method to get user initials
+  getInitials(user: any): string {
+    if (!user) return '';
+    const firstName = user.first_name || user.name || '';
+    const lastName = user.last_name || '';
+    return (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
   }
 }

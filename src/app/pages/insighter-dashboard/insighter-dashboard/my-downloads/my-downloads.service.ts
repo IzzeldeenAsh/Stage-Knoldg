@@ -64,9 +64,9 @@ export interface MyDownloadsResponse {
   providedIn: 'root'
 })
 export class MyDownloadsService {
-  private readonly API_URL = 'https://api.knoldg.com/api/account/library/my-knowledge';
-  private readonly DOWNLOAD_KNOWLEDGE_URL = 'https://api.knoldg.com/api/account/library/my-knowledge/download';
-  private readonly DOWNLOAD_DOCUMENT_URL = 'https://api.knoldg.com/api/account/library/my-knowledge/document/download';
+  private readonly API_URL = 'https://api.foresighta.co/api/account/library/my-knowledge';
+  private readonly DOWNLOAD_KNOWLEDGE_URL = 'https://api.foresighta.co/api/account/library/my-knowledge/download';
+  private readonly DOWNLOAD_DOCUMENT_URL = 'https://api.foresighta.co/api/account/library/my-knowledge/document/download';
   
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$ = this.isLoadingSubject.asObservable();
@@ -113,7 +113,7 @@ export class MyDownloadsService {
     return throwError(() => error);
   }
 
-  getMyDownloads(page: number = 1, title?: string): Observable<MyDownloadsResponse> {
+  getMyDownloads(page: number = 1, title?: string, uuids?: string[]): Observable<MyDownloadsResponse> {
     let url = `${this.API_URL}?page=${page}&per_page=10`;
     
     // Add title query parameter if provided
@@ -123,12 +123,25 @@ export class MyDownloadsService {
     
     const headers = this.getHeaders();
     
+    // Create request body if UUIDs are provided
+    const body = uuids && uuids.length > 0 ? { uuids } : null;
+    
     this.setLoading(true);
-    return this.http.get<MyDownloadsResponse>(url, { headers }).pipe(
-      map((response) => response),
-      catchError(error => this.handleError(error)),
-      finalize(() => this.setLoading(false))
-    );
+    
+    // Use POST if body exists, otherwise GET
+    if (body) {
+      return this.http.post<MyDownloadsResponse>(url, body, { headers }).pipe(
+        map((response) => response),
+        catchError(error => this.handleError(error)),
+        finalize(() => this.setLoading(false))
+      );
+    } else {
+      return this.http.get<MyDownloadsResponse>(url, { headers }).pipe(
+        map((response) => response),
+        catchError(error => this.handleError(error)),
+        finalize(() => this.setLoading(false))
+      );
+    }
   }
 
   downloadKnowledge(knowledgeUUID: string): Observable<Blob> {

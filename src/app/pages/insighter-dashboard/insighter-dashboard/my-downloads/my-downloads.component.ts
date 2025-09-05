@@ -35,6 +35,7 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
   // Search state
   searchControl = new FormControl('');
   currentSearchTerm = signal<string>('');
+  currentUuids = signal<string[]>([]);
 
   // UI state
   selectedColumn = signal<'knowledge' | 'document' | 'details'>('knowledge');
@@ -98,7 +99,21 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
         if (params['search']) {
           this.searchControl.setValue(params['search'], { emitEvent: false });
           this.currentSearchTerm.set(params['search']);
+          this.currentUuids.set([]);
           this.loadMyDownloads(1, params['search']);
+        } else if (params['uuids']) {
+          // Handle multiple UUIDs passed as comma-separated string
+          const uuids = params['uuids'].split(',').filter((id: string) => id.trim());
+          this.currentUuids.set(uuids);
+          this.currentSearchTerm.set('');
+          this.searchControl.setValue('', { emitEvent: false });
+          this.loadMyDownloads(1, '', uuids);
+        } else if (params['uuid']) {
+          const uuids = [params['uuid']];
+          this.currentUuids.set(uuids);
+          this.currentSearchTerm.set('');
+          this.searchControl.setValue('', { emitEvent: false });
+          this.loadMyDownloads(1, '', uuids);
         } else {
           this.loadMyDownloads();
         }
@@ -118,10 +133,11 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
       )
       .subscribe(searchTerm => {
         this.currentSearchTerm.set(searchTerm || '');
+        this.currentUuids.set([]); // Clear UUIDs when searching by title
         this.currentPage.set(1); // Reset to first page when searching
         this.selectedKnowledge.set(null); // Clear selection when searching
         this.selectedDocument.set(null);
-        this.loadMyDownloads(1, searchTerm || '');
+        this.loadMyDownloads(1, searchTerm || '', []);
       });
    
   }
@@ -133,8 +149,8 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
     }, 100);
   }
 
-  loadMyDownloads(page: number = 1, searchTerm: string = ''): void {
-    this._mydownloads.getMyDownloads(page, searchTerm || undefined)
+  loadMyDownloads(page: number = 1, searchTerm: string = '', uuids: string[] = []): void {
+    this._mydownloads.getMyDownloads(page, searchTerm || undefined, uuids.length > 0 ? uuids : undefined)
     .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe({
       next:(response) =>{
@@ -257,7 +273,7 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
     // Pagination methods
     onPageChange(page: number): void {
       if (page >= 1 && page <= this.totalPages() && page !== this.currentPage()) {
-        this.loadMyDownloads(page, this.currentSearchTerm());
+        this.loadMyDownloads(page, this.currentSearchTerm(), this.currentUuids());
       }
     }
 

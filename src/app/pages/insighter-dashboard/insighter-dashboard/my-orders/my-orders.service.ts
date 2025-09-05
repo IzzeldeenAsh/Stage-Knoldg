@@ -26,6 +26,7 @@ export interface Order {
   currency: string;
   date: string;
   suborders: SubOrder[];
+  knowledge_download_ids: string[];
 }
 
 export interface PaginationLinks {
@@ -60,7 +61,7 @@ export interface OrdersResponse {
   providedIn: 'root'
 })
 export class MyOrdersService {
-  private readonly API_URL = 'https://api.knoldg.com/api/account/order/knowledge';
+  private readonly API_URL = 'https://api.foresighta.co/api/account/order/knowledge';
   
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$ = this.isLoadingSubject.asObservable();

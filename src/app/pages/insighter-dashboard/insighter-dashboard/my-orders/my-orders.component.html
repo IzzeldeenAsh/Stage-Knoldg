@@ -55,13 +55,13 @@
           </div> -->
 
           <!-- Knowledge Items -->
-          <div *ngFor="let suborder of order.suborders" class="mb-3">
+          <div *ngFor="let suborder of order.suborders; let suborderIndex = index" class="mb-3">
             <div *ngFor="let knowledge of suborder.knowledge" class="mb-2">
               <div class="d-flex align-items-center ">
                 <div >
                   <a 
                   [pTooltip]="lang ==='ar' ? 'عرض في التحميلات' : 'View in downloads'"
-                  (click)="navigateToDownloads(knowledge.title)"
+                  (click)="navigateToDownloads(order, suborderIndex)"
                     target="_blank"
                     class="text-info text-decoration-none fw-bold fs-6 cursor-pointer">
                     {{ knowledge.title }}
@@ -80,14 +80,18 @@
               <!-- Documents Preview -->
               <div *ngIf="suborder.knowledge_documents && suborder.knowledge_documents.length > 0" class="mt-2">
                 <div class="d-flex flex-wrap gap-2">
-                  <div *ngFor="let extension of getUniqueExtensions(suborder)" class="d-flex align-items-center">
-                    <span class="badge badge-light-secondary me-1">({{ getDocumentCountByExtension(suborder, extension) }})</span>
+                  <div *ngFor="let extension of getUniqueExtensions(suborder)" class="position-relative d-inline-block">
                     <img 
                       [src]="getFileIconByExtension(extension)" 
                       [alt]="extension"
-                      class="me-2"
-                      style="width: 24px; height: 24px;"
+                      class="file-icon"
+                      style="width: 40px; height: 40px;"
                       onerror="this.style.display='none'">
+                    <span 
+                      class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-white"
+                      [style.background-color]="getBadgeColorByExtension(extension)">
+                      {{ getDocumentCountByExtension(suborder, extension) }}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -189,7 +193,7 @@
                         [src]="getFileIconByExtension(doc.file_extension)" 
                         [alt]="doc.file_extension"
                         class="me-3"
-                        style="width: 32px; height: 32px;"
+                        style="width: 40px; height: 40px;"
                         onerror="this.style.display='none'">
                       <div class="flex-grow-1">
                         <div class="fw-bold fs-6">{{ doc.file_name }}</div>

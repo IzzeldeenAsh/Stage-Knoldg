@@ -90,9 +90,34 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
     return iconMap[fileExtension.toLowerCase()] || './assets/media/svg/new-files/file.svg';
   }
 
+  getBadgeColorByExtension(fileExtension: string): string {
+    const colorMap: { [key: string]: string } = {
+      csv: '#28a745',
+      doc: '#0d6efd',
+      docx: '#0d6efd',
+      jpg: '#28a745',
+      jpeg: '#28a745',
+      png: '#28a745',
+      gif: '#28a745',
+      mp3: '#dc3545',
+      mp4: '#6f42c1',
+      pdf: '#dc3545',
+      ppt: '#dc3545',
+      pptx: '#dc3545',
+      pub: '#dc3545',
+      txt: '#0d6efd',
+      xls: '#28a745',
+      xlsx: '#28a745',
+      zip: '#dc3545',
+      rar: '#dc3545'
+    };
+    
+    return colorMap[fileExtension.toLowerCase()] || '#6c757d';
+  }
+
   getKnowledgeUrl(knowledge: any): string {
     if (knowledge.slug) {
-      return `https://knoldg.com/en/knowledge/data/${knowledge.slug}`;
+      return `http://localhost:3000/en/knowledge/data/${knowledge.slug}`;
     }
     return '#';
   }
@@ -132,10 +157,20 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
     return Array.from(extensions);
   }
 
-  navigateToDownloads(knowledgeTitle: string): void {
-    this.router.navigate(['/app/insighter-dashboard/my-downloads'], {
-      queryParams: { search: knowledgeTitle }
-    });
+  navigateToDownloads(order: Order, suborderIndex: number): void {
+    const knowledgeDownloadIds = order.knowledge_download_ids || [];
+    
+    if (knowledgeDownloadIds.length > 0) {
+      // Navigate with all UUIDs as comma-separated query parameter
+      this.router.navigate(['/app/insighter-dashboard/my-downloads'], {
+        queryParams: { uuids: knowledgeDownloadIds.join(',') }
+      });
+    } else {
+      this.showError(
+        this.lang === 'ar' ? 'خطأ' : 'Error',
+        this.lang === 'ar' ? 'لم يتم العثور على معرفات التحميل' : 'Download IDs not found'
+      );
+    }
   }
 
   private handleServerErrors(error: any) {

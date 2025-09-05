@@ -69,11 +69,7 @@ export class CountriesComponent implements OnInit, OnDestroy {
   }
 
   filterCountries() {
-    this.filteredCountries = this.listOfCountries.filter(country => {
-      const matchesRegion = this.selectedRegionId ? country.region_id === this.selectedRegionId : true;
-      const matchesStatus = this.selectedStatus ? country.status === this.selectedStatus : true;
-      return matchesRegion && matchesStatus;
-    });
+    this.applyAllFilters();
   }
 
   getRegionsList() {
@@ -141,18 +137,38 @@ export class CountriesComponent implements OnInit, OnDestroy {
   }
 
   filterCountriesByRegion() {
-    if (this.selectedRegionId && this.selectedRegionId !== 0) {
-      this.filteredCountries = this.listOfCountries.filter(
-        country => country.region_id === this.selectedRegionId
-      );
-    } else {
-      this.filteredCountries = [...this.listOfCountries];
-    }
+    this.applyAllFilters();
   }
 
   applyFilter(event: any) {
-    const value = event.target.value.trim().toLowerCase();
-    this.table.filterGlobal(value, "contains");
+    const filterValue = (event.target as HTMLInputElement).value.toLowerCase();
+    this.applyAllFilters(filterValue);
+  }
+
+  private applyAllFilters(searchTerm: string = '') {
+    let filtered = [...this.listOfCountries];
+
+    // Apply search filter
+    if (searchTerm) {
+      filtered = filtered.filter(country => 
+        country.names?.en?.toLowerCase().includes(searchTerm) ||
+        country.names?.ar?.toLowerCase().includes(searchTerm) ||
+        country.iso2?.toLowerCase().includes(searchTerm) ||
+        country.iso3?.toLowerCase().includes(searchTerm)
+      );
+    }
+
+    // Apply region filter
+    if (this.selectedRegionId) {
+      filtered = filtered.filter(country => country.region_id === this.selectedRegionId);
+    }
+
+    // Apply status filter
+    if (this.selectedStatus) {
+      filtered = filtered.filter(country => country.status === this.selectedStatus);
+    }
+
+    this.filteredCountries = filtered;
   }
 
   submit() {

@@ -1,4 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { DialogModule } from 'primeng/dialog';
+import { TooltipModule } from 'primeng/tooltip';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { CalendarModule } from 'primeng/calendar';
+import { TranslationModule } from 'src/app/modules/i18n';
+import { TruncateTextPipe } from 'src/app/pipes/truncate-pipe/truncate-text.pipe';
 import { Router } from '@angular/router';
 import { forkJoin, Subject, takeUntil } from 'rxjs';
 import { SentMeetingsService, SentMeeting, SentMeetingResponse, AvailableHoursResponse, AvailableDay, AvailableTime, RescheduleRequest } from '../../../../../_fake/services/meetings/sent-meetings.service';
@@ -6,7 +14,18 @@ import { SentMeetingsService, SentMeeting, SentMeetingResponse, AvailableHoursRe
 @Component({
   selector: 'app-sent-meetings',
   templateUrl: './sent-meetings.component.html',
-  styleUrls: ['./sent-meetings.component.scss']
+  styleUrls: ['./sent-meetings.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    DialogModule,
+    TooltipModule,
+    InputTextareaModule,
+    CalendarModule,
+    TranslationModule,
+    TruncateTextPipe
+  ]
 })
 export class SentMeetingsComponent implements OnInit, OnDestroy {
   meetings: SentMeeting[] = [];
@@ -133,7 +152,6 @@ export class SentMeetingsComponent implements OnInit, OnDestroy {
       // For status-based tabs (pending, approved, postponed)
       filteredMeetings = this.meetings.filter(meeting => meeting.status === this.selectedTab);
     }
-    console.log("filteredMeetings --->", filteredMeetings)
     // Sort by date (closest meetings first)
     return filteredMeetings.sort((a, b) => {
       const dateA = new Date(a.date).getTime();
@@ -198,7 +216,7 @@ export class SentMeetingsComponent implements OnInit, OnDestroy {
   // Navigate to insighter profile
   goToInsighterProfile(insighterUuid: string): void {
     const currentLocale = localStorage.getItem('language') || 'en';
-   window.location.href = `https://knoldg.com/${currentLocale}/profile/${insighterUuid}?entity=insighter&tab=meet`;
+   window.location.href = `http://localhost:3000/${currentLocale}/profile/${insighterUuid}?entity=insighter&tab=meet`;
   }
 
   // Join meeting

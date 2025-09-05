@@ -39,9 +39,13 @@ import { IndustriesComponent } from './dashboard/industries/industries.component
 import { RequestsListComponent } from './dashboard/requests-list/requests-list.component';
 import { EconomicBlocksComponent } from './dashboard/economic-blocks/economic-blocks.component';
 import { VerificationQuestionsListComponent } from './dashboard/verification-questions-list/verification-questions-list.component';
+import { AdminNotificationsPageComponent } from './dashboard/admin-notifications-page/admin-notifications-page.component';
+import { NotificationsIconsPipe } from 'src/app/pipes/notifications-icons/notificaitons-icons.pipe';
+import { NotificationsBgPipe } from 'src/app/pipes/notifications-background/notifications-bg.pipe';
 import { TagInputModule } from 'ngx-chips';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { PaginatorModule } from 'primeng/paginator';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @NgModule({
   declarations: [
@@ -57,6 +61,7 @@ import { PaginatorModule } from 'primeng/paginator';
     HSCodeComponent,
     RequestsListComponent,
     VerificationQuestionsListComponent,
+    AdminNotificationsPageComponent,
     ISICCodeManagmentComponent,
     RegionsComponent,
     IndustriesComponent,
@@ -90,6 +95,9 @@ import { PaginatorModule } from 'primeng/paginator';
     TagInputModule,
     MultiSelectModule,
     PaginatorModule,
+    ProgressSpinnerModule,
+    NotificationsIconsPipe,
+    NotificationsBgPipe,
   ],
   providers: [NodeService]
 })

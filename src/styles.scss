@@ -224,3 +224,47 @@ width: fit-content;
 .text-inline-start{
   text-align: start !important;
 }
+
+/* Global PrimeNG Button Rounded Styles */
+.p-button {
+  border-radius: 6px !important;
+  font-size: 0.875rem !important;
+  padding: 0.5rem 1rem !important;
+}
+
+.p-button.p-button-rounded {
+  border-radius: 6px !important;
+}
+
+/* Specific button size variants */
+.p-button.p-button-sm {
+  border-radius: 6px !important;
+}
+
+.p-button.p-button-lg {
+  border-radius: 6px !important;
+}
+
+/* Button variants */
+.p-button-outlined {
+  border-radius: 6px !important;
+}
+
+.p-button-text {
+  border-radius: 6px !important;
+}
+
+/* Split button components */
+.p-splitbutton .p-button {
+  border-radius: 6px !important;
+}
+
+.p-splitbutton .p-button:first-child {
+  border-top-left-radius: 6px !important;
+  border-bottom-left-radius: 6px !important;
+}
+
+.p-splitbutton .p-button:last-child {
+  border-top-right-radius: 6px !important;
+  border-bottom-right-radius: 6px !important;
+}
