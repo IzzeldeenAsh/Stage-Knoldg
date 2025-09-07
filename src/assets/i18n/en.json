@@ -82,7 +82,9 @@
     "DOWNLOAD_KNOWLEDGE": "Download Knowledge",
     "DOWNLOAD_DOCUMENT": "Download Document",
     "PUBLISHER": "Publisher",
-    "PURCHASE_DATE": "Purchase Date"
+    "PURCHASE_DATE": "Purchase Date",
+    "VIEW_ALL": "View All",
+    "SEARCH_PLACEHOLDER": "Search by title..."
   },
   "EMPTY_DASHBOARD": {
     "TITLE": "Start Building Your knowledge library",

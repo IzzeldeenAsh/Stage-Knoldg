@@ -620,6 +620,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     },
     MY_DOWNLOADS: {
       TITLE: "My Downloads",
+      VIEW_ALL: "View All",
       DESCRIPTION: "Download your knowledge",
       DOWNLOAD: "Download",
       DOCUMENTS: "Documents",

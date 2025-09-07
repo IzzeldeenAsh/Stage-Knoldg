@@ -165,6 +165,11 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
           this.selectedKnowledge.set(response.data[0]);
         }
         
+        // Auto-select first item if UUIDs are provided
+        if (uuids && uuids.length > 0 && response.data.length > 0 && !this.selectedKnowledge()) {
+          this.selectedKnowledge.set(response.data[0]);
+        }
+        
         // Check scroll state after data loads
         setTimeout(() => {
           this.checkScrollState();
@@ -317,6 +322,28 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
 
   clearSearch(): void {
     this.searchControl.setValue('');
+  }
+
+  viewAll(): void {
+    // Clear UUIDs and search term
+    this.currentUuids.set([]);
+    this.currentSearchTerm.set('');
+    this.searchControl.setValue('', { emitEvent: false });
+    
+    // Reset page to 1 and clear selections
+    this.currentPage.set(1);
+    this.selectedKnowledge.set(null);
+    this.selectedDocument.set(null);
+    
+    // Load all downloads without filters
+    this.loadMyDownloads(1, '', []);
+    
+    // Update URL to remove query parameters
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {},
+      queryParamsHandling: 'merge'
+    });
   }
 
   trackByKnowledgeUuid(index: number, item: KnowledgeItem): string {

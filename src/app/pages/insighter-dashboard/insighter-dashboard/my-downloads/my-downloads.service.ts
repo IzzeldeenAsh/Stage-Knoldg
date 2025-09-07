@@ -129,19 +129,11 @@ export class MyDownloadsService {
     this.setLoading(true);
     
     // Use POST if body exists, otherwise GET
-    if (body) {
-      return this.http.post<MyDownloadsResponse>(url, body, { headers }).pipe(
-        map((response) => response),
-        catchError(error => this.handleError(error)),
-        finalize(() => this.setLoading(false))
-      );
-    } else {
-      return this.http.get<MyDownloadsResponse>(url, { headers }).pipe(
-        map((response) => response),
-        catchError(error => this.handleError(error)),
-        finalize(() => this.setLoading(false))
-      );
-    }
+    return this.http.post<MyDownloadsResponse>(url, body, { headers }).pipe(
+      map((response) => response),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
   }
 
   downloadKnowledge(knowledgeUUID: string): Observable<Blob> {

@@ -2,7 +2,9 @@ import { ChangeDetectionStrategy, Component, Injector, OnInit } from '@angular/c
 import { Router } from '@angular/router';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { MyOrdersService, Order, OrdersResponse, SubOrder, KnowledgeDocument } from './my-orders.service';
-import { Observable, catchError, map, of } from 'rxjs';
+import { Observable, catchError, map, of, forkJoin } from 'rxjs';
+import { InvoiceGeneratorService } from './invoice-generator.service';
+import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 
 @Component({
   selector: 'app-my-orders',
@@ -20,7 +22,9 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
   constructor(
     injector: Injector,
     private myOrdersService: MyOrdersService,
-    private router: Router
+    private router: Router,
+    private invoiceGeneratorService: InvoiceGeneratorService,
+    private profileService: ProfileService
   ) {
     super(injector);
   }
@@ -59,16 +63,16 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
     this.showOrderDetails = true;
   }
 
-  copyOrderUuid(uuid: string): void {
-    navigator.clipboard.writeText(uuid).then(() => {
+  copyOrderNo(orderNo: string): void {
+    navigator.clipboard.writeText(orderNo).then(() => {
       this.showSuccess(
         this.lang === 'ar' ? 'تم النسخ' : 'Copied',
-        this.lang === 'ar' ? 'تم نسخ رقم الطلب' : 'Order UUID copied to clipboard'
+        this.lang === 'ar' ? 'تم نسخ رقم الطلب' : 'Order number copied to clipboard'
       );
     }).catch(() => {
       this.showError(
         this.lang === 'ar' ? 'خطأ' : 'Error',
-        this.lang === 'ar' ? 'فشل في نسخ رقم الطلب' : 'Failed to copy order UUID'
+        this.lang === 'ar' ? 'فشل في نسخ رقم الطلب' : 'Failed to copy order number'
       );
     });
   }
@@ -135,6 +139,31 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
     }
   }
 
+  getServiceTypeDisplay(service: string): string {
+    if (service === 'knowledge_service') {
+      return 'Knowledge';
+    }
+    return service.replace(/_/g, ' ').split(' ').map(word => 
+      word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+    ).join(' ');
+  }
+
+  getPaymentMethodDisplay(payment: any): string {
+    if (!payment) {
+      return this.lang === 'ar' ? 'غير محدد' : 'Not specified';
+    }
+    
+    const method = payment.method?.charAt(0).toUpperCase() + payment.method?.slice(1).toLowerCase();
+    const provider = payment.provider?.charAt(0).toUpperCase() + payment.provider?.slice(1).toLowerCase();
+    
+    if (payment.method === 'provider' && payment.provider) {
+      return provider;
+    }
+    
+    return method || (this.lang === 'ar' ? 'غير محدد' : 'Not specified');
+  }
+
+
   getDocumentCountByExtension(suborder: SubOrder, extension: string): number {
     let count = 0;
     suborder.knowledge_documents?.forEach((docGroup: KnowledgeDocument[]) => {
@@ -171,6 +200,38 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
         this.lang === 'ar' ? 'لم يتم العثور على معرفات التحميل' : 'Download IDs not found'
       );
     }
+  }
+
+  downloadInvoice(order: Order): void {
+    // Get user profile and generate invoice
+    this.profileService.getProfile().pipe(
+      catchError((error) => {
+        this.handleServerErrors(error);
+        return of(null);
+      })
+    ).subscribe(userProfile => {
+      try {
+        // Generate invoice HTML
+        const invoiceHtml = this.invoiceGeneratorService.generateInvoice(order, userProfile);
+        
+        // Generate filename
+        const filename = `invoice-${order.invoice_no || order.order_no}.pdf`;
+        
+        // Open invoice in new tab for viewing and potential PDF download
+        this.invoiceGeneratorService.openInvoiceInNewTab(invoiceHtml);
+        
+        this.showSuccess(
+          this.lang === 'ar' ? 'تم إنشاء الفاتورة' : 'Invoice Generated',
+          this.lang === 'ar' ? 'تم فتح الفاتورة في نافذة جديدة. يمكنك طباعتها أو حفظها كـ PDF من المتصفح' : 'Invoice opened in new tab. You can print or save as PDF from the browser'
+        );
+      } catch (error) {
+        console.error('Error generating invoice:', error);
+        this.showError(
+          this.lang === 'ar' ? 'خطأ' : 'Error',
+          this.lang === 'ar' ? 'فشل في إنشاء الفاتورة' : 'Failed to generate invoice'
+        );
+      }
+    });
   }
 
   private handleServerErrors(error: any) {

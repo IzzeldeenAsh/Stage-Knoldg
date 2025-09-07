@@ -21,7 +21,7 @@ mode="indeterminate"
               type="text"
               pInputText
               class="form-control ps-10"
-              style="width: 240px; height: 36px; border: 1px solid #e1e5e9; border-radius: 6px;"
+              style="width: 240px; height: 36px; border: 1px solid #cbd5e1; border-radius: 6px;"
               placeholder="Search"
               (input)="applyFilter($event)"
           />
@@ -33,7 +33,7 @@ mode="indeterminate"
           [(ngModel)]="selectedStatus"
           placeholder="Status"
           (onChange)="filterCountries()"
-          [style]="{ 'height': '36px', 'min-width': '120px', 'border': '1px solid #e1e5e9', 'border-radius': '6px' }"
+          [style]="{ 'height': '36px', 'min-width': '120px', 'border': '1px solid #cbd5e1', 'border-radius': '6px' }"
         ></p-dropdown>
         <p-dropdown 
           appendTo="body"
@@ -42,12 +42,12 @@ mode="indeterminate"
           [(ngModel)]="selectedRegionId" 
           placeholder="Region" 
           (onChange)="filterCountriesByRegion()"
-          [style]="{ 'height': '36px', 'min-width': '120px', 'border': '1px solid #e1e5e9', 'border-radius': '6px' }"
+          [style]="{ 'height': '36px', 'min-width': '120px', 'border': '1px solid #cbd5e1', 'border-radius': '6px' }"
         ></p-dropdown>
         <button 
           (click)="showDialog()" 
           class="btn btn-sm d-flex align-items-center "
-          style="background: white; border: 1px solid #e1e5e9; border-radius: 6px; padding: 6px 12px; height: 36px; white-space: nowrap;"
+          style="background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 6px 12px; height: 36px; white-space: nowrap;"
         >
           <i class="ki-outline ki-plus fs-5" style="color: #3b82f6;"></i>
           <span class="ms-1" style="font-size: 13px; font-weight: 500; color: #374151;">Create</span>

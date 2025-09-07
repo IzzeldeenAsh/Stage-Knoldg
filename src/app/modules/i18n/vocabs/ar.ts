@@ -36,6 +36,7 @@ INSIGHTER_REQUESTS: {
     },
     MY_DOWNLOADS: {
       TITLE: "تحميلاتي",
+      VIEW_ALL: "عرض الكل",
       DESCRIPTION: "تحميل معرفتك",
       DOWNLOAD: "تحميل",
       NO_DOWNLOADS: "لا يوجد تحميلات بعد",

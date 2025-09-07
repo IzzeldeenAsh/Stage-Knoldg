@@ -82,7 +82,9 @@
     "DOWNLOAD_KNOWLEDGE": "تحميل المعرفة",
     "DOWNLOAD_DOCUMENT": "تحميل المستند",
     "PUBLISHER": "الناشر",
-    "PURCHASE_DATE": "تاريخ الشراء"
+    "PURCHASE_DATE": "تاريخ الشراء",
+    "VIEW_ALL": "عرض الكل",
+    "SEARCH_PLACEHOLDER": "البحث بالعنوان..."
   },
   "EMPTY_DASHBOARD": {
     "TITLE": "ابدأ في بناء مكتبة المعرفة الخاصة بك",

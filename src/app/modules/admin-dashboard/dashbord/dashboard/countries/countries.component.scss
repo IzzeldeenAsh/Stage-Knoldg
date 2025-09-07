@@ -1,5 +1,5 @@
 ::ng-deep .p-datatable {
-    border: 1px solid #dadddf;
+    border: 1px solid #cbd5e1;
     border-radius: 0.75rem;
     overflow: hidden;
     
@@ -9,7 +9,7 @@
     
     .p-datatable-thead > tr > th {
         background: transparent;
-        border-bottom: 1px solid #e5e5e5;
+        border-bottom: 1px solid #cbd5e1;
         padding: 0.5rem 1rem;
         font-weight: 700;
         color: #a1a5b7;
@@ -19,7 +19,7 @@
     }
     
     .p-datatable-tbody > tr > td {
-        border-bottom: 1px solid #dadddf;
+        border-bottom: 1px solid #cbd5e1;
         padding: 0.7rem 1rem;
         font-size: 0.875rem;
         color: #5e6278;

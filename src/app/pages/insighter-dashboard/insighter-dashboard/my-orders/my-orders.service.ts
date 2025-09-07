@@ -19,12 +19,22 @@ export interface SubOrder {
   knowledge_documents: KnowledgeDocument[][];
 }
 
+export interface PaymentInfo {
+  method: string;
+  provider: string;
+  confirmed_at: string;
+}
+
 export interface Order {
   uuid: string;
+  service: string;
   status: string;
   amount: number;
   currency: string;
   date: string;
+  order_no: string;
+  invoice_no: string;
+  payment: PaymentInfo;
   suborders: SubOrder[];
   knowledge_download_ids: string[];
 }
