@@ -53,15 +53,15 @@
   
   &:hover {
     background-color: #f8f9fa;
-    border-color: #009ef7 !important;
+    border-color: #0978B9 !important;
   }
   
   &.active {
     background-color: #e3f2fd;
-    border-color: #009ef7 !important;
+    border-color: #0978B9 !important;
     
     .text-muted {
-      color: #009ef7 !important;
+      color: #0978B9 !important;
     }
   }
   
@@ -275,7 +275,7 @@
   border-radius: 50%;
   border: none;
   background-color: #e1f5fe;
-  color: #009ef7;
+  color: #0978B9;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -284,7 +284,7 @@
   transition: all 0.3s ease;
   
   &:hover {
-    background-color: #009ef7;
+    background-color: #0978B9;
     color: white !important;
     box-shadow: 0 4px 12px rgba(0, 158, 247, 0.3);
     transform: translateY(-1px);

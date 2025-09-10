@@ -12,7 +12,6 @@ import { TranslationModule } from '../../modules/i18n';
 import { LayoutComponent } from './layout.component';
 import { Routing } from '../../pages/routing';
 import { HeaderComponent } from './components/header/header.component';
-import { ContentComponent } from './components/content/content.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { ScriptsInitComponent } from './components/scripts-init/scripts-init.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
@@ -46,7 +45,6 @@ import { ReportsComponent } from './components/toolbar/reports/reports.component
 import { SaasComponent } from './components/toolbar/saas/saas.component';
 import {SharedModule} from "../shared/shared.module";
 import { InsightaDashboardComponent } from './insighta-dashboard/insighta-dashboard.component';
-import { SearchHeadComponent } from './components/search-head/search-head.component';
 import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
@@ -62,10 +60,8 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     LayoutComponent,
-    SearchHeadComponent,
     HeaderComponent,
     InsightaDashboardComponent,
-    ContentComponent,
     FooterComponent,
     ScriptsInitComponent,
     ToolbarComponent,

@@ -45,7 +45,7 @@ import { environment } from 'src/environments/environment';
     }
     
     .menu-link:hover {
-      color: #009ef7;
+      color: #0978B9;
       background-color: #F4F6FA;
     }
     

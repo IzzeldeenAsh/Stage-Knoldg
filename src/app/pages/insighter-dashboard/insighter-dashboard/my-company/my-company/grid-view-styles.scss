@@ -14,7 +14,7 @@
 
   &:hover {
     box-shadow: 0 0.125rem 0.25rem rgba(0, 158, 247, 0.15);
-    border-color: #009ef7;
+    border-color: #0978B9;
     transform: translateY(-2px);
   }
 
@@ -36,7 +36,7 @@
       
       &.bg-light-info {
         background-color: #f1faff !important;
-        color: #009ef7 !important;
+        color: #0978B9 !important;
       }
     }
 
@@ -66,7 +66,7 @@
         transition: all 0.2s ease-in-out;
         
         &:hover {
-          border-color: #009ef7;
+          border-color: #0978B9;
           background-color: #f1faff;
         }
         
@@ -166,13 +166,13 @@
     &.btn-light-info {
       background-color: #f1faff !important;
       border-color: #f1faff !important;
-      color: #009ef7 !important;
+      color: #0978B9 !important;
       
       .ki-duotone {
-        color: #009ef7 !important;
+        color: #0978B9 !important;
         
         .path1, .path2, .path3, .path4 {
-          fill: #009ef7 !important;
+          fill: #0978B9 !important;
         }
       }
     }
@@ -193,13 +193,13 @@
       &:hover {
         background-color: #f1faff !important;
         border-color: #f1faff !important;
-        color: #009ef7 !important;
+        color: #0978B9 !important;
         
         .ki-duotone {
-          color: #009ef7 !important;
+          color: #0978B9 !important;
           
           .path1, .path2, .path3, .path4 {
-            fill: #009ef7 !important;
+            fill: #0978B9 !important;
           }
         }
       }

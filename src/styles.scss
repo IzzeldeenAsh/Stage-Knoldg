@@ -335,6 +335,7 @@ tag-input,
 .p-autocomplete-panel,
 .p-calendar-panel,
 .p-cascadeselect-panel,
+.rate-input,
 .p-treeselect-panel,
 .p-overlaypanel,
 .p-dialog,
@@ -353,6 +354,7 @@ tag-input,
 .p-chips,
 .p-autocomplete,
 .p-cascadeselect,
+.rate-input,
 .p-treeselect,
 .p-listbox,
 .p-colorpicker,
@@ -382,15 +384,4 @@ tag-input,
   border-color: #cbd5e1 !important;
 }
 
-/* Update datatable specific borders */
-.p-datatable {
-  border: 1px solid #cbd5e1 !important;
-}
 
-.p-datatable .p-datatable-thead > tr > th {
-  border-bottom: 1px solid #cbd5e1 !important;
-}
-
-.p-datatable .p-datatable-tbody > tr > td {
-  border-bottom: 1px solid #cbd5e1 !important;
-}

@@ -30,11 +30,6 @@ export const routes: Routes = [
     canActivate: [adminGuard]
 },
 {
-  path: 'error',
-  loadChildren: () =>
-    import('./modules/errors/errors.module').then((m) => m.ErrorsModule),
-},
-{
   path: 'cors-test',
   component: CorsTestComponent
 },

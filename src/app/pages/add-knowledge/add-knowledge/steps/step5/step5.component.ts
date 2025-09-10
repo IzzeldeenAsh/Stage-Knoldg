@@ -41,13 +41,13 @@ import { PaymentService, PaymentDetailsResponse } from 'src/app/_fake/services/p
     /* Radio button selection styles */
     :host ::ng-deep .btn-check:checked + .btn-outline {
       background-color: #f1faff !important;
-      color: #009ef7 !important;
-      border: 1px solid #009ef7 !important;
+      color: #0978B9 !important;
+      border: 1px solid #0978B9 !important;
       box-shadow: 0 0 10px rgba(0, 158, 247, 0.1);
     }
     
     :host ::ng-deep .btn-check:checked + .btn-outline .text-gray-800 {
-      color: #009ef7 !important;
+      color: #0978B9 !important;
       font-weight: 600 !important;
     }
     

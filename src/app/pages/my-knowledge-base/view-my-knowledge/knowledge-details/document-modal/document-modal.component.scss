@@ -42,7 +42,7 @@
   transition: all 0.3s ease;
 
   &:hover {
-    border-color: #009EF7;
+    border-color: #0978B9;
     background-color: #EEF6FF;
   }
 }
@@ -135,7 +135,7 @@
   background-color: #E1F0FF;
   
   .progress-bar {
-    background: linear-gradient(90deg, #009EF7 0%, #50CD89 100%);
+    background: linear-gradient(90deg, #0978B9 0%, #50CD89 100%);
     transition: width 0.3s ease;
   }
 }
@@ -159,7 +159,7 @@
     border-left: none;
     
     &:focus {
-      border-color: #009EF7;
+      border-color: #0978B9;
       box-shadow: none;
     }
   }
@@ -169,7 +169,7 @@
   border-color: #E4E6EA;
   
   &:focus {
-    border-color: #009EF7;
+    border-color: #0978B9;
     box-shadow: 0 0 0 0.2rem rgba(0, 158, 247, 0.1);
   }
   
@@ -262,8 +262,8 @@
   }
   
   &.btn-light-primary:hover {
-    background-color: #009EF7;
-    border-color: #009EF7;
+    background-color: #0978B9;
+    border-color: #0978B9;
     color: white;
   }
   
@@ -277,8 +277,8 @@
 // Form switch improvements
 .form-check-input {
   &:checked {
-    background-color: #009EF7;
-    border-color: #009EF7;
+    background-color: #0978B9;
+    border-color: #0978B9;
   }
   
   &:focus {

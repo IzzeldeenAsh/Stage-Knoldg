@@ -182,6 +182,7 @@
              {{ 'INSIGHTER.DASHBOARD.NAV.PAYMENT_SETTINGS' | translate }}
            </div>
          </div>
+        
             </div>
           </div>
         </div>
@@ -211,6 +212,7 @@
         <app-consulting-schedule-header *ngIf="isRouteActive('my-consulting-schedule')"></app-consulting-schedule-header>
         <app-account-settings-header *ngIf="isRouteActive('general-settings')"></app-account-settings-header>
         <app-payment-settings-header *ngIf="isRouteActive('payment-settings')"></app-payment-settings-header>
+        <app-wallet-statistics *ngIf="isRouteActive('wallet')"></app-wallet-statistics>
         <app-company-statistics *ngIf="isRouteActive('my-company-settings') && (hasCompanyRole$ | async)"></app-company-statistics>
       </div>
     </div>
@@ -456,7 +458,17 @@
                       {{ 'INSIGHTER.DASHBOARD.NAV.MY_COMPANY' | translate }}
                     </div>
                   </div>
-                  
+                  <div *ngIf="(isInsighter$ | async) || (isCompany$ | async) "  class="nav-item" [routerLink]="['wallet']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+                  [pTooltip]="('INSIGHTER.DASHBOARD.NAV.WALLET' | translate)"
+                  tooltipPosition="right"
+                  appendTo="body">
+                    <div class="item-icon">
+                      <i class="ki-outline ki-wallet"></i>
+                    </div>
+                    <div class="item-label" *ngIf="!isNavCollapsed">
+                      {{ 'INSIGHTER.DASHBOARD.NAV.WALLET' | translate }}
+                    </div>
+                  </div>
                   <!-- Settings Expandable Item -->
                    <ng-container *ngIf="!(isClient$ | async)">
                   <div class="nav-item expandable" [class.expanded]="isSettingsExpanded" *ngIf="!isNavCollapsed">
@@ -495,6 +507,7 @@
                           {{ 'INSIGHTER.DASHBOARD.NAV.PAYMENT_SETTINGS' | translate }}
                         </div>
                       </div>
+                     
                     </div>
                   </div>
                   </ng-container>
@@ -507,6 +520,15 @@
                          appendTo="body" *ngIf="(isInsighter$ | async) || (isCompany$ | async)">
                       <div class="item-icon">
                         <i class="ki-outline ki-credit-cart"></i>
+                      </div>
+                    </div>
+                    <div class="nav-item" [routerLink]="['wallet']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+                         [attr.title]="('INSIGHTER.DASHBOARD.NAV.WALLET' | translate)"
+                         pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.WALLET' | translate) : '' }}"
+                         tooltipPosition="right"
+                         appendTo="body" *ngIf="(isInsighter$ | async) || (isCompany$ | async)">
+                      <div class="item-icon">
+                        <i class="ki-outline ki-wallet"></i>
                       </div>
                     </div>
                     <div class="nav-item" [routerLink]="['account-settings/general-settings']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"

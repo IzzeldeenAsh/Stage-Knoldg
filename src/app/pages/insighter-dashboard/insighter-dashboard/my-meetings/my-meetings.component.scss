@@ -16,12 +16,12 @@
       margin-right: 8px;
 
       &:hover {
-        color: #009ef7 !important;
+        color: #0978B9 !important;
         background-color: #f5f8fa !important;
       }
 
       &.active {
-        color: #009ef7 !important;
+        color: #0978B9 !important;
         background-color: #f1faff !important;
         font-weight: 600 !important;
       }
@@ -120,7 +120,7 @@
         height: 40px;
         
         &.bg-primary {
-          background-color: #009ef7 !important;
+          background-color: #0978B9 !important;
         }
       }
 
@@ -173,7 +173,7 @@
     }
 
     &.badge-primary {
-      background-color: #009ef7 !important;
+      background-color: #0978B9 !important;
       color: #ffffff !important;
     }
   }
@@ -233,13 +233,13 @@
     background-color: transparent !important;
 
     &:hover {
-      color: #009ef7 !important;
+      color: #0978B9 !important;
       background-color: transparent !important;
     }
 
     &.active {
-      color: #009ef7 !important;
-      border-bottom-color: #009ef7 !important;
+      color: #0978B9 !important;
+      border-bottom-color: #0978B9 !important;
       background-color: transparent !important;
       font-weight: 600 !important;
     }
@@ -262,7 +262,7 @@
 .spinner-border {
   width: 3rem;
   height: 3rem;
-  color: #009ef7;
+  color: #0978B9;
 }
 
 // Empty state styling
@@ -299,8 +299,8 @@
       margin: 0 2px;
 
       &:hover {
-        background-color: #009ef7;
-        border-color: #009ef7;
+        background-color: #0978B9;
+        border-color: #0978B9;
         color: white;
       }
 
@@ -311,8 +311,8 @@
     }
 
     &.active .page-link {
-      background-color: #009ef7 !important;
-      border-color: #009ef7 !important;
+      background-color: #0978B9 !important;
+      border-color: #0978B9 !important;
       color: #ffffff !important;
     }
 
@@ -451,7 +451,7 @@
       min-height: 100px;
 
       &:focus {
-        border-color: #009ef7 !important;
+        border-color: #0978B9 !important;
         box-shadow: 0 0 0 0.2rem rgba(0, 158, 247, 0.25) !important;
         outline: none;
       }
@@ -505,7 +505,7 @@
 
       &:hover,
       &.active {
-        color: #009ef7 !important;
+        color: #0978B9 !important;
       }
     }
   }
@@ -575,7 +575,7 @@
         }
 
         &:focus {
-          border-color: #009ef7 !important;
+          border-color: #0978B9 !important;
         }
       }
     }

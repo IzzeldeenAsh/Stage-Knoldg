@@ -936,7 +936,8 @@ INSIGHTER_REQUESTS: {
           "PAYMENT_SETTINGS": "إعدادات الدفع",
           "MY_CONSULTING_SCHEDULE": "إدارة مواعيد العملاء",
           "SETTINGS": "الإعدادات",
-          "DASHBOARD": "لوحة المعلومات"
+          "DASHBOARD": "لوحة المعلومات",
+          "WALLET": "المحفظة"
         },
         "REQUESTS": {
           APPROVED: "الطلبات المقبولة",
@@ -1204,6 +1205,7 @@ INSIGHTER_REQUESTS: {
   ENTER_DESCRIPTION: "ادخل الوصف",
   DESCRIPTION_REQUIRED: "الوصف مطلوب",
   DASHBOARD: "لوحة المعلومات",
+  IN_WALLET:'في المحفظة',
   MY_KNOWLEDGE_BASE: "مكتبة المعرفة",
   COMING_SOON:"قريباً",
   CLICK_TO_ADD_DOCUMENT: "اضغط لإضافة مستند",
@@ -1462,6 +1464,33 @@ INSIGHTER_REQUESTS: {
   "ERROR_TITLE": "تعذر تحميل تفاصيل الدفع",
   "EDIT_BUTTON": "تعديل معلومات الدفع",
   "ADD_DETAILS_BUTTON": "إضافة تفاصيل الدفع"
+},
+"WALLET": {
+  "TITLE": "المحفظة",
+  "BALANCE": "رصيد محفظة ProStop الحالي",
+  "TRANSACTIONS_HISTORY": "سجل المعاملات",
+  "TRANSACTIONS_DESCRIPTION": "تتبع الأموال الواردة والصادرة من هذه المنطقة.",
+  "SERVICE": "الخدمة",
+  "DATE": "التاريخ",
+  "TYPE": "النوع",
+  "AMOUNT": "المبلغ",
+  "DETAILS": "التفاصيل",
+  "TRANSACTION_DETAILS": "تفاصيل المعاملة",
+  "TRANSACTION_TYPE": "نوع المعاملة",
+  "ORDER_INFORMATION": "معلومات الطلب",
+  "ORDER_NUMBER": "رقم الطلب",
+  "INVOICE_NUMBER": "رقم الفاتورة",
+  "KNOWLEDGE_ITEMS": "عناصر المعرفة",
+  "NO_TRANSACTIONS": "لا توجد معاملات",
+  "DEPOSIT": "إيداع",
+  "WITHDRAW": "سحب",
+  "INCOME": "دخل",
+  "OUTCOME": "خرج",
+  "CLOSE": "إغلاق",
+  "VIEW_DETAILS": "عرض التفاصيل",
+  "SHOWING_PAGE": "عرض الصفحة",
+  "OF_PAGES": "من",
+  "PAGES": "صفحات"
 },
     "READ_LATER": {
   "TITLE": "قائمة المعاينة",

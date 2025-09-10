@@ -63,18 +63,20 @@ class="cursor-pointer card card-flush h-md-50 mb-5 mb-xl-10">
     <div class="col-md-6 col-lg-6 col-xl-6 col-xxl-3 mb-md-5 mb-xl-10">
         
 <!--begin::Card widget 17-->
-<div class="card h-md-50 mb-5 mb-xl-10 light-wallet-gradient-bg position-relative">
+<div class="card h-md-50 mb-5 mb-xl-10 light-wallet-gradient-bg">
     <div class="card-body d-flex justify-content-between align-items-start flex-column">         
         <div class="m-0">
             <i class="ki-outline ki-dollar text-gray-700 fs-2tx"></i>                     
         </div>                           
         <div class="d-flex flex-column my-7">
-            <span class="fw-semibold fs-3x lh-1 ls-n2">---</span> 
+            <span class="fw-semibold fs-3x lh-1 ls-n2" *ngIf="!isLoadingBalance">${{ walletBalance | number:'1.2-2' }}</span>
+            <span class="fw-semibold fs-3x lh-1 ls-n2" *ngIf="isLoadingBalance">
+                <i class="ki-outline ki-loading fs-3x text-gray-500"></i>
+            </span> 
             <div class="m-0">
-                <span class="fw-semibold fs-6 text-gray-500">in Wallet</span>  
+                <span class="fw-semibold fs-6 text-gray-500">{{ 'IN_WALLET' | translate }}</span>  
             </div>       
         </div>  
-        <span class="badge badge-light-info fs-base position-absolute" style="bottom: 20px; right: 20px;">Coming Soon</span>  
     </div>
 </div>
 <!--end::Card widget 17-->
