@@ -62,11 +62,11 @@ export class ClientMyDashboardComponent extends BaseComponent implements OnInit,
   }
 
   redirectToExperts(): void {
-    window.open('http://localhost:3000/en/home?search_type=insighter&accuracy=any', '_blank');
+    window.open('https://knoldg.com/en/home?search_type=insighter&accuracy=any', '_blank');
   }
 
   redirectToKnowledge(type: string): void {
-    window.open(`http://localhost:3000/en/home?search_type=knowledge&type=${type}`, '_blank');
+    window.open(`https://knoldg.com/en/home?search_type=knowledge&type=${type}`, '_blank');
   }
 
   loadWalletBalance(): void {

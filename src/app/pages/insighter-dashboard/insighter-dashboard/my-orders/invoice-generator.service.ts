@@ -15,29 +15,56 @@ export class InvoiceGeneratorService {
       day: '2-digit'
     });
 
-    // Extract all documents from suborders
-    const allDocuments: Array<{name: string, price: number}> = [];
-    let subtotal = 0;
+    // Check if this is a meeting order or knowledge order
+    const isMeetingOrder = order.service === 'meeting_service';
+    let documentRows = '';
+    let subtotal = order.amount;
 
-    order.suborders.forEach(suborder => {
-      suborder.knowledge_documents?.forEach(docGroup => {
-        docGroup.forEach((doc: KnowledgeDocument) => {
-          allDocuments.push({
-            name: doc.file_name,
-            price: doc.price
+    if (isMeetingOrder) {
+      // Handle meeting orders
+      const meetingItems: Array<{name: string, price: number}> = [];
+      
+      order.suborders.forEach(suborder => {
+        if (suborder.meeting_booking) {
+          const meeting = suborder.meeting_booking;
+          meetingItems.push({
+            name: `Meeting: ${meeting.title} - ${meeting.date} (${meeting.start_time} - ${meeting.end_time})`,
+            price: order.amount
           });
-          subtotal += doc.price;
+        }
+      });
+
+      documentRows = meetingItems.map(item => `
+        <tr>
+          <td>${item.name}</td>
+          <td class="amount">$${item.price.toFixed(2)}</td>
+        </tr>
+      `).join('');
+    } else {
+      // Handle knowledge orders
+      const allDocuments: Array<{name: string, price: number}> = [];
+      subtotal = 0;
+
+      order.suborders.forEach(suborder => {
+        suborder.knowledge_documents?.forEach(docGroup => {
+          docGroup.forEach((doc: KnowledgeDocument) => {
+            allDocuments.push({
+              name: doc.file_name,
+              price: doc.price
+            });
+            subtotal += doc.price;
+          });
         });
       });
-    });
 
-    // Generate table rows for documents
-    const documentRows = allDocuments.map(doc => `
-      <tr>
-        <td>${doc.name}</td>
-        <td class="amount">$${doc.price.toFixed(2)}</td>
-      </tr>
-    `).join('');
+      // Generate table rows for documents
+      documentRows = allDocuments.map(doc => `
+        <tr>
+          <td>${doc.name}</td>
+          <td class="amount">$${doc.price.toFixed(2)}</td>
+        </tr>
+      `).join('');
+    }
 
     return `<!DOCTYPE html>
 <html lang="en">

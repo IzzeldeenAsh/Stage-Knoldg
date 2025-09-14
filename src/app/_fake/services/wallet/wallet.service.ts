@@ -75,7 +75,7 @@ export interface TransactionResponse {
   providedIn: "root",
 })
 export class WalletService {
-  private readonly BASE_URL = "https://api.foresighta.co/api/account/wallet";
+  private readonly BASE_URL = "https://api.knoldg.com/api/account/wallet";
   currentLang: string = "";
 
   constructor(

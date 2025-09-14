@@ -30,7 +30,7 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
     return [
       { field: 'service', header: this.lang === 'ar' ? 'الخدمة' : 'Service' },
       { field: 'date', header: this.lang === 'ar' ? 'التاريخ' : 'Date' },
-      { field: 'type', header: this.lang === 'ar' ? 'النوع' : 'Type' },
+      { field: 'type', header: this.lang === 'ar' ? 'المعاملة' : 'Transaction' },
       { field: 'amount', header: this.lang === 'ar' ? 'المبلغ' : 'Amount' },
       { field: 'actions', header: this.lang === 'ar' ? 'التفاصيل' : 'Details' }
     ];
@@ -98,18 +98,147 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
           display: false
         },
         tooltip: {
-          enabled: true,
-          backgroundColor: 'rgba(79, 40, 237, 0.9)',
-          titleColor: '#fff',
-          bodyColor: '#fff',
-          borderColor: 'transparent',
-          borderRadius: 8,
-          padding: 12,
-          displayColors: false,
-          callbacks: {
-            label: (context: any) => {
-              return `$${context.parsed.y.toFixed(2)}`;
+          enabled: false,
+          external: (context: any) => {
+            const { chart, tooltip } = context;
+            
+            let tooltipEl = document.body.querySelector('.chartjs-wallet-tooltip') as HTMLElement;
+            
+            if (!tooltipEl) {
+              tooltipEl = document.createElement('div');
+              tooltipEl.classList.add('chartjs-wallet-tooltip');
+              tooltipEl.style.position = 'fixed';
+              tooltipEl.style.zIndex = '99999';
+              tooltipEl.style.pointerEvents = 'none';
+              tooltipEl.style.transition = 'opacity 0.2s ease';
+              document.body.appendChild(tooltipEl);
             }
+            
+            if (tooltip.opacity === 0) {
+              tooltipEl.style.opacity = '0';
+              return;
+            }
+            
+            if (tooltip.body) {
+              const dataIndex = tooltip.dataPoints[0].dataIndex;
+              const transaction = this.chartData.datasets[0].transactionData[dataIndex];
+              const balance = tooltip.dataPoints[0].parsed.y;
+              
+              if (transaction) {
+                const date = new Date(transaction.date);
+                const dateString = date.toLocaleDateString('en-US', {
+                  month: '2-digit',
+                  day: '2-digit',
+                  year: 'numeric'
+                }) + ' ' + date.toLocaleTimeString('en-US', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: false
+                });
+                
+                const transactionType = this.getTransactionType(transaction);
+                const amount = Math.abs(transaction.amount);
+                const isDeposit = transaction.transaction === 'deposit';
+                
+                tooltipEl.innerHTML = `
+                  <div class="tooltip-content" style="
+                    background: white;
+                    border: 1px solid #e3e6f0;
+                    border-radius: 8px;
+                    font-size: 13px;
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+                    width: auto;
+                    min-width: 160px;
+                  ">
+                    <div class="tooltip-header" style="
+                      background: #f8f9fa;
+                      padding: 6px 12px;
+                      border-radius: 8px 8px 0 0;
+                      font-size: 12px;
+                      color: #6c757d;
+                      border-bottom: 1px solid #e9ecef;
+                      text-align: center;
+                    ">${dateString}</div>
+                    <div class="tooltip-body" style="padding: 8px 12px;">
+                      <div class="tooltip-row" style="display: flex; align-items: center; margin-bottom: 4px;">
+                        <span class="tooltip-dot" style="
+                          width: 6px;
+                          height: 6px;
+                          border-radius: 50%;
+                          margin-right: 8px;
+                          background: ${isDeposit ? '#2c3e50' : '#17a2b8'};
+                        "></span>
+                        <span class="tooltip-label" style="
+                          flex: 1;
+                          font-size: 13px;
+                          font-weight: 500;
+                          color: #333;
+                          margin-right: 8px;
+                        ">${transactionType}</span>
+                        <span class="tooltip-value" style="
+                          font-size: 13px;
+                          font-weight: 600;
+                          color: #333;
+                        ">$${amount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>
+                      </div>
+                      <div class="tooltip-row" style="display: flex; align-items: center;">
+                        <span class="tooltip-dot" style="
+                          width: 6px;
+                          height: 6px;
+                          border-radius: 50%;
+                          margin-right: 8px;
+                          background: #6c757d;
+                        "></span>
+                        <span class="tooltip-label" style="
+                          flex: 1;
+                          font-size: 13px;
+                          font-weight: 500;
+                          color: #333;
+                          margin-right: 8px;
+                        ">Balance</span>
+                        <span class="tooltip-value" style="
+                          font-size: 13px;
+                          font-weight: 600;
+                          color: #333;
+                        ">$${balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                      </div>
+                    </div>
+                  </div>
+                `;
+              }
+            }
+            
+            // Get canvas position relative to viewport
+            const canvasRect = chart.canvas.getBoundingClientRect();
+            
+            // Calculate tooltip position using viewport coordinates
+            let tooltipX = canvasRect.left + tooltip.caretX + 10;
+            let tooltipY = canvasRect.top + tooltip.caretY - 70;
+            
+            // Keep tooltip within viewport bounds
+            const tooltipWidth = 160;
+            const tooltipHeight = 80;
+            
+            // Adjust horizontal position
+            if (tooltipX + tooltipWidth > window.innerWidth) {
+              tooltipX = canvasRect.left + tooltip.caretX - tooltipWidth - 10;
+            }
+            if (tooltipX < 0) {
+              tooltipX = 10;
+            }
+            
+            // Adjust vertical position  
+            if (tooltipY < 0) {
+              tooltipY = canvasRect.top + tooltip.caretY + 20;
+            }
+            if (tooltipY + tooltipHeight > window.innerHeight) {
+              tooltipY = canvasRect.top + tooltip.caretY - tooltipHeight - 10;
+            }
+            
+            tooltipEl.style.opacity = '1';
+            tooltipEl.style.left = tooltipX + 'px';
+            tooltipEl.style.top = tooltipY + 'px';
           }
         }
       },
@@ -185,6 +314,7 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
     const last10Transactions = this.transactions.slice(0, 10).reverse();
     const chartDataPoints: number[] = [];
     const chartLabels: string[] = [];
+    const transactionData: Transaction[] = [];
     let runningBalance = this.walletBalance;
     
     last10Transactions.forEach((transaction, index) => {
@@ -209,6 +339,7 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
       
       chartDataPoints.push(runningBalance);
       chartLabels.push(new Date(transaction.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+      transactionData.push(transaction);
     });
     
     this.chartData = {
@@ -216,7 +347,8 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
       labels: chartLabels,
       datasets: [{
         ...this.chartData.datasets[0],
-        data: chartDataPoints
+        data: chartDataPoints,
+        transactionData: transactionData
       }]
     };
   }
@@ -274,8 +406,10 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
 
   formatAmount(amount: number): string {
     const absAmount = Math.abs(amount);
-    const sign = amount >= 0 ? '+' : '-';
-    return `${sign}$${absAmount.toFixed(2)}`;
+    const sign = amount >= 0 ? '+' : '(';
+    const closeSign = amount >= 0 ? '' : ')';
+    const openSign = amount >= 0 ? '' : '(';
+    return `${openSign}$${absAmount.toFixed(2)}${closeSign}`;
   }
 
   showTransactionDetails(transaction: Transaction): void {
@@ -311,7 +445,7 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
       'transactionsSubtitle': { en: 'Track money coming in and going out from this area.', ar: 'تتبع الأموال الواردة والصادرة من هذه المنطقة.' },
       'service': { en: 'Service', ar: 'الخدمة' },
       'date': { en: 'Date', ar: 'التاريخ' },
-      'type': { en: 'Type', ar: 'النوع' },
+      'type': { en: 'Transaction', ar: 'المعاملة' },
       'amount': { en: 'Amount', ar: 'المبلغ' },
       'details': { en: 'Details', ar: 'التفاصيل' },
       'deposit': { en: 'Deposit', ar: 'إيداع' },

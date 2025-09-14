@@ -7,13 +7,7 @@
         <div class="flex-grow-1">
           <div class="d-flex align-items-center justify-content-between gap-5">
             <span class="fw-bold fs-3x lh-1 ls-n2">{{ walletBalance.toFixed(2) | currency}}</span>
-            <!-- Latest Transaction Badge -->
-            <div *ngIf="transactions.length > 0">
-              <span 
-                [class]="'badge ' + (getLatestTransactionType() === 'deposit' ? 'badge-light-success' : 'badge-light-danger') + ' fs-base'">
-               {{ formatAmount(getLatestTransactionAmount()) }}
-              </span>
-            </div>
+       
           </div>
           <div class="m-0">
             <span class="fw-semibold fs-6 text-gray-500">{{ getTranslation('currentWalletBalance') }}</span>

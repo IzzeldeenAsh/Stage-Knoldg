@@ -1,4 +1,28 @@
-<div class="container-fluid">
+<div class="container-fluid bg-white p-5 rounded-lg" style="border-radius: 10px;">
+  <!-- Tab Navigation -->
+  <div class="row mb-5">
+    <div class="col-12">
+      <div class="filter-tabs-orders">
+        <div class="nav nav-pills nav-pills-custom">
+          <a class="nav-link" 
+            [class.active]="activeTab === 'knowledge'"
+            (click)="setActiveTab('knowledge')">
+            <i class="ki-outline ki-book me-2"></i>
+            {{ lang === 'ar' ? 'طلبات المعرفة' : 'Knowledge Orders' }}
+          </a>
+          <a class="nav-link" 
+            [class.active]="activeTab === 'meeting'"
+            (click)="setActiveTab('meeting')">
+            <i class="ki-outline ki-calendar me-2"></i>
+            {{ lang === 'ar' ? 'طلبات الاجتماعات' : 'Meeting Orders' }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Knowledge Orders Tab -->
+  <div *ngIf="activeTab === 'knowledge'">
   <div class="row g-4">
     <!-- Loading State -->
     <div *ngIf="isLoading$ | async" class="col-12">
@@ -179,7 +203,7 @@
     </div>
   </div>
 
-  <!-- Pagination -->
+  <!-- Pagination for Knowledge Orders -->
   <div *ngIf="(totalPages$ | async)! > 1" class="d-flex justify-content-center mt-6">
     <p-paginator 
       [rows]="10" 
@@ -189,6 +213,168 @@
       [showCurrentPageReport]="true"
       [currentPageReportTemplate]="lang === 'ar' ? 'عرض {first} إلى {last} من {totalRecords} طلب' : 'Showing {first} to {last} of {totalRecords} orders'">
     </p-paginator>
+  </div>
+</div>
+
+  <!-- Meeting Orders Tab -->
+  <div *ngIf="activeTab === 'meeting'">
+    <div class="row g-4">
+      <!-- Loading State -->
+      <div *ngIf="isMeetingLoading$ | async" class="col-12">
+        <div class="d-flex justify-content-center align-items-center" style="min-height: 200px;">
+          <div class="spinner-border text-info" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">{{ lang === 'ar' ? 'جاري التحميل...' : 'Loading...' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Meeting Orders Cards -->
+      <div *ngFor="let order of meetingOrders$ | async" class="col-12">
+        <div class="card card-custom gutter-b">
+          <div class="card-body p-6">
+            <!-- Order Header -->
+            <div class="d-flex justify-content-between align-items-start mb-4">
+              <div class="d-flex align-items-center">
+                <div class="symbol symbol-40px me-3">
+                  <div class="symbol-label bg-light-info">
+                    <i class="ki-outline ki-calendar fs-2x text-info"></i>
+                  </div>
+                </div>
+                <div>
+                  <div class="d-flex align-items-center mb-1">
+                    <h6 class="mb-0 fw-bold me-2">
+                      {{ lang === 'ar' ? 'طلب رقم' : 'Order' }} {{ order.order_no }}
+                    </h6>
+                    <button 
+                      type="button" 
+                      class="btn btn-sm btn-light-info p-1"
+                      (click)="copyOrderNo(order.order_no)"
+                      [title]="lang === 'ar' ? 'نسخ رقم الطلب' : 'Copy Order Number'">
+                      <i class="ki-outline ki-copy fs-6"></i>
+                    </button>
+                  </div>
+                  <div class="text-muted fs-7">{{ order.amount === 0 ? (lang === 'ar' ? 'مجاني' : 'Free') : '$' + order.amount }}</div>
+                </div>
+              </div>
+              <div class="d-flex gap-2">
+                <button 
+                  type="button" 
+                  class="btn btn-info btn-sm"
+                  (click)="openMeetingOrderDetails(order)">
+                  {{ lang === 'ar' ? 'تفاصيل الطلب' : 'Order Details' }}
+                </button>
+                <button 
+                  type="button" 
+                  class="btn btn-light-info btn-sm"
+                  (click)="downloadInvoice(order)">
+                  <i class="ki-outline ki-file-down fs-6 me-1"></i>
+                  {{ lang === 'ar' ? 'تحميل الفاتورة' : 'Download Invoice' }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Order Info Row -->
+            <div class="mb-4 d-flex flex-wrap gap-3">
+              <div>
+                <span class="text-muted fs-7">{{ lang === 'ar' ? 'النوع:' : 'Type:' }}</span>
+                <span class="ms-2 fw-semibold">{{ getServiceTypeDisplay(order.service) }}</span>
+              </div>
+              <div>
+                <span class="text-muted fs-7">{{ lang === 'ar' ? 'طريقة الدفع:' : 'Payment Method:' }}</span>
+                <span class="ms-2 fw-semibold">{{ getPaymentMethodDisplay(order.payment) }}</span>
+              </div>
+              <div>
+                <span class="text-muted fs-7">{{ lang === 'ar' ? 'الحالة:' : 'Status:' }}</span>
+                <span [class]="getStatusBadgeClass(order.status)" class="ms-2 text-uppercase">
+                  {{ order.status }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Meeting Details -->
+            <div *ngFor="let suborder of order.suborders">
+              <div *ngIf="suborder.meeting_booking" class="bg-light-info rounded p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <div>
+                    <h6 class="mb-1 fw-bold text-dark">{{ suborder.meeting_booking.title }}</h6>
+                    <p class="text-muted fs-7 mb-0">{{ suborder.meeting_booking.description }}</p>
+                  </div>
+                  <span [class]="'badge ' + getMeetingStatusBadgeClass(suborder.meeting_booking.status)">
+                    {{ getMeetingStatusDisplay(suborder.meeting_booking.status) }}
+                  </span>
+                </div>
+                
+                <div class="row g-3 mt-2">
+                  <div class="col-md-4">
+                    <div class="d-flex align-items-center">
+                      <i class="ki-outline ki-calendar fs-5 text-info me-2"></i>
+                      <div>
+                        <div class="fs-8 text-muted">{{ lang === 'ar' ? 'التاريخ' : 'Date' }}</div>
+                        <div class="fw-semibold fs-7">{{ suborder.meeting_booking.date | date:'mediumDate' }}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="d-flex align-items-center">
+                      <i class="ki-outline ki-time fs-5 text-info me-2"></i>
+                      <div>
+                        <div class="fs-8 text-muted">{{ lang === 'ar' ? 'الوقت' : 'Time' }}</div>
+                        <div class="fw-semibold fs-7">{{ suborder.meeting_booking.start_time }} - {{ suborder.meeting_booking.end_time }}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="d-flex align-items-center">
+                      <i class="ki-outline ki-timer fs-5 text-info me-2"></i>
+                      <div>
+                        <div class="fs-8 text-muted">{{ lang === 'ar' ? 'المدة' : 'Duration' }}</div>
+                        <div class="fw-semibold fs-7">{{ calculateDuration(suborder.meeting_booking.start_time, suborder.meeting_booking.end_time) }}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Order Date -->
+            <div class="border-top pt-3 mt-4">
+              <div class="text-muted fs-7">
+                {{ lang === 'ar' ? 'تاريخ الطلب' : 'Ordered' }} {{ order.date | date:'short' }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State for Meeting Orders -->
+      <div *ngIf="(meetingOrders$ | async)?.length === 0 && !(isMeetingLoading$ | async)" class="col-12">
+        <div class="card">
+          <div class="text-center py-10">
+            <div class="symbol symbol-100px mx-auto mb-4">
+              <div class="symbol-label bg-light-info">
+                <i class="ki-outline ki-calendar fs-3x text-info"></i>
+              </div>
+            </div>
+            <h5 class="mb-3">{{ lang === 'ar' ? 'لا توجد طلبات اجتماعات' : 'No Meeting Orders Found' }}</h5>
+            <p class="text-muted">
+              {{ lang === 'ar' ? 'لم تقم بأي طلبات اجتماعات بعد' : 'You haven\'t placed any meeting orders yet.' }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination for Meeting Orders -->
+    <div *ngIf="(meetingTotalPages$ | async)! > 1" class="d-flex justify-content-center mt-6">
+      <p-paginator 
+        [rows]="10" 
+        [totalRecords]="(meetingTotalPages$ | async)! * 10"
+        [first]="(currentMeetingPage - 1) * 10"
+        (onPageChange)="onMeetingPageChange(($event.page || 0) + 1)"
+        [showCurrentPageReport]="true"
+        [currentPageReportTemplate]="lang === 'ar' ? 'عرض {first} إلى {last} من {totalRecords} طلب اجتماع' : 'Showing {first} to {last} of {totalRecords} meeting orders'">
+      </p-paginator>
+    </div>
   </div>
 </div>
 
@@ -275,5 +461,91 @@
       </div>
     </div>
 
+  </div>
+</p-dialog>
+
+<!-- Meeting Order Details Dialog -->
+<p-dialog 
+  [(visible)]="showMeetingOrderDetails" 
+  [header]="lang === 'ar' ? 'تفاصيل طلب الاجتماع' : 'Meeting Order Details'"
+  [modal]="true" 
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '50vw', minWidth: '300px' }"
+  [contentStyle]="{ 'max-height': '70vh', 'overflow-y': 'auto' }"
+  appendTo="body">
+  
+  <div *ngIf="selectedMeetingOrder" class="order-details">
+    <!-- Order Header -->
+    <div class="mb-4">
+      <h6 class="fw-bold mb-2">
+        {{ lang === 'ar' ? 'طلب رقم' : 'Order' }} {{ selectedMeetingOrder.order_no }}
+      </h6>
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="text-muted">{{ lang === 'ar' ? 'المبلغ:' : 'Amount:' }}</span>
+        <span class="fw-bold">{{ selectedMeetingOrder.amount === 0 ? (lang === 'ar' ? 'مجاني' : 'Free') : '$'+ selectedMeetingOrder.amount }}</span>
+      </div>
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="text-muted">{{ lang === 'ar' ? 'الحالة:' : 'Status:' }}</span>
+        <span [class]="getStatusBadgeClass(selectedMeetingOrder.status)" class="text-uppercase">{{ selectedMeetingOrder.status }}</span>
+      </div>
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="text-muted">{{ lang === 'ar' ? 'التاريخ:' : 'Date:' }}</span>
+        <span>{{ selectedMeetingOrder.date | date:'medium' }}</span>
+      </div>
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="text-muted">{{ lang === 'ar' ? 'النوع:' : 'Type:' }}</span>
+        <span class="fw-bold">{{ getServiceTypeDisplay(selectedMeetingOrder.service) }}</span>
+      </div>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="text-muted">{{ lang === 'ar' ? 'طريقة الدفع:' : 'Payment:' }}</span>
+        <span class="fw-bold">{{ getPaymentMethodDisplay(selectedMeetingOrder.payment) }}</span>
+      </div>
+    </div>
+
+    <!-- Meeting Bookings Details -->
+    <div *ngFor="let suborder of selectedMeetingOrder.suborders" class="mb-4">
+      <div *ngIf="suborder.meeting_booking" class="border rounded p-4">
+        <div class="d-flex justify-content-between align-items-start mb-3">
+          <div>
+            <h6 class="mb-2 fw-bold text-dark">{{ suborder.meeting_booking.title }}</h6>
+            <p class="text-muted fs-7 mb-0">{{ suborder.meeting_booking.description }}</p>
+          </div>
+          <span [class]="'badge ' + getMeetingStatusBadgeClass(suborder.meeting_booking.status)">
+            {{ getMeetingStatusDisplay(suborder.meeting_booking.status) }}
+          </span>
+        </div>
+        
+        <div class="row g-3">
+          <div class="col-md-4">
+            <div class="d-flex align-items-center">
+              <i class="ki-outline ki-calendar fs-5 text-info me-2"></i>
+              <div>
+                <div class="fs-8 text-muted">{{ lang === 'ar' ? 'التاريخ' : 'Date' }}</div>
+                <div class="fw-semibold">{{ suborder.meeting_booking.date | date:'mediumDate' }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="d-flex align-items-center">
+              <i class="ki-outline ki-time fs-5 text-info me-2"></i>
+              <div>
+                <div class="fs-8 text-muted">{{ lang === 'ar' ? 'الوقت' : 'Time' }}</div>
+                <div class="fw-semibold">{{ suborder.meeting_booking.start_time }} - {{ suborder.meeting_booking.end_time }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="d-flex align-items-center">
+              <i class="ki-outline ki-timer fs-5 text-info me-2"></i>
+              <div>
+                <div class="fs-8 text-muted">{{ lang === 'ar' ? 'المدة' : 'Duration' }}</div>
+                <div class="fw-semibold">{{ calculateDuration(suborder.meeting_booking.start_time, suborder.meeting_booking.end_time) }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </p-dialog>

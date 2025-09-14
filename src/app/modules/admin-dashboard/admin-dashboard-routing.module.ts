@@ -51,6 +51,13 @@ const routes: Routes = [ {
           (m) => m.ContactMessagesModule
         ),
     },
+    {
+      path: 'orders',
+      loadChildren: () =>
+        import('./orders/orders.module').then(
+          (m) => m.OrdersModule
+        ),
+    },
     { path: '**', redirectTo: 'auth' },
   ],
   

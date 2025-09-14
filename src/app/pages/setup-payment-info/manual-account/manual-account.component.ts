@@ -1,9 +1,10 @@
-import { Component, Injector, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, Injector, OnInit, ViewChild, AfterViewInit, HostListener } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { ComponentCanDeactivate } from 'src/app/guards/pending-changes.guard';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { PaymentService, ManualAccountRequest, UpdateManualAccountRequest, PaymentDetailsResponse, PaymentMethod, TermsResponse } from 'src/app/_fake/services/payment/payment.service';
-import { PaymentCountryService } from 'src/app/_fake/services/payment/payment-country.service';
 import { CountriesService, Country } from 'src/app/_fake/services/countries/countries.service';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import { PhoneNumberInputComponent } from 'src/app/reusable-components/phone-number-input/phone-number-input.component';
@@ -17,7 +18,7 @@ interface ExtendedCountry extends Country {
   templateUrl: './manual-account.component.html',
   styleUrls: ['./manual-account.component.scss']
 })
-export class ManualAccountComponent extends BaseComponent implements OnInit, AfterViewInit {
+export class ManualAccountComponent extends BaseComponent implements OnInit, AfterViewInit, ComponentCanDeactivate {
   manualAccountForm: FormGroup;
   showValidationErrors: boolean = false;
   isEditing: boolean = false;
@@ -34,6 +35,10 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
   showTermsDialog: boolean = false;
   termsContent: string = '';
   isLoadingTerms: boolean = false;
+  initialFormValue: any = null;
+  showUnsavedChangesDialog: boolean = false;
+  pendingNavigation: () => void = () => {};
+  isFormDirtyOnEdit: boolean = false;
 
   @ViewChild('phoneInput') phoneInput!: PhoneNumberInputComponent;
 
@@ -42,7 +47,6 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
     private fb: FormBuilder,
     private router: Router,
     public paymentService: PaymentService,
-    private paymentCountryService: PaymentCountryService,
     private countriesService: CountriesService,
     private profileService: ProfileService
   ) {
@@ -63,6 +67,7 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
   ngOnInit() {
     this.loadUserProfile();
     this.loadCountries();
+    this.trackFormChanges();
   }
 
   ngAfterViewInit() {
@@ -71,6 +76,64 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
       setTimeout(() => {
         this.updatePhoneInputDisplay();
       });
+    }
+  }
+
+  // Track form changes
+  private trackFormChanges() {
+    this.manualAccountForm.valueChanges.subscribe(() => {
+      if (this.isEditing && this.initialFormValue) {
+        this.isFormDirtyOnEdit = this.hasFormChanged();
+      }
+    });
+  }
+
+  // Check if form has unsaved changes
+  private hasFormChanged(): boolean {
+    if (!this.initialFormValue) return false;
+    
+    const currentValue = this.manualAccountForm.getRawValue();
+    const keysToCheck = ['countryId', 'accountName', 'iban', 'address', 'swift_code', 'phoneCountryCode', 'phoneNumber'];
+    
+    for (const key of keysToCheck) {
+      if (currentValue[key] !== this.initialFormValue[key]) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // CanDeactivate implementation
+  canDeactivate(): Observable<boolean> | boolean {
+    if (this.isEditing && this.hasFormChanged()) {
+      this.showUnsavedChangesDialog = true;
+      return false;
+    }
+    return true;
+  }
+
+  // Handle browser back/refresh
+  @HostListener('window:beforeunload', ['$event'])
+  unloadNotification($event: any) {
+    if (this.isEditing && this.hasFormChanged()) {
+      $event.returnValue = true;
+    }
+  }
+
+  // Dialog actions
+  onStayOnPage() {
+    this.showUnsavedChangesDialog = false;
+    // Auto-generate OTP when staying on page
+    if (this.canResendOtp) {
+      this.resendOtp();
+    }
+  }
+
+  onDiscardChanges() {
+    this.showUnsavedChangesDialog = false;
+    if (this.pendingNavigation) {
+      this.pendingNavigation();
+      this.pendingNavigation = () => {};
     }
   }
 
@@ -142,7 +205,7 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
           }
           
           // Pre-fill form
-          this.manualAccountForm.patchValue({
+          const formData = {
             countryId: this.existingData.country?.id || '',
             accountName: this.existingData.account_name || '',
             iban: this.existingData.iban || '',
@@ -151,9 +214,13 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
             phoneCountryCode: countryCode,
             phoneNumber: phoneNumber.replace(/\D/g, ''),
             termsAccepted: true
-          });
-
+          };
+          this.manualAccountForm.patchValue(formData);
+          
+          // Store initial form value after pre-filling
           setTimeout(() => {
+            this.initialFormValue = this.manualAccountForm.getRawValue();
+            this.manualAccountForm.markAsPristine();
             this.updatePhoneInputDisplay();
           });
         } else if (manualAccount?.country) {
@@ -209,8 +276,18 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
   }
 
   onSubmit() {
+    // Always validate first
     this.showValidationErrors = true;
     this.markFormGroupTouched();
+    
+    // Check if form has been modified in edit mode only after validation
+    if (this.isEditing && !this.hasFormChanged()) {
+      this.showInfo(
+        this.lang === 'ar' ? 'معلومات' : 'Information',
+        this.lang === 'ar' ? 'لم يتم إجراء أي تغييرات' : 'No changes were made'
+      );
+      return;
+    }
     
     if (this.manualAccountForm.valid) {
       const countryId = this.selectedCountry?.id || this.manualAccountForm.value.countryId;
@@ -236,6 +313,11 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
 
         this.paymentService.updateManualAccount(updateData).subscribe({
           next: () => {
+            // Reset form state to prevent unsaved changes dialog
+            this.initialFormValue = this.manualAccountForm.getRawValue();
+            this.manualAccountForm.markAsPristine();
+            this.isFormDirtyOnEdit = false;
+            
             this.showSuccess(
               this.lang === 'ar' ? 'تم الحفظ' : 'Success',
               this.lang === 'ar' ? 'تم تحديث الحساب بنجاح' : 'Account updated successfully'
@@ -279,11 +361,23 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
     Object.keys(this.manualAccountForm.controls).forEach(key => {
       const control = this.manualAccountForm.get(key);
       control?.markAsTouched();
+      control?.markAsDirty();
     });
   }
 
   goBack() {
-    this.router.navigate(['/setup-payment-info']);
+    if (this.isEditing && this.hasFormChanged()) {
+      this.showUnsavedChangesDialog = true;
+      this.pendingNavigation = () => {
+        this.router.navigate(['/app/insighter-dashboard/account-settings/payment-settings']);
+      };
+    } else {
+      if (this.isEditing) {
+        this.router.navigate(['/app/insighter-dashboard/account-settings/payment-settings']);
+      } else {
+        this.router.navigate(['/setup-payment-info']);
+      }
+    }
   }
 
   onCountryCodeChange(countryCode: string) {
