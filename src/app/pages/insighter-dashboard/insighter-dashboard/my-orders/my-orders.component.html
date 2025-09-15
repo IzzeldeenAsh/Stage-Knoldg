@@ -100,15 +100,12 @@
           </div>
 
           <!-- Order Info Row -->
-          <div class="mb-3 d-flex flex-wrap gap-3">
+          <div class="mb-3 d-flex flex-wrap gap-3  ">
             <div>
               <span class="text-muted fs-7">{{ lang === 'ar' ? 'النوع:' : 'Type:' }}</span>
               <span class="ms-2 fw-semibold">{{ getServiceTypeDisplay(order.service) }}</span>
             </div>
-            <div>
-              <span class="text-muted fs-7">{{ lang === 'ar' ? 'طريقة الدفع:' : 'Payment Method:' }}</span>
-              <span class="ms-2 fw-semibold">{{ getPaymentMethodDisplay(order.payment) }}</span>
-            </div>
+        
             <div>
               <span class="text-muted fs-7">{{ lang === 'ar' ? 'الحالة:' : 'Status:' }}</span>
               <span [class]="getStatusBadgeClass(order.status)" class="ms-2 text-uppercase">
@@ -281,7 +278,17 @@
               </div>
               <div>
                 <span class="text-muted fs-7">{{ lang === 'ar' ? 'طريقة الدفع:' : 'Payment Method:' }}</span>
-                <span class="ms-2 fw-semibold">{{ getPaymentMethodDisplay(order.payment) }}</span>
+                <div class="d-inline-flex align-items-center ms-2">
+                  <div class="payment-method-display d-inline-flex align-items-center bg-light-info rounded px-2 py-1">
+                    <ng-container *ngIf="shouldShowCardLogo(order.payment); else showIcon2">
+                      <div class="me-2" [innerHTML]="getCardLogoSvg(order.payment)" style="width: 24px; height: 16px; display: flex; align-items: center;"></div>
+                    </ng-container>
+                    <ng-template #showIcon2>
+                      <i [class]="getPaymentMethodIcon(order.payment)" class="fs-6 me-2 text-info"></i>
+                    </ng-template>
+                    <span class="fw-semibold text-dark">{{ getPaymentMethodDisplay(order.payment) }}</span>
+                  </div>
+                </div>
               </div>
               <div>
                 <span class="text-muted fs-7">{{ lang === 'ar' ? 'الحالة:' : 'Status:' }}</span>
@@ -413,7 +420,17 @@
       </div>
       <div class="d-flex justify-content-between align-items-center">
         <span class="text-muted">{{ lang === 'ar' ? 'طريقة الدفع:' : 'Payment:' }}</span>
-        <span class="fw-bold">{{ getPaymentMethodDisplay(selectedOrder.payment) }}</span>
+        <div class="d-flex align-items-center">
+          <div class="payment-method-display d-inline-flex align-items-center bg-light-info rounded px-2 py-1">
+            <ng-container *ngIf="shouldShowCardLogo(selectedOrder.payment); else showIcon3">
+              <div class="me-2" [innerHTML]="getCardLogoSvg(selectedOrder.payment)" style="width: 24px; height: 16px; display: flex; align-items: center;"></div>
+            </ng-container>
+            <ng-template #showIcon3>
+              <i [class]="getPaymentMethodIcon(selectedOrder.payment)" class="fs-6 me-2 text-info"></i>
+            </ng-template>
+            <span class="fw-bold text-dark">{{ getPaymentMethodDisplay(selectedOrder.payment) }}</span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -499,7 +516,17 @@
       </div>
       <div class="d-flex justify-content-between align-items-center">
         <span class="text-muted">{{ lang === 'ar' ? 'طريقة الدفع:' : 'Payment:' }}</span>
-        <span class="fw-bold">{{ getPaymentMethodDisplay(selectedMeetingOrder.payment) }}</span>
+        <div class="d-flex align-items-center">
+          <div class="payment-method-display d-inline-flex align-items-center bg-light-info rounded px-2 py-1">
+            <ng-container *ngIf="shouldShowCardLogo(selectedMeetingOrder.payment); else showIcon4">
+              <div class="me-2" [innerHTML]="getCardLogoSvg(selectedMeetingOrder.payment)" style="width: 24px; height: 16px; display: flex; align-items: center;"></div>
+            </ng-container>
+            <ng-template #showIcon4>
+              <i [class]="getPaymentMethodIcon(selectedMeetingOrder.payment)" class="fs-6 me-2 text-info"></i>
+            </ng-template>
+            <span class="fw-bold text-dark">{{ getPaymentMethodDisplay(selectedMeetingOrder.payment) }}</span>
+          </div>
+        </div>
       </div>
     </div>
 

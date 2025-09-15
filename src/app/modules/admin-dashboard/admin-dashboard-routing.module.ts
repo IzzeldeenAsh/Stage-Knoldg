@@ -58,6 +58,13 @@ const routes: Routes = [ {
           (m) => m.OrdersModule
         ),
     },
+    {
+      path: 'transactions',
+      loadChildren: () =>
+        import('./transactions/transactions.module').then(
+          (m) => m.TransactionsModule
+        ),
+    },
     { path: '**', redirectTo: 'auth' },
   ],
   

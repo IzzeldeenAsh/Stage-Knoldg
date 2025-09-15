@@ -21,9 +21,19 @@ export interface Knowledge {
   title: string;
 }
 
+export interface MeetingBooking {
+  date: string;
+  start_time: string;
+  end_time: string;
+  status: string;
+  title: string;
+  description?: string;
+}
+
 export interface SubOrder {
-  knowledge: Knowledge[];
-  knowledge_documents: KnowledgeDocument[][];
+  knowledge?: Knowledge[];
+  knowledge_documents?: KnowledgeDocument[][];
+  meeting_booking?: MeetingBooking;
 }
 
 export interface Order {
@@ -75,7 +85,7 @@ export interface TransactionResponse {
   providedIn: "root",
 })
 export class WalletService {
-  private readonly BASE_URL = "https://api.knoldg.com/api/account/wallet";
+  private readonly BASE_URL = "https://api.foresighta.co/api/account/wallet";
   currentLang: string = "";
 
   constructor(

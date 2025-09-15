@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Injector, ViewChild, ElementRef, AfterViewInit, HostListener } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
-import { WalletService, Transaction, TransactionResponse } from 'src/app/_fake/services/wallet/wallet.service';
+import { WalletService, Transaction, TransactionResponse, SubOrder, MeetingBooking } from 'src/app/_fake/services/wallet/wallet.service';
 import { BaseComponent } from 'src/app/modules/base.component';
 
 @Component({
@@ -309,39 +309,98 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
   }
 
   updateChart(): void {
-    if (this.transactions.length === 0) return;
-    
     const last10Transactions = this.transactions.slice(0, 10).reverse();
     const chartDataPoints: number[] = [];
     const chartLabels: string[] = [];
     const transactionData: Transaction[] = [];
     let runningBalance = this.walletBalance;
-    
-    last10Transactions.forEach((transaction, index) => {
-      if (index === 0) {
-        for (let i = last10Transactions.length - 1; i >= 0; i--) {
-          const trans = last10Transactions[i];
-          const transAmount = Math.abs(trans.amount);
-          if (trans.transaction === 'deposit') {
-            runningBalance -= transAmount;
-          } else {
-            runningBalance += transAmount;
-          }
-        }
+
+    // If there are no transactions, show a default point at current day with value 0
+    if (this.transactions.length === 0) {
+      const today = new Date();
+      const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+
+      // Add two points to create a flat line at 0
+      chartDataPoints.push(0, 0);
+      chartLabels.push(
+        yesterday.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        today.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+      );
+
+      // Add dummy transactions for tooltips
+      transactionData.push(
+        {
+          id: 0,
+          amount: 0,
+          transaction: 'balance',
+          date: yesterday.toISOString(),
+          type: 'balance'
+        } as any,
+        {
+          id: 0,
+          amount: 0,
+          transaction: 'balance',
+          date: today.toISOString(),
+          type: 'balance'
+        } as any
+      );
+
+      this.chartData = {
+        ...this.chartData,
+        labels: chartLabels,
+        datasets: [{
+          ...this.chartData.datasets[0],
+          data: chartDataPoints,
+          transactionData: transactionData
+        }]
+      };
+      return;
+    }
+
+    // Calculate initial balance before all transactions
+    for (let i = last10Transactions.length - 1; i >= 0; i--) {
+      const trans = last10Transactions[i];
+      const transAmount = Math.abs(trans.amount);
+      if (trans.transaction === 'deposit') {
+        runningBalance -= transAmount;
+      } else {
+        runningBalance += transAmount;
       }
-      
+    }
+
+    // If there's only one transaction, add a starting point at 0 or previous balance
+    if (last10Transactions.length === 1) {
+      const startingBalance = runningBalance;
+      chartDataPoints.push(startingBalance);
+
+      // Create a label for the starting point (one day before the transaction)
+      const transactionDate = new Date(last10Transactions[0].date);
+      const startDate = new Date(transactionDate.getTime() - 24 * 60 * 60 * 1000);
+      chartLabels.push(startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+
+      // Add a dummy transaction for the starting point
+      transactionData.push({
+        ...last10Transactions[0],
+        date: startDate.toISOString(),
+        amount: 0,
+        transaction: 'balance'
+      } as any);
+    }
+
+    // Process all transactions
+    last10Transactions.forEach((transaction) => {
       const transactionAmount = Math.abs(transaction.amount);
       if (transaction.transaction === 'deposit') {
         runningBalance += transactionAmount;
       } else {
         runningBalance -= transactionAmount;
       }
-      
+
       chartDataPoints.push(runningBalance);
       chartLabels.push(new Date(transaction.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
       transactionData.push(transaction);
     });
-    
+
     this.chartData = {
       ...this.chartData,
       labels: chartLabels,
@@ -360,12 +419,21 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
 
   formatService(service: string): string {
     if (!service) return '';
-    
-    // Handle special cases
+
+    // Handle special cases for meeting-related transactions
     if (service === 'book_meeting') {
       return this.lang === 'ar' ? 'حجز اجتماع' : 'Book Meeting';
     }
-    
+    if (service === 'income_meeting') {
+      return this.lang === 'ar' ? 'دخل من اجتماع' : 'Meeting Income';
+    }
+    if (service === 'income_knowledge') {
+      return this.lang === 'ar' ? 'دخل من المعرفة' : 'Knowledge Income';
+    }
+    if (service === 'purchase_knowledge') {
+      return this.lang === 'ar' ? 'شراء المعرفة' : 'Knowledge Purchase';
+    }
+
     // Default formatting for other services
     return service
       .split('_')
@@ -423,6 +491,16 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
     return `assets/media/svg/new-files/${ext}.svg`;
   }
 
+  formatMeetingDate(dateString: string): string {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  }
+
   getLatestTransactionAmount(): number {
     if (this.transactions.length > 0) {
       return this.transactions[0].amount;
@@ -461,6 +539,12 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
       'invoiceNumber': { en: 'Invoice Number', ar: 'رقم الفاتورة' },
       'status': { en: 'Status', ar: 'الحالة' },
       'knowledgeItems': { en: 'Knowledge Items', ar: 'عناصر المعرفة' },
+      'meetingDetails': { en: 'Meeting Details', ar: 'تفاصيل الاجتماع' },
+      'meetingTitle': { en: 'Meeting Title', ar: 'عنوان الاجتماع' },
+      'meetingStatus': { en: 'Meeting Status', ar: 'حالة الاجتماع' },
+      'meetingDate': { en: 'Meeting Date', ar: 'تاريخ الاجتماع' },
+      'meetingTime': { en: 'Meeting Time', ar: 'وقت الاجتماع' },
+      'meetingDescription': { en: 'Description', ar: 'الوصف' },
       'close': { en: 'Close', ar: 'إغلاق' },
       'viewDetails': { en: 'View Details', ar: 'عرض التفاصيل' },
       'balance': { en: 'Balance', ar: 'الرصيد' }

@@ -193,7 +193,7 @@
                       <!-- Join Button for Approved Meetings with valid URL -->
                       @if (meeting.status === 'approved' && meeting.meeting_url && meeting.meeting_url !== '?pwd=') {
                         <div class="ms-2">
-                          <button type="button" 
+                          <button type="button"
                                   class="btn btn-sm btn-secondary"
                                   (click)="joinMeeting(meeting.meeting_url)"
                                   [pTooltip]="'MEETINGS.JOIN_MEETING' | translate"
@@ -203,6 +203,23 @@
                               <span class="path2"></span>
                             </i>
                             {{ 'MEETINGS.JOIN' | translate }}
+                          </button>
+                        </div>
+                      }
+
+                      <!-- Reschedule Button for Postponed Meetings -->
+                      @if (canRescheduleMeeting(meeting)) {
+                        <div class="ms-2">
+                          <button type="button"
+                                  class="btn btn-sm btn-light-warning"
+                                  (click)="openRescheduleModal(meeting)"
+                                  [pTooltip]="'Reschedule Meeting'"
+                                  tooltipPosition="top">
+                            <i class="ki-duotone ki-calendar-edit me-1">
+                              <span class="path1"></span>
+                              <span class="path2"></span>
+                            </i>
+                            Reschedule
                           </button>
                         </div>
                       }
@@ -453,5 +470,153 @@
         Processing...
       }
     </button>
+  </ng-template>
+</p-dialog>
+
+<!-- Reschedule Meeting Dialog -->
+<p-dialog
+  header="Reschedule Meeting"
+  [visible]="showRescheduleDialog()"
+  [modal]="true"
+  [style]="{width: '90vw', maxWidth: '1000px'}"
+  [draggable]="false"
+  [resizable]="false"
+  appendTo="body"
+  [closable]="true"
+  styleClass="custom-dialog"
+  (onHide)="closeRescheduleDialog()">
+
+  <div class="dialog-content p-4">
+    <!-- Meeting Info -->
+    @if (selectedMeetingForReschedule()) {
+      <div class="mb-4">
+        <div class="alert alert-info d-flex align-items-center">
+          <i class="ki-duotone ki-information-5 fs-2x me-3">
+            <span class="path1"></span>
+            <span class="path2"></span>
+            <span class="path3"></span>
+          </i>
+          <div>
+            <strong>{{ selectedMeetingForReschedule()?.title }}</strong><br>
+            <span class="text-muted">
+              Current Time:
+              {{ formatDateForDisplay(selectedMeetingForReschedule()?.date || '') }},
+              {{ formatTimeForDisplay(selectedMeetingForReschedule()?.start_time || '') }} -
+              {{ formatTimeForDisplay(selectedMeetingForReschedule()?.end_time || '') }}
+            </span>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Loading State -->
+    @if (rescheduleLoading()) {
+      <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-3 text-muted">Loading available times...</p>
+      </div>
+    }
+
+    <!-- Calendly-Style Calendar and Time Selection -->
+    @if (!rescheduleLoading() && availableDays().length > 0) {
+      <div class="calendly-container">
+        <div class="row g-4">
+          <!-- Left Column: Date Selection -->
+          <div class="col-lg-6">
+            <div class="calendar-section">
+              <h6 class="fw-bold mb-3">Select Date</h6>
+              <div class="available-dates-list">
+                @for (day of availableDays(); track day.date) {
+                  @if (day.active && day.times.length > 0) {
+                    <div class="date-option"
+                         [class.selected]="selectedDate() === day.date"
+                         (click)="selectDate(day.date)"
+                         tabindex="0"
+                         (keydown.enter)="selectDate(day.date)">
+                      <div class="date-display">
+                        <div class="day-name">{{ day.day }}</div>
+                        <div class="date-value">{{ formatDateForDisplay(day.date) }}</div>
+                      </div>
+                      <div class="available-times-count">
+                        {{ day.times.length }} time{{ day.times.length === 1 ? '' : 's' }} available
+                      </div>
+                    </div>
+                  }
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Time Selection -->
+          <div class="col-lg-6">
+            <div class="time-slots-section">
+              <h6 class="fw-bold mb-3">
+                @if (selectedDate()) {
+                  Select Time for {{ formatDateForDisplay(selectedDate()) }}
+                } @else {
+                  Select a date first
+                }
+              </h6>
+
+              @if (selectedDate()) {
+                <div class="time-slots-grid">
+                  @for (timeSlot of getAvailableTimesForDate(selectedDate()); track timeSlot.start_time) {
+                    <button type="button"
+                            class="btn time-slot-btn"
+                            [class.btn-primary]="selectedTimeSlot() === timeSlot"
+                            [class.btn-outline-primary]="selectedTimeSlot() !== timeSlot"
+                            (click)="selectTimeSlot(timeSlot)">
+                      {{ formatTimeForDisplay(timeSlot.start_time) }} - {{ formatTimeForDisplay(timeSlot.end_time) }}
+                    </button>
+                  }
+                </div>
+              } @else {
+                <div class="text-muted text-center py-4">
+                  <i class="ki-duotone ki-calendar fs-2x mb-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                  </i>
+                  <p>Please select a date to see available time slots</p>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- No Available Times -->
+    @if (!rescheduleLoading() && availableDays().length === 0) {
+      <div class="text-center py-5">
+        <i class="ki-duotone ki-calendar-remove fs-3x text-gray-400 mb-3">
+          <span class="path1"></span>
+          <span class="path2"></span>
+          <span class="path3"></span>
+        </i>
+        <h5 class="text-gray-700">No Available Times</h5>
+        <p class="text-gray-500">There are currently no available time slots for rescheduling this meeting.</p>
+      </div>
+    }
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="d-flex justify-content-end gap-3 p-3">
+      <button type="button"
+              class="btn btn-light"
+              (click)="closeRescheduleDialog()">
+        Cancel
+      </button>
+      <button type="button"
+              class="btn btn-primary"
+              [disabled]="!selectedTimeSlot() || !isDifferentTime() || rescheduleLoading()"
+              (click)="confirmReschedule()">
+        @if (rescheduleLoading()) {
+          <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+        }
+        Reschedule Meeting
+      </button>
+    </div>
   </ng-template>
 </p-dialog>

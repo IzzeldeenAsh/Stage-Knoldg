@@ -1,0 +1,164 @@
+<div class="card">
+  <div class="card-header">
+    <h2 class="page-title">Transactions Management</h2>
+  </div>
+
+  <div class="table-container">
+    <p-table #dt
+      [value]="transactions"
+      [paginator]="true"
+      [rows]="rows"
+      [totalRecords]="totalRecords"
+      [lazy]="true"
+      (onLazyLoad)="loadTransactions($event)"
+      [loading]="loading"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} transactions"
+      styleClass="p-datatable-sm p-datatable-striped">
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Type</th>
+          <th>Amount</th>
+          <th>Date</th>
+          <th>Category</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-transaction>
+        <tr>
+          <td>
+            <p-tag [value]="transaction.transaction" [severity]="getTransactionSeverity(transaction.transaction)"></p-tag>
+          </td>
+          <td>
+            <span [class.text-success]="transaction.amount > 0" [class.text-danger]="transaction.amount < 0">
+              {{ transaction.amount > 0 ? '+' : '' }}{{ formatCurrency(transaction.amount) }}
+            </span>
+          </td>
+          <td>{{ formatDate(transaction.date) }}</td>
+          <td>
+            <p-tag [value]="getTransactionTypeLabel(transaction.type)" severity="info"></p-tag>
+          </td>
+          <td>
+            <button pButton
+              type="button"
+              icon="pi pi-eye"
+              class="p-button-rounded p-button-text p-button-info"
+              (click)="showTransactionDetails(transaction)"
+              pTooltip="View Details">
+            </button>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="5" class="text-center">No transactions found.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+<!-- Transaction Details Dialog -->
+<p-dialog [(visible)]="displayDialog"
+  [modal]="true"
+  [style]="{width: '90vw', maxWidth: '1200px'}"
+  [maximizable]="true"
+  [header]="'Transaction Details'"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="transaction-details-dialog">
+
+  <div *ngIf="selectedTransaction" class="transaction-details">
+    <!-- Header Section with Key Information -->
+    <div class="detail-header">
+      <div class="header-grid">
+        <div class="header-item">
+          <i class="pi pi-arrow-up-down header-icon"></i>
+          <div class="header-content">
+            <span class="header-label">Transaction Type</span>
+            <p-tag [value]="selectedTransaction.transaction" [severity]="getTransactionSeverity(selectedTransaction.transaction)"></p-tag>
+          </div>
+        </div>
+        <div class="header-item">
+          <i class="pi pi-dollar header-icon"></i>
+          <div class="header-content">
+            <span class="header-label">Amount</span>
+            <span class="header-value amount" [class.text-success]="selectedTransaction.amount > 0" [class.text-danger]="selectedTransaction.amount < 0">
+              {{ selectedTransaction.amount > 0 ? '+' : '' }}{{ formatCurrency(selectedTransaction.amount) }}
+            </span>
+          </div>
+        </div>
+        <div class="header-item">
+          <i class="pi pi-calendar header-icon"></i>
+          <div class="header-content">
+            <span class="header-label">Date</span>
+            <span class="header-value">{{ formatDate(selectedTransaction.date) }}</span>
+          </div>
+        </div>
+        <div class="header-item">
+          <i class="pi pi-tag header-icon"></i>
+          <div class="header-content">
+            <span class="header-label">Category</span>
+            <p-tag [value]="getTransactionTypeLabel(selectedTransaction.type)" severity="info"></p-tag>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Information Section -->
+    <div class="items-section" *ngIf="selectedTransaction.order && selectedTransaction.order.sub_orders && selectedTransaction.order.sub_orders.length > 0">
+      <h3 class="section-title">
+        <i class="pi pi-shopping-cart"></i>
+        Related Order Details
+      </h3>
+
+      <div class="suborders-container">
+        <div class="suborder-card" *ngFor="let suborder of selectedTransaction.order.sub_orders; let i = index">
+          <div class="suborder-header">
+            <span class="suborder-number">Item Group {{ i + 1 }}</span>
+          </div>
+
+          <!-- Knowledge Items -->
+          <div class="knowledge-section" *ngIf="suborder.knowledge && suborder.knowledge.length > 0">
+            <h4 class="subsection-title">Knowledge Products</h4>
+            <div class="knowledge-items">
+              <div class="knowledge-item" *ngFor="let item of suborder.knowledge">
+                <div class="knowledge-type">
+                  <p-chip [label]="item.type" styleClass="custom-chip"></p-chip>
+                </div>
+                <div class="knowledge-title">{{ item.title }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Documents -->
+          <div class="documents-section" *ngIf="suborder.knowledge_documents && suborder.knowledge_documents.length > 0">
+            <h4 class="subsection-title">Documents</h4>
+            <div class="documents-grid">
+              <div *ngFor="let docGroup of suborder.knowledge_documents">
+                <div class="document-item" *ngFor="let doc of docGroup">
+                  <img [src]="getFileIcon(doc.file_extension)"
+                       [alt]="doc.file_extension"
+                       class="file-icon">
+                  <div class="document-info">
+                    <span class="document-name">{{ doc.file_name }}.{{ doc.file_extension }}</span>
+                    <span class="document-price">{{ formatCurrency(doc.price) }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="dialog-footer">
+      <button pButton type="button" label="Close" icon="pi pi-times" class="p-button-secondary" (click)="displayDialog = false"></button>
+    </div>
+  </ng-template>
+</p-dialog>

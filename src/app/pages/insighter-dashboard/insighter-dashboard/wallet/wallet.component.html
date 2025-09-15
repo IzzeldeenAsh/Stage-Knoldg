@@ -192,34 +192,71 @@
         
         <!-- Knowledge Items -->
         <div *ngIf="selectedTransaction.order.sub_orders || selectedTransaction.order.suborders">
-          <h6 class="mb-3">{{ getTranslation('knowledgeItems') }}</h6>
-          <div class="border rounded p-3">
-            <ng-container *ngFor="let suborder of (selectedTransaction.order.sub_orders || selectedTransaction.order.suborders)">
-              <div *ngFor="let knowledge of suborder.knowledge" class="mb-3">
-                <div class="d-flex align-items-center mb-2">
-                  
-                  <span class="badge badge-light-info fs-base me-2">{{ knowledge.type }}</span>
-                  <span class="fw-semibold">{{ knowledge.title }}</span>
-                </div>
-                
-                <!-- Documents -->
-                <div class="ms-4" *ngIf="suborder.knowledge_documents">
-                  <div *ngFor="let docGroup of suborder.knowledge_documents" class="mb-2">
-                    <div *ngFor="let doc of docGroup" class="d-flex align-items-center justify-content-between py-2 border-bottom">
-                      <div class="d-flex align-items-center">
-                        <img [src]="getFileIcon(doc.file_extension)" 
-                             [alt]="doc.file_extension" 
-                             style="width: 24px; height: 24px;" 
-                             class="me-2">
-                        <span>{{ doc.file_name }}.{{ doc.file_extension }}</span>
+          <ng-container *ngFor="let suborder of (selectedTransaction.order.sub_orders || selectedTransaction.order.suborders)">
+
+            <!-- Knowledge Items Section -->
+            <div *ngIf="suborder.knowledge" class="mb-4">
+              <h6 class="mb-3">{{ getTranslation('knowledgeItems') }}</h6>
+              <div class="border rounded p-3">
+                <div *ngFor="let knowledge of suborder.knowledge" class="mb-3">
+                  <div class="d-flex align-items-center mb-2">
+                    <span class="badge badge-light-info fs-base me-2">{{ knowledge.type }}</span>
+                    <span class="fw-semibold">{{ knowledge.title }}</span>
+                  </div>
+
+                  <!-- Documents -->
+                  <div class="ms-4" *ngIf="suborder.knowledge_documents">
+                    <div *ngFor="let docGroup of suborder.knowledge_documents" class="mb-2">
+                      <div *ngFor="let doc of docGroup" class="d-flex align-items-center justify-content-between py-2 border-bottom">
+                        <div class="d-flex align-items-center">
+                          <img [src]="getFileIcon(doc.file_extension)"
+                               [alt]="doc.file_extension"
+                               style="width: 24px; height: 24px;"
+                               class="me-2">
+                          <span>{{ doc.file_name }}.{{ doc.file_extension }}</span>
+                        </div>
+                        <span class="fw-semibold text-info">${{ doc.price }}</span>
                       </div>
-                      <span class="fw-semibold text-info">${{ doc.price }}</span>
                     </div>
                   </div>
                 </div>
               </div>
-            </ng-container>
-          </div>
+            </div>
+
+            <!-- Meeting Booking Section -->
+            <div *ngIf="suborder.meeting_booking" class="mb-4">
+              <h6 class="mb-3">{{ getTranslation('meetingDetails') }}</h6>
+              <div class="border rounded p-3">
+                <div class="row mb-3">
+                  <div class="col-6">
+                    <span class="mb-1 text-muted d-block">{{ getTranslation('meetingTitle') }}</span>
+                    <span class="fw-semibold">{{ suborder.meeting_booking.title }}</span>
+                  </div>
+                  <div class="col-6">
+                    <span class="mb-1 text-muted d-block">{{ getTranslation('meetingStatus') }}</span>
+                    <span class="badge badge-light-info fs-base">{{ suborder.meeting_booking.status }}</span>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-6">
+                    <span class="mb-1 text-muted d-block">{{ getTranslation('meetingDate') }}</span>
+                    <span class="fw-semibold">{{ formatMeetingDate(suborder.meeting_booking.date) }}</span>
+                  </div>
+                  <div class="col-6">
+                    <span class="mb-1 text-muted d-block">{{ getTranslation('meetingTime') }}</span>
+                    <span class="fw-semibold">{{ suborder.meeting_booking.start_time }} - {{ suborder.meeting_booking.end_time }}</span>
+                  </div>
+                </div>
+
+                <div *ngIf="suborder.meeting_booking.description" class="mb-3">
+                  <span class="mb-1 text-muted d-block">{{ getTranslation('meetingDescription') }}</span>
+                  <p class="fw-semibold mb-0">{{ suborder.meeting_booking.description }}</p>
+                </div>
+              </div>
+            </div>
+
+          </ng-container>
         </div>
       </div>
     </div>

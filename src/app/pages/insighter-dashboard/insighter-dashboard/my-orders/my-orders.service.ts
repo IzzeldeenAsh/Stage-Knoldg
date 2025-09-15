@@ -31,7 +31,11 @@ export interface SubOrder {
 
 export interface PaymentInfo {
   method: string;
-  provider: string;
+  provider: string | null;
+  provider_payment_method_type: string | null;
+  provider_card_last_number: string | null;
+  provider_card_brand: string | null;
+  provide_receipt_url: string | null;
   confirmed_at: string;
 }
 
@@ -81,8 +85,8 @@ export interface OrdersResponse {
   providedIn: 'root'
 })
 export class MyOrdersService {
-  private readonly API_URL = 'https://api.knoldg.com/api/account/order/knowledge';
-  private readonly MEETING_API_URL = 'https://api.knoldg.com/api/account/order/meeting';
+  private readonly API_URL = 'https://api.foresighta.co/api/account/order/knowledge';
+  private readonly MEETING_API_URL = 'https://api.foresighta.co/api/account/order/meeting';
   
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$ = this.isLoadingSubject.asObservable();
