@@ -139,7 +139,7 @@
               
               <!-- Documents Preview -->
               <div *ngIf="suborder.knowledge_documents && suborder.knowledge_documents.length > 0" class="mt-2">
-                <div class="d-flex flex-wrap gap-2">
+                <div class="d-flex flex-wrap pt-2 gap-2">
                   <div *ngFor="let extension of getUniqueExtensions(suborder)" class="position-relative d-inline-block">
                     <img 
                       [src]="getFileIconByExtension(extension)" 
@@ -148,7 +148,7 @@
                       style="width: 40px; height: 40px;"
                       onerror="this.style.display='none'">
                     <span 
-                      class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-white"
+                      class="position-absolute top-0 start-75 translate-middle badge rounded-pill text-white"
                       [style.background-color]="getBadgeColorByExtension(extension)">
                       {{ getDocumentCountByExtension(suborder, extension) }}
                     </span>
@@ -276,20 +276,7 @@
                 <span class="text-muted fs-7">{{ lang === 'ar' ? 'النوع:' : 'Type:' }}</span>
                 <span class="ms-2 fw-semibold">{{ getServiceTypeDisplay(order.service) }}</span>
               </div>
-              <div>
-                <span class="text-muted fs-7">{{ lang === 'ar' ? 'طريقة الدفع:' : 'Payment Method:' }}</span>
-                <div class="d-inline-flex align-items-center ms-2">
-                  <div class="payment-method-display d-inline-flex align-items-center bg-light-info rounded px-2 py-1">
-                    <ng-container *ngIf="shouldShowCardLogo(order.payment); else showIcon2">
-                      <div class="me-2" [innerHTML]="getCardLogoSvg(order.payment)" style="width: 24px; height: 16px; display: flex; align-items: center;"></div>
-                    </ng-container>
-                    <ng-template #showIcon2>
-                      <i [class]="getPaymentMethodIcon(order.payment)" class="fs-6 me-2 text-info"></i>
-                    </ng-template>
-                    <span class="fw-semibold text-dark">{{ getPaymentMethodDisplay(order.payment) }}</span>
-                  </div>
-                </div>
-              </div>
+           
               <div>
                 <span class="text-muted fs-7">{{ lang === 'ar' ? 'الحالة:' : 'Status:' }}</span>
                 <span [class]="getStatusBadgeClass(order.status)" class="ms-2 text-uppercase">

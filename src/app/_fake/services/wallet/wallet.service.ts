@@ -36,8 +36,19 @@ export interface SubOrder {
   meeting_booking?: MeetingBooking;
 }
 
+export interface User {
+  name: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  profile_photo_url?: string | null;
+  country_id: number;
+  roles: string[];
+}
+
 export interface Order {
   uuid: string;
+  user?: User;
   service: string;
   status: string;
   date: string;

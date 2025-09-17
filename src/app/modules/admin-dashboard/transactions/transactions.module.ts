@@ -9,6 +9,7 @@ import { DialogModule } from 'primeng/dialog';
 import { TooltipModule } from 'primeng/tooltip';
 import { ChipModule } from 'primeng/chip';
 import { ToastModule } from 'primeng/toast';
+import { ServiceNamePipe } from '../../../shared/pipes/service-name.pipe';
 
 const routes: Routes = [
   {
@@ -30,7 +31,8 @@ const routes: Routes = [
     DialogModule,
     TooltipModule,
     ChipModule,
-    ToastModule
+    ToastModule,
+    ServiceNamePipe
   ]
 })
 export class TransactionsModule { }

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Injector, ViewChild, ElementRef, AfterViewInit, HostListener } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
-import { WalletService, Transaction, TransactionResponse, SubOrder, MeetingBooking } from 'src/app/_fake/services/wallet/wallet.service';
+import { WalletService, Transaction, TransactionResponse, SubOrder, MeetingBooking, User } from 'src/app/_fake/services/wallet/wallet.service';
 import { BaseComponent } from 'src/app/modules/base.component';
 
 @Component({
@@ -515,6 +515,74 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
     return '';
   }
 
+  // User helper methods
+  getUserInitials(user: User | undefined): string {
+    if (!user) return '';
+    const firstInitial = user.first_name?.charAt(0) || user.name?.charAt(0) || '';
+    const lastInitial = user.last_name?.charAt(0) || user.name?.split(' ')[1]?.charAt(0) || '';
+    return (firstInitial + lastInitial).toUpperCase();
+  }
+
+  getRoleBadgeClass(role: string): string {
+    switch (role?.toLowerCase()) {
+      case 'insighter':
+        return 'badge-light-success';
+      case 'company':
+      case 'client':
+        return 'badge-light-info';
+      case 'admin':
+        return 'badge-light-warning';
+      default:
+        return 'badge-light-secondary';
+    }
+  }
+
+  formatRole(role: string): string {
+    if (!role) return '';
+
+    if (this.lang === 'ar') {
+      switch (role.toLowerCase()) {
+        case 'insighter':
+          return 'خبير';
+        case 'company':
+          return 'شركة';
+        case 'client':
+          return 'عميل';
+        case 'admin':
+          return 'مدير';
+        default:
+          return role;
+      }
+    }
+
+    return role.charAt(0).toUpperCase() + role.slice(1);
+  }
+
+  getStatusBadgeClass(status: string): string {
+    if (!status) return 'badge-light-secondary';
+
+    switch (status.toLowerCase()) {
+      case 'paid':
+      case 'completed':
+        return 'badge-light-success';
+      case 'pending':
+      case 'processing':
+        return 'badge-light-warning';
+      case 'cancelled':
+      case 'failed':
+        return 'badge-light-danger';
+      case 'postponed':
+        return 'badge-light-info';
+      default:
+        return 'badge-light-secondary';
+    }
+  }
+
+  formatStatus(status: string): string {
+    if (!status) return '';
+    return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
+  }
+
   // Translation helper methods
   getTranslation(key: string): string {
     const translations: { [key: string]: { en: string; ar: string } } = {
@@ -547,7 +615,9 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
       'meetingDescription': { en: 'Description', ar: 'الوصف' },
       'close': { en: 'Close', ar: 'إغلاق' },
       'viewDetails': { en: 'View Details', ar: 'عرض التفاصيل' },
-      'balance': { en: 'Balance', ar: 'الرصيد' }
+      'balance': { en: 'Balance', ar: 'الرصيد' },
+      'userInformation': { en: 'User Information', ar: 'معلومات المستخدم' },
+      'sendEmail': { en: 'Send Email', ar: 'إرسال بريد إلكتروني' }
     };
     
     return translations[key] ? translations[key][this.lang === 'ar' ? 'ar' : 'en'] : key;

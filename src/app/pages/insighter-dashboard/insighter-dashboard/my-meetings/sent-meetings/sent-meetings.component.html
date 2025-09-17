@@ -1,219 +1,222 @@
-<!-- Filter Tabs -->
-<div class="row mb-5">
-  <div class="col-12">
-  <div class="filter-tabs">
-    <div class="nav nav-pills nav-pills-custom">
-      <a class="nav-link" 
-        [class.active]="selectedTab === 'coming'"
-        (click)="onTabChange('coming')">
-        {{ 'INSIGHTER.MEETINGS.FILTERS.COMING' | translate }}
-      </a>
-      <!-- <a class="nav-link" 
-       [class.active]="selectedTab === 'upcoming'"
-       (click)="onTabChange('upcoming')">
-      {{ 'INSIGHTER.MEETINGS.FILTERS.UPCOMING' | translate }}
-      </a> -->
-      <a class="nav-link" 
-       [class.active]="selectedTab === 'pending'"
-       (click)="onTabChange('pending')">
-      {{ 'INSIGHTER.MEETINGS.FILTERS.PENDING' | translate }}
-      </a>
-      <a class="nav-link" 
-       [class.active]="selectedTab === 'postponed'"
-       (click)="onTabChange('postponed')">
-      {{ 'INSIGHTER.MEETINGS.FILTERS.POSTPONED' | translate }}
-      </a>
-      <a class="nav-link" 
-       [class.active]="selectedTab === 'past'"
-       (click)="onTabChange('past')">
-      {{ 'INSIGHTER.MEETINGS.FILTERS.PAST' | translate }}
-      </a>
-      <!-- <a class="nav-link" 
-       [class.active]="selectedTab === 'approved'"
-       (click)="onTabChange('approved')">
-      {{ 'INSIGHTER.MEETINGS.FILTERS.APPROVED' | translate }}
-      </a> -->
+<div class="container-fluid bg-white p-5 rounded-lg" style="border-radius: 10px;">
+  <!-- Filter Tabs -->
+  <div class="row mb-5">
+    <div class="col-12">
+      <div class="filter-tabs">
+        <div class="nav nav-pills nav-pills-custom">
+            <a class="nav-link" 
+              [class.active]="selectedTab === 'coming'"
+              (click)="onTabChange('coming')">
+              {{ 'INSIGHTER.MEETINGS.FILTERS.COMING' | translate }}
+            </a>
+          <!-- <a class="nav-link" 
+             [class.active]="selectedTab === 'upcoming'"
+             (click)="onTabChange('upcoming')">
+            {{ 'INSIGHTER.MEETINGS.FILTERS.UPCOMING' | translate }}
+          </a> -->
+          <a class="nav-link" 
+             [class.active]="selectedTab === 'pending'"
+             (click)="onTabChange('pending')">
+            {{ 'INSIGHTER.MEETINGS.FILTERS.PENDING' | translate }}
+          </a>
+          <a class="nav-link" 
+             [class.active]="selectedTab === 'postponed'"
+             (click)="onTabChange('postponed')">
+            {{ 'INSIGHTER.MEETINGS.FILTERS.POSTPONED' | translate }}
+          </a>
+          <a class="nav-link" 
+             [class.active]="selectedTab === 'past'"
+             (click)="onTabChange('past')">
+            {{ 'INSIGHTER.MEETINGS.FILTERS.PAST' | translate }}
+          </a>
+          <!-- <a class="nav-link" 
+             [class.active]="selectedTab === 'approved'"
+             (click)="onTabChange('approved')">
+            {{ 'INSIGHTER.MEETINGS.FILTERS.APPROVED' | translate }}
+          </a> -->
+        </div>
+      </div>
     </div>
-    </div>
-  </div>
   </div>
 
   <!-- Loading State -->
-  <div *ngIf="loading" class="d-flex justify-content-center align-items-center" style="min-height: 100px;">
-  <div class="spinner-border text-primary" role="status">
-    <span class="visually-hidden">Loading...</span>
-  </div>
+  <div *ngIf="loading" class="d-flex justify-content-center align-items-center" style="min-height: 300px;">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
   </div>
 
   <!-- Meetings Grid -->
   <div *ngIf="!loading" class="row g-4">
-  <div class="col-12" *ngIf="getFilteredMeetings().length === 0">
-    <div class="text-center py-5">
-    <i class="ki-duotone ki-calendar-8 fs-3x text-gray-400 mb-3">
-      <span class="path1"></span>
-      <span class="path2"></span>
-      <span class="path3"></span>
-      <span class="path4"></span>
-      <span class="path5"></span>
-      <span class="path6"></span>
-    </i>
-    <h4 class="text-gray-700 mb-2">{{ 'INSIGHTER.MEETINGS.NO_MEETINGS' | translate }}</h4>
-    <p class="text-gray-500">{{ 'INSIGHTER.MEETINGS.NO_MEETINGS_DESC' | translate }}</p>
+    <div class="col-12" *ngIf="getFilteredMeetings().length === 0">
+      <div class="text-center py-5">
+        <i class="ki-duotone ki-calendar-8 fs-3x text-gray-400 mb-3">
+          <span class="path1"></span>
+          <span class="path2"></span>
+          <span class="path3"></span>
+          <span class="path4"></span>
+          <span class="path5"></span>
+          <span class="path6"></span>
+        </i>
+        <h4 class="text-gray-700 mb-2">{{ 'INSIGHTER.MEETINGS.NO_MEETINGS' | translate }}</h4>
+        <p class="text-gray-500">{{ 'INSIGHTER.MEETINGS.NO_MEETINGS_DESC' | translate }}</p>
+      </div>
     </div>
-  </div>
 
-  <div class="col-xl-4 col-lg-6 col-md-6" *ngFor="let meeting of getFilteredMeetings(); let i = index">
-    <div class="card meeting-card h-100" 
-       [class.closest-meeting]="isClosestMeeting(meeting, i)">
-    <div class="card-body d-flex flex-column">
-      <!-- Meeting Header -->
-      <div class="d-flex align-items-center mb-4">
-      <div class="meeting-date-badge me-3">
-        <div class="month">{{ formatMonth(meeting.date) }}</div>
-        <div class="day">{{ formatDay(meeting.date) }}</div>
-      </div>
-      <div class="flex-grow-1">
-        <h5 class="card-title mb-1" 
-            [pTooltip]="meeting.title" 
-            tooltipPosition="top"
-            [style.cursor]="meeting.title && meeting.title.length > 50 ? 'help' : 'default'">
-          {{ meeting.title | truncateText:30 }}
-        </h5>
-        <div class="meeting-time text-muted">
-          <i class="ki-duotone ki-time me-1">
-            <span class="path1"></span>
-            <span class="path2"></span>
-          </i>
-          {{ formatTime(meeting.start_time) }} - {{ formatTime(meeting.end_time) }}
-        </div>
-      </div>
-      </div>
-
-      <!-- Meeting Status and Rate -->
-      <div class="mb-3 d-flex align-items-center">
-      <span class="badge" [ngClass]="getStatusClass(meeting.status)">
-        {{ ('INSIGHTER.MEETINGS.STATUS.' + meeting.status.toUpperCase()) | translate }}
-      </span>
-      <span *ngIf="meeting.rate !== '0'" class="ms-2 badge badge-light-info">
-        {{ 'INSIGHTER.MEETINGS.RATE' | translate  }}: {{ meeting.rate | currency }}
-      </span>
-      </div>
-
-      <!-- Meeting Description -->
-      <div class="meeting-description mb-4 flex-grow-1">
-      <p class="text-gray-600 mb-0" 
-         [pTooltip]="meeting.description ? meeting.description : ('INSIGHTER.MEETINGS.NO_DESCRIPTION' | translate)" 
-         tooltipPosition="top"
-         [style.cursor]="meeting.description && meeting.description.length > 100 ? 'help' : 'default'">
-        {{ ( (meeting.description == "No description provided" || meeting.description == "No description available") ? ('INSIGHTER.MEETINGS.NO_DESCRIPTION' | translate) : meeting.description || ('INSIGHTER.MEETINGS.NO_DESCRIPTION' | translate) ) | truncateText:100:true }}
-      </p>
-      </div>
-
-      <!-- Insighter Info -->
-      <div class="meeting-participant">
-      <div class="d-flex align-items-center">
-        <div class="symbol symbol-40px me-3" 
-             style="cursor: pointer;" 
-             (click)="goToInsighterProfile(meeting.insighter.uuid)">
-          <img *ngIf="meeting.insighter.profile_photo_url" 
-               [src]="meeting.insighter.profile_photo_url" 
-               [alt]="meeting.insighter.name" 
-               class="rounded-circle"
-               style="object-position: top;">
-          <div *ngIf="!meeting.insighter.profile_photo_url" 
-               class="symbol-label bg-primary text-white">
-            {{ getInitials(meeting.insighter.name) }}
+    <div class="col-xl-4 col-lg-6 col-md-6" *ngFor="let meeting of getFilteredMeetings(); let i = index">
+      <div class="card meeting-card h-100" 
+           [class.closest-meeting]="isClosestMeeting(meeting, i)">
+        <div class="card-body d-flex flex-column">
+          <!-- Meeting Header -->
+          <div class="d-flex align-items-center mb-4">
+            <div class="meeting-date-badge me-3">
+              <div class="month">{{ formatMonth(meeting.date) }}</div>
+              <div class="day">{{ formatDay(meeting.date) }}</div>
+            </div>
+            <div class="flex-grow-1">
+              <h5 class="card-title mb-1" 
+                  [pTooltip]="meeting.title" 
+                  tooltipPosition="top"
+                  [style.cursor]="meeting.title && meeting.title.length > 50 ? 'help' : 'default'">
+                {{ meeting.title | truncateText:30 }}
+              </h5>
+              <div class="meeting-time text-muted">
+                <i class="ki-duotone ki-time me-1">
+                  <span class="path1"></span>
+                  <span class="path2"></span>
+                </i>
+                {{ formatTime(meeting.start_time) }} - {{ formatTime(meeting.end_time) }}
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="flex-grow-1">
-          <div class="fw-bold text-gray-800" 
-               style="cursor: pointer;"
-               (click)="goToInsighterProfile(meeting.insighter.uuid)"
-               [pTooltip]="meeting.insighter.name" 
+
+          <!-- Meeting Status and Rate -->
+          <div class="mb-3 d-flex align-items-center">
+            <span class="badge" [ngClass]="getStatusClass(meeting.status)">
+              {{ ('INSIGHTER.MEETINGS.STATUS.' + meeting.status.toUpperCase()) | translate }}
+            </span>
+            <span *ngIf="meeting.rate !== '0'" class="ms-2 badge badge-light-info">
+              {{ 'INSIGHTER.MEETINGS.RATE' | translate  }}: {{ meeting.rate | currency }}
+            </span>
+          </div>
+
+          <!-- Meeting Description -->
+          <div class="meeting-description mb-4 flex-grow-1">
+            <p class="text-gray-600 mb-0" 
+               [pTooltip]="meeting.description ? meeting.description : ('INSIGHTER.MEETINGS.NO_DESCRIPTION' | translate)" 
                tooltipPosition="top"
-               [style.cursor]="meeting.insighter.name && meeting.insighter.name.length > 25 ? 'help' : 'pointer'">
-            {{ meeting.insighter.name | truncateText:25:true }}
+               [style.cursor]="meeting.description && meeting.description.length > 100 ? 'help' : 'default'">
+              {{ ( (meeting.description == "No description provided" || meeting.description == "No description available") ? ('INSIGHTER.MEETINGS.NO_DESCRIPTION' | translate) : meeting.description || ('INSIGHTER.MEETINGS.NO_DESCRIPTION' | translate) ) | truncateText:100:true }}
+            </p>
           </div>
-          <div class="text-muted fs-7">
-            {{ 'INSIGHTER.MEETINGS.INSIGHTER' | translate }}
+
+          <!-- Insighter Info -->
+          <div class="meeting-participant">
+            <div class="d-flex align-items-center">
+              <div class="symbol symbol-40px me-3" 
+                   style="cursor: pointer;" 
+                   (click)="goToInsighterProfile(meeting.insighter.uuid)">
+                <img *ngIf="meeting.insighter.profile_photo_url" 
+                     [src]="meeting.insighter.profile_photo_url" 
+                     [alt]="meeting.insighter.name" 
+                     class="rounded-circle"
+                     style="object-position: top;">
+                <div *ngIf="!meeting.insighter.profile_photo_url" 
+                     class="symbol-label bg-primary text-white">
+                  {{ getInitials(meeting.insighter.name) }}
+                </div>
+              </div>
+              <div class="flex-grow-1">
+                <div class="fw-bold text-gray-800" 
+                     style="cursor: pointer;"
+                     (click)="goToInsighterProfile(meeting.insighter.uuid)"
+                     [pTooltip]="meeting.insighter.name" 
+                     tooltipPosition="top"
+                     [style.cursor]="meeting.insighter.name && meeting.insighter.name.length > 25 ? 'help' : 'pointer'">
+                  {{ meeting.insighter.name | truncateText:25:true }}
+                </div>
+                <div class="text-muted fs-7">
+                  {{ 'INSIGHTER.MEETINGS.INSIGHTER' | translate }}
+                </div>
+              </div>
+              <!-- Join Button -->
+              <div *ngIf="canJoinMeeting(meeting)" class="ms-2">
+                <button type="button" 
+                        class="btn btn-sm btn-secondary"
+                        (click)="joinMeeting(meeting.meeting_url)"
+                        [pTooltip]="'INSIGHTER.MEETINGS.JOIN_MEETING' | translate"
+                        tooltipPosition="top">
+                  <i class="ki-duotone ki-entrance-right me-1">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                  </i>
+                  {{ 'INSIGHTER.MEETINGS.JOIN' | translate }}
+                </button>
+              </div>
+              <!-- Reschedule Button -->
+              <div *ngIf="canRescheduleMeeting(meeting)" class="ms-2">
+                <button type="button" 
+                        class="btn btn-sm btn-light-warning"
+                        (click)="openRescheduleModal(meeting)"
+                        [pTooltip]="'INSIGHTER.MEETINGS.RESCHEDULE_MEETING' | translate"
+                        tooltipPosition="top">
+                  <i class="ki-duotone ki-calendar-edit me-1">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                  </i>
+                  {{ 'INSIGHTER.MEETINGS.RESCHEDULE' | translate }}
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-        <!-- Join Button -->
-        <div *ngIf="canJoinMeeting(meeting)" class="ms-2">
-          <button type="button" 
-                  class="btn btn-sm btn-secondary"
-                  (click)="joinMeeting(meeting.meeting_url)"
-                  [pTooltip]="'INSIGHTER.MEETINGS.JOIN_MEETING' | translate"
-                  tooltipPosition="top">
-            <i class="ki-duotone ki-entrance-right me-1">
-              <span class="path1"></span>
-              <span class="path2"></span>
-            </i>
-            {{ 'INSIGHTER.MEETINGS.JOIN' | translate }}
-          </button>
-        </div>
-        <!-- Reschedule Button -->
-        <div *ngIf="canRescheduleMeeting(meeting)" class="ms-2">
-          <button type="button" 
-                  class="btn btn-sm btn-light-warning"
-                  (click)="openRescheduleModal(meeting)"
-                  [pTooltip]="'INSIGHTER.MEETINGS.RESCHEDULE_MEETING' | translate"
-                  tooltipPosition="top">
-            <i class="ki-duotone ki-calendar-edit me-1">
-              <span class="path1"></span>
-              <span class="path2"></span>
-            </i>
-            {{ 'INSIGHTER.MEETINGS.RESCHEDULE' | translate }}
-          </button>
         </div>
       </div>
-      </div>
     </div>
-    </div>
-  </div>
   </div>
 
   <!-- Pagination -->
   <div class="row mt-5" *ngIf="!loading && totalPages > 1">
-  <div class="col-12">
-    <div class="d-flex justify-content-between align-items-center">
-    <div class="pagination-info text-muted">
-      {{ 'COMMON.SHOWING' | translate }} 
-      {{ (currentPage - 1) * perPage + 1 }} 
-      {{ 'COMMON.TO' | translate }} 
-      {{ Math.min(currentPage * perPage, totalItems) }} 
-      {{ 'COMMON.OF' | translate }} 
-      {{ totalItems }} 
-      {{ 'COMMON.RESULTS' | translate }}
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="pagination-info text-muted">
+          {{ 'COMMON.SHOWING' | translate }} 
+          {{ (currentPage - 1) * perPage + 1 }} 
+          {{ 'COMMON.TO' | translate }} 
+          {{ Math.min(currentPage * perPage, totalItems) }} 
+          {{ 'COMMON.OF' | translate }} 
+          {{ totalItems }} 
+          {{ 'COMMON.RESULTS' | translate }}
+        </div>
+        
+        <nav aria-label="Pagination">
+          <ul class="pagination pagination-outline">
+            <li class="page-item" [class.disabled]="currentPage === 1">
+              <a class="page-link" (click)="onPageChange(currentPage - 1)" *ngIf="currentPage > 1">
+                <i class="ki-duotone ki-black-left">
+                  <span class="path1"></span>
+                  <span class="path2"></span>
+                </i>
+              </a>
+            </li>
+            
+            <li class="page-item" 
+                *ngFor="let page of [].constructor(totalPages); let i = index"
+                [class.active]="currentPage === i + 1">
+              <a class="page-link" (click)="onPageChange(i + 1)">{{ i + 1 }}</a>
+            </li>
+            
+            <li class="page-item" [class.disabled]="currentPage === totalPages">
+              <a class="page-link" (click)="onPageChange(currentPage + 1)" *ngIf="currentPage < totalPages">
+                <i class="ki-duotone ki-black-right">
+                  <span class="path1"></span>
+                  <span class="path2"></span>
+                </i>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
     </div>
-    
-    <nav aria-label="Pagination">
-      <ul class="pagination pagination-outline">
-      <li class="page-item" [class.disabled]="currentPage === 1">
-        <a class="page-link" (click)="onPageChange(currentPage - 1)" *ngIf="currentPage > 1">
-          <i class="ki-duotone ki-black-left">
-            <span class="path1"></span>
-            <span class="path2"></span>
-          </i>
-        </a>
-      </li>
-      
-      <li class="page-item" 
-          *ngFor="let page of [].constructor(totalPages); let i = index"
-          [class.active]="currentPage === i + 1">
-        <a class="page-link" (click)="onPageChange(i + 1)">{{ i + 1 }}</a>
-      </li>
-      
-      <li class="page-item" [class.disabled]="currentPage === totalPages">
-        <a class="page-link" (click)="onPageChange(currentPage + 1)" *ngIf="currentPage < totalPages">
-          <i class="ki-duotone ki-black-right">
-            <span class="path1"></span>
-            <span class="path2"></span>
-          </i>
-        </a>
-      </li>
-      </ul>
-    </nav>
   </div>
 </div>
 
@@ -232,175 +235,175 @@
   
   <!-- Header -->
   <ng-template pTemplate="header">
-  <div class="d-flex align-items-center">
-    <i class="ki-duotone ki-calendar-edit me-2 fs-2">
-    <span class="path1"></span>
-    <span class="path2"></span>
-    </i>
-    <span class="fw-bold fs-4">{{ 'INSIGHTER.MEETINGS.RESCHEDULE_MEETING' | translate }}</span>
-  </div>
+    <div class="d-flex align-items-center">
+      <i class="ki-duotone ki-calendar-edit me-2 fs-2">
+        <span class="path1"></span>
+        <span class="path2"></span>
+      </i>
+      <span class="fw-bold fs-4">{{ 'INSIGHTER.MEETINGS.RESCHEDULE_MEETING' | translate }}</span>
+    </div>
   </ng-template>
 
   <!-- Content -->
   <div class="p-4">
-  <!-- Meeting Info -->
-  <div *ngIf="selectedMeetingForReschedule" class="mb-4">
-    <div class="alert alert-info d-flex align-items-center">
-    <i class="ki-duotone ki-information-5 fs-2x me-3">
-      <span class="path1"></span>
-      <span class="path2"></span>
-      <span class="path3"></span>
-    </i>
-    <div>
-      <strong>{{ selectedMeetingForReschedule.title }}</strong><br>
-      <span class="text-muted">
-      {{ 'INSIGHTER.MEETINGS.CURRENT_TIME' | translate }}: 
-      {{ formatDateForDisplay(selectedMeetingForReschedule.date) }}, 
-      {{ formatTimeForDisplay(selectedMeetingForReschedule.start_time) }} - 
-      {{ formatTimeForDisplay(selectedMeetingForReschedule.end_time) }}
-      </span>
-    </div>
-    </div>
-  </div>
-
-  <!-- Loading State -->
-  <div *ngIf="rescheduleLoading" class="text-center py-5">
-    <div class="spinner-border text-primary" role="status">
-    <span class="visually-hidden">Loading...</span>
-    </div>
-    <p class="mt-3 text-muted">{{ 'INSIGHTER.MEETINGS.LOADING_AVAILABLE_TIMES' | translate }}</p>
-  </div>
-
-  <!-- Calendly-Style Calendar and Time Selection -->
-  <div *ngIf="!rescheduleLoading && availableDays.length > 0">
-    <div class="calendly-container">
-    <div class="row g-4">
-      <!-- Left Column: Custom Calendar -->
-      <div class="col-lg-6">
-      <div class="calendar-section">
-        <h3 class="calendar-title">Select a Date</h3>
-        
-        <!-- Month Navigation -->
-        <div class="month-navigation">
-          <button type="button" class="nav-btn" (click)="previousMonth()">
-            <i class="ki-duotone ki-left fs-2">
-              <span class="path1"></span>
-              <span class="path2"></span>
-            </i>
-          </button>
-          <h4 class="month-title">{{ currentMonthName }} {{ currentYear }}</h4>
-          <button type="button" class="nav-btn" (click)="nextMonth()">
-            <i class="ki-duotone ki-right fs-2">
-              <span class="path1"></span>
-              <span class="path2"></span>
-            </i>
-          </button>
-        </div>
-
-        <!-- Weekday Headers -->
-        <div class="weekday-headers">
-          <div class="weekday-header">Sun</div>
-          <div class="weekday-header">Mon</div>
-          <div class="weekday-header">Tue</div>
-          <div class="weekday-header">Wed</div>
-          <div class="weekday-header">Thu</div>
-          <div class="weekday-header">Fri</div>
-          <div class="weekday-header">Sat</div>
-        </div>
-
-        <!-- Calendar Grid -->
-        <div class="calendar-grid">
-          <!-- Empty cells for days before the first day of the month -->
-          <div *ngFor="let empty of getEmptyDays()" class="calendar-day empty"></div>
-          
-          <!-- Days of the month -->
-          <button *ngFor="let day of getDaysInCurrentMonth()" 
-                  type="button"
-                  class="calendar-day"
-                  [class.available]="isDateActive(getDateString(day))"
-                  [class.selected]="selectedDate === getDateString(day)"
-                  [class.disabled]="!isDateActive(getDateString(day))"
-                  [disabled]="!isDateActive(getDateString(day))"
-                  (click)="selectDate(getDateString(day))">
-            {{ day }}
-          </button>
+    <!-- Meeting Info -->
+    <div *ngIf="selectedMeetingForReschedule" class="mb-4">
+      <div class="alert alert-info d-flex align-items-center">
+        <i class="ki-duotone ki-information-5 fs-2x me-3">
+          <span class="path1"></span>
+          <span class="path2"></span>
+          <span class="path3"></span>
+        </i>
+        <div>
+          <strong>{{ selectedMeetingForReschedule.title }}</strong><br>
+          <span class="text-muted">
+            {{ 'INSIGHTER.MEETINGS.CURRENT_TIME' | translate }}: 
+            {{ formatDateForDisplay(selectedMeetingForReschedule.date) }}, 
+            {{ formatTimeForDisplay(selectedMeetingForReschedule.start_time) }} - 
+            {{ formatTimeForDisplay(selectedMeetingForReschedule.end_time) }}
+          </span>
         </div>
       </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="rescheduleLoading" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
       </div>
+      <p class="mt-3 text-muted">{{ 'INSIGHTER.MEETINGS.LOADING_AVAILABLE_TIMES' | translate }}</p>
+    </div>
 
-      <!-- Right Column: Time Selection -->
-      <div class="col-lg-6">
-      <div class="time-selection-section">
-        <div *ngIf="selectedDate" class="selected-date-header">
-          <h3 class="selected-date-title">{{ getFormattedSelectedDate() }}</h3>
-        </div>
+    <!-- Calendly-Style Calendar and Time Selection -->
+    <div *ngIf="!rescheduleLoading && availableDays.length > 0">
+      <div class="calendly-container">
+        <div class="row g-4">
+          <!-- Left Column: Custom Calendar -->
+          <div class="col-lg-6">
+            <div class="calendar-section">
+              <h3 class="calendar-title">Select a Date</h3>
+              
+              <!-- Month Navigation -->
+              <div class="month-navigation">
+                <button type="button" class="nav-btn" (click)="previousMonth()">
+                  <i class="ki-duotone ki-left fs-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                  </i>
+                </button>
+                <h4 class="month-title">{{ currentMonthName }} {{ currentYear }}</h4>
+                <button type="button" class="nav-btn" (click)="nextMonth()">
+                  <i class="ki-duotone ki-right fs-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                  </i>
+                </button>
+              </div>
 
-        <div class="time-slots" *ngIf="selectedDate">
-          <div *ngFor="let timeSlot of getAvailableTimesForDate(selectedDate)" 
-               class="time-slot-item"
-               [class.selected]="selectedTimeSlot === timeSlot"
-               (click)="selectTimeSlot(timeSlot)">
-            {{ formatTimeForDisplay(timeSlot.start_time) }} - {{ formatTimeForDisplay(timeSlot.end_time) }}
+              <!-- Weekday Headers -->
+              <div class="weekday-headers">
+                <div class="weekday-header">Sun</div>
+                <div class="weekday-header">Mon</div>
+                <div class="weekday-header">Tue</div>
+                <div class="weekday-header">Wed</div>
+                <div class="weekday-header">Thu</div>
+                <div class="weekday-header">Fri</div>
+                <div class="weekday-header">Sat</div>
+              </div>
+
+              <!-- Calendar Grid -->
+              <div class="calendar-grid">
+                <!-- Empty cells for days before the first day of the month -->
+                <div *ngFor="let empty of getEmptyDays()" class="calendar-day empty"></div>
+                
+                <!-- Days of the month -->
+                <button *ngFor="let day of getDaysInCurrentMonth()" 
+                        type="button"
+                        class="calendar-day"
+                        [class.available]="isDateActive(getDateString(day))"
+                        [class.selected]="selectedDate === getDateString(day)"
+                        [class.disabled]="!isDateActive(getDateString(day))"
+                        [disabled]="!isDateActive(getDateString(day))"
+                        (click)="selectDate(getDateString(day))">
+                  {{ day }}
+                </button>
+              </div>
+            </div>
           </div>
-          
-          <div *ngIf="getAvailableTimesForDate(selectedDate).length === 0" class="no-times">
-            No times available for this date
+
+          <!-- Right Column: Time Selection -->
+          <div class="col-lg-6">
+            <div class="time-selection-section">
+              <div *ngIf="selectedDate" class="selected-date-header">
+                <h3 class="selected-date-title">{{ getFormattedSelectedDate() }}</h3>
+              </div>
+
+              <div class="time-slots" *ngIf="selectedDate">
+                <div *ngFor="let timeSlot of getAvailableTimesForDate(selectedDate)" 
+                     class="time-slot-item"
+                     [class.selected]="selectedTimeSlot === timeSlot"
+                     (click)="selectTimeSlot(timeSlot)">
+                  {{ formatTimeForDisplay(timeSlot.start_time) }} - {{ formatTimeForDisplay(timeSlot.end_time) }}
+                </div>
+                
+                <div *ngIf="getAvailableTimesForDate(selectedDate).length === 0" class="no-times">
+                  No times available for this date
+                </div>
+              </div>
+
+              <div *ngIf="!selectedDate" class="select-date-prompt">
+                <i class="ki-duotone ki-calendar-8 fs-3x text-gray-300 mb-3">
+                  <span class="path1"></span>
+                  <span class="path2"></span>
+                  <span class="path3"></span>
+                  <span class="path4"></span>
+                  <span class="path5"></span>
+                  <span class="path6"></span>
+                </i>
+                <p>Please select a date to view available times</p>
+              </div>
+
+              <!-- Warning for same time selection -->
+              <div *ngIf="selectedTimeSlot && !isDifferentTime()" class="same-time-warning">
+                <i class="ki-duotone ki-warning me-2">
+                  <span class="path1"></span>
+                  <span class="path2"></span>
+                </i>
+                {{ 'INSIGHTER.MEETINGS.SAME_TIME_WARNING' | translate }}
+              </div>
+            </div>
           </div>
         </div>
-
-        <div *ngIf="!selectedDate" class="select-date-prompt">
-          <i class="ki-duotone ki-calendar-8 fs-3x text-gray-300 mb-3">
-            <span class="path1"></span>
-            <span class="path2"></span>
-            <span class="path3"></span>
-            <span class="path4"></span>
-            <span class="path5"></span>
-            <span class="path6"></span>
-          </i>
-          <p>Please select a date to view available times</p>
-        </div>
-
-        <!-- Warning for same time selection -->
-        <div *ngIf="selectedTimeSlot && !isDifferentTime()" class="same-time-warning">
-          <i class="ki-duotone ki-warning me-2">
-            <span class="path1"></span>
-            <span class="path2"></span>
-          </i>
-          {{ 'INSIGHTER.MEETINGS.SAME_TIME_WARNING' | translate }}
-        </div>
-      </div>
       </div>
     </div>
-    </div>
-  </div>
 
-  <!-- No Available Times -->
-  <div *ngIf="!rescheduleLoading && availableDays.length === 0" class="text-center py-5">
-    <i class="ki-duotone ki-calendar-remove fs-3x text-gray-400 mb-3">
-    <span class="path1"></span>
-    <span class="path2"></span>
-    <span class="path3"></span>
-    </i>
-    <h6 class="text-gray-700 mb-2">{{ 'INSIGHTER.MEETINGS.NO_AVAILABLE_TIMES' | translate }}</h6>
-    <p class="text-gray-500">{{ 'INSIGHTER.MEETINGS.NO_AVAILABLE_TIMES_DESC' | translate }}</p>
-  </div>
+    <!-- No Available Times -->
+    <div *ngIf="!rescheduleLoading && availableDays.length === 0" class="text-center py-5">
+      <i class="ki-duotone ki-calendar-remove fs-3x text-gray-400 mb-3">
+        <span class="path1"></span>
+        <span class="path2"></span>
+        <span class="path3"></span>
+      </i>
+      <h6 class="text-gray-700 mb-2">{{ 'INSIGHTER.MEETINGS.NO_AVAILABLE_TIMES' | translate }}</h6>
+      <p class="text-gray-500">{{ 'INSIGHTER.MEETINGS.NO_AVAILABLE_TIMES_DESC' | translate }}</p>
+    </div>
   </div>
 
   <!-- Footer -->
   <ng-template pTemplate="footer">
-  <div class="d-flex justify-content-end gap-3 p-3">
-    <button type="button" 
-        class="btn btn-light" 
-        (click)="closeRescheduleModal()">
-    {{ 'COMMON.CANCEL' | translate }}
-    </button>
-    <button type="button" 
-        class="btn btn-primary"
-        [disabled]="!selectedTimeSlot || !isDifferentTime() || rescheduleLoading"
-        (click)="confirmReschedule()">
-    <span *ngIf="rescheduleLoading" class="spinner-border spinner-border-sm me-2" role="status"></span>
-    {{ 'INSIGHTER.MEETINGS.RESCHEDULE' | translate }}
-    </button>
-  </div>
+    <div class="d-flex justify-content-end gap-3 p-3">
+      <button type="button" 
+              class="btn btn-light" 
+              (click)="closeRescheduleModal()">
+        {{ 'COMMON.CANCEL' | translate }}
+      </button>
+      <button type="button" 
+              class="btn btn-primary"
+              [disabled]="!selectedTimeSlot || !isDifferentTime() || rescheduleLoading"
+              (click)="confirmReschedule()">
+        <span *ngIf="rescheduleLoading" class="spinner-border spinner-border-sm me-2" role="status"></span>
+        {{ 'INSIGHTER.MEETINGS.RESCHEDULE' | translate }}
+      </button>
+    </div>
   </ng-template>
 </p-dialog> 

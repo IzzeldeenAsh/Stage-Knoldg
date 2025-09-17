@@ -98,6 +98,21 @@ export class TransactionsComponent extends BaseComponent implements OnInit {
     return '/assets/media/svg/new-files/txt.svg';
   }
 
+  shouldShowInsighterInfo(type: string): boolean {
+    return type === 'withdraw_payout_insighter_knowledge' || type === 'withdraw_payout_insighter_meeting';
+  }
+
+  getTransactionBadgeClass(type: string): string {
+    switch (type.toLowerCase()) {
+      case 'deposit':
+        return 'badge-light-success';
+      case 'withdraw':
+        return 'badge-light-danger';
+      default:
+        return 'badge-light-info';
+    }
+  }
+
   private handleServerErrors(error: any) {
     if (error.error && error.error.errors) {
       const serverErrors = error.error.errors;

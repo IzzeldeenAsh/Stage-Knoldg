@@ -1,5 +1,5 @@
-<div class="card">
-  <div class="card-header">
+<div class="pt-5 py-10">
+  <div class="card-header p-5">
     <h2 class="page-title">Orders Management</h2>
   </div>
   
@@ -37,17 +37,17 @@
           </td>
           <td>{{ formatDate(order.date) }}</td>
           <td>
-            <p-tag [value]="order.service" severity="info"></p-tag>
+            <span class="badge badge-light-info">{{ order.service | serviceName }}</span>
           </td>
           <td>{{ formatCurrency(order.amount, order.currency) }}</td>
           <td>
-            <p-tag [value]="order.status" [severity]="getStatusSeverity(order.status)"></p-tag>
+            <span class="badge" [ngClass]="getStatusBadgeClass(order.status)">{{ order.status | titlecase }}</span>
           </td>
           <td>
-            <p-tag [value]="getPaymentMethodLabel(order.payment.method)" severity="secondary"></p-tag>
+            <span class="badge badge-light-secondary">{{ getPaymentMethodLabel(order.payment.method) }}</span>
           </td>
           <td>
-            <p-tag [value]="order.fulfillment_staus" [severity]="getFulfillmentSeverity(order.fulfillment_staus)"></p-tag>
+            <span class="badge" [ngClass]="getFulfillmentBadgeClass(order.fulfillment_staus)">{{ order.fulfillment_staus | titlecase }}</span>
           </td>
           <td>{{ order.invoice_no }}</td>
           <td>
@@ -126,11 +126,11 @@
         <div class="status-body">
           <div class="status-row">
             <span class="status-label">Method:</span>
-            <p-tag [value]="getPaymentMethodLabel(selectedOrder.payment.method)" severity="secondary"></p-tag>
+            <span class="badge badge-light-secondary">{{ getPaymentMethodLabel(selectedOrder.payment.method) }}</span>
           </div>
           <div class="status-row">
             <span class="status-label">Status:</span>
-            <p-tag [value]="selectedOrder.payment.status" [severity]="getStatusSeverity(selectedOrder.payment.status)"></p-tag>
+            <span class="badge" [ngClass]="getStatusBadgeClass(selectedOrder.payment.status)">{{ selectedOrder.payment.status | titlecase }}</span>
           </div>
           <div class="status-row" *ngIf="selectedOrder.payment.provider">
             <span class="status-label">Provider:</span>
@@ -151,11 +151,11 @@
         <div class="status-body">
           <div class="status-row">
             <span class="status-label">Status:</span>
-            <p-tag [value]="selectedOrder.fulfillment_staus" [severity]="getFulfillmentSeverity(selectedOrder.fulfillment_staus)"></p-tag>
+            <span class="badge" [ngClass]="getFulfillmentBadgeClass(selectedOrder.fulfillment_staus)">{{ selectedOrder.fulfillment_staus | titlecase }}</span>
           </div>
           <div class="status-row">
             <span class="status-label">Service:</span>
-            <p-tag [value]="selectedOrder.service" severity="info"></p-tag>
+            <span class="badge badge-light-info">{{ selectedOrder.service | serviceName }}</span>
           </div>
         </div>
       </div>
@@ -236,10 +236,8 @@
             </div>
             <div class="timeline-body">
               <div class="timeline-details">
-                <p-tag [value]="attempt.step" severity="info" styleClass="step-tag"></p-tag>
-                <p-tag [value]="attempt.status" 
-                       [severity]="attempt.status === 'succeeded' ? 'success' : 'danger'"
-                       styleClass="status-tag"></p-tag>
+                <span class="badge badge-light-info">{{ attempt.step | titlecase }}</span>
+                <span class="badge" [ngClass]="attempt.status === 'succeeded' ? 'badge-light-success' : 'badge-light-danger'">{{ attempt.status | titlecase }}</span>
                 <span class="retry-info" *ngIf="attempt.retry_count > 0">
                   Retries: {{ attempt.retry_count }}
                 </span>

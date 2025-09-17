@@ -11,6 +11,7 @@ import { FieldsetModule } from 'primeng/fieldset';
 import { ChipModule } from 'primeng/chip';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { ServiceNamePipe } from '../../../shared/pipes/service-name.pipe';
 
 const routes: Routes = [
   {
@@ -33,7 +34,8 @@ const routes: Routes = [
     TooltipModule,
     FieldsetModule,
     ChipModule,
-    ToastModule
+    ToastModule,
+    ServiceNamePipe
   ],
   providers: [MessageService]
 })

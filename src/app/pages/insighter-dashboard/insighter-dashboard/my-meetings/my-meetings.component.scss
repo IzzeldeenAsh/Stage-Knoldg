@@ -16,12 +16,12 @@
       margin-right: 8px;
 
       &:hover {
-        color: #0978B9 !important;
+        color: #009ef7 !important;
         background-color: #f5f8fa !important;
       }
 
       &.active {
-        color: #0978B9 !important;
+        color: #009ef7 !important;
         background-color: #f1faff !important;
         font-weight: 600 !important;
       }
@@ -120,7 +120,7 @@
         height: 40px;
         
         &.bg-primary {
-          background-color: #0978B9 !important;
+          background-color: #009ef7 !important;
         }
       }
 
@@ -173,7 +173,7 @@
     }
 
     &.badge-primary {
-      background-color: #0978B9 !important;
+      background-color: #009ef7 !important;
       color: #ffffff !important;
     }
   }
@@ -233,13 +233,13 @@
     background-color: transparent !important;
 
     &:hover {
-      color: #0978B9 !important;
+      color: #009ef7 !important;
       background-color: transparent !important;
     }
 
     &.active {
-      color: #0978B9 !important;
-      border-bottom-color: #0978B9 !important;
+      color: #009ef7 !important;
+      border-bottom-color: #009ef7 !important;
       background-color: transparent !important;
       font-weight: 600 !important;
     }
@@ -262,7 +262,7 @@
 .spinner-border {
   width: 3rem;
   height: 3rem;
-  color: #0978B9;
+  color: #009ef7;
 }
 
 // Empty state styling
@@ -299,8 +299,8 @@
       margin: 0 2px;
 
       &:hover {
-        background-color: #0978B9;
-        border-color: #0978B9;
+        background-color: #009ef7;
+        border-color: #009ef7;
         color: white;
       }
 
@@ -311,8 +311,8 @@
     }
 
     &.active .page-link {
-      background-color: #0978B9 !important;
-      border-color: #0978B9 !important;
+      background-color: #009ef7 !important;
+      border-color: #009ef7 !important;
       color: #ffffff !important;
     }
 
@@ -451,7 +451,7 @@
       min-height: 100px;
 
       &:focus {
-        border-color: #0978B9 !important;
+        border-color: #009ef7 !important;
         box-shadow: 0 0 0 0.2rem rgba(0, 158, 247, 0.25) !important;
         outline: none;
       }
@@ -505,7 +505,7 @@
 
       &:hover,
       &.active {
-        color: #0978B9 !important;
+        color: #009ef7 !important;
       }
     }
   }
@@ -575,7 +575,7 @@
         }
 
         &:focus {
-          border-color: #0978B9 !important;
+          border-color: #009ef7 !important;
         }
       }
     }
@@ -592,126 +592,5 @@
         margin-right: 4px;
       }
     }
-  }
-}
-
-// Reschedule Modal Styles
-.calendly-container {
-  .available-dates-list {
-    max-height: 400px;
-    overflow-y: auto;
-    border: 1px solid #eff2f5;
-    border-radius: 8px;
-    padding: 12px;
-
-    .date-option {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 16px;
-      border: 1px solid #eff2f5;
-      border-radius: 8px;
-      margin-bottom: 8px;
-      cursor: pointer;
-      transition: all 0.2s ease-in-out;
-      background-color: #ffffff;
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-
-      &:hover {
-        background-color: #f8f9fa;
-        border-color: #0978B9;
-      }
-
-      &.selected {
-        background-color: #f1faff;
-        border-color: #0978B9;
-        color: #0978B9;
-
-        .day-name, .date-value {
-          color: #0978B9 !important;
-        }
-      }
-
-      .date-display {
-        .day-name {
-          font-size: 12px;
-          font-weight: 600;
-          color: #7e8299;
-          text-transform: uppercase;
-          margin-bottom: 2px;
-        }
-
-        .date-value {
-          font-size: 14px;
-          font-weight: 500;
-          color: #181c32;
-        }
-      }
-
-      .available-times-count {
-        font-size: 12px;
-        color: #a1a5b7;
-        font-weight: 500;
-      }
-    }
-  }
-
-  .time-slots-section {
-    .time-slots-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 8px;
-      max-height: 400px;
-      overflow-y: auto;
-
-      .time-slot-btn {
-        padding: 12px 16px;
-        font-size: 14px;
-        font-weight: 500;
-        border-radius: 8px;
-        transition: all 0.2s ease-in-out;
-        white-space: nowrap;
-
-        &.btn-outline-primary {
-          border-color: #eff2f5;
-          color: #7e8299;
-          background-color: #ffffff;
-
-          &:hover {
-            background-color: #f8f9fa;
-            border-color: #0978B9;
-            color: #0978B9;
-          }
-        }
-
-        &.btn-primary {
-          background-color: #0978B9;
-          border-color: #0978B9;
-          color: #ffffff;
-        }
-      }
-    }
-  }
-}
-
-// Reschedule button styles
-.btn-light-warning {
-  background-color: #fff5e6 !important;
-  border-color: #ffc700 !important;
-  color: #f1bc00 !important;
-
-  &:hover {
-    background-color: #ffc700 !important;
-    border-color: #ffc700 !important;
-    color: #1e2129 !important;
-    transform: translateY(-1px);
-  }
-
-  .ki-duotone {
-    width: 16px;
-    height: 16px;
   }
 } 

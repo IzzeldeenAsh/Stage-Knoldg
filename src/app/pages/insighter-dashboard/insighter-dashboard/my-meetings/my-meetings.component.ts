@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, inject, DestroyRef, signal, computed } from '@angular/core';
 import { Subject, take, takeUntil } from 'rxjs';
-import { MeetingsService, Meeting, MeetingResponse, AvailableHoursResponse, AvailableDay, AvailableTime, RescheduleRequest } from '../../../../_fake/services/meetings/meetings.service';
+import { MeetingsService, Meeting, MeetingResponse } from '../../../../_fake/services/meetings/meetings.service';
 import { Router } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -58,15 +58,6 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
   actionLoading = signal<boolean>(false);
   showApproveDialog = signal<boolean>(false);
   showPostponeDialog = signal<boolean>(false);
-
-  // Reschedule modal properties
-  showRescheduleDialog = signal<boolean>(false);
-  selectedMeetingForReschedule = signal<Meeting | null>(null);
-  rescheduleLoading = signal<boolean>(false);
-  availableDays = signal<AvailableDay[]>([]);
-  selectedDate = signal<string>('');
-  selectedCalendarDate = signal<Date | null>(null);
-  selectedTimeSlot = signal<AvailableTime | null>(null);
   
   // Math reference for template
   Math = Math;
@@ -305,135 +296,6 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
     } else {
       this.showError('','An unexpected error occurred.');
     }
-  }
-
-  // Reschedule functionality
-  canRescheduleMeeting(meeting: Meeting): boolean {
-    return meeting.status === 'postponed';
-  }
-
-  openRescheduleModal(meeting: Meeting): void {
-    this.selectedMeetingForReschedule.set(meeting);
-    this.showRescheduleDialog.set(true);
-    this.loadAvailableHours();
-  }
-
-  closeRescheduleDialog(): void {
-    this.showRescheduleDialog.set(false);
-    this.selectedMeetingForReschedule.set(null);
-    this.availableDays.set([]);
-    this.selectedDate.set('');
-    this.selectedCalendarDate.set(null);
-    this.selectedTimeSlot.set(null);
-  }
-
-  loadAvailableHours(): void {
-    this.rescheduleLoading.set(true);
-    this.meetingsService.getAvailableHours()
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (response: AvailableHoursResponse) => {
-          this.availableDays.set(response.data);
-          this.rescheduleLoading.set(false);
-        },
-        error: (error) => {
-          console.error('Error loading available hours:', error);
-          this.rescheduleLoading.set(false);
-          this.handleServerErrors(error);
-        }
-      });
-  }
-
-  selectDate(date: string): void {
-    this.selectedDate.set(date);
-    this.selectedTimeSlot.set(null);
-
-    // Convert string date to Date object for calendar
-    const dateObj = new Date(date);
-    this.selectedCalendarDate.set(dateObj);
-  }
-
-  selectTimeSlot(timeSlot: AvailableTime): void {
-    this.selectedTimeSlot.set(timeSlot);
-  }
-
-  isDifferentTime(): boolean {
-    const meeting = this.selectedMeetingForReschedule();
-    const timeSlot = this.selectedTimeSlot();
-    const date = this.selectedDate();
-
-    if (!meeting || !timeSlot || !date) {
-      return false;
-    }
-
-    const currentDate = meeting.date;
-    const currentStartTime = meeting.start_time;
-    const currentEndTime = meeting.end_time;
-
-    return !(date === currentDate &&
-             timeSlot.start_time === currentStartTime &&
-             timeSlot.end_time === currentEndTime);
-  }
-
-  getAvailableTimesForDate(date: string): AvailableTime[] {
-    const day = this.availableDays().find(d => d.date === date);
-    return day ? day.times : [];
-  }
-
-  isDateActive(date: string): boolean {
-    const day = this.availableDays().find(d => d.date === date);
-    return day ? day.active : false;
-  }
-
-  formatDateForDisplay(dateString: string): string {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  }
-
-  formatTimeForDisplay(time: string): string {
-    const [hours, minutes] = time.split(':');
-    const hour24 = parseInt(hours);
-    const hour12 = hour24 === 0 ? 12 : hour24 > 12 ? hour24 - 12 : hour24;
-    const ampm = hour24 >= 12 ? 'PM' : 'AM';
-    return `${hour12}:${minutes} ${ampm}`;
-  }
-
-  confirmReschedule(): void {
-    const meeting = this.selectedMeetingForReschedule();
-    const timeSlot = this.selectedTimeSlot();
-    const date = this.selectedDate();
-
-    if (!meeting || !timeSlot || !date || !this.isDifferentTime()) {
-      return;
-    }
-
-    const rescheduleData: RescheduleRequest = {
-      meeting_date: date,
-      start_time: timeSlot.start_time.substring(0, 5), // Remove seconds
-      end_time: timeSlot.end_time.substring(0, 5) // Remove seconds
-    };
-
-    this.rescheduleLoading.set(true);
-    this.meetingsService.rescheduleMeeting(meeting.uuid, rescheduleData)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          this.showSuccess('', this.lang === 'ar' ? 'تم إعادة جدولة الاجتماع بنجاح' : 'Meeting rescheduled successfully');
-          this.closeRescheduleDialog();
-          this.reloadMeetingsAfterAction();
-          this.rescheduleLoading.set(false);
-        },
-        error: (error) => {
-          console.error('Error rescheduling meeting:', error);
-          this.rescheduleLoading.set(false);
-          this.handleServerErrors(error);
-        }
-      });
   }
 
   /**

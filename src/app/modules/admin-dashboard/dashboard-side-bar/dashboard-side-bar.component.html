@@ -191,7 +191,7 @@
       <!-- Financial Category -->
       <div class="nav-category">
         <div class="nav-category-header" (click)="toggleCategory('financial')"
-             [class.active]="isCategoryActive(['/orders', '/transactions'])">
+             [class.active]="isCategoryActive(['/orders', '/transactions', '/fund'])">
           <i class="ki-outline ki-finance-calculator nav-icon text-success"></i>
           <span class="nav-title">Financial</span>
           <i class="ki-outline ki-arrow-down category-toggle"
@@ -210,6 +210,13 @@
                routerLink="/admin-dashboard/admin/transactions">
               <i class="ki-outline ki-finance-calculator nav-icon text-primary"></i>
               <span class="nav-title">Transactions</span>
+            </a>
+          </div>
+          <div class="nav-item">
+            <a class="nav-link" routerLinkActive="active"
+               routerLink="/admin-dashboard/admin/fund">
+              <i class="ki-outline ki-wallet nav-icon text-info"></i>
+              <span class="nav-title">Fund Management</span>
             </a>
           </div>
         </div>

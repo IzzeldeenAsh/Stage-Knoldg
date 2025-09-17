@@ -24,12 +24,25 @@ export interface Order {
   sub_orders: Suborder[];
 }
 
+export interface Insighter {
+  id: number;
+  uuid: string;
+  name: string;
+  email: string;
+  country: string;
+  phone: string;
+  profile_photo_url: string | null;
+  balance: string;
+  payment_type: string;
+}
+
 export interface Transaction {
   transaction: string;
   amount: number;
   date: string;
   type: string;
   order?: Order;
+  insighter?: Insighter;
 }
 
 export interface TransactionLink {
