@@ -25,10 +25,10 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy 
   // Chart data properties
   chartData: any;
   chartOptions: any;
-  selectedPeriod: 'weekly' | 'monthly' | 'yearly' = 'monthly';
+  selectedPeriod: 'weekly' | 'monthly' | 'yearly' = 'weekly';
 
-  // Period options for PrimeNG SelectButton
-  periodOptions = [
+  // Period options for custom select buttons
+  periodOptions: Array<{label: string; labelAr: string; value: 'weekly' | 'monthly' | 'yearly'}> = [
     { label: 'Weekly', labelAr: 'أسبوعي', value: 'weekly' },
     { label: 'Monthly', labelAr: 'شهري', value: 'monthly' },
     { label: 'Yearly', labelAr: 'سنوي', value: 'yearly' }
@@ -85,8 +85,8 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy 
   loadTransactions(page: number = 1): void {
     this.loading = true;
     this.currentPage = page;
-    
-    this.walletService.getTransactions(page, this.pageSize)
+
+    this.walletService.getTransactions(page, this.pageSize, this.selectedPeriod)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response: TransactionResponse) => {
@@ -549,6 +549,7 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy 
   setPeriod(period: 'weekly' | 'monthly' | 'yearly'): void {
     this.selectedPeriod = period;
     this.loadChartData();
+    this.loadTransactions(1); // Reset to first page when period changes
   }
 
   createVerticalAnnotations(): any {

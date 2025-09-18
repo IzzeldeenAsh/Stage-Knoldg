@@ -6,11 +6,11 @@ flex-column pt-6 pb-lg-10 pt-lg-20"
     <ul class="breadcrumb breadcrumb-separatorless fw-semibold">
       <li class="breadcrumb-item text-white fw-bold lh-1">
         <a href="/" class="text-white text-hover-secondary">
-          <i class="ki-outline ki-home text-white fs-3"></i>
+          <i class="pi pi-home text-white" style="font-size: 1.25rem;"></i>
         </a>
       </li>
       <li class="breadcrumb-item">
-        <i class="ki-outline {{lang === 'ar' ? 'ki-left' : 'ki-right'}} fs-4 text-white mx-n1"></i>
+        <i class="pi {{lang === 'ar' ? 'pi-chevron-left' : 'pi-chevron-right'}} text-white mx-n1" style="font-size: 1rem;"></i>
       </li>
       <li class="breadcrumb-item text-white fw-bold lh-1">
         {{"DASHBOARD" | translate}}
@@ -48,7 +48,7 @@ flex-column pt-6 pb-lg-10 pt-lg-20"
       <!-- Total Meetings -->
       <div class="d-flex flex-column rounded p-6 hover-scale">           
         <div class="d-flex align-items-center mb-2">
-          <i class="ki-solid ki-calendar text-success mx-2 fs-2"></i>
+          <i class="pi pi-calendar text-success mx-2" style="font-size: 1.5rem;"></i>
           <span class="text-white fw-bolder fs-2x" 
                 [appCountUp]="totalMeetings">
             {{ totalMeetings }}
@@ -62,7 +62,7 @@ flex-column pt-6 pb-lg-10 pt-lg-20"
       <!-- Pending Meetings -->
       <div class="d-flex flex-column rounded p-6 hover-scale">           
         <div class="d-flex align-items-center mb-2">
-          <i class="ki-solid ki-time text-warning mx-2 fs-2"></i>
+          <i class="pi pi-clock text-warning mx-2" style="font-size: 1.5rem;"></i>
           <span class="text-white fw-bolder fs-2x" 
                 [appCountUp]="pendingMeetings">
             {{ pendingMeetings }}
@@ -76,7 +76,7 @@ flex-column pt-6 pb-lg-10 pt-lg-20"
       <!-- Approved Meetings -->
       <div class="d-flex flex-column rounded p-6 hover-scale">           
         <div class="d-flex align-items-center mb-2">
-          <i class="ki-solid ki-check text-success mx-2 fs-2"></i>
+          <i class="pi pi-check text-success mx-2" style="font-size: 1.5rem;"></i>
           <span class="text-white fw-bolder fs-2x" 
                 [appCountUp]="approvedMeetings">
             {{ approvedMeetings }}
@@ -90,7 +90,7 @@ flex-column pt-6 pb-lg-10 pt-lg-20"
       <!-- Postponed Meetings -->
       <div class="d-flex flex-column rounded p-6 hover-scale">           
         <div class="d-flex align-items-center mb-2">
-          <i class="ki-solid ki-pause text-secondary mx-2 fs-2"></i>
+          <i class="pi pi-pause-circle"  style="font-size: 1.5rem; color: #edaa00; margin: 0 8px;"></i>
           <span class="text-white fw-bolder fs-2x" 
                 [appCountUp]="postponedMeetings">
             {{ postponedMeetings }}

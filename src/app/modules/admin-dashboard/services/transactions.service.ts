@@ -15,25 +15,55 @@ export interface Knowledge {
   title: string;
 }
 
+export interface MeetingBooking {
+  date: string;
+  start_time: string;
+  end_time: string;
+  status: string;
+  title: string;
+  description: string;
+}
+
 export interface Suborder {
-  knowledge: Knowledge[];
-  knowledge_documents: KnowledgeDocument[][];
+  knowledge?: Knowledge[];
+  knowledge_documents?: KnowledgeDocument[][];
+  meeting_booking?: MeetingBooking;
+}
+
+export interface User {
+  name: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  profile_photo_url: string | null;
+  country_id: number;
+  roles: string[];
 }
 
 export interface Order {
+  uuid: string;
+  user: User;
+  service: string;
+  status: string;
+  date: string;
+  order_no: string;
+  invoice_no: string;
   sub_orders: Suborder[];
 }
 
+export interface Company {
+  uuid: string;
+  legal_name: string;
+  logo: string;
+  verified: boolean;
+}
+
 export interface Insighter {
-  id: number;
   uuid: string;
   name: string;
-  email: string;
-  country: string;
-  phone: string;
   profile_photo_url: string | null;
-  balance: string;
-  payment_type: string;
+  roles: string[];
+  company: Company | null;
 }
 
 export interface Transaction {
@@ -41,7 +71,7 @@ export interface Transaction {
   amount: number;
   date: string;
   type: string;
-  order?: Order;
+  order: Order;
   insighter?: Insighter;
 }
 

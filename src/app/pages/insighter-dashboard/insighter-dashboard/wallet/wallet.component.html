@@ -2,7 +2,7 @@
   <!-- Chart Section -->
   <div class="card mb-5 light-wallet-gradient-bg">
     <div class="card-header border-0 pt-5">
-      <div class="d-flex justify-content-between align-items-center w-100">
+      <div class="d-flex  w-100">
         <div class="d-flex align-items-center">
           <i class="ki-outline ki-dollar text-gray-700 fs-2tx me-4"></i>
           <div class="flex-grow-1">
@@ -14,15 +14,6 @@
             </div>
           </div>
         </div>
-
-        <!-- Period Selection Buttons -->
-        <p-selectButton
-          [options]="periodOptions"
-          [(ngModel)]="selectedPeriod"
-          [optionLabel]="lang === 'ar' ? 'labelAr' : 'label'"
-          optionValue="value"
-          (onChange)="setPeriod(selectedPeriod)">
-        </p-selectButton>
       </div>
     </div>
 
@@ -43,10 +34,28 @@
   <!-- Transactions Table -->
   <div class="card">
     <div class="card-header border-0 pt-5">
-      <h3 class="card-title align-items-start flex-column">
-        <span class="card-label fw-bold fs-3 mb-1">{{ getTranslation('transactionsHistory') }}</span>
-        <span class="text-muted fw-semibold fs-7">{{ getTranslation('transactionsSubtitle') }}</span>
-      </h3>
+      <div class="d-flex justify-content-between align-items-center w-100">
+        <h3 class="card-title align-items-start flex-column">
+          <span class="card-label fw-bold fs-3 mb-1">{{ getTranslation('transactionsHistory') }}</span>
+          <span class="text-muted fw-semibold fs-7">{{ getTranslation('transactionsSubtitle') }}</span>
+        </h3>
+
+        <!-- Period Selection Buttons -->
+        <div class="d-flex align-items-center p-1" style="background-color: #F1F5F9; border-radius: 8px; gap: 2px;">
+          <button
+            *ngFor="let option of periodOptions"
+            type="button"
+            class="btn btn-sm px-3 py-2 border-0"
+            [ngClass]="{
+              'bg-white text-dark fw-semibold shadow-sm': selectedPeriod === option.value,
+              'bg-transparent text-muted': selectedPeriod !== option.value
+            }"
+            (click)="setPeriod(option.value)"
+            style="border-radius: 8px; font-size: 14px; min-width: 70px; transition: all 0.2s ease;">
+            {{ lang === 'ar' ? option.labelAr : option.label }}
+          </button>
+        </div>
+      </div>
     </div>
     
     <div class="card-body py-3">

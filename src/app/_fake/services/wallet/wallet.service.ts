@@ -140,16 +140,20 @@ export class WalletService {
     );
   }
 
-  getTransactions(page: number = 1, perPage: number = 10): Observable<TransactionResponse> {
+  getTransactions(page: number = 1, perPage: number = 10, period?: 'weekly' | 'monthly' | 'yearly'): Observable<TransactionResponse> {
     const headers = new HttpHeaders({
       Accept: "application/json",
       "Accept-Language": this.currentLang,
       "X-Timezone": Intl.DateTimeFormat().resolvedOptions().timeZone,
     });
 
-    const params = new HttpParams()
+    let params = new HttpParams()
       .set('page', page.toString())
       .set('per_page', perPage.toString());
+
+    if (period) {
+      params = params.set('per_time', period);
+    }
 
     return this.http.get<TransactionResponse>(`${this.BASE_URL}/transaction`, { headers, params }).pipe(
       catchError((err) => {

@@ -18,10 +18,10 @@
 
       <ng-template pTemplate="header">
         <tr>
-          <th>Type</th>
+          <th>Transaction</th>
           <th>Amount</th>
           <th>Date</th>
-          <th>Category</th>
+          <th>Type</th>
           <th>Actions</th>
         </tr>
       </ng-template>
@@ -115,65 +115,71 @@
         Insighter Information
       </h3>
 
-      <div class="insighter-card">
+      <div class="insighter-card enhanced-card profile-card-modern">
         <!-- Main Profile Header -->
-        <div class="profile-header">
-          <div class="profile-avatar">
+        <div class="profile-header-modern">
+          <div class="profile-avatar-modern">
             <img *ngIf="selectedTransaction.insighter.profile_photo_url"
                  [src]="selectedTransaction.insighter.profile_photo_url"
-                 [alt]="selectedTransaction.insighter.name"
-                 class="avatar-image">
+                 [alt]="selectedTransaction.insighter.name">
             <div *ngIf="!selectedTransaction.insighter.profile_photo_url"
                  class="avatar-placeholder">
               {{ selectedTransaction.insighter.name.charAt(0) }}
             </div>
           </div>
-          <div class="profile-main-info">
-            <h4 class="profile-name">{{ selectedTransaction.insighter.name }}</h4>
-            <p class="profile-email">{{ selectedTransaction.insighter.email }}</p>
-            <div class="profile-id">
-              <span class="id-label">ID:</span>
-              <span class="id-value">{{ selectedTransaction.insighter.id }}</span>
+          <div class="profile-info-modern">
+            <h4 class="profile-name-modern">{{ selectedTransaction.insighter.name }}</h4>
+            <div class="profile-roles-modern">
+              <span class="role-badge" *ngFor="let role of selectedTransaction.insighter.roles">{{ role }}</span>
             </div>
-          </div>
-          <div class="profile-balance">
-            <div class="balance-label">Current Balance</div>
-            <div class="balance-amount">{{ formatCurrency(+selectedTransaction.insighter.balance) }}</div>
           </div>
         </div>
 
-        <!-- Profile Details Grid -->
-        <div class="profile-details">
-          <div class="detail-row">
-            <div class="detail-item">
-              <i class="pi pi-map-marker detail-icon"></i>
-              <div class="detail-content">
-                <span class="detail-label">Location</span>
-                <span class="detail-value">{{ selectedTransaction.insighter.country || 'Not specified' }}</span>
-              </div>
-            </div>
-            <div class="detail-item">
-              <i class="pi pi-phone detail-icon"></i>
-              <div class="detail-content">
-                <span class="detail-label">Phone</span>
-                <span class="detail-value">{{ selectedTransaction.insighter.phone || 'Not provided' }}</span>
+        <!-- Company Information if available -->
+        <div class="company-section" *ngIf="selectedTransaction.insighter.company">
+          <div class="company-card-modern">
+            <div class="company-header-modern">
+              <img *ngIf="selectedTransaction.insighter.company.logo"
+                   [src]="selectedTransaction.insighter.company.logo"
+                   [alt]="selectedTransaction.insighter.company.legal_name"
+                   class="company-logo-modern">
+              <div class="company-info-modern">
+                <h5 class="company-name-modern">{{ selectedTransaction.insighter.company.legal_name }}</h5>
+                <div class="company-status">
+                  <span class="verification-badge" [ngClass]="selectedTransaction.insighter.company.verified ? 'verified' : 'unverified'">
+                    {{ selectedTransaction.insighter.company.verified ? 'Verified' : 'Unverified' }}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-          <div class="detail-row">
-            <div class="detail-item">
-              <i class="pi pi-credit-card detail-icon"></i>
-              <div class="detail-content">
-                <span class="detail-label">Payment Method</span>
-                <span class="badge badge-light-info">{{ selectedTransaction.insighter.payment_type | titlecase }}</span>
-              </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- User (Buyer) Information Section -->
+    <div class="user-section" *ngIf="selectedTransaction.order && selectedTransaction.order.user">
+      <h3 class="section-title">
+        <i class="pi pi-shopping-cart"></i>
+        Customer Information
+      </h3>
+
+      <div class="user-card enhanced-card profile-card-modern">
+        <div class="profile-header-modern">
+          <div class="profile-avatar-modern">
+            <img *ngIf="selectedTransaction.order.user.profile_photo_url"
+                 [src]="selectedTransaction.order.user.profile_photo_url"
+                 [alt]="selectedTransaction.order.user.name">
+            <div *ngIf="!selectedTransaction.order.user.profile_photo_url"
+                 class="avatar-placeholder">
+              {{ selectedTransaction.order.user.name.charAt(0) }}
             </div>
-            <div class="detail-item">
-              <i class="pi pi-shield detail-icon"></i>
-              <div class="detail-content">
-                <span class="detail-label">Account Status</span>
-                <span class="badge badge-light-success">Active</span>
-              </div>
+          </div>
+          <div class="profile-info-modern">
+            <h4 class="profile-name-modern">{{ selectedTransaction.order.user.name }}</h4>
+            <p class="profile-email-modern">{{ selectedTransaction.order.user.email }}</p>
+            <div class="profile-roles-modern">
+              <span class="role-badge" *ngFor="let role of selectedTransaction.order.user.roles">{{ role }}</span>
             </div>
           </div>
         </div>
@@ -183,9 +189,37 @@
     <!-- Order Information Section -->
     <div class="items-section" *ngIf="selectedTransaction.order && selectedTransaction.order.sub_orders && selectedTransaction.order.sub_orders.length > 0">
       <h3 class="section-title">
-        <i class="pi pi-shopping-cart"></i>
-        Related Order Details
+        <i class="pi pi-file-text"></i>
+        Order Details
       </h3>
+
+      <!-- Order Metadata -->
+      <div class="order-metadata">
+        <div class="metadata-grid-modern">
+          <div class="metadata-item-modern">
+            <span class="metadata-label-modern">Order Number</span>
+            <span class="metadata-value-modern">{{ selectedTransaction.order.order_no }}</span>
+          </div>
+          <div class="metadata-item-modern">
+            <span class="metadata-label-modern">Invoice Number</span>
+            <span class="metadata-value-modern">{{ selectedTransaction.order.invoice_no }}</span>
+          </div>
+          <div class="metadata-item-modern">
+            <span class="metadata-label-modern">Service Type</span>
+            <span class="modern-badge primary">{{ selectedTransaction.order.service | titlecase }}</span>
+          </div>
+          <div class="metadata-item-modern">
+            <span class="metadata-label-modern">Order Status</span>
+            <span class="modern-badge" [ngClass]="selectedTransaction.order.status === 'paid' ? 'success' : 'warning'">
+              {{ selectedTransaction.order.status | titlecase }}
+            </span>
+          </div>
+          <div class="metadata-item-modern">
+            <span class="metadata-label-modern">Order Date</span>
+            <span class="metadata-value-modern">{{ formatDate(selectedTransaction.order.date) }}</span>
+          </div>
+        </div>
+      </div>
 
       <div class="suborders-container">
         <div class="suborder-card" *ngFor="let suborder of selectedTransaction.order.sub_orders; let i = index">
@@ -220,6 +254,42 @@
                     <span class="document-price">{{ formatCurrency(doc.price) }}</span>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Meeting Booking -->
+          <div class="meeting-section" *ngIf="suborder.meeting_booking">
+            <h4 class="subsection-title">Meeting Details</h4>
+            <div class="meeting-card">
+              <div class="meeting-grid">
+                <div class="meeting-item">
+                  <i class="pi pi-calendar meeting-icon"></i>
+                  <div class="meeting-content">
+                    <span class="meeting-label">Date</span>
+                    <span class="meeting-value">{{ suborder.meeting_booking.date }}</span>
+                  </div>
+                </div>
+                <div class="meeting-item">
+                  <i class="pi pi-clock meeting-icon"></i>
+                  <div class="meeting-content">
+                    <span class="meeting-label">Time</span>
+                    <span class="meeting-value">{{ suborder.meeting_booking.start_time }} - {{ suborder.meeting_booking.end_time }}</span>
+                  </div>
+                </div>
+                <div class="meeting-item">
+                  <i class="pi pi-info-circle meeting-icon"></i>
+                  <div class="meeting-content">
+                    <span class="meeting-label">Status</span>
+                    <span class="badge" [ngClass]="getMeetingStatusClass(suborder.meeting_booking.status)">
+                      {{ suborder.meeting_booking.status | titlecase }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="meeting-details">
+                <h5 class="meeting-title">{{ suborder.meeting_booking.title }}</h5>
+                <p class="meeting-description">{{ suborder.meeting_booking.description }}</p>
               </div>
             </div>
           </div>

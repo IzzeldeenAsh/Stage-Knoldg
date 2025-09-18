@@ -68,7 +68,7 @@ export class TransactionsComponent extends BaseComponent implements OnInit {
     const typeLabels: { [key: string]: string } = {
       'income_knowledge': 'Knowledge Income',
       'withdraw_payout_insighter_knowledge': 'Insighter Knowledge Payout',
-      'income_meeting': 'Meeting Income',
+      'book_meeting': 'Meeting Booking',
       'withdraw_payout_insighter_meeting': 'Insighter Meeting Payout',
       'income_case': 'Case Income',
       'withdraw_payout_insighter_case': 'Insighter Case Payout',
@@ -110,6 +110,21 @@ export class TransactionsComponent extends BaseComponent implements OnInit {
         return 'badge-light-danger';
       default:
         return 'badge-light-info';
+    }
+  }
+
+  getMeetingStatusClass(status: string): string {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return 'badge-light-warning';
+      case 'completed':
+        return 'badge-light-success';
+      case 'cancelled':
+        return 'badge-light-danger';
+      case 'postponed':
+        return 'badge-light-info';
+      default:
+        return 'badge-light-secondary';
     }
   }
 
