@@ -1,0 +1,91 @@
+// Invoice Page Styles
+.no-print {
+  @media print {
+    display: none !important;
+  }
+}
+
+// Loading animation
+.spinner-border {
+  animation: spinner-border 0.75s linear infinite;
+}
+
+@keyframes spinner-border {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Error state styling
+.symbol {
+  transition: all 0.3s ease;
+}
+
+.symbol:hover {
+  transform: scale(1.05);
+}
+
+// Back button styling
+.btn {
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// Global print styles for invoice page
+@media print {
+  // Hide all Metronic layout elements
+  :global(.kt_header),
+  :global(.kt_toolbar),
+  :global(.kt_aside),
+  :global(.kt_footer),
+  :global(.kt_app_header),
+  :global(.kt_app_toolbar),
+  :global(.kt_app_aside),
+  :global(.kt_app_footer),
+  :global(.primeng-header),
+  :global(.p-toolbar),
+  :global(.navbar),
+  :global(nav),
+  :global(header),
+  :global(.header),
+  :global(.toolbar),
+  :global(.sidebar),
+  :global(.menu),
+  :global(.navigation),
+  :global(.app-header),
+  :global(.app-toolbar),
+  :global(.app-sidebar),
+  :global(.app-nav),
+  :global(.breadcrumb),
+  :global(.page-header) {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  // Ensure only invoice content is visible
+  :global(body) {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+  }
+
+  // Hide everything except the invoice page content
+  :global(body > *:not(app-root)) {
+    display: none !important;
+  }
+
+  :global(app-root > *:not(router-outlet):not(app-invoice-page)) {
+    display: none !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}

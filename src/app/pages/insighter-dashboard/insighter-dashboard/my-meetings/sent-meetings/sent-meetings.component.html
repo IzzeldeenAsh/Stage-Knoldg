@@ -391,18 +391,20 @@
 
   <!-- Footer -->
   <ng-template pTemplate="footer">
-    <div class="d-flex justify-content-end gap-3 p-3">
-      <button type="button" 
-              class="btn btn-light" 
+    <div class="d-flex justify-content-end gap-2 p-3">
+      <button type="button"
+              class="btn btn-light modal-btn-sm"
               (click)="closeRescheduleModal()">
         {{ 'COMMON.CANCEL' | translate }}
       </button>
-      <button type="button" 
-              class="btn btn-primary"
+      <button type="button"
+              class="btn btn-primary modal-btn-sm"
               [disabled]="!selectedTimeSlot || !isDifferentTime() || rescheduleLoading"
               (click)="confirmReschedule()">
-        <span *ngIf="rescheduleLoading" class="spinner-border spinner-border-sm me-2" role="status"></span>
-        {{ 'INSIGHTER.MEETINGS.RESCHEDULE' | translate }}
+        <span *ngIf="rescheduleLoading" class="spinner-border spinner-border-sm" role="status"></span>
+        @if (!rescheduleLoading) {
+          {{ 'INSIGHTER.MEETINGS.RESCHEDULE' | translate }}
+        }
       </button>
     </div>
   </ng-template>

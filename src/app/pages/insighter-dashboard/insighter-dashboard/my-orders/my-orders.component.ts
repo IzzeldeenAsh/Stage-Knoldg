@@ -4,8 +4,6 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { MyOrdersService, Order, OrdersResponse, SubOrder, KnowledgeDocument } from './my-orders.service';
 import { Observable, catchError, map, of, forkJoin } from 'rxjs';
-import { InvoiceGeneratorService } from './invoice-generator.service';
-import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 
 @Component({
   selector: 'app-my-orders',
@@ -32,8 +30,6 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
     injector: Injector,
     private myOrdersService: MyOrdersService,
     private router: Router,
-    private invoiceGeneratorService: InvoiceGeneratorService,
-    private profileService: ProfileService,
     private sanitizer: DomSanitizer
   ) {
     super(injector);
@@ -410,35 +406,12 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
   }
 
   downloadInvoice(order: Order): void {
-    // Get user profile and generate invoice
-    this.profileService.getProfile().pipe(
-      catchError((error) => {
-        this.handleServerErrors(error);
-        return of(null);
-      })
-    ).subscribe(userProfile => {
-      try {
-        // Generate invoice HTML
-        const invoiceHtml = this.invoiceGeneratorService.generateInvoice(order, userProfile);
-        
-        // Generate filename
-        const filename = `invoice-${order.invoice_no || order.order_no}.pdf`;
-        
-        // Open invoice in new tab for viewing and potential PDF download
-        this.invoiceGeneratorService.openInvoiceInNewTab(invoiceHtml);
-        
-        this.showSuccess(
-          this.lang === 'ar' ? 'تم إنشاء الفاتورة' : 'Invoice Generated',
-          this.lang === 'ar' ? 'تم فتح الفاتورة في نافذة جديدة. يمكنك طباعتها أو حفظها كـ PDF من المتصفح' : 'Invoice opened in new tab. You can print or save as PDF from the browser'
-        );
-      } catch (error) {
-        console.error('Error generating invoice:', error);
-        this.showError(
-          this.lang === 'ar' ? 'خطأ' : 'Error',
-          this.lang === 'ar' ? 'فشل في إنشاء الفاتورة' : 'Failed to generate invoice'
-        );
-      }
-    });
+    // Open invoice in a new tab
+    const orderNumber = order.invoice_no || order.order_no;
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree(['/app/invoice', orderNumber])
+    );
+    window.open(url, '_blank');
   }
 
   private handleServerErrors(error: any) {

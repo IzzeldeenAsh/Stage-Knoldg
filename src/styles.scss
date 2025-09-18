@@ -384,4 +384,45 @@ tag-input,
   border-color: #cbd5e1 !important;
 }
 
+/* Global Modal Button Standards */
+.modal-btn-standard {
+  height: 38px !important;
+  min-height: 38px !important;
+  padding: 0.5rem 1rem !important;
+  font-size: 0.875rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1.25 !important;
+  border-radius: 6px !important;
+  font-weight: 500 !important;
+  white-space: nowrap !important;
+}
+
+/* Modal button size variants */
+.modal-btn-sm {
+  height: 40px !important;
+  min-height: 40px !important;
+  padding: 0.625rem 1rem !important;
+  font-size: 0.875rem !important;
+}
+
+.modal-btn-lg {
+  height: 44px !important;
+  min-height: 44px !important;
+  padding: 0.625rem 1.25rem !important;
+  font-size: 0.9375rem !important;
+}
+
+/* Spinner in modal buttons */
+.modal-btn-standard .spinner-border-sm {
+  width: 0.875rem !important;
+  height: 0.875rem !important;
+}
+
+.modal-btn-sm .spinner-border-sm {
+  width: 0.75rem !important;
+  height: 0.75rem !important;
+}
+
 

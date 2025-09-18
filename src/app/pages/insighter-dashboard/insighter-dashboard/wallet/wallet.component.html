@@ -1,32 +1,42 @@
 <div class="d-flex flex-column  pb-lg-10 pe-10 overflow-hidden" >
-  <!-- Wallet Balance Card -->
-  <div class="card light-wallet-gradient-bg mb-5">
-    <div class="card-body">
-      <div class="d-flex align-items-center mb-4">
-        <i class="ki-outline ki-dollar text-gray-700 fs-2tx me-4"></i>
-        <div class="flex-grow-1">
-          <div class="d-flex align-items-center justify-content-between gap-5">
-            <span class="fw-bold fs-3x lh-1 ls-n2">{{ walletBalance.toFixed(2) | currency}}</span>
-       
-          </div>
-          <div class="m-0">
-            <span class="fw-semibold fs-6 text-gray-500">{{ getTranslation('currentWalletBalance') }}</span>
+  <!-- Chart Section -->
+  <div class="card mb-5 light-wallet-gradient-bg">
+    <div class="card-header border-0 pt-5">
+      <div class="d-flex justify-content-between align-items-center w-100">
+        <div class="d-flex align-items-center">
+          <i class="ki-outline ki-dollar text-gray-700 fs-2tx me-4"></i>
+          <div class="flex-grow-1">
+            <div class="d-flex align-items-center justify-content-between gap-5">
+              <span class="fw-bold fs-3x lh-1 ls-n2 " style="color:#4f28ed; padding-top: 20px;">{{ walletBalance.toFixed(2) | currency}}</span>
+            </div>
+            <div class="m-0">
+              <span class="fw-semibold fs-6 text-gray-500">{{ getTranslation('currentWalletBalance') }}</span>
+            </div>
           </div>
         </div>
+
+        <!-- Period Selection Buttons -->
+        <p-selectButton
+          [options]="periodOptions"
+          [(ngModel)]="selectedPeriod"
+          [optionLabel]="lang === 'ar' ? 'labelAr' : 'label'"
+          optionValue="value"
+          (onChange)="setPeriod(selectedPeriod)">
+        </p-selectButton>
       </div>
-      
-      <!-- Wallet Chart -->
-      <div class="wallet-chart position-relative" style="width: 100%; height: 120px;">
-        <p-chart 
-          type="line" 
-          [data]="chartData" 
-          [options]="chartOptions"
-          [responsive]="true"
-          [width]="'100%'"
-          [height]="'100%'"
-          styleClass="w-100 ">
+    </div>
+
+    <div class="card-body">
+      <!-- Chart Container -->
+      <!-- <div class="chart-container ">
+        <p-chart type="line"
+                 [data]="chartData"
+                 [options]="chartOptions"
+                 class="wallet-chart"
+                 *ngIf="chartData">
         </p-chart>
-      </div>
+      </div> -->
+
     </div>
   </div>
 

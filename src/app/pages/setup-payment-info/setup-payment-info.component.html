@@ -75,8 +75,20 @@
                           <span *ngIf="!((type.id === 'manual' && existingManualAccount?.status === 'active') || (type.id === 'provider' && existingProviderAccount && existingProviderAccount.details_submitted_at !== null))">
                             {{ lang === 'ar' ? type.description.ar : type.description.en }}
                           </span>
-                          <span *ngIf="(type.id === 'manual' && existingManualAccount?.status === 'active') || (type.id === 'provider' && existingProviderAccount && existingProviderAccount.details_submitted_at !== null)" class="text-info">
-                            {{ lang === 'ar' ? 'الحساب موجود بالفعل' : 'Account Already Exist' }}
+                          <span *ngIf="(type.id === 'manual' && existingManualAccount?.status === 'active') || (type.id === 'provider' && existingProviderAccount && existingProviderAccount.details_submitted_at !== null)">
+                            <span class="d-block text-info">
+                              {{ lang === 'ar' ? 'تم إعداد هذه الطريقة بالفعل' : 'This payment method is already configured' }}
+                            </span>
+                            <span class="d-block text-muted fs-7 mt-1">
+                              <span *ngIf="lang === 'ar'">
+                                يمكنك التعديل أو الحذف من
+                                  إعدادات الدفع
+                              </span>
+                              <span *ngIf="lang !== 'ar'">
+                                Edit or delete from
+                                  payment settings
+                              </span>
+                            </span>
                           </span>
                         </span>
                       </span>

@@ -1,0 +1,95 @@
+<!-- Invoice Container -->
+<div class="invoice-viewer-container d-flex justify-content-center">
+  <!-- Action Button (No Print) -->
+   <div style="max-width: 190mm; width: 190mm;margin: auto;"  >
+    <div class="no-print mb-3 d-flex justify-content-center mx-auto" >
+      <button
+        type="button"
+        class="btn btn-info btn-sm px-4"
+        (click)="printOrSaveAsPDF()">
+        <i class="ki-outline ki-printer fs-6 me-2"></i>
+        {{ lang === 'ar' ? 'طباعة أو حفظ كـ PDF' : 'Print or Save PDF' }}
+      </button>
+    </div>
+   </div>
+
+  <div id="invoice-content" class="invoice-container">
+    <div class="bg"></div>
+
+    <!-- Header -->
+    <div class="invoice-header">
+      <h1>INVOICE</h1>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+      <!-- Logo and Invoice Info Section -->
+      <div class="logo-section">
+        <div class="logo-container">
+          <img
+            src="https://res.cloudinary.com/dsiku9ipv/image/upload/v1758006879/invoice_template_knoldg_0_2_aeurma.png"
+            alt="KNOLDG Logo"
+            class="logo">
+        </div>
+        <div class="invoice-info">
+          {{ invoiceData.invoice_no || invoiceData.order_no }}<br>
+          {{ invoiceDate }}
+        </div>
+      </div>
+
+      <!-- Billing Section -->
+      <div class="billing-section">
+        <div class="from-section">
+          <h3 class="section-title">From:</h3>
+          <p>
+            Foresighta Systems Consulting FZ-LLC<br>
+            Compass Building<br>
+            Al Shohada Road<br>
+            AL Hamra Industrial Zone-FZ<br>
+            Ras Al Khaimah<br>
+            United Arab Emirates<br>
+            info&#64;knoldg.com
+          </p>
+        </div>
+
+        <div class="bill-to-section">
+          <h3 class="section-title">Bill To:</h3>
+          <p>
+            <span class="label">Name:</span> {{ invoiceData.userProfile?.name || 'Client Name' }}<br>
+            <span class="label">Email:</span> {{ invoiceData.userProfile?.email || 'client@email.com' }}<br>
+            <span class="label">Country:</span> {{ invoiceData.userProfile?.country || 'Country' }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Services Table -->
+      <div class="services-table">
+        <div class="table-header">
+          <h3>Service type</h3>
+          <h3>Amount</h3>
+        </div>
+
+        <div *ngFor="let service of serviceRows" class="service-row">
+          <span class="service-name">{{ service.name }}</span>
+          <span class="service-amount">${{ service.amount.toFixed(2) }}</span>
+        </div>
+      </div>
+
+      <!-- Totals Section -->
+      <div class="totals-section">
+        <div class="subtotal">
+          <span>Subtotal: ${{ subtotal.toFixed(2) }}</span>
+        </div>
+        <div class="total">
+          <span>Total:</span>
+          <span class="amount">${{ invoiceData.amount.toFixed(2) }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- invoice-footer -->
+    <div class="invoice-footer">
+      Thank you for your business © 2025 knoldg | info&#64;knoldg.com
+    </div>
+  </div>
+</div>

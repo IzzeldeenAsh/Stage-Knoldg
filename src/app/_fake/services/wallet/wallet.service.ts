@@ -92,6 +92,17 @@ export interface TransactionResponse {
   meta: TransactionMeta;
 }
 
+export interface ChartDataPoint {
+  date: string;
+  deposits: number;
+  balance: number;
+  withdrawals: number;
+}
+
+export interface ChartDataResponse {
+  data: ChartDataPoint[];
+}
+
 @Injectable({
   providedIn: "root",
 })
@@ -146,5 +157,85 @@ export class WalletService {
         return throwError(() => err);
       })
     );
+  }
+
+  getChartData(period: 'weekly' | 'monthly' | 'yearly' = 'monthly', currentBalance?: number): Observable<ChartDataResponse> {
+    const headers = new HttpHeaders({
+      Accept: "application/json",
+      "Accept-Language": this.currentLang,
+      "X-Timezone": Intl.DateTimeFormat().resolvedOptions().timeZone,
+    });
+
+    const params = new HttpParams()
+      .set('per_time', period);
+
+    // Combine wallet balance and transactions to calculate proper chart data
+    return this.http.get<TransactionResponse>(`${this.BASE_URL}/transaction`, { headers, params }).pipe(
+      map((response) => {
+        return this.aggregateTransactionsToChartData(response.data, currentBalance);
+      }),
+      catchError((err) => {
+        console.error("Error fetching chart data:", err);
+        return throwError(() => err);
+      })
+    );
+  }
+
+  private aggregateTransactionsToChartData(transactions: Transaction[], currentBalance?: number): ChartDataResponse {
+    // Group transactions by date
+    const dailyData = new Map<string, { deposits: number; withdrawals: number; netChange: number }>();
+
+    transactions.forEach(transaction => {
+      const date = transaction.date.split(' ')[0]; // Extract date part (YYYY-MM-DD)
+
+      if (!dailyData.has(date)) {
+        dailyData.set(date, { deposits: 0, withdrawals: 0, netChange: 0 });
+      }
+
+      const dayData = dailyData.get(date)!;
+
+      if (transaction.transaction === 'deposit') {
+        dayData.deposits += Math.abs(transaction.amount);
+        dayData.netChange += Math.abs(transaction.amount);
+      } else {
+        dayData.withdrawals += Math.abs(transaction.amount);
+        dayData.netChange -= Math.abs(transaction.amount);
+      }
+    });
+
+    // Convert to chart data format and sort by date
+    const chartData: ChartDataPoint[] = Array.from(dailyData.entries())
+      .map(([date, data]) => {
+        return {
+          date,
+          deposits: data.deposits,
+          withdrawals: data.withdrawals,
+          balance: 0 // Will be calculated below
+        };
+      })
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+    // Calculate cumulative balance progression
+    if (chartData.length > 0) {
+      // Calculate total net change from all transactions
+      const totalNetChange = Array.from(dailyData.values())
+        .reduce((sum, day) => sum + day.netChange, 0);
+
+      // Use current balance if provided, otherwise estimate
+      const endBalance = currentBalance || (totalNetChange > 0 ? totalNetChange : 1000);
+
+      // Calculate starting balance by working backwards from current balance
+      const startingBalance = endBalance - totalNetChange;
+
+      let cumulativeBalance = startingBalance;
+
+      chartData.forEach(point => {
+        const dayData = dailyData.get(point.date)!;
+        cumulativeBalance += dayData.netChange;
+        point.balance = Math.max(0, cumulativeBalance);
+      });
+    }
+
+    return { data: chartData };
   }
 }
