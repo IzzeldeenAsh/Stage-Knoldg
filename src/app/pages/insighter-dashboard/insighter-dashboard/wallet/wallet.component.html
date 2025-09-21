@@ -17,9 +17,9 @@
       </div>
     </div>
 
-    <div class="card-body" *ngIf="hasRealData">
+    <div class="card-body" >
       <!-- Chart Container -->
-      <div class="chart-container ">
+      <div class="chart-container " *ngIf="hasRealData">
         <p-chart type="line"
                  [data]="chartData"
                  [options]="chartOptions"
