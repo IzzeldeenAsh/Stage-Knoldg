@@ -39,6 +39,7 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy 
   // Chart data from API
   chartApiData: ChartDataPoint[] = [];
   useApiData: boolean = true;
+  hasRealData: boolean = false;
   
   
   get tableColumns() {
@@ -100,9 +101,8 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy 
         error: (error) => {
           this.loading = false;
           this.handleServerErrors(error);
-          // Fallback to generate sample data if API fails
-          this.generateSampleChartData();
-          this.initializeChart();
+          this.hasRealData = false;
+          this.chartApiData = [];
         }
       });
   }
@@ -349,6 +349,12 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy 
   initializeChartFromTransactions(): void {
     console.log('Initializing chart from transactions:', this.allTransactions.length);
 
+    if (this.allTransactions.length === 0) {
+      this.hasRealData = false;
+      this.chartApiData = [];
+      return;
+    }
+
     // Group transactions by date
     const dailyData = new Map<string, { deposits: number; withdrawals: number }>();
 
@@ -379,13 +385,11 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy 
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
     this.useApiData = true;
+    this.hasRealData = this.chartApiData.length > 0;
 
-    if (this.chartApiData.length === 0) {
-      console.log('No transaction data available for chart, using sample data');
-      this.generateSampleChartData();
+    if (this.hasRealData) {
+      this.initializeChart();
     }
-
-    this.initializeChart();
   }
 
   generateSampleChartData(): void {
