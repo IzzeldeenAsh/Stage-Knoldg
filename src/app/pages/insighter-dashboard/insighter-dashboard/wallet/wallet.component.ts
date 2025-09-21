@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Injector } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
-import { WalletService, Transaction, TransactionResponse, User, ChartDataPoint } from 'src/app/_fake/services/wallet/wallet.service';
+import { WalletService, Transaction, TransactionListResponse, User, ChartDataPoint } from 'src/app/_fake/services/wallet/wallet.service';
 import { BaseComponent } from 'src/app/modules/base.component';
 
 @Component({
@@ -13,9 +13,11 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy 
   
   walletBalance: number = 0;
   transactions: Transaction[] = [];
+  allTransactions: Transaction[] = []; // All transactions for chart
+  paginatedTransactions: Transaction[] = []; // Transactions for current page
   totalRecords: number = 0;
   loading: boolean = false;
-  
+
   currentPage: number = 1;
   pageSize: number = 10;
 
@@ -58,8 +60,7 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy 
 
   ngOnInit(): void {
     this.loadWalletData();
-    this.loadTransactions();
-    this.loadChartData();
+    this.loadAllData();
   }
   
 
@@ -82,29 +83,41 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy 
       });
   }
 
-  loadTransactions(page: number = 1): void {
+  loadAllData(): void {
     this.loading = true;
-    this.currentPage = page;
 
-    this.walletService.getTransactions(page, this.pageSize, this.selectedPeriod)
+    // Load all transactions using the new endpoint
+    this.walletService.getAllTransactions(this.selectedPeriod)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (response: TransactionResponse) => {
-          this.transactions = response.data;
-          this.totalRecords = response.meta.total;
+        next: (response: TransactionListResponse) => {
+          this.allTransactions = response.data;
+          this.totalRecords = response.data.length;
+          this.updatePaginatedTransactions();
+          this.initializeChartFromTransactions();
           this.loading = false;
         },
         error: (error) => {
           this.loading = false;
           this.handleServerErrors(error);
+          // Fallback to generate sample data if API fails
+          this.generateSampleChartData();
+          this.initializeChart();
         }
       });
   }
 
+  updatePaginatedTransactions(): void {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.paginatedTransactions = this.allTransactions.slice(startIndex, endIndex);
+    this.transactions = this.paginatedTransactions;
+  }
+
 
   onPageChange(event: any): void {
-    const page = (event.page || 0) + 1;
-    this.loadTransactions(page);
+    this.currentPage = (event.page || 0) + 1;
+    this.updatePaginatedTransactions();
   }
 
   formatService(service: string): string {
@@ -333,30 +346,46 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy 
   }
 
   // Chart methods
-  loadChartData(): void {
-    console.log('Loading chart data for period:', this.selectedPeriod);
-    this.walletService.getChartData(this.selectedPeriod, this.walletBalance)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (response) => {
-          console.log('Chart data received:', response);
-          this.chartApiData = response.data;
-          this.useApiData = true;
+  initializeChartFromTransactions(): void {
+    console.log('Initializing chart from transactions:', this.allTransactions.length);
 
-          if (this.chartApiData.length === 0) {
-            console.log('No chart data received, using sample data');
-            this.generateSampleChartData();
-          }
+    // Group transactions by date
+    const dailyData = new Map<string, { deposits: number; withdrawals: number }>();
 
-          this.initializeChart();
-        },
-        error: (error) => {
-          console.warn('Failed to load chart data from API, using sample data:', error);
-          this.useApiData = false;
-          this.generateSampleChartData();
-          this.initializeChart();
-        }
-      });
+    this.allTransactions.forEach(transaction => {
+      const date = transaction.date.split(' ')[0]; // Extract date part (YYYY-MM-DD)
+
+      if (!dailyData.has(date)) {
+        dailyData.set(date, { deposits: 0, withdrawals: 0 });
+      }
+
+      const dayData = dailyData.get(date)!;
+
+      if (transaction.transaction === 'deposit') {
+        dayData.deposits += Math.abs(transaction.amount);
+      } else {
+        dayData.withdrawals += Math.abs(transaction.amount);
+      }
+    });
+
+    // Convert to chart data format and sort by date
+    this.chartApiData = Array.from(dailyData.entries())
+      .map(([date, data]) => ({
+        date,
+        deposits: data.deposits,
+        withdrawals: data.withdrawals,
+        balance: 0 // Not used in chart but kept for compatibility
+      }))
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+    this.useApiData = true;
+
+    if (this.chartApiData.length === 0) {
+      console.log('No transaction data available for chart, using sample data');
+      this.generateSampleChartData();
+    }
+
+    this.initializeChart();
   }
 
   generateSampleChartData(): void {
@@ -455,7 +484,7 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy 
     this.chartOptions = {
       responsive: true,
       maintainAspectRatio: false,
-      onHover: (event: any, activeElements: any[], chart: any) => {
+      onHover: (_event: any, activeElements: any[], chart: any) => {
         // Update vertical line on hover
         if (activeElements.length > 0) {
           const dataIndex = activeElements[0].index;
@@ -548,8 +577,8 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy 
 
   setPeriod(period: 'weekly' | 'monthly' | 'yearly'): void {
     this.selectedPeriod = period;
-    this.loadChartData();
-    this.loadTransactions(1); // Reset to first page when period changes
+    this.currentPage = 1; // Reset to first page when period changes
+    this.loadAllData(); // Reload all data with new period
   }
 
   createVerticalAnnotations(): any {

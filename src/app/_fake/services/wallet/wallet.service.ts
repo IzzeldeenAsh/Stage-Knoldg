@@ -92,6 +92,10 @@ export interface TransactionResponse {
   meta: TransactionMeta;
 }
 
+export interface TransactionListResponse {
+  data: Transaction[];
+}
+
 export interface ChartDataPoint {
   date: string;
   deposits: number;
@@ -163,7 +167,7 @@ export class WalletService {
     );
   }
 
-  getChartData(period: 'weekly' | 'monthly' | 'yearly' = 'monthly', currentBalance?: number): Observable<ChartDataResponse> {
+  getAllTransactions(period: 'weekly' | 'monthly' | 'yearly' = 'weekly'): Observable<TransactionListResponse> {
     const headers = new HttpHeaders({
       Accept: "application/json",
       "Accept-Language": this.currentLang,
@@ -173,8 +177,17 @@ export class WalletService {
     const params = new HttpParams()
       .set('per_time', period);
 
-    // Combine wallet balance and transactions to calculate proper chart data
-    return this.http.get<TransactionResponse>(`${this.BASE_URL}/transaction`, { headers, params }).pipe(
+    return this.http.get<TransactionListResponse>(`${this.BASE_URL}/transaction/list`, { headers, params }).pipe(
+      catchError((err) => {
+        console.error("Error fetching all transactions:", err);
+        return throwError(() => err);
+      })
+    );
+  }
+
+  getChartData(period: 'weekly' | 'monthly' | 'yearly' = 'monthly', currentBalance?: number): Observable<ChartDataResponse> {
+    // Use the new endpoint that returns all transactions
+    return this.getAllTransactions(period).pipe(
       map((response) => {
         return this.aggregateTransactionsToChartData(response.data, currentBalance);
       }),
