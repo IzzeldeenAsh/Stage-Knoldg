@@ -11,6 +11,7 @@ import { StripeCallbackComponent } from './stripe-callback/stripe-callback.compo
 import { PaymentSuccessComponent } from './payment-success/payment-success.component';
 import { PaymentHeaderComponent } from '../../reusable-components/payment-header/payment-header.component';
 import { PaymentTypeGuard } from './guards/payment-type.guard';
+import { PendingChangesGuard } from '../../guards/pending-changes.guard';
 import { PhoneNumberInputModule } from '../../reusable-components/phone-number-input/phone-number-input.module';
 import { ToastModule } from 'primeng/toast';
 @NgModule({
@@ -37,7 +38,8 @@ import { ToastModule } from 'primeng/toast';
       {
         path: 'manual-account',
         component: ManualAccountComponent,
-        canActivate: [PaymentTypeGuard]
+        canActivate: [PaymentTypeGuard],
+        canDeactivate: [PendingChangesGuard]
       },
       {
         path: 'stripe-callback',

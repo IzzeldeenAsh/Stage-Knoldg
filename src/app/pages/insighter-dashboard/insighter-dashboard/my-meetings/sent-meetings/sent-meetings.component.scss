@@ -16,12 +16,12 @@
       margin-right: 8px;
 
       &:hover {
-        color: #009ef7 !important;
+        color: #0978B9 !important;
         background-color: #f5f8fa !important;
       }
 
       &.active {
-        color: #009ef7 !important;
+        color: #0978B9 !important;
         background-color: #f1faff !important;
         font-weight: 600 !important;
       }
@@ -119,7 +119,7 @@
         height: 40px;
         
         &.bg-primary {
-          background-color: #009ef7 !important;
+          background-color: #0978B9 !important;
         }
       }
 
@@ -172,7 +172,7 @@
     }
 
     &.badge-primary {
-      background-color: #009ef7 !important;
+      background-color: #0978B9 !important;
       color: #ffffff !important;
     }
   }
@@ -182,7 +182,7 @@
 .spinner-border {
   width: 3rem;
   height: 3rem;
-  color: #009ef7;
+  color: #0978B9;
 }
 
 // Empty state styling
@@ -219,8 +219,8 @@
       margin: 0 2px;
 
       &:hover {
-        background-color: #009ef7;
-        border-color: #009ef7;
+        background-color: #0978B9;
+        border-color: #0978B9;
         color: white;
       }
 
@@ -231,8 +231,8 @@
     }
 
     &.active .page-link {
-      background-color: #009ef7 !important;
-      border-color: #009ef7 !important;
+      background-color: #0978B9 !important;
+      border-color: #0978B9 !important;
       color: #ffffff !important;
     }
 
@@ -304,7 +304,7 @@
       font-weight: 600 !important;
       
       .ki-duotone {
-        color: #009ef7;
+        color: #0978B9;
         width: 20px;
         height: 20px;
       }
@@ -332,10 +332,10 @@
 
       &.alert-info {
         background-color: #f1faff;
-        color: #009ef7;
+        color: #0978B9;
 
         .ki-duotone {
-          color: #009ef7;
+          color: #0978B9;
         }
       }
 
@@ -368,14 +368,14 @@
       transition: all 0.2s ease-in-out;
 
       &:hover {
-        background-color: #009ef7;
-        border-color: #009ef7;
+        background-color: #0978B9;
+        border-color: #0978B9;
         color: white;
       }
 
       &.active {
-        background-color: #009ef7 !important;
-        border-color: #009ef7 !important;
+        background-color: #0978B9 !important;
+        border-color: #0978B9 !important;
         color: white !important;
       }
 
@@ -434,7 +434,7 @@
     .spinner-border {
       width: 2rem;
       height: 2rem;
-      color: #009ef7;
+      color: #0978B9;
     }
   }
 
@@ -461,8 +461,8 @@
       }
 
       &.btn-primary {
-        background-color: #009ef7;
-        border-color: #009ef7;
+        background-color: #0978B9;
+        border-color: #0978B9;
 
         &:hover {
           background-color: #0b7ec8;
@@ -517,7 +517,7 @@
 
         &:hover {
           background-color: #f5f8fa;
-          color: #009ef7;
+          color: #0978B9;
         }
       }
 

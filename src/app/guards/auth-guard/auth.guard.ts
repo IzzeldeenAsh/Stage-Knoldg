@@ -51,6 +51,9 @@ export class authGuard  {
     // Token exists and is valid - now check profile
     return this.getProfileService.getProfile().pipe(
       map(user => {
+        if(user.roles.includes('admin')){
+          return this.router.createUrlTree(['/admin-dashboard']);
+        }
         if (user && user.verified) {
           // User is authenticated and verified, allow access
           return true;

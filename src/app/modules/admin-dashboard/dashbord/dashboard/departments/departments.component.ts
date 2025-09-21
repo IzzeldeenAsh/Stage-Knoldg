@@ -19,6 +19,7 @@ export class DepartmentComponent implements OnInit {
   messages: Message[] = []; // Array to hold error messages
   private unsubscribe: Subscription[] = [];
   listOfDepartments: Department[] = [];
+  filteredDepartments: Department[] = [];
   isEditMode: boolean = false; // Tracks whether we are in edit mode
   isLoading$: Observable<boolean>;
   selectedDepartmentId: number | null = null; // Holds the ID of the department being edited
@@ -103,6 +104,7 @@ export class DepartmentComponent implements OnInit {
     const listSub = this._departments.getDepartments().subscribe({
       next: (data: Department[]) => {
         this.listOfDepartments = data;
+        this.filteredDepartments = data;
         this.cdr.detectChanges()
       },
       error: (error) => {
@@ -128,8 +130,17 @@ export class DepartmentComponent implements OnInit {
 
   // Method to apply the filter to the table
   applyFilter(event: any) {
-    const value = event.target.value.trim().toLowerCase();
-    this.table.filterGlobal(value, "contains");
+    const filterValue = (event.target as HTMLInputElement).value.toLowerCase();
+    if (!filterValue) {
+      this.filteredDepartments = this.listOfDepartments;
+      return;
+    }
+
+    this.filteredDepartments = this.listOfDepartments.filter(department => 
+      department.name?.toLowerCase().includes(filterValue) ||
+      department.names?.en?.toLowerCase().includes(filterValue) ||
+      department.names?.ar?.toLowerCase().includes(filterValue)
+    );
   }
 
    get hasSuccessMessage(){

@@ -427,12 +427,12 @@
     
     &.active {
       background-color: #ffffff;
-      color: #009ef7;
+      color: #0978B9;
       box-shadow: 0 0.1rem 0.7rem 0 rgba(0, 0, 0, 0.08);
     }
 
     &:hover:not(.active) {
-      color: #009ef7;
+      color: #0978B9;
     }
   }
 }
@@ -492,7 +492,7 @@
       display: block;
       
       &:hover {
-        color: #009ef7;
+        color: #0978B9;
       }
     }
   }
@@ -510,7 +510,7 @@
   .price {
     font-size: 1.1rem;
     font-weight: 600;
-    color: #009ef7;
+    color: #0978B9;
   }
 }
 

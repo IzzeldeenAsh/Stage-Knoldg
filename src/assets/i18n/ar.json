@@ -7,10 +7,15 @@
         "MY_REQUESTS": "طلباتي",
         "MY_KNOWLEDGE": "معرفتي", 
         "MY_DOWNLOADS": "تحميلاتي",
+        "READ_LATER": "اقرأ لاحقاً",
+        "MY_ORDERS": "طلباتي",
         "MEETINGS": "الاجتماعات",
         "MY_CONSULTING_SCHEDULE": "جدولي الاستشاري",
         "MY_COMPANY": "شركتي",
-        "ACCOUNT_SETTINGS": "إعدادات الحساب"
+        "SETTINGS": "الإعدادات",
+        "ACCOUNT_SETTINGS": "إعدادات الحساب",
+        "PAYMENT_SETTINGS": "إعدادات الدفع",
+        "WALLET": "المحفظة"
       }
     },
     "MEETINGS": {
@@ -82,7 +87,9 @@
     "DOWNLOAD_KNOWLEDGE": "تحميل المعرفة",
     "DOWNLOAD_DOCUMENT": "تحميل المستند",
     "PUBLISHER": "الناشر",
-    "PURCHASE_DATE": "تاريخ الشراء"
+    "PURCHASE_DATE": "تاريخ الشراء",
+    "VIEW_ALL": "عرض الكل",
+    "SEARCH_PLACEHOLDER": "البحث بالعنوان..."
   },
   "EMPTY_DASHBOARD": {
     "TITLE": "ابدأ في بناء مكتبة المعرفة الخاصة بك",

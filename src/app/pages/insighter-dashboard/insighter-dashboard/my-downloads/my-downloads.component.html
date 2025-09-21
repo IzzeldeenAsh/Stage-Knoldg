@@ -39,6 +39,20 @@
                 </i>
               </button>
             }
+            @if (currentUuids().length > 0) {
+              <button 
+                type="button" 
+                class="btn btn-sm btn-light-primary ms-2" 
+                (click)="viewAll()"
+                [attr.title]="'MY_DOWNLOADS.VIEW_ALL' | translate">
+                <i class="ki-duotone ki-eye fs-2">
+                  <span class="path1"></span>
+                  <span class="path2"></span>
+                  <span class="path3"></span>
+                </i>
+                <span class="ms-1">{{ 'MY_DOWNLOADS.VIEW_ALL' | translate }}</span>
+              </button>
+            }
           </div>
         </div>
       </div>

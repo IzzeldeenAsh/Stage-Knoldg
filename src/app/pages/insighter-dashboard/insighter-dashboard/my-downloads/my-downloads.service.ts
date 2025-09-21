@@ -113,7 +113,7 @@ export class MyDownloadsService {
     return throwError(() => error);
   }
 
-  getMyDownloads(page: number = 1, title?: string): Observable<MyDownloadsResponse> {
+  getMyDownloads(page: number = 1, title?: string, uuids?: string[]): Observable<MyDownloadsResponse> {
     let url = `${this.API_URL}?page=${page}&per_page=10`;
     
     // Add title query parameter if provided
@@ -123,8 +123,13 @@ export class MyDownloadsService {
     
     const headers = this.getHeaders();
     
+    // Create request body if UUIDs are provided
+    const body = uuids && uuids.length > 0 ? { uuids } : null;
+    
     this.setLoading(true);
-    return this.http.get<MyDownloadsResponse>(url, { headers }).pipe(
+    
+    // Use POST if body exists, otherwise GET
+    return this.http.post<MyDownloadsResponse>(url, body, { headers }).pipe(
       map((response) => response),
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))

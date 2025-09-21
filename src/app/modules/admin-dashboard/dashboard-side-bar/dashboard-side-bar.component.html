@@ -1,240 +1,173 @@
 <div [ngClass]="{'sidebar':!isMobile,'sidebar-hidden':isMobile}"  [class.sidebar-hidden]="isSidebarHidden">
 <!--begin::Menu-->
-<div
-  class="menu menu-column menu-fit menu-rounded menu-title-gray-600 menu-icon-gray-500 menu-state-primary menu-state-icon-primary menu-state-bullet-primary menu-arrow-gray-500 fw-bold fs-5 px-6 my-5 my-lg-0"
-  id="kt_aside_menu" data-kt-menu="true">
+<div class="azure-nav" id="kt_aside_menu">
   
-  <div id="kt_aside_menu_wrapper" class="menu-fit">
+  <div id="kt_aside_menu_wrapper" class="nav-wrapper">
     
-    <!-- CPandel Section Title -->
-    <div class="menu-item">
-      <div class="menu-content pt-8 pb-2">
-        <span class="menu-section text-muted text-uppercase fs-8 ls-1">CPanel</span>
-      </div>
+    <!-- Notifications - First and Default -->
+    <div class="nav-item">
+      <a class="nav-link" routerLinkActive="active" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/notifications">
+        <i class="ki-outline ki-notification-bing nav-icon text-warning"></i>
+        <span class="nav-title">Notifications</span>
+      </a>
     </div>
     
-    <!-- CPandel Menu -->
-    <div class="menu-item menu-accordion" data-kt-menu-trigger="click" routerLinkActive="here show">
-      <span class="menu-link">
-        <span class="menu-icon">
-          <span class="svg-icon svg-icon-2" [inlineSVG]="'./assets/media/icons/duotune/general/gen025.svg'"></span>
-        </span>
-        <span class="menu-title">CPanel</span>
-        <span class="menu-arrow"></span>
-      </span>
-      <div class="menu-sub menu-sub-accordion" routerLinkActive="menu-active-bg">
-        <div class="menu-item">
-          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/requests">
-            <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-            <span class="menu-title">Requests</span>
-          </a>
-        </div>
-        <div class="menu-item">
-          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/departments">
-            <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-            <span class="menu-title">Departments</span>
-          </a>
-        </div>
-        <div class="menu-item">
-          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/positions">
-            <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-            <span class="menu-title">Positions</span>
-          </a>
-        </div>
-        <div class="menu-item">
-          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/countries">
-            <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-            <span class="menu-title">Countries</span>
-          </a>
-        </div>
-        <div class="menu-item">
-          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/regions">
-            <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-            <span class="menu-title">Regions</span>
-          </a>
-        </div>
-        <div class="menu-item">
-          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/verification-questions">
-            <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-            <span class="menu-title">Verification Questions</span>
-          </a>
-        </div>
-        <div class="menu-item">
-          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/consulting-fields">
-            <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-            <span class="menu-title">Consulting Fields</span>
-          </a>
-        </div>
-        <div class="menu-item">
-          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/ISIC-code">
-            <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-            <span class="menu-title">ISIC Code</span>
-          </a>
-        </div>
-        <div class="menu-item">
-          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/industries">
-            <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-            <span class="menu-title">Industries</span>
-          </a>
-        </div>
-        <div class="menu-item">
-          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/tags">
-            <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-            <span class="menu-title">Tags</span>
-          </a>
-        </div>
-        <div class="menu-item">
-          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/hscode">
-            <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-            <span class="menu-title">HS Code</span>
-          </a>
-        </div>
-        <div class="menu-item">
-          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/guidelines">
-            <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-            <span class="menu-title">Guidelines</span>
-          </a>
-        </div>
-        <div class="menu-item">
-          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/economic-blocks">
-            <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-            <span class="menu-title">Economic Blocks</span>
-          </a>
-        </div>
-        <div class="menu-item">
-          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/admin-dashboard/admin/dashboard/topics">
-            <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-            <span class="menu-title">Topics</span>
-          </a>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Account Section Title -->
-    <div class="menu-item">
-      <div class="menu-content pt-2 pb-2">
-        <span class="menu-section text-muted text-uppercase fs-8 ls-1">Account</span>
-      </div>
-    </div>
-    
-    <!-- Account Menu -->
-    <div class="menu-item menu-accordion" data-kt-menu-trigger="click" routerLinkActive="here show">
-      <span class="menu-link">
-        <span class="menu-icon">
-          <span class="svg-icon svg-icon-2" [inlineSVG]="'./assets/media/icons/duotune/communication/com006.svg'"></span>
-        </span>
-        <span class="menu-title">Account</span>
-        <span class="menu-arrow"></span>
-      </span>
-      <div class="menu-sub menu-sub-accordion" routerLinkActive="menu-active-bg">
-        <div class="menu-item">
-          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/admin-dashboard/admin/accounts/main-accounts/staff">
-            <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-            <span class="menu-title">Staff</span>
-          </a>
-        </div>
-        <div class="menu-item">
-          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/admin-dashboard/admin/accounts/main-accounts/roles">
-            <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-            <span class="menu-title">Roles</span>
-          </a>
-        </div>
-        <div class="menu-item">
-          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/admin-dashboard/admin/accounts/main-accounts/permissions">
-            <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-            <span class="menu-title">Permissions</span>
-          </a>
-        </div>
-        <div class="menu-item">
-          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/admin-dashboard/admin/accounts/main-accounts/users">
-            <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-            <span class="menu-title">Users</span>
-          </a>
-        </div>
-      </div>
-    </div>
 
-     <!-- Account Section Title -->
-     <div class="menu-item">
-      <div class="menu-content pt-2 pb-2">
-        <span class="menu-section text-muted text-uppercase fs-8 ls-1">MY SETTINGS</span>
-      </div>
-    </div>
-     <!-- Account Menu -->
-     <div class="menu-item menu-accordion" data-kt-menu-trigger="click" routerLinkActive="here show">
-      <span class="menu-link">
-        <span class="menu-icon">
-          <span class="svg-icon svg-icon-2" [inlineSVG]="'./assets/media/icons/duotune/general/gen047.svg'"></span>
-        </span>
-        <span class="menu-title">Settings</span>
-        <span class="menu-arrow"></span>
-      </span>
-      <div class="menu-sub menu-sub-accordion" routerLinkActive="menu-active-bg">
-        <div class="menu-item">
-          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/admin-dashboard/admin/my-settings/resetpassword">
-            <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-            <span class="menu-title">Change Password</span>
-          </a>
-        </div>
-       
-      </div>
+    
+   
+    
+    <!-- Data Management -->
+    <div class="nav-item">
+      <a class="nav-link" routerLinkActive="active" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/requests">
+        <i class="ki-outline ki-message-text nav-icon text-info"></i>
+        <span class="nav-title">Requests</span>
+      </a>
     </div>
     
-    <!-- Website Settings Section Title -->
-    <div class="menu-item">
-      <div class="menu-content pt-2 pb-2">
-        <span class="menu-section text-muted text-uppercase fs-8 ls-1">WEBSITE SETTINGS</span>
-      </div>
+    <div class="nav-item">
+      <a class="nav-link" routerLinkActive="active" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/departments">
+        <i class="ki-outline ki-category nav-icon text-warning"></i>
+        <span class="nav-title">Departments</span>
+      </a>
     </div>
     
-    <!-- Website Settings Menu -->
-    <div class="menu-item menu-accordion" data-kt-menu-trigger="click" routerLinkActive="here show">
-      <span class="menu-link">
-        <span class="menu-icon">
-          <span class="svg-icon svg-icon-2" [inlineSVG]="'./assets/media/icons/duotune/general/gen055.svg'"></span>
-        </span>
-        <span class="menu-title">Website</span>
-        <span class="menu-arrow"></span>
-      </span>
-      <div class="menu-sub menu-sub-accordion" routerLinkActive="menu-active-bg">
-        <div class="menu-item">
-          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/admin-dashboard/admin/website-settings/socials">
-            <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-            <span class="menu-title">Social Media</span>
-          </a>
-        </div>
-      </div>
+    <div class="nav-item">
+      <a class="nav-link" routerLinkActive="active" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/positions">
+        <i class="ki-outline ki-badge nav-icon text-success"></i>
+        <span class="nav-title">Positions</span>
+      </a>
     </div>
     
-    <!-- Contact Messages Section Title -->
-    <div class="menu-item">
-      <div class="menu-content pt-2 pb-2">
-        <span class="menu-section text-muted text-uppercase fs-8 ls-1">COMMUNICATION</span>
-      </div>
+    <div class="nav-item">
+      <a class="nav-link" routerLinkActive="active" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/countries">
+        <i class="ki-outline ki-geolocation nav-icon text-primary"></i>
+        <span class="nav-title">Countries</span>
+      </a>
     </div>
     
-    <!-- Contact Messages Menu -->
-    <div class="menu-item menu-accordion" data-kt-menu-trigger="click" routerLinkActive="here show">
-      <span class="menu-link">
-        <span class="menu-icon">
-          <span class="svg-icon svg-icon-2" [inlineSVG]="'./assets/media/icons/duotune/communication/com012.svg'"></span>
-        </span>
-        <span class="menu-title">Contact Messages</span>
-        <span class="menu-arrow"></span>
-      </span>
-      <div class="menu-sub menu-sub-accordion" routerLinkActive="menu-active-bg">
-        <div class="menu-item">
-          <a class="menu-link without-sub" routerLinkActive="active" routerLink="/admin-dashboard/admin/contact-messages/contact-list">
-            <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-            <span class="menu-title">Message List</span>
-          </a>
-        </div>
-      </div>
+    <div class="nav-item">
+      <a class="nav-link" routerLinkActive="active" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/regions">
+        <i class="ki-outline ki-map nav-icon text-info"></i>
+        <span class="nav-title">Regions</span>
+      </a>
+    </div>
+    
+    <div class="nav-item">
+      <a class="nav-link" routerLinkActive="active" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/consulting-fields">
+        <i class="ki-outline ki-teacher nav-icon text-warning"></i>
+        <span class="nav-title">Consulting Fields</span>
+      </a>
+    </div>
+    
+    <div class="nav-item">
+      <a class="nav-link" routerLinkActive="active" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/ISIC-code">
+        <i class="ki-outline ki-code nav-icon text-danger"></i>
+        <span class="nav-title">ISIC Code</span>
+      </a>
+    </div>
+    
+    <div class="nav-item">
+      <a class="nav-link" routerLinkActive="active" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/industries">
+        <i class="ki-outline ki-technology-2 nav-icon text-success"></i>
+        <span class="nav-title">Industries</span>
+      </a>
+    </div>
+    
+    <div class="nav-item">
+      <a class="nav-link" routerLinkActive="active" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/tags">
+        <i class="ki-outline ki-tag nav-icon text-primary"></i>
+        <span class="nav-title">Tags</span>
+      </a>
+    </div>
+    
+    <div class="nav-item">
+      <a class="nav-link" routerLinkActive="active" routerLink="/admin-dashboard/admin/dashboard/topics">
+        <i class="ki-outline ki-abstract-25 nav-icon text-info"></i>
+        <span class="nav-title">Topics</span>
+      </a>
+    </div>
+    
+    <div class="nav-item">
+      <a class="nav-link" routerLinkActive="active" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/hscode">
+        <i class="ki-outline ki-barcode nav-icon text-warning"></i>
+        <span class="nav-title">HS Code</span>
+      </a>
+    </div>
+    
+    <div class="nav-item">
+      <a class="nav-link" routerLinkActive="active" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/guidelines">
+        <i class="ki-outline ki-book-open nav-icon text-success"></i>
+        <span class="nav-title">Guidelines</span>
+      </a>
+    </div>
+    
+    <div class="nav-item">
+      <a class="nav-link" routerLinkActive="active" routerLink="/admin-dashboard/admin/dashboard/main-dashboard/economic-blocks">
+        <i class="ki-outline ki-technology-4 nav-icon text-primary"></i>
+        <span class="nav-title">Economic Blocks</span>
+      </a>
+    </div>
+    
+    <!-- Account Management -->
+    <div class="nav-item">
+      <a class="nav-link" routerLinkActive="active" routerLink="/admin-dashboard/admin/accounts/main-accounts/staff">
+        <i class="ki-outline ki-people nav-icon text-info"></i>
+        <span class="nav-title">Staff</span>
+      </a>
+    </div>
+    
+    <div class="nav-item">
+      <a class="nav-link" routerLinkActive="active" routerLink="/admin-dashboard/admin/accounts/main-accounts/roles">
+        <i class="ki-outline ki-user-tick nav-icon text-warning"></i>
+        <span class="nav-title">Roles</span>
+      </a>
+    </div>
+    
+    <div class="nav-item">
+      <a class="nav-link" routerLinkActive="active" routerLink="/admin-dashboard/admin/accounts/main-accounts/permissions">
+        <i class="ki-outline ki-shield-tick nav-icon text-success"></i>
+        <span class="nav-title">Permissions</span>
+      </a>
+    </div>
+    
+    <div class="nav-item">
+      <a class="nav-link" routerLinkActive="active" routerLink="/admin-dashboard/admin/accounts/main-accounts/users">
+        <i class="ki-outline ki-profile-user nav-icon text-primary"></i>
+        <span class="nav-title">Users</span>
+      </a>
+    </div>
+    
+    <!-- Settings -->
+    <div class="nav-item">
+      <a class="nav-link" routerLinkActive="active" routerLink="/admin-dashboard/admin/my-settings/resetpassword">
+        <i class="ki-outline ki-key nav-icon text-danger"></i>
+        <span class="nav-title">Change Password</span>
+      </a>
+    </div>
+    
+    <div class="nav-item">
+      <a class="nav-link" routerLinkActive="active" routerLink="/admin-dashboard/admin/website-settings/socials">
+        <i class="ki-outline ki-social-media nav-icon text-info"></i>
+        <span class="nav-title">Social Media</span>
+      </a>
+    </div>
+    
+    <div class="nav-item">
+      <a class="nav-link" routerLinkActive="active" routerLink="/admin-dashboard/admin/contact-messages/contact-list">
+        <i class="ki-outline ki-sms nav-icon text-warning"></i>
+        <span class="nav-title">Contact Messages</span>
+      </a>
+    </div>
+    
+    <div class="nav-item">
+      <a class="nav-link" routerLinkActive="active" routerLink="/admin-dashboard/admin/orders">
+        <i class="ki-outline ki-basket nav-icon text-success"></i>
+        <span class="nav-title">Orders</span>
+      </a>
     </div>
     
   </div>
 </div>
-
 
 </div>
 

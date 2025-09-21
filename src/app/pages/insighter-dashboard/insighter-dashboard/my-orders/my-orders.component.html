@@ -1,4 +1,28 @@
-<div class="container-fluid">
+<div class="container-fluid bg-white p-5 rounded-lg" style="border-radius: 10px;">
+  <!-- Tab Navigation -->
+  <div class="row mb-5">
+    <div class="col-12">
+      <div class="filter-tabs-orders">
+        <div class="nav nav-pills nav-pills-custom">
+          <a class="nav-link" 
+            [class.active]="activeTab === 'knowledge'"
+            (click)="setActiveTab('knowledge')">
+            <i class="ki-outline ki-book me-2"></i>
+            {{ lang === 'ar' ? 'طلبات المعرفة' : 'Knowledge Orders' }}
+          </a>
+          <a class="nav-link" 
+            [class.active]="activeTab === 'meeting'"
+            (click)="setActiveTab('meeting')">
+            <i class="ki-outline ki-calendar me-2"></i>
+            {{ lang === 'ar' ? 'طلبات الاجتماعات' : 'Meeting Orders' }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Knowledge Orders Tab -->
+  <div *ngIf="activeTab === 'knowledge'">
   <div class="row g-4">
     <!-- Loading State -->
     <div *ngIf="isLoading$ | async" class="col-12">
@@ -18,19 +42,40 @@
             <div class="d-flex align-items-center">
               <div class="symbol symbol-40px me-3">
                 <div class="symbol-label bg-light-info">
-                  <i class="pi pi-shopping-bag text-info fs-2"></i>
+                  <svg width="24" height="32" viewBox="0 0 24 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1.30664 12.1711H5.04102C5.61598 12.1712 6.08384 12.6392 6.08398 13.2141V28.5237C6.08398 29.0987 5.61607 29.5676 5.04102 29.5676H1.30664C0.731667 29.5675 0.263672 29.0987 0.263672 28.5237V13.2141C0.263816 12.6392 0.731755 12.1713 1.30664 12.1711Z" fill="white" stroke="#499AFE" stroke-width="0.527156"/>
+                    <path d="M3.17435 14.4116C3.33775 14.4119 3.47025 14.545 3.47025 14.7085V24.7896C3.47025 24.953 3.33775 25.0862 3.17435 25.0864C3.01074 25.0864 2.87747 24.9532 2.87747 24.7896V14.7085C2.87747 14.5449 3.01074 14.4116 3.17435 14.4116Z" fill="white" stroke="#499AFE" stroke-width="0.527156"/>
+                    <path d="M2.61429 26.7341H3.73441C3.89785 26.7343 4.0303 26.8675 4.0303 27.031C4.03006 27.1943 3.8977 27.3267 3.73441 27.3269H2.61429C2.45083 27.3269 2.31765 27.1944 2.31741 27.031C2.31741 26.8674 2.45068 26.7341 2.61429 26.7341Z" fill="white" stroke="#499AFE" stroke-width="0.527156"/>
+                    <path d="M7.63251 12.1711H11.3669C11.9418 12.1712 12.4097 12.6392 12.4099 13.2141V28.5237C12.4099 29.0987 11.9419 29.5676 11.3669 29.5676H7.63251C7.05753 29.5675 6.58954 29.0987 6.58954 28.5237V13.2141C6.58968 12.6392 7.05762 12.1713 7.63251 12.1711Z" fill="white" stroke="#499AFE" stroke-width="0.527156"/>
+                    <path d="M9.50024 14.4116C9.66365 14.4119 9.79614 14.545 9.79614 14.7085V24.7896C9.79614 24.953 9.66365 25.0862 9.50024 25.0864C9.33664 25.0864 9.20337 24.9532 9.20337 24.7896V14.7085C9.20337 14.5449 9.33664 14.4116 9.50024 14.4116Z" fill="white" stroke="#499AFE" stroke-width="0.527156"/>
+                    <path d="M8.94012 26.7341H10.0602C10.2237 26.7343 10.3561 26.8675 10.3561 27.031C10.3559 27.1943 10.2235 27.3267 10.0602 27.3269H8.94012C8.77667 27.3269 8.64349 27.1944 8.64325 27.031C8.64325 26.8674 8.77652 26.7341 8.94012 26.7341Z" fill="white" stroke="#499AFE" stroke-width="0.527156"/>
+                    <path d="M13.5933 12.3933L17.2068 11.4508C17.7631 11.3057 18.334 11.6404 18.4792 12.1967L22.3435 27.0106C22.4886 27.567 22.1542 28.1388 21.5978 28.284L17.9843 29.2266C17.4279 29.3715 16.8567 29.0361 16.7116 28.4797L12.8474 13.6658C12.7024 13.1095 13.0371 12.5386 13.5933 12.3933Z" fill="white" stroke="#499AFE" stroke-width="0.527156"/>
+                    <path d="M15.9661 14.0897C16.1243 14.0487 16.2861 14.1441 16.3273 14.3023L18.8719 24.0569C18.9131 24.2151 18.8185 24.3774 18.6605 24.4189C18.5022 24.4602 18.3396 24.3649 18.2983 24.2066L15.7538 14.4519C15.7125 14.2936 15.8078 14.131 15.9661 14.0897Z" fill="white" stroke="#499AFE" stroke-width="0.527156"/>
+                    <path d="M18.5343 26.1542L19.6182 25.8715C19.7764 25.8304 19.9381 25.9258 19.9794 26.084C20.0204 26.2421 19.9257 26.4036 19.7678 26.445L18.6839 26.7278C18.5258 26.769 18.3635 26.6744 18.322 26.5164C18.2807 26.3581 18.376 26.1955 18.5343 26.1542Z" fill="white" stroke="#499AFE" stroke-width="0.527156"/>
+                    <g clip-path="url(#clip0_545_160)">
+                    <path d="M18.3504 10.4139C15.8686 8.23941 12.3585 7.46563 8.96075 8.34402C8.10046 8.56587 7.26557 8.89254 6.47086 9.31451L8.87457 9.6624C8.98278 9.67807 9.06945 9.73884 9.11885 9.82225C9.15998 9.89169 9.17535 9.97678 9.15584 10.0646C9.11296 10.2582 8.91758 10.3918 8.71939 10.3631L4.93795 9.81571L6.24504 6.3417C6.31554 6.15429 6.52687 6.04759 6.71703 6.10344C6.90712 6.15933 7.00409 6.35651 6.93349 6.54406L6.11594 8.71702C6.9765 8.25668 7.88182 7.90113 8.81502 7.66045C12.4511 6.7205 16.2074 7.54857 18.8633 9.87559C18.8899 9.89888 18.9117 9.92553 18.9288 9.95425C19.0046 10.0823 18.9852 10.2536 18.8696 10.375C18.728 10.5236 18.4956 10.541 18.3504 10.4139Z" fill="#499AFE"/>
+                    </g>
+                    <defs>
+                    <clipPath id="clip0_545_160">
+                    <rect width="11.1027" height="11.9671" fill="white" transform="translate(13.7276 1.1731) rotate(59.3625)"/>
+                    </clipPath>
+                    </defs>
+                    </svg>
+                    
+                      
+
                 </div>
               </div>
               <div>
                 <div class="d-flex align-items-center mb-1">
                   <h6 class="mb-0 fw-bold me-2">
-                    {{ lang === 'ar' ? 'طلب رقم' : 'Order no' }} #{{ order.uuid }}
+                    {{ lang === 'ar' ? 'طلب رقم' : 'Order' }} {{ order.order_no }}
                   </h6>
                   <button 
                     type="button" 
                     class="btn btn-sm btn-light-info p-1"
-                    (click)="copyOrderUuid(order.uuid)"
-                    [title]="lang === 'ar' ? 'نسخ رقم الطلب' : 'Copy Order UUID'">
+                    (click)="copyOrderNo(order.order_no)"
+                    [title]="lang === 'ar' ? 'نسخ رقم الطلب' : 'Copy Order Number'">
                     <i class="ki-outline ki-copy fs-6"></i>
                   </button>
                 </div>
@@ -44,24 +89,42 @@
                 (click)="openOrderDetails(order)">
                 {{ lang === 'ar' ? 'تفاصيل الطلب' : 'Order Details' }}
               </button>
+              <button 
+                type="button" 
+                class="btn btn-light-info btn-sm"
+                (click)="downloadInvoice(order)">
+                <i class="ki-outline ki-file-down fs-6 me-1"></i>
+                {{ lang === 'ar' ? 'تحميل الفاتورة' : 'Download Invoice' }}
+              </button>
             </div>
           </div>
 
-          <!-- Order Status -->
-          <!-- <div class="mb-3">
-            <span [class]="getStatusBadgeClass(order.status)" class="text-uppercase">
-              {{ order.status  }}
-            </span>
-          </div> -->
+          <!-- Order Info Row -->
+          <div class="mb-3 d-flex flex-wrap gap-3">
+            <div>
+              <span class="text-muted fs-7">{{ lang === 'ar' ? 'النوع:' : 'Type:' }}</span>
+              <span class="ms-2 fw-semibold">{{ getServiceTypeDisplay(order.service) }}</span>
+            </div>
+            <div>
+              <span class="text-muted fs-7">{{ lang === 'ar' ? 'طريقة الدفع:' : 'Payment Method:' }}</span>
+              <span class="ms-2 fw-semibold">{{ getPaymentMethodDisplay(order.payment) }}</span>
+            </div>
+            <div>
+              <span class="text-muted fs-7">{{ lang === 'ar' ? 'الحالة:' : 'Status:' }}</span>
+              <span [class]="getStatusBadgeClass(order.status)" class="ms-2 text-uppercase">
+                {{ order.status }}
+              </span>
+            </div>
+          </div>
 
           <!-- Knowledge Items -->
-          <div *ngFor="let suborder of order.suborders" class="mb-3">
+          <div *ngFor="let suborder of order.suborders; let suborderIndex = index" class="mb-3">
             <div *ngFor="let knowledge of suborder.knowledge" class="mb-2">
               <div class="d-flex align-items-center ">
                 <div >
                   <a 
                   [pTooltip]="lang ==='ar' ? 'عرض في التحميلات' : 'View in downloads'"
-                  (click)="navigateToDownloads(knowledge.title)"
+                  (click)="navigateToDownloads(order, suborderIndex)"
                     target="_blank"
                     class="text-info text-decoration-none fw-bold fs-6 cursor-pointer">
                     {{ knowledge.title }}
@@ -80,14 +143,18 @@
               <!-- Documents Preview -->
               <div *ngIf="suborder.knowledge_documents && suborder.knowledge_documents.length > 0" class="mt-2">
                 <div class="d-flex flex-wrap gap-2">
-                  <div *ngFor="let extension of getUniqueExtensions(suborder)" class="d-flex align-items-center">
-                    <span class="badge badge-light-secondary me-1">({{ getDocumentCountByExtension(suborder, extension) }})</span>
+                  <div *ngFor="let extension of getUniqueExtensions(suborder)" class="position-relative d-inline-block">
                     <img 
                       [src]="getFileIconByExtension(extension)" 
                       [alt]="extension"
-                      class="me-2"
-                      style="width: 24px; height: 24px;"
+                      class="file-icon"
+                      style="width: 40px; height: 40px;"
                       onerror="this.style.display='none'">
+                    <span 
+                      class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-white"
+                      [style.background-color]="getBadgeColorByExtension(extension)">
+                      {{ getDocumentCountByExtension(suborder, extension) }}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -106,21 +173,37 @@
 
     <!-- Empty State -->
     <div *ngIf="(orders$ | async)?.length === 0 && !(isLoading$ | async)" class="col-12">
-      <div class="text-center py-10">
-        <div class="symbol symbol-100px mx-auto mb-4">
-          <div class="symbol-label bg-light-info">
-            <i class="pi pi-shopping-bag text-info fs-1"></i>
+      <div class="card">
+        <div class="text-center py-10">
+          <div class="symbol symbol-100px mx-auto mb-4">
+            <div class="symbol-label bg-light-info">
+              <svg width="44" height="53" viewBox="0 0 44 53" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2.46436 18.8176H9.50049C10.6633 18.8178 11.6099 19.7642 11.6099 20.927V49.7747C11.6099 50.9375 10.6633 51.8839 9.50049 51.884H2.46436C1.30145 51.884 0.35498 50.9376 0.35498 49.7747V20.927C0.35498 19.7641 1.30145 18.8176 2.46436 18.8176Z" stroke="#3799FF" stroke-width="0.706368"/>
+                <path d="M5.98236 23.0396C6.36978 23.0397 6.68451 23.3543 6.68451 23.7417V42.7388C6.68451 43.1262 6.36978 43.4408 5.98236 43.4409C5.59483 43.4409 5.28021 43.1263 5.28021 42.7388V23.7417C5.28021 23.3542 5.59483 23.0396 5.98236 23.0396Z" stroke="#3799FF" stroke-width="0.706368"/>
+                <path d="M4.92703 46.2593H7.03738C7.42491 46.2593 7.73953 46.5739 7.73953 46.9614C7.7394 47.3488 7.42483 47.6636 7.03738 47.6636H4.92703C4.53959 47.6636 4.22502 47.3488 4.22488 46.9614C4.22488 46.5739 4.5395 46.2593 4.92703 46.2593Z" stroke="#3799FF" stroke-width="0.706368"/>
+                <path d="M14.3843 18.8176H21.4204C22.5832 18.8178 23.5298 19.7642 23.5298 20.927V49.7747C23.5298 50.9375 22.5832 51.8839 21.4204 51.884H14.3843C13.2214 51.884 12.2749 50.9376 12.2749 49.7747V20.927C12.2749 19.7641 13.2214 18.8176 14.3843 18.8176Z" stroke="#3799FF" stroke-width="0.706368"/>
+                <path d="M17.9024 23.0396C18.2898 23.0397 18.6046 23.3543 18.6046 23.7417V42.7388C18.6046 43.1262 18.2898 43.4408 17.9024 43.4409C17.5149 43.4409 17.2003 43.1263 17.2003 42.7388V23.7417C17.2003 23.3542 17.5149 23.0396 17.9024 23.0396Z" stroke="#3799FF" stroke-width="0.706368"/>
+                <path d="M16.847 46.2593H18.9573C19.3448 46.2593 19.6595 46.5739 19.6595 46.9614C19.6593 47.3488 19.3448 47.6636 18.9573 47.6636H16.847C16.4595 47.6636 16.1449 47.3488 16.1448 46.9614C16.1448 46.5739 16.4594 46.2593 16.847 46.2593Z" stroke="#3799FF" stroke-width="0.706368"/>
+                <path d="M25.5809 19.2404L32.3892 17.4645C33.5144 17.1711 34.6692 17.848 34.9627 18.9731L42.2441 46.8867C42.5376 48.0119 41.8605 49.1666 40.7354 49.4602L33.9271 51.2362C32.8019 51.5297 31.6471 50.8528 31.3536 49.7275L24.0723 21.8139C23.7787 20.6887 24.4557 19.534 25.5809 19.2404Z" stroke="#3799FF" stroke-width="0.706368"/>
+                <path d="M30.0507 22.4377C30.4257 22.34 30.8096 22.565 30.9074 22.9399L35.7024 41.3218C35.8002 41.6967 35.575 42.0806 35.2002 42.1785C34.8252 42.2763 34.4414 42.0513 34.3435 41.6763L29.5486 23.2943C29.4507 22.9193 29.6758 22.5355 30.0507 22.4377Z" fill="#CCEBFF" stroke="#3799FF" stroke-width="0.706368"/>
+                <path d="M34.89 45.1706L36.9321 44.6379C37.307 44.5401 37.6909 44.7651 37.7887 45.1401C37.8864 45.515 37.6614 45.8989 37.2865 45.9967L35.2445 46.5294C34.8696 46.6272 34.4858 46.4021 34.3879 46.0272C34.29 45.6522 34.5151 45.2684 34.89 45.1706Z" fill="#CCEBFF" stroke="#3799FF" stroke-width="0.706368"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M18.1881 14.3762C14.2246 14.3762 11 11.1517 11 7.1881C11 3.22453 14.2246 0 18.1881 0C22.1517 0 25.3762 3.22453 25.3762 7.1881C25.3762 11.1517 22.1517 14.3762 18.1881 14.3762ZM18.1881 1.06772C14.8133 1.06772 12.0677 3.81331 12.0677 7.1881C12.0677 10.5629 14.8133 13.3085 18.1881 13.3085C21.5629 13.3085 24.3085 10.5629 24.3085 7.1881C24.3085 3.81331 21.5629 1.06772 18.1881 1.06772Z" fill="#3799FF"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M18.3186 9.00487C18.0234 9.00487 17.7847 8.76616 17.7847 8.47099C17.7847 6.906 18.0547 6.33478 18.8967 6.11969C19.1178 6.06324 19.2635 6.02588 19.4427 5.40048C19.6456 4.68892 19.233 3.94532 18.5214 3.74168C17.8099 3.5388 17.0663 3.95142 16.8626 4.66298C16.7818 4.94669 16.4859 5.11066 16.2029 5.02982C15.9192 4.94896 15.7552 4.65307 15.8361 4.37011C16.2014 3.09263 17.5376 2.35055 18.8143 2.71513C20.0918 3.08044 20.8338 4.41586 20.4693 5.69332C20.1489 6.81444 19.6471 7.02952 19.1613 7.15383C19.1102 7.16681 19.0332 7.18663 19.0149 7.19885C19.0095 7.20419 18.8532 7.37042 18.8532 8.47021C18.8524 8.76614 18.613 9.00487 18.3186 9.00487Z" fill="#3799FF"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M18.3186 11.7539C18.0234 11.7539 17.7847 11.5151 17.7847 11.22V10.5656C17.7847 10.2705 18.0234 10.0317 18.3186 10.0317C18.6137 10.0317 18.8524 10.2704 18.8524 10.5656V11.22C18.8524 11.5144 18.6129 11.7539 18.3186 11.7539Z" fill="#3799FF"/>
+                </svg>
+                
+            </div>
           </div>
+          <h5 class="mb-3">{{ lang === 'ar' ? 'لا توجد طلبات' : 'No Orders Found' }}</h5>
+          <p class="text-muted">
+            {{ lang === 'ar' ? 'لم تقم بأي طلبات بعد' : 'You haven\'t placed any orders yet.' }}
+          </p>
         </div>
-        <h5 class="mb-3">{{ lang === 'ar' ? 'لا توجد طلبات' : 'No Orders Found' }}</h5>
-        <p class="text-muted">
-          {{ lang === 'ar' ? 'لم تقم بأي طلبات بعد' : 'You haven\'t placed any orders yet.' }}
-        </p>
       </div>
     </div>
   </div>
 
-  <!-- Pagination -->
+  <!-- Pagination for Knowledge Orders -->
   <div *ngIf="(totalPages$ | async)! > 1" class="d-flex justify-content-center mt-6">
     <p-paginator 
       [rows]="10" 
@@ -130,6 +213,168 @@
       [showCurrentPageReport]="true"
       [currentPageReportTemplate]="lang === 'ar' ? 'عرض {first} إلى {last} من {totalRecords} طلب' : 'Showing {first} to {last} of {totalRecords} orders'">
     </p-paginator>
+  </div>
+</div>
+
+  <!-- Meeting Orders Tab -->
+  <div *ngIf="activeTab === 'meeting'">
+    <div class="row g-4">
+      <!-- Loading State -->
+      <div *ngIf="isMeetingLoading$ | async" class="col-12">
+        <div class="d-flex justify-content-center align-items-center" style="min-height: 200px;">
+          <div class="spinner-border text-info" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">{{ lang === 'ar' ? 'جاري التحميل...' : 'Loading...' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Meeting Orders Cards -->
+      <div *ngFor="let order of meetingOrders$ | async" class="col-12">
+        <div class="card card-custom gutter-b">
+          <div class="card-body p-6">
+            <!-- Order Header -->
+            <div class="d-flex justify-content-between align-items-start mb-4">
+              <div class="d-flex align-items-center">
+                <div class="symbol symbol-40px me-3">
+                  <div class="symbol-label bg-light-info">
+                    <i class="ki-outline ki-calendar fs-2x text-info"></i>
+                  </div>
+                </div>
+                <div>
+                  <div class="d-flex align-items-center mb-1">
+                    <h6 class="mb-0 fw-bold me-2">
+                      {{ lang === 'ar' ? 'طلب رقم' : 'Order' }} {{ order.order_no }}
+                    </h6>
+                    <button 
+                      type="button" 
+                      class="btn btn-sm btn-light-info p-1"
+                      (click)="copyOrderNo(order.order_no)"
+                      [title]="lang === 'ar' ? 'نسخ رقم الطلب' : 'Copy Order Number'">
+                      <i class="ki-outline ki-copy fs-6"></i>
+                    </button>
+                  </div>
+                  <div class="text-muted fs-7">{{ order.amount === 0 ? (lang === 'ar' ? 'مجاني' : 'Free') : '$' + order.amount }}</div>
+                </div>
+              </div>
+              <div class="d-flex gap-2">
+                <button 
+                  type="button" 
+                  class="btn btn-info btn-sm"
+                  (click)="openMeetingOrderDetails(order)">
+                  {{ lang === 'ar' ? 'تفاصيل الطلب' : 'Order Details' }}
+                </button>
+                <button 
+                  type="button" 
+                  class="btn btn-light-info btn-sm"
+                  (click)="downloadInvoice(order)">
+                  <i class="ki-outline ki-file-down fs-6 me-1"></i>
+                  {{ lang === 'ar' ? 'تحميل الفاتورة' : 'Download Invoice' }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Order Info Row -->
+            <div class="mb-4 d-flex flex-wrap gap-3">
+              <div>
+                <span class="text-muted fs-7">{{ lang === 'ar' ? 'النوع:' : 'Type:' }}</span>
+                <span class="ms-2 fw-semibold">{{ getServiceTypeDisplay(order.service) }}</span>
+              </div>
+              <div>
+                <span class="text-muted fs-7">{{ lang === 'ar' ? 'طريقة الدفع:' : 'Payment Method:' }}</span>
+                <span class="ms-2 fw-semibold">{{ getPaymentMethodDisplay(order.payment) }}</span>
+              </div>
+              <div>
+                <span class="text-muted fs-7">{{ lang === 'ar' ? 'الحالة:' : 'Status:' }}</span>
+                <span [class]="getStatusBadgeClass(order.status)" class="ms-2 text-uppercase">
+                  {{ order.status }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Meeting Details -->
+            <div *ngFor="let suborder of order.suborders">
+              <div *ngIf="suborder.meeting_booking" class="bg-light-info rounded p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <div>
+                    <h6 class="mb-1 fw-bold text-dark">{{ suborder.meeting_booking.title }}</h6>
+                    <p class="text-muted fs-7 mb-0">{{ suborder.meeting_booking.description }}</p>
+                  </div>
+                  <span [class]="'badge ' + getMeetingStatusBadgeClass(suborder.meeting_booking.status)">
+                    {{ getMeetingStatusDisplay(suborder.meeting_booking.status) }}
+                  </span>
+                </div>
+                
+                <div class="row g-3 mt-2">
+                  <div class="col-md-4">
+                    <div class="d-flex align-items-center">
+                      <i class="ki-outline ki-calendar fs-5 text-info me-2"></i>
+                      <div>
+                        <div class="fs-8 text-muted">{{ lang === 'ar' ? 'التاريخ' : 'Date' }}</div>
+                        <div class="fw-semibold fs-7">{{ suborder.meeting_booking.date | date:'mediumDate' }}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="d-flex align-items-center">
+                      <i class="ki-outline ki-time fs-5 text-info me-2"></i>
+                      <div>
+                        <div class="fs-8 text-muted">{{ lang === 'ar' ? 'الوقت' : 'Time' }}</div>
+                        <div class="fw-semibold fs-7">{{ suborder.meeting_booking.start_time }} - {{ suborder.meeting_booking.end_time }}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="d-flex align-items-center">
+                      <i class="ki-outline ki-timer fs-5 text-info me-2"></i>
+                      <div>
+                        <div class="fs-8 text-muted">{{ lang === 'ar' ? 'المدة' : 'Duration' }}</div>
+                        <div class="fw-semibold fs-7">{{ calculateDuration(suborder.meeting_booking.start_time, suborder.meeting_booking.end_time) }}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Order Date -->
+            <div class="border-top pt-3 mt-4">
+              <div class="text-muted fs-7">
+                {{ lang === 'ar' ? 'تاريخ الطلب' : 'Ordered' }} {{ order.date | date:'short' }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State for Meeting Orders -->
+      <div *ngIf="(meetingOrders$ | async)?.length === 0 && !(isMeetingLoading$ | async)" class="col-12">
+        <div class="card">
+          <div class="text-center py-10">
+            <div class="symbol symbol-100px mx-auto mb-4">
+              <div class="symbol-label bg-light-info">
+                <i class="ki-outline ki-calendar fs-3x text-info"></i>
+              </div>
+            </div>
+            <h5 class="mb-3">{{ lang === 'ar' ? 'لا توجد طلبات اجتماعات' : 'No Meeting Orders Found' }}</h5>
+            <p class="text-muted">
+              {{ lang === 'ar' ? 'لم تقم بأي طلبات اجتماعات بعد' : 'You haven\'t placed any meeting orders yet.' }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination for Meeting Orders -->
+    <div *ngIf="(meetingTotalPages$ | async)! > 1" class="d-flex justify-content-center mt-6">
+      <p-paginator 
+        [rows]="10" 
+        [totalRecords]="(meetingTotalPages$ | async)! * 10"
+        [first]="(currentMeetingPage - 1) * 10"
+        (onPageChange)="onMeetingPageChange(($event.page || 0) + 1)"
+        [showCurrentPageReport]="true"
+        [currentPageReportTemplate]="lang === 'ar' ? 'عرض {first} إلى {last} من {totalRecords} طلب اجتماع' : 'Showing {first} to {last} of {totalRecords} meeting orders'">
+      </p-paginator>
+    </div>
   </div>
 </div>
 
@@ -148,7 +393,7 @@
     <!-- Order Header -->
     <div class="mb-4">
       <h6 class="fw-bold mb-2">
-        {{ lang === 'ar' ? 'طلب رقم' : 'Order' }} #{{ selectedOrder.uuid }}
+        {{ lang === 'ar' ? 'طلب رقم' : 'Order' }} {{ selectedOrder.order_no }}
       </h6>
       <div class="d-flex justify-content-between align-items-center mb-2">
         <span class="text-muted">{{ lang === 'ar' ? 'المبلغ:' : 'Amount:' }}</span>
@@ -158,9 +403,17 @@
         <span class="text-muted">{{ lang === 'ar' ? 'الحالة:' : 'Status:' }}</span>
         <span [class]="getStatusBadgeClass(selectedOrder.status)" class="text-uppercase">{{ selectedOrder.status }}</span>
       </div>
-      <div class="d-flex justify-content-between align-items-center">
+      <div class="d-flex justify-content-between align-items-center mb-2">
         <span class="text-muted">{{ lang === 'ar' ? 'التاريخ:' : 'Date:' }}</span>
         <span>{{ selectedOrder.date | date:'medium' }}</span>
+      </div>
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="text-muted">{{ lang === 'ar' ? 'النوع:' : 'Type:' }}</span>
+        <span class="fw-bold">{{ getServiceTypeDisplay(selectedOrder.service) }}</span>
+      </div>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="text-muted">{{ lang === 'ar' ? 'طريقة الدفع:' : 'Payment:' }}</span>
+        <span class="fw-bold">{{ getPaymentMethodDisplay(selectedOrder.payment) }}</span>
       </div>
     </div>
 
@@ -189,7 +442,7 @@
                         [src]="getFileIconByExtension(doc.file_extension)" 
                         [alt]="doc.file_extension"
                         class="me-3"
-                        style="width: 32px; height: 32px;"
+                        style="width: 40px; height: 40px;"
                         onerror="this.style.display='none'">
                       <div class="flex-grow-1">
                         <div class="fw-bold fs-6">{{ doc.file_name }}</div>
@@ -208,5 +461,91 @@
       </div>
     </div>
 
+  </div>
+</p-dialog>
+
+<!-- Meeting Order Details Dialog -->
+<p-dialog 
+  [(visible)]="showMeetingOrderDetails" 
+  [header]="lang === 'ar' ? 'تفاصيل طلب الاجتماع' : 'Meeting Order Details'"
+  [modal]="true" 
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '50vw', minWidth: '300px' }"
+  [contentStyle]="{ 'max-height': '70vh', 'overflow-y': 'auto' }"
+  appendTo="body">
+  
+  <div *ngIf="selectedMeetingOrder" class="order-details">
+    <!-- Order Header -->
+    <div class="mb-4">
+      <h6 class="fw-bold mb-2">
+        {{ lang === 'ar' ? 'طلب رقم' : 'Order' }} {{ selectedMeetingOrder.order_no }}
+      </h6>
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="text-muted">{{ lang === 'ar' ? 'المبلغ:' : 'Amount:' }}</span>
+        <span class="fw-bold">{{ selectedMeetingOrder.amount === 0 ? (lang === 'ar' ? 'مجاني' : 'Free') : '$'+ selectedMeetingOrder.amount }}</span>
+      </div>
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="text-muted">{{ lang === 'ar' ? 'الحالة:' : 'Status:' }}</span>
+        <span [class]="getStatusBadgeClass(selectedMeetingOrder.status)" class="text-uppercase">{{ selectedMeetingOrder.status }}</span>
+      </div>
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="text-muted">{{ lang === 'ar' ? 'التاريخ:' : 'Date:' }}</span>
+        <span>{{ selectedMeetingOrder.date | date:'medium' }}</span>
+      </div>
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="text-muted">{{ lang === 'ar' ? 'النوع:' : 'Type:' }}</span>
+        <span class="fw-bold">{{ getServiceTypeDisplay(selectedMeetingOrder.service) }}</span>
+      </div>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="text-muted">{{ lang === 'ar' ? 'طريقة الدفع:' : 'Payment:' }}</span>
+        <span class="fw-bold">{{ getPaymentMethodDisplay(selectedMeetingOrder.payment) }}</span>
+      </div>
+    </div>
+
+    <!-- Meeting Bookings Details -->
+    <div *ngFor="let suborder of selectedMeetingOrder.suborders" class="mb-4">
+      <div *ngIf="suborder.meeting_booking" class="border rounded p-4">
+        <div class="d-flex justify-content-between align-items-start mb-3">
+          <div>
+            <h6 class="mb-2 fw-bold text-dark">{{ suborder.meeting_booking.title }}</h6>
+            <p class="text-muted fs-7 mb-0">{{ suborder.meeting_booking.description }}</p>
+          </div>
+          <span [class]="'badge ' + getMeetingStatusBadgeClass(suborder.meeting_booking.status)">
+            {{ getMeetingStatusDisplay(suborder.meeting_booking.status) }}
+          </span>
+        </div>
+        
+        <div class="row g-3">
+          <div class="col-md-4">
+            <div class="d-flex align-items-center">
+              <i class="ki-outline ki-calendar fs-5 text-info me-2"></i>
+              <div>
+                <div class="fs-8 text-muted">{{ lang === 'ar' ? 'التاريخ' : 'Date' }}</div>
+                <div class="fw-semibold">{{ suborder.meeting_booking.date | date:'mediumDate' }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="d-flex align-items-center">
+              <i class="ki-outline ki-time fs-5 text-info me-2"></i>
+              <div>
+                <div class="fs-8 text-muted">{{ lang === 'ar' ? 'الوقت' : 'Time' }}</div>
+                <div class="fw-semibold">{{ suborder.meeting_booking.start_time }} - {{ suborder.meeting_booking.end_time }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="d-flex align-items-center">
+              <i class="ki-outline ki-timer fs-5 text-info me-2"></i>
+              <div>
+                <div class="fs-8 text-muted">{{ lang === 'ar' ? 'المدة' : 'Duration' }}</div>
+                <div class="fw-semibold">{{ calculateDuration(suborder.meeting_booking.start_time, suborder.meeting_booking.end_time) }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </p-dialog>

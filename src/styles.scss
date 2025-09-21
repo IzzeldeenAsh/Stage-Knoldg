@@ -187,6 +187,9 @@ html[dir="rtl"] .logo{
 }
 .btn-light{
   border: 1px solid #dbdfe9 !important;
+}
+.btn-light-info{
+  border: 1px solid #8cbef3 !important;
 } 
 .btn-xs{
 font-size: 10px;
@@ -224,3 +227,161 @@ width: fit-content;
 .text-inline-start{
   text-align: start !important;
 }
+
+/* Global PrimeNG Button Rounded Styles */
+.p-button {
+  border-radius: 6px !important;
+  font-size: 0.875rem !important;
+  padding: 0.5rem 1rem !important;
+  box-shadow: 0 0 #0000, 0 0 #0000, 0 1px 2px 0 rgba(18, 18, 23, 0.05) !important;
+}
+
+.p-button.p-button-rounded {
+  border-radius: 6px !important;
+  box-shadow: 0 0 #0000, 0 0 #0000, 0 1px 2px 0 rgba(18, 18, 23, 0.05) !important;
+}
+
+/* Specific button size variants */
+.p-button.p-button-sm {
+  border-radius: 6px !important;
+  box-shadow: 0 0 #0000, 0 0 #0000, 0 1px 2px 0 rgba(18, 18, 23, 0.05) !important;
+}
+
+.p-button.p-button-lg {
+  border-radius: 6px !important;
+  box-shadow: 0 0 #0000, 0 0 #0000, 0 1px 2px 0 rgba(18, 18, 23, 0.05) !important;
+}
+
+/* Button variants */
+.p-button-outlined {
+  border-radius: 6px !important;
+  box-shadow: 0 0 #0000, 0 0 #0000, 0 1px 2px 0 rgba(18, 18, 23, 0.05) !important;
+}
+
+.p-button-text {
+  border-radius: 6px !important;
+  box-shadow: 0 0 #0000, 0 0 #0000, 0 1px 2px 0 rgba(18, 18, 23, 0.05) !important;
+}
+
+/* Split button components */
+.p-splitbutton .p-button {
+  border-radius: 6px !important;
+  box-shadow: 0 0 #0000, 0 0 #0000, 0 1px 2px 0 rgba(18, 18, 23, 0.05) !important;
+}
+
+.p-splitbutton .p-button:first-child {
+  border-top-left-radius: 6px !important;
+  border-bottom-left-radius: 6px !important;
+}
+
+.p-splitbutton .p-button:last-child {
+  border-top-right-radius: 6px !important;
+  border-bottom-right-radius: 6px !important;
+}
+
+/* Global PrimeNG Form Elements Box Shadow */
+.p-inputtext,
+.p-dropdown,
+.p-multiselect,
+.p-calendar,
+.p-inputnumber,
+.p-inputmask,
+.p-inputtextarea,
+.p-chips,
+.p-autocomplete,
+.p-cascadeselect,
+.p-treeselect,
+.p-listbox,
+.p-colorpicker,
+.p-inputswitch,
+.p-slider,
+.p-rating,
+.p-selectbutton,
+.p-togglebutton,
+.p-inputgroup,
+.p-password,
+.p-editor,
+.p-fileupload-choose,
+tag-input,
+.p-checkbox .p-checkbox-box,
+.p-radiobutton .p-radiobutton-box {
+  box-shadow: 0 0 #0000, 0 0 #0000, 0 1px 2px 0 rgba(18, 18, 23, 0.05) !important;
+}
+
+/* Additional shadow for focused state */
+.p-inputtext:focus,
+.p-dropdown:focus,
+.p-multiselect:focus,
+.p-calendar:focus,
+.p-inputnumber:focus,
+.p-inputmask:focus,
+.p-inputtextarea:focus,
+.p-chips:focus,
+.p-autocomplete:focus,
+.p-cascadeselect:focus,
+.p-treeselect:focus,
+.p-listbox:focus,
+.p-colorpicker:focus,
+.p-password:focus,
+.p-editor:focus,
+.p-checkbox .p-checkbox-box:focus,
+.p-radiobutton .p-radiobutton-box:focus {
+  box-shadow: 0 0 #0000, 0 0 #0000, 0 1px 2px 0 rgba(18, 18, 23, 0.05), 0 0 0 0.2rem rgba(3, 55, 97, 0.1) !important;
+}
+
+/* Apply to dropdown panel and overlay elements */
+.p-dropdown-panel,
+.p-multiselect-panel,
+.p-autocomplete-panel,
+.p-calendar-panel,
+.p-cascadeselect-panel,
+.rate-input,
+.p-treeselect-panel,
+.p-overlaypanel,
+.p-dialog,
+.p-sidebar {
+  box-shadow: 0 0 #0000, 0 0 #0000, 0 1px 2px 0 rgba(18, 18, 23, 0.05) !important;
+}
+
+/* Global border color for PrimeNG elements */
+.p-inputtext,
+.p-dropdown,
+.p-multiselect,
+.p-calendar,
+.p-inputnumber,
+.p-inputmask,
+.p-inputtextarea,
+.p-chips,
+.p-autocomplete,
+.p-cascadeselect,
+.rate-input,
+.p-treeselect,
+.p-listbox,
+.p-colorpicker,
+.p-password,
+.p-editor,
+.p-checkbox .p-checkbox-box,
+.p-radiobutton .p-radiobutton-box,
+.p-button-outlined,
+.p-datatable,
+.p-datatable .p-datatable-thead > tr > th,
+.p-datatable .p-datatable-tbody > tr > td,
+.p-paginator,
+.p-card,
+.p-panel,
+.p-fieldset,
+.p-accordion,
+.p-tabview,
+.p-toolbar,
+.p-fileupload,
+.form-control,
+.form-select {
+  border-color: #cbd5e1 !important;
+}
+
+/* Update button borders */
+.btn {
+  border-color: #cbd5e1 !important;
+}
+
+

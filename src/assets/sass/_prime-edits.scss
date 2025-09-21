@@ -239,228 +239,7 @@ html[dir="rtl"] .home-countries-dropdown .p-dropdown-panel {
   }
 }
 
-/* PrimeNG DataTable Global Styles */
-.p-datatable {
-  .p-datatable-wrapper {
-    border-radius: 0.75rem;
-    overflow: hidden;
-  }
-  
-  .p-datatable-header {
-    background: var(--kt-gray-100);
-    border-bottom: 1px solid var(--kt-gray-200);
-    padding: 1rem 1.5rem;
-  }
-  
-  .p-datatable-thead > tr > th {
-    background: var(--kt-gray-50);
-    border-bottom: 3px solid var(--kt-gray-200);
-    padding: 1.75rem 1.5rem;
-    font-weight: 600;
-    font-size: 0.875rem;
-    color: var(--kt-gray-700);
-    text-transform: uppercase;
-    letter-spacing: 0.025em;
-    position: relative;
-    vertical-align: middle;
-    text-align: start;
-    
-    &:first-child {
-      border-top-left-radius: 0.75rem;
-      text-align: center;
-    }
-    
-    &:last-child {
-      border-top-right-radius: 0.75rem;
-      text-align: center;
-    }
-    
-    // Add more space after header
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: -1.5rem;
-      left: 0;
-      right: 0;
-      height: 1.5rem;
-      background: var(--kt-gray-50);
-      z-index: 1;
-    }
-  }
-  
-  .p-datatable-tbody > tr {
-    border-bottom: 3px solid var(--kt-gray-300);
-    transition: all 0.2s ease;
-    position: relative;
-    
-    &:hover {
-      background-color: var(--kt-gray-50);
-      border-bottom-color: var(--kt-gray-400);
-    }
-    
-    &:last-child {
-      border-bottom: 3px solid var(--kt-gray-300);
-    }
-    
-    // Add a more prominent line between rows
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 1.5rem;
-      right: 1.5rem;
-      height: 2px;
-      background: var(--kt-gray-400);
-      z-index: 1;
-    }
-    
-    > td {
-      padding: 1.75rem 1.5rem;
-      vertical-align: middle;
-      border: none;
-      text-align: start;
-      position: relative;
-      
-      &:first-child {
-        padding-left: 1.5rem;
-        text-align: center;
-      }
-      
-      &:last-child {
-        padding-right: 1.5rem;
-        text-align: center;
-      }
-    }
-  }
-  
-  // Expanded row styling
-  .expanded-row {
-    background-color: var(--kt-gray-50) !important;
-    border-bottom: 3px solid var(--kt-gray-300) !important;
-    
-    > td {
-      padding: 0 !important;
-      border: none !important;
-    }
-    
-    // Remove the subtle line for expanded rows
-    &::after {
-      display: none;
-    }
-  }
-  
-  // Empty state styling
-  .p-datatable-tbody > tr.p-datatable-emptymessage > td {
-    padding: 3rem 1.5rem;
-    text-align: center;
-    color: var(--kt-gray-500);
-  }
-  
-  // Loading state styling
-  .p-datatable-loading {
-    .p-datatable-tbody > tr > td {
-      padding: 2rem 1.5rem;
-      text-align: center;
-    }
-  }
-  
-  // Button styling improvements
-  .expand-button {
-    transition: all 0.3s ease;
-    border-radius: 0.5rem;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    
-    &:hover {
-      background-color: rgba(var(--kt-primary-rgb), 0.1);
-      transform: scale(1.05);
-    }
-    
-    &.expanded {
-      background-color: rgba(var(--kt-primary-rgb), 0.15);
-    }
-    
-    i {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.3s ease;
-    }
-  }
-  
-  // Action buttons styling
-  .btn-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 0.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-    
-    &:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-  }
-  
-  // Avatar and user info styling
-  .symbol-45px {
-    flex-shrink: 0;
-  }
-  
-  // Badge styling improvements
-  .badge {
-    font-size: 0.75rem;
-    font-weight: 600;
-    padding: 0.375rem 0.75rem;
-    border-radius: 0.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.025em;
-  }
-  
-  // Scrollbar styling for table
-  .p-datatable-wrapper {
-    &::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    
-    &::-webkit-scrollbar-track {
-      background: var(--kt-gray-100);
-      border-radius: 3px;
-    }
-    
-    &::-webkit-scrollbar-thumb {
-      background: var(--kt-gray-300);
-      border-radius: 3px;
-      
-      &:hover {
-        background: var(--kt-gray-400);
-      }
-    }
-  }
-}
 
-// Responsive improvements for tables
-@media (max-width: 768px) {
-  .table-container {
-    margin: 0 -1rem;
-    border-radius: 0;
-    border-left: none;
-    border-right: none;
-  }
-  
-  .p-datatable {
-    .p-datatable-thead > tr > th,
-    .p-datatable-tbody > tr > td {
-      padding: 0.75rem 1rem;
-    }
-  }
-}
 
 .border-success {
   border: 1px solid var(--bs-success);
@@ -701,9 +480,24 @@ li .p-menuitem:not(:last-child) {
 }
 .card{
   box-shadow: none !important;
-  border: 1px solid #dededf !important;
+  border: 1px solid #e2e8f0 !important;
 }
 
 .z-index-99999{
 z-index: 99999 !important;
+}
+/* شيل أي حدود على الخلايا */
+.p-datatable .p-datatable-tbody > tr > td,
+.p-datatable .p-datatable-thead > tr > th {
+  border: none !important;
+}
+
+/* اعمل خط تحت كل صف */
+.p-datatable .p-datatable-tbody > tr {
+  border-bottom: 1px solid #e5e7eb; /* رمادي فاتح زي الصورة */
+}
+
+/* خليه بدون خط آخر صف */
+.p-datatable .p-datatable-tbody > tr:last-child {
+  border-bottom: none;
 }

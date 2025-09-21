@@ -16,12 +16,14 @@ import { IndustriesComponent } from './dashboard/industries/industries.component
 import { RequestsListComponent } from './dashboard/requests-list/requests-list.component';
 import { EconomicBlocksComponent } from './dashboard/economic-blocks/economic-blocks.component';
 import { VerificationQuestionsListComponent } from './dashboard/verification-questions-list/verification-questions-list.component';
+import { AdminNotificationsPageComponent } from './dashboard/admin-notifications-page/admin-notifications-page.component';
 
 const routes: Routes = [
   {
     path: '',
     component: DashboardComponent,
     children: [
+      { path: 'main-dashboard/notifications', component: AdminNotificationsPageComponent },
       { path: 'main-dashboard/requests', component: RequestsListComponent },
       { path: 'main-dashboard/departments', component: DepartmentComponent },
       { path: 'main-dashboard/verification-questions', component: VerificationQuestionsListComponent },
@@ -35,7 +37,7 @@ const routes: Routes = [
       { path: 'main-dashboard/hscode', component: HSCodeComponent },
       { path: 'main-dashboard/guidelines', component: GuidelineComponent },
       { path: 'main-dashboard/economic-blocks', component: EconomicBlocksComponent },
-      { path: '', redirectTo: 'main-dashboard/requests', pathMatch: 'full' },
+      { path: '', redirectTo: 'main-dashboard/notifications', pathMatch: 'full' },
     ],
   },
   {

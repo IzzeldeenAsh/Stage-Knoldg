@@ -252,12 +252,12 @@
     
     &.radio-active {
       background-color: #ffffff;
-      color: #009ef7;
+      color: #0978B9;
       box-shadow: 0 0.1rem 0.7rem 0 rgba(0, 0, 0, 0.08);
     }
 
     &:hover:not(.radio-active) {
-      color: #009ef7;
+      color: #0978B9;
     }
   }
 }
@@ -272,7 +272,7 @@
   &:hover {
     transform: translateY(-5px);
     box-shadow: 0px 10px 30px rgba(76, 87, 125, 0.1);
-    border-color: #009ef7;
+    border-color: #0978B9;
   }
 
   .card-body {
@@ -293,7 +293,7 @@
       display: block;
       
       &:hover {
-        color: #009ef7;
+        color: #0978B9;
       }
     }
   }
@@ -311,7 +311,7 @@
   .price {
     font-size: 1.1rem;
     font-weight: 600;
-    color: #009ef7;
+    color: #0978B9;
   }
 }
 
@@ -362,7 +362,7 @@
       }
       
       &:hover:not(.disabled) {
-        color: #009ef7;
+        color: #0978B9;
         background-color: #f5f8fa;
       }
     }
@@ -370,7 +370,7 @@
     &.active {
       .page-link {
         color: #ffffff;
-        background-color: #009ef7;
+        background-color: #0978B9;
       }
     }
     

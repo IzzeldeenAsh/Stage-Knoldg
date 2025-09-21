@@ -156,7 +156,7 @@ export const DefaultLayoutConfig: ILayout = {
   main: {
     componentName: 'main',
     type: 'default',
-    primaryColor: '#009EF7',
+    primaryColor: '#0978B9',
     darkSkinEnabled: true,
   },
   loader: {

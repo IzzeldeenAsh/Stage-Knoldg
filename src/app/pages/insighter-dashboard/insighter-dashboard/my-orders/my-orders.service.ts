@@ -14,18 +14,39 @@ export interface Knowledge {
   title: string;
 }
 
+export interface MeetingBooking {
+  date: string;
+  start_time: string;
+  end_time: string;
+  status: string;
+  title: string;
+  description: string;
+}
+
 export interface SubOrder {
   knowledge: Knowledge[];
   knowledge_documents: KnowledgeDocument[][];
+  meeting_booking?: MeetingBooking;
+}
+
+export interface PaymentInfo {
+  method: string;
+  provider: string;
+  confirmed_at: string;
 }
 
 export interface Order {
   uuid: string;
+  service: string;
   status: string;
   amount: number;
   currency: string;
   date: string;
+  order_no: string;
+  invoice_no: string;
+  payment: PaymentInfo;
   suborders: SubOrder[];
+  knowledge_download_ids: string[];
 }
 
 export interface PaginationLinks {
@@ -61,9 +82,14 @@ export interface OrdersResponse {
 })
 export class MyOrdersService {
   private readonly API_URL = 'https://api.knoldg.com/api/account/order/knowledge';
+  private readonly MEETING_API_URL = 'https://api.knoldg.com/api/account/order/meeting';
   
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$ = this.isLoadingSubject.asObservable();
+  
+  private isMeetingLoadingSubject = new BehaviorSubject<boolean>(false);
+  public isMeetingLoading$ = this.isMeetingLoadingSubject.asObservable();
+  
   private currentLang: string = 'en';
 
   constructor(
@@ -85,6 +111,10 @@ export class MyOrdersService {
 
   private setLoading(loading: boolean): void {
     this.isLoadingSubject.next(loading);
+  }
+
+  private setMeetingLoading(loading: boolean): void {
+    this.isMeetingLoadingSubject.next(loading);
   }
 
   private getHeaders(): HttpHeaders {
@@ -110,6 +140,18 @@ export class MyOrdersService {
       map((response) => response),
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))
+    );
+  }
+
+  getMeetingOrders(page: number = 1): Observable<OrdersResponse> {
+    const url = `${this.MEETING_API_URL}?page=${page}&per_page=5`;
+    const headers = this.getHeaders();
+    
+    this.setMeetingLoading(true);
+    return this.http.get<OrdersResponse>(url, { headers }).pipe(
+      map((response) => response),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setMeetingLoading(false))
     );
   }
 }

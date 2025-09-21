@@ -620,6 +620,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     },
     MY_DOWNLOADS: {
       TITLE: "My Downloads",
+      VIEW_ALL: "View All",
       DESCRIPTION: "Download your knowledge",
       DOWNLOAD: "Download",
       DOCUMENTS: "Documents",
@@ -951,7 +952,8 @@ Your wealth of knowledge is valued and many are eager to learn from it.
         "READ_LATER": "Bookmarks",
         "MY_MEETINGS": "My Meetings",
         "MY_CONSULTING_SCHEDULE": "Meeting Planner",
-        "DASHBOARD": "Dashboard"
+        "DASHBOARD": "Dashboard",
+        "WALLET": "Wallet"
       },
       REQUESTS: {
         APPROVED: "Approved Requests",
@@ -1314,6 +1316,7 @@ UPLOAD: 'Upload',
     TOOLTIP_POINT_3: "Gain unexpected opportunities",
     BECOME_INSIHGER_HEADER:'Become an Insighter',
     BECOME_COMPANY_HEADER:'Upgrade to a Company Account',
+    IN_WALLET:'In Wallet',
     BECOME_INSIGHTER_DESCRIPTION:"Sharing knowledge empowers us all to grow and innovate together!",
     CHAPTER_TITLE_REQUIRED: "Chapter Title is required",
     HEADER: {
@@ -1584,6 +1587,33 @@ UPLOAD: 'Upload',
     "ERROR_TITLE": "Unable to Load Payment Details",
     "EDIT_BUTTON": "Update Payment Info",
     "ADD_DETAILS_BUTTON": "Add Payment Details"
+  },
+  "WALLET": {
+    "TITLE": "Wallet",
+    "BALANCE": "Current  Wallet Balance",
+    "TRANSACTIONS_HISTORY": "Transactions History",
+    "TRANSACTIONS_DESCRIPTION": "Track money coming in and going out from this area.",
+    "SERVICE": "Service",
+    "DATE": "Date",
+    "TYPE": "Type",
+    "AMOUNT": "Amount",
+    "DETAILS": "Details",
+    "TRANSACTION_DETAILS": "Transaction Details",
+    "TRANSACTION_TYPE": "Transaction Type",
+    "ORDER_INFORMATION": "Order Information",
+    "ORDER_NUMBER": "Order Number",
+    "INVOICE_NUMBER": "Invoice Number",
+    "KNOWLEDGE_ITEMS": "Knowledge Items",
+    "NO_TRANSACTIONS": "No transactions found",
+    "DEPOSIT": "Deposit",
+    "WITHDRAW": "Withdraw",
+    "INCOME": "Income",
+    "OUTCOME": "Outcome",
+    "CLOSE": "Close",
+    "VIEW_DETAILS": "View Details",
+    "SHOWING_PAGE": "Showing page",
+    "OF_PAGES": "of",
+    "PAGES": "pages"
   }
   },
  

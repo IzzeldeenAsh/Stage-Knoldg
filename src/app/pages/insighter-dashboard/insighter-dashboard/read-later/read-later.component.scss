@@ -120,7 +120,7 @@
           border: 2px solid #e5e7eb;
           
           &.company-initials {
-            background: linear-gradient(135deg, #009ef7 0%, #0099e6 100%);
+            background: linear-gradient(135deg, #0978B9 0%, #0099e6 100%);
             color: white;
             font-weight: 600;
             font-size: 14px;
@@ -211,16 +211,16 @@
       
       &:hover {
         background-color: #f8f9fa;
-        border-color: #009ef7;
-        color: #009ef7;
+        border-color: #0978B9;
+        color: #0978B9;
       }
       
      
     }
     
     .page-item.active .page-link {
-      background-color: #009ef7;
-      border-color: #009ef7;
+      background-color: #0978B9;
+      border-color: #0978B9;
       color: #ffffff;
     }
     

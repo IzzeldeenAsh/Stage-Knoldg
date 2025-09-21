@@ -7,10 +7,15 @@
         "MY_REQUESTS": "My Requests",
         "MY_KNOWLEDGE": "My Knowledge", 
         "MY_DOWNLOADS": "My Downloads",
+        "READ_LATER": "Read Later",
+        "MY_ORDERS": "My Orders",
         "MEETINGS": "Meetings",
         "MY_CONSULTING_SCHEDULE": "My Schedule",
         "MY_COMPANY": "My Company",
-        "ACCOUNT_SETTINGS": "Account Settings"
+        "SETTINGS": "Settings",
+        "ACCOUNT_SETTINGS": "Account Settings",
+        "PAYMENT_SETTINGS": "Payment Settings",
+        "WALLET": "Wallet"
       }
     },
     "MEETINGS": {
@@ -82,7 +87,9 @@
     "DOWNLOAD_KNOWLEDGE": "Download Knowledge",
     "DOWNLOAD_DOCUMENT": "Download Document",
     "PUBLISHER": "Publisher",
-    "PURCHASE_DATE": "Purchase Date"
+    "PURCHASE_DATE": "Purchase Date",
+    "VIEW_ALL": "View All",
+    "SEARCH_PLACEHOLDER": "Search by title..."
   },
   "EMPTY_DASHBOARD": {
     "TITLE": "Start Building Your knowledge library",
