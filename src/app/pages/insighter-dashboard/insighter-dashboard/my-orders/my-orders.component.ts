@@ -162,7 +162,7 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
 
   getKnowledgeUrl(knowledge: any): string {
     if (knowledge.slug) {
-      return `http://localhost:3000/en/knowledge/data/${knowledge.slug}`;
+      return `https://knoldg.com/en/knowledge/data/${knowledge.slug}`;
     }
     return '#';
   }

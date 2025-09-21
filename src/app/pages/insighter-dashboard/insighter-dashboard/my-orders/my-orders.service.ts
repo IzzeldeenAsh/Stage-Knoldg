@@ -85,8 +85,8 @@ export interface OrdersResponse {
   providedIn: 'root'
 })
 export class MyOrdersService {
-  private readonly API_URL = 'https://api.foresighta.co/api/account/order/knowledge';
-  private readonly MEETING_API_URL = 'https://api.foresighta.co/api/account/order/meeting';
+  private readonly API_URL = 'https://api.knoldg.com/api/account/order/knowledge';
+  private readonly MEETING_API_URL = 'https://api.knoldg.com/api/account/order/meeting';
   
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$ = this.isLoadingSubject.asObservable();
