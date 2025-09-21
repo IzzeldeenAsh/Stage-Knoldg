@@ -6,10 +6,6 @@
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
   overflow: hidden; // Prevent overflow
   
-  .card-header {
-    background: white;
-    border-bottom: 1px solid #e9ecef;
-  }
   
   .card-body {
     padding: 1.5rem;
@@ -17,9 +13,6 @@
   }
 }
 
-.text-info {
-  color: #50CD89 !important;
-}
 
 .bg-light {
   background-color: #f8f9fa !important;
@@ -147,6 +140,105 @@
         &:before {
           display: none !important;
         }
+      }
+    }
+  }
+}
+
+// Chart section styling
+.chart-container {
+  position: relative;
+  width: 100%;
+
+  ::ng-deep {
+    .wallet-chart {
+      .p-chart {
+        width: 100% !important;
+        height: 100% !important;
+
+        canvas {
+          width: 100% !important;
+          height: 100% !important;
+          cursor: crosshair !important;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    height: 300px !important;
+  }
+}
+
+.chart-legend {
+  .legend-dot {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .legend-dot-inner {
+      width: 6px;
+      height: 6px;
+      background-color: white;
+      border-radius: 50%;
+    }
+  }
+}
+
+
+
+// Custom tooltip styles
+::ng-deep {
+  .chartjs-tooltip {
+    position: absolute !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+    padding: 0 !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    pointer-events: none !important;
+    transition: all 0.2s ease !important;
+    z-index: 1000 !important;
+    min-width: 200px !important;
+    backdrop-filter: blur(8px) !important;
+  }
+
+  .chartjs-tooltip-header {
+    background: #f9fafb !important;
+    color: #1f2937 !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    padding: 8px 12px !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    border-radius: 8px 8px 0 0 !important;
+    text-align: center !important;
+  }
+
+  .chartjs-tooltip-body {
+    padding: 8px 12px !important;
+
+    .chartjs-tooltip-body-item {
+      display: flex !important;
+      align-items: center !important;
+      margin-bottom: 6px !important;
+      font-size: 11px !important;
+
+      &:last-child {
+        margin-bottom: 0 !important;
+      }
+
+      .chartjs-tooltip-color-box {
+        width: 8px !important;
+        height: 8px !important;
+        border-radius: 50% !important;
+        margin-right: 8px !important;
+        border: 2px solid white !important;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1) !important;
       }
     }
   }

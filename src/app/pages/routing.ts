@@ -64,6 +64,12 @@ const Routing: Routes = [
      canActivate:[authGuard],
   },
   {
+    path: 'invoice/:orderNo',
+    loadChildren: () => import('./invoice-page/invoice-page.module').then((m) => m.InvoicePageModule),
+    canActivate:[authGuard,RolesGuard],
+    data: { roles: [ 'insighter','company','company-insighter','client'] }
+  },
+  {
     path: '**',
     redirectTo: 'error/404',
   },

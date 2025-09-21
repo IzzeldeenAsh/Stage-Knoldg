@@ -1,0 +1,392 @@
+// Invoice Viewer Styles
+.invoice-viewer-container {
+  padding: 3rem 2rem 2rem 2rem;
+  background: #f5f8fa;
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.invoice-container {
+  background: white;
+  width: 190mm;
+  height: 277mm;
+  max-height: 277mm;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  margin: 0 auto;
+}
+
+.invoice-header {
+  background: linear-gradient(90deg, #042043 0%, #57B6C7 100%);
+  padding: 25px;
+  position: relative;
+  overflow: hidden;
+}
+
+.invoice-header h1 {
+  color: white;
+  font-size: 36px;
+  text-align: center;
+  font-weight: 600;
+  position: relative;
+  z-index: 1;
+  margin: 0;
+}
+
+.content {
+  padding: 40px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.logo-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 40px;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  width: 160px;
+}
+
+.company-name {
+  font-size: 24px;
+  font-weight: 600;
+  color: #042043;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.company-name .business {
+  font-size: 16px;
+  font-weight: 400;
+  color: #57B6C7;
+}
+
+.invoice-info {
+  text-align: right;
+  color: #666;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.invoice-info strong {
+  color: #333;
+}
+
+.billing-section {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 40px;
+  gap: 60px;
+}
+
+.from-section, .bill-to-section {
+  flex: 1;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #042043;
+  margin-bottom: 15px;
+}
+
+.from-section p, .bill-to-section p {
+  color: #333;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+.bill-to-section .label {
+  display: inline-block;
+  font-weight: 600;
+  color: #042043;
+  min-width: 80px;
+}
+
+.services-table {
+  margin-bottom: 40px;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 0;
+  border-bottom: 2px solid #e0e0e0;
+  margin-bottom: 20px;
+}
+
+.table-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #042043;
+}
+
+.service-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.service-name {
+  color: #333;
+  font-size: 15px;
+  flex: 1;
+  margin-right: 20px;
+}
+
+.service-amount {
+  color: #333;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.totals-section {
+  margin-top: 40px;
+  margin-bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 15px;
+}
+
+.subtotal, .total {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  font-size: 18px;
+}
+
+.subtotal {
+  color: #666;
+}
+
+.total {
+  font-weight: 600;
+  color: #042043;
+}
+
+.total .amount {
+  background: linear-gradient(90deg, #042043 0%, #57B6C7 100%);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 4px;
+  min-width: 120px;
+  text-align: center;
+}
+
+.invoice-footer {
+  padding: 30px;
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.bg {
+  background-image: url(https://res.cloudinary.com/dsiku9ipv/image/upload/v1758005640/invoice_template_knoldg_0_1_naflvj.png);
+  position: absolute;
+  top: 130px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-repeat: no-repeat;
+  z-index: 10;
+  background-position: center;
+  height: 100%;
+  width: 680px;
+  opacity: 0.1;
+}
+
+// Action buttons styling
+.no-print {
+  @media print {
+    display: none !important;
+  }
+}
+
+.btn {
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 992px) {
+  .invoice-viewer-container {
+    padding: 1rem;
+  }
+
+  .invoice-container {
+    width: 100%;
+    height: auto;
+    max-height: none;
+    transform: scale(0.8);
+    transform-origin: top center;
+  }
+}
+
+@media (max-width: 768px) {
+  .invoice-container {
+    transform: scale(0.6);
+  }
+
+  .no-print {
+    .btn {
+      font-size: 14px;
+      padding: 8px 16px;
+    }
+  }
+}
+
+// Print styles
+@media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+  }
+
+  .invoice-viewer-container {
+    background: white !important;
+    padding: 0 !important;
+    min-height: auto !important;
+    position: static !important;
+  }
+
+  .invoice-container {
+    width: 100% !important;
+    height: 100vh !important;
+    max-height: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    transform: none !important;
+    page-break-after: avoid !important;
+    page-break-inside: avoid !important;
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: visible !important;
+  }
+
+  .header {
+    background: linear-gradient(90deg, #042043 0%, #57B6C7 100%) !important;
+    padding: 25px !important;
+    position: relative !important;
+    overflow: hidden !important;
+    page-break-inside: avoid !important;
+  }
+
+  .header h1 {
+    color: white !important;
+    font-size: 36px !important;
+    text-align: center !important;
+    font-weight: 600 !important;
+    margin: 0 !important;
+  }
+
+  .content {
+    padding: 40px !important;
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+  }
+
+  .total .amount {
+    background: linear-gradient(90deg, #042043 0%, #57B6C7 100%) !important;
+    color: white !important;
+    padding: 10px 20px !important;
+    border-radius: 4px !important;
+    min-width: 120px !important;
+    text-align: center !important;
+  }
+
+  .bg {
+    background-image: url(https://res.cloudinary.com/dsiku9ipv/image/upload/v1758005640/invoice_template_knoldg_0_1_naflvj.png) !important;
+    position: absolute !important;
+    top: 130px !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    background-repeat: no-repeat !important;
+    z-index: 10 !important;
+    background-position: center !important;
+    height: 100% !important;
+    width: 680px !important;
+    opacity: 0.1 !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  // Hide navigation and layout elements
+  .kt_header,
+  .kt_toolbar,
+  .kt_aside,
+  .kt_footer,
+  .primeng-header,
+  .p-toolbar,
+  .navbar,
+  nav,
+  header,
+  .header,
+  .toolbar,
+  .sidebar,
+  .menu,
+  .navigation,
+  .app-header,
+  .app-toolbar,
+  .app-sidebar,
+  .app-nav,
+  .breadcrumb,
+  .page-header,
+  .kt_app_header,
+  .kt_app_toolbar,
+  .kt_app_aside,
+  .kt_app_footer {
+    display: none !important;
+  }
+
+  // Remove the overly broad hiding rules - let the dynamic styles handle this
+
+  // Ensure specific elements print correctly
+  .logo-section,
+  .billing-section,
+  .services-table,
+  .totals-section,
+  .invoice-footer {
+    page-break-inside: avoid !important;
+  }
+
+  .service-row {
+    page-break-inside: avoid !important;
+  }
+}

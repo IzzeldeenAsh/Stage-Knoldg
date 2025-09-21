@@ -17,13 +17,13 @@ export class InvoiceGeneratorService {
 
     // Check if this is a meeting order or knowledge order
     const isMeetingOrder = order.service === 'meeting_service';
-    let documentRows = '';
+    let serviceRows = '';
     let subtotal = order.amount;
 
     if (isMeetingOrder) {
       // Handle meeting orders
       const meetingItems: Array<{name: string, price: number}> = [];
-      
+
       order.suborders.forEach(suborder => {
         if (suborder.meeting_booking) {
           const meeting = suborder.meeting_booking;
@@ -34,11 +34,11 @@ export class InvoiceGeneratorService {
         }
       });
 
-      documentRows = meetingItems.map(item => `
-        <tr>
-          <td>${item.name}</td>
-          <td class="amount">$${item.price.toFixed(2)}</td>
-        </tr>
+      serviceRows = meetingItems.map(item => `
+        <div class="service-row">
+          <span class="service-name">${item.name}</span>
+          <span class="service-amount">$${item.price.toFixed(2)}</span>
+        </div>
       `).join('');
     } else {
       // Handle knowledge orders
@@ -57,12 +57,12 @@ export class InvoiceGeneratorService {
         });
       });
 
-      // Generate table rows for documents
-      documentRows = allDocuments.map(doc => `
-        <tr>
-          <td>${doc.name}</td>
-          <td class="amount">$${doc.price.toFixed(2)}</td>
-        </tr>
+      // Generate service rows for documents
+      serviceRows = allDocuments.map(doc => `
+        <div class="service-row">
+          <span class="service-name">${doc.name}</span>
+          <span class="service-amount">$${doc.price.toFixed(2)}</span>
+        </div>
       `).join('');
     }
 
@@ -71,273 +71,309 @@ export class InvoiceGeneratorService {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice #${order.invoice_no || order.order_no}</title>
-    <style>
-        @page {
-            size: A4 portrait;
-            margin: 15mm;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Arial', sans-serif;
-            font-size: 12px;
-            line-height: 1.4;
-            color: #333;
-            background: white;
-            margin: 0;
-            padding: 0;
-        }
-        
-        .invoice {
-            width: 210mm;
-            height: 297mm;
-            margin: 0 auto;
-            padding: 15mm;
-            background: white;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #3b82f6;
-        }
-        
-        .logo img {
-            height: 70px;
-            max-width: 300px;
-            object-fit: contain;
-        }
-        
-        .invoice-info {
-            text-align: right;
-            font-size: 12px;
-        }
-        
-        .invoice-info h1 {
-            font-size: 24px;
-            color: #2563eb;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-        
-        .status {
-            background: #3b82f6;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: bold;
-            display: inline-block;
-            margin-top: 5px;
-        }
-        
-        .billing {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 30px;
-            font-size: 12px;
-        }
-        
-        .billing div {
-            width: 48%;
-        }
-        
-        .billing h3 {
-            font-size: 14px;
-            margin-bottom: 10px;
-            color: #1e40af;
-            font-weight: bold;
-        }
-        
-        .billing p {
-            line-height: 1.6;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 30px;
-            font-size: 12px;
-        }
-        
-        th {
-            background: #eff6ff;
-            padding: 12px;
-            text-align: left;
-            font-weight: 600;
-            border-bottom: 2px solid #3b82f6;
-            color: #1e40af;
-            font-size: 13px;
-        }
-        
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #e5e7eb;
-        }
-        
-        .amount {
-            text-align: right;
-            font-weight: 600;
-            color: #2563eb;
-        }
-        
-        .totals {
-            margin-left: auto;
-            width: 250px;
-            font-size: 12px;
-        }
-        
-        .total-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 5px 0;
-        }
-        
-        .final-total {
-            border-top: 2px solid #2563eb;
-            margin-top: 10px;
-            padding-top: 10px;
-            font-weight: bold;
-            font-size: 14px;
-            color: #1e40af;
-        }
-        
-        .content-wrapper {
-            flex: 1;
-        }
-        
-        .footer {
-            margin-top: auto;
-            text-align: center;
-            font-size: 11px;
-            color: #666;
-            padding-top: 20px;
-            border-top: 1px solid #e5e7eb;
-            position: absolute;
-            bottom: 15mm;
-            left: 15mm;
-            right: 15mm;
-        }
-        
-        @media screen {
-            body {
-                background: #f0f0f0;
-                padding: 20px;
+    <title>Invoice - KNOLDG Business</title>
+        <style>
+            @page{
+                size: A4;
+                margin: 10mm;
+                padding: 0;
             }
-        }
-        
-        @media print {
-            body { 
+
+            @media print {
+                html, body {
+                    height: 100%;
+                    overflow: hidden;
+                }
+
+                .invoice-container {
+                    page-break-after: avoid;
+                    page-break-inside: avoid;
+                }
+            }
+
+            * {
                 margin: 0;
                 padding: 0;
-                background: white;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
+                box-sizing: border-box;
             }
-            .invoice { 
-                width: 100%;
-                height: 100%;
+
+            body {
+                font-family:Arial, Helvetica, sans-serif;
+                display: flex;
+                justify-content: center;
+                align-items: center;
                 margin: 0;
-                padding: 15mm;
-                box-shadow: none;
-                page-break-after: avoid;
+                min-height: 100vh;
+                overflow: hidden;
             }
+
+            .invoice-container {
+                background: white;
+                width: 190mm;
+                height: 277mm;
+                max-height: 277mm;
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+            }
+
             .header {
-                break-inside: avoid;
+                background: linear-gradient(90deg, #042043 0%, #57B6C7 100%);
+                padding: 25px;
+                position: relative;
+                overflow: hidden;
             }
-            .billing {
-                break-inside: avoid;
+
+
+            .header h1 {
+                color: white;
+                font-size: 36px;
+                text-align: center;
+                font-weight: 600;
+                position: relative;
+                z-index: 1;
+                margin: 0;
             }
-            table {
-                break-inside: avoid;
+
+            .content {
+                padding: 40px 40px;
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
             }
-            thead {
-                display: table-header-group;
+
+            .logo-section {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                margin-bottom: 40px;
             }
-            tr {
-                break-inside: avoid;
+
+            .logo-container {
+                display: flex;
+                align-items: center;
+                gap: 12px;
             }
-            .totals {
-                break-inside: avoid;
+
+            .logo {
+                width: 160px;
             }
+
+            .company-name {
+                font-size: 24px;
+                font-weight: 600;
+                color: #042043;
+                display: flex;
+                flex-direction: column;
+                line-height: 1.2;
+            }
+
+            .company-name .business {
+                font-size: 16px;
+                font-weight: 400;
+                color: #57B6C7;
+            }
+
+            .invoice-info {
+                text-align: right;
+                color: #666;
+                font-size: 13px;
+                line-height: 1.6;
+            }
+
+            .invoice-info strong {
+                color: #333;
+            }
+
+            .billing-section {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 40px;
+                gap: 60px;
+            }
+
+            .from-section, .bill-to-section {
+                flex: 1;
+            }
+
+            .section-title {
+                font-size: 18px;
+                font-weight: 600;
+                color: #042043;
+                margin-bottom: 15px;
+            }
+
+            .from-section p, .bill-to-section p {
+                color: #333;
+                line-height: 1.8;
+                font-size: 15px;
+            }
+
+            .bill-to-section .label {
+                display: inline-block;
+                font-weight: 600;
+                color: #042043;
+                min-width: 80px;
+            }
+
+            .services-table {
+                margin-bottom: 40px;
+            }
+
+            .table-header {
+                display: flex;
+                justify-content: space-between;
+                padding: 15px 0;
+                border-bottom: 2px solid #e0e0e0;
+                margin-bottom: 20px;
+            }
+
+            .table-header h3 {
+                font-size: 18px;
+                font-weight: 600;
+                color: #042043;
+            }
+
+            .service-row {
+                display: flex;
+                justify-content: space-between;
+                padding: 15px 0;
+                border-bottom: 1px solid #f0f0f0;
+            }
+
+            .service-name {
+                color: #333;
+                font-size: 15px;
+            }
+
+            .service-amount {
+                color: #333;
+                font-size: 15px;
+            }
+
+            .totals-section {
+                margin-top: 40px;
+                margin-bottom: 40px;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 15px;
+            }
+
+            .subtotal, .total {
+                display: flex;
+                align-items: center;
+                gap: 30px;
+                font-size: 18px;
+            }
+
+            .subtotal {
+                color: #666;
+            }
+
+            .total {
+                font-weight: 600;
+                color: #042043;
+            }
+
+            .total .amount {
+                background: linear-gradient(90deg, #042043 0%, #57B6C7 100%);
+                color: white;
+                padding: 10px 20px;
+                border-radius: 4px;
+                min-width: 120px;
+                text-align: center;
+            }
+
             .footer {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
+                padding: 30px;
+                text-align: center;
+                color: #999;
+                font-size: 14px;
+                border-top: 1px solid #f0f0f0;
             }
-        }
-    </style>
+            .bg{
+                background-image: url(https://res.cloudinary.com/dsiku9ipv/image/upload/v1758005640/invoice_template_knoldg_0_1_naflvj.png);
+    position: absolute;
+    top: 130px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-repeat: no-repeat;
+    z-index: 10;
+    background-position: center;
+    height: 100%;
+    width: 680px;
+    opacity: 0.1;
+            }
+        </style>
 </head>
 <body>
-    <div class="invoice">
-        <div class="content-wrapper">
-            <div class="header">
-                <div class="logo">
-                    <img src="https://res.cloudinary.com/dsiku9ipv/image/upload/v1744785080/logos_-_KNOLDG-01_1_oxm7ks.png" alt="KNOLDG">
+
+    <div class="invoice-container">
+        <div class="bg"></div>
+        <div class="header">
+            <h1>INVOICE</h1>
+        </div>
+
+        <div class="content">
+            <div class="logo-section">
+                <div class="logo-container">
+                    <img src="https://res.cloudinary.com/dsiku9ipv/image/upload/v1758006879/invoice_template_knoldg_0_2_aeurma.png" alt="KNOLDG Logo" class="logo">
                 </div>
                 <div class="invoice-info">
-                    <h1>INVOICE</h1>
-                    <p>#${order.invoice_no || order.order_no}</p>
-                    <p>${invoiceDate}</p>
+                    ${order.invoice_no || order.order_no}<br>
+                    ${invoiceDate}
                 </div>
             </div>
-            
-            <div class="billing">
-                <div>
-                    <h3>Bill To:</h3>
-                    <p>${userProfile?.name || 'Client Name'}<br>
-                    ${userProfile?.email || 'client@email.com'}<br>
-                    ${userProfile?.country || 'Country'}</p>
+
+            <div class="billing-section">
+                <div class="from-section">
+                    <h3 class="section-title">From:</h3>
+                    <p>
+                        Foresighta Systems Consulting FZ-LLC<br>
+                        Compass Building<br>
+                        Al Shohada Road<br>
+                        AL Hamra Industrial Zone-FZ<br>
+                        Ras Al Khaimah<br>
+                        United Arab Emirates<br>
+                        info&#64;knoldg.com
+                    </p>
                 </div>
-                <div>
-                    <h3>From:</h3>
-                    <p>KNOLDG<br>
-                    info@knoldg.com<br>
-                    www.knoldg.com</p>
+
+                <div class="bill-to-section">
+                    <h3 class="section-title">Bill To:</h3>
+                    <p>
+                        <span class="label">Name:</span> ${userProfile?.name || 'Client Name'}<br>
+                        <span class="label">Email:</span> ${userProfile?.email || 'client@email.com'}<br>
+                        <span class="label">Country:</span> ${userProfile?.country || 'Country'}
+                    </p>
                 </div>
             </div>
-            
-            <table>
-                <thead>
-                    <tr>
-                        <th>Description</th>
-                        <th style="width: 80px;">Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${documentRows}
-                </tbody>
-            </table>
-            
-            <div class="totals">
-                <div class="total-row">
-                    <span>Subtotal:</span>
-                    <span>$${subtotal.toFixed(2)}</span>
+
+            <div class="services-table">
+                <div class="table-header">
+                    <h3>Service type</h3>
+                    <h3>Amount</h3>
                 </div>
-                <div class="total-row final-total">
+
+                ${serviceRows}
+            </div>
+
+            <div class="totals-section">
+                <div class="subtotal">
+                    <span>Subtotal: $${subtotal.toFixed(2)}</span>
+                </div>
+                <div class="total">
                     <span>Total:</span>
-                    <span>$${order.amount.toFixed(2)}</span>
+                    <span class="amount">$${order.amount.toFixed(2)}</span>
                 </div>
             </div>
         </div>
-        
+
         <div class="footer">
-            <p>Thank you for your business</p>
-            <p style="margin-top: 10px;">&copy; 2025 Knoldg.com | info@knoldg.com</p>
+            Thank you for your business © 2025 knoldg | info&#64;knoldg.com
         </div>
     </div>
 </body>

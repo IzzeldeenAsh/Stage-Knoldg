@@ -1,0 +1,306 @@
+<div class="card">
+  <div class="card-header">
+    <h2 class="page-title">Transactions Management</h2>
+  </div>
+
+  <div class="table-container">
+    <p-table #dt
+      [value]="transactions"
+      [paginator]="true"
+      [rows]="rows"
+      [totalRecords]="totalRecords"
+      [lazy]="true"
+      (onLazyLoad)="loadTransactions($event)"
+      [loading]="loading"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} transactions"
+      styleClass="p-datatable-sm p-datatable-striped">
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Transaction</th>
+          <th>Amount</th>
+          <th>Date</th>
+          <th>Type</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-transaction>
+        <tr>
+          <td>
+            <span class="badge" [ngClass]="getTransactionBadgeClass(transaction.transaction)">{{ transaction.transaction | titlecase }}</span>
+          </td>
+          <td>
+            <span [class.text-success]="transaction.amount > 0" [class.text-danger]="transaction.amount < 0">
+              {{ transaction.amount > 0 ? '+' : '' }}{{ formatCurrency(transaction.amount) }}
+            </span>
+          </td>
+          <td>{{ formatDate(transaction.date) }}</td>
+          <td>
+            <span class="badge badge-light-info">{{ getTransactionTypeLabel(transaction.type) | titlecase }}</span>
+          </td>
+          <td>
+            <button pButton
+              type="button"
+              icon="pi pi-eye"
+              class="p-button-rounded p-button-text p-button-info"
+              (click)="showTransactionDetails(transaction)"
+              pTooltip="View Details">
+            </button>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="5" class="text-center">No transactions found.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+<!-- Transaction Details Dialog -->
+<p-dialog [(visible)]="displayDialog"
+  [modal]="true"
+  [style]="{width: '90vw', maxWidth: '1200px'}"
+  [maximizable]="true"
+  [header]="'Transaction Details'"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="transaction-details-dialog">
+
+  <div *ngIf="selectedTransaction" class="transaction-details">
+    <!-- Header Section with Key Information -->
+    <div class="detail-header">
+      <div class="header-grid">
+        <div class="header-item">
+          <i class="pi pi-arrow-up-down header-icon"></i>
+          <div class="header-content">
+            <span class="header-label">Transaction Type</span>
+            <span class="badge" [ngClass]="getTransactionBadgeClass(selectedTransaction.transaction)">{{ selectedTransaction.transaction | titlecase }}</span>
+          </div>
+        </div>
+        <div class="header-item">
+          <i class="pi pi-dollar header-icon"></i>
+          <div class="header-content">
+            <span class="header-label">Amount</span>
+            <span class="header-value amount" [class.text-success]="selectedTransaction.amount > 0" [class.text-danger]="selectedTransaction.amount < 0">
+              {{ selectedTransaction.amount > 0 ? '+' : '' }}{{ formatCurrency(selectedTransaction.amount) }}
+            </span>
+          </div>
+        </div>
+        <div class="header-item">
+          <i class="pi pi-calendar header-icon"></i>
+          <div class="header-content">
+            <span class="header-label">Date</span>
+            <span class="header-value">{{ formatDate(selectedTransaction.date) }}</span>
+          </div>
+        </div>
+        <div class="header-item">
+          <i class="pi pi-tag header-icon"></i>
+          <div class="header-content">
+            <span class="header-label">Category</span>
+            <span class="badge badge-light-info">{{ getTransactionTypeLabel(selectedTransaction.type) | titlecase }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Insighter Information Section -->
+    <div class="insighter-section" *ngIf="selectedTransaction.insighter && shouldShowInsighterInfo(selectedTransaction.type)">
+      <h3 class="section-title">
+        <i class="pi pi-user"></i>
+        Insighter Information
+      </h3>
+
+      <div class="insighter-card enhanced-card profile-card-modern">
+        <!-- Main Profile Header -->
+        <div class="profile-header-modern">
+          <div class="profile-avatar-modern">
+            <img *ngIf="selectedTransaction.insighter.profile_photo_url"
+                 [src]="selectedTransaction.insighter.profile_photo_url"
+                 [alt]="selectedTransaction.insighter.name">
+            <div *ngIf="!selectedTransaction.insighter.profile_photo_url"
+                 class="avatar-placeholder">
+              {{ selectedTransaction.insighter.name.charAt(0) }}
+            </div>
+          </div>
+          <div class="profile-info-modern">
+            <h4 class="profile-name-modern">{{ selectedTransaction.insighter.name }}</h4>
+            <div class="profile-roles-modern">
+              <span class="role-badge" *ngFor="let role of selectedTransaction.insighter.roles">{{ role }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Company Information if available -->
+        <div class="company-section" *ngIf="selectedTransaction.insighter.company">
+          <div class="company-card-modern">
+            <div class="company-header-modern">
+              <img *ngIf="selectedTransaction.insighter.company.logo"
+                   [src]="selectedTransaction.insighter.company.logo"
+                   [alt]="selectedTransaction.insighter.company.legal_name"
+                   class="company-logo-modern">
+              <div class="company-info-modern">
+                <h5 class="company-name-modern">{{ selectedTransaction.insighter.company.legal_name }}</h5>
+                <div class="company-status">
+                  <span class="verification-badge" [ngClass]="selectedTransaction.insighter.company.verified ? 'verified' : 'unverified'">
+                    {{ selectedTransaction.insighter.company.verified ? 'Verified' : 'Unverified' }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- User (Buyer) Information Section -->
+    <div class="user-section" *ngIf="selectedTransaction.order && selectedTransaction.order.user">
+      <h3 class="section-title">
+        <i class="pi pi-shopping-cart"></i>
+        Customer Information
+      </h3>
+
+      <div class="user-card enhanced-card profile-card-modern">
+        <div class="profile-header-modern">
+          <div class="profile-avatar-modern">
+            <img *ngIf="selectedTransaction.order.user.profile_photo_url"
+                 [src]="selectedTransaction.order.user.profile_photo_url"
+                 [alt]="selectedTransaction.order.user.name">
+            <div *ngIf="!selectedTransaction.order.user.profile_photo_url"
+                 class="avatar-placeholder">
+              {{ selectedTransaction.order.user.name.charAt(0) }}
+            </div>
+          </div>
+          <div class="profile-info-modern">
+            <h4 class="profile-name-modern">{{ selectedTransaction.order.user.name }}</h4>
+            <p class="profile-email-modern">{{ selectedTransaction.order.user.email }}</p>
+            <div class="profile-roles-modern">
+              <span class="role-badge" *ngFor="let role of selectedTransaction.order.user.roles">{{ role }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Information Section -->
+    <div class="items-section" *ngIf="selectedTransaction.order && selectedTransaction.order.sub_orders && selectedTransaction.order.sub_orders.length > 0">
+      <h3 class="section-title">
+        <i class="pi pi-file-text"></i>
+        Order Details
+      </h3>
+
+      <!-- Order Metadata -->
+      <div class="order-metadata">
+        <div class="metadata-grid-modern">
+          <div class="metadata-item-modern">
+            <span class="metadata-label-modern">Order Number</span>
+            <span class="metadata-value-modern">{{ selectedTransaction.order.order_no }}</span>
+          </div>
+          <div class="metadata-item-modern">
+            <span class="metadata-label-modern">Invoice Number</span>
+            <span class="metadata-value-modern">{{ selectedTransaction.order.invoice_no }}</span>
+          </div>
+          <div class="metadata-item-modern">
+            <span class="metadata-label-modern">Service Type</span>
+            <span class="modern-badge primary">{{ selectedTransaction.order.service | titlecase }}</span>
+          </div>
+          <div class="metadata-item-modern">
+            <span class="metadata-label-modern">Order Status</span>
+            <span class="modern-badge" [ngClass]="selectedTransaction.order.status === 'paid' ? 'success' : 'warning'">
+              {{ selectedTransaction.order.status | titlecase }}
+            </span>
+          </div>
+          <div class="metadata-item-modern">
+            <span class="metadata-label-modern">Order Date</span>
+            <span class="metadata-value-modern">{{ formatDate(selectedTransaction.order.date) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="suborders-container">
+        <div class="suborder-card" *ngFor="let suborder of selectedTransaction.order.sub_orders; let i = index">
+          <div class="suborder-header">
+            <span class="suborder-number">Item Group {{ i + 1 }}</span>
+          </div>
+
+          <!-- Knowledge Items -->
+          <div class="knowledge-section" *ngIf="suborder.knowledge && suborder.knowledge.length > 0">
+            <h4 class="subsection-title">Knowledge Products</h4>
+            <div class="knowledge-items">
+              <div class="knowledge-item" *ngFor="let item of suborder.knowledge">
+                <div class="knowledge-type">
+                  <p-chip [label]="item.type" styleClass="custom-chip"></p-chip>
+                </div>
+                <div class="knowledge-title">{{ item.title }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Documents -->
+          <div class="documents-section" *ngIf="suborder.knowledge_documents && suborder.knowledge_documents.length > 0">
+            <h4 class="subsection-title">Documents</h4>
+            <div class="documents-grid">
+              <div *ngFor="let docGroup of suborder.knowledge_documents">
+                <div class="document-item" *ngFor="let doc of docGroup">
+                  <img [src]="getFileIcon(doc.file_extension)"
+                       [alt]="doc.file_extension"
+                       class="file-icon">
+                  <div class="document-info">
+                    <span class="document-name">{{ doc.file_name }}.{{ doc.file_extension }}</span>
+                    <span class="document-price">{{ formatCurrency(doc.price) }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Meeting Booking -->
+          <div class="meeting-section" *ngIf="suborder.meeting_booking">
+            <h4 class="subsection-title">Meeting Details</h4>
+            <div class="meeting-card">
+              <div class="meeting-grid">
+                <div class="meeting-item">
+                  <i class="pi pi-calendar meeting-icon"></i>
+                  <div class="meeting-content">
+                    <span class="meeting-label">Date</span>
+                    <span class="meeting-value">{{ suborder.meeting_booking.date }}</span>
+                  </div>
+                </div>
+                <div class="meeting-item">
+                  <i class="pi pi-clock meeting-icon"></i>
+                  <div class="meeting-content">
+                    <span class="meeting-label">Time</span>
+                    <span class="meeting-value">{{ suborder.meeting_booking.start_time }} - {{ suborder.meeting_booking.end_time }}</span>
+                  </div>
+                </div>
+                <div class="meeting-item">
+                  <i class="pi pi-info-circle meeting-icon"></i>
+                  <div class="meeting-content">
+                    <span class="meeting-label">Status</span>
+                    <span class="badge" [ngClass]="getMeetingStatusClass(suborder.meeting_booking.status)">
+                      {{ suborder.meeting_booking.status | titlecase }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="meeting-details">
+                <h5 class="meeting-title">{{ suborder.meeting_booking.title }}</h5>
+                <p class="meeting-description">{{ suborder.meeting_booking.description }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="dialog-footer">
+      <button pButton type="button" label="Close" icon="pi pi-times" class="p-button-secondary" (click)="displayDialog = false"></button>
+    </div>
+  </ng-template>
+</p-dialog>

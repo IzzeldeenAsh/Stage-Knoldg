@@ -18,6 +18,15 @@ export class DashboardSideBarComponent implements OnInit {
   isAccountActive: boolean = false;
   isSettingsActive: boolean = false;
 
+  // Collapse state for categories
+  collapsedCategories: { [key: string]: boolean } = {
+    notifications: false,
+    users: false,
+    content: false,
+    financial: false,
+    settings: false
+  };
+
   base:string=''
   page:string=''
   constructor( 
@@ -42,8 +51,16 @@ export class DashboardSideBarComponent implements OnInit {
 
   ngOnInit(): void {
     this.base=this.router.url.split('/')[3];
-   
+
   }
 
-  
+  toggleCategory(category: string): void {
+    this.collapsedCategories[category] = !this.collapsedCategories[category];
+  }
+
+  isCategoryActive(categoryRoutes: string[]): boolean {
+    const currentUrl = this.router.url;
+    return categoryRoutes.some(route => currentUrl.includes(route));
+  }
+
 }

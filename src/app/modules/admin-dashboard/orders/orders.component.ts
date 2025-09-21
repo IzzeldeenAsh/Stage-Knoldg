@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { AdminOrdersService, Order, OrderResponse } from '../services/admin-orders.service';
 import { Table } from 'primeng/table';
 import { MessageService } from 'primeng/api';
+import { ServiceNamePipe } from '../../../shared/pipes/service-name.pipe';
 
 @Component({
   selector: 'app-orders',
@@ -113,5 +114,31 @@ export class OrdersComponent implements OnInit {
       return `/assets/media/svg/new-files/${ext}.svg`;
     }
     return '/assets/media/svg/new-files/txt.svg'; // default icon
+  }
+
+  getStatusBadgeClass(status: string): string {
+    switch (status.toLowerCase()) {
+      case 'paid':
+        return 'badge-light-success';
+      case 'pending':
+        return 'badge-light-warning';
+      case 'failed':
+        return 'badge-light-danger';
+      default:
+        return 'badge-light-info';
+    }
+  }
+
+  getFulfillmentBadgeClass(status: string): string {
+    switch (status.toLowerCase()) {
+      case 'completed':
+        return 'badge-light-success';
+      case 'pending':
+        return 'badge-light-warning';
+      case 'failed':
+        return 'badge-light-danger';
+      default:
+        return 'badge-light-info';
+    }
   }
 }

@@ -1,17 +1,16 @@
 <div class="
 d-flex 
 flex-column pt-6 pb-lg-10 pt-lg-20"
-style="min-height: 100px;"
 >
   <div class="d-flex align-items-center pt-1">
     <ul class="breadcrumb breadcrumb-separatorless fw-semibold">
       <li class="breadcrumb-item text-white fw-bold lh-1">
         <a href="/" class="text-white text-hover-secondary">
-          <i class="ki-outline ki-home text-white fs-3"></i>
+          <i class="pi pi-home text-white" style="font-size: 1.25rem;"></i>
         </a>
       </li>
       <li class="breadcrumb-item">
-        <i class="ki-outline {{lang === 'ar' ? 'ki-left' : 'ki-right'}} fs-4 text-white mx-n1"></i>
+        <i class="pi {{lang === 'ar' ? 'pi-chevron-left' : 'pi-chevron-right'}} text-white mx-n1" style="font-size: 1rem;"></i>
       </li>
       <li class="breadcrumb-item text-white fw-bold lh-1">
         {{"DASHBOARD" | translate}}
@@ -48,7 +47,7 @@ style="min-height: 100px;"
       <!-- Total Meetings -->
       <div class="d-flex flex-column rounded p-6 hover-scale">           
         <div class="d-flex align-items-center mb-2">
-          <i class="ki-solid ki-calendar text-success mx-2 fs-2"></i>
+          <i class="pi pi-calendar text-success mx-2" style="font-size: 1.5rem;"></i>
           <span class="text-white fw-bolder fs-2x" 
                 [appCountUp]="totalMeetings">
             {{ totalMeetings }}
@@ -76,7 +75,7 @@ style="min-height: 100px;"
        <!-- Coming Meetings -->
       <div class="d-flex flex-column rounded p-6 hover-scale">           
         <div class="d-flex align-items-center mb-2">
-          <i class="ki-solid ki-calendar-clock text-warning mx-2 fs-2"></i>
+          <i class="pi pi-calendar-times text-warning mx-2 fs-2"></i>
           <span class="text-white fw-bolder fs-2x" 
                 [appCountUp]="comingMeetings">
             {{ comingMeetings }}
@@ -90,7 +89,7 @@ style="min-height: 100px;"
       <!-- Past Meetings -->
       <div class="d-flex flex-column rounded p-6 hover-scale">           
         <div class="d-flex align-items-center mb-2">
-          <i class="ki-solid ki-calendar-tick text-danger mx-2 fs-2"></i>
+          <i class="pi pi-calendar-plus text-danger mx-2" style="font-size: 1.5rem;"></i>
           <span class="text-white fw-bolder fs-2x" 
                 [appCountUp]="pastMeetings">
             {{ pastMeetings }}
@@ -104,7 +103,7 @@ style="min-height: 100px;"
       <!-- Pending Meetings -->
       <div class="d-flex flex-column rounded p-6 hover-scale">           
         <div class="d-flex align-items-center mb-2">
-          <i class="ki-solid ki-time text-warning mx-2 fs-2"></i>
+          <i class="pi pi-clock text-warning mx-2" style="font-size: 1.5rem;"></i>
           <span class="text-white fw-bolder fs-2x" 
                 [appCountUp]="pendingMeetings">
             {{ pendingMeetings }}
@@ -132,7 +131,7 @@ style="min-height: 100px;"
       <!-- Postponed Meetings -->
       <div class="d-flex flex-column rounded p-6 hover-scale">           
         <div class="d-flex align-items-center mb-2">
-          <i class="ki-solid ki-pause text-secondary mx-2 fs-2"></i>
+          <i class="pi pi-pause-circle"  style="font-size: 1.5rem; color: #edaa00; margin: 0 8px;"></i>
           <span class="text-white fw-bolder fs-2x" 
                 [appCountUp]="postponedMeetings">
             {{ postponedMeetings }}

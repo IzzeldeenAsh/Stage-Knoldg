@@ -4,6 +4,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ClipboardModule } from 'ngx-clipboard';
 import { TranslateModule } from '@ngx-translate/core';
+import { Chart } from 'chart.js';
+import annotationPlugin from 'chartjs-plugin-annotation';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutingModule } from './app-routing.module';
@@ -80,5 +82,8 @@ function appInitializer(authService: AuthService) {
 export class AppModule { 
   constructor(private primengConfig: PrimeNGConfig) {
     this.primengConfig.ripple = true;
+
+    // تسجيل البلغ-إن
+    Chart.register(annotationPlugin);
   }
 }

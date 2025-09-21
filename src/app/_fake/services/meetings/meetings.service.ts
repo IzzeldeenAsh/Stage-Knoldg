@@ -48,6 +48,28 @@ export interface MeetingResponse {
   };
 }
 
+export interface AvailableTime {
+  start_time: string;
+  end_time: string;
+}
+
+export interface AvailableDay {
+  date: string;
+  day: string;
+  active: boolean;
+  times: AvailableTime[];
+}
+
+export interface AvailableHoursResponse {
+  data: AvailableDay[];
+}
+
+export interface RescheduleRequest {
+  meeting_date: string;
+  start_time: string;
+  end_time: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -117,6 +139,43 @@ export class MeetingsService {
 
     this.setLoading(true);
     return this.http.put(url, body, { headers }).pipe(
+      map(response => response),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  // Get available hours for reschedule (for current authenticated user)
+  getAvailableHours(): Observable<AvailableHoursResponse> {
+    const headers = this.getHeaders();
+    const url = `https://api.knoldg.com/api/insighter/meeting/available/hours`;
+
+    // Calculate date range - from tomorrow to 3 months from tomorrow
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const endDate = new Date(tomorrow);
+    endDate.setMonth(endDate.getMonth() + 3);
+
+    const body = {
+      start_date: tomorrow.toISOString().split('T')[0],
+      end_date: endDate.toISOString().split('T')[0]
+    };
+
+    this.setLoading(true);
+    return this.http.post<AvailableHoursResponse>(url, body, { headers }).pipe(
+      map(response => response),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  // Reschedule meeting
+  rescheduleMeeting(meetingUuid: string, rescheduleData: RescheduleRequest): Observable<any> {
+    const headers = this.getHeaders();
+    const url = `https://api.knoldg.com/api/insighter/meeting/reschedule/${meetingUuid}`;
+
+    this.setLoading(true);
+    return this.http.post(url, rescheduleData, { headers }).pipe(
       map(response => response),
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))

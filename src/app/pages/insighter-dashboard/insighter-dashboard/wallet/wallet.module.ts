@@ -14,6 +14,7 @@ import { BadgeModule } from 'primeng/badge';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { ChartModule } from 'primeng/chart';
+import { SelectButtonModule } from 'primeng/selectbutton';
 
 const routes: Routes = [
   {
@@ -40,7 +41,8 @@ const routes: Routes = [
     BadgeModule,
     FormsModule,
     TranslateModule,
-    ChartModule
+    ChartModule,
+    SelectButtonModule
   ]
 })
 export class WalletModule { }

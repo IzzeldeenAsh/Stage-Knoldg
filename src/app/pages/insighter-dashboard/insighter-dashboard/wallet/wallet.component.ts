@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy, Injector, ViewChild, ElementRef, AfterViewInit, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, Injector } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
-import { WalletService, Transaction, TransactionResponse } from 'src/app/_fake/services/wallet/wallet.service';
+import { WalletService, Transaction, TransactionListResponse, User, ChartDataPoint } from 'src/app/_fake/services/wallet/wallet.service';
 import { BaseComponent } from 'src/app/modules/base.component';
 
 @Component({
@@ -8,23 +8,38 @@ import { BaseComponent } from 'src/app/modules/base.component';
   templateUrl: './wallet.component.html',
   styleUrls: ['./wallet.component.scss']
 })
-export class WalletComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
+export class WalletComponent extends BaseComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
-  private resizeObserver: ResizeObserver | null = null;
   
   walletBalance: number = 0;
   transactions: Transaction[] = [];
+  allTransactions: Transaction[] = []; // All transactions for chart
+  paginatedTransactions: Transaction[] = []; // Transactions for current page
   totalRecords: number = 0;
   loading: boolean = false;
-  
+
   currentPage: number = 1;
   pageSize: number = 10;
-  
+
   selectedTransaction: Transaction | null = null;
   showDetailsDialog: boolean = false;
-  
+
+  // Chart data properties
   chartData: any;
   chartOptions: any;
+  selectedPeriod: 'weekly' | 'monthly' | 'yearly' = 'weekly';
+
+  // Period options for custom select buttons
+  periodOptions: Array<{label: string; labelAr: string; value: 'weekly' | 'monthly' | 'yearly'}> = [
+    { label: 'Weekly', labelAr: 'أسبوعي', value: 'weekly' },
+    { label: 'Monthly', labelAr: 'شهري', value: 'monthly' },
+    { label: 'Yearly', labelAr: 'سنوي', value: 'yearly' }
+  ];
+
+  // Chart data from API
+  chartApiData: ChartDataPoint[] = [];
+  useApiData: boolean = true;
+  
   
   get tableColumns() {
     return [
@@ -44,234 +59,14 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
   }
 
   ngOnInit(): void {
-    this.initializeChart();
     this.loadWalletData();
-    this.loadTransactions();
+    this.loadAllData();
   }
   
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.updateChartSize();
-    }, 100);
-  }
-  
-  @HostListener('window:resize', ['$event'])
-  onResize(event: any): void {
-    this.updateChartSize();
-  }
-  
-  private updateChartSize(): void {
-    if (this.chartData && this.chartOptions) {
-      this.chartOptions = {
-        ...this.chartOptions,
-        responsive: true,
-        maintainAspectRatio: false
-      };
-    }
-  }
-  
-  initializeChart(): void {
-    this.chartData = {
-      labels: [],
-      datasets: [{
-        label: this.lang === 'ar' ? 'الرصيد' : 'Balance',
-        data: [],
-        borderColor: '#4f28ed',
-        backgroundColor: 'rgba(79, 40, 237, 0.1)',
-        fill: true,
-        tension: 0.4,
-        borderWidth: 2,
-        pointRadius: 0,
-        pointHoverRadius: 4,
-        pointBackgroundColor: '#4f28ed',
-        pointBorderColor: '#fff',
-        pointBorderWidth: 2
-      }]
-    };
-    
-    this.chartOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-      aspectRatio: 3,
-      plugins: {
-        legend: {
-          display: false
-        },
-        tooltip: {
-          enabled: false,
-          external: (context: any) => {
-            const { chart, tooltip } = context;
-            
-            let tooltipEl = document.body.querySelector('.chartjs-wallet-tooltip') as HTMLElement;
-            
-            if (!tooltipEl) {
-              tooltipEl = document.createElement('div');
-              tooltipEl.classList.add('chartjs-wallet-tooltip');
-              tooltipEl.style.position = 'fixed';
-              tooltipEl.style.zIndex = '99999';
-              tooltipEl.style.pointerEvents = 'none';
-              tooltipEl.style.transition = 'opacity 0.2s ease';
-              document.body.appendChild(tooltipEl);
-            }
-            
-            if (tooltip.opacity === 0) {
-              tooltipEl.style.opacity = '0';
-              return;
-            }
-            
-            if (tooltip.body) {
-              const dataIndex = tooltip.dataPoints[0].dataIndex;
-              const transaction = this.chartData.datasets[0].transactionData[dataIndex];
-              const balance = tooltip.dataPoints[0].parsed.y;
-              
-              if (transaction) {
-                const date = new Date(transaction.date);
-                const dateString = date.toLocaleDateString('en-US', {
-                  month: '2-digit',
-                  day: '2-digit',
-                  year: 'numeric'
-                }) + ' ' + date.toLocaleTimeString('en-US', {
-                  hour: '2-digit',
-                  minute: '2-digit',
-                  hour12: false
-                });
-                
-                const transactionType = this.getTransactionType(transaction);
-                const amount = Math.abs(transaction.amount);
-                const isDeposit = transaction.transaction === 'deposit';
-                
-                tooltipEl.innerHTML = `
-                  <div class="tooltip-content" style="
-                    background: white;
-                    border: 1px solid #e3e6f0;
-                    border-radius: 8px;
-                    font-size: 13px;
-                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-                    width: auto;
-                    min-width: 160px;
-                  ">
-                    <div class="tooltip-header" style="
-                      background: #f8f9fa;
-                      padding: 6px 12px;
-                      border-radius: 8px 8px 0 0;
-                      font-size: 12px;
-                      color: #6c757d;
-                      border-bottom: 1px solid #e9ecef;
-                      text-align: center;
-                    ">${dateString}</div>
-                    <div class="tooltip-body" style="padding: 8px 12px;">
-                      <div class="tooltip-row" style="display: flex; align-items: center; margin-bottom: 4px;">
-                        <span class="tooltip-dot" style="
-                          width: 6px;
-                          height: 6px;
-                          border-radius: 50%;
-                          margin-right: 8px;
-                          background: ${isDeposit ? '#2c3e50' : '#17a2b8'};
-                        "></span>
-                        <span class="tooltip-label" style="
-                          flex: 1;
-                          font-size: 13px;
-                          font-weight: 500;
-                          color: #333;
-                          margin-right: 8px;
-                        ">${transactionType}</span>
-                        <span class="tooltip-value" style="
-                          font-size: 13px;
-                          font-weight: 600;
-                          color: #333;
-                        ">$${amount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>
-                      </div>
-                      <div class="tooltip-row" style="display: flex; align-items: center;">
-                        <span class="tooltip-dot" style="
-                          width: 6px;
-                          height: 6px;
-                          border-radius: 50%;
-                          margin-right: 8px;
-                          background: #6c757d;
-                        "></span>
-                        <span class="tooltip-label" style="
-                          flex: 1;
-                          font-size: 13px;
-                          font-weight: 500;
-                          color: #333;
-                          margin-right: 8px;
-                        ">Balance</span>
-                        <span class="tooltip-value" style="
-                          font-size: 13px;
-                          font-weight: 600;
-                          color: #333;
-                        ">$${balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                      </div>
-                    </div>
-                  </div>
-                `;
-              }
-            }
-            
-            // Get canvas position relative to viewport
-            const canvasRect = chart.canvas.getBoundingClientRect();
-            
-            // Calculate tooltip position using viewport coordinates
-            let tooltipX = canvasRect.left + tooltip.caretX + 10;
-            let tooltipY = canvasRect.top + tooltip.caretY - 70;
-            
-            // Keep tooltip within viewport bounds
-            const tooltipWidth = 160;
-            const tooltipHeight = 80;
-            
-            // Adjust horizontal position
-            if (tooltipX + tooltipWidth > window.innerWidth) {
-              tooltipX = canvasRect.left + tooltip.caretX - tooltipWidth - 10;
-            }
-            if (tooltipX < 0) {
-              tooltipX = 10;
-            }
-            
-            // Adjust vertical position  
-            if (tooltipY < 0) {
-              tooltipY = canvasRect.top + tooltip.caretY + 20;
-            }
-            if (tooltipY + tooltipHeight > window.innerHeight) {
-              tooltipY = canvasRect.top + tooltip.caretY - tooltipHeight - 10;
-            }
-            
-            tooltipEl.style.opacity = '1';
-            tooltipEl.style.left = tooltipX + 'px';
-            tooltipEl.style.top = tooltipY + 'px';
-          }
-        }
-      },
-      scales: {
-        x: {
-          display: false,
-          grid: {
-            display: false
-          }
-        },
-        y: {
-          display: false,
-          grid: {
-            display: false
-          }
-        }
-      },
-      interaction: {
-        intersect: false,
-        mode: 'index'
-      },
-      layout: {
-        padding: 0
-      }
-    };
-  }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-    if (this.resizeObserver) {
-      this.resizeObserver.disconnect();
-    }
     super.ngOnDestroy();
   }
 
@@ -288,84 +83,60 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
       });
   }
 
-  loadTransactions(page: number = 1): void {
+  loadAllData(): void {
     this.loading = true;
-    this.currentPage = page;
-    
-    this.walletService.getTransactions(page, this.pageSize)
+
+    // Load all transactions using the new endpoint
+    this.walletService.getAllTransactions(this.selectedPeriod)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (response: TransactionResponse) => {
-          this.transactions = response.data;
-          this.totalRecords = response.meta.total;
+        next: (response: TransactionListResponse) => {
+          this.allTransactions = response.data;
+          this.totalRecords = response.data.length;
+          this.updatePaginatedTransactions();
+          this.initializeChartFromTransactions();
           this.loading = false;
-          this.updateChart();
         },
         error: (error) => {
           this.loading = false;
           this.handleServerErrors(error);
+          // Fallback to generate sample data if API fails
+          this.generateSampleChartData();
+          this.initializeChart();
         }
       });
   }
 
-  updateChart(): void {
-    if (this.transactions.length === 0) return;
-    
-    const last10Transactions = this.transactions.slice(0, 10).reverse();
-    const chartDataPoints: number[] = [];
-    const chartLabels: string[] = [];
-    const transactionData: Transaction[] = [];
-    let runningBalance = this.walletBalance;
-    
-    last10Transactions.forEach((transaction, index) => {
-      if (index === 0) {
-        for (let i = last10Transactions.length - 1; i >= 0; i--) {
-          const trans = last10Transactions[i];
-          const transAmount = Math.abs(trans.amount);
-          if (trans.transaction === 'deposit') {
-            runningBalance -= transAmount;
-          } else {
-            runningBalance += transAmount;
-          }
-        }
-      }
-      
-      const transactionAmount = Math.abs(transaction.amount);
-      if (transaction.transaction === 'deposit') {
-        runningBalance += transactionAmount;
-      } else {
-        runningBalance -= transactionAmount;
-      }
-      
-      chartDataPoints.push(runningBalance);
-      chartLabels.push(new Date(transaction.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
-      transactionData.push(transaction);
-    });
-    
-    this.chartData = {
-      ...this.chartData,
-      labels: chartLabels,
-      datasets: [{
-        ...this.chartData.datasets[0],
-        data: chartDataPoints,
-        transactionData: transactionData
-      }]
-    };
+  updatePaginatedTransactions(): void {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.paginatedTransactions = this.allTransactions.slice(startIndex, endIndex);
+    this.transactions = this.paginatedTransactions;
   }
 
+
   onPageChange(event: any): void {
-    const page = (event.page || 0) + 1;
-    this.loadTransactions(page);
+    this.currentPage = (event.page || 0) + 1;
+    this.updatePaginatedTransactions();
   }
 
   formatService(service: string): string {
     if (!service) return '';
-    
-    // Handle special cases
+
+    // Handle special cases for meeting-related transactions
     if (service === 'book_meeting') {
       return this.lang === 'ar' ? 'حجز اجتماع' : 'Book Meeting';
     }
-    
+    if (service === 'income_meeting') {
+      return this.lang === 'ar' ? 'دخل من اجتماع' : 'Meeting Income';
+    }
+    if (service === 'income_knowledge') {
+      return this.lang === 'ar' ? 'دخل من المعرفة' : 'Knowledge Income';
+    }
+    if (service === 'purchase_knowledge') {
+      return this.lang === 'ar' ? 'شراء المعرفة' : 'Knowledge Purchase';
+    }
+
     // Default formatting for other services
     return service
       .split('_')
@@ -406,7 +177,6 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
 
   formatAmount(amount: number): string {
     const absAmount = Math.abs(amount);
-    const sign = amount >= 0 ? '+' : '(';
     const closeSign = amount >= 0 ? '' : ')';
     const openSign = amount >= 0 ? '' : '(';
     return `${openSign}$${absAmount.toFixed(2)}${closeSign}`;
@@ -423,6 +193,16 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
     return `assets/media/svg/new-files/${ext}.svg`;
   }
 
+  formatMeetingDate(dateString: string): string {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  }
+
   getLatestTransactionAmount(): number {
     if (this.transactions.length > 0) {
       return this.transactions[0].amount;
@@ -435,6 +215,74 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
       return this.transactions[0].transaction;
     }
     return '';
+  }
+
+  // User helper methods
+  getUserInitials(user: User | undefined): string {
+    if (!user) return '';
+    const firstInitial = user.first_name?.charAt(0) || user.name?.charAt(0) || '';
+    const lastInitial = user.last_name?.charAt(0) || user.name?.split(' ')[1]?.charAt(0) || '';
+    return (firstInitial + lastInitial).toUpperCase();
+  }
+
+  getRoleBadgeClass(role: string): string {
+    switch (role?.toLowerCase()) {
+      case 'insighter':
+        return 'badge-light-success';
+      case 'company':
+      case 'client':
+        return 'badge-light-info';
+      case 'admin':
+        return 'badge-light-warning';
+      default:
+        return 'badge-light-secondary';
+    }
+  }
+
+  formatRole(role: string): string {
+    if (!role) return '';
+
+    if (this.lang === 'ar') {
+      switch (role.toLowerCase()) {
+        case 'insighter':
+          return 'خبير';
+        case 'company':
+          return 'شركة';
+        case 'client':
+          return 'عميل';
+        case 'admin':
+          return 'مدير';
+        default:
+          return role;
+      }
+    }
+
+    return role.charAt(0).toUpperCase() + role.slice(1);
+  }
+
+  getStatusBadgeClass(status: string): string {
+    if (!status) return 'badge-light-secondary';
+
+    switch (status.toLowerCase()) {
+      case 'paid':
+      case 'completed':
+        return 'badge-light-success';
+      case 'pending':
+      case 'processing':
+        return 'badge-light-warning';
+      case 'cancelled':
+      case 'failed':
+        return 'badge-light-danger';
+      case 'postponed':
+        return 'badge-light-info';
+      default:
+        return 'badge-light-secondary';
+    }
+  }
+
+  formatStatus(status: string): string {
+    if (!status) return '';
+    return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
   }
 
   // Translation helper methods
@@ -461,9 +309,17 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
       'invoiceNumber': { en: 'Invoice Number', ar: 'رقم الفاتورة' },
       'status': { en: 'Status', ar: 'الحالة' },
       'knowledgeItems': { en: 'Knowledge Items', ar: 'عناصر المعرفة' },
+      'meetingDetails': { en: 'Meeting Details', ar: 'تفاصيل الاجتماع' },
+      'meetingTitle': { en: 'Meeting Title', ar: 'عنوان الاجتماع' },
+      'meetingStatus': { en: 'Meeting Status', ar: 'حالة الاجتماع' },
+      'meetingDate': { en: 'Meeting Date', ar: 'تاريخ الاجتماع' },
+      'meetingTime': { en: 'Meeting Time', ar: 'وقت الاجتماع' },
+      'meetingDescription': { en: 'Description', ar: 'الوصف' },
       'close': { en: 'Close', ar: 'إغلاق' },
       'viewDetails': { en: 'View Details', ar: 'عرض التفاصيل' },
-      'balance': { en: 'Balance', ar: 'الرصيد' }
+      'balance': { en: 'Balance', ar: 'الرصيد' },
+      'userInformation': { en: 'User Information', ar: 'معلومات المستخدم' },
+      'sendEmail': { en: 'Send Email', ar: 'إرسال بريد إلكتروني' }
     };
     
     return translations[key] ? translations[key][this.lang === 'ar' ? 'ar' : 'en'] : key;
@@ -487,5 +343,341 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
         this.lang === "ar" ? "حدث خطأ" : "An unexpected error occurred."
       );
     }
+  }
+
+  // Chart methods
+  initializeChartFromTransactions(): void {
+    console.log('Initializing chart from transactions:', this.allTransactions.length);
+
+    // Group transactions by date
+    const dailyData = new Map<string, { deposits: number; withdrawals: number }>();
+
+    this.allTransactions.forEach(transaction => {
+      const date = transaction.date.split(' ')[0]; // Extract date part (YYYY-MM-DD)
+
+      if (!dailyData.has(date)) {
+        dailyData.set(date, { deposits: 0, withdrawals: 0 });
+      }
+
+      const dayData = dailyData.get(date)!;
+
+      if (transaction.transaction === 'deposit') {
+        dayData.deposits += Math.abs(transaction.amount);
+      } else {
+        dayData.withdrawals += Math.abs(transaction.amount);
+      }
+    });
+
+    // Convert to chart data format and sort by date
+    this.chartApiData = Array.from(dailyData.entries())
+      .map(([date, data]) => ({
+        date,
+        deposits: data.deposits,
+        withdrawals: data.withdrawals,
+        balance: 0 // Not used in chart but kept for compatibility
+      }))
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+    this.useApiData = true;
+
+    if (this.chartApiData.length === 0) {
+      console.log('No transaction data available for chart, using sample data');
+      this.generateSampleChartData();
+    }
+
+    this.initializeChart();
+  }
+
+  generateSampleChartData(): void {
+    const today = new Date();
+    const data = [];
+
+    for (let i = 29; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - i);
+
+      const baseDeposits = 5000 + Math.random() * 3000;
+      const baseWithdrawals = 2000 + Math.random() * 2000;
+      const deposits = Math.round(baseDeposits + Math.sin(i * 0.2) * 1000);
+      const withdrawals = Math.round(baseWithdrawals + Math.cos(i * 0.15) * 800);
+
+      data.push({
+        date: date.toISOString().split('T')[0],
+        deposits: deposits,
+        balance: deposits - withdrawals + 3000,
+        withdrawals: withdrawals
+      });
+    }
+
+    this.chartApiData = data;
+  }
+
+  initializeChart(): void {
+    console.log('Initializing chart with data:', this.chartApiData);
+
+    if (!this.chartApiData || this.chartApiData.length === 0) {
+      console.log('No data available for chart');
+      return;
+    }
+
+    const labels = this.chartApiData.map(item => {
+      const date = new Date(item.date);
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    });
+
+    // Create gradients
+    const createGradient = (ctx: CanvasRenderingContext2D, color1: string, color2: string) => {
+      const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+      gradient.addColorStop(0, color1);
+      gradient.addColorStop(1, color2);
+      return gradient;
+    };
+
+    this.chartData = {
+      labels: labels,
+      datasets: [
+        {
+          label: this.lang === 'ar' ? 'الإيداعات' : 'Deposits',
+          data: this.chartApiData.map(item => item.deposits),
+          borderColor: '#10b981',
+          backgroundColor: (ctx: any) => {
+            const chart = ctx.chart;
+            const {ctx: canvasCtx} = chart;
+            return createGradient(canvasCtx, 'rgba(16, 185, 129, 0.2)', 'rgba(16, 185, 129, 0)');
+          },
+          borderWidth: 2,
+          fill: true,
+          tension: 0.4,
+          pointBackgroundColor: '#10b981',
+          pointBorderColor: '#ffffff',
+          pointBorderWidth: 2,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          pointHoverBackgroundColor: '#10b981',
+          pointHoverBorderColor: '#ffffff',
+          pointHoverBorderWidth: 3
+        },
+        {
+          label: this.lang === 'ar' ? 'السحوبات' : 'Withdrawals',
+          data: this.chartApiData.map(item => item.withdrawals),
+          borderColor: '#ef4444',
+          backgroundColor: (ctx: any) => {
+            const chart = ctx.chart;
+            const {ctx: canvasCtx} = chart;
+            return createGradient(canvasCtx, 'rgba(239, 68, 68, 0.1)', 'rgba(239, 68, 68, 0)');
+          },
+          borderWidth: 2,
+          fill: true,
+          tension: 0.4,
+          pointBackgroundColor: '#ef4444',
+          pointBorderColor: '#ffffff',
+          pointBorderWidth: 2,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          pointHoverBackgroundColor: '#ef4444',
+          pointHoverBorderColor: '#ffffff',
+          pointHoverBorderWidth: 3
+        }
+      ]
+    };
+
+    this.chartOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      onHover: (_event: any, activeElements: any[], chart: any) => {
+        // Update vertical line on hover
+        if (activeElements.length > 0) {
+          const dataIndex = activeElements[0].index;
+          this.updateHoverAnnotation(chart, dataIndex);
+        } else {
+          this.clearHoverAnnotation(chart);
+        }
+      },
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          backgroundColor: '#ffffff',
+          titleColor: '#1f2937',
+          bodyColor: '#1f2937',
+          borderColor: '#e5e7eb',
+          borderWidth: 1,
+          cornerRadius: 8,
+          displayColors: true,
+          usePointStyle: true,
+          padding: 12,
+          titleFont: {
+            size: 12,
+            weight: '600'
+          },
+          bodyFont: {
+            size: 11
+          },
+          callbacks: {
+            title: (context: any) => {
+              const dataIndex = context[0].dataIndex;
+              const date = new Date(this.chartApiData[dataIndex].date);
+              return date.toLocaleDateString('en-US', {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+              });
+            },
+            label: (context: any) => {
+              return `${context.dataset.label}: $${context.parsed.y.toLocaleString()}`;
+            }
+          }
+        },
+        annotation: {
+          annotations: this.createVerticalAnnotations()
+        }
+      },
+      scales: {
+        x: {
+          type: 'category',
+          grid: {
+            color: '#f3f4f6',
+            lineWidth: 1,
+            drawBorder: false
+          },
+          ticks: {
+            color: '#6b7280',
+            font: {
+              size: 11
+            },
+            autoSkip: true,
+            maxTicksLimit: 7
+          }
+        },
+        y: {
+          grid: {
+            color: '#f3f4f6',
+            lineWidth: 1,
+            drawBorder: false
+          },
+          ticks: {
+            color: '#6b7280',
+            font: {
+              size: 11
+            },
+            callback: function(value: any) {
+              return '$' + value.toLocaleString();
+            }
+          }
+        }
+      },
+      interaction: {
+        intersect: false,
+        mode: 'index'
+      }
+    };
+  }
+
+  setPeriod(period: 'weekly' | 'monthly' | 'yearly'): void {
+    this.selectedPeriod = period;
+    this.currentPage = 1; // Reset to first page when period changes
+    this.loadAllData(); // Reload all data with new period
+  }
+
+  createVerticalAnnotations(): any {
+    if (!this.chartApiData || this.chartApiData.length === 0) {
+      return {};
+    }
+
+    const annotations: any = {};
+
+    // Add a vertical line for each data point (initially hidden or very light)
+    this.chartApiData.forEach((_, index) => {
+      annotations[`verticalLine${index}`] = {
+        type: 'line',
+        scaleID: 'x',
+        value: index,
+        borderColor: 'rgba(209, 213, 219, 0)', // Initially transparent
+        borderWidth: 1,
+        borderDash: [3, 3],
+        label: {
+          display: false
+        }
+      };
+    });
+
+    return annotations;
+  }
+
+  updateHoverAnnotation(chart: any, dataIndex: number): void {
+    if (!chart || !chart.options.plugins.annotation) {
+      return;
+    }
+
+    const annotations = chart.options.plugins.annotation.annotations;
+
+    // Reset all annotations to transparent
+    Object.keys(annotations).forEach(key => {
+      if (key.startsWith('verticalLine')) {
+        annotations[key].borderColor = 'rgba(209, 213, 219, 0)';
+      }
+    });
+
+    // Highlight the hovered annotation
+    const hoveredAnnotation = annotations[`verticalLine${dataIndex}`];
+    if (hoveredAnnotation) {
+      hoveredAnnotation.borderColor = '#6b7280'; // Darker gray on hover
+      hoveredAnnotation.borderWidth = 2;
+    }
+
+    chart.update('none'); // Update without animation for instant response
+  }
+
+  clearHoverAnnotation(chart: any): void {
+    if (!chart || !chart.options.plugins.annotation) {
+      return;
+    }
+
+    const annotations = chart.options.plugins.annotation.annotations;
+
+    // Reset all annotations to transparent
+    Object.keys(annotations).forEach(key => {
+      if (key.startsWith('verticalLine')) {
+        annotations[key].borderColor = 'rgba(209, 213, 219, 0)';
+        annotations[key].borderWidth = 1;
+      }
+    });
+
+    chart.update('none');
+  }
+
+  getChartLegendData(): {label: string, value: string, color: string}[] {
+    if (!this.chartApiData || this.chartApiData.length === 0) {
+      return [
+        {
+          label: this.lang === 'ar' ? 'الدخل' : 'Income',
+          value: '$0',
+          color: '#6366f1'
+        },
+        {
+          label: this.lang === 'ar' ? 'المصروفات' : 'Expenditure',
+          value: '$0',
+          color: '#0ea5e9'
+        }
+      ];
+    }
+
+    const totalIncome = this.chartApiData.reduce((sum, item) => sum + item.deposits, 0);
+    const totalExpenditure = this.chartApiData.reduce((sum, item) => sum + item.withdrawals, 0);
+
+    return [
+      {
+        label: this.lang === 'ar' ? 'الدخل' : 'Income',
+        value: `$${totalIncome.toLocaleString()}`,
+        color: '#6366f1'
+      },
+      {
+        label: this.lang === 'ar' ? 'المصروفات' : 'Expenditure',
+        value: `$${totalExpenditure.toLocaleString()}`,
+        color: '#0ea5e9'
+      }
+    ];
   }
 }

@@ -31,7 +31,11 @@ export interface SubOrder {
 
 export interface PaymentInfo {
   method: string;
-  provider: string;
+  provider: string | null;
+  provider_payment_method_type: string | null;
+  provider_card_last_number: string | null;
+  provider_card_brand: string | null;
+  provide_receipt_url: string | null;
   confirmed_at: string;
 }
 
