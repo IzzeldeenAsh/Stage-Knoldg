@@ -333,11 +333,8 @@ export class InvoiceGeneratorService {
                     <h3 class="section-title">From:</h3>
                     <p>
                         Foresighta Systems Consulting FZ-LLC<br>
-                        Compass Building<br>
-                        Al Shohada Road<br>
-                        AL Hamra Industrial Zone-FZ<br>
-                        Ras Al Khaimah<br>
-                        United Arab Emirates<br>
+                        Compass Building  Al Shohada Road  AL Hamra Industrial Zone-FZ<br>
+                        Ras Al Khaimah - United Arab Emirates<br>
                         info&#64;knoldg.com
                     </p>
                 </div>
@@ -347,7 +344,7 @@ export class InvoiceGeneratorService {
                     <p>
                         <span class="label">Name:</span> ${userProfile?.name || 'Client Name'}<br>
                         <span class="label">Email:</span> ${userProfile?.email || 'client@email.com'}<br>
-                        <span class="label">Country:</span> ${userProfile?.country || 'Country'}
+                        <span class="label">Country:</span> ${userProfile?.billing_address || 'N/A'}
                     </p>
                 </div>
             </div>
@@ -362,9 +359,7 @@ export class InvoiceGeneratorService {
             </div>
 
             <div class="totals-section">
-                <div class="subtotal">
-                    <span>Subtotal: $${subtotal.toFixed(2)}</span>
-                </div>
+               
                 <div class="total">
                     <span>Total:</span>
                     <span class="amount">$${order.amount.toFixed(2)}</span>
