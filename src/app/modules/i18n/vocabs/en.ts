@@ -1317,6 +1317,8 @@ UPLOAD: 'Upload',
     BECOME_INSIHGER_HEADER:'Become an Insighter',
     BECOME_COMPANY_HEADER:'Upgrade to a Company Account',
     IN_WALLET:'In Wallet',
+    DEPOSIT_WALLET_DESCRIPTION:'Deposit money to your wallet to make purchases',
+    MANAGE_WALLET_FUNDS:'Manage wallet funds',
     BECOME_INSIGHTER_DESCRIPTION:"Sharing knowledge empowers us all to grow and innovate together!",
     CHAPTER_TITLE_REQUIRED: "Chapter Title is required",
     HEADER: {

@@ -27,7 +27,7 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy 
   // Chart data properties
   chartData: any;
   chartOptions: any;
-  selectedPeriod: 'weekly' | 'monthly' | 'yearly' = 'weekly';
+  selectedPeriod: 'weekly' | 'monthly' | 'yearly' = 'monthly';
 
   // Period options for custom select buttons
   periodOptions: Array<{label: string; labelAr: string; value: 'weekly' | 'monthly' | 'yearly'}> = [
@@ -46,7 +46,8 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy 
     return [
       { field: 'service', header: this.lang === 'ar' ? 'الخدمة' : 'Service' },
       { field: 'date', header: this.lang === 'ar' ? 'التاريخ' : 'Date' },
-      { field: 'type', header: this.lang === 'ar' ? 'المعاملة' : 'Transaction' },
+      { field: 'transactionType', header: this.lang === 'ar' ? 'النوع' : 'Type' },
+      { field: 'operationType', header: this.lang === 'ar' ? 'العملية' : 'Operation' },
       { field: 'amount', header: this.lang === 'ar' ? 'المبلغ' : 'Amount' },
       { field: 'actions', header: this.lang === 'ar' ? 'التفاصيل' : 'Details' }
     ];
@@ -139,6 +140,32 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy 
 
     // Default formatting for other services
     return service
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
+
+  formatOperationType(type: string): string {
+    if (!type) return '';
+
+    const typeTranslations: { [key: string]: { en: string; ar: string } } = {
+      'book_meeting': { en: 'Book Meeting', ar: 'حجز اجتماع' },
+      'income_meeting': { en: 'Meeting Income', ar: 'دخل اجتماع' },
+      'income_knowledge': { en: 'Knowledge Income', ar: 'دخل معرفة' },
+      'purchase_knowledge': { en: 'Knowledge Purchase', ar: 'شراء معرفة' },
+      'wallet_topup': { en: 'Wallet Top-up', ar: 'شحن المحفظة' },
+      'refund': { en: 'Refund', ar: 'استرداد' },
+      'commission': { en: 'Commission', ar: 'عمولة' },
+      'bonus': { en: 'Bonus', ar: 'مكافأة' }
+    };
+
+    const translation = typeTranslations[type];
+    if (translation) {
+      return this.lang === 'ar' ? translation.ar : translation.en;
+    }
+
+    // Default formatting for unknown types
+    return type
       .split('_')
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
@@ -285,6 +312,14 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy 
     return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
   }
 
+  // Profile redirect method
+  redirectToProfile(user: User | undefined): void {
+    if (user?.uuid) {
+      const profileUrl = `https://knoldg.com/en/profile/${user.uuid}?entity=insighter`;
+      window.open(profileUrl, '_blank');
+    }
+  }
+
   // Translation helper methods
   getTranslation(key: string): string {
     const translations: { [key: string]: { en: string; ar: string } } = {
@@ -293,7 +328,10 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy 
       'transactionsSubtitle': { en: 'Track money coming in and going out from this area.', ar: 'تتبع الأموال الواردة والصادرة من هذه المنطقة.' },
       'service': { en: 'Service', ar: 'الخدمة' },
       'date': { en: 'Date', ar: 'التاريخ' },
-      'type': { en: 'Transaction', ar: 'المعاملة' },
+      'transaction': { en: 'Transaction', ar: 'المعاملة' },
+      'type': { en: 'Type', ar: 'النوع' },
+      'transactionType': { en: 'Type', ar: 'النوع' },
+      'operationType': { en: 'Operation', ar: 'العملية' },
       'amount': { en: 'Amount', ar: 'المبلغ' },
       'details': { en: 'Details', ar: 'التفاصيل' },
       'deposit': { en: 'Deposit', ar: 'إيداع' },
@@ -303,7 +341,6 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy 
       'of': { en: 'of', ar: 'من' },
       'pages': { en: 'pages', ar: 'صفحات' },
       'transactionDetails': { en: 'Transaction Details', ar: 'تفاصيل المعاملة' },
-      'transactionType': { en: 'Transaction Type', ar: 'نوع المعاملة' },
       'orderInformation': { en: 'Order Information', ar: 'معلومات الطلب' },
       'orderNumber': { en: 'Order Number', ar: 'رقم الطلب' },
       'invoiceNumber': { en: 'Invoice Number', ar: 'رقم الفاتورة' },
@@ -319,9 +356,11 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy 
       'viewDetails': { en: 'View Details', ar: 'عرض التفاصيل' },
       'balance': { en: 'Balance', ar: 'الرصيد' },
       'userInformation': { en: 'User Information', ar: 'معلومات المستخدم' },
-      'sendEmail': { en: 'Send Email', ar: 'إرسال بريد إلكتروني' }
+      'sendEmail': { en: 'Send Email', ar: 'إرسال بريد إلكتروني' },
+      'viewProfile': { en: 'View Profile', ar: 'عرض الملف الشخصي' },
+      'emailNotAvailable': { en: 'Email not available', ar: 'البريد الإلكتروني غير متوفر' }
     };
-    
+
     return translations[key] ? translations[key][this.lang === 'ar' ? 'ar' : 'en'] : key;
   }
 
@@ -566,8 +605,12 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy 
             font: {
               size: 11
             },
-            callback: function(value: any) {
-              return '$' + value.toLocaleString();
+            callback: function(value: any, index: number, ticks: any[]) {
+              // Only show first and last tick values
+              if (index === 0 || index === ticks.length - 1) {
+                return '$' + value.toLocaleString();
+              }
+              return '';
             }
           }
         }

@@ -41,24 +41,24 @@
         </h3>
 
         <!-- Period Selection Buttons -->
-        <div class="d-flex align-items-center p-1" style="background-color: #F1F5F9; border-radius: 8px; gap: 2px;">
+        <div class="d-flex align-items-center p-1" style="background-color: #F1F5F9; border-radius: 6px; gap: 2px;">
           <button
             *ngFor="let option of periodOptions"
             type="button"
-            class="btn btn-sm px-3 py-2 border-0"
+            class="btn btn-sm px-2 py-1 border-0"
             [ngClass]="{
               'bg-white text-dark fw-semibold shadow-sm': selectedPeriod === option.value,
               'bg-transparent text-muted': selectedPeriod !== option.value
             }"
             (click)="setPeriod(option.value)"
-            style="border-radius: 8px; font-size: 14px; min-width: 70px; transition: all 0.2s ease;">
+            style="border-radius: 6px; font-size: 12px; min-width: 55px; transition: all 0.2s ease;">
             {{ lang === 'ar' ? option.labelAr : option.label }}
           </button>
         </div>
       </div>
     </div>
     
-    <div class="card-body py-3">
+    <div class="card-body py-3" style="margin-top: 20px;">
       <p-table 
         [value]="transactions" 
         [loading]="loading"
@@ -69,10 +69,11 @@
         
         <ng-template pTemplate="header">
           <tr>
-            <th style="width: 25%;" [style.text-align]="lang === 'ar' ? 'right' : 'left'">{{ getTranslation('service') }}</th>
-            <th style="width: 20%;" [style.text-align]="lang === 'ar' ? 'right' : 'left'">{{ getTranslation('date') }}</th>
+            <th style="width: 20%;" [style.text-align]="lang === 'ar' ? 'right' : 'left'">{{ getTranslation('service') }}</th>
+            <th style="width: 15%;" [style.text-align]="lang === 'ar' ? 'right' : 'left'">{{ getTranslation('date') }}</th>
+            <th style="width: 15%;" [style.text-align]="lang === 'ar' ? 'right' : 'left'">{{ getTranslation('transaction') }}</th>
             <th style="width: 15%;" [style.text-align]="lang === 'ar' ? 'right' : 'left'">{{ getTranslation('type') }}</th>
-            <th style="width: 20%;" [style.text-align]="lang === 'ar' ? 'right' : 'left'">{{ getTranslation('amount') }}</th>
+            <th style="width: 15%;" [style.text-align]="lang === 'ar' ? 'right' : 'left'">{{ getTranslation('amount') }}</th>
             <th style="width: 20%; text-align: center;">{{ getTranslation('details') }}</th>
           </tr>
         </ng-template>
@@ -83,15 +84,14 @@
             <td [attr.data-label]="getTranslation('service')" [style.text-align]="lang === 'ar' ? 'right' : 'left'">
               <span class="fw-semibold">{{ formatService(transaction.order?.service || transaction.type) }}</span>
             </td>
-            
+
             <!-- Date Column -->
             <td [attr.data-label]="getTranslation('date')" [style.text-align]="lang === 'ar' ? 'right' : 'left'">
               <span class="text-muted">{{ formatDate(transaction.date) }}</span>
             </td>
-            
-            <!-- Type Column -->
-            <td [attr.data-label]="getTranslation('type')" [style.text-align]="lang === 'ar' ? 'right' : 'left'">
 
+            <!-- Transaction Type Column (Deposit/Withdraw) -->
+            <td [attr.data-label]="getTranslation('transaction')" [style.text-align]="lang === 'ar' ? 'right' : 'left'">
               <span class="badge fs-base" [ngClass]="transaction.transaction === 'deposit' ? 'badge-light-success' : 'badge-light-danger'">
                 <i class="pi" [ngClass]="{
                   'pi-arrow-up text-success': transaction.transaction === 'deposit',
@@ -99,24 +99,29 @@
                   'me-1': lang !== 'ar',
                   'ms-1': lang === 'ar'
                 }"></i>
-
                 {{ getTransactionType(transaction) }}
-            </span>
+              </span>
             </td>
-            
+
+            <!-- Operation Type Column -->
+            <td [attr.data-label]="getTranslation('type')" [style.text-align]="lang === 'ar' ? 'right' : 'left'">
+              <span class="badge badge-light-info fs-base">
+                {{ transaction.type | titlecase }}
+              </span>
+            </td>
+
             <!-- Amount Column -->
             <td [attr.data-label]="getTranslation('amount')" [style.text-align]="lang === 'ar' ? 'right' : 'left'">
-              <span 
+              <span
                 [class]="'badge ' + (transaction.transaction === 'deposit' ? 'badge-light-success' : 'badge-light-danger') + ' fs-base px-2 py-1'">
               {{ formatAmount(transaction.amount) }}
               </span>
-              
             </td>
-            
+
             <!-- Details Column -->
             <td [attr.data-label]="getTranslation('details')" class="text-center">
-              <button 
-                type="button" 
+              <button
+                type="button"
                 class="btn btn-sm btn-icon btn-light-primary"
                 (click)="showTransactionDetails(transaction)"
                 [title]="getTranslation('viewDetails')">
@@ -128,7 +133,7 @@
         
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td colspan="5" class="text-center py-5">
+            <td colspan="6" class="text-center py-5">
               <span class="text-muted">{{ getTranslation('noTransactions') }}</span>
             </td>
           </tr>
@@ -166,35 +171,41 @@
   <ng-container *ngIf="selectedTransaction">
     <div class="grid">
       <!-- Transaction Info -->
-      <div class="col-12 mb-4">
-        <div class="d-flex justify-content-between align-items-center p-3 bg-light rounded">
-          <div>
-            <span class="mb-1 text-muted d-block">{{ getTranslation('transactionType') }}</span>
-            <span
-              [class]="'badge ' + (selectedTransaction.transaction === 'deposit' ? 'badge-light-success' : 'badge-light-danger') + ' fs-base'">
-              <i class="pi me-2" [ngClass]="{
-                'pi-arrow-up text-success': selectedTransaction.transaction === 'deposit',
-                'pi-arrow-down text-danger': selectedTransaction.transaction !== 'deposit'
-              }"></i>{{ getTransactionType(selectedTransaction) }}
-            </span>
-          </div>
-          <div class="text-end">
-            <span class="mb-1 text-muted d-block">{{ getTranslation('amount') }}</span>
-            <h3 [class]="getAmountClass(selectedTransaction)">
-              {{ formatAmount(selectedTransaction.amount) }}
-            </h3>
+      <div class="col-12 mb-5">
+        <div class="bg-light rounded p-4">
+          <h5 class="mb-4">{{ getTranslation('transactionDetails') }}</h5>
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <span class="mb-2 text-muted d-block">{{ getTranslation('transaction') }}</span>
+              <span
+                [class]="'badge ' + (selectedTransaction.transaction === 'deposit' ? 'badge-light-success' : 'badge-light-danger') + ' fs-base'">
+                <i class="pi me-2" [ngClass]="{
+                  'pi-arrow-up text-success': selectedTransaction.transaction === 'deposit',
+                  'pi-arrow-down text-danger': selectedTransaction.transaction !== 'deposit'
+                }"></i>{{ getTransactionType(selectedTransaction) }}
+              </span>
+            </div>
+            <div class="text-end">
+              <span class="mb-2 text-muted d-block">{{ getTranslation('amount') }}</span>
+              <h3 [class]="getAmountClass(selectedTransaction)">
+                {{ formatAmount(selectedTransaction.amount) }}
+              </h3>
+            </div>
           </div>
         </div>
       </div>
       
       <!-- User Information -->
-      <div class="col-12 mb-4" *ngIf="selectedTransaction.order?.user">
-        <h5 class="mb-3">{{ getTranslation('userInformation') }}</h5>
-        <div class="d-flex align-items-center p-3 bg-light rounded">
+      <div class="col-12 mb-5" *ngIf="selectedTransaction.order?.user">
+        <div class="bg-light rounded p-4 mb-4">
+          <h5 class="mb-4">{{ selectedTransaction.transaction === 'deposit' ? 'Client Information' : 'Insighter Information' }}</h5>
+          <div class="d-flex align-items-center">
           <div class="symbol symbol-50px me-3">
-            <div class="symbol-label"
+            <div class="symbol-label cursor-pointer"
                  [style.background-image]="selectedTransaction.order?.user?.profile_photo_url ? 'url(' + selectedTransaction.order?.user?.profile_photo_url + ')' : 'none'"
-                 [style.background-color]="!selectedTransaction.order?.user?.profile_photo_url ? '#4f28ed' : 'transparent'">
+                 [style.background-color]="!selectedTransaction.order?.user?.profile_photo_url ? '#4f28ed' : 'transparent'"
+                 (click)="redirectToProfile(selectedTransaction.order?.user)"
+                 [title]="getTranslation('viewProfile')">
               <span *ngIf="!selectedTransaction.order?.user?.profile_photo_url"
                     class="text-white fw-bold fs-4">
                 {{ getUserInitials(selectedTransaction.order?.user) }}
@@ -203,9 +214,13 @@
           </div>
           <div class="flex-grow-1">
             <div class="mb-1">
-              <h6 class="mb-0">{{ selectedTransaction.order?.user?.name }}</h6>
+              <h6 class="mb-0 cursor-pointer text-info"
+                  (click)="redirectToProfile(selectedTransaction.order?.user)"
+                  [title]="getTranslation('viewProfile')">
+                {{ selectedTransaction.order?.user?.name }}
+              </h6>
             </div>
-            <div class="text-muted">
+            <div class="text-muted" *ngIf="selectedTransaction.order?.user?.email">
               <a [href]="'mailto:' + selectedTransaction.order?.user?.email"
                  class="text-info text-decoration-none fw-semibold d-flex align-items-center"
                  [title]="getTranslation('sendEmail')">
@@ -213,14 +228,18 @@
                 {{ selectedTransaction.order?.user?.email }}
               </a>
             </div>
+            <div class="text-muted" *ngIf="!selectedTransaction.order?.user?.email">
+              <span class="text-muted fs-7">{{ getTranslation('emailNotAvailable') }}</span>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Order Details -->
-      <div class="col-12" *ngIf="selectedTransaction.order">
-        <h5 class="mb-3">{{ getTranslation('orderInformation') }}</h5>
-        <div class="row mb-3">
+      <div class="col-12 mb-5" *ngIf="selectedTransaction.order">
+        <div class="bg-light rounded p-4">
+          <h5 class="mb-4">{{ getTranslation('orderInformation') }}</h5>
+          <div class="row mb-3">
           <div class="col-6">
             <span class="mb-1 text-muted d-block">{{ getTranslation('orderNumber') }}</span>
             <span class="fw-semibold">{{ selectedTransaction.order.order_no }}</span>
@@ -241,79 +260,83 @@
             <span class="badge fs-base" [ngClass]="getStatusBadgeClass(selectedTransaction.order.status)">{{ formatStatus(selectedTransaction.order.status) }}</span>
           </div>
         </div>
-        
-        <!-- Knowledge Items -->
-        <div *ngIf="selectedTransaction.order.sub_orders || selectedTransaction.order.suborders">
-          <ng-container *ngFor="let suborder of (selectedTransaction.order.sub_orders || selectedTransaction.order.suborders)">
+        </div>
+      </div>
 
-            <!-- Knowledge Items Section -->
-            <div *ngIf="suborder.knowledge" class="mb-4">
-              <h6 class="mb-3">{{ getTranslation('knowledgeItems') }}</h6>
-              <div class="border rounded p-3">
-                <div *ngFor="let knowledge of suborder.knowledge" class="mb-3">
-                  <div class="d-flex align-items-center mb-2">
-                    <span class="badge badge-light-info fs-base me-2">{{ knowledge.type }}</span>
-                    <span class="fw-semibold">{{ knowledge.title }}</span>
-                  </div>
+      <!-- Knowledge Items -->
+      <div *ngIf="selectedTransaction.order.sub_orders || selectedTransaction.order.suborders" class="col-12 mb-5">
+            <div class="bg-light rounded p-4">
+              <h5 class="mb-4">{{ getTranslation('knowledgeItems') }}</h5>
+              <ng-container *ngFor="let suborder of (selectedTransaction.order.sub_orders || selectedTransaction.order.suborders)">
 
-                  <!-- Documents -->
-                  <div class="ms-4" *ngIf="suborder.knowledge_documents">
-                    <div *ngFor="let docGroup of suborder.knowledge_documents" class="mb-2">
-                      <div *ngFor="let doc of docGroup" class="d-flex align-items-center justify-content-between py-2 border-bottom">
-                        <div class="d-flex align-items-center">
-                          <img [src]="getFileIcon(doc.file_extension)"
-                               [alt]="doc.file_extension"
-                               style="width: 24px; height: 24px;"
-                               class="me-2">
-                          <span>{{ doc.file_name }}.{{ doc.file_extension }}</span>
+                <!-- Knowledge Items Section -->
+                <div *ngIf="suborder.knowledge" class="mb-4">
+                  <div class="border rounded p-3">
+                  <div *ngFor="let knowledge of suborder.knowledge" class="mb-3">
+                    <div class="d-flex align-items-center mb-2">
+                      <span class="badge badge-light-info fs-base me-2">{{ knowledge.type | titlecase }}</span>
+                      <span class="fw-semibold">{{ knowledge.title }}</span>
+                    </div>
+
+                    <!-- Documents -->
+                    <div class="ms-4" *ngIf="suborder.knowledge_documents">
+                      <div *ngFor="let docGroup of suborder.knowledge_documents" class="mb-2">
+                        <div *ngFor="let doc of docGroup" class="d-flex align-items-center justify-content-between py-2 border-bottom">
+                          <div class="d-flex align-items-center">
+                            <img [src]="getFileIcon(doc.file_extension)"
+                                 [alt]="doc.file_extension"
+                                 style="width: 24px; height: 24px;"
+                                 class="me-2">
+                            <span>{{ doc.file_name }}.{{ doc.file_extension }}</span>
+                          </div>
+                          <span class="fw-semibold text-info">${{ doc.price }}</span>
                         </div>
-                        <span class="fw-semibold text-info">${{ doc.price }}</span>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
+
+              <!-- Meeting Booking Section -->
+              <div *ngIf="suborder.meeting_booking" class="mb-4 mt-4">
+                <h6 class="mb-3">{{ getTranslation('meetingDetails') }}</h6>
+                <div class="border rounded p-3">
+                  <div class="row mb-3">
+                    <div class="col-6">
+                      <span class="mb-1 text-muted d-block">{{ getTranslation('meetingTitle') }}</span>
+                      <span class="fw-semibold">{{ suborder.meeting_booking.title }}</span>
+                    </div>
+                    <div class="col-6">
+                      <span class="mb-1 text-muted d-block">{{ getTranslation('meetingStatus') }}</span>
+                      <span class="badge fs-base" [ngClass]="getStatusBadgeClass(suborder.meeting_booking.status)">{{ formatStatus(suborder.meeting_booking.status) }}</span>
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <div class="col-6">
+                      <span class="mb-1 text-muted d-block">{{ getTranslation('meetingDate') }}</span>
+                      <span class="fw-semibold">{{ formatMeetingDate(suborder.meeting_booking.date) }}</span>
+                    </div>
+                    <div class="col-6">
+                      <span class="mb-1 text-muted d-block">{{ getTranslation('meetingTime') }}</span>
+                      <span class="fw-semibold">{{ suborder.meeting_booking.start_time }} - {{ suborder.meeting_booking.end_time }}</span>
+                    </div>
+                  </div>
+
+                  <div *ngIf="suborder.meeting_booking.description" class="mb-3">
+                    <span class="mb-1 text-muted d-block">{{ getTranslation('meetingDescription') }}</span>
+                    <p class="fw-semibold mb-0">{{ suborder.meeting_booking.description }}</p>
+                  </div>
+                </div>
+                </div>
+
+              </ng-container>
             </div>
-
-            <!-- Meeting Booking Section -->
-            <div *ngIf="suborder.meeting_booking" class="mb-4">
-              <h6 class="mb-3">{{ getTranslation('meetingDetails') }}</h6>
-              <div class="border rounded p-3">
-                <div class="row mb-3">
-                  <div class="col-6">
-                    <span class="mb-1 text-muted d-block">{{ getTranslation('meetingTitle') }}</span>
-                    <span class="fw-semibold">{{ suborder.meeting_booking.title }}</span>
-                  </div>
-                  <div class="col-6">
-                    <span class="mb-1 text-muted d-block">{{ getTranslation('meetingStatus') }}</span>
-                    <span class="badge fs-base" [ngClass]="getStatusBadgeClass(suborder.meeting_booking.status)">{{ formatStatus(suborder.meeting_booking.status) }}</span>
-                  </div>
-                </div>
-
-                <div class="row mb-3">
-                  <div class="col-6">
-                    <span class="mb-1 text-muted d-block">{{ getTranslation('meetingDate') }}</span>
-                    <span class="fw-semibold">{{ formatMeetingDate(suborder.meeting_booking.date) }}</span>
-                  </div>
-                  <div class="col-6">
-                    <span class="mb-1 text-muted d-block">{{ getTranslation('meetingTime') }}</span>
-                    <span class="fw-semibold">{{ suborder.meeting_booking.start_time }} - {{ suborder.meeting_booking.end_time }}</span>
-                  </div>
-                </div>
-
-                <div *ngIf="suborder.meeting_booking.description" class="mb-3">
-                  <span class="mb-1 text-muted d-block">{{ getTranslation('meetingDescription') }}</span>
-                  <p class="fw-semibold mb-0">{{ suborder.meeting_booking.description }}</p>
-                </div>
-              </div>
-            </div>
-
-          </ng-container>
+          </div>
         </div>
-      </div>
     </div>
   </ng-container>
-  
+
   <ng-template pTemplate="footer">
     <button pButton type="button" [label]="getTranslation('close')" icon="pi pi-times" 
             class="p-button-text" (click)="showDetailsDialog = false"></button>
