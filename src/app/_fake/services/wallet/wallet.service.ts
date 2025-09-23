@@ -37,12 +37,13 @@ export interface SubOrder {
 }
 
 export interface User {
+  uuid: string;
   name: string;
   first_name: string;
   last_name: string;
-  email: string;
+  email?: string;
   profile_photo_url?: string | null;
-  country_id: number;
+  country_id?: number;
   roles: string[];
 }
 

@@ -1,7 +1,7 @@
 import { Component, Injector, OnInit, ViewChild, AfterViewInit, HostListener } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Router, UrlTree } from '@angular/router';
+import { Observable, of } from 'rxjs';
 import { ComponentCanDeactivate } from 'src/app/guards/pending-changes.guard';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { PaymentService, ManualAccountRequest, UpdateManualAccountRequest, PaymentDetailsResponse, PaymentMethod, TermsResponse } from 'src/app/_fake/services/payment/payment.service';
@@ -39,6 +39,8 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
   showUnsavedChangesDialog: boolean = false;
   pendingNavigation: () => void = () => {};
   isFormDirtyOnEdit: boolean = false;
+  allowNavigationAfterDiscard: boolean = false;
+  private navigationResolver: ((value: boolean) => void) | null = null;
 
   @ViewChild('phoneInput') phoneInput!: PhoneNumberInputComponent;
 
@@ -105,9 +107,17 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
 
   // CanDeactivate implementation
   canDeactivate(): Observable<boolean> | boolean {
+    if (this.allowNavigationAfterDiscard) {
+      return true;
+    }
     if (this.isEditing && this.hasFormChanged()) {
-      this.showUnsavedChangesDialog = true;
-      return false;
+      return new Observable<boolean>(observer => {
+        this.navigationResolver = (result: boolean) => {
+          observer.next(result);
+          observer.complete();
+        };
+        this.showUnsavedChangesDialog = true;
+      });
     }
     return true;
   }
@@ -123,6 +133,10 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
   // Dialog actions
   onStayOnPage() {
     this.showUnsavedChangesDialog = false;
+    if (this.navigationResolver) {
+      this.navigationResolver(false);
+      this.navigationResolver = null;
+    }
     // Auto-generate OTP when staying on page
     if (this.canResendOtp) {
       this.resendOtp();
@@ -131,6 +145,19 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
 
   onDiscardChanges() {
     this.showUnsavedChangesDialog = false;
+
+    // Reset form state to clean state to bypass canDeactivate check
+    this.initialFormValue = this.manualAccountForm.getRawValue();
+    this.manualAccountForm.markAsPristine();
+    this.isFormDirtyOnEdit = false;
+
+    // Resolve the navigation observable to allow navigation to proceed
+    if (this.navigationResolver) {
+      this.navigationResolver(true);
+      this.navigationResolver = null;
+    }
+
+    // Also handle any explicit pending navigation (for back button)
     if (this.pendingNavigation) {
       this.pendingNavigation();
       this.pendingNavigation = () => {};
