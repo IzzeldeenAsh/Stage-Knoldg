@@ -1,6 +1,6 @@
 <p-toast></p-toast>
 <app-payment-header 
-  [title]="lang === 'ar' ? 'إعداد حسابك البنكي' : 'Bank Account Setup'"
+  [title]="lang === 'ar' ? 'إعداد حسابك البنكي' : 'Bank Transfer'"
   [subtitle]="lang === 'ar' ? 'أدخل معلومات حسابك البنكي لاستقبال المدفوعات' : 'Enter your bank account details to receive payments'">
 </app-payment-header>
 
@@ -157,7 +157,7 @@
                 #phoneInput
                 [countries]="countries"
                 [placeholder]="lang === 'ar' ? 'رقم هاتفك' : 'Your phone number'"
-                [searchPlaceholder]="'Search countries...'"
+                [searchPlaceholder]="'BANK_SETUP.FIELDS.PHONE_COUNTRY_CODE_SEARCH' | translate"
                 [lang]="lang"
                 [isRequired]="true"
                 [showValidationErrors]="true"

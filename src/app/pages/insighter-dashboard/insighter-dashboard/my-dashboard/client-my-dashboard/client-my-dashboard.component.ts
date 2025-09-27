@@ -13,13 +13,20 @@ export class ClientMyDashboardComponent extends BaseComponent implements OnInit,
   todayMeetingsCount: number = 0;
   sentMeetings: SentMeeting[] = [];
   expertsCount: number = 1250;
-  topIndustries: string[] = ['Technology', 'Healthcare', 'Finance', 'Education', 'Marketing'];
+  // topIndustries: string[] = ['Technology', 'Healthcare', 'Finance', 'Education', 'Marketing'];
+  topIndustries: string[] = [
+  'TOP_INDUSTRIES.TECHNOLOGY',
+  'TOP_INDUSTRIES.HEALTHCARE',
+  'TOP_INDUSTRIES.FINANCE',
+  'TOP_INDUSTRIES.EDUCATION',
+  'TOP_INDUSTRIES.MARKETING'
+];
   knowledgeLinks = [
-    { name: 'Data', type: 'data' },
-    { name: 'Insight', type: 'insight' },
-    { name: 'Manual', type: 'manual' },
-    { name: 'Courses', type: 'course' },
-    { name: 'Report', type: 'report' }
+    { type: 'data',  translationKey: 'KNOWLEDGE.DATA' },
+    { type: 'insight', translationKey: 'KNOWLEDGE.INSIGHT' },
+    { type: 'manual',  translationKey: 'KNOWLEDGE.MANUAL' },
+    { type: 'course',  translationKey: 'KNOWLEDGE.COURSE' },
+    { type: 'report',  translationKey: 'KNOWLEDGE.REPORT' }
   ];
   walletBalance: number = 0;
   isLoadingBalance: boolean = true;
@@ -61,12 +68,16 @@ export class ClientMyDashboardComponent extends BaseComponent implements OnInit,
       });
   }
 
+  // redirectToExperts(): void {
+  //   window.open('https://knoldg.com/en/home?search_type=insighter&accuracy=any', '_blank');
+  // }
   redirectToExperts(): void {
-    window.open('https://knoldg.com/en/home?search_type=insighter&accuracy=any', '_blank');
+    window.open(`https://knoldg.com/${this.lang}/home?search_type=insighter&accuracy=any`, '_blank');
   }
-
   redirectToKnowledge(type: string): void {
-    window.open(`https://knoldg.com/en/home?search_type=knowledge&type=${type}`, '_blank');
+    const currentLang = this.lang; 
+    
+    window.open(`https://knoldg.com/${currentLang}/home?search_type=knowledge&type=${type}`, '_blank');
   }
 
   loadWalletBalance(): void {

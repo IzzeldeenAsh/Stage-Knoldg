@@ -46,7 +46,7 @@ class="cursor-pointer card card-flush h-md-50 mb-5 mb-xl-10">
 
         <!--begin::Industries group-->
         <div class="d-flex flex-wrap gap-2">
-            <span *ngFor="let industry of topIndustries" class="badge badge-light-info fs-8 fw-semibold px-3 py-2">{{ industry }}</span>
+            <span *ngFor="let industry of topIndustries" class="badge badge-light-info fs-8 fw-semibold px-3 py-2">{{ industry | translate }}</span>
             <div class="d-flex align-items-center">
                 <span class="text-gray-500 fs-7 fw-semibold me-2">{{ 'HOME.DISCOVER' | translate }}</span>
                 <i class="ki-outline ki-arrow-right text-info fs-5"></i>
@@ -135,7 +135,7 @@ class="cursor-pointer card card-flush h-md-50 mb-5 mb-xl-10">
                     
                     <!--begin::Info-->
                     <div class="flex-grow-1">
-                        <span class="text-gray-800 fw-semibold fs-7">{{ link.type | titlecase }}</span>
+                        <span class="text-gray-800 fw-semibold fs-7">{{ link.translationKey | translate }}</span>
                     </div>
                     <!--end::Info-->
                     

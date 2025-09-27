@@ -14,6 +14,8 @@ import { PaymentTypeGuard } from './guards/payment-type.guard';
 import { PendingChangesGuard } from '../../guards/pending-changes.guard';
 import { PhoneNumberInputModule } from '../../reusable-components/phone-number-input/phone-number-input.module';
 import { ToastModule } from 'primeng/toast';
+import { TranslateModule } from '@ngx-translate/core';
+
 @NgModule({
   declarations: [
     SetupPaymentInfoComponent,
@@ -30,6 +32,7 @@ import { ToastModule } from 'primeng/toast';
     DialogModule,
     DropdownModule,
     PhoneNumberInputModule,
+    TranslateModule,
     RouterModule.forChild([
       {
         path: '',

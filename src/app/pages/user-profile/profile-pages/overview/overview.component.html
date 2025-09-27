@@ -51,17 +51,24 @@
           <div class="card-body pt-0">
             <div class="row mb-3 py-2 border-bottom border-light">
               <div class="col-12 col-md-4 text-muted d-flex align-items-center">
+                <i class="bi bi-person fs-4 text-info me-2"></i>
+                <span>{{ 'PROFILE.FULL_NAME' | translate }}</span>
+              </div>
+              <div class="col-12 col-md-8 text-dark">{{ profile.first_name }} {{ profile.last_name }}</div>
+            </div>
+            <div class="row mb-3 py-2 border-bottom border-light">
+              <div class="col-12 col-md-4 text-muted d-flex align-items-center">
                 <i class="bi bi-envelope fs-4 text-info me-2"></i>
                 <span>{{ 'PROFILE.EMAIL' | translate }}</span>
               </div>
               <div class="col-12 col-md-8 text-dark">{{ profile.email }}</div>
             </div>
-            <div class="row mb-3 py-2 border-bottom border-light" *ngIf="profile.phone">
+            <div class="row mb-3 py-2 border-bottom border-light">
               <div class="col-12 col-md-4 text-muted d-flex align-items-center">
                 <i class="bi bi-telephone fs-4 text-success me-2"></i>
                 <span>{{ 'ACCOUNT_SETTINGS.PHONE_NUMBER' | translate }}</span>
               </div>
-              <div class="col-12 col-md-8 text-dark">{{ profile.phone }}</div>
+              <div class="col-12 col-md-8 text-dark">{{ profile.phone || '' }}</div>
             </div>
             <div class="row mb-0 py-2" >
               <div class="col-12 col-md-4 text-muted d-flex align-items-center">
