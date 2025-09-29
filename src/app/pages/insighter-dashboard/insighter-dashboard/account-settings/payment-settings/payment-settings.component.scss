@@ -231,8 +231,26 @@ hr.text-info {
       letter-spacing: 0.5px;
       margin-bottom: 4px;
     }
-    
+
     .account-name-value {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #2c3e50;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+  }
+
+  .bank-name-section {
+    .bank-name-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #6c757d;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .bank-name-value {
       font-size: 1.1rem;
       font-weight: 600;
       color: #2c3e50;

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { adminGuard } from './guards/admin-guard/admin.guard';
 import { authGuard } from './guards/auth-guard/auth.guard';
+import { CountryGuard } from './guards/country-guard/country.guard';
 import { CorsTestComponent } from './cors-test.component';
 import { CrossDomainAuthHelperComponent } from './shared/cross-domain-auth-helper.component';
 
@@ -21,7 +22,7 @@ export const routes: Routes = [
   path: 'app',
   loadChildren: () =>
     import('./_metronic/layout/layout.module').then((m) => m.LayoutModule),
-  canActivate:[authGuard]
+  canActivate:[authGuard, CountryGuard]
 },
 {
   path: 'admin-dashboard',

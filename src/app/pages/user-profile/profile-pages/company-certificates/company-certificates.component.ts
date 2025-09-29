@@ -90,38 +90,6 @@ export class CompanyCertificatesComponent extends BaseComponent implements OnIni
     return doc ? doc.name : "Other";
   }
 
-  // Company Certificate Form Data
-  private createCompanyFormData(): FormData {
-    const formData = new FormData();
-    
-    if (this.profile.company?.legal_name) {
-      formData.append("legal_name", this.profile.company.legal_name);
-    }
-    
-    if (this.profile.company?.about_us) {
-      formData.append("about_us", this.profile.company.about_us);
-    }
-    
-    if (this.profile.company?.website) {
-      formData.append("website", this.profile.company.website);
-    }
-    
-    // Add company industries if any
-    if (this.profile.company && this.profile.company.industries && this.profile.company.industries.length > 0) {
-      this.profile.company.industries.forEach((industry: any) => {
-        formData.append("industries[]", industry.id);
-      });
-    }
-    
-    // Add company consulting fields if any
-    if (this.profile.company && this.profile.company.consulting_field && this.profile.company.consulting_field.length > 0) {
-      this.profile.company.consulting_field.forEach((field: any) => {
-        formData.append("consulting_field[]", field.id);
-      });
-    }
-    
-    return formData;
-  }
   
   // Company Certificate Methods
   showAddCompanyCertDialog() {
@@ -155,48 +123,19 @@ export class CompanyCertificatesComponent extends BaseComponent implements OnIni
     }
 
     this.isUploadingCompany = true;
-    const formData = this.createCompanyFormData();
-    
-    // Always use index 0 for company certificate upload
-    formData.append('certification[0][type]', this.selectedCompanyDocType);
-    formData.append('certification[0][file]', this.selectedCompanyFile);
 
-    const uploadSub = this._profilePost.updateCompanyInfo(formData).subscribe({
+    const uploadSub = this._profilePost.updateCompanyCertification(this.selectedCompanyDocType, this.selectedCompanyFile).subscribe({
       next: (response: any) => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Company certificate uploaded successfully'
-        });
+        this.showSuccess(
+          this.lang === 'ar' ? 'نجح' : 'Success',
+          this.lang === 'ar' ? 'تم رفع الشهادة بنجاح' : 'Company certificate uploaded successfully'
+        );
         this.displayAddCompanyCertDialog = false;
         this.getProfileService.clearProfile();
         this.getProfile(); // Refresh the profile to show new certificate
       },
       error: (error: any) => {
-        // Handle detailed API errors
-        let errorMessage = 'Failed to upload company certificate';
-        
-        if (error.error && error.error.message) {
-          errorMessage = error.error.message;
-        }
-        
-        // Check for specific validation errors
-        if (error.error && error.error.errors) {
-          const errorKeys = Object.keys(error.error.errors);
-          if (errorKeys.length > 0) {
-            const firstError = error.error.errors[errorKeys[0]];
-            if (Array.isArray(firstError) && firstError.length > 0) {
-              errorMessage = firstError[0];
-            }
-          }
-        }
-        
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: errorMessage
-        });
-        
+        this.handleServerErrors(error);
         this.isUploadingCompany = false;
       },
       complete: () => {
@@ -205,6 +144,26 @@ export class CompanyCertificatesComponent extends BaseComponent implements OnIni
     });
 
     this.unsubscribe.push(uploadSub);
+  }
+
+  private handleServerErrors(error: any) {
+    if (error.error && error.error.errors) {
+      const serverErrors = error.error.errors;
+      for (const key in serverErrors) {
+        if (serverErrors.hasOwnProperty(key)) {
+          const messages = serverErrors[key];
+          this.showError(
+            this.lang === "ar" ? "حدث خطأ" : "An error occurred",
+            messages.join(", ")
+          );
+        }
+      }
+    } else {
+      this.showError(
+        this.lang === "ar" ? "حدث خطأ" : "An error occurred",
+        this.lang === "ar" ? "حدث خطأ" : "An unexpected error occurred."
+      );
+    }
   }
   
   confirmCompanyDelete(cert: any) {

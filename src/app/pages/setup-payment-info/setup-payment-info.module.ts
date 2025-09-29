@@ -16,6 +16,7 @@ import { PhoneNumberInputModule } from '../../reusable-components/phone-number-i
 import { ToastModule } from 'primeng/toast';
 import { TranslateModule } from '@ngx-translate/core';
 
+import { SharedModule } from '../../shared/shared.module';
 @NgModule({
   declarations: [
     SetupPaymentInfoComponent,
@@ -33,6 +34,7 @@ import { TranslateModule } from '@ngx-translate/core';
     DropdownModule,
     PhoneNumberInputModule,
     TranslateModule,
+    SharedModule,
     RouterModule.forChild([
       {
         path: '',

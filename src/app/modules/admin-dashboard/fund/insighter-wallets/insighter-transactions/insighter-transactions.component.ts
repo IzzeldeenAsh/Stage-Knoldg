@@ -1,7 +1,7 @@
 import { Component, OnInit, Injector } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from 'src/app/modules/base.component';
-import { FundService, Transaction, PaginatedResponse } from 'src/app/_fake/services/fund.service';
+import { FundService, Transaction, PaginatedResponse, KnowledgeDocument } from 'src/app/_fake/services/fund.service';
 
 @Component({
   selector: 'app-insighter-transactions',
@@ -63,6 +63,7 @@ export class InsighterTransactionsComponent extends BaseComponent implements OnI
       'income_meeting': 'Meeting Income',
       'income_knowledge': 'Knowledge Sale',
       'book_meeting': 'Meeting Booking',
+      'purchase_knowledge': 'Purchase Knowledge',
       'withdraw': 'Withdrawal',
       'deposit': 'Deposit'
     };
@@ -85,6 +86,30 @@ export class InsighterTransactionsComponent extends BaseComponent implements OnI
   formatDate(dateString: string): string {
     const date = new Date(dateString);
     return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+  }
+
+  getDocumentCount(knowledgeDocuments: KnowledgeDocument[][] | undefined): number {
+    if (!knowledgeDocuments) return 0;
+    return knowledgeDocuments.reduce((total, group) => total + group.length, 0);
+  }
+
+  getFileIcon(extension: string): string {
+    const ext = extension.toLowerCase();
+    const supportedExtensions = ['csv', 'doc', 'docx', 'jpg', 'mp3', 'mp4', 'pdf', 'ppt', 'pptx', 'pub', 'txt', 'xlsx', 'xsl', 'zip'];
+    if (supportedExtensions.includes(ext)) {
+      return `assets/media/svg/new-files/${ext}.svg`;
+    }
+    return 'assets/media/svg/new-files/txt.svg';
+  }
+
+  getInitials(name: string): string {
+    if (!name) return '?';
+    return name
+      .split(' ')
+      .map(word => word.charAt(0))
+      .join('')
+      .toUpperCase()
+      .substring(0, 2);
   }
 
   private handleServerErrors(error: any) {

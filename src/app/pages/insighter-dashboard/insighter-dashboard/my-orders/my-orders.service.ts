@@ -32,15 +32,30 @@ export interface SubOrder {
 export interface PaymentInfo {
   method: string;
   provider: string | null;
+  amount: number;
+  currency: string;
+  status: string;
   provider_payment_method_type: string | null;
   provider_card_last_number: string | null;
   provider_card_brand: string | null;
   provide_receipt_url: string | null;
+  billing_address: string;
   confirmed_at: string;
+}
+
+export interface User {
+  name: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  profile_photo_url: string;
+  roles: string[];
+  uuid: string;
 }
 
 export interface Order {
   uuid: string;
+  user: User;
   service: string;
   status: string;
   amount: number;
@@ -49,7 +64,7 @@ export interface Order {
   order_no: string;
   invoice_no: string;
   payment: PaymentInfo;
-  suborders: SubOrder[];
+  suborder: SubOrder;
   knowledge_download_ids: string[];
 }
 
@@ -87,12 +102,22 @@ export interface OrdersResponse {
 export class MyOrdersService {
   private readonly API_URL = 'https://api.knoldg.com/api/account/order/knowledge';
   private readonly MEETING_API_URL = 'https://api.knoldg.com/api/account/order/meeting';
+  private readonly COMPANY_KNOWLEDGE_API_URL = 'https://api.knoldg.com/api/company/order/knowledge';
+  private readonly INSIGHTER_KNOWLEDGE_API_URL = 'https://api.knoldg.com/api/insighter/order/knowledge';
+  private readonly COMPANY_MEETING_API_URL = 'https://api.knoldg.com/api/company/order/meeting';
+  private readonly INSIGHTER_MEETING_API_URL = 'https://api.knoldg.com/api/insighter/order/meeting';
   
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$ = this.isLoadingSubject.asObservable();
   
   private isMeetingLoadingSubject = new BehaviorSubject<boolean>(false);
   public isMeetingLoading$ = this.isMeetingLoadingSubject.asObservable();
+
+  private isSalesLoadingSubject = new BehaviorSubject<boolean>(false);
+  public isSalesLoading$ = this.isSalesLoadingSubject.asObservable();
+
+  private isMeetingSalesLoadingSubject = new BehaviorSubject<boolean>(false);
+  public isMeetingSalesLoading$ = this.isMeetingSalesLoadingSubject.asObservable();
   
   private currentLang: string = 'en';
 
@@ -119,6 +144,14 @@ export class MyOrdersService {
 
   private setMeetingLoading(loading: boolean): void {
     this.isMeetingLoadingSubject.next(loading);
+  }
+
+  private setSalesLoading(loading: boolean): void {
+    this.isSalesLoadingSubject.next(loading);
+  }
+
+  private setMeetingSalesLoading(loading: boolean): void {
+    this.isMeetingSalesLoadingSubject.next(loading);
   }
 
   private getHeaders(): HttpHeaders {
@@ -156,6 +189,32 @@ export class MyOrdersService {
       map((response) => response),
       catchError(error => this.handleError(error)),
       finalize(() => this.setMeetingLoading(false))
+    );
+  }
+
+  getSalesKnowledgeOrders(page: number = 1, role: 'company' | 'insighter'): Observable<OrdersResponse> {
+    const baseUrl = role === 'company' ? this.COMPANY_KNOWLEDGE_API_URL : this.INSIGHTER_KNOWLEDGE_API_URL;
+    const url = `${baseUrl}?page=${page}&per_page=5`;
+    const headers = this.getHeaders();
+
+    this.setSalesLoading(true);
+    return this.http.get<OrdersResponse>(url, { headers }).pipe(
+      map((response) => response),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setSalesLoading(false))
+    );
+  }
+
+  getSalesMeetingOrders(page: number = 1, role: 'company' | 'insighter'): Observable<OrdersResponse> {
+    const baseUrl = role === 'company' ? this.COMPANY_MEETING_API_URL : this.INSIGHTER_MEETING_API_URL;
+    const url = `${baseUrl}?page=${page}&per_page=5`;
+    const headers = this.getHeaders();
+
+    this.setMeetingSalesLoading(true);
+    return this.http.get<OrdersResponse>(url, { headers }).pipe(
+      map((response) => response),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setMeetingSalesLoading(false))
     );
   }
 }

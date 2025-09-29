@@ -1207,7 +1207,7 @@ INSIGHTER_REQUESTS: {
   DESCRIPTION_REQUIRED: "الوصف مطلوب",
   DASHBOARD: "لوحة المعلومات",
   IN_WALLET:'في المحفظة',
-  DEPOSIT_WALLET_DESCRIPTION:'قم بإيداع المال في محفظتك لإجراء المشتريات',
+  DEPOSIT_WALLET_DESCRIPTION:'تستخدم المحفظة لإيداع او استرداد الأموال في بعض الحالات',
   MANAGE_WALLET_FUNDS:'إدارة أموال المحفظة',
   MY_KNOWLEDGE_BASE: "مكتبة المعرفة",
   COMING_SOON:"قريباً",

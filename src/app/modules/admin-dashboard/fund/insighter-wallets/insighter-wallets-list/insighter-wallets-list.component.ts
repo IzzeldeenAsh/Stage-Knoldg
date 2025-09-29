@@ -16,6 +16,15 @@ export class InsighterWalletsListComponent extends BaseComponent implements OnIn
   totalItems = 0;
   Math = Math;
 
+  overdueWiredTransaction: number | undefined = undefined;
+  balanceStatus: string = 'positive';
+
+  balanceStatusOptions = [
+    { value: 'positive', label: 'Positive' },
+    { value: 'negative', label: 'Negative' },
+    { value: 'zero', label: 'Zero' }
+  ];
+
   constructor(
     injector: Injector,
     private fundService: FundService,
@@ -32,7 +41,7 @@ export class InsighterWalletsListComponent extends BaseComponent implements OnIn
   loadWallets(page: number = 1): void {
     this.currentPage = page;
     this.unsubscribe.push(
-      this.fundService.getInsighterWallets(page).subscribe({
+      this.fundService.getInsighterWallets(page, this.overdueWiredTransaction, this.balanceStatus).subscribe({
         next: (response: PaginatedResponse<InsighterWallet>) => {
           this.wallets = response.data;
           this.totalPages = response.meta.last_page;
@@ -51,6 +60,19 @@ export class InsighterWalletsListComponent extends BaseComponent implements OnIn
 
   onPageChange(page: number): void {
     this.loadWallets(page);
+  }
+
+  onOverdueFilterChange(event: any): void {
+    const checked = event.target.checked;
+    this.overdueWiredTransaction = checked ? 1 : undefined;
+    this.currentPage = 1;
+    this.loadWallets();
+  }
+
+  onBalanceStatusChange(event: any): void {
+    this.balanceStatus = event.target.value;
+    this.currentPage = 1;
+    this.loadWallets();
   }
 
   private handleServerErrors(error: any) {

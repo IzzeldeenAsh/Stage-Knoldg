@@ -348,118 +348,15 @@
     </ng-template>
   </p-dialog>
 
-  <!-- OTP Verification Dialog -->
-  <p-dialog 
-    [(visible)]="showOtpDialog" 
-    [modal]="true" 
-    [closable]="true" 
-    [draggable]="false" 
-    [resizable]="false"
-    [style]="{width: '90vw', maxWidth: '500px'}"
-    header="{{ lang === 'ar' ? 'تحقق من هويتك' : 'Verify Your Identity' }}">
-
-    <div class="otp-content">
-      <!-- Redirect Loader -->
-      <div *ngIf="isWaitingForRedirect" class="text-center py-5">
-        <div class="spinner-border text-info" role="status" style="width: 3rem; height: 3rem;">
-          <span class="visually-hidden">Loading...</span>
-        </div>
-        <div class="mt-3">
-          <h5 class="text-gray-700">
-            {{ lang === 'ar' ? 'جاري التوجيه إلى Stripe...' : 'Redirecting to Stripe...' }}
-          </h5>
-          <p class="text-muted">
-            {{ lang === 'ar' ? 'يرجى الانتظار' : 'Please wait' }}
-          </p>
-        </div>
-      </div>
-
-      <!-- OTP Form (hidden when redirecting) -->
-      <div *ngIf="!isWaitingForRedirect">
-        <div class="text-center mb-4">
-          <i class="fas fa-shield-check text-info fs-2 mb-3"></i>
-          <h5 class="mb-2">
-            {{ lang === 'ar' ? 'أدخل رمز التحقق' : 'Enter Verification Code' }}
-          </h5>
-          <p class="text-muted">
-            {{ lang === 'ar' ? 'لقد أرسلنا رمز التحقق إلى بريدك الإلكتروني' : 'We sent a verification code to your email' }}
-          </p>
-        </div>
-
-        <div class="mb-4">
-          <label class="form-label required">
-            {{ lang === 'ar' ? 'رمز التحقق' : 'Verification Code' }}
-          </label>
-          <input
-            type="text"
-            class="form-control text-center"
-            [(ngModel)]="otpCode"
-            [ngModelOptions]="{standalone: true}"
-            [placeholder]="lang === 'ar' ? 'أدخل الرمز' : 'Enter code'"
-            maxlength="10"
-            [disabled]="isSubmittingOtp"
-          />
-          <div class="form-text text-muted mt-2">
-            <i class="fas fa-envelope me-1"></i>
-            {{ lang === 'ar' ? 'تحقق من بريدك الإلكتروني ومجلد الرسائل المزعجة (تنتهي فعالية الكود في 1 ساعة)' : 'Check your email and spam folder (Code expires in 1 hour)' }}
-          </div>
-        </div>
-
-        <div class="text-center mb-3">
-          <span 
-            *ngIf="canResendOtp && !isResendingOtp"
-            class="text-info text-decoration-underline"
-            style="cursor: pointer;"
-            (click)="resendOtp()"
-          >
-            <i class="fas fa-paper-plane me-1"></i>
-            {{ lang === 'ar' ? 'إعادة إرسال الرمز' : 'Resend Code' }}
-          </span>
-          <span 
-            *ngIf="isResendingOtp"
-            class="text-info"
-          >
-            <span 
-              class="spinner-border spinner-border-sm me-2" 
-              role="status" 
-              aria-hidden="true">
-            </span>
-            {{ lang === 'ar' ? 'جاري الإرسال...' : 'Sending...' }}
-          </span>
-          <span 
-            *ngIf="!canResendOtp && !isResendingOtp"
-            class="text-muted"
-          >
-            <i class="fas fa-clock me-1"></i>
-            {{ lang === 'ar' ? 'إعادة الإرسال متاحة خلال' : 'Resend available in' }} {{ resendCooldown }}{{ lang === 'ar' ? 'ث' : 's' }}
-          </span>
-        </div>
-      </div>
-    </div>
-
-    <ng-template pTemplate="footer">
-      <div class="d-flex justify-content-between" *ngIf="!isWaitingForRedirect">
-        <button 
-          type="button" 
-          class="btn btn-outline-secondary"
-          (click)="closeOtpDialog()">
-          {{ lang === 'ar' ? 'إلغاء' : 'Cancel' }}
-        </button>
-        <button 
-          type="button" 
-          class="btn btn-info"
-          [disabled]="isSubmittingOtp || !otpCode.trim()"
-          (click)="submitOtp()">
-          
-          <span 
-            *ngIf="isSubmittingOtp"
-            class="spinner-border spinner-border-sm me-2" 
-            role="status" 
-            aria-hidden="true">
-          </span>
-          
-          {{ lang === 'ar' ? 'تأكيد' : 'Verify' }}
-        </button>
-      </div>
-    </ng-template>
-  </p-dialog>
+  <!-- OTP Modal -->
+  <app-otp-modal
+    [(visible)]="showOtpDialog"
+    [config]="otpModalConfig"
+    [isSubmitting]="isSubmittingOtp"
+    [isWaitingForRedirect]="isWaitingForRedirect"
+    [isResending]="isResendingOtp"
+    (otpSubmit)="onOtpSubmit($event)"
+    (otpResend)="onOtpResend()"
+    (modalCancel)="onOtpCancel()"
+    (modalClose)="onOtpClose()">
+  </app-otp-modal>

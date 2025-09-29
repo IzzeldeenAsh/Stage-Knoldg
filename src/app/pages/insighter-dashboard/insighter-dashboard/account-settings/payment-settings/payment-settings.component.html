@@ -74,10 +74,13 @@
                                         </div>
                                         <!-- Status Badge -->
                                         <div class="d-flex align-items-center gap-2">
-                                            <span *ngIf="method.primary" class="badge badge-light-success" style="font-size: 0.8rem; padding: 0.5rem 1rem;">
+                                            <span *ngIf="method.type === 'manual' && !isManualAccountComplete(method)" class="badge badge-light-warning" style="font-size: 0.8rem; padding: 0.5rem 1rem;">
+                                                {{ lang === 'ar' ? 'غير مكتمل' : 'INCOMPLETE' }}
+                                            </span>
+                                            <span *ngIf="method.primary && (method.type !== 'manual' || isManualAccountComplete(method))" class="badge badge-light-success" style="font-size: 0.8rem; padding: 0.5rem 1rem;">
                                                 {{ getStatusText(method).toUpperCase() }}
                                             </span>
-                                            <span *ngIf="!method.primary" class="badge" [ngClass]="getStatusBadgeClass(method)" style="font-size: 0.8rem; padding: 0.5rem 1rem;">
+                                            <span *ngIf="!method.primary && method.status === 'active' && (method.type !== 'manual' || isManualAccountComplete(method))" class="badge" [ngClass]="getStatusBadgeClass(method)" style="font-size: 0.8rem; padding: 0.5rem 1rem;">
                                                 {{ getStatusText(method).toUpperCase() }}
                                             </span>
                                         </div>
@@ -91,25 +94,30 @@
                                         <div class="account-name-section mb-3">
                                             <div class="account-name-label">{{ lang === 'ar' ? 'اسم الحساب' : 'Account Holder' }}</div>
                                             <div class="d-flex align-items-center justify-content-between">
-                                                <div class="account-name-value">{{ method.account_name || 'Not Available' }}</div>
-                                                <div class="d-flex align-items-center" *ngIf="method.country">
-                                                    <img [src]="getCountryFlagPath(method.country.name)" 
-                                                         [alt]="method.country.name"
+                                                <div class="account-name-value">{{ method.account_name || (lang === 'ar' ? 'غير محدد' : 'Not Available') }}</div>
+                                                <div class="d-flex align-items-center" *ngIf="method.account_country">
+                                                    <img [src]="getCountryFlagPath(method.account_country.name)"
+                                                         [alt]="method.account_country.name"
                                                          class="country-flag me-2"
                                                          style="width: 24px; height: 16px; object-fit: cover;">
-                                                    <span class="fw-semibold text-dark">{{ method.country.name }}</span>
+                                                    <span class="fw-semibold text-dark">{{ method.account_country.name }}</span>
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
+                                        <div class="bank-name-section mb-3" *ngIf="method.bank_name">
+                                            <div class="bank-name-label">{{ lang === 'ar' ? 'اسم البنك' : 'Bank Name' }}</div>
+                                            <div class="bank-name-value">{{ method.bank_name }}</div>
+                                        </div>
+
                                         <div class="iban-section">
                                             <div class="iban-label">IBAN</div>
                                             <div class="iban-value">
-                                                <span class="iban-text">{{ formatIban(method.iban) || 'Not Available' }}</span>
-                                                <button *ngIf="method.iban" 
-                                                        type="button" 
+                                                <span class="iban-text">{{ formatIban(method.bank_iban) || (lang === 'ar' ? 'غير محدد' : 'Not Available') }}</span>
+                                                <button *ngIf="method.bank_iban"
+                                                        type="button"
                                                         class="copy-btn"
-                                                        (click)="copyToClipboard(method.iban)"
+                                                        (click)="copyToClipboard(method.bank_iban)"
                                                         [pTooltip]="lang === 'ar' ? 'نسخ IBAN' : 'Copy IBAN'"
                                                         tooltipPosition="top">
                                                     <i class="ki-duotone ki-copy fs-6">
@@ -129,11 +137,11 @@
 
                                     <!-- Action Buttons -->
                                     <div class="d-flex justify-content-end gap-2 mt-4">
-                                        <button *ngIf="method.type === 'manual'" 
-                                                class="btn btn-sm btn-info" 
+                                        <button *ngIf="method.type === 'manual'"
+                                                class="btn btn-sm btn-info"
                                                 (click)="onEditManual()">
                                             <i class="fas fa-edit me-1"></i>
-                                            {{ lang === 'ar' ? 'تعديل' : 'Edit' }}
+                                            {{ isManualAccountComplete(method) ? (lang === 'ar' ? 'تعديل' : 'Edit') : (lang === 'ar' ? 'إكمال الإعداد' : 'Complete Setup') }}
                                         </button>
                                         <button *ngIf="!method.primary && method.status === 'active'" 
                                                 class="btn btn-sm btn-info" 
