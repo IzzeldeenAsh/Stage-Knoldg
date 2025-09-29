@@ -186,8 +186,14 @@ export class VerticalComponent extends BaseComponent implements OnInit {
       formData.append("country_id", user.country.toString());
     }
     if (user.phoneNumber) {
-      const userPhoneNumber = "+" + (user.phoneCountryCode || '') + user.phoneNumber;
-      formData.append("phone", userPhoneNumber);
+      formData.append("phone", user.phoneNumber.toString());
+    }
+    if (user.phoneCountryCode) {
+      // Handle different possible structures of phoneCountryCode
+      const phoneCode = user.phoneCountryCode.code || user.phoneCountryCode;
+      if (phoneCode && typeof phoneCode === 'string') {
+        formData.append("phone_code", phoneCode);
+      }
     }
     if(industriesList && industriesList.length>0){
       industriesList.forEach((code: any) => {
@@ -239,7 +245,7 @@ export class VerticalComponent extends BaseComponent implements OnInit {
   }
 
   prepareCorporateAccount(user:ICreateAccount){
- 
+    console.log('prepareCorporateAccount - user.phoneCountryCode:', user.phoneCountryCode);
     const formData = new FormData();
     formData.append("about_us", user.aboutCompany ? user.aboutCompany : "");
     formData.append("legal_name", user.legalName ? user.legalName : "");
@@ -261,8 +267,14 @@ export class VerticalComponent extends BaseComponent implements OnInit {
       }
     }
     if (user.phoneCompanyNumber) {
-      const userPhoneNumber = "+" + user.phoneCountryCode + user.phoneCompanyNumber;
-      formData.append("company_phone", userPhoneNumber);
+      formData.append("company_phone", user.phoneCompanyNumber);
+    }
+    if (user.phoneCountryCode) {
+      // Handle different possible structures of phoneCountryCode
+      const phoneCode = user.phoneCountryCode.code || user.phoneCountryCode;
+      if (phoneCode && typeof phoneCode === 'string') {
+        formData.append("phone_code", phoneCode);
+      }
     }
     
    

@@ -7,6 +7,7 @@ import { PaymentCountryService } from 'src/app/_fake/services/payment/payment-co
 import { GuidelinesService } from 'src/app/_fake/services/guidelines/guidelines.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { OtpModalConfig } from 'src/app/reusable-components/otp-modal/otp-modal.component';
 
 @Component({
   selector: 'app-setup-payment-info',
@@ -72,6 +73,11 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
   isOtpForLinkAccount: boolean = false;
   isWaitingForRedirect: boolean = false;
   isResendingOtp: boolean = false;
+  otpModalConfig: OtpModalConfig = {
+    headerTitle: '',
+    redirectMessage: '',
+    autoGenerateOnOpen: true
+  };
 
   constructor(
     injector: Injector,
@@ -225,9 +231,9 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
       this.router.navigate(['/app/setup-payment-info/manual-account']);
     } else if (this.selectedPaymentType === 'provider') {
       // For Stripe provider, show OTP dialog first
+      this.otpModalConfig.headerTitle = this.lang === 'ar' ? 'تحقق من حساب Stripe' : 'Stripe Account Verification';
+      this.otpModalConfig.redirectMessage = this.lang === 'ar' ? 'جاري التوجيه إلى Stripe...' : 'Redirecting to Stripe...';
       this.showOtpDialog = true;
-      // Auto-generate OTP when dialog opens
-      this.generateOtp();
     }
   }
 
@@ -453,21 +459,23 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
     });
   }
 
-  // OTP Dialog methods
-  closeOtpDialog() {
+  // OTP Modal event handlers
+  onOtpSubmit(otpCode: string) {
+    this.processStripeAccountWithOtp(otpCode);
+  }
+
+  onOtpResend() {
+    this.resendOtp();
+  }
+
+  onOtpCancel() {
     this.showOtpDialog = false;
     this.otpCode = '';
   }
-  
-  submitOtp() {
-    if (this.otpCode.trim().length >= 4) {
-      this.processStripeAccountWithOtp(this.otpCode.trim());
-    } else {
-      this.showError(
-        this.lang === 'ar' ? 'خطأ في التحقق' : 'Verification Error',
-        this.lang === 'ar' ? 'يرجى إدخال رمز التحقق' : 'Please enter the verification code'
-      );
-    }
+
+  onOtpClose() {
+    this.showOtpDialog = false;
+    this.otpCode = '';
   }
 
   // Process Stripe account creation/linking based on API logic
@@ -609,7 +617,7 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
       'X-Timezone': Intl.DateTimeFormat().resolvedOptions().timeZone
     };
 
-    this.http.get<any>('https://api.knoldg.com/api/common/setting/guideline/slug/stripe-payment-terms-and-conditions', { headers })
+    this.http.get<any>('https://api.foresighta.co/api/common/setting/guideline/slug/stripe-payment-terms-and-conditions', { headers })
       .subscribe({
         next: (response) => {
           this.isLoadingTerms = false;

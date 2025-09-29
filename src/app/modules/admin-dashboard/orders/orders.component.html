@@ -162,23 +162,23 @@
     </div>
 
     <!-- Order Items Section -->
-    <div class="items-section" *ngIf="selectedOrder.suborders && selectedOrder.suborders.length > 0">
+    <div class="items-section" *ngIf="selectedOrder.suborder">
       <h3 class="section-title">
         <i class="pi pi-shopping-cart"></i>
         Order Items
       </h3>
-      
+
       <div class="suborders-container">
-        <div class="suborder-card" *ngFor="let suborder of selectedOrder.suborders; let i = index">
+        <div class="suborder-card">
           <div class="suborder-header">
-            <span class="suborder-number">Item Group {{ i + 1 }}</span>
+            <span class="suborder-number">Order Contents</span>
           </div>
-          
+
           <!-- Knowledge Items -->
-          <div class="knowledge-section" *ngIf="suborder.knowledge && suborder.knowledge.length > 0">
+          <div class="knowledge-section" *ngIf="selectedOrder.suborder.knowledge && selectedOrder.suborder.knowledge.length > 0">
             <h4 class="subsection-title">Knowledge Products</h4>
             <div class="knowledge-items">
-              <div class="knowledge-item" *ngFor="let item of suborder.knowledge">
+              <div class="knowledge-item" *ngFor="let item of selectedOrder.suborder.knowledge">
                 <div class="knowledge-type">
                   <p-chip [label]="item.type" styleClass="custom-chip"></p-chip>
                 </div>
@@ -186,15 +186,15 @@
               </div>
             </div>
           </div>
-          
+
           <!-- Documents -->
-          <div class="documents-section" *ngIf="suborder.knowledge_documents && suborder.knowledge_documents.length > 0">
+          <div class="documents-section" *ngIf="selectedOrder.suborder.knowledge_documents && selectedOrder.suborder.knowledge_documents.length > 0">
             <h4 class="subsection-title">Documents</h4>
             <div class="documents-grid">
-              <div *ngFor="let docGroup of suborder.knowledge_documents">
+              <div *ngFor="let docGroup of selectedOrder.suborder.knowledge_documents">
                 <div class="document-item" *ngFor="let doc of docGroup">
-                  <img [src]="getFileIcon(doc.file_extension)" 
-                       [alt]="doc.file_extension" 
+                  <img [src]="getFileIcon(doc.file_extension)"
+                       [alt]="doc.file_extension"
                        class="file-icon">
                   <div class="document-info">
                     <span class="document-name">{{ doc.file_name }}.{{ doc.file_extension }}</span>

@@ -18,7 +18,7 @@ interface UserType {
   providedIn: "root",
 })
 export class ProfileService {
-  private readonly API_URL = "https://api.knoldg.com/api/account/profile";
+  private readonly API_URL = "https://api.foresighta.co/api/account/profile";
   private profileCache$: Observable<any> | null = null;
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   private userSubject = new BehaviorSubject<UserType | null>(null);
@@ -62,8 +62,8 @@ export class ProfileService {
           id: response.data.id,
           name: response.data.name,
           email: response.data.email,
-          countryId: null,
-          country: null,
+          countryId: response.data.country_id,
+          country: response.data.country,
           roles: response.data.roles || []
         };
         this.setUserInLocalStorage(user);
@@ -186,8 +186,30 @@ export class ProfileService {
     return this.getProfile().pipe(
       map(profile => {
         const userRoles = profile.roles || [];
-        return userRoles.includes("company") 
+        return userRoles.includes("company")
       })
+    );
+  }
+
+  updateCountry(countryId: string): Observable<any> {
+    const headers = new HttpHeaders({
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "Accept-Language": this.currentLang,
+    });
+
+    const payload = { country_id: countryId };
+
+    this.isLoadingSubject.next(true);
+    return this.http.post(`${this.API_URL}/country`, payload, { headers }).pipe(
+      tap(() => {
+        // Clear the cache so next getProfile() call fetches fresh data
+        this.profileCache$ = null;
+      }),
+      catchError((err) => {
+        return throwError(err);
+      }),
+      finalize(() => this.isLoadingSubject.next(false))
     );
   }
 }

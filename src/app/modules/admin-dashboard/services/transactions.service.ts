@@ -48,7 +48,7 @@ export interface Order {
   date: string;
   order_no: string;
   invoice_no: string;
-  sub_orders: Suborder[];
+  sub_order: Suborder;
 }
 
 export interface Company {
@@ -103,11 +103,30 @@ export interface TransactionResponse {
   meta: TransactionMeta;
 }
 
+export interface PlatformBalanceResponse {
+  data: {
+    balance: number;
+  };
+}
+
+export interface PlatformTransactionListResponse {
+  data: Transaction[];
+}
+
+export interface ChartDataPoint {
+  date: string;
+  deposits: number;
+  withdrawals: number;
+  balance: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class TransactionsService {
-  private apiUrl = `${environment.apiBaseUrl}/admin/fund/transaction`;
+  private apiUrl = `${environment.apiBaseUrl}/admin/fund/platform/transaction`;
+  private balanceApiUrl = `${environment.apiBaseUrl}/admin/fund/platform/balance`;
+  private listApiUrl = `${environment.apiBaseUrl}/admin/fund/platform/transaction/list`;
   private authLocalStorageKey = 'foresighta-creds';
   private currentLang = 'en';
 
@@ -145,13 +164,33 @@ export class TransactionsService {
     });
   }
 
-  getTransactions(page: number = 1, perPage: number = 10): Observable<TransactionResponse> {
-    const params = new HttpParams()
+  getTransactions(page: number = 1, perPage: number = 10, perTime?: 'weekly' | 'monthly' | 'yearly'): Observable<TransactionResponse> {
+    let params = new HttpParams()
       .set('page', page.toString())
       .set('per_page', perPage.toString());
+
+    if (perTime) {
+      params = params.set('per_time', perTime);
+    }
 
     const headers = this.getHeaders();
 
     return this.http.get<TransactionResponse>(this.apiUrl, { params, headers });
+  }
+
+  getPlatformBalance(): Observable<PlatformBalanceResponse> {
+    const headers = this.getHeaders();
+    return this.http.get<PlatformBalanceResponse>(this.balanceApiUrl, { headers });
+  }
+
+  getAllPlatformTransactions(perTime?: 'weekly' | 'monthly' | 'yearly'): Observable<PlatformTransactionListResponse> {
+    let params = new HttpParams();
+
+    if (perTime) {
+      params = params.set('per_time', perTime);
+    }
+
+    const headers = this.getHeaders();
+    return this.http.get<PlatformTransactionListResponse>(this.listApiUrl, { params, headers });
   }
 }

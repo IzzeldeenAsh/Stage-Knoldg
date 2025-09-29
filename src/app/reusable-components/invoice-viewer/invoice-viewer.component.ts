@@ -7,7 +7,7 @@ export interface InvoiceData {
   date: string;
   amount: number;
   service: string;
-  suborders: any[];
+  suborder: any;
   userProfile?: {
     name?: string;
     email?: string;
@@ -65,20 +65,20 @@ export class InvoiceViewerComponent extends BaseComponent implements OnInit, OnD
 
     if (isMeetingOrder) {
       // Handle meeting orders
-      this.invoiceData.suborders.forEach(suborder => {
-        if (suborder.meeting_booking) {
-          const meeting = suborder.meeting_booking;
-          this.serviceRows.push({
-            name: `Meeting: ${meeting.title} - ${meeting.date} (${meeting.start_time} - ${meeting.end_time})`,
-            amount: this.invoiceData.amount
-          });
-        }
-      });
+      const suborder = this.invoiceData.suborder;
+      if (suborder?.meeting_booking) {
+        const meeting = suborder.meeting_booking;
+        this.serviceRows.push({
+          name: `Meeting: ${meeting.title} - ${meeting.date} (${meeting.start_time} - ${meeting.end_time})`,
+          amount: this.invoiceData.amount
+        });
+      }
     } else {
       // Handle knowledge orders
       this.subtotal = 0;
-      this.invoiceData.suborders.forEach(suborder => {
-        suborder.knowledge_documents?.forEach((docGroup: any[]) => {
+      const suborder = this.invoiceData.suborder;
+      if (suborder?.knowledge_documents) {
+        suborder.knowledge_documents.forEach((docGroup: any[]) => {
           docGroup.forEach((doc: any) => {
             this.serviceRows.push({
               name: doc.file_name,
@@ -87,7 +87,7 @@ export class InvoiceViewerComponent extends BaseComponent implements OnInit, OnD
             this.subtotal += doc.price;
           });
         });
-      });
+      }
     }
   }
 

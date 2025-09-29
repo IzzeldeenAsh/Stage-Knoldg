@@ -18,117 +18,207 @@
     </div>
 
     <div class="card-body py-3">
-      <div class="table-responsive">
-        <table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
-          <thead>
-            <tr class="fw-bold text-muted">
-              <th class="min-w-150px">Transaction</th>
-              <th class="min-w-140px">Amount</th>
-              <th class="min-w-140px">Type</th>
-              <th class="min-w-120px">Date</th>
-              <th class="min-w-200px">Order Details</th>
-              <th class="min-w-150px">Customer</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let transaction of transactions">
-              <!-- Transaction Type -->
-              <td>
+      <!-- Transactions Cards Grid -->
+      <div class="row g-4">
+        <div *ngFor="let transaction of transactions" class="col-12">
+          <div class="card transaction-card">
+            <div class="card-body p-6">
+              <!-- Card Header -->
+              <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+                <!-- Transaction Info -->
                 <div class="d-flex align-items-center">
-                  <div class="symbol symbol-40px me-3">
-                    <div class="symbol-label bg-light">
-                      <i [class]="'ki-outline ' + getTransactionIcon(transaction) + ' fs-3'"></i>
+                  <div class="symbol symbol-50px me-4">
+                    <div [class]="'symbol-label bg-light-' + (transaction.transaction === 'deposit' ? 'success' : 'danger')">
+                      <i [class]="'ki-outline ' + (transaction.transaction === 'deposit' ? 'ki-arrow-up text-success' : 'ki-arrow-down text-danger') + ' fs-2'"></i>
                     </div>
                   </div>
                   <div class="d-flex flex-column">
-                    <span class="text-dark fw-bold fs-6">{{ transaction.transaction | titlecase }}</span>
-                    <span class="text-muted fw-semibold fs-7">{{ getTransactionTypeDisplay(transaction.type) }}</span>
+                    <span class="text-dark fw-bold fs-4">{{ transaction.transaction | titlecase }}</span>
+                    <span class="text-muted fw-semibold fs-6">{{ getTransactionTypeDisplay(transaction.type) }}</span>
                   </div>
                 </div>
-              </td>
 
-              <!-- Amount -->
-              <td>
-                <span [class]="'fw-bold fs-6 ' + (transaction.transaction === 'deposit' ? 'text-success' : 'text-danger')">
-                  {{ getAmountDisplay(transaction) }}
-                </span>
-              </td>
-
-              <!-- Type -->
-              <td>
-                <span class="badge badge-light-info">{{ transaction.order.service | titlecase }}</span>
-              </td>
-
-              <!-- Date -->
-              <td>
-                <span class="text-dark fw-semibold fs-6">{{ formatDate(transaction.date) }}</span>
-              </td>
-
-              <!-- Order Details -->
-              <td>
-                <div class="d-flex flex-column">
-                  <span class="text-dark fw-bold fs-6">{{ transaction.order.order_no }}</span>
-                  <span class="text-muted fw-semibold fs-7">{{ transaction.order.invoice_no }}</span>
-                  <span [class]="'badge badge-light-' + (transaction.order.status === 'paid' ? 'success' : 'warning') + ' mt-1'">
-                    {{ transaction.order.status | titlecase }}
+                <!-- Amount -->
+                <div class="text-end">
+                  <span [class]="'fw-bold fs-3 amount-display ' + (transaction.transaction === 'deposit' ? 'text-success' : 'text-danger')">
+                    {{ getAmountDisplay(transaction) }}
                   </span>
+                  <div class="text-muted fs-7 fw-semibold">{{ formatDate(transaction.date) }}</div>
+                </div>
+              </div>
 
-                  <!-- Meeting Details -->
-                  <div *ngIf="transaction.order.sub_orders && transaction.order.sub_orders[0]?.meeting_booking" class="mt-2">
-                    <div class="text-muted fs-7">
-                      <strong>Meeting:</strong> {{ transaction.order.sub_orders[0].meeting_booking.title }}
+              <!-- Card Content -->
+              <div class="row g-4">
+                <!-- Service Type & Customer -->
+                <div class="col-lg-4 col-md-12">
+                  <div class="service-section p-4">
+                    <div class="d-flex align-items-center mb-3">
+                      <i class="ki-outline ki-category fs-2 text-info me-2"></i>
+                      <span class="fw-bold fs-6 text-info">Service</span>
                     </div>
-                    <div class="text-muted fs-7">
-                      <strong>Date:</strong> {{ transaction.order.sub_orders[0].meeting_booking.date }}
-                      {{ transaction.order.sub_orders[0].meeting_booking.start_time }} -
-                      {{ transaction.order.sub_orders[0].meeting_booking.end_time }}
+                    <span class="badge badge-light-info fs-6 mb-4">{{ transaction.order.service | titlecase }}</span>
+
+                    <!-- Customer Section -->
+                    <div class="border-top pt-4">
+                      <div class="d-flex align-items-center mb-3">
+                        <i class="ki-outline ki-user fs-2 text-info me-2"></i>
+                        <span class="fw-bold fs-6 text-info">Customer</span>
+                      </div>
+                      <div *ngIf="transaction.order?.user" class="customer-info">
+                        <!-- Customer Avatar & Name -->
+                        <div class="d-flex align-items-center mb-3">
+                          <div class="symbol symbol-40px me-3">
+                            <img *ngIf="transaction.order.user?.profile_photo_url"
+                                 [src]="transaction.order.user?.profile_photo_url"
+                                 [alt]="transaction.order.user?.name"
+                                 style="object-fit: cover; object-position: top;"
+                                 class="rounded-circle">
+                            <div *ngIf="!transaction.order.user?.profile_photo_url"
+                                 class="symbol-label bg-light-info text-info fw-bold">
+                              {{ getInitials(transaction.order.user?.name || '') }}
+                            </div>
+                          </div>
+                          <div class="d-flex flex-column">
+                            <span class="text-dark fw-bold fs-6">{{ transaction.order.user?.name }}</span>
+                            <span class="text-muted fs-7">{{ transaction.order.user?.email }}</span>
+                          </div>
+                        </div>
+
+                        <!-- Customer Roles -->
+                        <div class="mb-2">
+                          <span *ngFor="let role of transaction.order.user?.roles || []"
+                                [class]="'badge me-1 fs-7 ' + (role === 'insighter' ? 'badge-light-success' : 'badge-light-info')">
+                            {{ role | titlecase }}
+                          </span>
+                        </div>
+
+                    
+                      </div>
+
+                      <div *ngIf="!transaction.order?.user" class="text-center py-3">
+                        <span class="text-muted fs-7">Customer information not available</span>
+                      </div>
                     </div>
-                    <span [class]="'badge badge-light-' + (transaction.order.sub_orders[0].meeting_booking.status === 'pending' ? 'warning' : 'info')">
-                      {{ transaction.order.sub_orders[0].meeting_booking.status | titlecase }}
-                    </span>
                   </div>
+                </div>
 
-                  <!-- Knowledge Details -->
-                  <div *ngIf="transaction.order.sub_orders && transaction.order.sub_orders[0]?.knowledge" class="mt-2">
-                    <div class="text-muted fs-7">
-                      <strong>Knowledge:</strong> {{ transaction.order.sub_orders[0].knowledge[0].title }}
+                <!-- Order Details -->
+                <div class="col-lg-8 col-md-12">
+                  <div class="order-section p-4">
+                    <!-- Order Header -->
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                      <div class="d-flex align-items-center">
+                        <div class="symbol symbol-40px me-3">
+                          <div class="symbol-label bg-light-info">
+                            <i class="ki-outline ki-bill fs-3 text-info"></i>
+                          </div>
+                        </div>
+                        <div class="d-flex flex-column">
+                          <span class="text-dark fw-bold fs-5">{{ transaction.order.order_no }}</span>
+                          <span class="text-muted fw-semibold fs-7">{{ transaction.order.invoice_no }}</span>
+                        </div>
+                      </div>
+
+                      <span [class]="'badge badge-light-' + (transaction.order.status === 'paid' ? 'success' : 'warning') + ' fs-6'">
+                        <i [class]="'ki-outline ' + (transaction.order.status === 'paid' ? 'ki-check-circle' : 'ki-time') + ' fs-7 me-1'"></i>
+                        {{ transaction.order.status | titlecase }}
+                      </span>
                     </div>
-                    <span class="badge badge-light-primary">{{ transaction.order.sub_orders[0].knowledge[0].type | titlecase }}</span>
-                    <div *ngIf="transaction.order.sub_orders[0].knowledge_documents" class="mt-1">
-                      <div *ngFor="let docGroup of transaction.order.sub_orders[0].knowledge_documents">
-                        <div *ngFor="let doc of docGroup" class="text-muted fs-7">
-                          <i class="ki-outline ki-document fs-7"></i>
-                          {{ doc.file_name }}.{{ doc.file_extension }} - ${{ doc.price }}
+
+                    <!-- Meeting Details -->
+                    <div *ngIf="transaction.order.sub_order?.meeting_booking"
+                         class="meeting-details-card p-4 mb-4">
+                      <div class="d-flex align-items-center mb-3">
+                        <i class="ki-outline ki-calendar fs-3 text-primary me-3"></i>
+                        <span class="fw-bold fs-5 text-primary">Meeting Details</span>
+                      </div>
+                      <div class="text-gray-800 fs-5 fw-bold mb-2">
+                        {{ transaction.order.sub_order.meeting_booking?.title }}
+                      </div>
+                      <div class="d-flex align-items-center text-gray-700 fs-6 mb-3">
+                        <i class="ki-outline ki-time fs-5 me-2"></i>
+                        <span>{{ transaction.order.sub_order.meeting_booking?.date }}</span>
+                        <span class="mx-2 text-muted">•</span>
+                        <span>{{ transaction.order.sub_order.meeting_booking?.start_time }} - {{ transaction.order.sub_order.meeting_booking?.end_time }}</span>
+                      </div>
+                      <span [class]="'badge badge-light-' + (transaction.order.sub_order.meeting_booking?.status === 'pending' ? 'warning' : 'success') + ' fs-6'">
+                        <i [class]="'ki-outline ' + (transaction.order.sub_order.meeting_booking?.status === 'pending' ? 'ki-time' : 'ki-check') + ' fs-7 me-1'"></i>
+                        {{ transaction.order.sub_order.meeting_booking?.status | titlecase }}
+                      </span>
+                    </div>
+
+                    <!-- Knowledge Details -->
+                    <div *ngIf="transaction.order.sub_order?.knowledge?.length"
+                         class="knowledge-details-card p-4">
+                      <div class="d-flex align-items-center mb-3">
+                        <i class="ki-outline ki-book fs-3 text-info me-3"></i>
+                        <span class="fw-bold fs-5 text-info">Knowledge Package</span>
+                      </div>
+                      <div class="text-gray-800 fs-5 fw-bold mb-2">
+                        {{ transaction.order.sub_order?.knowledge?.[0]?.title }}
+                      </div>
+                      <div class="mb-3">
+                        <span class="badge badge-light-primary fs-6">
+                          <i class="ki-outline ki-category fs-7 me-1"></i>
+                          {{ transaction.order.sub_order?.knowledge?.[0]?.type | titlecase }}
+                        </span>
+                      </div>
+
+
+                      <!-- Documents -->
+                      <div *ngIf="transaction.order.sub_order?.knowledge_documents" class="mt-4">
+                        <div class="d-flex align-items-center mb-3">
+                          <i class="ki-outline ki-folder text-info fs-2 me-2"></i>
+                          <span class="text-gray-800 fs-5 fw-bold">Order Contents</span>
+                          <span class="badge badge-light-info ms-2 fs-7">
+                            {{ getDocumentCount(transaction.order.sub_order.knowledge_documents) }}
+                            {{ getDocumentCount(transaction.order.sub_order.knowledge_documents) === 1 ? 'Document' : 'Documents' }}
+                          </span>
+                        </div>
+                        <div class="documents-container">
+                          <div *ngFor="let docGroup of transaction.order.sub_order.knowledge_documents" class="document-group mb-2">
+                            <div *ngFor="let doc of docGroup" class="document-card border border-light-info rounded-3 p-3 mb-2 bg-light-info">
+                              <div class="d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center flex-grow-1">
+                                  <div class="file-icon-wrapper me-3">
+                                    <img [src]="getFileIcon(doc.file_extension)"
+                                         [alt]="doc.file_extension + ' file'"
+                                         class="file-extension-icon"
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
+                                         style="width: 40px; height: 40px; object-fit: contain;">
+                                  
+                                  </div>
+                                  <div class="document-details">
+                                    <div class="document-name text-gray-800 fw-bold fs-6 mb-1">
+                                      {{ doc.file_name }}
+                                    </div>
+                                    <div class="document-meta d-flex align-items-center">
+                                      <span class="badge badge-light-secondary me-2 fs-8">{{ doc.file_extension.toUpperCase() }}</span>
+                                      <span class="text-muted fs-7">
+                                        <i class="ki-outline ki-file fs-7 me-1"></i>
+                                        Document
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="document-price">
+                                  <span class="badge badge-success fs-6 px-3 py-2">
+                                    <i class="ki-outline ki-dollar fs-6 me-1"></i>
+                                    {{ doc.price }}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </td>
-
-              <!-- Customer -->
-              <td>
-                <div class="d-flex align-items-center">
-                  <div class="symbol symbol-35px me-3">
-                    <img *ngIf="transaction.order.user.profile_photo_url" [src]="transaction.order.user.profile_photo_url" alt="" />
-                    <div *ngIf="!transaction.order.user.profile_photo_url" class="symbol-label bg-light-primary text-primary fw-bold">
-                      {{ transaction.order.user.name.charAt(0) }}
-                    </div>
-                  </div>
-                  <div class="d-flex flex-column">
-                    <span class="text-dark fw-bold fs-6">{{ transaction.order.user.name }}</span>
-                    <span class="text-muted fw-semibold fs-7">{{ transaction.order.user.email }}</span>
-                    <div class="mt-1">
-                      <span *ngFor="let role of transaction.order.user.roles" class="badge badge-light-success me-1">
-                        {{ role | titlecase }}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Pagination -->

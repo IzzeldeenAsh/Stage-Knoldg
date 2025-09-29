@@ -607,7 +607,7 @@ export class UpgradeToCompanyComponent
     if (email) {
       this.gettingCodeLoader = true;
       const getCodeSub = this.http
-        .post("https://api.knoldg.com/api/auth/company/code/send", {
+        .post("https://api.foresighta.co/api/auth/company/code/send", {
           verified_email: email,
         }, {
           headers: {
@@ -725,11 +725,19 @@ export class UpgradeToCompanyComponent
     formData.append("address", this.form.get("address")?.value);
     formData.append("country", this.form.get("country")?.value);
     
-    // Add phone with country code
+    // Add phone and phone code separately
     if (this.form.get("company_phone")?.value) {
-      const phoneCode = this.form.get("phoneCountryCode")?.value?.code || '';
       const phoneNumber = this.form.get("company_phone")?.value;
-      formData.append("company_phone", phoneCode + phoneNumber);
+      formData.append("company_phone", phoneNumber);
+    }
+
+    if (this.form.get("phoneCountryCode")?.value) {
+      const phoneCountryCode = this.form.get("phoneCountryCode")?.value;
+      const phoneCode = phoneCountryCode.code || phoneCountryCode;
+      if (phoneCode && typeof phoneCode === 'string') {
+        const cleanPhoneCode = phoneCode.startsWith('+') ? phoneCode.substring(1) : phoneCode;
+        formData.append("phone_code", cleanPhoneCode);
+      }
     }
     
     formData.append("company_agreement", "true"); // Add company agreement
