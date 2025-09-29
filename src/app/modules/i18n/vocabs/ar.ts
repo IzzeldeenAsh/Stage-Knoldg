@@ -314,7 +314,7 @@ INSIGHTER_REQUESTS: {
       ADVANCED_DATA_INSIGHTS: "رؤى البيانات المتقدمة",
       ACCESS_INSIGHTS:
         "الوصول إلى رؤى الاستشارات بسلاسة عبر جميع أجهزتك. قم بالإعداد مرة واحدة، وافتح عالمًا من المعرفة والفرص.",
-      DISCOVER: "استكشاف",
+      DISCOVER: "استكشف",
       AGILE_ORGANIZATIONS: "المنظمات الرشيقة",
       BUSINESS_RESILIENCE: "مرونة الأعمال",
       CLIMATE_CHANGE: "التغير المناخي",
@@ -618,8 +618,8 @@ INSIGHTER_REQUESTS: {
       COUNTRY_PLACEHOLDER: "رمز الدولة",
       WEBSITE_INVALID_FORMAT: "يجب أن يكون عنوان الموقع الإلكتروني بالصيغة مثل example.com",
       COUNTRY: "الدولة",
-      CERTIFICATES: "الوثائق الداعمة",
-      CERTIFICATES_DESC: "شهادات واعتمادات",
+      CERTIFICATES: "الشهادات والوثائق",
+      CERTIFICATES_DESC: "اعتماد خبرتك",
       BIO_REQUIRED:"معلوماتك مطلوبة",
       VERIFY_ACCOUNT: "تحقق من الحساب",
       VERIFY_ACCOUNT_DESC: "التحقق من الحساب التجاري",
@@ -674,7 +674,7 @@ INSIGHTER_REQUESTS: {
       UPLOAD_FILES: "إرفاق الشهادات والاعتمادات",
       CAMPAIGN_GUIDELINES: "إرشادات الشهادات",
       DROP_FILES_HERE_OR_CLICK: "اضغط هنا لإرفاق الملف (الشهادة)",
-      UPLOAD_UP_TO_FILES: "يمكنك تحميل ما يصل إلى 10 ملفات",
+      UPLOAD_UP_TO_FILES: "يمكنك رفع حتى 10 ملفات، بحد أقصى 5 ميجابايت لكل ملف.",
       UPLOADED_FILES: "الملفات المرفوعة",
       DOCUMENT_TYPE: "نوع المستند",
       SELECT_DOCUMENT_TYPE: "اختر نوع المستند",
@@ -686,7 +686,7 @@ INSIGHTER_REQUESTS: {
       CORPORATE_ACCOUNT_VERIFICATION: "التحقق من الحساب التجاري",
       VERIFY_YOUR_COMPANY_WITH: "تحقق من شركتك باستخدام",
       IF_NEED_MORE_INFO_VERIFICATION: "إذا كنت بحاجة إلى مزيد من المعلومات، يرجى زيارة",
-      DOCUMENT_SIZE: "حجم الملف يجب أن لا يتجاوز 5 ميجا",
+      DOCUMENT_SIZE: "لضمان جودة ومصداقية خبرائنا، يرجى تحميل المستندات التي تثبت مؤهلاتك وخبرتك المهنية",
       DROP_OR_UPLOAD_REGISTRY_DOCUMENT: "قم بإسقاط أو تحميل وثيقة التسجيل",
       VERIFY_COMPANY_ACCOUNT_BY_UPLOADING_REGISTRY_DOC: "تحقق من حساب الشركة عن طريق تحميل وثيقة تسجيل الشركة",
       WEBSITE_URL: "عنوان الموقع الإلكتروني",
@@ -753,7 +753,8 @@ INSIGHTER_REQUESTS: {
       CERTIFICATIONS_TYPE: 'النوع',
       MYDOCUMENTS:'ملفاتي',
       REGYDOCUMENT:"السجل التجاري",
-      MYCERTS:"شهاداتي"
+      MYCERTS:"شهاداتي",
+      FULL_NAME: 'الاسم الكامل',
     },
     ACCOUNT_SETTINGS: {
       PERSONAL_INFO: 'البيانات الشخصية',
@@ -1161,9 +1162,9 @@ INSIGHTER_REQUESTS: {
     "COURSE": "الدورات",
     "MEDIA": "الوسائط",
     "CLEAR_FILTERS": "مسح التصفية",
-   'TITLE': 'قاعدة معرفتي',
+   'TITLE': 'مكتبتي المعرفية',
     'TOTAL': 'المجموع',
-    'SEARCH_PLACEHOLDER': 'البحث عن الملفات والمجلدات',
+    'SEARCH_PLACEHOLDER': 'ابحث في المكتبة',
     'ADD_KNOWLEDGE': 'إضافة معرفة',
     'GENERATE_PACKAGE': 'إنشاء حزمة',
     'CLOSE_PACKAGE_BUILDER': 'إغلاق منشئ الحزم',
@@ -1263,7 +1264,7 @@ INSIGHTER_REQUESTS: {
     SHARE: 'مشاركة',
     BREADCRUMB: {
       HOME: 'الرئيسية',
-      MY_KNOWLEDGE_BASE: 'قاعدة معرفتي',
+      MY_KNOWLEDGE_BASE: '',
       GENERAL: 'الكل'
     },
     KNOWLEDGE_DETAILS: 'تفاصيل المعرفة',
@@ -1454,7 +1455,7 @@ INSIGHTER_REQUESTS: {
 "PAYMENT_ACCOUNT": {
   "TITLE": "معلومات حساب الدفع",
   "ADD_TITLE": "إضافة حساب دفع",
-  "DESCRIPTION": "عرض وإدارة تفاصيل حساب الدفع لتلقي المدفوعات.",
+  "DESCRIPTION": "إدارة حساب تلقي الارباح",
   "ADD_DESCRIPTION": "قم بإعداد حساب الدفع الخاص بك لبدء تلقي المدفوعات من مبيعات معرفتك.",
   "TYPE": "نوع الحساب",
   "STATUS": "الحالة",
@@ -1552,7 +1553,19 @@ INSIGHTER_REQUESTS: {
     "DISCOVER_NEW": "اكتشف رؤى جديدة",
     "TRACK_PURCHASES": "تتبع مشترياتك"
   }
-}
+},
+"TOP_INDUSTRIES": {
+    "TECHNOLOGY": "التكنولوجيا",
+    "HEALTHCARE": "الرعاية الصحية",
+    "FINANCE": "التمويل",
+    "EDUCATION": "التعليم",
+    "MARKETING": "التسويق"
+  },
+  "BANK_SETUP": {
+    "FIELDS": {
+      "PHONE_COUNTRY_CODE_SEARCH": "اختر رمز الدولة..."
+    }
+  }
 },
 
 "CALENDAR": {

@@ -19,9 +19,9 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
   paymentTypes = [
     {
       id: 'manual',
-      name: { en: 'Bank Account Setup', ar: 'إعداد حساب بنكي' },
+      name: { en: 'Bank Transfer', ar: 'إعداد حساب بنكي' },
       description: { 
-        en: 'Set up direct bank transfers with manual verification and processing', 
+        en: 'Direct transfers to your bank account with manual verification and processing.', 
         ar: 'إعداد التحويلات البنكية المباشرة مع التحقق والمعالجة اليدوية' 
       },
       imageUrl: 'https://res.cloudinary.com/dsiku9ipv/image/upload/v1755933067/bank-account_18410123_jbdogp.png'

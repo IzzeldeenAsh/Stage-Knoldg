@@ -443,7 +443,7 @@ export const locale = {
         "COUNTRY_PLACEHOLDER": "Select your country",
         "COUNTRY_REQUIRED": "Country is required",
         "CONSULTING_FIELD_LABEL": "Consulting Field",
-        "CONSULTING_FIELD_PLACEHOLDER": "Select your consulting field",
+        "CONSULTING_FIELD_PLACEHOLDER": "Select field",
         "CONSULTING_FIELD_REQUIRED": "Consulting field is required",
         "OTHER_FIELD_LABEL": "Other Field",
         "OTHER_FIELD_PLACEHOLDER": "Enter your other field",
@@ -665,8 +665,8 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       ACCOUNT_DETAILS_DESC: "Setup Your Account Details",
       ACCOUNT_INFO: "Account Info",
       ACCOUNT_INFO_DESC: "Setup Your Insighter Information",
-      CERTIFICATES: "Supporting Documents",
-      CERTIFICATES_DESC: "Upload Your Qualifications",
+      CERTIFICATES: "Credentials & Documents",
+      CERTIFICATES_DESC: "Verify Your Expertise",
       VERIFY_ACCOUNT: "Verify Account",
       VERIFY_ACCOUNT_DESC: "Verify Corporate Account",
       BACK: "Back",
@@ -694,7 +694,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       CORPORATE_ACCOUNT: "Company Account",
       CORPORATE_ACCOUNT_DESC: "Start managing your team of Insighters",
       IF_NEED_MORE_INFO: "Need more information? Visit our",
-      DOCUMENT_SIZE: "File size must not exceed 5MB",
+      DOCUMENT_SIZE: "To ensure the quality and credibility of our Insighters, please upload documents that verify your professional qualifications and experience.",
       INSIGHTER_INFO: "Account Info",
       CONSULTING_FIELDS: "Expertise and Specialties",
       CONSULTING_FIELDS_REQUIRED: "Expertise and Specialties are required",
@@ -715,10 +715,10 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       ABOUT_COMPANY: "About Company",
       PHONE_NUMBER_PLACEHOLDER: "Enter your phone number",
       
-      UPLOAD_FILES: "Upload Files",
+      UPLOAD_FILES: "Upload your Documents",
       CAMPAIGN_GUIDELINES: "Certificate Guidelines",
       DROP_FILES_HERE_OR_CLICK: "Add Certificate Files",
-      UPLOAD_UP_TO_FILES: "Upload up to 10 files",
+      UPLOAD_UP_TO_FILES: "Upload up to 10 files, each not to exceed 5MB",
 
       UPLOADED_FILES: "Uploaded Files",
       DOCUMENT_TYPE: "Document Type",
@@ -817,7 +817,8 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       CERTIFICATIONS_TYPE: 'Type',
       MYDOCUMENTS:'My Documents',
       REGYDOCUMENT:"Registry Document",
-      MYCERTS:"My Certificates"
+      MYCERTS:"My Certificates",
+      FULL_NAME: 'Full Name',
     },
     ACCOUNT_SETTINGS: {
       PERSONAL_INFO: 'Personal Info',
@@ -1575,9 +1576,9 @@ UPLOAD: 'Upload',
     },
 
   "PAYMENT_ACCOUNT": {
-    "TITLE": "Payment Account Information",
+    "TITLE": "Your Payment Methods",
     "ADD_TITLE": "Add Payment Account",
-    "DESCRIPTION": "View and manage your payment account details for receiving payments.",
+    "DESCRIPTION": "Manage how you receive your payments.",
     "ADD_DESCRIPTION": "Set up your payment account to start receiving payments from your knowledge sales.",
     "TYPE": "Account Type",
     "STATUS": "Status",
@@ -1616,6 +1617,18 @@ UPLOAD: 'Upload',
     "SHOWING_PAGE": "Showing page",
     "OF_PAGES": "of",
     "PAGES": "pages"
+  },
+  "TOP_INDUSTRIES": {
+  "TECHNOLOGY": "Technology",
+  "HEALTHCARE": "Healthcare",
+  "FINANCE": "Finance",
+  "EDUCATION": "Education",
+  "MARKETING": "Marketing"
+  },
+  "BANK_SETUP": {
+    "FIELDS": {
+      "PHONE_COUNTRY_CODE_SEARCH": "Choose country code..."
+    }
   }
   },
  

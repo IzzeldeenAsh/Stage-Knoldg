@@ -73,7 +73,13 @@
 </p-dialog>
 
 <div class="col-12 mb-4">
-  <label class="form-label fs-6 text-gray-900 " [class.required]="isRequired">
+  <!-- <label class="form-label fs-6 text-gray-900 " [class.required]="isRequired">
+    {{ title }}
+  </label> -->
+  <label
+    *ngIf="title === 'الخبرات و التخصصات' || title === 'Expertise and Specialties'"
+    class="form-label fs-6 text-gray-900"
+    [class.required]="isRequired">
     {{ title }}
   </label>
 
