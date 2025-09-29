@@ -88,7 +88,10 @@ export class PaymentSettingsComponent extends BaseComponent implements OnInit {
   getVisiblePaymentMethods(): PaymentMethod[] {
     return this.paymentMethods.filter(method => {
       if (method.type === 'manual') {
-        return method.status === 'active';
+        // Show manual account if it has status 'active' OR if it has any data (account_name, bank_iban, etc.)
+        return method.status === 'active' ||
+               method.account_name !== null ||
+               method.bank_iban !== null;
       }
       if (method.type === 'provider') {
         return method.status === 'active' || method.details_submitted_at !== null;
@@ -316,6 +319,12 @@ export class PaymentSettingsComponent extends BaseComponent implements OnInit {
 
   onAddPaymentMethod() {
     this.router.navigate(['/app/setup-payment-info']);
+  }
+
+  isManualAccountComplete(method: PaymentMethod): boolean {
+    if (method.type !== 'manual') return false;
+    // Consider account complete if it has the essential fields filled
+    return method.bank_iban !== null && method.bank_iban !== undefined && method.bank_iban !== '';
   }
 
   formatIban(iban: string | undefined): string {

@@ -1,5 +1,4 @@
 import { Component, Injector, OnInit } from "@angular/core";
-import { MessageService } from "primeng/api";
 import { IKnoldgProfile } from "src/app/_fake/models/profile.interface";
 import {
   Document,
@@ -34,8 +33,7 @@ export class CertificatesComponent extends BaseComponent implements OnInit {
     private documentsService: DocumentsService,
     injector: Injector,
     private _profilePost: UpdateProfileService,
-    private getProfileService: ProfileService,
-    public messageService: MessageService
+    private getProfileService: ProfileService
   ) {
     super(injector);
   }
@@ -52,7 +50,7 @@ export class CertificatesComponent extends BaseComponent implements OnInit {
         this.profile = profile;
         this.loadingProfile = false;
       },
-      error: (error) => {
+      error: () => {
         this.loadingProfile = false;
       },
     });
@@ -65,7 +63,7 @@ export class CertificatesComponent extends BaseComponent implements OnInit {
         this.documentTypes = types;
         this.isLoadingDocumentTypes = false;
       },
-      error: (error) => {
+      error: () => {
         this.isLoadingDocumentTypes = false;
       },
     });
@@ -90,85 +88,6 @@ export class CertificatesComponent extends BaseComponent implements OnInit {
     return doc ? doc.name : "Other";
   }
 
-  // Personal Certificate Form Data
-  private createFormData(): FormData {
-    const formData = new FormData();
-    formData.append("first_name", this.profile.first_name);
-    formData.append("last_name", this.profile.last_name);
-    if (this.profile.country_id) {
-      formData.append("country_id", this.profile.country_id.toString());
-    }
-    if (this.profile.bio) {
-      formData.append("bio", this.profile.bio);
-    } else {
-      formData.append("bio", this.generateDummyBio());
-    }
-    if (this.profile.phone) {
-      formData.append("phone", this.profile.phone);
-    }
-    // Append regular industries
-    if (this.profile.industries.length > 0) {
-      this.profile.industries.forEach((industry: any) => {
-        formData.append("industries[]", industry.id);
-      });
-    }
-    if (this.profile.consulting_field.length > 0) {
-      this.profile.consulting_field.forEach((field: any) => {
-        formData.append("consulting_field[]", field.id);
-      });
-    }
-    // Add company information if user has company role
-    if (this.profile.roles.includes("company") && this.profile.company?.legal_name) {
-      formData.append("legal_name", this.profile.company.legal_name);
-      formData.append("about_us", this.profile.company.about_us);
-    }
-    if (this.profile.roles.includes("company") && this.profile.company?.website) {
-      formData.append("website", this.profile.company.website);
-    }
-    return formData;
-  }
-
-  private generateDummyBio(): string {
-    const fullName = `${this.profile.first_name} ${this.profile.last_name}`;
-    let bio = `${fullName} is a professional`;
-    
-    // Add industry information if available
-    if (this.profile.industries && this.profile.industries.length > 0) {
-      bio += ` with experience in ${this.profile.industries.length > 1 ? 'various industries' : 'the industry'}`;
-      
-      // Add specific industry names if not too many
-      if (this.profile.industries.length <= 3) {
-        const industryNames = this.profile.industries.map((ind: any) => ind.name || 'specialized sector').filter(Boolean);
-        if (industryNames.length > 0) {
-          bio += ` including ${industryNames.join(', ')}`;
-        }
-      }
-    }
-    
-    // Add consulting information if available
-    if (this.profile.consulting_field && this.profile.consulting_field.length > 0) {
-      bio += `. Provides consulting services`;
-      
-      // Add specific consulting fields if not too many
-      if (this.profile.consulting_field.length <= 3) {
-        const fieldNames = this.profile.consulting_field.map((field: any) => field.name || 'specialized areas').filter(Boolean);
-        if (fieldNames.length > 0) {
-          bio += ` in ${fieldNames.join(', ')}`;
-        }
-      }
-    }
-    
-    // Add company information if user has company role
-    if (this.profile.roles && this.profile.roles.includes("company") && this.profile.company) {
-      bio += `. Associated with ${this.profile.company.legal_name || 'a company'}`;
-      if (this.profile.company.website) {
-        bio += ` (${this.profile.company.website})`;
-      }
-    }
-    
-    bio += '.';
-    return bio;
-  }
 
   // Personal Certificate Methods
   showAddCertDialog() {
@@ -186,11 +105,10 @@ export class CertificatesComponent extends BaseComponent implements OnInit {
       if (allowedTypes.includes(file.type)) {
         this.selectedFile = file;
       } else {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Invalid file type. Please upload PDF, DOC, DOCX, JPG or PNG files only.'
-        });
+        this.showError(
+          this.lang === "ar" ? "حدث خطأ" : "Error",
+          this.lang === "ar" ? "نوع الملف غير صحيح. يرجى رفع ملفات PDF أو DOC أو DOCX أو JPG أو PNG فقط." : "Invalid file type. Please upload PDF, DOC, DOCX, JPG or PNG files only."
+        );
         event.target.value = '';
       }
     }
@@ -202,48 +120,32 @@ export class CertificatesComponent extends BaseComponent implements OnInit {
     }
 
     this.isUploading = true;
-    const formData = this.createFormData();
-    
-    // Add the new certificate
-    formData.append(`certification[${this.profile.certifications.length}][type]`, this.selectedDocType);
-    formData.append(`certification[${this.profile.certifications.length}][file]`, this.selectedFile);
 
-    const uploadSub = this._profilePost.postProfile(formData).subscribe({
-      next: (response: any) => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Certificate uploaded successfully'
-        });
+    const uploadSub = this._profilePost.uploadCertificate(this.selectedDocType, this.selectedFile).subscribe({
+      next: () => {
+        this.showSuccess('Success', 'Certificate uploaded successfully');
         this.displayAddCertDialog = false;
         this.getProfileService.clearProfile();
-        this.getProfile(); // Refresh the profile to show new certificate
+        this.getProfile();
       },
       error: (error: any) => {
-        // Handle detailed API errors
-        let errorMessage = 'Failed to upload certificate';
-        
-        if (error.error && error.error.message) {
-          errorMessage = error.error.message;
-        }
-        
-        // Check for specific validation errors
         if (error.error && error.error.errors) {
-          const errorKeys = Object.keys(error.error.errors);
-          if (errorKeys.length > 0) {
-            const firstError = error.error.errors[errorKeys[0]];
-            if (Array.isArray(firstError) && firstError.length > 0) {
-              errorMessage = firstError[0];
+          const serverErrors = error.error.errors;
+          for (const key in serverErrors) {
+            if (serverErrors.hasOwnProperty(key)) {
+              const messages = serverErrors[key];
+              this.showError(
+                this.lang === "ar" ? "حدث خطأ" : "An error occurred",
+                messages.join(", ")
+              );
             }
           }
+        } else {
+          this.showError(
+            this.lang === "ar" ? "حدث خطأ" : "An error occurred",
+            this.lang === "ar" ? "حدث خطأ" : "Failed to upload certificate"
+          );
         }
-        
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: errorMessage
-        });
-        
         this.isUploading = false;
       },
       complete: () => {
@@ -267,21 +169,16 @@ export class CertificatesComponent extends BaseComponent implements OnInit {
     this.isDeleting = true;
     const deleteSub = this._profilePost.deleteCertificate(this.selectedCertificate.id).subscribe({
       next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Certificate deleted successfully'
-        });
+        this.showSuccess('Success', 'Certificate deleted successfully');
         this.displayDeleteDialog = false;
         this.getProfileService.clearProfile();
-        this.getProfile(); // Refresh the profile to update the certificates list
+        this.getProfile();
       },
-      error: (error) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to delete certificate'
-        });
+      error: () => {
+        this.showError(
+          this.lang === "ar" ? "حدث خطأ" : "Error",
+          this.lang === "ar" ? "فشل في حذف الشهادة" : "Failed to delete certificate"
+        );
       },
       complete: () => {
         this.isDeleting = false;

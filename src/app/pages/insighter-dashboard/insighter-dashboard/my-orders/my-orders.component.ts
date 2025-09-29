@@ -4,6 +4,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { MyOrdersService, Order, OrdersResponse, SubOrder, KnowledgeDocument } from './my-orders.service';
 import { Observable, catchError, map, of, forkJoin } from 'rxjs';
+import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 
 @Component({
   selector: 'app-my-orders',
@@ -13,6 +14,8 @@ import { Observable, catchError, map, of, forkJoin } from 'rxjs';
 })
 export class MyOrdersComponent extends BaseComponent implements OnInit {
   activeTab: 'knowledge' | 'meeting' = 'knowledge';
+  knowledgeSubTab: 'purchased' | 'sales' = 'purchased';
+  meetingSubTab: 'purchased' | 'sales' = 'purchased';
   
   orders$: Observable<Order[]> = of([]);
   totalPages$: Observable<number> = of(0);
@@ -20,19 +23,47 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
   selectedOrder: Order | null = null;
   showOrderDetails = false;
 
+  salesOrders$: Observable<Order[]> = of([]);
+  salesTotalPages$: Observable<number> = of(0);
+  currentSalesPage = 1;
+
   meetingOrders$: Observable<Order[]> = of([]);
   meetingTotalPages$: Observable<number> = of(0);
   currentMeetingPage = 1;
   selectedMeetingOrder: Order | null = null;
   showMeetingOrderDetails = false;
 
+  meetingSalesOrders$: Observable<Order[]> = of([]);
+  meetingSalesTotalPages$: Observable<number> = of(0);
+  currentMeetingSalesPage = 1;
+
+  roles: string[] = [];
+  private knowledgeSalesLoaded = false;
+  private meetingSalesLoaded = false;
+  private rolesLoaded = false;
   constructor(
     injector: Injector,
     private myOrdersService: MyOrdersService,
     private router: Router,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private proile:ProfileService
   ) {
     super(injector);
+  }
+
+  getRoles(){
+    this.proile.getProfile().subscribe((profile:any)=>{
+      this.roles = profile.roles || [];
+      this.rolesLoaded = true;
+
+      if (this.knowledgeSubTab === 'sales' && this.canViewSalesTabs && !this.knowledgeSalesLoaded) {
+        this.loadSalesKnowledgeOrders(this.currentSalesPage);
+      }
+
+      if (this.meetingSubTab === 'sales' && this.canViewSalesTabs && !this.meetingSalesLoaded) {
+        this.loadSalesMeetingOrders(this.currentMeetingSalesPage);
+      }
+    })
   }
 
   get isLoading$() {
@@ -43,13 +74,50 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
     return this.myOrdersService.isMeetingLoading$;
   }
 
+  get isSalesLoading$() {
+    return this.myOrdersService.isSalesLoading$;
+  }
+
+  get isMeetingSalesLoading$() {
+    return this.myOrdersService.isMeetingSalesLoading$;
+  }
+
+  get canViewSalesTabs(): boolean {
+    return this.resolveSalesRole() !== null;
+  }
+
   ngOnInit(): void {
+    this.getRoles();
     this.loadOrders();
     this.loadMeetingOrders();
   }
 
   setActiveTab(tab: 'knowledge' | 'meeting'): void {
     this.activeTab = tab;
+
+    if (tab === 'knowledge' && this.knowledgeSubTab === 'sales' && this.canViewSalesTabs && !this.knowledgeSalesLoaded) {
+      this.loadSalesKnowledgeOrders(this.currentSalesPage);
+    }
+
+    if (tab === 'meeting' && this.meetingSubTab === 'sales' && this.canViewSalesTabs && !this.meetingSalesLoaded) {
+      this.loadSalesMeetingOrders(this.currentMeetingSalesPage);
+    }
+  }
+
+  setKnowledgeSubTab(tab: 'purchased' | 'sales'): void {
+    this.knowledgeSubTab = tab;
+
+    if (tab === 'sales' && this.canViewSalesTabs && !this.knowledgeSalesLoaded) {
+      this.loadSalesKnowledgeOrders(this.currentSalesPage);
+    }
+  }
+
+  setMeetingSubTab(tab: 'purchased' | 'sales'): void {
+    this.meetingSubTab = tab;
+
+    if (tab === 'sales' && this.canViewSalesTabs && !this.meetingSalesLoaded) {
+      this.loadSalesMeetingOrders(this.currentMeetingSalesPage);
+    }
   }
 
   loadOrders(page: number = 1): void {
@@ -92,6 +160,14 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
 
   onMeetingPageChange(page: number): void {
     this.loadMeetingOrders(page);
+  }
+
+  onSalesPageChange(page: number): void {
+    this.loadSalesKnowledgeOrders(page);
+  }
+
+  onMeetingSalesPageChange(page: number): void {
+    this.loadSalesMeetingOrders(page);
   }
 
   openOrderDetails(order: Order): void {
@@ -232,13 +308,17 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
     }
   }
 
-  calculateDuration(startTime: string, endTime: string): string {
+  calculateDuration(startTime: string | undefined, endTime: string | undefined): string {
+    if (!startTime || !endTime) {
+      return this.lang === 'ar' ? 'غير محدد' : 'Not specified';
+    }
+
     const start = new Date(`2000-01-01T${startTime}`);
     const end = new Date(`2000-01-01T${endTime}`);
     const diff = end.getTime() - start.getTime();
     const hours = Math.floor(diff / 3600000);
     const minutes = Math.floor((diff % 3600000) / 60000);
-    
+
     if (hours > 0 && minutes > 0) {
       return this.lang === 'ar' ? `${hours} ساعة و ${minutes} دقيقة` : `${hours}h ${minutes}min`;
     } else if (hours > 0) {
@@ -389,7 +469,75 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
     return Array.from(extensions);
   }
 
-  navigateToDownloads(order: Order, suborderIndex: number): void {
+  private resolveSalesRole(): 'company' | 'insighter' | null {
+    if (this.roles.includes('company') || this.roles.includes('company-insighter')) {
+      return 'company';
+    }
+
+    if (this.roles.includes('insighter')) {
+      return 'insighter';
+    }
+
+    return null;
+  }
+
+  private loadSalesKnowledgeOrders(page: number = 1): void {
+    const role = this.resolveSalesRole();
+
+    if (!role) {
+      if (this.rolesLoaded) {
+        this.salesOrders$ = of([]);
+        this.salesTotalPages$ = of(0);
+      }
+      return;
+    }
+
+    this.currentSalesPage = page;
+    this.myOrdersService.getSalesKnowledgeOrders(page, role).pipe(
+      catchError((error) => {
+        this.handleServerErrors(error);
+        return of({
+          data: [],
+          links: { first: '', last: '', prev: null, next: null },
+          meta: { current_page: 1, from: 0, last_page: 1, links: [], path: '', per_page: 10, to: 0, total: 0 }
+        } as OrdersResponse);
+      })
+    ).subscribe(response => {
+      this.salesOrders$ = of(response.data);
+      this.salesTotalPages$ = of(response.meta.last_page);
+      this.knowledgeSalesLoaded = true;
+    });
+  }
+
+  private loadSalesMeetingOrders(page: number = 1): void {
+    const role = this.resolveSalesRole();
+
+    if (!role) {
+      if (this.rolesLoaded) {
+        this.meetingSalesOrders$ = of([]);
+        this.meetingSalesTotalPages$ = of(0);
+      }
+      return;
+    }
+
+    this.currentMeetingSalesPage = page;
+    this.myOrdersService.getSalesMeetingOrders(page, role).pipe(
+      catchError((error) => {
+        this.handleServerErrors(error);
+        return of({
+          data: [],
+          links: { first: '', last: '', prev: null, next: null },
+          meta: { current_page: 1, from: 0, last_page: 1, links: [], path: '', per_page: 10, to: 0, total: 0 }
+        } as OrdersResponse);
+      })
+    ).subscribe(response => {
+      this.meetingSalesOrders$ = of(response.data);
+      this.meetingSalesTotalPages$ = of(response.meta.last_page);
+      this.meetingSalesLoaded = true;
+    });
+  }
+
+  navigateToDownloads(order: Order): void {
     const knowledgeDownloadIds = order.knowledge_download_ids || [];
     
     if (knowledgeDownloadIds.length > 0) {

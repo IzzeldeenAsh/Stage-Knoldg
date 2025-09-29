@@ -19,6 +19,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { RippleModule } from 'primeng/ripple';
 import Aura from '@primeng/themes/aura';
 import { CoreModule } from './core/core.module';
+import { SharedModule } from './shared/shared.module';
 
 function appInitializer(authService: AuthService) {
   return () => {
@@ -48,6 +49,7 @@ function appInitializer(authService: AuthService) {
     HttpClientModule,
     ClipboardModule,
     CoreModule,
+    SharedModule,
     NgbModule,
     InlineSVGModule.forRoot(),
     SweetAlert2Module.forRoot(),

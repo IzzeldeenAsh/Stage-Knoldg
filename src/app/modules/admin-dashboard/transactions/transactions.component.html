@@ -1,52 +1,145 @@
-<div class="card">
-  <div class="card-header">
-    <h2 class="page-title">Transactions Management</h2>
+<!-- Chart Section -->
+<div class="card mb-5 light-wallet-gradient-bg">
+  <div class="card-header border-0 pt-5">
+    <div class="d-flex  w-100">
+      <div class="d-flex align-items-center">
+        <i class="ki-outline ki-dollar text-gray-700 fs-2tx me-4"></i>
+        <div class="flex-grow-1">
+          <div class="d-flex align-items-center justify-content-between gap-5">
+            <span class="fw-bold fs-3x lh-1 ls-n2 " style="color:#4f28ed; padding-top: 20px;" *ngIf="!balanceLoading">${{ platformBalance.toFixed(2) }}</span>
+            <div *ngIf="balanceLoading" class="d-flex align-items-center">
+              <div class="spinner-border spinner-border-sm text-info me-2"></div>
+              <span class="text-muted">{{ lang === 'ar' ? 'جارٍ التحميل...' : 'Loading...' }}</span>
+            </div>
+          </div>
+          <div class="m-0">
+            <span class="fw-semibold fs-6 text-gray-500">{{ lang === 'ar' ? 'رصيد المنصة الحالي' : 'Current Platform Balance' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="table-container">
-    <p-table #dt
+  <div class="card-body" >
+    <!-- Chart Container -->
+    <div class="chart-container " *ngIf="hasRealData">
+      <p-chart type="line"
+               [data]="chartData"
+               [options]="chartOptions"
+               class="wallet-chart"
+               *ngIf="chartData">
+      </p-chart>
+    </div>
+
+  </div>
+</div>
+
+<!-- Transactions Table -->
+<div class="card">
+  <div class="card-header border-0 pt-5">
+    <div class="d-flex justify-content-between align-items-center w-100">
+      <h3 class="card-title align-items-start flex-column">
+        <span class="card-label fw-bold fs-3 mb-1">{{ lang === 'ar' ? 'سجل المعاملات' : 'Transactions History' }}</span>
+        <span class="text-muted fw-semibold fs-7">{{ lang === 'ar' ? 'تتبع الأموال الواردة والصادرة من هذه المنطقة.' : 'Track money coming in and going out from this area.' }}</span>
+      </h3>
+
+      <!-- Period Selection Buttons -->
+      <div class="d-flex align-items-center p-1" style="background-color: #F1F5F9; border-radius: 6px; gap: 2px;">
+        <button
+          *ngFor="let option of periodOptions"
+          type="button"
+          class="btn btn-sm px-2 py-1 border-0"
+          [ngClass]="{
+            'bg-white text-dark fw-semibold shadow-sm': selectedPeriod === option.value,
+            'bg-transparent text-muted': selectedPeriod !== option.value
+          }"
+          (click)="setPeriod(option.value)"
+          style="border-radius: 6px; font-size: 12px; min-width: 55px; transition: all 0.2s ease;">
+          {{ lang === 'ar' ? option.labelAr : option.label }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body py-3" style="margin-top: 20px;">
+    <p-table
       [value]="transactions"
-      [paginator]="true"
-      [rows]="rows"
-      [totalRecords]="totalRecords"
-      [lazy]="true"
-      (onLazyLoad)="loadTransactions($event)"
       [loading]="loading"
-      [showCurrentPageReport]="true"
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} transactions"
-      styleClass="p-datatable-sm p-datatable-striped">
+      [paginator]="false"
+      styleClass="p-datatable-gridlines"
+      responsiveLayout="stack"
+      [breakpoint]="'768px'">
 
       <ng-template pTemplate="header">
         <tr>
-          <th>Transaction</th>
-          <th>Amount</th>
-          <th>Date</th>
-          <th>Type</th>
-          <th>Actions</th>
+          <th style="width: 15%;" [style.text-align]="lang === 'ar' ? 'right' : 'left'">{{ lang === 'ar' ? 'الخدمة' : 'Service' }}</th>
+          <th style="width: 15%;" [style.text-align]="lang === 'ar' ? 'right' : 'left'">{{ lang === 'ar' ? 'رقم الطلب' : 'Order' }}</th>
+          <th style="width: 12%;" [style.text-align]="lang === 'ar' ? 'right' : 'left'">{{ lang === 'ar' ? 'التاريخ' : 'Date' }}</th>
+          <th style="width: 13%;" [style.text-align]="lang === 'ar' ? 'right' : 'left'">{{ lang === 'ar' ? 'المعاملة' : 'Transaction' }}</th>
+          <th style="width: 13%;" [style.text-align]="lang === 'ar' ? 'right' : 'left'">{{ lang === 'ar' ? 'النوع' : 'Type' }}</th>
+          <th style="width: 12%;" [style.text-align]="lang === 'ar' ? 'right' : 'left'">{{ lang === 'ar' ? 'المبلغ' : 'Amount' }}</th>
+          <th style="width: 20%; text-align: center;">{{ lang === 'ar' ? 'التفاصيل' : 'Details' }}</th>
         </tr>
       </ng-template>
 
       <ng-template pTemplate="body" let-transaction>
         <tr>
-          <td>
-            <span class="badge" [ngClass]="getTransactionBadgeClass(transaction.transaction)">{{ transaction.transaction | titlecase }}</span>
+          <!-- Service Column -->
+          <td [attr.data-label]="lang === 'ar' ? 'الخدمة' : 'Service'" [style.text-align]="lang === 'ar' ? 'right' : 'left'">
+            <span class="fw-semibold">{{ formatService(transaction.type) }}</span>
           </td>
-          <td>
-            <span [class.text-success]="transaction.amount > 0" [class.text-danger]="transaction.amount < 0">
-              {{ transaction.amount > 0 ? '+' : '' }}{{ formatCurrency(transaction.amount) }}
+
+          <!-- Order Column -->
+          <td [attr.data-label]="lang === 'ar' ? 'رقم الطلب' : 'Order'" [style.text-align]="lang === 'ar' ? 'right' : 'left'">
+            <span class="text-info fw-semibold" *ngIf="transaction.order?.order_no; else noOrder">
+              #{{ transaction.order.order_no }}
+            </span>
+            <ng-template #noOrder>
+              <span class="text-muted">{{ lang === 'ar' ? 'غير متاح' : 'N/A' }}</span>
+            </ng-template>
+          </td>
+
+          <!-- Date Column -->
+          <td [attr.data-label]="lang === 'ar' ? 'التاريخ' : 'Date'" [style.text-align]="lang === 'ar' ? 'right' : 'left'">
+            <span class="text-muted">{{ formatDate(transaction.date) }}</span>
+          </td>
+
+          <!-- Transaction Type Column (Deposit/Withdraw) -->
+          <td [attr.data-label]="lang === 'ar' ? 'المعاملة' : 'Transaction'" [style.text-align]="lang === 'ar' ? 'right' : 'left'">
+            <span class="badge fs-base" [ngClass]="transaction.transaction === 'deposit' ? 'badge-light-success' : 'badge-light-danger'">
+              <i class="pi" [ngClass]="{
+                'pi-arrow-up text-success': transaction.transaction === 'deposit',
+                'pi-arrow-down text-danger': transaction.transaction !== 'deposit',
+                'me-1': lang !== 'ar',
+                'ms-1': lang === 'ar'
+              }"></i>
+              {{ getTransactionType(transaction) }}
             </span>
           </td>
-          <td>{{ formatDate(transaction.date) }}</td>
-          <td>
-            <span class="badge badge-light-info">{{ getTransactionTypeLabel(transaction.type) | titlecase }}</span>
+
+          <!-- Operation Type Column -->
+          <td [attr.data-label]="lang === 'ar' ? 'النوع' : 'Type'" [style.text-align]="lang === 'ar' ? 'right' : 'left'">
+            <span class="badge badge-light-info fs-base">
+              {{ transaction.type | titlecase }}
+            </span>
           </td>
-          <td>
-            <button pButton
+
+          <!-- Amount Column -->
+          <td [attr.data-label]="lang === 'ar' ? 'المبلغ' : 'Amount'" [style.text-align]="lang === 'ar' ? 'right' : 'left'">
+            <span
+              [class]="'badge ' + (transaction.transaction === 'deposit' ? 'badge-light-success' : 'badge-light-danger') + ' fs-base px-2 py-1'">
+            {{ formatAmount(transaction.amount) }}
+            </span>
+          </td>
+
+          <!-- Details Column -->
+          <td [attr.data-label]="lang === 'ar' ? 'التفاصيل' : 'Details'" class="text-center">
+            <button
               type="button"
-              icon="pi pi-eye"
-              class="p-button-rounded p-button-text p-button-info"
+              class="btn btn-sm btn-icon btn-light-primary"
               (click)="showTransactionDetails(transaction)"
-              pTooltip="View Details">
+              [title]="lang === 'ar' ? 'عرض التفاصيل' : 'View Details'">
+              <i class="ki-outline ki-eye fs-4"></i>
             </button>
           </td>
         </tr>
@@ -54,10 +147,26 @@
 
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="5" class="text-center">No transactions found.</td>
+          <td colspan="7" class="text-center py-5">
+            <span class="text-muted">{{ lang === 'ar' ? 'لا توجد معاملات' : 'No transactions found' }}</span>
+          </td>
         </tr>
       </ng-template>
     </p-table>
+
+    <!-- Pagination -->
+    <div class="d-flex justify-content-between align-items-center mt-4" *ngIf="totalRecords > pageSize">
+      <div class="text-muted">
+        {{ lang === 'ar' ? 'عرض الصفحة' : 'Showing page' }} {{ currentPage }} {{ lang === 'ar' ? 'من' : 'of' }} {{ Math.ceil(totalRecords / pageSize) }} {{ lang === 'ar' ? 'صفحات' : 'pages' }}
+      </div>
+      <p-paginator
+        [rows]="pageSize"
+        [totalRecords]="totalRecords"
+        [first]="(currentPage - 1) * pageSize"
+        (onPageChange)="onPageChange($event)"
+        styleClass="p-paginator-sm">
+      </p-paginator>
+    </div>
   </div>
 </div>
 
@@ -76,7 +185,6 @@
     <div class="detail-header">
       <div class="header-grid">
         <div class="header-item">
-          <i class="pi pi-arrow-up-down header-icon"></i>
           <div class="header-content">
             <span class="header-label">Transaction Type</span>
             <span class="badge" [ngClass]="getTransactionBadgeClass(selectedTransaction.transaction)">{{ selectedTransaction.transaction | titlecase }}</span>
@@ -187,7 +295,7 @@
     </div>
 
     <!-- Order Information Section -->
-    <div class="items-section" *ngIf="selectedTransaction.order && selectedTransaction.order.sub_orders && selectedTransaction.order.sub_orders.length > 0">
+    <div class="items-section" *ngIf="selectedTransaction.order && selectedTransaction.order.sub_order">
       <h3 class="section-title">
         <i class="pi pi-file-text"></i>
         Order Details
@@ -221,17 +329,17 @@
         </div>
       </div>
 
-      <div class="suborders-container">
-        <div class="suborder-card" *ngFor="let suborder of selectedTransaction.order.sub_orders; let i = index">
-          <div class="suborder-header">
-            <span class="suborder-number">Item Group {{ i + 1 }}</span>
+      <div class="sub_orders-container">
+        <div class="sub_order-card">
+          <div class="sub_order-header">
+            <span class="sub_order-number">Order Contents</span>
           </div>
 
           <!-- Knowledge Items -->
-          <div class="knowledge-section" *ngIf="suborder.knowledge && suborder.knowledge.length > 0">
+          <div class="knowledge-section" *ngIf="selectedTransaction.order.sub_order.knowledge && selectedTransaction.order.sub_order.knowledge.length > 0">
             <h4 class="subsection-title">Knowledge Products</h4>
             <div class="knowledge-items">
-              <div class="knowledge-item" *ngFor="let item of suborder.knowledge">
+              <div class="knowledge-item" *ngFor="let item of selectedTransaction.order.sub_order.knowledge">
                 <div class="knowledge-type">
                   <p-chip [label]="item.type" styleClass="custom-chip"></p-chip>
                 </div>
@@ -241,17 +349,45 @@
           </div>
 
           <!-- Documents -->
-          <div class="documents-section" *ngIf="suborder.knowledge_documents && suborder.knowledge_documents.length > 0">
-            <h4 class="subsection-title">Documents</h4>
-            <div class="documents-grid">
-              <div *ngFor="let docGroup of suborder.knowledge_documents">
-                <div class="document-item" *ngFor="let doc of docGroup">
-                  <img [src]="getFileIcon(doc.file_extension)"
-                       [alt]="doc.file_extension"
-                       class="file-icon">
-                  <div class="document-info">
-                    <span class="document-name">{{ doc.file_name }}.{{ doc.file_extension }}</span>
-                    <span class="document-price">{{ formatCurrency(doc.price) }}</span>
+
+          <div class="documents-section" *ngIf="selectedTransaction.order.sub_order?.knowledge_documents">
+            <div class="d-flex align-items-center mb-4">
+              <i class="ki-outline ki-folder text-info fs-2 me-3"></i>
+              <h4 class="subsection-title mb-0">Order Contents</h4>
+              <span class="badge badge-light-info ms-3 fs-7">
+                {{ getDocumentCount(selectedTransaction.order.sub_order?.knowledge_documents) }}
+                {{ getDocumentCount(selectedTransaction.order.sub_order?.knowledge_documents) === 1 ? 'Document' : 'Documents' }}
+              </span>
+            </div>
+            <div class="documents-container">
+              <div *ngFor="let docGroup of selectedTransaction.order.sub_order.knowledge_documents" class="document-group mb-3">
+                <div class="document-card p-4 mb-3" *ngFor="let doc of docGroup">
+                  <div class="d-flex align-items-center">
+                    <div class="file-icon-wrapper me-4">
+                      <img [src]="getFileIcon(doc.file_extension)"
+                           [alt]="doc.file_extension + ' file'"
+                           class="file-extension-icon"
+                           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
+                           style="width: 48px; height: 48px; object-fit: contain;">
+                 
+                    </div>
+                    <div class="document-details flex-grow-1">
+                      <div class="document-name text-gray-900 fw-bold fs-6 mb-1">
+                        {{ doc.file_name }}
+                      </div>
+                      <div class="document-meta d-flex align-items-center">
+                        <span class="badge badge-light-info me-3 px-2 py-1 fs-8 fw-semibold">{{ doc.file_extension.toUpperCase() }}</span>
+                        <span class="text-muted fs-8 d-flex align-items-center">
+                          <i class="ki-outline ki-document fs-7 me-2"></i>
+                          Document File
+                        </span>
+                      </div>
+                    </div>
+                    <div class="document-price ms-auto">
+                      <div class="price-display d-flex align-items-center">
+                        <span class="text-success fw-bold fs-5">${{ doc.price }}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -259,7 +395,7 @@
           </div>
 
           <!-- Meeting Booking -->
-          <div class="meeting-section" *ngIf="suborder.meeting_booking">
+          <div class="meeting-section" *ngIf="selectedTransaction.order.sub_order.meeting_booking">
             <h4 class="subsection-title">Meeting Details</h4>
             <div class="meeting-card">
               <div class="meeting-grid">
@@ -267,29 +403,29 @@
                   <i class="pi pi-calendar meeting-icon"></i>
                   <div class="meeting-content">
                     <span class="meeting-label">Date</span>
-                    <span class="meeting-value">{{ suborder.meeting_booking.date }}</span>
+                    <span class="meeting-value">{{ selectedTransaction.order.sub_order.meeting_booking.date }}</span>
                   </div>
                 </div>
                 <div class="meeting-item">
                   <i class="pi pi-clock meeting-icon"></i>
                   <div class="meeting-content">
                     <span class="meeting-label">Time</span>
-                    <span class="meeting-value">{{ suborder.meeting_booking.start_time }} - {{ suborder.meeting_booking.end_time }}</span>
+                    <span class="meeting-value">{{ selectedTransaction.order.sub_order.meeting_booking.start_time }} - {{ selectedTransaction.order.sub_order.meeting_booking.end_time }}</span>
                   </div>
                 </div>
                 <div class="meeting-item">
                   <i class="pi pi-info-circle meeting-icon"></i>
                   <div class="meeting-content">
                     <span class="meeting-label">Status</span>
-                    <span class="badge" [ngClass]="getMeetingStatusClass(suborder.meeting_booking.status)">
-                      {{ suborder.meeting_booking.status | titlecase }}
+                    <span class="badge" [ngClass]="getMeetingStatusClass(selectedTransaction.order.sub_order.meeting_booking.status)">
+                      {{ selectedTransaction.order.sub_order.meeting_booking.status | titlecase }}
                     </span>
                   </div>
                 </div>
               </div>
               <div class="meeting-details">
-                <h5 class="meeting-title">{{ suborder.meeting_booking.title }}</h5>
-                <p class="meeting-description">{{ suborder.meeting_booking.description }}</p>
+                <h5 class="meeting-title">{{ selectedTransaction.order.sub_order.meeting_booking.title }}</h5>
+                <p class="meeting-description">{{ selectedTransaction.order.sub_order.meeting_booking.description }}</p>
               </div>
             </div>
           </div>

@@ -49,45 +49,86 @@
 
 // Metronic tabs design matching settings-tabs
 .filter-tabs-orders {
+  display: flex;
+  justify-content: flex-start;
+
   .nav-pills-custom {
-    display: flex;
+    display: inline-flex;
     gap: 0.5rem;
-    
+
     .nav-link {
-      padding: 0.75rem 1.5rem;
+      padding: 0.65rem 1.25rem;
       border-radius: 0.5rem;
       font-weight: 500;
       color: #7e8299;
       background-color: transparent;
       border: 1px solid transparent;
       transition: all 0.3s ease;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       white-space: nowrap;
       cursor: pointer;
       text-decoration: none;
-      
+
+      i {
+        font-size: 1.1rem;
+      }
+
       &:hover {
         color: #181c32;
         background-color: #f5f8fa;
       }
-      
+
       &.active {
         color: #0978B9 !important;
         background-color: #F1FAFE !important;
         font-weight: 600 !important;
         border-color: transparent;
-        
+
         &:hover {
           color: #0978B9 !important;
           background-color: #f1faff !important;
         }
       }
-      
-      i {
-        font-size: 1.1rem;
-      }
     }
+  }
+}
+
+.nav-svg {
+  display: inline-flex;
+  align-items: center;
+}
+
+.tab-toggle-group {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px;
+  gap: 4px;
+  background-color: #F1F5F9;
+  border-radius: 6px;
+}
+
+.tab-toggle-button {
+  border: 0;
+  border-radius: 6px;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  min-width: 80px;
+  background-color: transparent;
+  color: #7e8299;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: #181c32;
+    background-color: #e9eef7;
+  }
+
+  &.active {
+    background-color: #ffffff;
+    color: #181c32;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
   }
 }
 
@@ -114,17 +155,24 @@
 
 // Responsive design matching settings-tabs
 @media (max-width: 768px) {
+  .tab-toggle-group {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .tab-toggle-button {
+    flex: 1 1 45%;
+    min-width: 120px;
+    text-align: center;
+  }
+
   .filter-tabs-orders {
     .nav-pills-custom {
       flex-wrap: wrap;
-      
+
       .nav-link {
-        padding: 0.625rem 1.25rem;
-        font-size: 0.875rem;
-        
-        i {
-          font-size: 1rem;
-        }
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
       }
     }
   }

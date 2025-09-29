@@ -10,6 +10,8 @@ import { TooltipModule } from 'primeng/tooltip';
 import { ChipModule } from 'primeng/chip';
 import { ToastModule } from 'primeng/toast';
 import { ServiceNamePipe } from '../../../shared/pipes/service-name.pipe';
+import { ChartModule } from 'primeng/chart';
+import { PaginatorModule } from 'primeng/paginator';
 
 const routes: Routes = [
   {
@@ -28,7 +30,9 @@ const routes: Routes = [
     TableModule,
     ButtonModule,
     TagModule,
+    ChartModule,
     DialogModule,
+    PaginatorModule,
     TooltipModule,
     ChipModule,
     ToastModule,

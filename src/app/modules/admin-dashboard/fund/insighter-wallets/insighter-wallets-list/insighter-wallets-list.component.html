@@ -15,6 +15,37 @@
         <span class="card-label fw-bold fs-3 mb-1">Insighter Wallets</span>
         <span class="text-muted mt-1 fw-semibold fs-7">Total: {{ totalItems }} insighters</span>
       </h3>
+
+      <!-- Filters -->
+      <div class="card-toolbar">
+        <div class="d-flex align-items-center gap-4">
+          <!-- Balance Status Filter -->
+          <div class="d-flex align-items-center">
+            <label class="form-label fw-semibold text-gray-600 fs-7 me-2 mb-0">Balance Status:</label>
+            <select
+              class="form-select form-select-sm w-auto"
+              [(ngModel)]="balanceStatus"
+              (change)="onBalanceStatusChange($event)">
+              <option *ngFor="let option of balanceStatusOptions" [value]="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Overdue Wired Transaction Filter -->
+          <div class="form-check form-check-sm">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="overdueFilter"
+              [checked]="overdueWiredTransaction === 1"
+              (change)="onOverdueFilterChange($event)">
+            <label class="form-check-label fw-semibold text-gray-600 fs-7" for="overdueFilter">
+              Overdue Wired (+60 days)
+            </label>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="card-body py-3">
@@ -27,6 +58,7 @@
               <th class="min-w-120px">Location</th>
               <th class="min-w-120px">Balance</th>
               <th class="min-w-100px">Payment Type</th>
+              <th class="min-w-120px">Last Wired Transfer</th>
               <th class="min-w-100px text-end">Actions</th>
             </tr>
           </thead>
@@ -75,6 +107,16 @@
               <!-- Payment Type -->
               <td>
                 <span class="badge badge-light-info text-capitalize">{{ wallet.payment_type }}</span>
+              </td>
+
+              <!-- Last Wired Transfer -->
+              <td>
+                <span *ngIf="wallet.last_wired_transfer" class="text-dark fw-semibold fs-6">
+                  {{ wallet.last_wired_transfer | date:'mediumDate' }}
+                </span>
+                <span *ngIf="!wallet.last_wired_transfer" class="text-muted fw-semibold fs-6">
+                  N/A
+                </span>
               </td>
 
               <!-- Actions -->

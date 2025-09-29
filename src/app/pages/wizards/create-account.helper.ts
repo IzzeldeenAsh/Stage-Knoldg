@@ -5,7 +5,7 @@ export interface ICreateAccount {
   phoneNumber?: number | null;
   consultingFields: number[]; // Array of IDs
   isicCodes:any; // Array of IDs
-  phoneCountryCode?:any;
+  phoneCountryCode?: { text: string; code: string; country: string };
   companyAddress?:string;
   country?: number | null; // Country ID
   // Personal account fields

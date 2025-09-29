@@ -14,6 +14,7 @@ import { PaymentTypeGuard } from './guards/payment-type.guard';
 import { PendingChangesGuard } from '../../guards/pending-changes.guard';
 import { PhoneNumberInputModule } from '../../reusable-components/phone-number-input/phone-number-input.module';
 import { ToastModule } from 'primeng/toast';
+import { SharedModule } from '../../shared/shared.module';
 @NgModule({
   declarations: [
     SetupPaymentInfoComponent,
@@ -30,6 +31,7 @@ import { ToastModule } from 'primeng/toast';
     DialogModule,
     DropdownModule,
     PhoneNumberInputModule,
+    SharedModule,
     RouterModule.forChild([
       {
         path: '',

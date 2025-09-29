@@ -55,8 +55,7 @@ export interface Order {
   date: string;
   order_no: string;
   invoice_no: string;
-  sub_orders?: SubOrder[];
-  suborders?: SubOrder[];
+  sub_order?: SubOrder;
 }
 
 export interface Transaction {
@@ -64,6 +63,7 @@ export interface Transaction {
   amount: number;
   date: string;
   type: string;
+  type_key: string;
   order: Order;
 }
 

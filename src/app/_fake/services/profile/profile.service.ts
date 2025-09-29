@@ -119,4 +119,40 @@ export class UpdateProfileService {
       finalize(() => this.setLoading(false))
     );
   }
+
+  uploadCertificate(certificationType: string, file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('certification[0][type]', certificationType);
+    formData.append('certification[0][file]', file);
+
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+
+    this.setLoading(true);
+    return this.http.post<any>('https://api.knoldg.com/api/account/profile/certification', formData, { headers }).pipe(
+      map((res) => res),
+      catchError((error) => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  updateCompanyCertification(certificationType: string, file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('certification[0][type]', certificationType);
+    formData.append('certification[0][file]', file);
+
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+
+    this.setLoading(true);
+    return this.http.post<any>('https://api.knoldg.com/api/account/profile/company/certification', formData, { headers }).pipe(
+      map((res) => res),
+      catchError((error) => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
 }

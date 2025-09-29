@@ -14,6 +14,7 @@ export interface InsighterWallet {
   profile_photo_url: string | null;
   balance: string;
   payment_type: string;
+  last_wired_transfer: string | null;
   company?: {
     uuid: string;
     legal_name: string;
@@ -22,14 +23,40 @@ export interface InsighterWallet {
   };
 }
 
+export interface KnowledgeDocument {
+  file_name: string;
+  file_extension: string;
+  price: number;
+}
+
+export interface Knowledge {
+  type: string;
+  title: string;
+}
+
+export interface MeetingBooking {
+  title: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+  status: string;
+}
+
+export interface SubOrder {
+  knowledge?: Knowledge[];
+  knowledge_documents?: KnowledgeDocument[][];
+  meeting_booking?: MeetingBooking;
+}
+
 export interface Transaction {
   transaction: 'deposit' | 'withdraw';
   amount: number;
   date: string;
   type: string;
+  type_key: string;
   order: {
     uuid: string;
-    user: {
+    user?: {
       name: string;
       first_name: string;
       last_name: string;
@@ -43,7 +70,7 @@ export interface Transaction {
     date: string;
     order_no: string;
     invoice_no: string;
-    sub_orders: any[];
+    sub_order: SubOrder;
   };
 }
 
@@ -102,11 +129,25 @@ export class FundService {
     return throwError(error);
   }
 
-  getInsighterWallets(page: number = 1): Observable<PaginatedResponse<InsighterWallet>> {
+  getInsighterWallets(
+    page: number = 1,
+    overdueWiredTransaction?: number,
+    balanceStatus?: string
+  ): Observable<PaginatedResponse<InsighterWallet>> {
     const headers = this.getHeaders();
     this.setLoading(true);
 
-    return this.http.get<PaginatedResponse<InsighterWallet>>(`${this.baseUrl}/insighter?page=${page}`, { headers }).pipe(
+    let url = `${this.baseUrl}/insighter?page=${page}`;
+
+    if (overdueWiredTransaction !== undefined) {
+      url += `&overdue_wired_transaction=${overdueWiredTransaction}`;
+    }
+
+    if (balanceStatus) {
+      url += `&balance_status=${balanceStatus}`;
+    }
+
+    return this.http.get<PaginatedResponse<InsighterWallet>>(url, { headers }).pipe(
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );

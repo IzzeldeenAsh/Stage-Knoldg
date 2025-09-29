@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { AuthService } from '../../modules/auth/services/auth.service';
-import { first, map, catchError } from 'rxjs';
+import { map, catchError } from 'rxjs';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import { of } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class authGuard  {
   constructor(
-    private getProfileService: ProfileService, 
+    private getProfileService: ProfileService,
     private router: Router,
     private authService: AuthService
   ) {}
@@ -28,13 +28,13 @@ export class authGuard  {
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     // First check if user has a valid token
     const token = this.authService.getTokenFromCookie();
-    
+
     if (!token) {
       // No token - redirect to login
       console.log('Auth Guard - No token found, redirecting to login');
       const url = state.url;
-      return this.router.createUrlTree(['/auth/login'], { 
-        queryParams: { returnUrl: url } 
+      return this.router.createUrlTree(['/auth/login'], {
+        queryParams: { returnUrl: url }
       });
     }
 
@@ -43,8 +43,8 @@ export class authGuard  {
       // Token expired - redirect to login
       console.log('Auth Guard - Token expired, redirecting to login');
       const url = state.url;
-      return this.router.createUrlTree(['/auth/login'], { 
-        queryParams: { returnUrl: url } 
+      return this.router.createUrlTree(['/auth/login'], {
+        queryParams: { returnUrl: url }
       });
     }
 
@@ -65,14 +65,14 @@ export class authGuard  {
           // No user data - redirect to login
           console.log('Auth Guard - No user data, redirecting to login');
           const url = state.url;
-          return this.router.createUrlTree(['/auth/login'], { 
-            queryParams: { returnUrl: url } 
+          return this.router.createUrlTree(['/auth/login'], {
+            queryParams: { returnUrl: url }
           });
         }
       }),
       catchError(error => {
         console.log('Auth Guard - Profile API error:', error);
-        
+
         // Check if it's an email verification error (403)
         if (error.status === 403) {
           const errorMessage = error.error?.message || '';
@@ -82,17 +82,17 @@ export class authGuard  {
             return of(this.router.createUrlTree(['/auth/email-reconfirm']));
           }
         }
-        
+
         // For other errors (401, 500, etc.) - clear auth data and redirect to login
         console.log('Auth Guard - API error, clearing auth and redirecting to login');
         localStorage.removeItem('foresighta-creds');
         localStorage.removeItem('currentUser');
         localStorage.removeItem('authToken');
         localStorage.removeItem('token');
-        
+
         const url = state.url;
-        return of(this.router.createUrlTree(['/auth/login'], { 
-          queryParams: { returnUrl: url } 
+        return of(this.router.createUrlTree(['/auth/login'], {
+          queryParams: { returnUrl: url }
         }));
       })
     );

@@ -6,268 +6,301 @@
 
 <div style="padding-top:50px" class="container-fluid  gradient-background">
   <div class="row justify-content-center">
-    <div class="col-lg-6 col-xl-5">
+    <div class="col-lg-8 col-xl-7">
 
-        
         <form [formGroup]="manualAccountForm" (ngSubmit)="onSubmit()">
-            <!-- Country Selection Field -->
-            <div class="mb-6">
-              <label class="form-label required">
-                {{ lang === 'ar' ? 'البلد' : 'Country' }}
-              </label>
-              <p-dropdown 
-                [options]="countries"
-                formControlName="countryId"
-                optionLabel="name"
-                optionValue="id"
-                [filter]="true"
-                [filterBy]="'name'"
-                [showClear]="true"
-                [placeholder]="lang === 'ar' ? 'اختر البلد' : 'Select Country'"
-                [filterPlaceholder]="lang === 'ar' ? 'ابحث عن بلد...' : 'Search for a country...'"
-                [class.p-invalid]="getFieldError('countryId')"
-                styleClass="w-100"
-                (onChange)="onCountryChange($event)"
-              >
-                <ng-template pTemplate="item" let-country>
-                  <div class="d-flex align-items-center">
-                    <img 
-                      *ngIf="country.showFlag"
-                      [src]="getFlagUrl(country.flag)" 
-                      [alt]="country.name"
-                      class="me-3"
-                      style="width: 24px; height: 16px; object-fit: cover;"
-                      (error)="onFlagError(country)"
-                    />
-                    <span>{{ country.name }}</span>
-                  </div>
-                </ng-template>
-                <ng-template pTemplate="selectedItem" let-country>
-                  <div class="d-flex align-items-center" *ngIf="country">
-                    <img 
-                      *ngIf="country.showFlag"
-                      [src]="getFlagUrl(country.flag)" 
-                      [alt]="country.name"
-                      class="me-3"
-                      style="width: 24px; height: 16px; object-fit: cover;"
-                      (error)="onFlagError(country)"
-                    />
-                    <span>{{ country.name }}</span>
-                  </div>
-                </ng-template>
-              </p-dropdown>
-              <div class="invalid-feedback d-block" *ngIf="getFieldError('countryId')">
-                {{ getFieldError('countryId') }}
-              </div>
-            </div>
 
-            <!-- Account Name Field -->
-            <div class="mb-6">
-              <label class="form-label required">
-                {{ getAccountNameLabel() }}
-              </label>
-              <input
-                type="text"
-                class="form-control"
-                [class.is-invalid]="getFieldError('accountName')"
-                formControlName="accountName"
-                [placeholder]="isCompanyAccount 
-                  ? (lang === 'ar' ? 'أدخل الاسم القانوني للشركة' : 'Enter company legal name')
-                  : (lang === 'ar' ? 'أدخل الاسم الكامل' : 'Enter full name')"
-              />
-              <div class="invalid-feedback" *ngIf="getFieldError('accountName')">
-                {{ getFieldError('accountName') }}
+            <!-- Beneficiary Information Section -->
+            <div class="card mb-6">
+              <div class="card-header bg-light-info">
+                <h5 class="card-title mb-0 text-info">
+                  <i class="fas fa-user me-2"></i>
+                  {{ lang === 'ar' ? 'معلومات المستفيد' : 'Beneficiary Information' }}
+                </h5>
               </div>
-              <div class="form-text text-muted">
-                <i class="fas fa-info-circle me-1"></i>
-                {{ lang === 'ar' 
-                  ? 'يجب أن يكون الاسم مطابقاً تماماً لاسم الحساب البنكي' 
-                  : 'Should be exactly as the name of the bank account' 
-                }}
-              </div>
-            </div>
+              <div class="card-body">
 
-            <!-- IBAN Field -->
-            <div class="mb-6">
-              <label class="form-label required">
-                {{ lang === 'ar' ? 'رقم الآيبان (IBAN)' : 'IBAN Number' }}
-              </label>
-              <input
-                type="text"
-                class="form-control"
-                [class.is-invalid]="getFieldError('iban')"
-                formControlName="iban"
-                [placeholder]="lang === 'ar' ? 'أدخل رقم الآيبان' : 'Enter IBAN number'"
-              />
-              <div class="invalid-feedback" *ngIf="getFieldError('iban')">
-                {{ getFieldError('iban') }}
-              </div>
-              <div class="form-text text-muted">
-                {{ lang === 'ar' ? 'مثال: SA03 8000 0000 6080 1016 7519' : 'Example: SA03 8000 0000 6080 1016 7519' }}
-              </div>
-            </div>
-
-            <!-- Address Field -->
-            <div class="mb-6">
-              <label class="form-label required">
-                {{ lang === 'ar' ? 'العنوان' : 'Address' }}
-              </label>
-              <input
-                type="text"
-                class="form-control"
-                [class.is-invalid]="getFieldError('address')"
-                formControlName="address"
-                [placeholder]="lang === 'ar' ? 'أدخل العنوان' : 'Enter address'"
-              />
-              <div class="invalid-feedback" *ngIf="getFieldError('address')">
-                {{ getFieldError('address') }}
-              </div>
-              <div class="form-text text-muted">
-                <i class="fas fa-info-circle me-1"></i>
-                {{ lang === 'ar' 
-                  ? 'يجب أن يكون العنوان مطابقاً تماماً للعنوان المذكور في الحساب البنكي' 
-                  : 'Should be exactly as the address of the bank account' 
-                }}
-              </div>
-            </div>
-
-            <!-- SWIFT Code Field -->
-            <div class="mb-6">
-              <label class="form-label">
-                {{ lang === 'ar' ? 'رمز السويفت (SWIFT)' : 'SWIFT Code' }}
-                <span class="text-gray-500">{{ lang === 'ar' ? '(اختياري)' : '(Optional)' }}</span>
-              </label>
-              <input
-                type="text"
-                class="form-control"
-                formControlName="swift_code"
-                [placeholder]="lang === 'ar' ? 'أدخل رمز السويفت' : 'Enter SWIFT code'"
-              />
-              <div class="invalid-feedback" *ngIf="getFieldError('swift_code')">
-                {{ getFieldError('swift_code') }}
-              </div>
-            </div>
-
-            <!-- Phone Field -->
-            <div class="mb-6">
-              <label class="form-label required">
-                {{ lang === 'ar' ? 'رقم الهاتف' : 'Phone Number' }}
-              </label>
-              <app-phone-number-input
-                #phoneInput
-                [countries]="countries"
-                [placeholder]="lang === 'ar' ? 'رقم هاتفك' : 'Your phone number'"
-                [searchPlaceholder]="'Search countries...'"
-                [lang]="lang"
-                [isRequired]="true"
-                [showValidationErrors]="true"
-                [countryCodeError]="getFieldError('phoneCountryCode')"
-                [phoneNumberError]="getFieldError('phoneNumber')"
-                [initialCountryCode]="manualAccountForm.get('phoneCountryCode')?.value"
-                [initialPhoneNumber]="manualAccountForm.get('phoneNumber')?.value"
-                (countryCodeChange)="onCountryCodeChange($event)"
-                (phoneNumberChange)="onPhoneNumberChange($event)"
-                (formattedPhoneNumberChange)="onFormattedPhoneNumberChange($event)"
-                (flagError)="onFlagError($event)"
-              ></app-phone-number-input>
-            </div>
-
-            <!-- OTP Code Field -->
-            <div class="mb-6">
-              <label class="form-label required">
-                {{ lang === 'ar' ? 'رمز التحقق' : 'Verification Code' }}
-              </label>
-              <div class="input-group" [class.is-invalid]="getFieldError('code')">
-                <!-- For Arabic: Button first, then Input -->
-                <ng-container *ngIf="lang === 'ar'">
-                  <input
-                  type="text"
-                  class="form-control text-end"
-                  [class.is-invalid]="getFieldError('code')"
-                  style="border-radius: 0 0.375rem 0.375rem 0;"
-                  formControlName="code"
-                  placeholder="أدخل رمز التحقق"
-                  dir="rtl"
-                />
-                  <button
-                    type="button"
-                    class="btn btn-outline-info"
-                    [class.border-danger]="getFieldError('code')"
-                    style="border-radius: 0.375rem 0 0 0.375rem;"
-                    (click)="resendOtp()"
-                    [disabled]="!canResendOtp">
-                    <span *ngIf="canResendOtp">
-                      {{ 'الحصول على الرمز' }}
-                    </span>
-                    <span *ngIf="!canResendOtp">
-                      {{ resendCooldown }}{{ 'ث' }}
-                    </span>
-                  </button>
-
-                </ng-container>
-
-                <!-- For English: Input first, then Button -->
-                <ng-container *ngIf="lang === 'en'">
+                <!-- Account Name Field -->
+                <div class="mb-6">
+                  <label class="form-label required">
+                    {{ getAccountNameLabel() }}
+                  </label>
                   <input
                     type="text"
                     class="form-control"
-                    [class.is-invalid]="getFieldError('code')"
-                    style="border-radius: 0.375rem 0 0 0.375rem;"
-                    formControlName="code"
-                    placeholder="Enter verification code"
-                    dir="ltr"
+                    [class.is-invalid]="getFieldError('account_name')"
+                    formControlName="account_name"
+                    [placeholder]="isCompanyAccount
+                      ? (lang === 'ar' ? 'أدخل الاسم القانوني للشركة' : 'Enter company legal name')
+                      : (lang === 'ar' ? 'أدخل الاسم الكامل' : 'Enter full name')"
                   />
-                  <button
-                    type="button"
-                    class="btn btn-info"
-                    [class.border-danger]="getFieldError('code')"
-                    style="border-radius: 0 0.375rem 0.375rem 0;"
-                    (click)="resendOtp()"
-                    [disabled]="!canResendOtp">
-                    <span *ngIf="canResendOtp">
-                      {{ 'Get Code' }}
-                    </span>
-                    <span *ngIf="!canResendOtp">
-                      {{ resendCooldown }}{{ 's' }}
-                    </span>
-                  </button>
-                </ng-container>
-              </div>
-              <div class="invalid-feedback d-block" *ngIf="getFieldError('code')">
-                {{ getFieldError('code') }}
-              </div>
-              <div class="form-text text-muted">
-                <i class="fas fa-envelope me-1"></i>
-                {{ lang === 'ar'
-                  ? 'سيتم إرسال رمز التحقق إلى عنوان بريدك الإلكتروني'
-                  : 'Verification code will be sent to your email address'
-                }}
+                  <div class="invalid-feedback" *ngIf="getFieldError('account_name')">
+                    {{ getFieldError('account_name') }}
+                  </div>
+                  <div class="form-text text-muted">
+                    <i class="fas fa-info-circle me-1"></i>
+                    {{ lang === 'ar'
+                      ? 'يجب أن يكون الاسم مطابقاً تماماً لاسم الحساب البنكي'
+                      : 'Should be exactly as the name of the bank account'
+                    }}
+                  </div>
+                </div>
+
+                <!-- Account Country Field -->
+                <div class="mb-6">
+                  <label class="form-label required">
+                    {{ lang === 'ar' ? 'بلد الإقامة' : 'Country of Residence' }}
+                  </label>
+                  <p-dropdown
+                    [options]="countries"
+                    formControlName="account_country_id"
+                    optionLabel="name"
+                    optionValue="id"
+                    [filter]="true"
+                    [filterBy]="'name'"
+                    [showClear]="true"
+                    [placeholder]="lang === 'ar' ? 'اختر بلد الإقامة' : 'Select Country of Residence'"
+                    [filterPlaceholder]="lang === 'ar' ? 'ابحث عن بلد...' : 'Search for a country...'"
+                    [class.p-invalid]="getFieldError('account_country_id')"
+                    styleClass="w-100"
+                    (onChange)="onAccountCountryChange($event)"
+                  >
+                    <ng-template pTemplate="item" let-country>
+                      <div class="d-flex align-items-center">
+                        <img
+                          *ngIf="country.showFlag"
+                          [src]="getFlagUrl(country.flag)"
+                          [alt]="country.name"
+                          class="me-3"
+                          style="width: 24px; height: 16px; object-fit: cover;"
+                          (error)="onFlagError(country)"
+                        />
+                        <span>{{ country.name }}</span>
+                      </div>
+                    </ng-template>
+                    <ng-template pTemplate="selectedItem" let-country>
+                      <div class="d-flex align-items-center" *ngIf="country">
+                        <img
+                          *ngIf="country.showFlag"
+                          [src]="getFlagUrl(country.flag)"
+                          [alt]="country.name"
+                          class="me-3"
+                          style="width: 24px; height: 16px; object-fit: cover;"
+                          (error)="onFlagError(country)"
+                        />
+                        <span>{{ country.name }}</span>
+                      </div>
+                    </ng-template>
+                  </p-dropdown>
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('account_country_id')">
+                    {{ getFieldError('account_country_id') }}
+                  </div>
+                </div>
+
+                <!-- Account Address Field -->
+                <div class="mb-6">
+                  <label class="form-label">
+                    {{ lang === 'ar' ? 'عنوان الشخصي' : 'Personal Address' }}
+                    <span class="text-gray-500">{{ lang === 'ar' ? '(اختياري)' : '(Optional)' }}</span>
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    [class.is-invalid]="getFieldError('account_address')"
+                    formControlName="account_address"
+                    [placeholder]="lang === 'ar' ? 'أدخل عنوان الحساب' : 'Enter account address'"
+                  />
+                  <div class="invalid-feedback" *ngIf="getFieldError('account_address')">
+                    {{ getFieldError('account_address') }}
+                  </div>
+                </div>
+
+                <!-- Account Phone Field -->
+                <div class="mb-0">
+                  <label class="form-label">
+                    {{ lang === 'ar' ? 'رقم هاتف الشخصي' : 'Personal Phone Number' }}
+                    <span class="text-gray-500">{{ lang === 'ar' ? '(اختياري)' : '(Optional)' }}</span>
+                  </label>
+                  <app-phone-number-input
+                    #phoneInput
+                    [countries]="countries"
+                    [placeholder]="lang === 'ar' ? 'رقم هاتفك' : 'Your phone number'"
+                    [searchPlaceholder]="'Search countries...'"
+                    [lang]="lang"
+                    [isRequired]="false"
+                    [showValidationErrors]="true"
+                    [countryCodeError]="getFieldError('phoneCountryCode')"
+                    [phoneNumberError]="getFieldError('phoneNumber')"
+                    [initialCountryCode]="manualAccountForm.get('phoneCountryCode')?.value"
+                    [initialPhoneNumber]="manualAccountForm.get('phoneNumber')?.value"
+                    (countryCodeChange)="onCountryCodeChange($event)"
+                    (phoneNumberChange)="onPhoneNumberChange($event)"
+                    (formattedPhoneNumberChange)="onFormattedPhoneNumberChange($event)"
+                    (flagError)="onFlagError($event)"
+                  ></app-phone-number-input>
+                </div>
+
               </div>
             </div>
 
-            <!-- Terms and Conditions Checkbox (only for new accounts) -->
-            <div *ngIf="!isEditing" class="mb-6">
+            <!-- Bank Information Section -->
+            <div class="card mb-6">
+              <div class="card-header bg-light-info">
+                <h5 class="card-title mb-0 text-info">
+                  <i class="fas fa-building-columns me-2"></i>
+                  {{ lang === 'ar' ? 'معلومات البنك' : 'Bank Information' }}
+                </h5>
+              </div>
+              <div class="card-body">
+
+                <!-- Bank Name Field -->
+                <div class="mb-6">
+                  <label class="form-label required">
+                    {{ lang === 'ar' ? 'اسم البنك' : 'Bank Name' }}
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    [class.is-invalid]="getFieldError('bank_name')"
+                    formControlName="bank_name"
+                    [placeholder]="lang === 'ar' ? 'أدخل اسم البنك' : 'Enter bank name'"
+                  />
+                  <div class="invalid-feedback" *ngIf="getFieldError('bank_name')">
+                    {{ getFieldError('bank_name') }}
+                  </div>
+                </div>
+
+                <!-- Bank Country Field -->
+                <div class="mb-6">
+                  <label class="form-label required">
+                    {{ lang === 'ar' ? 'بلد البنك' : 'Bank Country' }}
+                  </label>
+                  <p-dropdown
+                    [options]="countries"
+                    formControlName="bank_country_id"
+                    optionLabel="name"
+                    optionValue="id"
+                    [filter]="true"
+                    [filterBy]="'name'"
+                    [showClear]="true"
+                    [placeholder]="lang === 'ar' ? 'اختر بلد البنك' : 'Select Bank Country'"
+                    [filterPlaceholder]="lang === 'ar' ? 'ابحث عن بلد...' : 'Search for a country...'"
+                    [class.p-invalid]="getFieldError('bank_country_id')"
+                    styleClass="w-100"
+                    (onChange)="onBankCountryChange($event)"
+                  >
+                    <ng-template pTemplate="item" let-country>
+                      <div class="d-flex align-items-center">
+                        <img
+                          *ngIf="country.showFlag"
+                          [src]="getFlagUrl(country.flag)"
+                          [alt]="country.name"
+                          class="me-3"
+                          style="width: 24px; height: 16px; object-fit: cover;"
+                          (error)="onFlagError(country)"
+                        />
+                        <span>{{ country.name }}</span>
+                      </div>
+                    </ng-template>
+                    <ng-template pTemplate="selectedItem" let-country>
+                      <div class="d-flex align-items-center" *ngIf="country">
+                        <img
+                          *ngIf="country.showFlag"
+                          [src]="getFlagUrl(country.flag)"
+                          [alt]="country.name"
+                          class="me-3"
+                          style="width: 24px; height: 16px; object-fit: cover;"
+                          (error)="onFlagError(country)"
+                        />
+                        <span>{{ country.name }}</span>
+                      </div>
+                    </ng-template>
+                  </p-dropdown>
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('bank_country_id')">
+                    {{ getFieldError('bank_country_id') }}
+                  </div>
+                </div>
+
+                <!-- Bank Address Field -->
+                <div class="mb-6">
+                  <label class="form-label required">
+                    {{ lang === 'ar' ? 'عنوان البنك' : 'Bank Address' }}
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    [class.is-invalid]="getFieldError('bank_address')"
+                    formControlName="bank_address"
+                    [placeholder]="lang === 'ar' ? 'أدخل عنوان البنك' : 'Enter bank address'"
+                  />
+                  <div class="invalid-feedback" *ngIf="getFieldError('bank_address')">
+                    {{ getFieldError('bank_address') }}
+                  </div>
+                </div>
+
+                <!-- IBAN Field -->
+                <div class="mb-6">
+                  <label class="form-label required">
+                    {{ lang === 'ar' ? 'رقم الآيبان (IBAN)' : 'IBAN Number' }}
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    [class.is-invalid]="getFieldError('bank_iban')"
+                    formControlName="bank_iban"
+                    [placeholder]="lang === 'ar' ? 'أدخل رقم الآيبان' : 'Enter IBAN number'"
+                  />
+                  <div class="invalid-feedback" *ngIf="getFieldError('bank_iban')">
+                    {{ getFieldError('bank_iban') }}
+                  </div>
+                  <div class="form-text text-muted">
+                    {{ lang === 'ar' ? 'مثال: SA03 8000 0000 6080 1016 7519' : 'Example: SA03 8000 0000 6080 1016 7519' }}
+                  </div>
+                </div>
+
+                <!-- SWIFT Code Field -->
+                <div class="mb-0">
+                  <label class="form-label">
+                    {{ lang === 'ar' ? 'رمز السويفت (SWIFT)' : 'SWIFT Code' }}
+                    <span class="text-gray-500">{{ lang === 'ar' ? '(اختياري)' : '(Optional)' }}</span>
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="bank_swift_code"
+                    [placeholder]="lang === 'ar' ? 'أدخل رمز السويفت' : 'Enter SWIFT code'"
+                  />
+                  <div class="invalid-feedback" *ngIf="getFieldError('bank_swift_code')">
+                    {{ getFieldError('bank_swift_code') }}
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Terms and Conditions -->
+            <div *ngIf="!isEditing && !acceptAgreement" class="mb-6">
               <div class="form-check">
-                <input 
-                  class="form-check-input" 
-                  type="checkbox" 
-                  id="termsAccepted"
-                  formControlName="termsAccepted"
-                  [class.is-invalid]="getFieldError('termsAccepted')"
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="acceptTerms"
+                  formControlName="accept_terms"
+                  [class.is-invalid]="getFieldError('accept_terms')"
                   [disabled]="termsAccepted"
                 />
-                <label class="form-check-label required" for="termsAccepted">
+                <label class="form-check-label required" for="acceptTerms">
                   {{ lang === 'ar' ? 'أوافق على' : 'I agree to the' }}
-                  <a 
-                    href="javascript:void(0)" 
+                  <a
+                    href="javascript:void(0)"
                     class="text-info text-decoration-underline"
                     (click)="openTermsDialog()"
                   >
                     {{ lang === 'ar' ? 'الشروط والأحكام' : 'Terms & Conditions' }}
                   </a>
                 </label>
-                <div class="invalid-feedback" *ngIf="getFieldError('termsAccepted')">
-                  {{ getFieldError('termsAccepted') }}
+                <div class="invalid-feedback" *ngIf="getFieldError('accept_terms')">
+                  {{ getFieldError('accept_terms') }}
                 </div>
                 <div *ngIf="termsAccepted" class="form-text text-success mt-1">
                   <i class="fas fa-check-circle me-1"></i>
@@ -275,6 +308,9 @@
                 </div>
               </div>
             </div>
+
+            <!-- Hidden Code Field -->
+            <input type="hidden" formControlName="code" />
 
             <!-- Info Box -->
             <div class="alert alert-light-info mb-0">
@@ -285,9 +321,9 @@
                     {{ lang === 'ar' ? 'معلومات هامة' : 'Important Information' }}
                   </p>
                   <p class="mb-0 text-muted">
-                    {{ lang === 'ar' 
-                      ? 'تأكد من صحة المعلومات المدخلة. سيتم استخدام هذه المعلومات لتحويل المدفوعات إليك.' 
-                      : 'Please ensure the information is correct. These details will be used to transfer payments to you.' 
+                    {{ lang === 'ar'
+                      ? 'تأكد من صحة المعلومات المدخلة. سيتم استخدام هذه المعلومات لتحويل المدفوعات إليك.'
+                      : 'Please ensure the information is correct. These details will be used to transfer payments to you.'
                     }}
                   </p>
                 </div>
@@ -389,12 +425,25 @@
   </ng-template>
 </p-dialog>
 
+<!-- OTP Modal -->
+<app-otp-modal
+  [(visible)]="showOtpModal"
+  [config]="otpModalConfig"
+  [isSubmitting]="false"
+  [isWaitingForRedirect]="false"
+  [isResending]="isResendingOtp"
+  (otpSubmit)="onOtpSubmit($event)"
+  (otpResend)="onOtpResend()"
+  (modalCancel)="onOtpCancel()"
+  (modalClose)="onOtpClose()">
+</app-otp-modal>
+
 <!-- Unsaved Changes Warning Dialog -->
-<p-dialog 
-  [(visible)]="showUnsavedChangesDialog" 
-  [modal]="true" 
-  [closable]="false" 
-  [draggable]="false" 
+<p-dialog
+  [(visible)]="showUnsavedChangesDialog"
+  [modal]="true"
+  [closable]="false"
+  [draggable]="false"
   [resizable]="false"
   [style]="{width: '90vw', maxWidth: '500px'}"
 >
@@ -407,24 +456,24 @@
 
   <div class="py-3">
     <p class="mb-0">
-      {{ lang === 'ar' 
-        ? 'لديك تغييرات غير محفوظة. هل تريد المتابعة وفقدان هذه التغييرات؟' 
-        : 'You have unsaved changes. Do you want to continue and lose these changes?' 
+      {{ lang === 'ar'
+        ? 'لديك تغييرات غير محفوظة. هل تريد المتابعة وفقدان هذه التغييرات؟'
+        : 'You have unsaved changes. Do you want to continue and lose these changes?'
       }}
     </p>
   </div>
 
   <ng-template pTemplate="footer">
     <div class="d-flex justify-content-end gap-3">
-      <button 
-        type="button" 
+      <button
+        type="button"
         class="btn btn-light"
         (click)="onStayOnPage()"
       >
         {{ lang === 'ar' ? 'البقاء في الصفحة' : 'Stay on Page' }}
       </button>
-      <button 
-        type="button" 
+      <button
+        type="button"
         class="btn btn-danger"
         (click)="onDiscardChanges()"
       >
@@ -433,3 +482,17 @@
     </div>
   </ng-template>
 </p-dialog>
+
+<!-- OTP Modal -->
+<app-otp-modal
+  [(visible)]="showOtpModal"
+  [config]="otpModalConfig"
+  [isSubmitting]="false"
+  [isWaitingForRedirect]="false"
+  [isResending]="isResendingOtp"
+  (otpSubmit)="onOtpSubmit($event)"
+  (otpResend)="onOtpResend()"
+  (modalCancel)="onOtpCancel()"
+  (modalClose)="onOtpClose()">
+</app-otp-modal>
+

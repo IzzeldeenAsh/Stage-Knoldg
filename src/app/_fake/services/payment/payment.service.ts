@@ -13,22 +13,37 @@ export interface StripeCountry {
 
 export interface PaymentMethod {
   type: 'manual' | 'provider';
+  // Manual account fields
   account_name?: string;
-  swift_code?: string;
-  iban?: string;
-  address?: string;
-  phone?: string;
+  account_country?: {
+    id: number;
+    name: string;
+    flag: string;
+  };
+  account_address?: string;
+  account_phone?: string;
+  bank_name?: string;
+  bank_country?: {
+    id: number;
+    name: string;
+    flag: string;
+  };
+  bank_address?: string;
+  bank_iban?: string;
+  bank_swift_code?: string;
+  // Provider account fields
+  stripe_account?: boolean;
+  details_submitted_at?: string | null;
+  charges_enable_at?: string | null;
   country?: {
     id: number;
     name: string;
     flag: string;
   };
+  // Common fields
   accept_agreement: boolean;
   status: 'active' | 'inactive';
   primary: boolean;
-  stripe_account?: boolean;
-  details_submitted_at?: string | null;
-  charges_enable_at?: string | null;
 }
 
 export interface PaymentDetailsResponse {
@@ -40,23 +55,30 @@ export interface SetPrimaryRequest {
 }
 
 export interface ManualAccountRequest {
-  country_id: number;
   account_name: string;
-  iban: string;
-  address: string;
-  swift_code: string;
-  phone: string;
+  account_country_id: number;
+  account_address?: string;
+  account_phone?: string;
+  bank_name: string;
+  bank_country_id: number;
+  bank_address: string;
+  bank_iban: string;
+  bank_swift_code?: string;
+  accept_terms: boolean;
   code: string;
-  accept_terms?: boolean;
 }
 
 export interface UpdateManualAccountRequest {
-  country_id: number;
   account_name: string;
-  iban: string;
-  address: string;
-  swift_code: string;
-  phone: string;
+  account_country_id: number;
+  account_address?: string;
+  account_phone?: string;
+  bank_name: string;
+  bank_country_id: number;
+  bank_address: string;
+  bank_iban: string;
+  bank_swift_code?: string;
+  accept_terms: boolean;
   code: string;
 }
 
