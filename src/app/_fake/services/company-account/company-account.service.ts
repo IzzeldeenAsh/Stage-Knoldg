@@ -37,6 +37,32 @@ export interface InsighterResponse {
   };
 }
 
+export interface CompanyInsighterStatistics {
+  uuid: string;
+  insighter_name: string;
+  total_orders: number;
+  total_amount: number;
+  insighter_profit: number;
+}
+
+export interface CompanyOrderKnowledgeStatisticsResponse {
+  data: {
+    total_orders: number;
+    total_amount: number;
+    total_company_profit: number;
+    insighters: CompanyInsighterStatistics[];
+  };
+}
+
+export interface CompanyOrderMeetingStatisticsResponse {
+  data: {
+    total_orders: number;
+    total_amount: number;
+    total_company_profit: number;
+    insighters: CompanyInsighterStatistics[];
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -44,6 +70,8 @@ export class CompanyAccountService {
   private insightaHost = 'https://api.knoldg.com';
   private accountExistApi = `${this.insightaHost}/api/company/account/exist`;
   private inviteInsighterApi = `${this.insightaHost}/api/company/insighter`;
+  private companyOrderKnowledgeStatisticsApi = `${this.insightaHost}/api/company/order/knowledge/statistics`;
+  private companyOrderMeetingStatisticsApi = `${this.insightaHost}/api/company/order/meeting/statistics`;
 
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
@@ -273,6 +301,64 @@ export class CompanyAccountService {
         
         return {
           data: insightersWithKnowledge
+        };
+      }),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  getCompanyOrderKnowledgeStatistics(): Observable<CompanyOrderKnowledgeStatisticsResponse['data']> {
+    this.setLoading(true);
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+
+    return this.http.get<CompanyOrderKnowledgeStatisticsResponse>(this.companyOrderKnowledgeStatisticsApi, { headers }).pipe(
+      map(response => {
+        const insighters = (response?.data?.insighters ?? []).map((insighter): CompanyInsighterStatistics => ({
+          uuid: insighter?.uuid ?? '',
+          insighter_name: insighter?.insighter_name ?? '',
+          total_orders: insighter?.total_orders ?? 0,
+          total_amount: insighter?.total_amount ?? 0,
+          insighter_profit: insighter?.insighter_profit ?? 0
+        }));
+
+        return {
+          total_orders: response?.data?.total_orders ?? 0,
+          total_amount: response?.data?.total_amount ?? 0,
+          total_company_profit: response?.data?.total_company_profit ?? 0,
+          insighters
+        };
+      }),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  getCompanyOrderMeetingStatistics(): Observable<CompanyOrderMeetingStatisticsResponse['data']> {
+    this.setLoading(true);
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+
+    return this.http.get<CompanyOrderMeetingStatisticsResponse>(this.companyOrderMeetingStatisticsApi, { headers }).pipe(
+      map(response => {
+        const insighters = (response?.data?.insighters ?? []).map((insighter): CompanyInsighterStatistics => ({
+          uuid: insighter?.uuid ?? '',
+          insighter_name: insighter?.insighter_name ?? '',
+          total_orders: insighter?.total_orders ?? 0,
+          total_amount: insighter?.total_amount ?? 0,
+          insighter_profit: insighter?.insighter_profit ?? 0
+        }));
+
+        return {
+          total_orders: response?.data?.total_orders ?? 0,
+          total_amount: response?.data?.total_amount ?? 0,
+          total_company_profit: response?.data?.total_company_profit ?? 0,
+          insighters
         };
       }),
       catchError(error => this.handleError(error)),

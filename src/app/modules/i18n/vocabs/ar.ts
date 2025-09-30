@@ -1551,8 +1551,28 @@ INSIGHTER_REQUESTS: {
     "VIEW_ORDERS": "عرض جميع الطلبات",
     "BROWSE_KNOWLEDGE": "تصفح المعرفة",
     "DISCOVER_NEW": "اكتشف رؤى جديدة",
-    "TRACK_PURCHASES": "تتبع مشترياتك"
+  "TRACK_PURCHASES": "تتبع مشترياتك"
   }
+},
+"COMPANY_SALES_STATISTICS": {
+  "TITLE": "نظرة عامة على مبيعات الإنسايترز",
+  "SUBTITLE": "إجمالي طلبات المعرفة لكل إنسايتر",
+  "TOTAL_ORDERS_LABEL": "إجمالي الطلبات",
+  "TOTAL_AMOUNT_LABEL": "إجمالي المبلغ",
+  "COMPANY_PROFIT_LABEL": "ربح الشركة",
+  "ERROR_MESSAGE": "تعذر تحميل إحصائيات المبيعات حالياً.",
+  "RETRY": "إعادة المحاولة",
+  "EMPTY_STATE": "لا توجد بيانات مبيعات متاحة بعد."
+},
+"COMPANY_MEETINGS_STATISTICS": {
+  "TITLE": "نظرة عامة على اجتماعات الإنسايترز",
+  "SUBTITLE": "حجوزات الاجتماعات والعوائد لكل إنسايتر",
+  "TOTAL_MEETINGS_LABEL": "إجمالي الاجتماعات",
+  "TOTAL_AMOUNT_LABEL": "إجمالي المبلغ",
+  "COMPANY_PROFIT_LABEL": "ربح الشركة",
+  "ERROR_MESSAGE": "تعذر تحميل إحصائيات الاجتماعات حالياً.",
+  "RETRY": "إعادة المحاولة",
+  "EMPTY_STATE": "لا توجد بيانات اجتماعات متاحة بعد."
 },
 "TOP_INDUSTRIES": {
     "TECHNOLOGY": "التكنولوجيا",

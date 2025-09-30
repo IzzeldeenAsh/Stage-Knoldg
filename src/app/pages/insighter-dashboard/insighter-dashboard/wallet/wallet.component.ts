@@ -333,6 +333,7 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy 
       'transactionType': { en: 'Type', ar: 'النوع' },
       'operationType': { en: 'Operation', ar: 'العملية' },
       'amount': { en: 'Amount', ar: 'المبلغ' },
+      'amountAfterFees':{en:'After Tax',ar:'بعد الضرائب'},
       'details': { en: 'Details', ar: 'التفاصيل' },
       'deposit': { en: 'Deposit', ar: 'إيداع' },
       'withdraw': { en: 'Withdraw', ar: 'سحب' },

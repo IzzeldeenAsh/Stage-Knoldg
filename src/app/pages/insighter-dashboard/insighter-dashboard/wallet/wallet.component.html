@@ -186,7 +186,7 @@
               </span>
             </div>
             <div class="text-end">
-              <span class="mb-2 text-muted d-block">{{ getTranslation('amount') }}</span>
+              <span class="mb-2 text-muted d-block">{{ getTranslation('amount') }} <ng-container *ngIf="selectedTransaction.transaction === 'deposit'"><small>({{getTranslation('amountAfterFees')}})</small></ng-container></span>
               <h3 [class]="getAmountClass(selectedTransaction)">
                 {{ formatAmount(selectedTransaction.amount) }}
               </h3>
