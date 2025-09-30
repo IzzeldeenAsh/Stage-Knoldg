@@ -538,17 +538,17 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
   }
 
   navigateToDownloads(order: Order): void {
-    const knowledgeDownloadIds = order.knowledge_download_ids || [];
-    
-    if (knowledgeDownloadIds.length > 0) {
-      // Navigate with all UUIDs as comma-separated query parameter
+    const knowledgeDownloadId = order.knowledge_download_id;
+
+    if (knowledgeDownloadId) {
+      // Navigate with single UUID as query parameter
       this.router.navigate(['/app/insighter-dashboard/my-downloads'], {
-        queryParams: { uuids: knowledgeDownloadIds.join(',') }
+        queryParams: { uuids: knowledgeDownloadId }
       });
     } else {
       this.showError(
         this.lang === 'ar' ? 'خطأ' : 'Error',
-        this.lang === 'ar' ? 'لم يتم العثور على معرفات التحميل' : 'Download IDs not found'
+        this.lang === 'ar' ? 'لم يتم العثور على معرف التحميل' : 'Download ID not found'
       );
     }
   }

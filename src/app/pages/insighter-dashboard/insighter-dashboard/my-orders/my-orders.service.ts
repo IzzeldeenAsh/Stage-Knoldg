@@ -65,7 +65,7 @@ export interface Order {
   invoice_no: string;
   payment: PaymentInfo;
   suborder: SubOrder;
-  knowledge_download_ids: string[];
+  knowledge_download_id: string;
 }
 
 export interface PaginationLinks {
