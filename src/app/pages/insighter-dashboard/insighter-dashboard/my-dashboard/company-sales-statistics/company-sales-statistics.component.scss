@@ -1,0 +1,105 @@
+:host {
+  display: block;
+}
+
+.company-sales-statistics-card {
+  min-height: 100%;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  background: linear-gradient(160deg, #ffffff 0%, #f8fafc 100%);
+  box-shadow: 0 20px 45px -35px rgba(15, 23, 42, 0.6);
+
+  .card-header {
+    padding: 1.25rem 1.5rem 0.75rem;
+  }
+
+  .summary-item {
+    min-width: 140px;
+    padding: 0.65rem 1.15rem;
+    border-radius: 1rem;
+    background: rgba(248, 250, 252, 0.9);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 16px 32px -34px rgba(30, 64, 175, 0.6);
+    border: 1px solid rgba(148, 163, 184, 0.24);
+    text-align: right;
+  }
+
+  .summary-label {
+    letter-spacing: 0.08em;
+    font-size: 0.7rem;
+    color: #94a3b8;
+  }
+
+  .summary-value {
+    line-height: 1;
+    color: #0f172a;
+    font-size: 1.95rem;
+  }
+
+  .chart-wrapper {
+    position: relative;
+    height: 320px;
+    padding: 0.5rem 1rem 1rem;
+    overflow: hidden;
+
+    apx-chart {
+      width: 100%;
+      max-width: 100%;
+      display: block;
+
+      ::ng-deep .apexcharts-canvas {
+        margin: 0 auto;
+        max-width: 100%;
+      }
+
+      ::ng-deep .apexcharts-svg {
+        width: 100% !important;
+        max-width: 100%;
+      }
+
+      ::ng-deep .apexcharts-inner {
+        width: 100% !important;
+      }
+
+      ::ng-deep .apexcharts-bar-area {
+        cursor: pointer;
+      }
+
+      ::ng-deep .apexcharts-xaxis-texts-g text {
+        font-weight: 500;
+        font-size: 12px;
+        text-anchor: middle;
+      }
+
+      ::ng-deep .apexcharts-yaxis-texts-g text {
+        font-weight: 500;
+        font-size: 11px;
+      }
+
+      ::ng-deep .apexcharts-bar-series .apexcharts-series {
+        transform-origin: center;
+      }
+    }
+  }
+}
+
+@media (max-width: 992px) {
+  .company-sales-statistics-card {
+    .chart-wrapper {
+      height: 320px;
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .company-sales-statistics-card {
+    .chart-wrapper {
+      height: 220px;
+    }
+
+    .summary-item {
+      width: 100%;
+      text-align: center;
+    }
+  }
+}

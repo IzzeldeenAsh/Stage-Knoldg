@@ -1,16 +1,15 @@
 
-
 <app-widgets-row [userRole]="userRole"></app-widgets-row>
 <div class="row">
     <div class="d-flex flex-column gap-6" [ngClass]="{'col-12 col-md-5': showDonutChart, 'col-12 col-md-6': !showDonutChart}">
         @if(showDonutChart){
             <app-donut-employee-chart (hasMultipleEmployeesDonut)="onHasMultipleEmployeesDonut($event)"></app-donut-employee-chart>
              <!--begin::Tiles Top Active Employee-->
-         
-           
+
+
              <!--end::Tiles Widget Discover knowledge by your industries-->
         } @else{
-            
+
                 <!--begin::Tiles Widget 4-->
                 <div class="card  card-xl-stretch border-0"
                 [ngClass]="{'rtl-bg-flip': lang === 'ar'}"
@@ -27,18 +26,18 @@
                         <div class="d-flex flex-column align-items-start">
                             <h1 class="fs-2x fw-bolder text-gray-800 pb-3 m-0 p-0">   {{ 'START_UPLOADING' | translate }}</h1>
                             <p class="text-start text-gray-800 pb-4 fw-semibold fs-5" [innerHTML]="'START_UPLOADING_DESRIPTION' | translate">
-                                
+
                             </p>
                         </div>
                         <div >
                             <a [routerLink]="['/app/insighter-dashboard/my-knowledge/general']" class="btn btn-info fw-semibold px-6 py-3" data-bs-toggle="modal" data-bs-target="#kt_modal_create_campaign">
                             {{"MENU.MY_LIBRARY" | translate}}
-                            </a> 
+                            </a>
                         </div>
                 </div>
                 <!--end::Body-->
                 </div>
-              
+
                 <!--end::Tiles Widget 4-->
         }
     </div>
@@ -64,13 +63,13 @@
                 <div class="d-flex flex-column align-items-start">
                     <h1 class="fs-2x fw-bolder text-gray-800 pb-3 m-0 p-0">   {{ 'BUILD_YOUR_TEAM' | translate }}</h1>
                     <p class="text-start text-gray-800 pb-4 fw-semibold fs-5" [innerHTML]="'BUILD_YOUR_TEAM_DESCRIPTION' | translate">
-                        
+
                     </p>
                 </div>
                 <div >
                     <a [routerLink]="['/app/insighter-dashboard/my-company-settings']" class="btn btn-info fw-semibold px-6 py-3" data-bs-toggle="modal" data-bs-target="#kt_modal_create_campaign">
                     {{"MY_COMPANY.ADD_EMPLOYEE" | translate}}
-                    </a> 
+                    </a>
                 </div>
         </div>
         <!--end::Body-->
@@ -80,4 +79,13 @@
     </div>
 
 
+</div>
+
+<div class="row mt-6 g-6">
+    <div class="col-12 col-xl-6">
+        <app-company-sales-statistics></app-company-sales-statistics>
+    </div>
+    <div class="col-12 col-xl-6">
+        <app-company-meetings-statistics></app-company-meetings-statistics>
+    </div>
 </div>

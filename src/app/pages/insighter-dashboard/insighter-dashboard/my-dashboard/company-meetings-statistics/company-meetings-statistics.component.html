@@ -1,0 +1,92 @@
+<div class="card company-meetings-statistics-card">
+  <div class="card-header border-0 pt-5 pb-0">
+    <div class="d-flex flex-wrap justify-content-between align-items-start w-100 gap-4">
+      <div class="d-flex flex-column">
+        <h3 class="card-title fw-bold fs-3 mb-2">
+          {{ 'COMPANY_MEETINGS_STATISTICS.TITLE' | translate }}
+        </h3>
+        <span class="text-muted fw-semibold fs-7">
+          {{ 'COMPANY_MEETINGS_STATISTICS.SUBTITLE' | translate }}
+        </span>
+      </div>
+
+      <div class="d-flex flex-wrap gap-5">
+        <div class="summary-item">
+          <span class="summary-label text-muted fw-semibold d-block text-uppercase mb-1">
+            {{ 'COMPANY_MEETINGS_STATISTICS.TOTAL_MEETINGS_LABEL' | translate }}
+          </span>
+          <span class="summary-value fs-2 fw-bold text-gray-800">
+            {{ totalMeetings | number:'1.0-0' }}
+          </span>
+        </div>
+
+        <div class="summary-item">
+          <span class="summary-label text-muted fw-semibold d-block text-uppercase mb-1">
+            {{ 'COMPANY_MEETINGS_STATISTICS.TOTAL_AMOUNT_LABEL' | translate }}
+          </span>
+          <span class="summary-value fs-2 fw-bold text-gray-800">
+            {{ totalAmount | currency }}
+          </span>
+        </div>
+
+        <div class="summary-item">
+          <span class="summary-label text-muted fw-semibold d-block text-uppercase mb-1">
+            {{ 'COMPANY_MEETINGS_STATISTICS.COMPANY_PROFIT_LABEL' | translate }}
+          </span>
+          <span class="summary-value fs-2 fw-bold text-gray-800">
+            {{ totalCompanyProfit | currency }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <ng-container *ngIf="loading">
+      <div class="d-flex justify-content-center align-items-center py-10">
+        <i class="pi pi-spin pi-spinner fs-2hx text-primary"></i>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="!loading && error">
+      <div class="d-flex flex-column align-items-center justify-content-center py-10 text-center gap-3">
+        <i class="pi pi-exclamation-triangle text-danger fs-2hx"></i>
+        <p class="text-muted fw-semibold mb-1">
+          {{ 'COMPANY_MEETINGS_STATISTICS.ERROR_MESSAGE' | translate }}
+        </p>
+        <button type="button" class="btn btn-sm btn-primary" (click)="reload()">
+          {{ 'COMPANY_MEETINGS_STATISTICS.RETRY' | translate }}
+        </button>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="!loading && !error && hasData">
+      <div class="chart-wrapper">
+        <apx-chart
+          #chart
+          [series]="chartOptions.series!"
+          [chart]="chartOptions.chart!"
+          [dataLabels]="chartOptions.dataLabels!"
+          [plotOptions]="chartOptions.plotOptions!"
+          [xaxis]="chartOptions.xaxis!"
+          [yaxis]="chartOptions.yaxis!"
+          [grid]="chartOptions.grid!"
+          [fill]="chartOptions.fill!"
+          [stroke]="chartOptions.stroke!"
+          [tooltip]="chartOptions.tooltip!"
+          [colors]="chartOptions.colors!"
+          [legend]="chartOptions.legend!"
+        ></apx-chart>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="!loading && !error && !hasData">
+      <div class="d-flex flex-column align-items-center justify-content-center py-10 text-center gap-2">
+        <i class="pi pi-calendar text-gray-400 fs-2hx"></i>
+        <p class="text-muted fw-semibold mb-0">
+          {{ 'COMPANY_MEETINGS_STATISTICS.EMPTY_STATE' | translate }}
+        </p>
+      </div>
+    </ng-container>
+  </div>
+</div>
