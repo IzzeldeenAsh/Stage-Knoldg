@@ -67,7 +67,7 @@ export interface CompanyOrderMeetingStatisticsResponse {
   providedIn: 'root'
 })
 export class CompanyAccountService {
-  private insightaHost = 'https://api.knoldg.com';
+  private insightaHost = 'https://api.foresighta.co';
   private accountExistApi = `${this.insightaHost}/api/company/account/exist`;
   private inviteInsighterApi = `${this.insightaHost}/api/company/insighter`;
   private companyOrderKnowledgeStatisticsApi = `${this.insightaHost}/api/company/order/knowledge/statistics`;

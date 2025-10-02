@@ -825,6 +825,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
       ADDRESS: 'Address',
       PHONE: 'Phone',
       PHONE_PLACEHOLDER: 'Phone',
+      COMPANY_ADDRESS:'Company Address',
       COMPANY_INFO: 'Company Info',
       RESET_PASSWORD: 'Reset Password',
       SETTINGS: 'Settings',

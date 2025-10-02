@@ -48,7 +48,7 @@ export interface Order {
   date: string;
   order_no: string;
   invoice_no: string;
-  sub_order: Suborder;
+  orderable: Suborder;
 }
 
 export interface Company {

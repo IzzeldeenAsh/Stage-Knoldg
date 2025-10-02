@@ -23,6 +23,7 @@ export interface IKnoldgProfile {
     insighter_status?:string;
     client_status?:string;
     phone?:string;
+    phone_code?:string;
     social?: SocialNetwork[];
     login_social?:boolean;
     
@@ -87,6 +88,7 @@ export interface Company {
   address:string;
   primary_activate_at?:string;
   company_phone:string;
+  phone_code?:string;
   verified:boolean;
   social?: SocialNetwork[];
   industries?:any;

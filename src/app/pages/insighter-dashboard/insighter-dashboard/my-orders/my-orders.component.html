@@ -1,10 +1,11 @@
+
 <div class="container-fluid bg-white p-5 rounded-lg" style="border-radius: 10px;">
   <!-- Tab Navigation -->
-  <div class="row mb-5">
-    <div class="col-12">
+  <div class="row mb-10">
+    <div class="col-md-6 col-lg-8">
       <div class="filter-tabs-orders">
           <div class="nav nav-pills nav-pills-custom">
-            <a class="nav-link" 
+            <a class="nav-link"
               [class.active]="activeTab === 'knowledge'"
               (click)="setActiveTab('knowledge')">
               <span class="nav-svg me-2">
@@ -15,11 +16,11 @@
                   <path d="M8.35679 13.5327C8.34208 13.6876 8.38942 13.8419 8.48841 13.9619C8.5874 14.0819 8.72996 14.1577 8.88479 14.1727H8.91039H8.95999C9.10577 14.1725 9.24624 14.118 9.35395 14.0198C9.46165 13.9215 9.52885 13.7867 9.54239 13.6415L9.81279 10.7615C9.8275 10.6067 9.78016 10.4523 9.68117 10.3323C9.58218 10.2123 9.43962 10.1365 9.28479 10.1215H9.25919C9.18239 10.1142 9.10491 10.1222 9.03117 10.1448C8.95743 10.1675 8.88889 10.2045 8.82945 10.2537C8.77002 10.3029 8.72086 10.3633 8.68478 10.4315C8.6487 10.4997 8.62641 10.5743 8.61919 10.6511L8.35679 13.5327ZM8.67679 13.5631L8.94719 10.6831C8.95317 10.6172 8.98356 10.5559 9.03239 10.5112C9.08123 10.4665 9.14499 10.4416 9.21119 10.4415H9.23519H9.26079C9.29545 10.4445 9.32917 10.4544 9.35998 10.4705C9.39079 10.4867 9.41809 10.5088 9.44027 10.5356C9.46246 10.5624 9.47909 10.5934 9.4892 10.6266C9.49932 10.6599 9.50271 10.6949 9.49919 10.7295L9.23039 13.6095C9.22299 13.6799 9.18858 13.7447 9.13439 13.7903C9.1076 13.8124 9.07671 13.8291 9.04349 13.8392C9.01027 13.8494 8.97537 13.8529 8.94079 13.8495H8.91519C8.84582 13.8426 8.78194 13.8087 8.73734 13.7551C8.69273 13.7016 8.67099 13.6326 8.67679 13.5631Z" fill="#A6A5A5"/>
                   <path d="M10.7696 14.1583H10.7952C10.8347 14.1658 10.8749 14.1695 10.9152 14.1695C11.0498 14.1694 11.1803 14.1232 11.2849 14.0384C11.3894 13.9537 11.4617 13.8355 11.4896 13.7039L11.7696 12.3583L12.0784 10.8799C12.1096 10.7278 12.0794 10.5695 11.9942 10.4397C11.909 10.3098 11.7759 10.219 11.624 10.1871H11.5984C11.4463 10.1558 11.288 10.1861 11.1582 10.2712C11.0283 10.3564 10.9375 10.4895 10.9056 10.6415L10.3168 13.4655C10.2851 13.6174 10.3149 13.7757 10.3998 13.9056C10.4847 14.0355 10.6177 14.1263 10.7696 14.1583ZM10.6304 13.5311L11.2192 10.7071C11.2317 10.6472 11.2645 10.5935 11.312 10.5551C11.3595 10.5166 11.4188 10.4957 11.48 10.4959H11.5344H11.5584C11.593 10.5033 11.6258 10.5174 11.6549 10.5375C11.684 10.5576 11.7088 10.5833 11.728 10.613C11.7472 10.6427 11.7603 10.676 11.7666 10.7108C11.7729 10.7456 11.7723 10.7813 11.7648 10.8159L11.456 12.2991L11.1744 13.6447C11.1674 13.6794 11.1535 13.7124 11.1335 13.7417C11.1134 13.771 11.0877 13.7959 11.0579 13.815C11.028 13.8341 10.9946 13.847 10.9596 13.8529C10.9247 13.8589 10.8889 13.8577 10.8544 13.8495H10.8288C10.7628 13.8336 10.7055 13.7929 10.6688 13.7359C10.6491 13.706 10.6355 13.6725 10.6289 13.6373C10.6223 13.6022 10.6228 13.566 10.6304 13.5311Z" fill="#A6A5A5"/>
                   </svg>
-                  
+
               </span>
               {{ lang === 'ar' ? 'طلبات المعرفة' : 'Knowledge Orders' }}
             </a>
-            <a class="nav-link" 
+            <a class="nav-link"
               [class.active]="activeTab === 'meeting'"
               (click)="setActiveTab('meeting')">
               <span class="nav-svg me-2">
@@ -30,35 +31,121 @@
           </div>
       </div>
     </div>
+    <div class="col-md-6 col-lg-4 d-flex justify-content-end align-items-center">
+      <!-- Statistics Cards -->
+      <div class="d-flex gap-3" *ngIf="orderStatisticsService.statistics$ | async as stats; else loadingSpinnerHeader">
+        <!-- Purchased Card -->
+        <div class="d-flex align-items-center border rounded-3 p-3" style="border-color: #e4e6ef !important; min-width: 160px;">
+          <div class="symbol symbol-40px me-2">
+            <div class="symbol-label bg-light-primary">
+              <i class="ki-outline ki-basket text-primary fs-5"></i>
+            </div>
+          </div>
+          <div class="d-flex flex-column">
+            <span class="text-gray-800 fw-bold fs-6">
+              <ng-container *ngIf="activeTab === 'knowledge'">
+                ${{ stats?.knowledge_purchased_amount || 0 }}
+              </ng-container>
+              <ng-container *ngIf="activeTab === 'meeting'">
+                ${{ stats?.meeting_purchased_amount || 0 }}
+              </ng-container>
+            </span>
+            <span class="text-muted fw-semibold fs-8">
+              {{ lang === 'ar' ? 'مشترى' : 'Purchased' }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Sold Card -->
+        <div class="d-flex align-items-center border rounded-3 p-3" style="border-color: #e4e6ef !important; min-width: 160px;">
+          <div class="symbol symbol-40px me-2">
+            <div class="symbol-label bg-light-success">
+              <i class="ki-outline ki-dollar text-success fs-5"></i>
+            </div>
+          </div>
+          <div class="d-flex flex-column">
+            <span class="text-gray-800 fw-bold fs-6">
+              <ng-container *ngIf="activeTab === 'knowledge'">
+                ${{ stats?.knowledge_sold_amount || 0 }}
+              </ng-container>
+              <ng-container *ngIf="activeTab === 'meeting'">
+                ${{ stats?.meeting_sold_amount || 0 }}
+              </ng-container>
+            </span>
+            <span class="text-muted fw-semibold fs-8">
+              {{ lang === 'ar' ? 'مباع' : 'Sold' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #loadingSpinnerHeader>
+        <div class="d-flex gap-3">
+          <!-- Loading Purchased Card -->
+          <div class="d-flex align-items-center border rounded-3 p-3" style="border-color: #e4e6ef !important; min-width: 160px;">
+            <div class="symbol symbol-40px me-2">
+              <div class="symbol-label bg-light-primary">
+                <i class="ki-outline ki-basket text-primary fs-5"></i>
+              </div>
+            </div>
+            <div class="d-flex flex-column">
+              <div class="spinner-border spinner-border-sm text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <span class="text-muted fw-semibold fs-8">
+                {{ lang === 'ar' ? 'مشترى' : 'Purchased' }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Loading Sold Card -->
+          <div class="d-flex align-items-center border rounded-3 p-3" style="border-color: #e4e6ef !important; min-width: 160px;">
+            <div class="symbol symbol-40px me-2">
+              <div class="symbol-label bg-light-success">
+                <i class="ki-outline ki-dollar text-success fs-5"></i>
+              </div>
+            </div>
+            <div class="d-flex flex-column">
+              <div class="spinner-border spinner-border-sm text-success" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <span class="text-muted fw-semibold fs-8">
+                {{ lang === 'ar' ? 'مباع' : 'Sold' }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </div>
   </div>
 
   <!-- Knowledge Orders Tab -->
   <div *ngIf="activeTab === 'knowledge'">
-    <div class="row mb-4" *ngIf="canViewSalesTabs">
+    <div class="row mb-0" *ngIf="canViewSalesTabs">
       <div class="col-12">
-        <div class="filter-tabs-orders">
-          <div class="tab-toggle-group">
-            <button
-              type="button"
-              class="tab-toggle-button"
-              [ngClass]="{ 'active': knowledgeSubTab === 'purchased' }"
-              (click)="setKnowledgeSubTab('purchased')">
-              {{ lang === 'ar' ? 'الطلبات المشتراة' : 'Purchased Orders' }}
-            </button>
-            <button
-              type="button"
-              class="tab-toggle-button"
-              [ngClass]="{ 'active': knowledgeSubTab === 'sales' }"
-              (click)="setKnowledgeSubTab('sales')">
-              {{ lang === 'ar' ? 'طلبات المبيعات' : 'Sales Orders' }}
-            </button>
-          </div>
+        <div class="nested-tab-nav">
+          <button
+            type="button"
+            class="nested-tab-button"
+            [ngClass]="{ 'active': knowledgeSubTab === 'purchased' }"
+            (click)="setKnowledgeSubTab('purchased')">
+            {{ lang === 'ar' ? 'الطلبات المشتراة' : 'Purchased' }}
+          </button>
+          <button
+            type="button"
+            class="nested-tab-button"
+            [ngClass]="{ 'active': knowledgeSubTab === 'sales' }"
+            (click)="setKnowledgeSubTab('sales')">
+            {{ lang === 'ar' ? 'طلبات المبيعات' : 'Sold' }}
+          </button>
         </div>
       </div>
     </div>
 
+
     <ng-container *ngIf="knowledgeSubTab === 'purchased'">
-      <div class="row g-4">
+      <div class="nested-tab-content">
+        <div class="row g-4">
     <!-- Loading State -->
     <div *ngIf="isLoading$ | async" class="col-12">
       <div class="d-flex justify-content-center align-items-center" style="min-height: 200px;">
@@ -123,24 +210,9 @@
             </div>
           </div>
 
-          <!-- Order Info Row -->
-          <div class="mb-3 d-flex flex-wrap gap-3  ">
-            <div>
-              <span class="text-muted fs-7">{{ lang === 'ar' ? 'النوع:' : 'Type:' }}</span>
-              <span class="ms-2 fw-semibold">{{ getServiceTypeDisplay(order.service) }}</span>
-            </div>
-        
-            <div>
-              <span class="text-muted fs-7">{{ lang === 'ar' ? 'الحالة:' : 'Status:' }}</span>
-              <span [class]="getStatusBadgeClass(order.status)" class="ms-2 text-uppercase">
-                {{ order.status }}
-              </span>
-            </div>
-          </div>
-
           <!-- Knowledge Items -->
-          <div *ngIf="order.suborder" class="mb-3">
-            <div *ngFor="let knowledge of order.suborder.knowledge" class="mb-2">
+          <div *ngIf="order.orderable" class="mb-3">
+            <div *ngFor="let knowledge of order.orderable.knowledge" class="mb-2">
               <div class="d-flex align-items-center ">
                 <div >
                   <a 
@@ -162,9 +234,9 @@
               </div>
               
               <!-- Documents Preview -->
-              <div *ngIf="order.suborder.knowledge_documents && order.suborder.knowledge_documents.length > 0" class="mt-2">
+              <div *ngIf="order.orderable.knowledge_documents && order.orderable.knowledge_documents.length > 0" class="mt-2">
                 <div class="d-flex flex-wrap pt-2 gap-2">
-                  <div *ngFor="let extension of getUniqueExtensions(order.suborder)" class="position-relative d-inline-block">
+                  <div *ngFor="let extension of getUniqueExtensions(order.orderable)" class="position-relative d-inline-block">
                     <img 
                       [src]="getFileIconByExtension(extension)" 
                       [alt]="extension"
@@ -174,7 +246,7 @@
                     <span 
                       class="position-absolute top-0 start-75 translate-middle badge rounded-pill text-white"
                       [style.background-color]="getBadgeColorByExtension(extension)">
-                      {{ getDocumentCountByExtension(order.suborder, extension) }}
+                      {{ getDocumentCountByExtension(order.orderable, extension) }}
                     </span>
                   </div>
                 </div>
@@ -220,19 +292,21 @@
 
     <!-- Pagination for Knowledge Orders -->
     <div *ngIf="(totalPages$ | async)! > 1" class="d-flex justify-content-center mt-6">
-      <p-paginator 
-        [rows]="10" 
+      <p-paginator
+        [rows]="10"
         [totalRecords]="(totalPages$ | async)! * 10"
         [first]="(currentPage - 1) * 10"
         (onPageChange)="onPageChange(($event.page || 0) + 1)"
         [showCurrentPageReport]="true"
         [currentPageReportTemplate]="lang === 'ar' ? 'عرض {first} إلى {last} من {totalRecords} طلب' : 'Showing {first} to {last} of {totalRecords} orders'">
       </p-paginator>
-    </div>
+        </div>
+      </div>
     </ng-container>
 
     <ng-container *ngIf="knowledgeSubTab === 'sales'">
-      <div class="row g-4">
+      <div class="nested-tab-content">
+        <div class="row g-4">
         <div *ngIf="isSalesLoading$ | async" class="col-12">
           <div class="d-flex justify-content-center align-items-center" style="min-height: 200px;">
             <div class="spinner-border text-info" role="status" style="width: 3rem; height: 3rem;">
@@ -275,7 +349,7 @@
                         <i class="ki-outline ki-copy fs-6"></i>
                       </button>
                     </div>
-                    <div class="text-muted fs-7">{{ lang === 'ar' ? 'العميل' : 'Client' }}: {{ order?.user?.name || '' }}</div>
+                    <div *ngIf="order.user" class="text-muted fs-7">{{ lang === 'ar' ? 'العميل' : 'Client' }}: {{ order?.user?.name || '' }}</div>
                   </div>
                 </div>
                 <div class="d-flex gap-2">
@@ -295,30 +369,12 @@
                 </div>
               </div>
 
-              <!-- Order Info Row -->
-              <div class="mb-3 d-flex flex-wrap gap-3">
-                <div>
-                  <span class="text-muted fs-7">{{ lang === 'ar' ? 'النوع:' : 'Type:' }}</span>
-                  <span class="ms-2 fw-semibold">{{ getServiceTypeDisplay(order.service) }}</span>
-                </div>
-
-                <div>
-                  <span class="text-muted fs-7">{{ lang === 'ar' ? 'الحالة:' : 'Status:' }}</span>
-                  <span [class]="getStatusBadgeClass(order.status)" class="ms-2 text-uppercase">
-                    {{ order.status }}
-                  </span>
-                </div>
-
-                <div>
-                  <span class="text-muted fs-7">{{ lang === 'ar' ? 'المبلغ:' : 'Amount:' }}</span>
-                  <span class="ms-2 fw-semibold text-info">{{ order.amount === 0 ? (lang === 'ar' ? 'مجاني' : 'Free') : '$' + order.amount }}</span>
-                </div>
-              </div>
+        
 
 
               <!-- Knowledge Items -->
-              <div *ngIf="order.suborder" class="mb-3">
-                <div *ngFor="let knowledge of order.suborder.knowledge" class="mb-2">
+              <div *ngIf="order.orderable" class="mb-3">
+                <div *ngFor="let knowledge of order.orderable.knowledge" class="mb-2">
                   <div class="d-flex align-items-center">
                     <div>
                       <a
@@ -334,9 +390,9 @@
               </div>
 
               <!-- Documents Preview -->
-              <div *ngIf="order.suborder.knowledge_documents && order.suborder.knowledge_documents.length > 0" class="mt-2">
+              <div *ngIf="order.orderable.knowledge_documents && order.orderable.knowledge_documents.length > 0" class="mt-2">
                 <div class="d-flex flex-wrap pt-2 gap-2">
-                  <div *ngFor="let extension of getUniqueExtensions(order.suborder)" class="position-relative d-inline-block">
+                  <div *ngFor="let extension of getUniqueExtensions(order.orderable)" class="position-relative d-inline-block">
                     <img
                       [src]="getFileIconByExtension(extension)"
                       [alt]="extension"
@@ -346,7 +402,7 @@
                     <span
                       class="position-absolute top-0 start-75 translate-middle badge rounded-pill text-white"
                       [style.background-color]="getBadgeColorByExtension(extension)">
-                      {{ getDocumentCountByExtension(order.suborder, extension) }}
+                      {{ getDocumentCountByExtension(order.orderable, extension) }}
                     </span>
                   </div>
                 </div>
@@ -381,38 +437,38 @@
           [showCurrentPageReport]="true"
           [currentPageReportTemplate]="lang === 'ar' ? 'عرض {first} إلى {last} من {totalRecords} طلب' : 'Showing {first} to {last} of {totalRecords} orders'">
         </p-paginator>
+        </div>
       </div>
     </ng-container>
   </div>
 
   <!-- Meeting Orders Tab -->
   <div *ngIf="activeTab === 'meeting'">
-    <div class="row mb-4" *ngIf="canViewSalesTabs">
+    <div class="row mb-0" *ngIf="canViewSalesTabs">
       <div class="col-12">
-        <div class="filter-tabs-orders">
-          <div class="tab-toggle-group">
-            <button
-              type="button"
-              class="tab-toggle-button"
-              [ngClass]="{ 'active': meetingSubTab === 'purchased' }"
-              (click)="setMeetingSubTab('purchased')">
-              {{ lang === 'ar' ? 'الاجتماعات المحجوزة' : 'Booked Meetings' }}
-            </button>
-            <button
-              *ngIf="canViewSalesTabs"
-              type="button"
-              class="tab-toggle-button"
-              [ngClass]="{ 'active': meetingSubTab === 'sales' }"
-              (click)="setMeetingSubTab('sales')">
-              {{ lang === 'ar' ? 'اجتماعات المبيعات' : 'Sales Meetings' }}
-            </button>
-          </div>
+        <div class="nested-tab-nav">
+          <button
+            type="button"
+            class="nested-tab-button"
+            [ngClass]="{ 'active': meetingSubTab === 'purchased' }"
+            (click)="setMeetingSubTab('purchased')">
+            {{ lang === 'ar' ? 'الاجتماعات المحجوزة' : 'Purchased' }}
+          </button>
+          <button
+            type="button"
+            class="nested-tab-button"
+            [ngClass]="{ 'active': meetingSubTab === 'sales' }"
+            (click)="setMeetingSubTab('sales')">
+            {{ lang === 'ar' ? 'اجتماعات المبيعات' : 'Sold' }}
+          </button>
         </div>
       </div>
     </div>
 
+
     <ng-container *ngIf="meetingSubTab === 'purchased'">
-      <div class="row g-4">
+      <div class="nested-tab-content">
+        <div class="row g-4">
       <!-- Loading State -->
       <div *ngIf="isMeetingLoading$ | async" class="col-12">
         <div class="d-flex justify-content-center align-items-center" style="min-height: 200px;">
@@ -476,22 +532,22 @@
            
               <div>
                 <span class="text-muted fs-7">{{ lang === 'ar' ? 'الحالة:' : 'Status:' }}</span>
-                <span [class]="getStatusBadgeClass(order.status)" class="ms-2 text-uppercase">
+                <span class="ms-2 text-uppercase" [ngClass]="getStatusBadgeClass(order.status)">
                   {{ order.status }}
                 </span>
               </div>
             </div>
 
             <!-- Meeting Details -->
-            <div *ngIf="order.suborder">
-              <div *ngIf="order.suborder.meeting_booking" class="bg-light-info rounded p-4">
+            <div *ngIf="order.orderable">
+              <div *ngIf="order.orderable.meeting_booking" class="bg-light-info rounded p-4">
                 <div class="d-flex justify-content-between align-items-start mb-3">
                   <div>
-                    <h6 class="mb-1 fw-bold text-dark">{{ order.suborder.meeting_booking.title }}</h6>
-                    <p class="text-muted fs-7 mb-0">{{ order.suborder.meeting_booking.description }}</p>
+                    <h6 class="mb-1 fw-bold text-dark">{{ order.orderable.meeting_booking.title }}</h6>
+                    <p class="text-muted fs-7 mb-0">{{ order.orderable.meeting_booking.description }}</p>
                   </div>
-                  <span [class]="'badge ' + getMeetingStatusBadgeClass(order.suborder.meeting_booking.status)">
-                    {{ getMeetingStatusDisplay(order.suborder.meeting_booking.status) }}
+                  <span class="badge" [ngClass]="getMeetingStatusBadgeClass(order.orderable.meeting_booking.status)">
+                    {{ getMeetingStatusDisplay(order.orderable.meeting_booking.status) }}
                   </span>
                 </div>
                 
@@ -501,7 +557,7 @@
                       <i class="ki-outline ki-calendar fs-5 text-info me-2"></i>
                       <div>
                         <div class="fs-8 text-muted">{{ lang === 'ar' ? 'التاريخ' : 'Date' }}</div>
-                        <div class="fw-semibold fs-7">{{ order.suborder.meeting_booking.date | date:'mediumDate' }}</div>
+                        <div class="fw-semibold fs-7">{{ order.orderable.meeting_booking.date | date:'mediumDate' }}</div>
                       </div>
                     </div>
                   </div>
@@ -510,7 +566,7 @@
                       <i class="ki-outline ki-time fs-5 text-info me-2"></i>
                       <div>
                         <div class="fs-8 text-muted">{{ lang === 'ar' ? 'الوقت' : 'Time' }}</div>
-                        <div class="fw-semibold fs-7">{{ order.suborder.meeting_booking.start_time }} - {{ order.suborder.meeting_booking.end_time }}</div>
+                        <div class="fw-semibold fs-7">{{ order.orderable.meeting_booking.start_time }} - {{ order.orderable.meeting_booking.end_time }}</div>
                       </div>
                     </div>
                   </div>
@@ -519,7 +575,7 @@
                       <i class="ki-outline ki-timer fs-5 text-info me-2"></i>
                       <div>
                         <div class="fs-8 text-muted">{{ lang === 'ar' ? 'المدة' : 'Duration' }}</div>
-                        <div class="fw-semibold fs-7">{{ calculateDuration(order.suborder.meeting_booking.start_time, order.suborder.meeting_booking.end_time) }}</div>
+                        <div class="fw-semibold fs-7">{{ calculateDuration(order.orderable.meeting_booking.start_time, order.orderable.meeting_booking.end_time) }}</div>
                       </div>
                     </div>
                   </div>
@@ -565,11 +621,13 @@
         [showCurrentPageReport]="true"
         [currentPageReportTemplate]="lang === 'ar' ? 'عرض {first} إلى {last} من {totalRecords} طلب اجتماع' : 'Showing {first} to {last} of {totalRecords} meeting orders'">
       </p-paginator>
-    </div>
+        </div>
+      </div>
     </ng-container>
 
     <ng-container *ngIf="meetingSubTab === 'sales'">
-      <div class="row g-4">
+      <div class="nested-tab-content">
+        <div class="row g-4">
         <div *ngIf="isMeetingSalesLoading$ | async" class="col-12">
           <div class="d-flex justify-content-center align-items-center" style="min-height: 200px;">
             <div class="spinner-border text-info" role="status" style="width: 3rem; height: 3rem;">
@@ -602,7 +660,7 @@
                         <i class="ki-outline ki-copy fs-6"></i>
                       </button>
                     </div>
-                    <div class="text-muted fs-7">{{ lang === 'ar' ? 'العميل' : 'Client' }}: {{ order?.user?.name || '' }}</div>
+                    <div *ngIf="order.user" class="text-muted fs-7">{{ lang === 'ar' ? 'العميل' : 'Client' }}: {{ order?.user?.name || '' }}</div>
                   </div>
                 </div>
                 <div class="d-flex gap-2">
@@ -622,36 +680,16 @@
                 </div>
               </div>
 
-              <!-- Order Info Row -->
-              <div class="mb-3 d-flex flex-wrap gap-3">
-                <div>
-                  <span class="text-muted fs-7">{{ lang === 'ar' ? 'النوع:' : 'Type:' }}</span>
-                  <span class="ms-2 fw-semibold">{{ getServiceTypeDisplay(order.service) }}</span>
-                </div>
-
-                <div>
-                  <span class="text-muted fs-7">{{ lang === 'ar' ? 'الحالة:' : 'Status:' }}</span>
-                  <span [class]="getStatusBadgeClass(order.status)" class="ms-2 text-uppercase">
-                    {{ order.status }}
-                  </span>
-                </div>
-
-                <div>
-                  <span class="text-muted fs-7">{{ lang === 'ar' ? 'المبلغ:' : 'Amount:' }}</span>
-                  <span class="ms-2 fw-semibold text-info">{{ order.amount === 0 ? (lang === 'ar' ? 'مجاني' : 'Free') : '$' + order.amount }}</span>
-                </div>
-              </div>
-
               <!-- Meeting Items -->
-              <div *ngIf="order.suborder" class="mb-3">
-                <div *ngIf="order.suborder.meeting_booking" class="bg-light-info rounded p-4">
+              <div *ngIf="order.orderable" class="mb-3">
+                <div *ngIf="order.orderable.meeting_booking" class="bg-light-info rounded p-4">
                   <div class="d-flex justify-content-between align-items-start mb-3">
                     <div>
-                      <h6 class="mb-1 fw-bold text-dark">{{ order.suborder.meeting_booking.title }}</h6>
-                      <p class="text-muted fs-7 mb-0">{{ order.suborder.meeting_booking.description }}</p>
+                      <h6 class="mb-1 fw-bold text-dark">{{ order.orderable.meeting_booking.title }}</h6>
+                      <p class="text-muted fs-7 mb-0">{{ order.orderable.meeting_booking.description }}</p>
                     </div>
-                    <span [class]="'badge ' + getMeetingStatusBadgeClass(order.suborder.meeting_booking.status)">
-                      {{ getMeetingStatusDisplay(order.suborder.meeting_booking.status) }}
+                    <span class="badge" [ngClass]="getMeetingStatusBadgeClass(order.orderable.meeting_booking.status)">
+                      {{ getMeetingStatusDisplay(order.orderable.meeting_booking.status) }}
                     </span>
                   </div>
 
@@ -661,7 +699,7 @@
                         <i class="ki-outline ki-calendar-8 fs-5 text-info me-2"></i>
                         <div>
                           <div class="fs-8 text-muted">{{ lang === 'ar' ? 'تاريخ الاجتماع' : 'Date' }}</div>
-                          <div class="fw-semibold fs-7">{{ order.suborder.meeting_booking.date | date:'mediumDate' }}</div>
+                          <div class="fw-semibold fs-7">{{ order.orderable.meeting_booking.date | date:'mediumDate' }}</div>
                         </div>
                       </div>
                     </div>
@@ -671,7 +709,7 @@
                         <i class="ki-outline ki-time fs-5 text-info me-2"></i>
                         <div>
                           <div class="fs-8 text-muted">{{ lang === 'ar' ? 'الوقت' : 'Time' }}</div>
-                          <div class="fw-semibold fs-7">{{ order.suborder.meeting_booking.start_time }} - {{ order.suborder.meeting_booking.end_time }}</div>
+                          <div class="fw-semibold fs-7">{{ order.orderable.meeting_booking.start_time }} - {{ order.orderable.meeting_booking.end_time }}</div>
                         </div>
                       </div>
                     </div>
@@ -681,7 +719,7 @@
                         <i class="ki-outline ki-timer fs-5 text-info me-2"></i>
                         <div>
                           <div class="fs-8 text-muted">{{ lang === 'ar' ? 'المدة' : 'Duration' }}</div>
-                          <div class="fw-semibold fs-7">{{ calculateDuration(order.suborder.meeting_booking.start_time, order.suborder.meeting_booking.end_time) }}</div>
+                          <div class="fw-semibold fs-7">{{ calculateDuration(order.orderable.meeting_booking.start_time, order.orderable.meeting_booking.end_time) }}</div>
                         </div>
                       </div>
                     </div>
@@ -720,6 +758,7 @@
           [currentPageReportTemplate]="lang === 'ar' ? 'عرض {first} إلى {last} من {totalRecords} اجتماع' : 'Showing {first} to {last} of {totalRecords} meetings'">
         </p-paginator>
       </div>
+    </div> 
     </ng-container>
   </div>
 
@@ -746,7 +785,7 @@
       </div>
       <div class="d-flex justify-content-between align-items-center mb-2">
         <span class="text-muted">{{ lang === 'ar' ? 'الحالة:' : 'Status:' }}</span>
-        <span [class]="getStatusBadgeClass(selectedOrder.status)" class="text-uppercase">{{ selectedOrder.status }}</span>
+        <span class="text-uppercase" [ngClass]="getStatusBadgeClass(selectedOrder.status)">{{ selectedOrder.status }}</span>
       </div>
       <div class="d-flex justify-content-between align-items-center mb-2">
         <span class="text-muted">{{ lang === 'ar' ? 'التاريخ:' : 'Date:' }}</span>
@@ -764,7 +803,7 @@
               <div class="me-2" [innerHTML]="getCardLogoSvg(selectedOrder.payment)" style="width: 24px; height: 16px; display: flex; align-items: center;"></div>
             </ng-container>
             <ng-template #showIcon3>
-              <i [class]="getPaymentMethodIcon(selectedOrder.payment)" class="fs-6 me-2 text-info"></i>
+              <i class="fs-6 me-2 text-info" [ngClass]="getPaymentMethodIcon(selectedOrder.payment)"></i>
             </ng-template>
             <span class="fw-bold text-dark">{{ getPaymentMethodDisplay(selectedOrder.payment) }}</span>
           </div>
@@ -773,8 +812,8 @@
     </div>
 
     <!-- Knowledge Items -->
-    <div *ngIf="selectedOrder.suborder" class="mb-4">
-      <div *ngFor="let knowledge of selectedOrder.suborder.knowledge" class="border rounded p-3 mb-3">
+    <div *ngIf="selectedOrder.orderable" class="mb-4">
+      <div *ngFor="let knowledge of selectedOrder.orderable.knowledge" class="border rounded p-3 mb-3">
         <h6 class="mb-6 text-info">
           <div
             class="text-info text-decoration-none">
@@ -783,10 +822,10 @@
         </h6>
         
         <!-- Documents -->
-        <div *ngIf="selectedOrder.suborder.knowledge_documents && selectedOrder.suborder.knowledge_documents.length > 0">
+        <div *ngIf="selectedOrder.orderable.knowledge_documents && selectedOrder.orderable.knowledge_documents.length > 0">
           <h6 class="fs-7 text-muted mb-2">{{ lang === 'ar' ? 'المستندات:' : 'Documents:' }}</h6>
           <div class="row g-2">
-            <ng-container *ngFor="let docGroup of selectedOrder.suborder.knowledge_documents">
+            <ng-container *ngFor="let docGroup of selectedOrder.orderable.knowledge_documents">
               <div *ngFor="let doc of docGroup" class="col-md-12">
                 <div class="card card-flush border border-gray-300">
                   <div class="card-body p-3">
@@ -840,7 +879,7 @@
       </div>
       <div class="d-flex justify-content-between align-items-center mb-2">
         <span class="text-muted">{{ lang === 'ar' ? 'الحالة:' : 'Status:' }}</span>
-        <span [class]="getStatusBadgeClass(selectedMeetingOrder.status)" class="text-uppercase">{{ selectedMeetingOrder.status }}</span>
+        <span class="text-uppercase" [ngClass]="getStatusBadgeClass(selectedMeetingOrder.status)">{{ selectedMeetingOrder.status }}</span>
       </div>
       <div class="d-flex justify-content-between align-items-center mb-2">
         <span class="text-muted">{{ lang === 'ar' ? 'التاريخ:' : 'Date:' }}</span>
@@ -858,7 +897,7 @@
               <div class="me-2" [innerHTML]="getCardLogoSvg(selectedMeetingOrder.payment)" style="width: 24px; height: 16px; display: flex; align-items: center;"></div>
             </ng-container>
             <ng-template #showIcon4>
-              <i [class]="getPaymentMethodIcon(selectedMeetingOrder.payment)" class="fs-6 me-2 text-info"></i>
+              <i class="fs-6 me-2 text-info" [ngClass]="getPaymentMethodIcon(selectedMeetingOrder.payment)"></i>
             </ng-template>
             <span class="fw-bold text-dark">{{ getPaymentMethodDisplay(selectedMeetingOrder.payment) }}</span>
           </div>
@@ -867,15 +906,15 @@
     </div>
 
     <!-- Meeting Bookings Details -->
-    <div *ngIf="selectedMeetingOrder.suborder" class="mb-4">
-      <div *ngIf="selectedMeetingOrder.suborder.meeting_booking" class="border rounded p-4">
+    <div *ngIf="selectedMeetingOrder.orderable" class="mb-4">
+      <div *ngIf="selectedMeetingOrder.orderable.meeting_booking" class="border rounded p-4">
         <div class="d-flex justify-content-between align-items-start mb-3">
           <div>
-            <h6 class="mb-2 fw-bold text-dark">{{ selectedMeetingOrder.suborder.meeting_booking.title }}</h6>
-            <p class="text-muted fs-7 mb-0">{{ selectedMeetingOrder.suborder.meeting_booking.description }}</p>
+            <h6 class="mb-2 fw-bold text-dark">{{ selectedMeetingOrder.orderable.meeting_booking.title }}</h6>
+            <p class="text-muted fs-7 mb-0">{{ selectedMeetingOrder.orderable.meeting_booking.description }}</p>
           </div>
-          <span [class]="'badge ' + getMeetingStatusBadgeClass(selectedMeetingOrder.suborder.meeting_booking.status)">
-            {{ getMeetingStatusDisplay(selectedMeetingOrder.suborder.meeting_booking.status) }}
+          <span class="badge" [ngClass]="getMeetingStatusBadgeClass(selectedMeetingOrder.orderable.meeting_booking.status)">
+            {{ getMeetingStatusDisplay(selectedMeetingOrder.orderable.meeting_booking.status) }}
           </span>
         </div>
         
@@ -885,7 +924,7 @@
               <i class="ki-outline ki-calendar fs-5 text-info me-2"></i>
               <div>
                 <div class="fs-8 text-muted">{{ lang === 'ar' ? 'التاريخ' : 'Date' }}</div>
-                <div class="fw-semibold">{{ selectedMeetingOrder.suborder.meeting_booking.date | date:'mediumDate' }}</div>
+                <div class="fw-semibold">{{ selectedMeetingOrder.orderable.meeting_booking.date | date:'mediumDate' }}</div>
               </div>
             </div>
           </div>
@@ -894,7 +933,7 @@
               <i class="ki-outline ki-time fs-5 text-info me-2"></i>
               <div>
                 <div class="fs-8 text-muted">{{ lang === 'ar' ? 'الوقت' : 'Time' }}</div>
-                <div class="fw-semibold">{{ selectedMeetingOrder.suborder.meeting_booking.start_time }} - {{ selectedMeetingOrder.suborder.meeting_booking.end_time }}</div>
+                <div class="fw-semibold">{{ selectedMeetingOrder.orderable.meeting_booking.start_time }} - {{ selectedMeetingOrder.orderable.meeting_booking.end_time }}</div>
               </div>
             </div>
           </div>
@@ -903,7 +942,7 @@
               <i class="ki-outline ki-timer fs-5 text-info me-2"></i>
               <div>
                 <div class="fs-8 text-muted">{{ lang === 'ar' ? 'المدة' : 'Duration' }}</div>
-                <div class="fw-semibold">{{ calculateDuration(selectedMeetingOrder.suborder.meeting_booking.start_time, selectedMeetingOrder.suborder.meeting_booking.end_time) }}</div>
+                <div class="fw-semibold">{{ calculateDuration(selectedMeetingOrder.orderable.meeting_booking.start_time, selectedMeetingOrder.orderable.meeting_booking.end_time) }}</div>
               </div>
             </div>
           </div>

@@ -2,9 +2,11 @@ import { ChangeDetectionStrategy, Component, Injector, OnInit } from '@angular/c
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { BaseComponent } from 'src/app/modules/base.component';
-import { MyOrdersService, Order, OrdersResponse, SubOrder, KnowledgeDocument } from './my-orders.service';
+import { MyOrdersService, Order, OrdersResponse, KnowledgeDocument, Orderable } from './my-orders.service';
+import { OrderStatisticsService } from './order-statistics.service';
 import { Observable, catchError, map, of, forkJoin } from 'rxjs';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
+import { SubOrder } from 'src/app/_fake/services/fund.service';
 
 @Component({
   selector: 'app-my-orders',
@@ -46,7 +48,8 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
     private myOrdersService: MyOrdersService,
     private router: Router,
     private sanitizer: DomSanitizer,
-    private proile:ProfileService
+    private proile:ProfileService,
+    public orderStatisticsService: OrderStatisticsService
   ) {
     super(injector);
   }
@@ -90,6 +93,10 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
     this.getRoles();
     this.loadOrders();
     this.loadMeetingOrders();
+    // Load statistics only if not already loaded by the header component
+    if (!this.orderStatisticsService.getCurrentStatistics()) {
+      this.orderStatisticsService.loadStatistics();
+    }
   }
 
   setActiveTab(tab: 'knowledge' | 'meeting'): void {
@@ -447,9 +454,9 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
   }
 
 
-  getDocumentCountByExtension(suborder: SubOrder, extension: string): number {
+  getDocumentCountByExtension(order_data: Orderable, extension: string): number {
     let count = 0;
-    suborder.knowledge_documents?.forEach((docGroup: KnowledgeDocument[]) => {
+    order_data.knowledge_documents?.forEach((docGroup: KnowledgeDocument[]) => {
       docGroup.forEach((doc: KnowledgeDocument) => {
         if (doc.file_extension.toLowerCase() === extension.toLowerCase()) {
           count++;
@@ -459,9 +466,9 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
     return count;
   }
 
-  getUniqueExtensions(suborder: SubOrder): string[] {
+  getUniqueExtensions(order_data: SubOrder): string[] {
     const extensions = new Set<string>();
-    suborder.knowledge_documents?.forEach((docGroup: KnowledgeDocument[]) => {
+    order_data.knowledge_documents?.forEach((docGroup: KnowledgeDocument[]) => {
       docGroup.forEach((doc: KnowledgeDocument) => {
         extensions.add(doc.file_extension.toLowerCase());
       });

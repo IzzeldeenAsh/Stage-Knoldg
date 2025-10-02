@@ -512,13 +512,41 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     if (stats.insight) total += stats.insight;
     if (stats.manual) total += stats.manual;
     if (stats.course) total += stats.course;
-    
+
     return total;
+  }
+
+  canActivate(insighter: Insighter): boolean {
+    const hasCompanyRole = Array.isArray(insighter.roles) && insighter.roles.includes('company');
+
+    if (hasCompanyRole) {
+      return !!insighter.company && insighter.company.status === 'inactive';
+    }
+
+    return insighter.insighter_status === 'inactive';
+  }
+
+  canDeactivate(insighter: Insighter): boolean {
+    const hasCompanyRole = Array.isArray(insighter.roles) && insighter.roles.includes('company');
+
+    if (hasCompanyRole) {
+      return false;
+    }
+
+    return insighter.insighter_status === 'active' && !!insighter.verified_as_insighter;
+  }
+
+  canDelete(insighter: Insighter): boolean {
+    return !(Array.isArray(insighter.roles) && insighter.roles.includes('company'));
+  }
+
+  getInsighterIdentifier(insighter: Insighter & { [key: string]: any }): string {
+    return insighter?.uuid || insighter?.uuuid || '';
   }
 
   navigateToInsighterProfile(insighterId: string, verified: boolean): void {
     if(verified){
-      window.open(`https://knoldg.com/${this.lang}/profile/${insighterId}?entity=insighter`, '_blank');
+      window.open(`http://localhost:3000/${this.lang}/profile/${insighterId}?entity=insighter`, '_blank');
     }else{
       this.showError('Error', 'This insighter is not verified');
     }

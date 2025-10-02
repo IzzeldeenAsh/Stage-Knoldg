@@ -1,318 +1,314 @@
-// Grid View Styles for My Company Component
-// Import this file in the main component SCSS
+// Clean, minimal grid view styling for My Company cards
+// 3 cards per row on laptop screens, no shadows, minimal radius
 
-// ===============================================================
-// GRID VIEW STYLES
-// ===============================================================
+$primary: #0a7abf;
+$primary-soft: #f8fbff;
+$border-light: #e1ebf5;
+$text-dark: #1e2329;
+$text-muted: #64748b;
+$bg-white: #ffffff;
 
-.insighter-card {
-  border: 1px solid #64beff !important;
-  box-shadow: none;
-  transition: all 0.2s ease-in-out;
-  border-radius: 12px;
-  background-color: #ffffff;
+.grid-view {
+  .horizontal-card {
+    border: 1px solid $border-light;
+    border-radius: 6px; // Reduced from 16px
+    background: $bg-white;
+    background-image: url('https://res.cloudinary.com/dsiku9ipv/image/upload/v1746774746/Artboard_3_r89a4q.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: all 0.3s ease;
+    height: 180px; // Reduced height since no knowledge info
+    position: relative;
 
-  &:hover {
-    box-shadow: 0 0.125rem 0.25rem rgba(0, 158, 247, 0.15);
-    border-color: #0978B9;
-    transform: translateY(-2px);
-  }
+    // Add a subtle overlay to ensure text readability
 
-  .card-body {
-    padding: 24px;
-  }
+    &:hover {
+      transform: translateY(-1px); // Subtle movement
+      border-color: lighten($primary, 20%);
 
-  .card-title {
-    color: #181c32 !important;
-    font-size: 16px !important;
-    font-weight: 600 !important;
-    margin-bottom: 6px !important;
-    line-height: 1.3;
-  }
-
-  .symbol {
-    .symbol-label {
-      border-radius: 50%;
-      
-      &.bg-light-info {
-        background-color: #f1faff !important;
-        color: #0978B9 !important;
+      &::before {
+        background: rgba(255, 255, 255, 0.9);
       }
     }
 
-    img {
-      border-radius: 50%;
-      object-fit: cover;
+    .card-body {
+      padding: 16px; // Reduced padding
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      z-index: 2; // Ensure content is above the overlay
     }
   }
 
-  .knowledge-summary {
-    border-radius: 8px;
-    padding: 12px;
-    
-    .knowledge-mini-stats {
-      flex-wrap: wrap;
-      
-      .mini-stat-item {
-        font-size: 11px;
-        color: #7e8299;
-        background-color: #ffffff;
-        padding: 6px 10px;
-        border-radius: 6px;
-        border: 1px solid #c8e6fc;
-        white-space: nowrap;
+  // Top section with status and actions
+  .card-top {
+    .status-pill {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.025em;
+      padding: 4px 12px;
+      border-radius: 4px; // Reduced radius
+      text-transform: uppercase;
+    }
+
+    .action-dropdown {
+      .action-trigger {
+        width: 30px;
+        height: 30px;
+        border-radius: 4px; // Reduced radius
+        background: $primary-soft;
+        border: 0;
+        color: $primary;
         display: flex;
         align-items: center;
-        transition: all 0.2s ease-in-out;
-        
-        &:hover {
-          border-color: #0978B9;
-          background-color: #f1faff;
-        }
-        
-        svg {
-          flex-shrink: 0;
-        }
-      }
-    }
-  }
+        justify-content: center;
+        transition: all 0.2s ease;
 
-  .card-actions {
-    // border-top: 1px solid #c8e6fc;
-    padding-top: 16px;
-    
-    .btn {
-      font-size: 12px !important;
-      font-weight: 600 !important;
-      padding: 8px 16px !important;
-      border-radius: 6px !important;
-      transition: all 0.2s ease-in-out;
-      text-transform: none !important;
-
-      &.btn-success {
-        background-color: #50cd89 !important;
-        border-color: #50cd89 !important;
-        color: #ffffff !important;
-
-        &:hover {
-          background-color: #47be7d !important;
-          border-color: #47be7d !important;
-          transform: translateY(-1px);
+        &:hover,
+        &:focus {
+          background: darken($primary-soft, 5%);
+          color: darken($primary, 10%);
         }
       }
 
-      &.btn-warning {
-        background-color: #ffc700 !important;
-        border-color: #ffc700 !important;
-        color: #1e2129 !important;
+      .action-menu {
+        min-width: 180px;
+        border: 1px solid $border-light;
+        border-radius: 6px; // Reduced radius
+        background: $bg-white;
+        z-index: 1000; // Ensure dropdown appears above background
 
-        &:hover {
-          background-color: #f1bc00 !important;
-          border-color: #f1bc00 !important;
-          transform: translateY(-1px);
-        }
-      }
+        .dropdown-item {
+          font-size: 0.85rem;
+          font-weight: 500;
+          padding: 8px 16px;
+          color: $text-dark;
+          border-radius: 4px; // Reduced radius
+          margin: 4px;
 
-      &.btn-light-danger {
-        background-color: #fff5f8 !important;
-        border-color: #fff5f8 !important;
-        color: #f1416c !important;
+          i {
+            font-size: 0.9rem;
+            width: 16px;
+          }
 
-        &:hover {
-          background-color: #f1416c !important;
-          border-color: #f1416c !important;
-          color: #ffffff !important;
-          transform: translateY(-1px);
-        }
-      }
+          &:hover {
+            background: $primary-soft;
+            color: $primary;
+          }
 
-      .ki-duotone {
-        width: 16px;
-        height: 16px;
-        margin-right: 4px;
-      }
-    }
-  }
+          &.text-warning:hover {
+            background: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+          }
 
-  .badge {
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 11px !important;
-    font-weight: 600 !important;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    white-space: nowrap;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1;
-  }
-  
-  // Status badge in top right corner
-  .position-absolute .badge {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-}
-
-// View toggle button styles
-.btn-group {
-  .btn {
-    border-radius: 6px !important;
-    
-    &:not(:last-child) {
-      margin-right: 2px;
-    }
-    
-    &.btn-light-info {
-      background-color: #f1faff !important;
-      border-color: #f1faff !important;
-      color: #0978B9 !important;
-      
-      .ki-duotone {
-        color: #0978B9 !important;
-        
-        .path1, .path2, .path3, .path4 {
-          fill: #0978B9 !important;
-        }
-      }
-    }
-    
-    &.btn-light {
-      background-color: #f8f9fa !important;
-      border-color: #f8f9fa !important;
-      color: #7e8299 !important;
-      
-      .ki-duotone {
-        color: #7e8299 !important;
-        
-        .path1, .path2, .path3, .path4 {
-          fill: #7e8299 !important;
-        }
-      }
-      
-      &:hover {
-        background-color: #f1faff !important;
-        border-color: #f1faff !important;
-        color: #0978B9 !important;
-        
-        .ki-duotone {
-          color: #0978B9 !important;
-          
-          .path1, .path2, .path3, .path4 {
-            fill: #0978B9 !important;
+          &.text-danger:hover {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
           }
         }
       }
     }
   }
+
+  // Identity section with larger avatar
+  .identity-block {
+    min-width: 100px;
+    text-align: center;
+
+    .avatar-wrapper {
+      width: 70px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      margin: 0 auto;
+    }
+
+    .avatar-backdrop {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      opacity: 0.4;
+    }
+
+    .avatar-image,
+    .avatar-fallback {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 2px solid $bg-white;
+      position: relative;
+      z-index: 2;
+    }
+
+    .avatar-image {
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .avatar-fallback {
+      background: linear-gradient(135deg, $primary-soft, lighten($primary-soft, 3%));
+      color: $primary;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .identity-name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: $text-dark;
+      line-height: 1.3;
+      margin-bottom: 4px;
+    }
+
+    .identity-role {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: $primary;
+    }
+  }
+
+  // Details section
+  .card-details {
+    .info-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      .info-item {
+        display: flex;
+        align-items: center;
+        padding: 0;
+        margin: 0;
+        background: none;
+        border: none;
+
+        i {
+          flex-shrink: 0;
+        }
+
+        span {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+    }
+  }
 }
 
-// Responsive grid view
+// Special border for company users
+.border-orange {
+  border-color: #00b1f9 !important;
+
+  &:hover {
+    border-color: darken(#00aeff, 15%) !important;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 1399px) {
+  .grid-view .horizontal-card {
+    height: 170px; // Reduced height
+
+    .card-body {
+      padding: 16px;
+    }
+
+    .identity-block {
+      .avatar-wrapper {
+        width: 65px;
+        height: 65px;
+      }
+
+      .avatar-image,
+      .avatar-fallback {
+        width: 55px;
+        height: 55px;
+      }
+    }
+  }
+}
+
 @media (max-width: 1199px) {
-  .grid-view {
-    .insighter-card {
-      .card-body {
-        padding: 20px;
+  .grid-view .horizontal-card {
+    height: 160px; // Reduced height since no knowledge info
+
+    .card-body {
+      padding: 14px;
+    }
+
+    .identity-block {
+      .avatar-wrapper {
+        width: 60px;
+        height: 60px;
+      }
+
+      .avatar-image,
+      .avatar-fallback {
+        width: 50px;
+        height: 50px;
+      }
+
+      .identity-name {
+        font-size: 0.9rem;
       }
     }
   }
 }
 
 @media (max-width: 991px) {
-  .grid-view {
-    .insighter-card {
-      .card-body {
-        padding: 16px;
+  .grid-view .horizontal-card {
+    height: auto;
+    min-height: 150px; // Reduced minimum height
+
+    .card-body {
+      padding: 14px;
+    }
+
+    .identity-block {
+      min-width: 80px;
+
+      .avatar-wrapper {
+        width: 55px;
+        height: 55px;
       }
-      
-      .card-actions {
-        .btn {
-          font-size: 11px !important;
-          padding: 6px 12px !important;
-        }
+
+      .avatar-image,
+      .avatar-fallback {
+        width: 45px;
+        height: 45px;
       }
     }
   }
 }
 
 @media (max-width: 767px) {
-  .grid-view {
-    .row {
-      margin: 0 -8px;
-      
-      [class*="col-"] {
-        padding: 0 8px;
-        margin-bottom: 16px;
-      }
+  .grid-view .horizontal-card {
+    .card-body {
+      flex-direction: column;
+      gap: 12px;
+      padding: 12px;
     }
-    
-    .insighter-card {
-      .card-body {
-        padding: 12px;
-      }
-      
-      // Status badge positioning for mobile
-      .position-absolute {
-        top: 8px !important;
-        right: 8px !important;
-        
-        .badge {
-          padding: 4px 8px;
-          font-size: 10px !important;
-        }
-      }
-      
-      .symbol {
-        width: 40px !important;
-        height: 40px !important;
-        
-        img {
-          width: 40px !important;
-          height: 40px !important;
-        }
-      }
-      
-      .card-title {
-        font-size: 14px !important;
-      }
-      
-      .knowledge-summary {
-        padding: 8px;
-        
-        .knowledge-mini-stats {
-          .mini-stat-item {
-            font-size: 10px;
-            padding: 4px 8px;
-            border: 1px solid #c8e6fc;
-            
-            svg {
-              width: 7px;
-              height: 7px;
-              flex-shrink: 0;
-            }
-          }
-        }
-      }
-      
-      .card-actions {
-        padding-top: 12px;
-        
-        .btn {
-          font-size: 10px !important;
-          padding: 4px 8px !important;
-          
-          .ki-duotone {
-            width: 14px;
-            height: 14px;
-            margin-right: 2px;
-          }
-        }
-      }
+
+    .card-top {
+      order: 1;
+    }
+
+    .d-flex.gap-4 {
+      flex-direction: column;
+      gap: 12px !important;
+      order: 2;
+    }
+
+    .identity-block {
+      text-align: center;
+      min-width: auto;
     }
   }
-}
-
-.border-orange{
-  border-color: #ffa500 !important;
-  box-shadow: 0 0.125rem 0.25rem rgba(255, 165, 0, 0.55);
 }

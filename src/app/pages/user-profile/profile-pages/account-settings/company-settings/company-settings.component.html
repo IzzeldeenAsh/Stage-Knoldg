@@ -35,27 +35,6 @@
   </div>
 
 
-<!-- Industry -->
-  <div class="row">
-    <div class="col-12">
-      <shared-tree-selector
-      [title]="'AUTH.REGISTRATION.INDUSTRY' | translate"
-      [placeholder]="'AUTH.REGISTRATION.INDUSTRY_PLACEHOLDER' | translate"
-      [otherFieldPlaceholder]="'INSIGHTER_WIZARD.OTHER_FIELD_PLACEHOLDER' | translate"
-      [selectAllLabel]="lang === 'ar' ? 'اختر الكل' : 'Select All'"
-      [fetchedData]="industries"
-      [initialSelectedNodes]="corporateInfoForm.value.companyIndustries"
-      [cancelLabel]="'BUTTONS.CANCEL' | translate"
-      [okLabel]="'BUTTONS.OK' | translate"
-      [currentLang]="this.lang"
-      (nodesSelected)="onIndustrySelected($event)"
-    ></shared-tree-selector>
-    <div *ngIf="isFieldInvalid('companyIndustries')" class="invalid-feedback d-block">
-      {{ getFieldError('companyIndustries') }}
-    </div>
-    </div>
-  </div>
-
 <!-- Consulting Fields -->
   <div class="row">
      <div class="col-12">
@@ -73,6 +52,68 @@
     <div *ngIf="isFieldInvalid('companyConsultingFields')" class="invalid-feedback d-block">
       {{ getFieldError('companyConsultingFields') }}
     </div>
+    </div>
+  </div>
+
+<!-- Industry -->
+<div class="row">
+  <div class="col-12">
+    <shared-tree-selector
+    [title]="'AUTH.REGISTRATION.INDUSTRY' | translate"
+    [placeholder]="'AUTH.REGISTRATION.INDUSTRY_PLACEHOLDER' | translate"
+    [otherFieldPlaceholder]="'INSIGHTER_WIZARD.OTHER_FIELD_PLACEHOLDER' | translate"
+    [selectAllLabel]="lang === 'ar' ? 'اختر الكل' : 'Select All'"
+    [fetchedData]="industries"
+    [initialSelectedNodes]="corporateInfoForm.value.companyIndustries"
+    [cancelLabel]="'BUTTONS.CANCEL' | translate"
+    [okLabel]="'BUTTONS.OK' | translate"
+    [currentLang]="this.lang"
+    (nodesSelected)="onIndustrySelected($event)"
+  ></shared-tree-selector>
+  <div *ngIf="isFieldInvalid('companyIndustries')" class="invalid-feedback d-block">
+    {{ getFieldError('companyIndustries') }}
+  </div>
+  </div>
+</div>
+
+  <!-- Company Address and Phone -->
+  <div class="row">
+    <div class="col-lg-6 mb-6 fv-row">
+      <label class="form-label required">{{
+        "ACCOUNT_SETTINGS.COMPANY_ADDRESS" | translate
+      }}</label>
+      <input
+        type="text"
+        formControlName="companyAddress"
+        class="form-control"
+        [class.is-invalid]="isFieldInvalid('companyAddress')"
+        [placeholder]="lang === 'ar' ? 'أدخل عنوان الشركة' : 'Enter company address'"
+      />
+      <div *ngIf="isFieldInvalid('companyAddress')" class="invalid-feedback">
+        {{ getFieldError('companyAddress') }}
+      </div>
+    </div>
+    <div class="col-lg-6 mb-6 fv-row">
+      <label class="form-label">
+        {{ lang === 'ar' ? 'رقم هاتف الشركة' : 'Company Phone Number' }}
+      </label>
+      <app-phone-number-input
+        #companyPhoneInput
+        [countries]="countries"
+        [placeholder]="lang === 'ar' ? 'رقم هاتف الشركة' : 'Company phone number'"
+        [searchPlaceholder]="lang === 'ar' ? 'البحث عن دولة...' : 'Search for a country...'"
+        [lang]="lang"
+        [isRequired]="false"
+        [showValidationErrors]="true"
+        [countryCodeError]="getFieldError('companyPhoneCountryCode')"
+        [phoneNumberError]="getFieldError('companyPhoneNumber')"
+        [initialCountryCode]="corporateInfoForm.get('companyPhoneCountryCode')?.value"
+        [initialPhoneNumber]="corporateInfoForm.get('companyPhoneNumber')?.value"
+        (countryCodeChange)="onCompanyCountryCodeChange($event)"
+        (phoneNumberChange)="onCompanyPhoneNumberChange($event)"
+        (formattedPhoneNumberChange)="onCompanyFormattedPhoneNumberChange($event)"
+        (flagError)="onFlagError($event)"
+      ></app-phone-number-input>
     </div>
   </div>
 

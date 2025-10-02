@@ -55,7 +55,7 @@ export interface Order {
   date: string;
   order_no: string;
   invoice_no: string;
-  sub_order?: SubOrder;
+  orderable?: SubOrder;
 }
 
 export interface Transaction {
@@ -112,7 +112,7 @@ export interface ChartDataResponse {
   providedIn: "root",
 })
 export class WalletService {
-  private readonly BASE_URL = "https://api.knoldg.com/api/account/wallet";
+  private readonly BASE_URL = "https://api.foresighta.co/api/account/wallet";
   currentLang: string = "";
 
   constructor(

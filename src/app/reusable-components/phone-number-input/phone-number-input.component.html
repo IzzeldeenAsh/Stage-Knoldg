@@ -1,6 +1,6 @@
 <div class="input-group">
   <!-- Country Code Dropdown -->
-  <div class="max-width-200px">
+  <div style="flex: 0 0 140px;">
     <p-dropdown
       [options]="countries"
       [ngModel]="countryCode"
@@ -61,6 +61,7 @@
   <input
     type="text"
     class="form-control no-rtl-b-radius"
+    style="flex: 1;"
     [placeholder]="currentPlaceholder"
     [disabled]="disabled"
     [attr.aria-required]="isRequired"

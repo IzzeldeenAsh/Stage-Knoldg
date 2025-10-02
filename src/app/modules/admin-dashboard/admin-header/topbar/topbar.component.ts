@@ -14,6 +14,7 @@ import { FileUploadService } from "src/app/_fake/services/upload-picture/upload-
 import { AuthService, UserType } from "src/app/modules/auth";
 import { Notification, NotificationsService } from 'src/app/_fake/services/notifications/notifications.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 @Component({
   selector: "app-topbar",
   templateUrl: "./topbar.component.html",
@@ -52,17 +53,15 @@ export class TopbarComponent implements OnInit {
  
   }
   signOut() {
-    this.getProfileService.clearProfile()
-    this._auth.logout().pipe(first()).subscribe({
-      next:()=>{
-        localStorage.removeItem("foresighta-creds");
-        localStorage.removeItem("currentUser");
-        localStorage.removeItem("user");
-        localStorage.removeItem("authToken");
-        this.getProfileService.clearProfile()
-        this.router.navigate(['/auth/login'])
-      }
-    });
+
+    // Calculate timestamp to prevent caching
+    const timestamp = new Date().getTime();
+    
+    // Create the redirect URI to the main domain
+    const redirectUri = encodeURIComponent(`${environment.mainAppUrl}/en?logged_out=true&t=${timestamp}`);
+    
+    // Navigate to the logout route with the redirect URI
+    window.location.href = `/auth/logout?redirect_uri=${redirectUri}`;
 
   }
 
@@ -170,7 +169,7 @@ export class TopbarComponent implements OnInit {
       });
       
       // Call API to mark all notifications as read - using same endpoint as in primeng-header
-      this.http.put('https://api.knoldg.com/api/account/notification/read', {}, { headers })
+      this.http.put('https://api.foresighta.co/api/account/notification/read', {}, { headers })
         .subscribe({
           next: () => {
             // Refresh notifications from API

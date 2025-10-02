@@ -52,7 +52,7 @@ export interface Order {
   date: string;
   order_no: string;
   invoice_no: string;
-  suborder: Suborder;
+  order_data: Suborder;
   status: string;
   payment: Payment;
   fulfillment_staus: string;

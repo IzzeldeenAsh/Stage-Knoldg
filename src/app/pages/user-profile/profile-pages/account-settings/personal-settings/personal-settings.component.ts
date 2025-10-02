@@ -148,7 +148,8 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
       first_name: this.profile.first_name,
       last_name: this.profile.last_name,
       country: this.countries.find((country: any) => country.id === this.profile.country_id),
-      phone: this.profile.phone || '',
+      phoneCountryCode: this.profile.phone_code || '',
+      phoneNumber: this.profile.phone || '',
       bio: this.profile.bio || '',
       industries: transformedIndustries,
       consulting_field: transformedConsultingFields,
@@ -181,7 +182,8 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
       first_name: ["", Validators.required],
       last_name: ["", Validators.required],
       country: ["", Validators.required],
-      phone: [""],
+      phoneCountryCode: [""],
+      phoneNumber: [""],
       bio: [""],
       industries: [[]],
       consulting_field: [[]],
@@ -191,7 +193,7 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
       instagram: ['', [Validators.pattern('^https://www\.instagram\.com/.*$')]],
       youtube: ['', [Validators.pattern('^https://www\.youtube\.com/.*$')]]
     });
-    
+
     // Add required validators for non-client users after form initialization
     this.updateFormValidators();
   }
@@ -288,8 +290,13 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
     formData.append("last_name", form.get("last_name")?.value);
 
     // Add phone if provided
-    if (form.get("phone")?.value) {
-      formData.append("phone", form.get("phone")?.value);
+    if (form.get("phoneNumber")?.value) {
+      formData.append("phone", form.get("phoneNumber")?.value);
+    }
+
+    // Add phone code if provided
+    if (form.get("phoneCountryCode")?.value) {
+      formData.append("phone_code", form.get("phoneCountryCode")?.value);
     }
 
     // Add country if selected
@@ -471,5 +478,17 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
   isInvitationFieldInvalid(fieldName: string): boolean {
     const field = this.invitationForm.get(fieldName);
     return field ? field.invalid && field.touched : false;
+  }
+
+  onCountryCodeChange(countryCode: string): void {
+    this.personalInfoForm.get('phoneCountryCode')?.setValue(countryCode);
+  }
+
+  onPhoneNumberChange(phoneNumber: string): void {
+    this.personalInfoForm.get('phoneNumber')?.setValue(phoneNumber);
+  }
+
+  onFormattedPhoneNumberChange(formattedPhone: string): void {
+    // Handle formatted phone number if needed
   }
 }

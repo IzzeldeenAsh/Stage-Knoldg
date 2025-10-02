@@ -617,7 +617,7 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
       'X-Timezone': Intl.DateTimeFormat().resolvedOptions().timeZone
     };
 
-    this.http.get<any>('https://api.knoldg.com/api/common/setting/guideline/slug/stripe-payment-terms-and-conditions', { headers })
+    this.http.get<any>('https://api.foresighta.co/api/common/setting/guideline/slug/stripe-payment-terms-and-conditions', { headers })
       .subscribe({
         next: (response) => {
           this.isLoadingTerms = false;

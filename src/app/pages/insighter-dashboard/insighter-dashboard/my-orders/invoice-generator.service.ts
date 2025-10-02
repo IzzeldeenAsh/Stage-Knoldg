@@ -9,6 +9,7 @@ export class InvoiceGeneratorService {
   constructor() { }
 
   generateInvoice(order: Order, userProfile: any): string {
+    console.log('Order', order)
     const invoiceDate = new Date(order.date).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
@@ -24,15 +25,13 @@ export class InvoiceGeneratorService {
       // Handle meeting orders
       const meetingItems: Array<{name: string, price: number}> = [];
 
-      order.suborders.forEach(suborder => {
-        if (suborder.meeting_booking) {
-          const meeting = suborder.meeting_booking;
-          meetingItems.push({
-            name: `Meeting: ${meeting.title} - ${meeting.date} (${meeting.start_time} - ${meeting.end_time})`,
-            price: order.amount
-          });
-        }
-      });
+      if (order.orderable?.meeting_booking) {
+        const meeting = order.orderable.meeting_booking;
+        meetingItems.push({
+          name: `Meeting: ${meeting.title} - ${meeting.date} (${meeting.start_time} - ${meeting.end_time})`,
+          price: order.amount
+        });
+      }
 
       serviceRows = meetingItems.map(item => `
         <div class="service-row">
@@ -45,8 +44,8 @@ export class InvoiceGeneratorService {
       const allDocuments: Array<{name: string, price: number}> = [];
       subtotal = 0;
 
-      order.suborders.forEach(suborder => {
-        suborder.knowledge_documents?.forEach(docGroup => {
+      if (order.orderable?.knowledge_documents) {
+        order.orderable.knowledge_documents.forEach(docGroup => {
           docGroup.forEach((doc: KnowledgeDocument) => {
             allDocuments.push({
               name: doc.file_name,
@@ -55,7 +54,7 @@ export class InvoiceGeneratorService {
             subtotal += doc.price;
           });
         });
-      });
+      }
 
       // Generate service rows for documents
       serviceRows = allDocuments.map(doc => `

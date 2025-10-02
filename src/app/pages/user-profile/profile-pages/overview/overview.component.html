@@ -9,9 +9,23 @@
       <div class="card-body p-0">
         <div class=" p-5 d-flex flex-column flex-md-row align-items-center gap-4">
           <div class="image-input image-input-circle mb-3 mb-md-0">
-            <div class="image-input-wrapper border-2 border-primary w-125px h-125px" [style.backgroundImage]="getLogoBackgroundImage()">
-              <!-- Fallback image if background-image doesn't work -->
-              <img *ngIf="profile?.profile_photo_url" [src]="profile.profile_photo_url" alt="Profile Photo" class="w-100 h-100" style="object-fit: cover; opacity: 0;">
+            <div
+              class="image-input-wrapper border-2 border-primary w-125px h-125px"
+              [style.backgroundImage]="getLogoBackgroundImage()"
+            >
+              <img
+                *ngIf="hasProfilePhoto()"
+                [src]="profile.profile_photo_url"
+                alt="Profile Photo"
+                class="w-100 h-100 rounded-circle"
+                style="object-fit: cover; object-position: top;"
+              />
+              <div
+                *ngIf="!hasProfilePhoto()"
+                class="placeholder-avatar"
+              >
+                {{ getProfileInitials() }}
+              </div>
             </div>
             <label 
               class="btn btn-icon btn-circle btn-light btn-active-light w-25px h-25px position-absolute bottom-0 end-0"
@@ -68,7 +82,7 @@
                 <i class="bi bi-telephone fs-4 text-success me-2"></i>
                 <span>{{ 'ACCOUNT_SETTINGS.PHONE_NUMBER' | translate }}</span>
               </div>
-              <div class="col-12 col-md-8 text-dark">{{ profile.phone || '' }}</div>
+              <div class="col-12 col-md-8 text-dark">{{ getDisplayPhone() }}</div>
             </div>
             <div class="row mb-0 py-2" >
               <div class="col-12 col-md-4 text-muted d-flex align-items-center">

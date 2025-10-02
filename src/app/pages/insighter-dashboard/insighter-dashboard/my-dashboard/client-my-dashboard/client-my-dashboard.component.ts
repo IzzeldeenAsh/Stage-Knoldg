@@ -69,15 +69,15 @@ export class ClientMyDashboardComponent extends BaseComponent implements OnInit,
   }
 
   // redirectToExperts(): void {
-  //   window.open('https://knoldg.com/en/home?search_type=insighter&accuracy=any', '_blank');
+  //   window.open('http://localhost:3000/en/home?search_type=insighter&accuracy=any', '_blank');
   // }
   redirectToExperts(): void {
-    window.open(`https://knoldg.com/${this.lang}/home?search_type=insighter&accuracy=any`, '_blank');
+    window.open(`http://localhost:3000/${this.lang}/home?search_type=insighter&accuracy=any`, '_blank');
   }
   redirectToKnowledge(type: string): void {
     const currentLang = this.lang; 
     
-    window.open(`https://knoldg.com/${currentLang}/home?search_type=knowledge&type=${type}`, '_blank');
+    window.open(`http://localhost:3000/${currentLang}/home?search_type=knowledge&type=${type}`, '_blank');
   }
 
   loadWalletBalance(): void {

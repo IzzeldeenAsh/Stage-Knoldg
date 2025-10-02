@@ -99,38 +99,87 @@
   align-items: center;
 }
 
-.tab-toggle-group {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px;
-  gap: 4px;
-  background-color: #F1F5F9;
-  border-radius: 6px;
+// Folder tabs design
+.nested-tab-nav {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: -1px;
+  position: relative;
+  z-index: 2;
 }
 
-.tab-toggle-button {
-  border: 0;
-  border-radius: 6px;
-  padding: 0.4rem 0.85rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-  min-width: 80px;
-  background-color: transparent;
+.nested-tab-button {
+  position: relative;
+  background-color: #f5f8fa;
+  border: 1px solid #e4e6ef;
+  border-bottom: none;
   color: #7e8299;
-  transition: all 0.2s ease;
+  padding: 0.75rem 1.5rem 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-right: 2px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+
+  // Folder tab shape
+  &::before {
+    content: '';
+    position: absolute;
+    left: -1px;
+    bottom: -1px;
+    width: calc(100% + 2px);
+    height: 1px;
+    background-color: #e4e6ef;
+    z-index: 1;
+  }
 
   &:hover {
+    background-color: #fff;
     color: #181c32;
-    background-color: #e9eef7;
+    border-color: #d1d5db;
   }
 
   &.active {
-    background-color: #ffffff;
-    color: #181c32;
+    background-color: #fff;
+    color: #0978B9;
     font-weight: 600;
-    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
+    border-color: #e4e6ef;
+    z-index: 3;
+
+    // Hide bottom border for active tab to connect with content
+    &::before {
+      background-color: #fff;
+    }
+
+    // Add shadow for depth
+  }
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  &:last-child {
+    margin-right: 0;
   }
 }
+
+.nested-tab-panel:focus {
+  outline: none;
+}
+
+// Content area connected to folder tabs
+.nested-tab-content {
+  background-color: #fff;
+  border: 1px solid #e4e6ef;
+  border-radius: 0 8px 8px 8px;
+  padding: 1.5rem;
+  margin-top: 0;
+  position: relative;
+  z-index: 1;
+}
+
 
 
 .meeting-status-badge {
@@ -155,14 +204,15 @@
 
 // Responsive design matching settings-tabs
 @media (max-width: 768px) {
-  .tab-toggle-group {
+  .nested-tab-nav {
     flex-wrap: wrap;
     justify-content: center;
+    width: 100%;
   }
 
-  .tab-toggle-button {
+  .nested-tab-button {
     flex: 1 1 45%;
-    min-width: 120px;
+    min-width: 140px;
     text-align: center;
   }
 

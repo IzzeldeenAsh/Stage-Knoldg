@@ -1001,8 +1001,8 @@
       }
     }
 
-    .sub_orders-container {
-      .sub_order-card {
+    .orderables-container {
+      .orderable-card {
         padding: 1rem;
       }
     }
@@ -1084,12 +1084,12 @@
   }
 
   // Fix suborders container typo and improve styling
-  .sub_orders-container {
+  .orderables-container {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 
-    .sub_order-card {
+    .orderable-card {
       background: white;
       border-radius: 1rem;
       padding: 1.5rem;
@@ -1097,12 +1097,12 @@
       border: 1px solid #e9ecef;
       border-left: 4px solid #50CD89;
 
-      .sub_order-header {
+      .orderable-header {
         margin-bottom: 1.5rem;
         padding-bottom: 1rem;
         border-bottom: 1px solid #e5e7eb;
 
-        .sub_order-number {
+        .orderable-number {
           font-size: 1rem;
           font-weight: 600;
           color: #50CD89;

@@ -20,18 +20,18 @@ import { ChipModule } from 'primeng/chip';
 import { EditPermissionsDialogComponent } from './roles/edit-permissions-dialog/edit-permissions-dialog.component';
 import { ToastModule } from 'primeng/toast';
 import { DialogService } from 'primeng/dynamicdialog';
-import { UsersComponent } from './users/users.component';
 import { TabViewModule } from 'primeng/tabview';
 import { ToolbarModule } from 'primeng/toolbar';
 import { MenuModule } from 'primeng/menu';
+import { UsersComponent } from './users/users.component';
 @NgModule({
   declarations: [
     AccountsComponent,
     StaffComponent,
     EditPermissionsDialogComponent,
     RolesComponent,
-    UsersComponent,
-    PermissionsComponent
+    PermissionsComponent,
+    UsersComponent
   ],
   imports: [
     CommonModule,

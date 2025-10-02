@@ -71,7 +71,7 @@ export class InvoicePageComponent extends BaseComponent implements OnInit {
             date: foundOrder.date,
             amount: foundOrder.amount,
             service: foundOrder.service,
-            suborder: foundOrder.suborder,
+            orderable: foundOrder.orderable,
             userProfile: userProfile
           };
         } else {

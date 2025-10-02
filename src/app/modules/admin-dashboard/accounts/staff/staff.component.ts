@@ -87,21 +87,26 @@ export class StaffComponent implements OnInit, OnDestroy {
 
   private handleServerErrors(error: any) {
     this.messages = [];
-    if (error.error && error.error.errors) {
+    this.messageService.clear();
+
+    if (error?.error?.errors) {
       const serverErrors = error.error.errors;
       for (const key in serverErrors) {
-        if (serverErrors.hasOwnProperty(key)) {
-          const messages = serverErrors[key];
-          this.messages.push({ severity: 'error', summary: '', detail: messages.join(', ') });
+        if (Object.prototype.hasOwnProperty.call(serverErrors, key)) {
+          const details: string[] = serverErrors[key];
+          details.forEach((detail) =>
+            this.messageService.add({ severity: 'error', summary: 'Error', detail })
+          );
         }
       }
-    } else {
-      this.messages.push({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'An unexpected error occurred.'
-      });
+      return;
     }
+
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: 'An unexpected error occurred.'
+    });
   }
 
   getStaffList() {

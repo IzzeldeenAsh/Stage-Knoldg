@@ -1,4 +1,5 @@
-@import './my-company-rtl.scss';\n\n// Essential grid view styles (inline)\n.grid-view .insighter-card {\n  border: 1px solid #64beff;\n  box-shadow: none;\n  transition: all 0.2s ease-in-out;\n  border-radius: 12px;\n  background-color: #ffffff;\n  \n  &:hover {\n    box-shadow: 0 0.125rem 0.25rem rgba(0, 158, 247, 0.15);\n    border-color: #0978B9;\n    transform: translateY(-2px);\n  }\n}
+@import './my-company-rtl.scss';
+@import './grid-view-styles.scss';
 
 .my-company-container {
   overflow: hidden;
