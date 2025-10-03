@@ -8,6 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TruncateTextPipe } from 'src/app/pipes/truncate-pipe/truncate-text.pipe';
 import { FileSizePipe } from 'src/app/pipes/file-size-pipe/file-size.pipe';
+import { ProgressBarModule } from 'primeng/progressbar';
 const routes: Routes = [
   {
     path: '',
@@ -28,6 +29,7 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     TruncateTextPipe,
+    ProgressBarModule,
     FileSizePipe
   ]
 })

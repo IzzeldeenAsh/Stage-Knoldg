@@ -69,6 +69,7 @@
     [mask]="currentMask"
     [ngModel]="value"
     (ngModelChange)="onPhoneNumberInput($event)"
+    (keypress)="onKeyPress($event)"
     [dropSpecialCharacters]="false"
   />
 </div>

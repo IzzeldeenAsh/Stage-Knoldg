@@ -100,7 +100,7 @@
                 <!-- Account Address Field -->
                 <div class="mb-6">
                   <label class="form-label">
-                    {{ lang === 'ar' ? 'عنوان الشخصي' : 'Personal Address' }}
+                    {{ lang === 'ar' ? 'عنوان الفاتورة' : 'Billing Address' }}
                     <span class="text-gray-500">{{ lang === 'ar' ? '(اختياري)' : '(Optional)' }}</span>
                   </label>
                   <input
@@ -279,7 +279,7 @@
             </div>
 
             <!-- Terms and Conditions -->
-            <div *ngIf="!isEditing && !acceptAgreement" class="mb-6">
+            <div *ngIf="!acceptAgreement" class="mb-6">
               <div class="form-check">
                 <input
                   class="form-check-input"

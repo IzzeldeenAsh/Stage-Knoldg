@@ -129,9 +129,12 @@
               <!-- Loading state -->
               <tr *ngIf="isLoading$ | async">
                 <td colspan="6" class="text-center">
-                  <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                  </div>
+                  <p-progressBar
+                 
+                  mode="indeterminate"
+                  [style]="{ height: '4px' }"
+                  styleClass=""
+                  ></p-progressBar>
                 </td>
               </tr>
             </tbody>

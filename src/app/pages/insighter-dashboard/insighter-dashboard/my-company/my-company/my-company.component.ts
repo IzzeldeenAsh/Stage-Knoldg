@@ -4,7 +4,7 @@ import { BaseComponent } from 'src/app/modules/base.component';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CountryDropdownComponent, Country as DropdownCountry } from 'src/app/reusable-components/country-dropdown/country-dropdown.component';
 import { CountriesService, Country as ServiceCountry } from 'src/app/_fake/services/countries/countries.service';
-import { CompanyAccountService } from 'src/app/_fake/services/company-account/company-account.service';
+import { CompanyAccountService, DashboardStatisticsResponse } from 'src/app/_fake/services/company-account/company-account.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import { ConfirmationService } from 'primeng/api';
@@ -62,6 +62,7 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
   industries: any[] = [];
   consultingFields: any[] = [];
   isInviting = false;
+  isLoading = false;
   
   // Forms
   emailForm: FormGroup;
@@ -87,6 +88,68 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
   
   // Countries data
   availableCountries: DropdownCountry[] = [];
+  gridInsighters: Insighter[] = [];
+
+  // Dashboard statistics
+  dashboardStats: DashboardStatisticsResponse['data'] | null = null;
+  publishedKnowledgeChartData: any = null;
+  publishedKnowledgeChartOptions: any = null;
+  knowledgeOrdersChartData: any = null;
+  knowledgeOrdersChartOptions: any = null;
+  meetingOrdersChartData: any = null;
+  meetingOrdersChartOptions: any = null;
+
+  private readonly flagBasePath = './assets/media/flags/';
+  private readonly defaultFlagSlug = 'united-nations';
+  private readonly countryFlagAliases: Record<string, string> = {
+    'united states': 'united-states',
+    'united states of america': 'united-states',
+    'usa': 'united-states',
+    'u.s.a.': 'united-states',
+    'united kingdom': 'united-kingdom',
+    'united kingdom of great britain and northern ireland': 'united-kingdom',
+    'uk': 'united-kingdom',
+    'u.k.': 'united-kingdom',
+    'uae': 'united-arab-emirates',
+    'u.a.e.': 'united-arab-emirates',
+    'united arab emirates': 'united-arab-emirates',
+    'south korea': 'south-korea',
+    'republic of korea': 'south-korea',
+    'korea, republic of': 'south-korea',
+    'north korea': 'north-korea',
+    'democratic people\'s republic of korea': 'north-korea',
+    'korea, democratic people\'s republic of': 'north-korea',
+    'russian federation': 'russia',
+    'bolivia (plurinational state of)': 'bolivia',
+    'cote divoire': 'ivory-coast',
+    'cote d\'ivoire': 'ivory-coast',
+    'taiwan, province of china': 'taiwan',
+    'hong kong sar china': 'hong-kong',
+    'macao sar china': 'macao',
+    'macao special administrative region of china': 'macao',
+    'brunei darussalam': 'brunei',
+    'syrian arab republic': 'syria',
+    'province of china taiwan': 'taiwan',
+    'myanmar (burma)': 'myanmar',
+    'viet nam': 'vietnam',
+    'moldova, republic of': 'moldova',
+    'iran (islamic republic of)': 'iran',
+    'tanzania, united republic of': 'tanzania',
+    'lao people\'s democratic republic': 'laos',
+    'democratic republic of the congo': 'democratic-republic-of-congo',
+    'congo, democratic republic of the': 'democratic-republic-of-congo',
+    'congo': 'republic-of-the-congo',
+    'congo, republic of the': 'republic-of-the-congo',
+    'micronesia (federated states of)': 'micronesia',
+    'palestine, state of': 'palestine',
+    'holy see (vatican city state)': 'vatican',
+    'bahamas, the': 'bahamas',
+    'gambia, the': 'gambia',
+    'cape verde': 'cabo-verde',
+    'east timor': 'timor-leste',
+    'eswatini': 'swaziland',
+    'czechia': 'czech-republic'
+  };
   
   constructor(
     injector: Injector,
@@ -126,9 +189,12 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     
     // Load countries first, then load insighters
     this.loadCountries();
-    
+
     // Load initial insighter data
     this.loadInsighters(1);
+
+    // Load dashboard statistics
+    this.loadDashboardStatistics();
     
     // Listen for email changes to trigger account check
     this.emailForm.get('email')?.valueChanges
@@ -153,12 +219,14 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     this.companyAccountService.getInsighters(page, this.rows).subscribe({
       next: (response) => {
         this.insighters = response.data;
+        this.gridInsighters = this.insighters.filter(ins => !Array.isArray(ins.roles) || !ins.roles.includes('company'));
         this.paginationMeta = response.meta;
         this.totalRecords = response.meta.total;
         this.loading = false;
       },
       error: (error) => {
         this.loading = false;
+        this.gridInsighters = [];
         this.showError('Error', 'Failed to load insighters');
         console.error('Error loading insighters:', error);
       }
@@ -544,6 +612,53 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     return insighter?.uuid || insighter?.uuuid || '';
   }
 
+  getCountryFlag(country?: string | null): string {
+    const slug = this.resolveCountrySlug(country);
+    return `${this.flagBasePath}${slug}.svg`;
+  }
+
+  handleFlagError(event: Event): void {
+    const element = event.target as HTMLImageElement | null;
+    if (!element) {
+      return;
+    }
+
+    const fallbackSrc = `${this.flagBasePath}${this.defaultFlagSlug}.svg`;
+    if (element.src.endsWith(`${this.defaultFlagSlug}.svg`)) {
+      return;
+    }
+
+    element.src = fallbackSrc;
+  }
+
+  private resolveCountrySlug(country?: string | null): string {
+    if (!country) {
+      return this.defaultFlagSlug;
+    }
+
+    const normalizedName = country.trim().toLowerCase();
+    if (!normalizedName) {
+      return this.defaultFlagSlug;
+    }
+
+    const alias = this.countryFlagAliases[normalizedName];
+    if (alias) {
+      return alias;
+    }
+
+    const slug = normalizedName
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/['\u2019`]/g, '')
+      .replace(/&/g, 'and')
+      .replace(/\./g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
+
+    return slug || this.defaultFlagSlug;
+  }
+
   navigateToInsighterProfile(insighterId: string, verified: boolean): void {
     if(verified){
       window.open(`http://localhost:3000/${this.lang}/profile/${insighterId}?entity=insighter`, '_blank');
@@ -713,5 +828,190 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
   toggleViewMode(mode: 'table' | 'grid'): void {
     this.viewMode = mode;
   }
-  
+
+  // Load dashboard statistics
+  loadDashboardStatistics(): void {
+    this.companyAccountService.getDashboardStatistics().subscribe({
+      next: (data) => {
+        this.dashboardStats = data;
+        this.setupPublishedKnowledgeChart();
+        this.setupKnowledgeOrdersChart();
+        this.setupMeetingOrdersChart();
+      },
+      error: (error) => {
+        console.error('Error loading dashboard statistics:', error);
+        this.showError(
+          this.lang === 'ar' ? 'حدث خطأ' : 'Error',
+          this.lang === 'ar' ? 'فشل في تحميل الإحصائيات' : 'Failed to load statistics'
+        );
+      }
+    });
+  }
+
+  // Setup published knowledge pie chart
+  setupPublishedKnowledgeChart(): void {
+    if (!this.dashboardStats?.knowledge_published_statistics) return;
+
+    const stats = this.dashboardStats.knowledge_published_statistics;
+    const labels: string[] = [];
+    const data: number[] = [];
+    const backgroundColors: string[] = [];
+
+    // Define blue color grades for each knowledge type
+    const colors = {
+      insight: '#0a7abf',
+      report: '#3b9ae1',
+      manual: '#6bb6ff',
+      data: '#1e88e5',
+      course: '#42a5f5'
+    };
+
+    // Build chart data from the type statistics
+    Object.entries(stats.type).forEach(([type, count]) => {
+      if (count && count > 0) {
+        labels.push(type.charAt(0).toUpperCase() + type.slice(1));
+        data.push(count);
+        backgroundColors.push(colors[type as keyof typeof colors] || '#999');
+      }
+    });
+
+    this.publishedKnowledgeChartData = {
+      labels,
+      datasets: [{
+        data,
+        backgroundColor: backgroundColors,
+        borderWidth: 0
+      }]
+    };
+
+    this.publishedKnowledgeChartOptions = {
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: (context: any) => `${context.label}: ${context.parsed}`
+          }
+        }
+      },
+      maintainAspectRatio: false,
+      responsive: true
+    };
+  }
+
+  // Setup knowledge orders column chart
+  setupKnowledgeOrdersChart(): void {
+    if (!this.dashboardStats?.knowledge_order_statistics?.company_insighter_orders_statistics) return;
+
+    const orderStats = this.dashboardStats.knowledge_order_statistics.company_insighter_orders_statistics;
+    const labels = orderStats.map(stat => stat.insighter_name);
+    const data = orderStats.map(stat => parseFloat(stat.total_amount.replace(/,/g, '')));
+
+    this.knowledgeOrdersChartData = {
+      labels,
+      datasets: [{
+        label: 'Total Amount',
+        data,
+        backgroundColor: '#0a7abf',
+        borderColor: '#0a7abf',
+        borderWidth: 0,
+        maxBarThickness: 25
+      }]
+    };
+
+    this.knowledgeOrdersChartOptions = {
+      plugins: {
+        legend: {
+          display: false
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: function(value: any) {
+              return '$' + value.toLocaleString();
+            }
+          }
+        },
+        x: {
+          ticks: {
+            maxRotation: 45
+          }
+        }
+      },
+      maintainAspectRatio: false,
+      responsive: true
+    };
+  }
+
+  // Setup meeting orders column chart
+  setupMeetingOrdersChart(): void {
+    if (!this.dashboardStats?.meeting_booking_order_statistics?.company_insighter_orders_statistics) return;
+
+    const orderStats = this.dashboardStats.meeting_booking_order_statistics.company_insighter_orders_statistics;
+    const labels = orderStats.map(stat => stat.insighter_name);
+    const data = orderStats.map(stat => parseFloat(stat.total_amount.replace(/,/g, '')));
+
+    this.meetingOrdersChartData = {
+      labels,
+      datasets: [{
+        label: 'Total Amount',
+        data,
+        backgroundColor: '#0a7abf',
+        borderColor: '#0a7abf',
+        borderWidth: 0,
+        maxBarThickness: 25
+      }]
+    };
+
+    this.meetingOrdersChartOptions = {
+      plugins: {
+        legend: {
+          display: false
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: function(value: any) {
+              return '$' + value.toLocaleString();
+            }
+          }
+        },
+        x: {
+          ticks: {
+            maxRotation: 45
+          }
+        }
+      },
+      maintainAspectRatio: false,
+      responsive: true
+    };
+  }
+
+  formatCurrency(amount: string | number | null | undefined): string {
+    if (amount === null || amount === undefined || amount === '') {
+      return '$0';
+    }
+
+    const numericAmount = typeof amount === 'number'
+      ? amount
+      : parseFloat(String(amount).replace(/,/g, ''));
+
+    if (Number.isNaN(numericAmount)) {
+      return '$0';
+    }
+
+    const locale = this.lang === 'ar' ? 'ar-EG' : 'en-US';
+
+    return new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0
+    }).format(numericAmount);
+  }
+
 }

@@ -1,6 +1,18 @@
 <!-- Company Management Page -->
+@if(loading) {
+  <div *ngIf="loading" class="text-center py-10 bg-light rounded mb-5 border border-1 border-light">
+    <div class="my-5">
+        <div class="spinner-border text-primary mb-4" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
+        </div>
+        <h3 class="fw-bold text-gray-800 mb-2">Loading Team</h3>
+        <p class="text-gray-600 fs-6 px-3">Please wait while we fetch your team...</p>
+    </div>
+</div>
+}
+@else {
 <div class="my-company-container">
-<div class="card mb-5 mb-xl-10">
+<div class="card mb-5 mb-xl-10 p-0">
   <!-- Header -->
   <div class="card-header border-0 pt-5">
     <h3 class="card-title align-items-start flex-column">
@@ -63,7 +75,103 @@
     </div>
   </div>
   <!-- Body -->
-  <div class="card-body py-3">
+  <div class="card-body" style="padding: 10px !important">
+
+    <!-- Dashboard Statistics Charts -->
+    <div *ngIf="dashboardStats" class="row g-4 mb-6">
+      <!-- Published Knowledge Chart -->
+      <div class="col-lg-4 col-12">
+        <div class="card border-0 h-100">
+          <div class="card-body chart-card text-center">
+            <div class="chart-card__header">
+              <h6 class="card-title fw-bold text-gray-800 mb-0">Published Knowledge</h6>
+            </div>
+            <div *ngIf="publishedKnowledgeChartData" class="donut-wrapper">
+              <p-chart
+                type="doughnut"
+                [data]="publishedKnowledgeChartData"
+                [options]="publishedKnowledgeChartOptions"
+                width="160"
+                height="160">
+              </p-chart>
+              <div class="donut-wrapper__center">
+                <div class="donut-wrapper__total">{{ dashboardStats.knowledge_published_statistics.total }}</div>
+                <div class="donut-wrapper__label">Total</div>
+              </div>
+            </div>
+            <div *ngIf="!publishedKnowledgeChartData" class="chart-card__empty">
+              <i class="ki-duotone ki-file fs-2x text-muted mb-2"></i>
+              <div class="text-muted fs-7">No data available</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Knowledge Orders Chart -->
+      <div class="col-lg-4 col-12">
+        <div class="card border-0 h-100">
+          <div class="card-body chart-card">
+            <h6 class="card-title fw-bold text-gray-800 mb-4 text-center">Knowledge Orders</h6>
+            <div *ngIf="dashboardStats?.knowledge_order_statistics" class="chart-stat-cards mb-4">
+              <div class="chart-stat-card">
+                <span class="chart-stat-card__label">Orders Amount</span>
+                <span class="chart-stat-card__value">{{ formatCurrency(dashboardStats.knowledge_order_statistics.orders_amount) }}</span>
+              </div>
+              <div class="chart-stat-card">
+                <span class="chart-stat-card__label">Company Net Share</span>
+                <span class="chart-stat-card__value">{{ formatCurrency(dashboardStats.knowledge_order_statistics.company_orders_amount) }}</span>
+              </div>
+            </div>
+            <div *ngIf="knowledgeOrdersChartData" class="bar-chart-wrapper">
+              <p-chart
+                type="bar"
+                [data]="knowledgeOrdersChartData"
+                [options]="knowledgeOrdersChartOptions"
+                width="100%"
+                height="200">
+              </p-chart>
+            </div>
+            <div *ngIf="!knowledgeOrdersChartData" class="chart-card__empty">
+              <i class="ki-duotone ki-chart-line fs-2x text-muted mb-2"></i>
+              <div class="text-muted fs-7">No data available</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Meeting Orders Chart -->
+      <div class="col-lg-4 col-12">
+        <div class="card border-0 h-100">
+          <div class="card-body chart-card">
+            <h6 class="card-title fw-bold text-gray-800 mb-4 text-center">Meeting Orders</h6>
+            <div *ngIf="dashboardStats?.meeting_booking_order_statistics" class="chart-stat-cards mb-4">
+              <div class="chart-stat-card">
+                <span class="chart-stat-card__label">Orders Amount</span>
+                <span class="chart-stat-card__value">{{ formatCurrency(dashboardStats.meeting_booking_order_statistics.orders_amount) }}</span>
+              </div>
+              <div class="chart-stat-card">
+                <span class="chart-stat-card__label">Company Net Share</span>
+                <span class="chart-stat-card__value">{{ formatCurrency(dashboardStats.meeting_booking_order_statistics.company_orders_amount) }}</span>
+              </div>
+            </div>
+            <div *ngIf="meetingOrdersChartData" class="bar-chart-wrapper">
+              <p-chart
+                type="bar"
+                [data]="meetingOrdersChartData"
+                [options]="meetingOrdersChartOptions"
+                width="100%"
+                height="200">
+              </p-chart>
+            </div>
+            <div *ngIf="!meetingOrdersChartData" class="chart-card__empty">
+              <i class="ki-duotone ki-calendar fs-2x text-muted mb-2"></i>
+              <div class="text-muted fs-7">No data available</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Empty state - only show if no insighters -->
     <div *ngIf="!loading && (!insighters || insighters.length === 0)" class="d-flex flex-column align-items-center justify-content-center py-8">
       <div class="symbol symbol-200px symbol-circle mb-7">
@@ -155,7 +263,16 @@
                
                <!-- Country -->
                <td style="width: 140px; min-width: 140px; text-align: start;">
-                 <span class="text-gray-600">{{ insighter.country }}</span>
+                 <div class="d-flex align-items-center">
+                   <img
+                     [src]="getCountryFlag(insighter.country)"
+                     class="country-flag"
+                     [attr.alt]="(insighter.country || 'Unknown') + ' flag'"
+                     [attr.title]="insighter.country || 'Unknown'"
+                     (error)="handleFlagError($event)"
+                   />
+                   <span class="visually-hidden">{{ insighter.country || 'Unknown' }}</span>
+                 </div>
                </td>
                
                <!-- Status -->
@@ -336,82 +453,69 @@
       <!-- Grid View -->
       <div *ngIf="viewMode === 'grid'" class="grid-view">
         <div class="row g-4">
-          <div *ngFor="let insighter of insighters" class="col-xl-4 col-lg-6 col-12">
+          <div *ngFor="let insighter of gridInsighters" class="col-xl-4 col-lg-6 col-12">
             <div class="card horizontal-card" [ngClass]="{'border-orange': insighter.roles.includes('company')}">
-              <div class="card-body">
+              <div class="card-body" style="padding: 10px !important">
+
                 <!-- Top Section -->
-                <div class="card-top d-flex justify-content-between align-items-start mb-4">
+                <div class="card-top d-flex align-items-start">
                   <!-- Status Badge -->
                   <span [class]="'badge status-pill ' + getStatusBadgeClass(insighter.insighter_status)">
                     {{
-                        (insighter.insighter_status === 'active' ? 'MY_COMPANY.STATUS.ACTIVE' :
-                         insighter.insighter_status === 'inactive' ? 'MY_COMPANY.STATUS.INACTIVE' :
-                         insighter.insighter_status) | translate | titlecase }}
+                      (insighter.insighter_status === 'active' ? 'MY_COMPANY.STATUS.ACTIVE' :
+                       insighter.insighter_status === 'inactive' ? 'MY_COMPANY.STATUS.INACTIVE' :
+                       insighter.insighter_status) | translate | titlecase
+                    }}
                   </span>
 
-                  <!-- Actions Dropdown -->
-                  <div class="action-dropdown" *ngIf="!insighter.roles.includes('company')">
-                    <button class="action-trigger"
+                  <!-- Actions (meatballs) pinned to far edge -->
+                  <div class="action-dropdown dropdown"
+                       *ngIf="!(insighter.roles && insighter.roles.includes('company'))">
+                    <button class="action-trigger meatballs-btn"
                             type="button"
                             data-bs-toggle="dropdown"
                             aria-expanded="false"
-                            [attr.aria-label]="'Actions for ' + insighter.name">
-                      <i class="ki-duotone ki-dots-horizontal fs-2">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                        <span class="path3"></span>
-                      </i>
+                            aria-label="More actions">
                     </button>
-                    <ul class="dropdown-menu action-menu dropdown-menu-end">
-                      <li *ngIf="(insighter.roles && insighter.roles.includes('company') && insighter.company && insighter.company.status === 'inactive' ||
-                                (!insighter.roles || !insighter.roles.includes('company')) && insighter.insighter_status === 'inactive')">
-                        <a class="dropdown-item"
-                           (click)="activateInsighter(insighter.id)">
-                          <i class="ki-duotone ki-check me-2">
-                            <span class="path1"></span>
-                            <span class="path2"></span>
-                          </i>
-                          {{ 'MY_COMPANY.ACTIVATE' | translate }}
-                        </a>
-                      </li>
-                      <li *ngIf="(insighter.roles && insighter.roles.includes('company') && insighter.company && insighter.company.status === 'active' ||
-                                (!insighter.roles || !insighter.roles.includes('company')) && insighter.insighter_status === 'active' && insighter.verified_as_insighter)">
-                        <a class="dropdown-item text-warning"
-                           (click)="deactivateInsighter(insighter.id)">
-                          <i class="ki-duotone ki-shield-slash me-2">
-                            <span class="path1"></span>
-                            <span class="path2"></span>
-                            <span class="path3"></span>
-                            <span class="path4"></span>
-                          </i>
-                          {{ 'MY_COMPANY.DEACTIVATE' | translate }}
-                        </a>
-                      </li>
-                      <li><hr class="dropdown-divider"></li>
-                      <li>
-                        <a class="dropdown-item text-danger"
-                           (click)="deleteInsighter(insighter.id)">
-                          <i class="ki-duotone ki-trash me-2">
-                            <span class="path1"></span>
-                            <span class="path2"></span>
-                            <span class="path3"></span>
-                            <span class="path4"></span>
-                            <span class="path5"></span>
-                          </i>
-                          {{ 'MY_COMPANY.DELETE' | translate }}
-                        </a>
-                      </li>
-                    </ul>
+
+                    <div class="dropdown-menu action-menu dropdown-menu-end" role="menu">
+                      <div class="action-menu-grid">
+                        <button type="button"
+                                class="dropdown-item menu-action menu-action--activate"
+                                *ngIf="(insighter.roles && insighter.roles.includes('company') && insighter.company && insighter.company.status === 'inactive' ||
+                                         (!insighter.roles || !insighter.roles.includes('company')) && insighter.insighter_status === 'inactive')"
+                                (click)="activateInsighter(insighter.id)">
+                          <i class="ki-duotone ki-check"></i>
+                          <span>{{ 'MY_COMPANY.ACTIVATE' | translate }}</span>
+                        </button>
+
+                        <button type="button"
+                                class="dropdown-item menu-action menu-action--deactivate"
+                                *ngIf="(insighter.roles && insighter.roles.includes('company') && insighter.company && insighter.company.status === 'active' ||
+                                         (!insighter.roles || !insighter.roles.includes('company')) && insighter.insighter_status === 'active' && insighter.verified_as_insighter)"
+                                (click)="deactivateInsighter(insighter.id)">
+                          <i class="ki-duotone ki-shield-slash"></i>
+                          <span>{{ 'MY_COMPANY.DEACTIVATE' | translate }}</span>
+                        </button>
+
+                        <button type="button"
+                                class="dropdown-item menu-action menu-action--delete"
+                                (click)="deleteInsighter(insighter.id)">
+                          <i class="ki-duotone ki-trash"></i>
+                          <span>{{ 'MY_COMPANY.DELETE' | translate }}</span>
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
                 <!-- Main Content Area -->
-                <div class="d-flex gap-4">
+                <div class="d-flex gap-4 content-flex">
                   <!-- Identity Section -->
                   <div class="identity-block flex-shrink-0">
                     <div class="avatar-wrapper">
                       <!-- Avatar Backdrop -->
-                      <svg class="avatar-backdrop" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <svg class="avatar-backdrop" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                         <circle cx="50" cy="50" r="45" fill="url(#avatarGradient)" />
                         <defs>
                           <radialGradient id="avatarGradient" cx="0" cy="0" r="1">
@@ -452,43 +556,44 @@
 
                   <!-- Details Section -->
                   <div class="card-details flex-grow-1">
-                    <!-- Basic Info -->
-                    <div class="info-list">
-                      <div class="info-item">
-                        <i class="ki-duotone ki-sms fs-6 text-muted me-2">
-                          <span class="path1"></span>
-                          <span class="path2"></span>
-                        </i>
-                        <span class="text-gray-700 fs-7">{{ insighter.email }}</span>
-                      </div>
-                      <div class="info-item">
-                        <i class="ki-duotone ki-geolocation fs-6 text-muted me-2">
-                          <span class="path1"></span>
-                          <span class="path2"></span>
-                        </i>
-                        <span class="text-gray-700 fs-7">{{ insighter.country || 'N/A' }}</span>
-                      </div>
-                    </div>
+                  </div>
+                </div> <!-- /content-flex -->
+
+                <div class="meta-footer">
+                  <div class="meta-item meta-email">
+                    <i class="ki-duotone ki-sms fs-6 text-muted" aria-hidden="true"></i>
+                    <span class="meta-text text-muted" [attr.title]="insighter.email">{{ insighter.email }}</span>
+                  </div>
+                  <div class="meta-item meta-country">
+                    <img
+                      [src]="getCountryFlag(insighter.country)"
+                      class="country-flag"
+                      [attr.alt]="(insighter.country || 'Unknown') + ' flag'"
+                      [attr.title]="insighter.country || 'Unknown'"
+                      (error)="handleFlagError($event)"
+                    />
+                    <span class="visually-hidden">{{ insighter.country || 'Unknown' }}</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        
-        <!-- Pagination for Grid View -->
-        <div class="d-flex justify-content-between align-items-center flex-wrap mt-4">
-          <div class="d-flex flex-wrap py-2">
-            <p-paginator 
-              [rows]="rows" 
-              [totalRecords]="totalRecords" 
-              [first]="first"
-              [showCurrentPageReport]="true"
-              currentPageReportTemplate="{{ 'MY_COMPANY.SHOWING_ENTRIES' | translate:{first: '{first}', last: '{last}', total: '{totalRecords}'} }}"
-              (onPageChange)="onPageChange($event)">
-            </p-paginator>
+
+          <!-- Pagination for Grid View -->
+          <div class="d-flex justify-content-between align-items-center flex-wrap mt-4">
+            <div class="d-flex flex-wrap py-2">
+              <p-paginator
+                [rows]="rows"
+                [totalRecords]="totalRecords"
+                [first]="first"
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="{{ 'MY_COMPANY.SHOWING_ENTRIES' | translate:{first: '{first}', last: '{last}', total: '{totalRecords}'} }}"
+                (onPageChange)="onPageChange($event)">
+              </p-paginator>
+            </div>
           </div>
         </div>
+
       </div>
     </div>
   </div>
@@ -698,3 +803,4 @@
                  rejectIcon="ki-duotone ki-cross"></p-confirmDialog>
 
 </div>
+}

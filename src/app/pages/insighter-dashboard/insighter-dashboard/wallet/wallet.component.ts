@@ -324,7 +324,7 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy 
   getTranslation(key: string): string {
     const translations: { [key: string]: { en: string; ar: string } } = {
       'currentWalletBalance': { en: 'Current Wallet Balance', ar: 'رصيد المحفظة الحالي' },
-      'transactionsHistory': { en: 'Transactions History', ar: 'سجل المعاملات' },
+      'transactionsHistory': { en: 'Wallet Transactions History', ar: 'سجل معاملات المحفظة' },
       'transactionsSubtitle': { en: 'Track money coming in and going out from this area.', ar: 'تتبع الأموال الواردة والصادرة من هذه المنطقة.' },
       'service': { en: 'Service', ar: 'الخدمة' },
       'date': { en: 'Date', ar: 'التاريخ' },

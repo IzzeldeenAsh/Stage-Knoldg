@@ -1,0 +1,53 @@
+:host {
+  display: block;
+}
+
+:host .order-details .card-flush {
+  border: 1px solid #e1e3ea !important;
+}
+
+:host .text-info {
+  color: #0978B9 !important;
+}
+
+:host .bg-light-info {
+  background-color: #F1FAFE !important;
+}
+
+:host .btn-light-info {
+  background-color: #F1FAFE;
+  border-color: transparent;
+  color: #0978B9;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #E8F4FD;
+    color: #0978B9;
+  }
+}
+
+:host .btn-info {
+  background-color: #0978B9;
+  border-color: #0978B9;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #0866A1;
+    border-color: #0866A1;
+  }
+}
+
+:host .badge-light-success {
+  background-color: rgba(80, 205, 137, 0.1);
+  color: #50cd89;
+}
+
+:host .badge-light-warning {
+  background-color: rgba(255, 187, 34, 0.1);
+  color: #ffbb22;
+}
+
+:host .badge-light-danger {
+  background-color: rgba(255, 77, 79, 0.1);
+  color: #ff4d4f;
+}

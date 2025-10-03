@@ -1,314 +1,426 @@
-// Clean, minimal grid view styling for My Company cards
-// 3 cards per row on laptop screens, no shadows, minimal radius
-
-$primary: #0a7abf;
-$primary-soft: #f8fbff;
-$border-light: #e1ebf5;
-$text-dark: #1e2329;
-$text-muted: #64748b;
-$bg-white: #ffffff;
-
-.grid-view {
-  .horizontal-card {
-    border: 1px solid $border-light;
-    border-radius: 6px; // Reduced from 16px
-    background: $bg-white;
-    background-image: url('https://res.cloudinary.com/dsiku9ipv/image/upload/v1746774746/Artboard_3_r89a4q.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    transition: all 0.3s ease;
-    height: 180px; // Reduced height since no knowledge info
-    position: relative;
-
-    // Add a subtle overlay to ensure text readability
-
-    &:hover {
-      transform: translateY(-1px); // Subtle movement
-      border-color: lighten($primary, 20%);
-
-      &::before {
-        background: rgba(255, 255, 255, 0.9);
-      }
-    }
-
-    .card-body {
-      padding: 16px; // Reduced padding
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      z-index: 2; // Ensure content is above the overlay
-    }
-  }
-
-  // Top section with status and actions
-  .card-top {
-    .status-pill {
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.025em;
-      padding: 4px 12px;
-      border-radius: 4px; // Reduced radius
-      text-transform: uppercase;
-    }
-
-    .action-dropdown {
-      .action-trigger {
-        width: 30px;
-        height: 30px;
-        border-radius: 4px; // Reduced radius
-        background: $primary-soft;
-        border: 0;
-        color: $primary;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s ease;
-
-        &:hover,
-        &:focus {
-          background: darken($primary-soft, 5%);
-          color: darken($primary, 10%);
-        }
-      }
-
-      .action-menu {
-        min-width: 180px;
-        border: 1px solid $border-light;
-        border-radius: 6px; // Reduced radius
-        background: $bg-white;
-        z-index: 1000; // Ensure dropdown appears above background
-
-        .dropdown-item {
-          font-size: 0.85rem;
-          font-weight: 500;
-          padding: 8px 16px;
-          color: $text-dark;
-          border-radius: 4px; // Reduced radius
-          margin: 4px;
-
-          i {
-            font-size: 0.9rem;
-            width: 16px;
-          }
-
-          &:hover {
-            background: $primary-soft;
-            color: $primary;
-          }
-
-          &.text-warning:hover {
-            background: rgba(255, 193, 7, 0.1);
-            color: #ffc107;
-          }
-
-          &.text-danger:hover {
-            background: rgba(220, 53, 69, 0.1);
-            color: #dc3545;
-          }
-        }
-      }
-    }
-  }
-
-  // Identity section with larger avatar
-  .identity-block {
-    min-width: 100px;
-    text-align: center;
-
-    .avatar-wrapper {
-      width: 70px;
-      height: 70px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      margin: 0 auto;
-    }
-
-    .avatar-backdrop {
-      position: absolute;
-      width: 80px;
-      height: 80px;
-      opacity: 0.4;
-    }
-
-    .avatar-image,
-    .avatar-fallback {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      border: 2px solid $bg-white;
-      position: relative;
-      z-index: 2;
-    }
-
-    .avatar-image {
-      object-fit: cover;
-      object-position: center;
-    }
-
-    .avatar-fallback {
-      background: linear-gradient(135deg, $primary-soft, lighten($primary-soft, 3%));
-      color: $primary;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .identity-name {
-      font-size: 1rem;
-      font-weight: 700;
-      color: $text-dark;
-      line-height: 1.3;
-      margin-bottom: 4px;
-    }
-
-    .identity-role {
-      font-size: 0.7rem;
-      font-weight: 600;
-      color: $primary;
-    }
-  }
-
-  // Details section
-  .card-details {
-    .info-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-
-      .info-item {
-        display: flex;
-        align-items: center;
-        padding: 0;
-        margin: 0;
-        background: none;
-        border: none;
-
-        i {
-          flex-shrink: 0;
-        }
-
-        span {
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-      }
-    }
-  }
+/* ألوان وخلفيات ثابتة */
+:root {
+  --primary: #0a7abf;
+  --primary-soft: #f8fbff;
+  --border-light: #e1ebf5;
+  --text-dark: #1e2329;
+  --bg-white: #ffffff;
 }
 
-// Special border for company users
+
+/* البطاقة الأساسية */
+.grid-view .horizontal-card {
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  background: var(--bg-white);
+  background-image: url('https://res.cloudinary.com/dsiku9ipv/image/upload/v1746774746/Artboard_3_r89a4q.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: all 0.3s ease;
+  height: 180px;
+  position: relative;
+
+}
+.grid-view .horizontal-card:hover {
+  transform: translateY(-1px);
+  border-color: #6ec0ef; /* lighten(#0a7abf, ~20%) */
+}
+.grid-view .horizontal-card .card-body {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 2;
+}
+
+/* أعلى البطاقة */
+.grid-view .card-top {
+  display: flex;
+  justify-content: flex-start;
+  gap: 12px;
+  position: relative;
+  padding-inline-end: 40px;
+}
+
+.grid-view .card-top .action-dropdown {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 3;
+}
+
+[dir="rtl"] .grid-view .card-top .action-dropdown {
+  right: auto;
+  left: 0;
+}
+
+/* شارة الحالة */
+.grid-view .status-pill {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  padding: 4px 12px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+/* زر الإجراءات */
+.grid-view .action-dropdown .action-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid var(--border-light);
+  background: var(--primary-soft);
+  color: var(--text-dark);
+  transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+.grid-view .action-dropdown .action-trigger:hover,
+.grid-view .action-dropdown .action-trigger:focus {
+  background: #fff;
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.grid-view .action-dropdown .action-trigger:active {
+  transform: scale(0.96);
+}
+
+/* القائمة المنسدلة */
+.grid-view .action-dropdown .action-menu {
+  min-width: 220px;
+  padding: 12px;
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 12px 24px rgba(15, 42, 77, 0.12);
+}
+.grid-view .action-dropdown .action-menu .action-menu-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.grid-view .action-dropdown .action-menu .menu-action {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-dark);
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+.grid-view .action-dropdown .action-menu .menu-action:hover,
+.grid-view .action-dropdown .action-menu .menu-action:focus {
+  background: var(--primary-soft);
+  color: var(--primary);
+  transform: translateX(2px);
+}
+.grid-view .action-dropdown .action-menu .menu-action i,
+.grid-view .action-dropdown .action-menu .menu-action span {
+  transition: transform 0.15s ease;
+}
+.grid-view .action-dropdown .action-menu .menu-action:hover i {
+  transform: translateX(1px);
+}
+.grid-view .action-dropdown .action-menu .menu-action:hover span {
+  transform: translateX(2px);
+}
+/* ألوان تلميحية لكل فعل */
+.grid-view .action-dropdown .action-menu .menu-action--activate:hover {
+  background: rgba(25, 135, 84, 0.12);
+  color: #0f5132;
+}
+.grid-view .action-dropdown .action-menu .menu-action--deactivate:hover {
+  background: rgba(255, 193, 7, 0.18);
+  color: #805b00;
+}
+.grid-view .action-dropdown .action-menu .menu-action--delete:hover {
+  background: rgba(220, 53, 69, 0.14);
+  color: #a71d2a;
+}
+
+/* منطقة المحتوى الأفقي */
+.grid-view .content-flex {
+  display: flex;
+  gap: 1rem;
+  margin-top: 12px;
+}
+
+/* الهوية */
+.grid-view .identity-block {
+  min-width: 100px;
+  text-align: center;
+}
+.grid-view .identity-block .avatar-wrapper {
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin: 0 auto;
+}
+.grid-view .identity-block .avatar-backdrop {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  opacity: 0.4;
+}
+.grid-view .identity-block .avatar-image,
+.grid-view .identity-block .avatar-fallback {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 2px solid var(--bg-white);
+  position: relative;
+  z-index: 2;
+}
+.grid-view .identity-block .avatar-image {
+  object-fit: cover;
+  object-position: center;
+}
+.grid-view .identity-block .avatar-fallback {
+  background: linear-gradient(135deg, var(--primary-soft), #ffffff);
+  color: var(--primary);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.grid-view .identity-block .identity-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  line-height: 1.3;
+  margin: 6px 0 4px;
+}
+.grid-view .identity-block .identity-role {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+/* تفاصيل */
+.grid-view .card-details .info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.grid-view .card-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.grid-view .card-details .info-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.grid-view .meta-footer {
+  margin-top: auto;
+  padding-top: 3px;
+  border-top: 1px solid #ededed;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.grid-view .meta-footer .meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+
+}
+
+.grid-view .meta-footer .meta-email {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.grid-view .meta-footer .meta-country {
+  flex: 0 0 auto;
+}
+
+.grid-view .meta-footer .meta-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* تمييز مستخدم الشركة */
 .border-orange {
   border-color: #00b1f9 !important;
-
-  &:hover {
-    border-color: darken(#00aeff, 15%) !important;
-  }
+}
+.border-orange:hover {
+  border-color: #0092d1 !important; /* darken */
 }
 
-// Responsive adjustments
+/* دعم RTL */
+[dir="rtl"] .grid-view .action-dropdown .action-trigger {
+  /* لما يكون RTL، الإزاحة المنطقية تنعكس تلقائياً، بس بنضمن اتجاه المحتوى */
+  flex-direction: row-reverse;
+}
+[dir="rtl"] .grid-view .card-top {
+  flex-direction: row-reverse;
+}
+[dir="rtl"] .grid-view .card-details .info-item i {
+  margin-left: 0.5rem;
+  margin-right: 0;
+}
+[dir="ltr"] .grid-view .card-details .info-item i {
+  margin-right: 0.5rem;
+  margin-left: 0;
+}
+
+/* Responsiveness */
 @media (max-width: 1399px) {
   .grid-view .horizontal-card {
-    height: 170px; // Reduced height
-
-    .card-body {
-      padding: 16px;
-    }
-
-    .identity-block {
-      .avatar-wrapper {
-        width: 65px;
-        height: 65px;
-      }
-
-      .avatar-image,
-      .avatar-fallback {
-        width: 55px;
-        height: 55px;
-      }
-    }
+    height: 190px;
   }
+  .grid-view .identity-block .avatar-wrapper { width: 65px; height: 65px; }
+  .grid-view .identity-block .avatar-image,
+  .grid-view .identity-block .avatar-fallback { width: 55px; height: 55px; }
 }
-
 @media (max-width: 1199px) {
   .grid-view .horizontal-card {
-    height: 160px; // Reduced height since no knowledge info
-
-    .card-body {
-      padding: 14px;
-    }
-
-    .identity-block {
-      .avatar-wrapper {
-        width: 60px;
-        height: 60px;
-      }
-
-      .avatar-image,
-      .avatar-fallback {
-        width: 50px;
-        height: 50px;
-      }
-
-      .identity-name {
-        font-size: 0.9rem;
-      }
-    }
+    height: 160px;
   }
+  .grid-view .identity-block .avatar-wrapper { width: 60px; height: 60px; }
+  .grid-view .identity-block .avatar-image,
+  .grid-view .identity-block .avatar-fallback { width: 50px; height: 50px; }
+  .grid-view .identity-block .identity-name { font-size: 0.9rem; }
 }
-
 @media (max-width: 991px) {
   .grid-view .horizontal-card {
     height: auto;
-    min-height: 150px; // Reduced minimum height
-
-    .card-body {
-      padding: 14px;
-    }
-
-    .identity-block {
-      min-width: 80px;
-
-      .avatar-wrapper {
-        width: 55px;
-        height: 55px;
-      }
-
-      .avatar-image,
-      .avatar-fallback {
-        width: 45px;
-        height: 45px;
-      }
-    }
+    min-height: 150px;
   }
+  .grid-view .content-flex {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .grid-view .identity-block { min-width: auto; }
+  .grid-view .identity-block .avatar-wrapper { width: 55px; height: 55px; }
+  .grid-view .identity-block .avatar-image,
+  .grid-view .identity-block .avatar-fallback { width: 45px; height: 45px; }
 }
-
 @media (max-width: 767px) {
-  .grid-view .horizontal-card {
-    .card-body {
-      flex-direction: column;
-      gap: 12px;
-      padding: 12px;
-    }
-
-    .card-top {
-      order: 1;
-    }
-
-    .d-flex.gap-4 {
-      flex-direction: column;
-      gap: 12px !important;
-      order: 2;
-    }
-
-    .identity-block {
-      text-align: center;
-      min-width: auto;
-    }
-  }
+  .grid-view .card-top { margin-bottom: 8px; }
 }
+
+
+/* زر Meatballs بدون نص */
+.action-dropdown .meatballs-btn{
+  inline-size:32px;
+  block-size:32px;
+  border-radius:999px;
+  border:1px solid var(--border-light);
+  background:var(--primary-soft);
+  color:var(--text-muted);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+  transition:background .2s ease, border-color .2s ease, color .2s ease, transform .12s ease;
+  position:relative;
+  box-shadow:0 1px 2px rgba(0,0,0,.06);
+}
+
+/* رسم ثلاث نقاط */
+.action-dropdown .meatballs-btn::before{
+  content:"";
+  inline-size:4px;
+  block-size:4px;
+  border-radius:50%;
+  background:currentColor;
+  box-shadow:-8px 0 0 currentColor, 8px 0 0 currentColor; /* النقطة اليسار واليمين */
+}
+
+/* تفاعلات */
+.action-dropdown .meatballs-btn:hover,
+.action-dropdown .meatballs-btn:focus{
+  background:#fff;
+  border-color:var(--primary);
+  color:var(--primary);
+}
+.action-dropdown .meatballs-btn:active{
+  transform:scale(.96);
+}
+
+/* حالة القائمة المفتوحة */
+.action-dropdown .meatballs-btn[aria-expanded="true"]{
+  background:#fff;
+  border-color:var(--primary);
+  color:var(--primary);
+}
+
+/* إمكانية الوصول */
+.action-dropdown .meatballs-btn:focus-visible{
+  outline:2px solid #94d2ff;
+  outline-offset:2px;
+}
+
+/* القائمة (تبقى مثل ما أعطيتك) — يمكن إبقاء ستايلك السابق */
+.action-dropdown .action-menu{
+  min-width:220px;
+  padding:12px;
+  border:1px solid var(--border-light);
+  border-radius:10px;
+  background:#fff;
+  box-shadow:0 12px 24px rgba(15,42,77,.12);
+}
+.action-dropdown .action-menu .action-menu-grid{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.action-dropdown .action-menu .menu-action{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 10px;
+  border-radius:8px;
+  background:transparent;
+  color:var(--text-dark);
+  font-size:.8rem;
+  font-weight:600;
+  transition:background .2s ease, color .2s ease, transform .15s ease;
+}
+.action-dropdown .action-menu .menu-action:hover{
+  background:var(--primary-soft);
+  color:var(--primary);
+  transform:translateX(2px);
+}
+.action-dropdown .action-menu .menu-action i,
+.action-dropdown .action-menu .menu-action span{
+  transition:transform .15s ease;
+}
+.action-dropdown .action-menu .menu-action:hover i{
+  transform:translateX(1px);
+}
+.action-dropdown .action-menu .menu-action:hover span{
+  transform:translateX(2px);
+}
+.action-dropdown .action-menu .menu-action--activate:hover{
+  background:rgba(25,135,84,.12); color:#0f5132;
+}
+.action-dropdown .action-menu .menu-action--deactivate:hover{
+  background:rgba(255,193,7,.18); color:#805b00;
+}
+.action-dropdown .action-menu .menu-action--delete:hover{
+  background:rgba(220,53,69,.14); color:#a71d2a;
+}
+
+/* احترام الاتجاه — الموضع يعالج في القسم العلوي من الملف */
