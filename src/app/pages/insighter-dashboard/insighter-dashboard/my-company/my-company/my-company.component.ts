@@ -94,6 +94,7 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
   dashboardStats: DashboardStatisticsResponse['data'] | null = null;
   publishedKnowledgeChartData: any = null;
   publishedKnowledgeChartOptions: any = null;
+  publishedKnowledgeLegend: Array<{ label: string; color: string }> = [];
   knowledgeOrdersChartData: any = null;
   knowledgeOrdersChartOptions: any = null;
   meetingOrdersChartData: any = null;
@@ -149,6 +150,13 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     'east timor': 'timor-leste',
     'eswatini': 'swaziland',
     'czechia': 'czech-republic'
+  };
+  private readonly knowledgeTypeColors: Record<string, string> = {
+    insight: '#0a7abf',
+    report: '#3b9ae1',
+    manual: '#6bb6ff',
+    data: '#1e88e5',
+    course: '#42a5f5'
   };
   
   constructor(
@@ -850,30 +858,41 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
 
   // Setup published knowledge pie chart
   setupPublishedKnowledgeChart(): void {
-    if (!this.dashboardStats?.knowledge_published_statistics) return;
+    const stats = this.dashboardStats?.knowledge_published_statistics;
 
-    const stats = this.dashboardStats.knowledge_published_statistics;
+    this.publishedKnowledgeLegend = [];
+
+    if (!stats) {
+      this.publishedKnowledgeChartData = null;
+      return;
+    }
+
     const labels: string[] = [];
     const data: number[] = [];
     const backgroundColors: string[] = [];
 
-    // Define blue color grades for each knowledge type
-    const colors = {
-      insight: '#0a7abf',
-      report: '#3b9ae1',
-      manual: '#6bb6ff',
-      data: '#1e88e5',
-      course: '#42a5f5'
-    };
+    Object.entries(stats.type || {}).forEach(([type, count]) => {
+      const numericCount = Number(count) || 0;
 
-    // Build chart data from the type statistics
-    Object.entries(stats.type).forEach(([type, count]) => {
-      if (count && count > 0) {
-        labels.push(type.charAt(0).toUpperCase() + type.slice(1));
-        data.push(count);
-        backgroundColors.push(colors[type as keyof typeof colors] || '#999');
+      if (numericCount > 0) {
+        const formattedLabel = type.charAt(0).toUpperCase() + type.slice(1);
+        const color = this.knowledgeTypeColors[type as keyof typeof this.knowledgeTypeColors] || '#999';
+
+        labels.push(formattedLabel);
+        data.push(numericCount);
+        backgroundColors.push(color);
+
+        this.publishedKnowledgeLegend.push({
+          label: formattedLabel,
+          color
+        });
       }
     });
+
+    if (!data.length) {
+      this.publishedKnowledgeChartData = null;
+      return;
+    }
 
     this.publishedKnowledgeChartData = {
       labels,

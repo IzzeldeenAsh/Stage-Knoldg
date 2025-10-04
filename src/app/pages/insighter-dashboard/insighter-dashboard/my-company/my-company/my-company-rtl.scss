@@ -11,6 +11,18 @@
       text-align: right;
       align-items: flex-end;
     }
+
+    .chart-legend {
+      justify-content: flex-end;
+    }
+
+    .chart-legend__item {
+      flex-direction: row-reverse;
+    }
+
+    .chart-legend__label {
+      text-align: right;
+    }
   }
 }
 
@@ -25,6 +37,18 @@
     .chart-stat-card {
       text-align: right;
       align-items: flex-end;
+    }
+
+    .chart-legend {
+      justify-content: flex-end;
+    }
+
+    .chart-legend__item {
+      flex-direction: row-reverse;
+    }
+
+    .chart-legend__label {
+      text-align: right;
     }
   }
 }
