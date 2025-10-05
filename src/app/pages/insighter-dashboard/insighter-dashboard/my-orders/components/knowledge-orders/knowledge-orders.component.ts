@@ -27,6 +27,7 @@ export class KnowledgeOrdersComponent {
 
   @Input() canViewSalesTabs = false;
   @Input() knowledgeSubTab: KnowledgeSubTab = 'purchased';
+  @Input() selectedInsighterUuid: string | null = null;
 
   @Output() knowledgeSubTabChange = new EventEmitter<KnowledgeSubTab>();
   @Output() pageChange = new EventEmitter<number>();
@@ -35,6 +36,7 @@ export class KnowledgeOrdersComponent {
   @Output() invoiceDownload = new EventEmitter<Order>();
   @Output() navigateToDownloads = new EventEmitter<Order>();
   @Output() copyOrderNo = new EventEmitter<string>();
+  @Output() insighterFilterChange = new EventEmitter<string | null>();
 
   readonly utils = OrderViewUtils;
 
@@ -66,6 +68,10 @@ export class KnowledgeOrdersComponent {
 
   copyOrder(orderNo: string): void {
     this.copyOrderNo.emit(orderNo);
+  }
+
+  onInsighterFilterChange(insighterUuid: string | null): void {
+    this.insighterFilterChange.emit(insighterUuid);
   }
 
 }

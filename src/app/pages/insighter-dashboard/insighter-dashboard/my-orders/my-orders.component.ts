@@ -38,6 +38,7 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
   currentMeetingSalesPage = 1;
 
   roles: string[] = [];
+  selectedInsighterUuid: string | null = null;
   private knowledgeSalesLoaded = false;
   private meetingSalesLoaded = false;
   private rolesLoaded = false;
@@ -83,7 +84,7 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
   }
 
   get canViewSalesTabs(): boolean {
-    return this.resolveSalesRole() !== null;
+    return this.roles.includes('company');
   }
 
   get currentLang(): 'ar' | 'en' {
@@ -95,7 +96,7 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
     this.loadOrders();
     this.loadMeetingOrders();
     // Load statistics only if not already loaded by the header component
-    if (!this.orderStatisticsService.getCurrentStatistics()) {
+    if (!this.orderStatisticsService.getCurrentStatistics() && this.roles.includes('company')) {
       this.orderStatisticsService.loadStatistics();
     }
   }
@@ -269,7 +270,7 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
     }
 
     this.currentSalesPage = page;
-    this.myOrdersService.getSalesKnowledgeOrders(page, role).pipe(
+    this.myOrdersService.getSalesKnowledgeOrders(page, role, this.selectedInsighterUuid || undefined).pipe(
       catchError((error) => {
         this.handleServerErrors(error);
         return of({
@@ -297,7 +298,7 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
     }
 
     this.currentMeetingSalesPage = page;
-    this.myOrdersService.getSalesMeetingOrders(page, role).pipe(
+    this.myOrdersService.getSalesMeetingOrders(page, role, this.selectedInsighterUuid || undefined).pipe(
       catchError((error) => {
         this.handleServerErrors(error);
         return of({
@@ -336,6 +337,25 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
       this.router.createUrlTree(['/app/invoice', orderNumber])
     );
     window.open(url, '_blank');
+  }
+
+  onInsighterFilterChange(insighterUuid: string | null): void {
+    this.selectedInsighterUuid = insighterUuid;
+
+    // Reset page to 1 when filtering
+    this.currentSalesPage = 1;
+    this.currentMeetingSalesPage = 1;
+
+    // Reload sales data with new filter
+    if (this.knowledgeSubTab === 'sales' && this.canViewSalesTabs) {
+      this.knowledgeSalesLoaded = false;
+      this.loadSalesKnowledgeOrders(1);
+    }
+
+    if (this.meetingSubTab === 'sales' && this.canViewSalesTabs) {
+      this.meetingSalesLoaded = false;
+      this.loadSalesMeetingOrders(1);
+    }
   }
 
   private handleServerErrors(error: any) {

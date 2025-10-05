@@ -139,7 +139,7 @@ export class CallbackComponent extends BaseComponent implements OnInit, OnDestro
     const returnUrl = this.getReturnUrlFromCookie();
     
     // Build the redirect URL
-    let redirectUrl = `http://localhost:3000/en/callback`;
+    let redirectUrl = `https://knoldg.com/en/callback`;
     
     if (this.token) {
       redirectUrl += `/${this.token}`;
@@ -207,7 +207,7 @@ export class CallbackComponent extends BaseComponent implements OnInit, OnDestro
           'Accept-Language': 'en',
         });
         
-        return this.http.post('https://api.foresighta.co/api/account/timezone/set', 
+        return this.http.post('https://api.knoldg.com/api/account/timezone/set', 
           { timezone: userTimezone }, 
           { headers }
         );

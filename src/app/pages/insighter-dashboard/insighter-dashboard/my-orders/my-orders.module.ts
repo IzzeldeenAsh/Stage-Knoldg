@@ -6,12 +6,14 @@ import { KnowledgeOrdersComponent } from './components/knowledge-orders/knowledg
 import { MeetingOrdersComponent } from './components/meeting-orders/meeting-orders.component';
 import { OrderDetailsDialogComponent } from './components/order-details-dialog/order-details-dialog.component';
 import { MeetingOrderDetailsDialogComponent } from './components/meeting-order-details-dialog/meeting-order-details-dialog.component';
+import { InsighterFilterComponent } from './components/insighter-filter/insighter-filter.component';
 import { TranslationModule } from 'src/app/modules/i18n';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { DialogModule } from 'primeng/dialog';
 import { PaginatorModule } from 'primeng/paginator';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
+import { DropdownModule } from 'primeng/dropdown';
 
 @NgModule({
   declarations: [
@@ -19,7 +21,8 @@ import { TooltipModule } from 'primeng/tooltip';
     KnowledgeOrdersComponent,
     MeetingOrdersComponent,
     OrderDetailsDialogComponent,
-    MeetingOrderDetailsDialogComponent
+    MeetingOrderDetailsDialogComponent,
+    InsighterFilterComponent
   ],
   imports: [
     CommonModule,
@@ -29,7 +32,8 @@ import { TooltipModule } from 'primeng/tooltip';
     DialogModule,
     PaginatorModule,
     ButtonModule,
-    TooltipModule
+    TooltipModule,
+    DropdownModule
   ]
 })
 export class MyOrdersModule { }

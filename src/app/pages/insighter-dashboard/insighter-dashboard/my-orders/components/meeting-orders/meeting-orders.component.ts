@@ -26,6 +26,7 @@ export class MeetingOrdersComponent {
 
   @Input() canViewSalesTabs = false;
   @Input() meetingSubTab: MeetingSubTab = 'purchased';
+  @Input() selectedInsighterUuid: string | null = null;
 
   @Output() meetingSubTabChange = new EventEmitter<MeetingSubTab>();
   @Output() meetingPageChange = new EventEmitter<number>();
@@ -33,6 +34,7 @@ export class MeetingOrdersComponent {
   @Output() meetingOrderSelected = new EventEmitter<Order>();
   @Output() invoiceDownload = new EventEmitter<Order>();
   @Output() copyOrderNo = new EventEmitter<string>();
+  @Output() insighterFilterChange = new EventEmitter<string | null>();
 
   readonly utils = OrderViewUtils;
 
@@ -60,5 +62,9 @@ export class MeetingOrdersComponent {
 
   copyOrder(orderNo: string): void {
     this.copyOrderNo.emit(orderNo);
+  }
+
+  onInsighterFilterChange(insighterUuid: string | null): void {
+    this.insighterFilterChange.emit(insighterUuid);
   }
 }

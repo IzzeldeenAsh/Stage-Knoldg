@@ -3,7 +3,7 @@
   <div *ngIf="loading" class="text-center py-10 bg-light rounded mb-5 border border-1 border-light">
     <div class="my-5">
         <div class="spinner-border text-primary mb-4" role="status" style="width: 3rem; height: 3rem;">
-            <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
+            <span class="visually-hidden">{{ getTranslation('loading') }}</span>
         </div>
         <h3 class="fw-bold text-gray-800 mb-2">Loading Team</h3>
         <p class="text-gray-600 fs-6 px-3">Please wait while we fetch your team...</p>
@@ -14,35 +14,36 @@
 <div class="my-company-container">
       <!-- Dashboard Statistics Charts -->
       <div *ngIf="dashboardStats" class="row g-4 mb-6">
-        <!-- Published Knowledge Chart -->
-        <div class="col-lg-4 col-12">
+        <!-- Published Knowledge Overview -->
+        <div class="col-12 col-lg-6 ">
           <div class="card border-0 h-100">
-            <div class="card-body chart-card text-center">
-              <div class="chart-card__header">
-                <h6 class="card-title fw-bold text-gray-800 mb-0">Published Knowledge</h6>
-              </div>
-              <ng-container *ngIf="publishedKnowledgeChartData; else publishedKnowledgeEmpty">
+            <div class="chart-card__header px-6 pt-6">
+              <h6 class="card-title fw-bold text-gray-800 mb-0">{{ getTranslation('publishedKnowledge') }}</h6>
+            </div>
+            <div class="card-body chart-card chart-card--centered">
+            
+              <ng-container *ngIf="publishedKnowledgeDonutData; else publishedKnowledgeDonutEmpty">
                 <div class="donut-wrapper">
                   <p-chart
                     type="doughnut"
-                    [data]="publishedKnowledgeChartData"
-                    [options]="publishedKnowledgeChartOptions"
+                    [data]="publishedKnowledgeDonutData"
+                    [options]="publishedKnowledgeDonutOptions"
                     width="160"
                     height="160">
                   </p-chart>
                   <div class="donut-wrapper__center">
-                    <div class="donut-wrapper__total">{{ dashboardStats.knowledge_published_statistics.total }}</div>
+                    <div class="donut-wrapper__total">{{ totalPublishedKnowledge }}</div>
                     <div class="donut-wrapper__label">Total</div>
                   </div>
                 </div>
-              <div *ngIf="publishedKnowledgeLegend.length" class="chart-legend mt-4">
-                <div *ngFor="let legendItem of publishedKnowledgeLegend" class="chart-legend__item">
-                  <span class="chart-legend__swatch" [style.backgroundColor]="legendItem.color"></span>
-                  <span class="chart-legend__label">{{ legendItem.label }}</span>
+                <div *ngIf="knowledgeTypeLegend.length" class="chart-legend mt-4">
+                  <div *ngFor="let legendItem of knowledgeTypeLegend" class="chart-legend__item">
+                    <span class="chart-legend__swatch" [style.backgroundColor]="legendItem.color"></span>
+                    <span class="chart-legend__label">{{ legendItem.label }}</span>
+                  </div>
                 </div>
-              </div>
               </ng-container>
-              <ng-template #publishedKnowledgeEmpty>
+              <ng-template #publishedKnowledgeDonutEmpty>
                 <div class="chart-card__empty">
                   <i class="ki-duotone ki-file fs-2x text-muted mb-2"></i>
                   <div class="text-muted fs-7">No data available</div>
@@ -51,19 +52,63 @@
             </div>
           </div>
         </div>
-  
-        <!-- Knowledge Orders Chart -->
-        <div class="col-lg-4 col-12">
+
+        <!-- Published Knowledge by Insighter -->
+        <div class="col-12 col-lg-6 ">
           <div class="card border-0 h-100">
             <div class="card-body chart-card">
-              <h6 class="card-title fw-bold text-gray-800 mb-4 text-center">Knowledge Orders</h6>
+              <div class="chart-card__header">
+                <h6 class="text-start fw-bold text-gray-800 mb-0">{{ getTranslation('publishedKnowledgeByInsighter') }}</h6>
+              </div>
+              <div class="chart-stat-cards mb-4">
+                <div class="chart-stat-card">
+                  <span class="chart-stat-card__label">{{ getTranslation('totalPublished') }}</span>
+                  <span class="chart-stat-card__value">{{ totalPublishedKnowledge }}</span>
+                </div>
+                <div class="chart-stat-card">
+                  <span class="chart-stat-card__label">{{ getTranslation('totalMeetings') }}</span>
+                  <span class="chart-stat-card__value">{{ totalMeetings }}</span>
+                </div>
+              </div>
+              <ng-container *ngIf="publishedKnowledgeChartData; else publishedKnowledgeStackedEmpty">
+                <div class="bar-chart-wrapper">
+                  <p-chart
+                    type="bar"
+                    [data]="publishedKnowledgeChartData"
+                    [options]="publishedKnowledgeChartOptions"
+                    width="100%"
+                    height="220">
+                  </p-chart>
+                </div>
+                <div *ngIf="publishedKnowledgeLegend.length" class="chart-legend mt-4">
+                  <div *ngFor="let legendItem of publishedKnowledgeLegend" class="chart-legend__item">
+                    <span class="chart-legend__swatch" [style.backgroundColor]="legendItem.color"></span>
+                    <span class="chart-legend__label">{{ legendItem.label }}</span>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-template #publishedKnowledgeStackedEmpty>
+                <div class="chart-card__empty">
+                  <i class="ki-duotone ki-chart-line fs-2x text-muted mb-2"></i>
+                  <div class="text-muted fs-7">No data available</div>
+                </div>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+
+        <!-- Knowledge Orders Chart -->
+        <div class="col-12 col-lg-6 ">
+          <div class="card border-0 h-100">
+            <div class="card-body chart-card text-center">
+              <h6 class="card-title fw-bold text-start mb-4">{{ getTranslation('knowledgeOrders') }}</h6>
               <div *ngIf="dashboardStats?.knowledge_order_statistics" class="chart-stat-cards mb-4">
                 <div class="chart-stat-card">
-                  <span class="chart-stat-card__label">Orders Amount</span>
+                  <span class="chart-stat-card__label">{{ getTranslation('ordersAmount') }}</span>
                   <span class="chart-stat-card__value">{{ formatCurrency(dashboardStats.knowledge_order_statistics.orders_amount) }}</span>
                 </div>
                 <div class="chart-stat-card">
-                  <span class="chart-stat-card__label">Company Net Share</span>
+                  <span class="chart-stat-card__label">{{ getTranslation('companyNetShare') }}</span>
                   <span class="chart-stat-card__value">{{ formatCurrency(dashboardStats.knowledge_order_statistics.company_orders_amount) }}</span>
                 </div>
               </div>
@@ -85,17 +130,17 @@
         </div>
   
         <!-- Meeting Orders Chart -->
-        <div class="col-lg-4 col-12">
+        <div class="col-12 col-lg-6 ">
           <div class="card border-0 h-100">
-            <div class="card-body chart-card">
-              <h6 class="card-title fw-bold text-gray-800 mb-4 text-center">Meeting Orders</h6>
+            <div class="card-body chart-card text-start">
+              <h6 class="card-title fw-bold text-gray-800 mb-4">{{ getTranslation('meetingOrders') }}</h6>
               <div *ngIf="dashboardStats?.meeting_booking_order_statistics" class="chart-stat-cards mb-4">
                 <div class="chart-stat-card">
-                  <span class="chart-stat-card__label">Orders Amount</span>
+                  <span class="chart-stat-card__label">{{ getTranslation('ordersAmount') }}</span>
                   <span class="chart-stat-card__value">{{ formatCurrency(dashboardStats.meeting_booking_order_statistics.orders_amount) }}</span>
                 </div>
                 <div class="chart-stat-card">
-                  <span class="chart-stat-card__label">Company Net Share</span>
+                  <span class="chart-stat-card__label">{{ getTranslation('companyNetShare') }}</span>
                   <span class="chart-stat-card__value">{{ formatCurrency(dashboardStats.meeting_booking_order_statistics.company_orders_amount) }}</span>
                 </div>
               </div>
@@ -116,13 +161,13 @@
           </div>
         </div>
       </div>
-  
+
 <div class="card mb-5 mb-xl-10 p-0">
   <!-- Header -->
   <div class="card-header border-0 pt-5">
     <h3 class="card-title align-items-start flex-column">
-      <span class="card-label fw-bold fs-3 mb-1">{{ 'MY_COMPANY.TITLE' | translate }}</span>
-      <span class="text-muted mt-1 fw-semibold fs-7">{{ 'MY_COMPANY.SUBTITLE' | translate }}</span>
+      <span class="card-label fw-bold fs-3 mb-1">{{ getTranslation('title') }}</span>
+      <span class="text-muted mt-1 fw-semibold fs-7">{{ getTranslation('subtitle') }}</span>
     </h3>
     <div class="card-toolbar d-flex align-items-center">
       <!-- View Toggle -->
@@ -175,7 +220,7 @@
       
       <button type="button" class="btn btn-sm btn-light-info" (click)="openAddEmployeeModal()">
         <i class="ki-duotone ki-plus fs-2"></i>
-        {{ 'MY_COMPANY.ADD_EMPLOYEE' | translate }}
+        {{ getTranslation('addEmployee') }}
       </button>
     </div>
   </div>
@@ -188,9 +233,9 @@
       <div class="symbol symbol-200px symbol-circle mb-7">
         <img src="./assets/media/illustrations/sigma-1/5568706.jpg" alt="company image" />
       </div>
-      <h2 class="fw-bold text-gray-800">{{ 'MY_COMPANY.ADD_EMPLOYEE' | translate }}</h2>
+      <h2 class="fw-bold text-gray-800">{{ getTranslation('addEmployee') }}</h2>
       <div class="fs-6 mb-5 text-gray-600">
-        {{ 'MY_COMPANY.EMPTY_STATE_MESSAGE' | translate }}
+        {{ getTranslation('emptyStateMessage') }}
       </div>
     </div>
     
@@ -464,12 +509,13 @@
       <!-- Grid View -->
       <div *ngIf="viewMode === 'grid'" class="grid-view">
         <div class="row g-4">
-          <div *ngFor="let insighter of gridInsighters" class="col-xl-4 col-lg-6 col-12">
+          <div *ngFor="let insighter of gridInsighters" class="col-xl-6 col-lg-6 col-12">
             <div class="card horizontal-card" [ngClass]="{'border-orange': insighter.roles.includes('company')}">
               <div class="card-body" style="padding: 10px !important">
 
                 <!-- Top Section -->
-                <div class="card-top d-flex align-items-start">
+                <div class="card-top d-flex align-items-start justify-content-between"
+                     [ngClass]="{'card-top--rtl': lang === 'ar'}">
                   <!-- Status Badge -->
                   <span [class]="'badge status-pill ' + getStatusBadgeClass(insighter.insighter_status)">
                     {{
@@ -481,6 +527,10 @@
 
                   <!-- Actions (meatballs) pinned to far edge -->
                   <div class="action-dropdown dropdown"
+                       [ngClass]="{
+                         'order-first': lang === 'ar',
+                         'action-dropdown--rtl': lang === 'ar'
+                       }"
                        *ngIf="!(insighter.roles && insighter.roles.includes('company'))">
                     <button class="action-trigger meatballs-btn"
                             type="button"
@@ -489,7 +539,7 @@
                             aria-label="More actions">
                     </button>
 
-                    <div class="dropdown-menu action-menu dropdown-menu-end" role="menu">
+                    <div class="dropdown-menu action-menu" [ngClass]="lang === 'ar' ? 'dropdown-menu-start' : 'dropdown-menu-end'" role="menu">
                       <div class="action-menu-grid">
                         <button type="button"
                                 class="dropdown-item menu-action menu-action--activate"
@@ -567,6 +617,64 @@
 
                   <!-- Details Section -->
                   <div class="card-details flex-grow-1">
+                    <!-- Three Statistics Cards -->
+                    <div class="row g-3 mb-3">
+                      <!-- Published Knowledge -->
+                      <div class="col-4">
+                        <div class="stat-card h-100" style="background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%); border: 1px solid #e5e7eb; border-radius: 6px;">
+                          <div class="p-4">
+                            <div class="d-flex align-items-center mb-3">
+                              <div class="symbol symbol-35px symbol-circle me-2" >
+                                <i class="ki-duotone ki-document fs-6 text-success">
+                                  <span class="path1"></span>
+                                  <span class="path2"></span>
+                                </i>
+                              </div>
+                              <span class="fs-7 fw-semibold text-success">{{ getTranslation('published') }}</span>
+                            </div>
+                            <div class="fw-bold" style="font-size: 2rem; line-height: 1; color: #1f2937;">{{ getInsighterPublishedCount(insighter) }}</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Total Amount -->
+                      <div class="col-4">
+                        <div class="stat-card h-100" style="background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%); border: 1px solid #e5e7eb; border-radius: 6px;">
+                          <div class="p-4">
+                            <div class="d-flex align-items-center mb-3">
+                              <div class="symbol symbol-35px symbol-circle me-2">
+                                <i class="ki-duotone ki-dollar fs-6 text-info">
+                                  <span class="path1"></span>
+                                  <span class="path2"></span>
+                                  <span class="path3"></span>
+                                </i>
+                              </div>
+                              <span class="fs-7 fw-semibold text-info">{{ getTranslation('profit') }}</span>
+                            </div>
+                            <div class="fw-bold" style="font-size: 2rem; line-height: 1; color: #1f2937;">{{ formatCurrency(getInsighterPublishedAmount(insighter)) }}</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Meetings -->
+                      <div class="col-4">
+                        <div class="stat-card h-100" style="background: linear-gradient(135deg, #ffffff 0%, #fefce8 100%); border: 1px solid #e5e7eb; border-radius: 6px;">
+                          <div class="p-4">
+                            <div class="d-flex align-items-center mb-3">
+                              <div class="symbol symbol-35px symbol-circle me-2" >
+                                <i class="ki-duotone ki-message-text-2 fs-6 text-warning">
+                                  <span class="path1"></span>
+                                  <span class="path2"></span>
+                                  <span class="path3"></span>
+                                </i>
+                              </div>
+                              <span class="fs-7 fw-semibold text-warning">{{ getTranslation('meetings') }}</span>
+                            </div>
+                            <div class="fw-bold" style="font-size: 2rem; line-height: 1; color: #1f2937;">{{ getInsighterMeetingsCount(insighter) }}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div> <!-- /content-flex -->
 

@@ -37,7 +37,7 @@
           </div>
       </div>
     </div>
-    <div class="col-md-6 col-lg-4 d-flex justify-content-end align-items-center">
+    <div class="col-md-6 col-lg-4 d-flex justify-content-end align-items-center" *ngIf="roles.includes('company')">
       <!-- Statistics Cards -->
       <div class="d-flex gap-3" *ngIf="orderStatisticsService.statistics$ | async as stats; else loadingSpinnerHeader">
         <!-- Purchased Card -->
@@ -139,13 +139,15 @@
       [isSalesLoading$]="isSalesLoading$"
       [canViewSalesTabs]="canViewSalesTabs"
       [knowledgeSubTab]="knowledgeSubTab"
+      [selectedInsighterUuid]="selectedInsighterUuid"
       (knowledgeSubTabChange)="setKnowledgeSubTab($event)"
       (pageChange)="onPageChange($event)"
       (salesPageChange)="onSalesPageChange($event)"
       (orderSelected)="openOrderDetails($event)"
       (invoiceDownload)="downloadInvoice($event)"
       (navigateToDownloads)="navigateToDownloads($event)"
-      (copyOrderNo)="copyOrderNo($event)">
+      (copyOrderNo)="copyOrderNo($event)"
+      (insighterFilterChange)="onInsighterFilterChange($event)">
     </app-knowledge-orders>
   </ng-container>
 
@@ -163,12 +165,14 @@
       [isMeetingSalesLoading$]="isMeetingSalesLoading$"
       [canViewSalesTabs]="canViewSalesTabs"
       [meetingSubTab]="meetingSubTab"
+      [selectedInsighterUuid]="selectedInsighterUuid"
       (meetingSubTabChange)="setMeetingSubTab($event)"
       (meetingPageChange)="onMeetingPageChange($event)"
       (meetingSalesPageChange)="onMeetingSalesPageChange($event)"
       (meetingOrderSelected)="openMeetingOrderDetails($event)"
       (invoiceDownload)="downloadInvoice($event)"
-      (copyOrderNo)="copyOrderNo($event)">
+      (copyOrderNo)="copyOrderNo($event)"
+      (insighterFilterChange)="onInsighterFilterChange($event)">
     </app-meeting-orders>
   </ng-container>
 

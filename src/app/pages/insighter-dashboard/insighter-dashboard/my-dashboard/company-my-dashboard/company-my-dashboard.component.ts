@@ -4,6 +4,7 @@ import { Subject } from "rxjs";
 import { BaseComponent } from 'src/app/modules/base.component';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import { IKnoldgProfile } from 'src/app/_fake/models/profile.interface';
+import { CompanyAccountService, DashboardStatisticsResponse } from 'src/app/_fake/services/company-account/company-account.service';
 
 @Component({
   selector: "app-company-my-dashboard",
@@ -16,17 +17,30 @@ export class CompanyMyDashboardComponent extends BaseComponent implements OnInit
   private destroy$ = new Subject<void>();
   showDonutChart = true;
   showEmployeeStats = true;
+  dashboardStats: DashboardStatisticsResponse['data'] | null = null;
+  publishedKnowledgeChartData: any = null;
+  publishedKnowledgeChartOptions: any = null;
+  publishedKnowledgeLegend: Array<{ label: string; color: string }> = [];
+  private readonly knowledgeTypeColors: Record<string, string> = {
+    insight: '#0a7abf',
+    report: '#3b9ae1',
+    manual: '#6bb6ff',
+    data: '#1e88e5',
+    course: '#42a5f5'
+  };
 
   constructor(
     injector: Injector,
     private profileService: ProfileService,
-    private router: Router
+    private router: Router,
+    private companyAccountService: CompanyAccountService
   ) {
     super(injector);
   }
 
   ngOnInit(): void {
     this.getUserRole();
+    this.loadDashboardStatistics();
   }
   
   getUserRole(): void {
@@ -55,5 +69,84 @@ export class CompanyMyDashboardComponent extends BaseComponent implements OnInit
   onHasMultipleEmployeesDonut($event: boolean) {
     this.showDonutChart = $event;
     console.log("hasMultipleEmployeesDonut", $event);
+  }
+
+  loadDashboardStatistics(): void {
+    this.companyAccountService.getDashboardStatistics().subscribe({
+      next: (data) => {
+        this.dashboardStats = data;
+        this.setupPublishedKnowledgeChart();
+      },
+      error: (error) => {
+        console.error('Error loading dashboard statistics:', error);
+      }
+    });
+  }
+
+  private setupPublishedKnowledgeChart(): void {
+    const stats = this.dashboardStats?.knowledge_published_statistics;
+    this.publishedKnowledgeLegend = [];
+
+    if (!stats) {
+      this.publishedKnowledgeChartData = null;
+      return;
+    }
+
+    const labels: string[] = [];
+    const data: number[] = [];
+    const backgroundColors: string[] = [];
+
+    Object.entries(stats.type || {}).forEach(([type, count]) => {
+      const numericCount = Number(count) || 0;
+
+      if (numericCount > 0) {
+        const formattedLabel = type.charAt(0).toUpperCase() + type.slice(1);
+        const color = this.knowledgeTypeColors[type as keyof typeof this.knowledgeTypeColors] || '#999';
+
+        labels.push(formattedLabel);
+        data.push(numericCount);
+        backgroundColors.push(color);
+
+        this.publishedKnowledgeLegend.push({
+          label: formattedLabel,
+          color
+        });
+      }
+    });
+
+    if (!data.length) {
+      this.publishedKnowledgeChartData = null;
+      return;
+    }
+
+    this.publishedKnowledgeChartData = {
+      labels,
+      datasets: [
+        {
+          data,
+          backgroundColor: backgroundColors,
+          borderWidth: 0
+        }
+      ]
+    };
+
+    this.publishedKnowledgeChartOptions = {
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: (context: any) => `${context.label}: ${context.parsed}`
+          }
+        }
+      },
+      maintainAspectRatio: false,
+      responsive: true
+    };
+  }
+
+  get totalPublishedKnowledge(): number {
+    return this.dashboardStats?.knowledge_published_statistics?.total ?? 0;
   }
 }

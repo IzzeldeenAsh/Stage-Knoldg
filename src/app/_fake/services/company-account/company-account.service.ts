@@ -74,6 +74,28 @@ export interface DashboardStatisticsResponse {
         data?: number;
         course?: number;
       };
+      insighters?: Array<{
+        uuid: string;
+        insighter_name: string;
+        total_published: number;
+        types: {
+          insight?: number;
+          report?: number;
+          manual?: number;
+          data?: number;
+          course?: number;
+          [key: string]: number | undefined;
+        };
+      }>;
+    };
+    meeting_booking_statistics?: {
+      total: number;
+      insighters: Array<{
+        uuid: string;
+        insighter_name: string;
+        total_meetings?: number;
+        types?: Record<string, number>;
+      }>;
     };
     meeting_booking_total: number;
     knowledge_order_statistics: {
@@ -107,7 +129,7 @@ export interface DashboardStatisticsResponse {
   providedIn: 'root'
 })
 export class CompanyAccountService {
-  private insightaHost = 'https://api.foresighta.co';
+  private insightaHost = 'https://api.knoldg.com';
   private accountExistApi = `${this.insightaHost}/api/company/account/exist`;
   private inviteInsighterApi = `${this.insightaHost}/api/company/insighter`;
   private companyOrderKnowledgeStatisticsApi = `${this.insightaHost}/api/company/order/knowledge/statistics`;

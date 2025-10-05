@@ -43,11 +43,24 @@
   padding-inline-end: 40px;
 }
 
+.grid-view .card-top.card-top--rtl {
+  flex-direction: row-reverse;
+  padding-inline-end: 0;
+  padding-inline-start: 40px;
+  padding-right: 0; /* fallback for browsers without logical properties */
+  padding-left: 40px;
+}
+
 .grid-view .card-top .action-dropdown {
   position: absolute;
   top: 0;
   right: 0;
   z-index: 3;
+}
+
+.grid-view .card-top .action-dropdown.action-dropdown--rtl {
+  right: auto;
+  left: 0;
 }
 
 [dir="rtl"] .grid-view .card-top .action-dropdown {

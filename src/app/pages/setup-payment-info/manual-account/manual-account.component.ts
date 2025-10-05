@@ -67,7 +67,7 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
     this.manualAccountForm = this.fb.group({
       // Beneficiary Information
       account_name: ['', [Validators.required, Validators.minLength(2)]],
-      account_country_id: ['', [Validators.required]],
+      account_country_id: [''],
       account_address: [''],
       account_phone: [''],
 
@@ -189,11 +189,26 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
       next: (profile) => {
         this.userRoles = profile?.roles || [];
         this.isCompanyAccount = this.userRoles.includes('company');
+        this.updateValidatorsBasedOnAccountType();
       },
       error: (error) => {
         console.error('Error loading user profile:', error);
       }
     });
+  }
+
+  private updateValidatorsBasedOnAccountType() {
+    const accountCountryControl = this.manualAccountForm.get('account_country_id');
+
+    if (this.isCompanyAccount) {
+      // Remove required validator for company accounts
+      accountCountryControl?.clearValidators();
+    } else {
+      // Add required validator for individual accounts
+      accountCountryControl?.setValidators([Validators.required]);
+    }
+
+    accountCountryControl?.updateValueAndValidity();
   }
 
   loadCountries() {
@@ -379,7 +394,7 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
     if (this.manualAccountForm.valid) {
       const formValue = this.manualAccountForm.value;
 
-      if (!formValue.account_country_id) {
+      if (!this.isCompanyAccount && !formValue.account_country_id) {
         this.showError(
           this.lang === 'ar' ? 'خطأ' : 'Error',
           this.lang === 'ar' ? 'يرجى اختيار بلد الحساب' : 'Please select account country'
@@ -442,12 +457,16 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
   private areRequiredFieldsValid(): boolean {
     const requiredFields = [
       'account_name',
-      'account_country_id',
       'bank_name',
       'bank_country_id',
       'bank_address',
       'bank_iban'
     ];
+
+    // Add account_country_id only for individual accounts
+    if (!this.isCompanyAccount) {
+      requiredFields.push('account_country_id');
+    }
 
     // Add accept_terms if accept_agreement is false (both new and edit modes)
     if (!this.acceptAgreement) {
@@ -554,7 +573,7 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
     if (this.manualAccountForm.valid) {
       const formValue = this.manualAccountForm.value;
 
-      if (!formValue.account_country_id) {
+      if (!this.isCompanyAccount && !formValue.account_country_id) {
         this.showError(
           this.lang === 'ar' ? 'خطأ' : 'Error',
           this.lang === 'ar' ? 'يرجى اختيار بلد الحساب' : 'Please select account country'

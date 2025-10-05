@@ -28,6 +28,7 @@ export interface Orderable {
   knowledge_documents: KnowledgeDocument[][];
   knowledge_download_id: string;
   meeting_booking?: MeetingBooking;
+  insighter?: User;
 }
 
 export interface PaymentInfo {
@@ -101,12 +102,12 @@ export interface OrdersResponse {
   providedIn: 'root'
 })
 export class MyOrdersService {
-  private readonly API_URL = 'https://api.foresighta.co/api/account/order/knowledge';
-  private readonly MEETING_API_URL = 'https://api.foresighta.co/api/account/order/meeting';
-  private readonly COMPANY_KNOWLEDGE_API_URL = 'https://api.foresighta.co/api/company/order/knowledge';
-  private readonly INSIGHTER_KNOWLEDGE_API_URL = 'https://api.foresighta.co/api/insighter/order/knowledge';
-  private readonly COMPANY_MEETING_API_URL = 'https://api.foresighta.co/api/company/order/meeting';
-  private readonly INSIGHTER_MEETING_API_URL = 'https://api.foresighta.co/api/insighter/order/meeting';
+  private readonly API_URL = 'https://api.knoldg.com/api/account/order/knowledge';
+  private readonly MEETING_API_URL = 'https://api.knoldg.com/api/account/order/meeting';
+  private readonly COMPANY_KNOWLEDGE_API_URL = 'https://api.knoldg.com/api/company/order/knowledge';
+  private readonly INSIGHTER_KNOWLEDGE_API_URL = 'https://api.knoldg.com/api/insighter/order/knowledge';
+  private readonly COMPANY_MEETING_API_URL = 'https://api.knoldg.com/api/company/order/meeting';
+  private readonly INSIGHTER_MEETING_API_URL = 'https://api.knoldg.com/api/insighter/order/meeting';
   
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$ = this.isLoadingSubject.asObservable();
@@ -193,9 +194,14 @@ export class MyOrdersService {
     );
   }
 
-  getSalesKnowledgeOrders(page: number = 1, role: 'company' | 'insighter'): Observable<OrdersResponse> {
+  getSalesKnowledgeOrders(page: number = 1, role: 'company' | 'insighter', insighterUuid?: string): Observable<OrdersResponse> {
     const baseUrl = role === 'company' ? this.COMPANY_KNOWLEDGE_API_URL : this.INSIGHTER_KNOWLEDGE_API_URL;
-    const url = `${baseUrl}?page=${page}&per_page=5`;
+    let url = `${baseUrl}?page=${page}&per_page=5`;
+
+    if (insighterUuid) {
+      url += `&insighter_uuid=${insighterUuid}`;
+    }
+
     const headers = this.getHeaders();
 
     this.setSalesLoading(true);
@@ -206,9 +212,14 @@ export class MyOrdersService {
     );
   }
 
-  getSalesMeetingOrders(page: number = 1, role: 'company' | 'insighter'): Observable<OrdersResponse> {
+  getSalesMeetingOrders(page: number = 1, role: 'company' | 'insighter', insighterUuid?: string): Observable<OrdersResponse> {
     const baseUrl = role === 'company' ? this.COMPANY_MEETING_API_URL : this.INSIGHTER_MEETING_API_URL;
-    const url = `${baseUrl}?page=${page}&per_page=5`;
+    let url = `${baseUrl}?page=${page}&per_page=5`;
+
+    if (insighterUuid) {
+      url += `&insighter_uuid=${insighterUuid}`;
+    }
+
     const headers = this.getHeaders();
 
     this.setMeetingSalesLoading(true);
