@@ -20,6 +20,9 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { TableModule } from 'primeng/table';
+import { DropdownModule } from 'primeng/dropdown';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { ChartModule } from 'primeng/chart';
 
 @NgModule({
   declarations: [
@@ -35,6 +38,7 @@ import { TableModule } from 'primeng/table';
     ReactiveFormsModule,
     DialogModule,
     InputTextModule,
+    ProgressBarModule,
     PaginatorModule,
     ButtonModule,
     ToastModule,
@@ -43,6 +47,8 @@ import { TableModule } from 'primeng/table';
     ConfirmDialogModule,
     NgApexchartsModule,
     TableModule,
+    DropdownModule,
+    ChartModule,
     CountryDropdownComponent
   ],
   providers: [

@@ -1,0 +1,129 @@
+:host {
+  display: block;
+}
+
+:host .text-info {
+  color: #0978B9 !important;
+}
+
+:host .bg-light-info {
+  background-color: #F1FAFE !important;
+}
+
+:host .btn-light-info {
+  background-color: #F1FAFE;
+  border-color: transparent;
+  color: #0978B9;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #E8F4FD;
+    color: #0978B9;
+  }
+}
+
+:host .btn-info {
+  background-color: #0978B9;
+  border-color: #0978B9;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #0866A1;
+    border-color: #0866A1;
+  }
+}
+
+:host .nested-tab-nav {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: -1px;
+  position: relative;
+  z-index: 2;
+}
+
+:host .nested-tab-button {
+  position: relative;
+  background-color: #f5f8fa;
+  border: 1px solid #e4e6ef;
+  border-bottom: none;
+  color: #7e8299;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-right: 2px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  top: -1px;
+  &::before {
+    content: '';
+    position: absolute;
+    left: -1px;
+    bottom: -1px;
+    width: calc(100% + 2px);
+    height: 1px;
+    background-color: #e4e6ef;
+    z-index: 1;
+  }
+
+  &:hover {
+    background-color: #fff;
+    color: #181c32;
+    border-color: #d1d5db;
+  }
+
+  &.active {
+    background-color: #fff;
+    color: #0978B9;
+    font-weight: 600;
+    border-color: #e4e6ef;
+    z-index: 3;
+
+    &::before {
+      background-color: #fff;
+    }
+  }
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+:host .nested-tab-content {
+  background-color: #fff;
+  border: 1px solid #e4e6ef;
+  border-radius: 0 8px 8px 8px;
+  padding: 1.5rem;
+  margin-top: 0;
+  position: relative;
+  z-index: 1;
+}
+
+:host .nested-tab-panel:focus {
+  outline: none;
+}
+
+:host .meeting-status-badge {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+}
+
+:host .badge-light-success {
+  background-color: rgba(80, 205, 137, 0.1);
+  color: #50cd89;
+}
+
+:host .badge-light-warning {
+  background-color: rgba(255, 187, 34, 0.1);
+  color: #ffbb22;
+}
+
+:host .badge-light-danger {
+  background-color: rgba(255, 77, 79, 0.1);
+  color: #ff4d4f;
+}

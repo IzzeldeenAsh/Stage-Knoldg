@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, finalize, map } from 'rxjs/operators';
+import { TranslationService } from 'src/app/modules/i18n/translation.service';
 import { IKnoldgProfile } from 'src/app/_fake/models/profile.interface';
 
 @Injectable({
@@ -9,11 +10,21 @@ import { IKnoldgProfile } from 'src/app/_fake/models/profile.interface';
 })
 export class UsersListService {
   private apiUrl = 'https://api.knoldg.com/api/admin/account';
-  
+
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$ = this.isLoadingSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+  private currentLang = 'en';
+
+  constructor(
+    private http: HttpClient,
+    private translationService: TranslationService
+  ) {
+    this.currentLang = this.translationService.getSelectedLanguage() || 'en';
+    this.translationService.onLanguageChange().subscribe((lang) => {
+      this.currentLang = lang || 'en';
+    });
+  }
 
   private setLoading(loading: boolean) {
     this.isLoadingSubject.next(loading);
@@ -21,13 +32,14 @@ export class UsersListService {
 
   private handleError(error: any) {
     console.error('An error occurred:', error);
-    return throwError(error);
+    return throwError(() => error);
   }
 
   private getHeaders(): HttpHeaders {
     return new HttpHeaders({
+      Accept: 'application/json',
       'Content-Type': 'application/json',
-      'Accept-Language': 'en'
+      'Accept-Language': this.currentLang,
     });
   }
 
@@ -37,17 +49,7 @@ export class UsersListService {
     const url = `${this.apiUrl}/client/list`;
     return this.http.get<any>(url, { headers: this.getHeaders() }).pipe(
       map(response => response.data),
-      catchError(this.handleError),
-      finalize(() => this.setLoading(false))
-    );
-  }
-
-  deleteClient(clientId: number): Observable<any> {
-    this.setLoading(true);
-    const url = `${this.apiUrl}/client/${clientId}`;
-    return this.http.delete(url, { headers: this.getHeaders() }).pipe(
-      map(response => response),
-      catchError(this.handleError),
+      catchError((error) => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );
   }
@@ -58,7 +60,7 @@ export class UsersListService {
     const body = { staff_notes: staffNotes };
     return this.http.post(url, body, { headers: this.getHeaders() }).pipe(
       map(response => response),
-      catchError(this.handleError),
+      catchError((error) => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );
   }
@@ -69,17 +71,7 @@ export class UsersListService {
     const url = `${this.apiUrl}/insighter/list`;
     return this.http.get<any>(url, { headers: this.getHeaders() }).pipe(
       map(response => response.data),
-      catchError(this.handleError),
-      finalize(() => this.setLoading(false))
-    );
-  }
-
-  deleteInsighter(insighterId: number): Observable<any> {
-    this.setLoading(true);
-    const url = `${this.apiUrl}/insighter/${insighterId}`;
-    return this.http.delete(url, { headers: this.getHeaders() }).pipe(
-      map(response => response),
-      catchError(this.handleError),
+      catchError((error) => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );
   }
@@ -90,7 +82,7 @@ export class UsersListService {
     const body = { staff_notes: staffNotes };
     return this.http.post(url, body, { headers: this.getHeaders() }).pipe(
       map(response => response),
-      catchError(this.handleError),
+      catchError((error) => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );
   }
@@ -101,7 +93,7 @@ export class UsersListService {
     const body = { staff_notes: staffNotes };
     return this.http.post(url, body, { headers: this.getHeaders() }).pipe(
       map(response => response),
-      catchError(this.handleError),
+      catchError((error) => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );
   }
@@ -112,7 +104,7 @@ export class UsersListService {
     const body = { staff_notes: staffNotes };
     return this.http.post(url, body, { headers: this.getHeaders() }).pipe(
       map(response => response),
-      catchError(this.handleError),
+      catchError((error) => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );
   }
@@ -123,17 +115,7 @@ export class UsersListService {
     const url = `${this.apiUrl}/company/list`;
     return this.http.get<any>(url, { headers: this.getHeaders() }).pipe(
       map(response => response.data),
-      catchError(this.handleError),
-      finalize(() => this.setLoading(false))
-    );
-  }
-
-  deleteCompanyInsighter(insighterId: number): Observable<any> {
-    this.setLoading(true);
-    const url = `${this.apiUrl}/insighter/${insighterId}`;
-    return this.http.delete(url, { headers: this.getHeaders() }).pipe(
-      map(response => response),
-      catchError(this.handleError),
+      catchError((error) => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );
   }
@@ -144,7 +126,7 @@ export class UsersListService {
     const body = { staff_notes: staffNotes };
     return this.http.post(url, body, { headers: this.getHeaders() }).pipe(
       map(response => response),
-      catchError(this.handleError),
+      catchError((error) => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );
   }
@@ -155,7 +137,7 @@ export class UsersListService {
     const body = { staff_notes: staffNotes };
     return this.http.post(url, body, { headers: this.getHeaders() }).pipe(
       map(response => response),
-      catchError(this.handleError),
+      catchError((error) => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );
   }
@@ -166,7 +148,7 @@ export class UsersListService {
     const body = { staff_notes: staffNotes };
     return this.http.post(url, body, { headers: this.getHeaders() }).pipe(
       map(response => response),
-      catchError(this.handleError),
+      catchError((error) => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );
   }
@@ -177,7 +159,7 @@ export class UsersListService {
     const body = { status };
     return this.http.put(url, body, { headers: this.getHeaders() }).pipe(
       map(response => response),
-      catchError(this.handleError),
+      catchError((error) => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );
   }

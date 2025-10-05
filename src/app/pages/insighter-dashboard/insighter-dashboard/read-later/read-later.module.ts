@@ -7,6 +7,7 @@ import { TranslationModule } from 'src/app/modules/i18n';
 import { TruncateTextPipe } from 'src/app/pipes/truncate-pipe/truncate-text.pipe';
 import { TooltipModule } from 'primeng/tooltip';
 import { ButtonModule } from 'primeng/button';
+import { ProgressBarModule } from 'primeng/progressbar';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { ButtonModule } from 'primeng/button';
     TranslationModule,
     ButtonModule,
     TruncateTextPipe,
+    ProgressBarModule,
     TooltipModule
   ]
 })

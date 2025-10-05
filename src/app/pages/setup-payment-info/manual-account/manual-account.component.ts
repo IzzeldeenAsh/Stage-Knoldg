@@ -67,7 +67,7 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
     this.manualAccountForm = this.fb.group({
       // Beneficiary Information
       account_name: ['', [Validators.required, Validators.minLength(2)]],
-      account_country_id: ['', [Validators.required]],
+      account_country_id: [''],
       account_address: [''],
       account_phone: [''],
 
@@ -189,11 +189,26 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
       next: (profile) => {
         this.userRoles = profile?.roles || [];
         this.isCompanyAccount = this.userRoles.includes('company');
+        this.updateValidatorsBasedOnAccountType();
       },
       error: (error) => {
         console.error('Error loading user profile:', error);
       }
     });
+  }
+
+  private updateValidatorsBasedOnAccountType() {
+    const accountCountryControl = this.manualAccountForm.get('account_country_id');
+
+    if (this.isCompanyAccount) {
+      // Remove required validator for company accounts
+      accountCountryControl?.clearValidators();
+    } else {
+      // Add required validator for individual accounts
+      accountCountryControl?.setValidators([Validators.required]);
+    }
+
+    accountCountryControl?.updateValueAndValidity();
   }
 
   loadCountries() {
@@ -238,19 +253,29 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
           this.isEditing = true;
           this.existingData = manualAccount;
           
-          // Parse phone number
+          // Parse phone number from separate fields
           let countryCode = '';
           let phoneNumber = '';
-          
-          if (this.existingData.account_phone) {
+
+          // Use separate phone fields if available
+          if (this.existingData.account_phone_code && this.existingData.account_phone) {
+            countryCode = this.existingData.account_phone_code;
+            phoneNumber = this.existingData.account_phone;
+            this.formattedPhoneNumber = `(+${countryCode})${phoneNumber}`;
+          } else if (this.existingData.account_phone) {
+            // Check if it's in combined format first
             const phoneMatch = this.existingData.account_phone.match(/\(\+(\d+)\)(.+)/);
             if (phoneMatch) {
               countryCode = phoneMatch[1];
               phoneNumber = phoneMatch[2];
+              this.formattedPhoneNumber = this.existingData.account_phone;
+            } else {
+              // Phone number exists but no country code - just use the phone number
+              phoneNumber = this.existingData.account_phone;
+              this.formattedPhoneNumber = phoneNumber;
+              // Keep countryCode empty for now
             }
           }
-          
-          this.formattedPhoneNumber = this.existingData.account_phone || '';
           
           // Set selected country
           if (this.existingData.account_country) {
@@ -262,13 +287,13 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
             account_name: this.existingData.account_name || '',
             account_country_id: this.existingData.account_country?.id || '',
             account_address: this.existingData.account_address || '',
-            account_phone: this.existingData.account_phone || '',
-            bank_name: '', // This will need to be added to the API response
+            account_phone: this.formattedPhoneNumber || '',
+            bank_name: this.existingData.bank_name || '',
             bank_country_id: this.existingData.bank_country?.id || '',
             bank_address: this.existingData.bank_address || '',
             bank_iban: this.existingData.bank_iban || '',
             bank_swift_code: this.existingData.bank_swift_code || '',
-            accept_terms: true,
+            accept_terms: this.acceptAgreement,
             phoneCountryCode: countryCode,
             phoneNumber: phoneNumber.replace(/\D/g, '')
           };
@@ -369,7 +394,7 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
     if (this.manualAccountForm.valid) {
       const formValue = this.manualAccountForm.value;
 
-      if (!formValue.account_country_id) {
+      if (!this.isCompanyAccount && !formValue.account_country_id) {
         this.showError(
           this.lang === 'ar' ? 'خطأ' : 'Error',
           this.lang === 'ar' ? 'يرجى اختيار بلد الحساب' : 'Please select account country'
@@ -389,7 +414,8 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
         account_name: formValue.account_name,
         account_country_id: formValue.account_country_id,
         account_address: formValue.account_address,
-        account_phone: this.formattedPhoneNumber || `${formValue.phoneCountryCode}${formValue.phoneNumber}`,
+        account_phone_code: formValue.phoneCountryCode || '',
+        account_phone: formValue.phoneNumber || '',
         bank_name: formValue.bank_name,
         bank_country_id: formValue.bank_country_id,
         bank_address: formValue.bank_address,
@@ -431,15 +457,19 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
   private areRequiredFieldsValid(): boolean {
     const requiredFields = [
       'account_name',
-      'account_country_id',
       'bank_name',
       'bank_country_id',
       'bank_address',
       'bank_iban'
     ];
 
-    // Add accept_terms for new accounts only and if accept_agreement is false
-    if (!this.isEditing && !this.acceptAgreement) {
+    // Add account_country_id only for individual accounts
+    if (!this.isCompanyAccount) {
+      requiredFields.push('account_country_id');
+    }
+
+    // Add accept_terms if accept_agreement is false (both new and edit modes)
+    if (!this.acceptAgreement) {
       requiredFields.push('accept_terms');
     }
 
@@ -543,7 +573,7 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
     if (this.manualAccountForm.valid) {
       const formValue = this.manualAccountForm.value;
 
-      if (!formValue.account_country_id) {
+      if (!this.isCompanyAccount && !formValue.account_country_id) {
         this.showError(
           this.lang === 'ar' ? 'خطأ' : 'Error',
           this.lang === 'ar' ? 'يرجى اختيار بلد الحساب' : 'Please select account country'
@@ -563,7 +593,8 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
         account_name: formValue.account_name,
         account_country_id: formValue.account_country_id,
         account_address: formValue.account_address,
-        account_phone: this.formattedPhoneNumber || `${formValue.phoneCountryCode}${formValue.phoneNumber}`,
+        account_phone_code: formValue.phoneCountryCode || '',
+        account_phone: formValue.phoneNumber || '',
         bank_name: formValue.bank_name,
         bank_country_id: formValue.bank_country_id,
         bank_address: formValue.bank_address,
@@ -595,11 +626,8 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
   }
 
   private handleOtpError(error: any) {
-    // Check if error is related to invalid OTP code
-    if (error?.error?.errors?.code ||
-        (error?.error?.message && error.error.message.toLowerCase().includes('code')) ||
-        (error?.error?.message && error.error.message.toLowerCase().includes('invalid'))) {
-
+    // Check if error is specifically related to invalid OTP code only
+    if (error?.error?.errors?.code && !error?.error?.errors?.account_phone) {
       // Clear the code field and reopen OTP modal for invalid code
       this.manualAccountForm.patchValue({ code: '' });
       this.showError(
@@ -612,7 +640,7 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
         this.openOtpModal();
       }, 500);
     } else {
-      // Handle other server errors normally
+      // Handle other server errors normally (including phone validation errors)
       this.handleServerErrors(error);
     }
   }

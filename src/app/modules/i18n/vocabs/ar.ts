@@ -761,6 +761,7 @@ INSIGHTER_REQUESTS: {
       COMPANY_INFO: 'بيانات الشركة',
       ADDRESS: 'العنوان',
       PHONE: 'الهاتف',
+      COMPANY_ADDRESS:'عنوان الشركة',
       PHONE_PLACEHOLDER: 'الهاتف',
       RESET_PASSWORD: 'إعادة تعيين كلمة المرور',
       SETTINGS: 'الإعدادات',

@@ -70,7 +70,7 @@ export interface Transaction {
     date: string;
     order_no: string;
     invoice_no: string;
-    sub_order: SubOrder;
+    orderable: SubOrder;
   };
 }
 

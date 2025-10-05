@@ -127,15 +127,32 @@ export class PhoneNumberInputComponent implements ControlValueAccessor, OnInit, 
     // Extract only digits for the clean value
     const cleanValue = value.replace(/\D/g, '');
     this.value = cleanValue;
-    
+
     // Emit the formatted phone number with country code
     const fullFormattedPhone = `(+${this.countryCode})${value}`;
-    
+
     // Emit changes
     this.onChange(cleanValue);
     this.phoneNumberChange.emit(cleanValue);
     this.formattedPhoneNumberChange.emit(fullFormattedPhone);
     this.onTouched();
+  }
+
+  onKeyPress(event: KeyboardEvent): void {
+    // Allow: backspace, delete, tab, escape, enter
+    if ([8, 9, 27, 13, 46].indexOf(event.keyCode) !== -1 ||
+        // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+        (event.keyCode === 65 && event.ctrlKey === true) ||
+        (event.keyCode === 67 && event.ctrlKey === true) ||
+        (event.keyCode === 86 && event.ctrlKey === true) ||
+        (event.keyCode === 88 && event.ctrlKey === true)) {
+      return;
+    }
+
+    // Ensure that it is a number and stop the keypress
+    if ((event.shiftKey || (event.keyCode < 48 || event.keyCode > 57)) && (event.keyCode < 96 || event.keyCode > 105)) {
+      event.preventDefault();
+    }
   }
 
   onFlagError(country: any): void {

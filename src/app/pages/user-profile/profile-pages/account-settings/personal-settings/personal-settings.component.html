@@ -44,7 +44,7 @@
         </div>
         <div class="row" *ngIf="hasRole(['insighter']) || hasRole(['company']) || hasRole(['company-insighter'])">
           <!-- Consulting Field -->
-          <div class="col-lg-6 mb-6 fv-row">
+          <div class="col-lg-12 fv-row">
             <shared-tree-selector *ngIf="consultingFields"
               [title]="'INSIGHTER_WIZARD.CONSULTING_FIELDS' | translate"
               [placeholder]="'AUTH.REGISTRATION.CONSULTING_FIELD_PLACEHOLDER' | translate"
@@ -63,7 +63,7 @@
             </div>
           </div>
           <!-- Industry -->
-          <div class="col-lg-6 mb-6 fv-row">
+          <div class="col-lg-12 fv-row">
             <!-- Debug info -->
             <div *ngIf="!industries?.length" class="alert alert-warning">
               No industries data available
@@ -121,21 +121,26 @@
             </div>
           </div>
           <div class="col-lg-6 mb-6 fv-row">
-            <label for="phone" class="form-label">
+            <label class="form-label">
               {{ "ACCOUNT_SETTINGS.PHONE" | translate }}
             </label>
-            <input
-              class="d-block w-100"
-              [class.is-invalid]="isFieldInvalid('phone')"
-              pInputText
-              id="phone"
-              type="tel"
-              formControlName="phone"
-              placeholder="{{ 'ACCOUNT_SETTINGS.PHONE_PLACEHOLDER' | translate }}"
-            />
-            <div *ngIf="isFieldInvalid('phone')" class="invalid-feedback">
-              {{ getFieldError('phone') }}
-            </div>
+            <app-phone-number-input
+              #phoneInput
+              [countries]="countries"
+              [placeholder]="lang === 'ar' ? 'رقم هاتفك' : 'Your phone number'"
+              [searchPlaceholder]="lang === 'ar' ? 'البحث عن دولة...' : 'Search for a country...'"
+              [lang]="lang"
+              [isRequired]="false"
+              [showValidationErrors]="true"
+              [countryCodeError]="getFieldError('phoneCountryCode')"
+              [phoneNumberError]="getFieldError('phoneNumber')"
+              [initialCountryCode]="personalInfoForm.get('phoneCountryCode')?.value"
+              [initialPhoneNumber]="personalInfoForm.get('phoneNumber')?.value"
+              (countryCodeChange)="onCountryCodeChange($event)"
+              (phoneNumberChange)="onPhoneNumberChange($event)"
+              (formattedPhoneNumberChange)="onFormattedPhoneNumberChange($event)"
+              (flagError)="onFlagError($event)"
+            ></app-phone-number-input>
           </div>
         </div>
         <div class="row">

@@ -1,0 +1,102 @@
+<!-- Insighter Filter -->
+<div class="d-flex align-items-center gap-3 mb-4">
+  <div class="position-relative">
+    <!-- Dropdown Button -->
+    <button
+      type="button"
+      class="btn btn-light border dropdown-toggle d-flex align-items-center gap-2"
+      id="insighterDropdown"
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+      style="width: 100%; ">
+
+      <!-- Selected Insighter Display -->
+      <ng-container *ngIf="selectedInsighterUuid; else allInsightersTemplate">
+        <ng-container *ngFor="let insighter of insighters$ | async">
+          <ng-container *ngIf="insighter.uuid === selectedInsighterUuid">
+            <!-- Profile Image or Initials -->
+            <div class="symbol symbol-25px">
+              <img *ngIf="insighter.profile_photo_url"
+                   [src]="insighter.profile_photo_url"
+                   [alt]="insighter.name"
+                   class="symbol-label rounded-circle"
+                   style="object-fit: cover;">
+              <div *ngIf="!insighter.profile_photo_url"
+                   class="symbol-label bg-light-info rounded-circle d-flex align-items-center justify-content-center">
+                <span class="text-info fw-bold fs-8">
+                  {{ getInsighterInitials(insighter.name) }}
+                </span>
+              </div>
+            </div>
+            <span class="fs-7">{{ insighter.name }}</span>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+
+      <ng-template #allInsightersTemplate>
+        <span class="fs-7">
+          {{ lang === 'ar' ? 'جميع الخبراء' : 'All Insighters' }}
+        </span>
+      </ng-template>
+    </button>
+
+    <!-- Dropdown Menu -->
+    <ul class="dropdown-menu w-100" aria-labelledby="insighterDropdown" style="max-height: 300px; overflow-y: auto;">
+      <!-- Loading Spinner -->
+      <li *ngIf="isLoading$ | async" class="text-center p-3">
+        <div class="spinner-border spinner-border-sm text-info" role="status">
+          <span class="visually-hidden">{{ lang === 'ar' ? 'جاري التحميل...' : 'Loading...' }}</span>
+        </div>
+      </li>
+
+      <!-- All Insighters Option -->
+      <li *ngIf="!(isLoading$ | async)">
+        <a class="dropdown-item d-flex align-items-center gap-2"
+           href="javascript:void(0)"
+           [class.active]="!selectedInsighterUuid"
+           (click)="onInsighterChange(null)">
+          <span class="fs-7">
+            {{ lang === 'ar' ? 'جميع الخبراء' : 'All Insighters' }}
+          </span>
+        </a>
+      </li>
+
+      <!-- Divider -->
+      <li *ngIf="!(isLoading$ | async) && (insighters$ | async)?.length"><hr class="dropdown-divider"></li>
+
+      <!-- Insighter Options -->
+      <li *ngFor="let insighter of insighters$ | async">
+        <a class="dropdown-item d-flex align-items-center gap-2"
+           href="javascript:void(0)"
+           [class.active]="selectedInsighterUuid === insighter.uuid"
+           (click)="onInsighterChange(insighter.uuid)">
+
+          <!-- Profile Image or Initials -->
+          <div class="symbol symbol-25px">
+            <img *ngIf="insighter.profile_photo_url"
+                 [src]="insighter.profile_photo_url"
+                 [alt]="insighter.name"
+                 class="symbol-label rounded-circle"
+                 style="object-fit: cover;">
+            <div *ngIf="!insighter.profile_photo_url"
+                 class="symbol-label bg-light-info rounded-circle d-flex align-items-center justify-content-center">
+              <span class="text-info fw-bold fs-8">
+                {{ getInsighterInitials(insighter.name) }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Name -->
+          <span class="fs-7">{{ insighter.name }}</span>
+        </a>
+      </li>
+
+      <!-- Empty State -->
+      <li *ngIf="!(isLoading$ | async) && (insighters$ | async)?.length === 0" class="text-center p-3 text-muted">
+        <span class="fs-7">
+          {{ lang === 'ar' ? 'لا يوجد خبراء' : 'No insighters found' }}
+        </span>
+      </li>
+    </ul>
+  </div>
+</div>

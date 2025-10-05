@@ -47,7 +47,7 @@
                 </div>
 
                 <!-- Account Country Field -->
-                <div class="mb-6">
+                <div class="mb-6" *ngIf="!isCompanyAccount">
                   <label class="form-label required">
                     {{ lang === 'ar' ? 'بلد الإقامة' : 'Country of Residence' }}
                   </label>
@@ -100,7 +100,7 @@
                 <!-- Account Address Field -->
                 <div class="mb-6">
                   <label class="form-label">
-                    {{ lang === 'ar' ? 'عنوان الشخصي' : 'Personal Address' }}
+                    {{ lang === 'ar' ? 'عنوان الفاتورة' : 'Billing Address' }}
                     <span class="text-gray-500">{{ lang === 'ar' ? '(اختياري)' : '(Optional)' }}</span>
                   </label>
                   <input
@@ -118,7 +118,7 @@
                 <!-- Account Phone Field -->
                 <div class="mb-0">
                   <label class="form-label">
-                    {{ lang === 'ar' ? 'رقم هاتف الشخصي' : 'Personal Phone Number' }}
+                    {{ isCompanyAccount ? (lang === 'ar' ? 'رقم هاتف الشركة' : 'Company Phone Number') : (lang === 'ar' ? 'رقم هاتف الشخصي' : 'Personal Phone Number') }}
                     <span class="text-gray-500">{{ lang === 'ar' ? '(اختياري)' : '(Optional)' }}</span>
                   </label>
                   <app-phone-number-input
@@ -279,7 +279,7 @@
             </div>
 
             <!-- Terms and Conditions -->
-            <div *ngIf="!isEditing && !acceptAgreement" class="mb-6">
+            <div *ngIf="!acceptAgreement" class="mb-6">
               <div class="form-check">
                 <input
                   class="form-check-input"

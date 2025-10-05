@@ -1,4 +1,5 @@
-@import './my-company-rtl.scss';\n\n// Essential grid view styles (inline)\n.grid-view .insighter-card {\n  border: 1px solid #64beff;\n  box-shadow: none;\n  transition: all 0.2s ease-in-out;\n  border-radius: 12px;\n  background-color: #ffffff;\n  \n  &:hover {\n    box-shadow: 0 0.125rem 0.25rem rgba(0, 158, 247, 0.15);\n    border-color: #0978B9;\n    transform: translateY(-2px);\n  }\n}
+@import './my-company-rtl.scss';
+@import './grid-view-styles.scss';
 
 .my-company-container {
   overflow: hidden;
@@ -15,6 +16,167 @@
     max-width: 100% !important;
     overflow: hidden !important;
     padding: 1.5rem !important;
+  }
+
+  .chart-card {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 1rem;
+    padding: 1.5rem !important;
+  }
+
+  .chart-card--centered {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    .chart-card__header {
+      width: 100%;
+      justify-content: flex-start;
+    }
+
+    .donut-wrapper {
+      margin-left: auto;
+      margin-right: auto;
+      align-self: center;
+    }
+
+    .chart-legend {
+      justify-content: center;
+    }
+  }
+
+  .chart-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+
+  .chart-card__empty {
+    min-height: 200px;
+    border-radius: 0.75rem;
+    background-color: var(--kt-gray-50);
+    border: 1px dashed var(--kt-gray-200);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .donut-wrapper {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .donut-wrapper__center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+  }
+
+  .donut-wrapper__total {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--kt-gray-900);
+    line-height: 1;
+  }
+
+  .donut-wrapper__label {
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--kt-gray-500);
+  }
+
+  .chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
+  .chart-legend__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.85rem;
+    border-radius: 0.75rem;
+    background-color: var(--kt-gray-50);
+    color: var(--kt-gray-700);
+    font-size: 0.8rem;
+  }
+
+  .chart-legend__swatch {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .chart-legend__label {
+    font-weight: 600;
+    text-transform: capitalize;
+    letter-spacing: 0.02em;
+  }
+
+  .chart-stat-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .chart-stat-card {
+    background-color: #ffffff;
+    border: 1px solid #e4e6ef;
+    border-radius: 0.9rem;
+    padding: 0.9rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    box-shadow: none;
+  }
+
+  .chart-stat-card__label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--kt-gray-600);
+    font-weight: 600;
+  }
+
+  .chart-stat-card__value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--kt-gray-900);
+  }
+
+  .bar-chart-wrapper {
+    position: relative;
+    min-height: 220px;
+  }
+
+  .bar-chart-wrapper ::ng-deep canvas {
+    max-height: 100% !important;
+  }
+
+  .donut-wrapper ::ng-deep canvas {
+    width: 100% !important;
+    height: 100% !important;
   }
   
   .table-container {
@@ -194,6 +356,15 @@
     &.insight { border-left: 3px solid var(--kt-success); .stat-value { color: var(--kt-success); } }
     &.manual { border-left: 3px solid var(--kt-warning); .stat-value { color: var(--kt-warning); } }
     &.course { border-left: 3px solid var(--kt-danger); .stat-value { color: var(--kt-danger); } }
+  }
+
+  .country-flag {
+    width: 18px;
+    height: 12px;
+    border-radius: 3px;
+    object-fit: cover;
+    display: inline-block;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
   }
 }
 

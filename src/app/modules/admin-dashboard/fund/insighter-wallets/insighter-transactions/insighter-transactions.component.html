@@ -126,57 +126,57 @@
                     </div>
 
                     <!-- Meeting Details -->
-                    <div *ngIf="transaction.order.sub_order?.meeting_booking"
+                    <div *ngIf="transaction.order.orderable?.meeting_booking"
                          class="meeting-details-card p-4 mb-4">
                       <div class="d-flex align-items-center mb-3">
                         <i class="ki-outline ki-calendar fs-3 text-primary me-3"></i>
                         <span class="fw-bold fs-5 text-primary">Meeting Details</span>
                       </div>
                       <div class="text-gray-800 fs-5 fw-bold mb-2">
-                        {{ transaction.order.sub_order.meeting_booking?.title }}
+                        {{ transaction.order.orderable.meeting_booking?.title }}
                       </div>
                       <div class="d-flex align-items-center text-gray-700 fs-6 mb-3">
                         <i class="ki-outline ki-time fs-5 me-2"></i>
-                        <span>{{ transaction.order.sub_order.meeting_booking?.date }}</span>
+                        <span>{{ transaction.order.orderable.meeting_booking?.date }}</span>
                         <span class="mx-2 text-muted">•</span>
-                        <span>{{ transaction.order.sub_order.meeting_booking?.start_time }} - {{ transaction.order.sub_order.meeting_booking?.end_time }}</span>
+                        <span>{{ transaction.order.orderable.meeting_booking?.start_time }} - {{ transaction.order.orderable.meeting_booking?.end_time }}</span>
                       </div>
-                      <span [class]="'badge badge-light-' + (transaction.order.sub_order.meeting_booking?.status === 'pending' ? 'warning' : 'success') + ' fs-6'">
-                        <i [class]="'ki-outline ' + (transaction.order.sub_order.meeting_booking?.status === 'pending' ? 'ki-time' : 'ki-check') + ' fs-7 me-1'"></i>
-                        {{ transaction.order.sub_order.meeting_booking?.status | titlecase }}
+                      <span [class]="'badge badge-light-' + (transaction.order.orderable.meeting_booking?.status === 'pending' ? 'warning' : 'success') + ' fs-6'">
+                        <i [class]="'ki-outline ' + (transaction.order.orderable.meeting_booking?.status === 'pending' ? 'ki-time' : 'ki-check') + ' fs-7 me-1'"></i>
+                        {{ transaction.order.orderable.meeting_booking?.status | titlecase }}
                       </span>
                     </div>
 
                     <!-- Knowledge Details -->
-                    <div *ngIf="transaction.order.sub_order?.knowledge?.length"
+                    <div *ngIf="transaction.order.orderable?.knowledge?.length"
                          class="knowledge-details-card p-4">
                       <div class="d-flex align-items-center mb-3">
                         <i class="ki-outline ki-book fs-3 text-info me-3"></i>
                         <span class="fw-bold fs-5 text-info">Knowledge Package</span>
                       </div>
                       <div class="text-gray-800 fs-5 fw-bold mb-2">
-                        {{ transaction.order.sub_order?.knowledge?.[0]?.title }}
+                        {{ transaction.order.orderable?.knowledge?.[0]?.title }}
                       </div>
                       <div class="mb-3">
                         <span class="badge badge-light-primary fs-6">
                           <i class="ki-outline ki-category fs-7 me-1"></i>
-                          {{ transaction.order.sub_order?.knowledge?.[0]?.type | titlecase }}
+                          {{ transaction.order.orderable?.knowledge?.[0]?.type | titlecase }}
                         </span>
                       </div>
 
 
                       <!-- Documents -->
-                      <div *ngIf="transaction.order.sub_order?.knowledge_documents" class="mt-4">
+                      <div *ngIf="transaction.order.orderable?.knowledge_documents" class="mt-4">
                         <div class="d-flex align-items-center mb-3">
                           <i class="ki-outline ki-folder text-info fs-2 me-2"></i>
                           <span class="text-gray-800 fs-5 fw-bold">Order Contents</span>
                           <span class="badge badge-light-info ms-2 fs-7">
-                            {{ getDocumentCount(transaction.order.sub_order.knowledge_documents) }}
-                            {{ getDocumentCount(transaction.order.sub_order.knowledge_documents) === 1 ? 'Document' : 'Documents' }}
+                            {{ getDocumentCount(transaction.order.orderable.knowledge_documents) }}
+                            {{ getDocumentCount(transaction.order.orderable.knowledge_documents) === 1 ? 'Document' : 'Documents' }}
                           </span>
                         </div>
                         <div class="documents-container">
-                          <div *ngFor="let docGroup of transaction.order.sub_order.knowledge_documents" class="document-group mb-2">
+                          <div *ngFor="let docGroup of transaction.order.orderable.knowledge_documents" class="document-group mb-2">
                             <div *ngFor="let doc of docGroup" class="document-card border border-light-info rounded-3 p-3 mb-2 bg-light-info">
                               <div class="d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center flex-grow-1">

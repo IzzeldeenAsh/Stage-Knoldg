@@ -18,8 +18,12 @@ const routes: Routes = [
     children:[
       {
         path:'',
-        redirectTo:'staff',
+        redirectTo:'users',
         pathMatch:'full'
+      },
+      {
+        path:'users',
+        component:UsersComponent
       },
       {
         path:'staff',
@@ -32,10 +36,6 @@ const routes: Routes = [
       {
         path:'permissions',
         component:PermissionsComponent
-      },
-      {
-        path:'users',
-        component:UsersComponent
       }
       
     ]

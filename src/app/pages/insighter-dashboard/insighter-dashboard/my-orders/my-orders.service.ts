@@ -23,10 +23,12 @@ export interface MeetingBooking {
   description: string;
 }
 
-export interface SubOrder {
+export interface Orderable {
   knowledge: Knowledge[];
   knowledge_documents: KnowledgeDocument[][];
+  knowledge_download_id: string;
   meeting_booking?: MeetingBooking;
+  insighter?: User;
 }
 
 export interface PaymentInfo {
@@ -55,17 +57,17 @@ export interface User {
 
 export interface Order {
   uuid: string;
-  user: User;
   service: string;
   status: string;
   amount: number;
   currency: string;
   date: string;
   order_no: string;
+  user?: User;
   invoice_no: string;
   payment: PaymentInfo;
-  suborder: SubOrder;
   knowledge_download_id: string;
+  orderable: Orderable;
 }
 
 export interface PaginationLinks {
@@ -192,9 +194,14 @@ export class MyOrdersService {
     );
   }
 
-  getSalesKnowledgeOrders(page: number = 1, role: 'company' | 'insighter'): Observable<OrdersResponse> {
+  getSalesKnowledgeOrders(page: number = 1, role: 'company' | 'insighter', insighterUuid?: string): Observable<OrdersResponse> {
     const baseUrl = role === 'company' ? this.COMPANY_KNOWLEDGE_API_URL : this.INSIGHTER_KNOWLEDGE_API_URL;
-    const url = `${baseUrl}?page=${page}&per_page=5`;
+    let url = `${baseUrl}?page=${page}&per_page=5`;
+
+    if (insighterUuid) {
+      url += `&insighter_uuid=${insighterUuid}`;
+    }
+
     const headers = this.getHeaders();
 
     this.setSalesLoading(true);
@@ -205,9 +212,14 @@ export class MyOrdersService {
     );
   }
 
-  getSalesMeetingOrders(page: number = 1, role: 'company' | 'insighter'): Observable<OrdersResponse> {
+  getSalesMeetingOrders(page: number = 1, role: 'company' | 'insighter', insighterUuid?: string): Observable<OrdersResponse> {
     const baseUrl = role === 'company' ? this.COMPANY_MEETING_API_URL : this.INSIGHTER_MEETING_API_URL;
-    const url = `${baseUrl}?page=${page}&per_page=5`;
+    let url = `${baseUrl}?page=${page}&per_page=5`;
+
+    if (insighterUuid) {
+      url += `&insighter_uuid=${insighterUuid}`;
+    }
+
     const headers = this.getHeaders();
 
     this.setMeetingSalesLoading(true);

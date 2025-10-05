@@ -1,91 +1,115 @@
-
 <app-widgets-row [userRole]="userRole"></app-widgets-row>
 <div class="row">
-    <div class="d-flex flex-column gap-6" [ngClass]="{'col-12 col-md-5': showDonutChart, 'col-12 col-md-6': !showDonutChart}">
-        @if(showDonutChart){
-            <app-donut-employee-chart (hasMultipleEmployeesDonut)="onHasMultipleEmployeesDonut($event)"></app-donut-employee-chart>
-             <!--begin::Tiles Top Active Employee-->
-
-
-             <!--end::Tiles Widget Discover knowledge by your industries-->
-        } @else{
-
-                <!--begin::Tiles Widget 4-->
-                <div class="card  card-xl-stretch border-0"
-                [ngClass]="{'rtl-bg-flip': lang === 'ar'}"
-                [ngStyle]="{
+    <div class="col-12 col-md-4 d-flex">
+      <div class="card border-0 h-100 w-100">
+        <div class="card-body chart-card text-center">
+          <div class="chart-card__header">
+            <h6 class="card-title fw-bold text-gray-800 mb-0">Published Knowledge</h6>
+          </div>
+          <ng-container *ngIf="publishedKnowledgeChartData; else publishedKnowledgeEmpty">
+            <div class="donut-wrapper">
+              <p-chart
+                type="doughnut"
+                [data]="publishedKnowledgeChartData"
+                [options]="publishedKnowledgeChartOptions"
+                width="180"
+                height="180">
+              </p-chart>
+              <div class="donut-wrapper__center">
+                <div class="donut-wrapper__total">{{ totalPublishedKnowledge }}</div>
+                <div class="donut-wrapper__label">Total</div>
+              </div>
+            </div>
+            <div *ngIf="publishedKnowledgeLegend.length" class="chart-legend mt-4">
+              <div *ngFor="let legendItem of publishedKnowledgeLegend" class="chart-legend__item">
+                <span class="chart-legend__swatch" [style.backgroundColor]="legendItem.color"></span>
+                <span class="chart-legend__label">{{ legendItem.label }}</span>
+              </div>
+            </div>
+          </ng-container>
+          <ng-template #publishedKnowledgeEmpty>
+            <div class="chart-card__empty">
+              <i class="ki-duotone ki-file fs-2x text-muted mb-2"></i>
+              <div class="text-muted fs-7">No data available</div>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  <div class="col-12 col-md-4 d-flex">
+    <div
+      class="card card-xl-stretch border-0 h-100 w-100"
+      [ngClass]="{ 'rtl-bg-flip': lang === 'ar' }"
+      [ngStyle]="{
                   'background-image': 'url(./assets/media/illustrations/misc/buildup_dashboard.svg)',
                   'background-size': '40%',
                   'background-repeat': 'no-repeat',
                   'background-position':'100% 40%',
                   'border-radius': '10px',
                 }"
-                >
-                <!--begin::Body-->
-                <div class="card-body d-flex flex-column   flex-wrap" >
-                        <div class="d-flex flex-column align-items-start">
-                            <h1 class="fs-2x fw-bolder text-gray-800 pb-3 m-0 p-0">   {{ 'START_UPLOADING' | translate }}</h1>
-                            <p class="text-start text-gray-800 pb-4 fw-semibold fs-5" [innerHTML]="'START_UPLOADING_DESRIPTION' | translate">
-
-                            </p>
-                        </div>
-                        <div >
-                            <a [routerLink]="['/app/insighter-dashboard/my-knowledge/general']" class="btn btn-info fw-semibold px-6 py-3" data-bs-toggle="modal" data-bs-target="#kt_modal_create_campaign">
-                            {{"MENU.MY_LIBRARY" | translate}}
-                            </a>
-                        </div>
-                </div>
-                <!--end::Body-->
-                </div>
-
-                <!--end::Tiles Widget 4-->
-        }
+    >
+      <!--begin::Body-->
+      <div class="card-body d-flex flex-column flex-wrap">
+        <div class="d-flex flex-column align-items-start">
+          <h1 class="fs-2x fw-bolder text-gray-800 pb-3 m-0 p-0">
+            {{ "START_UPLOADING" | translate }}
+          </h1>
+          <p
+            class="text-start text-gray-800 pb-4 fw-semibold fs-5"
+            [innerHTML]="'START_UPLOADING_DESRIPTION' | translate"
+          ></p>
+        </div>
+        <div>
+          <a
+            [routerLink]="['/app/insighter-dashboard/my-knowledge/general']"
+            class="btn btn-info fw-semibold px-6 py-3"
+            data-bs-toggle="modal"
+            data-bs-target="#kt_modal_create_campaign"
+          >
+            {{ "MENU.MY_LIBRARY" | translate }}
+          </a>
+        </div>
+      </div>
+      <!--end::Body-->
     </div>
-    <div [ngClass]="{'col-12 col-md-7': showDonutChart, 'col-12 col-md-6': !showDonutChart}">
-        @if(showEmployeeStats){
-            <app-employee-knowledge-statistics (hasMultipleEmployees)="onHasMultipleEmployees($event)"></app-employee-knowledge-statistics>
-        } @else{
-
-        <!--begin::Tiles Widget 4-->
-        <div class="card card-xl-stretch border-0"
-        [ngClass]="{'rtl-bg-flip': lang === 'ar'}"
-        [ngStyle]="{
-          'background-image': 'url(./assets/media/illustrations/misc/buildup_team.svg)',
-          'background-size': 'cover',
-          'background-repeat': 'no-repeat',
-          'background-position': 'center',
-          'border-radius': '10px',
-          'margin-bottom': '10px'
-        }"
-        >
+  </div>
+    <div class="col-12 col-md-4 d-flex">
+      <div
+        class="card card-xl-stretch border-0 h-100 w-100"
+      [ngClass]="{ 'rtl-bg-flip': lang === 'ar' }"
+      [ngStyle]="{
+        'background-image':
+          'url(./assets/media/illustrations/misc/buildup_team.svg)',
+        'background-size': 'cover',
+        'background-repeat': 'no-repeat',
+        'background-position': 'center',
+        'border-radius': '10px',
+        'margin-bottom': '10px'
+      }"
+      >
         <!--begin::Body-->
-        <div class="card-body d-flex flex-column   flex-wrap" >
-                <div class="d-flex flex-column align-items-start">
-                    <h1 class="fs-2x fw-bolder text-gray-800 pb-3 m-0 p-0">   {{ 'BUILD_YOUR_TEAM' | translate }}</h1>
-                    <p class="text-start text-gray-800 pb-4 fw-semibold fs-5" [innerHTML]="'BUILD_YOUR_TEAM_DESCRIPTION' | translate">
-
-                    </p>
-                </div>
-                <div >
-                    <a [routerLink]="['/app/insighter-dashboard/my-company-settings']" class="btn btn-info fw-semibold px-6 py-3" data-bs-toggle="modal" data-bs-target="#kt_modal_create_campaign">
-                    {{"MY_COMPANY.ADD_EMPLOYEE" | translate}}
-                    </a>
-                </div>
+        <div class="card-body d-flex flex-column flex-wrap">
+          <div class="d-flex flex-column align-items-start">
+            <h1 class="fs-2x fw-bolder text-gray-800 pb-3 m-0 p-0">
+              {{ "BUILD_YOUR_TEAM" | translate }}
+            </h1>
+            <p
+              class="text-start text-gray-800 pb-4 fw-semibold fs-5"
+              [innerHTML]="'BUILD_YOUR_TEAM_DESCRIPTION' | translate"
+            ></p>
+          </div>
+          <div>
+            <a
+              [routerLink]="['/app/insighter-dashboard/my-company-settings']"
+              class="btn btn-info fw-semibold px-6 py-3"
+              data-bs-toggle="modal"
+              data-bs-target="#kt_modal_create_campaign"
+            >
+              {{ "MY_COMPANY.ADD_EMPLOYEE" | translate }}
+            </a>
+          </div>
         </div>
         <!--end::Body-->
-        </div>
-        <!--end::Tiles Widget 4-->
-        }
-    </div>
-
-
-</div>
-
-<div class="row mt-6 g-6">
-    <div class="col-12 col-xl-6">
-        <app-company-sales-statistics></app-company-sales-statistics>
-    </div>
-    <div class="col-12 col-xl-6">
-        <app-company-meetings-statistics></app-company-meetings-statistics>
+      </div>
     </div>
 </div>

@@ -4,7 +4,7 @@ import { BaseComponent } from 'src/app/modules/base.component';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CountryDropdownComponent, Country as DropdownCountry } from 'src/app/reusable-components/country-dropdown/country-dropdown.component';
 import { CountriesService, Country as ServiceCountry } from 'src/app/_fake/services/countries/countries.service';
-import { CompanyAccountService } from 'src/app/_fake/services/company-account/company-account.service';
+import { CompanyAccountService, DashboardStatisticsResponse } from 'src/app/_fake/services/company-account/company-account.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import { ConfirmationService } from 'primeng/api';
@@ -62,6 +62,7 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
   industries: any[] = [];
   consultingFields: any[] = [];
   isInviting = false;
+  isLoading = false;
   
   // Forms
   emailForm: FormGroup;
@@ -87,6 +88,80 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
   
   // Countries data
   availableCountries: DropdownCountry[] = [];
+  gridInsighters: Insighter[] = [];
+
+  // Dashboard statistics
+  dashboardStats: DashboardStatisticsResponse['data'] | null = null;
+  publishedKnowledgeChartData: any = null;
+  publishedKnowledgeChartOptions: any = null;
+  publishedKnowledgeDonutData: any = null;
+  publishedKnowledgeDonutOptions: any = null;
+  knowledgeTypeLegend: Array<{ label: string; color: string }> = [];
+  publishedKnowledgeLegend: Array<{ label: string; color: string }> = [];
+  knowledgeOrdersChartData: any = null;
+  knowledgeOrdersChartOptions: any = null;
+  meetingOrdersChartData: any = null;
+  meetingOrdersChartOptions: any = null;
+  private readonly meetingOrdersColor = '#f28e2c';
+
+  private readonly flagBasePath = './assets/media/flags/';
+  private readonly defaultFlagSlug = 'united-nations';
+  private readonly countryFlagAliases: Record<string, string> = {
+    'united states': 'united-states',
+    'united states of america': 'united-states',
+    'usa': 'united-states',
+    'u.s.a.': 'united-states',
+    'united kingdom': 'united-kingdom',
+    'united kingdom of great britain and northern ireland': 'united-kingdom',
+    'uk': 'united-kingdom',
+    'u.k.': 'united-kingdom',
+    'uae': 'united-arab-emirates',
+    'u.a.e.': 'united-arab-emirates',
+    'united arab emirates': 'united-arab-emirates',
+    'south korea': 'south-korea',
+    'republic of korea': 'south-korea',
+    'korea, republic of': 'south-korea',
+    'north korea': 'north-korea',
+    'democratic people\'s republic of korea': 'north-korea',
+    'korea, democratic people\'s republic of': 'north-korea',
+    'russian federation': 'russia',
+    'bolivia (plurinational state of)': 'bolivia',
+    'cote divoire': 'ivory-coast',
+    'cote d\'ivoire': 'ivory-coast',
+    'taiwan, province of china': 'taiwan',
+    'hong kong sar china': 'hong-kong',
+    'macao sar china': 'macao',
+    'macao special administrative region of china': 'macao',
+    'brunei darussalam': 'brunei',
+    'syrian arab republic': 'syria',
+    'province of china taiwan': 'taiwan',
+    'myanmar (burma)': 'myanmar',
+    'viet nam': 'vietnam',
+    'moldova, republic of': 'moldova',
+    'iran (islamic republic of)': 'iran',
+    'tanzania, united republic of': 'tanzania',
+    'lao people\'s democratic republic': 'laos',
+    'democratic republic of the congo': 'democratic-republic-of-congo',
+    'congo, democratic republic of the': 'democratic-republic-of-congo',
+    'congo': 'republic-of-the-congo',
+    'congo, republic of the': 'republic-of-the-congo',
+    'micronesia (federated states of)': 'micronesia',
+    'palestine, state of': 'palestine',
+    'holy see (vatican city state)': 'vatican',
+    'bahamas, the': 'bahamas',
+    'gambia, the': 'gambia',
+    'cape verde': 'cabo-verde',
+    'east timor': 'timor-leste',
+    'eswatini': 'swaziland',
+    'czechia': 'czech-republic'
+  };
+  private readonly knowledgeTypeColors: Record<string, string> = {
+    insight: '#0a7abf',
+    report: '#3b9ae1',
+    manual: '#6bb6ff',
+    data: '#1e88e5',
+    course: '#42a5f5'
+  };
   
   constructor(
     injector: Injector,
@@ -126,9 +201,12 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     
     // Load countries first, then load insighters
     this.loadCountries();
-    
+
     // Load initial insighter data
     this.loadInsighters(1);
+
+    // Load dashboard statistics
+    this.loadDashboardStatistics();
     
     // Listen for email changes to trigger account check
     this.emailForm.get('email')?.valueChanges
@@ -153,12 +231,14 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     this.companyAccountService.getInsighters(page, this.rows).subscribe({
       next: (response) => {
         this.insighters = response.data;
+        this.gridInsighters = this.insighters.filter(ins => !Array.isArray(ins.roles) || !ins.roles.includes('company'));
         this.paginationMeta = response.meta;
         this.totalRecords = response.meta.total;
         this.loading = false;
       },
       error: (error) => {
         this.loading = false;
+        this.gridInsighters = [];
         this.showError('Error', 'Failed to load insighters');
         console.error('Error loading insighters:', error);
       }
@@ -512,8 +592,83 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     if (stats.insight) total += stats.insight;
     if (stats.manual) total += stats.manual;
     if (stats.course) total += stats.course;
-    
+
     return total;
+  }
+
+  canActivate(insighter: Insighter): boolean {
+    const hasCompanyRole = Array.isArray(insighter.roles) && insighter.roles.includes('company');
+
+    if (hasCompanyRole) {
+      return !!insighter.company && insighter.company.status === 'inactive';
+    }
+
+    return insighter.insighter_status === 'inactive';
+  }
+
+  canDeactivate(insighter: Insighter): boolean {
+    const hasCompanyRole = Array.isArray(insighter.roles) && insighter.roles.includes('company');
+
+    if (hasCompanyRole) {
+      return false;
+    }
+
+    return insighter.insighter_status === 'active' && !!insighter.verified_as_insighter;
+  }
+
+  canDelete(insighter: Insighter): boolean {
+    return !(Array.isArray(insighter.roles) && insighter.roles.includes('company'));
+  }
+
+  getInsighterIdentifier(insighter: Insighter & { [key: string]: any }): string {
+    return insighter?.uuid || insighter?.uuuid || '';
+  }
+
+  getCountryFlag(country?: string | null): string {
+    const slug = this.resolveCountrySlug(country);
+    return `${this.flagBasePath}${slug}.svg`;
+  }
+
+  handleFlagError(event: Event): void {
+    const element = event.target as HTMLImageElement | null;
+    if (!element) {
+      return;
+    }
+
+    const fallbackSrc = `${this.flagBasePath}${this.defaultFlagSlug}.svg`;
+    if (element.src.endsWith(`${this.defaultFlagSlug}.svg`)) {
+      return;
+    }
+
+    element.src = fallbackSrc;
+  }
+
+  private resolveCountrySlug(country?: string | null): string {
+    if (!country) {
+      return this.defaultFlagSlug;
+    }
+
+    const normalizedName = country.trim().toLowerCase();
+    if (!normalizedName) {
+      return this.defaultFlagSlug;
+    }
+
+    const alias = this.countryFlagAliases[normalizedName];
+    if (alias) {
+      return alias;
+    }
+
+    const slug = normalizedName
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/['\u2019`]/g, '')
+      .replace(/&/g, 'and')
+      .replace(/\./g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
+
+    return slug || this.defaultFlagSlug;
   }
 
   navigateToInsighterProfile(insighterId: string, verified: boolean): void {
@@ -685,5 +840,504 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
   toggleViewMode(mode: 'table' | 'grid'): void {
     this.viewMode = mode;
   }
-  
+
+  // Load dashboard statistics
+  loadDashboardStatistics(): void {
+    this.companyAccountService.getDashboardStatistics().subscribe({
+      next: (data) => {
+        this.dashboardStats = data;
+        this.setupPublishedKnowledgeChart();
+        this.setupKnowledgeOrdersChart();
+        this.setupMeetingOrdersChart();
+      },
+      error: (error) => {
+        console.error('Error loading dashboard statistics:', error);
+        this.showError(
+          this.lang === 'ar' ? 'حدث خطأ' : 'Error',
+          this.lang === 'ar' ? 'فشل في تحميل الإحصائيات' : 'Failed to load statistics'
+        );
+      }
+    });
+  }
+
+  // Setup published knowledge stacked column chart
+  setupPublishedKnowledgeChart(): void {
+    const stats = this.dashboardStats?.knowledge_published_statistics;
+
+    this.publishedKnowledgeLegend = [];
+    this.knowledgeTypeLegend = [];
+    this.publishedKnowledgeDonutData = null;
+    this.publishedKnowledgeDonutOptions = null;
+
+    if (!stats || !Array.isArray(stats.insighters) || !stats.insighters.length) {
+      this.publishedKnowledgeChartData = null;
+      return;
+    }
+
+    const insighters = stats.insighters;
+    const knowledgeTypeOrder = ['insight', 'report', 'manual', 'data', 'course'];
+    const discoveredTypes = new Set<string>();
+
+    Object.keys(stats.type || {}).forEach(type => discoveredTypes.add(type));
+    insighters.forEach(insighter => {
+      Object.keys(insighter.types || {}).forEach(type => discoveredTypes.add(type));
+    });
+
+    const orderedTypes: string[] = [];
+    knowledgeTypeOrder.forEach(type => {
+      if (discoveredTypes.has(type)) {
+        orderedTypes.push(type);
+        discoveredTypes.delete(type);
+      }
+    });
+    orderedTypes.push(...Array.from(discoveredTypes));
+
+    const availableTypes = orderedTypes.filter(type => {
+      const totalFromStats = Number((stats.type as any)?.[type] ?? 0);
+      const totalFromInsighters = insighters.reduce((sum, insighter) => {
+        const count = Number((insighter.types || {})[type] ?? 0);
+        return sum + (Number.isNaN(count) ? 0 : count);
+      }, 0);
+
+      return totalFromStats > 0 || totalFromInsighters > 0;
+    });
+
+    if (!availableTypes.length) {
+      this.publishedKnowledgeChartData = null;
+      return;
+    }
+
+    const labels = insighters.map(ins => ins.insighter_name || 'Unknown');
+    const donutLabels: string[] = [];
+    const donutData: number[] = [];
+    const donutColors: string[] = [];
+
+    const knowledgeDatasets = availableTypes.map(type => {
+      const color = this.knowledgeTypeColors[type as keyof typeof this.knowledgeTypeColors] || '#999';
+      const formattedLabel = type.charAt(0).toUpperCase() + type.slice(1);
+      const data = insighters.map(ins => {
+        const value = Number((ins.types || {})[type] ?? 0);
+        return Number.isNaN(value) ? 0 : value;
+      });
+
+      this.knowledgeTypeLegend.push({
+        label: formattedLabel,
+        color
+      });
+
+      const totalForType = Number((stats.type as any)?.[type] ?? 0);
+      if (totalForType > 0) {
+        donutLabels.push(formattedLabel);
+        donutData.push(totalForType);
+        donutColors.push(color);
+      }
+
+      return {
+        label: formattedLabel,
+        data,
+        backgroundColor: color,
+        borderColor: color,
+        borderWidth: 0,
+        maxBarThickness: 35,
+        stack: 'published-knowledge'
+      };
+    });
+
+    const knowledgeTotalsByIndex = insighters.map((_, index) =>
+      knowledgeDatasets.reduce((sum, dataset) => {
+        const value = Number((dataset.data as number[])[index] ?? 0);
+        return sum + (Number.isNaN(value) ? 0 : value);
+      }, 0)
+    );
+
+    const datasets = [...knowledgeDatasets];
+    let meetingLegendEntry: { label: string; color: string } | null = null;
+
+    const meetingOrdersMap = new Map<string, number>();
+    const meetingOrderStats = this.dashboardStats?.meeting_booking_order_statistics?.company_insighter_orders_statistics || [];
+    meetingOrderStats.forEach(stat => {
+      const meetingCount = Number(stat.total_orders);
+      meetingOrdersMap.set(stat.uuid, Number.isNaN(meetingCount) ? 0 : meetingCount);
+    });
+
+    const meetingDatasetData = insighters.map(ins => meetingOrdersMap.get(ins.uuid) ?? 0);
+    const hasMeetingData = meetingDatasetData.some(value => value > 0);
+
+    if (hasMeetingData || meetingOrderStats.length) {
+      datasets.push({
+        label: 'Meeting Orders',
+        data: meetingDatasetData,
+        backgroundColor: this.meetingOrdersColor,
+        borderColor: this.meetingOrdersColor,
+        borderWidth: 0,
+        maxBarThickness: 35,
+        stack: 'meeting-orders'
+      });
+
+      meetingLegendEntry = {
+        label: 'Meeting Orders',
+        color: this.meetingOrdersColor
+      };
+    }
+
+    this.publishedKnowledgeDonutData = donutData.length ? {
+      labels: donutLabels,
+      datasets: [{
+        data: donutData,
+        backgroundColor: donutColors,
+        borderWidth: 0,
+        cutout: '65%'
+      }]
+    } : null;
+
+    this.publishedKnowledgeDonutOptions = {
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: (context: any) => `${context.label}: ${context.parsed}`
+          }
+        }
+      },
+      maintainAspectRatio: false,
+      responsive: true
+    };
+
+    this.publishedKnowledgeLegend = [...this.knowledgeTypeLegend];
+    if (meetingLegendEntry) {
+      this.publishedKnowledgeLegend.push(meetingLegendEntry);
+    }
+
+    this.publishedKnowledgeChartData = {
+      labels,
+      datasets
+    };
+
+    this.publishedKnowledgeChartOptions = {
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          mode: 'index',
+          intersect: false,
+          callbacks: {
+            label: (context: any) => {
+              const value = context.parsed?.y ?? context.parsed ?? 0;
+              return `${context.dataset.label}: ${value}`;
+            },
+            footer: (tooltipItems: any[]) => {
+              if (!tooltipItems?.length) {
+                return '';
+              }
+
+              const dataIndex = tooltipItems[0].dataIndex;
+              const totalPublished = knowledgeTotalsByIndex[dataIndex] ?? 0;
+
+              return `Total Published: ${totalPublished}`;
+            }
+          }
+        }
+      },
+      interaction: {
+        mode: 'index',
+        intersect: false
+      },
+      scales: {
+        x: {
+          stacked: true,
+          ticks: {
+            maxRotation: 45
+          }
+        },
+        y: {
+          stacked: true,
+          beginAtZero: true,
+          ticks: {
+            precision: 0
+          }
+        }
+      },
+      maintainAspectRatio: false,
+      responsive: true
+    };
+  }
+
+  // Setup knowledge orders column chart
+  setupKnowledgeOrdersChart(): void {
+    if (!this.dashboardStats?.knowledge_order_statistics?.company_insighter_orders_statistics) return;
+
+    const orderStats = this.dashboardStats.knowledge_order_statistics.company_insighter_orders_statistics;
+    const labels = orderStats.map(stat => stat.insighter_name);
+    const data = orderStats.map(stat => this.parseAmount(stat.total_amount));
+
+    this.knowledgeOrdersChartData = {
+      labels,
+      datasets: [{
+        label: 'Total Amount',
+        data,
+        backgroundColor: '#0a7abf',
+        borderColor: '#0a7abf',
+        borderWidth: 0,
+        maxBarThickness: 25
+      }]
+    };
+
+    this.knowledgeOrdersChartOptions = {
+      plugins: {
+        legend: {
+          display: false
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: function(value: any) {
+              return '$' + value.toLocaleString();
+            }
+          }
+        },
+        x: {
+          ticks: {
+            maxRotation: 45
+          }
+        }
+      },
+      maintainAspectRatio: false,
+      responsive: true
+    };
+  }
+
+  // Setup meeting orders column chart
+  setupMeetingOrdersChart(): void {
+    if (!this.dashboardStats?.meeting_booking_order_statistics?.company_insighter_orders_statistics) return;
+
+    const orderStats = this.dashboardStats.meeting_booking_order_statistics.company_insighter_orders_statistics;
+    const labels = orderStats.map(stat => stat.insighter_name);
+    const data = orderStats.map(stat => this.parseAmount(stat.total_amount));
+
+    this.meetingOrdersChartData = {
+      labels,
+      datasets: [{
+        label: 'Total Amount',
+        data,
+        backgroundColor: '#0a7abf',
+        borderColor: '#0a7abf',
+        borderWidth: 0,
+        maxBarThickness: 25
+      }]
+    };
+
+    this.meetingOrdersChartOptions = {
+      plugins: {
+        legend: {
+          display: false
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: function(value: any) {
+              return '$' + value.toLocaleString();
+            }
+          }
+        },
+        x: {
+          ticks: {
+            maxRotation: 45
+          }
+        }
+      },
+      maintainAspectRatio: false,
+      responsive: true
+    };
+  }
+
+  formatCurrency(amount: string | number | null | undefined): string {
+    if (amount === null || amount === undefined || amount === '') {
+      return '$0';
+    }
+
+    const numericAmount = typeof amount === 'number'
+      ? amount
+      : parseFloat(String(amount).replace(/,/g, ''));
+
+    if (Number.isNaN(numericAmount)) {
+      return '$0';
+    }
+
+    const locale = this.lang === 'ar' ? 'ar-EG' : 'en-US';
+
+    return new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0
+    }).format(numericAmount);
+  }
+
+  get totalPublishedKnowledge(): number {
+    return this.dashboardStats?.knowledge_published_statistics?.total ?? 0;
+  }
+
+  get totalMeetings(): number {
+    if (this.dashboardStats?.meeting_booking_statistics && this.dashboardStats.meeting_booking_statistics.total !== undefined) {
+      return this.dashboardStats.meeting_booking_statistics.total;
+    }
+
+    return this.dashboardStats?.meeting_booking_order_statistics?.orders_total ?? 0;
+  }
+
+  private parseAmount(value: string | number | null | undefined): number {
+    if (typeof value === 'number') {
+      return value;
+    }
+
+    if (typeof value === 'string') {
+      const sanitized = value.replace(/,/g, '');
+      const parsed = parseFloat(sanitized);
+      return Number.isNaN(parsed) ? 0 : parsed;
+    }
+
+    return 0;
+  }
+
+  // Methods for individual insighter statistics in grid cards
+  getInsighterPublishedCount(insighter: Insighter): number {
+    const publishedStats = (insighter as any).knowledge_published_statistics;
+    if (publishedStats && publishedStats.total_published) {
+      return publishedStats.total_published;
+    }
+    return 0;
+  }
+
+  getInsighterPublishedAmount(insighter: Insighter): number {
+    const publishedStats = (insighter as any).knowledge_published_statistics;
+    if (publishedStats && publishedStats.total_amount) {
+      return this.parseAmount(publishedStats.total_amount);
+    }
+    return 0;
+  }
+
+  getInsighterMeetingsCount(insighter: Insighter): number {
+    const meetingStats = (insighter as any).meeting_booking_statistics;
+    if (meetingStats && meetingStats.total) {
+      return meetingStats.total;
+    }
+    return 0;
+  }
+
+  getInsighterMeetingsAmount(insighter: Insighter): number {
+    // For meetings, we'll use a placeholder since meeting amounts may not be in the current API
+    // This would need to be adjusted based on actual API structure for meeting amounts
+    const meetingStats = (insighter as any).meeting_booking_statistics;
+    if (meetingStats && meetingStats.total_amount) {
+      return this.parseAmount(meetingStats.total_amount);
+    }
+    return 0;
+  }
+
+  getInsighterRequestsCount(insighter: Insighter): number {
+    const requestStats = (insighter as any).knowledge_request_statistics;
+    if (requestStats) {
+      const approved = requestStats.approved || 0;
+      const declined = requestStats.declined || 0;
+      const pending = requestStats.pending || 0;
+      return approved + declined + pending;
+    }
+    return 0;
+  }
+
+  getInsighterRequestsAmount(insighter: Insighter): number {
+    // For requests, we'll use a placeholder since request amounts may not be in the current API
+    // This would need to be adjusted based on actual API structure for request amounts
+    const requestStats = (insighter as any).knowledge_request_statistics;
+    if (requestStats && requestStats.total_amount) {
+      return this.parseAmount(requestStats.total_amount);
+    }
+    return 0;
+  }
+
+  // Localization method for statistics cards and other components
+  getTranslation(key: string): string {
+    const translations: { [key: string]: { en: string; ar: string } } = {
+      // Statistics cards
+      'published': { en: 'Published', ar: 'منشور' },
+      'profit': { en: 'Profit', ar: 'الربح' },
+      'meetings': { en: 'Meetings', ar: 'الاجتماعات' },
+
+      // Common
+      'loading': { en: 'Loading', ar: 'جاري التحميل' },
+
+      // Main titles
+      'title': { en: 'Manage your company employees', ar: 'إدارة موظفي شركتك' },
+      'subtitle': { en: 'View and manage your team members', ar: 'عرض وإدارة أعضاء فريقك' },
+
+      // Actions
+      'addEmployee': { en: 'Add Employee', ar: 'إضافة موظف' },
+      'activate': { en: 'Activate', ar: 'تفعيل' },
+      'deactivate': { en: 'Deactivate', ar: 'إلغاء التفعيل' },
+      'delete': { en: 'Delete', ar: 'حذف' },
+      'cancel': { en: 'Cancel', ar: 'إلغاء' },
+      'invite': { en: 'Invite', ar: 'دعوة' },
+      'inviting': { en: 'Inviting...', ar: 'جاري الدعوة...' },
+
+      // Table headers
+      'insighter': { en: 'Insighter', ar: 'المستشار' },
+      'email': { en: 'Email', ar: 'البريد الإلكتروني' },
+      'country': { en: 'Country', ar: 'البلد' },
+      'status': { en: 'Status', ar: 'الحالة' },
+      'actions': { en: 'Actions', ar: 'الإجراءات' },
+
+      // Status
+      'active': { en: 'Active', ar: 'نشط' },
+      'inactive': { en: 'Inactive', ar: 'غير نشط' },
+      'verified': { en: 'Verified', ar: 'موثق' },
+      'pending': { en: 'Pending', ar: 'في الانتظار' },
+      'currentUser': { en: 'Current User', ar: 'المستخدم الحالي' },
+
+      // Forms
+      'emailAddress': { en: 'Email Address', ar: 'عنوان البريد الإلكتروني' },
+      'enterEmail': { en: 'Enter email address', ar: 'أدخل عنوان البريد الإلكتروني' },
+      'firstName': { en: 'First Name', ar: 'الاسم الأول' },
+      'lastName': { en: 'Last Name', ar: 'الاسم الأخير' },
+      'enterFirstName': { en: 'Enter first name', ar: 'أدخل الاسم الأول' },
+      'enterLastName': { en: 'Enter last name', ar: 'أدخل الاسم الأخير' },
+      'selectCountry': { en: 'Select country', ar: 'اختر البلد' },
+      'searchCountries': { en: 'Search countries', ar: 'البحث في البلدان' },
+
+      // Validation
+      'emailRequired': { en: 'Email address is required', ar: 'عنوان البريد الإلكتروني مطلوب' },
+      'emailInvalid': { en: 'Please enter a valid email address', ar: 'يرجى إدخال عنوان بريد إلكتروني صحيح' },
+      'firstNameRequired': { en: 'First name is required', ar: 'الاسم الأول مطلوب' },
+      'lastNameRequired': { en: 'Last name is required', ar: 'الاسم الأخير مطلوب' },
+      'countryRequired': { en: 'Country selection is required', ar: 'اختيار البلد مطلوب' },
+
+      // Empty states
+      'emptyStateMessage': { en: 'Start building your team by adding employees', ar: 'ابدأ في بناء فريقك عن طريق إضافة الموظفين' },
+      'noEmployees': { en: 'No employees found', ar: 'لم يتم العثور على موظفين' },
+      'checkingAccount': { en: 'Checking account...', ar: 'جاري فحص الحساب...' },
+
+      // Statistics
+      'total': { en: 'Total', ar: 'المجموع' },
+      'publishedKnowledge': { en: 'Published Knowledge', ar: 'المعرفة المنشورة' },
+      'publishedKnowledgeByInsighter': { en: 'Published Knowledge by Insighter', ar: 'المعرفة المنشورة حسب المستشار' },
+      'knowledgeOrders': { en: 'Knowledge Orders', ar: 'طلبات المعرفة' },
+      'meetingOrders': { en: 'Meeting Orders', ar: 'طلبات الاجتماعات' },
+      'totalMeetings': { en: 'Total Meetings', ar: 'إجمالي الاجتماعات' },
+      'totalPublished': { en: 'Total Published', ar: 'إجمالي المنشور' },
+      'ordersAmount': { en: 'Orders Amount', ar: 'مبلغ الطلبات' },
+      'companyNetShare': { en: 'Company Net Share', ar: 'حصة الشركة الصافية' }
+    };
+
+    const translation = translations[key];
+    if (translation) {
+      return translation[this.lang as keyof typeof translation] || translation.en;
+    }
+    return key;
+  }
+
 }

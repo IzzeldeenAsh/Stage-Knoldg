@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { catchError, forkJoin, Observable, of, tap } from 'rxjs';
 import { IKnoldgProfile } from 'src/app/_fake/models/profile.interface';
 import { ConsultingFieldTreeService } from 'src/app/_fake/services/consulting-fields-tree/consulting-fields-tree.service';
+import { CountriesService } from 'src/app/_fake/services/countries/countries.service';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import { IndustryService } from 'src/app/_fake/services/industries/industry.service';
 import { UpdateProfileService } from 'src/app/_fake/services/profile/profile.service';
@@ -23,6 +24,7 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
   corporateInfoForm:FormGroup;
   industries:any[] = [];
   consultingFields: any[] = [];
+  countries: any[] = [];
   allIndustriesSelected:any[] = [];
   allConsultingFieldsSelected:any[] = [];
   constructor(
@@ -31,8 +33,9 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
     private _industries: IndustryService,
     private _consultingFieldService: ConsultingFieldTreeService,
     private _profilePost: UpdateProfileService,
+    private _countryService: CountriesService,
     injector: Injector,
-    private getProfileService: ProfileService 
+    private getProfileService: ProfileService
   ) {
     super(injector);
   }
@@ -69,8 +72,21 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
       })
     );
 
+    const countries$ = this._countryService.getCountries().pipe(
+      tap((countries) => {
+        this.countries = countries.map((country: any) => ({
+          ...country,
+          flagPath: `assets/media/flags/${country.flag}.svg`,
+          showFlag: true,
+        }));
+      }),
+      catchError((err) => {
+        return of([]);
+      })
+    );
+
     forkJoin(
-      [profile$, industries$, consultingFields$]
+      [profile$, industries$, consultingFields$, countries$]
     ).subscribe({
       next: () => {
         if(this.hasRole(["company"])){
@@ -88,8 +104,9 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
   initForm(){
     if(this.profile.roles.includes("company")){
       this.corporateInfoForm = this.fb.group({
-     
         companyAddress: ["", Validators.required],
+        companyPhoneCountryCode: [""],
+        companyPhoneNumber: [""],
         companyIndustries: [[], Validators.required],
         companyConsultingFields: [[], Validators.required],
         companyLegalName: ["", Validators.required],
@@ -102,7 +119,6 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
         instagram: [''],
         youtube: [''],
       });
-
     }
   }
 
@@ -162,6 +178,8 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
       companyRegisterDocument: this.profile.company?.register_document,
       companyAboutUs: this.profile.company?.about_us,
       companyAddress: this.profile.company?.address,
+      companyPhoneCountryCode: this.profile.company?.phone_code || '',
+      companyPhoneNumber: this.profile.company?.company_phone || '',
     });
 
     // Add social media population
@@ -254,6 +272,16 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
     formData.append("legal_name", this.corporateInfoForm.get("companyLegalName")?.value);
     formData.append("website", this.corporateInfoForm.get("companyWebsite")?.value);
     formData.append("about_us", this.corporateInfoForm.get("companyAboutUs")?.value);
+
+    // Add company phone if provided
+    if (this.corporateInfoForm.get("companyPhoneNumber")?.value) {
+      formData.append("company_phone", this.corporateInfoForm.get("companyPhoneNumber")?.value);
+    }
+
+    // Add company phone code if provided
+    if (this.corporateInfoForm.get("companyPhoneCountryCode")?.value) {
+      formData.append("phone_code", this.corporateInfoForm.get("companyPhoneCountryCode")?.value);
+    }
       // Handle industries selection
     const industriesList = this.corporateInfoForm.get("companyIndustries")?.value.filter((node: any) => typeof node.key === 'number');
     const otherIndustriesFields = this.corporateInfoForm.get("companyIndustries")?.value.filter(
@@ -352,6 +380,24 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
       }
     } else {
       this.showError("", "An unexpected error occurred.");
+    }
+  }
+
+  onCompanyCountryCodeChange(countryCode: string): void {
+    this.corporateInfoForm.get('companyPhoneCountryCode')?.setValue(countryCode);
+  }
+
+  onCompanyPhoneNumberChange(phoneNumber: string): void {
+    this.corporateInfoForm.get('companyPhoneNumber')?.setValue(phoneNumber);
+  }
+
+  onCompanyFormattedPhoneNumberChange(formattedPhone: string): void {
+    // Handle formatted phone number if needed
+  }
+
+  onFlagError(country: any): void {
+    if (country) {
+      country.showFlag = false;
     }
   }
 }

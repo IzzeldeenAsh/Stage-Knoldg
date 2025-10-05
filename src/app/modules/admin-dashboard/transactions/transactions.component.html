@@ -295,7 +295,7 @@
     </div>
 
     <!-- Order Information Section -->
-    <div class="items-section" *ngIf="selectedTransaction.order && selectedTransaction.order.sub_order">
+    <div class="items-section" *ngIf="selectedTransaction.order && selectedTransaction.order.orderable">
       <h3 class="section-title">
         <i class="pi pi-file-text"></i>
         Order Details
@@ -329,17 +329,17 @@
         </div>
       </div>
 
-      <div class="sub_orders-container">
-        <div class="sub_order-card">
-          <div class="sub_order-header">
-            <span class="sub_order-number">Order Contents</span>
+      <div class="orderables-container">
+        <div class="orderable-card">
+          <div class="orderable-header">
+            <span class="orderable-number">Order Contents</span>
           </div>
 
           <!-- Knowledge Items -->
-          <div class="knowledge-section" *ngIf="selectedTransaction.order.sub_order.knowledge && selectedTransaction.order.sub_order.knowledge.length > 0">
+          <div class="knowledge-section" *ngIf="selectedTransaction.order.orderable.knowledge && selectedTransaction.order.orderable.knowledge.length > 0">
             <h4 class="subsection-title">Knowledge Products</h4>
             <div class="knowledge-items">
-              <div class="knowledge-item" *ngFor="let item of selectedTransaction.order.sub_order.knowledge">
+              <div class="knowledge-item" *ngFor="let item of selectedTransaction.order.orderable.knowledge">
                 <div class="knowledge-type">
                   <p-chip [label]="item.type" styleClass="custom-chip"></p-chip>
                 </div>
@@ -350,17 +350,17 @@
 
           <!-- Documents -->
 
-          <div class="documents-section" *ngIf="selectedTransaction.order.sub_order?.knowledge_documents">
+          <div class="documents-section" *ngIf="selectedTransaction.order.orderable?.knowledge_documents">
             <div class="d-flex align-items-center mb-4">
               <i class="ki-outline ki-folder text-info fs-2 me-3"></i>
               <h4 class="subsection-title mb-0">Order Contents</h4>
               <span class="badge badge-light-info ms-3 fs-7">
-                {{ getDocumentCount(selectedTransaction.order.sub_order?.knowledge_documents) }}
-                {{ getDocumentCount(selectedTransaction.order.sub_order?.knowledge_documents) === 1 ? 'Document' : 'Documents' }}
+                {{ getDocumentCount(selectedTransaction.order.orderable?.knowledge_documents) }}
+                {{ getDocumentCount(selectedTransaction.order.orderable?.knowledge_documents) === 1 ? 'Document' : 'Documents' }}
               </span>
             </div>
             <div class="documents-container">
-              <div *ngFor="let docGroup of selectedTransaction.order.sub_order.knowledge_documents" class="document-group mb-3">
+              <div *ngFor="let docGroup of selectedTransaction.order.orderable.knowledge_documents" class="document-group mb-3">
                 <div class="document-card p-4 mb-3" *ngFor="let doc of docGroup">
                   <div class="d-flex align-items-center">
                     <div class="file-icon-wrapper me-4">
@@ -395,7 +395,7 @@
           </div>
 
           <!-- Meeting Booking -->
-          <div class="meeting-section" *ngIf="selectedTransaction.order.sub_order.meeting_booking">
+          <div class="meeting-section" *ngIf="selectedTransaction.order.orderable.meeting_booking">
             <h4 class="subsection-title">Meeting Details</h4>
             <div class="meeting-card">
               <div class="meeting-grid">
@@ -403,29 +403,29 @@
                   <i class="pi pi-calendar meeting-icon"></i>
                   <div class="meeting-content">
                     <span class="meeting-label">Date</span>
-                    <span class="meeting-value">{{ selectedTransaction.order.sub_order.meeting_booking.date }}</span>
+                    <span class="meeting-value">{{ selectedTransaction.order.orderable.meeting_booking.date }}</span>
                   </div>
                 </div>
                 <div class="meeting-item">
                   <i class="pi pi-clock meeting-icon"></i>
                   <div class="meeting-content">
                     <span class="meeting-label">Time</span>
-                    <span class="meeting-value">{{ selectedTransaction.order.sub_order.meeting_booking.start_time }} - {{ selectedTransaction.order.sub_order.meeting_booking.end_time }}</span>
+                    <span class="meeting-value">{{ selectedTransaction.order.orderable.meeting_booking.start_time }} - {{ selectedTransaction.order.orderable.meeting_booking.end_time }}</span>
                   </div>
                 </div>
                 <div class="meeting-item">
                   <i class="pi pi-info-circle meeting-icon"></i>
                   <div class="meeting-content">
                     <span class="meeting-label">Status</span>
-                    <span class="badge" [ngClass]="getMeetingStatusClass(selectedTransaction.order.sub_order.meeting_booking.status)">
-                      {{ selectedTransaction.order.sub_order.meeting_booking.status | titlecase }}
+                    <span class="badge" [ngClass]="getMeetingStatusClass(selectedTransaction.order.orderable.meeting_booking.status)">
+                      {{ selectedTransaction.order.orderable.meeting_booking.status | titlecase }}
                     </span>
                   </div>
                 </div>
               </div>
               <div class="meeting-details">
-                <h5 class="meeting-title">{{ selectedTransaction.order.sub_order.meeting_booking.title }}</h5>
-                <p class="meeting-description">{{ selectedTransaction.order.sub_order.meeting_booking.description }}</p>
+                <h5 class="meeting-title">{{ selectedTransaction.order.orderable.meeting_booking.title }}</h5>
+                <p class="meeting-description">{{ selectedTransaction.order.orderable.meeting_booking.description }}</p>
               </div>
             </div>
           </div>

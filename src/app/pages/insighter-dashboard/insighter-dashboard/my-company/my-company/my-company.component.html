@@ -1,11 +1,173 @@
 <!-- Company Management Page -->
+@if(loading) {
+  <div *ngIf="loading" class="text-center py-10 bg-light rounded mb-5 border border-1 border-light">
+    <div class="my-5">
+        <div class="spinner-border text-primary mb-4" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">{{ getTranslation('loading') }}</span>
+        </div>
+        <h3 class="fw-bold text-gray-800 mb-2">Loading Team</h3>
+        <p class="text-gray-600 fs-6 px-3">Please wait while we fetch your team...</p>
+    </div>
+</div>
+}
+@else {
 <div class="my-company-container">
-<div class="card mb-5 mb-xl-10">
+      <!-- Dashboard Statistics Charts -->
+      <div *ngIf="dashboardStats" class="row g-4 mb-6">
+        <!-- Published Knowledge Overview -->
+        <div class="col-12 col-lg-6 ">
+          <div class="card border-0 h-100">
+            <div class="chart-card__header px-6 pt-6">
+              <h6 class="card-title fw-bold text-gray-800 mb-0">{{ getTranslation('publishedKnowledge') }}</h6>
+            </div>
+            <div class="card-body chart-card chart-card--centered">
+            
+              <ng-container *ngIf="publishedKnowledgeDonutData; else publishedKnowledgeDonutEmpty">
+                <div class="donut-wrapper">
+                  <p-chart
+                    type="doughnut"
+                    [data]="publishedKnowledgeDonutData"
+                    [options]="publishedKnowledgeDonutOptions"
+                    width="160"
+                    height="160">
+                  </p-chart>
+                  <div class="donut-wrapper__center">
+                    <div class="donut-wrapper__total">{{ totalPublishedKnowledge }}</div>
+                    <div class="donut-wrapper__label">Total</div>
+                  </div>
+                </div>
+                <div *ngIf="knowledgeTypeLegend.length" class="chart-legend mt-4">
+                  <div *ngFor="let legendItem of knowledgeTypeLegend" class="chart-legend__item">
+                    <span class="chart-legend__swatch" [style.backgroundColor]="legendItem.color"></span>
+                    <span class="chart-legend__label">{{ legendItem.label }}</span>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-template #publishedKnowledgeDonutEmpty>
+                <div class="chart-card__empty">
+                  <i class="ki-duotone ki-file fs-2x text-muted mb-2"></i>
+                  <div class="text-muted fs-7">No data available</div>
+                </div>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+
+        <!-- Published Knowledge by Insighter -->
+        <div class="col-12 col-lg-6 ">
+          <div class="card border-0 h-100">
+            <div class="card-body chart-card">
+              <div class="chart-card__header">
+                <h6 class="text-start fw-bold text-gray-800 mb-0">{{ getTranslation('publishedKnowledgeByInsighter') }}</h6>
+              </div>
+              <div class="chart-stat-cards mb-4">
+                <div class="chart-stat-card">
+                  <span class="chart-stat-card__label">{{ getTranslation('totalPublished') }}</span>
+                  <span class="chart-stat-card__value">{{ totalPublishedKnowledge }}</span>
+                </div>
+                <div class="chart-stat-card">
+                  <span class="chart-stat-card__label">{{ getTranslation('totalMeetings') }}</span>
+                  <span class="chart-stat-card__value">{{ totalMeetings }}</span>
+                </div>
+              </div>
+              <ng-container *ngIf="publishedKnowledgeChartData; else publishedKnowledgeStackedEmpty">
+                <div class="bar-chart-wrapper">
+                  <p-chart
+                    type="bar"
+                    [data]="publishedKnowledgeChartData"
+                    [options]="publishedKnowledgeChartOptions"
+                    width="100%"
+                    height="220">
+                  </p-chart>
+                </div>
+                <div *ngIf="publishedKnowledgeLegend.length" class="chart-legend mt-4">
+                  <div *ngFor="let legendItem of publishedKnowledgeLegend" class="chart-legend__item">
+                    <span class="chart-legend__swatch" [style.backgroundColor]="legendItem.color"></span>
+                    <span class="chart-legend__label">{{ legendItem.label }}</span>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-template #publishedKnowledgeStackedEmpty>
+                <div class="chart-card__empty">
+                  <i class="ki-duotone ki-chart-line fs-2x text-muted mb-2"></i>
+                  <div class="text-muted fs-7">No data available</div>
+                </div>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+
+        <!-- Knowledge Orders Chart -->
+        <div class="col-12 col-lg-6 ">
+          <div class="card border-0 h-100">
+            <div class="card-body chart-card text-center">
+              <h6 class="card-title fw-bold text-start mb-4">{{ getTranslation('knowledgeOrders') }}</h6>
+              <div *ngIf="dashboardStats?.knowledge_order_statistics" class="chart-stat-cards mb-4">
+                <div class="chart-stat-card">
+                  <span class="chart-stat-card__label">{{ getTranslation('ordersAmount') }}</span>
+                  <span class="chart-stat-card__value">{{ formatCurrency(dashboardStats.knowledge_order_statistics.orders_amount) }}</span>
+                </div>
+                <div class="chart-stat-card">
+                  <span class="chart-stat-card__label">{{ getTranslation('companyNetShare') }}</span>
+                  <span class="chart-stat-card__value">{{ formatCurrency(dashboardStats.knowledge_order_statistics.company_orders_amount) }}</span>
+                </div>
+              </div>
+              <div *ngIf="knowledgeOrdersChartData" class="bar-chart-wrapper">
+                <p-chart
+                  type="bar"
+                  [data]="knowledgeOrdersChartData"
+                  [options]="knowledgeOrdersChartOptions"
+                  width="100%"
+                  height="200">
+                </p-chart>
+              </div>
+              <div *ngIf="!knowledgeOrdersChartData" class="chart-card__empty">
+                <i class="ki-duotone ki-chart-line fs-2x text-muted mb-2"></i>
+                <div class="text-muted fs-7">No data available</div>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Meeting Orders Chart -->
+        <div class="col-12 col-lg-6 ">
+          <div class="card border-0 h-100">
+            <div class="card-body chart-card text-start">
+              <h6 class="card-title fw-bold text-gray-800 mb-4">{{ getTranslation('meetingOrders') }}</h6>
+              <div *ngIf="dashboardStats?.meeting_booking_order_statistics" class="chart-stat-cards mb-4">
+                <div class="chart-stat-card">
+                  <span class="chart-stat-card__label">{{ getTranslation('ordersAmount') }}</span>
+                  <span class="chart-stat-card__value">{{ formatCurrency(dashboardStats.meeting_booking_order_statistics.orders_amount) }}</span>
+                </div>
+                <div class="chart-stat-card">
+                  <span class="chart-stat-card__label">{{ getTranslation('companyNetShare') }}</span>
+                  <span class="chart-stat-card__value">{{ formatCurrency(dashboardStats.meeting_booking_order_statistics.company_orders_amount) }}</span>
+                </div>
+              </div>
+              <div *ngIf="meetingOrdersChartData" class="bar-chart-wrapper">
+                <p-chart
+                  type="bar"
+                  [data]="meetingOrdersChartData"
+                  [options]="meetingOrdersChartOptions"
+                  width="100%"
+                  height="200">
+                </p-chart>
+              </div>
+              <div *ngIf="!meetingOrdersChartData" class="chart-card__empty">
+                <i class="ki-duotone ki-calendar fs-2x text-muted mb-2"></i>
+                <div class="text-muted fs-7">No data available</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+<div class="card mb-5 mb-xl-10 p-0">
   <!-- Header -->
   <div class="card-header border-0 pt-5">
     <h3 class="card-title align-items-start flex-column">
-      <span class="card-label fw-bold fs-3 mb-1">{{ 'MY_COMPANY.TITLE' | translate }}</span>
-      <span class="text-muted mt-1 fw-semibold fs-7">{{ 'MY_COMPANY.SUBTITLE' | translate }}</span>
+      <span class="card-label fw-bold fs-3 mb-1">{{ getTranslation('title') }}</span>
+      <span class="text-muted mt-1 fw-semibold fs-7">{{ getTranslation('subtitle') }}</span>
     </h3>
     <div class="card-toolbar d-flex align-items-center">
       <!-- View Toggle -->
@@ -58,20 +220,22 @@
       
       <button type="button" class="btn btn-sm btn-light-info" (click)="openAddEmployeeModal()">
         <i class="ki-duotone ki-plus fs-2"></i>
-        {{ 'MY_COMPANY.ADD_EMPLOYEE' | translate }}
+        {{ getTranslation('addEmployee') }}
       </button>
     </div>
   </div>
   <!-- Body -->
-  <div class="card-body py-3">
+  <div class="card-body" style="padding: 10px !important">
+
+
     <!-- Empty state - only show if no insighters -->
     <div *ngIf="!loading && (!insighters || insighters.length === 0)" class="d-flex flex-column align-items-center justify-content-center py-8">
       <div class="symbol symbol-200px symbol-circle mb-7">
         <img src="./assets/media/illustrations/sigma-1/5568706.jpg" alt="company image" />
       </div>
-      <h2 class="fw-bold text-gray-800">{{ 'MY_COMPANY.ADD_EMPLOYEE' | translate }}</h2>
+      <h2 class="fw-bold text-gray-800">{{ getTranslation('addEmployee') }}</h2>
       <div class="fs-6 mb-5 text-gray-600">
-        {{ 'MY_COMPANY.EMPTY_STATE_MESSAGE' | translate }}
+        {{ getTranslation('emptyStateMessage') }}
       </div>
     </div>
     
@@ -155,7 +319,16 @@
                
                <!-- Country -->
                <td style="width: 140px; min-width: 140px; text-align: start;">
-                 <span class="text-gray-600">{{ insighter.country }}</span>
+                 <div class="d-flex align-items-center">
+                   <img
+                     [src]="getCountryFlag(insighter.country)"
+                     class="country-flag"
+                     [attr.alt]="(insighter.country || 'Unknown') + ' flag'"
+                     [attr.title]="insighter.country || 'Unknown'"
+                     (error)="handleFlagError($event)"
+                   />
+                   <span class="visually-hidden">{{ insighter.country || 'Unknown' }}</span>
+                 </div>
                </td>
                
                <!-- Status -->
@@ -336,216 +509,210 @@
       <!-- Grid View -->
       <div *ngIf="viewMode === 'grid'" class="grid-view">
         <div class="row g-4">
-          <div *ngFor="let insighter of insighters" class="col-xl-4 col-lg-6 col-md-6">
-            <div class="card insighter-card h-100 " [ngClass]="{'border-orange': insighter.roles.includes('company')}">
-              <div class="card-body d-flex flex-column position-relative">
-                <!-- Status Badge - Top Right -->
-                <div class="position-absolute" style="top: 16px; right: 16px;">
-                  <span [class]="'badge ' + getStatusBadgeClass(insighter.insighter_status)">
-                    {{ 
-                        (insighter.insighter_status === 'active' ? 'MY_COMPANY.STATUS.ACTIVE' : 
-                         insighter.insighter_status === 'inactive' ? 'MY_COMPANY.STATUS.INACTIVE' : 
-                         insighter.insighter_status) | translate | titlecase }}
+          <div *ngFor="let insighter of gridInsighters" class="col-xl-6 col-lg-6 col-12">
+            <div class="card horizontal-card" [ngClass]="{'border-orange': insighter.roles.includes('company')}">
+              <div class="card-body" style="padding: 10px !important">
+
+                <!-- Top Section -->
+                <div class="card-top d-flex align-items-start justify-content-between"
+                     [ngClass]="{'card-top--rtl': lang === 'ar'}">
+                  <!-- Status Badge -->
+                  <span [class]="'badge status-pill ' + getStatusBadgeClass(insighter.insighter_status)">
+                    {{
+                      (insighter.insighter_status === 'active' ? 'MY_COMPANY.STATUS.ACTIVE' :
+                       insighter.insighter_status === 'inactive' ? 'MY_COMPANY.STATUS.INACTIVE' :
+                       insighter.insighter_status) | translate | titlecase
+                    }}
                   </span>
-                </div>
-                
-                <!-- Header -->
-              
-                  <a (click)="navigateToInsighterProfile(insighter.uuid, insighter.verified_as_insighter)" [ngClass]="{'cursor-pointer': insighter.verified_as_insighter}">
-                    <div class="d-flex align-items-center mb-4">
-                    <div class="symbol symbol-50px me-3">
-                      <p-avatar 
-                        [label]="getUserInitials(insighter.name)"
-                        styleClass="bg-light-info rounded-circle"
-                        [style]="{'font-size': '1.1rem', 'height': '50px', 'width': '50px'}"
-                        *ngIf="!insighter.profile_photo_url">
-                      </p-avatar>
-                      <img 
-                        *ngIf="insighter.profile_photo_url" 
-                        [src]="insighter.profile_photo_url" 
-                        alt="insighter" 
-                        class="h-50px w-50px rounded-circle object-fit-cover" 
-                        style="object-position: top;" />
+
+                  <!-- Actions (meatballs) pinned to far edge -->
+                  <div class="action-dropdown dropdown"
+                       [ngClass]="{
+                         'order-first': lang === 'ar',
+                         'action-dropdown--rtl': lang === 'ar'
+                       }"
+                       *ngIf="!(insighter.roles && insighter.roles.includes('company'))">
+                    <button class="action-trigger meatballs-btn"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            aria-label="More actions">
+                    </button>
+
+                    <div class="dropdown-menu action-menu" [ngClass]="lang === 'ar' ? 'dropdown-menu-start' : 'dropdown-menu-end'" role="menu">
+                      <div class="action-menu-grid">
+                        <button type="button"
+                                class="dropdown-item menu-action menu-action--activate"
+                                *ngIf="(insighter.roles && insighter.roles.includes('company') && insighter.company && insighter.company.status === 'inactive' ||
+                                         (!insighter.roles || !insighter.roles.includes('company')) && insighter.insighter_status === 'inactive')"
+                                (click)="activateInsighter(insighter.id)">
+                          <i class="ki-duotone ki-check"></i>
+                          <span>{{ 'MY_COMPANY.ACTIVATE' | translate }}</span>
+                        </button>
+
+                        <button type="button"
+                                class="dropdown-item menu-action menu-action--deactivate"
+                                *ngIf="(insighter.roles && insighter.roles.includes('company') && insighter.company && insighter.company.status === 'active' ||
+                                         (!insighter.roles || !insighter.roles.includes('company')) && insighter.insighter_status === 'active' && insighter.verified_as_insighter)"
+                                (click)="deactivateInsighter(insighter.id)">
+                          <i class="ki-duotone ki-shield-slash"></i>
+                          <span>{{ 'MY_COMPANY.DEACTIVATE' | translate }}</span>
+                        </button>
+
+                        <button type="button"
+                                class="dropdown-item menu-action menu-action--delete"
+                                (click)="deleteInsighter(insighter.id)">
+                          <i class="ki-duotone ki-trash"></i>
+                          <span>{{ 'MY_COMPANY.DELETE' | translate }}</span>
+                        </button>
+                      </div>
                     </div>
-                    <div class="flex-grow-1">
-                      <h5 class="card-title mb-1 text-gray-800 fw-bold cursor-pointer" >{{ insighter.name }}</h5>
-                      <div class="text-info fs-7" *ngIf="insighter.roles.includes('company')">
+                  </div>
+                </div>
+
+                <!-- Main Content Area -->
+                <div class="d-flex gap-4 content-flex">
+                  <!-- Identity Section -->
+                  <div class="identity-block flex-shrink-0">
+                    <div class="avatar-wrapper">
+                      <!-- Avatar Backdrop -->
+                      <svg class="avatar-backdrop" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <circle cx="50" cy="50" r="45" fill="url(#avatarGradient)" />
+                        <defs>
+                          <radialGradient id="avatarGradient" cx="0" cy="0" r="1">
+                            <stop offset="0%" stop-color="#0a7abf" stop-opacity="0.08"/>
+                            <stop offset="100%" stop-color="#0a7abf" stop-opacity="0.02"/>
+                          </radialGradient>
+                        </defs>
+                      </svg>
+
+                      <!-- Avatar -->
+                      <a (click)="navigateToInsighterProfile(insighter.uuid, insighter.verified_as_insighter)"
+                         [ngClass]="{'cursor-pointer': insighter.verified_as_insighter}">
+                        <p-avatar
+                          [label]="getUserInitials(insighter.name)"
+                          class="avatar-fallback"
+                          [style]="{'font-size': '1.4rem'}"
+                          *ngIf="!insighter.profile_photo_url">
+                        </p-avatar>
+                        <img
+                          *ngIf="insighter.profile_photo_url"
+                          [src]="insighter.profile_photo_url"
+                          alt="insighter"
+                          class="avatar-image" />
+                      </a>
+                    </div>
+
+                    <!-- Identity Info -->
+                    <div class="text-center mt-3">
+                      <a (click)="navigateToInsighterProfile(insighter.uuid, insighter.verified_as_insighter)"
+                         [ngClass]="{'cursor-pointer': insighter.verified_as_insighter}">
+                        <h6 class="identity-name fw-bold mb-1 text-hover-primary">{{ insighter.name }}</h6>
+                      </a>
+                      <div class="identity-role text-info fw-semibold" *ngIf="insighter.roles.includes('company')">
                         {{ 'MY_COMPANY.CURRENT_USER' | translate }}
                       </div>
                     </div>
                   </div>
-                  </a>
-                
-                
-                <!-- Email and Country -->
-                <div class="mb-4 flex-grow-1">
-                  <div class="d-flex align-items-center mb-2">
-                    <i class="ki-duotone ki-sms fs-4 text-muted me-2">
-                      <span class="path1"></span>
-                      <span class="path2"></span>
-                    </i>
-                    <span class="text-gray-600 fs-7">{{ insighter.email }}</span>
-                  </div>
-                  <div class="d-flex align-items-center mb-3">
-                    <i class="ki-duotone ki-geolocation fs-4 text-muted me-2">
-                      <span class="path1"></span>
-                      <span class="path2"></span>
-                    </i>
-                    <span class="text-gray-600 fs-7">{{ insighter.country || 'N/A' }}</span>
-                  </div>
-                  
-                  <!-- Knowledge Stats Summary -->
-                  <div class="knowledge-summary" *ngIf="getTotalKnowledgeCount(insighter) > 0">
-                    <div class="text-inline-start mb-3">
-                      <span class="text-muted fs-8">{{ 'COMMON.PUBLISHED' | translate:{ name: insighter.name } }}</span>
-                    </div>
-                    <div class="knowledge-big-stats d-flex justify-content-center gap-3">
-                      <div *ngIf="insighter.knowledge_type_statistics?.report" 
-                           class="big-stat-item text-center"
-                           pTooltip="{{ 'KNOWLEDGE_TYPES.REPORT' | translate }}"
-                           tooltipPosition="top"
-                           [showDelay]="300">
-                        <svg width="24" height="24" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" class="mb-1">
-                          <path opacity="0.4" d="M45.125 21.75L43.0833 30.4583C41.3333 37.9792 37.875 41.0208 31.375 40.3958C30.3333 40.3125 29.2083 40.125 28 39.8333L24.5 39C15.8125 36.9375 13.125 32.6458 15.1667 23.9375L17.2083 15.2083C17.625 13.4375 18.125 11.8958 18.75 10.625C21.1875 5.58333 25.3333 4.22916 32.2917 5.875L35.7708 6.6875C44.5 8.72916 47.1667 13.0417 45.125 21.75Z" fill="#589AEA"/>
-                          <path d="M31.375 40.3958C30.0833 41.2708 28.4583 42 26.4792 42.6458L23.1875 43.7292C14.9167 46.3958 10.5625 44.1667 7.87499 35.8958L5.20833 27.6667C2.54166 19.3958 4.74999 15.0208 13.0208 12.3542L16.3125 11.2708C17.1667 11 17.9792 10.7708 18.75 10.625C18.125 11.8958 17.625 13.4375 17.2083 15.2083L15.1667 23.9375C13.125 32.6458 15.8125 36.9375 24.5 39L28 39.8333C29.2083 40.125 30.3333 40.3125 31.375 40.3958Z" fill="#589AEA"/>
-                        </svg>
-                        <div class="stat-number fw-bold fs-5 text-info">{{ insighter.knowledge_type_statistics?.report }}</div>
+
+                  <!-- Details Section -->
+                  <div class="card-details flex-grow-1">
+                    <!-- Three Statistics Cards -->
+                    <div class="row g-3 mb-3">
+                      <!-- Published Knowledge -->
+                      <div class="col-4">
+                        <div class="stat-card h-100" style="background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%); border: 1px solid #e5e7eb; border-radius: 6px;">
+                          <div class="p-4">
+                            <div class="d-flex align-items-center mb-3">
+                              <div class="symbol symbol-35px symbol-circle me-2" >
+                                <i class="ki-duotone ki-document fs-6 text-success">
+                                  <span class="path1"></span>
+                                  <span class="path2"></span>
+                                </i>
+                              </div>
+                              <span class="fs-7 fw-semibold text-success">{{ getTranslation('published') }}</span>
+                            </div>
+                            <div class="fw-bold" style="font-size: 2rem; line-height: 1; color: #1f2937;">{{ getInsighterPublishedCount(insighter) }}</div>
+                          </div>
+                        </div>
                       </div>
-                      <div *ngIf="insighter.knowledge_type_statistics?.data" 
-                           class="big-stat-item text-center"
-                           pTooltip="{{ 'KNOWLEDGE_TYPES.DATA' | translate }}"
-                           tooltipPosition="top"
-                           [showDelay]="300">
-                        <svg width="24" height="24" viewBox="0 0 30 34" fill="none" xmlns="http://www.w3.org/2000/svg" class="mb-1">
-                          <path d="M14.5464 0C10.5851 0 6.86364 0.704566 4.06815 1.98373C1.48292 3.16777 0 4.73376 0 6.28348C0 7.8332 1.48292 9.39967 4.06815 10.5831C6.86364 11.8623 10.585 12.5669 14.5464 12.5669C18.5078 12.5669 22.2297 11.8623 25.0243 10.5831C27.6099 9.39967 29.0933 7.8333 29.0933 6.28348C29.0933 4.73367 27.6099 3.16777 25.0243 1.98373C22.2293 0.704566 18.5077 0 14.5464 0Z" fill="#589AEA"/>
-                          <path d="M0 9.45442C0.821516 10.3442 1.99713 11.1499 3.49489 11.8359C6.46628 13.1954 10.3914 13.9444 14.5469 13.9444C18.7023 13.9444 22.627 13.1949 25.5984 11.8359C27.0961 11.1499 28.2718 10.3445 29.0933 9.45442V13.4496C29.0933 15.004 27.6131 16.5723 25.0331 17.7531C22.2436 19.029 18.5194 19.7326 14.5464 19.7326C10.5734 19.7326 6.84871 19.029 4.05982 17.7531C1.47967 16.5723 0 15.004 0 13.4496V9.45442Z" fill="#589AEA"/>
-                          <path d="M29.0933 16.6207C26.6302 19.2908 21.1116 21.1102 14.5464 21.1102C7.98116 21.1102 2.46273 19.2908 0 16.6207V20.1383C0 21.6918 1.47967 23.261 4.05982 24.4417C6.84871 25.7181 10.5734 26.4217 14.5464 26.4217C18.5194 26.4217 22.2436 25.7181 25.0336 24.4417C27.6136 23.261 29.0933 21.6918 29.0933 20.1383V16.6207Z" fill="#589AEA"/>
-                          <path d="M4.05982 31.608C1.47967 30.4272 0 28.858 0 27.3041V23.3093C2.46273 25.9799 7.98116 27.7994 14.5464 27.7994C21.1116 27.7994 26.6302 25.9799 29.0933 23.3093V27.3041C29.0933 28.858 27.6131 30.4272 25.0331 31.608C22.2436 32.8844 18.5194 33.5875 14.5464 33.5875C10.5734 33.5875 6.84871 32.8844 4.05982 31.608Z" fill="#589AEA"/>
-                        </svg>
-                        <div class="stat-number fw-bold fs-5 text-info ">{{ insighter.knowledge_type_statistics?.data }}</div>
+
+                      <!-- Total Amount -->
+                      <div class="col-4">
+                        <div class="stat-card h-100" style="background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%); border: 1px solid #e5e7eb; border-radius: 6px;">
+                          <div class="p-4">
+                            <div class="d-flex align-items-center mb-3">
+                              <div class="symbol symbol-35px symbol-circle me-2">
+                                <i class="ki-duotone ki-dollar fs-6 text-info">
+                                  <span class="path1"></span>
+                                  <span class="path2"></span>
+                                  <span class="path3"></span>
+                                </i>
+                              </div>
+                              <span class="fs-7 fw-semibold text-info">{{ getTranslation('profit') }}</span>
+                            </div>
+                            <div class="fw-bold" style="font-size: 2rem; line-height: 1; color: #1f2937;">{{ formatCurrency(getInsighterPublishedAmount(insighter)) }}</div>
+                          </div>
+                        </div>
                       </div>
-                      <div *ngIf="insighter.knowledge_type_statistics?.insight" 
-                           class="big-stat-item text-center"
-                           pTooltip="{{ 'KNOWLEDGE_TYPES.INSIGHT' | translate }}"
-                           tooltipPosition="top"
-                           [showDelay]="300">
-                        <svg width="24" height="24" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg" class="mb-1">
-                          <path d="M29.5625 0C37.1458 0 41.6663 4.52116 41.6455 12.1045V29.5625C41.6455 37.1457 37.1251 41.6669 29.542 41.667H12.1045C4.52127 41.667 0.00012927 37.146 0 29.542V12.1045C0 4.52116 4.52116 0 12.1045 0H29.5625ZM11.9346 21.46C10.7753 21.4601 9.83305 22.4022 9.83301 23.5615V29.4678C9.83321 30.6269 10.7754 31.5682 11.9346 31.5684C13.112 31.5684 14.0545 30.627 14.0547 29.4678V23.5615C14.0546 22.4021 13.1121 21.46 11.9346 21.46ZM19.96 12.1846C18.7825 12.1847 17.8409 13.1268 17.8408 14.2861V29.4678C17.841 30.6269 18.7827 31.5682 19.96 31.5684C21.1192 31.5684 22.0613 30.627 22.0615 29.4678V14.2861C22.0615 13.1267 21.1194 12.1846 19.96 12.1846ZM27.6689 8.83301C26.4561 8.83301 25.4854 9.93196 25.4854 11.2842V28.9912C25.4855 30.3434 26.4561 31.4424 27.6689 31.4424C28.863 31.4423 29.8329 30.3433 29.833 28.9912V11.2842C29.8329 9.93204 28.8631 8.83313 27.6689 8.83301Z" fill="#589AEA"/>
-                        </svg>
-                        <div class="stat-number fw-bold fs-5 text-info">{{ insighter.knowledge_type_statistics?.insight }}</div>
-                      </div>
-                      <div *ngIf="insighter.knowledge_type_statistics?.manual" 
-                           class="big-stat-item text-center"
-                           pTooltip="{{ 'KNOWLEDGE_TYPES.MANUAL' | translate }}"
-                           tooltipPosition="top"
-                           [showDelay]="300">
-                        <svg width="24" height="24" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" class="mb-1">
-                          <path d="M42.7083 14.5834V31.25H13.2292C9.95834 31.25 7.29167 33.9167 7.29167 37.1875V14.5834C7.29167 6.25002 9.37501 4.16669 17.7083 4.16669H32.2917C40.625 4.16669 42.7083 6.25002 42.7083 14.5834Z" fill="#589AEA"/>
-                          <path d="M42.7083 31.25V38.5417C42.7083 42.5625 39.4375 45.8333 35.4167 45.8333H14.5833C10.5625 45.8333 7.29167 42.5625 7.29167 38.5417V37.1875C7.29167 33.9167 9.95834 31.25 13.2292 31.25H42.7083Z" fill="#589AEA"/>
-                          <path d="M33.3333 16.1458H16.6667C15.8125 16.1458 15.1042 15.4375 15.1042 14.5833C15.1042 13.7291 15.8125 13.0208 16.6667 13.0208H33.3333C34.1875 13.0208 34.8958 13.7291 34.8958 14.5833C34.8958 15.4375 34.1875 16.1458 33.3333 16.1458Z" fill="#ffffff"/>
-                          <path d="M27.0833 23.4375H16.6667C15.8125 23.4375 15.1042 22.7292 15.1042 21.875C15.1042 21.0208 15.8125 20.3125 16.6667 20.3125H27.0833C27.9375 20.3125 28.6458 21.0208 28.6458 21.875C28.6458 22.7292 27.9375 23.4375 27.0833 23.4375Z" fill="#ffffff"/>
-                        </svg>
-                        <div class="stat-number fw-bold fs-5 text-info ">{{ insighter.knowledge_type_statistics?.manual }}</div>
-                      </div>
-                      <div *ngIf="insighter.knowledge_type_statistics?.course" 
-                           class="big-stat-item text-center"
-                           pTooltip="{{ 'KNOWLEDGE_TYPES.COURSE' | translate }}"
-                           tooltipPosition="top"
-                           [showDelay]="300">
-                        <svg width="24" height="24" viewBox="0 0 39 36" fill="none" xmlns="http://www.w3.org/2000/svg" class="mb-1">
-                          <path d="M31.9898 26.8163C31.9898 24.1788 29.8518 22.0408 27.2143 22.0408C24.5767 22.0408 22.4388 24.1788 22.4388 26.8163C22.4388 28.1696 23.0037 29.3885 23.9081 30.2576V36L27.2143 33.7959L30.5204 36V30.2576C31.4248 29.3885 31.9898 28.1696 31.9898 26.8163Z" fill="#589AEA"/>
-                          <path d="M37.1327 0H1.86734C1.05624 0 0.397949 0.657551 0.397949 1.46939V30.8572C0.397949 31.6683 1.05624 32.3265 1.86734 32.3265H20.9694V31.3443C20.0143 30.0372 19.5 28.4694 19.5 26.8163C19.5 22.5625 22.9604 19.102 27.2143 19.102C31.4682 19.102 34.9286 22.5625 34.9286 26.8163C34.9286 28.4701 34.4143 30.038 33.4592 31.345V32.3265H37.1327C37.9438 32.3265 38.6021 31.6683 38.6021 30.8572V1.46939C38.6021 0.657551 37.9438 0 37.1327 0ZM20.9694 13.2245H8.47959V10.2857H20.9694V13.2245ZM30.5204 7.34694H8.47959V4.40816H30.5204V7.34694Z" fill="#589AEA"/>
-                        </svg>
-                        <div class="stat-number fw-bold fs-5 text-info">{{ insighter.knowledge_type_statistics?.course }}</div>
-                      </div>
-                    </div>
-                    <!-- Total Knowledge Count -->
-                    <div class="text-center mt-3">
-                      <span class="badge badge-light-info px-4 py-2 fs-6 fw-bold w-100">
-                        {{ 'MY_COMPANY.TOTAL' | translate }}: {{ getTotalKnowledgeCount(insighter) }}
-                      </span>
-                    </div>
-                  </div>
-                  
-                  <!-- Empty State for No Knowledge -->
-                  <div class="knowledge-empty-state" *ngIf="getTotalKnowledgeCount(insighter) === 0">
-                    <div class="text-center py-4">
-                      <i class="ki-duotone ki-folder-open fs-2x text-muted mb-3">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                      </i>
-                      <div class="text-muted fs-7">
-                        {{ 'MY_COMPANY.NO_KNOWLEDGE_PUBLISHED' | translate }}
+
+                      <!-- Meetings -->
+                      <div class="col-4">
+                        <div class="stat-card h-100" style="background: linear-gradient(135deg, #ffffff 0%, #fefce8 100%); border: 1px solid #e5e7eb; border-radius: 6px;">
+                          <div class="p-4">
+                            <div class="d-flex align-items-center mb-3">
+                              <div class="symbol symbol-35px symbol-circle me-2" >
+                                <i class="ki-duotone ki-message-text-2 fs-6 text-warning">
+                                  <span class="path1"></span>
+                                  <span class="path2"></span>
+                                  <span class="path3"></span>
+                                </i>
+                              </div>
+                              <span class="fs-7 fw-semibold text-warning">{{ getTranslation('meetings') }}</span>
+                            </div>
+                            <div class="fw-bold" style="font-size: 2rem; line-height: 1; color: #1f2937;">{{ getInsighterMeetingsCount(insighter) }}</div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                
-                <!-- Actions -->
-                <div class="card-actions mt-auto">
-                  <div class="d-flex justify-content-center gap-2">
-                    <button *ngIf="(insighter.roles && insighter.roles.includes('company') && insighter.company && insighter.company.status === 'inactive' || 
-                              (!insighter.roles || !insighter.roles.includes('company')) && insighter.insighter_status === 'inactive') 
-                              && !insighter.roles.includes('company')" 
-                            class="btn btn-sm btn-success"
-                            (click)="activateInsighter(insighter.id)" 
-                            pTooltip="{{ 'MY_COMPANY.ACTIVATE' | translate }}" 
-                            tooltipPosition="top">
-                      <i class="ki-duotone ki-check fs-4">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                      </i>
-                      {{ 'MY_COMPANY.ACTIVATE' | translate }}
-                    </button>
-                    <button *ngIf="(insighter.roles && insighter.roles.includes('company') && insighter.company && insighter.company.status === 'active' || 
-                              (!insighter.roles || !insighter.roles.includes('company')) && insighter.insighter_status === 'active' && insighter.verified_as_insighter)   
-                              && !insighter.roles.includes('company')" 
-                            class="btn btn-sm btn-light-warning"
-                            (click)="deactivateInsighter(insighter.id)" 
-                            pTooltip="{{ 'MY_COMPANY.DEACTIVATE' | translate }}" 
-                            tooltipPosition="top">
-                      <i class="ki-duotone ki-shield-slash fs-4">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                        <span class="path3"></span>
-                        <span class="path4"></span>
-                      </i>
-                      {{ 'MY_COMPANY.DEACTIVATE' | translate }}
-                    </button>
-                    <button *ngIf="!insighter.roles.includes('company')" 
-                            class="btn btn-sm btn-light-danger"
-                            (click)="deleteInsighter(insighter.id)" 
-                            pTooltip="{{ 'MY_COMPANY.DELETE' | translate }}" 
-                            tooltipPosition="top">
-                      <i class="ki-duotone ki-trash fs-4">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                        <span class="path3"></span>
-                        <span class="path4"></span>
-                        <span class="path5"></span>
-                      </i>
-                      {{ 'MY_COMPANY.DELETE' | translate }}
-                    </button>
+                </div> <!-- /content-flex -->
+
+                <div class="meta-footer">
+                  <div class="meta-item meta-email">
+                    <i class="ki-duotone ki-sms fs-6 text-muted" aria-hidden="true"></i>
+                    <span class="meta-text text-muted" [attr.title]="insighter.email">{{ insighter.email }}</span>
+                  </div>
+                  <div class="meta-item meta-country">
+                    <img
+                      [src]="getCountryFlag(insighter.country)"
+                      class="country-flag"
+                      [attr.alt]="(insighter.country || 'Unknown') + ' flag'"
+                      [attr.title]="insighter.country || 'Unknown'"
+                      (error)="handleFlagError($event)"
+                    />
+                    <span class="visually-hidden">{{ insighter.country || 'Unknown' }}</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        
-        <!-- Pagination for Grid View -->
-        <div class="d-flex justify-content-between align-items-center flex-wrap mt-4">
-          <div class="d-flex flex-wrap py-2">
-            <p-paginator 
-              [rows]="rows" 
-              [totalRecords]="totalRecords" 
-              [first]="first"
-              [showCurrentPageReport]="true"
-              currentPageReportTemplate="{{ 'MY_COMPANY.SHOWING_ENTRIES' | translate:{first: '{first}', last: '{last}', total: '{totalRecords}'} }}"
-              (onPageChange)="onPageChange($event)">
-            </p-paginator>
+
+          <!-- Pagination for Grid View -->
+          <div class="d-flex justify-content-between align-items-center flex-wrap mt-4">
+            <div class="d-flex flex-wrap py-2">
+              <p-paginator
+                [rows]="rows"
+                [totalRecords]="totalRecords"
+                [first]="first"
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="{{ 'MY_COMPANY.SHOWING_ENTRIES' | translate:{first: '{first}', last: '{last}', total: '{totalRecords}'} }}"
+                (onPageChange)="onPageChange($event)">
+              </p-paginator>
+            </div>
           </div>
         </div>
+
       </div>
     </div>
   </div>
@@ -755,3 +922,4 @@
                  rejectIcon="ki-duotone ki-cross"></p-confirmDialog>
 
 </div>
+}

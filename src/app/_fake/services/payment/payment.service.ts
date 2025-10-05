@@ -22,6 +22,7 @@ export interface PaymentMethod {
   };
   account_address?: string;
   account_phone?: string;
+  account_phone_code?: string;
   bank_name?: string;
   bank_country?: {
     id: number;
@@ -59,6 +60,7 @@ export interface ManualAccountRequest {
   account_country_id: number;
   account_address?: string;
   account_phone?: string;
+  account_phone_code?: string;
   bank_name: string;
   bank_country_id: number;
   bank_address: string;
@@ -73,6 +75,7 @@ export interface UpdateManualAccountRequest {
   account_country_id: number;
   account_address?: string;
   account_phone?: string;
+  account_phone_code?: string;
   bank_name: string;
   bank_country_id: number;
   bank_address: string;

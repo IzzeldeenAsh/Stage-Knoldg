@@ -86,25 +86,69 @@ export class OverviewComponent extends BaseComponent implements OnInit {
         },
         (error: any) => {
           // Handle error
+          const detail = this.extractUploadErrorMessage(error);
           this.messageService.add({
             severity: "error",
             summary: "Error",
-            detail: "An error occurred while updating your profile picture.",
+            detail,
           });
         }
       );
   }
 
-  getLogoBackgroundImage(){
-    // Always use the personal profile photo URL with proper encoding
-    if (this.profile?.profile_photo_url) {
-      // Encode the URL to handle spaces and special characters
-      const encodedUrl = encodeURI(this.profile.profile_photo_url);
-      console.log('Encoded profile photo URL:', encodedUrl); // Debug log
-      return `url('${encodedUrl}')`;
-    } else {
-      return 'url(../../../assets/media/svg/avatars/blank.svg)';
+  getLogoBackgroundImage(): string {
+    if (!this.profile?.profile_photo_url) {
+      return "";
     }
+
+    const encodedUrl = encodeURI(this.profile.profile_photo_url);
+    return `url('${encodedUrl}')`;
+  }
+
+  hasProfilePhoto(): boolean {
+    return !!this.profile?.profile_photo_url;
+  }
+
+  getProfileInitials(): string {
+    const firstInitial = (this.profile?.first_name || "").trim().charAt(0);
+    const lastInitial = (this.profile?.last_name || "").trim().charAt(0);
+    const initials = `${firstInitial}${lastInitial}`.toUpperCase();
+    return initials || "--";
+  }
+
+  private extractUploadErrorMessage(error: any): string {
+    const defaultMessage = "An error occurred while updating your profile picture.";
+    if (!error) {
+      return defaultMessage;
+    }
+
+    const response = error.error ?? error;
+
+    if (response?.errors) {
+      const profilePhotoErrors = response.errors.profile_photo;
+      if (Array.isArray(profilePhotoErrors) && profilePhotoErrors.length) {
+        return profilePhotoErrors[0];
+      }
+
+      for (const key of Object.keys(response.errors)) {
+        const currentError = response.errors[key];
+        if (Array.isArray(currentError) && currentError.length && typeof currentError[0] === "string") {
+          const firstError = currentError[0].trim();
+          if (firstError) {
+            return firstError;
+          }
+        } else if (typeof currentError === "string" && currentError.trim()) {
+          return currentError.trim();
+        }
+      }
+    }
+
+    const message = response?.message ?? error.message;
+    if (typeof message === "string" && message.trim()) {
+      return message;
+    }
+
+    return defaultMessage;
   }
 
   hasCompanySocial(): boolean {
@@ -132,5 +176,28 @@ export class OverviewComponent extends BaseComponent implements OnInit {
   // Debug method to check company social data in console
   logCompanySocial(): void {
     console.log('Company social data:', this.profile?.company?.social);
+  }
+
+  getDisplayPhone(): string {
+    if (!this.profile) return '';
+
+    // For company role, check both user phone and company phone
+    if (this.profile.roles?.includes('company')) {
+      // First try company phone
+      if (this.profile.company?.company_phone && this.profile.company?.phone_code) {
+        return `(+${this.profile.company.phone_code}) ${this.profile.company.company_phone}`;
+      }
+      // Fallback to user personal phone
+      if (this.profile.phone && this.profile.phone_code) {
+        return `(+${this.profile.phone_code}) ${this.profile.phone}`;
+      }
+    } else {
+      // For non-company roles, show personal phone
+      if (this.profile.phone && this.profile.phone_code) {
+        return `(+${this.profile.phone_code}) ${this.profile.phone}`;
+      }
+    }
+
+    return this.lang === 'ar' ? 'غير محدد' : 'Not specified';
   }
 }

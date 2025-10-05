@@ -6,6 +6,23 @@
       right: auto !important;
       left: 16px !important;
     }
+
+    .chart-stat-card {
+      text-align: right;
+      align-items: flex-end;
+    }
+
+    .chart-legend {
+      justify-content: flex-end;
+    }
+
+    .chart-legend__item {
+      flex-direction: row-reverse;
+    }
+
+    .chart-legend__label {
+      text-align: right;
+    }
   }
 }
 
@@ -15,6 +32,23 @@
     .position-absolute[style*="top: 16px; right: 16px"] {
       right: auto !important;
       left: 16px !important;
+    }
+
+    .chart-stat-card {
+      text-align: right;
+      align-items: flex-end;
+    }
+
+    .chart-legend {
+      justify-content: flex-end;
+    }
+
+    .chart-legend__item {
+      flex-direction: row-reverse;
+    }
+
+    .chart-legend__label {
+      text-align: right;
     }
   }
 }
