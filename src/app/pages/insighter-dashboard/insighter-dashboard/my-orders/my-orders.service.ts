@@ -98,6 +98,19 @@ export interface OrdersResponse {
   meta: PaginationMeta;
 }
 
+export interface InsighterStatistics {
+  orders_sold_amount: number;
+  orders_purchased_amount: number;
+  knowledge_sold_amount: number;
+  meeting_sold_amount: number;
+  knowledge_purchased_amount: number;
+  meeting_purchased_amount: number;
+}
+
+export interface InsighterStatisticsResponse {
+  data: InsighterStatistics;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -108,7 +121,8 @@ export class MyOrdersService {
   private readonly INSIGHTER_KNOWLEDGE_API_URL = 'https://api.knoldg.com/api/insighter/order/knowledge';
   private readonly COMPANY_MEETING_API_URL = 'https://api.knoldg.com/api/company/order/meeting';
   private readonly INSIGHTER_MEETING_API_URL = 'https://api.knoldg.com/api/insighter/order/meeting';
-  
+  private readonly INSIGHTER_STATISTICS_API_URL = 'https://api.knoldg.com/api/insighter/order/statistics';
+
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$ = this.isLoadingSubject.asObservable();
   
@@ -227,6 +241,15 @@ export class MyOrdersService {
       map((response) => response),
       catchError(error => this.handleError(error)),
       finalize(() => this.setMeetingSalesLoading(false))
+    );
+  }
+
+  getInsighterStatistics(): Observable<InsighterStatisticsResponse> {
+    const headers = this.getHeaders();
+
+    return this.http.get<InsighterStatisticsResponse>(this.INSIGHTER_STATISTICS_API_URL, { headers }).pipe(
+      map((response) => response),
+      catchError(error => this.handleError(error))
     );
   }
 }

@@ -84,7 +84,7 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
   }
 
   get canViewSalesTabs(): boolean {
-    return this.roles.includes('company');
+    return this.roles.includes('company') || this.roles.includes('insighter') || this.roles.includes('company-insighter');
   }
 
   get currentLang(): 'ar' | 'en' {
@@ -96,7 +96,7 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
     this.loadOrders();
     this.loadMeetingOrders();
     // Load statistics only if not already loaded by the header component
-    if (!this.orderStatisticsService.getCurrentStatistics() && this.roles.includes('company')) {
+    if (!this.orderStatisticsService.getCurrentStatistics() && this.canViewSalesTabs) {
       this.orderStatisticsService.loadStatistics();
     }
   }
@@ -247,11 +247,11 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
 
 
   private resolveSalesRole(): 'company' | 'insighter' | null {
-    if (this.roles.includes('company') || this.roles.includes('company-insighter')) {
+    if (this.roles.includes('company') ) {
       return 'company';
     }
 
-    if (this.roles.includes('insighter')) {
+    if (this.roles.includes('insighter') || this.roles.includes('company-insighter')) {
       return 'insighter';
     }
 

@@ -8,6 +8,21 @@
     transform: translate(10px, -50px);
     border-radius: 10px;
 }
+#kt_app_toolbar_container {
+    padding-inline: 1rem;
+
+    @media screen and (min-width: 576px) {
+        padding-inline: 1.5rem;
+    }
+
+    @media screen and (min-width: 992px) {
+        padding-inline: 2rem;
+    }
+
+    @media screen and (min-width: 1200px) {
+        padding-inline: 3rem;
+    }
+}
 .btn-custom {
     background-color: #0182d51a !important;
     border-bottom: 3px solid #0fe1ff !important;

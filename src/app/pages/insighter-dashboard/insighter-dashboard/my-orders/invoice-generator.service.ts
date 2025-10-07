@@ -331,10 +331,11 @@ export class InvoiceGeneratorService {
                 <div class="from-section">
                     <h3 class="section-title">From:</h3>
                     <p>
-                        Foresighta Systems Consulting FZ-LLC<br>
-                        Compass Building  Al Shohada Road  AL Hamra Industrial Zone-FZ<br>
-                        Ras Al Khaimah - United Arab Emirates<br>
-                        info&#64;knoldg.com
+                       Foresighta Systems Consulting FZ-LLC<br>
+Compass Building Al Shohada Road AL Hamra Industrial<br>
+Zone-FZ<br>
+Ras Al Khaimah United Arab Emirates<br>
+info@knoldg.com
                     </p>
                 </div>
 

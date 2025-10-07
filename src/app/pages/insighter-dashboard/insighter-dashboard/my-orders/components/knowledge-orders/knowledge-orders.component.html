@@ -184,8 +184,8 @@
 
     <ng-container *ngIf="knowledgeSubTab === 'sales'">
       <div class="nested-tab-content">
-        <!-- Insighter Filter positioned at the end -->
-        <div class="d-flex mb-4" [ngClass]="lang === 'ar' ? 'justify-content-start' : 'justify-content-end'">
+        <!-- Insighter Filter positioned at the end (only for company users) -->
+        <div class="d-flex mb-4" [ngClass]="lang === 'ar' ? 'justify-content-start' : 'justify-content-end'" *ngIf="shouldShowInsighterFilter">
           <div style="max-width: 300px;">
             <app-insighter-filter
               [lang]="lang"

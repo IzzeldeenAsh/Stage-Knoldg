@@ -104,12 +104,12 @@
               <h6 class="card-title fw-bold text-start mb-4">{{ getTranslation('knowledgeOrders') }}</h6>
               <div *ngIf="dashboardStats?.knowledge_order_statistics" class="chart-stat-cards mb-4">
                 <div class="chart-stat-card">
-                  <span class="chart-stat-card__label">{{ getTranslation('ordersAmount') }}</span>
-                  <span class="chart-stat-card__value">{{ formatCurrency(dashboardStats.knowledge_order_statistics.orders_amount) }}</span>
+                  <span class="chart-stat-card__label text-start">{{ getTranslation('ordersAmount') }}</span>
+                  <span class="chart-stat-card__value text-start">{{ formatCurrency(dashboardStats.knowledge_order_statistics.orders_amount) }}</span>
                 </div>
                 <div class="chart-stat-card">
-                  <span class="chart-stat-card__label">{{ getTranslation('companyNetShare') }}</span>
-                  <span class="chart-stat-card__value">{{ formatCurrency(dashboardStats.knowledge_order_statistics.company_orders_amount) }}</span>
+                  <span class="chart-stat-card__label text-start">{{ getTranslation('companyNetShare') }}</span>
+                  <span class="chart-stat-card__value text-start">{{ formatCurrency(dashboardStats.knowledge_order_statistics.company_orders_amount) }}</span>
                 </div>
               </div>
               <div *ngIf="knowledgeOrdersChartData" class="bar-chart-wrapper">
@@ -638,7 +638,7 @@
                       </div>
 
                       <!-- Total Amount -->
-                      <div class="col-4">
+                      <!-- <div class="col-4">
                         <div class="stat-card h-100" style="background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%); border: 1px solid #e5e7eb; border-radius: 6px;">
                           <div class="p-4">
                             <div class="d-flex align-items-center mb-3">
@@ -654,7 +654,7 @@
                             <div class="fw-bold" style="font-size: 2rem; line-height: 1; color: #1f2937;">{{ formatCurrency(getInsighterPublishedAmount(insighter)) }}</div>
                           </div>
                         </div>
-                      </div>
+                      </div> -->
 
                       <!-- Meetings -->
                       <div class="col-4">

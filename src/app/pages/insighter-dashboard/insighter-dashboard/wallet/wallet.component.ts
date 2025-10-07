@@ -209,6 +209,14 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy 
     return `${openSign}$${absAmount.toFixed(2)}${closeSign}`;
   }
 
+  formatOriginalAmount(amount: number | undefined): string {
+    if (amount === undefined || amount === null) {
+      return '$0.00';
+    }
+    return `$${amount.toFixed(2)}`;
+  }
+
+
   showTransactionDetails(transaction: Transaction): void {
     this.selectedTransaction = transaction;
     this.showDetailsDialog = true;
@@ -334,6 +342,9 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy 
       'operationType': { en: 'Operation', ar: 'العملية' },
       'amount': { en: 'Amount', ar: 'المبلغ' },
       'amountAfterFees':{en:'After Tax',ar:'بعد الضرائب'},
+      'originalAmount': { en: 'Original Amount', ar: 'المبلغ الأصلي' },
+      'profitRate': { en: 'Profit Rate', ar: 'نسبة الربح' },
+      'insighterProfit': { en: 'Insighter Profit', ar: 'ربح الخبير' },
       'details': { en: 'Details', ar: 'التفاصيل' },
       'deposit': { en: 'Deposit', ar: 'إيداع' },
       'withdraw': { en: 'Withdraw', ar: 'سحب' },

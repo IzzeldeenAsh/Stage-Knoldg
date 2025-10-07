@@ -108,10 +108,19 @@
 
             <!-- Amount Column -->
             <td [attr.data-label]="getTranslation('amount')" [style.text-align]="lang === 'ar' ? 'right' : 'left'">
-              <span
-                [class]="'badge ' + (transaction.transaction === 'deposit' ? 'badge-light-success' : 'badge-light-danger') + ' fs-base px-2 py-1'">
-              {{ formatAmount(transaction.amount) }}
-              </span>
+              <div class="d-flex flex-column align-items-start">
+                <span
+                  [class]="'badge ' + (transaction.transaction === 'deposit' ? 'badge-light-success' : 'badge-light-danger') + ' fs-base px-2 py-1'">
+                {{ formatAmount(transaction.amount) }}
+                </span>
+                <!-- Show profit rate info for deposits -->
+                <div *ngIf="transaction.transaction === 'deposit' && transaction.order?.insighter_profit_rate && transaction.order?.amount"
+                     class="mt-1">
+                  <small class="text-muted">
+                    {{ formatOriginalAmount(transaction.order.amount!) }} ({{ transaction.order.insighter_profit_rate }})
+                  </small>
+                </div>
+              </div>
             </td>
 
             <!-- Details Column -->
@@ -182,15 +191,24 @@
               </span>
             </div>
             <div class="text-end">
-              <span class="mb-2 text-muted d-block">{{ getTranslation('amount') }} <ng-container *ngIf="selectedTransaction.transaction === 'deposit'"><small>({{getTranslation('amountAfterFees')}})</small></ng-container></span>
+              <span class="mb-2 text-muted d-block">{{ getTranslation('amount') }}</span>
               <h3 [class]="getAmountClass(selectedTransaction)">
                 {{ formatAmount(selectedTransaction.amount) }}
               </h3>
+              <!-- Simple profit rate display for deposits -->
+              <div *ngIf="selectedTransaction.transaction === 'deposit' && selectedTransaction.order?.insighter_profit_rate && selectedTransaction.order?.amount"
+                   class="mt-2">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="text-muted text-decoration-line-through">{{ formatOriginalAmount(selectedTransaction.order.amount!) }}</span>
+                  <span class="badge badge-light-success">{{ selectedTransaction.order.insighter_profit_rate }} {{ getTranslation('insighterProfit') }}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      
+
+
       <!-- User Information -->
       <div class="col-12 mb-5">
         <div class="bg-light rounded p-4 mb-4"  *ngIf="selectedTransaction.order?.user">

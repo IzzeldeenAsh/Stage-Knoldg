@@ -6,6 +6,7 @@ import { ComponentCanDeactivate } from 'src/app/guards/pending-changes.guard';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { PaymentService, ManualAccountRequest, UpdateManualAccountRequest, PaymentDetailsResponse, PaymentMethod, TermsResponse } from 'src/app/_fake/services/payment/payment.service';
 import { CountriesService, Country } from 'src/app/_fake/services/countries/countries.service';
+import { environment } from 'src/environments/environment';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import { PhoneNumberInputComponent } from 'src/app/reusable-components/phone-number-input/phone-number-input.component';
 import { OtpModalConfig } from 'src/app/reusable-components/otp-modal/otp-modal.component';
@@ -96,8 +97,10 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
 
   ngAfterViewInit() {
     // Update phone input component after data is loaded
+    console.log('ngAfterViewInit called, phoneInput available:', !!this.phoneInput);
     if (this.isEditing && this.phoneInput) {
       setTimeout(() => {
+        console.log('Calling updatePhoneInputDisplay from ngAfterViewInit');
         this.updatePhoneInputDisplay();
       });
     }
@@ -212,24 +215,49 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
   }
 
   loadCountries() {
+    console.log('Starting to load countries from API: https://api.knoldg.com/api/common/setting/country/list');
+
     this.countriesService.getCountries().subscribe({
       next: (countries) => {
-        this.countries = countries.map(country => ({
-          ...country,
-          showFlag: true
-        } as ExtendedCountry));
+        console.log('Countries API response:', countries);
+        console.log('Countries API response length:', countries?.length);
+
+        if (!countries || countries.length === 0) {
+          console.error('Empty or null countries response from API');
+          this.countries = [];
+        } else {
+          this.countries = countries.map(country => ({
+            ...country,
+            showFlag: true
+          } as ExtendedCountry));
+          console.log('Countries loaded successfully:', this.countries.length);
+          console.log('Sample countries:', this.countries.slice(0, 3));
+
+          // Log countries with code 268 and ID 167
+          const country268 = this.countries.find(c => c.international_code === '268');
+          const country167 = this.countries.find(c => c.id === 167);
+          console.log('Country with code 268:', country268);
+          console.log('Country with ID 167:', country167);
+        }
+
         // Load existing data after countries are loaded
         this.loadExistingData();
       },
       error: (error) => {
-        console.error('Error loading countries:', error);
-        // Still try to load existing data even if countries fail
+        console.error('Error loading countries from API:', error);
+        console.error('Error status:', error?.status);
+        console.error('Error message:', error?.message);
+        console.error('Error details:', error?.error);
+
+        this.countries = [];
         this.loadExistingData();
       }
     });
   }
 
+
   loadExistingData() {
+    console.log('Loading existing data, countries available:', this.countries.length);
     // Always check payment account details to determine if manual account exists
     this.paymentService.getPaymentAccountDetails().subscribe({
       next: (response: PaymentDetailsResponse) => {
@@ -262,6 +290,7 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
             countryCode = this.existingData.account_phone_code;
             phoneNumber = this.existingData.account_phone;
             this.formattedPhoneNumber = `(+${countryCode})${phoneNumber}`;
+            console.log('Phone code from API:', countryCode, 'Phone number:', phoneNumber);
           } else if (this.existingData.account_phone) {
             // Check if it's in combined format first
             const phoneMatch = this.existingData.account_phone.match(/\(\+(\d+)\)(.+)/);
@@ -276,6 +305,15 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
               // Keep countryCode empty for now
             }
           }
+
+          // Set bank country if exists
+          let bankCountryId: number | string = '';
+          if (this.existingData.bank_country) {
+            bankCountryId = this.existingData.bank_country.id; // Keep as number for dropdown
+            console.log('Bank country from API:', this.existingData.bank_country);
+            console.log('Bank country ID to set:', bankCountryId);
+            console.log('Bank country ID type:', typeof bankCountryId);
+          }
           
           // Set selected country
           if (this.existingData.account_country) {
@@ -289,7 +327,7 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
             account_address: this.existingData.account_address || '',
             account_phone: this.formattedPhoneNumber || '',
             bank_name: this.existingData.bank_name || '',
-            bank_country_id: this.existingData.bank_country?.id || '',
+            bank_country_id: bankCountryId,
             bank_address: this.existingData.bank_address || '',
             bank_iban: this.existingData.bank_iban || '',
             bank_swift_code: this.existingData.bank_swift_code || '',
@@ -297,6 +335,12 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
             phoneCountryCode: countryCode,
             phoneNumber: phoneNumber.replace(/\D/g, '')
           };
+
+          console.log('Available countries for dropdown:', this.countries.map(c => ({id: c.id, name: c.name})));
+          console.log('Looking for bank country ID:', bankCountryId, 'type:', typeof bankCountryId);
+
+          const matchingBankCountry = this.countries.find(c => c.id === bankCountryId);
+          console.log('Matching bank country found:', matchingBankCountry);
           this.manualAccountForm.patchValue(formData);
           
           // Store initial form value after pre-filling
@@ -304,6 +348,11 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
             this.initialFormValue = this.manualAccountForm.getRawValue();
             this.manualAccountForm.markAsPristine();
             this.updatePhoneInputDisplay();
+            console.log('Form value after patching:', this.manualAccountForm.getRawValue());
+            // Additional timeout to ensure phone component is ready
+            setTimeout(() => {
+              this.updatePhoneInputDisplay();
+            }, 500);
           });
         } else if (manualAccount?.country) {
           // Not in edit mode but manual account exists - set country from existing data
@@ -516,16 +565,33 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
     if (this.phoneInput) {
       const countryCode = this.manualAccountForm.get('phoneCountryCode')?.value;
       const phoneNumber = this.manualAccountForm.get('phoneNumber')?.value;
-      
-      if (countryCode) {
+
+      console.log('Updating phone display - countryCode:', countryCode, 'phoneNumber:', phoneNumber);
+      console.log('Available countries for phone:', this.countries.length);
+
+      if (this.countries.length === 0) {
+        console.log('Countries not loaded yet, retrying in 1 second...');
+        setTimeout(() => this.updatePhoneInputDisplay(), 1000);
+        return;
+      }
+
+      // Find the country with matching international_code
+      const matchingCountry = this.countries.find(c => c.international_code === countryCode);
+      console.log('Matching country found:', matchingCountry);
+
+      if (countryCode && matchingCountry) {
         this.phoneInput.countryCode = countryCode;
         this.phoneInput.updateMask();
         this.phoneInput.updatePlaceholder();
+        console.log('Phone country code set to:', countryCode);
       }
-      
+
       if (phoneNumber) {
         this.phoneInput.value = phoneNumber;
+        console.log('Phone number set to:', phoneNumber);
       }
+    } else {
+      console.log('Phone input component not available yet');
     }
   }
 
