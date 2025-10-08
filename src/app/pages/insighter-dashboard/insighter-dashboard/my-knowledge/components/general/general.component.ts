@@ -624,16 +624,16 @@ export class GeneralComponent extends BaseComponent implements OnInit, OnDestroy
   }
   
   // Get knowledge types for dropdown
-  get knowledgeTypes(): {value: string, label: string}[] {
-    return [
-      { value: '', label: 'All Types' },
-      { value: 'data', label: 'Data' },
-      { value: 'insight', label: 'Insight' },
-      { value: 'course', label: 'Course' },
-      { value: 'report', label: 'Report' },
-      { value: 'manual', label: 'Manual' }
-    ];
-  }
+  get knowledgeTypes(): {value: string, labelKey: string}[] {
+  return [
+    { value: '', labelKey: 'KNOWLEDGE.ALL' },
+    { value: 'data', labelKey: 'KNOWLEDGE.DATA' },
+    { value: 'insight', labelKey: 'KNOWLEDGE.INSIGHT' },
+    { value: 'course', labelKey: 'KNOWLEDGE.COURSE' },
+    { value: 'report', labelKey: 'KNOWLEDGE.REPORT' },
+    { value: 'manual', labelKey: 'KNOWLEDGE.MANUAL' }
+  ];
+}
 
   // New method to load filtered knowledges
   loadFilteredKnowledges() {

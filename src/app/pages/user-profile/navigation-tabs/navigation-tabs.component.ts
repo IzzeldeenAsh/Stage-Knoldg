@@ -34,12 +34,12 @@ export class NavigationTabsComponent implements OnInit, OnChanges {
   tabs: NavigationTab[] = [
     { labelen: 'My Information', labelar: 'معلوماتي', link: '/app/profile/overview', activeInfo: true, activePrimary: false, roles: ['client', 'insighter', 'company', 'company-insighter'], icon: 'user', category: 'personal' },
     { labelen: 'My Certificates', labelar: 'شهاداتي', link: '/app/profile/certificates', activeInfo: false, activePrimary: true, roles: ['insighter', 'company', 'company-insighter'], icon: 'certificate', category: 'personal' },
-    { labelen: 'My Company Info', labelar: 'معلومات شركتي', link: '/app/profile/company', activeInfo: false, activePrimary: true, roles: ['company'], icon: 'building', category: 'company' },
-    { labelen: 'Company Certificates', labelar: 'شهادات الشركة', link: '/app/profile/company-certificates', activeInfo: false, activePrimary: true, roles: ['company'], icon: 'award', category: 'company' },
+    { labelen: 'General Information', labelar: 'معلومات عامة', link: '/app/profile/company', activeInfo: false, activePrimary: true, roles: ['company'], icon: 'building', category: 'company' },
+    { labelen: 'Certificates and Credentials', labelar: 'الشهادات والاعتمادات', link: '/app/profile/company-certificates', activeInfo: false, activePrimary: true, roles: ['company'], icon: 'award', category: 'company' },
     { labelen: 'Legal Documents', labelar: 'وثائق قانونية', link: '/app/profile/documents', activeInfo: false, activePrimary: true, roles: ['company'], icon: 'file-text', category: 'company' },
     // Settings tabs moved from settings-sidebar
-    { labelen: 'Personal Information', labelar: 'البيانات الشخصية', link: '/app/profile/settings/personal-info', activeInfo: false, activePrimary: true, roles: ['company', 'insighter', 'client'], icon: 'id-card', category: 'settings' },
-    { labelen: 'Company Settings', labelar: 'بيانات الشركة', link: '/app/profile/settings/company-settings', activeInfo: false, activePrimary: true, roles: ['company'], icon: 'cog', category: 'settings' },
+    { labelen: 'Manager', labelar: 'المدير', link: '/app/profile/settings/personal-info', activeInfo: false, activePrimary: true, roles: ['company', 'insighter', 'client'], icon: 'id-card', category: 'settings' },
+    { labelen: 'Company', labelar: 'الشركة', link: '/app/profile/settings/company-settings', activeInfo: false, activePrimary: true, roles: ['company'], icon: 'cog', category: 'settings' },
   ];
 
   constructor(

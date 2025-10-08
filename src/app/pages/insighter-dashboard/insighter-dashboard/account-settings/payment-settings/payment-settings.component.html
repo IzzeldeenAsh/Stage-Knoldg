@@ -27,11 +27,11 @@
                     <!-- Empty State -->
                     <div *ngIf="!paymentAccountLoading && hasNoPaymentMethods()" class="text-center py-10">
                         <i class="bi bi-credit-card fs-1 text-muted mb-4 d-block" style="font-size: 4rem !important;"></i>
-                        <h4 class="text-muted mb-4">{{ lang === 'ar' ? 'لم تتم إضافة أي طريقة دفع' : 'No Payment Method Added' }}</h4>
-                        <p class="text-muted mb-5">{{ lang === 'ar' ? 'أضف طريقة دفع لتتمكن من استلام أرباحك' : 'To ensure you receive your earnings, please add a payment account.' }}</p>
+                        <h4 class="text-muted mb-4">{{ lang === 'ar' ? 'لا يوجد حساب لتلقي الدفعات' : 'No Payment Method Added' }}</h4>
+                        <p class="text-muted mb-5">{{ lang === 'ar' ? "حدد كيف سيتم الدفع لك" : 'To ensure you receive your earnings, please add a payment account.' }}</p>
                         <button class="btn btn-info" (click)="onAddPaymentMethod()">
                             <i class="bi bi-plus-circle me-2"></i>
-                            {{ lang === 'ar' ? 'إضافة طريقة دفع' : 'Add Payment Method' }}
+                            {{ lang === 'ar' ? 'إضافة حساب' : 'Add Payment Method' }}
                         </button>
                     </div>
 
@@ -186,10 +186,10 @@
                                                 
                                         </div>
                                         <h5 class="fw-bold text-gray-800 mb-2">
-                                            {{ lang === 'ar' ? 'أضف طريقة دفع جديدة' : 'Add a new payment method' }}
+                                            {{ lang === 'ar' ? 'أضف حساب آخر' : 'Add a new payout method' }}
                                         </h5>
                                         <p class="text-muted mb-4">
-                                            {{ lang === 'ar' ? 'أضف وسيلة دفع لاستلام مدفوعاتك أو مدفوعات مقدم الخدمة' : 'Add a payment method to receive your payments or provider payments' }}
+                                            {{ lang === 'ar' ? '' : 'Add a payout method to receive payments' }}
                                           </p>
                                           
                                       

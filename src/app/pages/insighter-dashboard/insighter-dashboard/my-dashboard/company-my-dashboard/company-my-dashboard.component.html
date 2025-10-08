@@ -4,7 +4,7 @@
       <div class="card border-0 h-100 w-100">
         <div class="card-body chart-card text-center">
           <div class="chart-card__header">
-            <h6 class="card-title fw-bold text-gray-800 mb-0">Published Knowledge</h6>
+            <h6 class="card-title fw-bold text-gray-800 mb-0">{{ 'PUBLISHED_KNOWLEDGE_DASHBOARD' | translate }}</h6>
           </div>
           <ng-container *ngIf="publishedKnowledgeChartData; else publishedKnowledgeEmpty">
             <div class="donut-wrapper">
@@ -17,13 +17,13 @@
               </p-chart>
               <div class="donut-wrapper__center">
                 <div class="donut-wrapper__total">{{ totalPublishedKnowledge }}</div>
-                <div class="donut-wrapper__label">Total</div>
+                <div class="donut-wrapper__label">{{ 'TOTAL_DASHBOARD' | translate }}</div>
               </div>
             </div>
             <div *ngIf="publishedKnowledgeLegend.length" class="chart-legend mt-4">
               <div *ngFor="let legendItem of publishedKnowledgeLegend" class="chart-legend__item">
                 <span class="chart-legend__swatch" [style.backgroundColor]="legendItem.color"></span>
-                <span class="chart-legend__label">{{ legendItem.label }}</span>
+                <span class="chart-legend__label">{{ legendItem.labelKey | translate }}</span>
               </div>
             </div>
           </ng-container>
