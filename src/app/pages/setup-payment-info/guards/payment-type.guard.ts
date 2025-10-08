@@ -32,11 +32,36 @@ export class PaymentTypeGuard implements CanActivate {
     // For manual account routes, check if user has manual account
     return this.paymentService.getPaymentAccountDetails().pipe(
       map((response: PaymentDetailsResponse) => {
-        const primaryAccount = response.data.find(account => account.primary);
-        if (primaryAccount?.type === expectedType) {
+        const methods = response?.data ?? [];
+
+        if (expectedType === 'manual') {
+          const manualAccount = methods.find(account => account.type === 'manual');
+          const isEditFlow = route.queryParamMap.get('edit') === 'true';
+
+          // Allow access when user needs to create the manual account, update an inactive one,
+          // or explicitly edit an existing active account.
+          if (!manualAccount || manualAccount.status !== 'active' || isEditFlow) {
+            return true;
+          }
+
+          // Manual account is active and no edit flag – fall through to keep old behaviour of redirecting.
+        }
+
+        const primaryAccount = methods.find(account => account.primary);
+        if (!primaryAccount) {
+          // No primary means setup is incomplete; let the user proceed.
           return true;
         }
-        
+
+        if (primaryAccount.type === expectedType) {
+          return true;
+        }
+
+        const hasExpectedAccount = methods.some(account => account.type === expectedType);
+        if (hasExpectedAccount) {
+          return true;
+        }
+
         // Redirect to the main setup payment page if type doesn't match
         this.router.navigate(['/app/setup-payment-info']);
         return false;

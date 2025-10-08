@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http'; 
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, throwError, of } from 'rxjs';
 import { catchError, finalize, map } from 'rxjs/operators';
 import { TranslationService } from 'src/app/modules/i18n/translation.service';
 
@@ -55,6 +55,18 @@ export class CountriesService {
 
   private getAuthToken(): string | null {
     try {
+      // First try to get token from cookie (preferred method)
+      if (typeof document !== 'undefined') {
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+          const [name, value] = cookie.trim().split('=');
+          if (name === 'token') {
+            return value;
+          }
+        }
+      }
+
+      // Fallback to localStorage
       const authData = localStorage.getItem(this.authLocalStorageKey);
       if (authData) {
         const parsedData = JSON.parse(authData);
@@ -68,17 +80,56 @@ export class CountriesService {
 
   getCountries(): Observable<Country[]> {
     const token = this.getAuthToken();
+
+    console.log('[CountriesService] Starting getCountries call');
+    console.log('[CountriesService] API URL:', this.apiUrl);
+    console.log('[CountriesService] Token available:', !!token);
+    console.log('[CountriesService] Token (first 20 chars):', token?.substring(0, 20));
+
+    // Skip API call if we're on logout/auth pages
+    if (typeof window !== 'undefined') {
+      const currentPath = window.location.pathname;
+      console.log('[CountriesService] Current path:', currentPath);
+      if (currentPath.includes('/auth/logout') || currentPath.includes('/logout') || currentPath.includes('/auth/login')) {
+        console.log('[CountriesService] Skipping countries fetch on auth/logout page');
+        return of([]);
+      }
+    }
+
+    // Check if we have authentication data
+    if (!token) {
+      console.error('[CountriesService] No token available - this might be the issue!');
+      // Let's try without token first to see if the API requires it
+    }
+
     const headers = new HttpHeaders({
       'Accept': 'application/json',
       'Content-Type': 'application/json',
       'Accept-Language': this.currentLang,
+      'X-Timezone': Intl.DateTimeFormat().resolvedOptions().timeZone,
       ...(token ? { 'Authorization': `Bearer ${token}` } : {})
     });
-  
+
+    console.log('[CountriesService] Headers:', headers.keys());
+
     this.setLoading(true);
     return this.http.get<any>(this.apiUrl, { headers }).pipe(
-      map(res => res.data),
-      catchError(error => this.handleError(error)),
+      map(res => {
+        console.log('[CountriesService] Raw API response:', res);
+        return res.data || res;
+      }),
+      catchError(error => {
+        console.error('[CountriesService] API Error:', error);
+        console.error('[CountriesService] Error status:', error.status);
+        console.error('[CountriesService] Error message:', error.message);
+        console.error('[CountriesService] Error body:', error.error);
+
+        // Handle specific CORS/Network errors more gracefully
+        if (error.status === 0) {
+          console.error('[CountriesService] Network/CORS error detected');
+        }
+        return this.handleError(error);
+      }),
       finalize(() => this.setLoading(false))
     );
   }

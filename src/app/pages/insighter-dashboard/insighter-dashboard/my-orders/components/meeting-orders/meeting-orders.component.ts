@@ -27,6 +27,7 @@ export class MeetingOrdersComponent {
   @Input() canViewSalesTabs = false;
   @Input() meetingSubTab: MeetingSubTab = 'purchased';
   @Input() selectedInsighterUuid: string | null = null;
+  @Input() roles: string[] = [];
 
   @Output() meetingSubTabChange = new EventEmitter<MeetingSubTab>();
   @Output() meetingPageChange = new EventEmitter<number>();
@@ -37,6 +38,10 @@ export class MeetingOrdersComponent {
   @Output() insighterFilterChange = new EventEmitter<string | null>();
 
   readonly utils = OrderViewUtils;
+
+  get shouldShowInsighterFilter(): boolean {
+    return this.roles.includes('company') ;
+  }
 
   onMeetingPageChange(event: any): void {
     const nextPage = (event.page || 0) + 1;

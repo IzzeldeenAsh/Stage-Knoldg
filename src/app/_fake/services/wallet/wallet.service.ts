@@ -55,6 +55,8 @@ export interface Order {
   date: string;
   order_no: string;
   invoice_no: string;
+  amount?: number;
+  insighter_profit_rate?: string;
   orderable?: SubOrder;
 }
 

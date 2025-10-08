@@ -36,6 +36,7 @@
 .light-wallet-gradient-bg {
   .card-body {
     padding: 2rem !important;
+    overflow-x: hidden;
   }
   
   .wallet-chart {
@@ -149,6 +150,8 @@
 .chart-container {
   position: relative;
   width: 100%;
+  max-width: 100%;
+  overflow: hidden;
 
   ::ng-deep {
     .wallet-chart {

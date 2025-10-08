@@ -53,21 +53,7 @@ gap-lg-10  align-items-center">
   </h1>
 </div>
 <div class="d-flex gap-4 gap-lg-13">
-   <!--begin::Item - Total Spent-->
-   <div class="d-flex flex-column rounded p-6 hover-scale">           
-    <div class="d-flex align-items-center mb-2">
-      <i class="ki-solid ki-dollar text-success mx-2 fs-2"></i>
-      @if (loading()) {
-        <span class="spinner-border spinner-border-sm text-white mx-2"></span>
-      } @else {
-        <span class="text-white fw-bolder fs-2x">${{ totalRevenue() | number:'1.2-2' }}</span>
-      }
-    </div>
-    <div class="text-white opacity-75 fw-bold fs-6">
-      {{'MY_DOWNLOADS.TOTAL_SPENT' | translate}}
-    </div>                   
-  </div>
-  <!--end::Item-->
+
 
   <!--begin::Item - Knowledge Items-->
   <div class="d-flex flex-column rounded p-6 hover-scale">           

@@ -3,6 +3,7 @@ import { BaseComponent } from 'src/app/modules/base.component';
 import { SentMeetingsService, SentMeeting, SentMeetingResponse } from 'src/app/_fake/services/meetings/sent-meetings.service';
 import { WalletService } from 'src/app/_fake/services/wallet/wallet.service';
 import { Subject, takeUntil } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-client-my-dashboard',
@@ -22,25 +23,59 @@ export class ClientMyDashboardComponent extends BaseComponent implements OnInit,
   'TOP_INDUSTRIES.MARKETING'
 ];
   knowledgeLinks = [
-    { type: 'data',  translationKey: 'KNOWLEDGE.DATA' },
-    { type: 'insight', translationKey: 'KNOWLEDGE.INSIGHT' },
-    { type: 'manual',  translationKey: 'KNOWLEDGE.MANUAL' },
-    { type: 'course',  translationKey: 'KNOWLEDGE.COURSE' },
-    { type: 'report',  translationKey: 'KNOWLEDGE.REPORT' }
+    { type: 'data',    translationKey: 'KNOWLEDGE.DATA',    descriptionKey: 'KNOWLEDGE.DATA_DESCRIPTION' },
+    { type: 'insight', translationKey: 'KNOWLEDGE.INSIGHT', descriptionKey: 'KNOWLEDGE.INSIGHT_DESCRIPTION' },
+    { type: 'manual',  translationKey: 'KNOWLEDGE.MANUAL',  descriptionKey: 'KNOWLEDGE.MANUAL_DESCRIPTION' },
+    { type: 'course',  translationKey: 'KNOWLEDGE.COURSE',  descriptionKey: 'KNOWLEDGE.COURSE_DESCRIPTION' },
+  { type: 'report',  translationKey: 'KNOWLEDGE.REPORT',  descriptionKey: 'KNOWLEDGE.REPORT_DESCRIPTION' }
   ];
   walletBalance: number = 0;
   isLoadingBalance: boolean = true;
   private destroy$ = new Subject<void>();
+  private readonly knowledgeTranslations = {
+    en: {
+      KNOWLEDGE: {
+        TITLE: 'Latest Knowledge',
+        DATA: 'Data Library',
+        DATA_DESCRIPTION: 'Explore recently added datasets and figures.',
+        INSIGHT: 'Insights',
+        INSIGHT_DESCRIPTION: 'Review the newest analyst insights and findings.',
+        MANUAL: 'Manuals',
+        MANUAL_DESCRIPTION: 'Quick guides to help you apply best practices.',
+        COURSE: 'Courses',
+        COURSE_DESCRIPTION: 'Learning paths curated for your growth.',
+        REPORT: 'Reports',
+        REPORT_DESCRIPTION: 'Download the latest research and reports.'
+      }
+    },
+    ar: {
+      KNOWLEDGE: {
+        TITLE: 'أحدث مصادر المعرفة',
+        DATA: 'مكتبة البيانات',
+        DATA_DESCRIPTION: 'استكشف أحدث مجموعات البيانات والأرقام.',
+        INSIGHT: 'رؤى تحليلية',
+        INSIGHT_DESCRIPTION: 'اطلع على أحدث التحليلات والاستنتاجات.',
+        MANUAL: 'أدلة إرشادية',
+        MANUAL_DESCRIPTION: 'أدلة سريعة لتطبيق أفضل الممارسات.',
+        COURSE: 'دورات تدريبية',
+        COURSE_DESCRIPTION: 'مسارات تعليمية مختارة لتطويرك.',
+        REPORT: 'تقارير',
+        REPORT_DESCRIPTION: 'قم بتنزيل أحدث التقارير والدراسات.'
+      }
+    }
+  };
 
   constructor(
     injector: Injector,
     private sentMeetingsService: SentMeetingsService,
-    private walletService: WalletService
+    private walletService: WalletService,
+    private translateService: TranslateService
   ) {
     super(injector)
   }
 
   ngOnInit(): void {
+    this.registerKnowledgeTranslations();
     this.loadTodayMeetings();
     this.loadWalletBalance();
   }
@@ -94,6 +129,12 @@ export class ClientMyDashboardComponent extends BaseComponent implements OnInit,
           this.isLoadingBalance = false;
         },
       });
+  }
+
+  private registerKnowledgeTranslations(): void {
+    Object.entries(this.knowledgeTranslations).forEach(([lang, messages]) => {
+      this.translateService.setTranslation(lang, messages, true);
+    });
   }
 
 }

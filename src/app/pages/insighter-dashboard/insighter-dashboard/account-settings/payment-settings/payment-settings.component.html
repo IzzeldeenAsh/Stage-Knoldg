@@ -95,12 +95,12 @@
                                             <div class="account-name-label">{{ lang === 'ar' ? 'اسم الحساب' : 'Account Holder' }}</div>
                                             <div class="d-flex align-items-center justify-content-between">
                                                 <div class="account-name-value">{{ method.account_name || (lang === 'ar' ? 'غير محدد' : 'Not Available') }}</div>
-                                                <div class="d-flex align-items-center" *ngIf="method.account_country">
-                                                    <img [src]="getCountryFlagPath(method.account_country.name)"
-                                                         [alt]="method.account_country.name"
+                                                <div class="d-flex align-items-center" *ngIf="method.bank_country">
+                                                    <img [src]="getCountryFlagPath(method.bank_country.name)"
+                                                         [alt]="method.bank_country.name"
                                                          class="country-flag me-2"
                                                          style="width: 24px; height: 16px; object-fit: cover;">
-                                                    <span class="fw-semibold text-dark">{{ method.account_country.name }}</span>
+                                                    <span class="fw-semibold text-dark">{{ method.bank_country.name }}</span>
                                                 </div>
                                             </div>
                                         </div>

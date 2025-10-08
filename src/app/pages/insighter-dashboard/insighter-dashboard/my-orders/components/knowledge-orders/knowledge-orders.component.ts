@@ -28,6 +28,7 @@ export class KnowledgeOrdersComponent {
   @Input() canViewSalesTabs = false;
   @Input() knowledgeSubTab: KnowledgeSubTab = 'purchased';
   @Input() selectedInsighterUuid: string | null = null;
+  @Input() roles: string[] = [];
 
   @Output() knowledgeSubTabChange = new EventEmitter<KnowledgeSubTab>();
   @Output() pageChange = new EventEmitter<number>();
@@ -39,6 +40,10 @@ export class KnowledgeOrdersComponent {
   @Output() insighterFilterChange = new EventEmitter<string | null>();
 
   readonly utils = OrderViewUtils;
+
+  get shouldShowInsighterFilter(): boolean {
+    return this.roles.includes('company');
+  }
 
   onKnowledgePageChange(event: any): void {
     const nextPage = (event.page || 0) + 1;

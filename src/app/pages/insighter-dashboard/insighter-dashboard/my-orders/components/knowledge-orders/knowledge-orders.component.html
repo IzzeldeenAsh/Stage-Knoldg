@@ -21,7 +21,7 @@
     </div>
 
     <ng-container *ngIf="knowledgeSubTab === 'purchased'">
-      <div class="nested-tab-content">
+      <div class="nested-tab-content" [ngClass]="!canViewSalesTabs ? 'border-none' : ''">
         <div class="row g-4">
     <!-- Loading State -->
     <div *ngIf="isLoading$ | async" class="col-12">
@@ -33,11 +33,12 @@
     </div>
 
     <!-- Orders Cards -->
-    <div *ngFor="let order of orders$ | async" class="col-12">
-      <div class="card card-custom gutter-b">
+    <ng-container *ngIf="!(isLoading$ | async)">
+      <div *ngFor="let order of orders$ | async" class="col-12">
+        <div class="card card-custom gutter-b">
         <div class="card-body p-6">
           <!-- Order Header -->
-          <div class="d-flex justify-content-between align-items-start mb-4">
+          <div class="d-flex justify-content-between align-items-start mb-6">
             <div class="d-flex align-items-center">
               <div class="symbol symbol-40px me-3">
                 <div class="symbol-label bg-light-info">
@@ -68,7 +69,6 @@
                   </h6>
                   <i    (click)="copyOrder(order.order_no)" class="ki-outline ki-copy fs-6 cursor-pointer"></i>
                 </div>
-                <div class="text-muted fs-7">{{ order.amount === 0 ? (lang === 'ar' ? 'مجاني' : 'Free') : '$' + order.amount }}</div>
               </div>
             </div>
             <div class="d-flex gap-2">
@@ -132,19 +132,24 @@
             </div>
           </div>
 
-          <!-- Order Info -->
+          <!-- Order Date and Amount -->
           <div class="border-top pt-3 mt-3">
-            <div class="text-muted fs-7">
-              {{ lang === 'ar' ? 'تاريخ الطلب' : 'Ordered' }} {{ order.date | date:'short' }}
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="text-muted fs-7">
+                {{ lang === 'ar' ? 'تاريخ الطلب' : 'Ordered' }} {{ order.date | date:'short' }}
+              </div>
+              <div class="fw-bold text-dark fs-6">
+                {{ order.amount === 0 ? (lang === 'ar' ? 'مجاني' : 'Free') : '$' + order.amount }}
+              </div>
             </div>
           </div>
         </div>
+        </div>
       </div>
-    </div>
+    </ng-container>
 
     <!-- Empty State -->
     <div *ngIf="(orders$ | async)?.length === 0 && !(isLoading$ | async)" class="col-12">
-      <div class="card">
         <div class="text-center py-10">
           <div class="symbol symbol-100px mx-auto mb-4">
             <div class="symbol-label bg-light-info">
@@ -164,7 +169,6 @@
             {{ lang === 'ar' ? 'لم تقم بأي طلبات بعد' : 'You haven\'t placed any orders yet.' }}
           </p>
         </div>
-      </div>
     </div>
   </div>
 
@@ -183,9 +187,9 @@
     </ng-container>
 
     <ng-container *ngIf="knowledgeSubTab === 'sales'">
-      <div class="nested-tab-content">
-        <!-- Insighter Filter positioned at the end -->
-        <div class="d-flex mb-4" [ngClass]="lang === 'ar' ? 'justify-content-start' : 'justify-content-end'">
+      <div class="nested-tab-content" >
+        <!-- Insighter Filter positioned at the end (only for company users) -->
+        <div class="d-flex mb-4" [ngClass]="lang === 'ar' ? 'justify-content-start' : 'justify-content-end'" *ngIf="shouldShowInsighterFilter">
           <div style="max-width: 300px;">
             <app-insighter-filter
               [lang]="lang"
@@ -204,11 +208,12 @@
           </div>
         </div>
 
-        <div *ngFor="let order of salesOrders$ | async" class="col-12">
-          <div class="card card-custom gutter-b">
+        <ng-container *ngIf="!(isSalesLoading$ | async)">
+          <div *ngFor="let order of salesOrders$ | async" class="col-12">
+            <div class="card card-custom gutter-b">
             <div class="card-body p-6">
               <!-- Order Header -->
-              <div class="d-flex justify-content-between align-items-start mb-4">
+              <div class="d-flex justify-content-between align-items-start mb-6">
                 <div class="d-flex align-items-center">
                   <div class="symbol symbol-40px me-3">
                     <div class="symbol-label bg-light-info">
@@ -310,12 +315,24 @@
                   </div>
                 </div>
               </div>
+
+              <!-- Order Date and Amount -->
+              <div class="border-top pt-3 mt-3">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="text-muted fs-7">
+                    {{ lang === 'ar' ? 'تاريخ الطلب' : 'Ordered' }} {{ order.date | date:'short' }}
+                  </div>
+                  <div class="fw-bold text-dark fs-6">
+                    {{ order.amount === 0 ? (lang === 'ar' ? 'مجاني' : 'Free') : '$' + order.amount }}
+                  </div>
+                </div>
+              </div>
+            </div>
             </div>
           </div>
-        </div>
+        </ng-container>
 
         <div *ngIf="(salesOrders$ | async)?.length === 0 && !(isSalesLoading$ | async)" class="col-12">
-          <div class="card">
             <div class="text-center py-10">
               <div class="symbol symbol-100px mx-auto mb-4">
                 <div class="symbol-label bg-light-success">
@@ -327,7 +344,6 @@
                 {{ lang === 'ar' ? 'لم تقم بأي مبيعات بعد' : 'You have no sales orders yet.' }}
               </p>
             </div>
-          </div>
         </div>
       </div>
 

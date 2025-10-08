@@ -93,6 +93,7 @@ export interface DashboardStatisticsResponse {
       insighters: Array<{
         uuid: string;
         insighter_name: string;
+        meeting_booking_total: number;
         total_meetings?: number;
         types?: Record<string, number>;
       }>;
