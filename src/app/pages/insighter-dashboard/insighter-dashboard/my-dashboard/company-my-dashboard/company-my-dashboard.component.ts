@@ -20,7 +20,7 @@ export class CompanyMyDashboardComponent extends BaseComponent implements OnInit
   dashboardStats: DashboardStatisticsResponse['data'] | null = null;
   publishedKnowledgeChartData: any = null;
   publishedKnowledgeChartOptions: any = null;
-  publishedKnowledgeLegend: Array<{ label: string; color: string }> = [];
+  publishedKnowledgeLegend: Array<{ labelKey: string; color: string }> = [];
   private readonly knowledgeTypeColors: Record<string, string> = {
     insight: '#0a7abf',
     report: '#3b9ae1',
@@ -100,15 +100,15 @@ export class CompanyMyDashboardComponent extends BaseComponent implements OnInit
       const numericCount = Number(count) || 0;
 
       if (numericCount > 0) {
-        const formattedLabel = type.charAt(0).toUpperCase() + type.slice(1);
+        const translationKey = `KNOWLEDGE.${type.toUpperCase()}`;
         const color = this.knowledgeTypeColors[type as keyof typeof this.knowledgeTypeColors] || '#999';
-
-        labels.push(formattedLabel);
+        
+        labels.push(type); 
         data.push(numericCount);
         backgroundColors.push(color);
 
         this.publishedKnowledgeLegend.push({
-          label: formattedLabel,
+          labelKey: translationKey,
           color
         });
       }

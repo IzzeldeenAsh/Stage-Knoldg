@@ -896,7 +896,7 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
 
         // Show confirmation dialog
         this.showConfirmationDialog(
-          this.translate.getTranslation('LANGUAGE_MISMATCH_DETECTED'),
+          // this.translate.getTranslation('LANGUAGE_MISMATCH_DETECTED'),
           message,
           this.translate.getTranslation('LANGUAGE_MISMATCH_EDIT'),
           this.translate.getTranslation('LANGUAGE_MISMATCH_IGNORE')
@@ -919,9 +919,11 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
     });
   }
 
-  private showConfirmationDialog(title: string, message: string, cancelText: string, confirmText: string): Promise<boolean> {
+  private showConfirmationDialog(
+    // title: string, 
+    message: string, cancelText: string, confirmText: string): Promise<boolean> {
     return new Promise((resolve) => {
-      this.languageMismatchTitle = title;
+      // this.languageMismatchTitle = title;
       this.languageMismatchMessage = message;
       this.showLanguageMismatchDialog = true;
       this.languageMismatchResolver = resolve;

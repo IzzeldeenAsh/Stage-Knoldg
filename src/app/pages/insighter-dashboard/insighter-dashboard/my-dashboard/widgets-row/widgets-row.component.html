@@ -9,7 +9,7 @@
                 <div class="d-flex flex-column my-7">
                     <span class="fw-bold fs-3x lh-1 ls-n2">{{ walletBalance |currency }}</span> 
                     <div class="m-0">
-                        <span class="fw-semibold fs-6 text-gray-500">in Wallet</span>  
+                        <span class="fw-semibold fs-6 text-gray-500">{{ 'IN_WALLET' | translate }}</span>  
                     </div>       
                 </div>  
             </div>
@@ -26,7 +26,7 @@
                 <div class="d-flex flex-column my-7">
                     <span class="fw-semibold fs-3x lh-1 ls-n2">{{ todayMeetingsCount }}</span> 
                     <div class="m-0">
-                     <span class="fw-semibold fs-6 text-gray-500">Meetings Today</span>  
+                     <span class="fw-semibold fs-6 text-gray-500">{{ 'MEETINGS_TODAY' | translate }}</span>  
                     </div>       
                 </div>  
             </div>
@@ -43,7 +43,7 @@
                 </div>                           
                 <div class="d-flex flex-column my-7">
                     <span class="fw-semibold fs-3x lh-1 ls-n2">{{ pendingRequestsCount }}</span> 
-                    <div class="m-0"><span class="fw-semibold fs-6 text-gray-500">Pending Requests</span></div>       
+                    <div class="m-0"><span class="fw-semibold fs-6 text-gray-500">{{ 'PENDING_REQUEST' | translate }}</span></div>       
                 </div>  
             </div>
         </div>

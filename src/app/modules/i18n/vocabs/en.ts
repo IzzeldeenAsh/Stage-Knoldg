@@ -167,6 +167,8 @@ export const locale = {
       "TITLE": "Profile Completion",
       "DESCRIPTION": "Complete your profile to unlock all features and get the most out of your account."
     },
+    PUBLISHED_KNOWLEDGE_DASHBOARD: "Published Knowledge",
+    TOTAL_DASHBOARD: "Total",
     KNOWLEDGE_DOCUMENTS_INFO:'Documents Info',
     DESCRIBE_KNOWLEDGE_AND_DOCUMENTS: 'Briefly describe your knowledge and documents to help users understand your content.',
     DOCUMENT_DESCRIPTIONS: 'Document Descriptions',
@@ -788,6 +790,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
         INACTIVE: "inactive"
       },
       GENERAL_INFO: 'General Information',
+      GENERAL_INFO2: 'General Information',
       COMPANY_CERTIFICATES: 'Company Certificates',
       "MY_CERTIFICATES": "My Certificates",
      
@@ -942,7 +945,8 @@ Your wealth of knowledge is valued and many are eager to learn from it.
         "OVERVIEW": "Dashboard",
         "MY_REQUESTS": "Notifications",
         "MY_KNOWLEDGE": "My knowledge library",
-        "PAYMENT_SETTINGS": "Payment Settings",
+        "PAYMENT_SETTINGS": "Payout Settings",
+        "PAYMENT_SETTINGS_HEADER": "Payout Settings",
         "SETTINGS": "Settings",
         "ACCOUNT_SETTINGS": "Account Settings",
         "MY_COMPANY": "My Team",
@@ -1267,6 +1271,13 @@ UPLOAD: 'Upload',
       'POSTED': 'Published',
       'PACKAGES': 'Packages',
       'UNPUBLISHED': 'Drafts'
+    },
+    "KNOWLEDGE_STATUS": {
+    "UNPUBLISHED": "Draft",
+    "IN_REVIEW": "In Review",
+    "PUBLISHED": "Published",
+    "SCHEDULED": "Scheduled",
+    "DRAFT": "Draft"
     }
   },
   DEACTIVATE_ACCOUNT_SUCCESS_MESSAGE: "Account deactivated successfully",
@@ -1319,6 +1330,8 @@ UPLOAD: 'Upload',
     BECOME_INSIHGER_HEADER:'Become an Insighter',
     BECOME_COMPANY_HEADER:'Upgrade to a Company Account',
     IN_WALLET:'In Wallet',
+    MEETINGS_TODAY:'Meetings Today',
+    PENDING_REQUEST:'Pending Requests',
     DEPOSIT_WALLET_DESCRIPTION:'This will be used to deposit money to your wallet to make purchases',
     MANAGE_WALLET_FUNDS:'Manage wallet funds',
     BECOME_INSIGHTER_DESCRIPTION:"Sharing knowledge empowers us all to grow and innovate together!",
@@ -1601,7 +1614,7 @@ UPLOAD: 'Upload',
   "PAYMENT_ACCOUNT": {
     "TITLE": "Your Payment Methods",
     "ADD_TITLE": "Add Payment Account",
-    "DESCRIPTION": "Manage how you receive your payments.",
+    "DESCRIPTION": "Set up payout account",
     "ADD_DESCRIPTION": "Set up your payment account to start receiving payments from your knowledge sales.",
     "TYPE": "Account Type",
     "STATUS": "Status",
