@@ -1,16 +1,33 @@
-import { Component, OnInit, OnDestroy, Injector } from '@angular/core';
+import { Component, OnInit, OnDestroy, Injector, HostListener, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { WalletService, Transaction, TransactionListResponse, User, ChartDataPoint } from 'src/app/_fake/services/wallet/wallet.service';
 import { BaseComponent } from 'src/app/modules/base.component';
+import { UIChart } from 'primeng/chart';
 
 @Component({
   selector: 'app-wallet',
   templateUrl: './wallet.component.html',
   styleUrls: ['./wallet.component.scss']
 })
-export class WalletComponent extends BaseComponent implements OnInit, OnDestroy {
+export class WalletComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
   private destroy$ = new Subject<void>();
-  
+  private resizeTimeout: ReturnType<typeof setTimeout> | null = null;
+  private resizeObserver?: any;
+  private chartContainer?: ElementRef<HTMLDivElement>;
+
+  @ViewChild('walletChart') walletChart?: UIChart;
+  @ViewChild('chartContainer', { static: false })
+  set chartContainerRef(element: ElementRef<HTMLDivElement> | undefined) {
+    if (element) {
+      this.chartContainer = element;
+      this.initResizeObserver();
+      this.scheduleChartRefresh(0);
+    } else {
+      this.chartContainer = undefined;
+      this.teardownResizeObserver();
+    }
+  }
+
   walletBalance: number = 0;
   transactions: Transaction[] = [];
   allTransactions: Transaction[] = []; // All transactions for chart
@@ -60,6 +77,11 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy 
     super(injector);
   }
 
+  ngAfterViewInit(): void {
+    this.initResizeObserver();
+    this.scheduleChartRefresh();
+  }
+
   ngOnInit(): void {
     this.loadWalletData();
     this.loadAllData();
@@ -67,6 +89,11 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy 
   
 
   ngOnDestroy(): void {
+    if (this.resizeTimeout) {
+      clearTimeout(this.resizeTimeout);
+      this.resizeTimeout = null;
+    }
+    this.teardownResizeObserver();
     this.destroy$.next();
     this.destroy$.complete();
     super.ngOnDestroy();
@@ -106,6 +133,56 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy 
           this.chartApiData = [];
         }
       });
+  }
+
+  @HostListener('window:resize')
+  onWindowResize(): void {
+    this.scheduleChartRefresh();
+  }
+
+  private scheduleChartRefresh(delay: number = 150): void {
+    if (this.resizeTimeout) {
+      clearTimeout(this.resizeTimeout);
+    }
+
+    this.resizeTimeout = setTimeout(() => {
+      const chartComponent = this.walletChart;
+      if (!chartComponent) {
+        return;
+      }
+
+      // If chart instance already exists, force a manual resize/update; otherwise fall back to full reinit.
+      if (chartComponent.chart) {
+        chartComponent.chart.canvas.style.width = '100%';
+        chartComponent.chart.resize();
+        chartComponent.chart.update('none');
+      }
+
+      if (typeof chartComponent.reinit === 'function') {
+        chartComponent.reinit();
+      }
+    }, delay);
+  }
+
+  private initResizeObserver(): void {
+    if (typeof window === 'undefined' || !(window as any).ResizeObserver || !this.chartContainer?.nativeElement) {
+      return;
+    }
+
+    this.teardownResizeObserver();
+
+    const NativeResizeObserver = (window as any).ResizeObserver;
+    this.resizeObserver = new NativeResizeObserver(() => {
+      this.scheduleChartRefresh(100);
+    });
+    this.resizeObserver.observe(this.chartContainer.nativeElement);
+  }
+
+  private teardownResizeObserver(): void {
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+      this.resizeObserver = undefined;
+    }
   }
 
   updatePaginatedTransactions(): void {
@@ -632,6 +709,8 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy 
         mode: 'index'
       }
     };
+
+    this.scheduleChartRefresh();
   }
 
   setPeriod(period: 'weekly' | 'monthly' | 'yearly'): void {

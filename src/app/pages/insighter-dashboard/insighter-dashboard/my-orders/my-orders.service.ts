@@ -21,6 +21,7 @@ export interface MeetingBooking {
   status: string;
   title: string;
   description: string;
+  insighter?: User;
 }
 
 export interface Orderable {

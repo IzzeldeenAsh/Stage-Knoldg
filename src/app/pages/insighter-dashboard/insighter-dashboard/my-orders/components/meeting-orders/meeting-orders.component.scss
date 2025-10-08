@@ -113,6 +113,64 @@
   padding: 0.25rem 0.5rem;
 }
 
+// Card spacing improvements
+:host .card {
+  margin-bottom: 2rem;
+
+  .card-body {
+    padding: 1.75rem;
+  }
+
+  .card-header {
+    padding: 1.25rem 1.75rem;
+    margin-bottom: 0;
+  }
+}
+
+// Improve spacing between card elements
+:host .row {
+  margin-bottom: 1.5rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+
+// Badge and text spacing
+:host .badge {
+  margin-bottom: 0.75rem;
+}
+
+
+:host .btn {
+  margin-top: 1rem;
+}
+
+// Specific spacing for order elements
+:host .order-item {
+  padding: 1.5rem 0;
+  border-bottom: 1px solid #f1f1f2;
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  &:first-child {
+    padding-top: 0;
+  }
+}
+
+// List spacing
+:host ul, :host ol {
+  margin-bottom: 1.5rem;
+
+  li {
+    margin-bottom: 0.5rem;
+  }
+}
+
 :host .badge-light-success {
   background-color: rgba(80, 205, 137, 0.1);
   color: #50cd89;

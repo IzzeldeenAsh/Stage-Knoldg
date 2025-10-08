@@ -1,1 +1,85 @@
 // Insighter Filter Component Styles
+
+:host {
+  display: block;
+}
+
+// PrimeNG Dropdown Styling
+:host ::ng-deep {
+  .p-dropdown {
+    border: 1px solid #e4e6ef;
+    border-radius: 0.475rem;
+
+    &.p-focus {
+      border-color: #0978B9;
+      box-shadow: 0 0 0 0.2rem rgba(9, 120, 185, 0.25);
+    }
+
+    .p-dropdown-label {
+      font-size: 0.875rem;
+      color: #181c32;
+      padding: 0.75rem 1rem;
+    }
+
+    .p-dropdown-trigger {
+      width: 2.5rem;
+
+      .p-dropdown-trigger-icon {
+        color: #7e8299;
+      }
+    }
+  }
+
+  .insighter-dropdown-panel {
+    border: 1px solid #e4e6ef;
+    border-radius: 0.475rem;
+    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
+    min-width: 320px !important;
+    width: auto !important;
+
+    .p-dropdown-items {
+      .p-dropdown-item {
+        padding: 0.75rem 1rem;
+        border: none;
+        color: #181c32;
+        white-space: nowrap;
+
+        &:hover {
+          background-color: #f5f8fa;
+          color: #181c32;
+        }
+
+        &.p-highlight {
+          background-color: #f1fafe;
+          color: #0978B9;
+        }
+      }
+    }
+
+    .p-dropdown-filter-container {
+      padding: 0.75rem;
+      border-bottom: 1px solid #f1f1f2;
+
+      .p-dropdown-filter {
+        border: 1px solid #e4e6ef;
+        border-radius: 0.375rem;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+        width: 100%;
+        min-width: 280px;
+
+        &:focus {
+          border-color: #0978B9;
+          box-shadow: 0 0 0 0.2rem rgba(9, 120, 185, 0.25);
+        }
+      }
+    }
+  }
+
+  // Custom styling for symbols in dropdown
+  .symbol {
+    .symbol-label {
+      font-size: 0.75rem;
+    }
+  }
+}

@@ -19,8 +19,9 @@
 
     <div class="card-body" >
       <!-- Chart Container -->
-      <div class="chart-container " *ngIf="hasRealData">
-        <p-chart type="line"
+      <div #chartContainer class="chart-container " *ngIf="hasRealData">
+        <p-chart #walletChart
+                 type="line"
                  [data]="chartData"
                  [options]="chartOptions"
                  class="wallet-chart"
@@ -66,10 +67,10 @@
         <ng-template pTemplate="header">
           <tr>
             <th style="width: 20%;" [style.text-align]="lang === 'ar' ? 'right' : 'left'">{{ getTranslation('service') }}</th>
-            <th style="width: 15%;" [style.text-align]="lang === 'ar' ? 'right' : 'left'">{{ getTranslation('date') }}</th>
+            <th style="width: 17%;" [style.text-align]="lang === 'ar' ? 'right' : 'left'">{{ getTranslation('date') }}</th>
             <th style="width: 15%;" [style.text-align]="lang === 'ar' ? 'right' : 'left'">{{ getTranslation('transaction') }}</th>
             <th style="width: 15%;" [style.text-align]="lang === 'ar' ? 'right' : 'left'">{{ getTranslation('type') }}</th>
-            <th style="width: 15%;" [style.text-align]="lang === 'ar' ? 'right' : 'left'">{{ getTranslation('amount') }}</th>
+            <th style="width: 12%;" [style.text-align]="lang === 'ar' ? 'right' : 'left'">{{ getTranslation('amount') }}</th>
             <th style="width: 20%; text-align: center;">{{ getTranslation('details') }}</th>
           </tr>
         </ng-template>
@@ -114,12 +115,12 @@
                 {{ formatAmount(transaction.amount) }}
                 </span>
                 <!-- Show profit rate info for deposits -->
-                <div *ngIf="transaction.transaction === 'deposit' && transaction.order?.insighter_profit_rate && transaction.order?.amount"
+                <!-- <div *ngIf="transaction.transaction === 'deposit' && transaction.order?.insighter_profit_rate && transaction.order?.amount"
                      class="mt-1">
                   <small class="text-muted">
                     {{ formatOriginalAmount(transaction.order.amount!) }} ({{ transaction.order.insighter_profit_rate }})
                   </small>
-                </div>
+                </div> -->
               </div>
             </td>
 
