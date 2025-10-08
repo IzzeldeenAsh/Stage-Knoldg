@@ -11,117 +11,121 @@
   
   <div *ngIf="order" class="order-details">
     <!-- Order Header -->
-    <div class="mb-4">
-      <h6 class="fw-bold mb-2">
-        {{ lang === 'ar' ? 'طلب رقم' : 'Order' }} {{ order.order_no }}
-      </h6>
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <span class="text-muted">{{ lang === 'ar' ? 'المبلغ:' : 'Amount:' }}</span>
-        <span class="fw-bold">{{ order.amount === 0 ? (lang === 'ar' ? 'مجاني' : 'Free') : '$'+ order.amount }}</span>
-      </div>
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <span class="text-muted">{{ lang === 'ar' ? 'الحالة:' : 'Status:' }}</span>
-        <span class="text-uppercase" [ngClass]="utils.getStatusBadgeClass(order.status)">{{ order.status }}</span>
-      </div>
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <span class="text-muted">{{ lang === 'ar' ? 'التاريخ:' : 'Date:' }}</span>
-        <span>{{ order.date | date:'medium' }}</span>
-      </div>
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <span class="text-muted">{{ lang === 'ar' ? 'النوع:' : 'Type:' }}</span>
-        <span class="fw-bold">{{ utils.getServiceTypeDisplay(order.service) }}</span>
-      </div>
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <span class="text-muted">{{ lang === 'ar' ? 'طريقة الدفع:' : 'Payment:' }}</span>
-        <div class="d-flex align-items-center">
-          <div class="payment-method-display d-inline-flex align-items-center bg-light-info rounded px-2 py-1">
-            <ng-container *ngIf="utils.shouldShowCardLogo(order?.payment); else showIcon4">
-              <div class="me-2" [innerHTML]="cardLogoSvg(order?.payment)" style="width: 24px; height: 16px; display: flex; align-items: center;"></div>
-            </ng-container>
-            <ng-template #showIcon4>
-              <i class="fs-6 me-2 text-info" [ngClass]="utils.getPaymentMethodIcon(order?.payment)"></i>
-            </ng-template>
-            <span class="fw-bold text-dark">{{ utils.getPaymentMethodDisplay(order?.payment, lang) }}</span>
+    <div class="order-header bg-light rounded-3 border p-4 mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <h5 class="fw-bold text-dark mb-1">
+            {{ lang === 'ar' ? 'طلب رقم' : 'Order' }} #{{ order.order_no }}
+          </h5>
+          <div class="text-muted fs-7">{{ order.date | date:'medium' }}</div>
+        </div>
+        <div class="text-end">
+          <div class="fs-2 fw-bold text-dark">
+            {{ order.amount === 0 ? (lang === 'ar' ? 'مجاني' : 'Free') : '$'+ order.amount }}
           </div>
+          <span class="badge" [ngClass]="utils.getStatusBadgeClass(order.status)">{{ order.status }}</span>
         </div>
       </div>
 
-      <!-- Client Information -->
-      <div *ngIf="order.user" class="d-flex justify-content-between align-items-center">
-        <span class="text-muted">{{ lang === 'ar' ? 'العميل:' : 'Client:' }}</span>
-        <div class="d-flex align-items-center">
-          <div class="symbol symbol-30px me-2">
-            <img *ngIf="order.user.profile_photo_url"
-                 [src]="order.user.profile_photo_url"
-                 [alt]="order.user.name"
-                 class="symbol-label rounded-circle"
-                 style="object-fit: cover;">
-            <div *ngIf="!order.user.profile_photo_url"
-                 class="symbol-label bg-light-info rounded-circle d-flex align-items-center justify-content-center">
-              <span class="text-info fw-bold fs-7">
-                {{ (order.user.first_name?.charAt(0) || '') + (order.user.last_name?.charAt(0) || '') }}
-              </span>
-            </div>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="fw-semibold">{{ utils.getServiceTypeDisplay(order.service) }}</span>
+        <div class="payment-method-display d-inline-flex align-items-center bg-white rounded border px-3 py-2">
+          <ng-container *ngIf="utils.shouldShowCardLogo(order?.payment); else showIcon4">
+            <div class="me-2" [innerHTML]="cardLogoSvg(order?.payment)" style="width: 24px; height: 16px; display: flex; align-items: center;"></div>
+          </ng-container>
+          <ng-template #showIcon4>
+            <i class="fs-6 me-2 text-info" [ngClass]="utils.getPaymentMethodIcon(order?.payment)"></i>
+          </ng-template>
+          <span class="fw-bold text-dark">{{ utils.getPaymentMethodDisplay(order?.payment, lang) }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Client Information -->
+    <div *ngIf="order.user" class="client-info bg-light rounded-3 border p-4 mb-4">
+      <div class="mb-3">
+        <h6 class="fw-bold text-dark mb-0">{{ lang === 'ar' ? 'العميل' : 'Client' }}</h6>
+      </div>
+      <div class="d-flex align-items-center">
+        <div class="symbol symbol-50px me-3">
+          <img *ngIf="order.user.profile_photo_url"
+               [src]="order.user.profile_photo_url"
+               [alt]="order.user.name"
+               class="symbol-label rounded-circle"
+               style="object-fit: cover;">
+          <div *ngIf="!order.user.profile_photo_url"
+               class="symbol-label bg-light-info rounded-circle d-flex align-items-center justify-content-center">
+            <span class="text-info fw-bold fs-6">
+              {{ (order.user.first_name?.charAt(0) || '') + (order.user.last_name?.charAt(0) || '') }}
+            </span>
           </div>
-          <div class="d-flex flex-column">
+        </div>
+        <div class="flex-grow-1">
+          <div class="mb-2">
             <a *ngIf="order.user.uuid; else justName"
                [href]="'https://knoldg.com/en/profile/' + order.user.uuid + '?entity=insighter'"
                target="_blank"
-               class="text-info text-decoration-none fw-semibold">
-              {{ order.user.name }}
+               class="text-info text-decoration-none fw-bold client-name-link d-flex align-items-center">
+              <span class="me-2">{{ order.user.name }}</span>
+              <i class="ki-outline ki-arrow-top-right fs-6 go-to-icon"></i>
             </a>
             <ng-template #justName>
-              <span class="fw-semibold">{{ order.user.name }}</span>
+              <span class="fw-bold client-name text-dark">{{ order.user.name }}</span>
             </ng-template>
-            <a *ngIf="order.user.email"
-               [href]="'mailto:' + order.user.email"
-               class="text-muted text-decoration-none fs-7">
-              {{ order.user.email }}
+          </div>
+          <div *ngIf="order.user.email">
+            <a [href]="'mailto:' + order.user.email"
+               class="text-muted text-decoration-none client-email-link d-flex align-items-center">
+              <i class="ki-outline ki-send fs-6 me-2 email-icon"></i>
+              <span>{{ order.user.email }}</span>
             </a>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Meeting Bookings Details -->
-    <div *ngIf="order.orderable" class="mb-4">
-      <div *ngIf="order.orderable.meeting_booking" class="border rounded p-4">
-        <div class="d-flex justify-content-between align-items-start mb-3">
-          <div>
-            <h6 class="mb-2 fw-bold text-dark">{{ order.orderable.meeting_booking.title }}</h6>
-            <p class="text-muted fs-7 mb-0">{{ order.orderable.meeting_booking.description }}</p>
-          </div>
-          <span class="badge" [ngClass]="utils.getMeetingStatusBadgeClass(order.orderable.meeting_booking.status)">
-            {{ utils.getMeetingStatusDisplay(order.orderable.meeting_booking.status, lang) }}
-          </span>
+    <!-- Meeting Details -->
+    <div *ngIf="order.orderable?.meeting_booking" class="meeting-details bg-light rounded-3 border p-4">
+      <div class="mb-3">
+        <h6 class="fw-bold text-dark mb-0">{{ lang === 'ar' ? 'تفاصيل الاجتماع' : 'Meeting Details' }}</h6>
+      </div>
+      <div class="d-flex justify-content-between align-items-start mb-3">
+        <div>
+          <h6 class="fw-bold text-dark mb-1">{{ order.orderable.meeting_booking?.title }}</h6>
+          <p class="text-muted fs-7 mb-0" *ngIf="order.orderable.meeting_booking?.description">
+            {{ order.orderable.meeting_booking?.description }}
+          </p>
         </div>
-        
-        <div class="row g-3">
-          <div class="col-md-4">
-            <div class="d-flex align-items-center">
-              <i class="ki-outline ki-calendar fs-5 text-info me-2"></i>
-              <div>
-                <div class="fs-8 text-muted">{{ lang === 'ar' ? 'التاريخ' : 'Date' }}</div>
-                <div class="fw-semibold">{{ order.orderable.meeting_booking.date | date:'mediumDate' }}</div>
-              </div>
+        <span class="badge" [ngClass]="utils.getMeetingStatusBadgeClass(order.orderable.meeting_booking?.status || '')">
+          {{ utils.getMeetingStatusDisplay(order.orderable.meeting_booking?.status || '', lang) }}
+        </span>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="d-flex align-items-center">
+            <i class="ki-outline ki-calendar fs-5 text-info me-2"></i>
+            <div>
+              <div class="fs-8 text-muted">{{ lang === 'ar' ? 'التاريخ' : 'Date' }}</div>
+              <div class="fw-semibold">{{ order.orderable.meeting_booking?.date | date:'mediumDate' }}</div>
             </div>
           </div>
-          <div class="col-md-4">
-            <div class="d-flex align-items-center">
-              <i class="ki-outline ki-time fs-5 text-info me-2"></i>
-              <div>
-                <div class="fs-8 text-muted">{{ lang === 'ar' ? 'الوقت' : 'Time' }}</div>
-                <div class="fw-semibold">{{ order.orderable.meeting_booking.start_time }} - {{ order.orderable.meeting_booking.end_time }}</div>
-              </div>
+        </div>
+        <div class="col-md-4">
+          <div class="d-flex align-items-center">
+            <i class="ki-outline ki-time fs-5 text-info me-2"></i>
+            <div>
+              <div class="fs-8 text-muted">{{ lang === 'ar' ? 'الوقت' : 'Time' }}</div>
+              <div class="fw-semibold">{{ order.orderable.meeting_booking?.start_time }} - {{ order.orderable.meeting_booking?.end_time }}</div>
             </div>
           </div>
-          <div class="col-md-4">
-            <div class="d-flex align-items-center">
-              <i class="ki-outline ki-timer fs-5 text-info me-2"></i>
-              <div>
-                <div class="fs-8 text-muted">{{ lang === 'ar' ? 'المدة' : 'Duration' }}</div>
-                <div class="fw-semibold">{{ utils.calculateDuration(lang, order.orderable.meeting_booking.start_time, order.orderable.meeting_booking.end_time) }}</div>
-              </div>
+        </div>
+        <div class="col-md-4">
+          <div class="d-flex align-items-center">
+            <i class="ki-outline ki-timer fs-5 text-info me-2"></i>
+            <div>
+              <div class="fs-8 text-muted">{{ lang === 'ar' ? 'المدة' : 'Duration' }}</div>
+              <div class="fw-semibold">{{ utils.calculateDuration(lang, order.orderable.meeting_booking?.start_time || '', order.orderable.meeting_booking?.end_time || '') }}</div>
             </div>
           </div>
         </div>

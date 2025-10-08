@@ -10,7 +10,9 @@
   display: block !important;
   box-sizing: border-box; /* Ensure padding and borders are included in the width */
 }
-
+.border-none{
+  border: none !important;
+}
 /* Dropdown and TreeSelect Padding */
 .p-multiselect-items,
 .p-multiselect-items ul,

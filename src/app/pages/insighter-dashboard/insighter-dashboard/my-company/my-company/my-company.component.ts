@@ -825,7 +825,7 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
         } else {
           console.warn('Countries API returned empty array or null');
           this.availableCountries = [];
-          this.showWarn('Warning', 'No countries available');
+          // this.showWarn('Warning', 'No countries available');
         }
       },
       error: (error) => {
@@ -953,29 +953,29 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     const datasets = [...knowledgeDatasets];
     let meetingLegendEntry: { label: string; color: string } | null = null;
 
-    const meetingOrdersMap = new Map<string, number>();
-    const meetingOrderStats = this.dashboardStats?.meeting_booking_order_statistics?.company_insighter_orders_statistics || [];
-    meetingOrderStats.forEach(stat => {
-      const meetingCount = Number(stat.total_orders);
-      meetingOrdersMap.set(stat.uuid, Number.isNaN(meetingCount) ? 0 : meetingCount);
+    const meetingBookingsMap = new Map<string, number>();
+    const meetingBookingStats = this.dashboardStats?.meeting_booking_statistics?.insighters || [];
+    meetingBookingStats.forEach(stat => {
+      const meetingCount = Number(stat.meeting_booking_total || 0);
+      meetingBookingsMap.set(stat.uuid, Number.isNaN(meetingCount) ? 0 : meetingCount);
     });
 
-    const meetingDatasetData = insighters.map(ins => meetingOrdersMap.get(ins.uuid) ?? 0);
+    const meetingDatasetData = insighters.map(ins => meetingBookingsMap.get(ins.uuid) ?? 0);
     const hasMeetingData = meetingDatasetData.some(value => value > 0);
 
-    if (hasMeetingData || meetingOrderStats.length) {
+    if (hasMeetingData || meetingBookingStats.length) {
       datasets.push({
-        label: 'Meeting Orders',
+        label: 'Meeting Bookings',
         data: meetingDatasetData,
         backgroundColor: this.meetingOrdersColor,
         borderColor: this.meetingOrdersColor,
         borderWidth: 0,
         maxBarThickness: 35,
-        stack: 'meeting-orders'
+        stack: 'meeting-bookings'
       });
 
       meetingLegendEntry = {
-        label: 'Meeting Orders',
+        label: 'Meeting Bookings',
         color: this.meetingOrdersColor
       };
     }
@@ -1072,6 +1072,7 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     const orderStats = this.dashboardStats.knowledge_order_statistics.company_insighter_orders_statistics;
     const labels = orderStats.map(stat => stat.insighter_name);
     const data = orderStats.map(stat => this.parseAmount(stat.total_amount));
+    const ordersTotal = orderStats.map(stat => stat.total_orders);
 
     this.knowledgeOrdersChartData = {
       labels,
@@ -1081,7 +1082,8 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
         backgroundColor: '#0a7abf',
         borderColor: '#0a7abf',
         borderWidth: 0,
-        maxBarThickness: 25
+        maxBarThickness: 25,
+        ordersTotal: ordersTotal
       }]
     };
 
@@ -1089,6 +1091,18 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
       plugins: {
         legend: {
           display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: (context: any) => {
+              const amount = context.parsed.y;
+              const ordersCount = context.dataset.ordersTotal[context.dataIndex];
+              return [
+                `Total Amount: $${amount.toLocaleString()}`,
+                `Orders Total: ${ordersCount}`
+              ];
+            }
+          }
         }
       },
       scales: {
@@ -1118,6 +1132,7 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     const orderStats = this.dashboardStats.meeting_booking_order_statistics.company_insighter_orders_statistics;
     const labels = orderStats.map(stat => stat.insighter_name);
     const data = orderStats.map(stat => this.parseAmount(stat.total_amount));
+    const ordersTotal = orderStats.map(stat => stat.total_orders);
 
     this.meetingOrdersChartData = {
       labels,
@@ -1127,7 +1142,8 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
         backgroundColor: '#0a7abf',
         borderColor: '#0a7abf',
         borderWidth: 0,
-        maxBarThickness: 25
+        maxBarThickness: 25,
+        ordersTotal: ordersTotal
       }]
     };
 
@@ -1135,6 +1151,18 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
       plugins: {
         legend: {
           display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: (context: any) => {
+              const amount = context.parsed.y;
+              const ordersCount = context.dataset.ordersTotal[context.dataIndex];
+              return [
+                `Total Amount: $${amount.toLocaleString()}`,
+                `Orders Total: ${ordersCount}`
+              ];
+            }
+          }
         }
       },
       scales: {
@@ -1326,6 +1354,7 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
       'publishedKnowledge': { en: 'Published Knowledge', ar: 'المعرفة المنشورة' },
       'publishedKnowledgeByInsighter': { en: 'Published Knowledge by Insighter', ar: 'المعرفة المنشورة حسب المستشار' },
       'knowledgeOrders': { en: 'Knowledge Orders', ar: 'طلبات المعرفة' },
+      'meetingBookings': { en: 'Meeting Bookings', ar: 'حجوزات الاجتماعات' },
       'meetingOrders': { en: 'Meeting Orders', ar: 'طلبات الاجتماعات' },
       'totalMeetings': { en: 'Total Meetings', ar: 'إجمالي الاجتماعات' },
       'totalPublished': { en: 'Total Published', ar: 'إجمالي المنشور' },

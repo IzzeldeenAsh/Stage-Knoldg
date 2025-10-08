@@ -61,6 +61,15 @@ export class CountryUpdateModalComponent extends BaseComponent implements OnInit
   }
 
   private loadCountries(): void {
+    // Skip loading countries if we're on logout/auth pages
+    if (typeof window !== 'undefined') {
+      const currentPath = window.location.pathname;
+      if (currentPath.includes('/auth/logout') || currentPath.includes('/logout')) {
+        console.log('[CountryUpdateModal] Skipping countries load on logout page');
+        return;
+      }
+    }
+
     this.countriesService.getCountries().subscribe({
       next: (countries) => {
         this.countries = countries.map((country: Country) => ({
@@ -71,10 +80,13 @@ export class CountryUpdateModalComponent extends BaseComponent implements OnInit
       },
       error: (error) => {
         console.error('Error loading countries:', error);
-        this.showError(
-          this.lang === 'ar' ? 'خطأ' : 'Error',
-          this.lang === 'ar' ? 'فشل في تحميل البلدان' : 'Failed to load countries'
-        );
+        // Only show error if it's not a logout-related error
+        if (!error.message?.includes('Network/CORS') && error.status !== 0) {
+          this.showError(
+            this.lang === 'ar' ? 'خطأ' : 'Error',
+            this.lang === 'ar' ? 'فشل في تحميل البلدان' : 'Failed to load countries'
+          );
+        }
       }
     });
   }

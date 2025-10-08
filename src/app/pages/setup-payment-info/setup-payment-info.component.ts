@@ -207,7 +207,8 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
       }
     }
 
-    if (this.paymentForm.invalid) {
+    // Skip form validation for manual payments as they don't require additional fields
+    if (this.selectedPaymentType === 'provider' && this.paymentForm.invalid) {
       this.showError(
         this.lang === 'ar' ? 'خطأ في التحقق' : 'Validation Error',
         this.lang === 'ar' ? 'يرجى ملء جميع الحقول المطلوبة' : 'Please fill in all required fields'

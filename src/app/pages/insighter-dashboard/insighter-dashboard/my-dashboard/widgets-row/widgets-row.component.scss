@@ -6,7 +6,7 @@
 }
 
 .dashboard-card {
-    flex: 0 0 calc(20% - 1rem); /* 5 equal columns with gap consideration */
+    flex: 0 0 calc(30% - 1rem); /* 5 equal columns with gap consideration */
     min-width: 0; /* Prevents flex items from overflowing */
     
     /* Responsive adjustments */

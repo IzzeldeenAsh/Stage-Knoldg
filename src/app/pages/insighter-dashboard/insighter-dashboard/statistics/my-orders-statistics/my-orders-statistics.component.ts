@@ -26,8 +26,9 @@ export class MyOrdersStatisticsComponent extends BaseComponent implements OnInit
   }
 
   ngOnInit(): void {
-    // Load statistics only if not already loaded
-    if (!this.orderStatisticsService.getCurrentStatistics() && this.roles.includes('company')) {
+    // Load statistics for both company and insighter roles
+    if (!this.orderStatisticsService.getCurrentStatistics() &&
+        (this.roles.includes('company') || this.roles.includes('company-insighter') || this.roles.includes('insighter'))) {
       this.orderStatisticsService.loadStatistics();
     }
   }

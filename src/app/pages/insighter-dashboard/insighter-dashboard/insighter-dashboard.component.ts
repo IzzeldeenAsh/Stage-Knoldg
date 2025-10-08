@@ -53,7 +53,7 @@ export class InsighterDashboardComponent implements OnInit, OnDestroy {
         this.isNavCollapsed = false;
       } else {
         // On desktop, auto-collapse on smaller screens
-        this.isNavCollapsed = window.innerWidth <= 992;
+        this.isNavCollapsed = window.innerWidth <= 1230;
       }
     }
   }
