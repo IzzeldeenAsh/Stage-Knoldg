@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, Injector } from '@angular/core';
-import { TransactionsService, Transaction, TransactionResponse, PlatformBalanceResponse, PlatformTransactionListResponse, ChartDataPoint } from '../services/transactions.service';
+import { TransactionsService, Transaction, TransactionResponse, PlatformBalanceResponse, ChartDataPoint } from '../services/transactions.service';
 import { Table } from 'primeng/table';
 import { BaseComponent } from '../../base.component';
 import { Subject, takeUntil } from 'rxjs';
@@ -15,8 +15,6 @@ export class TransactionsComponent extends BaseComponent implements OnInit, OnDe
   private destroy$ = new Subject<void>();
 
   transactions: Transaction[] = [];
-  allTransactions: Transaction[] = [];
-  paginatedTransactions: Transaction[] = [];
   loading = false;
   totalRecords = 0;
   rows = 10;
@@ -56,7 +54,7 @@ export class TransactionsComponent extends BaseComponent implements OnInit, OnDe
   ngOnInit(): void {
     this.loadTransactions();
     this.loadPlatformBalance();
-    this.loadAllTransactionsForChart();
+    this.loadChartData();
   }
 
   ngOnDestroy(): void {
@@ -179,13 +177,16 @@ export class TransactionsComponent extends BaseComponent implements OnInit, OnDe
       });
   }
 
-  loadAllTransactionsForChart(): void {
-    this.transactionsService.getAllPlatformTransactions(this.selectedPeriod)
+  loadChartData(): void {
+    this.transactionsService.getChartData(this.selectedPeriod)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (response: PlatformTransactionListResponse) => {
-          this.allTransactions = response.data;
-          this.initializeChartFromTransactions();
+        next: (response) => {
+          this.chartApiData = response.data;
+          this.hasRealData = this.chartApiData.length > 0;
+          if (this.hasRealData) {
+            this.initializeChart();
+          }
         },
         error: (error) => {
           this.handleServerErrors(error);
@@ -195,48 +196,6 @@ export class TransactionsComponent extends BaseComponent implements OnInit, OnDe
       });
   }
 
-  initializeChartFromTransactions(): void {
-    if (this.allTransactions.length === 0) {
-      this.hasRealData = false;
-      this.chartApiData = [];
-      return;
-    }
-
-    // Group transactions by date
-    const dailyData = new Map<string, { deposits: number; withdrawals: number }>();
-
-    this.allTransactions.forEach(transaction => {
-      const date = transaction.date.split(' ')[0]; // Extract date part (YYYY-MM-DD)
-
-      if (!dailyData.has(date)) {
-        dailyData.set(date, { deposits: 0, withdrawals: 0 });
-      }
-
-      const dayData = dailyData.get(date)!;
-
-      if (transaction.transaction === 'deposit') {
-        dayData.deposits += Math.abs(transaction.amount);
-      } else {
-        dayData.withdrawals += Math.abs(transaction.amount);
-      }
-    });
-
-    // Convert to chart data format and sort by date
-    this.chartApiData = Array.from(dailyData.entries())
-      .map(([date, data]) => ({
-        date,
-        deposits: data.deposits,
-        withdrawals: data.withdrawals,
-        balance: 0 // Not used in chart but kept for compatibility
-      }))
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-
-    this.hasRealData = this.chartApiData.length > 0;
-
-    if (this.hasRealData) {
-      this.initializeChart();
-    }
-  }
 
   initializeChart(): void {
     if (!this.chartApiData || this.chartApiData.length === 0) {
@@ -244,8 +203,8 @@ export class TransactionsComponent extends BaseComponent implements OnInit, OnDe
     }
 
     const labels = this.chartApiData.map(item => {
-      const date = new Date(item.date);
-      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      // For the new API structure, date is already formatted (Mon, Tue, Jan, Feb, 2025, etc.)
+      return item.date;
     });
 
     // Create gradients
@@ -331,13 +290,45 @@ export class TransactionsComponent extends BaseComponent implements OnInit, OnDe
           callbacks: {
             title: (context: any) => {
               const dataIndex = context[0].dataIndex;
-              const date = new Date(this.chartApiData[dataIndex].date);
-              return date.toLocaleDateString('en-US', {
-                weekday: 'short',
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-              });
+              const dateValue = this.chartApiData[dataIndex].date;
+
+              // Handle different period formats
+              if (this.selectedPeriod === 'weekly') {
+                // For weekly, dateValue is like "Mon", "Tue", etc.
+                const dayNames = {
+                  'Mon': 'Monday',
+                  'Tue': 'Tuesday',
+                  'Wed': 'Wednesday',
+                  'Thu': 'Thursday',
+                  'Fri': 'Friday',
+                  'Sat': 'Saturday',
+                  'Sun': 'Sunday'
+                };
+                return dayNames[dateValue as keyof typeof dayNames] || dateValue;
+              } else if (this.selectedPeriod === 'monthly') {
+                // For monthly, dateValue is like "Jan", "Feb", etc.
+                const monthNames = {
+                  'Jan': 'January',
+                  'Feb': 'February',
+                  'Mar': 'March',
+                  'Apr': 'April',
+                  'May': 'May',
+                  'Jun': 'June',
+                  'Jul': 'July',
+                  'Aug': 'August',
+                  'Sep': 'September',
+                  'Oct': 'October',
+                  'Nov': 'November',
+                  'Dec': 'December'
+                };
+                return monthNames[dateValue as keyof typeof monthNames] || dateValue;
+              } else if (this.selectedPeriod === 'yearly') {
+                // For yearly, dateValue is like "2025"
+                return `Year ${dateValue}`;
+              }
+
+              // Fallback for any other format
+              return dateValue;
             },
             label: (context: any) => {
               return `${context.dataset.label}: $${context.parsed.y.toLocaleString()}`;
@@ -358,8 +349,8 @@ export class TransactionsComponent extends BaseComponent implements OnInit, OnDe
             font: {
               size: 11
             },
-            autoSkip: true,
-            maxTicksLimit: 7
+            autoSkip: this.selectedPeriod === 'monthly' ? false : true,
+            maxTicksLimit: this.selectedPeriod === 'monthly' ? 12 : (this.selectedPeriod === 'weekly' ? 7 : undefined)
           }
         },
         y: {
@@ -465,20 +456,13 @@ export class TransactionsComponent extends BaseComponent implements OnInit, OnDe
   setPeriod(period: 'weekly' | 'monthly' | 'yearly'): void {
     this.selectedPeriod = period;
     this.currentPage = 1; // Reset to first page when period changes
-    this.loadAllTransactionsForChart(); // Reload chart data with new period
+    this.loadChartData(); // Reload chart data with new period
     this.loadTransactions(); // Reload table data
   }
 
   onPageChange(event: any): void {
     this.currentPage = (event.page || 0) + 1;
-    this.updatePaginatedTransactions();
-  }
-
-  updatePaginatedTransactions(): void {
-    const startIndex = (this.currentPage - 1) * this.pageSize;
-    const endIndex = startIndex + this.pageSize;
-    this.paginatedTransactions = this.allTransactions.slice(startIndex, endIndex);
-    this.transactions = this.paginatedTransactions;
+    this.loadTransactions(event);
   }
 
   get Math() {

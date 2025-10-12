@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Injector, HostListener, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
-import { WalletService, Transaction, TransactionListResponse, User, ChartDataPoint } from 'src/app/_fake/services/wallet/wallet.service';
+import { WalletService, Transaction, TransactionResponse, User, ChartDataPoint } from 'src/app/_fake/services/wallet/wallet.service';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { UIChart } from 'primeng/chart';
 
@@ -30,8 +30,6 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
 
   walletBalance: number = 0;
   transactions: Transaction[] = [];
-  allTransactions: Transaction[] = []; // All transactions for chart
-  paginatedTransactions: Transaction[] = []; // Transactions for current page
   totalRecords: number = 0;
   loading: boolean = false;
 
@@ -84,7 +82,8 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
 
   ngOnInit(): void {
     this.loadWalletData();
-    this.loadAllData();
+    this.loadTransactions();
+    this.loadChartData();
   }
   
 
@@ -112,22 +111,36 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
       });
   }
 
-  loadAllData(): void {
+  loadTransactions(): void {
     this.loading = true;
 
-    // Load all transactions using the new endpoint
-    this.walletService.getAllTransactions(this.selectedPeriod)
+    this.walletService.getTransactions(this.currentPage, this.pageSize, this.selectedPeriod)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (response: TransactionListResponse) => {
-          this.allTransactions = response.data;
-          this.totalRecords = response.data.length;
-          this.updatePaginatedTransactions();
-          this.initializeChartFromTransactions();
+        next: (response: TransactionResponse) => {
+          this.transactions = response.data;
+          this.totalRecords = response.meta.total;
           this.loading = false;
         },
         error: (error) => {
           this.loading = false;
+          this.handleServerErrors(error);
+        }
+      });
+  }
+
+  loadChartData(): void {
+    this.walletService.getChartData(this.selectedPeriod)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.chartApiData = response.data;
+          this.hasRealData = this.chartApiData.length > 0;
+          if (this.hasRealData) {
+            this.initializeChart();
+          }
+        },
+        error: (error) => {
           this.handleServerErrors(error);
           this.hasRealData = false;
           this.chartApiData = [];
@@ -185,17 +198,11 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
     }
   }
 
-  updatePaginatedTransactions(): void {
-    const startIndex = (this.currentPage - 1) * this.pageSize;
-    const endIndex = startIndex + this.pageSize;
-    this.paginatedTransactions = this.allTransactions.slice(startIndex, endIndex);
-    this.transactions = this.paginatedTransactions;
-  }
 
 
   onPageChange(event: any): void {
     this.currentPage = (event.page || 0) + 1;
-    this.updatePaginatedTransactions();
+    this.loadTransactions();
   }
 
   formatService(service: string): string {
@@ -473,52 +480,6 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
     }
   }
 
-  // Chart methods
-  initializeChartFromTransactions(): void {
-    console.log('Initializing chart from transactions:', this.allTransactions.length);
-
-    if (this.allTransactions.length === 0) {
-      this.hasRealData = false;
-      this.chartApiData = [];
-      return;
-    }
-
-    // Group transactions by date
-    const dailyData = new Map<string, { deposits: number; withdrawals: number }>();
-
-    this.allTransactions.forEach(transaction => {
-      const date = transaction.date.split(' ')[0]; // Extract date part (YYYY-MM-DD)
-
-      if (!dailyData.has(date)) {
-        dailyData.set(date, { deposits: 0, withdrawals: 0 });
-      }
-
-      const dayData = dailyData.get(date)!;
-
-      if (transaction.transaction === 'deposit') {
-        dayData.deposits += Math.abs(transaction.amount);
-      } else {
-        dayData.withdrawals += Math.abs(transaction.amount);
-      }
-    });
-
-    // Convert to chart data format and sort by date
-    this.chartApiData = Array.from(dailyData.entries())
-      .map(([date, data]) => ({
-        date,
-        deposits: data.deposits,
-        withdrawals: data.withdrawals,
-        balance: 0 // Not used in chart but kept for compatibility
-      }))
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-
-    this.useApiData = true;
-    this.hasRealData = this.chartApiData.length > 0;
-
-    if (this.hasRealData) {
-      this.initializeChart();
-    }
-  }
 
   generateSampleChartData(): void {
     const today = new Date();
@@ -553,8 +514,8 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
     }
 
     const labels = this.chartApiData.map(item => {
-      const date = new Date(item.date);
-      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      // For the new API structure, date is already formatted (Mon, Tue, Jan, Feb, 2025, etc.)
+      return item.date;
     });
 
     // Create gradients
@@ -649,13 +610,45 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
           callbacks: {
             title: (context: any) => {
               const dataIndex = context[0].dataIndex;
-              const date = new Date(this.chartApiData[dataIndex].date);
-              return date.toLocaleDateString('en-US', {
-                weekday: 'short',
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-              });
+              const dateValue = this.chartApiData[dataIndex].date;
+
+              // Handle different period formats
+              if (this.selectedPeriod === 'weekly') {
+                // For weekly, dateValue is like "Mon", "Tue", etc.
+                const dayNames = {
+                  'Mon': 'Monday',
+                  'Tue': 'Tuesday',
+                  'Wed': 'Wednesday',
+                  'Thu': 'Thursday',
+                  'Fri': 'Friday',
+                  'Sat': 'Saturday',
+                  'Sun': 'Sunday'
+                };
+                return dayNames[dateValue as keyof typeof dayNames] || dateValue;
+              } else if (this.selectedPeriod === 'monthly') {
+                // For monthly, dateValue is like "Jan", "Feb", etc.
+                const monthNames = {
+                  'Jan': 'January',
+                  'Feb': 'February',
+                  'Mar': 'March',
+                  'Apr': 'April',
+                  'May': 'May',
+                  'Jun': 'June',
+                  'Jul': 'July',
+                  'Aug': 'August',
+                  'Sep': 'September',
+                  'Oct': 'October',
+                  'Nov': 'November',
+                  'Dec': 'December'
+                };
+                return monthNames[dateValue as keyof typeof monthNames] || dateValue;
+              } else if (this.selectedPeriod === 'yearly') {
+                // For yearly, dateValue is like "2025"
+                return `Year ${dateValue}`;
+              }
+
+              // Fallback for any other format
+              return dateValue;
             },
             label: (context: any) => {
               return `${context.dataset.label}: $${context.parsed.y.toLocaleString()}`;
@@ -679,8 +672,8 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
             font: {
               size: 11
             },
-            autoSkip: true,
-            maxTicksLimit: 7
+            autoSkip: this.selectedPeriod === 'monthly' ? false : true,
+            maxTicksLimit: this.selectedPeriod === 'monthly' ? 12 : (this.selectedPeriod === 'weekly' ? 7 : undefined)
           }
         },
         y: {
@@ -716,7 +709,8 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
   setPeriod(period: 'weekly' | 'monthly' | 'yearly'): void {
     this.selectedPeriod = period;
     this.currentPage = 1; // Reset to first page when period changes
-    this.loadAllData(); // Reload all data with new period
+    this.loadTransactions(); // Reload transactions with new period
+    this.loadChartData(); // Reload chart data with new period
   }
 
   createVerticalAnnotations(): any {

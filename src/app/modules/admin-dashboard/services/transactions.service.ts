@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import { TranslationService } from '../../../modules/i18n';
 
@@ -120,6 +121,23 @@ export interface ChartDataPoint {
   balance: number;
 }
 
+export interface StatisticsData {
+  deposit: number;
+  withdraw: number;
+}
+
+export interface StatisticsResponse {
+  data: {
+    weekly?: { [key: string]: StatisticsData };
+    monthly?: { [key: string]: StatisticsData };
+    yearly?: { [key: string]: StatisticsData };
+  };
+}
+
+export interface ChartDataResponse {
+  data: ChartDataPoint[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -127,6 +145,7 @@ export class TransactionsService {
   private apiUrl = `${environment.apiBaseUrl}/admin/fund/platform/transaction`;
   private balanceApiUrl = `${environment.apiBaseUrl}/admin/fund/platform/balance`;
   private listApiUrl = `${environment.apiBaseUrl}/admin/fund/platform/transaction/list`;
+  private statisticsApiUrl = `${environment.apiBaseUrl}/admin/fund/platform/statistics`;
   private authLocalStorageKey = 'foresighta-creds';
   private currentLang = 'en';
 
@@ -192,5 +211,64 @@ export class TransactionsService {
 
     const headers = this.getHeaders();
     return this.http.get<PlatformTransactionListResponse>(this.listApiUrl, { params, headers });
+  }
+
+  getStatistics(period: 'weekly' | 'monthly' | 'yearly' = 'monthly'): Observable<StatisticsResponse> {
+    const params = new HttpParams().set('per_time', period);
+    const headers = this.getHeaders();
+    return this.http.get<StatisticsResponse>(this.statisticsApiUrl, { params, headers });
+  }
+
+  getChartData(period: 'weekly' | 'monthly' | 'yearly' = 'monthly'): Observable<ChartDataResponse> {
+    return this.getStatistics(period).pipe(
+      map((response: StatisticsResponse) => {
+        return this.convertStatisticsToChartData(response, period);
+      })
+    );
+  }
+
+  private convertStatisticsToChartData(response: StatisticsResponse, period: 'weekly' | 'monthly' | 'yearly'): ChartDataResponse {
+    const chartData: ChartDataPoint[] = [];
+    const data = response.data;
+
+    if (period === 'weekly' && data.weekly) {
+      const weekOrder = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      weekOrder.forEach(day => {
+        const dayData = data.weekly![day];
+        if (dayData) {
+          chartData.push({
+            date: day,
+            deposits: Math.abs(dayData.deposit),
+            withdrawals: Math.abs(dayData.withdraw),
+            balance: 0 // Not used in current chart implementation
+          });
+        }
+      });
+    } else if (period === 'monthly' && data.monthly) {
+      const monthOrder = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      monthOrder.forEach(month => {
+        const monthData = data.monthly![month];
+        if (monthData) {
+          chartData.push({
+            date: month,
+            deposits: Math.abs(monthData.deposit),
+            withdrawals: Math.abs(monthData.withdraw),
+            balance: 0 // Not used in current chart implementation
+          });
+        }
+      });
+    } else if (period === 'yearly' && data.yearly) {
+      Object.keys(data.yearly).forEach(year => {
+        const yearData = data.yearly![year];
+        chartData.push({
+          date: year,
+          deposits: Math.abs(yearData.deposit),
+          withdrawals: Math.abs(yearData.withdraw),
+          balance: 0 // Not used in current chart implementation
+        });
+      });
+    }
+
+    return { data: chartData };
   }
 }

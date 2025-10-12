@@ -109,17 +109,20 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
     this.unsubscribe.push(sub);
   }
   updateFormValidators() {
-    // Only add required validators for industries and consulting_field if user is not client-only
+    // Only add required validators for industries, consulting_field, and bio if user is not client-only
     if (!this.isClientOnly()) {
       this.personalInfoForm.get('industries')?.setValidators([Validators.required]);
       this.personalInfoForm.get('consulting_field')?.setValidators([Validators.required]);
+      this.personalInfoForm.get('bio')?.setValidators([Validators.required]);
     } else {
       // Remove any existing validators for client-only users
       this.personalInfoForm.get('industries')?.clearValidators();
       this.personalInfoForm.get('consulting_field')?.clearValidators();
+      this.personalInfoForm.get('bio')?.clearValidators();
     }
     this.personalInfoForm.get('industries')?.updateValueAndValidity();
     this.personalInfoForm.get('consulting_field')?.updateValueAndValidity();
+    this.personalInfoForm.get('bio')?.updateValueAndValidity();
   }
 
   populateForm(){

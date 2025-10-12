@@ -20,7 +20,7 @@ export class KnowledgeStatisticsComponent extends BaseComponent implements OnIni
   }
 
   ngOnInit(): void {
-    this.loadStatistics();
+    // this.loadStatistics();
   }
 
   private loadStatistics(): void {

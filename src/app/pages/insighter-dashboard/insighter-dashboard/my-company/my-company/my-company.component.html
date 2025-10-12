@@ -97,69 +97,6 @@
           </div>
         </div>
 
-        <!-- Knowledge Orders Chart -->
-        <div class="col-12 col-lg-6 ">
-          <div class="card border-0 h-100">
-            <div class="card-body chart-card text-center">
-              <h6 class="card-title fw-bold text-start mb-4">{{ getTranslation('knowledgeOrders') }}</h6>
-              <div *ngIf="dashboardStats?.knowledge_order_statistics" class="chart-stat-cards mb-4">
-                <div class="chart-stat-card">
-                  <span class="chart-stat-card__label text-start">{{ getTranslation('ordersAmount') }}</span>
-                  <span class="chart-stat-card__value text-start">{{ formatCurrency(dashboardStats.knowledge_order_statistics.orders_amount) }}</span>
-                </div>
-                <div class="chart-stat-card">
-                  <span class="chart-stat-card__label text-start">{{ getTranslation('companyNetShare') }}</span>
-                  <span class="chart-stat-card__value text-start">{{ formatCurrency(dashboardStats.knowledge_order_statistics.company_orders_amount) }}</span>
-                </div>
-              </div>
-              <div *ngIf="knowledgeOrdersChartData" class="bar-chart-wrapper">
-                <p-chart
-                  type="bar"
-                  [data]="knowledgeOrdersChartData"
-                  [options]="knowledgeOrdersChartOptions"
-                  width="100%"
-                  height="200">
-                </p-chart>
-              </div>
-              <div *ngIf="!knowledgeOrdersChartData" class="chart-card__empty">
-                <i class="ki-duotone ki-chart-line fs-2x text-muted mb-2"></i>
-                <div class="text-muted fs-7">No data available</div>
-              </div>
-            </div>
-          </div>
-        </div>
-  
-        <!-- Meeting Orders Chart -->
-        <div class="col-12 col-lg-6 ">
-          <div class="card border-0 h-100">
-            <div class="card-body chart-card text-start">
-              <h6 class="card-title fw-bold text-gray-800 mb-4">{{ getTranslation('meetingOrders') }}</h6>
-              <div *ngIf="dashboardStats?.meeting_booking_order_statistics" class="chart-stat-cards mb-4">
-                <div class="chart-stat-card">
-                  <span class="chart-stat-card__label">{{ getTranslation('ordersAmount') }}</span>
-                  <span class="chart-stat-card__value">{{ formatCurrency(dashboardStats.meeting_booking_order_statistics.orders_amount) }}</span>
-                </div>
-                <div class="chart-stat-card">
-                  <span class="chart-stat-card__label">{{ getTranslation('companyNetShare') }}</span>
-                  <span class="chart-stat-card__value">{{ formatCurrency(dashboardStats.meeting_booking_order_statistics.company_orders_amount) }}</span>
-                </div>
-              </div>
-              <div *ngIf="meetingOrdersChartData" class="bar-chart-wrapper">
-                <p-chart
-                  type="bar"
-                  [data]="meetingOrdersChartData"
-                  [options]="meetingOrdersChartOptions"
-                  width="100%"
-                  height="200">
-                </p-chart>
-              </div>
-              <div *ngIf="!meetingOrdersChartData" class="chart-card__empty">
-                <i class="ki-duotone ki-calendar fs-2x text-muted mb-2"></i>
-                <div class="text-muted fs-7">No data available</div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
 
 <div class="card mb-5 mb-xl-10 p-0">
@@ -294,13 +231,24 @@
                            <!-- Insighter Name & Avatar -->
                <td style="width: 220px; min-width: 220px; text-align: start;">
                  <div class="d-flex align-items-center">
-                   <div class="symbol symbol-45px me-3">
-                     <p-avatar 
+                   <div class="me-3">
+                     <p-avatar
                        [label]="getUserInitials(insighter.name)"
-                       styleClass="bg-light-primary"
-                       [style]="{'font-size': '1rem', 'height': '45px', 'width': '45px'}"
-                       *ngIf="!insighter.profile_photo_url">
+                       styleClass="bg-light-info fw-bold"
+                       shape="circle"
+                       [style]="{'font-size': '1rem', 'height': '45px', 'width': '45px', 'font-weight': 'bold', 'border-radius': '50%', 'min-width': '45px', 'min-height': '45px'}"
+                       *ngIf="!insighter.profile_photo_url && hasValidInitials(insighter.name)">
                      </p-avatar>
+                     <div *ngIf="!insighter.profile_photo_url && !hasValidInitials(insighter.name)"
+                          class="d-flex align-items-center justify-content-center bg-light-info"
+                          style="width: 45px; height: 45px; border-radius: 50%;">
+                       <i class="ki-duotone ki-profile-user fs-2 text-info">
+                         <span class="path1"></span>
+                         <span class="path2"></span>
+                         <span class="path3"></span>
+                         <span class="path4"></span>
+                       </i>
+                     </div>
                      <img *ngIf="insighter.profile_photo_url" [src]="insighter.profile_photo_url" alt="insighter" class="h-45px w-45px rounded-circle object-fit-cover" style="object-position: top;" />
                    </div>
                    <div class="d-flex flex-column">
@@ -591,10 +539,22 @@
                          [ngClass]="{'cursor-pointer': insighter.verified_as_insighter}">
                         <p-avatar
                           [label]="getUserInitials(insighter.name)"
+                          styleClass="bg-light-info fw-bold"
+                          shape="circle"
                           class="avatar-fallback"
-                          [style]="{'font-size': '1.4rem'}"
-                          *ngIf="!insighter.profile_photo_url">
+                          [style]="{'font-size': '1.4rem', 'height': '70px', 'width': '70px', 'font-weight': 'bold', 'border-radius': '50%', 'min-width': '70px', 'min-height': '70px'}"
+                          *ngIf="!insighter.profile_photo_url && hasValidInitials(insighter.name)">
                         </p-avatar>
+                        <div *ngIf="!insighter.profile_photo_url && !hasValidInitials(insighter.name)"
+                             class="avatar-fallback bg-light-info d-flex align-items-center justify-content-center"
+                             style="width: 70px; height: 70px; border-radius: 50%;">
+                          <i class="ki-duotone ki-profile-user text-info" style="font-size: 2rem;">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                            <span class="path4"></span>
+                          </i>
+                        </div>
                         <img
                           *ngIf="insighter.profile_photo_url"
                           [src]="insighter.profile_photo_url"
@@ -617,10 +577,10 @@
 
                   <!-- Details Section -->
                   <div class="card-details flex-grow-1">
-                    <!-- Three Statistics Cards -->
-                    <div class="row g-3 mb-3">
+                    <!-- Statistics Cards -->
+                    <div class="row g-2 mb-3">
                       <!-- Published Knowledge -->
-                      <div class="col-4">
+                      <div class="col-6">
                         <div class="stat-card h-100" style="background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%); border: 1px solid #e5e7eb; border-radius: 6px;">
                           <div class="p-4">
                             <div class="d-flex align-items-center mb-3">
@@ -637,27 +597,8 @@
                         </div>
                       </div>
 
-                      <!-- Total Amount -->
-                      <!-- <div class="col-4">
-                        <div class="stat-card h-100" style="background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%); border: 1px solid #e5e7eb; border-radius: 6px;">
-                          <div class="p-4">
-                            <div class="d-flex align-items-center mb-3">
-                              <div class="symbol symbol-35px symbol-circle me-2">
-                                <i class="ki-duotone ki-dollar fs-6 text-info">
-                                  <span class="path1"></span>
-                                  <span class="path2"></span>
-                                  <span class="path3"></span>
-                                </i>
-                              </div>
-                              <span class="fs-7 fw-semibold text-info">{{ getTranslation('profit') }}</span>
-                            </div>
-                            <div class="fw-bold" style="font-size: 2rem; line-height: 1; color: #1f2937;">{{ formatCurrency(getInsighterPublishedAmount(insighter)) }}</div>
-                          </div>
-                        </div>
-                      </div> -->
-
                       <!-- Meetings -->
-                      <div class="col-4">
+                      <div class="col-6">
                         <div class="stat-card h-100" style="background: linear-gradient(135deg, #ffffff 0%, #fefce8 100%); border: 1px solid #e5e7eb; border-radius: 6px;">
                           <div class="p-4">
                             <div class="d-flex align-items-center mb-3">
@@ -792,14 +733,25 @@
     <!-- Account exists - show user info -->
     <div *ngIf="accountExists && accountInfo && !accountExistError && !isCheckingAccount" class="mb-5">
       <div class="d-flex flex-center my-10 mb-5">
-          <div class="symbol symbol-60px symbol-circle me-3">
-            <p-avatar 
+          <div class="me-3">
+            <p-avatar
               [label]="getUserInitials(accountInfo.name)"
-              styleClass="bg-light-info"
+              styleClass="bg-light-info fw-bold"
+              shape="circle"
               size="large"
-              rounded="true"
-              [style]="{'font-size': '1.2rem', 'height': '40px', 'width': '40px'}">
+              [style]="{'font-size': '1.2rem', 'height': '50px', 'width': '50px', 'font-weight': 'bold', 'border-radius': '50%', 'min-width': '50px', 'min-height': '50px'}"
+              *ngIf="hasValidInitials(accountInfo.name)">
             </p-avatar>
+            <div *ngIf="!hasValidInitials(accountInfo.name)"
+                 class="d-flex align-items-center justify-content-center bg-light-info"
+                 style="width: 50px; height: 50px; border-radius: 50%;">
+              <i class="ki-duotone ki-profile-user text-info" style="font-size: 1.5rem;">
+                <span class="path1"></span>
+                <span class="path2"></span>
+                <span class="path3"></span>
+                <span class="path4"></span>
+              </i>
+            </div>
           </div>
           <div class="d-flex flex-column">
             <span class="fs-4 fw-bold text-gray-800 mb-0">{{ accountInfo.name }}</span>

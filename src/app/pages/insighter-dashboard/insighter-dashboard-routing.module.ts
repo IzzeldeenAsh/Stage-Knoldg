@@ -79,6 +79,12 @@ const routes: Routes = [
         loadChildren: () => import('./insighter-dashboard/wallet/wallet.module').then(m => m.WalletModule),
         canActivate: [authGuard, RolesGuard],
         data: { roles: ['insighter', 'company', 'client'] }
+      },
+      {
+        path: 'sales',
+        loadChildren: () => import('./insighter-dashboard/sales/sales.module').then(m => m.SalesModule),
+        canActivate: [authGuard, RolesGuard],
+        data: { roles: ['insighter', 'company'] }
       }
     ]
   }

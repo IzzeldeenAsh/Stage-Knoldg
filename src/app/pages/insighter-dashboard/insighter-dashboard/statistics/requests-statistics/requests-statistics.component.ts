@@ -17,7 +17,7 @@ constructor(injector: Injector, private requests:UserRequestsService, private pr
 userProfile:IKnoldgProfile | null = null;
 ngOnInit(){
   this.getProfile();
-  this.getRequestsStatistics();
+  // this.getRequestsStatistics();
 }
 
 getProfile(){
