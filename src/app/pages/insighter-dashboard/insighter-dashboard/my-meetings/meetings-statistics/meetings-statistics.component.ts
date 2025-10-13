@@ -25,7 +25,7 @@ export class MeetingsStatisticsComponent extends BaseComponent implements OnInit
   }
 
   ngOnInit(): void {
-    this.loadStatistics();
+    // this.loadStatistics();
     
     // Subscribe to loading state
     this.meetingsService.isLoading$

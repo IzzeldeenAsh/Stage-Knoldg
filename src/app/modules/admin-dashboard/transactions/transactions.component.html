@@ -44,17 +44,13 @@
       </h3>
 
       <!-- Period Selection Buttons -->
-      <div class="d-flex align-items-center p-1" style="background-color: #F1F5F9; border-radius: 6px; gap: 2px;">
+      <div class="nested-tab-nav">
         <button
           *ngFor="let option of periodOptions"
           type="button"
-          class="btn btn-sm px-2 py-1 border-0"
-          [ngClass]="{
-            'bg-white text-dark fw-semibold shadow-sm': selectedPeriod === option.value,
-            'bg-transparent text-muted': selectedPeriod !== option.value
-          }"
-          (click)="setPeriod(option.value)"
-          style="border-radius: 6px; font-size: 12px; min-width: 55px; transition: all 0.2s ease;">
+          class="nested-tab-button"
+          [ngClass]="{ 'active': selectedPeriod === option.value }"
+          (click)="setPeriod(option.value)">
           {{ lang === 'ar' ? option.labelAr : option.label }}
         </button>
       </div>

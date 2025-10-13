@@ -90,7 +90,7 @@ export class OrdersComponent implements OnInit {
       case 'provider':
         return 'Payment Provider';
       case 'manual':
-        return 'Manual Payment';
+        return 'Wallet Payment';
       default:
         return method;
     }

@@ -1115,3 +1115,61 @@
     }
   }
 }
+
+// Nested tab navigation (matching wallet design)
+.nested-tab-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem;
+  background-color: #f1f5f9;
+  border-radius: 9999px;
+}
+
+.nested-tab-button {
+  border: 0;
+  border-radius: 9999px;
+  padding: 0.45rem 1.1rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  min-width: 70px;
+  background-color: transparent;
+  color: #7e8299;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
+
+  &:hover {
+    color: #181c32;
+    background-color: rgba(15, 23, 42, 0.06);
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(9, 120, 185, 0.35);
+    outline-offset: 2px;
+  }
+
+  &.is-active,
+  &.active {
+    background-color: #ffffff;
+    color: #0978B9;
+    font-weight: 600;
+  }
+}
+
+// Responsive design for nested tabs
+@media (max-width: 768px) {
+  .nested-tab-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .nested-tab-button {
+    flex: 1 1 45%;
+    min-width: 140px;
+    text-align: center;
+  }
+}

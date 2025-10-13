@@ -98,11 +98,7 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
   publishedKnowledgeDonutOptions: any = null;
   knowledgeTypeLegend: Array<{ label: string; color: string }> = [];
   publishedKnowledgeLegend: Array<{ label: string; color: string }> = [];
-  knowledgeOrdersChartData: any = null;
-  knowledgeOrdersChartOptions: any = null;
-  meetingOrdersChartData: any = null;
-  meetingOrdersChartOptions: any = null;
-  private readonly meetingOrdersColor = '#f28e2c';
+  private readonly meetingOrdersColor = '#3B9797';
 
   private readonly flagBasePath = './assets/media/flags/';
   private readonly defaultFlagSlug = 'united-nations';
@@ -530,15 +526,20 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
   // Get user initials for avatar
   getUserInitials(name: string): string {
     if (!name) return '';
-    
-    const nameParts = name.split(' ');
+
+    const nameParts = name.split(' ').filter(part => part.trim().length > 0);
     if (nameParts.length >= 2) {
       return (nameParts[0][0] + nameParts[1][0]).toUpperCase();
-    } else if (nameParts.length === 1) {
-      return nameParts[0][0].toUpperCase();
     }
-    
+
     return '';
+  }
+
+  // Check if name has two parts for displaying initials
+  hasValidInitials(name: string): boolean {
+    if (!name) return false;
+    const nameParts = name.split(' ').filter(part => part.trim().length > 0);
+    return nameParts.length >= 2;
   }
   
   // Get status badge class
@@ -847,8 +848,6 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
       next: (data) => {
         this.dashboardStats = data;
         this.setupPublishedKnowledgeChart();
-        this.setupKnowledgeOrdersChart();
-        this.setupMeetingOrdersChart();
       },
       error: (error) => {
         console.error('Error loading dashboard statistics:', error);
@@ -895,7 +894,8 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     const availableTypes = orderedTypes.filter(type => {
       const totalFromStats = Number((stats.type as any)?.[type] ?? 0);
       const totalFromInsighters = insighters.reduce((sum, insighter) => {
-        const count = Number((insighter.types || {})[type] ?? 0);
+        const types = insighter.types || {};
+        const count = Number((types as any)[type] ?? 0);
         return sum + (Number.isNaN(count) ? 0 : count);
       }, 0);
 
@@ -916,7 +916,8 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
       const color = this.knowledgeTypeColors[type as keyof typeof this.knowledgeTypeColors] || '#999';
       const formattedLabel = type.charAt(0).toUpperCase() + type.slice(1);
       const data = insighters.map(ins => {
-        const value = Number((ins.types || {})[type] ?? 0);
+        const types = ins.types || {};
+        const value = Number((types as any)[type] ?? 0);
         return Number.isNaN(value) ? 0 : value;
       });
 
@@ -1065,125 +1066,6 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     };
   }
 
-  // Setup knowledge orders column chart
-  setupKnowledgeOrdersChart(): void {
-    if (!this.dashboardStats?.knowledge_order_statistics?.company_insighter_orders_statistics) return;
-
-    const orderStats = this.dashboardStats.knowledge_order_statistics.company_insighter_orders_statistics;
-    const labels = orderStats.map(stat => stat.insighter_name);
-    const data = orderStats.map(stat => this.parseAmount(stat.total_amount));
-    const ordersTotal = orderStats.map(stat => stat.total_orders);
-
-    this.knowledgeOrdersChartData = {
-      labels,
-      datasets: [{
-        label: 'Total Amount',
-        data,
-        backgroundColor: '#0a7abf',
-        borderColor: '#0a7abf',
-        borderWidth: 0,
-        maxBarThickness: 25,
-        ordersTotal: ordersTotal
-      }]
-    };
-
-    this.knowledgeOrdersChartOptions = {
-      plugins: {
-        legend: {
-          display: false
-        },
-        tooltip: {
-          callbacks: {
-            label: (context: any) => {
-              const amount = context.parsed.y;
-              const ordersCount = context.dataset.ordersTotal[context.dataIndex];
-              return [
-                `Total Amount: $${amount.toLocaleString()}`,
-                `Orders Total: ${ordersCount}`
-              ];
-            }
-          }
-        }
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: {
-            callback: function(value: any) {
-              return '$' + value.toLocaleString();
-            }
-          }
-        },
-        x: {
-          ticks: {
-            maxRotation: 45
-          }
-        }
-      },
-      maintainAspectRatio: false,
-      responsive: true
-    };
-  }
-
-  // Setup meeting orders column chart
-  setupMeetingOrdersChart(): void {
-    if (!this.dashboardStats?.meeting_booking_order_statistics?.company_insighter_orders_statistics) return;
-
-    const orderStats = this.dashboardStats.meeting_booking_order_statistics.company_insighter_orders_statistics;
-    const labels = orderStats.map(stat => stat.insighter_name);
-    const data = orderStats.map(stat => this.parseAmount(stat.total_amount));
-    const ordersTotal = orderStats.map(stat => stat.total_orders);
-
-    this.meetingOrdersChartData = {
-      labels,
-      datasets: [{
-        label: 'Total Amount',
-        data,
-        backgroundColor: '#0a7abf',
-        borderColor: '#0a7abf',
-        borderWidth: 0,
-        maxBarThickness: 25,
-        ordersTotal: ordersTotal
-      }]
-    };
-
-    this.meetingOrdersChartOptions = {
-      plugins: {
-        legend: {
-          display: false
-        },
-        tooltip: {
-          callbacks: {
-            label: (context: any) => {
-              const amount = context.parsed.y;
-              const ordersCount = context.dataset.ordersTotal[context.dataIndex];
-              return [
-                `Total Amount: $${amount.toLocaleString()}`,
-                `Orders Total: ${ordersCount}`
-              ];
-            }
-          }
-        }
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: {
-            callback: function(value: any) {
-              return '$' + value.toLocaleString();
-            }
-          }
-        },
-        x: {
-          ticks: {
-            maxRotation: 45
-          }
-        }
-      },
-      maintainAspectRatio: false,
-      responsive: true
-    };
-  }
 
   formatCurrency(amount: string | number | null | undefined): string {
     if (amount === null || amount === undefined || amount === '') {
@@ -1212,11 +1094,7 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
   }
 
   get totalMeetings(): number {
-    if (this.dashboardStats?.meeting_booking_statistics && this.dashboardStats.meeting_booking_statistics.total !== undefined) {
-      return this.dashboardStats.meeting_booking_statistics.total;
-    }
-
-    return this.dashboardStats?.meeting_booking_order_statistics?.orders_total ?? 0;
+    return this.dashboardStats?.meeting_booking_statistics?.total ?? 0;
   }
 
   private parseAmount(value: string | number | null | undefined): number {

@@ -40,7 +40,7 @@ export class DownloadsStatisticsComponent extends BaseComponent implements OnIni
   }
 
   ngOnInit(): void {
-    this.loadAllDownloadStatistics();
+    // this.loadAllDownloadStatistics();
   }
 
   private loadAllDownloadStatistics(): void {

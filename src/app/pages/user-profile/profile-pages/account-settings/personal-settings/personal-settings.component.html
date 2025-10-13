@@ -146,10 +146,17 @@
         <div class="row">
           <div class="col-12">
             <div class="mb-6" *ngIf="hasRole(['insighter']) || hasRole(['company']) || hasRole(['company-insighter'])">
-              <label class="form-label">
+              <label class="form-label required">
                 {{ "ACCOUNT_SETTINGS.BIO" | translate }}
               </label>
-              <textarea formControlName="bio" class="form-control min-h-300px"></textarea>
+              <textarea
+                formControlName="bio"
+                class="form-control min-h-300px"
+                [class.is-invalid]="isFieldInvalid('bio')"
+              ></textarea>
+              <div *ngIf="isFieldInvalid('bio')" class="invalid-feedback">
+                {{ getFieldError('bio') }}
+              </div>
             </div>
           </div>
         </div>

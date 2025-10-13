@@ -74,7 +74,7 @@ export interface DashboardStatisticsResponse {
         data?: number;
         course?: number;
       };
-      insighters?: Array<{
+      insighters: Array<{
         uuid: string;
         insighter_name: string;
         total_published: number;
@@ -84,43 +84,15 @@ export interface DashboardStatisticsResponse {
           manual?: number;
           data?: number;
           course?: number;
-          [key: string]: number | undefined;
         };
       }>;
     };
-    meeting_booking_statistics?: {
+    meeting_booking_statistics: {
       total: number;
       insighters: Array<{
         uuid: string;
         insighter_name: string;
         meeting_booking_total: number;
-        total_meetings?: number;
-        types?: Record<string, number>;
-      }>;
-    };
-    meeting_booking_total: number;
-    knowledge_order_statistics: {
-      orders_total: number;
-      orders_amount: string;
-      company_orders_amount: string;
-      company_insighter_orders_statistics: Array<{
-        uuid: string;
-        insighter_name: string;
-        total_orders: number;
-        total_amount: string;
-        total_insighter_amount: string;
-      }>;
-    };
-    meeting_booking_order_statistics: {
-      orders_total: number;
-      orders_amount: string;
-      company_orders_amount: string;
-      company_insighter_orders_statistics: Array<{
-        uuid: string;
-        insighter_name: string;
-        total_orders: number;
-        total_amount: string;
-        total_insighter_amount: string;
       }>;
     };
   };
@@ -135,7 +107,7 @@ export class CompanyAccountService {
   private inviteInsighterApi = `${this.insightaHost}/api/company/insighter`;
   private companyOrderKnowledgeStatisticsApi = `${this.insightaHost}/api/company/order/knowledge/statistics`;
   private companyOrderMeetingStatisticsApi = `${this.insightaHost}/api/company/order/meeting/statistics`;
-  private dashboardStatisticsApi = `${this.insightaHost}/api/company/insighter/dashboard/statistics`;
+  private dashboardStatisticsApi = `${this.insightaHost}/api/company/insighter/statistics`;
 
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();

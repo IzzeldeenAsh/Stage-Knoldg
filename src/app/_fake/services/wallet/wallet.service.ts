@@ -110,6 +110,19 @@ export interface ChartDataResponse {
   data: ChartDataPoint[];
 }
 
+export interface StatisticsData {
+  deposit: number;
+  withdraw: number;
+}
+
+export interface StatisticsResponse {
+  data: {
+    weekly?: { [key: string]: StatisticsData };
+    monthly?: { [key: string]: StatisticsData };
+    yearly?: { [key: string]: StatisticsData };
+  };
+}
+
 @Injectable({
   providedIn: "root",
 })
@@ -170,7 +183,7 @@ export class WalletService {
     );
   }
 
-  getAllTransactions(period: 'weekly' | 'monthly' | 'yearly' = 'weekly'): Observable<TransactionListResponse> {
+  getStatistics(period: 'weekly' | 'monthly' | 'yearly' = 'monthly'): Observable<StatisticsResponse> {
     const headers = new HttpHeaders({
       Accept: "application/json",
       "Accept-Language": this.currentLang,
@@ -180,19 +193,18 @@ export class WalletService {
     const params = new HttpParams()
       .set('per_time', period);
 
-    return this.http.get<TransactionListResponse>(`${this.BASE_URL}/transaction/list`, { headers, params }).pipe(
+    return this.http.get<StatisticsResponse>(`${this.BASE_URL}/statistics`, { headers, params }).pipe(
       catchError((err) => {
-        console.error("Error fetching all transactions:", err);
+        console.error("Error fetching statistics:", err);
         return throwError(() => err);
       })
     );
   }
 
-  getChartData(period: 'weekly' | 'monthly' | 'yearly' = 'monthly', currentBalance?: number): Observable<ChartDataResponse> {
-    // Use the new endpoint that returns all transactions
-    return this.getAllTransactions(period).pipe(
+  getChartData(period: 'weekly' | 'monthly' | 'yearly' = 'monthly'): Observable<ChartDataResponse> {
+    return this.getStatistics(period).pipe(
       map((response) => {
-        return this.aggregateTransactionsToChartData(response.data, currentBalance);
+        return this.convertStatisticsToChartData(response, period);
       }),
       catchError((err) => {
         console.error("Error fetching chart data:", err);
@@ -201,58 +213,45 @@ export class WalletService {
     );
   }
 
-  private aggregateTransactionsToChartData(transactions: Transaction[], currentBalance?: number): ChartDataResponse {
-    // Group transactions by date
-    const dailyData = new Map<string, { deposits: number; withdrawals: number; netChange: number }>();
+  private convertStatisticsToChartData(response: StatisticsResponse, period: 'weekly' | 'monthly' | 'yearly'): ChartDataResponse {
+    const chartData: ChartDataPoint[] = [];
+    const data = response.data;
 
-    transactions.forEach(transaction => {
-      const date = transaction.date.split(' ')[0]; // Extract date part (YYYY-MM-DD)
-
-      if (!dailyData.has(date)) {
-        dailyData.set(date, { deposits: 0, withdrawals: 0, netChange: 0 });
-      }
-
-      const dayData = dailyData.get(date)!;
-
-      if (transaction.transaction === 'deposit') {
-        dayData.deposits += Math.abs(transaction.amount);
-        dayData.netChange += Math.abs(transaction.amount);
-      } else {
-        dayData.withdrawals += Math.abs(transaction.amount);
-        dayData.netChange -= Math.abs(transaction.amount);
-      }
-    });
-
-    // Convert to chart data format and sort by date
-    const chartData: ChartDataPoint[] = Array.from(dailyData.entries())
-      .map(([date, data]) => {
-        return {
-          date,
-          deposits: data.deposits,
-          withdrawals: data.withdrawals,
-          balance: 0 // Will be calculated below
-        };
-      })
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-
-    // Calculate cumulative balance progression
-    if (chartData.length > 0) {
-      // Calculate total net change from all transactions
-      const totalNetChange = Array.from(dailyData.values())
-        .reduce((sum, day) => sum + day.netChange, 0);
-
-      // Use current balance if provided, otherwise estimate
-      const endBalance = currentBalance || (totalNetChange > 0 ? totalNetChange : 1000);
-
-      // Calculate starting balance by working backwards from current balance
-      const startingBalance = endBalance - totalNetChange;
-
-      let cumulativeBalance = startingBalance;
-
-      chartData.forEach(point => {
-        const dayData = dailyData.get(point.date)!;
-        cumulativeBalance += dayData.netChange;
-        point.balance = Math.max(0, cumulativeBalance);
+    if (period === 'weekly' && data.weekly) {
+      const weekOrder = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      weekOrder.forEach(day => {
+        const dayData = data.weekly![day];
+        if (dayData) {
+          chartData.push({
+            date: day,
+            deposits: Math.abs(dayData.deposit),
+            withdrawals: Math.abs(dayData.withdraw),
+            balance: 0 // Not used in current chart implementation
+          });
+        }
+      });
+    } else if (period === 'monthly' && data.monthly) {
+      const monthOrder = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      monthOrder.forEach(month => {
+        const monthData = data.monthly![month];
+        if (monthData) {
+          chartData.push({
+            date: month,
+            deposits: Math.abs(monthData.deposit),
+            withdrawals: Math.abs(monthData.withdraw),
+            balance: 0 // Not used in current chart implementation
+          });
+        }
+      });
+    } else if (period === 'yearly' && data.yearly) {
+      Object.keys(data.yearly).forEach(year => {
+        const yearData = data.yearly![year];
+        chartData.push({
+          date: year,
+          deposits: Math.abs(yearData.deposit),
+          withdrawals: Math.abs(yearData.withdraw),
+          balance: 0 // Not used in current chart implementation
+        });
       });
     }
 

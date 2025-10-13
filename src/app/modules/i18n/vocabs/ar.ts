@@ -1606,6 +1606,33 @@ INSIGHTER_REQUESTS: {
   "WEEK_VIEW": "عرض الأسبوع",
   "TIME": "الوقت"
 },
+"SALES": {
+  "PAGE_TITLE": "المبيعات",
+  "TOTAL_ORDERS": "إجمالي الطلبات",
+  "ORDERS_REVENUE": "إيرادات الطلبات",
+  "NET_PROFIT": "صافي الربح",
+  "COMPANY_NET_PROFIT": "صافي ربح الشركة",
+  "REVENUE_CHART": "مخطط الإيرادات",
+  "KNOWLEDGE_ORDERS": "طلبات المعرفة",
+  "KNOWLEDGE_REVENUE": "إيرادات المعرفة",
+  "KNOWLEDGE_PROFIT": "ربح المعرفة",
+  "MEETING_ORDERS": "طلبات الاجتماعات",
+  "MEETING_REVENUE": "إيرادات الاجتماعات",
+  "MEETING_PROFIT": "ربح الاجتماعات",
+  "WEEKLY": "أسبوعي",
+  "MONTHLY": "شهري",
+  "YEARLY": "سنوي",
+  "PERIOD": {
+    "WEEKLY": "أسبوعي",
+    "MONTHLY": "شهري",
+    "YEARLY": "سنوي"
+  },
+  "CHART_LABELS": {
+    "KNOWLEDGE": "المعرفة",
+    "MEETINGS": "الاجتماعات",
+    "TOTAL_AMOUNT": "إجمالي المبلغ"
+  }
+},
   "NO_DESCRIPTION": "لا يوجد وصف"
 
 }

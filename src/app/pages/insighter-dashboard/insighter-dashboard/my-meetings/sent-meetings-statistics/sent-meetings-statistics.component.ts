@@ -31,7 +31,7 @@ export class SentMeetingsStatisticsComponent extends BaseComponent implements On
   }
 
   ngOnInit(): void {
-    this.loadStatistics();
+    // this.loadStatistics();
     this.isClient$ = this.profileService.isClient()
 
     // Subscribe to loading state

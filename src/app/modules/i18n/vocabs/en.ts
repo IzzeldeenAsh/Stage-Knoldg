@@ -945,7 +945,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
         "OVERVIEW": "Dashboard",
         "MY_REQUESTS": "Notifications",
         "MY_KNOWLEDGE": "My knowledge library",
-        "PAYMENT_SETTINGS": "Payout Settings",
+        "PAYMENT_SETTINGS": "Transactions Settings",
         "PAYMENT_SETTINGS_HEADER": "Payout Settings",
         "SETTINGS": "Settings",
         "ACCOUNT_SETTINGS": "Account Settings",
@@ -1626,6 +1626,33 @@ UPLOAD: 'Upload',
     "ERROR_TITLE": "Unable to Load Payment Details",
     "EDIT_BUTTON": "Update Payment Info",
     "ADD_DETAILS_BUTTON": "Add Payment Details"
+  },
+  "SALES": {
+    "PAGE_TITLE": "Sales",
+    "TOTAL_ORDERS": "Total Orders",
+    "ORDERS_REVENUE": "Orders Revenue",
+    "NET_PROFIT": "Net Profit",
+    "COMPANY_NET_PROFIT": "Company Net Profit",
+    "REVENUE_CHART": "Revenue Chart",
+    "KNOWLEDGE_ORDERS": "Knowledge Orders",
+    "KNOWLEDGE_REVENUE": "Knowledge Revenue",
+    "KNOWLEDGE_PROFIT": "Knowledge Profit",
+    "MEETING_ORDERS": "Meeting Orders",
+    "MEETING_REVENUE": "Meeting Revenue",
+    "MEETING_PROFIT": "Meeting Profit",
+    "WEEKLY": "Weekly",
+    "MONTHLY": "Monthly",
+    "YEARLY": "Yearly",
+    "PERIOD": {
+      "WEEKLY": "Weekly",
+      "MONTHLY": "Monthly",
+      "YEARLY": "Yearly"
+    },
+    "CHART_LABELS": {
+      "KNOWLEDGE": "Knowledge",
+      "MEETINGS": "Meetings",
+      "TOTAL_AMOUNT": "Total Amount"
+    }
   },
   "WALLET": {
     "TITLE": "Wallet",

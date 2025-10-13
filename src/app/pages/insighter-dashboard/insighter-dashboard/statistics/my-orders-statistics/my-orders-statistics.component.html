@@ -45,7 +45,6 @@
     </div>
 
     <div class="d-flex gap-4 gap-lg-13" *ngIf="roles.includes('company') || roles.includes('insighter') ||  roles.includes('company-insighter')">
-      <!-- Total Purchased Card -->
       <div class="d-flex flex-column rounded p-6 hover-scale">
         <div class="d-flex align-items-center mb-2">
           <i class="ki-outline ki-basket text-success mx-2 fs-2"></i>
@@ -63,7 +62,6 @@
         </div>
       </div>
 
-      <!-- Total Sold Card -->
       <div class="d-flex flex-column rounded p-6 hover-scale">
         <div class="d-flex align-items-center mb-2">
           <i class="ki-outline ki-dollar text-info mx-2 fs-2"></i>
@@ -80,6 +78,6 @@
           {{ lang === 'ar' ? 'إجمالي المبيعات' : 'Total Sold' }}
         </div>
       </div>
-    </div>  
+    </div>
   </div>
 </div>
