@@ -107,13 +107,13 @@ export class SalesComponent extends BaseComponent implements OnInit, OnDestroy, 
   // Localization methods
   getText(key: string): string {
     const translations: { [key: string]: { en: string; ar: string } } = {
-      'TOTAL_ORDERS': { en: 'Total Orders', ar: 'إجمالي الطلبات' },
-      'ORDERS_REVENUE': { en: 'Orders Revenue', ar: 'إيرادات الطلبات' },
+      'TOTAL_ORDERS': { en: 'Total Orders', ar: "العدد الإجمالي" },
+      'ORDERS_REVENUE': { en: 'Revenue', ar: "الإيرادات" },
       'NET_PROFIT': { en: 'Net Profit', ar: 'صافي الربح' },
-      'COMPANY_NET_PROFIT': { en: 'Company Net Profit', ar: 'صافي ربح الشركة' },
+      'COMPANY_NET_PROFIT': { en: 'Net Profit', ar: 'الربح' },
       'REVENUE_CHART': { en: 'Revenue Chart', ar: 'مخطط الإيرادات' },
-      'KNOWLEDGE_ORDERS': { en: 'Knowledge Orders', ar: 'طلبات المعرفة' },
-      'MEETING_ORDERS': { en: 'Meeting Orders', ar: 'طلبات الاجتماعات' },
+      'KNOWLEDGE_ORDERS': { en: 'Knowledge Orders', ar: "المعارف" },
+      'MEETING_ORDERS': { en: 'Meeting Orders', ar: 'الاجتماعات' },
       'LOADING': { en: 'Loading...', ar: 'جاري التحميل...' },
       'WEEKLY': { en: 'Weekly', ar: 'أسبوعي' },
       'MONTHLY': { en: 'Monthly', ar: 'شهري' },

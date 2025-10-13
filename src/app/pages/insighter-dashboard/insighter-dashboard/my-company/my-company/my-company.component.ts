@@ -1171,7 +1171,7 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
   getTranslation(key: string): string {
     const translations: { [key: string]: { en: string; ar: string } } = {
       // Statistics cards
-      'published': { en: 'Published', ar: 'منشور' },
+      'published': { en: 'Published', ar: 'منشورات' },
       'profit': { en: 'Profit', ar: 'الربح' },
       'meetings': { en: 'Meetings', ar: 'الاجتماعات' },
 
@@ -1207,7 +1207,7 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
 
       // Forms
       'emailAddress': { en: 'Email Address', ar: 'عنوان البريد الإلكتروني' },
-      'enterEmail': { en: 'Enter email address', ar: 'أدخل عنوان البريد الإلكتروني' },
+      'enterEmail': { en: 'Enter email address', ar: 'الرجاء إدخال عنوان البريد الإلكتروني للموظف' },
       'firstName': { en: 'First Name', ar: 'الاسم الأول' },
       'lastName': { en: 'Last Name', ar: 'الاسم الأخير' },
       'enterFirstName': { en: 'Enter first name', ar: 'أدخل الاسم الأول' },

@@ -679,14 +679,15 @@
       <form [formGroup]="emailForm">
         <div class="mb-3">
           <label class="form-label required">{{ 'MY_COMPANY.EMAIL_ADDRESS' | translate }}</label>
-          <div class="input-group" dir="ltr">
+          <div class="input-group" [dir]="lang === 'ar' ? 'rtl' : 'ltr'">
             <input 
               type="email" 
-              class="form-control text-start" 
+              class="form-control" 
               [placeholder]="'MY_COMPANY.ENTER_EMAIL' | translate" 
               formControlName="email"
               pInputText
-              dir="ltr"
+              [dir]="lang === 'ar' ? 'rtl' : 'ltr'"
+              [ngClass]="{ 'text-end': lang === 'ar', 'text-start': lang !== 'ar' }"
             />
             <span class="input-group-text">
               <i class="ki-duotone ki-sms fs-4">
@@ -714,7 +715,7 @@
                !(emailForm.get('email')?.valid && emailForm.get('email')?.dirty && apiCheckCompleted)" 
           class="d-flex flex-column align-items-center justify-content-center my-10">
       <img src="./assets/media/illustrations/employee_search.svg" alt="Search employees" style="max-width: 300px;" />
-      <div class="text-muted fs-6 mt-4 text-center">Enter an email address to search for existing account or create new employee</div>
+      <div class="text-muted fs-6 mt-4 text-center">{{ 'MY_COMPANY.ENTER_EMAIL_PANNER' | translate }}</div>
     </div>
     
     <!-- Processing indicator -->
