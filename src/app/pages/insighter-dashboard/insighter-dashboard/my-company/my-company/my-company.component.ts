@@ -1,5 +1,5 @@
 import { Knowledge } from 'src/app/_fake/services/knowledge/knowledge.service';
-import { Component, Injector, OnInit } from '@angular/core';
+import { Component, Injector, OnInit, ViewChild } from '@angular/core';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CountryDropdownComponent, Country as DropdownCountry } from 'src/app/reusable-components/country-dropdown/country-dropdown.component';
@@ -8,6 +8,21 @@ import { CompanyAccountService, DashboardStatisticsResponse } from 'src/app/_fak
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import { ConfirmationService } from 'primeng/api';
+import {
+  ApexAxisChartSeries,
+  ApexChart,
+  ApexDataLabels,
+  ApexFill,
+  ApexLegend,
+  ApexNonAxisChartSeries,
+  ApexPlotOptions,
+  ApexResponsive,
+  ApexStroke,
+  ApexTooltip,
+  ApexXAxis,
+  ApexYAxis,
+  ChartComponent
+} from 'ng-apexcharts';
 
 interface Insighter {
   id: number;
@@ -43,6 +58,35 @@ interface PaginationMeta {
   to: number;
   total: number;
 }
+
+export type PublishedKnowledgeBarChartOptions = {
+  series: ApexAxisChartSeries;
+  chart: ApexChart;
+  plotOptions: ApexPlotOptions;
+  dataLabels: ApexDataLabels;
+  xaxis: ApexXAxis;
+  yaxis: ApexYAxis;
+  tooltip: ApexTooltip;
+  legend: ApexLegend;
+  fill: ApexFill;
+  stroke: ApexStroke;
+  colors: string[];
+  responsive: ApexResponsive[];
+};
+
+export type PublishedKnowledgeDonutChartOptions = {
+  series: ApexNonAxisChartSeries;
+  chart: ApexChart;
+  labels: string[];
+  colors: string[];
+  legend: ApexLegend;
+  dataLabels: ApexDataLabels;
+  tooltip: ApexTooltip;
+  plotOptions: ApexPlotOptions;
+  responsive: ApexResponsive[];
+  fill: ApexFill;
+  stroke: ApexStroke;
+};
 
 @Component({
   selector: 'app-my-company',
@@ -92,10 +136,12 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
 
   // Dashboard statistics
   dashboardStats: DashboardStatisticsResponse['data'] | null = null;
-  publishedKnowledgeChartData: any = null;
-  publishedKnowledgeChartOptions: any = null;
-  publishedKnowledgeDonutData: any = null;
-  publishedKnowledgeDonutOptions: any = null;
+  @ViewChild('publishedKnowledgeBarChart') publishedKnowledgeBarChart?: ChartComponent;
+  @ViewChild('publishedKnowledgeDonutChart') publishedKnowledgeDonutChart?: ChartComponent;
+  publishedKnowledgeBarChartOptions: Partial<PublishedKnowledgeBarChartOptions> = this.createInitialBarChartOptions();
+  publishedKnowledgeDonutChartOptions: Partial<PublishedKnowledgeDonutChartOptions> = this.createInitialDonutChartOptions();
+  hasPublishedKnowledgeBarData = false;
+  hasPublishedKnowledgeDonutData = false;
   knowledgeTypeLegend: Array<{ label: string; color: string }> = [];
   publishedKnowledgeLegend: Array<{ label: string; color: string }> = [];
   private readonly meetingOrdersColor = '#3B9797';
@@ -865,11 +911,12 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
 
     this.publishedKnowledgeLegend = [];
     this.knowledgeTypeLegend = [];
-    this.publishedKnowledgeDonutData = null;
-    this.publishedKnowledgeDonutOptions = null;
+    this.hasPublishedKnowledgeBarData = false;
+    this.hasPublishedKnowledgeDonutData = false;
+    this.publishedKnowledgeBarChartOptions = this.createInitialBarChartOptions();
+    this.publishedKnowledgeDonutChartOptions = this.createInitialDonutChartOptions();
 
     if (!stats || !Array.isArray(stats.insighters) || !stats.insighters.length) {
-      this.publishedKnowledgeChartData = null;
       return;
     }
 
@@ -903,22 +950,27 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     });
 
     if (!availableTypes.length) {
-      this.publishedKnowledgeChartData = null;
       return;
     }
 
     const labels = insighters.map(ins => ins.insighter_name || 'Unknown');
     const donutLabels: string[] = [];
-    const donutData: number[] = [];
+    const donutSeries: number[] = [];
     const donutColors: string[] = [];
 
-    const knowledgeDatasets = availableTypes.map(type => {
+    const barSeries: ApexAxisChartSeries = [];
+    const barColors: string[] = [];
+    const knowledgeTotalsByIndex: number[] = Array(insighters.length).fill(0);
+
+    availableTypes.forEach(type => {
       const color = this.knowledgeTypeColors[type as keyof typeof this.knowledgeTypeColors] || '#999';
       const formattedLabel = type.charAt(0).toUpperCase() + type.slice(1);
-      const data = insighters.map(ins => {
+      const data = insighters.map((ins, index) => {
         const types = ins.types || {};
         const value = Number((types as any)[type] ?? 0);
-        return Number.isNaN(value) ? 0 : value;
+        const sanitized = Number.isNaN(value) ? 0 : value;
+        knowledgeTotalsByIndex[index] += sanitized;
+        return sanitized;
       });
 
       this.knowledgeTypeLegend.push({
@@ -929,31 +981,39 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
       const totalForType = Number((stats.type as any)?.[type] ?? 0);
       if (totalForType > 0) {
         donutLabels.push(formattedLabel);
-        donutData.push(totalForType);
+        donutSeries.push(totalForType);
         donutColors.push(color);
       }
 
-      return {
-        label: formattedLabel,
+      barSeries.push({
+        name: formattedLabel,
+        type: 'column',
+        group: 'knowledge',
         data,
-        backgroundColor: color,
-        borderColor: color,
-        borderWidth: 0,
-        maxBarThickness: 35,
-        stack: 'published-knowledge'
-      };
+        color
+      });
+      barColors.push(color);
     });
 
-    const knowledgeTotalsByIndex = insighters.map((_, index) =>
-      knowledgeDatasets.reduce((sum, dataset) => {
-        const value = Number((dataset.data as number[])[index] ?? 0);
-        return sum + (Number.isNaN(value) ? 0 : value);
-      }, 0)
-    );
+    const donutOptions = this.createInitialDonutChartOptions();
+    if (donutSeries.length) {
+      donutOptions.series = donutSeries;
+      donutOptions.labels = donutLabels;
+      donutOptions.colors = donutColors;
+      donutOptions.tooltip = {
+        ...donutOptions.tooltip,
+        y: {
+          formatter: (value: number, opts?: any) => {
+            const label = donutLabels[opts?.dataPointIndex ?? 0] ?? '';
+            return `${label ? label + ': ' : ''}${Math.round(value ?? 0)}`;
+          }
+        }
+      };
+      this.hasPublishedKnowledgeDonutData = true;
+    }
+    this.publishedKnowledgeDonutChartOptions = donutOptions;
 
-    const datasets = [...knowledgeDatasets];
-    let meetingLegendEntry: { label: string; color: string } | null = null;
-
+    const meetingLabel = this.getTranslation('meetingBookings');
     const meetingBookingsMap = new Map<string, number>();
     const meetingBookingStats = this.dashboardStats?.meeting_booking_statistics?.insighters || [];
     meetingBookingStats.forEach(stat => {
@@ -963,106 +1023,263 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
 
     const meetingDatasetData = insighters.map(ins => meetingBookingsMap.get(ins.uuid) ?? 0);
     const hasMeetingData = meetingDatasetData.some(value => value > 0);
+    let meetingLegendEntry: { label: string; color: string } | null = null;
 
     if (hasMeetingData || meetingBookingStats.length) {
-      datasets.push({
-        label: 'Meeting Bookings',
+      barSeries.push({
+        name: meetingLabel,
+        type: 'column',
+        group: 'meeting-bookings',
         data: meetingDatasetData,
-        backgroundColor: this.meetingOrdersColor,
-        borderColor: this.meetingOrdersColor,
-        borderWidth: 0,
-        maxBarThickness: 35,
-        stack: 'meeting-bookings'
+        color: this.meetingOrdersColor
       });
+      barColors.push(this.meetingOrdersColor);
 
       meetingLegendEntry = {
-        label: 'Meeting Bookings',
+        label: meetingLabel,
         color: this.meetingOrdersColor
       };
     }
 
-    this.publishedKnowledgeDonutData = donutData.length ? {
-      labels: donutLabels,
-      datasets: [{
-        data: donutData,
-        backgroundColor: donutColors,
-        borderWidth: 0,
-        cutout: '65%'
-      }]
-    } : null;
-
-    this.publishedKnowledgeDonutOptions = {
-      plugins: {
-        legend: {
-          display: false
-        },
-        tooltip: {
-          callbacks: {
-            label: (context: any) => `${context.label}: ${context.parsed}`
-          }
+    const barOptions = this.createInitialBarChartOptions();
+    barOptions.series = barSeries;
+    barOptions.colors = barColors;
+    barOptions.xaxis = {
+      ...(barOptions.xaxis ?? {}),
+      categories: labels,
+      labels: {
+        ...(barOptions.xaxis?.labels ?? {}),
+        rotate: -35,
+        trim: true,
+        style: {
+          ...(barOptions.xaxis?.labels?.style ?? {}),
+          fontSize: '12px',
+          fontWeight: 600,
+          colors: Array(labels.length).fill('#475569')
         }
-      },
-      maintainAspectRatio: false,
-      responsive: true
+      }
     };
+    barOptions.yaxis = {
+      ...(barOptions.yaxis ?? {}),
+      labels: {
+        ...(barOptions.yaxis?.labels ?? {}),
+        style: {
+          ...(barOptions.yaxis?.labels?.style ?? {}),
+          fontSize: '11px',
+          fontWeight: 500,
+          colors: '#64748B'
+        }
+      }
+    };
+    const tooltipSeriesMeta = barSeries.map((seriesItem, index) => ({
+      index,
+      label: seriesItem.name ?? '',
+      color: barColors[index] ?? '#999',
+      isMeeting: seriesItem.group === 'meeting-bookings'
+    }));
+
+    barOptions.tooltip = {
+      shared: true,
+      intersect: false,
+      custom: ({ series, dataPointIndex }: any) => {
+        if (dataPointIndex === undefined) {
+          return '';
+        }
+
+        const insighterLabel = this.escapeHtml(labels[dataPointIndex] ?? '');
+        const totalLabel = this.getTranslation('totalPublished');
+
+        const knowledgeRows = tooltipSeriesMeta
+          .filter(meta => !meta.isMeeting)
+          .map(meta => {
+            const rawValue = Number(series?.[meta.index]?.[dataPointIndex] ?? 0);
+            const safeLabel = this.escapeHtml(meta.label);
+            return `
+              <div class="apex-tooltip__row">
+                <span class="apex-tooltip__dot" style="background:${meta.color};"></span>
+                <span class="apex-tooltip__label">${safeLabel}</span>
+                <span class="apex-tooltip__value">${Math.round(rawValue)}</span>
+              </div>
+            `;
+          })
+          .join('');
+
+        const totalPublished = knowledgeTotalsByIndex[dataPointIndex] ?? 0;
+        const meetingMeta = tooltipSeriesMeta.find(meta => meta.isMeeting);
+        const meetingCount = meetingMeta ? Number(series?.[meetingMeta.index]?.[dataPointIndex] ?? 0) : 0;
+        const meetingLabel = meetingMeta ? this.escapeHtml(meetingMeta.label) : '';
+
+        return `
+          <div class="apex-tooltip apex-tooltip--knowledge">
+            <div class="apex-tooltip__header">${insighterLabel}</div>
+            <div class="apex-tooltip__rows">
+              ${knowledgeRows}
+            </div>
+            <div class="apex-tooltip__divider"></div>
+            <div class="apex-tooltip__summary">
+              <div class="apex-tooltip__summary-item">
+                <span class="apex-tooltip__summary-label">${this.escapeHtml(totalLabel)}</span>
+                <span class="apex-tooltip__summary-value">${Math.round(totalPublished)}</span>
+              </div>
+              ${
+                meetingMeta
+                  ? `<div class="apex-tooltip__summary-item">
+                      <span class="apex-tooltip__summary-label">${meetingLabel}</span>
+                      <span class="apex-tooltip__summary-value">${Math.round(meetingCount)}</span>
+                    </div>`
+                  : ''
+              }
+            </div>
+          </div>
+        `;
+      }
+    };
+    this.publishedKnowledgeBarChartOptions = barOptions;
 
     this.publishedKnowledgeLegend = [...this.knowledgeTypeLegend];
     if (meetingLegendEntry) {
       this.publishedKnowledgeLegend.push(meetingLegendEntry);
     }
 
-    this.publishedKnowledgeChartData = {
-      labels,
-      datasets
-    };
+    this.hasPublishedKnowledgeBarData = barSeries.length > 0 && barSeries.some(seriesItem =>
+      Array.isArray(seriesItem.data) && seriesItem.data.some(value => {
+        if (typeof value === 'number') {
+          return value > 0;
+        }
 
-    this.publishedKnowledgeChartOptions = {
-      plugins: {
-        legend: {
-          display: false
+        if (value && typeof value === 'object' && 'y' in value) {
+          const numeric = Number((value as { y: number }).y ?? 0);
+          return !Number.isNaN(numeric) && numeric > 0;
+        }
+
+        return false;
+      })
+    );
+  }
+
+  private createInitialBarChartOptions(): Partial<PublishedKnowledgeBarChartOptions> {
+    return {
+      series: [],
+      chart: {
+        type: 'bar',
+        height: 260,
+        stacked: true,
+        stackType: 'normal',
+        toolbar: {
+          show: false
         },
-        tooltip: {
-          mode: 'index',
-          intersect: false,
-          callbacks: {
-            label: (context: any) => {
-              const value = context.parsed?.y ?? context.parsed ?? 0;
-              return `${context.dataset.label}: ${value}`;
+        fontFamily: 'Poppins, sans-serif'
+      },
+      plotOptions: {
+        bar: {
+          horizontal: false,
+          columnWidth: '45%',
+          borderRadius: 0
+        }
+      },
+      dataLabels: {
+        enabled: false
+      },
+      xaxis: {
+        categories: [],
+        labels: {
+          style: {
+            fontFamily: 'Poppins, sans-serif'
+          }
+        }
+      },
+      yaxis: {
+        min: 0,
+        labels: {
+          style: {
+            fontFamily: 'Poppins, sans-serif'
+          }
+        }
+      },
+      tooltip: {
+        shared: true,
+        intersect: false
+      },
+      legend: {
+        show: false
+      },
+      fill: {
+        opacity: 1
+      },
+      stroke: {
+        show: true,
+        width: 1,
+        colors: ['#ffffff']
+      },
+      colors: [],
+      responsive: [
+        {
+          breakpoint: 992,
+          options: {
+            chart: {
+              height: 280
             },
-            footer: (tooltipItems: any[]) => {
-              if (!tooltipItems?.length) {
-                return '';
+            plotOptions: {
+              bar: {
+                columnWidth: '55%'
               }
+            }
+          }
+        }
+      ]
+    };
+  }
 
-              const dataIndex = tooltipItems[0].dataIndex;
-              const totalPublished = knowledgeTotalsByIndex[dataIndex] ?? 0;
-
-              return `Total Published: ${totalPublished}`;
+  private createInitialDonutChartOptions(): Partial<PublishedKnowledgeDonutChartOptions> {
+    return {
+      series: [],
+      chart: {
+        type: 'donut',
+        height: 260,
+        fontFamily: 'Poppins, sans-serif',
+        toolbar: {
+          show: false
+        }
+      },
+      labels: [],
+      colors: [],
+      legend: {
+        show: false
+      },
+      dataLabels: {
+        enabled: false
+      },
+      plotOptions: {
+        pie: {
+          donut: {
+            size: '68%',
+            labels: {
+              show: false
             }
           }
         }
       },
-      interaction: {
-        mode: 'index',
-        intersect: false
-      },
-      scales: {
-        x: {
-          stacked: true,
-          ticks: {
-            maxRotation: 45
-          }
-        },
+      tooltip: {
         y: {
-          stacked: true,
-          beginAtZero: true,
-          ticks: {
-            precision: 0
-          }
+          formatter: (value: number) => `${Math.round(value ?? 0)}`
         }
       },
-      maintainAspectRatio: false,
-      responsive: true
+      fill: {
+        opacity: 1
+      },
+      stroke: {
+        width: 0
+      },
+      responsive: [
+        {
+          breakpoint: 992,
+          options: {
+            chart: {
+              height: 240
+            }
+          }
+        }
+      ]
     };
   }
 
@@ -1109,6 +1326,27 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     }
 
     return 0;
+  }
+
+  private escapeHtml(value: string): string {
+    if (!value) {
+      return '';
+    }
+
+    return value.replace(/[&<>"'`=\/]/g, (char) => {
+      const escapeMap: Record<string, string> = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;',
+        '`': '&#96;',
+        '=': '&#61;',
+        '/': '&#47;'
+      };
+
+      return escapeMap[char] ?? char;
+    });
   }
 
   // Methods for individual insighter statistics in grid cards

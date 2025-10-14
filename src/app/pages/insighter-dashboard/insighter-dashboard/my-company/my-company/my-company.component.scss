@@ -170,13 +170,94 @@
     min-height: 220px;
   }
 
-  .bar-chart-wrapper ::ng-deep canvas {
+  .bar-chart-wrapper ::ng-deep .apexcharts-canvas {
     max-height: 100% !important;
+    width: 100% !important;
   }
 
-  .donut-wrapper ::ng-deep canvas {
+  .donut-wrapper ::ng-deep .apexcharts-canvas {
     width: 100% !important;
     height: 100% !important;
+  }
+
+  ::ng-deep .apex-tooltip--knowledge {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 12px 14px;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+    min-width: 220px;
+    font-family: 'Poppins', sans-serif;
+    color: #0f172a;
+  }
+
+  ::ng-deep .apex-tooltip--knowledge .apex-tooltip__header {
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+    color: #111827;
+  }
+
+  ::ng-deep .apex-tooltip--knowledge .apex-tooltip__rows {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  ::ng-deep .apex-tooltip--knowledge .apex-tooltip__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 0.82rem;
+    color: #1f2937;
+  }
+
+  ::ng-deep .apex-tooltip--knowledge .apex-tooltip__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-flex;
+    flex-shrink: 0;
+  }
+
+  ::ng-deep .apex-tooltip--knowledge .apex-tooltip__label {
+    flex: 1;
+    font-weight: 600;
+    color: #475569;
+  }
+
+  ::ng-deep .apex-tooltip--knowledge .apex-tooltip__value {
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  ::ng-deep .apex-tooltip--knowledge .apex-tooltip__divider {
+    height: 1px;
+    background: rgba(203, 213, 225, 0.6);
+    margin: 10px 0;
+  }
+
+  ::ng-deep .apex-tooltip--knowledge .apex-tooltip__summary {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  ::ng-deep .apex-tooltip--knowledge .apex-tooltip__summary-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #0f172a;
+  }
+
+  ::ng-deep .apex-tooltip--knowledge .apex-tooltip__summary-label {
+    color: #1e293b;
+  }
+
+  ::ng-deep .apex-tooltip--knowledge .apex-tooltip__summary-value {
+    color: #0f172a;
   }
   
   .table-container {

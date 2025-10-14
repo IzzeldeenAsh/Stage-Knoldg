@@ -26,6 +26,10 @@ export class InvoiceViewerComponent extends BaseComponent implements OnInit, OnD
   invoiceDate = '';
   serviceRows: Array<{name: string, amount: number}> = [];
   subtotal = 0;
+  isMeetingOrder = false;
+  meetingTitle = '';
+  meetingDetails: Array<{label: string, value: string}> = [];
+  knowledgePackages: Array<{title: string, documents: any[], totalPrice: number}> = [];
 
   constructor(injector: Injector) {
     super(injector);
@@ -59,35 +63,60 @@ export class InvoiceViewerComponent extends BaseComponent implements OnInit, OnD
     });
 
     // Process service items
-    const isMeetingOrder = this.invoiceData.service === 'meeting_service';
+    this.isMeetingOrder = this.invoiceData.service === 'meeting_service';
     this.serviceRows = [];
     this.subtotal = this.invoiceData.amount;
 
-    if (isMeetingOrder) {
+    if (this.isMeetingOrder) {
       // Handle meeting orders
       const orderable = this.invoiceData.orderable;
       if (orderable?.meeting_booking) {
         const meeting = orderable.meeting_booking;
+        this.meetingTitle = `Meeting: ${meeting.title}`;
+        this.meetingDetails = [
+          { label: '📅 Date: ' + meeting.date, value: '-' },
+          { label: '⏰ Time: ' + meeting.start_time + ' - ' + meeting.end_time, value: '-' }
+        ];
         this.serviceRows.push({
           name: `Meeting: ${meeting.title} - ${meeting.date} (${meeting.start_time} - ${meeting.end_time})`,
           amount: this.invoiceData.amount
         });
       }
     } else {
-      // Handle knowledge orders
+      // Handle knowledge orders - Group by knowledge package
+      const knowledgePackagesMap = new Map<string, {documents: any[], totalPrice: number}>();
       this.subtotal = 0;
-      const orderable = this.invoiceData.orderable;
-      if (orderable?.knowledge_documents) {
-        orderable.knowledge_documents.forEach((docGroup: any[]) => {
+
+      // Get the main knowledge title from the order
+      const knowledgeTitle = this.invoiceData.orderable?.knowledge?.[0]?.title || 'Knowledge Package';
+
+      if (this.invoiceData.orderable?.knowledge_documents) {
+        // Group all documents under the main knowledge title
+        if (!knowledgePackagesMap.has(knowledgeTitle)) {
+          knowledgePackagesMap.set(knowledgeTitle, {documents: [], totalPrice: 0});
+        }
+
+        const pkg = knowledgePackagesMap.get(knowledgeTitle)!;
+
+        this.invoiceData.orderable.knowledge_documents.forEach((docGroup: any[]) => {
           docGroup.forEach((doc: any) => {
+            pkg.documents.push(doc);
+            pkg.totalPrice += doc.price;
+            this.subtotal += doc.price;
             this.serviceRows.push({
               name: doc.file_name,
               amount: doc.price
             });
-            this.subtotal += doc.price;
           });
         });
       }
+
+      // Convert map to array for template
+      this.knowledgePackages = Array.from(knowledgePackagesMap.entries()).map(([title, pkg]) => ({
+        title,
+        documents: pkg.documents,
+        totalPrice: pkg.totalPrice
+      }));
     }
   }
 

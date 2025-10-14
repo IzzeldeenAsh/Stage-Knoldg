@@ -4,11 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { InsighterWalletsRoutingModule } from './insighter-wallets-routing.module';
 import { InsighterWalletsListComponent } from './insighter-wallets-list/insighter-wallets-list.component';
 import { InsighterTransactionsComponent } from './insighter-transactions/insighter-transactions.component';
+import { InsighterWalletFormComponent } from './insighter-wallet-form/insighter-wallet-form.component';
 
 @NgModule({
   declarations: [
     InsighterWalletsListComponent,
-    InsighterTransactionsComponent
+    InsighterTransactionsComponent,
+    InsighterWalletFormComponent
   ],
   imports: [
     CommonModule,

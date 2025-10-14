@@ -192,13 +192,20 @@
       <!-- Financial Category -->
       <div class="nav-category">
         <div class="nav-category-header" (click)="toggleCategory('financial')"
-             [class.active]="isCategoryActive(['/orders', '/transactions', '/fund'])">
+             [class.active]="isCategoryActive(['/orders', '/transactions', '/fund', '/finance'])">
           <i class="ki-outline ki-finance-calculator nav-icon text-success"></i>
           <span class="nav-title">Financial</span>
           <i class="ki-outline ki-arrow-down category-toggle"
              [class.rotated]="!collapsedCategories['financial']"></i>
         </div>
         <div class="nav-category-items" [class.collapsed]="collapsedCategories['financial']">
+          <div class="nav-item">
+            <a class="nav-link" routerLinkActive="active"
+               routerLink="/admin-dashboard/admin/finance/sales">
+              <i class="ki-outline ki-chart-line-up nav-icon text-info"></i>
+              <span class="nav-title">Sales Dashboard</span>
+            </a>
+          </div>
           <div class="nav-item">
             <a class="nav-link" routerLinkActive="active"
                routerLink="/admin-dashboard/admin/orders">

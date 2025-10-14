@@ -6,30 +6,17 @@
 }
 
 .dashboard-card {
-    flex: 0 0 calc(30% - 1rem); /* 5 equal columns with gap consideration */
+    flex: 1 1 0; /* Equal width for all cards */
     min-width: 0; /* Prevents flex items from overflowing */
-    
-    /* Responsive adjustments */
-    @media (max-width: 1400px) and (min-width: 1201px) { /* Between 1400px and 1200px */
-        flex: 0 0 calc(20% - 1rem); /* Keep 5 columns, but make them smaller to fit */
-    }
-    
-    @media (max-width: 1300px) and (min-width: 1201px) { /* Tighter range for better fit */
-        flex: 0 0 calc(19% - 0.8rem); /* Slightly smaller cards with reduced gap */
-    }
-    
-    @media (max-width: 1200px) { /* XL breakpoint */
-        flex: 0 0 calc(33.333% - 1rem); /* 3 columns */
-        
-        &:nth-child(4), &:nth-child(5) {
-            flex: 0 0 calc(50% - 1rem); /* Last two cards take 50% width each */
-        }
-    }
-    
+
     @media (max-width: 992px) { /* LG breakpoint */
         flex: 0 0 calc(50% - 0.625rem); /* 2 columns */
+
+        &:nth-child(3) {
+            flex: 0 0 100%; /* Third card full width on medium screens */
+        }
     }
-    
+
     @media (max-width: 576px) { /* SM breakpoint */
         flex: 0 0 100%; /* Full width on small screens */
     }
@@ -56,23 +43,7 @@
     color: #a128ed;
 }
 
-// Wallet card takes 2 slots width
+// Wallet card inherits same width as other cards
 .wallet-card {
-    flex: 0 0 calc(40% - 0.75rem) !important; /* 2x width (20% x 2) */
-    
-    @media (max-width: 1400px) and (min-width: 1201px) {
-        flex: 0 0 calc(40% - 0.75rem) !important;
-    }
-    
-    @media (max-width: 1300px) and (min-width: 1201px) {
-        flex: 0 0 calc(38% - 0.6rem) !important;
-    }
-    
-    @media (max-width: 1200px) {
-        flex: 0 0 calc(66.666% - 1rem) !important; /* 2/3 width on medium screens */
-    }
-    
-    @media (max-width: 992px) {
-        flex: 0 0 100% !important; /* Full width on smaller screens */
-    }
+    // No special sizing needed - inherits from .dashboard-card
 }
