@@ -95,7 +95,7 @@ export class ReviewInsighterKnowledgeComponent extends BaseComponent implements 
             console.log('Pending request:', this.pendingRequest);
             console.log('Show review box:', this.showReviewBox);
             if(this.currentRequest.comments == "Accept Knowledge Request"){
-              this.statusRequestString = { en: 'Accept to Publish', ar: "طلب موافقة على النشر" };
+              this.statusRequestString = { en: 'Approve to Publish', ar: "طلب موافقة على النشر" };
             }
           }
         },
