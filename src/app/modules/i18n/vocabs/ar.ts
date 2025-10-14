@@ -931,7 +931,7 @@ INSIGHTER_REQUESTS: {
         "NAV": {
           "OVERVIEW": "لوحة المعلومات",
           "MY_REQUESTS": "طلبات",
-          "MY_KNOWLEDGE": "مكتبة المعرفة" ,
+          "MY_KNOWLEDGE": "مكتبتي المعرفية" ,
           "ACCOUNT_SETTINGS": "الحساب",
           "MY_COMPANY": "فريقي",
           "READ_LATER":"قائمة المعاينة",

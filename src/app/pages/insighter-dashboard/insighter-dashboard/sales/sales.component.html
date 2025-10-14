@@ -4,7 +4,7 @@
     <div class="col-xl-4 col-md-12 mb-4">
       <div class="card border-0 shadow-sm h-100">
         <div class="card-body text-start">
-          <div class="text-muted small mb-3">{{ getText('TOTAL_ORDERS') }}</div>
+          <div class="text-muted small mb-3">{{ getText('TOTAL_ORDERS_TITLE') }}</div>
           <div class="h1 fw-bold text-dark mb-0">{{ totalStatistics.order_statistics.orders_total | number }}</div>
         </div>
       </div>
@@ -13,7 +13,7 @@
     <div class="col-xl-4 col-md-12 mb-4">
       <div class="card border-0 shadow-sm h-100">
         <div class="card-body text-start">
-          <div class="text-muted small mb-3">{{ getText('ORDERS_REVENUE') }}</div>
+          <div class="text-muted small mb-3">{{ getText('ORDERS_REVENUE_TITLE') }}</div>
           <div class="h1 fw-bold text-dark mb-0">${{ totalStatistics.order_statistics.orders_amount | number:'1.2-2' }}</div>
         </div>
       </div>
@@ -180,13 +180,13 @@
           <div class="row g-3 mb-4">
             <div class="col-6">
               <div class="simple-stat-card text-start">
-                <div class="text-muted small mb-2">{{ getText('TOTAL_ORDERS') }}</div>
+                <div class="text-muted small mb-2">{{ getText('TOTAL_ORDERS_MEETINGS') }}</div>
                 <div class="h4 fw-bold text-dark mb-0">{{ totalStatistics.meeting_booking_order_statistics.orders_total | number }}</div>
               </div>
             </div>
             <div class="col-6">
               <div class="simple-stat-card text-start">
-                <div class="text-muted small mb-2">{{ getText('ORDERS_REVENUE') }}</div>
+                <div class="text-muted small mb-2">{{ getText('ORDERS_REVENUE_MEETINGS') }}</div>
                 <div class="h4 fw-bold text-dark mb-0">${{ totalStatistics.meeting_booking_order_statistics.orders_amount | number:'1.2-2' }}</div>
               </div>
             </div>
