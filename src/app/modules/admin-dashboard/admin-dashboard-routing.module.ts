@@ -72,6 +72,13 @@ const routes: Routes = [ {
           (m) => m.FundModule
         ),
     },
+    {
+      path: 'finance',
+      loadChildren: () =>
+        import('./finance/finance.module').then(
+          (m) => m.FinanceModule
+        ),
+    },
     { path: '**', redirectTo: 'auth' },
   ],
   

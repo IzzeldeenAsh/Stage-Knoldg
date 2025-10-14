@@ -7,6 +7,12 @@
   --bg-white: #ffffff;
 }
 
+/* Tighten gutters so grid cards sit closer together */
+.grid-view .grid-insighter-row {
+  --bs-gutter-x: 0.25rem;
+  --bs-gutter-y: 0.75rem;
+}
+
 
 /* البطاقة الأساسية */
 .grid-view .horizontal-card {
@@ -14,13 +20,13 @@
   border-radius: 6px;
   background: var(--bg-white);
   background-image: url('https://res.cloudinary.com/dsiku9ipv/image/upload/v1746774746/Artboard_3_r89a4q.png');
-  background-size: cover;
-  background-position: center;
+  background-size: 50%;
+  background-position: right;
   background-repeat: no-repeat;
   transition: all 0.3s ease;
-  height: 180px;
+  height: 205px;
   position: relative;
-
+  margin-bottom: 0;
 }
 .grid-view .horizontal-card:hover {
   transform: translateY(-1px);
@@ -106,7 +112,6 @@
   border: 1px solid var(--border-light);
   border-radius: 10px;
   background: #fff;
-  box-shadow: 0 12px 24px rgba(15, 42, 77, 0.12);
 }
 .grid-view .action-dropdown .action-menu .action-menu-grid {
   display: flex;
@@ -239,7 +244,6 @@
 .grid-view .meta-footer {
   margin-top: auto;
   padding-top: 3px;
-  border-top: 1px solid #ededed;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -300,7 +304,7 @@
 /* Responsiveness */
 @media (max-width: 1399px) {
   .grid-view .horizontal-card {
-    height: 190px;
+    height: 205px;
   }
   .grid-view .identity-block .avatar-wrapper { width: 65px; height: 65px; }
   .grid-view .identity-block .avatar-image,
@@ -308,7 +312,7 @@
 }
 @media (max-width: 1199px) {
   .grid-view .horizontal-card {
-    height: 160px;
+    height: 205px;
   }
   .grid-view .identity-block .avatar-wrapper { width: 60px; height: 60px; }
   .grid-view .identity-block .avatar-image,
@@ -318,7 +322,7 @@
 @media (max-width: 991px) {
   .grid-view .horizontal-card {
     height: auto;
-    min-height: 150px;
+    min-height: 160px;
   }
   .grid-view .content-flex {
     flex-direction: column;
@@ -348,7 +352,6 @@
   padding:0;
   transition:background .2s ease, border-color .2s ease, color .2s ease, transform .12s ease;
   position:relative;
-  box-shadow:0 1px 2px rgba(0,0,0,.06);
 }
 
 /* رسم ثلاث نقاط */
@@ -392,7 +395,6 @@
   border:1px solid var(--border-light);
   border-radius:10px;
   background:#fff;
-  box-shadow:0 12px 24px rgba(15,42,77,.12);
 }
 .action-dropdown .action-menu .action-menu-grid{
   display:flex;

@@ -8,211 +8,197 @@
   flex-direction: column;
 }
 
-.invoice-container {
-  background: white;
+// Page container sized to A4 printable area (210mm - 2*10mm = 190mm width)
+.page {
   width: 190mm;
-  height: 277mm;
-  max-height: 277mm;
+  height: 277mm; // 297mm - 2*10mm margins = 277mm
+  margin: 0 auto;
   position: relative;
-  display: flex;
-  flex-direction: column;
+  background: #fff;
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  margin: 0 auto;
 }
 
-.invoice-header {
-  background: linear-gradient(90deg, #042043 0%, #57B6C7 100%);
-  padding: 25px;
+// Main layout table (keeps header, body, footer in place reliably)
+.layout {
+  width: 100%;
+  height: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
   position: relative;
-  overflow: hidden;
+  z-index: 1; // above watermark
 }
 
-.invoice-header h1 {
-  color: white;
-  font-size: 36px;
+// Header
+.header-cell {
+  background-color: #2C74B3; // fallback color (gradients sometimes fail in dompdf)
+  // Attempt gradient (dompdf may ignore it) but fallback will display
+  background-image: linear-gradient(90deg, #2C74B3 0%, #57B6C7 100%);
+  color: #fff;
   text-align: center;
+  padding: 14px 10px;
+}
+
+.header-title {
+  font-size: 32px;
   font-weight: 600;
-  position: relative;
-  z-index: 1;
   margin: 0;
 }
 
-.content {
-  padding: 40px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+// Content area
+.content-cell {
+  padding: 25px;
+  vertical-align: top;
 }
 
-.logo-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 40px;
+// Logo + invoice info row
+.logo-table {
+  margin-top: 16px;
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.logo-container {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.logo-left {
+  width: 60%;
+  vertical-align: top;
 }
 
-.logo {
-  width: 160px;
-}
-
-.company-name {
-  font-size: 24px;
-  font-weight: 600;
-  color: #042043;
-  display: flex;
-  flex-direction: column;
-  line-height: 1.2;
-}
-
-.company-name .business {
-  font-size: 16px;
-  font-weight: 400;
-  color: #57B6C7;
-}
-
-.invoice-info {
+.logo-right {
+  width: 40%;
   text-align: right;
-  color: #666;
+  vertical-align: top;
   font-size: 13px;
-  line-height: 1.6;
-}
-
-.invoice-info strong {
-  color: #333;
-}
-
-.billing-section {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 40px;
-  gap: 60px;
-}
-
-.from-section, .bill-to-section {
-  flex: 1;
-}
-
-.section-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #042043;
-  margin-bottom: 15px;
-}
-
-.from-section p, .bill-to-section p {
-  color: #333;
-  line-height: 1.6;
-  font-size: 14px;
-}
-
-.bill-to-section .label {
-  display: inline-block;
-  font-weight: 600;
-  color: #042043;
-  min-width: 80px;
-}
-
-.services-table {
-  margin-bottom: 40px;
-}
-
-.table-header {
-  display: flex;
-  justify-content: space-between;
-  padding: 15px 0;
-  border-bottom: 2px solid #e0e0e0;
-  margin-bottom: 20px;
-}
-
-.table-header h3 {
-  font-size: 18px;
-  font-weight: 600;
-  color: #042043;
-}
-
-.service-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 15px 0;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.service-name {
-  color: #333;
-  font-size: 15px;
-  flex: 1;
-  margin-right: 20px;
-}
-
-.service-amount {
-  color: #333;
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.totals-section {
-  margin-top: 40px;
-  margin-bottom: 40px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 15px;
-}
-
-.subtotal, .total {
-  display: flex;
-  align-items: center;
-  gap: 30px;
-  font-size: 18px;
-}
-
-.subtotal {
   color: #666;
 }
 
-.total {
-  font-weight: 600;
-  color: #042043;
+.logo-img {
+  width: 150px;
+  display: block;
+  margin-bottom: 6px;
 }
 
-.total .amount {
-  background: linear-gradient(90deg, #042043 0%, #57B6C7 100%);
-  color: white;
-  padding: 10px 20px;
-  border-radius: 4px;
-  min-width: 120px;
-  text-align: center;
+// Billing two-column table
+.billing-table {
+  width: 100%;
+  margin-top: 15px;
+  border-collapse: collapse;
 }
 
-.invoice-footer {
-  padding: 30px;
-  text-align: center;
-  color: #999;
+.billing-table td {
+  vertical-align: top;
+  padding: 6px 0;
+  font-size: 13px;
+  color: #333;
+}
+
+// Small helpers
+.section-title {
+  color: #2C74B3;
+  font-weight: 700;
+  margin-bottom: 6px;
+  display: inline-block;
   font-size: 14px;
-  border-top: 1px solid #f0f0f0;
+}
+
+// Services table (simple, works in dompdf)
+.services {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 50px;
+}
+
+.services th, .services td {
+  padding: 8px 6px;
+  font-size: 13px;
+}
+
+.services th {
+  text-align: left;
+  border-bottom: 2px solid #2C74B3;
+}
+
+.services td.amount {
+  text-align: right;
+}
+
+.sub-item {
+  padding-left: 40px;
+  font-size: 12px;
+  color: #666;
+  padding-top: 2px;
+  padding-bottom: 6px;
+  background-color: #f8f9fa;
+}
+
+.knowledge-item {
+  font-weight: 600;
+  color: #2C74B3;
+}
+
+.meeting-item {
+  font-weight: 600;
+  color: #2C74B3;
+}
+
+.totals {
+  width: auto; // shrink to content
+  margin-left: auto; // push to right
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+
+.totals td {
+  padding: 4px 8px;
+  font-size: 14px;
+  text-align: right;
+}
+
+.totals .label {
+  color: #666;
+  white-space: nowrap;
+}
+
+.totals .value {
+  font-weight: 600;
+  color: #2C74B3;
+}
+
+.totals .total-badge {
+  background: #2C74B3;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 4px;
+  display: inline-block;
+  min-width: 80px;
+  text-align: center;
+}
+
+// Footer (kept in its own bottom row so it always sits at page bottom)
+.footer {
+  position: absolute;
+  bottom: 14px;
+  text-align: center;
+  font-size: 12px;
+  color: #999;
+  padding-top: 8px;
+  border-top: 1px solid #eee;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .bg {
   background-image: url(https://res.cloudinary.com/dsiku9ipv/image/upload/v1758005640/invoice_template_knoldg_0_1_naflvj.png);
   position: absolute;
-  top: 130px;
+  top: 137px;
   left: 50%;
   transform: translate(-50%, -50%);
   background-repeat: no-repeat;
   z-index: 10;
   background-position: center;
   height: 100%;
-  width: 680px;
-  opacity: 0.1;
+  width: 750px;
+  opacity: 0.04;
 }
 
 // Action buttons styling
@@ -237,7 +223,7 @@
     padding: 1rem;
   }
 
-  .invoice-container {
+  .page {
     width: 100%;
     height: auto;
     max-height: none;
@@ -247,7 +233,7 @@
 }
 
 @media (max-width: 768px) {
-  .invoice-container {
+  .page {
     transform: scale(0.6);
   }
 
@@ -280,7 +266,7 @@
     position: static !important;
   }
 
-  .invoice-container {
+  .page {
     width: 100% !important;
     height: 100vh !important;
     max-height: none !important;
@@ -291,8 +277,6 @@
     page-break-after: avoid !important;
     page-break-inside: avoid !important;
     position: relative !important;
-    display: flex !important;
-    flex-direction: column !important;
     overflow: visible !important;
   }
 

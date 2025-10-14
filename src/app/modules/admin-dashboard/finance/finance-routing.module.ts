@@ -2,13 +2,18 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MainFinanceComponent } from './main-finance/main-finance.component';
 import { FeesControlComponent } from './main-finance/fees-control/fees-control.component';
+import { AdminSalesComponent } from './admin-sales/admin-sales.component';
 
 
 const routes: Routes = [
   {
     path:'',
-    redirectTo:'main-cases',
+    redirectTo:'sales',
     pathMatch:'full'
+  },
+  {
+    path:'sales',
+    component:AdminSalesComponent
   },
   {
     path:'main-settings',

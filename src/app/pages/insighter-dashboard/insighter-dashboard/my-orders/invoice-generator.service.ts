@@ -23,354 +23,384 @@ export class InvoiceGeneratorService {
 
     if (isMeetingOrder) {
       // Handle meeting orders
-      const meetingItems: Array<{name: string, price: number}> = [];
-
       if (order.orderable?.meeting_booking) {
         const meeting = order.orderable.meeting_booking;
-        meetingItems.push({
-          name: `Meeting: ${meeting.title} - ${meeting.date} (${meeting.start_time} - ${meeting.end_time})`,
-          price: order.amount
-        });
+        serviceRows = `
+          <tr>
+            <td class="meeting-item" style="padding-top:8px;">Meeting: ${meeting.title}</td>
+            <td class="amount" style="padding-top:8px;"></td>
+          </tr>
+          <tr>
+            <td class="sub-item">
+              &nbsp;&nbsp;&nbsp;&nbsp;• 📅 Date: ${meeting.date}
+            </td>
+            <td class="amount">-</td>
+          </tr>
+          <tr>
+            <td class="sub-item">
+              &nbsp;&nbsp;&nbsp;&nbsp;• ⏰ Time: ${meeting.start_time} - ${meeting.end_time}
+            </td>
+            <td class="amount">$${order.amount.toFixed(2)}</td>
+          </tr>
+        `;
       }
-
-      serviceRows = meetingItems.map(item => `
-        <div class="service-row">
-          <span class="service-name">${item.name}</span>
-          <span class="service-amount">$${item.price.toFixed(2)}</span>
-        </div>
-      `).join('');
     } else {
-      // Handle knowledge orders
-      const allDocuments: Array<{name: string, price: number}> = [];
+      // Handle knowledge orders - Group by knowledge package
+      const knowledgePackages = new Map<string, {documents: KnowledgeDocument[], totalPrice: number}>();
       subtotal = 0;
 
+      // Get the main knowledge title from the order
+      const knowledgeTitle = order.orderable?.knowledge?.[0]?.title || 'Knowledge Package';
+
       if (order.orderable?.knowledge_documents) {
+        // Group all documents under the main knowledge title
+        if (!knowledgePackages.has(knowledgeTitle)) {
+          knowledgePackages.set(knowledgeTitle, {documents: [], totalPrice: 0});
+        }
+
+        const pkg = knowledgePackages.get(knowledgeTitle)!;
+
         order.orderable.knowledge_documents.forEach(docGroup => {
           docGroup.forEach((doc: KnowledgeDocument) => {
-            allDocuments.push({
-              name: doc.file_name,
-              price: doc.price
-            });
+            pkg.documents.push(doc);
+            pkg.totalPrice += doc.price;
             subtotal += doc.price;
           });
         });
       }
 
-      // Generate service rows for documents
-      serviceRows = allDocuments.map(doc => `
-        <div class="service-row">
-          <span class="service-name">${doc.name}</span>
-          <span class="service-amount">$${doc.price.toFixed(2)}</span>
-        </div>
-      `).join('');
+      // Generate table rows for knowledge packages and their documents
+      let rows = '';
+      knowledgePackages.forEach((pkg, title) => {
+        // Main knowledge package row
+        rows += `
+          <tr>
+            <td class="knowledge-item" style="padding-top:8px;">${title}</td>
+            <td class="amount" style="padding-top:8px;"></td>
+          </tr>
+        `;
+
+        // Sub-items for each document
+        pkg.documents.forEach(doc => {
+          rows += `
+            <tr>
+              <td class="sub-item">
+                &nbsp;&nbsp;&nbsp;&nbsp;• 📄 ${doc.file_name}
+              </td>
+              <td class="amount">$${doc.price.toFixed(2)}</td>
+            </tr>
+          `;
+        });
+      });
+
+      serviceRows = rows;
     }
 
     return `<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice - KNOLDG Business</title>
-        <style>
-            @page{
-                size: A4;
-                margin: 10mm;
-                padding: 0;
-            }
+    <meta charset="utf-8"/>
+    <title>Invoice - Knoldg Business</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 10mm;
+        }
 
-            @media print {
-                html, body {
-                    height: 100%;
-                    overflow: hidden;
-                }
+        /* Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-                .invoice-container {
-                    page-break-after: avoid;
-                    page-break-inside: avoid;
-                }
-            }
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            color: #333;
+            background: #fff;
+        }
 
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-            }
+        /* Page container sized to A4 printable area (210mm - 2*10mm = 190mm width) */
+        .page {
+            width: 190mm;
+            height: 277mm; /* 297mm - 2*10mm margins = 277mm */
+            margin: 0 auto;
+            position: relative;
+            background: #fff;
+            overflow: hidden;
+        }
 
-            body {
-                font-family:Arial, Helvetica, sans-serif;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                margin: 0;
-                min-height: 100vh;
-                overflow: hidden;
-            }
+        .bg {
+            background-image: url(https://res.cloudinary.com/dsiku9ipv/image/upload/v1758005640/invoice_template_knoldg_0_1_naflvj.png);
+            position: absolute;
+            top: 137px;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-repeat: no-repeat;
+            z-index: 10;
+            background-position: center;
+            height: 100%;
+            width: 750px;
+            opacity: 0.04;
+        }
 
-            .invoice-container {
-                background: white;
-                width: 190mm;
-                height: 277mm;
-                max-height: 277mm;
-                position: relative;
-                display: flex;
-                flex-direction: column;
-                overflow: hidden;
-            }
+        /* Main layout table (keeps header, body, footer in place reliably) */
+        .layout {
+            width: 100%;
+            height: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            z-index: 1; /* above watermark */
+        }
 
-            .header {
-                background: linear-gradient(90deg, #042043 0%, #57B6C7 100%);
-                padding: 25px;
-                position: relative;
-                overflow: hidden;
-            }
+        /* Header */
+        .header-cell {
+            background-color: #2C74B3; /* fallback color (gradients sometimes fail in dompdf) */
+            /* Attempt gradient (dompdf may ignore it) but fallback will display */
+            background-image: linear-gradient(90deg, #2C74B3 0%, #57B6C7 100%);
 
+            color: #fff;
+            text-align: center;
+            padding: 14px 10px;
+        }
 
-            .header h1 {
-                color: white;
-                font-size: 36px;
-                text-align: center;
-                font-weight: 600;
-                position: relative;
-                z-index: 1;
-                margin: 0;
-            }
+        .header-title {
+            font-size: 32px;
+            font-weight: 600;
+        }
 
-            .content {
-                padding: 40px 40px;
-                flex: 1;
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-            }
+        /* Content area */
+        .content-cell {
+            padding: 25px;
+            vertical-align: top;
+        }
 
-            .logo-section {
-                display: flex;
-                justify-content: space-between;
-                align-items: flex-start;
-                margin-bottom: 40px;
-            }
+        /* Logo + invoice info row */
+        .logo-table {
+            margin-top: 16px;
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-            .logo-container {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-            }
+        .logo-left {
+            width: 60%;
+            vertical-align: top;
+        }
 
-            .logo {
-                width: 160px;
-            }
+        .logo-right {
+            width: 40%;
+            text-align: right;
+            vertical-align: top;
+            font-size: 13px;
+            color: #666;
+        }
 
-            .company-name {
-                font-size: 24px;
-                font-weight: 600;
-                color: #042043;
-                display: flex;
-                flex-direction: column;
-                line-height: 1.2;
-            }
+        .logo-img {
+            width: 150px;
+            display: block;
+            margin-bottom: 6px;
+        }
 
-            .company-name .business {
-                font-size: 16px;
-                font-weight: 400;
-                color: #57B6C7;
-            }
+        /* Billing two-column table */
+        .billing-table {
+            width: 100%;
+            margin-top: 15px;
+            border-collapse: collapse;
+        }
 
-            .invoice-info {
-                text-align: right;
-                color: #666;
-                font-size: 13px;
-                line-height: 1.6;
-            }
+        .billing-table td {
+            vertical-align: top;
+            padding: 6px 0;
+            font-size: 13px;
+            color: #333;
+        }
 
-            .invoice-info strong {
-                color: #333;
-            }
+        /* Services table (simple, works in dompdf) */
+        .services {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 50px;
+        }
 
-            .billing-section {
-                display: flex;
-                justify-content: space-between;
-                margin-bottom: 40px;
-                gap: 60px;
-            }
+        .services th, .services td {
+            padding: 8px 6px;
+            font-size: 13px;
+        }
 
-            .from-section, .bill-to-section {
-                flex: 1;
-            }
+        .services th {
+            text-align: left;
+            border-bottom: 2px solid #2C74B3;
+        }
 
-            .section-title {
-                font-size: 18px;
-                font-weight: 600;
-                color: #042043;
-                margin-bottom: 15px;
-            }
+        .services td.amount {
+            text-align: right;
+        }
 
-            .from-section p, .bill-to-section p {
-                color: #333;
-                line-height: 1.8;
-                font-size: 15px;
-            }
+        .sub-item {
+            padding-left: 40px;
+            font-size: 12px;
+            color: #666;
+            padding-top: 2px;
+            padding-bottom: 6px;
+            background-color: #f8f9fa;
+        }
 
-            .bill-to-section .label {
-                display: inline-block;
-                font-weight: 600;
-                color: #042043;
-                min-width: 80px;
-            }
+        .knowledge-item {
+            font-weight: 600;
+            color: #2C74B3;
+        }
 
-            .services-table {
-                margin-bottom: 40px;
-            }
+        .meeting-item {
+            font-weight: 600;
+            color: #2C74B3;
+        }
 
-            .table-header {
-                display: flex;
-                justify-content: space-between;
-                padding: 15px 0;
-                border-bottom: 2px solid #e0e0e0;
-                margin-bottom: 20px;
-            }
+        .totals {
+            width: auto; /* shrink to content */
+            margin-left: auto; /* push to right */
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
 
-            .table-header h3 {
-                font-size: 18px;
-                font-weight: 600;
-                color: #042043;
-            }
+        .totals td {
+            padding: 4px 8px;
+            font-size: 14px;
+            text-align: right;
+        }
 
-            .service-row {
-                display: flex;
-                justify-content: space-between;
-                padding: 15px 0;
-                border-bottom: 1px solid #f0f0f0;
-            }
+        .totals .label {
+            color: #666;
+            white-space: nowrap;
+        }
 
-            .service-name {
-                color: #333;
-                font-size: 15px;
-            }
+        .totals .value {
+            font-weight: 600;
+            color: #2C74B3;
+        }
 
-            .service-amount {
-                color: #333;
-                font-size: 15px;
-            }
+        .totals .total-badge {
+            background: #2C74B3;
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 4px;
+            display: inline-block;
+            min-width: 80px;
+            text-align: center;
+        }
 
-            .totals-section {
-                margin-top: 40px;
-                margin-bottom: 40px;
-                display: flex;
-                flex-direction: column;
-                align-items: flex-end;
-                gap: 15px;
-            }
+        /* Small helpers */
+        .section-title {
+            color: #2C74B3;
+            font-weight: 700;
+            margin-bottom: 6px;
+            display: inline-block;
+            font-size: 14px;
+        }
 
-            .subtotal, .total {
-                display: flex;
-                align-items: center;
-                gap: 30px;
-                font-size: 18px;
-            }
-
-            .subtotal {
-                color: #666;
-            }
-
-            .total {
-                font-weight: 600;
-                color: #042043;
-            }
-
-            .total .amount {
-                background: linear-gradient(90deg, #042043 0%, #57B6C7 100%);
-                color: white;
-                padding: 10px 20px;
-                border-radius: 4px;
-                min-width: 120px;
-                text-align: center;
-            }
-
-            .footer {
-                padding: 30px;
-                text-align: center;
-                color: #999;
-                font-size: 14px;
-                border-top: 1px solid #f0f0f0;
-            }
-            .bg{
-                background-image: url(https://res.cloudinary.com/dsiku9ipv/image/upload/v1758005640/invoice_template_knoldg_0_1_naflvj.png);
-    position: absolute;
-    top: 130px;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-repeat: no-repeat;
-    z-index: 10;
-    background-position: center;
-    height: 100%;
-    width: 680px;
-    opacity: 0.1;
-            }
-        </style>
+        /* Footer (kept in its own bottom row so it always sits at page bottom) */
+        .footer {
+            position: absolute;
+            bottom: 14px;
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            padding-top: 8px;
+            border-top: 1px solid #eee;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
 </head>
 <body>
+<div class="page">
+    <div class="bg"></div>
 
-    <div class="invoice-container">
-        <div class="bg"></div>
-        <div class="header">
-            <h1>INVOICE</h1>
-        </div>
+    <!-- main layout (table ensures consistent placement in Dompdf) -->
+    <table class="layout" cellpadding="0" cellspacing="0">
+        <!-- Header row -->
+        <tr>
+            <td class="header-cell" style="height:48px;">
+                <div class="header-title">INVOICE</div>
+            </td>
+        </tr>
 
-        <div class="content">
-            <div class="logo-section">
-                <div class="logo-container">
-                    <img src="https://res.cloudinary.com/dsiku9ipv/image/upload/v1758006879/invoice_template_knoldg_0_2_aeurma.png" alt="KNOLDG Logo" class="logo">
-                </div>
-                <div class="invoice-info">
-                    ${order.invoice_no || order.order_no}<br>
-                    ${invoiceDate}
-                </div>
-            </div>
+        <!-- Content row -->
+        <tr>
+            <td class="content-cell">
+                <!-- Logo + invoice info -->
+                <table class="logo-table">
+                    <tr>
+                        <td class="logo-left">
+                            <img src="https://res.cloudinary.com/dsiku9ipv/image/upload/v1758006879/invoice_template_knoldg_0_2_aeurma.png"
+                                 alt="KNOLDG Logo" class="logo-img"/>
+                        </td>
+                        <td class="logo-right">
+                            <div>${order.invoice_no || order.order_no}</div>
+                            <div style="margin-top:6px;">${invoiceDate}</div>
+                        </td>
+                    </tr>
+                </table>
 
-            <div class="billing-section">
-                <div class="from-section">
-                    <h3 class="section-title">From:</h3>
-                    <p>
-                       Foresighta Systems Consulting FZ-LLC<br>
-Compass Building Al Shohada Road AL Hamra Industrial<br>
-Zone-FZ<br>
-Ras Al Khaimah United Arab Emirates<br>
-info@knoldg.com
-                    </p>
-                </div>
+                <!-- Billing (two columns) -->
+                <table class="billing-table" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td style="width:70%; padding-right:10px;">
+                            <div class="section-title">From:</div>
+                            <div style="margin-top:6px;">
+                                Foresighta Systems Consulting FZ-LLC<br/>
+                                Compass Building Al Shohada Road<br/>
+                                AL Hamra Industrial Zone-FZ<br/>
+                                Ras Al Khaimah United Arab Emirates<br/>
+                                info@knoldg.com<br/>
+                            </div>
+                        </td>
 
-                <div class="bill-to-section">
-                    <h3 class="section-title">Bill To:</h3>
-                    <p>
-                        <span class="label">Name:</span> ${userProfile?.name || 'Client Name'}<br>
-                        <span class="label">Email:</span> ${userProfile?.email || 'client@email.com'}<br>
-                        <span class="label">Country:</span> ${userProfile?.billing_address || 'N/A'}
-                    </p>
-                </div>
-            </div>
+                        <td style="width:30%; text-align:left; padding-left:10px;">
+                            <div class="section-title">Bill To:</div>
+                            <div style="margin-top:6px; text-align:left;">
+                                <strong>Name:</strong>${userProfile?.name || 'Client Name'}<br/>
+                                <strong>Email:</strong>${userProfile?.email || 'client@email.com'}<br/>
+                                <strong>Address:</strong> ${userProfile?.billing_address || 'N/A'}
+                            </div>
+                        </td>
+                    </tr>
+                </table>
 
-            <div class="services-table">
-                <div class="table-header">
-                    <h3>Service type</h3>
-                    <h3>Amount</h3>
-                </div>
+                <!-- Services table -->
+                <table class="services" cellpadding="0" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th style="width:70%;">${isMeetingOrder ? 'Meeting Service' : 'Knowledge'}</th>
+                        <th style="width:30%; text-align:right;">Amount</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        ${serviceRows}
+                    </tbody>
+                </table>
 
-                ${serviceRows}
-            </div>
+                <!-- Totals -->
+                <table class="totals" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td class="label" style="font-weight:600; color:#2C74B3;">Total:</td>
+                        <td class="value">
+                            <span class="total-badge">$${order.amount.toFixed(2)}</span>
+                        </td>
+                    </tr>
+                </table>
 
-            <div class="totals-section">
-               
-                <div class="total">
-                    <span>Total:</span>
-                    <span class="amount">$${order.amount.toFixed(2)}</span>
-                </div>
-            </div>
-        </div>
+            </td>
+        </tr>
 
-        <div class="footer">
-            Thank you for your business © 2025 knoldg | info&#64;knoldg.com
-        </div>
+        <!-- Footer row (kept at bottom by table rows) -->
+
+    </table>
+
+    <div class="footer">
+        Thank you for your business © 2025 knoldg | info@knoldg.com
     </div>
+
+</div>
 </body>
 </html>`;
   }
