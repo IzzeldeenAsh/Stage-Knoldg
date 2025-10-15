@@ -4,8 +4,8 @@
   [subtitle]="lang === 'ar' ? 'أدخل معلومات حسابك البنكي لاستقبال المدفوعات' : 'Enter your bank account details to receive payments'">
 </app-payment-header>
 
-<div style="padding-top:50px" class="container-fluid  gradient-background">
-  <div class="row justify-content-center">
+<div style="padding:50px 0px" class="container-fluid  gradient-background">
+  <div class="row justify-content-center" style="padding-bottom: 100px;">
     <div class="col-lg-8 col-xl-7">
 
         <form [formGroup]="manualAccountForm" (ngSubmit)="onSubmit()">

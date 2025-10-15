@@ -2,7 +2,7 @@
   <!-- Chart Section -->
   <div class="card mb-5 light-wallet-gradient-bg">
     <div class="card-header border-0 pt-5">
-      <div class="d-flex  w-100">
+      <div class="d-flex justify-content-between align-items-start w-100">
         <div class="d-flex align-items-center">
           <i class="ki-outline ki-dollar text-gray-700 fs-2tx me-4"></i>
           <div class="flex-grow-1">
@@ -13,6 +13,9 @@
               <span class="fw-semibold fs-6 text-gray-500">{{ getTranslation('currentWalletBalance') }}</span>
             </div>
           </div>
+        </div>
+        <div class="text-end">
+          <span class="fw-bold fs-4 text-gray-700">{{ getPeriodLabel() }}</span>
         </div>
       </div>
     </div>

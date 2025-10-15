@@ -134,6 +134,19 @@ export class SalesComponent extends BaseComponent implements OnInit, OnDestroy, 
     return this.lang === 'ar' ? translation.ar : translation.en;
   }
 
+  // Get period label based on selected filter
+  getPeriodLabel(): string {
+    const currentYear = new Date().getFullYear();
+
+    if (this.selectedPeriod === 'weekly') {
+      return this.lang === 'ar' ? 'الأسبوع الحالي' : 'Current Week';
+    } else if (this.selectedPeriod === 'monthly') {
+      return this.lang === 'ar' ? `معاملات ${currentYear}` : `${currentYear} Transactions`;
+    }
+
+    return '';
+  }
+
   private checkUserRole(): void {
     const user = this.authService.getProfile().pipe(takeUntil(this.unsubscribe$), take(1));
     user.subscribe((user: any) => {
