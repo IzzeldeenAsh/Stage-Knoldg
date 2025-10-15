@@ -1,41 +1,70 @@
-import { Component, Injector, OnInit } from '@angular/core';
+import { Component, Injector, OnInit, OnDestroy } from '@angular/core';
 import { BaseComponent } from 'src/app/modules/base.component';
-import { OrderStatisticsService, OrderStatistics } from '../../my-orders/order-statistics.service';
-import { Observable } from 'rxjs';
-import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
+import { BreadcrumbItem, StatisticCard } from 'src/app/reusable-components/dashboard-statistics/dashboard-statistics.component';
+import { OrderStatisticsService } from '../../my-orders/order-statistics.service';
 
 @Component({
   selector: 'app-my-orders-statistics',
   templateUrl: './my-orders-statistics.component.html',
   styleUrls: ['./my-orders-statistics.component.scss']
 })
-export class MyOrdersStatisticsComponent extends BaseComponent implements OnInit {
-  statistics$: Observable<OrderStatistics | null>;
-  isLoading$: Observable<boolean>;
-  roles: string[] = [];
+export class MyOrdersStatisticsComponent extends BaseComponent implements OnInit, OnDestroy {
+  breadcrumbs: BreadcrumbItem[] = [
+    { label: 'Dashboard', translationKey: 'DASHBOARD' },
+    { label: 'My Orders', translationKey: 'INSIGHTER.DASHBOARD.NAV.MY_ORDERS' }
+  ];
+
+  statisticCards: StatisticCard[] = [];
 
   constructor(
     injector: Injector,
-    private orderStatisticsService: OrderStatisticsService,
-    private proile:ProfileService
+    private orderStatisticsService: OrderStatisticsService
   ) {
     super(injector);
-    this.statistics$ = this.orderStatisticsService.statistics$;
-    this.isLoading$ = this.orderStatisticsService.isLoading$;
-    this.getRoles();
   }
 
   ngOnInit(): void {
-    // Load statistics for both company and insighter roles
-    if (!this.orderStatisticsService.getCurrentStatistics() &&
-        (this.roles.includes('company') || this.roles.includes('company-insighter') || this.roles.includes('insighter'))) {
-      this.orderStatisticsService.loadStatistics();
-    }
+    this.loadStatistics();
   }
 
-  getRoles(){
-    this.proile.getProfile().subscribe((profile:any)=>{
-      this.roles = profile.roles || [];
-    })
+  private loadStatistics(): void {
+    const sub = this.orderStatisticsService.getOrderStatistics().subscribe({
+      next: (response) => {
+        const stats = response.data;
+        this.statisticCards = [
+          {
+            icon: 'ki-basket',
+            iconType: 'ki-solid',
+            iconColor: 'text-success',
+            value: stats.orders_purchased_amount,
+            label: 'Total Purchased',
+            translationKey: this.lang === 'ar' ? 'إجمالي المشتريات' : 'Total Purchases',
+            useCountUp: true
+          },
+          {
+            icon: 'ki-dollar',
+            iconType: 'ki-solid',
+            iconColor: 'text-info',
+            value: stats.orders_sold_amount,
+            label: 'Total Sold',
+            translationKey: this.lang === 'ar' ? 'إجمالي المبيعات' : 'Total Solds',
+            useCountUp: true
+          }
+        ];
+      },
+      error: (error) => {
+        console.error('Error loading order statistics:', error);
+        this.showError(
+          this.lang === 'ar' ? 'خطأ' : 'Error',
+          this.lang === 'ar' ? 'فشل تحميل إحصائيات الطلبات' : 'Failed to load order statistics'
+        );
+      }
+    });
+
+    this.unsubscribe.push(sub);
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
   }
 }

@@ -1,29 +1,4 @@
-
-
-<div
-class="d-flex flex-column pt-6 pb-lg-10 pt-lg-20"
-style="min-height: 100px;"
->
-<div class="d-flex align-items-center pt-1">
-  <ul class="breadcrumb breadcrumb-separatorless fw-semibold">
-    <li class="breadcrumb-item text-white fw-bold lh-1">
-      <a href="/" class="text-white text-hover-secondary">
-        <i class="ki-outline ki-home text-white fs-3"></i>
-      </a>
-    </li>
-    <li class="breadcrumb-item">
-      <i class="ki-outline {{lang === 'ar' ? 'ki-left' : 'ki-right'}} fs-4 text-white mx-n1"></i>
-    </li>
-    <li class="breadcrumb-item text-white  fw-bold lh-1">
-      {{"DASHBOARD" | translate}}
-    </li>
-    <li class="breadcrumb-item">
-      <i class="ki-outline {{lang === 'ar' ? 'ki-left' : 'ki-right'}} fs-4 text-white mx-n1"></i>
-    </li>
-    <li class="breadcrumb-item text-white fw-bold lh-1">
-      {{ 'SALES.PAGE_TITLE' | translate }}
-    </li>
-  </ul>
-</div>
-
-</div>
+<app-dashboard-statistics
+  [breadcrumbs]="breadcrumbs"
+  [showStatistics]="false">
+</app-dashboard-statistics>
