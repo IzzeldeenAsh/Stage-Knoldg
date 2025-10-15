@@ -23,6 +23,7 @@ import { SalesStatisticsComponent } from './insighter-dashboard/statistics/sales
 import { SidebarModule } from 'primeng/sidebar';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
+import { DashboardStatisticsComponent } from 'src/app/reusable-components/dashboard-statistics/dashboard-statistics.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { TooltipModule } from 'primeng/tooltip';
     CommonModule,
     AppFooterComponent,
     CountUpDirective,
+    DashboardStatisticsComponent,
     InsighterDashboardRoutingModule,
     SidebarModule,
     ButtonModule,

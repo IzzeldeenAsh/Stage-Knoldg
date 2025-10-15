@@ -59,7 +59,6 @@
               <th class="min-w-120px">Balance</th>
               <th class="min-w-100px">Payment Type</th>
               <th class="min-w-120px">Last Wired Transfer</th>
-              <th class="min-w-100px">Form</th>
               <th class="min-w-100px text-end">Actions</th>
             </tr>
           </thead>
@@ -118,17 +117,7 @@
                 <span *ngIf="!wallet.last_wired_transfer" class="text-muted fw-semibold fs-6">
                   N/A
                 </span>
-
-              <!-- Form -->
-              <td>
-                <button
-                  class="btn btn-sm btn-light-info"
-                  (click)="viewForm(wallet.id)">
-                  <i class="ki-outline ki-document fs-4 me-1"></i>
-                  View Form
-                </button>
               </td>
-
 
               <!-- Actions -->
               <td class="text-end">

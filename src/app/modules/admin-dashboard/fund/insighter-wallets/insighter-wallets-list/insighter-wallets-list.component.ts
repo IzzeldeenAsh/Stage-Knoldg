@@ -58,6 +58,10 @@ export class InsighterWalletsListComponent extends BaseComponent implements OnIn
     this.router.navigate(['/admin-dashboard/admin/fund/insighter-wallets/transactions', insighterId]);
   }
 
+  viewForm(insighterId: number): void {
+    this.router.navigate(['/admin-dashboard/admin/fund/insighter-wallets/form', insighterId]);
+  }
+
   onPageChange(page: number): void {
     this.loadWallets(page);
   }

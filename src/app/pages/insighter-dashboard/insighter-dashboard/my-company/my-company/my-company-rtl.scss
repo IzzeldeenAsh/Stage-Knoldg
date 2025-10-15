@@ -1,7 +1,7 @@
 // RTL Support for My Company Component
 :host-context([dir="rtl"]) {
   .my-company-container {
-    // Grid view status badge positioning for RTL
+    // Grid view d status badge positioning for RTL
     .position-absolute[style*="top: 16px; right: 16px"] {
       right: auto !important;
       left: 16px !important;

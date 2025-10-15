@@ -9,6 +9,7 @@ export interface OrderStatistics {
   orders_amount: number;
   company_orders_amount?: number;
   insighter_orders_amount?: number;
+  platform_orders_amount?: number;
 }
 
 export interface KnowledgeOrderStatistics extends OrderStatistics {
@@ -95,5 +96,17 @@ export class SalesService {
     const url = `${environment.apiBaseUrl}/insighter/dashboard/sales/revenue/statistics`;
     console.log('🧠 Sales Service - getInsighterTotalStatistics URL:', url);
     return this.http.get<TotalStatisticsResponse>(url, { headers: this.getHeaders() });
+  }
+
+  getAdminTotalStatistics(): Observable<TotalStatisticsResponse> {
+    const url = `${environment.apiBaseUrl}/admin/dashboard/sales/revenue/statistics`;
+    console.log('👑 Sales Service - getAdminTotalStatistics URL:', url);
+    return this.http.get<TotalStatisticsResponse>(url, { headers: this.getHeaders() });
+  }
+
+  getAdminPeriodStatistics(perTime: PeriodType): Observable<PeriodStatisticsResponse> {
+    const url = `${environment.apiBaseUrl}/admin/dashboard/sales/revenue/period/statistics?per_time=${perTime}`;
+    console.log('👑 Sales Service - getAdminPeriodStatistics URL:', url);
+    return this.http.get<PeriodStatisticsResponse>(url, { headers: this.getHeaders() });
   }
 }

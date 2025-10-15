@@ -412,6 +412,19 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
     }
   }
 
+  // Get period label based on selected filter
+  getPeriodLabel(): string {
+    const currentYear = new Date().getFullYear();
+
+    if (this.selectedPeriod === 'weekly') {
+      return this.lang === 'ar' ? 'الأسبوع الحالي' : 'Current Week';
+    } else if (this.selectedPeriod === 'monthly') {
+      return this.lang === 'ar' ? `معاملات ${currentYear}` : `${currentYear} Transactions`;
+    }
+
+    return '';
+  }
+
   // Translation helper methods
   getTranslation(key: string): string {
     const translations: { [key: string]: { en: string; ar: string } } = {

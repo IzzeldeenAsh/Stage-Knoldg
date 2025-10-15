@@ -958,7 +958,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
         "MY_ORDERS": "My Orders",
         "READ_LATER": "Bookmarks",
         "MY_MEETINGS": "My Meetings",
-        "MY_CONSULTING_SCHEDULE": "Meeting Planner",
+        "MY_CONSULTING_SCHEDULE": "Meeting Settings",
         "DASHBOARD": "Dashboard",
         "WALLET": "Wallet"
       },
@@ -1448,7 +1448,7 @@ UPLOAD: 'Upload',
       "NO_DATA_DESCRIPTION": "Your employees haven't published any knowledge items yet."
     },
     "CONSULTING_SCHEDULE": {
-      "TITLE": "Meeting Planner",
+      "TITLE": "Meeting Settings",
       "PERFECT_HOUR_ERROR":"Time slot must be 1 hour apart",
       "TIME_SPAN_ERROR": "Time slot must 1 hour apart",
       "INVALID_RANGE_ERROR": "Start time must be less than end time",
@@ -1586,7 +1586,8 @@ UPLOAD: 'Upload',
         "VIEW_ORDERS": "View All Orders",
         "BROWSE_KNOWLEDGE": "Browse Knowledge",
         "DISCOVER_NEW": "Discover new insights",
-        "TRACK_PURCHASES": "Track your purchases"
+        "TRACK_PURCHASES": "Track your purchases",
+        "TOTAL_SOLD":"Total Sold"
       }
     },
 

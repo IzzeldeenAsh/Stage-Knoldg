@@ -1,8 +1,8 @@
 <app-widgets-row [userRole]="userRole"></app-widgets-row>
-<div class="row">
-    <div class="col-12 col-md-4 d-flex">
+<div class="row g-4">
+    <div class="col-12 col-lg-4 d-flex">
       <div class="card border-0 h-100 w-100">
-        <div class="card-body chart-card text-center">
+        <div class="card-body chart-card text-center p-4">
           <div class="chart-card__header">
             <h6 class="card-title fw-bold text-gray-800 mb-0">{{ 'PUBLISHED_KNOWLEDGE_DASHBOARD' | translate }}</h6>
           </div>
@@ -36,7 +36,7 @@
         </div>
       </div>
     </div>
-  <div class="col-12 col-md-4 d-flex">
+  <div class="col-12 col-lg-4 d-flex">
     <div
       class="card card-xl-stretch border-0 h-100 w-100"
       [ngClass]="{ 'rtl-bg-flip': lang === 'ar' }"
@@ -49,7 +49,7 @@
                 }"
     >
       <!--begin::Body-->
-      <div class="card-body d-flex flex-column flex-wrap">
+      <div class="card-body d-flex flex-column flex-wrap p-8">
         <div class="d-flex flex-column align-items-start">
           <h1 class="fs-2x fw-bolder text-gray-800 pb-3 m-0 p-0">
             {{ "START_UPLOADING" | translate }}
@@ -73,7 +73,7 @@
       <!--end::Body-->
     </div>
   </div>
-    <div class="col-12 col-md-4 d-flex">
+    <div class="col-12 col-lg-4 d-flex">
       <div
         class="card card-xl-stretch border-0 h-100 w-100"
       [ngClass]="{ 'rtl-bg-flip': lang === 'ar' }"
@@ -83,12 +83,11 @@
         'background-size': 'cover',
         'background-repeat': 'no-repeat',
         'background-position': 'center',
-        'border-radius': '10px',
-        'margin-bottom': '10px'
+        'border-radius': '10px'
       }"
       >
         <!--begin::Body-->
-        <div class="card-body d-flex flex-column flex-wrap">
+        <div class="card-body d-flex flex-column flex-wrap p-8">
           <div class="d-flex flex-column align-items-start">
             <h1 class="fs-2x fw-bolder text-gray-800 pb-3 m-0 p-0">
               {{ "BUILD_YOUR_TEAM" | translate }}

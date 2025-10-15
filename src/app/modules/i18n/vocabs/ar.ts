@@ -1566,8 +1566,11 @@ INSIGHTER_REQUESTS: {
     "VIEW_ORDERS": "عرض جميع الطلبات",
     "BROWSE_KNOWLEDGE": "تصفح المعرفة",
     "DISCOVER_NEW": "اكتشف رؤى جديدة",
-  "TRACK_PURCHASES": "تتبع مشترياتك"
-  }
+  "TRACK_PURCHASES": "تتبع مشترياتك",
+  "TOTAL_SOLD":"المبيعات الكلية", 
+  "TOTAL_PURCHASED":"المشتريات الكلية"
+
+}
 },
 "COMPANY_SALES_STATISTICS": {
   "TITLE": "نظرة عامة على مبيعات الإنسايترز",

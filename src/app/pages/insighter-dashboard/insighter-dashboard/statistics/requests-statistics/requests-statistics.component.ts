@@ -4,6 +4,7 @@ import { BaseComponent } from 'src/app/modules/base.component';
 import { forkJoin } from 'rxjs';
 import { IKnoldgProfile } from 'src/app/_fake/models/profile.interface';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
+import { BreadcrumbItem, StatisticCard } from 'src/app/reusable-components/dashboard-statistics/dashboard-statistics.component';
 
 @Component({
   selector: 'app-requests-statistics',
@@ -11,24 +12,66 @@ import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.s
   styleUrl: './requests-statistics.component.scss'
 })
 export class RequestsStatisticsComponent extends BaseComponent {
-constructor(injector: Injector, private requests:UserRequestsService, private profileService:ProfileService){
-  super(injector);
-}
-userProfile:IKnoldgProfile | null = null;
-ngOnInit(){
-  this.getProfile();
-  // this.getRequestsStatistics();
-}
+  breadcrumbs: BreadcrumbItem[] = [
+    { label: 'Dashboard', translationKey: 'DASHBOARD' },
+    { label: 'My Requests', translationKey: 'INSIGHTER.DASHBOARD.NAV.MY_REQUESTS' }
+  ];
 
-getProfile(){
-  this.profileService.getProfile().subscribe((profile:IKnoldgProfile)=>{
-    this.userProfile = profile;
-  });
-}
+  statisticCards: StatisticCard[] = [];
 
-public pendingRequests: number = 0;
-public approvedRequests: number = 0;
-public declinedRequests: number = 0;
+  constructor(injector: Injector, private requests:UserRequestsService, private profileService:ProfileService){
+    super(injector);
+  }
+
+  userProfile:IKnoldgProfile | null = null;
+
+  ngOnInit(){
+    this.getProfile();
+    // this.getRequestsStatistics();
+    this.initializeStatisticCards();
+  }
+
+  getProfile(){
+    this.profileService.getProfile().subscribe((profile:IKnoldgProfile)=>{
+      this.userProfile = profile;
+    });
+  }
+
+  public pendingRequests: number = 0;
+  public approvedRequests: number = 0;
+  public declinedRequests: number = 0;
+
+  private initializeStatisticCards() {
+    this.statisticCards = [
+      {
+        icon: 'ki-check-circle',
+        iconType: 'ki-solid',
+        iconColor: 'text-success',
+        value: this.approvedRequests,
+        label: 'Approved',
+        translationKey: 'INSIGHTER.DASHBOARD.REQUESTS.APPROVED',
+        useCountUp: false
+      },
+      {
+        icon: 'ki-timer',
+        iconType: 'ki-solid',
+        iconColor: 'text-warning',
+        value: this.pendingRequests,
+        label: 'Pending',
+        translationKey: 'INSIGHTER.DASHBOARD.REQUESTS.PENDING',
+        useCountUp: false
+      },
+      {
+        icon: 'ki-cross-circle',
+        iconType: 'ki-solid',
+        iconColor: 'text-danger',
+        value: this.declinedRequests,
+        label: 'Declined',
+        translationKey: 'INSIGHTER.DASHBOARD.REQUESTS.DECLINED',
+        useCountUp: false
+      }
+    ];
+  }
 
 getRequestsStatistics(){
   // Use forkJoin to fetch both user requests and insighter requests simultaneously

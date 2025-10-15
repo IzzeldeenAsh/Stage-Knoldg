@@ -138,6 +138,19 @@ export class SalesComponent extends BaseComponent implements OnInit, OnDestroy, 
     return this.lang === 'ar' ? translation.ar : translation.en;
   }
 
+  // Get period label based on selected filter
+  getPeriodLabel(): string {
+    const currentYear = new Date().getFullYear();
+
+    if (this.selectedPeriod === 'weekly') {
+      return this.lang === 'ar' ? 'الأسبوع الحالي' : 'Current Week';
+    } else if (this.selectedPeriod === 'monthly') {
+      return this.lang === 'ar' ? `معاملات ${currentYear}` : `${currentYear} Transactions`;
+    }
+
+    return '';
+  }
+
   private checkUserRole(): void {
     const user = this.authService.getProfile().pipe(takeUntil(this.unsubscribe$), take(1));
     user.subscribe((user: any) => {
@@ -293,12 +306,14 @@ export class SalesComponent extends BaseComponent implements OnInit, OnDestroy, 
     if (!this.periodStatistics) return;
 
     const labels = Object.keys(this.periodStatistics.order_statistics);
-    const knowledgeData = labels.map(label =>
-      this.periodStatistics!.knowledge_order_statistics[label]?.orders_amount || 0
-    );
-    const meetingData = labels.map(label =>
-      this.periodStatistics!.meeting_booking_order_statistics[label]?.orders_amount || 0
-    );
+    const knowledgeData = labels.map(label => {
+      const amount = this.periodStatistics!.knowledge_order_statistics[label]?.orders_amount || 0;
+      return Math.max(0, amount); // Ensure no negative values
+    });
+    const meetingData = labels.map(label => {
+      const amount = this.periodStatistics!.meeting_booking_order_statistics[label]?.orders_amount || 0;
+      return Math.max(0, amount); // Ensure no negative values
+    });
 
     // Create gradients function
     const createGradient = (ctx: CanvasRenderingContext2D, color1: string, color2: string) => {
@@ -424,10 +439,7 @@ export class SalesComponent extends BaseComponent implements OnInit, OnDestroy, 
               size: 11
             },
             callback: function(value: any, index: number, ticks: any[]) {
-              if (index === 0 || index === ticks.length - 1) {
-                return '$' + value.toLocaleString();
-              }
-              return '';
+              return '$' + value.toLocaleString();
             }
           }
         }
@@ -446,7 +458,7 @@ export class SalesComponent extends BaseComponent implements OnInit, OnDestroy, 
 
     const data = this.totalStatistics.knowledge_order_statistics.company_insighter_orders_statistics;
     const labels = data.map(item => item.insighter_name);
-    const amounts = data.map(item => item.total_amount);
+    const amounts = data.map(item => Math.max(0, item.total_amount)); // Ensure no negative values
 
     this.knowledgeChartData = {
       labels: labels,
@@ -539,7 +551,7 @@ export class SalesComponent extends BaseComponent implements OnInit, OnDestroy, 
 
     const data = this.totalStatistics.meeting_booking_order_statistics.company_insighter_orders_statistics;
     const labels = data.map(item => item.insighter_name);
-    const amounts = data.map(item => item.total_amount);
+    const amounts = data.map(item => Math.max(0, item.total_amount)); // Ensure no negative values
 
     this.meetingChartData = {
       labels: labels,
