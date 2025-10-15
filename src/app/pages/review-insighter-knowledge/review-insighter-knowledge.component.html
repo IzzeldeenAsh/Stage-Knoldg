@@ -200,8 +200,8 @@
                   <!-- 1. Original Submission -->
                   <div class="chat-message-row d-flex mb-4" *ngIf="currentRequest && currentRequest.comments">
                     <div class="chat-bubble-left bg-light-primary text-gray-800 p-4 rounded-3 mw-400px">
-                      <div class="text-gray-800 mb-1">{{ currentRequest.comments }}</div>
-                      <div class="text-muted fs-7 text-end">Initial submission</div>
+                      <div class="text-gray-800 mb-1" *ngIf="statusRequestString" >{{ lang === "ar" ? statusRequestString.ar : statusRequestString.en }}</div>
+                      <!-- <div class="text-muted fs-7 text-end">Initial submission</div> -->
                     </div>
                   </div>
                   
@@ -260,11 +260,12 @@
                 <div class="mb-5">
                   <label class="form-label fw-bold">{{ 'ADD_NOTE' | translate }}</label>
                   <textarea 
-                    class="form-control notes-textarea" 
-                    rows="6" 
-                    [(ngModel)]="staffNotes" 
-                    placeholder="{{ 'ENTER_NOTES_FOR_INSIGHTER' | translate }}"
-                    [ngClass]="{'is-invalid': staffNotesInvalid}"></textarea>
+                  class="form-control notes-textarea" 
+                  rows="6" 
+                  [(ngModel)]="staffNotes" 
+                  placeholder=""
+                  [ngClass]="{'is-invalid': staffNotesInvalid}"></textarea>
+                  <!-- placeholder="{{ 'ENTER_NOTES_FOR_INSIGHTER' | translate }}" -->
                   <div class="invalid-feedback" *ngIf="staffNotesInvalid">
                     {{ 'NOTES_REQUIRED_FOR_REJECTION' | translate }}
                   </div>

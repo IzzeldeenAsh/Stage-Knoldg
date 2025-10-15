@@ -12,9 +12,9 @@ export const locale = {
     TODAY_MEETINGS:'اجتماعاتي اليوم', 
     LATEST_KNOWLEDGE:'أحدث المعارف',
     GENERATE_AI_ABSTRACT:'ٌانشاء بواسطة الذكاء الاصطناعي',
-    BUILD_YOUR_TEAM_DESCRIPTION: 'نمو عملك من خلال <br> إضافة موظفين لشركتك',
-    START_UPLOADING:'بدء النشر!',
-    START_UPLOADING_DESRIPTION:'شارك المعرفة الخاصة بك مع العالم! ابدأ برفعها الآن ',
+    BUILD_YOUR_TEAM_DESCRIPTION: 'نمي أعمالك عبر <br> إضافة موظفين لشركتك',
+    START_UPLOADING:'ابدأ  النشر!',
+    START_UPLOADING_DESRIPTION:'شارك معارفك مع العالم وابدأ برفعها الآن!',
     FILE_UPLOADED:'تم رفع الملف',
     GENERATE_AI_INFORMATION: "إنشاء معلومات المعرفة بواسطة الذكاء الاصطناعي",
     NOTES_REQUIRED_FOR_REJECTION:'ملاحظات مطلوبة في حال الرفض',
@@ -117,7 +117,7 @@ INSIGHTER_REQUESTS: {
     STATUS: 'الحالة',
     APPROVE: 'موافق',
     REJECT: 'مرفوض',
-    ADD_NOTE:'أدخل هنا ملاحظاتك للإنسايتر',
+    ADD_NOTE:'أدخل ملاحظاتك للإنسايتر هنا:',
     REMOVE:'حذف',
     ERROR_FILES_DETECTED: 'تم اكتشاف ملفات بها أخطاء',
     REMOVE_ERROR_FILES_MESSAGE: 'يرجى إزالة جميع الملفات التي تحتوي على أخطاء قبل المتابعة.',
@@ -247,7 +247,8 @@ INSIGHTER_REQUESTS: {
       "LOADING": "جاري التحميل...",
       "SHOWING_ENTRIES": "عرض {{first}} إلى {{last}} من {{total}} سجل",
       "EMAIL_ADDRESS": "عنوان البريد الإلكتروني",
-      "ENTER_EMAIL": "أدخل عنوان البريد الإلكتروني",
+      "ENTER_EMAIL": "الرجاء إدخال عنوان البريد الإلكتروني للموظف",
+      "ENTER_EMAIL_PANNER": "سيتم إرسال دعوة بالبريد الإلكتروني للموظف. يمكنك دعوة أي شخص - سواء كان من مستخدمي المنصة أو غير مسجل فيها - للانضمام إلى حساب شركتك على نولج لرفع ومشاركة المعرفة وبيعها.",
       "EMAIL_REQUIRED": "البريد الإلكتروني مطلوب",
       "EMAIL_INVALID": "البريد الإلكتروني غير صالح",
       "CHECKING_ACCOUNT": "جاري التحقق من الحساب...",
@@ -929,12 +930,12 @@ INSIGHTER_REQUESTS: {
         "READ_MORE": "اقرأ المزيد عن هذه الخطوة!",
         "NAV": {
           "OVERVIEW": "لوحة المعلومات",
-          "MY_REQUESTS": "إشعارات",
-          "MY_KNOWLEDGE": "مكتبة المعرفة" ,
+          "MY_REQUESTS": "طلبات",
+          "MY_KNOWLEDGE": "مكتبتي المعرفية" ,
           "ACCOUNT_SETTINGS": "الحساب",
           "MY_COMPANY": "فريقي",
           "READ_LATER":"قائمة المعاينة",
-          "MY_ORDERS": "طلباتي",
+          "MY_ORDERS": "مشترياتي",
           "MY_DOWNLOADS": "التحميلات",
           "MEETINGS": "الجلسات الاستشارية",
           "MY_MEETINGS": "اجتماعاتي",
@@ -1366,9 +1367,9 @@ INSIGHTER_REQUESTS: {
     "CURRENT_SPAN": "الفترة الحالية",
     "RATE_MIN_ERROR": "يجب أن يكون السعر أكبر من 0",
     "MINUTES": "دقائق",
-    "DESCRIPTION": "الرجاء تحديد موعد الجلسات الاستشارية",
-    "AVAILABLE_DAYS": "الأيام المتاحة",
-    "EXCEPTION_DAYS": "أيام عدم التوفر",
+    "DESCRIPTION": "الرجاء تحديد مواعيد الجلسات الاستشارية الدورية، والمواعيد المستثناة منها في حال وجدت",
+    "AVAILABLE_DAYS": "المواعيد المتاحة",
+    "EXCEPTION_DAYS": "المواعيد المستثناة",
     "NOTE_ONE_YEAR":"",
     "DAYS": {
       "MONDAY": "الاثنين",
@@ -1383,7 +1384,7 @@ INSIGHTER_REQUESTS: {
     "TO": "إلى",
     "DATE": "التاريخ",
     "ADD_TIME_SLOT": "إضافة فترة زمنية",
-    "ADD_EXCEPTION": "إضافة يوم غير متاح",
+    "ADD_EXCEPTION": "أضف موعد آخر",
     "NO_EXCEPTIONS": "لم يتم إضافة أيام غير متاحة بعد",
     "NO_EXCEPTIONS_DESC": "أضف الأيام التي لن تكون متاحاً فيها للاستشارات خارج جدولك المعتاد",
     "SAVE": "حفظ الجدول",
@@ -1467,9 +1468,9 @@ INSIGHTER_REQUESTS: {
     },
 
 "PAYMENT_ACCOUNT": {
-  "TITLE": "معلومات حساب الدفع",
+  "TITLE": "معلومات حساب تلقي الدفعات",
   "ADD_TITLE": "إضافة حساب دفع",
-  "DESCRIPTION": "معلومات حساب تلقي الدفعات",
+  "DESCRIPTION": "حدد كيف سيتم الدفع لك",
   "ADD_DESCRIPTION": "قم بإعداد حساب الدفع الخاص بك لبدء تلقي المدفوعات من مبيعات معرفتك.",
   "TYPE": "نوع الحساب",
   "STATUS": "الحالة",
@@ -1602,39 +1603,39 @@ INSIGHTER_REQUESTS: {
     "FIELDS": {
       "PHONE_COUNTRY_CODE_SEARCH": "اختر رمز الدولة..."
     }
-  }
+  },
+  "SALES": {
+    "PAGE_TITLE": "المبيعات",
+    "TOTAL_ORDERS": "إجمالي الطلبات",
+    "ORDERS_REVENUE": "إيرادات الطلبات",
+    "NET_PROFIT": "صافي الربح",
+    "COMPANY_NET_PROFIT": "صافي ربح الشركة",
+    "REVENUE_CHART": "مخطط الإيرادات",
+    "KNOWLEDGE_ORDERS": "طلبات المعرفة",
+    "KNOWLEDGE_REVENUE": "إيرادات المعرفة",
+    "KNOWLEDGE_PROFIT": "ربح المعرفة",
+    "MEETING_ORDERS": "طلبات الاجتماعات",
+    "MEETING_REVENUE": "إيرادات الاجتماعات",
+    "MEETING_PROFIT": "ربح الاجتماعات",
+    "WEEKLY": "أسبوعي",
+    "MONTHLY": "شهري",
+    "YEARLY": "سنوي",
+    "PERIOD": {
+      "WEEKLY": "أسبوعي",
+      "MONTHLY": "شهري",
+      "YEARLY": "سنوي"
+    },
+    "CHART_LABELS": {
+      "KNOWLEDGE": "المعرفة",
+      "MEETINGS": "الاجتماعات",
+      "TOTAL_AMOUNT": "إجمالي المبلغ"
+    }
+  },
 },
 
 "CALENDAR": {
   "WEEK_VIEW": "عرض الأسبوع",
   "TIME": "الوقت"
-},
-"SALES": {
-  "PAGE_TITLE": "المبيعات",
-  "TOTAL_ORDERS": "إجمالي الطلبات",
-  "ORDERS_REVENUE": "إيرادات الطلبات",
-  "NET_PROFIT": "صافي الربح",
-  "COMPANY_NET_PROFIT": "صافي ربح الشركة",
-  "REVENUE_CHART": "مخطط الإيرادات",
-  "KNOWLEDGE_ORDERS": "طلبات المعرفة",
-  "KNOWLEDGE_REVENUE": "إيرادات المعرفة",
-  "KNOWLEDGE_PROFIT": "ربح المعرفة",
-  "MEETING_ORDERS": "طلبات الاجتماعات",
-  "MEETING_REVENUE": "إيرادات الاجتماعات",
-  "MEETING_PROFIT": "ربح الاجتماعات",
-  "WEEKLY": "أسبوعي",
-  "MONTHLY": "شهري",
-  "YEARLY": "سنوي",
-  "PERIOD": {
-    "WEEKLY": "أسبوعي",
-    "MONTHLY": "شهري",
-    "YEARLY": "سنوي"
-  },
-  "CHART_LABELS": {
-    "KNOWLEDGE": "المعرفة",
-    "MEETINGS": "الاجتماعات",
-    "TOTAL_AMOUNT": "إجمالي المبلغ"
-  }
 },
   "NO_DESCRIPTION": "لا يوجد وصف"
 

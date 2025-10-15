@@ -31,6 +31,7 @@ export class ReviewInsighterKnowledgeComponent extends BaseComponent implements 
   childRequest: any = null;
   requestUser: any = null;
   pendingRequest: any = null;
+  statusRequestString: { en: string; ar: string } = { en: '', ar: '' };
 
   constructor(
     injector: Injector,
@@ -93,6 +94,9 @@ export class ReviewInsighterKnowledgeComponent extends BaseComponent implements 
             console.log('Root request:', this.currentRequest);
             console.log('Pending request:', this.pendingRequest);
             console.log('Show review box:', this.showReviewBox);
+            if(this.currentRequest.comments == "Accept Knowledge Request"){
+              this.statusRequestString = { en: 'Approve to Publish', ar: "طلب موافقة على النشر" };
+            }
           }
         },
         error: (error) => {
