@@ -133,7 +133,6 @@ export class SentMeetingsComponent implements OnInit, OnDestroy {
       // For status-based tabs (pending, approved, postponed)
       filteredMeetings = this.meetings.filter(meeting => meeting.status === this.selectedTab);
     }
-    console.log("filteredMeetings --->", filteredMeetings)
     // Sort by date (closest meetings first)
     return filteredMeetings.sort((a, b) => {
       const dateA = new Date(a.date).getTime();

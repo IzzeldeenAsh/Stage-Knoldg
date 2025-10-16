@@ -1,6 +1,7 @@
 import { Component, OnInit, Injector } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from 'src/app/modules/base.component';
+import { FundService, InsighterWalletDetails } from 'src/app/_fake/services/fund.service';
 
 @Component({
   selector: 'app-insighter-wallet-form',
@@ -9,20 +10,14 @@ import { BaseComponent } from 'src/app/modules/base.component';
 })
 export class InsighterWalletFormComponent extends BaseComponent implements OnInit {
   insighterId: number = 0;
-
-  // Dummy data for now
-  insighterData = {
-    name: 'Izzeldeen Ashoor',
-    email: 'izaldeen@gamil.com',
-    role: 'Insighter',
-    balance: 4500,
-    profile_photo_url: 'https://preview.keenthemes.com/metronic8/demo27/assets/media/avatars/300-1.jpg'
-  };
+  insighterData: InsighterWalletDetails | null = null;
+  isLoading: boolean = false;
 
   constructor(
     injector: Injector,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private fundService: FundService
   ) {
     super(injector);
   }
@@ -30,7 +25,45 @@ export class InsighterWalletFormComponent extends BaseComponent implements OnIni
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.insighterId = +params['id'];
+      if (this.insighterId) {
+        this.loadInsighterWalletDetails();
+      }
     });
+  }
+
+  private loadInsighterWalletDetails(): void {
+    this.isLoading = true;
+    this.fundService.getInsighterWalletDetails(this.insighterId)
+      .subscribe({
+        next: (data) => {
+          this.insighterData = data;
+          this.isLoading = false;
+        },
+        error: (error) => {
+          this.handleServerErrors(error);
+          this.isLoading = false;
+        }
+      });
+  }
+
+  private handleServerErrors(error: any) {
+    if (error.error && error.error.errors) {
+      const serverErrors = error.error.errors;
+      for (const key in serverErrors) {
+        if (serverErrors.hasOwnProperty(key)) {
+          const messages = serverErrors[key];
+          this.showError(
+            this.lang === "ar" ? "حدث خطأ" : "An error occurred",
+            messages.join(", ")
+          );
+        }
+      }
+    } else {
+      this.showError(
+        this.lang === "ar" ? "حدث خطأ" : "An error occurred",
+        this.lang === "ar" ? "حدث خطأ" : "An unexpected error occurred."
+      );
+    }
   }
 
   goBack(): void {

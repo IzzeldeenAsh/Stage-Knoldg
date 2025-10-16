@@ -23,6 +23,27 @@ export interface InsighterWallet {
   };
 }
 
+export interface InsighterWalletDetails {
+  user_name: string;
+  user_email: string;
+  user_balance: number;
+  account_name: string | null;
+  account_country: {
+    id: number;
+    name: string;
+    flag: string;
+  } | null;
+  account_address: string | null;
+  account_phone_code: string | null;
+  account_phone: string | null;
+  bank_name: string | null;
+  bank_country: string | null;
+  bank_address: string | null;
+  bank_iban: string | null;
+  bank_swift_code: string | null;
+  status: string;
+}
+
 export interface KnowledgeDocument {
   file_name: string;
   file_extension: string;
@@ -158,6 +179,17 @@ export class FundService {
     this.setLoading(true);
 
     return this.http.get<PaginatedResponse<Transaction>>(`${this.baseUrl}/insighter/transaction/${insighterId}?page=${page}`, { headers }).pipe(
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  getInsighterWalletDetails(insighterId: number): Observable<InsighterWalletDetails> {
+    const headers = this.getHeaders();
+    this.setLoading(true);
+
+    return this.http.get<{data: InsighterWalletDetails[]}>(`${this.baseUrl}/insighter/payment/manual/${insighterId}`, { headers }).pipe(
+      map(response => response.data[0]),
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );

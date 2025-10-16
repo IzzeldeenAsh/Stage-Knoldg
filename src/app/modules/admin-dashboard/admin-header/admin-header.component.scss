@@ -101,3 +101,9 @@
   padding: 1rem 1.5rem;
   border-bottom: 1px solid var(--kt-gray-300);
 }
+
+@media print {
+  #kt_app_header_container {
+    display: none !important;
+  }
+}

@@ -41,14 +41,37 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
   // Computed signal for page numbers
   pageNumbers = computed(() => {
     const pages: number[] = [];
-    for (let i = 1; i <= this.totalPages(); i++) {
+    const totalPages = this.showArchivedMeetings() ? this.archivedTotalPages() : this.totalPages();
+    for (let i = 1; i <= totalPages; i++) {
       pages.push(i);
     }
     return pages;
   });
+
+  // Computed signal for current page
+  currentDisplayPage = computed(() => {
+    return this.showArchivedMeetings() ? this.archivedCurrentPage() : this.currentPage();
+  });
+
+  // Computed signal for total pages
+  currentTotalPages = computed(() => {
+    return this.showArchivedMeetings() ? this.archivedTotalPages() : this.totalPages();
+  });
+
+  // Computed signal for total items
+  currentTotalItems = computed(() => {
+    return this.showArchivedMeetings() ? this.archivedTotalItems() : this.totalItems();
+  });
   
   // Filter tabs
   selectedTab = signal<TabType>('upcoming');
+
+  // Archived meetings state
+  showArchivedMeetings = signal<boolean>(false);
+  archivedMeetings = signal<Meeting[]>([]);
+  archivedCurrentPage = signal<number>(1);
+  archivedTotalPages = signal<number>(1);
+  archivedTotalItems = signal<number>(0);
 
   
   // Dialog properties
@@ -104,6 +127,7 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
 
   onTabChange(tab: TabType): void {
      this.selectedTab.set(tab);
+     this.showArchivedMeetings.set(false);
      this.loadMeetings(1);
   }
 
@@ -118,9 +142,12 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
 
   getFilteredMeetings(): Meeting[] {
     let filteredMeetings: Meeting[] = [];
-    
-    //date based (upcoming,past) // backend filter
-    if(this.selectedTab() === 'upcoming' || this.selectedTab() === 'past'){
+
+    // If showing archived meetings, return archived meetings
+    if (this.selectedTab() === 'past' && this.showArchivedMeetings()) {
+      filteredMeetings = this.archivedMeetings();
+    } else if(this.selectedTab() === 'upcoming' || this.selectedTab() === 'past'){
+      // date based (upcoming,past) // backend filter
       filteredMeetings = this.meetings();
     }else{
       // status-based tabs ( pending , approved , postponed)
@@ -132,11 +159,15 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
     const dateB = new Date(b.date).getTime();
     return dateA-dateB
    })
-   
+
   }
 
   onPageChange(page: number): void {
-    this.loadMeetings(page);
+    if (this.showArchivedMeetings()) {
+      this.loadArchivedMeetings(page);
+    } else {
+      this.loadMeetings(page);
+    }
   }
 
   getStatusClass(status: string): string {
@@ -305,5 +336,60 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
     if (meetingUrl && meetingUrl !== '?pwd=') {
       window.open(meetingUrl, '_blank');
     }
+  }
+
+  /**
+   * Archive a meeting
+   */
+  archiveMeeting(meeting: Meeting): void {
+    this.actionLoading.set(true);
+    this.meetingsService.archiveMeeting(meeting.uuid)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.actionLoading.set(false);
+          this.showSuccess('Success', 'Meeting archived successfully');
+          this.reloadMeetingsAfterAction();
+        },
+        error: (error: any) => {
+          this.actionLoading.set(false);
+          this.handleServerErrors(error);
+        }
+      });
+  }
+
+  /**
+   * Toggle between past meetings and archived meetings
+   */
+  toggleArchivedMeetings(): void {
+    const newState = !this.showArchivedMeetings();
+    this.showArchivedMeetings.set(newState);
+
+    if (newState) {
+      this.loadArchivedMeetings(1);
+    } else {
+      this.loadMeetings(1);
+    }
+  }
+
+  /**
+   * Load archived meetings
+   */
+  loadArchivedMeetings(page: number = 1): void {
+    this.archivedCurrentPage.set(page);
+    this.meetingsService.getArchivedMeetings(page, this.perPage())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response: MeetingResponse) => {
+          this.archivedMeetings.set(response.data);
+          this.archivedCurrentPage.set(response.meta.current_page);
+          this.archivedTotalPages.set(response.meta.last_page);
+          this.archivedTotalItems.set(response.meta.total);
+        },
+        error: (error) => {
+          console.error('Error loading archived meetings:', error);
+          this.handleServerErrors(error);
+        }
+      });
   }
 }

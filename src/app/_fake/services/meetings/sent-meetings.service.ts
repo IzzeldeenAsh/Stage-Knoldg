@@ -160,13 +160,44 @@ export class SentMeetingsService {
   rescheduleMeeting(meetingUuid: string, rescheduleData: RescheduleRequest): Observable<any> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
-      'Content-Type': 'application/json', 
+      'Content-Type': 'application/json',
       'Accept-Language': this.currentLang
     });
     const url = `https://api.knoldg.com/api/account/meeting/reschedule/${meetingUuid}`;
 
     this.setLoading(true);
     return this.http.post(url, rescheduleData, { headers }).pipe(
+      map(response => response),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  // Archive meeting
+  archiveMeeting(meetingUuid: string): Observable<any> {
+    const headers = this.getHeaders();
+    const url = `https://api.knoldg.com/api/account/meeting/archive/${meetingUuid}`;
+
+    this.setLoading(true);
+    return this.http.post(url, {}, { headers }).pipe(
+      map(response => response),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  // Get archived meetings
+  getArchivedMeetings(page: number = 1, perPage: number = 10): Observable<SentMeetingResponse> {
+    const headers = this.getHeaders();
+    const url = 'https://api.knoldg.com/api/account/meeting/client/list';
+
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('per_page', perPage.toString())
+      .set('archived', 'true');
+
+    this.setLoading(true);
+    return this.http.get<SentMeetingResponse>(url, { headers, params }).pipe(
       map(response => response),
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))

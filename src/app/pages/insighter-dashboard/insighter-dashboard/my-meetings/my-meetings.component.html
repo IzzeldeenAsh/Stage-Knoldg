@@ -56,6 +56,28 @@
         </div>
       </div>
 
+      <!-- Archived Toggle Button for Past Meetings -->
+      @if (selectedTab() === 'past') {
+        <div class="row mb-4">
+          <div class="col-12">
+            <div class="d-flex justify-content-start">
+              <button class="btn btn-outline-info d-flex align-items-center"
+                      [class.active]="showArchivedMeetings()"
+                      (click)="toggleArchivedMeetings()"
+                      [pTooltip]="showArchivedMeetings() ? 'Show Past Meetings' : 'Show Archived Meetings'"
+                      tooltipPosition="top">
+                @if (showArchivedMeetings()) {
+                  <i class="pi pi-arrow-left me-2 text-dark" style="font-size: 1rem;"></i>
+                } @else {
+                  <i class="pi pi-inbox me-2 text-dark" style="font-size: 1rem;"></i>
+                }
+                {{ showArchivedMeetings() ? 'Past' : 'Archived' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+
       <!-- Loading State -->
       @if (loading()) {
         <div class="text-center py-5">
@@ -120,7 +142,7 @@
                         {{ ('MEETINGS.STATUS.' + meeting.status.toUpperCase()) | translate }}
                       </span>
                     }
-                    
+
                     <!-- Action Buttons for Pending Meetings -->
                     @if (meeting.status === 'pending' && selectedTab() !== 'past') {
                       <div class="d-flex gap-2">
@@ -145,6 +167,18 @@
                           </i>
                         </button>
                       </div>
+                    }
+
+                    <!-- Archive Button for Past Meetings -->
+                    @if (selectedTab() === 'past' && !showArchivedMeetings()) {
+                      <button class="btn btn-sm  d-flex align-items-center px-2 py-1"
+                              (click)="archiveMeeting(meeting)"
+                              [disabled]="actionLoading()"
+                              [pTooltip]="'Archive Meeting'"
+                              tooltipPosition="top"
+                              aria-label="Archive Meeting">
+                        <i class="pi pi-inbox" style="font-size: 1rem;"></i>
+                      </button>
                     }
                   </div>
 
@@ -215,29 +249,29 @@
           }
 
           <!-- Pagination -->
-          @if (!loading() && totalPages() > 1) {
+          @if (!loading() && currentTotalPages() > 1) {
             <div class="row mt-5">
               <div class="col-12">
                 <div class="d-flex justify-content-between align-items-center">
                   <div class="pagination-info text-muted">
-                    {{ 'MEETINGS.SHOWING' | translate }} 
-                    {{ (currentPage() - 1) * perPage() + 1 }} 
-                    {{ 'MEETINGS.TO' | translate }} 
-                    {{ Math.min(currentPage() * perPage(), totalItems()) }} 
-                    {{ 'MEETINGS.OF' | translate }} 
-                    {{ totalItems() }} 
+                    {{ 'MEETINGS.SHOWING' | translate }}
+                    {{ (currentDisplayPage() - 1) * perPage() + 1 }}
+                    {{ 'MEETINGS.TO' | translate }}
+                    {{ Math.min(currentDisplayPage() * perPage(), currentTotalItems()) }}
+                    {{ 'MEETINGS.OF' | translate }}
+                    {{ currentTotalItems() }}
                     {{ 'MEETINGS.RESULTS' | translate }}
                   </div>
-                  
+
                   <nav aria-label="Pagination">
                     <ul class="pagination pagination-outline">
-                      <li class="page-item" [class.disabled]="currentPage() === 1">
-                        @if (currentPage() > 1) {
-                          <a class="page-link" 
-                             (click)="onPageChange(currentPage() - 1)"
+                      <li class="page-item" [class.disabled]="currentDisplayPage() === 1">
+                        @if (currentDisplayPage() > 1) {
+                          <a class="page-link"
+                             (click)="onPageChange(currentDisplayPage() - 1)"
                              tabindex="0"
                              aria-label="Previous page"
-                             (keydown.enter)="onPageChange(currentPage() - 1)">
+                             (keydown.enter)="onPageChange(currentDisplayPage() - 1)">
                             <i class="ki-duotone ki-black-left">
                               <span class="path1"></span>
                               <span class="path2"></span>
@@ -245,10 +279,10 @@
                           </a>
                         }
                       </li>
-                      
+
                       @for (page of pageNumbers(); track page) {
-                        <li class="page-item" [class.active]="currentPage() === page">
-                          <a class="page-link" 
+                        <li class="page-item" [class.active]="currentDisplayPage() === page">
+                          <a class="page-link"
                              (click)="onPageChange(page)"
                              tabindex="0"
                              (keydown.enter)="onPageChange(page)">
@@ -256,14 +290,14 @@
                           </a>
                         </li>
                       }
-                      
-                      <li class="page-item" [class.disabled]="currentPage() === totalPages()">
-                        @if (currentPage() < totalPages()) {
-                          <a class="page-link" 
-                             (click)="onPageChange(currentPage() + 1)"
+
+                      <li class="page-item" [class.disabled]="currentDisplayPage() === currentTotalPages()">
+                        @if (currentDisplayPage() < currentTotalPages()) {
+                          <a class="page-link"
+                             (click)="onPageChange(currentDisplayPage() + 1)"
                              tabindex="0"
                              aria-label="Next page"
-                             (keydown.enter)="onPageChange(currentPage() + 1)">
+                             (keydown.enter)="onPageChange(currentDisplayPage() + 1)">
                             <i class="ki-duotone ki-black-right">
                               <span class="path1"></span>
                               <span class="path2"></span>

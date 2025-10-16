@@ -5,28 +5,29 @@
       <!-- User Header Section -->
       <div class=" mb-6">
         <div class="card-body p-5">
-          <div class="d-flex align-items-start justify-content-between mb-5">
-            <div class="d-flex align-items-start">
-              <!-- Profile Image with Border -->
-              <div class="profile-image-wrapper me-5">
-                <img [src]="insighterData.profile_photo_url" alt="{{ insighterData.name }}" class="profile-image"/>
-              </div>
+          <div *ngIf="isLoading" class="text-center py-5">
+            <div class="spinner-border text-info" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
 
+          <div *ngIf="!isLoading && insighterData" class="d-flex align-items-start justify-content-between mb-5">
+            <div class="d-flex align-items-start">
               <!-- User Info -->
               <div>
-                <div class="d-flex align-items-center mb-2">
-                  <h4 class="mb-0 me-2">{{ insighterData.name }}</h4>
-                  <i class="ki-outline ki-verify fs-3 text-info"></i>
+                <div class="d-flex align-items-center mb-2 align-items-center">
+                  <h4 class="mb-0 me-2 fs-1">{{ insighterData.user_name }}</h4>
+                   <span class="badge badge-light-success ">Insighter</span>
                 </div>
-                <span class="badge badge-light-success mb-3">{{ insighterData.role }}</span>
+               
                 <div class="text-muted mb-4 d-flex align-items-center">
                   <i class="ki-outline ki-sms fs-5 me-2 mt-1" ></i>
-                  <span>{{ insighterData.email }}</span>
+                  <span>{{ insighterData.user_email }}</span>
                 </div>
 
                 <!-- Dues Box -->
                 <div class="dues-box">
-                  <div class="fs-2x fw-bold text-dark mb-1">${{ insighterData.balance | number:'1.0-0' }}</div>
+                  <div class="fs-2x fw-bold text-dark mb-1">${{ insighterData.user_balance | number:'1.2-2' }}</div>
                   <div class="text-muted">Dues</div>
                 </div>
               </div>
@@ -54,7 +55,7 @@
       </div>
 
       <!-- Beneficiary Information Section -->
-      <div class="card mb-6">
+      <div *ngIf="!isLoading && insighterData" class="card mb-6">
         <div class="card-header bg-light-info">
           <h6 class="card-title mb-0 text-info">
             <i class="fas fa-user me-2"></i>
@@ -68,7 +69,7 @@
               <label class="form-label fw-bold text-muted fs-7">Account Name</label>
             </div>
             <div class="col-md-8">
-              <div class="text-dark fs-7">John Doe</div>
+              <div class="text-dark fs-7">{{ insighterData.account_name || 'Not provided' }}</div>
             </div>
           </div>
 
@@ -78,19 +79,19 @@
               <label class="form-label fw-bold text-muted fs-7">Country of Residence</label>
             </div>
             <div class="col-md-8">
-              <div class="text-dark fs-7">United States</div>
+              <div class="text-dark fs-7">{{ insighterData.account_country?.name || 'Not provided' }}</div>
             </div>
           </div>
 
           <!-- Billing Address -->
-          <!-- <div class="row mb-5">
+          <div class="row mb-5" *ngIf="insighterData.account_address">
             <div class="col-md-4">
               <label class="form-label fw-bold text-muted fs-7">Billing Address</label>
             </div>
             <div class="col-md-8">
-              <div class="text-dark fs-7">123 Main Street, New York, NY 10001</div>
+              <div class="text-dark fs-7">{{ insighterData.account_address }}</div>
             </div>
-          </div> -->
+          </div>
 
           <!-- Phone Number -->
           <div class="row mb-0">
@@ -98,14 +99,21 @@
               <label class="form-label fw-bold text-muted fs-7">Phone Number</label>
             </div>
             <div class="col-md-8">
-              <div class="text-dark fs-7">+1 (555) 123-4567</div>
+              <div class="text-dark fs-7">
+                <span *ngIf="insighterData.account_phone_code && insighterData.account_phone">
+                  {{ insighterData.account_phone_code }} {{ insighterData.account_phone }}
+                </span>
+                <span *ngIf="!insighterData.account_phone_code || !insighterData.account_phone">
+                  Not provided
+                </span>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Bank Information Section -->
-      <div class="card mb-6">
+      <div *ngIf="!isLoading && insighterData" class="card mb-6">
         <div class="card-header bg-light-info">
           <h6 class="card-title mb-0 text-info">
             <i class="fas fa-building-columns me-2"></i>
@@ -119,7 +127,7 @@
               <label class="form-label fw-bold text-muted fs-7">Bank Name</label>
             </div>
             <div class="col-md-8">
-              <div class="text-dark fs-7">Chase Bank</div>
+              <div class="text-dark fs-7">{{ insighterData.bank_name || 'Not provided' }}</div>
             </div>
           </div>
 
@@ -129,17 +137,17 @@
               <label class="form-label fw-bold text-muted fs-7">Bank Country</label>
             </div>
             <div class="col-md-8">
-              <div class="text-dark fs-7">United States</div>
+              <div class="text-dark fs-7">{{ insighterData.bank_country || 'Not provided' }}</div>
             </div>
           </div>
 
           <!-- Bank Address -->
-          <div class="row mb-5">
+          <div class="row mb-5" *ngIf="insighterData.bank_address">
             <div class="col-md-4">
               <label class="form-label fw-bold text-muted fs-7">Bank Address</label>
             </div>
             <div class="col-md-8">
-              <div class="text-dark fs-7">270 Park Avenue, New York, NY 10017</div>
+              <div class="text-dark fs-7">{{ insighterData.bank_address }}</div>
             </div>
           </div>
 
@@ -149,7 +157,7 @@
               <label class="form-label fw-bold text-muted fs-7">IBAN Number</label>
             </div>
             <div class="col-md-8">
-              <div class="text-dark fs-7">SA03 8000 0000 6080 1016 7519</div>
+              <div class="text-dark fs-7">{{ insighterData.bank_iban || 'Not provided' }}</div>
             </div>
           </div>
 
@@ -159,7 +167,7 @@
               <label class="form-label fw-bold text-muted fs-7">SWIFT Code</label>
             </div>
             <div class="col-md-8">
-              <div class="text-dark fs-7">CHASUS33</div>
+              <div class="text-dark fs-7">{{ insighterData.bank_swift_code || 'Not provided' }}</div>
             </div>
           </div>
         </div>
