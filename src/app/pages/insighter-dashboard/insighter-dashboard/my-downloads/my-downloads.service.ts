@@ -152,10 +152,47 @@ export class MyDownloadsService {
   downloadDocument(documentUuid: string): Observable<{url: string}> {
     const url = `${this.DOWNLOAD_DOCUMENT_URL}/${documentUuid}`;
     const headers = this.getHeaders();
-    
+
     return this.http.post<{data: {url: string}}>(url, {}, { headers }).pipe(
       map(response => ({ url: response.data.url })),
       catchError(error => this.handleError(error)),
+    );
+  }
+
+  // Archive knowledge item
+  archiveKnowledge(knowledgeUuid: string): Observable<any> {
+    const url = `${this.API_URL}/archive/${knowledgeUuid}`;
+    const headers = this.getHeaders();
+
+    this.setLoading(true);
+    return this.http.post(url, {}, { headers }).pipe(
+      map(response => response),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  // Get archived downloads
+  getArchivedDownloads(page: number = 1, title?: string, uuids?: string[]): Observable<MyDownloadsResponse> {
+    let url = `${this.API_URL}?page=${page}&per_page=10&archived=true`;
+
+    // Add title query parameter if provided
+    if (title && title.trim()) {
+      url += `&title=${encodeURIComponent(title.trim())}`;
+    }
+
+    const headers = this.getHeaders();
+
+    // Create request body if UUIDs are provided
+    const body = uuids && uuids.length > 0 ? { uuids } : null;
+
+    this.setLoading(true);
+
+    // Use POST if body exists, otherwise GET
+    return this.http.post<MyDownloadsResponse>(url, body, { headers }).pipe(
+      map((response) => response),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
     );
   }
 }

@@ -39,6 +39,13 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
 
   // UI state
   selectedColumn = signal<'knowledge' | 'document' | 'details'>('knowledge');
+
+  // Archived downloads state
+  showArchivedDownloads = signal<boolean>(false);
+  archivedKnowledgeItems = signal<KnowledgeItem[]>([]);
+  archivedCurrentPage = signal<number>(1);
+  archivedTotalPages = signal<number>(1);
+  archivedTotalItems = signal<number>(0);
   
   // Scroll state
   canScrollUp = signal<boolean>(false);
@@ -73,8 +80,26 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
     }
   })
 
-  hasNextPage = computed(() => this.currentPage() < this.totalPages());
-  hasPrevPage = computed(() => this.currentPage() > 1);
+  // Get current knowledge items based on archive state
+  currentKnowledgeItems = computed(() => {
+    return this.showArchivedDownloads() ? this.archivedKnowledgeItems() : this.knowledgeItems();
+  });
+
+  // Get current pagination based on archive state
+  currentDisplayPage = computed(() => {
+    return this.showArchivedDownloads() ? this.archivedCurrentPage() : this.currentPage();
+  });
+
+  currentDisplayTotalPages = computed(() => {
+    return this.showArchivedDownloads() ? this.archivedTotalPages() : this.totalPages();
+  });
+
+  currentDisplayTotalItems = computed(() => {
+    return this.showArchivedDownloads() ? this.archivedTotalItems() : this.totalItems();
+  });
+
+  hasNextPage = computed(() => this.currentDisplayPage() < this.currentDisplayTotalPages());
+  hasPrevPage = computed(() => this.currentDisplayPage() > 1);
   
   //Services
   private myDownloadsService = inject(MyDownloadsService);
@@ -137,6 +162,12 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
         this.currentPage.set(1); // Reset to first page when searching
         this.selectedKnowledge.set(null); // Clear selection when searching
         this.selectedDocument.set(null);
+
+        // Reset archived state when searching
+        if (this.showArchivedDownloads()) {
+          this.showArchivedDownloads.set(false);
+        }
+
         this.loadMyDownloads(1, searchTerm || '', []);
       });
    
@@ -277,15 +308,19 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
 
     // Pagination methods
     onPageChange(page: number): void {
-      if (page >= 1 && page <= this.totalPages() && page !== this.currentPage()) {
-        this.loadMyDownloads(page, this.currentSearchTerm(), this.currentUuids());
+      if (page >= 1 && page <= this.currentDisplayTotalPages() && page !== this.currentDisplayPage()) {
+        if (this.showArchivedDownloads()) {
+          this.loadArchivedDownloads(page);
+        } else {
+          this.loadMyDownloads(page, this.currentSearchTerm(), this.currentUuids());
+        }
       }
     }
 
 
   getPages(): (number | string)[] {
-    const totalPages = this.totalPages();
-    const currentPage = this.currentPage();
+    const totalPages = this.currentDisplayTotalPages();
+    const currentPage = this.currentDisplayPage();
     const delta = 2;
     let pages: (number | string)[] = [];
 
@@ -438,6 +473,86 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
 
   onKnowledgeListScroll(): void {
     this.checkScrollState();
+  }
+
+  // Archive functionality
+  archiveKnowledge(knowledge: KnowledgeItem): void {
+    // Add knowledge UUID to downloading items to show loading state
+    this.downloadingItems.update(items => new Set(items).add(knowledge.uuid));
+
+    this.myDownloadsService.archiveKnowledge(knowledge.uuid)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.showSuccess('Success', 'Knowledge archived successfully');
+          // Remove from downloading items
+          this.downloadingItems.update(items => {
+            const newItems = new Set(items);
+            newItems.delete(knowledge.uuid);
+            return newItems;
+          });
+          // Reload current downloads
+          this.reloadCurrentDownloads();
+        },
+        error: (error) => {
+          console.error('Error archiving knowledge:', error);
+          this.showError('Error', 'Failed to archive knowledge. Please try again.');
+          // Remove from downloading items
+          this.downloadingItems.update(items => {
+            const newItems = new Set(items);
+            newItems.delete(knowledge.uuid);
+            return newItems;
+          });
+        }
+      });
+  }
+
+  // Toggle between regular downloads and archived downloads
+  toggleArchivedDownloads(): void {
+    const newState = !this.showArchivedDownloads();
+    this.showArchivedDownloads.set(newState);
+
+    // Clear selections when toggling
+    this.selectedKnowledge.set(null);
+    this.selectedDocument.set(null);
+
+    if (newState) {
+      this.loadArchivedDownloads(1);
+    } else {
+      this.loadMyDownloads(1, this.currentSearchTerm(), this.currentUuids());
+    }
+  }
+
+  // Load archived downloads
+  loadArchivedDownloads(page: number = 1): void {
+    this.myDownloadsService.getArchivedDownloads(page, this.currentSearchTerm() || undefined, this.currentUuids().length > 0 ? this.currentUuids() : undefined)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          this.archivedKnowledgeItems.set(response.data);
+          this.archivedCurrentPage.set(response.meta.current_page);
+          this.archivedTotalPages.set(response.meta.last_page);
+          this.archivedTotalItems.set(response.meta.total);
+
+          // Check scroll state after data loads
+          setTimeout(() => {
+            this.checkScrollState();
+          }, 100);
+        },
+        error: (error) => {
+          console.error('Error loading archived downloads:', error);
+          this.showError('Error', 'Failed to load archived downloads. Please try again.');
+        }
+      });
+  }
+
+  // Helper method to reload current downloads based on state
+  private reloadCurrentDownloads(): void {
+    if (this.showArchivedDownloads()) {
+      this.loadArchivedDownloads(this.currentDisplayPage());
+    } else {
+      this.loadMyDownloads(this.currentDisplayPage(), this.currentSearchTerm(), this.currentUuids());
+    }
   }
 
 } 

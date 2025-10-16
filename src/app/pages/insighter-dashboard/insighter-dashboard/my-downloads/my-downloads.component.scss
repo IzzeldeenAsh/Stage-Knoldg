@@ -300,23 +300,64 @@
   }
 }
 
+// Button hover states for icons
+.download-btn {
+  transition: all 0.3s ease;
+
+  &:hover:not(:disabled) {
+    i {
+      color: white !important;
+    }
+  }
+}
+
+.archive-btn {
+  transition: all 0.3s ease;
+
+  &:hover:not(:disabled) {
+    i {
+      color: white !important;
+    }
+  }
+}
+
+.toggle-archived-btn {
+  transition: all 0.3s ease;
+
+  &:hover:not(:disabled) {
+    i {
+      color: white !important;
+    }
+  }
+
+  &.active {
+    background-color: #0778b9;
+    border-color: #0778b9;
+    color: white;
+
+    i {
+      color: white !important;
+    }
+  }
+}
+
 // RTL Support
 [dir="rtl"] {
   .border-end {
     border-right: none !important;
     border-left: 1px solid #e4e6ef !important;
   }
-  
+
   .me-3 {
     margin-right: 0 !important;
     margin-left: 1rem !important;
   }
-  
+
   .ms-2 {
     margin-left: 0 !important;
     margin-right: 0.5rem !important;
   }
-  
+
   .publisher-image-container {
     .company-logo-container {
       .insighter-overlay {
@@ -326,5 +367,5 @@
       }
     }
   }
-  
+
 }

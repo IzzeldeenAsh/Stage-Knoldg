@@ -182,6 +182,37 @@ export class MeetingsService {
     );
   }
 
+  // Archive meeting
+  archiveMeeting(meetingUuid: string): Observable<any> {
+    const headers = this.getHeaders();
+    const url = `https://api.knoldg.com/api/insighter/meeting/archive/${meetingUuid}`;
+
+    this.setLoading(true);
+    return this.http.post(url, {}, { headers }).pipe(
+      map(response => response),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  // Get archived meetings
+  getArchivedMeetings(page: number = 1, perPage: number = 10): Observable<MeetingResponse> {
+    const headers = this.getHeaders();
+    const url = 'https://api.knoldg.com/api/insighter/meeting/list';
+
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('per_page', perPage.toString())
+      .set('archived', 'true');
+
+    this.setLoading(true);
+    return this.http.get<MeetingResponse>(url, { headers, params }).pipe(
+      map(response => response),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
   // Helper method to get initials from name
   getInitials(firstName: string, lastName: string): string {
     const first = firstName ? firstName.charAt(0).toUpperCase() : '';
