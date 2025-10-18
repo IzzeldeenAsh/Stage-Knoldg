@@ -1417,7 +1417,7 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
       'loading': { en: 'Loading', ar: 'جاري التحميل' },
 
       // Main titles
-      'title': { en: 'Manage your company employees', ar: 'إدارة موظفي شركتك' },
+      'title': { en: 'Manage company employees', ar: 'إدارة موظفي الشركة' },
       'subtitle': { en: 'View and manage your team members', ar: 'عرض وإدارة أعضاء فريقك' },
 
       // Actions
@@ -1467,13 +1467,13 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
 
       // Statistics
       'total': { en: 'Total', ar: 'المجموع' },
-      'publishedKnowledge': { en: 'Published Knowledge', ar: 'المعرفة المنشورة' },
-      'publishedKnowledgeByInsighter': { en: 'Published Knowledge by Insighter', ar: 'المعرفة المنشورة حسب المستشار' },
+      'publishedKnowledge': { en: 'Published Knowledge', ar: 'المعارف المنشورة' },
+      'publishedKnowledgeByInsighter': { en: 'Knowledge by Insighter', ar: "التصنيف حسب الإنسايتر" },
       'knowledgeOrders': { en: 'Knowledge Orders', ar: 'طلبات المعرفة' },
       'meetingBookings': { en: 'Meeting Bookings', ar: 'حجوزات الاجتماعات' },
       'meetingOrders': { en: 'Meeting Orders', ar: 'طلبات الاجتماعات' },
       'totalMeetings': { en: 'Total Meetings', ar: 'إجمالي الاجتماعات' },
-      'totalPublished': { en: 'Total Published', ar: 'إجمالي المنشور' },
+      'totalPublished': { en: 'Total Published', ar: 'إجمالي المنشورات' },
       'ordersAmount': { en: 'Orders Amount', ar: 'مبلغ الطلبات' },
       'companyNetShare': { en: 'Company Net Share', ar: 'حصة الشركة الصافية' }
     };
