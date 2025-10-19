@@ -273,7 +273,7 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     this.companyAccountService.getInsighters(page, this.rows).subscribe({
       next: (response) => {
         this.insighters = response.data;
-        this.gridInsighters = this.insighters.filter(ins => !Array.isArray(ins.roles) || !ins.roles.includes('company'));
+        this.gridInsighters = this.insighters;
         this.paginationMeta = response.meta;
         this.totalRecords = response.meta.total;
         this.loading = false;

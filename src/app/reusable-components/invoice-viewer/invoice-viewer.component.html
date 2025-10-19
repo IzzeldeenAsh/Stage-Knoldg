@@ -49,9 +49,9 @@
                 <div class="section-title">From:</div>
                 <div style="margin-top:6px;">
                   Foresighta Systems Consulting FZ-LLC<br/>
-                  Compass Building Al Shohada Road<br/>
+                  Compass Building, Al Shohada Road<br/>
                   AL Hamra Industrial Zone-FZ<br/>
-                  Ras Al Khaimah United Arab Emirates<br/>
+                  Ras Al Khaimah, United Arab Emirates<br/>
                   info&#64;knoldg.com<br/>
                 </div>
               </td>
@@ -85,7 +85,7 @@
                   <td class="sub-item">
                     &nbsp;&nbsp;&nbsp;&nbsp;• {{ detail.label }}
                   </td>
-                  <td class="amount">{{ detail.value }}</td>
+                  <td class="amount sub-item-amount">{{ detail.value }}</td>
                 </tr>
               </ng-container>
 
@@ -99,7 +99,7 @@
                     <td class="sub-item">
                       &nbsp;&nbsp;&nbsp;&nbsp;• 📄 {{ doc.file_name }}
                     </td>
-                    <td class="amount">${{ doc.price.toFixed(2) }}</td>
+                    <td class="amount sub-item-amount">${{ doc.price.toFixed(2) }}</td>
                   </tr>
                 </ng-container>
               </ng-container>
@@ -120,7 +120,7 @@
       </tr>
     </table>
 
-    <div class="footer">
+    <div class="footer-invoice">
       Thank you for your business © 2025 knoldg | info&#64;knoldg.com
     </div>
   </div>

@@ -163,8 +163,19 @@ export class InvoiceViewerComponent extends BaseComponent implements OnInit, OnD
     style.id = 'invoice-print-styles';
     style.type = 'text/css';
     style.innerHTML = `
+      @page {
+        margin: 0 !important;
+        padding: 0 !important;
+        size: A4 !important;
+      }
+
       @media print {
-        /* Hide navigation and layout elements only */
+        * {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
+
+        /* Hide navigation and layout elements */
         .kt_header,
         .kt_toolbar,
         .kt_aside,
@@ -186,17 +197,20 @@ export class InvoiceViewerComponent extends BaseComponent implements OnInit, OnD
         .app-nav,
         .breadcrumb,
         .page-header,
-        .no-print {
+        .no-print,
+        nav,
+        header:not(.header-cell) {
           display: none !important;
         }
 
-        /* Ensure body and main containers are visible */
+        /* Remove browser default margins and padding */
         html, body {
           margin: 0 !important;
           padding: 0 !important;
           background: white !important;
-          height: auto !important;
+          height: 100% !important;
           overflow: visible !important;
+          font-family: Arial, Helvetica, sans-serif !important;
         }
 
         /* Ensure Angular app root is visible */
@@ -204,11 +218,15 @@ export class InvoiceViewerComponent extends BaseComponent implements OnInit, OnD
           display: block !important;
           width: 100% !important;
           height: auto !important;
+          margin: 0 !important;
+          padding: 0 !important;
         }
 
         /* Ensure router outlet content is visible */
         router-outlet + * {
           display: block !important;
+          margin: 0 !important;
+          padding: 0 !important;
         }
 
         /* Ensure invoice page component is visible */
@@ -216,6 +234,8 @@ export class InvoiceViewerComponent extends BaseComponent implements OnInit, OnD
           display: block !important;
           width: 100% !important;
           height: auto !important;
+          margin: 0 !important;
+          padding: 0 !important;
         }
 
         /* Ensure invoice viewer is visible */
@@ -223,6 +243,8 @@ export class InvoiceViewerComponent extends BaseComponent implements OnInit, OnD
           display: block !important;
           width: 100% !important;
           height: auto !important;
+          margin: 0 !important;
+          padding: 0 !important;
         }
 
         /* Invoice container styling */
@@ -230,22 +252,38 @@ export class InvoiceViewerComponent extends BaseComponent implements OnInit, OnD
           display: flex !important;
           justify-content: center !important;
           align-items: flex-start !important;
-          padding: 20px !important;
+          padding: 0 !important;
+          margin: 0 !important;
           background: white !important;
           width: 100% !important;
           height: auto !important;
+          min-height: 100vh !important;
         }
 
-        .invoice-container {
+        .page, .invoice-container {
           display: flex !important;
           flex-direction: column !important;
-          width: 210mm !important;
+          width: 100% !important;
           height: auto !important;
-          min-height: 297mm !important;
+          min-height: 100vh !important;
           background: white !important;
           box-shadow: none !important;
           border-radius: 0 !important;
           margin: 0 !important;
+          padding: 0 !important;
+          overflow: visible !important;
+        }
+
+        /* Prevent page breaks within important sections */
+        .layout,
+        .header-cell,
+        .content-cell,
+        .logo-table,
+        .billing-table,
+        .services,
+        .totals,
+        .footer-invoice {
+          page-break-inside: avoid !important;
         }
       }
     `;
