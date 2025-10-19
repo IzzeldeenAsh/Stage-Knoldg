@@ -16,9 +16,12 @@
   color: #0978B9;
   transition: all 0.3s ease;
 
-  &:hover {
-    background-color: #E8F4FD;
-    color: #0978B9;
+  &:hover,
+  &:focus,
+  &:active {
+    background-color: #0978B9 !important;
+    color: #ffffff !important;
+    border-color: #0978B9 !important;
   }
 }
 
