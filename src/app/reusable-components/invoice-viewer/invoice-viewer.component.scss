@@ -2,10 +2,11 @@
 .invoice-viewer-container {
   padding: 3rem 2rem 2rem 2rem;
   background: #f5f8fa;
-  min-height: 100vh;
+  min-height: 94vh;
   position: relative;
   display: flex;
   flex-direction: column;
+  max-height: 94vh;
 }
 
 // Page container sized to A4 printable area (210mm - 2*10mm = 190mm width)
@@ -122,6 +123,10 @@
   text-align: right;
 }
 
+.services td.amount.sub-item-amount {
+  background-color: #f8f9fa;
+}
+
 .sub-item {
   padding-left: 40px;
   font-size: 12px;
@@ -175,14 +180,13 @@
 }
 
 // Footer (kept in its own bottom row so it always sits at page bottom)
-.footer {
+.footer-invoice {
   position: absolute;
   bottom: 14px;
   text-align: center;
   font-size: 12px;
   color: #999;
   padding-top: 8px;
-  border-top: 1px solid #eee;
   left: 50%;
   transform: translate(-50%, -50%);
 }
@@ -245,39 +249,53 @@
   }
 }
 
-// Print styles
+// Print styles with @page configuration
+@page {
+  margin: 0 !important;
+  padding: 0 !important;
+  size: A4 !important;
+}
+
 @media print {
   * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
 
-  body {
+  html, body {
     margin: 0 !important;
     padding: 0 !important;
     background: white !important;
     font-family: Arial, Helvetica, sans-serif !important;
+    height: 100% !important;
+    overflow: visible !important;
   }
 
   .invoice-viewer-container {
     background: white !important;
     padding: 0 !important;
+    margin: 0 !important;
     min-height: auto !important;
     position: static !important;
+    width: 100% !important;
+    height: auto !important;
   }
 
   .page {
     width: 100% !important;
-    height: 100vh !important;
+    height: auto !important;
+    min-height: 100vh !important;
     max-height: none !important;
     box-shadow: none !important;
     border-radius: 0 !important;
     margin: 0 !important;
+    padding: 0 !important;
     transform: none !important;
     page-break-after: avoid !important;
     page-break-inside: avoid !important;
     position: relative !important;
     overflow: visible !important;
+    background: white !important;
   }
 
   .header {

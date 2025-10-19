@@ -37,7 +37,11 @@ export interface InsighterWalletDetails {
   account_phone_code: string | null;
   account_phone: string | null;
   bank_name: string | null;
-  bank_country: string | null;
+  bank_country: {
+    id: number;
+    name: string;
+    flag: string;
+  } | null;
   bank_address: string | null;
   bank_iban: string | null;
   bank_swift_code: string | null;
@@ -190,6 +194,18 @@ export class FundService {
 
     return this.http.get<{data: InsighterWalletDetails[]}>(`${this.baseUrl}/insighter/payment/manual/${insighterId}`, { headers }).pipe(
       map(response => response.data[0]),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  sendTransferFormToEmail(insighterId: number, email: string): Observable<any> {
+    const headers = this.getHeaders();
+    this.setLoading(true);
+
+    const body = { email };
+
+    return this.http.post(`${this.baseUrl}/insighter/send/transfer-form-email/${insighterId}`, body, { headers }).pipe(
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );
