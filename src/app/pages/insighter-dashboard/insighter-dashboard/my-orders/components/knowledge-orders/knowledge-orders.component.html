@@ -7,14 +7,14 @@
             class="nested-tab-button"
             [ngClass]="{ 'active': knowledgeSubTab === 'purchased' }"
             (click)="changeSubTab('purchased')">
-            {{ lang === 'ar' ? 'الطلبات المشتراة' : 'Purchased' }}
+            {{ lang === 'ar' ? 'مشتريات' : 'Purchased' }}
           </button>
           <button
             type="button"
             class="nested-tab-button"
             [ngClass]="{ 'active': knowledgeSubTab === 'sales' }"
             (click)="changeSubTab('sales')">
-            {{ lang === 'ar' ? 'طلبات المبيعات' : 'Sold' }}
+            {{ lang === 'ar' ? 'المبيعات' : 'Sold' }}
           </button>
         </div>
       </div>
@@ -164,7 +164,7 @@
                 
             </div>
           </div>
-          <h5 class="mb-3">{{ lang === 'ar' ? 'لا توجد طلبات' : 'No Orders Found' }}</h5>
+          <h5 class="mb-3">{{ lang === 'ar' ? 'لا توجد مشتريات' : 'No Orders Found' }}</h5>
           <p class="text-muted">
             {{ lang === 'ar' ? 'لم تقم بأي طلبات بعد' : 'You haven\'t placed any orders yet.' }}
           </p>
@@ -342,7 +342,7 @@
                   <i class="ki-outline ki-chart-line fs-2 text-success"></i>
                 </div>
               </div>
-              <h5 class="mb-3">{{ lang === 'ar' ? 'لا توجد طلبات مبيعات' : 'No Sales Orders Found' }}</h5>
+              <h5 class="mb-3">{{ lang === 'ar' ? "لا توجد مبيعات" : 'No Sales Orders Found' }}</h5>
               <p class="text-muted">
                 {{ lang === 'ar' ? 'لم تقم بأي مبيعات بعد' : 'You have no sales orders yet.' }}
               </p>

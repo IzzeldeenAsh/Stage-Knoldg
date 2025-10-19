@@ -567,7 +567,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
     },
     "DEACTIVATE_ACCOUNT_WITH_DELETE": {
     "TITLE": "Delete Account",
-    "DESCRIPTION": "<div class='d-flex align-items-center'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Data will be permanently erased</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Account will no longer be visible</span></div>",
+    "DESCRIPTION": "<div class='d-flex align-items-center'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Data will be permanently erased</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Account will no longer be visible</span></div><div class='d-flex align-items-center mt-2'><i class='fa-sharp fa-solid fa-circle fs-10 me-2'></i><span>Your account will be permanently deleted Your account will be permanently deleted</span></div>",
     "BUTTON_TEXT": "Request Account Deletion",
     "PENDING_REQUEST": "Deletion Request Pending",
     "ILLUSTRATION_ALT": "Account deletion illustration",
