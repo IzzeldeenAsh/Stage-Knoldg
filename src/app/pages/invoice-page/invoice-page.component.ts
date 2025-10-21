@@ -40,49 +40,78 @@ export class InvoicePageComponent extends BaseComponent implements OnInit {
     this.isLoading = true;
     this.error = null;
 
-    // Load both order data and user profile
-    forkJoin({
-      orders: this.myOrdersService.getOrders(1).pipe(
-        catchError(() => of({ data: [], meta: { last_page: 1 } }))
-      ),
-      meetingOrders: this.myOrdersService.getMeetingOrders(1).pipe(
-        catchError(() => of({ data: [], meta: { last_page: 1 } }))
-      ),
-      userProfile: this.profileService.getProfile().pipe(
-        catchError(() => of(null))
-      )
-    }).subscribe({
-      next: ({ orders, meetingOrders, userProfile }) => {
-        // Find the order by order number
-        let foundOrder = orders.data.find(order =>
-          order.order_no === orderNo || order.invoice_no === orderNo
-        );
+    // First get user profile to determine role
+    this.profileService.getProfile().subscribe({
+      next: (userProfile) => {
+        const userRoles = userProfile?.roles || [];
+        const isCompany = userRoles.includes('company');
+        const salesRole: 'company' | 'insighter' = isCompany ? 'company' : 'insighter';
 
-        if (!foundOrder) {
-          foundOrder = meetingOrders.data.find(order =>
-            order.order_no === orderNo || order.invoice_no === orderNo
-          );
-        }
+        // Load order data from all sources
+        forkJoin({
+          orders: this.myOrdersService.getOrders(1).pipe(
+            catchError(() => of({ data: [], meta: { last_page: 1 } }))
+          ),
+          meetingOrders: this.myOrdersService.getMeetingOrders(1).pipe(
+            catchError(() => of({ data: [], meta: { last_page: 1 } }))
+          ),
+          salesKnowledgeOrders: this.myOrdersService.getSalesKnowledgeOrders(1, salesRole).pipe(
+            catchError(() => of({ data: [], meta: { last_page: 1 } }))
+          ),
+          salesMeetingOrders: this.myOrdersService.getSalesMeetingOrders(1, salesRole).pipe(
+            catchError(() => of({ data: [], meta: { last_page: 1 } }))
+          )
+        }).subscribe({
+          next: ({ orders, meetingOrders, salesKnowledgeOrders, salesMeetingOrders }) => {
+            // Find the order by order number in all order types
+            let foundOrder = orders.data.find(order =>
+              order.order_no === orderNo || order.invoice_no === orderNo
+            );
 
-        if (foundOrder) {
-          this.invoiceData = {
-            order_no: foundOrder.order_no,
-            invoice_no: foundOrder.invoice_no,
-            date: foundOrder.date,
-            amount: foundOrder.amount,
-            service: foundOrder.service,
-            orderable: foundOrder.orderable,
-            userProfile: userProfile
-          };
-        } else {
-          this.error = this.lang === 'ar' ? 'الطلب غير موجود' : 'Order not found';
-        }
+            if (!foundOrder) {
+              foundOrder = meetingOrders.data.find(order =>
+                order.order_no === orderNo || order.invoice_no === orderNo
+              );
+            }
 
-        this.isLoading = false;
+            if (!foundOrder) {
+              foundOrder = salesKnowledgeOrders.data.find(order =>
+                order.order_no === orderNo || order.invoice_no === orderNo
+              );
+            }
+
+            if (!foundOrder) {
+              foundOrder = salesMeetingOrders.data.find(order =>
+                order.order_no === orderNo || order.invoice_no === orderNo
+              );
+            }
+
+            if (foundOrder) {
+              this.invoiceData = {
+                order_no: foundOrder.order_no,
+                invoice_no: foundOrder.invoice_no,
+                date: foundOrder.date,
+                amount: foundOrder.amount,
+                service: foundOrder.service,
+                orderable: foundOrder.orderable,
+                userProfile: userProfile
+              };
+            } else {
+              this.error = this.lang === 'ar' ? 'الطلب غير موجود' : 'Order not found';
+            }
+
+            this.isLoading = false;
+          },
+          error: (error) => {
+            console.error('Error loading invoice data:', error);
+            this.error = this.lang === 'ar' ? 'خطأ في تحميل بيانات الفاتورة' : 'Error loading invoice data';
+            this.isLoading = false;
+          }
+        });
       },
       error: (error) => {
-        console.error('Error loading invoice data:', error);
-        this.error = this.lang === 'ar' ? 'خطأ في تحميل بيانات الفاتورة' : 'Error loading invoice data';
+        console.error('Error loading user profile:', error);
+        this.error = this.lang === 'ar' ? 'خطأ في تحميل بيانات المستخدم' : 'Error loading user profile';
         this.isLoading = false;
       }
     });

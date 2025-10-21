@@ -7,6 +7,9 @@
 .app-container{
     transform: translate(10px, -50px);
     border-radius: 10px;
+    @media screen and (max-width: 992px) {
+        transform: translate(0px, 0px);
+    }
 }
 #kt_app_toolbar_container {
     padding-inline: 1rem;
@@ -101,6 +104,9 @@
       // Ensure full width usage for table components
       max-width: 100%;
       overflow: hidden;
+    }
+    @media screen and (max-width: 992px) {
+      padding: 0px 20px;
     }
 }
 .navigation-cards .p-card{
