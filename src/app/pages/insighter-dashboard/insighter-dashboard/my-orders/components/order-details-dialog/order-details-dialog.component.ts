@@ -42,4 +42,18 @@ export class OrderDetailsDialogComponent {
     const svgContent = this.utils.getCardLogoSvgContent(payment || null);
     return this.sanitizer.bypassSecurityTrustHtml(svgContent);
   }
+
+  getInsighterInitials(insighter: any): string {
+    if (!insighter?.name) {
+      return '';
+    }
+
+    const nameParts = insighter.name.trim().split(' ');
+
+    if (nameParts.length >= 2) {
+      return (nameParts[0].charAt(0) + nameParts[nameParts.length - 1].charAt(0)).toUpperCase();
+    } else {
+      return nameParts[0].charAt(0).toUpperCase();
+    }
+  }
 }
