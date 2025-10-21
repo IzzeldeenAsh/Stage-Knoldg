@@ -46,6 +46,13 @@ export interface PaymentInfo {
   confirmed_at: string;
 }
 
+export interface Company {
+  uuid: string;
+  legal_name: string;
+  logo: string;
+  verified: boolean;
+}
+
 export interface User {
   name: string;
   email: string;
@@ -54,6 +61,7 @@ export interface User {
   profile_photo_url: string;
   roles: string[];
   uuid: string;
+  company?: Company;
 }
 
 export interface Order {

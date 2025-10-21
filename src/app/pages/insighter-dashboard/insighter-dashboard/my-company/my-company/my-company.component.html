@@ -185,7 +185,7 @@
     <!-- Empty state - only show if no insighters -->
     <div *ngIf="!loading && (!insighters || insighters.length === 0)" class="d-flex flex-column align-items-center justify-content-center py-8">
       <div class="symbol symbol-200px symbol-circle mb-7">
-        <img src="./assets/media/illustrations/sigma-1/5568706.jpg" alt="company image" />
+        <img src="./assets/media/illustrations/sigma-1/5568706.jpg" alt="company image"  />
       </div>
       <h2 class="fw-bold text-gray-800">{{ getTranslation('addEmployee') }}</h2>
       <div class="fs-6 mb-5 text-gray-600">
@@ -457,11 +457,11 @@
         </div>
         
         <!-- Pagination for Table View -->
-        <div class="d-flex justify-content-between align-items-center flex-wrap mt-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap mt-4" *ngIf="paginationMeta && paginationMeta.last_page > 1">
           <div class="d-flex flex-wrap py-2">
-            <p-paginator 
-              [rows]="rows" 
-              [totalRecords]="totalRecords" 
+            <p-paginator
+              [rows]="rows"
+              [totalRecords]="totalRecords"
               [first]="first"
               [showCurrentPageReport]="true"
               currentPageReportTemplate="{{ 'MY_COMPANY.SHOWING_ENTRIES' | translate:{first: '{first}', last: '{last}', total: '{totalRecords}'} }}"
@@ -511,7 +511,7 @@
                                 *ngIf="(insighter.roles && insighter.roles.includes('company') && insighter.company && insighter.company.status === 'inactive' ||
                                          (!insighter.roles || !insighter.roles.includes('company')) && insighter.insighter_status === 'inactive')"
                                 (click)="activateInsighter(insighter.id)">
-                          <i class="ki-duotone ki-check"></i>
+                          <i class="pi pi-check-circle"></i>
                           <span>{{ 'MY_COMPANY.ACTIVATE' | translate }}</span>
                         </button>
 
@@ -520,14 +520,14 @@
                                 *ngIf="(insighter.roles && insighter.roles.includes('company') && insighter.company && insighter.company.status === 'active' ||
                                          (!insighter.roles || !insighter.roles.includes('company')) && insighter.insighter_status === 'active' && insighter.verified_as_insighter)"
                                 (click)="deactivateInsighter(insighter.id)">
-                          <i class="ki-duotone ki-shield-slash"></i>
+                          <i class="pi pi-ban"></i>
                           <span>{{ 'MY_COMPANY.DEACTIVATE' | translate }}</span>
                         </button>
 
                         <button type="button"
                                 class="dropdown-item menu-action menu-action--delete"
                                 (click)="deleteInsighter(insighter.id)">
-                          <i class="ki-duotone ki-trash"></i>
+                          <i class="pi pi-trash"></i>
                           <span>{{ 'MY_COMPANY.DELETE' | translate }}</span>
                         </button>
                       </div>
@@ -576,6 +576,7 @@
                           *ngIf="insighter.profile_photo_url"
                           [src]="insighter.profile_photo_url"
                           alt="insighter"
+                          style="object-fit: cover; object-position: top;"
                           class="avatar-image" />
                       </a>
                     </div>
@@ -657,7 +658,7 @@
           </div>
 
           <!-- Pagination for Grid View -->
-          <div class="d-flex justify-content-between align-items-center flex-wrap mt-4">
+          <div class="d-flex justify-content-between align-items-center flex-wrap mt-4" *ngIf="paginationMeta && paginationMeta.last_page > 1">
             <div class="d-flex flex-wrap py-2">
               <p-paginator
                 [rows]="rows"
