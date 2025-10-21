@@ -21,6 +21,8 @@ export class CompanyMyDashboardComponent extends BaseComponent implements OnInit
   publishedKnowledgeChartData: any = null;
   publishedKnowledgeChartOptions: any = null;
   publishedKnowledgeLegend: Array<{ labelKey: string; color: string }> = [];
+  isArabicAndNotRtl: boolean = false;
+
   private readonly knowledgeTypeColors: Record<string, string> = {
     insight: '#0a7abf',
     report: '#3b9ae1',
@@ -41,6 +43,9 @@ export class CompanyMyDashboardComponent extends BaseComponent implements OnInit
   ngOnInit(): void {
     this.getUserRole();
     this.loadDashboardStatistics();
+    const isArabic = this.lang === 'ar';
+    const isRtlModeActive = false; 
+    this.isArabicAndNotRtl = isArabic && !isRtlModeActive;
   }
   
   getUserRole(): void {

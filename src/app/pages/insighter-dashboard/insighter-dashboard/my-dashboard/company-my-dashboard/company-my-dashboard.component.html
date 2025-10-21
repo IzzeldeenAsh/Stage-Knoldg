@@ -95,6 +95,7 @@
             <p
               class="text-start text-gray-800 pb-4 fw-semibold fs-5"
               [innerHTML]="'BUILD_YOUR_TEAM_DESCRIPTION' | translate"
+              [ngClass]="{ 'force-text-align-right': isArabicAndNotRtl }"
             ></p>
           </div>
           <div>
