@@ -15,7 +15,7 @@
 // Statistics cards gradient styling
 .row.mb-5 .card {
   background: linear-gradient(135deg, #ffffff 0%, #f8faff 50%, #f0f4ff 100%);
-  border: 1px solid #e8eafd;
+  border: 1px solid #ddd;
 
   .h1 {
     background: linear-gradient(135deg, #0563eb 0%, #06dac4 100%);
@@ -76,7 +76,7 @@
 .card.light-sales-gradient-bg {
   background-image: linear-gradient(to bottom right, #fff , #eceefd) !important;
   color: #4f28ed !important;
-  border: 1px solid #e8eafd !important;
+  border: 1px solid #ddd !important;
 
   .card-title, .card-label {
     text-align: start !important;

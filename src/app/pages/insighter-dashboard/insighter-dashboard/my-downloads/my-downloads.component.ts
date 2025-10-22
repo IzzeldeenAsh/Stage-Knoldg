@@ -491,6 +491,13 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
             newItems.delete(knowledge.uuid);
             return newItems;
           });
+
+          // Unselect the knowledge if it was selected
+          if (this.selectedKnowledge()?.uuid === knowledge.uuid) {
+            this.selectedKnowledge.set(null);
+            this.selectedDocument.set(null);
+          }
+
           // Reload current downloads
           this.reloadCurrentDownloads();
         },

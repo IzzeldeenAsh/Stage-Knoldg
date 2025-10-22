@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, inject, DestroyRef, signal, computed } from '@angular/core';
-import { Subject, take, takeUntil } from 'rxjs';
+import { Subject, take, takeUntil, forkJoin } from 'rxjs';
 import { MeetingsService, Meeting, MeetingResponse } from '../../../../_fake/services/meetings/meetings.service';
+import { SentMeetingsService, SentMeeting, SentMeetingResponse, AvailableHoursResponse, AvailableDay, AvailableTime, RescheduleRequest } from '../../../../_fake/services/meetings/sent-meetings.service';
 import { Router } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -11,7 +12,7 @@ import { TruncateTextPipe } from 'src/app/pipes/truncate-pipe/truncate-text.pipe
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslationModule } from 'src/app/modules/i18n';
 import { BaseComponent } from 'src/app/modules/base.component';
-type TabType = 'pending' | 'approved' | 'postponed' | 'upcoming' | 'past';
+type TabType = 'pending' | 'approved' | 'postponed' | 'upcoming' | 'past' | 'coming';
 @Component({
   selector: 'app-my-meetings',
   templateUrl: './my-meetings.component.html',
@@ -31,73 +32,129 @@ type TabType = 'pending' | 'approved' | 'postponed' | 'upcoming' | 'past';
 })
 export class MyMeetingsComponent extends BaseComponent implements OnInit {
 [x: string]: any;
-  meetings = signal<Meeting[]>([]); 
+  activeTab: 'client-meetings' | 'my-meetings' = 'client-meetings';
+  clientMeetingsSubTab: 'coming' | 'past' = 'coming';
+  myMeetingsSubTab: 'coming' | 'past' = 'coming';
+
+  // Client meetings (my-meetings) state
+  meetings = signal<Meeting[]>([]);
   loading = signal<boolean>(false);
   currentPage=signal<number>(1);
   totalPages = signal<number>(1);
   totalItems = signal<number>(0);
   perPage = signal<number>(10);
-  
-  // Computed signal for page numbers
-  pageNumbers = computed(() => {
-    const pages: number[] = [];
-    const totalPages = this.showArchivedMeetings() ? this.archivedTotalPages() : this.totalPages();
-    for (let i = 1; i <= totalPages; i++) {
-      pages.push(i);
-    }
-    return pages;
-  });
 
-  // Computed signal for current page
-  currentDisplayPage = computed(() => {
-    return this.showArchivedMeetings() ? this.archivedCurrentPage() : this.currentPage();
-  });
+  // Sent meetings (my-meetings) state
+  sentMeetings = signal<SentMeeting[]>([]);
+  sentLoading = signal<boolean>(false);
+  sentCurrentPage = signal<number>(1);
+  sentTotalPages = signal<number>(1);
+  sentTotalItems = signal<number>(0);
 
-  // Computed signal for total pages
-  currentTotalPages = computed(() => {
-    return this.showArchivedMeetings() ? this.archivedTotalPages() : this.totalPages();
-  });
+  get currentLang(): 'ar' | 'en' {
+    return this.lang === 'ar' ? 'ar' : 'en';
+  }
 
-  // Computed signal for total items
-  currentTotalItems = computed(() => {
-    return this.showArchivedMeetings() ? this.archivedTotalItems() : this.totalItems();
-  });
-  
   // Filter tabs
-  selectedTab = signal<TabType>('upcoming');
+  selectedTab = signal<TabType>('coming');
 
-  // Archived meetings state
+  // Client meetings archived state
   showArchivedMeetings = signal<boolean>(false);
   archivedMeetings = signal<Meeting[]>([]);
   archivedCurrentPage = signal<number>(1);
   archivedTotalPages = signal<number>(1);
   archivedTotalItems = signal<number>(0);
 
+  // Sent meetings archived state
+  sentShowArchivedMeetings = signal<boolean>(false);
+  sentArchivedMeetings = signal<SentMeeting[]>([]);
+  sentArchivedCurrentPage = signal<number>(1);
+  sentArchivedTotalPages = signal<number>(1);
+  sentArchivedTotalItems = signal<number>(0);
+
   
-  // Dialog properties
+  // Dialog properties for client meetings
   selectedMeeting = signal<Meeting | null> (null);
   approveNotes= signal<string>('');
   postponeNotes = signal<string>('');
   actionLoading = signal<boolean>(false);
   showApproveDialog = signal<boolean>(false);
   showPostponeDialog = signal<boolean>(false);
-  
+
+  // Sent meetings reschedule modal properties
+  showRescheduleModal = signal<boolean>(false);
+  selectedMeetingForReschedule = signal<SentMeeting | null>(null);
+  availableDays = signal<AvailableDay[]>([]);
+  selectedDate = signal<string>('');
+  selectedCalendarDate = signal<Date | null>(null);
+  selectedTimeSlot = signal<AvailableTime | null>(null);
+  rescheduleLoading = signal<boolean>(false);
+  minDate = signal<Date>(new Date());
+  maxDate = signal<Date>(new Date(new Date().setMonth(new Date().getMonth() + 3)));
+
+  // Custom calendar properties
+  currentMonth = signal<Date>(new Date());
+  currentYear = signal<number>(new Date().getFullYear());
+  currentMonthName = signal<string>('');
+  monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'];
+
   // Math reference for template
   Math = Math;
 
   private meetingsService= inject(MeetingsService);
+  private sentMeetingsService = inject(SentMeetingsService);
   private router=inject(Router);
   private destroyRef = inject(DestroyRef);
 
 
 
   ngOnInit(): void {
-    this.loadMeetings();
-    
-    // Subscribe to loading state
+    this.updateCurrentMonthName();
+    this.loadCurrentTabData();
+
+    // Subscribe to loading states
     this.meetingsService.isLoading$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(loading => this.loading.set(loading));
+
+    this.sentMeetingsService.isLoading$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(loading => this.sentLoading.set(loading));
+  }
+
+  setActiveTab(tab: 'client-meetings' | 'my-meetings'): void {
+    this.activeTab = tab;
+    if (tab === 'client-meetings') {
+      this.selectedTab.set(this.clientMeetingsSubTab);
+    } else {
+      this.selectedTab.set(this.myMeetingsSubTab);
+    }
+    this.showArchivedMeetings.set(false);
+    this.sentShowArchivedMeetings.set(false);
+    this.loadCurrentTabData();
+  }
+
+  setClientMeetingsSubTab(tab: 'coming' | 'past'): void {
+    this.clientMeetingsSubTab = tab;
+    this.selectedTab.set(tab);
+    this.showArchivedMeetings.set(false);
+    this.loadCurrentTabData();
+  }
+
+  setMyMeetingsSubTab(tab: 'coming' | 'past'): void {
+    this.myMeetingsSubTab = tab;
+    this.selectedTab.set(tab);
+    this.sentShowArchivedMeetings.set(false);
+    this.loadCurrentTabData();
+  }
+
+  private loadCurrentTabData(): void {
+    if (this.activeTab === 'client-meetings') {
+      this.loadMeetings();
+    } else {
+      this.loadSentMeetings();
+    }
   }
 
   goToClientProfile(meeting: Meeting): void {
@@ -125,14 +182,51 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
       });
   }
 
-  onTabChange(tab: TabType): void {
-     this.selectedTab.set(tab);
-     this.showArchivedMeetings.set(false);
-     this.loadMeetings(1);
+  loadSentMeetings(page: number = 1): void {
+    this.sentCurrentPage.set(page);
+    if (this.selectedTab() === 'coming') {
+      this.sentLoading.set(true);
+
+      const upcoming$ = this.sentMeetingsService.getSentMeetings(page, this.perPage(), 'upcoming');
+      const approved$ = this.sentMeetingsService.getSentMeetings(page, this.perPage(), undefined);
+
+      // Combine both results
+      forkJoin([upcoming$, approved$])
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: ([upcomingRes, approvedRes]) => {
+            const approvedMeetings = approvedRes.data.filter(m => m.status === 'approved');
+            this.sentMeetings.set([...upcomingRes.data, ...approvedMeetings]);
+            this.sentTotalPages.set(upcomingRes.meta.last_page);
+            this.sentTotalItems.set(upcomingRes.meta.total + approvedMeetings.length);
+            this.sentCurrentPage.set(upcomingRes.meta.current_page);
+            this.sentLoading.set(false);
+          },
+          error: (error) => {
+            console.error('Error loading coming meetings:', error);
+            this.sentLoading.set(false);
+          }
+        });
+    } else {
+      const dateStatus = this.getSentMeetingsDateStatusFilter();
+      this.sentMeetingsService.getSentMeetings(page, this.perPage(), dateStatus)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (response: SentMeetingResponse) => {
+            this.sentMeetings.set(response.data);
+            this.sentTotalPages.set(response.meta.last_page);
+            this.sentTotalItems.set(response.meta.total);
+            this.sentCurrentPage.set(response.meta.current_page);
+          },
+          error: (error) => {
+            console.error('Error loading sent meetings:', error);
+          }
+        });
+    }
   }
 
-  getDateStatusFilter(): string | undefined {
-    if (this.selectedTab() === 'upcoming') {
+  getSentMeetingsDateStatusFilter(): string | undefined {
+    if (this.selectedTab() === 'coming') {
       return 'upcoming';
     } else if (this.selectedTab() === 'past') {
       return 'past';
@@ -140,16 +234,40 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
     return undefined;
   }
 
-  getFilteredMeetings(): Meeting[] {
+  onTabChange(tab: TabType): void {
+    this.selectedTab.set(tab);
+    this.showArchivedMeetings.set(false);
+    this.sentShowArchivedMeetings.set(false);
+    this.loadCurrentTabData();
+  }
+
+  getDateStatusFilter(): string | undefined {
+    if (this.selectedTab() === 'coming') {
+      return 'upcoming';
+    } else if (this.selectedTab() === 'past') {
+      return 'past';
+    }
+    return undefined;
+  }
+
+  getFilteredMeetings(): (Meeting | SentMeeting)[] {
+    if (this.activeTab === 'client-meetings') {
+      return this.getFilteredClientMeetings();
+    } else {
+      return this.getFilteredSentMeetings();
+    }
+  }
+
+  getFilteredClientMeetings(): Meeting[] {
     let filteredMeetings: Meeting[] = [];
 
     // If showing archived meetings, return archived meetings
     if (this.selectedTab() === 'past' && this.showArchivedMeetings()) {
       filteredMeetings = this.archivedMeetings();
-    } else if(this.selectedTab() === 'upcoming' || this.selectedTab() === 'past'){
-      // date based (upcoming,past) // backend filter
+    } else if(this.selectedTab() === 'coming' || this.selectedTab() === 'past'){
+      // date based (coming,past) // backend filter
       filteredMeetings = this.meetings();
-    }else{
+    } else {
       // status-based tabs ( pending , approved , postponed)
       filteredMeetings = this.meetings().filter((meeting:Meeting)=>(meeting.status === this.selectedTab()))
     }
@@ -159,15 +277,89 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
     const dateB = new Date(b.date).getTime();
     return dateA-dateB
    })
+  }
 
+  getFilteredSentMeetings(): SentMeeting[] {
+    let filteredMeetings: SentMeeting[] = [];
+
+    // If showing archived meetings, return archived meetings
+    if (this.selectedTab() === 'past' && this.sentShowArchivedMeetings()) {
+      filteredMeetings = this.sentArchivedMeetings();
+    } else if (this.selectedTab() === 'coming' || this.selectedTab() === 'past') {
+      // For date-based tabs (coming/past), the filtering is done on the backend
+      filteredMeetings = this.sentMeetings();
+    } else {
+      // For status-based tabs (pending, approved, postponed)
+      filteredMeetings = this.sentMeetings().filter(meeting => meeting.status === this.selectedTab());
+    }
+    // Sort by date (closest meetings first)
+    return filteredMeetings.sort((a, b) => {
+      const dateA = new Date(a.date).getTime();
+      const dateB = new Date(b.date).getTime();
+      return dateA - dateB;
+    });
   }
 
   onPageChange(page: number): void {
+    if (this.activeTab === 'client-meetings') {
+      if (this.showArchivedMeetings()) {
+        this.loadArchivedMeetings(page);
+      } else {
+        this.loadMeetings(page);
+      }
+    } else {
+      if (this.sentShowArchivedMeetings()) {
+        this.loadSentArchivedMeetings(page);
+      } else {
+        this.loadSentMeetings(page);
+      }
+    }
+  }
+
+  onClientMeetingsPageChange(page: number): void {
     if (this.showArchivedMeetings()) {
       this.loadArchivedMeetings(page);
     } else {
       this.loadMeetings(page);
     }
+  }
+
+  onMyMeetingsPageChange(page: number): void {
+    if (this.sentShowArchivedMeetings()) {
+      this.loadSentArchivedMeetings(page);
+    } else {
+      this.loadSentMeetings(page);
+    }
+  }
+
+  getSentPageNumbers(): number[] {
+    const pages: number[] = [];
+    const totalPages = this.sentShowArchivedMeetings() ? this.sentArchivedTotalPages() : this.sentTotalPages();
+    for (let i = 1; i <= totalPages; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+
+  getSentCurrentPage(): number {
+    return this.sentShowArchivedMeetings() ? this.sentArchivedCurrentPage() : this.sentCurrentPage();
+  }
+
+  getClientPageNumbers(): number[] {
+    const pages: number[] = [];
+    const totalPages = this.showArchivedMeetings() ? this.archivedTotalPages() : this.totalPages();
+    for (let i = 1; i <= totalPages; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+
+  getClientCurrentPage(): number {
+    return this.showArchivedMeetings() ? this.archivedCurrentPage() : this.currentPage();
+  }
+
+  getClientTotalPages(): number {
+    return this.showArchivedMeetings() ? this.archivedTotalPages() : this.totalPages();
   }
 
   getStatusClass(status: string): string {
@@ -185,6 +377,13 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
 
   getInitials(firstName: string, lastName: string): string {
     return this.meetingsService.getInitials(firstName, lastName);
+  }
+
+  getSentMeetingInitials(name: string): string {
+    const names = name.split(' ');
+    const firstName = names[0] || '';
+    const lastName = names[1] || '';
+    return this.sentMeetingsService.getInitials(name);
   }
 
   formatTime(time: string): string {
@@ -213,7 +412,7 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
     return date.getDate().toString();
   }
 
-  isClosestMeeting(meeting: Meeting, index: number): boolean {
+  isClosestMeeting(meeting: Meeting | SentMeeting, index: number): boolean {
     const filteredMeetings = this.getFilteredMeetings();
     // Only the first meeting (closest) gets the orange color
     return index === 0 && filteredMeetings.length > 0;
@@ -358,19 +557,6 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
       });
   }
 
-  /**
-   * Toggle between past meetings and archived meetings
-   */
-  toggleArchivedMeetings(): void {
-    const newState = !this.showArchivedMeetings();
-    this.showArchivedMeetings.set(newState);
-
-    if (newState) {
-      this.loadArchivedMeetings(1);
-    } else {
-      this.loadMeetings(1);
-    }
-  }
 
   /**
    * Load archived meetings
@@ -391,5 +577,273 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
           this.handleServerErrors(error);
         }
       });
+  }
+
+  // Sent meetings methods
+  goToInsighterProfile(insighterUuid: string): void {
+    const currentLocale = localStorage.getItem('language') || 'en';
+    window.location.href = `http://localhost:3000/${currentLocale}/profile/${insighterUuid}?entity=insighter&tab=meet`;
+  }
+
+  canJoinMeeting(meeting: SentMeeting): boolean {
+    return this.selectedTab() !== 'past' && meeting.status === 'approved';
+  }
+
+  canRescheduleMeeting(meeting: SentMeeting): boolean {
+    return meeting.status === 'postponed';
+  }
+
+  openRescheduleModal(meeting: SentMeeting): void {
+    this.selectedMeetingForReschedule.set(meeting);
+    this.showRescheduleModal.set(true);
+    this.loadAvailableHours(meeting.insighter.uuid);
+  }
+
+  closeRescheduleModal(): void {
+    this.showRescheduleModal.set(false);
+    this.selectedMeetingForReschedule.set(null);
+    this.availableDays.set([]);
+    this.selectedDate.set('');
+    this.selectedCalendarDate.set(null);
+    this.selectedTimeSlot.set(null);
+  }
+
+  loadAvailableHours(insighterUuid: string): void {
+    this.rescheduleLoading.set(true);
+    this.sentMeetingsService.getAvailableHours(insighterUuid)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response: AvailableHoursResponse) => {
+          this.availableDays.set(response.data);
+          this.rescheduleLoading.set(false);
+        },
+        error: (error) => {
+          console.error('Error loading available hours:', error);
+          this.rescheduleLoading.set(false);
+        }
+      });
+  }
+
+  selectDate(date: string): void {
+    this.selectedDate.set(date);
+    this.selectedTimeSlot.set(null);
+  }
+
+  selectTimeSlot(timeSlot: AvailableTime): void {
+    this.selectedTimeSlot.set(timeSlot);
+  }
+
+  isDifferentTime(): boolean {
+    const selectedMeeting = this.selectedMeetingForReschedule();
+    const selectedTime = this.selectedTimeSlot();
+    const selectedDateValue = this.selectedDate();
+
+    if (!selectedMeeting || !selectedTime || !selectedDateValue) {
+      return false;
+    }
+
+    const currentDate = selectedMeeting.date;
+    const currentStartTime = selectedMeeting.start_time;
+    const currentEndTime = selectedMeeting.end_time;
+
+    return !(selectedDateValue === currentDate &&
+             selectedTime.start_time === currentStartTime &&
+             selectedTime.end_time === currentEndTime);
+  }
+
+  getAvailableTimesForDate(date: string): AvailableTime[] {
+    const day = this.availableDays().find(d => d.date === date);
+    return day ? day.times : [];
+  }
+
+  isDateActive(date: string): boolean {
+    const day = this.availableDays().find(d => d.date === date);
+    return day ? day.active : false;
+  }
+
+  formatDateForDisplay(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric'
+    });
+  }
+
+  formatTimeForDisplay(time: string): string {
+    const [hours, minutes] = time.split(':');
+    return `${hours}:${minutes}`;
+  }
+
+  confirmReschedule(): void {
+    const selectedMeeting = this.selectedMeetingForReschedule();
+    const selectedTime = this.selectedTimeSlot();
+    const selectedDateValue = this.selectedDate();
+
+    if (!selectedMeeting || !selectedTime || !selectedDateValue || !this.isDifferentTime()) {
+      return;
+    }
+
+    const rescheduleData: RescheduleRequest = {
+      meeting_date: selectedDateValue,
+      start_time: selectedTime.start_time.substring(0, 5),
+      end_time: selectedTime.end_time.substring(0, 5)
+    };
+
+    this.rescheduleLoading.set(true);
+    this.sentMeetingsService.rescheduleMeeting(selectedMeeting.uuid, rescheduleData)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          console.log('Meeting rescheduled successfully:', response);
+          this.closeRescheduleModal();
+          this.loadSentMeetings(this.sentCurrentPage());
+          this.rescheduleLoading.set(false);
+        },
+        error: (error) => {
+          console.error('Error rescheduling meeting:', error);
+          this.rescheduleLoading.set(false);
+        }
+      });
+  }
+
+  // Calendar methods
+  updateCurrentMonthName(): void {
+    const currentMonthValue = this.currentMonth();
+    this.currentMonthName.set(this.monthNames[currentMonthValue.getMonth()]);
+    this.currentYear.set(currentMonthValue.getFullYear());
+  }
+
+  previousMonth(): void {
+    const currentMonthValue = this.currentMonth();
+    const newMonth = new Date(currentMonthValue.getFullYear(), currentMonthValue.getMonth() - 1, 1);
+    this.currentMonth.set(newMonth);
+    this.updateCurrentMonthName();
+  }
+
+  nextMonth(): void {
+    const currentMonthValue = this.currentMonth();
+    const newMonth = new Date(currentMonthValue.getFullYear(), currentMonthValue.getMonth() + 1, 1);
+    this.currentMonth.set(newMonth);
+    this.updateCurrentMonthName();
+  }
+
+  getEmptyDays(): number[] {
+    const currentMonthValue = this.currentMonth();
+    const firstDay = new Date(currentMonthValue.getFullYear(), currentMonthValue.getMonth(), 1).getDay();
+    return Array(firstDay).fill(0);
+  }
+
+  getDaysInCurrentMonth(): number[] {
+    const currentMonthValue = this.currentMonth();
+    const daysInMonth = new Date(currentMonthValue.getFullYear(), currentMonthValue.getMonth() + 1, 0).getDate();
+    return Array.from({length: daysInMonth}, (_, i) => i + 1);
+  }
+
+  getDateString(day: number): string {
+    const currentMonthValue = this.currentMonth();
+    const year = currentMonthValue.getFullYear();
+    const month = currentMonthValue.getMonth();
+    const date = new Date(year, month, day);
+    return this.formatDateToString(date);
+  }
+
+  formatDateToString(date: Date): string {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  getFormattedSelectedDate(): string {
+    const selectedDateValue = this.selectedDate();
+    if (!selectedDateValue) return '';
+    const date = new Date(selectedDateValue);
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const dayName = dayNames[date.getDay()];
+    const monthName = this.monthNames[date.getMonth()];
+    const dayNumber = date.getDate();
+    return `${dayName}, ${monthName} ${dayNumber}`;
+  }
+
+  // Sent meetings archive methods
+  archiveSentMeeting(meeting: SentMeeting): void {
+    this.actionLoading.set(true);
+    this.sentMeetingsService.archiveMeeting(meeting.uuid)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.actionLoading.set(false);
+          this.showSuccess('Success', 'Meeting archived successfully');
+          this.reloadSentMeetingsAfterAction();
+        },
+        error: (error: any) => {
+          this.actionLoading.set(false);
+          this.handleServerErrors(error);
+        }
+      });
+  }
+
+  toggleSentArchivedMeetings(): void {
+    const newState = !this.sentShowArchivedMeetings();
+    this.sentShowArchivedMeetings.set(newState);
+
+    if (newState) {
+      this.loadSentArchivedMeetings(1);
+    } else {
+      this.loadSentMeetings(1);
+    }
+  }
+
+  loadSentArchivedMeetings(page: number = 1): void {
+    this.sentArchivedCurrentPage.set(page);
+    this.sentMeetingsService.getArchivedMeetings(page, this.perPage())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response: SentMeetingResponse) => {
+          this.sentArchivedMeetings.set(response.data);
+          this.sentArchivedCurrentPage.set(response.meta.current_page);
+          this.sentArchivedTotalPages.set(response.meta.last_page);
+          this.sentArchivedTotalItems.set(response.meta.total);
+        },
+        error: (error) => {
+          console.error('Error loading archived sent meetings:', error);
+          this.handleServerErrors(error);
+        }
+      });
+  }
+
+  private reloadSentMeetingsAfterAction(): void {
+    this.loadSentMeetings(this.sentCurrentPage());
+    setTimeout(() => {
+      if (this.getFilteredSentMeetings().length === 0 && this.sentCurrentPage() > 1) {
+        this.loadSentMeetings(this.sentCurrentPage() - 1);
+      }
+    }, 500);
+  }
+
+  // Helper method to determine which type of meeting for template
+  isClientMeeting(meeting: Meeting | SentMeeting): meeting is Meeting {
+    return this.activeTab === 'client-meetings';
+  }
+
+  isSentMeeting(meeting: Meeting | SentMeeting): meeting is SentMeeting {
+    return this.activeTab === 'my-meetings';
+  }
+
+  // Updated toggle archived meetings method
+  toggleArchivedMeetings(): void {
+    if (this.activeTab === 'client-meetings') {
+      const newState = !this.showArchivedMeetings();
+      this.showArchivedMeetings.set(newState);
+
+      if (newState) {
+        this.loadArchivedMeetings(1);
+      } else {
+        this.loadMeetings(1);
+      }
+    } else {
+      this.toggleSentArchivedMeetings();
+    }
   }
 }

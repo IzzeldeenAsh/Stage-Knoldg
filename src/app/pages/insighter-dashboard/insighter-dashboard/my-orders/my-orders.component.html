@@ -1,7 +1,7 @@
 
 <div class="container-fluid bg-white p-5 rounded-lg" style="border-radius: 10px;">
   <!-- Tab Navigation -->
-  <div class="row mb-10">
+  <div class="row mb-2">
     <div class="col-md-6 col-lg-8">
       <div class="filter-tabs-orders">
           <div class="nav nav-pills nav-pills-custom">
@@ -63,7 +63,7 @@
         </div>
 
         <!-- Sold Card -->
-        <div class="d-flex align-items-center border rounded-3 p-3" style="border-color: #e4e6ef !important; min-width: 160px;">
+        <!-- <div class="d-flex align-items-center border rounded-3 p-3" style="border-color: #e4e6ef !important; min-width: 160px;">
           <div class="symbol symbol-40px me-2">
             <div class="symbol-label bg-light-success">
               <i class="ki-outline ki-dollar text-success fs-5"></i>
@@ -82,7 +82,7 @@
               {{ lang === 'ar' ? 'مباع' : 'Sold' }}
             </span>
           </div>
-        </div>
+        </div> -->
       </div>
 
       <ng-template #loadingSpinnerHeader>
@@ -105,7 +105,7 @@
           </div>
 
           <!-- Loading Sold Card -->
-          <div class="d-flex align-items-center border rounded-3 p-3" style="border-color: #e4e6ef !important; min-width: 160px;">
+          <!-- <div class="d-flex align-items-center border rounded-3 p-3" style="border-color: #e4e6ef !important; min-width: 160px;">
             <div class="symbol symbol-40px me-2">
               <div class="symbol-label bg-light-success">
                 <i class="ki-outline ki-dollar text-success fs-5"></i>
@@ -119,7 +119,7 @@
                 {{ lang === 'ar' ? 'مباع' : 'Sold' }}
               </span>
             </div>
-          </div>
+          </div> -->
         </div>
       </ng-template>
     </div>
@@ -133,22 +133,11 @@
       [totalPages$]="totalPages$"
       [currentPage]="currentPage"
       [isLoading$]="isLoading$"
-      [salesOrders$]="salesOrders$"
-      [salesTotalPages$]="salesTotalPages$"
-      [currentSalesPage]="currentSalesPage"
-      [isSalesLoading$]="isSalesLoading$"
-      [canViewSalesTabs]="canViewSalesTabs"
-      [knowledgeSubTab]="knowledgeSubTab"
-      [selectedInsighterUuid]="selectedInsighterUuid"
-      [roles]="roles"
-      (knowledgeSubTabChange)="setKnowledgeSubTab($event)"
       (pageChange)="onPageChange($event)"
-      (salesPageChange)="onSalesPageChange($event)"
       (orderSelected)="openOrderDetails($event)"
       (invoiceDownload)="downloadInvoice($event)"
       (navigateToDownloads)="navigateToDownloads($event)"
-      (copyOrderNo)="copyOrderNo($event)"
-      (insighterFilterChange)="onInsighterFilterChange($event)">
+      (copyOrderNo)="copyOrderNo($event)">
     </app-knowledge-orders>
   </ng-container>
 
@@ -160,21 +149,10 @@
       [meetingTotalPages$]="meetingTotalPages$"
       [currentMeetingPage]="currentMeetingPage"
       [isMeetingLoading$]="isMeetingLoading$"
-      [meetingSalesOrders$]="meetingSalesOrders$"
-      [meetingSalesTotalPages$]="meetingSalesTotalPages$"
-      [currentMeetingSalesPage]="currentMeetingSalesPage"
-      [isMeetingSalesLoading$]="isMeetingSalesLoading$"
-      [canViewSalesTabs]="canViewSalesTabs"
-      [meetingSubTab]="meetingSubTab"
-      [selectedInsighterUuid]="selectedInsighterUuid"
-      [roles]="roles"
-      (meetingSubTabChange)="setMeetingSubTab($event)"
       (meetingPageChange)="onMeetingPageChange($event)"
-      (meetingSalesPageChange)="onMeetingSalesPageChange($event)"
       (meetingOrderSelected)="openMeetingOrderDetails($event)"
       (invoiceDownload)="downloadInvoice($event)"
-      (copyOrderNo)="copyOrderNo($event)"
-      (insighterFilterChange)="onInsighterFilterChange($event)">
+      (copyOrderNo)="copyOrderNo($event)">
     </app-meeting-orders>
   </ng-container>
 

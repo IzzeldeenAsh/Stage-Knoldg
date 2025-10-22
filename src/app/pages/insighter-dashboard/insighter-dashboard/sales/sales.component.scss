@@ -1,21 +1,141 @@
-// Card styling
+// Main container styling (matching admin dashboard)
+.card-header {
+  padding: 2rem 2rem 1.5rem 2rem;
+  border-bottom: none;
+
+  .page-title {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    letter-spacing: -0.5px;
+  }
+}
+
+// Primary tabs styling (aligned with orders page)
+.filter-tabs-orders {
+  display: flex;
+  justify-content: flex-start;
+
+  .nav-pills-custom {
+    display: inline-flex;
+    gap: 0.5rem;
+
+    .nav-link {
+      padding: 0.65rem 1.25rem;
+      border-radius: 0.5rem;
+      font-weight: 500;
+      color: #7e8299;
+      background-color: transparent;
+      border: 1px solid transparent;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
+      cursor: pointer;
+      text-decoration: none;
+
+      i {
+        font-size: 1.1rem;
+      }
+
+      &:hover {
+        color: #181c32;
+        background-color: #f5f8fa;
+      }
+
+      &.active {
+        color: #0978B9 !important;
+        background-color: #F1FAFE !important;
+        font-weight: 600 !important;
+        border-color: transparent;
+
+        &:hover {
+          color: #0978B9 !important;
+          background-color: #f1faff !important;
+        }
+      }
+    }
+  }
+}
+
+.nav-svg {
+  display: inline-flex;
+  align-items: center;
+}
+
+// Reusable nested tabs styling
+.nested-tab-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem;
+  background-color: #f1f5f9;
+  border-radius: 9999px;
+  border: 1px solid #e7e7e7;
+}
+
+.nested-tab-button {
+  border: 0;
+  border-radius: 9999px;
+  padding: 0.45rem 1.1rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  min-width: 70px;
+  background-color: transparent;
+  color: #7e8299;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
+
+  &:hover {
+    color: #181c32;
+    background-color: rgba(15, 23, 42, 0.06);
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(9, 120, 185, 0.35);
+    outline-offset: 2px;
+  }
+
+  &.active {
+    background-color: #ffffff;
+    color: #0978B9;
+    font-weight: 600;
+  }
+}
+
+// Tab content styling
+.tab-content {
+  padding: 0 2rem 2rem 2rem;
+}
+
+// Card styling (matching admin dashboard)
 .card {
-  border: 1px solid #e9ecef;
-  border-radius: 0.75rem;
-  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  background: #ffffff;
   overflow: hidden;
+  border: 1px solid #e9ecef;
 
   .card-body {
     padding: 1.5rem;
     overflow-x: auto;
     text-align: start !important;
   }
+
+  .card-header {
+    padding: 2rem;
+    border-bottom: 1px solid #e9ecef;
+  }
 }
 
 // Statistics cards gradient styling
 .row.mb-5 .card {
   background: linear-gradient(135deg, #ffffff 0%, #f8faff 50%, #f0f4ff 100%);
-  border: 1px solid #e8eafd;
+  border: 1px solid #ddd;
 
   .h1 {
     background: linear-gradient(135deg, #0563eb 0%, #06dac4 100%);
@@ -60,23 +180,11 @@
   }
 }
 
-.bg-light {
-  background-color: #f8f9fa !important;
-}
-
-.text-success {
-  color: #28a745 !important;
-}
-
-.text-danger {
-  color: #dc3545 !important;
-}
-
 // Sales card specific styling
 .card.light-sales-gradient-bg {
   background-image: linear-gradient(to bottom right, #fff , #eceefd) !important;
   color: #4f28ed !important;
-  border: 1px solid #e8eafd !important;
+  border: 1px solid #ddd !important;
 
   .card-title, .card-label {
     text-align: start !important;
@@ -142,7 +250,6 @@
   }
 }
 
-
 // Custom tooltip styles
 ::ng-deep {
   .chartjs-tooltip {
@@ -196,51 +303,20 @@
   }
 }
 
-// Nested tab navigation (matching wallet design)
-.nested-tab-nav {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.35rem;
-  background-color: #f1f5f9;
-  border-radius: 9999px;
-  border: 1px solid #e7e7e7;
+// Utility classes
+.bg-light {
+  background-color: #f8f9fa !important;
 }
 
-.nested-tab-button {
-  border: 0;
-  border-radius: 9999px;
-  padding: 0.45rem 1.1rem;
-  font-size: 0.78rem;
-  font-weight: 500;
-  min-width: 70px;
-  background-color: transparent;
-  color: #7e8299;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1.2;
-
-  &:hover {
-    color: #181c32;
-    background-color: rgba(15, 23, 42, 0.06);
-  }
-
-  &:focus-visible {
-    outline: 2px solid rgba(9, 120, 185, 0.35);
-    outline-offset: 2px;
-  }
-
-  &.is-active,
-  &.active {
-    background-color: #ffffff;
-    color: #0978B9;
-    font-weight: 600;
-  }
+.text-success {
+  color: #28a745 !important;
 }
 
-// Responsive design for nested tabs
+.text-danger {
+  color: #dc3545 !important;
+}
+
+// Responsive design
 @media (max-width: 768px) {
   .nested-tab-nav {
     flex-wrap: wrap;
@@ -252,6 +328,17 @@
     flex: 1 1 45%;
     min-width: 140px;
     text-align: center;
+  }
+
+  .filter-tabs-orders {
+    .nav-pills-custom {
+      flex-wrap: wrap;
+
+      .nav-link {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+      }
+    }
   }
 
   .card-header {
@@ -287,5 +374,4 @@
   .h5 {
     font-size: 1.1rem;
   }
-
 }

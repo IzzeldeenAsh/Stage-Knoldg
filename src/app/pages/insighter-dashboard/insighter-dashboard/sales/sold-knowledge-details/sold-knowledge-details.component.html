@@ -1,0 +1,178 @@
+<!-- Insighter Filter positioned at the end (only for company users) -->
+<div class="d-flex mb-4" [ngClass]="lang === 'ar' ? 'justify-content-start' : 'justify-content-end'" *ngIf="shouldShowInsighterFilter">
+  <div style="max-width: 300px;">
+    <app-insighter-filter
+      [lang]="lang"
+      [selectedInsighterUuid]="selectedInsighterUuid"
+      (insighterSelected)="onInsighterFilterChange($event)">
+    </app-insighter-filter>
+  </div>
+</div>
+
+<div class="row g-4">
+  <!-- Loading State -->
+  <div *ngIf="isSalesLoading$ | async" class="col-12">
+    <div class="d-flex justify-content-center align-items-center" style="min-height: 200px;">
+      <div class="spinner-border text-info" role="status" style="width: 3rem; height: 3rem;">
+        <span class="visually-hidden">{{ lang === 'ar' ? 'جاري التحميل...' : 'Loading...' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Orders Cards -->
+  <ng-container *ngIf="!(isSalesLoading$ | async)">
+    <div *ngFor="let order of salesOrders$ | async" class="col-12">
+      <div class="card card-custom gutter-b">
+        <div class="card-body p-6">
+          <!-- Order Header -->
+          <div class="d-flex justify-content-between align-items-start mb-6">
+            <div class="d-flex align-items-center">
+              <div class="symbol symbol-40px me-3">
+                <div class="symbol-label bg-light-info">
+                  <svg width="23" height="26" viewBox="0 0 23 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1.31201 7.35547H5.05811C5.67682 7.35571 6.18 7.85881 6.18018 8.47754V23.834C6.18003 24.4527 5.67683 24.9568 5.05811 24.957H1.31201C0.693226 24.9569 0.190084 24.4528 0.189941 23.834V8.47754C0.190115 7.85877 0.693245 7.35564 1.31201 7.35547Z" stroke="#3799FF" stroke-width="0.376002"/>
+                    <path d="M3.18469 9.60278C3.39088 9.60278 3.55857 9.76967 3.55872 9.97583V20.0881C3.55872 20.2944 3.39098 20.4622 3.18469 20.4622C2.97854 20.462 2.81165 20.2943 2.81165 20.0881V9.97583C2.8118 9.76977 2.97863 9.60293 3.18469 9.60278Z" stroke="#3799FF" stroke-width="0.376002"/>
+                    <path d="M2.62296 21.9626H3.74698C3.9531 21.9627 4.12085 22.1296 4.121 22.3357C4.121 22.5419 3.95319 22.7096 3.74698 22.7097H2.62296C2.4168 22.7096 2.24991 22.5419 2.24991 22.3357C2.25006 22.1296 2.41689 21.9628 2.62296 21.9626Z" stroke="#3799FF" stroke-width="0.376002"/>
+                    <path d="M7.65704 7.35547H11.4031C12.0218 7.35571 12.525 7.85881 12.5252 8.47754V23.834C12.5251 24.4527 12.0219 24.9568 11.4031 24.957H7.65704C7.03826 24.9569 6.53512 24.4528 6.53497 23.834V8.47754C6.53515 7.85877 7.03828 7.35564 7.65704 7.35547Z" stroke="#3799FF" stroke-width="0.376002"/>
+                    <path d="M9.52979 9.60278C9.73598 9.60278 9.90366 9.76967 9.90381 9.97583V20.0881C9.90381 20.2944 9.73607 20.4622 9.52979 20.4622C9.32363 20.462 9.15674 20.2943 9.15674 20.0881V9.97583C9.15689 9.76977 9.32372 9.60293 9.52979 9.60278Z" stroke="#3799FF" stroke-width="0.376002"/>
+                    <path d="M8.96796 21.9626H10.092C10.2981 21.9627 10.4659 22.1296 10.466 22.3357C10.466 22.5419 10.2982 22.7096 10.092 22.7097H8.96796C8.7618 22.7096 8.59491 22.5419 8.59491 22.3357C8.59506 22.1296 8.76189 21.9628 8.96796 21.9626Z" stroke="#3799FF" stroke-width="0.376002"/>
+                    <path d="M13.6171 7.58059L17.2419 6.63505C17.8406 6.47911 18.4545 6.83892 18.6109 7.43757L22.4869 22.2968C22.643 22.8955 22.2833 23.5103 21.6847 23.6667L18.0599 24.6122C17.4611 24.7683 16.847 24.4075 16.6907 23.8088L12.8146 8.94954C12.6586 8.35077 13.0184 7.73694 13.6171 7.58059Z" stroke="#3799FF" stroke-width="0.376002"/>
+                    <path d="M15.9965 9.28259C16.196 9.23054 16.4004 9.3497 16.4525 9.54915L19.0049 19.334C19.057 19.5336 18.937 19.7383 18.7374 19.7903C18.5379 19.8422 18.3341 19.7221 18.2821 19.5226L15.7297 9.73771C15.6778 9.53828 15.7971 9.33474 15.9965 9.28259Z" fill="#CCEBFF" stroke="#3799FF" stroke-width="0.376002"/>
+                    <path d="M18.5724 21.3834L19.6601 21.0997C19.8595 21.0478 20.064 21.1669 20.1161 21.3663C20.1682 21.5658 20.0481 21.7705 19.8486 21.8226L18.761 22.1063C18.5615 22.1582 18.3577 22.0381 18.3056 21.8385C18.2537 21.6391 18.3731 21.4356 18.5724 21.3834Z" fill="#CCEBFF" stroke="#3799FF" stroke-width="0.376002"/>
+                    <path d="M14.2398 2.9276H9.98135C9.76311 2.9276 9.58212 2.74662 9.58212 2.52838C9.58212 2.31013 9.76311 2.12915 9.98135 2.12915H14.2398C14.458 2.12915 14.639 2.31013 14.639 2.52838C14.639 2.74662 14.458 2.9276 14.2398 2.9276Z" fill="#3799FF"/>
+                    <path d="M12.1106 5.05688C11.8923 5.05688 11.7113 4.87589 11.7113 4.65765V0.399227C11.7113 0.180983 11.8923 0 12.1106 0C12.3288 0 12.5098 0.180983 12.5098 0.399227V4.65765C12.5098 4.87589 12.3288 5.05688 12.1106 5.05688Z" fill="#3799FF"/>
+                  </svg>
+                </div>
+              </div>
+              <div>
+                <div class="d-flex align-items-center mb-1">
+                  <h6 class="mb-0 fw-bold me-2">
+                    {{ lang === 'ar' ? 'طلب رقم' : 'Order' }} {{ order.order_no }}
+                  </h6>
+                  <i (click)="copyOrder(order.order_no)" class="ki-outline ki-copy fs-6 cursor-pointer"></i>
+                </div>
+                <div class="d-flex align-items-center mb-1" *ngIf="order.orderable.insighter">
+                  <div class="symbol symbol-25px me-2">
+                    <img *ngIf="order.orderable.insighter.profile_photo_url"
+                         [src]="order.orderable.insighter.profile_photo_url"
+                         [alt]="order.orderable.insighter.name"
+                         class="symbol-label rounded-circle"
+                         style="object-fit: cover;">
+                    <div *ngIf="!order.orderable.insighter.profile_photo_url"
+                         class="symbol-label bg-light-info rounded-circle d-flex align-items-center justify-content-center">
+                      <span class="text-info fw-bold fs-8">
+                        {{ (order.orderable.insighter.first_name?.charAt(0) || '') + (order.orderable.insighter.last_name?.charAt(0) || '') }}
+                      </span>
+                    </div>
+                  </div>
+                  <a *ngIf="order.orderable.insighter.uuid; else justInsighterName"
+                     [href]="'http://localhost:3000/en/profile/' + order.orderable.insighter.uuid + '?entity=insighter'"
+                     target="_blank"
+                     class="text-info text-decoration-none fs-7">
+                    {{ order.orderable.insighter.name }}
+                  </a>
+                  <ng-template #justInsighterName>
+                    <span class="text-muted fs-7">{{ order.orderable.insighter.name }}</span>
+                  </ng-template>
+                  <span class="badge badge-light-success ms-2 mb-0">
+                    {{ lang === 'ar' ? 'خبير' : 'Insighter' }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex gap-2">
+              <button
+                type="button"
+                class="btn btn-info btn-sm"
+                (click)="selectOrder(order)">
+                {{ lang === 'ar' ? 'تفاصيل الطلب' : 'Order Details' }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-light-info btn-sm"
+                (click)="downloadInvoice(order)">
+                <i class="ki-outline ki-file-down fs-6 me-1"></i>
+                {{ lang === 'ar' ? 'تحميل الفاتورة' : 'Download Invoice' }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Knowledge Items -->
+          <div *ngIf="order.orderable" class="mb-3">
+            <div *ngFor="let knowledge of order.orderable.knowledge" class="mb-2">
+              <div class="d-flex align-items-center">
+                <div>
+                  <a
+                    [pTooltip]="lang ==='ar' ? 'عرض في التحميلات' : 'View in downloads'"
+                    (click)="openDownloads(order)"
+                    target="_blank"
+                    class="text-info text-decoration-none fw-bold fs-6 cursor-pointer">
+                    {{ knowledge.title }}
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Documents Preview -->
+          <div *ngIf="order.orderable.knowledge_documents && order.orderable.knowledge_documents.length > 0" class="mt-2">
+            <div class="d-flex flex-wrap pt-2 gap-2">
+              <div *ngFor="let extension of utils.getUniqueExtensions(order.orderable)" class="position-relative d-inline-block">
+                <img
+                  [src]="utils.getFileIconByExtension(extension)"
+                  [alt]="extension"
+                  class="file-icon"
+                  style="width: 40px; height: 40px;"
+                  onerror="this.style.display='none'">
+                <span
+                  class="position-absolute top-0 start-75 translate-middle badge rounded-pill text-white"
+                  [style.background-color]="utils.getBadgeColorByExtension(extension)">
+                  {{ utils.getDocumentCountByExtension(order.orderable, extension) }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Order Date and Amount -->
+          <div class="border-top pt-3 mt-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="text-muted fs-7">
+                {{ lang === 'ar' ? 'تاريخ الطلب' : 'Ordered' }} {{ order.date | date:'short' }}
+              </div>
+              <div class="fw-bold text-dark fs-6">
+                {{ order.amount === 0 ? (lang === 'ar' ? 'مجاني' : 'Free') : '$' + order.amount }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Empty State -->
+  <div *ngIf="(salesOrders$ | async)?.length === 0 && !(isSalesLoading$ | async)" class="col-12">
+    <div class="text-center py-10">
+      <div class="symbol symbol-100px mx-auto mb-4">
+        <div class="symbol-label bg-light-success">
+          <i class="ki-outline ki-chart-line fs-2 text-success"></i>
+        </div>
+      </div>
+      <h5 class="mb-3">{{ lang === 'ar' ? "لا توجد مبيعات" : 'No Sales Orders Found' }}</h5>
+      <p class="text-muted">
+        {{ lang === 'ar' ? 'لم تقم بأي مبيعات بعد' : 'You have no sales orders yet.' }}
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Pagination -->
+<div *ngIf="(salesTotalPages$ | async)! > 1" class="d-flex justify-content-center mt-6">
+  <p-paginator
+    [rows]="10"
+    [totalRecords]="(salesTotalPages$ | async)! * 10"
+    [first]="(currentSalesPage - 1) * 10"
+    (onPageChange)="onSalesPageChange($event)"
+    [showCurrentPageReport]="true"
+    [currentPageReportTemplate]="lang === 'ar' ? 'عرض {first} إلى {last} من {totalRecords} طلب' : 'Showing {first} to {last} of {totalRecords} orders'">
+  </p-paginator>
+</div>

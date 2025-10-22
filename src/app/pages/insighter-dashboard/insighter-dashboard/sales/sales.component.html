@@ -1,5 +1,45 @@
-<div class="d-flex flex-column pb-lg-10 pe-10 overflow-hidden">
-  <!-- Revenue Statistics Cards -->
+<div class="py-1 bg-white rounded-2">
+  <div class="card-header p-5">
+    <!-- Primary Tabs -->
+    <div class="filter-tabs-orders">
+      <div class="nav nav-pills nav-pills-custom">
+        <a
+          class="nav-link"
+          role="button"
+          [class.active]="activeTab === 'analytics'"
+          (click)="setActiveTab('analytics')">
+          <span class="nav-svg me-2">
+            <i class="ki-outline ki-chart-line"></i>
+          </span>
+          {{ lang === 'ar' ? 'التحليلات والمخططات' : 'Analytics & Charts' }}
+        </a>
+        <a
+          class="nav-link"
+          role="button"
+          [class.active]="activeTab === 'sold-details'"
+          (click)="setActiveTab('sold-details')">
+          <span class="nav-svg me-2">
+            <i class="ki-outline ki-book-open"></i>
+          </span>
+          {{ lang === 'ar' ? 'تفاصيل المعارف المباعة' : 'Sold Knowledge Details' }}
+        </a>
+        <a
+          class="nav-link"
+          role="button"
+          [class.active]="activeTab === 'sold-meetings'"
+          (click)="setActiveTab('sold-meetings')">
+          <span class="nav-svg me-2">
+            <i class="ki-outline ki-calendar"></i>
+          </span>
+          {{ lang === 'ar' ? 'تفاصيل الاجتماعات المباعة' : 'Sold Meeting Details' }}
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-content">
+  <ng-container *ngIf="activeTab === 'analytics'">
+    <!-- Revenue Statistics Cards -->
   <div class="row mb-5" *ngIf="totalStatistics">
     <div class="col-xl-4 col-md-12 mb-4">
       <div class="card border-0 shadow-sm h-100">
@@ -39,7 +79,7 @@
   </div>
 
   <!-- Revenue Chart Section -->
-  <div class="card mb-5 light-sales-gradient-bg">
+  <div class="card mb-5  light-sales-gradient-bg">
     <div class="card-header border-0 pt-5">
       <!-- Title and Export Button Row -->
       <div class="d-flex justify-content-between align-items-center w-100 mb-3">
@@ -61,7 +101,7 @@
       </div>
 
       <!-- Period Selection Buttons Row -->
-      <div class="d-flex justify-content-end w-100 pt-5">
+      <div class="d-flex justify-content-end w-100 ">
         <div class="nested-tab-nav">
           <button
             *ngFor="let option of periodOptions"
@@ -98,7 +138,7 @@
   <!-- Company-specific Charts -->
   <div *ngIf="isCompany && totalStatistics" class="row">
     <!-- Knowledge Orders Chart -->
-    <div class="col-xl-6 mb-5">
+    <div class="col-xl-6 mb-5 gradient-bg">
       <div class="card">
         <div class="card-header border-0 pt-5 px-5">
           <div class="d-flex justify-content-between align-items-center w-100">
@@ -211,4 +251,60 @@
       </div>
     </div>
   </div>
+  </ng-container>
+
+  <!-- Sold Knowledge Details Tab -->
+  <ng-container *ngIf="activeTab === 'sold-details'">
+    <app-sold-knowledge-details
+      [lang]="lang === 'ar' ? 'ar' : 'en'"
+      [salesOrders$]="soldOrders$"
+      [salesTotalPages$]="soldTotalPages$"
+      [currentSalesPage]="currentSoldPage"
+      [isSalesLoading$]="isSoldLoading$"
+      [selectedInsighterUuid]="selectedInsighterUuid"
+      [roles]="roles"
+      (salesPageChange)="onSoldPageChange($event)"
+      (orderSelected)="onOrderSelected($event)"
+      (invoiceDownload)="onInvoiceDownload($event)"
+      (navigateToDownloads)="onNavigateToDownloads($event)"
+      (copyOrderNo)="onCopyOrderNo($event)"
+      (insighterFilterChange)="onInsighterFilterChange($event)">
+    </app-sold-knowledge-details>
+  </ng-container>
+
+  <!-- Sold Meeting Details Tab -->
+  <ng-container *ngIf="activeTab === 'sold-meetings'">
+    <app-sold-meeting-details
+      [lang]="lang === 'ar' ? 'ar' : 'en'"
+      [meetingSalesOrders$]="soldMeetingOrders$"
+      [meetingSalesTotalPages$]="soldMeetingTotalPages$"
+      [currentMeetingSalesPage]="currentSoldMeetingPage"
+      [isMeetingSalesLoading$]="isSoldMeetingLoading$"
+      [selectedInsighterUuid]="selectedInsighterUuid"
+      [roles]="roles"
+      (meetingSalesPageChange)="onSoldMeetingPageChange($event)"
+      (orderSelected)="onOrderSelected($event)"
+      (invoiceDownload)="onInvoiceDownload($event)"
+      (copyOrderNo)="onCopyOrderNo($event)"
+      (insighterFilterChange)="onInsighterFilterChange($event)">
+    </app-sold-meeting-details>
+  </ng-container>
+
+  </div>
 </div>
+
+<!-- Order Details Dialog -->
+<app-order-details-dialog
+  [visible]="showOrderDetailsDialog"
+  (visibleChange)="onOrderDetailsDialogVisibleChange($event)"
+  [order]="selectedOrderForDialog"
+  [lang]="lang === 'ar' ? 'ar' : 'en'">
+</app-order-details-dialog>
+
+<!-- Meeting Order Details Dialog -->
+<app-meeting-order-details-dialog
+  [visible]="showMeetingOrderDetailsDialog"
+  (visibleChange)="onMeetingOrderDetailsDialogVisibleChange($event)"
+  [order]="selectedMeetingOrderForDialog"
+  [lang]="lang === 'ar' ? 'ar' : 'en'">
+</app-meeting-order-details-dialog>

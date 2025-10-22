@@ -44,6 +44,9 @@ export class InsighterWalletFormComponent extends BaseComponent implements OnIni
       .subscribe({
         next: (data) => {
           this.insighterData = data;
+          this.emailForm.patchValue({
+            email: data.user_email || ''
+          });
           this.isLoading = false;
         },
         error: (error) => {
@@ -187,5 +190,14 @@ Generated from KNOLDG Admin Platform`;
           }
         });
     }
+  }
+
+  getCurrentDate(): string {
+    const now = new Date();
+    return now.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
   }
 }

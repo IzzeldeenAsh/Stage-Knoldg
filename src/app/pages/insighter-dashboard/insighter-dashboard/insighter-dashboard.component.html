@@ -9,7 +9,7 @@
       <!-- Dashboard Card -->
       <div class="p-card navigation-card">
         <div class="p-card-header">
-          <h3>{{ 'INSIGHTER.DASHBOARD.NAV.DASHBOARD' | translate }}</h3>
+          <h3>{{ 'INSIGHTER.DASHBOARD.NAV.MENU' | translate }}</h3>
         </div>
         <div class="p-card-body">
           <div class="nav-item" [routerLink]="['my-dashboard']" *ngIf="!(isClient$ | async)" routerLinkActive="active" 
@@ -18,129 +18,134 @@
               <i class="ki-outline ki-abstract-28"></i>
             </div>
             <div class="item-label">
-              {{ 'INSIGHTER.DASHBOARD.NAV.OVERVIEW' | translate }}
+              {{ 'INSIGHTER.DASHBOARD.NAV.MENU' | translate }}
             </div>
           </div>
-          <div class="nav-item" [routerLink]="['my-requests']" routerLinkActive="active" *ngIf="!(isClient$ | async)"
-               (click)="closeMobileSidebar()">
-            <div class="item-icon">
-              <i class="ki-outline ki-question-2"></i>
-            </div>
-            <div class="item-label">
-              {{ 'INSIGHTER.DASHBOARD.NAV.MY_REQUESTS' | translate }}
-            </div>
-          </div>
-          <div class="nav-item" [routerLink]="['my-knowledge']" routerLinkActive="active"  *ngIf="!(isClient$ | async)"
-               (click)="closeMobileSidebar()">
-            <div class="item-icon">
-            <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M1.23926 0.25H4.78125C5.32661 0.25 5.77033 0.693936 5.77051 1.23926V15.7607C5.77033 16.3061 5.32661 16.75 4.78125 16.75H1.23926C0.694045 16.7498 0.250177 16.306 0.25 15.7607V1.23926C0.250177 0.694045 0.694045 0.250177 1.23926 0.25Z" stroke="#3799FF" stroke-width="0.5"/>
-  <path d="M7.2601 3.79175H10.4476C10.993 3.79175 11.4377 4.23568 11.4378 4.78101V15.7605C11.4378 16.306 10.9931 16.7498 10.4476 16.7498H7.2601C6.71478 16.7496 6.27084 16.3059 6.27084 15.7605V4.78101C6.27102 4.23579 6.71489 3.79192 7.2601 3.79175Z" stroke="#3799FF" stroke-width="0.5"/>
-  <path d="M12.9268 8.04175H15.7607C16.306 8.04192 16.7498 8.48579 16.75 9.03101V15.7605C16.75 16.3059 16.3061 16.7496 15.7607 16.7498H12.9268C12.3814 16.7496 11.9375 16.3059 11.9375 15.7605V9.03101C11.9377 8.48579 12.3815 8.04192 12.9268 8.04175Z" stroke="#3799FF" stroke-width="0.5"/>
-  <path d="M3.01041 2.375C3.16559 2.375 3.29166 2.50107 3.29166 2.65625V12.2188C3.29166 12.3739 3.16559 12.5 3.01041 12.5C2.85523 12.5 2.72916 12.3739 2.72916 12.2188V2.65625C2.72916 2.50107 2.85523 2.375 3.01041 2.375Z" stroke="#3799FF" stroke-width="0.5"/>
-  <path d="M2.47916 14.0625H3.54166C3.69684 14.0625 3.82291 14.1886 3.82291 14.3438C3.82291 14.4989 3.69684 14.625 3.54166 14.625H2.47916C2.32398 14.625 2.19791 14.4989 2.19791 14.3438C2.19791 14.1886 2.32398 14.0625 2.47916 14.0625Z" stroke="#3799FF" stroke-width="0.5"/>
-  <path d="M8.85416 5.91675C9.00934 5.91675 9.13541 6.04282 9.13541 6.198V12.2185C9.13541 12.3737 9.00934 12.4998 8.85416 12.4998C8.69898 12.4998 8.57291 12.3737 8.57291 12.2185V6.198C8.57291 6.04282 8.69898 5.91675 8.85416 5.91675Z" stroke="#3799FF" stroke-width="0.5"/>
-  <path d="M8.32291 14.0625H9.38541C9.54059 14.0625 9.66666 14.1886 9.66666 14.3438C9.66666 14.4989 9.54059 14.625 9.38541 14.625H8.32291C8.16773 14.625 8.04166 14.4989 8.04166 14.3438C8.04166 14.1886 8.16773 14.0625 8.32291 14.0625Z" stroke="#3799FF" stroke-width="0.5"/>
-  <path d="M14.3438 10.1667C14.4989 10.1667 14.625 10.2928 14.625 10.448V12.2185C14.625 12.3737 14.4989 12.4998 14.3438 12.4998C14.1886 12.4998 14.0625 12.3737 14.0625 12.2185V10.448C14.0625 10.2928 14.1886 10.1667 14.3438 10.1667Z" stroke="#3799FF" stroke-width="0.5"/>
-  <path d="M13.8125 14.0625H14.875C15.0302 14.0625 15.1562 14.1886 15.1562 14.3438C15.1562 14.4989 15.0302 14.625 14.875 14.625H13.8125C13.6573 14.625 13.5313 14.4989 13.5312 14.3438C13.5312 14.1886 13.6573 14.0625 13.8125 14.0625Z" stroke="#3799FF" stroke-width="0.5"/>
-  </svg>
-
-            </div>
-            <div class="item-label">
-              {{ 'INSIGHTER.DASHBOARD.NAV.MY_KNOWLEDGE' | translate }}
-            </div>
-          </div>
-          <div class="nav-item" [routerLink]="['my-downloads']" routerLinkActive="active"
-               (click)="closeMobileSidebar()">
-            <div class="item-icon">
-              <i class="ki-outline ki-file-down"></i>
-            </div>
-            <div class="item-label">
-              {{ 'INSIGHTER.DASHBOARD.NAV.MY_DOWNLOADS' | translate }}
-            </div>
-          </div>
-          <div class="nav-item" [routerLink]="['read-later']" routerLinkActive="active"
-               (click)="closeMobileSidebar()">
-            <div class="item-icon">
-              <i class="ki-outline ki-bookmark"></i>
-            </div>
-            <div class="item-label">
-              {{ 'INSIGHTER.DASHBOARD.NAV.READ_LATER' | translate }}
-            </div>
-          </div>
-          <div class="nav-item" [routerLink]="['my-orders']" routerLinkActive="active"
-               (click)="closeMobileSidebar()">
-            <div class="item-icon">
-              <svg width="19" height="21" viewBox="0 0 19 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M1.08447 6.10889H4.17822C4.67152 6.10889 5.07275 6.51012 5.07275 7.00342V19.688C5.07275 20.1813 4.67152 20.5835 4.17822 20.5835H1.08447C0.591175 20.5835 0.189941 20.1813 0.189941 19.688V7.00342C0.189941 6.51012 0.591175 6.10889 1.08447 6.10889Z" stroke="#3799FF" stroke-width="0.376002"/>
-                <path d="M2.63107 7.96533C2.78335 7.96533 2.90732 8.08848 2.90744 8.24072V16.5942C2.90744 16.7466 2.78342 16.8706 2.63107 16.8706C2.47883 16.8705 2.35568 16.7465 2.35568 16.5942V8.24072C2.3558 8.08855 2.4789 7.96545 2.63107 7.96533Z" stroke="#3799FF" stroke-width="0.376002"/>
-                <path d="M2.16702 18.1755H3.09573C3.24786 18.1757 3.371 18.2988 3.37112 18.4509C3.37112 18.6032 3.24794 18.7271 3.09573 18.7273H2.16702C2.01478 18.7272 1.89163 18.6032 1.89163 18.4509C1.89175 18.2988 2.01485 18.1757 2.16702 18.1755Z" stroke="#3799FF" stroke-width="0.376002"/>
-                <path d="M6.32596 6.10889H9.41971C9.91301 6.10889 10.3142 6.51012 10.3142 7.00342V19.688C10.3142 20.1813 9.91301 20.5835 9.41971 20.5835H6.32596C5.83266 20.5835 5.43143 20.1813 5.43143 19.688V7.00342C5.43143 6.51012 5.83266 6.10889 6.32596 6.10889Z" stroke="#3799FF" stroke-width="0.376002"/>
-                <path d="M7.87259 7.96533C8.02486 7.96533 8.14884 8.08848 8.14896 8.24072V16.5942C8.14896 16.7466 8.02494 16.8706 7.87259 16.8706C7.72034 16.8705 7.5972 16.7465 7.5972 16.5942V8.24072C7.59732 8.08855 7.72042 7.96545 7.87259 7.96533Z" stroke="#3799FF" stroke-width="0.376002"/>
-                <path d="M7.40848 18.1755H8.33719C8.48932 18.1757 8.61246 18.2988 8.61258 18.4509C8.61258 18.6032 8.48939 18.7271 8.33719 18.7273H7.40848C7.25623 18.7272 7.13309 18.6032 7.13309 18.4509C7.13321 18.2988 7.25631 18.1757 7.40848 18.1755Z" stroke="#3799FF" stroke-width="0.376002"/>
-                <path d="M11.2577 6.29378L14.2513 5.5129C14.7286 5.38839 15.2181 5.67535 15.3426 6.15268L18.5443 18.4265C18.6688 18.9039 18.3821 19.3943 17.9048 19.5188L14.9112 20.2997C14.4338 20.4242 13.9441 20.1363 13.8196 19.659L10.6179 7.38513C10.4934 6.90781 10.7804 6.41829 11.2577 6.29378Z" stroke="#3799FF" stroke-width="0.376002"/>
-                <path d="M13.2228 7.69981C13.3702 7.66138 13.5212 7.74924 13.5598 7.89653L15.6682 15.9796C15.7067 16.127 15.618 16.2783 15.4706 16.3167C15.3232 16.3551 15.1728 16.2662 15.1343 16.1188L13.0259 8.0358C12.9876 7.88852 13.0756 7.73834 13.2228 7.69981Z" fill="#CCEBFF" stroke="#3799FF" stroke-width="0.376002"/>
-                <path d="M15.3508 17.6962L16.2494 17.4617C16.3966 17.4235 16.5469 17.5115 16.5854 17.6587C16.6238 17.806 16.5359 17.9571 16.3887 17.9956L15.49 18.23C15.3427 18.2684 15.1922 18.1795 15.1538 18.0321C15.1155 17.8849 15.2035 17.7347 15.3508 17.6962Z" fill="#CCEBFF" stroke="#3799FF" stroke-width="0.376002"/>
-                <path d="M11.7634 2.41837H8.24559C8.06531 2.41837 7.9158 2.26887 7.9158 2.08858C7.9158 1.90829 8.06531 1.75879 8.24559 1.75879H11.7634C11.9437 1.75879 12.0932 1.90829 12.0932 2.08858C12.0932 2.26887 11.9437 2.41837 11.7634 2.41837Z" fill="#3799FF"/>
-                <path d="M10.0045 4.17736C9.82422 4.17736 9.67471 4.02786 9.67471 3.84757V0.329792C9.67471 0.149506 9.82422 0 10.0045 0C10.1848 0 10.3343 0.149506 10.3343 0.329792V3.84757C10.3343 4.02786 10.1848 4.17736 10.0045 4.17736Z" fill="#3799FF"/>
-                </svg>
-
-
-            </div>
-            <div class="item-label">
-              {{ 'INSIGHTER.DASHBOARD.NAV.MY_ORDERS' | translate }}
-            </div>
-          </div>
-          <div class="nav-item" [routerLink]="['sales']" routerLinkActive="active" *ngIf="(isInsighter$ | async) || (isCompany$ | async)"
-               (click)="closeMobileSidebar()">
-            <div class="item-icon">
-              <i class="ki-outline ki-chart-line-up"></i>
-            </div>
-            <div class="item-label">
-              {{ 'SALES.PAGE_TITLE' | translate }}
-            </div>
-          </div>
-          <!-- Meetings Expandable Item -->
-          <div class="nav-item expandable" [class.expanded]="isMeetingsExpanded">
-            <div class="nav-item-main" (click)="toggleMeetings()">
+          <div class="nav-item expandable" [class.expanded]="isActivityExpanded">
+            <div class="nav-item-main" (click)="toggleActivity()">
               <div class="item-icon">
-                <i class="ki-outline ki-calendar"></i>
+                <i class="pi pi-bars"></i>
               </div>
               <div class="item-label">
-                {{ 'INSIGHTER.DASHBOARD.NAV.MEETINGS' | translate }}
+                {{ 'INSIGHTER.DASHBOARD.NAV.MY_ACTIVITY' | translate }}
               </div>
-              <div class="expand-icon">
-                <i class="ki-outline ki-down"></i>
+              <div class="expand-icon" (click)="toggleActivity(); $event.stopPropagation()">
+                <i class="ki-outline ki-down" [class.rotated]="isActivityExpanded"></i>
               </div>
             </div>
-            <div class="sub-nav" [class.show]="isMeetingsExpanded">
-              <div class="sub-nav-item"  [routerLink]="['my-consulting-schedule']" routerLinkActive="active" *ngIf="!(isClient$ | async)"
+            <div class="sub-nav" [class.show]="isActivityExpanded">
+              <div class="sub-nav-item" [routerLink]="['my-requests']" routerLinkActive="active" *ngIf="!(isClient$ | async)"
                    (click)="closeMobileSidebar()">
                 <div class="sub-item-icon">
-                  <i class="ki-outline ki-calendar"></i>
+                  <i class="ki-outline ki-question-2"></i>
                 </div>
                 <div class="sub-item-label">
-                  {{ 'INSIGHTER.DASHBOARD.NAV.MY_CONSULTING_SCHEDULE' | translate }}
+                  {{ 'INSIGHTER.DASHBOARD.NAV.MY_REQUESTS' | translate }}
                 </div>
               </div>
-              <div class="sub-nav-item" [routerLink]="['my-meetings/received']" routerLinkActive="active"  *ngIf="!(isClient$ | async)"
+          <div class="sub-nav-item" [routerLink]="['my-knowledge']" routerLinkActive="active" *ngIf="!(isClient$ | async)"
                    (click)="closeMobileSidebar()">
                 <div class="sub-item-icon">
-                  <i class="ki-outline ki-message-text-2"></i>
+                  <svg width="14" height="14" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1.23926 0.25H4.78125C5.32661 0.25 5.77033 0.693936 5.77051 1.23926V15.7607C5.77033 16.3061 5.32661 16.75 4.78125 16.75H1.23926C0.694045 16.7498 0.250177 16.306 0.25 15.7607V1.23926C0.250177 0.694045 0.694045 0.250177 1.23926 0.25Z" stroke="#6D757D" stroke-width="0.5"/>
+                    <path d="M7.2601 3.79175H10.4476C10.993 3.79175 11.4377 4.23568 11.4378 4.78101V15.7605C11.4378 16.306 10.9931 16.7498 10.4476 16.7498H7.2601C6.71478 16.7496 6.27084 16.3059 6.27084 15.7605V4.78101C6.27102 4.23579 6.71489 3.79192 7.2601 3.79175Z" stroke="#6D757D" stroke-width="0.5"/>
+                    <path d="M12.9268 8.04175H15.7607C16.306 8.04192 16.7498 8.48579 16.75 9.03101V15.7605C16.75 16.3059 16.3061 16.7496 15.7607 16.7498H12.9268C12.3814 16.7496 11.9375 16.3059 11.9375 15.7605V9.03101C11.9377 8.48579 12.3815 8.04192 12.9268 8.04175Z" stroke="#6D757D" stroke-width="0.5"/>
+                    <path d="M3.01041 2.375C3.16559 2.375 3.29166 2.50107 3.29166 2.65625V12.2188C3.29166 12.3739 3.16559 12.5 3.01041 12.5C2.85523 12.5 2.72916 12.3739 2.72916 12.2188V2.65625C2.72916 2.50107 2.85523 2.375 3.01041 2.375Z" stroke="#6D757D" stroke-width="0.5"/>
+                    <path d="M2.47916 14.0625H3.54166C3.69684 14.0625 3.82291 14.1886 3.82291 14.3438C3.82291 14.4989 3.69684 14.625 3.54166 14.625H2.47916C2.32398 14.625 2.19791 14.4989 2.19791 14.3438C2.19791 14.1886 2.32398 14.0625 2.47916 14.0625Z" stroke="#6D757D" stroke-width="0.5"/>
+                    <path d="M8.85416 5.91675C9.00934 5.91675 9.13541 6.04282 9.13541 6.198V12.2185C9.13541 12.3737 9.00934 12.4998 8.85416 12.4998C8.69898 12.4998 8.57291 12.3737 8.57291 12.2185V6.198C8.57291 6.04282 8.69898 5.91675 8.85416 5.91675Z" stroke="#6D757D" stroke-width="0.5"/>
+                    <path d="M8.32291 14.0625H9.38541C9.54059 14.0625 9.66666 14.1886 9.66666 14.3438C9.66666 14.4989 9.54059 14.625 9.38541 14.625H8.32291C8.16773 14.625 8.04166 14.4989 8.04166 14.3438C8.04166 14.1886 8.16773 14.0625 8.32291 14.0625Z" stroke="#6D757D" stroke-width="0.5"/>
+                    <path d="M14.3438 10.1667C14.4989 10.1667 14.625 10.2928 14.625 10.448V12.2185C14.625 12.3737 14.4989 12.4998 14.3438 12.4998C14.1886 12.4998 14.0625 12.3737 14.0625 12.2185V10.448C14.0625 10.2928 14.1886 10.1667 14.3438 10.1667Z" stroke="#6D757D" stroke-width="0.5"/>
+                    <path d="M13.8125 14.0625H14.875C15.0302 14.0625 15.1562 14.1886 15.1562 14.3438C15.1562 14.4989 15.0302 14.625 14.875 14.625H13.8125C13.6573 14.625 13.5313 14.4989 13.5312 14.3438C13.5312 14.1886 13.6573 14.0625 13.8125 14.0625Z" stroke="#6D757D" stroke-width="0.5"/>
+                  </svg>
                 </div>
                 <div class="sub-item-label">
-                  {{ 'INSIGHTER.MEETINGS.TABS.RECEIVED' | translate }}
+                  {{ 'INSIGHTER.DASHBOARD.NAV.MY_KNOWLEDGE' | translate }}
                 </div>
               </div>
-              <div class="sub-nav-item" [routerLink]="['my-meetings/sent']" routerLinkActive="active"
+              <div class="sub-nav-item" [routerLink]="['my-downloads']" routerLinkActive="active"
                    (click)="closeMobileSidebar()">
                 <div class="sub-item-icon">
-                  <i class="ki-outline ki-send"></i>
+                  <i class="ki-outline ki-file-down"></i>
                 </div>
                 <div class="sub-item-label">
-                  {{ 'INSIGHTER.MEETINGS.TABS.SENT' | translate }}
+                  {{ 'INSIGHTER.DASHBOARD.NAV.MY_DOWNLOADS' | translate }}
                 </div>
               </div>
+              <div class="sub-nav-item" [routerLink]="['read-later']" routerLinkActive="active"
+                   (click)="closeMobileSidebar()">
+                <div class="sub-item-icon">
+                  <i class="ki-outline ki-bookmark"></i>
+                </div>
+                <div class="sub-item-label">
+                  {{ 'INSIGHTER.DASHBOARD.NAV.READ_LATER' | translate }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="nav-item expandable" [class.expanded]="isCommerceExpanded">
+            <div class="nav-item-main" (click)="toggleCommerce()">
+              <div class="item-icon">
+               <i class="pi pi-chart-bar"></i>
+              </div>
+              <div class="item-label">
+                {{ 'INSIGHTER.DASHBOARD.NAV.COMMERCE' | translate }}
+              </div>
+              <div class="expand-icon" (click)="toggleCommerce(); $event.stopPropagation()">
+                <i class="ki-outline ki-down" [class.rotated]="isCommerceExpanded"></i>
+              </div>
+            </div>
+            <div class="sub-nav" [class.show]="isCommerceExpanded">
+              <div class="sub-nav-item" [routerLink]="['my-orders']" routerLinkActive="active"
+                   (click)="closeMobileSidebar()">
+                <div class="sub-item-icon">
+                  <svg width="14" height="15" viewBox="0 0 19 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1.08447 6.10889H4.17822C4.67152 6.10889 5.07275 6.51012 5.07275 7.00342V19.688C5.07275 20.1813 4.67152 20.5835 4.17822 20.5835H1.08447C0.591175 20.5835 0.189941 20.1813 0.189941 19.688V7.00342C0.189941 6.51012 0.591175 6.10889 1.08447 6.10889Z" stroke="#6D757D" stroke-width="0.376002"/>
+                    <path d="M2.63107 7.96533C2.78335 7.96533 2.90732 8.08848 2.90744 8.24072V16.5942C2.90744 16.7466 2.78342 16.8706 2.63107 16.8706C2.47883 16.8705 2.35568 16.7465 2.35568 16.5942V8.24072C2.3558 8.08855 2.4789 7.96545 2.63107 7.96533Z" stroke="#6D757D" stroke-width="0.376002"/>
+                    <path d="M2.16702 18.1755H3.09573C3.24786 18.1757 3.371 18.2988 3.37112 18.4509C3.37112 18.6032 3.24794 18.7271 3.09573 18.7273H2.16702C2.01478 18.7272 1.89163 18.6032 1.89163 18.4509C1.89175 18.2988 2.01485 18.1757 2.16702 18.1755Z" stroke="#6D757D" stroke-width="0.376002"/>
+                    <path d="M6.32596 6.10889H9.41971C9.91301 6.10889 10.3142 6.51012 10.3142 7.00342V19.688C10.3142 20.1813 9.91301 20.5835 9.41971 20.5835H6.32596C5.83266 20.5835 5.43143 20.1813 5.43143 19.688V7.00342C5.43143 6.51012 5.83266 6.10889 6.32596 6.10889Z" stroke="#6D757D" stroke-width="0.376002"/>
+                    <path d="M7.87259 7.96533C8.02486 7.96533 8.14884 8.08848 8.14896 8.24072V16.5942C8.14896 16.7466 8.02494 16.8706 7.87259 16.8706C7.72034 16.8705 7.5972 16.7465 7.5972 16.5942V8.24072C7.59732 8.08855 7.72042 7.96545 7.87259 7.96533Z" stroke="#6D757D" stroke-width="0.376002"/>
+                    <path d="M7.40848 18.1755H8.33719C8.48932 18.1757 8.61246 18.2988 8.61258 18.4509C8.61258 18.6032 8.48939 18.7271 8.33719 18.7273H7.40848C7.25623 18.7272 7.13309 18.6032 7.13309 18.4509C7.13321 18.2988 7.25631 18.1757 7.40848 18.1755Z" stroke="#6D757D" stroke-width="0.376002"/>
+                    <path d="M11.2577 6.29378L14.2513 5.5129C14.7286 5.38839 15.2181 5.67535 15.3426 6.15268L18.5443 18.4265C18.6688 18.9039 18.3821 19.3943 17.9048 19.5188L14.9112 20.2997C14.4338 20.4242 13.9441 20.1363 13.8196 19.659L10.6179 7.38513C10.4934 6.90781 10.7804 6.41829 11.2577 6.29378Z" stroke="#6D757D" stroke-width="0.376002"/>
+                    <path d="M13.2228 7.69981C13.3702 7.66138 13.5212 7.74924 13.5598 7.89653L15.6682 15.9796C15.7067 16.127 15.618 16.2783 15.4706 16.3167C15.3232 16.3551 15.1728 16.2662 15.1343 16.1188L13.0259 8.0358C12.9876 7.88852 13.0756 7.73834 13.2228 7.69981Z" fill="#CCEBFF" stroke="#6D757D" stroke-width="0.376002"/>
+                    <path d="M15.3508 17.6962L16.2494 17.4617C16.3966 17.4235 16.5469 17.5115 16.5854 17.6587C16.6238 17.806 16.5359 17.9571 16.3887 17.9956L15.49 18.23C15.3427 18.2684 15.1922 18.1795 15.1538 18.0321C15.1155 17.8849 15.2035 17.7347 15.3508 17.6962Z" fill="#CCEBFF" stroke="#6D757D" stroke-width="0.376002"/>
+                    <path d="M11.7634 2.41837H8.24559C8.06531 2.41837 7.9158 2.26887 7.9158 2.08858C7.9158 1.90829 8.06531 1.75879 8.24559 1.75879H11.7634C11.9437 1.75879 12.0932 1.90829 12.0932 2.08858C12.0932 2.26887 11.9437 2.41837 11.7634 2.41837Z" fill="#6D757D"/>
+                    <path d="M10.0045 4.17736C9.82422 4.17736 9.67471 4.02786 9.67471 3.84757V0.329792C9.67471 0.149506 9.82422 0 10.0045 0C10.1848 0 10.3343 0.149506 10.3343 0.329792V3.84757C10.3343 4.02786 10.1848 4.17736 10.0045 4.17736Z" fill="#6D757D"/>
+                  </svg>
+                </div>
+                <div class="sub-item-label">
+                  {{ 'INSIGHTER.DASHBOARD.NAV.MY_ORDERS' | translate }}
+                </div>
+              </div>
+              <div class="sub-nav-item" [routerLink]="['sales']" routerLinkActive="active"
+                   (click)="closeMobileSidebar()" *ngIf="(isInsighter$ | async) || (isCompany$ | async)">
+                <div class="sub-item-icon">
+                  <i class="ki-outline ki-chart-line-up"></i>
+                </div>
+                <div class="sub-item-label">
+                  {{ 'SALES.PAGE_TITLE' | translate }}
+                </div>
+              </div>
+              <div class="sub-nav-item" *ngIf="(isInsighter$ | async) || (isCompany$ | async) || (isClient$ | async)"
+                   [routerLink]="['wallet']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+                   (click)="closeMobileSidebar()">
+                <div class="sub-item-icon">
+                  <i class="ki-outline ki-wallet"></i>
+                </div>
+                <div class="sub-item-label">
+                  {{ 'INSIGHTER.DASHBOARD.NAV.WALLET' | translate }}
+                </div>
+              </div>
+            </div>
+              </div>
+          </div>
+          <!-- Meetings Single Link -->
+          <div class="nav-item" [routerLink]="['my-meetings']" routerLinkActive="active"
+               (click)="closeMobileSidebar()">
+            <div class="item-icon">
+              <i class="ki-outline ki-calendar"></i>
+            </div>
+            <div class="item-label">
+              {{ 'INSIGHTER.DASHBOARD.NAV.MEETINGS' | translate }}
             </div>
           </div>
          
@@ -186,13 +191,21 @@
              {{ 'INSIGHTER.DASHBOARD.NAV.PAYMENT_SETTINGS' | translate }}
            </div>
          </div>
-        
+         <div class="sub-nav-item"  [routerLink]="['my-consulting-schedule']" routerLinkActive="active" *ngIf="!(isClient$ | async)"
+              (click)="closeMobileSidebar()">
+           <div class="sub-item-icon">
+             <i class="ki-outline ki-calendar"></i>
+           </div>
+           <div class="sub-item-label">
+             {{ 'INSIGHTER.DASHBOARD.NAV.MY_CONSULTING_SCHEDULE' | translate }}
+           </div>
+         </div>
+
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 </p-sidebar>
 
 <div class="flex-column flex-row-fluid pt-sm-160px" id="kt_app_wrapper" > 
@@ -211,8 +224,7 @@
         <app-downloads-statistics *ngIf="isRouteActive('my-downloads')"></app-downloads-statistics>
         <app-read-later-statistics *ngIf="isRouteActive('read-later')"></app-read-later-statistics>
         <app-my-orders-statistics *ngIf="isRouteActive('my-orders')"></app-my-orders-statistics>
-        <app-meetings-statistics *ngIf="isRouteActive('my-meetings') && !isSubRouteActive('my-meetings', 'sent')"></app-meetings-statistics>
-        <app-sent-meetings-statistics *ngIf="isSubRouteActive('my-meetings', 'sent')"></app-sent-meetings-statistics>
+        <app-meetings-statistics *ngIf="isRouteActive('my-meetings')"></app-meetings-statistics>
         <app-consulting-schedule-header *ngIf="isRouteActive('my-consulting-schedule')"></app-consulting-schedule-header>
         <app-account-settings-header *ngIf="isRouteActive('general-settings')"></app-account-settings-header>
         <app-payment-settings-header *ngIf="isRouteActive('payment-settings')"></app-payment-settings-header>
@@ -234,7 +246,7 @@
               <!-- Dashboard Card -->
               <div class="p-card navigation-card">
                 <div class="p-card-header">
-                  <h3 *ngIf="!isNavCollapsed">{{ 'INSIGHTER.DASHBOARD.NAV.DASHBOARD' | translate }}</h3>
+                  <h3 *ngIf="!isNavCollapsed">{{ 'INSIGHTER.DASHBOARD.NAV.MENU' | translate }}</h3>
                   <!-- Collapse Toggle Button -->
                   <button type="button" class="nav-toggle-btn btn btn-sm btn-icon btn-active-color-primary" (click)="toggleNavCollapse()" 
                           [attr.title]="isNavCollapsed ? 'Expand Menu' : 'Collapse Menu'">
@@ -254,218 +266,220 @@
                       {{ 'INSIGHTER.DASHBOARD.NAV.OVERVIEW' | translate }}
                     </div>
                   </div>
-                  <div class="nav-item" [routerLink]="['my-requests']" routerLinkActive="active" *ngIf="!(isClient$ | async)"
-                       [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_REQUESTS' | translate) : null"
-                       pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_REQUESTS' | translate) : '' }}"
-                       tooltipPosition="right"
-                       appendTo="body">
-                    <div class="item-icon">
-                      <i class="ki-outline ki-question-2"></i>
-                    </div>
-                    <div class="item-label" *ngIf="!isNavCollapsed">
-                      {{ 'INSIGHTER.DASHBOARD.NAV.MY_REQUESTS' | translate }}
-                    </div>
-                  </div>
-                  <div class="nav-item" [routerLink]="['my-knowledge']" routerLinkActive="active"  *ngIf="!(isClient$ | async)"
-                       [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_KNOWLEDGE' | translate) : null"
-                       pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_KNOWLEDGE' | translate) : '' }}"
-                       tooltipPosition="right"
-                       appendTo="body">
-                    <div class="item-icon">
-                    <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M1.23926 0.25H4.78125C5.32661 0.25 5.77033 0.693936 5.77051 1.23926V15.7607C5.77033 16.3061 5.32661 16.75 4.78125 16.75H1.23926C0.694045 16.7498 0.250177 16.306 0.25 15.7607V1.23926C0.250177 0.694045 0.694045 0.250177 1.23926 0.25Z" stroke="#3799FF" stroke-width="0.5"/>
-  <path d="M7.2601 3.79175H10.4476C10.993 3.79175 11.4377 4.23568 11.4378 4.78101V15.7605C11.4378 16.306 10.9931 16.7498 10.4476 16.7498H7.2601C6.71478 16.7496 6.27084 16.3059 6.27084 15.7605V4.78101C6.27102 4.23579 6.71489 3.79192 7.2601 3.79175Z" stroke="#3799FF" stroke-width="0.5"/>
-  <path d="M12.9268 8.04175H15.7607C16.306 8.04192 16.7498 8.48579 16.75 9.03101V15.7605C16.75 16.3059 16.3061 16.7496 15.7607 16.7498H12.9268C12.3814 16.7496 11.9375 16.3059 11.9375 15.7605V9.03101C11.9377 8.48579 12.3815 8.04192 12.9268 8.04175Z" stroke="#3799FF" stroke-width="0.5"/>
-  <path d="M3.01041 2.375C3.16559 2.375 3.29166 2.50107 3.29166 2.65625V12.2188C3.29166 12.3739 3.16559 12.5 3.01041 12.5C2.85523 12.5 2.72916 12.3739 2.72916 12.2188V2.65625C2.72916 2.50107 2.85523 2.375 3.01041 2.375Z" stroke="#3799FF" stroke-width="0.5"/>
-  <path d="M2.47916 14.0625H3.54166C3.69684 14.0625 3.82291 14.1886 3.82291 14.3438C3.82291 14.4989 3.69684 14.625 3.54166 14.625H2.47916C2.32398 14.625 2.19791 14.4989 2.19791 14.3438C2.19791 14.1886 2.32398 14.0625 2.47916 14.0625Z" stroke="#3799FF" stroke-width="0.5"/>
-  <path d="M8.85416 5.91675C9.00934 5.91675 9.13541 6.04282 9.13541 6.198V12.2185C9.13541 12.3737 9.00934 12.4998 8.85416 12.4998C8.69898 12.4998 8.57291 12.3737 8.57291 12.2185V6.198C8.57291 6.04282 8.69898 5.91675 8.85416 5.91675Z" stroke="#3799FF" stroke-width="0.5"/>
-  <path d="M8.32291 14.0625H9.38541C9.54059 14.0625 9.66666 14.1886 9.66666 14.3438C9.66666 14.4989 9.54059 14.625 9.38541 14.625H8.32291C8.16773 14.625 8.04166 14.4989 8.04166 14.3438C8.04166 14.1886 8.16773 14.0625 8.32291 14.0625Z" stroke="#3799FF" stroke-width="0.5"/>
-  <path d="M14.3438 10.1667C14.4989 10.1667 14.625 10.2928 14.625 10.448V12.2185C14.625 12.3737 14.4989 12.4998 14.3438 12.4998C14.1886 12.4998 14.0625 12.3737 14.0625 12.2185V10.448C14.0625 10.2928 14.1886 10.1667 14.3438 10.1667Z" stroke="#3799FF" stroke-width="0.5"/>
-  <path d="M13.8125 14.0625H14.875C15.0302 14.0625 15.1562 14.1886 15.1562 14.3438C15.1562 14.4989 15.0302 14.625 14.875 14.625H13.8125C13.6573 14.625 13.5313 14.4989 13.5312 14.3438C13.5312 14.1886 13.6573 14.0625 13.8125 14.0625Z" stroke="#3799FF" stroke-width="0.5"/>
-  </svg>
-
-                    </div>
-                    <div class="item-label" *ngIf="!isNavCollapsed">
-                      {{ 'INSIGHTER.DASHBOARD.NAV.MY_KNOWLEDGE' | translate }}
-                    </div>
-                  </div>
-                  <div class="nav-item" [routerLink]="['my-downloads']" routerLinkActive="active"
-                       [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_DOWNLOADS' | translate) : null"
-                       pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_DOWNLOADS' | translate) : '' }}"
-                       tooltipPosition="right"
-                       appendTo="body">
-                    <div class="item-icon">
-                      <i class="ki-outline ki-file-down"></i>
-                    </div>
-                    <div class="item-label" *ngIf="!isNavCollapsed">
-                      {{ 'INSIGHTER.DASHBOARD.NAV.MY_DOWNLOADS' | translate }}
-                    </div>
-                  </div>
-                  <div class="nav-item" [routerLink]="['read-later']" routerLinkActive="active"
-                       [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.READ_LATER' | translate) : null"
-                       pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.READ_LATER' | translate) : '' }}"
-                       tooltipPosition="right"
-                       appendTo="body">
-                    <div class="item-icon">
-                      <i class="ki-outline ki-bookmark"></i>
-                    </div>
-                    <div class="item-label" *ngIf="!isNavCollapsed">
-                      {{ 'INSIGHTER.DASHBOARD.NAV.READ_LATER' | translate }}
-                    </div>
-                  </div>
-                  <div class="nav-item" [routerLink]="['my-orders']" routerLinkActive="active"
-                       [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_ORDERS' | translate) : null"
-                       pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_ORDERS' | translate) : '' }}"
-                       tooltipPosition="right"
-                       appendTo="body">
-                    <div class="item-icon">
-                      <svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M0.939941 5.29346H3.62061C4.04808 5.29346 4.396 5.64137 4.396 6.06885V17.061C4.396 17.4885 4.04808 17.8364 3.62061 17.8364H0.939941C0.512463 17.8364 0.164551 17.4885 0.164551 17.061V6.06885C0.164551 5.64137 0.512463 5.29346 0.939941 5.29346Z" stroke="#3799FF" stroke-width="0.325833"/>
-                        <path d="M2.28058 6.90234C2.41252 6.90244 2.51984 7.00964 2.51984 7.1416V14.3809C2.5196 14.5126 2.41237 14.62 2.28058 14.6201C2.1487 14.6201 2.04156 14.5127 2.04132 14.3809V7.1416C2.04132 7.00958 2.14856 6.90234 2.28058 6.90234Z" stroke="#3799FF" stroke-width="0.325833"/>
-                        <path d="M1.87845 15.7502H2.68216C2.81418 15.7502 2.92142 15.8575 2.92142 15.9895C2.92132 16.1214 2.81412 16.2288 2.68216 16.2288H1.87845C1.74649 16.2288 1.63929 16.1214 1.63919 15.9895C1.63919 15.8575 1.74643 15.7502 1.87845 15.7502Z" stroke="#3799FF" stroke-width="0.325833"/>
-                        <path d="M5.48206 5.29346H8.16272C8.5902 5.29346 8.93811 5.64137 8.93811 6.06885V17.061C8.93811 17.4885 8.5902 17.8364 8.16272 17.8364H5.48206C5.05458 17.8364 4.70667 17.4885 4.70667 17.061V6.06885C4.70667 5.64137 5.05458 5.29346 5.48206 5.29346Z" stroke="#3799FF" stroke-width="0.325833"/>
-                        <path d="M6.82272 6.90234C6.95466 6.90244 7.06198 7.00964 7.06198 7.1416V14.3809C7.06175 14.5126 6.95452 14.62 6.82272 14.6201C6.69085 14.6201 6.5837 14.5127 6.58347 14.3809V7.1416C6.58347 7.00958 6.6907 6.90234 6.82272 6.90234Z" stroke="#3799FF" stroke-width="0.325833"/>
-                        <path d="M6.42053 15.7502H7.22424C7.35626 15.7502 7.4635 15.8575 7.4635 15.9895C7.46341 16.1214 7.3562 16.2288 7.22424 16.2288H6.42053C6.28857 16.2288 6.18137 16.1214 6.18127 15.9895C6.18127 15.8575 6.28851 15.7502 6.42053 15.7502Z" stroke="#3799FF" stroke-width="0.325833"/>
-                        <path d="M9.75571 5.45389L12.3496 4.77727C12.7632 4.66937 13.1877 4.9182 13.2956 5.33184L16.0701 15.9681C16.178 16.3818 15.9291 16.8062 15.5155 16.9141L12.9216 17.5907C12.508 17.6986 12.0835 17.4498 11.9756 17.0362L9.20114 6.39988C9.09324 5.98625 9.34207 5.56179 9.75571 5.45389Z" stroke="#3799FF" stroke-width="0.325833"/>
-                        <path d="M11.459 6.67222C11.5867 6.63901 11.7176 6.71565 11.7509 6.84334L13.5782 13.8482C13.6112 13.9758 13.5345 14.1067 13.407 14.1401C13.2794 14.1734 13.1486 14.0965 13.1151 13.969L11.2879 6.96412C11.2546 6.83637 11.3313 6.70554 11.459 6.67222Z" fill="#CCEBFF" stroke="#3799FF" stroke-width="0.325833"/>
-                        <path d="M13.303 15.3346L14.0807 15.1317C14.2085 15.0984 14.3393 15.1751 14.3726 15.3028C14.4058 15.4305 14.3292 15.5614 14.2015 15.5947L13.4238 15.7976C13.2961 15.8309 13.1653 15.7541 13.1319 15.6265C13.0986 15.4987 13.1753 15.3679 13.303 15.3346Z" fill="#CCEBFF" stroke="#3799FF" stroke-width="0.325833"/>
-                        <path d="M10.194 2.09575H7.14559C6.98936 2.09575 6.8598 1.96619 6.8598 1.80996C6.8598 1.65373 6.98936 1.52417 7.14559 1.52417H10.194C10.3502 1.52417 10.4798 1.65373 10.4798 1.80996C10.4798 1.96619 10.3502 2.09575 10.194 2.09575Z" fill="#3799FF"/>
-                        <path d="M8.66982 3.61999C8.51359 3.61999 8.38403 3.49043 8.38403 3.3342V0.285788C8.38403 0.129557 8.51359 0 8.66982 0C8.82605 0 8.95561 0.129557 8.95561 0.285788V3.3342C8.95561 3.49043 8.82605 3.61999 8.66982 3.61999Z" fill="#3799FF"/>
-                        </svg>
-                        
-                        
-                        
-                      
-                    </div>
-                    <div class="item-label" *ngIf="!isNavCollapsed">
-                      {{ 'INSIGHTER.DASHBOARD.NAV.MY_ORDERS' | translate }}
-                    </div>
-                  </div>
-                  <div class="nav-item" [routerLink]="['sales']" routerLinkActive="active"*ngIf="(isInsighter$ | async) || (isCompany$ | async)"
-                       [attr.title]="isNavCollapsed ? ('SALES.PAGE_TITLE' | translate) : null"
-                       pTooltip="{{ isNavCollapsed ? ('SALES.PAGE_TITLE' | translate) : '' }}"
-                       tooltipPosition="right"
-                       appendTo="body">
-                    <div class="item-icon">
-                      <i class="ki-outline ki-chart-line-up"></i>
-                    </div>
-                    <div class="item-label" *ngIf="!isNavCollapsed">
-                      {{ 'SALES.PAGE_TITLE' | translate }}
-                    </div>
-                  </div>
-                  <div class="nav-item" [routerLink]="['my-meetings/sent']" routerLinkActive="active" *ngIf="!isNavCollapsed && (isClient$ | async)"
-                       [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.SENT' | translate) : null"
-                       pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.SENT' | translate) : '' }}"
-                       tooltipPosition="right"
-                       appendTo="body">
-                    <div class="item-icon">
-                      <i class="ki-outline ki-calendar"></i>
-                    </div>
-                    <div class="item-label" >
-                        {{ 'INSIGHTER.DASHBOARD.NAV.MEETINGS' | translate }}
-                    </div>
-                  </div>
-                  <!-- Meetings Expandable Item -->
-                  <div class="nav-item expandable" [class.expanded]="isMeetingsExpanded" *ngIf="!isNavCollapsed && !(isClient$ | async)">
-                    <div class="nav-item-main" (click)="toggleMeetings()">
-                      <div class="item-icon">
-                        <i class="ki-outline ki-calendar"></i>
+                  <ng-container *ngIf="!isNavCollapsed">
+                    <div class="nav-item expandable" [class.expanded]="isActivityExpanded">
+                      <div class="nav-item-main" (click)="toggleActivity()">
+                        <div class="item-icon">
+                                        <i class="pi pi-bars"></i>
+                        </div>
+                        <div class="item-label">
+                          {{ 'INSIGHTER.DASHBOARD.NAV.MY_ACTIVITY' | translate }}
+                        </div>
+                        <div class="expand-icon" (click)="toggleActivity(); $event.stopPropagation()">
+                          <i class="ki-outline ki-down" [class.rotated]="isActivityExpanded"></i>
+                        </div>
                       </div>
-                      <div class="item-label">
-                        {{ 'INSIGHTER.DASHBOARD.NAV.MEETINGS' | translate }}
-                      </div>
-                      <div class="expand-icon">
-                        <i class="ki-outline ki-down"></i>
-                      </div>
-                    </div>
-                    <div class="sub-nav" [class.show]="isMeetingsExpanded">
-                      <div class="sub-nav-item"  [routerLink]="['my-consulting-schedule']" routerLinkActive="active" *ngIf="!(isClient$ | async)"
-                      pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_CONSULTING_SCHEDULE' | translate) : '' }}"
-                      tooltipPosition="right"
-                      appendTo="body">
-                        <div class="sub-item-icon">
-                          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M4.66669 1.16669V2.91669" stroke="#9C9FA1" stroke-width="0.875" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M9.33331 1.16669V2.91669" stroke="#9C9FA1" stroke-width="0.875" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M2.04169 5.30249H11.9584" stroke="#9C9FA1" stroke-width="0.875" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M11.2058 9.19919L9.14084 11.2642C9.05918 11.3459 8.98333 11.4975 8.96583 11.6084L8.855 12.3959C8.81416 12.6817 9.0125 12.88 9.29834 12.8392L10.0858 12.7284C10.1967 12.7109 10.3542 12.635 10.43 12.5534L12.495 10.4884C12.8508 10.1325 13.02 9.71836 12.495 9.19336C11.9758 8.6742 11.5617 8.84335 11.2058 9.19919Z" stroke="#9C9FA1" stroke-width="0.875" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M10.9084 9.4967C11.0834 10.1267 11.5734 10.6167 12.2034 10.7917" stroke="#9C9FA1" stroke-width="0.875" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M7 12.8334H4.66667C2.625 12.8334 1.75 11.6667 1.75 9.91669V4.95835C1.75 3.20835 2.625 2.04169 4.66667 2.04169H9.33333C11.375 2.04169 12.25 3.20835 12.25 4.95835V7.00002" stroke="#9C9FA1" stroke-width="0.875" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M6.99739 7.99168H7.00263" stroke="#9C9FA1" stroke-width="1.16667" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M4.83833 7.99168H4.84357" stroke="#9C9FA1" stroke-width="1.16667" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M4.83833 9.74168H4.84357" stroke="#9C9FA1" stroke-width="1.16667" stroke-linecap="round" stroke-linejoin="round"/>
+                      <div class="sub-nav" [class.show]="isActivityExpanded">
+                        <div class="sub-nav-item" [routerLink]="['my-requests']" routerLinkActive="active" *ngIf="!(isClient$ | async)">
+                          <div class="sub-item-icon">
+                            <i class="ki-outline ki-question-2"></i>
+                          </div>
+                          <div class="sub-item-label">
+                            {{ 'INSIGHTER.DASHBOARD.NAV.MY_REQUESTS' | translate }}
+                          </div>
+                        </div>
+                        <div class="sub-nav-item" [routerLink]="['my-knowledge']" routerLinkActive="active" *ngIf="!(isClient$ | async)">
+                          <div class="sub-item-icon">
+                            <svg width="14" height="14" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M1.23926 0.25H4.78125C5.32661 0.25 5.77033 0.693936 5.77051 1.23926V15.7607C5.77033 16.3061 5.32661 16.75 4.78125 16.75H1.23926C0.694045 16.7498 0.250177 16.306 0.25 15.7607V1.23926C0.250177 0.694045 0.694045 0.250177 1.23926 0.25Z" stroke="#6D757D" stroke-width="0.5"/>
+                              <path d="M7.2601 3.79175H10.4476C10.993 3.79175 11.4377 4.23568 11.4378 4.78101V15.7605C11.4378 16.306 10.9931 16.7498 10.4476 16.7498H7.2601C6.71478 16.7496 6.27084 16.3059 6.27084 15.7605V4.78101C6.27102 4.23579 6.71489 3.79192 7.2601 3.79175Z" stroke="#6D757D" stroke-width="0.5"/>
+                              <path d="M12.9268 8.04175H15.7607C16.306 8.04192 16.7498 8.48579 16.75 9.03101V15.7605C16.75 16.3059 16.3061 16.7496 15.7607 16.7498H12.9268C12.3814 16.7496 11.9375 16.3059 11.9375 15.7605V9.03101C11.9377 8.48579 12.3815 8.04192 12.9268 8.04175Z" stroke="#6D757D" stroke-width="0.5"/>
+                              <path d="M3.01041 2.375C3.16559 2.375 3.29166 2.50107 3.29166 2.65625V12.2188C3.29166 12.3739 3.16559 12.5 3.01041 12.5C2.85523 12.5 2.72916 12.3739 2.72916 12.2188V2.65625C2.72916 2.50107 2.85523 2.375 3.01041 2.375Z" stroke="#6D757D" stroke-width="0.5"/>
+                              <path d="M2.47916 14.0625H3.54166C3.69684 14.0625 3.82291 14.1886 3.82291 14.3438C3.82291 14.4989 3.69684 14.625 3.54166 14.625H2.47916C2.32398 14.625 2.19791 14.4989 2.19791 14.3438C2.19791 14.1886 2.32398 14.0625 2.47916 14.0625Z" stroke="#6D757D" stroke-width="0.5"/>
+                              <path d="M8.85416 5.91675C9.00934 5.91675 9.13541 6.04282 9.13541 6.198V12.2185C9.13541 12.3737 9.00934 12.4998 8.85416 12.4998C8.69898 12.4998 8.57291 12.3737 8.57291 12.2185V6.198C8.57291 6.04282 8.69898 5.91675 8.85416 5.91675Z" stroke="#6D757D" stroke-width="0.5"/>
+                              <path d="M8.32291 14.0625H9.38541C9.54059 14.0625 9.66666 14.1886 9.66666 14.3438C9.66666 14.4989 9.54059 14.625 9.38541 14.625H8.32291C8.16773 14.625 8.04166 14.4989 8.04166 14.3438C8.04166 14.1886 8.16773 14.0625 8.32291 14.0625Z" stroke="#6D757D" stroke-width="0.5"/>
+                              <path d="M14.3438 10.1667C14.4989 10.1667 14.625 10.2928 14.625 10.448V12.2185C14.625 12.3737 14.4989 12.4998 14.3438 12.4998C14.1886 12.4998 14.0625 12.3737 14.0625 12.2185V10.448C14.0625 10.2928 14.1886 10.1667 14.3438 10.1667Z" stroke="#6D757D" stroke-width="0.5"/>
+                              <path d="M13.8125 14.0625H14.875C15.0302 14.0625 15.1562 14.1886 15.1562 14.3438C15.1562 14.4989 15.0302 14.625 14.875 14.625H13.8125C13.6573 14.625 13.5313 14.4989 13.5312 14.3438C13.5312 14.1886 13.6573 14.0625 13.8125 14.0625Z" stroke="#6D757D" stroke-width="0.5"/>
                             </svg>
-                            
+                          </div>
+                          <div class="sub-item-label">
+                            {{ 'INSIGHTER.DASHBOARD.NAV.MY_KNOWLEDGE' | translate }}
+                          </div>
                         </div>
-                        <div class="sub-item-label">
-                          {{ 'INSIGHTER.DASHBOARD.NAV.MY_CONSULTING_SCHEDULE' | translate }}
+                        <div class="sub-nav-item" [routerLink]="['my-downloads']" routerLinkActive="active">
+                          <div class="sub-item-icon">
+                            <i class="ki-outline ki-file-down"></i>
+                          </div>
+                          <div class="sub-item-label">
+                            {{ 'INSIGHTER.DASHBOARD.NAV.MY_DOWNLOADS' | translate }}
+                          </div>
                         </div>
-                      </div>
-                      <div class="sub-nav-item" [routerLink]="['my-meetings/received']" routerLinkActive="active"  *ngIf="!(isClient$ | async)"
-                      pTooltip="{{ isNavCollapsed ? ('INSIGHTER.MEETINGS.TABS.RECEIVED' | translate) : '' }}"
-                      tooltipPosition="right"
-                      appendTo="body">
-                        <div class="sub-item-icon">
-                          <i class="ki-outline ki-message-text-2"></i>
-                        </div>
-                        <div class="sub-item-label">
-                          {{ 'INSIGHTER.MEETINGS.TABS.RECEIVED' | translate }}
-                        </div>
-                      </div>
-                      <div class="sub-nav-item" [routerLink]="['my-meetings/sent']" routerLinkActive="active"
-                      pTooltip="{{ isNavCollapsed ? ('INSIGHTER.MEETINGS.TABS.SENT' | translate) : '' }}"
-                      tooltipPosition="right"
-                      appendTo="body">
-                        <div class="sub-item-icon">
-                          <i class="ki-outline ki-send"></i>
-                        </div>
-                        <div class="sub-item-label">
-                          {{ 'INSIGHTER.MEETINGS.TABS.SENT' | translate }}
+                        <div class="sub-nav-item" [routerLink]="['read-later']" routerLinkActive="active">
+                          <div class="sub-item-icon">
+                            <i class="ki-outline ki-bookmark"></i>
+                          </div>
+                          <div class="sub-item-label">
+                            {{ 'INSIGHTER.DASHBOARD.NAV.READ_LATER' | translate }}
+                          </div>
                         </div>
                       </div>
-                     
                     </div>
-                  </div>
-                  
-                  <!-- Collapsed Meeting Items (shown as separate items when collapsed) -->
-                  <div *ngIf="isNavCollapsed">
-                    <div class="nav-item" [routerLink]="['my-consulting-schedule']" routerLinkActive="active" 
-                         *ngIf="!(isClient$ | async)" [attr.title]="('INSIGHTER.DASHBOARD.NAV.MY_CONSULTING_SCHEDULE' | translate)"
-                         pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_CONSULTING_SCHEDULE' | translate) : '' }}"
+                    <div class="nav-item expandable" [class.expanded]="isCommerceExpanded">
+                      <div class="nav-item-main" (click)="toggleCommerce()">
+                        <div class="item-icon">
+                         <i class="pi pi-chart-bar"></i>
+                        </div>
+                        <div class="item-label">
+                          {{ 'INSIGHTER.DASHBOARD.NAV.COMMERCE' | translate }}
+                        </div>
+                        <div class="expand-icon" (click)="toggleCommerce(); $event.stopPropagation()">
+                          <i class="ki-outline ki-down" [class.rotated]="isCommerceExpanded"></i>
+                        </div>
+                      </div>
+                      <div class="sub-nav" [class.show]="isCommerceExpanded">
+                        <div class="sub-nav-item" [routerLink]="['my-orders']" routerLinkActive="active">
+                          <div class="sub-item-icon">
+                            <svg width="14" height="15" viewBox="0 0 19 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M1.08447 6.10889H4.17822C4.67152 6.10889 5.07275 6.51012 5.07275 7.00342V19.688C5.07275 20.1813 4.67152 20.5835 4.17822 20.5835H1.08447C0.591175 20.5835 0.189941 20.1813 0.189941 19.688V7.00342C0.189941 6.51012 0.591175 6.10889 1.08447 6.10889Z" stroke="#6D757D" stroke-width="0.376002"/>
+                              <path d="M2.63107 7.96533C2.78335 7.96533 2.90732 8.08848 2.90744 8.24072V16.5942C2.90744 16.7466 2.78342 16.8706 2.63107 16.8706C2.47883 16.8705 2.35568 16.7465 2.35568 16.5942V8.24072C2.3558 8.08855 2.4789 7.96545 2.63107 7.96533Z" stroke="#6D757D" stroke-width="0.376002"/>
+                              <path d="M2.16702 18.1755H3.09573C3.24786 18.1757 3.371 18.2988 3.37112 18.4509C3.37112 18.6032 3.24794 18.7271 3.09573 18.7273H2.16702C2.01478 18.7272 1.89163 18.6032 1.89163 18.4509C1.89175 18.2988 2.01485 18.1757 2.16702 18.1755Z" stroke="#6D757D" stroke-width="0.376002"/>
+                              <path d="M6.32596 6.10889H9.41971C9.91301 6.10889 10.3142 6.51012 10.3142 7.00342V19.688C10.3142 20.1813 9.91301 20.5835 9.41971 20.5835H6.32596C5.83266 20.5835 5.43143 20.1813 5.43143 19.688V7.00342C5.43143 6.51012 5.83266 6.10889 6.32596 6.10889Z" stroke="#6D757D" stroke-width="0.376002"/>
+                              <path d="M7.87259 7.96533C8.02486 7.96533 8.14884 8.08848 8.14896 8.24072V16.5942C8.14896 16.7466 8.02494 16.8706 7.87259 16.8706C7.72034 16.8705 7.5972 16.7465 7.5972 16.5942V8.24072C7.59732 8.08855 7.72042 7.96545 7.87259 7.96533Z" stroke="#6D757D" stroke-width="0.376002"/>
+                              <path d="M7.40848 18.1755H8.33719C8.48932 18.1757 8.61246 18.2988 8.61258 18.4509C8.61258 18.6032 8.48939 18.7271 8.33719 18.7273H7.40848C7.25623 18.7272 7.13309 18.6032 7.13309 18.4509C7.13321 18.2988 7.25631 18.1757 7.40848 18.1755Z" stroke="#6D757D" stroke-width="0.376002"/>
+                              <path d="M11.2577 6.29378L14.2513 5.5129C14.7286 5.38839 15.2181 5.67535 15.3426 6.15268L18.5443 18.4265C18.6688 18.9039 18.3821 19.3943 17.9048 19.5188L14.9112 20.2997C14.4338 20.4242 13.9441 20.1363 13.8196 19.659L10.6179 7.38513C10.4934 6.90781 10.7804 6.41829 11.2577 6.29378Z" stroke="#6D757D" stroke-width="0.376002"/>
+                              <path d="M13.2228 7.69981C13.3702 7.66138 13.5212 7.74924 13.5598 7.89653L15.6682 15.9796C15.7067 16.127 15.618 16.2783 15.4706 16.3167C15.3232 16.3551 15.1728 16.2662 15.1343 16.1188L13.0259 8.0358C12.9876 7.88852 13.0756 7.73834 13.2228 7.69981Z" fill="#CCEBFF" stroke="#6D757D" stroke-width="0.376002"/>
+                              <path d="M15.3508 17.6962L16.2494 17.4617C16.3966 17.4235 16.5469 17.5115 16.5854 17.6587C16.6238 17.806 16.5359 17.9571 16.3887 17.9956L15.49 18.23C15.3427 18.2684 15.1922 18.1795 15.1538 18.0321C15.1155 17.8849 15.2035 17.7347 15.3508 17.6962Z" fill="#CCEBFF" stroke="#6D757D" stroke-width="0.376002"/>
+                              <path d="M11.7634 2.41837H8.24559C8.06531 2.41837 7.9158 2.26887 7.9158 2.08858C7.9158 1.90829 8.06531 1.75879 8.24559 1.75879H11.7634C11.9437 1.75879 12.0932 1.90829 12.0932 2.08858C12.0932 2.26887 11.9437 2.41837 11.7634 2.41837Z" fill="#6D757D"/>
+                              <path d="M10.0045 4.17736C9.82422 4.17736 9.67471 4.02786 9.67471 3.84757V0.329792C9.67471 0.149506 9.82422 0 10.0045 0C10.1848 0 10.3343 0.149506 10.3343 0.329792V3.84757C10.3343 4.02786 10.1848 4.17736 10.0045 4.17736Z" fill="#6D757D"/>
+                            </svg>
+                          </div>
+                          <div class="sub-item-label">
+                            {{ 'INSIGHTER.DASHBOARD.NAV.MY_ORDERS' | translate }}
+                          </div>
+                        </div>
+                        <div class="sub-nav-item" [routerLink]="['sales']" routerLinkActive="active" *ngIf="(isInsighter$ | async) || (isCompany$ | async)">
+                          <div class="sub-item-icon">
+                            <i class="ki-outline ki-chart-line-up"></i>
+                          </div>
+                          <div class="sub-item-label">
+                            {{ 'SALES.PAGE_TITLE' | translate }}
+                          </div>
+                        </div>
+                        <div class="sub-nav-item" *ngIf="(isInsighter$ | async) || (isCompany$ | async) || (isClient$ | async)"
+                             [routerLink]="['wallet']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                          <div class="sub-item-icon">
+                            <i class="ki-outline ki-wallet"></i>
+                          </div>
+                          <div class="sub-item-label">
+                            {{ 'INSIGHTER.DASHBOARD.NAV.WALLET' | translate }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-container>
+                  <ng-container *ngIf="isNavCollapsed">
+                    <div class="nav-item" [routerLink]="['my-requests']" routerLinkActive="active" *ngIf="!(isClient$ | async)"
+                         [attr.title]="('INSIGHTER.DASHBOARD.NAV.MY_REQUESTS' | translate)"
+                         pTooltip="{{ ('INSIGHTER.DASHBOARD.NAV.MY_REQUESTS' | translate) }}"
                          tooltipPosition="right"
                          appendTo="body">
                       <div class="item-icon">
-                        <i class="ki-outline ki-calendar"></i>
+                        <i class="ki-outline ki-question-2"></i>
                       </div>
                     </div>
-                    <div class="nav-item" [routerLink]="['my-meetings/received']" routerLinkActive="active" 
-                         *ngIf="!(isClient$ | async)" [attr.title]="('INSIGHTER.MEETINGS.TABS.RECEIVED' | translate)"
-                         pTooltip="{{ isNavCollapsed ? ('INSIGHTER.MEETINGS.TABS.RECEIVED' | translate) : '' }}"
+                    <div class="nav-item" [routerLink]="['my-knowledge']" routerLinkActive="active" *ngIf="!(isClient$ | async)"
+                         [attr.title]="('INSIGHTER.DASHBOARD.NAV.MY_KNOWLEDGE' | translate)"
+                         pTooltip="{{ ('INSIGHTER.DASHBOARD.NAV.MY_KNOWLEDGE' | translate) }}"
                          tooltipPosition="right"
                          appendTo="body">
                       <div class="item-icon">
-                        <i class="ki-outline ki-message-text-2"></i>
+                        <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M1.23926 0.25H4.78125C5.32661 0.25 5.77033 0.693936 5.77051 1.23926V15.7607C5.77033 16.3061 5.32661 16.75 4.78125 16.75H1.23926C0.694045 16.7498 0.250177 16.306 0.25 15.7607V1.23926C0.250177 0.694045 0.694045 0.250177 1.23926 0.25Z" stroke="#3799FF" stroke-width="0.5"/>
+                          <path d="M7.2601 3.79175H10.4476C10.993 3.79175 11.4377 4.23568 11.4378 4.78101V15.7605C11.4378 16.306 10.9931 16.7498 10.4476 16.7498H7.2601C6.71478 16.7496 6.27084 16.3059 6.27084 15.7605V4.78101C6.27102 4.23579 6.71489 3.79192 7.2601 3.79175Z" stroke="#3799FF" stroke-width="0.5"/>
+                          <path d="M12.9268 8.04175H15.7607C16.306 8.04192 16.7498 8.48579 16.75 9.03101V15.7605C16.75 16.3059 16.3061 16.7496 15.7607 16.7498H12.9268C12.3814 16.7496 11.9375 16.3059 11.9375 15.7605V9.03101C11.9377 8.48579 12.3815 8.04192 12.9268 8.04175Z" stroke="#3799FF" stroke-width="0.5"/>
+                          <path d="M3.01041 2.375C3.16559 2.375 3.29166 2.50107 3.29166 2.65625V12.2188C3.29166 12.3739 3.16559 12.5 3.01041 12.5C2.85523 12.5 2.72916 12.3739 2.72916 12.2188V2.65625C2.72916 2.50107 2.85523 2.375 3.01041 2.375Z" stroke="#3799FF" stroke-width="0.5"/>
+                          <path d="M2.47916 14.0625H3.54166C3.69684 14.0625 3.82291 14.1886 3.82291 14.3438C3.82291 14.4989 3.69684 14.625 3.54166 14.625H2.47916C2.32398 14.625 2.19791 14.4989 2.19791 14.3438C2.19791 14.1886 2.32398 14.0625 2.47916 14.0625Z" stroke="#3799FF" stroke-width="0.5"/>
+                          <path d="M8.85416 5.91675C9.00934 5.91675 9.13541 6.04282 9.13541 6.198V12.2185C9.13541 12.3737 9.00934 12.4998 8.85416 12.4998C8.69898 12.4998 8.57291 12.3737 8.57291 12.2185V6.198C8.57291 6.04282 8.69898 5.91675 8.85416 5.91675Z" stroke="#3799FF" stroke-width="0.5"/>
+                          <path d="M8.32291 14.0625H9.38541C9.54059 14.0625 9.66666 14.1886 9.66666 14.3438C9.66666 14.4989 9.54059 14.625 9.38541 14.625H8.32291C8.16773 14.625 8.04166 14.4989 8.04166 14.3438C8.04166 14.1886 8.16773 14.0625 8.32291 14.0625Z" stroke="#3799FF" stroke-width="0.5"/>
+                          <path d="M14.3438 10.1667C14.4989 10.1667 14.625 10.2928 14.625 10.448V12.2185C14.625 12.3737 14.4989 12.4998 14.3438 12.4998C14.1886 12.4998 14.0625 12.3737 14.0625 12.2185V10.448C14.0625 10.2928 14.1886 10.1667 14.3438 10.1667Z" stroke="#3799FF" stroke-width="0.5"/>
+                          <path d="M13.8125 14.0625H14.875C15.0302 14.0625 15.1562 14.1886 15.1562 14.3438C15.1562 14.4989 15.0302 14.625 14.875 14.625H13.8125C13.6573 14.625 13.5313 14.4989 13.5312 14.3438C13.5312 14.1886 13.6573 14.0625 13.8125 14.0625Z" stroke="#3799FF" stroke-width="0.5"/>
+                        </svg>
                       </div>
                     </div>
-                    <div class="nav-item" [routerLink]="['my-meetings/sent']" routerLinkActive="active"
-                         [attr.title]="('INSIGHTER.MEETINGS.TABS.SENT' | translate)"
-                         pTooltip="{{ isNavCollapsed ? ('INSIGHTER.MEETINGS.TABS.SENT' | translate) : '' }}"
+                    <div class="nav-item" [routerLink]="['my-downloads']" routerLinkActive="active"
+                         [attr.title]="('INSIGHTER.DASHBOARD.NAV.MY_DOWNLOADS' | translate)"
+                         pTooltip="{{ ('INSIGHTER.DASHBOARD.NAV.MY_DOWNLOADS' | translate) }}"
                          tooltipPosition="right"
                          appendTo="body">
                       <div class="item-icon">
-                        <i class="ki-outline ki-send"></i>
+                        <i class="ki-outline ki-file-down"></i>
+                      </div>
+                    </div>
+                    <div class="nav-item" [routerLink]="['read-later']" routerLinkActive="active"
+                         [attr.title]="('INSIGHTER.DASHBOARD.NAV.READ_LATER' | translate)"
+                         pTooltip="{{ ('INSIGHTER.DASHBOARD.NAV.READ_LATER' | translate) }}"
+                         tooltipPosition="right"
+                         appendTo="body">
+                      <div class="item-icon">
+                        <i class="ki-outline ki-bookmark"></i>
+                      </div>
+                    </div>
+                    <div class="nav-item" [routerLink]="['my-orders']" routerLinkActive="active"
+                         [attr.title]="('INSIGHTER.DASHBOARD.NAV.MY_ORDERS' | translate)"
+                         pTooltip="{{ ('INSIGHTER.DASHBOARD.NAV.MY_ORDERS' | translate) }}"
+                         tooltipPosition="right"
+                         appendTo="body">
+                      <div class="item-icon">
+                        <svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M0.939941 5.29346H3.62061C4.04808 5.29346 4.396 5.64137 4.396 6.06885V17.061C4.396 17.4885 4.04808 17.8364 3.62061 17.8364H0.939941C0.512463 17.8364 0.164551 17.4885 0.164551 17.061V6.06885C0.164551 5.64137 0.512463 5.29346 0.939941 5.29346Z" stroke="#3799FF" stroke-width="0.325833"/>
+                          <path d="M2.28058 6.90234C2.41252 6.90244 2.51984 7.00964 2.51984 7.1416V14.3809C2.5196 14.5126 2.41237 14.62 2.28058 14.6201C2.1487 14.6201 2.04156 14.5127 2.04132 14.3809V7.1416C2.04132 7.00958 2.14856 6.90234 2.28058 6.90234Z" stroke="#3799FF" stroke-width="0.325833"/>
+                          <path d="M1.87845 15.7502H2.68216C2.81418 15.7502 2.92142 15.8575 2.92142 15.9895C2.92132 16.1214 2.81412 16.2288 2.68216 16.2288H1.87845C1.74649 16.2288 1.63929 16.1214 1.63919 15.9895C1.63919 15.8575 1.74643 15.7502 1.87845 15.7502Z" stroke="#3799FF" stroke-width="0.325833"/>
+                          <path d="M5.48206 5.29346H8.16272C8.5902 5.29346 8.93811 5.64137 8.93811 6.06885V17.061C8.93811 17.4885 8.5902 17.8364 8.16272 17.8364H5.48206C5.05458 17.8364 4.70667 17.4885 4.70667 17.061V6.06885C4.70667 5.64137 5.05458 5.29346 5.48206 5.29346Z" stroke="#3799FF" stroke-width="0.325833"/>
+                          <path d="M6.82272 6.90234C6.95466 6.90244 7.06198 7.00964 7.06198 7.1416V14.3809C7.06175 14.5126 6.95452 14.62 6.82272 14.6201C6.69085 14.6201 6.5837 14.5127 6.58347 14.3809V7.1416C6.58347 7.00958 6.6907 6.90234 6.82272 6.90234Z" stroke="#3799FF" stroke-width="0.325833"/>
+                          <path d="M6.42053 15.7502H7.22424C7.35626 15.7502 7.4635 15.8575 7.4635 15.9895C7.46341 16.1214 7.3562 16.2288 7.22424 16.2288H6.42053C6.28857 16.2288 6.18137 16.1214 6.18127 15.9895C6.18127 15.8575 6.28851 15.7502 6.42053 15.7502Z" stroke="#3799FF" stroke-width="0.325833"/>
+                          <path d="M9.75571 5.45389L12.3496 4.77727C12.7632 4.66937 13.1877 4.9182 13.2956 5.33184L16.0701 15.9681C16.178 16.3818 15.9291 16.8062 15.5155 16.9141L12.9216 17.5907C12.508 17.6986 12.0835 17.4498 11.9756 17.0362L9.20114 6.39988C9.09324 5.98625 9.34207 5.56179 9.75571 5.45389Z" stroke="#3799FF" stroke-width="0.325833"/>
+                          <path d="M11.459 6.67222C11.5867 6.63901 11.7176 6.71565 11.7509 6.84334L13.5782 13.8482C13.6112 13.9758 13.5345 14.1067 13.407 14.1401C13.2794 14.1734 13.1486 14.0965 13.1151 13.969L11.2879 6.96412C11.2546 6.83637 11.3313 6.70554 11.459 6.67222Z" fill="#CCEBFF" stroke="#3799FF" stroke-width="0.325833"/>
+                          <path d="M13.303 15.3346L14.0807 15.1317C14.2085 15.0984 14.3393 15.1751 14.3726 15.3028C14.4058 15.4305 14.3292 15.5614 14.2015 15.5947L13.4238 15.7976C13.2961 15.8309 13.1653 15.7541 13.1319 15.6265C13.0986 15.4987 13.1753 15.3679 13.303 15.3346Z" fill="#CCEBFF" stroke="#3799FF" stroke-width="0.325833"/>
+                          <path d="M10.194 2.09575H7.14559C6.98936 2.09575 6.8598 1.96619 6.8598 1.80996C6.8598 1.65373 6.98936 1.52417 7.14559 1.52417H10.194C10.3502 1.52417 10.4798 1.65373 10.4798 1.80996C10.4798 1.96619 10.3502 2.09575 10.194 2.09575Z" fill="#3799FF"/>
+                          <path d="M8.66982 3.61999C8.51359 3.61999 8.38403 3.49043 8.38403 3.3342V0.285788C8.38403 0.129557 8.51359 0 8.66982 0C8.82605 0 8.95561 0.129557 8.95561 0.285788V3.3342C8.95561 3.49043 8.82605 3.61999 8.66982 3.61999Z" fill="#3799FF"/>
+                        </svg>
                       </div>
                     </div>
                     <div class="nav-item" [routerLink]="['sales']" routerLinkActive="active"
-                    *ngIf="(isInsighter$ | async) || (isCompany$ | async)" [attr.title]="('SALES.PAGE_TITLE' | translate)"
-                         pTooltip="{{ isNavCollapsed ? ('SALES.PAGE_TITLE' | translate) : '' }}"
+                         *ngIf="(isInsighter$ | async) || (isCompany$ | async)"
+                         [attr.title]="('SALES.PAGE_TITLE' | translate)"
+                         pTooltip="{{ ('SALES.PAGE_TITLE' | translate) }}"
                          tooltipPosition="right"
                          appendTo="body">
                       <div class="item-icon">
                         <i class="ki-outline ki-chart-line-up"></i>
                       </div>
                     </div>
+                    <div class="nav-item" *ngIf="(isInsighter$ | async) || (isCompany$ | async) || (isClient$ | async)"
+                         [routerLink]="['wallet']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+                         [attr.title]="('INSIGHTER.DASHBOARD.NAV.WALLET' | translate)"
+                         pTooltip="{{ ('INSIGHTER.DASHBOARD.NAV.WALLET' | translate) }}"
+                         tooltipPosition="right"
+                         appendTo="body">
+                      <div class="item-icon">
+                        <i class="ki-outline ki-wallet"></i>
+                      </div>
+                    </div>
+                  </ng-container>
+                  <!-- Meetings Single Link -->
+                  <div class="nav-item" [routerLink]="['my-meetings']" routerLinkActive="active"
+                       [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MEETINGS' | translate) : null"
+                       pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MEETINGS' | translate) : '' }}"
+                       tooltipPosition="right"
+                       appendTo="body">
+                    <div class="item-icon">
+                      <i class="ki-outline ki-calendar"></i>
+                    </div>
+                    <div class="item-label" *ngIf="!isNavCollapsed">
+                      {{ 'INSIGHTER.DASHBOARD.NAV.MEETINGS' | translate }}
+                    </div>
                   </div>
+                  
                  
                   <div class="nav-item" [routerLink]="['my-company-settings']" routerLinkActive="active" *ngIf="hasCompanyRole$ | async"
                        [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_COMPANY' | translate) : null"
@@ -477,17 +491,6 @@
                     </div>
                     <div class="item-label" *ngIf="!isNavCollapsed">
                       {{ 'INSIGHTER.DASHBOARD.NAV.MY_COMPANY' | translate }}
-                    </div>
-                  </div>
-                  <div *ngIf="(isInsighter$ | async) || (isCompany$ | async) || (isClient$ | async)"  class="nav-item" [routerLink]="['wallet']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
-                  [pTooltip]="('INSIGHTER.DASHBOARD.NAV.WALLET' | translate)"
-                  tooltipPosition="right"
-                  appendTo="body">
-                    <div class="item-icon">
-                      <i class="ki-outline ki-wallet"></i>
-                    </div>
-                    <div class="item-label" *ngIf="!isNavCollapsed">
-                      {{ 'INSIGHTER.DASHBOARD.NAV.WALLET' | translate }}
                     </div>
                   </div>
                   <!-- Settings Expandable Item -->
@@ -505,7 +508,7 @@
                       </div>
                     </div>
                     <div class="sub-nav" [class.show]="isSettingsExpanded">
-                     
+
                       <div class="sub-nav-item" [routerLink]="['account-settings/general-settings']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" *ngIf="!(isClient$ | async)"
                       pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS' | translate) : '' }}"
                       tooltipPosition="right"
@@ -528,7 +531,29 @@
                           {{ 'INSIGHTER.DASHBOARD.NAV.PAYMENT_SETTINGS' | translate }}
                         </div>
                       </div>
-                     
+                      <div class="sub-nav-item"  [routerLink]="['my-consulting-schedule']" routerLinkActive="active" *ngIf="!(isClient$ | async)"
+                      pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_CONSULTING_SCHEDULE' | translate) : '' }}"
+                      tooltipPosition="right"
+                      appendTo="body">
+                        <div class="sub-item-icon">
+                          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4.66669 1.16669V2.91669" stroke="#9C9FA1" stroke-width="0.875" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M9.33331 1.16669V2.91669" stroke="#9C9FA1" stroke-width="0.875" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2.04169 5.30249H11.9584" stroke="#9C9FA1" stroke-width="0.875" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M11.2058 9.19919L9.14084 11.2642C9.05918 11.3459 8.98333 11.4975 8.96583 11.6084L8.855 12.3959C8.81416 12.6817 9.0125 12.88 9.29834 12.8392L10.0858 12.7284C10.1967 12.7109 10.3542 12.635 10.43 12.5534L12.495 10.4884C12.8508 10.1325 13.02 9.71836 12.495 9.19336C11.9758 8.6742 11.5617 8.84335 11.2058 9.19919Z" stroke="#9C9FA1" stroke-width="0.875" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M10.9084 9.4967C11.0834 10.1267 11.5734 10.6167 12.2034 10.7917" stroke="#9C9FA1" stroke-width="0.875" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M7 12.8334H4.66667C2.625 12.8334 1.75 11.6667 1.75 9.91669V4.95835C1.75 3.20835 2.625 2.04169 4.66667 2.04169H9.33333C11.375 2.04169 12.25 3.20835 12.25 4.95835V7.00002" stroke="#9C9FA1" stroke-width="0.875" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M6.99739 7.99168H7.00263" stroke="#9C9FA1" stroke-width="1.16667" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M4.83833 7.99168H4.84357" stroke="#9C9FA1" stroke-width="1.16667" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M4.83833 9.74168H4.84357" stroke="#9C9FA1" stroke-width="1.16667" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+
+                        </div>
+                        <div class="sub-item-label">
+                          {{ 'INSIGHTER.DASHBOARD.NAV.MY_CONSULTING_SCHEDULE' | translate }}
+                        </div>
+                      </div>
+
                     </div>
                   </div>
                   </ng-container>
@@ -559,6 +584,15 @@
                          appendTo="body">
                       <div class="item-icon">
                         <i class="ki-outline ki-user-edit"></i>
+                      </div>
+                    </div>
+                    <div class="nav-item" [routerLink]="['my-consulting-schedule']" routerLinkActive="active"
+                         *ngIf="!(isClient$ | async)" [attr.title]="('INSIGHTER.DASHBOARD.NAV.MY_CONSULTING_SCHEDULE' | translate)"
+                         pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_CONSULTING_SCHEDULE' | translate) : '' }}"
+                         tooltipPosition="right"
+                         appendTo="body">
+                      <div class="item-icon">
+                        <i class="ki-outline ki-calendar"></i>
                       </div>
                     </div>
                   </div>

@@ -1,7 +1,21 @@
 <div class="container-fluid p-6">
   <div class="row justify-content-center">
-    <div class="col-lg-10 col-xl-8">
-     
+    <div class="col-lg-11 col-xl-10">
+
+      <!-- Document header (no images/buttons) -->
+      <div class="brandbar print-only">
+        <div style="display: flex; align-items: center;">
+          <img src="https://res.cloudinary.com/dsiku9ipv/image/upload/v1759820174/custom-2_1_soof2l.png" alt="Knoldg Logo" class="logo">
+          <div>
+            <div class="brand-title">Payout Details</div>
+            <div class="brand-sub">Beneficiary & Bank Information</div>
+          </div>
+        </div>
+        <div class="doc-meta">
+          <div><strong>Date:</strong> {{ getCurrentDate() }}</div>
+        </div>
+      </div>
+
       <!-- User Header Section -->
       <div class=" mb-6">
         <div class="card-body p-5">

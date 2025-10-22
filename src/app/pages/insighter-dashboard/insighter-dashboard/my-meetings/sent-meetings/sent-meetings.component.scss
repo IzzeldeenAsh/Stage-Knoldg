@@ -758,6 +758,27 @@
   }
 }
 
+// Archive toggle button hover states
+.btn-outline-info {
+  transition: all 0.3s ease;
+
+  &:hover:not(:disabled) {
+    i {
+      color: white !important;
+    }
+  }
+
+  &.active {
+    background-color: #0978b9 !important;
+    border-color: #0978b9 !important;
+    color: white !important;
+
+    i {
+      color: white !important;
+    }
+  }
+}
+
 // Responsive design
 @media (max-width: 991px) {
   .calendly-container {

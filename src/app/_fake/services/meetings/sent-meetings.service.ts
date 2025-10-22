@@ -72,7 +72,7 @@ export interface RescheduleRequest {
   providedIn: 'root'
 })
 export class SentMeetingsService {
-  private apiUrl = 'https://api.knoldg.com/api/account/meeting/client/list';
+  private apiUrl = 'https://api.foresighta.co/api/account/meeting/client/list';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   currentLang: string = 'en';
@@ -135,7 +135,7 @@ export class SentMeetingsService {
   // Get available hours for rescheduling
   getAvailableHours(insighterUuid: string): Observable<AvailableHoursResponse> {
     const headers = this.getHeaders();
-    const url = `https://api.knoldg.com/api/account/meeting/available/hours/${insighterUuid}`;
+    const url = `https://api.foresighta.co/api/account/meeting/available/hours/${insighterUuid}`;
     
     // Calculate date range - from tomorrow to 3 months from tomorrow
     const tomorrow = new Date();
@@ -163,7 +163,7 @@ export class SentMeetingsService {
       'Content-Type': 'application/json',
       'Accept-Language': this.currentLang
     });
-    const url = `https://api.knoldg.com/api/account/meeting/reschedule/${meetingUuid}`;
+    const url = `https://api.foresighta.co/api/account/meeting/reschedule/${meetingUuid}`;
 
     this.setLoading(true);
     return this.http.post(url, rescheduleData, { headers }).pipe(
@@ -176,7 +176,7 @@ export class SentMeetingsService {
   // Archive meeting
   archiveMeeting(meetingUuid: string): Observable<any> {
     const headers = this.getHeaders();
-    const url = `https://api.knoldg.com/api/account/meeting/archive/${meetingUuid}`;
+    const url = `https://api.foresighta.co/api/account/meeting/archive/${meetingUuid}`;
 
     this.setLoading(true);
     return this.http.post(url, {}, { headers }).pipe(
@@ -189,7 +189,7 @@ export class SentMeetingsService {
   // Get archived meetings
   getArchivedMeetings(page: number = 1, perPage: number = 10): Observable<SentMeetingResponse> {
     const headers = this.getHeaders();
-    const url = 'https://api.knoldg.com/api/account/meeting/client/list';
+    const url = 'https://api.foresighta.co/api/account/meeting/client/list';
 
     let params = new HttpParams()
       .set('page', page.toString())

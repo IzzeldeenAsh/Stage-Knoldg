@@ -482,7 +482,7 @@ li .p-menuitem:not(:last-child) {
 }
 .card{
   box-shadow: none !important;
-  border: 1px solid #d0d0d0 !important;
+  border: 1px solid #e8eafd !important;
 }
 
 .z-index-99999{
@@ -502,4 +502,7 @@ z-index: 99999 !important;
 /* خليه بدون خط آخر صف */
 .p-datatable .p-datatable-tbody > tr:last-child {
   border-bottom: none;
+}
+.nav-link.active{
+  	border-bottom: 1px solid #0978b9 !important;
 }
