@@ -10,7 +10,7 @@
       font-weight: 500 !important;
       font-size: 14px !important;
       padding: 12px 20px !important;
-      border-radius: 8px !important;
+      // border-radius: 8px !important;
       transition: all 0.2s ease-in-out;
       background-color: transparent !important;
       margin-right: 8px;
@@ -754,6 +754,27 @@
       margin-right: 8px;
       width: 16px;
       height: 16px;
+    }
+  }
+}
+
+// Archive toggle button hover states
+.btn-outline-info {
+  transition: all 0.3s ease;
+
+  &:hover:not(:disabled) {
+    i {
+      color: white !important;
+    }
+  }
+
+  &.active {
+    background-color: #0978b9 !important;
+    border-color: #0978b9 !important;
+    color: white !important;
+
+    i {
+      color: white !important;
     }
   }
 }

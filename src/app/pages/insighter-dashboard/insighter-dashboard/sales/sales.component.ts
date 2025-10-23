@@ -1,12 +1,14 @@
 import { Component, OnInit, Injector, OnDestroy, HostListener, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { SalesService, PeriodType, TotalStatisticsData, PeriodStatisticsData } from 'src/app/_fake/services/sales/sales.service';
-import { forkJoin, Subject } from 'rxjs';
+import { MyOrdersService, Order } from '../my-orders/my-orders.service';
+import { forkJoin, Subject, Observable, BehaviorSubject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 import { UIChart } from 'primeng/chart';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sales',
@@ -59,6 +61,31 @@ export class SalesComponent extends BaseComponent implements OnInit, OnDestroy, 
   isCompany = false;
   isInsighter = false;
 
+  // Tab management
+  activeTab: 'analytics' | 'sold-details' | 'sold-meetings' = 'analytics';
+
+  // Sold knowledge data
+  soldOrders$ = new BehaviorSubject<Order[]>([]);
+  soldTotalPages$ = new BehaviorSubject<number>(0);
+  currentSoldPage = 1;
+  isSoldLoading$ = new BehaviorSubject<boolean>(false);
+
+  // Sold meeting data
+  soldMeetingOrders$ = new BehaviorSubject<Order[]>([]);
+  soldMeetingTotalPages$ = new BehaviorSubject<number>(0);
+  currentSoldMeetingPage = 1;
+  isSoldMeetingLoading$ = new BehaviorSubject<boolean>(false);
+
+  selectedInsighterUuid: string | null = null;
+  roles: string[] = [];
+
+  // Modal dialog properties
+  showOrderDetailsDialog = false;
+  showMeetingOrderDetailsDialog = false;
+  selectedOrderForDialog: Order | null = null;
+  selectedMeetingOrderForDialog: Order | null = null;
+
+
   revenueChartData: any = null;
   revenueChartOptions: any = null;
 
@@ -78,7 +105,9 @@ export class SalesComponent extends BaseComponent implements OnInit, OnDestroy, 
   constructor(
     injector: Injector,
     private salesService: SalesService,
-    private authService: ProfileService
+    private authService: ProfileService,
+    private myOrdersService: MyOrdersService,
+    private router: Router
   ) {
     super(injector);
   }
@@ -91,6 +120,7 @@ export class SalesComponent extends BaseComponent implements OnInit, OnDestroy, 
   ngOnInit(): void {
     this.checkUserRole();
     this.loadData();
+    this.loadUserRoles();
   }
 
   ngOnDestroy(): void {
@@ -157,8 +187,140 @@ export class SalesComponent extends BaseComponent implements OnInit, OnDestroy, 
       if (user && user.roles) {
         this.isCompany = user.roles.includes('company') ;
         this.isInsighter = user.roles.includes('insighter');
+        this.roles = user.roles;
       }
     });
+  }
+
+  private loadUserRoles(): void {
+    const user = this.authService.getProfile().pipe(takeUntil(this.unsubscribe$), take(1));
+    user.subscribe((user: any) => {
+      if (user && user.roles) {
+        this.roles = user.roles;
+      }
+    });
+  }
+
+  setActiveTab(tab: 'analytics' | 'sold-details' | 'sold-meetings'): void {
+    this.activeTab = tab;
+    if (tab === 'sold-details' && this.soldOrders$.value.length === 0) {
+      this.loadSoldOrders();
+    }
+    if (tab === 'sold-meetings' && this.soldMeetingOrders$.value.length === 0) {
+      this.loadSoldMeetingOrders();
+    }
+  }
+
+  private loadSoldOrders(): void {
+    this.isSoldLoading$.next(true);
+    const role = this.isCompany ? 'company' : 'insighter';
+    this.myOrdersService.getSalesKnowledgeOrders(this.currentSoldPage, role, this.selectedInsighterUuid || undefined)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (response) => {
+          this.soldOrders$.next(response.data);
+          this.soldTotalPages$.next(response.meta.last_page);
+          this.isSoldLoading$.next(false);
+        },
+        error: (error) => {
+          this.handleServerErrors(error);
+          this.isSoldLoading$.next(false);
+        }
+      });
+  }
+
+  private loadSoldMeetingOrders(): void {
+    this.isSoldMeetingLoading$.next(true);
+    const role = this.isCompany ? 'company' : 'insighter';
+    this.myOrdersService.getSalesMeetingOrders(this.currentSoldMeetingPage, role, this.selectedInsighterUuid || undefined)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (response) => {
+          this.soldMeetingOrders$.next(response.data);
+          this.soldMeetingTotalPages$.next(response.meta.last_page);
+          this.isSoldMeetingLoading$.next(false);
+        },
+        error: (error) => {
+          this.handleServerErrors(error);
+          this.isSoldMeetingLoading$.next(false);
+        }
+      });
+  }
+
+  onSoldPageChange(page: number): void {
+    this.currentSoldPage = page;
+    this.loadSoldOrders();
+  }
+
+  onSoldMeetingPageChange(page: number): void {
+    this.currentSoldMeetingPage = page;
+    this.loadSoldMeetingOrders();
+  }
+
+  onOrderSelected(order: Order): void {
+    if (this.activeTab === 'sold-details') {
+      // Show knowledge order details dialog
+      this.selectedOrderForDialog = order;
+      this.showOrderDetailsDialog = true;
+    } else if (this.activeTab === 'sold-meetings') {
+      // Show meeting order details dialog
+      this.selectedMeetingOrderForDialog = order;
+      this.showMeetingOrderDetailsDialog = true;
+    }
+  }
+
+  onInvoiceDownload(order: Order): void {
+    // Open invoice in a new tab
+    const orderNumber = order.invoice_no || order.order_no;
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree(['/app/invoice', orderNumber])
+    );
+    window.open(url, '_blank');
+  }
+
+  onNavigateToDownloads(order: Order): void {
+    // Navigate to downloads page
+    this.router.navigate(['/app/my-downloads']);
+  }
+
+  onCopyOrderNo(orderNo: string): void {
+    navigator.clipboard.writeText(orderNo).then(() => {
+      this.showSuccess(
+        this.lang === 'ar' ? 'تم النسخ' : 'Copied',
+        this.lang === 'ar' ? 'تم نسخ رقم الطلب' : 'Order number copied to clipboard'
+      );
+    }).catch(() => {
+      this.showError(
+        this.lang === 'ar' ? 'خطأ' : 'Error',
+        this.lang === 'ar' ? 'فشل في نسخ رقم الطلب' : 'Failed to copy order number'
+      );
+    });
+  }
+
+  onInsighterFilterChange(insighterUuid: string | null): void {
+    this.selectedInsighterUuid = insighterUuid;
+    this.currentSoldPage = 1;
+    this.currentSoldMeetingPage = 1;
+    if (this.activeTab === 'sold-details') {
+      this.loadSoldOrders();
+    }
+    if (this.activeTab === 'sold-meetings') {
+      this.loadSoldMeetingOrders();
+    }
+  }
+
+  onOrderDetailsDialogVisibleChange(visible: boolean): void {
+    this.showOrderDetailsDialog = visible;
+    if (!visible) {
+      this.selectedOrderForDialog = null;
+    }
+  }
+
+  onMeetingOrderDetailsDialogVisibleChange(visible: boolean): void {
+    this.showMeetingOrderDetailsDialog = visible;
+    if (!visible) {
+      this.selectedMeetingOrderForDialog = null;
+    }
   }
 
 

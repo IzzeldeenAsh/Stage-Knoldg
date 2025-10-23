@@ -68,6 +68,11 @@ export interface RescheduleRequest {
   end_time: string;
 }
 
+export interface MeetingStatistics {
+  total: number;
+  archived: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -201,6 +206,17 @@ export class SentMeetingsService {
       map(response => response),
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))
+    );
+  }
+
+  // Get meeting statistics
+  getMeetingStatistics(): Observable<{ data: MeetingStatistics }> {
+    const headers = this.getHeaders();
+    const url = 'https://api.knoldg.com/api/account/meeting/statistics';
+
+    return this.http.get<{ data: MeetingStatistics }>(url, { headers }).pipe(
+      map(response => response),
+      catchError(error => this.handleError(error))
     );
   }
 } 

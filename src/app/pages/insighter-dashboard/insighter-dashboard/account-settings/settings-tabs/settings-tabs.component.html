@@ -11,12 +11,20 @@
             <i class="ki-outline ki-user-edit me-2"></i>
             {{ 'INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS' | translate }}
           </a>
-          <a class="nav-link" 
+          <a class="nav-link"
             [class.active]="activeTab === 'payment-settings'"
             (click)="switchTab('payment-settings')"
             *ngIf="(isInsighter$ | async) || (isCompany$ | async)">
             <i class="ki-outline ki-credit-cart me-2"></i>
             {{ 'INSIGHTER.DASHBOARD.NAV.PAYMENT_SETTINGS_HEADER' | translate }}
+          </a>
+      
+          <a class="nav-link"
+            [class.active]="activeTab === 'consulting-schedule'"
+            (click)="switchTab('consulting-schedule')"
+            *ngIf="(isInsighter$ | async) || (isCompany$ | async) || (isCompanyInsighter$ | async)">
+            <i class="ki-outline ki-calendar me-2"></i>
+            {{ 'INSIGHTER.DASHBOARD.NAV.MY_CONSULTING_SCHEDULE' | translate }}
           </a>
         </div>
       </div>

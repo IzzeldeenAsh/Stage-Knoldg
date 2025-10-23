@@ -87,6 +87,9 @@
                     <i class="pi pi-inbox me-2 text-dark" style="font-size: 1rem;"></i>
                   }
                   <span>{{ showArchivedDownloads() ? 'Downloads' : 'Archived' }}</span>
+                  @if (!showArchivedDownloads() && libraryStatistics()?.archived) {
+                    <span class="badge badge-light-info ms-2">{{ libraryStatistics()?.archived }}</span>
+                  }
                 </button>
               </div>
             </div>
@@ -154,27 +157,28 @@
                             <div class="ms-2 d-flex gap-1">
                               <!-- Download Button -->
                               <button
-                                class="btn btn-sm btn-outline-info download-btn"
+                                class="btn btn-xs btn-light-info download-btn "
                                 (click)="downloadKnowledge(knowledge); $event.stopPropagation()"
                                 [disabled]="isKnowledgeDownloading(knowledge.uuid)"
                                 [pTooltip]="'Download Knowledge'"
+                                style="border-color: transparent !important"
                                 tooltipPosition="top">
                                 @if (isKnowledgeDownloading(knowledge.uuid)) {
                                   <span class="spinner-border spinner-border-sm" role="status"></span>
                                 } @else {
-                                  <i class="pi pi-download text-info" style="font-size: 1rem;"></i>
+                                  <i class="pi pi-download text-info" style="font-size: 1rem; padding: 0;"></i>
                                 }
                               </button>
 
                               <!-- Archive Button - only show when not viewing archived items -->
                               @if (!showArchivedDownloads()) {
                                 <button
-                                  class="btn btn-sm btn-outline-warning archive-btn"
+                                  class="btn btn-xs btn-light-warning archive-btn"
                                   (click)="archiveKnowledge(knowledge); $event.stopPropagation()"
                                   [disabled]="isKnowledgeDownloading(knowledge.uuid)"
                                   [pTooltip]="'Archive Knowledge'"
                                   tooltipPosition="top">
-                                  <i class="pi pi-inbox text-warning" style="font-size: 1rem;"></i>
+                                  <i class="pi pi-inbox text-warning" style="font-size: 1rem; padding: 0;"></i>
                                 </button>
                               }
                             </div>
@@ -298,7 +302,7 @@
                             <!-- Download Icon -->
                             <div class="ms-2">
                               <button
-                                class="btn btn-sm btn-outline-info download-btn"
+                                class="btn btn-sm btn-light-info download-btn"
                                 (click)="downloadDocument(document); $event.stopPropagation()"
                                 [disabled]="isDocumentDownloading(document.uuid)"
                                 [pTooltip]="'Download Document'"

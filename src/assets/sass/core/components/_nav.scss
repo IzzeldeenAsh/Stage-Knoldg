@@ -29,6 +29,7 @@
 	.nav-link {
 		display: flex;
 		align-items: center;
+	
 	}
 }
 html[dir='rtl'] .nav-stretch{
@@ -38,7 +39,7 @@ html[dir='rtl'] .nav-stretch{
 // Nav group
 .nav-group {
 	padding: 0.35rem;
-	@include border-radius($border-radius);
+	// @include border-radius($border-radius);
 	background-color: #f1f1f4;
     border: 1px solid #f9f9f9;
 

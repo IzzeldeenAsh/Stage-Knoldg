@@ -1,5 +1,5 @@
 import { Component, Injector, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { BaseComponent } from 'src/app/modules/base.component';
@@ -15,18 +15,19 @@ export class SettingsTabsComponent extends BaseComponent implements OnInit, OnDe
   isInsighter$: Observable<boolean>;
   isCompany$: Observable<boolean>;
   isClient$: Observable<any>;
+  isCompanyInsighter$: Observable<boolean>;
   private routerSubscription: Subscription;
 
   constructor(
     injector: Injector,
     private router: Router,
-    private route: ActivatedRoute,
     private profileService: ProfileService
   ) {
     super(injector);
     this.isInsighter$ = this.profileService.isInsighter();
     this.isCompany$ = this.profileService.isCompany();
     this.isClient$ = this.profileService.isClient();
+    this.isCompanyInsighter$ = this.profileService.isCompanyInsighter()
   }
 
   ngOnInit(): void {
@@ -53,6 +54,8 @@ export class SettingsTabsComponent extends BaseComponent implements OnInit, OnDe
       this.activeTab = 'general-settings';
     } else if (url.includes('payment-settings')) {
       this.activeTab = 'payment-settings';
+    } else if (url.includes('consulting-schedule')) {
+      this.activeTab = 'consulting-schedule';
     }
   }
 

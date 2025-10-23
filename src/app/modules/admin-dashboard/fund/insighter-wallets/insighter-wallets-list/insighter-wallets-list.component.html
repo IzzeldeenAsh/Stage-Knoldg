@@ -54,13 +54,12 @@
           <thead>
             <tr class="fw-bold text-muted">
               <th class="min-w-150px">Insighter</th>
-              <th class="min-w-140px">Contact</th>
-              <th class="min-w-120px">Location</th>
+              <th class="min-w-100px">Location</th>
               <th class="min-w-120px">Balance</th>
               <th class="min-w-100px">Payment Type</th>
-              <th class="min-w-120px">Last Wired Transfer</th>
-              <th class="min-w-100px">Form</th>
-              <th class="min-w-100px text-end">Actions</th>
+              <th class="min-w-110px">Last Wired Transfer</th>
+              <th class="min-w-160px">Transfer Form</th>
+              <th class="min-w-70px text-end">Transactions</th>
             </tr>
           </thead>
           <tbody>
@@ -84,13 +83,7 @@
                 </div>
               </td>
 
-              <!-- Contact -->
-              <td>
-                <div class="d-flex flex-column">
-                  <span class="text-dark fw-bold fs-6">{{ wallet.email }}</span>
-                  <span *ngIf="wallet.phone" class="text-muted fw-semibold fs-7">{{ wallet.phone }}</span>
-                </div>
-              </td>
+           
 
               <!-- Location -->
               <td>

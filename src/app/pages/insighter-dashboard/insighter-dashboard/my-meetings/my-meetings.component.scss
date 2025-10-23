@@ -1,5 +1,165 @@
 // My Meetings Component Styles
 
+// Metronic tabs design matching my-orders component
+.filter-tabs-orders {
+  display: flex;
+  justify-content: flex-start;
+
+  .nav-pills-custom {
+    display: inline-flex;
+    gap: 0.5rem;
+
+    .nav-link {
+      padding: 0.65rem 1.25rem;
+      // border-radius: 0.5rem;
+      font-weight: 500;
+      color: #7e8299;
+      background-color: transparent;
+      border: 1px solid transparent;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
+      cursor: pointer;
+      text-decoration: none;
+
+      i {
+        font-size: 1.1rem;
+      }
+
+      &:hover {
+        color: #181c32;
+        background-color: #f5f8fa;
+      }
+
+      &.active {
+        color: #0978B9 !important;
+        background-color: #F1FAFE !important;
+        font-weight: 600 !important;
+        border-color: transparent;
+
+        &:hover {
+          color: #0978B9 !important;
+          background-color: #f1faff !important;
+        }
+      }
+    }
+  }
+}
+
+.nav-svg {
+  display: inline-flex;
+  align-items: center;
+}
+
+// Folder tabs design
+.nested-tab-nav {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: -1px;
+  position: relative;
+  z-index: 2;
+}
+
+.nested-tab-button {
+  position: relative;
+  background-color: #f5f8fa;
+  border: 1px solid #e4e6ef;
+  border-bottom: none;
+  color: #7e8299;
+  padding: 0.75rem 1.5rem 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-right: 2px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+
+  // Folder tab shape
+  &::before {
+    content: '';
+    position: absolute;
+    left: -1px;
+    bottom: -1px;
+    width: calc(100% + 2px);
+    height: 1px;
+    background-color: #e4e6ef;
+    z-index: 1;
+  }
+
+  &:hover {
+    background-color: #fff;
+    color: #181c32;
+    border-color: #d1d5db;
+  }
+
+  &.active {
+    background-color: #fff;
+    color: #0978B9;
+    font-weight: 600;
+    border-color: #e4e6ef;
+    z-index: 3;
+
+    // Hide bottom border for active tab to connect with content
+    &::before {
+      background-color: #fff;
+    }
+  }
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.nested-tab-panel:focus {
+  outline: none;
+}
+
+// Content area connected to folder tabs
+.nested-tab-content {
+  background-color: #fff;
+  border: 1px solid #e4e6ef;
+  border-radius: 0 8px 8px 8px;
+  padding: 1.5rem;
+  margin-top: 0;
+  position: relative;
+  z-index: 1;
+}
+
+// Responsive design matching my-orders
+@media (max-width: 768px) {
+  .nested-tab-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .nested-tab-button {
+    flex: 1 1 45%;
+    min-width: 140px;
+    text-align: center;
+  }
+
+  .filter-tabs-orders {
+    .nav-pills-custom {
+      flex-wrap: wrap;
+
+      .nav-link {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+      }
+    }
+  }
+}
+
+// Legacy nested tab styles (can be removed later)
+// Legacy styles maintained for backwards compatibility
+
 .filter-tabs {
   margin-bottom: 2rem;
 
@@ -10,7 +170,7 @@
       font-weight: 500 !important;
       font-size: 14px !important;
       padding: 12px 20px !important;
-      border-radius: 8px !important;
+      // border-radius: 8px !important;
       transition: all 0.2s ease-in-out;
       background-color: transparent !important;
       margin-right: 8px;
@@ -603,7 +763,7 @@
   }
 }
 
-// Responsive adjustments for filter tabs
+// Additional responsive adjustments
 @media (max-width: 768px) {
   .filter-tabs {
     .nav-pills-custom {
@@ -611,6 +771,181 @@
         padding: 8px 12px !important;
         font-size: 13px !important;
         margin-right: 4px;
+      }
+    }
+  }
+}
+
+// Reschedule modal calendar styles
+:host ::ng-deep .reschedule-modal {
+  .calendly-container {
+    .calendar-section {
+      .calendar-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #181c32;
+        margin-bottom: 1rem;
+      }
+
+      .month-navigation {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding: 0 1rem;
+
+        .nav-btn {
+          background: none;
+          border: none;
+          color: #7e8299;
+          cursor: pointer;
+          padding: 0.5rem;
+          border-radius: 4px;
+          transition: all 0.2s ease;
+
+          &:hover {
+            background-color: #f5f8fa;
+            color: #181c32;
+          }
+        }
+
+        .month-title {
+          font-size: 16px;
+          font-weight: 600;
+          color: #181c32;
+          margin: 0;
+        }
+      }
+
+      .weekday-headers {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 4px;
+        margin-bottom: 0.5rem;
+
+        .weekday-header {
+          text-align: center;
+          font-size: 12px;
+          font-weight: 600;
+          color: #7e8299;
+          padding: 0.5rem;
+        }
+      }
+
+      .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 4px;
+
+        .calendar-day {
+          aspect-ratio: 1;
+          border: none;
+          background: transparent;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 14px;
+          color: #7e8299;
+          cursor: pointer;
+          border-radius: 4px;
+          transition: all 0.2s ease;
+
+          &.empty {
+            cursor: default;
+          }
+
+          &.available {
+            color: #181c32;
+
+            &:hover {
+              background-color: #f5f8fa;
+              color: #009ef7;
+            }
+          }
+
+          &.selected {
+            background-color: #009ef7;
+            color: white;
+          }
+
+          &.disabled {
+            color: #e4e6ef;
+            cursor: not-allowed;
+          }
+        }
+      }
+    }
+
+    .time-selection-section {
+      .selected-date-header {
+        margin-bottom: 1rem;
+
+        .selected-date-title {
+          font-size: 18px;
+          font-weight: 600;
+          color: #181c32;
+          margin: 0;
+        }
+      }
+
+      .time-slots {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        max-height: 300px;
+        overflow-y: auto;
+
+        .time-slot-item {
+          padding: 0.75rem 1rem;
+          border: 1px solid #e4e6ef;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          text-align: center;
+          font-size: 14px;
+          color: #181c32;
+
+          &:hover {
+            border-color: #009ef7;
+            background-color: #f5f8fa;
+          }
+
+          &.selected {
+            background-color: #009ef7;
+            border-color: #009ef7;
+            color: white;
+          }
+        }
+
+        .no-times {
+          text-align: center;
+          color: #7e8299;
+          font-style: italic;
+          padding: 2rem 1rem;
+        }
+      }
+
+      .select-date-prompt {
+        text-align: center;
+        color: #7e8299;
+        padding: 2rem 1rem;
+
+        p {
+          margin: 0;
+          font-size: 14px;
+        }
+      }
+
+      .same-time-warning {
+        margin-top: 1rem;
+        padding: 0.75rem 1rem;
+        background-color: #fff5f5;
+        border: 1px solid #fecaca;
+        border-radius: 6px;
+        color: #dc2626;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
       }
     }
   }

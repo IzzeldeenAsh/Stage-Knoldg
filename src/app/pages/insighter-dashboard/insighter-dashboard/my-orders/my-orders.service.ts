@@ -42,7 +42,14 @@ export interface PaymentInfo {
   provider_card_last_number: string | null;
   provider_card_brand: string | null;
   provide_receipt_url: string | null;
-  billing_address: string;
+  billing_address: string | {
+    city?: string;
+    country?: string;
+    line1?: string;
+    line2?: string;
+    postal_code?: string;
+    state?: string;
+  };
   confirmed_at: string;
 }
 
@@ -61,6 +68,7 @@ export interface User {
   profile_photo_url: string;
   roles: string[];
   uuid: string;
+  country?: string;
   company?: Company;
 }
 

@@ -14,8 +14,6 @@ import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.s
 })
 export class MyOrdersComponent extends BaseComponent implements OnInit {
   activeTab: 'knowledge' | 'meeting' = 'knowledge';
-  knowledgeSubTab: 'purchased' | 'sales' = 'purchased';
-  meetingSubTab: 'purchased' | 'sales' = 'purchased';
   
   orders$: Observable<Order[]> = of([]);
   totalPages$: Observable<number> = of(0);
@@ -23,24 +21,13 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
   selectedOrder: Order | null = null;
   showOrderDetails = false;
 
-  salesOrders$: Observable<Order[]> = of([]);
-  salesTotalPages$: Observable<number> = of(0);
-  currentSalesPage = 1;
-
   meetingOrders$: Observable<Order[]> = of([]);
   meetingTotalPages$: Observable<number> = of(0);
   currentMeetingPage = 1;
   selectedMeetingOrder: Order | null = null;
   showMeetingOrderDetails = false;
 
-  meetingSalesOrders$: Observable<Order[]> = of([]);
-  meetingSalesTotalPages$: Observable<number> = of(0);
-  currentMeetingSalesPage = 1;
-
   roles: string[] = [];
-  selectedInsighterUuid: string | null = null;
-  private knowledgeSalesLoaded = false;
-  private meetingSalesLoaded = false;
   private rolesLoaded = false;
   constructor(
     injector: Injector,
@@ -56,14 +43,6 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
     this.proile.getProfile().subscribe((profile:any)=>{
       this.roles = profile.roles || [];
       this.rolesLoaded = true;
-
-      if (this.knowledgeSubTab === 'sales' && this.canViewSalesTabs && !this.knowledgeSalesLoaded) {
-        this.loadSalesKnowledgeOrders(this.currentSalesPage);
-      }
-
-      if (this.meetingSubTab === 'sales' && this.canViewSalesTabs && !this.meetingSalesLoaded) {
-        this.loadSalesMeetingOrders(this.currentMeetingSalesPage);
-      }
     })
   }
 
@@ -75,13 +54,6 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
     return this.myOrdersService.isMeetingLoading$;
   }
 
-  get isSalesLoading$() {
-    return this.myOrdersService.isSalesLoading$;
-  }
-
-  get isMeetingSalesLoading$() {
-    return this.myOrdersService.isMeetingSalesLoading$;
-  }
 
   get canViewSalesTabs(): boolean {
     return this.roles.includes('company') || this.roles.includes('insighter') || this.roles.includes('company-insighter');
@@ -103,31 +75,8 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
 
   setActiveTab(tab: 'knowledge' | 'meeting'): void {
     this.activeTab = tab;
-
-    if (tab === 'knowledge' && this.knowledgeSubTab === 'sales' && this.canViewSalesTabs && !this.knowledgeSalesLoaded) {
-      this.loadSalesKnowledgeOrders(this.currentSalesPage);
-    }
-
-    if (tab === 'meeting' && this.meetingSubTab === 'sales' && this.canViewSalesTabs && !this.meetingSalesLoaded) {
-      this.loadSalesMeetingOrders(this.currentMeetingSalesPage);
-    }
   }
 
-  setKnowledgeSubTab(tab: 'purchased' | 'sales'): void {
-    this.knowledgeSubTab = tab;
-
-    if (tab === 'sales' && this.canViewSalesTabs && !this.knowledgeSalesLoaded) {
-      this.loadSalesKnowledgeOrders(this.currentSalesPage);
-    }
-  }
-
-  setMeetingSubTab(tab: 'purchased' | 'sales'): void {
-    this.meetingSubTab = tab;
-
-    if (tab === 'sales' && this.canViewSalesTabs && !this.meetingSalesLoaded) {
-      this.loadSalesMeetingOrders(this.currentMeetingSalesPage);
-    }
-  }
 
   loadOrders(page: number = 1): void {
     this.currentPage = page;
@@ -171,13 +120,6 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
     this.loadMeetingOrders(page);
   }
 
-  onSalesPageChange(page: number): void {
-    this.loadSalesKnowledgeOrders(page);
-  }
-
-  onMeetingSalesPageChange(page: number): void {
-    this.loadSalesMeetingOrders(page);
-  }
 
   openOrderDetails(order: Order): void {
     this.selectedOrder = order;
@@ -246,73 +188,6 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
   }
 
 
-  private resolveSalesRole(): 'company' | 'insighter' | null {
-    if (this.roles.includes('company') ) {
-      return 'company';
-    }
-
-    if (this.roles.includes('insighter') || this.roles.includes('company-insighter')) {
-      return 'insighter';
-    }
-
-    return null;
-  }
-
-  private loadSalesKnowledgeOrders(page: number = 1): void {
-    const role = this.resolveSalesRole();
-
-    if (!role) {
-      if (this.rolesLoaded) {
-        this.salesOrders$ = of([]);
-        this.salesTotalPages$ = of(0);
-      }
-      return;
-    }
-
-    this.currentSalesPage = page;
-    this.myOrdersService.getSalesKnowledgeOrders(page, role, this.selectedInsighterUuid || undefined).pipe(
-      catchError((error) => {
-        this.handleServerErrors(error);
-        return of({
-          data: [],
-          links: { first: '', last: '', prev: null, next: null },
-          meta: { current_page: 1, from: 0, last_page: 1, links: [], path: '', per_page: 10, to: 0, total: 0 }
-        } as OrdersResponse);
-      })
-    ).subscribe(response => {
-      this.salesOrders$ = of(response.data);
-      this.salesTotalPages$ = of(response.meta.last_page);
-      this.knowledgeSalesLoaded = true;
-    });
-  }
-
-  private loadSalesMeetingOrders(page: number = 1): void {
-    const role = this.resolveSalesRole();
-
-    if (!role) {
-      if (this.rolesLoaded) {
-        this.meetingSalesOrders$ = of([]);
-        this.meetingSalesTotalPages$ = of(0);
-      }
-      return;
-    }
-
-    this.currentMeetingSalesPage = page;
-    this.myOrdersService.getSalesMeetingOrders(page, role, this.selectedInsighterUuid || undefined).pipe(
-      catchError((error) => {
-        this.handleServerErrors(error);
-        return of({
-          data: [],
-          links: { first: '', last: '', prev: null, next: null },
-          meta: { current_page: 1, from: 0, last_page: 1, links: [], path: '', per_page: 10, to: 0, total: 0 }
-        } as OrdersResponse);
-      })
-    ).subscribe(response => {
-      this.meetingSalesOrders$ = of(response.data);
-      this.meetingSalesTotalPages$ = of(response.meta.last_page);
-      this.meetingSalesLoaded = true;
-    });
-  }
 
   navigateToDownloads(order: Order): void {
     const knowledgeDownloadId = order.knowledge_download_id;
@@ -339,24 +214,6 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
     window.open(url, '_blank');
   }
 
-  onInsighterFilterChange(insighterUuid: string | null): void {
-    this.selectedInsighterUuid = insighterUuid;
-
-    // Reset page to 1 when filtering
-    this.currentSalesPage = 1;
-    this.currentMeetingSalesPage = 1;
-
-    // Reload sales data with new filter
-    if (this.knowledgeSubTab === 'sales' && this.canViewSalesTabs) {
-      this.knowledgeSalesLoaded = false;
-      this.loadSalesKnowledgeOrders(1);
-    }
-
-    if (this.meetingSubTab === 'sales' && this.canViewSalesTabs) {
-      this.meetingSalesLoaded = false;
-      this.loadSalesMeetingOrders(1);
-    }
-  }
 
   private handleServerErrors(error: any) {
     if (error.error && error.error.errors) {

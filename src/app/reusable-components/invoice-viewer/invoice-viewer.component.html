@@ -59,9 +59,9 @@
               <td style="width:30%; text-align:left; padding-left:10px;">
                 <div class="section-title">Bill To:</div>
                 <div style="margin-top:6px; text-align:left;">
-                  <strong>Name:</strong>{{ invoiceData.userProfile?.name || 'Client Name' }}<br/>
+                  <strong>Name:</strong>{{ getDisplayName() }}<br/>
                   <strong>Email:</strong>{{ invoiceData.userProfile?.email || 'client@email.com' }}<br/>
-                  <strong>Address:</strong> {{ invoiceData.userProfile?.country || 'N/A' }}
+                  <strong>Address:</strong> {{ getDisplayAddress() }}
                 </div>
               </td>
             </tr>

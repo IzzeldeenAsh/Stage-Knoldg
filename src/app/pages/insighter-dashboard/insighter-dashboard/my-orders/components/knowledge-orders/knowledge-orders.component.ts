@@ -5,7 +5,6 @@ import * as OrderViewUtils from '../../utils/order-view.utils';
 
 type Language = 'ar' | 'en';
 
-type KnowledgeSubTab = 'purchased' | 'sales';
 
 @Component({
   selector: 'app-knowledge-orders',
@@ -20,44 +19,21 @@ export class KnowledgeOrdersComponent {
   @Input() currentPage = 1;
   @Input() isLoading$!: Observable<boolean>;
 
-  @Input() salesOrders$!: Observable<Order[]>;
-  @Input() salesTotalPages$!: Observable<number>;
-  @Input() currentSalesPage = 1;
-  @Input() isSalesLoading$!: Observable<boolean>;
 
-  @Input() canViewSalesTabs = false;
-  @Input() knowledgeSubTab: KnowledgeSubTab = 'purchased';
-  @Input() selectedInsighterUuid: string | null = null;
-  @Input() roles: string[] = [];
-
-  @Output() knowledgeSubTabChange = new EventEmitter<KnowledgeSubTab>();
   @Output() pageChange = new EventEmitter<number>();
-  @Output() salesPageChange = new EventEmitter<number>();
   @Output() orderSelected = new EventEmitter<Order>();
   @Output() invoiceDownload = new EventEmitter<Order>();
   @Output() navigateToDownloads = new EventEmitter<Order>();
   @Output() copyOrderNo = new EventEmitter<string>();
-  @Output() insighterFilterChange = new EventEmitter<string | null>();
 
   readonly utils = OrderViewUtils;
 
-  get shouldShowInsighterFilter(): boolean {
-    return this.roles.includes('company');
-  }
 
   onKnowledgePageChange(event: any): void {
     const nextPage = (event.page || 0) + 1;
     this.pageChange.emit(nextPage);
   }
 
-  onSalesPageChange(event: any): void {
-    const nextPage = (event.page || 0) + 1;
-    this.salesPageChange.emit(nextPage);
-  }
-
-  changeSubTab(tab: KnowledgeSubTab): void {
-    this.knowledgeSubTabChange.emit(tab);
-  }
 
   selectOrder(order: Order): void {
     this.orderSelected.emit(order);
@@ -75,8 +51,5 @@ export class KnowledgeOrdersComponent {
     this.copyOrderNo.emit(orderNo);
   }
 
-  onInsighterFilterChange(insighterUuid: string | null): void {
-    this.insighterFilterChange.emit(insighterUuid);
-  }
 
 }

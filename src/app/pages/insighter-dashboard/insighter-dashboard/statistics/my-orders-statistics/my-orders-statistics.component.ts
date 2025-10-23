@@ -40,15 +40,6 @@ export class MyOrdersStatisticsComponent extends BaseComponent implements OnInit
             label: 'Total Purchased',
             translationKey: this.lang === 'ar' ? 'إجمالي المشتريات' : 'Total Purchases',
             useCountUp: true
-          },
-          {
-            icon: 'ki-dollar',
-            iconType: 'ki-solid',
-            iconColor: 'text-info',
-            value: stats.orders_sold_amount,
-            label: 'Total Sold',
-            translationKey: this.lang === 'ar' ? 'إجمالي المبيعات' : 'Total Solds',
-            useCountUp: true
           }
         ];
       },

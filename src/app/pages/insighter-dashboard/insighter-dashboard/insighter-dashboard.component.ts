@@ -21,6 +21,8 @@ export class InsighterDashboardComponent implements OnInit, OnDestroy {
   lang: string = 'en';
   isMeetingsExpanded: boolean = false;
   isSettingsExpanded: boolean = false;
+  isActivityExpanded: boolean = false;
+  isCommerceExpanded: boolean = false;
   isNavCollapsed: boolean = false;
   isMobileSidebarVisible: boolean = false;
   isMobileView: boolean = false;
@@ -73,6 +75,10 @@ export class InsighterDashboardComponent implements OnInit, OnDestroy {
       
       // Check if we're on a settings route to expand the settings section
       this.checkSettingsRoute(this.router.url);
+
+      // Expand activity/commerce groups when their routes are active
+      this.checkActivityRoute(this.router.url);
+      this.checkCommerceRoute(this.router.url);
     });
     this.subscriptions.push(hasCompanyRoleSub);
 
@@ -87,6 +93,8 @@ export class InsighterDashboardComponent implements OnInit, OnDestroy {
       this.setActiveTabFromRoute(event.url);
       this.checkMeetingsRoute(event.url);
       this.checkSettingsRoute(event.url);
+      this.checkActivityRoute(event.url);
+      this.checkCommerceRoute(event.url);
       // Close mobile sidebar after navigation
       if (this.isMobileView) {
         this.isMobileSidebarVisible = false;
@@ -264,6 +272,28 @@ export class InsighterDashboardComponent implements OnInit, OnDestroy {
     // Auto-expand settings section if we're on a settings route
     if (url.includes('account-settings')) {
       this.isSettingsExpanded = true;
+    }
+  }
+
+  toggleActivity(): void {
+    this.isActivityExpanded = !this.isActivityExpanded;
+  }
+
+  checkActivityRoute(url: string): void {
+    const routes = ['my-requests', 'my-knowledge', 'my-downloads', 'read-later'];
+    if (routes.some(route => url.includes(route))) {
+      this.isActivityExpanded = true;
+    }
+  }
+
+  toggleCommerce(): void {
+    this.isCommerceExpanded = !this.isCommerceExpanded;
+  }
+
+  checkCommerceRoute(url: string): void {
+    const routes = ['my-orders', 'sales', 'wallet'];
+    if (routes.some(route => url.includes(route))) {
+      this.isCommerceExpanded = true;
     }
   }
 

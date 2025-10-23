@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { forkJoin, Subject, takeUntil } from 'rxjs';
-import { SentMeetingsService, SentMeeting, SentMeetingResponse, AvailableHoursResponse, AvailableDay, AvailableTime, RescheduleRequest } from '../../../../../_fake/services/meetings/sent-meetings.service';
+import { SentMeetingsService, SentMeeting, SentMeetingResponse, AvailableHoursResponse, AvailableDay, AvailableTime, RescheduleRequest, MeetingStatistics } from '../../../../../_fake/services/meetings/sent-meetings.service';
 
 @Component({
   selector: 'app-sent-meetings',
@@ -18,6 +18,17 @@ export class SentMeetingsComponent implements OnInit, OnDestroy {
   
   // Filter tabs
   selectedTab: 'pending' | 'approved' | 'postponed' | 'upcoming' | 'past' | 'coming'= 'coming';
+
+  // Archived meetings state
+  showArchivedMeetings = false;
+  archivedMeetings: SentMeeting[] = [];
+  archivedCurrentPage = 1;
+  archivedTotalPages = 1;
+  archivedTotalItems = 0;
+  archivedCount = 0;
+
+  // Action loading state
+  actionLoading = false;
   
   // Reschedule modal
   showRescheduleModal = false;
@@ -49,8 +60,9 @@ export class SentMeetingsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadMeetings();
+    this.loadMeetingStatistics();
     this.updateCurrentMonthName();
-    
+
     // Subscribe to loading state
     this.sentMeetingsService.isLoading$
       .pipe(takeUntil(this.destroy$))
@@ -110,6 +122,7 @@ export class SentMeetingsComponent implements OnInit, OnDestroy {
   }
   onTabChange(tab: 'pending' | 'approved' | 'postponed' | 'upcoming' | 'past' | 'coming'): void {
     this.selectedTab = tab;
+    this.showArchivedMeetings = false;
     // Reload meetings with the new filter
     this.loadMeetings(1);
   }
@@ -125,9 +138,12 @@ export class SentMeetingsComponent implements OnInit, OnDestroy {
 
   getFilteredMeetings(): SentMeeting[] {
     let filteredMeetings: SentMeeting[] = [];
-    
-    // For date-based tabs (upcoming/past), the filtering is done on the backend
-    if (this.selectedTab === 'upcoming' || this.selectedTab === 'past' || this.selectedTab === 'coming') {
+
+    // If showing archived meetings, return archived meetings
+    if (this.selectedTab === 'past' && this.showArchivedMeetings) {
+      filteredMeetings = this.archivedMeetings;
+    } else if (this.selectedTab === 'upcoming' || this.selectedTab === 'past' || this.selectedTab === 'coming') {
+      // For date-based tabs (upcoming/past), the filtering is done on the backend
       filteredMeetings = this.meetings;
     } else {
       // For status-based tabs (pending, approved, postponed)
@@ -142,7 +158,11 @@ export class SentMeetingsComponent implements OnInit, OnDestroy {
   }
 
   onPageChange(page: number): void {
-    this.loadMeetings(page);
+    if (this.showArchivedMeetings) {
+      this.loadArchivedMeetings(page);
+    } else {
+      this.loadMeetings(page);
+    }
   }
 
   getStatusClass(status: string): string {
@@ -414,5 +434,111 @@ export class SentMeetingsComponent implements OnInit, OnDestroy {
     const monthName = this.monthNames[date.getMonth()];
     const dayNumber = date.getDate();
     return `${dayName}, ${monthName} ${dayNumber}`;
+  }
+
+  /**
+   * Archive a meeting
+   */
+  archiveMeeting(meeting: SentMeeting): void {
+    this.actionLoading = true;
+    this.sentMeetingsService.archiveMeeting(meeting.uuid)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.actionLoading = false;
+          console.log('Meeting archived successfully');
+          this.reloadMeetingsAfterAction();
+        },
+        error: (error: any) => {
+          this.actionLoading = false;
+          console.error('Error archiving meeting:', error);
+        }
+      });
+  }
+
+  /**
+   * Toggle between past meetings and archived meetings
+   */
+  toggleArchivedMeetings(): void {
+    this.showArchivedMeetings = !this.showArchivedMeetings;
+
+    if (this.showArchivedMeetings) {
+      this.loadArchivedMeetings(1);
+    } else {
+      this.loadMeetings(1);
+    }
+  }
+
+  /**
+   * Load archived meetings
+   */
+  loadArchivedMeetings(page: number = 1): void {
+    this.archivedCurrentPage = page;
+    this.sentMeetingsService.getArchivedMeetings(page, this.perPage)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response: SentMeetingResponse) => {
+          this.archivedMeetings = response.data;
+          this.archivedCurrentPage = response.meta.current_page;
+          this.archivedTotalPages = response.meta.last_page;
+          this.archivedTotalItems = response.meta.total;
+        },
+        error: (error) => {
+          console.error('Error loading archived meetings:', error);
+        }
+      });
+  }
+
+  /**
+   * Reload meetings after an action (archive). If the current page becomes empty and is not the first page, go to the previous page.
+   */
+  private reloadMeetingsAfterAction(): void {
+    // Reload meetings for the current page
+    this.loadMeetings(this.currentPage);
+    // Reload statistics to update archived count
+    this.loadMeetingStatistics();
+    // After loading, check if the current page is empty and not the first page
+    setTimeout(() => {
+      if (this.getFilteredMeetings().length === 0 && this.currentPage > 1) {
+        this.loadMeetings(this.currentPage - 1);
+      }
+    }, 500); // Wait for meetings to reload
+  }
+
+  /**
+   * Get current page based on archive state
+   */
+  getCurrentPage(): number {
+    return this.showArchivedMeetings ? this.archivedCurrentPage : this.currentPage;
+  }
+
+  /**
+   * Get current total pages based on archive state
+   */
+  getCurrentTotalPages(): number {
+    return this.showArchivedMeetings ? this.archivedTotalPages : this.totalPages;
+  }
+
+  /**
+   * Get current total items based on archive state
+   */
+  getCurrentTotalItems(): number {
+    return this.showArchivedMeetings ? this.archivedTotalItems : this.totalItems;
+  }
+
+  /**
+   * Load meeting statistics to get archived count
+   */
+  loadMeetingStatistics(): void {
+    this.sentMeetingsService.getMeetingStatistics()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.archivedCount = response.data.archived;
+        },
+        error: (error) => {
+          console.error('Error loading meeting statistics:', error);
+        }
+      });
   }
 } 

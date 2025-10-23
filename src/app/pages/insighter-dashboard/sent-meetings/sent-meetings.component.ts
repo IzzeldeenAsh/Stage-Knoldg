@@ -136,7 +136,7 @@ export class SentMeetingsComponent extends BaseComponent implements OnInit {
   }
 
   getFilteredMeetings(): SentMeeting[] {
-    let filteredMeetings: Meeting[] = [];
+    let filteredMeetings: SentMeeting[] = [];
 
     // If showing archived meetings, return archived meetings
     if (this.selectedTab() === 'past' && this.showArchivedMeetings()) {
