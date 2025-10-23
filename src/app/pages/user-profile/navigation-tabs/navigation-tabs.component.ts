@@ -38,8 +38,8 @@ export class NavigationTabsComponent implements OnInit, OnChanges {
     { labelen: 'Certificates and Credentials', labelar: 'الشهادات والاعتمادات', link: '/app/profile/company-certificates', activeInfo: false, activePrimary: true, roles: ['company'], icon: 'award', category: 'company' },
     { labelen: 'Legal Documents', labelar: 'وثائق قانونية', link: '/app/profile/documents', activeInfo: false, activePrimary: true, roles: ['company'], icon: 'file-text', category: 'company' },
     // Settings tabs moved from settings-sidebar
-    { labelen: 'Manager', labelar: 'المدير', link: '/app/profile/settings/personal-info', activeInfo: false, activePrimary: true, roles: ['company', 'insighter', 'client'], icon: 'id-card', category: 'settings' },
-    { labelen: 'Company', labelar: 'الشركة', link: '/app/profile/settings/company-settings', activeInfo: false, activePrimary: true, roles: ['company'], icon: 'cog', category: 'settings' },
+    { labelen: 'Personal Settings', labelar: 'الإعدادات الشخصية', link: '/app/profile/settings/personal-info', activeInfo: false, activePrimary: true, roles: ['company', 'insighter', 'client'], icon: 'id-card', category: 'settings' },
+    { labelen: 'Company Settings', labelar: 'إعدادات الشركة', link: '/app/profile/settings/company-settings', activeInfo: false, activePrimary: true, roles: ['company'], icon: 'cog', category: 'settings' },
   ];
 
   constructor(

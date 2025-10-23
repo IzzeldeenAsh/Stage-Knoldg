@@ -66,6 +66,10 @@
                   <i class="pi pi-inbox me-2 text-dark" style="font-size: 1rem;"></i>
                 }
                 {{ showArchivedMeetings() ? 'Past' : 'Archived' }}
+                <span *ngIf="!showArchivedMeetings() && clientArchivedCount() > 0"
+                      class="badge badge-light-info ms-2">
+                  {{ clientArchivedCount() }}
+                </span>
               </button>
             </div>
           </div>
@@ -165,13 +169,13 @@
 
                     <!-- Archive Button for Past Meetings -->
                     @if (clientMeetingsSubTab === 'past' && !showArchivedMeetings) {
-                      <button class="btn btn-sm d-flex align-items-center px-2 py-1"
+                      <button class="btn btn-xs btn-light-warning d-flex align-items-center px-2 py-1"
                               (click)="archiveMeeting(meeting)"
                               [disabled]="actionLoading()"
                               [pTooltip]="'Archive Meeting'"
                               tooltipPosition="top"
                               aria-label="Archive Meeting">
-                        <i class="pi pi-inbox" style="font-size: 1rem;"></i>
+                        <i class="pi pi-inbox" style="font-size: 1rem; padding: 0;"></i>
                       </button>
                     }
                   </div>
@@ -351,6 +355,10 @@
                   <i class="pi pi-inbox me-2 text-dark" style="font-size: 1rem;"></i>
                 }
                 {{ sentShowArchivedMeetings() ? 'Past' : 'Archived' }}
+                <span *ngIf="!sentShowArchivedMeetings() && sentArchivedCount() > 0"
+                      class="badge badge-light-info ms-2">
+                  {{ sentArchivedCount() }}
+                </span>
               </button>
             </div>
           </div>
@@ -427,13 +435,13 @@
 
                     <!-- Archive Button for Past Meetings -->
                     @if (myMeetingsSubTab === 'past' && !sentShowArchivedMeetings()) {
-                      <button class="btn btn-sm d-flex align-items-center px-2 py-1 ms-auto"
+                   <button class="btn btn-xs btn-light-warning d-flex align-items-center px-2 py-1"
                               (click)="archiveSentMeeting(meeting)"
                               [disabled]="actionLoading()"
                               [pTooltip]="'Archive Meeting'"
                               tooltipPosition="top"
                               aria-label="Archive Meeting">
-                        <i class="pi pi-inbox" style="font-size: 1rem;"></i>
+                        <i class="pi pi-inbox" style="font-size: 1rem; padding: 0;"></i>
                       </button>
                     }
                   </div>

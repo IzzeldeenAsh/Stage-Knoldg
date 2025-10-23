@@ -12,7 +12,17 @@ export interface InvoiceData {
     name?: string;
     email?: string;
     country?: string;
+    first_name?: string;
+    last_name?: string;
   };
+  billingAddress?: {
+    city?: string;
+    country?: string;
+    line1?: string;
+    line2?: string;
+    postal_code?: string;
+    state?: string;
+  } | string;
 }
 
 @Component({
@@ -480,5 +490,61 @@ export class InvoiceViewerComponent extends BaseComponent implements OnInit, OnD
         opacity: 0.1;
       }
     `;
+  }
+
+  getDisplayName(): string {
+    if (!this.invoiceData?.userProfile) return 'Client Name';
+
+    const profile = this.invoiceData.userProfile;
+
+    // If first_name and last_name are available, use them
+    if (profile.first_name && profile.last_name) {
+      return `${profile.first_name} ${profile.last_name}`;
+    }
+
+    // Fallback to name if available
+    if (profile.name) {
+      return profile.name;
+    }
+
+    return 'Client Name';
+  }
+
+  getDisplayAddress(): string {
+    if (!this.invoiceData?.userProfile && !this.invoiceData?.billingAddress) {
+      return 'N/A';
+    }
+
+    // For purchased orders, prefer billing address, fallback to user country
+    if (this.invoiceData.billingAddress) {
+      return this.formatBillingAddress(this.invoiceData.billingAddress);
+    }
+
+    // For sold orders, use the country from user profile
+    if (this.invoiceData.userProfile?.country) {
+      return this.invoiceData.userProfile.country;
+    }
+
+    return 'N/A';
+  }
+
+  formatBillingAddress(billingAddress: any): string {
+    if (!billingAddress) return '';
+
+    // If billing address is a string, return it directly
+    if (typeof billingAddress === 'string') {
+      return billingAddress;
+    }
+
+    // If it's an object, format it
+    const parts = [];
+    if (billingAddress.line1) parts.push(billingAddress.line1);
+    if (billingAddress.line2) parts.push(billingAddress.line2);
+    if (billingAddress.city) parts.push(billingAddress.city);
+    if (billingAddress.state) parts.push(billingAddress.state);
+    if (billingAddress.postal_code) parts.push(billingAddress.postal_code);
+    if (billingAddress.country) parts.push(billingAddress.country);
+
+    return parts.filter(part => part).join(', ');
   }
 }

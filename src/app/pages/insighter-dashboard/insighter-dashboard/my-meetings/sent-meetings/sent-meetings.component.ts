@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { forkJoin, Subject, takeUntil } from 'rxjs';
-import { SentMeetingsService, SentMeeting, SentMeetingResponse, AvailableHoursResponse, AvailableDay, AvailableTime, RescheduleRequest } from '../../../../../_fake/services/meetings/sent-meetings.service';
+import { SentMeetingsService, SentMeeting, SentMeetingResponse, AvailableHoursResponse, AvailableDay, AvailableTime, RescheduleRequest, MeetingStatistics } from '../../../../../_fake/services/meetings/sent-meetings.service';
 
 @Component({
   selector: 'app-sent-meetings',
@@ -25,6 +25,7 @@ export class SentMeetingsComponent implements OnInit, OnDestroy {
   archivedCurrentPage = 1;
   archivedTotalPages = 1;
   archivedTotalItems = 0;
+  archivedCount = 0;
 
   // Action loading state
   actionLoading = false;
@@ -59,8 +60,9 @@ export class SentMeetingsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadMeetings();
+    this.loadMeetingStatistics();
     this.updateCurrentMonthName();
-    
+
     // Subscribe to loading state
     this.sentMeetingsService.isLoading$
       .pipe(takeUntil(this.destroy$))
@@ -215,7 +217,7 @@ export class SentMeetingsComponent implements OnInit, OnDestroy {
   // Navigate to insighter profile
   goToInsighterProfile(insighterUuid: string): void {
     const currentLocale = localStorage.getItem('language') || 'en';
-   window.location.href = `http://localhost:3000/${currentLocale}/profile/${insighterUuid}?entity=insighter&tab=meet`;
+   window.location.href = `https://knoldg.com/${currentLocale}/profile/${insighterUuid}?entity=insighter&tab=meet`;
   }
 
   // Join meeting
@@ -493,6 +495,8 @@ export class SentMeetingsComponent implements OnInit, OnDestroy {
   private reloadMeetingsAfterAction(): void {
     // Reload meetings for the current page
     this.loadMeetings(this.currentPage);
+    // Reload statistics to update archived count
+    this.loadMeetingStatistics();
     // After loading, check if the current page is empty and not the first page
     setTimeout(() => {
       if (this.getFilteredMeetings().length === 0 && this.currentPage > 1) {
@@ -520,5 +524,21 @@ export class SentMeetingsComponent implements OnInit, OnDestroy {
    */
   getCurrentTotalItems(): number {
     return this.showArchivedMeetings ? this.archivedTotalItems : this.totalItems;
+  }
+
+  /**
+   * Load meeting statistics to get archived count
+   */
+  loadMeetingStatistics(): void {
+    this.sentMeetingsService.getMeetingStatistics()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.archivedCount = response.data.archived;
+        },
+        error: (error) => {
+          console.error('Error loading meeting statistics:', error);
+        }
+      });
   }
 } 

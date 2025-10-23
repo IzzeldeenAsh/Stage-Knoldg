@@ -8,7 +8,7 @@ export class InvoiceGeneratorService {
 
   constructor() { }
 
-  generateInvoice(order: Order, userProfile: any): string {
+  generateInvoice(order: Order, userProfile: any, billingAddress?: any): string {
     console.log('Order', order)
     const invoiceDate = new Date(order.date).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -358,9 +358,9 @@ export class InvoiceGeneratorService {
                         <td style="width:30%; text-align:left; padding-left:10px;">
                             <div class="section-title">Bill To:</div>
                             <div style="margin-top:6px; text-align:left;">
-                                <strong>Name:</strong>${userProfile?.name || 'Client Name'}<br/>
-                                <strong>Email:</strong>${userProfile?.email || 'client@email.com'}<br/>
-                                <strong>Address:</strong> ${userProfile?.billing_address || 'N/A'}
+                                <strong>Name:</strong>${this.getDisplayName(userProfile, order)}<br/>
+                                <strong>Email:</strong>${this.getDisplayEmail(userProfile, order)}<br/>
+                                <strong>Address:</strong> ${this.getDisplayAddress(userProfile, order)}
                             </div>
                         </td>
                     </tr>
@@ -434,5 +434,68 @@ export class InvoiceGeneratorService {
         window.URL.revokeObjectURL(url);
       };
     }
+  }
+
+  private getDisplayName(userProfile: any, order: Order): string {
+    // For purchased orders (my orders), use current user profile
+    // For sold orders, use the buyer's information
+    if (order.user) {
+      // This is a sold order, use buyer's info
+      if (order.user.first_name && order.user.last_name) {
+        return `${order.user.first_name} ${order.user.last_name}`;
+      }
+      return order.user.name || 'Client Name';
+    } else {
+      // This is a purchased order, use current user's info
+      if (userProfile?.first_name && userProfile?.last_name) {
+        return `${userProfile.first_name} ${userProfile.last_name}`;
+      }
+      return userProfile?.name || 'Client Name';
+    }
+  }
+
+  private getDisplayEmail(userProfile: any, order: Order): string {
+    // For sold orders, use buyer's email; for purchased orders, use current user's email
+    if (order.user) {
+      return order.user.email || 'client@email.com';
+    } else {
+      return userProfile?.email || 'client@email.com';
+    }
+  }
+
+  private getDisplayAddress(userProfile: any, order: Order): string {
+    // For sold orders, use billing address from payment
+    if (order.user && order.payment?.billing_address) {
+      return this.formatBillingAddress(order.payment.billing_address);
+    }
+
+    // For purchased orders, use billing address if available, otherwise user's country
+    if (order.payment?.billing_address) {
+      return this.formatBillingAddress(order.payment.billing_address);
+    }
+
+    // Fallback to user's country
+    const country = order.user?.country || userProfile?.country;
+    return country || 'N/A';
+  }
+
+  private formatBillingAddress(billingAddress: any): string {
+    if (!billingAddress) return '';
+
+    // If billing address is a string, return it directly
+    if (typeof billingAddress === 'string') {
+      return billingAddress;
+    }
+
+    // If it's an object, format it
+    const parts = [];
+    if (billingAddress.line1) parts.push(billingAddress.line1);
+    if (billingAddress.line2) parts.push(billingAddress.line2);
+    if (billingAddress.city) parts.push(billingAddress.city);
+    if (billingAddress.state) parts.push(billingAddress.state);
+    if (billingAddress.postal_code) parts.push(billingAddress.postal_code);
+    if (billingAddress.country) parts.push(billingAddress.country);
+
+    return parts.filter(part => part).join(', ');
   }
 }

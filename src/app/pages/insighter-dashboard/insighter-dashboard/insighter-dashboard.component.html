@@ -191,7 +191,7 @@
              {{ 'INSIGHTER.DASHBOARD.NAV.PAYMENT_SETTINGS' | translate }}
            </div>
          </div>
-         <div class="sub-nav-item"  [routerLink]="['my-consulting-schedule']" routerLinkActive="active" *ngIf="!(isClient$ | async)"
+         <div class="sub-nav-item"  [routerLink]="['/app/insighter-dashboard/account-settings/consulting-schedule']" routerLinkActive="active" *ngIf="!(isClient$ | async)"
               (click)="closeMobileSidebar()">
            <div class="sub-item-icon">
              <i class="ki-outline ki-calendar"></i>
@@ -228,6 +228,7 @@
         <app-consulting-schedule-header *ngIf="isRouteActive('my-consulting-schedule')"></app-consulting-schedule-header>
         <app-account-settings-header *ngIf="isRouteActive('general-settings')"></app-account-settings-header>
         <app-payment-settings-header *ngIf="isRouteActive('payment-settings')"></app-payment-settings-header>
+        <app-consulting-schedule-header *ngIf="isRouteActive('consulting-schedule')"></app-consulting-schedule-header>
         <app-wallet-statistics *ngIf="isRouteActive('wallet')"></app-wallet-statistics>
         <app-sales-statistics *ngIf="isRouteActive('sales')"></app-sales-statistics>
         <app-company-statistics *ngIf="isRouteActive('my-company-settings') && (hasCompanyRole$ | async)"></app-company-statistics>
@@ -479,9 +480,7 @@
                       {{ 'INSIGHTER.DASHBOARD.NAV.MEETINGS' | translate }}
                     </div>
                   </div>
-                  
-                 
-                  <div class="nav-item" [routerLink]="['my-company-settings']" routerLinkActive="active" *ngIf="hasCompanyRole$ | async"
+                             <div class="nav-item" [routerLink]="['my-company-settings']" routerLinkActive="active" *ngIf="hasCompanyRole$ | async"
                        [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_COMPANY' | translate) : null"
                        pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_COMPANY' | translate) : '' }}"
                        tooltipPosition="right"
@@ -493,6 +492,17 @@
                       {{ 'INSIGHTER.DASHBOARD.NAV.MY_COMPANY' | translate }}
                     </div>
                   </div>
+                 
+         
+                </div>
+              </div>
+                 <!-- Dashboard Card -->
+              <div class="p-card navigation-card">
+                <div class="p-card-header">
+                  <h3 *ngIf="!isNavCollapsed">{{ 'INSIGHTER.DASHBOARD.NAV.SETTINGS' | translate }}</h3>
+                </div>
+                <div class="p-card-body">
+           
                   <!-- Settings Expandable Item -->
                    <ng-container *ngIf="!(isClient$ | async)">
                   <div class="nav-item expandable" [class.expanded]="isSettingsExpanded" *ngIf="!isNavCollapsed">
@@ -531,7 +541,7 @@
                           {{ 'INSIGHTER.DASHBOARD.NAV.PAYMENT_SETTINGS' | translate }}
                         </div>
                       </div>
-                      <div class="sub-nav-item"  [routerLink]="['my-consulting-schedule']" routerLinkActive="active" *ngIf="!(isClient$ | async)"
+                      <div class="sub-nav-item"  [routerLink]="['/app/insighter-dashboard/account-settings/consulting-schedule']" routerLinkActive="active" *ngIf="!(isClient$ | async)"
                       pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_CONSULTING_SCHEDULE' | translate) : '' }}"
                       tooltipPosition="right"
                       appendTo="body">
@@ -586,7 +596,7 @@
                         <i class="ki-outline ki-user-edit"></i>
                       </div>
                     </div>
-                    <div class="nav-item" [routerLink]="['my-consulting-schedule']" routerLinkActive="active"
+                    <div class="nav-item" [routerLink]="['/app/insighter-dashboard/account-settings/consulting-schedule']" routerLinkActive="active"
                          *ngIf="!(isClient$ | async)" [attr.title]="('INSIGHTER.DASHBOARD.NAV.MY_CONSULTING_SCHEDULE' | translate)"
                          pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_CONSULTING_SCHEDULE' | translate) : '' }}"
                          tooltipPosition="right"

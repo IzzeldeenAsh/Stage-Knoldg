@@ -145,13 +145,13 @@
 
                     <!-- Archive Button for Past Meetings -->
                     @if (selectedTab() === 'past' && !showArchivedMeetings()) {
-                      <button class="btn btn-sm d-flex align-items-center px-2 py-1"
+                      <button class="btn btn-xs btn-light-warning d-flex align-items-center px-2 py-1"
                               (click)="archiveMeeting(meeting)"
                               [disabled]="actionLoading()"
                               [pTooltip]="'Archive Meeting'"
                               tooltipPosition="top"
                               aria-label="Archive Meeting">
-                        <i class="pi pi-inbox" style="font-size: 1rem;"></i>
+                        <i class="pi pi-inbox" style="font-size: 1rem; padding: 0;"></i>
                       </button>
                     }
                   </div>

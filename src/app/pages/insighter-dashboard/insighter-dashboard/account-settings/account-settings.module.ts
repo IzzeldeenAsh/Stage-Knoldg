@@ -20,6 +20,8 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { TooltipModule } from 'primeng/tooltip';
 import { CheckboxModule } from 'primeng/checkbox';
 import { RadioButtonModule } from 'primeng/radiobutton';
+import { CalendarModule } from 'primeng/calendar';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { SharedTreeSelectorComponent } from 'src/app/reusable-components/shared-tree-selector/shared-tree-selector.component';
 import { TruncateTextPipe } from 'src/app/pipes/truncate-pipe/truncate-text.pipe';
 import { DropdownModule } from 'primeng/dropdown';
@@ -27,6 +29,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CountryDropdownComponent } from 'src/app/reusable-components/country-dropdown/country-dropdown.component';
 import { PaymentSettingsComponent } from './payment-settings/payment-settings.component';
 import { SettingsTabsComponent } from './settings-tabs/settings-tabs.component';
+import { ConsultingScheduleComponent } from './consulting-schedule.component';
 
 const routes: Routes = [
   {
@@ -51,6 +54,10 @@ const routes: Routes = [
       {
         path: 'payment-settings',
         component: PaymentSettingsComponent
+      },
+      {
+        path: 'consulting-schedule',
+        component: ConsultingScheduleComponent
       }
     ]
   }
@@ -64,6 +71,7 @@ const routes: Routes = [
     GeneralSettingsComponent,
     ReactivateDialogComponent,
     PaymentSettingsComponent,
+    ConsultingScheduleComponent,
     TransferDialogComponent,
     DeactivateDialogComponent,
     DeleteDialogComponent,
@@ -83,6 +91,8 @@ const routes: Routes = [
     ProgressBarModule,
     CheckboxModule,
     RadioButtonModule,
+    CalendarModule,
+    ConfirmDialogModule,
     SharedTreeSelectorComponent,
     TruncateTextPipe,
     DropdownModule,

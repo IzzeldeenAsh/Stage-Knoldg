@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, inject, DestroyRef, signal, computed } from '@angular/core';
 import { Subject, take, takeUntil, forkJoin } from 'rxjs';
-import { MeetingsService, Meeting, MeetingResponse } from '../../../../_fake/services/meetings/meetings.service';
-import { SentMeetingsService, SentMeeting, SentMeetingResponse, AvailableHoursResponse, AvailableDay, AvailableTime, RescheduleRequest } from '../../../../_fake/services/meetings/sent-meetings.service';
+import { MeetingsService, Meeting, MeetingResponse, ClientMeetingStatistics } from '../../../../_fake/services/meetings/meetings.service';
+import { SentMeetingsService, SentMeeting, SentMeetingResponse, AvailableHoursResponse, AvailableDay, AvailableTime, RescheduleRequest, MeetingStatistics } from '../../../../_fake/services/meetings/sent-meetings.service';
 import { Router } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -72,6 +72,10 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
   sentArchivedTotalPages = signal<number>(1);
   sentArchivedTotalItems = signal<number>(0);
 
+  // Archived counts
+  clientArchivedCount = signal<number>(0);
+  sentArchivedCount = signal<number>(0);
+
   
   // Dialog properties for client meetings
   selectedMeeting = signal<Meeting | null> (null);
@@ -112,6 +116,8 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
   ngOnInit(): void {
     this.updateCurrentMonthName();
     this.loadCurrentTabData();
+    this.loadClientMeetingStatistics();
+    this.loadSentMeetingStatistics();
 
     // Subscribe to loading states
     this.meetingsService.isLoading$
@@ -506,6 +512,8 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
   private reloadMeetingsAfterAction(): void {
     // Reload meetings for the current page
     this.loadMeetings(this.currentPage());
+    // Reload client meeting statistics to update archived count
+    this.loadClientMeetingStatistics();
     // After loading, check if the current page is empty and not the first page
     setTimeout(() => {
       if (this.getFilteredMeetings().length === 0 && this.currentPage() > 1) {
@@ -582,7 +590,7 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
   // Sent meetings methods
   goToInsighterProfile(insighterUuid: string): void {
     const currentLocale = localStorage.getItem('language') || 'en';
-    window.location.href = `http://localhost:3000/${currentLocale}/profile/${insighterUuid}?entity=insighter&tab=meet`;
+    window.location.href = `https://knoldg.com/${currentLocale}/profile/${insighterUuid}?entity=insighter&tab=meet`;
   }
 
   canJoinMeeting(meeting: SentMeeting): boolean {
@@ -815,6 +823,8 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
 
   private reloadSentMeetingsAfterAction(): void {
     this.loadSentMeetings(this.sentCurrentPage());
+    // Reload sent meeting statistics to update archived count
+    this.loadSentMeetingStatistics();
     setTimeout(() => {
       if (this.getFilteredSentMeetings().length === 0 && this.sentCurrentPage() > 1) {
         this.loadSentMeetings(this.sentCurrentPage() - 1);
@@ -845,5 +855,37 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
     } else {
       this.toggleSentArchivedMeetings();
     }
+  }
+
+  /**
+   * Load client meeting statistics to get archived count
+   */
+  loadClientMeetingStatistics(): void {
+    this.meetingsService.getClientMeetingStatistics()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          this.clientArchivedCount.set(response.data.archived);
+        },
+        error: (error) => {
+          console.error('Error loading client meeting statistics:', error);
+        }
+      });
+  }
+
+  /**
+   * Load sent meeting statistics to get archived count
+   */
+  loadSentMeetingStatistics(): void {
+    this.sentMeetingsService.getMeetingStatistics()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          this.sentArchivedCount.set(response.data.archived);
+        },
+        error: (error) => {
+          console.error('Error loading sent meeting statistics:', error);
+        }
+      });
   }
 }

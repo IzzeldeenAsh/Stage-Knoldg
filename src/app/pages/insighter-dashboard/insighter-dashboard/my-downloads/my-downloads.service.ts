@@ -60,13 +60,19 @@ export interface MyDownloadsResponse {
   meta: PaginationMeta;
 }
 
+export interface LibraryStatistics {
+  total: number;
+  archived: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class MyDownloadsService {
-  private readonly API_URL = 'https://api.foresighta.co/api/account/library/my-knowledge';
-  private readonly DOWNLOAD_KNOWLEDGE_URL = 'https://api.foresighta.co/api/account/library/my-knowledge/download';
-  private readonly DOWNLOAD_DOCUMENT_URL = 'https://api.foresighta.co/api/account/library/my-knowledge/document/download';
+  private readonly API_URL = 'https://api.knoldg.com/api/account/library/my-knowledge';
+  private readonly STATISTICS_URL = 'https://api.knoldg.com/api/account/library/my-knowledge/statistics';
+  private readonly DOWNLOAD_KNOWLEDGE_URL = 'https://api.knoldg.com/api/account/library/my-knowledge/download';
+  private readonly DOWNLOAD_DOCUMENT_URL = 'https://api.knoldg.com/api/account/library/my-knowledge/document/download';
   
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$ = this.isLoadingSubject.asObservable();
@@ -193,6 +199,16 @@ export class MyDownloadsService {
       map((response) => response),
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))
+    );
+  }
+
+  // Get library statistics
+  getLibraryStatistics(): Observable<LibraryStatistics> {
+    const headers = this.getHeaders();
+
+    return this.http.get<{data: LibraryStatistics}>(this.STATISTICS_URL, { headers }).pipe(
+      map((response) => response.data),
+      catchError(error => this.handleError(error))
     );
   }
 }

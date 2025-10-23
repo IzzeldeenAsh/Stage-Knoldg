@@ -506,3 +506,10 @@ z-index: 99999 !important;
 .nav-link.active{
   	border-bottom: 1px solid #0978b9 !important;
 }
+
+.nav-link {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  border-bottom-left-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
+  }

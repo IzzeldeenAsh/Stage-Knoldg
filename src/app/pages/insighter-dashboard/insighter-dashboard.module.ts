@@ -12,7 +12,6 @@ import { RequestsStatisticsComponent } from './insighter-dashboard/statistics/re
 import { CountUpDirective } from 'src/app/directives/countup/count-up.directive';
 import { CompanyStatisticsComponent } from './insighter-dashboard/statistics/company-statistics/company-statistics.component';
 import { DownloadsStatisticsComponent } from './insighter-dashboard/statistics/downloads-statistics/downloads-statistics.component';
-import { ConsultingScheduleHeaderComponent } from './insighter-dashboard/statistics/consulting-schedule-header/consulting-schedule-header.component';
 import { MeetingsStatisticsComponent } from './insighter-dashboard/my-meetings/meetings-statistics/meetings-statistics.component';
 import { SentMeetingsStatisticsComponent } from './insighter-dashboard/my-meetings/sent-meetings-statistics/sent-meetings-statistics.component';
 import { ReadLaterStatisticsComponent } from './insighter-dashboard/statistics/read-later-statistics/read-later-statistics.component';
@@ -20,6 +19,7 @@ import { MyOrdersStatisticsComponent } from './insighter-dashboard/statistics/my
 import { PaymentSettingsHeaderComponent } from './insighter-dashboard/statistics/payment-settings-header/payment-settings-header.component';
 import { WalletStatisticsComponent } from './insighter-dashboard/statistics/wallet-statistics/wallet-statistics.component';
 import { SalesStatisticsComponent } from './insighter-dashboard/statistics/sales-statistics/sales-statistics.component';
+import { ConsultingScheduleHeaderComponent } from './insighter-dashboard/statistics/consulting-schedule-header/consulting-schedule-header.component';
 import { SidebarModule } from 'primeng/sidebar';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
@@ -34,7 +34,6 @@ import { DashboardStatisticsComponent } from 'src/app/reusable-components/dashbo
     AccountSettingsHeaderComponent,
     CompanyStatisticsComponent,
     DownloadsStatisticsComponent,
-    ConsultingScheduleHeaderComponent,
     MeetingsStatisticsComponent,
     SentMeetingsStatisticsComponent,
     ReadLaterStatisticsComponent,
@@ -42,6 +41,7 @@ import { DashboardStatisticsComponent } from 'src/app/reusable-components/dashbo
     PaymentSettingsHeaderComponent,
     WalletStatisticsComponent,
     SalesStatisticsComponent,
+    ConsultingScheduleHeaderComponent,
 
   ],
   imports: [

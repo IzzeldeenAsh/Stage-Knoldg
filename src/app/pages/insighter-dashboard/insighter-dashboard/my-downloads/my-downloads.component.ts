@@ -7,7 +7,7 @@ import { BaseComponent } from 'src/app/modules/base.component';
 
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { Document, KnowledgeItem, MyDownloadsService } from './my-downloads.service';
+import { Document, KnowledgeItem, MyDownloadsService, LibraryStatistics } from './my-downloads.service';
 import { FileSizePipe } from 'src/app/pipes/file-size-pipe/file-size.pipe';
 
 
@@ -46,6 +46,9 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
   archivedCurrentPage = signal<number>(1);
   archivedTotalPages = signal<number>(1);
   archivedTotalItems = signal<number>(0);
+
+  // Library statistics
+  libraryStatistics = signal<LibraryStatistics | null>(null);
   
   // Scroll state
   canScrollUp = signal<boolean>(false);
@@ -117,6 +120,9 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
     super(injector)
    }
   ngOnInit(): void {
+    // Load library statistics first
+    this.loadLibraryStatistics();
+
     // Check for search query param first
     this.route.queryParams
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -498,8 +504,9 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
             this.selectedDocument.set(null);
           }
 
-          // Reload current downloads
+          // Reload current downloads and statistics
           this.reloadCurrentDownloads();
+          this.loadLibraryStatistics();
         },
         error: (error) => {
           console.error('Error archiving knowledge:', error);
@@ -560,6 +567,20 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
     } else {
       this.loadMyDownloads(this.currentDisplayPage(), this.currentSearchTerm(), this.currentUuids());
     }
+  }
+
+  // Load library statistics
+  loadLibraryStatistics(): void {
+    this.myDownloadsService.getLibraryStatistics()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (statistics) => {
+          this.libraryStatistics.set(statistics);
+        },
+        error: (error) => {
+          console.error('Error loading library statistics:', error);
+        }
+      });
   }
 
 } 

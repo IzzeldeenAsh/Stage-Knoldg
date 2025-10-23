@@ -30,33 +30,6 @@
                     </h6>
                     <i     (click)="copyOrder(order.order_no)" class="ki-outline ki-copy fs-6 cursor-pointer"></i>
                   </div>
-                  <div class="d-flex align-items-center mb-1" *ngIf="order.orderable.meeting_booking?.insighter">
-                    <div class="symbol symbol-25px me-2">
-                      <img *ngIf="order.orderable.meeting_booking?.insighter?.profile_photo_url"
-                           [src]="order.orderable.meeting_booking?.insighter?.profile_photo_url"
-                           [alt]="order.orderable.meeting_booking?.insighter?.name"
-                           class="symbol-label rounded-circle"
-                           style="object-fit: cover;">
-                      <div *ngIf="!order.orderable.meeting_booking?.insighter?.profile_photo_url"
-                           class="symbol-label bg-light-info rounded-circle d-flex align-items-center justify-content-center">
-                        <span class="text-info fw-bold fs-8">
-                          {{ (order.orderable.meeting_booking?.insighter?.first_name?.charAt(0) || '') + (order.orderable.meeting_booking?.insighter?.last_name?.charAt(0) || '') }}
-                        </span>
-                      </div>
-                    </div>
-                    <a *ngIf="order.orderable.meeting_booking?.insighter?.uuid; else justInsighterName"
-                       [href]="'http://localhost:3000/en/profile/' + order.orderable.meeting_booking?.insighter?.uuid + '?entity=insighter'"
-                       target="_blank"
-                       class="text-info text-decoration-none fs-7">
-                      {{ order.orderable.meeting_booking?.insighter?.name }}
-                    </a>
-                    <ng-template #justInsighterName>
-                      <span class="text-muted fs-7">{{ order.orderable.meeting_booking?.insighter?.name }}</span>
-                    </ng-template>
-                    <span class="badge badge-light-success ms-2 mb-0">
-                      {{ lang === 'ar' ? 'خبير' : 'Insighter' }}
-                    </span>
-                  </div>
                 </div>
               </div>
               <div class="d-flex gap-2">

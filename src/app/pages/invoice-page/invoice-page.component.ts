@@ -87,6 +87,42 @@ export class InvoicePageComponent extends BaseComponent implements OnInit {
             }
 
             if (foundOrder) {
+              // Determine if this is a purchased order (current user bought it) or sold order (current user sold it)
+              const isPurchasedOrder = orders.data.some(o => o.uuid === foundOrder!.uuid) || meetingOrders.data.some(o => o.uuid === foundOrder!.uuid);
+              const isSoldOrder = salesKnowledgeOrders.data.some(o => o.uuid === foundOrder!.uuid) || salesMeetingOrders.data.some(o => o.uuid === foundOrder!.uuid);
+
+              let billToProfile: {
+                first_name: string;
+                last_name: string;
+                name: string;
+                email: string;
+                country: string;
+              } | undefined = undefined;
+              let billingAddress = null;
+
+              if (isPurchasedOrder) {
+                // For purchased orders, bill-to should be the current logged-in user
+                billToProfile = {
+                  first_name: userProfile?.first_name || '',
+                  last_name: userProfile?.last_name || '',
+                  name: userProfile?.name || '',
+                  email: userProfile?.email || '',
+                  country: userProfile?.country || ''
+                };
+                billingAddress = foundOrder.payment?.billing_address || userProfile?.country || '';
+              } else if (isSoldOrder) {
+                // For sold orders, bill-to should be the buyer (user object in the order)
+                const billingAddressObj = typeof foundOrder.payment?.billing_address === 'object' ? foundOrder.payment.billing_address : null;
+                billToProfile = {
+                  first_name: foundOrder.user?.first_name || '',
+                  last_name: foundOrder.user?.last_name || '',
+                  name: foundOrder.user?.name || '',
+                  email: foundOrder.user?.email || '',
+                  country: billingAddressObj?.country || foundOrder.user?.country || ''
+                };
+                billingAddress = foundOrder.payment?.billing_address || '';
+              }
+
               this.invoiceData = {
                 order_no: foundOrder.order_no,
                 invoice_no: foundOrder.invoice_no,
@@ -94,7 +130,8 @@ export class InvoicePageComponent extends BaseComponent implements OnInit {
                 amount: foundOrder.amount,
                 service: foundOrder.service,
                 orderable: foundOrder.orderable,
-                userProfile: userProfile
+                userProfile: billToProfile,
+                billingAddress: billingAddress
               };
             } else {
               this.error = this.lang === 'ar' ? 'الطلب غير موجود' : 'Order not found';
