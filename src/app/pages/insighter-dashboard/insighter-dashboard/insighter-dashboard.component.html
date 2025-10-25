@@ -502,7 +502,17 @@
                   <h3 *ngIf="!isNavCollapsed">{{ 'INSIGHTER.DASHBOARD.NAV.SETTINGS' | translate }}</h3>
                 </div>
                 <div class="p-card-body">
-           
+                  <ng-container *ngIf="(isClient$ | async) && !isNavCollapsed">
+                      <div class="nav-item" [routerLink]="['account-settings/general-settings']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+               (click)="closeMobileSidebar()" *ngIf="(isClient$ | async)">
+            <div class="item-icon">
+              <i class="ki-outline ki-user-edit"></i>
+            </div>
+            <div class="item-label">
+              {{ 'INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS' | translate }}
+            </div>
+          </div>
+                  </ng-container>
                   <!-- Settings Expandable Item -->
                    <ng-container *ngIf="!(isClient$ | async)">
                   <div class="nav-item expandable" [class.expanded]="isSettingsExpanded" *ngIf="!isNavCollapsed">
@@ -569,26 +579,18 @@
                   </ng-container>
                   <!-- Collapsed Settings Items (shown as separate items when collapsed) -->
                   <div *ngIf="isNavCollapsed">
-                    <div class="nav-item" [routerLink]="['account-settings/payment-settings']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+                    <div class="nav-item"  [routerLink]="['account-settings/payment-settings']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
                          [attr.title]="('INSIGHTER.DASHBOARD.NAV.PAYMENT_SETTINGS' | translate)"
                          pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.PAYMENT_SETTINGS' | translate) : '' }}"
                          tooltipPosition="right"
-                         appendTo="body" *ngIf="(isInsighter$ | async) || (isCompany$ | async)">
+                         appendTo="body" *ngIf="((isInsighter$ | async) || (isCompany$ | async)) && !(isClient$ | async)">
                       <div class="item-icon">
                         <i class="ki-outline ki-credit-cart"></i>
                       </div>
                     </div>
-                    <div class="nav-item" [routerLink]="['wallet']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
-                         [attr.title]="('INSIGHTER.DASHBOARD.NAV.WALLET' | translate)"
-                         pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.WALLET' | translate) : '' }}"
-                         tooltipPosition="right"
-                         appendTo="body" *ngIf="(isInsighter$ | async) || (isCompany$ | async) || (isClient$ | async)">
-                      <div class="item-icon">
-                        <i class="ki-outline ki-wallet"></i>
-                      </div>
-                    </div>
+                 
                     <div class="nav-item" [routerLink]="['account-settings/general-settings']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
-                         *ngIf="!(isClient$ | async)" [attr.title]="('INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS' | translate)"
+                        [attr.title]="('INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS' | translate)"
                          pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS' | translate) : '' }}"
                          tooltipPosition="right"
                          appendTo="body">

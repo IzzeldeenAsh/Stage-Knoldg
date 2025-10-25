@@ -4,7 +4,7 @@
     <div class="col-md-6 col-lg-8">
       <div class="filter-tabs-orders">
         <div class="nav nav-pills nav-pills-custom">
-          <a class="nav-link"
+          <a class="nav-link" *ngIf="!(isClient$ | async)"
              [class.active]="activeTab === 'client-meetings'"
              (click)="setActiveTab('client-meetings')">
             <span class="nav-svg me-2">
@@ -26,7 +26,7 @@
   </div>
 
   <!-- Client Meetings Tab -->
-  <ng-container *ngIf="activeTab === 'client-meetings'">
+  <ng-container *ngIf="activeTab === 'client-meetings' && !(isClient$ | async)" >
     <!-- Nested Tabs for Client Meetings -->
     <div class="row mb-0">
       <div class="col-12">
@@ -131,6 +131,17 @@
                         {{ formatTime(meeting.start_time) }} - {{ formatTime(meeting.end_time) }}
                       </div>
                     </div>
+                    <!-- Archive Button for Past Meetings -->
+                    @if (clientMeetingsSubTab === 'past' && !showArchivedMeetings) {
+                      <button class="btn btn-xs btn-light-warning d-flex align-items-center px-2 py-1"
+                              (click)="archiveMeeting(meeting)"
+                              [disabled]="actionLoading()"
+                              [pTooltip]="'Archive Meeting'"
+                              tooltipPosition="top"
+                              aria-label="Archive Meeting">
+                        <i class="pi pi-inbox" style="font-size: 1rem; padding: 0;"></i>
+                      </button>
+                    }
                   </div>
 
                   <!-- Client Meeting Status and Action Buttons -->
@@ -165,18 +176,6 @@
                           </i>
                         </button>
                       </div>
-                    }
-
-                    <!-- Archive Button for Past Meetings -->
-                    @if (clientMeetingsSubTab === 'past' && !showArchivedMeetings) {
-                      <button class="btn btn-xs btn-light-warning d-flex align-items-center px-2 py-1"
-                              (click)="archiveMeeting(meeting)"
-                              [disabled]="actionLoading()"
-                              [pTooltip]="'Archive Meeting'"
-                              tooltipPosition="top"
-                              aria-label="Archive Meeting">
-                        <i class="pi pi-inbox" style="font-size: 1rem; padding: 0;"></i>
-                      </button>
                     }
                   </div>
 
@@ -420,6 +419,17 @@
                         {{ formatTime(meeting.start_time) }} - {{ formatTime(meeting.end_time) }}
                       </div>
                     </div>
+                    <!-- Archive Button for Past Meetings -->
+                    @if (myMeetingsSubTab === 'past' && !sentShowArchivedMeetings()) {
+                      <button class="btn btn-xs btn-light-warning d-flex align-items-center px-2 py-1"
+                              (click)="archiveSentMeeting(meeting)"
+                              [disabled]="actionLoading()"
+                              [pTooltip]="'Archive Meeting'"
+                              tooltipPosition="top"
+                              aria-label="Archive Meeting">
+                        <i class="pi pi-inbox" style="font-size: 1rem; padding: 0;"></i>
+                      </button>
+                    }
                   </div>
 
                   <!-- Sent Meeting Status and Action Buttons -->
@@ -431,18 +441,6 @@
                       <span class="ms-2 badge badge-light-info">
                         {{ 'INSIGHTER.MEETINGS.RATE' | translate }}: {{ meeting.rate | currency }}
                       </span>
-                    }
-
-                    <!-- Archive Button for Past Meetings -->
-                    @if (myMeetingsSubTab === 'past' && !sentShowArchivedMeetings()) {
-                   <button class="btn btn-xs btn-light-warning d-flex align-items-center px-2 py-1"
-                              (click)="archiveSentMeeting(meeting)"
-                              [disabled]="actionLoading()"
-                              [pTooltip]="'Archive Meeting'"
-                              tooltipPosition="top"
-                              aria-label="Archive Meeting">
-                        <i class="pi pi-inbox" style="font-size: 1rem; padding: 0;"></i>
-                      </button>
                     }
                   </div>
 

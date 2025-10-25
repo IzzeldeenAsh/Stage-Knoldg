@@ -7,6 +7,7 @@ import { DeactivateDialogComponent } from '../deactivate-dialog/deactivate-dialo
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
 import { TransferDialogComponent } from '../transfer-dialog/transfer-dialog.component';
 import { UserRequest, UserRequestsService } from 'src/app/_fake/services/user-requests/user-requests.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-general-settings',
@@ -21,7 +22,7 @@ export class GeneralSettingsComponent extends BaseComponent implements OnInit {
   isPrimaryKey: boolean = false;
   ref: DynamicDialogRef | undefined;
   hasPendingDeactivationRequest: boolean = false;
-
+  isClient$:Observable<boolean>;
   constructor(
     injector: Injector,
     private getProfileService: ProfileService,
@@ -35,6 +36,7 @@ export class GeneralSettingsComponent extends BaseComponent implements OnInit {
   ngOnInit(): void {
     this.getProfile();
     this.checkPendingRequests();
+    this.isClient$=this.getProfileService.isClient()
   }
 
   getProfile() {
@@ -43,6 +45,7 @@ export class GeneralSettingsComponent extends BaseComponent implements OnInit {
         (profile: IKnoldgProfile) => {
           this.profile = profile;
           this.roles = profile.roles;
+          
           switch (true) {
             case this.hasRole(['insighter']):
               this.isActive = profile.insighter_status === "active";
