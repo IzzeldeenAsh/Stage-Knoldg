@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, inject, DestroyRef, signal, computed } from '@angular/core';
-import { Subject, take, takeUntil, forkJoin } from 'rxjs';
+import { Subject, take, takeUntil, forkJoin, Observable } from 'rxjs';
 import { MeetingsService, Meeting, MeetingResponse, ClientMeetingStatistics } from '../../../../_fake/services/meetings/meetings.service';
 import { SentMeetingsService, SentMeeting, SentMeetingResponse, AvailableHoursResponse, AvailableDay, AvailableTime, RescheduleRequest, MeetingStatistics } from '../../../../_fake/services/meetings/sent-meetings.service';
 import { Router } from '@angular/router';
@@ -12,6 +12,7 @@ import { TruncateTextPipe } from 'src/app/pipes/truncate-pipe/truncate-text.pipe
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslationModule } from 'src/app/modules/i18n';
 import { BaseComponent } from 'src/app/modules/base.component';
+import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 type TabType = 'pending' | 'approved' | 'postponed' | 'upcoming' | 'past' | 'coming';
 @Component({
   selector: 'app-my-meetings',
@@ -35,6 +36,9 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
   activeTab: 'client-meetings' | 'my-meetings' = 'client-meetings';
   clientMeetingsSubTab: 'coming' | 'past' = 'coming';
   myMeetingsSubTab: 'coming' | 'past' = 'coming';
+
+  // Role observables
+  isClient$: Observable<boolean>;
 
   // Client meetings (my-meetings) state
   meetings = signal<Meeting[]>([]);
@@ -108,6 +112,7 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
 
   private meetingsService= inject(MeetingsService);
   private sentMeetingsService = inject(SentMeetingsService);
+  private profileService = inject(ProfileService);
   private router=inject(Router);
   private destroyRef = inject(DestroyRef);
 
@@ -115,8 +120,26 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
 
   ngOnInit(): void {
     this.updateCurrentMonthName();
+
+    // Initialize role observables
+    this.isClient$ = this.profileService.isClient();
+
+    // Set default tab based on user role
+    this.isClient$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(isClient => {
+      if (isClient) {
+        this.activeTab = 'my-meetings';
+      }
+    });
+
     this.loadCurrentTabData();
-    this.loadClientMeetingStatistics();
+
+    // Only load client meeting statistics if user is not a client
+    this.isClient$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(isClient => {
+      if (!isClient) {
+        this.loadClientMeetingStatistics();
+      }
+    });
+
     this.loadSentMeetingStatistics();
 
     // Subscribe to loading states
@@ -130,15 +153,22 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
   }
 
   setActiveTab(tab: 'client-meetings' | 'my-meetings'): void {
-    this.activeTab = tab;
-    if (tab === 'client-meetings') {
-      this.selectedTab.set(this.clientMeetingsSubTab);
-    } else {
-      this.selectedTab.set(this.myMeetingsSubTab);
-    }
-    this.showArchivedMeetings.set(false);
-    this.sentShowArchivedMeetings.set(false);
-    this.loadCurrentTabData();
+    // Prevent clients from accessing client-meetings tab
+    this.isClient$.pipe(take(1)).subscribe(isClient => {
+      if (isClient && tab === 'client-meetings') {
+        return; // Don't allow clients to switch to client-meetings
+      }
+
+      this.activeTab = tab;
+      if (tab === 'client-meetings') {
+        this.selectedTab.set(this.clientMeetingsSubTab);
+      } else {
+        this.selectedTab.set(this.myMeetingsSubTab);
+      }
+      this.showArchivedMeetings.set(false);
+      this.sentShowArchivedMeetings.set(false);
+      this.loadCurrentTabData();
+    });
   }
 
   setClientMeetingsSubTab(tab: 'coming' | 'past'): void {
@@ -512,8 +542,14 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
   private reloadMeetingsAfterAction(): void {
     // Reload meetings for the current page
     this.loadMeetings(this.currentPage());
-    // Reload client meeting statistics to update archived count
-    this.loadClientMeetingStatistics();
+
+    // Reload client meeting statistics only if user is not a client
+    this.isClient$.pipe(take(1)).subscribe(isClient => {
+      if (!isClient) {
+        this.loadClientMeetingStatistics();
+      }
+    });
+
     // After loading, check if the current page is empty and not the first page
     setTimeout(() => {
       if (this.getFilteredMeetings().length === 0 && this.currentPage() > 1) {

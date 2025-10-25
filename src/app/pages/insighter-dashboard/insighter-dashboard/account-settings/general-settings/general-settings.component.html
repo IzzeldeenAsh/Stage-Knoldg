@@ -72,7 +72,7 @@
 
 
     <!-- Delete Account Section -->
-    <div class="delete-section border-1 border-light-danger w-100 bg-white" *ngIf="(!hasRole(['company-insighter']) )">
+    <div class="delete-section border-1 border-light-danger w-100 bg-white" *ngIf="(!hasRole(['company-insighter']) && !(isClient$ | async) )">
         <div class="p-24px">
             <div class="fs-2 fw-bolder mb-2">{{ 'DEACTIVATE_ACCOUNT_WITH_DELETE.TITLE' | translate }}</div>
             
