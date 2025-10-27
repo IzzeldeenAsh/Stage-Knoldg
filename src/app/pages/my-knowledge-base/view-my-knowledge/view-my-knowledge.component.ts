@@ -646,35 +646,152 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
     const description = this.getSocialShareDescription();
     const image = this.getSocialShareImage();
     const url = this.getShareableLink();
+    const author = 'Knoldg Expert';
+    const publishedDate = this.knowledge.published_at;
 
-    // Update page title
-    this.titleService.setTitle(title);
+    // Update page title with SEO optimization
+    this.titleService.setTitle(`${title} | Knoldg.com - Professional Knowledge Sharing Platform`);
 
-    // Open Graph meta tags
+    // Enhanced meta description
+    const enhancedDescription = this.knowledge.description
+      ? `${this.knowledge.description.substring(0, 155)}...`
+      : description;
+
+    // Open Graph meta tags (Facebook, LinkedIn)
     this.meta.updateTag({ property: 'og:title', content: title });
-    this.meta.updateTag({ property: 'og:description', content: description });
+    this.meta.updateTag({ property: 'og:description', content: enhancedDescription });
     this.meta.updateTag({ property: 'og:image', content: image });
+    this.meta.updateTag({ property: 'og:image:width', content: '1200' });
+    this.meta.updateTag({ property: 'og:image:height', content: '630' });
+    this.meta.updateTag({ property: 'og:image:alt', content: `${title} - Professional Knowledge on Knoldg.com` });
     this.meta.updateTag({ property: 'og:url', content: url });
     this.meta.updateTag({ property: 'og:type', content: 'article' });
     this.meta.updateTag({ property: 'og:site_name', content: 'Knoldg.com' });
+    this.meta.updateTag({ property: 'og:locale', content: this.lang === 'ar' ? 'ar_AR' : 'en_US' });
 
     // Twitter Card meta tags
     this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
     this.meta.updateTag({ name: 'twitter:title', content: title });
-    this.meta.updateTag({ name: 'twitter:description', content: description });
+    this.meta.updateTag({ name: 'twitter:description', content: enhancedDescription });
     this.meta.updateTag({ name: 'twitter:image', content: image });
+    this.meta.updateTag({ name: 'twitter:image:alt', content: `${title} - Professional Knowledge on Knoldg.com` });
     this.meta.updateTag({ name: 'twitter:site', content: '@knoldg' });
+    this.meta.updateTag({ name: 'twitter:creator', content: '@knoldg' });
 
-    // LinkedIn meta tags
-    this.meta.updateTag({ property: 'article:author', content: 'Knoldg.com' });
+    // Article meta tags for SEO
+    this.meta.updateTag({ property: 'article:author', content: author });
     this.meta.updateTag({ property: 'article:publisher', content: 'Knoldg.com' });
+    if (publishedDate) {
+      this.meta.updateTag({ property: 'article:published_time', content: publishedDate });
+    }
+    // Note: updated_at not available in Knowledge interface
+    if (this.knowledge.tags && this.knowledge.tags.length > 0) {
+      this.knowledge.tags.forEach(tag => {
+        const tagName = typeof tag === 'string' ? tag : tag.name;
+        this.meta.updateTag({ property: 'article:tag', content: tagName });
+      });
+    }
 
-    // General meta tags
-    this.meta.updateTag({ name: 'description', content: description });
-    const keywords = Array.isArray(this.knowledge.keywords)
-      ? this.knowledge.keywords.join(', ')
-      : this.knowledge.keywords || 'knowledge, insights, business';
+    // General SEO meta tags
+    this.meta.updateTag({ name: 'description', content: enhancedDescription });
+    this.meta.updateTag({ name: 'author', content: author });
+    this.meta.updateTag({ name: 'robots', content: 'index, follow, max-image-preview:large' });
+
+    // Canonical URL
+    this.addCanonicalUrl(url);
+
+    // Keywords optimization
+    let keywords = 'knowledge, insights, business, professional development, expertise';
+    if (this.knowledge.keywords) {
+      const knowledgeKeywords = Array.isArray(this.knowledge.keywords)
+        ? this.knowledge.keywords.join(', ')
+        : this.knowledge.keywords;
+      keywords = `${knowledgeKeywords}, ${keywords}`;
+    }
+    if (this.knowledge.industry?.name) {
+      keywords += `, ${this.knowledge.industry.name}`;
+    }
+    if (this.knowledge.type) {
+      keywords += `, ${this.knowledge.type}`;
+    }
     this.meta.updateTag({ name: 'keywords', content: keywords });
+
+    // Schema.org structured data
+    this.addStructuredData();
+  }
+
+  private addStructuredData(): void {
+    if (!this.knowledge) return;
+
+    const structuredData: any = {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": this.knowledge.title,
+      "description": this.knowledge.description || this.getSocialShareDescription(),
+      "image": this.getSocialShareImage(),
+      "url": this.getShareableLink(),
+      "datePublished": this.knowledge.published_at,
+      "dateModified": this.knowledge.published_at,
+      "author": {
+        "@type": "Person",
+        "name": "Knoldg Expert"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Knoldg.com",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://knoldg.com/assets/logo.png"
+        }
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": this.getShareableLink()
+      }
+    };
+
+    // Add industry if available
+    if (this.knowledge.industry?.name) {
+      structuredData["about"] = {
+        "@type": "Thing",
+        "name": this.knowledge.industry.name
+      };
+    }
+
+    // Add keywords if available
+    if (this.knowledge.keywords) {
+      const keywords = Array.isArray(this.knowledge.keywords)
+        ? this.knowledge.keywords
+        : [this.knowledge.keywords];
+      structuredData["keywords"] = keywords.join(', ');
+    }
+
+    // Remove existing structured data script if it exists
+    const existingScript = document.querySelector('script[type="application/ld+json"][data-knowledge-schema]');
+    if (existingScript) {
+      existingScript.remove();
+    }
+
+    // Add new structured data script
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.setAttribute('data-knowledge-schema', 'true');
+    script.textContent = JSON.stringify(structuredData);
+    document.head.appendChild(script);
+  }
+
+  private addCanonicalUrl(url: string): void {
+    // Remove existing canonical link if it exists
+    const existingCanonical = document.querySelector('link[rel="canonical"]');
+    if (existingCanonical) {
+      existingCanonical.remove();
+    }
+
+    // Add new canonical link
+    const canonicalLink = document.createElement('link');
+    canonicalLink.setAttribute('rel', 'canonical');
+    canonicalLink.setAttribute('href', url);
+    document.head.appendChild(canonicalLink);
   }
 
 }
