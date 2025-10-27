@@ -1,41 +1,47 @@
-<div class="py-1 bg-white rounded-2">
-  <div class="card-header p-5">
-    <!-- Primary Tabs -->
-    <div class="filter-tabs-orders">
-      <div class="nav nav-pills nav-pills-custom">
-        <a
-          class="nav-link"
-          role="button"
+<!-- Page Header with Tabs -->
+<app-page-header
+  [titleEn]="'Sales'"
+  [titleAr]="'المبيعات'"
+  [lang]="lang"
+  [subtitle]="getSalesSubtitle()"
+  [showTabs]="true">
+
+  <!-- Icon slot -->
+  <i slot="icon" class="ki-duotone ki-chart-line fs-2x text-info">
+     <span class="path1"></span>
+ <span class="path2"></span>
+ <span class="path3"></span>
+  </i>
+
+  <!-- Tabs slot -->
+  <div slot="tabs">
+    <ul class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-semibold flex-nowrap">
+      <li class="nav-item">
+        <a class="nav-link text-active-primary pb-4"
           [class.active]="activeTab === 'analytics'"
           (click)="setActiveTab('analytics')">
-          <span class="nav-svg me-2">
-            <i class="ki-outline ki-chart-line"></i>
-          </span>
           {{ lang === 'ar' ? 'التحليلات والمخططات' : 'Analytics & Charts' }}
         </a>
-        <a
-          class="nav-link"
-          role="button"
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-active-primary pb-4"
           [class.active]="activeTab === 'sold-details'"
           (click)="setActiveTab('sold-details')">
-          <span class="nav-svg me-2">
-            <i class="ki-outline ki-book-open"></i>
-          </span>
           {{ lang === 'ar' ? 'تفاصيل المعارف المباعة' : 'Sold Knowledge Details' }}
         </a>
-        <a
-          class="nav-link"
-          role="button"
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-active-primary pb-4"
           [class.active]="activeTab === 'sold-meetings'"
           (click)="setActiveTab('sold-meetings')">
-          <span class="nav-svg me-2">
-            <i class="ki-outline ki-calendar"></i>
-          </span>
           {{ lang === 'ar' ? 'تفاصيل الاجتماعات المباعة' : 'Sold Meeting Details' }}
         </a>
-      </div>
-    </div>
+      </li>
+    </ul>
   </div>
+</app-page-header>
+
+<div class="py-1 bg-white rounded-2">
 
   <div class="tab-content">
   <ng-container *ngIf="activeTab === 'analytics'">

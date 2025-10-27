@@ -412,3 +412,13 @@
     text-align: center;
   }
 }
+
+// Profile photo circular styling
+.symbol {
+  .symbol-label {
+    border-radius: 50% !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+  }
+}

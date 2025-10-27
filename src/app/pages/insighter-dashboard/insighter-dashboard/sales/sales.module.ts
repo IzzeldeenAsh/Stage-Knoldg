@@ -15,6 +15,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { DialogModule } from 'primeng/dialog';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from '../../../../shared/shared.module';
+import { InsighterDashboardSharedModule } from '../shared/shared.module';
 
 const routes: Routes = [
   {
@@ -42,7 +43,8 @@ const routes: Routes = [
     DropdownModule,
     DialogModule,
     FormsModule,
-    SharedModule
+    SharedModule,
+    InsighterDashboardSharedModule
   ]
 })
 export class SalesModule { }

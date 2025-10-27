@@ -15,6 +15,7 @@ import { SchedulePublishDialogComponent } from "./schedule-publish-dialog/schedu
 import Swal from 'sweetalert2';
 import { KnowledgeUpdateService } from "src/app/_fake/services/knowledge/knowledge-update.service";
 import { UserRequestsService, UserRequest } from "src/app/_fake/services/user-requests/user-requests.service";
+import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: "app-view-my-knowledge",
@@ -35,6 +36,8 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
   isResendReviewDialogVisible: boolean = false;
   reviewComments: string = "";
   showAllMarkets: boolean = false;
+  isSocialShareModalVisible: boolean = false;
+  customShareMessage: string = "";
   private hasShownLanguageMismatchToast: boolean = false;
 
   // Request conversation properties
@@ -52,7 +55,9 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
     private addInsightStepsService: AddInsightStepsService,
     private dialogService: DialogService,
     private profileService: ProfileService,
-    private userRequestsService: UserRequestsService
+    private userRequestsService: UserRequestsService,
+    private meta: Meta,
+    private titleService: Title
   ) {
     super(injector);
   }
@@ -153,9 +158,12 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
         this.knowledge = response.knowledge.data;
         this.documents = response.documents;
         this.isLoading = false;
-        
+
+        // Update meta tags for social sharing
+        this.updateSocialMetaTags();
+
         // Check for language mismatch after knowledge is loaded
-    
+
       },
       error: (error) => {
         this.handleServerErrors(error);
@@ -482,19 +490,30 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
     this.linkCopied = false;
   }
 
+  openSocialShareModal(): void {
+    this.isSocialShareModalVisible = true;
+    this.customShareMessage = this.getDefaultShareMessage();
+    this.linkCopied = false;
+  }
+
+  closeSocialShareModal(): void {
+    this.isSocialShareModalVisible = false;
+  }
+
   getSocialShareLink(platform: string): string {
     const shareUrl = this.getShareableLink();
-    const title = encodeURIComponent(this.knowledge.title || 'Check out this knowledge');
-    
+    const title = this.getSocialShareTitle();
+    const description = `Thought you might enjoy this on Knoldg.com: ${this.knowledge.type || 'Knowledge'} - ${this.knowledge.title || 'Check out this knowledge'}`;
+
     switch(platform) {
       case 'facebook':
-        return `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+        return `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(description)}`;
       case 'twitter':
-        return `https://twitter.com/intent/tweet?text=${title}&url=${encodeURIComponent(shareUrl)}`;
+        return `https://twitter.com/intent/tweet?text=${encodeURIComponent(description)}&url=${encodeURIComponent(shareUrl)}`;
       case 'linkedin':
-        return `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
+        return `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(title)}&summary=${encodeURIComponent(description)}`;
       case 'whatsapp':
-        return `https://api.whatsapp.com/send?text=${title}%20${encodeURIComponent(shareUrl)}`;
+        return `https://api.whatsapp.com/send?text=${encodeURIComponent(description)}%20${encodeURIComponent(shareUrl)}`;
       default:
         return '';
     }
@@ -504,6 +523,56 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
     const knowledgeType = this.knowledge.type?.toLowerCase() || 'insight';
     const slug = this.knowledge.slug || '';
     return `https://knoldg.com/en/knowledge/${knowledgeType}/${slug}`;
+  }
+
+  getSocialShareTitle(): string {
+    const knowledgeType = this.knowledge.type ? this.knowledge.type.charAt(0).toUpperCase() + this.knowledge.type.slice(1) : 'Knowledge';
+    const title = this.knowledge.title || 'Amazing Knowledge';
+    return `${knowledgeType} - ${title}`;
+  }
+
+  getSocialShareImage(): string {
+    return 'https://res.cloudinary.com/dsiku9ipv/image/upload/v1761457481/socil-media-share-bg_cgurrb.webp';
+  }
+
+  getSocialShareDescription(): string {
+    if (this.lang === 'ar') {
+      return `اعتقدت أنك قد تستمتع بهذا على Knoldg.com: ${this.getSocialShareTitle()}`;
+    }
+    return `Thought you might enjoy this on Knoldg.com: ${this.getSocialShareTitle()}`;
+  }
+
+  getDefaultShareMessage(): string {
+    if (this.lang === 'ar') {
+      return `اعتقدت أنك قد تستمتع بهذا على Knoldg.com: ${this.knowledge.type || 'معرفة'} - ${this.knowledge.title || 'تحقق من هذه المعرفة'}`;
+    }
+    return `Thought you might enjoy this on Knoldg.com: ${this.knowledge.type || 'Knowledge'} - ${this.knowledge.title || 'Check out this knowledge'}`;
+  }
+
+
+  shareToSocial(platform: string): void {
+    const shareUrl = this.getSocialShareLinkWithCustomMessage(platform);
+    window.open(shareUrl, '_blank', 'width=600,height=400');
+    this.closeSocialShareModal();
+  }
+
+  getSocialShareLinkWithCustomMessage(platform: string): string {
+    const shareUrl = this.getShareableLink();
+    const message = this.customShareMessage || this.getDefaultShareMessage();
+    const title = this.getSocialShareTitle();
+
+    switch(platform) {
+      case 'facebook':
+        return `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(message)}`;
+      case 'twitter':
+        return `https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}&url=${encodeURIComponent(shareUrl)}`;
+      case 'linkedin':
+        return `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(title)}&summary=${encodeURIComponent(message)}`;
+      case 'whatsapp':
+        return `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}%20${encodeURIComponent(shareUrl)}`;
+      default:
+        return '';
+    }
   }
 
   copyLink(inputElement: HTMLInputElement): void {
@@ -569,5 +638,43 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
   /**
    * Check if knowledge language matches current locale and show toast if different
    */
+
+  private updateSocialMetaTags(): void {
+    if (!this.knowledge) return;
+
+    const title = this.getSocialShareTitle();
+    const description = this.getSocialShareDescription();
+    const image = this.getSocialShareImage();
+    const url = this.getShareableLink();
+
+    // Update page title
+    this.titleService.setTitle(title);
+
+    // Open Graph meta tags
+    this.meta.updateTag({ property: 'og:title', content: title });
+    this.meta.updateTag({ property: 'og:description', content: description });
+    this.meta.updateTag({ property: 'og:image', content: image });
+    this.meta.updateTag({ property: 'og:url', content: url });
+    this.meta.updateTag({ property: 'og:type', content: 'article' });
+    this.meta.updateTag({ property: 'og:site_name', content: 'Knoldg.com' });
+
+    // Twitter Card meta tags
+    this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
+    this.meta.updateTag({ name: 'twitter:title', content: title });
+    this.meta.updateTag({ name: 'twitter:description', content: description });
+    this.meta.updateTag({ name: 'twitter:image', content: image });
+    this.meta.updateTag({ name: 'twitter:site', content: '@knoldg' });
+
+    // LinkedIn meta tags
+    this.meta.updateTag({ property: 'article:author', content: 'Knoldg.com' });
+    this.meta.updateTag({ property: 'article:publisher', content: 'Knoldg.com' });
+
+    // General meta tags
+    this.meta.updateTag({ name: 'description', content: description });
+    const keywords = Array.isArray(this.knowledge.keywords)
+      ? this.knowledge.keywords.join(', ')
+      : this.knowledge.keywords || 'knowledge, insights, business';
+    this.meta.updateTag({ name: 'keywords', content: keywords });
+  }
 
 }

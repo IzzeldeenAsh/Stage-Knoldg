@@ -49,6 +49,27 @@ export class SettingsTabsComponent extends BaseComponent implements OnInit, OnDe
     super.ngOnDestroy();
   }
 
+  getSettingsSubtitle(): string {
+    switch (this.activeTab) {
+      case 'general-settings':
+        return this.lang === 'ar' ?
+          'إدارة المعلومات الشخصية وإعدادات الحساب.' :
+          'Manage personal information and account settings.';
+      case 'payment-settings':
+        return this.lang === 'ar' ?
+          'تكوين طرق الدفع وإعدادات الفوترة.' :
+          'Configure payment methods and billing settings.';
+      case 'consulting-schedule':
+        return this.lang === 'ar' ?
+          'إدارة جدولة الاستشارات وأوقات التوفر.' :
+          'Manage consultation scheduling and availability.';
+      default:
+        return this.lang === 'ar' ?
+          'إدارة إعدادات الحساب والتفضيلات.' :
+          'Manage account settings and preferences.';
+    }
+  }
+
   private updateActiveTabFromRoute(url: string): void {
     if (url.includes('general-settings')) {
       this.activeTab = 'general-settings';

@@ -215,6 +215,12 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
   }
 
 
+  getOrdersSubtitle(): string {
+    // We can use the observable data to show order counts or just return empty for now
+    // This method will be called whenever the component updates
+    return this.lang === 'ar' ? 'عرض طلباتك' : 'View your orders';
+  }
+
   private handleServerErrors(error: any) {
     if (error.error && error.error.errors) {
       const serverErrors = error.error.errors;

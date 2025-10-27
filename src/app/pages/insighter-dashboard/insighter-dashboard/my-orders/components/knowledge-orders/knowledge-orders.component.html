@@ -47,6 +47,26 @@
                   </h6>
                   <i    (click)="copyOrder(order.order_no)" class="ki-outline ki-copy fs-6 cursor-pointer"></i>
                 </div>
+                <!-- Insighter Information -->
+                <div class="d-flex align-items-center mb-1" *ngIf="order.orderable?.insighter">
+                  <div class="symbol symbol-25px me-2">
+                    <img *ngIf="order.orderable?.insighter?.profile_photo_url"
+                         [src]="order.orderable?.insighter?.profile_photo_url"
+                         [alt]="order.orderable?.insighter?.name"
+                         class="symbol-label rounded-circle"
+                         style="object-fit: cover; object-position: top;">
+                    <div *ngIf="!order.orderable?.insighter?.profile_photo_url"
+                         class="symbol-label bg-light-info rounded-circle d-flex align-items-center justify-content-center">
+                      <span class="text-info fw-bold fs-8">
+                        {{ (order.orderable?.insighter?.first_name?.charAt(0) || '') + (order.orderable?.insighter?.last_name?.charAt(0) || '') }}
+                      </span>
+                    </div>
+                  </div>
+                  <span class="text-muted fs-7">{{ order.orderable?.insighter?.name || 'Unknown' }}</span>
+                  <span class="badge badge-light-success ms-2 mb-0">
+                    {{ lang === 'ar' ? 'خبير' : 'Insighter' }}
+                  </span>
+                </div>
               </div>
             </div>
             <div class="d-flex gap-2">

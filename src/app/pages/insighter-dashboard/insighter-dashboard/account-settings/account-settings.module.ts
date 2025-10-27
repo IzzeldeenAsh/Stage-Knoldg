@@ -30,6 +30,7 @@ import { CountryDropdownComponent } from 'src/app/reusable-components/country-dr
 import { PaymentSettingsComponent } from './payment-settings/payment-settings.component';
 import { SettingsTabsComponent } from './settings-tabs/settings-tabs.component';
 import { ConsultingScheduleComponent } from './consulting-schedule.component';
+import { InsighterDashboardSharedModule } from '../shared/shared.module';
 
 const routes: Routes = [
   {
@@ -97,6 +98,7 @@ const routes: Routes = [
     TruncateTextPipe,
     DropdownModule,
     CountryDropdownComponent,
+    InsighterDashboardSharedModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

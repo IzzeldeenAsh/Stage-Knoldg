@@ -226,6 +226,7 @@
                 <img *ngIf="attempt.user.profile_photo_url" 
                      [src]="attempt.user.profile_photo_url" 
                      [alt]="attempt.user.name"
+                         style="object-fit: cover; object-position: top;"
                      class="user-avatar">
                 <div class="user-info">
                   <span class="user-name">{{ attempt.user.name }}</span>

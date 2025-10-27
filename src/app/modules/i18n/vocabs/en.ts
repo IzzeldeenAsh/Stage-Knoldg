@@ -958,7 +958,7 @@ Your wealth of knowledge is valued and many are eager to learn from it.
         "MEETINGS-CLIENT": "Meetings",
         "INVITING": "Inviting",
         "MY_DOWNLOADS": "My Downloads",
-        "MY_ORDERS": "My Orders",
+        "MY_ORDERS": "My Purchases",
         "READ_LATER": "Bookmarks",
         "MY_MEETINGS": "My Meetings",
         "MY_CONSULTING_SCHEDULE": "Meeting Settings",
@@ -1567,7 +1567,7 @@ UPLOAD: 'Upload',
       }
     },
     "MY_ORDERS": {
-      "TITLE": "My Orders",
+      "TITLE": "My Purchases",
       "ORDERS": "orders",
       "EMPTY_TITLE": "No Orders Found",
       "EMPTY_MESSAGE": "You haven't placed any orders yet.",

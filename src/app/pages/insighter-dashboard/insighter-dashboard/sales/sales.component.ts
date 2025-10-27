@@ -1050,6 +1050,13 @@ export class SalesComponent extends BaseComponent implements OnInit, OnDestroy, 
     }
   }
 
+  getSalesSubtitle(): string {
+    if (this.totalStatistics) {
+      return this.lang === 'ar' ? 'تحليل أداء المبيعات' : 'Sales performance analytics';
+    }
+    return this.lang === 'ar' ? 'تحليل أداء المبيعات' : 'Sales performance analytics';
+  }
+
   exportMeetingToExcel(): void {
     if (!this.totalStatistics?.meeting_booking_order_statistics?.company_insighter_orders_statistics) {
       this.showWarn(

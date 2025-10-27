@@ -25,7 +25,7 @@
       <div class="card card-custom gutter-b">
         <div class="card-body p-6">
           <!-- Order Header -->
-          <div class="d-flex justify-content-between align-items-start mb-6">
+          <div class="d-flex justify-content-between align-items-start mb-8">
             <div class="d-flex align-items-center">
               <div class="symbol symbol-40px me-3">
                 <div class="symbol-label bg-light-info">
@@ -57,7 +57,7 @@
                          [src]="order.orderable.insighter.profile_photo_url"
                          [alt]="order.orderable.insighter.name"
                          class="symbol-label rounded-circle"
-                         style="object-fit: cover;">
+                         style="object-fit: cover; object-position: top;">
                     <div *ngIf="!order.orderable.insighter.profile_photo_url"
                          class="symbol-label bg-light-info rounded-circle d-flex align-items-center justify-content-center">
                       <span class="text-info fw-bold fs-8">
@@ -98,43 +98,43 @@
           </div>
 
           <!-- Knowledge Items -->
-          <div *ngIf="order.orderable" class="mb-3">
-            <div *ngFor="let knowledge of order.orderable.knowledge" class="mb-2">
-              <div class="d-flex align-items-center">
-                <div>
+          <div *ngIf="order.orderable" class="mb-5">
+            <div *ngFor="let knowledge of order.orderable.knowledge" class="mb-4">
+              <div class="d-flex align-items-center ">
+                <div >
                   <a
-                    [pTooltip]="lang ==='ar' ? 'عرض في التحميلات' : 'View in downloads'"
-                    (click)="openDownloads(order)"
+                  [pTooltip]="lang ==='ar' ? 'عرض في التحميلات' : 'View in downloads'"
+                  (click)="openDownloads(order)"
                     target="_blank"
                     class="text-info text-decoration-none fw-bold fs-6 cursor-pointer">
                     {{ knowledge.title }}
                   </a>
                 </div>
               </div>
-            </div>
-          </div>
 
-          <!-- Documents Preview -->
-          <div *ngIf="order.orderable.knowledge_documents && order.orderable.knowledge_documents.length > 0" class="mt-2">
-            <div class="d-flex flex-wrap pt-2 gap-2">
-              <div *ngFor="let extension of utils.getUniqueExtensions(order.orderable)" class="position-relative d-inline-block">
-                <img
-                  [src]="utils.getFileIconByExtension(extension)"
-                  [alt]="extension"
-                  class="file-icon"
-                  style="width: 40px; height: 40px;"
-                  onerror="this.style.display='none'">
-                <span
-                  class="position-absolute top-0 start-75 translate-middle badge rounded-pill text-white"
-                  [style.background-color]="utils.getBadgeColorByExtension(extension)">
-                  {{ utils.getDocumentCountByExtension(order.orderable, extension) }}
-                </span>
+              <!-- Documents Preview -->
+              <div *ngIf="order.orderable.knowledge_documents && order.orderable.knowledge_documents.length > 0" class="mt-4">
+                <div class="d-flex flex-wrap pt-3 gap-4">
+                  <div *ngFor="let extension of utils.getUniqueExtensions(order.orderable)" class="position-relative d-inline-block">
+                    <img
+                      [src]="utils.getFileIconByExtension(extension)"
+                      [alt]="extension"
+                      class="file-icon"
+                      style="width: 40px; height: 40px;"
+                      onerror="this.style.display='none'">
+                    <span
+                      class="position-absolute top-0 start-75 translate-middle badge rounded-pill text-white"
+                      [style.background-color]="utils.getBadgeColorByExtension(extension)">
+                      {{ utils.getDocumentCountByExtension(order.orderable, extension) }}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
           <!-- Order Date and Amount -->
-          <div class="border-top pt-3 mt-3">
+          <div class="border-top pt-4 mt-5">
             <div class="d-flex justify-content-between align-items-center">
               <div class="text-muted fs-7">
                 {{ lang === 'ar' ? 'تاريخ الطلب' : 'Ordered' }} {{ order.date | date:'short' }}

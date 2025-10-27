@@ -2,6 +2,7 @@ import { Component, Injector, OnInit, OnDestroy } from '@angular/core';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { BreadcrumbItem, StatisticCard } from 'src/app/reusable-components/dashboard-statistics/dashboard-statistics.component';
 import { OrderStatisticsService } from '../../my-orders/order-statistics.service';
+import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 
 @Component({
   selector: 'app-my-orders-statistics',
@@ -10,21 +11,31 @@ import { OrderStatisticsService } from '../../my-orders/order-statistics.service
 })
 export class MyOrdersStatisticsComponent extends BaseComponent implements OnInit, OnDestroy {
   breadcrumbs: BreadcrumbItem[] = [
-    { label: 'Dashboard', translationKey: 'DASHBOARD' },
     { label: 'My Orders', translationKey: 'INSIGHTER.DASHBOARD.NAV.MY_ORDERS' }
   ];
-
+  isClient: boolean = false;
   statisticCards: StatisticCard[] = [];
 
   constructor(
     injector: Injector,
-    private orderStatisticsService: OrderStatisticsService
+    private orderStatisticsService: OrderStatisticsService,
+    private getprofile:ProfileService
   ) {
     super(injector);
   }
 
   ngOnInit(): void {
-    this.loadStatistics();
+     this.getprofile.isClient().subscribe({
+      next: (response) => {
+        this.isClient = response;
+      },
+      error: (error) => {
+        console.error('Error getting user profile:', error);
+      }
+    });
+   if( !this.isClient){
+     this.loadStatistics();
+   }
   }
 
   private loadStatistics(): void {

@@ -1,3 +1,17 @@
+<!-- Page Header -->
+<app-page-header
+  [titleEn]="'Bookmarks'"
+  [titleAr]="'قائمة المعاينات'"
+  [subtitle]="getReadLaterSubtitle()"
+  [lang]="lang">
+  <div slot="icon">
+    <i class="ki-duotone ki-bookmark fs-2x text-info">
+ <span class="path1"></span>
+ <span class="path2"></span>
+</i>
+  </div>
+</app-page-header>
+
 @if (isLoading()) {
   <!-- Loading State -->
   <div *ngIf="isLoading()" class="text-center py-10 bg-light rounded mb-5 border border-1 border-light">
@@ -10,21 +24,11 @@
     </div>
 </div>
 }
-@else {  
-  
-<div class="read-later-container">
-  <!-- Header Section -->
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold text-gray-900 mb-0">
-      {{ "INSIGHTER.READ_LATER.TITLE" | translate }}
-    </h2>
-    <div class="text-muted">
-      {{ totalItems() }} {{ "INSIGHTER.READ_LATER.ITEMS" | translate }}
-    </div>
-  </div>
+@else {
 
+<div class="read-later-container">
   <!-- Filters Section -->
-  <div class="border-0 border-1 border-gray-200 my-8">
+  <div class="border-0 border-1 border-gray-200 mb-8">
     <div class="row g-3">
       <!-- Title Search -->
       <div class="col-12 col-md-4">
@@ -311,6 +315,7 @@
                   *ngIf="item.insighter.profile_photo_url"
                   [src]="item.insighter.profile_photo_url"
                   [alt]="item.insighter.name"
+                  style="object-fit: cover; object-position: top;"
                   class="insighter-overlay"
                   onerror="this.style.display='none'"
                 />
@@ -329,6 +334,7 @@
                   [src]="item.insighter.profile_photo_url"
                   [alt]="item.insighter.name"
                   class="insighter-photo"
+                  style="object-fit: cover; object-position: top;"
                   onerror="this.style.display='none'"
                 />
                 <div

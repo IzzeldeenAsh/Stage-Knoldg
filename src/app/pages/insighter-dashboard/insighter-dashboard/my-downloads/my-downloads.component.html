@@ -1,6 +1,19 @@
 
+<!-- Page Header -->
+<app-page-header
+  [titleEn]="'My Downloads'"
+  [titleAr]="'تحميلاتي'"
+  [subtitle]="getDownloadsSubtitle()"
+  [lang]="lang">
+  <div slot="icon">
+    <i class="ki-duotone ki-file-down fs-2x text-info">
+ <span class="path1"></span>
+ <span class="path2"></span>
+</i>
+  </div>
+</app-page-header>
 
-@if (loading()) { 
+@if (loading()) {
   <div *ngIf="loading" class="text-center py-10 bg-light rounded mb-5 border border-1 border-light">
     <div class="my-5">
         <div class="spinner-border text-primary mb-4" role="status" style="width: 3rem; height: 3rem;">

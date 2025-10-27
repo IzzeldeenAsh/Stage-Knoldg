@@ -9,7 +9,6 @@ import { BreadcrumbItem } from 'src/app/reusable-components/dashboard-statistics
 })
 export class ReadLaterStatisticsComponent extends BaseComponent {
   breadcrumbs: BreadcrumbItem[] = [
-    { label: 'Dashboard', translationKey: 'DASHBOARD' },
     { label: 'Read Later', translationKey: 'INSIGHTER.DASHBOARD.NAV.READ_LATER' }
   ];
 

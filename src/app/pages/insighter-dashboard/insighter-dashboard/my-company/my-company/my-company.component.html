@@ -1,3 +1,20 @@
+<!-- Page Header -->
+<app-page-header
+  [titleEn]="'My Team'"
+  [titleAr]="'فريقي'"
+  [lang]="lang"
+  [subtitle]="getCompanySubtitle()"
+  [showTabs]="false">
+
+
+  <i slot="icon" class="ki-duotone ki-profile-user fs-2x text-info">
+ <span class="path1"></span>
+ <span class="path2"></span>
+ <span class="path3"></span>
+ <span class="path4"></span>
+</i>
+</app-page-header>
+
 <!-- Company Management Page -->
 @if(loading) {
   <div *ngIf="loading" class="text-center py-10 bg-light rounded mb-5 border border-1 border-light">
@@ -253,7 +270,8 @@
                        [label]="getUserInitials(insighter.name)"
                        styleClass="bg-light-info fw-bold"
                        shape="circle"
-                       [style]="{'font-size': '1rem', 'height': '45px', 'width': '45px', 'font-weight': 'bold', 'border-radius': '50%', 'min-width': '45px', 'min-height': '45px'}"
+                       [style]="{'font-size': '1rem', 'height': '45px', 'width': '45px', 'font-weight': 'bold', 'border-radius': '50%', 'min-width': '45px', 'min-height': '45px', 'object-fit': 'cover', 'object-position': 'top'}"
+                       
                        *ngIf="!insighter.profile_photo_url && hasValidInitials(insighter.name)">
                      </p-avatar>
                      <div *ngIf="!insighter.profile_photo_url && !hasValidInitials(insighter.name)"

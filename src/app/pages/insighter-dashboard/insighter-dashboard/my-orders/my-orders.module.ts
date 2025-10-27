@@ -14,6 +14,7 @@ import { PaginatorModule } from 'primeng/paginator';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { DropdownModule } from 'primeng/dropdown';
+import { InsighterDashboardSharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { DropdownModule } from 'primeng/dropdown';
     PaginatorModule,
     ButtonModule,
     TooltipModule,
-    DropdownModule
+    DropdownModule,
+    InsighterDashboardSharedModule
   ]
 })
 export class MyOrdersModule { }

@@ -1,4 +1,4 @@
-import { Component, Injector, Input, OnInit } from '@angular/core';
+import { Component, Injector, Input, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormArray, FormGroup, Validators } from '@angular/forms';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { ICreateKnowldege, IDocument } from '../../../create-account.helper';
@@ -26,6 +26,7 @@ interface DocumentInfo {
   originalFileName?: string; // To track if name has changed
   originalPrice?: number;    // To track if price has changed
   table_of_content?: Array<{ chapter: { title: string } }>; // Added to match IDocument
+  language?: string; // Language of the document
 }
 
 @Component({
@@ -76,25 +77,28 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
     injector: Injector,
     private fb: FormBuilder,
     private addInsightStepsService: AddInsightStepsService,
-    private knowledgeService: KnowledgeService
+    private knowledgeService: KnowledgeService,
+    private cdr: ChangeDetectorRef
   ) {
     super(injector);
     this.documentsForm = this.fb.group({
       documents: this.fb.array([])
     });
 
-    // Update total price whenever form d
+    // Update total price whenever form changes
     this.documentsForm.valueChanges.subscribe(() => {
       // Update documents array with latest form values
       this.documentControls.controls.forEach((control, index) => {
         if (this.documents[index]) {
           const price = Number(control.get('price')?.value) || 0;
           const isCharity = control.get('isCharity')?.value || false;
+          // PRESERVE existing properties when updating from form
           this.documents[index] = {
             ...this.documents[index],
             file_name: control.get('file_name')?.value,
             price: price,
             isCharity: isCharity
+            // Don't overwrite id, uploadStatus, language, etc.
           };
         }
       });
@@ -428,7 +432,8 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       uploadProgress: 0,
       errorMessage: '',
       isCharity: false,
-      table_of_content: [] // Initialize empty table_of_content
+      table_of_content: [], // Initialize empty table_of_content
+      language: undefined // Will be set after upload
     };
     
     this.documents.push(localDoc);
@@ -524,7 +529,8 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
           file_size: file.size,
           status: 'active',
           uploadStatus: 'pending',
-          errorMessage: ''
+          errorMessage: '',
+          language: undefined // Will be set after upload
         };
         this.documents[index] = localDoc;
       }
@@ -608,12 +614,16 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
             control.get('uploadProgress')?.setValue(event.progress);
             doc.uploadProgress = event.progress;
           } else if (event.type === 'response' && event.response && event.response.data && event.response.data.knowledge_document_id) {
-            // Store the document ID returned by the API
+            // Store the document ID and language returned by the API
             const docId = event.response.data.knowledge_document_id;
-            console.log(`Upload successful - Document ID received: ${docId}`);
-            
+            const language = (event.response.data as any).language; // Type assertion for language property
+            console.log(`Upload successful - Document ID received: ${docId}, Language: ${language}`);
+            console.log('Full API response:', event.response.data);
+            console.log('Document index being updated:', index);
+
             // Make sure we're using the current document object
             const currentDoc = this.documents[index];
+            console.log('Current document before update:', currentDoc);
             if (!currentDoc) {
               console.error(`Document at index ${index} no longer exists`);
               if (isFromQueue) {
@@ -621,20 +631,34 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
               }
               return;
             }
-            
+
             // Update form control
             control.get('docId')?.setValue(docId);
             control.get('uploadStatus')?.setValue('success');
             control.get('uploadProgress')?.setValue(100);
-            
+
             // Update document object - ensure these changes actually persist
             currentDoc.id = docId;
             currentDoc.uploadStatus = 'success';
             currentDoc.uploadProgress = 100;
+            currentDoc.language = language; // Store the language
+
+            // Update the specific array element to ensure persistence
+            this.documents[index] = { ...currentDoc };
+
             // Force array update to ensure change detection
             this.documents = [...this.documents];
-            
-            console.log(`Document state after update: id=${currentDoc.id}, status=${currentDoc.uploadStatus}`);
+
+            console.log(`Document state after update: id=${currentDoc.id}, status=${currentDoc.uploadStatus}, language=${currentDoc.language}`);
+            console.log('Documents array after update:', this.documents.map(d => ({ name: d.file_name, language: d.language, status: d.uploadStatus })));
+
+            // Force change detection to update the template
+            this.cdr.detectChanges();
+
+            // Debug the language display conditions
+            setTimeout(() => {
+              this.checkLanguageDisplayConditions();
+            }, 100);
            if(this.lang=='ar'){
             this.showSuccess('', 'تم رفع الملف بنجاح');
            }else{
@@ -664,17 +688,42 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
           console.error('File upload error:', error);
 
           let errorMessage = 'Failed to upload file';
+          let detectedLanguage = null;
+
+          // Extract detected language from error response
+          if (error.error && error.error.errors && error.error.errors.language) {
+            detectedLanguage = error.error.errors.language[0]; // Get the first language from array
+          }
+
           if (error.error && error.error.message) {
             // Check for language mismatch error
             if (error.error.message.includes('language mismatch') || error.error.message.toLowerCase().includes('document language')) {
-              errorMessage = 'Document language mismatch: All knowledge documents must use the same language. Please upload documents in a consistent language.';
+              if (detectedLanguage) {
+                errorMessage = `Document language mismatch: Detected "${detectedLanguage}" document, but all knowledge documents must use the same language. Please upload documents in a consistent language.`;
+                // Store the detected language even though upload failed
+                doc.language = detectedLanguage;
+                this.documents[index] = { ...doc };
+                this.documents = [...this.documents];
+                this.cdr.detectChanges();
+              } else {
+                errorMessage = 'Document language mismatch: All knowledge documents must use the same language. Please upload documents in a consistent language.';
+              }
             } else {
               errorMessage += `: ${error.error.message}`;
             }
           } else if (error.message) {
             // Also check the regular error message
             if (error.message.includes('language mismatch') || error.message.toLowerCase().includes('document language')) {
-              errorMessage = 'Document language mismatch: All knowledge documents must use the same language. Please upload documents in a consistent language.';
+              if (detectedLanguage) {
+                errorMessage = `Document language mismatch: Detected "${detectedLanguage}" document, but all knowledge documents must use the same language. Please upload documents in a consistent language.`;
+                // Store the detected language even though upload failed
+                doc.language = detectedLanguage;
+                this.documents[index] = { ...doc };
+                this.documents = [...this.documents];
+                this.cdr.detectChanges();
+              } else {
+                errorMessage = 'Document language mismatch: All knowledge documents must use the same language. Please upload documents in a consistent language.';
+              }
             } else {
               errorMessage += `: ${error.message}`;
             }
@@ -986,7 +1035,8 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
                     isCharity: Number(docInfo.price) === 0,
                     originalFileName: docInfo.file_name || 'Untitled Document',
                     originalPrice: Number(docInfo.price) || 0,
-                    table_of_content: docInfo.table_of_content || [] // Make sure to include table_of_content
+                    table_of_content: docInfo.table_of_content || [], // Make sure to include table_of_content
+                    language: (docInfo as any).language // Include language from server
                   };
                   
                   this.documents.push(serverDoc);
@@ -1047,7 +1097,8 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
         isCharity: isCharity,
         originalFileName: doc.file_name || '',
         originalPrice: Number(doc.price) || 0,
-        table_of_content: doc.table_of_content || [] // Make sure to include table_of_content
+        table_of_content: doc.table_of_content || [], // Make sure to include table_of_content
+        language: doc.language // Include language from input document
       };
       
       this.documents.push(docInfo);
@@ -1290,7 +1341,22 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   logDocumentStatus(): void {
     console.log('Current document statuses:');
     this.documents.forEach((doc, index) => {
-      console.log(`Document ${index}: id=${doc.id}, name=${doc.file_name}, status=${doc.uploadStatus}`);
+      console.log(`Document ${index}: id=${doc.id}, name=${doc.file_name}, status=${doc.uploadStatus}, language=${doc.language}`);
+    });
+  }
+
+  // Debug method to check template conditions
+  checkLanguageDisplayConditions(): void {
+    console.log('=== Language Display Debug ===');
+    this.documents.forEach((doc, index) => {
+      const formControl = this.documentControls.at(index);
+      const hasLanguage = !!doc.language;
+      const isSuccess = formControl?.get('uploadStatus')?.value === 'success';
+
+      console.log(`Document ${index}:`);
+      console.log(`  - Language: ${doc.language} (exists: ${hasLanguage})`);
+      console.log(`  - Upload Status: ${formControl?.get('uploadStatus')?.value} (is success: ${isSuccess})`);
+      console.log(`  - Should show language: ${hasLanguage && isSuccess}`);
     });
   }
 
@@ -1312,7 +1378,8 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       status: 'active',
       isCharity: false,
       originalFileName: fileName,
-      originalPrice: 0
+      originalPrice: 0,
+      language: undefined // Will be set after upload
     };
     
     let docIndex: number;

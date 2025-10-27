@@ -532,7 +532,7 @@
                       <!-- Profile Image or Initials Circle -->
                       <div class="me-3">
                         <div *ngIf="requestUser && requestUser.profile_photo_url" class="symbol symbol-45px w-45px h-45px overflow-hidden">
-                          <img [src]="requestUser.profile_photo_url" alt="Profile" class="w-100">
+                          <img [src]="requestUser.profile_photo_url" alt="Profile" class="w-100".     style="object-fit: cover; object-position: top;">
                         </div>
                         <div *ngIf="requestUser && requestUser.name && !requestUser.profile_photo_url" 
                           class="symbol h-40px w-40px d-flex align-items-center justify-content-center bg-light-info text-info"
@@ -763,7 +763,7 @@
             <div class="p-4">
               <!-- New Social Share Animation Container -->
               <!-- Social Share button with improved RTL support -->
-              <div class="btn-share" >
+              <div class="btn-share" (click)="openSocialShareModal()">
                 <span class="btn-text mx-2">{{ 'SHARE' | translate }}</span>
                 <span class="btn-icon">
                   <svg
@@ -779,40 +779,6 @@
                     ></path>
                   </svg>
                 </span>
-                <ul class="social-icons">
-                  <!-- Facebook -->
-                  <li>
-                    <a [href]="getSocialShareLink('facebook')" target="_blank" aria-label="Share on Facebook">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#ffffff">
-                        <path d="M13.397 20.997v-8.196h2.765l.411-3.209h-3.176V7.548c0-.926.258-1.56 1.587-1.56h1.684V3.127A22.336 22.336 0 0 0 14.201 3c-2.444 0-4.122 1.492-4.122 4.231v2.355H7.332v3.209h2.753v8.202h3.312z"/>
-                      </svg>
-                    </a>
-                  </li>
-                  <!-- Twitter/X -->
-                  <li>
-                    <a [href]="getSocialShareLink('twitter')" target="_blank" aria-label="Share on Twitter">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#ffffff">
-                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                      </svg>
-                    </a>
-                  </li>
-                  <!-- LinkedIn -->
-                  <li>
-                    <a [href]="getSocialShareLink('linkedin')" target="_blank" aria-label="Share on LinkedIn">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#ffffff">
-                        <path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z"/>
-                      </svg>
-                    </a>
-                  </li>
-                  <!-- WhatsApp -->
-                  <li>
-                    <a [href]="getSocialShareLink('whatsapp')" target="_blank" aria-label="Share on WhatsApp">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#ffffff">
-                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
-                      </svg>
-                    </a>
-                  </li>
-                </ul>
               </div>
               
               <!-- Copy Link Button -->
@@ -888,6 +854,93 @@
         <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
         {{ isLoading ? 'Sending...' : 'Send' }}
       </button>
+    </div>
+  </div>
+</p-dialog>
+
+<!-- Social Share Dialog -->
+<p-dialog
+  [(visible)]="isSocialShareModalVisible"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{width: '600px'}"
+  styleClass="p-0"
+  appendTo="body"
+  [showHeader]="false">
+  <div class="modal-content">
+    <!-- Modal header -->
+    <div class="modal-header p-5 border-bottom">
+      <h2 class="fw-bold">{{ lang === 'ar' ? 'مشاركة المعرفة' : 'Share Knowledge' }}</h2>
+      <div class="btn btn-icon btn-sm btn-active-light-info ms-2" (click)="closeSocialShareModal()">
+        <i class="ki-duotone ki-cross fs-2x"><span class="path1"></span><span class="path2"></span></i>
+      </div>
+    </div>
+
+    <!-- Modal body -->
+    <div class="modal-body py-5 px-8">
+      <!-- Custom Message Input -->
+      <div class="mb-4">
+        <label class="form-label fw-bold">{{ lang === 'ar' ? 'رسالة مخصصة' : 'Custom Share Message' }}</label>
+        <textarea
+          class="form-control form-control-solid"
+          [(ngModel)]="customShareMessage"
+          rows="3"
+          [placeholder]="getDefaultShareMessage()">
+        </textarea>
+        <div class="form-text text-muted mt-2">
+          {{ lang === 'ar' ? 'اكتب رسالتك المخصصة لمشاركة هذه المعرفة' : 'Write your custom message to share this knowledge' }}
+        </div>
+      </div>
+
+      <!-- Character Count -->
+      <div class="mb-4">
+        <small class="text-muted">{{ lang === 'ar' ? 'عدد الأحرف' : 'Character Count' }}: {{ customShareMessage.length || 0 }}</small>
+      </div>
+
+      <!-- Social Media Buttons -->
+      <div class="d-flex justify-content-center gap-3 mb-4">
+        <!-- Facebook -->
+        <button class="btn btn-icon btn-primary d-flex align-items-center justify-content-center social-share-btn"
+                (click)="shareToSocial('facebook')"
+                [attr.aria-label]="lang === 'ar' ? 'مشاركة على فيسبوك' : 'Share on Facebook'">
+          <i class="pi pi-facebook" style="font-size: 20px;"></i>
+        </button>
+
+        <!-- Twitter/X -->
+        <button class="btn btn-icon btn-dark d-flex align-items-center justify-content-center social-share-btn"
+                (click)="shareToSocial('twitter')"
+                [attr.aria-label]="lang === 'ar' ? 'مشاركة على تويتر' : 'Share on Twitter'">
+          <i class="pi pi-twitter" style="font-size: 20px;"></i>
+        </button>
+
+        <!-- LinkedIn -->
+        <button class="btn btn-icon btn-info d-flex align-items-center justify-content-center social-share-btn"
+                (click)="shareToSocial('linkedin')"
+                [attr.aria-label]="lang === 'ar' ? 'مشاركة على لينكد إن' : 'Share on LinkedIn'">
+          <i class="pi pi-linkedin" style="font-size: 20px;"></i>
+        </button>
+
+        <!-- WhatsApp -->
+        <button class="btn btn-icon btn-success d-flex align-items-center justify-content-center social-share-btn"
+                (click)="shareToSocial('whatsapp')"
+                [attr.aria-label]="lang === 'ar' ? 'مشاركة على واتساب' : 'Share on WhatsApp'">
+          <i class="pi pi-whatsapp" style="font-size: 20px;"></i>
+        </button>
+      </div>
+
+      <!-- Copy Link Section -->
+      <div class="separator my-5"></div>
+      <div class="text-center">
+        <button class="btn btn-light-info w-100" (click)="copyToClipboard(getShareableLink())">
+          <i class="ki-outline ki-copy fs-4 me-2"></i>
+          {{ 'COPY_LINK' | translate }}
+        </button>
+
+        <div *ngIf="linkCopied" class="text-success text-center mt-2 small">
+          <i class="ki-outline ki-check fs-6 me-1"></i> {{ 'LINK_COPIED' | translate }}
+        </div>
+      </div>
     </div>
   </div>
 </p-dialog>
