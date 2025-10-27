@@ -277,7 +277,7 @@ INSIGHTER_REQUESTS: {
       "MY_COMPANY": "فريقي",
       "INVITING": "جاري الدعوة",
       "MY_DOWNLOADS": "التحميلات",
-      "MY_ORDERS": "طلباتي",
+      "MY_ORDERS": "مشترياتي",
       "READ_LATER": "قائمة المعاينة",
       "MY_CONSULTING_SCHEDULE": "جدولة الاستشارات",
       "DASHBOARD": "لوحة المعلومات"

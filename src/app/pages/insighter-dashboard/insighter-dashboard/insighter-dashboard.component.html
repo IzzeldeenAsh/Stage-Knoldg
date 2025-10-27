@@ -80,6 +80,15 @@
                   {{ 'INSIGHTER.DASHBOARD.NAV.READ_LATER' | translate }}
                 </div>
               </div>
+              <div class="sub-nav-item" [routerLink]="['my-company-settings']" routerLinkActive="active"
+                   (click)="closeMobileSidebar()">
+                <div class="sub-item-icon">
+                  <i class="ki-outline ki-people"></i>
+                </div>
+                <div class="sub-item-label">
+                  {{ 'INSIGHTER.DASHBOARD.NAV.MY_COMPANY' | translate }}
+                </div>
+              </div>
             </div>
           </div>
           <div class="nav-item expandable" [class.expanded]="isCommerceExpanded">
@@ -146,16 +155,6 @@
             </div>
             <div class="item-label">
               {{ 'INSIGHTER.DASHBOARD.NAV.MEETINGS' | translate }}
-            </div>
-          </div>
-         
-          <div class="nav-item" [routerLink]="['my-company-settings']" routerLinkActive="active" *ngIf="hasCompanyRole$ | async"
-               (click)="closeMobileSidebar()">
-            <div class="item-icon">
-              <i class="ki-outline ki-people"></i>
-            </div>
-            <div class="item-label">
-              {{ 'INSIGHTER.DASHBOARD.NAV.MY_COMPANY' | translate }}
             </div>
           </div>
           
@@ -323,6 +322,14 @@
                             {{ 'INSIGHTER.DASHBOARD.NAV.READ_LATER' | translate }}
                           </div>
                         </div>
+                        <div class="sub-nav-item" [routerLink]="['my-company-settings']" routerLinkActive="active">
+                          <div class="sub-item-icon">
+                            <i class="ki-outline ki-people"></i>
+                          </div>
+                          <div class="sub-item-label">
+                            {{ 'INSIGHTER.DASHBOARD.NAV.MY_COMPANY' | translate }}
+                          </div>
+                        </div>
                       </div>
                     </div>
                     <div class="nav-item expandable" [class.expanded]="isCommerceExpanded">
@@ -466,6 +473,15 @@
                         <i class="ki-outline ki-wallet"></i>
                       </div>
                     </div>
+                    <div class="nav-item" [routerLink]="['my-company-settings']" routerLinkActive="active"
+                         [attr.title]="('INSIGHTER.DASHBOARD.NAV.MY_COMPANY' | translate)"
+                         pTooltip="{{ ('INSIGHTER.DASHBOARD.NAV.MY_COMPANY' | translate) }}"
+                         tooltipPosition="right"
+                         appendTo="body">
+                      <div class="item-icon">
+                        <i class="ki-outline ki-people"></i>
+                      </div>
+                    </div>
                   </ng-container>
                   <!-- Meetings Single Link -->
                   <div class="nav-item" [routerLink]="['my-meetings']" routerLinkActive="active"
@@ -478,18 +494,6 @@
                     </div>
                     <div class="item-label" *ngIf="!isNavCollapsed">
                       {{ 'INSIGHTER.DASHBOARD.NAV.MEETINGS' | translate }}
-                    </div>
-                  </div>
-                             <div class="nav-item" [routerLink]="['my-company-settings']" routerLinkActive="active" *ngIf="hasCompanyRole$ | async"
-                       [attr.title]="isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_COMPANY' | translate) : null"
-                       pTooltip="{{ isNavCollapsed ? ('INSIGHTER.DASHBOARD.NAV.MY_COMPANY' | translate) : '' }}"
-                       tooltipPosition="right"
-                       appendTo="body">
-                    <div class="item-icon">
-                      <i class="ki-outline ki-people"></i>
-                    </div>
-                    <div class="item-label" *ngIf="!isNavCollapsed">
-                      {{ 'INSIGHTER.DASHBOARD.NAV.MY_COMPANY' | translate }}
                     </div>
                   </div>
                  

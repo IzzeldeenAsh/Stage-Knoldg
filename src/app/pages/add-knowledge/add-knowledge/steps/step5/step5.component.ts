@@ -7,6 +7,7 @@ import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.s
 import { TranslateService } from '@ngx-translate/core';
 import { TooltipModule } from 'primeng/tooltip';
 import { PaymentService, PaymentDetailsResponse } from 'src/app/_fake/services/payment/payment.service';
+import { KnowledgeService, Knowledge } from 'src/app/_fake/services/knowledge/knowledge.service';
 
 @Component({
   selector: 'app-step5',
@@ -37,7 +38,7 @@ import { PaymentService, PaymentDetailsResponse } from 'src/app/_fake/services/p
       border-color: #DFDFDF;
       color: #6E6E6E;
     }
-    
+
     /* Radio button selection styles */
     :host ::ng-deep .btn-check:checked + .btn-outline {
       background-color: #f1faff !important;
@@ -45,20 +46,65 @@ import { PaymentService, PaymentDetailsResponse } from 'src/app/_fake/services/p
       border: 1px solid #0978B9 !important;
       box-shadow: 0 0 10px rgba(0, 158, 247, 0.1);
     }
-    
+
     :host ::ng-deep .btn-check:checked + .btn-outline .text-gray-800 {
       color: #0978B9 !important;
       font-weight: 600 !important;
     }
-    
+
     :host ::ng-deep .btn-check:checked + .btn-outline .text-gray-600 {
       color: #0095e8 !important;
     }
-    
+
     /* Hover effect for options */
     :host ::ng-deep .btn-outline:hover {
       background-color: #f8f8f8;
       transition: all 0.3s ease;
+    }
+
+    /* Fixed height for consistent card heights */
+    .fixed-height-card {
+      min-height: 180px;
+      align-items: center;
+    }
+
+    /* Ensure proper spacing between cards */
+    .notice + .notice {
+      margin-top: 1.5rem;
+    }
+
+    /* Social share button styles */
+    .social-share-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+      border: none;
+    }
+
+    .social-share-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .social-share-btn:active {
+      transform: translateY(0);
+    }
+
+    .social-share-btn i {
+      font-size: 20px !important;
+      line-height: 1;
+    }
+
+    /* Ensure consistent sizing across all buttons */
+    .social-share-btn.btn-primary,
+    .social-share-btn.btn-dark,
+    .social-share-btn.btn-info,
+    .social-share-btn.btn-success {
+      width: 50px;
+      height: 50px;
+      min-width: 50px;
+      padding: 0;
     }
   `]
 })
@@ -87,10 +133,17 @@ export class Step5Component extends BaseComponent implements OnInit {
   paymentAccountLoading: boolean = false;
   paymentAccountError: string | null = null;
   hasActivePaymentAccount: boolean = false;
-  
+
   // Calendar configuration for PrimeNG
   timeFormat: string = '24';
   dateFormat: string = 'yy-mm-dd';
+
+  // Share functionality properties
+  showShareBox: boolean = false;
+  publishedKnowledge: Knowledge | null = null;
+  isSocialShareModalVisible: boolean = false;
+  customShareMessage: string = "";
+  linkCopied: boolean = false;
 
   get isStripeAccountUnderVerification(): boolean {
     const primaryAccount = this.getPrimaryAccount();
@@ -137,16 +190,17 @@ export class Step5Component extends BaseComponent implements OnInit {
   }
 
   constructor(
-    injector: Injector, 
-    private fb: FormBuilder, 
+    injector: Injector,
+    private fb: FormBuilder,
     private profileService: ProfileService,
     private translateService: TranslateService,
     private paymentService: PaymentService,
     private cdr: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private knowledgeService: KnowledgeService
   ) {
     super(injector);
-    
+
     // Add translation keys
     this.addTranslations();
   }
@@ -168,7 +222,13 @@ export class Step5Component extends BaseComponent implements OnInit {
         'SEND_TO_MANAGER_DESC': 'Submit your knowledge for manager review before publishing.',
         'SCHEDULE_TIME_MIN_ERROR': 'Scheduled time must be at least 1 hour from now',
         'PAST_DATE_ERROR': 'Selected date cannot be in the past',
-        'PAST_TIME_ERROR': 'Selected time must be at least 1 hour from now'
+        'PAST_TIME_ERROR': 'Selected time must be at least 1 hour from now',
+        'SHARE_YOUR_KNOWLEDGE': 'Share Your Knowledge',
+        'SHARE_KNOWLEDGE_DESCRIPTION': 'Spread the word and help others discover your valuable insights. Sharing your knowledge increases its reach and impact in the community.',
+        'SHARE_NOW': 'Share Now',
+        'SHARE': 'Share',
+        'COPY_LINK': 'Copy Link',
+        'LINK_COPIED': 'Link Copied!'
       },
       'ar': {
         'ACCOUNT_STATUS_NOTICE': 'مطلوب حساب دفع',
@@ -184,7 +244,13 @@ export class Step5Component extends BaseComponent implements OnInit {
         'SEND_TO_MANAGER_DESC': 'أرسل المعرفة الخاصة بك للمراجعة من قبل المدير قبل النشر.',
         'SCHEDULE_TIME_MIN_ERROR': 'يجب أن يكون وقت الجدولة ساعة واحدة على الأقل من الآن',
         'PAST_DATE_ERROR': 'لا يمكن أن يكون التاريخ المحدد في الماضي',
-        'PAST_TIME_ERROR': 'يجب أن يكون الوقت المحدد ساعة واحدة على الأقل من الآن'
+        'PAST_TIME_ERROR': 'يجب أن يكون الوقت المحدد ساعة واحدة على الأقل من الآن',
+        'SHARE_YOUR_KNOWLEDGE': 'شارك معرفتك',
+        'SHARE_KNOWLEDGE_DESCRIPTION': 'انشر الكلمة وساعد الآخرين في اكتشاف رؤاك القيمة. مشاركة معرفتك تزيد من انتشارها وتأثيرها في المجتمع.',
+        'SHARE_NOW': 'شارك الآن',
+        'SHARE': 'شارك',
+        'COPY_LINK': 'نسخ الرابط',
+        'LINK_COPIED': 'تم نسخ الرابط!'
       }
     };
     
@@ -674,14 +740,95 @@ export class Step5Component extends BaseComponent implements OnInit {
     Object.keys(this.publishForm.controls).forEach(key => {
       this.publishForm.get(key)?.markAsTouched();
     });
-    
+
     // Update time error display
     this.updateTimeError();
-    
+
     // Update parent values after validation
     this.updateParentValues();
-    
+
     // Return form validity
     return this.checkForm();
+  }
+
+  // Method to be called after successful publish to show share box
+  onPublishSuccess(knowledgeId: number): void {
+    // Fetch the published knowledge details
+    this.knowledgeService.getKnowledgeById(knowledgeId).subscribe({
+      next: (response) => {
+        this.publishedKnowledge = response.data;
+        this.showShareBox = true;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error fetching published knowledge:', error);
+      }
+    });
+  }
+
+  openSocialShareModal(): void {
+    this.isSocialShareModalVisible = true;
+    this.customShareMessage = this.getDefaultShareMessage();
+    this.linkCopied = false;
+  }
+
+  closeSocialShareModal(): void {
+    this.isSocialShareModalVisible = false;
+  }
+
+  getShareableLink(): string {
+    if (!this.publishedKnowledge) return '';
+    const knowledgeType = this.publishedKnowledge.type?.toLowerCase() || 'insight';
+    const slug = this.publishedKnowledge.slug || '';
+    return `https://knoldg.com/en/knowledge/${knowledgeType}/${slug}`;
+  }
+
+  getSocialShareTitle(): string {
+    if (!this.publishedKnowledge) return 'Knowledge';
+    const knowledgeType = this.publishedKnowledge.type ? this.publishedKnowledge.type.charAt(0).toUpperCase() + this.publishedKnowledge.type.slice(1) : 'Knowledge';
+    const title = this.publishedKnowledge.title || 'Amazing Knowledge';
+    return `${knowledgeType} - ${title}`;
+  }
+
+  getDefaultShareMessage(): string {
+    if (!this.publishedKnowledge) return '';
+    if (this.lang === 'ar') {
+      return `اعتقدت أنك قد تستمتع بهذا على Knoldg.com: ${this.publishedKnowledge.type || 'معرفة'} - ${this.publishedKnowledge.title || 'تحقق من هذه المعرفة'}`;
+    }
+    return `Thought you might enjoy this on Knoldg.com: ${this.publishedKnowledge.type || 'Knowledge'} - ${this.publishedKnowledge.title || 'Check out this knowledge'}`;
+  }
+
+  shareToSocial(platform: string): void {
+    const shareUrl = this.getSocialShareLinkWithCustomMessage(platform);
+    window.open(shareUrl, '_blank', 'width=600,height=400');
+    this.closeSocialShareModal();
+  }
+
+  getSocialShareLinkWithCustomMessage(platform: string): string {
+    const shareUrl = this.getShareableLink();
+    const message = this.customShareMessage || this.getDefaultShareMessage();
+    const title = this.getSocialShareTitle();
+
+    switch(platform) {
+      case 'facebook':
+        return `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(message)}`;
+      case 'twitter':
+        return `https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}&url=${encodeURIComponent(shareUrl)}`;
+      case 'linkedin':
+        return `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(title)}&summary=${encodeURIComponent(message)}`;
+      case 'whatsapp':
+        return `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}%20${encodeURIComponent(shareUrl)}`;
+      default:
+        return '';
+    }
+  }
+
+  copyToClipboard(text: string): void {
+    navigator.clipboard.writeText(text).then(() => {
+      this.linkCopied = true;
+      setTimeout(() => {
+        this.linkCopied = false;
+      }, 3000);
+    });
   }
 }

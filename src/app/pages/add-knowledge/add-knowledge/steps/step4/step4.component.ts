@@ -1483,8 +1483,9 @@ export class Step4Component extends BaseComponent implements OnInit {
       if (!isNaN(industryId)) {
         this.form.get('industry')?.setValue(industryId);
         this.aiGeneratedFields.industry = true;
-        // Also update topics if industry changes
+        // Also update topics and tags if industry changes
         this.getTopics(industryId);
+        this.fetchTagsByIndustry(industryId);
       }
     }
     

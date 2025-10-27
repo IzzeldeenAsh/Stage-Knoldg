@@ -69,6 +69,8 @@
                                 <span *ngIf="doc.get('uploadStatus')?.value === 'uploading'" class="badge badge-light-info ms-2 d-flex align-items-center">
                                     <span class="spinner-border spinner-border-sm text-info me-1"></span>
                                 </span>
+
+                            
                             </div>
                             
                          
@@ -82,6 +84,24 @@
                     <div class="col-12 col-md-5 col-lg-6">
                         <label class="form-label required">{{ 'FILE_NAME' | translate }}</label>
                         <input formControlName="file_name" class="form-control" placeholder="{{ 'ENTER_FILE_NAME' | translate }}" />
+
+                        <!-- Language display under file name -->
+                        <div *ngIf="documents[i]?.language" class="small mt-1 d-flex align-items-center"
+                             [ngClass]="{'text-muted': documents[i]?.uploadStatus === 'success', 'text-danger': documents[i]?.uploadStatus === 'error'}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1">
+                                <path d="M4 5h7"></path>
+                                <path d="M9 3v2c0 4.418 -2.239 8 -5 8"></path>
+                                <path d="M5 9c0 2.144 2.952 3.908 6.7 4"></path>
+                                <path d="M12 20l4 -9l4 9"></path>
+                                <path d="M19.1 18h-6.2"></path>
+                            </svg>
+                            <span *ngIf="documents[i]?.language === 'arabic'">Arabic Document</span>
+                            <span *ngIf="documents[i]?.language === 'english'">English Document</span>
+                            <span *ngIf="documents[i]?.language && documents[i]?.language !== 'arabic' && documents[i]?.language !== 'english'">
+                                {{ documents[i]?.language | titlecase }} Document
+                            </span>
+                        </div>
+
                         <div *ngIf="doc.get('file_name')?.invalid && doc.get('file_name')?.touched" class="text-danger small mt-1">
                             <span *ngIf="doc.get('file_name')?.errors?.['required']">
                                 {{ 'FILE_NAME_REQUIRED' | translate }}
