@@ -457,4 +457,15 @@ export class MyRequestsComponent extends BaseComponent implements OnInit {
       this.displayRequestDialog = false;
     }
   }
+
+  /**
+   * Get subtitle for the page header
+   */
+  getRequestsSubtitle(): string {
+    if (this.lang === 'ar') {
+      return 'هنا يمكنك متابعة حالة طلباتك على المنصة.';
+    }
+
+    return 'Review the status of your platform requests here.';
+  }
 }

@@ -9,7 +9,6 @@ import { BreadcrumbItem } from 'src/app/reusable-components/dashboard-statistics
 })
 export class SalesStatisticsComponent extends BaseComponent implements OnInit {
   breadcrumbs: BreadcrumbItem[] = [
-    { label: 'Dashboard', translationKey: 'DASHBOARD' },
     { label: 'Sales', translationKey: 'SALES.PAGE_TITLE' }
   ];
 

@@ -13,6 +13,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslationModule } from 'src/app/modules/i18n';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
+import { InsighterDashboardSharedModule } from '../shared/shared.module';
 type TabType = 'pending' | 'approved' | 'postponed' | 'upcoming' | 'past' | 'coming';
 @Component({
   selector: 'app-my-meetings',
@@ -28,7 +29,8 @@ type TabType = 'pending' | 'approved' | 'postponed' | 'upcoming' | 'past' | 'com
     InputTextareaModule,
     TruncateTextPipe,
     TranslationModule,
-    DatePipe
+    DatePipe,
+    InsighterDashboardSharedModule
   ]
 })
 export class MyMeetingsComponent extends BaseComponent implements OnInit {
@@ -57,6 +59,18 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
 
   get currentLang(): 'ar' | 'en' {
     return this.lang === 'ar' ? 'ar' : 'en';
+  }
+
+  getMeetingsSubtitle(): string {
+    if (this.activeTab === 'client-meetings') {
+      return this.lang === 'ar'
+        ? 'راجع وأدر الاجتماعات التي طلبها العملاء.'
+        : 'Review and manage meetings requested by clients.';
+    }
+
+    return this.lang === 'ar'
+      ? 'تابع الجلسات التي قمت بجدولتها مع العملاء.'
+      : 'Track the sessions you have scheduled with clients.';
   }
 
   // Filter tabs
@@ -626,7 +640,7 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
   // Sent meetings methods
   goToInsighterProfile(insighterUuid: string): void {
     const currentLocale = localStorage.getItem('language') || 'en';
-    window.location.href = `https://knoldg.com/${currentLocale}/profile/${insighterUuid}?entity=insighter&tab=meet`;
+    window.location.href = `http://localhost:3000/${currentLocale}/profile/${insighterUuid}?entity=insighter&tab=meet`;
   }
 
   canJoinMeeting(meeting: SentMeeting): boolean {

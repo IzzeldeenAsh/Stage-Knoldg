@@ -112,203 +112,57 @@
    min-height: 100vh;
  }
  
- // Social share button animation styles
+ // Simple social share button
 .btn-share {
-  --btn-color: #0095e8;
   position: relative;
   padding: 14px 30px;
   font-family: inherit;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 16px;
   line-height: 1;
   color: white;
-  background: none;
+  background: linear-gradient(135deg, #3B88F1 0%, #2FD1C0 100%);
   border: none;
+  border-radius: 8px;
   outline: none;
-  overflow: hidden;
   cursor: pointer;
-  filter: drop-shadow(0 2px 8px rgba(0, 149, 232, 0.3));
-  transition: 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  max-width: none;
   text-align: center;
   margin-bottom: 15px;
   height: 50px;
-  
-  &::before {
-    position: absolute;
-    content: "";
-    top: 0;
-    left: 0;
-    z-index: -1;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, #3B88F1 0%, #2FD1C0 100%) !important;
-    border: none !important;
-    border-radius: 8px;
-    transition: 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 136, 241, 0.4);
   }
 
-  .btn-text,
-  .btn-icon {
-    display: inline-flex;
-    vertical-align: middle;
-    transition: 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
+  &:active {
+    transform: translateY(0);
   }
 
   .btn-text {
-    transition-delay: 0.05s;
+    display: inline-flex;
+    align-items: center;
     font-weight: 600;
   }
 
   .btn-icon {
-    // Default LTR styling
+    display: inline-flex;
+    align-items: center;
     margin-left: 8px;
     margin-right: 0;
-    transition-delay: 0.1s;
   }
-  
+
   // RTL specific styling
   [dir="rtl"] & {
     .btn-icon {
       margin-left: 0;
       margin-right: 8px;
-    }
-  }
-
-  .social-icons {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    display: flex;
-    margin: 0;
-    padding: 0;
-    list-style-type: none;
-    transform: translateY(-50%);
-    justify-content: center;
-    // Ensure direction matches current language direction
-    direction: inherit;
-
-    li {
-      flex: 1;
-      text-align: center;
-      max-width: 50px; // Limit width to ensure proper spacing
-      
-      // Add hover transition effect that works in both RTL and LTR
-      transition: transform 0.2s ease;
-      &:hover {
-        transform: scale(1.1);
-      }
-      
-      a {
-        display: inline-flex;
-        vertical-align: middle;
-        transform: translateY(55px);
-        transition: 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
-        color: white;
-        justify-content: center;
-        width: 100%;
-        height: 100%;
-        align-items: center;
-
-        &:hover {
-          opacity: 0.7;
-          transform: translateY(0) scale(1.2);
-        }
-        
-        i {
-          font-size: 18px;
-          color: #ffffff;
-        }
-      }
-    }
-  }
-
-  &:hover {
-    &::before {
-      transform: scale(1.2);
-    }
-
-    .btn-text,
-    .btn-icon {
-      transform: translateY(-55px);
-    }
-
-    .social-icons li {
-      a {
-        transform: translateY(0);
-      }
-
-      &:nth-child(1) a {
-        transition-delay: 0.15s;
-      }
-      
-      &:nth-child(2) a {
-        transition-delay: 0.2s;
-      }
-      
-      &:nth-child(3) a {
-        transition-delay: 0.25s;
-      }
-      
-      &:nth-child(4) a {
-        transition-delay: 0.3s;
-      }
-    }
-  }
-  
-  // Additional RTL specific styling
-  [dir="rtl"] & {
-    // Ensure the hover animations still work correctly in RTL
-    &:hover {
-      .btn-text,
-      .btn-icon {
-        transform: translateY(-55px);
-      }
-      
-      .social-icons li a {
-        transform: translateY(0);
-      }
-    }
-  }
-}
-
-// Add color classes for the social icons
-.social-icons {
-  li {
-    &:nth-child(1) a { // Facebook
-      color: #fff;
-      i { color: #fff; }
-      text-shadow: 0 1px 3px rgba(59, 89, 152, 0.5);
-    }
-    
-    &:nth-child(2) a { // Twitter/X
-      color: #fff;
-      i { color: #fff; }
-      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-      
-      // X logo specific styling
-      i.fa-x {
-        font-weight: bold;
-        font-size: 16px;
-      }
-    }
-    
-    &:nth-child(3) a { // LinkedIn
-      color: #fff;
-      i { color: #fff; }
-      text-shadow: 0 1px 3px rgba(0, 119, 181, 0.5);
-    }
-    
-    &:nth-child(4) a { // WhatsApp
-      color: #fff;
-      i { color: #fff; }
-      text-shadow: 0 1px 3px rgba(37, 211, 102, 0.5);
     }
   }
 }
@@ -392,5 +246,39 @@
   &.symbol-45px {
     height: 45px;
     width: 45px;
+  }
+}
+
+// Social share button styles
+.social-share-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  border: none;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  i {
+    font-size: 20px !important;
+    line-height: 1;
+  }
+
+  // Ensure consistent sizing across all buttons
+  &.btn-primary,
+  &.btn-dark,
+  &.btn-info,
+  &.btn-success {
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+    padding: 0;
   }
 }

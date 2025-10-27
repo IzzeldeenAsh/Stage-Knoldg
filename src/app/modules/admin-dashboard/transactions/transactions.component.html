@@ -225,7 +225,7 @@
           <div class="profile-avatar-modern">
             <img *ngIf="selectedTransaction.insighter.profile_photo_url"
                  [src]="selectedTransaction.insighter.profile_photo_url"
-                 [alt]="selectedTransaction.insighter.name">
+                 [alt]="selectedTransaction.insighter.name"     style="object-fit: cover; object-position: top;">
             <div *ngIf="!selectedTransaction.insighter.profile_photo_url"
                  class="avatar-placeholder">
               {{ selectedTransaction.insighter.name.charAt(0) }}

@@ -14,22 +14,23 @@
     <!--end::Image preview wrapper-->
   
     <!--begin::Edit button-->
-    <label 
+    <label
+      *ngIf="!hasRole(['company-insighter'])"
       class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
       title="Change avatar">
       <i class="ki-duotone ki-pencil fs-6">
         <span class="path1"></span>
         <span class="path2"></span>
       </i>
-  
+
       <!--begin::Input-->
-      <input 
-        type="file" 
-        name="avatar" 
-        accept=".png, .jpg, .jpeg" 
-        (change)="onFileSelected($event)" 
-        class="d-none" 
-        #fileInput 
+      <input
+        type="file"
+        name="avatar"
+        accept=".png, .jpg, .jpeg"
+        (change)="onFileSelected($event)"
+        class="d-none"
+        #fileInput
       />
       <!--end::Input-->
     </label>

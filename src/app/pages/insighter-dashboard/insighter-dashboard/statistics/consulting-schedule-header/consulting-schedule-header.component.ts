@@ -9,7 +9,6 @@ import { BreadcrumbItem } from 'src/app/reusable-components/dashboard-statistics
 })
 export class ConsultingScheduleHeaderComponent extends BaseComponent {
   breadcrumbs: BreadcrumbItem[] = [
-    { label: 'Dashboard', translationKey: 'DASHBOARD' },
     { label: 'Meeting Settings', translationKey: 'INSIGHTER.DASHBOARD.NAV.MY_CONSULTING_SCHEDULE' }
   ];
 

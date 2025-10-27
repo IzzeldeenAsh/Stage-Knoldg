@@ -9,7 +9,6 @@ import { BreadcrumbItem } from 'src/app/reusable-components/dashboard-statistics
 })
 export class DownloadsStatisticsComponent extends BaseComponent {
   breadcrumbs: BreadcrumbItem[] = [
-    { label: 'Dashboard', translationKey: 'DASHBOARD' },
     { label: 'My Downloads', translationKey: 'INSIGHTER.DASHBOARD.NAV.MY_DOWNLOADS' }
   ];
 

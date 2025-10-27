@@ -10,6 +10,7 @@ import { TruncateTextPipe } from 'src/app/pipes/truncate-pipe/truncate-text.pipe
 import { FileSizePipe } from 'src/app/pipes/file-size-pipe/file-size.pipe';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { TooltipModule } from 'primeng/tooltip';
+import { InsighterDashboardSharedModule } from '../shared/shared.module';
 const routes: Routes = [
   {
     path: '',
@@ -32,7 +33,8 @@ const routes: Routes = [
     TruncateTextPipe,
     ProgressBarModule,
     FileSizePipe,
-    TooltipModule
+    TooltipModule,
+    InsighterDashboardSharedModule
   ]
 })
 export class MyDownloadsModule { } 

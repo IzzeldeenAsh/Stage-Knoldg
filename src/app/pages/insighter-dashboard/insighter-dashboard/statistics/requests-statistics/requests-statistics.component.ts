@@ -13,7 +13,6 @@ import { BreadcrumbItem, StatisticCard } from 'src/app/reusable-components/dashb
 })
 export class RequestsStatisticsComponent extends BaseComponent {
   breadcrumbs: BreadcrumbItem[] = [
-    { label: 'Dashboard', translationKey: 'DASHBOARD' },
     { label: 'My Requests', translationKey: 'INSIGHTER.DASHBOARD.NAV.MY_REQUESTS' }
   ];
 

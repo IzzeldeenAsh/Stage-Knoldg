@@ -52,7 +52,7 @@
                [src]="order.user.profile_photo_url"
                [alt]="order.user.name"
                class="symbol-label rounded-circle"
-               style="object-fit: cover;">
+               style="object-fit: cover; object-fit: top;">
           <div *ngIf="!order.user.profile_photo_url"
                class="symbol-label bg-light-info rounded-circle d-flex align-items-center justify-content-center">
             <span class="text-info fw-bold fs-6">
@@ -63,7 +63,7 @@
         <div class="flex-grow-1">
           <div class="mb-2">
             <a *ngIf="order.user.uuid; else justName"
-               [href]="'https://knoldg.com/en/profile/' + order.user.uuid + '?entity=insighter'"
+               [href]="'http://localhost:3000/en/profile/' + order.user.uuid + '?entity=insighter'"
                target="_blank"
                class="text-info text-decoration-none fw-bold client-name-link d-flex align-items-center">
               <span class="me-2">{{ order.user.name }}</span>
@@ -95,7 +95,7 @@
                [src]="order.orderable?.insighter?.profile_photo_url"
                [alt]="order.orderable?.insighter?.name"
                class="symbol-label rounded-circle"
-               style="object-fit: cover;">
+               style="object-fit: cover; object-position: top;">
           <div *ngIf="!order.orderable?.insighter?.profile_photo_url"
                class="symbol-label bg-light-info rounded-circle d-flex align-items-center justify-content-center">
             <span class="text-info fw-bold fs-6">
@@ -106,7 +106,7 @@
         <div class="flex-grow-1">
           <div class="mb-2">
             <a *ngIf="order.orderable?.insighter?.uuid; else justInsighterName"
-               [href]="'https://knoldg.com/en/profile/' + order.orderable?.insighter?.uuid + '?entity=insighter'"
+               [href]="'http://localhost:3000/en/profile/' + order.orderable?.insighter?.uuid + '?entity=insighter'"
                target="_blank"
                class="text-info text-decoration-none fw-bold d-flex align-items-center">
               <span class="me-2">{{ order.orderable?.insighter?.name }}</span>

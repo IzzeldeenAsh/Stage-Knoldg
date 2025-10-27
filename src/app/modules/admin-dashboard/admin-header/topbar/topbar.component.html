@@ -30,7 +30,7 @@
       
       <!-- User Avatar -->
       <div class="symbol symbol-circle symbol-40px bg-primary">
-        <img *ngIf="user && user?.profile_photo_url; else defaultAvatar" [src]="user.profile_photo_url" alt="User Avatar">
+        <img *ngIf="user && user?.profile_photo_url; else defaultAvatar" [src]="user.profile_photo_url"     style="object-fit: cover; object-position: top;" alt="User Avatar">
         <ng-template #defaultAvatar>
           <span class="symbol-label bg-primary fs-2 text-white">
             {{ user.name.charAt(0) }}

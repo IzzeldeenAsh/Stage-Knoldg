@@ -7,6 +7,7 @@ import { MyCompanyComponent } from './my-company/my-company.component';
 import { TranslationModule } from 'src/app/modules/i18n';
 import { EmployeeStatusStatisticsComponent } from './employee-status-statistics/employee-status-statistics.component';
 import { CountryDropdownComponent } from 'src/app/reusable-components/country-dropdown/country-dropdown.component';
+import { InsighterDashboardSharedModule } from '../shared/shared.module';
 
 // PrimeNG Modules
 import { DialogModule } from 'primeng/dialog';
@@ -47,7 +48,8 @@ import { ProgressBarModule } from 'primeng/progressbar';
     NgApexchartsModule,
     TableModule,
     DropdownModule,
-    CountryDropdownComponent
+    CountryDropdownComponent,
+    InsighterDashboardSharedModule
   ],
   providers: [
     ConfirmationService

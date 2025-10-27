@@ -110,7 +110,7 @@ export class ReadLaterComponent extends BaseComponent implements OnInit {
   }
 
   viewKnowledge(item: ReadLaterItem): void {
-    const url = `https://knoldg.com/${this.lang}/knowledge/${item.type}/${item.slug}`;
+    const url = `http://localhost:3000/${this.lang}/knowledge/${item.type}/${item.slug}`;
     window.open(url, '_blank');
   }
 
@@ -231,5 +231,22 @@ export class ReadLaterComponent extends BaseComponent implements OnInit {
     };
     this.currentPage.set(1);
     this.loadReadLaterItems(1);
+  }
+
+  /**
+   * Get subtitle for the page header
+   */
+  getReadLaterSubtitle(): string {
+    const totalItems = this.totalItems();
+
+    if (totalItems === 0) {
+      return '';
+    }
+
+    if (this.lang === 'ar') {
+      return `${totalItems} عنصر محفوظ`;
+    }
+
+    return `${totalItems} saved items`;
   }
 }

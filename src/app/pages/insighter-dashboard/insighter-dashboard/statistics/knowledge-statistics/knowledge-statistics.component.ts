@@ -10,7 +10,6 @@ import { BreadcrumbItem, StatisticCard } from 'src/app/reusable-components/dashb
 })
 export class KnowledgeStatisticsComponent extends BaseComponent implements OnInit {
   breadcrumbs: BreadcrumbItem[] = [
-    { label: 'Dashboard', translationKey: 'DASHBOARD' },
     { label: 'My Knowledge', translationKey: 'MY_KNOWLEDGE_BASE' }
   ];
 

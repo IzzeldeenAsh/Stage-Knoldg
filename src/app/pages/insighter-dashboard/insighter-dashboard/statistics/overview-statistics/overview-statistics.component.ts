@@ -12,7 +12,7 @@ import { BreadcrumbItem } from 'src/app/reusable-components/dashboard-statistics
 export class OverviewStatisticsComponent extends BaseComponent  {
   profile: IKnoldgProfile;
   breadcrumbs: BreadcrumbItem[] = [
-    { label: 'Dashboard', translationKey: 'DASHBOARD' }
+    { label: '', translationKey: 'INSIGHTER.DASHBOARD.NAV.OVERVIEW' }
   ];
 
   constructor(injector: Injector, private profileService: ProfileService){

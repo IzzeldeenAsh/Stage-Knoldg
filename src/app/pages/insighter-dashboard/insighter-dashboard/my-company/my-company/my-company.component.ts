@@ -8,6 +8,7 @@ import { CompanyAccountService, DashboardStatisticsResponse } from 'src/app/_fak
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import { ConfirmationService } from 'primeng/api';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   ApexAxisChartSeries,
   ApexChart,
@@ -211,7 +212,9 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     private companyAccountService: CompanyAccountService,
     private profileService: ProfileService,
     private confirmationService: ConfirmationService,
-    private countriesService: CountriesService
+    private countriesService: CountriesService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {
     super(injector);
     
@@ -234,13 +237,13 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
       this.consultingFields = user.consulting_field;
       this.currentUserId = user.id;
       this.currentUserCountryId = user.country_id || null;
-      
+
       // Set default country in employee form
       this.employeeForm.patchValue({
         country: this.currentUserCountryId
       });
     });
-    
+
     // Load countries first, then load insighters
     this.loadCountries();
 
@@ -249,7 +252,21 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
 
     // Load dashboard statistics
     this.loadDashboardStatistics();
-    
+
+    // Check for addEmployee query parameter
+    this.route.queryParams.subscribe(params => {
+      if (params['addEmployee'] === 'true') {
+        // Open add employee modal
+        this.openAddEmployeeModal();
+        // Remove the query parameter from URL without reloading
+        this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: {},
+          replaceUrl: true
+        });
+      }
+    });
+
     // Listen for email changes to trigger account check
     this.emailForm.get('email')?.valueChanges
       .pipe(
@@ -266,7 +283,13 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
         }
       });
   }
-  
+
+  getCompanySubtitle(): string {
+    return this.lang === 'ar' ?
+      `إدارة فريق الشركة  ` :
+      `Manage company team `;
+  }
+
   // Load insighters with pagination
   loadInsighters(page: number = 1): void {
     this.loading = true;
@@ -720,7 +743,7 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
 
   navigateToInsighterProfile(insighterId: string, verified: boolean): void {
     if(verified){
-      window.open(`https://knoldg.com/${this.lang}/profile/${insighterId}?entity=insighter`, '_blank');
+      window.open(`http://localhost:3000/${this.lang}/profile/${insighterId}?entity=insighter`, '_blank');
     }else{
       this.showError('Error', 'This insighter is not verified');
     }

@@ -101,9 +101,8 @@
           <div>
             <a
               [routerLink]="['/app/insighter-dashboard/my-company-settings']"
+              [queryParams]="{ addEmployee: 'true' }"
               class="btn btn-info fw-semibold px-6 py-3"
-              data-bs-toggle="modal"
-              data-bs-target="#kt_modal_create_campaign"
             >
               {{ "MY_COMPANY.ADD_EMPLOYEE" | translate }}
             </a>

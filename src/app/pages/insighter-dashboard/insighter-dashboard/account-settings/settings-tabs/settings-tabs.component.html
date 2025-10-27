@@ -1,36 +1,44 @@
-<div class="container-fluid bg-white p-5 rounded-lg" style="border-radius: 10px;">
-  <!-- Tab Navigation -->
-  <div class="row mb-5">
-    <div class="col-12">
-      <div class="filter-tabs-settings">
-        <div class="nav nav-pills nav-pills-custom">
-          <a class="nav-link" 
-            [class.active]="activeTab === 'general-settings'"
-            (click)="switchTab('general-settings')"
-            *ngIf="!(isClient$ | async)">
-            <i class="ki-outline ki-user-edit me-2"></i>
-            {{ 'INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS' | translate }}
-          </a>
-          <a class="nav-link"
-            [class.active]="activeTab === 'payment-settings'"
-            (click)="switchTab('payment-settings')"
-            *ngIf="(isInsighter$ | async) || (isCompany$ | async)">
-            <i class="ki-outline ki-credit-cart me-2"></i>
-            {{ 'INSIGHTER.DASHBOARD.NAV.PAYMENT_SETTINGS_HEADER' | translate }}
-          </a>
-      
-          <a class="nav-link"
-            [class.active]="activeTab === 'consulting-schedule'"
-            (click)="switchTab('consulting-schedule')"
-            *ngIf="(isInsighter$ | async) || (isCompany$ | async) || (isCompanyInsighter$ | async)">
-            <i class="ki-outline ki-calendar me-2"></i>
-            {{ 'INSIGHTER.DASHBOARD.NAV.MY_CONSULTING_SCHEDULE' | translate }}
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
+<!-- Page Header with Tabs -->
+<app-page-header
+  [titleEn]="'Settings'"
+  [titleAr]="'الإعدادات'"
+  [lang]="lang"
+  [subtitle]="getSettingsSubtitle()"
+  [showTabs]="true">
 
+  <!-- Icon slot -->
+
+<i slot="icon"  class="ki-duotone ki-gear fs-2x text-info">
+ <span class="path1"></span>
+ <span class="path2"></span>
+</i>
+  <!-- Tabs slot -->
+  <ng-container slot="tabs">
+    <li class="nav-item" *ngIf="!(isClient$ | async)">
+      <a class="nav-link text-active-primary pb-4"
+        [class.active]="activeTab === 'general-settings'"
+        (click)="switchTab('general-settings')">
+        {{ 'INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS' | translate }}
+      </a>
+    </li>
+    <li class="nav-item" *ngIf="(isInsighter$ | async) || (isCompany$ | async)">
+      <a class="nav-link text-active-primary pb-4"
+        [class.active]="activeTab === 'payment-settings'"
+        (click)="switchTab('payment-settings')">
+        {{ 'INSIGHTER.DASHBOARD.NAV.PAYMENT_SETTINGS_HEADER' | translate }}
+      </a>
+    </li>
+    <li class="nav-item" *ngIf="(isInsighter$ | async) || (isCompany$ | async) || (isCompanyInsighter$ | async)">
+      <a class="nav-link text-active-primary pb-4"
+        [class.active]="activeTab === 'consulting-schedule'"
+        (click)="switchTab('consulting-schedule')">
+        {{ 'INSIGHTER.DASHBOARD.NAV.MY_CONSULTING_SCHEDULE' | translate }}
+      </a>
+    </li>
+  </ng-container>
+</app-page-header>
+
+<div class="py-1 bg-white rounded-2">
   <!-- Tab Content -->
   <div class="tab-content">
     <router-outlet></router-outlet>

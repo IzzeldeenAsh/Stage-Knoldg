@@ -9,7 +9,7 @@ import { BreadcrumbItem } from 'src/app/reusable-components/dashboard-statistics
 })
 export class AccountSettingsHeaderComponent extends BaseComponent {
   breadcrumbs: BreadcrumbItem[] = [
-    { label: 'Dashboard', translationKey: 'DASHBOARD' },
+    
     { label: 'Account Settings', translationKey: 'INSIGHTER.DASHBOARD.NAV.ACCOUNT_SETTINGS' }
   ];
 

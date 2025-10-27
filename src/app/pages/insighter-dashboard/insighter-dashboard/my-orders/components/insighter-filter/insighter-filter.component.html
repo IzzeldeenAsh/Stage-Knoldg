@@ -25,7 +25,7 @@
                  [src]="selectedOption.insighter.profile_photo_url"
                  [alt]="selectedOption.insighter.name"
                  class="symbol-label rounded-circle"
-                 style="object-fit: cover;">
+                 style="object-fit: cover; object-position: top;">
             <div *ngIf="!selectedOption.insighter.profile_photo_url"
                  class="symbol-label bg-light-info rounded-circle d-flex align-items-center justify-content-center">
               <span class="text-info fw-bold fs-8">
@@ -50,7 +50,7 @@
                  [src]="option.insighter.profile_photo_url"
                  [alt]="option.insighter.name"
                  class="symbol-label rounded-circle"
-                 style="object-fit: cover;">
+                 style="object-fit: cover; object-position: top;">
             <div *ngIf="!option.insighter.profile_photo_url"
                  class="symbol-label bg-light-info rounded-circle d-flex align-items-center justify-content-center">
               <span class="text-info fw-bold fs-8">

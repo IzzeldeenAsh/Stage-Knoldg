@@ -8,6 +8,7 @@ import { TruncateTextPipe } from 'src/app/pipes/truncate-pipe/truncate-text.pipe
 import { TooltipModule } from 'primeng/tooltip';
 import { ButtonModule } from 'primeng/button';
 import { ProgressBarModule } from 'primeng/progressbar';
+import { InsighterDashboardSharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { ProgressBarModule } from 'primeng/progressbar';
     ButtonModule,
     TruncateTextPipe,
     ProgressBarModule,
-    TooltipModule
+    TooltipModule,
+    InsighterDashboardSharedModule
   ]
 })
 export class ReadLaterModule { }

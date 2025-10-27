@@ -39,13 +39,13 @@
                   </h6>
                   <i (click)="copyOrder(order.order_no)" class="ki-outline ki-copy fs-6 cursor-pointer"></i>
                 </div>
-                <div class="d-flex align-items-center mb-1" *ngIf="order.orderable.meeting_booking?.insighter">
+                  <div class="d-flex align-items-center mb-1" *ngIf="order.orderable.meeting_booking?.insighter">
                   <div class="symbol symbol-25px me-2">
                     <img *ngIf="order.orderable.meeting_booking?.insighter?.profile_photo_url"
                          [src]="order.orderable.meeting_booking?.insighter?.profile_photo_url"
                          [alt]="order.orderable.meeting_booking?.insighter?.name"
                          class="symbol-label rounded-circle"
-                         style="object-fit: cover;">
+                         style="object-fit: cover; object-position: top;">
                     <div *ngIf="!order.orderable.meeting_booking?.insighter?.profile_photo_url"
                          class="symbol-label bg-light-info rounded-circle d-flex align-items-center justify-content-center">
                       <span class="text-info fw-bold fs-8">
@@ -54,7 +54,7 @@
                     </div>
                   </div>
                   <a *ngIf="order.orderable.meeting_booking?.insighter?.uuid; else justInsighterName"
-                     [href]="'https://knoldg.com/en/profile/' + order.orderable.meeting_booking?.insighter?.uuid + '?entity=insighter'"
+                     [href]="'http://localhost:3000/en/profile/' + order.orderable.meeting_booking?.insighter?.uuid + '?entity=insighter'"
                      target="_blank"
                      class="text-info text-decoration-none fs-7">
                     {{ order.orderable.meeting_booking?.insighter?.name }}
@@ -133,7 +133,7 @@
           </div>
 
           <!-- Order Date and Amount -->
-          <div class="border-top pt-3 mt-4">
+          <div class="border-top pt-3 mt-3">
             <div class="d-flex justify-content-between align-items-center">
               <div class="text-muted fs-7">
                 {{ lang === 'ar' ? 'تاريخ الطلب' : 'Ordered' }} {{ order.date | date:'short' }}

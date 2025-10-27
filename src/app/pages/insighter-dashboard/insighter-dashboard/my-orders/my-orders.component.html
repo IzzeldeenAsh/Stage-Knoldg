@@ -1,44 +1,56 @@
 
-<div class="container-fluid bg-white p-5 rounded-lg" style="border-radius: 10px;">
-  <!-- Tab Navigation -->
-  <div class="row mb-2">
-    <div class="col-md-6 col-lg-8">
-      <div class="filter-tabs-orders">
-          <div class="nav nav-pills nav-pills-custom">
-            <a class="nav-link"
-              [class.active]="activeTab === 'knowledge'"
-              (click)="setActiveTab('knowledge')">
-              <span class="nav-svg me-2">
-                <svg width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M1.36533 4.13696H3.47275C3.82072 4.13721 4.10355 4.42078 4.10361 4.7688V13.4075C4.10338 13.7553 3.82061 14.0381 3.47275 14.0383H1.36533C1.0173 14.0383 0.733722 13.7555 0.73349 13.4075V4.7688C0.733543 4.42066 1.01719 4.13702 1.36533 4.13696Z" stroke="#A6A5A5" stroke-width="0.211513"/>
-                  <path d="M2.41922 5.40137C2.53509 5.40157 2.62918 5.49639 2.62918 5.6123V11.3008C2.62901 11.4166 2.53498 11.5105 2.41922 11.5107C2.30328 11.5107 2.20845 11.4167 2.20828 11.3008V5.6123C2.20828 5.49626 2.30318 5.40137 2.41922 5.40137Z" stroke="#A6A5A5" stroke-width="0.211513"/>
-                  <path d="M2.10324 12.3542H2.73508C2.85105 12.3543 2.94504 12.4492 2.94504 12.5652C2.94483 12.681 2.85092 12.7751 2.73508 12.7751H2.10324C1.98733 12.7751 1.89251 12.6811 1.8923 12.5652C1.8923 12.4491 1.9872 12.3542 2.10324 12.3542Z" stroke="#A6A5A5" stroke-width="0.211513"/>
-                  <path d="M4.9346 4.13696H7.04202C7.39 4.13721 7.67283 4.42078 7.67288 4.7688V13.4075C7.67265 13.7553 7.38989 14.0381 7.04202 14.0383H4.9346C4.58657 14.0383 4.303 13.7555 4.30276 13.4075V4.7688C4.30282 4.42066 4.58646 4.13702 4.9346 4.13696Z" stroke="#A6A5A5" stroke-width="0.211513"/>
-                  <path d="M5.98853 5.40137C6.10439 5.40157 6.19849 5.49639 6.19849 5.6123V11.3008C6.19831 11.4166 6.10429 11.5105 5.98853 11.5107C5.87259 11.5107 5.77776 11.4167 5.77759 11.3008V5.6123C5.77759 5.49626 5.87248 5.40137 5.98853 5.40137Z" stroke="#A6A5A5" stroke-width="0.211513"/>
-                  <path d="M5.67249 12.3542H6.30432C6.42029 12.3543 6.51428 12.4492 6.51428 12.5652C6.51408 12.681 6.42017 12.7751 6.30432 12.7751H5.67249C5.55657 12.7751 5.46175 12.6811 5.46155 12.5652C5.46155 12.4491 5.55644 12.3542 5.67249 12.3542Z" stroke="#A6A5A5" stroke-width="0.211513"/>
-                  <path d="M8.28717 4.26361L10.3264 3.73168C10.6631 3.64409 11.0084 3.84709 11.0963 4.18383L13.2767 12.5428C13.3643 12.8795 13.1621 13.2244 12.8255 13.3125L10.7863 13.8444C10.4496 13.9322 10.1038 13.7301 10.0157 13.3934L7.83527 5.03447C7.74745 4.69759 7.95032 4.35153 8.28717 4.26361Z" stroke="#A6A5A5" stroke-width="0.211513"/>
-                  <path d="M9.62609 5.22092C9.73825 5.19187 9.85323 5.25987 9.88249 5.37203L11.3183 10.8763C11.3474 10.9884 11.2801 11.1031 11.1681 11.1325C11.056 11.1617 10.9404 11.0947 10.911 10.9826L9.47522 5.47827C9.44593 5.36599 9.5138 5.25021 9.62609 5.22092Z" stroke="#A6A5A5" stroke-width="0.211513"/>
-                  <path d="M11.0751 12.0281L11.6865 11.8686C11.7987 11.8394 11.9136 11.9074 11.9429 12.0197C11.9719 12.1318 11.9048 12.2465 11.7927 12.2758L11.1814 12.4353C11.0692 12.4646 10.9537 12.3975 10.9243 12.2854C10.895 12.1731 10.9628 12.0573 11.0751 12.0281Z" stroke="#A6A5A5" stroke-width="0.211513"/>
-                  <path d="M6.24203 1.34692H8.63754C8.6776 1.34695 8.71274 1.38205 8.71274 1.42212C8.71272 1.46217 8.67759 1.49729 8.63754 1.49731H6.24203C6.20196 1.49731 6.16686 1.46219 6.16684 1.42212C6.16684 1.38204 6.20195 1.34692 6.24203 1.34692Z" fill="#3799FF" stroke="#A6A5A5" stroke-width="0.299437"/>
-                  <path d="M7.43979 0.149414C7.47986 0.149432 7.51498 0.184538 7.51498 0.224609V2.62012C7.51496 2.66017 7.47984 2.69529 7.43979 2.69531C7.39972 2.69531 7.36462 2.66018 7.36459 2.62012V0.224609C7.36459 0.184528 7.39971 0.149414 7.43979 0.149414Z" fill="#3799FF" stroke="#A6A5A5" stroke-width="0.299437"/>
-                  </svg>
-                  
-              </span>
-              {{ lang === 'ar' ? 'بيانات وتقارير' : 'Data and Reports' }}
-            </a>
-            <a class="nav-link"
-              [class.active]="activeTab === 'meeting'"
-              (click)="setActiveTab('meeting')">
-              <span class="nav-svg me-2">
-                <i class="ki-outline ki-calendar"></i>
-              </span>
-              {{ lang === 'ar' ? "اجتماعات" : 'Meetings' }}
-            </a>
-          </div>
-      </div>
-    </div>
-    <div class="col-md-6 col-lg-4 d-flex justify-content-end align-items-center" *ngIf="canViewSalesTabs">
-      <!-- Statistics Cards -->
+<!-- Page Header with Tabs -->
+<app-page-header
+  [titleEn]="'My Orders'"
+  [titleAr]="'طلباتي'"
+  [lang]="currentLang"
+  [subtitle]="getOrdersSubtitle()"
+  [showTabs]="true">
+
+  <!-- Icon slot -->
+  <i slot="icon">
+<svg width="33" height="35" viewBox="0 0 33 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M1.82422 10.2922H7.03809C7.86907 10.2923 8.54567 10.9691 8.5459 11.8V33.175C8.54581 34.0061 7.86916 34.6828 7.03809 34.6829H1.82422C0.993258 34.6826 0.316491 34.006 0.316406 33.175V11.8C0.316638 10.9692 0.993348 10.2925 1.82422 10.2922Z" fill="#3799FF" stroke="#3799FF" stroke-width="0.633563"/>
+<path d="M4.43125 28.7438C3.99959 28.7438 3.64926 28.3935 3.64926 27.9618V13.886C3.64926 13.4543 3.99959 13.104 4.43125 13.104C4.86291 13.104 5.21324 13.4543 5.21324 13.886V27.9618C5.21324 28.3935 4.86291 28.7438 4.43125 28.7438Z" fill="white"/>
+<path d="M3.6496 30.625H5.21307C5.46978 30.625 5.67889 30.8341 5.67889 31.0908C5.67877 31.3474 5.4697 31.5557 5.21307 31.5557H3.6496C3.39297 31.5557 3.1839 31.3474 3.18378 31.0908C3.18378 30.8341 3.39289 30.625 3.6496 30.625Z" fill="#3799FF" stroke="#3799FF" stroke-width="0.633563"/>
+<path d="M10.6561 10.2922H15.87C16.701 10.2923 17.3775 10.9691 17.3778 11.8V33.175C17.3777 34.0061 16.701 34.6828 15.87 34.6829H10.6561C9.82514 34.6826 9.14837 34.006 9.14828 33.175V11.8C9.14852 10.9692 9.82523 10.2925 10.6561 10.2922Z" fill="#37AFFF" stroke="#37AFFF" stroke-width="0.633563"/>
+<path d="M13.2632 28.7438C12.8315 28.7438 12.4812 28.3935 12.4812 27.9618V13.886C12.4812 13.4543 12.8315 13.104 13.2632 13.104C13.6949 13.104 14.0452 13.4543 14.0452 13.886V27.9618C14.0452 28.3935 13.6949 28.7438 13.2632 28.7438Z" fill="white"/>
+<path d="M12.4814 30.625H14.0449C14.3016 30.625 14.5107 30.8341 14.5107 31.0908C14.5106 31.3474 14.3015 31.5557 14.0449 31.5557H12.4814C12.2248 31.5557 12.0157 31.3474 12.0156 31.0908C12.0156 30.8341 12.2247 30.625 12.4814 30.625Z" fill="#3799FF" stroke="#37AFFF" stroke-width="0.633563"/>
+<path d="M18.9658 10.604L24.0109 9.288C24.815 9.07834 25.6405 9.56242 25.8505 10.3664L31.2456 31.0493C31.4553 31.8535 30.9714 32.679 30.1672 32.8889L25.1222 34.2049C24.3181 34.4144 23.4924 33.9306 23.2826 33.1265L17.8874 12.4436C17.6779 11.6396 18.1619 10.814 18.9658 10.604Z" fill="#37CAFF" stroke="#37CAFF" stroke-width="0.633563"/>
+<path d="M26.1458 27.8008C25.7281 27.9097 25.3007 27.6592 25.1917 27.2415L21.6389 13.6214C21.5299 13.2037 21.7805 12.7763 22.1982 12.6674C22.6159 12.5584 23.0433 12.809 23.1522 13.2267L26.7051 26.8467C26.814 27.2644 26.5634 27.6918 26.1458 27.8008Z" fill="white"/>
+<path d="M25.8639 29.8167L27.3767 29.4221C27.6251 29.3573 27.8802 29.5069 27.945 29.7553C28.0097 30.0036 27.8599 30.2579 27.6116 30.3226L26.0988 30.7173C25.8504 30.782 25.5956 30.6333 25.5307 30.385C25.4659 30.1367 25.6155 29.8815 25.8639 29.8167Z" fill="#3799FF" stroke="#37CAFF" stroke-width="0.633563"/>
+<path d="M19.8188 4.07527H13.8914C13.5876 4.07527 13.3357 3.82335 13.3357 3.51957C13.3357 3.21578 13.5876 2.96387 13.8914 2.96387H19.8188C20.1226 2.96387 20.3745 3.21578 20.3745 3.51957C20.3745 3.82335 20.1226 4.07527 19.8188 4.07527Z" fill="#3799FF"/>
+<path d="M16.8551 7.03886C16.5514 7.03886 16.2994 6.78694 16.2994 6.48316V0.555699C16.2994 0.251917 16.5514 0 16.8551 0C17.1589 0 17.4108 0.251917 17.4108 0.555699V6.48316C17.4108 6.78694 17.1589 7.03886 16.8551 7.03886Z" fill="#3799FF"/>
+</svg>
+
+
+  </i>
+
+  <!-- Tabs slot -->
+  <div slot="tabs" class="d-flex justify-content-between w-100">
+    <ul class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-semibold flex-nowrap">
+      <li class="nav-item">
+        <a class="nav-link text-active-primary pb-4"
+          [class.active]="activeTab === 'knowledge'"
+          (click)="setActiveTab('knowledge')">
+          {{ lang === 'ar' ? 'بيانات وتقارير' : 'Data and Reports' }}
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-active-primary pb-4"
+          [class.active]="activeTab === 'meeting'"
+          (click)="setActiveTab('meeting')">
+          {{ lang === 'ar' ? "اجتماعات" : 'Meetings' }}
+        </a>
+      </li>
+    </ul>
+  </div>
+</app-page-header>
+
+<div class="container-fluid bg-white rounded-lg" style="border-radius: 10px;">
+  <!-- Statistics Cards -->
+  <div class="row mb-4" *ngIf="canViewSalesTabs">
+    <div class="col-12 d-flex justify-content-end">
       <div class="d-flex gap-3" *ngIf="orderStatisticsService.statistics$ | async as stats; else loadingSpinnerHeader">
         <!-- Purchased Card -->
         <div class="d-flex align-items-center border rounded-3 p-3" style="border-color: #e4e6ef !important; min-width: 160px;">
@@ -61,28 +73,6 @@
             </span>
           </div>
         </div>
-
-        <!-- Sold Card -->
-        <!-- <div class="d-flex align-items-center border rounded-3 p-3" style="border-color: #e4e6ef !important; min-width: 160px;">
-          <div class="symbol symbol-40px me-2">
-            <div class="symbol-label bg-light-success">
-              <i class="ki-outline ki-dollar text-success fs-5"></i>
-            </div>
-          </div>
-          <div class="d-flex flex-column">
-            <span class="text-gray-800 fw-bold fs-6">
-              <ng-container *ngIf="activeTab === 'knowledge'">
-                ${{ stats?.knowledge_sold_amount || 0 }}
-              </ng-container>
-              <ng-container *ngIf="activeTab === 'meeting'">
-                ${{ stats?.meeting_sold_amount || 0 }}
-              </ng-container>
-            </span>
-            <span class="text-muted fw-semibold fs-8">
-              {{ lang === 'ar' ? 'مباع' : 'Sold' }}
-            </span>
-          </div>
-        </div> -->
       </div>
 
       <ng-template #loadingSpinnerHeader>
@@ -103,23 +93,6 @@
               </span>
             </div>
           </div>
-
-          <!-- Loading Sold Card -->
-          <!-- <div class="d-flex align-items-center border rounded-3 p-3" style="border-color: #e4e6ef !important; min-width: 160px;">
-            <div class="symbol symbol-40px me-2">
-              <div class="symbol-label bg-light-success">
-                <i class="ki-outline ki-dollar text-success fs-5"></i>
-              </div>
-            </div>
-            <div class="d-flex flex-column">
-              <div class="spinner-border spinner-border-sm text-success" role="status">
-                <span class="visually-hidden">Loading...</span>
-              </div>
-              <span class="text-muted fw-semibold fs-8">
-                {{ lang === 'ar' ? 'مباع' : 'Sold' }}
-              </span>
-            </div>
-          </div> -->
         </div>
       </ng-template>
     </div>

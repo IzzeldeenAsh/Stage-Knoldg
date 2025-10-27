@@ -1,3 +1,18 @@
+<!-- Page Header -->
+<app-page-header
+  [titleEn]="'My Requests'"
+  [titleAr]="'طلباتي'"
+  [subtitle]="getRequestsSubtitle()"
+  [lang]="lang">
+  <div slot="icon" style="display: flex; align-items: center;justify-content: center;">
+  <i class="ki-duotone ki-question-2 fs-2x text-info">
+ <span class="path1"></span>
+ <span class="path2"></span>
+ <span class="path3"></span>
+</i>
+  </div>
+</app-page-header>
+
 <p-progressBar
 *ngIf="isLoading$ | async"
 mode="indeterminate"
@@ -26,15 +41,12 @@ styleClass=""
     </div>
 </div>
 
-<div class="mb-5 mb-xl-10 card" *ngIf="!(isLoading$ | async) && userProfile && userRequests.length > 0">
+<div class="mb-5  card" *ngIf="!(isLoading$ | async) && userProfile && userRequests.length > 0">
     <!--begin::Header-->
     <div class="card-header pt-7 border-0">
         <!--begin::Title-->
         <h3 class="card-title align-items-start flex-column">
             <span class="fw-bolder text-dark">{{ 'USER_REQUESTS.TITLE' | translate }}</span>
-            <span class="text-muted mt-1 fw-semibold fs-6">
-                <span class="badge badge-light-info mx-2">{{ userRequests.length }}</span> {{ 'USER_REQUESTS.REQUEST_COUNT' | translate }}
-            </span>
         </h3>
         <!--end::Title-->
 
@@ -91,7 +103,7 @@ styleClass=""
                                             {{ request.requestable.first_name }} {{ request.requestable.last_name }}
                                         </ng-container>
                                     </div>
-                                    <div class="text-muted fs-7">{{ request.comments || 'No comments' }}</div>
+                                    <!-- <div class="text-muted fs-7">{{ request.comments || 'No comments' }}</div> -->
                                 </div>
                             </div>
                             
@@ -140,7 +152,7 @@ styleClass=""
 </div>
 
 <!-- Insighter Requests Section -->
-<div class="mb-5 mb-xl-10 mt-10 card" *ngIf="!(isLoading$ | async) && insighterRequests.length > 0">
+<div class="mb-5 mb-xl-10 card" *ngIf="!(isLoading$ | async) && insighterRequests.length > 0">
     <!--begin::Header-->
     <div class="card-header pt-7 border-0">
         <!--begin::Title-->

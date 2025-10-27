@@ -583,4 +583,24 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
       });
   }
 
+  /**
+   * Get subtitle for the page header
+   */
+  getDownloadsSubtitle(): string {
+    const totalItems = this.currentDisplayTotalItems();
+    const isArchived = this.showArchivedDownloads();
+
+  
+
+    if (this.lang === 'ar') {
+      return isArchived
+        ? `${totalItems} تنزيلات مؤرشفة`
+        : `${totalItems} إجمالي التنزيلات`;
+    }
+
+    return isArchived
+      ? `${totalItems} archived downloads`
+      : `${totalItems} total downloads`;
+  }
+
 } 

@@ -1,6 +1,6 @@
 <div class="input-group">
   <!-- Country Code Dropdown -->
-  <div style="flex: 0 0 140px;">
+  <div style="flex: 0 0 190px;">
     <p-dropdown
       [options]="countries"
       [ngModel]="countryCode"
@@ -10,7 +10,7 @@
       [dataKey]="'international_code'"
       [placeholder]="searchPlaceholder"
       [filter]="true"
-      [showClear]="true"
+      [showClear]="false"
       [disabled]="disabled"
       [filterFields]="['names.en', 'names.ar', 'international_code']"
       filterPlaceholder="Search countries..."
