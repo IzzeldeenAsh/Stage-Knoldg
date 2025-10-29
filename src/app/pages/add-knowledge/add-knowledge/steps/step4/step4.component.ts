@@ -1,6 +1,6 @@
-import { Component, Injector, Input, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, Injector, Input, OnInit, OnDestroy, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { Subscription, forkJoin, of, delay, finalize, interval, timer, takeWhile, takeUntil, Subject } from 'rxjs';
+import { Subscription, forkJoin, of, delay, finalize, interval, timer, takeWhile, takeUntil, Subject, debounceTime } from 'rxjs';
 import { ICreateKnowldege } from '../../create-account.helper';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { LanguagesService, Language } from 'src/app/_fake/services/languages-list/languages.service';
@@ -43,7 +43,7 @@ interface TagItem {
     ])
   ]
 })
-export class Step4Component extends BaseComponent implements OnInit {
+export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
   @Input('updateParentModel') updateParentModel: (
     part: Partial<ICreateKnowldege>,
     isFormValid: boolean
@@ -123,6 +123,10 @@ export class Step4Component extends BaseComponent implements OnInit {
   showEditor = false;
   private stopPolling$ = new Subject<void>();
 
+  // Cover year properties
+  coverYearDates: Date[] = [];
+  private isUpdatingCoverYears = false;
+
   // Add tracking for AI-generated fields
   aiGeneratedFields: Record<string, boolean> = {
     title: false,
@@ -197,12 +201,7 @@ export class Step4Component extends BaseComponent implements OnInit {
       }
     }
     
-    // Subscribe to form value changes to update parent model with validation status
-    this.form.valueChanges.subscribe(() => {
-      if (this.updateParentModel) {
-        this.updateParentModel({}, this.checkForm());
-      }
-    });
+    // Form value changes subscription is handled in initForms() with debouncing
     
     // Subscribe to language changes
     const langChangeSub = this.translationService.onLanguageChange().subscribe(lang => {
@@ -214,18 +213,37 @@ export class Step4Component extends BaseComponent implements OnInit {
     this.unsubscribe.push(langChangeSub);
     
     // Subscribe to language service loading state
-    this.languagesService.isLoading$.subscribe(isLoading => {
+    const langLoadingSub = this.languagesService.isLoading$.subscribe(isLoading => {
       this.isLanguageLoading = isLoading;
     });
-    
+    this.unsubscribe.push(langLoadingSub);
+
 
   }
-  
+
+  ngOnDestroy(): void {
+    // Clean up AI generation polling
+    if (this.stopPolling$) {
+      this.stopPolling$.next();
+      this.stopPolling$.complete();
+    }
+
+    // Clear any running timers
+    if (this.animationTimers) {
+      clearInterval(this.animationTimers);
+    }
+
+    // Call parent destroy
+    super.ngOnDestroy();
+  }
+
   private initForms() {
     // Initialize main form
     this.form = this.fb.group({
       title: [this.defaultValues.title, [Validators.required]],
       description: [this.defaultValues.description, [Validators.required]],
+      cover_start: [this.defaultValues.cover_start],
+      cover_end: [this.defaultValues.cover_end],
       language: [this.defaultValues.language, [Validators.required]],
       industry: [this.defaultValues.industry, [Validators.required]],
       topicId: [this.defaultValues.topicId, [Validators.required]],
@@ -241,8 +259,10 @@ export class Step4Component extends BaseComponent implements OnInit {
       keywords: [this.defaultValues.keywords || []]
     });
     
-    // Setup form change subscription
-    const formChangesSubscr = this.form.valueChanges.subscribe((val) => {
+    // Setup form change subscription with debouncing
+    const formChangesSubscr = this.form.valueChanges.pipe(
+      debounceTime(100) // Wait 100ms after last change before processing
+    ).subscribe((val) => {
       this.updateParentModel(val, this.checkForm());
     });
     this.unsubscribe.push(formChangesSubscr);
@@ -263,6 +283,9 @@ export class Step4Component extends BaseComponent implements OnInit {
 
     // For worldwide target market, get all region IDs
     this.updateForWorldwide();
+
+    // Initialize cover year dates from default values
+    this.initializeCoverYearDates();
   }
   
   private setupConditionalValidators() {
@@ -459,7 +482,10 @@ export class Step4Component extends BaseComponent implements OnInit {
         
         // Update tag items for display
         this.updateTagItems();
-        
+
+        // Initialize cover year dates after loading data
+        this.initializeCoverYearDates();
+
         this.cdr.detectChanges();
         // Initialize tags and keywords if industry/topic are selected
         if (this.defaultValues.industry) {
@@ -575,6 +601,8 @@ export class Step4Component extends BaseComponent implements OnInit {
     const updateData = {
       title: formValue.title,
       description: formValue.description,
+      cover_start: formValue.cover_start,
+      cover_end: formValue.cover_end,
       language: formValue.language,
       industry: formValue.industry,
       topicId: formValue.topicId,
@@ -587,8 +615,15 @@ export class Step4Component extends BaseComponent implements OnInit {
       hs_code: formValue.hs_code,
       targetMarket: formValue.targetMarket
     };
-    
+
+    console.log('Force full sync - form raw values:', formValue);
     console.log('Force full sync - updating parent model with:', updateData);
+    console.log('Force full sync - cover years specifically:', {
+      raw_cover_start: formValue.cover_start,
+      raw_cover_end: formValue.cover_end,
+      processed_cover_start: updateData.cover_start,
+      processed_cover_end: updateData.cover_end
+    });
     this.updateParentModel(updateData, this.checkForm());
   }
   
@@ -1320,125 +1355,158 @@ export class Step4Component extends BaseComponent implements OnInit {
     if (!this.defaultValues.knowledgeId) {
       // If no knowledge ID, just show the editor
       this.showEditor = true;
+      this.cdr.detectChanges();
       return;
     }
-    
+
     // Set loading state
     this.isDescriptionLoading = true;
     this.showEditor = false;
     this.aiAbstractError = false;
-    
-    // Clear any previous timers
+    this.cdr.detectChanges();
+
+    // Clear any previous timers and subscriptions
     if (this.stopPolling$) {
       this.stopPolling$.next();
       this.stopPolling$.complete();
     }
     this.stopPolling$ = new Subject<void>();
-    
+
     // Time tracking
     const startTime = Date.now();
-    const maxDuration = 25000; // 20 seconds
+    const maxDuration = 20000; // Fixed: 20 seconds
     const pollInterval = 2000; // 2 seconds
     let hasReceivedData = false;
-    
+    let pollingSubscription: any = null;
+
+    // Function to clean up and stop loading
+    const cleanUpAndStop = (showError: boolean = false) => {
+      console.log('Cleaning up AI generation...');
+
+      // Stop polling
+      if (pollingSubscription && !pollingSubscription.closed) {
+        pollingSubscription.unsubscribe();
+      }
+
+      // Clean up stop polling subject
+      if (this.stopPolling$) {
+        this.stopPolling$.next();
+        this.stopPolling$.complete();
+      }
+
+      // Update UI state
+      this.isDescriptionLoading = false;
+      if (showError && !hasReceivedData) {
+        this.aiAbstractError = true;
+        this.showEditor = true;
+      }
+
+      this.cdr.detectChanges();
+    };
+
     // Start polling timer - this will execute every 2 seconds
-    const polling = interval(pollInterval).pipe(
-      takeWhile(() => (Date.now() - startTime) < maxDuration), // Run for 20 seconds max
-      takeUntil(this.stopPolling$) // Or until manually stopped
-    ).subscribe(() => {
-      // Only make API call if we haven't received data yet
-      if (!hasReceivedData) {
-        console.log(`Polling API at ${new Date().toISOString()} - ${Math.floor((Date.now() - startTime) / 1000)}s elapsed`);
-        
-        // Make API call
-        this.addInsightStepsService.getKnowledgeParserData(this.defaultValues.knowledgeId as number)
-          .subscribe({
-            next: (response) => {
-              console.log('API Response:', response);
-              
-              // Check if we have valid data - use type assertion to fix TypeScript errors
-              const responseData = response?.data as any;
-              const hasValidData = responseData && (
-                (responseData.abstract && responseData.abstract.trim().length > 0)
-              );
-              
-              if (hasValidData) {
-                console.log('Valid data received, stopping poll');
-                hasReceivedData = true;
-                
-                // Update the form with received data
-                this.updateFormWithAIData(responseData);
-                
-                // Stop polling since we have data
-                if (this.stopPolling$) {
-                  this.stopPolling$.next();
+    pollingSubscription = interval(pollInterval).pipe(
+      takeWhile(() => (Date.now() - startTime) < maxDuration),
+      takeUntil(this.stopPolling$),
+      finalize(() => {
+        console.log('Polling finalized');
+        if (!hasReceivedData) {
+          cleanUpAndStop(true);
+        }
+      })
+    ).subscribe({
+      next: () => {
+        // Only make API call if we haven't received data yet
+        if (!hasReceivedData) {
+          console.log(`Polling API at ${new Date().toISOString()} - ${Math.floor((Date.now() - startTime) / 1000)}s elapsed`);
+
+          // Make API call
+          this.addInsightStepsService.getKnowledgeParserData(this.defaultValues.knowledgeId as number)
+            .subscribe({
+              next: (response) => {
+                console.log('API Response:', response);
+
+                // Check if we have valid data
+                const responseData = response?.data as any;
+                const hasValidData = responseData && (
+                  (responseData.abstract && responseData.abstract.trim().length > 0)
+                );
+
+                if (hasValidData) {
+                  console.log('Valid data received, stopping poll');
+                  hasReceivedData = true;
+
+                  // Update the form with received data
+                  this.updateFormWithAIData(responseData);
+
+                  // Clean up and stop
+                  cleanUpAndStop(false);
+                } else {
+                  console.log('No valid data yet, continuing to poll');
                 }
-              } else {
-                console.log('No valid data yet, continuing to poll');
+              },
+              error: (error) => {
+                console.error('API error:', error);
+                // Continue polling on error unless it's a critical error
+                if (error.status === 404 || error.status === 403) {
+                  console.log('Critical error, stopping polling');
+                  hasReceivedData = true; // Prevent timeout handler
+                  cleanUpAndStop(true);
+                }
               }
-            },
-            error: (error) => {
-              console.error('API error:', error);
-              // Continue polling on error
-            }
-          });
+            });
+        }
+      },
+      error: (error) => {
+        console.error('Polling error:', error);
+        cleanUpAndStop(true);
+      },
+      complete: () => {
+        console.log('Polling completed');
+        if (!hasReceivedData) {
+          cleanUpAndStop(true);
+        }
       }
     });
-    
+
     // Run initial API call immediately
     console.log(`Initial API call at ${new Date().toISOString()}`);
     this.addInsightStepsService.getKnowledgeParserData(this.defaultValues.knowledgeId as number)
       .subscribe({
         next: (response) => {
           console.log('Initial API Response:', response);
-          
-          // Check if we have valid data - use type assertion to fix TypeScript errors
+
+          // Check if we have valid data
           const responseData = response?.data as any;
           const hasValidData = responseData && (
             (responseData.abstract && responseData.abstract.trim().length > 0)
           );
-          
+
           if (hasValidData) {
             console.log('Valid data received on initial call');
             hasReceivedData = true;
             this.updateFormWithAIData(responseData);
-            
-            // Stop polling since we have data
-            if (this.stopPolling$) {
-              this.stopPolling$.next();
-            }
+            cleanUpAndStop(false);
           }
         },
-        error: (error) => console.error('Initial API error:', error)
+        error: (error) => {
+          console.error('Initial API error:', error);
+          // For critical errors on initial call, stop immediately
+          if (error.status === 404 || error.status === 403) {
+            hasReceivedData = true; // Prevent timeout handler
+            cleanUpAndStop(true);
+          }
+        }
       });
-    
-    // Safety timeout to stop everything after 20 seconds
-    // This ensures the loader is shown for full 20 seconds
-    timer(maxDuration).subscribe(() => {
+
+    // Safety timeout to ensure loading never gets stuck
+    setTimeout(() => {
       console.log(`Max duration reached at ${new Date().toISOString()}`);
-      
-      // Clean up polling subscription
-      if (polling && !polling.closed) {
-        polling.unsubscribe();
-      }
-      
-      // Clean up stop polling subject
-      if (this.stopPolling$) {
-        this.stopPolling$.next();
-        this.stopPolling$.complete();
-      }
-      
-      // If we didn't get data, show error and editor
       if (!hasReceivedData) {
-        console.log('No data received after timeout');
-        this.aiAbstractError = true;
-        this.showEditor = true;
+        console.log('Timeout reached, no data received');
+        cleanUpAndStop(true);
       }
-      
-      // Always turn off loading state after 20 seconds
-      this.isDescriptionLoading = false;
-      this.cdr.detectChanges();
-    });
+    }, maxDuration);
   }
   
   // Update form with AI data
@@ -1489,8 +1557,7 @@ export class Step4Component extends BaseComponent implements OnInit {
       }
     }
     
-    // Reset loading state
-    this.isDescriptionLoading = false;
+    // Note: Loading state is handled by the calling function (cleanUpAndStop)
     this.cdr.detectChanges();
   }
 
@@ -1539,5 +1606,143 @@ export class Step4Component extends BaseComponent implements OnInit {
     });
 
     // Industry field - handled separately in onIndustrySelected method
+  }
+
+  // Method to manually stop AI generation
+  stopAIGeneration(): void {
+    console.log('Manually stopping AI generation...');
+
+    if (this.stopPolling$) {
+      this.stopPolling$.next();
+      this.stopPolling$.complete();
+    }
+
+    this.isDescriptionLoading = false;
+    this.aiAbstractError = true;
+    this.showEditor = true;
+    this.cdr.detectChanges();
+  }
+
+  // Cover year range methods
+  onCoverYearChange(dates: Date[]): void {
+    if (this.isUpdatingCoverYears) {
+      return; // Prevent infinite loops
+    }
+
+    this.isUpdatingCoverYears = true;
+    this.coverYearDates = dates || [];
+
+    try {
+      if (!dates || dates.length === 0) {
+        // Clear both fields when nothing is selected
+        this.form.patchValue({
+          cover_start: null,
+          cover_end: null
+        }, { emitEvent: false });
+
+        // Update parent model with complete form data
+        this.updateParentModel(this.form.value, this.checkForm());
+        return;
+      }
+
+      if (dates.length === 1) {
+        // Single year selected - set both start and end to the same year
+        const year = dates[0].getFullYear();
+        console.log('Setting cover years to:', year);
+
+        this.form.patchValue({
+          cover_start: year,
+          cover_end: year
+        }, { emitEvent: false });
+
+        console.log('After patchValue - form values:', {
+          cover_start: this.form.get('cover_start')?.value,
+          cover_end: this.form.get('cover_end')?.value,
+          fullForm: this.form.value
+        });
+
+        // Update parent model with complete form data
+        this.updateParentModel(this.form.value, this.checkForm());
+      } else if (dates.length === 2) {
+        // Two years selected - sort them and set as range
+        const years = dates
+          .filter(date => date !== null && date !== undefined)
+          .map(date => date.getFullYear())
+          .sort((a, b) => a - b); // Sort in ascending order
+
+        if (years.length === 2) {
+          const startYear = years[0];
+          const endYear = years[1];
+
+          console.log('Setting cover year range:', startYear, '-', endYear);
+
+          this.form.patchValue({
+            cover_start: startYear,
+            cover_end: endYear
+          }, { emitEvent: false });
+
+          console.log('After patchValue - range form values:', {
+            cover_start: this.form.get('cover_start')?.value,
+            cover_end: this.form.get('cover_end')?.value,
+            fullForm: this.form.value
+          });
+
+          // Update parent model with complete form data
+          this.updateParentModel(this.form.value, this.checkForm());
+        }
+      }
+    } finally {
+      // Always reset the flag
+      setTimeout(() => {
+        this.isUpdatingCoverYears = false;
+      }, 100);
+    }
+  }
+
+  // Get display text for cover years
+  getCoverYearDisplayText(): string {
+    const startYear = this.form.get('cover_start')?.value;
+    const endYear = this.form.get('cover_end')?.value;
+
+    if (!startYear && !endYear) {
+      return '';
+    }
+
+    if (startYear === endYear) {
+      return startYear.toString();
+    }
+
+    return `${startYear} - ${endYear}`;
+  }
+
+  // Get selected dates for calendar display
+  getSelectedCoverDates(): Date[] {
+    return this.coverYearDates;
+  }
+
+  // Initialize cover year dates from form values (called on form init)
+  private initializeCoverYearDates(): void {
+    const startYear = this.form.get('cover_start')?.value;
+    const endYear = this.form.get('cover_end')?.value;
+
+    if (!startYear && !endYear) {
+      this.coverYearDates = [];
+      return;
+    }
+
+    const dates: Date[] = [];
+    if (startYear) {
+      dates.push(new Date(startYear, 0, 1)); // January 1st of start year
+    }
+    if (endYear && endYear !== startYear) {
+      dates.push(new Date(endYear, 0, 1)); // January 1st of end year
+    }
+
+    this.coverYearDates = dates;
+    console.log('Initialized cover year dates:', {
+      startYear,
+      endYear,
+      dates: this.coverYearDates
+    });
   }
 }

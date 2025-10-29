@@ -44,6 +44,8 @@ export const locale = {
     ERROR_FILES_DETECTED: 'Error Files Detected',
     SENT_MEETINGS:'Sent Meetings',
     RECEIVED_MEETINGS:'Received Meetings',
+    COVER_YEARS:'Cover Years',
+    COVER_YEARS_TOOLTIP:'Select one year or a range of years that this knowledge cover',
     ENTER_TAGS:'Enter Tag',
     MY_CERTIFICATES:'My Certificates',
     NO_CERTIFICATES:'No Certificates Uploaded',

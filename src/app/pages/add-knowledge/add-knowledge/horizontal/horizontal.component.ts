@@ -118,6 +118,8 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
               countries: knowledge.countries?.map((country: any) => country.id) || [],
               economic_blocs: economicBlocIds,
               description: knowledge.description,
+              cover_start: knowledge.cover_start || null,
+              cover_end: knowledge.cover_end || null,
               targetMarket: targetMarket,
               keywords: knowledge.keywords?.map((keyword: any) => ({ display: keyword, value: keyword })) || [],
               customTopic: '',
@@ -146,6 +148,18 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
   updateAccount = (part: Partial<ICreateKnowldege>, isFormValid: boolean) => {
     const currentAccount = this.account$.value;
     const updatedAccount = { ...currentAccount, ...part };
+
+    // Debug cover years specifically
+    if (part.cover_start !== undefined || part.cover_end !== undefined) {
+      console.log('Horizontal: Updating account with cover years:', {
+        incoming_part: part,
+        current_cover_start: currentAccount.cover_start,
+        current_cover_end: currentAccount.cover_end,
+        new_cover_start: updatedAccount.cover_start,
+        new_cover_end: updatedAccount.cover_end
+      });
+    }
+
     this.account$.next(updatedAccount);
     this.isCurrentFormValid$.next(isFormValid);
 
@@ -590,9 +604,17 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
             const newTopicId = response.data.topic_id;
             
             // Prepare the request payload with the new topic ID
+            console.log('Horizontal (custom topic): Current account before API call:', currentAccount);
+            console.log('Horizontal (custom topic): Cover years in account:', {
+              cover_start: currentAccount.cover_start,
+              cover_end: currentAccount.cover_end
+            });
+
             const updateRequest = {
               title: currentAccount.title || '',
               description: currentAccount.description || '',
+              cover_start: currentAccount.cover_start || null,
+              cover_end: currentAccount.cover_end || null,
               topic_id: newTopicId, // Use the newly created topic ID
               industry_id: currentAccount.industry || 0,
               isic_code_id: currentAccount.isic_code || null,
@@ -606,6 +628,7 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
             };
             
             // Now update knowledge details with the new topic ID
+            console.log('Horizontal (custom topic): Final API request payload:', updateRequest);
             this.updateKnowledgeDetailsAndProceed(updateRequest, nextStep);
           },
           error: (error) => {
@@ -616,9 +639,17 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
     } else {
       // No custom topic, proceed with regular update
       // Prepare the request payload
+      console.log('Horizontal: Current account before API call:', currentAccount);
+      console.log('Horizontal: Cover years in account:', {
+        cover_start: currentAccount.cover_start,
+        cover_end: currentAccount.cover_end
+      });
+
       const updateRequest = {
         title: currentAccount.title || '',
         description: currentAccount.description || '',
+        cover_start: currentAccount.cover_start || null,
+        cover_end: currentAccount.cover_end || null,
         topic_id: currentAccount.topicId || 0,
         industry_id: currentAccount.industry || 0,
         isic_code_id: currentAccount.isic_code || null,
@@ -631,6 +662,7 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
         tag_ids: currentAccount.tag_ids || []
       };
 
+      console.log('Horizontal (regular): Final API request payload:', updateRequest);
       this.updateKnowledgeDetailsAndProceed(updateRequest, nextStep);
     }
   }

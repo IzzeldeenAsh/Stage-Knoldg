@@ -32,6 +32,8 @@ export interface Knowledge {
   title: string;
   slug: string;
   description: string;
+  cover_start?: number | null;
+  cover_end?: number | null;
   keywords: string[];
   tags: Tag[];
   topic: Topic;

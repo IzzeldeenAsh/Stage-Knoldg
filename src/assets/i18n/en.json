@@ -155,5 +155,7 @@
     }
   },
   "GENERATE_AI_INFORMATION": "Generate AI Information",
-  "REGENERATE_AI_INFORMATION": "Regenerate AI Information"
+  "REGENERATE_AI_INFORMATION": "Regenerate AI Information",
+  "COVER_YEARS": "Cover Years",
+  "COVER_YEARS_TOOLTIP": "Select the year or range of years that this knowledge covers or relates to"
 } 

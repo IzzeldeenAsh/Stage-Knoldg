@@ -27,6 +27,8 @@ interface ICreateKnowldege {
   countries: any[];
   economic_blocs: number[];
   description: string;
+  cover_start?: number|null;
+  cover_end?: number|null;
   targetMarket: string;
   customTopic: string;
   documents: IDocument[];
@@ -37,9 +39,9 @@ interface ICreateKnowldege {
   publish_date_time: string;
   status?: string;
   economic_bloc?: number[];
-  documentDescriptions?: { 
+  documentDescriptions?: {
     id: number;
-    description: string; 
+    description: string;
   }[];
   isWorldwide?: boolean;
   filesWithErrors?: any[];
