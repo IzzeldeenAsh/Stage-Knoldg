@@ -139,7 +139,7 @@ export class CallbackComponent extends BaseComponent implements OnInit, OnDestro
     const returnUrl = this.getReturnUrlFromCookie();
     
     // Build the redirect URL
-    let redirectUrl = `https://knoldg.com/en/callback`;
+    let redirectUrl = `https://foresighta.co/en/callback`;
     
     if (this.token) {
       redirectUrl += `/${this.token}`;

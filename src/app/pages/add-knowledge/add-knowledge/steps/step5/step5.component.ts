@@ -780,7 +780,7 @@ export class Step5Component extends BaseComponent implements OnInit {
     if (!this.publishedKnowledge) return '';
     const knowledgeType = this.publishedKnowledge.type?.toLowerCase() || 'insight';
     const slug = this.publishedKnowledge.slug || '';
-    return `https://knoldg.com/en/knowledge/${knowledgeType}/${slug}`;
+    return `https://foresighta.co/en/knowledge/${knowledgeType}/${slug}`;
   }
 
   getSocialShareTitle(): string {

@@ -521,7 +521,7 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
   getShareableLink(): string {
     const knowledgeType = this.knowledge.type?.toLowerCase() || 'insight';
     const slug = this.knowledge.slug || '';
-    return `https://knoldg.com/en/knowledge/${knowledgeType}/${slug}`;
+    return `https://foresighta.co/en/knowledge/${knowledgeType}/${slug}`;
   }
 
   getSocialShareTitle(): string {
@@ -740,7 +740,7 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
         "name": "Knoldg.com",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://knoldg.com/assets/logo.png"
+          "url": "https://foresighta.co/assets/logo.png"
         }
       },
       "mainEntityOfPage": {

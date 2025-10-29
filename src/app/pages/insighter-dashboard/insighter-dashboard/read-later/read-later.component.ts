@@ -110,7 +110,7 @@ export class ReadLaterComponent extends BaseComponent implements OnInit {
   }
 
   viewKnowledge(item: ReadLaterItem): void {
-    const url = `https://knoldg.com/${this.lang}/knowledge/${item.type}/${item.slug}`;
+    const url = `https://foresighta.co/${this.lang}/knowledge/${item.type}/${item.slug}`;
     window.open(url, '_blank');
   }
 

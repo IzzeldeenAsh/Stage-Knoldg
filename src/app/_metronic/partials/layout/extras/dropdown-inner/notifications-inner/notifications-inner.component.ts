@@ -150,7 +150,7 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
     if (notification.type === 'knowledge' && notification.category) {
       // Construct the URL for knowledge page with sub_page and param
       const lang = this.translationService.getSelectedLanguage() || 'en';
-      const knowledgeUrl = `https://knoldg.com/${lang}/knowledge/${notification.category}/${notification.param || ''}?tab=ask`;
+      const knowledgeUrl = `https://foresighta.co/${lang}/knowledge/${notification.category}/${notification.param || ''}?tab=ask`;
       
       // Navigate to the external URL
       window.open(knowledgeUrl, '_blank');
@@ -216,7 +216,7 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
   //   const baseUrl = window.location.origin;
   //   const lang = this.translationService.getSelectedLanguage() || 'en';
   //   // const tabParam = notification.param && notification.tap ? `?tab=${notification.tap}` : '';
-  //   const knowledgeUrl = `https://knoldg.com/${lang}/knowledge/${notification.category}/${notification.param || ''}?`;
+  //   const knowledgeUrl = `https://foresighta.co/${lang}/knowledge/${notification.category}/${notification.param || ''}?`;
     
   //   // Navigate to the external URL
   //   window.open(knowledgeUrl, '_blank');
