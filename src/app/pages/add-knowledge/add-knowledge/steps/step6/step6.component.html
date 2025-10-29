@@ -55,33 +55,6 @@
   </div>
 </div>
 
-<!-- Share Box (Only visible when knowledge is published) -->
-<div *ngIf="defaultValues.publish_status === 'published' && publishedKnowledge"
-     class="notice d-flex bg-light-info rounded border-info border p-6 mb-6 mt-6 fixed-height-card">
-  <!-- Share Illustration -->
-  <div class="d-flex align-items-center justify-content-center me-12">
-    <img
-      src="https://res.cloudinary.com/dsiku9ipv/image/upload/v1761550742/Share-Illustartion_laydqp.png"
-      style="width: 100px; height: fit-content; max-height: 100px;"
-      alt="Share illustration">
-  </div>
-
-  <!-- Content -->
-  <div class="d-flex flex-stack flex-grow-1">
-    <div class="fw-bold">
-      <h4 class="text-gray-800 fw-bolder mb-2">{{ 'SHARE_YOUR_KNOWLEDGE' | translate }}</h4>
-      <div class="text-gray-700 fs-6 mb-4">
-        {{ 'SHARE_KNOWLEDGE_DESCRIPTION' | translate }}
-      </div>
-
-      <!-- Share Button -->
-      <button class="btn btn-sm btn-primary d-flex align-items-center" (click)="openSocialShareModal()">
-        <i class="ki-outline ki-share fs-4 me-2"></i>
-        {{ 'SHARE_NOW' | translate }}
-      </button>
-    </div>
-  </div>
-</div>
 
 <!-- New fancy box to encourage adding more knowledge -->
 <div
@@ -113,89 +86,80 @@
   </div>
 </div>
 
-<!-- Social Share Dialog -->
-<p-dialog
-  [(visible)]="isSocialShareModalVisible"
-  [modal]="true"
-  [draggable]="false"
-  [resizable]="false"
-  [style]="{width: '600px'}"
-  styleClass="p-0"
-  appendTo="body"
-  [showHeader]="false">
-  <div class="modal-content">
-    <!-- Modal header -->
-    <div class="modal-header p-5 border-bottom">
-      <h2 class="fw-bold">{{ lang === 'ar' ? 'مشاركة المعرفة' : 'Share Knowledge' }}</h2>
-      <div class="btn btn-icon btn-sm btn-active-light-info ms-2" (click)="closeSocialShareModal()">
-        <i class="ki-duotone ki-cross fs-2x"><span class="path1"></span><span class="path2"></span></i>
-      </div>
-    </div>
+<!-- Custom Social Share Modal -->
+<div class="custom-modal-overlay" *ngIf="isSocialShareModalVisible" (click)="closeSocialShareModal()">
+  <div class="custom-modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-content">
+      <!-- Modal body -->
+      <div class="modal-body py-5 px-8 bg-white rounded-bottom" style="margin-top: -1rem; position: relative; z-index: 3;">
+       <div class="motive-title" style="text-align: center; padding: 2.5rem 0px;">
+       <div class="motive-title-image">
+        <img src="https://res.cloudinary.com/dsiku9ipv/image/upload/v1761664127/New_Project_17_r2dreh.png" alt="Social Share" />
+       </div>
+        <h2>{{ lang === 'ar' ? 'المشاركة هي الهدف' : 'It\'s all about sharing' }}</h2>
+        <p>{{ lang === 'ar' ? 'شارك هذه المعرفة مع شبكتك' : 'Share this knowledge with your network' }}</p>
+       </div>
+        <!-- Custom Message Input -->
+        <div class="mb-4">
+          <label class="form-label fw-bold">{{ lang === 'ar' ? 'رسالة المشاركة' : 'Share Message' }}</label>
+          <textarea
+            class="form-control form-control-solid"
+            [(ngModel)]="customShareMessage"
+            rows="3"
+            [placeholder]="getDefaultShareMessage()">
+          </textarea>
 
-    <!-- Modal body -->
-    <div class="modal-body py-5 px-8">
-      <!-- Custom Message Input -->
-      <div class="mb-4">
-        <label class="form-label fw-bold">{{ lang === 'ar' ? 'رسالة مخصصة' : 'Custom Share Message' }}</label>
-        <textarea
-          class="form-control form-control-solid"
-          [(ngModel)]="customShareMessage"
-          rows="3"
-          [placeholder]="getDefaultShareMessage()">
-        </textarea>
-        <div class="form-text text-muted mt-2">
-          {{ lang === 'ar' ? 'اكتب رسالتك المخصصة لمشاركة هذه المعرفة' : 'Write your custom message to share this knowledge' }}
         </div>
-      </div>
 
-      <!-- Character Count -->
-      <div class="mb-4">
-        <small class="text-muted">{{ lang === 'ar' ? 'عدد الأحرف' : 'Character Count' }}: {{ customShareMessage.length || 0 }}</small>
-      </div>
+        <!-- Character Count -->
+        <div class="mb-4">
+          <small class="text-muted">{{ lang === 'ar' ? 'عدد الأحرف' : 'Character Count' }}: {{ customShareMessage.length || 0 }}</small>
+        </div>
 
-      <!-- Social Media Buttons -->
-      <div class="d-flex justify-content-center gap-3 mb-4">
-        <!-- Facebook -->
-        <button class="btn btn-icon btn-primary d-flex align-items-center justify-content-center social-share-btn"
-                (click)="shareToSocial('facebook')"
-                [attr.aria-label]="lang === 'ar' ? 'مشاركة على فيسبوك' : 'Share on Facebook'">
-          <i class="pi pi-facebook" style="font-size: 20px;"></i>
-        </button>
+        <!-- Social Media Buttons -->
+        <div class="d-flex justify-content-center gap-3 mb-4">
+          <!-- Facebook -->
+          <button class="btn btn-icon btn-primary d-flex align-items-center justify-content-center social-share-btn"
+                  (click)="shareToSocial('facebook')"
+                  [attr.aria-label]="lang === 'ar' ? 'مشاركة على فيسبوك' : 'Share on Facebook'">
+            <i class="pi pi-facebook" style="font-size: 20px;"></i>
+          </button>
 
-        <!-- Twitter/X -->
-        <button class="btn btn-icon btn-dark d-flex align-items-center justify-content-center social-share-btn"
-                (click)="shareToSocial('twitter')"
-                [attr.aria-label]="lang === 'ar' ? 'مشاركة على تويتر' : 'Share on Twitter'">
-          <i class="pi pi-twitter" style="font-size: 20px;"></i>
-        </button>
+          <!-- Twitter/X -->
+          <button class="btn btn-icon btn-dark d-flex align-items-center justify-content-center social-share-btn"
+                  (click)="shareToSocial('twitter')"
+                  [attr.aria-label]="lang === 'ar' ? 'مشاركة على تويتر' : 'Share on Twitter'">
+            <i class="pi pi-twitter" style="font-size: 20px;"></i>
+          </button>
 
-        <!-- LinkedIn -->
-        <button class="btn btn-icon btn-info d-flex align-items-center justify-content-center social-share-btn"
-                (click)="shareToSocial('linkedin')"
-                [attr.aria-label]="lang === 'ar' ? 'مشاركة على لينكد إن' : 'Share on LinkedIn'">
-          <i class="pi pi-linkedin" style="font-size: 20px;"></i>
-        </button>
+          <!-- LinkedIn -->
+          <button class="btn btn-icon btn-info d-flex align-items-center justify-content-center social-share-btn"
+                  (click)="shareToSocial('linkedin')"
+                  [attr.aria-label]="lang === 'ar' ? 'مشاركة على لينكد إن' : 'Share on LinkedIn'">
+            <i class="pi pi-linkedin" style="font-size: 20px;"></i>
+          </button>
 
-        <!-- WhatsApp -->
-        <button class="btn btn-icon btn-success d-flex align-items-center justify-content-center social-share-btn"
-                (click)="shareToSocial('whatsapp')"
-                [attr.aria-label]="lang === 'ar' ? 'مشاركة على واتساب' : 'Share on WhatsApp'">
-          <i class="pi pi-whatsapp" style="font-size: 20px;"></i>
-        </button>
-      </div>
+          <!-- WhatsApp -->
+          <button class="btn btn-icon btn-success d-flex align-items-center justify-content-center social-share-btn"
+                  (click)="shareToSocial('whatsapp')"
+                  [attr.aria-label]="lang === 'ar' ? 'مشاركة على واتساب' : 'Share on WhatsApp'">
+            <i class="pi pi-whatsapp" style="font-size: 20px;"></i>
+          </button>
+        </div>
 
-      <!-- Copy Link Section -->
-      <div class="separator my-5"></div>
-      <div class="text-center">
-        <button class="btn btn-light-info w-100" (click)="copyToClipboard(getShareableLink())">
-          <i class="ki-outline ki-copy fs-4 me-2"></i>
-          {{ 'COPY_LINK' | translate }}
-        </button>
+        <!-- Copy Link Section -->
+        <div class="separator my-5"></div>
+        <div class="text-center">
+          <button class="btn btn-light-info w-100" (click)="copyToClipboard(getShareableLink())">
+            <i class="ki-outline ki-copy fs-4 me-2"></i>
+            {{ 'COPY_LINK' | translate }}
+          </button>
 
-        <div *ngIf="linkCopied" class="text-success text-center mt-2 small">
-          <i class="ki-outline ki-check fs-6 me-1"></i> {{ 'LINK_COPIED' | translate }}
+          <div *ngIf="linkCopied" class="text-success text-center mt-2 small">
+            <i class="ki-outline ki-check fs-6 me-1"></i> {{ 'LINK_COPIED' | translate }}
+          </div>
         </div>
       </div>
     </div>
   </div>
-</p-dialog>
+</div>

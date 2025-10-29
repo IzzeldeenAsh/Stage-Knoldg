@@ -53,6 +53,109 @@ import { TranslateService } from '@ngx-translate/core';
       min-width: 50px;
       padding: 0;
     }
+
+    /* Custom Modal Styles */
+    .custom-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      backdrop-filter: blur(4px);
+      animation: fadeIn 0.3s ease;
+    }
+
+    .custom-modal-container {
+      width: 90%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: scaleIn 0.3s ease;
+    }
+
+    .custom-modal-overlay .custom-modal-container .modal-content {
+      border-radius: 12px !important;
+      overflow: hidden;
+      border: none !important;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      position: relative;
+      background: white !important;
+    }
+
+    .custom-modal-overlay .custom-modal-container .modal-content::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 200px;
+      background: #e9deff;
+      background: linear-gradient(180deg, rgba(233, 222, 255, 1) 0%, rgba(255, 255, 255, 1) 100%);
+      z-index: 1;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+    }
+
+    .custom-modal-overlay .custom-modal-container .modal-content .modal-body {
+      border-radius: 0 0 12px 12px !important;
+      box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.05);
+      background: none !important;
+      background-color: transparent !important;
+      position: relative;
+      z-index: 2;
+    }
+
+    .custom-modal-overlay .modal-body.bg-white,
+    .custom-modal-overlay .modal-body.bg-light,
+    .custom-modal-overlay .modal-body[class*="bg-"] {
+      background: none !important;
+      background-color: transparent !important;
+    }
+
+    .custom-modal-overlay .motive-title {
+      position: relative;
+      z-index: 2;
+    }
+
+    .motive-title-image img {
+      height: 220px;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes scaleIn {
+      from {
+        transform: scale(0.9);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .custom-modal-container {
+        width: 95%;
+        margin: 1rem;
+      }
+
+      .custom-modal-overlay .modal-body {
+        padding: 1.5rem 1rem !important;
+      }
+    }
   `]
 })
 export class Step6Component extends BaseComponent implements OnInit {
@@ -115,6 +218,10 @@ export class Step6Component extends BaseComponent implements OnInit {
       this.knowledgeService.getKnowledgeById(this.defaultValues.knowledgeId).subscribe({
         next: (response) => {
           this.publishedKnowledge = response.data;
+          // Auto-open the social share modal once knowledge data is loaded
+          if (this.defaultValues.publish_status === 'published' && this.publishedKnowledge) {
+            this.openSocialShareModal();
+          }
         },
         error: (error) => {
           console.error('Error fetching knowledge details:', error);
@@ -131,7 +238,6 @@ export class Step6Component extends BaseComponent implements OnInit {
 
   openSocialShareModal(): void {
     this.isSocialShareModalVisible = true;
-    this.customShareMessage = this.getDefaultShareMessage();
     this.linkCopied = false;
   }
 
@@ -153,13 +259,14 @@ export class Step6Component extends BaseComponent implements OnInit {
     return `${knowledgeType} - ${title}`;
   }
 
+
   getDefaultShareMessage(): string {
-    if (!this.publishedKnowledge) return '';
     if (this.lang === 'ar') {
-      return `اعتقدت أنك قد تستمتع بهذا على Knoldg.com: ${this.publishedKnowledge.type || 'معرفة'} - ${this.publishedKnowledge.title || 'تحقق من هذه المعرفة'}`;
+      return "اكتب رسالة المشاركة الخاصة بك";
     }
-    return `Thought you might enjoy this on Knoldg.com: ${this.publishedKnowledge.type || 'Knowledge'} - ${this.publishedKnowledge.title || 'Check out this knowledge'}`;
+    return "Write your share message";
   }
+
 
   shareToSocial(platform: string): void {
     const shareUrl = this.getSocialShareLinkWithCustomMessage(platform);
@@ -169,7 +276,7 @@ export class Step6Component extends BaseComponent implements OnInit {
 
   getSocialShareLinkWithCustomMessage(platform: string): string {
     const shareUrl = this.getShareableLink();
-    const message = this.customShareMessage || this.getDefaultShareMessage();
+    const message = this.customShareMessage 
     const title = this.getSocialShareTitle();
 
     switch(platform) {

@@ -18,7 +18,7 @@
 <div class="fv-row" [formGroup]="form">
   <div class="row">
     <div class="col-lg-6 mb-4" *ngFor="let type of knowledgeTypes" >
-      <input 
+      <input
         formControlName="knowledgeType"
         name="knowledgeType"
         type="radio"
@@ -33,6 +33,7 @@
         [ngbTooltip]="type.tooltip"
         [class.disabled]="type.disabled"
         [style.cursor]="type.disabled ? 'not-allowed' : 'pointer'"
+        style="min-height: 160px;"
       >
         <svg class="mx-5 my-5" *ngIf="type.value === 'data'" width="38" height="42" viewBox="0 0 26 29" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M12.5596 0C9.13931 0 5.92618 0.608334 3.51251 1.71279C1.28038 2.73511 0 4.08721 0 5.42527C0 6.76332 1.28038 8.11584 3.51251 9.13766C5.92618 10.2421 9.13923 10.8504 12.5596 10.8504C15.98 10.8504 19.1935 10.2421 21.6064 9.13766C23.8388 8.11584 25.1196 6.7634 25.1196 5.42527C25.1196 4.08713 23.8388 2.73511 21.6064 1.71279C19.1931 0.608334 15.9799 0 12.5596 0Z" fill="black"/>
