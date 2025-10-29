@@ -492,7 +492,6 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
 
   openSocialShareModal(): void {
     this.isSocialShareModalVisible = true;
-    this.customShareMessage = this.getDefaultShareMessage();
     this.linkCopied = false;
   }
 
@@ -544,9 +543,9 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
 
   getDefaultShareMessage(): string {
     if (this.lang === 'ar') {
-      return `اعتقدت أنك قد تستمتع بهذا على Knoldg.com: ${this.knowledge.type || 'معرفة'} - ${this.knowledge.title || 'تحقق من هذه المعرفة'}`;
+      return "اكتب رسالة المشاركة الخاصة بك";
     }
-    return `Thought you might enjoy this on Knoldg.com: ${this.knowledge.type || 'Knowledge'} - ${this.knowledge.title || 'Check out this knowledge'}`;
+    return "Write your share message";
   }
 
 
@@ -558,7 +557,7 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
 
   getSocialShareLinkWithCustomMessage(platform: string): string {
     const shareUrl = this.getShareableLink();
-    const message = this.customShareMessage || this.getDefaultShareMessage();
+    const message = this.customShareMessage 
     const title = this.getSocialShareTitle();
 
     switch(platform) {

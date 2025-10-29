@@ -15,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { ChartModule } from 'primeng/chart';
 import { SelectButtonModule } from 'primeng/selectbutton';
+import { InsighterDashboardSharedModule } from '../shared/shared.module';
 
 const routes: Routes = [
   {
@@ -42,7 +43,8 @@ const routes: Routes = [
     FormsModule,
     TranslateModule,
     ChartModule,
-    SelectButtonModule
+    SelectButtonModule,
+    InsighterDashboardSharedModule
   ]
 })
 export class WalletModule { }

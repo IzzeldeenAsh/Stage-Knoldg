@@ -303,10 +303,22 @@
 // Button hover states for icons
 .download-btn {
   transition: all 0.3s ease;
+  color: #0778b9 !important;
+
+  svg path {
+    fill: currentColor;
+    transition: fill 0.2s ease;
+  }
 
   &:hover:not(:disabled) {
+    color: #ffffff !important;
+
     i {
       color: white !important;
+    }
+
+    svg path {
+      fill: currentColor;
     }
   }
 }

@@ -473,6 +473,13 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
     return translations[key] ? translations[key][this.lang === 'ar' ? 'ar' : 'en'] : key;
   }
 
+  getWalletSubtitle(): string {
+    if (this.lang === 'ar') {
+      return 'اعرض رصيدك الحالي وتاريخ المعاملات المالية';
+    }
+    return 'View your current balance and transaction history';
+  }
+
   private handleServerErrors(error: any): void {
     if (error.error && error.error.errors) {
       const serverErrors = error.error.errors;
