@@ -10,6 +10,8 @@ export const locale = {
     BUILD_YOUR_TEAM: 'ابني فريقك',
     EDIT_DOCUMENT:'تعديل الملف',
     TODAY_MEETINGS:'اجتماعاتي اليوم', 
+      COVER_YEARS: 'الأعوام التكافؤية',
+    COVER_YEARS_TOOLTIP: 'حدد عامًا أو نطاقًا من الأعوام التي تغطيها المعرفة',
     LATEST_KNOWLEDGE:'أحدث المعارف',
     GENERATE_AI_ABSTRACT:'ٌانشاء بواسطة الذكاء الاصطناعي',
     BUILD_YOUR_TEAM_DESCRIPTION: 'نمي أعمالك عبر <br> إضافة موظفين لشركتك',
