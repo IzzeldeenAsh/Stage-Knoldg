@@ -1,0 +1,54 @@
+.lang-button {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  background-color: transparent;
+  cursor: pointer;
+  
+  &:hover {
+    background-color: rgba(211, 211, 211, 0.2);
+  }
+  
+  &.insighter-dashboard {
+    @media (min-width: 992px) {
+      color: white;
+      
+      &:hover {
+        background-color: #2a4cad;
+      }
+    }
+  }
+}
+
+.language-icon {
+  margin-right: 8px;
+  
+  &:hover {
+    transform: rotate(12deg);
+  }
+}
+
+.stroke-white {
+  @media (min-width: 992px) {
+    stroke: white;
+  }
+}
+
+.lang-text {
+  font-size: 12.35px;
+  font-weight: 500;
+}
+
+.right-130px{
+  right: -130px !important
+}
+
+
+@media screen and (max-width:768px) {
+    .menu-sub{
+        right: 40px;
+    }
+   
+}

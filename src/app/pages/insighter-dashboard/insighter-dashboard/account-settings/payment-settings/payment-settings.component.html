@@ -1,0 +1,206 @@
+    <!-- Payment Methods Section -->
+    <div class="mb-10 bg-white" *ngIf="isActive && (hasRole(['insighter']) || hasRole(['company']))">
+        <div class="col-12">
+            <div class="w-100">
+                <div class="p-24px">
+                    <div class="fs-2 fw-bolder mb-2 d-flex flex-column">
+                        <span>
+                            {{ 'PAYMENT_ACCOUNT.TITLE' | translate }}
+                        </span>
+                        <span class="text-gray-600 fw-semibold fs-6">
+                            {{ 'PAYMENT_ACCOUNT.DESCRIPTION' | translate }}
+                        </span>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div *ngIf="paymentAccountLoading" class="text-center py-10">
+                        <div class="spinner-border spinner-border-sm text-info" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+
+                    <!-- Error State -->
+                    <div *ngIf="!paymentAccountLoading && paymentAccountError" class="alert alert-danger">
+                        {{ paymentAccountError }}
+                    </div>
+
+                    <!-- Empty State -->
+                    <div *ngIf="!paymentAccountLoading && hasNoPaymentMethods()" class="text-center py-10">
+                        <i class="bi bi-credit-card fs-1 text-muted mb-4 d-block" style="font-size: 4rem !important;"></i>
+                        <h4 class="text-muted mb-4">{{ lang === 'ar' ? 'لا يوجد حساب لتلقي الدفعات' : 'No Payout Method Added' }}</h4>
+                        <p class="text-muted mb-5">{{ lang === 'ar' ? '': 'Tell us how you would like to receive your payment.' }}</p>
+                        <button class="btn btn-info" (click)="onAddPaymentMethod()">
+                            <i class="bi bi-plus-circle me-2"></i>
+                            {{ lang === 'ar' ? 'إضافة حساب' : 'Add Payment Method' }}
+                        </button>
+                    </div>
+
+                    <!-- Payment Methods List - Card Design -->
+                    <div *ngIf="!paymentAccountLoading && !hasNoPaymentMethods()">
+                        <div class="payment-methods-grid">
+                            <!-- Existing Payment Methods -->
+                            <div class="payment-method-wrapper" *ngFor="let method of getVisiblePaymentMethods(); let i = index">
+                                <div class="payment-method-card card border rounded-3 p-4" [ngClass]="{'primary-card': method.primary, 'secondary-card': !method.primary}">
+                                    <!-- Card Header -->
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <div class="d-flex align-items-center">
+                                            <!-- Logo -->
+                                            <div class="payment-logo-container me-3">
+                                                <img *ngIf="method.type === 'manual'" 
+                                                     src="/assets/media/logos/custom-2.svg" 
+                                                     alt="Bank Account"
+                                                     class="payment-logo">
+                                                <img *ngIf="method.type === 'provider'" 
+                                                     src="https://logos-world.net/wp-content/uploads/2022/12/Stripe-Emblem.png" 
+                                                     alt="Stripe"
+                                                     class="payment-logo">
+                                            </div>
+                                            <div>
+                                                <!-- Primary Account Badge -->
+                                                <div class="d-flex align-items-center mb-1">
+                                                    <h5 class="mb-0 text-info fw-bold" *ngIf="method.primary">
+                                                        {{ lang === 'ar' ? 'الحساب الأساسي' : 'Primary Account' }}
+                                                    </h5>
+                                                    <h5 class="mb-0 text-muted fw-bold" *ngIf="!method.primary">
+                                                        {{ lang === 'ar' ? 'حساب ثانوي' : 'Secondary Account' }}
+                                                    </h5>
+                                                </div>
+                                                <!-- Account Type -->
+                                                <div class="d-flex align-items-center text-info">
+                                                    <i [ngClass]="getAccountTypeIcon(method.type)" class="me-2"></i>
+                                                    <span class="fw-semibold">{{ getAccountTypeText(method.type) }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Status Badge -->
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span *ngIf="method.type === 'manual' && !isManualAccountComplete(method)" class="badge badge-light-warning" style="font-size: 0.8rem; padding: 0.5rem 1rem;">
+                                                {{ lang === 'ar' ? 'غير مكتمل' : 'INCOMPLETE' }}
+                                            </span>
+                                            <span *ngIf="method.primary && (method.type !== 'manual' || isManualAccountComplete(method))" class="badge badge-light-success" style="font-size: 0.8rem; padding: 0.5rem 1rem;">
+                                                {{ getStatusText(method).toUpperCase() }}
+                                            </span>
+                                            <span *ngIf="!method.primary && method.status === 'active' && (method.type !== 'manual' || isManualAccountComplete(method))" class="badge" [ngClass]="getStatusBadgeClass(method)" style="font-size: 0.8rem; padding: 0.5rem 1rem;">
+                                                {{ getStatusText(method).toUpperCase() }}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Blue Divider -->
+                                    <hr class="text-info mb-0" style="height: 1px; opacity: 0.3;">
+
+                                    <!-- Account Details -->
+                                    <div class="account-details-section" *ngIf="method.type === 'manual'">
+                                        <div class="account-name-section mb-3">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div class="account-name-label">{{ lang === 'ar' ? 'اسم الحساب' : 'Account Holder' }}</div>
+                                            </div>
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div class="account-name-value">{{ method.account_name || (lang === 'ar' ? 'غير محدد' : 'Not Available') }}</div>
+                                                <div class="d-flex align-items-center" *ngIf="method.bank_country">
+                                                    <img [src]="getCountryFlagPath(method.bank_country.name)"
+                                                         [alt]="method.bank_country.name"
+                                                         class="country-flag me-2"
+                                                         style="width: 24px; height: 16px; object-fit: cover;">
+                                                    <span class="fw-semibold text-dark">{{ method.bank_country.name }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="bank-name-section mb-3" *ngIf="method.bank_name">
+                                            <div class="bank-name-label">{{ lang === 'ar' ? 'اسم البنك' : 'Bank Name' }}</div>
+                                            <div class="bank-name-value">{{ method.bank_name }}</div>
+                                        </div>
+
+                                        <div class="iban-section">
+                                            <div class="iban-label">IBAN</div>
+                                            <div class="iban-value">
+                                                <span class="iban-text">{{ formatIban(method.bank_iban) || (lang === 'ar' ? 'غير محدد' : 'Not Available') }}</span>
+                                                <button *ngIf="method.bank_iban"
+                                                        type="button"
+                                                        class="copy-btn"
+                                                        (click)="copyToClipboard(method.bank_iban)"
+                                                        [pTooltip]="lang === 'ar' ? 'نسخ IBAN' : 'Copy IBAN'"
+                                                        tooltipPosition="top">
+                                                    <i class="ki-duotone ki-copy fs-6">
+                                                        <span class="path1"></span>
+                                                        <span class="path2"></span>
+                                                    </i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="account-details-section" *ngIf="method.type === 'provider'">
+                                        <div class="provider-info">
+                                            <i class="bi bi-info-circle text-info me-2"></i>
+                                            <span class="text-muted">{{ getProviderStatusExplanation(method) }}</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Action Buttons -->
+                                    <div class="d-flex justify-content-end gap-2 mt-4">
+                                        <button *ngIf="method.type === 'manual'"
+                                                class="btn btn-sm btn-info"
+                                                (click)="onEditManual()">
+                                            <i class="fas fa-edit me-1"></i>
+                                            {{ isManualAccountComplete(method) ? (lang === 'ar' ? 'تعديل' : 'Edit') : (lang === 'ar' ? 'إكمال الإعداد' : 'Complete Setup') }}
+                                        </button>
+                                        <button *ngIf="!method.primary && method.status === 'active'" 
+                                                class="btn btn-sm btn-info" 
+                                                (click)="onSetAsPrimary(method)"
+                                                [disabled]="switchingAccount">
+                                            <span *ngIf="!switchingAccount">
+                                                <i class="fas fa-star me-1"></i>
+                                                {{ lang === 'ar' ? 'تعيين أساسي' : 'Set Primary' }}
+                                            </span>
+                                            <span *ngIf="switchingAccount" class="spinner-border spinner-border-sm" role="status"></span>
+                                        </button>
+                                        <button 
+                                            *ngIf="!method.primary" 
+                                            class="btn btn-sm btn-outline-danger delete-btn-custom d-flex align-items-center" 
+                                            (click)="onDeleteMethod(method)"
+                                            [disabled]="deletingAccount[method.type + '_' + method.primary]">
+                                            <span *ngIf="!deletingAccount[method.type + '_' + method.primary]" class="d-flex align-items-center">
+                                                <i class="pi pi-trash delete-icon-custom" style="font-size: 14px; margin-inline-end: 6px;"></i>
+                                                <span class="delete-text-custom">{{ lang === 'ar' ? 'حذف' : 'Delete' }}</span>
+                                            </span>
+                                            <span *ngIf="deletingAccount[method.type + '_' + method.primary]" 
+                                                  class="spinner-border spinner-border-sm" role="status"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Add Payment Method Card -->
+                            <div class="payment-method-wrapper">
+                                <div class="add-payment-method-card card border rounded-3 p-5 text-center" (click)="onAddPaymentMethod()">
+                                    <div class="add-payment-content">
+                                        <div class="add-payment-icon mb-4">
+                                            <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M2 48.6667C2 49.5507 2.35119 50.3986 2.97631 51.0237C3.60143 51.6488 4.44928 52 5.33333 52H52.6667L62 42.6667V15.3333C62 14.4493 61.6488 13.6014 61.0237 12.9763C60.3986 12.3512 59.5507 12 58.6667 12H5.33333C4.44928 12 3.60143 12.3512 2.97631 12.9763C2.35119 13.6014 2 14.4493 2 15.3333V48.6667Z" fill="white"/>
+                                                <path d="M2 18.6667H62V27.3333H2V18.6667Z" fill="#29B6F6"/>
+                                                <path d="M43.3307 52.3333H5.33073C4.3586 52.3322 3.42661 51.9456 2.73921 51.2582C2.05182 50.5708 1.66516 49.6388 1.66406 48.6667V15.3333C1.66516 14.3612 2.05182 13.4292 2.73921 12.7418C3.42661 12.0544 4.3586 11.6678 5.33073 11.6667H58.6641C59.6362 11.6678 60.5682 12.0544 61.2556 12.7418C61.943 13.4292 62.3296 14.3612 62.3307 15.3333V33.3333C62.3307 33.4217 62.2956 33.5065 62.2331 33.569C62.1706 33.6315 62.0858 33.6667 61.9974 33.6667C61.909 33.6667 61.8242 33.6315 61.7617 33.569C61.6992 33.5065 61.6641 33.4217 61.6641 33.3333V15.3333C61.6632 14.538 61.3468 13.7754 60.7844 13.213C60.222 12.6506 59.4594 12.3342 58.6641 12.3333H5.33073C4.53536 12.3342 3.77282 12.6506 3.2104 13.213C2.64799 13.7754 2.33163 14.538 2.33073 15.3333V48.6667C2.33163 49.462 2.64799 50.2246 3.2104 50.787C3.77282 51.3494 4.53536 51.6658 5.33073 51.6667H43.3307C43.4191 51.6667 43.5039 51.7018 43.5664 51.7643C43.6289 51.8268 43.6641 51.9116 43.6641 52C43.6641 52.0884 43.6289 52.1732 43.5664 52.2357C43.5039 52.2982 43.4191 52.3333 43.3307 52.3333Z" fill="#C1C1C1"/>
+                                                <path d="M15.9974 45.6667H5.9974C5.90899 45.6667 5.82421 45.6315 5.76169 45.569C5.69918 45.5065 5.66406 45.4217 5.66406 45.3333V42.6667C5.66406 42.5783 5.69918 42.4935 5.76169 42.431C5.82421 42.3684 5.90899 42.3333 5.9974 42.3333H15.9974C16.0858 42.3333 16.1706 42.3684 16.2331 42.431C16.2956 42.4935 16.3307 42.5783 16.3307 42.6667V45.3333C16.3307 45.4217 16.2956 45.5065 16.2331 45.569C16.1706 45.6315 16.0858 45.6667 15.9974 45.6667ZM6.33073 45H15.6641V43H6.33073V45Z" fill="#C1C1C1"/>
+                                                <path d="M33.9974 45.6667H19.9974C19.909 45.6667 19.8242 45.6315 19.7617 45.569C19.6992 45.5065 19.6641 45.4217 19.6641 45.3333V42.6667C19.6641 42.5783 19.6992 42.4935 19.7617 42.431C19.8242 42.3684 19.909 42.3333 19.9974 42.3333H33.9974C34.0858 42.3333 34.1706 42.3684 34.2331 42.431C34.2956 42.4935 34.3307 42.5783 34.3307 42.6667V45.3333C34.3307 45.4217 34.2956 45.5065 34.2331 45.569C34.1706 45.6315 34.0858 45.6667 33.9974 45.6667ZM20.3307 45H33.6641V43H20.3307V45Z" fill="#C1C1C1"/>
+                                                <path d="M52.6641 32.6667C47.1501 32.6667 42.6641 37.1527 42.6641 42.6667C42.6641 48.1807 47.1501 52.6667 52.6641 52.6667C58.1781 52.6667 62.6641 48.1807 62.6641 42.6667C62.6641 37.1527 58.1781 32.6667 52.6641 32.6667ZM59.3307 43.3333H53.3307V49.3333C53.3307 49.5101 53.2605 49.6797 53.1355 49.8047C53.0104 49.9298 52.8409 50 52.6641 50C52.4873 50 52.3177 49.9298 52.1927 49.8047C52.0676 49.6797 51.9974 49.5101 51.9974 49.3333V43.3333H45.9974C45.8206 43.3333 45.651 43.2631 45.526 43.1381C45.401 43.013 45.3307 42.8435 45.3307 42.6667C45.3307 42.4899 45.401 42.3203 45.526 42.1953C45.651 42.0702 45.8206 42 45.9974 42H51.9974V36C51.9974 35.8232 52.0676 35.6536 52.1927 35.5286C52.3177 35.4036 52.4873 35.3333 52.6641 35.3333C52.8409 35.3333 53.0104 35.4036 53.1355 35.5286C53.2605 35.6536 53.3307 35.8232 53.3307 36V42H59.3307C59.5075 42 59.6771 42.0702 59.8021 42.1953C59.9272 42.3203 59.9974 42.4899 59.9974 42.6667C59.9974 42.8435 59.9272 43.013 59.8021 43.1381C59.6771 43.2631 59.5075 43.3333 59.3307 43.3333Z" fill="#29B6F6"/>
+                                                </svg>
+                                                
+                                                
+                                        </div>
+                                        <h5 class="fw-bold text-gray-800 mb-2">
+                                            {{ lang === 'ar' ? 'أضف حساب آخر' : 'Add a new payout method' }}
+                                        </h5>
+                                        <p class="text-muted mb-4">
+                                            {{ lang === 'ar' ? '' : 'Add a payout method to receive payments' }}
+                                          </p>
+                                          
+                                      
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

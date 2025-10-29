@@ -1,0 +1,63 @@
+<div class="d-flex flex-column pt-6 pb-lg-10 pt-lg-20" style="min-height: 100px;">
+  <!-- Breadcrumbs -->
+  <div class="d-flex align-items-center pt-1">
+    <ul class="breadcrumb breadcrumb-separatorless fw-semibold">
+      <li class="breadcrumb-item text-white fw-bold lh-1">
+        <a href="/" class="text-white text-hover-secondary">
+          <i class="ki-outline ki-home text-white fs-3"></i>
+        </a>
+      </li>
+      <ng-container *ngFor="let item of breadcrumbs; let last = last">
+        <li class="breadcrumb-item">
+          <i class="ki-outline {{lang === 'ar' ? 'ki-left' : 'ki-right'}} fs-4 text-white mx-n1"></i>
+        </li>
+        <li class="breadcrumb-item text-white fw-bold lh-1">
+          <a *ngIf="item.route && !last" [href]="item.route" class="text-white text-hover-secondary">
+            {{ item.translationKey ? (item.translationKey | translate) : item.label }}
+          </a>
+          <span *ngIf="!item.route || last">
+            {{ item.translationKey ? (item.translationKey | translate) : item.label }}
+          </span>
+        </li>
+      </ng-container>
+    </ul>
+  </div>
+
+  <!-- Statistics Cards (optional) -->
+  <div *ngIf="showStatistics && statisticCards.length > 0"
+       class="d-flex flex-wrap flex-lg-nowrap justify-content-end gap-4 gap-lg-10 align-items-center pt-9 pt-lg-5 mb-lg-5">
+    <div class="d-flex gap-4 gap-lg-13">
+      <div *ngFor="let card of statisticCards" class="d-flex flex-column rounded p-6 hover-scale">
+        <div class="d-flex align-items-center mb-2">
+          <!-- Handle different icon types -->
+          <i *ngIf="!card.iconType || card.iconType === 'ki-solid'"
+             class="ki-solid {{card.icon}} {{card.iconColor}} mx-2 fs-2"></i>
+          <i *ngIf="card.iconType === 'ki-outline'"
+             class="ki-outline {{card.icon}} {{card.iconColor}} mx-2 fs-2"></i>
+          <i *ngIf="card.iconType === 'ki-duotone'"
+             class="ki-duotone {{card.icon}} {{card.iconColor}} mx-2 fs-2">
+            <span class="path1"></span>
+            <span class="path2"></span>
+          </i>
+          <i *ngIf="card.iconType === 'pi'"
+             class="pi {{card.icon}} {{card.iconColor}} mx-2"
+             style="font-size: 1.5rem;"></i>
+
+          <ng-container *ngIf="card.useCountUp; else noCountUp">
+            <span class="text-white fw-bolder fs-2x" [appCountUp]="getNumericValue(card.value)">
+              {{ card.value }}
+            </span>
+          </ng-container>
+          <ng-template #noCountUp>
+            <span class="text-white fw-bolder fs-2x">
+              {{ card.value }}
+            </span>
+          </ng-template>
+        </div>
+        <div class="text-white opacity-75 fw-bold fs-6">
+          {{ card.translationKey | translate }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

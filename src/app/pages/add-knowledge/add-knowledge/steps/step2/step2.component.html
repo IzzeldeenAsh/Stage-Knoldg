@@ -1,0 +1,25 @@
+<div class="pb-10 pb-lg-12">
+  <h2 class="fw-bolder text-gray-900">
+    <ng-container *ngIf="defaultValues.knowledgeType === 'course'"> 
+      {{"COURSE_DOCUMENTS" | translate}}
+    </ng-container>
+    <ng-container *ngIf="defaultValues.knowledgeType === 'media'"> 
+      {{"MEDIA_DOCUMENTS" | translate}}
+    </ng-container>
+    <ng-container *ngIf="defaultValues.knowledgeType === 'data'"> 
+      {{"DATA_DOCUMENTS" | translate}}
+    </ng-container>
+    <ng-container *ngIf="defaultValues.knowledgeType === 'report'"> 
+      {{"REPORT_DOCUMENTS" | translate}}
+    </ng-container>
+    <ng-container *ngIf="defaultValues.knowledgeType === 'manual'"> 
+      {{"MANUAL_DOCUMENTS" | translate}}
+    </ng-container>
+    <ng-container *ngIf="defaultValues.knowledgeType === 'insight'"> 
+      {{"INSIGHT_DOCUMENTS" | translate}}
+    </ng-container>
+  </h2>
+  <div class="text-gray-500 fw-bold fs-6 mb-3"  >
+    {{'REPORTS_CHAPTERS_DETAILS' | translate}}
+  </div>
+</div> 

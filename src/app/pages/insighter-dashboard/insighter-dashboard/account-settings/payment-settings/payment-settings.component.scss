@@ -1,0 +1,412 @@
+// Clean design without shadows
+.p-24px{
+    padding: 24px;
+    
+    @media (max-width: 768px) {
+        padding: 16px;
+    }
+    
+    @media (max-width: 576px) {
+        padding: 12px;
+    }
+}
+
+// Payment Methods Grid Layout
+.payment-methods-grid {
+  display: grid;
+  gap: 24px;
+  margin-top: 2rem;
+
+  // Very large screens (1920px+) - 3 columns
+  @media (min-width: 1920px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  // Laptops and large screens (1024px - 1919px) - 2 columns
+  @media (min-width: 1024px) and (max-width: 1919px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  // Tablets (769px - 1023px) - 2 columns
+  @media (min-width: 769px) and (max-width: 1023px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  // Mobile (up to 768px) - 1 column
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+.payment-method-wrapper {
+  width: 100%;
+}
+
+// Payment Method Card Styling - Clean design
+.payment-method-card {
+  border: 1.5px solid #d1d5db !important;
+  border-radius: 12px !important;
+  background-color: #ffffff;
+  transition: all 0.2s ease;
+  box-shadow: none !important;
+  width: 100%;
+  height: 100%;
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  
+  &.primary-card {
+    border-color: #0978B9 !important;
+    background-color: #f8fbff;
+    background-image: url(https://res.cloudinary.com/dsiku9ipv/image/upload/v1755797462/237149957_689f919e-0ac3-4999-ad29-dfbf8a20382f_cm8fwh.webp);
+    background-position: 100%;
+    background-size: 140%;
+    background-repeat: no-repeat;
+    
+    &:hover {
+      box-shadow: 0 4px 12px rgba(9, 120, 185, 0.15) !important;
+      transform: translateY(-1px);
+    }
+  }
+  
+  &.secondary-card {
+    background-color: #ffffff;
+    
+    &:hover {
+      border-color: #0978B9 !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+      transform: translateY(-1px);
+    }
+  }
+}
+
+// Add Payment Method Card
+.add-payment-method-card {
+  border: 2px dashed #d1d5db !important;
+  border-radius: 12px !important;
+  background-color: #ffffff;
+  transition: all 0.2s ease;
+  box-shadow: none !important;
+  cursor: pointer;
+  height: 100%;
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &:hover {
+    background-color: #f9fafb;
+    border-color: #0978B9 !important;
+    transform: translateY(-1px);
+    
+    .bi-plus-circle {
+      transform: scale(1.1);
+      color: #0978B9 !important;
+    }
+  }
+}
+
+.add-payment-content {
+  text-align: center;
+}
+
+.add-payment-icon {
+  .bi-plus-circle {
+    transition: transform 0.2s ease;
+  }
+}
+
+// Payment Logo Container
+.payment-logo-container {
+  width: 48px;
+  height: 48px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+
+  border: 1px solid #e9ecef;
+}
+
+.payment-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+// Blue Divider Line
+hr.text-info {
+  border-top: 1px solid #0978B9 !important;
+  opacity: 0.3;
+}
+
+// Badge styles
+.badge {
+  padding: 0.375rem 0.75rem;
+  font-weight: 500;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  
+  &.badge-light-info {
+    background-color: #e3f2fd;
+    color: #0978B9;
+    border: 1px solid #bbdefb;
+  }
+  
+  &.badge-light-success {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
+    font-weight: 600;
+  }
+  
+  &.badge-light-warning {
+    background-color: #fff8e1;
+    color: #f57c00;
+    border: 1px solid #ffe0b2;
+  }
+  
+  &.badge-light-danger {
+    background-color: #ffebee;
+    color: #c62828;
+    border: 1px solid #ffcdd2;
+  }
+}
+
+// Button styles
+.btn {
+  &.btn-info {
+    background-color: #0978B9;
+    border-color: #0978B9;
+    color: white;
+    
+    &:hover {
+      background-color: #0052a3;
+      border-color: #0052a3;
+    }
+  }
+  
+  &.btn-light-info {
+    background-color: #EBF3FE;
+    border-color: #EBF3FE;
+    color: #0978B9;
+    
+    &:hover {
+      background-color: #d4e8fc;
+      border-color: #d4e8fc;
+    }
+  }
+  
+  &.btn-light-danger {
+    background-color: #ffebee;
+    border-color: #ffebee;
+    color: #f44336;
+    
+    &:hover {
+      background-color: #ffcdd2;
+      border-color: #ffcdd2;
+    }
+  }
+}
+
+// Alert styles
+.alert {
+  &.alert-light-info {
+    background-color: #e3f6fc;
+    border: 1px solid #b3e5fc;
+    color: #0277bd;
+  }
+}
+
+// Empty state icon
+.bi-credit-card {
+  opacity: 0.5;
+}
+
+// Account Details Section
+.account-details-section {
+  margin-top: 1.5rem;
+  flex-grow: 1;
+  
+  .account-name-section {
+    .account-name-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #6c757d;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .account-name-value {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #2c3e50;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+  }
+
+  .bank-name-section {
+    .bank-name-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #6c757d;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .bank-name-value {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #2c3e50;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+  }
+  
+  .iban-section {
+    .iban-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #6c757d;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    
+    .iban-value {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      
+      .iban-text {
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: #2c3e50;
+        letter-spacing: 1px;
+        background-color: #f8f9fa;
+        padding: 8px 12px;
+        border-radius: 6px;
+        border: 1px solid #e9ecef;
+        flex-grow: 1;
+      }
+      
+      .copy-btn {
+        background: none;
+        border: none;
+        color: #0978B9;
+        cursor: pointer;
+        padding: 6px;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        &:hover {
+          background-color: rgba(9, 120, 185, 0.1);
+          transform: scale(1.1);
+        }
+        
+        &:active {
+          transform: scale(0.95);
+        }
+      }
+    }
+  }
+  
+  // Legacy detail-box styles for backward compatibility
+  .detail-box {
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    padding: 12px 16px;
+    border: 1px solid #e9ecef;
+    
+    .detail-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #6c757d;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    
+    .detail-value {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #495057;
+    }
+  }
+}
+
+.provider-info {
+  background-color: #f8fbff;
+  border-radius: 6px;
+  padding: 12px 16px;
+  border: 1px solid #e3f2fd;
+  font-size: 0.85rem;
+}
+
+// Delete button custom styles
+.delete-btn-custom {
+  &:hover,
+  &:focus {
+    color: #fff !important;
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+  }
+  
+  &:hover .delete-icon-custom,
+  &:focus .delete-icon-custom,
+  &:hover .delete-text-custom,
+  &:focus .delete-text-custom {
+    color: #fff !important;
+  }
+}
+
+// Responsive improvements
+@media (max-width: 768px) {
+  .payment-method-card {
+    margin-bottom: 1rem;
+  }
+  
+  .detail-box {
+    margin-bottom: 0.75rem;
+  }
+  
+  .payment-logo-container {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .payment-logo {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .add-payment-method-card {
+    padding: 3rem !important;
+  }
+}
+
+// Account type icon styles
+.text-info {
+  color: #0978B9 !important;
+}
+
+// Status text helper
+.text-muted {
+  color: #6c757d !important;
+}
+
+// Country flag styling
+.country-flag {
+  border-radius: 2px;
+  border: 1px solid #e9ecef;
+}

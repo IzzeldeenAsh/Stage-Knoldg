@@ -1,0 +1,269 @@
+<div class="region-selector" (click)="showDialog()">
+  <div class="chips-container">
+    <ng-container *ngIf="hasSelections(); else placeholderTpl">
+      <div class="selected-items" (click)="$event.stopPropagation()">
+        <p-chip
+          *ngFor="let item of getSelectedDisplayItems()"
+          [label]="item"
+          [removable]="true"
+          (onRemove)="removeItem(item)"
+          (click)="$event.stopPropagation()"
+        ></p-chip>
+        <!-- Add button -->
+        <span 
+          class="add-button text-info fw-bold ms-2"
+          (click)="showDialog()"
+          style="cursor: pointer; font-size: 14px;"
+        >
+          Add
+        </span>
+      </div>
+    </ng-container>
+    <ng-template #placeholderTpl>
+      <div class="placeholder-text">
+        <span
+          ><i class="ki-duotone ki-globe me-2"
+            ><span class="path1"></span><span class="path2"></span></i></span
+        >{{ placeholder }}
+      </div>
+    </ng-template>
+  </div>
+</div>
+
+<p-dialog
+  [header]="title"
+  [(visible)]="dialogVisible"
+  [modal]="true"
+  [style]="{ width: '70vw', maxWidth: '1000px' }"
+  appendTo="body"
+  [breakpoints]="{ '960px': '90vw', '640px': '100vw' }"
+  class="select-region-dialog"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="p-fluid"
+>
+  <div class="region-dialog">
+    <!-- Search input -->
+    <div class="search-container mb-4">
+      <span class="p-input-icon-left w-100">
+        <input
+          type="text"
+          pInputText
+          [(ngModel)]="searchQuery"
+          (input)="filterRegions()"
+          placeholder="{{ 'SEARCH_COUNTRY' | translate }}"
+          class="w-100 search-input"
+        />
+      </span>
+    </div>
+
+    <!-- Clear all button -->
+    <div class="selected-count mb-4" *ngIf="hasSelections()">
+      <button
+        class="btn btn-link btn-sm text-danger"
+        (click)="clearAllSelections()"
+      >
+        <span
+          ><i class="ki-duotone ki-trash me-1"
+            ><span class="path1"></span><span class="path2"></span
+          >
+          <span class="path3"></span><span class="path4"></span
+            >
+            <span class="path5"></span>
+        </i>
+        </span>
+        {{ "CLEAR_ALL" | translate }}
+      </button>
+    </div>
+
+    <!-- Only Regions Mode - Enhanced Design -->
+    <div *ngIf="displayMode === 'onlyRegions' || !displayMode" class="mb-4">
+      <div class="regions-cards">
+        <div
+          *ngFor="let region of filteredRegions"
+          class="region-card"
+          [class.selected]="isRegionSelected(region)"
+          (click)="
+            toggleSelectRegion(region, {
+              target: { checked: !isRegionSelected(region) }
+            })
+          "
+        >
+          <div class="region-card-content">
+            <div class="form-check">
+              <input
+                type="checkbox"
+                class="form-check-input"
+                [checked]="isRegionSelected(region)"
+                (change)="toggleSelectRegion(region, $event)"
+                (click)="$event.stopPropagation()"
+                id="select-region-{{ region.id }}"
+              />
+              <label
+                class="form-check-label fw-bold"
+                for="select-region-{{ region.id }}"
+              >
+                {{ region.name }}
+              </label>
+            </div>
+            <div class="region-card-icon" *ngIf="isRegionSelected(region)">
+              <span
+                ><i class="ki-duotone ki-check-circle text-success"
+                  ><span class="path1"></span><span class="path2"></span></i
+              ></span>
+            </div>
+          </div>
+          <div class="region-card-footer">
+            <span class="text-muted">
+              <small
+                >{{ region.countries.length || 0 }}
+                {{ "COUNTRIES" | translate }}</small
+              >
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Only Countries Mode -->
+    <div *ngIf="displayMode === 'onlyCountries'" class="countries-container">
+      <div class="countries-grid">
+        <div
+          *ngFor="let country of allCountries"
+          class="country-item"
+          [class.highlighted]="isCountrySelectedFlat(country)"
+          [class.rtl-country-item]="document.dir === 'rtl'"
+          (click)="
+            toggleSelectCountryFlat(country, {
+              target: { checked: !isCountrySelectedFlat(country) }
+            })
+          "
+        >
+          <div
+            class="country-checkbox-container"
+            [ngClass]="{ 'rtl-checkbox-container': document.dir === 'rtl' }"
+          >
+            <input
+              type="checkbox"
+              class="form-check-input"
+              [checked]="isCountrySelectedFlat(country)"
+              (change)="toggleSelectCountryFlat(country, $event)"
+              id="select-country-flat-{{ country.id }}"
+            />
+            <label
+              class="form-check-label d-flex align-items-center country-label"
+              for="select-country-flat-{{ country.id }}"
+              (click)="
+                toggleSelectCountryFlat(country, {
+                  target: { checked: !isCountrySelectedFlat(country) }
+                })
+              "
+            >
+              <img
+                [src]="getCountryFlagPath(country.flag)"
+                (error)="onFlagError($event)"
+                [alt]="country.name"
+                class="country-flag"
+                [ngClass]="{
+                  'me-2': document.dir !== 'rtl',
+                  'ms-2': document.dir === 'rtl'
+                }"
+              />
+              <span>{{ country.name }}</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Default Mode - Tabbed Regions & Countries -->
+    <p-tabView *ngIf="displayMode === 'default'">
+      <p-tabPanel *ngFor="let region of filteredRegions" [header]="region.name">
+        <div class="region-header mb-3">
+          <div class="form-check">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              [checked]="isRegionSelected(region)"
+              (change)="toggleSelectRegion(region, $event)"
+              id="select-region-{{ region.id }}"
+            />
+            <label
+              class="form-check-label fw-bold"
+              for="select-region-{{ region.id }}"
+            >
+              {{ "SELECT_ALL_COUNTRIES" | translate }}
+            </label>
+          </div>
+        </div>
+
+        <!-- Countries grid -->
+        <div class="countries-grid">
+          <div
+            *ngFor="let country of filteredCountries(region)"
+            class="country-item"
+            [class.highlighted]="isCountrySelected(country, region)"
+            (click)="
+              toggleSelectCountry(region, country, {
+                target: { checked: !isCountrySelected(country, region) }
+              })
+            "
+          >
+            <div class="form-check rtl-friendly">
+              <input
+                type="checkbox"
+                class="form-check-input"
+                [checked]="isCountrySelected(country, region)"
+                (change)="toggleSelectCountry(region, country, $event)"
+                id="select-country-{{ country.id }}"
+              />
+              <label
+                class="form-check-label"
+                for="select-country-{{ country.id }}"
+              >
+                <div
+                  class="d-flex align-items-center"
+                  [ngClass]="{
+                    'flex-row': document.dir !== 'rtl',
+                    'flex-row-reverse': document.dir === 'rtl'
+                  }"
+                >
+                  <img
+                    [src]="getCountryFlagPath(country.flag)"
+                    (error)="onFlagError($event)"
+                    [alt]="country.name"
+                    class="country-flag"
+                    [ngClass]="{
+                      'me-2': document.dir !== 'rtl',
+                      'ms-2': document.dir === 'rtl'
+                    }"
+                  />
+                  <span>{{ country.name }}</span>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="dialog-footer">
+      <button class="btn btn-secondary me-2" (click)="dialogVisible = false">
+        {{ "CANCEL" | translate }}
+      </button>
+      <button
+        class="btn btn-primary"
+        (click)="onConfirm()"
+        [disabled]="!hasSelections()"
+      >
+        <span
+          ><i class="ki-duotone ki-check me-1"
+            ><span class="path1"></span><span class="path2"></span></i
+        ></span>
+        {{ "CONFIRM" | translate }}
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>

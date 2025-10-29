@@ -1,0 +1,63 @@
+<!--begin::Body-->
+<div class="d-flex flex-column flex-center min-vh-100 p-10 bg-light">
+  <div class="card w-md-550px p-10 mx-auto shadow-sm">
+    <!--begin::Header-->
+    <div class="text-center mb-10">
+      <h1 class="text-dark mb-3">{{ 'AUTH.EMAIL_RECONFIRM.FORM_TITLE' | translate }}</h1>
+      <div class="text-gray-400 fw-semibold fs-5">{{ 'AUTH.EMAIL_RECONFIRM.FORM_SUBTITLE' | translate }}</div>
+    </div>
+    <!--end::Header-->
+
+
+
+    <!--begin::Success Message-->
+    <div class="alert alert-success mb-5" role="alert" *ngIf="successMessage">
+      <h4 class="alert-heading text-center">{{ 'AUTH.EMAIL_RECONFIRM.SUCCESS_TITLE' | translate }}</h4>
+      <p class="mb-0 text-center">{{ successMessage }}</p>
+    </div>
+    <!--end::Success Message-->
+
+    <!--begin::Error Message-->
+    <div class="alert alert-danger mb-5" role="alert" *ngIf="errorMessage">
+      <p class="mb-0 text-center">{{ errorMessage }}</p>
+    </div>
+    <!--end::Error Message-->
+
+    <!--begin::Actions-->
+    <div class="d-grid gap-3 mb-6">
+      <!--begin::Resend Button-->
+      <button type="button" 
+              class="btn btn-primary py-3" 
+              [disabled]="!canResend || isResending"
+              (click)="resendVerificationEmail()">
+        <span *ngIf="!isResending && canResend">{{ 'AUTH.EMAIL_RECONFIRM.RESEND_BUTTON' | translate }}</span>
+        <span *ngIf="!canResend && !isResending">{{ 'AUTH.EMAIL_RECONFIRM.RESEND_COOLDOWN' | translate }}: {{ resendCooldown }}s</span>
+        <span *ngIf="isResending">
+          {{ 'AUTH.EMAIL_RECONFIRM.SENDING' | translate }}
+          <span class="spinner-border spinner-border-sm ms-2"></span>
+        </span>
+      </button>
+      <!--end::Resend Button-->
+
+      <!--begin::Back to Login-->
+      <!-- <button type="button" 
+              class="btn btn-light-primary py-3"
+              (click)="goToLogin()">
+        {{ 'AUTH.EMAIL_RECONFIRM.BACK_TO_LOGIN' | translate }}
+      </button> -->
+      <!--end::Back to Login-->
+    </div>
+    <!--end::Actions-->
+
+    <!--begin::Logout-->
+    <div class="text-center">
+      <button type="button" 
+              class="btn btn-sm btn-light-danger"
+              (click)="logout()">
+        {{ 'AUTH.EMAIL_RECONFIRM.LOGOUT' | translate }}
+      </button>
+    </div>
+    <!--end::Logout-->
+  </div>
+</div>
+<!--end::Body-->

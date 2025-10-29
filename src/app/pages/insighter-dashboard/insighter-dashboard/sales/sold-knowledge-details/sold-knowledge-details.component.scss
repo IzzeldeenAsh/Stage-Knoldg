@@ -1,0 +1,14 @@
+// Component-specific styles for sold knowledge details
+// Inherit styles from parent order components
+
+// Document count badge - make circular
+:host .position-absolute.top-0.start-75.translate-middle.badge.rounded-pill.text-white {
+  width: 20px;
+  height: 20px;
+  border-radius: 50% !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+}

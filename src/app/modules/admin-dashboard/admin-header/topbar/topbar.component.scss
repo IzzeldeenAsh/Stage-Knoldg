@@ -1,0 +1,127 @@
+/* navbar.component.css */
+
+/* Container Styles */
+.menu-dropdown {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+  }
+  .transition-all{
+    transition: all 0.3s ease;
+  }
+  /* Dropdown Menu Styles */
+  .menu-sub-dropdown {
+    position: absolute;
+    top: 100%; /* Positions the menu directly below the trigger */
+    right: 0;
+    z-index: 200; /* Ensure the dropdown appears above other elements */
+    width: 275px;
+    background: #fff; /* Menu background */
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: none; /* Hidden by default */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+  
+  /* Show the dropdown menu when the 'show' class is applied */
+  .menu-sub-dropdown.show {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* Notifications dropdown positioning */
+  .position-relative app-notifications-inner {
+    position: absolute;
+    z-index: 105;
+    top: 100%;
+    left: 0;
+    transform: translateX(-75%); /* Increased the translation to move it more to the left */
+    margin-top: 0.5rem;
+    background: white;
+    border-radius: 0.475rem;
+    box-shadow: 0 0 50px 0 rgb(82 63 105 / 15%);
+  }
+
+  /* Responsive adjustments for notifications dropdown */
+  @media (max-width: 767px) {
+    .position-relative app-notifications-inner {
+      transform: none;
+      left: auto;
+      right: 0;
+      width: 300px !important;
+      max-width: 90vw !important;
+    }
+  }
+
+  /* Dropdown Icon Styles */
+  .dropdown-icon {
+    position: absolute;
+    top: 50%;
+    right: 0.5rem;
+    transform: translateY(-50%);
+    pointer-events: none;
+    fill: #555;
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .menu-sub-dropdown {
+      width: 200px;
+    }
+  }
+  
+  .hidden{
+    visibility: hidden;
+    opacity: 0;
+    display: none;
+  }
+  .icon{
+    top: -10px;
+    right: 8px;
+  }
+
+/* Container for the user menu */
+.user-menu-container {
+  position: relative;
+}
+
+/* Dropdown menu styling */
+.user-dropdown-menu {
+  display: block; /* Hidden by default */
+  position: absolute;
+  top: 100%; /* Position below the avatar */
+  right: 0;
+  background-color: white;
+  min-width: 120px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  z-index: 1000;
+  margin-top: 8px; /* Space between avatar and menu */
+}
+
+.object-fit-cover{
+  object-fit: cover;
+}
+
+/* Style for the sign-out button */
+.signout-button {
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+}
+
+.signout-button:hover {
+  background-color: #f1f1f1;
+}
+
+.relative{
+  position: relative;
+}

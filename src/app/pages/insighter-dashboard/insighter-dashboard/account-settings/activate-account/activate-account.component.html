@@ -1,0 +1,21 @@
+<div class="delete-section border-1 border-light-danger w-100 mb-10">
+    <div class="p-24px">
+      <div class="fs-2 fw-bolder" *ngIf="role === 'company'">
+       {{lang === 'ar' ? 'اعادة تنشيط حساب الشركة' : 'Reactivate Company Account'}}
+      </div>
+      <div class="fs-2 fw-bolder" *ngIf="role === 'insighter'">
+        {{lang === 'ar' ? 'اعادة تنشيط حساب الانسايتر' : 'Reactivate Insighter Account'}}
+       </div>
+    <p class="warning-text">
+      {{ 'REACTIVATE_ACCOUNT.DESCRIPTION' | translate }}
+    </p>
+  
+  
+    </div>
+  
+    <div class="action-footer bg-light-success">
+      <button class="delete-button" (click)="showReactivateDialog()">
+        {{ 'REACTIVATE_ACCOUNT.BUTTON_TEXT' | translate }}
+      </button>
+    </div>
+  </div>

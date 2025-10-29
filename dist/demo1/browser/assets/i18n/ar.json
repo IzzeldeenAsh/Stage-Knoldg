@@ -1,0 +1,157 @@
+{
+  "INSIGHTER": {
+    "DASHBOARD": {
+      "NAV": {
+        "DASHBOARD": "لوحة القيادة",
+        "OVERVIEW": "نظرة عامة",
+        "MY_REQUESTS": "طلباتي",
+        "MY_KNOWLEDGE": "معرفتي", 
+        "MY_DOWNLOADS": "تحميلاتي",
+        "READ_LATER": "اقرأ لاحقاً",
+        "MY_ORDERS": "طلباتي",
+        "MEETINGS": "الاجتماعات",
+        "MY_CONSULTING_SCHEDULE": "جدولي الاستشاري",
+        "MY_COMPANY": "شركتي",
+        "SETTINGS": "الإعدادات",
+        "ACCOUNT_SETTINGS": "إعدادات الحساب",
+        "PAYMENT_SETTINGS": "إعدادات الدفع",
+        "WALLET": "المحفظة"
+      }
+    },
+    "MEETINGS": {
+      "TABS": {
+        "RECEIVED": "المستلمة",
+        "SENT": "المرسلة"
+      },
+      "FILTERS": {
+        "ALL": "الكل",
+        "PENDING": "في الانتظار",
+        "APPROVED": "مقبولة",
+        "POSTPONED": "مؤجلة"
+      },
+      "STATUS": {
+        "PENDING": "في الانتظار",
+        "APPROVED": "مقبولة",
+        "POSTPONED": "مؤجلة"
+      },
+      "NO_MEETINGS": "لا توجد اجتماعات",
+      "NO_MEETINGS_DESC": "ليس لديك أي اجتماعات مجدولة في الوقت الحالي.",
+      "NO_DESCRIPTION": "لا يوجد وصف",
+      "INSIGHTER": "المستشار"
+    }
+  },
+  "COMMON": {
+    "SHOWING": "عرض",
+    "TO": "إلى",
+    "OF": "من",
+    "RESULTS": "نتائج",
+    "CANCEL": "إلغاء",
+    "UPLOAD": "رفع",
+    "UPLOADING": "جاري الرفع...",
+    "DELETE": "حذف",
+    "DELETING": "جاري الحذف...",
+    "FREE": "مجاني",
+    "LOADING": "جاري التحميل"
+  },
+  "MY_KNOWLEDGE": {
+    "NO_ITEMS": {
+      "TITLE": "لم يتم العثور على عناصر معرفية",
+      "MESSAGE": "ليس لديك أي عناصر معرفية في الوقت الحالي. ستظهر العناصر الجديدة هنا بمجرد إنشائها.",
+      "FILTERED_MESSAGE": "لا توجد عناصر معرفية تطابق معايير التصفية الحالية. حاول تعديل الفلاتر أو عرض جميع العناصر."
+    },
+    "NO_SCHEDULED": {
+      "TITLE": "لم يتم العثور على عناصر مجدولة",
+      "MESSAGE": "ليس لديك أي عناصر معرفية مجدولة في الوقت الحالي.",
+      "FILTERED_MESSAGE": "لا توجد عناصر مجدولة تطابق معايير البحث. حاول استخدام مصطلح بحث مختلف."
+    },
+    "NO_POSTED": {
+      "TITLE": "لم يتم العثور على عناصر منشورة",
+      "MESSAGE": "ليس لديك أي عناصر معرفية منشورة في الوقت الحالي.",
+      "FILTERED_MESSAGE": "لا توجد عناصر منشورة تطابق معايير البحث. حاول استخدام مصطلح بحث مختلف."
+    },
+    "NO_PACKAGES": {
+      "TITLE": "لم يتم العثور على حزم",
+      "MESSAGE": "ليس لديك أي حزم معرفية في الوقت الحالي. أنشئ حزمة باستخدام زر 'إنشاء حزمة'."
+    }
+  },
+  "MY_DOWNLOADS": {
+    "STATISTICS": "إحصائيات التحميل",
+    "TOTAL_SPENT": "إجمالي المصروف",
+    "TOTAL_DOCUMENTS": "إجمالي المستندات",
+    "KNOWLEDGE_ITEMS": "العناصر المعرفية",
+    "NO_DOWNLOADS": "لا توجد تحميلات متاحة",
+    "SELECT_KNOWLEDGE": "اختر عنصر معرفي لعرض المستندات",
+    "SELECT_ITEM_DETAILS": "اختر عنصرًا لعرض التفاصيل",
+    "NO_DOCUMENTS": "لا توجد مستندات متاحة",
+    "DOCUMENTS": "المستندات",
+    "DOWNLOAD_KNOWLEDGE": "تحميل المعرفة",
+    "DOWNLOAD_DOCUMENT": "تحميل المستند",
+    "PUBLISHER": "الناشر",
+    "PURCHASE_DATE": "تاريخ الشراء",
+    "VIEW_ALL": "عرض الكل",
+    "SEARCH_PLACEHOLDER": "البحث بالعنوان..."
+  },
+  "EMPTY_DASHBOARD": {
+    "TITLE": "ابدأ في بناء مكتبة المعرفة الخاصة بك",
+    "DESCRIPTION": "ابدأ في إنشاء محتوى معرفي قيم يمكن مشاركته داخل مؤسستك. أضف أول عنصر معرفي للبدء.",
+    "ADD_BUTTON": "إضافة معرفة"
+  },
+  "PROFILE": {
+    "GENERAL_INFO": "المعلومات العامة",
+    "COMPANY_NAME": "اسم الشركة",
+    "WEBSITE": "الموقع الإلكتروني",
+    "FIRST_NAME": "الاسم الأول",
+    "LAST_NAME": "اسم العائلة",
+    "EMAIL": "البريد الإلكتروني",
+    "ROLES": "الأدوار",
+    "COUNTRY": "الدولة",
+    "SOCIAL_MEDIA": "وسائل التواصل الاجتماعي",
+    "ABOUT_COMPANY": "عن الشركة",
+    "CONSULTING_FIELDS": "مجالات الاستشارة",
+    "INDUSTRIES": "المجالات",
+    "MY_CERTIFICATES": "شهاداتي",
+    "ADD_CERTIFICATE": "إضافة شهادة",
+    "CERTIFICATE_TYPE": "نوع الشهادة",
+    "SELECT_CERTIFICATE_TYPE": "اختر نوع الشهادة",
+    "CERTIFICATE_FILE": "ملف الشهادة",
+    "SUPPORTED_FORMATS": "الصيغ المدعومة: PDF، DOC، DOCX، JPG، PNG",
+    "DELETE_CERTIFICATE": "حذف الشهادة",
+    "DELETE_CERTIFICATE_CONFIRMATION": "هل أنت متأكد أنك تريد حذف هذه الشهادة؟ لا يمكن التراجع عن هذا الإجراء."
+  },
+  "ACCOUNT_SETTINGS": {
+    "PHONE_NUMBER": "رقم الهاتف",
+    "BIO": "نبذة عني"
+  },
+
+  "CLIENT": "عميل",
+  "VERIFIED": "موثق",
+  "COMPANY_PHONE": "هاتف الشركة",
+  "ADDRESS": "العنوان",
+  "NO_SOCIAL_MEDIA": "لا توجد روابط وسائل تواصل اجتماعي متاحة",
+  "COMPANY_INDUSTRIES": "مجالات الشركة",
+  "COMPANY_CONSULTING_FIELDS": "مجالات استشارات الشركة",
+  "CERTIFICATIONS": "الشهادات",
+  "COMPANY_CERTIFICATIONS": "شهادات الشركة",
+  "AUTH": {
+    "EMAIL_RECONFIRM": {
+      "TITLE": "مطلوب تأكيد البريد الإلكتروني",
+      "DESCRIPTION": "يرجى تأكيد عنوان بريدك الإلكتروني للوصول إلى جميع الميزات",
+      "FORM_TITLE": "تأكيد بريدك الإلكتروني",
+      "FORM_SUBTITLE": "نحتاج إلى تأكيد عنوان بريدك الإلكتروني قبل أن تتمكن من المتابعة",
+      "EMAIL_NOT_VERIFIED": "عنوان البريد الإلكتروني غير مؤكد",
+      "SUCCESS_TITLE": "تم إرسال البريد الإلكتروني!",
+      "SUCCESS_MESSAGE": "تم إرسال رسالة التأكيد بنجاح. يرجى التحقق من صندوق الوارد ومجلد الرسائل غير المرغوب فيها.",
+      "ERROR_MESSAGE": "فشل في إرسال رسالة التأكيد. يرجى المحاولة مرة أخرى.",
+      "RESEND_BUTTON": "إعادة إرسال رسالة التأكيد",
+      "RESEND_COOLDOWN": "انتظر",
+      "SENDING": "جاري الإرسال...",
+      "BACK_TO_LOGIN": "العودة إلى تسجيل الدخول",
+      "OR": "أو",
+      "LOGOUT": "تسجيل الخروج"
+    }
+  },
+  "GENERATE_AI_INFORMATION": "إنشاء معلومات بالذكاء الاصطناعي",
+  "REGENERATE_AI_INFORMATION": "إعادة إنشاء معلومات بالذكاء الاصطناعي",
+  "COVER_YEARS": "سنوات التغطية",
+  "COVER_YEARS_TOOLTIP": "اختر السنة أو نطاق السنوات التي تغطيها هذه المعرفة أو تتعلق بها"
+}

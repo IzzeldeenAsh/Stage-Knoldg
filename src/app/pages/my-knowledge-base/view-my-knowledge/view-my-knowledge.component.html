@@ -1,0 +1,939 @@
+<p-toast></p-toast>
+
+<div class="bg-custom"></div>
+<div class="content-wrapper">
+  <div class="breadcrumb-bg" *ngIf="knowledge">
+    <div class="container">
+      <!-- Breadcrumb -->
+      <div class="d-flex align-items-center justify-content-between pt-10 mb-70">
+        <ul
+          class="breadcrumb breadcrumb-separatorless d-flex align-items-center gap-2"
+        >
+          <li
+            class="breadcrumb-item text-gray-800 lh-1 d-flex align-items-center"
+          >
+            <a
+              [routerLink]="['/']"
+              class="text-gray-700 text-hover-info d-flex align-items-center gap-2"
+            >
+              <i class="ki-outline ki-home text-gray-700 fs-3"></i>
+              {{ 'VIEW_MY_KNOWLEDGE.BREADCRUMB.HOME' | translate }}
+            </a>
+            <i
+              class="ki-outline {{
+                lang === 'ar' ? 'ki-left' : 'ki-right'
+              }} fs-4 text-gray-700 ms-2"
+            ></i>
+          </li>
+          <li
+            class="breadcrumb-item text-gray-800 lh-1 d-flex align-items-center"
+          >
+            <a
+              [routerLink]="['/app/insighter-dashboard/my-knowledge/general']"
+              class="text-gray-700 text-hover-info"
+            >
+              {{ 'VIEW_MY_KNOWLEDGE.BREADCRUMB.MY_KNOWLEDGE_BASE' | translate }}
+            </a>
+            <i
+              class="ki-outline {{
+                lang === 'ar' ? 'ki-left' : 'ki-right'
+              }} fs-4 text-gray-700 ms-2"
+            ></i>
+          </li>
+          <li
+            class="breadcrumb-item text-gray-800 lh-1 d-flex align-items-center"
+          >
+            <a
+              [routerLink]="['/app/insighter-dashboard/my-knowledge/general']"
+              class="text-gray-700 text-hover-info"
+            >
+              {{ 'VIEW_MY_KNOWLEDGE.BREADCRUMB.GENERAL' | translate }}
+            </a>
+            <i
+              class="ki-outline {{
+                lang === 'ar' ? 'ki-left' : 'ki-right'
+              }} fs-4 text-gray-700 ms-2"
+            ></i>
+          </li>
+        </ul>
+          <div
+            class="breadcrumb-item text-gray-800 lh-1 d-flex align-items-center gap-2"
+          >
+          <!-- Only show delete button if not in review -->
+          <button class="btn btn-xs btn-danger d-flex align-items-center" (click)="confirmDelete()" *ngIf="knowledge.status !== 'in_review'">
+            <i class="ki-duotone ki-trash fs-6 mx-1">
+              <span class="path1"></span>
+              <span class="path2"></span>
+              <span class="path3"></span>
+              <span class="path4"></span>
+              <span class="path5"></span>
+            </i>
+            {{"COMMON.DELETE" | translate}}
+          </button>
+            <!-- Only show edit button if not in review -->
+            <button class="btn btn-xs btn-success d-flex align-items-center" 
+            [routerLink]="['/app/edit-knowledge/stepper', knowledge.id]"
+            *ngIf="knowledge.status !== 'in_review' && 
+              !(
+              (knowledge.status === 'scheduled') && 
+              knowledge.publish_as !== 'package' && 
+              !hasRequiredFields()
+            )"
+            >
+              <i class="ki-duotone ki-pencil fs-6 me-1">
+                <span class="path1"></span>
+                <span class="path2"></span>
+              </i>
+              <ng-container *ngIf="!knowledge.description">
+                {{ 'VIEW_MY_KNOWLEDGE.REVIEW_AND_COMPLETE' | translate }}
+              </ng-container>
+              <ng-container *ngIf="knowledge.description">
+                {{ 'VIEW_MY_KNOWLEDGE.EDIT' | translate }}
+              </ng-container>
+            </button>
+          
+          </div>
+      </div>
+
+      <!-- Title -->
+      <div class="page-title d-flex align-items-start me-3 mb-4 mb-lg-15">
+       <div class="d-flex align-items-center justify-content-center flex-column me-6 ">
+        <div
+        class="btn btn-icon btn-custom bg-white h-70px w-70px"
+        *ngIf="knowledge.type === 'report'"
+      >
+        <svg width="35" height="35" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path opacity="0.4" d="M45.125 21.75L43.0833 30.4583C41.3333 37.9792 37.875 41.0208 31.375 40.3958C30.3333 40.3125 29.2083 40.125 28 39.8333L24.5 39C15.8125 36.9375 13.125 32.6458 15.1667 23.9375L17.2083 15.2083C17.625 13.4375 18.125 11.8958 18.75 10.625C21.1875 5.58333 25.3333 4.22916 32.2917 5.875L35.7708 6.6875C44.5 8.72916 47.1667 13.0417 45.125 21.75Z" fill="#699DDE"/>
+          <path d="M31.375 40.3958C30.0833 41.2708 28.4583 42 26.4792 42.6458L23.1875 43.7292C14.9167 46.3958 10.5625 44.1667 7.87499 35.8958L5.20833 27.6667C2.54166 19.3958 4.74999 15.0208 13.0208 12.3542L16.3125 11.2708C17.1667 11 17.9792 10.7708 18.75 10.625C18.125 11.8958 17.625 13.4375 17.2083 15.2083L15.1667 23.9375C13.125 32.6458 15.8125 36.9375 24.5 39L28 39.8333C29.2083 40.125 30.3333 40.3125 31.375 40.3958Z" fill="#3699FF"/>
+          <path d="M36.4375 21.8959C36.3125 21.8959 36.1875 21.875 36.0417 21.8542L25.9375 19.2917C25.1042 19.0834 24.6042 18.2292 24.8125 17.3959C25.0208 16.5625 25.875 16.0625 26.7083 16.2709L36.8125 18.8334C37.6458 19.0417 38.1458 19.8959 37.9375 20.7292C37.7708 21.4167 37.125 21.8959 36.4375 21.8959Z" fill="white"/>
+          <path d="M30.3333 28.9375C30.2083 28.9375 30.0833 28.9167 29.9375 28.8959L23.875 27.3542C23.0417 27.1459 22.5417 26.2917 22.75 25.4584C22.9583 24.625 23.8125 24.125 24.6458 24.3334L30.7083 25.875C31.5417 26.0834 32.0417 26.9375 31.8333 27.7709C31.6667 28.4792 31.0417 28.9375 30.3333 28.9375Z" fill="white"/>
+        </svg>
+      </div>
+      <div
+        class="btn btn-icon btn-custom bg-white h-70px w-70px"
+        *ngIf="knowledge.type === 'insight'"
+      >
+        <svg width="35" height="35" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M29.5625 0C37.1458 0 41.6663 4.52116 41.6455 12.1045V29.5625C41.6455 37.1457 37.1251 41.6669 29.542 41.667H12.1045C4.52127 41.667 0.00012927 37.146 0 29.542V12.1045C0 4.52116 4.52116 0 12.1045 0H29.5625ZM11.9346 21.46C10.7753 21.4601 9.83305 22.4022 9.83301 23.5615V29.4678C9.83321 30.6269 10.7754 31.5682 11.9346 31.5684C13.112 31.5684 14.0545 30.627 14.0547 29.4678V23.5615C14.0546 22.4021 13.1121 21.46 11.9346 21.46ZM19.96 12.1846C18.7825 12.1847 17.8409 13.1268 17.8408 14.2861V29.4678C17.841 30.6269 18.7827 31.5682 19.96 31.5684C21.1192 31.5684 22.0613 30.627 22.0615 29.4678V14.2861C22.0615 13.1267 21.1194 12.1846 19.96 12.1846ZM27.6689 8.83301C26.4561 8.83301 25.4854 9.93196 25.4854 11.2842V28.9912C25.4855 30.3434 26.4561 31.4424 27.6689 31.4424C28.863 31.4423 29.8329 30.3433 29.833 28.9912V11.2842C29.8329 9.93204 28.8631 8.83313 27.6689 8.83301Z" fill="#0181FC"/>
+        </svg>
+      </div>
+      <div
+        class="btn btn-icon btn-custom bg-white h-70px w-70px"
+        *ngIf="knowledge.type === 'data'"
+      >
+        <svg width="35" height="35" viewBox="0 0 30 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M14.5464 0C10.5851 0 6.86364 0.704566 4.06815 1.98373C1.48292 3.16777 0 4.73376 0 6.28348C0 7.8332 1.48292 9.39967 4.06815 10.5831C6.86364 11.8623 10.585 12.5669 14.5464 12.5669C18.5078 12.5669 22.2297 11.8623 25.0243 10.5831C27.6099 9.39967 29.0933 7.8333 29.0933 6.28348C29.0933 4.73367 27.6099 3.16777 25.0243 1.98373C22.2293 0.704566 18.5077 0 14.5464 0Z" fill="#000000"/>
+          <path d="M0 9.45442C0.821516 10.3442 1.99713 11.1499 3.49489 11.8359C6.46628 13.1954 10.3914 13.9444 14.5469 13.9444C18.7023 13.9444 22.627 13.1949 25.5984 11.8359C27.0961 11.1499 28.2718 10.3445 29.0933 9.45442V13.4496C29.0933 15.004 27.6131 16.5723 25.0331 17.7531C22.2436 19.029 18.5194 19.7326 14.5464 19.7326C10.5734 19.7326 6.84871 19.029 4.05982 17.7531C1.47967 16.5723 0 15.004 0 13.4496V9.45442Z" fill="#000000"/>
+          <path d="M29.0933 16.6207C26.6302 19.2908 21.1116 21.1102 14.5464 21.1102C7.98116 21.1102 2.46273 19.2908 0 16.6207V20.1383C0 21.6918 1.47967 23.261 4.05982 24.4417C6.84871 25.7181 10.5734 26.4217 14.5464 26.4217C18.5194 26.4217 22.2436 25.7181 25.0336 24.4417C27.6136 23.261 29.0933 21.6918 29.0933 20.1383V16.6207Z" fill="#000000"/>
+          <path d="M4.05982 31.608C1.47967 30.4272 0 28.858 0 27.3041V23.3093C2.46273 25.9799 7.98116 27.7994 14.5464 27.7994C21.1116 27.7994 26.6302 25.9799 29.0933 23.3093V27.3041C29.0933 28.858 27.6131 30.4272 25.0331 31.608C22.2436 32.8844 18.5194 33.5875 14.5464 33.5875C10.5734 33.5875 6.84871 32.8844 4.05982 31.608Z" fill="#000000"/>
+        </svg>
+      </div>
+      <div
+        class="btn btn-icon btn-custom bg-white h-70px w-70px"
+        *ngIf="knowledge.type === 'manual'"
+      >
+        <svg width="35" height="35" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M42.7083 14.5834V31.25H13.2292C9.95834 31.25 7.29167 33.9167 7.29167 37.1875V14.5834C7.29167 6.25002 9.37501 4.16669 17.7083 4.16669H32.2917C40.625 4.16669 42.7083 6.25002 42.7083 14.5834Z" fill="#FF9F43"/>
+          <path d="M42.7083 31.25V38.5417C42.7083 42.5625 39.4375 45.8333 35.4167 45.8333H14.5833C10.5625 45.8333 7.29167 42.5625 7.29167 38.5417V37.1875C7.29167 33.9167 9.95834 31.25 13.2292 31.25H42.7083Z" fill="#f8cda3"/>
+          <path d="M33.3333 16.1458H16.6667C15.8125 16.1458 15.1042 15.4375 15.1042 14.5833C15.1042 13.7291 15.8125 13.0208 16.6667 13.0208H33.3333C34.1875 13.0208 34.8958 13.7291 34.8958 14.5833C34.8958 15.4375 34.1875 16.1458 33.3333 16.1458Z" fill="white"/>
+          <path d="M27.0833 23.4375H16.6667C15.8125 23.4375 15.1042 22.7292 15.1042 21.875C15.1042 21.0208 15.8125 20.3125 16.6667 20.3125H27.0833C27.9375 20.3125 28.6458 21.0208 28.6458 21.875C28.6458 22.7292 27.9375 23.4375 27.0833 23.4375Z" fill="white"/>
+        </svg>
+      </div>
+      <div
+        class="btn btn-icon btn-custom bg-white h-70px w-70px"
+        *ngIf="knowledge.type === 'course'"
+      >
+        <svg width="35" height="35" viewBox="0 0 39 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M31.9898 26.8163C31.9898 24.1788 29.8518 22.0408 27.2143 22.0408C24.5767 22.0408 22.4388 24.1788 22.4388 26.8163C22.4388 28.1696 23.0037 29.3885 23.9081 30.2576V36L27.2143 33.7959L30.5204 36V30.2576C31.4248 29.3885 31.9898 28.1696 31.9898 26.8163Z" fill="#C3D8F2"/>
+          <path d="M37.1327 0H1.86734C1.05624 0 0.397949 0.657551 0.397949 1.46939V30.8572C0.397949 31.6683 1.05624 32.3265 1.86734 32.3265H20.9694V31.3443C20.0143 30.0372 19.5 28.4694 19.5 26.8163C19.5 22.5625 22.9604 19.102 27.2143 19.102C31.4682 19.102 34.9286 22.5625 34.9286 26.8163C34.9286 28.4701 34.4143 30.038 33.4592 31.345V32.3265H37.1327C37.9438 32.3265 38.6021 31.6683 38.6021 30.8572V1.46939C38.6021 0.657551 37.9438 0 37.1327 0ZM20.9694 13.2245H8.47959V10.2857H20.9694V13.2245ZM30.5204 7.34694H8.47959V4.40816H30.5204V7.34694Z" fill="#0ABB87"/>
+        </svg>
+      </div>
+      <div
+        class="btn btn-icon btn-custom bg-white h-70px w-70px"
+        *ngIf="knowledge.type === 'media'"
+      >
+        <svg width="35" height="35" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M25 0C11.215 0 0 11.215 0 25C0 38.785 11.215 50 25 50C38.785 50 50 38.785 50 25C50 11.215 38.785 0 25 0Z" fill="#F64E60"/>
+          <path d="M33 25L21 33V17L33 25Z" fill="white"/>
+        </svg>
+      </div>
+      <span class="page-desc fs-6 fw-bold d-flex align-items-center pt-4">
+        <span class="bg-light-info text-info px-3 py-1 rounded-2 mx-3 lh-1 d-flex align-items-center text-capitalize">
+          {{ knowledge.type || 'N/A' }}
+        </span>
+      </span>
+       </div>
+
+        <h1
+          class="page-heading d-flex text-black fw-bolder fs-lg-rem flex-column justify-content-center my-0 max-w-800px"
+        >
+          <div class="d-flex align-items-start flex-column gap-2 lg-max-width-700px">
+            <span class="max-w-80-per">
+              {{ knowledge.title || 'N/A' }}
+            </span>
+          </div>
+     
+        </h1>
+      </div>
+
+      <!-- Tabs -->
+      <div class="">
+        <div class="pt-9 pb-0">
+          <div class="d-flex overflow-auto h-55px">
+            <ul
+              class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bold flex-nowrap"
+            >
+              <li class="nav-item">
+                <a
+                  class="nav-link text-active-info me-6"
+                  routerLink="details"
+                  routerLinkActive="active"
+                >
+                  {{ 'VIEW_MY_KNOWLEDGE.KNOWLEDGE_DETAILS' | translate }}
+                </a>
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link text-active-info me-6"
+                  routerLink="analytics"
+                  routerLinkActive="active"
+                >
+                  {{ 'VIEW_MY_KNOWLEDGE.ANALYTICS' | translate }}
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container" *ngIf="knowledge">
+    <div class="row py-10">
+      <div class="col-lg-8 p-n-10">
+        <router-outlet></router-outlet>
+      </div>
+      <div class="col-lg-4">
+        <!-- Sticky container for sidebar elements -->
+        <div class="position-lg-sticky" style="z-index: 1; top: 120px;">
+          <!-- Main knowledge details -->
+          <div class="tp-course-details2-widget">
+            <div class="tp-course-details2-widget-content">
+              <div
+                class="tp-course-details2-widget-price d-flex justify-content-center align-items-center"
+              >
+              <span class="fs-2x  fw-bolder" [ngClass]="(knowledge.total_price | currency) === '$0.00' ? 'text-success' : 'text-info'">
+                <ng-container *ngIf="(knowledge.total_price | currency) === '$0.00'">
+                  <ng-container *ngIf="lang === 'ar'">صدقة جارية</ng-container>
+                  <ng-container *ngIf="lang !== 'ar'">Free</ng-container>
+                </ng-container>
+                <ng-container *ngIf="(knowledge.total_price | currency) !== '$0.00'">
+                  {{ knowledge.total_price ? (knowledge.total_price | currency) : 'N/A' }}
+                </ng-container>
+              </span>
+            </div>
+            <div class="separator separator-dashed my-5"></div>
+
+            <!-- Report details section -->
+            <div class="tp-course-details2-widget-list p-4">
+              <div class="tp-course-details2-widget-list-item-wrapper">
+                <!-- status -->
+                <div
+                  class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
+                >
+                  <span class="d-flex align-items-center">
+                    <div class="bg-light-info p-2 rounded-circle me-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="16" height="16" class="text-info">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    {{ 'VIEW_MY_KNOWLEDGE.STATUS' | translate }}
+                  </span>
+                  <span
+                    class="text-capitalize"
+                    [ngClass]="{
+                      'text-success': knowledge.status === 'published',
+                      'text-warning': knowledge.status === 'scheduled',
+                      'text-info': knowledge.status === 'in_review',
+                      'text-danger': knowledge.status === 'unpublised'
+                    }"
+                  >
+                    {{ knowledge.status === 'in_review' ? 'In Review' : (knowledge.publish_as === 'package' ? 'Published in Package only' : (knowledge.status || 'N/A')) }}
+                  </span>
+                </div>
+
+                <!-- Add Publish Date for Scheduled Status -->
+                <div
+                  *ngIf="knowledge.status === 'scheduled'"
+                  class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
+                >
+                  <span class="d-flex align-items-center">
+                    <div class="bg-light-info p-2 rounded-circle me-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="16" height="16" class="text-info">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"></path>
+                      </svg>
+                    </div>
+                    {{ 'VIEW_MY_KNOWLEDGE.PUBLISH_DATE' | translate }}
+                  </span>
+                  <span>
+                    <div class="d-flex align-items-center gap-2">
+                      <span>       {{ knowledge.published_at ? (knowledge.published_at | date:'yyyy-MM-dd') : 'N/A' }}</span>
+                      <span class="badge badge-light-warning text-warning">{{ knowledge.published_at ? (knowledge.published_at | date:'HH:mm') : '' }}</span>
+                    </div>
+                  </span>
+                </div>
+
+                <!-- Included in Package -->
+                <div
+                  *ngIf="knowledge.publish_as === 'both'"
+                  class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
+                >
+                  <span class="d-flex align-items-center">
+                    <div class="bg-light-info p-2 rounded-circle me-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="16" height="16" class="text-info">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                      </svg>
+                    </div>
+                    {{ 'VIEW_MY_KNOWLEDGE.INCLUDED_IN_PACKAGE' | translate }}
+                  </span>
+                  <span>Yes</span>
+                </div>
+
+                <!-- Language -->
+                <div
+                  class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
+                >
+                  <span class="d-flex align-items-center">
+                    <div class="bg-light-info p-2 rounded-circle me-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-info">
+                        <path d="M4 5h7"></path>
+                        <path d="M9 3v2c0 4.418 -2.239 8 -5 8"></path>
+                        <path d="M5 9c0 2.144 2.952 3.908 6.7 4"></path>
+                        <path d="M12 20l4 -9l4 9"></path>
+                        <path d="M19.1 18h-6.2"></path>
+                      </svg>
+                    </div>
+                    {{ 'VIEW_MY_KNOWLEDGE.DOCUMENTS_LANGUAGE' | translate }}
+                  </span>
+                  <span class="text-capitalize">
+                    <ng-container *ngIf="lang === 'ar' && knowledge.language">
+                      {{ (knowledge.language ==='english' ? 'الإنجليزية' : 'العربية' ) }}
+                    </ng-container>
+                    <ng-container *ngIf="lang === 'en' && knowledge.language">
+                      {{ knowledge.language || 'N/A' }}
+                    </ng-container>
+                    <ng-container *ngIf="!knowledge.language">
+                      N/A
+                    </ng-container>
+                  </span>
+                </div>
+
+                <!-- Industry -->
+                <div
+                  *ngIf="knowledge && knowledge.industry"
+                  class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
+                >
+                  <span class="d-flex align-items-center">
+                    <div class="bg-light-info p-2 rounded-circle me-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="16" height="16" class="text-info">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"></path>
+                      </svg>
+                    </div>
+                    {{ 'VIEW_MY_KNOWLEDGE.INDUSTRY' | translate }}
+                  </span>
+                  <span
+                    class="badge badge-light-secondary text-info fs-8 fw-bold pre-line text-right"
+                  >
+                    {{ knowledge.industry.name || 'N/A' }}
+                  </span>
+                </div>
+
+                <!-- ISIC Code -->
+                <div
+                  *ngIf="knowledge && knowledge.isic_code"
+                  class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
+                >
+                  <span class="d-flex align-items-center">
+                    <div class="bg-light-info p-2 rounded-circle me-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-info"><path d="M3 21l18 0"></path><path d="M3 10l18 0"></path><path d="M5 6l7 -3l7 3"></path><path d="M4 10l0 11"></path><path d="M20 10l0 11"></path><path d="M8 14l0 3"></path><path d="M12 14l0 3"></path><path d="M16 14l0 3"></path></svg>
+                    </div>
+                    {{ 'VIEW_MY_KNOWLEDGE.ISIC_CODE' | translate }}
+                  </span>
+                  <span
+                    class="badge badge-light-secondary text-info fs-8 fw-bold"
+                    [ngbTooltip]="knowledge.isic_code.name || 'N/A'"
+                  >
+                    {{ knowledge.isic_code.key || 'N/A' }}
+                  </span>
+                </div>
+
+                <!-- HS Code -->
+                <div
+                  *ngIf="knowledge && knowledge.hs_code"
+                  class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
+                >
+                  <span class="d-flex align-items-center">
+                    <div class="bg-light-info p-2 rounded-circle me-3">
+                      <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 64 64"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <g transform="matrix(0.99,0,0,0.99,0.32,0.3)">
+                        <path
+                          d="m49.5 34c-.82842712 0-1.5.67157288-1.5 1.5v13c0 .82842712.67157288 1.5 1.5 1.5s1.5-.67157288 1.5-1.5v-13c0-.82842712-.67157288-1.5-1.5-1.5zm-6 0c-.82842712 0-1.5.67157288-1.5 1.5v13c0 .82842712.67157288 1.5 1.5 1.5s1.5-.67157288 1.5-1.5v-13c0-.82842712-.67157288-1.5-1.5-1.5zm-6 0c-.82842712 0-1.5.67157288-1.5 1.5v13c0 .82842712.67157288 1.5 1.5 1.5s1.5-.67157288 1.5-1.5v-13c0-.82842712-.67157288-1.5-1.5-1.5zm-6 0c-.82842712 0-1.5.67157288-1.5 1.5v13c0 .82842712.67157288 1.5 1.5 1.5s1.5-.67157288 1.5-1.5v-13c0-.82842712-.67157288-1.5-1.5-1.5z"
+                          fill="#3b81f6"
+                        />
+                        <path
+                          d="m32 3c-.82842712 0-1.5.67157288-1.5 1.5v2.8007812c-1.2649826.52060382-2.2043206 1.6749789-2.4335938 3.0566406l-14.742188 16.642578h-6.8242188c-1.3590542 0-2.5 1.1409458-2.5 2.5v25c0 1.3590542 1.1409458 2.5 2.5 2.5h51c1.3590542 0 2.5-1.1409458 2.5-2.5v-25c0-1.3590542-1.1409361-2.5000073-2.5-2.5h-28c-.82842712 0-1.5.67157288-1.5 1.5s.67157288 1.5 1.5 1.5h27.5v24h-33v-24.5c0-1.3590542-1.1409458-2.5-2.5-2.5h-4.1679688l11.761719-13.279297c.73236176.78125202 1.7636799 1.2792969 2.90625 1.2792969 1.1727683 0 2.2019554-.53489178 2.9160156-1.359375l9.125 9.765625c.56539461.60477567 1.51386.63711965 2.1191406.0722656.60606614-.56559238.63843164-1.5155634.0722656-2.1210937l-10.396484-11.123047c-.26624623-1.3120561-1.1427571-2.4088386-2.3359375-2.9199219v-2.8144531c0-.82842712-.67157288-1.5-1.5-1.5zm-17 27h5c.554 0 1 .446 1 1v22c0 .554-.446 1-1 1h-5c-.554 0-1-.446-1-1v-22c0-.554.446-1 1-1z"
+                          fill="#3b81f6"
+                        />
+                      </g>
+                    </svg>
+                    </div>
+                    {{ 'VIEW_MY_KNOWLEDGE.HS_CODE' | translate }}
+                  </span>
+                  <span
+                    class="badge badge-light-secondary text-info fs-8 fw-bold"
+                    [ngbTooltip]="knowledge.hs_code?.name || 'N/A'"
+                  >
+                    {{ knowledge.hs_code?.key || 'N/A' }}
+                  </span>
+                </div>
+
+                <!-- Published -->
+                <div
+                  class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
+                  *ngIf="knowledge.published_at && knowledge.status !== 'scheduled'"
+                >
+                  <span class="d-flex align-items-center">
+                    <div class="bg-light-info p-2 rounded-circle me-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="16" height="16" class="text-info">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"></path>
+                      </svg>
+                    </div>
+                    {{ 'VIEW_MY_KNOWLEDGE.PUBLISHED_AT' | translate }}
+                  </span>
+                  <span>{{ knowledge.published_at ? (knowledge.published_at | date:'yyyy-MM-dd') : 'N/A' }}</span>
+                </div>
+
+                <!-- Target Market -->
+                <div
+                  class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
+                >
+                  <span class="d-flex align-items-center">
+                    <div class="bg-light-info p-2 rounded-circle me-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-info">
+                        <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
+                        <path d="M3.6 9h16.8"></path>
+                        <path d="M3.6 15h16.8"></path>
+                        <path d="M11.5 3a17 17 0 0 0 0 18"></path>
+                        <path d="M12.5 3a17 17 0 0 1 0 18"></path>
+                      </svg>
+                    </div>
+                    {{ 'VIEW_MY_KNOWLEDGE.TARGET_MARKET' | translate }}
+                  </span>
+                  <div
+                    class="max-w-100px d-flex flex-wrap gap-2 justify-content-end position-relative"
+                  >
+                    <!-- Show "Worldwide" if all 6 regions are selected -->
+                    <ng-container *ngIf="knowledge.regions && knowledge.regions.length === 6">
+                      <span class="badge badge-light-secondary text-gray-800 fs-8 fw-bold">
+                      {{lang =='ar' ? "العالم" : "Worldwide"}}
+                      </span>
+                    </ng-container>
+                    
+                    <!-- For markets other than Worldwide, show limited items with More option -->
+                    <ng-container *ngIf="!(knowledge.regions && knowledge.regions.length === 6)">
+                      <!-- Economic blocs (limited) -->
+                      <ng-container *ngIf="knowledge.economic_blocs && knowledge.economic_blocs.length > 0">
+                        <span
+                          class="badge badge-light-secondary text-gray-800 fs-8 fw-bold"
+                          *ngFor="let bloc of knowledge.economic_blocs.slice(0, !showAllMarkets ? 2 : knowledge.economic_blocs.length)"
+                        >
+                          {{ bloc.name || 'N/A' }}
+                        </span>
+                      </ng-container>
+                      
+                      <!-- Regions (limited) -->
+                      <ng-container *ngIf="knowledge.regions && knowledge.regions.length > 0 && knowledge.regions.length < 6">
+                        <span
+                          class="badge badge-light-secondary text-gray-800 fs-8 fw-bold"
+                          *ngFor="let region of knowledge.regions.slice(0, !showAllMarkets ? (knowledge.economic_blocs && knowledge.economic_blocs.length > 0 ? 1 : 2) : knowledge.regions.length)"
+                        >
+                          {{ region.name || 'N/A' }}
+                        </span>
+                      </ng-container>
+                      
+                      <!-- Countries (limited) -->
+                      <ng-container *ngIf="knowledge.countries && knowledge.countries.length > 0">
+                        <span
+                          class="badge badge-light-secondary text-gray-800 fs-8 fw-bold"
+                          *ngFor="let country of knowledge.countries.slice(0, !showAllMarkets ? ((knowledge.economic_blocs && knowledge.economic_blocs.length > 0) || (knowledge.regions && knowledge.regions.length > 0) ? 1 : 2) : knowledge.countries.length)"
+                        >
+                          {{ country.name || 'N/A' }}
+                        </span>
+                      </ng-container>
+                      
+                      <!-- More indicator with count -->
+                      <ng-container *ngIf="!showAllMarkets && getTotalMarketItems() > getVisibleMarketItemsCount()">
+                        <span 
+                          class="badge badge-light-info text-info fs-8 fw-bold cursor-pointer"
+                          (click)="showAllMarkets = true"
+                        >
+                          +{{ getTotalMarketItems() - getVisibleMarketItemsCount() }} {{ 'MORE' | translate }}
+                        </span>
+                      </ng-container>
+                      
+                      <!-- Show less button when expanded -->
+                      <ng-container *ngIf="showAllMarkets && getTotalMarketItems() > 3">
+                        <span 
+                          class="badge badge-light-info text-info fs-8 fw-bold cursor-pointer mt-1"
+                          (click)="showAllMarkets = false"
+                        >
+                          {{ 'SHOW_LESS' | translate }}
+                        </span>
+                      </ng-container>
+                    </ng-container>
+                    
+                    <!-- Show N/A if no markets are specified -->
+                    <span *ngIf="(!knowledge.economic_blocs || knowledge.economic_blocs.length === 0) && 
+                                (!knowledge.regions || knowledge.regions.length === 0) && 
+                                (!knowledge.countries || knowledge.countries.length === 0)"
+                          class="badge badge-light-secondary text-gray-800 fs-8 fw-bold">
+                      N/A
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Conversation Box Section - Only for company insighters -->
+                <div *ngIf="isCompanyInsighter() && currentRequest" class="tp-course-details2-widget-list-item">
+                  <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="d-flex align-items-center">
+                      <i class="ki-outline ki-message-text-2 fs-4 mx-4"></i>
+                    {{lang =='ar' ? "المحادثة" : "Conversation"}}
+                    </span>
+                    <button 
+                      class="btn btn-sm btn-icon btn-info" 
+                      (click)="toggleConversation()"
+                      [ngbTooltip]="showConversation ? 'Hide Conversation' : 'Show Conversation'">
+                      <i class="ki-duotone" [ngClass]="showConversation ? 'ki-minus' : 'ki-plus'">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                      </i>
+                    </button>
+                  </div>
+                  
+                  <!-- Conversation Box -->
+                  <div *ngIf="showConversation" class="chat-container border rounded mb-5">
+                    <!-- Requestor Header -->
+                    <div class="d-flex align-items-center p-4 border-bottom">
+                      <!-- Profile Image or Initials Circle -->
+                      <div class="me-3">
+                        <div *ngIf="requestUser && requestUser.profile_photo_url" class="symbol symbol-45px w-45px h-45px overflow-hidden">
+                          <img [src]="requestUser.profile_photo_url" alt="Profile" class="w-100".     style="object-fit: cover; object-position: top;">
+                        </div>
+                        <div *ngIf="requestUser && requestUser.name && !requestUser.profile_photo_url" 
+                          class="symbol h-40px w-40px d-flex align-items-center justify-content-center bg-light-info text-info"
+                          [ngStyle]="{'color': '#0978B9'}">
+                          {{ requestUser.name | slice:0:1 }}{{ (requestUser.name && requestUser.name.indexOf(' ') > -1 ? 
+                            requestUser.name.split(' ')[1] : '') | slice:0:1 }}
+                        </div>
+                      </div>
+                      
+                      <!-- Name and Role -->
+                      <div class="d-flex flex-column">
+                        <span class="text-gray-900 fw-bolder fs-5">{{ requestUser?.name || 'Unknown User' }}</span>
+                        <span class="text-muted fs-7">Company Insighter</span>
+                      </div>
+                      
+                      <!-- Resubmission Badge if applicable -->
+                      <div class="ms-auto">
+                        <span class="badge badge-light-info" *ngIf="hasChildRequest">{{lang =='ar' ? "إعادة الطلب" : "Resubmission"}}</span>
+                      </div>
+                    </div>
+                    
+                    <!-- Conversation Messages -->
+                    <div class="chat-messages p-4" style="max-height: 400px; overflow-y: auto;">
+                      <!-- 1. Original Submission -->
+                      <div class="chat-message-row d-flex mb-4" *ngIf="currentRequest && currentRequest.comments">
+                        <div class="chat-bubble-left bg-light-info text-gray-800 p-4 rounded-3 mw-400px">
+                          <div class="text-gray-800 mb-1">{{ currentRequest.comments }}</div>
+                          <div class="text-muted fs-7 text-end">{{lang =='ar' ? "الرسالة الأولى" : "First Message"}}</div>
+                        </div>
+                      </div>
+                      
+                      <!-- 2. First Manager Response -->
+                      <div class="chat-message-row d-flex justify-content-end mb-4" *ngIf="currentRequest && currentRequest.staff_notes">
+                        <div class="chat-bubble-right p-4 rounded-3 mw-400px"
+                             [ngClass]="currentRequest.status === 'approved' || currentRequest.final_status === 'approved' ? 
+                                        'bg-light-success' : 'bg-light-danger'">
+                          <div class="fw-bold mb-1" 
+                               [ngClass]="currentRequest.status === 'approved' || currentRequest.final_status === 'approved' ? 
+                                         'text-success' : 'text-danger'">
+                            {{ currentRequest.status === 'approved' || currentRequest.final_status === 'approved' ? 'Approved' : 'Review' }}
+                          </div>
+                          <div class="text-gray-800">{{ currentRequest.staff_notes }}</div>
+                          <div class="text-muted fs-7 text-end">
+                            {{ currentRequest.status === 'declined' ? 'Rejection' : 'Response' }} 
+                            {{ currentRequest.handel_at | date:'medium' }}
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <!-- Recursive Conversation Flow - For all children in the request tree -->
+                      <ng-container *ngIf="currentRequest && currentRequest.children">
+                        <ng-container *ngTemplateOutlet="recursiveMessages; context:{ $implicit: currentRequest.children }"></ng-container>
+                      </ng-container>
+                    </div>
+                  </div>
+                  
+                  <!-- Template for recursive rendering of messages -->
+                  <ng-template #recursiveMessages let-requests>
+                    <ng-container *ngFor="let request of requests; let i = index">
+                      <!-- Resubmission Message -->
+                      <div class="chat-message-row d-flex mb-4" *ngIf="request.comments">
+                        <div class="chat-bubble-left bg-light-info text-gray-800 p-4 rounded-3 mw-400px">
+                          <div class="fw-bold text-info mb-1">  {{lang =='ar' ? "إعادة الطلب" : "Resubmission"}}</div>
+                          <div class="text-gray-800 mb-1">{{ request.comments }}</div>
+                          <div class="text-muted fs-7 text-end">{{ request.created_at | date:'medium' }}</div>
+                        </div>
+                      </div>
+
+                      <!-- Manager Response -->
+                      <div class="chat-message-row d-flex justify-content-end mb-4" *ngIf="request.staff_notes">
+                        <div class="chat-bubble-right p-4 rounded-3 mw-400px"
+                             [ngClass]="request.status === 'approved' || request.final_status === 'approved' ? 
+                                        'bg-light-success' : 'bg-light-danger'">
+                          <div class="fw-bold mb-1" 
+                               [ngClass]="request.status === 'approved' || request.final_status === 'approved' ? 
+                                         'text-success' : 'text-danger'">
+                            {{ request.status === 'approved' || request.final_status === 'approved' ? 'Approved' : 'Review' }}
+                          </div>
+                          <div class="text-gray-800">{{ request.staff_notes }}</div>
+                          <div class="text-muted fs-7 text-end">
+                            {{ request.status === 'declined' ? 'Rejection' : 'Response' }} 
+                            {{ request.handel_at | date:'medium' }}
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <!-- Process children recursively -->
+                      <ng-container *ngIf="request.children && request.children.length > 0">
+                        <ng-container *ngTemplateOutlet="recursiveMessages; context:{ $implicit: request.children }"></ng-container>
+                      </ng-container>
+                    </ng-container>
+                  </ng-template>
+                </div>
+
+                <div class="d-flex flex-column gap-3 mb-4">
+                  <!-- Edit button - only show when we don't need to show Continue button -->
+              
+                  <!-- Show pending review status -->
+                  <button
+                    class="btn btn-secondary w-100 disabled opacity-75"
+                    *ngIf="(knowledge.status === 'in_review' && !hasReviewRequest()) || isPendingResendReview()"
+                    disabled
+                  >
+                    <i class="ki-outline ki-time fs-4 me-2"></i>
+                    {{ 'PENDING_Manager_REVIEW' | translate }}
+                  </button>
+
+                  <!-- Show send to review button for company-insighter when need_to_review is true but no request_id -->
+                  <button
+                    class="btn btn-info w-100"
+                    (click)="sendToReview()"
+                    *ngIf="knowledge.status !== 'in_review' && 
+                          (knowledge.status === 'unpublished' || knowledge.status === 'scheduled') && 
+                          knowledge.publish_as !== 'package' && 
+                          hasRequiredFields() && 
+                          isCompanyInsighter() && 
+                          needsReview() &&
+                          !hasReviewRequest()"
+                  >
+                    <i class="ki-outline ki-check-square fs-4 me-2"></i>
+                    {{ 'VIEW_MY_KNOWLEDGE.SEND_TO_REVIEW' | translate }}
+                  </button>
+                  
+                  <!-- Show resend to review button when action is 'resend_review' and request_status is not pending -->
+                  <button
+                    class="btn btn-info w-100"
+                    (click)="openResendReviewDialog()"
+                    *ngIf="hasReviewRequest() && isCompanyInsighter() && !isPendingResendReview()"
+                  >
+                    <i class="ki-outline ki-check-square fs-4 me-2"></i>
+                    Resend To Review
+                  </button>
+
+                  <!-- Show publish button when not needing review or user is not company-insighter -->
+                  <button
+                    class="btn btn-info w-100"
+                    (click)="confirmPublish()"
+                    *ngIf="knowledge.status !== 'in_review' && 
+                          (knowledge.status === 'unpublished' || knowledge.status === 'scheduled') && 
+                          knowledge.publish_as !== 'package' && 
+                          hasRequiredFields() && 
+                          (!isCompanyInsighter() || !needsReview())"
+                  >
+                    <i class="ki-outline ki-cart fs-4 me-2"></i>
+                    {{ 'VIEW_MY_KNOWLEDGE.PUBLISH' | translate }}
+                  </button>
+
+             
+
+                  <!-- Package publishing options - don't show if in review -->
+                  <button
+                    class="btn btn-info w-100"
+                    (click)="publishAs('package')"
+                    *ngIf="knowledge.status !== 'in_review' && knowledge.publish_as === 'both'"
+                  >
+                    <i class="ki-duotone ki-package fs-4 me-2">
+                      <span class="path1"></span>
+                      <span class="path2"></span>
+                    </i>
+                    {{ 'VIEW_MY_KNOWLEDGE.PUBLISH_IN_PACKAGE' | translate }}
+                  </button>
+
+                  <button
+                    class="btn btn-info w-100"
+                    (click)="publishAs('both')"
+                    *ngIf="knowledge.status !== 'in_review' && knowledge.publish_as === 'package' && (knowledge.status === 'published')"
+                  >
+                    <i class="ki-duotone ki-package fs-4 me-2">
+                      <span class="path1"></span>
+                      <span class="path2"></span>
+                    </i>
+                    {{ 'VIEW_MY_KNOWLEDGE.MAKE_AVAILABLE' | translate }}
+                  </button>
+
+                  <!-- Show change schedule button only when not needing review or user is not company-insighter -->
+                  <button
+                    class="btn btn-light-warning w-100"
+                    (click)="openScheduleDialog()"
+                    *ngIf="knowledge.status !== 'in_review' && 
+                          (knowledge.status === 'unpublished' || knowledge.status === 'scheduled') && 
+                          hasRequiredFields() && 
+                          (!isCompanyInsighter() || !needsReview())"
+                  >
+                   @if(knowledge.status === 'scheduled'){
+                    {{ 'VIEW_MY_KNOWLEDGE.CHANGE_SCHEDULE' | translate }}
+                   }@else{
+                    {{ 'VIEW_MY_KNOWLEDGE.SCHEDULE' | translate }}
+                   }
+                  </button>
+                </div>
+
+                <!-- Included in Packages Section -->
+                <div class="tp-course-details2-widget-list-item mb-5" *ngIf="knowledge.package && knowledge.package.length > 0">
+                  <h4 class="fs-6 fw-bold mb-3">{{ 'INCLUDED_IN_PACKAGES' | translate }}</h4>
+                  <div class="d-flex flex-column gap-2">
+                    <a *ngFor="let pkg of knowledge.package" 
+                       [routerLink]="['/app/my-knowledge-base/view-my-packages', pkg.id]"
+                       class="d-flex align-items-center p-3 bg-light-info rounded">
+                      <i class="ki-duotone ki-package fs-3 me-3 text-info">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                      </i>
+                      <span class="text-hover-info">{{ pkg.name }}</span>
+                    </a>
+                  </div>
+                </div>
+
+                <div
+                  class="d-flex flex-column gap-3 mb-4"
+                  *ngIf="knowledge.status === 'published'"
+                >
+                  <button
+                    class="btn btn-light-danger w-100"
+                    (click)="confirmUnpublish()"
+                  >
+                    <i class="ki-outline ki-cart fs-4 me-2"></i>
+                    {{ 'VIEW_MY_KNOWLEDGE.UNPUBLISH' | translate }}
+                  </button>
+                </div>
+              </div>
+            </div>
+            </div>
+          </div>
+          
+          <!-- Share Box (Only visible for published items) -->
+          <div *ngIf="knowledge.status === 'published'"
+               class="tp-course-details2-widget-2 mt-5">
+            <div class="p-4">
+              <!-- New Social Share Animation Container -->
+              <!-- Social Share button with improved RTL support -->
+              <div class="btn-share" (click)="openSocialShareModal()">
+                <span class="btn-text mx-2">{{ 'SHARE' | translate }}</span>
+                <span class="btn-icon">
+                  <svg
+                    viewBox="0 0 1024 1024"
+                    version="1.1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                  >
+                    <path
+                      d="M767.99994 585.142857q75.995429 0 129.462857 53.394286t53.394286 129.462857-53.394286 129.462857-129.462857 53.394286-129.462857-53.394286-53.394286-129.462857q0-6.875429 1.170286-19.456l-205.677714-102.838857q-52.589714 49.152-124.562286 49.152-75.995429 0-129.462857-53.394286t-53.394286-129.462857 53.394286-129.462857 129.462857-53.394286q71.972571 0 124.562286 49.152l205.677714-102.838857q-1.170286-12.580571-1.170286-19.456 0-75.995429 53.394286-129.462857t129.462857-53.394286 129.462857 53.394286 53.394286 129.462857-53.394286 129.462857-129.462857 53.394286q-71.972571 0-124.562286-49.152l-205.677714 102.838857q1.170286 12.580571 1.170286 19.456t-1.170286 19.456l205.677714 102.838857q52.589714-49.152 124.562286-49.152z"
+                      fill="#ffffff"
+                    ></path>
+                  </svg>
+                </span>
+              </div>
+              
+              <!-- Copy Link Button -->
+              <button class="btn btn-light-info w-100" (click)="copyToClipboard(getShareableLink())">
+                <i class="ki-outline ki-copy fs-4 me-2"></i>
+                {{ 'COPY_LINK' | translate }}
+              </button>
+              
+              <!-- Link Copied Confirmation -->
+              <div *ngIf="linkCopied" class="text-success text-center mt-2 small">
+                <i class="ki-outline ki-check fs-6 me-1"></i> {{ 'LINK_COPIED' | translate }}
+              </div>
+            </div>
+            
+          </div>
+      </div>
+      </div>
+    </div>
+
+    <div class="separator separator-solid my-10"></div>
+    <div class="row py-10">
+      <!-- <app-related-knowledges></app-related-knowledges> -->
+    </div>
+  </div>
+</div>
+
+<!-- Share Knowledge Dialog -->
+<!-- Share dialog removed as requested -->
+
+<!-- Resend Review Dialog -->
+<p-dialog 
+  [(visible)]="isResendReviewDialogVisible" 
+  [modal]="true"
+  [draggable]="false" 
+  [resizable]="false"
+  [style]="{width: '500px'}"
+  styleClass="p-0"
+  appendTo="body"
+  [showHeader]="false">
+  <div class="modal-content">
+    <!-- Modal header -->
+    <div class="modal-header p-5 border-bottom">
+      <h2 class="fw-bold">Resend Knowledge For Review</h2>
+      <div class="btn btn-icon btn-sm btn-active-light-info ms-2" (click)="closeResendReviewDialog()">
+        <i class="ki-duotone ki-cross fs-2x"><span class="path1"></span><span class="path2"></span></i>
+      </div>
+    </div>
+
+    <!-- Modal body -->
+    <div class="modal-body py-5 px-8">
+      <div class="my-3">
+ 
+        <textarea 
+          id="reviewComments" 
+          class="form-control form-control-solid" 
+          [(ngModel)]="reviewComments" 
+          rows="6" 
+          placeholder="Please provide additional notes for the review...">
+        </textarea>
+      </div>
+    </div>
+
+    <!-- Modal footer -->
+    <div class="modal-footer flex-center py-5 px-8 border-top">
+      <button type="button" class="btn btn-light me-3" (click)="closeResendReviewDialog()">
+        Cancel
+      </button>
+      <button type="button" 
+              class="btn btn-info" 
+              [disabled]="!reviewComments"
+              [class.disabled]="isLoading"
+              (click)="resendReview()">
+        <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+        {{ isLoading ? 'Sending...' : 'Send' }}
+      </button>
+    </div>
+  </div>
+</p-dialog>
+
+<!-- Custom Social Share Modal -->
+<div class="custom-modal-overlay" *ngIf="isSocialShareModalVisible" (click)="closeSocialShareModal()">
+  <div class="custom-modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-content">
+ 
+
+      <!-- Modal body -->
+      <div class="modal-body py-5 px-8 bg-white rounded-bottom" style="margin-top: -1rem; position: relative; z-index: 3;">
+       <div class="motive-title" style="text-align: center; padding: 2.5rem 0px;">
+       <div class="motive-title-image">
+        <img src="https://res.cloudinary.com/dsiku9ipv/image/upload/v1761664127/New_Project_17_r2dreh.png" alt="Social Share" />
+       </div>
+        <h2>{{ lang === 'ar' ? 'المشاركة هي الهدف' : 'It\'s all about sharing' }}</h2>
+        <p>{{ lang === 'ar' ? 'شارك هذه المعرفة مع شبكتك' : 'Share this knowledge with your network' }}</p>
+       </div>
+        <!-- Custom Message Input -->
+        <div class="mb-4">
+          <label class="form-label fw-bold">{{ lang === 'ar' ? 'رسالة المشاركة' : 'Share Message' }}</label>
+          <textarea
+            class="form-control form-control-solid"
+            [(ngModel)]="customShareMessage"
+            rows="3"
+            [placeholder]="getDefaultShareMessage()">
+          </textarea>
+         
+        </div>
+
+        <!-- Character Count -->
+        <div class="mb-4">
+          <small class="text-muted">{{ lang === 'ar' ? 'عدد الأحرف' : 'Character Count' }}: {{ customShareMessage.length || 0 }}</small>
+        </div>
+
+        <!-- Social Media Buttons -->
+        <div class="d-flex justify-content-center gap-3 mb-4">
+          <!-- Facebook -->
+          <button class="btn btn-icon btn-primary d-flex align-items-center justify-content-center social-share-btn"
+                  (click)="shareToSocial('facebook')"
+                  [attr.aria-label]="lang === 'ar' ? 'مشاركة على فيسبوك' : 'Share on Facebook'">
+            <i class="pi pi-facebook" style="font-size: 20px;"></i>
+          </button>
+
+          <!-- Twitter/X -->
+          <button class="btn btn-icon btn-dark d-flex align-items-center justify-content-center social-share-btn"
+                  (click)="shareToSocial('twitter')"
+                  [attr.aria-label]="lang === 'ar' ? 'مشاركة على تويتر' : 'Share on Twitter'">
+            <i class="pi pi-twitter" style="font-size: 20px;"></i>
+          </button>
+
+          <!-- LinkedIn -->
+          <button class="btn btn-icon btn-info d-flex align-items-center justify-content-center social-share-btn"
+                  (click)="shareToSocial('linkedin')"
+                  [attr.aria-label]="lang === 'ar' ? 'مشاركة على لينكد إن' : 'Share on LinkedIn'">
+            <i class="pi pi-linkedin" style="font-size: 20px;"></i>
+          </button>
+
+          <!-- WhatsApp -->
+          <button class="btn btn-icon btn-success d-flex align-items-center justify-content-center social-share-btn"
+                  (click)="shareToSocial('whatsapp')"
+                  [attr.aria-label]="lang === 'ar' ? 'مشاركة على واتساب' : 'Share on WhatsApp'">
+            <i class="pi pi-whatsapp" style="font-size: 20px;"></i>
+          </button>
+        </div>
+
+        <!-- Copy Link Section -->
+        <div class="separator my-5"></div>
+        <div class="text-center">
+          <button class="btn btn-light-info w-100" (click)="copyToClipboard(getShareableLink())">
+            <i class="ki-outline ki-copy fs-4 me-2"></i>
+            {{ 'COPY_LINK' | translate }}
+          </button>
+
+          <div *ngIf="linkCopied" class="text-success text-center mt-2 small">
+            <i class="ki-outline ki-check fs-6 me-1"></i> {{ 'LINK_COPIED' | translate }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

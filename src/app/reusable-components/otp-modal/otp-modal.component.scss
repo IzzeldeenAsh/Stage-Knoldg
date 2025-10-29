@@ -1,0 +1,36 @@
+// OTP Modal specific styles
+.otp-content {
+  .form-control {
+    font-size: 1.1rem;
+    padding: 12px;
+
+    &.text-center {
+      letter-spacing: 0.2em;
+      font-weight: 600;
+    }
+  }
+
+  .text-info {
+    &.text-decoration-underline {
+      transition: opacity 0.2s ease;
+
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+  }
+
+  .spinner-border {
+    &.text-info {
+      border-color: #0dcaf0 transparent #0dcaf0 transparent;
+    }
+  }
+}
+
+// Language-specific styles
+[dir="rtl"] .otp-content {
+  .form-control.text-center {
+    direction: ltr; // Keep OTP code left-to-right even in Arabic
+    text-align: center;
+  }
+}

@@ -1,0 +1,39 @@
+:host {
+  height: inherit;
+  width: inherit;
+}
+.w-50px{
+  svg{
+    width: 100px;
+  }
+}
+/* Hide dropdown by default */
+.menu-item .menu-sub {
+  display: none;
+  z-index: 108;
+  position: absolute;
+  top: 100%;
+  left: 0;
+}
+
+/* Show dropdown on hover */
+.menu-item:hover .menu-sub {
+  display: block;
+}
+.start-now-bg {
+  background-image: url(../../../../../../assets/media/images/2600x1200/bg-5.png);
+  background-size: cover;
+  background-position: center top 1.3rem;
+  background-repeat: no-repeat;
+  background-size: 700px;
+}
+.menu-link:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 10px;
+  background-color: #d9d9d9;
+}

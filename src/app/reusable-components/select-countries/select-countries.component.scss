@@ -1,0 +1,22 @@
+/* src/app/reusable-components/select-countries/select-countries.component.scss */
+
+.select-countries-container {
+    .country-item, .selected-country {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+  
+    .country-flag {
+      width: 20px;
+      height: 15px;
+      object-fit: cover;
+      border-radius: 3px;
+    }
+  
+    .loading-indicator {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #6c757d;
+    }
+  }

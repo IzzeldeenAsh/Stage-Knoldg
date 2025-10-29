@@ -1,0 +1,329 @@
+<!-- Main Header -->
+<div class="primeng-header">
+  <!-- Desktop Header -->
+  <div class="desktop-header" *ngIf="!isSmallScreen">
+    <div class="header-container d-flex justify-content-between align-items-center w-100">
+      <div class="header-logo">
+        <a [href]="getHomeUrl()">
+          <ng-container *ngIf="!isDashboardRoute">
+            <img *ngIf="lang === 'en'" src="./assets/media/LOGO-KNOLD/knoldg-01-Business.png" alt="Logo" />
+          <img *ngIf="lang === 'ar'" src="./assets/media/LOGO-KNOLD/KNOLDG-LOGO-12.png" alt="Logo"  />
+          </ng-container>
+          <ng-container *ngIf="isDashboardRoute">
+            <img *ngIf="lang === 'en'" src="./assets/media/LOGO-KNOLD/knoldg-03.png" alt="Logo" class="h-45px"  />
+          <img *ngIf="lang === 'ar'" src="./assets/media/LOGO-KNOLD/KNOLDG-16.png" alt="Logo" class="h-45px"   />
+          </ng-container>
+        </a>
+      </div>
+      
+      <div class="header-menu d-flex justify-content-center flex-grow-1">
+        
+        <!-- <p-menubar [model]="items" [style]="{'border': 'none', 'background': 'transparent', 'font-size': '14px',paddingTop: '18px'}">
+          <ng-template pTemplate="item" let-item>
+            <a [href]="item.routerLink" *ngIf="!item.items" class="menu-item-link" [ngClass]="{'text-white': isDashboardRoute}">
+              <div class="d-flex align-items-center py-3 mx-6">
+                <span>{{ item.label }}</span>
+              </div>
+            </a>
+            
+            <div *ngIf="item.items && item.label === translate.instant('MENU.INDUSTRIES')" class="position-relative industries-item">
+              <a href="#" class="menu-item-link industries-toggle" (click)="toggleIndustriesMenu($event)" [ngClass]="{'text-white': isDashboardRoute}">
+                <div class="d-flex align-items-center py-3 mx-8">
+                  <span>{{ item.label }}</span>
+                  <i class="ki-duotone ki-arrow-down fs-5 ms-2" [ngClass]="{'rotate-180': isIndustriesMenuOpen}"></i>
+                </div>
+              </a>
+              
+              <div *ngIf="isIndustriesMenuOpen" class="menu-sub menu-sub-dropdown industries-dropdown" 
+                  [ngClass]="{'show': isIndustriesMenuOpen, 'rtl': lang === 'ar'}"
+                  style="z-index: 108; position: absolute; top: 100%; min-width: 600px;">
+                <div class="padding-industries-menu">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h3 class="fs-5 fw-semibold m-0">Featured Industries</h3>
+                    <a href="https://knoldg.com/en/all-industries" class="text-primary fs-7">View all industries</a>
+                  </div>
+                  
+                  <div class="separator mb-3"></div>
+                  
+                  <div class="row gx-5 gy-3">
+                    <div class="col-6">
+                      <div *ngFor="let industry of industries.slice(0, Math.ceil(industries.length/2))" class="mb-3">
+                        <a [href]="getIndustryUrl(industry)" class="text-decoration-none">
+                          <h4 class="fs-6 fw-semibold text-dark mb-0">{{industry.name}}</h4>
+                          <p class="text-muted fs-7 mt-1 mb-0">Explore insights and trends</p>
+                        </a>
+                      </div>
+                    </div>
+                    
+                    <div class="col-6">
+                      <div *ngFor="let industry of industries.slice(Math.ceil(industries.length/2), industries.length)" class="mb-3">
+                        <a [href]="getIndustryUrl(industry)" class="text-decoration-none">
+                          <h4 class="fs-6 fw-semibold text-dark mb-0">{{industry.name}}</h4>
+                          <p class="text-muted fs-7 mt-1 mb-0">Explore insights and trends</p>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="separator my-3"></div>
+                  
+                  <div class="bg-light p-3 rounded">
+                    <div class="row align-items-center">
+                      <div class="col-9">
+                        <h4 class="fs-6 fw-semibold text-dark mb-0">Explore All Industries</h4>
+                        <p class="text-muted fs-7 mt-1 mb-0">Discover comprehensive insights across various sectors</p>
+                      </div>
+                      <div class="col-3 text-end">
+                        <a href="https://knoldg.com/en/all-industries" class="btn btn-primary btn-sm px-3 fs-7">Browse All</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </p-menubar> -->
+      </div>
+
+   
+      <div class="header-actions">
+        <!-- Language Switch Button -->
+    
+        <!-- Add Knowledge button for desktop -->
+          <div class="app-navbar-item me-3" *ngIf="shouldShowAddKnowledgeButton()">
+            <a [routerLink]="getAddKnowledgeRoute()" class="btn btn-sm btn-primary fw-bold">
+              <i class="ki-duotone ki-plus fs-5 "><span class="path1"></span><span class="path2"></span></i>
+              {{ 'KNOWLEDGE.ADD_KNOWLEDGE' | translate }}
+            </a>
+          </div>
+             <!-- Header Search Bar -->
+      <div class="header-search d-none d-lg-flex align-items-center mx-4">
+        <form (ngSubmit)="onSearchSubmit($event)" class="d-flex align-items-center">
+          <div class="position-relative">
+            <input 
+              type="text" 
+              class="form-control search-input"
+              [placeholder]="lang === 'ar' ? 'البحث...' : 'Search...'"
+              [value]="searchQuery"
+              (input)="onSearchInput($event)"
+              (click)="onSearchInputClick()"
+              (keydown.enter)="onSearchSubmit($event)"
+              [style.direction]="lang === 'ar' ? 'rtl' : 'ltr'"
+              [style.padding-left]="lang === 'ar' ? '40px' : '12px'"
+              [style.padding-right]="lang === 'ar' ? '12px' : '40px'"
+            />
+            <button 
+              type="button" 
+              class="btn btn-link search-icon-btn"
+              [class.search-icon-right]="lang !== 'ar'"
+              [class.search-icon-left]="lang === 'ar'"
+              (click)="handleSearch()"
+            >
+              <i class="ki-outline ki-magnifier fs-3"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+
+          <div class="app-navbar-item me-3">
+            <app-lang-switch-button [isInsighterDashboard]="isDashboardRoute"></app-lang-switch-button>
+          </div>
+        <!-- Notification bell -->
+        <div class="app-navbar-item position-relative notification-item">
+          <div
+            class="btn btn-icon btn-custom btn-icon-muted btn-active-light btn-active-color-primary w-35px h-35px w-md-40px h-md-40px cursor-pointer notification-toggle"
+            (click)="toggleNotifications($event)"
+          >
+            <i class="ki-outline ki-notification-on fs-1"></i>
+            <div
+              *ngIf="notificationCount > 0"
+              class="badge badge-circle badge-danger position-absolute translate-middle bottom-0 ms-10 mt-7 h-15px w-15px fs-9"
+            >
+              {{ notificationCount }}
+            </div>  
+          </div>
+          <!-- Notification dropdown -->
+          <app-notifications-inner 
+            *ngIf="isNotificationsOpen"
+            [parent]="'client'"
+            (notificationClicked)="handleNotificationClick($event)" 
+            [notifications]="notifications"
+            (clickOutside)="closeNotifications()"
+            class="notification-dropdown"
+          ></app-notifications-inner>
+        </div>
+      
+        <!-- User dropdown toggle -->
+        <div class="user-dropdown-container">
+          <a  class="user-dropdown-toggle" (click)="toggleUserDropdown($event)" #userDropdownToggle>
+            <div class="user-avatar" *ngIf="userProfileImage">
+              <img  [src]="userProfileImage" alt="User Avatar" style="object-position: top;" />
+            </div>
+            <div class="user-avatar user-initials" *ngIf="!userProfileImage">
+              {{ userInitials }}
+            </div>
+            
+            <!-- User status indicators for desktop -->            
+            <div class="d-flex flex-column align-items-end me-2">
+              <!-- Status indicator for insighter (not company) -->
+              @if (hasRole(['insighter']) && !hasRole(['company']) && profile.insighter_status !== 'active') {
+                <div class="ms-2 badge badge-light-danger fs-8 px-2 py-1 text-capitalize">
+                  {{profile.insighter_status}}
+                </div>
+              }
+              
+              <!-- Status indicator for company -->
+              @if (hasRole(['company']) && profile.company?.status !== 'active') {
+                <div class="ms-2 badge badge-light-danger fs-8 px-2 py-1 text-capitalize">
+                  {{profile.company?.status}}
+                </div>
+              }
+              
+              <!-- Status indicator for company-insighter -->
+              @if (hasRole(['company-insighter']) && profile.insighter_status !== 'active') {
+                <div class="ms-2 badge badge-light-danger fs-8 px-2 py-1 text-capitalize">
+                  {{profile.insighter_status}}
+                </div>
+              }
+            </div>
+            
+            <i class="ki-duotone ki-arrow-down fs-4 rotate-180" ></i>
+          </a>
+          
+          <!-- User dropdown menu -->
+          <div class="user-dropdown-menu" [ngClass]="{'show': isUserDropdownOpen, 'rtl': lang === 'ar'}" #userDropdownMenu>
+            <app-user-inner (closeDropdown)="isUserDropdownOpen = false"></app-user-inner>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Header -->
+  <div class="mobile-header" *ngIf="isSmallScreen">
+    <div class="mobile-header-container d-flex justify-content-between align-items-center w-100">
+      <div class="mobile-header-left d-flex align-items-center">
+        <!-- <button class="menu-toggle btn btn-icon btn-sm me-2" (click)="sidebarVisible = true">
+          <app-keenicon [name]="'abstract-14'" [type]="'outline'" class="fs-2"></app-keenicon>
+        </button> -->
+        <div class="mobile-logo">
+          <a [href]="getHomeUrl()">
+            <img src="./assets/media/logos/custom-2.svg" alt="Logo" class="h-30px" />
+          </a>
+        </div>
+      </div>
+      
+      <div class="mobile-header-right d-flex align-items-center">
+        <!-- Mobile Language Switch -->
+        <div class="me-3">
+          <app-lang-switch-button [isInsighterDashboard]="isDashboardRoute"></app-lang-switch-button>
+        </div>
+        
+        <!-- Mobile Notification bell -->
+        <div class="position-relative me-3">
+          <button
+            class="btn btn-icon btn-sm btn-light d-flex align-items-center justify-content-center position-relative"
+            (click)="toggleNotifications($event)"
+            style="width: 32px; height: 32px;">
+            <i class="ki-outline ki-notification-on fs-3"></i>
+            <span
+              *ngIf="notificationCount > 0"
+              class="badge badge-circle badge-danger position-absolute translate-middle top-0 start-100 fs-8"
+              style="font-size: 10px !important; min-width: 16px; height: 16px; line-height: 14px;">
+              {{ notificationCount > 9 ? '9+' : notificationCount }}
+            </span>  
+          </button>
+        </div>
+
+        <!-- Mobile User dropdown toggle -->
+        <div class="mobile-user-dropdown-container position-relative">
+          <a class="mobile-user-dropdown-toggle d-flex align-items-center" (click)="toggleMobileUserDropdown($event)" #mobileUserDropdown>
+            <div class="user-avatar" *ngIf="userProfileImage" style="width: 36px; height: 36px;">
+              <img [src]="userProfileImage" alt="User Avatar" style="object-position: top; width: 100%; height: 100%; border-radius: 50%;" />
+            </div>
+            <div class="user-avatar user-initials" *ngIf="!userProfileImage" style="width: 36px; height: 36px; font-size: 14px;">
+              {{ userInitials }}
+            </div>
+          </a>
+          
+          <!-- Mobile User dropdown menu -->
+          <div class="mobile-user-dropdown-menu" [ngClass]="{'show': isMobileUserDropdownOpen, 'rtl': lang === 'ar'}" #userDropdown>
+            <app-user-inner (closeDropdown)="isMobileUserDropdownOpen = false"></app-user-inner>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Notifications dropdown for mobile -->
+<div class="mobile-notifications-container" *ngIf="isNotificationsOpen && isSmallScreen">
+  <app-notifications-inner 
+    [parent]="'client'"
+    (notificationClicked)="handleNotificationClick($event)" 
+    [notifications]="notifications"
+    (clickOutside)="closeNotifications()"
+    class="notification-dropdown mobile-notification-dropdown"
+  ></app-notifications-inner>
+</div>
+
+<!-- Mobile Sidebar -->
+<p-sidebar [(visible)]="sidebarVisible" position="left" [style]="{'width':'80%', 'max-width':'300px', 'z-index': '1050'}" [baseZIndex]="1050" [showCloseIcon]="true" styleClass="custom-sidebar" [modal]="false">
+  <ng-template pTemplate="header">
+    <div class="sidebar-header">
+      <h3 class="sidebar-title">{{ 'MENU.TITLE' | translate }}</h3>
+    </div>
+  </ng-template>
+  <div class="mobile-menu">
+    <div *ngFor="let item of items" class="mobile-menu-item">
+      <!-- Special handling for Industries menu item -->
+      <div *ngIf="item.label === translate.instant('MENU.INDUSTRIES')" class="mobile-submenu-container">
+        <a class="mobile-menu-link with-submenu" (click)="toggleSubmenu(item); $event.preventDefault()">
+          <span class="menu-text">{{ item.label }}</span>
+          <i class="ki-duotone ki-arrow-down fs-4" [ngClass]="{'rotate-180': item.expanded}"></i>
+        </a>
+        
+        <div class="mobile-submenu" [ngClass]="{'expanded': item.expanded}">
+          <div *ngFor="let industry of industries" class="p-2 border-bottom">
+            <a [href]="getIndustryUrl(industry)" class="text-decoration-none" (click)="sidebarVisible = false">
+              <h5 class="fs-6 fw-semibold text-dark mb-0">{{ industry.name }}</h5>
+              <p class="text-muted fs-7 mt-1 mb-0">Explore insights and trends</p>
+            </a>
+          </div>
+          <div class="p-2 mt-1">
+            <div class="bg-light p-2 rounded">
+              <h5 class="fs-6 fw-semibold mb-0">Explore All Industries</h5>
+              <p class="text-muted fs-7 mt-1 mb-2">Discover comprehensive insights across various sectors</p>
+              <a href="https://knoldg.com/en/all-industries" class="btn btn-primary btn-sm w-100 fs-7" (click)="sidebarVisible = false">
+                Browse All
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Regular menu items without submenus -->
+      <a [routerLink]="item.routerLink" class="mobile-menu-link" 
+         [ngClass]="{'text-white': isDashboardRoute}"
+         *ngIf="!item.items && item.label !== translate.instant('MENU.INDUSTRIES')" 
+         (click)="sidebarVisible = false">
+        <span class="menu-text">{{ item.label }}</span>
+      </a>
+      
+      <!-- Regular menu items with submenus (not Industries) -->
+      <div *ngIf="item.items && item.label !== translate.instant('MENU.INDUSTRIES')" class="mobile-submenu-container">
+        <a class="mobile-menu-link with-submenu" (click)="toggleSubmenu(item); $event.preventDefault()">
+          <span class="menu-text">{{ item.label }}</span>
+          <i class="ki-duotone ki-arrow-down fs-4 rotate-180" [ngClass]="{'rotate-180': !item.expanded}"></i>
+        </a>
+        
+        <div class="mobile-submenu" [ngClass]="{'expanded': item.expanded}">
+          <a *ngFor="let subitem of item.items" [routerLink]="subitem.routerLink" class="mobile-submenu-link" (click)="sidebarVisible = false">
+            <span class="submenu-text">{{ subitem.label }}</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</p-sidebar>

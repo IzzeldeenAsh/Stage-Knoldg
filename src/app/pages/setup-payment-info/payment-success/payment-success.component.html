@@ -1,0 +1,126 @@
+<p-toast></p-toast>
+<app-payment-header 
+  [title]="lang === 'ar' ? 'تم الإعداد بنجاح!' : 'Setup Complete!'"
+  [subtitle]="lang === 'ar' ? 'تم إعداد محفظة الدفع الخاصة بك بنجاح' : 'Your payment wallet has been successfully set up'">
+</app-payment-header>
+
+<div style="padding-top:50px" class="container-fluid  gradient-background">
+  <div class="row justify-content-center">
+    <div class="col-lg-7 col-xl-6">
+      <div class="card success-card">
+        <div class="card-body text-center py-10">
+          
+          <!-- Success Animation -->
+          <div class="success-animation mb-6">
+            <lottie-player 
+              src="https://lottie.host/fe2c060d-6387-4674-a21f-55d6e9a8f0c0/9Aun5jI4fu.json" 
+              background="transparent" 
+              speed="1" 
+              style="width: 160px; height: 160px;" 
+              autoplay 
+              direction="1" 
+              mode="normal">
+            </lottie-player>
+          </div>
+
+          <!-- Payment Type Badge -->
+          <div class="payment-type-badge mb-4">
+            <span class="badge badge-light-success fs-6 px-4 py-2">
+              <span class="mx-2">
+                {{ paymentType === 'provider' 
+                  ? (lang === 'ar' ? 'Provider' : 'Provider')
+                  : (lang === 'ar' ? 'حساب يدوي' : 'Manual Account')
+                }}
+              </span>
+            </span>
+          </div>
+
+          <!-- Success Message -->
+          <div class="success-content mb-8">
+            <h2 class="text-success mb-3 fw-bold">
+              {{ getSuccessMessage().title }}
+            </h2>
+            <h5 class="text-gray-600 mb-4">
+              {{ getSuccessMessage().subtitle }}
+            </h5>
+            <p class="text-muted fs-6 mb-4 px-4">
+              {{ getSuccessMessage().description }}
+            </p>
+            
+            <!-- Verification Warning Message for Stripe -->
+            <div *ngIf="showVerificationMessage()" class="alert alert-warning d-flex align-items-center mb-0 mx-4" role="alert">
+              <i class="fas fa-clock me-2 text-warning"></i>
+              <div class="fs-7">
+                {{ getVerificationMessage() }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Features List -->
+          <div class="features-list mb-8">
+            <div class="row g-4">
+              <div class="col-md-4">
+                <div class="feature-item">
+                  <div class="feature-icon mb-3">
+                    <i class="fas fa-shield-alt text-success"></i>
+                  </div>
+                  <h6 class="mb-2">
+                    {{ lang === 'ar' ? 'آمن ومضمون' : 'Secure & Safe' }}
+                  </h6>
+                  <p class="text-muted fs-7 mb-0">
+                    {{ lang === 'ar' ? 'معلوماتك محمية' : 'Your information is protected' }}
+                  </p>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="feature-item">
+                  <div class="feature-icon mb-3">
+                    <i class="fas fa-bolt text-warning"></i>
+                  </div>
+                  <h6 class="mb-2">
+                    {{ lang === 'ar' ? 'سريع وفعال' : 'Fast & Efficient' }}
+                  </h6>
+                  <p class="text-muted fs-7 mb-0">
+                    {{ lang === 'ar' ? 'معالجة سريعة' : 'Quick processing' }}
+                  </p>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="feature-item">
+                  <div class="feature-icon mb-3">
+                    <i class="fas fa-headset text-info"></i>
+                  </div>
+                  <h6 class="mb-2">
+                    {{ lang === 'ar' ? 'دعم على مدار الساعة' : '24/7 Support' }}
+                  </h6>
+                  <p class="text-muted fs-7 mb-0">
+                    {{ lang === 'ar' ? 'نحن هنا لمساعدتك' : 'We are here to help' }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="action-buttons">
+            <button 
+              type="button"
+              class="btn btn-success btn-lg me-3 mb-3"
+              (click)="navigateToAddKnowledge()">
+              <i class="fas fa-plus me-2"></i>
+              {{ lang === 'ar' ? 'إضافة معرفة جديدة' : 'Add Knowledge' }}
+            </button>
+            <button 
+              type="button"
+              class="btn btn-info btn-lg mb-3"
+              (click)="navigateToLibrary()">
+              <i class="fas fa-book me-2"></i>
+              {{ lang === 'ar' ? 'التوجه لمكتبتي' : 'Go to Library' }}
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

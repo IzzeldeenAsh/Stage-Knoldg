@@ -1,0 +1,325 @@
+.document-modal {
+  .p-dialog-content {
+    padding: 0;
+  }
+
+  .document-modal-content {
+    padding: 1.5rem;
+    max-height: 70vh;
+    overflow-y: auto;
+
+    // Custom scrollbar
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 3px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 3px;
+
+      &:hover {
+        background: #a8a8a8;
+      }
+    }
+  }
+}
+
+// Fix SweetAlert z-index to appear above PrimeNG dialog
+::ng-deep .swal-high-z-index {
+  z-index: 10000 !important;
+}
+
+.file-drop-zone {
+  border: 2px dashed #E1F0FF;
+  border-radius: 8px;
+  background-color: #F8FCFF;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: #0978B9;
+    background-color: #EEF6FF;
+  }
+}
+
+.selected-file-display {
+  .file-icon {
+    object-fit: contain;
+  }
+}
+
+.editor-container {
+  .ql-toolbar {
+    border-top: 1px solid #E4E6EA;
+    border-left: 1px solid #E4E6EA;
+    border-right: 1px solid #E4E6EA;
+    border-radius: 8px 8px 0 0;
+    background-color: #F9F9F9;
+  }
+
+  .ql-container {
+    border-bottom: 1px solid #E4E6EA;
+    border-left: 1px solid #E4E6EA;
+    border-right: 1px solid #E4E6EA;
+    border-radius: 0 0 8px 8px;
+    font-family: inherit;
+  }
+
+  .ql-editor {
+    min-height: 200px;
+    font-size: 14px;
+    line-height: 1.6;
+    
+    &.ql-blank::before {
+      color: #A1A5B7;
+      font-style: normal;
+    }
+  }
+}
+
+.editor-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  z-index: 10;
+}
+
+.loading-animation {
+  display: flex;
+  gap: 4px;
+
+  .loading-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #FFC700;
+    animation: loading-bounce 1.4s ease-in-out infinite both;
+
+    &:nth-child(1) { animation-delay: -0.32s; }
+    &:nth-child(2) { animation-delay: -0.16s; }
+    &:nth-child(3) { animation-delay: 0s; }
+  }
+}
+
+@keyframes loading-bounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+// Language mismatch dialog
+.language-mismatch-dialog {
+  .p-dialog-header {
+    background-color: #FFF8E1;
+    border-bottom: 1px solid #FFC107;
+  }
+}
+
+// Progress bar styling
+.progress {
+  background-color: #E1F0FF;
+  
+  .progress-bar {
+    background: linear-gradient(90deg, #0978B9 0%, #50CD89 100%);
+    transition: width 0.3s ease;
+  }
+}
+
+// Form styling improvements
+.form-label.required::after {
+  content: " *";
+  color: #F1416C;
+}
+
+.input-group {
+  .input-group-text {
+    border-color: #E4E6EA;
+    
+    i {
+      color: #7E8299;
+    }
+  }
+
+  .form-control {
+    border-left: none;
+    
+    &:focus {
+      border-color: #0978B9;
+      box-shadow: none;
+    }
+  }
+}
+
+.form-control {
+  border-color: #E4E6EA;
+  
+  &:focus {
+    border-color: #0978B9;
+    box-shadow: 0 0 0 0.2rem rgba(0, 158, 247, 0.1);
+  }
+  
+  &.is-invalid,
+  &:invalid {
+    border-color: #F1416C;
+  }
+}
+
+.alert {
+  border-radius: 8px;
+  
+  &.alert-success {
+    background-color: #E8FFF3;
+    border-color: #50CD89;
+    color: #0F5132;
+  }
+  
+  &.alert-warning {
+    background-color: #FFF8E1;
+    border-color: #FFC107;
+    color: #664D03;
+  }
+}
+
+.badge {
+  &.badge-light-success {
+    background-color: #E8FFF3;
+    color: #0F5132;
+  }
+  
+  &.badge-light-warning {
+    background-color: #FFF8E1;
+    color: #664D03;
+  }
+}
+
+// Table styling
+.table {
+  .table-responsive {
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  &.table-row-bordered {
+    > tbody > tr > td {
+      border-top: 1px solid #E4E6EA;
+    }
+  }
+  
+  thead th {
+    background-color: #F9F9F9;
+    border-color: #E4E6EA;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 12px 8px;
+  }
+  
+  tbody td {
+    padding: 12px 8px;
+    vertical-align: middle;
+  }
+}
+
+// Button improvements
+.btn {
+  border-radius: 8px;
+  font-weight: 500;
+  
+  &.btn-sm {
+    padding: 6px 12px;
+    font-size: 0.875rem;
+  }
+  
+  &.btn-icon {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  &.btn-light-danger:hover {
+    background-color: #F1416C;
+    border-color: #F1416C;
+    color: white;
+  }
+  
+  &.btn-light-primary:hover {
+    background-color: #0978B9;
+    border-color: #0978B9;
+    color: white;
+  }
+  
+  &.btn-light-warning:hover {
+    background-color: #FFC107;
+    border-color: #FFC107;
+    color: #212529;
+  }
+}
+
+// Form switch improvements
+.form-check-input {
+  &:checked {
+    background-color: #0978B9;
+    border-color: #0978B9;
+  }
+  
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 158, 247, 0.25);
+  }
+}
+
+// Responsive improvements
+@media (max-width: 768px) {
+  .document-modal {
+    .p-dialog {
+      margin: 1rem;
+      width: calc(100vw - 2rem) !important;
+      max-width: none !important;
+      height: calc(100vh - 2rem);
+      max-height: calc(100vh - 2rem);
+    }
+    
+    .document-modal-content {
+      max-height: calc(100vh - 200px);
+    }
+  }
+  
+  .d-flex.gap-2 {
+    flex-direction: column;
+    
+    .btn {
+      width: 100%;
+    }
+  }
+}
+
+// Loading states
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+// Editor blur effect during AI generation
+.editor-blur {
+  filter: blur(2px);
+  pointer-events: none;
+  transition: filter 0.3s ease;
+}

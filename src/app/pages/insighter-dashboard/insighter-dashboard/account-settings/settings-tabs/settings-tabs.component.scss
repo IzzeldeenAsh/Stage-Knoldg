@@ -1,0 +1,64 @@
+// Metronic tabs design
+.filter-tabs-settings {
+  .nav-pills-custom {
+    display: flex;
+    gap: 0.5rem;
+    
+    .nav-link {
+      padding: 0.75rem 1.5rem;
+      font-weight: 500;
+      color: #7e8299;
+      background-color: transparent;
+      border: 1px solid transparent;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+      cursor: pointer;
+      text-decoration: none;
+      
+      &:hover {
+        color: #181c32;
+        background-color: #f5f8fa;
+      }
+      
+      &.active {
+        color: #0978B9 !important;
+        background-color: #F1FAFE !important;
+        font-weight: 600 !important;
+        border-color: transparent;
+        
+        &:hover {
+          color: #0978B9 !important;
+          background-color: #f1faff !important;
+        }
+      }
+      
+      i {
+        font-size: 1.1rem;
+      }
+    }
+  }
+}
+
+.tab-content {
+  min-height: 400px;
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .filter-tabs-settings {
+    .nav-pills-custom {
+      flex-wrap: wrap;
+      
+      .nav-link {
+        padding: 0.625rem 1.25rem;
+        font-size: 0.875rem;
+        
+        i {
+          font-size: 1rem;
+        }
+      }
+    }
+  }
+}

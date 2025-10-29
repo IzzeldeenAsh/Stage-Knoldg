@@ -1,0 +1,429 @@
+<!-- Insighter Info Section -->
+<!-- Loading Spinner -->
+<div *ngIf="(isLoading$ | async)" class="d-flex justify-content-center align-items-center min-h-300px">
+  <span class="spinner-border spinner-border-md align-middle mx-2  text-info"></span>
+</div>
+
+<!-- Content (shown when loading is complete) -->
+<div *ngIf="!(isLoading$ | async)">
+  <div class="pb-10 pb-lg-15">
+    <h2 class="fw-bolder text-gray-900">
+      {{ "INSIGHTER_WIZARD.INSIGHTER_INFO" | translate }}
+    </h2>
+   
+  </div>
+
+  <!-- Form Section -->
+  <div [formGroup]="form">
+    <!-- Personal Account Section -->
+    <ng-container *ngIf="defaultValues.accountType === 'personal'">
+      <div class="mb-10 row">
+        <!-- Consulting Fields -->
+        <div class=" col-12">
+          <shared-tree-selector
+          [title]="'INSIGHTER_WIZARD.CONSULTING_FIELDS' | translate"
+          [currentLang]="this.lang"
+          [placeholder]="
+            'AUTH.REGISTRATION.CONSULTING_FIELD_PLACEHOLDER' | translate
+          "
+          [otherFieldPlaceholder]="
+            'INSIGHTER_WIZARD.OTHER_FIELD_PLACEHOLDER' | translate
+          "
+          [selectAllLabel]="this.lang === 'ar' ? 'اختر الكل' : 'Select All'"
+          [fetchedData]="listOfConsultingFields"
+          [initialSelectedNodes]="form.value.consultingFields" 
+          [cancelLabel]="'BUTTONS.CANCEL' | translate"
+          [okLabel]="'BUTTONS.OK' | translate"
+          (nodesSelected)="onConsultingNodesSelected($event)"
+          [isRequired]="true"
+        ></shared-tree-selector>
+     
+
+          <div
+            *ngIf="
+              form.get('consultingFields')?.hasError('required') &&
+              form.get('consultingFields')?.touched
+            "
+            class="fv-plugins-message-container invalid-feedback"
+          >
+            {{ "INSIGHTER_WIZARD.CONSULTING_FIELDS_REQUIRED" | translate }}
+          </div>
+        </div>
+
+        <!-- Industry -->
+        <div class=" col-12">
+          <shared-tree-selector
+          [title]="'AUTH.REGISTRATION.INDUSTRY' | translate"
+          [currentLang]="this.lang"
+          [placeholder]="
+            'AUTH.REGISTRATION.INDUSTRY_PLACEHOLDER' | translate
+          "
+          [otherFieldPlaceholder]="
+            'INSIGHTER_WIZARD.OTHER_FIELD_PLACEHOLDER2' | translate
+          "
+          [selectAllLabel]="this.lang === 'ar' ? 'اختر الكل' : 'Select All'"
+          [fetchedData]="this.nodes"
+          [cancelLabel]="'BUTTONS.CANCEL' | translate"
+          [initialSelectedNodes]="form.value.isicCodes" 
+          [okLabel]="'BUTTONS.OK' | translate"
+          (nodesSelected)="onIndustrySelected($event)"
+          [isRequired]="true"
+        ></shared-tree-selector>
+
+          <div
+            *ngIf="
+              form.get('isicCodes')?.hasError('required') &&
+              form.get('isicCodes')?.touched
+            "
+            class="fv-plugins-message-container invalid-feedback"
+          >
+            {{ "INSIGHTER_WIZARD.INDUSTRY_REQUIRED" | translate }}
+          </div>
+        </div>
+      </div>
+
+      <!-- About You -->
+      <div class="mb-10 fv-row">
+        <label class="form-label mb-3 required">
+          {{ "INSIGHTER_WIZARD.ABOUT_YOU" | translate }}
+        </label>
+        <div class="row mb-2" data-kt-buttons="true">
+          <div class="col">
+            <textarea
+              name="bio"
+              class="form-control"
+              rows="3"
+              formControlName="bio"
+            ></textarea>
+          </div>
+        </div>
+        <div
+          *ngIf="
+            form.get('bio')?.hasError('required') &&
+            form.get('bio')?.touched
+          "
+          class="fv-plugins-message-container invalid-feedback"
+        >
+          {{ "INSIGHTER_WIZARD.BIO_REQUIRED" | translate }}
+        </div>
+      </div>
+
+      <!-- Country -->
+      <div class="mb-10 fv-row">
+        <label class="form-label mb-3 required">
+          {{ "INSIGHTER_WIZARD.COUNTRY" | translate }}
+        </label>
+        <app-country-dropdown
+          [countries]="countries"
+          formControlName="country"
+          [placeholder]="'INSIGHTER_WIZARD.COUNTRY_PLACEHOLDER' | translate"
+          [searchPlaceholder]="'Search countries...'"
+          [enableSearch]="true"
+          [showClear]="true"
+          [lang]="lang"
+          [isInvalid]="!!(form.get('country')?.hasError('required') && form.get('country')?.touched)"
+        ></app-country-dropdown>
+        <div
+          *ngIf="
+            form.get('country')?.hasError('required') &&
+            form.get('country')?.touched
+          "
+          class="fv-plugins-message-container invalid-feedback"
+        >
+          {{ "INSIGHTER_WIZARD.COUNTRY_REQUIRED" | translate }}
+        </div>
+      </div>
+
+      <!-- Phone Number -->
+      <div class="mb-10 fv-row">
+        <label class="form-label mb-3">
+          {{ "INSIGHTER_WIZARD.PHONE_NUMBER" | translate }}
+          <span class="text-gray-500">{{
+            "INSIGHTER_WIZARD.PHONE_NUMBER_OPTIONAL" | translate
+          }}</span>
+        </label>
+        <app-phone-number-input
+          [countries]="countries"
+          [placeholder]="'INSIGHTER_WIZARD.YOUR_PHONE_NUMBER' | translate"
+          [searchPlaceholder]="'Search countries...'"
+          [lang]="lang"
+          [showValidationErrors]="true"
+          [countryCodeError]="(form.get('phoneCountryCode')?.hasError('required') && form.get('phoneCountryCode')?.touched) ? ('INSIGHTER_WIZARD.COUNTRY_CODE_REQUIRED' | translate) : ''"
+          [phoneNumberError]="(form.get('phoneNumber')?.hasError('required') && form.get('phoneNumber')?.touched) ? ('INSIGHTER_WIZARD.PHONE_NUMBER_REQUIRED' | translate) : (form.get('phoneNumber')?.hasError('pattern') && form.get('phoneNumber')?.touched) ? ('INSIGHTER_WIZARD.PHONE_NUMBER_PATTERN' | translate) : ''"
+          (countryCodeChange)="form.get('phoneCountryCode')?.setValue($event)"
+          (phoneNumberChange)="form.get('phoneNumber')?.setValue($event)"
+          (flagError)="onFlagError($event)"
+        ></app-phone-number-input>
+      </div>
+    </ng-container>
+
+    <!-- Corporate Account Section -->
+    <ng-container *ngIf="defaultValues.accountType === 'corporate'">
+      <!-- Logo -->
+      <div class="mb-10 row">
+        <div class="col-12">
+          <label class="form-label mb-3 required">
+            {{ "INSIGHTER_WIZARD.COMPANYLOGO" | translate }}
+          </label>
+          <div class="d-flex flex-column">
+            <div
+              class="image-input logo-placeholder image-input-outline fit-content"
+              data-kt-image-input="true"
+            >
+              <!--begin::Image preview wrapper-->
+              <div
+                class="image-input-wrapper logo-placeholder shadow-sm w-150px h-150px"
+                [style.backgroundImage]="getBackgroundImage()"
+              ></div>
+              <!--end::Image preview wrapper-->
+
+              <!--begin::Edit button-->
+              <label
+                class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
+                data-kt-image-input-action="change"
+                data-bs-toggle="tooltip"
+                data-bs-dismiss="click"
+                title="{{ 'INSIGHTER_WIZARD.CHANGE_LOGO' | translate }}"
+              >
+                <i class="ki-duotone ki-pencil fs-6"
+                  ><span class="path1"></span><span class="path2"></span
+                ></i>
+
+                <!--begin::Inputs-->
+                <input
+                  type="file"
+                  name="avatar"
+                  accept=".png, .jpg, .jpeg"
+                  (change)="onLogoSelected($event)"
+                />
+                <input type="hidden" name="avatar_remove" />
+                <!--end::Inputs-->
+              </label>
+              <!--end::Edit button-->
+
+              <!--begin::Cancel button-->
+              <span
+                class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
+                data-kt-image-input-action="cancel"
+                data-bs-toggle="tooltip"
+                data-bs-dismiss="click"
+                title="{{ 'INSIGHTER_WIZARD.CANCEL_LOGO' | translate }}"
+              >
+                <i class="ki-outline ki-cross fs-3"></i>
+              </span>
+              <!--end::Cancel button-->
+
+              <!--begin::Remove button-->
+              <span
+                class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
+                data-kt-image-input-action="remove"
+                data-bs-toggle="tooltip"
+                data-bs-dismiss="click"
+                (click)="removeLogo()"
+                title="{{ 'INSIGHTER_WIZARD.REMOVE_LOGO' | translate }}"
+              >
+                <i class="ki-outline ki-cross fs-3"></i>
+              </span>
+              <!--end::Remove button-->
+            </div>
+            <div
+              *ngIf="
+                form.get('logo')?.hasError('required') &&
+                form.get('logo')?.touched
+              "
+              class="fv-plugins-message-container invalid-feedback"
+            >
+              {{ "INSIGHTER_WIZARD.COMPANY_LOGO_REQUIRED" | translate }}
+            </div>
+            <p-messages
+              [value]="fizeSizeMessages"
+              [enableService]="false"
+            ></p-messages>
+          </div>
+        </div>
+      </div>
+      <!-- Legal Name -->
+      <div class="mb-10 row">
+        <div class="col-12">
+          <label class="form-label mb-3 required">
+            {{ "INSIGHTER_WIZARD.LEGAL_NAME" | translate }}
+          </label>
+          <input
+            formControlName="legalName"
+            type="text"
+            class="form-control"
+            placeholder="{{
+              'INSIGHTER_WIZARD.LEGAL_NAME_PLACEHOLDER' | translate
+            }}"
+          />
+          <div
+            *ngIf="
+              form.get('legalName')?.hasError('required') &&
+              form.get('legalName')?.touched
+            "
+            class="fv-plugins-message-container invalid-feedback"
+          >
+            {{ "INSIGHTER_WIZARD.LEGAL_NAME_REQUIRED" | translate }}
+          </div>
+          <div
+            *ngIf="
+              form.get('legalName')?.hasError('legalNameExists') &&
+              form.get('legalName')?.touched
+            "
+            class="fv-plugins-message-container invalid-feedback"
+          >
+            {{ "INSIGHTER_WIZARD.LEGAL_NAME_EXISTS" | translate }}
+          </div>
+        </div>
+      </div>
+      <!-- Legal Name -->
+      <div class="mb-10 row">
+        <div class="col-12">
+          <label class="form-label mb-3 required">
+            {{ "INSIGHTER_WIZARD.COMPANY_ADDRESS" | translate }}
+          </label>
+          <input
+            formControlName="companyAddress"
+            type="text"
+            class="form-control"
+            placeholder="{{ 'INSIGHTER_WIZARD.COMPANY_ADDRESS' | translate }}"
+          />
+          <div
+            *ngIf="
+              form.get('companyAddress')?.hasError('required') &&
+              form.get('companyAddress')?.touched
+            "
+            class="fv-plugins-message-container invalid-feedback"
+          >
+            {{ "INSIGHTER_WIZARD.COMPANY_ADDRESS_REQUIRED" | translate }}
+          </div>
+        </div>
+      </div>
+      <!-- Country -->
+      <div class="mb-10 fv-row">
+        <label class="form-label mb-3 required">
+          {{ "INSIGHTER_WIZARD.COUNTRY" | translate }}
+        </label>
+        <app-country-dropdown
+          [countries]="countries"
+          formControlName="country"
+          [placeholder]="'INSIGHTER_WIZARD.COUNTRY_PLACEHOLDER' | translate"
+          [searchPlaceholder]="'Search countries...'"
+          [enableSearch]="true"
+          [showClear]="true"
+          [lang]="lang"
+          [isInvalid]="!!(form.get('country')?.hasError('required') && form.get('country')?.touched)"
+        ></app-country-dropdown>
+        <div
+          *ngIf="
+            form.get('country')?.hasError('required') &&
+            form.get('country')?.touched
+          "
+          class="fv-plugins-message-container invalid-feedback"
+        >
+          {{ "INSIGHTER_WIZARD.COUNTRY_REQUIRED" | translate }}
+        </div>
+      </div>
+
+      <!-- Phone Number -->
+      <div class="mb-10 fv-row">
+        <label class="form-label mb-3 required">
+          {{ "INSIGHTER_WIZARD.PHONE_NUMBER" | translate }}
+        </label>
+        <app-phone-number-input
+          [countries]="countries"
+          [placeholder]="'INSIGHTER_WIZARD.PHONE_NUMBER_PLACEHOLDER' | translate"
+          [searchPlaceholder]="'Search countries...'"
+          [lang]="lang"
+          [isRequired]="true"
+          [showValidationErrors]="true"
+          [countryCodeError]="(form.get('phoneCountryCode')?.hasError('required') && form.get('phoneCountryCode')?.touched) ? ('INSIGHTER_WIZARD.COUNTRY_CODE_REQUIRED' | translate) : ''"
+          [phoneNumberError]="(form.get('phoneCompanyNumber')?.hasError('required') && form.get('phoneCompanyNumber')?.touched) ? ('INSIGHTER_WIZARD.PHONE_NUMBER_REQUIRED' | translate) : (form.get('phoneCompanyNumber')?.hasError('pattern') && form.get('phoneCompanyNumber')?.touched) ? ('INSIGHTER_WIZARD.PHONE_NUMBER_PATTERN' | translate) : ''"
+          (countryCodeChange)="form.get('phoneCountryCode')?.setValue($event)"
+          (phoneNumberChange)="form.get('phoneCompanyNumber')?.setValue($event)"
+          (flagError)="onFlagError($event)"
+        ></app-phone-number-input>
+      </div>
+      <!-- Consulting Fied + Industry -->
+      <div class="mb-10 row">
+        <!-- Consulting Fields -->
+        <div class="col-12">
+          <shared-tree-selector
+            [title]="'INSIGHTER_WIZARD.CONSULTING_FIELDS' | translate"
+            [currentLang]="this.lang"
+            [placeholder]="
+              'AUTH.REGISTRATION.CONSULTING_FIELD_PLACEHOLDER' | translate
+            "
+            [otherFieldPlaceholder]="
+              'INSIGHTER_WIZARD.OTHER_FIELD_PLACEHOLDER' | translate
+            "
+            [selectAllLabel]="this.lang === 'ar' ? 'اختر الكل' : 'Select All'"
+            [fetchedData]="listOfConsultingFields"
+            [cancelLabel]="'BUTTONS.CANCEL' | translate"
+            [initialSelectedNodes]="form.value.consultingFields" 
+            [okLabel]="'BUTTONS.OK' | translate"
+            (nodesSelected)="onConsultingNodesSelected($event)"
+            [isRequired]="true"
+          ></shared-tree-selector>
+
+          <div
+            *ngIf="
+              form.get('consultingFields')?.hasError('required') &&
+              form.get('consultingFields')?.touched
+            "
+            class="fv-plugins-message-container invalid-feedback"
+          >
+            {{ "INSIGHTER_WIZARD.CONSULTING_FIELDS_REQUIRED" | translate }}
+          </div>
+        </div>
+     
+        <!-- ISIC Codes -->
+        <div class="col-12">
+          <shared-tree-selector
+          [title]="'AUTH.REGISTRATION.INDUSTRY' | translate"
+          [currentLang]="this.lang"
+          [placeholder]="
+            'AUTH.REGISTRATION.INDUSTRY_PLACEHOLDER' | translate
+          "
+          [otherFieldPlaceholder]="
+            'INSIGHTER_WIZARD.OTHER_FIELD_PLACEHOLDER2' | translate
+          "
+          [selectAllLabel]="this.lang === 'ar' ? 'اختر الكل' : 'Select All'"
+          [fetchedData]="this.nodes"
+          [cancelLabel]="'BUTTONS.CANCEL' | translate"
+          [initialSelectedNodes]="form.value.isicCodes" 
+          [okLabel]="'BUTTONS.OK' | translate"
+          (nodesSelected)="onIndustrySelected($event)"
+          [isRequired]="true"
+        ></shared-tree-selector>
+
+          <div
+            *ngIf="
+              form.get('isicCodes')?.hasError('required') &&
+              form.get('isicCodes')?.touched
+            "
+            class="fv-plugins-message-container invalid-feedback"
+          >
+            {{ "INSIGHTER_WIZARD.INDUSTRY_REQUIRED" | translate }}
+          </div>
+        </div>
+      </div>
+      <!-- About Company -->
+      <div class="mb-10 fv-row">
+        <label class="form-label mb-3 required">
+          {{ "INSIGHTER_WIZARD.ABOUT_COMPANY" | translate }}
+        </label>
+        <div class="row mb-2" data-kt-buttons="true">
+          <div class="col">
+            <textarea
+              name="aboutCompany"
+              class="form-control"
+              rows="3"
+              formControlName="aboutCompany"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

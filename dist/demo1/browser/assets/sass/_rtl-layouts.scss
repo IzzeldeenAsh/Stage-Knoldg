@@ -1,0 +1,18 @@
+html[dir="rtl"]{
+    /* Fix for timesicon position in RTL layout */
+    .p-dropdown.p-inputwrapper.p-dropdown-clearable {
+        direction: rtl; /* Ensure the dropdown is RTL */
+      
+        /* Move the timesicon (clear icon) to the left in RTL */
+        .p-dropdown-clear-icon {
+          left: 42px; /* Adjust the left positioning */
+          right: unset; /* Remove the right positioning */
+        }
+      
+        /* Adjust the dropdown trigger icon */
+        .p-dropdown-trigger {
+          right: 0; /* Ensure the dropdown trigger stays on the right */
+          left: unset; /* Remove the left positioning */
+        }
+      }
+    }

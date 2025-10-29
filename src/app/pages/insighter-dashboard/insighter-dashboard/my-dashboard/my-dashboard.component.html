@@ -1,0 +1,12 @@
+
+
+ @if(isClient() | async){
+
+  <app-client-my-dashboard></app-client-my-dashboard>
+} @else if((isInsighter() | async) || (isCompanyInsighter() | async)){
+  <app-insighter-my-dashboard></app-insighter-my-dashboard>
+} @else if(isCompany() | async){
+  <app-company-my-dashboard></app-company-my-dashboard>
+
+}
+

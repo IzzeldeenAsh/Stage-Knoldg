@@ -1,0 +1,163 @@
+<div class="container">
+    <div class="py-3 py-lg-10">
+        <!-- Knowledge Description -->
+     <div class="description-box p-3 bg-none rounded mb-3" *ngIf="knowledge && knowledge.description">
+       <p class="lead" [innerHTML]="knowledge.description || 'N/A'"></p>
+     </div>
+     <div class="description-box p-3 bg-none rounded mb-3" *ngIf="knowledge && !knowledge.description">
+       <p class="lead">N/A</p>
+     </div>
+    <!-- knowledge documents -->
+     <div class="documents-container">
+          <div
+            class="document-card d-flex flex-column flex-sm-row align-items-start p-4 p-sm-10 cursor-pointer position-relative"
+            *ngFor="let doc of documents"
+            [ngClass]="{ 'active': activeDocumentId === doc.id }"
+            (mouseenter)="onDocumentMouseEnter(doc.id)"
+            (mouseleave)="onDocumentMouseLeave(doc.id)"
+            (click)="toggleCollapse(doc.id, $event)"
+          >
+         <!--  [attr.data-label]="doc.highlighted ? 'Best Match' : ''" -->
+           <!-- Icon -->
+            <div class="file-icon me-3 mb-2 mb-sm-0 d-flex align-items-center">
+              <img
+                [src]="getFileIconByExtension(doc.file_extension)"
+                alt="file icon" 
+                width="40"
+                height="40"
+                [ngClass]="{'animate__animated animate__pulse': activeDocumentId === doc.id}"/>
+            </div>
+       
+           <!-- Main Info -->
+           <div class="flex-grow-1">
+              <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center  gap-6">
+               <div class="d-flex align-items-center">
+                 <div>
+                   <h5 class="mb-1" [ngClass]="{'text-info fw-bold': activeDocumentId === doc.id}">{{ doc.file_name || 'N/A' }}</h5>
+                   <small class="text-muted">{{ doc.file_size ? (doc.file_size | fileSize) + ' bytes' : 'N/A' }}</small>
+                 </div>
+                 
+                 <!-- Action Buttons moved here -->
+                
+               </div>
+               <div class="d-flex gap-1 align-items-center mt-2 mt-sm-0 flex-nowarp" >
+              <div >
+                <span class="badge me-2 px-2 py-1" 
+                [ngClass]="{
+                  'bg-info text-white fs-6 fs-sm-4': activeDocumentId === doc.id && doc.price !== '0',
+                  'bg-secondary fs-7 fs-sm-6': activeDocumentId !== doc.id && doc.price !== '0',
+                  'bg-success text-success fs-6 fs-sm-4': activeDocumentId === doc.id && doc.price === '0',
+                  'bg-success text-white fs-7 fs-sm-6': activeDocumentId !== doc.id && doc.price === '0'
+                }">
+                {{ doc.price === '0' ? (this.lang=="ar"? 'مجاني' : 'Free') : (doc.price | currency) }}
+              </span>
+              
+          
+            </div>
+              <div class="ms-3">
+                <p-menu #menu [popup]="true" [model]="docActions" [appendTo]="'body'"></p-menu>
+                <button class="btn btn-icon btn-sm btn-outline btn-active-light-primary"
+                        (click)="$event.stopPropagation(); menu.toggle($event); setMenuData(doc)"
+                        placement="top">
+                  <i class="ki-duotone ki-gear text-gray-800">
+                      <span class="path1"></span>
+                      <span class="path2"></span>
+                  </i>
+                </button>
+              </div>
+               <!-- Expand/Collapse Arrow -->
+               <button
+               class="btn btn-sm btn-link p-0"
+               (click)="toggleCollapse(doc.id, $event)"
+               [ngClass]="{'text-info': activeDocumentId === doc.id}"
+               [ngbTooltip]="activeDocumentId === doc.id ? 'Collapse' : 'Expand'"
+               placement="top">
+               <i class="bi" [ngClass]="activeDocumentId === doc.id ? 'bi-caret-up-fill' : 'bi-caret-down-fill'"></i>
+             </button>
+              </div>
+            </div>
+       
+             <!-- Collapsible section -->
+             <div
+               class="collapse-content mt-3"
+               [ngClass]="{ 'collapse': activeDocumentId !== doc.id }"
+             >
+               <!-- Description -->
+               <div *ngIf="doc.description" class="mb-4">
+                <strong [ngClass]="{'text-info': activeDocumentId === doc.id}">Description:</strong>
+                 <p [innerHTML]="doc.description"></p>
+               </div>
+               <div *ngIf="!doc.description" class="mb-4">
+                 <p class="lead fs-6">No description available.</p>
+               </div>
+
+               <!-- Table of Contents for non-insight types -->
+               <div *ngIf="shouldShowTableOfContents(doc) && doc.table_of_content && doc.table_of_content.length > 0" class="mt-4">
+                 <div class="d-flex align-items-start mb-3">
+                  
+                   <strong [ngClass]="{'text-info': activeDocumentId === doc.id}">Table of Contents:</strong>
+                 </div>
+                 
+                 <div class="table-responsive">
+                  <table class="table table-hover-info table-rounded table-striped border gy-4 gs-4">
+                   <thead>
+                     <tr class="fw-bold fs-6 text-gray-800 border-bottom-2 border-gray-200">
+                       <th class="min-w-50px">#</th>
+                       <th class="min-w-200px">Chapter Title</th>
+                     </tr>
+                   </thead>
+                   <tbody>
+                     <tr *ngFor="let item of doc.table_of_content; let i = index" 
+                         class="hover-elevate-up" 
+                         [@fadeInMoveY]>
+                       <td class="text-gray-600 fw-semibold">{{i + 1}}</td>
+                       <td class="fw-bold text-dark">
+                         <div class="d-flex align-items-center">
+                           {{item.chapter.title || 'N/A'}}
+                         </div>
+                       </td>
+                     </tr>
+                   </tbody>
+                 </table>
+               </div>
+               <div *ngIf="shouldShowTableOfContents(doc) && (!doc.table_of_content || doc.table_of_content.length === 0)" class="mt-4">
+                 <div class="d-flex align-items-start mb-3">
+                   <strong [ngClass]="{'text-info': activeDocumentId === doc.id}">Table of Contents:</strong>
+                 </div>
+                 <p class="lead fs-6">No table of contents available.</p>
+               </div>
+             </div>
+           </div>
+         </div>
+     </div>
+
+    <!-- Add Document Section -->
+    <div class="mt-5" *ngIf="knowledge">
+      <div class="upload-area border-dashed border-gray-300 d-flex flex-column justify-content-center align-items-center p-4 p-sm-7 cursor-pointer"
+           (click)="openDocumentModal()"
+           [ngClass]="{'border-primary bg-light-info': isUploadAreaHovered}"
+           (mouseenter)="isUploadAreaHovered = true"
+           (mouseleave)="isUploadAreaHovered = false">
+        <i class="ki-duotone ki-plus text-gray-600 fs-1 mb-3" [ngClass]="{'text-primary': isUploadAreaHovered}">
+          <span class="path1"></span>
+          <span class="path2"></span>
+        </i>
+         <div class="text-gray-600 fw-bold fs-6 fs-sm-4 mb-1 text-center" [ngClass]="{'text-primary': isUploadAreaHovered}">
+          {{ 'CLICK_TO_ADD_DOCUMENT' | translate }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Document Modal -->
+    <app-document-modal
+      [(visible)]="showDocumentModal"
+      [knowledgeId]="knowledgeId ? +knowledgeId : null"
+      [editingDocument]="editingDocumentForModal"
+      [knowledgeType]="knowledge.type || ''"
+      [preSelectedFile]="preSelectedFile"
+      (documentSaved)="onDocumentSaved()"
+      (visibleChange)="onModalVisibilityChanged($event)"
+      (tryAnotherFileRequest)="handleTryAnotherFile()">
+    </app-document-modal>
+   </div>
+</div>

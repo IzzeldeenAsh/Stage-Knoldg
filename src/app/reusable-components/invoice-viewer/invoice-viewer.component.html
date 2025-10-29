@@ -1,0 +1,127 @@
+<!-- Invoice Container -->
+<div class="invoice-viewer-container d-flex justify-content-center">
+  <!-- Action Button (No Print) -->
+  <div style="max-width: 190mm; width: 190mm;margin: auto;">
+    <div class="no-print mb-3 d-flex justify-content-center mx-auto">
+      <button
+        type="button"
+        class="btn btn-info btn-sm px-4"
+        (click)="printOrSaveAsPDF()">
+        <i class="ki-outline ki-printer fs-6 me-2"></i>
+        {{ lang === 'ar' ? 'طباعة أو حفظ كـ PDF' : 'Print or Save PDF' }}
+      </button>
+    </div>
+  </div>
+
+  <div id="invoice-content" class="page">
+    <div class="bg"></div>
+
+    <!-- main layout (table ensures consistent placement in Dompdf) -->
+    <table class="layout" cellpadding="0" cellspacing="0">
+      <!-- Header row -->
+      <tr>
+        <td class="header-cell" style="height:48px;">
+          <div class="header-title">INVOICE</div>
+        </td>
+      </tr>
+
+      <!-- Content row -->
+      <tr>
+        <td class="content-cell">
+          <!-- Logo + invoice info -->
+          <table class="logo-table">
+            <tr>
+              <td class="logo-left">
+                <img src="https://res.cloudinary.com/dsiku9ipv/image/upload/v1758006879/invoice_template_knoldg_0_2_aeurma.png"
+                     alt="KNOLDG Logo" class="logo-img"/>
+              </td>
+              <td class="logo-right">
+                <div>{{ invoiceData.invoice_no || invoiceData.order_no }}</div>
+                <div style="margin-top:6px;">{{ invoiceDate }}</div>
+              </td>
+            </tr>
+          </table>
+
+          <!-- Billing (two columns) -->
+          <table class="billing-table" cellpadding="0" cellspacing="0">
+            <tr>
+              <td style="width:70%; padding-right:10px;">
+                <div class="section-title">From:</div>
+                <div style="margin-top:6px;">
+                  Foresighta Systems Consulting FZ-LLC<br/>
+                  Compass Building, Al Shohada Road<br/>
+                  AL Hamra Industrial Zone-FZ<br/>
+                  Ras Al Khaimah, United Arab Emirates<br/>
+                  info&#64;knoldg.com<br/>
+                </div>
+              </td>
+
+              <td style="width:30%; text-align:left; padding-left:10px;">
+                <div class="section-title">Bill To:</div>
+                <div style="margin-top:6px; text-align:left;">
+                  <strong>Name:</strong>{{ getDisplayName() }}<br/>
+                  <strong>Email:</strong>{{ invoiceData.userProfile?.email || 'client@email.com' }}<br/>
+                  <strong>Address:</strong> {{ getDisplayAddress() }}
+                </div>
+              </td>
+            </tr>
+          </table>
+
+          <!-- Services table -->
+          <table class="services" cellpadding="0" cellspacing="0">
+            <thead>
+            <tr>
+              <th style="width:70%;">{{ isMeetingOrder ? 'Meeting Service' : 'Knowledge' }}</th>
+              <th style="width:30%; text-align:right;">Amount</th>
+            </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngIf="isMeetingOrder">
+                <tr>
+                  <td class="meeting-item" style="padding-top:8px;">{{ meetingTitle }}</td>
+                  <td class="amount" style="padding-top:8px;">${{ invoiceData.amount.toFixed(2) }}</td>
+                </tr>
+                <tr *ngFor="let detail of meetingDetails">
+                  <td class="sub-item">
+                    &nbsp;&nbsp;&nbsp;&nbsp;• {{ detail.label }}
+                  </td>
+                  <td class="amount sub-item-amount">{{ detail.value }}</td>
+                </tr>
+              </ng-container>
+
+              <ng-container *ngIf="!isMeetingOrder">
+                <ng-container *ngFor="let package of knowledgePackages">
+                  <tr>
+                    <td class="knowledge-item" style="padding-top:8px;">{{ package.title }}</td>
+                    <td class="amount" style="padding-top:8px;"></td>
+                  </tr>
+                  <tr *ngFor="let doc of package.documents">
+                    <td class="sub-item">
+                      &nbsp;&nbsp;&nbsp;&nbsp;• 📄 {{ doc.file_name }}
+                    </td>
+                    <td class="amount sub-item-amount">${{ doc.price.toFixed(2) }}</td>
+                  </tr>
+                </ng-container>
+              </ng-container>
+            </tbody>
+          </table>
+
+          <!-- Totals -->
+          <table class="totals" cellpadding="0" cellspacing="0">
+            <tr>
+              <td class="label" style="font-weight:600; color:#2C74B3;">Total:</td>
+              <td class="value">
+                <span class="total-badge">${{ invoiceData.amount.toFixed(2) }}</span>
+              </td>
+            </tr>
+          </table>
+
+        </td>
+      </tr>
+    </table>
+
+    <div class="footer-invoice">
+      Thank you for your business © 2025 knoldg | info&#64;knoldg.com
+    </div>
+  </div>
+</div>

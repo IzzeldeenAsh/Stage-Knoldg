@@ -1,0 +1,136 @@
+:host {
+  display: block;
+}
+
+:host .order-details {
+  .card-flush {
+    border: 1px solid #e1e3ea !important;
+  }
+}
+
+// Clean modal layout styles - no shadows, only borders
+:host .order-header,
+:host .client-info,
+:host .meeting-details {
+  border: 1px solid #dee2e6 !important;
+}
+
+:host .payment-method-display {
+  border: 1px solid #dee2e6 !important;
+}
+
+:host .text-info {
+  color: #0978B9 !important;
+}
+
+:host .bg-light-info {
+  background-color: #F1FAFE !important;
+}
+
+:host .btn-light-info {
+  background-color: #F1FAFE;
+  border-color: transparent;
+  color: #0978B9;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #E8F4FD;
+    color: #0978B9;
+  }
+}
+
+:host .btn-info {
+  background-color: #0978B9;
+  border-color: #0978B9;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #0866A1;
+    border-color: #0866A1;
+  }
+}
+
+:host .badge-light-success {
+  background-color: rgba(80, 205, 137, 0.1);
+  color: #50cd89;
+}
+
+:host .badge-light-warning {
+  background-color: rgba(255, 187, 34, 0.1);
+  color: #ffbb22;
+}
+
+:host .badge-light-danger {
+  background-color: rgba(255, 77, 79, 0.1);
+  color: #ff4d4f;
+}
+
+// Clear client interaction hover effects
+:host .client-name-link {
+  border-radius: 6px;
+  padding: 4px 8px;
+  margin: -4px -8px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: #0866A1 !important;
+    background-color: rgba(9, 120, 185, 0.1);
+    transform: translateX(3px);
+
+    .go-to-icon {
+      color: #0866A1 !important;
+      transform: translate(2px, -2px);
+    }
+  }
+}
+
+:host .client-name {
+  border-radius: 6px;
+  padding: 4px 8px;
+  margin: -4px -8px;
+  transition: all 0.2s ease;
+  cursor: default;
+
+  &:hover {
+    color: #0978B9 !important;
+    background-color: rgba(9, 120, 185, 0.05);
+  }
+}
+
+:host .go-to-icon {
+  color: #6c757d;
+  opacity: 0.7;
+  transition: all 0.2s ease;
+}
+
+:host .client-email-link {
+  border-radius: 6px;
+  padding: 4px 8px;
+  margin: -4px -8px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: #0978B9 !important;
+    background-color: rgba(9, 120, 185, 0.1);
+    transform: translateX(3px);
+
+    .email-icon {
+      color: #0978B9 !important;
+      transform: scale(1.1);
+    }
+
+    span {
+      color: #0978B9 !important;
+    }
+  }
+}
+
+:host .email-icon {
+  color: #6c757d;
+  transition: all 0.2s ease;
+}
+
+// Typography enhancements
+:host .tracking-wide {
+  letter-spacing: 0.05em;
+}

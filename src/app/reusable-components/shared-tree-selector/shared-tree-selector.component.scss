@@ -1,0 +1,84 @@
+.responsive-dialog {
+    width: 50vw;
+    max-height: 90vh;
+    overflow: hidden;
+  }
+  
+  @media (max-width: 768px) {
+    .responsive-dialog {
+      width: 100vw;
+    }
+  }
+  .tree-container{
+    height: 500px;
+    max-height:calc(-100px + 80vh)
+  }
+  .max-width-200px{
+    max-width: 250px;
+    width: 250px;
+  }
+  .logo-placeholder{
+    background-size: contain;
+    background-position: center;
+  }
+  .fit-content{
+    width: fit-content;
+  }
+  .selected-nodes-container {
+    cursor: pointer;
+    background-color: #fff;
+    border: 1px solid #DBDFE9;
+    border-radius: 0.475rem;
+    overflow-y: auto;
+    padding: 0.5rem 0.75rem;
+    min-height: 3.5rem;
+    max-height: 6rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    align-content: flex-start;
+    position: relative;
+  }
+  .dots{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    font-size: 1.5rem;
+    color: #6c757d;
+  }
+
+  .placeholder-text {
+    color: #6c757d;
+    padding: 10px;
+  }
+
+  :host ::ng-deep .read-only-chip {
+    .p-chips-input-token {
+      display: none;
+    }
+    
+    .p-chips-token {
+      margin: 2px;
+      background: #e9ecef;
+      color: #495057;
+    }
+  }
+
+  :host ::ng-deep .selection-chip {
+    background-color: #f0f7ff;
+    color: #0d6efd;
+    border-radius: 16px;
+    font-size: 0.85rem;
+    
+    .p-chip-remove-icon {
+      color: #0d6efd;
+      
+      &:hover {
+        color: #0a58ca;
+      }
+    }
+    
+    &:hover {
+      background-color: #e2f0ff;
+    }
+  }

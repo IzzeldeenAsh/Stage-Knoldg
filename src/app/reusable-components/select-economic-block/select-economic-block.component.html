@@ -1,0 +1,134 @@
+<div class="economic-block-selector" (click)="showDialog()">
+  <div class="chips-container">
+    <ng-container *ngIf="hasSelections(); else placeholderTpl">
+      <div class="selected-items" (click)="$event.stopPropagation()">
+        <p-chip
+          *ngFor="let item of getSelectedDisplayItems()"
+          [label]="item"
+          [removable]="true"
+          (onRemove)="removeItem(item)"
+          (click)="$event.stopPropagation()"
+        ></p-chip>
+        <!-- Add button -->
+        <span 
+          class="add-button text-info fw-bold ms-2"
+          (click)="showDialog()"
+          style="cursor: pointer; font-size: 14px;"
+        >
+          Add
+        </span>
+      </div>
+    </ng-container>
+    <ng-template #placeholderTpl>
+      <div class="placeholder-text">
+        <span
+          ><i class="ki-duotone ki-abstract-21 me-2"
+            ><span class="path1"></span><span class="path2"></span></i></span
+        >{{ placeholder }}
+      </div>
+    </ng-template>
+  </div>
+</div>
+
+<p-dialog
+  [header]="title"
+  [(visible)]="dialogVisible"
+  [modal]="true"
+  [style]="{ width: '70vw', maxWidth: '1000px' }"
+  appendTo="body"
+  [breakpoints]="{ '960px': '90vw', '640px': '100vw' }"
+  class="select-economic-block-dialog"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="p-fluid"
+>
+  <div class="economic-block-dialog">
+    <!-- Search input -->
+    <div class="search-container mb-4">
+      <span class="p-input-icon-left w-100">
+        <input
+          type="text"
+          pInputText
+          [(ngModel)]="searchQuery"
+          (input)="filterBlocks()"
+          placeholder="{{ 'SEARCH_ECONOMIC_BLOCK' | translate }}"
+          class="w-100 search-input"
+        />
+      </span>
+    </div>
+
+    <!-- Clear all button -->
+    <div class="selected-count mb-4" *ngIf="hasSelections()">
+      <button
+        class="btn btn-link btn-sm text-danger"
+        (click)="clearAllSelections()"
+      >
+        <span
+          ><i class="ki-duotone ki-trash me-1"
+            ><span class="path1"></span><span class="path2"></span>
+          <span class="path3"></span><span class="path4"></span>
+            <span class="path5"></span>
+        </i>
+        </span>
+        {{ "CLEAR_ALL" | translate }}
+      </button>
+    </div>
+
+    <!-- Economic Blocks Cards -->
+    <div class="blocks-cards">
+      <div
+        *ngFor="let block of filteredBlocks"
+        class="block-card"
+        [class.selected]="isBlockSelected(block)"
+        (click)="toggleBlockSelection(block)"
+        style="cursor: pointer;"
+      >
+        <div class="block-card-content">
+          <div class="form-check">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              [checked]="isBlockSelected(block)"
+              id="select-block-{{ block.id }}"
+              readonly
+            />
+            <label
+              class="form-check-label fw-bold"
+              for="select-block-{{ block.id }}"
+            >
+              {{ block.name }}
+            </label>
+          </div>
+          <div class="block-card-icon" *ngIf="isBlockSelected(block)">
+            <span
+              ><i class="ki-duotone ki-check-circle text-success"
+                ><span class="path1"></span><span class="path2"></span></i
+            ></span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="dialog-footer">
+      <button class="btn btn-secondary me-2" (click)="dialogVisible = false">
+        {{ "CANCEL" | translate }}
+      </button>
+      <button
+        class="btn btn-primary"
+        (click)="onConfirm()"
+        [disabled]="!hasSelections()"
+      >
+        <span
+          ><i class="ki-duotone ki-check me-1"
+            ><span class="path1"></span><span class="path2"></span></i
+        ></span>
+        {{ "CONFIRM" | translate }}
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>

@@ -1,0 +1,258 @@
+.aside-sign-up{
+  border-top-left-radius: 20px;
+  margin-top: 30px;
+}
+.bg-light{
+  background-image: url('../../../../../assets/media/auth/bg11-dark.webp');
+  min-height: 100vh;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  overflow: hidden;
+}
+.link-primary{
+  cursor: pointer;
+}
+.text-inline-start{
+  text-align: start;
+}
+.height-logo{
+  height: 80px;
+  @media screen and (max-width:768px) {
+    height: 50px;
+  }
+}
+.word-nowrap{
+  white-space: nowrap;
+}
+.top-round{
+ border-bottom-left-radius: 0; 
+ border-bottom-right-radius: 0;
+ @media screen and (min-width:2300px) {
+  margin-top: 100px;
+  position: static;
+  border-bottom-left-radius: 1rem; 
+  border-bottom-right-radius: 1rem;
+ }
+
+ @media screen and (max-width:1213px) {
+  position: static;
+  border-bottom-left-radius: 1rem; 
+  border-bottom-right-radius: 1rem;
+ }
+}
+.card-position {
+  align-self: flex-end;
+  @media screen and (min-width:2300px) {
+   align-self: center;
+   }
+  
+   @media screen and (max-width:1213px) {
+    align-self: center;
+   }
+}
+  /* Slide-in animation for forms */
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  .slide-in {
+    animation: slideIn 0.2s ease-out forwards;
+  }
+  
+  /* Optional: Slide-out animation */
+  @keyframes slideOut {
+    from {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(-100%);
+    }
+  }
+  
+  .slide-out {
+    animation: slideOut 0.2s ease-in forwards;
+  }
+  
+  /* Adjust form visibility */
+  form {
+    transition: all 0.2s ease-in-out;
+  }
+
+  .password-strength .progress {
+    height: 5px;
+  }
+  
+  .password-strength small {
+    display: block;
+    margin-top: 5px;
+  }
+  
+  .password-strength .text-warning {
+    font-size: 0.875rem;
+  }
+  
+  /* Terms Dialog Styling */
+  .terms-dialog {
+    .p-dialog-header {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid #eee;
+    }
+
+    .p-dialog-content {
+      padding: 0;
+    }
+
+    .terms-content-wrapper {
+      padding: 1.5rem;
+    }
+
+    .terms-header-image {
+      display: flex;
+      justify-content: center;
+      img {
+        max-height: 120px;
+      }
+    }
+
+    .agreement-content {
+      padding-right: 10px;
+      line-height: 1.6;
+    }
+
+    .custom-scrollbar {
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+      
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+      }
+      
+      &::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 4px;
+      }
+      
+      &::-webkit-scrollbar-thumb:hover {
+        background: #aaa;
+      }
+    }
+
+    .p-dialog-footer {
+      border-top: 1px solid #eee;
+      padding: 1rem 1.5rem;
+    }
+  }
+
+  /* RTL Support for Country Dropdown */
+  .rtl-dropdown {
+    direction: rtl;
+    
+    ::ng-deep {
+      .p-dropdown {
+        text-align: right;
+        
+        .p-dropdown-trigger {
+          left: 0.75rem;
+          right: auto;
+        }
+        
+        .p-dropdown-clear-icon {
+          right: auto;
+          left: 2.5rem;
+        }
+      }
+      
+      .p-dropdown-panel {
+        .p-dropdown-filter-container {
+          .p-dropdown-filter {
+            text-align: right;
+            padding-right: 1.75rem;
+            padding-left: 0.75rem;
+          }
+          
+          .p-dropdown-filter-icon {
+            right: auto;
+            left: 0.75rem;
+          }
+        }
+      }
+    }
+  }
+
+  .rtl-country-option,
+  .rtl-selected-option {
+    display: flex;
+    align-items: center;
+    direction: rtl;
+    text-align: right;
+    
+    .country-name {
+      flex: 1;
+      text-align: right;
+    }
+    
+    .flag-icon {
+      order: 2;
+      margin-right: 0;
+      margin-left: 0.5rem;
+    }
+  }
+
+  .ltr-country-option,
+  .ltr-selected-option {
+    display: flex;
+    align-items: center;
+    direction: ltr;
+    text-align: left;
+    
+    .country-name {
+      flex: 1;
+      text-align: left;
+    }
+    
+    .flag-icon {
+      order: 1;
+      margin-left: 0;
+      margin-right: 0.5rem;
+    }
+  }
+
+  /* RTL specific adjustments for PrimeNG dropdown */
+  [dir="rtl"] {
+    ::ng-deep {
+      .p-dropdown-panel .p-dropdown-items .p-dropdown-item {
+        text-align: right;
+      }
+      
+      .p-dropdown .p-dropdown-label {
+        text-align: right;
+      }
+      
+      .p-dropdown-filter {
+        text-align: right;
+      }
+    }
+  }
+
+  /* Custom scrollbar for RTL in terms dialog */
+  [dir="rtl"] .terms-dialog .agreement-content {
+    padding-left: 10px;
+    padding-right: 0;
+    
+    &.custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+  }
+  

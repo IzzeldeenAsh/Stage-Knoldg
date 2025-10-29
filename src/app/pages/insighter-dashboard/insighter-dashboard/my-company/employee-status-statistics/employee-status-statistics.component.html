@@ -1,0 +1,50 @@
+<ng-container *ngIf="statistics.length > 0">
+<div class="card card-flush h-md-100 mb-5 mb-xl-10">
+  <!--begin::Header-->
+  <div class="card-header pt-5">
+    <!--begin::Title-->
+    <div class="card-title d-flex flex-column">
+      <span class="fs-2 fw-bold text-gray-800">{{ 'EMPLOYEE_STATUS.TITLE' | translate }}</span>
+      <span class="text-gray-500 pt-1 fw-semibold fs-6">{{ 'EMPLOYEE_STATUS.SUBTITLE' | translate }}</span>
+    </div>
+    <!--end::Title-->
+  </div>
+  <!--end::Header-->
+
+  <!--begin::Card body-->
+  <div class="card-body pt-0">
+    <div *ngIf="loading" class="d-flex justify-content-center align-items-center" style="height: 320px;">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
+      </div>
+    </div>
+
+    <div *ngIf="error && !loading" class="alert alert-danger">
+      <i class="fas fa-exclamation-triangle me-2"></i>
+      <span>{{ 'EMPLOYEE_STATUS.LOAD_ERROR' | translate }}</span>
+      <button type="button" class="btn btn-sm btn-danger ms-2" (click)="refresh()">
+        <span>{{ 'EMPLOYEE_STATUS.RETRY' | translate }}</span>
+      </button>
+    </div>
+
+    <div *ngIf="!loading && !error && statistics.length > 0">
+      <div id="pieChart">
+        <apx-chart
+          [series]="pieChartOptions.series!"
+          [chart]="pieChartOptions.chart!"
+          [labels]="pieChartOptions.labels!"
+          [plotOptions]="pieChartOptions.plotOptions!"
+          [fill]="pieChartOptions.fill!"
+          [dataLabels]="pieChartOptions.dataLabels!"
+          [tooltip]="pieChartOptions.tooltip!"
+          [stroke]="pieChartOptions.stroke!"
+          [legend]="pieChartOptions.legend!"
+          [colors]="pieChartOptions.colors!"
+        ></apx-chart>
+      </div>
+    </div>
+
+  </div>
+  <!--end::Card body-->
+</div>
+</ng-container> 

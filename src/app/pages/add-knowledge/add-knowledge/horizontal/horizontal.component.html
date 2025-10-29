@@ -1,0 +1,255 @@
+<div class="pt-20 pb-20">
+  <div class="">
+    <div
+      class="stepper stepper-links d-flex flex-column "
+      id="kt_create_account_stepper"
+    >
+      <div class="stepper-nav mb-5">
+        <div
+          class="stepper-item"
+          [ngClass]="{
+            current: currentStep$.value === 1,
+            completed: currentStep$.value > 1
+          }"
+        >
+          <div class="stepper-icon-i">
+            <i class="ki-duotone ki-some-files fs-3" 
+            [ngClass]="{
+              'text-gray-100': currentStep$.value === 1 || currentStep$.value > 1,
+             }">
+             <span class="path1"></span><span class="path2"></span></i>
+          </div>
+          <h3 class="stepper-title fs-6">{{ "SELECT_KNOWLEDGE_TYPE" | translate }}</h3>
+        </div>
+
+        <div
+          class="stepper-item"
+          [ngClass]="{
+            current: currentStep$.value === 2,
+            completed: currentStep$.value > 2
+          }"
+        >
+          <div class="stepper-icon-i">
+            <i class="ki-duotone ki-information fs-3" [ngClass]="{
+              'text-gray-100': currentStep$.value === 2 || currentStep$.value > 2,
+             }">
+             <span class="path1"></span><span class="path2"></span></i>
+          </div>
+          <h3 class="stepper-title fs-6">{{ "ADD_DOCUMENTS" | translate }}</h3>
+        </div>
+
+        <div
+          class="stepper-item"
+          [ngClass]="{
+            current: currentStep$.value === 3,
+            completed: currentStep$.value > 3
+          }"
+        >
+          <div class="stepper-icon-i">
+            <i class="ki-duotone ki-document fs-3" [ngClass]="{
+              'text-gray-100': currentStep$.value === 3 || currentStep$.value > 3,
+             }">
+             <span class="path1"></span><span class="path2"></span></i>
+          </div>
+          <h3 class="stepper-title fs-6">
+            {{ "GENERATE_ABSTRACT" | translate }}
+          </h3>
+        </div>
+
+        <div
+          class="stepper-item"
+          [ngClass]="{
+            current: currentStep$.value === 4,
+            completed: currentStep$.value > 4
+          }"
+        >
+          <div class="stepper-icon-i">
+            <i class="ki-duotone ki-tag fs-3" [ngClass]="{
+              'text-gray-100': currentStep$.value === 4 || currentStep$.value > 4,
+             }">
+             <span class="path1"></span><span class="path2"></span></i>
+          </div>
+          <h3 class="stepper-title fs-6">{{ "ADD_KNOWLEDGE_INFO" | translate }}</h3>
+        </div>
+
+        <div
+          *ngIf="!isEditMode"
+          class="stepper-item"
+          [ngClass]="{
+            current: currentStep$.value === 5,
+            completed: currentStep$.value > 5
+          }"
+        >
+          <div class="stepper-icon-i">
+            <i class="ki-duotone ki-send fs-3" [ngClass]="{
+              'text-gray-100': currentStep$.value === 5 || currentStep$.value > 5,
+             }">
+             <span class="path1"></span><span class="path2"></span></i>
+          </div>
+          <h3 class="stepper-title fs-6">
+            {{ "PUBLISH_KNOWLEDGE" | translate }}
+          </h3>
+        </div>
+        <!-- <div
+          *ngIf="!isEditMode"
+          class="stepper-item"
+          [ngClass]="{ current: currentStep$.value === 6 }"
+        >
+          <div class="stepper-icon-i">
+            <i class="ki-duotone ki-check-circle fs-3" [ngClass]="{
+              'text-gray-100': currentStep$.value === 6,
+             }">
+             <span class="path1"></span><span class="path2"></span></i>
+          </div>
+          <h3 class="stepper-title fs-6">{{ "COMPLETED" | translate }}</h3>
+        </div> -->
+      </div>
+
+      <div class="mx-auto mw-700px w-100 pt-5 pb-10 padding-responsive">
+        <div class="current">
+          <ng-container *ngIf="currentStep$.value === 1">
+            <app-step1
+              class="w-100"
+              [updateParentModel]="updateAccount"
+              [defaultValues]="account$.value"
+              [knowledgeId]="knowledgeId"
+              (goToNextStep)="nextStep()"
+            ></app-step1>
+          </ng-container>
+
+          <ng-container *ngIf="currentStep$.value === 2">
+            <app-step2
+              class="w-100"
+              [updateParentModel]="updateAccount"
+              [defaultValues]="account$.value"
+              [knowledgeId]="knowledgeId"
+            ></app-step2>
+            <ng-container>
+              <app-sub-step-documents
+                class="w-100"
+                [updateParentModel]="updateAccount"
+                [defaultValues]="account$.value"
+                [parentComponent]="this"
+              ></app-sub-step-documents>
+            </ng-container>
+          </ng-container>
+
+          <ng-container *ngIf="currentStep$.value === 3">
+            <app-step3
+              #step3Component
+              class="w-100"
+              [updateParentModel]="updateAccount"
+              [defaultValues]="account$.value"
+              [knowledgeId]="knowledgeId"
+            ></app-step3>
+          </ng-container>
+
+          <ng-container *ngIf="currentStep$.value === 4">
+            <app-step4
+              #step4Component
+              class="w-100"
+              [updateParentModel]="updateAccount"
+              [defaultValues]="account$.value"
+              [knowledgeId]="knowledgeId"
+            ></app-step4>
+          </ng-container>
+
+          <ng-container *ngIf="currentStep$.value === 5 && !isEditMode">
+            <app-step5
+              #step5Component
+              class="w-100"
+              [updateParentModel]="updateAccount"
+              [defaultValues]="account$.value"
+            ></app-step5>
+          </ng-container>
+
+          <ng-container *ngIf="currentStep$.value === 6 && !isEditMode">
+            <app-step6
+              class="w-100"
+              [defaultValues]="account$.value"
+            ></app-step6>
+          </ng-container>
+        </div>
+
+        <div class="d-flex flex-stack pt-15">
+          <div class="mr-2">
+            <ng-container
+              *ngIf="currentStep$.value !== 1 && currentStep$.value !== 6"
+            >
+              <button
+                type="button"
+                class="btn btn-light-info me-3 text-hover-white"
+                (click)="prevStep()"
+              >
+                <div class="d-flex align-items-center">
+                  <app-keenicon
+                    name="arrow-left"
+                    class="fs-3 text-info text-hover-secondary d-flex text-hover-white"
+                    [ngStyle]="{'transform': this.lang === 'ar' ? 'rotate(180deg)' : 'none'}"
+                  ></app-keenicon>
+                  <span>{{ "INSIGHTER_WIZARD.BACK" | translate }}</span>
+                </div>
+              </button>
+            </ng-container>
+          </div>
+
+          <ng-container *ngIf="currentStep$.value !== formsCount">
+            <div>
+              <button
+                type="button"
+                class="btn btn-primary me-3"
+                [class.disabled]="(currentStep$.value === 5 && !isCurrentFormValid$.value) || isLoading"
+                (click)="nextStep()"
+                [disabled]="(currentStep$.value === 5 && !isCurrentFormValid$.value) || isLoading"
+              >
+                <span class="indicator-label d-flex align-items-center">
+                  <ng-container *ngIf="(!isEditMode && currentStep$.value < 5) || (isEditMode && currentStep$.value < 4)">
+                    <ng-container *ngIf="!isLoading">
+                      {{ "INSIGHTER_WIZARD.CONTINUE" | translate }} {{ " " }}
+                      <app-keenicon
+                        name="arrow-right"
+                        class="fs-3 mx-2 me-0 text-gray-100" 
+                      ></app-keenicon>
+                    </ng-container>
+                    <ng-container *ngIf="isLoading">
+                      {{ "COMMON.PLEASE_WAIT" | translate
+                      }}<span
+                        class="spinner-border spinner-border-sm align-middle mx-2"
+                      ></span>
+                    </ng-container>
+                  </ng-container>
+                  <ng-container *ngIf="(!isEditMode && currentStep$.value === 5) || (isEditMode && currentStep$.value === 4)">
+                    {{ "INSIGHTER_WIZARD.SUBMIT" | translate }}
+                  </ng-container>
+                </span>
+              </button>
+              
+              <!-- Step 5 Form Validation Warning - Only show on Step 5 when form is invalid -->
+              <div *ngIf="currentStep$.value === 5 && !isCurrentFormValid$.value" class="d-flex align-items-center mt-2">
+                <span class="badge badge-light-warning me-2">
+                  <i class="ki-duotone ki-warning-2 fs-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                  </i>
+                </span>
+              </div>
+              
+              <!-- Upload Error Warning - Only show on Step 2 when there are errors -->
+              <div *ngIf="currentStep$.value === 2 && hasAnyUploadErrors()" class="d-flex align-items-center mt-2">
+                <span class="badge badge-light-danger me-2">
+                  <i class="ki-duotone ki-warning-2 fs-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                  </i>
+                </span>
+                <span class="text-danger small">{{ "Please fix upload errors before continuing" | translate }}</span>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Add this comment for debugging - remove when fixed -->
+  <!-- Check app-step5 component for publish/draft button icons implementation -->
+</div>

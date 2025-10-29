@@ -1,0 +1,120 @@
+<!-- Weekly Calendar -->
+<div class="calendar-container">
+  <!-- Header -->
+  <div class="calendar-header">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+      <div>
+        <button class="btn btn-sm btn-light-primary me-2">Today</button>
+        <div class="d-inline-flex align-items-center">
+          <button class="btn btn-sm btn-icon btn-light me-1">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button class="btn btn-sm btn-icon btn-light">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+      <div class="text-end">
+        <h5 class="mb-1 text-gray-800">{{ getWeekDateRange() }}</h5>
+        <span class="text-muted fs-7">Week</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="d-flex justify-content-center align-items-center py-10">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Calendar Grid -->
+  <div *ngIf="!isLoading" class="calendar-grid">
+    <!-- Time Column -->
+    <div class="time-column">
+      <div class="time-header"></div>
+      <div class="time-slots">
+        <div class="time-slot" *ngFor="let hour of [9,10,11,12,13,14,15,16,17,18,19,20]">
+          {{ hour < 12 ? hour : (hour === 12 ? 12 : hour - 12) }}{{ hour < 12 ? ' AM' : ' PM' }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Days Columns -->
+    <div class="days-grid">
+      <!-- Day Headers -->
+      <div class="day-headers">
+        <div 
+          *ngFor="let day of weekDays" 
+          class="day-header"
+          [class.today]="day.isToday">
+          <div class="day-name">{{ day.dayName }}</div>
+          <div class="day-number">{{ day.dayNumber }}</div>
+        </div>
+      </div>
+
+      <!-- Day Columns with Events -->
+      <div class="day-columns">
+        <div 
+          *ngFor="let day of weekDays" 
+          class="day-column"
+          [class.today-column]="day.isToday">
+          
+          <!-- Time Grid Lines -->
+          <div class="time-grid-lines">
+            <div class="time-line" *ngFor="let hour of [9,10,11,12,13,14,15,16,17,18,19,20]"></div>
+          </div>
+
+          <!-- Events -->
+          <div 
+            *ngFor="let meeting of day.meetings; trackBy: trackByMeetingId" 
+            class="event-card"
+            [class]="getMeetingTypeColor(meeting)"
+            (click)="openMeetingUrl(meeting)">
+            
+            <!-- Event Content -->
+            <div class="event-content">
+              <!-- Time Badge -->
+              <div class="event-time-badge">
+                {{ meeting.start_time }}
+              </div>
+              
+              <!-- Event Title -->
+              <div class="event-title">{{ meeting.title }}</div>
+              
+              <!-- Participant Info -->
+              <div class="event-participant">
+                <div class="participant-avatar">
+                  <img 
+                    *ngIf="getParticipantAvatar(meeting); else initialsTemplate" 
+                    [src]="getParticipantAvatar(meeting)" 
+                    class="avatar-img" 
+                    [alt]="getParticipantName(meeting)">
+                  <ng-template #initialsTemplate>
+                    <div class="avatar-initials">
+                      {{ getParticipantInitials(meeting) }}
+                    </div>
+                  </ng-template>
+                </div>
+                <div class="participant-name">{{ getParticipantName(meeting) }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty State for day -->
+          <div *ngIf="day.meetings.length === 0" class="empty-day">
+            <!-- Empty day content can be added here if needed -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State for entire week -->
+  <div *ngIf="!isLoading && getTotalMeetingsThisWeek() === 0" 
+       class="d-flex flex-column align-items-center justify-content-center py-10 text-center">
+    <i class="fas fa-calendar-alt text-muted fs-3x mb-5 opacity-25"></i>
+    <h4 class="text-muted mb-3">No meetings this week</h4>
+    <span class="text-muted fs-6">Your calendar is clear for the upcoming week</span>
+  </div>
+</div>

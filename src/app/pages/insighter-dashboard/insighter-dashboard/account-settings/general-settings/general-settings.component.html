@@ -1,0 +1,96 @@
+<div class="p-24px">
+    <app-reset-password *ngIf="!profile?.login_social"></app-reset-password>
+    <ng-container *ngIf="hasRole(['company']) && profile.insighter_status === 'inactive'">
+        <app-activate-account
+        *ngIf=" isPrimaryKey"
+        [role]="'insighter'">
+       </app-activate-account>
+    </ng-container>
+    <app-activate-account
+     *ngIf="!isActive && isPrimaryKey"
+     [role]="hasRole(['company']) || hasRole(['company-insighter']) ? 'company' : 'insighter'">
+    </app-activate-account>
+
+
+    <!-- Transfer Account Section -->
+    <div class="border border-1 border-gray-300 rounded-2 mb-10 bg-white" *ngIf="(hasRole(['company']) ) && isActive">
+        <div class="col-12">
+            <div class="action-section border-1 border-light w-100">
+                <div class="p-24px">
+                    <div class="fs-2 fw-bolder mb-2">
+                        {{ 'TRANSFER_COMPANY_ACCOUNT.TITLE' | translate }}
+                    </div>
+                    <span class="text-gray-600 fw-semibold fs-6 mb-6 d-block">
+                        {{ 'TRANSFER_COMPANY_ACCOUNT.DESCRIPTION' | translate }}
+                    </span>
+                  
+                </div>
+               
+            </div>
+        </div>
+        <div class="action-footer bg-light">
+            <button class="btn btn-sm btn-primary" (click)="showTransferDialog()">
+                {{ 'TRANSFER_COMPANY_ACCOUNT.BUTTON_TEXT' | translate }}
+            </button>
+        </div>
+    </div>
+
+    <!-- Deactivate Account Section -->
+    <div class="delete-section border-1 border-light-danger w-100 mb-10 bg-white" *ngIf="(hasRole(['insighter'])) && isActive && !hasRole(['company'])">
+        <div class="p-24px ">
+            <div class="fs-2 fw-bolder mb-2">
+                {{ 'DEACTIVATE_ACCOUNT.TITLE_INSIGHTER' | translate }}
+            </div>
+            <p class="warning-text" [innerHTML]="'DEACTIVATE_ACCOUNT.DESCRIPTION' | translate"></p>
+        </div>
+      
+        <div class="action-footer bg-light-danger">
+            <button class="btn btn-sm btn-danger" (click)="showDeactivateDialog()">
+                {{ 'DEACTIVATE_ACCOUNT.BUTTON_TEXT_INSIGHTER' | translate }}
+            </button>
+        </div>
+    </div>
+
+
+
+    <!-- Company Accounts - User Deactivation Option -->
+    <div class="delete-section border-1 border-light-danger w-100 mb-10 bg-white" *ngIf="hasRole(['company'])">
+        <div class="p-24px ">
+            <div class="fs-2 fw-bolder mb-2">
+                {{ 'DEACTIVATE_ACCOUNT.TITLE_ACCOUNT' | translate }}
+            </div>
+            <p class="warning-text" [innerHTML]="'DEACTIVATE_ACCOUNT.DESCRIPTION_USER_ONLY' | translate"></p>
+        </div>
+      
+        <div class="action-footer bg-light-danger">
+            <button class="btn btn-sm btn-danger" (click)="showDeactivateDialog('user')">
+                {{ 'DEACTIVATE_ACCOUNT.TITLE_ACCOUNT' | translate }}
+            </button>
+        </div>
+    </div>
+
+
+
+    <!-- Delete Account Section -->
+    <div class="delete-section border-1 border-light-danger w-100 bg-white" *ngIf="(!hasRole(['company-insighter']) && !(isClient$ | async) )">
+        <div class="p-24px">
+            <div class="fs-2 fw-bolder mb-2">{{ 'DEACTIVATE_ACCOUNT_WITH_DELETE.TITLE' | translate }}</div>
+            
+            <p class="warning-text" [innerHTML]="'DEACTIVATE_ACCOUNT_WITH_DELETE.DESCRIPTION' | translate">
+            </p>
+        
+           
+        </div>
+        
+        <div class="action-footer bg-light-danger">
+            <button *ngIf="!hasPendingDeactivationRequest" class="btn btn-sm btn-danger" (click)="showDeleteDialog()">
+                {{ 'DEACTIVATE_ACCOUNT_WITH_DELETE.BUTTON_TEXT' | translate }}
+            </button>
+            <div *ngIf="hasPendingDeactivationRequest" class="pending-request">
+                <i class="bi bi-hourglass-split me-2"></i>
+                {{ 'DEACTIVATE_ACCOUNT_WITH_DELETE.PENDING_REQUEST' | translate }}
+            </div>
+        </div>
+    </div>
+
+</div>

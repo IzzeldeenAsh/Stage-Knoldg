@@ -1,0 +1,88 @@
+:host {
+  display: block;
+}
+
+// Clean modal layout styles - no shadows, only borders
+:host .order-header,
+:host .client-info,
+:host .knowledge-details {
+  border: 1px solid #dee2e6 !important;
+}
+
+:host .payment-method-display,
+:host .document-card {
+  border: 1px solid #dee2e6 !important;
+}
+
+:host .text-info {
+  color: #0978B9 !important;
+}
+
+:host .bg-light-info {
+  background-color: #F1FAFE !important;
+}
+
+// Clear client interaction hover effects
+:host .client-name-link {
+  border-radius: 6px;
+  padding: 4px 8px;
+  margin: -4px -8px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: #0866A1 !important;
+    background-color: rgba(9, 120, 185, 0.1);
+    transform: translateX(3px);
+
+    .go-to-icon {
+      color: #0866A1 !important;
+      transform: translate(2px, -2px);
+    }
+  }
+}
+
+:host .client-name {
+  border-radius: 6px;
+  padding: 4px 8px;
+  margin: -4px -8px;
+  transition: all 0.2s ease;
+  cursor: default;
+
+  &:hover {
+    color: #0978B9 !important;
+    background-color: rgba(9, 120, 185, 0.05);
+  }
+}
+
+:host .go-to-icon {
+  color: #6c757d;
+  opacity: 0.7;
+  transition: all 0.2s ease;
+}
+
+:host .client-email-link {
+  border-radius: 6px;
+  padding: 4px 8px;
+  margin: -4px -8px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: #0978B9 !important;
+    background-color: rgba(9, 120, 185, 0.1);
+    transform: translateX(3px);
+
+    .email-icon {
+      color: #0978B9 !important;
+      transform: scale(1.1);
+    }
+
+    span {
+      color: #0978B9 !important;
+    }
+  }
+}
+
+:host .email-icon {
+  color: #6c757d;
+  transition: all 0.2s ease;
+}

@@ -1,0 +1,316 @@
+<!-- Page Header with Tabs -->
+<app-page-header
+  [titleEn]="'Sales'"
+  [titleAr]="'المبيعات'"
+  [lang]="lang"
+  [subtitle]="getSalesSubtitle()"
+  [showTabs]="true">
+
+  <!-- Icon slot -->
+  <i slot="icon" class="ki-duotone ki-chart-line fs-2x text-info">
+     <span class="path1"></span>
+ <span class="path2"></span>
+ <span class="path3"></span>
+  </i>
+
+  <!-- Tabs slot -->
+  <div slot="tabs">
+    <ul class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-semibold flex-nowrap">
+      <li class="nav-item">
+        <a class="nav-link text-active-primary pb-4"
+          [class.active]="activeTab === 'analytics'"
+          (click)="setActiveTab('analytics')">
+          {{ lang === 'ar' ? 'التحليلات والمخططات' : 'Analytics & Charts' }}
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-active-primary pb-4"
+          [class.active]="activeTab === 'sold-details'"
+          (click)="setActiveTab('sold-details')">
+          {{ lang === 'ar' ? 'تفاصيل المعارف المباعة' : 'Sold Knowledge Details' }}
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-active-primary pb-4"
+          [class.active]="activeTab === 'sold-meetings'"
+          (click)="setActiveTab('sold-meetings')">
+          {{ lang === 'ar' ? 'تفاصيل الاجتماعات المباعة' : 'Sold Meeting Details' }}
+        </a>
+      </li>
+    </ul>
+  </div>
+</app-page-header>
+
+<div class="py-1 bg-white rounded-2">
+
+  <div class="tab-content">
+  <ng-container *ngIf="activeTab === 'analytics'">
+    <!-- Revenue Statistics Cards -->
+  <div class="row mb-5" *ngIf="totalStatistics">
+    <div class="col-xl-4 col-md-12 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body text-start">
+          <div class="text-muted small mb-3">{{ getText('TOTAL_ORDERS_TITLE') }}</div>
+          <div class="h1 fw-bold text-dark mb-0">{{ totalStatistics.order_statistics.orders_total | number }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-4 col-md-12 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body text-start">
+          <div class="text-muted small mb-3">{{ getText('ORDERS_REVENUE_TITLE') }}</div>
+          <div class="h1 fw-bold text-dark mb-0">${{ totalStatistics.order_statistics.orders_amount | number:'1.2-2' }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-4 col-md-12 mb-4" *ngIf="!isCompany">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body text-start">
+          <div class="text-muted small mb-3">{{ getText('NET_PROFIT') }}</div>
+          <div class="h1 fw-bold text-dark mb-0">${{ totalStatistics.order_statistics.insighter_orders_amount | number:'1.2-2' }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-4 col-md-12 mb-4" *ngIf="isCompany">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body text-start">
+          <div class="text-muted small mb-3">{{ getText('COMPANY_NET_PROFIT') }}</div>
+          <div class="h1 fw-bold text-dark mb-0">${{ totalStatistics.order_statistics.company_orders_amount | number:'1.2-2' }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Revenue Chart Section -->
+  <div class="card mb-5  light-sales-gradient-bg">
+    <div class="card-header border-0 pt-5">
+      <!-- Title and Export Button Row -->
+      <div class="d-flex justify-content-between align-items-center w-100 mb-3">
+        <h3 class="card-title align-items-start flex-column">
+          <span class="card-label fw-bold fs-3 mb-1">{{ getText('REVENUE_CHART') }}</span>
+          <span class="text-muted fw-semibold fs-7" *ngIf="getPeriodLabel()">{{ getPeriodLabel() }}</span>
+        </h3>
+
+        <!-- Export to Excel Button -->
+        <button
+          type="button"
+          class="btn btn-light-info btn-xs"
+          style="border: 1px solid #2CCC63;"
+          (click)="exportToExcel()"
+          [disabled]="isLoading || !periodStatistics">
+          <i class="ki-outline ki-exit-down fs-4 me-2"></i>
+          {{ getText('EXPORT_TO_EXCEL') }}
+        </button>
+      </div>
+
+      <!-- Period Selection Buttons Row -->
+      <div class="d-flex justify-content-end w-100 ">
+        <div class="nested-tab-nav">
+          <button
+            *ngFor="let option of periodOptions"
+            type="button"
+            class="nested-tab-button"
+            [ngClass]="{ 'active': selectedPeriod === option.value }"
+            (click)="onPeriodChange(option.value)"
+            [disabled]="isLoading">
+            {{ lang === 'ar' ? option.labelAr : option.label }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <!-- Chart Container -->
+      <div #revenueChartContainer class="chart-container" *ngIf="revenueChartData && !isLoading">
+        <p-chart #revenueChart
+                 type="line"
+                 [data]="revenueChartData"
+                 [options]="revenueChartOptions"
+                 class="sales-chart">
+        </p-chart>
+      </div>
+
+      <div *ngIf="isLoading" class="d-flex justify-content-center align-items-center" style="height: 300px;">
+        <div class="spinner-border text-info" role="status">
+          <span class="visually-hidden">{{ getText('LOADING') }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Company-specific Charts -->
+  <div *ngIf="isCompany && totalStatistics" class="row">
+    <!-- Knowledge Orders Chart -->
+    <div class="col-xl-6 mb-5 gradient-bg">
+      <div class="card">
+        <div class="card-header border-0 pt-5 px-5">
+          <div class="d-flex justify-content-between align-items-center w-100">
+            <h4 class="card-title align-items-start flex-column">
+              <span class="card-label fw-bold fs-3 mb-1">{{ getText('KNOWLEDGE_ORDERS') }}</span>
+            </h4>
+
+            <!-- Export Knowledge Orders Button -->
+            <button
+              type="button"
+              class="btn btn-light-info btn-xs"
+              style="border: 1px solid #2CCC63;"
+              (click)="exportKnowledgeToExcel()"
+              [disabled]="isLoading || !totalStatistics?.knowledge_order_statistics?.company_insighter_orders_statistics">
+              <i class="ki-outline ki-exit-down fs-4 me-2"></i>
+              {{ getText('EXPORT_TO_EXCEL') }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Knowledge Orders Statistics Row -->
+        <div class="card-body pt-0 px-5">
+          <div class="row g-3 mb-4">
+            <div class="col-6">
+              <div class="simple-stat-card text-start">
+                <div class="text-muted small mb-2">{{ getText('TOTAL_ORDERS') }}</div>
+                <div class="h4 fw-bold text-dark mb-0">{{ totalStatistics.knowledge_order_statistics.orders_total | number }}</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="simple-stat-card text-start">
+                <div class="text-muted small mb-2">{{ getText('ORDERS_REVENUE') }}</div>
+                <div class="h4 fw-bold text-dark mb-0">${{ totalStatistics.knowledge_order_statistics.orders_amount | number:'1.2-2' }}</div>
+              </div>
+            </div>
+          </div>
+
+          <div #knowledgeChartContainer class="chart-container" *ngIf="knowledgeChartData && !isLoading">
+            <p-chart #knowledgeChart
+              type="bar"
+              [data]="knowledgeChartData"
+              [options]="knowledgeChartOptions"
+              class="sales-chart">
+            </p-chart>
+          </div>
+
+          <div *ngIf="isLoading" class="d-flex justify-content-center align-items-center" style="height: 300px;">
+            <div class="spinner-border text-info" role="status">
+              <span class="visually-hidden">{{ getText('LOADING') }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Meeting Orders Chart -->
+    <div class="col-xl-6 mb-5">
+      <div class="card">
+        <div class="card-header border-0 pt-5 px-5">
+          <div class="d-flex justify-content-between align-items-center w-100">
+            <h4 class="card-title align-items-start flex-column">
+              <span class="card-label fw-bold fs-3 mb-1">{{ getText('MEETING_ORDERS') }}</span>
+            </h4>
+
+            <!-- Export Meeting Orders Button -->
+            <button
+              type="button"
+              class="btn btn-light-info btn-xs"
+              style="border: 1px solid #2CCC63;"
+              (click)="exportMeetingToExcel()"
+              [disabled]="isLoading || !totalStatistics?.meeting_booking_order_statistics?.company_insighter_orders_statistics">
+              <i class="ki-outline ki-exit-down fs-4 me-2"></i>
+              {{ getText('EXPORT_TO_EXCEL') }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Meeting Orders Statistics Row -->
+        <div class="card-body pt-0 px-5">
+          <div class="row g-3 mb-4">
+            <div class="col-6">
+              <div class="simple-stat-card text-start">
+                <div class="text-muted small mb-2">{{ getText('TOTAL_ORDERS_MEETINGS') }}</div>
+                <div class="h4 fw-bold text-dark mb-0">{{ totalStatistics.meeting_booking_order_statistics.orders_total | number }}</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="simple-stat-card text-start">
+                <div class="text-muted small mb-2">{{ getText('ORDERS_REVENUE_MEETINGS') }}</div>
+                <div class="h4 fw-bold text-dark mb-0">${{ totalStatistics.meeting_booking_order_statistics.orders_amount | number:'1.2-2' }}</div>
+              </div>
+            </div>
+          </div>
+
+          <div #meetingChartContainer class="chart-container" *ngIf="meetingChartData && !isLoading">
+            <p-chart #meetingChart
+              type="bar"
+              [data]="meetingChartData"
+              [options]="meetingChartOptions"
+              class="sales-chart">
+            </p-chart>
+          </div>
+
+          <div *ngIf="isLoading" class="d-flex justify-content-center align-items-center" style="height: 300px;">
+            <div class="spinner-border text-info" role="status">
+              <span class="visually-hidden">{{ getText('LOADING') }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </ng-container>
+
+  <!-- Sold Knowledge Details Tab -->
+  <ng-container *ngIf="activeTab === 'sold-details'">
+    <app-sold-knowledge-details
+      [lang]="lang === 'ar' ? 'ar' : 'en'"
+      [salesOrders$]="soldOrders$"
+      [salesTotalPages$]="soldTotalPages$"
+      [currentSalesPage]="currentSoldPage"
+      [isSalesLoading$]="isSoldLoading$"
+      [selectedInsighterUuid]="selectedInsighterUuid"
+      [roles]="roles"
+      (salesPageChange)="onSoldPageChange($event)"
+      (orderSelected)="onOrderSelected($event)"
+      (invoiceDownload)="onInvoiceDownload($event)"
+      (navigateToDownloads)="onNavigateToDownloads($event)"
+      (copyOrderNo)="onCopyOrderNo($event)"
+      (insighterFilterChange)="onInsighterFilterChange($event)">
+    </app-sold-knowledge-details>
+  </ng-container>
+
+  <!-- Sold Meeting Details Tab -->
+  <ng-container *ngIf="activeTab === 'sold-meetings'">
+    <app-sold-meeting-details
+      [lang]="lang === 'ar' ? 'ar' : 'en'"
+      [meetingSalesOrders$]="soldMeetingOrders$"
+      [meetingSalesTotalPages$]="soldMeetingTotalPages$"
+      [currentMeetingSalesPage]="currentSoldMeetingPage"
+      [isMeetingSalesLoading$]="isSoldMeetingLoading$"
+      [selectedInsighterUuid]="selectedInsighterUuid"
+      [roles]="roles"
+      (meetingSalesPageChange)="onSoldMeetingPageChange($event)"
+      (orderSelected)="onOrderSelected($event)"
+      (invoiceDownload)="onInvoiceDownload($event)"
+      (copyOrderNo)="onCopyOrderNo($event)"
+      (insighterFilterChange)="onInsighterFilterChange($event)">
+    </app-sold-meeting-details>
+  </ng-container>
+
+  </div>
+</div>
+
+<!-- Order Details Dialog -->
+<app-order-details-dialog
+  [visible]="showOrderDetailsDialog"
+  (visibleChange)="onOrderDetailsDialogVisibleChange($event)"
+  [order]="selectedOrderForDialog"
+  [lang]="lang === 'ar' ? 'ar' : 'en'">
+</app-order-details-dialog>
+
+<!-- Meeting Order Details Dialog -->
+<app-meeting-order-details-dialog
+  [visible]="showMeetingOrderDetailsDialog"
+  (visibleChange)="onMeetingOrderDetailsDialogVisibleChange($event)"
+  [order]="selectedMeetingOrderForDialog"
+  [lang]="lang === 'ar' ? 'ar' : 'en'">
+</app-meeting-order-details-dialog>

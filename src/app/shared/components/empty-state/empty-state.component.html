@@ -1,0 +1,29 @@
+<div class="text-center py-10 bg-light-secondary rounded">
+  <!-- Show custom SVG -->
+  <img src="assets/media/illustrations/dozzy-1/24487830_6931690.svg" class="mb-5" alt="Empty state" style="height: 300px;">
+  
+  <h3 class="fw-bold text-gray-800 mb-2">{{title}}</h3>
+  <p class="text-gray-600 fs-6">
+    {{message}}
+  </p>
+  
+  <!-- Optional action button -->
+  <ng-container *ngIf="showButton && buttonText">
+    <a *ngIf="buttonLink" [routerLink]="buttonLink" class="btn btn-sm btn-primary mt-3">
+      <i class="ki-duotone {{buttonIcon}} fs-2 me-1">
+        <span class="path1"></span>
+        <span class="path2"></span>
+        <span class="path3"></span>
+      </i>
+      {{buttonText}}
+    </a>
+    <button *ngIf="!buttonLink" type="button" class="btn btn-sm btn-primary mt-3" (click)="onButtonClick()">
+      <i class="ki-duotone {{buttonIcon}} fs-2 me-1">
+        <span class="path1"></span>
+        <span class="path2"></span>
+        <span class="path3"></span>
+      </i>
+      {{buttonText}}
+    </button>
+  </ng-container>
+</div>

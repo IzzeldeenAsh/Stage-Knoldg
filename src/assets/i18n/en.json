@@ -1,0 +1,161 @@
+{
+  "INSIGHTER": {
+    "DASHBOARD": {
+      "NAV": {
+        "DASHBOARD": "Dashboard",
+        "OVERVIEW": "Overview",
+        "MY_REQUESTS": "My Requests",
+        "MY_KNOWLEDGE": "My Knowledge", 
+        "MY_DOWNLOADS": "My Downloads",
+        "READ_LATER": "Read Later",
+        "MY_ORDERS": "My Orders",
+        "MEETINGS": "Meetings",
+        "MY_CONSULTING_SCHEDULE": "My Schedule",
+        "MY_COMPANY": "My Company",
+        "SETTINGS": "Settings",
+        "ACCOUNT_SETTINGS": "Account Settings",
+        "PAYMENT_SETTINGS": "Payment Settings",
+        "WALLET": "Wallet"
+      }
+    },
+    "MEETINGS": {
+      "TABS": {
+        "RECEIVED": "Received",
+        "SENT": "Sent"
+      },
+      "FILTERS": {
+        "ALL": "All",
+        "PENDING": "Pending",
+        "APPROVED": "Approved",
+        "POSTPONED": "Postponed"
+      },
+      "STATUS": {
+        "PENDING": "Pending",
+        "APPROVED": "Approved",
+        "POSTPONED": "Postponed"
+      },
+      "NO_MEETINGS": "No Meetings Found",
+      "NO_MEETINGS_DESC": "You don't have any meetings scheduled at this time.",
+      "NO_DESCRIPTION": "No description provided",
+      "INSIGHTER": "Insighter"
+    }
+  },
+  "COMMON": {
+    "SHOWING": "Showing",
+    "TO": "to",
+    "OF": "of",
+    "RESULTS": "results",
+    "CANCEL": "Cancel",
+    "UPLOAD": "Upload",
+    "UPLOADING": "Uploading...",
+    "DELETE": "Delete",
+    "DELETING": "Deleting...",
+    "FREE": "Free",
+    "LOADING": "Loading"
+  },
+  "MY_KNOWLEDGE": {
+    "NO_ITEMS": {
+      "TITLE": "No Knowledge Items Found",
+      "MESSAGE": "You don't have any knowledge items at the moment. New items will appear here once created.",
+      "FILTERED_MESSAGE": "No knowledge items match your current filter criteria. Try adjusting your filters or view all items."
+    },
+    "NO_SCHEDULED": {
+      "TITLE": "No Scheduled Items Found",
+      "MESSAGE": "You don't have any scheduled knowledge items at the moment.",
+      "FILTERED_MESSAGE": "No scheduled items match your search criteria. Try a different search term."
+    },
+    "NO_POSTED": {
+      "TITLE": "No Posted Items Found",
+      "MESSAGE": "You don't have any posted knowledge items at the moment.",
+      "FILTERED_MESSAGE": "No posted items match your search criteria. Try a different search term."
+    },
+    "NO_PACKAGES": {
+      "TITLE": "No Packages Found",
+      "MESSAGE": "You don't have any knowledge packages at the moment. Create a package by using the 'Generate Package' button."
+    }
+  },
+  "MY_DOWNLOADS": {
+    "STATISTICS": "Download Statistics",
+    "TOTAL_SPENT": "Total Spent",
+    "TOTAL_DOCUMENTS": "Total Documents",
+    "KNOWLEDGE_ITEMS": "Knowledge Items",
+    "NO_DOWNLOADS": "No downloads available",
+    "SELECT_KNOWLEDGE": "Select a knowledge item to view documents",
+    "SELECT_ITEM_DETAILS": "Select an item to view details",
+    "NO_DOCUMENTS": "No documents available",
+    "DOCUMENTS": "Documents",
+    "DOWNLOAD_KNOWLEDGE": "Download Knowledge",
+    "DOWNLOAD_DOCUMENT": "Download Document",
+    "PUBLISHER": "Publisher",
+    "PURCHASE_DATE": "Purchase Date",
+    "VIEW_ALL": "View All",
+    "SEARCH_PLACEHOLDER": "Search by title..."
+  },
+  "EMPTY_DASHBOARD": {
+    "TITLE": "Start Building Your knowledge library",
+    "DESCRIPTION": "Begin creating valuable knowledge content that can be shared within your organization. Add your first knowledge item to get started.",
+    "ADD_BUTTON": "Add Knowledge"
+  },
+  "PROFILE": {
+    "GENERAL_INFO": "General Information",
+    "COMPANY_NAME": "Company Name",
+    "WEBSITE": "Website",
+    "FIRST_NAME": "First Name",
+    "LAST_NAME": "Last Name",
+    "EMAIL": "Email",
+    "ROLES": "Roles",
+    "COUNTRY": "Country",
+    "SOCIAL_MEDIA": "Social Media",
+    "ABOUT_COMPANY": "About Company",
+    "CONSULTING_FIELDS": "Consulting Fields",
+    "INDUSTRIES": "Industries",
+    "MY_CERTIFICATES": "My Certificates",
+    "ADD_CERTIFICATE": "Add Certificate",
+    "CERTIFICATE_TYPE": "Certificate Type",
+    "SELECT_CERTIFICATE_TYPE": "Select Certificate Type",
+    "CERTIFICATE_FILE": "Certificate File",
+    "SUPPORTED_FORMATS": "Supported formats: PDF, DOC, DOCX, JPG, PNG",
+    "DELETE_CERTIFICATE": "Delete Certificate",
+    "DELETE_CERTIFICATE_CONFIRMATION": "Are you sure you want to delete this certificate? This action cannot be undone."
+  },
+  "ACCOUNT_SETTINGS": {
+    "PHONE_NUMBER": "Phone Number",
+    "BIO": "Bio"
+  },
+
+  "CLIENT": "Client",
+  "VERIFIED": "Verified",
+  "COMPANY_PHONE": "Company Phone",
+  "ADDRESS": "Address",
+  "NO_SOCIAL_MEDIA": "No social media links available",
+  "COMPANY_INDUSTRIES": "Company Industries",
+  "COMPANY_CONSULTING_FIELDS": "Company Consulting Fields",
+  "CERTIFICATIONS": "Certifications",
+  "COMPANY_CERTIFICATIONS": "Company Certifications",
+  "AUTH": {
+    "EMAIL_RECONFIRM": {
+      "TITLE": "Email Verification Required",
+      "DESCRIPTION": "Please verify your email address to access all features",
+      "FORM_TITLE": "Verify Your Email",
+      "FORM_SUBTITLE": "We need to verify your email address before you can continue",
+      "EMAIL_NOT_VERIFIED": "Email address not verified",
+      "SUCCESS_TITLE": "Email Sent!",
+      "SUCCESS_MESSAGE": "Verification email sent successfully. Please check your inbox and spam folder.",
+      "ERROR_MESSAGE": "Failed to send verification email. Please try again.",
+      "RESEND_BUTTON": "Resend Verification Email",
+      "RESEND_COOLDOWN": "Wait",
+      "SENDING": "Sending...",
+      "BACK_TO_LOGIN": "Back to Login",
+      "OR": "or",
+      "LOGOUT": "Logout",
+      "VERIFIED_SUCCESS": "Your email has been verified successfully!",
+      "AUTH_ERROR": "Authentication error. Please log in again.",
+      "VERIFICATION_REQUIRED": "Please verify your email address to continue.",
+      "PROFILE_ERROR": "Unable to load profile information. You can still try to resend the verification email."
+    }
+  },
+  "GENERATE_AI_INFORMATION": "Generate AI Information",
+  "REGENERATE_AI_INFORMATION": "Regenerate AI Information",
+  "COVER_YEARS": "Cover Years",
+  "COVER_YEARS_TOOLTIP": "Select the year or range of years that this knowledge covers or relates to"
+} 

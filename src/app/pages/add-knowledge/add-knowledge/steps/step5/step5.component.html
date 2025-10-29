@@ -1,0 +1,301 @@
+<div class="mb-5">
+  <h3 class="align-items-center mb-3">
+    {{ "PUBLISH_OPTIONS" | translate }}
+  </h3>
+  <div class="text-muted fs-6">
+    {{ "SELECT_PUBLISH_METHOD" | translate }}
+  </div>
+</div>
+
+<form [formGroup]="publishForm">
+  <div class="fv-row" >
+    <div class="row g-5">
+      <div class="col-lg-4" *ngFor="let option of publishOptions">
+        <input
+          formControlName="publishOption"
+          name="publishOption"
+          type="radio"
+          class="btn-check"
+          [id]="option.id"
+          [value]="option.value"
+          [disabled]="option.disabled"
+        />
+        <label
+          [for]="option.id"
+          class="btn btn-outline btn-outline-dashed btn-outline-default border-dashed border-gray-300 p-5 d-flex align-items-center position-relative rounded-2 transition h-100"
+          [class.opacity-50]="option.disabled"
+          [pTooltip]="option.disabled ? ('ACTIVE_ACCOUNT_REQUIRED_MESSAGE' | translate) : ''"
+          tooltipPosition="top"
+        >
+          <div class="d-flex align-items-center w-100">
+            <div class="mx-3">
+              <app-keenicon
+                [name]="option.icon"
+                [class]="'fs-2 text-' + (
+                  option.value === 'published' ? 'info' :
+                  option.value === 'scheduled' || option.value === 'in_review' ? 'warning' :
+                  'success'
+                )"
+              ></app-keenicon>
+            </div>
+            <div class="d-flex flex-column">
+              <span class="text-gray-800 fw-bold d-block fs-7 text-inline-start mb-1">{{ option.label | translate }}</span>
+              <span class="text-gray-600 fs-8 text-inline-start">{{ option.description | translate }}</span>
+            </div>
+          </div>
+        </label>
+      </div>
+    </div>
+  
+    <div
+      class="fv-plugins-message-container invalid-feedback mt-2"
+      *ngIf="
+        publishForm && publishForm.get('publishOption')?.invalid && publishForm.get('publishOption')?.touched
+      "
+    >
+      {{ "PUBLISH_OPTION_REQUIRED" | translate }}
+    </div>
+  </div>
+  
+  <!-- Scheduled Options -->
+  <div *ngIf="publishForm && publishForm.get('publishOption')?.value === 'scheduled'" class="mt-8" style="direction: ltr !important;">
+    <div class="row g-5">
+      <div class="col-md-6">
+        <label class="form-label">{{ "SELECT_DATE" | translate }}</label>
+        <div class="p-field">
+          <p-calendar
+            formControlName="publishDate"
+            [minDate]="minDate"
+            [showIcon]="true"
+            dateFormat="yy-mm-dd"
+            (onSelect)="onDateSelect()"
+            [required]="true"
+            [appendTo]="'body'"
+            styleClass="w-100"
+          ></p-calendar>
+          <small class="p-error block" *ngIf="
+            publishForm && publishForm.get('publishDate')?.invalid &&
+            publishForm.get('publishDate')?.touched &&
+            publishForm.get('publishDate')?.errors?.['required']
+          ">
+            {{ "VALID_DATE_REQUIRED" | translate }}
+          </small>
+          <small class="p-error block" *ngIf="
+            publishForm && publishForm.get('publishDate')?.invalid &&
+            publishForm.get('publishDate')?.touched &&
+            publishForm.get('publishDate')?.errors?.['pastDate']
+          ">
+            {{ "PAST_DATE_ERROR" | translate }}
+          </small>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">{{ "SELECT_TIME" | translate }}</label>
+        <div class="p-field">
+          <p-calendar
+            formControlName="publishTime"
+            [timeOnly]="true"
+            [showIcon]="true"
+            [required]="true"
+            [appendTo]="'body'"
+            styleClass="w-100"
+          ></p-calendar>
+          <small class="p-error block" *ngIf="
+            publishForm && publishForm.get('publishTime')?.invalid &&
+            publishForm.get('publishTime')?.touched &&
+            publishForm.get('publishTime')?.errors?.['required']
+          ">
+            {{ "VALID_TIME_REQUIRED" | translate }}
+          </small>
+          <small class="p-error block" *ngIf="timeError">{{ timeError }}</small>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Payment Account Warnings -->
+  <div *ngIf="shouldShowPaymentWarning" class="mt-8">
+    <!-- Manual Account Inactive Warning -->
+    <div *ngIf="isManualAccountInactive" class="alert alert-warning d-flex align-items-center p-5">
+      <div class="flex-grow-1">
+        <h5 class="text-warning mb-2">
+          <i class="ki-duotone ki-information fs-2 me-2">
+            <span class="path1"></span>
+            <span class="path2"></span>
+            <span class="path3"></span>
+          </i>
+          {{ 'MANUAL_ACCOUNT_INACTIVE_NOTICE' | translate }}
+        </h5>
+        <div class="text-gray-700 fs-6">
+          {{ 'MANUAL_ACCOUNT_INACTIVE_MESSAGE' | translate }}
+        </div>
+        <div class="mt-4">
+          <a 
+            href="javascript:void(0)" 
+            (click)="saveAsDraftAndRedirect()" 
+            class="text-info text-decoration-underline cursor-pointer">
+            {{ 'SAVE_DRAFT_AND_SETUP_ACCOUNT' | translate }}
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Stripe Account Incomplete Setup -->
+    <div *ngIf="isStripeAccountIncomplete" class="alert alert-warning d-flex align-items-center p-5">
+      <div class="flex-grow-1">
+        <h5 class="text-warning mb-2">
+          <i class="ki-duotone ki-information fs-2 me-2">
+            <span class="path1"></span>
+            <span class="path2"></span>
+            <span class="path3"></span>
+          </i>
+          {{ 'STRIPE_INCOMPLETE_NOTICE' | translate }}
+        </h5>
+        <div class="text-gray-700 fs-6">
+          {{ 'STRIPE_INCOMPLETE_MESSAGE' | translate }}
+        </div>
+        <div class="mt-4">
+          <a 
+            href="javascript:void(0)" 
+            (click)="saveAsDraftAndRedirect()" 
+            class="text-info text-decoration-underline cursor-pointer">
+            {{ 'SAVE_DRAFT_AND_SETUP_ACCOUNT' | translate }}
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Stripe Account Under Verification -->
+    <div *ngIf="isStripeAccountUnderVerification" class="alert alert-info d-flex align-items-center p-5">
+      <div class="flex-grow-1">
+        <h5 class="text-info mb-2">
+          <i class="ki-duotone ki-information fs-2 me-2">
+            <span class="path1"></span>
+            <span class="path2"></span>
+            <span class="path3"></span>
+          </i>
+          {{ 'STRIPE_VERIFICATION_NOTICE' | translate }}
+        </h5>
+        <div class="text-gray-700 fs-6">
+          {{ 'STRIPE_VERIFICATION_MESSAGE' | translate }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+</form>
+
+<!-- Share Box (Only visible after successful publish) -->
+<div *ngIf="showShareBox && publishedKnowledge"
+     class="notice d-flex bg-light-info rounded border-info border p-6 mt-8 fixed-height-card">
+  <!-- Share Illustration -->
+  <div class="d-flex align-items-center justify-content-center me-6">
+    <img
+      src="https://res.cloudinary.com/dsiku9ipv/image/upload/v1761550742/Share-Illustartion_laydqp.png"
+      style="width: 100px; height: fit-content; max-height: 100px;"
+      alt="Share illustration">
+  </div>
+
+  <!-- Content -->
+  <div class="d-flex flex-stack flex-grow-1">
+    <div class="fw-bold">
+      <h4 class="text-gray-800 fw-bolder mb-2">{{ 'SHARE_YOUR_KNOWLEDGE' | translate }}</h4>
+      <div class="text-gray-700 fs-6 mb-4">
+        {{ 'SHARE_KNOWLEDGE_DESCRIPTION' | translate }}
+      </div>
+
+      <!-- Share Button -->
+      <button class="btn btn-info d-flex align-items-center" (click)="openSocialShareModal()">
+        <i class="ki-outline ki-share fs-4 me-2"></i>
+        {{ 'SHARE_NOW' | translate }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Social Share Dialog -->
+<p-dialog
+  [(visible)]="isSocialShareModalVisible"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{width: '600px'}"
+  styleClass="p-0"
+  appendTo="body"
+  [showHeader]="false">
+  <div class="modal-content">
+    <!-- Modal header -->
+    <div class="modal-header p-5 border-bottom">
+      <h2 class="fw-bold">{{ lang === 'ar' ? 'مشاركة المعرفة' : 'Share Knowledge' }}</h2>
+      <div class="btn btn-icon btn-sm btn-active-light-info ms-2" (click)="closeSocialShareModal()">
+        <i class="ki-duotone ki-cross fs-2x"><span class="path1"></span><span class="path2"></span></i>
+      </div>
+    </div>
+
+    <!-- Modal body -->
+    <div class="modal-body py-5 px-8">
+      <!-- Custom Message Input -->
+      <div class="mb-4">
+        <label class="form-label fw-bold">{{ lang === 'ar' ? 'رسالة مخصصة' : 'Custom Share Message' }}</label>
+        <textarea
+          class="form-control form-control-solid"
+          [(ngModel)]="customShareMessage"
+          rows="3"
+          [placeholder]="getDefaultShareMessage()">
+        </textarea>
+        <div class="form-text text-muted mt-2">
+          {{ lang === 'ar' ? 'اكتب رسالتك المخصصة لمشاركة هذه المعرفة' : 'Write your custom message to share this knowledge' }}
+        </div>
+      </div>
+
+      <!-- Character Count -->
+      <div class="mb-4">
+        <small class="text-muted">{{ lang === 'ar' ? 'عدد الأحرف' : 'Character Count' }}: {{ customShareMessage.length || 0 }}</small>
+      </div>
+
+      <!-- Social Media Buttons -->
+      <div class="d-flex justify-content-center gap-3 mb-4">
+        <!-- Facebook -->
+        <button class="btn btn-icon btn-primary d-flex align-items-center justify-content-center social-share-btn"
+                (click)="shareToSocial('facebook')"
+                [attr.aria-label]="lang === 'ar' ? 'مشاركة على فيسبوك' : 'Share on Facebook'">
+          <i class="pi pi-facebook" style="font-size: 20px;"></i>
+        </button>
+
+        <!-- Twitter/X -->
+        <button class="btn btn-icon btn-dark d-flex align-items-center justify-content-center social-share-btn"
+                (click)="shareToSocial('twitter')"
+                [attr.aria-label]="lang === 'ar' ? 'مشاركة على تويتر' : 'Share on Twitter'">
+          <i class="pi pi-twitter" style="font-size: 20px;"></i>
+        </button>
+
+        <!-- LinkedIn -->
+        <button class="btn btn-icon btn-info d-flex align-items-center justify-content-center social-share-btn"
+                (click)="shareToSocial('linkedin')"
+                [attr.aria-label]="lang === 'ar' ? 'مشاركة على لينكد إن' : 'Share on LinkedIn'">
+          <i class="pi pi-linkedin" style="font-size: 20px;"></i>
+        </button>
+
+        <!-- WhatsApp -->
+        <button class="btn btn-icon btn-success d-flex align-items-center justify-content-center social-share-btn"
+                (click)="shareToSocial('whatsapp')"
+                [attr.aria-label]="lang === 'ar' ? 'مشاركة على واتساب' : 'Share on WhatsApp'">
+          <i class="pi pi-whatsapp" style="font-size: 20px;"></i>
+        </button>
+      </div>
+
+      <!-- Copy Link Section -->
+      <div class="separator my-5"></div>
+      <div class="text-center">
+        <button class="btn btn-light-info w-100" (click)="copyToClipboard(getShareableLink())">
+          <i class="ki-outline ki-copy fs-4 me-2"></i>
+          {{ 'COPY_LINK' | translate }}
+        </button>
+
+        <div *ngIf="linkCopied" class="text-success text-center mt-2 small">
+          <i class="ki-outline ki-check fs-6 me-1"></i> {{ 'LINK_COPIED' | translate }}
+        </div>
+      </div>
+    </div>
+  </div>
+</p-dialog>

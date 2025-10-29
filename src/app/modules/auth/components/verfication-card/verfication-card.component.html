@@ -1,0 +1,70 @@
+<div class="d-flex h-100 align-items-center justify-content-center flex-grow-1 bg-center bg-no-repeat sign-in-bg page-bg">
+  <div class="card w-lg-500px">
+    <div class="d-flex w-100 justify-content-center align-items-center" id="2fa_form">
+      <form class="card-body d-flex flex-column gap-3 p-8 justify-content-center" (ngSubmit)="submitCode()">
+        <img alt="image" class="w-200px m-auto mb-2" src="../../../../../assets/media/auth/verify-email.png">
+
+        <div class="text-center mb-2">
+          <h3 class="h5 fw-medium text-dark mb-3">{{ 'AUTH.TWO_FA.VERIFY_PHONE' | translate }}</h3>
+
+          <div class="d-flex flex-column">
+            <span class="small text-muted mb-2">{{ 'AUTH.TWO_FA.ENTER_VERIFICATION_CODE' | translate }}</span>
+            <a class="small fw-medium text-dark">{{ email }}</a>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-center gap-2">
+          <input 
+            [(ngModel)]="code" 
+            class="form-control text-center" 
+            (input)="resetError()"
+            maxlength="7" name="code_0" type="text" placeholder="{{ 'AUTH.TWO_FA.ENTER_CODE' | translate }}">
+        </div>
+
+        <!-- Resend Email Section -->
+        <div class="d-flex align-items-center justify-content-center mb-2">
+          <span class="small text-muted me-2">{{ 'AUTH.VERIFY_EMAIL.DIDNT_RECEIVE_EMAIL' | translate }}</span>
+          <span *ngIf="isResendDisabled">
+            {{ 'AUTH.VERIFY_EMAIL.COUNTER' | translate }} ({{ resendCountdown$ | async }}s)
+          </span>
+          <a class="small link text-hover-blue"
+             *ngIf="!isResendDisabled"
+             (click)="onResendClick()"
+             [class.disabled]="isResendDisabled"
+             [style.pointer-events]="isResendDisabled ? 'none' : 'auto'">
+            {{ 'AUTH.VERIFY_EMAIL.TRY_AGAIN' | translate }}
+          </a>
+        </div>
+
+        <!-- Display Success or Error Message -->
+        <div *ngIf="message" [ngClass]="{'alert-success': messageType === 'success', 'alert-danger': messageType === 'error'}" class="alert">
+          {{ message }}
+        </div>
+
+        <!-- Error Message for Invalid Code -->
+        <ng-container *ngIf="hasError">
+          <div class="mb-lg-15 alert alert-danger">
+            <div class="alert-text font-weight-bold">
+              {{ 'AUTH.TWO_FA.CODE_NOT_FOUND' | translate }}
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- Submit Button with Loading Indicator -->
+        <button 
+          [disabled]="code.length == 0 || (isLoading$ | async)"
+          class="btn btn-primary w-100 d-flex justify-content-center">
+          <ng-container *ngIf="!(isLoading$ | async)">
+            <span class="indicator-label">{{ 'AUTH.TWO_FA.CONTINUE' | translate }}</span>
+          </ng-container>
+          <ng-container *ngIf="isLoading$ | async">
+            <span class="indicator-progress" [style.display]="'block'">
+              {{ 'AUTH.REGISTRATION.PLEASE_WAIT' | translate }}
+              <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+            </span>
+          </ng-container>
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

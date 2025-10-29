@@ -1,0 +1,102 @@
+<p-dialog
+  [header]="title"
+  [(visible)]="dialogVisible"
+  [modal]="true"
+  [style]="{ width: dialogWidth, 'max-height': '100vh', overflow: 'hidden' }"
+  [contentStyle]="{ 'max-height': 'calc(90vh - 100px)', overflow: 'auto' }"
+  appendTo="body"
+>
+  <div class="tree-container">
+    <p-tree
+      class="industry-tree"
+      [style]="{ 'max-height': '100%', overflow: 'auto' }"
+      [value]="nodes"
+      selectionMode="checkbox"
+      [(selection)]="selectedNodes"
+      [metaKeySelection]="false"
+      [filter]="true"
+      filterMode="strict"
+      [loading]="isLoading$ | async"
+      (onNodeSelect)="onNodeSelect($event)"
+      (onNodeUnselect)="onNodeUnselect($event)"
+      (onChange)="updateSelectAllState()"
+    >
+      <ng-template let-node pTemplate="default">
+        <ng-container *ngIf="!node.isOther">
+          <span>{{ node.label }}</span>
+        </ng-container>
+        <ng-container *ngIf="node.isOther">
+          <div style="display: flex; gap: 5px;"
+        [ngStyle]="{'flex-direction':  currentLang === 'ar' ? 'row-reverse' : 'row'}">
+          <span style="margin-top: 10px;">{{ currentLang === 'ar' ? 'أخرى' : 'Other' }}</span>
+          <div
+            style="display: flex; flex-direction: column; width: 70%;"
+            [attr.dir]="currentLang === 'ar' ? 'rtl' : 'ltr'"
+            [style.margin-right.px]="currentLang === 'ar' ? 10 : 0"
+            [style.margin-left.px]="currentLang !== 'ar' ? 10 : 0"
+          >
+            <input
+              pInputText
+              type="text"
+              [(ngModel)]="node.data.customInput"
+              [placeholder]="otherFieldPlaceholder"
+              (input)="onOtherInput(node)"
+              (keypress)="onKeyPress($event)"
+              style="width: 100%;"
+            />
+            <small class="text-muted" style="font-size: 0.75rem; margin-top: 2px;" 
+            [ngStyle]="{'text-align':  currentLang === 'ar' ? 'right' : 'left'}">
+              {{ currentLang === 'ar' ? 'يجب الكتابة بالعربية فقط' : 'Please write in English only' }}
+            </small>
+           </div>
+          </div>
+        </ng-container>
+      </ng-template>
+    </p-tree>
+  </div>
+  <p-footer>
+    <div class="p-2 d-flex justify-content-between align-items-center">
+      <a
+        class="btn btn-sm btn-secondary btn-shadow cursor-pointer"
+        (click)="onCancel()"
+      >
+        {{ cancelLabel }}
+      </a>
+      <a
+        class="btn btn-sm btn-primary m-1 btn-shadow cursor-pointer"
+        (click)="onOk()"
+      >
+        {{ okLabel }}
+      </a>
+    </div>
+  </p-footer>
+</p-dialog>
+
+<div class="col-12 mb-4">
+  <!-- <label class="form-label fs-6 text-gray-900 " [class.required]="isRequired">
+    {{ title }}
+  </label> -->
+  <label
+    *ngIf="title === 'الخبرات و التخصصات' || title === 'Expertise and Specialties'"
+    class="form-label fs-6 text-gray-900"
+    [class.required]="isRequired">
+    {{ title }}
+  </label>
+
+  <div class="selected-nodes-container" (click)="showDialog()">
+    <ng-container *ngIf="getDisplayableSelectedNodes().length > 0">
+      <p-chip
+        *ngFor="let node of getDisplayableSelectedNodes()"
+        [label]="node.isOther ? (node.data.customInput || node.label) : node.label"
+        [removable]="true"
+        (onRemove)="onRemoveChip(node); $event.stopPropagation()"
+        (click)="$event.stopPropagation()"
+        [styleClass]="'selection-chip'"
+        [style]="{'margin': '5px'}"
+      ></p-chip>
+    </ng-container>
+    <div *ngIf="getDisplayableSelectedNodes().length === 0" class="placeholder-text">
+      {{ placeholder }}
+    </div>
+  </div>
+</div>

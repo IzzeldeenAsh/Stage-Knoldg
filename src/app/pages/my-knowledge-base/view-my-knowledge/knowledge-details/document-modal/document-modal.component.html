@@ -1,0 +1,294 @@
+<p-dialog 
+  [(visible)]="visible" 
+  [modal]="true" 
+  [closable]="true" 
+  [draggable]="false" 
+  [resizable]="false"
+  appendTo="body"
+  styleClass="document-modal"
+  [style]="{width: '90vw', maxWidth: '800px'}"
+  (onHide)="closeModal()">
+  
+  <ng-template pTemplate="header">
+    <h4 class="mb-0">
+      {{ editingDocument ? ('EDIT_DOCUMENT' | translate) : ('ADD_DOCUMENT' | translate) }}
+    </h4>
+  </ng-template>
+  
+  <div class="document-modal-content" [formGroup]="documentForm">
+    <!-- Hidden file input -->
+    <input 
+      type="file" 
+      id="documentFileInput" 
+      (change)="onFileSelected($event)" 
+      accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt"
+      style="display: none" />
+    
+    <!-- First Row: File Info and Form Fields -->
+    <div class="row mb-4">
+      <!-- File Icon and Size Column -->
+      <div class="col-md-3 d-flex align-items-center justify-content-center" *ngIf="selectedFile || editingDocument">
+        <div class="text-center ">
+          <img [src]="getDisplayFileIcon()" 
+               alt="File Icon" 
+               class="mb-2" 
+               style="width: 60px; height: 60px;" />
+          <div class="text-muted fs-7" *ngIf="getFileSize()">{{ getFileSize() }}</div>
+          
+          <!-- Upload Progress Bar -->
+          <div *ngIf="isUploading" class="mt-2">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="text-muted small">{{ 'UPLOADING' | translate }}...</span>
+              <span class="text-info small fw-bold">{{ uploadProgress || 0 }}%</span>
+            </div>
+            <div class="progress" style="height: 6px;">
+              <div class="progress-bar bg-info" 
+                   role="progressbar" 
+                   [style.width.%]="uploadProgress || 0"
+                   [attr.aria-valuenow]="uploadProgress || 0"
+                   aria-valuemin="0" 
+                   aria-valuemax="100">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Name and Price Fields Column -->
+      <div [class]="(selectedFile || editingDocument) ? 'col-md-9' : 'col-12'">
+        <!-- File Name Input -->
+        <div class="mb-3">
+          <label class="form-label required">{{ 'FILE_NAME' | translate }}</label>
+          <input formControlName="file_name" 
+                 class="form-control" 
+                 [ngClass]="{'is-invalid': documentForm.get('file_name')?.invalid && documentForm.get('file_name')?.touched}"
+                 placeholder="{{ 'ENTER_FILE_NAME' | translate }}" />
+          <div *ngIf="documentForm.get('file_name')?.invalid && documentForm.get('file_name')?.touched" 
+               class="text-danger fs-7 mt-1">
+            {{ 'FILE_NAME_REQUIRED' | translate }}
+          </div>
+        </div>
+
+        <!-- Price Section -->
+        <div class="mb-3">   
+          <label class="form-label required">{{ 'PRICE' | translate }}</label>
+          
+          <!-- Price Input -->
+          <div *ngIf="!documentForm.get('isCharity')?.value">
+            <input formControlName="price" 
+                   type="number" 
+                   min="0" 
+                   class="form-control" 
+                   [ngClass]="{'is-invalid': documentForm.get('price')?.invalid && documentForm.get('price')?.touched && !documentForm.get('isCharity')?.value}"
+                   placeholder="{{ 'ENTER_PRICE' | translate }}" 
+                   (input)="handlePriceInput($event)" />
+          </div>
+          
+          <!-- Free Price Display -->
+          <div class="alert alert-success" *ngIf="documentForm.get('isCharity')?.value">
+            {{ 'FREE_DOCUMENT' | translate }}
+          </div>
+          
+          <!-- Price Validation -->
+          <div *ngIf="documentForm.get('price')?.invalid && documentForm.get('price')?.touched && !documentForm.get('isCharity')?.value" 
+               class="text-danger fs-7 mt-1">
+            {{ 'PRICE_REQUIRED' | translate }}
+          </div>
+
+          <!-- Charity Toggle -->
+          <div class="form-check mt-2">
+            <input class="form-check-input" 
+                   type="checkbox" 
+                   formControlName="isCharity" 
+                   id="isCharityToggle" />
+            <label class="form-check-label" for="isCharityToggle">
+              {{ 'CHARITY_MODE' | translate }}
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Second Row: Description and Abstract -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <!-- Description Section -->
+        <div class="mb-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <label class="form-label required mb-0">
+              {{ "DOCUMENT_DESCRIPTION" | translate }}
+            </label>
+            
+            <!-- Generate AI Abstract Button -->
+            <button type="button" 
+                    class="btn btn-sm btn-warning" 
+                    (click)="generateAIAbstract()"
+                    [disabled]="isGeneratingAbstract || !documentForm.get('id')?.value"
+                    *ngIf="!isGeneratingAbstract">
+              {{ 'GENERATE_AI_ABSTRACT' | translate }}
+            </button>
+            
+            <!-- Loading State -->
+            <div *ngIf="isGeneratingAbstract" class="d-flex align-items-center">
+              <div class="spinner-border spinner-border-sm text-warning me-2" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <span class="text-warning fs-6 fw-semibold">
+                {{ (lang === 'ar' ? 'جاري الإنشاء' : 'Generating') }}...
+              </span>
+            </div>
+          </div>
+          
+          <!-- TinyMCE Editor -->
+          <div class="position-relative">
+            <div [ngClass]="{'editor-blur': isGeneratingAbstract}">
+              <editor
+                *ngIf="visible"
+                apiKey="fovwl5u83es9vkiv7x6h34fynj0utg108qrb0edwwwlxevt9"
+                formControlName="description"
+                [ngClass]="{'is-invalid': documentForm.get('description')?.invalid && documentForm.get('description')?.touched}"
+                [init]="{
+                  height: 300,
+                  menubar: false,
+                  plugins: [
+                    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                    'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                    'insertdatetime', 'media', 'table', 'help', 'wordcount'
+                  ],
+                  toolbar: 'undo redo | blocks | bold italic forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+                  content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+                }"
+                placeholder="Enter document description...">
+              </editor>
+            </div>
+            
+            <!-- Loading Overlay for AI Generation -->
+            <div *ngIf="isGeneratingAbstract" class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(255, 255, 255, 0.9); z-index: 10; border-radius: 8px;">
+              <div class="text-center p-4">
+                <div class="loading-animation mb-3">
+                  <div class="loading-dot"></div>
+                  <div class="loading-dot"></div>
+                  <div class="loading-dot"></div>
+                </div>
+                <div class="text-warning fw-bold fs-6 mb-2">
+                  {{ (lang === 'ar' ? 'جاري إنشاء الملخص بالذكاء الاصطناعي' : 'Generating AI Abstract') }}
+                </div>
+                <div class="text-muted fs-7">
+                  {{ (lang === 'ar' ? 'يرجى الانتظار...' : 'Please wait...') }}
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Error Message -->
+          <div *ngIf="abstractError" class="alert alert-warning mt-3 p-2">
+            {{ "COULD_NOT_GET_AI_ABSTRACT" | translate }}
+          </div>
+          
+          <!-- Validation Message -->
+          <div *ngIf="documentForm.get('description')?.invalid && documentForm.get('description')?.touched" 
+               class="text-danger fs-7 mt-2">
+            {{ "DOCUMENT_DESCRIPTION_REQUIRED" | translate }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+        <!-- Chapters Section (for non-insight documents) -->
+        <div *ngIf="knowledgeType !== 'insight' && !isGeneratingAbstract" class="mb-4">
+          <div class="d-flex align-items-center mb-3">
+            <div class="form-check">
+              <input class="form-check-input" 
+                     type="checkbox" 
+                     [checked]="showChapters"
+                     (change)="toggleChapters()"
+                     id="chapterToggle">
+              <label class="form-check-label" for="chapterToggle">
+                {{ "ADD_TABLE_OF_CONTENT" | translate }}
+              </label>
+            </div>
+          </div>
+          
+          <!-- Chapters List -->
+          <div *ngIf="showChapters" class="border-start border-3 border-primary ps-3">
+            <div class="fs-6 fw-semibold mb-3">{{ "TABLE_OF_CONTENT" | translate }}</div>
+            
+            <!-- Existing Chapters -->
+            <div *ngIf="stepperChapters && stepperChapters.length > 0" class="mb-3">
+              <div class="table-responsive">
+                <table class="table table-sm">
+                  <thead>
+                    <tr>
+                      <th class="w-50px">#</th>
+                      <th>{{ "CHAPTER_NAME" | translate }}</th>
+                      <th class="w-100px text-end">{{ "ACTIONS" | translate }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let chapter of stepperChapters; let i = index">
+                      <td>{{ i + 1 }}</td>
+                      <td>{{ chapter.title }}</td>
+                      <td class="text-end">
+                        <button type="button" 
+                                class="btn btn-sm btn-outline-danger" 
+                                (click)="removeChapter(i)"
+                                [disabled]="stepperChapters.length === 1">
+                          {{ 'REMOVE' | translate }}
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            
+            <!-- Add New Chapter -->
+            <div class="d-flex gap-2 align-items-center">
+              <div class="flex-grow-1">
+                <input type="text" 
+                       class="form-control form-control-sm" 
+                       [(ngModel)]="newChapterTitle" 
+                       placeholder="{{ 'ENTER_CHAPTER_NAME' | translate }}"
+                       (keydown.enter)="addChapter()"
+                       [ngModelOptions]="{standalone: true}">
+              </div>
+              <button type="button" 
+                      class="btn btn-sm btn-primary" 
+                      (click)="addChapter()"
+                      [disabled]="!newChapterTitle || !newChapterTitle.trim()">
+                {{ 'ADD' | translate }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+
+
+
+  </div>
+  
+  <ng-template pTemplate="footer">
+    <div class="d-flex justify-content-end gap-2">
+      <button type="button" 
+              class="btn btn-light" 
+              (click)="closeModal()"
+              [disabled]="isSaving">
+        {{ 'CANCEL' | translate }}
+      </button>
+      
+      <button type="button" 
+              class="btn btn-primary" 
+              (click)="saveDocument()"
+              [disabled]="!isFormValid() || isSaving || isUploading">
+        <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2"></span>
+        <span *ngIf="!isSaving">
+          <i class="ki-duotone ki-check fs-4 me-1">
+            <span class="path1"></span>
+            <span class="path2"></span>
+          </i>
+        </span>
+        {{ isSaving ? ('SAVING' | translate) : ('SAVE' | translate) }}
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>

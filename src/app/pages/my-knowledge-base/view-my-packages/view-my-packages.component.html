@@ -1,0 +1,377 @@
+<p-toast></p-toast>
+
+<div class="bg-custom"></div>
+<div class="content-wrapper">
+    <div class="breadcrumb-bg" *ngIf="packageDetails">
+        <div class="container">
+          <!-- Breadcrumb -->
+          <div class="d-flex align-items-center pt-10 mb-70">
+            <ul
+              class="breadcrumb breadcrumb-separatorless d-flex align-items-center gap-2"
+            >
+              <li
+                class="breadcrumb-item text-gray-800 lh-1 d-flex align-items-center"
+              >
+                <a
+                  [routerLink]="['/']"
+                  class="text-gray-700 text-hover-info d-flex align-items-center gap-2"
+                >
+                  <i class="ki-outline ki-home text-gray-700 fs-3"></i>
+                </a>
+                <i
+                  class="ki-outline {{
+                    lang === 'ar' ? 'ki-left' : 'ki-right'
+                  }} fs-4 text-gray-700 ms-2"
+                ></i>
+              </li>
+              <li
+                class="breadcrumb-item text-gray-800 lh-1 d-flex align-items-center"
+              >
+                <a
+                  [routerLink]="['/app/insighter-dashboard/my-knowledge/general']"
+                  class="text-gray-700 text-hover-info"
+                >
+                {{ 'VIEW_MY_KNOWLEDGE.BREADCRUMB.MY_KNOWLEDGE_BASE' | translate }}
+                </a>
+                <i
+                  class="ki-outline {{
+                    lang === 'ar' ? 'ki-left' : 'ki-right'
+                  }} fs-4 text-gray-700 ms-2"
+                ></i>
+              </li>
+              <li
+                class="breadcrumb-item text-gray-800 lh-1 d-flex align-items-center"
+              >
+                <a
+                  [routerLink]="['/app/insighter-dashboard/my-knowledge/packages']"
+                  class="text-gray-700 text-hover-info"
+                >
+                Packages
+                </a>
+                <i
+                  class="ki-outline {{
+                    lang === 'ar' ? 'ki-left' : 'ki-right'
+                  }} fs-4 text-gray-700 ms-2"
+                ></i>
+              </li>
+           
+            </ul>
+          </div>
+    
+          <!-- Title -->
+          <div class="page-title d-flex align-items-start me-3 mb-4 mb-lg-15">
+            <div
+              class="btn btn-icon btn-custom bg-white h-70px w-70px me-6"
+            >
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M28.995 8.51992L19.59 3.44992C18.6 2.90992 17.4 2.90992 16.41 3.44992L7.00502 8.51992C6.31502 8.89492 5.89502 9.61492 5.89502 10.4399C5.89502 11.2499 6.31502 11.9849 7.00502 12.3599L16.41 17.4299C16.905 17.6999 17.46 17.8349 18 17.8349C18.54 17.8349 19.095 17.6999 19.59 17.4299L28.995 12.3599C29.685 11.9849 30.105 11.2649 30.105 10.4399C30.105 9.61492 29.685 8.89492 28.995 8.51992Z" fill="#0071FF"/>
+              <path opacity="0.4" d="M14.865 19.185L6.105 14.805C5.43 14.475 4.65 14.505 4.02 14.895C3.375 15.3 3 15.975 3 16.725V24.99C3 26.415 3.795 27.705 5.07 28.35L13.815 32.73C14.115 32.88 14.445 32.955 14.775 32.955C15.165 32.955 15.555 32.85 15.9 32.64C16.545 32.25 16.92 31.56 16.92 30.81V22.545C16.935 21.105 16.14 19.815 14.865 19.185Z" fill="#0071FF"/>
+              <path opacity="0.4" d="M31.9801 14.895C31.3351 14.505 30.5551 14.46 29.8951 14.805L21.1501 19.185C19.8751 19.83 19.0801 21.105 19.0801 22.545V30.81C19.0801 31.56 19.4551 32.25 20.1001 32.64C20.4451 32.85 20.8351 32.955 21.2251 32.955C21.5551 32.955 21.8851 32.88 22.1851 32.73L30.9301 28.35C32.2051 27.705 33.0001 26.43 33.0001 24.99V16.725C33.0001 15.975 32.6251 15.3 31.9801 14.895Z" fill="#0071FF"/>
+              </svg>
+              
+            </div>
+    
+            <h1
+              class="page-heading d-flex text-black fw-bolder fs-lg-rem flex-column justify-content-center my-0 max-w-700px"
+            >
+        <div class="d-flex align-items-center gap-2">
+          <span>  {{ packageDetails.name }}</span>
+          <button class="btn btn-icon btn-sm btn-light-success" (click)="editPackageName($event)" ngbTooltip="Edit Package Name">
+            <i class="ki-duotone ki-pencil fs-2">
+              <span class="path1"></span>
+              <span class="path2"></span>
+            </i>
+          </button>
+        </div>
+              <span class="page-desc fs-6 fw-bold d-flex align-items-center pt-4">
+                <span  class="badge" [ngClass]="{
+                  'badge-light-success': packageDetails.status === 'published',
+                  'badge-light-danger': packageDetails.status === 'unpublished'
+                }" class="badge me-3 lh-1 d-flex align-items-center">
+                  {{ packageDetails.status }}
+                </span>
+                <span class="bullet text-black h-6px w-6px mx-3"></span>
+                <span class="d-flex align-items-center text-gray-700">
+                  <i class="ki-duotone ki-tag text-warning fs-3 mx-4">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                    <span class="path3"></span>
+                  </i>
+                  7,834 Downloads
+                </span>
+              </span>
+            </h1>
+          </div>
+    
+          
+        </div>
+      </div>
+
+      <div class="container" *ngIf="packageDetails">
+        <div class="row py-10">
+          <div class="col-lg-8 p-n-10">
+        <!-- knowledge items -->
+<div class="documents-container">
+    <div
+      class="knowledge-card document-card d-flex flex-row align-items-center p-10 cursor-pointer position-relative"
+      *ngFor="let item of knowledgeItems"
+      [ngClass]="{ 'active': activeKnowledgeId === item.id }"
+      (click)="toggleKnowledgeCollapse(item.id, $event)">
+      <!-- Icon Section -->
+      <div class="knowledge-icon me-3">
+        <i class="ki-duotone ki-document text-info fs-3 mx-4" *ngIf="item.type === 'report'">
+          <span class="path1"></span>
+          <span class="path2"></span>
+          <span class="path3"></span>
+        </i>
+        <i class="fas fa-lightbulb text-success fs-3 mx-4" *ngIf="item.type === 'insight'"></i>
+        <i class="fas fa-database text-primary fs-3 mx-4" *ngIf="item.type === 'data'"></i>
+        <i class="fas fa-book text-warning fs-3 mx-4" *ngIf="item.type === 'manual'"></i>
+        <i class="fas fa-graduation-cap text-success fs-3 mx-4" *ngIf="item.type === 'course'"></i>
+        <i class="fas fa-video text-danger fs-3 mx-4" *ngIf="item.type === 'media'"></i>
+      </div>
+  
+      <!-- Main Content -->
+      <div class="flex-grow-1">
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center">
+            <div>
+              <h5 class="mb-1 mx-w-300" [ngClass]="{'text-info fw-bold': activeKnowledgeId === item.id}">
+                {{ item.title }}
+              </h5>
+              <small class="text-muted">
+                {{ item.type | titlecase }} • {{ item.published_at | date:'mediumDate' }}
+              </small>
+            </div>
+          </div>
+  
+          <!-- Right Side Actions -->
+          <div class="d-flex gap-1 align-items-center">
+            <div class="d-flex align-items-center">
+              <span class="badge me-2 px-2 py-1" 
+                [ngClass]="{'bg-info text-white fs-4' : activeKnowledgeId === item.id, 'bg-secondary fs-6': activeKnowledgeId !== item.id}">
+                {{ item.total_price | currency }}
+              </span>
+  
+              <!-- Expand/Collapse Button -->
+              <button
+                class="btn btn-sm btn-link p-0"
+                (click)="toggleKnowledgeCollapse(item.id, $event)"
+                [ngClass]="{'text-info': activeKnowledgeId === item.id}"
+                [ngbTooltip]="activeKnowledgeId === item.id ? 'Collapse' : 'Expand'"
+                placement="top">
+                <i class="bi" [ngClass]="activeKnowledgeId === item.id ? 'bi-caret-up-fill' : 'bi-caret-down-fill'"></i>
+              </button>
+
+              <!-- View Button -->
+              <button
+                class="btn btn-sm btn-icon btn-light-primary ms-2"
+                [routerLink]="['/app/my-knowledge-base/view-my-knowledge', item.id]"
+                (click)="$event.stopPropagation()"
+                ngbTooltip="View Details"
+                placement="top">
+                <i class="ki-duotone ki-eye fs-2">
+                  <span class="path1"></span>
+                  <span class="path2"></span>
+                  <span class="path3"></span>
+                </i>
+              </button>
+
+              <!-- Delete Button -->
+              <button
+                class="btn btn-sm btn-icon btn-light-danger ms-2"
+                (click)="removeKnowledge(item.id, $event)"
+                ngbTooltip="Remove from Package"
+                placement="top">
+                <i class="ki-duotone ki-trash fs-2">
+                  <span class="path1"></span>
+                  <span class="path2"></span>
+                  <span class="path3"></span>
+                  <span class="path4"></span>
+                  <span class="path5"></span>
+                </i>
+              </button>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Collapsible Content -->
+        <div
+          class="collapse-content mt-3"
+          [ngClass]="{ 'collapse': activeKnowledgeId !== item.id }"
+        >
+          <!-- Description -->
+          <div class="mb-4">
+            <strong [ngClass]="{'text-info': activeKnowledgeId === item.id}">Description:</strong>
+            <p [innerHTML]="item.description || 'No description provided'"></p>
+          </div>
+  
+          <!-- Additional Info -->
+          <div class="row mt-4">
+            <div class="col-md-4">
+              <strong [ngClass]="{'text-info': activeKnowledgeId === item.id}">Industry:</strong>
+              <p *ngIf="item.industry">{{ item.industry.name || 'N/A' }}</p>
+            </div>
+            <div class="col-md-4">
+              <strong [ngClass]="{'text-info': activeKnowledgeId === item.id}">Language:</strong>
+              <p>{{ item.language | uppercase }}</p>
+            </div>
+            <div class="col-md-4">
+              <strong [ngClass]="{'text-info': activeKnowledgeId === item.id}">Status:</strong>
+              <p class="badge" [ngClass]="{
+                'badge-light-success': item.status === 'published',
+                'badge-light-danger': item.status === 'unpublished'
+              }">
+                {{ item.status | titlecase }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Knowledge Section -->
+  <div class="mt-5">
+    <div class="upload-area border-dashed border-gray-300 d-flex flex-column justify-content-center align-items-center p-7 cursor-pointer"
+         (click)="openAddKnowledgeDialog()"
+         [ngClass]="{'border-primary bg-light-info': isAddAreaHovered}"
+         (mouseenter)="isAddAreaHovered = true"
+         (mouseleave)="isAddAreaHovered = false">
+      <i class="ki-duotone ki-plus text-gray-600 fs-1 mb-3" [ngClass]="{'text-primary': isAddAreaHovered}">
+        <span class="path1"></span>
+        <span class="path2"></span>
+      </i>
+      <div class="text-gray-600 fw-bold fs-4 mb-1" [ngClass]="{'text-primary': isAddAreaHovered}">
+        Click to Add Knowledge
+      </div>
+      <div class="text-gray-400 fs-6">
+        Add new knowledge to this package
+      </div>
+    </div>
+  </div>
+
+  <!-- Knowledge Selection Dialog -->
+  <p-dialog 
+    [(visible)]="showKnowledgeDialog" 
+    [style]="{width: '50vw'}" 
+    [modal]="true" 
+    [draggable]="false" 
+    [resizable]="false"
+    header="Add Knowledge to Package">
+  
+    <div class="p-fluid">
+      <p-dropdown 
+        [options]="availableKnowledge" 
+        [(ngModel)]="selectedKnowledge"
+        [filter]="true" 
+        filterBy="title"
+        [showClear]="true"
+        placeholder="Search and select knowledge"
+        optionLabel="title"
+        [virtualScroll]="true" 
+        [virtualScrollItemSize]="38"
+        appendTo="body"
+        class="w-100">
+        <ng-template pTemplate="item" let-item>
+          <div class="d-flex justify-content-between align-items-center py-2">
+            <div>
+              <div class="fw-bold">{{item.title}}</div>
+              <div class="text-muted small">{{item.type | titlecase}}</div>
+            </div>
+            <span  class="badge me-2 px-2 py-1" >{{item.total_price | currency}}</span>
+          </div>
+        </ng-template>
+      </p-dropdown>
+    </div>
+
+    <ng-template pTemplate="footer">
+      <button 
+        class="btn btn-light me-2" 
+        (click)="showKnowledgeDialog = false">
+        Cancel
+      </button>
+      <button 
+        class="btn btn-primary" 
+        (click)="addKnowledgeToPackage()"
+        [disabled]="!selectedKnowledge">
+        Add to Package
+      </button>
+    </ng-template>
+  </p-dialog>
+
+          </div>
+          <div class="col-lg-4">
+            <!-- Added sticky sidebar with responsive behavior -->
+             
+            <div
+              class="tp-course-details2-widget position-lg-sticky"
+              style="z-index: 1"
+            >
+         
+              <div class="tp-course-details2-widget-content">
+                              <div class="tp-course-details2-widget-price d-flex justify-content-center align-items-center">
+                <span class="fs-2x fw-bolder text-primary">{{ packageDetails.final_price | currency }}</span>
+                <sup *ngIf="packageDetails.discount > 0" class="text-decoration-line-through text-muted">{{ packageDetails.price | currency }}</sup>
+              </div>
+                <div class="separator separator-dashed my-5"></div>
+    
+                <!-- Report details section -->
+                <div class="tp-course-details2-widget-list p-2">
+                  <div class="tp-course-details2-widget-list-item-wrapper">
+                    <!-- Discount with edit icon -->
+                    <div class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3">
+                      <span>
+                        <i class="ki-outline ki-discount text-gray-700 px-2 fs-2"></i>
+                        Discount
+                      </span>
+                      <div class="d-flex align-items-center gap-2">
+                        <span class="text-capitalize">{{ packageDetails.discount }}%</span>
+                        <button class="btn btn-icon btn-sm btn-light-success" (click)="editDiscount()" ngbTooltip="Edit Discount">
+                          <i class="ki-duotone ki-pencil fs-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                          </i>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="d-flex flex-column gap-3 mb-4" >
+                 
+                      <button 
+                      class="btn btn-sm"
+                      [class.btn-danger]="packageDetails.status === 'published'"
+                      [class.btn-primary]="packageDetails.status !== 'published'"
+                      (click)="updatePackageStatus()"
+                      [disabled]="isLoading">
+                      {{ packageDetails.status === 'published' ? 'Unpublish' : 'Publish' }}
+                    </button>
+                   
+                    <!-- <button 
+                    class="btn btn-sm"
+                    [class.btn-danger]="packageDetails?.status === 'published'"
+                    [class.btn-success]="packageDetails?.status !== 'published'"
+                    (click)="updatePackageStatus()"
+                    [disabled]="isLoading">
+                    {{ packageDetails?.status === 'published' ? 'Unpublish' : 'Publish' }}
+                  </button>
+                  <button 
+                    class="btn btn-sm btn-danger ms-2"
+                    (click)="deletePackage()"
+                    [disabled]="isLoading">
+                    Delete Package
+                  </button> -->
+             
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    
+        <div class="separator separator-solid my-10"></div>
+        <div class="row py-10">
+          <!-- <app-related-knowledges></app-related-knowledges> -->
+        </div>
+      </div>
+</div>

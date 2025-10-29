@@ -1,0 +1,284 @@
+<!-- personal-settings.component.html -->
+<p-progressBar
+  *ngIf="isLoading$ | async"
+  mode="indeterminate"
+  [style]="{ height: '4px' }"
+></p-progressBar>
+<form [formGroup]="personalInfoForm" (ngSubmit)="onSubmit()" *ngIf="!(isLoading$ | async)">
+  <div class="card">
+    <div class="card-body">
+      <div class="personal-info">
+        <div class="row">
+          <div class="col-lg-6 mb-6 fv-row">
+            <label for="first_name" class="form-label required">
+              {{ "ACCOUNT_SETTINGS.FIRST_NAME" | translate }}
+            </label>
+            <input
+              class="d-block w-100"
+              [class.is-invalid]="isFieldInvalid('first_name')"
+              pInputText
+              id="first_name"
+              type="text"
+              formControlName="first_name"
+            />
+            <div *ngIf="isFieldInvalid('first_name')" class="invalid-feedback">
+              {{ getFieldError('first_name') }}
+            </div>
+          </div>
+          <div class="col-lg-6 mb-6 fv-row">
+            <label for="last_name" class="form-label required">
+              {{ "ACCOUNT_SETTINGS.LAST_NAME" | translate }}
+            </label>
+            <input
+              id="last_name"
+              type="text"
+              pInputText
+              formControlName="last_name"
+              class="d-block w-100"
+              [class.is-invalid]="isFieldInvalid('last_name')"
+            />
+            <div *ngIf="isFieldInvalid('last_name')" class="invalid-feedback">
+              {{ getFieldError('last_name') }}
+            </div>
+          </div>
+        </div>
+        <div class="row" *ngIf="hasRole(['insighter']) || hasRole(['company']) || hasRole(['company-insighter'])">
+          <!-- Consulting Field -->
+          <div class="col-lg-12 fv-row">
+            <shared-tree-selector *ngIf="consultingFields"
+              [title]="'INSIGHTER_WIZARD.CONSULTING_FIELDS' | translate"
+              [placeholder]="'AUTH.REGISTRATION.CONSULTING_FIELD_PLACEHOLDER' | translate"
+              [isRequired]="true"
+              [otherFieldPlaceholder]="'INSIGHTER_WIZARD.OTHER_FIELD_PLACEHOLDER' | translate"
+              [selectAllLabel]="lang === 'ar' ? 'اختر الكل' : 'Select All'"
+              [fetchedData]="consultingFields"
+              [initialSelectedNodes]="personalInfoForm.value.consulting_field" 
+              [cancelLabel]="'BUTTONS.CANCEL' | translate"
+              [currentLang]="this.lang"
+              [okLabel]="'BUTTONS.OK' | translate"
+              (nodesSelected)="onConsultingNodesSelected($event)"
+            ></shared-tree-selector>
+            <div *ngIf="isFieldInvalid('consulting_field')" class="invalid-feedback d-block">
+              {{ getFieldError('consulting_field') }}
+            </div>
+          </div>
+          <!-- Industry -->
+          <div class="col-lg-12 fv-row">
+            <!-- Debug info -->
+            <div *ngIf="!industries?.length" class="alert alert-warning">
+              No industries data available
+            </div>
+            <shared-tree-selector 
+              *ngIf="industries && industries.length > 0"
+              [title]="'AUTH.REGISTRATION.INDUSTRY' | translate"
+              [isRequired]="true"
+              [placeholder]="'AUTH.REGISTRATION.INDUSTRY_PLACEHOLDER' | translate"
+              [otherFieldPlaceholder]="'INSIGHTER_WIZARD.OTHER_FIELD_PLACEHOLDER' | translate"
+              [selectAllLabel]="lang === 'ar' ? 'اختر الكل' : 'Select All'"
+              [fetchedData]="industries"
+              [initialSelectedNodes]="personalInfoForm.value.industries" 
+              [cancelLabel]="'BUTTONS.CANCEL' | translate"
+              [okLabel]="'BUTTONS.OK' | translate"
+              (nodesSelected)="onIndustrySelected($event)"
+            ></shared-tree-selector>
+            <div *ngIf="isFieldInvalid('industries')" class="invalid-feedback d-block">
+              {{ getFieldError('industries') }}
+            </div>
+          </div>
+        </div>
+        <div class="row" >
+          <div class="col-lg-6 mb-6 fv-row">
+            <label for="country" class="form-label required">
+              {{ "ACCOUNT_SETTINGS.COUNTRY" | translate }}
+            </label>
+        
+            <p-dropdown
+              [options]="countries"
+              formControlName="country"
+              class="d-block"
+              [class.ng-invalid]="isFieldInvalid('country')"
+              [class.is-invalid]="isFieldInvalid('country')"
+              optionLabel="names.en"
+              placeholder="{{ 'ACCOUNT_SETTINGS.SELECT_COUNTRY' | translate }}"
+              [filter]="true"
+              [showClear]="true"
+            >
+              <ng-template pTemplate="item" let-country>
+                <div class="country-option">
+                  <img
+                    *ngIf="country.showFlag"
+                    [src]="country.flagPath"
+                    (error)="onFlagError(country)"
+                    alt="{{ country.names.en }}"
+                    class="flag-icon w-20px mx-2"
+                  />
+                  <span>{{ country.names.en }}</span>
+                </div>
+              </ng-template>
+            </p-dropdown>
+            <div *ngIf="isFieldInvalid('country')" class="invalid-feedback d-block">
+              {{ getFieldError('country') }}
+            </div>
+          </div>
+          <div class="col-lg-6 mb-6 fv-row">
+            <label class="form-label">
+              {{ "ACCOUNT_SETTINGS.PHONE" | translate }}
+            </label>
+            <app-phone-number-input
+              #phoneInput
+              [countries]="countries"
+              [placeholder]="lang === 'ar' ? 'رقم هاتفك' : 'Your phone number'"
+              [searchPlaceholder]="lang === 'ar' ? 'البحث عن دولة...' : 'Search for a country...'"
+              [lang]="lang"
+              [isRequired]="false"
+              [showValidationErrors]="true"
+              [countryCodeError]="getFieldError('phoneCountryCode')"
+              [phoneNumberError]="getFieldError('phoneNumber')"
+              [initialCountryCode]="personalInfoForm.get('phoneCountryCode')?.value"
+              [initialPhoneNumber]="personalInfoForm.get('phoneNumber')?.value"
+              (countryCodeChange)="onCountryCodeChange($event)"
+              (phoneNumberChange)="onPhoneNumberChange($event)"
+              (formattedPhoneNumberChange)="onFormattedPhoneNumberChange($event)"
+              (flagError)="onFlagError($event)"
+            ></app-phone-number-input>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="mb-6" *ngIf="hasRole(['insighter']) || hasRole(['company']) || hasRole(['company-insighter'])">
+              <label class="form-label required">
+                {{ "ACCOUNT_SETTINGS.BIO" | translate }}
+              </label>
+              <textarea
+                formControlName="bio"
+                class="form-control min-h-300px"
+                [class.is-invalid]="isFieldInvalid('bio')"
+              ></textarea>
+              <div *ngIf="isFieldInvalid('bio')" class="invalid-feedback">
+                {{ getFieldError('bio') }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-6" *ngIf="hasRole(['insighter'])">
+          <div class="col-12">
+            <label class="form-label">
+              {{ "ACCOUNT_SETTINGS.SOCIAL_NETWORKS" | translate }}
+            </label>
+
+            <!-- LinkedIn -->
+            <div class="d-flex align-items-center mb-4">
+              <div class="symbol symbol-60px me-5">
+                <img src="assets/media/svg/social-logos/linkedin.svg" alt="LinkedIn" class="p-3"/>
+              </div>
+              <div class="flex-grow-1">
+                <input
+                  type="text"
+                  class="form-control "
+                  formControlName="linkedIn"
+                  placeholder="LinkedIn Profile URL"
+                />
+                <div *ngIf="isFieldInvalid('linkedIn')" class="invalid-feedback d-block">
+                  {{ getFieldError('linkedIn') }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Facebook -->
+            <div class="d-flex align-items-center mb-4">
+              <div class="symbol symbol-60px me-5">
+                <img src="assets/media/svg/social-logos/facebook.svg" alt="Facebook" class="p-3"/>
+              </div>
+              <div class="flex-grow-1">
+                <input
+                  type="text"
+                  class="form-control "
+                  formControlName="facebook"
+                  placeholder="Facebook Profile URL"
+                />
+                <div *ngIf="isFieldInvalid('facebook')" class="invalid-feedback d-block">
+                  {{ getFieldError('facebook') }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Twitter -->
+            <div class="d-flex align-items-center mb-4">
+              <div class="symbol symbol-60px me-5">
+                <img src="assets/media/svg/social-logos/x.svg" alt="Twitter" class="p-3"/>
+              </div>
+              <div class="flex-grow-1">
+                <input
+                  type="text"
+                  class="form-control "
+                  formControlName="twitter"
+                  placeholder="Twitter Profile URL"
+                />
+                <div *ngIf="isFieldInvalid('twitter')" class="invalid-feedback d-block">
+                  {{ getFieldError('twitter') }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Instagram -->
+            <div class="d-flex align-items-center mb-4">
+              <div class="symbol symbol-60px me-5">
+                <img src="assets/media/svg/social-logos/instagram.svg" alt="Instagram" class="p-3"/>
+              </div>
+              <div class="flex-grow-1">
+                <input
+                  type="text"
+                  class="form-control "
+                  formControlName="instagram"
+                  placeholder="Instagram Profile URL"
+                />
+                <div *ngIf="isFieldInvalid('instagram')" class="invalid-feedback d-block">
+                  {{ getFieldError('instagram') }}
+                </div>
+              </div>
+            </div>
+
+            <!-- YouTube -->
+            <div class="d-flex align-items-center mb-4">
+              <div class="symbol symbol-60px me-5">
+                <img src="assets/media/svg/social-logos/youtube.svg" alt="YouTube" class="p-3"/>
+              </div>
+              <div class="flex-grow-1">
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="youtube"
+                  placeholder="YouTube Channel URL"
+                />
+                <div *ngIf="isFieldInvalid('youtube')" class="invalid-feedback d-block">
+                  {{ getFieldError('youtube') }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex justify-content-end">
+          <button
+            type="submit"
+            class="btn btn-primary"
+[disabled]="(isUpdatingProfile$ | async)"
+          >
+            <ng-container *ngIf="(isUpdatingProfile$ | async) === false">
+              <span class="indicator-label">
+                {{ "ACCOUNT_SETTINGS.SAVE_CHANGES" | translate }}
+              </span>
+            </ng-container>
+            <ng-container *ngIf="isUpdatingProfile$ | async">
+              <span class="indicator-progress" [style.display]="'block'">
+                {{ "AUTH.REGISTRATION.PLEASE_WAIT" | translate }}
+                <span
+                  class="spinner-border spinner-border-sm align-middle ms-2"
+                ></span>
+              </span>
+            </ng-container>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

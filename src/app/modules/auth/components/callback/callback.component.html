@@ -1,0 +1,83 @@
+<div class="d-flex flex-column flex-root bg-light h-100vh" id="kt_app_root">
+  <div class="bg-red-light" *ngIf="errorMessage"></div>
+    <!--begin::Authentication - Sign-up -->
+    <div class="d-flex justify-content-center flex-column-fluid flex-lg-row align-items-center">
+      <!--begin::Body-->
+      <div class="d-flex justify-content-center p-lg-20 mil-up">
+        <!--begin::Card-->
+        <div class="bg-body p-20 d-flex overflow-hidden flex-column align-items-center flex-center rounded-4 w-md-600px ">
+          <!--begin::Wrapper-->
+          <div class="d-flex flex-center flex-column ">
+            <div class="text-center mb-10">
+              <!--begin::Title-->
+              <h1 class="text-gray-900 mb-3 max-width-350px">
+              
+              </h1>
+            
+              <ng-container *ngIf="!errorMessage && !isProcessing else errorOrProcessing">
+                <!--begin::Sub-title-->
+                <div class="text-muted fw-semibold fs-5 mb-5">{{ 'AUTH.VERIFY_EMAIL.ALL_SET' | translate }}</div>
+                <!--end::Sub-title-->
+  
+                <!--begin::Success Animation-->
+                <div class="my-10">
+                  <div class="check-container">
+                    <div class="check-background">
+                       <svg viewBox="0 0 65 51" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M7 25L27.3077 44L58.5 7" stroke="white" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" />
+                       </svg>
+                    </div>
+                    <div class="check-shadow"></div>
+                 </div>
+                </div>
+                <!--end::Success Animation-->
+  
+                <div class="d-flex flex-center mt-10">
+                  <button type="button" (click)="retryAuth()" class="btn btn-lg btn-primary fw-bold">
+                    <span class="indicator-label">{{ 'AUTH.VERIFY_EMAIL.GET_STARTED' | translate }}</span>
+                  </button>
+                </div>
+              </ng-container>
+              
+              <ng-template #errorOrProcessing>
+                <ng-container *ngIf="isProcessing && !errorMessage">
+                  <!--begin::Processing-->
+                  <div class="text-muted fw-semibold fs-5 mb-5">Processing authentication...</div>
+                  <div class="my-10">
+                    <div class="spinner-border text-primary" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
+                  </div>
+                  <!--end::Processing-->
+                </ng-container>
+                
+                <ng-container *ngIf="errorMessage">
+                  <!--begin::Error-->
+                  <h1 class="text-gray-900 mb-3 max-width-350px">
+                    {{ errorMessage }}
+                  </h1>
+                  <div class="m-auto mb-5">
+                    <img [alt]="'AUTH.VERIFY_EMAIL.ALT_FAILED_VERIFICATION' | translate" src="../../../../../assets/media/auth/faild-verify.svg">
+                  </div>
+                                     <div class="d-flex flex-center mt-10">
+                     <button type="button" (click)="retryAuth()" class="btn btn-lg btn-primary fw-bold me-3">
+                       <span class="indicator-label">Retry</span>
+                     </button>
+                     <button type="button" (click)="goToLogin()" class="btn btn-lg btn-light fw-bold">
+                       <span class="indicator-label">Back to Login</span>
+                     </button>
+                   </div>
+                  <!--end::Error-->
+                </ng-container>
+              </ng-template>
+            </div>
+          </div>
+          <!--end::Wrapper-->
+        </div>
+        <!--end::Card-->
+      </div>
+      <!--end::Body-->
+    </div>
+    <!--end::Authentication - Sign-up-->
+  </div>
+  

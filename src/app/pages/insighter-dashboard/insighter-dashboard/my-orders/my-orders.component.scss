@@ -1,0 +1,228 @@
+.order-card {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border-color: #3799ff;
+    transform: translateY(-2px);
+  }
+}
+
+.order-details {
+  .card-flush {
+    border: 1px solid #e1e3ea !important;
+  }
+}
+
+.symbol-label {
+  background-color: #F1FAFE;
+}
+
+.text-info {
+  color: #0978B9 !important;
+}
+
+.bg-light-info {
+  background-color: #F1FAFE !important;
+}
+
+.btn-light-info {
+  background-color: #F1FAFE;
+  border-color: transparent;
+  color: #0978B9;
+  
+  &:hover {
+    background-color: #E8F4FD;
+    color: #0978B9;
+  }
+}
+
+.btn-info {
+  background-color: #0978B9;
+  border-color: #0978B9;
+  
+  &:hover {
+    background-color: #0866A1;
+    border-color: #0866A1;
+  }
+}
+
+// Metronic tabs design matching settings-tabs
+.filter-tabs-orders {
+  display: flex;
+  justify-content: flex-start;
+
+  .nav-pills-custom {
+    display: inline-flex;
+    gap: 0.5rem;
+
+    .nav-link {
+      padding: 0.65rem 1.25rem;
+      // border-radius: 0.5rem;
+      font-weight: 500;
+      color: #7e8299;
+      background-color: transparent;
+      border: 1px solid transparent;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
+      cursor: pointer;
+      text-decoration: none;
+
+      i {
+        font-size: 1.1rem;
+      }
+
+      &:hover {
+        color: #181c32;
+        background-color: #f5f8fa;
+      }
+
+      &.active {
+        color: #0978B9 !important;
+        background-color: #F1FAFE !important;
+        font-weight: 600 !important;
+        border-color: transparent;
+
+        &:hover {
+          color: #0978B9 !important;
+          background-color: #f1faff !important;
+        }
+      }
+    }
+  }
+}
+
+.nav-svg {
+  display: inline-flex;
+  align-items: center;
+}
+
+// Folder tabs design
+.nested-tab-nav {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: -1px;
+  position: relative;
+  z-index: 2;
+}
+
+.nested-tab-button {
+  position: relative;
+  background-color: #f5f8fa;
+  border: 1px solid #e4e6ef;
+  border-bottom: none;
+  color: #7e8299;
+  padding: 0.75rem 1.5rem 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-right: 2px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+
+  // Folder tab shape
+  &::before {
+    content: '';
+    position: absolute;
+    left: -1px;
+    bottom: -1px;
+    width: calc(100% + 2px);
+    height: 1px;
+    background-color: #e4e6ef;
+    z-index: 1;
+  }
+
+  &:hover {
+    background-color: #fff;
+    color: #181c32;
+    border-color: #d1d5db;
+  }
+
+  &.active {
+    background-color: #fff;
+    color: #0978B9;
+    font-weight: 600;
+    border-color: #e4e6ef;
+    z-index: 3;
+
+    // Hide bottom border for active tab to connect with content
+    &::before {
+      background-color: #fff;
+    }
+
+    // Add shadow for depth
+  }
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.nested-tab-panel:focus {
+  outline: none;
+}
+
+// Content area connected to folder tabs
+.nested-tab-content {
+  background-color: #fff;
+  border: 1px solid #e4e6ef;
+  border-radius: 0 8px 8px 8px;
+  padding-top: 1rem;
+  margin-top: 0;
+  position: relative;
+  z-index: 1;
+}
+
+
+
+.meeting-status-badge {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.badge-light-success {
+  background-color: rgba(80, 205, 137, 0.1);
+  color: #50cd89;
+}
+
+.badge-light-warning {
+  background-color: rgba(255, 187, 34, 0.1);
+  color: #ffbb22;
+}
+
+.badge-light-danger {
+  background-color: rgba(248, 113, 113, 0.1);
+  color: #f87171;
+}
+
+// Responsive design matching settings-tabs
+@media (max-width: 768px) {
+  .nested-tab-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .nested-tab-button {
+    flex: 1 1 45%;
+    min-width: 140px;
+    text-align: center;
+  }
+
+  .filter-tabs-orders {
+    .nav-pills-custom {
+      flex-wrap: wrap;
+
+      .nav-link {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+      }
+    }
+  }
+}

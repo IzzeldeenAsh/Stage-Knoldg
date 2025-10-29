@@ -1,0 +1,95 @@
+<div class="pb-10 pb-lg-15">
+  <div>
+   
+  </div>
+  <h2 class="fw-bolder d-flex align-items-center text-gray-900">
+    {{ 'INSIGHTER_WIZARD.CHOOSE_ACCOUNT_TYPE' | translate }}
+    <i
+      class="fas fa-exclamation-circle mx-2 fs-7"
+      [ngbTooltip]="'CHOOSE_ACCOUNT_TYPE_TIP_DESC' | translate"
+    ></i>
+  </h2>
+
+
+</div>
+
+<div class="fv-row" [formGroup]="form">
+  <div class="row">
+    <div class="col-lg-6">
+      <input
+        formControlName="accountType"
+        name="accountType"
+        type="radio"
+        class="btn-check"
+        id="kt_create_account_form_account_type_personal"
+        value="personal"
+      />
+      <label
+        class="
+          btn btn-outline btn-outline-dashed btn-outline-default
+          p-7
+          d-flex
+          align-items-center
+          choose-account
+          mb-10
+        "
+        for="kt_create_account_form_account_type_personal"
+      >
+        <app-keenicon name="address-book" class=" fs-1 me-5"></app-keenicon>
+        <span class="d-block fw-bold text-inline-start" (click)="getInsighterSection()">
+          <span class="text-gray-900 text-inline-start fw-bolder d-block fs-4 mb-2">
+            {{ 'INSIGHTER_WIZARD.PERSONAL_ACCOUNT' | translate }}
+          </span>
+          <span class="text-gray-500 fw-bold fs-6">
+            {{ 'INSIGHTER_WIZARD.PERSONAL_ACCOUNT_DESC' | translate }}
+          </span>
+        
+        </span>
+      </label>
+    </div>
+
+    <div class="col-lg-6">
+      <input
+        formControlName="accountType"
+        name="accountType"
+        type="radio"
+        class="btn-check "
+        id="kt_create_account_form_account_type_corporate"
+        value="corporate"
+      />
+      <label
+        class="
+          btn btn-outline btn-outline-dashed btn-outline-default
+          p-7
+          d-flex
+          choose-account
+          align-items-center
+        "
+        for="kt_create_account_form_account_type_corporate"
+      >
+        <app-keenicon name="briefcase" class="fs-1 mx-2"></app-keenicon>
+        <span class="d-block fw-bold text-inline-start" (click)="getCompanySection()">
+          <span class="text-gray-900  text-inline-start fw-bolder d-block fs-4 mb-2"
+            > {{ 'INSIGHTER_WIZARD.CORPORATE_ACCOUNT' | translate }} </span
+          >
+          <span class="text-gray-500 fw-bold fs-6">
+            {{ 'INSIGHTER_WIZARD.CORPORATE_ACCOUNT_DESC' | translate }}
+          </span>
+        </span>
+      </label>
+    </div>
+
+    <div class="fv-plugins-message-container invalid-feedback">
+      <div 
+        class="fv-plugins-message-container" 
+        *ngIf="form.get('accountType')?.invalid && form.get('accountType')?.touched"
+      >
+        <div class="fv-help-block">
+          <span role="alert" class="text-danger">
+            {{ 'ACCOUNT_TYPE_REQUIRED' | translate }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

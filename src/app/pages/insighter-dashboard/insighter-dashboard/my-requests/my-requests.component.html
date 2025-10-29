@@ -1,0 +1,438 @@
+<!-- Page Header -->
+<app-page-header
+  [titleEn]="'My Requests'"
+  [titleAr]="'طلباتي'"
+  [subtitle]="getRequestsSubtitle()"
+  [lang]="lang">
+  <div slot="icon" style="display: flex; align-items: center;justify-content: center;">
+  <i class="ki-duotone ki-question-2 fs-2x text-info">
+ <span class="path1"></span>
+ <span class="path2"></span>
+ <span class="path3"></span>
+</i>
+  </div>
+</app-page-header>
+
+<p-progressBar
+*ngIf="isLoading$ | async"
+mode="indeterminate"
+[style]="{ height: '4px' }"
+styleClass=""
+></p-progressBar>
+
+<!-- Loading state - full page loader -->
+<div *ngIf="isLoading$ | async" class="text-center py-10 bg-light rounded mb-5 border border-1 border-light">
+    <div class="my-5">
+        <div class="spinner-border text-primary mb-4" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <h3 class="fw-bold text-gray-800 mb-2">Loading Requests</h3>
+        <p class="text-gray-600 fs-6 px-3">Please wait while we fetch your requests...</p>
+    </div>
+</div>
+
+<!-- Shared No Requests State - Only show when BOTH tables are empty and no filters are applied AND loading is complete -->
+<div *ngIf="!(isLoading$ | async) && filteredUserRequests.length === 0 && filteredInsighterRequests.length === 0 && !hasActiveFilters()" class="text-center py-10 bg-light-secondary rounded mb-5 border border-1 border-light">
+    <div class="my-5">
+        <img src="assets/media/illustrations/dozzy-1/7117863_3369471.svg" alt="No Requests Illustration" class="mb-4" style="max-width: 300px;">
+      
+        <h3 class="fw-bold text-gray-800 mb-2">No Requests Found</h3>
+        <p class="text-gray-600 fs-6 px-3">You don't have any requests at the moment. New requests will appear here once created.</p>
+    </div>
+</div>
+
+<div class="mb-5  card" *ngIf="!(isLoading$ | async) && userProfile && userRequests.length > 0">
+    <!--begin::Header-->
+    <div class="card-header pt-7 border-0">
+        <!--begin::Title-->
+        <h3 class="card-title align-items-start flex-column">
+            <span class="fw-bolder text-dark">{{ 'USER_REQUESTS.TITLE' | translate }}</span>
+        </h3>
+        <!--end::Title-->
+
+        <!--begin::Actions-->
+        <div class="card-toolbar">
+            <!--begin::Filters-->
+            <div class="d-flex justify-content-end flex-wrap gap-4">
+                <div class="d-flex align-items-center fw-bold">
+             
+                    <div class="text-muted fs-7 mx-2"><i class="bi bi-check-circle mx-1"></i>{{ 'USER_REQUESTS.FILTER.STATUS_TITLE' | translate }}</div>
+                    <select class="form-select form-select-sm form-select-solid text-gray-800 fs-7 lh-1 fw-bold py-1 ps-3 w-auto"
+                            [(ngModel)]="selectedStatus"
+                            (change)="filterRequests()">
+                        <option value="">{{ 'USER_REQUESTS.FILTER.SHOW_ALL' | translate }}</option>
+                        <option value="pending">{{ 'USER_REQUESTS.FILTER.PENDING' | translate }}</option>
+                        <option value="approved">{{ 'USER_REQUESTS.FILTER.APPROVED' | translate }}</option>
+                        <option value="rejected">{{ 'USER_REQUESTS.FILTER.REJECTED' | translate }}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <!--end::Actions-->
+    </div>
+    <!--end::Header-->
+    <!--begin::Body-->
+    <div class="card-body pt-6 pb-4">
+        <!-- Begin User Requests Cards -->
+        <div class="row g-3" *ngIf="filteredUserRequests.length > 0">
+            <!-- Card for each request -->
+            <div class="col-12" *ngFor="let request of filteredUserRequests">
+                <div class="card card-bordered hover-elevate-up cursor-pointer" (click)="openRequestDialog(request)">
+                    <div class="card-body py-3 px-4">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <!-- Left: Icon + Entity name -->
+                            <div class="d-flex align-items-center">
+                                <!-- Icon/Avatar based on request type -->
+                              @if(request.requestable.profile_photo_url){
+                                <div class="symbol symbol-40px me-4 h-40px w-40px bg-light-info d-flex align-items-center justify-content-center rounded-circle">
+                                    <img src="{{ request.requestable.profile_photo_url }}" alt="User Image" class="h-100 w-100 rounded-circle" style="object-fit: cover; object-position: top;">
+                                </div>
+                              }@else{
+                                <div class="symbol symbol-40px me-4 h-40px w-40px bg-light-info d-flex align-items-center justify-content-center rounded-circle">
+                                    <i class="bi fs-4" [ngClass]="{'bi-building': request.requestable_type === 'company', 'bi-person': request.requestable_type === 'userinsighter'}"></i>
+                                </div>
+                              }
+                                
+                                <!-- Entity details -->
+                                <div>
+                                    <div class="fs-5 fw-bold d-flex align-items-center">
+                                        <ng-container *ngIf="request.requestable_type==='company'">
+                                            {{ request.requestable.legal_name }}
+                                        </ng-container>
+                                        <ng-container *ngIf="request.requestable_type==='userinsighter'">
+                                            {{ request.requestable.first_name }} {{ request.requestable.last_name }}
+                                        </ng-container>
+                                    </div>
+                                    <!-- <div class="text-muted fs-7">{{ request.comments || 'No comments' }}</div> -->
+                                </div>
+                            </div>
+                            
+                            <!-- Center: Request Type as tags/skills -->
+                            <div class="d-none d-md-flex align-items-center mx-4">
+                                <span class="badge badge-light-info fs-7 fw-bold">{{ request.type.label }}</span>
+                            </div>
+                            
+                            <!-- Center-Right: Status indicator -->
+                            <div class="d-none d-md-flex align-items-center mx-4">
+                                <div class="badge badge-pill" [ngClass]="{
+                                    'badge-light-warning': request.final_status === 'pending',
+                                    'badge-light-success': request.final_status === 'approved',
+                                    'badge-light-danger': request.final_status === 'declined'
+                                }">
+                                    {{ 'USER_REQUESTS.FILTER.' + (request.final_status | uppercase) | translate }}
+                                </div>
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="d-flex align-items-center">
+                                <button class="btn btn-sm btn-primary" (click)="openRequestDialog(request); $event.stopPropagation();">
+                                    <i class="bi bi-eye-fill mx-1"></i> {{'USER_REQUESTS.DIALOG.VIEW' | translate}}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End User Requests Cards -->
+        
+        <!-- No Results Message for User Requests when filters are applied -->
+        <div *ngIf="!(isLoading$ | async) && filteredUserRequests.length === 0 && hasUserFilters()" class="text-center py-8 bg-light-secondary rounded">
+            <div class="my-3">
+                <i class="bi bi-funnel fs-1 text-gray-400 mb-3 d-block"></i>
+                <h4 class="fw-bold text-gray-800 mb-2">No Matching Requests</h4>
+                <p class="text-gray-600 fs-6 px-3">No requests match your current filter criteria.</p>
+                <button class="btn btn-sm btn-light-info mt-2" (click)="clearUserFilters()">
+                    <i class="bi bi-x-circle me-1"></i> Clear Filters
+                </button>
+            </div>
+        </div>
+    </div>
+    <!--end::Body-->
+</div>
+
+<!-- Insighter Requests Section -->
+<div class="mb-5 mb-xl-10 card" *ngIf="!(isLoading$ | async) && insighterRequests.length > 0">
+    <!--begin::Header-->
+    <div class="card-header pt-7 border-0">
+        <!--begin::Title-->
+        <h3 class="card-title align-items-start flex-column">
+            <span class="fw-bolder text-dark">{{ 'INSIGHTER_REQUESTS.TITLE' | translate }}</span>
+            <span class="text-muted mt-1 fw-semibold fs-6">
+                <!-- <span class="badge badge-light-info mx-2">{{ insighterRequests.length }}</span> {{ 'INSIGHTER_REQUESTS.REQUEST_COUNT' | translate }} -->
+            </span>
+        </h3>
+        <!--end::Title-->
+
+        <!--begin::Actions-->
+        <div class="card-toolbar" *ngIf="insighterRequests.length > 0">
+            <!--begin::Filters-->
+            <div class="d-flex justify-content-end flex-wrap gap-4">
+                <!-- <div class="d-flex align-items-center fw-bold" >
+                    <div class="text-muted fs-7 mx-2"><i class="bi bi-filter-square mx-1"></i>{{ 'INSIGHTER_REQUESTS.FILTER.REQUEST_TYPE' | translate }}</div>
+                    <select class="form-select form-select-sm form-select-solid text-gray-800 fs-7 lh-1 fw-bold py-1 ps-3 w-auto"
+                            [(ngModel)]="selectedInsighterType"
+                            (change)="filterInsighterRequests()">
+                        <option value="">{{ 'USER_REQUESTS.FILTER.SHOW_ALL' | translate }}</option>
+                        <option value="accept_knowledge">{{ 'USER_REQUESTS.FILTER.ACCEPT_KNOWLEDGE' | translate }}</option>
+                       
+                    </select>
+                </div> -->
+                <!--end::Request Type-->
+                <div class="d-flex align-items-center fw-bold">
+                    <div class="text-muted fs-7 mx-2"><i class="bi bi-check-circle mx-1"></i>{{ 'INSIGHTER_REQUESTS.FILTER.STATUS' | translate }}</div>
+                    <!--end::Label-->
+
+                    <!--begin::Select-->
+                    <select class="form-select form-select-sm form-select-solid text-gray-800 fs-7 lh-1 fw-bold py-1 ps-3 w-auto"
+                            [(ngModel)]="selectedInsighterStatus"
+                            (change)="filterInsighterRequests()">
+                        <option value="">{{ 'USER_REQUESTS.FILTER.SHOW_ALL' | translate }}</option>
+                        <option value="pending">{{ 'USER_REQUESTS.FILTER.PENDING' | translate }}</option>
+                        <option value="approved">{{ 'USER_REQUESTS.FILTER.APPROVED' | translate }}</option>
+                        <option value="rejected">{{ 'USER_REQUESTS.FILTER.REJECTED' | translate }}</option>
+                        <!-- Add more options as needed -->
+                    </select>
+                    <!--end::Select-->
+                </div>
+                <!--end::Status-->
+            </div>
+            <!--end::Filters-->
+        </div>
+        <!--end::Actions-->
+    </div>
+    <!--end::Header-->
+
+    <!--begin::Body-->
+    <div class="card-body pt-6 pb-4">
+        <!-- Begin Insighter Requests Cards -->
+        <div class="row g-3" *ngIf="filteredInsighterRequests.length > 0">
+            <!-- Card for each request -->
+            <div class="col-12" *ngFor="let request of filteredInsighterRequests">
+                <div class="card card-bordered hover-elevate-up cursor-pointer" (click)="openInsighterRequestDialog(request)">
+                    <div class="card-body py-3 px-4">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <!-- Left: Insighter Profile -->
+                            <div class="d-flex align-items-center">
+                                <!-- Insighter Avatar -->
+                                <div *ngIf="request.requestable" class="me-4">
+                                    <div *ngIf="request.requestable.profile_photo_url" class="symbol symbol-40px w-40px h-40px overflow-hidden rounded-circle">
+                                        <img [src]="request.requestable.profile_photo_url" alt="Profile" class="w-100 object-fit-cover" style="object-position: top;">
+                                    </div>
+                                    <div *ngIf="!request.requestable.profile_photo_url && request.requestable.name" class="symbol symbol-40px d-flex align-items-center h-40px w-40px justify-content-center rounded-circle" 
+                                        [ngStyle]="{'background-color': '#EEF6FF', 'color': '#3E97FF'}">
+                                        {{ request.requestable.name | slice:0:1 }}{{ (request.requestable.name && request.requestable.name.indexOf(' ') > -1 ? 
+                                          request.requestable.name.split(' ')[1] : '') | slice:0:1 }}
+                                    </div>
+                                </div>
+                                
+                                <!-- Name & Comments -->
+                                <div>
+                                    <div class="fs-5 fw-bold">{{ request.requestable.name || 'Unknown' }}</div>
+                                    <div class="text-muted fs-7">{{ request.comments || 'No comments' }}</div>
+                                </div>
+                            </div>
+
+                            <!-- Center: Request Type -->
+                            <div class="d-none d-md-flex align-items-center mx-4">
+                                <span class="badge badge-light-info fs-7 fw-bold">{{ request.type.label }}</span>
+                            </div>
+                            
+                            <!-- Center-Right: Status -->
+                            <div class="d-none d-md-flex align-items-center mx-4">
+                                <div class="badge badge-pill" [ngClass]="{
+                                    'badge-light-warning': request.final_status === 'pending',
+                                    'badge-light-success': request.final_status === 'approved',
+                                    'badge-light-danger': request.final_status === 'declined'
+                                }">
+                                    {{ 'USER_REQUESTS.STATUS.' + (request.final_status | uppercase) | translate }}
+                                </div>
+                            </div>
+                            <!-- Action Button -->
+                            <div class="d-flex flex-shrink-0">
+                                <button class="btn btn-sm btn-primary" (click)="openInsighterRequestDialog(request); $event.stopPropagation();">
+                                    <i class="bi bi-eye-fill mx-1"></i> {{ 'USER_REQUESTS.DIALOG.VIEW' | translate }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Insighter Requests Cards -->
+        
+        <!-- No Results Message for Insighter Requests when filters are applied -->
+        <div *ngIf="!(isLoading$ | async) && filteredInsighterRequests.length === 0 && hasInsighterFilters()" class="text-center py-8 bg-light-secondary rounded">
+            <div class="my-3">
+                <i class="bi bi-funnel fs-1 text-gray-400 mb-3 d-block"></i>
+                <h4 class="fw-bold text-gray-800 mb-2">No Matching Requests</h4>
+                <p class="text-gray-600 fs-6 px-3">No insighter requests match your current filter criteria.</p>
+                <button class="btn btn-sm btn-light-primary mt-2" (click)="clearInsighterFilters()">
+                    <i class="bi bi-x-circle me-1"></i> Clear Filters
+                </button>
+            </div>
+        </div>
+        <!--end::Table-->
+    </div>
+    <!--end::Body-->
+</div>
+
+<!-- Request Details Dialog -->
+<p-dialog
+    header="{{ 'USER_REQUESTS.DIALOG.HEADER' | translate }}"
+    [(visible)]="displayRequestDialog"
+    [modal]="true"
+    [style]="{ width: '50rem' }"
+    [closable]="true"
+    appendTo="body"
+>
+    <div *ngIf="selectedRequest" class="d-flex flex-column align-items-center">
+        <!-- Request Type Label -->
+        <h3 class="mb-4">{{ selectedRequest.type.label }}</h3>
+
+        <!-- Status Badge -->
+        <div class="mb-4">
+            <div class="badge" [ngClass]="{
+                'badge-light-warning': selectedRequest.final_status === 'pending',
+                'badge-light-success': selectedRequest.final_status === 'approved', 
+                'badge-light-danger': selectedRequest.final_status === 'declined'
+            }">
+                {{ selectedRequest.final_status | titlecase }}
+            </div>
+        </div>
+
+        <!-- Staff Notes -->
+        <div class="w-100 mb-4" *ngIf="selectedRequest.final_status !== 'pending'">
+            <h6 class="fw-bold mb-2">
+                <i class="bi bi-chat-left-text me-2"></i>
+                {{ 'USER_REQUESTS.DIALOG.STAFF_NOTES_LABEL' | translate }}
+            </h6>
+            <div class="bg-light-secondary rounded p-4">
+                <p class="text-gray-700 mb-0">
+                    {{ selectedRequest.staff_notes || ('USER_REQUESTS.DIALOG.NO_STAFF_NOTES' | translate) }}
+                </p>
+            </div>
+        </div>
+        <!-- Action Buttons for Insighter - Only show for pending insighter requests -->
+        <div class="w-100 mt-3" *ngIf="selectedRequest.final_status === 'pending' && isInsighterRequest">
+            <!-- For accept_knowledge requests, show Review button -->
+            <div *ngIf="selectedRequest.type?.key === 'accept_knowledge' && selectedRequest.knowledge_id" class="text-center">
+                <button 
+                    type="button" 
+                    class="btn btn-primary btn-lg btn-icon-primary w-75 mb-2 " 
+                    (click)="navigateToReview()"
+                >
+                    <i class="bi bi-file-earmark-text fs-4 mx-2"></i>
+                    Review Knowledge
+                </button>
+            </div>
+            
+            <!-- For other request types, show Approve/Decline buttons -->
+            <div *ngIf="!selectedRequest.type?.key || selectedRequest.type?.key !== 'accept_knowledge'" class="d-flex gap-3 justify-content-center">
+                <button 
+                    type="button" 
+                    class="btn btn-light-success btn-lg px-6 py-3 " 
+                    (click)="onApproveRequest()"
+                >
+                    <i class="bi bi-check-circle-fill fs-4 mx-2"></i>
+                    Approve
+                </button>
+                <button 
+                    type="button" 
+                    class="btn btn-light-danger btn-lg px-6 py-3 " 
+                    (click)="onDeclineRequest()"
+                >
+                    <i class="bi bi-x-circle-fill fs-4 mx-2"></i>
+                    Decline
+                </button>
+            </div>
+        </div>
+        
+        <!-- Notes field for approval/decline -->
+        <div class="w-100 mt-5" *ngIf="selectedRequest.final_status === 'pending' && isInsighterRequest && (isApproving || isDeclining)">
+                <div class="card-header border-0 ps-0 pt-0">
+                    <h5 class="card-title fw-semibold text-dark">
+                        <i class="bi bi-pencil-square mx-2"></i>
+                        Staff Notes
+                    </h5>
+                </div>
+                <div class="card-body px-0">
+                    <textarea
+                        id="staffNotes"
+                        class="form-control border-1 "
+                        rows="4"
+                        placeholder="Enter your notes here..."
+                        [(ngModel)]="staffNotes"
+                    ></textarea>
+                </div>
+                <div class="card-footer border-0 px-0 pt-4 bg-transparent">
+                    <div class="d-flex gap-3">
+                        <button
+                            type="button"
+                            [class]="isApproving ? 'btn btn-success  flex-grow-1' : 'btn btn-danger  flex-grow-1'"
+                            (click)="confirmAction()"
+                            [disabled]="!staffNotes"
+                        >
+                            <i class="bi fs-6 mx-2" [ngClass]="isApproving ? 'bi-check-lg' : 'bi-x-lg'"></i>
+                            {{ isApproving ? 'Confirm Approval' : 'Confirm Decline' }}
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-light btn-active-light-secondary "
+                            (click)="cancelAction()"
+                        >
+                            <i class="bi bi-arrow-left fs-6 mx-2"></i>
+                            {{'CANCEL' | translate}}
+                        </button>
+                    </div>
+                </div>
+        </div>
+
+    </div>
+
+    <!-- Resend Request for declined requests -->
+    <div *ngIf="selectedRequest?.final_status === 'declined' && !hasPendingRequestOfSameType && !isInsighterRequest" class="mt-5 w-100">
+            <div class="card-header border-0 ps-0 pt-0">
+                <h5 class="card-title fw-semibold text-dark">
+                    {{'USER_REQUESTS.DIALOG.RESEND_REQUEST' | translate}}
+                </h5>
+            </div>
+            <div class="card-body px-0">
+                <textarea
+                    id="resendComments"
+                    class="form-control border-1 "
+                    rows="4"
+                    placeholder="Please explain why you are resending this request..."
+                    [(ngModel)]="resendComments"
+                ></textarea>
+            </div>
+            <div class="card-footer border-0 px-0 pt-4 bg-transparent">
+                <button
+                    type="button"
+                    class="btn btn-primary btn-icon-primary w-100 "
+                    (click)="onResendRequest()"
+                    [disabled]="!resendComments"
+                >
+                    Resend Request
+                </button>
+                <!-- View Knowledge Button - Only show for accept_knowledge requests -->
+        <ng-container *ngIf="selectedRequest?.type?.key === 'accept_knowledge' && selectedRequest?.identity" >
+            <button
+              type="button"
+              class="btn btn-primary btn-icon-primary w-100 mt-4"
+              (click)="viewKnowledge()"
+            >
+              View Knowledge
+            </button>
+        </ng-container>
+            </div>
+    </div>
+    <div *ngIf="hasPendingRequestOfSameType && selectedRequest?.final_status !== 'approved'" class="mt-4 alert alert-warning  border">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-exclamation-triangle-fill mx-2 fs-4 text-warning"></i>
+            <span>{{ 'USER_REQUESTS.DIALOG.PENDING_REQUEST_EXISTS' | translate }}</span>
+        </div>
+    </div>
+        
+        
+</p-dialog>

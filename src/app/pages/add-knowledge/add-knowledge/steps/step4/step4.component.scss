@@ -1,0 +1,706 @@
+// Step 4 Component Styles
+
+.chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  background-color: #f1f3f5;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  position: relative;
+  min-height: 36px;
+}
+
+.chip:hover {
+  background-color: #e9ecef;
+}
+
+.chip.selected {
+  background-color: #e1f5fe;
+  border-color: #0dcaf0;
+  color: #0dcaf0;
+  padding-left: 2rem;
+}
+
+.check-icon {
+  position: absolute;
+  left: 0.5rem;
+  color: #0dcaf0;
+}
+
+// Cover year picker styling
+.cover-year-picker {
+  height: 48px;
+}
+
+:host ::ng-deep {
+  // Cover year picker input styling
+  .cover-year-picker {
+    .p-inputtext {
+      line-height: 1.5;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      border-radius: 0.375rem;
+    }
+
+    .p-button {
+      height: 48px !important;
+    }
+  }
+
+  tag-input {
+    width: 100% !important;
+    max-width: none !important;
+    
+    // Dropdown styles
+    tag-input-dropdown {
+      width: 100% !important;
+      max-width: none !important;
+      
+      .ng2-dropdown-menu {
+        min-width: 100% !important;
+        max-width: none !important;
+        width: auto !important;
+        
+        .ng2-dropdown-menu-item {
+          white-space: normal !important;
+          word-wrap: break-word !important;
+          overflow: visible !important;
+          text-overflow: clip !important;
+          padding: 0.5rem 1rem !important;
+          line-height: 1.4 !important;
+        }
+      }
+    }
+    
+    .ng2-tag-input {
+      border-bottom: 1px solid #e4e6ef !important;
+      padding: 0.75rem 1rem !important;
+      border-radius: 0.475rem !important;
+      background-color: #f5f8fa !important;
+      border: 1px solid #e4e6ef !important;
+      width: 100% !important;
+      max-width: none !important;
+      min-width: 100% !important;
+      
+      &.ng2-tag-input--focused {
+        border-color: #c3e2fd !important;
+        box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25) !important;
+        background-color: #ffffff !important;
+      }
+    }
+    
+    .ng2-tag-input__text-input {
+      height: 32px !important;
+      width: 100% !important;
+      max-width: none !important;
+      min-width: 200px !important;
+      flex-grow: 1 !important;
+    }
+    
+    .ng2-tags-container {
+      width: 100% !important;
+      max-width: none !important;
+      flex-wrap: wrap !important;
+      
+              .ng2-tag {
+          background-color: #e1f5fe !important;
+          color: #0dcaf0 !important;
+          border-radius: 0.475rem !important;
+          max-width: 100% !important;
+          width: auto !important;
+          min-width: fit-content !important;
+          white-space: normal !important;
+          overflow: visible !important;
+          text-overflow: clip !important;
+          word-wrap: break-word !important;
+          flex-shrink: 0 !important;
+          display: inline-flex !important;
+          align-items: center !important;
+          padding: 0.25rem 0.5rem !important;
+          margin: 0.125rem !important;
+          
+          .ng2-tag__text {
+            max-width: none !important;
+            width: auto !important;
+            white-space: normal !important;
+            overflow: visible !important;
+            text-overflow: clip !important;
+            word-break: break-word !important;
+            hyphens: auto !important;
+            line-height: 1.4 !important;
+          }
+          
+          .ng2-tag__remove-button {
+            color: #0dcaf0 !important;
+            flex-shrink: 0 !important;
+            margin-left: 0.25rem !important;
+          }
+        }
+    }
+  }
+}
+
+// Form field styles
+.form-field {
+  margin-bottom: 1.5rem;
+}
+
+.form-field-label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.info-icon {
+  margin-left: 0.5rem;
+  color: #6c757d;
+  font-size: 0.875rem;
+}
+
+.topic-field {
+  margin-top: 1.5rem;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Target market option styles
+.market-option {
+  margin-bottom: 0.5rem;
+  
+  &.selected {
+    border-color: #0dcaf0 !important;
+    background-color: #e1f5fe !important;
+  }
+} 
+
+/* Steel shining animation styles */
+.loader-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  background-color: #f3f3f3;
+  border-radius: 4px;
+}
+
+.steel-shining-text {
+  color: transparent;
+  animation: shine 2s linear infinite;
+  font-size: 12px;
+  background: linear-gradient(to right, #333333 20%, #818181 40%, #c0c0c0 60%, #333333 80%);
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+.no-animation {
+  animation: none;
+}
+
+/* Star animations */
+.star {
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+.star-small {
+  animation: twinkle-small 3s ease-in-out infinite;
+}
+
+.star-medium {
+  animation: twinkle-medium 4s ease-in-out infinite 0.5s;
+}
+
+.star-large {
+  animation: twinkle-large 5s ease-in-out infinite 1s;
+}
+
+@keyframes twinkle-small {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+@keyframes twinkle-medium {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+@keyframes twinkle-large {
+  0%, 100% { opacity: 0.9; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+@keyframes shine {
+  to {
+    background-position: 200% center;
+  }
+}
+
+/* Fancy loading overlay for textarea */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(2px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0.475rem;
+  z-index: 10;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg, 
+      rgba(255, 255, 255, 0) 0%, 
+      rgba(255, 255, 255, 0.2) 50%, 
+      rgba(255, 255, 255, 0) 100%
+    );
+    animation: shimmer 1.5s infinite;
+  }
+}
+
+@keyframes shimmer {
+  to {
+    left: 100%;
+  }
+}
+
+.loading-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  padding: 15px 25px;
+  border-radius: 8px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(0);
+  animation: float 3s ease-in-out infinite;
+  z-index: 20;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.loading-stars {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+/* Enhanced star animations */
+.loading-star {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  margin: 0 5px;
+}
+
+.loading-star:nth-child(1) {
+  animation: star-pulse 2s infinite 0.2s;
+}
+
+.loading-star:nth-child(2) {
+  animation: star-pulse 2s infinite 0.4s;
+}
+
+.loading-star:nth-child(3) {
+  animation: star-pulse 2s infinite 0.6s;
+}
+
+@keyframes star-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 1;
+  }
+}
+
+.loading-text {
+  font-size: 1rem;
+  font-weight: 500;
+  background: linear-gradient(90deg, #FF9900, #FFE4A6, #FF9900);
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: gradient-text 2s linear infinite;
+  text-align: center;
+}
+
+@keyframes gradient-text {
+  to {
+    background-position: 200% center;
+  }
+}
+
+/* Customize the dots animation */
+.loading-dots {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  margin: 0 3px;
+  background-color: #FF9900;
+  opacity: 0;
+  animation: dot-fade 1.4s infinite;
+}
+
+.dot:nth-child(1) {
+  animation-delay: 0s;
+}
+.dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes dot-fade {
+  0%, 60%, 100% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  30% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+/* Magical particle effects */
+.loading-magic-effect {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.magic-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  opacity: 0;
+  animation: magic-float 3s ease-in-out infinite;
+}
+
+.magic-particle:nth-child(1) {
+  top: 20%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.magic-particle:nth-child(2) {
+  top: 40%;
+  left: 25%;
+  animation-delay: 0.4s;
+}
+
+.magic-particle:nth-child(3) {
+  top: 60%;
+  left: 15%;
+  animation-delay: 0.8s;
+}
+
+.magic-particle:nth-child(4) {
+  top: 30%;
+  left: 80%;
+  animation-delay: 1.2s;
+}
+
+.magic-particle:nth-child(5) {
+  top: 65%;
+  left: 70%;
+  animation-delay: 1.6s;
+}
+
+@keyframes magic-float {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(-20px) scale(1.5);
+    opacity: 0.7;
+  }
+}
+
+/* Loading indicator for input fields */
+.field-loading-indicator {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+/* Animated abstract styles */
+.animated-abstract {
+  background-color: #f9f9f9;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  min-height: 150px;
+}
+
+.typing-text {
+  line-height: 1.6;
+  font-size: 14px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* Style for the blinking cursor effect */
+.typing-text:after {
+  content: '_';
+  display: inline-block;
+  animation: blink 0.7s infinite;
+}
+
+/* Remove cursor once animation is complete */
+.animated-abstract:has(.text-end) .typing-text:after {
+  display: none;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Fullscreen loading overlay */
+.fullscreen-loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.fullscreen-loading-overlay .loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  max-width: 90%;
+  position: relative;
+}
+
+.fullscreen-loading-overlay .loading-stars {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  gap: 1.5rem;
+}
+
+.fullscreen-loading-overlay .loading-star {
+  animation: star-pulse 2s infinite;
+}
+
+.fullscreen-loading-overlay .loading-star:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.fullscreen-loading-overlay .loading-star:nth-child(2) {
+  animation-delay: 0.3s;
+}
+
+.fullscreen-loading-overlay .loading-star:nth-child(3) {
+  animation-delay: 0.6s;
+}
+
+.fullscreen-loading-overlay .loading-text {
+  font-size: 1.25rem;
+  color: #333;
+  margin-top: 0.5rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.fullscreen-loading-overlay .loading-magic-effect {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.fullscreen-loading-overlay .magic-particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  opacity: 0;
+  animation: magic-float 4s ease-in-out infinite;
+}
+
+.fullscreen-loading-overlay .magic-particle:nth-child(1) {
+  top: 20%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.fullscreen-loading-overlay .magic-particle:nth-child(2) {
+  top: 40%;
+  left: 25%;
+  animation-delay: 0.4s;
+}
+
+.fullscreen-loading-overlay .magic-particle:nth-child(3) {
+  top: 60%;
+  left: 15%;
+  animation-delay: 0.8s;
+}
+
+.fullscreen-loading-overlay .magic-particle:nth-child(4) {
+  top: 30%;
+  left: 80%;
+  animation-delay: 1.2s;
+}
+
+.fullscreen-loading-overlay .magic-particle:nth-child(5) {
+  top: 65%;
+  left: 70%;
+  animation-delay: 1.6s;
+}
+
+.fullscreen-loading-overlay .magic-particle:nth-child(6) {
+  top: 75%;
+  left: 40%;
+  animation-delay: 2s;
+}
+
+@keyframes star-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 1;
+  }
+}
+
+/* Invalid form field styling */
+:host ::ng-deep {
+  .is-invalid,
+  .ng-invalid.ng-touched,
+  input.ng-invalid.ng-touched,
+  textarea.ng-invalid.ng-touched,
+  p-dropdown.ng-invalid.ng-touched .p-dropdown,
+  p-multiselect.ng-invalid.ng-touched .p-multiselect,
+  p-chips.ng-invalid.ng-touched .p-chips,
+  tag-input.ng-invalid.ng-touched .ng2-tag-input,
+  editor.ng-invalid.ng-touched .tox-tinymce {
+    border-color: #f64e60 !important;
+    box-shadow: none !important;
+  }
+
+  /* Override TinyMCE border */
+  editor.is-invalid .tox-tinymce,
+  editor.ng-invalid.ng-touched .tox-tinymce {
+    border: 1px solid #f64e60 !important;
+  }
+
+  /* Override PrimeNG components */
+  p-dropdown.is-invalid .p-dropdown,
+  p-multiselect.is-invalid .p-multiselect,
+  p-chips.is-invalid .p-chips {
+    border-color: #f64e60 !important;
+  }
+
+  /* Custom components with validation */
+  app-industry-selector.is-invalid .p-tree,
+  app-select-region.is-invalid .region-selector,
+  app-select-economic-block.is-invalid .economic-block-selector,
+  app-get-hs-code-by-isic.is-invalid .hs-code-selector {
+    border-color: #f64e60 !important;
+  }
+}
+
+/* Add AI Generated badge styles */
+.ai-generated-badge {
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  background: linear-gradient(135deg, rgba(255,209,0,0.1) 0%, rgba(255,145,0,0.1) 100%);
+  color: #FF9900;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  font-weight: 500;
+  border: 1px solid rgba(255,153,0,0.3);
+  animation: glow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 0px rgba(255,153,0,0);
+  }
+  to {
+    box-shadow: 0 0 3px rgba(255,153,0,0.5);
+  }
+}

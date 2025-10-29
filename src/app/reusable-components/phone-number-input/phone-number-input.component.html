@@ -1,0 +1,94 @@
+<div class="input-group">
+  <!-- Country Code Dropdown -->
+  <div style="flex: 0 0 190px;">
+    <p-dropdown
+      [options]="countries"
+      [ngModel]="countryCode"
+      (ngModelChange)="onCountryCodeChange($event)"
+      class="d-block form-p-control no-border-radius-start-end"
+      optionValue="international_code"
+      [dataKey]="'international_code'"
+      [placeholder]="searchPlaceholder"
+      [filter]="true"
+      [showClear]="false"
+      [disabled]="disabled"
+      [filterFields]="['names.en', 'names.ar', 'international_code']"
+      filterPlaceholder="Search countries..."
+    >
+      <!-- Country Option Template -->
+      <ng-template pTemplate="item" let-country>
+        <div class="country-option" [class]="lang === 'ar' ? 'rtl-country-option' : 'ltr-country-option'">
+          <img 
+            *ngIf="country.showFlag"
+            [src]="'../../../../assets/media/flags/' + country.flag + '.svg'"
+            (error)="onFlagError(country)"
+            alt="{{ country.names.en }}"
+            [class]="'flag-icon w-20px ' + (lang === 'ar' ? 'ms-2' : 'me-2')" 
+          />
+          <span class="country-code">(+{{ country.international_code }})</span>
+          <span 
+            *ngIf="lang === 'en'" 
+            class="country-name ms-2"
+          >{{ country.names.en }}</span>
+          <span 
+            *ngIf="lang === 'ar'" 
+            class="country-name ms-2"
+          >{{ country.names.ar }}</span>
+        </div>
+      </ng-template>
+      
+      <!-- Selected Item Template -->
+      <ng-template pTemplate="selectedItem" let-country>
+        <div 
+          class="selected-country-option" 
+          [class]="lang === 'ar' ? 'rtl-selected-option' : 'ltr-selected-option'" 
+          *ngIf="country"
+        >
+          <img 
+            *ngIf="country.showFlag"
+            [src]="'../../../../assets/media/flags/' + country.flag + '.svg'"
+            (error)="onFlagError(country)"
+            alt="{{ country.names.en }}"
+            [class]="'flag-icon w-20px ' + (lang === 'ar' ? 'ms-2' : 'me-2')" 
+          />
+          <span class="country-code">(+{{ country.international_code }})</span>
+        </div>
+      </ng-template>
+    </p-dropdown>
+  </div>
+
+  <!-- Phone Number Input with ngx-mask -->
+  <input
+    type="text"
+    class="form-control no-rtl-b-radius"
+    style="flex: 1;"
+    [placeholder]="currentPlaceholder"
+    [disabled]="disabled"
+    [attr.aria-required]="isRequired"
+    [attr.aria-invalid]="showValidationErrors && (countryCodeError || phoneNumberError)"
+    [mask]="currentMask"
+    [ngModel]="value"
+    (ngModelChange)="onPhoneNumberInput($event)"
+    (keypress)="onKeyPress($event)"
+    [dropSpecialCharacters]="false"
+  />
+</div>
+
+<!-- Validation Messages -->
+<div class="fv-plugins-message-container" *ngIf="showValidationErrors">
+  <!-- Country Code Error -->
+  <div
+    *ngIf="countryCodeError"
+    class="invalid-feedback d-block"
+  >
+    {{ countryCodeError }}
+  </div>
+
+  <!-- Phone Number Error -->
+  <div
+    *ngIf="phoneNumberError"
+    class="invalid-feedback d-block"
+  >
+    {{ phoneNumberError }}
+  </div>
+</div>

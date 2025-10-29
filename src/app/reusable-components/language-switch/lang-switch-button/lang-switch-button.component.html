@@ -1,0 +1,14 @@
+<div class="position-relative">
+    <a (click)="switchLanguage()" class="cursor-pointer d-flex active lang-button" [ngClass]="{'insighter-dashboard': isInsighterDashboard}">
+        <span class="symbol d-flex align-items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" [ngClass]="{'stroke-white': isInsighterDashboard || isAuthPage}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="language-icon mx-1 transition-transform duration-300">
+                <path d="M4 5h7"></path>
+                <path d="M9 3v2c0 4.418 -2.239 8 -5 8"></path>
+                <path d="M5 9c0 2.144 2.952 3.908 6.7 4"></path>
+                <path d="M12 20l4 -9l4 9"></path>
+                <path d="M19.1 18h-6.2"></path>
+            </svg>
+            <span class="lang-text" [ngClass]="{'text-white': (isInsighterDashboard && !isMobileView) || isAuthPage}">{{ selectedLang === 'en' ? 'العربية' : 'English' }}</span>
+        </span>
+    </a>
+</div>

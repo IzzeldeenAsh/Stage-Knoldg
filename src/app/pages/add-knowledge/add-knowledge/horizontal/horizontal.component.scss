@@ -1,0 +1,176 @@
+@media screen and (max-width: 768px) {
+  .padding-responsive {
+      padding: 2rem;
+  }
+}
+.white{
+  color: #ffffff !important;
+}
+// Stepper container styles
+.stepper-nav {
+display: flex;
+justify-content: space-between;
+align-items: center;
+position: relative;
+padding: 0 1rem;
+
+// Line connector between steps
+&::before {
+  content: '';
+  position: absolute;
+  top: 40%;
+  left: 100px;
+  right: 80px;
+  height: 2px;
+  background: #E4E6EF;
+  z-index: 0;
+}
+}
+
+// Individual step item
+.stepper-item {
+position: relative;
+z-index: 1;
+padding: 1rem;
+min-width: 120px;
+text-align: center;
+transition: all 0.3s ease;
+
+// Step icon container
+.stepper-icon-i {
+  width: 40px;
+  height: 40px;
+  background: #ffffff;
+  border: 2px solid #E4E6EF;
+  border-radius: 50%;
+  margin: 0 auto 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s ease;
+
+  .stepper-icon-elem {
+    color: #B5B5C3;
+    font-size: 1.25rem;
+    transition: all 0.3s ease;
+  }
+}
+
+// Step title
+.stepper-title {
+  color: #3F4254;
+  font-weight: 500;
+  margin: 0;
+  transition: all 0.3s ease;
+  font-size: 0.9rem !important;
+}
+
+// Current step styles
+&.current {
+  .stepper-icon-i {
+    border-color: #0978B9;
+    background: #0978B9;
+    box-shadow: 0 0 10px rgba(0, 158, 247, 0.3);
+
+    .stepper-icon-elem {
+      color: #ffffff !important;
+    }
+  }
+
+  .stepper-title {
+    color: #0978B9;
+    font-weight: 600;
+  }
+}
+
+// Completed step styles
+&.completed {
+  .stepper-icon-i {
+    border-color: #50CD89;
+    background: #50CD89;
+    box-shadow: 0 0 10px rgba(80, 205, 137, 0.3);
+
+    .stepper-icon-elem {
+      color: #ffffff !important;
+    }
+
+    &::after {
+      position: absolute;
+      color: #ffffff;
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+  }
+
+  .stepper-title {
+    color: #50CD89;
+  }
+}
+}
+
+// Responsive styles
+@media screen and (max-width: 992px) {
+.stepper-nav {
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+  
+  &::before {
+    display: none;
+  }
+}
+
+.stepper-item {
+  min-width: 110px;
+  padding: 0.5rem;
+  
+  .stepper-icon-i {
+    width: 40px;
+    height: 40px;
+
+    .stepper-icon-elem {
+      font-size: 1.1rem;
+    }
+  }
+  
+  .stepper-title {
+    font-size: 0.8rem !important;
+  }
+}
+}
+
+@media screen and (max-width: 768px) {
+.padding-responsive {
+  padding: 1rem;
+}
+
+.stepper-nav {
+  gap: 1rem;
+}
+
+.stepper-item {
+  min-width: 90px;
+  
+  .stepper-icon-i {
+    width: 35px;
+    height: 35px;
+
+    .stepper-icon-elem {
+      font-size: 1rem;
+    }
+
+    &::after {
+      font-size: 0.9rem;
+    }
+  }
+
+  .stepper-title {
+    font-size: 0.75rem !important;
+  }
+}
+}
+.stepper.stepper-links .stepper-nav .stepper-item:after{
+  display: none;
+}

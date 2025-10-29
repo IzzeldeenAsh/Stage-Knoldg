@@ -1,0 +1,81 @@
+.card {
+  transition: all 0.3s ease;
+  
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: transparent;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.btn-group {
+  .btn {
+    transition: all 0.3s ease;
+    
+    &.active {
+      background-color: var(--bs-primary) !important;
+      color: white !important;
+    }
+  }
+}
+
+.symbol-label {
+  width: 15px;
+  height: 15px;
+  border-radius: 4px;
+}
+
+#barChart, #pieChart {
+  min-height: 350px;
+  
+  apx-chart {
+    display: block;
+  }
+}
+
+#pieChart {
+  height: 300px;
+  margin: 0 auto;
+  position: relative;
+  transition: width 0.3s ease, height 0.3s ease;
+  
+  apx-chart {
+    display: block;
+    margin: 0 auto;
+  }
+  
+  ::ng-deep .apexcharts-canvas {
+    margin: 0 auto !important;
+  }
+  
+  ::ng-deep .apexcharts-legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100% !important;
+    left: 0 !important;
+  }
+}
+
+.table {
+  th, td {
+    vertical-align: middle;
+  }
+}
+
+.spinner-border {
+  width: 2rem;
+  height: 2rem;
+}
+
+// Metronic theme overrides
+.card-flush {
+  box-shadow: 0px 0px 20px 0px rgba(76, 87, 125, 0.02);
+}
+
+.fs-2 {
+  font-size: 1.5rem !important;
+}

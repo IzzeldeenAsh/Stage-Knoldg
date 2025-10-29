@@ -1,0 +1,75 @@
+<!-- Insighter Filter -->
+<div class="d-flex align-items-center gap-3 mb-4">
+  <div class="w-100">
+    <p-dropdown
+      [options]="(dropdownOptions$ | async) || []"
+      [(ngModel)]="selectedInsighterValue"
+      [placeholder]="lang === 'ar' ? 'اختر خبير' : 'Select Insighter'"
+      optionLabel="label"
+      optionValue="value"
+      [showClear]="false"
+      [filter]="true"
+      [filterBy]="'label'"
+      [filterPlaceholder]="lang === 'ar' ? 'البحث...' : 'Search...'"
+      styleClass="w-100"
+      panelStyleClass="insighter-dropdown-panel"
+      (onChange)="onInsighterChange($event.value)"
+      [loading]="isLoading$ | async">
+
+      <!-- Selected Value Template -->
+      <ng-template pTemplate="selectedItem" let-selectedOption>
+        <div class="d-flex align-items-center gap-2" *ngIf="selectedOption">
+          <!-- Profile Image or Initials for selected insighter -->
+          <div class="symbol symbol-25px" *ngIf="selectedOption.insighter">
+            <img *ngIf="selectedOption.insighter.profile_photo_url"
+                 [src]="selectedOption.insighter.profile_photo_url"
+                 [alt]="selectedOption.insighter.name"
+                 class="symbol-label rounded-circle"
+                 style="object-fit: cover; object-position: top;">
+            <div *ngIf="!selectedOption.insighter.profile_photo_url"
+                 class="symbol-label bg-light-info rounded-circle d-flex align-items-center justify-content-center">
+              <span class="text-info fw-bold fs-8">
+                {{ getInsighterInitials(selectedOption.insighter.name) }}
+              </span>
+            </div>
+          </div>
+          <span class="fs-7">{{ selectedOption.label }}</span>
+        </div>
+        <!-- Fallback for "All Insighters" -->
+        <span class="fs-7" *ngIf="!selectedOption">
+          {{ lang === 'ar' ? 'جميع الخبراء' : 'All Insighters' }}
+        </span>
+      </ng-template>
+
+      <!-- Option Template -->
+      <ng-template pTemplate="item" let-option>
+        <div class="d-flex align-items-center gap-2">
+          <!-- Profile Image or Initials for each option -->
+          <div class="symbol symbol-25px" *ngIf="option.insighter">
+            <img *ngIf="option.insighter.profile_photo_url"
+                 [src]="option.insighter.profile_photo_url"
+                 [alt]="option.insighter.name"
+                 class="symbol-label rounded-circle"
+                 style="object-fit: cover; object-position: top;">
+            <div *ngIf="!option.insighter.profile_photo_url"
+                 class="symbol-label bg-light-info rounded-circle d-flex align-items-center justify-content-center">
+              <span class="text-info fw-bold fs-8">
+                {{ getInsighterInitials(option.insighter.name) }}
+              </span>
+            </div>
+          </div>
+          <span class="fs-7">{{ option.label }}</span>
+        </div>
+      </ng-template>
+
+      <!-- Empty Template -->
+      <ng-template pTemplate="empty">
+        <div class="text-center p-3 text-muted">
+          <span class="fs-7">
+            {{ lang === 'ar' ? 'لا يوجد خبراء' : 'No insighters found' }}
+          </span>
+        </div>
+      </ng-template>
+    </p-dropdown>
+  </div>
+</div>

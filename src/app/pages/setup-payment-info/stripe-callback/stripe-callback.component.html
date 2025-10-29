@@ -1,0 +1,226 @@
+<p-toast></p-toast>
+<app-payment-header 
+  [title]="lang === 'ar' ? 'معالج Stripe' : 'Stripe Processing'"
+  [subtitle]="lang === 'ar' ? 'جاري معالجة إعداد حساب Stripe الخاص بك' : 'Processing your Stripe account setup'">
+</app-payment-header>
+
+<div style="padding-top:50px" class="container-fluid  gradient-background">
+  <div class="row justify-content-center">
+    <div class="col-lg-6 col-xl-5">
+      <div class="card">
+        
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="card-body text-center py-10">
+          <div class="loading-container">
+            <div class="spinner-border text-info mb-4" role="status" style="width: 3rem; height: 3rem;">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            
+            <!-- Different messages based on action -->
+            <div *ngIf="action === 'refresh'">
+              <h4 class="mb-3">
+                {{ lang === 'ar' ? 'جاري إعداد حساب Stripe...' : 'Setting up Stripe account...' }}
+              </h4>
+              <p class="text-muted mb-2">
+                {{ lang === 'ar' ? 'تم إرسال رمز التحقق إلى بريدك الإلكتروني' : 'Verification code sent to your email' }}
+              </p>
+              <p class="text-muted">
+                {{ lang === 'ar' ? 'يرجى الانتظار قليلاً' : 'Please wait a moment' }}
+              </p>
+            </div>
+            
+            <div *ngIf="action !== 'refresh'">
+              <h4 class="mb-3">
+                {{ lang === 'ar' ? 'جاري التحقق من حالة الحساب...' : 'Checking account status...' }}
+              </h4>
+              <p class="text-muted">
+                {{ lang === 'ar' ? 'يرجى الانتظار قليلاً' : 'Please wait a moment' }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Success State -->
+        <div *ngIf="isCompleted && !isLoading" class="card-body text-center py-10">
+          <div class="success-container">
+            <div class="success-icon mb-4">
+              <i class="fas fa-check-circle text-success"></i>
+            </div>
+            <h4 class="text-success mb-3">
+              {{ lang === 'ar' ? 'تم إعداد الحساب بنجاح!' : 'Account Setup Complete!' }}
+            </h4>
+            <p class="text-muted mb-4">
+              {{ lang === 'ar' 
+                ? 'تم إعداد حساب Stripe الخاص بك بنجاح. سيتم توجيهك إلى الصفحة الرئيسية.' 
+                : 'Your Stripe account has been successfully set up. You will be redirected shortly.' 
+              }}
+            </p>
+            <div class="spinner-border spinner-border-sm text-info" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Needs Completion State -->
+        <div *ngIf="needsCompletion && !isLoading" class="card-body text-center py-8">
+          <div class="completion-container">
+            <div class="warning-icon mb-4">
+              <i class="fas fa-exclamation-triangle text-warning"></i>
+            </div>
+            <h4 class="text-warning mb-3">
+              {{ lang === 'ar' ? 'يحتاج الحساب إلى الإكمال' : 'Account Needs Completion' }}
+            </h4>
+            <p class="text-muted mb-6">
+              {{ lang === 'ar' 
+                ? 'لم يتم إكمال إعداد حساب Stripe الخاص بك بالكامل. يرجى النقر على الزر أدناه لإكمال العملية.' 
+                : 'Your Stripe account setup is not fully complete. Please click the button below to complete the process.' 
+              }}
+            </p>
+            
+            <div class="d-flex justify-content-center gap-3">
+              <button 
+                type="button" 
+                class="btn btn-light"
+                (click)="goToSetup()">
+                {{ lang === 'ar' ? 'العودة للإعدادات' : 'Back to Setup' }}
+              </button>
+              
+              <button 
+                type="button"
+                class="btn btn-info"
+                [disabled]="paymentService.isLoading$ | async"
+                (click)="completeAccount()">
+                
+                <span 
+                  *ngIf="paymentService.isLoading$ | async"
+                  class="spinner-border spinner-border-sm me-2" 
+                  role="status" 
+                  aria-hidden="true">
+                </span>
+                
+                {{ lang === 'ar' ? 'إكمال الحساب' : 'Complete Account' }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Error State -->
+        <div *ngIf="error && !isLoading" class="card-body text-center py-8">
+          <div class="error-container">
+            <div class="error-icon mb-4">
+              <i class="fas fa-times-circle text-danger"></i>
+            </div>
+            <h4 class="text-danger mb-3">
+              {{ lang === 'ar' ? 'حدث خطأ' : 'Error Occurred' }}
+            </h4>
+            <p class="text-muted mb-6">
+              {{ error }}
+            </p>
+            
+            <div class="d-flex justify-content-center gap-3">
+              <button 
+                type="button" 
+                class="btn btn-light"
+                (click)="goToSetup()">
+                {{ lang === 'ar' ? 'العودة للإعدادات' : 'Back to Setup' }}
+              </button>
+              
+              <button 
+                type="button"
+                class="btn btn-info"
+                (click)="checkStripeStatus()">
+                {{ lang === 'ar' ? 'إعادة المحاولة' : 'Try Again' }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- OTP Verification Dialog -->
+<p-dialog 
+  [(visible)]="showOtpDialog" 
+  [modal]="true" 
+  [closable]="true" 
+  [draggable]="false" 
+  [resizable]="false"
+  [style]="{width: '90vw', maxWidth: '500px'}"
+  header="{{ lang === 'ar' ? 'تحقق من هويتك' : 'Verify Your Identity' }}">
+
+  <div class="otp-content">
+    <div class="text-center mb-4">
+      <i class="fas fa-shield-check text-info fs-2 mb-3"></i>
+      <h5 class="mb-2">
+        {{ lang === 'ar' ? 'أدخل رمز التحقق' : 'Enter Verification Code' }}
+      </h5>
+      <p class="text-muted">
+        {{ lang === 'ar' ? 'لقد أرسلنا رمز التحقق إلى بريدك الإلكتروني' : 'We sent a verification code to your email' }}
+      </p>
+    </div>
+
+    <div class="mb-4">
+      <label class="form-label required">
+        {{ lang === 'ar' ? 'رمز التحقق' : 'Verification Code' }}
+      </label>
+      <input
+        type="text"
+        class="form-control text-center"
+        [(ngModel)]="otpCode"
+        [placeholder]="lang === 'ar' ? 'أدخل الرمز' : 'Enter code'"
+        maxlength="10"
+      />
+      <div class="form-text text-muted mt-2">
+        <i class="fas fa-envelope me-1"></i>
+        {{ lang === 'ar' ? 'تحقق من بريدك الإلكتروني ومجلد الرسائل المزعجة (تنتهي فعالية الكود في 1 ساعة)' : 'Check your email and spam folder (Code expires in 1 hour)' }}
+      </div>
+    </div>
+
+    <div class="text-center mb-3">
+      <span 
+        *ngIf="canResendOtp"
+        class="text-info text-decoration-underline"
+        style="cursor: pointer;"
+        (click)="resendOtp()"
+      >
+        <i class="fas fa-paper-plane me-1"></i>
+        {{ lang === 'ar' ? 'إعادة إرسال الرمز' : 'Resend Code' }}
+      </span>
+      <span 
+        *ngIf="!canResendOtp"
+        class="text-muted"
+      >
+        <i class="fas fa-clock me-1"></i>
+        {{ lang === 'ar' ? 'إعادة الإرسال متاحة خلال' : 'Resend available in' }} {{ resendCooldown }}{{ lang === 'ar' ? 'ث' : 's' }}
+      </span>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="d-flex justify-content-between">
+      <button 
+        type="button" 
+        class="btn btn-outline-secondary"
+        (click)="closeOtpDialog()">
+        {{ lang === 'ar' ? 'إلغاء' : 'Cancel' }}
+      </button>
+      <button 
+        type="button" 
+        class="btn btn-info"
+        [disabled]="isSubmittingOtp || !otpCode.trim()"
+        (click)="submitOtp()">
+        
+        <span 
+          *ngIf="isSubmittingOtp"
+          class="spinner-border spinner-border-sm me-2" 
+          role="status" 
+          aria-hidden="true">
+        </span>
+        
+        {{ lang === 'ar' ? 'تأكيد' : 'Verify' }}
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>

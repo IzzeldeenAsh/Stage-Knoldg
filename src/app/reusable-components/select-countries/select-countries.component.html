@@ -1,0 +1,40 @@
+<div class="select-countries-container">
+  <p-multiSelect
+    [options]="countries"
+    [(ngModel)]="selectedCountries"
+    optionLabel="names.en"
+    placeholder="Select Countries"
+    [filter]="true"
+    filterPlaceholder="Search countries"
+    display="chip"
+    formControlName="countryControl"
+    class="insight-dropdown"
+  >
+    <ng-template let-country pTemplate="item">
+      <div class="country-item">
+        <img
+          [src]="getCountryFlagPath(country.flag)"
+          alt="{{ country.names.en }}"
+          class="country-flag"
+          (error)="onFlagError($event)"
+        />
+        <span>{{ country.names.en }}</span>
+      </div>
+    </ng-template>
+    <ng-template let-country pTemplate="selectedItem">
+      <div class="selected-country">
+        <img
+          [src]="getCountryFlagPath(country.flag)"
+          alt="{{ country.names.en }}"
+          class="country-flag"
+          (error)="onFlagError($event)"
+        />
+        <span>{{ country.names.en }}</span>
+      </div>
+    </ng-template>
+  </p-multiSelect>
+
+  <div *ngIf="loading$ | async" class="loading-indicator">
+    Loading countries...
+  </div>
+</div>

@@ -1,0 +1,40 @@
+<app-widgets-row></app-widgets-row>
+<div class="row">
+    <div class="col-12 col-md-6" *ngIf="userHasStatistics"><app-knowledge-types-statistics (hasStatistics)="hasStatistics($event)"></app-knowledge-types-statistics></div>
+    <div class="col-12" [ngClass]="{'col-md-12':!userHasStatistics , 'col-md-6':userHasStatistics}" *ngIf="!(isCompanyInsight | async)">
+        <div class="card light-upgrade-gradient-bg h-md-100 "  style="border: 1px solid #e3f2fd">
+            <div class="card-body d-flex justify-content-center flex-wrap px-xl-15 px-5">          
+                <div class="flex-grow-1 mt-2 me-9 me-md-0">
+                    <div class="position-relative text-gray-800 fs-1 z-index-2 fw-bold mb-5">
+                        {{ 'UPGRADE_TO_COMPANY_ACCOUNT.TITLE' | translate }} 
+                    </div>
+        
+                    <span class="text-gray-600 fw-semibold fs-6 mb-6 d-block mw-400px">
+                        <ng-container *ngIf="hasPendingActivationRequest; else regularDescription">
+                            {{'UPGRADE_TO_COMPANY_ACCOUNT.PENDING_DESCRIPTION' | translate}}
+                        </ng-container>
+                        <ng-template #regularDescription>
+                            {{'UPGRADE_TO_COMPANY_ACCOUNT.DESCRIPTION' | translate}}
+                        </ng-template>
+                    </span>
+                
+                    <div class="mb-7">
+                        <ng-container *ngIf="hasPendingActivationRequest; else upgradeButton">
+                            <button class="btn btn-sm btn-secondary fw-semibold me-2" disabled>
+                                {{'UPGRADE_TO_COMPANY_ACCOUNT.PENDING' | translate}}
+                            </button>
+                        </ng-container>
+                        <ng-template #upgradeButton>
+                            <a [routerLink]="['/app/insighter-dashboard/account-settings/company-account']" 
+                               class="btn btn-sm btn-primary fw-semibold me-2">
+                                {{'UPGRADE_TO_COMPANY_ACCOUNT.UPGRADE_NOW' | translate}}
+                            </a>
+                        </ng-template>
+                    </div>
+                </div>
+        
+                <img src="./assets/media/auth/upgrade-to-corporate.png" class="h-175px me-15" alt="Upgrade to Corporate"> 
+            </div>
+        </div>
+    </div>
+</div>

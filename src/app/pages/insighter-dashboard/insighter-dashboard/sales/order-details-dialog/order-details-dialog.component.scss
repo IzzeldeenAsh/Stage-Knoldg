@@ -1,0 +1,65 @@
+.order-details {
+  .order-header {
+    .badge {
+      font-size: 0.75rem;
+      padding: 0.375rem 0.75rem;
+    }
+  }
+
+  .client-info,
+  .insighter-info {
+    .symbol-label {
+      border: 1px solid #f1f1f2;
+    }
+
+    .client-name-link,
+    .client-email-link {
+      transition: color 0.2s ease;
+
+      &:hover {
+        color: #0b7ec8 !important;
+
+        .go-to-icon,
+        .email-icon {
+          transform: translateX(2px);
+          transition: transform 0.2s ease;
+        }
+      }
+    }
+  }
+
+  .knowledge-details {
+    .knowledge-item {
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    .document-card {
+      transition: box-shadow 0.2s ease;
+
+      &:hover {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+      }
+    }
+  }
+
+  .payment-method-display {
+    font-size: 0.875rem;
+
+    i {
+      font-size: 1rem;
+    }
+  }
+}
+
+:host ::ng-deep {
+  .p-dialog .p-dialog-header {
+    border-bottom: 1px solid #f1f1f2;
+    padding: 1rem 1.5rem;
+  }
+
+  .p-dialog .p-dialog-content {
+    padding: 1.5rem;
+  }
+}

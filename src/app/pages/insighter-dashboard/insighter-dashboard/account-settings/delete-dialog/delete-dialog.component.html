@@ -1,0 +1,63 @@
+<!-- Initial Modal Content -->
+<ng-container *ngIf="step === 1">
+  <div class="card shadow-none border-0">
+    <div class="card-body">
+      <div class="mb-5">
+        <h2 class="text-xl font-bold mb-3">
+          {{ 'DEACTIVATE_ACCOUNT_WITH_DELETE.MODAL.TITLE' | translate }}
+        </h2>
+        <p class="text-gray-600">
+          {{ 'DEACTIVATE_ACCOUNT_WITH_DELETE.MODAL.DESCRIPTION' | translate }}
+        </p>
+        <div class="alert alert-danger mt-4">
+          <i class="ki-duotone ki-warning-2 fs-2 me-2">
+            <span class="path1"></span>
+            <span class="path2"></span>
+          </i>
+          {{ 'DEACTIVATE_ACCOUNT_WITH_DELETE.MODAL.WARNING' | translate }}
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label required">{{ 'DEACTIVATE_ACCOUNT_WITH_DELETE.MODAL.REASON_LABEL' | translate }}</label>
+        <textarea 
+          class="form-control" 
+          rows="4" 
+          [(ngModel)]="deactivationReason"
+          [placeholder]="'DEACTIVATE_ACCOUNT_WITH_DELETE.MODAL.REASON_PLACEHOLDER' | translate"
+        ></textarea>
+      </div>
+
+      <div class="d-flex justify-content-end mt-5">
+        <button 
+          type="button" 
+          class="btn btn-danger w-100" 
+          [disabled]="!deactivationReason || isLoading"
+          (click)="deactivateAccount()"
+        >
+          <span class="indicator-label" *ngIf="!isLoading">
+            {{ 'DEACTIVATE_ACCOUNT_WITH_DELETE.MODAL.CONFIRM_BUTTON' | translate }}
+          </span>
+          <span class="indicator-progress" *ngIf="isLoading">
+            {{ 'COMMON.PLEASE_WAIT' | translate }}
+            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<!-- Success State -->
+<ng-container *ngIf="step === 2">
+  <div class="card shadow-none border-0">
+    <div class="card-body">
+      <div class="text-center">
+        <div class="text-success font-bold text-xl mb-3">
+          {{ 'DEACTIVATE_ACCOUNT_WITH_DELETE.MODAL.SUCCESS_MESSAGE' | translate }}
+        </div>
+        <app-keenicon name="check" class="text-success fs-3xl"></app-keenicon>
+      </div>
+    </div>
+  </div>
+</ng-container> 

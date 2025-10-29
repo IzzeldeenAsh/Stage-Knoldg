@@ -1,0 +1,952 @@
+// My Meetings Component Styles
+
+// Metronic tabs design matching my-orders component
+.filter-tabs-orders {
+  display: flex;
+  justify-content: flex-start;
+
+  .nav-pills-custom {
+    display: inline-flex;
+    gap: 0.5rem;
+
+    .nav-link {
+      padding: 0.65rem 1.25rem;
+      // border-radius: 0.5rem;
+      font-weight: 500;
+      color: #7e8299;
+      background-color: transparent;
+      border: 1px solid transparent;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
+      cursor: pointer;
+      text-decoration: none;
+
+      i {
+        font-size: 1.1rem;
+      }
+
+      &:hover {
+        color: #181c32;
+        background-color: #f5f8fa;
+      }
+
+      &.active {
+        color: #0978B9 !important;
+        background-color: #F1FAFE !important;
+        font-weight: 600 !important;
+        border-color: transparent;
+
+        &:hover {
+          color: #0978B9 !important;
+          background-color: #f1faff !important;
+        }
+      }
+    }
+  }
+}
+
+.nav-svg {
+  display: inline-flex;
+  align-items: center;
+}
+
+// Folder tabs design
+.nested-tab-nav {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: -1px;
+  position: relative;
+  z-index: 2;
+}
+
+.nested-tab-button {
+  position: relative;
+  background-color: #f5f8fa;
+  border: 1px solid #e4e6ef;
+  border-bottom: none;
+  color: #7e8299;
+  padding: 0.75rem 1.5rem 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-right: 2px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+
+  // Folder tab shape
+  &::before {
+    content: '';
+    position: absolute;
+    left: -1px;
+    bottom: 0;
+    width: calc(100% + 2px);
+    height: 1px;
+    background-color: #e4e6ef;
+    z-index: 1;
+  }
+
+  &:hover {
+    background-color: #fff;
+    color: #181c32;
+    border-color: #d1d5db;
+  }
+
+  &.active {
+    background-color: #fff;
+    color: #0978B9;
+    font-weight: 600;
+    border-color: #e4e6ef;
+    z-index: 3;
+
+    // Hide bottom border for active tab to connect with content
+    &::before {
+      background-color: #fff;
+    }
+  }
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.nested-tab-panel:focus {
+  outline: none;
+}
+
+// Content area connected to folder tabs
+.nested-tab-content {
+  background-color: #fff;
+  border: 1px solid #e4e6ef;
+  border-radius: 0 8px 8px 8px;
+  padding: 1.5rem;
+  margin-top: 0;
+  position: relative;
+  z-index: 1;
+}
+
+// Responsive design matching my-orders
+@media (max-width: 768px) {
+  .nested-tab-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .nested-tab-button {
+    flex: 1 1 45%;
+    min-width: 140px;
+    text-align: center;
+  }
+
+  .filter-tabs-orders {
+    .nav-pills-custom {
+      flex-wrap: wrap;
+
+      .nav-link {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+      }
+    }
+  }
+}
+
+// Legacy nested tab styles (can be removed later)
+// Legacy styles maintained for backwards compatibility
+
+.filter-tabs {
+  margin-bottom: 2rem;
+
+  .nav-pills-custom {
+    .nav-link {
+      border: none;
+      color: #a1a5b7 !important;
+      font-weight: 500 !important;
+      font-size: 14px !important;
+      padding: 12px 20px !important;
+      // border-radius: 8px !important;
+      transition: all 0.2s ease-in-out;
+      background-color: transparent !important;
+      margin-right: 8px;
+
+      &:hover {
+        color: #009ef7 !important;
+        background-color: #f5f8fa !important;
+      }
+
+      &.active {
+        color: #009ef7 !important;
+        background-color: #f1faff !important;
+        font-weight: 600 !important;
+      }
+    }
+  }
+}
+
+// Grid-based meeting cards
+.meeting-card {
+  border: 1px solid #eff2f5;
+  box-shadow: none;
+  transition: all 0.2s ease-in-out;
+  border-radius: 12px;
+  background-color: #ffffff;
+
+  &:hover {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border-color: #e4e6ef;
+    transform: translateY(-2px);
+  }
+
+  &.closest-meeting {
+    border-color: #fd7e14;
+    
+    .meeting-date-badge {
+      .month, .day {
+        color: #fd7e14 !important;
+      }
+    }
+  }
+
+  .card-body {
+    padding: 20px;
+  }
+
+  .meeting-date-badge {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 8px 12px;
+    text-align: center;
+    min-width: 60px;
+
+    .month {
+      color: #7e8299;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      line-height: 1;
+      margin-bottom: 2px;
+    }
+
+    .day {
+      color: #181c32;
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1;
+    }
+  }
+
+  .card-title {
+    color: #181c32 !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    margin-bottom: 6px !important;
+    line-height: 1.3;
+  }
+
+  .meeting-time {
+    color: #7e8299 !important;
+    font-size: 13px !important;
+    font-weight: 400 !important;
+
+    .ki-duotone {
+      color: #a1a5b7 !important;
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  .meeting-description {
+    p {
+      color: #7e8299 !important;
+      font-size: 14px !important;
+      font-weight: 400 !important;
+      line-height: 1.5;
+      margin-bottom: 0 !important;
+    }
+  }
+
+  .meeting-participant {
+    .symbol {
+      .symbol-label {
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        
+        &.bg-primary {
+          background-color: #009ef7 !important;
+        }
+      }
+
+      img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+    }
+
+    .fw-bold {
+      color: #181c32 !important;
+      font-size: 14px !important;
+      font-weight: 600 !important;
+      line-height: 1.3;
+      margin-bottom: 2px;
+    }
+
+    .text-muted {
+      color: #a1a5b7 !important;
+      font-size: 12px !important;
+      font-weight: 400 !important;
+      line-height: 1.3;
+    }
+  }
+
+  .badge {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+
+    &.badge-success {
+      background-color: #50cd89 !important;
+      color: #ffffff !important;
+    }
+
+    &.badge-warning {
+      background-color: #ffc700 !important;
+      color: #1e2129 !important;
+    }
+
+    &.badge-secondary {
+      background-color: #a1a5b7  7A6E69!important;
+      color: #a1a5b7 !important;
+    }
+
+    &.badge-primary {
+      background-color: #009ef7 !important;
+      color: #ffffff !important;
+    }
+  }
+
+  // Action Buttons for Pending Meetings
+  .btn-sm {
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    padding: 6px 12px !important;
+    border-radius: 6px !important;
+    transition: all 0.2s ease-in-out;
+
+    &.btn-success {
+      background-color: #50cd89 !important;
+      border-color: #50cd89 !important;
+      color: #ffffff !important;
+
+      &:hover {
+        background-color: #47be7d !important;
+        border-color: #47be7d !important;
+        transform: translateY(-1px);
+      }
+    }
+
+    &.btn-warning {
+      background-color: #ffc700 !important;
+      border-color: #ffc700 !important;
+      color: #1e2129 !important;
+
+      &:hover {
+        background-color: #f1bc00 !important;
+        border-color: #f1bc00 !important;
+        transform: translateY(-1px);
+      }
+    }
+
+    .ki-duotone {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
+// Tabs styling to match design
+.nav-line-tabs {
+  border-bottom: 1px solid #eff2f5;
+
+  .nav-link {
+    border: none;
+    color: #a1a5b7 !important;
+    font-weight: 500 !important;
+    font-size: 15px !important;
+    padding: 16px 24px !important;
+    border-radius: 0;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease-in-out;
+    background-color: transparent !important;
+
+    &:hover {
+      color: #009ef7 !important;
+      background-color: transparent !important;
+    }
+
+    &.active {
+      color: #009ef7 !important;
+      border-bottom-color: #009ef7 !important;
+      background-color: transparent !important;
+      font-weight: 600 !important;
+    }
+  }
+}
+
+// Card header styling
+.card-header {
+  background-color: #ffffff !important;
+  border-bottom: none !important;
+  padding: 0 !important;
+}
+
+// Text colors
+.text-orange {
+  color: #fd7e14 !important;
+}
+
+// Loading state
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+  color: #009ef7;
+}
+
+// Empty state styling
+.text-center {
+  h4 {
+    color: #7e8299 !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    margin-bottom: 8px;
+  }
+
+  p {
+    color: #a1a5b7 !important;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+  }
+}
+
+// Pagination styling
+.pagination-info {
+  color: #7e8299 !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+}
+
+.pagination {
+  .page-item {
+    .page-link {
+      border-color: #e4e6ef;
+      color: #7e8299;
+      background-color: transparent;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin: 0 2px;
+
+      &:hover {
+        background-color: #009ef7;
+        border-color: #009ef7;
+        color: white;
+      }
+
+      .ki-duotone {
+        width: 16px;
+        height: 16px;
+      }
+    }
+
+    &.active .page-link {
+      background-color: #009ef7 !important;
+      border-color: #009ef7 !important;
+      color: #ffffff !important;
+    }
+
+    &.disabled .page-link {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .meeting-card {
+    .card-body {
+      padding: 16px;
+    }
+
+    .meeting-date-badge {
+      min-width: 50px;
+      padding: 6px 10px;
+
+      .month {
+        font-size: 11px;
+      }
+
+      .day {
+        font-size: 18px;
+      }
+    }
+  }
+
+  .filter-tabs {
+    .nav-pills-custom {
+      .nav-link {
+        padding: 8px 12px !important;
+        font-size: 13px !important;
+        margin-right: 4px;
+      }
+    }
+  }
+}
+
+// PrimeNG Dialog Styling
+:host ::ng-deep .custom-dialog {
+  .p-dialog {
+    border-radius: 12px !important;
+    border: none !important;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    min-width: 500px;
+  }
+
+  .p-dialog-header {
+    border-bottom: 1px solid #eff2f5 !important;
+    padding: 20px 24px !important;
+    border-radius: 12px 12px 0 0 !important;
+
+    .p-dialog-title {
+      color: #181c32 !important;
+      font-size: 18px !important;
+      font-weight: 600 !important;
+    }
+
+    .p-dialog-header-close {
+      width: 32px !important;
+      height: 32px !important;
+      color: #7e8299 !important;
+
+      &:hover {
+        background-color: #f5f8fa !important;
+        color: #181c32 !important;
+      }
+    }
+  }
+
+  .p-dialog-content {
+    padding: 24px !important;
+  }
+
+  .p-dialog-footer {
+    border-top: 1px solid #eff2f5 !important;
+    padding: 16px 24px !important;
+    border-radius: 0 0 12px 12px !important;
+  }
+}
+
+// Dialog Content Styling
+.dialog-content {
+  .meeting-details {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+
+    h6 {
+      color: #181c32 !important;
+      font-size: 14px !important;
+      font-weight: 600 !important;
+      margin-bottom: 12px !important;
+    }
+
+    .detail-item {
+      color: #7e8299 !important;
+      font-size: 14px !important;
+      margin-bottom: 6px !important;
+      line-height: 1.5;
+
+      strong {
+        color: #181c32 !important;
+        font-weight: 600 !important;
+        margin-right: 8px;
+      }
+
+      &:last-child {
+        margin-bottom: 0 !important;
+      }
+    }
+  }
+
+  .form-group {
+    .form-label {
+      color: #181c32 !important;
+      font-size: 14px !important;
+      font-weight: 600 !important;
+      margin-bottom: 8px !important;
+      display: block;
+    }
+
+    textarea {
+      border: 1px solid #e4e6ef !important;
+      border-radius: 8px !important;
+      padding: 12px 16px !important;
+      font-size: 14px !important;
+      color: #181c32 !important;
+      transition: all 0.2s ease-in-out;
+      resize: vertical;
+      min-height: 100px;
+
+      &:focus {
+        border-color: #009ef7 !important;
+        box-shadow: 0 0 0 0.2rem rgba(0, 158, 247, 0.25) !important;
+        outline: none;
+      }
+
+      &::placeholder {
+        color: #a1a5b7 !important;
+      }
+    }
+  }
+}
+
+// Dark mode adjustments (if applicable)
+[data-bs-theme="dark"] {
+  .meeting-card {
+    background-color: #1e1e2d !important;
+    border-color: #2a2a3a !important;
+
+    .card-body {
+      h5 {
+        color: #ffffff !important;
+      }
+
+      p {
+        color: #92929f !important;
+      }
+    }
+  }
+
+  .date-container {
+    .day-name,
+    .day-number {
+      color: #fd7e14 !important;
+    }
+  }
+
+  .client-info {
+    .fw-bold {
+      color: #ffffff !important;
+    }
+
+    .text-muted {
+      color: #92929f !important;
+    }
+  }
+
+  .nav-line-tabs {
+    border-bottom-color: #2a2a3a;
+
+    .nav-link {
+      color: #92929f !important;
+
+      &:hover,
+      &.active {
+        color: #009ef7 !important;
+      }
+    }
+  }
+
+  :host ::ng-deep .custom-dialog {
+    .p-dialog {
+      background-color: #1e1e2d !important;
+    }
+
+    .p-dialog-header {
+      border-bottom-color: #2a2a3a !important;
+      background-color: #1e1e2d !important;
+
+      .p-dialog-title {
+        color: #ffffff !important;
+      }
+
+      .p-dialog-header-close {
+        color: #92929f !important;
+
+        &:hover {
+          background-color: #2a2a3a !important;
+          color: #ffffff !important;
+        }
+      }
+    }
+
+    .p-dialog-content {
+      background-color: #1e1e2d !important;
+    }
+
+    .p-dialog-footer {
+      border-top-color: #2a2a3a !important;
+      background-color: #1e1e2d !important;
+    }
+  }
+
+  .dialog-content {
+    .meeting-details {
+      background-color: #2a2a3a !important;
+
+      h6 {
+        color: #ffffff !important;
+      }
+
+      .detail-item {
+        color: #92929f !important;
+
+        strong {
+          color: #ffffff !important;
+        }
+      }
+    }
+
+    .form-group {
+      .form-label {
+        color: #ffffff !important;
+      }
+
+      textarea {
+        background-color: #2a2a3a !important;
+        border-color: #363843 !important;
+        color: #ffffff !important;
+
+        &::placeholder {
+          color: #92929f !important;
+        }
+
+        &:focus {
+          border-color: #009ef7 !important;
+        }
+      }
+    }
+  }
+}
+
+// Archive toggle button hover states
+.btn-outline-info {
+  transition: all 0.3s ease;
+
+  &:hover:not(:disabled) {
+    i {
+      color: white !important;
+    }
+  }
+
+  &.active {
+    background-color: #0978b9 !important;
+    border-color: #0978b9 !important;
+    color: white !important;
+
+    i {
+      color: white !important;
+    }
+  }
+}
+
+// Additional responsive adjustments
+@media (max-width: 768px) {
+  .filter-tabs {
+    .nav-pills-custom {
+      .nav-link {
+        padding: 8px 12px !important;
+        font-size: 13px !important;
+        margin-right: 4px;
+      }
+    }
+  }
+}
+
+// Reschedule modal calendar styles
+:host ::ng-deep .reschedule-modal {
+  .calendly-container {
+    .calendar-section {
+      .calendar-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #181c32;
+        margin-bottom: 1rem;
+      }
+
+      .month-navigation {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding: 0 1rem;
+
+        .nav-btn {
+          background: none;
+          border: none;
+          color: #7e8299;
+          cursor: pointer;
+          padding: 0.5rem;
+          border-radius: 4px;
+          transition: all 0.2s ease;
+
+          &:hover {
+            background-color: #f5f8fa;
+            color: #181c32;
+          }
+        }
+
+        .month-title {
+          font-size: 16px;
+          font-weight: 600;
+          color: #181c32;
+          margin: 0;
+        }
+      }
+
+      .weekday-headers {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 4px;
+        margin-bottom: 0.5rem;
+
+        .weekday-header {
+          text-align: center;
+          font-size: 12px;
+          font-weight: 600;
+          color: #7e8299;
+          padding: 0.5rem;
+        }
+      }
+
+      .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 4px;
+
+        .calendar-day {
+          aspect-ratio: 1;
+          border: none;
+          background: transparent;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 14px;
+          color: #7e8299;
+          cursor: pointer;
+          border-radius: 4px;
+          transition: all 0.2s ease;
+
+          &.empty {
+            cursor: default;
+          }
+
+          &.available {
+            color: #181c32;
+
+            &:hover {
+              background-color: #f5f8fa;
+              color: #009ef7;
+            }
+          }
+
+          &.selected {
+            background-color: #009ef7;
+            color: white;
+          }
+
+          &.disabled {
+            color: #e4e6ef;
+            cursor: not-allowed;
+          }
+        }
+      }
+    }
+
+    .time-selection-section {
+      .selected-date-header {
+        margin-bottom: 1rem;
+
+        .selected-date-title {
+          font-size: 18px;
+          font-weight: 600;
+          color: #181c32;
+          margin: 0;
+        }
+      }
+
+      .time-slots {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        max-height: 300px;
+        overflow-y: auto;
+
+        .time-slot-item {
+          padding: 0.75rem 1rem;
+          border: 1px solid #e4e6ef;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          text-align: center;
+          font-size: 14px;
+          color: #181c32;
+
+          &:hover {
+            border-color: #009ef7;
+            background-color: #f5f8fa;
+          }
+
+          &.selected {
+            background-color: #009ef7;
+            border-color: #009ef7;
+            color: white;
+          }
+        }
+
+        .no-times {
+          text-align: center;
+          color: #7e8299;
+          font-style: italic;
+          padding: 2rem 1rem;
+        }
+      }
+
+      .select-date-prompt {
+        text-align: center;
+        color: #7e8299;
+        padding: 2rem 1rem;
+
+        p {
+          margin: 0;
+          font-size: 14px;
+        }
+      }
+
+      .same-time-warning {
+        margin-top: 1rem;
+        padding: 0.75rem 1rem;
+        background-color: #fff5f5;
+        border: 1px solid #fecaca;
+        border-radius: 6px;
+        color: #dc2626;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
+} 

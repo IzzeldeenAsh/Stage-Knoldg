@@ -1,0 +1,104 @@
+:host {
+  width: 100%;
+  @media (min-width: 992px) {
+    .login-form {
+      width: 100%;
+      max-width: 450px;
+
+      .mat-form-field {
+        width: 100%;
+      }
+    }
+  }
+}
+.z-negative-1 {
+  z-index: -1;
+}
+.country-item {
+  display: flex;
+  align-items: center;
+  
+  .country-flag {
+    width: 20px;
+    margin-right: 8px;
+  }
+}
+.w-90{
+  width: 75%;
+  @media screen and (max-width:767px) {
+    width: 100%;
+  }
+}
+
+.bg-light{
+  background-image: url('https://res.cloudinary.com/dsiku9ipv/image/upload/v1728537941/1_ohccnm.webp');
+}
+.h-100vh{
+  min-height: 100vh;
+}
+
+
+
+.top-rtl{
+  top: 29px;
+   z-index: 1; 
+   background: none; 
+   border: none;
+}
+.top-ltr{
+  top: 27px;
+   z-index: 1; 
+   background: none; 
+   border: none;
+}
+
+.dropdown-wrapper {
+  position: relative;
+}
+
+.dropdown-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.4); /* Semi-transparent white */
+  z-index: 1; /* Make sure the overlay is on top */
+  cursor: not-allowed; /* Show disabled cursor */
+}
+.w-full{
+  width: 100% !important;
+}
+.min-w-500px{
+  min-width: 500px;
+}
+.flag-icon {
+  width: 20px;
+  height: 15px;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.country-option {
+  display: flex;
+  align-items: center;
+}
+.h-600px{
+  height: 500px;
+  overflow: auto;
+}
+.responsive-dialog {
+  width: 50vw;
+  max-height: 90vh;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .responsive-dialog {
+    width: 100vw;
+  }
+}
+.tree-container{
+  height: 500px;
+  max-height:calc(-100px + 80vh)
+}

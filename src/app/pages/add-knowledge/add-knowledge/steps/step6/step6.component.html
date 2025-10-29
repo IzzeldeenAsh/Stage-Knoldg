@@ -1,0 +1,165 @@
+<div class="pb-8 pb-lg-10">
+  <h2 class="fw-bolder text-gray-900" *ngIf="defaultValues.publish_status === 'unpublished'">
+    {{'KNOWLEDGE_SAVED_AS_DRAFT' | translate}}
+  </h2>
+  <h2 class="fw-bolder text-gray-900" *ngIf="defaultValues.publish_status === 'published'">
+    {{'KNOWLEDGE_PUBLISHED' | translate}}
+  </h2>
+  <h2 class="fw-bolder text-gray-900" *ngIf="defaultValues.publish_status === 'scheduled'">
+    {{'KNOWLEDGE_SCHEDULED' | translate}}
+  </h2>
+  <h2 class="fw-bolder text-gray-900" *ngIf="defaultValues.publish_status === 'in_review'">
+    {{'KNOWLEDGE_SENT_FOR_REVIEW' | translate}}
+  </h2>
+</div>
+<div class="mb-0">
+  <div class="fs-6 text-gray-600 mb-5" *ngIf="defaultValues.publish_status === 'unpublished'">
+    {{'KNOWLEDGE_DRAFT_MESSAGE' | translate}}
+  </div>
+  <div class="fs-6 text-gray-600 mb-5" *ngIf="defaultValues.publish_status === 'published'">
+    {{'KNOWLEDGE_PUBLISHED_MESSAGE' | translate}}
+  </div>
+  <div class="fs-6 text-gray-600 mb-5" *ngIf="defaultValues.publish_status === 'scheduled'">
+    {{'KNOWLEDGE_SCHEDULED_MESSAGE' | translate}}
+  </div>
+  <div class="fs-6 text-gray-600 mb-5" *ngIf="defaultValues.publish_status === 'in_review'">
+    {{'KNOWLEDGE_REVIEW_MESSAGE' | translate}}
+  </div>
+  <div
+    class="
+      notice
+      d-flex
+      bg-light-success
+      rounded
+      border-success border
+      p-6
+      fixed-height-card
+    "
+  >
+  <lottie-player src="https://lottie.host/fe2c060d-6387-4674-a21f-55d6e9a8f0c0/9Aun5jI4fu.json" background="##FFFFFF" speed="1" style="width: 150px; height: fit-content;" loop autoplay direction="1" mode="normal"></lottie-player>
+    <span class="svg-icon fs-2tx text-warning me-4"></span>
+    <div class="d-flex flex-stack flex-grow-1">
+      <div class="fw-bold">
+        <h4 class="text-gray-800 fw-bolder">{{'WHATS_NEXT' | translate}}</h4>
+
+        <div class="d-flex gap-3 mt-4">
+          <button class="btn btn-sm btn-primary" [routerLink]="['/app/my-knowledge-base/view-my-knowledge/', defaultValues.knowledgeId]">
+            {{'VIEW_KNOWLEDGE' | translate}}
+          </button>
+          <button class="btn btn-sm btn-light" [routerLink]="['/app/insighter-dashboard/my-knowledge/general']">
+            {{'GO_TO_LIBRARY' | translate}}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- New fancy box to encourage adding more knowledge -->
+<div
+  class="
+    notice
+    d-flex
+    bg-light-primary
+    rounded
+    border-info border
+    p-6
+    mt-6
+    fixed-height-card
+  "
+>
+ <div class="d-flex align-items-center jsutify-content-center px-6">
+  <img src="./assets/media/illustrations/sketchy-1/Add-File.png" style="width: 100px; height: fit-content; max-height: 100px;">
+ </div>
+  <span class="svg-icon fs-2tx text-primary me-4"></span>
+  <div class="d-flex flex-stack flex-grow-1">
+    <div class="fw-bold">
+      <h4 class="text-gray-800 fw-bolder">{{'KEEP_GROWING' | translate}}</h4>
+   
+      <div class="d-flex gap-3 mt-4">
+        <button class="btn btn-sm btn-primary" (click)="navigateToStepper()">
+          {{'ADD_NEW_KNOWLEDGE' | translate}}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Custom Social Share Modal -->
+<div class="custom-modal-overlay" *ngIf="isSocialShareModalVisible" (click)="closeSocialShareModal()">
+  <div class="custom-modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-content">
+      <!-- Modal body -->
+      <div class="modal-body py-5 px-8 bg-white rounded-bottom" style="margin-top: -1rem; position: relative; z-index: 3;">
+       <div class="motive-title" style="text-align: center; padding: 2.5rem 0px;">
+       <div class="motive-title-image">
+        <img src="https://res.cloudinary.com/dsiku9ipv/image/upload/v1761664127/New_Project_17_r2dreh.png" alt="Social Share" />
+       </div>
+        <h2>{{ lang === 'ar' ? 'المشاركة هي الهدف' : 'It\'s all about sharing' }}</h2>
+        <p>{{ lang === 'ar' ? 'شارك هذه المعرفة مع شبكتك' : 'Share this knowledge with your network' }}</p>
+       </div>
+        <!-- Custom Message Input -->
+        <div class="mb-4">
+          <label class="form-label fw-bold">{{ lang === 'ar' ? 'رسالة المشاركة' : 'Share Message' }}</label>
+          <textarea
+            class="form-control form-control-solid"
+            [(ngModel)]="customShareMessage"
+            rows="3"
+            [placeholder]="getDefaultShareMessage()">
+          </textarea>
+
+        </div>
+
+        <!-- Character Count -->
+        <div class="mb-4">
+          <small class="text-muted">{{ lang === 'ar' ? 'عدد الأحرف' : 'Character Count' }}: {{ customShareMessage.length || 0 }}</small>
+        </div>
+
+        <!-- Social Media Buttons -->
+        <div class="d-flex justify-content-center gap-3 mb-4">
+          <!-- Facebook -->
+          <button class="btn btn-icon btn-primary d-flex align-items-center justify-content-center social-share-btn"
+                  (click)="shareToSocial('facebook')"
+                  [attr.aria-label]="lang === 'ar' ? 'مشاركة على فيسبوك' : 'Share on Facebook'">
+            <i class="pi pi-facebook" style="font-size: 20px;"></i>
+          </button>
+
+          <!-- Twitter/X -->
+          <button class="btn btn-icon btn-dark d-flex align-items-center justify-content-center social-share-btn"
+                  (click)="shareToSocial('twitter')"
+                  [attr.aria-label]="lang === 'ar' ? 'مشاركة على تويتر' : 'Share on Twitter'">
+            <i class="pi pi-twitter" style="font-size: 20px;"></i>
+          </button>
+
+          <!-- LinkedIn -->
+          <button class="btn btn-icon btn-info d-flex align-items-center justify-content-center social-share-btn"
+                  (click)="shareToSocial('linkedin')"
+                  [attr.aria-label]="lang === 'ar' ? 'مشاركة على لينكد إن' : 'Share on LinkedIn'">
+            <i class="pi pi-linkedin" style="font-size: 20px;"></i>
+          </button>
+
+          <!-- WhatsApp -->
+          <button class="btn btn-icon btn-success d-flex align-items-center justify-content-center social-share-btn"
+                  (click)="shareToSocial('whatsapp')"
+                  [attr.aria-label]="lang === 'ar' ? 'مشاركة على واتساب' : 'Share on WhatsApp'">
+            <i class="pi pi-whatsapp" style="font-size: 20px;"></i>
+          </button>
+        </div>
+
+        <!-- Copy Link Section -->
+        <div class="separator my-5"></div>
+        <div class="text-center">
+          <button class="btn btn-light-info w-100" (click)="copyToClipboard(getShareableLink())">
+            <i class="ki-outline ki-copy fs-4 me-2"></i>
+            {{ 'COPY_LINK' | translate }}
+          </button>
+
+          <div *ngIf="linkCopied" class="text-success text-center mt-2 small">
+            <i class="ki-outline ki-check fs-6 me-1"></i> {{ 'LINK_COPIED' | translate }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

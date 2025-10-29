@@ -1,0 +1,288 @@
+<!-- guideline.component.html -->
+
+<p-progressBar
+  *ngIf="isLoading$ | async"
+  mode="indeterminate"
+  [style]="{ height: '4px' }"
+></p-progressBar>
+
+
+<div id="kt_app_toolbar" class="app-toolbar pt-10 mb-0">
+  <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex align-items-stretch">
+    <div class="app-toolbar-wrapper d-flex flex-stack flex-wrap gap-4 w-100">
+      <div class="page-title d-flex flex-column justify-content-center gap-1 me-3">
+        <h1 class="page-heading d-flex flex-column justify-content-center text-gray-900 fw-bold fs-3 m-0">
+          Guidelines
+        </h1>
+      </div>
+
+     
+      <!--end::Actions-->
+    </div>
+  </div>
+</div>
+<!-- Accordion for existing guidelines -->
+<div id="kt_app_content" class="app-content flex-column-fluid">
+    <div id="kt_app_content_container" class="app-container container-fluid">
+      <div class="card">
+        <div class="card-body ">
+            <p-accordion>
+                <p-accordionTab
+                  *ngFor="let guideline of guidelines"
+                  [header]="guideline.names.en + ' - ' + guideline.names.ar + ' - ' +' Version ' + '(' +guideline.version + ')'"
+                >
+                  <!-- Form for editing guideline -->
+                  <form [formGroup]="getGuidelineForm(guideline.id)">
+                    <div class="form-group mt-3">
+                      <label for="nameEn-{{ guideline.id }}">English Name</label>
+                      <input
+                        id="nameEn-{{ guideline.id }}"
+                        type="text"
+                        formControlName="nameEn"
+                        class="form-control"
+                      />
+                      <div
+                        *ngIf="
+                          getGuidelineForm(guideline.id).get('nameEn')?.invalid &&
+                          getGuidelineForm(guideline.id).get('nameEn')?.touched
+                        "
+                        class="text-danger"
+                      >
+                        English Name is required.
+                      </div>
+                    </div>
+                    <div class="form-group mt-3">
+                      <label for="nameAr-{{ guideline.id }}">Arabic Name</label>
+                      <input
+                        id="nameAr-{{ guideline.id }}"
+                        type="text"
+                        formControlName="nameAr"
+                        class="form-control"
+                      />
+                      <div
+                        *ngIf="
+                          getGuidelineForm(guideline.id).get('nameAr')?.invalid &&
+                          getGuidelineForm(guideline.id).get('nameAr')?.touched
+                        "
+                        class="text-danger"
+                      >
+                        Arabic Name is required.
+                      </div>
+                    </div>
+                    <div class="form-group mt-3">
+                      <label>Guideline (English)</label>
+                      <editor
+                        apiKey="fovwl5u83es9vkiv7x6h34fynj0utg108qrb0edwwwlxevt9"
+                        formControlName="guidelineEn"
+                      ></editor>
+                      <div
+                        *ngIf="
+                          getGuidelineForm(guideline.id).get('guidelineEn')?.invalid &&
+                          getGuidelineForm(guideline.id).get('guidelineEn')?.touched
+                        "
+                        class="text-danger"
+                      >
+                        English Guideline is required.
+                      </div>
+                    </div>
+                    <div class="form-group mt-3">
+                      <label>Guideline (Arabic)</label>
+                      <editor
+                        apiKey="fovwl5u83es9vkiv7x6h34fynj0utg108qrb0edwwwlxevt9"
+                        formControlName="guidelineAr"
+                      ></editor>
+                      <div
+                        *ngIf="
+                          getGuidelineForm(guideline.id).get('guidelineAr')?.invalid &&
+                          getGuidelineForm(guideline.id).get('guidelineAr')?.touched
+                        "
+                        class="text-danger"
+                      >
+                        Arabic Guideline is required.
+                      </div>
+                    </div>
+                    <div class="form-group mt-3">
+                      <label for="version-{{ guideline.id }}">Version</label>
+                      <input
+                        id="version-{{ guideline.id }}"
+                        type="text"
+                        formControlName="version"
+                        class="form-control"
+                      />
+                      <div
+                        *ngIf="
+                          getGuidelineForm(guideline.id).get('version')?.invalid &&
+                          getGuidelineForm(guideline.id).get('version')?.touched
+                        "
+                        class="text-danger"
+                      >
+                        Version is required.
+                      </div>
+                    </div>
+                    <!-- File inputs -->
+                    <div class="mb-3 mt-3 row">
+                        <label for="englishFile" class="col-sm-3 col-form-label">English File</label>
+                        <div class="col-sm-9">
+                          <input type="file" accept=".png, .jpg, .jpeg, .pdf" pInputText id="englishFile" class="form-control"   (change)="onFileChange($event, 'fileEn', guideline.id)" />
+                        </div>
+                      </div>
+                      <div class="mb-3 row">
+                        <label for="englishFile" class="col-sm-3 col-form-label">Arabic File</label>
+                        <div class="col-sm-9">
+                          <input type="file" accept=".png, .jpg, .jpeg, .pdf" pInputText id="englishFile" class="form-control"   (change)="onFileChange($event, 'fileAr', guideline.id)" />
+                        </div>
+                      </div>
+                
+                    <!-- Buttons -->
+                    <div class="d-flex justify-content-end mt-3">
+                      <button
+                        type="button"
+                        class="btn btn-primary me-2"
+                        (click)="saveGuideline(guideline.id)"
+                      >
+                        Save
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-danger"
+                        (click)="deleteGuideline(guideline.id)"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </form>
+                </p-accordionTab>
+              
+                <!-- AccordionTab for adding new guideline -->
+                <p-accordionTab header="Add New Guideline">
+                  <!-- Form for new guideline -->
+                  <form [formGroup]="newGuidelineForm">
+                    <div class="form-group">
+                      <label for="nameEn-new">English Name</label>
+                      <input
+                        id="nameEn-new"
+                        type="text"
+                        formControlName="nameEn"
+                        class="form-control"
+                      />
+                      <div
+                        *ngIf="
+                          newGuidelineForm.get('nameEn')?.invalid &&
+                          newGuidelineForm.get('nameEn')?.touched
+                        "
+                        class="text-danger"
+                      >
+                        English Name is required.
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="nameAr-new">Arabic Name</label>
+                      <input
+                        id="nameAr-new"
+                        type="text"
+                        formControlName="nameAr"
+                        class="form-control"
+                      />
+                      <div
+                        *ngIf="
+                          newGuidelineForm.get('nameAr')?.invalid &&
+                          newGuidelineForm.get('nameAr')?.touched
+                        "
+                        class="text-danger"
+                      >
+                        Arabic Name is required.
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label>Guideline (English)</label>
+                      <editor
+                        apiKey="fovwl5u83es9vkiv7x6h34fynj0utg108qrb0edwwwlxevt9"
+                        formControlName="guidelineEn"
+                      ></editor>
+                      <div
+                        *ngIf="
+                          newGuidelineForm.get('guidelineEn')?.invalid &&
+                          newGuidelineForm.get('guidelineEn')?.touched
+                        "
+                        class="text-danger"
+                      >
+                        English Guideline is required.
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label>Guideline (Arabic)</label>
+                      <editor
+                        apiKey="fovwl5u83es9vkiv7x6h34fynj0utg108qrb0edwwwlxevt9"
+                        formControlName="guidelineAr"
+                      ></editor>
+                      <div
+                        *ngIf="
+                          newGuidelineForm.get('guidelineAr')?.invalid &&
+                          newGuidelineForm.get('guidelineAr')?.touched
+                        "
+                        class="text-danger"
+                      >
+                        Arabic Guideline is required.
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="version-new">Version</label>
+                      <input
+                        id="version-new"
+                        type="text"
+                        formControlName="version"
+                        class="form-control"
+                      />
+                      <div
+                        *ngIf="
+                          newGuidelineForm.get('version')?.invalid &&
+                          newGuidelineForm.get('version')?.touched
+                        "
+                        class="text-danger"
+                      >
+                        Version is required.
+                      </div>
+                    </div>
+                 
+                    <div class="mb-3 mt-3 row">
+                      <label for="fileEn-new" class="col-sm-3 col-form-label">English File</label>
+                      <div class="col-sm-9">
+                        <input type="file" pInputText id="englishFile" class="form-control"
+                        id="fileEn-new"
+                        accept=".png, .jpg, .jpeg, .pdf"
+                        (change)="onFileChange($event, 'fileEn')"
+                      />
+                      </div>
+               
+                    </div>
+                    <div class="mb-3 mt-3 row">
+                      <label for="fileAr-new" class="col-sm-3 col-form-label">Arabic File</label>
+                      <div class="col-sm-9">
+                        <input type="file" pInputText id="fileAr-new" class="form-control" pInputText id="englishFile" 
+                        id="fileAr-new"
+                        type="file"
+                        accept=".png, .jpg, .jpeg, .pdf"
+                        (change)="onFileChange($event, 'fileAr')"
+                      />
+                      </div>
+                      
+                    </div>
+                    <!-- Buttons -->
+                    <div class="d-flex justify-content-end mt-3">
+                      <button
+                        type="button"
+                        class="btn btn-success"
+                        (click)="createGuideline()"
+                      >
+                        Create
+                      </button>
+                    </div>
+                  </form>
+                </p-accordionTab>
+              </p-accordion>
+        </div>
+   
+          
+      </div>
+    </div>
+</div>

@@ -1,0 +1,29 @@
+//
+// TinyMCE
+//
+
+
+// Base
+.tox-target{
+    display: none;
+}
+
+.tox-tinymce{
+    @include border-radius($border-radius !important);
+    border: 1px solid #d1d5db !important;
+    
+}
+.tox:not(.tox-tinymce-inline) .tox-editor-header {
+    border-bottom:none !important;
+    box-shadow: none !important;
+}
+.tox-tbtn svg, 
+.tox-mbtn svg, 
+.tox-toolbar__group button svg {
+    fill: #98A1B7 !important; /* Change the SVG fill color */
+}
+.tox-tbtn:hover svg, 
+.tox-mbtn:hover svg, 
+.tox-toolbar__group button:hover svg {
+    fill: #6D7895 !important; /* Optional: Change color on hover */
+}
