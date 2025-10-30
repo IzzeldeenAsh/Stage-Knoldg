@@ -24,6 +24,7 @@ import { AddKnowledgeComponent } from './add-knowledge/add-knowledge.component';
 import { Step1Component } from './add-knowledge/steps/step1/step1.component';
 import { HorizontalComponent } from './add-knowledge/horizontal/horizontal.component';
 import { SharedModule } from 'src/app/_metronic/shared/shared.module';
+import { SharedModule as AppSharedModule } from 'src/app/shared/shared.module';
 import { Step2Component } from './add-knowledge/steps/step2/step2.component';
 import { SubStepDocumentsComponent } from './add-knowledge/steps/step2/sub-step-documents/sub-step-documents.component';
 import { Step3Component } from './add-knowledge/steps/step3/step3.component';
@@ -67,6 +68,7 @@ import { FormatTooltipPipe } from 'src/app/shared/tooltip-module/format-tooltip.
     InputNumberModule,
     TagInputModule,
     SharedModule,
+    AppSharedModule,
     DropdownModule,
     SelectRegionComponent,
     SelectButtonModule,

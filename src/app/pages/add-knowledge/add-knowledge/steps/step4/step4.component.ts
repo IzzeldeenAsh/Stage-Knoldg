@@ -1,6 +1,6 @@
 import { Component, Injector, Input, OnInit, OnDestroy, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { Subscription, forkJoin, of, delay, finalize, interval, timer, takeWhile, takeUntil, Subject, debounceTime } from 'rxjs';
+import { Subscription, forkJoin, of, delay, finalize, interval, timer, takeWhile, takeUntil, Subject, debounceTime, filter } from 'rxjs';
 import { ICreateKnowldege } from '../../create-account.helper';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { LanguagesService, Language } from 'src/app/_fake/services/languages-list/languages.service';
@@ -123,9 +123,6 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
   showEditor = false;
   private stopPolling$ = new Subject<void>();
 
-  // Cover year properties
-  coverYearDates: Date[] = [];
-  private isUpdatingCoverYears = false;
 
   // Add tracking for AI-generated fields
   aiGeneratedFields: Record<string, boolean> = {
@@ -244,6 +241,7 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
       description: [this.defaultValues.description, [Validators.required]],
       cover_start: [this.defaultValues.cover_start],
       cover_end: [this.defaultValues.cover_end],
+      cover_years: [{ startYear: this.defaultValues.cover_start || null, endYear: this.defaultValues.cover_end || null }],
       language: [this.defaultValues.language, [Validators.required]],
       industry: [this.defaultValues.industry, [Validators.required]],
       topicId: [this.defaultValues.topicId, [Validators.required]],
@@ -266,6 +264,44 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
       this.updateParentModel(val, this.checkForm());
     });
     this.unsubscribe.push(formChangesSubscr);
+
+    // Setup cover years subscription to sync with start/end fields
+    const coverYearsSubscr = this.form.get('cover_years')?.valueChanges.subscribe((yearRange) => {
+      if (yearRange) {
+        this.form.patchValue({
+          cover_start: yearRange.startYear,
+          cover_end: yearRange.endYear
+        }, { emitEvent: false });
+      } else {
+        this.form.patchValue({
+          cover_start: null,
+          cover_end: null
+        }, { emitEvent: false });
+      }
+    });
+    if (coverYearsSubscr) {
+      this.unsubscribe.push(coverYearsSubscr);
+    }
+
+    // Setup reverse sync from cover_start/end to cover_years
+    const startEndSubscr = this.form.valueChanges.pipe(
+      debounceTime(50),
+      filter(val => val.cover_start !== undefined || val.cover_end !== undefined)
+    ).subscribe((val) => {
+      const currentCoverYears = this.form.get('cover_years')?.value;
+      const newCoverYears = {
+        startYear: val.cover_start || null,
+        endYear: val.cover_end || null
+      };
+
+      // Only update if the values are different to avoid infinite loops
+      if (!currentCoverYears ||
+          currentCoverYears.startYear !== newCoverYears.startYear ||
+          currentCoverYears.endYear !== newCoverYears.endYear) {
+        this.form.get('cover_years')?.setValue(newCoverYears, { emitEvent: false });
+      }
+    });
+    this.unsubscribe.push(startEndSubscr);
     
     // Setup conditional validators
     this.setupConditionalValidators();
@@ -283,9 +319,6 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
 
     // For worldwide target market, get all region IDs
     this.updateForWorldwide();
-
-    // Initialize cover year dates from default values
-    this.initializeCoverYearDates();
   }
   
   private setupConditionalValidators() {
@@ -483,9 +516,6 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
         // Update tag items for display
         this.updateTagItems();
 
-        // Initialize cover year dates after loading data
-        this.initializeCoverYearDates();
-
         this.cdr.detectChanges();
         // Initialize tags and keywords if industry/topic are selected
         if (this.defaultValues.industry) {
@@ -509,14 +539,6 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
     const countries = this.form.get('countries')?.value || [];
     const economicBlocks = this.form.get('economicBlocks')?.value || [];
     const keywords = this.form.get('keywords')?.value || [];
-    
-    console.log('checkForm called with:', {
-      targetMarket,
-      regions: regions.length,
-      countries: countries.length,
-      economicBlocks: economicBlocks.length,
-      keywords: keywords.length
-    });
     
     // Check target market specific validation
     let targetMarketValid = false;
@@ -553,8 +575,6 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
       isFormValid: isFormValid && targetMarketValid && otherControlsValid && isKeywordsValid
     };
     
-    console.log('checkForm result:', result);
-    
     return result.isFormValid;
   }
   
@@ -584,12 +604,6 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
 
     const isValid = this.form.valid && this.checkForm();
     
-    console.log('validateForm result:', {
-      formValid: this.form.valid,
-      checkFormValid: this.checkForm(),
-      overallValid: isValid
-    });
-    
     return isValid;
   }
   
@@ -616,14 +630,6 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
       targetMarket: formValue.targetMarket
     };
 
-    console.log('Force full sync - form raw values:', formValue);
-    console.log('Force full sync - updating parent model with:', updateData);
-    console.log('Force full sync - cover years specifically:', {
-      raw_cover_start: formValue.cover_start,
-      raw_cover_end: formValue.cover_end,
-      processed_cover_start: updateData.cover_start,
-      processed_cover_end: updateData.cover_end
-    });
     this.updateParentModel(updateData, this.checkForm());
   }
   
@@ -797,8 +803,6 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
     const uniqueRegions = regions.regions ? [...new Set(regions.regions)] : [];
     const uniqueCountries = regions.countries ? [...new Set(regions.countries)] : [];
 
-    console.log('onRegionsSelected called with:', { uniqueRegions, uniqueCountries, targetMarket });
-
     if (targetMarket === '1') {
       // Regions mode - we accept both regions and individual countries
       this.form.patchValue({
@@ -813,7 +817,6 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
         economic_blocs: [] // Clear economic blocks
       };
       
-      console.log('Updating parent model (regions mode):', updateData);
       this.updateParentModel(updateData, this.checkForm());
       
       // Set validation errors if both are empty
@@ -838,7 +841,6 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
         economic_blocs: [] // Clear economic blocks
       };
       
-      console.log('Updating parent model (countries mode):', updateData);
       this.updateParentModel(updateData, this.checkForm());
       
       // Set validation errors if countries are empty
@@ -862,7 +864,6 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
         economic_blocs: [] // Clear economic blocks
       };
       
-      console.log('Updating parent model (other mode):', updateData);
       this.updateParentModel(updateData, this.checkForm());
     }
 
@@ -874,21 +875,10 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
     
     // Force change detection
     this.cdr.detectChanges();
-    
-    console.log('Form values after update:', {
-      regions: this.form.get('regions')?.value,
-      countries: this.form.get('countries')?.value,
-      parentModel: {
-        regions: uniqueRegions,
-        countries: uniqueCountries
-      }
-    });
   }
   
   onEconomicBlocksSelected(blocks: EconomicBloc[]) {
     const selectedBlocks = blocks.map(block => block.id);
-    
-    console.log('onEconomicBlocksSelected called with:', { blocks: selectedBlocks });
     
     this.form.get('economicBlocks')?.setValue(selectedBlocks);
     // Force validation check and mark as touched
@@ -911,13 +901,6 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
     
     // Force change detection
     this.cdr.detectChanges();
-    
-    console.log('Economic blocks form values after update:', {
-      economicBlocks: this.form.get('economicBlocks')?.value,
-      parentModel: {
-        economic_blocs: selectedBlocks
-      }
-    });
   }
   
   // Worldwide helper methods
@@ -1322,7 +1305,6 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
   // Getter for economic bloc IDs
   get selectedEconomicBlocIds(): number[] {
     const result = this.defaultValues.economic_blocs || [];
-    console.log('Step4 selectedEconomicBlocIds getter - returning:', result);
     return result;
   }
   
@@ -1381,8 +1363,6 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
 
     // Function to clean up and stop loading
     const cleanUpAndStop = (showError: boolean = false) => {
-      console.log('Cleaning up AI generation...');
-
       // Stop polling
       if (pollingSubscription && !pollingSubscription.closed) {
         pollingSubscription.unsubscribe();
@@ -1409,7 +1389,6 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
       takeWhile(() => (Date.now() - startTime) < maxDuration),
       takeUntil(this.stopPolling$),
       finalize(() => {
-        console.log('Polling finalized');
         if (!hasReceivedData) {
           cleanUpAndStop(true);
         }
@@ -1418,14 +1397,11 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
       next: () => {
         // Only make API call if we haven't received data yet
         if (!hasReceivedData) {
-          console.log(`Polling API at ${new Date().toISOString()} - ${Math.floor((Date.now() - startTime) / 1000)}s elapsed`);
 
           // Make API call
           this.addInsightStepsService.getKnowledgeParserData(this.defaultValues.knowledgeId as number)
             .subscribe({
               next: (response) => {
-                console.log('API Response:', response);
-
                 // Check if we have valid data
                 const responseData = response?.data as any;
                 const hasValidData = responseData && (
@@ -1433,7 +1409,6 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
                 );
 
                 if (hasValidData) {
-                  console.log('Valid data received, stopping poll');
                   hasReceivedData = true;
 
                   // Update the form with received data
@@ -1441,15 +1416,12 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
 
                   // Clean up and stop
                   cleanUpAndStop(false);
-                } else {
-                  console.log('No valid data yet, continuing to poll');
                 }
               },
               error: (error) => {
                 console.error('API error:', error);
                 // Continue polling on error unless it's a critical error
                 if (error.status === 404 || error.status === 403) {
-                  console.log('Critical error, stopping polling');
                   hasReceivedData = true; // Prevent timeout handler
                   cleanUpAndStop(true);
                 }
@@ -1462,7 +1434,6 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
         cleanUpAndStop(true);
       },
       complete: () => {
-        console.log('Polling completed');
         if (!hasReceivedData) {
           cleanUpAndStop(true);
         }
@@ -1470,11 +1441,9 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
     });
 
     // Run initial API call immediately
-    console.log(`Initial API call at ${new Date().toISOString()}`);
     this.addInsightStepsService.getKnowledgeParserData(this.defaultValues.knowledgeId as number)
       .subscribe({
         next: (response) => {
-          console.log('Initial API Response:', response);
 
           // Check if we have valid data
           const responseData = response?.data as any;
@@ -1483,7 +1452,6 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
           );
 
           if (hasValidData) {
-            console.log('Valid data received on initial call');
             hasReceivedData = true;
             this.updateFormWithAIData(responseData);
             cleanUpAndStop(false);
@@ -1501,9 +1469,7 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
 
     // Safety timeout to ensure loading never gets stuck
     setTimeout(() => {
-      console.log(`Max duration reached at ${new Date().toISOString()}`);
       if (!hasReceivedData) {
-        console.log('Timeout reached, no data received');
         cleanUpAndStop(true);
       }
     }, maxDuration);
@@ -1511,8 +1477,6 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
   
   // Update form with AI data
   private updateFormWithAIData(data: any): void {
-    console.log('Updating form with AI data:', data);
-    
     // Update title if available
     if (data.title) {
       this.form.get('title')?.setValue(data.title);
@@ -1610,8 +1574,6 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
 
   // Method to manually stop AI generation
   stopAIGeneration(): void {
-    console.log('Manually stopping AI generation...');
-
     if (this.stopPolling$) {
       this.stopPolling$.next();
       this.stopPolling$.complete();
@@ -1623,81 +1585,18 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
-  // Cover year range methods
-  onCoverYearChange(dates: Date[]): void {
-    if (this.isUpdatingCoverYears) {
-      return; // Prevent infinite loops
-    }
+  // Custom year picker methods
+  getCoverYearRange(): { startYear: number | null, endYear: number | null } {
+    const startYear = this.form.get('cover_start')?.value;
+    const endYear = this.form.get('cover_end')?.value;
 
-    this.isUpdatingCoverYears = true;
-    this.coverYearDates = dates || [];
-
-    try {
-      if (!dates || dates.length === 0) {
-        // Clear both fields when nothing is selected
-        this.form.patchValue({
-          cover_start: null,
-          cover_end: null
-        }, { emitEvent: false });
-
-        // Update parent model with complete form data
-        this.updateParentModel(this.form.value, this.checkForm());
-        return;
-      }
-
-      if (dates.length === 1) {
-        // Single year selected - set both start and end to the same year
-        const year = dates[0].getFullYear();
-        console.log('Setting cover years to:', year);
-
-        this.form.patchValue({
-          cover_start: year,
-          cover_end: year
-        }, { emitEvent: false });
-
-        console.log('After patchValue - form values:', {
-          cover_start: this.form.get('cover_start')?.value,
-          cover_end: this.form.get('cover_end')?.value,
-          fullForm: this.form.value
-        });
-
-        // Update parent model with complete form data
-        this.updateParentModel(this.form.value, this.checkForm());
-      } else if (dates.length === 2) {
-        // Two years selected - sort them and set as range
-        const years = dates
-          .filter(date => date !== null && date !== undefined)
-          .map(date => date.getFullYear())
-          .sort((a, b) => a - b); // Sort in ascending order
-
-        if (years.length === 2) {
-          const startYear = years[0];
-          const endYear = years[1];
-
-          console.log('Setting cover year range:', startYear, '-', endYear);
-
-          this.form.patchValue({
-            cover_start: startYear,
-            cover_end: endYear
-          }, { emitEvent: false });
-
-          console.log('After patchValue - range form values:', {
-            cover_start: this.form.get('cover_start')?.value,
-            cover_end: this.form.get('cover_end')?.value,
-            fullForm: this.form.value
-          });
-
-          // Update parent model with complete form data
-          this.updateParentModel(this.form.value, this.checkForm());
-        }
-      }
-    } finally {
-      // Always reset the flag
-      setTimeout(() => {
-        this.isUpdatingCoverYears = false;
-      }, 100);
-    }
+    return {
+      startYear: startYear || null,
+      endYear: endYear || null
+    };
   }
+
+
 
   // Get display text for cover years
   getCoverYearDisplayText(): string {
@@ -1712,37 +1611,7 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
       return startYear.toString();
     }
 
-    return `${startYear} - ${endYear}`;
+    return `${startYear}-${endYear}`;
   }
 
-  // Get selected dates for calendar display
-  getSelectedCoverDates(): Date[] {
-    return this.coverYearDates;
-  }
-
-  // Initialize cover year dates from form values (called on form init)
-  private initializeCoverYearDates(): void {
-    const startYear = this.form.get('cover_start')?.value;
-    const endYear = this.form.get('cover_end')?.value;
-
-    if (!startYear && !endYear) {
-      this.coverYearDates = [];
-      return;
-    }
-
-    const dates: Date[] = [];
-    if (startYear) {
-      dates.push(new Date(startYear, 0, 1)); // January 1st of start year
-    }
-    if (endYear && endYear !== startYear) {
-      dates.push(new Date(endYear, 0, 1)); // January 1st of end year
-    }
-
-    this.coverYearDates = dates;
-    console.log('Initialized cover year dates:', {
-      startYear,
-      endYear,
-      dates: this.coverYearDates
-    });
-  }
 }

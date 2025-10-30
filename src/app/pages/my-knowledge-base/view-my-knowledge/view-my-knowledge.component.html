@@ -328,6 +328,22 @@
                   </span>
                 </div>
 
+                <!-- Years It Covers -->
+                <div
+                  *ngIf="knowledge.cover_start && knowledge.cover_end && knowledge.cover_start !== knowledge.cover_end"
+                  class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
+                >
+                  <span class="d-flex align-items-center">
+                    <div class="bg-light-info p-2 rounded-circle me-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="16" height="16" class="text-info">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                      </svg>
+                    </div>
+                    <span>{{ lang === 'ar' ? 'السنوات التي يغطيها' : 'Years it covers' }}</span>
+                  </span>
+                  <span>{{ knowledge.cover_start }} - {{ knowledge.cover_end }}</span>
+                </div>
+
                 <!-- Industry -->
                 <div
                   *ngIf="knowledge && knowledge.industry"
@@ -874,7 +890,7 @@
         <p>{{ lang === 'ar' ? 'شارك هذه المعرفة مع شبكتك' : 'Share this knowledge with your network' }}</p>
        </div>
         <!-- Custom Message Input -->
-        <div class="mb-4">
+        <div class="mb-8">
           <label class="form-label fw-bold">{{ lang === 'ar' ? 'رسالة المشاركة' : 'Share Message' }}</label>
           <textarea
             class="form-control form-control-solid"
@@ -882,13 +898,13 @@
             rows="3"
             [placeholder]="getDefaultShareMessage()">
           </textarea>
-         
+          <div class="mt-2 d-flex align-items-center text-info ">
+            <i class="ki-outline ki-information-2 fs-6 me-2 text-info"></i>
+            <span>{{ lang === 'ar' ? 'سيتم مشاركة رابط المعرفة مع رسالتك' : 'The knowledge link will be shared along with your message' }}</span>
+          </div>
         </div>
 
-        <!-- Character Count -->
-        <div class="mb-4">
-          <small class="text-muted">{{ lang === 'ar' ? 'عدد الأحرف' : 'Character Count' }}: {{ customShareMessage.length || 0 }}</small>
-        </div>
+  
 
         <!-- Social Media Buttons -->
         <div class="d-flex justify-content-center gap-3 mb-4">
@@ -922,8 +938,8 @@
         </div>
 
         <!-- Copy Link Section -->
-        <div class="separator my-5"></div>
-        <div class="text-center">
+        <div class="separator my-5 "></div>
+        <div class="text-center my-10">
           <button class="btn btn-light-info w-100" (click)="copyToClipboard(getShareableLink())">
             <i class="ki-outline ki-copy fs-4 me-2"></i>
             {{ 'COPY_LINK' | translate }}

@@ -101,8 +101,6 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
 
             // Update the account with fetched data
             const economicBlocIds = knowledge.economic_blocs?.map((bloc: any) => bloc.id) || [];
-            console.log('Horizontal Component - Raw economic_blocs from API:', knowledge.economic_blocs);
-            console.log('Horizontal Component - Mapped economic bloc IDs:', economicBlocIds);
             
             const updatedAccount: any = {
               ...this.account$.value,
@@ -149,16 +147,6 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
     const currentAccount = this.account$.value;
     const updatedAccount = { ...currentAccount, ...part };
 
-    // Debug cover years specifically
-    if (part.cover_start !== undefined || part.cover_end !== undefined) {
-      console.log('Horizontal: Updating account with cover years:', {
-        incoming_part: part,
-        current_cover_start: currentAccount.cover_start,
-        current_cover_end: currentAccount.cover_end,
-        new_cover_start: updatedAccount.cover_start,
-        new_cover_end: updatedAccount.cover_end
-      });
-    }
 
     this.account$.next(updatedAccount);
     this.isCurrentFormValid$.next(isFormValid);
@@ -176,7 +164,6 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
       this.addInsightStepsService.updateKnowledgeType(this.knowledgeId, knowledgeType)
         .subscribe({
           next: (response) => {
-            console.log('Knowledge type updated successfully', response);
             // The next step will be triggered by the step1 component's goToNextStep event
           },
           error: (error) => {
@@ -203,7 +190,6 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
       this.addInsightStepsService.step1HandleKnowledgeType(knowledgeType)
         .subscribe({
           next: (response) => {
-            console.log('Knowledge type created successfully', response);
             // Store the newly created knowledge ID
             if (response.data && response.data.knowledge_id) {
               this.knowledgeId = response.data.knowledge_id;
@@ -347,16 +333,13 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
       // Add a slight delay to ensure document IDs are fetched
       setTimeout(() => {
               // All validations passed, proceed with updating document details
-      console.log('Updating document details with IDs:', this.documentsComponent.documents);
       
       this.documentsComponent.updateDocumentDetails()
         .then((success: boolean) => {
           if (success) {
-            console.log('All document details updated successfully');
             this.isLoading = false;
             this.currentStep$.next(nextStep);
           } else {
-            console.log('User chose not to proceed (language mismatch - edit option chosen)');
             this.isLoading = false;
             // Don't proceed to next step - user wants to edit
           }
@@ -431,7 +414,6 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
     this.addInsightStepsService.updateKnowledgeAbstracts(this.knowledgeId, updateRequest)
       .subscribe({
         next: (response) => {
-          console.log('Knowledge abstracts updated successfully', response);
           this.currentStep$.next(nextStep);
           this.isLoading = false;
         },
@@ -598,17 +580,11 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
       this.addInsightStepsService.createSuggestTopic(suggestTopicRequest, step4Component.currentLanguage)
         .subscribe({
           next: (response) => {
-            console.log('New topic created successfully', response);
             
             // Use the new topic ID for the knowledge details update
             const newTopicId = response.data.topic_id;
             
             // Prepare the request payload with the new topic ID
-            console.log('Horizontal (custom topic): Current account before API call:', currentAccount);
-            console.log('Horizontal (custom topic): Cover years in account:', {
-              cover_start: currentAccount.cover_start,
-              cover_end: currentAccount.cover_end
-            });
 
             const updateRequest = {
               title: currentAccount.title || '',
@@ -628,7 +604,6 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
             };
             
             // Now update knowledge details with the new topic ID
-            console.log('Horizontal (custom topic): Final API request payload:', updateRequest);
             this.updateKnowledgeDetailsAndProceed(updateRequest, nextStep);
           },
           error: (error) => {
@@ -639,11 +614,6 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
     } else {
       // No custom topic, proceed with regular update
       // Prepare the request payload
-      console.log('Horizontal: Current account before API call:', currentAccount);
-      console.log('Horizontal: Cover years in account:', {
-        cover_start: currentAccount.cover_start,
-        cover_end: currentAccount.cover_end
-      });
 
       const updateRequest = {
         title: currentAccount.title || '',
@@ -662,7 +632,6 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
         tag_ids: currentAccount.tag_ids || []
       };
 
-      console.log('Horizontal (regular): Final API request payload:', updateRequest);
       this.updateKnowledgeDetailsAndProceed(updateRequest, nextStep);
     }
   }
@@ -672,7 +641,6 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
     this.addInsightStepsService.updateKnowledgeDetails(this.knowledgeId, updateRequest)
       .subscribe({
         next: (response) => {
-          console.log('Knowledge details updated successfully', response);
           
           // In edit mode, redirect to details page when moving to step 5
           if (this.isEditMode && nextStep === 5) {
@@ -752,7 +720,6 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
     this.addInsightStepsService.publishKnowledge(this.knowledgeId, publishRequest)
       .subscribe({
         next: (response) => {
-          console.log('Knowledge publishing handled successfully', response);
           
           // If in edit mode and this is the final step, navigate back to knowledge details
           if (this.isEditMode && nextStep > this.formsCount) {
