@@ -779,11 +779,7 @@
 .btn-outline-info {
   transition: all 0.3s ease;
 
-  &:hover:not(:disabled) {
-    i {
-      color: white !important;
-    }
-  }
+
 
   &.active {
     background-color: #0978b9 !important;

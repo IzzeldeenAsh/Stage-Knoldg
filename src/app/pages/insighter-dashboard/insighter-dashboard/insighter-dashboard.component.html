@@ -112,7 +112,7 @@
                   {{ 'INSIGHTER.DASHBOARD.NAV.READ_LATER' | translate }}
                 </div>
               </div>
-              <div class="sub-nav-item" [routerLink]="['my-company-settings']" routerLinkActive="active"
+              <div class="sub-nav-item" [routerLink]="['my-company-settings']" routerLinkActive="active" *ngIf="(isCompany$ | async)"
                    (click)="closeMobileSidebar()">
                 <div class="sub-item-icon">
                   <i class="ki-outline ki-people"></i>
@@ -166,7 +166,7 @@
                   {{ 'SALES.PAGE_TITLE' | translate }}
                 </div>
               </div>
-              <div class="sub-nav-item" *ngIf="(isInsighter$ | async) || (isCompany$ | async) || (isClient$ | async)"
+              <div class="sub-nav-item" *ngIf="(isInsighter$ | async) || (isCompany$ | async) || (isCompanyInsighter$ | async)"
                    [routerLink]="['wallet']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
                    (click)="closeMobileSidebar()">
                 <div class="sub-item-icon">
@@ -386,7 +386,7 @@
                             {{ 'INSIGHTER.DASHBOARD.NAV.READ_LATER' | translate }}
                           </div>
                         </div>
-                        <div class="sub-nav-item" [routerLink]="['my-company-settings']" routerLinkActive="active">
+                        <div class="sub-nav-item" [routerLink]="['my-company-settings']" routerLinkActive="active" *ngIf="(isCompany$ | async)">
                           <div class="sub-item-icon">
                             <i class="ki-outline ki-people"></i>
                           </div>
@@ -437,7 +437,7 @@
                             {{ 'SALES.PAGE_TITLE' | translate }}
                           </div>
                         </div>
-                        <div class="sub-nav-item" *ngIf="(isInsighter$ | async) || (isCompany$ | async) || (isClient$ | async)"
+                        <div class="sub-nav-item" *ngIf="(isInsighter$ | async) || (isCompany$ | async) || (isCompanyInsighter$ | async)"
                              [routerLink]="['wallet']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                           <div class="sub-item-icon">
                             <i class="ki-outline ki-wallet"></i>
@@ -559,7 +559,7 @@
                         <i class="ki-outline ki-chart-line-up"></i>
                       </div>
                     </div>
-                    <div class="nav-item" *ngIf="(isInsighter$ | async) || (isCompany$ | async) || (isClient$ | async)"
+                    <div class="nav-item" *ngIf="(isInsighter$ | async) || (isCompany$ | async) || (isCompanyInsighter$ | async)"
                          [routerLink]="['wallet']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
                          [attr.title]="('INSIGHTER.DASHBOARD.NAV.WALLET' | translate)"
                          pTooltip="{{ ('INSIGHTER.DASHBOARD.NAV.WALLET' | translate) }}"
@@ -569,7 +569,7 @@
                         <i class="ki-outline ki-wallet"></i>
                       </div>
                     </div>
-                    <div class="nav-item" [routerLink]="['my-company-settings']" routerLinkActive="active"
+                    <div class="nav-item" [routerLink]="['my-company-settings']" routerLinkActive="active" *ngIf="(isCompany$ | async)"
                          [attr.title]="('INSIGHTER.DASHBOARD.NAV.MY_COMPANY' | translate)"
                          pTooltip="{{ ('INSIGHTER.DASHBOARD.NAV.MY_COMPANY' | translate) }}"
                          tooltipPosition="right"

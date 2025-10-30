@@ -9,10 +9,24 @@
       style="padding: 0.7rem 1rem !important; background-color: #fff !important;"
       [placeholder]="placeholder"
     />
-    <i class="ki-duotone ki-calendar fs-2 input-icon">
-      <span class="path1"></span>
-      <span class="path2"></span>
-    </i>
+    <div class="input-icons">
+      <button
+        type="button"
+        class="btn btn-sm btn-icon btn-light-danger clear-btn"
+        (click)="clearSelection(); $event.stopPropagation()"
+        *ngIf="selectedYears.length > 0"
+        [title]="currentLang === 'ar' ? 'مسح' : 'Clear'"
+      >
+        <i class="ki-duotone ki-cross fs-3">
+          <span class="path1"></span>
+          <span class="path2"></span>
+        </i>
+      </button>
+      <i class="ki-duotone ki-calendar fs-2 input-icon">
+        <span class="path1"></span>
+        <span class="path2"></span>
+      </i>
+    </div>
   </div>
 
   <!-- Dropdown panel -->
