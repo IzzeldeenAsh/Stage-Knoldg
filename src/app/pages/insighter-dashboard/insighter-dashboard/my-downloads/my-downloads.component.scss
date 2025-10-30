@@ -32,6 +32,9 @@
 
 // Knowledge type icons styling
 .knowledge-item {
+  // Ensure consistent item height even when title wraps to a second line
+  min-height: 72px;
+
   svg {
     flex-shrink: 0;
     opacity: 0.8;
@@ -71,6 +74,18 @@
   
   .file-icon {
     object-fit: contain;
+  }
+}
+
+// Clamp knowledge title to 2 lines to prevent variable heights
+.knowledge-item {
+  .flex-grow-1 {
+    .fs-7 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
   }
 }
 
@@ -335,10 +350,22 @@
 
 .toggle-archived-btn {
   transition: all 0.3s ease;
+  background-color: #f1faff; // light info background
+  border-color: #cfe8ff;
+  color: #0778b9;
+  box-shadow: 0 1px 3px rgba(9, 120, 185, 0.12);
+
+  i {
+    color: #0778b9 !important;
+  }
 
   &:hover:not(:disabled) {
+    background-color: #e6f4ff;
+    border-color: #b9ddff;
+    color: #0778b9;
+
     i {
-      color: white !important;
+      color: #0778b9 !important;
     }
   }
 
@@ -346,6 +373,7 @@
     background-color: #0778b9;
     border-color: #0778b9;
     color: white;
+    box-shadow: 0 2px 8px rgba(9, 120, 185, 0.25);
 
     i {
       color: white !important;

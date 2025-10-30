@@ -146,6 +146,34 @@ import { TranslateService } from '@ngx-translate/core';
       }
     }
 
+    /* Share CTA glow button */
+    .btn-glow-primary {
+      position: relative;
+      animation: glowPulse 2.2s ease-in-out infinite;
+      box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.55);
+    }
+
+    .btn-glow-primary:hover {
+      box-shadow: 0 0 18px rgba(13, 110, 253, 0.5), 0 0 36px rgba(13, 110, 253, 0.3);
+    }
+
+    .btn-glow-primary:focus-visible {
+      outline: 2px solid #0d6efd;
+      outline-offset: 2px;
+    }
+
+    @keyframes glowPulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.55);
+      }
+      70% {
+        box-shadow: 0 0 0 12px rgba(13, 110, 253, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(13, 110, 253, 0);
+      }
+    }
+
     @media (max-width: 768px) {
       .custom-modal-container {
         width: 95%;

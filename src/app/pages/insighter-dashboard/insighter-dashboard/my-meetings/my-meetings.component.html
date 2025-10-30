@@ -67,7 +67,7 @@
         <div class="row mb-4">
           <div class="col-12">
             <div class="d-flex justify-content-start">
-              <button class="btn btn-outline-info d-flex align-items-center"
+              <button class="btn btn-sm btn-outline-info d-flex align-items-center toggle-archived-btn"
                       [class.active]="showArchivedMeetings()"
                       (click)="toggleArchivedMeetings()"
                       [pTooltip]="showArchivedMeetings() ? 'Show Past Meetings' : 'Show Archived Meetings'"
@@ -355,7 +355,7 @@
         <div class="row mb-4">
           <div class="col-12">
             <div class="d-flex justify-content-start">
-              <button class="btn btn-outline-info d-flex align-items-center"
+              <button class="btn btn-sm btn-outline-info d-flex align-items-center toggle-archived-btn"
                       [class.active]="sentShowArchivedMeetings()"
                       (click)="toggleSentArchivedMeetings()"
                       [pTooltip]="sentShowArchivedMeetings() ? 'Show Past Meetings' : 'Show Archived Meetings'"

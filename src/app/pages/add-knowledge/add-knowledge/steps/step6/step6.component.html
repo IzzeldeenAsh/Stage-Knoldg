@@ -43,11 +43,16 @@
         <h4 class="text-gray-800 fw-bolder">{{'WHATS_NEXT' | translate}}</h4>
 
         <div class="d-flex gap-3 mt-4">
-          <button class="btn btn-sm btn-primary" [routerLink]="['/app/my-knowledge-base/view-my-knowledge/', defaultValues.knowledgeId]">
-            {{'VIEW_KNOWLEDGE' | translate}}
+          <button
+            class="btn btn-sm btn-primary btn-glow-primary"
+            *ngIf="defaultValues.publish_status === 'published' && publishedKnowledge"
+            (click)="openSocialShareModal()"
+          >
+            <i class="pi pi-share-alt me-2" style="font-size: 16px;"></i>
+            {{ 'SHARE_NOW' | translate }}
           </button>
-          <button class="btn btn-sm btn-light" [routerLink]="['/app/insighter-dashboard/my-knowledge/general']">
-            {{'GO_TO_LIBRARY' | translate}}
+          <button class="btn btn-sm btn-light" [routerLink]="['/app/my-knowledge-base/view-my-knowledge/', defaultValues.knowledgeId]">
+            {{'VIEW_KNOWLEDGE' | translate}}
           </button>
         </div>
       </div>

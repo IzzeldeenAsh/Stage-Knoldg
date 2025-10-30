@@ -587,20 +587,17 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
    * Get subtitle for the page header
    */
   getDownloadsSubtitle(): string {
-    const totalItems = this.currentDisplayTotalItems();
-    const isArchived = this.showArchivedDownloads();
-
-  
+    const stats = this.libraryStatistics();
+    // Fallbacks in case statistics are not yet loaded
+    const archivedCount = stats?.archived ?? 0;
+    const activeTotalCount = stats?.total ?? this.totalItems();
+    const combinedTotal = (activeTotalCount || 0) + (archivedCount || 0);
 
     if (this.lang === 'ar') {
-      return isArchived
-        ? `${totalItems} تنزيلات مؤرشفة`
-        : `${totalItems} إجمالي التنزيلات`;
+      return `${combinedTotal} إجمالي التنزيلات`;
     }
 
-    return isArchived
-      ? `${totalItems} archived downloads`
-      : `${totalItems} total downloads`;
+    return `${combinedTotal} total downloads`;
   }
 
 } 
