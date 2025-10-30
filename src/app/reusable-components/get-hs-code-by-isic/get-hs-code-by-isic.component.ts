@@ -117,7 +117,7 @@ import { TranslateModule } from "@ngx-translate/core";
       <label class="d-flex align-items-center form-label mb-3" [ngClass]="{'required': isRequired}">
         {{ title }}
         <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{tip}}"></i>
-        <span class="text-muted fs-8 mx-2" *ngIf="!isRequired"> (optional) </span>
+        <span class="text-muted fs-8 mx-1" *ngIf="!isRequired"> (optional) </span>
       </label>
 
       <div *ngIf="isLoading$ | async" class="text-center">
