@@ -237,6 +237,7 @@
           <div class="d-flex align-items-center">
           <div class="symbol symbol-50px me-3">
             <div class="symbol-label cursor-pointer"
+            style="object-fit: cover; object-position: top;"
                  [style.background-image]="selectedTransaction.order?.user?.profile_photo_url ? 'url(' + selectedTransaction.order?.user?.profile_photo_url + ')' : 'none'"
                  [style.background-color]="!selectedTransaction.order?.user?.profile_photo_url ? '#4f28ed' : 'transparent'"
                  (click)="redirectToProfile(selectedTransaction.order?.user)"
