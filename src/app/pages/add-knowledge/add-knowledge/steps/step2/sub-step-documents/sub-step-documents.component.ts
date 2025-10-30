@@ -180,11 +180,9 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   removeDocument(index: number): void {
     const doc = this.documents[index];
     if (doc) {
-      console.log(`Removing document at index ${index}:`, doc);
       
       // Check if there's an active upload for this document
       if ((doc.uploadStatus === 'uploading' || doc.uploadStatus === 'pending') && this.activeUploadSubscriptions[index]) {
-        console.log(`Cancelling active upload for document at index ${index}`);
         // Cancel the upload subscription
         this.activeUploadSubscriptions[index].unsubscribe();
         delete this.activeUploadSubscriptions[index];
@@ -213,12 +211,10 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       
       // Get the document ID either from id or docId property
       const documentId = doc.id || (this.documentControls.at(index)?.get('docId')?.value);
-      console.log(`Document ID: ${documentId}, Upload Status: ${doc.uploadStatus}`);
       
       // Check if document has an ID (regardless of fromServer flag)
       // Since we're now auto-uploading files, they all get IDs
       if (documentId) {
-        console.log(`Deleting document from server with ID: ${documentId}`);
         
         // Set a local flag to track this specific deletion
         const deletionIndex = index;
@@ -228,7 +224,6 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
         this.addInsightStepsService.deleteKnowledgeDocument(documentId)
           .subscribe({
             next: (response) => {
-              console.log(`Document deleted successfully from server:`, response);
               this.documents.splice(index, 1);
               this.documentControls.removeAt(index);
               this.calculateTotalPrice();
@@ -273,7 +268,6 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
             }
           });
       } else {
-        console.log(`Document has no ID, removing locally only`);
         // Local document, just remove from array
         this.documents.splice(index, 1);
         this.documentControls.removeAt(index);
@@ -364,7 +358,6 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
     // Only add valid files to upload queue
     if (validFiles.length > 0) {
       this.fileUploadQueue.push(...validFiles);
-      console.log(`Added ${validFiles.length} valid files to upload queue. Queue size: ${this.fileUploadQueue.length}`);
       
       // Start sequential upload process if not already in progress
       if (!this.isUploadInProgress) {
@@ -381,7 +374,6 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   private processNextFileInQueue(): void {
     if (this.fileUploadQueue.length === 0) {
       this.isUploadInProgress = false;
-      console.log('File upload queue is empty. All uploads complete.');
       return;
     }
     
@@ -392,8 +384,6 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       this.isUploadInProgress = false;
       return;
     }
-    
-    console.log(`Processing next file in queue: ${file.name}`);
     
     const extension = this.getFileExtension(file.name);
     const fileName = file.name.replace(`.${extension}`, ''); // Remove extension from filename
@@ -569,19 +559,15 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
     // Create form data with just the file
     const formData = new FormData();
     formData.append('file', doc.file);
-
-    console.log(`Starting upload for document: ${doc.file_name}`);
     
     // Check if we need to create the knowledge type first
     let knowledgeId = this.defaultValues.knowledgeId;
     if (!knowledgeId && !this.knowledgeTypeCreated && this.parentComponent) {
       try {
-        console.log('Creating knowledge type before uploading the first file');
         this.showInfo('', 'Creating knowledge...');
         
         // Call the parent component's method to create knowledge type
         knowledgeId = await this.parentComponent.createKnowledgeType();
-        console.log(`Knowledge type created successfully with ID: ${knowledgeId}`);
         this.knowledgeTypeCreated = true;
       } catch (error) {
         console.error('Error creating knowledge type:', error);
@@ -617,15 +603,10 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
             // Store the document ID and language returned by the API
             const docId = event.response.data.knowledge_document_id;
             const language = (event.response.data as any).language; // Type assertion for language property
-            console.log(`Upload successful - Document ID received: ${docId}, Language: ${language}`);
-            console.log('Full API response:', event.response.data);
-            console.log('Document index being updated:', index);
 
             // Make sure we're using the current document object
             const currentDoc = this.documents[index];
-            console.log('Current document before update:', currentDoc);
             if (!currentDoc) {
-              console.error(`Document at index ${index} no longer exists`);
               if (isFromQueue) {
                 this.processNextFileInQueue(); // Move to next file in queue
               }
@@ -648,9 +629,6 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
 
             // Force array update to ensure change detection
             this.documents = [...this.documents];
-
-            console.log(`Document state after update: id=${currentDoc.id}, status=${currentDoc.uploadStatus}, language=${currentDoc.language}`);
-            console.log('Documents array after update:', this.documents.map(d => ({ name: d.file_name, language: d.language, status: d.uploadStatus })));
 
             // Force change detection to update the template
             this.cdr.detectChanges();
@@ -793,14 +771,11 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
         ignore_mismatch: ignoreMismatch
       };
     });
-    
-    console.log('Sending document data for update:', documentsData);
 
     return new Promise((resolve, reject) => {
       this.addInsightStepsService.updateKnowledgeDocumentDetails(this.defaultValues.knowledgeId, documentsData)
         .subscribe({
           next: (response) => {
-            console.log('Document details updated successfully:', response);
             if(this.lang=='ar'){
               this.showSuccess('', 'تم تحديث تفاصيل المستند بنجاح');
             }else{
@@ -856,16 +831,6 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   private handleLanguageMismatchError(error: any): Promise<boolean> {
     return new Promise((resolve, reject) => {
       try {
-        console.log('Language mismatch error details:', {
-          error: error.error,
-          currentDocuments: this.documents.map(doc => ({ id: doc.id, file_name: doc.file_name })),
-          formControlDocIds: this.documentControls.controls.map((control, index) => ({
-            index,
-            docId: control.get('docId')?.value,
-            fileName: control.get('file_name')?.value
-          }))
-        });
-        
         // Extract document indices from error
         const errorKeys = Object.keys(error.error.errors);
         const documentIndices: number[] = [];
@@ -1167,19 +1132,16 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   private validateDocuments(enableLogging: boolean = true): boolean {
     // Don't allow proceeding if there are uploads in progress
     if (this.pendingUploads > 0 || this.hasActiveUploads) {
-      if (enableLogging) console.log('Form invalid: uploads in progress');
       return false;
     }
     
     // Check for any files with errors - BLOCK ANY ACTION until they are removed
     if (this.hasFilesWithErrors()) {
-      if (enableLogging) console.log('Form invalid: documents with errors must be removed before proceeding');
       return false;
     }
     
     // Allow proceeding with no documents if needed
     if (!this.documents.length) {
-      if (enableLogging) console.log('No documents available');
       return true; // Allow continuing with no documents
     }
 
@@ -1192,14 +1154,12 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       
       // Check if file name exists and is not empty
       if (!doc.file_name?.trim()) {
-        if (enableLogging) console.log(`Form invalid: document ${i} has no file name`);
         return false;
       }
 
       // Check for duplicate file names (case insensitive)
       const lowerFileName = doc.file_name.toLowerCase();
       if (fileNames.has(lowerFileName)) {
-        if (enableLogging) console.log(`Form invalid: document ${i} has duplicate file name "${doc.file_name}"`);
         return false;
       }
       fileNames.add(lowerFileName);
@@ -1209,13 +1169,11 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       // We already checked for errors at the beginning, so this check is redundant
       // but we'll keep it for safety
       if (doc.uploadStatus === 'error') {
-        if (enableLogging) console.log(`Form invalid: document ${i} has error status`);
         return false;
       }
     }
 
     // Form is valid - all documents either uploaded or in progress
-    if (enableLogging) console.log('Documents validated successfully');
     return true;
   }
 
@@ -1260,8 +1218,6 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
         this.isUploadInProgress = false;
       }
     }
-    
-    console.log(`Upload status indicators updated: uploadsInProgress=${this.uploadsInProgress}, hasActiveUploads=${this.hasActiveUploads}, pendingUploads=${this.pendingUploads}, isUploadInProgress=${this.isUploadInProgress}`);
   }
 
   // Method to check if any documents have upload errors
@@ -1276,30 +1232,23 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
 
   // Method to get documents with pending uploads - with detailed logging
   getPendingDocuments(): DocumentInfo[] {
-    console.log('Checking for pending documents...');
-    
     const pendingDocs = this.documents.filter(doc => {
       const isPending = (doc.uploadStatus === 'pending' || doc.uploadStatus === 'uploading');
       const hasNoId = !doc.id;
       const result = isPending && hasNoId;
       
-      console.log(`Document ${doc.file_name}: status=${doc.uploadStatus}, id=${doc.id}, isPending=${result}`);
       return result;
     });
     
-    console.log(`Found ${pendingDocs.length} pending documents`);
     return pendingDocs;
   }
   
   // Method to cancel all active uploads
   cancelAllActiveUploads(): void {
-    console.log('Cancelling all active uploads');
-    
     // Unsubscribe from all active upload subscriptions
     Object.keys(this.activeUploadSubscriptions).forEach(indexStr => {
       const index = parseInt(indexStr, 10);
       if (this.activeUploadSubscriptions[index]) {
-        console.log(`Cancelling upload subscription at index ${index}`);
         this.activeUploadSubscriptions[index].unsubscribe();
         delete this.activeUploadSubscriptions[index];
       }
@@ -1339,25 +1288,10 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
 
   // Add debugging method to help identify document status issues
   logDocumentStatus(): void {
-    console.log('Current document statuses:');
-    this.documents.forEach((doc, index) => {
-      console.log(`Document ${index}: id=${doc.id}, name=${doc.file_name}, status=${doc.uploadStatus}, language=${doc.language}`);
-    });
   }
 
   // Debug method to check template conditions
   checkLanguageDisplayConditions(): void {
-    console.log('=== Language Display Debug ===');
-    this.documents.forEach((doc, index) => {
-      const formControl = this.documentControls.at(index);
-      const hasLanguage = !!doc.language;
-      const isSuccess = formControl?.get('uploadStatus')?.value === 'success';
-
-      console.log(`Document ${index}:`);
-      console.log(`  - Language: ${doc.language} (exists: ${hasLanguage})`);
-      console.log(`  - Upload Status: ${formControl?.get('uploadStatus')?.value} (is success: ${isSuccess})`);
-      console.log(`  - Should show language: ${hasLanguage && isSuccess}`);
-    });
   }
 
   processFile(file: File, index?: number): void {
@@ -1417,10 +1351,6 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
     // Create a new array reference to ensure change detection
     this.documents = [...this.documents];
     
-    // Log document status after adding
-    console.log(`Added document ${fileName} at index ${docIndex}, documents length: ${this.documents.length}`);
-    this.logDocumentStatus();
-    
     // Upload the file to the server immediately
     this.uploadFileOnly(docIndex);
     
@@ -1430,11 +1360,7 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
 
   // Add a direct method to get document IDs from the API
   getUploadedDocumentIds(): void {
-    // Log the current documents for debugging
-    console.log('Current document state before fetching IDs:', this.documents);
-    
     if (!this.defaultValues.knowledgeId) {
-      console.error('No knowledge ID available');
       return;
     }
     
@@ -1442,9 +1368,6 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       .subscribe({
         next: (response) => {
           if (response && response.data) {
-            // Map server documents to local documents by file name
-            console.log('Server documents:', response.data);
-            
             // Update our local documents with server IDs
             this.documents.forEach((doc, index) => {
               // Find matching document from server by name
@@ -1452,17 +1375,14 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
               if (serverDoc) {
                 // Update document ID
                 doc.id = serverDoc.id;
-                console.log(`Updated document ID for ${doc.file_name} to ${doc.id}`);
               }
             });
             
             // Force array update
             this.documents = [...this.documents];
-            console.log('Updated documents with server IDs:', this.documents);
           }
         },
         error: (error) => {
-          console.error('Error fetching document IDs:', error);
         }
       });
   }
@@ -1493,24 +1413,16 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
 
   // Method to check if all documents are deleted and handle knowledge deletion
   private checkAndHandleEmptyDocuments(): void {
-    console.log('checkAndHandleEmptyDocuments called - Conditions check:');
-    console.log('documents.length:', this.documents.length);
-    console.log('defaultValues?.knowledgeId:', this.defaultValues?.knowledgeId);
-    console.log('knowledgeTypeCreated:', this.knowledgeTypeCreated);
-    
     // Check if we have a knowledgeId either from defaultValues or parent component
     const knowledgeId = this.defaultValues?.knowledgeId || this.parentComponent?.getCurrentAccount()?.knowledgeId;
-    console.log('Resolved knowledgeId:', knowledgeId);
     
     // Only proceed if there are no documents left and we have a knowledgeId and knowledge was created
     if (this.documents.length === 0 && knowledgeId && knowledgeId !== 0) {
-      console.log('All conditions met - deleting knowledge with ID:', knowledgeId);
       
       // Call the deleteKnowledge API
       this.knowledgeService.deleteKnowledge(knowledgeId)
         .subscribe({
           next: (response) => {
-            console.log('Knowledge deleted successfully:', response);
             
             // Reset the knowledge creation flag so user can start fresh
             this.knowledgeTypeCreated = false;
@@ -1559,8 +1471,6 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
             this.showError('', errorMessage);
           }
         });
-    } else {
-      console.log('Conditions not met for knowledge deletion - skipping');
     }
   }
 }

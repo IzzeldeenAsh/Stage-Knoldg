@@ -36,7 +36,7 @@
     </div>
 
     <!-- Stop button -->
-    <div class="mt-4">
+    <!-- <div class="mt-4">
       <button
         type="button"
         class="btn btn-sm btn-light-danger"
@@ -45,7 +45,7 @@
         <i class="fas fa-stop me-1"></i>
         {{ currentLang === 'ar' ? 'إيقاف' : 'Stop' }}
       </button>
-    </div>
+    </div> -->
     
     <!-- Magical effect to show the AI is thinking -->
     <div class="loading-magic-effect">
@@ -68,7 +68,7 @@
   </div>
 
   <!-- Knowledge Details Form -->
-  <form [formGroup]="form">
+  <form [formGroup]="form" *ngIf="form">
     <!-- Generate AI Information Button - More accessible and prominent -->
     <div class="d-flex justify-content-end mb-6">
       <div class="d-flex gap-3 align-items-center">
@@ -187,41 +187,16 @@
             </label>
             <div class="row mb-2 mt-5">
               <div class="col-12">
-                <p-calendar
-                  [ngModel]="getSelectedCoverDates()"
-                  (ngModelChange)="onCoverYearChange($event)"
-                  [ngModelOptions]="{standalone: true}"
-                  view="year"
-                  dateFormat="yy"
-                  selectionMode="multiple"
-                  [showIcon]="true"
-                  iconDisplay="input"
-                  icon="ki-duotone ki-calendar fs-2"
+                <app-custom-year-picker
+                  formControlName="cover_years"
                   [placeholder]="currentLang === 'ar' ? 'اختر السنة' : 'Select year'"
-                  styleClass="w-100 cover-year-picker"
-                  [readonlyInput]="true"
-                  [showButtonBar]="true"
-                  [yearNavigator]="true"
-                  yearRange="1900:2030"
-                  [maxDateCount]="2"
+                  [yearRangeStart]="1900"
+                  [yearRangeEnd]="2030"
+                  [allowRange]="true"
+                  [currentLang]="currentLang"
+                  [class.is-invalid]="form.get('cover_start')?.invalid && form.get('cover_start')?.touched"
+                ></app-custom-year-picker>
 
-                >
-                  <ng-template pTemplate="footer">
-                    <div class="p-2 text-center">
-                      <small class="text-muted">
-                        {{ currentLang === 'ar' ? 'انقر مرة لسنة واحدة، مرتين لنطاق' : 'Click once for single year, twice for range' }}
-                      </small>
-                    </div>
-                  </ng-template>
-                </p-calendar>
-
-                <!-- Display selected years -->
-                <div *ngIf="getCoverYearDisplayText()" class="mt-2">
-                  <small class="text-info">
-                    {{ currentLang === 'ar' ? 'المختار:' : 'Selected:' }}
-                    <strong>{{ getCoverYearDisplayText() }}</strong>
-                  </small>
-                </div>
               </div>
             </div>
           </div>

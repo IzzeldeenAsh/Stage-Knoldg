@@ -231,7 +231,6 @@ export class Step6Component extends BaseComponent implements OnInit {
   }
 
   navigateToStepper() {
-    console.log('Navigating to stepper...');
     // Try with the full absolute path
     window.location.reload();
   }
@@ -239,6 +238,10 @@ export class Step6Component extends BaseComponent implements OnInit {
   openSocialShareModal(): void {
     this.isSocialShareModalVisible = true;
     this.linkCopied = false;
+    // Initialize with default message if empty
+    if (!this.customShareMessage) {
+      this.customShareMessage = this.getDefaultShareMessage();
+    }
   }
 
   closeSocialShareModal(): void {
@@ -260,11 +263,48 @@ export class Step6Component extends BaseComponent implements OnInit {
   }
 
 
-  getDefaultShareMessage(): string {
-    if (this.lang === 'ar') {
-      return "اكتب رسالة المشاركة الخاصة بك";
+  private translateKnowledgeTypeToArabic(type: string): string {
+    if (!type) return 'معرفة';
+    const normalized = type.toLowerCase();
+    switch (normalized) {
+      case 'data':
+        return 'بيانات';
+      case 'insight':
+      case 'insights':
+        return 'رؤية';
+      case 'report':
+      case 'reports':
+        return 'تقرير';
+      case 'manual':
+      case 'manuals':
+        return 'دليل';
+      case 'course':
+      case 'courses':
+        return 'دورة';
+      case 'media':
+        return 'وسائط';
+      case 'knowledge':
+        return 'معرفة';
+      default:
+        return type;
     }
-    return "Write your share message";
+  }
+
+  getDefaultShareMessage(): string {
+    if (!this.publishedKnowledge) {
+      if (this.lang === 'ar') {
+        return "اكتب رسالة المشاركة الخاصة بك";
+      }
+      return "Write your share message";
+    }
+
+    const knowledgeType = this.publishedKnowledge.type || 'knowledge';
+
+    if (this.lang === 'ar') {
+      const knowledgeTypeAr = this.translateKnowledgeTypeToArabic(knowledgeType);
+      return `لقد نشرت ${knowledgeTypeAr} جديد في ...`;
+    }
+    return `I just published a business ${knowledgeType} in ...`;
   }
 
 
@@ -276,7 +316,7 @@ export class Step6Component extends BaseComponent implements OnInit {
 
   getSocialShareLinkWithCustomMessage(platform: string): string {
     const shareUrl = this.getShareableLink();
-    const message = this.customShareMessage 
+    const message = this.customShareMessage +' '
     const title = this.getSocialShareTitle();
 
     switch(platform) {

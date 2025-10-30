@@ -10,12 +10,14 @@ import { ButtonModule } from 'primeng/button';
 import { EmptyStateComponent } from './components/empty-state/empty-state.component';
 import { OtpModalComponent } from '../reusable-components/otp-modal/otp-modal.component';
 import { CountryUpdateModalComponent } from '../reusable-components/country-update-modal/country-update-modal.component';
+import { CustomYearPickerComponent } from '../reusable-components/custom-year-picker/custom-year-picker.component';
 
 @NgModule({
   declarations: [
     EmptyStateComponent,
     OtpModalComponent,
-    CountryUpdateModalComponent
+    CountryUpdateModalComponent,
+    CustomYearPickerComponent
   ],
   imports: [
     CommonModule,
@@ -31,7 +33,8 @@ import { CountryUpdateModalComponent } from '../reusable-components/country-upda
   exports: [
     EmptyStateComponent,
     OtpModalComponent,
-    CountryUpdateModalComponent
+    CountryUpdateModalComponent,
+    CustomYearPickerComponent
   ]
 })
 export class SharedModule { }
