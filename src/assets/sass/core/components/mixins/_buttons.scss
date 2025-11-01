@@ -61,7 +61,7 @@
         }
 
         @if ( $border-color-active != null ) {
-            border-color: $border-color-active;
+            border-color: $border-color-active !important;
             background-color: aliceblue;
         }
 

@@ -28,6 +28,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
   messages: Message[] = [];
   isRTL: boolean = false;
   passwordVisible: boolean = false;
+  showFullLoader: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -96,11 +97,13 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
 
   signInWithGoogle(event: Event): void {
     event.preventDefault();
+    this.showFullLoader = true;
     this.performSocialAuth('google');
   }
 
   signInWithLinkedIn(event: Event): void {
     event.preventDefault();
+    this.showFullLoader = true;
     this.performSocialAuth('linkedin');
   }
 
@@ -125,6 +128,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
           summary: 'Error', 
           detail: `Failed to initiate ${provider} sign-in.` 
         });
+        this.showFullLoader = false;
       }
     });
   }
@@ -158,6 +162,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
 
     this.hasError = false;
     this.messages = [];
+    this.showFullLoader = true;
 
     const returnUrl = this.getReturnUrl();
     
@@ -181,6 +186,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     
     // Check if user needs email verification
     if (userData.verified === false) {
+      this.showFullLoader = false;
       this.router.navigate(["/auth/email-reconfirm"]);
       return;
     }
@@ -198,6 +204,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
   private handleLoginError(error: any): void {
     this.hasError = true;
     this.messages = [];
+    this.showFullLoader = false;
 
     if (error.validationMessages) {
       this.messages = error.validationMessages;

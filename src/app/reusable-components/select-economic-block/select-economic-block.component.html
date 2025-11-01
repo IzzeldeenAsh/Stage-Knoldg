@@ -95,6 +95,8 @@
             <label
               class="form-check-label fw-bold"
               for="select-block-{{ block.id }}"
+              (click)="toggleBlockSelection(block)"
+              style="cursor: pointer;"
             >
               {{ block.name }}
             </label>

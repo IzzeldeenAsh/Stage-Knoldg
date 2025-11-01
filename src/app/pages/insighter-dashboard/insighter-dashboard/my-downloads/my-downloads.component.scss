@@ -40,14 +40,20 @@
     opacity: 0.8;
     transition: opacity 0.2s ease;
   }
-  
+
   &.active svg {
     opacity: 1;
   }
-  
+
   &:hover svg {
     opacity: 1;
   }
+}
+
+// Document item styling to match knowledge-item dimensions
+.document-item {
+  // Ensure consistent item height matching knowledge-item
+  min-height: 72px;
 }
 
 .knowledge-item, .document-item {
@@ -77,8 +83,8 @@
   }
 }
 
-// Clamp knowledge title to 2 lines to prevent variable heights
-.knowledge-item {
+// Clamp titles to 2 lines to prevent variable heights
+.knowledge-item, .document-item {
   .flex-grow-1 {
     .fs-7 {
       display: -webkit-box;

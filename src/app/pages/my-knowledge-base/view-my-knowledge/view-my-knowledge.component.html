@@ -330,7 +330,7 @@
 
                 <!-- Years It Covers -->
                 <div
-                  *ngIf="knowledge.cover_start && knowledge.cover_end && knowledge.cover_start !== knowledge.cover_end"
+                  *ngIf="knowledge.cover_start && knowledge.cover_end"
                   class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"
                 >
                   <span class="d-flex align-items-center">
@@ -341,7 +341,7 @@
                     </div>
                     <span>{{ lang === 'ar' ? 'السنوات التي يغطيها' : 'Years it covers' }}</span>
                   </span>
-                  <span>{{ knowledge.cover_start }} - {{ knowledge.cover_end }}</span>
+                  <span>{{ knowledge.cover_start === knowledge.cover_end ? knowledge.cover_start : (knowledge.cover_start + ' - ' + knowledge.cover_end) }}</span>
                 </div>
 
                 <!-- Industry -->
