@@ -181,4 +181,19 @@
       </ng-template>
         </div>
   </div>
+
+<!-- Full-screen loader overlay -->
+<div class="full-screen-loader" *ngIf="showFullLoader || (isLoading$ | async)">
+  <div class="loader-content text-center">
+    <img
+      class="loader-logo mb-5"
+      src="assets/media/logos/light-logo-sm.svg"
+      alt="KNOLDG"
+    />
+    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
+    <div class="mt-5 text-gray-800 fs-4 fw-semibold">
+      {{ 'AUTH.LOGIN.PLEASE_WAIT' | translate }}
+    </div>
+  </div>
+</div>
 </div>
