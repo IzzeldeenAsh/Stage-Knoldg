@@ -1,0 +1,74 @@
+<div class="custom-year-picker" [class.is-open]="isOpen">
+  <!-- Input field -->
+  <div class="year-picker-input" (click)="togglePicker()">
+    <input
+      type="text"
+      readonly
+      [value]="getDisplayText()"
+      class="form-control"
+      style="padding: 0.7rem 1rem !important; background-color: #fff !important;"
+      [placeholder]="placeholder"
+    />
+    <div class="input-icons">
+      <button
+        type="button"
+        class="btn btn-sm btn-icon btn-light-danger clear-btn"
+        (click)="clearSelection(); $event.stopPropagation()"
+        *ngIf="selectedYears.length > 0"
+        [title]="currentLang === 'ar' ? 'مسح' : 'Clear'"
+      >
+        <i class="ki-duotone ki-cross fs-3">
+          <span class="path1"></span>
+          <span class="path2"></span>
+        </i>
+      </button>
+      <i class="ki-duotone ki-calendar fs-2 input-icon">
+        <span class="path1"></span>
+        <span class="path2"></span>
+      </i>
+    </div>
+  </div>
+
+  <!-- Dropdown panel -->
+  <div class="year-picker-panel" *ngIf="isOpen" (click)="$event.stopPropagation()">
+    <!-- Header with clear button -->
+    <div class="panel-header">
+      <span class="header-title">
+        {{ currentLang === 'ar' ? 'اختر السنة' : 'Select Year' }}
+      </span>
+      <button
+        type="button"
+        class="btn btn-sm btn-light-danger"
+        (click)="clearSelection()"
+        *ngIf="selectedYears.length > 0"
+      >
+        {{ currentLang === 'ar' ? 'مسح' : 'Clear' }}
+      </button>
+    </div>
+
+    <!-- Years grid -->
+    <div class="years-grid">
+      <div
+        *ngFor="let year of years"
+        class="year-item"
+        [class.selected]="isYearSelected(year)"
+        [class.in-range]="isYearInRange(year)"
+        [class.start-year]="isStartYear(year)"
+        [class.end-year]="isEndYear(year)"
+        (click)="selectYear(year)"
+      >
+        {{ year }}
+      </div>
+    </div>
+
+    <!-- Footer instructions -->
+    <div class="panel-footer">
+      <small class="text-muted">
+        {{ currentLang === 'ar' ? 'انقر مرة لسنة واحدة، مرتين لنطاق' : 'Click once for single year, twice for range' }}
+      </small>
+    </div>
+  </div>
+
+  <!-- Backdrop -->
+  <div class="year-picker-backdrop" *ngIf="isOpen" (click)="closePicker()"></div>
+</div>

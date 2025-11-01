@@ -264,8 +264,6 @@ export class Step5Component extends BaseComponent implements OnInit {
     // Get user profile data to determine roles and status
     this.profileService.getProfile().subscribe(profile => {
       this.userProfile = profile;
-      console.log('User Profile:', this.userProfile);
-      console.log('User Roles:', this.userProfile?.roles);
       
       // Check payment account status first
       this.checkPaymentAccount(() => {
@@ -330,13 +328,10 @@ export class Step5Component extends BaseComponent implements OnInit {
   private initializePublishOptions() {
     // Check if roles array exists and contains specific roles
     const roles = this.userProfile?.roles || [];
-    console.log('Roles array:', roles);
     
     const isCompany = Array.isArray(roles) && roles.includes('company');
     const isInsighter = Array.isArray(roles) && roles.includes('insighter');
     const isCompanyInsighter = Array.isArray(roles) && roles.includes('company-insighter');
-    
-    console.log('Role checks:', { isCompany, isInsighter, isCompanyInsighter });
     
     // Check if user status is active
     let isActive = false;
@@ -349,16 +344,11 @@ export class Step5Component extends BaseComponent implements OnInit {
       isActive = true;
     }
     
-    console.log('Is active:', isActive);
-    console.log('Has active payment account:', this.hasActivePaymentAccount);
-    
     // Check for company-insighter role first
     if (isCompanyInsighter) {
-      console.log('Setting company-insighter options');
       
       // Check if the company-insighter has active status
       const isCompanyInsighterActive = this.userProfile?.insighter_status === 'active';
-      console.log('Company-Insighter active status:', isCompanyInsighterActive);
       
       // Always show both options, but disable review if inactive
       this.publishOptions = [
@@ -418,7 +408,6 @@ export class Step5Component extends BaseComponent implements OnInit {
     
     // Never disable options, but show warning for payment account issues
     this.hasOnlyTwoOptions = false;
-    console.log('Final publish options:', this.publishOptions);
   }
 
   // Custom validator for date - must be today or future
@@ -780,7 +769,7 @@ export class Step5Component extends BaseComponent implements OnInit {
     if (!this.publishedKnowledge) return '';
     const knowledgeType = this.publishedKnowledge.type?.toLowerCase() || 'insight';
     const slug = this.publishedKnowledge.slug || '';
-    return `https://foresighta.co/en/knowledge/${knowledgeType}/${slug}`;
+    return `https://foresight.co/en/knowledge/${knowledgeType}/${slug}`;
   }
 
   getSocialShareTitle(): string {

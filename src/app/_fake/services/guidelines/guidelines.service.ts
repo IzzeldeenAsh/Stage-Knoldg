@@ -39,8 +39,8 @@ export interface GuidelineResponse {
   providedIn: 'root',
 })
 export class GuidelinesService {
-  private apiUrl = 'https://api.foresighta.co/api/common/setting/guideline/list';
-  private createUpdateApi = 'https://api.foresighta.co/api/admin/setting/guideline';
+  private apiUrl = 'https://api.foresight.co/api/common/setting/guideline/list';
+  private createUpdateApi = 'https://api.foresight.co/api/admin/setting/guideline';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
 

@@ -146,6 +146,34 @@ import { TranslateService } from '@ngx-translate/core';
       }
     }
 
+    /* Share CTA glow button */
+    .btn-glow-primary {
+      position: relative;
+      animation: glowPulse 2.2s ease-in-out infinite;
+      box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.55);
+    }
+
+    .btn-glow-primary:hover {
+      box-shadow: 0 0 18px rgba(13, 110, 253, 0.5), 0 0 36px rgba(13, 110, 253, 0.3);
+    }
+
+    .btn-glow-primary:focus-visible {
+      outline: 2px solid #0d6efd;
+      outline-offset: 2px;
+    }
+
+    @keyframes glowPulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.55);
+      }
+      70% {
+        box-shadow: 0 0 0 12px rgba(13, 110, 253, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(13, 110, 253, 0);
+      }
+    }
+
     @media (max-width: 768px) {
       .custom-modal-container {
         width: 95%;
@@ -231,7 +259,6 @@ export class Step6Component extends BaseComponent implements OnInit {
   }
 
   navigateToStepper() {
-    console.log('Navigating to stepper...');
     // Try with the full absolute path
     window.location.reload();
   }
@@ -239,6 +266,10 @@ export class Step6Component extends BaseComponent implements OnInit {
   openSocialShareModal(): void {
     this.isSocialShareModalVisible = true;
     this.linkCopied = false;
+    // Initialize with default message if empty
+    if (!this.customShareMessage) {
+      this.customShareMessage = this.getDefaultShareMessage();
+    }
   }
 
   closeSocialShareModal(): void {
@@ -249,7 +280,7 @@ export class Step6Component extends BaseComponent implements OnInit {
     if (!this.publishedKnowledge) return '';
     const knowledgeType = this.publishedKnowledge.type?.toLowerCase() || 'insight';
     const slug = this.publishedKnowledge.slug || '';
-    return `https://foresighta.co/en/knowledge/${knowledgeType}/${slug}`;
+    return `https://foresight.co/en/knowledge/${knowledgeType}/${slug}`;
   }
 
   getSocialShareTitle(): string {
@@ -260,11 +291,48 @@ export class Step6Component extends BaseComponent implements OnInit {
   }
 
 
-  getDefaultShareMessage(): string {
-    if (this.lang === 'ar') {
-      return "اكتب رسالة المشاركة الخاصة بك";
+  private translateKnowledgeTypeToArabic(type: string): string {
+    if (!type) return 'معرفة';
+    const normalized = type.toLowerCase();
+    switch (normalized) {
+      case 'data':
+        return 'بيانات';
+      case 'insight':
+      case 'insights':
+        return 'رؤية';
+      case 'report':
+      case 'reports':
+        return 'تقرير';
+      case 'manual':
+      case 'manuals':
+        return 'دليل';
+      case 'course':
+      case 'courses':
+        return 'دورة';
+      case 'media':
+        return 'وسائط';
+      case 'knowledge':
+        return 'معرفة';
+      default:
+        return type;
     }
-    return "Write your share message";
+  }
+
+  getDefaultShareMessage(): string {
+    if (!this.publishedKnowledge) {
+      if (this.lang === 'ar') {
+        return "اكتب رسالة المشاركة الخاصة بك";
+      }
+      return "Write your share message";
+    }
+
+    const knowledgeType = this.publishedKnowledge.type || 'knowledge';
+
+    if (this.lang === 'ar') {
+      const knowledgeTypeAr = this.translateKnowledgeTypeToArabic(knowledgeType);
+      return `لقد نشرت ${knowledgeTypeAr} جديد في ...`;
+    }
+    return `I just published a business ${knowledgeType} in ...`;
   }
 
 
@@ -276,7 +344,7 @@ export class Step6Component extends BaseComponent implements OnInit {
 
   getSocialShareLinkWithCustomMessage(platform: string): string {
     const shareUrl = this.getShareableLink();
-    const message = this.customShareMessage 
+    const message = this.customShareMessage +' '
     const title = this.getSocialShareTitle();
 
     switch(platform) {

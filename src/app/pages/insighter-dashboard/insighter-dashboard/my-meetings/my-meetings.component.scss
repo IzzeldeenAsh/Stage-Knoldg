@@ -1,3 +1,36 @@
+// Archived toggle button styling (aligned with My Downloads)
+.toggle-archived-btn {
+  transition: all 0.3s ease;
+  background-color: #f1faff; // light info background
+  border-color: #cfe8ff;
+  color: #0778b9;
+  box-shadow: 0 1px 3px rgba(9, 120, 185, 0.12);
+
+  i {
+    color: #0778b9 !important;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: #e6f4ff;
+    border-color: #b9ddff;
+    color: #0778b9;
+
+    i {
+      color: #0778b9 !important;
+    }
+  }
+
+  &.active {
+    background-color: #0778b9;
+    border-color: #0778b9;
+    color: white;
+    box-shadow: 0 2px 8px rgba(9, 120, 185, 0.25);
+
+    i {
+      color: white !important;
+    }
+  }
+}
 // My Meetings Component Styles
 
 // Metronic tabs design matching my-orders component
@@ -746,11 +779,7 @@
 .btn-outline-info {
   transition: all 0.3s ease;
 
-  &:hover:not(:disabled) {
-    i {
-      color: white !important;
-    }
-  }
+
 
   &.active {
     background-color: #0978b9 !important;

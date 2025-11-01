@@ -493,6 +493,10 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
   openSocialShareModal(): void {
     this.isSocialShareModalVisible = true;
     this.linkCopied = false;
+    // Initialize with default message if empty
+    if (!this.customShareMessage) {
+      this.customShareMessage = this.getDefaultShareMessage();
+    }
   }
 
   closeSocialShareModal(): void {
@@ -521,7 +525,7 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
   getShareableLink(): string {
     const knowledgeType = this.knowledge.type?.toLowerCase() || 'insight';
     const slug = this.knowledge.slug || '';
-    return `https://foresighta.co/en/knowledge/${knowledgeType}/${slug}`;
+    return `https://foresight.co/en/knowledge/${knowledgeType}/${slug}`;
   }
 
   getSocialShareTitle(): string {
@@ -541,11 +545,48 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
     return `Thought you might enjoy this on Knoldg.com: ${this.getSocialShareTitle()}`;
   }
 
-  getDefaultShareMessage(): string {
-    if (this.lang === 'ar') {
-      return "اكتب رسالة المشاركة الخاصة بك";
+  private translateKnowledgeTypeToArabic(type: string): string {
+    if (!type) return 'معرفة';
+    const normalized = type.toLowerCase();
+    switch (normalized) {
+      case 'data':
+        return 'بيانات';
+      case 'insight':
+      case 'insights':
+        return 'رؤية';
+      case 'report':
+      case 'reports':
+        return 'تقرير';
+      case 'manual':
+      case 'manuals':
+        return 'دليل';
+      case 'course':
+      case 'courses':
+        return 'دورة';
+      case 'media':
+        return 'وسائط';
+      case 'knowledge':
+        return 'معرفة';
+      default:
+        return type;
     }
-    return "Write your share message";
+  }
+
+  getDefaultShareMessage(): string {
+    if (!this.knowledge) {
+      if (this.lang === 'ar') {
+        return "اكتب رسالة المشاركة الخاصة بك";
+      }
+      return "Write your share message";
+    }
+
+    const knowledgeType = this.knowledge.type || 'knowledge';
+
+    if (this.lang === 'ar') {
+      const knowledgeTypeAr = this.translateKnowledgeTypeToArabic(knowledgeType);
+      return `لقد نشرت ${knowledgeTypeAr} جديد في ...`;
+    }
+    return `I just published a business ${knowledgeType} in ...`;
   }
 
 
@@ -557,7 +598,7 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
 
   getSocialShareLinkWithCustomMessage(platform: string): string {
     const shareUrl = this.getShareableLink();
-    const message = this.customShareMessage 
+    const message = this.customShareMessage +' '
     const title = this.getSocialShareTitle();
 
     switch(platform) {
@@ -740,7 +781,7 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
         "name": "Knoldg.com",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://foresighta.co/assets/logo.png"
+          "url": "https://foresight.co/assets/logo.png"
         }
       },
       "mainEntityOfPage": {

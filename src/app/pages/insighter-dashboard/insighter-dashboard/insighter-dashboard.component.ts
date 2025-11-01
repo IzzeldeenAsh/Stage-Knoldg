@@ -29,7 +29,7 @@ export class InsighterDashboardComponent implements OnInit, OnDestroy {
   isInsighter$: Observable<boolean>;
   isCompany$: Observable<boolean>;
   private subscriptions: Subscription[] = [];
-
+  isCompanyInsighter$: Observable<boolean>;
   constructor(
     private router: Router,
     private profileService: ProfileService,
@@ -85,7 +85,7 @@ export class InsighterDashboardComponent implements OnInit, OnDestroy {
     this.isClient$ = this.profileService.isClient()
     this.isInsighter$ = this.profileService.isInsighter()
     this.isCompany$ = this.profileService.isCompany()
-    
+    this.isCompanyInsighter$ = this.profileService.isCompanyInsighter()
     // Subscribe to route changes
     const routerSub = this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)

@@ -82,3 +82,28 @@
     padding-top: 50px;
   }
 }
+
+/* Full-screen loader overlay */
+.full-screen-loader {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(2px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader-logo {
+  width: 64px;
+  height: 64px;
+  opacity: 0.9;
+}

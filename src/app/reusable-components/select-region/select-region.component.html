@@ -102,6 +102,8 @@
               <label
                 class="form-check-label fw-bold"
                 for="select-region-{{ region.id }}"
+                (click)="toggleSelectRegion(region, { target: { checked: !isRegionSelected(region) } })"
+                style="cursor: pointer;"
               >
                 {{ region.name }}
               </label>
@@ -158,6 +160,7 @@
                   target: { checked: !isCountrySelectedFlat(country) }
                 })
               "
+              style="cursor: pointer;"
             >
               <img
                 [src]="getCountryFlagPath(country.flag)"
@@ -191,6 +194,8 @@
             <label
               class="form-check-label fw-bold"
               for="select-region-{{ region.id }}"
+              (click)="toggleSelectRegion(region, $event)"
+              style="cursor: pointer;"
             >
               {{ "SELECT_ALL_COUNTRIES" | translate }}
             </label>
@@ -220,6 +225,8 @@
               <label
                 class="form-check-label"
                 for="select-country-{{ country.id }}"
+                (click)="toggleSelectCountry(region, country, { target: { checked: !isCountrySelected(country, region) } })"
+                style="cursor: pointer;"
               >
                 <div
                   class="d-flex align-items-center"
