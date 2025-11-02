@@ -351,7 +351,7 @@ export class InvoiceGeneratorService {
                                 Compass Building Al Shohada Road<br/>
                                 AL Hamra Industrial Zone-FZ<br/>
                                 Ras Al Khaimah United Arab Emirates<br/>
-                                info@knoldg.com<br/>
+                                info@foresighta.co<br/>
                             </div>
                         </td>
 
@@ -397,7 +397,7 @@ export class InvoiceGeneratorService {
     </table>
 
     <div class="footer">
-        Thank you for your business © 2025 knoldg | info@knoldg.com
+        Thank you for your business © 2025 knoldg | info@foresighta.co
     </div>
 
 </div>
