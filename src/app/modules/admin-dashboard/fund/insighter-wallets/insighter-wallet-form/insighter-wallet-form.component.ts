@@ -127,7 +127,7 @@ ${this.insighterData.bank_address ? `عنوان البنك: ${this.insighterData
 رمز السويفت: ${this.insighterData.bank_swift_code || 'غير محدد'}
 
 ---
-تم إنشاؤه من منصة KNOLDG الإدارية`;
+تم إنشاؤه من منصة Insighta الإدارية`;
     } else {
       return `📋 *Transfer Form - KNOLDG*
 
@@ -150,7 +150,7 @@ IBAN Number: ${this.insighterData.bank_iban || 'Not provided'}
 SWIFT Code: ${this.insighterData.bank_swift_code || 'Not provided'}
 
 ---
-Generated from KNOLDG Admin Platform`;
+Generated from Insighta Admin Platform`;
     }
   }
 

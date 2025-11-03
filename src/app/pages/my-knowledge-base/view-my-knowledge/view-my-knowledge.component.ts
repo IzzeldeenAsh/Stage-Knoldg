@@ -686,7 +686,7 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
     const description = this.getSocialShareDescription();
     const image = this.getSocialShareImage();
     const url = this.getShareableLink();
-    const author = 'Knoldg Expert';
+    const author = 'Insighta Expert';
     const publishedDate = this.knowledge.published_at;
 
     // Update page title with SEO optimization
@@ -774,7 +774,7 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
       "dateModified": this.knowledge.published_at,
       "author": {
         "@type": "Person",
-        "name": "Knoldg Expert"
+        "name": "Insighta Expert"
       },
       "publisher": {
         "@type": "Organization",

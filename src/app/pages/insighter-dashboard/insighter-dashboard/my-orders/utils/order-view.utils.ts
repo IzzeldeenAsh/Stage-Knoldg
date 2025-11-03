@@ -169,7 +169,7 @@ export function getPaymentMethodDisplay(payment: PaymentInfo | null | undefined,
   }
 
   if (payment.method === 'manual') {
-    return lang === 'ar' ? 'محفظة نولدج' : 'Knoldg Wallet';
+    return lang === 'ar' ? 'محفظة نولدج' : 'Insighta Wallet';
   }
 
   if (payment.method === 'provider' && payment.provider) {

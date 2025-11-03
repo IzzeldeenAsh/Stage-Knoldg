@@ -100,7 +100,7 @@ export class InvoiceGeneratorService {
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
-    <title>Invoice - Knoldg Business</title>
+    <title>Invoice - Insighta Business</title>
     <style>
         @page {
             size: A4;
@@ -331,8 +331,8 @@ export class InvoiceGeneratorService {
                 <table class="logo-table">
                     <tr>
                         <td class="logo-left">
-                            <img src="https://res.cloudinary.com/dsiku9ipv/image/upload/v1758006879/invoice_template_knoldg_0_2_aeurma.png"
-                                 alt="KNOLDG Logo" class="logo-img"/>
+                            <img src="https://res.cloudinary.com/dsiku9ipv/image/upload/v1762151385/KNOLDG-01_tuepia.png"
+                                 alt="Insighta Logo" class="logo-img"/>
                         </td>
                         <td class="logo-right">
                             <div>${order.invoice_no || order.order_no}</div>
@@ -397,7 +397,7 @@ export class InvoiceGeneratorService {
     </table>
 
     <div class="footer">
-        Thank you for your business © 2025 knoldg | info@knoldg.com
+        Thank you for your business © 2025 Insighta | info@knoldg.com
     </div>
 
 </div>

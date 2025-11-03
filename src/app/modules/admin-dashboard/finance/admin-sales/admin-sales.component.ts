@@ -90,7 +90,7 @@ export class AdminSalesComponent extends BaseComponent implements OnInit, OnDest
       'MEETINGS': { en: 'Meetings', ar: 'الاجتماعات' },
       'TOTAL_AMOUNT': { en: 'Total Amount', ar: 'إجمالي المبلغ' },
       'EXPORT_TO_EXCEL': { en: 'Export to Excel', ar: 'تصدير إلى Excel' },
-      'ADMIN_SALES_DASHBOARD': { en: 'Knoldg Sales Dashboard', ar: 'لوحة مبيعات الإدارة' }
+      'ADMIN_SALES_DASHBOARD': { en: 'Insighta Sales Dashboard', ar: 'لوحة مبيعات الإدارة' }
     };
 
     const translation = translations[key];
