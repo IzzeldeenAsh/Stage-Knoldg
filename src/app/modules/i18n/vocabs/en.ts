@@ -470,7 +470,7 @@ export const locale = {
         "EMPOWER_INSIGHTS_TEXT": `
         Start generating revenue from your insights every time your report is downloaded.<br /><br />
           <span class="text-dark font-weight-bolder" ><strong>Reach a Global Audience</strong></span> by uploading and sharing your research, reports and data that will have a meaningful impact on individuals, businesses decision-makers around the world.<br /><br />
-          Knoldg provides a unique and Redefining consulting opportunity. Experience Flexible  <span class="text-dark font-weight-bolder" >Engagement with visitors</span>  who can reach out to you for one-on-one consultations and expert opinions, allowing you to offer tailored guidance.
+          Insighta provides a unique and Redefining consulting opportunity. Experience Flexible  <span class="text-dark font-weight-bolder" >Engagement with visitors</span>  who can reach out to you for one-on-one consultations and expert opinions, allowing you to offer tailored guidance.
           <br><br><span class="text-dark font-weight-bolder" ><strong>Work at your convenience, work any time.</strong></span> <br><br>
           Bring your reports and studies out of the drawer and let your experience shine.
 Your wealth of knowledge is valued and many are eager to learn from it.
