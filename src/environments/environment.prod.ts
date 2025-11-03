@@ -10,15 +10,15 @@ export const environment = {
   apiUrl: 'api',
   
   // API configuration for sharing authentication between domains
-  apiBaseUrl: 'https://api.knoldg.com/api',
-  appDomain: '.knoldg.com',
-  mainAppUrl: 'https://knoldg.com',
-  subAppUrl: 'https://app.knoldg.com',
+  apiBaseUrl: 'https://api.insightabusiness.com/api',
+  appDomain: '.insightabusiness.com',
+  mainAppUrl: 'https://insightabusiness.com',
+  subAppUrl: 'https://app.insightabusiness.com',
   
   // Cookie configuration
   cookieOptions: {
     secure: true, // Require HTTPS in production
-    domain: '.knoldg.com',
+    domain: '.insightabusiness.com',
     path: '/',
     sameSite: 'Lax'
   },

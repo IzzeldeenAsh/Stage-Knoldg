@@ -139,7 +139,7 @@ export class CallbackComponent extends BaseComponent implements OnInit, OnDestro
     const returnUrl = this.getReturnUrlFromCookie();
     
     // Build the redirect URL
-    let redirectUrl = `https://knoldg.com/en/callback`;
+    let redirectUrl = `https://insightabusiness.com/en/callback`;
     
     if (this.token) {
       redirectUrl += `/${this.token}`;
@@ -183,7 +183,7 @@ export class CallbackComponent extends BaseComponent implements OnInit, OnDestro
         'Path=/',
         'Max-Age=-1',
         'SameSite=None',
-        'Domain=.knoldg.com',
+        'Domain=.insightabusiness.com',
         'Secure'
       ];
     }
@@ -207,7 +207,7 @@ export class CallbackComponent extends BaseComponent implements OnInit, OnDestro
           'Accept-Language': 'en',
         });
         
-        return this.http.post('https://api.knoldg.com/api/account/timezone/set', 
+        return this.http.post('https://api.insightabusiness.com/api/account/timezone/set', 
           { timezone: userTimezone }, 
           { headers }
         );
