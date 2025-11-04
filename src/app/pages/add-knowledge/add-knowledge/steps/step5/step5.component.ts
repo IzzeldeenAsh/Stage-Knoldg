@@ -782,9 +782,9 @@ export class Step5Component extends BaseComponent implements OnInit {
   getDefaultShareMessage(): string {
     if (!this.publishedKnowledge) return '';
     if (this.lang === 'ar') {
-      return `اعتقدت أنك قد تستمتع بهذا على Knoldg.com: ${this.publishedKnowledge.type || 'معرفة'} - ${this.publishedKnowledge.title || 'تحقق من هذه المعرفة'}`;
+      return `اعتقدت أنك قد تستمتع بهذا على insightabusiness.com: ${this.publishedKnowledge.type || 'معرفة'} - ${this.publishedKnowledge.title || 'تحقق من هذه المعرفة'}`;
     }
-    return `Thought you might enjoy this on Knoldg.com: ${this.publishedKnowledge.type || 'Knowledge'} - ${this.publishedKnowledge.title || 'Check out this knowledge'}`;
+    return `Thought you might enjoy this on insightabusiness.com: ${this.publishedKnowledge.type || 'Knowledge'} - ${this.publishedKnowledge.title || 'Check out this knowledge'}`;
   }
 
   shareToSocial(platform: string): void {
