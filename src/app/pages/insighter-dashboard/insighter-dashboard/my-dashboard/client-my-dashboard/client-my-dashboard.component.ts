@@ -104,15 +104,15 @@ export class ClientMyDashboardComponent extends BaseComponent implements OnInit,
   }
 
   // redirectToExperts(): void {
-  //   window.open('https://foresighta.co/en/home?search_type=insighter&accuracy=any', '_blank');
+  //   window.open('https://insightabusiness.com/en/home?search_type=insighter&accuracy=any', '_blank');
   // }
   redirectToExperts(): void {
-    window.open(`https://foresighta.co/${this.lang}/home?search_type=insighter&accuracy=any`, '_blank');
+    window.open(`https://insightabusiness.com/${this.lang}/home?search_type=insighter&accuracy=any`, '_blank');
   }
   redirectToKnowledge(type: string): void {
     const currentLang = this.lang; 
     
-    window.open(`https://foresighta.co/${currentLang}/home?search_type=knowledge&type=${type}`, '_blank');
+    window.open(`https://insightabusiness.com/${currentLang}/home?search_type=knowledge&type=${type}`, '_blank');
   }
 
   loadWalletBalance(): void {

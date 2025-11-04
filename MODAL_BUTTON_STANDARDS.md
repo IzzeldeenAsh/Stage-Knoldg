@@ -1,6 +1,6 @@
 # Modal Button Standards
 
-This document defines the global standards for modal buttons across the KNOLDG application.
+This document defines the global standards for modal buttons across the Insighta application.
 
 ## CSS Classes
 

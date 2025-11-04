@@ -106,7 +106,7 @@ export class InsighterWalletFormComponent extends BaseComponent implements OnIni
     const isArabic = this.lang === 'ar';
 
     if (isArabic) {
-      return `📋 *نموذج تحويل الأموال - KNOLDG*
+      return `📋 *نموذج تحويل الأموال - Insighta*
 
 👤 *معلومات المستفيد:*
 الاسم: ${this.insighterData.user_name}
@@ -127,9 +127,9 @@ ${this.insighterData.bank_address ? `عنوان البنك: ${this.insighterData
 رمز السويفت: ${this.insighterData.bank_swift_code || 'غير محدد'}
 
 ---
-تم إنشاؤه من منصة KNOLDG الإدارية`;
+تم إنشاؤه من منصة Insighta الإدارية`;
     } else {
-      return `📋 *Transfer Form - KNOLDG*
+      return `📋 *Transfer Form -Insighta*
 
 👤 *Beneficiary Information:*
 Name: ${this.insighterData.user_name}
@@ -150,7 +150,7 @@ IBAN Number: ${this.insighterData.bank_iban || 'Not provided'}
 SWIFT Code: ${this.insighterData.bank_swift_code || 'Not provided'}
 
 ---
-Generated from KNOLDG Admin Platform`;
+Generated from Insighta Admin Platform`;
     }
   }
 

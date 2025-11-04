@@ -25,7 +25,7 @@ export class AdminHeaderComponent {
   isSidebarHidden: boolean = false;
   
   private routeLabels: { [key: string]: string } = {
-    'admin-dashboard': 'KNOLDG Admin',
+    'admin-dashboard': 'Insighta Admin',
     'dashboard': 'Dashboard',
     'main-dashboard': 'Management',
     'requests': 'Requests',

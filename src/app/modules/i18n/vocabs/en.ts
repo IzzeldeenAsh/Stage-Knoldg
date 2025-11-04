@@ -368,7 +368,7 @@ export const locale = {
         EMAIL_LABEL: "Email",
         EMAIL_PLACEHOLDER: "Enter your email",
         EMAIL_REQUIRED: "Email is required",
-        WELCOME_LOGIN: "Welcome To Knoldg",
+        WELCOME_LOGIN: "Welcome To Insighta",
         EMAIL_INVALID: "Email is invalid",
         PASSWORD_LABEL: "Password",
         PASSWORD_PLACEHOLDER: "Enter your password",
@@ -457,7 +457,7 @@ export const locale = {
         "INDUSTRY_PLACEHOLDER": "Select industry",
         "HSCODE": "HS-Code",
         "THANK_YOU_TITLE": "Thank you!",
-        "SUCCESS_JOURNEY_TITLE": "Congratulations on joining Knoldg!",
+        "SUCCESS_JOURNEY_TITLE": "Congratulations on joining Insighta!",
         "THANK_YOU_MESSAGE": `
         You are now part of an elite network of insight providers and consultants dedicated to empowering our visitors with valuable expertise.
        <br><br> You'll be notified by email when it's time to start uploading your reports, researches, and insights to the platform.
@@ -466,11 +466,11 @@ export const locale = {
         "STAY_TUNED_MESSAGE": `
           Stay tuned for more updates. Your future of smarter decisions is about to begin!
         `,
-        "EMPOWER_INSIGHTS_TITLE": "Unlock Your Expertise with Knoldg.",
+        "EMPOWER_INSIGHTS_TITLE": "Unlock Your Expertise withInsighta.",
         "EMPOWER_INSIGHTS_TEXT": `
         Start generating revenue from your insights every time your report is downloaded.<br /><br />
           <span class="text-dark font-weight-bolder" ><strong>Reach a Global Audience</strong></span> by uploading and sharing your research, reports and data that will have a meaningful impact on individuals, businesses decision-makers around the world.<br /><br />
-          Knoldg provides a unique and Redefining consulting opportunity. Experience Flexible  <span class="text-dark font-weight-bolder" >Engagement with visitors</span>  who can reach out to you for one-on-one consultations and expert opinions, allowing you to offer tailored guidance.
+          Insighta provides a unique and Redefining consulting opportunity. Experience Flexible  <span class="text-dark font-weight-bolder" >Engagement with visitors</span>  who can reach out to you for one-on-one consultations and expert opinions, allowing you to offer tailored guidance.
           <br><br><span class="text-dark font-weight-bolder" ><strong>Work at your convenience, work any time.</strong></span> <br><br>
           Bring your reports and studies out of the drawer and let your experience shine.
 Your wealth of knowledge is valued and many are eager to learn from it.
@@ -1360,7 +1360,7 @@ UPLOAD: 'Upload',
     TOTAL_REVENUE:'Earnings',
     ABOUT:'About',
     SUPPORT:'Support',
-    KNOLDG:'Knoldg',
+    KNOLDG:'Insighta',
     CLICK_TO_ADD:"Click to add new knowledge to your collection",
     POSTED_KNOWLEDGE:'Published',
     PUBLISHED_KNOWLEDGE:'Published',
