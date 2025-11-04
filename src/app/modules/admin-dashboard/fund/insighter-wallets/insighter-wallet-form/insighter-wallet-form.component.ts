@@ -106,7 +106,7 @@ export class InsighterWalletFormComponent extends BaseComponent implements OnIni
     const isArabic = this.lang === 'ar';
 
     if (isArabic) {
-      return `📋 *نموذج تحويل الأموال - KNOLDG*
+      return `📋 *نموذج تحويل الأموال - Insighta*
 
 👤 *معلومات المستفيد:*
 الاسم: ${this.insighterData.user_name}
@@ -129,7 +129,7 @@ ${this.insighterData.bank_address ? `عنوان البنك: ${this.insighterData
 ---
 تم إنشاؤه من منصة Insighta الإدارية`;
     } else {
-      return `📋 *Transfer Form - KNOLDG*
+      return `📋 *Transfer Form -Insighta*
 
 👤 *Beneficiary Information:*
 Name: ${this.insighterData.user_name}
