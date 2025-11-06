@@ -51,7 +51,7 @@
 
   <div class="menu-item px-5" *ngIf="_user.roles.includes('insighter') || _user.roles.includes('company') || _user.roles.includes('company-insighter')">
     <a [routerLink]="'/app/add-knowledge/stepper'" class="menu-link px-5 text-info" (click)="closeDropdown.emit()">
-      {{ 'KNOWLEDGE.ADD_KNOWLEDGE' | translate }}
+      {{ 'KNOWLEDGE.ADD_INSIGHT' | translate }}
       <i class="ki-duotone ki-plus fs-5 me-2 text-info"><span class="path1"></span><span class="path2"></span></i>
     </a>
   </div>

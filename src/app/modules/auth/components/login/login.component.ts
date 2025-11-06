@@ -142,7 +142,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     let returnUrl = this.returnUrl !== "/" ? this.returnUrl : document.referrer;
     
     // Check if returnUrl is a full URL from allowed domains
-    if (returnUrl && (returnUrl.includes('insightabusiness.com') || returnUrl.includes('localhost'))) {
+    if (returnUrl && (returnUrl.includes('foresighta.co') || returnUrl.includes('localhost'))) {
       return returnUrl;
     }
     
