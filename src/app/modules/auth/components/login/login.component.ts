@@ -257,7 +257,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
         `Path=/`,
         `Max-Age=${60 * 60}`, // 1 hour
         `SameSite=None`,
-        `Domain=.foresight.co`,
+        `Domain=.foresighta.co`,
         `Secure`
       ];
     }
