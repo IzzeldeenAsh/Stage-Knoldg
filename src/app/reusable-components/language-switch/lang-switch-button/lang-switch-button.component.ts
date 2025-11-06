@@ -70,7 +70,7 @@ export class LangSwitchButtonComponent implements OnInit {
     ];
     
     if (isProduction) {
-      cookieParts.push(`Domain=.foresighta.co`); // leading dot = include subdomains
+      cookieParts.push(`Domain=.insightabusiness.com`); // leading dot = include subdomains
       cookieParts.push(`Secure`);                // HTTPS only in production
     }
     

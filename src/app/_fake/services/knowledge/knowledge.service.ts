@@ -28,7 +28,7 @@ export interface IsicCode {
 
 export interface Knowledge {
   id: number;
-  type: "data" | "insight" | "report" | "manual" | "course" | "media";
+  type: "data" | "insight" | "report" | "manual" | "course" | "media"  | "statistic";
   title: string;
   slug: string;
   description: string;
@@ -98,7 +98,7 @@ export interface KnowledgeStatistics {
 }
 
 export interface KnowledgeTypeStatistic {
-  type: "data" | "insight" | "report" | "manual" | "course" | "media";
+  type: "data" | "insight" | "report" | "manual" | "course" | "media" | "statistic";
   count: number;
 }
 
@@ -110,7 +110,7 @@ export interface KnowledgeTypeStatisticsResponse {
   providedIn: 'root'
 })
 export class KnowledgeService {
-  private baseUrl = 'https://api.foresighta.co';
+  private baseUrl = 'https://api.insightabusiness.com';
   private apiUrl = `${this.baseUrl}/api/insighter/library/knowledge`;
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();

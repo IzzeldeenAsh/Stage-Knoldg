@@ -523,9 +523,9 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
   }
 
   getShareableLink(): string {
-    const knowledgeType = this.knowledge.type?.toLowerCase() || 'insight';
+    const knowledgeType = this.knowledge.type?.toLowerCase() || 'statistic';
     const slug = this.knowledge.slug || '';
-    return `https://foresighta.co/en/knowledge/${knowledgeType}/${slug}`;
+    return `https://insightabusiness.com/en/knowledge/${knowledgeType}/${slug}`;
   }
 
   getSocialShareTitle(): string {
@@ -551,7 +551,7 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
     switch (normalized) {
       case 'data':
         return 'بيانات';
-      case 'insight':
+      case 'statistic':
       case 'insights':
         return 'رؤية';
       case 'report':
@@ -781,7 +781,7 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
         "name": "Insightabusiness.com",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://foresighta.co/assets/logo.png"
+          "url": "https://insightabusiness.com/assets/logo.png"
         }
       },
       "mainEntityOfPage": {

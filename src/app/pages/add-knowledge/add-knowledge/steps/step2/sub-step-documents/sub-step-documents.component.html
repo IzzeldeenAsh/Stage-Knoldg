@@ -231,7 +231,7 @@
                 (click)="addDocument()" 
                 [disabled]="hasUploadsInProgress() || hasFilesWithErrors()">
                 <i class="ki-duotone ki-plus fs-2 me-1"></i>
-                    <ng-container *ngIf="defaultValues?.knowledgeType === 'insight'">
+                    <ng-container *ngIf="defaultValues?.knowledgeType === 'statistic'">
                         {{ (documentsControls.length > 0 ? 'ADD_ANOTHER_DOCUMENT' : 'ADD_DOCUMENT') | translate }}
                     </ng-container>
 

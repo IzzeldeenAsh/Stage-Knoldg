@@ -11,7 +11,7 @@ import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.s
 })
 export class MyOrdersStatisticsComponent extends BaseComponent implements OnInit, OnDestroy {
   breadcrumbs: BreadcrumbItem[] = [
-    { label: 'My Orders', translationKey: 'INSIGHTER.DASHBOARD.NAV.MY_ORDERS' }
+    { label: 'My Purchases', translationKey: 'INSIGHTER.DASHBOARD.NAV.MY_ORDERS' }
   ];
   isClient: boolean = false;
   statisticCards: StatisticCard[] = [];

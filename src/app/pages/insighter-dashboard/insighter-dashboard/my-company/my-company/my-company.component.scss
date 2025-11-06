@@ -434,7 +434,7 @@
     
     &.report { border-left: 3px solid var(--kt-primary); .stat-value { color: var(--kt-primary); } }
     &.data { border-left: 3px solid var(--kt-info); .stat-value { color: var(--kt-info); } }
-    &.insight { border-left: 3px solid var(--kt-success); .stat-value { color: var(--kt-success); } }
+    &.statistic { border-left: 3px solid var(--kt-success); .stat-value { color: var(--kt-success); } }
     &.manual { border-left: 3px solid var(--kt-warning); .stat-value { color: var(--kt-warning); } }
     &.course { border-left: 3px solid var(--kt-danger); .stat-value { color: var(--kt-danger); } }
   }

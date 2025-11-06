@@ -24,7 +24,7 @@ export class ClientMyDashboardComponent extends BaseComponent implements OnInit,
 ];
   knowledgeLinks = [
     { type: 'data',    translationKey: 'KNOWLEDGE.DATA',    descriptionKey: 'KNOWLEDGE.DATA_DESCRIPTION' },
-    { type: 'insight', translationKey: 'KNOWLEDGE.INSIGHT', descriptionKey: 'KNOWLEDGE.INSIGHT_DESCRIPTION' },
+    { type: 'statistic', translationKey: 'KNOWLEDGE.STATISTIC', descriptionKey: 'KNOWLEDGE.INSIGHT_DESCRIPTION' },
     { type: 'manual',  translationKey: 'KNOWLEDGE.MANUAL',  descriptionKey: 'KNOWLEDGE.MANUAL_DESCRIPTION' },
     { type: 'course',  translationKey: 'KNOWLEDGE.COURSE',  descriptionKey: 'KNOWLEDGE.COURSE_DESCRIPTION' },
   { type: 'report',  translationKey: 'KNOWLEDGE.REPORT',  descriptionKey: 'KNOWLEDGE.REPORT_DESCRIPTION' }
@@ -38,7 +38,7 @@ export class ClientMyDashboardComponent extends BaseComponent implements OnInit,
         TITLE: 'Latest Knowledge',
         DATA: 'Data Library',
         DATA_DESCRIPTION: 'Explore recently added datasets and figures.',
-        INSIGHT: 'Insights',
+        STATISTIC: 'Insights',
         INSIGHT_DESCRIPTION: 'Review the newest analyst insights and findings.',
         MANUAL: 'Manuals',
         MANUAL_DESCRIPTION: 'Quick guides to help you apply best practices.',
@@ -53,7 +53,7 @@ export class ClientMyDashboardComponent extends BaseComponent implements OnInit,
         TITLE: 'أحدث مصادر المعرفة',
         DATA: 'مكتبة البيانات',
         DATA_DESCRIPTION: 'استكشف أحدث مجموعات البيانات والأرقام.',
-        INSIGHT: 'رؤى تحليلية',
+        STATISTIC: 'إحصائيات',
         INSIGHT_DESCRIPTION: 'اطلع على أحدث التحليلات والاستنتاجات.',
         MANUAL: 'أدلة إرشادية',
         MANUAL_DESCRIPTION: 'أدلة سريعة لتطبيق أفضل الممارسات.',
@@ -104,15 +104,15 @@ export class ClientMyDashboardComponent extends BaseComponent implements OnInit,
   }
 
   // redirectToExperts(): void {
-  //   window.open('https://foresighta.co/en/home?search_type=insighter&accuracy=any', '_blank');
+  //   window.open('https://insightabusiness.com/en/home?search_type=insighter&accuracy=any', '_blank');
   // }
   redirectToExperts(): void {
-    window.open(`https://foresighta.co/${this.lang}/home?search_type=insighter&accuracy=any`, '_blank');
+    window.open(`https://insightabusiness.com/${this.lang}/home?search_type=insighter&accuracy=any`, '_blank');
   }
   redirectToKnowledge(type: string): void {
     const currentLang = this.lang; 
     
-    window.open(`https://foresighta.co/${currentLang}/home?search_type=knowledge&type=${type}`, '_blank');
+    window.open(`https://insightabusiness.com/${currentLang}/home?search_type=knowledge&type=${type}`, '_blank');
   }
 
   loadWalletBalance(): void {
