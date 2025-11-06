@@ -31,8 +31,8 @@ export class Step1Component extends BaseComponent implements OnInit, OnChanges {
     },
     {
       id: 'kt_create_account_form_type_insights',
-      value: 'insight',
-      label: 'INSIGHTS',
+      value: 'statistic',
+      label: 'STATISTICS',
       iconName: 'chart-line',
       iconClass: 'text-success',
       icon: 'fas fa-lightbulb text-success mx-2 fs-6',

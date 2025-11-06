@@ -219,9 +219,10 @@ export class KnowledgeTypesStatisticsComponent implements OnInit, AfterViewInit,
 
     const typeColors = {
       report: "#0095E8", // Light blue
-      insight: "#0070C0", // Medium blue
+      statistic: "#0070C0", // Medium blue
       manual: "#104E8B", // Dark blue
       data: "#1E90FF", // Dodger blue
+      insight: "#0056B3", // Royal blue
       course: "#4682B4", // Steel blue
       media: "#000080", // Navy blue
       other: "#0047AB"  // Cobalt blue

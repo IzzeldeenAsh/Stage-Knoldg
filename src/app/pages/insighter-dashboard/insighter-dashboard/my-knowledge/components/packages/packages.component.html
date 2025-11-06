@@ -156,7 +156,7 @@
               <div *ngIf="!publishedKnowledges || publishedKnowledges.length === 0" class="text-center py-5">
                 <i class="ki-outline ki-information-5 fs-3x text-gray-400 mb-5"></i>
                 <h3 class="fw-bold text-gray-800 mb-2">No Published Knowledge</h3>
-                <p class="text-gray-600">There are no published insight items available. Only insight with 'published' status can be added to packages.</p>
+                <p class="text-gray-600">There are no published statistic items available. Only statistic with 'published' status can be added to packages.</p>
               </div>
               
               <!-- Knowledge list when items are available -->
@@ -190,7 +190,7 @@
                         <td>
                           <div class="d-flex align-items-center">
                             <i *ngIf="knowledge.type === 'data'" class="fas fa-database text-primary me-2"></i>
-                            <i *ngIf="knowledge.type === 'insight'" class="fas fa-lightbulb text-success me-2"></i>
+                            <i *ngIf="knowledge.type === 'statistic'" class="fas fa-lightbulb text-success me-2"></i>
                             <i *ngIf="knowledge.type === 'report'" class="fas fa-file-alt text-info me-2"></i>
                             <i *ngIf="knowledge.type === 'manual'" class="fas fa-book text-warning me-2"></i>
                             <i *ngIf="knowledge.type === 'course'" class="fas fa-graduation-cap text-success me-2"></i>

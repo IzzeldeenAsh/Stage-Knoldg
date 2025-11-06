@@ -278,7 +278,7 @@ export class Step6Component extends BaseComponent implements OnInit {
 
   getShareableLink(): string {
     if (!this.publishedKnowledge) return '';
-    const knowledgeType = this.publishedKnowledge.type?.toLowerCase() || 'insight';
+    const knowledgeType = this.publishedKnowledge.type?.toLowerCase() || 'statistic';
     const slug = this.publishedKnowledge.slug || '';
     return `https://insightabusiness.com/en/knowledge/${knowledgeType}/${slug}`;
   }
@@ -297,7 +297,7 @@ export class Step6Component extends BaseComponent implements OnInit {
     switch (normalized) {
       case 'data':
         return 'بيانات';
-      case 'insight':
+      case 'statistic':
       case 'insights':
         return 'رؤية';
       case 'report':
