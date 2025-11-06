@@ -169,7 +169,7 @@ export class TopbarComponent implements OnInit {
       });
       
       // Call API to mark all notifications as read - using same endpoint as in primeng-header
-      this.http.put('https://api.insightabusiness.com/api/account/notification/read', {}, { headers })
+      this.http.put('https://api.foresight.co/api/account/notification/read', {}, { headers })
         .subscribe({
           next: () => {
             // Refresh notifications from API

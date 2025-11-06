@@ -123,7 +123,7 @@ export interface PaginatedResponse<T> {
   providedIn: 'root'
 })
 export class FundService {
-  private baseUrl = 'https://api.insightabusiness.com/api/admin/fund';
+  private baseUrl = 'https://api.foresight.co/api/admin/fund';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   currentLang: string = 'en';

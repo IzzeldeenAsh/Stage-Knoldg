@@ -152,7 +152,7 @@ export interface DocumentUploadResponse {
   providedIn: "root",
 })
 export class AddInsightStepsService {
-  private insightaHost = "https://api.insightabusiness.com";
+  private insightaHost = "https://api.foresight.co";
   private apiUrl = `${this.insightaHost}/api/insighter/library/knowledge`;
   private suggestTopicUrl = `${this.insightaHost}/api/insighter/topic/suggest`;
 
@@ -588,7 +588,7 @@ export class AddInsightStepsService {
 
     this.setLoading(true);
     return this.http
-      .put(`https://api.insightabusiness.com/api/insighter/library/knowledge/abstract/document/${knowledgeId}`, request, {
+      .put(`https://api.foresight.co/api/insighter/library/knowledge/abstract/document/${knowledgeId}`, request, {
         headers,
       })
       .pipe(
