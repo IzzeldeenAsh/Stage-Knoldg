@@ -1176,6 +1176,7 @@ INSIGHTER_REQUESTS: {
     "MANUAL": "الأدلة",
     "COURSE": "الدورات",
     "MEDIA": "الوسائط",
+    "ADD_INSIGHT": "إضافة معرفة",
     "CLEAR_FILTERS": "مسح التصفية",
    'TITLE': 'مكتبتي المعرفية',
     'TOTAL': 'المجموع',
