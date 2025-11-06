@@ -628,7 +628,7 @@ export class GeneralComponent extends BaseComponent implements OnInit, OnDestroy
   return [
     { value: '', labelKey: 'KNOWLEDGE.ALL' },
     { value: 'data', labelKey: 'KNOWLEDGE.DATA' },
-    { value: 'insight', labelKey: 'KNOWLEDGE.INSIGHT' },
+    { value: 'statistic', labelKey: 'KNOWLEDGE.STATISTIC' },
     { value: 'course', labelKey: 'KNOWLEDGE.COURSE' },
     { value: 'report', labelKey: 'KNOWLEDGE.REPORT' },
     { value: 'manual', labelKey: 'KNOWLEDGE.MANUAL' }

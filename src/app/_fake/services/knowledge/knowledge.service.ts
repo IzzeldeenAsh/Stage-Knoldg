@@ -28,7 +28,7 @@ export interface IsicCode {
 
 export interface Knowledge {
   id: number;
-  type: "data" | "insight" | "report" | "manual" | "course" | "media";
+  type: "data" | "insight" | "report" | "manual" | "course" | "media"  | "statistic";
   title: string;
   slug: string;
   description: string;
@@ -98,7 +98,7 @@ export interface KnowledgeStatistics {
 }
 
 export interface KnowledgeTypeStatistic {
-  type: "data" | "insight" | "report" | "manual" | "course" | "media";
+  type: "data" | "insight" | "report" | "manual" | "course" | "media" | "statistic";
   count: number;
 }
 

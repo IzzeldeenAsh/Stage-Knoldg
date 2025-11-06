@@ -523,7 +523,7 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
   }
 
   getShareableLink(): string {
-    const knowledgeType = this.knowledge.type?.toLowerCase() || 'insight';
+    const knowledgeType = this.knowledge.type?.toLowerCase() || 'statistic';
     const slug = this.knowledge.slug || '';
     return `https://insightabusiness.com/en/knowledge/${knowledgeType}/${slug}`;
   }
@@ -551,7 +551,7 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
     switch (normalized) {
       case 'data':
         return 'بيانات';
-      case 'insight':
+      case 'statistic':
       case 'insights':
         return 'رؤية';
       case 'report':

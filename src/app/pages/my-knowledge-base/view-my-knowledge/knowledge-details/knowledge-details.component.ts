@@ -61,7 +61,7 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
   activeDocumentId: number | null = null;
   animationStates: { [key: number]: string } = {};
 
-  // Add new properties for insight documents
+  // Add new properties for statistic documents
   insightDocForm: FormGroup;
   displayInsightDialog = false;
 
@@ -377,8 +377,8 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
       status: 'active'
     };
 
-    if (this.knowledge?.type !== 'insight') {
-      // Add table of content for non-insight types
+    if (this.knowledge?.type !== 'statistic') {
+      // Add table of content for non-statistic types
       request.table_of_content = this.chapters.controls.map(control => ({
         chapter: {
           title: control.get('chapter.title')?.value?.trim() || ''
@@ -685,7 +685,7 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
     this.editingDocument = null;
     
     // First initialize the form
-    if (this.knowledge?.type === 'insight') {
+    if (this.knowledge?.type === 'statistic') {
       this.initInsightDocForm();
       this.headerTitle = this.lang === 'en' ? 'Add New Document' : 'إضافة مستند جديد';
       
@@ -714,7 +714,7 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
   }
 
   isInsightType(): boolean {
-    return this.knowledge?.type === 'insight';
+    return this.knowledge?.type === 'statistic';
   }
 
   editorInit = {

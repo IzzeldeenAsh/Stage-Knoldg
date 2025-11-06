@@ -147,7 +147,7 @@
                   <ng-container *ngIf="defaultValues.knowledgeType === 'manual'">
                     {{ "MANUAL_TITLE" | translate }}
                   </ng-container>
-                  <ng-container *ngIf="defaultValues.knowledgeType === 'insight'">
+                  <ng-container *ngIf="defaultValues.knowledgeType === 'statistic'">
                     {{ "INSIGHT_TITLE" | translate }}
                   </ng-container>
                   <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'KNOWLEDGE_TITLE_TOOLTIP' | translate }}"></i>
@@ -292,7 +292,7 @@
               <ng-container *ngIf="defaultValues.knowledgeType === 'manual'">
                 {{ "MANUAL_LANGUAGE" | translate }}
               </ng-container>
-              <ng-container *ngIf="defaultValues.knowledgeType === 'insight'">
+              <ng-container *ngIf="defaultValues.knowledgeType === 'statistic'">
                 {{ "INSIGHT_LANGUAGE" | translate }}
               </ng-container>
               <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'KNOWLEDGE_LANGUAGE_TOOLTIP' | translate }}"></i>

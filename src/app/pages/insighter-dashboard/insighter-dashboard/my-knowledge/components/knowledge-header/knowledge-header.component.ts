@@ -25,7 +25,7 @@ export class KnowledgeHeaderComponent extends BaseComponent implements OnInit {
   // Knowledge type icon and style mapping
   private knowledgeTypeMap: KnowledgeTypeMap = {
     'data': { iconName: 'data', iconClass: 'primary', label: 'DATA' },
-    'insight': { iconName: 'chart-line', iconClass: 'success', label: 'INSIGHTS' },
+    'statistic': { iconName: 'chart-line', iconClass: 'success', label: 'INSIGHTS' },
     'report': { iconName: 'document', iconClass: 'info', label: 'REPORTS' },
     'manual': { iconName: 'book', iconClass: 'warning', label: 'MANUAL' },
     'course': { iconName: 'teacher', iconClass: 'success', label: 'COURSE' },

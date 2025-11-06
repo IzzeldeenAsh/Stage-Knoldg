@@ -41,7 +41,7 @@ interface Insighter {
   knowledge_type_statistics?: {
     report?: number;
     data?: number;
-    insight?: number;
+    statistic?: number;
     manual?: number;
     course?: number;
   };
@@ -199,7 +199,7 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     'czechia': 'czech-republic'
   };
   private readonly knowledgeTypeColors: Record<string, string> = {
-    insight: '#0a7abf',
+    statistic: '#0a7abf',
     report: '#3b9ae1',
     manual: '#6bb6ff',
     data: '#1e88e5',
@@ -659,7 +659,7 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     // Sum all the knowledge types
     if (stats.report) total += stats.report;
     if (stats.data) total += stats.data;
-    if (stats.insight) total += stats.insight;
+    if (stats.statistic) total += stats.statistic;
     if (stats.manual) total += stats.manual;
     if (stats.course) total += stats.course;
 
@@ -944,7 +944,7 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     }
 
     const insighters = stats.insighters;
-    const knowledgeTypeOrder = ['insight', 'report', 'manual', 'data', 'course'];
+    const knowledgeTypeOrder = ['statistic', 'report', 'manual', 'data', 'course'];
     const discoveredTypes = new Set<string>();
 
     Object.keys(stats.type || {}).forEach(type => discoveredTypes.add(type));

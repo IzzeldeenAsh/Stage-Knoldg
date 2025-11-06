@@ -767,7 +767,7 @@ export class Step5Component extends BaseComponent implements OnInit {
 
   getShareableLink(): string {
     if (!this.publishedKnowledge) return '';
-    const knowledgeType = this.publishedKnowledge.type?.toLowerCase() || 'insight';
+    const knowledgeType = this.publishedKnowledge.type?.toLowerCase() || 'statistic';
     const slug = this.publishedKnowledge.slug || '';
     return `https://insightabusiness.com/en/knowledge/${knowledgeType}/${slug}`;
   }

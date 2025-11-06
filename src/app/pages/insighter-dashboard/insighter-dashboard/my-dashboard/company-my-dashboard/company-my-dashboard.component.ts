@@ -24,7 +24,7 @@ export class CompanyMyDashboardComponent extends BaseComponent implements OnInit
   isArabicAndNotRtl: boolean = false;
 
   private readonly knowledgeTypeColors: Record<string, string> = {
-    insight: '#0a7abf',
+    statistic: '#0a7abf',
     report: '#3b9ae1',
     manual: '#6bb6ff',
     data: '#1e88e5',
@@ -56,8 +56,8 @@ export class CompanyMyDashboardComponent extends BaseComponent implements OnInit
           this.userRole = 'company';
         } else if (profile.roles.includes('client')) {
           this.userRole = 'client';
-        } else if (profile.roles.includes('insighter')) {
-          this.userRole = 'insighter';
+        } else if (profile.roles.includes('statisticer')) {
+          this.userRole = 'statisticer';
         }
       },
       error: (error) => {
