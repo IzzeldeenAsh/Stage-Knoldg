@@ -1,4 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { TranslationService } from 'src/app/modules/i18n'; // <-- Make sure this import path is correct!
 
 @Pipe({
   name: 'notificationsNames',
@@ -6,53 +7,58 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class NotificationsNamesPipe implements PipeTransform {
 
-  transform(value: string): string {
-    switch (value) {
-      case 'activate_company':
-        return 'Activate Company';
-      case 'deactivate_company':
-        return 'Deactivate Company';
-      case 'deactivate_company_with_delete':
-        return 'Deactivate Company with Delete';
-      case 'activate_insighter':
-        return 'Activate Insighter';
-      case 'deactivate_insighter':
-        return 'Deactivate Insighter';
-      case 'deactivate_insighter_with_delete':
-        return 'Deactivate Insighter with Delete';
-      case 'deactivate_delete_insighter':
-        return 'Deactivate Delete Insighter';
-      case 'deactivate_delete_company':
-        return 'Deactivate Delete Company';
-      case 'verified_company':
-        return 'Verified Company';
-      case 'verified_insighter':
-        return 'Verified Insighter';
-      case 'accept_knowledge':
-        return 'Knowledge Request';
-      case 'insighter_meeting_reminder':
-        return 'Meeting Reminder';
-      case 'client_meeting_reminder':
-        return 'Meeting Reminder';
-      case 'question_received':
-        return 'Question Received';
-      case 'client_meeting_new':
-        return 'New Meeting Request';
-      case 'insighter_meeting_client_new':
-        return 'New Meeting Request';
-      case 'insighter_meeting_approved':
-        return 'Meeting Approved';
-      case 'client_meeting_insighter_approved':
-        return 'Meeting Approved';
-      case 'client_meeting_insighter_postponed':
-        return 'Meeting Postponed';
-      case 'client_meeting_reschedule':
-        return 'Meeting Rescheduled';
-      case 'insighter_meeting_client_reschedule':
-        return 'Meeting Rescheduled';
-      default:
-        return value;
-    }
-  }
+  // 1. Inject your TranslationService in the constructor
+  constructor(private translationService: TranslationService) {}
 
+  // 2. We change the data structure to hold both languages
+  private readonly nameMap: Record<string, { en: string; ar: string }> = {
+    'activate_company': { en: 'Activate Company', ar: 'تفعيل الشركة' },
+    'deactivate_company': { en: 'Deactivate Company', ar: 'إلغاء تفعيل الشركة' },
+    'deactivate_company_with_delete': { en: 'Deactivate Company with Delete', ar: 'إلغاء تفعيل وحذف الشركة' },
+    'deactivate_delete_company': { en: 'Deactivate Delete Company', ar: 'إلغاء تفعيل وحذف الشركة' },
+    'activate_insighter': { en: 'Activate Insighter', ar: 'تفعيل الخبير' },
+    'deactivate_insighter': { en: 'Deactivate Insighter', ar: 'إلغاء تفعيل الخبير' },
+    'deactivate_insighter_with_delete': { en: 'Deactivate Insighter with Delete', ar: 'إلغاء تفعيل وحذف الخبير' },
+    'deactivate_delete_insighter': { en: 'Deactivate Delete Insighter', ar: 'إلغاء تفعيل وحذف الخبير' },
+    'verified_company': { en: 'Verified Company', ar: 'شركة موثقة' },
+    'verified_insighter': { en: 'Verified Insighter', ar: 'خبير موثق' },
+    'accept_knowledge': { en: 'Knowledge Request', ar: 'طلب معرفة' },
+    'insighter_meeting_reminder': { en: 'Meeting Reminder', ar: 'تذكير بالاجتماع' },
+    'client_meeting_reminder': { en: 'Meeting Reminder', ar: 'تذكير بالاجتماع' },
+    'question_received': { en: 'Question Received', ar: 'تم استلام سؤال' },
+    'client_meeting_new': { en: 'New Meeting Request', ar: 'طلب اجتماع جديد' },
+    'insighter_meeting_client_new': { en: 'New Meeting Request', ar: 'طلب اجتماع جديد' },
+    'insighter_meeting_approved': { en: 'Meeting Approved', ar: 'تمت الموافقة على الاجتماع' },
+    'client_meeting_insighter_approved': { en: 'Meeting Approved', ar: 'تمت الموافقة على الاجتماع' },
+    'client_meeting_insighter_postponed': { en: 'Meeting Postponed', ar: 'تم تأجيل الاجتماع' },
+    'client_meeting_reschedule': { en: 'Meeting Rescheduled', ar: 'تمت إعادة جدولة الاجتماع' },
+    'insighter_meeting_client_reschedule': { en: 'Meeting Rescheduled', ar: 'تمت إعادة جدولة الاجتماع' },
+    // Add any other keys from your first example if needed
+    'declined': { en: 'Knowledge Declined', ar: 'رفض المعرفة' },
+    'approved': { en: 'Knowledge Approved', ar: 'الموافقة على المعرفة' },
+    'download': { en: 'Download', ar: 'تنزيل' },
+    'upload': { en: 'Upload', ar: 'رفع' },
+    'comment': { en: 'Comment', ar: 'تعليق' },
+    'reply': { en: 'Reply', ar: 'رد' },
+    'like': { en: 'Like', ar: 'إعجاب' },
+    'save': { en: 'Save', ar: 'حفظ' },
+    'share': { en: 'Share', ar: 'مشاركة' },
+    'view': { en: 'View', ar: 'عرض' },
+  };
+
+  // 3. The transform logic now uses the language to decide which text to show
+  transform(value: string): string {
+    // Get the current language ('en', 'ar', etc.) from the service
+    const lang = this.translationService.getSelectedLanguage();
+    
+    const names = this.nameMap[value];
+
+    if (!names) {
+      // If we don't have a translation, return the original key
+      return value;
+    }
+
+    // If the language is Arabic, return the 'ar' version; otherwise, default to English
+    return lang === 'ar' ? names.ar : names.en;
+  }
 }
