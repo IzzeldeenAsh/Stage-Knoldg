@@ -89,14 +89,26 @@
                   class="btn btn-sm btn-outline-info d-flex align-items-center toggle-archived-btn"
                   [class.active]="showArchivedDownloads()"
                   (click)="toggleArchivedDownloads()"
-                  [pTooltip]="showArchivedDownloads() ? 'Show Downloads' : 'Show Archived'"
+                  [pTooltip]="lang === 'ar'
+                    ? (showArchivedDownloads() ? 'إظهار التحميلات' : 'إظهار الأرشيف')
+                    : (showArchivedDownloads() ? 'Show Downloads' : 'Show Archived')"
+                  
                   tooltipPosition="top">
+                  
                   @if (showArchivedDownloads()) {
                     <i class="pi pi-arrow-left me-2 text-dark" style="font-size: 1rem;"></i>
                   } @else {
                     <i class="pi pi-inbox me-2 text-dark" style="font-size: 1rem;"></i>
                   }
-                  <span>{{ showArchivedDownloads() ? 'Downloads' : 'Archived' }}</span>
+                  
+                  <!-- CHANGE 2: Updated Button Text Logic -->
+                  <span>
+                    {{ lang === 'ar'
+                      ? (showArchivedDownloads() ? 'التحميلات' : 'الأرشيف')
+                      : (showArchivedDownloads() ? 'Downloads' : 'Archived')
+                    }}
+                  </span>
+                  
                   @if (!showArchivedDownloads() && libraryStatistics()?.archived) {
                     <span class="badge badge-light-info ms-2">{{ libraryStatistics()?.archived }}</span>
                   }
