@@ -61,7 +61,7 @@ export class LangSwitchButtonComponent implements OnInit {
 
     // Set the language preference in a cookie that works across subdomains
     // This matches the cookie set in the NextJS app
-    const isProduction = location.hostname.includes('insightabusiness.com');
+    const isProduction = location.hostname.includes('foresighta.co');
     const cookieParts = [
       `preferred_language=${newLang}`,
       `Path=/`,                       // send on all paths
@@ -70,7 +70,7 @@ export class LangSwitchButtonComponent implements OnInit {
     ];
     
     if (isProduction) {
-      cookieParts.push(`Domain=.insightabusiness.com`); // leading dot = include subdomains
+      cookieParts.push(`Domain=.foresighta.co`); // leading dot = include subdomains
       cookieParts.push(`Secure`);                // HTTPS only in production
     }
     
