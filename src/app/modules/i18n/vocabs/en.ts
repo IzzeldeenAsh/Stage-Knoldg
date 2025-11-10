@@ -47,7 +47,7 @@ export const locale = {
     SENT_MEETINGS:'Sent Meetings',
     RECEIVED_MEETINGS:'Received Meetings',
     COVER_YEARS:'Cover Years',
-    COVER_YEARS_TOOLTIP:'Select one year or a range of years that this knowledge cover',
+    COVER_YEARS_TOOLTIP:'Select one year or a range of years that this insight covers',
     ENTER_TAGS:'Select or Add custom Tag',
     MY_CERTIFICATES:'My Certificates',
     NO_CERTIFICATES:'No Certificates Uploaded',
