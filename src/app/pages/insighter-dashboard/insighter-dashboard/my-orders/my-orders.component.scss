@@ -18,7 +18,7 @@
 }
 
 .text-info {
-  color: #0978B9 !important;
+  color: #3b82f6 !important;
 }
 
 .bg-light-info {
@@ -28,17 +28,17 @@
 .btn-light-info {
   background-color: #F1FAFE;
   border-color: transparent;
-  color: #0978B9;
+  color: #3b82f6;
   
   &:hover {
     background-color: #E8F4FD;
-    color: #0978B9;
+    color: #3b82f6;
   }
 }
 
 .btn-info {
-  background-color: #0978B9;
-  border-color: #0978B9;
+  background-color: #3b82f6;
+  border-color: #3b82f6;
   
   &:hover {
     background-color: #0866A1;
@@ -79,13 +79,13 @@
       }
 
       &.active {
-        color: #0978B9 !important;
+        color: #3b82f6 !important;
         background-color: #F1FAFE !important;
         font-weight: 600 !important;
         border-color: transparent;
 
         &:hover {
-          color: #0978B9 !important;
+          color: #3b82f6 !important;
           background-color: #f1faff !important;
         }
       }
@@ -142,7 +142,7 @@
 
   &.active {
     background-color: #fff;
-    color: #0978B9;
+    color: #3b82f6;
     font-weight: 600;
     border-color: #e4e6ef;
     z-index: 3;

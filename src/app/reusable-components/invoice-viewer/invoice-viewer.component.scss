@@ -12,11 +12,11 @@
 // Page container sized to A4 printable area (210mm - 2*10mm = 190mm width)
 .page {
   width: 190mm;
-  height: 277mm; // 297mm - 2*10mm margins = 277mm
+  height: 270mm; // Reduced height to fit content better
   margin: 0 auto;
   position: relative;
   background: #fff;
-  overflow: hidden;
+  overflow: visible; // Allow content to flow properly
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
 }
@@ -49,13 +49,13 @@
 
 // Content area
 .content-cell {
-  padding: 25px;
+  padding: 15px; // Reduced padding to fit more content
   vertical-align: top;
 }
 
 // Logo + invoice info row
 .logo-table {
-  margin-top: 16px;
+  margin-top: 8px; // Reduced margin
   width: 100%;
   border-collapse: collapse;
 }
@@ -82,13 +82,13 @@
 // Billing two-column table
 .billing-table {
   width: 100%;
-  margin-top: 15px;
+  margin-top: 10px; // Reduced margin
   border-collapse: collapse;
 }
 
 .billing-table td {
   vertical-align: top;
-  padding: 6px 0;
+  padding: 3px 0; // Reduced padding
   font-size: 13px;
   color: #333;
 }
@@ -106,11 +106,11 @@
 .services {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 50px;
+  margin-top: 25px; // Reduced margin to fit better
 }
 
 .services th, .services td {
-  padding: 8px 6px;
+  padding: 5px 6px; // Reduced padding
   font-size: 13px;
 }
 
@@ -131,8 +131,8 @@
   padding-left: 40px;
   font-size: 12px;
   color: #666;
-  padding-top: 2px;
-  padding-bottom: 6px;
+  padding-top: 1px; // Reduced padding
+  padding-bottom: 3px; // Reduced padding
   background-color: #f8f9fa;
 }
 
@@ -150,7 +150,7 @@
   width: auto; // shrink to content
   margin-left: auto; // push to right
   border-collapse: collapse;
-  margin-top: 12px;
+  margin-top: 8px; // Reduced margin
 }
 
 .totals td {
@@ -182,13 +182,13 @@
 // Footer (kept in its own bottom row so it always sits at page bottom)
 .footer-invoice {
   position: absolute;
-  bottom: 14px;
+  bottom: 8px; // Positioned closer to bottom
+  left: 15px; // Fixed positioning
+  right: 15px; // Fixed positioning
   text-align: center;
-  font-size: 12px;
+  font-size: 11px; // Slightly smaller
   color: #999;
-  padding-top: 8px;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  padding-top: 6px; // Reduced padding
 }
 
 .bg {
@@ -251,8 +251,7 @@
 
 // Print styles with @page configuration
 @page {
-  margin: 0 !important;
-  padding: 0 !important;
+  margin: 8mm 8mm 8mm 8mm !important; // Proper margins for A4
   size: A4 !important;
 }
 
@@ -284,12 +283,13 @@
   .page {
     width: 100% !important;
     height: auto !important;
-    min-height: 100vh !important;
+    min-height: auto !important; // Don't force 100vh
     max-height: none !important;
     box-shadow: none !important;
     border-radius: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
+    padding-top: 1.6mm !important; // Small top padding for safety
     transform: none !important;
     page-break-after: avoid !important;
     page-break-inside: avoid !important;

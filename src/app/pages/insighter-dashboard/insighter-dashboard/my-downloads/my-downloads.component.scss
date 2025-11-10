@@ -62,15 +62,15 @@
   
   &:hover {
     background-color: #f8f9fa;
-    border-color: #0978B9 !important;
+    border-color: #3b82f6 !important;
   }
   
   &.active {
     background-color: #e3f2fd;
-    border-color: #0978B9 !important;
+    border-color: #3b82f6 !important;
     
     .text-muted {
-      color: #0978B9 !important;
+      color: #3b82f6 !important;
     }
   }
   
@@ -296,7 +296,7 @@
   border-radius: 50%;
   border: none;
   background-color: #e1f5fe;
-  color: #0978B9;
+  color: #3b82f6;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -305,7 +305,7 @@
   transition: all 0.3s ease;
   
   &:hover {
-    background-color: #0978B9;
+    background-color: #3b82f6;
     color: white !important;
     box-shadow: 0 4px 12px rgba(0, 158, 247, 0.3);
     transform: translateY(-1px);
@@ -324,11 +324,12 @@
 // Button hover states for icons
 .download-btn {
   transition: all 0.3s ease;
-  color: #0778b9 !important;
+  color: #3b82f6 !important;
 
   svg path {
-    fill: currentColor;
-    transition: fill 0.2s ease;
+    fill: none !important;
+    stroke: currentColor !important;
+    transition: stroke 0.2s ease;
   }
 
   &:hover:not(:disabled) {
@@ -339,7 +340,8 @@
     }
 
     svg path {
-      fill: currentColor;
+      fill: none !important;
+      stroke: currentColor !important;
     }
   }
 }
@@ -358,26 +360,26 @@
   transition: all 0.3s ease;
   background-color: #f1faff; // light info background
   border-color: #cfe8ff;
-  color: #0778b9;
+  color: #3b82f6;
   box-shadow: 0 1px 3px rgba(9, 120, 185, 0.12);
 
   i {
-    color: #0778b9 !important;
+    color: #3b82f6 !important;
   }
 
   &:hover:not(:disabled) {
     background-color: #e6f4ff;
     border-color: #b9ddff;
-    color: #0778b9;
+    color: #3b82f6;
 
     i {
-      color: #0778b9 !important;
+      color: #3b82f6 !important;
     }
   }
 
   &.active {
-    background-color: #0778b9;
-    border-color: #0778b9;
+    background-color: #3b82f6;
+    border-color: #3b82f6;
     color: white;
     box-shadow: 0 2px 8px rgba(9, 120, 185, 0.25);
 

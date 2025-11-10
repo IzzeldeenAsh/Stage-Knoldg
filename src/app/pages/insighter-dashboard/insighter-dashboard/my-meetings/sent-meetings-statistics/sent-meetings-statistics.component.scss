@@ -3,26 +3,26 @@
   transition: all 0.3s ease;
   background-color: #f1faff; // light info background
   border-color: #cfe8ff;
-  color: #0778b9;
+  color: #3b82f6;
   box-shadow: 0 1px 3px rgba(9, 120, 185, 0.12);
 
   i {
-    color: #0778b9 !important;
+    color: #3b82f6 !important;
   }
 
   &:hover:not(:disabled) {
     background-color: #e6f4ff;
     border-color: #b9ddff;
-    color: #0778b9;
+    color: #3b82f6;
 
     i {
-      color: #0778b9 !important;
+      color: #3b82f6 !important;
     }
   }
 
   &.active {
-    background-color: #0778b9;
-    border-color: #0778b9;
+    background-color: #3b82f6;
+    border-color: #3b82f6;
     color: white;
     box-shadow: 0 2px 8px rgba(9, 120, 185, 0.25);
 

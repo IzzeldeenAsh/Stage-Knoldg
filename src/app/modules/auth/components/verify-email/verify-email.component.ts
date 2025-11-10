@@ -25,7 +25,7 @@
     error: boolean = false;
     loading: boolean = true;
 
-    private insightaHost: string = "https://api.insightabusiness.com";
+    private insightaHost: string = "https://api.foresighta.co";
     verified: boolean = false;
     showSignUpButton: boolean = false;
 
@@ -111,7 +111,7 @@
           next: (response: any) => {
             // Redirect to the callback URL with the token from cookies
             const token = this.getTokenFromCookie();
-            window.location.href = `https://insightabusiness.com/en/callback/${token}`;
+            window.location.href = `http://localhost:3000/en/callback/${token}`;
             this.verificationStatusKey = 'AUTH.VERIFY_EMAIL.EMAIL_SUCCESSFULLY_VERIFIED';
             this.verificationStatus = this.translationService.getTranslation(this.verificationStatusKey);
             this.verified = true;
