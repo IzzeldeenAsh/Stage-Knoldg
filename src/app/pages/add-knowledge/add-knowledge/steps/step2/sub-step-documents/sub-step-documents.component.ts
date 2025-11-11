@@ -298,22 +298,33 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
     fileInput.type = 'file';
     fileInput.multiple = true;
     fileInput.accept = '.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt';
-    // Intentionally do NOT set the 'capture' attribute here.
-    // On iOS (iPhone/iPad), adding 'capture' can force the camera UI
-    // instead of the file picker, which is undesirable for document uploads.
-    
-    fileInput.onchange = (event: any) => {
-      const files = event.target.files;
+    // Do NOT set the 'capture' attribute (iOS could force camera UI)
+    // iOS Safari requires the input to be in the DOM for change to reliably fire
+    fileInput.style.display = 'none';
+    document.body.appendChild(fileInput);
+
+    const handleFiles = () => {
+      const files = (fileInput.files as FileList) || ({} as FileList);
       if (files && files.length > 0) {
+        // Ensure Angular picks up changes even if this listener fires outside its zone
         this.handleMultipleFiles(files);
+        this.cdr.detectChanges();
+      }
+      // Cleanup the temporary input
+      if (fileInput.parentNode) {
+        fileInput.parentNode.removeChild(fileInput);
       }
     };
-    
+
+    // Some Safari/iOS versions fire 'input' instead of 'change' for file inputs
+    fileInput.addEventListener('change', handleFiles, { once: true });
+    fileInput.addEventListener('input', handleFiles, { once: true });
+
     // Use a longer timeout for Safari to ensure the click event is properly processed
     const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
     setTimeout(() => {
       fileInput.click();
-    }, isSafari ? 100 : 0);
+    }, isSafari ? 150 : 0);
   }
 
   // Queue to store files for sequential upload
@@ -1453,7 +1464,7 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
               this.showInfo('', 'Knowledge deleted successfully');
             }
           },
-          error: (error) => {
+          error: (error:any) => {
             console.error('Error deleting knowledge:', error);
             
             // Even if deletion fails, reset the flag so user can re-upload
