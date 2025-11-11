@@ -84,7 +84,7 @@ const routes: Routes = [
         path: 'sales',
         loadChildren: () => import('./insighter-dashboard/sales/sales.module').then(m => m.SalesModule),
         canActivate: [authGuard, RolesGuard],
-        data: { roles: ['insighter', 'company'] }
+        data: { roles: ['insighter', 'company', 'company-insighter'] }
       }
     ]
   }

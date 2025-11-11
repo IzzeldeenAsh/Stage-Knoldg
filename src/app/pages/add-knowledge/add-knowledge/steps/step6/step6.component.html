@@ -95,6 +95,17 @@
 <div class="custom-modal-overlay" *ngIf="isSocialShareModalVisible" (click)="closeSocialShareModal()">
   <div class="custom-modal-container" (click)="$event.stopPropagation()">
     <div class="modal-content">
+      <!-- Close button -->
+      <button
+        type="button"
+        class="btn btn-sm btn-icon btn-light position-absolute top-0 end-0 m-3"
+        style="z-index: 30;"
+        (click)="closeSocialShareModal()"
+        [attr.aria-label]="lang === 'ar' ? 'إغلاق' : 'Close'"
+        [title]="lang === 'ar' ? 'إغلاق' : 'Close'"
+      >
+        <i class="pi pi-times fs-2"></i>
+      </button>
       <!-- Modal body -->
       <div class="modal-body py-5 px-8 bg-white rounded-bottom" style="margin-top: -1rem; position: relative; z-index: 3;">
        <div class="motive-title" style="text-align: center; padding: 2.5rem 0px;">

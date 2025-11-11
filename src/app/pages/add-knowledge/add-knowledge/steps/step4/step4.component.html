@@ -189,7 +189,7 @@
               <div class="col-12">
                 <app-custom-year-picker
                   formControlName="cover_years"
-                  [placeholder]="currentLang === 'ar' ? 'اختر النطاق الزمني للبيانات' : 'Select Data Coverage Period'"
+                  [placeholder]="currentLang === 'ar' ? 'اختر النطاق الزمني' : 'Select Coverage Period'"
                   [yearRangeStart]="1900"
                   [yearRangeEnd]="2030"
                   [allowRange]="true"
@@ -701,8 +701,8 @@
         </app-industry-selector>
       </div>
 
-      <!-- HS Code -->
-      <div class="mb-10 fv-row" [@fadeInMoveY] *ngIf="selectedIsicId">
+      <!-- HS Code - Always visible -->
+      <div class="mb-10 fv-row">
         <app-get-hs-code-by-isic
           [isicCodeId]="selectedIsicId"
           [placeholder]="currentLanguage == 'ar' ? 'اختر رمز الـ HS' : 'Select HS code'"

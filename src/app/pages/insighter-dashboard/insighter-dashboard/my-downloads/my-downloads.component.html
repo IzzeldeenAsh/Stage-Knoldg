@@ -158,9 +158,13 @@
                       } @else {
                         @for (knowledge of currentKnowledgeItems(); track trackByKnowledgeUuid($index, knowledge)) {
                           <div 
-                            class="knowledge-item d-flex align-items-center px-4 py-2 mb-2 border rounded cursor-pointer"
+                            class="knowledge-item d-flex align-items-center px-4 py-2 mb-2 border rounded cursor-pointer position-relative"
                             [class.active]="selectedKnowledge()?.uuid === knowledge.uuid"
                             (click)="selectKnowledge(knowledge); $event.stopPropagation()">
+                            
+                            @if (highlightedKnowledgeUuid() === knowledge.uuid) {
+                              <span class="new-ribbon" [class.rtl]="lang === 'ar'">{{ lang === 'ar' ? 'جديد' : 'New' }}</span>
+                            }
                             
                             <!-- Folder Icon -->
                             <div class="me-3">

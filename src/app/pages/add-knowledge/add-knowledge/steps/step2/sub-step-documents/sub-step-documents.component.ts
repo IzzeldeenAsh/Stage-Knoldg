@@ -298,15 +298,9 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
     fileInput.type = 'file';
     fileInput.multiple = true;
     fileInput.accept = '.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt';
-    
-    // Only add capture attribute for mobile iOS devices, not desktop Safari
-    const isMobileIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && 
-                       !(navigator.platform === 'MacIntel' && navigator.maxTouchPoints <= 1);
-    
-    if (isMobileIOS) {
-      // Use the environment capture for mobile iOS devices only
-      fileInput.setAttribute('capture', 'environment');
-    }
+    // Intentionally do NOT set the 'capture' attribute here.
+    // On iOS (iPhone/iPad), adding 'capture' can force the camera UI
+    // instead of the file picker, which is undesirable for document uploads.
     
     fileInput.onchange = (event: any) => {
       const files = event.target.files;
