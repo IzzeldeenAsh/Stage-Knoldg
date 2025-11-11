@@ -131,6 +131,8 @@ export class InvoiceViewerComponent extends BaseComponent implements OnInit, OnD
   }
 
   printOrSaveAsPDF(): void {
+    console.log('Print button clicked!'); // Debug log
+
     try {
       // Add temporary print styles to hide navigation
       this.addPrintStyles();
@@ -140,6 +142,7 @@ export class InvoiceViewerComponent extends BaseComponent implements OnInit, OnD
 
       // Small delay to ensure focus, then trigger print
       setTimeout(() => {
+        console.log('Triggering print dialog...'); // Debug log
         if (window.print) {
           window.print();
         } else {
@@ -174,8 +177,7 @@ export class InvoiceViewerComponent extends BaseComponent implements OnInit, OnD
     style.type = 'text/css';
     style.innerHTML = `
       @page {
-        margin: 0 !important;
-        padding: 0 !important;
+        margin: 8mm 8mm 8mm 8mm !important;
         size: A4 !important;
       }
 
@@ -275,12 +277,13 @@ export class InvoiceViewerComponent extends BaseComponent implements OnInit, OnD
           flex-direction: column !important;
           width: 100% !important;
           height: auto !important;
-          min-height: 100vh !important;
+          min-height: auto !important;
           background: white !important;
           box-shadow: none !important;
           border-radius: 0 !important;
           margin: 0 !important;
           padding: 0 !important;
+          padding-top: 2mm !important;
           overflow: visible !important;
         }
 

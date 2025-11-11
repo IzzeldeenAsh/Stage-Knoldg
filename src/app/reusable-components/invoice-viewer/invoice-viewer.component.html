@@ -6,7 +6,8 @@
       <button
         type="button"
         class="btn btn-info btn-sm px-4"
-        (click)="printOrSaveAsPDF()">
+        (click)="printOrSaveAsPDF()"
+        style="pointer-events: auto; cursor: pointer; z-index: 1000; position: relative;">
         <i class="ki-outline ki-printer fs-6 me-2"></i>
         {{ lang === 'ar' ? 'طباعة أو حفظ كـ PDF' : 'Print or Save PDF' }}
       </button>

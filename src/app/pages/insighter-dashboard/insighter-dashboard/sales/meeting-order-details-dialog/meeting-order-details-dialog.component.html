@@ -20,10 +20,9 @@
           <div class="text-muted fs-7">{{ order.date | date:'medium' }}</div>
         </div>
         <div class="text-end">
-          <div class="fs-2 fw-bold text-dark">
+          <div class="fs-2 fw-bold text-dark " [ngClass]="{'badge badge-light-success': order.amount === 0, 'badge badge-light-info': order.amount > 0}">
             {{ order.amount === 0 ? (lang === 'ar' ? 'مجاني' : 'Free') : '$'+ order.amount }}
           </div>
-          <span class="badge" [ngClass]="utils.getStatusBadgeClass(order.status)">{{ order.status }}</span>
         </div>
       </div>
 

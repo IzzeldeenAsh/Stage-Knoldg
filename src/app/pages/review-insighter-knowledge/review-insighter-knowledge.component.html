@@ -182,7 +182,7 @@
                       <img [src]="requestUser.profile_photo_url" alt="Profile" class="w-100"     style="object-fit: cover; object-position: top;">
                     </div>
                     <div *ngIf="!requestUser.profile_photo_url && requestUser.name" class="symbol h-40px w-40px d-flex align-items-center justify-content-center bg-light-info text-info"
-                      [ngStyle]="{'color': '#0978B9'}">
+                      [ngStyle]="{'color': '#3b82f6'}">
                       {{ requestUser.name | slice:0:1 }}{{ (requestUser.name && requestUser.name.indexOf(' ') > -1 ? 
                         requestUser.name.split(' ')[1] : '') | slice:0:1 }}
                     </div>

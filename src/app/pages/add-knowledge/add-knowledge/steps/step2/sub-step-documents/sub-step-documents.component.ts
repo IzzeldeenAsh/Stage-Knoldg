@@ -72,6 +72,8 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   languageMismatchMessage = '';
   languageMismatchDocuments: string[] = [];
   private languageMismatchResolver: ((value: boolean) => void) | null = null;
+  // Track last shown mismatch to avoid re-showing after user edits titles
+  private lastLanguageMismatchDocs: Array<{ id: string | number; name: string }> = [];
 
   constructor(
     injector: Injector,
@@ -296,15 +298,9 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
     fileInput.type = 'file';
     fileInput.multiple = true;
     fileInput.accept = '.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt';
-    
-    // Only add capture attribute for mobile iOS devices, not desktop Safari
-    const isMobileIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && 
-                       !(navigator.platform === 'MacIntel' && navigator.maxTouchPoints <= 1);
-    
-    if (isMobileIOS) {
-      // Use the environment capture for mobile iOS devices only
-      fileInput.setAttribute('capture', 'environment');
-    }
+    // Intentionally do NOT set the 'capture' attribute here.
+    // On iOS (iPhone/iPad), adding 'capture' can force the camera UI
+    // instead of the file picker, which is undesirable for document uploads.
     
     fileInput.onchange = (event: any) => {
       const files = event.target.files;
@@ -781,6 +777,8 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
             }else{
               this.showSuccess('', 'Document details updated successfully');
             }
+            // Clear last mismatch tracking on successful update
+            this.lastLanguageMismatchDocs = [];
             resolve(true);
           },
                   error: (error) => {
@@ -835,6 +833,7 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
         const errorKeys = Object.keys(error.error.errors);
         const documentIndices: number[] = [];
         const affectedDocumentNames: string[] = [];
+        const affectedDocsMeta: Array<{ id: string | number; name: string }> = [];
 
         errorKeys.forEach(key => {
           // Extract index from keys like "documents.55", "documents.44"
@@ -847,12 +846,14 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
             // Try multiple approaches to find the document name
             let documentFound = false;
             let documentName = '';
+            let documentIdOrIndex: string | number = serverIndex;
             
             // Approach 1: Find by document ID in our documents array
             const docById = this.documents.find(doc => doc.id === serverIndex);
             if (docById) {
               documentName = docById.file_name;
               documentFound = true;
+              documentIdOrIndex = docById.id ?? serverIndex;
             }
             
             // Approach 2: Find by docId in form controls
@@ -864,6 +865,7 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
                   documentName = control.get('file_name')?.value || this.documents[i]?.file_name || '';
                   if (documentName) {
                     documentFound = true;
+                    documentIdOrIndex = docId ?? serverIndex;
                     break;
                   }
                 }
@@ -875,6 +877,7 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
               documentName = this.documents[serverIndex].file_name;
               if (documentName) {
                 documentFound = true;
+                documentIdOrIndex = serverIndex;
               }
             }
             
@@ -886,6 +889,7 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
               if (docWithMatchingId) {
                 documentName = docWithMatchingId.file_name;
                 documentFound = true;
+                documentIdOrIndex = docWithMatchingId.id ?? serverIndex;
               }
             }
             
@@ -895,14 +899,19 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
             }
             
             affectedDocumentNames.push(documentName);
+            affectedDocsMeta.push({ id: documentIdOrIndex, name: documentName });
           }
         });
 
         // Always show the dialog even if we couldn't extract specific document names
         if (affectedDocumentNames.length === 0) {
           affectedDocumentNames.push('One or more documents');
+          affectedDocsMeta.push({ id: 'unknown', name: 'One or more documents' });
         }
         
+        // Always snapshot latest mismatch context so we can compare on next occurrences if needed
+        this.lastLanguageMismatchDocs = affectedDocsMeta.map(d => ({ id: d.id, name: d.name }));
+
         // Store the affected documents for the modal
         this.languageMismatchDocuments = affectedDocumentNames;
         

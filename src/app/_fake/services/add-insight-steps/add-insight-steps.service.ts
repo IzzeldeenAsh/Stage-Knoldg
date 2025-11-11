@@ -74,6 +74,7 @@ export interface DocumentInfo {
   file_extension: string;
   description?: string;
   type?: string;
+  language?: string;
 }
 
 export interface DocumentListResponse {
@@ -145,6 +146,7 @@ export interface DocumentDetailsRequest {
 export interface DocumentUploadResponse {
   data: {
     knowledge_document_id: number;
+    language: string;
   };
 }
 

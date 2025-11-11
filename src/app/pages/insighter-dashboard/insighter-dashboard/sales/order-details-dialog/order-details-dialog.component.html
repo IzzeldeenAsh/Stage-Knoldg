@@ -20,22 +20,19 @@
           <div class="text-muted fs-7">{{ order.date | date:'medium' }}</div>
         </div>
         <div class="text-end">
-          <div class="fs-2 fw-bold text-dark">
+          <div class="fs-4 fw-bold text-success badge badge-light-success">
             {{ order.amount === 0 ? (lang === 'ar' ? 'مجاني' : 'Free') : '$'+ order.amount }}
           </div>
-          <span class="badge" [ngClass]="utils.getStatusBadgeClass(order.status)">{{ order.status }}</span>
         </div>
       </div>
 
       <div class="d-flex justify-content-between align-items-center">
         <span class="fw-semibold">{{ utils.getServiceTypeDisplay(order.service) }}</span>
-        <div class="payment-method-display d-inline-flex align-items-center bg-white rounded border px-3 py-2">
-          <ng-container *ngIf="utils.shouldShowCardLogo(order?.payment); else showIcon3">
+        <div class="payment-method-display d-inline-flex align-items-center bg-white rounded border px-3 py-2" *ngIf="order.amount > 0">
+          <ng-container *ngIf="utils.shouldShowCardLogo(order?.payment);">
             <div class="me-2" [innerHTML]="cardLogoSvg(order?.payment)" style="width: 24px; height: 16px; display: flex; align-items: center;"></div>
           </ng-container>
-          <ng-template #showIcon3>
-            <i class="fs-6 me-2 text-info" [ngClass]="utils.getPaymentMethodIcon(order?.payment)"></i>
-          </ng-template>
+         
           <span class="fw-bold text-dark">{{ utils.getPaymentMethodDisplay(order?.payment, lang) }}</span>
         </div>
       </div>
@@ -150,7 +147,7 @@
                       <div class="fw-bold fs-6">{{ doc.file_name }}</div>
                       <div class="text-muted fs-7">{{ doc.file_extension.toUpperCase() }}</div>
                     </div>
-                    <div class="text-end">
+                    <div class="text-end badge badge-light-success">
                       <div class="fw-bold text-info">{{ doc.price === 0 ? (lang === 'ar' ? 'مجاني' : 'Free') : '$' + doc.price }}</div>
                     </div>
                   </div>

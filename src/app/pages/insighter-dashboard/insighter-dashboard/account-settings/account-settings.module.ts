@@ -31,6 +31,7 @@ import { PaymentSettingsComponent } from './payment-settings/payment-settings.co
 import { SettingsTabsComponent } from './settings-tabs/settings-tabs.component';
 import { ConsultingScheduleComponent } from './consulting-schedule.component';
 import { InsighterDashboardSharedModule } from '../shared/shared.module';
+import { PendingChangesGuard } from 'src/app/guards/pending-changes.guard';
 
 const routes: Routes = [
   {
@@ -58,7 +59,8 @@ const routes: Routes = [
       },
       {
         path: 'consulting-schedule',
-        component: ConsultingScheduleComponent
+        component: ConsultingScheduleComponent,
+        canDeactivate: [PendingChangesGuard]
       }
     ]
   }

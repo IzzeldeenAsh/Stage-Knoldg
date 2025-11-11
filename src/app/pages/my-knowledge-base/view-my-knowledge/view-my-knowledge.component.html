@@ -1,9 +1,9 @@
 <p-toast></p-toast>
 
 <div class="bg-custom"></div>
-<div class="content-wrapper">
+<div class="content-wrapper"style="padding-bottom: 200px;">
   <div class="breadcrumb-bg" *ngIf="knowledge">
-    <div class="container">
+    <div class="container" >
       <!-- Breadcrumb -->
       <div class="d-flex align-items-center justify-content-between pt-10 mb-70">
         <ul
@@ -552,7 +552,7 @@
                         </div>
                         <div *ngIf="requestUser && requestUser.name && !requestUser.profile_photo_url" 
                           class="symbol h-40px w-40px d-flex align-items-center justify-content-center bg-light-info text-info"
-                          [ngStyle]="{'color': '#0978B9'}">
+                          [ngStyle]="{'color': '#3b82f6'}">
                           {{ requestUser.name | slice:0:1 }}{{ (requestUser.name && requestUser.name.indexOf(' ') > -1 ? 
                             requestUser.name.split(' ')[1] : '') | slice:0:1 }}
                         </div>
@@ -879,7 +879,17 @@
   <div class="custom-modal-container" (click)="$event.stopPropagation()">
     <div class="modal-content">
  
-
+      <!-- Close button -->
+      <button
+        type="button"
+        class="btn btn-sm btn-icon btn-light position-absolute top-0 end-0 m-3"
+        style="z-index: 30;"
+        (click)="closeSocialShareModal()"
+        [attr.aria-label]="lang === 'ar' ? 'إغلاق' : 'Close'"
+        [title]="lang === 'ar' ? 'إغلاق' : 'Close'"
+      >
+        <i class="pi pi-times fs-2"></i>
+      </button>
       <!-- Modal body -->
       <div class="modal-body py-5 px-8 bg-white rounded-bottom" style="margin-top: -1rem; position: relative; z-index: 3;">
        <div class="motive-title" style="text-align: center; padding: 2.5rem 0px;">
