@@ -1,4 +1,13 @@
 <form [formGroup]="documentsForm">
+    <!-- Hidden persistent file input for reliable iOS/iPadOS behavior -->
+    <input
+        type="file"
+        #multiUploadInput
+        [accept]="fileAcceptAttr"
+        (change)="onMultipleFilesSelected($event)"
+        multiple
+        style="display: none"
+    />
     <div formArrayName="documents">
         <!-- Document Items -->
         <div *ngFor="let doc of documentControls.controls; let i = index" [formGroupName]="i" class="card shadow-sm mb-5" [@fadeInMoveY]>
