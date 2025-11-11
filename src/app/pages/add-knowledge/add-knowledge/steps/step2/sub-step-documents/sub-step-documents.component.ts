@@ -303,7 +303,12 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
     fileInput.style.display = 'none';
     document.body.appendChild(fileInput);
 
+    let handled = false;
     const handleFiles = () => {
+      if (handled) {
+        return;
+      }
+      handled = true;
       const files = (fileInput.files as FileList) || ({} as FileList);
       if (files && files.length > 0) {
         // Ensure Angular picks up changes even if this listener fires outside its zone
@@ -362,9 +367,32 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       );
     }
     
-    // Only add valid files to upload queue
+    // Only add valid, unique files to upload queue
     if (validFiles.length > 0) {
-      this.fileUploadQueue.push(...validFiles);
+      // Build a set of existing file keys already queued or present in documents
+      const existingKeys = new Set<string>();
+      const toKey = (f: File) => `${f.name}|${f.size}|${f.lastModified}`;
+      
+      this.fileUploadQueue.forEach(f => existingKeys.add(toKey(f)));
+      this.documents.forEach(d => {
+        if (d.file) {
+          existingKeys.add(toKey(d.file));
+        }
+      });
+      
+      const seen = new Set<string>();
+      const uniqueValidFiles: File[] = [];
+      validFiles.forEach(f => {
+        const key = toKey(f);
+        if (!seen.has(key) && !existingKeys.has(key)) {
+          seen.add(key);
+          uniqueValidFiles.push(f);
+        }
+      });
+      
+      if (uniqueValidFiles.length > 0) {
+        this.fileUploadQueue.push(...uniqueValidFiles);
+      }
       
       // Start sequential upload process if not already in progress
       if (!this.isUploadInProgress) {
@@ -1464,7 +1492,7 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
               this.showInfo('', 'Knowledge deleted successfully');
             }
           },
-          error: (error:any) => {
+          error: (error) => {
             console.error('Error deleting knowledge:', error);
             
             // Even if deletion fails, reset the flag so user can re-upload
