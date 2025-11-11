@@ -30,6 +30,7 @@ export class DocumentModalComponent extends BaseComponent implements OnInit, OnC
   selectedFile: File | null = null;
   selectedFileName: string = '';
   selectedFileIcon: string = '';
+  documentLanguage: string = '';
   uploadProgress: number = 0;
   isUploading: boolean = false;
   isSaving: boolean = false;
@@ -158,6 +159,7 @@ export class DocumentModalComponent extends BaseComponent implements OnInit, OnC
     // Set file display information for edit mode
     this.selectedFileName = this.editingDocument.file_name;
     this.selectedFileIcon = this.getFileIconByExtension(this.editingDocument.file_extension);
+    this.documentLanguage = this.editingDocument.language || '';
     
     // Patch form values
     this.documentForm.patchValue({
@@ -246,9 +248,13 @@ export class DocumentModalComponent extends BaseComponent implements OnInit, OnC
             this.uploadProgress = event.progress || 0;
           } else if (event.type === 'response' && event.response?.data) {
             const documentId = event.response.data.knowledge_document_id;
-            
+            const language = event.response.data.language;
+
             if (documentId) {
               this.documentForm.patchValue({ id: documentId });
+              if (language) {
+                this.documentLanguage = language;
+              }
               this.showSuccess('', 'File uploaded successfully. Please complete the document details.');
               this.uploadProgress = 100;
             }
@@ -343,6 +349,7 @@ export class DocumentModalComponent extends BaseComponent implements OnInit, OnC
     this.selectedFile = null;
     this.selectedFileName = '';
     this.selectedFileIcon = '';
+    this.documentLanguage = '';
     this.uploadProgress = 0;
     this.documentForm.patchValue({
       file: null,

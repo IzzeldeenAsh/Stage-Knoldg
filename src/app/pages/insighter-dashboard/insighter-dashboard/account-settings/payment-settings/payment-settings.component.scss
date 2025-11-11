@@ -58,7 +58,7 @@
   flex-direction: column;
   
   &.primary-card {
-    border-color: #0978B9 !important;
+    border-color: #3b82f6 !important;
     background-color: #f8fbff;
     background-image: url(https://res.cloudinary.com/dsiku9ipv/image/upload/v1755797462/237149957_689f919e-0ac3-4999-ad29-dfbf8a20382f_cm8fwh.webp);
     background-position: 100%;
@@ -75,7 +75,7 @@
     background-color: #ffffff;
     
     &:hover {
-      border-color: #0978B9 !important;
+      border-color: #3b82f6 !important;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
       transform: translateY(-1px);
     }
@@ -98,12 +98,12 @@
   
   &:hover {
     background-color: #f9fafb;
-    border-color: #0978B9 !important;
+    border-color: #3b82f6 !important;
     transform: translateY(-1px);
     
     .bi-plus-circle {
       transform: scale(1.1);
-      color: #0978B9 !important;
+      color: #3b82f6 !important;
     }
   }
 }
@@ -141,7 +141,7 @@
 
 // Blue Divider Line
 hr.text-info {
-  border-top: 1px solid #0978B9 !important;
+  border-top: 1px solid #3b82f6 !important;
   opacity: 0.3;
 }
 
@@ -154,7 +154,7 @@ hr.text-info {
   
   &.badge-light-info {
     background-color: #e3f2fd;
-    color: #0978B9;
+    color: #3b82f6;
     border: 1px solid #bbdefb;
   }
   
@@ -181,8 +181,8 @@ hr.text-info {
 // Button styles
 .btn {
   &.btn-info {
-    background-color: #0978B9;
-    border-color: #0978B9;
+    background-color: #3b82f6;
+    border-color: #3b82f6;
     color: white;
     
     &:hover {
@@ -194,7 +194,7 @@ hr.text-info {
   &.btn-light-info {
     background-color: #EBF3FE;
     border-color: #EBF3FE;
-    color: #0978B9;
+    color: #3b82f6;
     
     &:hover {
       background-color: #d4e8fc;
@@ -300,7 +300,7 @@ hr.text-info {
       .copy-btn {
         background: none;
         border: none;
-        color: #0978B9;
+        color: #3b82f6;
         cursor: pointer;
         padding: 6px;
         border-radius: 4px;
@@ -397,7 +397,7 @@ hr.text-info {
 
 // Account type icon styles
 .text-info {
-  color: #0978B9 !important;
+  color: #3b82f6 !important;
 }
 
 // Status text helper

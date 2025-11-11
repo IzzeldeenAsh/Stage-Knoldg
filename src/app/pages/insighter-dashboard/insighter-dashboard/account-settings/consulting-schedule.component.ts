@@ -2,8 +2,8 @@ import { Component, OnInit, signal, computed, inject, Injector, HostListener, On
 import { FormBuilder, FormGroup, FormArray, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { BaseComponent } from 'src/app/modules/base.component';
-import { Observable, Subject, Subscription } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Observable, Subject, Subscription, of } from 'rxjs';
+import { takeUntil, map, catchError, finalize } from 'rxjs/operators';
 import { Router, NavigationEnd } from '@angular/router';
 import { ConsultingScheduleService, DayAvailability, AvailabilityException, TimeSlot } from 'src/app/services/consulting-schedule.service';
 
@@ -26,6 +26,8 @@ export class ConsultingScheduleComponent extends BaseComponent implements OnInit
   // For cleanup
   private destroy$ = new Subject<void>();
   private formSubscription: Subscription | null = null;
+  private pendingNavigationObserver: { next: (value: boolean) => void; complete: () => void } | null = null;
+  private suppressConfirmHide = false;
 
   // Form
   scheduleForm!: FormGroup;
@@ -121,6 +123,67 @@ export class ConsultingScheduleComponent extends BaseComponent implements OnInit
     endTimeControl.setValue(endDate);
   }
 
+  // Validator to detect duplicate time slots within the same day
+  private duplicateTimeSlotsValidator(control: AbstractControl): ValidationErrors | null {
+    const dayGroup = control as FormGroup;
+    const timesArray = dayGroup.get('times') as FormArray | null;
+    if (!timesArray) return null;
+
+    const keyToIndices: { [key: string]: number[] } = {};
+
+    // Build keys and track indices
+    timesArray.controls.forEach((ctrl, index) => {
+      const group = ctrl as FormGroup;
+      const start = group.get('start_time')?.value;
+      const end = group.get('end_time')?.value;
+
+      // Skip incomplete items
+      if (!start || !end) {
+        // Also clear duplicate error if present
+        const existing = group.errors || {};
+        if (existing['duplicateTimeSlot']) {
+          delete existing['duplicateTimeSlot'];
+          group.setErrors(Object.keys(existing).length ? existing : null);
+        }
+        return;
+      }
+
+      const startStr = this.formatTimeString(start);
+      const endStr = this.formatTimeString(end);
+      const key = `${startStr}_${endStr}`;
+
+      if (!keyToIndices[key]) keyToIndices[key] = [];
+      keyToIndices[key].push(index);
+    });
+
+    // Clear all duplicate flags initially
+    timesArray.controls.forEach(ctrl => {
+      const group = ctrl as FormGroup;
+      const existing = group.errors || {};
+      if (existing['duplicateTimeSlot']) {
+        delete existing['duplicateTimeSlot'];
+        group.setErrors(Object.keys(existing).length ? existing : null);
+      }
+    });
+
+    // Mark duplicates (all but first occurrence)
+    let hasDuplicates = false;
+    Object.keys(keyToIndices).forEach(key => {
+      const indices = keyToIndices[key];
+      if (indices.length > 1) {
+        hasDuplicates = true;
+        for (let i = 1; i < indices.length; i++) {
+          const duplicateGroup = timesArray.at(indices[i]) as FormGroup;
+          const existing = duplicateGroup.errors || {};
+          existing['duplicateTimeSlot'] = true;
+          duplicateGroup.setErrors(existing);
+        }
+      }
+    });
+
+    return hasDuplicates ? { duplicateTimeSlots: true } : null;
+  }
+
   ngOnInit(): void {
     this.initializeWithDefaultDays();
     this.loadScheduleData();
@@ -157,31 +220,50 @@ export class ConsultingScheduleComponent extends BaseComponent implements OnInit
     if (this.formDirty()) {
       // Return an observable that resolves when the user makes a choice
       return new Observable<boolean>(observer => {
+        this.pendingNavigationObserver = observer;
         this.confirmationService.confirm({
           header: this.lang === 'ar' ? 'تغييرات غير محفوظة' : 'Unsaved Changes',
           message: this.lang === 'ar' 
             ? 'لديك تغييرات غير محفوظة. هل تريد حفظ التغييرات أم المتابعة بدون حفظ؟' 
             : 'You have unsaved changes. Do you want to save the changes or continue without saving?',
           icon: 'pi pi-exclamation-triangle',
-          acceptLabel: this.lang === 'ar' ? 'حفظ التغييرات' : 'Save Changes',
-          rejectLabel: this.lang === 'ar' ? 'المتابعة بدون حفظ' : 'Continue Redirecting',
+          acceptLabel: this.lang === 'ar' ? 'حفظ والمتابعة' : 'Save and continue',
+          rejectLabel: this.lang === 'ar' ? 'تجاهل' : 'Discard',
           accept: () => {
-            // Remove duplicates before saving
-            this.removeDuplicateExceptions();
-            // Save changes and then navigate
-            this.onSave();
-            observer.next(true);
-            observer.complete();
+            // Accept = Save then continue navigating
+            this.suppressConfirmHide = true;
+            this.removeDuplicateExceptions(); // ensure clean state
+            this.saveChangesForNavigation().subscribe((ok) => {
+              observer.next(ok);
+              observer.complete();
+              this.pendingNavigationObserver = null;
+            });
           },
           reject: () => {
-            // Continue without saving (allow navigation)
+            // Reject = Discard changes and continue navigating
+            this.suppressConfirmHide = true;
             observer.next(true);
             observer.complete();
+            this.pendingNavigationObserver = null;
           }
         });
       });
     }
     return true; // No unsaved changes, allow navigation
+  }
+  
+  // Handle closing the dialog via (X) to stay on page
+  onConfirmDialogHide(): void {
+    if (this.suppressConfirmHide) {
+      // Reset suppression for subsequent dialogs
+      this.suppressConfirmHide = false;
+      return;
+    }
+    if (this.pendingNavigationObserver) {
+      this.pendingNavigationObserver.next(false);
+      this.pendingNavigationObserver.complete();
+      this.pendingNavigationObserver = null;
+    }
   }
 
   // Browser beforeunload event handler for page refresh/close
@@ -417,7 +499,7 @@ export class ConsultingScheduleComponent extends BaseComponent implements OnInit
       day: [day.day],
       active: [day.active],
       times: timesArray
-    });
+    }, { validators: this.duplicateTimeSlotsValidator.bind(this) });
   }
 
   private createTimeSlotFormGroup(timeSlot: TimeSlot): FormGroup {
@@ -851,6 +933,42 @@ export class ConsultingScheduleComponent extends BaseComponent implements OnInit
         this.showError('يرجى إدخال جميع الحقول المطلوبة');
       }
     }
+  }
+  
+  // Save used by navigation guard; returns whether navigation should proceed
+  private saveChangesForNavigation(): Observable<boolean> {
+    if (!this.scheduleForm.valid) {
+      if(this.lang === 'en'){
+        this.showError('Error','Please fill in all required fields');
+      }else{
+        this.showError('يرجى إدخال جميع الحقول المطلوبة');
+      }
+      return of(false);
+    }
+    
+    this.saving.set(true);
+    const formValue = this.scheduleForm.value;
+    const processedData = this.processFormData(formValue);
+    
+    return this.consultingScheduleService.updateScheduleAvailability(processedData).pipe(
+      map(() => {
+        if(this.lang === 'en'){
+          this.showSuccess('Success','Schedule updated successfully');
+        }else{
+          this.showSuccess('Success','تم تحديث الجدول بنجاح');
+        }
+        this.formDirty.set(false);
+        return true;
+      }),
+      catchError((error) => {
+        console.error('Error saving schedule:', error);
+        this.handleServerErrors(error);
+        return of(false);
+      }),
+      finalize(() => {
+        this.saving.set(false);
+      })
+    );
   }
 
   // Handle server errors

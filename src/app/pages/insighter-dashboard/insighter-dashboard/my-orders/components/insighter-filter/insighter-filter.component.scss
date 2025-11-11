@@ -11,7 +11,7 @@
     border-radius: 0.475rem;
 
     &.p-focus {
-      border-color: #0978B9;
+      border-color: #3b82f6;
       box-shadow: 0 0 0 0.2rem rgba(9, 120, 185, 0.25);
     }
 
@@ -51,7 +51,7 @@
 
         &.p-highlight {
           background-color: #f1fafe;
-          color: #0978B9;
+          color: #3b82f6;
         }
       }
     }
@@ -69,7 +69,7 @@
         min-width: 280px;
 
         &:focus {
-          border-color: #0978B9;
+          border-color: #3b82f6;
           box-shadow: 0 0 0 0.2rem rgba(9, 120, 185, 0.25);
         }
       }

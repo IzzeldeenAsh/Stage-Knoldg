@@ -104,7 +104,7 @@ export class InvoiceGeneratorService {
     <style>
         @page {
             size: A4;
-            margin: 10mm;
+            margin: 15mm 10mm 10mm 10mm;
         }
 
         /* Reset */
@@ -123,24 +123,25 @@ export class InvoiceGeneratorService {
         /* Page container sized to A4 printable area (210mm - 2*10mm = 190mm width) */
         .page {
             width: 190mm;
-            height: 277mm; /* 297mm - 2*10mm margins = 277mm */
+            height: 277mm; /* 297mm - 15mm top - 10mm bottom = 272mm */
             margin: 0 auto;
             position: relative;
             background: #fff;
-            overflow: hidden;
+            overflow: visible; /* Allow content to flow */
+            padding: 2mm 0; /* Minimal padding */
         }
 
         .bg {
             background-image: url(https://res.cloudinary.com/dsiku9ipv/image/upload/v1758005640/invoice_template_knoldg_0_1_naflvj.png);
             position: absolute;
-            top: 137px;
+            top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             background-repeat: no-repeat;
             z-index: 10;
             background-position: center;
-            height: 100%;
-            width: 750px;
+            height: 90%;
+            width: 650px;
             opacity: 0.04;
         }
 
@@ -171,13 +172,13 @@ export class InvoiceGeneratorService {
 
         /* Content area */
         .content-cell {
-            padding: 25px;
+            padding: 15px;
             vertical-align: top;
         }
 
         /* Logo + invoice info row */
         .logo-table {
-            margin-top: 16px;
+            margin-top: 8px;
             width: 100%;
             border-collapse: collapse;
         }
@@ -204,13 +205,13 @@ export class InvoiceGeneratorService {
         /* Billing two-column table */
         .billing-table {
             width: 100%;
-            margin-top: 15px;
+            margin-top: 10px;
             border-collapse: collapse;
         }
 
         .billing-table td {
             vertical-align: top;
-            padding: 6px 0;
+            padding: 3px 0;
             font-size: 13px;
             color: #333;
         }
@@ -219,11 +220,11 @@ export class InvoiceGeneratorService {
         .services {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 50px;
+            margin-top: 25px;
         }
 
         .services th, .services td {
-            padding: 8px 6px;
+            padding: 5px 6px;
             font-size: 13px;
         }
 
@@ -240,8 +241,8 @@ export class InvoiceGeneratorService {
             padding-left: 40px;
             font-size: 12px;
             color: #666;
-            padding-top: 2px;
-            padding-bottom: 6px;
+            padding-top: 1px;
+            padding-bottom: 3px;
             background-color: #f8f9fa;
         }
 
@@ -259,7 +260,7 @@ export class InvoiceGeneratorService {
             width: auto; /* shrink to content */
             margin-left: auto; /* push to right */
             border-collapse: collapse;
-            margin-top: 12px;
+            margin-top: 8px;
         }
 
         .totals td {
@@ -300,14 +301,14 @@ export class InvoiceGeneratorService {
         /* Footer (kept in its own bottom row so it always sits at page bottom) */
         .footer {
             position: absolute;
-            bottom: 14px;
+            bottom: 5mm;
+            left: 10mm;
+            right: 10mm;
             text-align: center;
-            font-size: 12px;
+            font-size: 11px;
             color: #999;
-            padding-top: 8px;
+            padding-top: 6px;
             border-top: 1px solid #eee;
-            left: 50%;
-            transform: translate(-50%, -50%);
         }
     </style>
 </head>
@@ -319,7 +320,7 @@ export class InvoiceGeneratorService {
     <table class="layout" cellpadding="0" cellspacing="0">
         <!-- Header row -->
         <tr>
-            <td class="header-cell" style="height:48px;">
+            <td class="header-cell" style="height:70px;">
                 <div class="header-title">INVOICE</div>
             </td>
         </tr>

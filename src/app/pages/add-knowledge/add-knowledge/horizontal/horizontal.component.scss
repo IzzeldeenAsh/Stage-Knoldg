@@ -70,8 +70,8 @@ transition: all 0.3s ease;
 // Current step styles
 &.current {
   .stepper-icon-i {
-    border-color: #0978B9;
-    background: #0978B9;
+    border-color: #3b82f6;
+    background: #3b82f6;
     box-shadow: 0 0 10px rgba(0, 158, 247, 0.3);
 
     .stepper-icon-elem {
@@ -80,7 +80,7 @@ transition: all 0.3s ease;
   }
 
   .stepper-title {
-    color: #0978B9;
+    color: #3b82f6;
     font-weight: 600;
   }
 }

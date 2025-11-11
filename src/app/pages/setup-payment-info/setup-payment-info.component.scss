@@ -57,7 +57,7 @@
   }
   
   &:hover {
-    border-color: #0978B9;
+    border-color: #3b82f6;
     transform: translateY(-3px);
     box-shadow: 0 0.5rem 1.5rem rgba(9, 120, 185, 0.15);
     
@@ -67,13 +67,13 @@
   }
   
   &.selected {
-    border-color: #0978B9;
+    border-color: #3b82f6;
     background-color: rgba(9, 120, 185, 0.05);
     box-shadow: 0 0.5rem 1.5rem rgba(9, 120, 185, 0.2);
     
     .payment-type-content {
       .payment-type-icon {
-        color: #0978B9;
+        color: #3b82f6;
         
         .payment-icon {
           filter: grayscale(0%);
@@ -83,7 +83,7 @@
       }
       
       .payment-type-name {
-        color: #0978B9;
+        color: #3b82f6;
         font-weight: 600;
       }
     }
@@ -125,7 +125,7 @@
     top: 12px;
     inset-inline-end: 12px;
     font-size: 1.4rem;
-    background: #0978B9;
+    background: #3b82f6;
     color: #ffffff !important;
     width: 28px;
     height: 28px;
@@ -160,7 +160,7 @@
     background-color: #f9f9f9;
     
     &:focus {
-      border-color: #0978B9;
+      border-color: #3b82f6;
       box-shadow: 0 0 0 0.25rem rgba(9, 120, 185, 0.15);
       background-color: #fff;
     }
@@ -195,7 +195,7 @@
   }
   
   &::-webkit-scrollbar-thumb {
-    background: #0978B9;
+    background: #3b82f6;
     border-radius: 10px;
     opacity: 0.7;
     
@@ -215,18 +215,18 @@
   position: relative;
   
   &:hover {
-    border-color: #0978B9;
+    border-color: #3b82f6;
     transform: translateY(-2px);
     box-shadow: 0 0.3rem 0.8rem rgba(9, 120, 185, 0.15);
   }
   
   &.selected {
-    border-color: #0978B9;
+    border-color: #3b82f6;
     background-color: rgba(9, 120, 185, 0.05);
     box-shadow: 0 0.3rem 0.8rem rgba(9, 120, 185, 0.2);
     
     .country-name {
-      color: #0978B9;
+      color: #3b82f6;
       font-weight: 600;
     }
   }
@@ -267,7 +267,7 @@
     top: 10px;
     inset-inline-end: 10px;
     font-size: 1rem;
-    background: #0978B9;
+    background: #3b82f6;
     color: #ffffff !important;
     width: 24px;
     height: 24px;
@@ -304,7 +304,7 @@
       left: 2rem;
       width: 50px;
       height: 3px;
-      background: #0978B9;
+      background: #3b82f6;
       border-radius: 3px;
     }
     
@@ -332,7 +332,7 @@
 .btn-info {
   background-color: #EBF3FE;
   border-color: #EBF3FE;
-  color: #0978B9;
+  color: #3b82f6;
   border-radius: 0.75rem;
   padding: 0.75rem 2rem;
   font-weight: 500;
@@ -360,7 +360,7 @@
 .btn-light-info {
   background-color: #EBF3FE;
   border-color: #EBF3FE;
-  color: #0978B9;
+  color: #3b82f6;
   
   &:hover {
     background-color: #d4e8fc;
@@ -370,7 +370,7 @@
 
 // Country selection styling
 .selected-country-card .card {
-  border-color: #0978B9 !important;
+  border-color: #3b82f6 !important;
   border-width: 2px;
 }
 
@@ -404,7 +404,7 @@
     font-weight: 600;
     
     &.badge-info {
-      background-color: #0978B9;
+      background-color: #3b82f6;
       color: white;
     }
   }
