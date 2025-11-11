@@ -715,8 +715,8 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
     this.meta.updateTag({ name: 'twitter:description', content: enhancedDescription });
     this.meta.updateTag({ name: 'twitter:image', content: image });
     this.meta.updateTag({ name: 'twitter:image:alt', content: `${title} - Professional Knowledge on foresighta.co` });
-    this.meta.updateTag({ name: 'twitter:site', content: '@Insightabusiness' });
-    this.meta.updateTag({ name: 'twitter:creator', content: '@Insightabusiness' });
+    this.meta.updateTag({ name: 'twitter:site', content: '@foresighta' });
+    this.meta.updateTag({ name: 'twitter:creator', content: '@foresighta' });
 
     // Article meta tags for SEO
     this.meta.updateTag({ property: 'article:author', content: author });
