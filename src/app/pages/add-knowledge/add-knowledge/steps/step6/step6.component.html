@@ -92,9 +92,11 @@
 </div>
 
 <!-- Custom Social Share Modal -->
-<div class="custom-modal-overlay" *ngIf="isSocialShareModalVisible" (click)="closeSocialShareModal()">
-  <div class="custom-modal-container" (click)="$event.stopPropagation()">
-    <div class="modal-content">
+<div class="custom-modal-overlay" *ngIf="isSocialShareModalVisible" (click)="closeSocialShareModal()"
+  style="position: fixed; inset: 0; background: rgba(15, 23, 42, 0.45); backdrop-filter: blur(2px); display: flex; align-items: center; justify-content: center; padding: 24px; z-index: 1050;">
+  <div class="custom-modal-container" (click)="$event.stopPropagation()"
+    style="width: min(92vw, 860px); border-radius: 20px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,.15); position: relative; background: #fff;">
+    <div class="modal-content" style="width: 100%;">
       <!-- Close button -->
       <button
         type="button"
@@ -107,22 +109,23 @@
         <i class="pi pi-times fs-2"></i>
       </button>
       <!-- Modal body -->
-      <div class="modal-body py-5 px-8 bg-white rounded-bottom" style="margin-top: -1rem; position: relative; z-index: 3;">
-       <div class="motive-title" style="text-align: center; padding: 2.5rem 0px;">
+      <div class="modal-body py-5 px-8 bg-white rounded-bottom" style="margin-top: -1rem; position: relative; z-index: 3; padding: 2rem 3rem; max-width: 860px; width: 100%; margin-left: auto; margin-right: auto;">
+        <h1 class="d-flex align-items-center justify-content-center gap-2 mb-3 " style="font-size: 25px; padding-top: 48px;">
+          <i class="ki-solid ki-check-circle text-success" style="font-size: 35px;"></i>
+          <span class="fw-bold" style="font-size: 25px;">
+            {{ lang === 'ar'
+              ? 'رائع! ' + (publishedKnowledge?.type || defaultValues?.knowledgeType || 'المعرفة') + ' الخاصة بك أصبحت منشورة الآن'
+              : 'Great! Your ' + (publishedKnowledge?.type || defaultValues?.knowledgeType || 'knowledge') + ' is published'
+            }}
+          </span>
+         </h1>
+       <div class="motive-title" style="text-align: center; padding: 1rem 0px; max-width: 720px; margin: 0 auto;">
        <div class="motive-title-image">
-        <img src="https://res.cloudinary.com/dsiku9ipv/image/upload/v1761664127/New_Project_17_r2dreh.png" alt="Social Share" />
+        <img src="https://res.cloudinary.com/dsiku9ipv/image/upload/v1761664127/New_Project_17_r2dreh.png" alt="Social Share" style="width: 420px; max-width: 85%; height: auto; display: block; margin: 0 auto;" />
        </div>
-       <h2 class="d-flex align-items-center justify-content-center gap-2 mb-3 pt-10">
-        <i class="ki-solid ki-check-circle fs-1 text-success"></i>
-        <span class="fw-bold">
-          {{ lang === 'ar'
-            ? 'رائع! ' + (publishedKnowledge?.type || defaultValues?.knowledgeType || 'المعرفة') + ' الخاصة بك أصبحت مباشرة الآن'
-            : 'Great! Your ' + (publishedKnowledge?.type || defaultValues?.knowledgeType || 'knowledge') + ' is live'
-          }}
-        </span>
-       </h2>
-        <h2>{{ lang === 'ar' ? 'المشاركة هي الهدف' : 'It\'s all about sharing' }}</h2>
-        <p>{{ lang === 'ar' ? 'شارك هذه المعرفة مع شبكتك' : 'Share this statistic with your network' }}</p>
+      
+        <h2 style="font-size: 25px;">{{ lang === 'ar' ? 'المشاركة هي الهدف' : 'It\'s all about sharing' }}</h2>
+        <p style="font-size: 14px;"> {{ lang === 'ar' ? 'شارك هذه المعرفة مع شبكتك' : 'Share this statistic with your network' }}</p>
        </div>
 
         <!-- Custom Message Input -->
@@ -147,28 +150,32 @@
           <!-- Facebook -->
           <button class="btn btn-icon btn-primary d-flex align-items-center justify-content-center social-share-btn"
                   (click)="shareToSocial('facebook')"
-                  [attr.aria-label]="lang === 'ar' ? 'مشاركة على فيسبوك' : 'Share on Facebook'">
+                  [attr.aria-label]="lang === 'ar' ? 'مشاركة على فيسبوك' : 'Share on Facebook'"
+                  style="width: 48px; height: 48px; border-radius: 999px;">
             <i class="pi pi-facebook" style="font-size: 20px;"></i>
           </button>
 
           <!-- Twitter/X -->
           <button class="btn btn-icon btn-dark d-flex align-items-center justify-content-center social-share-btn"
                   (click)="shareToSocial('twitter')"
-                  [attr.aria-label]="lang === 'ar' ? 'مشاركة على تويتر' : 'Share on Twitter'">
+                  [attr.aria-label]="lang === 'ar' ? 'مشاركة على تويتر' : 'Share on Twitter'"
+                  style="width: 48px; height: 48px; border-radius: 999px;">
             <i class="pi pi-twitter" style="font-size: 20px;"></i>
           </button>
 
           <!-- LinkedIn -->
           <button class="btn btn-icon btn-info d-flex align-items-center justify-content-center social-share-btn"
                   (click)="shareToSocial('linkedin')"
-                  [attr.aria-label]="lang === 'ar' ? 'مشاركة على لينكد إن' : 'Share on LinkedIn'">
+                  [attr.aria-label]="lang === 'ar' ? 'مشاركة على لينكد إن' : 'Share on LinkedIn'"
+                  style="width: 48px; height: 48px; border-radius: 999px;">
             <i class="pi pi-linkedin" style="font-size: 20px;"></i>
           </button>
 
           <!-- WhatsApp -->
           <button class="btn btn-icon btn-success d-flex align-items-center justify-content-center social-share-btn"
                   (click)="shareToSocial('whatsapp')"
-                  [attr.aria-label]="lang === 'ar' ? 'مشاركة على واتساب' : 'Share on WhatsApp'">
+                  [attr.aria-label]="lang === 'ar' ? 'مشاركة على واتساب' : 'Share on WhatsApp'"
+                  style="width: 48px; height: 48px; border-radius: 999px;">
             <i class="pi pi-whatsapp" style="font-size: 20px;"></i>
           </button>
         </div>
