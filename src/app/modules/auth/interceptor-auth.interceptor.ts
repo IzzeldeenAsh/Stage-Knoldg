@@ -40,7 +40,7 @@ export class AuthInterceptor implements HttpInterceptor {
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           // Handle unauthorized - token expired or invalid
-          this.handleUnauthorized();
+          this.handleUnauthorized(error, clonedReq.url);
         } else if (error.status === 403) {
           // Handle forbidden - check for email verification error
           this.handleForbidden(error);
@@ -54,7 +54,7 @@ export class AuthInterceptor implements HttpInterceptor {
     );
   }
 
-  private handleUnauthorized(): void {
+  private handleUnauthorized(error?: HttpErrorResponse, requestUrl?: string): void {
     console.log('Unauthorized access - redirecting to login');
     
     // Clear auth data directly without making HTTP calls
@@ -62,8 +62,22 @@ export class AuthInterceptor implements HttpInterceptor {
     
     // Navigate to login
     this.router.navigate(['/auth/login']).then(() => {
-      // Optional: Show message to user
-      this.toastService.warning('Your session has expired. Please log in again.', 'Session Expired');
+      // Determine appropriate message
+      const rawError = error && (error as any).error;
+      const apiMessage = typeof rawError === 'string'
+        ? rawError
+        : (rawError && rawError.message ? String(rawError.message) : '');
+      const responseUrl = (error && (error as any).url) ? String((error as any).url) : (requestUrl || '');
+      const isVerifyEmailRequest = typeof responseUrl === 'string' && responseUrl.includes('/api/account/email/verify');
+      const isExplicitUnauthenticated = apiMessage.toLowerCase().includes('unauthenticated');
+
+      if (isVerifyEmailRequest || isExplicitUnauthenticated) {
+        // Show "Unauthenticated" toast instead of "Session expired"
+        this.toastService.error('Unauthenticated', 'Error');
+      } else {
+        // Default behavior for other 401s
+        this.toastService.warning('Your session has expired. Please log in again.', 'Session Expired');
+      }
     });
   }
 
