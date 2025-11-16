@@ -385,7 +385,7 @@ export const locale = {
         PASSWORD_MINLENGTH: "Password should have at least 3 symbols",
         PASSWORD_MAXLENGTH: "Password should have a maximum of 100 symbols",
         EMPOWER_INSIGHTS_TEXT: `
-        Your gateway to expert data, research, insights, and advisory services.
+        Your gateway to insightful data, statistics, reports and subject matter expert advise
         `
       },
       FORGOT: {
