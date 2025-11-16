@@ -84,7 +84,7 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
       'Accept-Language': this.translationService.getSelectedLanguage()
     });
     
-    this.http.put(`https://api.insightabusiness.com/api/account/notification/read/${notificationId}`, {}, { headers })
+    this.http.put(`https://api.foresighta.co/api/account/notification/read/${notificationId}`, {}, { headers })
       .subscribe(
         () => {
           // Update local state to mark this notification as read
@@ -150,7 +150,7 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
     if (notification.type === 'knowledge' && notification.category) {
       // Construct the URL for knowledge page with sub_page and param
       const lang = this.translationService.getSelectedLanguage() || 'en';
-      const knowledgeUrl = `https://insightabusiness.com/${lang}/knowledge/${notification.category}/${notification.param || ''}?tab=ask`;
+      const knowledgeUrl = `http://localhost:3000/${lang}/knowledge/${notification.category}/${notification.param || ''}?tab=ask`;
       
       // Navigate to the external URL
       window.open(knowledgeUrl, '_blank');
@@ -159,53 +159,51 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
     
     // For meeting-related notifications, refresh profile first to ensure roles are current
     if(notification.type === 'meeting') {
-      console.log('Meeting notification clicked:', notification);
-      
-      // Force refresh the profile before navigating
       this.profileService.refreshProfile().subscribe(user => {
-        console.log('Profile refreshed, user roles:', user.roles);
-        
-        let targetRoute: string[] = [];
-        
+        let targetUrl: string = '';
         if(notification.sub_type === 'insighter_meeting_reminder') {
-          targetRoute = ['/app/insighter-dashboard/my-meetings/received'];
-        } else if(notification.sub_type === 'insighter_meeting_client_new')
+          targetUrl = '/app/insighter-dashboard/my-meetings?tab=client';
+        }
+        else if(notification.sub_type === 'client_meeting_new'){
+          console.log('Client meeting new notification clicked:', notification);
+          targetUrl = '/app/insighter-dashboard/my-meetings?tab=client';
+        }
+         else if(notification.sub_type === 'insighter_meeting_client_new')
         {
-          targetRoute = ['/app/insighter-dashboard/my-meetings/received'];
+          targetUrl = '/app/insighter-dashboard/my-meetings?tab=client';
         }
         else if(notification.sub_type === 'insighter_meeting_client_approved'){
-          targetRoute = ['/app/insighter-dashboard/my-meetings/received'];
+          targetUrl = '/app/insighter-dashboard/my-meetings?tab=client';
         }
         else if (notification.sub_type.startsWith('client_')) {
-          targetRoute = ['/app/insighter-dashboard/my-meetings/sent'];
+          targetUrl = '/app/insighter-dashboard/my-meetings?tab=client';
         } 
         else if (notification.sub_type.startsWith('insighter_')) {
-          targetRoute = ['/app/insighter-dashboard/my-meetings/received'];
+          targetUrl = '/app/insighter-dashboard/my-meetings?tab=client';
         } 
         else if(notification.sub_type.startsWith('client_meeting_insighter_postponed')) {
-          targetRoute = ['/app/insighter-dashboard/my-meetings/sent'];
+          targetUrl = '/app/insighter-dashboard/my-meetings?tab=my-meetings';
         } 
         else if(notification.sub_type.startsWith('insighter_meeting_client_reschedule')) {
-          targetRoute = ['/app/insighter-dashboard/my-meetings/received'];
+          targetUrl = '/app/insighter-dashboard/my-meetings?tab=client';
         } 
         else if(notification.sub_type.startsWith('client_meeting_reschedule')) {
-          targetRoute = ['/app/insighter-dashboard/my-meetings/sent'];
+          targetUrl = '/app/insighter-dashboard/my-meetings?tab=my-meetings';
         } 
         else if(notification.sub_type.startsWith('insighter_meeting_reminder')) {
-          targetRoute = ['/app/insighter-dashboard/my-meetings/received'];
+          targetUrl = '/app/insighter-dashboard/my-meetings?tab=client';
         } 
         else if(notification.sub_type.startsWith('client_meeting_reminder')) {
-          targetRoute = ['/app/insighter-dashboard/my-meetings/sent'];
+          targetUrl = '/app/insighter-dashboard/my-meetings?tab=my-meetings';
         }
         
         // Check if we're already on this route before navigating
-        if (targetRoute.length > 0) {
+        if (targetUrl) {
           const currentUrl = this.router.url;
-          const targetUrl = targetRoute.join('/');
           
           // Only navigate if we're not already on the target page
-          if (!currentUrl.includes(targetUrl)) {
-            this.router.navigate(targetRoute);
+          if (currentUrl !== targetUrl) {
+            this.router.navigateByUrl(targetUrl);
           }
         }
       });
@@ -216,7 +214,7 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
   //   const baseUrl = window.location.origin;
   //   const lang = this.translationService.getSelectedLanguage() || 'en';
   //   // const tabParam = notification.param && notification.tap ? `?tab=${notification.tap}` : '';
-  //   const knowledgeUrl = `https://insightabusiness.com/${lang}/knowledge/${notification.category}/${notification.param || ''}?`;
+  //   const knowledgeUrl = `http://localhost:3000/${lang}/knowledge/${notification.category}/${notification.param || ''}?`;
     
   //   // Navigate to the external URL
   //   window.open(knowledgeUrl, '_blank');
