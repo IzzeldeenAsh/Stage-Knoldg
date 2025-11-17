@@ -86,7 +86,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
     searchParams.set('search_type', searchType);
     
     // Navigate to the React app's search page
-    const searchUrl = `https://foresigha.co/${this.lang}/home?${searchParams.toString()}`;
+    const searchUrl = `https://foresighta.co/${this.lang}/home?${searchParams.toString()}`;
     window.location.href = searchUrl;
   }
   
@@ -226,7 +226,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
   }
 
   getHomeUrl(): string {
-    const url= 'https://foresigha.co/' + this.lang;
+    const url= 'https://foresighta.co/' + this.lang;
     return url;
   }
 
@@ -286,7 +286,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
       top_sub_industry: 1
     };
 
-    this.http.post<IndustriesResponse>('https://api.foresigha.co/api/platform/industries/menu', body, { headers })
+    this.http.post<IndustriesResponse>('https://api.foresighta.co/api/platform/industries/menu', body, { headers })
       .subscribe({
         next: (response) => {
           this.industries = response.data;
@@ -298,7 +298,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
   }
 
   getIndustryUrl(industry: Industry): string {
-    return `https://foresigha.co/en/industry/${industry.id}/${industry.slug}`;
+    return `https://foresighta.co/en/industry/${industry.id}/${industry.slug}`;
   }
 
   initializeMenu() {
@@ -324,7 +324,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: 'https://foresigha.co/en/industries/report'
+        routerLink: 'https://foresighta.co/en/industries/report'
       },
       {
         label: this.translate.instant('MENU.INSIGHTS'),
@@ -332,7 +332,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: 'https://foresigha.co/en/industries/insight'
+        routerLink: 'https://foresighta.co/en/industries/insight'
       },
      
       {
@@ -341,7 +341,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: 'https://foresigha.co/en/industries/data'
+        routerLink: 'https://foresighta.co/en/industries/data'
       },
       {
         label: this.translate.instant('MENU.MANUAL'),
@@ -349,7 +349,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: 'https://foresigha.co/en/industries/manual'
+        routerLink: 'https://foresighta.co/en/industries/manual'
       },
       {
         label: this.translate.instant('MENU.COURSES'),
@@ -357,7 +357,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: 'https://foresigha.co/en/industries/course'
+        routerLink: 'https://foresighta.co/en/industries/course'
       }
     ];
 
@@ -482,7 +482,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
       //   'Accept-Language': this.lang || 'en'
       // });
 
-      // this.http.put('https://api.foresigha.co/api/account/notification/read', {}, { headers })
+      // this.http.put('https://api.foresighta.co/api/account/notification/read', {}, { headers })
       //   .subscribe({
       //     next: () => {
       //       // Refresh notifications from API

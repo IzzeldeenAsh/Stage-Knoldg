@@ -407,7 +407,7 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
   // Profile redirect method
   redirectToProfile(user: User | undefined): void {
     if (user?.uuid) {
-      const profileUrl = `https://foresigha.co/en/profile/${user.uuid}?entity=insighter`;
+      const profileUrl = `https://foresighta.co/en/profile/${user.uuid}?entity=insighter`;
       window.open(profileUrl, '_blank');
     }
   }

@@ -32,10 +32,10 @@ export interface Region {
   providedIn: 'root'
 })
 export class RegionsService {
-  private apiUrl = 'https://api.foresigha.co/api/admin/setting/region';
-  private createApi = 'https://api.foresigha.co/api/admin/setting/region';
-  private updateDeleteApi = 'https://api.foresigha.co/api/admin/setting/region';
-  private getListApi = 'https://api.foresigha.co/api/common/setting/region/list';
+  private apiUrl = 'https://api.foresighta.co/api/admin/setting/region';
+  private createApi = 'https://api.foresighta.co/api/admin/setting/region';
+  private updateDeleteApi = 'https://api.foresighta.co/api/admin/setting/region';
+  private getListApi = 'https://api.foresighta.co/api/common/setting/region/list';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
   currentLang: string = 'en';

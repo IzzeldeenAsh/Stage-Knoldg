@@ -684,7 +684,7 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
   // Sent meetings methods
   goToInsighterProfile(insighterUuid: string): void {
     const currentLocale = localStorage.getItem('language') || 'en';
-    window.location.href = `https://foresigha.co/${currentLocale}/profile/${insighterUuid}?entity=insighter&tab=meet`;
+    window.location.href = `https://foresighta.co/${currentLocale}/profile/${insighterUuid}?entity=insighter&tab=meet`;
   }
 
   canJoinMeeting(meeting: SentMeeting): boolean {

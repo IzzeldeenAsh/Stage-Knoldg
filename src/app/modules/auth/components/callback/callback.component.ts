@@ -139,7 +139,7 @@ export class CallbackComponent extends BaseComponent implements OnInit, OnDestro
     const returnUrl = this.getReturnUrlFromCookie();
     
     // Build the redirect URL
-    let redirectUrl = `https://foresigha.co/en/callback`;
+    let redirectUrl = `https://foresighta.co/en/callback`;
     
     if (this.token) {
       redirectUrl += `/${this.token}`;
@@ -183,7 +183,7 @@ export class CallbackComponent extends BaseComponent implements OnInit, OnDestro
         'Path=/',
         'Max-Age=-1',
         'SameSite=None',
-        'Domain=.foresigha.co',
+        'Domain=.foresighta.co',
         'Secure'
       ];
     }
@@ -207,7 +207,7 @@ export class CallbackComponent extends BaseComponent implements OnInit, OnDestro
           'Accept-Language': 'en',
         });
         
-        return this.http.post('https://api.foresigha.co/api/account/timezone/set', 
+        return this.http.post('https://api.foresighta.co/api/account/timezone/set', 
           { timezone: userTimezone }, 
           { headers }
         );

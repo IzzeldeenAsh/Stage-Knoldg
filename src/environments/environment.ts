@@ -10,15 +10,15 @@ export const environment = {
   apiUrl: 'api',
   
   // API configuration for sharing authentication between domains
-  apiBaseUrl: 'https://api.foresigha.co/api',
-  appDomain: '.foresigha.co',
-  mainAppUrl: 'https://foresigha.co',
-  subAppUrl: 'https://app.foresigha.co',
+  apiBaseUrl: 'https://api.foresighta.co/api',
+  appDomain: '.foresighta.co',
+  mainAppUrl: 'https://foresighta.co',
+  subAppUrl: 'https://app.foresighta.co',
   
   // Cookie configuration
   cookieOptions: {
     secure: true, // Set to true for HTTPS
-    domain: '.foresigha.co', // Notice the leading dot - this allows sharing between subdomains
+    domain: '.foresighta.co', // Notice the leading dot - this allows sharing between subdomains
     path: '/',
     sameSite: 'None' // Changed from 'Lax' to 'None' for cross-domain sharing
   },
