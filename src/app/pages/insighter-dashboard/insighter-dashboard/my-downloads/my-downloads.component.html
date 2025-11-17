@@ -187,7 +187,8 @@
                             <div class="ms-2 d-flex gap-1">
                               <!-- Download Button -->
                               <button
-                                class="btn btn-xs btn-light-info download-btn "
+                                class="btn btn-xs download-btn"
+                                [ngClass]="isKnowledgeDownloaded(knowledge) ? 'btn-info text-white' : 'btn-light-info text-primary'"
                                 (click)="downloadKnowledge(knowledge); $event.stopPropagation()"
                                 [disabled]="isKnowledgeDownloading(knowledge.uuid)"
                                 [pTooltip]="'Download Knowledge'"
@@ -196,10 +197,10 @@
                                 @if (isKnowledgeDownloading(knowledge.uuid)) {
                                   <span class="spinner-border spinner-border-sm" role="status"></span>
                                 } @else {
-                                  <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M3.75984 9.5C2.89528 9.5 2.06612 9.17303 1.45479 8.59102C0.843447 8.00901 0.5 7.21964 0.5 6.39655C0.5 5.57347 0.843447 4.78409 1.45479 4.20208C2.06612 3.62007 2.89528 3.2931 3.75984 3.2931C3.96403 2.38771 4.56138 1.59206 5.42047 1.08118C5.84585 0.828223 6.32268 0.652792 6.82375 0.564905C7.32481 0.477019 7.8403 0.478399 8.34077 0.568966C8.84124 0.659532 9.3169 0.837513 9.74058 1.09274C10.1643 1.34798 10.5277 1.67546 10.8101 2.0565C11.0925 2.43754 11.2883 2.86468 11.3864 3.31351C11.4845 3.76235 11.483 4.22411 11.3819 4.67241H12.0748C12.718 4.67241 13.3349 4.92672 13.7897 5.3794C14.2445 5.83207 14.5 6.44603 14.5 7.08621C14.5 7.72638 14.2445 8.34034 13.7897 8.79302C13.3349 9.24569 12.718 9.5 12.0748 9.5H11.3819" stroke="#0778B9" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M9.5 10.5L7.5 12.5L5.5 10.5" stroke="#0778B9" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M7.5 12.5L7.5 6.5" stroke="#0778B9" stroke-linecap="round" stroke-linejoin="round"/>
+                                  <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg" [ngClass]="isKnowledgeDownloaded(knowledge) ? 'text-white' : 'text-primary'">
+                                    <path d="M3.75984 9.5C2.89528 9.5 2.06612 9.17303 1.45479 8.59102C0.843447 8.00901 0.5 7.21964 0.5 6.39655C0.5 5.57347 0.843447 4.78409 1.45479 4.20208C2.06612 3.62007 2.89528 3.2931 3.75984 3.2931C3.96403 2.38771 4.56138 1.59206 5.42047 1.08118C5.84585 0.828223 6.32268 0.652792 6.82375 0.564905C7.32481 0.477019 7.8403 0.478399 8.34077 0.568966C8.84124 0.659532 9.3169 0.837513 9.74058 1.09274C10.1643 1.34798 10.5277 1.67546 10.8101 2.0565C11.0925 2.43754 11.2883 2.86468 11.3864 3.31351C11.4845 3.76235 11.483 4.22411 11.3819 4.67241H12.0748C12.718 4.67241 13.3349 4.92672 13.7897 5.3794C14.2445 5.83207 14.5 6.44603 14.5 7.08621C14.5 7.72638 14.2445 8.34034 13.7897 8.79302C13.3349 9.24569 12.718 9.5 12.0748 9.5H11.3819" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M9.5 10.5L7.5 12.5L5.5 10.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M7.5 12.5L7.5 6.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
                                     </svg>
                                     
                                     
@@ -338,7 +339,8 @@
                             <!-- Download Icon -->
                             <div class="ms-2">
                               <button
-                                class="btn btn-xs btn-light-info download-btn"
+                                class="btn btn-xs download-btn"
+                                [ngClass]="isDocumentDownloaded(document) ? 'btn-info text-white' : 'btn-light-info text-primary'"
                                 (click)="downloadDocument(document); $event.stopPropagation()"
                                 [disabled]="isDocumentDownloading(document.uuid)"
                                 [pTooltip]="'Download Document'"
@@ -347,10 +349,10 @@
                                 @if (isDocumentDownloading(document.uuid)) {
                                   <span class="spinner-border spinner-border-sm" role="status"></span>
                                 } @else {
-                                  <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M3.75984 9.5C2.89528 9.5 2.06612 9.17303 1.45479 8.59102C0.843447 8.00901 0.5 7.21964 0.5 6.39655C0.5 5.57347 0.843447 4.78409 1.45479 4.20208C2.06612 3.62007 2.89528 3.2931 3.75984 3.2931C3.96403 2.38771 4.56138 1.59206 5.42047 1.08118C5.84585 0.828223 6.32268 0.652792 6.82375 0.564905C7.32481 0.477019 7.8403 0.478399 8.34077 0.568966C8.84124 0.659532 9.3169 0.837513 9.74058 1.09274C10.1643 1.34798 10.5277 1.67546 10.8101 2.0565C11.0925 2.43754 11.2883 2.86468 11.3864 3.31351C11.4845 3.76235 11.483 4.22411 11.3819 4.67241H12.0748C12.718 4.67241 13.3349 4.92672 13.7897 5.3794C14.2445 5.83207 14.5 6.44603 14.5 7.08621C14.5 7.72638 14.2445 8.34034 13.7897 8.79302C13.3349 9.24569 12.718 9.5 12.0748 9.5H11.3819" stroke="#0778B9" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M9.5 10.5L7.5 12.5L5.5 10.5" stroke="#0778B9" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M7.5 12.5L7.5 6.5" stroke="#0778B9" stroke-linecap="round" stroke-linejoin="round"/>
+                                  <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg" [ngClass]="isDocumentDownloaded(document) ? 'text-white' : 'text-primary'">
+                                    <path d="M3.75984 9.5C2.89528 9.5 2.06612 9.17303 1.45479 8.59102C0.843447 8.00901 0.5 7.21964 0.5 6.39655C0.5 5.57347 0.843447 4.78409 1.45479 4.20208C2.06612 3.62007 2.89528 3.2931 3.75984 3.2931C3.96403 2.38771 4.56138 1.59206 5.42047 1.08118C5.84585 0.828223 6.32268 0.652792 6.82375 0.564905C7.32481 0.477019 7.8403 0.478399 8.34077 0.568966C8.84124 0.659532 9.3169 0.837513 9.74058 1.09274C10.1643 1.34798 10.5277 1.67546 10.8101 2.0565C11.0925 2.43754 11.2883 2.86468 11.3864 3.31351C11.4845 3.76235 11.483 4.22411 11.3819 4.67241H12.0748C12.718 4.67241 13.3349 4.92672 13.7897 5.3794C14.2445 5.83207 14.5 6.44603 14.5 7.08621C14.5 7.72638 14.2445 8.34034 13.7897 8.79302C13.3349 9.24569 12.718 9.5 12.0748 9.5H11.3819" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M9.5 10.5L7.5 12.5L5.5 10.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M7.5 12.5L7.5 6.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
                                   </svg>
                                 }
                               </button>

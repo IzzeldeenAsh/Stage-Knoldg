@@ -68,10 +68,10 @@
       width: 100%;
   }
   
-  [dir="rtl"] .countries-grid .country-item .country-checkbox-container {
-      flex-direction: row-reverse;
-      text-align: right;
-  }
+[dir="rtl"] .countries-grid .country-item .country-checkbox-container {
+    /* Keep DOM order: checkbox → label; place at right in RTL */
+    text-align: right;
+}
   
   .countries-grid .country-item .country-checkbox-container .form-check-input {
       margin-right: 8px;
@@ -90,10 +90,10 @@
       gap: 0.5rem;
   }
   
-  [dir="rtl"] .country-label {
-      flex-direction: row-reverse;
-      text-align: right;
-  }
+[dir="rtl"] .country-label {
+    /* Keep order: flag then name */
+    text-align: right;
+}
   .country-box{
     padding: 5px;
     display: flex;
@@ -149,6 +149,12 @@
         }
       }
     }
+  }
+  
+  /* RTL spacing for default tab countries list checkboxes */
+  [dir="rtl"] .region-dialog .countries-container .country-item input[type="checkbox"] {
+    margin-right: 0;
+    margin-left: 10px;
   }
   
   .region-selector {
@@ -266,11 +272,7 @@
         display: flex;
         align-items: center;
         width: 100%;
-        
-        [dir="rtl"] & {
-          flex-direction: row-reverse;
-          justify-content: flex-start;
-        }
+        /* Keep natural order for RTL; checkbox should remain first */
       }
       
       .country-flag {

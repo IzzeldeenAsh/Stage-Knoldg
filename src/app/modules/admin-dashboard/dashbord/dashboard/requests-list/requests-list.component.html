@@ -33,19 +33,20 @@
     <div id="kt_app_content_container" class="app-container container-fluid">
         
         <ng-container *ngIf="(isLoading$ | async) === false && requestsList && requestsList.length > 0">
-            <p-table 
+            <p-table
                 #dt
-                [value]="filteredRequests" 
-                [paginator]="true" 
+                [value]="filteredRequests"
+                [paginator]="true"
                 [rows]="pageSize"
                 [totalRecords]="paginatedRequests?.meta?.total"
                 [lazy]="true"
                 (onLazyLoad)="onLazyLoad($event)"
-                [loading]="isLoading$ | async"
+                [loading]="loading"
                 [globalFilterFields]="['requestable.legal_name', 'requestable.name', 'type.label', 'final_status']"
                 responsiveLayout="scroll"
                 [rowHover]="true"
                 [tableStyle]="{'width': '100%'}"
+                [first]="(currentPage - 1) * pageSize"
             >
                 <ng-template pTemplate="header">
                     <tr>

@@ -620,4 +620,21 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
     return `${combinedTotal} total downloads`;
   }
 
+  /**
+   * Whether knowledge (or any of its documents) has been downloaded before
+   */
+  isKnowledgeDownloaded(knowledge: KnowledgeItem): boolean {
+    if (!knowledge) return false;
+    if (knowledge.download_at) return true;
+    const docs = knowledge.documents || [];
+    return docs.some(doc => !!doc.download_at);
+  }
+
+  /**
+   * Whether a document has been downloaded before
+   */
+  isDocumentDownloaded(document: Document): boolean {
+    return !!document?.download_at;
+  }
+
 } 

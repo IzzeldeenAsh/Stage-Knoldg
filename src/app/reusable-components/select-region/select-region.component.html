@@ -1,4 +1,4 @@
-<div class="region-selector" (click)="showDialog()">
+<div class="region-selector" (click)="showDialog()" [attr.dir]="document.dir || 'ltr'">
   <div class="chips-container">
     <ng-container *ngIf="hasSelections(); else placeholderTpl">
       <div class="selected-items" (click)="$event.stopPropagation()">
@@ -42,7 +42,7 @@
   [resizable]="false"
   styleClass="p-fluid"
 >
-  <div class="region-dialog">
+  <div class="region-dialog" [attr.dir]="document.dir || 'ltr'">
     <!-- Search input -->
     <div class="search-container mb-4">
       <span class="p-input-icon-left w-100">
@@ -90,7 +90,9 @@
           "
         >
           <div class="region-card-content">
-            <div class="form-check">
+            <div
+              class="form-check d-flex align-items-center"
+            >
               <input
                 type="checkbox"
                 class="form-check-input"
@@ -101,6 +103,7 @@
               />
               <label
                 class="form-check-label fw-bold"
+                [ngClass]="{ 'ms-2': document.dir !== 'rtl', 'me-2': document.dir === 'rtl' }"
                 for="select-region-{{ region.id }}"
                 (click)="toggleSelectRegion(region, { target: { checked: !isRegionSelected(region) } })"
                 style="cursor: pointer;"
@@ -142,8 +145,7 @@
           "
         >
           <div
-            class="country-checkbox-container"
-            [ngClass]="{ 'rtl-checkbox-container': document.dir === 'rtl' }"
+            class="country-checkbox-container d-flex align-items-center"
           >
             <input
               type="checkbox"
@@ -154,6 +156,7 @@
             />
             <label
               class="form-check-label d-flex align-items-center country-label"
+              [ngClass]="{ 'ms-2': document.dir !== 'rtl', 'me-2': document.dir === 'rtl' }"
               for="select-country-flat-{{ country.id }}"
               (click)="
                 toggleSelectCountryFlat(country, {
@@ -230,10 +233,6 @@
               >
                 <div
                   class="d-flex align-items-center"
-                  [ngClass]="{
-                    'flex-row': document.dir !== 'rtl',
-                    'flex-row-reverse': document.dir === 'rtl'
-                  }"
                 >
                   <img
                     [src]="getCountryFlagPath(country.flag)"
