@@ -342,7 +342,11 @@ getFileIcon(file: File): string {
     } else {
       this.form = this.fb.group(
         {
-          legalName: [this.defaultValues.legalName || '', [Validators.required], [this.legalNameExistsValidator()]],
+          legalName: new FormControl(this.defaultValues.legalName || '', {
+            validators: [Validators.required],
+            asyncValidators: [this.legalNameExistsValidator()],
+            updateOn: 'blur'
+          }),
           companyAddress: [this.defaultValues.companyAddress || '', [Validators.required]],
           aboutCompany: [this.defaultValues.aboutCompany || '', [Validators.required]],
           country: [this.defaultValues.country || '', [Validators.required]],
