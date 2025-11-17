@@ -9,7 +9,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class TranslationService {
   private readonly COOKIE_NAME = 'preferred_language';
-  private readonly COOKIE_DOMAIN = '.foresighta.co';
+  private readonly COOKIE_DOMAIN = '.foresigha.co';
   private readonly COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // one year in seconds
   private readonly STORAGE_KEY = 'language';
 

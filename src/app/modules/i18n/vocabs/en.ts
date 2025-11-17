@@ -62,8 +62,8 @@ export const locale = {
     RELATED: 'Related',
     RELATED_HS_CODES_FOR_ISIC: 'Related HS Codes for selected ISIC',
     VIEW_ALL: 'View All',
-    OTHER_HS_CODES: 'Other HS Codes',
-    ALL_OTHER_AVAILABLE_HS_CODES: 'All other available HS Codes',
+    OTHER_HS_CODES: 'All HS Codes',
+    ALL_OTHER_AVAILABLE_HS_CODES: 'All HS Codes available',
     NO_RESULTS_FOUND: 'No results found',
     NO_HS_CODES_AVAILABLE: 'No HS codes available',
     DECLINE:'Decline',
@@ -128,7 +128,7 @@ export const locale = {
     STEP3_5: "Step 3 out of 5",
     STEP4_5: "Step 4 out of 5",
     STEP5_5: "Step 5 out of 5",
-    "SEARCH_COUNTRY": "Search country or region...",
+    "SEARCH_COUNTRY": "Search...",
     "UPLOADS_IN_PROGRESS": "Uploads in progress",
     INCLUDED_IN_PACKAGES: 'Included in Packages',
     REGIONS_COUNTRIES_REQUIRED: "Regions and countries are required",
@@ -392,7 +392,7 @@ export const locale = {
         PASSWORD_MINLENGTH: "Password should have at least 3 symbols",
         PASSWORD_MAXLENGTH: "Password should have a maximum of 100 symbols",
         EMPOWER_INSIGHTS_TEXT: `
-        Your gateway to expert data, research, insights, and advisory services.
+        Your gateway to insightful data, statistics, reports and subject matter expert advise
         `
       },
       FORGOT: {

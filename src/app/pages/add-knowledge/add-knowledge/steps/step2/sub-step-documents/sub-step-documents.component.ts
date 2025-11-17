@@ -1,4 +1,4 @@
-import { Component, Injector, Input, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, Injector, Input, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormArray, FormGroup, Validators } from '@angular/forms';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { ICreateKnowldege, IDocument } from '../../../create-account.helper';
@@ -46,6 +46,7 @@ interface DocumentInfo {
   ]
 })
 export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
+  @ViewChild('multiUploadInput') multiUploadInput!: ElementRef<HTMLInputElement>;
   @Input('updateParentModel') updateParentModel: (
     part: Partial<ICreateKnowldege>,
     isFormValid: boolean
@@ -56,6 +57,16 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   documentsForm: FormGroup;
   totalPrice: number = 0;
   documents: DocumentInfo[] = [];
+  // Include both extensions and MIME types to maximize compatibility on iOS/iPadOS
+  fileAcceptAttr: string =
+    '.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,' +
+    'application/pdf,application/msword,' +
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document,' +
+    'application/vnd.ms-powerpoint,' +
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation,' +
+    'application/vnd.ms-excel,' +
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,' +
+    'text/plain';
   uploadsInProgress: boolean = false;
   hasActiveUploads = false;
   pendingUploads: number = 0;
@@ -176,6 +187,15 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   }
 
   addDocument(): void {
+    // Prefer the persistent template input for iOS reliability (synchronous user gesture)
+    if (this.multiUploadInput && this.multiUploadInput.nativeElement) {
+      const inputEl = this.multiUploadInput.nativeElement;
+      // Reset value to allow re-selecting the same file(s)
+      inputEl.value = '';
+      inputEl.click();
+      return;
+    }
+    // Fallback to dynamic creation if template input not available
     this.triggerMultipleFileInput();
   }
 
@@ -335,6 +355,18 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   // Queue to store files for sequential upload
   private fileUploadQueue: File[] = [];
   private isUploadInProgress = false;
+  
+  // Handler for the persistent template input (ensures iOS/iPadOS closes picker)
+  public onMultipleFilesSelected(event: Event): void {
+    const inputEl = event.target as HTMLInputElement;
+    const files = inputEl.files;
+    if (files && files.length > 0) {
+      this.handleMultipleFiles(files);
+      this.cdr.detectChanges();
+    }
+    // Reset input so selecting the same files again still triggers change
+    inputEl.value = '';
+  }
   
   // Flag to track if knowledge type has been created
   private knowledgeTypeCreated = false;

@@ -69,7 +69,7 @@ export class Step2Component implements OnInit, OnChanges, OnDestroy  {
 
       return timer(500).pipe( // Debounce for 500ms
         switchMap(() => {
-          return this.http.post<{exists: boolean}>('https://api.foresighta.co/api/account/insighter/company/name-exists', {
+          return this.http.post<{exists: boolean}>('https://api.foresigha.co/api/account/insighter/company/name-exists', {
             legal_name: control.value.trim()
           }, {
             headers: new HttpHeaders({
@@ -342,7 +342,11 @@ getFileIcon(file: File): string {
     } else {
       this.form = this.fb.group(
         {
-          legalName: [this.defaultValues.legalName || '', [Validators.required], [this.legalNameExistsValidator()]],
+          legalName: new FormControl(this.defaultValues.legalName || '', {
+            validators: [Validators.required],
+            asyncValidators: [this.legalNameExistsValidator()],
+            updateOn: 'blur'
+          }),
           companyAddress: [this.defaultValues.companyAddress || '', [Validators.required]],
           aboutCompany: [this.defaultValues.aboutCompany || '', [Validators.required]],
           country: [this.defaultValues.country || '', [Validators.required]],

@@ -59,6 +59,41 @@
           justify-content: flex-end;
       }
   }
+  
+  // RTL alignment fixes for Only Countries mode
+  // Ensure checkbox is on the visual "start" side and label contents (flag/name) align properly
+  .countries-grid .country-item .country-checkbox-container {
+      display: flex;
+      align-items: center;
+      width: 100%;
+  }
+  
+[dir="rtl"] .countries-grid .country-item .country-checkbox-container {
+    /* Keep DOM order: checkbox → label; place at right in RTL */
+    text-align: right;
+}
+  
+  .countries-grid .country-item .country-checkbox-container .form-check-input {
+      margin-right: 8px;
+      margin-left: 0;
+      flex-shrink: 0;
+  }
+  
+  [dir="rtl"] .countries-grid .country-item .country-checkbox-container .form-check-input {
+      margin-right: 0;
+      margin-left: 8px;
+  }
+  
+  .country-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+  }
+  
+[dir="rtl"] .country-label {
+    /* Keep order: flag then name */
+    text-align: right;
+}
   .country-box{
     padding: 5px;
     display: flex;
@@ -114,6 +149,12 @@
         }
       }
     }
+  }
+  
+  /* RTL spacing for default tab countries list checkboxes */
+  [dir="rtl"] .region-dialog .countries-container .country-item input[type="checkbox"] {
+    margin-right: 0;
+    margin-left: 10px;
   }
   
   .region-selector {
@@ -231,11 +272,7 @@
         display: flex;
         align-items: center;
         width: 100%;
-        
-        [dir="rtl"] & {
-          flex-direction: row-reverse;
-          justify-content: flex-start;
-        }
+        /* Keep natural order for RTL; checkbox should remain first */
       }
       
       .country-flag {

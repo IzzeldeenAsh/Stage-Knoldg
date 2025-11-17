@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy, inject, DestroyRef, signal, computed } from '@angular/core';
-import { Subject, take, takeUntil, forkJoin, Observable } from 'rxjs';
+import { Subject, take, takeUntil, forkJoin, Observable, combineLatest } from 'rxjs';
 import { MeetingsService, Meeting, MeetingResponse, ClientMeetingStatistics } from '../../../../_fake/services/meetings/meetings.service';
 import { SentMeetingsService, SentMeeting, SentMeetingResponse, AvailableHoursResponse, AvailableDay, AvailableTime, RescheduleRequest, MeetingStatistics } from '../../../../_fake/services/meetings/sent-meetings.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
@@ -128,6 +128,7 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
   private sentMeetingsService = inject(SentMeetingsService);
   private profileService = inject(ProfileService);
   private router=inject(Router);
+  private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
 
 
@@ -138,14 +139,49 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
     // Initialize role observables
     this.isClient$ = this.profileService.isClient();
 
-    // Set default tab based on user role
-    this.isClient$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(isClient => {
+    // Determine initial tab from query param while respecting role
+    combineLatest([
+      this.isClient$.pipe(take(1)),
+      this.route.queryParamMap.pipe(take(1))
+    ])
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe(([isClient, queryMap]) => {
+      const tabParam = (queryMap.get('tab') || '').toLowerCase();
+      let requestedTab: 'client-meetings' | 'my-meetings' | null = null;
+      if (tabParam === 'client') {
+        requestedTab = 'client-meetings';
+      } else if (tabParam === 'my-meetings') {
+        requestedTab = 'my-meetings';
+      }
+
       if (isClient) {
         this.activeTab = 'my-meetings';
+      } else if (requestedTab) {
+        this.activeTab = requestedTab;
+      } else {
+        this.activeTab = 'client-meetings';
       }
-    });
 
-    this.loadCurrentTabData();
+      // Sync selectedTab signal with the chosen activeTab
+      if (this.activeTab === 'client-meetings') {
+        this.selectedTab.set(this.clientMeetingsSubTab);
+      } else {
+        this.selectedTab.set(this.myMeetingsSubTab);
+      }
+      this.showArchivedMeetings.set(false);
+      this.sentShowArchivedMeetings.set(false);
+
+      // Load data for the initial tab
+      this.loadCurrentTabData();
+
+      // Reflect actual tab in URL
+      const actualTabParam = this.activeTab === 'client-meetings' ? 'client' : 'my-meetings';
+      this.router.navigate([], {
+        queryParams: { tab: actualTabParam },
+        queryParamsHandling: 'merge',
+        replaceUrl: true
+      });
+    });
 
     // Only load client meeting statistics if user is not a client
     this.isClient$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(isClient => {
@@ -182,6 +218,14 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
       this.showArchivedMeetings.set(false);
       this.sentShowArchivedMeetings.set(false);
       this.loadCurrentTabData();
+
+      // Update URL param to reflect chosen tab
+      const tabParam = this.activeTab === 'client-meetings' ? 'client' : 'my-meetings';
+      this.router.navigate([], {
+        queryParams: { tab: tabParam },
+        queryParamsHandling: 'merge',
+        replaceUrl: true
+      });
     });
   }
 
@@ -640,7 +684,7 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
   // Sent meetings methods
   goToInsighterProfile(insighterUuid: string): void {
     const currentLocale = localStorage.getItem('language') || 'en';
-    window.location.href = `https://foresighta.co/${currentLocale}/profile/${insighterUuid}?entity=insighter&tab=meet`;
+    window.location.href = `https://foresigha.co/${currentLocale}/profile/${insighterUuid}?entity=insighter&tab=meet`;
   }
 
   canJoinMeeting(meeting: SentMeeting): boolean {

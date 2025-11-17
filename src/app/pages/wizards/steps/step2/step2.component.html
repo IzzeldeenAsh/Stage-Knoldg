@@ -257,6 +257,13 @@
             }}"
           />
           <div
+            *ngIf="form.get('legalName')?.pending"
+            class="form-text text-muted d-flex align-items-center mt-2"
+          >
+            <span class="spinner-border spinner-border-sm align-middle mx-2 text-info"></span>
+            {{ lang === 'ar' ? 'جارٍ التحقق من الاسم...' : 'Checking availability...' }}
+          </div>
+          <div
             *ngIf="
               form.get('legalName')?.hasError('required') &&
               form.get('legalName')?.touched
