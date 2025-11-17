@@ -11,6 +11,7 @@ export interface Document {
   price: number;
   file_extension: string;
   file_size: number;
+  download_at?: string | null;
 }
 
 export interface Company {
@@ -30,6 +31,7 @@ export interface KnowledgeItem {
   purchase_date: string;
   documents: Document[];
   company: Company | null;
+  download_at?: string | null;
 }
 
 export interface PaginationLinks {
