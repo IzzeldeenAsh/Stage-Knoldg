@@ -20,8 +20,8 @@
         <div class="d-flex flex-center flex-lg-start flex-column">              
             <!--begin::Logo-->
             <a [href]="getHomeUrl()" class="mb-7">
-              <img *ngIf="lang=='en'" alt="Logo" src="assets/media/LOGO-KNOLD/knoldg-03.png" class="height-logo"> 
-              <img *ngIf="lang=='ar'" alt="Logo" src="assets/media/LOGO-KNOLD/knoldg-03.png" class="height-logo"> 
+              <img *ngIf="lang=='en'" alt="Logo" src="./assets/media/LOGO-KNOLD/knoldg-03.png" class="height-logo">
+              <img *ngIf="lang=='ar'" alt="Logo" src="./assets/media/LOGO-KNOLD/ANSIGHTAAr-03.png" class="height-logo">
             </a>    
             <!--end::Logo-->            
 
@@ -275,7 +275,7 @@
     <small class="text-muted">
       {{ getPasswordStrengthLabel() }}
     </small>
-    <div *ngIf="passwordStrength.feedback && lang=='en'" class="text-warning mt-1">
+    <div *ngIf="passwordStrength.feedback && lang=='en'" [ngClass]="{'text-danger': registrationForm.get('password')?.invalid, 'text-warning': registrationForm.get('password')?.valid}" class="mt-1">
       {{ passwordStrength.feedback }}
     </div>
   </div>

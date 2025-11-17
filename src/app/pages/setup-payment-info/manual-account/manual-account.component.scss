@@ -35,7 +35,7 @@
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
   
   &:focus {
-    border-color: #0978B9;
+    border-color: #3b82f6;
     box-shadow: 0 0 0 0.2rem rgba(9, 120, 185, 0.25);
   }
   
@@ -72,8 +72,8 @@
 
 // Button styling
 .btn-info {
-  background-color: #0978B9;
-  border-color: #0978B9;
+  background-color: #3b82f6;
+  border-color: #3b82f6;
   
   &:hover {
     background-color: #085a8a;
@@ -102,10 +102,10 @@
 .alert-light-info {
   background-color: rgba(9, 120, 185, 0.05);
   border: 1px solid rgba(9, 120, 185, 0.2);
-  color: #0978B9;
+  color: #3b82f6;
   
   .text-info {
-    color: #0978B9 !important;
+    color: #3b82f6 !important;
   }
 }
 

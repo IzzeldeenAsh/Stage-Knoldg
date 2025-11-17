@@ -282,8 +282,8 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
     this.knowledgeService.getListDocumentsInfo(Number(this.knowledgeId))
       .subscribe({
         next: (response) => {
-          this.documents = response.data;
-        
+          this.documents = response.data.reverse();
+
           this.isLoading = false;
         },
         error: (error) => {

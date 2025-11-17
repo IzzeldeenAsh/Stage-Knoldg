@@ -144,7 +144,7 @@
                       </div>
                     </div>
                     <!-- Archive Button for Past Meetings -->
-                    @if (clientMeetingsSubTab === 'past' && !showArchivedMeetings && meeting.status !== 'pending') {
+                    @if (clientMeetingsSubTab === 'past' && !showArchivedMeetings() && meeting.status !== 'pending') {
                       <button class="btn btn-xs btn-light-warning d-flex align-items-center px-2 py-1"
                               (click)="archiveMeeting(meeting)"
                               [disabled]="actionLoading()"

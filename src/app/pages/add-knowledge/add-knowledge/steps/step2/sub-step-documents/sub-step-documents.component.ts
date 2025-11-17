@@ -1,4 +1,4 @@
-import { Component, Injector, Input, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, Injector, Input, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormArray, FormGroup, Validators } from '@angular/forms';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { ICreateKnowldege, IDocument } from '../../../create-account.helper';
@@ -46,6 +46,7 @@ interface DocumentInfo {
   ]
 })
 export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
+  @ViewChild('multiUploadInput') multiUploadInput!: ElementRef<HTMLInputElement>;
   @Input('updateParentModel') updateParentModel: (
     part: Partial<ICreateKnowldege>,
     isFormValid: boolean
@@ -56,6 +57,16 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   documentsForm: FormGroup;
   totalPrice: number = 0;
   documents: DocumentInfo[] = [];
+  // Include both extensions and MIME types to maximize compatibility on iOS/iPadOS
+  fileAcceptAttr: string =
+    '.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,' +
+    'application/pdf,application/msword,' +
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document,' +
+    'application/vnd.ms-powerpoint,' +
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation,' +
+    'application/vnd.ms-excel,' +
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,' +
+    'text/plain';
   uploadsInProgress: boolean = false;
   hasActiveUploads = false;
   pendingUploads: number = 0;
@@ -72,6 +83,8 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   languageMismatchMessage = '';
   languageMismatchDocuments: string[] = [];
   private languageMismatchResolver: ((value: boolean) => void) | null = null;
+  // Track last shown mismatch to avoid re-showing after user edits titles
+  private lastLanguageMismatchDocs: Array<{ id: string | number; name: string }> = [];
 
   constructor(
     injector: Injector,
@@ -174,6 +187,15 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   }
 
   addDocument(): void {
+    // Prefer the persistent template input for iOS reliability (synchronous user gesture)
+    if (this.multiUploadInput && this.multiUploadInput.nativeElement) {
+      const inputEl = this.multiUploadInput.nativeElement;
+      // Reset value to allow re-selecting the same file(s)
+      inputEl.value = '';
+      inputEl.click();
+      return;
+    }
+    // Fallback to dynamic creation if template input not available
     this.triggerMultipleFileInput();
   }
 
@@ -296,33 +318,55 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
     fileInput.type = 'file';
     fileInput.multiple = true;
     fileInput.accept = '.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt';
-    
-    // Only add capture attribute for mobile iOS devices, not desktop Safari
-    const isMobileIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && 
-                       !(navigator.platform === 'MacIntel' && navigator.maxTouchPoints <= 1);
-    
-    if (isMobileIOS) {
-      // Use the environment capture for mobile iOS devices only
-      fileInput.setAttribute('capture', 'environment');
-    }
-    
-    fileInput.onchange = (event: any) => {
-      const files = event.target.files;
+    // Do NOT set the 'capture' attribute (iOS could force camera UI)
+    // iOS Safari requires the input to be in the DOM for change to reliably fire
+    fileInput.style.display = 'none';
+    document.body.appendChild(fileInput);
+
+    let handled = false;
+    const handleFiles = () => {
+      if (handled) {
+        return;
+      }
+      handled = true;
+      const files = (fileInput.files as FileList) || ({} as FileList);
       if (files && files.length > 0) {
+        // Ensure Angular picks up changes even if this listener fires outside its zone
         this.handleMultipleFiles(files);
+        this.cdr.detectChanges();
+      }
+      // Cleanup the temporary input
+      if (fileInput.parentNode) {
+        fileInput.parentNode.removeChild(fileInput);
       }
     };
-    
+
+    // Some Safari/iOS versions fire 'input' instead of 'change' for file inputs
+    fileInput.addEventListener('change', handleFiles, { once: true });
+    fileInput.addEventListener('input', handleFiles, { once: true });
+
     // Use a longer timeout for Safari to ensure the click event is properly processed
     const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
     setTimeout(() => {
       fileInput.click();
-    }, isSafari ? 100 : 0);
+    }, isSafari ? 150 : 0);
   }
 
   // Queue to store files for sequential upload
   private fileUploadQueue: File[] = [];
   private isUploadInProgress = false;
+  
+  // Handler for the persistent template input (ensures iOS/iPadOS closes picker)
+  public onMultipleFilesSelected(event: Event): void {
+    const inputEl = event.target as HTMLInputElement;
+    const files = inputEl.files;
+    if (files && files.length > 0) {
+      this.handleMultipleFiles(files);
+      this.cdr.detectChanges();
+    }
+    // Reset input so selecting the same files again still triggers change
+    inputEl.value = '';
+  }
   
   // Flag to track if knowledge type has been created
   private knowledgeTypeCreated = false;
@@ -355,9 +399,32 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       );
     }
     
-    // Only add valid files to upload queue
+    // Only add valid, unique files to upload queue
     if (validFiles.length > 0) {
-      this.fileUploadQueue.push(...validFiles);
+      // Build a set of existing file keys already queued or present in documents
+      const existingKeys = new Set<string>();
+      const toKey = (f: File) => `${f.name}|${f.size}|${f.lastModified}`;
+      
+      this.fileUploadQueue.forEach(f => existingKeys.add(toKey(f)));
+      this.documents.forEach(d => {
+        if (d.file) {
+          existingKeys.add(toKey(d.file));
+        }
+      });
+      
+      const seen = new Set<string>();
+      const uniqueValidFiles: File[] = [];
+      validFiles.forEach(f => {
+        const key = toKey(f);
+        if (!seen.has(key) && !existingKeys.has(key)) {
+          seen.add(key);
+          uniqueValidFiles.push(f);
+        }
+      });
+      
+      if (uniqueValidFiles.length > 0) {
+        this.fileUploadQueue.push(...uniqueValidFiles);
+      }
       
       // Start sequential upload process if not already in progress
       if (!this.isUploadInProgress) {
@@ -781,6 +848,8 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
             }else{
               this.showSuccess('', 'Document details updated successfully');
             }
+            // Clear last mismatch tracking on successful update
+            this.lastLanguageMismatchDocs = [];
             resolve(true);
           },
                   error: (error) => {
@@ -835,6 +904,7 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
         const errorKeys = Object.keys(error.error.errors);
         const documentIndices: number[] = [];
         const affectedDocumentNames: string[] = [];
+        const affectedDocsMeta: Array<{ id: string | number; name: string }> = [];
 
         errorKeys.forEach(key => {
           // Extract index from keys like "documents.55", "documents.44"
@@ -847,12 +917,14 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
             // Try multiple approaches to find the document name
             let documentFound = false;
             let documentName = '';
+            let documentIdOrIndex: string | number = serverIndex;
             
             // Approach 1: Find by document ID in our documents array
             const docById = this.documents.find(doc => doc.id === serverIndex);
             if (docById) {
               documentName = docById.file_name;
               documentFound = true;
+              documentIdOrIndex = docById.id ?? serverIndex;
             }
             
             // Approach 2: Find by docId in form controls
@@ -864,6 +936,7 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
                   documentName = control.get('file_name')?.value || this.documents[i]?.file_name || '';
                   if (documentName) {
                     documentFound = true;
+                    documentIdOrIndex = docId ?? serverIndex;
                     break;
                   }
                 }
@@ -875,6 +948,7 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
               documentName = this.documents[serverIndex].file_name;
               if (documentName) {
                 documentFound = true;
+                documentIdOrIndex = serverIndex;
               }
             }
             
@@ -886,6 +960,7 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
               if (docWithMatchingId) {
                 documentName = docWithMatchingId.file_name;
                 documentFound = true;
+                documentIdOrIndex = docWithMatchingId.id ?? serverIndex;
               }
             }
             
@@ -895,14 +970,19 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
             }
             
             affectedDocumentNames.push(documentName);
+            affectedDocsMeta.push({ id: documentIdOrIndex, name: documentName });
           }
         });
 
         // Always show the dialog even if we couldn't extract specific document names
         if (affectedDocumentNames.length === 0) {
           affectedDocumentNames.push('One or more documents');
+          affectedDocsMeta.push({ id: 'unknown', name: 'One or more documents' });
         }
         
+        // Always snapshot latest mismatch context so we can compare on next occurrences if needed
+        this.lastLanguageMismatchDocs = affectedDocsMeta.map(d => ({ id: d.id, name: d.name }));
+
         // Store the affected documents for the modal
         this.languageMismatchDocuments = affectedDocumentNames;
         

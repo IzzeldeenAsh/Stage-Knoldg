@@ -49,6 +49,9 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
 
   // Library statistics
   libraryStatistics = signal<LibraryStatistics | null>(null);
+  // URL-param selection/highlight state
+  selectFirstAfterLoad = signal<boolean>(false);
+  highlightedKnowledgeUuid = signal<string | null>(null);
   
   // Scroll state
   canScrollUp = signal<boolean>(false);
@@ -128,23 +131,30 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(params => {
         if (params['search']) {
-          this.searchControl.setValue(params['search'], { emitEvent: false });
-          this.currentSearchTerm.set(params['search']);
+          // Do not backend-filter; clear any search/ui state and select first after load
+          this.searchControl.setValue('', { emitEvent: false });
+          this.currentSearchTerm.set('');
           this.currentUuids.set([]);
-          this.loadMyDownloads(1, params['search']);
+          this.selectFirstAfterLoad.set(true);
+          this.highlightedKnowledgeUuid.set(null);
+          this.loadMyDownloads(1);
         } else if (params['uuids']) {
           // Handle multiple UUIDs passed as comma-separated string
-          const uuids = params['uuids'].split(',').filter((id: string) => id.trim());
-          this.currentUuids.set(uuids);
+          // Do not backend-filter; clear any search/ui state and select first after load
+          this.currentUuids.set([]);
           this.currentSearchTerm.set('');
           this.searchControl.setValue('', { emitEvent: false });
-          this.loadMyDownloads(1, '', uuids);
+          this.selectFirstAfterLoad.set(true);
+          this.highlightedKnowledgeUuid.set(null);
+          this.loadMyDownloads(1);
         } else if (params['uuid']) {
-          const uuids = [params['uuid']];
-          this.currentUuids.set(uuids);
+          // Do not backend-filter; clear any search/ui state and select first after load
+          this.currentUuids.set([]);
           this.currentSearchTerm.set('');
           this.searchControl.setValue('', { emitEvent: false });
-          this.loadMyDownloads(1, '', uuids);
+          this.selectFirstAfterLoad.set(true);
+          this.highlightedKnowledgeUuid.set(null);
+          this.loadMyDownloads(1);
         } else {
           this.loadMyDownloads();
         }
@@ -168,6 +178,7 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
         this.currentPage.set(1); // Reset to first page when searching
         this.selectedKnowledge.set(null); // Clear selection when searching
         this.selectedDocument.set(null);
+        this.highlightedKnowledgeUuid.set(null);
 
         // Reset archived state when searching
         if (this.showArchivedDownloads()) {
@@ -205,6 +216,13 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
         // Auto-select first item if UUIDs are provided
         if (uuids && uuids.length > 0 && response.data.length > 0 && !this.selectedKnowledge()) {
           this.selectedKnowledge.set(response.data[0]);
+        }
+        // When coming from URL params and not filtering: select first and highlight
+        if (this.selectFirstAfterLoad() && response.data.length > 0) {
+          const first = response.data[0];
+          this.selectedKnowledge.set(first);
+          this.highlightedKnowledgeUuid.set(first.uuid);
+          this.selectFirstAfterLoad.set(false);
         }
         
         // Check scroll state after data loads
@@ -363,6 +381,7 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
 
   clearSearch(): void {
     this.searchControl.setValue('');
+    this.highlightedKnowledgeUuid.set(null);
   }
 
   viewAll(): void {
@@ -370,6 +389,7 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
     this.currentUuids.set([]);
     this.currentSearchTerm.set('');
     this.searchControl.setValue('', { emitEvent: false });
+    this.highlightedKnowledgeUuid.set(null);
     
     // Reset page to 1 and clear selections
     this.currentPage.set(1);
@@ -598,6 +618,23 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
     }
 
     return `${combinedTotal} total downloads`;
+  }
+
+  /**
+   * Whether knowledge (or any of its documents) has been downloaded before
+   */
+  isKnowledgeDownloaded(knowledge: KnowledgeItem): boolean {
+    if (!knowledge) return false;
+    if (knowledge.download_at) return true;
+    const docs = knowledge.documents || [];
+    return docs.some(doc => !!doc.download_at);
+  }
+
+  /**
+   * Whether a document has been downloaded before
+   */
+  isDocumentDownloaded(document: Document): boolean {
+    return !!document?.download_at;
   }
 
 } 

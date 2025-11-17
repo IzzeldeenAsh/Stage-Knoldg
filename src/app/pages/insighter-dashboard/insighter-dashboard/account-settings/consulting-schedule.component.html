@@ -100,6 +100,13 @@
                     </small>
                   </div>
                 </div>
+                <div *ngIf="timeSlot.errors?.['duplicateTimeSlot']" class="validation-error-row">
+                  <div class="validation-error">
+                    <small class="error-message" style="color: #f44336;">
+                      {{ lang === 'ar' ? 'لا يمكن إضافة فترة زمنية مكررة في نفس اليوم' : 'Cannot add duplicate time slots for the same day' }}
+                    </small>
+                  </div>
+                </div>
                 
                 <!-- Validation Error Message for Rate - New Row -->
               
@@ -247,5 +254,6 @@
   [baseZIndex]="10000" 
   acceptButtonStyleClass="btn btn-sm btn-primary rounded mx-2" 
   rejectButtonStyleClass="btn btn-sm btn-light-danger rounded"
-  styleClass="custom-confirm-dialog">
+  styleClass="custom-confirm-dialog"
+  (onHide)="onConfirmDialogHide()">
 </p-confirmDialog>

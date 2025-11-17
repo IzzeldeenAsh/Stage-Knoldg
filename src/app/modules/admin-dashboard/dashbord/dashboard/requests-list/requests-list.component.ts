@@ -59,11 +59,17 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
 
   ngOnInit(): void {
     this.filteredRequests = [];
-    this.loadData();
     this.loadVerificationQuestions();
+    // Load initial data
+    this.loadData();
   }
 
   loadData() {
+    // Prevent multiple simultaneous calls
+    if (this.loading) {
+      return;
+    }
+
     this.loading = true;
     const reqSub = this.requestsService.getRequests(this.currentPage, this.pageSize).subscribe({
       next: (result) => {
@@ -157,11 +163,16 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
   }
 
   viewRequest(request: RequestItem) {
+    // Prevent multiple modal openings
+    if (this.visible || this.visibleVerification || this.visibleDeactivate || this.visibleDeactivateDelete) {
+      return;
+    }
+
     this.selectedChain = this.getRequestChain(request);
     this.selectedRequest = this.selectedChain[this.selectedChain.length - 1];
 
     // Add new condition for deactivate_delete_company
-    if (this.selectedRequest.type.key === 'deactivate_delete_company' || 
+    if (this.selectedRequest.type.key === 'deactivate_delete_company' ||
         this.selectedRequest.type.key === 'deactivate_delete_insighter') {
       this.visibleDeactivateDelete = true;
       return;
@@ -171,7 +182,7 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
     if (this.selectedRequest.type.key === 'verified_company') {
       const targetId = request.id;
       // Fetch the stored (already answered) Q&A from the service
-      this.requestsService.getRequestVerificationQuestion(targetId).subscribe({
+      const verificationSub = this.requestsService.getRequestVerificationQuestion(targetId).subscribe({
         next: (res) => {
           this.answeredQuestions = res.data || [];
 
@@ -191,10 +202,11 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
           this.visibleVerification = true;
         },
       });
+      this.unsubscribe.push(verificationSub);
       return;
     }
 
-    // Otherwise, it’s either activate_company or deactivate_company
+    // Otherwise, it's either activate_company or deactivate_company
     if (this.selectedRequest.type.key === 'activate_company') {
       this.visible = true;
     } else if (this.selectedRequest.type.key === 'deactivate_company') {
@@ -410,9 +422,15 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
 
   // PrimeNG lazy loading event handler
   onLazyLoad(event: any) {
-    this.currentPage = Math.floor(event.first / event.rows) + 1;
-    this.pageSize = event.rows;
-    this.loadData();
+    const newPage = Math.floor(event.first / event.rows) + 1;
+    const newPageSize = event.rows;
+
+    // Only load data if page or page size actually changed and not loading
+    if ((newPage !== this.currentPage || newPageSize !== this.pageSize) && !this.loading) {
+      this.currentPage = newPage;
+      this.pageSize = newPageSize;
+      this.loadData();
+    }
   }
 
   // Helper method to get user initials
