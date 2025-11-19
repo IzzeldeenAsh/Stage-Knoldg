@@ -3,7 +3,10 @@
   <!-- Personal Info Card -->
   <div class="p-card navigation-card" *ngIf="personalTabs.length > 0">
     <div class="p-card-header">
-      <h3>{{ lang === 'en' ? 'Personal' : 'شخصي' }}</h3>
+<h3>
+  <ng-container *ngIf="profile.roles.includes('company')">{{ "MY_COMPANY.CURRENT_USER" | translate }}</ng-container>
+      <ng-container *ngIf="!profile.roles.includes('company')">{{ lang === 'en' ? 'Personal' : 'شخصي' }}</ng-container>
+</h3>
     </div>
     <div class="p-card-body">
       <div *ngFor="let tab of personalTabs" class="nav-item" [routerLink]="tab.link" routerLinkActive="active">
