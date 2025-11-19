@@ -61,7 +61,7 @@ export class LangSwitchButtonComponent implements OnInit {
 
     // Set the language preference in a cookie that works across subdomains
     // This matches the cookie set in the NextJS app
-    const isProduction = location.hostname.includes('foresighta.co');
+    const isProduction = location.hostname.includes('insightabusiness.com');
     const cookieParts = [
       `preferred_language=${newLang}`,
       `Path=/`,                       // send on all paths
@@ -77,7 +77,7 @@ export class LangSwitchButtonComponent implements OnInit {
     document.cookie = cookieParts.join('; ');
 
     // Reload the page to apply language changes
-    window.location.reload();
+    // window.location.reload();
   }
 
   // Helper method to check if we're in insighter-dashboard routes

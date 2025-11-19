@@ -369,11 +369,25 @@
         justify-content: space-between;
         align-items: center;
         margin-bottom: 0.75rem;
+        /* Keep checkbox and label on the same line in LTR/RTL */
+        .form-check {
+          display: flex;
+          align-items: center;
+        }
+        .form-check-input {
+          float: none;
+          margin: 0 8px 0 0; /* LTR spacing */
+        }
         
         .form-check-label {
           font-size: 1rem;
           color: #181c32;
           cursor: pointer;
+          margin-bottom: 0; /* prevent label breaking above checkbox */
+        }
+        /* Swap spacing for RTL so layout stays horizontal and aligned */
+        [dir="rtl"] & .form-check-input {
+          margin: 0 0 0 8px;
         }
         
         .region-card-icon {

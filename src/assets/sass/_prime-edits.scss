@@ -22,9 +22,27 @@
   padding: 0 !important;
 }
 
-.p-dropdown ul {
+/* Dropdown list direction per document direction */
+html[dir="ltr"] .p-dropdown ul {
   direction: ltr !important;
   overflow: auto !important;
+}
+html[dir="rtl"] .p-dropdown ul {
+  direction: rtl !important;
+  overflow: auto !important;
+}
+/* Align dropdown choices to start in RTL */
+html[dir="rtl"] .p-dropdown-panel .p-dropdown-items .p-dropdown-item {
+  text-align: right !important;
+  justify-content: flex-end !important;
+}
+/* Align selected/label text inside the control in RTL */
+html[dir="rtl"] .p-dropdown .p-dropdown-label {
+  text-align: right !important;
+}
+/* Align filter input inside dropdown panel in RTL */
+html[dir="rtl"] .p-dropdown-panel .p-dropdown-header .p-dropdown-filter {
+  text-align: right !important;
 }
 
 /* Multiselect Clear Icon Positioning */

@@ -17,6 +17,9 @@ export class GuidelineComponent implements OnInit {
   isLoading$: Observable<boolean>;
   guidelineForms: Map<number, FormGroup> = new Map();
   newGuidelineForm: FormGroup;
+  joditConfig: any = {
+    height: 300
+  };
 
   constructor(
     private guidelinesService: GuidelinesService,
