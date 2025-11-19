@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { DashbordRoutingModule } from './dashbord-routing.module';
@@ -32,6 +32,7 @@ import { NodeService } from 'src/app/_fake/services/nodeService/nodeservice';
 import { TagsComponent } from './dashboard/tags/tags.component';
 import { HSCodeComponent } from './hscode/hscode.component';
 import { GuidelineComponent } from './dashboard/guidelines/guidelines.component';
+import { JoditAngularModule } from 'jodit-angular';
 import { ChipModule } from 'primeng/chip';
 import { TreeModule } from 'primeng/tree';
 import { TopicsComponent } from './dashboard/topics/topics.component';
@@ -79,6 +80,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     InlineSVGModule,
     DropdownModule,
     EditorModule,
+    JoditAngularModule,
     InputTextModule,
     FormsModule,
     TreeSelectModule,
@@ -99,6 +101,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     NotificationsIconsPipe,
     NotificationsBgPipe,
   ],
-  providers: [NodeService]
+  providers: [NodeService],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class DashbordModule { }

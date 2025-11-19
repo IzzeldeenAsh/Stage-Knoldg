@@ -71,7 +71,7 @@
             <editor
               *ngIf="!doc.animatedAbstract || doc.showEditor"
               apiKey="fovwl5u83es9vkiv7x6h34fynj0utg108qrb0edwwwlxevt9"
-              [ngClass]="{'is-invalid': doc.hasError}" 
+              [ngClass]="{'is-invalid': doc.hasError}"
               [initialValue]="doc.description || ''"
               (onInit)="handleEditorInit($event, doc.id)"
               [inline]="false"

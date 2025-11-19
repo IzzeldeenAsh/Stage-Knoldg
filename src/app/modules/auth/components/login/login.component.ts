@@ -97,13 +97,11 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
 
   signInWithGoogle(event: Event): void {
     event.preventDefault();
-    this.showFullLoader = true;
     this.performSocialAuth('google');
   }
 
   signInWithLinkedIn(event: Event): void {
     event.preventDefault();
-    this.showFullLoader = true;
     this.performSocialAuth('linkedin');
   }
 
@@ -128,7 +126,6 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
           summary: 'Error', 
           detail: `Failed to initiate ${provider} sign-in.` 
         });
-        this.showFullLoader = false;
       }
     });
   }
@@ -162,7 +159,6 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
 
     this.hasError = false;
     this.messages = [];
-    this.showFullLoader = true;
 
     const returnUrl = this.getReturnUrl();
     
@@ -186,7 +182,6 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     
     // Check if user needs email verification
     if (userData.verified === false) {
-      this.showFullLoader = false;
       this.router.navigate(["/auth/email-reconfirm"]);
       return;
     }
@@ -204,7 +199,6 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
   private handleLoginError(error: any): void {
     this.hasError = true;
     this.messages = [];
-    this.showFullLoader = false;
 
     if (error.validationMessages) {
       this.messages = error.validationMessages;
@@ -224,8 +218,15 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     
     console.log('Redirecting to Next.js with token:', token.substring(0, 20) + '...', 'and returnUrl:', returnUrl);
     
-    // Build the redirect URL with token
-    let redirectUrl = `${environment.mainAppUrl}/en/callback/${token}`;
+    // Store token in cookie for Next.js to read (cross-domain)
+    this.setTokenCookie(token);
+    // Also store return URL in cookie (for consistency with social auth)
+    if (returnUrl) {
+      this.setReturnUrlCookie(returnUrl);
+    }
+
+    // Build the redirect URL WITHOUT token (cookie-based handoff)
+    let redirectUrl = `${environment.mainAppUrl}/${this.selectedLang || 'en'}/callback`;
     
     // Add return URL as query parameter if it exists
     if (returnUrl && returnUrl !== '/') {
@@ -234,10 +235,8 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     
     console.log('Final redirect URL:', redirectUrl);
     
-    // Add a small delay to ensure any pending operations complete
-    setTimeout(() => {
-      window.location.href = redirectUrl;
-    }, 100);
+    // Redirect immediately; Next.js callback will show its own loader
+    window.location.href = redirectUrl;
   }
 
   private setReturnUrlCookie(url: string): void {
@@ -256,6 +255,31 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
         `auth_return_url=${encodeURIComponent(url)}`,
         `Path=/`,
         `Max-Age=${60 * 60}`, // 1 hour
+        `SameSite=None`,
+        `Domain=.insightabusiness.com`,
+        `Secure`
+      ];
+    }
+    
+    document.cookie = cookieSettings.join('; ');
+  }
+
+  private setTokenCookie(token: string): void {
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    
+    let cookieSettings;
+    if (isLocalhost) {
+      cookieSettings = [
+        `token=${encodeURIComponent(token)}`,
+        `Path=/`,
+        `Max-Age=${60 * 60 * 24 * 7}`, // 7 days
+        `SameSite=Lax`
+      ];
+    } else {
+      cookieSettings = [
+        `token=${encodeURIComponent(token)}`,
+        `Path=/`,
+        `Max-Age=${60 * 60 * 24 * 7}`, // 7 days
         `SameSite=None`,
         `Domain=.insightabusiness.com`,
         `Secure`

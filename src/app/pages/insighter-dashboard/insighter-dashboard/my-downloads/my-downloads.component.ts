@@ -251,18 +251,43 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
   downloadKnowledge(knowledge: KnowledgeItem): void {
     // Add knowledge UUID to downloading items
     this.downloadingItems.update(items => new Set(items).add(knowledge.uuid));
-    
+
     this.myDownloadsService.downloadKnowledge(knowledge.uuid)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (blob) => {
           this.downloadFile(blob, `${knowledge.title}.zip`);
+
+          // Immediately update local data to show downloaded state
+          const currentTime = new Date().toISOString();
+          this.knowledgeItems.update(items =>
+            items.map(item =>
+              item.uuid === knowledge.uuid
+                ? { ...item, download_at: currentTime }
+                : item
+            )
+          );
+
+          // Update archived items if they exist
+          if (this.archivedKnowledgeItems().length > 0) {
+            this.archivedKnowledgeItems.update(items =>
+              items.map(item =>
+                item.uuid === knowledge.uuid
+                  ? { ...item, download_at: currentTime }
+                  : item
+              )
+            );
+          }
+
           // Remove knowledge UUID from downloading items
           this.downloadingItems.update(items => {
             const newItems = new Set(items);
             newItems.delete(knowledge.uuid);
             return newItems;
           });
+
+          // Refresh the data to show updated download_at field
+          this.reloadCurrentDownloads();
         },
         error: (error) => {
           console.error('Error downloading knowledge:', error);
@@ -280,19 +305,50 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
   downloadDocument(document: Document): void {
     // Add document UUID to downloading items
     this.downloadingItems.update(items => new Set(items).add(document.uuid));
-    
+
     this.myDownloadsService.downloadDocument(document.uuid)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (response) => {
           // Open the URL in a new tab to download the file
           window.open(response.url, '_blank');
+
+          // Immediately update local data to show downloaded state
+          const currentTime = new Date().toISOString();
+          this.knowledgeItems.update(items =>
+            items.map(knowledge => ({
+              ...knowledge,
+              documents: knowledge.documents.map(doc =>
+                doc.uuid === document.uuid
+                  ? { ...doc, download_at: currentTime }
+                  : doc
+              )
+            }))
+          );
+
+          // Update archived items if they exist
+          if (this.archivedKnowledgeItems().length > 0) {
+            this.archivedKnowledgeItems.update(items =>
+              items.map(knowledge => ({
+                ...knowledge,
+                documents: knowledge.documents.map(doc =>
+                  doc.uuid === document.uuid
+                    ? { ...doc, download_at: currentTime }
+                    : doc
+                )
+              }))
+            );
+          }
+
           // Remove document UUID from downloading items
           this.downloadingItems.update(items => {
             const newItems = new Set(items);
             newItems.delete(document.uuid);
             return newItems;
           });
+
+          // Refresh the data to show updated download_at field
+          this.reloadCurrentDownloads();
         },
         error: (error) => {
           console.error('Error downloading document:', error);

@@ -71,10 +71,10 @@
                     </div>
                     <div class="form-group mt-3">
                       <label>Guideline (English)</label>
-                      <editor
-                        apiKey="fovwl5u83es9vkiv7x6h34fynj0utg108qrb0edwwwlxevt9"
+                      <jodit-editor
+                        [config]="joditConfig"
                         formControlName="guidelineEn"
-                      ></editor>
+                      ></jodit-editor>
                       <div
                         *ngIf="
                           getGuidelineForm(guideline.id).get('guidelineEn')?.invalid &&
@@ -87,10 +87,10 @@
                     </div>
                     <div class="form-group mt-3">
                       <label>Guideline (Arabic)</label>
-                      <editor
-                        apiKey="fovwl5u83es9vkiv7x6h34fynj0utg108qrb0edwwwlxevt9"
+                      <jodit-editor
+                        [config]="joditConfig"
                         formControlName="guidelineAr"
-                      ></editor>
+                      ></jodit-editor>
                       <div
                         *ngIf="
                           getGuidelineForm(guideline.id).get('guidelineAr')?.invalid &&
@@ -195,10 +195,10 @@
                     </div>
                     <div class="form-group">
                       <label>Guideline (English)</label>
-                      <editor
-                        apiKey="fovwl5u83es9vkiv7x6h34fynj0utg108qrb0edwwwlxevt9"
+                      <jodit-editor
+                        [config]="joditConfig"
                         formControlName="guidelineEn"
-                      ></editor>
+                      ></jodit-editor>
                       <div
                         *ngIf="
                           newGuidelineForm.get('guidelineEn')?.invalid &&
@@ -211,10 +211,10 @@
                     </div>
                     <div class="form-group">
                       <label>Guideline (Arabic)</label>
-                      <editor
-                        apiKey="fovwl5u83es9vkiv7x6h34fynj0utg108qrb0edwwwlxevt9"
+                      <jodit-editor
+                        [config]="joditConfig"
                         formControlName="guidelineAr"
-                      ></editor>
+                      ></jodit-editor>
                       <div
                         *ngIf="
                           newGuidelineForm.get('guidelineAr')?.invalid &&

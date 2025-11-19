@@ -51,6 +51,7 @@
               "node_modules/primeng/resources/primeng.min.css",
               "node_modules/swiper/swiper-bundle.css",
               "node_modules/quill/dist/quill.snow.css",
+              "node_modules/jodit/build/jodit.css",
               "src/theme.scss",
               "src/styles.scss"
             ],
