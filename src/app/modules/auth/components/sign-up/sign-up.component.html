@@ -2,7 +2,7 @@
   <!-- Validation Error Template -->
   <ng-template #formError let-control="control" let-message="message" let-validation="validation">
     <ng-container *ngIf="control.hasError(validation) && (control.dirty || control.touched)">
-      <div class="fv-plugins-message-container">
+      <div class="fv-plugins-message-container pt-5">
         <div class="fv-help-block text-inline-start">
           <span role="alert">{{ message }}</span>
         </div>
@@ -116,7 +116,7 @@
                     [ngTemplateOutlet]="formError"
                     [ngTemplateOutletContext]="{
                       validation: 'minlength',
-                      message: 'First name must be at least 2 characters',
+                      message: lang=='en' ? 'First name must be at least 2 characters' : 'يجب أن يحتوي الاسم الاول على 3 أحرف على الأقل',
                       control: registrationForm.controls['firstName']
                     }"
                   ></ng-container>
@@ -131,7 +131,7 @@
                   ></ng-container>
             
                   <!-- Server-Side Validation Error -->
-                  <div *ngIf="registrationForm.controls['firstName'].errors?.serverError && (registrationForm.controls['firstName'].touched || registrationForm.controls['firstName'].dirty)" class="text-danger mt-1">
+                  <div *ngIf="registrationForm.controls['firstName'].errors?.serverError && (registrationForm.controls['firstName'].touched || registrationForm.controls['firstName'].dirty)" class="text-danger mt-2">
                     {{ registrationForm.controls['firstName'].errors?.serverError }}
                   </div>
                 </div>
@@ -166,7 +166,7 @@
                     [ngTemplateOutlet]="formError"
                     [ngTemplateOutletContext]="{
                       validation: 'minlength',
-                      message: 'Last name must be at least 2 characters',
+                      message: lang=='en' ? 'Last name must be at least 2 characters' : 'يجب أن يحتوي الاسم الأخير على 3 أحرف على الأقل',
                       control: registrationForm.controls['lastName']
                     }"
                   ></ng-container>
