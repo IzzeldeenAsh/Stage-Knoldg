@@ -186,10 +186,7 @@ html[dir="rtl"] .home-countries-dropdown .p-dropdown-panel {
   padding: 0 !important;
 }
 
-/* Password Input Padding */
-.p-password-input {
-  padding: 0.775rem 1rem !important;
-}
+
 
 /* Search Bar Tools Dropdown */
 .search-bar-tools .p-dropdown {
@@ -530,4 +527,9 @@ z-index: 99999 !important;
   border-top-right-radius: 8px;
   border-bottom-left-radius: 0px !important;
   border-bottom-right-radius: 0px !important;
+  }
+
+  .pi-chip-remove-icon{
+    margin-left: 0.5rem !important;
+    margin-right: 0.5rem !important;
   }
