@@ -73,7 +73,8 @@
                       <label>Guideline (English)</label>
                       <jodit-editor
                         [config]="joditConfig"
-                        formControlName="guidelineEn"
+                        [defaultValue]="getGuidelineForm(guideline.id).get('guidelineEn')?.value"
+                        (onChange)="onEditorChange($event, guideline.id, 'guidelineEn')"
                       ></jodit-editor>
                       <div
                         *ngIf="
@@ -89,7 +90,8 @@
                       <label>Guideline (Arabic)</label>
                       <jodit-editor
                         [config]="joditConfig"
-                        formControlName="guidelineAr"
+                        [defaultValue]="getGuidelineForm(guideline.id).get('guidelineAr')?.value"
+                        (onChange)="onEditorChange($event, guideline.id, 'guidelineAr')"
                       ></jodit-editor>
                       <div
                         *ngIf="
@@ -197,7 +199,8 @@
                       <label>Guideline (English)</label>
                       <jodit-editor
                         [config]="joditConfig"
-                        formControlName="guidelineEn"
+                        [defaultValue]="newGuidelineForm.get('guidelineEn')?.value"
+                        (onChange)="onNewEditorChange($event, 'guidelineEn')"
                       ></jodit-editor>
                       <div
                         *ngIf="
@@ -213,7 +216,8 @@
                       <label>Guideline (Arabic)</label>
                       <jodit-editor
                         [config]="joditConfig"
-                        formControlName="guidelineAr"
+                        [defaultValue]="newGuidelineForm.get('guidelineAr')?.value"
+                        (onChange)="onNewEditorChange($event, 'guidelineAr')"
                       ></jodit-editor>
                       <div
                         *ngIf="

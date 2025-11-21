@@ -13,7 +13,7 @@
       [showClear]="false"
       [disabled]="disabled"
       [filterFields]="['names.en', 'names.ar', 'international_code']"
-      filterPlaceholder="Search countries..."
+      [filterPlaceholder]="searchPlaceholder"
     >
       <!-- Country Option Template -->
       <ng-template pTemplate="item" let-country>

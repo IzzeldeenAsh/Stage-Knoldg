@@ -202,6 +202,9 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
     .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe({
       next:(response) =>{
+        // Preserve current selection UUIDs before swapping arrays
+        const prevSelectedKnowledgeUuid = this.selectedKnowledge()?.uuid || null;
+        const prevSelectedDocumentUuid = this.selectedDocument()?.uuid || null;
         this.knowledgeItems.set(response.data);
         this.currentPage.set(response.meta.current_page);
         this.totalPages.set(response.meta.last_page);
@@ -223,6 +226,22 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
           this.selectedKnowledge.set(first);
           this.highlightedKnowledgeUuid.set(first.uuid);
           this.selectFirstAfterLoad.set(false);
+        }
+        // Re-bind selection to instances from the newly loaded array
+        if (prevSelectedKnowledgeUuid) {
+          const updatedSelectedKnowledge = response.data.find(k => k.uuid === prevSelectedKnowledgeUuid) || null;
+          if (updatedSelectedKnowledge) {
+            this.selectedKnowledge.set(updatedSelectedKnowledge);
+            if (prevSelectedDocumentUuid) {
+              const updatedSelectedDocument = (updatedSelectedKnowledge.documents || []).find(d => d.uuid === prevSelectedDocumentUuid) || null;
+              if (updatedSelectedDocument) {
+                this.selectedDocument.set(updatedSelectedDocument);
+              }
+            }
+          } else {
+            this.selectedKnowledge.set(null);
+            this.selectedDocument.set(null);
+          }
         }
         
         // Check scroll state after data loads
@@ -286,6 +305,14 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
             return newItems;
           });
 
+          // Re-bind selectedKnowledge to updated instance immediately if it is currently selected
+          if (this.selectedKnowledge()?.uuid === knowledge.uuid) {
+            const updatedItem = this.knowledgeItems().find(k => k.uuid === knowledge.uuid) || null;
+            if (updatedItem) {
+              this.selectedKnowledge.set(updatedItem);
+            }
+          }
+
           // Refresh the data to show updated download_at field
           this.reloadCurrentDownloads();
         },
@@ -346,6 +373,21 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
             newItems.delete(document.uuid);
             return newItems;
           });
+
+          // Re-bind selectedKnowledge and selectedDocument to updated instances immediately if selected
+          const currentSelectedKnowledgeUuid = this.selectedKnowledge()?.uuid || null;
+          if (currentSelectedKnowledgeUuid) {
+            const updatedKnowledge = this.knowledgeItems().find(k => k.uuid === currentSelectedKnowledgeUuid) || null;
+            if (updatedKnowledge) {
+              this.selectedKnowledge.set(updatedKnowledge);
+              if (this.selectedDocument()?.uuid === document.uuid) {
+                const updatedDoc = (updatedKnowledge.documents || []).find(d => d.uuid === document.uuid) || null;
+                if (updatedDoc) {
+                  this.selectedDocument.set(updatedDoc);
+                }
+              }
+            }
+          }
 
           // Refresh the data to show updated download_at field
           this.reloadCurrentDownloads();
@@ -619,10 +661,30 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (response) => {
+          // Preserve current selection UUIDs before swapping arrays
+          const prevSelectedKnowledgeUuid = this.selectedKnowledge()?.uuid || null;
+          const prevSelectedDocumentUuid = this.selectedDocument()?.uuid || null;
           this.archivedKnowledgeItems.set(response.data);
           this.archivedCurrentPage.set(response.meta.current_page);
           this.archivedTotalPages.set(response.meta.last_page);
           this.archivedTotalItems.set(response.meta.total);
+
+          // Re-bind selection to instances from the newly loaded archived array
+          if (prevSelectedKnowledgeUuid) {
+            const updatedSelectedKnowledge = response.data.find(k => k.uuid === prevSelectedKnowledgeUuid) || null;
+            if (updatedSelectedKnowledge) {
+              this.selectedKnowledge.set(updatedSelectedKnowledge);
+              if (prevSelectedDocumentUuid) {
+                const updatedSelectedDocument = (updatedSelectedKnowledge.documents || []).find(d => d.uuid === prevSelectedDocumentUuid) || null;
+                if (updatedSelectedDocument) {
+                  this.selectedDocument.set(updatedSelectedDocument);
+                }
+              }
+            } else {
+              this.selectedKnowledge.set(null);
+              this.selectedDocument.set(null);
+            }
+          }
 
           // Check scroll state after data loads
           setTimeout(() => {

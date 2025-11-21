@@ -256,7 +256,6 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
         error: (error) => {
           console.error('Error fetching data:', error);
           this.handleServerErrors(error);
-          this.showError('Error', 'An unexpected error occurred.');
         }
       });
 
@@ -312,7 +311,6 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
         error: (error) => {
           console.error('Error fetching data:', error);
           this.handleServerErrors(error);
-          this.showError('Error', 'An unexpected error occurred.');
         }
       });
       this.unsubscribe.push(reqSub);
@@ -344,17 +342,36 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
 
   private handleServerErrors(error: any) {
     this.messages = [];
-    if (error.error && error.error.errors) {
-      const serverErrors = error.error.errors;
-      for (const key in serverErrors) {
-        if (serverErrors.hasOwnProperty(key)) {
-          const messages = serverErrors[key];
-          this.messages.push({
-            severity: "error",
-            summary: "",
-            detail: messages.join(", "),
-          });
+    if (error && error.error) {
+      // Prefer explicit server message when available (e.g., balance due)
+      if (error.error.message) {
+        this.messages.push({
+          severity: "error",
+          summary: "",
+          detail: error.error.message,
+        });
+      }
+      // Also surface field/common validation errors if present
+      if (error.error.errors) {
+        const serverErrors = error.error.errors;
+        for (const key in serverErrors) {
+          if (serverErrors.hasOwnProperty(key)) {
+            const messages = serverErrors[key];
+            this.messages.push({
+              severity: "error",
+              summary: "",
+              detail: Array.isArray(messages) ? messages.join(", ") : String(messages),
+            });
+          }
         }
+      }
+      // If neither message nor errors exist, show a generic error
+      if (!error.error.message && !error.error.errors) {
+        this.messages.push({
+          severity: "error",
+          summary: "Error",
+          detail: "An unexpected error occurred.",
+        });
       }
     } else {
       this.messages.push({
@@ -388,7 +405,6 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
         error: (error) => {
           console.error('Error processing request:', error);
           this.handleServerErrors(error);
-          this.showError('Error', 'An unexpected error occurred.');
         }
       });
 

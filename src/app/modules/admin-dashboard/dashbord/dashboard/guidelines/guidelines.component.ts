@@ -43,6 +43,21 @@ export class GuidelineComponent implements OnInit {
     this.loadGuidelines();
   }
 
+  /**
+   * Ensure that any focused editor/control flushes its value to the form control.
+   * Some WYSIWYG editors propagate value on blur. We explicitly blur the active element.
+   */
+  private blurActiveElement(): void {
+    try {
+      const active = (document?.activeElement as HTMLElement | null) || null;
+      if (active && typeof active.blur === 'function') {
+        active.blur();
+      }
+    } catch {
+      // Ignore if document is unavailable (SSR) or any unexpected error occurs.
+    }
+  }
+
   loadGuidelines() {
     this.guidelinesService.getGuidelines().subscribe({
       next: (data) => {
@@ -65,6 +80,29 @@ export class GuidelineComponent implements OnInit {
     });
   }
 
+  // Sync Jodit changes to reactive form for existing items
+  onEditorChange(event: any, guidelineId: number, controlName: 'guidelineEn' | 'guidelineAr'): void {
+    const form = this.getGuidelineForm(guidelineId);
+    const value =
+      (event && event.args && event.args.length ? event.args[0] : undefined) ??
+      (event && event.editor ? event.editor?.value : undefined) ??
+      '';
+    form.get(controlName)?.setValue(value);
+    form.get(controlName)?.markAsDirty();
+    form.updateValueAndValidity({ onlySelf: false, emitEvent: false });
+  }
+
+  // Sync Jodit changes to reactive form for new item
+  onNewEditorChange(event: any, controlName: 'guidelineEn' | 'guidelineAr'): void {
+    const value =
+      (event && event.args && event.args.length ? event.args[0] : undefined) ??
+      (event && event.editor ? event.editor?.value : undefined) ??
+      '';
+    this.newGuidelineForm.get(controlName)?.setValue(value);
+    this.newGuidelineForm.get(controlName)?.markAsDirty();
+    this.newGuidelineForm.updateValueAndValidity({ onlySelf: false, emitEvent: false });
+  }
+
   getGuidelineForm(guidelineId: number): FormGroup {
     return this.guidelineForms.get(guidelineId) || this.fb.group({});
   }
@@ -72,13 +110,17 @@ export class GuidelineComponent implements OnInit {
   saveGuideline(guidelineId: number) {
     const form = this.getGuidelineForm(guidelineId);
 
+    // Flush editor changes to the form controls before reading values
+    this.blurActiveElement();
+    form.updateValueAndValidity({ onlySelf: false, emitEvent: false });
+
     if (form.invalid) {
       form.markAllAsTouched();
       return;
     }
 
     const formData = new FormData();
-    const values = form.value;
+    const values = form.getRawValue();
 
     formData.append('name[en]', values.nameEn);
     formData.append('name[ar]', values.nameAr);
@@ -114,13 +156,17 @@ export class GuidelineComponent implements OnInit {
   createGuideline() {
     const form = this.newGuidelineForm;
 
+    // Flush editor changes to the form controls before reading values
+    this.blurActiveElement();
+    form.updateValueAndValidity({ onlySelf: false, emitEvent: false });
+
     if (form.invalid) {
       form.markAllAsTouched();
       return;
     }
 
     const formData = new FormData();
-    const values = form.value;
+    const values = form.getRawValue();
 
     formData.append('name[en]', values.nameEn);
     formData.append('name[ar]', values.nameAr);
