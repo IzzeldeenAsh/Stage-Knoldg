@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Injector, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ContactMessage, ContactMessageService, ContactMessagesResponse } from '../contact-message.service';
+import { BaseComponent } from 'src/app/modules/base.component';
 
 @Component({
   selector: 'app-contact-list',
@@ -9,14 +10,16 @@ import { ContactMessage, ContactMessageService, ContactMessagesResponse } from '
   standalone: true,
   imports: [CommonModule]
 })
-export class ContactListComponent implements OnInit {
+export class ContactListComponent extends BaseComponent implements OnInit {
   contactMessages: ContactMessage[] = [];
   loading = true;
   currentPage = 1;
   totalPages = 1;
   totalItems = 0;
 
-  constructor(private contactMessageService: ContactMessageService) { }
+  constructor(injector: Injector, private contactMessageService: ContactMessageService) {
+    super(injector);
+  }
 
   ngOnInit(): void {
     this.loadContactMessages();

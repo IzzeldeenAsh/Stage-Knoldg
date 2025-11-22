@@ -36,10 +36,10 @@ styleClass=""
 <div *ngIf="isLoading$ | async" class="text-center py-10 bg-light rounded mb-5 border border-1 border-light">
     <div class="my-5">
         <div class="spinner-border text-primary mb-4" role="status" style="width: 3rem; height: 3rem;">
-            <span class="visually-hidden">Loading...</span>
+            <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
         </div>
-        <h3 class="fw-bold text-gray-800 mb-2">Loading Requests</h3>
-        <p class="text-gray-600 fs-6 px-3">Please wait while we fetch your requests...</p>
+        <h3 class="fw-bold text-gray-800 mb-2">{{ 'COMMON.LOADING' | translate }}</h3>
+        <p class="text-gray-600 fs-6 px-3">{{ 'COMMON.PLEASE_WAIT' | translate }}</p>
     </div>
 </div>
 
@@ -48,8 +48,8 @@ styleClass=""
     <div class="my-5">
         <img src="assets/media/illustrations/dozzy-1/7117863_3369471.svg" alt="No Requests Illustration" class="mb-4" style="max-width: 300px;">
       
-        <h3 class="fw-bold text-gray-800 mb-2">No Requests Found</h3>
-        <p class="text-gray-600 fs-6 px-3">You don't have any requests at the moment. New requests will appear here once created.</p>
+        <h3 class="fw-bold text-gray-800 mb-2">{{ 'COMMON.NO_REQUESTS_FOUND' | translate }}</h3>
+        <p class="text-gray-600 fs-6 px-3">{{ 'COMMON.NO_REQUESTS_FOUND_DESC' | translate }}</p>
     </div>
 </div>
 
