@@ -224,7 +224,7 @@
               >
               <span class="fs-2x  fw-bolder" [ngClass]="(knowledge.total_price | currency) === '$0.00' ? 'text-success' : 'text-info'">
                 <ng-container *ngIf="(knowledge.total_price | currency) === '$0.00'">
-                  <ng-container *ngIf="lang === 'ar'">صدقة جارية</ng-container>
+                  <ng-container *ngIf="lang === 'ar'"> مجاني</ng-container>
                   <ng-container *ngIf="lang !== 'ar'">Free</ng-container>
                 </ng-container>
                 <ng-container *ngIf="(knowledge.total_price | currency) !== '$0.00'">

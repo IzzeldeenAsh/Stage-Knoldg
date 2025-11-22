@@ -237,7 +237,7 @@
                   <!-- Loading indicator -->
                   <div *ngIf="isDescriptionLoading" class="d-flex align-items-center mb-3">
                     <div class="spinner-border text-primary me-2" role="status">
-                      <span class="visually-hidden">Loading...</span>
+                      <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
                     </div>
                     <span>{{ "GENERATING_AI_DESCRIPTION" | translate }}</span>
                   </div>
