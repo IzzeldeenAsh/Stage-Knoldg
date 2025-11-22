@@ -42,10 +42,9 @@
               <ng-template #errorOrProcessing>
                 <ng-container *ngIf="isProcessing && !errorMessage">
                   <!--begin::Processing-->
-                  <div class="text-muted fw-semibold fs-5 mb-5">Processing authentication...</div>
                   <div class="my-10">
                     <div class="spinner-border text-primary" role="status">
-                      <span class="visually-hidden">Loading...</span>
+                      <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
                     </div>
                   </div>
                   <!--end::Processing-->
@@ -61,10 +60,10 @@
                   </div>
                                      <div class="d-flex flex-center mt-10">
                      <button type="button" (click)="retryAuth()" class="btn btn-lg btn-primary fw-bold me-3">
-                       <span class="indicator-label">Retry</span>
+                       <span class="indicator-label">{{ 'COMMON.RETRY' | translate }}</span>
                      </button>
                      <button type="button" (click)="goToLogin()" class="btn btn-lg btn-light fw-bold">
-                       <span class="indicator-label">Back to Login</span>
+                       <span class="indicator-label">{{ 'COMMON.BACK_TO_LOGIN' | translate }}</span>
                      </button>
                    </div>
                   <!--end::Error-->

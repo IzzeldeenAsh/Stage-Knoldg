@@ -148,7 +148,7 @@
             <!-- Loading State -->
             <div *ngIf="isGeneratingAbstract" class="d-flex align-items-center">
               <div class="spinner-border spinner-border-sm text-warning me-2" role="status">
-                <span class="visually-hidden">Loading...</span>
+                <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
               </div>
               <span class="text-warning fs-6 fw-semibold">
                 {{ (lang === 'ar' ? 'جاري الإنشاء' : 'Generating') }}...
