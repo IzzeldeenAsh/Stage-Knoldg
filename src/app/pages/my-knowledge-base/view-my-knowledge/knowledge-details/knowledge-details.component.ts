@@ -359,10 +359,16 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
 
     if (!this.docForm.get('file')?.value && !this.editingDocument) {
       Swal.fire({
-        title: 'Error!',
-        text: 'Please select a file to upload',
+        title: this.lang === 'ar' ? 'خطأ!' : 'Error!',
+        text: this.lang === 'ar' ? 'يرجى اختيار ملف للرفع' : 'Please select a file to upload',
         icon: 'error',
-        confirmButtonText: 'OK'
+        confirmButtonText: this.lang === 'ar' ? 'حسناً' : 'OK',
+        customClass: {
+          popup: 'text-center',
+          title: 'text-center',
+          htmlContainer: 'text-center',
+          confirmButton: 'text-center'
+        }
       });
       return;
     }
@@ -404,19 +410,35 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
         this.loadDocuments();
         this.closeDialog();
         Swal.fire({
-          title: 'Success!',
-          text: isUpdate ? 'Document updated successfully' : 'Document added successfully',
+          title: this.lang === 'ar' ? 'نجح!' : 'Success!',
+          text: isUpdate 
+            ? (this.lang === 'ar' ? 'تم تحديث المستند بنجاح' : 'Document updated successfully')
+            : (this.lang === 'ar' ? 'تم إضافة المستند بنجاح' : 'Document added successfully'),
           icon: 'success',
-          confirmButtonText: 'OK'
+          confirmButtonText: this.lang === 'ar' ? 'حسناً' : 'OK',
+          customClass: {
+            popup: 'text-center',
+            title: 'text-center',
+            htmlContainer: 'text-center',
+            confirmButton: 'text-center'
+          }
         });
       },
       error: (error) => {
         console.error('Error saving document:', error);
         Swal.fire({
-          title: 'Error!',
-          text: isUpdate ? 'Failed to update document' : 'Failed to add document',
+          title: this.lang === 'ar' ? 'خطأ!' : 'Error!',
+          text: isUpdate 
+            ? (this.lang === 'ar' ? 'فشل تحديث المستند' : 'Failed to update document')
+            : (this.lang === 'ar' ? 'فشل إضافة المستند' : 'Failed to add document'),
           icon: 'error',
-          confirmButtonText: 'OK'
+          confirmButtonText: this.lang === 'ar' ? 'حسناً' : 'OK',
+          customClass: {
+            popup: 'text-center',
+            title: 'text-center',
+            htmlContainer: 'text-center',
+            confirmButton: 'text-center'
+          }
         });
       },
       complete: () => {
@@ -487,13 +509,21 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
     event.stopPropagation();
     
     Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
+      title: this.lang === 'ar' ? 'هل أنت متأكد؟' : 'Are you sure?',
+      text: this.lang === 'ar' ? 'لن تتمكن من التراجع عن هذا!' : "You won't be able to revert this!",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonText: this.lang === 'ar' ? 'نعم، احذفه!' : 'Yes, delete it!',
+      cancelButtonText: this.lang === 'ar' ? 'إلغاء' : 'Cancel',
+      customClass: {
+            popup: 'text-center',
+            title: 'text-center',
+            htmlContainer: 'text-center',
+            confirmButton: 'text-center',
+            cancelButton: 'text-center'
+          }
     }).then((result) => {
       if (result.isConfirmed) {
         this.addInsightStepsService.deleteKnowledgeDocument(doc.id)
@@ -504,19 +534,33 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
               // Notify the parent component to update total_price
               this.knowledgeUpdateService.notifyKnowledgeUpdate();
               
-              Swal.fire(
-                'Deleted!',
-                'Document has been deleted.',
-                'success'
-              );
+              Swal.fire({
+                title: this.lang === 'ar' ? 'تم الحذف!' : 'Deleted!',
+                text: this.lang === 'ar' ? 'تم حذف المستند.' : 'Document has been deleted.',
+                icon: 'success',
+                confirmButtonText: this.lang === 'ar' ? 'حسناً' : 'OK',
+                customClass: {
+                  popup: 'text-center',
+                  title: 'text-center',
+                  htmlContainer: 'text-center',
+                  confirmButton: 'text-center'
+                }
+              });
             },
             error: (error) => {
               console.error('Error deleting document:', error);
-              Swal.fire(
-                'Error!',
-                'Failed to delete document.',
-                'error'
-              );
+              Swal.fire({
+                title: this.lang === 'ar' ? 'خطأ!' : 'Error!',
+                text: this.lang === 'ar' ? 'فشل حذف المستند.' : 'Failed to delete document.',
+                icon: 'error',
+                confirmButtonText: this.lang === 'ar' ? 'حسناً' : 'OK',
+                customClass: {
+                  popup: 'text-center',
+                  title: 'text-center',
+                  htmlContainer: 'text-center',
+                  confirmButton: 'text-center'
+                }
+              });
             }
           });
       }
@@ -527,13 +571,21 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
     event.stopPropagation();
     
     Swal.fire({
-      title: 'Unpublish Document',
-      text: "Are you sure you want to unpublish this document?",
+      title: this.lang === 'ar' ? 'إلغاء نشر المستند' : 'Unpublish Document',
+      text: this.lang === 'ar' ? 'هل أنت متأكد أنك تريد إلغاء نشر هذا المستند؟' : "Are you sure you want to unpublish this document?",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, unpublish it!'
+      confirmButtonText: this.lang === 'ar' ? 'نعم، ألغِ نشره!' : 'Yes, unpublish it!',
+      cancelButtonText: this.lang === 'ar' ? 'إلغاء' : 'Cancel',
+      customClass: {
+            popup: 'text-center',
+            title: 'text-center',
+            htmlContainer: 'text-center',
+            confirmButton: 'text-center',
+            cancelButton: 'text-center'
+          }
     }).then((result) => {
       if (result.isConfirmed) {
         const request = {
@@ -545,19 +597,33 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
           .subscribe({
             next: () => {
               this.loadDocuments(); // Refresh the documents list
-              Swal.fire(
-                'Unpublished!',
-                'Document has been unpublished.',
-                'success'
-              );
+              Swal.fire({
+                title: this.lang === 'ar' ? 'تم إلغاء النشر!' : 'Unpublished!',
+                text: this.lang === 'ar' ? 'تم إلغاء نشر المستند.' : 'Document has been unpublished.',
+                icon: 'success',
+                confirmButtonText: this.lang === 'ar' ? 'حسناً' : 'OK',
+                customClass: {
+                  popup: 'text-center',
+                  title: 'text-center',
+                  htmlContainer: 'text-center',
+                  confirmButton: 'text-center'
+                }
+              });
             },
             error: (error) => {
               console.error('Error unpublishing document:', error);
-              Swal.fire(
-                'Error!',
-                'Failed to unpublish document.',
-                'error'
-              );
+              Swal.fire({
+                title: this.lang === 'ar' ? 'خطأ!' : 'Error!',
+                text: this.lang === 'ar' ? 'فشل إلغاء نشر المستند.' : 'Failed to unpublish document.',
+                icon: 'error',
+                confirmButtonText: this.lang === 'ar' ? 'حسناً' : 'OK',
+                customClass: {
+                  popup: 'text-center',
+                  title: 'text-center',
+                  htmlContainer: 'text-center',
+                  confirmButton: 'text-center'
+                }
+              });
             }
           });
       }
@@ -577,10 +643,16 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
         error: (error) => {
           console.error('Error getting document URL:', error);
           Swal.fire({
-            title: 'Error!',
-            text: 'Failed to open document',
+            title: this.lang === 'ar' ? 'خطأ!' : 'Error!',
+            text: this.lang === 'ar' ? 'فشل فتح المستند' : 'Failed to open document',
             icon: 'error',
-            confirmButtonText: 'OK'
+            confirmButtonText: this.lang === 'ar' ? 'حسناً' : 'OK',
+            customClass: {
+              popup: 'text-center',
+              title: 'text-center',
+              htmlContainer: 'text-center',
+              confirmButton: 'text-center'
+            }
           });
         }
       });
@@ -600,10 +672,16 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
 
     if (!this.insightDocForm.get('file')?.value && !this.editingDocument) {
       Swal.fire({
-        title: 'Error!',
-        text: 'Please select a file to upload',
+        title: this.lang === 'ar' ? 'خطأ!' : 'Error!',
+        text: this.lang === 'ar' ? 'يرجى اختيار ملف للرفع' : 'Please select a file to upload',
         icon: 'error',
-        confirmButtonText: 'OK'
+        confirmButtonText: this.lang === 'ar' ? 'حسناً' : 'OK',
+        customClass: {
+          popup: 'text-center',
+          title: 'text-center',
+          htmlContainer: 'text-center',
+          confirmButton: 'text-center'
+        }
       });
       return;
     }
@@ -636,19 +714,35 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
         this.closeInsightDialog();
         this.knowledgeUpdateService.notifyKnowledgeUpdate(); // Notify parent about the update
         Swal.fire({
-          title: 'Success!',
-          text: isUpdate ? 'Document updated successfully' : 'Document added successfully',
+          title: this.lang === 'ar' ? 'نجح!' : 'Success!',
+          text: isUpdate 
+            ? (this.lang === 'ar' ? 'تم تحديث المستند بنجاح' : 'Document updated successfully')
+            : (this.lang === 'ar' ? 'تم إضافة المستند بنجاح' : 'Document added successfully'),
           icon: 'success',
-          confirmButtonText: 'OK'
+          confirmButtonText: this.lang === 'ar' ? 'حسناً' : 'OK',
+          customClass: {
+            popup: 'text-center',
+            title: 'text-center',
+            htmlContainer: 'text-center',
+            confirmButton: 'text-center'
+          }
         });
       },
       error: (error) => {
         console.error('Error saving document:', error);
         Swal.fire({
-          title: 'Error!',
-          text: isUpdate ? 'Failed to update document' : 'Failed to add document',
+          title: this.lang === 'ar' ? 'خطأ!' : 'Error!',
+          text: isUpdate 
+            ? (this.lang === 'ar' ? 'فشل تحديث المستند' : 'Failed to update document')
+            : (this.lang === 'ar' ? 'فشل إضافة المستند' : 'Failed to add document'),
           icon: 'error',
-          confirmButtonText: 'OK'
+          confirmButtonText: this.lang === 'ar' ? 'حسناً' : 'OK',
+          customClass: {
+            popup: 'text-center',
+            title: 'text-center',
+            htmlContainer: 'text-center',
+            confirmButton: 'text-center'
+          }
         });
       },
       complete: () => {

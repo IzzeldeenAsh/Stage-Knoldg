@@ -206,13 +206,21 @@ export class PostedComponent extends BaseComponent implements OnInit {
 
   deleteKnowledge(knowledge: Knowledge): void {
     Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
+      title: this.lang === 'ar' ? 'هل أنت متأكد؟' : 'Are you sure?',
+      text: this.lang === 'ar' ? 'لن تتمكن من التراجع عن هذا!' : "You won't be able to revert this!",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonText: this.lang === 'ar' ? 'نعم، احذفه!' : 'Yes, delete it!',
+      cancelButtonText: this.lang === 'ar' ? 'إلغاء' : 'Cancel',
+      customClass: {
+            popup: 'text-center',
+            title: 'text-center',
+            htmlContainer: 'text-center',
+            confirmButton: 'text-center',
+            cancelButton: 'text-center'
+          }
     }).then((result) => {
       if (result.isConfirmed) {
         this.knowledgeService.deleteKnowledge(knowledge.id).subscribe(
@@ -232,8 +240,19 @@ export class PostedComponent extends BaseComponent implements OnInit {
           },
           (error) => {
             console.error('Error deleting knowledge:', error);
-            const errorMessage = error.error?.message || error.error?.errors?.common?.[0] || 'There was an error deleting the knowledge.';
-            Swal.fire('Error!', errorMessage, 'error');
+            const errorMessage = error.error?.message || error.error?.errors?.common?.[0] || (this.lang === 'ar' ? 'حدث خطأ أثناء حذف المعرفة.' : 'There was an error deleting the knowledge.');
+            Swal.fire({
+              title: this.lang === 'ar' ? 'خطأ!' : 'Error!',
+              text: errorMessage,
+              icon: 'error',
+              confirmButtonText: this.lang === 'ar' ? 'حسناً' : 'OK',
+              customClass: {
+                popup: 'text-center',
+                title: 'text-center',
+                htmlContainer: 'text-center',
+                confirmButton: 'text-center'
+              }
+            });
           }
         );
       }
@@ -292,23 +311,38 @@ export class PostedComponent extends BaseComponent implements OnInit {
 
   unpublishKnowledge(knowledgeId: number): void {
     Swal.fire({
-      title: 'Are you sure?',
-      text: "You are about to unpublish this knowledge. It will no longer be visible to users.",
+      title: this.lang === 'ar' ? 'هل أنت متأكد؟' : 'Are you sure?',
+      text: this.lang === 'ar' ? 'أنت على وشك إلغاء نشر هذه المعرفة. لن تكون مرئية للمستخدمين بعد الآن.' : "You are about to unpublish this knowledge. It will no longer be visible to users.",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, unpublish it!'
+      confirmButtonText: this.lang === 'ar' ? 'نعم، ألغِ نشره!' : 'Yes, unpublish it!',
+      cancelButtonText: this.lang === 'ar' ? 'إلغاء' : 'Cancel',
+      customClass: {
+            popup: 'text-center',
+            title: 'text-center',
+            htmlContainer: 'text-center',
+            confirmButton: 'text-center',
+            cancelButton: 'text-center'
+          }
     }).then((result) => {
       if (result.isConfirmed) {
         this.knowledgeService.setKnowledgeStatus(knowledgeId, 'unpublished', new Date().toISOString()).subscribe(
           () => {
             this.loadPage(this.currentPage);
-            Swal.fire(
-              'Unpublished!',
-              'The knowledge has been unpublished.',
-              'success'
-            );
+            Swal.fire({
+              title: this.lang === 'ar' ? 'تم إلغاء النشر!' : 'Unpublished!',
+              text: this.lang === 'ar' ? 'تم إلغاء نشر المعرفة.' : 'The knowledge has been unpublished.',
+              icon: 'success',
+              confirmButtonText: this.lang === 'ar' ? 'حسناً' : 'OK',
+              customClass: {
+                popup: 'text-center',
+                title: 'text-center',
+                htmlContainer: 'text-center',
+                confirmButton: 'text-center'
+              }
+            });
           }
         );
       }
@@ -318,9 +352,16 @@ export class PostedComponent extends BaseComponent implements OnInit {
   savePackage(packageData: PackageData) {
     if (!packageData.packageName.trim()) {
       Swal.fire({
-        title: 'Error',
-        text: 'Package name is required',
-        icon: 'error'
+        title: this.lang === 'ar' ? 'خطأ' : 'Error',
+        text: this.lang === 'ar' ? 'اسم الحزمة مطلوب' : 'Package name is required',
+        icon: 'error',
+        confirmButtonText: this.lang === 'ar' ? 'حسناً' : 'OK',
+        customClass: {
+          popup: 'text-center',
+          title: 'text-center',
+          htmlContainer: 'text-center',
+          confirmButton: 'text-center'
+        }
       });
       this.loading = false;
       return;
@@ -328,9 +369,16 @@ export class PostedComponent extends BaseComponent implements OnInit {
 
     if (packageData.knowledge_ids.length === 0) {
       Swal.fire({
-        title: 'Error',
-        text: 'Please add at least one knowledge to the package',
-        icon: 'error'
+        title: this.lang === 'ar' ? 'خطأ' : 'Error',
+        text: this.lang === 'ar' ? 'يرجى إضافة معرفة واحدة على الأقل إلى الحزمة' : 'Please add at least one knowledge to the package',
+        icon: 'error',
+        confirmButtonText: this.lang === 'ar' ? 'حسناً' : 'OK',
+        customClass: {
+          popup: 'text-center',
+          title: 'text-center',
+          htmlContainer: 'text-center',
+          confirmButton: 'text-center'
+        }
       });
       this.loading = false;
       return;
@@ -349,9 +397,16 @@ export class PostedComponent extends BaseComponent implements OnInit {
     ).subscribe(
       () => {
         Swal.fire({
-          title: 'Success',
-          text: 'Package saved successfully',
-          icon: 'success'
+          title: this.lang === 'ar' ? 'نجح' : 'Success',
+          text: this.lang === 'ar' ? 'تم حفظ الحزمة بنجاح' : 'Package saved successfully',
+          icon: 'success',
+          confirmButtonText: this.lang === 'ar' ? 'حسناً' : 'OK',
+          customClass: {
+            popup: 'text-center',
+            title: 'text-center',
+            htmlContainer: 'text-center',
+            confirmButton: 'text-center'
+          }
         }).then(() => {
           this.togglePackageBuilder();
         });
@@ -359,9 +414,16 @@ export class PostedComponent extends BaseComponent implements OnInit {
       (error) => {
         console.error('Error saving package:', error);
         Swal.fire({
-          title: 'Error',
-          text: error.error?.message || 'Failed to save package',
-          icon: 'error'
+          title: this.lang === 'ar' ? 'خطأ' : 'Error',
+          text: error.error?.message || (this.lang === 'ar' ? 'فشل حفظ الحزمة' : 'Failed to save package'),
+          icon: 'error',
+          confirmButtonText: this.lang === 'ar' ? 'حسناً' : 'OK',
+          customClass: {
+            popup: 'text-center',
+            title: 'text-center',
+            htmlContainer: 'text-center',
+            confirmButton: 'text-center'
+          }
         });
       }
     ).add(() => {

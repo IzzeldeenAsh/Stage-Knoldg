@@ -338,12 +338,12 @@
             <!-- Industry -->
             <div class="mb-10">
               <app-industry-selector
-                [title]="currentLanguage == 'ar' ? 'اختر الصناعة' : 'Document Industry'"
-                [placeholder]="currentLanguage == 'ar' ? 'اختر الصناعة' : 'Select the industry this document applies to'"
+                [title]="currentLanguage == 'ar' ? 'المجال' : 'Industry'"
+                [placeholder]="currentLanguage == 'ar' ? 'اختر المجال' : 'Select the industry this document applies to'"
                 [fetchedData]="industryNodes"
                 [cancelLabel]="currentLanguage == 'ar' ? 'الغاء' : 'Cancel'"
                 [okLabel]="currentLanguage == 'ar' ? 'تأكيد' : 'Ok'"
-                [tip]="currentLanguage == 'ar' ? ' اختر الصناعة المتعلقة بهذه المعرفة' : 'Select the industry related to your knowledge'"
+                [tip]="currentLanguage == 'ar' ? ' اختر المجال المتعلقة بهذه المعرفة' : 'Select the industry related to your knowledge'"
                 [selectedIndustryId]="form.get('industry')?.value"
                 [isRequired]="true"
                 (nodeSelected)="onIndustrySelected($event)"

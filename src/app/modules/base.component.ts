@@ -26,6 +26,10 @@ export abstract class BaseComponent implements OnDestroy, AfterViewInit {
     this.translate = this.injector.get(TranslationService);
     this.lang = this.translate.getSelectedLanguage();
     this.toastService = this.injector.get(ToastService);
+    const langSubscription = this.translate.onLanguageChange().subscribe((lang: string) => {
+      this.lang = lang || 'en';
+    });
+    this.unsubscribe.push(langSubscription);
   }
 
   ngAfterViewInit(): void {
