@@ -148,7 +148,7 @@
             <!-- Loading State -->
             <div *ngIf="isGeneratingAbstract" class="d-flex align-items-center">
               <div class="spinner-border spinner-border-sm text-warning me-2" role="status">
-                <span class="visually-hidden">Loading...</span>
+                <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
               </div>
               <span class="text-warning fs-6 fw-semibold">
                 {{ (lang === 'ar' ? 'جاري الإنشاء' : 'Generating') }}...
@@ -188,7 +188,7 @@
                   <div class="loading-dot"></div>
                 </div>
                 <div class="text-warning fw-bold fs-6 mb-2">
-                  {{ (lang === 'ar' ? 'جاري إنشاء الملخص بالذكاء الاصطناعي' : 'Generating AI Abstract') }}
+                  {{ (lang === 'ar' ? 'جاري إنشاء الملخص بالذكاء الاصطناعي' : 'AI generating document abstract') }}
                 </div>
                 <div class="text-muted fs-7">
                   {{ (lang === 'ar' ? 'يرجى الانتظار...' : 'Please wait...') }}

@@ -190,13 +190,21 @@ export class GeneralComponent extends BaseComponent implements OnInit, OnDestroy
     if (this.selectedKnowledges.size === 0) return;
 
     Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
+      title: this.lang === 'ar' ? 'هل أنت متأكد؟' : 'Are you sure?',
+      text: this.lang === 'ar' ? 'لن تتمكن من التراجع عن هذا!' : "You won't be able to revert this!",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete them!'
+      confirmButtonText: this.lang === 'ar' ? 'نعم، احذفهم!' : 'Yes, delete them!',
+      cancelButtonText: this.lang === 'ar' ? 'إلغاء' : 'Cancel',
+      customClass: {
+            popup: 'text-center',
+            title: 'text-center',
+            htmlContainer: 'text-center',
+            confirmButton: 'text-center',
+            cancelButton: 'text-center'
+          }
     }).then((result) => {
       if (result.isConfirmed) {
         const deletePromises = Array.from(this.selectedKnowledges).map(id =>
@@ -226,12 +234,19 @@ export class GeneralComponent extends BaseComponent implements OnInit, OnDestroy
           })
           .catch((error) => {
             console.error('Error deleting knowledges:', error);
-            const errorMessage = error.error?.message || error.error?.errors?.common?.[0] || 'There was an error deleting the knowledges.';
-            Swal.fire(
-              'Error!',
-              errorMessage,
-              'error'
-            );
+            const errorMessage = error.error?.message || error.error?.errors?.common?.[0] || (this.lang === 'ar' ? 'حدث خطأ أثناء حذف المعارف.' : 'There was an error deleting the knowledges.');
+            Swal.fire({
+              title: this.lang === 'ar' ? 'خطأ!' : 'Error!',
+              text: errorMessage,
+              icon: 'error',
+              confirmButtonText: this.lang === 'ar' ? 'حسناً' : 'OK',
+              customClass: {
+                popup: 'text-center',
+                title: 'text-center',
+                htmlContainer: 'text-center',
+                confirmButton: 'text-center'
+              }
+            });
           });
       }
     });
@@ -346,9 +361,16 @@ export class GeneralComponent extends BaseComponent implements OnInit, OnDestroy
   savePackage(packageData: PackageData) {
     if (!packageData.packageName.trim()) {
       Swal.fire({
-        title: 'Error',
-        text: 'Package name is required',
-        icon: 'error'
+        title: this.lang === 'ar' ? 'خطأ' : 'Error',
+        text: this.lang === 'ar' ? 'اسم الحزمة مطلوب' : 'Package name is required',
+        icon: 'error',
+        confirmButtonText: this.lang === 'ar' ? 'حسناً' : 'OK',
+        customClass: {
+          popup: 'text-center',
+          title: 'text-center',
+          htmlContainer: 'text-center',
+          confirmButton: 'text-center'
+        }
       });
       this.loading = false;
       return;
@@ -356,9 +378,16 @@ export class GeneralComponent extends BaseComponent implements OnInit, OnDestroy
 
     if (packageData.knowledge_ids.length === 0) {
       Swal.fire({
-        title: 'Error',
-        text: 'Please add at least one knowledge to the package',
-        icon: 'error'
+        title: this.lang === 'ar' ? 'خطأ' : 'Error',
+        text: this.lang === 'ar' ? 'يرجى إضافة معرفة واحدة على الأقل إلى الحزمة' : 'Please add at least one knowledge to the package',
+        icon: 'error',
+        confirmButtonText: this.lang === 'ar' ? 'حسناً' : 'OK',
+        customClass: {
+          popup: 'text-center',
+          title: 'text-center',
+          htmlContainer: 'text-center',
+          confirmButton: 'text-center'
+        }
       });
       this.loading = false;
       return;
@@ -381,9 +410,16 @@ export class GeneralComponent extends BaseComponent implements OnInit, OnDestroy
     ).subscribe(
       () => {
         Swal.fire({
-          title: 'Success',
-          text: 'Package saved successfully',
-          icon: 'success'
+          title: this.lang === 'ar' ? 'نجح' : 'Success',
+          text: this.lang === 'ar' ? 'تم حفظ الحزمة بنجاح' : 'Package saved successfully',
+          icon: 'success',
+          confirmButtonText: this.lang === 'ar' ? 'حسناً' : 'OK',
+          customClass: {
+            popup: 'text-center',
+            title: 'text-center',
+            htmlContainer: 'text-center',
+            confirmButton: 'text-center'
+          }
         }).then(() => {
           this.togglePackageBuilder();
         });
@@ -391,9 +427,16 @@ export class GeneralComponent extends BaseComponent implements OnInit, OnDestroy
       (error) => {
         console.error('Error saving package:', error);
         Swal.fire({
-          title: 'Error',
-          text: error.error?.message || 'Failed to save package',
-          icon: 'error'
+          title: this.lang === 'ar' ? 'خطأ' : 'Error',
+          text: error.error?.message || (this.lang === 'ar' ? 'فشل حفظ الحزمة' : 'Failed to save package'),
+          icon: 'error',
+          confirmButtonText: this.lang === 'ar' ? 'حسناً' : 'OK',
+          customClass: {
+            popup: 'text-center',
+            title: 'text-center',
+            htmlContainer: 'text-center',
+            confirmButton: 'text-center'
+          }
         });
       }
     ).add(() => {
@@ -474,13 +517,21 @@ export class GeneralComponent extends BaseComponent implements OnInit, OnDestroy
 
   deleteKnowledge(knowledge: Knowledge) {
     Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
+      title: this.lang === 'ar' ? 'إزالة الملف! ' : 'Delete file!',
+      text: this.lang === 'ar' ? 'هل أنت متأكد من إزالة هذا الملف؟' : "Are you sure you want to Delete this file?",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonText: this.lang === 'ar' ? 'نعم، احذفه!' : 'Yes, delete it!',
+      cancelButtonText: this.lang === 'ar' ? 'إلغاء' : 'Cancel',
+      customClass: {
+            popup: 'text-center',
+            title: 'text-center',
+            htmlContainer: 'text-center',
+            confirmButton: 'text-center',
+            cancelButton: 'text-center'
+          }
     }).then((result) => {
       if (result.isConfirmed) {
         this.knowledgeService.deleteKnowledge(knowledge.id).subscribe(
@@ -503,12 +554,19 @@ export class GeneralComponent extends BaseComponent implements OnInit, OnDestroy
           },
           (error) => {
             console.error('Error deleting knowledge:', error);
-            const errorMessage = error.error?.message || error.error?.errors?.common?.[0] || 'There was an error deleting the knowledge.';
-            Swal.fire(
-              'Error!',
-              errorMessage,
-              'error'
-            );
+            const errorMessage = error.error?.message || error.error?.errors?.common?.[0] || (this.lang === 'ar' ? 'حدث خطأ أثناء حذف المعرفة.' : 'There was an error deleting the knowledge.');
+            Swal.fire({
+              title: this.lang === 'ar' ? 'خطأ!' : 'Error!',
+              text: errorMessage,
+              icon: 'error',
+              confirmButtonText: this.lang === 'ar' ? 'حسناً' : 'OK',
+              customClass: {
+                popup: 'text-center',
+                title: 'text-center',
+                htmlContainer: 'text-center',
+                confirmButton: 'text-center'
+              }
+            });
           }
         );
       }
@@ -568,12 +626,19 @@ export class GeneralComponent extends BaseComponent implements OnInit, OnDestroy
       },
       (error:any) => {
         console.error('Error updating status:', error);
-        const errorMessage = error.error?.message || error.error?.errors?.common?.[0] || 'There was an error updating the status.';
-        Swal.fire(
-          'Error!',
-          errorMessage,
-          'error'
-        );
+        const errorMessage = error.error?.message || error.error?.errors?.common?.[0] || (this.lang === 'ar' ? 'حدث خطأ أثناء تحديث الحالة.' : 'There was an error updating the status.');
+        Swal.fire({
+          title: this.lang === 'ar' ? 'خطأ!' : 'Error!',
+          text: errorMessage,
+          icon: 'error',
+          confirmButtonText: this.lang === 'ar' ? 'حسناً' : 'OK',
+          customClass: {
+            popup: 'text-center',
+            title: 'text-center',
+            htmlContainer: 'text-center',
+            confirmButton: 'text-center'
+          }
+        });
       }
     );
   }
@@ -669,10 +734,16 @@ export class GeneralComponent extends BaseComponent implements OnInit, OnDestroy
   // Helper method to show filter errors
   private displayFilterError(message: string) {
     Swal.fire({
-      title: 'Error',
+      title: this.lang === 'ar' ? 'خطأ' : 'Error',
       text: message,
       icon: 'error',
-      confirmButtonText: 'OK'
+      confirmButtonText: this.lang === 'ar' ? 'حسناً' : 'OK',
+      customClass: {
+        popup: 'text-center',
+        title: 'text-center',
+        htmlContainer: 'text-center',
+        confirmButton: 'text-center'
+      }
     });
   }
 

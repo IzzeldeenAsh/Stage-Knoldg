@@ -1,7 +1,7 @@
 <!-- Page Header with Tabs -->
 <app-page-header
-  [titleEn]="'Meetings'"
-  [titleAr]="'الاجتماعات'"
+  [titleEn]="'INSIGHTER.DASHBOARD.NAV.MEETINGS' | translate"
+  [titleAr]="'INSIGHTER.DASHBOARD.NAV.MEETINGS' | translate"
   [lang]="lang"
   [subtitle]="getMeetingsSubtitle()"
   [showTabs]="!(isClient$ | async)">
@@ -21,14 +21,14 @@
       <a class="nav-link text-active-primary pb-4"
         [class.active]="activeTab === 'client-meetings'"
         (click)="setActiveTab('client-meetings')">
-        {{ lang === 'ar' ? 'اجتماعات العملاء' : 'Client Meetings' }}
+        {{ 'INSIGHTER.MEETINGS.TABS.RECEIVED' | translate }}
       </a>
     </li>
     <li class="nav-item">
       <a class="nav-link text-active-primary pb-4"
         [class.active]="activeTab === 'my-meetings'"
         (click)="setActiveTab('my-meetings')">
-        {{ lang === 'ar' ? 'اجتماعاتي' : 'My Meetings' }}
+        {{ 'INSIGHTER.MEETINGS.TABS.SENT' | translate }}
       </a>
     </li>
   </ng-container>
@@ -48,14 +48,14 @@
             class="nested-tab-button"
             [ngClass]="{ 'active': clientMeetingsSubTab === 'coming' }"
             (click)="setClientMeetingsSubTab('coming')">
-            {{ lang === 'ar' ? 'القادمة' : 'Coming' }}
+            {{ 'INSIGHTER.MEETINGS.FILTERS.COMING' | translate }}
           </button>
           <button
             type="button"
             class="nested-tab-button"
             [ngClass]="{ 'active': clientMeetingsSubTab === 'past' }"
             (click)="setClientMeetingsSubTab('past')">
-            {{ lang === 'ar' ? 'السابقة' : 'Past' }}
+            {{ 'INSIGHTER.MEETINGS.FILTERS.PAST' | translate }}
           </button>
         </div>
       </div>
@@ -70,14 +70,14 @@
               <button class="btn btn-sm btn-outline-info d-flex align-items-center toggle-archived-btn"
                       [class.active]="showArchivedMeetings()"
                       (click)="toggleArchivedMeetings()"
-                      [pTooltip]="showArchivedMeetings() ? 'Show Past Meetings' : 'Show Archived Meetings'"
+                      [pTooltip]="(showArchivedMeetings() ? ('MEETINGS.SHOW_PAST_MEETINGS' | translate) : ('MEETINGS.SHOW_ARCHIVED_MEETINGS' | translate))"
                       tooltipPosition="top">
                 @if (showArchivedMeetings()) {
                   <i class="pi pi-arrow-left me-2 text-dark" style="font-size: 1rem;"></i>
                 } @else {
                   <i class="pi pi-inbox me-2 text-dark" style="font-size: 1rem;"></i>
                 }
-                {{ showArchivedMeetings() ? 'Past' : 'Archived' }}
+                {{ showArchivedMeetings() ? ('INSIGHTER.MEETINGS.FILTERS.PAST' | translate) : ('MEETINGS.ARCHIVED' | translate) }}
                 <span *ngIf="!showArchivedMeetings() && clientArchivedCount() > 0"
                       class="badge badge-light-info ms-2">
                   {{ clientArchivedCount() }}
@@ -92,7 +92,7 @@
       @if (loading()) {
         <div class="text-center py-5">
           <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
+            <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
           </div>
         </div>
       }
@@ -148,9 +148,9 @@
                       <button class="btn btn-xs btn-light-warning d-flex align-items-center px-2 py-1"
                               (click)="archiveMeeting(meeting)"
                               [disabled]="actionLoading()"
-                              [pTooltip]="'Archive Meeting'"
+                              [pTooltip]="'MEETINGS.ARCHIVE_MEETING' | translate"
                               tooltipPosition="top"
-                              aria-label="Archive Meeting">
+                              [attr.aria-label]="'MEETINGS.ARCHIVE_MEETING' | translate">
                         <i class="pi pi-inbox" style="font-size: 1rem; padding: 0;"></i>
                       </button>
                     }
@@ -169,9 +169,9 @@
                       <div class="d-flex gap-2">
                         <button class="btn btn-sm btn-success d-flex align-items-center px-2 py-1"
                                 (click)="openApproveModal(meeting)"
-                                [pTooltip]="'Approve Meeting'"
+                                [pTooltip]="'MEETINGS.APPROVE_MEETING' | translate"
                                 tooltipPosition="top"
-                                aria-label="Approve Meeting">
+                                [attr.aria-label]="'MEETINGS.APPROVE_MEETING' | translate">
                           <i class="ki-duotone ki-check fs-4">
                             <span class="path1"></span>
                             <span class="path2"></span>
@@ -179,9 +179,9 @@
                         </button>
                         <button class="btn btn-sm btn-warning d-flex align-items-center px-2 py-1"
                                 (click)="openPostponeModal(meeting)"
-                                [pTooltip]="'Postpone Meeting'"
+                                [pTooltip]="'MEETINGS.POSTPONE_MEETING' | translate"
                                 tooltipPosition="top"
-                                aria-label="Postpone Meeting">
+                                [attr.aria-label]="'MEETINGS.POSTPONE_MEETING' | translate">
                           <i class="ki-duotone ki-time fs-4">
                             <span class="path1"></span>
                             <span class="path2"></span>
@@ -194,7 +194,7 @@
                   <!-- Meeting Description -->
                   <div class="meeting-description mb-4 flex-grow-1">
                     <p class="text-gray-600 mb-0" 
-                       [pTooltip]="meeting.description ? meeting.description : 'No description available'" 
+                       [pTooltip]="meeting.description ? meeting.description : ('INSIGHTER.MEETINGS.NO_DESCRIPTION' | translate)" 
                        tooltipPosition="top"
                        [style.cursor]="meeting.description && meeting.description.length > 100 ? 'help' : 'default'">
                      {{ ( (meeting.description == "No description provided" || meeting.description == "No description available") ? ('INSIGHTER.MEETINGS.NO_DESCRIPTION' | translate) : meeting.description || ('INSIGHTER.MEETINGS.NO_DESCRIPTION' | translate) ) | truncateText:100:true }}
@@ -336,14 +336,14 @@
             class="nested-tab-button"
             [ngClass]="{ 'active': myMeetingsSubTab === 'coming' }"
             (click)="setMyMeetingsSubTab('coming')">
-            {{ lang === 'ar' ? 'القادمة' : 'Coming' }}
+            {{ 'INSIGHTER.MEETINGS.FILTERS.COMING' | translate }}
           </button>
           <button
             type="button"
             class="nested-tab-button"
             [ngClass]="{ 'active': myMeetingsSubTab === 'past' }"
             (click)="setMyMeetingsSubTab('past')">
-            {{ lang === 'ar' ? 'السابقة' : 'Past' }}
+            {{ 'INSIGHTER.MEETINGS.FILTERS.PAST' | translate }}
           </button>
         </div>
       </div>
@@ -358,14 +358,14 @@
               <button class="btn btn-sm btn-outline-info d-flex align-items-center toggle-archived-btn"
                       [class.active]="sentShowArchivedMeetings()"
                       (click)="toggleSentArchivedMeetings()"
-                      [pTooltip]="sentShowArchivedMeetings() ? 'Show Past Meetings' : 'Show Archived Meetings'"
+                      [pTooltip]="(sentShowArchivedMeetings() ? ('MEETINGS.SHOW_PAST_MEETINGS' | translate) : ('MEETINGS.SHOW_ARCHIVED_MEETINGS' | translate))"
                       tooltipPosition="top">
                 @if (sentShowArchivedMeetings()) {
                   <i class="pi pi-arrow-left me-2 text-dark" style="font-size: 1rem;"></i>
                 } @else {
                   <i class="pi pi-inbox me-2 text-dark" style="font-size: 1rem;"></i>
                 }
-                {{ sentShowArchivedMeetings() ? 'Past' : 'Archived' }}
+                {{ sentShowArchivedMeetings() ? ('INSIGHTER.MEETINGS.FILTERS.PAST' | translate) : ('MEETINGS.ARCHIVED' | translate) }}
                 <span *ngIf="!sentShowArchivedMeetings() && sentArchivedCount() > 0"
                       class="badge badge-light-info ms-2">
                   {{ sentArchivedCount() }}
@@ -380,7 +380,7 @@
       @if (sentLoading()) {
         <div class="text-center py-5">
           <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
+            <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
           </div>
         </div>
       }
@@ -436,9 +436,9 @@
                       <button class="btn btn-xs btn-light-warning d-flex align-items-center px-2 py-1"
                               (click)="archiveSentMeeting(meeting)"
                               [disabled]="actionLoading()"
-                              [pTooltip]="'Archive Meeting'"
+                              [pTooltip]="'MEETINGS.ARCHIVE_MEETING' | translate"
                               tooltipPosition="top"
-                              aria-label="Archive Meeting">
+                              [attr.aria-label]="'MEETINGS.ARCHIVE_MEETING' | translate">
                         <i class="pi pi-inbox" style="font-size: 1rem; padding: 0;"></i>
                       </button>
                     }
@@ -459,7 +459,7 @@
                   <!-- Meeting Description -->
                   <div class="meeting-description mb-4 flex-grow-1">
                     <p class="text-gray-600 mb-0"
-                       [pTooltip]="meeting.description ? meeting.description : 'No description available'"
+                       [pTooltip]="meeting.description ? meeting.description : ('INSIGHTER.MEETINGS.NO_DESCRIPTION' | translate)"
                        tooltipPosition="top"
                        [style.cursor]="meeting.description && meeting.description.length > 100 ? 'help' : 'default'">
                      {{ ( (meeting.description == "No description provided" || meeting.description == "No description available") ? ('INSIGHTER.MEETINGS.NO_DESCRIPTION' | translate) : meeting.description || ('INSIGHTER.MEETINGS.NO_DESCRIPTION' | translate) ) | truncateText:100:true }}
@@ -606,7 +606,7 @@
 
 <!-- Approve Meeting Dialog -->
 <p-dialog 
-  header="Approve Meeting"
+  [header]="'MEETINGS.APPROVE_MEETING' | translate"
   [visible]="showApproveDialog()"
   [modal]="true" 
   [style]="{width: '500px'}"
@@ -618,9 +618,9 @@
   (onHide)="closeApproveDialog()">
   <div class="dialog-content">
     <div class="meeting-details mb-4">
-      <h6 class="fw-bold mb-3">Meeting Details:</h6>
+      <h6 class="fw-bold mb-3">{{ 'MEETINGS.MEETING_DETAILS' | translate }}:</h6>
       <div class="detail-item">
-        <strong>Title:</strong> 
+        <strong>{{ 'MEETINGS.MEETING_TITLE_LABEL' | translate }}:</strong> 
         <span [pTooltip]="selectedMeeting()?.title || ''" 
               tooltipPosition="top"
               [style.cursor]="(selectedMeeting()?.title?.length || 0) > 50 ? 'help' : 'default'">
@@ -628,7 +628,7 @@
         </span>
       </div>
       <div class="detail-item">
-        <strong>Client:</strong> 
+        <strong>{{ 'MEETINGS.CLIENT_LABEL' | translate }}:</strong> 
         <span [pTooltip]="selectedMeeting()?.client?.name || ''" 
               tooltipPosition="top"
               [style.cursor]="(selectedMeeting()?.client?.name?.length || 0) > 30 ? 'help' : 'default'">
@@ -636,21 +636,21 @@
         </span>
       </div>
       <div class="detail-item">
-        <strong>Date:</strong> {{ selectedMeeting()?.date | date:'fullDate' }}
+        <strong>{{ 'MEETINGS.DATE_LABEL' | translate }}:</strong> {{ selectedMeeting()?.date | date:'fullDate' }}
       </div>
       <div class="detail-item">
-        <strong>Time:</strong> {{ formatTime(selectedMeeting()?.start_time || '') }} - {{ formatTime(selectedMeeting()?.end_time || '') }}
+        <strong>{{ 'MEETINGS.TIME_LABEL' | translate }}:</strong> {{ formatTime(selectedMeeting()?.start_time || '') }} - {{ formatTime(selectedMeeting()?.end_time || '') }}
       </div>
     </div>
     
     <div class="form-group">
-      <label for="approveNotes" class="form-label fw-bold">Approval Notes</label>
+      <label for="approveNotes" class="form-label fw-bold">{{ 'MEETINGS.APPROVAL_NOTES' | translate }}</label>
       <textarea 
         pInputTextarea 
         id="approveNotes" 
         [ngModel]="approveNotes()"
         (ngModelChange)="approveNotes.set($event)"
-        placeholder="Enter approval notes for the client..."
+        [placeholder]="'MEETINGS.APPROVAL_NOTES_PLACEHOLDER' | translate"
         rows="4"
         class="w-100">
       </textarea>
@@ -666,7 +666,7 @@
         <span class="path1"></span>
         <span class="path2"></span>
       </i>
-      Cancel
+      {{ 'COMMON.CANCEL' | translate }}
     </button>
     <button
       type="button"
@@ -678,7 +678,7 @@
           <span class="path1"></span>
           <span class="path2"></span>
         </i>
-        Approve Meeting
+        {{ 'MEETINGS.APPROVE_MEETING' | translate }}
       } @else {
         <span class="spinner-border spinner-border-sm" role="status"></span>
       }
@@ -688,7 +688,7 @@
 
 <!-- Postpone Meeting Dialog -->
 <p-dialog 
-  header="Postpone Meeting"
+  [header]="'MEETINGS.POSTPONE_MEETING' | translate"
   [visible]="showPostponeDialog()"
   [modal]="true" 
   [style]="{width: '500px'}"
@@ -701,9 +701,9 @@
   
   <div class="dialog-content">
     <div class="meeting-details mb-4">
-      <h6 class="fw-bold mb-3">Meeting Details:</h6>
+      <h6 class="fw-bold mb-3">{{ 'MEETINGS.MEETING_DETAILS' | translate }}:</h6>
       <div class="detail-item">
-        <strong>Title:</strong> 
+        <strong>{{ 'MEETINGS.MEETING_TITLE_LABEL' | translate }}:</strong> 
         <span [pTooltip]="selectedMeeting()?.title || ''" 
               tooltipPosition="top"
               [style.cursor]="(selectedMeeting()?.title?.length || 0) > 50 ? 'help' : 'default'">
@@ -711,7 +711,7 @@
         </span>
       </div>
       <div class="detail-item">
-        <strong>Client:</strong> 
+        <strong>{{ 'MEETINGS.CLIENT_LABEL' | translate }}:</strong> 
         <span [pTooltip]="selectedMeeting()?.client?.name || ''" 
               tooltipPosition="top"
               [style.cursor]="(selectedMeeting()?.client?.name?.length || 0) > 30 ? 'help' : 'default'">
@@ -719,23 +719,23 @@
         </span>
       </div>
       <div class="detail-item">
-        <strong>Date:</strong> {{ selectedMeeting()?.date | date:'fullDate' }}
+        <strong>{{ 'MEETINGS.DATE_LABEL' | translate }}:</strong> {{ selectedMeeting()?.date | date:'fullDate' }}
       </div>
       <div class="detail-item">
-        <strong>Time:</strong> {{ formatTime(selectedMeeting()?.start_time || '') }} - {{ formatTime(selectedMeeting()?.end_time || '') }}
+        <strong>{{ 'MEETINGS.TIME_LABEL' | translate }}:</strong> {{ formatTime(selectedMeeting()?.start_time || '') }} - {{ formatTime(selectedMeeting()?.end_time || '') }}
       </div>
     </div>
     
     <div class="form-group">
       <label for="postponeNotes" class="form-label fw-bold">
-        Postponement Notes <span class="text-danger">*</span>
+        {{ 'MEETINGS.POSTPONEMENT_NOTES' | translate }} <span class="text-danger">*</span>
       </label>
       <textarea 
         pInputTextarea 
         id="postponeNotes" 
         [ngModel]="postponeNotes()"
         (ngModelChange)="postponeNotes.set($event)"
-        placeholder="Enter postponement reason and any additional information for the client..."
+        [placeholder]="'MEETINGS.POSTPONEMENT_NOTES_PLACEHOLDER' | translate"
         rows="4"
         class="w-100"
         required>
@@ -757,7 +757,7 @@
         <span class="path1"></span>
         <span class="path2"></span>
       </i>
-      Cancel
+      {{ 'COMMON.CANCEL' | translate }}
     </button>
     <button
       type="button"
@@ -769,7 +769,7 @@
           <span class="path1"></span>
           <span class="path2"></span>
         </i>
-        Postpone Meeting
+        {{ 'MEETINGS.POSTPONE_MEETING' | translate }}
       } @else {
         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
       }
@@ -833,8 +833,8 @@
         <span class="path3"></span>
       </i>
       <div>
-        <strong class="text-warning">Important Notice</strong><br>
-        <span>This is a paid meeting. Rescheduling will not affect the payment status.</span>
+        <strong class="text-warning">{{ 'COMMON.IMPORTANT_NOTICE' | translate }}</strong><br>
+        <span>{{ 'COMMON.PAID_MEETING_NOTICE' | translate }}</span>
       </div>
     </div>
 
@@ -842,7 +842,7 @@
     @if (rescheduleLoading()) {
       <div class="text-center py-5">
         <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">Loading...</span>
+          <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
         </div>
         <p class="mt-3 text-muted">{{ 'INSIGHTER.MEETINGS.LOADING_AVAILABLE_TIMES' | translate }}</p>
       </div>
@@ -855,7 +855,7 @@
           <!-- Left Column: Custom Calendar -->
           <div class="col-lg-6">
             <div class="calendar-section">
-              <h3 class="calendar-title">Select a Date</h3>
+              <h3 class="calendar-title">{{ 'INSIGHTER.MEETINGS.SELECT_DATE' | translate }}</h3>
 
               <!-- Month Navigation -->
               <div class="month-navigation">
@@ -876,13 +876,13 @@
 
               <!-- Weekday Headers -->
               <div class="weekday-headers">
-                <div class="weekday-header">Sun</div>
-                <div class="weekday-header">Mon</div>
-                <div class="weekday-header">Tue</div>
-                <div class="weekday-header">Wed</div>
-                <div class="weekday-header">Thu</div>
-                <div class="weekday-header">Fri</div>
-                <div class="weekday-header">Sat</div>
+                <div class="weekday-header">{{ 'CALENDAR.WEEKDAYS.SUN' | translate }}</div>
+                <div class="weekday-header">{{ 'CALENDAR.WEEKDAYS.MON' | translate }}</div>
+                <div class="weekday-header">{{ 'CALENDAR.WEEKDAYS.TUE' | translate }}</div>
+                <div class="weekday-header">{{ 'CALENDAR.WEEKDAYS.WED' | translate }}</div>
+                <div class="weekday-header">{{ 'CALENDAR.WEEKDAYS.THU' | translate }}</div>
+                <div class="weekday-header">{{ 'CALENDAR.WEEKDAYS.FRI' | translate }}</div>
+                <div class="weekday-header">{{ 'CALENDAR.WEEKDAYS.SAT' | translate }}</div>
               </div>
 
               <!-- Calendar Grid -->
@@ -928,7 +928,7 @@
 
                 @if (getAvailableTimesForDate(selectedDate()).length === 0) {
                   <div class="no-times">
-                    No times available for this date
+                    {{ 'INSIGHTER.MEETINGS.NO_AVAILABLE_TIMES' | translate }}
                   </div>
                 }
               </div>
@@ -943,7 +943,7 @@
                     <span class="path5"></span>
                     <span class="path6"></span>
                   </i>
-                  <p>سسسسسسسسسسسسسس Please select a date to view available times</p>
+                  <p>{{ 'INSIGHTER.MEETINGS.CALENDAR_HELP_TEXT' | translate }}</p>
                 </div>
               }
 
