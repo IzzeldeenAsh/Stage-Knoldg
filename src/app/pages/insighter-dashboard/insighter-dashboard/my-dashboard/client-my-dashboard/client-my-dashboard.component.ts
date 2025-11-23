@@ -24,10 +24,10 @@ export class ClientMyDashboardComponent extends BaseComponent implements OnInit,
 ];
   knowledgeLinks = [
     { type: 'data',    translationKey: 'KNOWLEDGE.DATA',    descriptionKey: 'KNOWLEDGE.DATA_DESCRIPTION' },
+    { type: 'report',  translationKey: 'KNOWLEDGE.REPORT',  descriptionKey: 'KNOWLEDGE.REPORT_DESCRIPTION' },
     { type: 'statistic', translationKey: 'KNOWLEDGE.STATISTIC', descriptionKey: 'KNOWLEDGE.INSIGHT_DESCRIPTION' },
     { type: 'manual',  translationKey: 'KNOWLEDGE.MANUAL',  descriptionKey: 'KNOWLEDGE.MANUAL_DESCRIPTION' },
     { type: 'course',  translationKey: 'KNOWLEDGE.COURSE',  descriptionKey: 'KNOWLEDGE.COURSE_DESCRIPTION' },
-  { type: 'report',  translationKey: 'KNOWLEDGE.REPORT',  descriptionKey: 'KNOWLEDGE.REPORT_DESCRIPTION' }
   ];
   walletBalance: number = 0;
   isLoadingBalance: boolean = true;
@@ -39,7 +39,7 @@ export class ClientMyDashboardComponent extends BaseComponent implements OnInit,
         DATA: 'Data',
         DATA_DESCRIPTION: 'Explore recently added datasets and figures.',
         STATISTIC: 'Statistics',
-        INSIGHT_DESCRIPTION: 'Review the newest analyst insights and findings.',
+        INSIGHT_DESCRIPTION: 'Review the newest analyst statistics and findings.',
         MANUAL: 'Manuals',
         MANUAL_DESCRIPTION: 'Quick guides to help you apply best practices.',
         COURSE: 'Courses',
@@ -54,7 +54,7 @@ export class ClientMyDashboardComponent extends BaseComponent implements OnInit,
         DATA: 'بيانات',
         DATA_DESCRIPTION: 'استكشف أحدث مجموعات البيانات والأرقام.',
         STATISTIC: 'إحصائيات',
-        INSIGHT_DESCRIPTION: 'اطلع على أحدث التحليلات والاستنتاجات.',
+        INSIGHT_DESCRIPTION: 'اطلع على أحدث الإحصائيات والاستنتاجات.',
         MANUAL: 'أدلة إرشادية',
         MANUAL_DESCRIPTION: 'أدلة سريعة لتطبيق أفضل الممارسات.',
         COURSE: 'دورات تدريبية',
