@@ -200,4 +200,9 @@ export class OverviewComponent extends BaseComponent implements OnInit {
 
     return this.lang === 'ar' ? 'غير محدد' : 'Not specified';
   }
+
+  hasRole(requiredRoles: string[]): boolean {
+    const userRoles = this.profile?.roles || [];
+    return requiredRoles?.some((role) => userRoles.includes(role));
+  }
 }
