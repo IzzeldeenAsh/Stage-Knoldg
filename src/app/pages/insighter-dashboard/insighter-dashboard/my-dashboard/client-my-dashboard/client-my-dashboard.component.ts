@@ -36,9 +36,9 @@ export class ClientMyDashboardComponent extends BaseComponent implements OnInit,
     en: {
       KNOWLEDGE: {
         TITLE: 'Latest Knowledge',
-        DATA: 'Data Library',
+        DATA: 'Data',
         DATA_DESCRIPTION: 'Explore recently added datasets and figures.',
-        STATISTIC: 'Insights',
+        STATISTIC: 'Statistics',
         INSIGHT_DESCRIPTION: 'Review the newest analyst insights and findings.',
         MANUAL: 'Manuals',
         MANUAL_DESCRIPTION: 'Quick guides to help you apply best practices.',
@@ -51,7 +51,7 @@ export class ClientMyDashboardComponent extends BaseComponent implements OnInit,
     ar: {
       KNOWLEDGE: {
         TITLE: 'أحدث مصادر المعرفة',
-        DATA: 'مكتبة البيانات',
+        DATA: 'بيانات',
         DATA_DESCRIPTION: 'استكشف أحدث مجموعات البيانات والأرقام.',
         STATISTIC: 'إحصائيات',
         INSIGHT_DESCRIPTION: 'اطلع على أحدث التحليلات والاستنتاجات.',
@@ -103,9 +103,7 @@ export class ClientMyDashboardComponent extends BaseComponent implements OnInit,
       });
   }
 
-  // redirectToExperts(): void {
-  //   window.open('https://foresighta.co/en/home?search_type=insighter&accuracy=any', '_blank');
-  // }
+
   redirectToExperts(): void {
     window.open(`https://foresighta.co/${this.lang}/home?search_type=insighter&accuracy=any`, '_blank');
   }

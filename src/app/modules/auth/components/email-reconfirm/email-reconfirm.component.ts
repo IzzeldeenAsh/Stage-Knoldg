@@ -173,12 +173,12 @@ export class EmailReconfirmComponent extends BaseComponent implements OnInit, On
   private redirectToMainApp(): void {
     const token = this.authService.getTokenFromCookie();
     if (token) {
-      const redirectUrl = `${environment.mainAppUrl}/en/callback/${token}`;
+      const redirectUrl = `${environment.mainAppUrl}/${this.lang}/callback/${token}`;
       console.log('Redirecting to main app:', redirectUrl);
       window.location.href = redirectUrl;
     } else {
       // Fallback to regular callback
-      const redirectUrl = `${environment.mainAppUrl}/en/callback`;
+      const redirectUrl = `${environment.mainAppUrl}/${this.lang}/callback`;
       console.log('Redirecting to main app (no token):', redirectUrl);
       window.location.href = redirectUrl;
     }

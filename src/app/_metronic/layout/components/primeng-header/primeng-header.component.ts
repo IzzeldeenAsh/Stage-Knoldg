@@ -298,7 +298,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
   }
 
   getIndustryUrl(industry: Industry): string {
-    return `https://foresighta.co/en/industry/${industry.id}/${industry.slug}`;
+    return `https://foresighta.co/${this.lang}/industry/${industry.id}/${industry.slug}`;
   }
 
   initializeMenu() {
@@ -324,7 +324,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: 'https://foresighta.co/en/industries/report'
+        routerLink: `https://foresighta.co/${this.lang}/industries/report`
       },
       {
         label: this.translate.instant('MENU.INSIGHTS'),
@@ -332,7 +332,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: 'https://foresighta.co/en/industries/insight'
+        routerLink: `https://foresighta.co/${this.lang}/industries/insight`
       },
      
       {
@@ -341,7 +341,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: 'https://foresighta.co/en/industries/data'
+        routerLink: `https://foresighta.co/${this.lang}/industries/data`
       },
       {
         label: this.translate.instant('MENU.MANUAL'),
@@ -349,7 +349,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: 'https://foresighta.co/en/industries/manual'
+        routerLink: `https://foresighta.co/${this.lang}/industries/manual`
       },
       {
         label: this.translate.instant('MENU.COURSES'),
@@ -357,7 +357,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: 'https://foresighta.co/en/industries/course'
+        routerLink: `https://foresighta.co/${this.lang}/industries/course`
       }
     ];
 

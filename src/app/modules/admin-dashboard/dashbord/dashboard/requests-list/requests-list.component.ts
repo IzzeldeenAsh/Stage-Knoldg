@@ -346,7 +346,7 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
       // Prefer explicit server message when available (e.g., balance due)
       if (error.error.message) {
         this.messages.push({
-          severity: "error",
+          severity: error.error.type === "warning" ? "warn" : "error",
           summary: "",
           detail: error.error.message,
         });
@@ -358,7 +358,7 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
           if (serverErrors.hasOwnProperty(key)) {
             const messages = serverErrors[key];
             this.messages.push({
-              severity: "error",
+              severity: error.error.type === "warning" ? "warn" : "error",
               summary: "",
               detail: Array.isArray(messages) ? messages.join(", ") : String(messages),
             });
@@ -368,9 +368,9 @@ export class RequestsListComponent extends BaseComponent implements OnInit {
       // If neither message nor errors exist, show a generic error
       if (!error.error.message && !error.error.errors) {
         this.messages.push({
-          severity: "error",
-          summary: "Error",
-          detail: "An unexpected error occurred.",
+          severity: error.error.type === "warning" ? "warn" : "error",
+          summary: error.error.type === "warning" ? "Warning" : "Error",
+          detail: error.error.type === "warning" ? "An unexpected warning occurred." : "An unexpected error occurred.",
         });
       }
     } else {

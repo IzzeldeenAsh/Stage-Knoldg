@@ -77,7 +77,7 @@ export class LangSwitchButtonComponent implements OnInit {
     document.cookie = cookieParts.join('; ');
 
     // Reload the page to apply language changes
-    // window.location.reload();
+    window.location.reload();
   }
 
   // Helper method to check if we're in insighter-dashboard routes

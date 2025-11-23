@@ -250,7 +250,7 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
             ? "تم تعديل البروفايل"
             : "Profile Updated Successfully";
           this.showSuccess("", message);
-          document.location.reload();
+           document.location.reload();
         },
         error: (error) => {
           this.handleServerErrors(error);
@@ -431,11 +431,19 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
       for (const key in serverErrors) {
         if (serverErrors.hasOwnProperty(key)) {
           const messages = serverErrors[key];
-          this.showError('',messages.join(", "));
+          if (error.error.type === "warning") {
+            this.showWarn('',messages.join(", "));
+          } else {
+            this.showError('',messages.join(", "));
+          }
         }
       }
     } else {
-      this.showError('','An unexpected error occurred.');
+      if (error.error && error.error.type === "warning") {
+        this.showWarn('','An unexpected warning occurred.');
+      } else {
+        this.showError('','An unexpected error occurred.');
+      }
     }
   }
 

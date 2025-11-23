@@ -857,24 +857,24 @@ export class UpgradeToCompanyComponent
   private handleServerErrors(error: any) {
     // Clear previous API errors
     this.apiErrorMessages = [];
-    
+
     if (error.error) {
       // Check for message property
       if (error.error.message) {
         this.messageService.add({
-          severity: "error",
-          summary: "Error",
+          severity: error.error.type === "warning" ? "warn" : "error",
+          summary: error.error.type === "warning" ? "Warning" : "Error",
           detail: error.error.message,
         });
       }
-      
+
       // Check for errors object
       if (error.error.errors) {
         const serverErrors = error.error.errors;
         for (const key in serverErrors) {
           if (serverErrors.hasOwnProperty(key)) {
             const messages = serverErrors[key];
-            
+
             // Handle 'common' errors or general errors not tied to a specific field
             if (key === 'common') {
               this.apiErrorMessages = messages;
@@ -900,7 +900,7 @@ export class UpgradeToCompanyComponent
         detail: "An unexpected error occurred.",
       });
     }
-    
+
     // Scroll to the top to show validation errors
     if (this.showApiErrors) {
       window.scrollTo({top: 0, behavior: 'smooth'});

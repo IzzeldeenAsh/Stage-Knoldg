@@ -177,11 +177,19 @@ export class ReviewInsighterKnowledgeComponent extends BaseComponent implements 
       for (const key in serverErrors) {
         if (serverErrors.hasOwnProperty(key)) {
           const messages = serverErrors[key];
-          this.showError('', messages.join(", "));
+          if (error.error.type === "warning") {
+            this.showWarn('', messages.join(", "));
+          } else {
+            this.showError('', messages.join(", "));
+          }
         }
       }
     } else {
-      this.showError('','An unexpected error occurred.');
+      if (error.error && error.error.type === "warning") {
+        this.showWarn('','An unexpected warning occurred.');
+      } else {
+        this.showError('','An unexpected error occurred.');
+      }
     }
   }
 

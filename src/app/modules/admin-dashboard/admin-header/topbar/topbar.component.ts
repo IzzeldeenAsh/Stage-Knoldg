@@ -15,6 +15,7 @@ import { AuthService, UserType } from "src/app/modules/auth";
 import { Notification, NotificationsService } from 'src/app/_fake/services/notifications/notifications.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { TranslationService } from 'src/app/modules/i18n';
 @Component({
   selector: "app-topbar",
   templateUrl: "./topbar.component.html",
@@ -26,6 +27,7 @@ export class TopbarComponent implements OnInit {
   btnClass: string = 'btn btn-icon btn-custom btn-icon-muted  btn-active-color-secondary w-35px h-35px w-md-40px h-md-40px';
   notifications: any[] = [];
   notificationsMenuOpen: boolean = false;
+  currentLang: string = 'en';
   
   constructor(
     private elRef: ElementRef,
@@ -36,9 +38,11 @@ export class TopbarComponent implements OnInit {
     private messageService: MessageService,
     private getProfileService: ProfileService,
     private notificationService: NotificationsService,
-    private http: HttpClient
+    private http: HttpClient,
+    private translationService: TranslationService
   ) {}
   ngOnInit(): void {
+    this.currentLang = this.translationService.getSelectedLanguage();
     this.getProfile();
        
     // Subscribe to the notifications$ observable to receive updates from polling
@@ -58,7 +62,7 @@ export class TopbarComponent implements OnInit {
     const timestamp = new Date().getTime();
     
     // Create the redirect URI to the main domain
-    const redirectUri = encodeURIComponent(`${environment.mainAppUrl}/en?logged_out=true&t=${timestamp}`);
+    const redirectUri = encodeURIComponent(`${environment.mainAppUrl}/${this.currentLang}?logged_out=true&t=${timestamp}`);
     
     // Navigate to the logout route with the redirect URI
     window.location.href = `/auth/logout?redirect_uri=${redirectUri}`;
@@ -165,7 +169,7 @@ export class TopbarComponent implements OnInit {
       const headers = new HttpHeaders({
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Accept-Language': 'en'
+        'Accept-Language': this.currentLang
       });
       
       // Call API to mark all notifications as read - using same endpoint as in primeng-header
@@ -173,7 +177,7 @@ export class TopbarComponent implements OnInit {
         .subscribe({
           next: () => {
             // Refresh notifications from API
-            this.notificationService.getNotifications('en').subscribe(notifications => {
+            this.notificationService.getNotifications(this.currentLang).subscribe(notifications => {
               this.notifications = notifications;
               // Only count unread notifications
               this.notificationCount = notifications.filter(n => !n.read_at).length;
@@ -210,10 +214,10 @@ export class TopbarComponent implements OnInit {
     const notification = this.notifications.find(n => n.id === notificationId);
     
     // Mark notification as read
-    this.notificationService.markAsRead(notificationId,'en').subscribe({
+    this.notificationService.markAsRead(notificationId, this.currentLang).subscribe({
       next: () => {
         // Refresh notifications from API
-        this.notificationService.getNotifications('en').subscribe(notifications => {
+        this.notificationService.getNotifications(this.currentLang).subscribe(notifications => {
           this.notifications = notifications;
           // Count only unread notifications
           this.notificationCount = notifications.filter(n => !n.read_at).length;

@@ -891,26 +891,47 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
         for (const key in serverErrors) {
           if (serverErrors.hasOwnProperty(key)) {
             const messages = serverErrors[key];
-            this.showError(
-              this.lang === "ar" ? "حدث خطأ" : "An error occurred",
-              Array.isArray(messages) ? messages.join(", ") : messages
-            );
+            if (error.error.type === "warning") {
+              this.showWarn(
+                this.lang === "ar" ? "تحذير" : "Warning",
+                Array.isArray(messages) ? messages.join(", ") : messages
+              );
+            } else {
+              this.showError(
+                this.lang === "ar" ? "حدث خطأ" : "An error occurred",
+                Array.isArray(messages) ? messages.join(", ") : messages
+              );
+            }
           }
         }
-      } 
+      }
       // Handle simple message format
       else if (error.error.message) {
-        this.showError(
-          this.lang === "ar" ? "حدث خطأ" : "An error occurred",
-          error.error.message
-        );
+        if (error.error.type === "warning") {
+          this.showWarn(
+            this.lang === "ar" ? "تحذير" : "Warning",
+            error.error.message
+          );
+        } else {
+          this.showError(
+            this.lang === "ar" ? "حدث خطأ" : "An error occurred",
+            error.error.message
+          );
+        }
       }
       // Fallback for other error formats
       else {
-        this.showError(
-          this.lang === "ar" ? "حدث خطأ" : "An error occurred",
-          this.lang === "ar" ? "حدث خطأ غير متوقع" : "An unexpected error occurred."
-        );
+        if (error.error.type === "warning") {
+          this.showWarn(
+            this.lang === "ar" ? "تحذير" : "Warning",
+            this.lang === "ar" ? "تحذير غير متوقع" : "An unexpected warning occurred."
+          );
+        } else {
+          this.showError(
+            this.lang === "ar" ? "حدث خطأ" : "An error occurred",
+            this.lang === "ar" ? "حدث خطأ غير متوقع" : "An unexpected error occurred."
+          );
+        }
       }
     } else {
       this.showError(
