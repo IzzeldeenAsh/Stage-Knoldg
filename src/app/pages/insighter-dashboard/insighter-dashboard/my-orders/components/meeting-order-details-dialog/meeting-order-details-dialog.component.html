@@ -140,9 +140,7 @@
             {{ order.orderable.meeting_booking?.description }}
           </p>
         </div>
-        <span class="badge" [ngClass]="utils.getMeetingStatusBadgeClass(order.orderable.meeting_booking?.status || '')">
-          {{ utils.getMeetingStatusDisplay(order.orderable.meeting_booking?.status || '', lang) }}
-        </span>
+       
       </div>
 
       <div class="row g-3">

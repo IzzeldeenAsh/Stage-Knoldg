@@ -159,7 +159,30 @@
       </div>
       <span class="page-desc fs-6 fw-bold d-flex align-items-center pt-4">
         <span class="bg-light-info text-info px-3 py-1 rounded-2 mx-3 lh-1 d-flex align-items-center text-capitalize">
+         @switch (knowledge.type) {
+          @case ('data') {
+            {{ 'KNOWLEDGE.DATA' | translate }}
+          }
+          @case ('statistic') {
+            {{ 'KNOWLEDGE.STATISTIC' | translate }}
+          }
+    
+         @case ('report') {
+          {{ 'KNOWLEDGE.REPORT' | translate }}
+         }
+         @case ('manual') {
+          {{ 'KNOWLEDGE.MANUAL' | translate }}
+         }
+         @case ('course') {
+            {{ 'KNOWLEDGE.COURSE' | translate }}
+         }
+         @case ('media') {
+          {{ 'KNOWLEDGE.MEDIA' | translate }}
+         }
+         @default {
           {{ knowledge.type || 'N/A' }}
+         }
+        }
         </span>
       </span>
        </div>

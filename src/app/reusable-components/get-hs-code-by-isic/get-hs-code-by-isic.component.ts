@@ -61,7 +61,7 @@ import { TranslateModule } from "@ngx-translate/core";
         <!-- Loading indicator -->
         <div *ngIf="isLoading$ | async" class="text-center p-4">
           <i class="pi pi-spinner pi-spin"></i>
-          <div>Loading HS Codes...</div>
+          <div>{{ 'COMMON.LOADING' | translate }}...</div>
         </div>
         
         <!-- List Items -->
@@ -207,7 +207,7 @@ import { TranslateModule } from "@ngx-translate/core";
       </label>
 
       <div *ngIf="isLoading$ | async" class="text-center">
-        Loading HS Codes...
+        {{ 'COMMON.LOADING' | translate }} HS Codes...
       </div>
 
       <div *ngIf="!(isLoading$ | async)" class="position-relative">

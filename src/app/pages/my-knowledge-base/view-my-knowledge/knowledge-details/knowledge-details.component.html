@@ -84,18 +84,18 @@
              >
                <!-- Description -->
                <div *ngIf="doc.description" class="mb-4">
-                <strong [ngClass]="{'text-info': activeDocumentId === doc.id}">Description:</strong>
+                <strong [ngClass]="{'text-info': activeDocumentId === doc.id}">{{ 'COMMON.DESCRIPTION' | translate }}:</strong>
                  <p [innerHTML]="doc.description"></p>
                </div>
                <div *ngIf="!doc.description" class="mb-4">
-                 <p class="lead fs-6">No description available.</p>
+                 <p class="lead fs-6">{{ 'COMMON.NO_DESCRIPTION_AVAILABLE' | translate }}.</p>
                </div>
 
                <!-- Table of Contents for non-statistic types -->
                <div *ngIf="shouldShowTableOfContents(doc) && doc.table_of_content && doc.table_of_content.length > 0" class="mt-4">
                  <div class="d-flex align-items-start mb-3">
                   
-                   <strong [ngClass]="{'text-info': activeDocumentId === doc.id}">Table of Contents:</strong>
+                   <strong [ngClass]="{'text-info': activeDocumentId === doc.id}">{{ 'COMMON.TABLE_OF_CONTENTS' | translate }}:</strong>
                  </div>
                  
                  <div class="table-responsive">
@@ -103,7 +103,7 @@
                    <thead>
                      <tr class="fw-bold fs-6 text-gray-800 border-bottom-2 border-gray-200">
                        <th class="min-w-50px">#</th>
-                       <th class="min-w-200px">Chapter Title</th>
+                       <th class="min-w-200px">{{ 'COMMON.CHAPTER_TITLE' | translate }}</th>
                      </tr>
                    </thead>
                    <tbody>
@@ -122,9 +122,9 @@
                </div>
                <div *ngIf="shouldShowTableOfContents(doc) && (!doc.table_of_content || doc.table_of_content.length === 0)" class="mt-4">
                  <div class="d-flex align-items-start mb-3">
-                   <strong [ngClass]="{'text-info': activeDocumentId === doc.id}">Table of Contents:</strong>
+                   <strong [ngClass]="{'text-info': activeDocumentId === doc.id}">{{ 'COMMON.TABLE_OF_CONTENTS' | translate }}:</strong>
                  </div>
-                 <p class="lead fs-6">No table of contents available.</p>
+                 <p class="lead fs-6">{{ 'COMMON.NO_TABLE_OF_CONTENTS_AVAILABLE' | translate }}.</p>
                </div>
              </div>
            </div>

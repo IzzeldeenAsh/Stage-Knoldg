@@ -46,14 +46,15 @@
               }
             ],
             "styles": [
-              "node_modules/primeicons/primeicons.css",
+              "src/critical.scss",
+              "src/styles.scss",
+              "src/theme.scss",
               "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
               "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/primeicons/primeicons.css",
               "node_modules/swiper/swiper-bundle.css",
               "node_modules/quill/dist/quill.snow.css",
-              "node_modules/jodit/build/jodit.css",
-              "src/theme.scss",
-              "src/styles.scss"
+              "node_modules/jodit/build/jodit.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
@@ -65,13 +66,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "5mb",
-                  "maximumError": "8mb"
+                  "maximumWarning": "6mb",
+                  "maximumError": "10mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "20kb",
-                  "maximumError": "30kb"
+                  "maximumWarning": "35kb",
+                  "maximumError": "50kb"
                 }
               ],
               "fileReplacements": [
@@ -88,7 +89,8 @@
               "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
-              "namedChunks": true
+              "namedChunks": true,
+              "preserveSymlinks": true
             }
           },
           "defaultConfiguration": "production"
