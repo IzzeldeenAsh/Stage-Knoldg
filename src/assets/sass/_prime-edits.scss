@@ -302,6 +302,13 @@ html[dir="rtl"] .p-input-icon-right > .p-icon-wrapper {
   display: flex;
   align-items: center;
 }
+.no-border-radius-start-end .p-dropdown {
+  border-end-end-radius: 0px !important;
+  border-start-end-radius: 0px !important;
+}
+html[dir="rtl"] .no-rtl-b-radius {
+  border-radius: 0px !important;
+}
 
 .flex-1 {
   flex: 1;
