@@ -148,6 +148,25 @@ export class Step2Component implements OnInit, OnChanges, OnDestroy  {
       this.form.patchValue({ country: this.defaultValues.country });
       this.updateParentModel({ country: this.defaultValues.country }, this.checkForm());
     }
+    // Handle pre-selected phone code and numbers from profile/defaults
+    if (this.form) {
+      // Normalize phoneCountryCode to a plain numeric string without '+'
+      const rawCode: any = this.defaultValues?.phoneCountryCode as any;
+      const normalizedCode =
+        typeof rawCode === 'object'
+          ? (rawCode?.code || '').toString()
+          : (rawCode || '').toString();
+      const cleanedCode = normalizedCode.replace(/^\+/, '');
+      if (cleanedCode) {
+        this.form.patchValue({ phoneCountryCode: cleanedCode });
+      }
+      if (this.defaultValues?.phoneNumber !== undefined && this.defaultValues?.phoneNumber !== null) {
+        this.form.patchValue({ phoneNumber: this.defaultValues.phoneNumber as any });
+      }
+      if (this.defaultValues?.phoneCompanyNumber) {
+        this.form.patchValue({ phoneCompanyNumber: this.defaultValues.phoneCompanyNumber });
+      }
+    }
   }
 
   initApiCalls() {

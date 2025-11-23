@@ -167,7 +167,8 @@ export class UserInnerComponent extends BaseComponent implements OnInit, AfterVi
     const timestamp = new Date().getTime();
     
     // Create the redirect URI to the main domain
-    const redirectUri = encodeURIComponent(`${environment.mainAppUrl}/en?logged_out=true&t=${timestamp}`);
+    const lang = this.translationService.getSelectedLanguage();
+    const redirectUri = encodeURIComponent(`${environment.mainAppUrl}/${lang}?logged_out=true&t=${timestamp}`);
     
     // Navigate to the logout route with the redirect URI
     window.location.href = `/auth/logout?redirect_uri=${redirectUri}`;

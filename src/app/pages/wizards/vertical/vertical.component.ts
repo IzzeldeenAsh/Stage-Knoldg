@@ -69,12 +69,24 @@ export class VerticalComponent extends BaseComponent implements OnInit {
     const authSub = this.getProfileService.getProfile().subscribe({
       next: (profile) => {
         this.user = profile;
-        // If user already has a country, pre-populate it in the account data
+        // Pre-populate account data from profile
+        const currentAccount = this.account$.value;
+        const updatedAccount = { ...currentAccount };
         if (profile.country_id) {
-          const currentAccount = this.account$.value;
-          const updatedAccount = { ...currentAccount, country: profile.country_id };
-          this.account$.next(updatedAccount);
+          updatedAccount.country = profile.country_id;
         }
+        if (profile.phone_code) {
+          // Ensure no leading '+' for consistency with masks
+          const cleanedCode = profile.phone_code.replace(/^\+/, '');
+          updatedAccount.phoneCountryCode = cleanedCode as any;
+        }
+        if (profile.phone) {
+          // Keep as number for personal, string for corporate
+          const numericPhone = Number(profile.phone);
+          updatedAccount.phoneNumber = isNaN(numericPhone) ? null : numericPhone;
+          updatedAccount.phoneCompanyNumber = profile.phone;
+        }
+        this.account$.next(updatedAccount);
       },
       error: (error) => {
         this.messages.push({

@@ -77,12 +77,12 @@
               </div>
               <div class="col-12 col-md-8 text-dark">{{ profile.email }}</div>
             </div>
-            <div class="row mb-3 py-2 border-bottom border-light" *ngIf="hasRole(['insighter']) || hasRole(['company']) || hasRole(['company-insighter'])">
+            <div class="row mb-3 py-2 border-bottom border-light">
               <div class="col-12 col-md-4 text-muted d-flex align-items-center">
                 <i class="bi bi-telephone fs-4 text-success me-2"></i>
                 <span>{{ 'ACCOUNT_SETTINGS.PHONE_NUMBER' | translate }}</span>
               </div>
-              <div class="col-12 col-md-8 text-dark">{{ getDisplayPhone() }}</div>
+              <div class="col-12 col-md-8 text-dark"><span [attr.dir]="lang === 'ar' ? 'ltr' : null">{{ getDisplayPhone() }}</span></div>
             </div>
             <div class="row mb-0 py-2" >
               <div class="col-12 col-md-4 text-muted d-flex align-items-center">
