@@ -31,7 +31,7 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
   allIndustriesSelected: any[] = [];
   allConsultingFieldsSelected: any[] = [];
   socialNetworks: {type: string, link: string}[] = [];
-
+  
   constructor(
     injector: Injector,
     private readonly _profileService: AuthService,

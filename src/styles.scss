@@ -11,10 +11,7 @@
 @import "./assets/plugins/keenicons/outline/style.css";
 @import "./assets/plugins/keenicons/solid/style.css";
 
-/* Swiper styles */
-@import 'swiper/scss';
-@import 'swiper/scss/navigation';
-@import 'swiper/scss/pagination';
+/* Swiper styles moved to lazy load */
 
 .swiper {
   width: 100%;

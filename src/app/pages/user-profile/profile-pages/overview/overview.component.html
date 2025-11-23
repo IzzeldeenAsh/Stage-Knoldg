@@ -51,7 +51,7 @@
     <!-- Main Content Section -->
     <div class="row g-4">
       <!-- Left Column -->
-      <div class="col-12 col-lg-8" [ngClass]="{ 'col-12 col-lg-12': profile.roles.includes('company-insighter') }">
+      <div class="col-12 col-lg-8" [ngClass]="{ 'col-12 col-lg-12': profile.roles.includes('company-insighter') || profile.roles.includes('company') || profile.roles.includes('insighter') || profile.roles.includes('client') }">
         <!-- General Info -->
         <div class="card rounded-4 border border-light mb-4">
           <div class="card-header border-0 bg-white py-3">
