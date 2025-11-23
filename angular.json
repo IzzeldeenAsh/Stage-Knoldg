@@ -46,15 +46,14 @@
               }
             ],
             "styles": [
-              "src/critical.scss",
-              "src/styles.scss",
-              "src/theme.scss",
+              "node_modules/primeicons/primeicons.css",
               "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
               "node_modules/primeng/resources/primeng.min.css",
-              "node_modules/primeicons/primeicons.css",
               "node_modules/swiper/swiper-bundle.css",
               "node_modules/quill/dist/quill.snow.css",
-              "node_modules/jodit/build/jodit.css"
+              "node_modules/jodit/build/jodit.css",
+              "src/theme.scss",
+              "src/styles.scss"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
