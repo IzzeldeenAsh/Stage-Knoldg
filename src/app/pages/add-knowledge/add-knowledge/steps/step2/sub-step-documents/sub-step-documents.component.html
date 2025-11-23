@@ -104,10 +104,10 @@
                                 <path d="M12 20l4 -9l4 9"></path>
                                 <path d="M19.1 18h-6.2"></path>
                             </svg>
-                            <span *ngIf="documents[i]?.language === 'arabic'">Arabic Document</span>
-                            <span *ngIf="documents[i]?.language === 'english'">English Document</span>
+                            <span *ngIf="documents[i]?.language === 'arabic'">{{ 'COMMON.ARABIC_DOCUMENT' | translate }}</span>
+                            <span *ngIf="documents[i]?.language === 'english'">{{ 'COMMON.ENGLISH_DOCUMENT' | translate }}</span>
                             <span *ngIf="documents[i]?.language && documents[i]?.language !== 'arabic' && documents[i]?.language !== 'english'">
-                                {{ documents[i]?.language | titlecase }} Document
+                                {{ documents[i]?.language | titlecase }} {{ 'COMMON.DOCUMENT' | translate }}
                             </span>
                         </div>
 

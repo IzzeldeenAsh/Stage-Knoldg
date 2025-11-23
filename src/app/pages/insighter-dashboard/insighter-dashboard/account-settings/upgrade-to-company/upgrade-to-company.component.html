@@ -134,7 +134,7 @@
                 [dir]="lang == 'ar' ? 'rtl' : 'ltr'"
                 formControlName="company_phone"
                 type="tel"
-                class="form-control no-rtl-b-radius"
+                class="form-control"
                 placeholder="{{ 'INSIGHTER_WIZARD.COMPANY_PHONE_PLACEHOLDER' | translate }}"
                 [class.is-invalid]="form.get('company_phone')?.invalid && form.get('company_phone')?.touched"
                 (input)="onPhoneNumberInput($event)"

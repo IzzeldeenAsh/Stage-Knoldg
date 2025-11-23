@@ -1,11 +1,11 @@
-<div class="input-group">
+<div class="input-group" [style.flex-direction]="lang === 'ar' ? 'row-reverse' : 'row'">
   <!-- Country Code Dropdown -->
-  <div style="flex: 0 0 190px;">
+  <div style="flex: 0 0 140px;">
     <p-dropdown
       [options]="countries"
       [ngModel]="countryCode"
       (ngModelChange)="onCountryCodeChange($event)"
-      class="d-block form-p-control no-border-radius-start-end"
+      class="d-block form-p-control"
       optionValue="international_code"
       [dataKey]="'international_code'"
       [placeholder]="searchPlaceholder"
@@ -18,38 +18,38 @@
       <!-- Country Option Template -->
       <ng-template pTemplate="item" let-country>
         <div class="country-option" [class]="lang === 'ar' ? 'rtl-country-option' : 'ltr-country-option'">
-          <img 
+          <img
             *ngIf="country.showFlag"
             [src]="'../../../../assets/media/flags/' + country.flag + '.svg'"
             (error)="onFlagError(country)"
             alt="{{ country.names.en }}"
-            [class]="'flag-icon w-20px ' + (lang === 'ar' ? 'ms-2' : 'me-2')" 
+            [class]="'flag-icon w-20px ' + (lang === 'ar' ? 'ms-2' : 'me-2')"
           />
           <span class="country-code">(+{{ country.international_code }})</span>
-          <span 
-            *ngIf="lang === 'en'" 
+          <span
+            *ngIf="lang === 'en'"
             class="country-name ms-2"
           >{{ country.names.en }}</span>
-          <span 
-            *ngIf="lang === 'ar'" 
+          <span
+            *ngIf="lang === 'ar'"
             class="country-name ms-2"
           >{{ country.names.ar }}</span>
         </div>
       </ng-template>
-      
+
       <!-- Selected Item Template -->
       <ng-template pTemplate="selectedItem" let-country>
-        <div 
-          class="selected-country-option" 
-          [class]="lang === 'ar' ? 'rtl-selected-option' : 'ltr-selected-option'" 
+        <div
+          class="selected-country-option"
+          [class]="lang === 'ar' ? 'rtl-selected-option' : 'ltr-selected-option'"
           *ngIf="country"
         >
-          <img 
+          <img
             *ngIf="country.showFlag"
             [src]="'../../../../assets/media/flags/' + country.flag + '.svg'"
             (error)="onFlagError(country)"
             alt="{{ country.names.en }}"
-            [class]="'flag-icon w-20px ' + (lang === 'ar' ? 'ms-2' : 'me-2')" 
+            [class]="'flag-icon w-20px ' + (lang === 'ar' ? 'ms-2' : 'me-2')"
           />
           <span class="country-code">(+{{ country.international_code }})</span>
         </div>
@@ -60,8 +60,8 @@
   <!-- Phone Number Input with ngx-mask -->
   <input
     type="text"
-    class="form-control no-rtl-b-radius"
-    style="flex: 1;"
+    class="form-control"
+    style="flex: 1; border-radius: 6px; margin: 0 4px;"
     [placeholder]="currentPlaceholder"
     [disabled]="disabled"
     [attr.aria-required]="isRequired"

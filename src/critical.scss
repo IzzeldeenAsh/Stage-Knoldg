@@ -1,0 +1,53 @@
+/* Critical CSS for faster initial page load */
+
+/* Form controls - used in login */
+.form-control {
+  background-color: #ffffffa7 !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 0 #0000, 0 0 #0000, 0 1px 2px 0 rgba(18, 18, 23, 0.05) !important;
+}
+
+/* Buttons - critical for login */
+.p-button, .btn {
+  border-radius: 6px !important;
+  font-size: 0.875rem !important;
+  padding: 0.5rem 1rem !important;
+  box-shadow: 0 0 #0000, 0 0 #0000, 0 1px 2px 0 rgba(18, 18, 23, 0.05) !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* Login specific styles */
+.bg-light {
+  background-image: url('https://res.cloudinary.com/dsiku9ipv/image/upload/v1744131473/bg-abstract-login.1bb8bf9e7f43c2f8_nfqa0o.webp');
+  background-size: cover;
+  background-position: 100% 10%;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.h-100vh {
+  min-height: 100vh;
+}
+
+/* RTL Typography */
+html[dir="rtl"] *:not(.ki-duotone):not(.ki-outline):not(.ki-solid):not(.fa-classic):not(.fa-regular):not(.fa-solid):not(.far):not(.fas):not(.pi) {
+  font-family: 'Tajawal', sans-serif !important;
+}
+
+/* Loading states */
+.full-screen-loader {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(2px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

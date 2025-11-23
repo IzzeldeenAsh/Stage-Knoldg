@@ -270,7 +270,30 @@
             ></i>
             } }
             <div class="type-label">
-              {{ item.type | uppercase | translate }}
+              @switch (item.type) {
+                @case ('data') {
+                  {{ 'KNOWLEDGE.DATA' | translate }}
+                }
+                @case ('statistic') {
+                  {{ 'KNOWLEDGE.STATISTIC' | translate }}
+                }
+          
+               @case ('report') {
+                {{ 'KNOWLEDGE.REPORT' | translate }}
+               }
+               @case ('manual') {
+                {{ 'KNOWLEDGE.MANUAL' | translate }}
+               }
+               @case ('course') {
+                  {{ 'KNOWLEDGE.COURSE' | translate }}
+               }
+               @case ('media') {
+                {{ 'KNOWLEDGE.MEDIA' | translate }}
+               }
+               @default {
+                {{ item.type || 'N/A' }}
+               }
+              }
             </div>
           </div>
 
