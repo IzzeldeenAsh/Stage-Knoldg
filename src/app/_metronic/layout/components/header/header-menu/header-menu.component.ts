@@ -66,7 +66,7 @@ export class HeaderMenuComponent extends BaseComponent implements OnInit {
   }
 
   getIndustryUrl(industry: Industry): string {
-    return `${this.clientBaseUrl}/en/industry/${industry.id}/${industry.slug}`;
+    return `${this.clientBaseUrl}/${this.lang}/industry/${industry.id}/${industry.slug}`;
   }
 
   calculateMenuItemCssClass(url: string): string {

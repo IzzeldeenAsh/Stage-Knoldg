@@ -590,6 +590,7 @@ INSIGHTER_REQUESTS: {
       "FREE":"مجاني",
       "PAID":"مدفوع",
       OR:"أو",
+      DECLINE:"رفض",
       PLEASE_WAIT:"يرجى الانتظار...",
       DESCRIPTION:"الوصف",
       TABLE_OF_CONTENTS:"جدول المحتويات",

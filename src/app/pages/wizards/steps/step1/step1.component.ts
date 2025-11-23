@@ -31,9 +31,7 @@ export class Step1Component implements OnInit, OnDestroy {
     // Initial update to parent with default values
     this.updateParentModel(this.defaultValues, this.form.valid);
     const lang = this.translateService.currentLang;
-    this.insighterLink = lang === 'ar'
-      ? 'https://insightabusiness.com/ar/insighter'
-      : 'https://insightabusiness.com/en/insighter';
+    this.insighterLink = `https://insightabusiness.com/${lang}/insighter`;
   }
 
   initForm() {

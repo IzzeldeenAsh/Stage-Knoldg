@@ -104,14 +104,14 @@
 
         const headers = new HttpHeaders({
           'Accept': 'application/json',
-          'Accept-Language': 'en'
+          'Accept-Language': this.lang || 'en'
         });
 
         this.http.get(apiUrl, { headers }).subscribe({
           next: (response: any) => {
             // Redirect to the callback URL with the token from cookies
             const token = this.getTokenFromCookie();
-            window.location.href = `https://insightabusiness.com/en/callback/${token}`;
+            window.location.href = `https://insightabusiness.com/${this.lang}/callback/${token}`;
             this.verificationStatusKey = 'AUTH.VERIFY_EMAIL.EMAIL_SUCCESSFULLY_VERIFIED';
             this.verificationStatus = this.translationService.getTranslation(this.verificationStatusKey);
             this.verified = true;

@@ -407,7 +407,7 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
   // Profile redirect method
   redirectToProfile(user: User | undefined): void {
     if (user?.uuid) {
-      const profileUrl = `https://insightabusiness.com/en/profile/${user.uuid}?entity=insighter`;
+      const profileUrl = `https://insightabusiness.com/${this.lang}/profile/${user.uuid}?entity=insighter`;
       window.open(profileUrl, '_blank');
     }
   }
@@ -486,17 +486,31 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
       for (const key in serverErrors) {
         if (serverErrors.hasOwnProperty(key)) {
           const messages = serverErrors[key];
-          this.showError(
-            this.lang === "ar" ? "حدث خطأ" : "An error occurred",
-            messages.join(", ")
-          );
+          if (error.error.type === "warning") {
+            this.showWarn(
+              this.lang === "ar" ? "تحذير" : "Warning",
+              messages.join(", ")
+            );
+          } else {
+            this.showError(
+              this.lang === "ar" ? "حدث خطأ" : "An error occurred",
+              messages.join(", ")
+            );
+          }
         }
       }
     } else {
-      this.showError(
-        this.lang === "ar" ? "حدث خطأ" : "An error occurred",
-        this.lang === "ar" ? "حدث خطأ" : "An unexpected error occurred."
-      );
+      if (error.error && error.error.type === "warning") {
+        this.showWarn(
+          this.lang === "ar" ? "تحذير" : "Warning",
+          this.lang === "ar" ? "تحذير" : "An unexpected warning occurred."
+        );
+      } else {
+        this.showError(
+          this.lang === "ar" ? "حدث خطأ" : "An error occurred",
+          this.lang === "ar" ? "حدث خطأ" : "An unexpected error occurred."
+        );
+      }
     }
   }
 

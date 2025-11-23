@@ -98,7 +98,7 @@
               class="d-block"
               [class.ng-invalid]="isFieldInvalid('country')"
               [class.is-invalid]="isFieldInvalid('country')"
-              optionLabel="names.en"
+              [optionLabel]="lang === 'en' ? 'names.en' : 'names.ar'"
               placeholder="{{ 'ACCOUNT_SETTINGS.SELECT_COUNTRY' | translate }}"
               [filter]="true"
               [showClear]="true"
@@ -109,10 +109,17 @@
                     *ngIf="country.showFlag"
                     [src]="country.flagPath"
                     (error)="onFlagError(country)"
-                    alt="{{ country.names.en }}"
+                    [alt]="country.names.en"
                     class="flag-icon w-20px mx-2"
                   />
-                  <span>{{ country.names.en }}</span>
+                  <span>
+                    <ng-container *ngIf="lang === 'en'">
+                      {{ country.names.en }}
+                      </ng-container>
+                    <ng-container *ngIf="lang === 'ar'">
+                      {{ country.names.ar }}
+                    </ng-container>
+                  </span>
                 </div>
               </ng-template>
             </p-dropdown>
@@ -120,7 +127,7 @@
               {{ getFieldError('country') }}
             </div>
           </div>
-          <div class="col-lg-6 mb-6 fv-row"    *ngIf="hasRole(['insighter']) || hasRole(['company']) || hasRole(['company-insighter'])" >
+          <div class="col-lg-6 mb-6 fv-row">
             <label class="form-label">
               {{ "ACCOUNT_SETTINGS.PHONE" | translate }}
             </label>

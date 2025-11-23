@@ -48,7 +48,7 @@
                     <span class="d-block text-muted small mb-5">
                       {{ 'HEADER.BROWSE_SECTORS' | translate }}
                     </span>
-                    <a class="btn btn-primary btn-xs" [href]="clientBaseUrl + '/en/all-industries'">
+                    <a class="btn btn-primary btn-xs" [href]="clientBaseUrl + '/' + lang + '/all-industries'">
                       {{ 'HEADER.EXPLORE_NOW' | translate }}
                     </a>
                   </div>
@@ -62,28 +62,28 @@
   </div>
 </div>
 <div class="menu-item me-lg-1 position-relative">
-  <a [href]="clientBaseUrl + '/en/industries/report'">
+  <a [href]="clientBaseUrl + '/' + lang + '/industries/report'">
   <span class="menu-link py-3">
     <span class="menu-title">{{ 'HEADER.REPORTS' | translate }}</span>
   </span>
   </a>
 </div>
 <div class="menu-item me-lg-1 position-relative">
-  <a [href]="clientBaseUrl + '/en/industries/data'">
+  <a [href]="clientBaseUrl + '/' + lang + '/industries/data'">
   <span class="menu-link py-3">
     <span class="menu-title">{{ 'HEADER.DATA' | translate }}</span>
   </span>
   </a>
 </div>
 <div class="menu-item me-lg-1 position-relative">
-  <a [href]="clientBaseUrl + '/en/industries/insight'">
+  <a [href]="clientBaseUrl + '/' + lang + '/industries/insight'">
   <span class="menu-link py-3">
     <span class="menu-title">{{ 'HEADER.INSIGHTS' | translate }}</span>
   </span>
   </a>
 </div>
 <div class="menu-item me-lg-1 position-relative">
-  <a [href]="clientBaseUrl + '/en/industries/manual'">
+  <a [href]="clientBaseUrl + '/' + lang + '/industries/manual'">
   <span class="menu-link py-3">
     <span class="menu-title">{{ 'HEADER.MANUAL' | translate }}</span>
   </span>

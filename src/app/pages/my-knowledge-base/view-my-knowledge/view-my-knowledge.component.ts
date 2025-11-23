@@ -179,11 +179,19 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
       for (const key in serverErrors) {
         if (serverErrors.hasOwnProperty(key)) {
           const messages = serverErrors[key];
-         this.showError('',messages.join(", "));
+          if (error.error.type === "warning") {
+            this.showWarn('',messages.join(", "));
+          } else {
+            this.showError('',messages.join(", "));
+          }
         }
       }
     } else {
-      this.showError('','An unexpected error occurred.');
+      if (error.error && error.error.type === "warning") {
+        this.showWarn('','An unexpected warning occurred.');
+      } else {
+        this.showError('','An unexpected error occurred.');
+      }
     }
   }
 
@@ -525,7 +533,7 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
   getShareableLink(): string {
     const knowledgeType = this.knowledge.type?.toLowerCase() || 'statistic';
     const slug = this.knowledge.slug || '';
-    return `https://insightabusiness.com/en/knowledge/${knowledgeType}/${slug}`;
+    return `https://insightabusiness.com/${this.lang}/knowledge/${knowledgeType}/${slug}`;
   }
 
   getSocialShareTitle(): string {

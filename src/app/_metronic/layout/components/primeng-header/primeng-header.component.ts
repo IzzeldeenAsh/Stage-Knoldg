@@ -298,7 +298,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
   }
 
   getIndustryUrl(industry: Industry): string {
-    return `https://insightabusiness.com/en/industry/${industry.id}/${industry.slug}`;
+    return `https://insightabusiness.com/${this.lang}/industry/${industry.id}/${industry.slug}`;
   }
 
   initializeMenu() {
@@ -324,7 +324,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: 'https://insightabusiness.com/en/industries/report'
+        routerLink: `https://insightabusiness.com/${this.lang}/industries/report`
       },
       {
         label: this.translate.instant('MENU.INSIGHTS'),
@@ -332,7 +332,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: 'https://insightabusiness.com/en/industries/insight'
+        routerLink: `https://insightabusiness.com/${this.lang}/industries/insight`
       },
      
       {
@@ -341,7 +341,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: 'https://insightabusiness.com/en/industries/data'
+        routerLink: `https://insightabusiness.com/${this.lang}/industries/data`
       },
       {
         label: this.translate.instant('MENU.MANUAL'),
@@ -349,7 +349,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: 'https://insightabusiness.com/en/industries/manual'
+        routerLink: `https://insightabusiness.com/${this.lang}/industries/manual`
       },
       {
         label: this.translate.instant('MENU.COURSES'),
@@ -357,7 +357,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: 'https://insightabusiness.com/en/industries/course'
+        routerLink: `https://insightabusiness.com/${this.lang}/industries/course`
       }
     ];
 

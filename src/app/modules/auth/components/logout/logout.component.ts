@@ -3,6 +3,7 @@ import { AuthService } from '../../services/auth.service';
 import { first } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { environment } from 'src/environments/environment';
+import { TranslationService } from 'src/app/modules/i18n';
 
 @Component({
   selector: 'app-logout',
@@ -12,7 +13,8 @@ import { environment } from 'src/environments/environment';
 export class LogoutComponent implements OnInit {
   constructor(
     private authService: AuthService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private translationService: TranslationService
   ) {}
 
   ngOnInit(): void {
@@ -55,7 +57,8 @@ export class LogoutComponent implements OnInit {
 
   private redirectToMainDomain(): void {
     const timestamp = new Date().getTime();
-    const redirectUrl = `${environment.mainAppUrl}/en?logged_out=true&t=${timestamp}`;
+    const lang = this.translationService.getSelectedLanguage();
+    const redirectUrl = `${environment.mainAppUrl}/${lang}?logged_out=true&t=${timestamp}`;
     
     console.log('Redirecting to main domain:', redirectUrl);
     window.location.href = redirectUrl;
