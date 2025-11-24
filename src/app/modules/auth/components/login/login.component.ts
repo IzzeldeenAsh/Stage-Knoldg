@@ -8,6 +8,7 @@ import { TranslationService } from "src/app/modules/i18n/translation.service";
 import { Message } from "primeng/api";
 import { BaseComponent } from "src/app/modules/base.component";
 import { environment } from "src/environments/environment";
+import { CookieService } from "src/app/utils/cookie.service";
 
 @Component({
   selector: "app-login",
@@ -36,6 +37,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private translationService: TranslationService,
+    private cookieService: CookieService,
     injector: Injector
   ) {
     super(injector);
@@ -113,7 +115,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     // Store return URL in cookie
     this.setReturnUrlCookie(localizedReturnUrl);
     // Store preferred language in cookie for Next.js middleware
-    this.setPreferredLanguageCookie(effectiveLang);
+    this.cookieService.setPreferredLanguage(effectiveLang);
     
     const authMethod = provider === 'google' 
       ? this.authService.getGoogleAuthRedirectUrl()
@@ -225,13 +227,13 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     console.log('Redirecting to Next.js with token:', token.substring(0, 20) + '...', 'and returnUrl:', returnUrl);
     
     // Store token in cookie for Next.js to read (cross-domain)
-    this.setTokenCookie(token);
+    this.cookieService.setAuthCookie('token', token);
     // Also store return URL in cookie (for consistency with social auth)
     if (localizedReturnUrl) {
       this.setReturnUrlCookie(localizedReturnUrl);
     }
     // Ensure preferred language is stored for middleware-based locale detection
-    this.setPreferredLanguageCookie(effectiveLang);
+    this.cookieService.setPreferredLanguage(effectiveLang);
 
     // Build the redirect URL WITHOUT token (cookie-based handoff)
     let redirectUrl = `${environment.mainAppUrl}/${effectiveLang}/callback`;
@@ -272,55 +274,6 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     document.cookie = cookieSettings.join('; ');
   }
 
-  private setPreferredLanguageCookie(lang: string): void {
-    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    
-    let cookieSettings;
-    if (isLocalhost) {
-      cookieSettings = [
-        `preferred_language=${encodeURIComponent(lang)}`,
-        `Path=/`,
-        `Max-Age=${60 * 60 * 24 * 30}`, // 30 days
-        `SameSite=Lax`
-      ];
-    } else {
-      cookieSettings = [
-        `preferred_language=${encodeURIComponent(lang)}`,
-        `Path=/`,
-        `Max-Age=${60 * 60 * 24 * 30}`, // 30 days
-        `SameSite=None`,
-        `Domain=.insightabusiness.com`,
-        `Secure`
-      ];
-    }
-    
-    document.cookie = cookieSettings.join('; ');
-  }
-
-  private setTokenCookie(token: string): void {
-    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    
-    let cookieSettings;
-    if (isLocalhost) {
-      cookieSettings = [
-        `token=${encodeURIComponent(token)}`,
-        `Path=/`,
-        `Max-Age=${60 * 60 * 24 * 7}`, // 7 days
-        `SameSite=Lax`
-      ];
-    } else {
-      cookieSettings = [
-        `token=${encodeURIComponent(token)}`,
-        `Path=/`,
-        `Max-Age=${60 * 60 * 24 * 7}`, // 7 days
-        `SameSite=None`,
-        `Domain=.insightabusiness.com`,
-        `Secure`
-      ];
-    }
-    
-    document.cookie = cookieSettings.join('; ');
-  }
 
   private localizeNextJsUrl(url: string, lang: string): string {
     if (!url) {
