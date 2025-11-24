@@ -27,7 +27,6 @@
       </div>
 
       <div class="d-flex justify-content-between align-items-center">
-        <span class="fw-semibold">{{ utils.getServiceTypeDisplay(order.service) }}</span>
         <div class="payment-method-display d-inline-flex align-items-center bg-white rounded border px-3 py-2">
           <ng-container *ngIf="utils.shouldShowCardLogo(order?.payment); else showIcon3">
             <div class="me-2" [innerHTML]="cardLogoSvg(order?.payment)" style="width: 24px; height: 16px; display: flex; align-items: center;"></div>
