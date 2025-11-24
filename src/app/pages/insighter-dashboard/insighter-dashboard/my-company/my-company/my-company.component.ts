@@ -1490,7 +1490,7 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
 
       // Statistics
       'total': { en: 'Total', ar: 'المجموع' },
-      'publishedKnowledge': { en: 'Published Knowledge', ar: 'المعارف المنشورة' },
+      'publishedKnowledge': { en: 'Published Knowledge', ar: 'المنشورات المنشورة' },
       'publishedKnowledgeByInsighter': { en: 'Knowledge by Insighter', ar: "التصنيف حسب الإنسايتر" },
       'knowledgeOrders': { en: 'Knowledge Orders', ar: 'طلبات المعرفة' },
       'meetingBookings': { en: 'Meeting Bookings', ar: 'حجوزات الاجتماعات' },

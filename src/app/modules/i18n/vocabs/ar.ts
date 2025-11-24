@@ -204,7 +204,7 @@ INSIGHTER_REQUESTS: {
       "FILTERED_MESSAGE": "لا توجد عناصر معرفة تطابق معايير التصفية الحالية. حاول تعديل عوامل التصفية أو عرض كل المعرفة."
     }
   },
-    PUBLISHED_KNOWLEDGE_DASHBOARD: "المعارف المنشورة",
+    PUBLISHED_KNOWLEDGE_DASHBOARD: "المعارف المشنورات",
     TOTAL_DASHBOARD: "المجموع",
     KNOWLEDGE_DOCUMENTS_INFO:'ملخص المستند',
     DESCRIBE_KNOWLEDGE_AND_DOCUMENTS: 'قدم وصفًا للمعرفة والمستندات المرتبطة بها.',
@@ -1283,8 +1283,8 @@ INSIGHTER_REQUESTS: {
   SUPPORT:'الدعم',
   KNOLDG:'إنسايتا',
   CLICK_TO_ADD:'اضغط لإضافة معرفة جديدة',
-  POSTED_KNOWLEDGE:'المعارف المنشورة',
-  PUBLISHED_KNOWLEDGE:'المعارف المنشورة',
+  POSTED_KNOWLEDGE:'المنشورات المنشورة',
+  PUBLISHED_KNOWLEDGE:'المنشورات المنشورة',
   SCHEDULED_KNOWLEDGE:'المعارف المجدولة',
   GENERAL_KNOWLEDGE:'المعارف العامة',
   PACKAGES_KNOWLEDGE:'الحزم الخاصة بالمعارف',

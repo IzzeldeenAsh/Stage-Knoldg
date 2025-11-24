@@ -65,6 +65,7 @@ export interface MeetingBooking {
   start_time: string;
   end_time: string;
   status: string;
+  status_name: string;
 }
 
 export interface SubOrder {
