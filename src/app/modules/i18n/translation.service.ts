@@ -3,25 +3,28 @@ import { TranslateService } from '@ngx-translate/core';
 import { locale as enLang } from './vocabs/en';
 import { locale as arLang } from './vocabs/ar';
 import { BehaviorSubject } from 'rxjs';
+import { CookieService } from '../../utils/cookie.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TranslationService {
-  private readonly COOKIE_NAME = 'preferred_language';
-  private readonly COOKIE_DOMAIN = '.insightabusiness.com';
-  private readonly COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // one year in seconds
   private readonly STORAGE_KEY = 'language';
 
-  // Initialize currentLang from storage or cookie
-  private currentLang = new BehaviorSubject<string>(this.getSelectedLanguage());
+  // Initialize currentLang - will be set in constructor
+  private currentLang = new BehaviorSubject<string>('en');
 
-  constructor(private translate: TranslateService) {
+  constructor(
+    private translate: TranslateService,
+    private cookieService: CookieService
+  ) {
     this.translate.addLangs(['en', 'ar']);
     this.translate.setDefaultLang('en');
     this.loadTranslations(enLang, arLang);
 
+    // Initialize language after dependencies are available
     const initial = this.getSelectedLanguage();
+    this.currentLang.next(initial);
     this.translate.use(initial);
     this.updateDirection(initial);
   }
@@ -47,14 +50,8 @@ export class TranslationService {
     // persist in localStorage
     localStorage.setItem(this.STORAGE_KEY, lang);
 
-    // persist in cookie (cross-subdomain)
-    this.setCookie(this.COOKIE_NAME, lang, {
-      domain: this.COOKIE_DOMAIN,
-      path: '/',
-      maxAge: this.COOKIE_MAX_AGE,
-      sameSite: 'Lax',
-      secure: true
-    });
+    // persist in cookie (cross-subdomain) using centralized service
+    this.cookieService.setPreferredLanguage(lang);
 
     // update direction/font
     this.updateDirection(lang);
@@ -72,36 +69,25 @@ export class TranslationService {
    * Reads preferred language from cookie only, else 'en'
    */
   getSelectedLanguage(): string {
-    const fromCookie = this.getCookie(this.COOKIE_NAME);
-    return fromCookie || 'en';
-  }
-
-  /** Utility to set a cookie with options */
-  private setCookie(
-    name: string,
-    value: string,
-    opts: { domain: string; path: string; maxAge: number; sameSite: 'Lax' | 'Strict' | 'None'; secure: boolean }
-  ) {
-    const parts = [
-      `${encodeURIComponent(name)}=${encodeURIComponent(value)}`,
-      `Domain=${opts.domain}`,
-      `Path=${opts.path}`,
-      `Max-Age=${opts.maxAge}`,
-      `SameSite=${opts.sameSite}`
-    ];
-    if (opts.secure) {
-      parts.push('Secure');
+    try {
+      const fromCookie = this.cookieService?.getPreferredLanguage();
+      return fromCookie || 'en';
+    } catch (error) {
+      // Fallback to direct cookie reading if service not available
+      return this.getCookieFallback('preferred_language') || 'en';
     }
-    document.cookie = parts.join('; ');
   }
 
-  /** Utility to read a cookie by name */
-  private getCookie(name: string): string | null {
+  /** Fallback cookie reading method */
+  private getCookieFallback(name: string): string | null {
+    if (typeof document === 'undefined') return null;
+
     const match = document.cookie.match(
       new RegExp('(^|; )' + name.replace(/([.*+?^${}()|[\]\\])/g, '\\$1') + '=([^;]*)')
     );
     return match ? decodeURIComponent(match[2]) : null;
   }
+
 
   /** Update HTML dir/lang attributes and load/remove Arabic font */
   private updateDirection(lang: string) {
