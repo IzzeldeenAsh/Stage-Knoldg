@@ -348,10 +348,10 @@ export class InvoiceGeneratorService {
                         <td style="width:70%; padding-right:10px;">
                             <div class="section-title">From:</div>
                             <div style="margin-top:6px;">
-                                Foresighta Systems Consulting FZ-LLC<br/>
-                                Compass Building Al Shohada Road<br/>
-                                AL Hamra Industrial Zone-FZ<br/>
-                                Ras Al Khaimah United Arab Emirates<br/>
+                                Foresighta Systems Consulting FZ-LLC<br/>,
+                                Compass Building Al Shohada Road<br/>,
+                                AL Hamra Industrial Zone-FZ<br/>,
+                                Ras Al Khaimah United Arab Emirates<br/>,
                                 info@insightabusiness.com<br/>
                             </div>
                         </td>
@@ -371,7 +371,7 @@ export class InvoiceGeneratorService {
                 <table class="services" cellpadding="0" cellspacing="0">
                     <thead>
                     <tr>
-                        <th style="width:70%;">${isMeetingOrder ? 'Meeting Service' : 'Knowledge'}</th>
+                        <th style="width:70%;">${isMeetingOrder ? 'Meeting Service' : 'Insight'}</th>
                         <th style="width:30%; text-align:right;">Amount</th>
                     </tr>
                     </thead>
