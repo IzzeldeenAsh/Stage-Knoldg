@@ -97,10 +97,11 @@ export class InvoiceGeneratorService {
     }
 
     return `<!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="utf-8"/>
     <title>Invoice - Insighta Business</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <style>
         @page {
             size: A4;
@@ -311,6 +312,31 @@ export class InvoiceGeneratorService {
             border-top: 1px solid #eee;
         }
     </style>
+    <script>
+      (function () {
+        function triggerPrint() {
+          try {
+            window.focus();
+            window.print();
+          } catch (e) {
+            // Fallback retry for Chrome timing quirks
+            setTimeout(function () {
+              try {
+                window.focus();
+                window.print();
+              } catch (_) {}
+            }, 300);
+          }
+        }
+        if (document.readyState === 'complete') {
+          setTimeout(triggerPrint, 100);
+        } else {
+          window.addEventListener('load', function () {
+            setTimeout(triggerPrint, 100);
+          });
+        }
+      })();
+    </script>
 </head>
 <body>
 <div class="page">
@@ -348,11 +374,11 @@ export class InvoiceGeneratorService {
                         <td style="width:70%; padding-right:10px;">
                             <div class="section-title">From:</div>
                             <div style="margin-top:6px;">
-                                Foresighta Systems Consulting FZ-LLC<br/>,
-                                Compass Building Al Shohada Road<br/>,
-                                AL Hamra Industrial Zone-FZ<br/>,
-                                Ras Al Khaimah United Arab Emirates<br/>,
-                                info@insightabusiness.com<br/>
+                                Foresighta Systems Consulting FZ-LLC,<br/>
+                                Compass Building Al Shohada Road,<br/>
+                                AL Hamra Industrial Zone-FZ,<br/>
+                                Ras Al Khaimah United Arab Emirates,<br/>
+                                info@insightabusiness.com.<br/>
                             </div>
                         </td>
 
@@ -412,12 +438,14 @@ export class InvoiceGeneratorService {
     if (printWindow) {
       printWindow.document.write(htmlContent);
       printWindow.document.close();
-      
-      // Wait for content to load, then trigger print dialog
-      printWindow.onload = () => {
-        printWindow.focus();
-        printWindow.print();
-      };
+      // Printing is auto-triggered by the injected script inside the HTML
+      // Keep a light fallback in case load event fires before script attaches
+      setTimeout(() => {
+        try {
+          printWindow.focus();
+          printWindow.print();
+        } catch {}
+      }, 800);
     }
   }
 
@@ -427,11 +455,7 @@ export class InvoiceGeneratorService {
     const newWindow = window.open(url, '_blank');
     if (newWindow) {
       newWindow.onload = () => {
-        // Auto-trigger print dialog after content loads
-        setTimeout(() => {
-          newWindow.focus();
-          newWindow.print();
-        }, 500);
+        // Printing is auto-triggered by the injected script inside the HTML
         window.URL.revokeObjectURL(url);
       };
     }
