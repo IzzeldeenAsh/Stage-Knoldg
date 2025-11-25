@@ -204,7 +204,7 @@ INSIGHTER_REQUESTS: {
       "FILTERED_MESSAGE": "لا توجد عناصر معرفة تطابق معايير التصفية الحالية. حاول تعديل عوامل التصفية أو عرض كل المعرفة."
     }
   },
-    PUBLISHED_KNOWLEDGE_DASHBOARD: "المعارف المنشورة",
+    PUBLISHED_KNOWLEDGE_DASHBOARD: "المشنورات",
     TOTAL_DASHBOARD: "المجموع",
     KNOWLEDGE_DOCUMENTS_INFO:'ملخص المستند',
     DESCRIBE_KNOWLEDGE_AND_DOCUMENTS: 'قدم وصفًا للمعرفة والمستندات المرتبطة بها.',
@@ -1051,11 +1051,66 @@ INSIGHTER_REQUESTS: {
     DOCUMENT_DETAILS: "تفاصيل الملف",
     ADD_DESCRIPTION_AND_CHAPTERS: "أضف الوصف والفصول",
     MANUAL: "الأدلة",
-    DATA_DESCRIPTION: "بيانات رقمية، إحصائيات، ومعلومات قابلة للمعالجة والتحليل لدعم اتخاذ القرار.",
+    DATA_DESCRIPTION: "معلومات منظمة خام (CSV، Excel، السجلات). ارفع المحتوى الخام بدون أي تفسير.",
     INSIGHTS_DESCRIPTION: "معلومات تحليلية تقدم فهماً أعمق لاتجاهات السوق والفرص والتهديدات المحتملة.",
-    REPORTS_DESCRIPTION: "وثائق تحليلية شاملة تحتوي على دراسات معمقة، وتوصيات عملية، واستنتاجات قابلة للتنفيذ.",
-    MANUAL_DESCRIPTION: "محتوى لإجراءات عملياتية منظَّمة يقدم خطوات واضحة لإنجاز المهام.",
+    STATISTICS_DESCRIPTION: "رؤى مُعالجة ونتائج مُلخّصة. ارفع محتوى محللاً وجاهزًا للرؤى.",
+    REPORTS_DESCRIPTION: "وثائق خبراء شاملة. ارفع مستندات كاملة تتضمن تحليلاً واستنتاجات.",
+    MANUAL_DESCRIPTION: "إرشادات تشغيلية خطوة بخطوة. ارفع محتوى يوجّه المستخدم.",
     KNOWLEDGE_TYPE: "نوع المعرفة",
+    DATA_TOOLTIP: `
+    <div class="mb-2">ارفع المحتوى الخام بدون أي تفسير</div>
+    <ul class="mb-0" style="padding-inline-start: 1.25rem;">
+      <li>مجموعات بيانات منظمة</li>
+      <li>ملفات قابلة للقراءة آليًا</li>
+      <li>بيانات غير مُعالجة</li>
+      <li>سجلات أو إدخالات خام</li>
+    </ul>
+    `,
+    REPORTS_TOOLTIP: `
+    <div class="mb-2">ارفع مستندات كاملة تتضمن تحليلاً واستنتاجات</div>
+    <ul class="mb-0" style="padding-inline-start: 1.25rem;">
+      <li>أوراق بحثية</li>
+      <li>دراسات سوق أو صناعة</li>
+      <li>تقارير تقييم استراتيجية</li>
+      <li>مستندات تحليل معمّق</li>
+    </ul>
+    `,
+    STATISTICS_TOOLTIP: `
+    <div class="mb-2">ارفع محتوى محللاً وجاهزًا للرؤى</div>
+    <ul class="mb-0" style="padding-inline-start: 1.25rem;">
+      <li>نتائج مجمعة أو مُلخّصة</li>
+      <li>مخططات الاتجاهات</li>
+      <li>توقعات ومؤشرات</li>
+      <li>نتائج مُفسَّرة أو معروضة بصريًا</li>
+    </ul>
+    `,
+    MANUAL_TOOLTIP: `
+    <div class="mb-2">ارفع محتوى يوجّه المستخدم</div>
+    <ul class="mb-0" style="padding-inline-start: 1.25rem;">
+      <li>خطوات إجرائية أو تعليمية</li>
+      <li>أدلة تقنية</li>
+      <li>إجراءات تشغيل قياسية (SOPs)</li>
+      <li>إرشادات تنفيذ المهام</li>
+    </ul>
+    `,
+    COURSE_TOOLTIP: `
+    <div class="mb-2">ارفع مواد تدريبية أو تعليمية</div>
+    <ul class="mb-0" style="padding-inline-start: 1.25rem;">
+      <li>وحدات دراسية</li>
+      <li>عروض تدريبية</li>
+      <li>مسارات تعليمية</li>
+      <li>مواد تطوير المهارات</li>
+    </ul>
+    `,
+    MEDIA_TOOLTIP: `
+    <div class="mb-2">سيكون رفع الوسائط مُتاحًا قريبًا</div>
+    <ul class="mb-0" style="padding-inline-start: 1.25rem;">
+      <li>مقاطع فيديو مسجّلة</li>
+      <li>مقاطع صوتية</li>
+      <li>عروض مرئية</li>
+      <li>عناصر وسائط متعددة</li>
+    </ul>
+    `,
     UPLOAD_YOUR_DOCUMENT: "رفع ملف",
     KNOWLEDGE_INFO: "معلومات المعرفة",
     DOCUMENT_UPLOAD: "رفع ملف",
@@ -1248,9 +1303,9 @@ INSIGHTER_REQUESTS: {
   DEACTIVATE_ACCOUNT_SUCCESS_MESSAGE: "تم إلغاء تنشيط حساب الانسايتر بنجاح",
   OVERVIEW: "لوحة المعلومات",
   "COURSE": "كورسات الأعمال",
-  "COURSE_DESCRIPTION": "محتوى تدريبي منظّم يشمل دروسًا تعليمية وأهدافاً واضحة لتطوير المهارات.",
+  "COURSE_DESCRIPTION": "محتوى تدريبي منظّم للتعلّم وتطوير المهارات.",
   "MEDIA": "وسائط",
-  "MEDIA_DESCRIPTION": "محتوى بصري أو سمعي مثل الفيديوهات، والعروض التفاعلية، والمواد متعددة الوسائط.",
+  "MEDIA_DESCRIPTION": "محتوى مرئي وصوتي ووسائط متعددة.",
   COUNTRIES_AND_REGIONS: "الدول والمناطق",
   TOTAL_KNOWLEDGE_PRICE: "القيمة الإجمالية",
   NODE_NAME: "اسم العقدة",
@@ -1283,8 +1338,8 @@ INSIGHTER_REQUESTS: {
   SUPPORT:'الدعم',
   KNOLDG:'إنسايتا',
   CLICK_TO_ADD:'اضغط لإضافة معرفة جديدة',
-  POSTED_KNOWLEDGE:'المعارف المنشورة',
-  PUBLISHED_KNOWLEDGE:'المعارف المنشورة',
+  POSTED_KNOWLEDGE:'المنشورات المنشورة',
+  PUBLISHED_KNOWLEDGE:'المنشورات المنشورة',
   SCHEDULED_KNOWLEDGE:'المعارف المجدولة',
   GENERAL_KNOWLEDGE:'المعارف العامة',
   PACKAGES_KNOWLEDGE:'الحزم الخاصة بالمعارف',

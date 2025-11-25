@@ -138,14 +138,16 @@
   border: 1px solid #ddd;
 
   .h1 {
-    background: linear-gradient(135deg, #0563eb 0%, #06dac4 100%);
+  
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     font-weight: 700;
     font-size: 2.5rem !important;
-  }
 
+  
+  }
+ 
   .text-muted {
     color: #6c7293 !important;
     font-weight: 500;
@@ -156,7 +158,12 @@
     text-align: start !important;
   }
 }
-
+  [dir="rtl"]   .row.mb-5 .card .h1{
+  
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  }
 // Simple statistics cards
 .simple-stat-card {
   padding: 1.5rem;
@@ -374,4 +381,19 @@
   .h5 {
     font-size: 1.1rem;
   }
+}
+
+// Gradient text utilities to replace inline ngStyle
+.gradient-text {
+  background: linear-gradient(135deg, #0563eb 0%, #06dac4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-rtl {
+  background: linear-gradient(267deg, #0563eb 0%, #06dac4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }

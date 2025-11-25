@@ -51,7 +51,8 @@
       <div class="card border-0 shadow-sm h-100">
         <div class="card-body text-start">
           <div class="text-muted small mb-3">{{ getText('TOTAL_ORDERS_TITLE') }}</div>
-          <div class="h1 fw-bold text-dark mb-0">{{ totalStatistics.order_statistics.orders_total | number }}</div>
+          <div class="h1 fw-bold text-dark mb-0"
+          [ngClass]="lang === 'ar' ? 'gradient-text-rtl' : 'gradient-text'">{{ totalStatistics.order_statistics.orders_total | number }}</div>
         </div>
       </div>
     </div>
@@ -60,7 +61,12 @@
       <div class="card border-0 shadow-sm h-100">
         <div class="card-body text-start">
           <div class="text-muted small mb-3">{{ getText('ORDERS_REVENUE_TITLE') }}</div>
-          <div class="h1 fw-bold text-dark mb-0">${{ totalStatistics.order_statistics.orders_amount | number:'1.2-2' }}</div>
+          <div 
+            class="h1 fw-bold text-dark mb-0"
+            [ngClass]="lang === 'ar' ? 'gradient-text-rtl' : 'gradient-text'"
+          >
+            ${{ totalStatistics.order_statistics.orders_amount | number:'1.2-2' }}
+          </div>
         </div>
       </div>
     </div>
@@ -69,7 +75,8 @@
       <div class="card border-0 shadow-sm h-100">
         <div class="card-body text-start">
           <div class="text-muted small mb-3">{{ getText('NET_PROFIT') }}</div>
-          <div class="h1 fw-bold text-dark mb-0">${{ totalStatistics.order_statistics.insighter_orders_amount | number:'1.2-2' }}</div>
+          <div class="h1 fw-bold text-dark mb-0"
+          [ngClass]="lang === 'ar' ? 'gradient-text-rtl' : 'gradient-text'">${{ totalStatistics.order_statistics.insighter_orders_amount | number:'1.2-2' }}</div>
         </div>
       </div>
     </div>
@@ -78,7 +85,8 @@
       <div class="card border-0 shadow-sm h-100">
         <div class="card-body text-start">
           <div class="text-muted small mb-3">{{ getText('COMPANY_NET_PROFIT') }}</div>
-          <div class="h1 fw-bold text-dark mb-0">${{ totalStatistics.order_statistics.company_orders_amount | number:'1.2-2' }}</div>
+          <div class="h1 fw-bold text-dark mb-0"
+          [ngClass]="lang === 'ar' ? 'gradient-text-rtl' : 'gradient-text'">${{ totalStatistics.order_statistics.company_orders_amount | number:'1.2-2' }}</div>
         </div>
       </div>
     </div>

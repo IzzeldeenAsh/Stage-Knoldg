@@ -12,6 +12,9 @@
     ></i>
   </h2>
 
+  <ng-template #tooltipTpl let-tooltip="tooltip">
+    <div class="kn-tooltip-content" [attr.dir]="isRtl ? 'rtl' : 'ltr'" [style.text-align]="isRtl ? 'right' : 'left'" [innerHTML]="tooltipContent ? (tooltipContent | translate) : ''"></div>
+  </ng-template>
 
 </div>
 
@@ -30,7 +33,10 @@
       <label
         class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center position-relative hover-elevate-up shadow-sm rounded-3 transition h-100"
         [for]="type.id"
-        [ngbTooltip]="type.tooltip"
+        [ngbTooltip]="type.tooltip ? tooltipTpl : null"
+        (mouseenter)="tooltipContent = type.tooltip"
+        (mouseleave)="tooltipContent = null"
+        container="body"
         [class.disabled]="type.disabled"
         [style.cursor]="type.disabled ? 'not-allowed' : 'pointer'"
         style="min-height: 160px;"

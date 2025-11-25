@@ -80,7 +80,7 @@ export function getStatusBadgeClass(status: string): string {
 }
 
 export function getServiceTypeDisplay(service: string): string {
-  if (service === 'knowledge_service') {
+  if (service === 'knowledge_service' ) {
     return 'Knowledge';
   }
   if (service === 'meeting_service') {

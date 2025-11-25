@@ -152,29 +152,57 @@
           
           <!-- List of added chapters in table format -->
           <div *ngIf="doc.chapters && doc.chapters.length > 0" class="mb-3">
-            <table class="table table-row-dashed table-row-gray-300 align-middle">
-              <thead>
+            <p-table 
+              [value]="doc.chapters"
+              styleClass="table table-row-dashed table-row-gray-300 align-middle toc-table">
+              <ng-template pTemplate="header">
                 <tr class="fw-bold">
+                  <th class="w-60px text-center"></th>
                   <th class="w-50px">#</th>
                   <th>{{ "CHAPTER_NAME" | translate }}</th>
                   <th class="w-75px text-end">{{ "ACTIONS" | translate }}</th>
                 </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let chapter of doc.chapters; let i = index">
-                  <td>{{ i + 1 }}</td>
-                  <td>{{ chapter.title }}</td>
+              </ng-template>
+              <ng-template pTemplate="body" let-chapter let-rowIndex="rowIndex">
+                <tr>
+                  <td class="text-center">
+                    <div class="toc-arrows">
+                      <button type="button"
+                              class="btn btn-light btn-sm btn-toc-arrow"
+                              (click)="moveChapterUp(doc.id, rowIndex)"
+                              [disabled]="rowIndex === 0"
+                              title="Move up">
+                        <i class="fas fa-chevron-up px-0"></i>
+                      </button>
+                      <button type="button"
+                              class="btn btn-light btn-sm btn-toc-arrow"
+                              (click)="moveChapterDown(doc.id, rowIndex)"
+                              [disabled]="rowIndex === (doc.chapters?.length - 1)"
+                              title="Move down">
+                        <i class="fas fa-chevron-down px-0"></i>
+                      </button>
+                    </div>
+                  </td>
+                  <td>{{ rowIndex + 1 }}</td>
+                  <td>
+                    <input type="text"
+                           class="form-control form-control-sm"
+                           [(ngModel)]="chapter.title"
+                           [ngModelOptions]="{standalone: true}"
+                           (ngModelChange)="onChapterTitleChange(doc.id, rowIndex)"
+                           placeholder="{{ 'CHAPTER_NAME' | translate }}">
+                  </td>
                   <td class="text-end">
                     <button type="button" 
                             class="btn btn-sm btn-icon btn-light-danger" 
-                            (click)="removeChapter(doc.id, i)"
+                            (click)="removeChapter(doc.id, rowIndex)"
                             title="{{ 'REMOVE_CHAPTER' | translate }}">
                       <i class="fas fa-times"></i>
                     </button>
                   </td>
                 </tr>
-              </tbody>
-            </table>
+              </ng-template>
+            </p-table>
           </div>
           
           <!-- Add new chapter form -->

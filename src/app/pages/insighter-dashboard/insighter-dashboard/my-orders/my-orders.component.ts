@@ -190,7 +190,7 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
 
 
   navigateToDownloads(order: Order): void {
-    const knowledgeDownloadId = order.knowledge_download_id;
+    const knowledgeDownloadId = order.uuid;
 
     if (knowledgeDownloadId) {
       // Navigate with single UUID as query parameter

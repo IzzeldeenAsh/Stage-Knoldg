@@ -18,10 +18,41 @@
     <!-- Personal Account Section -->
     <ng-container *ngIf="defaultValues.accountType === 'personal'">
       <div class="mb-10 row">
+          <!-- Industry -->
+          <div class=" col-12">
+            <shared-tree-selector
+            [title]="'INSIGHTER_WIZARD.CONSULTING_FIELDS' | translate"
+            [currentLang]="this.lang"
+            [placeholder]="
+              'AUTH.REGISTRATION.INDUSTRY_PLACEHOLDER' | translate
+            "
+            [otherFieldPlaceholder]="
+              'INSIGHTER_WIZARD.OTHER_FIELD_PLACEHOLDER2' | translate
+            "
+            [selectAllLabel]="this.lang === 'ar' ? 'اختر الكل' : 'Select All'"
+            [fetchedData]="this.nodes"
+            [cancelLabel]="'BUTTONS.CANCEL' | translate"
+            [initialSelectedNodes]="form.value.isicCodes" 
+            [okLabel]="'BUTTONS.OK' | translate"
+            (nodesSelected)="onIndustrySelected($event)"
+            [isRequired]="true"
+          ></shared-tree-selector>
+  
+            <div
+              *ngIf="
+                form.get('isicCodes')?.hasError('required') &&
+                form.get('isicCodes')?.touched
+              "
+              class="fv-plugins-message-container invalid-feedback"
+            >
+              {{ "INSIGHTER_WIZARD.INDUSTRY_REQUIRED" | translate }}
+            </div>
+          </div>
         <!-- Consulting Fields -->
         <div class=" col-12">
           <shared-tree-selector
-          [title]="'INSIGHTER_WIZARD.CONSULTING_FIELDS' | translate"
+        
+         
           [currentLang]="this.lang"
           [placeholder]="
             'AUTH.REGISTRATION.CONSULTING_FIELD_PLACEHOLDER' | translate
@@ -50,36 +81,7 @@
           </div>
         </div>
 
-        <!-- Industry -->
-        <div class=" col-12">
-          <shared-tree-selector
-          [title]="'AUTH.REGISTRATION.INDUSTRY' | translate"
-          [currentLang]="this.lang"
-          [placeholder]="
-            'AUTH.REGISTRATION.INDUSTRY_PLACEHOLDER' | translate
-          "
-          [otherFieldPlaceholder]="
-            'INSIGHTER_WIZARD.OTHER_FIELD_PLACEHOLDER2' | translate
-          "
-          [selectAllLabel]="this.lang === 'ar' ? 'اختر الكل' : 'Select All'"
-          [fetchedData]="this.nodes"
-          [cancelLabel]="'BUTTONS.CANCEL' | translate"
-          [initialSelectedNodes]="form.value.isicCodes" 
-          [okLabel]="'BUTTONS.OK' | translate"
-          (nodesSelected)="onIndustrySelected($event)"
-          [isRequired]="true"
-        ></shared-tree-selector>
-
-          <div
-            *ngIf="
-              form.get('isicCodes')?.hasError('required') &&
-              form.get('isicCodes')?.touched
-            "
-            class="fv-plugins-message-container invalid-feedback"
-          >
-            {{ "INSIGHTER_WIZARD.INDUSTRY_REQUIRED" | translate }}
-          </div>
-        </div>
+      
       </div>
 
       <!-- About You -->

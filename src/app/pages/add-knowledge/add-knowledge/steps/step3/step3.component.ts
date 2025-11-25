@@ -440,6 +440,41 @@ export class Step3Component extends BaseComponent implements OnInit {
     }
   }
 
+  // Move chapter up
+  moveChapterUp(docId: number, chapterIndex: number): void {
+    const docIndex = this.documents.findIndex(doc => doc.id === docId);
+    if (docIndex === -1 || chapterIndex <= 0) return;
+    const chapters = this.documents[docIndex].chapters || [];
+    [chapters[chapterIndex - 1], chapters[chapterIndex]] = [chapters[chapterIndex], chapters[chapterIndex - 1]];
+    this.documents[docIndex].chapters = chapters;
+    this.updateTableOfContent(docIndex);
+    this.updateParentModelWithDocuments();
+  }
+
+  // Move chapter down
+  moveChapterDown(docId: number, chapterIndex: number): void {
+    const docIndex = this.documents.findIndex(doc => doc.id === docId);
+    if (docIndex === -1) return;
+    const chapters = this.documents[docIndex].chapters || [];
+    if (chapterIndex >= chapters.length - 1) return;
+    [chapters[chapterIndex + 1], chapters[chapterIndex]] = [chapters[chapterIndex], chapters[chapterIndex + 1]];
+    this.documents[docIndex].chapters = chapters;
+    this.updateTableOfContent(docIndex);
+    this.updateParentModelWithDocuments();
+  }
+
+  // Handle inline chapter title edits
+  onChapterTitleChange(docId: number, chapterIndex: number): void {
+    const docIndex = this.documents.findIndex(doc => doc.id === docId);
+    if (docIndex !== -1 && this.documents[docIndex].chapters) {
+      // Ensure title is a string (avoid undefined)
+      const title = this.documents[docIndex].chapters[chapterIndex]?.title || '';
+      this.documents[docIndex].chapters[chapterIndex].title = title;
+      this.updateTableOfContent(docIndex);
+      this.updateParentModelWithDocuments();
+    }
+  }
+
   // Update the table_of_content based on chapters
   private updateTableOfContent(docIndex: number): void {
     if (this.documents[docIndex].chapters && this.documents[docIndex].chapters.length > 0) {

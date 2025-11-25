@@ -8,6 +8,7 @@ import { TranslationService } from "src/app/modules/i18n/translation.service";
 import { Message } from "primeng/api";
 import { BaseComponent } from "src/app/modules/base.component";
 import { environment } from "src/environments/environment";
+import { CookieService } from "src/app/utils/cookie.service";
 
 @Component({
   selector: "app-login",
@@ -36,6 +37,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private translationService: TranslationService,
+    private cookieService: CookieService,
     injector: Injector
   ) {
     super(injector);
@@ -107,9 +109,13 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
 
   private performSocialAuth(provider: 'google' | 'linkedin'): void {
     const returnUrl = this.getReturnUrl();
+    const effectiveLang = this.selectedLang || 'en';
+    const localizedReturnUrl = this.localizeNextJsUrl(returnUrl, effectiveLang);
     
     // Store return URL in cookie
-    this.setReturnUrlCookie(returnUrl);
+    this.setReturnUrlCookie(localizedReturnUrl);
+    // Store preferred language in cookie for Next.js middleware
+    this.cookieService.setPreferredLanguage(effectiveLang);
     
     const authMethod = provider === 'google' 
       ? this.authService.getGoogleAuthRedirectUrl()
@@ -215,22 +221,26 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
 
   private redirectToMainApp(token: string): void {
     const returnUrl = this.getReturnUrl();
+    const effectiveLang = this.selectedLang || 'en';
+    const localizedReturnUrl = this.localizeNextJsUrl(returnUrl, effectiveLang);
     
     console.log('Redirecting to Next.js with token:', token.substring(0, 20) + '...', 'and returnUrl:', returnUrl);
     
     // Store token in cookie for Next.js to read (cross-domain)
-    this.setTokenCookie(token);
+    this.cookieService.setAuthCookie('token', token);
     // Also store return URL in cookie (for consistency with social auth)
-    if (returnUrl) {
-      this.setReturnUrlCookie(returnUrl);
+    if (localizedReturnUrl) {
+      this.setReturnUrlCookie(localizedReturnUrl);
     }
+    // Ensure preferred language is stored for middleware-based locale detection
+    this.cookieService.setPreferredLanguage(effectiveLang);
 
     // Build the redirect URL WITHOUT token (cookie-based handoff)
-    let redirectUrl = `${environment.mainAppUrl}/${this.selectedLang || 'en'}/callback`;
+    let redirectUrl = `${environment.mainAppUrl}/${effectiveLang}/callback`;
     
     // Add return URL as query parameter if it exists
-    if (returnUrl && returnUrl !== '/') {
-      redirectUrl += `?returnUrl=${encodeURIComponent(returnUrl)}`;
+    if (localizedReturnUrl && localizedReturnUrl !== '/') {
+      redirectUrl += `?returnUrl=${encodeURIComponent(localizedReturnUrl)}`;
     }
     
     console.log('Final redirect URL:', redirectUrl);
@@ -264,28 +274,41 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     document.cookie = cookieSettings.join('; ');
   }
 
-  private setTokenCookie(token: string): void {
-    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    
-    let cookieSettings;
-    if (isLocalhost) {
-      cookieSettings = [
-        `token=${encodeURIComponent(token)}`,
-        `Path=/`,
-        `Max-Age=${60 * 60 * 24 * 7}`, // 7 days
-        `SameSite=Lax`
-      ];
-    } else {
-      cookieSettings = [
-        `token=${encodeURIComponent(token)}`,
-        `Path=/`,
-        `Max-Age=${60 * 60 * 24 * 7}`, // 7 days
-        `SameSite=None`,
-        `Domain=.foresighta.co`,
-        `Secure`
-      ];
+
+  private localizeNextJsUrl(url: string, lang: string): string {
+    if (!url) {
+      return url;
     }
-    
-    document.cookie = cookieSettings.join('; ');
+    try {
+      // Handle absolute URLs
+      const absolute = new URL(url, window.location.origin);
+      const isNextHost = absolute.hostname === 'localhost' && absolute.port === '3000';
+      const isProdNextHost = absolute.hostname.endsWith('insightabusiness.com') && absolute.hostname !== 'app.foresighta.co';
+      if (isNextHost || isProdNextHost) {
+        const adjustedPath = this.ensureLocalePrefix(absolute.pathname, lang);
+        absolute.pathname = adjustedPath;
+        return absolute.toString();
+      }
+      // If not targeting Next.js host, return as is
+      return url;
+    } catch {
+      // Handle relative paths
+      if (url.startsWith('/')) {
+        return this.ensureLocalePrefix(url, lang);
+      }
+      return url;
+    }
+  }
+
+  private ensureLocalePrefix(pathname: string, lang: string): string {
+    const locales = ['en', 'ar'];
+    const hasLocale = locales.some(l => pathname === `/${l}` || pathname.startsWith(`/${l}/`));
+    if (hasLocale) {
+      // Replace existing locale with the desired one
+      const withoutLocale = pathname.replace(/^\/(en|ar)(\/|$)/, '/');
+      return `/${lang}${withoutLocale === '/' ? '' : withoutLocale}`;
+    }
+    // Add locale if missing
+    return `/${lang}${pathname.startsWith('/') ? '' : '/'}${pathname}`;
   }
 }

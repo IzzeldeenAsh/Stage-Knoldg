@@ -93,9 +93,17 @@
                   <h6 class="mb-1 fw-bold text-dark">{{ order.orderable.meeting_booking.title }}</h6>
                   <p class="text-muted fs-7 mb-0">{{ order.orderable.meeting_booking.description }}</p>
                 </div>
-                <span class="badge text-capitalize" [ngClass]="utils.getMeetingStatusBadgeClass(order.orderable.meeting_booking.status)">
-                  {{ utils.getMeetingStatusDisplay(order.orderable.meeting_booking.status, lang) }}
-                </span>
+                <div>
+                  <span class="badge"
+                        [ngClass]="{
+                          'badge-light-success': order.orderable.meeting_booking.status === 'approved',
+                          'badge-light-warning': order.orderable.meeting_booking.status === 'pending',
+                          'badge-light-danger': order.orderable.meeting_booking.status === 'rejected',
+                          'badge-light-info': order.orderable.meeting_booking.status !== 'approved' && order.orderable.meeting_booking.status !== 'pending' && order.orderable.meeting_booking.status !== 'rejected'
+                        }">
+                    {{ order.orderable.meeting_booking.status_name }}
+                  </span>
+                </div>
               </div>
 
               <div class="row g-3">

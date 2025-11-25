@@ -4,6 +4,7 @@ import { filter } from 'rxjs/operators';
 
 import { FontService } from 'src/app/_fake/services/font-change/font.service';
 import { TranslationService } from 'src/app/modules/i18n/translation.service';
+import { CookieService } from 'src/app/utils/cookie.service';
 
 @Component({
   selector: 'app-lang-switch-button',
@@ -18,8 +19,9 @@ export class LangSwitchButtonComponent implements OnInit {
   
   constructor(
     private translationService: TranslationService,
-    private fontService: FontService, // Inject the FontService
-    private router: Router
+    private fontService: FontService,
+    private router: Router,
+    private cookieService: CookieService
   ) {}
 
   ngOnInit(): void {
@@ -51,30 +53,16 @@ export class LangSwitchButtonComponent implements OnInit {
   switchLanguage(): void {
     // Toggle between English and Arabic
     const newLang = this.selectedLang === 'en' ? 'ar' : 'en';
-    
+
     // Change the language in the app
     this.selectedLang = newLang;
     this.translationService.setLanguage(newLang);
-    
+
     // Update font based on the new language
     this.fontService.updateFont(this.selectedLang);
 
-    // Set the language preference in a cookie that works across subdomains
-    // This matches the cookie set in the NextJS app
-    const isProduction = location.hostname.includes('insightabusiness.com');
-    const cookieParts = [
-      `preferred_language=${newLang}`,
-      `Path=/`,                       // send on all paths
-      `Max-Age=${60 * 60 * 24 * 365}`,// one year
-      `SameSite=Lax`                  // prevent CSRF, still send on top-level nav
-    ];
-    
-    if (isProduction) {
-      cookieParts.push(`Domain=.foresighta.co`); // leading dot = include subdomains
-      cookieParts.push(`Secure`);                // HTTPS only in production
-    }
-    
-    document.cookie = cookieParts.join('; ');
+    // Set the language preference using centralized cookie service
+    this.cookieService.setPreferredLanguage(newLang);
 
     // Reload the page to apply language changes
     window.location.reload();

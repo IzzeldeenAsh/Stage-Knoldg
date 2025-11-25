@@ -24,7 +24,7 @@
           <i class="ki-outline ki-dollar text-gray-700 fs-2tx me-4"></i>
           <div class="flex-grow-1">
             <div class="d-flex align-items-center justify-content-between gap-5">
-              <span class="fw-bold fs-3x lh-1 ls-n2 " style="color:#4f28ed; padding-top: 20px;">{{ walletBalance.toFixed(2) | currency}}</span>
+              <span class="fw-bold fs-3x lh-1 ls-n2 " [ngClass]="lang === 'ar' ? 'gradient-text-rtl' : 'gradient-text'" style=" padding-top: 20px;">{{ walletBalance.toFixed(2) | currency}}</span>
             </div>
             <div class="m-0">
               <span class="fw-semibold fs-6 text-gray-500">{{ getTranslation('currentWalletBalance') }}</span>

@@ -27,7 +27,8 @@ export class Step1Component extends BaseComponent implements OnInit, OnChanges {
       iconName: 'data',
       iconClass: 'text-primary',
       icon: 'fas fa-database text-primary mx-2 fs-6',
-      description: 'DATA_DESCRIPTION'
+      description: 'DATA_DESCRIPTION',
+      tooltip: 'DATA_TOOLTIP'
     },
     {
       id: 'kt_create_account_form_type_insights',
@@ -36,7 +37,8 @@ export class Step1Component extends BaseComponent implements OnInit, OnChanges {
       iconName: 'chart-line',
       iconClass: 'text-success',
       icon: 'fas fa-lightbulb text-success mx-2 fs-6',
-      description: 'INSIGHTS_DESCRIPTION'
+      description: 'STATISTICS_DESCRIPTION',
+      tooltip: 'STATISTICS_TOOLTIP'
     },
     {
       id: 'kt_create_account_form_type_reports',
@@ -45,7 +47,8 @@ export class Step1Component extends BaseComponent implements OnInit, OnChanges {
       iconName: 'document',
       iconClass: 'text-info',
       icon: 'fas fa-file-alt text-info mx-2 fs-6',
-      description: 'REPORTS_DESCRIPTION'
+      description: 'REPORTS_DESCRIPTION',
+      tooltip: 'REPORTS_TOOLTIP'
     },
     {
       id: 'kt_create_account_form_type_manual',
@@ -54,7 +57,8 @@ export class Step1Component extends BaseComponent implements OnInit, OnChanges {
       iconName: 'book',
       iconClass: 'text-warning',
       icon: 'fas fa-book text-warning mx-2 fs-6',
-      description: 'MANUAL_DESCRIPTION'
+      description: 'MANUAL_DESCRIPTION',
+      tooltip: 'MANUAL_TOOLTIP'
     },
     {
       id: 'kt_create_account_form_type_course',
@@ -63,7 +67,8 @@ export class Step1Component extends BaseComponent implements OnInit, OnChanges {
       iconName: 'teacher',
       iconClass: 'text-success',
       icon: 'fas fa-certificate text-success mx-2 fs-6',
-      description: 'COURSE_DESCRIPTION'
+      description: 'COURSE_DESCRIPTION',
+      tooltip: 'COURSE_TOOLTIP'
     },
     {
       id: 'kt_create_account_form_type_media',
@@ -74,9 +79,12 @@ export class Step1Component extends BaseComponent implements OnInit, OnChanges {
       icon: 'fas fa-play-circle text-danger mx-2 fs-6',
       description: 'MEDIA_DESCRIPTION',
       disabled: true,
-      tooltip: 'Coming Soon'
+      tooltip: 'MEDIA_TOOLTIP'
     }
   ];
+
+  tooltipContent: string | null = null;
+  isRtl = false;
 
   constructor(injector: Injector, private fb: FormBuilder, private translationService: TranslationService) {
     super(injector);
@@ -86,8 +94,9 @@ export class Step1Component extends BaseComponent implements OnInit, OnChanges {
     this.initForm();
     this.updateParentModel({}, this.checkForm());
 
+    this.isRtl = this.translationService.getSelectedLanguage() === 'ar';
     const langChangeSub = this.translationService.onLanguageChange().subscribe(lang => {
-      // Perform any actions needed when the language changes
+      this.isRtl = lang === 'ar';
     });
     this.unsubscribe.push(langChangeSub);
   }
