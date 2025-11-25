@@ -418,17 +418,17 @@
               {{ "INSIGHTER.READ_LATER.POSTED_ABOUT" | translate }}
               {{ getTimeAgo(item.published_at) }}
             </div>
-            <div class="paid-badge">
+            <div class="price-badge">
               <span
-                class="fw-bold fs-8 px-2 py-1 rounded-1"
+                class="fw-bold fs-5 fs-8 px-2 py-1 rounded-1"
                 [ngClass]="{
                   'badge badge-light-success': !isPaid(item.total_price),
-                  'badge badge-light-warning': isPaid(item.total_price)
+                  'badge badge-light-warning text-orange': isPaid(item.total_price)
                 }"
               >
                 {{
                   isPaid(item.total_price)
-                    ? ("COMMON.PAID" | translate)
+                    ? '$' + formatPrice(item.total_price)
                     : ("COMMON.FREE" | translate)
                 }}
               </span>

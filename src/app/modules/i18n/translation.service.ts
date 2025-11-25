@@ -96,7 +96,7 @@ export class TranslationService {
       html.setAttribute('dir', 'rtl');
       html.setAttribute('lang', 'ar');
       this.loadArabicFont();
-      html.style.fontFamily = '"Tajawal", sans-serif';
+      html.style.fontFamily = '"Almarai", sans-serif';
     } else {
       html.setAttribute('dir', 'ltr');
       html.setAttribute('lang', 'en');
@@ -110,7 +110,7 @@ export class TranslationService {
       const link = document.createElement('link');
       link.id = 'arabicFontLink';
       link.rel = 'stylesheet';
-      link.href = 'https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900&display=swap';
+      link.href = 'https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap';
       document.head.appendChild(link);
     }
   }

@@ -34,6 +34,7 @@ import { Step6Component } from './add-knowledge/steps/step6/step6.component';
 import { CalendarModule } from 'primeng/calendar';
 import { TooltipModule } from 'primeng/tooltip';
 import { FormatTooltipPipe } from 'src/app/shared/tooltip-module/format-tooltip.pipe';
+import { TableModule } from 'primeng/table';
 @NgModule({
   declarations: [
     AddKnowledgeComponent,
@@ -74,7 +75,8 @@ import { FormatTooltipPipe } from 'src/app/shared/tooltip-module/format-tooltip.
     SelectButtonModule,
     ToastModule,
     CalendarModule,
-    TooltipModule
+    TooltipModule,
+    TableModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]  // Add this line
 })
