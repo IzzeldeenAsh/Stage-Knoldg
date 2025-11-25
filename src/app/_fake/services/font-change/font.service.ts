@@ -11,7 +11,7 @@ export class FontService {
   }
 
   updateFont(lang: string): void {
-    const fontFamily = lang === 'ar' ? 'Tajawal, sans-serif' : 'Inter, sans-serif';
+    const fontFamily = lang === 'ar' ? 'Almarai, sans-serif' : 'Inter, sans-serif';
     this.renderer.setStyle(document.body, 'font-family', fontFamily);
   }
 }

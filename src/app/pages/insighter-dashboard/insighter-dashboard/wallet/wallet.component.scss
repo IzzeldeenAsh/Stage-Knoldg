@@ -13,7 +13,20 @@
   }
 }
 
+// Gradient text utilities to replace inline ngStyle
+.gradient-text {
+  background: linear-gradient(135deg, #0563eb 0%, #06a2da 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 
+.gradient-text-rtl {
+  background: linear-gradient(267deg, #0563eb 0%, #06a2da 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 .bg-light {
   background-color: #f8f9fa !important;
 }
