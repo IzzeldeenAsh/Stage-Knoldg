@@ -1086,11 +1086,66 @@ Your wealth of knowledge is valued and many are eager to learn from it.
   REPORTS: "Reports",
   "SEARCH_ECONOMIC_BLOCK": "Economic Blocks",
   MANUAL: "Manuals",
-  DATA_DESCRIPTION: "Structured datasets, statistics, and digital information for analysis and informed decision-making.",
+  DATA_DESCRIPTION: "Raw structured information (CSV, Excel, logs). Upload raw, non‑interpreted content.",
   INSIGHTS_DESCRIPTION: "Analytical content that delivers deep understanding of market trends, opportunities, and risks.",
-  REPORTS_DESCRIPTION: "Comprehensive documents featuring in-depth studies, practical recommendations, and actionable conclusions.",
-  MANUAL_DESCRIPTION:"Instructional or procedural content designed to guide the implementation of operational procedures.",
+  STATISTICS_DESCRIPTION: "Processed insights and summarized results. Upload analyzed, insight‑ready content.",
+  REPORTS_DESCRIPTION: "Comprehensive expert documents. Upload full structured documents.",
+  MANUAL_DESCRIPTION:"Step‑by‑step operational guidance. Upload content guiding users.",
   KNOWLEDGE_TYPE: "Knowledge Type",
+  DATA_TOOLTIP: `
+  <div class="mb-2">Upload raw, non‑interpreted content</div>
+  <ul class="mb-0" style="padding-inline-start: 1.25rem;">
+    <li>Structured datasets</li>
+    <li>Machine‑readable files</li>
+    <li>Unprocessed entries</li>
+    <li>Logs or raw inputs</li>
+  </ul>
+  `,
+  REPORTS_TOOLTIP: `
+  <div class="mb-2">Upload full structured documents</div>
+  <ul class="mb-0" style="padding-inline-start: 1.25rem;">
+    <li>Research papers</li>
+    <li>Market / industry studies</li>
+    <li>Strategic evaluations</li>
+    <li>In‑depth analysis docs</li>
+  </ul>
+  `,
+  STATISTICS_TOOLTIP: `
+  <div class="mb-2">Upload analyzed, insight‑ready content</div>
+  <ul class="mb-0" style="padding-inline-start: 1.25rem;">
+    <li>Aggregated findings</li>
+    <li>Trend charts</li>
+    <li>Forecasts & indicators</li>
+    <li>Interpreted visuals</li>
+  </ul>
+  `,
+  MANUAL_TOOLTIP: `
+  <div class="mb-2">Upload content guiding users</div>
+  <ul class="mb-0" style="padding-inline-start: 1.25rem;">
+    <li>Procedural steps</li>
+    <li>Technical guides</li>
+    <li>SOPs</li>
+    <li>Task instructions</li>
+  </ul>
+  `,
+  COURSE_TOOLTIP: `
+  <div class="mb-2">Upload training or learning materials</div>
+  <ul class="mb-0" style="padding-inline-start: 1.25rem;">
+    <li>Course modules</li>
+    <li>Training slides</li>
+    <li>Learning paths</li>
+    <li>Skill‑development content</li>
+  </ul>
+  `,
+  MEDIA_TOOLTIP: `
+  <div class="mb-2">Media uploads coming soon</div>
+  <ul class="mb-0" style="padding-inline-start: 1.25rem;">
+    <li>Recorded videos</li>
+    <li>Audio briefings</li>
+    <li>Presentations</li>
+    <li>Multimedia elements</li>
+  </ul>
+  `,
   CHOOSE_FILE: "Choose File",
   KNOWLEDGE_INFO: "Knowledge Info",
   GENERATE_ABSTRACT: "Insight Summary",

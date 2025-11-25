@@ -385,3 +385,40 @@ textarea {
 .animated-abstract + editor {
   margin-top: 15px;
 }
+
+/* ---- Table of Content (chapters) UI refinements ---- */
+.toc-table .p-datatable-tbody > tr > td {
+  padding: 8px 12px !important;
+  vertical-align: middle;
+}
+
+.toc-table .p-datatable-thead > tr > th {
+  padding: 10px 12px !important;
+  vertical-align: middle;
+}
+
+.toc-arrows {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-toc-arrow {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+}
+
+.btn-toc-arrow i {
+  font-size: 0.9rem;
+  color: #3F4254; /* gray-800 for visibility */
+}
+
+.btn-toc-arrow:disabled i {
+  color: #B5B5C3; /* muted gray when disabled */
+}
