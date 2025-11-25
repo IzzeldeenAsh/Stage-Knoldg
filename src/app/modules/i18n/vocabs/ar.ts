@@ -204,7 +204,7 @@ INSIGHTER_REQUESTS: {
       "FILTERED_MESSAGE": "لا توجد عناصر معرفة تطابق معايير التصفية الحالية. حاول تعديل عوامل التصفية أو عرض كل المعرفة."
     }
   },
-    PUBLISHED_KNOWLEDGE_DASHBOARD: "المعارف المشنورات",
+    PUBLISHED_KNOWLEDGE_DASHBOARD: "المشنورات",
     TOTAL_DASHBOARD: "المجموع",
     KNOWLEDGE_DOCUMENTS_INFO:'ملخص المستند',
     DESCRIBE_KNOWLEDGE_AND_DOCUMENTS: 'قدم وصفًا للمعرفة والمستندات المرتبطة بها.',
