@@ -47,6 +47,7 @@
           <img *ngIf="order.user.profile_photo_url"
                [src]="order.user.profile_photo_url"
                [alt]="order.user.name"
+               style="object-fit: cover; object-position: top;"
                class="symbol-label rounded-circle"
                   style="object-fit: cover; object-position: top;">
           <div *ngIf="!order.user.profile_photo_url"
