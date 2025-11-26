@@ -139,7 +139,7 @@ export class CallbackComponent extends BaseComponent implements OnInit, OnDestro
     const returnUrl = this.getReturnUrlFromCookie();
     
     // Build the redirect URL
-    let redirectUrl = `https://insightabusiness.com/${this.lang}/callback`;
+    let redirectUrl = `http://localhost:3000/${this.lang}/callback`;
     
     if (this.token) {
       redirectUrl += `/${this.token}`;
@@ -207,7 +207,7 @@ export class CallbackComponent extends BaseComponent implements OnInit, OnDestro
           'Accept-Language': this.lang || 'en',
         });
         
-        return this.http.post('https://api.insightabusiness.com/api/account/timezone/set', 
+        return this.http.post('https://api.foresighta.co/api/account/timezone/set', 
           { timezone: userTimezone }, 
           { headers }
         );

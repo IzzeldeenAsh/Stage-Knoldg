@@ -122,10 +122,13 @@
           </div>
 
                 <!-- Three Column Layout -->
-                <div class="row" style="min-height: 500px;">
-    
+                <div class="row" style="min-height: 500px;" [attr.dir]="lang === 'ar' ? 'rtl' : 'ltr'">
+
                   <!-- Column 1: Knowledge Items -->
-                  <div class="col-lg-4 border-end" (click)="onKnowledgeColumnClick()">
+                  <div class="col-lg-4"
+                       [class.border-end]="lang !== 'ar'"
+                       [class.border-start]="lang === 'ar'"
+                       (click)="onKnowledgeColumnClick()">
                     <div class="d-flex align-items-center gap-2 mb-4 bg-light-gray px-4 py-4">
                       <h5 class="mb-0 fw-bold text-dark">{{ 'MY_DOWNLOADS.KNOWLEDGE_ITEMS' | translate }}</h5>
                       <span class="badge badge-light-info">{{ currentDisplayTotalItems() }}</span>
@@ -303,7 +306,9 @@
                   </div>
     
                   <!-- Column 2: Documents -->
-                  <div class="col-lg-4 border-end">
+                  <div class="col-lg-4"
+                       [class.border-end]="lang !== 'ar'"
+                       [class.border-start]="lang === 'ar'">
                     <div class="d-flex align-items-center mb-4 bg-light-gray p-4">
                       <h5 class="mb-0 fw-bold text-dark">{{ 'MY_DOWNLOADS.DOCUMENTS' | translate }}</h5>
                       @if (selectedKnowledge()) {
