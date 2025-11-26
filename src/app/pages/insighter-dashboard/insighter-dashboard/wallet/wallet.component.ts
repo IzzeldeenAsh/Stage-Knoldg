@@ -322,6 +322,10 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
     });
   }
 
+  getBackgroundImage(url: string): string {
+    return `url("${encodeURI(url)}")`;
+  }
+
   getLatestTransactionAmount(): number {
     if (this.transactions.length > 0) {
       return this.transactions[0].amount;
@@ -407,7 +411,7 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
   // Profile redirect method
   redirectToProfile(user: User | undefined): void {
     if (user?.uuid) {
-      const profileUrl = `http://localhost:3000/${this.lang}/profile/${user.uuid}?entity=insighter`;
+      const profileUrl = `https://insightabusiness.com/${this.lang}/profile/${user.uuid}?entity=insighter`;
       window.open(profileUrl, '_blank');
     }
   }

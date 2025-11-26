@@ -232,39 +232,40 @@
 
       <!-- User Information -->
       <div class="col-12 mb-5">
-        <div class="bg-light rounded p-4 mb-4"  *ngIf="selectedTransaction.order?.user">
+        <div class="bg-light rounded p-4 mb-4"  *ngIf="selectedTransaction?.order?.user as user">
           <h5 class="mb-4">{{ selectedTransaction.transaction === 'deposit' ? 'Client Information' : 'Insighter Information' }}</h5>
           <div class="d-flex align-items-center">
           <div class="symbol symbol-50px me-3">
             <div class="symbol-label cursor-pointer"
-            style="object-fit: cover; object-position: top;"
-                 [style.background-image]="selectedTransaction.order?.user?.profile_photo_url ? 'url(' + selectedTransaction.order?.user?.profile_photo_url + ')' : 'none'"
-                 [style.background-color]="!selectedTransaction.order?.user?.profile_photo_url ? '#4f28ed' : 'transparent'"
-                 (click)="redirectToProfile(selectedTransaction.order?.user)"
+                 [style.background-image]="user.profile_photo_url ? getBackgroundImage(user.profile_photo_url) : 'none'"
+                 [style.background-size]="'cover'"
+                 [style.background-position]="'top center'"
+                 [style.background-color]="!user.profile_photo_url ? '#4f28ed' : 'transparent'"
+                 (click)="redirectToProfile(user)"
                  [title]="getTranslation('viewProfile')">
-              <span *ngIf="!selectedTransaction.order?.user?.profile_photo_url"
+              <span *ngIf="!user.profile_photo_url"
                     class="text-white fw-bold fs-4">
-                {{ getUserInitials(selectedTransaction.order?.user) }}
+                {{ getUserInitials(user) }}
               </span>
             </div>
           </div>
           <div class="flex-grow-1" >
             <div class="mb-1" >
               <h6 class="mb-0 cursor-pointer text-info"
-                  (click)="redirectToProfile(selectedTransaction.order?.user)"
+                  (click)="redirectToProfile(user)"
                   [title]="getTranslation('viewProfile')">
-                {{ selectedTransaction.order?.user?.name }}
+                {{ user.name }}
               </h6>
             </div>
-            <div class="text-muted" *ngIf="selectedTransaction.order?.user?.email">
-              <a [href]="'mailto:' + selectedTransaction.order?.user?.email"
+            <div class="text-muted" *ngIf="user.email">
+              <a [href]="'mailto:' + user.email"
                  class="text-info text-decoration-none fw-semibold d-flex align-items-center"
                  [title]="getTranslation('sendEmail')">
                 <i class="ki-outline ki-sms fs-5 me-2"></i>
-                {{ selectedTransaction.order?.user?.email }}
+                {{ user.email }}
               </a>
             </div>
-            <div class="text-muted" *ngIf="!selectedTransaction.order?.user?.email">
+            <div class="text-muted" *ngIf="!user.email">
               <span class="text-muted fs-7">{{ getTranslation('emailNotAvailable') }}</span>
             </div>
           </div>
