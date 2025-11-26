@@ -322,6 +322,10 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
     });
   }
 
+  getBackgroundImage(url: string): string {
+    return `url("${encodeURI(url)}")`;
+  }
+
   getLatestTransactionAmount(): number {
     if (this.transactions.length > 0) {
       return this.transactions[0].amount;
