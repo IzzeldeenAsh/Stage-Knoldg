@@ -183,7 +183,7 @@ export class CallbackComponent extends BaseComponent implements OnInit, OnDestro
         'Path=/',
         'Max-Age=-1',
         'SameSite=None',
-        'Domain=.foresighta.co',
+        'Domain=.insightabusiness.com',
         'Secure'
       ];
     }
@@ -207,7 +207,7 @@ export class CallbackComponent extends BaseComponent implements OnInit, OnDestro
           'Accept-Language': this.lang || 'en',
         });
         
-        return this.http.post('https://api.foresighta.co/api/account/timezone/set', 
+        return this.http.post('https://api.insightabusiness.com/api/account/timezone/set', 
           { timezone: userTimezone }, 
           { headers }
         );
