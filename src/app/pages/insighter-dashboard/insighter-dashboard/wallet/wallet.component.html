@@ -123,7 +123,7 @@
             <!-- Operation Type Column -->
             <td [attr.data-label]="getTranslation('type')" [style.text-align]="lang === 'ar' ? 'right' : 'left'">
               <span class="badge badge-light-info fs-base">
-                {{ transaction.type | titlecase }}
+                {{ formatTransactionType(transaction.type) }}
               </span>
             </td>
 

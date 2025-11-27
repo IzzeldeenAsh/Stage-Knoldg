@@ -208,6 +208,16 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
   formatService(service: string): string {
     if (!service) return '';
 
+    // Handle Arabic text that might come from API
+    if (this.lang === 'ar') {
+      if (service.includes('مبيعات المعرفة') || service === 'مبيعات المعرفة') {
+        return 'مبيعات المستندات';
+      }
+      if (service.includes('دخل من المعرفة') || service === 'دخل من المعرفة') {
+        return 'مبيعات المستندات';
+      }
+    }
+
     // Handle special cases for meeting-related transactions
     if (service === 'book_meeting') {
       return this.lang === 'ar' ? 'حجز اجتماع' : 'Book Meeting';
@@ -216,14 +226,66 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
       return this.lang === 'ar' ? 'دخل من اجتماع' : 'Meeting Income';
     }
     if (service === 'income_knowledge') {
-      return this.lang === 'ar' ? 'دخل من المعرفة' : 'Knowledge Income';
+      return this.lang === 'ar' ? 'مبيعات المستندات' : 'Knowledge Income';
     }
     if (service === 'purchase_knowledge') {
       return this.lang === 'ar' ? 'شراء المعرفة' : 'Knowledge Purchase';
     }
 
+    // Check if service contains knowledge sales keywords
+    const normalizedService = service.toLowerCase().trim();
+    if (normalizedService.includes('knowledge') && (normalizedService.includes('sales') || normalizedService.includes('income'))) {
+      return this.lang === 'ar' ? 'مبيعات المستندات' : (normalizedService.includes('sales') ? 'Knowledge Sales' : 'Knowledge Income');
+    }
+
     // Default formatting for other services
     return service
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
+
+  formatTransactionType(type: string): string {
+    if (!type) return '';
+
+    // Handle Arabic text that might come from API
+    if (this.lang === 'ar') {
+      if (type.includes('مبيعات المعرفة') || type === 'مبيعات المعرفة') {
+        return 'مبيعات المستندات';
+      }
+    }
+
+    // Handle English/Latin text
+    const normalizedType = type.toLowerCase().trim();
+    
+    const typeTranslations: { [key: string]: { en: string; ar: string } } = {
+      'book_meeting': { en: 'Book Meeting', ar: 'حجز اجتماع' },
+      'income_meeting': { en: 'Meeting Income', ar: 'دخل اجتماع' },
+      'income_knowledge': { en: 'Knowledge Income', ar: 'مبيعات المستندات' },
+      'knowledge_sales': { en: 'Knowledge Sales', ar: 'مبيعات المستندات' },
+      'purchase_knowledge': { en: 'Knowledge Purchase', ar: 'شراء معرفة' },
+      'wallet_topup': { en: 'Wallet Top-up', ar: 'شحن المحفظة' },
+      'refund': { en: 'Refund', ar: 'استرداد' },
+      'commission': { en: 'Commission', ar: 'عمولة' },
+      'bonus': { en: 'Bonus', ar: 'مكافأة' }
+    };
+
+    // Check for exact match first
+    const translation = typeTranslations[normalizedType];
+    if (translation) {
+      return this.lang === 'ar' ? translation.ar : translation.en;
+    }
+
+    // Check if type contains keywords
+    if (normalizedType.includes('knowledge') && normalizedType.includes('sales')) {
+      return this.lang === 'ar' ? 'مبيعات المستندات' : 'Knowledge Sales';
+    }
+    if (normalizedType.includes('knowledge') && normalizedType.includes('income')) {
+      return this.lang === 'ar' ? 'مبيعات المستندات' : 'Knowledge Income';
+    }
+
+    // Default formatting for unknown types
+    return type
       .split('_')
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
@@ -479,7 +541,7 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
 
   getWalletSubtitle(): string {
     if (this.lang === 'ar') {
-      return 'اعرض رصيدك الحالي وتاريخ المعاملات المالية';
+      return 'عرض لرصيدك الحالي وتاريخ المعاملات المالية';
     }
     return 'View your current balance and transaction history';
   }

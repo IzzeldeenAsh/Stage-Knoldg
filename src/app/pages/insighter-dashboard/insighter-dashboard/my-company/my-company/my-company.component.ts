@@ -987,7 +987,7 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
 
     availableTypes.forEach(type => {
       const color = this.knowledgeTypeColors[type as keyof typeof this.knowledgeTypeColors] || '#999';
-      const formattedLabel = type.charAt(0).toUpperCase() + type.slice(1);
+      const formattedLabel = this.getKnowledgeTypeTranslation(type);
       const data = insighters.map((ins, index) => {
         const types = ins.types || {};
         const value = Number((types as any)[type] ?? 0);
@@ -1428,6 +1428,30 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
     return 0;
   }
 
+  // Get translated label for knowledge type
+  getKnowledgeTypeTranslation(type: string): string {
+    // Normalize the type by converting to lowercase and replacing hyphens/underscores
+    const normalizedType = type.toLowerCase().replace(/[-_]/g, '_');
+    
+    const translationMap: { [key: string]: string } = {
+      'report': 'KNOWLEDGE_TYPES.REPORTS',
+      'data': 'KNOWLEDGE_TYPES.DATA',
+      'statistic': 'KNOWLEDGE_TYPES.STATISTICS',
+      'manual': 'KNOWLEDGE_TYPES.MANUALS',
+      'course': 'KNOWLEDGE_TYPES.COURSES',
+      'business_courses': 'KNOWLEDGE_TYPES.BUSINESS_COURSES',
+      'media': 'KNOWLEDGE_TYPES.MEDIA'
+    };
+
+    const translationKey = translationMap[normalizedType];
+    if (translationKey) {
+      return this.translate.getTranslation(translationKey);
+    }
+
+    // Fallback to capitalized type name if no translation found
+    return type.charAt(0).toUpperCase() + type.slice(1);
+  }
+
   // Localization method for statistics cards and other components
   getTranslation(key: string): string {
     const translations: { [key: string]: { en: string; ar: string } } = {
@@ -1440,11 +1464,11 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
       'loading': { en: 'Loading', ar: 'جاري التحميل' },
 
       // Main titles
-      'title': { en: 'Manage company employees', ar: 'إدارة موظفي الشركة' },
+      'title': { en: 'Manage company employees', ar: 'إدارة الفريق' },
       'subtitle': { en: 'View and manage your team members', ar: 'عرض وإدارة أعضاء فريقك' },
 
       // Actions
-      'addEmployee': { en: 'Add Employee', ar: 'إضافة موظف' },
+      'addEmployee': { en: 'Add Employee', ar: 'إضافة عضو فريق' },
       'activate': { en: 'Activate', ar: 'تفعيل' },
       'deactivate': { en: 'Deactivate', ar: 'إلغاء التفعيل' },
       'delete': { en: 'Delete', ar: 'حذف' },
@@ -1490,7 +1514,7 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
 
       // Statistics
       'total': { en: 'Total', ar: 'المجموع' },
-      'publishedKnowledge': { en: 'Published Knowledge', ar: 'المنشورات المنشورة' },
+      'publishedKnowledge': { en: 'Published Knowledge', ar: 'المنشورات' },
       'publishedKnowledgeByInsighter': { en: 'Knowledge by Insighter', ar: "التصنيف حسب الإنسايتر" },
       'knowledgeOrders': { en: 'Knowledge Orders', ar: 'طلبات المعرفة' },
       'meetingBookings': { en: 'Meeting Bookings', ar: 'حجوزات الاجتماعات' },
