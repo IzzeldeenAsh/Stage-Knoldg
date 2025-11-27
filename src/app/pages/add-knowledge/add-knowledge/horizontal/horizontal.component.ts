@@ -286,23 +286,7 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
         return; // Don't advance to next step
       }
       
-      // Check for duplicate titles
-      const titles = new Set<string>();
-      const duplicateTitles = docs.filter(doc => {
-        const title = doc.file_name.toLowerCase();
-        if (titles.has(title)) return true;
-        titles.add(title);
-        return false;
-      });
-      
-      if (duplicateTitles.length > 0) {
-        if( this.lang === 'ar' ) {
-          this.showWarn('', 'يرجى إدخال عنوان مختلف لكل مستند');
-         } else {
-          this.showWarn('', 'All document titles must be unique');
-         }
-        return; // Don't advance to next step
-      }
+      // Removed duplicate title validation per request
       
       // Check for upload errors
       if (this.hasAnyDocumentUploadErrors()) {

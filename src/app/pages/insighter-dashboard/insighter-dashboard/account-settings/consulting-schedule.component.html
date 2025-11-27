@@ -68,11 +68,14 @@
                       formControlName="rate" 
                       placeholder="Rate"
                       max="999"
-                      min="0"
+                      min="10"
                       step="10"
                       class="rate-field no-validation-border"
                       (input)="limitRateValueTo999(dayIndex, timeIndex, $event)"
                     />
+                  </div>
+                  <div class="rate-note">
+                    <small class="text-muted">( min 10$ )</small>
                   </div>
                   
                   <button 
@@ -109,6 +112,13 @@
                 </div>
                 
                 <!-- Validation Error Message for Rate - New Row -->
+                <div *ngIf="timeSlot.get('rate')?.errors?.['min']" class="validation-error-row">
+                  <div class="validation-error">
+                    <small class="error-message" style="color: #f44336;">
+                      {{ lang === 'ar' ? 'الحد الأدنى للسعر هو 10$' : 'Minimum price is $10' }}
+                    </small>
+                  </div>
+                </div>
               
               </div>
               
