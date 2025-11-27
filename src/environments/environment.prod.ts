@@ -11,14 +11,14 @@ export const environment = {
   
   // API configuration for sharing authentication between domains
   apiBaseUrl: 'https://api.foresighta.co/api',
-  appDomain: '.insightabusiness.com',
+  appDomain: '.foresighta.co',
   mainAppUrl: 'http://localhost:3000',
   subAppUrl: 'http://localhost:4200',
   
   // Cookie configuration
   cookieOptions: {
     secure: true, // Require HTTPS in production
-    domain: '.insightabusiness.com',
+    domain: '.foresighta.co',
     path: '/',
     sameSite: 'Lax'
   },
