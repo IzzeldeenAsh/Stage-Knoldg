@@ -86,7 +86,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
     searchParams.set('search_type', searchType);
     
     // Navigate to the React app's search page
-    const searchUrl = `http://localhost:3000/${this.lang}/home?${searchParams.toString()}`;
+    const searchUrl = `https://insightabusiness.com/${this.lang}/home?${searchParams.toString()}`;
     window.location.href = searchUrl;
   }
   
@@ -226,7 +226,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
   }
 
   getHomeUrl(): string {
-    const url= 'http://localhost:3000/' + this.lang;
+    const url= 'https://insightabusiness.com/' + this.lang;
     return url;
   }
 
@@ -298,7 +298,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
   }
 
   getIndustryUrl(industry: Industry): string {
-    return `http://localhost:3000/${this.lang}/industry/${industry.id}/${industry.slug}`;
+    return `https://insightabusiness.com/${this.lang}/industry/${industry.id}/${industry.slug}`;
   }
 
   initializeMenu() {
@@ -324,7 +324,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: `http://localhost:3000/${this.lang}/industries/report`
+        routerLink: `https://insightabusiness.com/${this.lang}/industries/report`
       },
       {
         label: this.translate.instant('MENU.INSIGHTS'),
@@ -332,7 +332,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: `http://localhost:3000/${this.lang}/industries/insight`
+        routerLink: `https://insightabusiness.com/${this.lang}/industries/insight`
       },
      
       {
@@ -341,7 +341,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: `http://localhost:3000/${this.lang}/industries/data`
+        routerLink: `https://insightabusiness.com/${this.lang}/industries/data`
       },
       {
         label: this.translate.instant('MENU.MANUAL'),
@@ -349,7 +349,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: `http://localhost:3000/${this.lang}/industries/manual`
+        routerLink: `https://insightabusiness.com/${this.lang}/industries/manual`
       },
       {
         label: this.translate.instant('MENU.COURSES'),
@@ -357,7 +357,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: `http://localhost:3000/${this.lang}/industries/course`
+        routerLink: `https://insightabusiness.com/${this.lang}/industries/course`
       }
     ];
 

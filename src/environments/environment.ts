@@ -12,8 +12,8 @@ export const environment = {
   // API configuration for sharing authentication between domains
   apiBaseUrl: 'https://api.insightabusiness.com/api',
   appDomain: '.insightabusiness.com',
-  mainAppUrl: 'http://localhost:3000',
-  subAppUrl: 'http://localhost:4200',
+  mainAppUrl: 'https://insightabusiness.com',
+  subAppUrl: 'https://app.insightabusiness.com',
   
   // Cookie configuration
   cookieOptions: {
