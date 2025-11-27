@@ -463,7 +463,7 @@ export class MyRequestsComponent extends BaseComponent implements OnInit {
    */
   getRequestsSubtitle(): string {
     if (this.lang === 'ar') {
-      return 'هنا يمكنك متابعة حالة طلباتك على المنصة.';
+      return 'هنا يمكنك متابعة حالة الطلبات الواردة على المنصة.';
     }
 
     return 'Review the status of your platform requests here.';

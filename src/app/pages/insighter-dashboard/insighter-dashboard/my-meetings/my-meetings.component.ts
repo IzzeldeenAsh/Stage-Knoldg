@@ -64,7 +64,7 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
   getMeetingsSubtitle(): string {
     if (this.activeTab === 'client-meetings') {
       return this.lang === 'ar'
-        ? 'راجع وأدر الاجتماعات التي طلبها العملاء.'
+        ? 'إدارة اجتماعات العملاء.'
         : 'Review and manage meetings requested by clients.';
     }
 
