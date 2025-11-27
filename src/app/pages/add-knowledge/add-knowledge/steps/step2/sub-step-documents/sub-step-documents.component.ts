@@ -156,8 +156,8 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
 
   private createDocument(): FormGroup {
     const group = this.fb.group({
-      file_name: ['', [Validators.required, this.uniqueFileNameValidator()]],
-      price: [0, [Validators.required, Validators.min(0)]],
+      file_name: ['', [Validators.required]],
+      price: [0, [Validators.required, Validators.min(10)]],
       isCharity: [false],
       file: [null],
       filePreview: [false],
@@ -177,9 +177,13 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       const priceControl = group.get('price');
       if (isCharity) {
         priceControl?.setValue(0);
+        priceControl?.clearValidators();
         priceControl?.disable();
+        priceControl?.updateValueAndValidity({ emitEvent: false });
       } else {
         priceControl?.enable();
+        priceControl?.setValidators([Validators.required, Validators.min(10)]);
+        priceControl?.updateValueAndValidity({ emitEvent: false });
       }
     });
   
@@ -526,40 +530,6 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       const currentDoc = this.documents[index];
       const isExistingDocument = currentDoc && currentDoc.fromServer;
       const wasErrorState = currentDoc && currentDoc.uploadStatus === 'error';
-      
-      // Check for duplicate file names across all documents
-      const isDuplicate = this.isDuplicateFileName(fileName, index);
-      if (isDuplicate) {
-        // Set error message
-        docGroup.get('errorMessage')?.setValue('File name already exists. Please choose a different name.');
-        docGroup.get('uploadStatus')?.setValue('error');
-        
-        // Update documents array
-        if (this.documents[index]) {
-          this.documents[index].errorMessage = 'File name already exists. Please choose a different name.';
-          this.documents[index].uploadStatus = 'error';
-        }
-        
-        // Show error notification
-        this.showError('Duplicate File Name', 'A file with this name already exists. Please rename the file or remove this file.');
-        
-        // We'll still update the file and preview, but will not allow upload until renamed
-        docGroup.patchValue({
-          file: file,
-          file_name: fileName,
-          filePreview: true,
-          fileIcon: this.getFileIconByExtension(extension),
-          file_extension: extension
-        });
-        
-        // Mark file_name as touched to show validation errors
-        docGroup.get('file_name')?.markAsTouched();
-        
-        // Update parent model to disable next button
-        this.updateParentModel({ documents: this.documents as IDocument[] }, false);
-        
-        return;
-      }
       
       // Update form control with the file details
       docGroup.patchValue({
@@ -1040,17 +1010,6 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
     }
   }
 
-  // Helper method to check for duplicate file names
-  private isDuplicateFileName(fileName: string, currentIndex: number): boolean {
-    if (!fileName) return false;
-    
-    return this.documentControls.controls.some(
-      (control, index) => 
-        index !== currentIndex && 
-        control.get('file_name')?.value?.toLowerCase() === fileName.toLowerCase()
-    );
-  }
-
   private fetchDocumentsFromServer(): void {
     if (!this.defaultValues?.knowledgeId) return;
 
@@ -1191,24 +1150,6 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
     return iconMap[extension.toLowerCase()] || './assets/media/svg/files/default.svg';
   }
 
-  private uniqueFileNameValidator() {
-    return (control: any) => {
-      if (!control.value) return null;
-      
-      const currentIndex = this.documentControls?.controls.findIndex(
-        group => group.get('file_name') === control
-      );
-      
-      const isDuplicate = this.documentControls?.controls.some(
-        (group, index) => 
-          index !== currentIndex && 
-          group.get('file_name')?.value?.toLowerCase() === control.value.toLowerCase()
-      );
-      
-      return isDuplicate ? { duplicateFileName: true } : null;
-    };
-  }
-
   private validateDocuments(enableLogging: boolean = true): boolean {
     // Don't allow proceeding if there are uploads in progress
     if (this.pendingUploads > 0 || this.hasActiveUploads) {
@@ -1225,9 +1166,6 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       return true; // Allow continuing with no documents
     }
 
-    // Check for duplicate file names
-    const fileNames = new Set<string>();
-    
     for (let i = 0; i < this.documents.length; i++) {
       const doc = this.documents[i];
       const control = this.documentControls.at(i);
@@ -1237,14 +1175,18 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
         return false;
       }
 
-      // Check for duplicate file names (case insensitive)
-      const lowerFileName = doc.file_name.toLowerCase();
-      if (fileNames.has(lowerFileName)) {
-        return false;
+      // Price validation: must be >= 10 when not charity, or exactly 0 when charity
+      const isCharity = control.get('isCharity')?.value;
+      const priceValue = Number(control.get('price')?.value);
+      if (!isCharity) {
+        if (isNaN(priceValue) || priceValue < 10) {
+          return false;
+        }
+      } else {
+        if (priceValue !== 0) {
+          return false;
+        }
       }
-      fileNames.add(lowerFileName);
-
-      // Don't check control errors as we handle each field separately
       
       // We already checked for errors at the beginning, so this check is redundant
       // but we'll keep it for safety
@@ -1416,7 +1358,7 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       const control = this.fb.group({
         docId: [0],
         file_name: [fileName, [Validators.required]],
-        price: [0, [Validators.required, Validators.min(0)]],
+        price: [0, [Validators.required, Validators.min(10)]],
         isCharity: [false],
         uploadStatus: ['pending'],
         uploadProgress: [0],
@@ -1424,6 +1366,20 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
         file: [file],
         file_extension: [fileExtension],
         file_size: [fileSize]
+      });
+      // Sync validators and enable/disable with charity toggle
+      control.get('isCharity')?.valueChanges.subscribe(isCharity => {
+        const priceControl = control.get('price');
+        if (isCharity) {
+          priceControl?.setValue(0);
+          priceControl?.clearValidators();
+          priceControl?.disable();
+          priceControl?.updateValueAndValidity({ emitEvent: false });
+        } else {
+          priceControl?.enable();
+          priceControl?.setValidators([Validators.required, Validators.min(10)]);
+          priceControl?.updateValueAndValidity({ emitEvent: false });
+        }
       });
       this.documentControls.push(control);
     }

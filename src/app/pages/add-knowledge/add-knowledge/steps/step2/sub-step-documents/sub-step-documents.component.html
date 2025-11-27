@@ -115,9 +115,6 @@
                             <span *ngIf="doc.get('file_name')?.errors?.['required']">
                                 {{ 'FILE_NAME_REQUIRED' | translate }}
                             </span>
-                            <span *ngIf="doc.get('file_name')?.errors?.['duplicateFileName']">
-                                {{ 'FILE_NAME_DUPLICATE' | translate }}
-                            </span>
                         </div>
                     </div>
                     
@@ -148,7 +145,12 @@
                         
                         <!-- Price Validation Message -->
                         <div *ngIf="doc.get('price')?.invalid && doc.get('price')?.touched && !doc.get('isCharity')?.value" class="text-danger small mt-1">
-                            {{ 'PRICE_REQUIRED' | translate }}
+                            <span *ngIf="doc.get('price')?.errors?.['required']">
+                                {{ 'PRICE_REQUIRED' | translate }}
+                            </span>
+                            <span *ngIf="doc.get('price')?.errors?.['min']">
+                                {{ lang === 'ar' ? 'الحد الأدنى للسعر هو 10' : 'Minimum price is 10' }}
+                            </span>
                         </div>
                         
                         <!-- Charity toggle -->
