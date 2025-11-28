@@ -286,6 +286,25 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
         return; // Don't advance to next step
       }
       
+      // Validate prices: non-charity documents must have price >= 10
+      const controls = this.documentsComponent.documentControls;
+      for (let i = 0; i < controls.length; i++) {
+        const control: any = controls.at(i);
+        const isCharity = control.get('isCharity')?.value;
+        // When not charity, price must be a number >= 10
+        if (!isCharity) {
+          const priceValue = Number(control.get('price')?.value);
+          if (isNaN(priceValue) || priceValue < 10) {
+            if (this.lang === 'ar') {
+              this.showWarn('', 'الحد الأدنى للسعر هو 10');
+            } else {
+              this.showWarn('', 'Minimum price is 10');
+            }
+            return; // Block proceeding to next step
+          }
+        }
+      }
+      
       // Removed duplicate title validation per request
       
       // Check for upload errors
