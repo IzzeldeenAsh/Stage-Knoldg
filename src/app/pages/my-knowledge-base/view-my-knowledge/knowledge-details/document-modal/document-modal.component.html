@@ -107,9 +107,14 @@
           </div>
           
           <!-- Price Validation -->
-          <div *ngIf="documentForm.get('price')?.invalid && documentForm.get('price')?.touched && !documentForm.get('isCharity')?.value" 
+          <div *ngIf="documentForm.get('price')?.invalid && documentForm.get('price')?.touched && !documentForm.get('isCharity')?.value"
                class="text-danger fs-7 mt-1">
-            {{ 'PRICE_REQUIRED' | translate }}
+            <span *ngIf="documentForm.get('price')?.errors?.['required']">
+              {{ 'PRICE_REQUIRED' | translate }}
+            </span>
+            <span *ngIf="documentForm.get('price')?.errors?.['min']">
+              {{ lang === 'ar' ? 'الحد الأدنى للسعر هو 10' : 'Minimum price is 10' }}
+            </span>
           </div>
 
           <!-- Charity Toggle -->
