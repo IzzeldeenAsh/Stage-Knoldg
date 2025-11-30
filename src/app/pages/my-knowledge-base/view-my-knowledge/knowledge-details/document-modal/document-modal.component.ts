@@ -135,7 +135,7 @@ export class DocumentModalComponent extends BaseComponent implements OnInit, OnC
       id: [null],
       file_name: ['', Validators.required],
       description: ['', Validators.required],
-      price: [0, [Validators.required, Validators.min(0)]],
+      price: [0, [Validators.required, Validators.min(10)]],
       isCharity: [false],
       file: [null],
       file_extension: ['']
@@ -146,9 +146,13 @@ export class DocumentModalComponent extends BaseComponent implements OnInit, OnC
       const priceControl = this.documentForm.get('price');
       if (isCharity) {
         priceControl?.setValue(0);
+        priceControl?.clearValidators();
         priceControl?.disable();
+        priceControl?.updateValueAndValidity({ emitEvent: false });
       } else {
         priceControl?.enable();
+        priceControl?.setValidators([Validators.required, Validators.min(10)]);
+        priceControl?.updateValueAndValidity({ emitEvent: false });
       }
     });
   }
