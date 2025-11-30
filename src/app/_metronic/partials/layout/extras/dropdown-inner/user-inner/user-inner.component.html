@@ -76,11 +76,6 @@
   <!-- General Navigation Section -->
   <div class="separator my-2"></div>
 
-  <div class="menu-item px-5">
-    <a [routerLink]="'/app/profile/overview'" class="menu-link px-5" (click)="closeDropdown.emit()">
-      {{ 'HOME.MY_PROFILE' | translate }}
-    </a>
-  </div>
 
   <div class="menu-item px-5">
     <a [href]="'https://foresighta.co/en/profile/' + _user.uuid + '?entity=insighter'" class="menu-link px-5" (click)="closeDropdown.emit()">
@@ -94,6 +89,11 @@
     </a>
   </div>
 
+  <div class="menu-item px-5">
+    <a [routerLink]="'/app/profile/overview'" class="menu-link px-5" (click)="closeDropdown.emit()">
+      {{ 'HOME.MY_PROFILE' | translate }}
+    </a>
+  </div>
   <!-- Account Settings for non-client-only users -->
   <ng-container *ngIf="!(_user.roles.includes('client') && !_user.roles.includes('insighter') && !_user.roles.includes('company') && !_user.roles.includes('company-insighter'))">
     <div class="menu-item px-5">

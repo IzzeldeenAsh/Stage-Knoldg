@@ -280,19 +280,14 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
     this.sentCurrentPage.set(page);
     if (this.selectedTab() === 'coming') {
       this.sentLoading.set(true);
-
-      const upcoming$ = this.sentMeetingsService.getSentMeetings(page, this.perPage(), 'upcoming');
-      const approved$ = this.sentMeetingsService.getSentMeetings(page, this.perPage(), undefined);
-
-      // Combine both results
-      forkJoin([upcoming$, approved$])
+      // Rely solely on the "upcoming" endpoint; it already includes future approved meetings.
+      this.sentMeetingsService.getSentMeetings(page, this.perPage(), 'upcoming')
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
-          next: ([upcomingRes, approvedRes]) => {
-            const approvedMeetings = approvedRes.data.filter(m => m.status === 'approved');
-            this.sentMeetings.set([...upcomingRes.data, ...approvedMeetings]);
+          next: (upcomingRes: SentMeetingResponse) => {
+            this.sentMeetings.set(upcomingRes.data);
             this.sentTotalPages.set(upcomingRes.meta.last_page);
-            this.sentTotalItems.set(upcomingRes.meta.total + approvedMeetings.length);
+            this.sentTotalItems.set(upcomingRes.meta.total);
             this.sentCurrentPage.set(upcomingRes.meta.current_page);
             this.sentLoading.set(false);
           },
