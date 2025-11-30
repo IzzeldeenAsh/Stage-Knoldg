@@ -1,19 +1,36 @@
 <!-- Chart Section -->
 <div class="card mb-5 light-wallet-gradient-bg">
   <div class="card-header border-0 pt-5">
-    <div class="d-flex  w-100">
-      <div class="d-flex align-items-center">
+    <div class="d-flex w-100">
+      <div class="d-flex align-items-center w-100">
         <i class="ki-outline ki-dollar text-gray-700 fs-2tx me-4"></i>
         <div class="flex-grow-1">
-          <div class="d-flex align-items-center justify-content-between gap-5">
-            <span class="fw-bold fs-3x lh-1 ls-n2 " style="color:#4f28ed; padding-top: 20px;" *ngIf="!balanceLoading">${{ platformBalance.toFixed(2) }}</span>
-            <div *ngIf="balanceLoading" class="d-flex align-items-center">
-              <div class="spinner-border spinner-border-sm text-info me-2"></div>
-              <span class="text-muted">{{ lang === 'ar' ? 'جارٍ التحميل...' : 'Loading...' }}</span>
-            </div>
+          <div *ngIf="balanceLoading" class="d-flex align-items-center">
+            <div class="spinner-border spinner-border-sm text-info me-2"></div>
+            <span class="text-muted">{{ lang === 'ar' ? 'جارٍ التحميل...' : 'Loading...' }}</span>
           </div>
-          <div class="m-0">
-            <span class="fw-semibold fs-6 text-gray-500">{{ lang === 'ar' ? 'رصيد المنصة الحالي' : 'Current Platform Balance' }}</span>
+          <div *ngIf="!balanceLoading" class="row g-4">
+            <!-- Platform Balance -->
+            <div class="col-md-4">
+              <div class="d-flex flex-column">
+                <span class="fw-bold fs-3x lh-1 ls-n2" style="color:#4f28ed;">${{ platformBalance.toFixed(2) }}</span>
+                <span class="fw-semibold fs-6 text-gray-500">{{ lang === 'ar' ? 'رصيد المنصة' : 'Platform Balance' }}</span>
+              </div>
+            </div>
+            <!-- Provider Fee -->
+            <div class="col-md-4">
+              <div class="d-flex flex-column">
+                <span class="fw-bold fs-3x lh-1 ls-n2 text-warning">${{ providerFee.toFixed(2) }}</span>
+                <span class="fw-semibold fs-6 text-gray-500">{{ lang === 'ar' ? 'رسوم مقدم الخدمة' : 'Provider Fee' }}</span>
+              </div>
+            </div>
+            <!-- Net Amount -->
+            <div class="col-md-4">
+              <div class="d-flex flex-column">
+                <span class="fw-bold fs-3x lh-1 ls-n2 text-success">${{ netAmount.toFixed(2) }}</span>
+                <span class="fw-semibold fs-6 text-gray-500">{{ lang === 'ar' ? 'المبلغ الصافي' : 'Net Amount' }}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -122,10 +139,20 @@
 
           <!-- Amount Column -->
           <td [attr.data-label]="lang === 'ar' ? 'المبلغ' : 'Amount'" [style.text-align]="lang === 'ar' ? 'right' : 'left'">
-            <span
-              [class]="'badge ' + (transaction.transaction === 'deposit' ? 'badge-light-success' : 'badge-light-danger') + ' fs-base px-2 py-1'">
-            {{ formatAmount(transaction.amount) }}
-            </span>
+            <div class="d-flex flex-column gap-1">
+              <!-- Main Amount -->
+              <span [class]="'badge ' + (transaction.transaction === 'deposit' ? 'badge-light-success' : 'badge-light-danger') + ' fs-base px-2 py-1'">
+                {{ formatAmount(transaction.amount) }}
+              </span>
+              <!-- Provider Fee -->
+              <span class="badge badge-light-warning fs-7 px-2 py-1" *ngIf="transaction.provider_fee && parseFloat(transaction.provider_fee) !== 0">
+                {{ lang === 'ar' ? 'رسوم:' : 'Fee:' }} ${{ parseFloat(transaction.provider_fee).toFixed(2) }}
+              </span>
+              <!-- Net Amount -->
+              <span class="badge badge-light-info fs-7 px-2 py-1" *ngIf="transaction.net_amount && parseFloat(transaction.net_amount) !== 0">
+                {{ lang === 'ar' ? 'صافي:' : 'Net:' }} ${{ Math.abs(parseFloat(transaction.net_amount)).toFixed(2) }}
+              </span>
+            </div>
           </td>
 
           <!-- Details Column -->

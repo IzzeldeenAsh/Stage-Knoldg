@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output, OnInit, OnDestroy } from '@angular/core';
 import { TranslationService } from 'src/app/modules/i18n';
+import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 
 export interface OtpModalConfig {
   headerTitle?: string;
@@ -29,14 +30,35 @@ export class OtpModalComponent implements OnInit, OnDestroy {
   resendCooldown: number = 0;
   canResend: boolean = true;
   lang: string = 'en';
+  userEmail: string | null = null;
   private cooldownTimer: any;
 
-  constructor(private translationService: TranslationService) {}
+  constructor(private translationService: TranslationService, private profileService: ProfileService) {}
 
   ngOnInit() {
     this.translationService.onLanguageChange().subscribe(lang => {
       this.lang = lang || 'en';
     });
+
+    const currentUser = this.profileService.getCurrentUser ? this.profileService.getCurrentUser() : null;
+    if (currentUser && currentUser.email) {
+      this.userEmail = currentUser.email;
+    }
+
+    this.profileService.currentUser$.subscribe(user => {
+      this.userEmail = user?.email || this.userEmail;
+    });
+
+    if (!currentUser) {
+      this.profileService.getProfile().subscribe({
+        next: (data) => {
+          if (data?.email) {
+            this.userEmail = data.email;
+          }
+        },
+        error: () => {}
+      });
+    }
   }
 
   ngOnDestroy() {
