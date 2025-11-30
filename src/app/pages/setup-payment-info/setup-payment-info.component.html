@@ -151,7 +151,7 @@
 
                 <!-- Country Search and List -->
                 <div *ngIf="!selectedCountry">
-                  <div class="input-group mb-3">
+                  <div class="input-group mb-3" style="direction: ltr">
                     <span class="input-group-text">
                       <i class="fas fa-search"></i>
                     </span>
@@ -161,7 +161,7 @@
                       [(ngModel)]="searchTerm"
                       [ngModelOptions]="{standalone: true}"
                       (ngModelChange)="filterCountries()"
-                      [placeholder]="lang === 'ar' ? 'ابحث عن بلد...' : 'Search for a country...'">
+                     >
                   </div>
 
                   <div class="country-list" style="max-height: 300px; overflow-y: auto; overflow-x: hidden;">

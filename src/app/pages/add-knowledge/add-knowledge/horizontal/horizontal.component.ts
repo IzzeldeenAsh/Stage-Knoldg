@@ -286,23 +286,26 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
         return; // Don't advance to next step
       }
       
-      // Check for duplicate titles
-      const titles = new Set<string>();
-      const duplicateTitles = docs.filter(doc => {
-        const title = doc.file_name.toLowerCase();
-        if (titles.has(title)) return true;
-        titles.add(title);
-        return false;
-      });
-      
-      if (duplicateTitles.length > 0) {
-        if( this.lang === 'ar' ) {
-          this.showWarn('', 'يرجى إدخال عنوان مختلف لكل مستند');
-         } else {
-          this.showWarn('', 'All document titles must be unique');
-         }
-        return; // Don't advance to next step
+      // Validate prices: non-charity documents must have price >= 10
+      const controls = this.documentsComponent.documentControls;
+      for (let i = 0; i < controls.length; i++) {
+        const control: any = controls.at(i);
+        const isCharity = control.get('isCharity')?.value;
+        // When not charity, price must be a number >= 10
+        if (!isCharity) {
+          const priceValue = Number(control.get('price')?.value);
+          if (isNaN(priceValue) || priceValue < 10) {
+            if (this.lang === 'ar') {
+              this.showWarn('', 'الحد الأدنى للسعر هو 10');
+            } else {
+              this.showWarn('', 'Minimum price is 10');
+            }
+            return; // Block proceeding to next step
+          }
+        }
       }
+      
+      // Removed duplicate title validation per request
       
       // Check for upload errors
       if (this.hasAnyDocumentUploadErrors()) {

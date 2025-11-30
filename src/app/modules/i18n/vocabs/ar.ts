@@ -318,6 +318,7 @@ INSIGHTER_REQUESTS: {
       COMPANY_INSIGHTER: 'شركة إنسايتر',
       BECOME_INSIGHTER: 'سجل كإنسايتر',
       BECOME_INSIGHTER_DESC:  "سجل كمزود للمعرفة وابدأ برفع التقارير والبيانات على المنصة",
+      MY_INSIGHTER_PAGE: 'صفحتي الإنسايتر',
       LATEST_INSIGHTS: "أحدث الرؤى",
       TRENDING: "الشائع",
       REGION_PLACEHOLDER: "المنطقة",

@@ -32,7 +32,9 @@
           {{ lang === 'ar' ? 'أدخل رمز التحقق' : 'Enter Verification Code' }}
         </h5>
         <p class="text-muted">
-          {{ lang === 'ar' ? 'لقد أرسلنا رمز التحقق إلى بريدك الإلكتروني' : 'We sent a verification code to your email' }}
+          <span *ngIf="lang === 'ar'">لقد أرسلنا رمز التحقق إلى بريدك الإلكتروني:</span>
+          <span *ngIf="lang !== 'ar'">We sent a verification code to your email:</span> <br>
+          <span class="fw-semibold ms-1" style="direction: ltr;">{{ userEmail || '—' }}</span>
         </p>
       </div>
 

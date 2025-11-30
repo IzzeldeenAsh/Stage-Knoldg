@@ -5,7 +5,7 @@ export interface IKnoldgProfile {
     first_name: string;
     last_name: string;
     roles: string[];
-    
+    uuid: string;
     department?: Department;
     position?: Position;
     profile_photo_url: string | null;

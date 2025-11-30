@@ -506,7 +506,7 @@ export class ConsultingScheduleComponent extends BaseComponent implements OnInit
     const group = this.fb.group({
       start_time: [this.parseTimeString(timeSlot.start_time), Validators.required],
       end_time: [this.parseTimeString(timeSlot.end_time), Validators.required],
-      rate: [timeSlot.rate || 0]
+      rate: [timeSlot.rate ?? 10, [Validators.min(10)]]
     }, { validators: this.perfectHourValidator.bind(this) });
     
     // Add subscription to start_time changes to synchronize end_time minutes
@@ -616,7 +616,7 @@ export class ConsultingScheduleComponent extends BaseComponent implements OnInit
     } else {
       // Add a default time slot when day is activated
       if (timesArray.length === 0) {
-        const newTimeSlot = this.createTimeSlotFormGroup({ start_time: '09:00', end_time: '10:00', rate: 50 });
+        const newTimeSlot = this.createTimeSlotFormGroup({ start_time: '09:00', end_time: '10:00', rate: 10 });
         timesArray.push(newTimeSlot);
       }
     }
@@ -628,7 +628,7 @@ export class ConsultingScheduleComponent extends BaseComponent implements OnInit
     
     let startTime = '09:00';
     let endTime = '10:00';
-    let rate = 50; // Default rate if no previous time slot exists
+    let rate = 10; // Default rate if no previous time slot exists
     
     // If there are existing time slots, use the end time of the last one as the start time
     // and also get the last entered rate value
@@ -650,7 +650,7 @@ export class ConsultingScheduleComponent extends BaseComponent implements OnInit
       
       // Use the last rate value if available
       if (lastRate !== undefined && lastRate !== null) {
-        rate = lastRate;
+        rate = Math.max(lastRate, 10);
       }
     }
     

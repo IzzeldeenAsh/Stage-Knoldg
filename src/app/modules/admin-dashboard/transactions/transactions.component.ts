@@ -24,6 +24,8 @@ export class TransactionsComponent extends BaseComponent implements OnInit, OnDe
 
   // Balance properties
   platformBalance: number = 0;
+  providerFee: number = 0;
+  netAmount: number = 0;
   balanceLoading: boolean = false;
 
   // Chart properties
@@ -168,6 +170,8 @@ export class TransactionsComponent extends BaseComponent implements OnInit, OnDe
       .subscribe({
         next: (response: PlatformBalanceResponse) => {
           this.platformBalance = response.data.balance;
+          this.providerFee = response.data.provider_fee;
+          this.netAmount = response.data.net_amount;
           this.balanceLoading = false;
         },
         error: (error) => {
@@ -467,6 +471,10 @@ export class TransactionsComponent extends BaseComponent implements OnInit, OnDe
 
   get Math() {
     return Math;
+  }
+
+  parseFloat(value: string): number {
+    return parseFloat(value);
   }
 
   getDocumentCount(knowledgeDocuments: any[][] | undefined): number {
