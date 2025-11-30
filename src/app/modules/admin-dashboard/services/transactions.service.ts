@@ -73,6 +73,9 @@ export interface Transaction {
   amount: number;
   date: string;
   type: string;
+  type_key: string;
+  provider_fee: string;
+  net_amount: string;
   order: Order;
   insighter?: Insighter;
 }
@@ -108,6 +111,8 @@ export interface TransactionResponse {
 export interface PlatformBalanceResponse {
   data: {
     balance: number;
+    provider_fee: number;
+    net_amount: number;
   };
 }
 
