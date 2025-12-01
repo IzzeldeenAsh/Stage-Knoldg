@@ -571,7 +571,7 @@
                       <!-- Profile Image or Initials Circle -->
                       <div class="me-3">
                         <div *ngIf="requestUser && requestUser.profile_photo_url" class="symbol symbol-45px w-45px h-45px overflow-hidden">
-                          <img [src]="requestUser.profile_photo_url" alt="Profile" class="w-100".     style="object-fit: cover; object-position: top;">
+                          <img [src]="requestUser.profile_photo_url" alt="Profile" class="w-100" style="object-fit: cover; object-position: top;">
                         </div>
                         <div *ngIf="requestUser && requestUser.name && !requestUser.profile_photo_url" 
                           class="symbol h-40px w-40px d-flex align-items-center justify-content-center bg-light-info text-info"
