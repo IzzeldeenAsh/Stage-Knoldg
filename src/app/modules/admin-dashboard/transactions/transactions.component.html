@@ -300,7 +300,8 @@
           <div class="profile-avatar-modern">
             <img *ngIf="selectedTransaction.order.user.profile_photo_url"
                  [src]="selectedTransaction.order.user.profile_photo_url"
-                 [alt]="selectedTransaction.order.user.name">
+                 [alt]="selectedTransaction.order.user.name"
+                 style="object-fit: cover; object-position: top;">
             <div *ngIf="!selectedTransaction.order.user.profile_photo_url"
                  class="avatar-placeholder">
               {{ selectedTransaction.order.user.name.charAt(0) }}
