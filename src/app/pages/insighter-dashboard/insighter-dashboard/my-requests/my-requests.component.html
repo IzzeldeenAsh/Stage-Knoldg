@@ -228,10 +228,10 @@ styleClass=""
                             <div class="d-flex align-items-center">
                                 <!-- Insighter Avatar -->
                                 <div *ngIf="request.requestable" class="me-4">
-                                    <div *ngIf="request.requestable.profile_photo_url" class="symbol symbol-40px w-40px h-40px overflow-hidden rounded-circle">
+                                    <div *ngIf="request.requestable.profile_photo_url" class="symbol symbol-40px w-40px h-40px overflow-hidden rounded-circle" style="object-fit: cover; object-position: top;">
                                         <img [src]="request.requestable.profile_photo_url" alt="Profile" class="w-100 object-fit-cover" style="object-position: top;">
                                     </div>
-                                    <div *ngIf="!request.requestable.profile_photo_url && request.requestable.name" class="symbol symbol-40px d-flex align-items-center h-40px w-40px justify-content-center rounded-circle" 
+                                    <div *ngIf="!request.requestable.profile_photo_url && request.requestable.name" class="symbol symbol-40px d-flex align-items-center h-40px w-40px justify-content-center rounded-circle" style="object-fit: cover; object-position: top;"
                                         [ngStyle]="{'background-color': '#EEF6FF', 'color': '#3E97FF'}">
                                         {{ request.requestable.name | slice:0:1 }}{{ (request.requestable.name && request.requestable.name.indexOf(' ') > -1 ? 
                                           request.requestable.name.split(' ')[1] : '') | slice:0:1 }}

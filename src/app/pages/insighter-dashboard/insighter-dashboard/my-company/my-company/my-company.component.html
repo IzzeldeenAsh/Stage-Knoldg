@@ -582,7 +582,7 @@
                           styleClass="bg-light-info fw-bold"
                           shape="circle"
                           class="avatar-fallback"
-                          [style]="{'font-size': '1.4rem', 'height': '70px', 'width': '70px', 'font-weight': 'bold', 'border-radius': '50%', 'min-width': '70px', 'min-height': '70px'}"
+                          [style]="{'font-size': '1.4rem', 'height': '70px', 'width': '70px', 'font-weight': 'bold', 'border-radius': '50%', 'min-width': '70px', 'min-height': '70px', 'object-fit': 'cover', 'object-position': 'top'}"
                           *ngIf="!insighter.profile_photo_url && hasValidInitials(insighter.name)">
                         </p-avatar>
                         <div *ngIf="!insighter.profile_photo_url && !hasValidInitials(insighter.name)"
