@@ -144,7 +144,7 @@
                       </div>
                     </div>
                     <!-- Archive Button for Past Meetings -->
-                    @if (clientMeetingsSubTab === 'past' && !showArchivedMeetings() && meeting.status !== 'pending') {
+                    @if (clientMeetingsSubTab === 'past' && !showArchivedMeetings() && meeting.status === 'approved') {
                       <button class="btn btn-xs btn-light-warning d-flex align-items-center px-2 py-1"
                               (click)="archiveMeeting(meeting)"
                               [disabled]="actionLoading()"
@@ -210,7 +210,7 @@
                             <img [src]="meeting.client.profile_photo_url"
                                  [alt]="meeting.client.name"
                                  class="rounded-circle"
-                                 style="object-position: top;">
+                                 style="object-fit: cover; object-position: top;">
                           } @else {
                             <div class="symbol-label bg-primary text-white">
                               {{ getInitials(meeting.client.first_name, meeting.client.last_name) }}
@@ -432,7 +432,7 @@
                       </div>
                     </div>
                     <!-- Archive Button for Past Meetings -->
-                    @if (myMeetingsSubTab === 'past' && !sentShowArchivedMeetings() && meeting.status !== 'pending') {
+                    @if (myMeetingsSubTab === 'past' && !sentShowArchivedMeetings() && meeting.status === 'approved') {
                       <button class="btn btn-xs btn-light-warning d-flex align-items-center px-2 py-1"
                               (click)="archiveSentMeeting(meeting)"
                               [disabled]="actionLoading()"
@@ -476,7 +476,7 @@
                           <img [src]="meeting.insighter.profile_photo_url"
                                [alt]="meeting.insighter.name"
                                class="rounded-circle"
-                               style="object-position: top;">
+                               style="object-fit: cover; object-position: top;">
                         } @else {
                           <div class="symbol-label bg-primary text-white">
                             {{ getSentMeetingInitials(meeting.insighter.name) }}

@@ -31,7 +31,7 @@
           </div>
   
           <div class="mb-0 me-2">
-            <a  class="fs-6 text-gray-800 text-hover-primary text-capitalize" [ngClass]="{'fw-bolder': !alert.read_at, 'fw-light': alert.read_at}">
+            <a  class="fs-6 text-gray-800 text-hover-primary text-capitalize" [ngClass]="{'fw-bolder': !alert.read_at, 'fw-light': alert.read_at}" style="word-break: break-word;">
               {{ alert.sub_type | notificationsNames }}
             </a>
             <div class="text-gray-500 fs-7" [ngClass]="{'fw-bold': !alert.read_at}">{{ alert.message }}</div>
