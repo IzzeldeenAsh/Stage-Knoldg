@@ -246,7 +246,7 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
       industry: [this.defaultValues.industry, [Validators.required]],
       topicId: [this.defaultValues.topicId, [Validators.required]],
       customTopic: [this.defaultValues.customTopic],
-      targetMarket: [this.defaultValues.targetMarket || '1', [Validators.required]],
+      targetMarket: [this.defaultValues.targetMarket || '3', [Validators.required]],
       economicBlocks: [this.defaultValues.economic_blocs || []],
       regions: [this.defaultValues.regions || []],
       countries: [this.defaultValues.countries || []],
@@ -256,6 +256,13 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
       tagItems: [[]],  // For displaying selected tags in tag-input
       keywords: [this.defaultValues.keywords || []]
     });
+    
+    // Ensure worldwide is selected by default if not set
+    const initialTargetMarket = this.form.get('targetMarket')?.value;
+    if (!initialTargetMarket) {
+      this.form.get('targetMarket')?.setValue('3', { emitEvent: false });
+      this.updateParentModel({ targetMarket: '3' }, this.checkForm());
+    }
     
     // Setup form change subscription with debouncing
     const formChangesSubscr = this.form.valueChanges.pipe(

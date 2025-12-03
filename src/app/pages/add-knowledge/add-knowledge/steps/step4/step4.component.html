@@ -152,9 +152,9 @@
                   </ng-container>
                   <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'KNOWLEDGE_TITLE_TOOLTIP' | translate }}"></i>
                 </label>
-                <!-- AI Generated badge for title -->
+                <!-- AI Suggested badge for title -->
                 <span *ngIf="aiGeneratedFields.title" class="ai-generated-badge ms-2 mb-2">
-                  AI Generated
+                  AI Suggested
                 </span>
               </div>
             </div>
@@ -210,11 +210,11 @@
                 {{ "KNOWLEDGE_DESCRIPTION" | translate }}
                 <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'KNOWLEDGE_DESCRIPTION_TOOLTIP' | translate }}"></i>
                 
-                <!-- AI Generated badge for description -->
+                <!-- AI Suggested badge for description -->
                
               </label>
               <span *ngIf="aiGeneratedFields.description" class="ai-generated-badge ms-2 mb-2">
-                AI Generated
+                AI Suggested
               </span>
             </div>
        
@@ -299,9 +299,9 @@
               
             
             </label>
-              <!-- AI Generated badge for language -->
+              <!-- AI Suggested badge for language -->
               <span *ngIf="aiGeneratedFields.language" class="ai-generated-badge ms-2 mb-2">
-                AI Generated
+                AI Suggested
               </span>
             </div>
             <div class="row mb-2">
@@ -374,7 +374,7 @@
           name="targetMarket"
           value="3"
           id="targetMarket3"
-          [checked]="true"
+          [checked]="!form.get('targetMarket')?.value || form.get('targetMarket')?.value === '3'"
         />
         <label class="form-check-label text-gray-700" for="targetMarket3">
           {{ "WORLDWIDE" | translate }}
@@ -389,6 +389,7 @@
           name="targetMarket"
           value="4"
           id="targetMarket4"
+          [checked]="form.get('targetMarket')?.value === '4'"
         />
         <label class="form-check-label text-gray-700" for="targetMarket4">
           {{ "COUNTRIES" | translate }}
@@ -402,6 +403,7 @@
           name="targetMarket"
           value="1"
           id="targetMarket1"
+          [checked]="form.get('targetMarket')?.value === '1'"
         />
         <label class="form-check-label text-gray-700" for="targetMarket1">
           {{ "REGIONS" | translate }}
@@ -417,6 +419,7 @@
           name="targetMarket"
           value="2"
           id="targetMarket2"
+          [checked]="form.get('targetMarket')?.value === '2'"
         />
         <label class="form-check-label text-gray-700" for="targetMarket2">
           {{ "ECONOMIC_BLOCK" | translate }}
