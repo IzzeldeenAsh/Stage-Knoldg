@@ -67,10 +67,6 @@ export class MyOrdersComponent extends BaseComponent implements OnInit {
     this.getRoles();
     this.loadOrders();
     this.loadMeetingOrders();
-    // Load statistics only if not already loaded by the header component
-    if (!this.orderStatisticsService.getCurrentStatistics() && this.canViewSalesTabs) {
-      this.orderStatisticsService.loadStatistics();
-    }
   }
 
   setActiveTab(tab: 'knowledge' | 'meeting'): void {

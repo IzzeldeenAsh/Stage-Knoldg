@@ -69,7 +69,7 @@ export class GeneralComponent extends BaseComponent implements OnInit, OnDestroy
   itemsPerPage: number = 10;
 
   draggedItem: Knowledge | null = null;
-  allKnowledges: Knowledge[] = [];
+  // allKnowledges: Knowledge[] = [];
   selectedKnowledge: Knowledge | null = null;
 
   // Add loading property
@@ -131,7 +131,7 @@ export class GeneralComponent extends BaseComponent implements OnInit, OnDestroy
     
     // Initial data load
     this.loadFilteredKnowledges();
-    this.loadAllKnowledges();
+    // this.loadAllKnowledges();
     this.checkScreenSize();
   }
 
@@ -573,18 +573,16 @@ export class GeneralComponent extends BaseComponent implements OnInit, OnDestroy
     });
   }
 
-  loadAllKnowledges() {
-    // Use all statuses for package builder dropdown
-    this.knowledgeService.getListKnowledge().subscribe(
-      (response) => {
-        // Limit to a reasonable number to prevent memory issues
-        this.allKnowledges = response.data.slice(0, 100);
-      },
-      (error) => {
-        console.error('Error fetching all knowledges:', error);
-      }
-    );
-  }
+  // loadAllKnowledges() {
+  //   this.knowledgeService.getListKnowledge().subscribe(
+  //     (response) => {
+  //       this.allKnowledges = response.data.slice(0, 100);
+  //     },
+  //     (error) => {
+  //       console.error('Error fetching all knowledges:', error);
+  //     }
+  //   );
+  // }
 
   onKnowledgeSelect(event: any) {
     if (event && !this.packages.some(pkg => pkg.id === event.id)) {
