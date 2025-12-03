@@ -4,8 +4,7 @@ import { UserRequestsService } from 'src/app/_fake/services/user-requests/user-r
 import { forkJoin, Subject, takeUntil } from 'rxjs';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import { IKnoldgProfile } from 'src/app/_fake/models/profile.interface';
-import { SentMeetingsService, SentMeeting, SentMeetingResponse } from 'src/app/_fake/services/meetings/sent-meetings.service';
-import { MeetingsService, Meeting, MeetingResponse } from 'src/app/_fake/services/meetings/meetings.service';
+import { MeetingsService, ClientMeetingStatistics } from 'src/app/_fake/services/meetings/meetings.service';
 import { WalletService } from 'src/app/_fake/services/wallet/wallet.service';
 
 @Component({
@@ -22,18 +21,14 @@ export class WidgetsRowComponent extends BaseComponent implements OnInit {
   userProfile: IKnoldgProfile | null = null;
   private destroy$ = new Subject<void>();
   
-  // Store meetings data
-  sentMeetings: SentMeeting[] = [];
-  receivedMeetings: Meeting[] = [];
   
   // Wallet balance
   walletBalance: number = 0;
   
   constructor(
-    injector: Injector, 
+    injector: Injector,
     private requestsService: UserRequestsService,
     private profileService: ProfileService,
-    private sentMeetingsService: SentMeetingsService,
     private meetingsService: MeetingsService,
     private walletService: WalletService
   ) {
@@ -42,7 +37,7 @@ export class WidgetsRowComponent extends BaseComponent implements OnInit {
   
   ngOnInit(): void {
     this.getProfile();
-    this.loadAllMeetings();
+    this.loadMeetingStatistics();
     this.loadWalletBalance();
   }
   
@@ -94,63 +89,19 @@ export class WidgetsRowComponent extends BaseComponent implements OnInit {
     });
   }
   
-  loadAllMeetings(page: number = 1): void {
-    // Always get sent meetings
-    const sentMeetingsRequest = this.sentMeetingsService.getSentMeetings(page, 30);
-    
-    // Prepare requests based on role
-    if (this.userRole === 'client') {
-      // For client role, only get sent meetings
-      sentMeetingsRequest
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: (response: SentMeetingResponse) => {
-            this.sentMeetings = response.data;
-            
-            // Calculate number of today's meetings
-            const today = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
-            this.todayMeetingsCount = this.sentMeetings.filter(meeting => meeting.date === today).length;
-            
-            console.log('Today\'s sent meetings count:', this.todayMeetingsCount);
-          },
-          error: (error) => {
-            console.error("Error loading sent meetings:", error);
-          },
-        });
-    } else {
-      // For other roles (company, insighter, etc.), get both sent and received meetings
-      const receivedMeetingsRequest = this.meetingsService.getMeetings(page, 30);
-      
-      // Use forkJoin to execute both requests in parallel
-      forkJoin({
-        sent: sentMeetingsRequest,
-        received: receivedMeetingsRequest
-      })
+  loadMeetingStatistics(): void {
+    this.meetingsService.getClientMeetingStatistics()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (responses) => {
-          // Store both types of meetings
-          this.sentMeetings = responses.sent.data;
-          this.receivedMeetings = responses.received.data;
-          
-          // Calculate number of today's meetings from both sources
-          const today = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
-          
-          const todaySentMeetings = this.sentMeetings.filter(meeting => meeting.date === today).length;
-          const todayReceivedMeetings = this.receivedMeetings.filter(meeting => meeting.date === today).length;
-          
-          // Combine the counts
-          this.todayMeetingsCount = todaySentMeetings + todayReceivedMeetings;
-          
-          console.log('Sent meetings today:', todaySentMeetings);
-          console.log('Received meetings today:', todayReceivedMeetings);
-          console.log('Total meetings today:', this.todayMeetingsCount);
+        next: (response: { data: ClientMeetingStatistics }) => {
+          this.todayMeetingsCount = response.data.today;
+          console.log('Today\'s meetings count from API:', this.todayMeetingsCount);
         },
         error: (error) => {
-          console.error("Error loading meetings:", error);
-        },
+          console.error('Error loading meeting statistics:', error);
+          this.todayMeetingsCount = 0;
+        }
       });
-    }
   }
   
   loadWalletBalance(): void {

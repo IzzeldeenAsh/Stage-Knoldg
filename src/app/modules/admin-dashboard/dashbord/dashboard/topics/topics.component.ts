@@ -139,7 +139,10 @@ export class TopicsComponent implements OnInit, OnDestroy, AfterViewInit {
         // Handle topics data
         this.paginatedTopics = topicsResponse;
         this.topics = topicsResponse.data;
-        this.totalPages = Math.ceil(topicsResponse.meta.total / this.pageSize);
+        // Sync pagination data from API response
+        this.pageSize = topicsResponse.meta.per_page;
+        this.totalPages = topicsResponse.meta.last_page;
+        this.currentPage = topicsResponse.meta.current_page;
 
         // Handle industries data
         this.industries = this.prepareIndustriesForTreeSelect(industriesResponse);
@@ -205,7 +208,10 @@ export class TopicsComponent implements OnInit, OnDestroy, AfterViewInit {
       next: (res) => {
         this.paginatedTopics = res;
         this.topics = res.data;
-        this.totalPages = Math.ceil(res.meta.total / this.pageSize);
+        // Sync pagination data from API response
+        this.pageSize = res.meta.per_page;
+        this.totalPages = res.meta.last_page;
+        this.currentPage = res.meta.current_page;
         this.cdr.detectChanges();
       },
       error: (error) => {
@@ -219,6 +225,30 @@ export class TopicsComponent implements OnInit, OnDestroy, AfterViewInit {
     if (page >= 1 && page <= this.totalPages) {
       this.loadTopics(page);
     }
+  }
+
+  /**
+   * PrimeNG table paginator event handler (server-side)
+   */
+  onPageChange(event: any): void {
+    // event.page is zero-based
+    const nextPage = (event && typeof event.page === 'number') ? (event.page + 1) : 1;
+    this.loadTopics(nextPage);
+  }
+
+  /**
+   * PrimeNG lazy load event handler (fires on page change, sort, filter)
+   */
+  onLazyLoad(event: any): void {
+    if (!event) return;
+    const rows = typeof event.rows === 'number' && event.rows > 0 ? event.rows : this.pageSize;
+    const first = typeof event.first === 'number' ? event.first : 0;
+    const nextPage = Math.floor(first / rows) + 1;
+    // Guard: avoid refetch when the event matches the current view
+    if (nextPage === this.currentPage && rows === this.pageSize) {
+      return;
+    }
+    this.loadTopics(nextPage);
   }
 
   getPages(): number[] {

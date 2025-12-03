@@ -61,7 +61,8 @@
                       ></p-calendar>
                   </div>
                   
-                  <div class="rate-input">
+                  <div class="rate-input d-flex flex-column">
+                  <div class="d-flex align-items-center">
                     <span class="currency-symbol">$</span>
                     <input 
                       type="number" 
@@ -74,9 +75,16 @@
                       (input)="limitRateValueTo999(dayIndex, timeIndex, $event)"
                     />
                   </div>
-                  <div class="rate-note">
-                    <small class="text-muted">( min 10$ )</small>
+                    <div class="rate-note">
+                      <small class="text-muted" *ngIf="lang === 'en'">
+                        ( Minimum 10$ )
+                      </small>
+                      <small class="text-muted" *ngIf="lang === 'ar'">
+                        ( الحد الأدنى  10$ )
+                      </small>
+                    </div>
                   </div>
+                 
                   
                   <button 
                     *ngIf="getTimesFormArray(dayIndex).length > 1"

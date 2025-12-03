@@ -73,6 +73,7 @@ export interface RescheduleRequest {
 export interface ClientMeetingStatistics {
   total: number;
   archived: number;
+  today: number;
 }
 
 @Injectable({
