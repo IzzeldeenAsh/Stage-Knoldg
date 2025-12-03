@@ -16,22 +16,22 @@
           <div class="card card-custom gutter-b">
           <div class="card-body p-6">
             <!-- Order Header -->
-            <div class="d-flex justify-content-between align-items-start mb-6">
-              <div class="d-flex align-items-center">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start mb-6 gap-3">
+              <div class="d-flex align-items-center flex-grow-1">
                 <div class="symbol symbol-40px me-3">
                   <div class="symbol-label bg-light-info">
                     <i class="ki-outline ki-calendar fs-2x text-info"></i>
                   </div>
                 </div>
-                <div>
-                  <div class="d-flex align-items-center mb-1">
+                <div class="flex-grow-1">
+                  <div class="d-flex align-items-center flex-wrap mb-1">
                     <h6 class="mb-0 fw-bold me-2">
                       {{ lang === 'ar' ? 'طلب رقم' : 'Order' }} {{ order.order_no }}
                     </h6>
                     <i     (click)="copyOrder(order.order_no)" class="ki-outline ki-copy fs-6 cursor-pointer"></i>
                   </div>
                   <!-- Insighter Information -->
-                  <div class="d-flex align-items-center mb-1" *ngIf="order.orderable?.meeting_booking?.insighter">
+                  <div class="d-flex align-items-center flex-wrap mb-1" *ngIf="order.orderable?.meeting_booking?.insighter">
                     <div class="symbol symbol-25px me-2">
                       <img *ngIf="order.orderable?.meeting_booking?.insighter?.profile_photo_url"
                            [src]="order.orderable?.meeting_booking?.insighter?.profile_photo_url"
@@ -45,37 +45,39 @@
                         </span>
                       </div>
                     </div>
-                    <span class="text-muted fs-7">{{ order.orderable?.meeting_booking?.insighter?.name || 'Unknown' }}</span>
-                    <span class="badge badge-light-success ms-2 mb-0">
+                    <span class="text-muted fs-7 me-2">{{ order.orderable?.meeting_booking?.insighter?.name || 'Unknown' }}</span>
+                    <span class="badge badge-light-success ms-auto ms-md-2 mb-0">
                       {{ lang === 'ar' ? 'خبير' : 'Insighter' }}
                     </span>
                   </div>
                 </div>
               </div>
-              <div class="d-flex gap-2">
-                <button 
-                  type="button" 
+              <div class="d-flex flex-column flex-sm-row gap-2 w-100 w-md-auto">
+                <button
+                  type="button"
                   class="btn btn-info btn-sm"
                   (click)="selectOrder(order)">
-                  {{ lang === 'ar' ? 'تفاصيل الطلب' : 'Order Details' }}
+                  <span class="d-none d-sm-inline">{{ lang === 'ar' ? 'تفاصيل الطلب' : 'Order Details' }}</span>
+                  <span class="d-sm-none">{{ lang === 'ar' ? 'التفاصيل' : 'Details' }}</span>
                 </button>
-                <button 
-                  type="button" 
-                  class="btn btn-light-info btn-sm "
+                <button
+                  type="button"
+                  class="btn btn-light-info btn-sm"
                   (click)="downloadInvoice(order)">
                   <i class="ki-outline ki-file-down fs-6 me-1"></i>
-                  {{ lang === 'ar' ? 'تحميل الفاتورة' : 'Download Invoice' }}
+                  <span class="d-none d-sm-inline">{{ lang === 'ar' ? 'تحميل الفاتورة' : 'Download Invoice' }}</span>
+                  <span class="d-sm-none">{{ lang === 'ar' ? 'الفاتورة' : 'Invoice' }}</span>
                 </button>
               </div>
             </div>
 
             <!-- Order Info Row -->
-            <div class="mb-4 d-flex flex-wrap gap-3">
-              <div>
+            <div class="mb-4 d-flex flex-column flex-sm-row gap-3">
+              <div class="me-sm-4">
                 <span class="text-muted fs-7">{{ lang === 'ar' ? 'النوع:' : 'Type:' }}</span>
                 <span class="ms-2 fw-semibold">{{ utils.getServiceTypeDisplay(order.service) }}</span>
               </div>
-           
+
               <div>
                 <span class="text-muted fs-7">{{ lang === 'ar' ? 'الحالة:' : 'Status:' }}</span>
                 <span class="ms-2 text-uppercase" [ngClass]="utils.getStatusBadgeClass(order.status)">
@@ -86,19 +88,19 @@
 
             <!-- Meeting Details -->
             <div *ngIf="order.orderable">
-              <div *ngIf="order.orderable.meeting_booking" class="bg-light-info rounded p-4">
-                <div class="d-flex justify-content-between align-items-start mb-3">
-                  <div>
+              <div *ngIf="order.orderable.meeting_booking" class="bg-light-info rounded p-3 p-md-4">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start mb-3 gap-2">
+                  <div class="flex-grow-1">
                     <h6 class="mb-1 fw-bold text-dark">{{ order.orderable.meeting_booking.title }}</h6>
                     <p class="text-muted fs-7 mb-0">{{ order.orderable.meeting_booking.description }}</p>
                   </div>
-                  <span class="badge text-capitalize" [ngClass]="utils.getMeetingStatusBadgeClass(order.orderable.meeting_booking.status)">
+                  <span class="badge text-capitalize align-self-start" [ngClass]="utils.getMeetingStatusBadgeClass(order.orderable.meeting_booking.status)">
                     {{ utils.getMeetingStatusDisplay(order.orderable.meeting_booking.status, lang) }}
                   </span>
                 </div>
-                
+
                 <div class="row g-3 mt-2">
-                  <div class="col-md-4">
+                  <div class="col-12 col-sm-6 col-lg-4">
                     <div class="d-flex align-items-center">
                       <i class="ki-outline ki-calendar fs-5 text-info me-2"></i>
                       <div>
@@ -107,7 +109,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-md-4">
+                  <div class="col-12 col-sm-6 col-lg-4">
                     <div class="d-flex align-items-center">
                       <i class="ki-outline ki-time fs-5 text-info me-2"></i>
                       <div>
@@ -116,7 +118,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-md-4">
+                  <div class="col-12 col-sm-6 col-lg-4">
                     <div class="d-flex align-items-center">
                       <i class="ki-outline ki-timer fs-5 text-info me-2"></i>
                       <div>

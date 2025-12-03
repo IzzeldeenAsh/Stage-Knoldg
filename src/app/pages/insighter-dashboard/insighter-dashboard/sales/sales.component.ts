@@ -102,6 +102,18 @@ export class SalesComponent extends BaseComponent implements OnInit, OnDestroy, 
     { label: 'Yearly', labelAr: 'سنوي', value: 'yearly' }
   ];
 
+  getShortLabel(option: {label: string; labelAr: string; value: PeriodType}, lang: string): string {
+    const shortLabels: Record<string, {en: string; ar: string}> = {
+      'weekly': { en: 'Week', ar: 'أسبوع' },
+      'monthly': { en: 'Month', ar: 'شهر' },
+      'yearly': { en: 'Year', ar: 'سنة' }
+    };
+
+    return lang === 'ar'
+      ? shortLabels[option.value]?.ar || option.labelAr
+      : shortLabels[option.value]?.en || option.label;
+  }
+
   constructor(
     injector: Injector,
     private salesService: SalesService,
