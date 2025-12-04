@@ -702,46 +702,39 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
         error: (error) => {
           console.error('File upload error:', error);
 
+          // Prefer backend "errors" details over generic message
           let errorMessage = 'Failed to upload file';
-          let detectedLanguage = null;
+          let detectedLanguage: string | null = null;
+          const backendType = error?.error?.type;
+          const backendErrors = error?.error?.errors;
 
-          // Extract detected language from error response
-          if (error.error && error.error.errors && error.error.errors.language) {
-            detectedLanguage = error.error.errors.language[0]; // Get the first language from array
+          if (backendErrors) {
+            const fileMsgs = Array.isArray(backendErrors.file) ? backendErrors.file.join(', ') : (backendErrors.file || '');
+            const langMsgRaw = Array.isArray(backendErrors.language) ? backendErrors.language[0] : backendErrors.language;
+            const langMsg = typeof langMsgRaw === 'string' ? langMsgRaw : '';
+
+            // Compose a concise, informative message e.g. "Document language mismatch — language: arabic"
+            if (fileMsgs) {
+              errorMessage = fileMsgs + (langMsg ? ` — language: ${langMsg}` : '');
+            } else if (langMsg) {
+              errorMessage = `language: ${langMsg}`;
+            }
+
+            if (langMsg) {
+              detectedLanguage = langMsg;
+            }
+          } else if (error?.error?.message) {
+            errorMessage = error.error.message;
+          } else if (error?.message) {
+            errorMessage = error.message;
           }
 
-          if (error.error && error.error.message) {
-            // Check for language mismatch error
-            if (error.error.message.includes('language mismatch') || error.error.message.toLowerCase().includes('document language')) {
-              if (detectedLanguage) {
-                errorMessage = `Document language mismatch: Detected "${detectedLanguage}" document, but all knowledge documents must use the same language. Please upload documents in a consistent language.`;
-                // Store the detected language even though upload failed
-                doc.language = detectedLanguage;
-                this.documents[index] = { ...doc };
-                this.documents = [...this.documents];
-                this.cdr.detectChanges();
-              } else {
-                errorMessage = 'Document language mismatch: All knowledge documents must use the same language. Please upload documents in a consistent language.';
-              }
-            } else {
-              errorMessage += `: ${error.error.message}`;
-            }
-          } else if (error.message) {
-            // Also check the regular error message
-            if (error.message.includes('language mismatch') || error.message.toLowerCase().includes('document language')) {
-              if (detectedLanguage) {
-                errorMessage = `Document language mismatch: Detected "${detectedLanguage}" document, but all knowledge documents must use the same language. Please upload documents in a consistent language.`;
-                // Store the detected language even though upload failed
-                doc.language = detectedLanguage;
-                this.documents[index] = { ...doc };
-                this.documents = [...this.documents];
-                this.cdr.detectChanges();
-              } else {
-                errorMessage = 'Document language mismatch: All knowledge documents must use the same language. Please upload documents in a consistent language.';
-              }
-            } else {
-              errorMessage += `: ${error.message}`;
-            }
+          // Persist detected language on the document when available
+          if (detectedLanguage) {
+            doc.language = detectedLanguage;
+            this.documents[index] = { ...doc };
+            this.documents = [...this.documents];
+            this.cdr.detectChanges();
           }
 
           control.get('uploadStatus')?.setValue('error');
@@ -750,7 +743,7 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
           doc.errorMessage = errorMessage;
           
           // Immediately reset upload in progress indicators for language mismatch errors
-          if (errorMessage.includes('language mismatch') || errorMessage.includes('Document language mismatch')) {
+          if (errorMessage.toLowerCase().includes('language mismatch') || errorMessage.includes('Document language mismatch')) {
             this.pendingUploads = 0;
             this.uploadsInProgress = false;
             this.hasActiveUploads = false;
@@ -762,7 +755,12 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
             }
           }
 
-          this.showError('Upload Error', errorMessage);
+          // Use warning toast when backend marks it as a warning
+          if (backendType === 'warning') {
+            this.showWarn(this.lang === 'ar' ? 'تحذير الرفع' : 'Upload Warning', errorMessage);
+          } else {
+            this.showError(this.lang === 'ar' ? 'خطأ في الرفع' : 'Upload Error', errorMessage);
+          }
         },
         complete: () => {
           // Decrement the pending uploads counter
