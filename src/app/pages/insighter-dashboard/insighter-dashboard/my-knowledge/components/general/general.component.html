@@ -4,7 +4,7 @@
   <!--begin::Search and Filters-->
   <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center w-100 gap-3 mb-4" *ngIf="(knowledges && knowledges.length > 0) || searchTerm || selectedKnowledgeType">
     <!--begin::Search section-->
-    <div class="d-flex align-items-center" [ngClass]="allKnowledges && allKnowledges.length > 0 ? 'w-100 w-md-auto' : 'w-100'">
+    <div class="d-flex align-items-center" >
       <!--begin::Search-->
       <div class="d-flex align-items-center position-relative my-1 w-100">
         <i class="ki-outline ki-magnifier fs-1 position-absolute mx-2"></i>
@@ -459,7 +459,7 @@ styleClass=""
 style="top: 200px; height: calc(100vh - 100px); overflow-y: auto;">
 <div class="card">
 <div class="card-body">
- <app-package-builder-content
+ <!-- <app-package-builder-content
    [packageName]="packageName"
    [(packages)]="packages"
    [(discount)]="discount"
@@ -469,14 +469,14 @@ style="top: 200px; height: calc(100vh - 100px); overflow-y: auto;">
    [loading]="loading"
    (savePackage)="showEmittedPackage($event)"
    (onKnowledgeSelect)="onKnowledgeSelect($event)">
- </app-package-builder-content>
+ </app-package-builder-content> -->
 </div>
 </div>
 </div>
 </div>
 
 <!-- Package Builder Dialog for small screens -->
-<p-dialog 
+<!-- <p-dialog 
   [(visible)]="showDialog" 
   [modal]="true"
   [style]="{width: '90vw', maxWidth: '800px'}"
@@ -499,7 +499,7 @@ style="top: 200px; height: calc(100vh - 100px); overflow-y: auto;">
     (savePackage)="showEmittedPackage($event)"
     (onKnowledgeSelect)="onKnowledgeSelect($event)">
   </app-package-builder-content>
-</p-dialog>
+</p-dialog> -->
 </div>
 <!--end::Card body-->
 

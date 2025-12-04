@@ -125,7 +125,7 @@ interface FlatNode {
           <span class="text-muted fs-8 mx-2" *ngIf="!isRequired"> ({{'OPTIONAL' | translate}}) </span>
         </label>
         <span *ngIf="isAiGenerated" class="ai-generated-badge ms-2 mb-2">
-          AI Generated
+          AI Suggested
         </span>
       </div>
       <div class="position-relative">

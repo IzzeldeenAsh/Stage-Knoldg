@@ -323,6 +323,128 @@
   color: #dc3545 !important;
 }
 
+// Chart Header Container - Mobile Responsive Layout
+.chart-header-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+}
+
+.chart-title-section {
+  flex: 1;
+  min-width: 0;
+
+  .card-title {
+    margin: 0;
+
+    .card-label {
+      font-size: 1.5rem;
+      line-height: 1.3;
+
+      @media (min-width: 768px) {
+        font-size: 1.75rem;
+      }
+    }
+
+    .text-muted {
+      font-size: 0.875rem;
+      line-height: 1.4;
+    }
+  }
+}
+
+.chart-controls-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+
+  @media (min-width: 576px) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: auto;
+  }
+
+  @media (min-width: 768px) {
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-start;
+    gap: 1rem;
+  }
+
+  @media (min-width: 992px) {
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .export-btn {
+    white-space: nowrap;
+    min-width: fit-content;
+
+    @media (max-width: 575.98px) {
+      width: 100%;
+      padding: 0.75rem 1rem;
+
+      .ki-outline {
+        font-size: 1.25rem !important;
+      }
+    }
+  }
+}
+
+// Enhanced Nested Tab Navigation
+.nested-tab-nav {
+  &.mobile-friendly {
+    width: 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    @media (min-width: 576px) {
+      width: auto;
+      overflow-x: visible;
+    }
+
+    .nested-tab-button {
+      flex: 1;
+      min-width: fit-content;
+      white-space: nowrap;
+
+      @media (max-width: 575.98px) {
+        flex: 0 0 auto;
+        min-width: 60px;
+        padding: 0.45rem 0.8rem;
+        font-size: 0.75rem;
+
+        .period-short {
+          font-size: 0.7rem;
+          font-weight: 600;
+        }
+      }
+
+      @media (min-width: 576px) {
+        flex: 1 1 auto;
+        min-width: 100px;
+      }
+    }
+  }
+}
+
 // Responsive design
 @media (max-width: 768px) {
   .nested-tab-nav {
@@ -349,6 +471,8 @@
   }
 
   .card-header {
+    padding: 1.5rem 1rem;
+
     .d-flex {
       flex-direction: column;
       gap: 1rem;

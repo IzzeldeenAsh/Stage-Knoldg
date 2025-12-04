@@ -51,6 +51,18 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
     { label: 'Yearly', labelAr: 'سنوي', value: 'yearly' }
   ];
 
+  getShortPeriodLabel(option: {label: string; labelAr: string; value: 'weekly' | 'monthly' | 'yearly'}, lang: string): string {
+    const shortLabels: Record<string, {en: string; ar: string}> = {
+      'weekly': { en: 'Week', ar: 'أسبوع' },
+      'monthly': { en: 'Month', ar: 'شهر' },
+      'yearly': { en: 'Year', ar: 'سنة' }
+    };
+
+    return lang === 'ar'
+      ? shortLabels[option.value]?.ar || option.labelAr
+      : shortLabels[option.value]?.en || option.label;
+  }
+
   // Chart data from API
   chartApiData: ChartDataPoint[] = [];
   useApiData: boolean = true;

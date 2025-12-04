@@ -26,6 +26,7 @@ export class OrderStatisticsService {
   private currentLang = 'en';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   private statisticsSubject = new BehaviorSubject<OrderStatistics | null>(null);
+  private hasLoadedStatistics = false;
 
   constructor(
     private http: HttpClient,
@@ -42,6 +43,9 @@ export class OrderStatisticsService {
   }
 
   get statistics$(): Observable<OrderStatistics | null> {
+    if (!this.hasLoadedStatistics && !this.isLoadingSubject.value) {
+      this.loadStatistics();
+    }
     return this.statisticsSubject.asObservable();
   }
 
@@ -84,11 +88,17 @@ export class OrderStatisticsService {
   }
 
   loadStatistics(): void {
+    if (this.hasLoadedStatistics || this.isLoadingSubject.value) {
+      return;
+    }
+
+    this.hasLoadedStatistics = true;
     this.getOrderStatistics().subscribe({
       next: (response) => {
         this.statisticsSubject.next(response.data);
       },
       error: (error) => {
+        this.hasLoadedStatistics = false;
         console.error('Error loading order statistics:', error);
       }
     });

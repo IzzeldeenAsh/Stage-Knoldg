@@ -62,7 +62,7 @@ const inits: ICreateKnowldege = {
   countries: [],
   economic_blocs: [],
   description: '',
-  targetMarket: '1',
+  targetMarket: '3',
   customTopic: '',
   documents: [],
   knowledgeId: 0,
