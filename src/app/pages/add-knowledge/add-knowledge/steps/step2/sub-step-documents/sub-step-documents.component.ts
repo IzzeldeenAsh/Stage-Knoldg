@@ -707,37 +707,21 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
           let detectedLanguage: string | null = null;
           const backendType = error?.error?.type;
           const backendErrors = error?.error?.errors;
+          const backendMessage = error?.error?.message;
 
-          if (backendErrors) {
-            const fileMsgs = Array.isArray(backendErrors.file) ? backendErrors.file.join(', ') : (backendErrors.file || '');
-            const langMsgRaw = Array.isArray(backendErrors.language) ? backendErrors.language[0] : backendErrors.language;
-            const langMsg = typeof langMsgRaw === 'string' ? langMsgRaw : '';
-
-            // Use a localized, contextual message for language mismatch cases
-            const looksLikeMismatch =
-              (typeof fileMsgs === 'string' && fileMsgs.toLowerCase().includes('language')) ||
-              (typeof fileMsgs === 'string' && fileMsgs.toLowerCase().includes('mismatch')) ||
-              (typeof error?.error?.message === 'string' && error.error.message.toLowerCase().includes('language')) ||
-              !!langMsg;
-
-            if (looksLikeMismatch) {
-              errorMessage = this.buildLanguageMismatchMessage(langMsg || null);
-            } else if (fileMsgs) {
-              errorMessage = typeof fileMsgs === 'string' ? fileMsgs : 'Validation error';
-            }
-
-            if (langMsg) {
-              detectedLanguage = langMsg;
-            }
-          } else if (error?.error?.message) {
-            const msg = String(error.error.message);
-            if (msg.toLowerCase().includes('language')) {
-              errorMessage = this.buildLanguageMismatchMessage(null);
-            } else {
-              errorMessage = msg;
-            }
+          // Show ONLY the backend-provided message when available
+          if (backendMessage && typeof backendMessage === 'string') {
+            errorMessage = backendMessage;
           } else if (error?.message) {
             errorMessage = error.message;
+          }
+
+          // Optionally persist detected language (without altering the shown message)
+          if (backendErrors && backendErrors.language) {
+            const langMsgRaw = Array.isArray(backendErrors.language) ? backendErrors.language[0] : backendErrors.language;
+            if (typeof langMsgRaw === 'string') {
+              detectedLanguage = langMsgRaw;
+            }
           }
 
           // Persist detected language on the document when available
