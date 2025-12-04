@@ -713,18 +713,29 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
             const langMsgRaw = Array.isArray(backendErrors.language) ? backendErrors.language[0] : backendErrors.language;
             const langMsg = typeof langMsgRaw === 'string' ? langMsgRaw : '';
 
-            // Compose a concise, informative message e.g. "Document language mismatch — language: arabic"
-            if (fileMsgs) {
-              errorMessage = fileMsgs + (langMsg ? ` — language: ${langMsg}` : '');
-            } else if (langMsg) {
-              errorMessage = `language: ${langMsg}`;
+            // Use a localized, contextual message for language mismatch cases
+            const looksLikeMismatch =
+              (typeof fileMsgs === 'string' && fileMsgs.toLowerCase().includes('language')) ||
+              (typeof fileMsgs === 'string' && fileMsgs.toLowerCase().includes('mismatch')) ||
+              (typeof error?.error?.message === 'string' && error.error.message.toLowerCase().includes('language')) ||
+              !!langMsg;
+
+            if (looksLikeMismatch) {
+              errorMessage = this.buildLanguageMismatchMessage(langMsg || null);
+            } else if (fileMsgs) {
+              errorMessage = typeof fileMsgs === 'string' ? fileMsgs : 'Validation error';
             }
 
             if (langMsg) {
               detectedLanguage = langMsg;
             }
           } else if (error?.error?.message) {
-            errorMessage = error.error.message;
+            const msg = String(error.error.message);
+            if (msg.toLowerCase().includes('language')) {
+              errorMessage = this.buildLanguageMismatchMessage(null);
+            } else {
+              errorMessage = msg;
+            }
           } else if (error?.message) {
             errorMessage = error.message;
           }
@@ -1312,6 +1323,55 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
 
   // Debug method to check template conditions
   checkLanguageDisplayConditions(): void {
+  }
+
+  // Localize language names for UI messages
+  private localizeLanguageName(langValue: string | null | undefined, uiLang: string): string {
+    if (!langValue) return '';
+    const v = String(langValue).toLowerCase();
+    const mapEn: { [k: string]: string } = {
+      ar: 'Arabic',
+      arabic: 'Arabic',
+      en: 'English',
+      english: 'English',
+      fr: 'French',
+      french: 'French',
+      es: 'Spanish',
+      spanish: 'Spanish'
+    };
+    const mapAr: { [k: string]: string } = {
+      ar: 'العربية',
+      arabic: 'العربية',
+      en: 'الإنجليزية',
+      english: 'الإنجليزية',
+      fr: 'الفرنسية',
+      french: 'الفرنسية',
+      es: 'الإسبانية',
+      spanish: 'الإسبانية'
+    };
+    return uiLang === 'ar' ? (mapAr[v] || v) : (mapEn[v] || v.charAt(0).toUpperCase() + v.slice(1));
+  }
+
+  // Build a rich, localized message for language mismatch cases
+  private buildLanguageMismatchMessage(detectedLanguage: string | null | undefined): string {
+    const localizedLang = this.localizeLanguageName(detectedLanguage || '', this.lang);
+    if (this.lang === 'ar') {
+      // Keep spaces around colon as requested
+      const uploaded = localizedLang ? `لغة الملف المرفوع : ${localizedLang}` : '';
+      const parts = [
+        'عدم تطابق لغة المستند.',
+        'يجب أن تكون جميع المستندات بنفس لغة المحتوى.',
+        uploaded
+      ].filter(Boolean);
+      return parts.join(' ');
+    }
+    const uploaded = localizedLang ? `Uploaded file language: ${localizedLang}` : '';
+    const parts = [
+      'Document language mismatch.',
+      'All documents must have the same language content.',
+      uploaded
+    ].filter(Boolean);
+    return parts.join(' ');
   }
 
   processFile(file: File, index?: number): void {
