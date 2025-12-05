@@ -85,11 +85,9 @@
     @media screen and (max-width: 992px) {
       width: 90%;
       margin: 0 auto;
-      padding-top: 30px;
       
       &.collapsed {
         width: 80px;
-        margin: 30px auto 0;
       }
     }
 }
@@ -652,7 +650,13 @@
 
 @media screen and (max-width: 576px) {
  .pt-sm-160px{
-  padding-top: 160px;
+  padding-top: 115px;
  }
 }
   
+
+@media screen and (max-width: 992px) and (min-width: 577px) {
+  .responsive-cont {
+    padding-top: 80px;
+  }
+}
