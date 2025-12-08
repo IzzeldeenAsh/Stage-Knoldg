@@ -160,6 +160,7 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
       facebook: this.getSocialLink('facebook'),
       twitter: this.getSocialLink('twitter'),
       instagram: this.getSocialLink('instagram'),
+      youtube: this.getSocialLink('youtube'),
     }); 
   }
 
@@ -192,7 +193,7 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
       consulting_field: [[]],
       linkedIn: ['', [Validators.pattern('^https://www\.linkedin\.com/.*$')]],
       facebook: ['', [Validators.pattern('^https://www\.facebook\.com/.*$')]],
-      twitter: ['', [Validators.pattern('^https://www\.(twitter\.com|x\.com)/.*$')]],
+      twitter: ['', [Validators.pattern('^https://(www\.)?(twitter\.com|x\.com)/.*$')]],
       instagram: ['', [Validators.pattern('^https://www\.instagram\.com/.*$')]],
       youtube: ['', [Validators.pattern('^https://www\.youtube\.com/.*$')]]
     });
@@ -415,40 +416,79 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
       });
     }
 
-    if (this.socialNetworks.length > 0) {
-      if (this.hasRole(['insighter'])) {
-        return this._profilePost.addInsighterSocial(this.socialNetworks);
-      } else if (this.hasRole(['company'])) {
-        return this._profilePost.addCompanySocial(this.socialNetworks);
-      }
+    // Always send socials for roles that support them, even if empty
+    if (this.hasRole(['insighter'])) {
+      return this._profilePost.addInsighterSocial(this.socialNetworks);
+    } else if (this.hasRole(['company'])) {
+      return this._profilePost.addCompanySocial(this.socialNetworks);
     }
     return of(null);
   }
 
   private handleServerErrors(error: any) {
-    if (error.error && error.error.errors) {
-      const serverErrors = error.error.errors;
-      for (const key in serverErrors) {
-        if (serverErrors.hasOwnProperty(key)) {
-          const messages = serverErrors[key];
-          if (error.error.type === "warning") {
-            this.showWarn('',messages.join(", "));
-          } else {
-            this.showError('',messages.join(", "));
+    const err = error?.error ?? error;
+    const isWarning = err?.type === "warning";
+    const show = (msg: string) => {
+      if (isWarning) {
+        this.showWarn('', msg);
+      } else {
+        this.showError('', msg);
+      }
+    };
+  
+    if (err?.errors) {
+      const messages: string[] = [];
+      if (Array.isArray(err.errors)) {
+        messages.push(...err.errors.map((m: any) => String(m)));
+      } else if (typeof err.errors === 'object') {
+        for (const key in err.errors) {
+          if (!Object.prototype.hasOwnProperty.call(err.errors, key)) continue;
+          const value = err.errors[key];
+          if (Array.isArray(value)) {
+            messages.push(...value.map((m: any) => String(m)));
+          } else if (typeof value === 'string') {
+            messages.push(value);
+          } else if (value && typeof value.message === 'string') {
+            messages.push(value.message);
           }
         }
       }
-    } else {
-      if (error.error && error.error.type === "warning") {
-        this.showWarn('','An unexpected warning occurred.');
-      } else {
-        this.showError('','An unexpected error occurred.');
+      if (messages.length > 0) {
+        show(messages.join(", "));
+        return;
       }
     }
+  
+    // Prefer explicit message from backend body
+    if (typeof err?.message === 'string' && err.message) {
+      show(err.message);
+      return;
+    }
+    // If backend sent a raw string as body
+    if (typeof err === 'string' && err) {
+      show(err);
+      return;
+    }
+    // Handle 5xx responses explicitly
+    const status: number | undefined = error?.status;
+    const statusText: string | undefined = error?.statusText;
+    if (typeof status === 'number' && status >= 500) {
+      const generic = this.lang === 'ar' ? 'خطأ في الخادم. الرجاء المحاولة لاحقًا.' : 'Server error. Please try again later.';
+      const suffix = status ? ` (HTTP ${status}${statusText ? `: ${statusText}` : ''})` : '';
+      show(generic + suffix);
+      return;
+    }
+  
+    show(this.lang === 'ar' ? 'حدث خطأ غير متوقع.' : 'An unexpected error occurred.');
   }
 
   private getSocialLink(type: string): string {
-    const social = this.socialNetworks.find(s => s.type === type);
+    const candidates = type === 'twitter'
+      ? ['twitter', 'x']
+      : type === 'x'
+        ? ['x', 'twitter']
+        : [type];
+    const social = this.socialNetworks.find(s => candidates.includes(s.type));
     return social ? social.link : '';
   }
 
