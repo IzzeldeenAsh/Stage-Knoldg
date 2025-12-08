@@ -1,9 +1,3 @@
-<!-- Loading Indicator -->
-<p-progressBar
-  *ngIf="isLoading$ | async"
-  mode="indeterminate"
-  [style]="{ height: '4px' }"
-></p-progressBar>
 
 <!-- Toolbar -->
 <div id="kt_app_toolbar" class="app-toolbar pt-10 mb-0">
@@ -61,75 +55,92 @@
         </div>
       </div>
       <div class="card-body pt-0">
-        <ng-container *ngIf="(isLoading$ | async) === false  && isicnodes">
-          <p-messages *ngIf="hasSuccessMessage" [(value)]="messages" [enableService]="false"></p-messages>
-          <p-treeTable
-            #tt
-            [value]="isicnodes"
-            [scrollable]="true"
-            [tableStyle]="{ 'min-width': '50rem' }"
-            [globalFilterFields]="['data.code', 'data.label', 'data.status', 'data.nameEn', 'data.nameAr']"
-          >
-            <ng-template pTemplate="header">
-              <tr>
-                <th>Name (EN)</th>
-                <th>Name (AR)</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
-              <tr [ttRow]="rowNode">
-                <td>
-                  <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+        <p-treeTable
+          #tt
+          [value]="isicnodes || []"
+          [scrollable]="true"
+          [scrollHeight]="'60vh'"
+          [tableStyle]="{ 'min-width': '50rem' }"
+          [globalFilterFields]="['data.code', 'data.label', 'data.status', 'data.nameEn', 'data.nameAr']"
+          [loading]="isLoading$ | async"
+          [showGridlines]="true"
+          [resizableColumns]="true"
+          columnResizeMode="fit"
+          [reorderableColumns]="true"
+          styleClass="p-treetable-sm"
+        >
+        
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td [attr.colspan]="4" class="text-center text-muted py-10">
+                No industries found.
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="loadingbody">
+            <tr>
+              <td colspan="4">
+                <div class="d-flex flex-column gap-3 py-5">
+                  <div class="skeleton-line"></div>
+                  <div class="skeleton-line"></div>
+                  <div class="skeleton-line"></div>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+            <tr [ttRow]="rowNode">
+              <td class="truncate">
+                <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                <span pTooltip="{{ rowData.nameEn }}" tooltipPosition="top">
                   {{ rowData.nameEn }}
-                </td>
-                <td>{{ rowData.nameAr }}</td>
-                <td>
-                  <div class="badge" [ngClass]="{
-                    'badge-light-success': rowData.status === 'active',
-                    'badge-light-danger': rowData.status === 'inactive',
-                    'badge-light-warning': rowData.status === 'suggestion'
-                  }">{{ rowData.status }}</div>
-                </td>
-                <td>
-                  <a
-                    pTooltip="Edit Industry"
-                    tooltipPosition="top"
-                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-                    (click)="editIsicCode(rowNode)"
-                  >
-                    <i class="ki-duotone ki-pencil fs-2">
-                      <span class="path1"></span>
-                      <span class="path2"></span>
-                    </i>
-                  </a>
-                  <a
-                    pTooltip="Delete Industry"
-                    tooltipPosition="top"
-                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
-                    (click)="deleteIsicCode(rowNode)"
-                  >
-                    <i class="ki-duotone ki-trash fs-2">
-                      <span class="path1"></span>
-                      <span class="path2"></span>
-                      <span class="path3"></span>
-                      <span class="path4"></span>
-                      <span class="path5"></span>
-                    </i>
-                  </a>
-                </td>
-              </tr>
-            </ng-template>
-          </p-treeTable>
-        </ng-container>
+                </span>
+              </td>
+              <td class="truncate">
+                <span pTooltip="{{ rowData.nameAr }}" tooltipPosition="top">
+                  {{ rowData.nameAr }}
+                </span>
+              </td>
+              <td>
+                <div class="badge text-capitalize" [ngClass]="{
+                  'badge-light-success': rowData.status === 'active',
+                  'badge-light-danger': rowData.status === 'inactive',
+                  'badge-light-warning': rowData.status === 'suggestion'
+                }">{{ rowData.status }}</div>
+              </td>
+              <td class="text-end actions-cell">
+                <a
+                  pTooltip="Edit Industry"
+                  tooltipPosition="top"
+                  class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                  (click)="editIsicCode(rowNode)"
+                >
+                  <i class="ki-duotone ki-pencil fs-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                  </i>
+                </a>
+                <a
+                  pTooltip="Delete Industry"
+                  tooltipPosition="top"
+                  class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
+                  (click)="deleteIsicCode(rowNode)"
+                >
+                  <i class="ki-duotone ki-trash fs-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                    <span class="path3"></span>
+                    <span class="path4"></span>
+                    <span class="path5"></span>
+                  </i>
+                </a>
+              </td>
+            </tr>
+          </ng-template>
+        </p-treeTable>
       </div>
     </div>
-    <p-progressBar
-      *ngIf="isLoading$ | async"
-      mode="indeterminate"
-      [style]="{ height: '4px' }"
-    ></p-progressBar>
+    <!-- Removed global progress bar; loading handled by table -->
   </div>
 </div>
 
@@ -148,7 +159,6 @@
   [(visible)]="displayDialog"
   [style]="{ width: '40rem' }"
 >
-  <p-messages *ngIf="hasErrorMessage" [(value)]="messages" [enableService]="false"></p-messages>
   <span class="text-muted mb-3 d-block">
     {{ isUpdate ? 'Edit Industry' : 'Add Industry' }}.
   </span>

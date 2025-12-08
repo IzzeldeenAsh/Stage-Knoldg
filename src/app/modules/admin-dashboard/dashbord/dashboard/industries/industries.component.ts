@@ -3,24 +3,23 @@ import {
   Component,
   OnInit,
   ViewChild,
-  OnDestroy,
+  Injector,
 } from '@angular/core';
-import { TreeNode, MessageService } from 'primeng/api';
+import { TreeNode } from 'primeng/api';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import Swal from 'sweetalert2';
 import { TreeTable } from 'primeng/treetable';
-import { TranslationService } from 'src/app/modules/i18n';
 import { IndustryService } from 'src/app/_fake/services/industries/industry.service';
+import { BaseComponent } from 'src/app/modules/base.component';
 
 @Component({
   selector: 'app-industries',
   templateUrl: './industries.component.html',
   styleUrls: ['./industries.component.scss'],
 })
-export class IndustriesComponent implements OnInit, OnDestroy {
+export class IndustriesComponent extends BaseComponent implements OnInit {
   messages: any[] = [];
-  private unsubscribe: Subscription[] = [];
 
   isicnodes!: TreeNode[];
   originalIsicNodes!: TreeNode[];
@@ -48,12 +47,14 @@ export class IndustriesComponent implements OnInit, OnDestroy {
   selectedParentNode: TreeNode | number = 0;
 
   constructor(
+     injector: Injector,
     private cdr: ChangeDetectorRef,
     private industriesService: IndustryService,
     private fb: FormBuilder,
-    private messageService: MessageService,
-    private trans: TranslationService
+    // private messageService: MessageService,
+    // private trans: TranslationService
   ) {
+    super(injector);
     this.isLoading$ = this.industriesService.isLoading$;
   }
 
@@ -243,11 +244,15 @@ export class IndustriesComponent implements OnInit, OnDestroy {
   }
 
   applyFilters() {
+    const hasActiveFilter = !!(this.selectedStatus || this.searchTerm);
     this.isicnodes = this.filterNodesRecursively(
       this.originalIsicNodes,
       this.selectedStatus,
       this.searchTerm.toLowerCase()
     );
+    if (hasActiveFilter) {
+      this.expandAllVisibleNodes();
+    }
   }
 
   filterNodesRecursively(
@@ -287,6 +292,22 @@ export class IndustriesComponent implements OnInit, OnDestroy {
     return statusMatches && termMatches;
   }
 
+  private expandAllVisibleNodes(): void {
+    if (!this.isicnodes || this.isicnodes.length === 0) {
+      return;
+    }
+    const expandRecursively = (nodes: TreeNode[]) => {
+      for (const node of nodes) {
+        node.expanded = true;
+        if (node.children && node.children.length > 0) {
+          expandRecursively(node.children);
+        }
+      }
+    };
+    expandRecursively(this.isicnodes);
+    this.cdr.detectChanges();
+  }
+
   onCancel() {
     this.displayDialog = false;
     this.selectedParentNode = 0;
@@ -294,47 +315,55 @@ export class IndustriesComponent implements OnInit, OnDestroy {
   }
 
   private handleServerErrors(error: any) {
-    this.messages = [];
-    if (error.error && error.error.errors) {
-      const serverErrors = error.error.errors;
-      const errorKeyToFormControlName: any = {
-        'name.en': 'nameEn',
-        'name.ar': 'nameAr',
-        status: 'status',
-        parent_id: 'parentNode',
-      };
+    // Prefer toast errors + inline field errors
+    const defaultSummary = this.lang === 'ar' ? 'حدث خطأ' : 'An error occurred';
+    try {
+      const serverErrors = error?.error?.errors;
+      const topMessage = error?.error?.message;
 
-      for (const key in serverErrors) {
-        if (serverErrors.hasOwnProperty(key)) {
+      if (topMessage && (!serverErrors || !serverErrors.common)) {
+        this.showError(defaultSummary, topMessage);
+      }
+
+      if (serverErrors) {
+        const errorKeyToFormControlName: Record<string, string> = {
+          'name.en': 'nameEn',
+          'name.ar': 'nameAr',
+          status: 'status',
+          parent_id: 'parentNode',
+        };
+
+        Object.keys(serverErrors).forEach((key) => {
           const messages = serverErrors[key];
-          const formControlName = errorKeyToFormControlName[key];
-          if (formControlName) {
-            const control = this.isicForm.get(formControlName);
+          const joined = Array.isArray(messages) ? messages.join(', ') : String(messages);
+
+          // Map known keys to form controls for inline display
+          const controlName = errorKeyToFormControlName[key];
+          if (controlName) {
+            const control = this.isicForm.get(controlName);
             if (control) {
-              control.setErrors({ serverError: messages[0] });
+              control.setErrors({ serverError: joined });
               control.markAsTouched();
             }
-          } else {
-            this.messages.push({
-              severity: 'error',
-              summary: '',
-              detail: messages.join(', '),
-            });
+            return;
           }
-        }
+
+          // 'common' or any other non-field error -> toast
+          this.showError(defaultSummary, joined);
+        });
+        return;
       }
-    } else {
-      this.messages.push({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'An unexpected error occurred.',
-      });
+
+      // Fallback generic
+      this.showError(defaultSummary, this.lang === 'ar' ? 'حدث خطأ غير متوقع.' : 'An unexpected error occurred.');
+    } catch {
+      this.showError(defaultSummary, this.lang === 'ar' ? 'حدث خطأ غير متوقع.' : 'An unexpected error occurred.');
     }
   }
 
-  ngOnDestroy() {
-    this.unsubscribe.forEach((sb) => sb.unsubscribe());
-  }
+  // ngOnDestroy() {
+  //   this.unsubscribe.forEach((sb) => sb.unsubscribe());
+  // }
 
   get nameEn() {
     return this.isicForm.get('nameEn');

@@ -4,6 +4,7 @@ import {
   Output,
   EventEmitter,
   OnInit,
+  OnChanges,
   OnDestroy,
   ChangeDetectionStrategy,
 } from "@angular/core";
@@ -38,7 +39,7 @@ import { TranslateService } from "@ngx-translate/core";
   styleUrls: ["./shared-tree-selector.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SharedTreeSelectorComponent implements OnInit, OnDestroy {
+export class SharedTreeSelectorComponent implements OnInit, OnChanges, OnDestroy {
   @Input() title: string = "Select Items";
   @Input() placeholder: string = "Select...";
   @Input() otherFieldPlaceholder: string = "Specify Other...";
@@ -76,6 +77,13 @@ export class SharedTreeSelectorComponent implements OnInit, OnDestroy {
     console.log(this.currentLang);
   }
 
+  ngOnChanges(): void {
+    // When inputs change (e.g., fetched data or initial selections), rebuild and re-sync
+    if (this.fetchedData) {
+      this.loadData();
+    }
+  }
+
   ngOnDestroy() {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }
@@ -95,6 +103,9 @@ export class SharedTreeSelectorComponent implements OnInit, OnDestroy {
       expanded: true,
     };
     this.nodes = this.addOtherOption([selectAllNode]);
+
+    // Sync committed selections with the currently available tree nodes
+    this.syncCommittedWithCurrentTree();
 
     // Initialize working state from committed state
     this.reApplySelection();
@@ -359,5 +370,34 @@ export class SharedTreeSelectorComponent implements OnInit, OnDestroy {
       this.dialogWidth = width < 768 ? "100vw" : "70vw";
     });
     this.unsubscribe.push(sub);
+  }
+
+  /**
+   * Ensures committedNodes only contains nodes that still exist in the current tree.
+   * Also maps them to the live tree nodes so labels stay up to date.
+   */
+  private syncCommittedWithCurrentTree(): void {
+    if (!this.committedNodes || this.committedNodes.length === 0 || !this.nodes || this.nodes.length === 0) {
+      return;
+    }
+    const allNodes = this.flattenTree(this.nodes[0]);
+    const validMap = new Map<string | number, TreeNode>();
+    for (const node of allNodes) {
+      if (node.key !== "selectAll" && !(node as any).isOther) {
+        validMap.set(node.key as any, node);
+      }
+    }
+    const nextCommitted: TreeNode[] = [];
+    for (const committed of this.committedNodes) {
+      const live = validMap.get(committed.key as any);
+      if (live) {
+        // Preserve custom input for "Other" if somehow present
+        if ((live as any).isOther && committed.data?.customInput) {
+          live.data = { ...(live.data || {}), customInput: committed.data.customInput };
+        }
+        nextCommitted.push(live);
+      }
+    }
+    this.committedNodes = nextCommitted;
   }
 }
