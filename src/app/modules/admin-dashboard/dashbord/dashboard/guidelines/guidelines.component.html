@@ -72,7 +72,7 @@
                     <div class="form-group mt-3">
                       <label>Guideline (English)</label>
                       <jodit-editor
-                        [config]="joditConfig"
+                        [config]="joditConfigEn"
                         [defaultValue]="getGuidelineForm(guideline.id).get('guidelineEn')?.value"
                         (onChange)="onEditorChange($event, guideline.id, 'guidelineEn')"
                       ></jodit-editor>
@@ -89,7 +89,7 @@
                     <div class="form-group mt-3">
                       <label>Guideline (Arabic)</label>
                       <jodit-editor
-                        [config]="joditConfig"
+                        [config]="joditConfigAr"
                         [defaultValue]="getGuidelineForm(guideline.id).get('guidelineAr')?.value"
                         (onChange)="onEditorChange($event, guideline.id, 'guidelineAr')"
                       ></jodit-editor>
@@ -198,7 +198,7 @@
                     <div class="form-group">
                       <label>Guideline (English)</label>
                       <jodit-editor
-                        [config]="joditConfig"
+                        [config]="joditConfigEn"
                         [defaultValue]="newGuidelineForm.get('guidelineEn')?.value"
                         (onChange)="onNewEditorChange($event, 'guidelineEn')"
                       ></jodit-editor>
@@ -215,7 +215,7 @@
                     <div class="form-group">
                       <label>Guideline (Arabic)</label>
                       <jodit-editor
-                        [config]="joditConfig"
+                        [config]="joditConfigAr"
                         [defaultValue]="newGuidelineForm.get('guidelineAr')?.value"
                         (onChange)="onNewEditorChange($event, 'guidelineAr')"
                       ></jodit-editor>

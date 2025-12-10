@@ -1,35 +1,39 @@
 // guideline.component.ts
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Injector } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import Swal from 'sweetalert2';
 import { Guideline, GuidelinesService } from 'src/app/_fake/services/guidelines/guidelines.service';
+import { BaseComponent } from 'src/app/modules/base.component';
 
 @Component({
   selector: 'app-guideline',
   templateUrl: './guidelines.component.html',
   styleUrls: ['./guidelines.component.scss'],
 })
-export class GuidelineComponent implements OnInit {
+export class GuidelineComponent extends BaseComponent implements OnInit {
   guidelines: Guideline[] = [];
   isLoading$: Observable<boolean>;
   guidelineForms: Map<number, FormGroup> = new Map();
   newGuidelineForm: FormGroup;
-  joditConfig: any = {
-    height: 300
-  };
+  joditConfig: any = {};
+  joditConfigAr: any = {};
+  joditConfigEn: any = {};
 
   constructor(
     private guidelinesService: GuidelinesService,
     private fb: FormBuilder,
-    private messageService: MessageService
+    injector: Injector
   ) {
+    super(injector);
     this.isLoading$ = this.guidelinesService.isLoading$;
   }
 
   ngOnInit(): void {
+    this.initializeJoditConfigs();
+
     this.newGuidelineForm = this.fb.group({
       nameEn: ['', Validators.required],
       nameAr: ['', Validators.required],
@@ -41,6 +45,51 @@ export class GuidelineComponent implements OnInit {
     });
 
     this.loadGuidelines();
+  }
+
+  private initializeJoditConfigs(): void {
+    // Configuration for English (LTR)
+    this.joditConfigEn = {
+      height: 300,
+      direction: 'ltr',
+      language: 'en',
+      textAlign: 'left',
+      toolbarAdaptive: false,
+      buttons: [
+        'bold', 'italic', 'underline', '|',
+        'ul', 'ol', '|',
+        'outdent', 'indent', '|',
+        'font', 'fontsize', '|',
+        'brush', 'paragraph', '|',
+        'image', 'table', 'link', '|',
+        'align', 'undo', 'redo', '|',
+        'hr', 'eraser', 'copyformat', '|',
+        'symbol', 'fullsize', 'print', 'about'
+      ]
+    };
+
+    // Configuration for Arabic (RTL)
+    this.joditConfigAr = {
+      height: 300,
+      direction: 'rtl',
+      language: 'ar',
+      textAlign: 'right',
+      toolbarAdaptive: false,
+      buttons: [
+        'bold', 'italic', 'underline', '|',
+        'ul', 'ol', '|',
+        'outdent', 'indent', '|',
+        'font', 'fontsize', '|',
+        'brush', 'paragraph', '|',
+        'image', 'table', 'link', '|',
+        'align', 'undo', 'redo', '|',
+        'hr', 'eraser', 'copyformat', '|',
+        'symbol', 'fullsize', 'print', 'about'
+      ]
+    };
+
+    // Default config (can be switched based on current language)
+    this.joditConfig = this.lang === 'ar' ? this.joditConfigAr : this.joditConfigEn;
   }
 
   /**
