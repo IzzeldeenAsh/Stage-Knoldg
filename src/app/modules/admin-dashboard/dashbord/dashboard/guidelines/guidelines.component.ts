@@ -1,11 +1,7 @@
-// guideline.component.ts
-
 import { Component, OnInit, Injector } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { MessageService } from 'primeng/api';
-import Swal from 'sweetalert2';
-import { Guideline, GuidelinesService } from 'src/app/_fake/services/guidelines/guidelines.service';
+import { GuidelineType, GuidelinesService } from 'src/app/_fake/services/guidelines/guidelines.service';
 import { BaseComponent } from 'src/app/modules/base.component';
 
 @Component({
@@ -14,17 +10,12 @@ import { BaseComponent } from 'src/app/modules/base.component';
   styleUrls: ['./guidelines.component.scss'],
 })
 export class GuidelineComponent extends BaseComponent implements OnInit {
-  guidelines: Guideline[] = [];
+  guidelineTypes: GuidelineType[] = [];
   isLoading$: Observable<boolean>;
-  guidelineForms: Map<number, FormGroup> = new Map();
-  newGuidelineForm: FormGroup;
-  joditConfig: any = {};
-  joditConfigAr: any = {};
-  joditConfigEn: any = {};
 
   constructor(
     private guidelinesService: GuidelinesService,
-    private fb: FormBuilder,
+    private router: Router,
     injector: Injector
   ) {
     super(injector);
@@ -32,260 +23,25 @@ export class GuidelineComponent extends BaseComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.initializeJoditConfigs();
-
-    this.newGuidelineForm = this.fb.group({
-      nameEn: ['', Validators.required],
-      nameAr: ['', Validators.required],
-      guidelineEn: ['', Validators.required],
-      guidelineAr: ['', Validators.required],
-      fileEn: [null],
-      fileAr: [null],
-      version: ['', Validators.required],
-    });
-
-    this.loadGuidelines();
+    this.loadGuidelineTypes();
   }
 
-  private initializeJoditConfigs(): void {
-    // Configuration for English (LTR)
-    this.joditConfigEn = {
-      height: 300,
-      direction: 'ltr',
-      language: 'en',
-      textAlign: 'left',
-      toolbarAdaptive: false,
-      buttons: [
-        'bold', 'italic', 'underline', '|',
-        'ul', 'ol', '|',
-        'outdent', 'indent', '|',
-        'font', 'fontsize', '|',
-        'brush', 'paragraph', '|',
-        'image', 'table', 'link', '|',
-        'align', 'undo', 'redo', '|',
-        'hr', 'eraser', 'copyformat', '|',
-        'symbol', 'fullsize', 'print', 'about'
-      ]
-    };
-
-    // Configuration for Arabic (RTL)
-    this.joditConfigAr = {
-      height: 300,
-      direction: 'rtl',
-      language: 'ar',
-      textAlign: 'right',
-      toolbarAdaptive: false,
-      buttons: [
-        'bold', 'italic', 'underline', '|',
-        'ul', 'ol', '|',
-        'outdent', 'indent', '|',
-        'font', 'fontsize', '|',
-        'brush', 'paragraph', '|',
-        'image', 'table', 'link', '|',
-        'align', 'undo', 'redo', '|',
-        'hr', 'eraser', 'copyformat', '|',
-        'symbol', 'fullsize', 'print', 'about'
-      ]
-    };
-
-    // Default config (can be switched based on current language)
-    this.joditConfig = this.lang === 'ar' ? this.joditConfigAr : this.joditConfigEn;
-  }
-
-  /**
-   * Ensure that any focused editor/control flushes its value to the form control.
-   * Some WYSIWYG editors propagate value on blur. We explicitly blur the active element.
-   */
-  private blurActiveElement(): void {
-    try {
-      const active = (document?.activeElement as HTMLElement | null) || null;
-      if (active && typeof active.blur === 'function') {
-        active.blur();
-      }
-    } catch {
-      // Ignore if document is unavailable (SSR) or any unexpected error occurs.
-    }
-  }
-
-  loadGuidelines() {
-    this.guidelinesService.getGuidelines().subscribe({
+  loadGuidelineTypes() {
+    this.guidelinesService.getGuidelineTypes().subscribe({
       next: (data) => {
-        this.guidelines = data;
-        // Initialize forms for each guideline
-        this.guidelines.forEach((guideline) => {
-          const form = this.fb.group({
-            nameEn: [guideline.names.en, Validators.required],
-            nameAr: [guideline.names.ar, Validators.required],
-            guidelineEn: [guideline.guidelines.en, Validators.required],
-            guidelineAr: [guideline.guidelines.ar, Validators.required],
-            fileEn: [null],
-            fileAr: [null],
-            version: [guideline.version, Validators.required],
-          });
-          this.guidelineForms.set(guideline.id, form);
-        });
-      },
-      error: (err) => console.error(err),
-    });
-  }
-
-  // Sync Jodit changes to reactive form for existing items
-  onEditorChange(event: any, guidelineId: number, controlName: 'guidelineEn' | 'guidelineAr'): void {
-    const form = this.getGuidelineForm(guidelineId);
-    const value =
-      (event && event.args && event.args.length ? event.args[0] : undefined) ??
-      (event && event.editor ? event.editor?.value : undefined) ??
-      '';
-    form.get(controlName)?.setValue(value);
-    form.get(controlName)?.markAsDirty();
-    form.updateValueAndValidity({ onlySelf: false, emitEvent: false });
-  }
-
-  // Sync Jodit changes to reactive form for new item
-  onNewEditorChange(event: any, controlName: 'guidelineEn' | 'guidelineAr'): void {
-    const value =
-      (event && event.args && event.args.length ? event.args[0] : undefined) ??
-      (event && event.editor ? event.editor?.value : undefined) ??
-      '';
-    this.newGuidelineForm.get(controlName)?.setValue(value);
-    this.newGuidelineForm.get(controlName)?.markAsDirty();
-    this.newGuidelineForm.updateValueAndValidity({ onlySelf: false, emitEvent: false });
-  }
-
-  getGuidelineForm(guidelineId: number): FormGroup {
-    return this.guidelineForms.get(guidelineId) || this.fb.group({});
-  }
-
-  saveGuideline(guidelineId: number) {
-    const form = this.getGuidelineForm(guidelineId);
-
-    // Flush editor changes to the form controls before reading values
-    this.blurActiveElement();
-    form.updateValueAndValidity({ onlySelf: false, emitEvent: false });
-
-    if (form.invalid) {
-      form.markAllAsTouched();
-      return;
-    }
-
-    const formData = new FormData();
-    const values = form.getRawValue();
-
-    formData.append('name[en]', values.nameEn);
-    formData.append('name[ar]', values.nameAr);
-    formData.append('guideline[en]', values.guidelineEn);
-    formData.append('guideline[ar]', values.guidelineAr);
-    formData.append('version', values.version);
-
-    if (values.fileEn) formData.append('file[en]', values.fileEn);
-    if (values.fileAr) formData.append('file[ar]', values.fileAr);
-    formData.append('_method', 'put');
-    this.guidelinesService
-      .createOrUpdateGuideline(formData, guidelineId)
-      .subscribe({
-        next: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'Guideline updated successfully.',
-          });
-          this.loadGuidelines();
-        },
-        error: (err) => {
-          console.error(err);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Failed to update guideline.',
-          });
-        },
-      });
-  }
-
-  createGuideline() {
-    const form = this.newGuidelineForm;
-
-    // Flush editor changes to the form controls before reading values
-    this.blurActiveElement();
-    form.updateValueAndValidity({ onlySelf: false, emitEvent: false });
-
-    if (form.invalid) {
-      form.markAllAsTouched();
-      return;
-    }
-
-    const formData = new FormData();
-    const values = form.getRawValue();
-
-    formData.append('name[en]', values.nameEn);
-    formData.append('name[ar]', values.nameAr);
-    formData.append('guideline[en]', values.guidelineEn);
-    formData.append('guideline[ar]', values.guidelineAr);
-    formData.append('version', values.version);
-
-    if (values.fileEn) formData.append('file[en]', values.fileEn);
-    if (values.fileAr) formData.append('file[ar]', values.fileAr);
-
-    this.guidelinesService.createOrUpdateGuideline(formData).subscribe({
-      next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Guideline created successfully.',
-        });
-        this.loadGuidelines();
-        this.newGuidelineForm.reset();
+        this.guidelineTypes = data;
       },
       error: (err) => {
         console.error(err);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to create guideline.',
-        });
+        this.showError(
+          this.lang === 'ar' ? 'حدث خطأ' : 'Error',
+          this.lang === 'ar' ? 'فشل في تحميل أنواع التوجيهات' : 'Failed to load guideline types'
+        );
       },
     });
   }
 
-  deleteGuideline(id: number) {
-    Swal.fire({
-      title: 'Are you sure?',
-      text: 'This action cannot be undone.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
-      cancelButtonText: 'Cancel',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.guidelinesService.deleteGuideline(id).subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Success',
-              detail: 'Guideline deleted successfully.',
-            });
-            this.loadGuidelines();
-          },
-          error: (err) => {
-            console.error(err);
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Failed to delete guideline.',
-            });
-          },
-        });
-      }
-    });
-  }
-
-  onFileChange(event: any, controlName: string, guidelineId?: number) {
-    const file = event.target.files[0];
-    if (guidelineId) {
-      const form = this.getGuidelineForm(guidelineId);
-      form.patchValue({ [controlName]: file });
-    } else {
-      this.newGuidelineForm.patchValue({ [controlName]: file });
-    }
+  navigateToGuideline(value: string) {
+    this.router.navigate(['/admin-dashboard/admin/dashboard/main-dashboard/guidelines', value]);
   }
 }

@@ -112,8 +112,12 @@ export class SharedTreeSelectorComponent implements OnInit, OnChanges, OnDestroy
   }
 
   /**
-   * Add "Other" nodes at desired hierarchy levels.
-   * This demo adds Other nodes at levels 0 & 1.
+   * Add "Other" nodes at desired hierarchy levels with de-duplication.
+   * We want:
+   * - Exactly ONE "Other" at the parent (level 0, under Select All)
+   * - Exactly ONE "Other" inside each top-level parent (level 1) to add a child for that parent
+   * If the API already returns an "Other" item, we convert it into an input-capable node
+   * instead of adding a duplicate.
    */
   addOtherOption(nodes: TreeNode[], level: number = 0): TreeNode[] {
     if (!nodes) return [];
@@ -122,7 +126,23 @@ export class SharedTreeSelectorComponent implements OnInit, OnChanges, OnDestroy
         node.children = this.addOtherOption(node.children, level + 1);
       }
 
-      if (level === 0 || level === 1) {
+      // Helper to detect an existing "Other" child (either from API or previously added)
+      const hasExistingOtherIndex =
+        (node.children || []).findIndex((child: any) => {
+          if (child?.isOther === true) return true;
+          const lbl = (child?.label || "").toString().trim().toLowerCase();
+          // Match common "other" labels (English/Arabic)
+          return lbl === "other" || lbl === "others" || lbl === "أخرى" || lbl === "اخرى";
+        });
+
+      // If an "Other" exists already, convert it into an input-capable "isOther" node
+      if (hasExistingOtherIndex !== -1) {
+        const existing = (node.children as any[])[hasExistingOtherIndex] as any;
+        existing.isOther = true;
+        existing.selectable = false;
+        existing.data = { ...(existing.data || {}), label: existing.label };
+      } else if (level === 0 || level === 1) {
+        // Otherwise, append exactly one "Other" at this level
         const otherNode: TreeNode = {
           key: `${node.key}-other`,
           label: "Other",
@@ -383,7 +403,7 @@ export class SharedTreeSelectorComponent implements OnInit, OnChanges, OnDestroy
     const allNodes = this.flattenTree(this.nodes[0]);
     const validMap = new Map<string | number, TreeNode>();
     for (const node of allNodes) {
-      if (node.key !== "selectAll" && !(node as any).isOther) {
+      if (node.key !== "selectAll") {
         validMap.set(node.key as any, node);
       }
     }

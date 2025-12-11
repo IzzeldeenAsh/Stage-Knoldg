@@ -31,8 +31,25 @@ export interface Guideline {
   };
 }
 
+export interface GuidelineDetail {
+  uuid: string;
+  name: string;
+  guideline: string;
+  version: string;
+  file: any;
+}
+
+export interface GuidelineDetailResponse {
+  data: GuidelineDetail;
+}
+
 export interface GuidelineResponse {
   data: Guideline[];
+}
+
+export interface GuidelineType {
+  value: string;
+  label: string;
 }
 
 @Injectable({
@@ -89,6 +106,47 @@ export class GuidelinesService {
     const apiUrl = `${this.createUpdateApi}/${id}`;
     this.setLoading(true);
     return this.http.delete(apiUrl, { headers }).pipe(
+      catchError(this.handleError),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  getGuidelineTypes(): Observable<GuidelineType[]> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': 'en'
+    });
+    const apiUrl = 'https://api.insightabusiness.com/api/common/setting/guideline/type';
+    this.setLoading(true);
+    return this.http.get<GuidelineType[]>(apiUrl, { headers }).pipe(
+      catchError(this.handleError),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  getCurrentGuidelineByType(type: string): Observable<GuidelineDetail> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': 'en'
+    });
+    const apiUrl = `https://api.insightabusiness.com/api/common/setting/guideline/type/current/${type}`;
+    this.setLoading(true);
+    return this.http.get<GuidelineDetailResponse>(apiUrl, { headers }).pipe(
+      map((res) => res.data),
+      catchError(this.handleError),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  getLastGuidelineByType(type: string): Observable<GuidelineDetail> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': 'en'
+    });
+    const apiUrl = `https://api.insightabusiness.com/api/common/setting/guideline/type/last/${type}`;
+    this.setLoading(true);
+    return this.http.get<GuidelineDetailResponse>(apiUrl, { headers }).pipe(
+      map((res) => res.data),
       catchError(this.handleError),
       finalize(() => this.setLoading(false))
     );

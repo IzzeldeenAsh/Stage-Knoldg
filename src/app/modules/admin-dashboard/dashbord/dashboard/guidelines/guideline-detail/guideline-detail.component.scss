@@ -1,0 +1,31 @@
+.guideline-icon {
+  transition: all 0.3s ease;
+
+  svg {
+    transition: all 0.3s ease;
+  }
+}
+
+.max-w-700px {
+  max-width: 700px;
+}
+
+.border-dashed {
+  border-style: dashed !important;
+  border-width: 2px !important;
+}
+
+.border-info {
+  border-color: var(--bs-info) !important;
+}
+
+@media (max-width: 768px) {
+  .guideline-icon svg {
+    width: 64px;
+    height: 64px;
+  }
+
+  h2 {
+    font-size: 1.5rem !important;
+  }
+}

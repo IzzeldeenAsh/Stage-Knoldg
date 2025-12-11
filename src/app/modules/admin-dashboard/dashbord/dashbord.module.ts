@@ -32,6 +32,7 @@ import { NodeService } from 'src/app/_fake/services/nodeService/nodeservice';
 import { TagsComponent } from './dashboard/tags/tags.component';
 import { HSCodeComponent } from './hscode/hscode.component';
 import { GuidelineComponent } from './dashboard/guidelines/guidelines.component';
+import { GuidelineDetailComponent } from './dashboard/guidelines/guideline-detail/guideline-detail.component';
 import { JoditAngularModule } from 'jodit-angular';
 import { ChipModule } from 'primeng/chip';
 import { TreeModule } from 'primeng/tree';
@@ -47,6 +48,7 @@ import { TagInputModule } from 'ngx-chips';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { PaginatorModule } from 'primeng/paginator';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { CalendarModule } from 'primeng/calendar';
 
 @NgModule({
   declarations: [
@@ -67,6 +69,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     RegionsComponent,
     IndustriesComponent,
     GuidelineComponent,
+    GuidelineDetailComponent,
     PositionsComponent,
     EconomicBlocksComponent,
   ],
@@ -98,6 +101,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     MultiSelectModule,
     PaginatorModule,
     ProgressSpinnerModule,
+    CalendarModule,
     NotificationsIconsPipe,
     NotificationsBgPipe,
   ],
