@@ -21,7 +21,7 @@
           <!-- Industry -->
           <div class=" col-12">
             <shared-tree-selector
-            [title]="'INSIGHTER_WIZARD.CONSULTING_FIELDS' | translate"
+            [title]="lang === 'ar' ? 'المجالات' : 'Specialties (Industries)'"
             [currentLang]="this.lang"
             [placeholder]="
               'AUTH.REGISTRATION.INDUSTRY_PLACEHOLDER' | translate
@@ -51,7 +51,7 @@
         <!-- Consulting Fields -->
         <div class=" col-12">
           <shared-tree-selector
-        
+        [title]="lang === 'ar' ? 'التخصصات' : 'Expertise'"
          
           [currentLang]="this.lang"
           [placeholder]="
@@ -362,7 +362,7 @@
         <!-- Consulting Fields -->
         <div class="col-12">
           <shared-tree-selector
-            [title]="'INSIGHTER_WIZARD.CONSULTING_FIELDS' | translate"
+            [title]="lang === 'ar' ? 'التخصصات' : 'Expertise'"
             [currentLang]="this.lang"
             [placeholder]="
               'AUTH.REGISTRATION.CONSULTING_FIELD_PLACEHOLDER' | translate
@@ -393,7 +393,7 @@
         <!-- ISIC Codes -->
         <div class="col-12">
           <shared-tree-selector
-          [title]="'AUTH.REGISTRATION.INDUSTRY' | translate"
+          [title]="lang === 'ar' ? 'المجالات' : 'Specialties (Industries)'"
           [currentLang]="this.lang"
           [placeholder]="
             'AUTH.REGISTRATION.INDUSTRY_PLACEHOLDER' | translate
