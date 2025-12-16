@@ -1,18 +1,18 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild, Injector } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { TreeNode, MessageService } from 'primeng/api';
+import { TreeNode } from 'primeng/api';
 import { TreeTable } from 'primeng/treetable';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import Swal from 'sweetalert2';
 import { ConsultingFieldTreeService } from 'src/app/_fake/services/consulting-fields-tree/consulting-fields-tree.service';
-import { TranslationService } from 'src/app/modules/i18n';
+import { BaseComponent } from 'src/app/modules/base.component';
 
 @Component({
   selector: 'app-consulting-fields',
   templateUrl: './consulting-fields.component.html',
   styleUrls: ['./consulting-fields.component.scss'],
 })
-export class ConsultingFieldsComponent implements OnInit, OnDestroy {
+export class ConsultingFieldsComponent extends BaseComponent implements OnInit {
   isicForm!: FormGroup;
   isicnodes!: TreeNode[];
   originalIsicNodes!: TreeNode[];
@@ -36,17 +36,16 @@ export class ConsultingFieldsComponent implements OnInit, OnDestroy {
   isLoading$: Observable<boolean>;
   messages: any[] = [];
   selectedParentNode: TreeNode | number = 0;
-  private unsubscribe: Subscription[] = [];
 
   @ViewChild('tt') treeTable!: TreeTable; 
 
   constructor(
+    injector: Injector,
     private cdr: ChangeDetectorRef,
     private fb: FormBuilder,
-    private messageService: MessageService,
-    private isicCodesService: ConsultingFieldTreeService,
-    private trans: TranslationService
+    private isicCodesService: ConsultingFieldTreeService
   ) {
+    super(injector);
     this.isLoading$ = this.isicCodesService.isLoading$;
   }
 
@@ -234,11 +233,15 @@ export class ConsultingFieldsComponent implements OnInit, OnDestroy {
   }
 
   applyFilters() {
+    const hasActiveFilter = !!(this.selectedStatus || this.searchTerm);
     this.isicnodes = this.filterNodesRecursively(
       this.originalIsicNodes,
       this.selectedStatus,
       this.searchTerm.toLowerCase()
     );
+    if (hasActiveFilter) {
+      this.expandAllVisibleNodes();
+    }
   }
 
   filterNodesRecursively(nodes: TreeNode[], selectedStatus: string, searchTerm: string): TreeNode[] {
@@ -273,6 +276,22 @@ export class ConsultingFieldsComponent implements OnInit, OnDestroy {
     return statusMatches && termMatches;
   }
 
+  private expandAllVisibleNodes(): void {
+    if (!this.isicnodes || this.isicnodes.length === 0) {
+      return;
+    }
+    const expandRecursively = (nodes: TreeNode[]) => {
+      for (const node of nodes) {
+        node.expanded = true;
+        if (node.children && node.children.length > 0) {
+          expandRecursively(node.children);
+        }
+      }
+    };
+    expandRecursively(this.isicnodes);
+    this.cdr.detectChanges();
+  }
+
   onCancel() {
     this.displayDialog = false;
     this.selectedParentNode = 0;
@@ -280,46 +299,52 @@ export class ConsultingFieldsComponent implements OnInit, OnDestroy {
   }
 
   private handleServerErrors(error: any) {
-    this.messages = [];
-    if (error.error && error.error.errors) {
-      const serverErrors = error.error.errors;
-      const errorKeyToFormControlName: any = {
-        'name.en': 'nameEn',
-        'name.ar': 'nameAr',
-        'status': 'status',
-        'parent_id': 'parentNode',
-      };
+    const defaultSummary = this.lang === 'ar' ? 'حدث خطأ' : 'An error occurred';
+    try {
+      const serverErrors = error?.error?.errors;
+      const topMessage = error?.error?.message;
 
-      for (const key in serverErrors) {
-        if (serverErrors.hasOwnProperty(key)) {
+      if (topMessage && (!serverErrors || !serverErrors.common)) {
+        this.showError(defaultSummary, topMessage);
+      }
+
+      if (serverErrors) {
+        const errorKeyToFormControlName: Record<string, string> = {
+          'name.en': 'nameEn',
+          'name.ar': 'nameAr',
+          status: 'status',
+          parent_id: 'parentNode',
+        };
+
+        Object.keys(serverErrors).forEach((key) => {
           const messages = serverErrors[key];
-          const formControlName = errorKeyToFormControlName[key];
-          if (formControlName) {
-            const control = this.isicForm.get(formControlName);
+          const joined = Array.isArray(messages) ? messages.join(', ') : String(messages);
+
+          const controlName = errorKeyToFormControlName[key];
+          if (controlName) {
+            const control = this.isicForm.get(controlName);
             if (control) {
-              control.setErrors({ serverError: messages[0] });
+              control.setErrors({ serverError: joined });
               control.markAsTouched();
             }
-          } else {
-            this.messages.push({
-              severity: 'error',
-              summary: '',
-              detail: messages.join(', '),
-            });
+            return;
           }
-        }
-      }
-    } else {
-      this.messages.push({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'An unexpected error occurred.',
-      });
-    }
-  }
 
-  ngOnDestroy() {
-    this.unsubscribe.forEach((sb) => sb.unsubscribe());
+          this.showError(defaultSummary, joined);
+        });
+        return;
+      }
+
+      this.showError(
+        defaultSummary,
+        this.lang === 'ar' ? 'حدث خطأ غير متوقع.' : 'An unexpected error occurred.'
+      );
+    } catch {
+      this.showError(
+        defaultSummary,
+        this.lang === 'ar' ? 'حدث خطأ غير متوقع.' : 'An unexpected error occurred.'
+      );
+    }
   }
 
   get nameEn()   { return this.isicForm.get('nameEn');   }

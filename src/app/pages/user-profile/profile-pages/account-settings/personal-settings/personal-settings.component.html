@@ -46,7 +46,7 @@
           <!-- Consulting Field -->
           <div class="col-lg-12 fv-row">
             <shared-tree-selector *ngIf="consultingFields"
-              [title]="'INSIGHTER_WIZARD.CONSULTING_FIELDS' | translate"
+              [title]="lang === 'ar' ? 'التخصصات' : 'Expertise'"
               [placeholder]="'AUTH.REGISTRATION.CONSULTING_FIELD_PLACEHOLDER' | translate"
               [isRequired]="true"
               [otherFieldPlaceholder]="'INSIGHTER_WIZARD.OTHER_FIELD_PLACEHOLDER' | translate"
@@ -70,7 +70,7 @@
             </div>
             <shared-tree-selector 
               *ngIf="industries && industries.length > 0"
-              [title]="'AUTH.REGISTRATION.INDUSTRY' | translate"
+              [title]="lang === 'ar' ? 'المجالات' : 'Specialties (Industries)'"
               [isRequired]="true"
               [placeholder]="'AUTH.REGISTRATION.INDUSTRY_PLACEHOLDER' | translate"
               [otherFieldPlaceholder]="'INSIGHTER_WIZARD.OTHER_FIELD_PLACEHOLDER' | translate"

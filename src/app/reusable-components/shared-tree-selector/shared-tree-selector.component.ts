@@ -4,6 +4,7 @@ import {
   Output,
   EventEmitter,
   OnInit,
+  OnChanges,
   OnDestroy,
   ChangeDetectionStrategy,
 } from "@angular/core";
@@ -38,7 +39,7 @@ import { TranslateService } from "@ngx-translate/core";
   styleUrls: ["./shared-tree-selector.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SharedTreeSelectorComponent implements OnInit, OnDestroy {
+export class SharedTreeSelectorComponent implements OnInit, OnChanges, OnDestroy {
   @Input() title: string = "Select Items";
   @Input() placeholder: string = "Select...";
   @Input() otherFieldPlaceholder: string = "Specify Other...";
@@ -76,6 +77,13 @@ export class SharedTreeSelectorComponent implements OnInit, OnDestroy {
     console.log(this.currentLang);
   }
 
+  ngOnChanges(): void {
+    // When inputs change (e.g., fetched data or initial selections), rebuild and re-sync
+    if (this.fetchedData) {
+      this.loadData();
+    }
+  }
+
   ngOnDestroy() {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }
@@ -96,13 +104,20 @@ export class SharedTreeSelectorComponent implements OnInit, OnDestroy {
     };
     this.nodes = this.addOtherOption([selectAllNode]);
 
+    // Sync committed selections with the currently available tree nodes
+    this.syncCommittedWithCurrentTree();
+
     // Initialize working state from committed state
     this.reApplySelection();
   }
 
   /**
-   * Add "Other" nodes at desired hierarchy levels.
-   * This demo adds Other nodes at levels 0 & 1.
+   * Add "Other" nodes at desired hierarchy levels with de-duplication.
+   * We want:
+   * - Exactly ONE "Other" at the parent (level 0, under Select All)
+   * - Exactly ONE "Other" inside each top-level parent (level 1) to add a child for that parent
+   * If the API already returns an "Other" item, we convert it into an input-capable node
+   * instead of adding a duplicate.
    */
   addOtherOption(nodes: TreeNode[], level: number = 0): TreeNode[] {
     if (!nodes) return [];
@@ -111,7 +126,23 @@ export class SharedTreeSelectorComponent implements OnInit, OnDestroy {
         node.children = this.addOtherOption(node.children, level + 1);
       }
 
-      if (level === 0 || level === 1) {
+      // Helper to detect an existing "Other" child (either from API or previously added)
+      const hasExistingOtherIndex =
+        (node.children || []).findIndex((child: any) => {
+          if (child?.isOther === true) return true;
+          const lbl = (child?.label || "").toString().trim().toLowerCase();
+          // Match common "other" labels (English/Arabic)
+          return lbl === "other" || lbl === "others" || lbl === "أخرى" || lbl === "اخرى";
+        });
+
+      // If an "Other" exists already, convert it into an input-capable "isOther" node
+      if (hasExistingOtherIndex !== -1) {
+        const existing = (node.children as any[])[hasExistingOtherIndex] as any;
+        existing.isOther = true;
+        existing.selectable = false;
+        existing.data = { ...(existing.data || {}), label: existing.label };
+      } else if (level === 0 || level === 1) {
+        // Otherwise, append exactly one "Other" at this level
         const otherNode: TreeNode = {
           key: `${node.key}-other`,
           label: "Other",
@@ -359,5 +390,34 @@ export class SharedTreeSelectorComponent implements OnInit, OnDestroy {
       this.dialogWidth = width < 768 ? "100vw" : "70vw";
     });
     this.unsubscribe.push(sub);
+  }
+
+  /**
+   * Ensures committedNodes only contains nodes that still exist in the current tree.
+   * Also maps them to the live tree nodes so labels stay up to date.
+   */
+  private syncCommittedWithCurrentTree(): void {
+    if (!this.committedNodes || this.committedNodes.length === 0 || !this.nodes || this.nodes.length === 0) {
+      return;
+    }
+    const allNodes = this.flattenTree(this.nodes[0]);
+    const validMap = new Map<string | number, TreeNode>();
+    for (const node of allNodes) {
+      if (node.key !== "selectAll") {
+        validMap.set(node.key as any, node);
+      }
+    }
+    const nextCommitted: TreeNode[] = [];
+    for (const committed of this.committedNodes) {
+      const live = validMap.get(committed.key as any);
+      if (live) {
+        // Preserve custom input for "Other" if somehow present
+        if ((live as any).isOther && committed.data?.customInput) {
+          live.data = { ...(live.data || {}), customInput: committed.data.customInput };
+        }
+        nextCommitted.push(live);
+      }
+    }
+    this.committedNodes = nextCommitted;
   }
 }

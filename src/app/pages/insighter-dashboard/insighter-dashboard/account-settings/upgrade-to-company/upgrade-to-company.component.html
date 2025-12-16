@@ -167,7 +167,7 @@
               <!-- Consulting Fields -->
               <div class="col-12 mb-8">
                 <shared-tree-selector
-                  [title]="'INSIGHTER_WIZARD.CONSULTING_FIELDS' | translate"
+                  [title]="lang === 'ar' ? 'التخصصات' : 'Expertise'"
                   [placeholder]="'AUTH.REGISTRATION.CONSULTING_FIELD_PLACEHOLDER' | translate"
                   [otherFieldPlaceholder]="'INSIGHTER_WIZARD.OTHER_FIELD_PLACEHOLDER' | translate"
                   [selectAllLabel]="this.lang === 'ar' ? 'اختر الكل' : 'Select All'"
@@ -190,7 +190,7 @@
               <!-- ISIC Codes / Industries -->
               <div class="col-12 mb-8">
                 <shared-tree-selector
-                  [title]="'AUTH.REGISTRATION.INDUSTRY' | translate"
+                  [title]="lang === 'ar' ? 'المجالات' : 'Specialties (Industries)'"
                   [placeholder]="'AUTH.REGISTRATION.INDUSTRY_PLACEHOLDER' | translate"
                   [otherFieldPlaceholder]="'INSIGHTER_WIZARD.OTHER_FIELD_PLACEHOLDER' | translate"
                   [selectAllLabel]="this.lang === 'ar' ? 'اختر الكل' : 'Select All'"

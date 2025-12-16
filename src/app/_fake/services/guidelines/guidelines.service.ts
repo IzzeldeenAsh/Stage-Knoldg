@@ -10,6 +10,7 @@ import {
   throwError,
   map,
 } from 'rxjs';
+import { TranslationService } from 'src/app/modules/i18n/translation.service';
 
 export interface Guideline {
   id: number;
@@ -31,8 +32,26 @@ export interface Guideline {
   };
 }
 
+export interface GuidelineDetail {
+  uuid: string;
+  name: string;
+  guideline: string;
+  version: string;
+  file: any;
+  apply_at?: string;
+}
+
+export interface GuidelineDetailResponse {
+  data: GuidelineDetail;
+}
+
 export interface GuidelineResponse {
   data: Guideline[];
+}
+
+export interface GuidelineType {
+  value: string;
+  label: string;
 }
 
 @Injectable({
@@ -43,8 +62,10 @@ export class GuidelinesService {
   private createUpdateApi = 'https://api.foresighta.co/api/admin/setting/guideline';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
-
-  constructor(private http: HttpClient) {}
+  currentLang: string = 'en';
+  constructor(private http: HttpClient,private translationService: TranslationService) {
+    this.currentLang = this.translationService.getSelectedLanguage();
+  }
 
   private setLoading(loading: boolean): void {
     this.isLoadingSubject.next(loading);
@@ -58,7 +79,7 @@ export class GuidelinesService {
   getGuidelines(): Observable<Guideline[]> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
-      'Accept-Language': 'en'
+      'Accept-Language': this.currentLang
     });
     this.setLoading(true);
     return this.http.get<GuidelineResponse>(this.apiUrl, { headers }).pipe(
@@ -71,7 +92,7 @@ export class GuidelinesService {
   createOrUpdateGuideline(guidelineData: FormData, id?: number): Observable<any> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
-      'Accept-Language': 'en'
+      'Accept-Language': this.currentLang
     });
     const apiUrl = id ? `${this.createUpdateApi}/${id}` : this.createUpdateApi;
     this.setLoading(true);
@@ -84,11 +105,52 @@ export class GuidelinesService {
   deleteGuideline(id: number): Observable<any> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
-      'Accept-Language': 'en'
+        'Accept-Language': this.currentLang
     });
     const apiUrl = `${this.createUpdateApi}/${id}`;
     this.setLoading(true);
     return this.http.delete(apiUrl, { headers }).pipe(
+      catchError(this.handleError),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  getGuidelineTypes(): Observable<GuidelineType[]> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+    const apiUrl = 'https://api.foresighta.co/api/common/setting/guideline/type';
+    this.setLoading(true);
+    return this.http.get<GuidelineType[]>(apiUrl, { headers }).pipe(
+      catchError(this.handleError),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  getCurrentGuidelineByType(type: string): Observable<GuidelineDetail> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+    const apiUrl = `https://api.foresighta.co/api/common/setting/guideline/type/current/${type}`;
+    this.setLoading(true);
+    return this.http.get<GuidelineDetailResponse>(apiUrl, { headers }).pipe(
+      map((res) => res.data),
+      catchError(this.handleError),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  getLastGuidelineByType(type: string): Observable<GuidelineDetail> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+    const apiUrl = `https://api.foresighta.co/api/common/setting/guideline/type/last/${type}`;
+    this.setLoading(true);
+    return this.http.get<GuidelineDetailResponse>(apiUrl, { headers }).pipe(
+      map((res) => res.data),
       catchError(this.handleError),
       finalize(() => this.setLoading(false))
     );

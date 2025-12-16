@@ -11,6 +11,7 @@ import { ISICCodeManagmentComponent } from './dashboard/isic-code-managment/isic
 import { TagsComponent } from './dashboard/tags/tags.component';
 import { HSCodeComponent } from './hscode/hscode.component';
 import { GuidelineComponent } from './dashboard/guidelines/guidelines.component';
+import { GuidelineDetailComponent } from './dashboard/guidelines/guideline-detail/guideline-detail.component';
 import { TopicsComponent } from './dashboard/topics/topics.component';
 import { IndustriesComponent } from './dashboard/industries/industries.component';
 import { RequestsListComponent } from './dashboard/requests-list/requests-list.component';
@@ -36,6 +37,7 @@ const routes: Routes = [
       { path: 'main-dashboard/tags', component: TagsComponent },
       { path: 'main-dashboard/hscode', component: HSCodeComponent },
       { path: 'main-dashboard/guidelines', component: GuidelineComponent },
+      { path: 'main-dashboard/guidelines/:value', component: GuidelineDetailComponent },
       { path: 'main-dashboard/economic-blocks', component: EconomicBlocksComponent },
       { path: '', redirectTo: 'main-dashboard/notifications', pathMatch: 'full' },
     ],

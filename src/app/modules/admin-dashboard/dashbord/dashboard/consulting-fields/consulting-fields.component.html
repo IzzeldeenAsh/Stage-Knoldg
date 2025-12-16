@@ -67,14 +67,7 @@
             [tableStyle]="{ 'min-width': '50rem' }"
             [globalFilterFields]="['data.code', 'data.label', 'data.status', 'data.nameEn', 'data.nameAr']"
           >
-            <ng-template pTemplate="header">
-              <tr>
-                <th>Name (EN)</th>
-                <th>Name (AR)</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </ng-template>
+           
             <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
               <tr [ttRow]="rowNode">
                 <td>

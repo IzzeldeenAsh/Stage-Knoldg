@@ -54,7 +54,7 @@
 
 
     <!-- Company Accounts - User Deactivation Option -->
-    <div class="delete-section border-1 border-light-danger w-100 mb-10 bg-white" *ngIf="hasRole(['company'])">
+    <div class="delete-section border-1 border-light-danger w-100 mb-10 bg-white" *ngIf="hasRole(['company']) && isActive">
         <div class="p-24px ">
             <div class="fs-2 fw-bolder mb-2">
                 {{ 'DEACTIVATE_ACCOUNT.TITLE_ACCOUNT' | translate }}
