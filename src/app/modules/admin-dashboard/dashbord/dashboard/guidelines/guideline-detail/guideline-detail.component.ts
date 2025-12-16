@@ -1,4 +1,4 @@
-import { Component, OnInit, Injector } from '@angular/core';
+import { Component, OnInit, Injector, AfterViewInit, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable, forkJoin } from 'rxjs';
@@ -12,7 +12,7 @@ import { environment } from 'src/environments/environment';
   templateUrl: './guideline-detail.component.html',
   styleUrls: ['./guideline-detail.component.scss']
 })
-export class GuidelineDetailComponent extends BaseComponent implements OnInit {
+export class GuidelineDetailComponent extends BaseComponent implements OnInit, AfterViewInit {
   currentValue: string | null = null;
   guidelineType: GuidelineType | null = null;
   isLoading$: Observable<boolean>;
@@ -26,6 +26,15 @@ export class GuidelineDetailComponent extends BaseComponent implements OnInit {
   showAddVersionModal = false;
   addVersionForm: FormGroup;
   isCreating = false;
+
+  // Collapsible content controls
+  @ViewChild('currentContent') currentContentRef?: ElementRef<HTMLElement>;
+  @ViewChild('lastContent') lastContentRef?: ElementRef<HTMLElement>;
+  isCurrentExpanded = false;
+  isLastExpanded = false;
+  hasCurrentOverflow = false;
+  hasLastOverflow = false;
+  private readonly COLLAPSED_MAX_HEIGHT_PX = 420;
 
   // Jodit editor configurations
   joditConfigEn = {
@@ -77,6 +86,7 @@ export class GuidelineDetailComponent extends BaseComponent implements OnInit {
     private route: ActivatedRoute,
     private fb: FormBuilder,
     private http: HttpClient,
+    private cdr: ChangeDetectorRef,
     injector: Injector
   ) {
     super(injector);
@@ -91,6 +101,11 @@ export class GuidelineDetailComponent extends BaseComponent implements OnInit {
         this.loadGuidelineDetail();
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    // Check overflow after initial render
+    setTimeout(() => this.checkOverflow(), 0);
   }
 
   loadGuidelineDetail() {
@@ -116,6 +131,12 @@ export class GuidelineDetailComponent extends BaseComponent implements OnInit {
         console.log('Current guideline:', this.currentGuideline);
         console.log('Last guideline:', this.lastGuideline);
         console.log('Should show last guideline:', this.shouldShowLastGuideline);
+
+        // Reset expanded states and recalc overflow after view updates
+        this.isCurrentExpanded = false;
+        this.isLastExpanded = false;
+        this.cdr.detectChanges();
+        setTimeout(() => this.checkOverflow(), 0);
       },
       error: (err) => {
         console.error(err);
@@ -176,12 +197,23 @@ export class GuidelineDetailComponent extends BaseComponent implements OnInit {
       return;
     }
 
+    // Show irreversible confirmation ONLY for specific types
+    if (this.requiresIrreversibleConfirm(this.currentValue)) {
+      const message =
+        this.lang === 'ar'
+          ? 'هذا الإجراء غير قابل للتراجع. سيتلقى جميع الخبراء بريداً إلكترونياً بالشروط الجديدة. هل تريد المتابعة؟'
+          : 'This action is irreversible. All insighters will receive an email with the new terms. Do you want to continue?';
+      const confirmed = window.confirm(message);
+      if (!confirmed) {
+        return;
+      }
+    }
+
     this.isCreating = true;
     const formValue = this.addVersionForm.value;
 
-    // Format the date for apply_at
-    const applyAtDate = new Date(formValue.applyAt);
-    const formattedDate = applyAtDate.toISOString().split('T')[0]; // YYYY-MM-DD format
+    // Format the date for apply_at using local timezone to avoid UTC shift
+    const formattedDate = this.formatDateLocal(formValue.applyAt);
 
     // Prepare form data according to API specification
     const formData = new FormData();
@@ -218,6 +250,48 @@ export class GuidelineDetailComponent extends BaseComponent implements OnInit {
         this.handleServerErrors(error);
       }
     });
+  }
+
+  toggleCurrentExpanded(): void {
+    this.isCurrentExpanded = !this.isCurrentExpanded;
+  }
+
+  toggleLastExpanded(): void {
+    this.isLastExpanded = !this.isLastExpanded;
+  }
+
+  private requiresIrreversibleConfirm(type: string): boolean {
+    const TYPES_REQUIRING_CONFIRM = ['insighter_agreement', 'company_agreement'];
+    return TYPES_REQUIRING_CONFIRM.includes(type);
+  }
+
+  private checkOverflow(): void {
+    if (this.currentContentRef?.nativeElement) {
+      const el = this.currentContentRef.nativeElement;
+      this.hasCurrentOverflow = el.scrollHeight > Math.min(el.clientHeight, this.COLLAPSED_MAX_HEIGHT_PX);
+    } else {
+      this.hasCurrentOverflow = false;
+    }
+    if (this.lastContentRef?.nativeElement) {
+      const el = this.lastContentRef.nativeElement;
+      this.hasLastOverflow = el.scrollHeight > Math.min(el.clientHeight, this.COLLAPSED_MAX_HEIGHT_PX);
+    } else {
+      this.hasLastOverflow = false;
+    }
+    this.cdr.markForCheck();
+  }
+
+  private formatDateLocal(dateInput: any): string {
+    if (!dateInput) return '';
+    if (typeof dateInput === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(dateInput)) {
+      return dateInput;
+    }
+
+    const date = new Date(dateInput);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   private handleServerErrors(error: any) {

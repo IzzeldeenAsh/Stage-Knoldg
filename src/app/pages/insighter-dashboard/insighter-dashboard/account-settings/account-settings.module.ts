@@ -32,6 +32,7 @@ import { SettingsTabsComponent } from './settings-tabs/settings-tabs.component';
 import { ConsultingScheduleComponent } from './consulting-schedule.component';
 import { InsighterDashboardSharedModule } from '../shared/shared.module';
 import { PendingChangesGuard } from 'src/app/guards/pending-changes.guard';
+import { AgreementModalComponent } from 'src/app/reusable-components/agreement-modal/agreement-modal.component';
 
 const routes: Routes = [
   {
@@ -100,7 +101,8 @@ const routes: Routes = [
     TruncateTextPipe,
     DropdownModule,
     CountryDropdownComponent,
-    InsighterDashboardSharedModule
+    InsighterDashboardSharedModule,
+    AgreementModalComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

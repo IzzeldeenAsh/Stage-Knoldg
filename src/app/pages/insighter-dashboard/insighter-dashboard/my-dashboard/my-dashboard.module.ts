@@ -12,6 +12,7 @@ import { InsighterMyDashboardComponent } from './insighter-my-dashboard/insighte
 import { UpcomingMeetingsCalendarComponent } from './upcoming-sent-meetings/upcoming-meetings-calendar.component';
 import { WidgetsRowComponent } from './widgets-row/widgets-row.component';
 import { CompanyMeetingsStatisticsComponent } from './company-meetings-statistics/company-meetings-statistics.component';
+import { AgreementModalComponent } from 'src/app/reusable-components/agreement-modal/agreement-modal.component';
 
 const routes: Routes = [
   {
@@ -36,7 +37,8 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     TranslationModule,
     NgApexchartsModule,
-    ChartModule
+    ChartModule,
+    AgreementModalComponent
   ],
   schemas: [NO_ERRORS_SCHEMA]
 })
