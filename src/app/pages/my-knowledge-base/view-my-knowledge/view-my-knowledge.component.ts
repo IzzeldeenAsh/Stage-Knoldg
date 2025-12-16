@@ -514,7 +514,7 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
   getSocialShareLink(platform: string): string {
     const shareUrl = this.getShareableLink();
     const title = this.getSocialShareTitle();
-    const description = `Thought you might enjoy this on foresighta.co: ${this.knowledge.type || 'Knowledge'} - ${this.knowledge.title || 'Check out this knowledge'}`;
+    const description = `Thought you might enjoy this on Insightabusiness.com: ${this.knowledge.type || 'Knowledge'} - ${this.knowledge.title || 'Check out this knowledge'}`;
 
     switch(platform) {
       case 'facebook':
@@ -548,9 +548,9 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
 
   getSocialShareDescription(): string {
     if (this.lang === 'ar') {
-      return `اعتقدت أنك قد تستمتع بهذا على foresighta.co: ${this.getSocialShareTitle()}`;
+      return `اعتقدت أنك قد تستمتع بهذا على Insightabusiness.com: ${this.getSocialShareTitle()}`;
     }
-    return `Thought you might enjoy this on foresighta.co: ${this.getSocialShareTitle()}`;
+    return `Thought you might enjoy this on Insightabusiness.com: ${this.getSocialShareTitle()}`;
   }
 
   private translateKnowledgeTypeToArabic(type: string): string {
@@ -698,7 +698,7 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
     const publishedDate = this.knowledge.published_at;
 
     // Update page title with SEO optimization
-    this.titleService.setTitle(`${title} | foresighta.co - Professional Knowledge Sharing Platform`);
+    this.titleService.setTitle(`${title} | Insightabusiness.com - Professional Knowledge Sharing Platform`);
 
     // Enhanced meta description
     const enhancedDescription = this.knowledge.description
@@ -711,10 +711,10 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
     this.meta.updateTag({ property: 'og:image', content: image });
     this.meta.updateTag({ property: 'og:image:width', content: '1200' });
     this.meta.updateTag({ property: 'og:image:height', content: '630' });
-    this.meta.updateTag({ property: 'og:image:alt', content: `${title} - Professional Knowledge on foresighta.co` });
+    this.meta.updateTag({ property: 'og:image:alt', content: `${title} - Professional Knowledge on Insightabusiness.com` });
     this.meta.updateTag({ property: 'og:url', content: url });
     this.meta.updateTag({ property: 'og:type', content: 'article' });
-    this.meta.updateTag({ property: 'og:site_name', content: 'foresighta.co' });
+    this.meta.updateTag({ property: 'og:site_name', content: 'Insightabusiness.com' });
     this.meta.updateTag({ property: 'og:locale', content: this.lang === 'ar' ? 'ar_AR' : 'en_US' });
 
     // Twitter Card meta tags
@@ -722,13 +722,13 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
     this.meta.updateTag({ name: 'twitter:title', content: title });
     this.meta.updateTag({ name: 'twitter:description', content: enhancedDescription });
     this.meta.updateTag({ name: 'twitter:image', content: image });
-    this.meta.updateTag({ name: 'twitter:image:alt', content: `${title} - Professional Knowledge on foresighta.co` });
-    this.meta.updateTag({ name: 'twitter:site', content: '@foresighta' });
-    this.meta.updateTag({ name: 'twitter:creator', content: '@foresighta' });
+    this.meta.updateTag({ name: 'twitter:image:alt', content: `${title} - Professional Knowledge on Insightabusiness.com` });
+    this.meta.updateTag({ name: 'twitter:site', content: '@Insightabusiness' });
+    this.meta.updateTag({ name: 'twitter:creator', content: '@Insightabusiness' });
 
     // Article meta tags for SEO
     this.meta.updateTag({ property: 'article:author', content: author });
-    this.meta.updateTag({ property: 'article:publisher', content: 'foresighta.co' });
+    this.meta.updateTag({ property: 'article:publisher', content: 'Insightabusiness.com' });
     if (publishedDate) {
       this.meta.updateTag({ property: 'article:published_time', content: publishedDate });
     }
@@ -786,7 +786,7 @@ export class ViewMyKnowledgeComponent extends BaseComponent implements OnInit {
       },
       "publisher": {
         "@type": "Organization",
-        "name": "foresighta.co",
+        "name": "Insightabusiness.com",
         "logo": {
           "@type": "ImageObject",
           "url": "https://foresighta.co/assets/logo.png"
