@@ -200,7 +200,7 @@ export class GuidelineDetailComponent extends BaseComponent implements OnInit {
       'X-Timezone': Intl.DateTimeFormat().resolvedOptions().timeZone,
     };
 
-    const apiUrl = 'https://api.insightabusiness.com/api/admin/setting/guideline';
+    const apiUrl = 'https://api.foresighta.co/api/admin/setting/guideline';
 
     this.http.post(apiUrl, formData, { headers }).subscribe({
       next: (response) => {
