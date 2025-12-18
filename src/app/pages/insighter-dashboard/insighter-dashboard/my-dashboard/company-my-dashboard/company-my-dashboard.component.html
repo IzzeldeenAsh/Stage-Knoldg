@@ -1,3 +1,17 @@
+<div *ngIf="needsAgreement" class="alert alert-warning d-flex align-items-center justify-content-between" role="alert" style="border: 1px solid #ffeeba;">
+  <div class="d-flex align-items-center">
+    <i class="ki-duotone ki-information-2 fs-2 text-warning me-3"></i>
+    <span class="fw-semibold">{{lang === 'ar' ? 'لم تقبل الاتفاقية الأخيرة' : 'You have not accepted the latest agreement.'}}</span>
+  </div>
+  <button class="btn btn-sm btn-warning fw-semibold" (click)="openAgreementModal()">{{lang === 'ar' ? 'مراجعة وموافقة' : 'Review & Accept'}}</button>
+</div>
+<app-agreement-modal
+  [(visible)]="showAgreementModal"
+  [agreementType]="'company_agreement'"
+  (accepted)="onAgreementAccepted()"
+
+  (cancelled)="onAgreementCancelled()"
+></app-agreement-modal>
 <app-widgets-row [userRole]="userRole"></app-widgets-row>
 <div class="row g-4">
     <div class="col-12 col-lg-4 d-flex">

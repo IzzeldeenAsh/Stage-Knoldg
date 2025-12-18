@@ -10,7 +10,7 @@
       <div class="page-title d-flex flex-column justify-content-center gap-1 me-3">
         <h1 class="page-heading d-flex flex-column justify-content-center text-gray-900 fw-bold fs-3 m-0">
           Guideline Detail
-          <span *ngIf="guidelineType" class="fs-6 fw-normal text-muted">- {{ guidelineType?.label }}</span>
+          <span *ngIf="guidelineType" class="fs-6 fw-normal text-muted">- {{ guidelineType.label }}</span>
         </h1>
       </div>
 
@@ -67,7 +67,23 @@
                   <h6 class="card-title mb-0 text-success">{{ currentGuideline.name }}</h6>
                 </div>
                 <div class="card-body">
-                  <div [innerHTML]="currentGuideline.guideline" class="guideline-content"></div>
+                  <div
+                    #currentContent
+                    class="content-collapsible"
+                    [class.expanded]="isCurrentExpanded"
+                  >
+                    <div [innerHTML]="currentGuideline.guideline" class="guideline-content"></div>
+                    <div class="fade-overlay" *ngIf="!isCurrentExpanded && hasCurrentOverflow"></div>
+                  </div>
+                  <div class="mt-3 text-end" *ngIf="hasCurrentOverflow">
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-light"
+                      (click)="toggleCurrentExpanded()"
+                    >
+                      {{ isCurrentExpanded ? (lang === 'ar' ? 'عرض أقل' : 'Show less') : (lang === 'ar' ? 'عرض المزيد' : 'Show more') }}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -77,6 +93,7 @@
               <div class="d-flex align-items-center mb-4">
                 <h5 class="mb-0 me-3">Upcoming Version</h5>
                 <span class="badge badge-light-warning">Upcoming v{{ lastGuideline.version }}</span>
+                <span class="badge badge-light-primary ms-2">Applies On: {{ lastGuideline.apply_at }}</span>
               </div>
 
               <div class="card border border-light-warning">
@@ -84,7 +101,23 @@
                   <h6 class="card-title mb-0 text-warning">{{ lastGuideline.name }}</h6>
                 </div>
                 <div class="card-body">
-                  <div [innerHTML]="lastGuideline.guideline" class="guideline-content"></div>
+                  <div
+                    #lastContent
+                    class="content-collapsible"
+                    [class.expanded]="isLastExpanded"
+                  >
+                    <div [innerHTML]="lastGuideline.guideline" class="guideline-content"></div>
+                    <div class="fade-overlay" *ngIf="!isLastExpanded && hasLastOverflow"></div>
+                  </div>
+                  <div class="mt-3 text-end" *ngIf="hasLastOverflow">
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-light"
+                      (click)="toggleLastExpanded()"
+                    >
+                      {{ isLastExpanded ? (lang === 'ar' ? 'عرض أقل' : 'Show less') : (lang === 'ar' ? 'عرض المزيد' : 'Show more') }}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

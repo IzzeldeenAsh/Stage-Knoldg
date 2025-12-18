@@ -5,6 +5,7 @@ import { BaseComponent } from 'src/app/modules/base.component';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import { IKnoldgProfile } from 'src/app/_fake/models/profile.interface';
 import { CompanyAccountService, DashboardStatisticsResponse } from 'src/app/_fake/services/company-account/company-account.service';
+import { AgreementService } from 'src/app/_fake/services/agreement/agreement.service';
 
 @Component({
   selector: "app-company-my-dashboard",
@@ -22,6 +23,8 @@ export class CompanyMyDashboardComponent extends BaseComponent implements OnInit
   publishedKnowledgeChartOptions: any = null;
   publishedKnowledgeLegend: Array<{ labelKey: string; color: string }> = [];
   isArabicAndNotRtl: boolean = false;
+  needsAgreement: boolean = false;
+  showAgreementModal: boolean = false;
 
   private readonly knowledgeTypeColors: Record<string, string> = {
     statistic: '#0a7abf',
@@ -35,7 +38,8 @@ export class CompanyMyDashboardComponent extends BaseComponent implements OnInit
     injector: Injector,
     private profileService: ProfileService,
     private router: Router,
-    private companyAccountService: CompanyAccountService
+    private companyAccountService: CompanyAccountService,
+    private agreementService: AgreementService
   ) {
     super(injector);
   }
@@ -46,6 +50,15 @@ export class CompanyMyDashboardComponent extends BaseComponent implements OnInit
     const isArabic = this.lang === 'ar';
     const isRtlModeActive = false; 
     this.isArabicAndNotRtl = isArabic && !isRtlModeActive;
+    // Check if company accepted the latest agreement
+    this.agreementService.checkLatestAgreement().subscribe({
+      next: (accepted) => {
+        this.needsAgreement = !accepted;
+      },
+      error: () => {
+        this.needsAgreement = true;
+      }
+    });
   }
   
   getUserRole(): void {
@@ -153,5 +166,15 @@ export class CompanyMyDashboardComponent extends BaseComponent implements OnInit
 
   get totalPublishedKnowledge(): number {
     return this.dashboardStats?.knowledge_published_statistics?.total ?? 0;
+  }
+  openAgreementModal(): void {
+    this.showAgreementModal = true;
+  }
+  onAgreementAccepted(): void {
+    this.needsAgreement = false;
+    this.showAgreementModal = false;
+  }
+  onAgreementCancelled(): void {
+    this.showAgreementModal = false;
   }
 }
