@@ -8,7 +8,7 @@ import { UIChart } from 'primeng/chart';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-sales',
@@ -119,7 +119,8 @@ export class SalesComponent extends BaseComponent implements OnInit, OnDestroy, 
     private salesService: SalesService,
     private authService: ProfileService,
     private myOrdersService: MyOrdersService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     super(injector);
   }
@@ -133,6 +134,7 @@ export class SalesComponent extends BaseComponent implements OnInit, OnDestroy, 
     this.checkUserRole();
     this.loadData();
     this.loadUserRoles();
+    this.handleTabFromUrl();
   }
 
   ngOnDestroy(): void {
@@ -215,6 +217,20 @@ export class SalesComponent extends BaseComponent implements OnInit, OnDestroy, 
 
   setActiveTab(tab: 'analytics' | 'sold-details' | 'sold-meetings'): void {
     this.activeTab = tab;
+
+    // Update URL with tab parameter
+    const tabNumbers = {
+      'analytics': 1,
+      'sold-details': 2,
+      'sold-meetings': 3
+    };
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { tab: tabNumbers[tab] },
+      queryParamsHandling: 'merge'
+    });
+
     if (tab === 'sold-details' && this.soldOrders$.value.length === 0) {
       this.loadSoldOrders();
     }
@@ -1074,6 +1090,31 @@ export class SalesComponent extends BaseComponent implements OnInit, OnDestroy, 
         this.lang === 'ar' ? 'حدث خطأ أثناء تصدير التقرير' : 'An error occurred while exporting the report'
       );
     }
+  }
+
+  private handleTabFromUrl(): void {
+    this.route.queryParams.subscribe(params => {
+      const tabParam = params['tab'];
+      if (tabParam) {
+        const tabMap: { [key: string]: 'analytics' | 'sold-details' | 'sold-meetings' } = {
+          '1': 'analytics',
+          '2': 'sold-details',
+          '3': 'sold-meetings'
+        };
+
+        const newTab = tabMap[tabParam];
+        if (newTab && newTab !== this.activeTab) {
+          this.activeTab = newTab;
+
+          if (newTab === 'sold-details' && this.soldOrders$.value.length === 0) {
+            this.loadSoldOrders();
+          }
+          if (newTab === 'sold-meetings' && this.soldMeetingOrders$.value.length === 0) {
+            this.loadSoldMeetingOrders();
+          }
+        }
+      }
+    });
   }
 
   getSalesSubtitle(): string {

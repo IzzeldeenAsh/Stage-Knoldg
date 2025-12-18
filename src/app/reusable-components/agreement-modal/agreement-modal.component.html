@@ -1,0 +1,59 @@
+<p-dialog
+  [(visible)]="visible"
+  [modal]="true"
+  [closable]="false"
+  appendTo="body"
+  [draggable]="false"
+  [resizable]="false"
+  [dismissableMask]="false"
+  [style]="{ width: '85vw', maxWidth: '1000px' }"
+  [contentStyle]="{ padding: '0' }"
+  [breakpoints]="{ '1200px': '85vw', '992px': '90vw', '768px': '95vw', '576px': '98vw' }"
+  [baseZIndex]="10000"
+  [blockScroll]="true"
+  [focusOnShow]="false"
+  [keepInViewport]="true"
+  [showHeader]="true"
+  [header]="agreementTitle || agreement?.name || 'Agreement'"
+>
+  <ng-template pTemplate="default">
+    <div class="agreement-container" [class.loading]="loading">
+      <div class="loading-overlay" *ngIf="loading">
+        <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+      </div>
+
+      <div class="error-banner" *ngIf="loadError">
+        {{ loadError }}
+      </div>
+
+      <div class="agreement-content" [innerHTML]="agreementHtml"></div>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <div class="footer-actions">
+      <button
+        pButton
+        type="button"
+        class="p-button-text"
+        label="Cancel"
+        (click)="onCancel()"
+        [disabled]="submitting"
+      ></button>
+      <button
+        pButton
+        type="button"
+        label="Accept"
+        (click)="onAccept()"
+        [disabled]="loading || submitting"
+      >
+        <span class="p-button-label">Accept</span>
+        <span class="btn-spinner" *ngIf="submitting">
+          <p-progressSpinner strokeWidth="2" styleClass="btn-spinner-size text-info"></p-progressSpinner>
+        </span>
+      </button>
+    </div>
+    <div class="submit-error" *ngIf="submitError">{{ submitError }}</div>
+  </ng-template>
+</p-dialog>
+

@@ -10,6 +10,7 @@ import {
   throwError,
   map,
 } from 'rxjs';
+import { TranslationService } from 'src/app/modules/i18n/translation.service';
 
 export interface Guideline {
   id: number;
@@ -37,6 +38,7 @@ export interface GuidelineDetail {
   guideline: string;
   version: string;
   file: any;
+  apply_at?: string;
 }
 
 export interface GuidelineDetailResponse {
@@ -60,8 +62,10 @@ export class GuidelinesService {
   private createUpdateApi = 'https://api.insightabusiness.com/api/admin/setting/guideline';
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
-
-  constructor(private http: HttpClient) {}
+  currentLang: string = 'en';
+  constructor(private http: HttpClient,private translationService: TranslationService) {
+    this.currentLang = this.translationService.getSelectedLanguage();
+  }
 
   private setLoading(loading: boolean): void {
     this.isLoadingSubject.next(loading);
@@ -75,7 +79,7 @@ export class GuidelinesService {
   getGuidelines(): Observable<Guideline[]> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
-      'Accept-Language': 'en'
+      'Accept-Language': this.currentLang
     });
     this.setLoading(true);
     return this.http.get<GuidelineResponse>(this.apiUrl, { headers }).pipe(
@@ -88,7 +92,7 @@ export class GuidelinesService {
   createOrUpdateGuideline(guidelineData: FormData, id?: number): Observable<any> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
-      'Accept-Language': 'en'
+      'Accept-Language': this.currentLang
     });
     const apiUrl = id ? `${this.createUpdateApi}/${id}` : this.createUpdateApi;
     this.setLoading(true);
@@ -101,7 +105,7 @@ export class GuidelinesService {
   deleteGuideline(id: number): Observable<any> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
-      'Accept-Language': 'en'
+        'Accept-Language': this.currentLang
     });
     const apiUrl = `${this.createUpdateApi}/${id}`;
     this.setLoading(true);
@@ -114,7 +118,7 @@ export class GuidelinesService {
   getGuidelineTypes(): Observable<GuidelineType[]> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
-      'Accept-Language': 'en'
+      'Accept-Language': this.currentLang
     });
     const apiUrl = 'https://api.insightabusiness.com/api/common/setting/guideline/type';
     this.setLoading(true);
@@ -127,7 +131,7 @@ export class GuidelinesService {
   getCurrentGuidelineByType(type: string): Observable<GuidelineDetail> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
-      'Accept-Language': 'en'
+      'Accept-Language': this.currentLang
     });
     const apiUrl = `https://api.insightabusiness.com/api/common/setting/guideline/type/current/${type}`;
     this.setLoading(true);
@@ -141,7 +145,7 @@ export class GuidelinesService {
   getLastGuidelineByType(type: string): Observable<GuidelineDetail> {
     const headers = new HttpHeaders({
       'Accept': 'application/json',
-      'Accept-Language': 'en'
+      'Accept-Language': this.currentLang
     });
     const apiUrl = `https://api.insightabusiness.com/api/common/setting/guideline/type/last/${type}`;
     this.setLoading(true);

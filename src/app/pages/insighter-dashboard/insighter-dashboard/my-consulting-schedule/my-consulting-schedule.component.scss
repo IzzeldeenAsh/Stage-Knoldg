@@ -98,7 +98,7 @@
 
 .time-slot {
   display: flex;
-  align-items: start;
+  align-items: flex-start;
   gap: 12px;
 }
 
@@ -411,7 +411,7 @@
 
 .time-slot {
   display: flex;
-  align-items: start;
+  align-items: flex-start;
   gap: 10px;
   margin-bottom: 15px;
   

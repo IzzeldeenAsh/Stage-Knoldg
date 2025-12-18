@@ -2,6 +2,7 @@ import { Component, Injector, Input } from '@angular/core';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ReactivateDialogComponent } from './reactivate-dialog/reactivate-dialog.component';
 import { BaseComponent } from 'src/app/modules/base.component';
+import { AgreementService } from 'src/app/_fake/services/agreement/agreement.service';
 
 @Component({
   selector: 'app-activate-account',
@@ -12,11 +13,34 @@ import { BaseComponent } from 'src/app/modules/base.component';
 export class ActivateAccountComponent extends BaseComponent {
   ref: DynamicDialogRef | undefined;
   @Input() role: string = 'company';
-  constructor(private dialogService: DialogService, injector: Injector) {
+  showAgreementModal = false;
+
+  constructor(
+    private dialogService: DialogService,
+    private agreementService: AgreementService,
+    injector: Injector
+  ) {
     super(injector);
   }
 
   showReactivateDialog() {
+    // Check if user has accepted the latest agreement before proceeding
+    this.agreementService.checkLatestAgreement().subscribe({
+      next: (accepted) => {
+        if (accepted) {
+          this.openReactivateDialog();
+        } else {
+          this.openAgreementModal();
+        }
+      },
+      error: () => {
+        // On API error, require explicit agreement to proceed
+        this.openAgreementModal();
+      }
+    });
+  }
+
+  private openReactivateDialog() {
     this.ref = this.dialogService.open(ReactivateDialogComponent, {
       header: 'Reactivate Account',
       width: '450px',
@@ -32,6 +56,21 @@ export class ActivateAccountComponent extends BaseComponent {
         window.location.reload();
       }
     });
+  }
+
+  // Agreement modal flow
+  openAgreementModal() {
+    this.showAgreementModal = true;
+  }
+
+  onAgreementAccepted() {
+    this.showAgreementModal = false;
+    // After accepting agreements, proceed to reactivate
+    this.openReactivateDialog();
+  }
+
+  onAgreementCancelled() {
+    this.showAgreementModal = false;
   }
 
   ngOnDestroy() {
