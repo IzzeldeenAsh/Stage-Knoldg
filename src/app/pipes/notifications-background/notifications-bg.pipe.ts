@@ -7,6 +7,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class NotificationsBgPipe implements PipeTransform {
   transform(type: string): string {
     switch (type) {
+      case 'knowledge': // used as sub_type for order notifications
+        return 'success';
       case 'activate_company':
         return 'success';
       case 'deactivate_company':

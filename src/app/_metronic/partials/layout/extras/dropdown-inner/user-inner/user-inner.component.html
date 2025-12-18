@@ -77,7 +77,7 @@
   <div class="separator my-2"></div>
 
 
-  <div class="menu-item px-5">
+  <div class="menu-item px-5" *ngIf="_user.roles.includes('insighter') || _user.roles.includes('company') || _user.roles.includes('company-insighter')">
     <a [href]="'https://insightabusiness.com/en/profile/' + _user.uuid + '?entity=insighter'" class="menu-link px-5" (click)="closeDropdown.emit()">
       {{ 'HOME.MY_INSIGHTER_PAGE' | translate }}
     </a>

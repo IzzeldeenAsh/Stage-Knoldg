@@ -134,6 +134,16 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
   
   // Separate navigation logic to make it cleaner
   private handleNotificationNavigation(notification: Notification): void {
+    // New: Order notifications redirect to Sales page
+    if (notification.type === 'order') {
+      const targetUrl = '/app/insighter-dashboard/sales';
+      const currentUrl = this.router.url;
+      if (currentUrl !== targetUrl) {
+        this.router.navigateByUrl(targetUrl);
+      }
+      return;
+    }
+    
     // First, check for knowledge accept/decline notifications that need special handling
     if (notification.type === 'knowledge' && (notification.sub_type === 'accept_knowledge' || notification.sub_type === 'declined')) {
       // Check if user has company-insighter role

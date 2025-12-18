@@ -30,8 +30,18 @@ import { BaseComponent } from 'src/app/modules/base.component';
   [focusOnShow]="false"
   [keepInViewport]="true"
   [showHeader]="true"
-  [header]="agreementTitle || agreement?.name || 'Agreement'"
 >
+  <ng-template pTemplate="header">
+    <div class="d-flex justify-content-between align-items-center w-100">
+      <h5 class="m-0">{{ agreementTitle || agreement?.name || 'Agreement' }}</h5>
+      <div class="d-flex">
+        <button class="btn btn-sm btn-icon" (click)="printTerms()">
+          <i class="ki-outline ki-printer fs-3"></i>
+        </button>
+      </div>
+    </div>
+  </ng-template>
+
   <ng-template pTemplate="default">
     <div class="agreement-container" [class.loading]="loading">
       <div class="loading-overlay" *ngIf="loading">
@@ -320,6 +330,35 @@ export class AgreementModalComponent extends BaseComponent  implements OnChanges
   close(): void {
     this.visible = false;
     this.visibleChange.emit(false);
+  }
+
+  printTerms(): void {
+    const printContent = `
+      <html>
+        <head>
+          <title>${this.agreementTitle || this.agreement?.name || 'Agreement'}</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            h1, h2, h3 { margin-top: 1rem; margin-bottom: 0.5rem; }
+            p { margin: 0.5rem 0; }
+            hr { margin: 1rem 0; }
+          </style>
+        </head>
+        <body>
+          <h1>${this.agreementTitle || this.agreement?.name || 'Agreement'}</h1>
+          ${this.agreement?.guideline || ''}
+        </body>
+      </html>
+    `;
+
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.open();
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+    }
   }
 
   @HostListener('window:resize')
