@@ -3,7 +3,6 @@
   [titleEn]="'Sales'"
   [titleAr]="'المبيعات'"
   [lang]="lang"
-  [subtitle]="getSalesSubtitle()"
   [showTabs]="true">
 
   <!-- Icon slot -->
@@ -20,21 +19,21 @@
         <a class="nav-link text-active-primary pb-4"
           [class.active]="activeTab === 'analytics'"
           (click)="setActiveTab('analytics')">
-          {{ lang === 'ar' ? 'مؤشرات الأداء' : 'Performance Indicators' }}
+          {{ lang === 'ar' ? "نظرة عامة" : 'Sales Overview' }}
         </a>
       </li>
       <li class="nav-item">
         <a class="nav-link text-active-primary pb-4"
           [class.active]="activeTab === 'sold-details'"
           (click)="setActiveTab('sold-details')">
-          {{ lang === 'ar' ? 'تفاصيل المستندات المباعة' : 'Sold Insights Details' }}
+          {{ lang === 'ar' ? 'الوثائق' : 'Sold Documents' }}
         </a>
       </li>
       <li class="nav-item">
         <a class="nav-link text-active-primary pb-4"
           [class.active]="activeTab === 'sold-meetings'"
           (click)="setActiveTab('sold-meetings')">
-          {{ lang === 'ar' ? 'تفاصيل الاجتماعات المباعة' : 'Sold Meeting Details' }}
+          {{ lang === 'ar' ? 'الجلسات الاستشارية' : 'Meetings' }}
         </a>
       </li>
     </ul>

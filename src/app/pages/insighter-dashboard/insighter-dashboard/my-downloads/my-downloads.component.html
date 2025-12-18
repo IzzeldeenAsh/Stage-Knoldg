@@ -217,7 +217,7 @@
                                 [ngClass]="isKnowledgeDownloaded(knowledge) ? 'btn-info text-white' : 'btn-light-info text-primary'"
                                 (click)="downloadKnowledge(knowledge); $event.stopPropagation()"
                                 [disabled]="isKnowledgeDownloading(knowledge.uuid)"
-                                [pTooltip]="'Download Knowledge'"
+                                [pTooltip]="lang === 'ar' ? 'تنزيل' : 'Download'"
                                 style="border-color: transparent !important"
                                 tooltipPosition="top">
                                 @if (isKnowledgeDownloading(knowledge.uuid)) {
