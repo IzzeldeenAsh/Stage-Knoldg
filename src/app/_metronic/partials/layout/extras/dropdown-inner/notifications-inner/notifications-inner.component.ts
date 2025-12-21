@@ -136,7 +136,7 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
   private handleNotificationNavigation(notification: Notification): void {
     // New: Order notifications redirect to Sales page
     if (notification.type === 'order') {
-      const targetUrl = '/app/insighter-dashboard/sales';
+      const targetUrl = '/app/insighter-dashboard/sales?tab=2';
       const currentUrl = this.router.url;
       if (currentUrl !== targetUrl) {
         this.router.navigateByUrl(targetUrl);

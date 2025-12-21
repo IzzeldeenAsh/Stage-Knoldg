@@ -149,7 +149,7 @@ export class Step5Component extends BaseComponent implements OnInit {
     this.isLoadingAgreement = true;
     this.showAgreementDialog = true;
     
-    this.commonService.getClientAgreement('company-agreement').subscribe({
+    this.commonService.getGuidelineByTypeCurrent('company_agreement').subscribe({
       next: (response) => {
         this.agreementContent = response.data;
         this.isLoadingAgreement = false;

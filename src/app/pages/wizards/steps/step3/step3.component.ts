@@ -193,7 +193,7 @@ export class Step3Component extends BaseComponent implements OnInit, OnDestroy {
     this.isLoadingAgreement = true;
     this.showAgreementDialog = true;
     
-    this.commonService.getClientAgreement('insighter-agreement').subscribe({
+    this.commonService.getGuidelineByTypeCurrent('insighter_agreement').subscribe({
       next: (response) => {
         this.agreementContent = response.data;
         this.isLoadingAgreement = false;
