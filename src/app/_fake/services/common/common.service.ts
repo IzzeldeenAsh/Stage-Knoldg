@@ -32,6 +32,20 @@ export class CommonService {
     return throwError(() => error);
   }
 
+  // Fetch guideline by type (current active version)
+  getGuidelineByTypeCurrent(type: 'client_agreement' | 'insighter_agreement' | 'company_agreement'): Observable<any> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': this.currentLang
+    });
+    this.setLoading(true);
+    return this.http.get<any>(`${this.apiUrl}/guideline/type/current/${type}`, { headers }).pipe(
+      map(response => response),
+      catchError(error => this.handleError(error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
   // Fetch client agreement guidelines by slug
   getClientAgreement(slug: string): Observable<any> {
     const headers = new HttpHeaders({
@@ -49,12 +63,12 @@ export class CommonService {
   
   // Fetch insighter agreement for personal accounts
   getInsighterAgreement(): Observable<any> {
-    return this.getClientAgreement('insighter-agreement');
+    return this.getGuidelineByTypeCurrent('insighter_agreement');
   }
   
   // Fetch company agreement for company accounts
   getCompanyAgreement(): Observable<any> {
-    return this.getClientAgreement('company-agreement');
+    return this.getGuidelineByTypeCurrent('company_agreement');
   }
   
   // Get the appropriate agreement based on account type
