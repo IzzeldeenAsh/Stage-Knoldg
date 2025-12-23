@@ -331,19 +331,23 @@ export class StripeCallbackComponent extends BaseComponent implements OnInit {
         for (const key in serverErrors) {
           if (serverErrors.hasOwnProperty(key)) {
             const messages = serverErrors[key];
-            this.showError(
-              this.lang === "ar" ? "حدث خطأ" : "An error occurred",
-              Array.isArray(messages) ? messages.join(", ") : messages
-            );
+            if (error.error.type === "warning") {
+              this.showWarn('Error',messages.join(", "));
+            } else if (Array.isArray(messages)) {
+              this.showError('Error',messages.join(", "));
+            } else {
+              this.showError('Error',messages);
+            }
           }
         }
       } 
       // Handle simple message format
       else if (error.error.message) {
-        this.showError(
-          this.lang === "ar" ? "حدث خطأ" : "An error occurred",
-          error.error.message
-        );
+        if (error.error.type === "warning") {
+          this.showWarn('Error',error.error.message);
+        } else {
+          this.showError('Error',error.error.message);
+        }
       }
       // Fallback for other error formats
       else {

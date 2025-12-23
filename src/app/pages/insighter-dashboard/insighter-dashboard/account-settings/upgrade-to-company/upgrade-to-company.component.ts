@@ -861,11 +861,11 @@ export class UpgradeToCompanyComponent
     if (error.error) {
       // Check for message property
       if (error.error.message) {
-        this.messageService.add({
-          severity: error.error.type === "warning" ? "warn" : "error",
-          summary: error.error.type === "warning" ? "Warning" : "Error",
-          detail: error.error.message,
-        });
+        if (error.error.type === "warning") {
+          this.showWarn('Error',error.error.message);
+        } else {
+          this.showError('Error',error.error.message);
+        }
       }
 
       // Check for errors object
@@ -877,7 +877,11 @@ export class UpgradeToCompanyComponent
 
             // Handle 'common' errors or general errors not tied to a specific field
             if (key === 'common') {
-              this.apiErrorMessages = messages;
+              if (error.error.type === "warning") {
+                this.showWarn('Error',messages.join(", "));
+              } else {
+                this.showError('Error',messages.join(", "));
+              }
               this.showApiErrors = true;
             } else {
               // Form field specific errors

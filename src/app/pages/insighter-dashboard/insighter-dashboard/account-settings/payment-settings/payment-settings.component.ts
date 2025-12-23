@@ -380,10 +380,13 @@ export class PaymentSettingsComponent extends BaseComponent implements OnInit {
       for (const key in serverErrors) {
         if (serverErrors.hasOwnProperty(key)) {
           const messages = serverErrors[key];
-          this.showError(
-            this.lang === "ar" ? "حدث خطأ" : "An error occurred",
-            messages.join(", ")
-          );
+          if (error.error.type === "warning") {
+            this.showWarn('Error',messages.join(", "));
+          } else if (Array.isArray(messages)) {
+            this.showError('Error',messages.join(", "));
+          } else {
+            this.showError('Error',messages);
+          }
         }
       }
     } else {
