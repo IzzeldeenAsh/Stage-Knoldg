@@ -35,7 +35,7 @@ export class ClientMyDashboardComponent extends BaseComponent implements OnInit,
   private readonly knowledgeTranslations = {
     en: {
       KNOWLEDGE: {
-        TITLE: 'Latest Knowledge',
+        TITLE: 'Latest Insights',
         DATA: 'Data',
         DATA_DESCRIPTION: 'Explore recently added datasets and figures.',
         STATISTIC: 'Statistics',

@@ -253,14 +253,11 @@ export class ReadLaterComponent extends BaseComponent implements OnInit {
   getReadLaterSubtitle(): string {
     const totalItems = this.totalItems();
 
-    if (totalItems === 0) {
-      return '';
-    }
-
     if (this.lang === 'ar') {
-      return `${totalItems} عنصر محفوظ`;
+      // Arabic and English subtitle as in the image box
+      return `المستندات التي حفظتها للمراجعة أو الشراء لاحقًا.`;
     }
 
-    return `${totalItems} saved items`;
+    return `Insights you've saved to review or buy later.`;
   }
 }
