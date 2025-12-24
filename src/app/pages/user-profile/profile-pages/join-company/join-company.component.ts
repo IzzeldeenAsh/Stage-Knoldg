@@ -94,6 +94,10 @@ export class JoinCompanyComponent extends BaseComponent implements OnInit {
     }
     
     console.log('Extracted error message:', errorMessage); // Add this for debugging
-    this.showError('', errorMessage);
+    if (error.error.type === "warning") {
+      this.showWarn('Warning',errorMessage);
+    } else {
+      this.showError('Error',errorMessage);
+    }
   }
 }

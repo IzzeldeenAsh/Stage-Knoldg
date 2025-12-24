@@ -860,7 +860,9 @@ export class MyConsultingScheduleComponent extends BaseComponent implements OnIn
       for (const key in serverErrors) {
         if (serverErrors.hasOwnProperty(key)) {
           const messages = serverErrors[key];
-          if (Array.isArray(messages)) {
+          if (error.error.type === "warning") {
+            this.showWarn('Error',messages.join(", "));
+          } else if (Array.isArray(messages)) {
             this.showError('Error',messages.join(", "));
           } else {
             this.showError('Error',messages);

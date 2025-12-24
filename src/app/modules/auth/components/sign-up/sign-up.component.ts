@@ -109,7 +109,7 @@ export class SignUpComponent extends BaseComponent implements OnInit {
 
   private loadClientAgreement(): void {
     this.isLoadingAgreement = true;
-    this.commonService.getClientAgreement('client-agreement').subscribe({
+    this.commonService.getGuidelineByTypeCurrent('client_agreement').subscribe({
       next: (response) => {
         this.clientAgreementContent = response.data;
         this.isLoadingAgreement = false;

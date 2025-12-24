@@ -438,7 +438,11 @@ export class VerticalComponent extends BaseComponent implements OnInit {
       for (const key in serverErrors) {
         if (serverErrors.hasOwnProperty(key)) {
           const messages = serverErrors[key];
-         this.showError('',messages.join(", "),10000);
+          if (error.error.type === "warning") {
+            this.showWarn('Warning',messages.join(", "));
+          } else {
+            this.showError('Error',messages.join(", "));
+          }
         }
       }
     } else {

@@ -167,17 +167,17 @@ export class UpcomingMeetingsCalendarComponent extends BaseComponent implements 
       for (const key in serverErrors) {
         if (serverErrors.hasOwnProperty(key)) {
           const messages = serverErrors[key];
-          this.showError(
-            this.lang === 'ar' ? 'حدث خطأ' : 'An error occurred',
-            messages.join(', ')
-          );
+          if (error.error.type === "warning") {
+            this.showWarn('Error',messages.join(", "));
+          } else if (Array.isArray(messages)) {
+            this.showError('Error',messages.join(", "));
+          } else {
+            this.showError('Error',messages);
+          }
         }
       }
     } else {
-      this.showError(
-        this.lang === 'ar' ? 'حدث خطأ' : 'An error occurred',
-        this.lang === 'ar' ? 'حدث خطأ في تحميل الاجتماعات' : 'Failed to load meetings'
-      );
+      this.showError('Error','An unexpected error occurred.');
     }
   }
 
