@@ -124,8 +124,8 @@
         <img src="https://res.cloudinary.com/dsiku9ipv/image/upload/v1761664127/New_Project_17_r2dreh.png" alt="Social Share" style="width: 420px; max-width: 85%; height: auto; display: block; margin: 0 auto;" />
        </div>
       
-        <h2 style="font-size: 25px;">{{ lang === 'ar' ? 'المشاركة هي الهدف' : 'It\'s all about sharing' }}</h2>
-        <p style="font-size: 14px;"> {{ lang === 'ar' ? 'شارك هذه المعرفة مع شبكتك' : 'Share this statistic with your network' }}</p>
+        <h2 style="font-size: 25px;">{{ lang === 'ar' ? 'المشاركة هي الهدف' : "It's all about sharing" }}</h2>
+        <p style="font-size: 14px;">{{ lang === 'ar' ? 'شارك هذه المعرفة مع شبكتك' : ('Share this ' + (publishedKnowledge?.type || defaultValues?.knowledgeType || 'knowledge') + ' with your network') }}</p>
        </div>
 
         <!-- Custom Message Input -->

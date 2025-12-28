@@ -28,7 +28,13 @@ interface FlatNode {
   code?: string;
   label: string;
   fullPath: string;
+  topLevelLabel: string;
   originalNode: TreeNode;
+}
+
+interface GroupedSection {
+  topLevelLabel: string;
+  items: FlatNode[];
 }
 
 @Component({
@@ -72,19 +78,21 @@ interface FlatNode {
         
         <!-- List Items -->
         <div *ngIf="!(isLoading$ | async)" class="list-items">
-          <div 
-            *ngFor="let option of filteredNodes; trackBy: trackByKey" 
-            class="list-item cursor-pointer"
-            [class.selected]="option.key === selectedFlatNode?.key"
-            (click)="selectItem(option)"
-          >
-            <div class="d-flex align-items-start">
-              <span *ngIf="showCode && option.code" class="fw-bold text-primary me-2 flex-shrink-0">[{{option.code}}]</span>
-              <div class="flex-grow-1">
-                <div class="fw-semibold">{{option.label}}</div>
-                <small class="text-muted">{{option.fullPath}}</small>
+          <div *ngFor="let group of filteredGroups; trackBy: trackByGroupLabel" class="mb-3">
+            <div class="group-header text-primary fw-bold">{{ group.topLevelLabel }}</div>
+            <div 
+              *ngFor="let option of group.items; trackBy: trackByKey" 
+              class="list-item cursor-pointer"
+              [class.selected]="option.key === selectedFlatNode?.key"
+              (click)="selectItem(option)"
+            >
+              <div class="d-flex align-items-start">
+                <span *ngIf="showCode && option.code" class="fw-bold text-primary me-2 flex-shrink-0">[{{option.code}}]</span>
+                <div class="flex-grow-1">
+                  <div class="fw-semibold">{{option.label}}</div>
+                </div>
+                <i *ngIf="option.key === selectedFlatNode?.key" class="fas fa-check text-success ms-2"></i>
               </div>
-              <i *ngIf="option.key === selectedFlatNode?.key" class="fas fa-check text-success ms-2"></i>
             </div>
           </div>
           
@@ -258,6 +266,13 @@ interface FlatNode {
       background-color: rgba(220, 53, 69, 0.1);
     }
     
+    .group-header {
+      font-weight: 700;
+      color: #2f6ad9;
+      margin: 16px 2px 8px;
+      pointer-events: none;
+    }
+    
     /* RTL support */
     :host-context([dir="rtl"]) .clear-icon,
     :host-context(.rtl) .clear-icon,
@@ -295,11 +310,13 @@ export class IndustrySelectorComponent implements OnInit, OnDestroy {
   isLoading$ = new BehaviorSubject<boolean>(false);
   nodes: TreeNode[] = [];
   flatLeafNodes: FlatNode[] = [];
+  groupedNodes: GroupedSection[] = [];
   selectedNode: any;
   selectedFlatNode: FlatNode | null = null;
   private unsubscribe: Subscription[] = [];
   searchText: string = '';
   filteredNodes: FlatNode[] = [];
+  filteredGroups: GroupedSection[] = [];
 
   ngOnInit(): void {
     this.loadData();
@@ -318,19 +335,22 @@ export class IndustrySelectorComponent implements OnInit, OnDestroy {
 
     this.nodes = this.fetchedData;
     this.flatLeafNodes = this.extractLeafNodes(this.nodes);
-    this.filteredNodes = [...this.flatLeafNodes]; // Initialize filtered nodes
+    this.groupedNodes = this.buildGroupsFromList(this.flatLeafNodes);
+    this.filteredGroups = [...this.groupedNodes];
+    this.filteredNodes = this.flattenGroups(this.filteredGroups); // Initialize filtered nodes
     
     if (this._selectedIndustryId) {
       this.findAndSelectNodeById(this._selectedIndustryId);
     }
   }
 
-  private extractLeafNodes(nodes: TreeNode[], parentPath: string = ''): FlatNode[] {
+  private extractLeafNodes(nodes: TreeNode[], parentPath: string = '', topLevelLabel?: string): FlatNode[] {
     const leafNodes: FlatNode[] = [];
     
     for (const node of nodes) {
       const nodeLabel = node.label || '';
       const currentPath = parentPath ? `${parentPath} > ${nodeLabel}` : nodeLabel;
+      const currentTopLevel = topLevelLabel ?? nodeLabel;
       
       if (!node.children || node.children.length === 0) {
         // This is a leaf node
@@ -339,15 +359,39 @@ export class IndustrySelectorComponent implements OnInit, OnDestroy {
           code: node.data?.code,
           label: nodeLabel,
           fullPath: currentPath,
+          topLevelLabel: currentTopLevel,
           originalNode: node
         });
       } else {
         // Recursively extract from children
-        leafNodes.push(...this.extractLeafNodes(node.children, currentPath));
+        leafNodes.push(...this.extractLeafNodes(node.children, currentPath, currentTopLevel));
       }
     }
     
-    return leafNodes.sort((a, b) => a.label.localeCompare(b.label));
+    return leafNodes;
+  }
+
+  private buildGroupsFromList(list: FlatNode[]): GroupedSection[] {
+    const map = new Map<string, FlatNode[]>();
+    for (const item of list) {
+      const header = item.topLevelLabel || 'Other';
+      const arr = map.get(header) ?? [];
+      arr.push(item);
+      map.set(header, arr);
+    }
+    const groups: GroupedSection[] = Array.from(map.entries()).map(([header, items]) => ({
+      topLevelLabel: header,
+      items: items.slice().sort((a, b) => a.label.localeCompare(b.label))
+    }));
+    return groups.sort((a, b) => a.topLevelLabel.localeCompare(b.topLevelLabel));
+  }
+
+  private flattenGroups(groups: GroupedSection[]): FlatNode[] {
+    const out: FlatNode[] = [];
+    for (const g of groups) {
+      out.push(...g.items);
+    }
+    return out;
   }
 
   selectedNodeLabel(): string {
@@ -363,7 +407,8 @@ export class IndustrySelectorComponent implements OnInit, OnDestroy {
 
   showDialog() {
     this.searchText = ''; // Reset search when opening dialog
-    this.filteredNodes = [...this.flatLeafNodes]; // Reset filtered nodes
+    this.filteredGroups = [...this.groupedNodes];
+    this.filteredNodes = this.flattenGroups(this.filteredGroups); // Reset filtered nodes
     this.dialogVisible = true;
   }
 
@@ -405,10 +450,13 @@ export class IndustrySelectorComponent implements OnInit, OnDestroy {
 
   filterNodes() {
     const searchTerm = this.searchText.toLowerCase();
-    this.filteredNodes = this.flatLeafNodes.filter(node =>
+    const filtered = this.flatLeafNodes.filter(node =>
       node.label.toLowerCase().includes(searchTerm) ||
-      (node.code && node.code.toLowerCase().includes(searchTerm))
+      (node.code && node.code.toLowerCase().includes(searchTerm)) ||
+      node.fullPath.toLowerCase().includes(searchTerm)
     );
+    this.filteredGroups = this.buildGroupsFromList(filtered);
+    this.filteredNodes = filtered;
   }
 
   selectItem(option: FlatNode) {
@@ -418,6 +466,10 @@ export class IndustrySelectorComponent implements OnInit, OnDestroy {
 
   trackByKey(index: number, item: FlatNode) {
     return item.key;
+  }
+  
+  trackByGroupLabel(index: number, group: GroupedSection) {
+    return group.topLevelLabel;
   }
 
   clearSelection(event: Event) {
