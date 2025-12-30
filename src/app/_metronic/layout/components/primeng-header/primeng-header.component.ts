@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, ElementRef, ViewChild, HostListener, Renderer2 } from '@angular/core';
+import { trigger, transition, style, animate } from '@angular/animations';
 import { MenuItem } from 'primeng/api';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Subscription } from 'rxjs';
@@ -9,6 +10,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { Notification, NotificationsService } from 'src/app/_fake/services/nofitications/notifications.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { filter } from 'rxjs/operators';
+import { PusherClientService } from 'src/app/services/pusher-client.service';
+import type { Channel } from 'pusher-js';
 //d
 interface CustomMenuItem extends MenuItem {
   expanded?: boolean;
@@ -31,7 +34,27 @@ interface IndustriesResponse {
 @Component({
   selector: 'app-primeng-header',
   templateUrl: './primeng-header.component.html',
-  styleUrls: ['./primeng-header.component.scss']
+  styleUrls: ['./primeng-header.component.scss'],
+  animations: [
+    trigger('drawerSlide', [
+      transition(':enter', [
+        style({ transform: 'translateX({fromX})' }),
+        animate('300ms ease-out', style({ transform: 'translateX(0)' }))
+      ], { params: { fromX: '100%' } }),
+      transition(':leave', [
+        animate('250ms ease-in', style({ transform: 'translateX({fromX})' }))
+      ], { params: { fromX: '100%' } })
+    ]),
+    trigger('backdropFade', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('200ms ease-out', style({ opacity: 1 }))
+      ]),
+      transition(':leave', [
+        animate('150ms ease-in', style({ opacity: 0 }))
+      ])
+    ])
+  ]
 })
 export class PrimengHeaderComponent implements OnInit, OnDestroy {
   @ViewChild('userDropdown') userDropdown: ElementRef;
@@ -63,6 +86,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
   notifications: Notification[] = [];
   isNotificationsOpen: boolean = false;
   notificationCount: number = 0;
+  private notificationChannel: Channel | null = null;
   
   // Industries dropdown
   industries: Industry[] = [];
@@ -151,7 +175,8 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
     public translate: TranslateService,
     private renderer: Renderer2,
     private notificationService: NotificationsService,
-    private http: HttpClient
+    private http: HttpClient,
+    private pusherClient: PusherClientService
   ) {
     this.lang = this.translationService.getSelectedLanguage();
   }
@@ -185,16 +210,19 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         this.fetchIndustries(); // Fetch industries
         this.initializeMenu(); // Initialize menu after getting profile
         this.onLanguageChange(); // Subscribe to language changes
-        
-        // Subscribe to notifications
-        this.notificationService.notifications$.subscribe((notifications) => {
+
+        // Fetch notifications once (no periodic polling)
+        this.notificationService.getNotifications(this.lang || 'en').subscribe((notifications) => {
           this.notifications = notifications;
-          // Count only unread notifications (where read_at is null or undefined)
           this.notificationCount = this.notifications.filter(n => !n.read_at).length;
         });
 
-        // Start polling for notifications
-        this.notificationService.startPolling();
+        // Initialize realtime (Pusher) if available
+        const token = this.getAuthToken();
+        const userId = profile?.id;
+        if (userId && token && this.lang) {
+          this.initPusher(userId, token, this.lang);
+        }
       }
     });
 
@@ -220,6 +248,10 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
     this.checkScreenSize();
   }
 
+  get isRtl(): boolean {
+    return this.lang === 'ar' || this.lang === 'he';
+  }
+
   // Add method to check screen size manually
   private checkScreenSize() {
     this.isSmallScreen = window.innerWidth <= 991.98; // Bootstrap lg breakpoint
@@ -239,8 +271,13 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
       this.profileSubscription.unsubscribe();
     }
     
-    // Stop polling for notifications
-    this.notificationService.stopPolling();
+    // Unsubscribe realtime
+    try {
+      if (this.profile?.id) {
+        this.pusherClient.unsubscribePrivateUser(this.profile.id);
+      }
+      this.pusherClient.disconnect();
+    } catch {}
   }
 
   loadUserProfile() {
@@ -501,6 +538,13 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
   closeNotifications() {
     this.isNotificationsOpen = false;
   }
+
+  @HostListener('window:keydown', ['$event'])
+  onKeyDown(e: KeyboardEvent) {
+    if (e.key === 'Escape' && this.isNotificationsOpen) {
+      this.isNotificationsOpen = false;
+    }
+  }
   
   // Handle notification click
   handleNotificationClick(notificationId: string) {
@@ -636,5 +680,74 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
     this.isMobileUserDropdownOpen = false;
     this.isNotificationsOpen = false;
     this.isIndustriesMenuOpen = false;
+  }
+
+  // ---- Realtime helpers ----
+  private getAuthToken(): string | null {
+    try {
+      const cookieToken = typeof document !== 'undefined'
+        ? document.cookie.split('; ').find((r) => r.startsWith('token='))?.split('=')[1]
+        : null;
+      return cookieToken || (typeof window !== 'undefined' ? localStorage.getItem('token') : null);
+    } catch {
+      return null;
+    }
+  }
+
+  private initPusher(userId: number, token: string, currentLocale: string) {
+    try {
+      const channel = this.pusherClient.subscribePrivateUser(userId, token, currentLocale);
+      this.notificationChannel = channel;
+      const events = [
+        'account.activated',
+        'account.deactivated',
+        'knowledge.accepted',
+        'knowledge.declined',
+        'order.insight',
+        'knowledge.answer_question',
+        'knowledge.ask_question',
+        'meeting.client_meeting_insighter_approved',
+        'meeting.client_meeting_insighter_postponed',
+        'meeting.client_meeting_reminder',
+        'meeting.client_meeting_new',
+        'meeting.client_meeting_reschedule',
+        'meeting.insighter_meeting_approved',
+        'meeting.insighter_meeting_reminder',
+        'meeting.insighter_meeting_client_new',
+        'requests.action',
+        'requests'
+      ];
+      events.forEach(evt => {
+        channel.bind(evt, (data: any) => {
+          // eslint-disable-next-line no-console
+          const mapped = this.mapEventToNotification(data);
+          // Prepend to local list
+          this.notifications = [mapped, ...this.notifications];
+          // Update unread count (new events are unread)
+          this.notificationCount = this.notifications.filter(n => !n.read_at).length;
+        });
+      });
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.warn('[Pusher] init error', e);
+    }
+  }
+
+  private mapEventToNotification(data: any): Notification {
+    return {
+      id: data?.id ?? `evt-${Date.now()}`,
+      message: data?.message ?? '',
+      type: data?.type ?? 'notification',
+      notifiable_group_id: data?.notifiable_group_id ?? '',
+      notifiable_id: data?.notifiable_id ?? 0,
+      request_id: data?.request_id ?? 0,
+      param: data?.param ?? null,
+      sub_type: data?.sub_type ?? 'info',
+      redirect_page: !!data?.redirect_page,
+      read_at: undefined,
+      sub_page: data?.sub_page,
+      tap: data?.tap,
+      category: data?.category,
+    };
   }
 }

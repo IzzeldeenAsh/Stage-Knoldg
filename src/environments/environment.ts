@@ -8,6 +8,12 @@ export const environment = {
   USERDATA_KEY: 'authf649fc9a5f55',
   isMockEnabled: true,
   apiUrl: 'api',
+
+  // Realtime (Pusher) configuration
+  // Mirror NEXT_PUBLIC_* used in Next.js app when possible
+  pusherKey: (window as any)?.__env?.PUSHER_KEY || '81566bb993a074e07d41',
+  pusherCluster: (window as any)?.__env?.PUSHER_CLUSTER || 'eu',
+  pusherAuthEndpoint: (window as any)?.__env?.PUSHER_AUTH_ENDPOINT || 'https://api.foresighta.co/broadcasting/auth',
   
   // API configuration for sharing authentication between domains
   apiBaseUrl: 'https://api.foresighta.co/api',

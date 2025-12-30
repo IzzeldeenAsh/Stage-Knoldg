@@ -151,7 +151,7 @@ export class SalesComponent extends BaseComponent implements OnInit, OnDestroy, 
   // Localization methods
   getText(key: string): string {
     const translations: { [key: string]: { en: string; ar: string } } = {
-      'TOTAL_ORDERS_TITLE': { en: 'Total Sales', ar: 'إجمالي المبيعات' },
+      'TOTAL_ORDERS_TITLE': { en: 'Total Sale Orders', ar: 'إجمالي المبيعات' },
       'TOTAL_ORDERS': { en: 'Items Sold', ar: 'المستندات المباعة' },
       'TOTAL_ORDERS_MEETINGS': { en: 'Meetings Booked', ar: 'الجلسات المنعقدة' },
       'ORDERS_REVENUE_TITLE': { en: 'Total Revenue', ar: 'إجمالي الإيرادات' },
@@ -423,7 +423,6 @@ export class SalesComponent extends BaseComponent implements OnInit, OnDestroy, 
 
   private loadData(): void {
     this.isLoading = true;
-    console.log('📊 Sales Component - Loading data with isCompany:', this.isCompany);
 
     const totalStats$ = this.isCompany
       ? this.salesService.getCompanyTotalStatistics()
@@ -433,16 +432,10 @@ export class SalesComponent extends BaseComponent implements OnInit, OnDestroy, 
       ? this.salesService.getCompanyPeriodStatistics(this.selectedPeriod)
       : this.salesService.getInsighterPeriodStatistics(this.selectedPeriod);
 
-    console.log('🔗 Sales Component - Using total stats method:', this.isCompany ? 'getCompanyTotalStatistics' : 'getInsighterTotalStatistics');
-    console.log('🔗 Sales Component - Using period stats method:', this.isCompany ? 'getCompanyPeriodStatistics' : 'getInsighterPeriodStatistics');
-    console.log('📅 Sales Component - Selected period:', this.selectedPeriod);
-
     forkJoin([totalStats$, periodStats$])
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: ([totalResponse, periodResponse]) => {
-          console.log('✅ Sales Component - Total stats response:', totalResponse);
-          console.log('✅ Sales Component - Period stats response:', periodResponse);
           this.totalStatistics = totalResponse.data;
           this.periodStatistics = periodResponse.data;
           this.setupCharts();
@@ -458,26 +451,21 @@ export class SalesComponent extends BaseComponent implements OnInit, OnDestroy, 
 
   private loadPeriodStatistics(): void {
     this.isLoading = true;
-    console.log('📈 Sales Component - Loading period stats with isCompany:', this.isCompany);
-    console.log('📅 Sales Component - Period filter changed to:', this.selectedPeriod);
 
     const periodStats$ = this.isCompany
       ? this.salesService.getCompanyPeriodStatistics(this.selectedPeriod)
       : this.salesService.getInsighterPeriodStatistics(this.selectedPeriod);
 
-    console.log('🔗 Sales Component - Using period stats method:', this.isCompany ? 'getCompanyPeriodStatistics' : 'getInsighterPeriodStatistics');
 
     periodStats$
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: (response) => {
-          console.log('✅ Sales Component - Period stats response:', response);
           this.periodStatistics = response.data;
           this.setupRevenueChart();
           this.isLoading = false;
         },
         error: (error) => {
-          console.error('❌ Sales Component - Error loading period stats:', error);
           this.handleServerErrors(error);
           this.isLoading = false;
         }

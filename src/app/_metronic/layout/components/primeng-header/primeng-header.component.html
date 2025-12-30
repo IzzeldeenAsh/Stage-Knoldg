@@ -142,15 +142,39 @@
               {{ notificationCount }}
             </div>  
           </div>
-          <!-- Notification dropdown -->
-          <app-notifications-inner 
+          <!-- Notification drawer (desktop) -->
+          <div
             *ngIf="isNotificationsOpen"
-            [parent]="'client'"
-            (notificationClicked)="handleNotificationClick($event)" 
-            [notifications]="notifications"
-            (clickOutside)="closeNotifications()"
-            class="notification-dropdown"
-          ></app-notifications-inner>
+            class="fixed-top-0 fixed-bottom-0 start-0 end-0"
+            style="position: fixed; inset: 0; z-index: 1000;"
+            aria-hidden="false"
+          >
+            <!-- Backdrop -->
+            <div
+              class="position-absolute start-0 top-0 w-100"
+              style="background-color: rgba(0,0,0,0.3); transition: opacity 300ms;height: 100vh;"
+              (click)="closeNotifications()"
+              [@backdropFade]
+            ></div>
+            <!-- Drawer panel -->
+            <div
+              role="dialog"
+              aria-modal="true"
+              class="position-absolute top-0 bottom-0 bg-white shadow"
+              [ngClass]="isRtl ? 'start-0' : 'end-0'"
+              style="width: 100%; max-width: 32rem; height: 100vh;"
+              (click)="$event.stopPropagation()"
+              [@drawerSlide]="{ value: 'in', params: { fromX: isRtl ? '-100%' : '100%' } }"
+            >
+              <app-notifications-inner 
+                [parent]="'client'"
+                (notificationClicked)="handleNotificationClick($event)" 
+                [notifications]="notifications"
+                (clickOutside)="closeNotifications()"
+                class="h-100 w-100 d-flex flex-column"
+              ></app-notifications-inner>
+            </div>
+          </div>
         </div>
       
         <!-- User dropdown toggle -->
@@ -257,16 +281,39 @@
   </div>
 </div>
 
-<!-- Notifications dropdown for mobile -->
-<div class="mobile-notifications-container" *ngIf="isNotificationsOpen && isSmallScreen">
-  <app-notifications-inner 
-    [parent]="'client'"
-    (notificationClicked)="handleNotificationClick($event)" 
-    [notifications]="notifications"
-    (clickOutside)="closeNotifications()"
-    class="notification-dropdown mobile-notification-dropdown"
-  ></app-notifications-inner>
-</div>
+<!-- Global Notifications Drawer for small screens -->
+<div
+  *ngIf="isNotificationsOpen && isSmallScreen"
+  class="fixed-top-0 fixed-bottom-0 start-0 end-0"
+  style="position: fixed; inset: 0; z-index: 1000;"
+  aria-hidden="false"
+>
+  <!-- Backdrop -->
+  <div
+    class="position-absolute start-0 top-0 w-100"
+    style="background-color: rgba(0,0,0,0.3); transition: opacity 300ms;height: 100vh;"
+    (click)="closeNotifications()"
+    [@backdropFade]
+  ></div>
+  <!-- Drawer panel -->
+  <div
+    role="dialog"
+    aria-modal="true"
+    class="position-absolute top-0 bottom-0 bg-white shadow"
+    [ngClass]="isRtl ? 'start-0' : 'end-0'"
+    style="width: 100%; max-width: 32rem; height: 100vh;"
+    (click)="$event.stopPropagation()"
+    [@drawerSlide]="{ value: 'in', params: { fromX: isRtl ? '-100%' : '100%' } }"
+  >
+    <app-notifications-inner 
+      [parent]="'client'"
+      (notificationClicked)="handleNotificationClick($event)" 
+      [notifications]="notifications"
+      (clickOutside)="closeNotifications()"
+      class="h-100 w-100 d-flex flex-column"
+    ></app-notifications-inner>
+  </div>
+  </div>
 
 <!-- Mobile Sidebar -->
 <p-sidebar [(visible)]="sidebarVisible" position="left" [style]="{'width':'80%', 'max-width':'300px', 'z-index': '1050'}" [baseZIndex]="1050" [showCloseIcon]="true" styleClass="custom-sidebar" [modal]="false">

@@ -13,22 +13,19 @@ import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.s
   selector: 'app-notifications-inner',
   templateUrl: './notifications-inner.component.html',
   host: {
-    class: 'menu menu-sub menu-sub-dropdown menu-column w-350px w-lg-375px',
+    class: 'd-flex flex-column h-100 w-100',
     '[class.show]': 'true'
   },
   styles: [`
     :host {
-      position: absolute;
+      background: #ffffff;
       z-index: 105;
-      background: white;
-      border-radius: 0.475rem;
-      box-shadow: 0 0 50px 0 rgb(82 63 105 / 15%);
     }
 
     @media (max-width: 767px) {
       :host {
-        width: 300px !important;
-        max-width: 90vw !important;
+        width: 100% !important;
+        max-width: 100% !important;
       }
     }
   `]
@@ -175,7 +172,6 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
           targetUrl = '/app/insighter-dashboard/my-meetings?tab=client';
         }
         else if(notification.sub_type === 'client_meeting_new'){
-          console.log('Client meeting new notification clicked:', notification);
           targetUrl = '/app/insighter-dashboard/my-meetings?tab=client';
         }
          else if(notification.sub_type === 'insighter_meeting_client_new')
