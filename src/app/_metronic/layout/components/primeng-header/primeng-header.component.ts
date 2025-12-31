@@ -720,6 +720,8 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
       events.forEach(evt => {
         channel.bind(evt, (data: any) => {
           // eslint-disable-next-line no-console
+          console.log('[Pusher] Event:', evt, data);
+          // eslint-disable-next-line no-console
           const mapped = this.mapEventToNotification(data);
           // Prepend to local list
           this.notifications = [mapped, ...this.notifications];

@@ -9,6 +9,7 @@ import { Message } from "primeng/api";
 import { BaseComponent } from "src/app/modules/base.component";
 import { environment } from "src/environments/environment";
 import { CookieService } from "src/app/utils/cookie.service";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 @Component({
   selector: "app-login",
@@ -38,6 +39,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     private router: Router,
     private translationService: TranslationService,
     private cookieService: CookieService,
+    private http: HttpClient,
     injector: Injector
   ) {
     super(injector);
@@ -194,8 +196,17 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
 
     // Check user roles and redirect accordingly
     if (userData.roles && (userData.roles.includes("admin") || userData.roles.includes("staff"))) {
-      // Admin/staff users stay in the Angular app
-      this.router.navigate(["/admin-dashboard"]);
+      // Admin/staff users stay in the Angular app - set timezone first
+      this.setUserTimezone(token).subscribe({
+        next: () => {
+          this.router.navigate(["/admin-dashboard"]);
+        },
+        error: (error: any) => {
+          console.error('Failed to set timezone:', error);
+          // Proceed with navigation even if timezone setting fails
+          this.router.navigate(["/admin-dashboard"]);
+        }
+      });
     } else {
       // Regular users redirect to Next.js app
       this.redirectToMainApp(token);
@@ -310,5 +321,24 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     }
     // Add locale if missing
     return `/${lang}${pathname.startsWith('/') ? '' : '/'}${pathname}`;
+  }
+
+  private setUserTimezone(token: string): any {
+    try {
+      const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const headers = new HttpHeaders({
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Accept-Language': this.selectedLang || 'en',
+      });
+      return this.http.post('https://api.insightabusiness.com/api/account/timezone/set',
+        { timezone: userTimezone },
+        { headers }
+      );
+    } catch (error) {
+      console.error('Error setting timezone:', error);
+      return new Promise(resolve => resolve(null));
+    }
   }
 }
