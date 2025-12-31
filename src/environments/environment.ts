@@ -8,6 +8,12 @@ export const environment = {
   USERDATA_KEY: 'authf649fc9a5f55',
   isMockEnabled: true,
   apiUrl: 'api',
+
+  // Realtime (Pusher) configuration
+  // Mirror NEXT_PUBLIC_* used in Next.js app when possible
+  pusherKey: (window as any)?.__env?.PUSHER_KEY || '41745ad5e299f4af9e36',
+  pusherCluster: (window as any)?.__env?.PUSHER_CLUSTER || 'eu',
+  pusherAuthEndpoint: (window as any)?.__env?.PUSHER_AUTH_ENDPOINT || 'https://api.insightabusiness.com/broadcasting/auth',
   
   // API configuration for sharing authentication between domains
   apiBaseUrl: 'https://api.insightabusiness.com/api',

@@ -1,13 +1,28 @@
-<div
-  class="d-flex flex-column bgi-no-repeat rounded-top"
-  [style.background-image]="'url(./assets/media/misc/menu-header-bg.jpg)'"
->
-  <h3 class="text-white fw-bold px-9 mt-10 mb-6">
-    {{ 'NOTIFICATIONS.TITLE' | translate }}
-  </h3>
+<div class="position-sticky top-0" style="z-index: 10;">
+  <div
+    class="w-100"
+    style="background-image: linear-gradient(135deg,rgb(81, 175, 246) 0%, #01B5D5 100%);"
+  >
+    <div class="bg-dark bg-opacity-25">
+      <div class="px-5 py-4 d-flex align-items-center justify-content-between">
+        <h3 class="fw-bold fs-4 text-white m-0">
+          {{ 'NOTIFICATIONS.TITLE' | translate }}
+        </h3>
+        <button
+          type="button"
+          aria-label="Close notifications"
+          (click)="clickOutside.emit()"
+          class="btn btn-icon btn-sm "
+        >
+          <i class="ki-outline ki-cross text-white fs-3"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="separator m-0"></div>
 </div>
 
-<div class="scroll-y mh-325px my-5 ">
+<div class="my-3" style="height: calc(100vh - 90px); overflow-y: auto;">
   <!-- Show message when no notifications are available -->
   <div *ngIf="notifications.length === 0" class="text-center py-4">
     <div class="text-gray-500">{{ 'NOTIFICATIONS.NO_NEW' | translate }}</div>
@@ -21,23 +36,21 @@
         
         <div class="d-flex align-items-center">
           <div class="symbol symbol-35px me-4">
-            <span class="symbol-label" [ngClass]="'bg-light-' + (alert.sub_type | notificationsBg)">
               <span
                 [inlineSVG]="'./assets/media/icons/' + (alert.sub_type | notificationsIcons)"
-                class="svg-icon fs-3"
+                class=" svg-icon-lg fs-lg"
                 [ngClass]="'svg-icon-' + (alert.sub_type | notificationsBg)"
               ></span>
-            </span>
           </div>
   
           <div class="mb-0 me-2">
-            <a  class="fs-6 text-gray-800 text-hover-primary text-capitalize" [ngClass]="{'fw-bolder': !alert.read_at, 'fw-light': alert.read_at}" style="word-break: break-word;">
+            <a  class="fs-8 text-info-800 text-hover-info text-capitalize" [ngClass]="{'fw-bolder': !alert.read_at, 'fw-light': alert.read_at}" style="word-break: break-word;">
               {{ alert.sub_type | notificationsNames }}
             </a>
-            <div class="text-gray-500 fs-7" [ngClass]="{'fw-bold': !alert.read_at}">{{ alert.message }}</div>
+            <div class="text-gray-900 fs-7 fw-light" [ngClass]="{'fw-bold': !alert.read_at}">{{ alert.message }}</div>
           </div>
         </div>
-          <span class="badge badge-light-info fs-8 badge-hover-primary ">{{ 'NOTIFICATIONS.VIEW' | translate }}</span>
+          <span class="badge badge-light-info fs-8 badge-hover-primary " >{{ 'NOTIFICATIONS.VIEW' | translate }}</span>
       
       </div>
     </a>

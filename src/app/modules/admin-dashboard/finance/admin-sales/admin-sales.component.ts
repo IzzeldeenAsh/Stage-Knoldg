@@ -172,28 +172,21 @@ export class AdminSalesComponent extends BaseComponent implements OnInit, OnDest
 
   private loadData(): void {
     this.isLoading = true;
-    console.log('📊 Admin Sales Component - Loading data');
 
     const totalStats$ = this.salesService.getAdminTotalStatistics();
     const periodStats$ = this.salesService.getAdminPeriodStatistics(this.selectedPeriod);
 
-    console.log('🔗 Admin Sales Component - Using getAdminTotalStatistics');
-    console.log('🔗 Admin Sales Component - Using getAdminPeriodStatistics');
-    console.log('📅 Admin Sales Component - Selected period:', this.selectedPeriod);
-
+   
     forkJoin([totalStats$, periodStats$])
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: ([totalResponse, periodResponse]) => {
-          console.log('✅ Admin Sales Component - Total stats response:', totalResponse);
-          console.log('✅ Admin Sales Component - Period stats response:', periodResponse);
           this.totalStatistics = totalResponse.data;
           this.periodStatistics = periodResponse.data;
           this.setupCharts();
           this.isLoading = false;
         },
         error: (error) => {
-          console.error('❌ Admin Sales Component - Error loading data:', error);
           this.handleServerErrors(error);
           this.isLoading = false;
         }
@@ -202,18 +195,12 @@ export class AdminSalesComponent extends BaseComponent implements OnInit, OnDest
 
   private loadPeriodStatistics(): void {
     this.isLoading = true;
-    console.log('📈 Admin Sales Component - Loading period stats');
-    console.log('📅 Admin Sales Component - Period filter changed to:', this.selectedPeriod);
-
     const periodStats$ = this.salesService.getAdminPeriodStatistics(this.selectedPeriod);
-
-    console.log('🔗 Admin Sales Component - Using getAdminPeriodStatistics');
 
     periodStats$
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: (response) => {
-          console.log('✅ Admin Sales Component - Period stats response:', response);
           this.periodStatistics = response.data;
           this.setupRevenueChart();
           this.isLoading = false;
