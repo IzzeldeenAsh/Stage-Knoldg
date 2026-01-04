@@ -36,11 +36,12 @@
         
         <div class="d-flex align-items-center">
           <div class="symbol symbol-35px me-4">
-              <span
-                [inlineSVG]="'./assets/media/icons/' + (alert.sub_type | notificationsIcons)"
-                class=" svg-icon-lg fs-lg"
+              <img
+                [src]="'./assets/media/icons/' + (alert.sub_type | notificationsIcons)"
+                class="svg-icon-lg fs-lg"
                 [ngClass]="'svg-icon-' + (alert.sub_type | notificationsBg)"
-              ></span>
+                alt="notification icon"
+              />
           </div>
   
           <div class="mb-0 me-2">
