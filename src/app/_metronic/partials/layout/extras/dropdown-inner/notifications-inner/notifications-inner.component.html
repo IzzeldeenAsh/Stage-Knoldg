@@ -35,13 +35,14 @@
       <div  class="d-flex flex-stack py-4 cursor-pointer bg-hover-light-info px-8">
         
         <div class="d-flex align-items-center">
-          <div class="symbol symbol-35px me-4">
-              <img
-                [src]="'./assets/media/icons/' + (alert.sub_type | notificationsIcons)"
-                class="svg-icon-lg fs-lg"
+          <div class="symbol symbol-45px me-4">
+            <span class="symbol-label" style="background: none;">
+              <span
+                [inlineSVG]="'./assets/media/icons/' + (alert.sub_type | notificationsIcons)"
+                class="svg-icon fs-1 svg-icon-2x"
                 [ngClass]="'svg-icon-' + (alert.sub_type | notificationsBg)"
-                alt="notification icon"
-              />
+              ></span>
+            </span>
           </div>
   
           <div class="mb-0 me-2">

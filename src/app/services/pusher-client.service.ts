@@ -51,15 +51,19 @@ export class PusherClientService implements OnDestroy {
 
     this.pusher.connection.bind('state_change', (states: any) => {
       // eslint-disable-next-line no-console
+      console.log('[Pusher] State change', states);
     });
     this.pusher.connection.bind('connected', () => {
       // eslint-disable-next-line no-console
+      console.log('[Pusher] Connected');
     });
     this.pusher.connection.bind('failed', () => {
       // eslint-disable-next-line no-console
+      console.log('[Pusher] Failed');
     });
     this.pusher.connection.bind('error', (err: any) => {
-      // eslint-disable-next-line no-console
+      // eslint-disable-next-line no-console  
+      console.log('[Pusher] Error', err);
     });
 
     return this.pusher;
