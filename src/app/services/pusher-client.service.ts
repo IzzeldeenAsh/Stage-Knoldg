@@ -12,13 +12,18 @@ export class PusherClientService implements OnDestroy {
   private ensureClient(token: string, currentLocale: string): Pusher {
     if (this.pusher) return this.pusher;
 
-    const key = (environment as any).pusherKey || '';
-    const cluster = (environment as any).pusherCluster || 'eu';
-    const authEndpoint = (environment as any).pusherAuthEndpoint || '';
+    const key = '41745ad5e299f4af9e36';
+    const cluster =  'eu';
+    const authEndpoint = 'https://api.insightabusiness.com/broadcasting/auth';
 
     if (!key || !authEndpoint) {
       // Soft warn; allow app to proceed without realtime if not configured
       // eslint-disable-next-line no-console
+      console.warn('[Pusher] Missing config (key/authEndpoint). Realtime disabled.', {
+        hasKey: !!key,
+        hasAuthEndpoint: !!authEndpoint,
+        cluster
+      });
     }
 
     // Enable Pusher console logs in non-production mode
