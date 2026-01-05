@@ -30,7 +30,7 @@
   <div class="border-0 border-1 border-gray-200 mb-8">
     <div class="row g-3">
       <!-- Title Search -->
-      <div class="col-12 col-md-4">
+      <div class="col-12 col-md-6">
         <div class="input-group" [class.flex-row-reverse]="lang === 'ar'">
           <span class="input-group-text bg-light" [class.border-end-0]="lang !== 'ar'" [class.border-start-0]="lang === 'ar'">
             <i class="ki-duotone ki-magnifier fs-4">
@@ -55,7 +55,7 @@
       </div>
 
       <!-- Type Filter -->
-      <div class="col-12 col-md-4">
+      <div class="col-12 col-md-6">
         <select
           class="form-select"
           [(ngModel)]="filters.type"
@@ -69,23 +69,6 @@
           <option value="report">{{ ("KNOWLEDGE_TYPES.REPORTS") | translate }}</option>
           <option value="manual">{{ ("KNOWLEDGE_TYPES.MANUALS") | translate }}</option>
           <option value="course">{{ ("KNOWLEDGE_TYPES.COURSES") | translate }}</option>
-        </select>
-      </div>
-
-      <!-- Language Filter -->
-      <div class="col-12 col-md-4">
-        <select
-          class="form-select"
-          [(ngModel)]="filters.language"
-          (change)="onFilterChange()"
-        >
-          <option value="">
-            {{ lang === "ar" ? "جميع اللغات" : "All Languages" }}
-          </option>
-          <option value="ar">{{ lang === "ar" ? "العربية" : "Arabic" }}</option>
-          <option value="en">
-            {{ lang === "ar" ? "الإنجليزية" : "English" }}
-          </option>
         </select>
       </div>
     </div>

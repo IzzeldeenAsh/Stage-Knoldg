@@ -762,3 +762,121 @@
     }
   }
 } 
+
+// ------------------------------------------------------------
+// Mobile layout improvements (override earlier conflicting rules)
+// هدفها: منع التمرير الأفقي + جعل حقول الوقت/السعر قابلة للمس ولمسة واضحة
+// ------------------------------------------------------------
+@media (max-width: 768px) {
+  .schedule-container {
+    overflow-x: visible; // avoid horizontal scroll on mobile
+    padding: 12px;
+  }
+
+  .schedule-container .section {
+    overflow-x: visible;
+  }
+
+  .schedule-container .day-row {
+    padding: 10px 8px;
+  }
+
+  .schedule-container .day-checkbox {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .schedule-container .time-slots {
+    width: 100%;
+    margin-left: 0 !important;
+  }
+
+  // Make each time slot stack nicely on mobile
+  .schedule-container .time-slot {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  // Turn time inputs into a simple vertical stack (Start then End)
+  .schedule-container .time-inputs {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .schedule-container .time-inputs .time-separator {
+    display: none;
+  }
+
+  .schedule-container .rate-input {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .schedule-container .rate-input .d-flex {
+    width: 100%;
+  }
+
+  .schedule-container .rate-input .rate-field {
+    width: 100% !important;
+  }
+
+  .schedule-container .btn-remove {
+    align-self: flex-end;
+  }
+
+  .schedule-container .add-time-slot-row .btn-add {
+    width: 42px;
+    height: 42px;
+    font-size: 18px;
+  }
+
+  // Exceptions: stack date + time inputs + remove button
+  .schedule-container .exception-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .schedule-container .exception-row .btn-remove {
+    align-self: flex-end;
+  }
+
+  // PrimeNG Calendar: make inputs full-width and tappable
+  ::ng-deep .schedule-container {
+    .p-calendar {
+      width: 100%;
+    }
+
+    .p-calendar .p-inputtext {
+      width: 100% !important;
+      min-width: 0 !important;
+      height: 44px !important;
+      font-size: 14px !important;
+    }
+
+    .date-calendar .p-calendar .p-inputtext {
+      width: 100% !important;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .schedule-container {
+    padding: 10px;
+  }
+
+  .schedule-container .section {
+    padding: 10px;
+  }
+
+  ::ng-deep .schedule-container {
+    .p-calendar .p-inputtext {
+      height: 42px !important;
+      font-size: 13px !important;
+    }
+  }
+}

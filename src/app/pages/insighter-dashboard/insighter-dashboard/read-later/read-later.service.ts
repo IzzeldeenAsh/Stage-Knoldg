@@ -101,7 +101,7 @@ export class ReadLaterService {
     return throwError(() => error);
   }
 
-  getReadLaterItems(page: number = 1, filters?: { title?: string; type?: string; language?: string }): Observable<ReadLaterResponse> {
+  getReadLaterItems(page: number = 1, filters?: { title?: string; type?: string }): Observable<ReadLaterResponse> {
     let url = `${this.API_URL}?page=${page}&per_page=10`;
     
     // Add filter parameters if provided
@@ -111,9 +111,6 @@ export class ReadLaterService {
       }
       if (filters.type && filters.type.trim()) {
         url += `&type=${encodeURIComponent(filters.type.trim())}`;
-      }
-      if (filters.language && filters.language.trim()) {
-        url += `&language=${encodeURIComponent(filters.language.trim())}`;
       }
     }
     

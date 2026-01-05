@@ -18,7 +18,6 @@ export class ReadLaterComponent extends BaseComponent implements OnInit {
   filters = {
     title: '',
     type: '',
-    language: ''
   };
 
   private filterTimeout: any;
@@ -38,7 +37,6 @@ export class ReadLaterComponent extends BaseComponent implements OnInit {
     const filtersToApply = this.hasActiveFilters() ? {
       title: this.filters.title,
       type: this.filters.type,
-      language: this.filters.language
     } : undefined;
 
     this._readLater.getReadLaterItems(page, filtersToApply).subscribe({
@@ -234,14 +232,13 @@ export class ReadLaterComponent extends BaseComponent implements OnInit {
   }
 
   hasActiveFilters(): boolean {
-    return !!(this.filters.title?.trim() || this.filters.type || this.filters.language);
+    return !!(this.filters.title?.trim() || this.filters.type);
   }
 
   clearFilters(): void {
     this.filters = {
       title: '',
       type: '',
-      language: ''
     };
     this.currentPage.set(1);
     this.loadReadLaterItems(1);
