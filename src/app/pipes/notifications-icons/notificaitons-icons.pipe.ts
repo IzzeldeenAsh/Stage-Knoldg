@@ -8,7 +8,7 @@ export class NotificationsIconsPipe implements PipeTransform {
   transform(type: string): string {
     switch (type) {
       case 'knowledge': // used as sub_type for order notifications
-        return 'duotune/finance/fin010.svg';
+        return 'duotune/finance/Knlg010.svg';
       case 'deactivate_company':
       case 'deactivate_company_with_delete':
       case 'deactivate_insighter':

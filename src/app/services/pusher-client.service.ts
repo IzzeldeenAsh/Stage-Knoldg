@@ -12,13 +12,18 @@ export class PusherClientService implements OnDestroy {
   private ensureClient(token: string, currentLocale: string): Pusher {
     if (this.pusher) return this.pusher;
 
-    const key = (environment as any).pusherKey || '';
-    const cluster = (environment as any).pusherCluster || 'eu';
-    const authEndpoint = (environment as any).pusherAuthEndpoint || '';
+    const key = '81566bb993a074e07d41';
+    const cluster =  'eu';
+    const authEndpoint = 'https://api.foresighta.co/broadcasting/auth';
 
     if (!key || !authEndpoint) {
       // Soft warn; allow app to proceed without realtime if not configured
       // eslint-disable-next-line no-console
+      console.warn('[Pusher] Missing config (key/authEndpoint). Realtime disabled.', {
+        hasKey: !!key,
+        hasAuthEndpoint: !!authEndpoint,
+        cluster
+      });
     }
 
     // Enable Pusher console logs in non-production mode
@@ -51,15 +56,19 @@ export class PusherClientService implements OnDestroy {
 
     this.pusher.connection.bind('state_change', (states: any) => {
       // eslint-disable-next-line no-console
+      console.log('[Pusher] State change', states);
     });
     this.pusher.connection.bind('connected', () => {
       // eslint-disable-next-line no-console
+      console.log('[Pusher] Connected');
     });
     this.pusher.connection.bind('failed', () => {
       // eslint-disable-next-line no-console
+      console.log('[Pusher] Failed');
     });
     this.pusher.connection.bind('error', (err: any) => {
-      // eslint-disable-next-line no-console
+      // eslint-disable-next-line no-console  
+      console.log('[Pusher] Error', err);
     });
 
     return this.pusher;

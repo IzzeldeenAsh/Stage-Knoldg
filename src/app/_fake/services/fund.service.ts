@@ -163,7 +163,7 @@ export class FundService {
     const headers = this.getHeaders();
     this.setLoading(true);
 
-    let url = `${this.baseUrl}/insighter?page=${page}`;
+    let url = `${this.baseUrl}/insighter?page=${page}&per_time=yearly`;
 
     if (overdueWiredTransaction !== undefined) {
       url += `&overdue_wired_transaction=${overdueWiredTransaction}`;
@@ -183,7 +183,7 @@ export class FundService {
     const headers = this.getHeaders();
     this.setLoading(true);
 
-    return this.http.get<PaginatedResponse<Transaction>>(`${this.baseUrl}/insighter/transaction/${insighterId}?page=${page}`, { headers }).pipe(
+    return this.http.get<PaginatedResponse<Transaction>>(`${this.baseUrl}/insighter/transaction/${insighterId}?page=${page}&per_time=yearly`, { headers }).pipe(
       catchError(error => this.handleError(error)),
       finalize(() => this.setLoading(false))
     );

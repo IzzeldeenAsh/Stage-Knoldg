@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ElementRef, ViewChild, HostListener, Renderer2 } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild, HostListener, Renderer2, NgZone, ChangeDetectorRef } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { MenuItem } from 'primeng/api';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
@@ -87,6 +87,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
   isNotificationsOpen: boolean = false;
   notificationCount: number = 0;
   private notificationChannel: Channel | null = null;
+  private pusherGlobalHandler: ((eventName: string, data: any) => void) | null = null;
   
   // Industries dropdown
   industries: Industry[] = [];
@@ -176,7 +177,9 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
     private renderer: Renderer2,
     private notificationService: NotificationsService,
     private http: HttpClient,
-    private pusherClient: PusherClientService
+    private pusherClient: PusherClientService,
+    private ngZone: NgZone,
+    private cdr: ChangeDetectorRef
   ) {
     this.lang = this.translationService.getSelectedLanguage();
   }
@@ -220,8 +223,8 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         // Initialize realtime (Pusher) if available
         const token = this.getAuthToken();
         const userId = profile?.id;
-        if (userId && token && this.lang) {
-          this.initPusher(userId, token, this.lang);
+        if (userId && token) {
+          this.initPusher(userId, token, this.lang || 'en');
         }
       }
     });
@@ -276,6 +279,12 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
       if (this.profile?.id) {
         this.pusherClient.unsubscribePrivateUser(this.profile.id);
       }
+      // Best-effort unbind global handler
+      try {
+        if (this.notificationChannel && this.pusherGlobalHandler) {
+          (this.notificationChannel as any).unbind_global?.(this.pusherGlobalHandler);
+        }
+      } catch {}
       this.pusherClient.disconnect();
     } catch {}
   }
@@ -685,10 +694,20 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
   // ---- Realtime helpers ----
   private getAuthToken(): string | null {
     try {
-      const cookieToken = typeof document !== 'undefined'
-        ? document.cookie.split('; ').find((r) => r.startsWith('token='))?.split('=')[1]
-        : null;
-      return cookieToken || (typeof window !== 'undefined' ? localStorage.getItem('token') : null);
+      // Cookie first (primary), then localStorage fallback.
+      // Important: decode cookie value (token cookie is often URL-encoded).
+      if (typeof document !== 'undefined') {
+        const tokenPair = document.cookie
+          .split(';')
+          .map((c) => c.trim())
+          .find((c) => c.startsWith('token='));
+        if (tokenPair) {
+          const raw = tokenPair.split('=').slice(1).join('=');
+          const decoded = decodeURIComponent(raw);
+          return decoded || null;
+        }
+      }
+      return typeof window !== 'undefined' ? localStorage.getItem('token') : null;
     } catch {
       return null;
     }
@@ -696,8 +715,38 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
 
   private initPusher(userId: number, token: string, currentLocale: string) {
     try {
+      // eslint-disable-next-line no-console
+      console.log('[Pusher] Initializing', {
+        userId,
+        locale: currentLocale,
+        tokenPreview: token ? `${token.slice(0, 6)}…${token.slice(-4)}` : null
+      });
+
       const channel = this.pusherClient.subscribePrivateUser(userId, token, currentLocale);
       this.notificationChannel = channel;
+
+      // Surface auth issues explicitly (otherwise it feels like "Pusher doesn't work")
+      channel.bind('pusher:subscription_succeeded', () => {
+        // eslint-disable-next-line no-console
+        console.log('[Pusher] Subscription succeeded', `private-user.${userId}`);
+      });
+      channel.bind('pusher:subscription_error', (status: any) => {
+        // eslint-disable-next-line no-console
+        console.warn('[Pusher] Subscription error', status, {
+          channel: `private-user.${userId}`,
+          hint: 'Check Authorization token + authEndpoint CORS + broadcasting/auth response'
+        });
+      });
+
+      // Log ALL events received on this channel (like your Next.js hook does)
+      this.pusherGlobalHandler = (eventName: string, data: any) => {
+        // eslint-disable-next-line no-console
+        console.log('[Pusher][GLOBAL EVENT]', eventName, data);
+      };
+      try {
+        (channel as any).bind_global?.(this.pusherGlobalHandler);
+      } catch {}
+
       const events = [
         'account.activated',
         'account.deactivated',
@@ -720,11 +769,18 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
       events.forEach(evt => {
         channel.bind(evt, (data: any) => {
           // eslint-disable-next-line no-console
-          const mapped = this.mapEventToNotification(data);
-          // Prepend to local list
-          this.notifications = [mapped, ...this.notifications];
-          // Update unread count (new events are unread)
-          this.notificationCount = this.notifications.filter(n => !n.read_at).length;
+          console.log('[Pusher] Event:', evt, data);
+
+          // Pusher callbacks can run outside Angular's zone -> UI won't update unless we re-enter.
+          this.ngZone.run(() => {
+            const mapped = this.mapEventToNotification(data);
+            // Prepend to local list
+            this.notifications = [mapped, ...this.notifications];
+            // Update unread count (new events are unread)
+            this.notificationCount = this.notifications.filter(n => !n.read_at).length;
+            // Ensure view refresh even if event arrives outside normal Angular change detection
+            this.cdr.detectChanges();
+          });
         });
       });
     } catch (e) {
