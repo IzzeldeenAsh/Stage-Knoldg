@@ -148,10 +148,13 @@ transition: all 0.3s ease;
 
 .stepper-nav {
   gap: 1rem;
+  @media screen and (max-width: 768px) {
+    gap: 2px;
+  }
 }
 
 .stepper-item {
-  min-width: 90px;
+  min-width: 40px;
   
   .stepper-icon-i {
     width: 35px;

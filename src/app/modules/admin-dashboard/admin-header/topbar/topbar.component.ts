@@ -3,31 +3,39 @@ import {
   ElementRef,
   HostListener,
   OnInit,
+  OnDestroy,
   Renderer2,
+  NgZone,
+  ChangeDetectorRef,
 } from "@angular/core";
-import { Router } from "@angular/router";
+import { Router, NavigationEnd } from "@angular/router";
 import { MessageService } from "primeng/api";
-import { first } from "rxjs";
+import { first, filter } from "rxjs";
 import { IKnoldgProfile } from "src/app/_fake/models/profile.interface";
 import { ProfileService } from "src/app/_fake/services/get-profile/get-profile.service";
 import { FileUploadService } from "src/app/_fake/services/upload-picture/upload-picture";
 import { AuthService, UserType } from "src/app/modules/auth";
-import { Notification, NotificationsService } from 'src/app/_fake/services/notifications/notifications.service';
+import { Notification, NotificationsService } from 'src/app/_fake/services/nofitications/notifications.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { TranslationService } from 'src/app/modules/i18n';
+import { PusherClientService } from 'src/app/services/pusher-client.service';
+import type { Channel } from 'pusher-js';
 @Component({
   selector: "app-topbar",
   templateUrl: "./topbar.component.html",
   styleUrls: ["./topbar.component.scss"],
 })
-export class TopbarComponent implements OnInit {
+export class TopbarComponent implements OnInit, OnDestroy {
   user: IKnoldgProfile;
   itemClass: string = 'ms-1 ms-lg-3';
   btnClass: string = 'btn btn-icon btn-custom btn-icon-muted  btn-active-color-secondary w-35px h-35px w-md-40px h-md-40px';
-  notifications: any[] = [];
+  notifications: Notification[] = [];
   notificationsMenuOpen: boolean = false;
   currentLang: string = 'en';
+  notificationCount: number = 0;
+  private notificationChannel: Channel | null = null;
+  private pusherGlobalHandler: ((eventName: string, data: any) => void) | null = null;
   
   constructor(
     private elRef: ElementRef,
@@ -39,21 +47,23 @@ export class TopbarComponent implements OnInit {
     private getProfileService: ProfileService,
     private notificationService: NotificationsService,
     private http: HttpClient,
-    private translationService: TranslationService
+    private translationService: TranslationService,
+    private pusherClient: PusherClientService,
+    private ngZone: NgZone,
+    private cdr: ChangeDetectorRef
   ) {}
+  
   ngOnInit(): void {
     this.currentLang = this.translationService.getSelectedLanguage();
     this.getProfile();
-       
-    // Subscribe to the notifications$ observable to receive updates from polling
-    this.notificationService.notifications$.subscribe((notifications) => {
-      this.notifications = notifications;
-      // Count only unread notifications (where read_at is null or undefined)
-      this.notificationCount = this.notifications.filter(n => !n.read_at).length;
-    });
 
-    // Start polling for notifications
-    this.notificationService.startPolling();
+    // Subscribe to route changes
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event) => {
+      // Close notifications menu on route change
+      this.closeNotificationsMenu();
+    });
  
   }
   signOut() {
@@ -72,7 +82,20 @@ export class TopbarComponent implements OnInit {
   getProfile(){
     this.getProfileService.getProfile().pipe(first()).subscribe({
       next :(res)=>{
-        this.user = res
+        this.user = res;
+        
+        // Fetch notifications once (no periodic polling)
+        this.notificationService.getNotifications(this.currentLang || 'en').subscribe((notifications) => {
+          this.notifications = notifications;
+          this.notificationCount = this.notifications.filter(n => !n.read_at).length;
+        });
+
+        // Initialize realtime (Pusher) if available
+        const token = this.getAuthToken();
+        const userId = res?.id;
+        if (userId && token) {
+          this.initPusher(userId, token, this.currentLang || 'en');
+        }
       },
       error:(error)=>{
         this.messageService.add({
@@ -84,8 +107,6 @@ export class TopbarComponent implements OnInit {
       }
     })
   }
-
-  notificationCount: number = 0;
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -161,33 +182,8 @@ export class TopbarComponent implements OnInit {
     this.notificationsMenuOpen = !this.notificationsMenuOpen;
     console.log('Notifications menu toggled:', this.notificationsMenuOpen);
     
-    // If opening the notifications dropdown, mark all as read
-    if (this.notificationsMenuOpen && this.notificationCount > 0) {
-      // Immediately set notification count to 0 for UI feedback
-      this.notificationCount = 0;
-      
-      const headers = new HttpHeaders({
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Accept-Language': this.currentLang
-      });
-      
-      // Call API to mark all notifications as read - using same endpoint as in primeng-header
-      this.http.put('https://api.foresighta.co/api/account/notification/read', {}, { headers })
-        .subscribe({
-          next: () => {
-            // Refresh notifications from API
-            this.notificationService.getNotifications(this.currentLang).subscribe(notifications => {
-              this.notifications = notifications;
-              // Only count unread notifications
-              this.notificationCount = notifications.filter(n => !n.read_at).length;
-            });
-          },
-          error: (error) => {
-            console.error('Error marking all notifications as read:', error);
-          }
-        });
-    }
+    // Note: We don't mark all as read when opening, individual notifications are marked when clicked
+    // This matches the behavior in primeng-header component
   }
 
   // Close notifications menu
@@ -200,9 +196,20 @@ export class TopbarComponent implements OnInit {
     this.closeNotificationsMenu();
   }
 
-   // Add ngOnDestroy to clean up
-   ngOnDestroy(): void {
-    this.notificationService.stopPolling();
+  ngOnDestroy(): void {
+    // Unsubscribe realtime
+    try {
+      if (this.user?.id) {
+        this.pusherClient.unsubscribePrivateUser(this.user.id);
+      }
+      // Best-effort unbind global handler
+      try {
+        if (this.notificationChannel && this.pusherGlobalHandler) {
+          (this.notificationChannel as any).unbind_global?.(this.pusherGlobalHandler);
+        }
+      } catch {}
+      this.pusherClient.disconnect();
+    } catch {}
   }
 
 
@@ -230,5 +237,122 @@ export class TopbarComponent implements OnInit {
 
     // For admin, all notification types go to requests dashboard
     this.router.navigate(['/admin-dashboard/admin/dashboard/main-dashboard/requests']);
+  }
+
+  // ---- Realtime helpers ----
+  private getAuthToken(): string | null {
+    try {
+      // Cookie first (primary), then localStorage fallback.
+      // Important: decode cookie value (token cookie is often URL-encoded).
+      if (typeof document !== 'undefined') {
+        const tokenPair = document.cookie
+          .split(';')
+          .map((c) => c.trim())
+          .find((c) => c.startsWith('token='));
+        if (tokenPair) {
+          const raw = tokenPair.split('=').slice(1).join('=');
+          const decoded = decodeURIComponent(raw);
+          return decoded || null;
+        }
+      }
+      return typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    } catch {
+      return null;
+    }
+  }
+
+  private initPusher(userId: number, token: string, currentLocale: string) {
+    try {
+      // eslint-disable-next-line no-console
+      console.log('[Pusher] Initializing', {
+        userId,
+        locale: currentLocale,
+        tokenPreview: token ? `${token.slice(0, 6)}…${token.slice(-4)}` : null
+      });
+
+      const channel = this.pusherClient.subscribePrivateUser(userId, token, currentLocale);
+      this.notificationChannel = channel;
+
+      // Surface auth issues explicitly (otherwise it feels like "Pusher doesn't work")
+      channel.bind('pusher:subscription_succeeded', () => {
+        // eslint-disable-next-line no-console
+        console.log('[Pusher] Subscription succeeded', `private-user.${userId}`);
+      });
+      channel.bind('pusher:subscription_error', (status: any) => {
+        // eslint-disable-next-line no-console
+        console.warn('[Pusher] Subscription error', status, {
+          channel: `private-user.${userId}`,
+          hint: 'Check Authorization token + authEndpoint CORS + broadcasting/auth response'
+        });
+      });
+
+      // Log ALL events received on this channel (like your Next.js hook does)
+      this.pusherGlobalHandler = (eventName: string, data: any) => {
+        // eslint-disable-next-line no-console
+        console.log('[Pusher][GLOBAL EVENT]', eventName, data);
+      };
+      try {
+        (channel as any).bind_global?.(this.pusherGlobalHandler);
+      } catch {}
+
+      const events = [
+        'account.activated',
+        'account.deactivated',
+        'knowledge.accepted',
+        'knowledge.declined',
+        'order.insight',
+        'knowledge.answer_question',
+        'knowledge.ask_question',
+        'meeting.client_meeting_insighter_approved',
+        'meeting.client_meeting_insighter_postponed',
+        'meeting.client_meeting_reminder',
+        'meeting.client_meeting_new',
+        'meeting.client_meeting_reschedule',
+        'meeting.insighter_meeting_approved',
+        'meeting.insighter_meeting_reminder',
+        'meeting.insighter_meeting_client_new',
+        'requests.action',
+        'requests',
+        'contact-us'
+      ];
+      events.forEach(evt => {
+        channel.bind(evt, (data: any) => {
+          // eslint-disable-next-line no-console
+          console.log('[Pusher] Event:', evt, data);
+
+          // Pusher callbacks can run outside Angular's zone -> UI won't update unless we re-enter.
+          this.ngZone.run(() => {
+            const mapped = this.mapEventToNotification(data);
+            // Prepend to local list
+            this.notifications = [mapped, ...this.notifications];
+            // Update unread count (new events are unread)
+            this.notificationCount = this.notifications.filter(n => !n.read_at).length;
+            // Ensure view refresh even if event arrives outside normal Angular change detection
+            this.cdr.detectChanges();
+          });
+        });
+      });
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.warn('[Pusher] init error', e);
+    }
+  }
+
+  private mapEventToNotification(data: any): Notification {
+    return {
+      id: data?.id ?? `evt-${Date.now()}`,
+      message: data?.message ?? '',
+      type: data?.type ?? 'notification',
+      notifiable_group_id: data?.notifiable_group_id ?? '',
+      notifiable_id: data?.notifiable_id ?? 0,
+      request_id: data?.request_id ?? 0,
+      param: data?.param ?? null,
+      sub_type: data?.sub_type ?? 'info',
+      redirect_page: !!data?.redirect_page,
+      read_at: undefined,
+      sub_page: data?.sub_page,
+      tap: data?.tap,
+      category: data?.category,
+    };
   }
 }

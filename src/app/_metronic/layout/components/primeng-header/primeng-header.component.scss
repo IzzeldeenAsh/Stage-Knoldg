@@ -2,6 +2,17 @@
   position: absolute;
   inset: 0 0 auto 0;
   z-index: 1000;
+  transition: background-color 250ms ease, box-shadow 250ms ease, border-color 250ms ease;
+}
+
+/* Sticky mode: keep layout/overlay behavior (absolute initially), become fixed on scroll */
+.primeng-header.is-sticky {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  inset: 0 0 auto 0;
+  z-index: 1100;
 }
 
 /* Header Styles */
@@ -13,12 +24,13 @@
   background-color:transparent;
   position: relative;
   z-index: 120;
+  transition: background-color 250ms ease, box-shadow 250ms ease, border-color 250ms ease;
 }
 
 .header-logo {
   flex: 0 0 auto;
   margin-right: 2rem;
-  padding-top: 18px ;
+  padding: 10px ;
   padding-inline-start: 5px;
   a img{
     height: 45px;
@@ -138,6 +150,7 @@
   z-index: 1020;
   border-bottom: 1px solid #e9ecef;
   min-height: 60px;
+  transition: background-color 250ms ease, box-shadow 250ms ease, border-color 250ms ease;
 }
 
 .mobile-header-container {
@@ -789,9 +802,28 @@ app-user-inner {
   }
 }
 
-.desktop-header {
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(4px);
+/* Glassmorphism: only when the header is sticky (scrolled) */
+.primeng-header.is-sticky {
+  .header-container {
+    background-color: rgba(15, 22, 41, 0.22);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+  }
+
+  .desktop-header {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  .mobile-header {
+    background-color: rgba(255, 255, 255, 0.28);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+  }
 }
 
 /* Industries Dropdown Styles */

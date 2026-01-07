@@ -62,7 +62,9 @@
                 <div style="margin-top:6px; text-align:left;">
                   <strong>Name:</strong>{{ getDisplayName() }}<br/>
                   <strong>Email:</strong>{{ invoiceData.userProfile?.email || 'client@email.com' }}<br/>
-                  <strong>Address:</strong> {{ getDisplayAddress() }}
+               <ng-container *ngIf="invoiceData.billingAddress">
+                <strong>Address:</strong> {{ getDisplayAddress() }}
+               </ng-container>
                 </div>
               </td>
             </tr>

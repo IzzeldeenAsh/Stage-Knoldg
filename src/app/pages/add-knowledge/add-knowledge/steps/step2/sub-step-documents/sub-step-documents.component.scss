@@ -10,16 +10,25 @@
 .w-2{
     width: 40px !important;
 }
-.tooltip-inner {
+::ng-deep .charity-tooltip .tooltip-inner {
+  max-width: 800px; /* Bootstrap default is ~200px; increase to avoid wrapping */
   white-space: normal;
 }
-.tooltip-list {
+
+::ng-deep .charity-tooltip .tooltip-list {
   padding-left: 1rem;
   margin: 0;
   list-style-position: inside;
   text-align: start;
 }
 
-.tooltip-list li {
+::ng-deep .charity-tooltip .tooltip-list li {
   margin-bottom: 0.3rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 576px) {
+  ::ng-deep .charity-tooltip .tooltip-list li {
+    white-space: normal;
+  }
 }

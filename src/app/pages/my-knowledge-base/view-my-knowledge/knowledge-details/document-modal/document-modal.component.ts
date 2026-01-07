@@ -48,6 +48,13 @@ export class DocumentModalComponent extends BaseComponent implements OnInit, OnC
   newChapterTitle: string = '';
   stepperChapters: ChapterItem[] = [];
   
+  // AI Table of Content
+  aiTableOfContent: string[] = [];
+  animatedToc: boolean = false;
+  animatedTocItems: string[] = [];
+  animatedTocComplete: boolean = false;
+  tocRowSpeed = 220; // ms per TOC row (visual animation)
+  tocAnimationTimer: any = null;
 
 
   
@@ -182,12 +189,34 @@ export class DocumentModalComponent extends BaseComponent implements OnInit, OnC
       }
     }, 100);
 
-    // Load chapters if available
+    // Load chapters if available - same logic as step3
     if (this.editingDocument.table_of_content && this.editingDocument.table_of_content.length > 0) {
-      this.showChapters = true;
-      this.stepperChapters = this.editingDocument.table_of_content.map((item: any) => ({
-        title: item.chapter?.title || ''
-      })).filter((ch: ChapterItem) => ch.title !== '');
+      // Normalize existing table_of_content from API (strings OR objects)
+      const tocItems = this.normalizeTableOfContent(this.editingDocument.table_of_content);
+      const hasTableOfContent = tocItems.length > 0;
+      
+      if (hasTableOfContent) {
+        // In edit mode (editingDocument exists), show editable chapters directly (same as step3)
+        this.showChapters = true;
+        this.stepperChapters = tocItems.map((t: string) => ({ title: t }));
+        this.aiTableOfContent = tocItems;
+        this.animatedToc = false;
+        this.animatedTocComplete = true;
+        this.newChapterTitle = '';
+      } else {
+        // Reset TOC state if no valid content
+        this.aiTableOfContent = [];
+        this.animatedToc = false;
+        this.animatedTocComplete = false;
+        this.showChapters = false;
+      }
+    } else {
+      // Reset TOC state if no content
+      this.aiTableOfContent = [];
+      this.animatedToc = false;
+      this.animatedTocComplete = false;
+      this.showChapters = false;
+      this.stepperChapters = [];
     }
   }
 
@@ -475,6 +504,23 @@ export class DocumentModalComponent extends BaseComponent implements OnInit, OnC
           } else if (responseData.summary && typeof responseData.summary === 'string') {
             summary = responseData.summary;
           }
+
+          // Extract AI table of content (new API) - check multiple possible locations
+          let tocRaw = null;
+          if (typeof responseData === 'object') {
+            // Check direct property first
+            tocRaw = responseData.table_of_content || responseData.tableOfContent || responseData.toc;
+            
+            // Also check if it's nested in summary or metadata
+            if (!tocRaw && responseData.summary && typeof responseData.summary === 'object') {
+              tocRaw = responseData.summary.table_of_content || responseData.summary.tableOfContent;
+            }
+            if (!tocRaw && responseData.metadata && typeof responseData.metadata === 'object') {
+              tocRaw = responseData.metadata.table_of_content || responseData.metadata.tableOfContent;
+            }
+          }
+          
+          const tocItems = this.normalizeTableOfContent(tocRaw);
           
           if (summary && summary.trim() !== '') {
             // First update the form control
@@ -482,6 +528,36 @@ export class DocumentModalComponent extends BaseComponent implements OnInit, OnC
             
             // TinyMCE automatically updates through reactive forms
             // No additional editor manipulation needed
+            
+            // Apply AI table of content if present
+            if (tocItems.length > 0) {
+              this.aiTableOfContent = tocItems;
+              
+              // Always show preview mode first when AI generates TOC (unless user already has chapters open)
+              if (!this.showChapters) {
+                // Reset chapters state to ensure preview mode
+                this.showChapters = false;
+                this.animatedToc = true;
+                this.animatedTocItems = [];
+                this.animatedTocComplete = false;
+                
+                // Start animation after a short delay to ensure UI is ready
+                setTimeout(() => {
+                  if (this.aiTableOfContent.length > 0) {
+                    this.startTocRowAnimation(this.aiTableOfContent);
+                  }
+                }, 300);
+              } else {
+                // If chapters section is already open (user manually opened it), populate editable chapters
+                this.stepperChapters = tocItems.map((t: string) => ({ title: t }));
+                this.animatedToc = false;
+                this.animatedTocComplete = true;
+              }
+            } else {
+              this.aiTableOfContent = [];
+              this.animatedToc = false;
+              this.animatedTocComplete = false;
+            }
             
             if (pollingIntervalId) {
               clearInterval(pollingIntervalId);
@@ -526,14 +602,85 @@ export class DocumentModalComponent extends BaseComponent implements OnInit, OnC
   // TinyMCE automatically handles content changes through reactive forms
   // No additional editor instance management needed
 
-  // Chapter handling
+  // Chapter handling - same logic as step3
   toggleChapters(): void {
     this.showChapters = !this.showChapters;
+    
+    // Initialize chapters/table_of_content if toggled on
+    if (this.showChapters) {
+      // Get existing TOC from editingDocument if available, otherwise from stepperChapters
+      let existingToc: any = null;
+      if (this.editingDocument?.table_of_content) {
+        existingToc = this.editingDocument.table_of_content;
+      } else if (this.stepperChapters.length > 0) {
+        // Convert stepperChapters back to API format
+        existingToc = this.stepperChapters.map(ch => ({ chapter: { title: ch.title } }));
+      }
+      
+      const tocItems = this.normalizeTableOfContent(existingToc);
+      const aiTocItems = this.aiTableOfContent || [];
+
+      // Prefer existing API TOC, otherwise fall back to AI TOC preview items (same as step3)
+      const seed = tocItems.length > 0 ? tocItems : aiTocItems;
+      if (seed.length > 0) {
+        this.stepperChapters = seed.map((t: string) => ({ title: t }));
+      } else {
+        this.stepperChapters = [];
+      }
+    }
+    
+    // Clean up if toggled off (same as step3)
+    if (!this.showChapters) {
+      this.stepperChapters = [];
+      this.newChapterTitle = '';
+    }
+  }
+
+  // Show TOC editor (p-table) and prefill chapters from AI table of content - same as step3
+  editAITableOfContent(): void {
+    const tocItems: string[] = this.aiTableOfContent || [];
+    if (!tocItems || tocItems.length === 0) return;
+
+    this.showChapters = true;
+    this.stepperChapters = tocItems.map((t: string) => ({ title: t }));
+    this.newChapterTitle = '';
+    this.animatedToc = false;
+    this.animatedTocComplete = true;
+    // Note: In document-modal, we don't need to call updateTableOfContent here
+    // because we build it from stepperChapters when saving
+  }
+
+  // Animate TOC as rows appearing one-by-one
+  startTocRowAnimation(items: string[]): void {
+    // Clear any existing TOC animation timer
+    if (this.tocAnimationTimer) {
+      clearInterval(this.tocAnimationTimer);
+    }
+
+    this.animatedTocItems = [];
+    this.animatedTocComplete = false;
+
+    let current = 0;
+    const total = (items || []).length;
+
+    this.tocAnimationTimer = setInterval(() => {
+      if (current < total) {
+        this.animatedTocItems.push(items[current]);
+        current++;
+      } else {
+        clearInterval(this.tocAnimationTimer);
+        this.animatedTocComplete = true;
+      }
+    }, this.tocRowSpeed);
   }
 
   addChapter(): void {
     if (!this.newChapterTitle || !this.newChapterTitle.trim()) {
       return;
+    }
+    
+    if (!this.stepperChapters) {
+      this.stepperChapters = [];
     }
     
     this.stepperChapters.push({
@@ -545,6 +692,73 @@ export class DocumentModalComponent extends BaseComponent implements OnInit, OnC
 
   removeChapter(index: number): void {
     this.stepperChapters.splice(index, 1);
+  }
+
+  // Move chapter up
+  moveChapterUp(chapterIndex: number): void {
+    if (chapterIndex <= 0 || !this.stepperChapters) return;
+    [this.stepperChapters[chapterIndex - 1], this.stepperChapters[chapterIndex]] = 
+      [this.stepperChapters[chapterIndex], this.stepperChapters[chapterIndex - 1]];
+  }
+
+  // Move chapter down
+  moveChapterDown(chapterIndex: number): void {
+    if (!this.stepperChapters || chapterIndex >= this.stepperChapters.length - 1) return;
+    [this.stepperChapters[chapterIndex + 1], this.stepperChapters[chapterIndex]] = 
+      [this.stepperChapters[chapterIndex], this.stepperChapters[chapterIndex + 1]];
+  }
+
+  // Handle inline chapter title edits
+  onChapterTitleChange(chapterIndex: number): void {
+    if (!this.stepperChapters || !this.stepperChapters[chapterIndex]) return;
+    // Ensure title is a string (avoid undefined)
+    const title = this.stepperChapters[chapterIndex]?.title || '';
+    this.stepperChapters[chapterIndex].title = title;
+  }
+
+  // Normalize table of content from API (handles both string arrays and object format)
+  private normalizeTableOfContent(raw: any): string[] {
+    if (!raw) return [];
+
+    // Most common: array of strings (new API)
+    if (Array.isArray(raw)) {
+      return raw
+        .map((item: any) => {
+          if (typeof item === 'string') return item;
+          if (item?.chapter?.title) return item.chapter.title;
+          if (item?.title) return item.title;
+          return '';
+        })
+        .map((s: string) => (s || '').trim())
+        .filter((s: string) => !!s);
+    }
+
+    // Sometimes backend may return a single string (fallback)
+    if (typeof raw === 'string') {
+      const t = raw.trim();
+      return t ? [t] : [];
+    }
+
+    return [];
+  }
+
+  // Build API format table of content from string array
+  private buildApiTableOfContent(items: string[]): any[] {
+    const clean = (items || []).map(s => (s || '').trim()).filter(Boolean);
+    return clean.map((title: string) => ({
+      chapter: {
+        title,
+        sub_child: []
+      }
+    }));
+  }
+
+  // Check if table of content is Arabic (for text alignment)
+  isTableOfContentArabic(): boolean {
+    const tocItems = this.animatedTocItems.length > 0 ? this.animatedTocItems : this.aiTableOfContent;
+    if (tocItems.length === 0) return false;
+    const firstItem = tocItems[0] || '';
+    return this.isFirstWordArabic(firstItem);
   }
 
   // Save functionality
@@ -587,18 +801,23 @@ export class DocumentModalComponent extends BaseComponent implements OnInit, OnC
         
         // Update document description
         const description = this.documentForm.get('description')?.value;
-        const chapters = this.stepperChapters.length > 0 ? 
-          this.stepperChapters.map(chapter => ({
-            id: chapter.id,
-            title: chapter.title,
-            page_number: chapter.page_number
-          })) : [];
+        
+        // Use stepperChapters if available, otherwise build from aiTableOfContent
+        let tableOfContent: any[] = [];
+        if (this.stepperChapters.length > 0) {
+          tableOfContent = this.buildApiTableOfContent(
+            this.stepperChapters.map(ch => ch.title)
+          );
+        } else if (this.aiTableOfContent.length > 0 && !this.showChapters) {
+          // If AI TOC exists but user hasn't edited, use AI TOC
+          tableOfContent = this.buildApiTableOfContent(this.aiTableOfContent);
+        }
           
         const abstractRequest = {
           documents: [{
             id: documentId,
             description: description || '',
-            table_of_content: chapters
+            table_of_content: tableOfContent
           }]
         };
         
@@ -634,18 +853,23 @@ export class DocumentModalComponent extends BaseComponent implements OnInit, OnC
         
         // Update document description
         const description = this.documentForm.get('description')?.value;
-        const chapters = this.stepperChapters.length > 0 ? 
-          this.stepperChapters.map(chapter => ({
-            id: chapter.id,
-            title: chapter.title,
-            page_number: chapter.page_number
-          })) : [];
+        
+        // Use stepperChapters if available, otherwise build from aiTableOfContent
+        let tableOfContent: any[] = [];
+        if (this.stepperChapters.length > 0) {
+          tableOfContent = this.buildApiTableOfContent(
+            this.stepperChapters.map(ch => ch.title)
+          );
+        } else if (this.aiTableOfContent.length > 0 && !this.showChapters) {
+          // If AI TOC exists but user hasn't edited, use AI TOC
+          tableOfContent = this.buildApiTableOfContent(this.aiTableOfContent);
+        }
           
         const abstractRequest = {
           documents: [{
             id: this.editingDocument!.id,
             description: description || '',
-            table_of_content: chapters
+            table_of_content: tableOfContent
           }]
         };
         
@@ -882,6 +1106,16 @@ export class DocumentModalComponent extends BaseComponent implements OnInit, OnC
     this.documentSuccessfullySaved = false; // Reset save flag
     this.editingDocument = null;
     this.preSelectedFile = null; // Clear pre-selected file
+    
+    // Reset AI TOC state
+    this.aiTableOfContent = [];
+    this.animatedToc = false;
+    this.animatedTocItems = [];
+    this.animatedTocComplete = false;
+    if (this.tocAnimationTimer) {
+      clearInterval(this.tocAnimationTimer);
+      this.tocAnimationTimer = null;
+    }
   }
 
   private resetTemporaryStates(): void {
@@ -894,6 +1128,15 @@ export class DocumentModalComponent extends BaseComponent implements OnInit, OnC
     this.isUploading = false;
     this.uploadProgress = 0;
     this.documentSuccessfullySaved = false; // Reset save flag
+    
+    // Reset animation states but keep AI TOC data
+    this.animatedToc = false;
+    this.animatedTocItems = [];
+    this.animatedTocComplete = false;
+    if (this.tocAnimationTimer) {
+      clearInterval(this.tocAnimationTimer);
+      this.tocAnimationTimer = null;
+    }
   }
 
   // Validation

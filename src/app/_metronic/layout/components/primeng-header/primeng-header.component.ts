@@ -97,6 +97,9 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
   
   // Search functionality
   searchQuery: string = '';
+
+  // Sticky / glass header state (activated when page is scrolled)
+  isSticky: boolean = false;
   
   /**
    * Handle search submission
@@ -249,6 +252,9 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
     
     // Initialize screen size on component load
     this.checkScreenSize();
+
+    // Ensure sticky state is correct on initial load (e.g. refresh while scrolled)
+    this.onWindowScroll();
   }
 
   get isRtl(): boolean {
@@ -552,6 +558,14 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
   onKeyDown(e: KeyboardEvent) {
     if (e.key === 'Escape' && this.isNotificationsOpen) {
       this.isNotificationsOpen = false;
+    }
+  }
+
+  @HostListener('window:scroll')
+  onWindowScroll() {
+    const next = (typeof window !== 'undefined' ? window.scrollY : 0) > 0;
+    if (next !== this.isSticky) {
+      this.isSticky = next;
     }
   }
   

@@ -54,6 +54,31 @@ export abstract class BaseComponent implements OnDestroy, AfterViewInit {
     this.toastService.error(detail, summary, life);
   }
 
+  isFirstWordArabic(text: string): boolean {
+    if (!text || typeof text !== 'string') {
+      return false;
+    }
+    
+    // Trim whitespace and get the first word
+    const trimmedText = text.trim();
+    if (trimmedText.length === 0) {
+      return false;
+    }
+    
+    // Extract the first word (split by whitespace and take the first element)
+    const firstWord = trimmedText.split(/\s+/)[0];
+    if (firstWord.length === 0) {
+      return false;
+    }
+    
+    // Check if the first character is in the Arabic Unicode range (U+0600 to U+06FF)
+    const firstChar = firstWord[0];
+    const charCode = firstChar.charCodeAt(0);
+    
+    // Arabic Unicode range: U+0600 to U+06FF
+    return charCode >= 0x0600 && charCode <= 0x06FF;
+  }
+
   ngOnDestroy(): void {
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
     this.unsubscribe$.next();

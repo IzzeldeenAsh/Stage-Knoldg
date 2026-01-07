@@ -22,7 +22,7 @@ export interface InvoiceData {
     line2?: string;
     postal_code?: string;
     state?: string;
-  } | string;
+  } | string | null;
 }
 
 @Component({
@@ -518,7 +518,6 @@ export class InvoiceViewerComponent extends BaseComponent implements OnInit, OnD
       return 'N/A';
     }
 
-    // For purchased orders, prefer billing address, fallback to user country
     if (this.invoiceData.billingAddress) {
       return this.formatBillingAddress(this.invoiceData.billingAddress);
     }

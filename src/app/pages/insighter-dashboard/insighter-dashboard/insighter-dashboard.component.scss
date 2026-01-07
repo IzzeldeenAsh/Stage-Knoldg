@@ -496,6 +496,10 @@
         font-size: 1rem;
         color: #4096ff;
       }
+
+      svg {
+        display: block;
+      }
       
       .item-icon, .sub-item-icon {
         display: flex;

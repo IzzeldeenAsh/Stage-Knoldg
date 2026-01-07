@@ -216,9 +216,49 @@
       </div>
     </div>
 
+        <!-- AI Table of Content preview (only if table_of_content isn't empty and not currently editing) -->
+        <div *ngIf="knowledgeType !== 'statistic' && !isGeneratingAbstract && aiTableOfContent && aiTableOfContent.length > 0 && !showChapters"
+             class="ai-toc-preview mb-4">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="d-flex align-items-center gap-2">
+              <div class="fw-bold">{{ "TABLE_OF_CONTENT" | translate }}</div>
+              <span class="badge bg-light-warning text-warning border">AI</span>
+            </div>
+
+            <button *ngIf="(animatedTocComplete || !animatedToc)"
+                    type="button"
+                    (click)="editAITableOfContent()"
+                    class="btn btn-sm btn-light-primary">
+              <i class="fas fa-pencil-alt me-1"></i> {{'KNOWLEDGE.EDIT' | translate}}
+            </button>
+          </div>
+
+          <div class="animated-toc border rounded overflow-hidden"
+               [ngStyle]="{'direction': isTableOfContentArabic() ? 'rtl' : 'ltr'}">
+            <table class="table table-row-dashed table-row-gray-300 align-middle mb-0 ai-toc-preview-table">
+              <thead>
+                <tr class="fw-bold">
+                  <th class="w-50px">#</th>
+                  <th [ngClass]="{'text-start': !isTableOfContentArabic(), 'text-end': isTableOfContentArabic()}"
+                      [ngStyle]="{'text-align': isTableOfContentArabic() ? 'right' : 'left'}">{{ "CHAPTER_NAME" | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of (animatedToc && animatedTocItems && animatedTocItems.length > 0 ? animatedTocItems : aiTableOfContent); let i = index"
+                    class="toc-preview-row">
+                  <td class="fw-semibold">{{ i + 1 }}</td>
+                  <td class="fw-medium" 
+                      [ngClass]="{'text-start': !isTableOfContentArabic(), 'text-end': isTableOfContentArabic()}"
+                      [ngStyle]="{'text-align': isTableOfContentArabic() ? 'right' : 'left'}">{{ item }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
         <!-- Chapters Section (for non-statistic documents) -->
         <div *ngIf="knowledgeType !== 'statistic' && !isGeneratingAbstract" class="mb-4">
-          <div class="d-flex align-items-center mb-3">
+          <div class="d-flex align-items-center mb-3" *ngIf="!aiTableOfContent || aiTableOfContent.length === 0 || showChapters">
             <div class="form-check">
               <input class="form-check-input" 
                      type="checkbox" 
@@ -232,41 +272,67 @@
           </div>
           
           <!-- Chapters List -->
-          <div *ngIf="showChapters" class="border-start border-3 border-primary ps-3">
-            <div class="fs-6 fw-semibold mb-3">{{ "TABLE_OF_CONTENT" | translate }}</div>
+          <div *ngIf="showChapters" class="ps-4 border-start border-3 border-light-primary mb-3">
+            <div class="fs-6 fw-bold mb-3">{{ "TABLE_OF_CONTENT" | translate }}</div>
             
             <!-- Existing Chapters -->
             <div *ngIf="stepperChapters && stepperChapters.length > 0" class="mb-3">
-              <div class="table-responsive">
-                <table class="table table-sm">
-                  <thead>
-                    <tr>
-                      <th class="w-50px">#</th>
-                      <th>{{ "CHAPTER_NAME" | translate }}</th>
-                      <th class="w-100px text-end">{{ "ACTIONS" | translate }}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let chapter of stepperChapters; let i = index">
-                      <td>{{ i + 1 }}</td>
-                      <td>{{ chapter.title }}</td>
-                      <td class="text-end">
-                        <button type="button" 
-                                class="btn btn-sm btn-outline-danger" 
-                                (click)="removeChapter(i)"
-                                [disabled]="stepperChapters.length === 1">
-                          {{ 'REMOVE' | translate }}
+              <p-table 
+                [value]="stepperChapters"
+                styleClass="table table-row-dashed table-row-gray-300 align-middle toc-table">
+                <ng-template pTemplate="header">
+                  <tr class="fw-bold">
+                    <th class="w-60px text-center"></th>
+                    <th class="w-50px">#</th>
+                    <th>{{ "CHAPTER_NAME" | translate }}</th>
+                    <th class="w-75px text-end">{{ "ACTIONS" | translate }}</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-chapter let-rowIndex="rowIndex">
+                  <tr>
+                    <td class="text-center">
+                      <div class="toc-arrows">
+                        <button type="button"
+                                class="btn btn-light btn-sm btn-toc-arrow"
+                                (click)="moveChapterUp(rowIndex)"
+                                [disabled]="rowIndex === 0"
+                                title="Move up">
+                          <i class="fas fa-chevron-up px-0"></i>
                         </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+                        <button type="button"
+                                class="btn btn-light btn-sm btn-toc-arrow"
+                                (click)="moveChapterDown(rowIndex)"
+                                [disabled]="!stepperChapters || rowIndex === (stepperChapters.length - 1)"
+                                title="Move down">
+                          <i class="fas fa-chevron-down px-0"></i>
+                        </button>
+                      </div>
+                    </td>
+                    <td>{{ rowIndex + 1 }}</td>
+                    <td>
+                      <input type="text"
+                             class="form-control form-control-sm"
+                             [(ngModel)]="chapter.title"
+                             [ngModelOptions]="{standalone: true}"
+                             (ngModelChange)="onChapterTitleChange(rowIndex)"
+                             placeholder="{{ 'CHAPTER_NAME' | translate }}">
+                    </td>
+                    <td class="text-end">
+                      <button type="button" 
+                              class="btn btn-sm btn-icon btn-light-danger" 
+                              (click)="removeChapter(rowIndex)"
+                              title="{{ 'REMOVE_CHAPTER' | translate }}">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
             </div>
             
             <!-- Add New Chapter -->
-            <div class="d-flex gap-2 align-items-center">
-              <div class="flex-grow-1">
+            <div class="d-flex align-items-center">
+              <div class="flex-grow-1 me-3">
                 <input type="text" 
                        class="form-control form-control-sm" 
                        [(ngModel)]="newChapterTitle" 

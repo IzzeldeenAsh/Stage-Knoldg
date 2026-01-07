@@ -64,7 +64,10 @@
           <div class="textarea-container">
             <!-- Animated abstract display -->
             <div *ngIf="doc.animatedAbstract && !doc.showEditor" class="animated-abstract p-3 border rounded mb-3">
-              <div [innerHTML]="doc.animatedAbstractText" class="typing-text"></div>
+              <div [innerHTML]="doc.animatedAbstractText" 
+                   class="typing-text"
+                   [ngClass]="{'text-start': !isDescriptionArabic(doc), 'text-end': isDescriptionArabic(doc)}"
+                   [ngStyle]="{'direction': isDescriptionArabic(doc) ? 'rtl' : 'ltr', 'text-align': isDescriptionArabic(doc) ? 'right' : 'left'}"></div>
             </div>
             
             <!-- Only show editor when needed -->
@@ -132,9 +135,49 @@
             </div>
           </div>
         </div>
+
+        <!-- AI Table of Content preview (only if table_of_content isn't empty and not currently editing) -->
+        <div *ngIf="doc.aiTableOfContent && doc.aiTableOfContent.length > 0 && !doc.showChapters"
+             class="ai-toc-preview mb-4">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="d-flex align-items-center gap-2">
+              <div class="fw-bold">{{ "TABLE_OF_CONTENT" | translate }}</div>
+              <span class="badge bg-light-warning text-warning border">AI</span>
+            </div>
+
+            <button *ngIf="(doc.animatedTocComplete || !doc.animatedToc)"
+                    type="button"
+                    (click)="editAITableOfContent(doc.id)"
+                    class="btn btn-sm btn-light-primary">
+              <i class="fas fa-pencil-alt me-1"></i> {{'KNOWLEDGE.EDIT' | translate}}
+            </button>
+          </div>
+
+          <div class="animated-toc border rounded overflow-hidden"
+               [ngStyle]="{'direction': isTableOfContentArabic(doc) ? 'rtl' : 'ltr'}">
+            <table class="table table-row-dashed table-row-gray-300 align-middle mb-0 ai-toc-preview-table">
+              <thead>
+                <tr class="fw-bold">
+                  <th class="w-50px">#</th>
+                  <th [ngClass]="{'text-start': !isTableOfContentArabic(doc), 'text-end': isTableOfContentArabic(doc)}"
+                      [ngStyle]="{'text-align': isTableOfContentArabic(doc) ? 'right' : 'left'}">{{ "CHAPTER_NAME" | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of (doc.animatedToc && doc.animatedTocItems && doc.animatedTocItems.length > 0 ? doc.animatedTocItems : doc.aiTableOfContent); let i = index"
+                    class="toc-preview-row">
+                  <td class="fw-semibold">{{ i + 1 }}</td>
+                  <td class="fw-medium" 
+                      [ngClass]="{'text-start': !isTableOfContentArabic(doc), 'text-end': isTableOfContentArabic(doc)}"
+                      [ngStyle]="{'text-align': isTableOfContentArabic(doc) ? 'right' : 'left'}">{{ item }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
         
         <!-- Chapter toggle checkbox -->
-        <div class="form-check form-switch mb-3">
+        <!-- <div class="form-check form-switch mb-3">
           <input class="form-check-input" 
                  type="checkbox" 
                  role="switch" 
@@ -144,7 +187,7 @@
           <label class="form-check-label" for="chapterToggle{{doc.id}}">
             {{ "ADD_TABLE_OF_CONTENT" | translate }}
           </label>
-        </div>
+        </div> -->
         
         <!-- Chapters section with table format -->
         <div *ngIf="doc.showChapters" class="ps-4 border-start border-3 border-light-primary mb-3">
