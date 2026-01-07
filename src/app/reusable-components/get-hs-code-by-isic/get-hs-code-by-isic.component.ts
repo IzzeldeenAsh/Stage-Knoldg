@@ -6,6 +6,7 @@ import {
   OnInit,
   OnDestroy,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   OnChanges,
   SimpleChanges,
 } from "@angular/core";
@@ -41,8 +42,8 @@ import { TranslateModule } from "@ngx-translate/core";
       [header]="title"
       [(visible)]="dialogVisible"
       [modal]="true"
-      [style]="{ width: dialogWidth, 'max-height': '100vh', overflow: 'hidden' }"
-      [contentStyle]="{ 'max-height': 'calc(90vh - 100px)', overflow: 'auto' }"
+      [style]="getDialogStyle()"
+      [contentStyle]="getDialogContentStyle()"
       appendTo="body"
     >
       <div class="list-container">
@@ -337,6 +338,18 @@ import { TranslateModule } from "@ngx-translate/core";
       right: auto;
       left: 12px;
     }
+
+    /* Mobile fullscreen adjustments */
+    @media (max-width: 767px) {
+      .list-container {
+        min-height: auto;
+        max-height: calc(100vh - 200px);
+      }
+      
+      .list-items {
+        max-height: calc(100vh - 250px);
+      }
+    }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -355,6 +368,8 @@ export class GetHsCodeByIsicComponent implements OnInit, OnDestroy, OnChanges {
 
   dialogVisible = false;
   dialogWidth: string = "80vw";
+  dialogHeight: string = "auto";
+  isMobile: boolean = false;
   isLoading$ = new BehaviorSubject<boolean>(false);
   hsCodes: HSCode[] = [];
   allHSCodes: HSCode[] = [];
@@ -365,11 +380,16 @@ export class GetHsCodeByIsicComponent implements OnInit, OnDestroy, OnChanges {
   showAllCodes: boolean = false;
   private unsubscribe: Subscription[] = [];
 
-  constructor(private hsCodeService: HSCodeService) {}
+  constructor(
+    private hsCodeService: HSCodeService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     // Load HS codes on initialization
     this.loadHSCodes();
+    // Set up responsive dialog sizing
+    this.handleWindowResize();
   }
 
   ngOnDestroy() {
@@ -547,9 +567,38 @@ export class GetHsCodeByIsicComponent implements OnInit, OnDestroy, OnChanges {
     );
 
     const sub = screenwidth$.subscribe((width) => {
-      this.dialogWidth = width < 768 ? "100vw" : "50vw";
+      this.isMobile = width < 768;
+      if (this.isMobile) {
+        // Mobile: fullscreen
+        this.dialogWidth = "100vw";
+        this.dialogHeight = "100vh";
+      } else {
+        // Desktop: normal size
+        this.dialogWidth = "80vw";
+        this.dialogHeight = "auto";
+      }
+      this.cdr.markForCheck();
     });
     this.unsubscribe.push(sub);
+  }
+
+  getDialogStyle(): any {
+    return {
+      width: this.dialogWidth,
+      height: this.isMobile ? this.dialogHeight : 'auto',
+      'max-height': '100vh',
+      overflow: 'hidden',
+      margin: this.isMobile ? '0' : undefined,
+      borderRadius: this.isMobile ? '0' : undefined
+    };
+  }
+
+  getDialogContentStyle(): any {
+    return {
+      'max-height': this.isMobile ? 'calc(100vh - 120px)' : 'calc(90vh - 100px)',
+      overflow: 'auto',
+      padding: this.isMobile ? '1rem' : undefined
+    };
   }
 
   clearSelection(event: Event) {

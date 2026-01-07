@@ -15,7 +15,7 @@ textarea {
   resize: vertical;
 } 
 .table td {
-  padding: 3px !important;
+  padding: 4px 8px !important
 }
 
 /* Steel shining animation styles */
@@ -384,6 +384,43 @@ textarea {
 /* Adjust editor when animated abstract is shown */
 .animated-abstract + editor {
   margin-top: 15px;
+}
+
+/* ---- AI Table of Content preview ---- */
+.ai-toc-preview .animated-toc {
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.ai-toc-preview-table {
+  margin-bottom: 0;
+}
+
+.ai-toc-preview-table thead th {
+  padding: 12px 16px;
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #e4e6ef;
+  font-size: 13px;
+  font-weight: 600;
+  color: #181c32;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ai-toc-preview-table tbody td {
+  padding: 12px 16px;
+  vertical-align: middle;
+  font-size: 14px;
+  color: #181c32;
+}
+
+.ai-toc-preview-table tbody tr.toc-preview-row {
+  transition: background-color 0.2s ease;
+}
+
+.ai-toc-preview-table tbody tr.toc-preview-row:hover {
+  background-color: #f8f9fa;
 }
 
 /* ---- Table of Content (chapters) UI refinements ---- */

@@ -6,6 +6,7 @@ import {
   OnInit,
   OnDestroy,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
 } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import {
@@ -53,8 +54,8 @@ interface GroupedSection {
       [header]="title"
       [(visible)]="dialogVisible"
       [modal]="true"
-      [style]="{ width: dialogWidth, 'max-height': '100vh', overflow: 'hidden' }"
-      [contentStyle]="{ 'max-height': 'calc(90vh - 100px)', overflow: 'auto' }"
+      [style]="getDialogStyle()"
+      [contentStyle]="getDialogContentStyle()"
       appendTo="body"
     >
       <div class="list-container">
@@ -280,6 +281,18 @@ interface GroupedSection {
       right: auto;
       left: 12px;
     }
+
+    /* Mobile fullscreen adjustments */
+    @media (max-width: 767px) {
+      .list-container {
+        min-height: auto;
+        max-height: calc(100vh - 200px);
+      }
+      
+      .list-items {
+        max-height: calc(100vh - 250px);
+      }
+    }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -306,7 +319,9 @@ export class IndustrySelectorComponent implements OnInit, OnDestroy {
   @Output() nodeSelected = new EventEmitter<TreeNode>();
 
   dialogVisible = false;
-  dialogWidth: string = "50vw";
+  dialogWidth: string = "70vw";
+  dialogHeight: string = "auto";
+  isMobile: boolean = false;
   isLoading$ = new BehaviorSubject<boolean>(false);
   nodes: TreeNode[] = [];
   flatLeafNodes: FlatNode[] = [];
@@ -317,6 +332,8 @@ export class IndustrySelectorComponent implements OnInit, OnDestroy {
   searchText: string = '';
   filteredNodes: FlatNode[] = [];
   filteredGroups: GroupedSection[] = [];
+
+  constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.loadData();
@@ -435,9 +452,38 @@ export class IndustrySelectorComponent implements OnInit, OnDestroy {
     );
 
     const sub = screenwidth$.subscribe((width) => {
-      this.dialogWidth = width < 768 ? "100vw" : "70vw";
+      this.isMobile = width < 768;
+      if (this.isMobile) {
+        // Mobile: fullscreen
+        this.dialogWidth = "100vw";
+        this.dialogHeight = "100vh";
+      } else {
+        // Desktop: normal size
+        this.dialogWidth = "70vw";
+        this.dialogHeight = "auto";
+      }
+      this.cdr.markForCheck();
     });
     this.unsubscribe.push(sub);
+  }
+
+  getDialogStyle(): any {
+    return {
+      width: this.dialogWidth,
+      height: this.isMobile ? this.dialogHeight : 'auto',
+      'max-height': '100vh',
+      overflow: 'hidden',
+      margin: this.isMobile ? '0' : undefined,
+      borderRadius: this.isMobile ? '0' : undefined
+    };
+  }
+
+  getDialogContentStyle(): any {
+    return {
+      'max-height': this.isMobile ? 'calc(100vh - 120px)' : 'calc(90vh - 100px)',
+      overflow: 'auto',
+      padding: this.isMobile ? '1rem' : undefined
+    };
   }
 
   private findAndSelectNodeById(id: number) {

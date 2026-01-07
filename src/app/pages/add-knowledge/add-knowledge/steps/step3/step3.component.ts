@@ -50,6 +50,8 @@ export class Step3Component extends BaseComponent implements OnInit {
   // Animation control properties
   typingSpeed = 10; // ms per character
   animationTimers: { [key: number]: any } = {};
+  tocRowSpeed = 220; // ms per TOC row (visual animation)
+  tocAnimationTimers: { [key: number]: any } = {};
 
   constructor(
     injector: Injector,
@@ -62,6 +64,41 @@ export class Step3Component extends BaseComponent implements OnInit {
   ngOnInit(): void {
     this.initForm();
     this.loadDocuments();
+  }
+
+  private normalizeTableOfContent(raw: any): string[] {
+    if (!raw) return [];
+
+    // Most common: array of strings (new API)
+    if (Array.isArray(raw)) {
+      return raw
+        .map((item: any) => {
+          if (typeof item === 'string') return item;
+          if (item?.chapter?.title) return item.chapter.title;
+          if (item?.title) return item.title;
+          return '';
+        })
+        .map((s: string) => (s || '').trim())
+        .filter((s: string) => !!s);
+    }
+
+    // Sometimes backend may return a single string (fallback)
+    if (typeof raw === 'string') {
+      const t = raw.trim();
+      return t ? [t] : [];
+    }
+
+    return [];
+  }
+
+  private buildApiTableOfContent(items: string[]): any[] {
+    const clean = (items || []).map(s => (s || '').trim()).filter(Boolean);
+    return clean.map((title: string) => ({
+      chapter: {
+        title,
+        sub_child: []
+      }
+    }));
   }
   
   // Store editor instance when initialized
@@ -145,6 +182,11 @@ export class Step3Component extends BaseComponent implements OnInit {
             } else if (responseData.summary && typeof responseData.summary === 'string') {
               summary = responseData.summary;
             }
+
+            // Extract AI table of content (new API)
+            const tocItems = (typeof responseData === 'object')
+              ? this.normalizeTableOfContent(responseData.table_of_content)
+              : [];
             
             if (summary) {
               // We have a valid abstract, use it directly
@@ -161,6 +203,33 @@ export class Step3Component extends BaseComponent implements OnInit {
               
               // Start typing animation
               this.startTypingAnimation(docId, formattedDescription);
+
+              // Apply AI table of content if present
+              if (tocItems.length > 0) {
+                this.documents[index].aiTableOfContent = tocItems;
+                this.documents[index].table_of_content = this.buildApiTableOfContent(tocItems);
+
+                const isEditMode = this.isEditMode();
+                if (isEditMode) {
+                  // Only in explicit edit mode: show editor directly
+                  this.documents[index].showChapters = true;
+                  this.documents[index].chapters = tocItems.map((t: string) => ({ title: t }));
+                  this.documents[index].animatedToc = false;
+                  this.documents[index].animatedTocComplete = true;
+                } else {
+                  // Always show preview mode first (user clicks Edit to switch)
+                  this.documents[index].showChapters = false;
+                  this.documents[index].animatedToc = true;
+                  this.documents[index].animatedTocItems = [];
+                  this.documents[index].animatedTocComplete = false;
+                  this.startTocRowAnimation(docId, tocItems);
+                }
+              } else {
+                this.documents[index].aiTableOfContent = [];
+                this.documents[index].showChapters = false;
+                this.documents[index].animatedToc = false;
+                this.documents[index].animatedTocComplete = false;
+              }
               
               // Validate and update parent model
               this.validateDocuments();
@@ -223,6 +292,21 @@ export class Step3Component extends BaseComponent implements OnInit {
       }
     }
   }
+
+  // Show TOC editor (p-table) and prefill chapters from AI table of content
+  editAITableOfContent(docId: number): void {
+    const index = this.documents.findIndex(doc => doc.id === docId);
+    if (index === -1) return;
+
+    const tocItems: string[] = (this.documents[index].aiTableOfContent || []) as string[];
+    if (!tocItems || tocItems.length === 0) return;
+
+    this.documents[index].showChapters = true;
+    this.documents[index].chapters = tocItems.map((t: string) => ({ title: t }));
+    this.documents[index].newChapterTitle = '';
+    this.updateTableOfContent(index);
+    this.updateParentModelWithDocuments();
+  }
   
   // Start typing animation for abstract
   startTypingAnimation(docId: number, text: string): void {
@@ -252,6 +336,33 @@ export class Step3Component extends BaseComponent implements OnInit {
     }, this.typingSpeed);
   }
 
+  // Animate TOC as rows appearing one-by-one
+  startTocRowAnimation(docId: number, items: string[]): void {
+    const index = this.documents.findIndex(doc => doc.id === docId);
+    if (index === -1) return;
+
+    // Clear any existing TOC animation timer
+    if (this.tocAnimationTimers[docId]) {
+      clearInterval(this.tocAnimationTimers[docId]);
+    }
+
+    this.documents[index].animatedTocItems = [];
+    this.documents[index].animatedTocComplete = false;
+
+    let current = 0;
+    const total = (items || []).length;
+
+    this.tocAnimationTimers[docId] = setInterval(() => {
+      if (current < total) {
+        this.documents[index].animatedTocItems.push(items[current]);
+        current++;
+      } else {
+        clearInterval(this.tocAnimationTimers[docId]);
+        this.documents[index].animatedTocComplete = true;
+      }
+    }, this.tocRowSpeed);
+  }
+
   initForm(): void {
     this.form = this.fb.group({
       description: [this.defaultValues.description || '', []]
@@ -262,7 +373,7 @@ export class Step3Component extends BaseComponent implements OnInit {
       const documentDescriptions = this.documents.map(doc => ({
         id: doc.id,
         description: doc.description || '',
-        table_of_content: doc.table_of_content || undefined
+        table_of_content: doc.table_of_content || []
       }));
 
       this.updateParentModel(
@@ -286,14 +397,17 @@ export class Step3Component extends BaseComponent implements OnInit {
       .subscribe({
         next: (response) => {
           this.documents = response.data.map(doc => {
-            // Check if there's existing table_of_content data
-            const hasTableOfContent = doc.table_of_content && Array.isArray(doc.table_of_content) && doc.table_of_content.length > 0;
+            // Normalize existing table_of_content from API (strings OR objects)
+            const tocItems = this.normalizeTableOfContent(doc.table_of_content);
+            const hasTableOfContent = tocItems.length > 0;
             // Initialize chapters array from table_of_content if it exists
-            const chapters = hasTableOfContent 
-              ? doc.table_of_content.map((item: any) => ({ 
-                  title: item.chapter.title 
-                })) 
+            const chapters = hasTableOfContent
+              ? tocItems.map((t: string) => ({ title: t }))
               : [];
+            
+            // Always start with preview mode - user must click Edit to switch to editable mode
+            // Only exception: explicit edit mode where knowledge was already saved and user is editing
+            const isEditMode = this.isEditMode();
             
             // Initialize loading state for this document - start with false
             this.documentLoadingStates[doc.id] = false;
@@ -303,10 +417,16 @@ export class Step3Component extends BaseComponent implements OnInit {
             return {
               ...doc,
               fileIcon: this.getFileIconByExtension(doc.file_extension),
-              // Show chapters section if there are existing chapters
-              showChapters: hasTableOfContent,
-              // Initialize chapters from existing table_of_content
+              // Always start with preview mode (showChapters = false) - user clicks Edit to switch
+              showChapters: false,
+              // Initialize chapters from existing table_of_content (for when Edit is clicked)
               chapters: chapters,
+              // Keep AI table_of_content around for preview/edit even if user doesn't toggle
+              aiTableOfContent: tocItems,
+              // Preview/animation state for AI TOC - enable animation if we have TOC and not in edit mode
+              animatedToc: !isEditMode && hasTableOfContent,
+              animatedTocItems: [],
+              animatedTocComplete: isEditMode ? true : !hasTableOfContent,
               newChapterTitle: '',
               // Track validation errors for each document
               hasError: false,
@@ -347,6 +467,29 @@ export class Step3Component extends BaseComponent implements OnInit {
                   this.startTypingAnimation(doc.id, doc.description);
                 }, 500);
               }
+            }
+
+            // If we already have TOC from list-docs response, animate preview
+            if (doc.aiTableOfContent && doc.aiTableOfContent.length > 0) {
+              const isEditMode = this.isEditMode();
+
+              if (isEditMode) {
+                // Only in explicit edit mode (knowledge already saved), show editable section directly
+                doc.showChapters = true;
+                doc.animatedToc = false;
+                doc.animatedTocComplete = true;
+              } else {
+                // In all other cases, show preview mode (user clicks Edit to switch)
+                doc.showChapters = false;
+                if (doc.animatedToc) {
+                  setTimeout(() => {
+                    this.startTocRowAnimation(doc.id, doc.aiTableOfContent);
+                  }, 500);
+                }
+              }
+
+              // Ensure API-format table_of_content exists for submission
+              doc.table_of_content = this.buildApiTableOfContent(doc.aiTableOfContent);
             }
           });
           
@@ -391,14 +534,25 @@ export class Step3Component extends BaseComponent implements OnInit {
     if (index !== -1) {
       this.documents[index].showChapters = !this.documents[index].showChapters;
       
-      // Initialize table_of_content as an empty array if toggled on
+      // Initialize chapters/table_of_content if toggled on
       if (this.documents[index].showChapters) {
-        this.documents[index].table_of_content = [];
+        const tocItems = this.normalizeTableOfContent(this.documents[index].table_of_content);
+        const aiTocItems = (this.documents[index].aiTableOfContent || []) as string[];
+
+        // Prefer existing API TOC, otherwise fall back to AI TOC preview items
+        const seed = tocItems.length > 0 ? tocItems : aiTocItems;
+        if (seed.length > 0) {
+          this.documents[index].chapters = seed.map((t: string) => ({ title: t }));
+          this.updateTableOfContent(index);
+        } else {
+          this.documents[index].table_of_content = [];
+          this.documents[index].chapters = [];
+        }
       }
       
       // Clean up if toggled off
       if (!this.documents[index].showChapters) {
-        this.documents[index].table_of_content = undefined;
+        this.documents[index].table_of_content = [];
         this.documents[index].chapters = [];
         this.documents[index].newChapterTitle = '';
       }
@@ -478,12 +632,9 @@ export class Step3Component extends BaseComponent implements OnInit {
   // Update the table_of_content based on chapters
   private updateTableOfContent(docIndex: number): void {
     if (this.documents[docIndex].chapters && this.documents[docIndex].chapters.length > 0) {
-      this.documents[docIndex].table_of_content = this.documents[docIndex].chapters.map((chapter: ChapterItem) => ({
-        chapter: {
-          title: chapter.title,
-          sub_child: [] // Always empty array as per requirements
-        }
-      }));
+      this.documents[docIndex].table_of_content = this.buildApiTableOfContent(
+        this.documents[docIndex].chapters.map((c: ChapterItem) => c.title)
+      );
     } else {
       this.documents[docIndex].table_of_content = []; // Set to empty array instead of undefined
     }
@@ -525,14 +676,9 @@ export class Step3Component extends BaseComponent implements OnInit {
         id: doc.id,
         description: doc.description || ''
       };
-      
-      if (doc.showChapters) {
-        // Always include table_of_content when chapters are enabled
-        result.table_of_content = doc.table_of_content || [];
-      } else {
-        // Include empty array for table_of_content when not enabled
-        result.table_of_content = [];
-      }
+
+      // Always include table_of_content (AI or manual) to keep backend in sync
+      result.table_of_content = doc.table_of_content || [];
       
       return result;
     });
@@ -583,5 +729,21 @@ export class Step3Component extends BaseComponent implements OnInit {
     return !!this.defaultValues?.documentDescriptions && 
            this.defaultValues.documentDescriptions.length > 0 &&
            this.defaultValues.documentDescriptions.some(doc => doc.description && doc.description.trim() !== '');
+  }
+
+  // Check if document description is Arabic (for text alignment)
+  isDescriptionArabic(doc: any): boolean {
+    const text = doc.animatedAbstractText || doc.description || '';
+    // Remove HTML tags for checking
+    const textWithoutHtml = text.replace(/<[^>]*>/g, '').trim();
+    return this.isFirstWordArabic(textWithoutHtml);
+  }
+
+  // Check if table of content is Arabic (for text alignment)
+  isTableOfContentArabic(doc: any): boolean {
+    const tocItems = doc.animatedTocItems || doc.aiTableOfContent || [];
+    if (tocItems.length === 0) return false;
+    const firstItem = tocItems[0] || '';
+    return this.isFirstWordArabic(firstItem);
   }
 }

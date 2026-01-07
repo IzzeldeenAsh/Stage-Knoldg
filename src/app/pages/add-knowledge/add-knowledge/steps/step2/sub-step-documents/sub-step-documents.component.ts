@@ -724,6 +724,18 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
             }
           }
 
+          // Try to infer language from "file" field when backend doesn't send "language" key
+          if (!detectedLanguage && backendErrors && backendErrors.file) {
+            const fileErrRaw = Array.isArray(backendErrors.file) ? backendErrors.file[0] : backendErrors.file;
+            if (typeof fileErrRaw === 'string') {
+              // Look for patterns like "in English", "in Arabic", etc.
+              const match = fileErrRaw.match(/in\s+([A-Za-z\u0600-\u06FF]+)/i);
+              if (match && match[1]) {
+                detectedLanguage = match[1];
+              }
+            }
+          }
+
           // Persist detected language on the document when available
           if (detectedLanguage) {
             doc.language = detectedLanguage;
@@ -752,7 +764,25 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
 
           // Use warning toast when backend marks it as a warning
           if (backendType === 'warning') {
-            this.showWarn(this.lang === 'ar' ? 'تحذير الرفع' : 'Upload Warning', errorMessage);
+            // For language mismatch warnings, build a richer localized message
+            const isLangMismatch =
+              (errorMessage && errorMessage.toLowerCase().includes('document language mismatch')) ||
+              (typeof backendErrors?.file === 'string' &&
+                backendErrors.file.toLowerCase().includes('document language mismatch')) ||
+              (Array.isArray(backendErrors?.file) &&
+                backendErrors.file.some(
+                  (m: any) => typeof m === 'string' && m.toLowerCase().includes('document language mismatch')
+                ));
+
+            const warningTitle = this.lang === 'ar' ? 'تحذير لغة المستند' : 'Document Language Warning';
+
+            if (isLangMismatch) {
+              const richMessage = this.buildLanguageMismatchMessage(detectedLanguage);
+              // Fallback to backend message if for some reason we couldn't build a better one
+              this.showWarn(warningTitle, richMessage || errorMessage);
+            } else {
+              this.showWarn(this.lang === 'ar' ? 'تحذير الرفع' : 'Upload Warning', errorMessage);
+            }
           } else {
             this.showError(this.lang === 'ar' ? 'خطأ في الرفع' : 'Upload Error', errorMessage);
           }

@@ -1,10 +1,10 @@
 import { Component, OnInit, Injector } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from 'src/app/modules/base.component';
-import { MyOrdersService } from '../insighter-dashboard/insighter-dashboard/my-orders/my-orders.service';
+import { MyOrdersService, OrdersResponse, Order } from '../insighter-dashboard/insighter-dashboard/my-orders/my-orders.service';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import { InvoiceData } from 'src/app/reusable-components/invoice-viewer/invoice-viewer.component';
-import { forkJoin, catchError, of } from 'rxjs';
+import { forkJoin, catchError, of, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-invoice-page',
@@ -45,51 +45,92 @@ export class InvoicePageComponent extends BaseComponent implements OnInit {
       next: (userProfile) => {
         const userRoles = userProfile?.roles || [];
         const isCompany = userRoles.includes('company');
+        const isClient = userRoles.length === 1 && userRoles[0] === 'client';
         const salesRole: 'company' | 'insighter' = isCompany ? 'company' : 'insighter';
-
+        //
         // Load order data from all sources
-        forkJoin({
+        // Clients don't have access to sales orders, so conditionally include them
+        type OrderSources = {
+          orders: Observable<OrdersResponse>;
+          meetingOrders: Observable<OrdersResponse>;
+          salesKnowledgeOrders?: Observable<OrdersResponse>;
+          salesMeetingOrders?: Observable<OrdersResponse>;
+        };
+
+        // Create a fallback empty OrdersResponse
+        const emptyOrdersResponse: OrdersResponse = {
+          data: [],
+          links: {
+            first: '',
+            last: '',
+            prev: null,
+            next: null
+          },
+          meta: {
+            current_page: 1,
+            from: 0,
+            last_page: 1,
+            links: [],
+            path: '',
+            per_page: 5,
+            to: 0,
+            total: 0
+          }
+        };
+
+        const orderSources: OrderSources = {
           orders: this.myOrdersService.getOrders(1).pipe(
-            catchError(() => of({ data: [], meta: { last_page: 1 } }))
+            catchError(() => of(emptyOrdersResponse))
           ),
           meetingOrders: this.myOrdersService.getMeetingOrders(1).pipe(
-            catchError(() => of({ data: [], meta: { last_page: 1 } }))
-          ),
-          salesKnowledgeOrders: this.myOrdersService.getSalesKnowledgeOrders(1, salesRole).pipe(
-            catchError(() => of({ data: [], meta: { last_page: 1 } }))
-          ),
-          salesMeetingOrders: this.myOrdersService.getSalesMeetingOrders(1, salesRole).pipe(
-            catchError(() => of({ data: [], meta: { last_page: 1 } }))
+            catchError(() => of(emptyOrdersResponse))
           )
-        }).subscribe({
-          next: ({ orders, meetingOrders, salesKnowledgeOrders, salesMeetingOrders }) => {
+        };
+
+        // Only include sales orders if user is not a client
+        if (!isClient) {
+          orderSources.salesKnowledgeOrders = this.myOrdersService.getSalesKnowledgeOrders(1, salesRole).pipe(
+            catchError(() => of(emptyOrdersResponse))
+          );
+          orderSources.salesMeetingOrders = this.myOrdersService.getSalesMeetingOrders(1, salesRole).pipe(
+            catchError(() => of(emptyOrdersResponse))
+          );
+        }
+
+        forkJoin(orderSources).subscribe({
+          next: (result) => {
+            const orders = result.orders;
+            const meetingOrders = result.meetingOrders;
+            const salesKnowledgeOrders = result.salesKnowledgeOrders || emptyOrdersResponse;
+            const salesMeetingOrders = result.salesMeetingOrders || emptyOrdersResponse;
+
             // Find the order by order number in all order types
-            let foundOrder = orders.data.find(order =>
+            let foundOrder: Order | undefined = orders.data.find((order: Order) =>
               order.order_no === orderNo || order.invoice_no === orderNo
             );
 
             if (!foundOrder) {
-              foundOrder = meetingOrders.data.find(order =>
+              foundOrder = meetingOrders.data.find((order: Order) =>
                 order.order_no === orderNo || order.invoice_no === orderNo
               );
             }
 
-            if (!foundOrder) {
-              foundOrder = salesKnowledgeOrders.data.find(order =>
+            if (!foundOrder && !isClient) {
+              foundOrder = salesKnowledgeOrders.data.find((order: Order) =>
                 order.order_no === orderNo || order.invoice_no === orderNo
               );
             }
 
-            if (!foundOrder) {
-              foundOrder = salesMeetingOrders.data.find(order =>
+            if (!foundOrder && !isClient) {
+              foundOrder = salesMeetingOrders.data.find((order: Order) =>
                 order.order_no === orderNo || order.invoice_no === orderNo
               );
             }
 
             if (foundOrder) {
               // Determine if this is a purchased order (current user bought it) or sold order (current user sold it)
-              const isPurchasedOrder = orders.data.some(o => o.uuid === foundOrder!.uuid) || meetingOrders.data.some(o => o.uuid === foundOrder!.uuid);
-              const isSoldOrder = salesKnowledgeOrders.data.some(o => o.uuid === foundOrder!.uuid) || salesMeetingOrders.data.some(o => o.uuid === foundOrder!.uuid);
+              const isPurchasedOrder = orders.data.some((o: Order) => o.uuid === foundOrder!.uuid) || meetingOrders.data.some((o: Order) => o.uuid === foundOrder!.uuid);
+              const isSoldOrder = !isClient && (salesKnowledgeOrders.data.some((o: Order) => o.uuid === foundOrder!.uuid) || salesMeetingOrders.data.some((o: Order) => o.uuid === foundOrder!.uuid));
 
               let billToProfile: {
                 first_name: string;
@@ -98,7 +139,7 @@ export class InvoicePageComponent extends BaseComponent implements OnInit {
                 email: string;
                 country: string;
               } | undefined = undefined;
-              let billingAddress = null;
+              let billingAddress: string | null = null;
 
               if (isPurchasedOrder) {
                 // For purchased orders, bill-to should be the current logged-in user
@@ -107,20 +148,27 @@ export class InvoicePageComponent extends BaseComponent implements OnInit {
                   last_name: userProfile?.last_name || '',
                   name: userProfile?.name || '',
                   email: userProfile?.email || '',
-                  country: userProfile?.country || ''
+                  country: ''
                 };
-                billingAddress = foundOrder.payment?.billing_address || userProfile?.country || '';
+                // billing_address is a string, use it directly (not an object)
+                const billingAddr = foundOrder.payment?.billing_address;
+                billingAddress = typeof billingAddr === 'string' && billingAddr !== '' 
+                  ? billingAddr 
+                  : null;
               } else if (isSoldOrder) {
                 // For sold orders, bill-to should be the buyer (user object in the order)
-                const billingAddressObj = typeof foundOrder.payment?.billing_address === 'object' ? foundOrder.payment.billing_address : null;
                 billToProfile = {
                   first_name: foundOrder.user?.first_name || '',
                   last_name: foundOrder.user?.last_name || '',
                   name: foundOrder.user?.name || '',
                   email: foundOrder.user?.email || '',
-                  country: billingAddressObj?.country || foundOrder.user?.country || ''
+                  country: ''
                 };
-                billingAddress = foundOrder.payment?.billing_address || '';
+                // billing_address is a string, use it directly (not an object)
+                const billingAddr = foundOrder.payment?.billing_address;
+                billingAddress = typeof billingAddr === 'string' && billingAddr !== '' 
+                  ? billingAddr 
+                  : null;
               }
 
               this.invoiceData = {

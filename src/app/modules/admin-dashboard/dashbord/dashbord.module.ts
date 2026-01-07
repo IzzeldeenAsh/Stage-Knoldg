@@ -44,6 +44,10 @@ import { VerificationQuestionsListComponent } from './dashboard/verification-que
 import { AdminNotificationsPageComponent } from './dashboard/admin-notifications-page/admin-notifications-page.component';
 import { NotificationsIconsPipe } from 'src/app/pipes/notifications-icons/notificaitons-icons.pipe';
 import { NotificationsBgPipe } from 'src/app/pipes/notifications-background/notifications-bg.pipe';
+import { NotificationsLinksPipe } from 'src/app/pipes/notifications-links/notifications-links.pipe';
+import { NotificationsNamesPipe } from 'src/app/pipes/notificaitons-pipe/notifications-names.pipe';
+import { RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { TagInputModule } from 'ngx-chips';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { PaginatorModule } from 'primeng/paginator';
@@ -104,6 +108,10 @@ import { CalendarModule } from 'primeng/calendar';
     CalendarModule,
     NotificationsIconsPipe,
     NotificationsBgPipe,
+    NotificationsLinksPipe,
+    NotificationsNamesPipe,
+    RouterModule,
+    TranslateModule,
   ],
   providers: [NodeService],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
