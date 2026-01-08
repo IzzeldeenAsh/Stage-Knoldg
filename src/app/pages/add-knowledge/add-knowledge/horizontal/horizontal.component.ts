@@ -119,7 +119,6 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
               cover_start: knowledge.cover_start || null,
               cover_end: knowledge.cover_end || null,
               targetMarket: targetMarket,
-              keywords: knowledge.keywords?.map((keyword: any) => ({ display: keyword, value: keyword })) || [],
               customTopic: '',
               documents: [],
               publish_date_time: knowledge.published_at ? moment(knowledge.published_at).format('YYYY-MM-DD HH:mm:ss') : '',
@@ -253,7 +252,7 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
       // Handle step 3 submission (descriptions)
       this.handleStep3Submission(nextStep);
     } else if (this.currentStep$.value === 4) {
-      // Handle step 4 submission (knowledge details, tags and keywords)
+      // Handle step 4 submission (knowledge details and tags)
       // For edit mode, redirecting will happen inside the handler after successful submission
       this.handleStep4Submission(nextStep);
     } else if (this.currentStep$.value === 5) {
@@ -531,16 +530,6 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
          }
         return; // Don't advance to next step
       }
-      
-      // Validate keywords
-      if (!currentAccount.keywords || currentAccount.keywords.length === 0) {
-        if( this.lang === 'ar' ) {
-          this.showWarn('', 'يرجى إضافة على الأقل واحد أو أكثر من الكلمات الرئيسية');
-         } else {
-          this.showWarn('', 'Please add at least one keyword');
-         }
-        return; // Don't advance to next step
-      }
     }
     
     this.isLoading = true;
@@ -602,7 +591,6 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
               region: currentAccount.regions || [],
               country: currentAccount.countries || [],
               economic_bloc: currentAccount.economic_blocs || [],
-              keywords: currentAccount.keywords?.map((k: any) => k.value || k) || [],
               tag_ids: currentAccount.tag_ids || []
             };
             
@@ -631,7 +619,6 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
         region: currentAccount.regions || [],
         country: currentAccount.countries || [],
         economic_bloc: currentAccount.economic_blocs || [],
-        keywords: currentAccount.keywords?.map((k: any) => k.value || k) || [],
         tag_ids: currentAccount.tag_ids || []
       };
 

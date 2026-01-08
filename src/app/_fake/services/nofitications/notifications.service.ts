@@ -18,6 +18,7 @@ export interface Notification {
   read_at? : string;
   sub_page?: string;
   tap?: string;
+  sub_type_value?: string;
   category?:string;
 }
 

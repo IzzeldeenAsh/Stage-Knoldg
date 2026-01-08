@@ -47,7 +47,13 @@
   
           <div class="mb-0 me-2">
             <a  class="fs-8 text-info-800 text-hover-info text-capitalize" [ngClass]="{'fw-bolder': !alert.read_at, 'fw-light': alert.read_at}" style="word-break: break-word;">
-              {{ alert.sub_type | notificationsNames }}
+            
+            <ng-container *ngIf="alert.sub_type_value else default">
+                {{ alert.sub_type_value }}
+              </ng-container>
+              <ng-template #default>
+                {{ alert.sub_type | notificationsNames }}
+              </ng-template>
             </a>
             <div class="text-gray-900 fs-7 fw-light" [ngClass]="{'fw-bold': !alert.read_at}">{{ alert.message }}</div>
           </div>

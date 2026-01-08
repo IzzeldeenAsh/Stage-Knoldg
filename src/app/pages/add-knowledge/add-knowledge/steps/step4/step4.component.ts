@@ -16,11 +16,6 @@ import { KnowledgeService } from 'src/app/_fake/services/knowledge/knowledge.ser
 import { AddInsightStepsService } from 'src/app/_fake/services/add-insight-steps/add-insight-steps.service';
 import { RegionsService } from 'src/app/_fake/services/region/regions.service';
 
-interface KeywordItem {
-  display: string;
-  value: string;
-}
-
 interface TagItem {
   display: string;
   value: string;
@@ -105,9 +100,6 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
   selectedTagItems: TagItem[] = [];
   selectedTagIds: number[] = [];
   selectedTagForAdding: number | null = null;
-  
-  // Keywords related properties
-  availableKeywords: KeywordItem[] = [];
 
   @ViewChild('regionSelector') regionSelector: any;
   @ViewChild('economicBlockSelector') economicBlockSelector: any;
@@ -253,8 +245,7 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
       isic_code: [this.defaultValues.isic_code],
       hs_code: [this.defaultValues.hs_code],
       tag_ids: [this.defaultValues.tag_ids || [], [Validators.required]],
-      tagItems: [[]],  // For displaying selected tags in tag-input
-      keywords: [this.defaultValues.keywords || []]
+      tagItems: [[]]  // For displaying selected tags in tag-input
     });
     
     // Ensure worldwide is selected by default if not set
@@ -507,30 +498,18 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
         if (knowledge.tags) {
           this.defaultValues.tag_ids = knowledge.tags.map(tag => tag.id);
         }
-        if (knowledge.keywords) {
-          // Convert string keywords to KeywordItem format
-          this.defaultValues.keywords = knowledge.keywords.map(keyword => ({
-            display: keyword,
-            value: keyword
-          }));
-        }
         
         // Update form controls and selectedTagIds
         this.form.get('tag_ids')?.setValue(this.defaultValues.tag_ids || []);
         this.selectedTagIds = [...(this.defaultValues.tag_ids || [])];
-        this.form.get('keywords')?.setValue(this.defaultValues.keywords || []);
         
         // Update tag items for display
         this.updateTagItems();
 
         this.cdr.detectChanges();
-        // Initialize tags and keywords if industry/topic are selected
+        // Initialize tags if industry is selected
         if (this.defaultValues.industry) {
           this.fetchTagsByIndustry(this.defaultValues.industry);
-        }
-        const topicId = this.form.get('topicId')?.value;
-        if (topicId && topicId !== 'other') {
-          this.fetchSuggestedKeywordsByTopic(topicId);
         }
       },
       error: (error) => {
@@ -621,7 +600,6 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
       regions: formValue.regions || [],
       countries: formValue.countries || [],
       economic_blocs: formValue.economicBlocks || [],
-      keywords: formValue.keywords || [],
       tag_ids: formValue.tag_ids || [],
       isic_code: formValue.isic_code,
       hs_code: formValue.hs_code,
@@ -705,7 +683,7 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
       this.form.get('industry')?.setValue(null);
       this.selectedIndustryId = 0;
       this.topics = [];
-      this.clearTagsAndKeywords();
+      this.clearTags();
       return;
     }
     
@@ -721,9 +699,6 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
       this.getTopics(node.data.key);
       // Fetch tags for the new industry
       this.fetchTagsByIndustry(node.data.key);
-      // Clear keywords when industry changes
-      this.form.get('keywords')?.setValue([]);
-      this.updateParentModel({ keywords: [] }, this.checkForm());
     }
   }
   
@@ -762,16 +737,7 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
 
     this.form.get('topicId')?.setValue(topicId);
     
-    // Clear keywords when topic changes
-    this.form.get('keywords')?.setValue([]);
-    this.availableKeywords = [];
-    
-    // Fetch keywords based on the new topic
-    if (topicId && topicId !== 'other') {
-      this.fetchSuggestedKeywordsByTopic(topicId);
-    }
-    
-    this.updateParentModel({ topicId: topicId, keywords: [] }, this.checkForm());
+    this.updateParentModel({ topicId: topicId }, this.checkForm());
   }
 
   selectOtherOption() {
@@ -1132,96 +1098,6 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
   
   
   
-  // Keywords related methods
-  private fetchSuggestedKeywords() {
-    const topicId = this.form.get('topicId')?.value;
-    if (this.defaultValues.knowledgeId && topicId && topicId !== 'other') {
-      this.fetchSuggestedKeywordsByTopic(topicId);
-    }
-  }
-  
-  private fetchSuggestedKeywordsByTopic(topicId: number | string) {
-    if (!this.defaultValues.knowledgeId) return;
-
-    // Call the new method in TagsService
-    this.tagsService.getSuggestKeywordsByTopic(this.defaultValues.knowledgeId!, topicId, this.currentLanguage)
-      .subscribe({
-        next: (keywords: string[]) => {
-          // Convert suggested keywords to KeywordItem format
-          this.availableKeywords = keywords.map((keyword: string) => ({
-            display: keyword,
-            value: keyword
-          }));
-          
-          // Set availableKeywords as default values for the keywords form control
-          // Only set if the form control is empty or not set
-          const currentKeywords = this.form.get('keywords')?.value || [];
-          if (currentKeywords.length === 0) {
-            this.form.get('keywords')?.setValue(this.availableKeywords);
-            
-            // Update parent model
-            this.updateParentModel(
-              { keywords: this.availableKeywords },
-              this.checkForm()
-            );
-          }
-        },
-        error: (error: any) => {
-          console.error("Error fetching suggested keywords:", error);
-          this.handleServerErrors(error);
-        }
-      });
-  }
-  
-  addKeyword(event: any) {
-    const value = typeof event.value === 'string' ? event.value : event.value?.value;
-    if (!value?.trim()) return;
-
-    // Create keyword item
-    const newKeyword: KeywordItem = {
-      display: value.trim(),
-      value: value.trim()
-    };
-
-    // Get current keywords
-    const currentKeywords: KeywordItem[] = this.form.get('keywords')?.value || [];
-
-    // Check if keyword already exists
-    if (!currentKeywords.some(k => k.value === newKeyword.value)) {
-      const updatedKeywords = [...currentKeywords, newKeyword];
-      
-      // Update form
-      this.form.get('keywords')?.setValue(updatedKeywords);
-      
-      // Update parent
-      this.updateParentModel(
-        { keywords: updatedKeywords },
-        this.checkForm()
-      );
-    }
-  }
-  
-  removeKeyword(event: any) {
-    const removedKeyword = event.removed;
-    if (!removedKeyword) return;
-
-    const currentKeywords: KeywordItem[] = this.form.get('keywords')?.value || [];
-    
-    // Remove the keyword
-    const updatedKeywords = currentKeywords.filter(keyword => 
-      keyword.value !== (typeof removedKeyword === 'string' ? removedKeyword : removedKeyword.value)
-    );
-
-    // Update form
-    this.form.get('keywords')?.setValue(updatedKeywords);
-    
-    // Update parent
-    this.updateParentModel(
-      { keywords: updatedKeywords },
-      this.checkForm()
-    );
-  }
-  
   // Helper methods
   private handleServerErrors(error: any) {
     // Reset all error messages first
@@ -1311,16 +1187,13 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
     return this.currentLang;
   }
   
-  // Clear tags and keywords (but keep available tags since they depend on industry)
-  private clearTagsAndKeywords() {
-    this.availableKeywords = [];
+  // Clear tags (but keep available tags since they depend on industry)
+  private clearTags() {
     this.form.get('tag_ids')?.setValue([]);
     this.form.get('tagItems')?.setValue([]);
     this.selectedTagIds = [];
-    this.form.get('keywords')?.setValue([]);
     this.updateParentModel({ 
-      tag_ids: [], 
-      keywords: [] 
+      tag_ids: [] 
     }, this.checkForm());
   }
 
