@@ -545,7 +545,6 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
     const regions = this.form.get('regions')?.value || [];
     const countries = this.form.get('countries')?.value || [];
     const economicBlocks = this.form.get('economicBlocks')?.value || [];
-    const keywords = this.form.get('keywords')?.value || [];
     
     // Check target market specific validation
     let targetMarketValid = false;
@@ -572,14 +571,12 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
     const tagIds = this.form.get('tag_ids')?.value || [];
     
     const otherControlsValid = !!(title && description && language && industry && topicId && tagIds.length > 0);
-    const isKeywordsValid = keywords.length > 0;
     const isFormValid = this.form.valid;
     
     const result = {
       targetMarketValid,
       otherControlsValid,
-      isKeywordsValid,
-      isFormValid: isFormValid && targetMarketValid && otherControlsValid && isKeywordsValid
+      isFormValid: isFormValid && targetMarketValid && otherControlsValid
     };
     
     return result.isFormValid;
@@ -599,12 +596,6 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
 
     // Use the centralized target market validation method
     this.forceTargetMarketValidation();
-
-    // Special validation for keywords
-    const keywords = this.form.get('keywords')?.value || [];
-    if (keywords.length === 0) {
-      this.form.get('keywords')?.setErrors({ required: true });
-    }
 
     // Force full synchronization between form and parent model
     this.forceFullSync();

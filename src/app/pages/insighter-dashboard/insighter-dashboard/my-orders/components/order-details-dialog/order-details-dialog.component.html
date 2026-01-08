@@ -88,13 +88,36 @@
         <h6 class="fw-bold text-dark mb-0">{{ lang === 'ar' ? 'الخبير' : 'Insighter' }}</h6>
       </div>
       <div class="d-flex align-items-center">
-        <div class="symbol symbol-50px me-3">
-          <img *ngIf="order.orderable?.insighter?.profile_photo_url"
+        <div class="symbol symbol-50px me-3 position-relative">
+          <!-- Show company logo if company exists, otherwise show insighter profile photo -->
+          <img *ngIf="order.orderable?.insighter?.company?.logo"
+               [src]="order.orderable?.insighter?.company?.logo"
+               [alt]="order.orderable?.insighter?.company?.legal_name"
+               class="symbol-label rounded-circle"
+               style="object-fit: cover; object-position: top;">
+          <!-- Overlapping insighter avatar when company exists -->
+          <div *ngIf="order.orderable?.insighter?.company?.logo" 
+               class="position-absolute"
+               style="width: 22px; height: 22px; border: 2px solid white; border-radius: 50%; overflow: hidden; background-color: #E3F2FD; bottom: -2px; right: -2px; transform: translate(0, 0);">
+            <img *ngIf="order.orderable?.insighter?.profile_photo_url"
+                 [src]="order.orderable?.insighter?.profile_photo_url"
+                 [alt]="order.orderable?.insighter?.name"
+                 style="width: 17px ; height: 22px;
+                           object-fit: cover; object-position: top; display: flex;"
+                >
+            <div *ngIf="!order.orderable?.insighter?.profile_photo_url"
+                 class="w-100 h-100 d-flex align-items-center justify-content-center bg-light-info">
+              <span class="text-info fw-bold" style="font-size: 9px;">
+                {{ getInsighterInitials(order.orderable?.insighter) }}
+              </span>
+            </div>
+          </div>
+          <img *ngIf="!order.orderable?.insighter?.company?.logo && order.orderable?.insighter?.profile_photo_url"
                [src]="order.orderable?.insighter?.profile_photo_url"
                [alt]="order.orderable?.insighter?.name"
                class="symbol-label rounded-circle"
                style="object-fit: cover; object-position: top;">
-          <div *ngIf="!order.orderable?.insighter?.profile_photo_url"
+          <div *ngIf="!order.orderable?.insighter?.company?.logo && !order.orderable?.insighter?.profile_photo_url"
                class="symbol-label bg-light-info rounded-circle d-flex align-items-center justify-content-center">
             <span class="text-info fw-bold fs-6">
               {{ getInsighterInitials(order.orderable?.insighter) }}
@@ -102,7 +125,23 @@
           </div>
         </div>
         <div class="flex-grow-1">
-          <div class="mb-2">
+          <!-- Show company name if company exists, otherwise show insighter name -->
+          <div class="mb-2" *ngIf="order.orderable?.insighter?.company">
+            <a *ngIf="order.orderable?.insighter?.company?.uuid; else justCompanyName"
+               [href]="'https://insightabusiness.com/' + lang + '/profile/' + order.orderable?.insighter?.company?.uuid"
+               target="_blank"
+               class="text-info text-decoration-none fw-bold d-flex align-items-center">
+              <span class="me-2">{{ order.orderable?.insighter?.company?.legal_name }}</span>
+              <i class="ki-outline ki-arrow-top-right fs-6"></i>
+            </a>
+            <ng-template #justCompanyName>
+              <span class="fw-bold text-dark">{{ order.orderable?.insighter?.company?.legal_name }}</span>
+            </ng-template>
+            <div class="text-muted fs-7 mt-1">
+              {{ lang === 'ar' ? 'بواسطة' : 'By' }} {{ order.orderable?.insighter?.name }}
+            </div>
+          </div>
+          <div class="mb-2" *ngIf="!order.orderable?.insighter?.company">
             <a *ngIf="order.orderable?.insighter?.uuid; else justInsighterName"
                [href]="'https://insightabusiness.com/' + lang + '/profile/' + order.orderable?.insighter?.uuid + '?entity=insighter'"
                target="_blank"
@@ -114,8 +153,11 @@
               <span class="fw-bold text-dark">{{ order.orderable?.insighter?.name }}</span>
             </ng-template>
           </div>
-          <span class="badge badge-light-success">
+          <span *ngIf="!order.orderable?.insighter?.company" class="badge badge-light-success">
             {{ lang === 'ar' ? 'خبير' : 'Insighter' }}
+          </span>
+          <span *ngIf="order.orderable?.insighter?.company" class="badge badge-light-warning">
+            {{ lang === 'ar' ? 'شركة' : 'Company' }}
           </span>
         </div>
       </div>

@@ -267,24 +267,56 @@
           <div class="bg-light rounded p-3 p-md-4">
             <h5 class="mb-3 mb-md-4 fs-6 fs-md-5">{{ selectedTransaction.transaction === 'deposit' ? 'Client Information' : 'Insighter Information' }}</h5>
             <div class="d-flex align-items-center gap-3">
-              <div class="symbol symbol-40px symbol-md-50px flex-shrink-0">
-                <div class="cursor-pointer"
-                     (click)="redirectToProfile(user)"
-                     [title]="getTranslation('viewProfile')"
-                     style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;"
-                     class="symbol-40px symbol-md-50px">
-                  <img *ngIf="user.profile_photo_url"
-                       [src]="user.profile_photo_url"
-                       alt="User photo"
-                       class="rounded-circle"
-                       style="width: 100%; height: 100%; object-fit: cover; object-position: top;" />
-                  <span *ngIf="!user.profile_photo_url"
-                        class="text-white fw-bold rounded-circle d-flex align-items-center justify-content-center"
-                        style="background-color: #4f28ed; width: 100%; height: 100%; font-size: 0.9rem;">
-                    {{ getUserInitials(user) }}
-                  </span>
+              <ng-container *ngIf="user?.company?.logo" else insighterAvatar>
+                <div class="symbol symbol-40px symbol-md-50px flex-shrink-0 position-relative">
+                  <div class="cursor-pointer position-relative"
+                       (click)="redirectToProfile(user)"
+                       [title]="getTranslation('viewProfile')"
+                       style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;"
+                       class="symbol-40px symbol-md-50px">
+                    <!-- Show company logo if company exists -->
+                    <img [src]="user.company?.logo"
+                         [alt]="user.company?.legal_name"
+                         class="rounded-circle"
+                         style="width: 100%; height: 100%; object-fit: cover; object-position: top;" />
+                    <!-- Overlapping insighter avatar when company exists -->
+                    <div class="position-absolute"
+                         style="width: 16px; height: 16px; border: 1.5px solid white; border-radius: 50%; overflow: hidden; background-color: #E3F2FD; bottom: -1px; right: -1px; transform: translate(0, 0);">
+                      <img *ngIf="user.profile_photo_url"
+                           [src]="user.profile_photo_url"
+                           [alt]="user.name"
+                           style="width: 100%; height: 100%; object-fit: cover; object-position: top; display: flex;"
+                          >
+                      <div *ngIf="!user.profile_photo_url"
+                           class="w-100 h-100 d-flex align-items-center justify-content-center bg-light-info">
+                        <span class="text-info fw-bold" style="font-size: 6px;">
+                          {{ (user.first_name?.charAt(0) || '') + (user.last_name?.charAt(0) || '') }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              </ng-container>
+              <ng-template #insighterAvatar>
+                <div class="symbol symbol-40px symbol-md-50px flex-shrink-0">
+                  <div class="cursor-pointer"
+                       (click)="redirectToProfile(user)"
+                       [title]="getTranslation('viewProfile')"
+                       style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;"
+                       class="symbol-40px symbol-md-50px">
+                    <img *ngIf="user.profile_photo_url"
+                         [src]="user.profile_photo_url"
+                         alt="User photo"
+                         class="rounded-circle"
+                         style="width: 100%; height: 100%; object-fit: cover; object-position: top;" />
+                    <span *ngIf="!user.profile_photo_url"
+                          class="text-white fw-bold rounded-circle d-flex align-items-center justify-content-center"
+                          style="background-color: #4f28ed; width: 100%; height: 100%; font-size: 0.9rem;">
+                      {{ getUserInitials(user) }}
+                    </span>
+                  </div>
+                </div>
+              </ng-template>
               <div class="flex-grow-1 min-w-0">
                 <div class="mb-1">
                   <h6 class="mb-0 cursor-pointer text-info fs-6"

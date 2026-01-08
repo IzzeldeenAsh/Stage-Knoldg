@@ -18,7 +18,7 @@
           <!-- Order Header -->
           <div class="d-flex flex-column flex-md-row justify-content-between align-items-start mb-6 gap-3">
             <div class="d-flex align-items-center flex-grow-1">
-              <div class="symbol symbol-40px me-3">
+              <div class="symbol symbol-50px me-3">
                 <div class="symbol-label bg-light-info">
                   <svg width="23" height="26" viewBox="0 0 23 26" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M1.31201 7.35547H5.05811C5.67682 7.35571 6.18 7.85881 6.18018 8.47754V23.834C6.18003 24.4527 5.67683 24.9568 5.05811 24.957H1.31201C0.693226 24.9569 0.190084 24.4528 0.189941 23.834V8.47754C0.190115 7.85877 0.693245 7.35564 1.31201 7.35547Z" stroke="#3799FF" stroke-width="0.376002"/>
@@ -49,23 +49,63 @@
                 </div>
                 <!-- Insighter Information -->
                 <div class="d-flex align-items-center flex-wrap mb-1" *ngIf="order.orderable?.insighter">
-                  <div class="symbol symbol-25px me-2">
-                    <img *ngIf="order.orderable?.insighter?.profile_photo_url"
+                  <div class="symbol symbol-30px me-2 position-relative">
+                    <!-- Show company logo if company exists, otherwise show insighter profile photo -->
+                    <img *ngIf="order.orderable?.insighter?.company?.logo"
+                         [src]="order.orderable?.insighter?.company?.logo"
+                         [alt]="order.orderable?.insighter?.company?.legal_name"
+                         class="symbol-label rounded-circle"
+                         style="object-fit: cover; object-position: top;">
+                    <!-- Overlapping insighter avatar when company exists -->
+                    <div *ngIf="order.orderable?.insighter?.company?.logo" 
+                         class="position-absolute"
+                         style="width: 16px; height: 16px; border: 1.5px solid white; border-radius: 50%; overflow: hidden; background-color: #E3F2FD; bottom: -1px; right: -1px; transform: translate(0, 0);">
+                      <img *ngIf="order.orderable?.insighter?.profile_photo_url"
+                           [src]="order.orderable?.insighter?.profile_photo_url"
+                           [alt]="order.orderable?.insighter?.name"
+                           style="width: 13px ; height: 13px;
+                           object-fit: cover; object-position: top; display: flex;"
+                          >
+                      <div *ngIf="!order.orderable?.insighter?.profile_photo_url"
+                           class="w-100 h-100 d-flex align-items-center justify-content-center bg-light-info">
+                        <span class="text-info fw-bold" style="font-size: 7px;">
+                          {{ (order.orderable?.insighter?.first_name?.charAt(0) || '') + (order.orderable?.insighter?.last_name?.charAt(0) || '') }}
+                        </span>
+                      </div>
+                    </div>
+                    <img *ngIf="!order.orderable?.insighter?.company?.logo && order.orderable?.insighter?.profile_photo_url"
                          [src]="order.orderable?.insighter?.profile_photo_url"
                          [alt]="order.orderable?.insighter?.name"
                          class="symbol-label rounded-circle"
                          style="object-fit: cover; object-position: top;">
-                    <div *ngIf="!order.orderable?.insighter?.profile_photo_url"
+                    <div *ngIf="!order.orderable?.insighter?.company?.logo && !order.orderable?.insighter?.profile_photo_url"
                          class="symbol-label bg-light-info rounded-circle d-flex align-items-center justify-content-center">
                       <span class="text-info fw-bold fs-8">
                         {{ (order.orderable?.insighter?.first_name?.charAt(0) || '') + (order.orderable?.insighter?.last_name?.charAt(0) || '') }}
                       </span>
                     </div>
                   </div>
-                  <span class="text-muted fs-7 me-2">{{ order.orderable?.insighter?.name || 'Unknown' }}</span>
-                  <span class="badge badge-light-success ms-auto ms-md-2 mb-0">
+                  <div class="d-flex flex-column">
+                    <span class="text-muted fs-7 me-2" *ngIf="order.orderable?.insighter?.company">
+                      {{ order.orderable?.insighter?.company?.legal_name || 'Unknown' }}
+                    </span>
+                    <span class="text-muted fs-7 me-2" *ngIf="!order.orderable?.insighter?.company">
+                      {{ order.orderable?.insighter?.name || 'Unknown' }}
+                    </span>
+                    <span class="text-muted fs-8" *ngIf="order.orderable?.insighter?.company">
+                      {{ lang === 'ar' ? 'بواسطة' : 'By' }} {{ order.orderable?.insighter?.name }}
+                    </span>
+                  </div>
+                  <span 
+                    *ngIf="!order.orderable?.insighter?.company"
+                    class="badge badge-light-success ms-auto ms-md-2 mb-0">
                     {{ lang === 'ar' ? 'خبير' : 'Insighter' }}
                   </span>
+                  <span 
+                  *ngIf="order.orderable?.insighter?.company"
+                  class="badge badge-light-warning ms-auto ms-md-2 mb-0">
+                  {{ lang === 'ar' ? 'شركة' : 'Company' }}
+                </span>
                 </div>
               </div>
             </div>
