@@ -19,6 +19,7 @@ export class NotificationsNamesPipe implements PipeTransform {
     'activate_insighter': { en: 'Activate Insighter', ar: 'تفعيل الخبير' },
     'deactivate_insighter': { en: 'Deactivate Insighter', ar: 'إلغاء تفعيل الخبير' },
     'deactivate_insighter_with_delete': { en: 'Deactivate Insighter with Delete', ar: 'إلغاء تفعيل وحذف الخبير' },
+    'sale': { en: 'Sales Order', ar: 'طلب شراء' },
     'deactivate_delete_insighter': { en: 'Deactivate Delete Insighter', ar: 'إلغاء تفعيل وحذف الخبير' },
     'verified_company': { en: 'Verified Company', ar: 'شركة موثقة' },
     'verified_insighter': { en: 'Verified Insighter', ar: 'خبير موثق' },

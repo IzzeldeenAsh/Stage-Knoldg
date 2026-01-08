@@ -7,7 +7,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class NotificationsIconsPipe implements PipeTransform {
   transform(type: string): string {
     switch (type) {
-      case 'knowledge': // used as sub_type for order notifications
+      case 'sale': // used as sub_type for order notifications
         return 'duotune/finance/Knlg010.svg';
       case 'deactivate_company':
       case 'deactivate_company_with_delete':

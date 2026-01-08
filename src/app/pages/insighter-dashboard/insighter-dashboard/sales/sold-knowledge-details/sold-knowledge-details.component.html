@@ -65,6 +65,10 @@
                         {{ (order.orderable.insighter.first_name?.charAt(0) || '') + (order.orderable.insighter.last_name?.charAt(0) || '') }}
                       </span>
                     </div>
+
+                    <ng-container *ngIf="order.user?.company?.logo">
+                      <img [src]="order.user?.company?.logo" [alt]="order.user?.company?.legal_name" class="symbol-label rounded-circle" style="width: 17px; height: 25px; object-fit: cover; object-position: top;">
+                    </ng-container>
                   </div>
                   <a *ngIf="order.orderable.insighter.uuid; else justInsighterName"
                      [href]="'https://foresighta.co/' + lang + '/profile/' + order.orderable.insighter.uuid + '?entity=insighter'"

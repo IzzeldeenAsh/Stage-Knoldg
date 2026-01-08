@@ -655,33 +655,6 @@
 
       <!-- Tag dialog removed - tags are now added directly through the tag input -->
 
-      <!-- Keywords Section -->
-      <div class="mt-10 mb-10" >
-        <label class="d-flex align-items-center fs-5 fw-semibold mb-5">
-          <span class="required">{{ "KEYWORDS" | translate }}</span>
-        </label>
-        <tag-input
-          formControlName="keywords"
-          [secondaryPlaceholder]="'ENTER_KEYWORDS' | translate"
-          [separatorKeyCodes]="[13]"
-          [addOnBlur]="true"
-          [required]="true"
-          [placeholder]="'ENTER_KEYWORDS' | translate"
-          (onAdd)="addKeyword($event)"
-          (onRemove)="removeKeyword($event)"
-          [ngClass]="{'is-invalid': form.get('keywords')?.hasError('required') && form.get('keywords')?.touched, 'border-red': form.get('keywords')?.hasError('required') && form.get('keywords')?.touched}"
-          style="width: 100%; max-width: none;"
-        >
-          <tag-input-dropdown
-            [showDropdownIfEmpty]="true"
-            [autocompleteItems]="availableKeywords"
-          ></tag-input-dropdown>
-        </tag-input>
-        <div *ngIf="form.get('keywords')?.hasError('required') && form.get('keywords')?.touched" class="fv-plugins-message-container invalid-feedback mb-3">
-          {{ "KEYWORDS_REQUIRED" | translate }}
-        </div>
-      </div>
-
       <!-- ISIC Code -->
       <div class="mb-10 fv-row">
         <app-industry-selector
