@@ -601,7 +601,11 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
     let knowledgeId = this.defaultValues.knowledgeId;
     if (!knowledgeId && !this.knowledgeTypeCreated && this.parentComponent) {
       try {
-        this.showInfo('', 'Creating knowledge...');
+        if(this.lang=='ar'){
+          this.showInfo('', 'جاري إنشاء المعرفة ...');
+        }else{
+          this.showInfo('', 'Creating Insight...');
+        }
         
         // Call the parent component's method to create knowledge type
         knowledgeId = await this.parentComponent.createKnowledgeType();

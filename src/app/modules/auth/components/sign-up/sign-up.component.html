@@ -410,6 +410,19 @@
                 {{ 'AUTH.VERIFY_EMAIL.EMAIL_SENT' | translate }}
               </p>
               <img src="../../../../../assets/media/auth/verify-email.svg" alt="Verify Email" class="img-fluid my-5 fade-up ">
+              
+              <!-- Important Notice: Use Link from Same Device -->
+              <div class="alert alert-warning d-flex align-items-center p-4 mb-5" role="alert">
+                <i class="ki-outline ki-information-5 fs-2x me-3" *ngIf="lang=='en'"></i>
+                <i class="ki-outline ki-information-5 fs-2x ms-3" *ngIf="lang=='ar'"></i>
+                <div [class]="lang === 'ar' ? 'text-end' : 'text-start'">
+                  <strong *ngIf="lang=='en'" class="d-block mb-1">Important:</strong>
+                  <strong *ngIf="lang=='ar'" class="d-block mb-1">مهم:</strong>
+                  <span *ngIf="lang=='en'">You must use the verification link from the same device you used to register.</span>
+                  <span *ngIf="lang=='ar'">يجب استخدام رابط التحقق المرسل من نفس الجهاز الذي استخدمته للتسجيل.</span>
+                </div>
+              </div>
+              
               <p class="text-gray-500 fw-semibold fs-6">
            <span>     {{ 'AUTH.VERIFY_EMAIL.DIDNT_RECEIVE_EMAIL' | translate }}</span>
                 <span *ngIf="isResendDisabled">
