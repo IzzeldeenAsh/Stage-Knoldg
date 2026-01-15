@@ -97,24 +97,6 @@
                   </div>
                 </div>
 
-                <!-- Account Address Field -->
-                <div class="mb-6">
-                  <label class="form-label">
-                    {{ lang === 'ar' ? 'عنوان الفاتورة' : 'Billing Address' }}
-                    <span class="text-gray-500">{{ lang === 'ar' ? '(اختياري)' : '(Optional)' }}</span>
-                  </label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    [class.is-invalid]="getFieldError('account_address')"
-                    formControlName="account_address"
-                    [placeholder]="lang === 'ar' ? 'أدخل عنوان الحساب' : 'Enter account address'"
-                  />
-                  <div class="invalid-feedback" *ngIf="getFieldError('account_address')">
-                    {{ getFieldError('account_address') }}
-                  </div>
-                </div>
-
                 <!-- Account Phone Field -->
                 <div class="mb-0">
                   <label class="form-label">
@@ -424,19 +406,6 @@
     </div>
   </ng-template>
 </p-dialog>
-
-<!-- OTP Modal -->
-<app-otp-modal
-  [(visible)]="showOtpModal"
-  [config]="otpModalConfig"
-  [isSubmitting]="false"
-  [isWaitingForRedirect]="false"
-  [isResending]="isResendingOtp"
-  (otpSubmit)="onOtpSubmit($event)"
-  (otpResend)="onOtpResend()"
-  (modalCancel)="onOtpCancel()"
-  (modalClose)="onOtpClose()">
-</app-otp-modal>
 
 <!-- Unsaved Changes Warning Dialog -->
 <p-dialog

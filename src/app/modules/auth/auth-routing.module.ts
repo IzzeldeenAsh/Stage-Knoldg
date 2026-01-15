@@ -9,6 +9,7 @@ import { VerifyEmailComponent } from './components/verify-email/verify-email.com
 import { CallbackComponent } from './components/callback/callback.component';
 import { EmailReconfirmComponent } from './components/email-reconfirm/email-reconfirm.component';
 import { UnAuthGuard } from '../../guards/unauth-guard/un-auth.guard';
+import { ProductionLoginComponent } from './components/production-login/production-login.component';
 
 const routes: Routes = [
   {
@@ -22,7 +23,8 @@ const routes: Routes = [
       },
       {
         path: 'login',
-        component: LoginComponent,
+        // component: LoginComponent,
+        component: ProductionLoginComponent,
         data: { returnUrl: window.location.pathname },
         canActivate:[UnAuthGuard]
       },

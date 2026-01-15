@@ -48,6 +48,7 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
   // OTP Modal properties
   showOtpModal: boolean = false;
   isResendingOtp: boolean = false;
+  private isFirstOtpOpen: boolean = true;
   otpModalConfig: OtpModalConfig = {
     headerTitle: '',
     autoGenerateOnOpen: true
@@ -69,7 +70,6 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
       // Beneficiary Information
       account_name: ['', [Validators.required, Validators.minLength(2)]],
       account_country_id: [''],
-      account_address: [''],
       account_phone: [''],
 
       // Bank Information
@@ -120,7 +120,7 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
     if (!this.initialFormValue) return false;
     
     const currentValue = this.manualAccountForm.getRawValue();
-    const keysToCheck = ['account_name', 'account_country_id', 'account_address', 'account_phone', 'bank_name', 'bank_country_id', 'bank_address', 'bank_iban', 'bank_swift_code', 'accept_terms'];
+    const keysToCheck = ['account_name', 'account_country_id', 'account_phone', 'bank_name', 'bank_country_id', 'bank_address', 'bank_iban', 'bank_swift_code', 'accept_terms'];
 
     for (const key of keysToCheck) {
       if (currentValue[key] !== this.initialFormValue[key]) {
@@ -256,6 +256,20 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
   }
 
 
+  // Check if manual account is fully set up (has all required data)
+  private isManualAccountFullySetUp(manualAccount: PaymentMethod | null): boolean {
+    if (!manualAccount) return false;
+    
+    // Check if key fields are filled (not null/empty)
+    return !!(
+      manualAccount.account_name &&
+      manualAccount.bank_name &&
+      manualAccount.bank_iban &&
+      manualAccount.bank_country &&
+      manualAccount.bank_address
+    );
+  }
+
   loadExistingData() {
     console.log('Loading existing data, countries available:', this.countries.length);
     // Always check payment account details to determine if manual account exists
@@ -270,7 +284,9 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
                                        manualAccount.bank_iban !== '';
 
         // Set accept_agreement status from the manual account
-        this.acceptAgreement = manualAccount?.accept_agreement || false;
+        // If account is not fully set up (has null values), show terms checkbox
+        const isFullySetUp = this.isManualAccountFullySetUp(manualAccount);
+        this.acceptAgreement = isFullySetUp && (manualAccount?.accept_agreement || false);
         
         // Check for edit mode
         const urlParams = new URLSearchParams(window.location.search);
@@ -324,7 +340,6 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
           const formData = {
             account_name: this.existingData.account_name || '',
             account_country_id: this.existingData.account_country?.id || '',
-            account_address: this.existingData.account_address || '',
             account_phone: this.formattedPhoneNumber || '',
             bank_name: this.existingData.bank_name || '',
             bank_country_id: bankCountryId,
@@ -363,8 +378,8 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
           });
         }
         
-        // Load terms for new accounts (not in edit mode)
-        if (!isEditMode) {
+        // Load terms for new accounts or accounts that are not fully set up
+        if (!isEditMode || !isFullySetUp) {
           this.loadManualPaymentTerms();
         }
       },
@@ -462,7 +477,6 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
       const requestData = {
         account_name: formValue.account_name,
         account_country_id: formValue.account_country_id,
-        account_address: formValue.account_address,
         account_phone_code: formValue.phoneCountryCode || '',
         account_phone: formValue.phoneNumber || '',
         bank_name: formValue.bank_name,
@@ -608,7 +622,10 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
   // OTP Modal methods
   openOtpModal() {
     this.otpModalConfig.headerTitle = this.lang === 'ar' ? 'تحقق من رمز الدفع' : 'Payment Verification';
+    // Only auto-generate on first open, not when reopening after validation errors
+    this.otpModalConfig.autoGenerateOnOpen = this.isFirstOtpOpen;
     this.showOtpModal = true;
+    this.isFirstOtpOpen = false;
   }
 
   generateAndOpenOtpModal() {
@@ -629,66 +646,157 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
   onOtpSubmit(otpCode: string) {
     // Update the form control with the OTP code
     this.manualAccountForm.patchValue({ code: otpCode });
-    this.showOtpModal = false;
-
+    this.manualAccountForm.get('code')?.markAsTouched();
+    
     // Automatically submit the form after OTP is entered
     this.submitFormWithOtp();
   }
 
   private submitFormWithOtp() {
-    if (this.manualAccountForm.valid) {
-      const formValue = this.manualAccountForm.value;
+    // Mark all fields as touched to show validation errors
+    this.markFormGroupTouched();
+    this.showValidationErrors = true;
 
-      if (!this.isCompanyAccount && !formValue.account_country_id) {
-        this.showError(
-          this.lang === 'ar' ? 'خطأ' : 'Error',
-          this.lang === 'ar' ? 'يرجى اختيار بلد الحساب' : 'Please select account country'
-        );
-        return;
+    // Check if code is valid first
+    const codeControl = this.manualAccountForm.get('code');
+    if (!codeControl || !codeControl.value || codeControl.value.trim() === '') {
+      this.showError(
+        this.lang === 'ar' ? 'رمز التحقق مطلوب' : 'Verification Code Required',
+        this.lang === 'ar' ? 'يرجى إدخال رمز التحقق' : 'Please enter the verification code'
+      );
+      // Reopen OTP modal (don't auto-generate new OTP)
+      this.otpModalConfig.autoGenerateOnOpen = false;
+      setTimeout(() => {
+        this.showOtpModal = true;
+      }, 500);
+      return;
+    }
+
+    // Check if code has minimum length
+    if (codeControl.value.length < 4) {
+      this.showError(
+        this.lang === 'ar' ? 'رمز التحقق غير صحيح' : 'Invalid Verification Code',
+        this.lang === 'ar' ? 'رمز التحقق يجب أن يكون على الأقل 4 أحرف' : 'Verification code must be at least 4 characters'
+      );
+      // Reopen OTP modal (don't auto-generate new OTP)
+      this.otpModalConfig.autoGenerateOnOpen = false;
+      setTimeout(() => {
+        this.showOtpModal = true;
+      }, 500);
+      return;
+    }
+
+    // Check if all required fields except code are valid
+    if (!this.areRequiredFieldsValid()) {
+      // Find which fields are invalid for better error message
+      const invalidFields: string[] = [];
+      const requiredFields = [
+        'account_name',
+        'bank_name',
+        'bank_country_id',
+        'bank_address',
+        'bank_iban'
+      ];
+      
+      if (!this.isCompanyAccount) {
+        requiredFields.push('account_country_id');
+      }
+      
+      if (!this.acceptAgreement) {
+        requiredFields.push('accept_terms');
       }
 
-      if (!formValue.bank_country_id) {
-        this.showError(
-          this.lang === 'ar' ? 'خطأ' : 'Error',
-          this.lang === 'ar' ? 'يرجى اختيار بلد البنك' : 'Please select bank country'
-        );
-        return;
-      }
-
-      const requestData = {
-        account_name: formValue.account_name,
-        account_country_id: formValue.account_country_id,
-        account_address: formValue.account_address,
-        account_phone_code: formValue.phoneCountryCode || '',
-        account_phone: formValue.phoneNumber || '',
-        bank_name: formValue.bank_name,
-        bank_country_id: formValue.bank_country_id,
-        bank_address: formValue.bank_address,
-        bank_iban: formValue.bank_iban.replace(/\s+/g, ''),
-        bank_swift_code: formValue.bank_swift_code,
-        accept_terms: formValue.accept_terms,
-        code: formValue.code
-      };
-
-      // Always use updateManualAccount since backend creates account by default
-      this.paymentService.updateManualAccount(requestData).subscribe({
-        next: () => {
-          // Reset form state to prevent unsaved changes dialog
-          this.initialFormValue = this.manualAccountForm.getRawValue();
-          this.manualAccountForm.markAsPristine();
-          this.isFormDirtyOnEdit = false;
-
-          this.showSuccess(
-            this.lang === 'ar' ? 'تم الحفظ' : 'Success',
-            this.lang === 'ar' ? 'تم تحديث الحساب بنجاح' : 'Account updated successfully'
-          );
-          this.router.navigate(['/app/insighter-dashboard/account-settings/payment-settings']);
-        },
-        error: (error) => {
-          this.handleOtpError(error);
+      requiredFields.forEach(fieldName => {
+        const control = this.manualAccountForm.get(fieldName);
+        if (!control || control.invalid) {
+          invalidFields.push(this.getFieldLabel(fieldName));
         }
       });
+
+      // Show error with specific fields
+      const errorMessage = invalidFields.length > 0
+        ? (this.lang === 'ar' 
+            ? `الحقول التالية مطلوبة: ${invalidFields.join(', ')}`
+            : `The following fields are required: ${invalidFields.join(', ')}`)
+        : (this.lang === 'ar' 
+            ? 'يرجى التأكد من ملء جميع الحقول المطلوبة'
+            : 'Please ensure all required fields are filled');
+
+      this.showError(
+        this.lang === 'ar' ? 'خطأ في التحقق' : 'Validation Error',
+        errorMessage
+      );
+      // Reopen OTP modal to allow user to try again (don't auto-generate new OTP)
+      this.otpModalConfig.autoGenerateOnOpen = false;
+      setTimeout(() => {
+        this.showOtpModal = true;
+      }, 500);
+      return;
     }
+
+    const formValue = this.manualAccountForm.value;
+
+    if (!this.isCompanyAccount && !formValue.account_country_id) {
+      this.showError(
+        this.lang === 'ar' ? 'خطأ' : 'Error',
+        this.lang === 'ar' ? 'يرجى اختيار بلد الحساب' : 'Please select account country'
+      );
+      // Reopen OTP modal (don't auto-generate new OTP)
+      this.otpModalConfig.autoGenerateOnOpen = false;
+      setTimeout(() => {
+        this.showOtpModal = true;
+      }, 500);
+      return;
+    }
+
+    if (!formValue.bank_country_id) {
+      this.showError(
+        this.lang === 'ar' ? 'خطأ' : 'Error',
+        this.lang === 'ar' ? 'يرجى اختيار بلد البنك' : 'Please select bank country'
+      );
+      // Reopen OTP modal (don't auto-generate new OTP)
+      this.otpModalConfig.autoGenerateOnOpen = false;
+      setTimeout(() => {
+        this.showOtpModal = true;
+      }, 500);
+      return;
+    }
+
+    // Close OTP modal before submitting
+    this.showOtpModal = false;
+
+    const requestData = {
+      account_name: formValue.account_name,
+      account_country_id: formValue.account_country_id,
+      account_phone_code: formValue.phoneCountryCode || '',
+      account_phone: formValue.phoneNumber || '',
+      bank_name: formValue.bank_name,
+      bank_country_id: formValue.bank_country_id,
+      bank_address: formValue.bank_address,
+      bank_iban: formValue.bank_iban.replace(/\s+/g, ''),
+      bank_swift_code: formValue.bank_swift_code,
+      accept_terms: formValue.accept_terms,
+      code: formValue.code
+    };
+
+    // Always use updateManualAccount since backend creates account by default
+    this.paymentService.updateManualAccount(requestData).subscribe({
+      next: () => {
+        // Reset form state to prevent unsaved changes dialog
+        this.initialFormValue = this.manualAccountForm.getRawValue();
+        this.manualAccountForm.markAsPristine();
+        this.isFormDirtyOnEdit = false;
+
+        this.showSuccess(
+          this.lang === 'ar' ? 'تم الحفظ' : 'Success',
+          this.lang === 'ar' ? 'تم تحديث الحساب بنجاح' : 'Account updated successfully'
+        );
+        this.router.navigate(['/app/insighter-dashboard/account-settings/payment-settings']);
+      },
+      error: (error) => {
+        this.handleOtpError(error);
+      }
+    });
   }
 
   private handleOtpError(error: any) {
@@ -701,9 +809,10 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
         this.lang === 'ar' ? 'الرمز المدخل غير صحيح، يرجى المحاولة مرة أخرى' : 'The entered code is invalid, please try again'
       );
 
-      // Reopen OTP modal to allow user to try again
+      // Reopen OTP modal to allow user to try again (don't auto-generate new OTP)
+      this.otpModalConfig.autoGenerateOnOpen = false;
       setTimeout(() => {
-        this.openOtpModal();
+        this.showOtpModal = true;
       }, 500);
     } else {
       // Handle other server errors normally (including phone validation errors)
@@ -868,7 +977,6 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
         ? { en: 'Company Legal Name', ar: 'الاسم القانوني للشركة' }
         : { en: 'Full Name', ar: 'الاسم الكامل' },
       account_country_id: { en: 'Account Country', ar: 'بلد الحساب' },
-      account_address: { en: 'Account Address', ar: 'عنوان الحساب' },
       account_phone: { en: 'Account Phone', ar: 'هاتف الحساب' },
       bank_name: { en: 'Bank Name', ar: 'اسم البنك' },
       bank_country_id: { en: 'Bank Country', ar: 'بلد البنك' },

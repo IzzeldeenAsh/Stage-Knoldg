@@ -1,0 +1,109 @@
+:host {
+  width: 100%;
+  @media (min-width: 992px) {
+    .login-form {
+      width: 100%;
+      max-width: 450px;
+
+      .mat-form-field {
+        width: 100%;
+      }
+    }
+   
+  }
+}
+
+
+
+.country-item {
+  display: flex;
+  align-items: center;
+  
+  .country-flag {
+    width: 20px;
+    margin-right: 8px;
+  }
+}
+.w-90{
+  width: 75%;
+  @media screen and (max-width:767px) {
+    width: 100%;
+  }
+}
+
+.form-control{
+  background-color: #ffffffa7 !important;
+}
+
+.bg-light{
+  background-image: url('https://res.cloudinary.com/dsiku9ipv/image/upload/v1744131473/bg-abstract-login.1bb8bf9e7f43c2f8_nfqa0o.webp');
+  background-size: cover;
+  background-position: 100% 10%;
+}
+.h-100vh{
+  min-height: 100vh;
+}
+.auth-card {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  border-radius: 10px;
+  overflow: hidden;
+
+  @media screen and (max-width: 576px) {
+    max-width: 90%;
+    margin: 0 auto;
+  }
+}
+
+.auth-form-container {
+  width: 100%;
+}
+
+.gap{
+  gap: 30px;
+}
+.top-rtl{
+  top: 29px;
+   z-index: 1; 
+   background: none; 
+   border: none;
+}
+.top-ltr{
+  top: 27px;
+   z-index: 1; 
+   background: none; 
+   border: none;
+}
+
+
+@media screen and (max-width: 992px) {
+  .pt-res-100{
+    padding-top: 50px;
+  }
+}
+
+/* Full-screen loader overlay */
+.full-screen-loader {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(2px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader-logo {
+  width: 64px;
+  height: 64px;
+  opacity: 0.9;
+}
