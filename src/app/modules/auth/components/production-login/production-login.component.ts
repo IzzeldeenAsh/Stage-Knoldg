@@ -79,6 +79,76 @@ export class ProductionLoginComponent extends BaseComponent implements OnInit, O
     this.passwordVisible = !this.passwordVisible;
   }
 
+  signInWithGoogle(event: Event): void {
+    event.preventDefault();
+    this.performSocialAuth('google');
+  }
+
+  signInWithLinkedIn(event: Event): void {
+    event.preventDefault();
+    this.performSocialAuth('linkedin');
+  }
+
+  private performSocialAuth(provider: 'google' | 'linkedin'): void {
+    // Store return URL in cookie before redirecting
+    if (this.returnUrl) {
+      this.setReturnUrlCookie(this.returnUrl);
+    }
+    
+    // Store preferred language
+    this.productionCookieService.setPreferredLanguage(this.selectedLang);
+    
+    const authMethod = provider === 'google' 
+      ? this.productionLoginService.getGoogleAuthRedirectUrl(this.selectedLang)
+      : this.productionLoginService.getLinkedInAuthRedirectUrl(this.selectedLang);
+
+    const authSubscr = authMethod.pipe(first()).subscribe({
+      next: (redirectUrl) => {
+        // Redirect to social provider
+        window.location.href = redirectUrl;
+      },
+      error: (error) => {
+        console.error(`Error getting ${provider} auth redirect URL`, error);
+        this.showError(
+          this.lang === "ar" ? "خطأ" : "Error",
+          this.lang === "ar" 
+            ? `فشل البدء بتسجيل الدخول باستخدام ${provider === 'google' ? 'جوجل' : 'لينكد إن'}`
+            : `Failed to initiate ${provider} sign-in.`
+        );
+      },
+    });
+
+    this.unsubscribe.push(authSubscr);
+  }
+
+  private setReturnUrlCookie(url: string): void {
+    const isLocalhost = window.location.hostname === 'localhost' || 
+                       window.location.hostname === '127.0.0.1' ||
+                       window.location.hostname.startsWith('localhost:') ||
+                       window.location.hostname.startsWith('127.0.0.1:');
+    
+    let cookieSettings;
+    if (isLocalhost) {
+      cookieSettings = [
+        `auth_return_url=${encodeURIComponent(url)}`,
+        `Path=/`,
+        `Max-Age=${60 * 60}`, // 1 hour
+        `SameSite=Lax`
+      ];
+    } else {
+      cookieSettings = [
+        `auth_return_url=${encodeURIComponent(url)}`,
+        `Path=/`,
+        `Max-Age=${60 * 60}`, // 1 hour
+        `SameSite=None`,
+        `Domain=.foresighta.co`,
+        `Secure`
+      ];
+    }
+    
+    document.cookie = cookieSettings.join('; ');
+  }
+
   submit(): void {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
