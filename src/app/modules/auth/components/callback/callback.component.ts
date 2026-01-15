@@ -96,7 +96,7 @@ export class CallbackComponent extends BaseComponent implements OnInit {
                        window.location.hostname.startsWith('127.0.0.1:');
     
     if (isLocalhost) {
-      window.location.href = `http://localhost:3000/${currentLang}/home`;
+      window.location.href = `https://foresighta.co/${currentLang}/home`;
     } else {
       window.location.href = `https://www.foresighta.co/${currentLang}/home`;
     }

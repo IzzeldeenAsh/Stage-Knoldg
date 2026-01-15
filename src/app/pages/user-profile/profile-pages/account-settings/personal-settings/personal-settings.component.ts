@@ -161,6 +161,7 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
       twitter: this.getSocialLink('twitter'),
       instagram: this.getSocialLink('instagram'),
       youtube: this.getSocialLink('youtube'),
+      tiktok: this.getSocialLink('tiktok'),
     }); 
   }
 
@@ -193,9 +194,10 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
       consulting_field: [[]],
       linkedIn: ['', [Validators.pattern('^https://www\.linkedin\.com/.*$')]],
       facebook: ['', [Validators.pattern('^https://www\.facebook\.com/.*$')]],
-      twitter: ['', [Validators.pattern('^https://(www\.)?(twitter\.com|x\.com)/.*$')]],
+      twitter: ['', [Validators.pattern('^https://www\.(twitter\.com|x\.com)/.*$')]],
       instagram: ['', [Validators.pattern('^https://www\.instagram\.com/.*$')]],
-      youtube: ['', [Validators.pattern('^https://www\.youtube\.com/.*$')]]
+      youtube: ['', [Validators.pattern('^https://www\.youtube\.com/.*$')]],
+      tiktok: ['', [Validators.pattern('^https://www\.tiktok\.com/.*$')]]
     });
 
     // Add required validators for non-client users after form initialization
@@ -416,6 +418,13 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
       });
     }
 
+    if (form.get('tiktok')?.value) {
+      this.socialNetworks.push({
+        type: 'tiktok',
+        link: form.get('tiktok')?.value
+      });
+    }
+
     // Always send socials for roles that support them, even if empty
     if (this.hasRole(['insighter'])) {
       return this._profilePost.addInsighterSocial(this.socialNetworks);
@@ -499,6 +508,12 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
         return this.lang === 'ar' ? 'هذا الحقل مطلوب' : 'This field is required';
       }
       if (field.errors?.['pattern']) {
+        const socialFields = ['linkedIn', 'facebook', 'twitter', 'instagram', 'youtube', 'tiktok'];
+        if (socialFields.includes(fieldName)) {
+          return this.lang === 'ar' 
+            ? 'يجب أن يبدأ الرابط بـ https://www.' 
+            : 'URL must start with https://www.';
+        }
         return this.lang === 'ar' ? 'الرابط غير صحيح' : 'Invalid URL format';
       }
     }
