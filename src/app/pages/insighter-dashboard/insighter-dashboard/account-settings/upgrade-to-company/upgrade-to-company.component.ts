@@ -9,6 +9,7 @@ import {
   ElementRef,
   Injector,
   ChangeDetectorRef,
+  Inject,
 } from "@angular/core";
 import { FormBuilder, FormGroup, Validators, FormArray } from "@angular/forms";
 import {
@@ -96,7 +97,7 @@ export class UpgradeToCompanyComponent
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
-    private insighterAsCompany: InsighterAsCompany,
+    @Inject(InsighterAsCompany) private insighterAsCompany: InsighterAsCompany,
     private router: Router,
     private commonService: CommonService,
     private _KnoldgFieldsService: ConsultingFieldTreeService,

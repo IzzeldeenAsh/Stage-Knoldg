@@ -23,8 +23,8 @@ const routes: Routes = [
       },
       {
         path: 'login',
-        // component: LoginComponent,
-        component: ProductionLoginComponent,
+      //  component: LoginComponent,
+       component: ProductionLoginComponent,
         data: { returnUrl: window.location.pathname },
         canActivate:[UnAuthGuard]
       },
