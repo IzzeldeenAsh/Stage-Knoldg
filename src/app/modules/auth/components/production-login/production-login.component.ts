@@ -47,7 +47,7 @@ export class ProductionLoginComponent extends BaseComponent implements OnInit, O
   }
 
   getHomeUrl(): string {
-    return "https://www.foresighta.co";
+    return "https://www.insightabusiness.com";
   }
 
   ngOnInit(): void {
@@ -141,7 +141,7 @@ export class ProductionLoginComponent extends BaseComponent implements OnInit, O
         `Path=/`,
         `Max-Age=${60 * 60}`, // 1 hour
         `SameSite=None`,
-        `Domain=.foresighta.co`,
+        `Domain=.insightabusiness.com`,
         `Secure`
       ];
     }
@@ -182,7 +182,7 @@ export class ProductionLoginComponent extends BaseComponent implements OnInit, O
     
     const token = userData.token;
     
-    // Store token in cookie with .foresighta.co domain for cross-domain sharing
+    // Store token in cookie with .insightabusiness.com domain for cross-domain sharing
     this.productionCookieService.setAuthToken(token);
     
     // Store preferred language
@@ -196,8 +196,8 @@ export class ProductionLoginComponent extends BaseComponent implements OnInit, O
         const returnUrlObj = new URL(this.returnUrl);
         const allowedDomains = [
           'foresighta.co', 
-          'www.foresighta.co', 
-          'app.foresighta.co',
+          'www.insightabusiness.com', 
+          'app.insightabusiness.com',
           'localhost',
           '127.0.0.1'
         ];
@@ -241,8 +241,8 @@ export class ProductionLoginComponent extends BaseComponent implements OnInit, O
       const defaultUrl = `https://insightabusiness.com/${this.selectedLang}/home`;
       window.location.href = defaultUrl;
     } else {
-      // For production, redirect to www.foresighta.co
-      const defaultUrl = `https://www.foresighta.co/${this.selectedLang}/home`;
+      // For production, redirect to www.insightabusiness.com
+      const defaultUrl = `https://www.insightabusiness.com/${this.selectedLang}/home`;
       window.location.href = defaultUrl;
     }
   }

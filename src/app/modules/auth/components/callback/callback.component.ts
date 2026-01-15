@@ -38,7 +38,7 @@ export class CallbackComponent extends BaseComponent implements OnInit {
         
         if (token) {
           try {
-            // Store token in cookie with .foresighta.co domain
+            // Store token in cookie with .insightabusiness.com domain
             this.productionCookieService.setAuthToken(token);
             console.log('[callback] Token stored successfully');
             
@@ -89,7 +89,7 @@ export class CallbackComponent extends BaseComponent implements OnInit {
   }
 
   private redirectToLogin(): void {
-    const loginUrl = 'https://app.foresighta.co/auth/login';
+    const loginUrl = 'https://app.insightabusiness.com/auth/login';
     console.log('[callback] Redirecting to login:', loginUrl);
     window.location.href = loginUrl;
   }
@@ -126,7 +126,7 @@ export class CallbackComponent extends BaseComponent implements OnInit {
     if (returnUrl) {
       try {
         const returnUrlObj = new URL(returnUrl);
-        const allowedDomains = ['foresighta.co', 'www.foresighta.co', 'app.foresighta.co', 'localhost', 'insightabusiness.com', 'www.insightabusiness.com'];
+        const allowedDomains = ['foresighta.co', 'www.insightabusiness.com', 'app.insightabusiness.com', 'localhost', 'insightabusiness.com', 'www.insightabusiness.com'];
         const isAllowed = allowedDomains.some(domain => 
           returnUrlObj.hostname === domain || 
           returnUrlObj.hostname.endsWith(`.${domain}`) ||
@@ -164,8 +164,8 @@ export class CallbackComponent extends BaseComponent implements OnInit {
     if (isLocalhost) {
       baseUrl = `https://insightabusiness.com/${currentLang}/home`;
     } else {
-      // For production, use www.foresighta.co (not foresighta.co:3000)
-      baseUrl = `https://www.foresighta.co/${currentLang}/home`;
+      // For production, use www.insightabusiness.com (not foresighta.co:3000)
+      baseUrl = `https://www.insightabusiness.com/${currentLang}/home`;
     }
     
     console.log('[callback] Redirecting to default URL:', baseUrl);
@@ -216,7 +216,7 @@ export class CallbackComponent extends BaseComponent implements OnInit {
         'Path=/',
         'Max-Age=-1',
         'SameSite=None',
-        'Domain=.foresighta.co',
+        'Domain=.insightabusiness.com',
         'Secure'
       ];
     }
@@ -256,7 +256,7 @@ export class CallbackComponent extends BaseComponent implements OnInit {
         'Path=/',
         'Max-Age=-1',
         'SameSite=None',
-        'Domain=.foresighta.co',
+        'Domain=.insightabusiness.com',
         'Secure'
       ];
     }
