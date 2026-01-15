@@ -34,57 +34,94 @@ export class CallbackComponent extends BaseComponent implements OnInit {
         const rolesParam = params.get("roles");
         const roles = rolesParam ? rolesParam.split(",").map((role) => role.trim()) : [];
         
+        console.log('[callback] Processing callback with roles:', roles);
+        
         if (token) {
           try {
             // Store token in cookie with .foresighta.co domain
             this.productionCookieService.setAuthToken(token);
+            console.log('[callback] Token stored successfully');
             
             // Store preferred language
             const currentLang = this.translationService.getSelectedLanguage() || 'en';
             this.productionCookieService.setPreferredLanguage(currentLang);
             
+            // Check if this is a social signup (from sign-up page)
+            const isSocialSignup = this.isSocialSignup();
+            
             // Get return URL from cookie
             const returnUrl = this.getReturnUrlFromCookie();
+            console.log('[callback] Return URL from cookie:', returnUrl, 'isSocialSignup:', isSocialSignup);
             
-            // Clean up return URL cookie
+            // Clean up cookies
             if (returnUrl) {
               this.clearReturnUrlCookie();
             }
+            if (isSocialSignup) {
+              this.clearSignupFlag();
+            }
             
-            // Immediately redirect based on roles
-            this.redirectBasedOnRole(roles, returnUrl);
+            // Immediately redirect based on roles - use setTimeout to ensure it executes
+            setTimeout(() => {
+              this.redirectBasedOnRole(roles, returnUrl, isSocialSignup);
+            }, 100);
           } catch (error) {
             console.error('[callback] Error processing callback:', error);
-            this.redirectToLogin();
+            setTimeout(() => {
+              this.redirectToLogin();
+            }, 100);
           }
         } else {
           // No token - redirect to login
           console.error('[callback] No token found in URL');
-          this.redirectToLogin();
+          setTimeout(() => {
+            this.redirectToLogin();
+          }, 100);
         }
       },
       error: (error) => {
         console.error('[callback] Error reading query params:', error);
-        this.redirectToLogin();
+        setTimeout(() => {
+          this.redirectToLogin();
+        }, 100);
       }
     });
   }
 
   private redirectToLogin(): void {
-    window.location.href = 'https://app.foresighta.co/auth/login';
+    const loginUrl = 'https://app.foresighta.co/auth/login';
+    console.log('[callback] Redirecting to login:', loginUrl);
+    window.location.href = loginUrl;
   }
 
-  private redirectBasedOnRole(roles: string[], returnUrl: string | null): void {
+  private redirectBasedOnRole(roles: string[], returnUrl: string | null, isSocialSignup: boolean = false): void {
     const currentLang = this.translationService.getSelectedLanguage() || 'en';
+    
+    console.log('[callback] Redirecting based on roles:', roles, 'returnUrl:', returnUrl, 'isSocialSignup:', isSocialSignup);
     
     // Check if user is admin/staff - stay in Angular app
     if (roles.includes('admin') || roles.includes('staff')) {
-      // Use window.location for full page navigation to ensure proper routing
-      window.location.href = `${window.location.origin}/admin-dashboard`;
+      const adminUrl = `${window.location.origin}/admin-dashboard`;
+      console.log('[callback] Redirecting admin/staff to:', adminUrl);
+      window.location.href = adminUrl;
       return;
     }
     
-    // Regular users redirect to Next.js app
+    // For social signups, redirect to insightabusiness.com/{current language}
+    if (isSocialSignup) {
+      const signupUrl = `https://foresighta.co/${currentLang}`;
+      
+      console.log('[callback] Redirecting social signup to:', signupUrl);
+      window.location.replace(signupUrl);
+      setTimeout(() => {
+        if (window.location.href.includes('/auth/callback')) {
+          window.location.href = signupUrl;
+        }
+      }, 200);
+      return;
+    }
+    
+    // Regular users (including 'client') redirect to Next.js app
     // If returnUrl exists and is valid, redirect there
     if (returnUrl) {
       try {
@@ -98,12 +135,21 @@ export class CallbackComponent extends BaseComponent implements OnInit {
         );
         
         if (isAllowed) {
-          // Use replace to avoid adding to history
+          console.log('[callback] Redirecting to returnUrl:', returnUrl);
+          // Force redirect - try both methods
           window.location.replace(returnUrl);
+          // Fallback if replace doesn't work immediately
+          setTimeout(() => {
+            if (window.location.href.includes('/auth/callback')) {
+              window.location.href = returnUrl;
+            }
+          }, 200);
           return;
+        } else {
+          console.warn('[callback] ReturnUrl domain not allowed:', returnUrlObj.hostname);
         }
       } catch (e) {
-        console.error('[callback] Invalid returnUrl:', e);
+        console.error('[callback] Invalid returnUrl:', e, returnUrl);
       }
     }
     
@@ -122,8 +168,16 @@ export class CallbackComponent extends BaseComponent implements OnInit {
       baseUrl = `https://www.foresighta.co/${currentLang}/home`;
     }
     
-    // Use replace to avoid adding callback page to history
+    console.log('[callback] Redirecting to default URL:', baseUrl);
+    // Force redirect - try both methods
     window.location.replace(baseUrl);
+    // Fallback if replace doesn't work immediately
+    setTimeout(() => {
+      if (window.location.href.includes('/auth/callback')) {
+        console.log('[callback] Fallback redirect to:', baseUrl);
+        window.location.href = baseUrl;
+      }
+    }, 200);
   }
 
   private getReturnUrlFromCookie(): string | null {
@@ -159,6 +213,46 @@ export class CallbackComponent extends BaseComponent implements OnInit {
     } else {
       cookieSettings = [
         'auth_return_url=',
+        'Path=/',
+        'Max-Age=-1',
+        'SameSite=None',
+        'Domain=.foresighta.co',
+        'Secure'
+      ];
+    }
+    
+    document.cookie = cookieSettings.join('; ');
+  }
+
+  private isSocialSignup(): boolean {
+    if (typeof document === 'undefined') return false;
+    
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+      const [name, value] = cookie.trim().split('=');
+      if (name === 'is_social_signup' && value === 'true') {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private clearSignupFlag(): void {
+    const isLocalhost = window.location.hostname === 'localhost' || 
+                       window.location.hostname === '127.0.0.1' ||
+                       window.location.hostname.startsWith('localhost:') ||
+                       window.location.hostname.startsWith('127.0.0.1:');
+    
+    let cookieSettings;
+    if (isLocalhost) {
+      cookieSettings = [
+        'is_social_signup=',
+        'Path=/',
+        'Max-Age=-1'
+      ];
+    } else {
+      cookieSettings = [
+        'is_social_signup=',
         'Path=/',
         'Max-Age=-1',
         'SameSite=None',
