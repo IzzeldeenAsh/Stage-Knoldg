@@ -35,7 +35,9 @@
               <div class="flex-grow-1">
                 <div class="d-flex align-items-center flex-wrap mb-1">
                   <h6 class="mb-0 fw-bold me-2">
-                    {{ lang === 'ar' ? 'طلب رقم' : 'Order' }} {{ order.order_no }}
+                    <a [routerLink]="['/app/insighter-dashboard/my-meetings']" [queryParams]="{ tab: 'client' }">
+                      {{ lang === 'ar' ? 'طلب رقم' : 'Order' }} {{ order.order_no }}
+                    </a>
                   </h6>
                   <i (click)="copyOrder(order.order_no)" class="ki-outline ki-copy fs-6 cursor-pointer"></i>
                 </div>
@@ -108,7 +110,56 @@
               </div>
 
               <div class="row g-3 mt-2">
-                <div class="col-12 col-sm-6 col-lg-4">
+                <div class="col-12 col-sm-6 col-lg-3" *ngIf="order.user">
+                  <div class="d-flex align-items-center">
+                    <div class="symbol symbol-30px me-2">
+                      <a *ngIf="order.user.uuid"
+                         [href]="'https://insightabusiness.com/' + lang + '/profile/' + order.user.uuid + '?entity=insighter'"
+                         target="_blank"
+                         class="text-decoration-none d-block">
+                        <img *ngIf="order.user.profile_photo_url"
+                             [src]="order.user.profile_photo_url"
+                             [alt]="order.user.name"
+                             class="symbol-label rounded-circle"
+                             style="object-fit: cover; object-position: top;">
+                        <div *ngIf="!order.user.profile_photo_url"
+                             class="symbol-label bg-light-primary rounded-circle d-flex align-items-center justify-content-center">
+                          <span class="text-primary fw-bold fs-8">
+                            {{ (order.user.first_name?.charAt(0) || '') + (order.user.last_name?.charAt(0) || '') }}
+                          </span>
+                        </div>
+                      </a>
+                      <div *ngIf="!order.user.uuid">
+                        <img *ngIf="order.user.profile_photo_url"
+                             [src]="order.user.profile_photo_url"
+                             [alt]="order.user.name"
+                             class="symbol-label rounded-circle"
+                             style="object-fit: cover; object-position: top;">
+                        <div *ngIf="!order.user.profile_photo_url"
+                             class="symbol-label bg-light-primary rounded-circle d-flex align-items-center justify-content-center">
+                          <span class="text-primary fw-bold fs-8">
+                            {{ (order.user.first_name?.charAt(0) || '') + (order.user.last_name?.charAt(0) || '') }}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="fs-8 text-muted">{{ lang === 'ar' ? 'العميل' : 'Client' }}</div>
+                      <div class="fw-semibold fs-7">
+                        <a *ngIf="order.user.uuid; else justUserName"
+                           [href]="'https://insightabusiness.com/' + lang + '/profile/' + order.user.uuid + '?entity=insighter'"
+                           target="_blank"
+                           class="text-primary text-decoration-none">
+                          {{ order.user.name }}
+                        </a>
+                        <ng-template #justUserName>
+                          <span class="text-dark">{{ order.user.name }}</span>
+                        </ng-template>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-3">
                   <div class="d-flex align-items-center">
                     <i class="ki-outline ki-calendar fs-5 text-info me-2"></i>
                     <div>
@@ -117,7 +168,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-12 col-sm-6 col-lg-4">
+                <div class="col-12 col-sm-6 col-lg-3">
                   <div class="d-flex align-items-center">
                     <i class="ki-outline ki-time fs-5 text-info me-2"></i>
                     <div>
@@ -126,7 +177,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-12 col-sm-6 col-lg-4">
+                <div class="col-12 col-sm-6 col-lg-3">
                   <div class="d-flex align-items-center">
                     <i class="ki-outline ki-timer fs-5 text-info me-2"></i>
                     <div>
@@ -135,6 +186,7 @@
                     </div>
                   </div>
                 </div>
+              
               </div>
             </div>
           </div>

@@ -271,54 +271,81 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
     // Add knowledge UUID to downloading items
     this.downloadingItems.update(items => new Set(items).add(knowledge.uuid));
 
+    let downloadProcessed = false;
+
     this.myDownloadsService.downloadKnowledge(knowledge.uuid)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (blob) => {
-          this.downloadFile(blob, `${knowledge.title}.zip`);
+          try {
+            // Validate blob exists
+            if (!blob || !(blob instanceof Blob)) {
+              throw new Error('Invalid response: expected Blob');
+            }
 
-          // Immediately update local data to show downloaded state
-          const currentTime = new Date().toISOString();
-          this.knowledgeItems.update(items =>
-            items.map(item =>
-              item.uuid === knowledge.uuid
-                ? { ...item, download_at: currentTime }
-                : item
-            )
-          );
+            this.downloadFile(blob, `${knowledge.title}.zip`);
+            downloadProcessed = true; // Mark as processed after download starts
 
-          // Update archived items if they exist
-          if (this.archivedKnowledgeItems().length > 0) {
-            this.archivedKnowledgeItems.update(items =>
+            // Immediately update local data to show downloaded state
+            const currentTime = new Date().toISOString();
+            this.knowledgeItems.update(items =>
               items.map(item =>
                 item.uuid === knowledge.uuid
                   ? { ...item, download_at: currentTime }
                   : item
               )
             );
-          }
 
-          // Remove knowledge UUID from downloading items
-          this.downloadingItems.update(items => {
-            const newItems = new Set(items);
-            newItems.delete(knowledge.uuid);
-            return newItems;
-          });
-
-          // Re-bind selectedKnowledge to updated instance immediately if it is currently selected
-          if (this.selectedKnowledge()?.uuid === knowledge.uuid) {
-            const updatedItem = this.knowledgeItems().find(k => k.uuid === knowledge.uuid) || null;
-            if (updatedItem) {
-              this.selectedKnowledge.set(updatedItem);
+            // Update archived items if they exist
+            if (this.archivedKnowledgeItems().length > 0) {
+              this.archivedKnowledgeItems.update(items =>
+                items.map(item =>
+                  item.uuid === knowledge.uuid
+                    ? { ...item, download_at: currentTime }
+                    : item
+                )
+              );
             }
-          }
 
-          // Refresh the data to show updated download_at field
-          this.reloadCurrentDownloads();
+            // Remove knowledge UUID from downloading items
+            this.downloadingItems.update(items => {
+              const newItems = new Set(items);
+              newItems.delete(knowledge.uuid);
+              return newItems;
+            });
+
+            // Re-bind selectedKnowledge to updated instance immediately if it is currently selected
+            if (this.selectedKnowledge()?.uuid === knowledge.uuid) {
+              const updatedItem = this.knowledgeItems().find(k => k.uuid === knowledge.uuid) || null;
+              if (updatedItem) {
+                this.selectedKnowledge.set(updatedItem);
+              }
+            }
+
+            // Refresh the data to show updated download_at field
+            this.reloadCurrentDownloads();
+          } catch (error) {
+            // Handle errors in the next handler (e.g., invalid blob)
+            console.error('Error processing knowledge download:', error);
+            // Don't show error if blob was received - the download likely succeeded
+            // Only show error if blob is invalid
+            if (!blob || !(blob instanceof Blob)) {
+              this.showError('Error', 'Failed to download knowledge. Invalid response from server.');
+            }
+            // Remove knowledge UUID from downloading items
+            this.downloadingItems.update(items => {
+              const newItems = new Set(items);
+              newItems.delete(knowledge.uuid);
+              return newItems;
+            });
+          }
         },
         error: (error) => {
           console.error('Error downloading knowledge:', error);
-          this.showError('Error', 'Failed to download knowledge. Please try again.');
+          // Only show error if download hasn't been processed yet
+          if (!downloadProcessed) {
+            this.showError('Error', 'Failed to download knowledge. Please try again.');
+          }
           // Remove knowledge UUID from downloading items
           this.downloadingItems.update(items => {
             const newItems = new Set(items);
@@ -333,29 +360,39 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
     // Add document UUID to downloading items
     this.downloadingItems.update(items => new Set(items).add(document.uuid));
 
+    let downloadProcessed = false;
+
     this.myDownloadsService.downloadDocument(document.uuid)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (response) => {
-          // Open the URL in a new tab to download the file
-          window.open(response.url, '_blank');
+          try {
+            // Validate response has a URL
+            if (!response || !response.url) {
+              throw new Error('Invalid response: missing download URL');
+            }
 
-          // Immediately update local data to show downloaded state
-          const currentTime = new Date().toISOString();
-          this.knowledgeItems.update(items =>
-            items.map(knowledge => ({
-              ...knowledge,
-              documents: knowledge.documents.map(doc =>
-                doc.uuid === document.uuid
-                  ? { ...doc, download_at: currentTime }
-                  : doc
-              )
-            }))
-          );
+            // Open the URL in a new tab to download the file
+            const downloadWindow = window.open(response.url, '_blank');
+            
+            // Check if popup was blocked (window.open returns null)
+            if (!downloadWindow) {
+              // Popup was blocked, but download might still work via direct navigation
+              // Try alternative method: create a temporary link
+              const link = window.document.createElement('a');
+              link.href = response.url;
+              link.target = '_blank';
+              link.rel = 'noopener noreferrer';
+              window.document.body.appendChild(link);
+              link.click();
+              window.document.body.removeChild(link);
+            }
 
-          // Update archived items if they exist
-          if (this.archivedKnowledgeItems().length > 0) {
-            this.archivedKnowledgeItems.update(items =>
+            downloadProcessed = true; // Mark as processed after download starts
+
+            // Immediately update local data to show downloaded state
+            const currentTime = new Date().toISOString();
+            this.knowledgeItems.update(items =>
               items.map(knowledge => ({
                 ...knowledge,
                 documents: knowledge.documents.map(doc =>
@@ -365,36 +402,67 @@ export class MyDownloadsComponent extends BaseComponent implements OnInit, After
                 )
               }))
             );
-          }
 
-          // Remove document UUID from downloading items
-          this.downloadingItems.update(items => {
-            const newItems = new Set(items);
-            newItems.delete(document.uuid);
-            return newItems;
-          });
+            // Update archived items if they exist
+            if (this.archivedKnowledgeItems().length > 0) {
+              this.archivedKnowledgeItems.update(items =>
+                items.map(knowledge => ({
+                  ...knowledge,
+                  documents: knowledge.documents.map(doc =>
+                    doc.uuid === document.uuid
+                      ? { ...doc, download_at: currentTime }
+                      : doc
+                  )
+                }))
+              );
+            }
 
-          // Re-bind selectedKnowledge and selectedDocument to updated instances immediately if selected
-          const currentSelectedKnowledgeUuid = this.selectedKnowledge()?.uuid || null;
-          if (currentSelectedKnowledgeUuid) {
-            const updatedKnowledge = this.knowledgeItems().find(k => k.uuid === currentSelectedKnowledgeUuid) || null;
-            if (updatedKnowledge) {
-              this.selectedKnowledge.set(updatedKnowledge);
-              if (this.selectedDocument()?.uuid === document.uuid) {
-                const updatedDoc = (updatedKnowledge.documents || []).find(d => d.uuid === document.uuid) || null;
-                if (updatedDoc) {
-                  this.selectedDocument.set(updatedDoc);
+            // Remove document UUID from downloading items
+            this.downloadingItems.update(items => {
+              const newItems = new Set(items);
+              newItems.delete(document.uuid);
+              return newItems;
+            });
+
+            // Re-bind selectedKnowledge and selectedDocument to updated instances immediately if selected
+            const currentSelectedKnowledgeUuid = this.selectedKnowledge()?.uuid || null;
+            if (currentSelectedKnowledgeUuid) {
+              const updatedKnowledge = this.knowledgeItems().find(k => k.uuid === currentSelectedKnowledgeUuid) || null;
+              if (updatedKnowledge) {
+                this.selectedKnowledge.set(updatedKnowledge);
+                if (this.selectedDocument()?.uuid === document.uuid) {
+                  const updatedDoc = (updatedKnowledge.documents || []).find(d => d.uuid === document.uuid) || null;
+                  if (updatedDoc) {
+                    this.selectedDocument.set(updatedDoc);
+                  }
                 }
               }
             }
-          }
 
-          // Refresh the data to show updated download_at field
-          this.reloadCurrentDownloads();
+            // Refresh the data to show updated download_at field
+            this.reloadCurrentDownloads();
+          } catch (error) {
+            // Handle errors in the next handler (e.g., invalid response structure)
+            console.error('Error processing document download:', error);
+            // Don't show error if download URL was received - the download likely succeeded
+            // Only show error if response structure is invalid
+            if (!response || !response.url) {
+              this.showError('Error', 'Failed to download document. Invalid response from server.');
+            }
+            // Remove document UUID from downloading items
+            this.downloadingItems.update(items => {
+              const newItems = new Set(items);
+              newItems.delete(document.uuid);
+              return newItems;
+            });
+          }
         },
         error: (error) => {
           console.error('Error downloading document:', error);
-          this.showError('Error', 'Failed to download document. Please try again.');
+          // Only show error if download hasn't been processed yet
+          if (!downloadProcessed) {
+            this.showError('Error', 'Failed to download document. Please try again.');
+          }
           // Remove document UUID from downloading items
           this.downloadingItems.update(items => {
             const newItems = new Set(items);

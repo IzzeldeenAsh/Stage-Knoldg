@@ -55,7 +55,7 @@
                 {{ alert.sub_type | notificationsNames }}
               </ng-template>
             </a>
-            <div class="text-gray-900 fs-7 fw-light" [ngClass]="{'fw-bold': !alert.read_at}">{{ alert.message }}</div>
+            <div class="text-gray-900 fs-7 fw-light" [ngClass]="{'fw-bold': !alert.read_at}" [innerHTML]="alert.message"></div>
           </div>
         </div>
           <span class="badge badge-light-info fs-8 badge-hover-primary " >{{ 'NOTIFICATIONS.VIEW' | translate }}</span>
