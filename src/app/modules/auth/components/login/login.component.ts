@@ -147,7 +147,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     let returnUrl = this.returnUrl !== "/" ? this.returnUrl : document.referrer;
     
     // Check if returnUrl is a full URL from allowed domains
-    if (returnUrl && (returnUrl.includes('foresighta.co') || returnUrl.includes('localhost'))) {
+    if (returnUrl && (returnUrl.includes('insightabusiness.com') || returnUrl.includes('localhost'))) {
       return returnUrl;
     }
     
@@ -294,7 +294,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
       // Handle absolute URLs
       const absolute = new URL(url, window.location.origin);
       const isNextHost = absolute.hostname === 'localhost' && absolute.port === '3000';
-      const isProdNextHost = absolute.hostname.endsWith('foresighta.co') && absolute.hostname !== 'app.foresighta.co';
+      const isProdNextHost = absolute.hostname.endsWith('insightabusiness.com') && absolute.hostname !== 'app.foresighta.co';
       if (isNextHost || isProdNextHost) {
         const adjustedPath = this.ensureLocalePrefix(absolute.pathname, lang);
         absolute.pathname = adjustedPath;
