@@ -330,22 +330,32 @@
   transition: all 0.3s ease;
   color: #3b82f6 !important;
 
-  svg path {
-    fill: none !important;
-    stroke: currentColor !important;
-    transition: stroke 0.2s ease;
+  svg {
+    color: currentColor;
+    transition: color 0.2s ease;
+    
+    path {
+      fill: none !important;
+      stroke: currentColor !important;
+      transition: stroke 0.2s ease;
+    }
   }
 
   &:hover:not(:disabled) {
     color: #ffffff !important;
+    background-color: #3b82f6 !important;
 
     i {
       color: white !important;
     }
 
-    svg path {
-      fill: none !important;
-      stroke: currentColor !important;
+    svg {
+      color: #ffffff !important;
+      
+      path {
+        fill: none !important;
+        stroke: #ffffff !important;
+      }
     }
   }
 }

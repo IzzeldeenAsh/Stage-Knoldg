@@ -238,7 +238,7 @@ export class ProductionLoginComponent extends BaseComponent implements OnInit, O
     
     if (isLocalhost) {
       // For localhost, use localhost:3000 (typical Next.js dev server)
-      const defaultUrl = `http://localhost:3000/${this.selectedLang}/home`;
+      const defaultUrl = `https://insightabusiness.com/${this.selectedLang}/home`;
       window.location.href = defaultUrl;
     } else {
       // For production, redirect to www.foresighta.co
