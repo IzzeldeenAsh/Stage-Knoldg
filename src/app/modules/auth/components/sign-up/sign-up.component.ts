@@ -8,6 +8,11 @@ import zxcvbn from 'zxcvbn';
 import { trigger, transition, style, animate } from "@angular/animations";
 import { CommonService } from "src/app/_fake/services/common/common.service";
 import { environment } from "src/environments/environment";
+import { ProductionLoginService } from "../production-login/production-login.service";
+import { ProductionCookieService } from "../production-login/production-cookie.service";
+import { ActivatedRoute } from "@angular/router";
+import { first } from "rxjs/operators";
+import { TranslationService } from "src/app/modules/i18n/translation.service";
 
 @Component({
   selector: "app-sign-up",
@@ -47,20 +52,44 @@ export class SignUpComponent extends BaseComponent implements OnInit {
   agreementDialogScrollable: boolean = true;
 
   private socialAuthPending: 'google' | 'linkedin' | null = null;
+  returnUrl: string = "";
+  selectedLang: string = "en";
 
   constructor(
     private fb: FormBuilder,
     private countriesService: CountriesService,
     private authService: AuthService,
     private commonService: CommonService,
+    private productionLoginService: ProductionLoginService,
+    private productionCookieService: ProductionCookieService,
+    private route: ActivatedRoute,
+    private translationService: TranslationService,
     injector: Injector
   ) {
     super(injector);
     this.initializeForm();
     this.isLoadingCountries$ = this.countriesService.isLoading$;
+    this.selectedLang = this.translationService.getSelectedLanguage();
   }
 
   ngOnInit(): void {
+    // Get return URL from query parameters
+    this.route.queryParams.subscribe((params) => {
+      this.returnUrl = params["returnUrl"] || "";
+      if (this.returnUrl) {
+        try {
+          this.returnUrl = decodeURIComponent(this.returnUrl);
+        } catch (e) {
+          console.error("Error decoding returnUrl:", e);
+        }
+      }
+    });
+
+    // Subscribe to language changes
+    this.translationService.onLanguageChange().subscribe((lang) => {
+      this.selectedLang = lang;
+    });
+
     this.loadCountries();
     this.setupPasswordStrengthValidation();
     this.loadClientAgreement();
@@ -280,35 +309,115 @@ export class SignUpComponent extends BaseComponent implements OnInit {
   }
 
   private proceedWithGoogleAuth(): void {
-    this.authService.getGoogleAuthRedirectUrl().subscribe({
+    // Store signup flag to indicate this is a signup (not login)
+    this.setSignupFlag();
+    
+    // Store return URL in cookie before redirecting
+    if (this.returnUrl) {
+      this.setReturnUrlCookie(this.returnUrl);
+    }
+    
+    // Store preferred language
+    this.productionCookieService.setPreferredLanguage(this.selectedLang);
+    
+    this.productionLoginService.getGoogleAuthRedirectUrl(this.selectedLang).pipe(first()).subscribe({
       next: (redirectUrl) => {
         window.location.href = redirectUrl;
       },
       error: (err) => {
         console.error('Error getting Google auth redirect URL', err);
-        this.messageService.add({ 
-          severity: 'error', 
-          summary: 'Error', 
-          detail: 'Failed to initiate Google sign-in.' 
-        });
+        this.showError(
+          this.lang === "ar" ? "خطأ" : "Error",
+          this.lang === "ar" 
+            ? "فشل البدء بتسجيل الدخول باستخدام جوجل"
+            : "Failed to initiate Google sign-in."
+        );
       }
     });
   }
   
   private proceedWithLinkedInAuth(): void {
-    this.authService.getLinkedInAuthRedirectUrl().subscribe({
+    // Store signup flag to indicate this is a signup (not login)
+    this.setSignupFlag();
+    
+    // Store return URL in cookie before redirecting
+    if (this.returnUrl) {
+      this.setReturnUrlCookie(this.returnUrl);
+    }
+    
+    // Store preferred language
+    this.productionCookieService.setPreferredLanguage(this.selectedLang);
+    
+    this.productionLoginService.getLinkedInAuthRedirectUrl(this.selectedLang).pipe(first()).subscribe({
       next: (redirectUrl) => {
         window.location.href = redirectUrl;
       },
       error: (err) => {
         console.error('Error getting LinkedIn auth redirect URL', err);
-        this.messageService.add({ 
-          severity: 'error', 
-          summary: 'Error', 
-          detail: 'Failed to initiate LinkedIn sign-in.' 
-        });
+        this.showError(
+          this.lang === "ar" ? "خطأ" : "Error",
+          this.lang === "ar" 
+            ? "فشل البدء بتسجيل الدخول باستخدام لينكد إن"
+            : "Failed to initiate LinkedIn sign-in."
+        );
       }
     });
+  }
+
+  private setSignupFlag(): void {
+    const isLocalhost = window.location.hostname === 'localhost' || 
+                       window.location.hostname === '127.0.0.1' ||
+                       window.location.hostname.startsWith('localhost:') ||
+                       window.location.hostname.startsWith('127.0.0.1:');
+    
+    let cookieSettings;
+    if (isLocalhost) {
+      cookieSettings = [
+        `is_social_signup=true`,
+        `Path=/`,
+        `Max-Age=${60 * 60}`, // 1 hour
+        `SameSite=Lax`
+      ];
+    } else {
+      cookieSettings = [
+        `is_social_signup=true`,
+        `Path=/`,
+        `Max-Age=${60 * 60}`, // 1 hour
+        `SameSite=None`,
+        `Domain=.insightabusiness.com`,
+        `Secure`
+      ];
+    }
+    
+    document.cookie = cookieSettings.join('; ');
+  }
+
+  private setReturnUrlCookie(url: string): void {
+    const isLocalhost = window.location.hostname === 'localhost' || 
+                       window.location.hostname === '127.0.0.1' ||
+                       window.location.hostname.startsWith('localhost:') ||
+                       window.location.hostname.startsWith('127.0.0.1:');
+    
+    let cookieSettings;
+    if (isLocalhost) {
+      cookieSettings = [
+        `auth_return_url=${encodeURIComponent(url)}`,
+        `Path=/`,
+        `Max-Age=${60 * 60}`, // 1 hour
+        `SameSite=Lax`
+      ];
+    } else {
+      cookieSettings = [
+        `auth_return_url=${encodeURIComponent(url)}`,
+        `Path=/`,
+        `Max-Age=${60 * 60}`, // 1 hour
+        `SameSite=None`,
+        `Domain=.insightabusiness.com`,
+        `Secure`
+      ];
+    }
+    
+    document.cookie = cookieSettings.join('; ');
   }
 
   // Registration form submission

@@ -1,157 +1,183 @@
-import { Component, Injector, OnDestroy, OnInit } from "@angular/core";
+import { Component, Injector, OnInit } from "@angular/core";
 import { Router, ActivatedRoute } from "@angular/router";
 import { BaseComponent } from "src/app/modules/base.component";
-import { AuthService } from "../../services/auth.service";
+import { ProductionCookieService } from "../production-login/production-cookie.service";
+import { TranslationService } from "src/app/modules/i18n/translation.service";
 import { first } from "rxjs/operators";
-import { environment } from "src/environments/environment";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 @Component({
   selector: "app-callback",
   templateUrl: "./callback.component.html",
   styleUrls: ["./callback.component.scss"],
 })
-export class CallbackComponent extends BaseComponent implements OnInit, OnDestroy {
-  user: any;
-  token: string | null = null;
-  roles: string[] = [];
-  errorMessage: string | null = null;
-  isProcessing: boolean = false;
-
+export class CallbackComponent extends BaseComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private authService: AuthService,
-    private http: HttpClient,
+    private productionCookieService: ProductionCookieService,
+    private translationService: TranslationService,
     injector: Injector
   ) {
     super(injector);
   }
 
   ngOnInit(): void {
-    this.isProcessing = true;
+    // Fast processing - no loaders, immediate redirect
     this.processCallback();
   }
 
   private processCallback(): void {
-    // Check for token in query parameters first
-    const routeSub = this.route.queryParamMap.subscribe((params) => {
-      this.token = params.get("token");
-      const rolesParam = params.get("roles");
-      
-      if (rolesParam) {
-        this.roles = rolesParam.split(",").map((role) => role.trim());
-      }
-      
-      if (this.token) {
-        this.handleTokenReceived(this.token);
-      } else {
-        // If no token in query params, check URL path for backward compatibility
-        this.route.params.subscribe(params => {
-          if (params['token']) {
-            this.handleTokenReceived(params['token']);
-          } else {
-            this.handleError("No authentication token found in callback URL.");
+    // Get token from query parameters - use first() to complete after first emission
+    this.route.queryParamMap.pipe(first()).subscribe({
+      next: (params) => {
+        const token = params.get("token");
+        const rolesParam = params.get("roles");
+        const roles = rolesParam ? rolesParam.split(",").map((role) => role.trim()) : [];
+        
+        console.log('[callback] Processing callback with roles:', roles);
+        
+        if (token) {
+          try {
+            // Store token in cookie with .insightabusiness.com domain
+            this.productionCookieService.setAuthToken(token);
+            console.log('[callback] Token stored successfully');
+            
+            // Store preferred language
+            const currentLang = this.translationService.getSelectedLanguage() || 'en';
+            this.productionCookieService.setPreferredLanguage(currentLang);
+            
+            // Check if this is a social signup (from sign-up page)
+            const isSocialSignup = this.isSocialSignup();
+            
+            // Get return URL from cookie
+            const returnUrl = this.getReturnUrlFromCookie();
+            console.log('[callback] Return URL from cookie:', returnUrl, 'isSocialSignup:', isSocialSignup);
+            
+            // Clean up cookies
+            if (returnUrl) {
+              this.clearReturnUrlCookie();
+            }
+            if (isSocialSignup) {
+              this.clearSignupFlag();
+            }
+            
+            // Immediately redirect based on roles - use setTimeout to ensure it executes
+            setTimeout(() => {
+              this.redirectBasedOnRole(roles, returnUrl, isSocialSignup);
+            }, 100);
+          } catch (error) {
+            console.error('[callback] Error processing callback:', error);
+            setTimeout(() => {
+              this.redirectToLogin();
+            }, 100);
           }
-        });
-      }
-    });
-    
-    this.unsubscribe.push(routeSub);
-  }
-
-  private handleTokenReceived(token: string): void {
-    // Store the token in cookie using the auth service
-    this.authService['setTokenCookie'](token);
-    
-    // Now get user profile and handle redirect
-    this.authService.getProfile().pipe(first()).subscribe({
-      next: (userData) => {
-        this.handleProfileSuccess(userData);
+        } else {
+          // No token - redirect to login
+          console.error('[callback] No token found in URL');
+          setTimeout(() => {
+            this.redirectToLogin();
+          }, 100);
+        }
       },
       error: (error) => {
-        this.handleProfileError(error);
+        console.error('[callback] Error reading query params:', error);
+        setTimeout(() => {
+          this.redirectToLogin();
+        }, 100);
       }
     });
   }
 
-  private handleProfileSuccess(userData: any): void {
-    this.user = userData;
+  private redirectToLogin(): void {
+    const loginUrl = 'https://app.insightabusiness.com/auth/login';
+    console.log('[callback] Redirecting to login:', loginUrl);
+    window.location.href = loginUrl;
+  }
+
+  private redirectBasedOnRole(roles: string[], returnUrl: string | null, isSocialSignup: boolean = false): void {
+    const currentLang = this.translationService.getSelectedLanguage() || 'en';
     
-    // Check if user is verified
-    if (!userData.verified) {
-      this.router.navigate(['/auth/email-reconfirm']);
+    console.log('[callback] Redirecting based on roles:', roles, 'returnUrl:', returnUrl, 'isSocialSignup:', isSocialSignup);
+    
+    // Check if user is admin/staff - stay in Angular app
+    if (roles.includes('admin') || roles.includes('staff')) {
+      const adminUrl = `${window.location.origin}/admin-dashboard`;
+      console.log('[callback] Redirecting admin/staff to:', adminUrl);
+      window.location.href = adminUrl;
       return;
     }
-
-    // Set user's timezone before redirecting
-    this.setUserTimezone().subscribe({
-      next: () => {
-        console.log('Timezone set successfully');
-        this.redirectBasedOnRole(userData);
-      },
-             error: (error: any) => {
-         console.error('Failed to set timezone:', error);
-         // Still redirect even if timezone setting fails
-         this.redirectBasedOnRole(userData);
-       }
-    });
-  }
-
-  private handleProfileError(error: any): void {
-    console.error('Profile fetch error:', error);
     
-    if (error.status === 401) {
-      this.handleError("Authentication failed. Please log in again.");
-      this.authService.handleLogout().subscribe(() => {
-        this.router.navigate(['/auth/login']);
-      });
-    } else if (error.status === 403) {
-      const errorMessage = error.error?.message || '';
-      // Check if it's an email verification error
-      if (errorMessage.includes('verified') || errorMessage.includes('verification')) {
-        this.handleError("Please verify your email address to continue.");
-        this.router.navigate(['/auth/email-reconfirm']);
-      } else {
-        this.handleError("Access denied. Please log in again.");
-        this.authService.handleLogout().subscribe(() => {
-          this.router.navigate(['/auth/login']);
-        });
-      }
-    } else {
-      this.handleError("Failed to verify authentication. Please try again.");
-    }
-  }
-
-  private redirectBasedOnRole(userData: any): void {
-    // Check user roles and redirect accordingly
-    if (userData.roles && (userData.roles.includes('admin') || userData.roles.includes('staff'))) {
-      // Admin/staff users stay in the Angular app
-      this.router.navigate(['/admin-dashboard']);
-    } else {
-      // Regular users redirect to Next.js app
-      this.redirectToMainApp();
-    }
-  }
-
-  private redirectToMainApp(): void {
-    // Check for return URL in cookie
-    const returnUrl = this.getReturnUrlFromCookie();
-    
-    // Build the redirect URL
-    let redirectUrl = `https://insightabusiness.com/${this.lang}/callback`;
-    
-    if (this.token) {
-      redirectUrl += `/${this.token}`;
+    // For social signups, redirect to insightabusiness.com/{current language}
+    if (isSocialSignup) {
+      const signupUrl = `https://insightabusiness.com/${currentLang}`;
+      
+      console.log('[callback] Redirecting social signup to:', signupUrl);
+      window.location.replace(signupUrl);
+      setTimeout(() => {
+        if (window.location.href.includes('/auth/callback')) {
+          window.location.href = signupUrl;
+        }
+      }, 200);
+      return;
     }
     
+    // Regular users (including 'client') redirect to Next.js app
+    // If returnUrl exists and is valid, redirect there
     if (returnUrl) {
-      redirectUrl += `?returnUrl=${encodeURIComponent(returnUrl)}`;
-      // Clean up the return URL cookie
-      this.clearReturnUrlCookie();
+      try {
+        const returnUrlObj = new URL(returnUrl);
+        const allowedDomains = ['foresighta.co', 'www.insightabusiness.com', 'app.insightabusiness.com', 'localhost', 'insightabusiness.com', 'www.insightabusiness.com'];
+        const isAllowed = allowedDomains.some(domain => 
+          returnUrlObj.hostname === domain || 
+          returnUrlObj.hostname.endsWith(`.${domain}`) ||
+          returnUrlObj.hostname.startsWith('localhost:') ||
+          returnUrlObj.hostname.startsWith('127.0.0.1:')
+        );
+        
+        if (isAllowed) {
+          console.log('[callback] Redirecting to returnUrl:', returnUrl);
+          // Force redirect - try both methods
+          window.location.replace(returnUrl);
+          // Fallback if replace doesn't work immediately
+          setTimeout(() => {
+            if (window.location.href.includes('/auth/callback')) {
+              window.location.href = returnUrl;
+            }
+          }, 200);
+          return;
+        } else {
+          console.warn('[callback] ReturnUrl domain not allowed:', returnUrlObj.hostname);
+        }
+      } catch (e) {
+        console.error('[callback] Invalid returnUrl:', e, returnUrl);
+      }
     }
     
-    window.location.href = redirectUrl;
+    // Default redirect to Next.js app home
+    const isLocalhost = window.location.hostname === 'localhost' || 
+                       window.location.hostname === '127.0.0.1' ||
+                       window.location.hostname.startsWith('localhost:') ||
+                       window.location.hostname.startsWith('127.0.0.1:');
+    
+    // Determine the correct base URL
+    let baseUrl: string;
+    if (isLocalhost) {
+      baseUrl = `https://insightabusiness.com/${currentLang}/home`;
+    } else {
+      // For production, use www.insightabusiness.com (not foresighta.co:3000)
+      baseUrl = `https://www.insightabusiness.com/${currentLang}/home`;
+    }
+    
+    console.log('[callback] Redirecting to default URL:', baseUrl);
+    // Force redirect - try both methods
+    window.location.replace(baseUrl);
+    // Fallback if replace doesn't work immediately
+    setTimeout(() => {
+      if (window.location.href.includes('/auth/callback')) {
+        console.log('[callback] Fallback redirect to:', baseUrl);
+        window.location.href = baseUrl;
+      }
+    }, 200);
   }
 
   private getReturnUrlFromCookie(): string | null {
@@ -161,14 +187,21 @@ export class CallbackComponent extends BaseComponent implements OnInit, OnDestro
     for (let cookie of cookies) {
       const [name, value] = cookie.trim().split('=');
       if (name === 'auth_return_url') {
-        return decodeURIComponent(value);
+        try {
+          return decodeURIComponent(value);
+        } catch (e) {
+          return value;
+        }
       }
     }
     return null;
   }
 
   private clearReturnUrlCookie(): void {
-    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const isLocalhost = window.location.hostname === 'localhost' || 
+                       window.location.hostname === '127.0.0.1' ||
+                       window.location.hostname.startsWith('localhost:') ||
+                       window.location.hostname.startsWith('127.0.0.1:');
     
     let cookieSettings;
     if (isLocalhost) {
@@ -191,50 +224,43 @@ export class CallbackComponent extends BaseComponent implements OnInit, OnDestro
     document.cookie = cookieSettings.join('; ');
   }
 
-  private setUserTimezone(): any {
-    try {
-      const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      console.log('Setting user timezone:', userTimezone);
-      
-      // Get token from cookie
-      const token = this.authService['getTokenFromCookie']();
-      
-      if (token) {
-        const headers = new HttpHeaders({
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Accept-Language': this.lang || 'en',
-        });
-        
-        return this.http.post('https://api.insightabusiness.com/api/account/timezone/set', 
-          { timezone: userTimezone }, 
-          { headers }
-        );
+  private isSocialSignup(): boolean {
+    if (typeof document === 'undefined') return false;
+    
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+      const [name, value] = cookie.trim().split('=');
+      if (name === 'is_social_signup' && value === 'true') {
+        return true;
       }
-      
-      // Return empty observable if no token
-      return new Promise(resolve => resolve(null));
-    } catch (error) {
-      console.error('Error setting timezone:', error);
-      return new Promise(resolve => resolve(null));
     }
+    return false;
   }
 
-  private handleError(message: string): void {
-    this.errorMessage = message;
-    this.isProcessing = false;
-  }
-
-  // Method to retry the authentication process
-  retryAuth(): void {
-    this.errorMessage = null;
-    this.isProcessing = true;
-    this.processCallback();
-  }
-
-  // Method to go back to login
-  goToLogin(): void {
-    this.router.navigate(['/auth/login']);
+  private clearSignupFlag(): void {
+    const isLocalhost = window.location.hostname === 'localhost' || 
+                       window.location.hostname === '127.0.0.1' ||
+                       window.location.hostname.startsWith('localhost:') ||
+                       window.location.hostname.startsWith('127.0.0.1:');
+    
+    let cookieSettings;
+    if (isLocalhost) {
+      cookieSettings = [
+        'is_social_signup=',
+        'Path=/',
+        'Max-Age=-1'
+      ];
+    } else {
+      cookieSettings = [
+        'is_social_signup=',
+        'Path=/',
+        'Max-Age=-1',
+        'SameSite=None',
+        'Domain=.insightabusiness.com',
+        'Secure'
+      ];
+    }
+    
+    document.cookie = cookieSettings.join('; ');
   }
 }
