@@ -309,6 +309,9 @@ export class SignUpComponent extends BaseComponent implements OnInit {
   }
 
   private proceedWithGoogleAuth(): void {
+    // Store signup flag to indicate this is a signup (not login)
+    this.setSignupFlag();
+    
     // Store return URL in cookie before redirecting
     if (this.returnUrl) {
       this.setReturnUrlCookie(this.returnUrl);
@@ -334,6 +337,9 @@ export class SignUpComponent extends BaseComponent implements OnInit {
   }
   
   private proceedWithLinkedInAuth(): void {
+    // Store signup flag to indicate this is a signup (not login)
+    this.setSignupFlag();
+    
     // Store return URL in cookie before redirecting
     if (this.returnUrl) {
       this.setReturnUrlCookie(this.returnUrl);
@@ -356,6 +362,34 @@ export class SignUpComponent extends BaseComponent implements OnInit {
         );
       }
     });
+  }
+
+  private setSignupFlag(): void {
+    const isLocalhost = window.location.hostname === 'localhost' || 
+                       window.location.hostname === '127.0.0.1' ||
+                       window.location.hostname.startsWith('localhost:') ||
+                       window.location.hostname.startsWith('127.0.0.1:');
+    
+    let cookieSettings;
+    if (isLocalhost) {
+      cookieSettings = [
+        `is_social_signup=true`,
+        `Path=/`,
+        `Max-Age=${60 * 60}`, // 1 hour
+        `SameSite=Lax`
+      ];
+    } else {
+      cookieSettings = [
+        `is_social_signup=true`,
+        `Path=/`,
+        `Max-Age=${60 * 60}`, // 1 hour
+        `SameSite=None`,
+        `Domain=.foresighta.co`,
+        `Secure`
+      ];
+    }
+    
+    document.cookie = cookieSettings.join('; ');
   }
 
   private setReturnUrlCookie(url: string): void {
