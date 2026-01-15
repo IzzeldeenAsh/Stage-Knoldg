@@ -111,4 +111,34 @@ export class ProductionLoginService {
       error: error.error
     }));
   }
+
+  /**
+   * Get Google authentication redirect URL
+   */
+  getGoogleAuthRedirectUrl(locale: string = 'en'): Observable<string> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': locale
+    });
+    
+    return this.http.get('https://api.foresighta.co/api/auth/provider/google', { 
+      headers,
+      responseType: 'text'
+    });
+  }
+
+  /**
+   * Get LinkedIn authentication redirect URL
+   */
+  getLinkedInAuthRedirectUrl(locale: string = 'en'): Observable<string> {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json', 
+      'Accept-Language': locale
+    });
+    
+    return this.http.get('https://api.foresighta.co/api/auth/provider/linkedin-openid', {
+      headers,
+      responseType: 'text'
+    });
+  }
 }
