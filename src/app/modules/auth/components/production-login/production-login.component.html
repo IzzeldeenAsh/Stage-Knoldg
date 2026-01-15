@@ -1,0 +1,176 @@
+
+<div class="row h-100vh pt-res-100 justify-content-center align-items-center bg-light">
+  <div class="auth-card rounded  p-4">
+    <div class="text-center mb-15">
+      <a [href]="getHomeUrl()" class="d-inline-block mb-4">
+        <img
+          class="w-60px"
+          src="assets/media/logos/light-logo-sm.svg"
+        />
+      </a>
+      <h2 class="h2 font-weight-bolder text-dark fs-1 fw-bold">
+        {{ 'AUTH.LOGIN.WELCOME_LOGIN' | translate }}
+      </h2>
+      <p class="text-gray-800 fs-4" [innerHTML]="'AUTH.LOGIN.EMPOWER_INSIGHTS_TEXT' | translate">
+      </p>
+    </div>
+    
+    <div class="auth-form-container">
+    
+      <form class="form w-100" [formGroup]="loginForm" (ngSubmit)="submit()" id="kt_login_signin_form">
+      <!--begin::Heading-->
+    
+      <!--end::Heasding-->
+      
+      <!--begin::Login options-->
+      <div class="row g-3 mb-9">
+      
+        <div class="col-md-6">
+      
+          <a href="#"
+             (click)="signInWithGoogle($event)"
+             class="btn fs-7 btn-flex btn-secondary btn-light btn-text-gray-700 btn-active-color-primary  flex-center text-nowrap w-100">
+            <img alt="Logo" src="./assets/media/svg/brand-logos/google-icon.svg" class="h-15px mx-3" />
+            {{ 'AUTH.LOGIN.USE_GOOGLE' | translate }}
+          </a>
+      
+        </div>
+      
+        <div class="col-md-6">
+      
+          <a
+            href="#"
+            (click)="signInWithLinkedIn($event)"
+            class="btn fs-7 btn-flex btn-secondary btn-light btn-text-gray-700 btn-active-color-primary  flex-center text-nowrap w-100">
+            <img alt="Logo" src="./assets/media/svg/brand-logos/linkedin-2.svg" class="theme-light-show h-15px mx-3" />
+            <img alt="Logo" src="./assets/media/svg/brand-logos/linkedin-2.svg" class="theme-dark-show h-15px mx-3" />
+            {{ 'AUTH.LOGIN.USE_LINKEDIN' | translate }}
+          </a>
+      
+        </div>
+      
+      </div>
+      <!--end::Login options-->
+      
+      <!--begin::Separator-->
+      <div class="separator separator-content my-8">
+        <span class="w-125px text-gray-500 fw-semibold fs-7">{{ 'AUTH.LOGIN.OR_WITH_EMAIL' | translate }}</span>
+      </div>
+      <!--end::Separator-->
+      
+      
+      <!-- begin::Alert error-->
+      <div class="mb-lg-15 alert alert-danger" *ngIf="hasError" [style.display]="hasError ? 'block' : 'none'">
+        <div class="alert-text font-weight-bold">
+          {{ errorMessage || ('AUTH.LOGIN.ERROR' | translate) }}
+        </div>
+      </div>
+      <!-- end::Alert error-->
+      
+      <!--begin::Form group-->
+      <div class="fv-row mb-8">
+        <label class="form-label fs-6 text-gray-900">{{ 'AUTH.LOGIN.EMAIL_LABEL' | translate }}</label>
+        <input 
+          class="form-control bg-transparent" 
+          [class.is-invalid]="f.email.invalid && (f.email.touched || f.email.dirty)"
+          type="email" 
+          formControlName="email"
+          placeholder="{{ 'AUTH.LOGIN.EMAIL_PLACEHOLDER' | translate }}" 
+          autocomplete="email" 
+        />
+        <div *ngIf="f.email.invalid && (f.email.touched || f.email.dirty)" class="invalid-feedback">
+          <div *ngIf="f.email.errors?.['required']">
+            {{ (lang === 'ar' ? 'البريد الإلكتروني مطلوب' : 'Email is required') }}
+          </div>
+          <div *ngIf="f.email.errors?.['email']">
+            {{ (lang === 'ar' ? 'البريد الإلكتروني غير صحيح' : 'Invalid email format') }}
+          </div>
+        </div>
+      </div>
+      <!--end::Form group-->
+      
+      <!--begin::Form group-->
+      <div class="fv-row mb-3 position-relative">
+        <!--begin::Wrapper-->
+        <div class="d-flex flex-stack flex-wrap gap-3 fs-base fw-semibold mb-0">
+          <label class="form-label text-gray-900 fs-6 mb-0">{{ 'AUTH.LOGIN.PASSWORD_LABEL' | translate }}</label>
+        </div>
+        <!--end::Wrapper-->
+        <div class="fv-row mb-3 position-relative">
+          <!-- input -->
+          <input
+            class="form-control bg-transparent"
+            [class.is-invalid]="f.password.invalid && (f.password.touched || f.password.dirty)"
+            [class.ps-10]="selectedLang === 'ar'"
+            [type]="passwordVisible ? 'text' : 'password'"
+            formControlName="password"
+            placeholder="{{ 'AUTH.LOGIN.PASSWORD_PLACEHOLDER' | translate }}"
+            autocomplete="current-password"
+          />
+          <button
+            type="button"
+            (click)="togglePasswordVisibility()"
+            class="btn btn-icon position-absolute top-50 translate-middle-y p-0 border-0 bg-transparent shadow-none"
+            [ngClass]="{
+              'end-0 me-3': selectedLang !== 'ar',
+              'start-0 ms-3': selectedLang === 'ar'
+            }"
+          >
+            <img
+              [src]="passwordVisible ? 'assets/media/svg/password-icon/eye-show.svg' : 'assets/media/svg/password-icon/eye-off.svg'"
+              width="15"
+              height="15"
+              alt="Toggle password visibility"
+            />
+          </button>
+          <div *ngIf="f.password.invalid && (f.password.touched || f.password.dirty)" class="invalid-feedback">
+            <div *ngIf="f.password.errors?.['required']">
+              {{ (lang === 'ar' ? 'كلمة المرور مطلوبة' : 'Password is required') }}
+            </div>
+            <div *ngIf="f.password.errors?.['minlength']">
+              {{ (lang === 'ar' ? 'كلمة المرور يجب أن تكون على الأقل 3 أحرف' : 'Password must be at least 3 characters') }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--begin::Link-->
+      <a href="#" class="link-primary fs-base fw-semibold py-3 d-inline-block">
+        {{ 'AUTH.LOGIN.FORGOT_PASSWORD' | translate }}
+      </a>
+      <!--end::Link-->
+      <!--end::Form group-->
+     
+      <!--begin::Action-->
+      <div class="d-grid mb-10">
+        <button 
+          type="submit" 
+          id="kt_sign_in_submit" 
+          class="btn btn-primary"
+          [disabled]="isLoading || loginForm.invalid"
+        >
+          <span *ngIf="!isLoading" class="indicator-label">{{ 'AUTH.LOGIN.CONTINUE' | translate }}</span>
+          <span *ngIf="isLoading" class="indicator-label">
+            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+            {{ (lang === 'ar' ? 'جاري تسجيل الدخول...' : 'Logging in...') }}
+          </span>
+        </button>
+      </div>
+      
+      
+      
+      <!--end::Action-->
+      </form>
+
+      <div class="text-center mb-5">
+       
+        <!--begin::Subtitle-->
+        <div class="fs-6 text-gray-500 fw-semibold fs-6">
+          {{ 'AUTH.LOGIN.NEED_ACCOUNT' | translate }}
+         <a href="#" class="text-primary"> {{ 'AUTH.LOGIN.SIGN_UP' | translate }}</a>
+        </div>
+        
+      </div>
+      <!--end::Form-->
+        </div>
+  </div>
+</div>

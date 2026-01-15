@@ -28,6 +28,7 @@ import { VerifyEmailComponent } from './components/verify-email/verify-email.com
 import { CallbackComponent } from './components/callback/callback.component';
 import { EmailReconfirmComponent } from './components/email-reconfirm/email-reconfirm.component';
 import { CheckboxModule } from 'primeng/checkbox';
+import { ProductionLoginComponent } from './components/production-login/production-login.component';
 @NgModule({
   declarations: [
     LoginComponent,
@@ -37,6 +38,7 @@ import { CheckboxModule } from 'primeng/checkbox';
     LogoutComponent,
     CallbackComponent,
     SignUpComponent,
+    ProductionLoginComponent,
     VerifyEmailComponent,
     EmailReconfirmComponent,
     WaitComponent,
