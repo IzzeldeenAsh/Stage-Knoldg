@@ -178,8 +178,6 @@ export class ProductionLoginComponent extends BaseComponent implements OnInit, O
   }
 
   private handleLoginSuccess(userData: any): void {
-    this.isLoading = false;
-    
     const token = userData.token;
     
     // Store token in cookie with .insightabusiness.com domain for cross-domain sharing
@@ -188,44 +186,51 @@ export class ProductionLoginComponent extends BaseComponent implements OnInit, O
     // Store preferred language
     this.productionCookieService.setPreferredLanguage(this.selectedLang);
     
-    // Handle redirect
-    if (this.returnUrl) {
-      // Redirect to the returnUrl
-      try {
-        // Validate that returnUrl is from an allowed domain
-        const returnUrlObj = new URL(this.returnUrl);
-        const allowedDomains = [
-          'foresighta.co', 
-          'www.insightabusiness.com', 
-          'app.insightabusiness.com',
-          'localhost',
-          '127.0.0.1'
-        ];
-        const isAllowed = allowedDomains.some(domain => {
-          // Check exact match or subdomain match
-          return returnUrlObj.hostname === domain || 
-                 returnUrlObj.hostname.endsWith(`.${domain}`) ||
-                 returnUrlObj.hostname.startsWith('localhost:') ||
-                 returnUrlObj.hostname.startsWith('127.0.0.1:');
-        });
-        
-        if (isAllowed) {
-          window.location.href = this.returnUrl;
-          return;
-        } else {
-          // Fallback to default redirect
-          console.warn('Return URL not from allowed domain, using default redirect');
+    // Clear loading state immediately to update UI
+    this.isLoading = false;
+    
+    // Use setTimeout to ensure cookies are set and UI updates before redirect
+    setTimeout(() => {
+      // Handle redirect
+      if (this.returnUrl) {
+        // Redirect to the returnUrl
+        try {
+          // Validate that returnUrl is from an allowed domain
+          const returnUrlObj = new URL(this.returnUrl);
+          const allowedDomains = [
+            'foresighta.co', 
+            'www.insightabusiness.com', 
+            'app.insightabusiness.com',
+            'insightabusiness.com',
+            'localhost',
+            '127.0.0.1'
+          ];
+          const isAllowed = allowedDomains.some(domain => {
+            // Check exact match or subdomain match
+            return returnUrlObj.hostname === domain || 
+                   returnUrlObj.hostname.endsWith(`.${domain}`) ||
+                   returnUrlObj.hostname.startsWith('localhost:') ||
+                   returnUrlObj.hostname.startsWith('127.0.0.1:');
+          });
+          
+          if (isAllowed) {
+            window.location.replace(this.returnUrl);
+            return;
+          } else {
+            // Fallback to default redirect
+            console.warn('Return URL not from allowed domain, using default redirect');
+            this.redirectToDefault();
+          }
+        } catch (e) {
+          // Invalid URL, use fallback
+          console.error('Error parsing returnUrl:', e);
           this.redirectToDefault();
         }
-      } catch (e) {
-        // Invalid URL, use fallback
-        console.error('Error parsing returnUrl:', e);
+      } else {
+        // No returnUrl, redirect to default
         this.redirectToDefault();
       }
-    } else {
-      // No returnUrl, redirect to default
-      this.redirectToDefault();
-    }
+    }, 100);
   }
 
   private redirectToDefault(): void {
@@ -239,11 +244,11 @@ export class ProductionLoginComponent extends BaseComponent implements OnInit, O
     if (isLocalhost) {
       // For localhost, use localhost:3000 (typical Next.js dev server)
       const defaultUrl = `https://insightabusiness.com/${this.selectedLang}/home`;
-      window.location.href = defaultUrl;
+      window.location.replace(defaultUrl);
     } else {
       // For production, redirect to www.insightabusiness.com
       const defaultUrl = `https://www.insightabusiness.com/${this.selectedLang}/home`;
-      window.location.href = defaultUrl;
+      window.location.replace(defaultUrl);
     }
   }
 
