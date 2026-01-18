@@ -307,6 +307,18 @@ export class SharedTreeSelectorComponent implements OnInit, OnChanges, OnDestroy
     if (event.node.key === "selectAll") {
       this.toggleSelectAll(true);
     } else {
+      // Prevent cascading selection: if a parent is selected, remove any children that got auto-selected
+      if (event.node.children && event.node.children.length > 0) {
+        // Filter out any children of this node from selectedNodes
+        const childKeys = this.getDescendantKeys(event.node);
+        this.selectedNodes = this.selectedNodes.filter((node: TreeNode) => {
+          return !node.key || !childKeys.includes(node.key);
+        });
+        // Ensure the parent node is selected
+        if (event.node.key && !this.selectedNodes.some((n: TreeNode) => n.key === event.node.key)) {
+          this.selectedNodes = [...this.selectedNodes, event.node];
+        }
+      }
       this.updateSelectAllState();
     }
   }
@@ -316,6 +328,10 @@ export class SharedTreeSelectorComponent implements OnInit, OnChanges, OnDestroy
     if (event.node.key === "selectAll") {
       this.toggleSelectAll(false);
     } else {
+      // When unselecting a parent, don't auto-unselect children
+      // PrimeNG might auto-unselect them, so we preserve any children that should remain selected
+      // Actually, we just need to ensure only the parent is removed
+      this.selectedNodes = this.selectedNodes.filter((node: TreeNode) => node.key !== event.node.key);
       this.updateSelectAllState();
     }
   }
@@ -365,6 +381,25 @@ export class SharedTreeSelectorComponent implements OnInit, OnChanges, OnDestroy
       node.children.forEach((childNode) => this.flattenTree(childNode, allNodes));
     }
     return allNodes;
+  }
+
+  /**
+   * Get all descendant keys (children, grandchildren, etc.) of a node
+   */
+  private getDescendantKeys(node: TreeNode): (string | number)[] {
+    const keys: (string | number)[] = [];
+    if (node.children && node.children.length > 0) {
+      node.children.forEach((child) => {
+        if (child.key !== undefined) {
+          keys.push(child.key);
+        }
+        // Recursively get descendants of children
+        if (child.children && child.children.length > 0) {
+          keys.push(...this.getDescendantKeys(child));
+        }
+      });
+    }
+    return keys;
   }
 
   private getAllChildNodes(nodes: TreeNode[]): TreeNode[] {

@@ -280,7 +280,7 @@
           </div>
 
           <!-- Knowledge Title -->
-          <h3 class="knowledge-title">
+          <h3 class="knowledge-title" [style.text-align]="isFirstWordArabic(item.title) ? 'right' : 'left'" [style.direction]="isFirstWordArabic(item.title) ? 'rtl' : 'ltr'">
             <a
               (click)="viewKnowledge(item); $event.stopPropagation()"
               class="cursor-pointer"
@@ -354,15 +354,33 @@
             <!-- Publisher Name and Role -->
             <div class="publisher-text flex-grow-1">
               <div *ngIf="item.insighter.company" class="company-info">
-                <div class="publisher-name">
+                <a 
+                  class="publisher-name cursor-pointer text-decoration-none"
+                  [href]="clientBaseUrl + '/' + lang + '/profile/' + item.insighter.company.uuid"
+                  target="_blank"
+                  (click)="$event.stopPropagation()">
                   {{ item.insighter.company.legal_name }}
-                </div>
-                <span class="insighter-name"
-                  >{{ "COMMON.BY" | translate }} {{ item.insighter.name }}</span
-                >
+                </a>
+                <br>
+                <span class="insighter-name">
+                  {{ "COMMON.BY" | translate }} 
+                  <a 
+                    class="cursor-pointer text-decoration-none"
+                    [href]="clientBaseUrl + '/' + lang + '/profile/' + item.insighter.uuid + '?entity=insighter'"
+                    target="_blank"
+                    (click)="$event.stopPropagation()">
+                    {{ item.insighter.name }}
+                  </a>
+                </span>
               </div>
               <div *ngIf="!item.insighter.company" class="publisher-name">
-                {{ item.insighter.name }}
+                <a 
+                  class="cursor-pointer text-decoration-none"
+                  [href]="clientBaseUrl + '/' + lang + '/profile/' + item.insighter.uuid + '?entity=insighter'"
+                  target="_blank"
+                  (click)="$event.stopPropagation()">
+                  {{ item.insighter.name }}
+                </a>
               </div>
 
               <!-- Role -->

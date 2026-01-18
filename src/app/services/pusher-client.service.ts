@@ -19,11 +19,11 @@ export class PusherClientService implements OnDestroy {
     if (!key || !authEndpoint) {
       // Soft warn; allow app to proceed without realtime if not configured
       // eslint-disable-next-line no-console
-      console.warn('[Pusher] Missing config (key/authEndpoint). Realtime disabled.', {
-        hasKey: !!key,
-        hasAuthEndpoint: !!authEndpoint,
-        cluster
-      });
+      // console.warn('[Pusher] Missing config (key/authEndpoint). Realtime disabled.', {
+      //   hasKey: !!key,
+      //   hasAuthEndpoint: !!authEndpoint,
+      //   cluster
+      // });
     }
 
     // Enable Pusher console logs in non-production mode
@@ -56,19 +56,19 @@ export class PusherClientService implements OnDestroy {
 
     this.pusher.connection.bind('state_change', (states: any) => {
       // eslint-disable-next-line no-console
-      console.log('[Pusher] State change', states);
+      // console.log('[Pusher] State change', states);
     });
     this.pusher.connection.bind('connected', () => {
       // eslint-disable-next-line no-console
-      console.log('[Pusher] Connected');
+      // console.log('[Pusher] Connected');
     });
     this.pusher.connection.bind('failed', () => {
       // eslint-disable-next-line no-console
-      console.log('[Pusher] Failed');
+      // console.log('[Pusher] Failed');
     });
     this.pusher.connection.bind('error', (err: any) => {
       // eslint-disable-next-line no-console  
-      console.log('[Pusher] Error', err);
+      // console.log('[Pusher] Error', err);
     });
 
     return this.pusher;
@@ -90,7 +90,7 @@ export class PusherClientService implements OnDestroy {
         // eslint-disable-next-line no-console
       } catch (e) {
         // eslint-disable-next-line no-console
-        console.warn('[Pusher] Unsubscribe warning', e);
+        // console.warn('[Pusher] Unsubscribe warning', e);
       }
     }
   }

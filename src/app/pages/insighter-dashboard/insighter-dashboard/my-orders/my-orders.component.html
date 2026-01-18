@@ -106,6 +106,7 @@
       [totalPages$]="totalPages$"
       [currentPage]="currentPage"
       [isLoading$]="isLoading$"
+      [clientBaseUrl]="clientBaseUrl"
       (pageChange)="onPageChange($event)"
       (orderSelected)="openOrderDetails($event)"
       (invoiceDownload)="downloadInvoice($event)"
@@ -133,12 +134,14 @@
 <app-order-details-dialog
   [(visible)]="showOrderDetails"
   [lang]="currentLang"
-  [order]="selectedOrder">
+  [order]="selectedOrder"
+  [clientBaseUrl]="clientBaseUrl">
 </app-order-details-dialog>
 
 <!-- Meeting Order Details Dialog -->
 <app-meeting-order-details-dialog
   [(visible)]="showMeetingOrderDetails"
   [lang]="currentLang"
-  [order]="selectedMeetingOrder">
+  [order]="selectedMeetingOrder"
+  [clientBaseUrl]="clientBaseUrl">
 </app-meeting-order-details-dialog>

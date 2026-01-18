@@ -66,7 +66,7 @@
               <div *ngIf="!order.user.profile_photo_url"
                    class="w-100 h-100 d-flex align-items-center justify-content-center bg-light-info">
                 <span class="text-info fw-bold" style="font-size: 7px;">
-                  {{ (order.user.first_name?.charAt(0) || '') + (order.user.last_name?.charAt(0) || '') }}
+                  {{ getUserInitials(order.user) }}
                 </span>
               </div>
             </div>
@@ -78,7 +78,7 @@
             <div *ngIf="!order.user.company?.logo && !order.user.profile_photo_url"
                  class="symbol-label bg-light-info rounded-circle d-flex align-items-center justify-content-center">
               <span class="text-info fw-bold fs-8">
-                {{ (order.user.first_name?.charAt(0) || '') + (order.user.last_name?.charAt(0) || '') }}
+                {{ getUserInitials(order.user) }}
               </span>
             </div>
           </div>
@@ -94,7 +94,7 @@
             <div *ngIf="!order.user.profile_photo_url"
                  class="symbol-label bg-light-info rounded-circle d-flex align-items-center justify-content-center">
               <span class="text-info fw-bold fs-6">
-                {{ (order.user.first_name?.charAt(0) || '') + (order.user.last_name?.charAt(0) || '') }}
+                {{ getUserInitials(order.user) }}
               </span>
             </div>
           </div>

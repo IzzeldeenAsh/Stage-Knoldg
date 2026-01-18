@@ -14,6 +14,7 @@ type Language = 'ar' | 'en';
 export class OrderDetailsDialogComponent {
   @Input() lang: Language = 'en';
   @Input() order: Order | null = null;
+  @Input() clientBaseUrl: string = 'https://insightabusiness.com';
 
   private _visible = false;
 
@@ -43,13 +44,28 @@ export class OrderDetailsDialogComponent {
     return this.sanitizer.bypassSecurityTrustHtml(svgContent);
   }
 
+  getUserInitials(user: any): string {
+    // First try first_name and last_name if available
+    if (user?.first_name && user?.last_name) {
+      return (user.first_name.charAt(0) + user.last_name.charAt(0)).toUpperCase();
+    }
+    // Fall back to name field if available
+    if (user?.name) {
+      const nameParts = user.name.trim().split(' ');
+      if (nameParts.length >= 2) {
+        return (nameParts[0].charAt(0) + nameParts[nameParts.length - 1].charAt(0)).toUpperCase();
+      } else {
+        return nameParts[0].charAt(0).toUpperCase();
+      }
+    }
+    return '';
+  }
+
   getInsighterInitials(insighter: any): string {
     if (!insighter?.name) {
       return '';
     }
-
     const nameParts = insighter.name.trim().split(' ');
-
     if (nameParts.length >= 2) {
       return (nameParts[0].charAt(0) + nameParts[nameParts.length - 1].charAt(0)).toUpperCase();
     } else {

@@ -730,32 +730,32 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
   private initPusher(userId: number, token: string, currentLocale: string) {
     try {
       // eslint-disable-next-line no-console
-      console.log('[Pusher] Initializing', {
-        userId,
-        locale: currentLocale,
-        tokenPreview: token ? `${token.slice(0, 6)}…${token.slice(-4)}` : null
-      });
+      // console.log('[Pusher] Initializing', {
+      //   userId,
+      //   locale: currentLocale,
+      //   tokenPreview: token ? `${token.slice(0, 6)}…${token.slice(-4)}` : null
+      // });
 
       const channel = this.pusherClient.subscribePrivateUser(userId, token, currentLocale);
       this.notificationChannel = channel;
 
       // Surface auth issues explicitly (otherwise it feels like "Pusher doesn't work")
       channel.bind('pusher:subscription_succeeded', () => {
-        // eslint-disable-next-line no-console
-        console.log('[Pusher] Subscription succeeded', `private-user.${userId}`);
+          // eslint-disable-next-line no-console
+          //console.log('[Pusher] Subscription succeeded', `private-user.${userId}`);
       });
       channel.bind('pusher:subscription_error', (status: any) => {
         // eslint-disable-next-line no-console
-        console.warn('[Pusher] Subscription error', status, {
-          channel: `private-user.${userId}`,
-          hint: 'Check Authorization token + authEndpoint CORS + broadcasting/auth response'
-        });
+        // console.warn('[Pusher] Subscription error', status, {
+        //   channel: `private-user.${userId}`,
+        //   hint: 'Check Authorization token + authEndpoint CORS + broadcasting/auth response'
+        // });
       });
 
       // Log ALL events received on this channel (like your Next.js hook does)
       this.pusherGlobalHandler = (eventName: string, data: any) => {
         // eslint-disable-next-line no-console
-        console.log('[Pusher][GLOBAL EVENT]', eventName, data);
+        // console.log('[Pusher][GLOBAL EVENT]', eventName, data);
       };
       try {
         (channel as any).bind_global?.(this.pusherGlobalHandler);
@@ -783,7 +783,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
       events.forEach(evt => {
         channel.bind(evt, (data: any) => {
           // eslint-disable-next-line no-console
-          console.log('[Pusher] Event:', evt, data);
+          // console.log('[Pusher] Event:', evt, data);
 
           // Pusher callbacks can run outside Angular's zone -> UI won't update unless we re-enter.
           this.ngZone.run(() => {
@@ -799,7 +799,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
       });
     } catch (e) {
       // eslint-disable-next-line no-console
-      console.warn('[Pusher] init error', e);
+      // console.warn('[Pusher] init error', e);
     }
   }
 

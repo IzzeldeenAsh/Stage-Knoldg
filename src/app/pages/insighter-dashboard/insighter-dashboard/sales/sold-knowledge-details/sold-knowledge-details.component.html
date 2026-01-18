@@ -62,7 +62,7 @@
                     <div *ngIf="!order.orderable.insighter.profile_photo_url"
                          class="symbol-label bg-light-info rounded-circle d-flex align-items-center justify-content-center">
                       <span class="text-info fw-bold fs-8">
-                        {{ (order.orderable.insighter.first_name?.charAt(0) || '') + (order.orderable.insighter.last_name?.charAt(0) || '') }}
+                        {{ getInsighterInitials(order.orderable.insighter) }}
                       </span>
                     </div>
 

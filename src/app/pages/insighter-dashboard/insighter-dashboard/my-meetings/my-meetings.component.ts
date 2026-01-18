@@ -252,9 +252,19 @@ export class MyMeetingsComponent extends BaseComponent implements OnInit {
   }
 
   goToClientProfile(meeting: Meeting): void {
-  if (meeting.client.uuid) {
-    this.router.navigate(['/app/insighter-dashboard/client-profile', meeting.client.uuid]);
-  } 
+    if (meeting.client.uuid) {
+      const currentLocale = localStorage.getItem('language') || 'en';
+      const url = `https://insightabusiness.com/${currentLocale}/profile/${meeting.client.uuid}?entity=insighter`;
+      window.open(url, '_blank');
+    }
+  }
+
+  openClientProfileInNewTab(meeting: SentMeeting): void {
+    if (meeting.client && meeting.client.uuid) {
+      const currentLocale = localStorage.getItem('language') || 'en';
+      const url = `https://insightabusiness.com/${currentLocale}/profile/${meeting.client.uuid}?entity=insighter`;
+      window.open(url, '_blank');
+    }
   }
 
   loadMeetings(page: number = 1): void {
