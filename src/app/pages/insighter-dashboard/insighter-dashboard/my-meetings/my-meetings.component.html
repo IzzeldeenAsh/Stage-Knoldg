@@ -204,8 +204,39 @@
                   <!-- Client Info -->
                   <div class="meeting-participant">
                     <div class="d-flex align-items-center">
-                      <div class="symbol symbol-40px me-3">
-                        <a (click)="goToClientProfile(meeting)" tabindex="0" (keydown.enter)="goToClientProfile(meeting)">
+                      @if (meeting.client.uuid) {
+                        <div class="symbol symbol-40px me-3">
+                          <a (click)="goToClientProfile(meeting)" tabindex="0" (keydown.enter)="goToClientProfile(meeting)">
+                            @if (meeting.client.profile_photo_url) {
+                              <img [src]="meeting.client.profile_photo_url"
+                                   [alt]="meeting.client.name"
+                                   class="rounded-circle"
+                                   style="object-fit: cover; object-position: top;">
+                            } @else {
+                              <div class="symbol-label bg-primary text-white">
+                                {{ getInitials(meeting.client.first_name, meeting.client.last_name) }}
+                              </div>
+                            }
+                          </a>
+                        </div>
+                        <div class="flex-grow-1">
+                          <a (click)="goToClientProfile(meeting)" tabindex="0" (keydown.enter)="goToClientProfile(meeting)">
+                            <div class="fw-bold text-gray-800"
+                                 [pTooltip]="meeting.client.name"
+                                 tooltipPosition="top"
+                                 [style.cursor]="meeting.client.name && meeting.client.name.length > 25 ? 'help' : 'pointer'">
+                              {{ meeting.client.name | truncateText:25:true }}
+                            </div>
+                            <div class="text-muted fs-7"
+                                 [pTooltip]="meeting.client.email"
+                                 tooltipPosition="top"
+                                 [style.cursor]="meeting.client.email && meeting.client.email.length > 25 ? 'help' : 'pointer'">
+                              {{ meeting.client.email | truncateText:25 }}
+                            </div>
+                          </a>
+                        </div>
+                      } @else {
+                        <div class="symbol symbol-40px me-3">
                           @if (meeting.client.profile_photo_url) {
                             <img [src]="meeting.client.profile_photo_url"
                                  [alt]="meeting.client.name"
@@ -216,10 +247,8 @@
                               {{ getInitials(meeting.client.first_name, meeting.client.last_name) }}
                             </div>
                           }
-                        </a>
-                      </div>
-                      <div class="flex-grow-1">
-                        <a (click)="goToClientProfile(meeting)" tabindex="0" (keydown.enter)="goToClientProfile(meeting)">
+                        </div>
+                        <div class="flex-grow-1">
                           <div class="fw-bold text-gray-800"
                                [pTooltip]="meeting.client.name"
                                tooltipPosition="top"
@@ -232,8 +261,8 @@
                                [style.cursor]="meeting.client.email && meeting.client.email.length > 25 ? 'help' : 'default'">
                             {{ meeting.client.email | truncateText:25 }}
                           </div>
-                        </a>
-                      </div>
+                        </div>
+                      }
                       <!-- Join Button for Approved Meetings with valid URL -->
                       @if (meeting.status === 'approved' && meeting.meeting_url && meeting.meeting_url !== '?pwd=') {
                         <div class="ms-2">
@@ -466,36 +495,71 @@
                     </p>
                   </div>
 
-                  <!-- Insighter Info -->
+                  <!-- Client/Insighter Info -->
                   <div class="meeting-participant">
                     <div class="d-flex align-items-center">
-                      <div class="symbol symbol-40px me-3"
-                           style="cursor: pointer;"
-                           (click)="goToInsighterProfile(meeting.insighter.uuid)">
-                        @if (meeting.insighter.profile_photo_url) {
-                          <img [src]="meeting.insighter.profile_photo_url"
-                               [alt]="meeting.insighter.name"
-                               class="rounded-circle"
-                               style="object-fit: cover; object-position: top;">
-                        } @else {
-                          <div class="symbol-label bg-primary text-white">
-                            {{ getSentMeetingInitials(meeting.insighter.name) }}
-                          </div>
-                        }
-                      </div>
-                      <div class="flex-grow-1">
-                        <div class="fw-bold text-gray-800"
+                      <!-- Client Info (if exists with uuid) -->
+                      @if (meeting.client && meeting.client.uuid) {
+                        <div class="symbol symbol-40px me-3">
+                          <a (click)="openClientProfileInNewTab(meeting)" tabindex="0" (keydown.enter)="openClientProfileInNewTab(meeting)">
+                            @if (meeting.client.profile_photo_url) {
+                              <img [src]="meeting.client.profile_photo_url"
+                                   [alt]="meeting.client.name"
+                                   class="rounded-circle"
+                                   style="object-fit: cover; object-position: top;">
+                            } @else {
+                              <div class="symbol-label bg-primary text-white">
+                                {{ getInitials(meeting.client.first_name, meeting.client.last_name) }}
+                              </div>
+                            }
+                          </a>
+                        </div>
+                        <div class="flex-grow-1">
+                          <a (click)="openClientProfileInNewTab(meeting)" tabindex="0" (keydown.enter)="openClientProfileInNewTab(meeting)">
+                            <div class="fw-bold text-gray-800"
+                                 [pTooltip]="meeting.client.name"
+                                 tooltipPosition="top"
+                                 [style.cursor]="meeting.client.name && meeting.client.name.length > 25 ? 'help' : 'pointer'">
+                              {{ meeting.client.name | truncateText:25:true }}
+                            </div>
+                            <div class="text-muted fs-7"
+                                 [pTooltip]="meeting.client.email"
+                                 tooltipPosition="top"
+                                 [style.cursor]="meeting.client.email && meeting.client.email.length > 25 ? 'help' : 'pointer'">
+                              {{ meeting.client.email | truncateText:25 }}
+                            </div>
+                          </a>
+                        </div>
+                      } @else {
+                        <!-- Fallback to Insighter Info -->
+                        <div class="symbol symbol-40px me-3"
                              style="cursor: pointer;"
-                             (click)="goToInsighterProfile(meeting.insighter.uuid)"
-                             [pTooltip]="meeting.insighter.name"
-                             tooltipPosition="top"
-                             [style.cursor]="meeting.insighter.name && meeting.insighter.name.length > 25 ? 'help' : 'pointer'">
-                          {{ meeting.insighter.name | truncateText:25:true }}
+                             (click)="goToInsighterProfile(meeting.insighter.uuid)">
+                          @if (meeting.insighter.profile_photo_url) {
+                            <img [src]="meeting.insighter.profile_photo_url"
+                                 [alt]="meeting.insighter.name"
+                                 class="rounded-circle"
+                                 style="object-fit: cover; object-position: top;">
+                          } @else {
+                            <div class="symbol-label bg-primary text-white">
+                              {{ getSentMeetingInitials(meeting.insighter.name) }}
+                            </div>
+                          }
                         </div>
-                        <div class="text-muted fs-7">
-                          {{ 'INSIGHTER.MEETINGS.INSIGHTER' | translate }}
+                        <div class="flex-grow-1">
+                          <div class="fw-bold text-gray-800"
+                               style="cursor: pointer;"
+                               (click)="goToInsighterProfile(meeting.insighter.uuid)"
+                               [pTooltip]="meeting.insighter.name"
+                               tooltipPosition="top"
+                               [style.cursor]="meeting.insighter.name && meeting.insighter.name.length > 25 ? 'help' : 'pointer'">
+                            {{ meeting.insighter.name | truncateText:25:true }}
+                          </div>
+                          <div class="text-muted fs-7">
+                            {{ 'INSIGHTER.MEETINGS.INSIGHTER' | translate }}
+                          </div>
                         </div>
-                      </div>
+                      }
                       <!-- Join Button -->
                       @if (canJoinMeeting(meeting)) {
                         <div class="ms-2">

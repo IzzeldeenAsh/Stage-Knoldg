@@ -86,14 +86,31 @@
                     </div>
                   </div>
                   <div class="d-flex flex-column">
-                    <span class="text-muted fs-7 me-2" *ngIf="order.orderable?.insighter?.company">
+                    <a 
+                      *ngIf="order.orderable?.insighter?.company"
+                      class="text-info fs-7 me-2 cursor-pointer text-decoration-none"
+                      [href]="clientBaseUrl + '/' + lang + '/profile/' + order.orderable?.insighter?.company?.uuid"
+                      target="_blank"
+                      (click)="$event.stopPropagation()">
                       {{ order.orderable?.insighter?.company?.legal_name || 'Unknown' }}
-                    </span>
-                    <span class="text-muted fs-7 me-2" *ngIf="!order.orderable?.insighter?.company">
+                    </a>
+                    <a 
+                      *ngIf="!order.orderable?.insighter?.company"
+                      class="text-info fs-7 me-2 cursor-pointer text-decoration-none"
+                      [href]="clientBaseUrl + '/' + lang + '/profile/' + order.orderable?.insighter?.uuid + '?entity=insighter'"
+                      target="_blank"
+                      (click)="$event.stopPropagation()">
                       {{ order.orderable?.insighter?.name || 'Unknown' }}
-                    </span>
+                    </a>
                     <span class="text-muted fs-8" *ngIf="order.orderable?.insighter?.company">
-                      {{ lang === 'ar' ? 'بواسطة' : 'By' }} {{ order.orderable?.insighter?.name }}
+                      {{ lang === 'ar' ? 'بواسطة' : 'By' }} 
+                      <a 
+                        class="text-info cursor-pointer text-decoration-none"
+                        [href]="clientBaseUrl + '/' + lang + '/profile/' + order.orderable?.insighter?.uuid + '?entity=insighter'"
+                        target="_blank"
+                        (click)="$event.stopPropagation()">
+                        {{ order.orderable?.insighter?.name }}
+                      </a>
                     </span>
                   </div>
                   <span 

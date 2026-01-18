@@ -7,6 +7,14 @@ export interface SentMeeting {
   uuid: string;
   date: string;
   start_time: string;
+  client?: {
+    uuid: string;
+    name: string;
+    profile_photo_url: string | null;
+    first_name: string;
+    last_name: string;
+    email: string;
+  };
   end_time: string;
   status: 'approved' | 'pending' | 'postponed';
   title: string;
@@ -140,7 +148,7 @@ export class SentMeetingsService {
   // Get available hours for rescheduling
   getAvailableHours(insighterUuid: string): Observable<AvailableHoursResponse> {
     const headers = this.getHeaders();
-    const url = `https://api.foresighta.co/api/account/meeting/available/hours/${insighterUuid}`;
+    const url = `https://api.foresighta.co/api/platform/insighter/meeting/available/hours/${insighterUuid}`;
     
     // Calculate date range - from tomorrow to 3 months from tomorrow
     const tomorrow = new Date();

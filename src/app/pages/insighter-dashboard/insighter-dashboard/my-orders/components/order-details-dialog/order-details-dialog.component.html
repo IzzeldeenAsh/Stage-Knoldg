@@ -54,14 +54,14 @@
           <div *ngIf="!order.user.profile_photo_url"
                class="symbol-label bg-light-info rounded-circle d-flex align-items-center justify-content-center">
             <span class="text-info fw-bold fs-6">
-              {{ (order.user.first_name?.charAt(0) || '') + (order.user.last_name?.charAt(0) || '') }}
+              {{ getUserInitials(order.user) }}
             </span>
           </div>
         </div>
         <div class="flex-grow-1">
           <div class="mb-2">
             <a *ngIf="order.user.uuid; else justName"
-               [href]="'https://foresighta.co/' + lang + '/profile/' + order.user.uuid + '?entity=insighter'"
+               [href]="clientBaseUrl + '/' + lang + '/profile/' + order.user.uuid + '?entity=insighter'"
                target="_blank"
                class="text-info text-decoration-none fw-bold client-name-link d-flex align-items-center">
               <span class="me-2">{{ order.user.name }}</span>
@@ -128,7 +128,7 @@
           <!-- Show company name if company exists, otherwise show insighter name -->
           <div class="mb-2" *ngIf="order.orderable?.insighter?.company">
             <a *ngIf="order.orderable?.insighter?.company?.uuid; else justCompanyName"
-               [href]="'https://foresighta.co/' + lang + '/profile/' + order.orderable?.insighter?.company?.uuid"
+               [href]="clientBaseUrl + '/' + lang + '/profile/' + order.orderable?.insighter?.company?.uuid"
                target="_blank"
                class="text-info text-decoration-none fw-bold d-flex align-items-center">
               <span class="me-2">{{ order.orderable?.insighter?.company?.legal_name }}</span>
@@ -138,12 +138,20 @@
               <span class="fw-bold text-dark">{{ order.orderable?.insighter?.company?.legal_name }}</span>
             </ng-template>
             <div class="text-muted fs-7 mt-1">
-              {{ lang === 'ar' ? 'بواسطة' : 'By' }} {{ order.orderable?.insighter?.name }}
+              {{ lang === 'ar' ? 'بواسطة' : 'By' }} 
+              <a *ngIf="order.orderable?.insighter?.uuid"
+                 [href]="clientBaseUrl + '/' + lang + '/profile/' + order.orderable?.insighter?.uuid + '?entity=insighter'"
+                 target="_blank"
+                 class="text-info text-decoration-none cursor-pointer"
+                 (click)="$event.stopPropagation()">
+                {{ order.orderable?.insighter?.name }}
+              </a>
+              <span *ngIf="!order.orderable?.insighter?.uuid">{{ order.orderable?.insighter?.name }}</span>
             </div>
           </div>
           <div class="mb-2" *ngIf="!order.orderable?.insighter?.company">
             <a *ngIf="order.orderable?.insighter?.uuid; else justInsighterName"
-               [href]="'https://foresighta.co/' + lang + '/profile/' + order.orderable?.insighter?.uuid + '?entity=insighter'"
+               [href]="clientBaseUrl + '/' + lang + '/profile/' + order.orderable?.insighter?.uuid + '?entity=insighter'"
                target="_blank"
                class="text-info text-decoration-none fw-bold d-flex align-items-center">
               <span class="me-2">{{ order.orderable?.insighter?.name }}</span>

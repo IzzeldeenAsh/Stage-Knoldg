@@ -267,7 +267,7 @@
           <div class="bg-light rounded p-3 p-md-4">
             <h5 class="mb-3 mb-md-4 fs-6 fs-md-5">{{ selectedTransaction.transaction === 'deposit' ? 'Client Information' : 'Insighter Information' }}</h5>
             <div class="d-flex align-items-center gap-3">
-              <ng-container *ngIf="user?.company?.logo" else insighterAvatar>
+              <ng-container *ngIf="user?.company">
                 <div class="symbol symbol-40px symbol-md-50px flex-shrink-0 position-relative">
                   <div class="cursor-pointer position-relative"
                        (click)="redirectToProfile(user)"
@@ -297,7 +297,7 @@
                   </div>
                 </div>
               </ng-container>
-              <ng-template #insighterAvatar>
+              <ng-container *ngIf="!user.company">
                 <div class="symbol symbol-40px symbol-md-50px flex-shrink-0">
                   <div class="cursor-pointer"
                        (click)="redirectToProfile(user)"
@@ -316,7 +316,7 @@
                     </span>
                   </div>
                 </div>
-              </ng-template>
+              </ng-container>
               <div class="flex-grow-1 min-w-0">
                 <div class="mb-1">
                   <h6 class="mb-0 cursor-pointer text-info fs-6"

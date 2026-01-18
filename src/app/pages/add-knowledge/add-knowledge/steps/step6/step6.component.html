@@ -139,7 +139,12 @@
           </textarea>
           <div class="mt-2 d-flex align-items-center text-info ">
             <i class="ki-outline ki-information-2 fs-6 me-2 text-info"></i>
-            <span>{{ lang === 'ar' ? 'سيتم مشاركة رابط المعرفة مع رسالتك' : 'The statistic link will be shared along with your message' }}</span>
+            <span>
+              {{ lang === 'ar' 
+                ? 'سيتم مشاركة رابط ' + (publishedKnowledge?.type || defaultValues?.knowledgeType || 'المعرفة') + ' مع رسالتك' 
+                : 'The ' + (publishedKnowledge?.type || defaultValues?.knowledgeType || 'knowledge') + ' link will be shared along with your message'
+              }}
+            </span>
           </div>
         </div>
 

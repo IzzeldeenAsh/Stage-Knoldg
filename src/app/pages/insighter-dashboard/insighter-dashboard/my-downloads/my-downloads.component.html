@@ -528,11 +528,31 @@
                                 <div class="publisher-text">
                                   @if (selectedKnowledge()?.company) {
                                     <div class="company-info">
-                                      <div class="company-name fw-bold">{{ selectedKnowledge()?.company?.legal_name }}</div>
-                                      <span class="text-muted fs-8">By {{ details.publisher }}</span>
+                                      <a 
+                                        class="company-name fw-bold cursor-pointer text-decoration-none" 
+                                        [href]="clientBaseUrl + '/' + lang + '/profile/' + selectedKnowledge()?.company?.uuid"
+                                        target="_blank"
+                                        (click)="$event.stopPropagation()">
+                                        {{ selectedKnowledge()?.company?.legal_name }}
+                                      </a>
+                                      <span class="text-muted fs-8">
+                                        By <a 
+                                          class="cursor-pointer text-decoration-none" 
+                                          [href]="clientBaseUrl + '/' + lang + '/profile/' + selectedKnowledge()?.insighter_uuid + '?entity=insighter'"
+                                          target="_blank"
+                                          (click)="$event.stopPropagation()">
+                                          {{ details.publisher }}
+                                        </a>
+                                      </span>
                                     </div>
                                   } @else {
-                                    <div class="publisher-name fw-bold">{{ details.publisher }}</div>
+                                    <a 
+                                      class="publisher-name fw-bold cursor-pointer text-decoration-none" 
+                                      [href]="clientBaseUrl + '/' + lang + '/profile/' + selectedKnowledge()?.insighter_uuid + '?entity=insighter'"
+                                      target="_blank"
+                                      (click)="$event.stopPropagation()">
+                                      {{ details.publisher }}
+                                    </a>
                                   }
                                 </div>
                               </div>

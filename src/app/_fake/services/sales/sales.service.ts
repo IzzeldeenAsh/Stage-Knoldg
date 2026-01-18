@@ -76,37 +76,31 @@ export class SalesService {
 
   getCompanyPeriodStatistics(perTime: PeriodType): Observable<PeriodStatisticsResponse> {
     const url = `${environment.apiBaseUrl}/company/dashboard/sales/revenue/period/statistics?per_time=${perTime}`;
-    console.log('🏢 Sales Service - getCompanyPeriodStatistics URL:', url);
     return this.http.get<PeriodStatisticsResponse>(url, { headers: this.getHeaders() });
   }
 
   getInsighterPeriodStatistics(perTime: PeriodType): Observable<PeriodStatisticsResponse> {
     const url = `${environment.apiBaseUrl}/insighter/dashboard/sales/revenue/period/statistics?per_time=${perTime}`;
-    console.log('🧠 Sales Service - getInsighterPeriodStatistics URL:', url);
     return this.http.get<PeriodStatisticsResponse>(url, { headers: this.getHeaders() });
   }
 
   getCompanyTotalStatistics(): Observable<TotalStatisticsResponse> {
     const url = `${environment.apiBaseUrl}/company/dashboard/sales/revenue/statistics`;
-    console.log('🏢 Sales Service - getCompanyTotalStatistics URL:', url);
     return this.http.get<TotalStatisticsResponse>(url, { headers: this.getHeaders() });
   }
 
   getInsighterTotalStatistics(): Observable<TotalStatisticsResponse> {
     const url = `${environment.apiBaseUrl}/insighter/dashboard/sales/revenue/statistics`;
-    console.log('🧠 Sales Service - getInsighterTotalStatistics URL:', url);
     return this.http.get<TotalStatisticsResponse>(url, { headers: this.getHeaders() });
   }
 
   getAdminTotalStatistics(): Observable<TotalStatisticsResponse> {
     const url = `${environment.apiBaseUrl}/admin/dashboard/sales/revenue/statistics`;
-    console.log('👑 Sales Service - getAdminTotalStatistics URL:', url);
     return this.http.get<TotalStatisticsResponse>(url, { headers: this.getHeaders() });
   }
 
   getAdminPeriodStatistics(perTime: PeriodType): Observable<PeriodStatisticsResponse> {
     const url = `${environment.apiBaseUrl}/admin/dashboard/sales/revenue/period/statistics?per_time=${perTime}`;
-    console.log('👑 Sales Service - getAdminPeriodStatistics URL:', url);
     return this.http.get<PeriodStatisticsResponse>(url, { headers: this.getHeaders() });
   }
 }
