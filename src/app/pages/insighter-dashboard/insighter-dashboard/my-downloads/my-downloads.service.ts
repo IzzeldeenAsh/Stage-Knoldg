@@ -27,6 +27,7 @@ export interface KnowledgeItem {
   title: string;
   type: string;
   insighter: string;
+  insighter_uuid: string;
   insighter_photo: string | null;
   purchase_date: string;
   documents: Document[];
