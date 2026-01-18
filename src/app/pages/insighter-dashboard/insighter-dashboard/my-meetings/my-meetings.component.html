@@ -163,32 +163,6 @@
                         {{ ('MEETINGS.STATUS.' + meeting.status.toUpperCase()) | translate }}
                       </span>
                     }
-
-                    <!-- Action Buttons for Pending Meetings -->
-                    @if (meeting.status === 'pending' && clientMeetingsSubTab !== 'past') {
-                      <div class="d-flex gap-2">
-                        <button class="btn btn-sm btn-success d-flex align-items-center px-2 py-1"
-                                (click)="openApproveModal(meeting)"
-                                [pTooltip]="'MEETINGS.APPROVE_MEETING' | translate"
-                                tooltipPosition="top"
-                                [attr.aria-label]="'MEETINGS.APPROVE_MEETING' | translate">
-                          <i class="ki-duotone ki-check fs-4">
-                            <span class="path1"></span>
-                            <span class="path2"></span>
-                          </i>
-                        </button>
-                        <button class="btn btn-sm btn-warning d-flex align-items-center px-2 py-1"
-                                (click)="openPostponeModal(meeting)"
-                                [pTooltip]="'MEETINGS.POSTPONE_MEETING' | translate"
-                                tooltipPosition="top"
-                                [attr.aria-label]="'MEETINGS.POSTPONE_MEETING' | translate">
-                          <i class="ki-duotone ki-time fs-4">
-                            <span class="path1"></span>
-                            <span class="path2"></span>
-                          </i>
-                        </button>
-                      </div>
-                    }
                   </div>
 
                   <!-- Meeting Description -->
@@ -263,6 +237,9 @@
                           </div>
                         </div>
                       }
+
+                    
+
                       <!-- Join Button for Approved Meetings with valid URL -->
                       @if (meeting.status === 'approved' && meeting.meeting_url && meeting.meeting_url !== '?pwd=') {
                         <div class="ms-2">
@@ -280,6 +257,26 @@
                         </div>
                       }
                     </div>
+                      <!-- Action Buttons for Pending Meetings (Bottom End) -->
+                      @if (meeting.status === 'pending' && clientMeetingsSubTab !== 'past') {
+                        <div class="ms-2 mt-2 justify-content-end flex-column flex-sm-row d-flex gap-2">
+                          <button class="btn btn-sm btn-success rounded-lg px-3 py-1"
+                          style="    border-radius: 20px !important; font-size: 11px !important;"
+                                  (click)="openApproveModal(meeting)"
+                                  tooltipPosition="top"
+                                 >
+                            {{ 'MEETINGS.APPROVE_MEETING' | translate }}
+                          </button>
+                          <button class="btn btn-sm btn-warning text-white rounded-lg px-1 py-1"
+                                  (click)="openPostponeModal(meeting)"
+                                 
+                                  style="    border-radius: 20px !important; color: #fff !important; font-size: 11px !important;"
+                                  tooltipPosition="top"
+                                  >
+                            {{ 'MEETINGS.POSTPONE_MEETING' | translate }}
+                          </button>
+                        </div>
+                      }
                   </div>
                 </div>
               </div>
@@ -1062,3 +1059,4 @@
     </div>
   </ng-template>
 </p-dialog>
+
