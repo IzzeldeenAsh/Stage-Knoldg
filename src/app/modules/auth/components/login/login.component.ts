@@ -63,6 +63,14 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     
     // Get return URL from route parameters
     this.returnUrl = this.route.snapshot.queryParams["returnUrl"] || "/";
+    if (this.returnUrl && this.returnUrl !== "/") {
+      try {
+        // Decode the returnUrl if it's encoded (to preserve query params)
+        this.returnUrl = decodeURIComponent(this.returnUrl);
+      } catch (e) {
+        console.error("Error decoding returnUrl:", e);
+      }
+    }
     
     console.log('Login component initialized with returnUrl:', this.returnUrl);
 

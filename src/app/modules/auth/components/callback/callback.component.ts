@@ -96,6 +96,10 @@ export class CallbackComponent extends BaseComponent implements OnInit {
 
   private redirectBasedOnRole(roles: string[], returnUrl: string | null, isSocialSignup: boolean = false): void {
     const currentLang = this.translationService.getSelectedLanguage() || 'en';
+    const isLocalhost = window.location.hostname === 'localhost' || 
+                       window.location.hostname === '127.0.0.1' ||
+                       window.location.hostname.startsWith('localhost:') ||
+                       window.location.hostname.startsWith('127.0.0.1:');
     
     console.log('[callback] Redirecting based on roles:', roles, 'returnUrl:', returnUrl, 'isSocialSignup:', isSocialSignup);
     
@@ -107,10 +111,27 @@ export class CallbackComponent extends BaseComponent implements OnInit {
       return;
     }
     
-    // For social signups, redirect to insightabusiness.com/{current language}
-    if (isSocialSignup) {
+    // For social signups, prefer redirecting to returnUrl (if provided)
+    if (isSocialSignup && returnUrl) {
+      console.log('[callback] Redirecting social signup to returnUrl:', returnUrl);
+      // On localhost, cookies won't be shared across ports (4200 -> 3000),
+      // so always go through Next.js callback to set token on :3000 domain.
+      if (isLocalhost) {
+        const nextCallbackUrl = `https://foresighta.co/${currentLang}/callback?token=${encodeURIComponent(this.getTokenFromCookie() || '')}&returnUrl=${encodeURIComponent(returnUrl)}`;
+        window.location.replace(nextCallbackUrl);
+      } else {
+        window.location.replace(returnUrl);
+      }
+      setTimeout(() => {
+        if (window.location.href.includes('/auth/callback')) {
+          window.location.href = isLocalhost
+            ? `https://foresighta.co/${currentLang}/callback?token=${encodeURIComponent(this.getTokenFromCookie() || '')}&returnUrl=${encodeURIComponent(returnUrl)}`
+            : returnUrl;
+        }
+      }, 200);
+      return;
+    } else if (isSocialSignup) {
       const signupUrl = `https://foresighta.co/${currentLang}`;
-      
       console.log('[callback] Redirecting social signup to:', signupUrl);
       window.location.replace(signupUrl);
       setTimeout(() => {
@@ -137,11 +158,18 @@ export class CallbackComponent extends BaseComponent implements OnInit {
         if (isAllowed) {
           console.log('[callback] Redirecting to returnUrl:', returnUrl);
           // Force redirect - try both methods
-          window.location.replace(returnUrl);
+          if (isLocalhost) {
+            const nextCallbackUrl = `https://foresighta.co/${currentLang}/callback?token=${encodeURIComponent(this.getTokenFromCookie() || '')}&returnUrl=${encodeURIComponent(returnUrl)}`;
+            window.location.replace(nextCallbackUrl);
+          } else {
+            window.location.replace(returnUrl);
+          }
           // Fallback if replace doesn't work immediately
           setTimeout(() => {
             if (window.location.href.includes('/auth/callback')) {
-              window.location.href = returnUrl;
+              window.location.href = isLocalhost
+                ? `https://foresighta.co/${currentLang}/callback?token=${encodeURIComponent(this.getTokenFromCookie() || '')}&returnUrl=${encodeURIComponent(returnUrl)}`
+                : returnUrl;
             }
           }, 200);
           return;
@@ -154,11 +182,6 @@ export class CallbackComponent extends BaseComponent implements OnInit {
     }
     
     // Default redirect to Next.js app home
-    const isLocalhost = window.location.hostname === 'localhost' || 
-                       window.location.hostname === '127.0.0.1' ||
-                       window.location.hostname.startsWith('localhost:') ||
-                       window.location.hostname.startsWith('127.0.0.1:');
-    
     // Determine the correct base URL
     let baseUrl: string;
     if (isLocalhost) {
@@ -192,6 +215,19 @@ export class CallbackComponent extends BaseComponent implements OnInit {
         } catch (e) {
           return value;
         }
+      }
+    }
+    return null;
+  }
+
+  private getTokenFromCookie(): string | null {
+    if (typeof document === 'undefined') return null;
+    
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+      const [name, value] = cookie.trim().split('=');
+      if (name === 'token') {
+        return value;
       }
     }
     return null;

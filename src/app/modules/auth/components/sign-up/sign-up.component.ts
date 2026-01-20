@@ -420,6 +420,35 @@ export class SignUpComponent extends BaseComponent implements OnInit {
     document.cookie = cookieSettings.join('; ');
   }
 
+  private setSignUpReturnUrlCookie(url: string): void {
+    const isLocalhost =
+      window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1" ||
+      window.location.hostname.startsWith("localhost:") ||
+      window.location.hostname.startsWith("127.0.0.1:");
+
+    let cookieSettings;
+    if (isLocalhost) {
+      cookieSettings = [
+        `signUpReturnUrl=${encodeURIComponent(url)}`,
+        `Path=/`,
+        `Max-Age=${60 * 60}`, // 1 hour
+        `SameSite=Lax`,
+      ];
+    } else {
+      cookieSettings = [
+        `signUpReturnUrl=${encodeURIComponent(url)}`,
+        `Path=/`,
+        `Max-Age=${60 * 60}`, // 1 hour
+        `SameSite=None`,
+        `Domain=.foresighta.co`,
+        `Secure`,
+      ];
+    }
+
+    document.cookie = cookieSettings.join("; ");
+  }
+
   // Registration form submission
   onSubmit(): void {
     // Mark all fields as touched to trigger validation display
@@ -445,6 +474,12 @@ export class SignUpComponent extends BaseComponent implements OnInit {
     this.authService.registration(user).subscribe({
       next: (response) => {
         this.isLoadingSubmit$ = of(false);
+
+        // Store returnUrl for verify-email redirect after manual signup
+        if (this.returnUrl) {
+          this.setSignUpReturnUrlCookie(this.returnUrl);
+        }
+
         this.messageService.add({ 
           severity: 'success', 
           summary: 'Success', 
