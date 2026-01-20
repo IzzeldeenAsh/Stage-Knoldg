@@ -109,7 +109,22 @@
 
         this.http.get(apiUrl, { headers }).subscribe({
           next: (response: any) => {
-            // Redirect to the callback URL with the token from cookies
+            // If user came from a Next.js returnUrl (meeting booking), go back there
+            const signUpReturnUrl = this.getSignUpReturnUrlFromCookie();
+            if (signUpReturnUrl) {
+              this.clearSignUpReturnUrlCookie();
+              // On localhost, cookies won't be shared across ports (4200 -> 3000),
+              // so always go through Next.js callback to set token on :3000 domain.
+              const token = this.getTokenFromCookie();
+              if (token) {
+                window.location.href = `https://insightabusiness.com/${this.lang}/callback?token=${encodeURIComponent(token)}&returnUrl=${encodeURIComponent(signUpReturnUrl)}`;
+              } else {
+                window.location.href = signUpReturnUrl;
+              }
+              return;
+            }
+
+            // Fallback: redirect to Next.js callback URL with token from cookies
             const token = this.getTokenFromCookie();
             window.location.href = `https://insightabusiness.com/${this.lang}/callback/${token}`;
             this.verificationStatusKey = 'AUTH.VERIFY_EMAIL.EMAIL_SUCCESSFULLY_VERIFIED';
@@ -183,5 +198,48 @@
         }
       }
       return null;
+    }
+
+    private getSignUpReturnUrlFromCookie(): string | null {
+      if (typeof document === 'undefined') return null;
+      const cookies = document.cookie.split(';');
+      for (let cookie of cookies) {
+        const [name, value] = cookie.trim().split('=');
+        if (name === 'signUpReturnUrl') {
+          try {
+            return decodeURIComponent(value);
+          } catch (e) {
+            return value;
+          }
+        }
+      }
+      return null;
+    }
+
+    private clearSignUpReturnUrlCookie(): void {
+      const isLocalhost = window.location.hostname === 'localhost' || 
+                         window.location.hostname === '127.0.0.1' ||
+                         window.location.hostname.startsWith('localhost:') ||
+                         window.location.hostname.startsWith('127.0.0.1:');
+      
+      let cookieSettings;
+      if (isLocalhost) {
+        cookieSettings = [
+          'signUpReturnUrl=',
+          'Path=/',
+          'Max-Age=-1'
+        ];
+      } else {
+        cookieSettings = [
+          'signUpReturnUrl=',
+          'Path=/',
+          'Max-Age=-1',
+          'SameSite=None',
+          'Domain=.insightabusiness.com',
+          'Secure'
+        ];
+      }
+      
+      document.cookie = cookieSettings.join('; ');
     }
   }
