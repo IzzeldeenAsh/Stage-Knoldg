@@ -10,9 +10,10 @@ import { CommonService } from "src/app/_fake/services/common/common.service";
 import { environment } from "src/environments/environment";
 import { ProductionLoginService } from "../production-login/production-login.service";
 import { ProductionCookieService } from "../production-login/production-cookie.service";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { first } from "rxjs/operators";
 import { TranslationService } from "src/app/modules/i18n/translation.service";
+import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 
 @Component({
   selector: "app-sign-up",
@@ -34,7 +35,9 @@ export class SignUpComponent extends BaseComponent implements OnInit {
   step: number = 1; // 1: Registration Form, 2: Email Verification
   isLoadingCountries$: Observable<boolean> = of(true);
   isLoadingSubmit$: Observable<boolean> = of(false);
+  isLoadingVerify$: Observable<boolean> = of(false);
   registrationForm: FormGroup;
+  verificationCodeForm: FormGroup;
   countries: Country[] = [];
   showPassword: boolean = false;
   isResendDisabled = false;
@@ -54,6 +57,7 @@ export class SignUpComponent extends BaseComponent implements OnInit {
   private socialAuthPending: 'google' | 'linkedin' | null = null;
   returnUrl: string = "";
   selectedLang: string = "en";
+  verifyErrorMessage: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -63,11 +67,14 @@ export class SignUpComponent extends BaseComponent implements OnInit {
     private productionLoginService: ProductionLoginService,
     private productionCookieService: ProductionCookieService,
     private route: ActivatedRoute,
+    private router: Router,
     private translationService: TranslationService,
+    private http: HttpClient,
     injector: Injector
   ) {
     super(injector);
     this.initializeForm();
+    this.initializeVerificationCodeForm();
     this.isLoadingCountries$ = this.countriesService.isLoading$;
     this.selectedLang = this.translationService.getSelectedLanguage();
   }
@@ -110,6 +117,19 @@ export class SignUpComponent extends BaseComponent implements OnInit {
       ],
       country: [null, [Validators.required]],
       client_agreement: [false, [Validators.requiredTrue]]
+    });
+  }
+
+  private initializeVerificationCodeForm(): void {
+    this.verificationCodeForm = this.fb.group({
+      code: [
+        "",
+        [
+          Validators.required,
+          // allow 4-10 digits; backend accepts numeric code
+          Validators.pattern(/^\d{4,10}$/),
+        ],
+      ],
     });
   }
 
@@ -486,6 +506,8 @@ export class SignUpComponent extends BaseComponent implements OnInit {
           detail: 'Registration successful! Verification email sent.' 
         });
         this.step = 2;
+        this.verifyErrorMessage = '';
+        this.verificationCodeForm.reset();
         this.startResendCooldown();
       },
       error: (error) => {
@@ -575,6 +597,59 @@ export class SignUpComponent extends BaseComponent implements OnInit {
     this.resendVerificationEmail();
   }
 
+  onVerifyCodeSubmit(): void {
+    this.verificationCodeForm.markAllAsTouched();
+    this.verifyErrorMessage = '';
+
+    if (this.verificationCodeForm.invalid) return;
+
+    const codeRaw = String(this.verificationCodeForm.value.code || "").trim();
+    if (!codeRaw) return;
+
+    this.isLoadingVerify$ = of(true);
+
+    const headers = new HttpHeaders({
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "Accept-Language": this.lang || this.selectedLang || "en",
+    });
+
+    const url = `${environment.apiBaseUrl}/account/email/verify`;
+
+    this.http.post(url, { code: Number(codeRaw) }, { headers }).subscribe({
+      next: () => {
+        this.isLoadingVerify$ = of(false);
+        this.messageService.add({
+          severity: "success",
+          summary: this.lang === "ar" ? "تم" : "Success",
+          detail: this.lang === "ar" ? "تم تفعيل البريد الإلكتروني بنجاح." : "Email verified successfully.",
+        });
+        this.redirectAfterSignupVerification();
+      },
+      error: (error: HttpErrorResponse) => {
+        this.isLoadingVerify$ = of(false);
+
+        // Keep errors simple and user-friendly
+        const serverMessage =
+          (error?.error && (error.error.message || error.error?.error)) ||
+          (typeof error?.error === "string" ? error.error : "") ||
+          "";
+
+        this.verifyErrorMessage =
+          serverMessage ||
+          (this.lang === "ar"
+            ? "رمز التفعيل غير صالح أو منتهي الصلاحية."
+            : "Invalid or expired verification code.");
+
+        this.messageService.add({
+          severity: "error",
+          summary: this.lang === "ar" ? "خطأ" : "Error",
+          detail: this.verifyErrorMessage,
+        });
+      },
+    });
+  }
+
   private startResendCooldown(): void {
     const countdownTime = 30; // seconds
     this.resendCountdown$.next(countdownTime);
@@ -593,5 +668,75 @@ export class SignUpComponent extends BaseComponent implements OnInit {
     });
 
     this.unsubscribe.push(resendTimerSubscription);
+  }
+
+  private getSignUpReturnUrlFromCookie(): string | null {
+    if (typeof document === "undefined") return null;
+    const cookies = document.cookie.split(";");
+    for (let cookie of cookies) {
+      const [name, value] = cookie.trim().split("=");
+      if (name === "signUpReturnUrl") {
+        try {
+          return decodeURIComponent(value);
+        } catch {
+          return value;
+        }
+      }
+    }
+    return null;
+  }
+
+  private clearSignUpReturnUrlCookie(): void {
+    const isLocalhost =
+      window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1" ||
+      window.location.hostname.startsWith("localhost:") ||
+      window.location.hostname.startsWith("127.0.0.1:");
+
+    let cookieSettings: string[];
+    if (isLocalhost) {
+      cookieSettings = ["signUpReturnUrl=", "Path=/", "Max-Age=-1"];
+    } else {
+      cookieSettings = [
+        "signUpReturnUrl=",
+        "Path=/",
+        "Max-Age=-1",
+        "SameSite=None",
+        "Domain=.foresighta.co",
+        "Secure",
+      ];
+    }
+    document.cookie = cookieSettings.join("; ");
+  }
+
+  private redirectAfterSignupVerification(): void {
+    const signUpReturnUrl = this.getSignUpReturnUrlFromCookie();
+    const token = this.authService.getTokenFromCookie();
+    const lang = this.lang || this.selectedLang || "en";
+    const nextBase = environment.mainAppUrl || "https://foresighta.co";
+
+    if (signUpReturnUrl) {
+      this.clearSignUpReturnUrlCookie();
+
+      // On localhost, cookies won't be shared across ports (4200 -> 3000),
+      // so always go through Next.js callback to set token on :3000 domain.
+      if (token) {
+        window.location.href = `${nextBase}/${lang}/callback?token=${encodeURIComponent(
+          token
+        )}&returnUrl=${encodeURIComponent(signUpReturnUrl)}`;
+      } else {
+        window.location.href = signUpReturnUrl;
+      }
+      return;
+    }
+
+    // Fallback: redirect to Next.js callback URL with token from cookies
+    if (token) {
+      window.location.href = `${nextBase}/${lang}/callback/${encodeURIComponent(token)}`;
+      return;
+    }
+
+    // No token available; send to login
+    this.router.navigateByUrl("/auth/login");
   }
 }

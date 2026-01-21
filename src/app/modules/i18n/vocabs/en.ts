@@ -518,7 +518,7 @@ Your wealth of insight is valued and many are eager to learn from it.
         DIDNT_RECEIVE_EMAIL: "Didn't receive the email?",
         TRY_AGAIN: "Resend Verification Link",
         RESEND_EMAIL: "Resend Email",
-        EMAIL_SENT:"A verification link has been sent to your email. Please check your inbox and click the link to activate your account.",
+        EMAIL_SENT:"A verification code has been sent to your email. Please check your inbox and click the link to activate your account.",
         COUNTER: "Resend again after",
 
         PLEASE_WAIT: "Please wait!",

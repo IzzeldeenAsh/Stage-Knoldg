@@ -36,6 +36,13 @@ export interface PaymentMethod {
   stripe_account?: boolean;
   details_submitted_at?: string | null;
   charges_enable_at?: string | null;
+  restricted_at?: string | null;
+  restricted_deadline?: string | null;
+  disabled_reason?: string | null;
+  requirements?: Array<{
+    field?: string | null;
+    message?: string | null;
+  }> | null;
   country?: {
     id: number;
     name: string;
@@ -43,7 +50,7 @@ export interface PaymentMethod {
   };
   // Common fields
   accept_agreement: boolean;
-  status: 'active' | 'inactive';
+  status: 'active' | 'inactive' | 'restricted';
   primary: boolean;
 }
 

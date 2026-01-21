@@ -33,6 +33,8 @@ export class NotificationsIconsPipe implements PipeTransform {
         return 'duotune/general/gen014.svg';
       case 'insighter_meeting_reminder':
         return 'duotune/general/gen014.svg';
+      case 'stripe':
+        return 'duotune/general/Capa_1.svg';
       case 'client_meeting_reminder':
         return 'duotune/general/gen014.svg';
         case 'ask_question':

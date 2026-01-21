@@ -94,7 +94,7 @@ export class PaymentSettingsComponent extends BaseComponent implements OnInit {
                method.bank_iban !== null;
       }
       if (method.type === 'provider') {
-        return method.status === 'active' || method.details_submitted_at !== null;
+        return method.status === 'active' || method.status === 'restricted' || method.details_submitted_at !== null;
       }
       return false;
     });
@@ -222,11 +222,14 @@ export class PaymentSettingsComponent extends BaseComponent implements OnInit {
 
   canShowProviderCard(method: PaymentMethod): boolean {
     if (method.type !== 'provider') return false;
-    return method.status === 'active' || method.details_submitted_at !== null;
+    return method.status === 'active' || method.status === 'restricted' || method.details_submitted_at !== null;
   }
 
   getStatusBadgeClass(account: any): string {
     if (account.type === 'provider') {
+      if (account.status === 'restricted') {
+        return 'badge-light-danger';
+      }
       if (!account.details_submitted_at) {
         return 'badge-light-danger';
       } else if (account.details_submitted_at && !account.charges_enable_at) {
@@ -244,6 +247,9 @@ export class PaymentSettingsComponent extends BaseComponent implements OnInit {
 
   getStatusText(account: any): string {
     if (account.type === 'provider') {
+      if (account.status === 'restricted') {
+        return this.lang === 'ar' ? 'مقيد' : 'Restricted';
+      }
       if (!account.details_submitted_at) {
         return this.lang === 'ar' ? 'غير مكتمل' : 'Incomplete';
       } else if (account.details_submitted_at && !account.charges_enable_at) {
@@ -280,6 +286,13 @@ export class PaymentSettingsComponent extends BaseComponent implements OnInit {
   getProviderStatusExplanation(account: any): string {
     if (account.type !== 'provider') return '';
     
+    if (account.status === 'restricted') {
+      const deadline = account.restricted_deadline ? ` (${account.restricted_deadline})` : '';
+      return this.lang === 'ar'
+        ? `تم تقييد حساب مزود الدفع. يرجى إكمال المتطلبات المطلوبة قبل الموعد النهائي${deadline}`
+        : `Your payment provider account is restricted. Please complete the required information before the deadline${deadline}`;
+    }
+
     if (!account.details_submitted_at) {
       return this.lang === 'ar' ? 
         'يجب إكمال إعداد الحساب لدى مزود الدفع' : 
@@ -294,6 +307,14 @@ export class PaymentSettingsComponent extends BaseComponent implements OnInit {
         'Account is complete and activated for use';
     }
     return '';
+  }
+
+  formatProviderRequirement(req: { field?: string | null; message?: string | null } | null | undefined): string {
+    if (!req) return '';
+    const field = req.field ?? '';
+    const message = req.message ?? '';
+    if (field && message) return `${field}: ${message}`;
+    return field || message || '';
   }
 
   shouldShowFormSubmittedBadge(account: any): boolean {
