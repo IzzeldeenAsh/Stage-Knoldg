@@ -411,18 +411,67 @@
               </p>
               <img src="../../../../../assets/media/auth/verify-email.svg" alt="Verify Email" class="img-fluid my-5 fade-up ">
               
-              <!-- Important Notice: Use Link from Same Device -->
-              <div class="alert alert-warning d-flex align-items-center p-4 mb-5" role="alert">
-                <i class="ki-outline ki-information-5 fs-2x me-3" *ngIf="lang=='en'"></i>
-                <i class="ki-outline ki-information-5 fs-2x ms-3" *ngIf="lang=='ar'"></i>
-                <div [class]="lang === 'ar' ? 'text-end' : 'text-start'">
-                  <strong *ngIf="lang=='en'" class="d-block mb-1">Important:</strong>
-                  <strong *ngIf="lang=='ar'" class="d-block mb-1">مهم:</strong>
-                  <span *ngIf="lang=='en'">You must use the verification link from the same device you used to register.</span>
-                  <span *ngIf="lang=='ar'">يجب استخدام رابط التحقق المرسل من نفس الجهاز الذي استخدمته للتسجيل.</span>
+              <!-- Verification Code Form -->
+              <form
+                class="form w-100 mx-auto"
+                style="max-width: 420px;"
+                [formGroup]="verificationCodeForm"
+                (ngSubmit)="onVerifyCodeSubmit()"
+                novalidate
+              >
+                <div class="fv-row mb-4">
+                  <input
+                    type="text"
+                    inputmode="numeric"
+                    autocomplete="one-time-code"
+                    placeholder="{{ lang === 'ar' ? 'رمز التفعيل' : 'Verification code' }}"
+                    formControlName="code"
+                    class="form-control bg-transparent text-center"
+                    [ngClass]="{
+                      'is-invalid':
+                        verificationCodeForm.controls['code'].invalid &&
+                        (verificationCodeForm.controls['code'].dirty || verificationCodeForm.controls['code'].touched)
+                    }"
+                  />
+                  <div
+                    *ngIf="verificationCodeForm.controls['code'].invalid && (verificationCodeForm.controls['code'].dirty || verificationCodeForm.controls['code'].touched)"
+                    class="text-danger mt-2 fs-8"
+                  >
+                    <span *ngIf="verificationCodeForm.controls['code'].hasError('required')">
+                      {{ lang === 'ar' ? 'رمز التفعيل مطلوب' : 'Verification code is required' }}
+                    </span>
+                    <span *ngIf="verificationCodeForm.controls['code'].hasError('pattern')">
+                      {{ lang === 'ar' ? 'رمز التفعيل غير صالح' : 'Invalid verification code' }}
+                    </span>
+                  </div>
                 </div>
-              </div>
-              
+
+                <div *ngIf="verifyErrorMessage" class="text-danger mb-4">
+                  {{ verifyErrorMessage }}
+                </div>
+
+                <div class="d-grid mb-4">
+                  <button
+                    type="submit"
+                    class="btn btn-primary"
+                    [disabled]="(isLoadingVerify$ | async) || verificationCodeForm.invalid"
+                  >
+                    <ng-container *ngIf="(isLoadingVerify$ | async) === false">
+                      <span class="indicator-label">
+                        {{ lang === 'ar' ? 'تفعيل' : 'Verify' }}
+                      </span>
+                    </ng-container>
+                    <ng-container *ngIf="isLoadingVerify$ | async">
+                      <span class="indicator-progress" [style.display]="'block'">
+                        {{ lang === 'ar' ? 'يرجى الانتظار' : 'Please wait' }}
+                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                      </span>
+                    </ng-container>
+                  </button>
+                </div>
+              </form>
+        
+        
               <p class="text-gray-500 fw-semibold fs-6">
            <span>     {{ 'AUTH.VERIFY_EMAIL.DIDNT_RECEIVE_EMAIL' | translate }}</span>
                 <span *ngIf="isResendDisabled">

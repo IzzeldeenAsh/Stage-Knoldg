@@ -1,5 +1,5 @@
   import { Component, OnInit, OnDestroy, Injector } from "@angular/core";
-  import { ActivatedRoute, Params, Router } from "@angular/router";
+  import { ActivatedRoute, Router } from "@angular/router";
   import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
   import { BaseComponent } from "src/app/modules/base.component";
   import { Subscription } from 'rxjs';
@@ -86,9 +86,9 @@
       }
       
       this.routeSubscription = this.route.queryParamMap.subscribe((paramMap) => {
-        let paramsValue = paramMap.get("params");
-
-        if (!paramsValue) {
+        const urlParam = (paramMap.get("url") || "").trim();
+        
+        if (!urlParam) {
           this.verificationStatusKey = 'AUTH.VERIFY_EMAIL.INVALID_VERIFICATION_LINK';
           this.verificationStatus = this.translationService.getTranslation(this.verificationStatusKey);
 
@@ -100,7 +100,18 @@
           return;
         }
 
-        const apiUrl = `${this.insightaHost}/api/account/email/verify/${paramsValue}`;
+        const apiUrl = this.buildVerificationApiUrl(urlParam);
+        if (!apiUrl) {
+          this.verificationStatusKey = 'AUTH.VERIFY_EMAIL.INVALID_VERIFICATION_LINK';
+          this.verificationStatus = this.translationService.getTranslation(this.verificationStatusKey);
+
+          this.errorMessageKey = 'AUTH.VERIFY_EMAIL.VERIFICATION_LINK_INVALID';
+          this.errorMessage = this.translationService.getTranslation(this.errorMessageKey);
+
+          this.error = true;
+          this.loading = false;
+          return;
+        }
 
         const headers = new HttpHeaders({
           'Accept': 'application/json',
@@ -241,5 +252,35 @@
       }
       
       document.cookie = cookieSettings.join('; ');
+    }
+
+    private safeDecodeURIComponent(value: string): string {
+      // Angular router typically decodes query params, but the value may still be encoded.
+      // We decode once (safely) to support links like:
+      // ?url=https:%2F%2Fapi.foresighta.co%2Fapi%2Femail%2Fverify%2F...%3Fexpires%3D...%26signature%3D...
+      try {
+        return decodeURIComponent(value);
+      } catch {
+        return value;
+      }
+    }
+
+    private buildVerificationApiUrl(urlParam: string): string | null {
+      const decoded = this.safeDecodeURIComponent(urlParam).trim();
+      if (!decoded) return null;
+
+      // If the param is already a full URL, use it directly (but only for our API host).
+      if (decoded.startsWith('http://') || decoded.startsWith('https://')) {
+        if (decoded.startsWith(this.insightaHost)) return decoded;
+        return null;
+      }
+
+      // If it's an absolute path, attach to the API host.
+      if (decoded.startsWith('/')) {
+        return `${this.insightaHost}${decoded}`;
+      }
+
+      // Otherwise, treat it as the legacy "verify token/path" segment.
+      return `${this.insightaHost}/api/email/verify/${decoded}`;
     }
   }
