@@ -10,6 +10,7 @@ import { CallbackComponent } from './components/callback/callback.component';
 import { EmailReconfirmComponent } from './components/email-reconfirm/email-reconfirm.component';
 import { UnAuthGuard } from '../../guards/unauth-guard/un-auth.guard';
 import { ProductionLoginComponent } from './components/production-login/production-login.component';
+import { LoginEmailVerificationComponent } from './components/login-email-verification/login-email-verification.component';
 
 const routes: Routes = [
   {
@@ -31,6 +32,10 @@ const routes: Routes = [
       {
         path:'verify-email',
         component:VerifyEmailComponent,
+      },
+      {
+        path: 'verify-login-email',
+        component: LoginEmailVerificationComponent,
       },
       {
         path: 'email-reconfirm',

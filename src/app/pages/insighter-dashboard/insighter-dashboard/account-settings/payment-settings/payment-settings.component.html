@@ -163,7 +163,7 @@
                                                     <div class="text-muted small mb-1">{{ lang === 'ar' ? 'المتطلبات' : 'Requirements' }}</div>
                                                     <ul class="mb-0 ps-4">
                                                         <li *ngFor="let req of method.requirements">
-                                                            <span *ngIf="req?.field">{{ req.field }}</span>
+                                                            <span *ngIf="req?.field">{{ req.field }} Field </span>
                                                             <span *ngIf="!req?.field && req?.message">{{ req.message }}</span>
                                                             <span *ngIf="req?.field && req?.message">: {{ req.message }}</span>
                                                         </li>

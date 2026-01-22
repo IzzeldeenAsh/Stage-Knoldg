@@ -21,6 +21,7 @@ export class ProductionLoginComponent extends BaseComponent implements OnInit, O
   returnUrl: string = "";
   isLoading: boolean = false;
   errorMessage: string = "";
+  homeUrl: string = "";
 
   constructor(
     private translationService: TranslationService,
@@ -46,8 +47,12 @@ export class ProductionLoginComponent extends BaseComponent implements OnInit, O
     }, 100);
   }
 
-  getHomeUrl(): string {
-    return "https://www.insightabusiness.com";
+  redirectToHome(event?: Event): void {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    window.location.assign(this.homeUrl || this.getDefaultHomeUrl());
   }
 
   ngOnInit(): void {
@@ -68,7 +73,11 @@ export class ProductionLoginComponent extends BaseComponent implements OnInit, O
     this.translationService.onLanguageChange().subscribe((lang) => {
       this.selectedLang = lang;
       this.isRTL = lang === "ar";
+      this.homeUrl = this.getDefaultHomeUrl();
     });
+
+    // Initialize home URL on first load
+    this.homeUrl = this.getDefaultHomeUrl();
   }
 
   get f() {
@@ -188,6 +197,19 @@ export class ProductionLoginComponent extends BaseComponent implements OnInit, O
     
     // Clear loading state immediately to update UI
     this.isLoading = false;
+
+    // If email is not verified, go to verification code page (keep token cookie for resend/verify APIs)
+    if (userData?.verified === false) {
+      const emailFromResponse = (userData?.email || "").trim();
+      const email = emailFromResponse || String(this.f.email.value || "").trim();
+      this.router.navigate(["/auth/verify-login-email"], {
+        queryParams: {
+          email,
+          returnUrl: this.returnUrl || "",
+        },
+      });
+      return;
+    }
     
     // Use setTimeout to ensure cookies are set and UI updates before redirect
     setTimeout(() => {
@@ -235,21 +257,25 @@ export class ProductionLoginComponent extends BaseComponent implements OnInit, O
 
   private redirectToDefault(): void {
     // Redirect to Next.js app home (or main app URL)
+    window.location.replace(this.getDefaultHomeUrl());
+  }
+
+  private getDefaultHomeUrl(): string {
     // Check if we're on localhost for development
-    const isLocalhost = window.location.hostname === 'localhost' || 
-                       window.location.hostname === '127.0.0.1' ||
-                       window.location.hostname.startsWith('localhost:') ||
-                       window.location.hostname.startsWith('127.0.0.1:');
-    
+    const host = window.location.hostname;
+    const isLocalhost =
+      host === "localhost" ||
+      host === "127.0.0.1" ||
+      host.startsWith("localhost:") ||
+      host.startsWith("127.0.0.1:");
+
     if (isLocalhost) {
       // For localhost, use localhost:3000 (typical Next.js dev server)
-      const defaultUrl = `https://insightabusiness.com/${this.selectedLang}/home`;
-      window.location.replace(defaultUrl);
-    } else {
-      // For production, redirect to www.insightabusiness.com
-      const defaultUrl = `https://www.insightabusiness.com/${this.selectedLang}/home`;
-      window.location.replace(defaultUrl);
+      return `https://insightabusiness.com/${this.selectedLang}/home`;
     }
+
+    // For production, redirect to www.insightabusiness.com
+    return `https://www.insightabusiness.com/${this.selectedLang}/home`;
   }
 
   private handleLoginError(error: any): void {
