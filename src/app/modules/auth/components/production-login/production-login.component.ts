@@ -6,6 +6,7 @@ import { BaseComponent } from "src/app/modules/base.component";
 import { ProductionLoginService } from "./production-login.service";
 import { ProductionCookieService } from "./production-cookie.service";
 import { first } from "rxjs/operators";
+import { environment } from "src/environments/environment";
 
 @Component({
   selector: "app-production-login",
@@ -261,23 +262,36 @@ export class ProductionLoginComponent extends BaseComponent implements OnInit, O
   }
 
   private getDefaultHomeUrl(): string {
-    // Check if we're on localhost for development
-    const host = window.location.hostname;
-    const isLocalhost =
-      host === "localhost" ||
-      host === "127.0.0.1" ||
-      host.startsWith("localhost:") ||
-      host.startsWith("127.0.0.1:");
+    const lang = this.selectedLang || "en";
+
+    // `hostname` never includes port; `port` is separate.
+    const hostname = window.location.hostname;
+    const port = window.location.port;
+
+    const isLocalhost = hostname === "localhost" || hostname === "127.0.0.1";
 
     if (isLocalhost) {
-      // For localhost, use localhost:3000 (typical Next.js dev server)
-      return `https://insightabusiness.com/${this.selectedLang}/home`;
+      // Next.js dev server is typically http://localhost:3000
+      return `http://${hostname}:3000/${lang}/home`;
     }
 
-    // For production, redirect to www.insightabusiness.com
-    return `https://www.insightabusiness.com/${this.selectedLang}/home`;
+    // If Angular is served from an internal :3000 origin in production,
+    // always navigate to the canonical public domain (no port).
+    // (This avoids `https://insightabusiness.com:3000/...` showing up.)
+    const canonicalHost = "www.insightabusiness.com";
+
+    // If for any reason we're already on the canonical host, keep using it.
+    if (hostname === canonicalHost && port) {
+      return `https://${canonicalHost}/${lang}/home`;
+    }
+
+    return `https://${canonicalHost}/${lang}/home`;
   }
 
+  getHomeUrl(): string {
+    return `${environment.mainAppUrl}/${this.lang}`;
+  }
+  
   private handleLoginError(error: any): void {
     this.isLoading = false;
     this.hasError = true;
