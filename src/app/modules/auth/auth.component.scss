@@ -5,8 +5,46 @@
   background-image: url('../../../assets/media/images/2600x1200/bg-10.png');
 background-size: cover;
 }
-.switch-lang{
+.auth-top-bar{
   position: absolute;
   top: 20px;
+  inset-inline: 0;
+  padding-inline: 20px;
   z-index: 10;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.switch-lang{
+  position: static;
+}
+
+.auth-back-btn{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 10px;
+}
+
+.back-rtl{
+  display: none;
+  height: 20px;
+}
+
+:host-context(html[dir='rtl']) .auth-top-bar,
+:host-context(body[dir='rtl']) .auth-top-bar{
+  flex-direction: row-reverse;
+}
+
+:host-context(html[dir='rtl']) .back-ltr,
+:host-context(body[dir='rtl']) .back-ltr{
+  display: none;
+}
+
+:host-context(html[dir='rtl']) .back-rtl,
+:host-context(body[dir='rtl']) .back-rtl{
+  display: inline;
 }

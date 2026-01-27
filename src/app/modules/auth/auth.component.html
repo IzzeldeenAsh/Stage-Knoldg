@@ -8,7 +8,21 @@
 </div>
 </div> -->
 <p-toast></p-toast>
-<div class="switch-lang">
-  <app-lang-switch-button></app-lang-switch-button>
+<div class="auth-top-bar">
+  <button type="button" class="btn d-flex align-items-center justify-content-center btn-sm btn-light-primary auth-back-btn" (click)="goBack()">
+    <span class="back-ltr" aria-hidden="true">
+      <i class="ki-outline ki-arrow-left fs-2"></i>
+    </span>
+    <span class="back-ltr fw-semibold">Back</span>
+
+    <span class="back-rtl fw-semibold">رجوع</span>
+    <span class="back-rtl" aria-hidden="true">
+      <i class="ki-outline ki-arrow-left fs-2"></i>
+    </span>
+  </button>
+
+  <div class="switch-lang">
+    <app-lang-switch-button></app-lang-switch-button>
+  </div>
 </div>
 <router-outlet></router-outlet>

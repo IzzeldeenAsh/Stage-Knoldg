@@ -1,4 +1,6 @@
+import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 // const BODY_CLASSES = ['bgi-size-cover', 'bgi-position-center', 'bgi-no-repeat'];
 
@@ -11,7 +13,10 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 export class AuthComponent implements OnInit, OnDestroy {
   today: Date = new Date();
 
-  constructor() {}
+  constructor(
+    private location: Location,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     // BODY_CLASSES.forEach((c) => document.body.classList.add(c));
@@ -19,5 +24,15 @@ export class AuthComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     // BODY_CLASSES.forEach((c) => document.body.classList.remove(c));
+  }
+
+  goBack(): void {
+    // If there is history, go back; otherwise fallback to root.
+    if (window.history.length > 1) {
+      this.location.back();
+      return;
+    }
+
+    this.router.navigateByUrl('/');
   }
 }
