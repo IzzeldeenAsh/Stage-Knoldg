@@ -17,6 +17,7 @@ import { DeactivateDialogComponent } from './deactivate-dialog/deactivate-dialog
 import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
 import { ActivateAccountComponent } from './activate-account/activate-account.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { SetPasswordComponent } from './set-password/set-password.component';
 import { TooltipModule } from 'primeng/tooltip';
 import { CheckboxModule } from 'primeng/checkbox';
 import { RadioButtonModule } from 'primeng/radiobutton';
@@ -80,7 +81,8 @@ const routes: Routes = [
     DeactivateDialogComponent,
     DeleteDialogComponent,
     ActivateAccountComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
+    SetPasswordComponent
   ],
   imports: [
     CommonModule,

@@ -1,4 +1,6 @@
-import { Component, HostBinding, Input, OnInit, Output, EventEmitter, OnDestroy, Injector } from '@angular/core';
+import { Component, HostBinding, Input, OnInit, Output, EventEmitter, OnDestroy, Injector, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Notification } from 'src/app/_fake/services/nofitications/notifications.service';
@@ -39,6 +41,9 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
   // Removed activeTabId since tabs are no longer used
   alerts: Array<AlertModel> = defaultAlerts;
   logs: Array<LogModel> = defaultLogs;
+
+  private readonly isBrowser: boolean;
+  private readonly messageCache = new Map<string, { raw: string; unreadHtml: SafeHtml; readText: string }>();
   
   get unreadNotificationsCount(): number {
     // Count all unread notifications (where read_at is null or undefined)
@@ -50,14 +55,120 @@ export class NotificationsInnerComponent extends BaseComponent implements OnInit
     private translationService: TranslationService,
     private router: Router,
     private profileService: ProfileService,
-    private http: HttpClient
+    private http: HttpClient,
+    private sanitizer: DomSanitizer,
+    @Inject(PLATFORM_ID) platformId: object
   ) {
     super(injector);
+    this.isBrowser = isPlatformBrowser(platformId);
   }
 
   ngOnInit(): void {
     // Add click outside listener
     document.addEventListener('click', this.onClickOutside.bind(this));
+  }
+
+  // ---- Message rendering helpers ----
+  // Unread: render safe minimal HTML to preserve <b>/<strong> emphasis.
+  // Read: render plain text so `fw-light` always wins and can’t be overridden.
+  getUnreadMessageHtml(alert: Notification): SafeHtml {
+    const raw = (alert?.message ?? '').toString();
+    const cached = this.messageCache.get(alert.id);
+    if (cached && cached.raw === raw) return cached.unreadHtml;
+
+    const sanitized = this.sanitizeNotificationHtml(raw);
+    const trusted = this.sanitizer.bypassSecurityTrustHtml(sanitized);
+    const readText = this.htmlToText(raw);
+    this.messageCache.set(alert.id, { raw, unreadHtml: trusted, readText });
+    return trusted;
+  }
+
+  getReadMessageText(alert: Notification): string {
+    const raw = (alert?.message ?? '').toString();
+    const cached = this.messageCache.get(alert.id);
+    if (cached && cached.raw === raw) return cached.readText;
+    // Populate cache via unread getter (cheap, consistent)
+    void this.getUnreadMessageHtml(alert);
+    return this.messageCache.get(alert.id)?.readText ?? this.htmlToText(raw);
+  }
+
+  private htmlToText(html: string): string {
+    if (!html) return '';
+    // Fast path: no tags
+    if (!/[<>]/.test(html)) return html;
+    if (!this.isBrowser || typeof DOMParser === 'undefined') {
+      return html.replace(/<[^>]*>/g, '').trim();
+    }
+    try {
+      const normalized = html.replace(/<br\s*\/?>/gi, '\n');
+      const doc = new DOMParser().parseFromString(normalized, 'text/html');
+      return (doc.body?.textContent ?? '').trim();
+    } catch {
+      return html.replace(/<[^>]*>/g, '').trim();
+    }
+  }
+
+  private escapeHtml(value: string): string {
+    return (value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  private escapeAttribute(value: string): string {
+    return this.escapeHtml(value);
+  }
+
+  private sanitizeNotificationHtml(html: string): string {
+    if (!html) return '';
+    if (!this.isBrowser || typeof DOMParser === 'undefined') {
+      return this.escapeHtml(this.htmlToText(html));
+    }
+    try {
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const allowedTags = new Set(['B', 'STRONG', 'I', 'EM', 'BR', 'A', 'SPAN']);
+
+      const sanitizeNode = (node: Node): string => {
+        // Text node
+        if (node.nodeType === Node.TEXT_NODE) return this.escapeHtml(node.textContent ?? '');
+        // Ignore comments/others
+        if (node.nodeType !== Node.ELEMENT_NODE) return '';
+
+        const el = node as HTMLElement;
+        const tag = (el.tagName || '').toUpperCase();
+
+        // Drop tag but keep children text
+        if (!allowedTags.has(tag)) {
+          return Array.from(el.childNodes).map(sanitizeNode).join('');
+        }
+
+        if (tag === 'BR') return '<br />';
+
+        if (tag === 'A') {
+          const rawHref = (el.getAttribute('href') ?? '').trim();
+          const href =
+            rawHref.startsWith('http://') ||
+            rawHref.startsWith('https://') ||
+            rawHref.startsWith('/') ||
+            rawHref.startsWith('#')
+              ? rawHref
+              : '#';
+
+          const inner = Array.from(el.childNodes).map(sanitizeNode).join('');
+          return `<a href="${this.escapeAttribute(href)}" target="_blank" rel="noopener noreferrer" class="text-decoration-underline">${inner}</a>`;
+        }
+
+        const lower = tag.toLowerCase();
+        const inner = Array.from(el.childNodes).map(sanitizeNode).join('');
+        return `<${lower}>${inner}</${lower}>`;
+      };
+
+      return Array.from(doc.body.childNodes).map(sanitizeNode).join('');
+    } catch {
+      return this.escapeHtml(this.htmlToText(html));
+    }
   }
   
   // Handle click outside of dropdown

@@ -55,7 +55,18 @@
                 {{ alert.sub_type | notificationsNames }}
               </ng-template>
             </a>
-            <div class="text-gray-900 fs-7 fw-light" [ngClass]="{'fw-bold': !alert.read_at}" [innerHTML]="alert.message"></div>
+            <div
+              class="text-gray-900 fs-7"
+              [ngClass]="{ 'fw-medium': !alert.read_at, 'fw-light': alert.read_at }"
+              [style.white-space]="alert.read_at ? 'pre-line' : null"
+            >
+              <ng-container *ngIf="!alert.read_at; else readMessage">
+                <span [innerHTML]="getUnreadMessageHtml(alert)"></span>
+              </ng-container>
+              <ng-template #readMessage>
+                {{ getReadMessageText(alert) }}
+              </ng-template>
+            </div>
           </div>
         </div>
           <span class="badge badge-light-info fs-8 badge-hover-primary " >{{ 'NOTIFICATIONS.VIEW' | translate }}</span>
