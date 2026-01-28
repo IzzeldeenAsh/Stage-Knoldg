@@ -1,9 +1,9 @@
 <div class="p-24px">
     <app-set-password
-      *ngIf="profile?.login_social === true && profile?.login_social_only === false"
+      *ngIf="profile?.login_social === true && profile?.login_social_only === true"
       (passwordSet)="onPasswordSet()"
     ></app-set-password>
-    <app-reset-password *ngIf="!(profile?.login_social === true && profile?.login_social_only === false)"></app-reset-password>
+    <app-reset-password *ngIf="!(profile?.login_social === true && profile?.login_social_only === true)"></app-reset-password>
     <ng-container *ngIf="hasRole(['company']) && profile.insighter_status === 'inactive'">
         <app-activate-account
         *ngIf=" isPrimaryKey"
