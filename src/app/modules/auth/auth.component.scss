@@ -41,10 +41,16 @@ background-size: cover;
 
 :host-context(html[dir='rtl']) .back-ltr,
 :host-context(body[dir='rtl']) .back-ltr{
+  height: 20px !important;
   display: none;
 }
 
 :host-context(html[dir='rtl']) .back-rtl,
 :host-context(body[dir='rtl']) .back-rtl{
   display: inline;
+  height: 20px !important;
+}
+.back-rtl,
+.back-ltr{
+  height: 20px !important;
 }

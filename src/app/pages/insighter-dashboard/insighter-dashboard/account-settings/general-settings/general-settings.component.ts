@@ -39,28 +39,40 @@ export class GeneralSettingsComponent extends BaseComponent implements OnInit {
     this.isClient$=this.getProfileService.isClient()
   }
 
+  private applyProfile(profile: IKnoldgProfile) {
+    this.profile = profile;
+    this.roles = profile.roles;
+
+    switch (true) {
+      case this.hasRole(['insighter']):
+        this.isActive = profile.insighter_status === "active";
+        this.isPrimaryKey = true;
+        break;
+      case this.hasRole(['company']):
+        this.isActive = profile.company?.status === "active";
+        this.isPrimaryKey = !!profile.company?.primary_activate_at;
+        break;
+      default:
+        this.isActive = false;
+    }
+  }
+
   getProfile() {
     const subscription = this.getProfileService.getProfile()
       .subscribe(
         (profile: IKnoldgProfile) => {
-          this.profile = profile;
-          this.roles = profile.roles;
-          
-          switch (true) {
-            case this.hasRole(['insighter']):
-              this.isActive = profile.insighter_status === "active";
-              this.isPrimaryKey = true;
-              break;
-            case this.hasRole(['company']):
-              this.isActive = profile.company?.status === "active";
-              this.isPrimaryKey = !!profile.company?.primary_activate_at;
-              break;
-            default:
-              this.isActive = false;
-          }
+          this.applyProfile(profile);
           this.cdr.detectChanges();
         }
       )
+    this.unsubscribe.push(subscription);
+  }
+
+  onPasswordSet() {
+    const subscription = this.getProfileService.refreshProfile().subscribe((profile: IKnoldgProfile) => {
+      this.applyProfile(profile);
+      this.cdr.detectChanges();
+    });
     this.unsubscribe.push(subscription);
   }
 

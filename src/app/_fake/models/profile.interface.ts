@@ -26,6 +26,7 @@ export interface IKnoldgProfile {
     phone_code?:string;
     social?: SocialNetwork[];
     login_social?:boolean;
+    login_social_only?: boolean;
     
   }
   
