@@ -65,6 +65,9 @@ export class GuidelinesService {
   currentLang: string = 'en';
   constructor(private http: HttpClient,private translationService: TranslationService) {
     this.currentLang = this.translationService.getSelectedLanguage();
+    this.translationService.onLanguageChange().subscribe((lang) => {
+      this.currentLang = lang || 'en';
+    });
   }
 
   private setLoading(loading: boolean): void {

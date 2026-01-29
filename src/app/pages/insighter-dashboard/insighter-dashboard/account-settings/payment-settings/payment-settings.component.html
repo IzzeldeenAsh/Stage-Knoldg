@@ -101,7 +101,7 @@
                                             <div class="d-flex align-items-center justify-content-between">
                                                 <div class="account-name-value">{{ method.account_name || (lang === 'ar' ? 'غير محدد' : 'Not Available') }}</div>
                                                 <div class="d-flex align-items-center" *ngIf="method.bank_country">
-                                                    <img [src]="getCountryFlagPath(method.bank_country.name)"
+                                                    <img [src]="getCountryFlagPath(method.bank_country.flag)"
                                                          [alt]="method.bank_country.name"
                                                          class="country-flag me-2"
                                                          style="width: 24px; height: 16px; object-fit: cover;">

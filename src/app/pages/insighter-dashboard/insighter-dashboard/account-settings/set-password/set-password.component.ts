@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Injector, OnDestroy, Output, computed, signal } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { Subject, Subscription, interval, takeUntil } from 'rxjs';
 import { BaseComponent } from 'src/app/modules/base.component';
 import { SetPasswordService } from 'src/app/_fake/services/set-password/set-password.service';
@@ -10,6 +11,8 @@ import { SetPasswordService } from 'src/app/_fake/services/set-password/set-pass
 })
 export class SetPasswordComponent extends BaseComponent implements OnDestroy {
   @Output() passwordSet = new EventEmitter<void>();
+
+  private readonly MIN_PASSWORD_LENGTH = 8;
 
   constructor(
     injector: Injector,
@@ -132,8 +135,23 @@ export class SetPasswordComponent extends BaseComponent implements OnDestroy {
       });
   }
 
-  submitSetPassword() {
+  submitSetPassword(form?: NgForm) {
     if (this.isSubmitting()) return;
+
+    if (form?.invalid) {
+      form.control.markAllAsTouched();
+      return;
+    }
+
+    if ((this._password() || '').length < this.MIN_PASSWORD_LENGTH) {
+      this.showError(
+        this.lang === 'ar' ? 'خطأ في التحقق' : 'Validation Error',
+        this.lang === 'ar'
+          ? 'يجب أن تكون كلمة المرور 8 أحرف على الأقل.'
+          : 'Password must be at least 8 characters.'
+      );
+      return;
+    }
 
     if (!this.passwordsMatch()) {
       this.showError(

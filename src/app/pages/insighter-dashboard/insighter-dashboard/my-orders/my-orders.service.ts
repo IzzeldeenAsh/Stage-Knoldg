@@ -66,6 +66,10 @@ export interface User {
   email: string;
   first_name: string;
   last_name: string;
+  /**
+   * Added by API: e.g. "guest"
+   */
+  type?: string;
   profile_photo_url: string;
   roles: string[];
   uuid: string;
