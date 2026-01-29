@@ -31,7 +31,6 @@ import { ScrollAnimsService } from "src/app/_fake/services/scroll-anims/scroll-a
 import Swal from "sweetalert2";
 import { Router } from "@angular/router";
 import { BaseComponent } from "src/app/modules/base.component";
-import { CommonService } from "src/app/_fake/services/common/common.service";
 import { TreeNode } from 'src/app/reusable-components/shared-tree-selector/TreeNode';
 import { ConsultingFieldTreeService } from "src/app/_fake/services/consulting-fields-tree/consulting-fields-tree.service";
 import { IsicCodesService } from "src/app/_fake/services/isic-code/isic-codes.service";
@@ -41,6 +40,7 @@ import { phoneNumbers } from "src/app/pages/wizards/phone-keys";
 import { TranslateService } from "@ngx-translate/core";
 import { CountriesService, Country } from "src/app/_fake/services/countries/countries.service";
 import { ProfileService } from "src/app/_fake/services/get-profile/get-profile.service";
+import { GuidelinesService } from "src/app/_fake/services/guidelines/guidelines.service";
 
 @Component({
   selector: "app-upgrade-to-company",
@@ -99,13 +99,13 @@ export class UpgradeToCompanyComponent
     private http: HttpClient,
     @Inject(InsighterAsCompany) private insighterAsCompany: InsighterAsCompany,
     private router: Router,
-    private commonService: CommonService,
     private _KnoldgFieldsService: ConsultingFieldTreeService,
     private _isicService: IndustryService,
     private documentsService: DocumentsService,
     private translationService: TranslationService,
     private _countriesService: CountriesService,
     private profileService: ProfileService,
+    private guidelinesService: GuidelinesService,
     private cdr: ChangeDetectorRef,
     injector: Injector
   ) {
@@ -271,9 +271,9 @@ export class UpgradeToCompanyComponent
     this.isLoadingAgreement = true;
     this.showAgreementDialog = true;
     
-    this.commonService.getClientAgreement('company-agreement').subscribe({
-      next: (response) => {
-        this.agreementContent = response.data;
+    this.guidelinesService.getCurrentGuidelineByType('company_agreement').subscribe({
+      next: (data) => {
+        this.agreementContent = data;
         this.isLoadingAgreement = false;
       },
       error: (error) => {

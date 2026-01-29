@@ -40,7 +40,12 @@
     <!-- Client Information -->
     <div *ngIf="order.user" class="client-info bg-light rounded-3 border p-4 mb-4">
       <div class="mb-3">
-        <h6 class="fw-bold text-dark mb-0">{{ lang === 'ar' ? 'العميل' : 'Client' }} </h6>
+        <h6 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+          <span>{{ lang === 'ar' ? 'العميل' : 'Client' }}</span>
+          <span *ngIf="order.user?.type === 'guest'" class="badge badge-light-info fw-semibold">
+            {{ lang === 'ar' ? '(تم الشراء كزائر)' : '(Bought As Guest)' }}
+          </span>
+        </h6>
       </div>
       <div class="d-flex align-items-center">
         <ng-container *ngIf="order.user.company">

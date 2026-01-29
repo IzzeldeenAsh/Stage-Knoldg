@@ -4,12 +4,13 @@ import { Router, UrlTree } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { ComponentCanDeactivate } from 'src/app/guards/pending-changes.guard';
 import { BaseComponent } from 'src/app/modules/base.component';
-import { PaymentService, ManualAccountRequest, UpdateManualAccountRequest, PaymentDetailsResponse, PaymentMethod, TermsResponse } from 'src/app/_fake/services/payment/payment.service';
+import { PaymentService, ManualAccountRequest, UpdateManualAccountRequest, PaymentDetailsResponse, PaymentMethod } from 'src/app/_fake/services/payment/payment.service';
 import { CountriesService, Country } from 'src/app/_fake/services/countries/countries.service';
 import { environment } from 'src/environments/environment';
 import { ProfileService } from 'src/app/_fake/services/get-profile/get-profile.service';
 import { PhoneNumberInputComponent } from 'src/app/reusable-components/phone-number-input/phone-number-input.component';
 import { OtpModalConfig } from 'src/app/reusable-components/otp-modal/otp-modal.component';
+import { GuidelinesService } from 'src/app/_fake/services/guidelines/guidelines.service';
 
 interface ExtendedCountry extends Country {
   showFlag?: boolean;
@@ -63,7 +64,8 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
     private router: Router,
     public paymentService: PaymentService,
     private countriesService: CountriesService,
-    private profileService: ProfileService
+    private profileService: ProfileService,
+    private guidelinesService: GuidelinesService
   ) {
     super(injector);
     this.manualAccountForm = this.fb.group({
@@ -860,24 +862,30 @@ export class ManualAccountComponent extends BaseComponent implements OnInit, Aft
 
   acceptTerms() {
     this.termsAccepted = true;
-    this.manualAccountForm.patchValue({ termsAccepted: true });
+    this.manualAccountForm.patchValue({ accept_terms: true });
+    this.manualAccountForm.get('accept_terms')?.markAsTouched();
+    this.manualAccountForm.get('accept_terms')?.markAsDirty();
     this.closeTermsDialog();
   }
 
   declineTerms() {
     this.termsAccepted = false;
-    this.manualAccountForm.patchValue({ termsAccepted: false });
+    this.manualAccountForm.patchValue({ accept_terms: false });
+    this.manualAccountForm.get('accept_terms')?.markAsTouched();
+    this.manualAccountForm.get('accept_terms')?.markAsDirty();
     this.closeTermsDialog();
   }
 
   private loadManualPaymentTerms() {
     this.isLoadingTerms = true;
-    this.paymentService.getManualPaymentTerms().subscribe({
-      next: (response: TermsResponse) => {
-        this.termsContent = response.data.guideline;
+    this.guidelinesService.getCurrentGuidelineByType('wallet_agreement').subscribe({
+      next: (data) => {
+        this.termsContent = data?.guideline || '';
         this.isLoadingTerms = false;
       },
-      error: () => {
+      error: (error) => {
+        console.error('Failed to load wallet agreement:', error);
+        this.termsContent = '';
         this.isLoadingTerms = false;
       }
     });

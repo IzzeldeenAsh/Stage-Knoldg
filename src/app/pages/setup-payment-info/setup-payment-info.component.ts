@@ -122,7 +122,7 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
     // Load Stripe countries and terms only when provider is selected
     if (type === 'provider') {
       this.loadStripeCountries();
-      this.loadStripeTerms();
+      this.loadStripeAgreement();
       // Make country and terms required for provider
       this.paymentForm.get('country')?.setValidators([Validators.required]);
       this.paymentForm.get('termsAgreed')?.setValidators([Validators.requiredTrue]); // Terms are required for provider
@@ -605,7 +605,7 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
   openTermsDialog() {
     console.log('Opening Terms Dialog'); // Debug log
     this.showTermsDialog = true;
-    this.loadTermsAndConditions();
+    this.loadStripeAgreement();
   }
 
   closeTermsDialog() {
@@ -628,38 +628,24 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
     this.termsAgreed = event.target.checked;
   }
 
-  private loadTermsAndConditions() {
+  private loadStripeAgreement() {
     this.isLoadingTerms = true;
     this.stripeTermsContent = '';
 
-    const headers = {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Accept-Language': this.lang || 'en',
-      'X-Timezone': Intl.DateTimeFormat().resolvedOptions().timeZone
-    };
-
-    this.http.get<any>('https://api.insightabusiness.com/api/common/setting/guideline/slug/stripe-payment-terms-and-conditions', { headers })
-      .subscribe({
-        next: (response) => {
-          this.isLoadingTerms = false;
-          if (response && response.data && response.data.guideline) {
-            this.stripeTermsContent = response.data.guideline;
-          } else {
-            this.showError(
-              this.lang === 'ar' ? 'خطأ' : 'Error',
-              this.lang === 'ar' ? 'لا يمكن تحميل الشروط والأحكام' : 'Unable to load Terms & Conditions'
-            );
-          }
-        },
-        error: (error) => {
-          this.isLoadingTerms = false;
-          this.showError(
-            this.lang === 'ar' ? 'خطأ' : 'Error',
-            this.lang === 'ar' ? 'فشل في تحميل الشروط والأحكام' : 'Failed to load Terms & Conditions'
-          );
-        }
-      });
+    this.guidelinesService.getCurrentGuidelineByType('stripe_agreement').subscribe({
+      next: (data) => {
+        this.stripeTermsContent = data?.guideline || '';
+        this.isLoadingTerms = false;
+      },
+      error: (error) => {
+        console.error('Error loading Stripe agreement:', error);
+        this.isLoadingTerms = false;
+        this.showError(
+          this.lang === 'ar' ? 'خطأ' : 'Error',
+          this.lang === 'ar' ? 'فشل في تحميل الشروط والأحكام' : 'Failed to load Terms & Conditions'
+        );
+      },
+    });
   }
 
   printTerms(): void {
@@ -723,18 +709,9 @@ export class SetupPaymentInfoComponent extends BaseComponent implements OnInit {
     return tempElement.textContent || tempElement.innerText || '';
   }
 
+  // Keep this method name for backwards template/usage compatibility if referenced elsewhere
   loadStripeTerms() {
-    this.isLoadingTerms = true;
-    this.paymentService.getStripePaymentTerms().subscribe({
-      next: (terms: any) => {
-        this.stripeTermsContent = terms?.data?.guideline || '';
-        this.isLoadingTerms = false;
-      },
-      error: (error: any) => {
-        console.error('Error loading Stripe terms:', error);
-        this.isLoadingTerms = false;
-      }
-    });
+    this.loadStripeAgreement();
   }
 
   get allPaymentOptionsExist(): boolean | null {
