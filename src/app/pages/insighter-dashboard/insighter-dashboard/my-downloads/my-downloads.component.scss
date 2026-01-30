@@ -30,6 +30,17 @@
   margin-top: 1rem !important;
 }
 
+@media screen and (max-width: 575.98px) {
+  .knowledge-list{
+    border: 1px solid #efefef;
+    border-radius: 10px;
+    padding: 14px;
+  }
+  .mobile-border{
+    border-radius: 10px !important;
+  }
+}
+
 // Knowledge type icons styling
 .knowledge-item {
   // Ensure consistent item height even when title wraps to a second line

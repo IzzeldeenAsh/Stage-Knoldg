@@ -152,16 +152,19 @@
   min-height: 60px;
   transition: background-color 250ms ease, box-shadow 250ms ease, border-color 250ms ease;
 }
+@media (max-width: 575.98px) {
+  .mobile-header {
+    background-color: transparent !important;
+    box-shadow: none !important;
+  }
+}
 
 .mobile-header-container {
   width: 100%;
-  max-width: 100%;
+  max-width: 83%;
+  margin: auto;
 }
 
-.mobile-header-left {
-  flex: 1;
-  max-width: 60%;
-}
 
 .mobile-header-right {
   flex: 0 0 auto;

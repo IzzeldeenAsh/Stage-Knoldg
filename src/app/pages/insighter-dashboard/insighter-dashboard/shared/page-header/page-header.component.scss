@@ -7,13 +7,17 @@
 
   // Small mobile devices (phones in portrait)
   @media (max-width: 575.98px) {
-    min-height: 160px !important;
-
+    min-height: 0 !important;
+    background: transparent !important;
+    border: none !important;
     .card-header {
       padding: 1.5rem 1rem !important;
 
       .d-flex {
         gap: 1rem;
+        @media (max-width: 575.98px) {
+          gap: 0rem;
+        }
 
         // Icon container adjustments for mobile
         .symbol {

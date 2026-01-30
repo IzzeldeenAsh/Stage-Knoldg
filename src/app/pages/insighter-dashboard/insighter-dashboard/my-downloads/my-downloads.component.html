@@ -129,7 +129,7 @@
                        [class.border-end]="lang !== 'ar'"
                        [class.border-start]="lang === 'ar'"
                        (click)="onKnowledgeColumnClick()">
-                    <div class="d-flex align-items-center gap-2 mb-4 bg-light-gray px-4 py-4">
+                    <div class="d-flex align-items-center gap-2 mb-4 bg-light-gray px-4 py-4 mobile-border">
                       <h5 class="mb-0 fw-bold text-dark">{{ 'MY_DOWNLOADS.KNOWLEDGE_ITEMS' | translate }}</h5>
                       <span class="badge badge-light-info">{{ currentDisplayTotalItems() }}</span>
                     </div>
@@ -309,7 +309,7 @@
                   <div class="col-lg-4"
                        [class.border-end]="lang !== 'ar'"
                        [class.border-start]="lang === 'ar'">
-                    <div class="d-flex align-items-center mb-4 bg-light-gray p-4">
+                    <div class="d-flex align-items-center mb-4 bg-light-gray p-4 mobile-border">
                       <h5 class="mb-0 fw-bold text-dark">{{ 'MY_DOWNLOADS.DOCUMENTS' | translate }}</h5>
                       @if (selectedKnowledge()) {
                         <span class="badge badge-light-success ms-2">{{ currentKnowledgeDocuments().length }}</span>
@@ -393,7 +393,7 @@
     
                   <!-- Column 3: Details -->
                   <div class="col-lg-4">
-                    <div class="d-flex align-items-center gap-2 mb-4 bg-light-gray p-4">
+                    <div class="d-flex align-items-center gap-2 mb-4 bg-light-gray p-4 mobile-border">
                       <h5 class="mb-0 fw-bold text-dark">{{ 'MY_DOWNLOADS.KNOWLEDGE_SOURCE' | translate }}</h5>
                     </div>
                     <div class="details-panel">
