@@ -553,7 +553,7 @@ INSIGHTER_REQUESTS: {
     },
     "DEACTIVATE_ACCOUNT_WITH_DELETE": {
       "TITLE": "حذف الحساب نهائياً",
-      "DESCRIPTION": "<i class='fa-sharp fa-solid fa-circle fs-10'></i> سيتم حذف حسابك نهائيًا<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> سيتم فقدان جميع البيانات<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> سيتم إزالة البيانات وحذفها",
+      "DESCRIPTION": "<i class='fa-sharp fa-solid fa-circle fs-10'></i>&nbsp; سيتم حذف حسابك نهائيًا<br><i class='fa-sharp fa-solid fa-circle fs-10'></i>&nbsp; سيتم فقدان جميع البيانات<br><i class='fa-sharp fa-solid fa-circle fs-10'></i>&nbsp; سيتم إزالة البيانات وحذفها",
       "BUTTON_TEXT": "طلب حذف الحساب",
       "PENDING_REQUEST": "طلب الحذف قيد المراجعة",
       "ILLUSTRATION_ALT": "رسم توضيحي لحذف الحساب",
@@ -931,10 +931,10 @@ INSIGHTER_REQUESTS: {
       "TITLE_ACCOUNT":"إيقاف الحساب",
       "TITLE_USER_ONLY": "إلغاء تنشيط حساب المستخدم",
       "TITLE_COMPANY_ONLY": "إلغاء تنشيط حساب الشركة",
-     "DESCRIPTION": "<i class='fa-sharp fa-solid fa-circle fs-10'></i> سيتم حجب معارفك عن زوار المنصة و العملاء<br><i class='fa-sharp fa-solid fa-circle fs-10'></i>سيكون بإمكانك رفع وتنزيل وحذف المعارف والبيانات  على المنصة دون ظهورها للجمهور<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> يمكنك الاستمرار في رفع وإدارة بياناتك في أي وقت",
-      "DESCRIPTION_COMPANY_COMBINED": "<i class='fa-sharp fa-solid fa-circle fs-10'></i> سيتم حجب معارفك عن زوار المنصة و العملاء<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> سيكون بإمكانك رفع وتنزيل وحذف المعارف والبيانات  على المنصة دون ظهورها للجمهور<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> يمكنك الاستمرار في رفع وإدارة بيانات الشركة والمستخدم في أي وقت",
-      "DESCRIPTION_USER_ONLY": "<i class='fa-sharp fa-solid fa-circle fs-10'></i> سيتم حجب معارفك عن زوار المنصة و العملاء<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> سيكون بإمكانك رفع وتنزيل وحذف المعارف والبيانات  على المنصة دون ظهورها للجمهور<br><i class='fa-sharp fa-solid fa-circle fs-10'></i> ستتمكن من رفع وإدارة بياناتك في أي وقت",
-      "DESCRIPTION_COMPANY_ONLY": "<i class='fa-sharp fa-solid fa-circle fs-10'></i> سيتم حجب معارفك عن زوار المنصة و العملاء<br><i class='fa-sharp fa-solid fa-circle fs-10'></i>سيكون بإمكانك رفع وتنزيل وحذف المعارف والبيانات  على المنصة دون ظهورها للجمهور <br><i class='fa-sharp fa-solid fa-circle fs-10'></i> يمكنك الاستمرار في رفع وإدارة بيانات الشركة في أي وقت",
+      "DESCRIPTION": "<i class='fa-sharp fa-solid fa-circle fs-10'></i>&nbsp; سيتم حجب معارفك عن زوار المنصة و العملاء<br><i class='fa-sharp fa-solid fa-circle fs-10'></i>&nbsp; سيكون بإمكانك رفع وتنزيل وحذف المعارف والبيانات على المنصة دون ظهورها للجمهور<br><i class='fa-sharp fa-solid fa-circle fs-10'></i>&nbsp; يمكنك الاستمرار في رفع وإدارة بياناتك في أي وقت",
+  "DESCRIPTION_COMPANY_COMBINED": "<i class='fa-sharp fa-solid fa-circle fs-10'></i>&nbsp; سيتم حجب معارفك عن زوار المنصة و العملاء<br><i class='fa-sharp fa-solid fa-circle fs-10'></i>&nbsp; سيكون بإمكانك رفع وتنزيل وحذف المعارف والبيانات على المنصة دون ظهورها للجمهور<br><i class='fa-sharp fa-solid fa-circle fs-10'></i>&nbsp; يمكنك الاستمرار في رفع وإدارة بيانات الشركة والمستخدم في أي وقت",
+  "DESCRIPTION_USER_ONLY": "<i class='fa-sharp fa-solid fa-circle fs-10'></i>&nbsp; سيتم حجب معارفك عن زوار المنصة و العملاء<br><i class='fa-sharp fa-solid fa-circle fs-10'></i>&nbsp; سيكون بإمكانك رفع وتنزيل وحذف المعارف والبيانات على المنصة دون ظهورها للجمهور<br><i class='fa-sharp fa-solid fa-circle fs-10'></i>&nbsp; ستتمكن من رفع وإدارة بياناتك في أي وقت",
+  "DESCRIPTION_COMPANY_ONLY": "<i class='fa-sharp fa-solid fa-circle fs-10'></i>&nbsp; سيتم حجب معارفك عن زوار المنصة و العملاء<br><i class='fa-sharp fa-solid fa-circle fs-10'></i>&nbsp; سيكون بإمكانك رفع وتنزيل وحذف المعارف والبيانات على المنصة دون ظهورها للجمهور <br><i class='fa-sharp fa-solid fa-circle fs-10'></i>&nbsp; يمكنك الاستمرار في رفع وإدارة بيانات الشركة في أي وقت",
       "BUTTON_TEXT_COMPANY": "إلغاء تنشيط حساب الشركة",
       "BUTTON_TEXT_USER": "إلغاء تنشيط حساب المستخدم",
       "BUTTON_TEXT_BOTH": "إلغاء تنشيط كلا الحسابين",
@@ -1047,8 +1047,8 @@ INSIGHTER_REQUESTS: {
       "READ_LATER": {
         "TITLE": "قائمة المعاينة",
         "ITEMS": "عنصر",
-        "EMPTY_TITLE": "لا توجد عناصل محفوظة بعد",
-        "EMPTY_MESSAGE": "العناصل التي تضعها في المفضلة ستظهر هنا للوصول إليها لاحقاً.",
+        "EMPTY_TITLE": "لا توجد عناصر محفوظة بعد",
+        "EMPTY_MESSAGE": "العناصر التي تضعها في المفضلة ستظهر هنا للوصول إليها لاحقاً.",
         "POSTED_ABOUT":'نشر قبل'
       }
     
