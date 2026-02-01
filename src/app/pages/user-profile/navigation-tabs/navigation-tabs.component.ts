@@ -93,6 +93,17 @@ export class NavigationTabsComponent implements OnInit, OnChanges {
   // }
 
   filterTabs() {
+    const personalSettingsTab = this.tabs.find(t => t.link === '/app/profile/settings/personal-info');
+
+    if (personalSettingsTab) {
+      if (this.roles.includes('company')) {
+        personalSettingsTab.labelen = 'Manager Settings';
+        personalSettingsTab.labelar = 'إعدادات المدير';
+      } else {
+        personalSettingsTab.labelen = 'Personal Settings';
+        personalSettingsTab.labelar = 'الإعدادات الشخصية';
+      }
+    }
     this.filteredTabs = this.tabs.filter(tab => this.hasRole(tab.roles));
     
     // Categorize tabs into their respective groups

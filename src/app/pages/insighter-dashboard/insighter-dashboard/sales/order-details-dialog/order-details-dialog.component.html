@@ -169,7 +169,7 @@
     <!-- Knowledge Items -->
     <div *ngIf="order.orderable" class="knowledge-details bg-light rounded-3 border p-4">
       <div class="mb-3">
-        <h6 class="fw-bold text-dark mb-0">{{ lang === 'ar' ? 'المعرفة المطلوبة' : 'Knowledge Items' }}</h6>
+        <h6 class="fw-bold text-dark mb-0">{{ lang === 'ar' ? "المستند المباع" : 'Knowledge Items' }}</h6>
       </div>
 
       <div *ngFor="let knowledge of order.orderable.knowledge" class="knowledge-item mb-4">
