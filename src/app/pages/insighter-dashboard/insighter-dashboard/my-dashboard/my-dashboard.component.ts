@@ -18,7 +18,6 @@ constructor(
 }
 
 ngOnInit(){
-
 }
 
 ngOnDestroy(): void {

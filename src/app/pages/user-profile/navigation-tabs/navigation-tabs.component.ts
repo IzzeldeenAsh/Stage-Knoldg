@@ -50,7 +50,7 @@ export class NavigationTabsComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.roles = this.profile.roles;
     this.handleLanguage();
-    this.checkSocialLogin();
+    // this.checkSocialLogin();
     this.filterTabs();
     this.buildMenu();
   }
@@ -58,7 +58,7 @@ export class NavigationTabsComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.profile) {
       this.roles = this.profile.roles;
-      this.checkSocialLogin();
+      // this.checkSocialLogin();
       this.filterTabs();
       this.buildMenu();
     }
@@ -72,27 +72,25 @@ export class NavigationTabsComponent implements OnInit, OnChanges {
     });
   }
 
-  checkSocialLogin() {
-    this.isSocialLogin = this.profile.login_social === true;
+  // checkSocialLogin() {
+  //   this.isSocialLogin = this.profile.login_social === true;
     
-    // Add Reset Password tab for non-social login users
-    if (!this.isSocialLogin) {
-      // Check if it's already added to avoid duplicates
-      const hasResetPassword = this.tabs.some(tab => tab.link === '/app/profile/settings/reset-password');
-      if (!hasResetPassword) {
-        this.tabs.push({
-          labelen: 'Change Password',
-          labelar: 'تغيير كلمة المرور',
-          link: '/app/profile/settings/reset-password',
-          activeInfo: false,
-          activePrimary: true,
-          roles: ['client'],
-          icon: 'lock',
-          category: 'settings'  // Add category property
-        });
-      }
-    }
-  }
+  //   if (!this.isSocialLogin) {
+  //     const hasResetPassword = this.tabs.some(tab => tab.link === '/app/profile/settings/reset-password');
+  //     if (!hasResetPassword) {
+  //       this.tabs.push({
+  //         labelen: 'Change Password',
+  //         labelar: 'تغيير كلمة المرور',
+  //         link: '/app/profile/settings/reset-password',
+  //         activeInfo: false,
+  //         activePrimary: true,
+  //         roles: ['client'],
+  //         icon: 'lock',
+  //         category: 'settings'  
+  //       });
+  //     }
+  //   }
+  // }
 
   filterTabs() {
     this.filteredTabs = this.tabs.filter(tab => this.hasRole(tab.roles));

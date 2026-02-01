@@ -17,7 +17,6 @@ import { DialogModule } from 'primeng/dialog';
 import { TreeSelectModule } from 'primeng/treeselect';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { FileUploadModule } from 'primeng/fileupload';
 import { CertificatesComponent } from './profile-pages/certificates/certificates.component';
@@ -39,6 +38,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ResetPasswordComponent } from './profile-pages/account-settings/reset-password/reset-password.component';
 import { JoinCompanyComponent } from './profile-pages/join-company/join-company.component';
 import { MenuModule } from 'primeng/menu';
+import { InsighterDashboardSharedModule } from '../insighter-dashboard/insighter-dashboard/shared/shared.module';
 
   @NgModule({
     declarations: [
@@ -86,7 +86,7 @@ import { MenuModule } from 'primeng/menu';
       DropdownMenusModule,
       MenuModule
     ],
-    providers: [ DialogService, NgbActiveModal, MessageService],
+    providers: [DialogService, NgbActiveModal],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]  // Add this line
   })
   export class UserProfileModule { }
