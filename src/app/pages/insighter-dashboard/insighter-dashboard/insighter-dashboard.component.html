@@ -1,5 +1,10 @@
 <p-toast></p-toast>
-
+       <!-- Mobile Menu Toggle Button (visible only on mobile) -->
+       <div class="mobile-menu-toggle" *ngIf="isMobileView">
+        <button type="button" class="btn btn-icon btn-active-color-primary" (click)="toggleNavCollapse()">
+          <i class="pi pi-bars h-30px fs-2 text-info"></i>
+        </button>
+      </div>
 <!-- Mobile Sidebar -->
 <p-sidebar [(visible)]="isMobileSidebarVisible" position="left" [modal]="true" [showCloseIcon]="true" 
            [style]="{width: '300px'}" (onHide)="closeMobileSidebar()" 
@@ -196,7 +201,7 @@
  </p-sidebar>
 
 <div class="flex-column flex-row-fluid pt-sm-160px" id="kt_app_wrapper" > 
-  <div id="kt_app_toolbar" class="app-toolbar d-none d-lg-block"  style="padding-top: 90px;">
+  <div id="kt_app_toolbar" class="app-toolbar d-none d-lg-block"  style="padding-top: 40px;">
     <div
       id="kt_app_toolbar_container"
       class="app-container d-flex align-items-start"
@@ -742,12 +747,7 @@
             </div>
           </div>
 
-          <!-- Mobile Menu Toggle Button (visible only on mobile) -->
-          <div class="mobile-menu-toggle" *ngIf="isMobileView">
-            <button type="button" class="btn btn-icon btn-active-color-primary" (click)="toggleNavCollapse()">
-              <i class="ki-outline ki-burger-menu fs-2 text-info"></i>
-            </button>
-          </div>
+   
 
           <!-- Main Content Area -->
           <div class="main-content-area flex-fill" [ngClass]="{'pe-5': !isRouteActive('my-company-settings'), 'pe-2': isRouteActive('my-company-settings')}">

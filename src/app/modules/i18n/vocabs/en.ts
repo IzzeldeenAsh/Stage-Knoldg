@@ -299,7 +299,7 @@ export const locale = {
       TERMS: 'Terms',
       PRIVACY: 'Privacy',
       COOKIES: 'Cookies',
-      MY_PROFILE: 'Profile Settings',
+      MY_PROFILE: 'Profile',
       MY_PROJECTS: 'My Insights',
       PROFILE_SETTINGS: 'Profile Settings',
       MY_SUBSCRIPTION: 'My Subscription',

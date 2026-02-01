@@ -41,7 +41,7 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
     private getProfileService: ProfileService,
     private _consultingFieldService: ConsultingFieldTreeService,
     private _industries: IndustryService,
-    private _invitationService: InvitationService
+    private _invitationService: InvitationService,
   ) {
     super(injector);
     this.isProcessingInvitation$ = this._invitationService.isLoading$;
@@ -52,6 +52,7 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
     this.handleAPIs();
     this.initForm();
     this.initInvitationForm();
+        
   }
 
   handleAPIs(){
@@ -228,7 +229,7 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
 
     const formData = this.createFormData();
     
-    if (this.hasRole(['insighter'])) {
+    if (this.hasRole(['insighter']) || this.hasRole(['company-insighter'])) {
       // Call both profile and social networks update for insighters
       forkJoin([
         this._profilePost.postProfile(formData),
@@ -239,7 +240,7 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
             ? "تم تعديل البروفايل"
             : "Profile Updated Successfully";
           this.showSuccess("", message);
-          document.location.reload();
+          this.refreshProfileAndForm();
         },
         error: (error) => {
           this.handleServerErrors(error);
@@ -253,7 +254,7 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
             ? "تم تعديل البروفايل"
             : "Profile Updated Successfully";
           this.showSuccess("", message);
-           document.location.reload();
+          this.refreshProfileAndForm();
         },
         error: (error) => {
           this.handleServerErrors(error);
@@ -279,13 +280,40 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
           : "Invitation accepted successfully";
         this.showSuccess("", message);
         this.invitationForm.reset();
-        // Reload to reflect changes
-        document.location.reload();
+        // Refresh profile locally to reflect new roles/permissions
+        this.refreshProfileAndForm();
       },
       error: (error) => {
         this.handleServerErrors(error);
       }
     });
+  }
+
+  /**
+   * Refreshes profile data (clears cache) and re-populates the form
+   * so we don't rely on full page reload after updates (e.g. social links).
+   */
+  private refreshProfileAndForm(): void {
+    const sub = this.getProfileService.refreshProfile().subscribe({
+      next: (profile) => {
+        this.profile = profile;
+        this.roles = profile.roles || [];
+        this.socialNetworks = profile.social || [];
+        this.updateFormValidators();
+        this.populateForm();
+        this.personalInfoForm.markAsPristine();
+      },
+      error: (error) => {
+        // If refresh fails, we still keep the locally-updated form values.
+        // Show a non-blocking warning so user knows data might be stale elsewhere.
+        const msg =
+          this.lang === "ar"
+            ? "تم الحفظ، ولكن حدثت مشكلة أثناء تحديث البيانات."
+            : "Saved, but failed to refresh data.";
+        this.showWarn("", msg);
+      },
+    });
+    this.unsubscribe.push(sub);
   }
   private createFormData(): FormData {
     const formData = new FormData();
@@ -426,7 +454,7 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
     }
 
     // Always send socials for roles that support them, even if empty
-    if (this.hasRole(['insighter'])) {
+    if (this.hasRole(['insighter']) || this.hasRole(['company-insighter'])) {
       return this._profilePost.addInsighterSocial(this.socialNetworks);
     } else if (this.hasRole(['company'])) {
       return this._profilePost.addCompanySocial(this.socialNetworks);

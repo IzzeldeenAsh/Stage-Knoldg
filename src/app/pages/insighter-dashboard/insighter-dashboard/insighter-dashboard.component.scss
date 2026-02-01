@@ -198,7 +198,7 @@
           padding: 0.5rem 0.75rem;
           border-radius: 6px;
           white-space: nowrap;
-          z-index: 1000;
+          z-index: 1140;
           font-size: 0.875rem;
           font-weight: 500;
           margin-left: 0.75rem;
@@ -563,10 +563,9 @@
   position: fixed;
   top: -100px;
   left: 1rem;
-  z-index: 1000;
+  z-index: 1140;
   
   .btn {
-    background: #ffffff;
     border: 1px solid #e9ecef;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -626,7 +625,7 @@
   
   // Mobile menu toggle positioning
   .mobile-menu-toggle {
-    top: -51px;
+    top: 1rem;
     left: 0.5rem;
   }
 }
@@ -654,7 +653,7 @@
 
 @media screen and (max-width: 576px) {
  .pt-sm-160px{
-  padding-top: 115px;
+  padding-top: 40px;
  }
 }
   

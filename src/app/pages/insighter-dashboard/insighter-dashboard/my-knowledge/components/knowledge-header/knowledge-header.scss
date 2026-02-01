@@ -1,0 +1,21 @@
+@media screen and (max-width: 575.98px) {
+    .nav-item{
+        font-size: 0.8rem !important;
+    }
+    .nav-line-tabs .nav-item .nav-link{
+        margin-right: 0.2rem !important;
+    }
+    .card{
+        padding: 0.5rem !important;
+        border: none !important;
+        background: transparent !important;
+        margin-bottom: 0.5rem !important;
+    }
+    .card-header{
+        padding: 0.5rem !important;
+        min-height: 10px !important;
+    }
+    .card-body{
+        padding: 0.5rem !important;
+    }
+}

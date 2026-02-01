@@ -15,6 +15,7 @@ type KnowledgeTypeMap = {
 @Component({
   selector: 'app-knowledge-header',
   templateUrl: './knowledge-header.component.html',
+  styleUrls: ['./knowledge-header.scss'],
 })
 export class KnowledgeHeaderComponent extends BaseComponent implements OnInit {
   totalSize: string = '2.6 GB';
