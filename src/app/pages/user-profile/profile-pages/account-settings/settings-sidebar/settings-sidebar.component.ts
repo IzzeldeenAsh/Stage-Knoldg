@@ -81,14 +81,14 @@ export class SettingsSidebarComponent extends BaseComponent implements OnInit {
     ];
 
     // Only add reset password option for non-social login users
-    if (!this.isSocialLogin) {
-      this.menuItems.push({
-        title: this.lang === 'ar' ? 'تغيير كلمة المرور' : 'Reset Password',
-        route: '/app/profile/settings/reset-password',
-        roles: ['client'],
-        iconSource: 'assets/media/svg/profile-icons/resetPassIcon.svg',
-      });
-    }
+    // if (!this.isSocialLogin) {
+    //   this.menuItems.push({
+    //     title: this.lang === 'ar' ? 'تغيير كلمة المرور' : 'Reset Password',
+    //     route: '/app/profile/settings/reset-password',
+    //     roles: ['client'],
+    //     iconSource: 'assets/media/svg/profile-icons/resetPassIcon.svg',
+    //   });
+    // }
 
     // if (this.isActive) {
     //   this.menuItems.push({
