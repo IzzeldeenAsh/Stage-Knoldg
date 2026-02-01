@@ -257,7 +257,7 @@
     private safeDecodeURIComponent(value: string): string {
       // Angular router typically decodes query params, but the value may still be encoded.
       // We decode once (safely) to support links like:
-      // ?url=https:%2F%2Fapi.foresighta.co%2Fapi%2Femail%2Fverify%2F...%3Fexpires%3D...%26signature%3D...
+      // ?url=https:%2F%2Fapi.insightabusiness.com%2Fapi%2Femail%2Fverify%2F...%3Fexpires%3D...%26signature%3D...
       try {
         return decodeURIComponent(value);
       } catch {

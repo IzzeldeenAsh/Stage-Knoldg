@@ -43,8 +43,7 @@ export class NavigationTabsComponent implements OnInit, OnChanges {
   ];
 
   constructor(
-    private translationService: TranslationService,
-    private authService: AuthService
+    private translationService: TranslationService
   ) {}
 
   ngOnInit(): void {

@@ -88,7 +88,7 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
     }
   ];
   
-  // ISIC and HS code properties
+  // ISIC and Products properties
   isicCodeNodes: TreeNode[] = [];
   hsCodeNodes: TreeNode[] = [];
   selectedIsicId: number = 0;
@@ -900,13 +900,13 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
     }
   }
   
-  // ISIC and HS code methods
+  // ISIC and Products methods
   onIsicCodeSelected(node: any) {
     // Handle clear selection
     if (!node.data || node.data.key === null || node.data.key === undefined) {
       this.selectedIsicId = 0;
       this.form.get('isic_code')?.setValue(null);
-      this.form.get('hs_code')?.setValue(null); // Clear HS code when ISIC is cleared
+      this.form.get('hs_code')?.setValue(null); // Clear Products when ISIC is cleared
       this.updateParentModel({ isic_code: null, hs_code: null }, this.checkForm());
       return;
     }
