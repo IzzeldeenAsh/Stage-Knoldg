@@ -141,7 +141,7 @@ import { TranslateModule } from "@ngx-translate/core";
               <hr class="my-4 divider-clean">
             </div>
 
-            <!-- Other HS Codes section header (when showing all after related) -->
+            <!-- Other Products section header (when showing all after related) -->
             <div *ngIf="isicCodeId && relatedHSCodes.length > 0 && showAllCodes" class="section-header-clean mb-3">
               <h3 class="mb-1 text-muted fw-bold">
                 <i class="fas fa-list me-2"></i>
@@ -174,7 +174,7 @@ import { TranslateModule } from "@ngx-translate/core";
             <div>{{ 'NO_RESULTS_FOUND' | translate }}</div>
           </div>
 
-          <!-- No HS codes available -->
+          <!-- No Products available -->
           <div *ngIf="hsCodes.length === 0 && allHSCodes.length === 0" class="text-center p-4 text-muted">
             <i class="fas fa-info-circle mb-2"></i>
             <div>{{ 'NO_HS_CODES_AVAILABLE' | translate }}</div>
@@ -208,7 +208,7 @@ import { TranslateModule } from "@ngx-translate/core";
       </label>
 
       <div *ngIf="isLoading$ | async" class="text-center">
-        {{ 'COMMON.LOADING' | translate }} HS Codes...
+        {{ 'COMMON.LOADING' | translate }} Products...
       </div>
 
       <div *ngIf="!(isLoading$ | async)" class="position-relative">
@@ -354,13 +354,13 @@ import { TranslateModule } from "@ngx-translate/core";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GetHsCodeByIsicComponent implements OnInit, OnDestroy, OnChanges {
-  @Input() title: string = "Select HS Code";
-  @Input() placeholder: string = "Select HS Code...";
+  @Input() title: string = "Select Product";
+  @Input() placeholder: string = "Select Product...";
   @Input() isRequired: boolean = false;
   @Input() isicCodeId!: number;
   @Input() cancelLabel: string = "Cancel";
   @Input() okLabel: string = "OK";
-  @Input() tip: string = "Select an HS Code for the selected ISIC Code";
+  @Input() tip: string = "Select an Products for the selected ISIC Code";
   @Input() language: string = "en";
   @Input() preselectedHSCodeId?: number;
 
@@ -386,7 +386,7 @@ export class GetHsCodeByIsicComponent implements OnInit, OnDestroy, OnChanges {
   ) {}
 
   ngOnInit() {
-    // Load HS codes on initialization
+    // Load Products on initialization
     this.loadHSCodes();
     // Set up responsive dialog sizing
     this.handleWindowResize();
@@ -398,7 +398,7 @@ export class GetHsCodeByIsicComponent implements OnInit, OnDestroy, OnChanges {
   
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isicCodeId']) {
-      // Don't reload if we already have HS codes loaded
+      // Don't reload if we already have Products loaded
       if (this.allHSCodes.length > 0) {
         this.updateRelatedCodes();
       } else {
@@ -416,7 +416,7 @@ export class GetHsCodeByIsicComponent implements OnInit, OnDestroy, OnChanges {
     this.isLoading$.next(true);
 
     return new Promise<void>((resolve) => {
-      // Only load all HS codes
+      // Only load all Products
       const sub = this.hsCodeService.getHSCodes().subscribe({
         next: (codes) => {
           this.allHSCodes = (codes || []).sort((a: HSCode, b: HSCode) => a.code.localeCompare(b.code));
@@ -425,7 +425,7 @@ export class GetHsCodeByIsicComponent implements OnInit, OnDestroy, OnChanges {
           resolve();
         },
         error: (error) => {
-          console.error('Error loading HS Codes:', error);
+          console.error('Error loading Products:', error);
           this.allHSCodes = [];
           this.relatedHSCodes = [];
           this.hsCodes = [];
@@ -457,11 +457,11 @@ export class GetHsCodeByIsicComponent implements OnInit, OnDestroy, OnChanges {
         code.isic_code_id === this.isicCodeId
       ).sort((a: HSCode, b: HSCode) => a.code.localeCompare(b.code));
 
-      // Check if currently selected HS code is in related codes
+      // Check if currently selected Products is in related codes
       const selectedIsInRelated = this.selectedHSCode &&
         this.relatedHSCodes.some(code => code.id === this.selectedHSCode!.id);
 
-      // If we have a selected HS code that's not in related codes, show all immediately
+      // If we have a selected Products that's not in related codes, show all immediately
       if (this.selectedHSCode && !selectedIsInRelated) {
         this.showAllCodes = true;
       } else {

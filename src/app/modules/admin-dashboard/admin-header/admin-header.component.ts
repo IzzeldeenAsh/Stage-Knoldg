@@ -38,7 +38,7 @@ export class AdminHeaderComponent {
     'industries': 'Industries',
     'tags': 'Tags',
     'topics': 'Topics',
-    'hscode': 'HS Code',
+    'hscode': 'Products',
     'guidelines': 'Guidelines',
     'accounts': 'Accounts',
     'main-accounts': 'User Management',

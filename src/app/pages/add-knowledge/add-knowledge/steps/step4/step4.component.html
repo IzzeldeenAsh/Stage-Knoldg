@@ -677,12 +677,12 @@
         </app-industry-selector>
       </div>
 
-      <!-- HS Code - Always visible -->
+      <!-- Products - Always visible -->
       <div class="mb-10 fv-row">
         <app-get-hs-code-by-isic
           [isicCodeId]="selectedIsicId"
-          [placeholder]="currentLanguage == 'ar' ? 'اختر رمز الـ HS' : 'Select HS code'"
-          [title]="currentLanguage == 'ar' ? 'اختر رمز الـ HS' : 'Select HS code'"
+          [placeholder]="currentLanguage == 'ar' ? 'اختر رمز الـ HS' : 'Select Product'"
+          [title]="currentLanguage == 'ar' ? 'اختر رمز الـ HS' : 'Select Product'"
           [isRequired]="false"
           [language]="currentLanguage"
           [cancelLabel]="currentLanguage == 'ar' ? 'الغاء' : 'Cancel'"

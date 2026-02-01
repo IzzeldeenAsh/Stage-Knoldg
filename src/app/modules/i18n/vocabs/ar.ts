@@ -1383,7 +1383,7 @@ INSIGHTER_REQUESTS: {
   FILE_NAME_DUPLICATE:'اسم الملف موجود بالفعل',
   SAVE_CHANGES: 'حفظ التغييرات',
   VIEW_MY_KNOWLEDGE: {
-    HS_CODE: 'رمز HS',
+    HS_CODE: 'رمز المنتج',
     REVIEW_AND_COMPLETE: 'مراجعة وإكمال',
     SEND_TO_REVIEW: 'إرسال للمراجعة من المدير',
     SHARE: 'مشاركة',
