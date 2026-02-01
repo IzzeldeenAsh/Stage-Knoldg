@@ -348,7 +348,7 @@ INSIGHTER_REQUESTS: {
       TERMS: "الشروط",
       PRIVACY: "الخصوصية",
       COOKIES: "الكوكيز",
-      MY_PROFILE: 'إعدادات ملفي الشخصي',
+      MY_PROFILE: 'ملفي الشخصي',
       MY_PROJECTS: 'تقاريري',
       MY_SUBSCRIPTION: 'اشتراكي',
       MY_STATEMENTS: 'بياناتي',
