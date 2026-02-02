@@ -59,7 +59,7 @@
                     <!-- Overlapping insighter avatar when company exists -->
                     <div *ngIf="order.orderable?.insighter?.company?.logo" 
                          class="position-absolute"
-                         style="width: 16px; height: 16px; border: 1.5px solid white; border-radius: 50%; overflow: hidden; background-color: #E3F2FD; bottom: -1px; right: -1px; transform: translate(0, 0);">
+                         style="width: 16px; height: 16px; border: 1.5px solid white; border-radius: 50%; overflow: hidden; background-color: #E3F2FD; bottom: -10px; right: -1px; transform: translate(0, 0);">
                       <img *ngIf="order.orderable?.insighter?.profile_photo_url"
                            [src]="order.orderable?.insighter?.profile_photo_url"
                            [alt]="order.orderable?.insighter?.name"
@@ -81,7 +81,7 @@
                     <div *ngIf="!order.orderable?.insighter?.company?.logo && !order.orderable?.insighter?.profile_photo_url"
                          class="symbol-label bg-light-info rounded-circle d-flex align-items-center justify-content-center">
                       <span class="text-info fw-bold fs-8">
-                        {{ (order.orderable?.insighter?.first_name?.charAt(0) || '') + (order.orderable?.insighter?.last_name?.charAt(0) || '') }}
+                        {{ getInsighterInitials(order.orderable.insighter) }}
                       </span>
                     </div>
                   </div>

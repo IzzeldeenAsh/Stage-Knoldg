@@ -52,5 +52,8 @@ export class KnowledgeOrdersComponent {
     this.copyOrderNo.emit(orderNo);
   }
 
+  getInsighterInitials(insighter: any): string {
+    return (insighter.name?.split(' ')[0]?.charAt(0) || '') + (insighter.name?.split(' ')[1]?.charAt(0) || '');
+  }
 
 }

@@ -98,7 +98,7 @@
           <!-- Overlapping insighter avatar when company exists -->
           <div *ngIf="order.orderable?.insighter?.company?.logo" 
                class="position-absolute"
-               style="width: 22px; height: 22px; border: 2px solid white; border-radius: 50%; overflow: hidden; background-color: #E3F2FD; bottom: -2px; right: -2px; transform: translate(0, 0);">
+               style="width: 22px; height: 22px; border: 2px solid white; border-radius: 50%; overflow: hidden; background-color: #E3F2FD; bottom: -10px; right: -2px; transform: translate(0, 0);">
             <img *ngIf="order.orderable?.insighter?.profile_photo_url"
                  [src]="order.orderable?.insighter?.profile_photo_url"
                  [alt]="order.orderable?.insighter?.name"
