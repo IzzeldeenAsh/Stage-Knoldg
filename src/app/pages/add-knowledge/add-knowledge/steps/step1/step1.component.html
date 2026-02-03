@@ -6,16 +6,21 @@
 <div class="pb-10 pb-lg-15">
   <h2 class="fw-bolder d-flex align-items-center text-gray-900">
     {{ 'CHOOSE_KNOWLEDGE_TYPE' | translate }}
-    <i
-      class="fas fa-exclamation-circle mx-2 fs-7"
-      [ngbTooltip]=" 'KNOWLEDGE_TYPE_TOOLTIP_EXPLANATION' | translate "
-    ></i>
+    <span class="custom-tooltip-wrapper">
+      <i
+        class="fas fa-exclamation-circle mx-2 fs-7 cursor-pointer "
+        (mouseenter)="activeTooltip = 'header'"
+        (mouseleave)="activeTooltip = null"
+      ></i>
+      <div 
+        class="custom-tooltip header-tooltip" 
+        *ngIf="activeTooltip === 'header'"
+        [class.rtl]="isRtl"
+      >
+        <div class="custom-tooltip-content" [innerHTML]="'KNOWLEDGE_TYPE_TOOLTIP_EXPLANATION' | translate"></div>
+      </div>
+    </span>
   </h2>
-
-  <ng-template #tooltipTpl let-tooltip="tooltip">
-    <div class="kn-tooltip-content" [attr.dir]="isRtl ? 'rtl' : 'ltr'" [style.text-align]="isRtl ? 'right' : 'left'" [innerHTML]="tooltipContent ? (tooltipContent | translate) : ''"></div>
-  </ng-template>
-
 </div>
 
 <div class="fv-row" [formGroup]="form">
@@ -33,14 +38,20 @@
       <label
         class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center position-relative hover-elevate-up shadow-sm rounded-3 transition h-100"
         [for]="type.id"
-        [ngbTooltip]="type.tooltip ? tooltipTpl : null"
-        (mouseenter)="tooltipContent = type.tooltip"
-        (mouseleave)="tooltipContent = null"
-        container="body"
+        (mouseenter)="type.tooltip ? activeTooltip = type.value : null"
+        (mouseleave)="activeTooltip = null"
         [class.disabled]="type.disabled"
         [style.cursor]="type.disabled ? 'not-allowed' : 'pointer'"
         style="min-height: 160px;"
       >
+        <!-- Custom Tooltip -->
+        <div 
+          class="custom-tooltip card-tooltip" 
+          *ngIf="type.tooltip && activeTooltip === type.value"
+          [class.rtl]="isRtl"
+        >
+          <div class="custom-tooltip-content" [innerHTML]="type.tooltip | translate"></div>
+        </div>
         <svg class="mx-5 my-5" *ngIf="type.value === 'data'" width="38" height="42" viewBox="0 0 26 29" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M12.5596 0C9.13931 0 5.92618 0.608334 3.51251 1.71279C1.28038 2.73511 0 4.08721 0 5.42527C0 6.76332 1.28038 8.11584 3.51251 9.13766C5.92618 10.2421 9.13923 10.8504 12.5596 10.8504C15.98 10.8504 19.1935 10.2421 21.6064 9.13766C23.8388 8.11584 25.1196 6.7634 25.1196 5.42527C25.1196 4.08713 23.8388 2.73511 21.6064 1.71279C19.1931 0.608334 15.9799 0 12.5596 0Z" fill="black"/>
           <path d="M0 8.1631C0.70931 8.93133 1.72436 9.627 3.01754 10.2193C5.58309 11.3931 8.97215 12.0398 12.56 12.0398C16.1479 12.0398 19.5365 11.3927 22.1021 10.2193C23.3953 9.627 24.4103 8.93158 25.1196 8.1631V11.6126C25.1196 12.9547 23.8416 14.3088 21.614 15.3283C19.2055 16.43 15.99 17.0375 12.5596 17.0375C9.12923 17.0375 5.91329 16.43 3.50532 15.3283C1.27757 14.3088 0 12.9547 0 11.6126V8.1631Z" fill="black"/>

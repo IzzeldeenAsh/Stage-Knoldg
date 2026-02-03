@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { FormsModule } from '@angular/forms';
@@ -7,6 +7,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TruncateTextPipe } from 'src/app/pipes/truncate-pipe/truncate-text.pipe';
 import { TranslationModule } from 'src/app/modules/i18n';
 import { ChipModule } from 'primeng/chip';
+import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
+import { normalizeSearchText } from 'src/app/utils/search-normalize';
 
 @Component({
   selector: 'app-select-economic-block',
@@ -15,7 +17,7 @@ import { ChipModule } from 'primeng/chip';
   templateUrl: './select-economic-block.component.html',
   styleUrls: ['./select-economic-block.component.scss']
 })
-export class SelectEconomicBlockComponent implements OnInit, OnChanges {
+export class SelectEconomicBlockComponent implements OnInit, OnChanges, OnDestroy {
   @Input() placeholder: string = 'Select Economic Block...';
   @Input() title: string = 'Select Economic Blocks';
   @Output() blocksSelected = new EventEmitter<EconomicBloc[]>();
@@ -28,10 +30,30 @@ export class SelectEconomicBlockComponent implements OnInit, OnChanges {
   displayValue: string = '';
   searchQuery: string = '';
 
+  private search$ = new Subject<string>();
+  private destroy$ = new Subject<void>();
+  private blocksIndex: Array<{ block: EconomicBloc; normName: string }> = [];
+
   constructor(private economicBlockService: EconomicBlockService) {}
 
   ngOnInit() {
     this.loadEconomicBlocks();
+
+    // Debounce filtering so typing stays responsive.
+    this.search$
+      .pipe(
+        debounceTime(120),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((q) => {
+        this.applyFilter(q);
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -47,6 +69,10 @@ export class SelectEconomicBlockComponent implements OnInit, OnChanges {
     this.economicBlockService.getEconomicBlocs().subscribe({
       next: (blocks) => {
         this.economicBlocks = blocks;
+        this.blocksIndex = this.economicBlocks.map((b) => ({
+          block: b,
+          normName: normalizeSearchText(b.name),
+        }));
         this.filteredBlocks = [...this.economicBlocks];
         this.updateSelectedBlocks();
       },
@@ -78,6 +104,7 @@ export class SelectEconomicBlockComponent implements OnInit, OnChanges {
     this.dialogVisible = true;
     this.searchQuery = '';
     this.filteredBlocks = [...this.economicBlocks];
+    this.search$.next('');
   }
 
   /**
@@ -135,15 +162,19 @@ export class SelectEconomicBlockComponent implements OnInit, OnChanges {
    * Filters blocks based on search query
    */
   filterBlocks() {
-    if (!this.searchQuery || this.searchQuery.trim() === '') {
+    // Called on each input event; schedule debounced filtering instead of filtering synchronously.
+    this.search$.next(this.searchQuery);
+  }
+
+  private applyFilter(rawQuery: string) {
+    const q = normalizeSearchText(rawQuery);
+    if (!q) {
       this.filteredBlocks = [...this.economicBlocks];
       return;
     }
-
-    const query = this.searchQuery.toLowerCase().trim();
-    this.filteredBlocks = this.economicBlocks.filter(block => 
-      block.name.toLowerCase().includes(query)
-    );
+    this.filteredBlocks = this.blocksIndex
+      .filter((x) => x.normName.includes(q))
+      .map((x) => x.block);
   }
 
   /**

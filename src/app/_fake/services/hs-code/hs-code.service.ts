@@ -19,7 +19,7 @@ export class HSCodeService {
 
   private handleError(error: any) {
     console.error('An error occurred:', error);
-    return throwError(() => new Error('Could not get HS codes; please try again later.'));
+    return throwError(() => new Error('Could not get Products; please try again later.'));
   }
 
   getHSCodes(lang: string = 'en'): Observable<any> {

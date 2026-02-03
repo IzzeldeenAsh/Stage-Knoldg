@@ -15,11 +15,13 @@ import { TagsService } from 'src/app/_fake/services/tags/tags.service';
 import { KnowledgeService } from 'src/app/_fake/services/knowledge/knowledge.service';
 import { AddInsightStepsService } from 'src/app/_fake/services/add-insight-steps/add-insight-steps.service';
 import { RegionsService } from 'src/app/_fake/services/region/regions.service';
+import { normalizeSearchText } from 'src/app/utils/search-normalize';
 
 interface TagItem {
   display: string;
   value: string;
   id: number;
+  normalizedDisplay?: string;
 }
 
 @Component({
@@ -62,6 +64,8 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
   // Language related properties
   languages: Language[] = [];
   currentLang: string = 'en';
+  languageChipIds: { ar: string | null; en: string | null } = { ar: null, en: null };
+  private pendingParsedLanguage: string | null = null;
   
   // Industry related properties
   industryNodes: TreeNode[] = [];
@@ -88,7 +92,7 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
     }
   ];
   
-  // ISIC and HS code properties
+  // ISIC and Products properties
   isicCodeNodes: TreeNode[] = [];
   hsCodeNodes: TreeNode[] = [];
   selectedIsicId: number = 0;
@@ -100,6 +104,13 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
   selectedTagItems: TagItem[] = [];
   selectedTagIds: number[] = [];
   selectedTagForAdding: number | null = null;
+  newTagName: string = '';
+  showAllTags = false;
+  private readonly tagsPreviewLimit = 17;
+
+  get displayedTags(): TagItem[] {
+    return this.showAllTags ? this.availableTags : this.availableTags.slice(0, this.tagsPreviewLimit);
+  }
 
   @ViewChild('regionSelector') regionSelector: any;
   @ViewChild('economicBlockSelector') economicBlockSelector: any;
@@ -476,6 +487,8 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
       next: (response) => {
         this.industryNodes = response.industries;
         this.languages = response.languages;
+        this.computeLanguageChipIds();
+        this.applyPendingParsedLanguage();
         this.isicCodeNodes = response.isicCodes;
         this.fetchTags();
       },
@@ -488,6 +501,97 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
       }
     });
     this.unsubscribe.push(dataSub);
+  }
+
+  private computeLanguageChipIds(): void {
+    this.languageChipIds = {
+      ar: this.findLanguageId('ar'),
+      en: this.findLanguageId('en'),
+    };
+  }
+
+  private findLanguageId(target: 'ar' | 'en'): string | null {
+    // Prefer direct ID matching if the API uses 'ar'/'en'
+    const byId = this.languages.find((l) => (l?.id ?? '').toLowerCase() === target);
+    if (byId?.id) return byId.id;
+
+    // Fallback: match by localized name
+    const patterns =
+      target === 'ar'
+        ? ['arabic', 'عربي', 'العربية', 'عربى']
+        : ['english', 'انجليزي', 'إنجليزي', 'الانجليزية', 'الإنجليزية'];
+
+    const byName = this.languages.find((l) => {
+      const name = (l?.name ?? '').toString().toLowerCase();
+      return patterns.some((p) => name.includes(p.toLowerCase()));
+    });
+
+    return byName?.id ?? null;
+  }
+
+  private resolveLanguageId(target: 'ar' | 'en'): string | null {
+    const id = target === 'ar' ? this.languageChipIds.ar : this.languageChipIds.en;
+    if (id) return id;
+    return this.findLanguageId(target);
+  }
+
+  private inferLanguageTarget(raw: unknown): 'ar' | 'en' | null {
+    if (raw == null) return null;
+    const value = String(raw).trim().toLowerCase();
+    if (!value) return null;
+
+    // Common parser values: "english" | "arabic"
+    if (value === 'en' || value.includes('english')) return 'en';
+    if (value === 'ar' || value.includes('arabic') || value.includes('العربية') || value.includes('عربي')) return 'ar';
+
+    return null;
+  }
+
+  private setLanguageFromParser(rawLanguage: unknown): void {
+    const target = this.inferLanguageTarget(rawLanguage);
+    if (!target) return;
+
+    const id = this.resolveLanguageId(target);
+    if (!id) {
+      // Languages list might not be loaded yet; defer.
+      this.pendingParsedLanguage = String(rawLanguage);
+      return;
+    }
+
+    this.form.get('language')?.setValue(id);
+    this.aiGeneratedFields.language = true;
+    this.pendingParsedLanguage = null;
+  }
+
+  private applyPendingParsedLanguage(): void {
+    if (!this.pendingParsedLanguage) return;
+
+    const control = this.form.get('language');
+    // If the user already selected a language, don't overwrite it.
+    if (control?.value) {
+      this.pendingParsedLanguage = null;
+      return;
+    }
+
+    this.setLanguageFromParser(this.pendingParsedLanguage);
+  }
+
+  setLanguageChip(target: 'ar' | 'en'): void {
+    const control = this.form.get('language');
+    control?.markAsTouched();
+
+    const id = target === 'ar' ? this.languageChipIds.ar : this.languageChipIds.en;
+    if (!id) {
+      this.showWarn(
+        this.lang === 'ar' ? 'تنبيه' : 'Warning',
+        this.lang === 'ar'
+          ? 'تعذر تحديد معرفات اللغة. يرجى إعادة المحاولة.'
+          : 'Could not resolve language IDs. Please try again.'
+      );
+      return;
+    }
+
+    control?.setValue(id);
   }
   
   private fetchKnowledgeData(knowledgeId: number) {
@@ -670,7 +774,7 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
       if (!control.value) {
         return null;
       }
-      const enteredTopic = control.value.trim().toLowerCase();
+      const enteredTopic = normalizeSearchText(control.value);
       const exists = this.topicNames.includes(enteredTopic);
       return exists ? { duplicateTopic: true } : null;
     };
@@ -705,9 +809,16 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
   private getTopics(industryId: number) {
     this.topicService.getTopicsByIndustry(industryId).subscribe({
       next: (data: Topic[]) => {
-        this.topics = [...data, { id: 'other', name: 'Other' }];
-        // Store trimmed and lowercased topic names for validation
-        this.topicNames = data.map(topic => topic.name.trim().toLowerCase());
+        // Add normalized field for hamza/diacritics tolerant filtering in the dropdown.
+        this.topics = [
+          ...data.map((t: any) => ({
+            ...t,
+            normalizedName: normalizeSearchText(t.name),
+          })),
+          { id: 'other', name: this.lang == 'ar' ? 'موضوع آخر' : 'Other Topic', normalizedName: 'other' },
+        ];
+        // Store normalized topic names for validation (handles hamza/diacritics)
+        this.topicNames = data.map(topic => normalizeSearchText(topic.name));
         this.selectedTopic = null;
         if (this.selectedIndustryId && this.defaultValues.topicId) {
           this.form.get('topicId')?.setValue(this.defaultValues.topicId);
@@ -900,13 +1011,13 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
     }
   }
   
-  // ISIC and HS code methods
+  // ISIC and Products methods
   onIsicCodeSelected(node: any) {
     // Handle clear selection
     if (!node.data || node.data.key === null || node.data.key === undefined) {
       this.selectedIsicId = 0;
       this.form.get('isic_code')?.setValue(null);
-      this.form.get('hs_code')?.setValue(null); // Clear HS code when ISIC is cleared
+      this.form.get('hs_code')?.setValue(null); // Clear Products when ISIC is cleared
       this.updateParentModel({ isic_code: null, hs_code: null }, this.checkForm());
       return;
     }
@@ -947,7 +1058,8 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
           this.availableTags = this.tags.map((tag) => ({
             display: tag.name,
             value: tag.name,
-            id: tag.id
+            id: tag.id,
+            normalizedDisplay: normalizeSearchText(tag.name),
           }));
           
           // Update tag items for display
@@ -973,7 +1085,8 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
           this.availableTags = this.tags.map((tag) => ({
             display: tag.name,
             value: tag.name,
-            id: tag.id
+            id: tag.id,
+            normalizedDisplay: normalizeSearchText(tag.name),
           }));
           
           // Update tag items display
@@ -1036,7 +1149,13 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
     if (!tagValue?.trim()) return;
     
     // Check if this is one of our existing tags
-    const existingTag = this.availableTags.find(t => t.value === tagValue || t.display === tagValue);
+    const norm = normalizeSearchText(tagValue);
+    const existingTag = this.availableTags.find((t) => {
+      return (
+        normalizeSearchText(t.value) === norm ||
+        normalizeSearchText(t.display) === norm
+      );
+    });
     
     if (existingTag && existingTag.id) {
       // This is an existing tag, add it to selected if not already selected
@@ -1072,9 +1191,11 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
         const newTag: TagItem = {
           display: tagName,
           value: tagName,
-          id: newTagId
+          id: newTagId,
+          normalizedDisplay: normalizeSearchText(tagName),
         };
-        this.availableTags.push(newTag);
+        // Put the newly added tag first
+        this.availableTags = [newTag, ...this.availableTags];
         
         // Add to selected tags
         this.selectedTagIds = [...this.selectedTagIds, newTagId];
@@ -1094,6 +1215,62 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
         this.handleServerErrors(error);
       },
     });
+  }
+
+  // Chips-based tag selection
+  isTagSelected(tagId: number): boolean {
+    return this.selectedTagIds.includes(tagId);
+  }
+
+  toggleTagChip(tag: TagItem): void {
+    if (!tag?.id) return;
+
+    // Mark required control as touched so errors show immediately
+    this.form.get('tag_ids')?.markAsTouched();
+
+    // Clear server error once user interacts
+    this.tagIdError = '';
+
+    if (this.isTagSelected(tag.id)) {
+      this.selectedTagIds = this.selectedTagIds.filter((id) => id !== tag.id);
+    } else {
+      this.selectedTagIds = [...this.selectedTagIds, tag.id];
+    }
+
+    this.updateTagItems();
+    this.updateFormAndParent();
+  }
+
+  addNewTagFromInput(): void {
+    const tagName = (this.newTagName || '').trim();
+    if (!tagName) return;
+
+    // If it already exists in available tags, just select it
+    const norm = normalizeSearchText(tagName);
+    const existingTag = this.availableTags.find((t) => {
+      return (
+        normalizeSearchText(t.value) === norm ||
+        normalizeSearchText(t.display) === norm
+      );
+    });
+
+    if (existingTag?.id) {
+      if (!this.selectedTagIds.includes(existingTag.id)) {
+        this.selectedTagIds = [...this.selectedTagIds, existingTag.id];
+        this.updateTagItems();
+        this.updateFormAndParent();
+      }
+      this.newTagName = '';
+      return;
+    }
+
+    // Otherwise create it via API (also selects it)
+    this.createCustomTagViaAPI(tagName);
+    this.newTagName = '';
+  }
+
+  toggleViewMoreTags(): void {
+    this.showAllTags = !this.showAllTags;
   }
   
   
@@ -1366,18 +1543,9 @@ export class Step4Component extends BaseComponent implements OnInit, OnDestroy {
       this.startTypingAnimation(data.abstract);
     }
     
-    // Update language if available (convert from string to ID)
+    // Update language if available (convert from parser string to language ID)
     if (data.language) {
-      // Find the language ID by name
-      const languageName = data.language.toLowerCase();
-      const language = this.languages.find(lang => 
-        lang.name.toLowerCase() === languageName
-      );
-      
-      if (language) {
-        this.form.get('language')?.setValue(language.id);
-        this.aiGeneratedFields.language = true;
-      }
+      this.setLanguageFromParser(data.language);
     }
     
     // Update industry if available

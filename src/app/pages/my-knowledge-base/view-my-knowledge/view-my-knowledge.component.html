@@ -68,7 +68,7 @@
               <span class="path4"></span>
               <span class="path5"></span>
             </i>
-            {{"COMMON.DELETE" | translate}}
+           {{lang === 'ar' ? 'حذف' : 'Delete'}}
           </button>
             <!-- Only show edit button if not in review -->
             <button class="btn btn-xs btn-success d-flex align-items-center" 
@@ -406,7 +406,7 @@
                   </span>
                 </div>
 
-                <!-- HS Code -->
+                <!-- Products -->
                 <div
                   *ngIf="knowledge && knowledge.hs_code"
                   class="tp-course-details2-widget-list-item d-flex align-items-center justify-content-between mb-3"

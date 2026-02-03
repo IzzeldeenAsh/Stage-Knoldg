@@ -229,7 +229,7 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
 
     const formData = this.createFormData();
     
-    if (this.hasRole(['insighter']) || this.hasRole(['company-insighter'])) {
+    if (this.hasRole(['insighter']) || this.hasRole(['company-insighter']) || this.hasRole(['company'])) {
       // Call both profile and social networks update for insighters
       forkJoin([
         this._profilePost.postProfile(formData),
@@ -454,7 +454,7 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
     }
 
     // Always send socials for roles that support them, even if empty
-    if (this.hasRole(['insighter']) || this.hasRole(['company-insighter'])) {
+    if (this.hasRole(['insighter']) || this.hasRole(['company-insighter']) || this.hasRole(['company'])) {
       return this._profilePost.addInsighterSocial(this.socialNetworks);
     } else if (this.hasRole(['company'])) {
       return this._profilePost.addCompanySocial(this.socialNetworks);

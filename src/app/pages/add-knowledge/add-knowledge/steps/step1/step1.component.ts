@@ -83,8 +83,8 @@ export class Step1Component extends BaseComponent implements OnInit, OnChanges {
     }
   ];
 
-  tooltipContent: string | null = null;
   isRtl = false;
+  activeTooltip: string | null = null;
 
   constructor(injector: Injector, private fb: FormBuilder, private translationService: TranslationService) {
     super(injector);

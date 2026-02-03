@@ -47,6 +47,7 @@
           <div class="col-lg-12 fv-row">
             <shared-tree-selector *ngIf="consultingFields"
               [title]="lang === 'ar' ? 'التخصصات' : 'Expertise'"
+              [type]="'expertise'"
               [placeholder]="'AUTH.REGISTRATION.CONSULTING_FIELD_PLACEHOLDER' | translate"
               [isRequired]="true"
               [otherFieldPlaceholder]="'INSIGHTER_WIZARD.OTHER_FIELD_PLACEHOLDER' | translate"
@@ -66,11 +67,12 @@
           <div class="col-lg-12 fv-row">
             <!-- Debug info -->
             <div *ngIf="!industries?.length" class="alert alert-warning">
-              No industries data available
+              {{lang == 'ar' ? 'لا يوجد بيانات للمجالات' : 'No industries data available'}}
             </div>
             <shared-tree-selector 
               *ngIf="industries && industries.length > 0"
               [title]="lang === 'ar' ? 'المجالات' : 'Specialties (Industries)'"
+              [subtitle]="lang == 'ar' ? 'اختر المجالات التي تنتمي إليها' : 'Select the industries you belong to'"
               [isRequired]="true"
               [placeholder]="'AUTH.REGISTRATION.INDUSTRY_PLACEHOLDER' | translate"
               [otherFieldPlaceholder]="'INSIGHTER_WIZARD.OTHER_FIELD_PLACEHOLDER' | translate"
@@ -78,6 +80,7 @@
               [fetchedData]="industries"
               [initialSelectedNodes]="personalInfoForm.value.industries" 
               [cancelLabel]="'BUTTONS.CANCEL' | translate"
+              [currentLang]="lang"
               [okLabel]="'BUTTONS.OK' | translate"
               (nodesSelected)="onIndustrySelected($event)"
             ></shared-tree-selector>
@@ -168,7 +171,7 @@
             </div>
           </div>
         </div>
-        <div class="row mb-6" *ngIf="hasRole(['insighter']) || hasRole(['company-insighter'])">
+        <div class="row mb-6" *ngIf="hasRole(['insighter']) || hasRole(['company-insighter']) || hasRole(['company'])">
           <div class="col-12">
             <label class="form-label">
               {{ "ACCOUNT_SETTINGS.SOCIAL_NETWORKS" | translate }}

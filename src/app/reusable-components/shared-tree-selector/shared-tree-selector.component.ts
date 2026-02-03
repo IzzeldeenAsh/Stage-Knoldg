@@ -24,6 +24,7 @@ import { InputTextModule } from "primeng/inputtext";
 import { TreeNode } from "./TreeNode";
 import { ChipModule } from 'primeng/chip';
 import { TranslateService } from "@ngx-translate/core";
+import { lang } from "moment";
 @Component({
   selector: "shared-tree-selector",
   standalone: true,
@@ -41,6 +42,7 @@ import { TranslateService } from "@ngx-translate/core";
 })
 export class SharedTreeSelectorComponent implements OnInit, OnChanges, OnDestroy {
   @Input() title: string = "Select Items";
+  @Input() type: string = "industry";
   @Input() placeholder: string = "Select...";
   @Input() otherFieldPlaceholder: string = "Specify Other...";
   @Input() selectAllLabel: string = "Select All";
@@ -49,7 +51,8 @@ export class SharedTreeSelectorComponent implements OnInit, OnChanges, OnDestroy
   @Input() cancelLabel: string = "Cancel";
   @Input() okLabel: string = "OK";
   @Input() currentLang: string = "en";
-
+  public subtitle: string = "";
+ 
   /**
    * Previously selected nodes that should be reselected when the dialog is shown again.
    * These should be an array of TreeNode objects that were emitted previously.
@@ -69,6 +72,18 @@ export class SharedTreeSelectorComponent implements OnInit, OnChanges, OnDestroy
 
   constructor(private translate: TranslateService) {} 
   ngOnInit(): void {
+    if(this.currentLang ==='ar' && this.title === 'المجالات') {
+      this.subtitle = "يمكتك اختيار المجالات التي تنتمي إليها او إضافة مجال جديد من نهاية القائمة";
+    } else if(this.currentLang !== 'ar' && this.title === 'Specialties (Industries)') {
+      this.subtitle = "You can choose the industries you belong to or add a new industry from the end of the list";
+    } 
+    if(this.type === 'expertise'){
+      if(this.currentLang === 'ar') {
+        this.subtitle = "يمكتك اختيار التخصصات التي تنتمي إليها او إضافة تخصص جديد من نهاية القائمة";
+      } else if(this.currentLang !== 'ar') {
+        this.subtitle = "You can choose the expertise you belong to or add a new expertise from the end of the list";
+      }
+    }
     // Initialize committed state with initial selected nodes first
     this.committedNodes = [...(this.initialSelectedNodes || [])];
     this.loadData();
@@ -78,6 +93,7 @@ export class SharedTreeSelectorComponent implements OnInit, OnChanges, OnDestroy
   }
 
   ngOnChanges(): void {
+ 
     // When inputs change (e.g., fetched data or initial selections), rebuild and re-sync
     if (this.fetchedData) {
       this.loadData();

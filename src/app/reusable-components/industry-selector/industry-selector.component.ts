@@ -17,12 +17,14 @@ import {
   map,
   startWith,
 } from "rxjs";
+import { Subject, debounceTime, distinctUntilChanged, takeUntil } from "rxjs";
 import { DialogModule } from "primeng/dialog";
 import { FormsModule } from "@angular/forms";
 import { InputTextModule } from "primeng/inputtext";
 import { TreeNode } from "primeng/api";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { TranslationModule } from "src/app/modules/i18n";
+import { normalizeSearchText } from "src/app/utils/search-normalize";
 
 interface FlatNode {
   key: number;
@@ -332,15 +334,31 @@ export class IndustrySelectorComponent implements OnInit, OnDestroy {
   searchText: string = '';
   filteredNodes: FlatNode[] = [];
   filteredGroups: GroupedSection[] = [];
+  private flatIndex: Array<{ node: FlatNode; normLabel: string; normCode: string; normPath: string }> = [];
+  private search$ = new Subject<string>();
+  private destroy$ = new Subject<void>();
 
   constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.loadData();
     this.handleWindowResize();
+
+    // Debounce filtering so typing stays responsive.
+    this.search$
+      .pipe(
+        debounceTime(120),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((q) => {
+        this.applyFilter(q);
+      });
   }
 
   ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }
 
@@ -355,6 +373,14 @@ export class IndustrySelectorComponent implements OnInit, OnDestroy {
     this.groupedNodes = this.buildGroupsFromList(this.flatLeafNodes);
     this.filteredGroups = [...this.groupedNodes];
     this.filteredNodes = this.flattenGroups(this.filteredGroups); // Initialize filtered nodes
+
+    // Build normalization cache for fast, tolerant searching
+    this.flatIndex = this.flatLeafNodes.map((n) => ({
+      node: n,
+      normLabel: normalizeSearchText(n.label),
+      normCode: normalizeSearchText(n.code || ''),
+      normPath: normalizeSearchText(n.fullPath),
+    }));
     
     if (this._selectedIndustryId) {
       this.findAndSelectNodeById(this._selectedIndustryId);
@@ -427,6 +453,7 @@ export class IndustrySelectorComponent implements OnInit, OnDestroy {
     this.filteredGroups = [...this.groupedNodes];
     this.filteredNodes = this.flattenGroups(this.filteredGroups); // Reset filtered nodes
     this.dialogVisible = true;
+    this.search$.next('');
   }
 
   onOk() {
@@ -495,19 +522,33 @@ export class IndustrySelectorComponent implements OnInit, OnDestroy {
   }
 
   filterNodes() {
-    const searchTerm = this.searchText.toLowerCase();
-    const filtered = this.flatLeafNodes.filter(node =>
-      node.label.toLowerCase().includes(searchTerm) ||
-      (node.code && node.code.toLowerCase().includes(searchTerm)) ||
-      node.fullPath.toLowerCase().includes(searchTerm)
-    );
+    // Called on each input event; schedule debounced filtering instead of filtering synchronously.
+    this.search$.next(this.searchText);
+  }
+
+  private applyFilter(rawQuery: string) {
+    const q = normalizeSearchText(rawQuery);
+    if (!q) {
+      this.filteredGroups = [...this.groupedNodes];
+      this.filteredNodes = this.flattenGroups(this.filteredGroups);
+      this.cdr.markForCheck();
+      return;
+    }
+
+    const filtered = this.flatIndex
+      .filter((x) => x.normLabel.includes(q) || x.normCode.includes(q) || x.normPath.includes(q))
+      .map((x) => x.node);
+
     this.filteredGroups = this.buildGroupsFromList(filtered);
     this.filteredNodes = filtered;
+    this.cdr.markForCheck();
   }
 
   selectItem(option: FlatNode) {
     this.selectedFlatNode = option;
     this.selectedNode = option.originalNode;
+    // Auto-close on selection
+    this.onOk();
   }
 
   trackByKey(index: number, item: FlatNode) {

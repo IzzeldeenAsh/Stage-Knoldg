@@ -9,7 +9,6 @@ import { IndustryService } from 'src/app/_fake/services/industries/industry.serv
 import { UpdateProfileService } from 'src/app/_fake/services/profile/profile.service';
 import { AuthService } from 'src/app/modules/auth';
 import { BaseComponent } from 'src/app/modules/base.component';
-import Swal from "sweetalert2"; // Import Swal
 @Component({
   selector: 'app-company-settings',
   templateUrl: './company-settings.component.html',
@@ -334,16 +333,53 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
       this.submitSocialNetworks()
     ]).subscribe({
       next: ([profileRes, socialRes]) => {
-        const message = this.lang === "ar" 
-          ? "تم تعديل البروفايل"
-          : "Profile Updated Successfully";
-        this.showSuccess("", message);
-        document.location.reload();
+        this.showSuccess(
+          this.lang === "ar" ? "نجح" : "Success",
+          this.lang === "ar" ? "تم تعديل البروفايل" : "Profile Updated Successfully"
+        );
+        // Refresh profile in background to reflect changes without reload
+        this.refreshProfileAndForm({
+          warnMessage:
+            this.lang === "ar"
+              ? "تم الحفظ، ولكن حدثت مشكلة أثناء تحديث البيانات."
+              : "Saved, but failed to refresh data.",
+        });
       },
       error: (error) => {
         this.handleServerErrors(error);
       }
     });
+  }
+
+  /**
+   * Clears cached profile and re-populates the form so we don't rely on full page reload.
+   * Only warns if refresh fails (success toast is already shown after save).
+   */
+  private refreshProfileAndForm(opts?: { warnMessage?: string }): void {
+    const sub = this.getProfileService.refreshProfile().subscribe({
+      next: (profile) => {
+        this.profile = profile;
+        this.roles = profile.roles || [];
+        // Re-init & repopulate if company role is present
+        if (this.hasRole(["company"])) {
+          if (!this.corporateInfoForm) {
+            this.initForm();
+          }
+          this.populateForm();
+          this.corporateInfoForm?.markAsPristine();
+        }
+      },
+      error: () => {
+        this.showWarn(
+          this.lang === "ar" ? "تحذير" : "Warning",
+          opts?.warnMessage ||
+            (this.lang === "ar"
+              ? "حدثت مشكلة أثناء تحديث البيانات."
+              : "Failed to refresh data.")
+        );
+      },
+    });
+    this.unsubscribe.push(sub);
   }
 
   submitSocialNetworks() {

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { FormsModule } from '@angular/forms';
@@ -9,6 +9,8 @@ import { AccordionModule } from 'primeng/accordion';
 import { TranslationModule } from 'src/app/modules/i18n';
 import { ChipModule } from 'primeng/chip';
 import { TabViewModule } from 'primeng/tabview';
+import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
+import { normalizeSearchText } from 'src/app/utils/search-normalize';
 
 @Component({
   selector: 'app-select-region',
@@ -27,7 +29,7 @@ import { TabViewModule } from 'primeng/tabview';
   templateUrl: './select-region.component.html',
   styleUrls: ['./select-region.component.scss']
 })
-export class SelectRegionComponent implements OnInit, OnChanges {
+export class SelectRegionComponent implements OnInit, OnChanges, OnDestroy {
   @Input() placeholder: string = 'Select Region...';
   @Input() title: string = 'Select Regions';
   @Input() preSelectedRegions: any = [];
@@ -46,6 +48,13 @@ export class SelectRegionComponent implements OnInit, OnChanges {
   displayValue: string = '';
   searchQuery: string = '';
   allCountries: Country[] = [];
+  private allCountriesBase: Country[] = [];
+
+  private search$ = new Subject<string>();
+  private destroy$ = new Subject<void>();
+  private regionNormById = new Map<number, string>();
+  private countryNormById = new Map<number, string>();
+  private currentNormQuery: string = '';
 
   constructor(private regionsService: RegionsService) {}
 
@@ -54,6 +63,22 @@ export class SelectRegionComponent implements OnInit, OnChanges {
     this.selectedRegions = this.preSelectedRegions ? [...this.preSelectedRegions] : [];
     this.selectedCountries = this.preSelectedCountries ? [...this.preSelectedCountries] : [];
     this.updateDisplayValue();
+
+    // Debounce filtering so typing stays responsive.
+    this.search$
+      .pipe(
+        debounceTime(120),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((q) => {
+        this.applyFilter(q);
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -80,12 +105,23 @@ export class SelectRegionComponent implements OnInit, OnChanges {
       next: (regions) => {
         this.regions = regions;
         this.filteredRegions = [...this.regions];
+
+        // Build normalization caches
+        this.regionNormById = new Map(this.regions.map((r) => [r.id, normalizeSearchText(r.name)]));
+        this.countryNormById = new Map();
+        for (const r of this.regions) {
+          for (const c of r.countries) {
+            this.countryNormById.set(c.id, normalizeSearchText(c.name));
+          }
+        }
         
         // Extract all countries for "onlyCountries" view
         if (this.displayMode === 'onlyCountries') {
-          this.allCountries = this.regions.reduce((acc, region) => {
+          const flat = this.regions.reduce((acc, region) => {
             return [...acc, ...region.countries];
           }, [] as Country[]);
+          this.allCountriesBase = flat;
+          this.allCountries = [...flat];
         }
       },
       error: (error) => {
@@ -98,12 +134,16 @@ export class SelectRegionComponent implements OnInit, OnChanges {
     this.dialogVisible = true;
     this.searchQuery = '';
     this.filteredRegions = [...this.regions];
+    this.currentNormQuery = '';
     
     // Reset filtered countries when in onlyCountries mode
     if (this.displayMode === 'onlyCountries') {
-      this.allCountries = this.regions.reduce((acc, region) => {
-        return [...acc, ...region.countries];
-      }, [] as Country[]);
+      if (!this.allCountriesBase.length && this.regions.length) {
+        this.allCountriesBase = this.regions.reduce((acc, region) => {
+          return [...acc, ...region.countries];
+        }, [] as Country[]);
+      }
+      this.allCountries = [...this.allCountriesBase];
     }
   }
 
@@ -311,31 +351,31 @@ export class SelectRegionComponent implements OnInit, OnChanges {
    * Filters regions and countries based on search query
    */
   filterRegions() {
-    if (!this.searchQuery || this.searchQuery.trim() === '') {
+    // Called on each input event; schedule debounced filtering instead of filtering synchronously.
+    this.search$.next(this.searchQuery);
+  }
+
+  private applyFilter(rawQuery: string) {
+    const q = normalizeSearchText(rawQuery);
+    this.currentNormQuery = q;
+
+    if (!q) {
       this.filteredRegions = [...this.regions];
       if (this.displayMode === 'onlyCountries') {
-        this.allCountries = this.regions.reduce((acc, region) => {
-          return [...acc, ...region.countries];
-        }, [] as Country[]);
+        this.allCountries = [...this.allCountriesBase];
       }
       return;
     }
 
-    const query = this.searchQuery.toLowerCase().trim();
-    
-    // Filter regions whose names match the query
-    this.filteredRegions = this.regions.filter(region => 
-      region.name.toLowerCase().includes(query) || 
-      region.countries.some(country => country.name.toLowerCase().includes(query))
-    );
-    
-    // Filter countries if in onlyCountries mode
+    // Filter regions whose names match OR have matching countries
+    this.filteredRegions = this.regions.filter((region) => {
+      const rNorm = this.regionNormById.get(region.id) || normalizeSearchText(region.name);
+      if (rNorm.includes(q)) return true;
+      return region.countries.some((c) => (this.countryNormById.get(c.id) || normalizeSearchText(c.name)).includes(q));
+    });
+
     if (this.displayMode === 'onlyCountries') {
-      this.allCountries = this.regions.reduce((acc, region) => {
-        return [...acc, ...region.countries.filter(country => 
-          country.name.toLowerCase().includes(query)
-        )];
-      }, [] as Country[]);
+      this.allCountries = this.allCountriesBase.filter((c) => (this.countryNormById.get(c.id) || normalizeSearchText(c.name)).includes(q));
     }
   }
 
@@ -343,13 +383,12 @@ export class SelectRegionComponent implements OnInit, OnChanges {
    * Filters countries within a region based on search query
    */
   filteredCountries(region: Continent): Country[] {
-    if (!this.searchQuery || this.searchQuery.trim() === '') {
+    if (!this.currentNormQuery) {
       return region.countries;
     }
-
-    const query = this.searchQuery.toLowerCase().trim();
-    return region.countries.filter(country => 
-      country.name.toLowerCase().includes(query)
+    const q = this.currentNormQuery;
+    return region.countries.filter((country) =>
+      (this.countryNormById.get(country.id) || normalizeSearchText(country.name)).includes(q)
     );
   }
 

@@ -212,7 +212,7 @@ updateTag(tagId: number, tag:   { name: { en: string; ar: string }; status: stri
       'Accept-Language': lang
     });
 
-    return this.http.get<IndustryTagResponse>(`${this.insightaHost}/api/common/setting/tag/industry/${industryId}`, { headers })
+    return this.http.get<IndustryTagResponse>(`${this.insightaHost}/api/common/setting/tag/common/list`, { headers })
       .pipe(
         map(res => res.data),
         catchError(error => this.handleError(error))

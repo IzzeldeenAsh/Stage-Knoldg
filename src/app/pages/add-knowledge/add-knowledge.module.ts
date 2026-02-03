@@ -11,6 +11,7 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectButtonModule } from 'primeng/selectbutton';
+import { SkeletonModule } from 'primeng/skeleton';
 import { ToastModule } from 'primeng/toast';
 import { TranslationModule } from 'src/app/modules/i18n';
 import { TruncateTextPipe } from 'src/app/pipes/truncate-pipe/truncate-text.pipe';
@@ -73,6 +74,7 @@ import { TableModule } from 'primeng/table';
     DropdownModule,
     SelectRegionComponent,
     SelectButtonModule,
+    SkeletonModule,
     ToastModule,
     CalendarModule,
     TooltipModule,
