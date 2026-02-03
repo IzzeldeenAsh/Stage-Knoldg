@@ -284,7 +284,7 @@ INSIGHTER_REQUESTS: {
       "ACTIVATE": "تفعيل",
       "SEARCH_COUNTRIES": "البحث عن دول",
       "DEACTIVATE": "إلغاء التفعيل",
-      "CURRENT_USER": "المدير التنفيذي"
+      "CURRENT_USER": "المدير"
     },
     INSIGHTER_DASHBOARD: {
       TITLE: 'لوحة المعلومات',
@@ -357,7 +357,7 @@ INSIGHTER_REQUESTS: {
       LANGUAGE: 'اللغة',
       ARABIC: 'العربية',
       CLIENT: 'عميل',
-      INSIGHTER: 'انسايتر',
+      INSIGHTER: 'إنسايتر',
       COMPANY: 'شركة'
     },
     AUTH: {
@@ -1164,10 +1164,11 @@ INSIGHTER_REQUESTS: {
     TOPIC_REQUIRED: "الموضوع مطلوب",
     SHARE: "مشاركة",
     ENTER_TOPIC: "ادخل الموضوع",
-    TOPIC_TOOLTIP: "ادخل الموضوع",
-    SPECIFY_OTHER_TOPIC: "تحديد موضوع آخر",
+    TOPIC_TOOLTIP: "ادخل الموضوع المتعلق بمعرفتك، ستندرج المعرفة تحت هذا الموضوع، يمكنك إنشاء موضوع في حال لم يكن موجودا",
+    SPECIFY_OTHER_TOPIC: "تحديد موضوع آخر غير موجود بالقائمة السابقة",
     CUSTOM_TOPIC: "موضوع آخر",
     CUSTOM_TOPIC_REQUIRED: "موضوع آخر مطلوب",
+    TAGS_TOOLTIP: "الوسوم هي كلمات أو عبارات وصفية تساعد في تصنيف معرفتك. إضافة وسوم مناسبة يُسهّل على الآخرين العثور على محتواك من خلال البحث ويزيد من ظهوره في محرك البحث عبر الربط بين المستخدمين والمواضيع التي يهتمون بها.",
     CUSTOM_TOPIC_MIN_LENGTH: "موضوع آخر يجب أن يكون أكثر من 3 أحرف",
     CUSTOM_TOPIC_MAX_LENGTH: "موضوع آخر يجب أن يكون أقل من 100 حرف",
     SEARCH_TOPICS: "البحث عن موضوعات",
@@ -1235,8 +1236,8 @@ INSIGHTER_REQUESTS: {
     SAVE_AS_DRAFT: "حفظ كمسودة",
     SAVE_AS_DRAFT_DESC: "احفظ معرفتك كمسودة لإنهائها لاحقًا",
     SEND_TO_Manager_REVIEW: "إرسال للمراجعة من المدير",
-    SEND_TO_Manager_REVIEW_DESC: "ارسال المحتوى للمراجعة من المدير التنفيذي قبل النشر",
-    PENDING_Manager_REVIEW: "قيد مراجعة المدير التنفيذي",
+    SEND_TO_Manager_REVIEW_DESC: "ارسال المحتوى للمراجعة من المدير قبل النشر",
+    PENDING_Manager_REVIEW: "قيد مراجعة المدير",
     PUBLISH_OPTION_REQUIRED: "الرجاء اختيار خيار النشر",
     SELECT_DATE_TIME: "اختر التاريخ والوقت",
     CHOOSE_COUNTRIES:'اختر الدول',

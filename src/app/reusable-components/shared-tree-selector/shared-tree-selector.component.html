@@ -1,11 +1,23 @@
 <p-dialog
-  [header]="title"
   [(visible)]="dialogVisible"
   [modal]="true"
   [style]="{ width: dialogWidth, 'max-height': '100vh', overflow: 'hidden' }"
   [contentStyle]="{ 'max-height': 'calc(90vh - 100px)', overflow: 'auto' }"
   appendTo="body"
 >
+  <ng-template pTemplate="header">
+    <div
+      class="d-flex flex-column"
+      [attr.dir]="currentLang === 'ar' ? 'rtl' : 'ltr'"
+      [ngStyle]="{ 'text-align': currentLang === 'ar' ? 'right' : 'left' }"
+    >
+      <div class="fw-semibold fs-2">{{ title }}</div>
+      <small *ngIf="subtitle" class="text-info" style="font-size: 0.95rem; margin-top: 2px;">
+        {{ subtitle }}
+      </small>
+    </div>
+  </ng-template>
+
   <div class="tree-container">
     <p-tree
       class="industry-tree"

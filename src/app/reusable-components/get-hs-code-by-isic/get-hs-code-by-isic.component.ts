@@ -19,12 +19,17 @@ import {
   map,
   startWith,
 } from "rxjs";
+import { Subject, debounceTime, distinctUntilChanged, takeUntil } from "rxjs";
 import { DialogModule } from "primeng/dialog";
 import { FormsModule } from "@angular/forms";
 import { InputTextModule } from "primeng/inputtext";
+import { SkeletonModule } from "primeng/skeleton";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { HSCode, HSCodeService } from 'src/app/_fake/services/hs-code-management/hscode.service';
-import { TranslateModule } from "@ngx-translate/core";
+import { LangChangeEvent, TranslateModule } from "@ngx-translate/core";
+import { normalizeSearchText } from "src/app/utils/search-normalize";
+import { ScrollingModule } from "@angular/cdk/scrolling";
+import {  TranslationService } from "src/app/modules/i18n";
 
 @Component({
   selector: "app-get-hs-code-by-isic",
@@ -34,8 +39,10 @@ import { TranslateModule } from "@ngx-translate/core";
     DialogModule,
     FormsModule,
     InputTextModule,
+    SkeletonModule,
     NgbTooltipModule,
-    TranslateModule
+    TranslateModule,
+    ScrollingModule
   ],
   template: `
     <p-dialog
@@ -59,10 +66,21 @@ import { TranslateModule } from "@ngx-translate/core";
           />
         </div>
         
-        <!-- Loading indicator -->
-        <div *ngIf="isLoading$ | async" class="text-center p-4">
-          <i class="pi pi-spinner pi-spin"></i>
-          <div>{{ 'COMMON.LOADING' | translate }}...</div>
+        <!-- Loading skeleton -->
+        <div *ngIf="isLoading$ | async" class="p-3">
+          <div class="mb-3">
+            <p-skeleton height="2.5rem" styleClass="w-100"></p-skeleton>
+          </div>
+
+          <div class="skeleton-item" *ngFor="let _ of skeletonRows">
+            <div class="d-flex align-items-start">
+              <p-skeleton width="86px" height="1rem" styleClass="me-2 mt-1"></p-skeleton>
+              <div class="flex-grow-1">
+                <p-skeleton width="92%" height="1rem" styleClass="mb-2"></p-skeleton>
+                <p-skeleton width="48%" height="0.875rem"></p-skeleton>
+              </div>
+            </div>
+          </div>
         </div>
         
         <!-- List Items -->
@@ -79,7 +97,7 @@ import { TranslateModule } from "@ngx-translate/core";
 
             <!-- Related codes -->
             <div
-              *ngFor="let code of getFilteredRelatedCodes(); trackBy: trackByKey"
+              *ngFor="let code of filteredRelatedCodes; trackBy: trackByKey"
               class="list-item-clean cursor-pointer"
               [class.selected]="code.id === selectedHSCode?.id"
               (click)="selectCode(code)"
@@ -122,7 +140,7 @@ import { TranslateModule } from "@ngx-translate/core";
 
               <!-- Related codes list -->
               <div
-                *ngFor="let code of getFilteredRelatedCodes(); trackBy: trackByKey"
+                *ngFor="let code of filteredRelatedCodes; trackBy: trackByKey"
                 class="list-item-clean cursor-pointer"
                 [class.selected]="code.id === selectedHSCode?.id"
                 (click)="selectCode(code)"
@@ -150,22 +168,29 @@ import { TranslateModule } from "@ngx-translate/core";
               <small class="text-muted">{{ 'ALL_OTHER_AVAILABLE_HS_CODES' | translate }}</small>
             </div>
 
-            <!-- Other codes list -->
-            <div
-              *ngFor="let code of getFilteredNonRelatedCodes(); trackBy: trackByKey"
-              class="list-item-clean cursor-pointer"
-              [class.selected]="code.id === selectedHSCode?.id"
-              (click)="selectCode(code)"
+            <!-- Other codes list (virtualized for performance) -->
+            <cdk-virtual-scroll-viewport
+              class="virtual-viewport"
+              [itemSize]="56"
+              [minBufferPx]="560"
+              [maxBufferPx]="1120"
             >
-              <div class="d-flex align-items-start">
-                <span class="fw-bold text-primary me-2 flex-shrink-0">[{{code.code}}]</span>
-                <div class="flex-grow-1">
-                  <div class="fw-semibold text-dark">{{code.name}}</div>
-                  <small class="text-muted">Code: {{code.code}}</small>
+              <div
+                *cdkVirtualFor="let code of filteredNonRelatedCodes; trackBy: trackByKey"
+                class="list-item-clean cursor-pointer"
+                [class.selected]="code.id === selectedHSCode?.id"
+                (click)="selectCode(code)"
+              >
+                <div class="d-flex align-items-start">
+                  <span class="fw-bold text-primary me-2 flex-shrink-0">[{{code.code}}]</span>
+                  <div class="flex-grow-1">
+                    <div class="fw-semibold text-dark">{{code.name}}</div>
+                    <small class="text-muted">Code: {{code.code}}</small>
+                  </div>
+                  <i *ngIf="code.id === selectedHSCode?.id" class="fas fa-check text-success ms-2"></i>
                 </div>
-                <i *ngIf="code.id === selectedHSCode?.id" class="fas fa-check text-success ms-2"></i>
               </div>
-            </div>
+            </cdk-virtual-scroll-viewport>
           </div>
 
           <!-- No results message -->
@@ -204,11 +229,11 @@ import { TranslateModule } from "@ngx-translate/core";
       <label class="d-flex align-items-center form-label mb-3" [ngClass]="{'required': isRequired}">
         {{ title }}
         <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{tip}}"></i>
-        <span class="text-muted fs-8 mx-1" *ngIf="!isRequired"> (optional) </span>
+        <span class="text-muted fs-8 mx-1" *ngIf="!isRequired"> {{'OPTIONAL' | translate}} </span>
       </label>
 
-      <div *ngIf="isLoading$ | async" class="text-center">
-        {{ 'COMMON.LOADING' | translate }} Products...
+      <div *ngIf="isLoading$ | async" class="position-relative">
+        <p-skeleton height="2.5rem" styleClass="w-100"></p-skeleton>
       </div>
 
       <div *ngIf="!(isLoading$ | async)" class="position-relative">
@@ -249,6 +274,15 @@ import { TranslateModule } from "@ngx-translate/core";
     .list-items {
       max-height: calc(80vh - 180px);
       overflow-y: auto;
+    }
+
+    /* Virtual scrolling viewport */
+    .virtual-viewport {
+      height: calc(80vh - 240px);
+      width: 100%;
+      overflow: auto;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
     }
     
     .list-item {
@@ -350,6 +384,16 @@ import { TranslateModule } from "@ngx-translate/core";
         max-height: calc(100vh - 250px);
       }
     }
+
+    /* Skeleton rows */
+    .skeleton-item {
+      padding: 12px 0;
+      border-bottom: 1px solid #f1f1f1;
+    }
+
+    .skeleton-item:last-child {
+      border-bottom: none;
+    }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -360,7 +404,7 @@ export class GetHsCodeByIsicComponent implements OnInit, OnDestroy, OnChanges {
   @Input() isicCodeId!: number;
   @Input() cancelLabel: string = "Cancel";
   @Input() okLabel: string = "OK";
-  @Input() tip: string = "Select an Products for the selected ISIC Code";
+  @Input() tip: string = ""
   @Input() language: string = "en";
   @Input() preselectedHSCodeId?: number;
 
@@ -375,24 +419,48 @@ export class GetHsCodeByIsicComponent implements OnInit, OnDestroy, OnChanges {
   allHSCodes: HSCode[] = [];
   relatedHSCodes: HSCode[] = [];
   filteredCodes: HSCode[] = [];
+  filteredRelatedCodes: HSCode[] = [];
+  filteredNonRelatedCodes: HSCode[] = [];
   selectedHSCode: HSCode | null = null;
   searchText: string = '';
+  lang: string = 'en';
   showAllCodes: boolean = false;
+  skeletonRows = Array.from({ length: 10 });
   private unsubscribe: Subscription[] = [];
+  private search$ = new Subject<string>();
+  private destroy$ = new Subject<void>();
+  private normById = new Map<number, { code: string; name: string }>();
 
   constructor(
     private hsCodeService: HSCodeService,
-    private cdr: ChangeDetectorRef
-  ) {}
+    private cdr: ChangeDetectorRef,
+    private translateService: TranslationService
+  ) {
+   this.lang = this.translateService.getSelectedLanguage();
+   this.tip = this.lang === 'ar' ? "اختر رمز المنتج للمعرفة الخاصة بك" : "Select Product (HS code) for your insight";
+  }
 
   ngOnInit() {
     // Load Products on initialization
     this.loadHSCodes();
     // Set up responsive dialog sizing
     this.handleWindowResize();
+
+    // Debounce filtering so typing stays responsive.
+    this.search$
+      .pipe(
+        debounceTime(120),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        this.applySearchFilter();
+      });
   }
 
   ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
     this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }
   
@@ -420,6 +488,15 @@ export class GetHsCodeByIsicComponent implements OnInit, OnDestroy, OnChanges {
       const sub = this.hsCodeService.getHSCodes().subscribe({
         next: (codes) => {
           this.allHSCodes = (codes || []).sort((a: HSCode, b: HSCode) => a.code.localeCompare(b.code));
+          this.normById = new Map(
+            this.allHSCodes.map((c) => [
+              c.id,
+              {
+                code: normalizeSearchText(c.code),
+                name: normalizeSearchText(c.name),
+              },
+            ])
+          );
           this.updateRelatedCodes();
           this.isLoading$.next(false);
           resolve();
@@ -439,10 +516,8 @@ export class GetHsCodeByIsicComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   filterCodes() {
-    this.filteredCodes = this.hsCodes.filter(code =>
-      code.name.toLowerCase().includes(this.searchText.toLowerCase()) ||
-      code.code.toLowerCase().includes(this.searchText.toLowerCase())
-    );
+    // Called on each input event; schedule debounced filtering instead of filtering synchronously.
+    this.search$.next(this.searchText);
   }
 
   toggleViewAllCodes() {
@@ -493,24 +568,34 @@ export class GetHsCodeByIsicComponent implements OnInit, OnDestroy, OnChanges {
       this.showAllCodes = false; // No need for toggle
     }
     this.filteredCodes = [...this.hsCodes];
-    this.filterCodes(); // Apply current search filter
+    this.applySearchFilter(); // Apply current search filter
   }
 
-  getFilteredRelatedCodes(): HSCode[] {
-    return this.relatedHSCodes.filter(code =>
-      code.name.toLowerCase().includes(this.searchText.toLowerCase()) ||
-      code.code.toLowerCase().includes(this.searchText.toLowerCase())
-    );
-  }
+  private applySearchFilter() {
+    const q = normalizeSearchText(this.searchText);
 
-  getFilteredNonRelatedCodes(): HSCode[] {
-    const relatedIds = new Set(this.relatedHSCodes.map(code => code.id));
-    return this.allHSCodes
-      .filter(code => !relatedIds.has(code.id))
-      .filter(code =>
-        code.name.toLowerCase().includes(this.searchText.toLowerCase()) ||
-        code.code.toLowerCase().includes(this.searchText.toLowerCase())
-      );
+    const matches = (code: HSCode) => {
+      if (!q) return true;
+      const norm = this.normById.get(code.id);
+      const normCode = norm?.code ?? normalizeSearchText(code.code);
+      const normName = norm?.name ?? normalizeSearchText(code.name);
+      return normCode.includes(q) || normName.includes(q);
+    };
+
+    this.filteredCodes = this.hsCodes.filter(matches);
+
+    if (this.isicCodeId && this.relatedHSCodes.length > 0) {
+      this.filteredRelatedCodes = this.relatedHSCodes.filter(matches);
+      const relatedIds = new Set(this.relatedHSCodes.map((c) => c.id));
+      this.filteredNonRelatedCodes = this.allHSCodes.filter((c) => !relatedIds.has(c.id)).filter(matches);
+    } else {
+      this.filteredRelatedCodes = [];
+      // When no ISIC is selected (or there are no related codes), the UI expects
+      // the "all codes" list to be available in the "other codes" section.
+      this.filteredNonRelatedCodes = [...this.filteredCodes];
+    }
+
+    this.cdr.markForCheck();
   }
 
   selectCode(code: HSCode) {
@@ -524,6 +609,9 @@ export class GetHsCodeByIsicComponent implements OnInit, OnDestroy, OnChanges {
         this.updateDisplayedCodes();
       }
     }
+
+    // Auto-close on selection
+    this.onOk();
   }
 
   trackByKey(_index: number, item: HSCode) {
@@ -543,6 +631,7 @@ export class GetHsCodeByIsicComponent implements OnInit, OnDestroy, OnChanges {
     this.updateDisplayedCodes();
     this.dialogVisible = true;
     this.loadHSCodes();
+    this.search$.next('');
   }
 
   onOk() {

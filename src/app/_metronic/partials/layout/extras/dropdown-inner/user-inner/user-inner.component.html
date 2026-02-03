@@ -24,8 +24,9 @@
           </ng-container>
           <ng-container *ngIf="_user.roles.includes('company-insighter')">
             <span class="badge badge-light-info fw-bolder fs-8 px-2 py-1 me-1 mb-1 text-truncate" style="max-width: 150px;">
-              {{ _user.company?.legal_name }} {{ 'HOME.INSIGHTER' | translate }}
+ {{ 'HOME.INSIGHTER' | translate }} {{lang==='ar'? 'في': 'at'}}               {{ _user.company?.legal_name }}  
             </span>
+        
           </ng-container>
           <ng-container *ngIf="_user.roles.includes('company') && !_user.roles.includes('company-insighter')">
             <div class="d-flex gap-1 pt-1">

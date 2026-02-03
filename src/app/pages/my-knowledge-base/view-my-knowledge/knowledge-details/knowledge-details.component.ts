@@ -140,7 +140,7 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
 
   docActions: MenuItem[] = [
     {
-      label: 'Edit',
+      label:this.lang === 'ar' ? 'تعديل' : 'Edit',
       icon: 'ki-duotone ki-pencil',
       command: (event) => {
         if (event.item?.data) {
@@ -149,7 +149,7 @@ export class KnowledgeDetailsComponent extends BaseComponent implements OnInit {
       }
     },
     {
-      label: 'Delete',
+      label:this.lang === 'ar' ? 'حذف' : 'Delete',
       icon: 'ki-duotone ki-trash',
       command: (event) => {
         if (event.item?.data) {

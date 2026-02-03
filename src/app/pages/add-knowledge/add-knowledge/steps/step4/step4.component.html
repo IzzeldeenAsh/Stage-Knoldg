@@ -1,6 +1,42 @@
 <!-- Loading State -->
-<div *ngIf="isLoading" class="d-flex justify-content-center align-items-center min-h-300px">
-  <span class="spinner-border spinner-border-md align-middle mx-2 text-info"></span>
+<div *ngIf="isLoading" class="py-10">
+  <div class="container-fluid">
+    <!-- Page title skeleton -->
+    <div class="mb-8">
+      <p-skeleton width="260px" height="1.75rem" styleClass="mb-3"></p-skeleton>
+      <p-skeleton width="420px" height="1rem"></p-skeleton>
+    </div>
+
+    <!-- Form skeleton -->
+    <div class="row g-6">
+      <!-- Left column -->
+      <div class="col-lg-8 col-md-7 col-12">
+        <p-skeleton height="2.75rem" styleClass="w-100 mb-4"></p-skeleton>
+        <p-skeleton height="14rem" styleClass="w-100 mb-4"></p-skeleton>
+        <p-skeleton height="2.75rem" styleClass="w-100 mb-4"></p-skeleton>
+      </div>
+
+      <!-- Right column -->
+      <div class="col-lg-4 col-md-5 col-12">
+        <p-skeleton height="2.75rem" styleClass="w-100 mb-4"></p-skeleton>
+        <p-skeleton height="2.75rem" styleClass="w-100 mb-4"></p-skeleton>
+      </div>
+    </div>
+
+    <!-- Lower section skeleton -->
+    <div class="mt-8">
+      <p-skeleton height="2.75rem" styleClass="w-100 mb-4"></p-skeleton>
+      <div class="row g-6">
+        <div class="col-md-6 col-12">
+          <p-skeleton height="2.75rem" styleClass="w-100 mb-4"></p-skeleton>
+        </div>
+        <div class="col-md-6 col-12">
+          <p-skeleton height="2.75rem" styleClass="w-100 mb-4"></p-skeleton>
+        </div>
+      </div>
+      <p-skeleton height="2.75rem" styleClass="w-100"></p-skeleton>
+    </div>
+  </div>
 </div>
 
 <!-- Fullscreen loading overlay for AI generation -->
@@ -99,7 +135,7 @@
                   </linearGradient>
                   </defs>
                 </svg>
-                Generate AI Information
+                {{lang == 'ar' ? 'توليد معلومات بالذكاء الاصطناعي' : 'Generate AI Information'}}
               </div>
             </div>
           </div>
@@ -125,7 +161,7 @@
       </div>
     </div>
       <!-- Knowledge Title and \ Years -->
-      <div class="mb-10 fv-row">
+      <div class="mb-15 fv-row">
         <div class="row">
           <!-- Knowledge Title (larger column) -->
           <div class="col-lg-8 col-md-7 col-12">
@@ -204,7 +240,7 @@
       </div>
 
           <!-- Knowledge Description -->
-          <div class="mb-10 fv-row">
+          <div class="mb-15 fv-row">
             <div class="d-flex align-items-center  ">
               <label class="form-label mb-3 required">
                 {{ "KNOWLEDGE_DESCRIPTION" | translate }}
@@ -274,7 +310,7 @@
           </div>
       
           <!-- Knowledge Language -->
-          <div class="mb-10 fv-row">
+          <div class="mb-15 fv-row">
             <div class="d-flex align-items-center">
               <label class="d-flex align-items-center form-label mb-3 required">
                 <ng-container *ngIf="defaultValues.knowledgeType === 'course'">
@@ -307,22 +343,44 @@
             <div class="row mb-2">
               <div class="col-lg-12">
                 <div class="position-relative">
-                  <p-dropdown
-                    [options]="languages"
-                    formControlName="language"
-                    [filter]="true"
-                    filterBy="name"
-                    [showClear]="true"
-                    placeholder="{{ 'ENTER_KNOWLEDGE_LANGUAGE' | translate }}"
-                    optionLabel="name"
-                    optionValue="id"
-                    styleClass="w-100"
-                    [loading]="isLanguageFieldLoading"
-                    [ngClass]="{'is-invalid': form.get('language')?.hasError('required') && form.get('language')?.touched, 'border-red': form.get('language')?.hasError('required') && form.get('language')?.touched}"
+                  <div
+                    class="chip-group"
+                    [ngClass]="{'is-invalid': form.get('language')?.hasError('required') && form.get('language')?.touched}"
                   >
-                  </p-dropdown>
-                  
-                  <!-- No need for separate loading indicator since p-dropdown has built-in loading state -->
+                    <div
+                      class="chip"
+                      role="button"
+                      tabindex="0"
+                      [class.selected]="form.get('language')?.value === languageChipIds.en"
+                      [class.disabled]="isLanguageFieldLoading"
+                      (click)="setLanguageChip('en')"
+                      (keydown.enter)="setLanguageChip('en')"
+                      (keydown.space)="$event.preventDefault(); setLanguageChip('en')"
+                    >
+                      <i
+                        *ngIf="form.get('language')?.value === languageChipIds.en"
+                        class="fas fa-check check-icon"
+                      ></i>
+                      English
+                    </div>
+
+                    <div
+                      class="chip"
+                      role="button"
+                      tabindex="0"
+                      [class.selected]="form.get('language')?.value === languageChipIds.ar"
+                      [class.disabled]="isLanguageFieldLoading"
+                      (click)="setLanguageChip('ar')"
+                      (keydown.enter)="setLanguageChip('ar')"
+                      (keydown.space)="$event.preventDefault(); setLanguageChip('ar')"
+                    >
+                      <i
+                        *ngIf="form.get('language')?.value === languageChipIds.ar"
+                        class="fas fa-check check-icon"
+                      ></i>
+                      Arabic
+                    </div>
+                  </div>
                   
                   <div
                     *ngIf="form.get('language')?.hasError('required') && form.get('language')?.touched"
@@ -336,7 +394,7 @@
           </div>
       
             <!-- Industry -->
-            <div class="mb-10">
+            <div class="mb-15">
               <app-industry-selector
                 [title]="currentLanguage == 'ar' ? 'المجال' : 'Industry'"
                 [placeholder]="currentLanguage == 'ar' ? 'اختر المجال' : 'Select the industry this document applies to'"
@@ -359,14 +417,17 @@
  
 
     <!-- Target Market -->
-    <div class="mb-10">
+    <div class="mb-15">
       <label class="d-flex align-items-center form-label mb-3 required">
         {{ "SELECT_TARGET_MARKET" | translate }}
         <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'TARGET_MARKET_TOOLTIP' | translate }}"></i>
       </label>
 
-     <div class="d-flex justify-content-start gap-4 pt-10">
-      <div class="form-check">
+     <div
+       class="d-flex flex-wrap gap-4 pt-5"
+      
+     >
+      <div class="form-check" [ngClass]="{ 'form-check-reverse': currentLang === 'ar' }">
         <input
           type="radio"
           class="form-check-input"
@@ -381,7 +442,7 @@
         </label>
       </div>
 
-      <div class="form-check mb-3">
+      <div class="form-check mb-3" [ngClass]="{ 'form-check-reverse': currentLang === 'ar' }">
         <input
           type="radio"
           class="form-check-input"
@@ -395,7 +456,7 @@
           {{ "COUNTRIES" | translate }}
         </label>
       </div>
-      <div class="form-check mb-3">
+      <div class="form-check mb-3" [ngClass]="{ 'form-check-reverse': currentLang === 'ar' }">
         <input
           type="radio"
           class="form-check-input"
@@ -411,7 +472,7 @@
       </div>
 
 
-      <div class="form-check">
+      <div class="form-check" [ngClass]="{ 'form-check-reverse': currentLang === 'ar' }">
         <input
           type="radio"
           class="form-check-input"
@@ -447,7 +508,7 @@
       </div>
 
       <!-- Region Selector -->
-      <div class="mb-10">
+      <div class="mb-15">
         <!-- Regions Only -->
         <div *ngIf="form.get('targetMarket')?.value === '1'">
           <label class="d-flex align-items-center form-label mb-3 required">
@@ -492,7 +553,7 @@
       </div>
 
       <!-- Economic Block -->
-      <div class="mb-10">
+      <div class="mb-15">
         <div *ngIf="form.get('targetMarket')?.value === '2'">
           <label class="d-flex align-items-center form-label mb-3 required">
             {{ "ECONOMIC_BLOCK" | translate }}
@@ -513,7 +574,7 @@
       </div>
 
       <!-- Worldwide -->
-      <!-- <div class="mb-10">
+      <!-- <div class="mb-15">
         <div *ngIf="form.get('targetMarket')?.value === '3'">
           <div class="d-flex align-items-center">
             <label class="form-label mb-3">
@@ -530,7 +591,7 @@
         </div>
       </div> -->
    <!-- Topics -->
-   <div [@fadeInMoveY] class="mb-10" *ngIf="topics && topics.length > 0">
+   <div [@fadeInMoveY] class="mb-15" *ngIf="topics && topics.length > 0">
     <label class="d-flex align-items-center form-label mb-3 required">
       {{ "SELECT_TOPIC" | translate }}
       <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'TOPIC_TOOLTIP' | translate }}"></i>
@@ -544,6 +605,7 @@
       placeholder="{{ 'ENTER_TOPIC' | translate }}"
       [showClear]="true"
       [filter]="true"
+      filterBy="name,normalizedName"
       filterPlaceholder="{{ 'SEARCH_TOPICS' | translate }}"
       class="w-100"
       (onChange)="onTopicSelected($event.value)"
@@ -571,7 +633,7 @@
   </div>
 
   <!-- Custom Topic Input -->
-  <div [@fadeInMoveY] class="mb-10" *ngIf="form.get('topicId')?.value === 'other'">
+  <div [@fadeInMoveY] class="mb-15" *ngIf="form.get('topicId')?.value === 'other'">
     <label class="d-flex align-items-center form-label mb-3 required">
       {{ "SPECIFY_OTHER_TOPIC" | translate }}
       <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{ 'TOPIC_TOOLTIP' | translate }}"></i>
@@ -602,8 +664,9 @@
 
       <!-- Tags Section -->
       <div class="mt-10 mb-8" *ngIf="form.get('industry')?.value && form.get('industry')?.value !== ''">
-        <label class="d-flex align-items-center fs-5 fw-semibold mb-5">
-          <span class="required">{{ "SELECT_TAGS" | translate }}</span>
+        <label class="d-flex align-items-center fs-5 fw-semibold mb-5 required">
+          <span >{{lang == 'ar' ? 'اختر أو أضف وسم' : 'Select or Add a Tag'}}</span>
+          <i class="fas fa-exclamation-circle mx-2 fs-7 " ngbTooltip="{{ 'TAGS_TOOLTIP' | translate }}"></i>
         </label>
                 <!-- Tag selection error message -->
         <div *ngIf="form.get('tag_ids')?.hasError('required') && form.get('tag_ids')?.touched" class="fv-plugins-message-container invalid-feedback mb-3">
@@ -615,48 +678,56 @@
           {{ tagIdError }}
         </div>
         
-        <!-- PrimeNG Dropdown for selecting tags -->
-        <!-- <div class="mb-3">
-          <p-dropdown
-            [options]="availableTags"
-            [(ngModel)]="selectedTagForAdding"
-            [ngModelOptions]="{standalone: true}"
-            name="tagSelector"
-            optionLabel="display"
-            optionValue="id"
-            [filter]="true"
-            filterBy="display"
-            placeholder="{{ 'SELECT_TAGS' | translate }}"
-            [showClear]="true"
-            styleClass="w-100"
-            (onChange)="onTagSelectedFromDropdown($event)"
-          >
-          </p-dropdown>
-        </div> -->
+        <div class="mb-4">
+          <input
+            type="text"
+            pInputText
+            class="form-control "
+            placeholder="{{lang == 'ar' ? 'أضف وسم جديد :' : 'Initiate new Tag'}}"
+            [(ngModel)]="newTagName"
+            [ngModelOptions]="{ standalone: true }"
+            (keydown.enter)="$event.preventDefault(); addNewTagFromInput()"
+          />
+          <div class="form-text text-muted mt-2">
+            {{lang == 'ar' ? 'اضغط على الوسم لتحديد/إلغاء التحديد. اضغط على Enter لإضافة.' : 'Click a chip to select/unselect. Press Enter to add.'}}
+          </div>
+        </div>
 
-        <!-- Tag-input for displaying selected tags and adding new ones -->
-        <tag-input
-          formControlName="tagItems"
-          [secondaryPlaceholder]="'ENTER_TAGS' | translate"
-          [separatorKeyCodes]="[13]"
-          [addOnBlur]="true"
-          [placeholder]="'ENTER_TAGS' | translate"
-          [ngClass]="{'is-invalid': form.get('tag_ids')?.hasError('required') && form.get('tag_ids')?.touched, 'border-red': form.get('tag_ids')?.hasError('required') && form.get('tag_ids')?.touched}"
-          style="width: 100%; max-width: none;"
-          (onAdd)="onTagAddedViaTagInput($event)"
-          (onRemove)="onTagRemoved($event)"
+        <div
+          class="chip-group"
+          [ngClass]="{'is-invalid': form.get('tag_ids')?.hasError('required') && form.get('tag_ids')?.touched}"
         >
-          <tag-input-dropdown
-            [showDropdownIfEmpty]="true"
-            [autocompleteItems]="availableTags"
-          ></tag-input-dropdown>
-        </tag-input>
+          <div
+            *ngFor="let tag of displayedTags"
+            class="chip"
+            role="button"
+            tabindex="0"
+            [class.selected]="isTagSelected(tag.id)"
+            (click)="toggleTagChip(tag)"
+            (keydown.enter)="toggleTagChip(tag)"
+            (keydown.space)="$event.preventDefault(); toggleTagChip(tag)"
+          >
+            <i *ngIf="isTagSelected(tag.id)" class="fas fa-check check-icon"></i>
+            {{ tag.display }}
+          </div>
+        </div>
+
+       <div class="d-flex justify-content-end">
+        <button
+        *ngIf="availableTags.length > 17"
+        type="button"
+        class="btn btn-link text-primary fw-bold p-0 mt-2"
+        (click)="toggleViewMoreTags()"
+      >
+        {{ showAllTags ? lang == 'ar' ? 'عرض أقل' : 'View less tags' : lang == 'ar' ? 'عرض المزيد من الوسوم' : 'View more tags' }}
+      </button>
+       </div>
       </div>
 
       <!-- Tag dialog removed - tags are now added directly through the tag input -->
 
       <!-- ISIC Code -->
-      <div class="mb-10 fv-row">
+      <div class="mb-15 fv-row">
         <app-industry-selector
           [title]="currentLanguage == 'ar' ? 'اختر الرمز الصناعي' : 'Select industry code '"
           [placeholder]="currentLanguage == 'ar' ? 'اختر الرمز الصناعي' : 'Industry classification (ISIC)'"
@@ -678,7 +749,7 @@
       </div>
 
       <!-- Products - Always visible -->
-      <div class="mb-10 fv-row">
+      <div class="mb-15 fv-row">
         <app-get-hs-code-by-isic
           [isicCodeId]="selectedIsicId"
           [placeholder]="currentLanguage == 'ar' ? 'اختر رمز الـ HS' : 'Select Product (HS Code)'"
