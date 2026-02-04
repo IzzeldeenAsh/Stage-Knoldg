@@ -127,7 +127,7 @@ interface GroupedSection {
 
     <div class="w-100">
       <div class="d-flex align-items-center">
-        <label class="d-flex align-items-center form-label mb-3" [ngClass]="{'required': isRequired}">
+        <label class="d-flex align-items-center form-label mb-3 fw-bold text-capitalize" [ngClass]="{'required': isRequired}">
           {{ title }}
           <i
             class="fas fa-exclamation-circle mx-2 fs-7"

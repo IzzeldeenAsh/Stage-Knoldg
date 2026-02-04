@@ -5,7 +5,9 @@
   flex-wrap: wrap;
   gap: 0.5rem;
 }
-
+.form-label{
+  font-weight: 600 !important;
+}
 .chip {
   display: flex;
   align-items: center;
