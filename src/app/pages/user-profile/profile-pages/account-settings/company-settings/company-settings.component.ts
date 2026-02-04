@@ -242,6 +242,9 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
       if (field.errors?.['required']) {
         return this.lang === 'ar' ? 'هذا الحقل مطلوب' : 'This field is required';
       }
+      if (field.errors?.['pattern']) {
+        return this.lang === 'ar' ? 'الرابط غير صحيح' : 'Invalid URL format';
+      }
     }
     return '';
   }
