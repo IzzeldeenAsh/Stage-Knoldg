@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild, OnDestroy } from "@angular/core";
 import { Message } from "primeng/api";
-import { Table } from "primeng/table";
+import { Table, TableLazyLoadEvent } from "primeng/table";
 import { Observable, Subscription, of } from "rxjs";
 import Swal from 'sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -28,10 +28,16 @@ export class TagsComponent implements OnInit, OnDestroy {
   // Data properties
   tagsWithIndustries: TagWithIndustries[] = [];
   industriesList: Industry[] = [];
-  paginationData: any;
+  paginationData: any = {
+    currentPage: 1,
+    totalPages: 1,
+    totalRecords: 0,
+    perPage: 10
+  };
   
   // Loading states
   isLoading$: Observable<boolean>;
+  private isInitialLoad: boolean = true;
   
   // Form and dialog properties
   isEditMode: boolean = false;
@@ -134,11 +140,13 @@ export class TagsComponent implements OnInit, OnDestroy {
   // Filter and pagination methods
   onSearch() {
     this.currentPage = 1;
+    this.isInitialLoad = false; // Reset flag for manual operations
     this.ensureIndustriesLoadedThenLoadTags();
   }
 
   onStatusFilterChange() {
     this.currentPage = 1;
+    this.isInitialLoad = false; // Reset flag for manual operations
     this.ensureIndustriesLoadedThenLoadTags();
   }
 
@@ -152,9 +160,21 @@ export class TagsComponent implements OnInit, OnDestroy {
     }
   }
 
-  onPageChange(event: any) {
-    this.currentPage = event.page + 1;
-    this.ensureIndustriesLoadedThenLoadTags();
+  onLazyLoad(event: TableLazyLoadEvent) {
+    // Skip the initial automatic load since we handle it in ngOnInit
+    if (this.isInitialLoad) {
+      this.isInitialLoad = false;
+      return;
+    }
+    
+    if (event.first !== undefined && event.rows !== undefined && event.rows !== null) {
+      const newPage = (event.first / event.rows) + 1;
+      // Only load if page actually changed
+      if (newPage !== this.currentPage) {
+        this.currentPage = newPage;
+        this.ensureIndustriesLoadedThenLoadTags();
+      }
+    }
   }
 
   // Dialog methods
