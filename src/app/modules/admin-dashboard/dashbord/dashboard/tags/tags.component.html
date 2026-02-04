@@ -186,12 +186,16 @@ mode="indeterminate"
         #dt
         [value]="tagsWithIndustries"
         [paginator]="true"
-        [rows]="10"
+        [rows]="paginationData?.perPage || 10"
+        [totalRecords]="paginationData?.totalRecords || 0"
+        [lazy]="true"
+        (onLazyLoad)="onLazyLoad($event)"
         [loading]="isLoading$ | async"
         [globalFilterFields]="['names.en', 'names.ar', 'status']"
         responsiveLayout="scroll"
         [rowHover]="true"
         [tableStyle]="{'width': '100%'}"
+        [first]="(paginationData?.currentPage - 1) * (paginationData?.perPage || 10)"
       >
         <ng-template pTemplate="header">
           <tr>

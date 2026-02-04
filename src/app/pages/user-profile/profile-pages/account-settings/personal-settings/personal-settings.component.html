@@ -187,14 +187,8 @@
                   type="text"
                   class="form-control "
                   formControlName="linkedIn"
-                  [placeholder]="lang === 'ar' ? 'ابدأ بـ https://www.linkedin.com/...' : 'Start with https://www.linkedin.com/...'"
+                  [placeholder]="lang === 'ar' ? 'رابط الملف الشخصي على LinkedIn' : 'LinkedIn Profile URL'"
                 />
-                <small class="form-text text-muted d-block mt-1">
-                  {{ lang === 'ar' ? 'يجب أن يبدأ الرابط بـ https://www.' : 'URL must start with https://www.' }}
-                </small>
-                <div *ngIf="isFieldInvalid('linkedIn')" class="invalid-feedback d-block">
-                  {{ getFieldError('linkedIn') }}
-                </div>
               </div>
             </div>
 
@@ -208,14 +202,8 @@
                   type="text"
                   class="form-control "
                   formControlName="facebook"
-                  [placeholder]="lang === 'ar' ? 'ابدأ بـ https://www.facebook.com/...' : 'Start with https://www.facebook.com/...'"
+                  [placeholder]="lang === 'ar' ? 'رابط الملف الشخصي على Facebook' : 'Facebook Profile URL'"
                 />
-                <small class="form-text text-muted d-block mt-1">
-                  {{ lang === 'ar' ? 'يجب أن يبدأ الرابط بـ https://www.' : 'URL must start with https://www.' }}
-                </small>
-                <div *ngIf="isFieldInvalid('facebook')" class="invalid-feedback d-block">
-                  {{ getFieldError('facebook') }}
-                </div>
               </div>
             </div>
 
@@ -229,14 +217,8 @@
                   type="text"
                   class="form-control "
                   formControlName="twitter"
-                  [placeholder]="lang === 'ar' ? 'ابدأ بـ https://www.twitter.com/... أو https://www.x.com/...' : 'Start with https://www.twitter.com/... or https://www.x.com/...'"
+                  [placeholder]="lang === 'ar' ? 'رابط الملف الشخصي على X/Twitter' : 'X/Twitter Profile URL'"
                 />
-                <small class="form-text text-muted d-block mt-1">
-                  {{ lang === 'ar' ? 'يجب أن يبدأ الرابط بـ https://www.' : 'URL must start with https://www.' }}
-                </small>
-                <div *ngIf="isFieldInvalid('twitter')" class="invalid-feedback d-block">
-                  {{ getFieldError('twitter') }}
-                </div>
               </div>
             </div>
 
@@ -250,14 +232,8 @@
                   type="text"
                   class="form-control "
                   formControlName="instagram"
-                  [placeholder]="lang === 'ar' ? 'ابدأ بـ https://www.instagram.com/...' : 'Start with https://www.instagram.com/...'"
+                  [placeholder]="lang === 'ar' ? 'رابط الملف الشخصي على Instagram' : 'Instagram Profile URL'"
                 />
-                <small class="form-text text-muted d-block mt-1">
-                  {{ lang === 'ar' ? 'يجب أن يبدأ الرابط بـ https://www.' : 'URL must start with https://www.' }}
-                </small>
-                <div *ngIf="isFieldInvalid('instagram')" class="invalid-feedback d-block">
-                  {{ getFieldError('instagram') }}
-                </div>
               </div>
             </div>
 
@@ -271,14 +247,8 @@
                   type="text"
                   class="form-control"
                   formControlName="youtube"
-                  [placeholder]="lang === 'ar' ? 'ابدأ بـ https://www.youtube.com/...' : 'Start with https://www.youtube.com/...'"
+                  [placeholder]="lang === 'ar' ? 'رابط قناة YouTube' : 'YouTube Channel URL'"
                 />
-                <small class="form-text text-muted d-block mt-1">
-                  {{ lang === 'ar' ? 'يجب أن يبدأ الرابط بـ https://www.' : 'URL must start with https://www.' }}
-                </small>
-                <div *ngIf="isFieldInvalid('youtube')" class="invalid-feedback d-block">
-                  {{ getFieldError('youtube') }}
-                </div>
               </div>
             </div>
 
@@ -292,14 +262,8 @@
                   type="text"
                   class="form-control"
                   formControlName="tiktok"
-                  [placeholder]="lang === 'ar' ? 'ابدأ بـ https://www.tiktok.com/...' : 'Start with https://www.tiktok.com/...'"
+                  [placeholder]="lang === 'ar' ? 'رابط الملف الشخصي على TikTok' : 'TikTok Profile URL'"
                 />
-                <small class="form-text text-muted d-block mt-1">
-                  {{ lang === 'ar' ? 'يجب أن يبدأ الرابط بـ https://www.' : 'URL must start with https://www.' }}
-                </small>
-                <div *ngIf="isFieldInvalid('tiktok')" class="invalid-feedback d-block">
-                  {{ getFieldError('tiktok') }}
-                </div>
               </div>
             </div>
           </div>
