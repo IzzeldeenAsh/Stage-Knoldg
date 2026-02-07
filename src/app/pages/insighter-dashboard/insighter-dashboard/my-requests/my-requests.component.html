@@ -414,7 +414,7 @@ styleClass=""
                     id="resendComments"
                     class="form-control border-1 "
                     rows="4"
-                    placeholder="Please explain why you are resending this request..."
+                    placeholder="{{'USER_REQUESTS.DIALOG.RESEND_REQUEST_PLACEHOLDER' | translate}}"
                     [(ngModel)]="resendComments"
                 ></textarea>
             </div>
@@ -425,7 +425,7 @@ styleClass=""
                     (click)="onResendRequest()"
                     [disabled]="!resendComments"
                 >
-                    Resend Request
+                {{'USER_REQUESTS.DIALOG.RESEND_REQUEST' | translate}}
                 </button>
                 <!-- View Knowledge Button - Only show for accept_knowledge requests -->
         <ng-container *ngIf="selectedRequest?.type?.key === 'accept_knowledge' && selectedRequest?.identity" >
