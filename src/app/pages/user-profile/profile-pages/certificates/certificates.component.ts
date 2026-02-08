@@ -3,7 +3,7 @@ import { IKnoldgProfile } from "src/app/_fake/models/profile.interface";
 import {
   Document,
   DocumentsService,
-} from "src/app/_fake/services/douments-types/documents-types.service.spec";
+} from "src/app/_fake/services/douments-types/documents-types.service";
 import { ProfileService } from "src/app/_fake/services/get-profile/get-profile.service";
 import { UpdateProfileService } from "src/app/_fake/services/profile/profile.service";
 import { BaseComponent } from "src/app/modules/base.component";

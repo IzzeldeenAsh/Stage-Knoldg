@@ -15,7 +15,7 @@ import { ICreateAccount } from "../../create-account.helper";
 import {
   Document,
   DocumentsService,
-} from "src/app/_fake/services/douments-types/documents-types.service.spec";
+} from "src/app/_fake/services/douments-types/documents-types.service";
 import { BaseComponent } from "src/app/modules/base.component";
 import { CommonService } from "src/app/_fake/services/common/common.service";
 
@@ -105,7 +105,9 @@ export class Step3Component extends BaseComponent implements OnInit, OnDestroy {
 
   loadDocumentTypes() {
     this.isLoadingDocumentTypes = true;
-    const docTypesSub = this.documentsService.getDocumentsTypes().subscribe({
+    const docTypesSub = this.documentsService
+      .getDocumentsTypes(this.defaultValues?.accountType)
+      .subscribe({
       next: (types) => {
         this.documentTypes = types;
         this.isLoadingDocumentTypes = false;
