@@ -193,12 +193,12 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
       bio: [""],
       industries: [[]],
       consulting_field: [[]],
-      linkedIn: ['', [Validators.pattern('^https://www\.linkedin\.com/.*$')]],
-      facebook: ['', [Validators.pattern('^https://www\.facebook\.com/.*$')]],
-      twitter: ['', [Validators.pattern('^https://www\.(twitter\.com|x\.com)/.*$')]],
-      instagram: ['', [Validators.pattern('^https://www\.instagram\.com/.*$')]],
-      youtube: ['', [Validators.pattern('^https://www\.youtube\.com/.*$')]],
-      tiktok: ['', [Validators.pattern('^https://www\.tiktok\.com/.*$')]]
+      linkedIn: [''],
+      facebook: [''],
+      twitter: [''],
+      instagram: [''],
+      youtube: [''],
+      tiktok: ['']
     });
 
     // Add required validators for non-client users after form initialization
@@ -536,12 +536,6 @@ export class PersonalSettingsComponent extends BaseComponent implements OnInit {
         return this.lang === 'ar' ? 'هذا الحقل مطلوب' : 'This field is required';
       }
       if (field.errors?.['pattern']) {
-        const socialFields = ['linkedIn', 'facebook', 'twitter', 'instagram', 'youtube', 'tiktok'];
-        if (socialFields.includes(fieldName)) {
-          return this.lang === 'ar' 
-            ? 'يجب أن يبدأ الرابط بـ https://www.' 
-            : 'URL must start with https://www.';
-        }
         return this.lang === 'ar' ? 'الرابط غير صحيح' : 'Invalid URL format';
       }
     }

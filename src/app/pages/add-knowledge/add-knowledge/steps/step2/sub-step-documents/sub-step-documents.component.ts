@@ -457,7 +457,7 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
     }
     
     const extension = this.getFileExtension(file.name);
-    const fileName = file.name.replace(`.${extension}`, ''); // Remove extension from filename
+    const fileName = file.name.replace(`.${extension}`, '').replace(/[_-]/g, ' '); // Remove extension and replace _ or - with spaces
     
     // Create new document form group
     const newDocGroup = this.createDocument();
@@ -523,7 +523,7 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
       }
       
       const extension = this.getFileExtension(file.name);
-      const fileName = file.name.replace(`.${extension}`, ''); // Extract file name without extension
+      const fileName = file.name.replace(`.${extension}`, '').replace(/[_-]/g, ' '); // Extract file name without extension and replace _ or - with spaces
       const docGroup = this.documentControls.at(index);
       
       // Get current document info
@@ -1393,8 +1393,9 @@ export class SubStepDocumentsComponent extends BaseComponent implements OnInit {
   }
 
   processFile(file: File, index?: number): void {
-    const fileName = file.name;
-    const fileExtension = fileName.split('.').pop() || '';
+    const originalFileName = file.name;
+    const fileExtension = originalFileName.split('.').pop() || '';
+    const fileName = originalFileName.replace(`.${fileExtension}`, '').replace(/[_-]/g, ' '); // Remove extension and replace _ or - with spaces
     const fileSize = file.size;
     
     // Create new document object

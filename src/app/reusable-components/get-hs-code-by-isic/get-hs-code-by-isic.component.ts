@@ -226,10 +226,10 @@ import {  TranslationService } from "src/app/modules/i18n";
     </p-dialog>
 
     <div class="w-100">
-      <label class="d-flex align-items-center form-label mb-3" [ngClass]="{'required': isRequired}">
+      <label class="d-flex align-items-center form-label mb-3 fw-bold text-capitalize" [ngClass]="{'required': isRequired}">
         {{ title }}
         <i class="fas fa-exclamation-circle mx-2 fs-7" ngbTooltip="{{tip}}"></i>
-        <span class="text-muted fs-8 mx-1" *ngIf="!isRequired"> {{'OPTIONAL' | translate}} </span>
+        <span class="text-muted fs-8 mx-1" *ngIf="!isRequired"> ({{'OPTIONAL' | translate}}) </span>
       </label>
 
       <div *ngIf="isLoading$ | async" class="position-relative">
@@ -281,8 +281,7 @@ import {  TranslationService } from "src/app/modules/i18n";
       height: calc(80vh - 240px);
       width: 100%;
       overflow: auto;
-      border: 1px solid #cbd5e1;
-      border-radius: 10px;
+     
     }
     
     .list-item {

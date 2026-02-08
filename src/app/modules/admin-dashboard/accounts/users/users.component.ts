@@ -108,7 +108,7 @@ export class UsersComponent implements OnInit, OnDestroy {
     }
     const sub = this.usersListService.getClients().subscribe({
       next: (data) => {
-        this.clients = data || [];
+        this.clients = data.filter((client) => client.roles.length === 1) || [];
         this.loaded.clients = true;
         this.clientsTable?.clear();
       },
