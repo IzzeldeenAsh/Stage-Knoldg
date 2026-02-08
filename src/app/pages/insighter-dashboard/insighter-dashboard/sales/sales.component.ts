@@ -1157,7 +1157,7 @@ export class SalesComponent extends BaseComponent implements OnInit, OnDestroy, 
 
       this.showSuccess(
         this.lang === 'ar' ? 'نجح التصدير' : 'Export Successful',
-        this.lang === 'ar' ? 'تم تصدير تقرير طلبات الاجتماعات بنجاح' : 'Meeting orders report exported successfully'
+        this.lang === 'ar' ? 'تم تصدير تقرير طلبات الجلسات الاستشارية بنجاح' : 'Session orders report exported successfully'
       );
     } catch (error) {
       console.error('Error exporting meeting orders to Excel:', error);

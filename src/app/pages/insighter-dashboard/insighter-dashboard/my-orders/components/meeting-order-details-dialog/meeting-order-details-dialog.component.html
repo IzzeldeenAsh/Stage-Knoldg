@@ -1,7 +1,7 @@
 <!-- Meeting Order Details Dialog -->
 <p-dialog 
   [visible]="visible" (visibleChange)="onVisibleChange($event)" (onHide)="onVisibleChange(false)" 
-  [header]="lang === 'ar' ? 'تفاصيل طلب الاجتماع' : 'Meeting Order Details'"
+  [header]="lang === 'ar' ? 'تفاصيل طلب الجلسة الاستشارية' : 'Session Order Details'"
   [modal]="true" 
   [draggable]="false"
   [resizable]="false"
@@ -176,7 +176,7 @@
     <!-- Meeting Details -->
     <div *ngIf="order.orderable?.meeting_booking" class="meeting-details bg-light rounded-3 border p-4">
       <div class="mb-3">
-        <h6 class="fw-bold text-dark mb-0">{{ lang === 'ar' ? 'تفاصيل الاجتماع' : 'Meeting Details' }}</h6>
+        <h6 class="fw-bold text-dark mb-0">{{ lang === 'ar' ? 'تفاصيل الجلسة الاستشارية' : 'Session Details' }}</h6>
       </div>
       <div class="d-flex justify-content-between align-items-start mb-3">
         <div>

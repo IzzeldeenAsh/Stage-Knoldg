@@ -1,7 +1,7 @@
 <!-- Meeting Order Details Dialog -->
 <p-dialog
   [visible]="visible" (visibleChange)="onVisibleChange($event)" (onHide)="onVisibleChange(false)"
-  [header]="lang === 'ar' ? 'تفاصيل طلب الاجتماع' : 'Meeting Order Details'"
+  [header]="lang === 'ar' ? 'تفاصيل طلب الجلسة الاستشارية' : 'Session Order Details'"
   [modal]="true"
   [draggable]="false"
   [resizable]="false"
@@ -165,13 +165,13 @@
     <!-- Meeting Details -->
     <div *ngIf="order.orderable?.meeting_booking" class="meeting-details bg-light rounded-3 border p-4">
       <div class="mb-3">
-        <h6 class="fw-bold text-dark mb-0">{{ lang === 'ar' ? 'تفاصيل الاجتماع' : 'Meeting Details' }}</h6>
+        <h6 class="fw-bold text-dark mb-0">{{ lang === 'ar' ? 'تفاصيل الجلسة الاستشارية' : 'Session Details' }}</h6>
       </div>
 
       <div class="meeting-info">
         <!-- Meeting Title -->
         <div *ngIf="order.orderable.meeting_booking?.title" class="mb-3">
-          <div class="fs-7 text-muted mb-1">{{ lang === 'ar' ? 'عنوان الاجتماع:' : 'Meeting Title:' }}</div>
+          <div class="fs-7 text-muted mb-1">{{ lang === 'ar' ? 'عنوان الجلسة الاستشارية:' : 'Session Title:' }}</div>
           <div class="fw-semibold text-dark">{{ order.orderable.meeting_booking?.title }}</div>
         </div>
 
@@ -195,7 +195,7 @@
 
         <!-- Meeting Status -->
         <div *ngIf="order.orderable.meeting_booking?.status" class="mb-0">
-          <div class="fs-7 text-muted mb-1">{{ lang === 'ar' ? 'حالة الاجتماع:' : 'Meeting Status:' }}</div>
+          <div class="fs-7 text-muted mb-1">{{ lang === 'ar' ? 'حالة الجلسة الاستشارية:' : 'Session Status:' }}</div>
           <span class="badge badge-light-info">{{ order.orderable.meeting_booking?.status }}</span>
         </div>
       </div>
