@@ -198,41 +198,45 @@ export class ReviewInsighterKnowledgeComponent extends BaseComponent implements 
   }
 
   rejectKnowledge(): void {
-    // Check if notes are provided when rejecting
-    if (!this.staffNotes || this.staffNotes.trim() === '') {
-      // Show error message based on language
-      const errorMessage = this.lang === 'ar' 
-        ? 'يرجى إضافة ملاحظات للمستبصر قبل الرفض.'
-        : 'Please add notes to the Insighter before rejecting.';
-      
-      this.showError('', errorMessage);
-      
-      // Set the validation flag to true
-      this.staffNotesInvalid = true;
-      
-      // Focus on the textarea
-      setTimeout(() => {
-        const textareaElement = document.querySelector('.notes-textarea') as HTMLElement;
-        if (textareaElement) {
-          textareaElement.focus();
-        }
-      }, 100);
-      
-      return;
-    }
-    
-    // Reset validation flag
-    this.staffNotesInvalid = false;
-    
-    // Proceed with rejection if notes are provided
+    // Partial reject (allows resubmission)
+    if (!this.ensureStaffNotesForRejection()) return;
     this.confirmAction('decline');
   }
 
-  confirmAction(status: 'approve' | 'decline'): void {
-    const actionText = status === 'approve' ? 'approve' : 'reject';
-    const actionTitle = status === 'approve' ? 'Approve Knowledge' : 'Reject Knowledge';
-    const actionIcon = status === 'approve' ? 'success' : 'warning';
-    const actionButtonClass = status === 'approve' ? 'btn btn-success fw-bold px-10' : 'btn btn-danger fw-bold px-10';
+  totalRejectKnowledge(): void {
+    // Final reject (no resubmission allowed)
+    if (!this.ensureStaffNotesForRejection()) return;
+    this.confirmAction('reject');
+  }
+
+  private ensureStaffNotesForRejection(): boolean {
+    if (!this.staffNotes || this.staffNotes.trim() === '') {
+      const errorMessage =
+        this.lang === 'ar'
+          ? 'يرجى إضافة ملاحظات للمستبصر قبل الرفض.'
+          : 'Please add notes to the Insighter before rejecting.';
+
+      this.showError('', errorMessage);
+      this.staffNotesInvalid = true;
+
+      setTimeout(() => {
+        const textareaElement = document.querySelector('.notes-textarea') as HTMLElement;
+        textareaElement?.focus();
+      }, 100);
+
+      return false;
+    }
+
+    this.staffNotesInvalid = false;
+    return true;
+  }
+
+  confirmAction(status: 'approve' | 'decline' | 'reject'): void {
+    const actionIcon = status === 'approve' ? 'success' : status === 'reject' ? 'error' : 'warning';
+    const actionButtonClass =
+      status === 'approve'
+        ? 'btn btn-success fw-bold px-10'
+        : 'btn btn-danger fw-bold px-10';
     
     // Arabic translations
     const arMessages = {
@@ -242,12 +246,18 @@ export class ReviewInsighterKnowledgeComponent extends BaseComponent implements 
         confirmButton: 'نعم، وافق عليها!',
         cancelButton: 'إلغاء'
       },
-      reject: {
-        title: 'هل أنت متأكد أنك تريد رفض هذه المعرفة؟',
-        text: 'أنت على وشك رفض تقديم هذه المعرفة.',
-        confirmButton: 'نعم، ارفضها!',
+      decline: {
+        title: 'هل أنت متأكد أنك تريد الرفض الجزئي لهذه المعرفة؟',
+        text: 'أنت على وشك رفض هذه المعرفة (مع السماح بإعادة الإرسال).',
+        confirmButton: 'نعم، ارفض جزئياً!',
         cancelButton: 'إلغاء'
-      }
+      },
+      reject: {
+        title: 'هل أنت متأكد أنك تريد الرفض النهائي لهذه المعرفة؟',
+        text: 'هذا رفض نهائي ولن يُسمح بإرسال متابعة/رد لاحقًا.',
+        confirmButton: 'نعم، ارفض نهائياً!',
+        cancelButton: 'إلغاء'
+      },
     };
 
     // English messages
@@ -258,17 +268,28 @@ export class ReviewInsighterKnowledgeComponent extends BaseComponent implements 
         confirmButton: 'Yes, approve it!',
         cancelButton: 'Cancel'
       },
-      reject: {
-        title: 'Are you sure you want to reject this knowledge?',
-        text: 'You are about to reject this knowledge submission.',
-        confirmButton: 'Yes, reject it!',
+      decline: {
+        title: 'Are you sure you want to partially reject this knowledge?',
+        text: 'You are about to partially reject this knowledge submission (resubmission allowed).',
+        confirmButton: 'Yes, partially reject it!',
         cancelButton: 'Cancel'
-      }
+      },
+      reject: {
+        title: 'Are you sure you want to finally reject this knowledge?',
+        text: 'This is a final rejection and no follow-up response/resubmission will be allowed.',
+        confirmButton: 'Yes, reject it permanently!',
+        cancelButton: 'Cancel'
+      },
     };
 
     // Select messages based on language
     const messages = this.lang === 'ar' ? arMessages : enMessages;
-    const currentMessages = status === 'approve' ? messages.approve : messages.reject;
+    const currentMessages =
+      status === 'approve'
+        ? messages.approve
+        : status === 'decline'
+          ? messages.decline
+          : messages.reject;
     
     Swal.fire({
       title: currentMessages.title,
@@ -289,11 +310,11 @@ export class ReviewInsighterKnowledgeComponent extends BaseComponent implements 
     });
   }
 
-  submitDecision(status: 'approve' | 'decline'): void {
+  submitDecision(status: 'approve' | 'decline' | 'reject'): void {
     this.isLoading = true;
     
-    // Map approve/decline to the API's expected values
-    const apiStatus = status === 'approve' ? 'approved' : 'declined';
+    // Map to the API's expected values
+    const apiStatus = status === 'approve' ? 'approved' : status === 'decline' ? 'declined' : 'rejected';
     
     const body = {
       staff_notes: this.staffNotes,
@@ -327,11 +348,21 @@ export class ReviewInsighterKnowledgeComponent extends BaseComponent implements 
           // Success messages based on language
           const successMessages = this.lang === 'ar' ? {
             title: 'تم بنجاح!',
-            text: status === 'approve' ? 'تمت الموافقة على المعرفة بنجاح.' : 'تم رفض المعرفة بنجاح.',
+            text:
+              status === 'approve'
+                ? 'تمت الموافقة على المعرفة بنجاح.'
+                : status === 'decline'
+                  ? 'تم رفض المعرفة (رفض جزئي) بنجاح.'
+                  : 'تم رفض المعرفة (رفض نهائي) بنجاح.',
             confirmButton: 'حسناً'
           } : {
             title: 'Success!',
-            text: `Knowledge has been ${status === 'approve' ? 'approved' : 'rejected'} successfully.`,
+            text:
+              status === 'approve'
+                ? 'Knowledge has been approved successfully.'
+                : status === 'decline'
+                  ? 'Knowledge has been partially rejected successfully.'
+                  : 'Knowledge has been rejected permanently successfully.',
             confirmButton: 'OK'
           };
 

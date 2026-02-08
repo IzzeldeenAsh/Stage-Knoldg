@@ -23,7 +23,7 @@ export class NotificationsNamesPipe implements PipeTransform {
     'deactivate_delete_insighter': { en: 'Deactivate Delete Insighter', ar: 'إلغاء تفعيل وحذف الخبير' },
     'verified_company': { en: 'Verified Company', ar: 'شركة موثقة' },
     'verified_insighter': { en: 'Verified Insighter', ar: 'خبير موثق' },
-    'accept_knowledge': { en: 'Knowledge Request', ar: 'طلب معرفة' },
+    'accept_knowledge': { en: 'Knowledge Request', ar: 'طلب موافقة الرؤية' },
     'insighter_meeting_reminder': { en: 'Session Reminder', ar: 'تذكير بالجلسة الاستشارية' },
     'client_meeting_reminder': { en: 'Session Reminder', ar: 'تذكير بالجلسة الاستشارية' },
     'question_received': { en: 'Question Received', ar: 'تم استلام سؤال' },
