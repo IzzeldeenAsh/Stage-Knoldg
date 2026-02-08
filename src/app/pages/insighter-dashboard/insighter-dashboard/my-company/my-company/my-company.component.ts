@@ -1458,7 +1458,7 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
       // Statistics cards
       'published': { en: 'Published', ar: 'منشورات' },
       'profit': { en: 'Profit', ar: 'الربح' },
-      'meetings': { en: 'Meetings', ar: 'الاجتماعات' },
+      'meetings': { en: 'Sessions', ar: 'الجلسات الاستشارية' },
 
       // Common
       'loading': { en: 'Loading', ar: 'جاري التحميل' },
@@ -1517,9 +1517,9 @@ export class MyCompanyComponent extends BaseComponent implements OnInit {
       'publishedKnowledge': { en: 'Published Knowledge', ar: 'المنشورات' },
       'publishedKnowledgeByInsighter': { en: 'Knowledge by Insighter', ar: "التصنيف حسب الإنسايتر" },
       'knowledgeOrders': { en: 'Knowledge Orders', ar: 'طلبات المعرفة' },
-      'meetingBookings': { en: 'Meeting Bookings', ar: 'حجوزات الاجتماعات' },
-      'meetingOrders': { en: 'Meeting Orders', ar: 'طلبات الاجتماعات' },
-      'totalMeetings': { en: 'Total Meetings', ar: 'إجمالي الاجتماعات' },
+      'meetingBookings': { en: 'Session Bookings', ar: 'حجوزات الجلسات الاستشارية' },
+      'meetingOrders': { en: 'Session Orders', ar: 'طلبات الجلسات الاستشارية' },
+      'totalMeetings': { en: 'Total Sessions', ar: 'إجمالي الجلسات الاستشارية' },
       'totalPublished': { en: 'Total Published', ar: 'إجمالي المنشورات' },
       'ordersAmount': { en: 'Orders Amount', ar: 'مبلغ الطلبات' },
       'companyNetShare': { en: 'Company Net Share', ar: 'حصة الشركة الصافية' }
