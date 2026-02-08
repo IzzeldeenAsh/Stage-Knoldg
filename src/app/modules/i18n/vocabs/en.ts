@@ -106,6 +106,8 @@ export const locale = {
     ISIC_CODES: 'ISIC Codes',
     APPROVE: 'Approve',
     REJECT: 'Reject',
+    PARTIAL_REJECT: 'Partial Reject',
+    FINAL_REJECT: 'Final Reject',
     STAFF_NOTES: 'Staff Notes',
     INDUSTRY: 'Industry',
     STATUS: 'Status',
