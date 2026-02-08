@@ -1483,7 +1483,7 @@ UPLOAD: 'Upload',
         MY_KNOWLEDGE_BASE: 'My library',
         GENERAL: 'General'
       },
-      KNOWLEDGE_DETAILS: 'Knowledge Details',
+      KNOWLEDGE_DETAILS: 'Insight Details',
       ANALYTICS: 'Analytics',
       DOWNLOADS: 'Downloads',
       CONTINUE: "Continue",

@@ -212,8 +212,8 @@ export class Step6Component extends BaseComponent implements OnInit {
         'SHARE_YOUR_KNOWLEDGE': 'Share Your Knowledge',
         'SHARE_KNOWLEDGE_DESCRIPTION': 'Spread the word and help others discover your valuable insights. Sharing your knowledge increases its reach and impact in the community.',
         'SHARE_NOW': 'Share Now',
-        'KNOWLEDGE_SENT_FOR_REVIEW': 'Knowledge Sent for Review',
-        'KNOWLEDGE_REVIEW_MESSAGE': 'Your knowledge has been successfully sent for manager review. You will be notified once the review is complete.',
+        'KNOWLEDGE_SENT_FOR_REVIEW': 'Insight Sent for Review',
+        'KNOWLEDGE_REVIEW_MESSAGE': 'Your Insight has been successfully sent for manager review. You will be notified once the review is complete.',
         'COPY_LINK': 'Copy Link',
         'LINK_COPIED': 'Link Copied!'
       },
