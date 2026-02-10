@@ -4,7 +4,7 @@ import { IKnoldgProfile } from "src/app/_fake/models/profile.interface";
 import {
   Document,
   DocumentsService,
-} from "src/app/_fake/services/douments-types/documents-types.service.spec";
+} from "src/app/_fake/services/douments-types/documents-types.service";
 import { ProfileService } from "src/app/_fake/services/get-profile/get-profile.service";
 import { UpdateProfileService } from "src/app/_fake/services/profile/profile.service";
 import { BaseComponent } from "src/app/modules/base.component";
@@ -60,7 +60,7 @@ export class CompanyCertificatesComponent extends BaseComponent implements OnIni
   }
 
   loadDocList() {
-    const docListSub = this.documentsService.getDocumentsTypes().subscribe({
+    const docListSub = this.documentsService.getDocumentsTypes("corporate").subscribe({
       next: (types) => {
         this.documentTypes = types;
         this.isLoadingDocumentTypes = false;

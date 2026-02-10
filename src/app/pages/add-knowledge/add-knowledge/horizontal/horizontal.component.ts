@@ -28,6 +28,7 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
   );
   isLoading = false;
   
+  private static readonly DRAFT_TOAST_FLAG_KEY = 'knoldg:draft_saved_toast';
   @ViewChild(SubStepDocumentsComponent) documentsComponent: SubStepDocumentsComponent;
   @ViewChild('step3Component') step3Component: any;
   @ViewChild('step4Component') step4Component: any;
@@ -46,7 +47,44 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
     super(injector);
   }
 
+  private initialStep: number | null = null;
+
+  private shouldShowSavedAsDraftToast(): boolean {
+    // Only for create flow (not edit mode)
+    if (this.isEditMode) return false;
+
+    const publishStatus = this.account$.value?.publish_status;
+
+    // If it's published or scheduled, don't show "Saved as Draft"
+    if (publishStatus === 'published' || publishStatus === 'scheduled') return false;
+
+    // Show if user didn't reach publish completion (step <= 5),
+    // OR they finished but explicitly kept it unpublished (draft).
+    return this.currentStep$.value <= 5 || publishStatus === 'unpublished';
+  }
+
+  private syncDraftFlagForExternalRedirect() {
+    // This flag is used by the Angular header logo click to pass a query param to the Next.js app.
+    try {
+      if (this.shouldShowSavedAsDraftToast()) {
+        sessionStorage.setItem(HorizontalComponent.DRAFT_TOAST_FLAG_KEY, Date.now().toString());
+      } else {
+        sessionStorage.removeItem(HorizontalComponent.DRAFT_TOAST_FLAG_KEY);
+      }
+    } catch {
+      // ignore (e.g. Safari private mode)
+    }
+  }
+
   ngOnInit(): void {
+    // Read the optional ?step= query parameter
+    this.route.queryParams.subscribe(queryParams => {
+      const stepParam = queryParams['step'];
+      if (stepParam) {
+        this.initialStep = +stepParam;
+      }
+    });
+
     this.route.params.subscribe(params => {
       const id = params['id'];
       if (id) {
@@ -67,6 +105,15 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
     this.addInsightStepsService.isLoading$.subscribe(isLoading => {
       this.isLoading = isLoading;
     });
+
+    // Keep external redirect draft flag in sync while user is in the wizard
+    const stepSub = this.currentStep$.subscribe(() => this.syncDraftFlagForExternalRedirect());
+    this.unsubscribe.push(stepSub);
+    const accountSub = this.account$.subscribe(() => this.syncDraftFlagForExternalRedirect());
+    this.unsubscribe.push(accountSub);
+
+    // Ensure the flag is correct on initial load
+    this.syncDraftFlagForExternalRedirect();
   }
 
   private loadKnowledgeData() {
@@ -131,6 +178,12 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
             this.updateAccount(updatedAccount, true);
             this.isCurrentFormValid$.next(true);
             this.isLoading = false;
+
+            // Jump to the requested step if provided via ?step= query param
+            if (this.initialStep && this.initialStep >= 1 && this.initialStep <= this.formsCount) {
+              this.currentStep$.next(this.initialStep);
+              this.initialStep = null; // Only apply once
+            }
           });
         },
         error: (error) => {
@@ -149,6 +202,7 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
 
     this.account$.next(updatedAccount);
     this.isCurrentFormValid$.next(isFormValid);
+    this.syncDraftFlagForExternalRedirect();
 
     // If the knowledgeType has changed and it's valid, handle the API call
     if (part.knowledgeType && isFormValid) {
@@ -261,6 +315,7 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
     } else {
       // For other steps, just proceed without any special handling
       this.currentStep$.next(nextStep);
+      this.syncDraftFlagForExternalRedirect();
     }
   }
 
@@ -752,6 +807,7 @@ export class HorizontalComponent extends BaseComponent implements OnInit {
       return;
     }
     this.currentStep$.next(prevStep);
+    this.syncDraftFlagForExternalRedirect();
   }
 
   private handleServerErrors(error: any) {

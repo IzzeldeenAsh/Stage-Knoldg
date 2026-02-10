@@ -35,7 +35,7 @@ import { TreeNode } from 'src/app/reusable-components/shared-tree-selector/TreeN
 import { ConsultingFieldTreeService } from "src/app/_fake/services/consulting-fields-tree/consulting-fields-tree.service";
 import { IsicCodesService } from "src/app/_fake/services/isic-code/isic-codes.service";
 import { IndustryService } from "src/app/_fake/services/industries/industry.service";
-import { Document, DocumentsService } from "src/app/_fake/services/douments-types/documents-types.service.spec";
+import { Document, DocumentsService } from "src/app/_fake/services/douments-types/documents-types.service";
 import { phoneNumbers } from "src/app/pages/wizards/phone-keys";
 import { TranslateService } from "@ngx-translate/core";
 import { CountriesService, Country } from "src/app/_fake/services/countries/countries.service";
@@ -217,7 +217,8 @@ export class UpgradeToCompanyComponent
   private loadDocumentTypes() {
     this.isLoadingDocumentTypes = true;
     
-    const docTypesSub = this.documentsService.getDocumentsTypes().subscribe({
+    // This screen is for upgrading to company (corporate) account.
+    const docTypesSub = this.documentsService.getDocumentsTypes("corporate").subscribe({
       next: (types) => {
         this.documentTypes = types;
         this.isLoadingDocumentTypes = false;
