@@ -25,12 +25,6 @@ export const routes: Routes = [
   canActivate:[authGuard, CountryGuard]
 },
 {
-  path: 'admin-dashboard',
-  loadChildren: () =>
-    import('./modules/admin-dashboard/admin-dashboard.module').then((m) => m.AdminDashboardModule),
-    canActivate: [adminGuard]
-},
-{
   path: 'cors-test',
   component: CorsTestComponent
 },
