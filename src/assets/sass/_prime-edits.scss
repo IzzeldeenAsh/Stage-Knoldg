@@ -204,6 +204,10 @@ html[dir="rtl"] .home-countries-dropdown .p-dropdown-panel {
 }
 
 /* Toast Messages */
+.p-toast {
+  z-index: 10000 !important;
+}
+
 .p-toast .p-toast-message.p-toast-message-success {
   background: rgba(228, 248, 240, 1) !important;
 }
@@ -366,7 +370,6 @@ html[dir="ltr"] .my-menu {
   left: -50px;
 }
 
-/* src/app/modules/admin-dashboard/accounts/users/users.component.scss */
 
 .custom-tabview {
   .p-tabview-nav {
@@ -533,4 +536,3 @@ z-index: 99999 !important;
     margin-left: 0.5rem !important;
     margin-right: 0.5rem !important;
   }
-
