@@ -17,6 +17,11 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
   styleUrls: ["./login.component.scss"],
 })
 export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
+  private readonly angularRoutePrefixes = [
+    "/app/",
+    "/admin-dashboard/",
+  ];
+
   defaultAuth: any = {
     email: null,
     password: null,
@@ -153,9 +158,18 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
   
   private getReturnUrl(): string {
     let returnUrl = this.returnUrl !== "/" ? this.returnUrl : document.referrer;
+
+    if (returnUrl && this.isAngularReturnUrl(returnUrl)) {
+      return this.toAbsoluteAngularReturnUrl(returnUrl);
+    }
     
     // Check if returnUrl is a full URL from allowed domains
-    if (returnUrl && (returnUrl.includes('insightabusiness.com') || returnUrl.includes('localhost'))) {
+    if (returnUrl && (
+      returnUrl.includes('insightabusiness.com') ||
+      returnUrl.includes('foresighta.co') ||
+      returnUrl.includes('localhost') ||
+      returnUrl.includes('127.0.0.1')
+    )) {
       return returnUrl;
     }
     
@@ -198,7 +212,13 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     
     // Check if user needs email verification
     if (userData.verified === false) {
-      this.router.navigate(["/auth/email-reconfirm"]);
+      const returnUrl = this.getReturnUrl();
+      this.router.navigate(["/auth/verify-login-email"], {
+        queryParams: {
+          ...(userData?.email ? { email: userData.email } : {}),
+          returnUrl: returnUrl !== "/" ? returnUrl : ""
+        }
+      });
       return;
     }
 
@@ -231,9 +251,31 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     this.messages = [];
 
     if (error.validationMessages) {
+      const maybeNotVerified = (error.validationMessages || []).some((m: any) => {
+        const detail = String(m?.detail || '').toLowerCase();
+        return detail.includes('not verified') || detail.includes('verification');
+      });
+
+      if (maybeNotVerified) {
+        const returnUrl = this.getReturnUrl();
+        this.router.navigate(["/auth/verify-login-email"], {
+          queryParams: {
+            email: (this.f.email?.value || '').trim(),
+            returnUrl: returnUrl !== "/" ? returnUrl : ""
+          }
+        });
+        return;
+      }
+
       this.messages = error.validationMessages;
     } else if (error.error?.message === 'Your email address is not verified.') {
-      this.router.navigate(['/auth/email-reconfirm']);
+      const returnUrl = this.getReturnUrl();
+      this.router.navigate(["/auth/verify-login-email"], {
+        queryParams: {
+          email: (this.f.email?.value || '').trim(),
+          returnUrl: returnUrl !== "/" ? returnUrl : ""
+        }
+      });
     } else {
       this.messages.push({
         severity: "error",
@@ -315,6 +357,9 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     try {
       // Handle absolute URLs
       const absolute = new URL(url, window.location.origin);
+      if (this.isAngularPath(absolute.pathname)) {
+        return absolute.toString();
+      }
       const isNextHost = absolute.hostname === 'localhost' && absolute.port === '3000';
       const isProdNextHost = absolute.hostname.endsWith('insightabusiness.com') && absolute.hostname !== 'app.foresighta.co';
       if (isNextHost || isProdNextHost) {
@@ -327,10 +372,39 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     } catch {
       // Handle relative paths
       if (url.startsWith('/')) {
+        if (this.isAngularPath(url)) {
+          return url;
+        }
         return this.ensureLocalePrefix(url, lang);
       }
       return url;
     }
+  }
+
+  private isAngularReturnUrl(url: string): boolean {
+    try {
+      const absolute = new URL(url, window.location.origin);
+      return this.isAngularPath(absolute.pathname);
+    } catch {
+      return this.isAngularPath(url);
+    }
+  }
+
+  private toAbsoluteAngularReturnUrl(url: string): string {
+    const absolute = new URL(url, window.location.origin);
+    absolute.pathname = this.normalizeAngularPath(absolute.pathname);
+    return absolute.toString();
+  }
+
+  private isAngularPath(pathOrUrl: string): boolean {
+    const normalizedPath = this.normalizeAngularPath(pathOrUrl);
+    return this.angularRoutePrefixes.some(prefix => normalizedPath.startsWith(prefix));
+  }
+
+  private normalizeAngularPath(pathOrUrl: string): string {
+    const pathOnly = pathOrUrl.split("?")[0].split("#")[0];
+    const normalized = pathOnly.replace(/^\/(en|ar)(?=\/|$)/, "") || "/";
+    return normalized.startsWith("/") ? normalized : `/${normalized}`;
   }
 
   private ensureLocalePrefix(pathname: string, lang: string): string {

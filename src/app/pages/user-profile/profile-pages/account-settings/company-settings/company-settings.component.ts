@@ -9,6 +9,7 @@ import { IndustryService } from 'src/app/_fake/services/industries/industry.serv
 import { UpdateProfileService } from 'src/app/_fake/services/profile/profile.service';
 import { AuthService } from 'src/app/modules/auth';
 import { BaseComponent } from 'src/app/modules/base.component';
+import { ProjectProgressCelebrationService } from 'src/app/reusable-components/project-progress-celebration/project-progress-celebration.service';
 @Component({
   selector: 'app-company-settings',
   templateUrl: './company-settings.component.html',
@@ -34,7 +35,8 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
     private _profilePost: UpdateProfileService,
     private _countryService: CountriesService,
     injector: Injector,
-    private getProfileService: ProfileService
+    private getProfileService: ProfileService,
+    private readonly projectProgressCelebrationService: ProjectProgressCelebrationService
   ) {
     super(injector);
   }
@@ -104,6 +106,7 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
     if(this.profile.roles.includes("company")){
       this.corporateInfoForm = this.fb.group({
         companyAddress: ["", Validators.required],
+        companyCountry: [null, Validators.required],
         companyPhoneCountryCode: [""],
         companyPhoneNumber: [""],
         companyIndustries: [[], Validators.required],
@@ -112,6 +115,12 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
         companyWebsite: [null],
         companyRegisterDocument: [null],
         companyAboutUs: ["",Validators.required],
+        companyExperience: ["", [
+          Validators.required,
+          Validators.min(0),
+          Validators.max(40),
+          Validators.pattern(/^\d+$/),
+        ]],
         linkedIn: [''],
         facebook: [''],
         x: [''],
@@ -167,6 +176,8 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
 
     const transformedIndustries = transformNodes(this.profile.company?.industries || []);
     const transformedConsultingFields = transformNodes(this.profile.company?.consulting_field || []);
+    const profileAny: any = this.profile as any;
+    const companyAny: any = this.profile.company as any;
 
     
     this.corporateInfoForm.patchValue({
@@ -177,8 +188,10 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
       companyRegisterDocument: this.profile.company?.register_document,
       companyAboutUs: this.profile.company?.about_us,
       companyAddress: this.profile.company?.address,
+      companyCountry: this.profile.country_id || null,
       companyPhoneCountryCode: this.profile.company?.phone_code || '',
       companyPhoneNumber: this.profile.company?.company_phone || '',
+      companyExperience: companyAny?.experience ?? profileAny?.experience ?? '',
     });
 
     // Add social media population
@@ -243,7 +256,22 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
         return this.lang === 'ar' ? 'هذا الحقل مطلوب' : 'This field is required';
       }
       if (field.errors?.['pattern']) {
+        if (fieldName === 'companyExperience') {
+          return this.lang === 'ar'
+            ? 'يرجى إدخال عدد صحيح من السنوات'
+            : 'Please enter a valid number of years';
+        }
         return this.lang === 'ar' ? 'الرابط غير صحيح' : 'Invalid URL format';
+      }
+      if (field.errors?.['min']) {
+        return this.lang === 'ar'
+          ? 'يرجى إدخال عدد صحيح من السنوات'
+          : 'Please enter a valid number of years';
+      }
+      if (field.errors?.['max'] && fieldName === 'companyExperience') {
+        return this.lang === 'ar'
+          ? 'الحد الأقصى هو 40 سنة'
+          : 'Maximum is 40 years';
       }
     }
     return '';
@@ -266,14 +294,20 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
     const formData = new FormData();
     formData.append("first_name", this.profile.first_name);
     formData.append("last_name", this.profile.last_name);
-    if(this.profile.country_id){
-      formData.append("country_id", this.profile.country_id.toString());
+    const companyCountry = this.corporateInfoForm.get("companyCountry")?.value;
+    if(companyCountry){
+      formData.append("country_id", companyCountry.toString());
     }
 
     formData.append("address", this.corporateInfoForm.get("companyAddress")?.value);
     formData.append("legal_name", this.corporateInfoForm.get("companyLegalName")?.value);
     formData.append("website", this.corporateInfoForm.get("companyWebsite")?.value);
     formData.append("about_us", this.corporateInfoForm.get("companyAboutUs")?.value);
+
+    const companyExperience = this.corporateInfoForm.get("companyExperience")?.value;
+    if (companyExperience !== null && companyExperience !== undefined && companyExperience !== "") {
+      formData.append("experience", String(companyExperience));
+    }
 
     // Add company phone if provided
     if (this.corporateInfoForm.get("companyPhoneNumber")?.value) {
@@ -340,6 +374,12 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
           this.lang === "ar" ? "نجح" : "Success",
           this.lang === "ar" ? "تم تعديل البروفايل" : "Profile Updated Successfully"
         );
+
+        const celebrationSub = this.projectProgressCelebrationService
+          .checkMilestone('profile', this.roles)
+          .subscribe();
+        this.unsubscribe.push(celebrationSub);
+
         // Refresh profile in background to reflect changes without reload
         this.refreshProfileAndForm({
           warnMessage:
@@ -444,4 +484,3 @@ export class CompanySettingsComponent extends BaseComponent implements OnInit {
     }
   }
 }
-
