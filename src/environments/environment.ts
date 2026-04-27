@@ -14,13 +14,13 @@ export const environment = {
   pusherKey: (window as any)?.__env?.PUSHER_KEY || '81566bb993a074e07d41 ',
   pusherCluster: (window as any)?.__env?.PUSHER_CLUSTER || 'eu',
   pusherAuthEndpoint: (window as any)?.__env?.PUSHER_AUTH_ENDPOINT || 'https://api.foresighta.co/broadcasting/auth',
-
+  
   // API configuration for sharing authentication between domains
   apiBaseUrl: 'https://api.foresighta.co/api',
   appDomain: '.foresighta.co',
   mainAppUrl: 'https://foresighta.co',
   subAppUrl: 'https://app.foresighta.co',
-
+  
   // Cookie configuration
   cookieOptions: {
     secure: true, // Set to true for HTTPS
@@ -28,7 +28,7 @@ export const environment = {
     path: '/',
     sameSite: 'None' // Changed from 'Lax' to 'None' for cross-domain sharing
   },
-
+  
   appThemeName: 'Metronic',
   appPurchaseUrl: 'https://1.envato.market/EA4JP',
   appHTMLIntegration:
