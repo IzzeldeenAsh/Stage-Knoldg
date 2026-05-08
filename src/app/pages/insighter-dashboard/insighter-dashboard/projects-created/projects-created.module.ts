@@ -7,6 +7,7 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { PaginatorModule } from 'primeng/paginator';
 import { DropdownModule } from 'primeng/dropdown';
 import { SidebarModule } from 'primeng/sidebar';
+import { DialogModule } from 'primeng/dialog';
 import { InsighterDashboardSharedModule } from '../shared/shared.module';
 import { ProjectsCreatedComponent } from './projects-created.component';
 import { ProjectDetailComponent } from './project-detail/project-detail.component';
@@ -36,6 +37,7 @@ const routes: Routes = [
     PaginatorModule,
     DropdownModule,
     SidebarModule,
+    DialogModule,
     InsighterDashboardSharedModule,
   ]
 })

@@ -194,6 +194,12 @@ Which also has lang:string that can be 'en' or 'ar' so we know the current local
 
 ---
 
+## Form Validation Rule
+
+- Do not disable submit/action buttons only because required fields are empty or invalid. Keep the button clickable, and when clicked, mark the required fields as touched and dirty so the user immediately sees the validation errors and highlighted fields. Only disable submit buttons for true in-flight or unavailable states, such as while the request is submitting.
+
+---
+
 ## **🌐 API Setup**
 
 ---

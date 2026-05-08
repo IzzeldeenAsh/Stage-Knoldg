@@ -10,7 +10,6 @@ export type ProjectOfferProjectStatus = 'invited' | 'cancelled' | 'submitted' | 
 export type ProjectOfferActionStatus = 'pending' | 'viewed' | 'offered' | 'declined' | 'expired' | string;
 
 export interface ProjectOffersFilters {
-  project_status?: ProjectOfferProjectStatus | null;
   action_status?: ProjectOfferActionStatus | null;
 }
 
@@ -27,6 +26,20 @@ export interface ProjectOfferTargetMarketObject {
 }
 
 export interface ProjectOfferBlock {
+  [key: string]: any;
+}
+
+export interface ProjectOfferFile {
+  uuid: string;
+  url?: string | null;
+  [key: string]: any;
+}
+
+export interface ProjectOfferScope {
+  scope: string | null;
+  description?: string | null;
+  files?: ProjectOfferFile[];
+  children?: ProjectOfferScope[];
   [key: string]: any;
 }
 
@@ -51,6 +64,8 @@ export interface ProjectOffer {
     deadline: string | null;
     components: ProjectOfferBlock[];
     addons: ProjectOfferBlock[];
+    scopes: ProjectOfferScope[];
+    request_files: ProjectOfferFile[];
   };
 }
 
@@ -103,6 +118,9 @@ export interface ProjectProposalOfferPayload {
   cover_letter: string;
   estimated_hours: string | number;
   proposed_price: number;
+  down_payment_percentage?: string | number;
+  first_payment_percentage?: string | number;
+  final_payment_percentage?: string | number;
 }
 
 interface ApiProjectOffer {
@@ -126,6 +144,8 @@ interface ApiProjectOffer {
       deadline: string | null;
       components: ProjectOfferBlock[];
       addons: ProjectOfferBlock[];
+      scopes?: ProjectOfferScope[] | null;
+      request_files?: ProjectOfferFile[] | null;
     } | null;
   } | null;
   offer: any;
@@ -183,6 +203,32 @@ const MOCK_PROJECT_OFFERS: ProjectOffer[] = [
           'data-sources-expected': 'mixed_data'
         }
       ],
+      scopes: [
+        {
+          scope: 'Market Definition',
+          description: null,
+          children: [
+            {
+              scope: 'Alternative Products',
+              description: null,
+              files: [
+                {
+                  uuid: 'mock-scope-file-001',
+                  url: '/project/11/scopes/market-definition.pdf',
+                }
+              ]
+            }
+          ]
+        },
+        {
+          scope: 'Customers Analysis',
+          description: null,
+          children: [
+            { scope: 'Customers Analysis', description: null }
+          ]
+        }
+      ],
+      request_files: [],
       addons: [
         {
           'kickoff-meeting': {
@@ -230,6 +276,8 @@ const MOCK_PROJECT_OFFERS: ProjectOffer[] = [
           }
         }
       ],
+      scopes: [],
+      request_files: [],
       addons: [
         {
           'third-party-consultant': [
@@ -270,6 +318,8 @@ const MOCK_PROJECT_OFFERS: ProjectOffer[] = [
           'data-sources-expected': 'primary_data'
         }
       ],
+      scopes: [],
+      request_files: [],
       addons: [
         {
           'survey-conduct': {
@@ -301,6 +351,8 @@ const MOCK_PROJECT_OFFERS: ProjectOffer[] = [
       deadline_offer: '2026-05-14T00:00:00.000000Z',
       deadline: '2026-05-30T00:00:00.000000Z',
       components: [],
+      scopes: [],
+      request_files: [],
       addons: []
     }
   },
@@ -336,6 +388,8 @@ const MOCK_PROJECT_OFFERS: ProjectOffer[] = [
           }
         }
       ],
+      scopes: [],
+      request_files: [],
       addons: [
         {
           'consulting-sessions': [
@@ -372,6 +426,8 @@ const MOCK_PROJECT_OFFERS: ProjectOffer[] = [
           }
         }
       ],
+      scopes: [],
+      request_files: [],
       addons: [
         {
           'kickoff-meeting': {
@@ -423,6 +479,14 @@ export class ProjectOffersService {
     });
   }
 
+  private getFormDataHeaders(): HttpHeaders {
+    return new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': this.currentLang,
+      'X-Timezone': Intl.DateTimeFormat().resolvedOptions().timeZone,
+    });
+  }
+
   getProjectOffers(
     page: number = 1,
     filters: ProjectOffersFilters = {}
@@ -456,6 +520,16 @@ export class ProjectOffersService {
     ).pipe(
       catchError(error => throwError(() => error)),
       finalize(() => this.setLoading(false))
+    );
+  }
+
+  markProjectAsViewed(offerUuid: string): Observable<ProjectOfferActionResponse> {
+    return this.http.post<ProjectOfferActionResponse>(
+      `${this.baseUrl}/mark-as-viewd/${offerUuid}`,
+      {},
+      { headers: this.getHeaders() }
+    ).pipe(
+      catchError(error => throwError(() => error))
     );
   }
 
@@ -497,17 +571,26 @@ export class ProjectOffersService {
    */
   submitProposalOffer(
     proposalUuid: string,
-    payload: ProjectProposalOfferPayload
+    payload: FormData
   ): Observable<ProjectOfferActionResponse> {
     this.setLoading(true);
 
     return this.http.post<ProjectOfferActionResponse>(
       `${this.baseUrl}/add-offer/${proposalUuid}`,
       payload,
-      { headers: this.getHeaders() }
+      { headers: this.getFormDataHeaders() }
     ).pipe(
       catchError(error => throwError(() => error)),
       finalize(() => this.setLoading(false))
+    );
+  }
+
+  getProjectFileUrl(fileUuid: string): Observable<string> {
+    return this.http.get<any>(`${environment.apiBaseUrl}/account/project/file/download/${fileUuid}`, {
+      headers: this.getHeaders(),
+    }).pipe(
+      map(response => response?.file ?? response?.data?.file ?? response?.data?.url ?? response?.url ?? ''),
+      catchError(error => throwError(() => error)),
     );
   }
 
@@ -540,10 +623,6 @@ export class ProjectOffersService {
   private buildHttpParams(page: number, filters: ProjectOffersFilters): HttpParams {
     let params = new HttpParams().set('page', `${page}`);
 
-    if (filters.project_status) {
-      params = params.set('project_status', filters.project_status);
-    }
-
     if (filters.action_status) {
       params = params.set('action_status', filters.action_status);
     }
@@ -554,10 +633,9 @@ export class ProjectOffersService {
   private buildMockResponse(page: number, filters: ProjectOffersFilters): ProjectOffersPaginatedResponse {
     const perPage = 3;
     const filteredOffers = MOCK_PROJECT_OFFERS.filter(offer => {
-      const matchesProjectStatus = !filters.project_status || offer.status === filters.project_status;
       const matchesActionStatus = !filters.action_status || offer.action_status === filters.action_status;
 
-      return matchesProjectStatus && matchesActionStatus;
+      return matchesActionStatus;
     });
     const total = filteredOffers.length;
     const lastPage = Math.max(1, Math.ceil(total / perPage));
@@ -645,6 +723,8 @@ export class ProjectOffersService {
         deadline: project?.deadline ?? null,
         components: this.sanitizeBlocks(project?.components),
         addons: this.sanitizeBlocks(project?.addons),
+        scopes: this.sanitizeScopes(project?.scopes),
+        request_files: this.sanitizeFiles(project?.request_files),
       },
     };
   }
@@ -661,5 +741,37 @@ export class ProjectOffersService {
 
       return Object.keys(block).length > 0;
     });
+  }
+
+  private sanitizeScopes(scopes: ProjectOfferScope[] | null | undefined): ProjectOfferScope[] {
+    if (!Array.isArray(scopes)) {
+      return [];
+    }
+
+    return scopes
+      .filter(scope => scope && typeof scope === 'object' && !Array.isArray(scope))
+      .map(scope => ({
+        ...scope,
+        scope: scope.scope ?? null,
+        description: scope.description ?? null,
+        files: this.sanitizeFiles(scope.files),
+        children: this.sanitizeScopes(scope.children),
+      }))
+      .filter(scope => !!scope.scope || !!scope.description || !!scope.files?.length || !!scope.children?.length);
+  }
+
+  private sanitizeFiles(files: ProjectOfferFile[] | null | undefined): ProjectOfferFile[] {
+    if (!Array.isArray(files)) {
+      return [];
+    }
+
+    return files
+      .filter(file => file && typeof file === 'object' && !Array.isArray(file))
+      .map(file => ({
+        ...file,
+        uuid: file.uuid ?? '',
+        url: file.url ?? null,
+      }))
+      .filter(file => !!file.uuid);
   }
 }

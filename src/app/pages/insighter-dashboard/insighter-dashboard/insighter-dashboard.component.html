@@ -73,10 +73,11 @@
       </div>
     </div>
 
-    <div class="mobile-section" *ngIf="(isInsighter$ | async) || (isCompany$ | async) || (isCompanyInsighter$ | async) || (isClient$ | async)">
+    <div class="mobile-section"
+      *ngIf="(isInsighter$ | async) || (isCompany$ | async) || (isCompanyInsighter$ | async) || (isClient$ | async)">
       <div class="mobile-section-title">{{ lang === 'ar' ? 'المشاريع' : 'Projects' }}</div>
-      <div class="nav-item" [routerLink]="['project-offers']" routerLinkActive="active"
-        *ngIf="!(isClient$ | async)" (click)="closeMobileSidebar()">
+      <div class="nav-item" [routerLink]="['project-offers']" routerLinkActive="active" *ngIf="!(isClient$ | async)"
+        (click)="closeMobileSidebar()">
         <div class="item-icon">
           <i class="ki-outline ki-abstract-26"></i>
         </div>
@@ -97,7 +98,6 @@
         <span>{{ lang === 'ar' ? 'إعدادات المشروع' : 'Project Settings' }}</span>
       </div>
     </div>
-
     <div class="mobile-section">
       <div class="mobile-section-title">{{ lang === 'ar' ? 'السوق' : 'Marketplace' }}</div>
       <div class="nav-item" [routerLink]="['my-orders']" routerLinkActive="active" (click)="closeMobileSidebar()">
@@ -312,7 +312,8 @@
                 </div>
               </div>
 
-              <div class="p-card navigation-card" *ngIf="(isInsighter$ | async) || (isCompany$ | async) || (isCompanyInsighter$ | async) || (isClient$ | async)">
+              <div class="p-card navigation-card"
+                *ngIf="(isInsighter$ | async) || (isCompany$ | async) || (isCompanyInsighter$ | async) || (isClient$ | async)">
                 <div class="p-card-header" *ngIf="!isNavCollapsed">
                   <h3>{{ lang === 'ar' ? 'المشاريع' : 'Projects' }}</h3>
                 </div>

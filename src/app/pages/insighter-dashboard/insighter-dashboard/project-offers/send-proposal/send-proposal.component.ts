@@ -1,4 +1,5 @@
-import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
+import { Component, Injector, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { NgModel } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -6,6 +7,8 @@ import { BaseComponent } from 'src/app/modules/base.component';
 import {
   InsighterProjectAccountSettings,
   ProjectOffer,
+  ProjectOfferFile,
+  ProjectOfferScope,
   ProjectOffersService,
   ProposalEstimateUnit,
 } from 'src/app/_fake/services/project-offers/project-offers.service';
@@ -18,6 +21,8 @@ const HOURS_PER_DAY = 8;
   styleUrl: './send-proposal.component.scss'
 })
 export class SendProposalComponent extends BaseComponent implements OnInit, OnDestroy {
+  @ViewChildren(NgModel) private formModels!: QueryList<NgModel>;
+
   proposal: ProjectOffer | null = null;
   settings: InsighterProjectAccountSettings | null = null;
 
@@ -25,16 +30,21 @@ export class SendProposalComponent extends BaseComponent implements OnInit, OnDe
   hourlyRate: number = 0;
   isLoading: boolean = false;
   isSubmitting: boolean = false;
+  hasSubmitAttempted: boolean = false;
   priceManuallyEdited: boolean = false;
 
   // Project details drawer state
   detailsDrawerVisible: boolean = false;
+  openingFileUuid: string | null = null;
 
   // Form state
-  estimateUnit: ProposalEstimateUnit = 'days';
+  estimateUnit: ProposalEstimateUnit = 'hours';
   estimateAmount: number | null = null;
   proposedPrice: number | null = null;
   coverLetter: string = '';
+  selectedAttachments: File[] = [];
+  firstPaymentPercentage: number | null = 30;
+  finalPaymentPercentage: number | null = 70;
 
   readonly hoursPerDay = HOURS_PER_DAY;
 
@@ -102,6 +112,19 @@ export class SendProposalComponent extends BaseComponent implements OnInit, OnDe
     this.priceManuallyEdited = true;
   }
 
+  onAttachmentsSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const files = input.files ? Array.from(input.files) : [];
+    if (!files.length) return;
+
+    this.selectedAttachments = [...this.selectedAttachments, ...files];
+    input.value = '';
+  }
+
+  removeAttachment(index: number): void {
+    this.selectedAttachments = this.selectedAttachments.filter((_, i) => i !== index);
+  }
+
   /** Total estimated working hours (what we send to the API). */
   get totalHours(): number {
     const amt = Number(this.estimateAmount ?? 0);
@@ -114,24 +137,22 @@ export class SendProposalComponent extends BaseComponent implements OnInit, OnDe
     return this.totalHours * (this.hourlyRate || 0);
   }
 
-  isSubmitDisabled(): boolean {
-    if (this.isSubmitting) return true;
-    if (!this.proposalUuid) return true;
-    if (!this.coverLetter || !this.coverLetter.trim()) return true;
-    if (!this.estimateAmount || this.estimateAmount <= 0) return true;
-    if (!this.proposedPrice || this.proposedPrice <= 0) return true;
-    return false;
+  get paymentSplitTotal(): number {
+    const first = Number(this.firstPaymentPercentage);
+    const final = Number(this.finalPaymentPercentage);
+    if (!isFinite(first) || !isFinite(final)) return 0;
+    return Number((first + final).toFixed(2));
   }
 
   submitProposal(): void {
-    if (this.isSubmitDisabled() || !this.proposalUuid) return;
+    if (this.isSubmitting) return;
+    if (!this.proposalUuid || this.isProposalFormInvalid()) {
+      this.markRequiredFieldsTouchedAndDirty();
+      return;
+    }
 
     this.isSubmitting = true;
-    const payload = {
-      cover_letter: (this.coverLetter || '').trim(),
-      estimated_hours: `${this.totalHours}`,
-      proposed_price: Number(this.proposedPrice),
-    };
+    const payload = this.buildProposalFormData();
 
     this.projectOffersService.submitProposalOffer(this.proposalUuid, payload)
       .pipe(takeUntil(this.unsubscribe$))
@@ -266,6 +287,10 @@ export class SendProposalComponent extends BaseComponent implements OnInit, OnDe
 
   trackByValue(_: number, value: string): string { return value; }
   trackByIndex(index: number): number { return index; }
+  trackByScope(index: number, scope: ProjectOfferScope): string {
+    return `${scope?.scope || 'scope'}-${index}`;
+  }
+  trackByFile(_: number, file: ProjectOfferFile): string { return file.uuid; }
 
   /** Find a component block by key inside the loaded proposal's project. */
   getComponent(key: string): any | null {
@@ -287,6 +312,78 @@ export class SendProposalComponent extends BaseComponent implements OnInit, OnDe
 
   hasAddons(): boolean {
     return !!(this.proposal?.project?.addons?.length);
+  }
+
+  getScopeLabel(scope: ProjectOfferScope | null | undefined): string {
+    return this.getFormattedValue(scope?.scope);
+  }
+
+  getScopeDescription(scope: ProjectOfferScope | null | undefined): string {
+    return scope?.description || '';
+  }
+
+  getScopeChildren(scope: ProjectOfferScope | null | undefined): ProjectOfferScope[] {
+    const children = scope?.children;
+    return Array.isArray(children) ? children : [];
+  }
+
+  getScopeFiles(scope: ProjectOfferScope | null | undefined): ProjectOfferFile[] {
+    const files = scope?.files;
+    return Array.isArray(files) ? files : [];
+  }
+
+  getRequestFiles(): ProjectOfferFile[] {
+    const files = this.proposal?.project?.request_files;
+    return Array.isArray(files) ? files : [];
+  }
+
+  getProjectFileName(file: ProjectOfferFile | null | undefined): string {
+    const rawName = (file?.url || '').split('/').pop()?.split('?')[0];
+    return rawName ? decodeURIComponent(rawName) : (this.lang === 'ar' ? 'ملف' : 'File');
+  }
+
+  openProjectFile(file: ProjectOfferFile | null | undefined): void {
+    if (!file?.uuid) {
+      this.showError(
+        this.lang === 'ar' ? 'تعذر فتح الملف' : 'Cannot open file',
+        this.lang === 'ar' ? 'لم يتم العثور على معرّف الملف.' : 'File identifier was not found.'
+      );
+      return;
+    }
+
+    const fileWindow = window.open('', '_blank');
+    this.openingFileUuid = file.uuid;
+
+    this.projectOffersService.getProjectFileUrl(file.uuid)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (url: string) => {
+          this.openingFileUuid = null;
+          if (!url) {
+            if (fileWindow) fileWindow.close();
+            this.showError(
+              this.lang === 'ar' ? 'تعذر فتح الملف' : 'Cannot open file',
+              this.lang === 'ar' ? 'لم يرجع الخادم رابط الملف.' : 'The server did not return a file URL.'
+            );
+            return;
+          }
+
+          if (fileWindow) {
+            fileWindow.location.href = url;
+          } else {
+            window.open(url, '_blank');
+          }
+        },
+        error: (err) => {
+          this.openingFileUuid = null;
+          if (fileWindow) fileWindow.close();
+          this.handleServerErrors(err);
+        },
+      });
+  }
+
+  isOpeningFile(file: ProjectOfferFile | null | undefined): boolean {
+    return !!file?.uuid && this.openingFileUuid === file.uuid;
   }
 
   formatDate(value: string | null | undefined): string {
@@ -314,7 +411,88 @@ export class SendProposalComponent extends BaseComponent implements OnInit, OnDe
     return this.lang === 'ar' ? 'ki-arrow-right' : 'ki-arrow-left';
   }
 
+  formatFileSize(file: File): string {
+    if (!file?.size) return '0 KB';
+    const sizeInKb = file.size / 1024;
+    if (sizeInKb < 1024) return `${sizeInKb.toFixed(sizeInKb >= 10 ? 0 : 1)} KB`;
+    return `${(sizeInKb / 1024).toFixed(1)} MB`;
+  }
+
+  isCoverLetterInvalid(): boolean {
+    return !(this.coverLetter || '').trim();
+  }
+
+  isEstimateAmountInvalid(): boolean {
+    return !this.estimateAmount || this.estimateAmount <= 0;
+  }
+
+  isProposedPriceInvalid(): boolean {
+    return !this.proposedPrice || this.proposedPrice <= 0;
+  }
+
+  shouldShowFieldError(model: NgModel | null | undefined, invalidByValue: boolean = false): boolean {
+    return !!(
+      (model?.touched || model?.dirty || this.hasSubmitAttempted)
+      && (model?.invalid || invalidByValue)
+    );
+  }
+
+  shouldShowPaymentSplitError(...models: Array<NgModel | null | undefined>): boolean {
+    const hasInteracted = this.hasSubmitAttempted || models.some(model => !!(model?.touched || model?.dirty));
+    return hasInteracted && this.isPaymentSplitInvalid();
+  }
+
   // ---------- Internals ----------
+
+  private buildProposalFormData(): FormData {
+    const formData = new FormData();
+    formData.append('estimated_hours', `${this.totalHours}`);
+    formData.append('cover_letter', (this.coverLetter || '').trim());
+    formData.append('proposed_price', `${Number(this.proposedPrice)}`);
+    formData.append('down_payment_percentage', `${Number(this.firstPaymentPercentage)}`);
+    formData.append('first_payment_percentage', `${Number(this.firstPaymentPercentage)}`);
+    formData.append('final_payment_percentage', `${Number(this.finalPaymentPercentage)}`);
+
+    this.selectedAttachments.forEach((file, index) => {
+      formData.append(`files[${index}]`, file, file.name);
+    });
+
+    return formData;
+  }
+
+  private isPaymentSplitInvalid(): boolean {
+    return !this.isValidPercentage(this.firstPaymentPercentage)
+      || !this.isValidPercentage(this.finalPaymentPercentage)
+      || this.paymentSplitTotal !== 100;
+  }
+
+  private isProposalFormInvalid(): boolean {
+    return this.isCoverLetterInvalid()
+      || this.isEstimateAmountInvalid()
+      || this.isProposedPriceInvalid()
+      || this.isPaymentSplitInvalid();
+  }
+
+  private isValidPercentage(value: number | null): boolean {
+    const n = Number(value);
+    return isFinite(n) && n >= 0 && n <= 100;
+  }
+
+  private markRequiredFieldsTouchedAndDirty(): void {
+    this.hasSubmitAttempted = true;
+    this.formModels?.forEach(model => {
+      model.control.markAsTouched();
+      model.control.markAsDirty();
+    });
+    setTimeout(() => this.scrollToFirstInvalidField(), 0);
+  }
+
+  private scrollToFirstInvalidField(): void {
+    const firstInvalid = document.querySelector<HTMLElement>(
+      '.sp-input.is-invalid, .sp-input-group.is-invalid'
+    );
+    firstInvalid?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
 
   private loadAll(uuid: string): void {
     forkJoin({

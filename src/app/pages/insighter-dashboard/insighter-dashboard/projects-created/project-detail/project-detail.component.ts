@@ -5,10 +5,42 @@ import { BaseComponent } from 'src/app/modules/base.component';
 import {
   CreatedProject,
   CreatedProjectBlock,
+  CreatedProjectFile,
   CreatedProjectProposalInvite,
+  CreatedProjectProposalMatch,
+  CreatedProjectProposalMatchCountry,
+  CreatedProjectScope,
   CreatedProjectType,
   ProjectsCreatedService,
+  SubmitRematchProposalPayload,
 } from 'src/app/_fake/services/projects-created/projects-created.service';
+
+type ProjectDetailTab = 'overview' | 'documents';
+type RematchWizardStep = 'matches' | 'deadline';
+type RematchPhase = 'idle' | 'creating' | 'loading' | 'ready' | 'empty' | 'error' | 'submitting';
+
+interface ProjectDocumentGroup {
+  key: 'general' | 'scopes' | 'offer';
+  labelEn: string;
+  labelAr: string;
+  descriptionEn: string;
+  descriptionAr: string;
+  files: CreatedProjectFile[];
+}
+
+interface MatchCriteriaEntry {
+  key: string;
+  label: string;
+  matched: boolean;
+}
+
+const MATCH_CRITERIA_LABELS: Record<string, { en: string; ar: string }> = {
+  ORIGIN_MATCH: { en: 'Origin', ar: 'البلد' },
+  INDUSTRY_MATCH: { en: 'Industry', ar: 'القطاع' },
+  EXPERIENCE_MATCH: { en: 'Experience', ar: 'الخبرة' },
+  TEAM_SIZE_MATCH: { en: 'Team size', ar: 'حجم الفريق' },
+  INSIGHTER_TYPE_MATCH: { en: 'Insighter type', ar: 'نوع الخبير' },
+};
 
 @Component({
   selector: 'app-project-detail',
@@ -18,9 +50,23 @@ import {
 export class ProjectDetailComponent extends BaseComponent implements OnInit, OnDestroy {
   project: CreatedProject | null = null;
   invitedInsighters: CreatedProjectProposalInvite[] = [];
+  activeTab: ProjectDetailTab = 'overview';
   isLoading: boolean = false;
   proposalDrawerVisible: boolean = false;
   selectedInvite: CreatedProjectProposalInvite | null = null;
+  openingFileUuid: string | null = null;
+  rematchDialogVisible = false;
+  rematchStep: RematchWizardStep = 'matches';
+  rematchPhase: RematchPhase = 'idle';
+  rematchProposalUuid = '';
+  rematchMatches: CreatedProjectProposalMatch[] = [];
+  selectedRematchIds: string[] = [];
+  includePreviousInvited = false;
+  deadlineOfferDate = '';
+  rematchError: string | null = null;
+  expandedMatchIds = new Set<string>();
+
+  private rematchMatchDelayTimer: ReturnType<typeof setTimeout> | null = null;
 
   private projectTypeOptions = [
     { key: 'ad_hoc', labelEn: 'Ad Hoc', labelAr: 'خاص' },
@@ -55,7 +101,193 @@ export class ProjectDetailComponent extends BaseComponent implements OnInit, OnD
   }
 
   onRematch(): void {
-    // No action for now
+    if (!this.project?.uuid) return;
+
+    this.resetRematchState();
+    this.closeProposalDrawer();
+    this.deadlineOfferDate = this.defaultOfferExpiryDate(this.project.type);
+    this.rematchPhase = 'creating';
+
+    this.projectsCreatedService.createProjectProposal(this.project.uuid)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (proposalUuid: string) => {
+          this.rematchProposalUuid = proposalUuid;
+          this.rematchDialogVisible = true;
+          this.waitThenLoadRematchMatches(proposalUuid);
+        },
+        error: (err) => this.handleRematchStartError(
+          err,
+          this.lang === 'ar' ? 'تعذر بدء إعادة المطابقة.' : 'Failed to start rematch.'
+        ),
+      });
+  }
+
+  get todayDateString(): string {
+    return this.toDateInputValue(new Date());
+  }
+
+  get tomorrowDateString(): string {
+    return this.futureDateInputValue(1);
+  }
+
+  get visibleRematchMatches(): CreatedProjectProposalMatch[] {
+    if (this.hasNewRematchMatches && !this.includePreviousInvited) {
+      return this.rematchMatches.filter(match => !match.is_match_before);
+    }
+
+    return this.rematchMatches;
+  }
+
+  get hasNewRematchMatches(): boolean {
+    return this.rematchMatches.some(match => !match.is_match_before);
+  }
+
+  get selectedRematchCount(): number {
+    const visibleIds = new Set(this.visibleRematchMatches.map(match => match.uuid));
+    return this.selectedRematchIds.filter(id => visibleIds.has(id)).length;
+  }
+
+  get isRematchLoading(): boolean {
+    return this.rematchPhase === 'creating' || this.rematchPhase === 'loading';
+  }
+
+  get isSubmittingRematch(): boolean {
+    return this.rematchPhase === 'submitting';
+  }
+
+  get canContinueRematchMatches(): boolean {
+    return this.rematchPhase === 'ready' && this.selectedRematchCount > 0;
+  }
+
+  get isRematchUrgentProject(): boolean {
+    return this.normalizeProjectType(this.project?.type || null) === 'urgent_request';
+  }
+
+  get deadlineValidationError(): string | null {
+    if (!this.deadlineOfferDate) return null;
+    if (this.deadlineOfferDate < this.todayDateString) {
+      return this.lang === 'ar' ? 'لا يمكن أن يكون التاريخ في الماضي.' : 'Date cannot be in the past.';
+    }
+    if (this.isRematchUrgentProject && this.deadlineOfferDate > this.tomorrowDateString) {
+      return this.lang === 'ar'
+        ? 'يجب أن تنتهي صلاحية عرض الطلب العاجل خلال 24 ساعة.'
+        : 'Urgent request offer must expire within 24 hours.';
+    }
+
+    return null;
+  }
+
+  setIncludePreviousInvited(include: boolean): void {
+    this.includePreviousInvited = include;
+
+    if (!include && this.hasNewRematchMatches) {
+      const newMatchIds = new Set(
+        this.rematchMatches
+          .filter(match => !match.is_match_before)
+          .map(match => match.uuid)
+      );
+      this.selectedRematchIds = this.selectedRematchIds.filter(id => newMatchIds.has(id));
+    }
+  }
+
+  toggleRematchSelection(matchUuid: string): void {
+    if (this.rematchPhase !== 'ready') return;
+
+    this.selectedRematchIds = this.selectedRematchIds.includes(matchUuid)
+      ? this.selectedRematchIds.filter(id => id !== matchUuid)
+      : [...this.selectedRematchIds, matchUuid];
+  }
+
+  isRematchSelected(matchUuid: string): boolean {
+    return this.selectedRematchIds.includes(matchUuid);
+  }
+
+  goToRematchDeadline(): void {
+    if (!this.canContinueRematchMatches) return;
+    this.rematchError = null;
+    this.rematchStep = 'deadline';
+  }
+
+  goToRematchMatches(): void {
+    if (this.isSubmittingRematch) return;
+    this.rematchError = null;
+    this.rematchStep = 'matches';
+  }
+
+  submitRematchProposal(): void {
+    if (this.isSubmittingRematch) return;
+
+    const projectUuid = this.project?.uuid || '';
+    if (!this.rematchProposalUuid) {
+      this.rematchError = this.lang === 'ar'
+        ? 'تعذر العثور على معرّف المقترح.'
+        : 'The proposal identifier is missing.';
+      return;
+    }
+
+    if (this.selectedRematchCount === 0) {
+      this.rematchError = this.lang === 'ar'
+        ? 'يرجى اختيار خبير واحد على الأقل.'
+        : 'Please select at least one insighter.';
+      return;
+    }
+
+    if (!this.deadlineOfferDate) {
+      this.rematchError = this.lang === 'ar'
+        ? 'يرجى اختيار تاريخ انتهاء العرض.'
+        : 'Please select an offer expiry date.';
+      return;
+    }
+
+    const validationError = this.deadlineValidationError;
+    if (validationError) {
+      this.rematchError = validationError;
+      return;
+    }
+
+    const payload: SubmitRematchProposalPayload = {
+      deadline_offer: this.formatDeadlineOffer(this.deadlineOfferDate),
+      matches: [...this.selectedRematchIds],
+    };
+
+    this.rematchPhase = 'submitting';
+    this.rematchError = null;
+
+    this.projectsCreatedService.submitRematchProposal(this.rematchProposalUuid, payload)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: () => {
+          this.showSuccess(
+            this.lang === 'ar' ? 'تم الإرسال' : 'Submitted',
+            this.lang === 'ar'
+              ? 'تم إرسال المقترح إلى الخبراء المختارين.'
+              : 'The proposal was submitted to the selected insighters.'
+          );
+          this.closeRematchWizard();
+          if (projectUuid) this.loadProject(projectUuid);
+        },
+        error: (err) => {
+          this.rematchPhase = 'ready';
+          this.rematchError = this.getServerErrorMessage(
+            err,
+            this.lang === 'ar' ? 'تعذر إرسال المقترح.' : 'Failed to submit proposal.'
+          );
+          this.showError(
+            this.lang === 'ar' ? 'حدث خطأ' : 'An error occurred',
+            this.rematchError
+          );
+        },
+      });
+  }
+
+  closeRematchWizard(): void {
+    if (this.isSubmittingRematch) return;
+    this.resetRematchState();
+  }
+
+  setActiveTab(tab: ProjectDetailTab): void {
+    this.activeTab = tab;
   }
 
   openProposalDrawer(invite: CreatedProjectProposalInvite): void {
@@ -174,6 +406,130 @@ export class ProjectDetailComponent extends BaseComponent implements OnInit, OnD
     return `https://foresighta.co/${locale}/profile/${insighterUuid}?entity=insighter`;
   }
 
+  getCompanyProfileUrl(companyUuid: string | null | undefined): string {
+    if (!companyUuid) return '#';
+    const locale = this.lang === 'ar' ? 'ar' : 'en';
+    return `https://foresighta.co/${locale}/profile/${companyUuid}`;
+  }
+
+  toggleMatchDetails(matchUuid: string, event?: Event): void {
+    event?.stopPropagation();
+    const next = new Set(this.expandedMatchIds);
+    if (next.has(matchUuid)) {
+      next.delete(matchUuid);
+    } else {
+      next.add(matchUuid);
+    }
+    this.expandedMatchIds = next;
+  }
+
+  isMatchExpanded(matchUuid: string): boolean {
+    return this.expandedMatchIds.has(matchUuid);
+  }
+
+  isCompanyMatch(match: CreatedProjectProposalMatch): boolean {
+    return (match.insighter.roles || []).some(role => {
+      const normalized = this.normalizeValue(role);
+      return normalized === 'company' || normalized === 'company-insighter';
+    });
+  }
+
+  getMatchBadgeLabel(match: CreatedProjectProposalMatch): string {
+    const isCompany = this.isCompanyMatch(match);
+    return this.lang === 'ar'
+      ? isCompany ? 'شركة' : 'خبير'
+      : isCompany ? 'Company' : 'Insighter';
+  }
+
+  getMatchAvatarUrl(match: CreatedProjectProposalMatch): string {
+    if (this.isCompanyMatch(match)) {
+      return match.insighter.company?.logo || match.insighter.profile_photo_url || '';
+    }
+
+    return match.insighter.profile_photo_url || '';
+  }
+
+  getMatchOverlayAvatarUrl(match: CreatedProjectProposalMatch): string {
+    if (!this.isCompanyMatch(match)) return '';
+
+    const profilePhoto = match.insighter.profile_photo_url || '';
+    const companyLogo = match.insighter.company?.logo || '';
+    return profilePhoto && profilePhoto !== companyLogo ? profilePhoto : '';
+  }
+
+  getMatchInitials(match: CreatedProjectProposalMatch): string {
+    const cleaned = (match.insighter.name || '').trim();
+    if (!cleaned) return '?';
+
+    const parts = cleaned.split(/\s+/).filter(Boolean);
+    if (parts.length === 1) {
+      return Array.from(parts[0]).slice(0, 2).join('').toUpperCase();
+    }
+
+    return parts
+      .slice(0, 2)
+      .map(part => Array.from(part)[0] || '')
+      .join('')
+      .toUpperCase();
+  }
+
+  getMatchCountryName(country: CreatedProjectProposalMatchCountry | null | undefined): string {
+    if (!country) return '';
+
+    const localizedName = country.names || (country.name && typeof country.name === 'object' ? country.name : null);
+    const plainName = typeof country.name === 'string' ? country.name : '';
+
+    if (this.lang === 'ar') {
+      return localizedName?.ar || plainName || localizedName?.en || '';
+    }
+
+    return localizedName?.en || plainName || localizedName?.ar || '';
+  }
+
+  getMatchScorePercent(score: number | null | undefined): number {
+    const numeric = Number(score ?? 0);
+    if (!Number.isFinite(numeric)) return 0;
+    return Math.round(Math.min(Math.max(numeric, 0), 1) * 100);
+  }
+
+  getMatchScoreStyle(score: number | null | undefined): Record<string, string> {
+    const pct = this.getMatchScorePercent(score);
+    const color = pct >= 80 ? '#16a34a' : pct >= 50 ? '#1d9cfd' : '#d97706';
+
+    return {
+      '--match-score': `${pct}%`,
+      '--match-score-color': color,
+    };
+  }
+
+  getMatchCriteriaEntries(matches: Record<string, boolean | undefined> | null | undefined): MatchCriteriaEntry[] {
+    if (!matches) return [];
+
+    return Object.entries(matches)
+      .filter(([, value]) => value !== undefined)
+      .map(([key, value]) => ({
+        key,
+        label: this.getMatchCriteriaLabel(key),
+        matched: !!value,
+      }));
+  }
+
+  getMatchStatusLabel(status: string | null | undefined): string {
+    const normalized = this.normalizeValue(status);
+    if (!normalized) return '';
+
+    const labels: Record<string, { en: string; ar: string }> = {
+      invited: { en: 'Invited', ar: 'تمت الدعوة' },
+      pending: { en: 'Pending', ar: 'قيد الانتظار' },
+      accepted: { en: 'Accepted', ar: 'مقبول' },
+      rejected: { en: 'Rejected', ar: 'مرفوض' },
+    };
+    const match = labels[normalized];
+    if (match) return this.lang === 'ar' ? match.ar : match.en;
+
+    return this.humanizeValue(normalized);
+  }
+
   getInsighterInitials(invite: CreatedProjectProposalInvite | null): string {
     const name = invite?.insighter?.name || '';
     const parts = name.trim().split(/\s+/).filter(Boolean);
@@ -247,6 +603,11 @@ export class ProjectDetailComponent extends BaseComponent implements OnInit, OnD
     return !!invite?.offer;
   }
 
+  getOfferFiles(invite: CreatedProjectProposalInvite | null): CreatedProjectFile[] {
+    const files = invite?.offer?.files;
+    return Array.isArray(files) ? files : [];
+  }
+
   hasInvitedInsighters(): boolean {
     return this.invitedInsighters.length > 0;
   }
@@ -311,20 +672,175 @@ export class ProjectDetailComponent extends BaseComponent implements OnInit, OnD
     return !!(this.project?.addons?.length);
   }
 
+  getScopeLabel(scope: CreatedProjectScope | null | undefined): string {
+    return this.getFormattedValue(scope?.scope);
+  }
+
+  getScopeDescription(scope: CreatedProjectScope | null | undefined): string {
+    return scope?.description || '';
+  }
+
+  getScopeChildren(scope: CreatedProjectScope | null | undefined): CreatedProjectScope[] {
+    const children = scope?.children;
+    return Array.isArray(children) ? children : [];
+  }
+
+  getScopeFiles(scope: CreatedProjectScope | null | undefined): CreatedProjectFile[] {
+    const files = scope?.files;
+    return Array.isArray(files) ? files : [];
+  }
+
+  getDocumentGroups(project: CreatedProject | null = this.project): ProjectDocumentGroup[] {
+    if (!project) return [];
+
+    const proposal = project.file?.proposal;
+    const groups: ProjectDocumentGroup[] = [
+      {
+        key: 'general',
+        labelEn: 'General Documents',
+        labelAr: 'المستندات العامة',
+        descriptionEn: 'Files attached to the full project proposal.',
+        descriptionAr: 'الملفات المرفقة بمقترح المشروع بالكامل.',
+        files: this.uniqueFiles([
+          ...(project.request_files || []),
+          ...(proposal?.general || []),
+        ]),
+      },
+      {
+        key: 'scopes',
+        labelEn: 'Scope Documents',
+        labelAr: 'مستندات النطاقات',
+        descriptionEn: 'Files mapped to scopes or sub-scopes.',
+        descriptionAr: 'الملفات المرتبطة بالنطاقات أو النطاقات الفرعية.',
+        files: this.uniqueFiles([
+          ...(proposal?.scopes || []),
+          ...this.collectScopeFiles(project.scopes || []),
+        ]),
+      },
+      {
+        key: 'offer',
+        labelEn: 'Offer Documents',
+        labelAr: 'مستندات العروض',
+        descriptionEn: 'Files attached to submitted offers.',
+        descriptionAr: 'الملفات المرفقة بالعروض المقدمة.',
+        files: this.uniqueFiles(proposal?.offer || []),
+      },
+    ];
+
+    return groups.filter(group => group.files.length > 0);
+  }
+
+  getDocumentCount(project: CreatedProject | null = this.project): number {
+    return this.getDocumentGroups(project).reduce((sum, group) => sum + group.files.length, 0);
+  }
+
+  hasDocuments(project: CreatedProject | null = this.project): boolean {
+    return this.getDocumentCount(project) > 0;
+  }
+
+  getDocumentGroupLabel(group: ProjectDocumentGroup): string {
+    return this.lang === 'ar' ? group.labelAr : group.labelEn;
+  }
+
+  getDocumentGroupDescription(group: ProjectDocumentGroup): string {
+    return this.lang === 'ar' ? group.descriptionAr : group.descriptionEn;
+  }
+
+  getProjectFileName(file: CreatedProjectFile | null | undefined): string {
+    if (file?.name) return file.name;
+    const rawName = (file?.url || '').split('/').pop()?.split('?')[0];
+    return rawName ? decodeURIComponent(rawName) : (this.lang === 'ar' ? 'ملف' : 'File');
+  }
+
+  getProjectFileScope(file: CreatedProjectFile | null | undefined): string {
+    return file?.scope ? this.getFormattedValue(file.scope) : '';
+  }
+
+  getProjectFileExtension(file: CreatedProjectFile | null | undefined): string {
+    const name = this.getProjectFileName(file);
+    const extension = name.includes('.') ? name.split('.').pop() : '';
+    return extension || '';
+  }
+
+  getProjectFileUploader(file: CreatedProjectFile | null | undefined): string {
+    return file?.uploadBy || file?.uploaded_by || '';
+  }
+
+  getProjectFileUploadDate(file: CreatedProjectFile | null | undefined): string {
+    return file?.upload_date ? this.formatDate(file.upload_date) : '';
+  }
+
+  openProjectFile(file: CreatedProjectFile | null | undefined): void {
+    if (!file?.uuid) {
+      this.showError(
+        this.lang === 'ar' ? 'تعذر فتح الملف' : 'Cannot open file',
+        this.lang === 'ar' ? 'لم يتم العثور على معرّف الملف.' : 'File identifier was not found.'
+      );
+      return;
+    }
+
+    const fileWindow = window.open('', '_blank');
+    this.openingFileUuid = file.uuid;
+
+    this.projectsCreatedService.getProjectFileUrl(file.uuid)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (url: string) => {
+          this.openingFileUuid = null;
+          if (!url) {
+            if (fileWindow) fileWindow.close();
+            this.showError(
+              this.lang === 'ar' ? 'تعذر فتح الملف' : 'Cannot open file',
+              this.lang === 'ar' ? 'لم يرجع الخادم رابط الملف.' : 'The server did not return a file URL.'
+            );
+            return;
+          }
+
+          if (fileWindow) {
+            fileWindow.location.href = url;
+          } else {
+            window.open(url, '_blank');
+          }
+        },
+        error: (err) => {
+          this.openingFileUuid = null;
+          if (fileWindow) fileWindow.close();
+          this.handleServerErrors(err);
+        },
+      });
+  }
+
+  isOpeningFile(file: CreatedProjectFile | null | undefined): boolean {
+    return !!file?.uuid && this.openingFileUuid === file.uuid;
+  }
+
   getBackIcon(): string {
     return this.lang === 'ar' ? 'ki-arrow-right' : 'ki-arrow-left';
   }
 
   trackByValue(_: number, value: string): string { return value; }
   trackByIndex(index: number): number { return index; }
+  trackByScope(index: number, scope: CreatedProjectScope): string {
+    return `${scope?.scope || 'scope'}-${index}`;
+  }
+  trackByFile(_: number, file: CreatedProjectFile): string {
+    return file.uuid;
+  }
+  trackByDocumentGroup(_: number, group: ProjectDocumentGroup): string {
+    return group.key;
+  }
   trackByInvite(_: number, invite: CreatedProjectProposalInvite): string {
     return invite.uuid || `${invite.insighter?.uuid || 'invite'}-${invite.offer?.uuid || 'offer'}`;
+  }
+  trackByMatch(_: number, match: CreatedProjectProposalMatch): string {
+    return match.uuid;
   }
 
   private loadProject(uuid: string): void {
     this.project = null;
     this.invitedInsighters = [];
     this.closeProposalDrawer();
+    this.resetRematchState();
 
     this.projectsCreatedService.getProject(uuid)
       .pipe(takeUntil(this.unsubscribe$))
@@ -340,6 +856,138 @@ export class ProjectDetailComponent extends BaseComponent implements OnInit, OnD
         },
         error: (err) => this.handleServerErrors(err),
       });
+  }
+
+  private waitThenLoadRematchMatches(proposalUuid: string): void {
+    this.clearRematchMatchDelay();
+    this.rematchPhase = 'loading';
+
+    this.rematchMatchDelayTimer = setTimeout(() => {
+      this.rematchMatchDelayTimer = null;
+      this.loadRematchMatches(proposalUuid);
+    }, 5000);
+  }
+
+  private loadRematchMatches(proposalUuid: string): void {
+    this.rematchPhase = 'loading';
+
+    this.projectsCreatedService.getProjectProposalMatches(proposalUuid)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: (matches: CreatedProjectProposalMatch[]) => {
+          this.rematchMatches = matches;
+          this.includePreviousInvited = !matches.some(match => !match.is_match_before);
+          this.selectedRematchIds = [];
+          this.expandedMatchIds = new Set<string>();
+          this.rematchPhase = matches.length > 0 ? 'ready' : 'empty';
+        },
+        error: (err) => this.handleRematchError(
+          err,
+          this.lang === 'ar' ? 'تعذر تحميل المطابقات.' : 'Failed to load matches.'
+        ),
+      });
+  }
+
+  private handleRematchError(error: any, fallback: string): void {
+    this.rematchPhase = 'error';
+    this.rematchError = this.getServerErrorMessage(error, fallback);
+    this.showError(
+      this.lang === 'ar' ? 'حدث خطأ' : 'An error occurred',
+      this.rematchError
+    );
+  }
+
+  private handleRematchStartError(error: any, fallback: string): void {
+    const message = this.getServerErrorMessage(error, fallback);
+    this.resetRematchState();
+    this.showError(
+      this.lang === 'ar' ? 'حدث خطأ' : 'An error occurred',
+      message
+    );
+  }
+
+  private resetRematchState(): void {
+    this.clearRematchMatchDelay();
+    this.rematchDialogVisible = false;
+    this.rematchStep = 'matches';
+    this.rematchPhase = 'idle';
+    this.rematchProposalUuid = '';
+    this.rematchMatches = [];
+    this.selectedRematchIds = [];
+    this.includePreviousInvited = false;
+    this.deadlineOfferDate = '';
+    this.rematchError = null;
+    this.expandedMatchIds = new Set<string>();
+  }
+
+  private clearRematchMatchDelay(): void {
+    if (!this.rematchMatchDelayTimer) return;
+    clearTimeout(this.rematchMatchDelayTimer);
+    this.rematchMatchDelayTimer = null;
+  }
+
+  private getMatchCriteriaLabel(key: string): string {
+    const label = MATCH_CRITERIA_LABELS[key];
+    if (label) return this.lang === 'ar' ? label.ar : label.en;
+
+    return this.humanizeValue(key.replace(/_MATCH$/i, ''));
+  }
+
+  private getServerErrorMessage(error: any, fallback: string): string {
+    if (error instanceof Error && error.message === 'proposal_uuid_missing') {
+      return this.lang === 'ar'
+        ? 'لم يرجع الخادم معرّف المقترح.'
+        : 'The server did not return a proposal identifier.';
+    }
+
+    const serverErrors = error?.error?.errors;
+    if (serverErrors && typeof serverErrors === 'object') {
+      for (const key of Object.keys(serverErrors)) {
+        const messages = serverErrors[key];
+        if (Array.isArray(messages) && messages.length > 0) {
+          return messages.join(', ');
+        }
+        if (typeof messages === 'string' && messages.trim()) {
+          return messages;
+        }
+      }
+    }
+
+    return error?.error?.message || error?.message || fallback;
+  }
+
+  private defaultOfferExpiryDate(projectType: string | null | undefined): string {
+    return this.normalizeProjectType(projectType || null) === 'urgent_request'
+      ? this.futureDateInputValue(1)
+      : this.futureDateInputValue(7);
+  }
+
+  private normalizeProjectType(value: string | null): string | null {
+    if (!value) return null;
+    if (value === 'urgent' || value === 'urgent_request') return 'urgent_request';
+    return value;
+  }
+
+  private futureDateInputValue(daysFromNow: number): string {
+    const date = new Date();
+    date.setDate(date.getDate() + daysFromNow);
+    return this.toDateInputValue(date);
+  }
+
+  private toDateInputValue(date: Date): string {
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  }
+
+  private formatDeadlineOffer(dateValue: string): string {
+    const [yyyy, mm, dd] = dateValue.split('-');
+    return `${dd}-${mm}-${yyyy} 23:59:59`;
+  }
+
+  private normalizeValue(value: unknown): string {
+    return String(value || '').trim().toLowerCase();
   }
 
   private handleServerErrors(error: any): void {
@@ -376,7 +1024,26 @@ export class ProjectDetailComponent extends BaseComponent implements OnInit, OnD
       .replace(/\b\w/g, l => l.toUpperCase());
   }
 
+  private collectScopeFiles(scopes: CreatedProjectScope[]): CreatedProjectFile[] {
+    return scopes.reduce<CreatedProjectFile[]>((files, scope) => {
+      files.push(...this.getScopeFiles(scope));
+      files.push(...this.collectScopeFiles(this.getScopeChildren(scope)));
+      return files;
+    }, []);
+  }
+
+  private uniqueFiles(files: CreatedProjectFile[]): CreatedProjectFile[] {
+    const seen = new Set<string>();
+
+    return files.filter(file => {
+      if (!file?.uuid || seen.has(file.uuid)) return false;
+      seen.add(file.uuid);
+      return true;
+    });
+  }
+
   override ngOnDestroy(): void {
+    this.clearRematchMatchDelay();
     super.ngOnDestroy();
   }
 }

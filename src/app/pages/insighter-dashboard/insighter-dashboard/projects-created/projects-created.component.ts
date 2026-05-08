@@ -33,7 +33,8 @@ export class ProjectsCreatedComponent extends BaseComponent implements OnInit, O
   isLoading$: Observable<boolean>;
 
   projects: CreatedProject[] = [];
-  viewMode: ViewMode = 'grid';
+  viewMode: ViewMode = 'list';
+  projectImageUrl = 'https://res.cloudinary.com/dsiku9ipv/image/upload/v1778143539/project_15257127_mm241t.png';
   selectedProjectStatus: string | null = null;
 
   currentPage: number = 1;

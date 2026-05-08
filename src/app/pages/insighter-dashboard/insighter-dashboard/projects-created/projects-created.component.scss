@@ -124,6 +124,13 @@
     background: #fafafa;
   }
 
+  &__project-image {
+    display: block;
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+  }
+
   &__project {
     display: flex;
     flex-direction: column;

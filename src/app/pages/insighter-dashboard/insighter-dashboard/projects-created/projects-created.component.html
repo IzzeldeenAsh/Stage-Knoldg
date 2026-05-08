@@ -70,6 +70,7 @@
     <table class="table align-middle fs-6 pc-table">
       <thead>
         <tr class="text-start text-gray-500 fw-semibold fs-8 text-uppercase gs-0">
+          <th class="w-64px"></th>
           <th class="min-w-300px">{{ lang === 'ar' ? 'المشروع' : 'Project' }}</th>
           <th class="min-w-170px">{{ lang === 'ar' ? 'النوع' : 'Type' }}</th>
           <th class="min-w-180px">{{ lang === 'ar' ? 'الخدمة' : 'Service' }}</th>
@@ -80,6 +81,12 @@
       </thead>
       <tbody class="fw-semibold text-gray-600">
         <tr *ngFor="let project of projects; trackBy: trackByProject" class="pc-table__row">
+          <td>
+            <img class="pc-table__project-image"
+                 [src]="projectImageUrl"
+                 [alt]="lang === 'ar' ? 'أيقونة المشروع' : 'Project icon'">
+          </td>
+
           <td>
             <div class="pc-table__project">
               <span class="pc-table__project-title">{{ project.title }}</span>
