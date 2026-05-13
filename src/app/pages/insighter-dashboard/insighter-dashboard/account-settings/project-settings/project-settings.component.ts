@@ -551,11 +551,7 @@ export class ProjectSettingsComponent extends BaseComponent implements OnInit {
       {
         key: 'publish_insights',
         title: this.lang === 'ar' ? 'نشر الرؤى' : 'Publish Insight',
-        details: [
-          this.lang === 'ar'
-            ? 'استوفِ شرط نشر الرؤى.'
-            : 'Meet the insight publishing requirement.',
-        ],
+        details: [this.getPublishInsightDetails(results)],
         route: '/app/add-knowledge/stepper',
         passed: !!results.publish_insights?.pass,
         insightRequirements: {
@@ -583,6 +579,17 @@ export class ProjectSettingsComponent extends BaseComponent implements OnInit {
         passed: !!results.whatsapp?.pass,
       },
     ];
+  }
+
+  private getPublishInsightDetails(results: ProjectAccountCheckResults): string {
+    const freeRequired = results.publish_insights?.required?.free ?? 0;
+    const paidRequired = results.publish_insights?.required?.paid ?? 0;
+
+    if (this.lang === 'ar') {
+      return `المطلوب: ${freeRequired} مجاني، ${paidRequired} مدفوع`;
+    }
+
+    return `Required insights: ${freeRequired} Free, ${paidRequired} Paid`;
   }
 
   private isProfileComplete(results: ProjectAccountCheckResults): boolean {

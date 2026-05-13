@@ -11,11 +11,16 @@ import { DialogModule } from 'primeng/dialog';
 import { InsighterDashboardSharedModule } from '../shared/shared.module';
 import { ProjectsCreatedComponent } from './projects-created.component';
 import { ProjectDetailComponent } from './project-detail/project-detail.component';
+import { ProjectContractComponent } from './project-contract/project-contract.component';
 
 const routes: Routes = [
   {
     path: '',
     component: ProjectsCreatedComponent,
+  },
+  {
+    path: ':uuid/contract',
+    component: ProjectContractComponent,
   },
   {
     path: ':uuid',
@@ -27,6 +32,7 @@ const routes: Routes = [
   declarations: [
     ProjectsCreatedComponent,
     ProjectDetailComponent,
+    ProjectContractComponent,
   ],
   imports: [
     CommonModule,

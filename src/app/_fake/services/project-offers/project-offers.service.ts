@@ -31,7 +31,36 @@ export interface ProjectOfferBlock {
 
 export interface ProjectOfferFile {
   uuid: string;
+  name?: string | null;
   url?: string | null;
+  uploadBy?: string | null;
+  upload_date?: string | null;
+  scope?: string | null;
+  [key: string]: any;
+}
+
+export interface ProjectOfferProposalFiles {
+  general: ProjectOfferFile[];
+  scopes: ProjectOfferFile[];
+  offer: ProjectOfferFile[];
+}
+
+export interface ProjectContractFile {
+  name?: string | null;
+  url?: string | null;
+  uuid?: string | null;
+  [key: string]: any;
+}
+
+export interface ProjectContract {
+  uuid?: string | null;
+  user_sign_at: boolean;
+  insighter_sign_at: boolean;
+  is_attach_type: boolean;
+  status: string | null;
+  file: ProjectContractFile | null;
+  guideline?: string | null;
+  name?: string | null;
   [key: string]: any;
 }
 
@@ -49,6 +78,8 @@ export interface ProjectOffer {
   action_status: ProjectOfferActionStatus | null;
   proposal_no?: string | null;
   project_proposal_uuid?: string | null;
+  contract_uuid?: string | null;
+  contract?: ProjectContract | null;
   offer?: any;
   project: {
     title: string;
@@ -66,6 +97,12 @@ export interface ProjectOffer {
     addons: ProjectOfferBlock[];
     scopes: ProjectOfferScope[];
     request_files: ProjectOfferFile[];
+    file?: {
+      proposal: ProjectOfferProposalFiles;
+      [key: string]: any;
+    };
+    contract_uuid?: string | null;
+    contract?: ProjectContract | null;
   };
 }
 
@@ -116,21 +153,23 @@ export type ProposalEstimateUnit = 'hours' | 'days';
 
 export interface ProjectProposalOfferPayload {
   cover_letter: string;
+  hourly_rate: string | number;
   estimated_hours: string | number;
-  proposed_price: number;
+  payment_plan: 'full_at_start' | 'full_at_end' | 'partial';
   down_payment_percentage?: string | number;
-  first_payment_percentage?: string | number;
   final_payment_percentage?: string | number;
 }
 
 interface ApiProjectOffer {
   uuid: string;
   action_status: ProjectOfferActionStatus | null;
+  contract_uuid?: string | null;
   project_proposal: {
     uuid: string;
     proposal_no: string | null;
     status?: ProjectOfferProjectStatus | null;
     deadline_offer: string | null;
+    contract_uuid?: string | null;
     project: {
       title: string;
       type: ProjectOfferType;
@@ -144,9 +183,11 @@ interface ApiProjectOffer {
       deadline: string | null;
       components: ProjectOfferBlock[];
       addons: ProjectOfferBlock[];
-      scopes?: ProjectOfferScope[] | null;
-      request_files?: ProjectOfferFile[] | null;
-    } | null;
+        scopes?: ProjectOfferScope[] | null;
+        request_files?: ProjectOfferFile[] | null;
+        file?: any;
+        contract_uuid?: string | null;
+      } | null;
   } | null;
   offer: any;
 }
@@ -510,6 +551,19 @@ export class ProjectOffersService {
     );
   }
 
+  getOnWorkProjects(page: number = 1): Observable<ProjectOffersPaginatedResponse> {
+    this.setLoading(true);
+
+    return this.http.get<any>(`${environment.apiBaseUrl}/insighter/project`, {
+      headers: this.getHeaders(),
+      params: new HttpParams().set('page', `${page}`),
+    }).pipe(
+      map(response => this.mapOnWorkProjectsResponse(response)),
+      catchError(error => throwError(() => error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
   declineOffer(offerUuid: string): Observable<ProjectOfferActionResponse> {
     this.setLoading(true);
 
@@ -579,6 +633,31 @@ export class ProjectOffersService {
       `${this.baseUrl}/add-offer/${proposalUuid}`,
       payload,
       { headers: this.getFormDataHeaders() }
+    ).pipe(
+      catchError(error => throwError(() => error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  getProjectContract(contractUuid: string): Observable<ProjectContract> {
+    this.setLoading(true);
+
+    return this.http.get<any>(`${environment.apiBaseUrl}/insighter/project/contract/${contractUuid}`, {
+      headers: this.getHeaders(),
+    }).pipe(
+      map(response => this.mapProjectContract(response?.data ?? response)),
+      catchError(error => throwError(() => error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  signProjectContract(contractUuid: string): Observable<ProjectOfferActionResponse> {
+    this.setLoading(true);
+
+    return this.http.post<ProjectOfferActionResponse>(
+      `${environment.apiBaseUrl}/insighter/project/contract/sign/${contractUuid}`,
+      { accept_contract: 'true' },
+      { headers: this.getHeaders() }
     ).pipe(
       catchError(error => throwError(() => error)),
       finalize(() => this.setLoading(false))
@@ -698,9 +777,85 @@ export class ProjectOffersService {
     };
   }
 
+  private mapOnWorkProjectsResponse(response: any): ProjectOffersPaginatedResponse {
+    return {
+      data: Array.isArray(response?.data)
+        ? response.data.map((project: any) => this.mapOnWorkProject(project))
+        : [],
+      links: response?.links ?? {
+        first: '',
+        last: '',
+        prev: null,
+        next: null,
+      },
+      meta: response?.meta ?? {
+        current_page: 1,
+        from: 0,
+        last_page: 1,
+        links: [],
+        path: `${environment.apiBaseUrl}/insighter/project`,
+        per_page: 10,
+        to: 0,
+        total: 0,
+      },
+    };
+  }
+
+  private mapOnWorkProject(project: any): ProjectOffer {
+    const contract = project?.contract && typeof project.contract === 'object'
+      ? this.mapProjectContract(project.contract)
+      : null;
+    const contractUuid = contract?.uuid ?? project?.contract_uuid ?? null;
+
+    return {
+      uuid: project?.uuid ?? contractUuid ?? '',
+      status: contractUuid ? 'contract' : (project?.status ?? 'submitted'),
+      action_status: project?.action_status ?? 'offered',
+      proposal_no: project?.proposal_no ?? null,
+      project_proposal_uuid: project?.project_proposal_uuid ?? project?.proposal_uuid ?? null,
+      contract_uuid: contractUuid,
+      contract,
+      offer: project?.offer ?? null,
+      project: {
+        title: project?.title ?? '',
+        type: project?.type ?? '',
+        language: project?.language ?? null,
+        service: project?.service ?? null,
+        service_prompt: project?.service_prompt ?? null,
+        phase: project?.phase ?? null,
+        business_type: project?.business_type ?? null,
+        industry: project?.industry ?? null,
+        description: project?.description ?? null,
+        deadline_offer: project?.deadline_offer ?? null,
+        deadline: project?.deadline ?? null,
+        components: this.sanitizeBlocks(project?.components),
+        addons: this.sanitizeBlocks(project?.addons),
+        scopes: this.sanitizeScopes(project?.scopes),
+        request_files: this.sanitizeFiles(project?.request_files),
+        file: this.sanitizeProjectFile(project?.file),
+        contract_uuid: contractUuid,
+        contract,
+      },
+    };
+  }
+
   private mapProjectOffer(offer: ApiProjectOffer): ProjectOffer {
     const proposal = offer?.project_proposal;
     const project = proposal?.project;
+    const rawContract = (offer as any)?.contract
+      ?? (proposal as any)?.contract
+      ?? (project as any)?.contract
+      ?? offer?.offer?.contract
+      ?? null;
+    const contract = rawContract && typeof rawContract === 'object'
+      ? this.mapProjectContract(rawContract)
+      : null;
+    const contractUuid = contract?.uuid
+      ?? offer?.contract_uuid
+      ?? proposal?.contract_uuid
+      ?? project?.contract_uuid
+      ?? offer?.offer?.contract_uuid
+      ?? null;
 
     return {
       uuid: offer?.uuid ?? '',
@@ -708,6 +863,8 @@ export class ProjectOffersService {
       action_status: offer?.action_status ?? null,
       proposal_no: proposal?.proposal_no ?? null,
       project_proposal_uuid: proposal?.uuid ?? null,
+      contract_uuid: contractUuid,
+      contract,
       offer: offer?.offer ?? null,
       project: {
         title: project?.title ?? '',
@@ -725,7 +882,24 @@ export class ProjectOffersService {
         addons: this.sanitizeBlocks(project?.addons),
         scopes: this.sanitizeScopes(project?.scopes),
         request_files: this.sanitizeFiles(project?.request_files),
+        file: this.sanitizeProjectFile(project?.file),
+        contract_uuid: contractUuid,
+        contract,
       },
+    };
+  }
+
+  private mapProjectContract(contract: any): ProjectContract {
+    return {
+      ...(contract || {}),
+      uuid: contract?.uuid ?? contract?.contract_uuid ?? null,
+      user_sign_at: this.toBoolean(contract?.user_sign_at),
+      insighter_sign_at: this.toBoolean(contract?.insighter_sign_at),
+      is_attach_type: this.toBoolean(contract?.is_attach_type),
+      status: contract?.status ?? null,
+      file: contract?.file && typeof contract.file === 'object' ? contract.file : null,
+      guideline: contract?.guideline ?? contract?.contract?.guideline ?? null,
+      name: contract?.name ?? contract?.contract?.name ?? null,
     };
   }
 
@@ -770,8 +944,33 @@ export class ProjectOffersService {
       .map(file => ({
         ...file,
         uuid: file.uuid ?? '',
+        name: file.name ?? null,
         url: file.url ?? null,
+        uploadBy: file.uploadBy ?? null,
+        upload_date: file.upload_date ?? null,
+        scope: file.scope ?? null,
       }))
       .filter(file => !!file.uuid);
+  }
+
+  private sanitizeProjectFile(file: any): { proposal: ProjectOfferProposalFiles } {
+    const proposal = file?.proposal ?? {};
+
+    return {
+      ...(file || {}),
+      proposal: {
+        general: this.sanitizeFiles(proposal.general),
+        scopes: this.sanitizeFiles(proposal.scopes),
+        offer: this.sanitizeFiles(proposal.offer),
+      },
+    };
+  }
+
+  private toBoolean(value: any): boolean {
+    if (value === true || value === 1) return true;
+    if (value === false || value === 0 || value === null || value === undefined) return false;
+    const normalized = String(value).trim().toLowerCase();
+    if (!normalized || normalized === 'false' || normalized === '0' || normalized === 'null') return false;
+    return true;
   }
 }

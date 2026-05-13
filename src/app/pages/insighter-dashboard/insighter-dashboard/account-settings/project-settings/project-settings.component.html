@@ -78,6 +78,7 @@
 
                   <span class="project-checklist-status" [class.is-complete]="item.passed"
                     [class.is-pending]="!item.passed">
+                    <i *ngIf="!item.passed" class="pi pi-plus"></i>
                     {{ item.passed ? (lang === 'ar' ? 'مكتمل' : 'Done') : (lang === 'ar' ? 'أضف' : 'Add') }}
                   </span>
                 </div>

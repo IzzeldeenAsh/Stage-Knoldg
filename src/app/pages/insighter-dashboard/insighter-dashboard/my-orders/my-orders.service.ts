@@ -39,6 +39,8 @@ export interface PaymentInfo {
   amount: number;
   currency: string;
   status: string;
+  invoice_no?: string | null;
+  fulfillment_attempts?: unknown;
   provider_payment_method_type: string | null;
   provider_card_last_number: string | null;
   provider_card_brand: string | null;
@@ -86,8 +88,9 @@ export interface Order {
   date: string;
   order_no: string;
   user?: User;
-  invoice_no: string;
-  payment: PaymentInfo;
+  invoice_no?: string;
+  payment?: PaymentInfo;
+  payments?: PaymentInfo[];
   knowledge_download_id: string;
   orderable: Orderable;
 }

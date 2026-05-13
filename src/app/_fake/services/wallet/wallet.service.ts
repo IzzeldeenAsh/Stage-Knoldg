@@ -57,10 +57,22 @@ export interface Order {
   status: string;
   date: string;
   order_no: string;
-  invoice_no: string;
+  invoice_no?: string;
   amount?: number;
   insighter_profit_rate?: string;
   orderable?: SubOrder;
+  payment?: PaymentInfo;
+  payments?: PaymentInfo[];
+}
+
+export interface PaymentInfo {
+  invoice_no?: string | null;
+  fulfillment_attempts?: unknown;
+  method?: string;
+  provider?: string | null;
+  amount?: number;
+  currency?: string;
+  status?: string;
 }
 
 export interface Transaction {
@@ -70,6 +82,7 @@ export interface Transaction {
   type: string;
   type_key: string;
   order: Order;
+  payment?: PaymentInfo;
 }
 
 export interface TransactionMeta {

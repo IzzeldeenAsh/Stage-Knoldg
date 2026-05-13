@@ -23,6 +23,18 @@ export interface CreatedProjectFile {
   [key: string]: any;
 }
 
+export interface CreatedProjectContract {
+  uuid: string | null;
+  user_sign_at: boolean;
+  insighter_sign_at: boolean;
+  is_attach_type: boolean;
+  status?: string | null;
+  file?: CreatedProjectFile | null;
+  guideline?: string | null;
+  name?: string | null;
+  [key: string]: any;
+}
+
 export interface CreatedProjectProposalFiles {
   general: CreatedProjectFile[];
   scopes: CreatedProjectFile[];
@@ -64,7 +76,10 @@ export interface CreatedProject {
   scopes: CreatedProjectScope[];
   request_files: CreatedProjectFile[];
   file: CreatedProjectFiles | null;
+  invited: CreatedProjectProposalInvite[];
   status?: string | null;
+  contract_uuid?: string | null;
+  contract?: CreatedProjectContract | null;
 }
 
 export interface CreatedProjectInvitedInsighterCountry {
@@ -91,12 +106,14 @@ export interface CreatedProjectInvitedInsighter {
 export interface CreatedProjectSubmittedOffer {
   uuid: string;
   proposed_price: string | number | null;
+  payment_plan?: string | null;
   down_payment: string | number | null;
   final_payment: string | number | null;
   estimated_hours: string | number | null;
   cover_letter: string | null;
   status: string | null;
   files: CreatedProjectFile[];
+  contract_uuid?: string | null;
 }
 
 export interface CreatedProjectProposalInvite {
@@ -105,6 +122,12 @@ export interface CreatedProjectProposalInvite {
   submission_status: string | null;
   deadline_offer: string | null;
   total_matches: number | null;
+  match_score: number;
+  matches: Record<string, boolean | undefined>;
+  is_match_all: boolean;
+  is_match_before: boolean;
+  is_invited_before: boolean;
+  status: string | null;
   insighter: CreatedProjectInvitedInsighter | null;
   offer: CreatedProjectSubmittedOffer | null;
 }
@@ -213,6 +236,14 @@ export class ProjectsCreatedService {
     });
   }
 
+  private getFormDataHeaders(): HttpHeaders {
+    return new HttpHeaders({
+      'Accept': 'application/json',
+      'Accept-Language': this.currentLang,
+      'X-Timezone': Intl.DateTimeFormat().resolvedOptions().timeZone,
+    });
+  }
+
   getProjects(
     page: number = 1,
     filters: CreatedProjectsFilters = {}
@@ -252,18 +283,6 @@ export class ProjectsCreatedService {
     }).pipe(
       map(response => response?.file ?? response?.data?.url ?? response?.url ?? response?.data ?? ''),
       catchError(error => throwError(() => error))
-    );
-  }
-
-  getProjectProposalInvites(uuid: string): Observable<CreatedProjectProposalInvite[]> {
-    this.setLoading(true);
-
-    return this.http.get<any>(`${this.baseUrl}/proposal/submit-list/${uuid}`, {
-      headers: this.getHeaders(),
-    }).pipe(
-      map(response => this.mapProposalInvites(response)),
-      catchError(error => throwError(() => error)),
-      finalize(() => this.setLoading(false))
     );
   }
 
@@ -312,6 +331,40 @@ export class ProjectsCreatedService {
     );
   }
 
+  acceptProposalOffer(offerUuid: string): Observable<any> {
+    this.setLoading(true);
+
+    return this.http.post<any>(`${this.baseUrl}/proposal/offer/accept/${offerUuid}`, {}, {
+      headers: this.getHeaders(),
+    }).pipe(
+      catchError(error => throwError(() => error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  signProjectContract(contractUuid: string, payload: FormData): Observable<any> {
+    this.setLoading(true);
+
+    return this.http.post<any>(`${this.baseUrl}/contract/sign/${contractUuid}`, payload, {
+      headers: this.getFormDataHeaders(),
+    }).pipe(
+      catchError(error => throwError(() => error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
+  getProjectContract(contractUuid: string): Observable<CreatedProjectContract> {
+    this.setLoading(true);
+
+    return this.http.get<any>(`${this.baseUrl}/contract/${contractUuid}`, {
+      headers: this.getHeaders(),
+    }).pipe(
+      map(response => this.mapProjectContract(response?.data ?? response)),
+      catchError(error => throwError(() => error)),
+      finalize(() => this.setLoading(false))
+    );
+  }
+
   private mapPaginatedResponse(response: any): CreatedProjectsPaginatedResponse {
     return {
       data: Array.isArray(response?.data) ? response.data.map((p: any) => this.mapProject(p)) : [],
@@ -345,24 +398,47 @@ export class ProjectsCreatedService {
       scopes: this.sanitizeScopes(p?.scopes),
       request_files: this.sanitizeFiles(p?.request_files),
       file: this.sanitizeProjectFiles(p?.file),
+      invited: this.mapProjectInvites(p?.invited),
       status: p?.status ?? null,
+      contract_uuid: p?.contract_uuid ?? p?.contract?.uuid ?? null,
+      contract: p?.contract && typeof p.contract === 'object' ? this.mapProjectContract(p.contract) : null,
     };
   }
 
-  private mapProposalInvites(response: any): CreatedProjectProposalInvite[] {
-    const groups = Array.isArray(response?.data) ? response.data : [];
+  private mapProjectContract(contract: any): CreatedProjectContract {
+    return {
+      ...(contract || {}),
+      uuid: contract?.uuid ?? contract?.contract_uuid ?? null,
+      user_sign_at: this.toBoolean(contract?.user_sign_at),
+      insighter_sign_at: this.toBoolean(contract?.insighter_sign_at),
+      is_attach_type: this.toBoolean(contract?.is_attach_type),
+      status: contract?.status ?? null,
+      file: contract?.file && typeof contract.file === 'object' ? contract.file : null,
+      guideline: contract?.guideline ?? contract?.contract?.guideline ?? null,
+      name: contract?.name ?? contract?.contract?.name ?? null,
+    };
+  }
 
-    return groups.flatMap((group: any) => {
-      const invited = Array.isArray(group?.invited) ? group.invited : [];
+  private mapProjectInvites(invited: any[] | null | undefined): CreatedProjectProposalInvite[] {
+    if (!Array.isArray(invited)) return [];
 
-      return invited.map((item: any) => ({
-        uuid: item?.uuid ?? '',
-        action_status: item?.action_status ?? null,
-        submission_status: group?.status ?? null,
-        deadline_offer: group?.deadline_offer ?? null,
-        total_matches: group?.total_matches ?? null,
+    return invited
+      .map((item: any) => ({
+        uuid: this.stringifyValue(item?.uuid ?? item?.id ?? item?.insighter?.uuid),
+        action_status: item?.action_status ?? item?.status ?? null,
+        submission_status: item?.submission_status ?? null,
+        deadline_offer: item?.deadline_offer ?? null,
+        total_matches: item?.total_matches ?? null,
+        match_score: this.normalizeMatchScore(item?.match_score),
+        matches: item?.matches && typeof item.matches === 'object' && !Array.isArray(item.matches)
+          ? item.matches
+          : {},
+        is_match_all: Boolean(item?.is_match_all ?? item?.is_match_all_properties),
+        is_match_before: Boolean(item?.is_match_before),
+        is_invited_before: Boolean(item?.is_invited_before),
+        status: item?.status ?? null,
         insighter: item?.insighter ? {
-          uuid: item.insighter?.uuid ?? '',
+          uuid: this.stringifyValue(item.insighter?.uuid),
           name: item.insighter?.name ?? null,
           profile_photo_url: item.insighter?.profile_photo_url ?? null,
           roles: Array.isArray(item.insighter?.roles) ? item.insighter.roles : [],
@@ -370,17 +446,19 @@ export class ProjectsCreatedService {
           company: item.insighter?.company ?? null,
         } : null,
         offer: item?.offer ? {
-          uuid: item.offer?.uuid ?? '',
+          uuid: this.stringifyValue(item.offer?.uuid),
           proposed_price: item.offer?.proposed_price ?? null,
+          payment_plan: item.offer?.payment_plan ?? null,
           down_payment: item.offer?.down_payment ?? null,
           final_payment: item.offer?.final_payment ?? null,
           estimated_hours: item.offer?.estimated_hours ?? null,
           cover_letter: item.offer?.cover_letter ?? null,
           status: item.offer?.status ?? null,
           files: this.sanitizeFiles(item.offer?.files),
+          contract_uuid: item.offer?.contract_uuid ?? item?.contract_uuid ?? item?.contract?.uuid ?? null,
         } : null,
-      }));
-    });
+      }))
+      .filter((invite: CreatedProjectProposalInvite) => !!invite.uuid || !!invite.insighter?.uuid);
   }
 
   private mapProposalMatches(response: any): CreatedProjectProposalMatch[] {
@@ -453,6 +531,17 @@ export class ProjectsCreatedService {
   private stringifyValue(value: any): string {
     if (value === null || value === undefined) return '';
     return String(value).trim();
+  }
+
+  private toBoolean(value: any): boolean {
+    if (typeof value === 'boolean') return value;
+    if (typeof value === 'number') return value === 1;
+    if (typeof value === 'string') {
+      const normalized = value.trim().toLowerCase();
+      return ['1', 'true', 'yes'].includes(normalized);
+    }
+
+    return false;
   }
 
   private sanitizeBlocks(blocks: any[] | null | undefined): CreatedProjectBlock[] {

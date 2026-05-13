@@ -49,8 +49,20 @@ export interface Order {
   status: string;
   date: string;
   order_no: string;
-  invoice_no: string;
+  invoice_no?: string;
   orderable: Suborder;
+  payment?: PaymentInfo;
+  payments?: PaymentInfo[];
+}
+
+export interface PaymentInfo {
+  invoice_no?: string | null;
+  fulfillment_attempts?: unknown;
+  method?: string;
+  provider?: string | null;
+  amount?: number;
+  currency?: string;
+  status?: string;
 }
 
 export interface Company {
@@ -77,6 +89,7 @@ export interface Transaction {
   provider_fee: string;
   net_amount: string;
   order: Order;
+  payment?: PaymentInfo;
   insighter?: Insighter;
 }
 

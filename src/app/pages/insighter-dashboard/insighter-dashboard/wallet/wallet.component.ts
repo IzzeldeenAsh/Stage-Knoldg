@@ -392,6 +392,21 @@ export class WalletComponent extends BaseComponent implements OnInit, OnDestroy,
     this.showDetailsDialog = true;
   }
 
+  getTransactionInvoiceNo(transaction: Transaction | null | undefined): string {
+    if (!transaction) {
+      return '';
+    }
+
+    if (transaction.payment?.invoice_no) {
+      return transaction.payment.invoice_no;
+    }
+
+    const payments = transaction.order?.payments || [];
+    const paymentWithInvoice = payments.find(payment => Boolean(payment.invoice_no));
+
+    return paymentWithInvoice?.invoice_no || transaction.order?.payment?.invoice_no || transaction.order?.invoice_no || '';
+  }
+
   getFileIcon(extension: string): string {
     if (!extension) return 'assets/media/svg/new-files/doc.svg';
     const ext = extension.toLowerCase();

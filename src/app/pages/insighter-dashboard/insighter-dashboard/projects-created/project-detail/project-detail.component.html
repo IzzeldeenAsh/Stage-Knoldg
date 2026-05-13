@@ -481,8 +481,8 @@
           </div>
           <p class="pd-aside-card__hint">
             {{ lang === 'ar'
-              ? 'راجع تفاصيل مشروعك أو ابدأ عملية مطابقة جديدة مع الخبراء.'
-              : 'Review your project details or start a new matching process with experts.' }}
+              ? (hasContractAction(p) ? 'تم قبول عرض لهذا المشروع. راجع العقد واختر طريقة التوقيع.' : 'راجع تفاصيل مشروعك أو ابدأ عملية مطابقة جديدة مع الخبراء.')
+              : (hasContractAction(p) ? 'An offer has been accepted for this project. Review the contract and choose how to sign.' : 'Review your project details or start a new matching process with experts.') }}
           </p>
 
           <section class="pd-action-panel">
@@ -529,24 +529,25 @@
                     </div>
                   </a>
 
-                  <span class="badge pd-invite-card__status"
-                        [ngClass]="getInvitedStatusBadgeClass(invite)">
-                    {{ getInvitedStatusLabel(invite) }}
+                  <span class="badge pd-invite-card__action-status flex-shrink-0"
+                        [class.pd-invite-card__action-status--offered]="canViewSubmittedOffer(invite)"
+                        [ngClass]="getInviteActionStatusBadgeClass(invite)">
+                    {{ getInviteActionStatusLabel(invite) }}
                   </span>
                 </div>
 
-                <div class="pd-invite-card__footer">
-                  <span class="pd-invite-card__deadline" *ngIf="invite.deadline_offer">
-                    {{ lang === 'ar' ? 'موعد العرض:' : 'Offer deadline:' }} {{ formatDate(invite.deadline_offer) }}
+                <div class="pd-invite-card__footer d-flex align-items-center justify-content-between gap-2 mt-3 pt-3 border-top">
+                  <span class="badge pd-invite-card__status flex-shrink-0"
+                        [ngClass]="getInviteStatusBadgeClass(invite)">
+                    {{ getInviteStatusLabel(invite) }}
                   </span>
 
-                  <button *ngIf="canViewSubmittedOffer(invite)"
-                          type="button"
-                          class="pd-linkbtn"
+                  <button type="button"
+                          *ngIf="canViewSubmittedOffer(invite)"
+                          class="btn btn-sm btn-light-info pd-invite-card__offer-btn d-inline-flex align-items-center gap-1 flex-shrink-0 text-nowrap"
                           (click)="openProposalDrawer(invite)">
-                    {{ lang === 'ar' ? 'عرض العرض المقدم' : 'View Submitted Offer' }}
-                    <i class="ki-outline fs-7"
-                       [ngClass]="lang === 'ar' ? 'ki-arrow-left' : 'ki-arrow-right'"></i>
+                    <i class="ki-outline ki-file-up fs-7"></i>
+                    <span>{{ lang === 'ar' ? 'عرض العرض' : 'View Offer' }}</span>
                   </button>
                 </div>
               </article>
@@ -561,6 +562,15 @@
           </section>
 
           <button type="button"
+                  *ngIf="hasContractAction(p)"
+                  class="btn btn-info w-100 mt-3 pd-contract-pulse"
+                  (click)="viewContract()">
+            <i class="ki-outline ki-document fs-6 me-1"></i>
+            {{ lang === 'ar' ? 'عرض العقد' : 'View Contract' }}
+          </button>
+
+          <button type="button"
+                  *ngIf="!hasContractAction(p)"
                   class="btn btn-info w-100 mt-3"
                   (click)="onRematch()"
                   [disabled]="isRematchLoading || isSubmittingRematch">
@@ -686,11 +696,12 @@
           [class.is-selected]="isRematchSelected(match.uuid)"
           (click)="toggleRematchSelection(match.uuid)">
           <div class="pd-match-card__main">
-            <label class="pd-match-checkbox" (click)="$event.stopPropagation()">
+            <label class="pd-match-checkbox"
+                   [class.is-checked]="isRematchSelected(match.uuid)"
+                   (click)="toggleRematchSelection(match.uuid); $event.stopPropagation()">
               <input
                 type="checkbox"
                 [checked]="isRematchSelected(match.uuid)"
-                (change)="toggleRematchSelection(match.uuid)"
                 [attr.aria-label]="lang === 'ar' ? 'اختيار ' + match.insighter.name : 'Select ' + match.insighter.name" />
               <span></span>
             </label>
@@ -793,7 +804,7 @@
         </article>
       </div>
 
-      <div *ngIf="rematchPhase === 'ready' && hasNewRematchMatches" class="pd-rematch-previous">
+      <div *ngIf="rematchPhase === 'ready' && shouldAskToIncludePreviousInvited" class="pd-rematch-previous">
         <strong>{{ lang === 'ar' ? 'تم العثور على نتائج جديدة' : 'New matches found' }}</strong>
         <div class="pd-rematch-previous__actions" role="group" [attr.aria-label]="lang === 'ar' ? 'تضمين المدعوين سابقًا' : 'Include previously invited insighters'">
           <button type="button"
@@ -1021,22 +1032,24 @@
                   <span class="pd-proposal-drawer__stat-value">{{ formatPrice(invite.offer?.proposed_price) }}</span>
                 </span>
               </div>
-              <div class="pd-proposal-drawer__stat pd-proposal-drawer__stat--down">
+              <div class="pd-proposal-drawer__stat pd-proposal-drawer__stat--down"
+                   *ngIf="shouldShowDownPayment(invite.offer)">
                 <span class="pd-proposal-drawer__stat-icon">
                   <i class="ki-outline ki-wallet fs-4"></i>
                 </span>
                 <span class="pd-proposal-drawer__stat-copy">
                   <span class="pd-proposal-drawer__stat-label">{{ lang === 'ar' ? 'الدفعة الأولى' : 'Down Payment' }}</span>
-                  <span class="pd-proposal-drawer__stat-value">{{ formatPrice(invite.offer?.down_payment) }}</span>
+                  <span class="pd-proposal-drawer__stat-value">{{ formatPrice(getDownPaymentAmount(invite.offer)) }}</span>
                 </span>
               </div>
-              <div class="pd-proposal-drawer__stat pd-proposal-drawer__stat--final">
+              <div class="pd-proposal-drawer__stat pd-proposal-drawer__stat--final"
+                   *ngIf="shouldShowFinalPayment(invite.offer)">
                 <span class="pd-proposal-drawer__stat-icon">
                   <i class="ki-outline ki-bank fs-4"></i>
                 </span>
                 <span class="pd-proposal-drawer__stat-copy">
                   <span class="pd-proposal-drawer__stat-label">{{ lang === 'ar' ? 'الدفعة النهائية' : 'Final Payment' }}</span>
-                  <span class="pd-proposal-drawer__stat-value">{{ formatPrice(invite.offer?.final_payment) }}</span>
+                  <span class="pd-proposal-drawer__stat-value">{{ formatPrice(getFinalPaymentAmount(invite.offer)) }}</span>
                 </span>
               </div>
               <div class="pd-proposal-drawer__stat pd-proposal-drawer__stat--hours">
@@ -1060,15 +1073,20 @@
           </div>
           <p class="pd-proposal-drawer__aside-hint">
             {{ lang === 'ar'
-              ? 'يمكنك مراجعة العرض والقبول به عند تفعيل الإجراء لاحقاً.'
-              : 'You can review this offer and accept it once the action is enabled.' }}
+              ? 'راجع تفاصيل العرض ثم اقبله للانتقال إلى مرحلة العقد.'
+              : 'Review the offer details, then accept it to move into the contract stage.' }}
           </p>
 
           <button type="button"
                   class="btn btn-info w-100"
-                  disabled>
+                  [disabled]="!canAcceptOffer(invite)"
+                  (click)="acceptOffer(invite)">
             <i class="ki-outline ki-check fs-6 me-1"></i>
-            {{ lang === 'ar' ? 'قبول العرض' : 'Accept Offer' }}
+            {{
+              isAcceptingOffer(invite)
+                ? (lang === 'ar' ? 'جاري القبول...' : 'Accepting...')
+                : (lang === 'ar' ? 'قبول العرض' : 'Accept Offer')
+            }}
           </button>
 
           <div class="pd-aside-table-wrap">
@@ -1094,13 +1112,13 @@
                   <th scope="row">{{ lang === 'ar' ? 'السعر' : 'Price' }}</th>
                   <td>{{ formatPrice(invite.offer?.proposed_price) }}</td>
                 </tr>
-                <tr>
+                <tr *ngIf="shouldShowDownPayment(invite.offer)">
                   <th scope="row">{{ lang === 'ar' ? 'الدفعة الأولى' : 'Down Payment' }}</th>
-                  <td>{{ formatPrice(invite.offer?.down_payment) }}</td>
+                  <td>{{ formatPrice(getDownPaymentAmount(invite.offer)) }}</td>
                 </tr>
-                <tr>
+                <tr *ngIf="shouldShowFinalPayment(invite.offer)">
                   <th scope="row">{{ lang === 'ar' ? 'الدفعة النهائية' : 'Final Payment' }}</th>
-                  <td>{{ formatPrice(invite.offer?.final_payment) }}</td>
+                  <td>{{ formatPrice(getFinalPaymentAmount(invite.offer)) }}</td>
                 </tr>
               </tbody>
             </table>

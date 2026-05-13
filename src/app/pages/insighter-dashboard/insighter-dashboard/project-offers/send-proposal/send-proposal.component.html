@@ -104,8 +104,8 @@
               <h3 class="sp-section__title">{{ lang === 'ar' ? 'التسعير والمدة' : 'Pricing & estimated time' }}</h3>
               <p class="sp-section__sub">
                 {{ lang === 'ar'
-                ? 'حدّد أسلوب التقدير ثم راجع السعر النهائي.'
-                : 'Choose how you want to estimate the work, then review the final price.' }}
+                ? 'حدّد أسلوب التقدير وسعر الساعة وخطة الدفعات.'
+                : 'Choose the estimate basis, hourly rate, and payment plan.' }}
               </p>
             </div>
 
@@ -139,7 +139,6 @@
                 [class.is-invalid]="shouldShowFieldError(estimateAmountModel, isEstimateAmountInvalid())">
                 <input id="sp-estimate-amount" name="estimateAmount" type="number" min="1" step="1" class="sp-input"
                   [(ngModel)]="estimateAmount" #estimateAmountModel="ngModel" required
-                  (ngModelChange)="onEstimateAmountChange()"
                   [placeholder]="estimateUnit === 'days' ? '0' : '0'" />
                 <span class="sp-input-group__suffix" *ngIf="estimateUnit === 'days'">
                   {{ lang === 'ar' ? '8 ساعات/يوم' : '8 hrs / Day' }}
@@ -154,82 +153,129 @@
                 ? (lang === 'ar' ? 'عدد الأيام مطلوب.' : 'Number of days is required.')
                 : (lang === 'ar' ? 'عدد الساعات مطلوب.' : 'Number of hours is required.') }}
               </div>
-              <div class="sp-field__hint">
-                {{ lang === 'ar' ? 'سعر الساعة' : 'Hourly rate' }}
-                <strong>{{ formatPrice(hourlyRate) }}</strong>
-                <ng-container *ngIf="estimateUnit === 'days' && totalHours > 0">
-                  · {{ lang === 'ar' ? 'إجمالي الساعات' : 'Total hours' }}
-                  <strong>{{ totalHours }}</strong>
-                  {{ lang === 'ar' ? 'ساعة' : 'hrs' }}
-                </ng-container>
+              <div class="sp-field__hint" *ngIf="estimateUnit === 'days' && totalHours > 0">
+                {{ lang === 'ar' ? 'إجمالي الساعات' : 'Total hours' }}
+                <strong>{{ totalHours }}</strong>
+                {{ lang === 'ar' ? 'ساعة' : 'hrs' }}
               </div>
             </div>
 
-            <!-- Final Price -->
+            <!-- Hourly rate -->
             <div class="sp-field">
-              <label class="sp-field__label" for="sp-final-price">
-                {{ lang === 'ar' ? 'السعر النهائي' : 'Final Price' }}
+              <label class="sp-field__label" for="sp-hourly-rate">
+                {{ lang === 'ar' ? 'سعر الساعة' : 'Hourly rate' }}
               </label>
               <div class="sp-input-group"
-                [class.is-invalid]="shouldShowFieldError(proposedPriceModel, isProposedPriceInvalid())">
+                [class.is-invalid]="shouldShowFieldError(hourlyRateModel, isHourlyRateInvalid())">
                 <span class="sp-input-group__prefix">$</span>
-                <input id="sp-final-price" name="proposedPrice" type="number" min="0.01" step="0.01"
-                  class="sp-input sp-input--price" [(ngModel)]="proposedPrice" #proposedPriceModel="ngModel"
-                  required (input)="onProposedPriceManualChange()" placeholder="0.00" />
-                <span class="sp-input-group__suffix sp-input-group__suffix--muted">USD</span>
+                <input id="sp-hourly-rate" name="hourlyRate" type="number"
+                  class="sp-input sp-input--price" [(ngModel)]="hourlyRate" #hourlyRateModel="ngModel"
+                  required placeholder="0.00" />
+                <span class="sp-input-group__suffix sp-input-group__suffix--muted">USD/hr</span>
               </div>
               <div class="sp-field__hint sp-field__hint--danger"
-                *ngIf="shouldShowFieldError(proposedPriceModel, isProposedPriceInvalid())">
-                {{ lang === 'ar' ? 'السعر النهائي مطلوب.' : 'Final price is required.' }}
+                *ngIf="shouldShowFieldError(hourlyRateModel, isHourlyRateInvalid())">
+                {{ lang === 'ar' ? 'سعر الساعة مطلوب.' : 'Hourly rate is required.' }}
               </div>
-              <div class="sp-field__hint" *ngIf="totalHours > 0">
-                {{ lang === 'ar' ? 'مقترح' : 'Suggested' }}:
+              <div class="sp-field__hint" *ngIf="totalHours > 0 && hourlyRate">
+                {{ lang === 'ar' ? 'الإجمالي التقديري' : 'Estimated total' }}:
                 <strong>{{ formatPrice(suggestedPrice) }}</strong>
                 ({{ totalHours }} {{ lang === 'ar' ? 'ساعة' : 'hrs' }} × {{ formatPrice(hourlyRate) }})
               </div>
             </div>
 
-            <div class="sp-payment-grid">
-              <div class="sp-field">
-                <label class="sp-field__label" for="sp-first-payment-percentage">
-                  {{ lang === 'ar' ? 'نسبة الدفعة الأولى' : 'First Payment Percentage' }}
-                </label>
-                <div class="sp-input-group"
-                  [class.is-invalid]="shouldShowFieldError(firstPaymentPercentageModel) || shouldShowPaymentSplitError(firstPaymentPercentageModel, finalPaymentPercentageModel)">
-                  <input id="sp-first-payment-percentage" name="firstPaymentPercentage" type="number" min="0" max="100"
-                    step="1" class="sp-input" [(ngModel)]="firstPaymentPercentage"
-                    #firstPaymentPercentageModel="ngModel" required placeholder="30" />
-                  <span class="sp-input-group__suffix">%</span>
-                </div>
-                <div class="sp-field__hint sp-field__hint--danger"
-                  *ngIf="shouldShowFieldError(firstPaymentPercentageModel)">
-                  {{ lang === 'ar' ? 'نسبة الدفعة الأولى مطلوبة.' : 'First payment percentage is required.' }}
-                </div>
-              </div>
-
-              <div class="sp-field">
-                <label class="sp-field__label" for="sp-final-payment-percentage">
-                  {{ lang === 'ar' ? 'نسبة الدفعة الأخيرة' : 'Last Payment Percentage' }}
-                </label>
-                <div class="sp-input-group"
-                  [class.is-invalid]="shouldShowFieldError(finalPaymentPercentageModel) || shouldShowPaymentSplitError(firstPaymentPercentageModel, finalPaymentPercentageModel)">
-                  <input id="sp-final-payment-percentage" name="finalPaymentPercentage" type="number" min="0" max="100"
-                    step="1" class="sp-input" [(ngModel)]="finalPaymentPercentage"
-                    #finalPaymentPercentageModel="ngModel" required placeholder="70" />
-                  <span class="sp-input-group__suffix">%</span>
-                </div>
-                <div class="sp-field__hint sp-field__hint--danger"
-                  *ngIf="shouldShowFieldError(finalPaymentPercentageModel)">
-                  {{ lang === 'ar' ? 'نسبة الدفعة الأخيرة مطلوبة.' : 'Last payment percentage is required.' }}
-                </div>
+            <div class="sp-field">
+              <label class="sp-field__label">
+                {{ lang === 'ar' ? 'خطة الدفع' : 'Payment plan' }}
+              </label>
+              <div class="sp-plan-grid" role="radiogroup">
+                <button type="button" class="sp-plan-option" [class.is-active]="paymentPlan === 'partial'"
+                  [attr.aria-pressed]="paymentPlan === 'partial'" (click)="setPaymentPlan('partial')">
+                  <i class="ki-outline ki-percentage fs-5"></i>
+                  <span class="sp-plan-option__copy">
+                    <span class="sp-plan-option__title">
+                      {{ lang === 'ar' ? 'الأولى والنهائية' : 'First & Final' }}
+                    </span>
+                    <span class="sp-plan-option__sub">
+                      {{ lang === 'ar' ? 'خطة دفع' : 'Payment plan' }}
+                    </span>
+                  </span>
+                </button>
+                <button type="button" class="sp-plan-option" [class.is-active]="paymentPlan === 'full_at_start'"
+                  [attr.aria-pressed]="paymentPlan === 'full_at_start'" (click)="setPaymentPlan('full_at_start')">
+                  <i class="ki-outline ki-wallet fs-5"></i>
+                  <span class="sp-plan-option__copy">
+                    <span class="sp-plan-option__title">
+                      {{ lang === 'ar' ? 'الأولى' : 'First' }}
+                    </span>
+                    <span class="sp-plan-option__sub">
+                      {{ lang === 'ar' ? 'دفعة فقط' : 'Payment only' }}
+                    </span>
+                  </span>
+                </button>
+                <button type="button" class="sp-plan-option" [class.is-active]="paymentPlan === 'full_at_end'"
+                  [attr.aria-pressed]="paymentPlan === 'full_at_end'" (click)="setPaymentPlan('full_at_end')">
+                  <i class="ki-outline ki-calendar-tick fs-5"></i>
+                  <span class="sp-plan-option__copy">
+                    <span class="sp-plan-option__title">
+                      {{ lang === 'ar' ? 'النهائية' : 'Final' }}
+                    </span>
+                    <span class="sp-plan-option__sub">
+                      {{ lang === 'ar' ? 'دفعة فقط' : 'Payment only' }}
+                    </span>
+                  </span>
+                </button>
               </div>
             </div>
 
-            <div class="sp-field__hint sp-field__hint--danger"
-              *ngIf="shouldShowPaymentSplitError(firstPaymentPercentageModel, finalPaymentPercentageModel)">
-              {{ lang === 'ar'
-              ? 'يجب أن يكون مجموع نسب الدفعات 100%.'
-              : 'Payment percentages must total 100%.' }}
+            <ng-container *ngIf="paymentPlan === 'partial'">
+              <div class="sp-payment-grid">
+                <div class="sp-field">
+                  <label class="sp-field__label" for="sp-first-payment-percentage">
+                    {{ lang === 'ar' ? 'نسبة الدفعة المقدمة' : 'Down payment percentage' }}
+                  </label>
+                  <div class="sp-input-group"
+                    [class.is-invalid]="shouldShowFieldError(firstPaymentPercentageModel) || shouldShowPaymentSplitError(firstPaymentPercentageModel, finalPaymentPercentageModel)">
+                    <input id="sp-first-payment-percentage" name="firstPaymentPercentage" type="number" min="0"
+                      max="100" step="1" class="sp-input" [(ngModel)]="firstPaymentPercentage"
+                      #firstPaymentPercentageModel="ngModel" required placeholder="30" />
+                    <span class="sp-input-group__suffix">%</span>
+                  </div>
+                  <div class="sp-field__hint sp-field__hint--danger"
+                    *ngIf="shouldShowFieldError(firstPaymentPercentageModel)">
+                    {{ lang === 'ar' ? 'نسبة الدفعة المقدمة مطلوبة.' : 'Down payment percentage is required.' }}
+                  </div>
+                </div>
+
+                <div class="sp-field">
+                  <label class="sp-field__label" for="sp-final-payment-percentage">
+                    {{ lang === 'ar' ? 'نسبة الدفعة الأخيرة' : 'Final payment percentage' }}
+                  </label>
+                  <div class="sp-input-group"
+                    [class.is-invalid]="shouldShowFieldError(finalPaymentPercentageModel) || shouldShowPaymentSplitError(firstPaymentPercentageModel, finalPaymentPercentageModel)">
+                    <input id="sp-final-payment-percentage" name="finalPaymentPercentage" type="number" min="0"
+                      max="100" step="1" class="sp-input" [(ngModel)]="finalPaymentPercentage"
+                      #finalPaymentPercentageModel="ngModel" required placeholder="70" />
+                    <span class="sp-input-group__suffix">%</span>
+                  </div>
+                  <div class="sp-field__hint sp-field__hint--danger"
+                    *ngIf="shouldShowFieldError(finalPaymentPercentageModel)">
+                    {{ lang === 'ar' ? 'نسبة الدفعة الأخيرة مطلوبة.' : 'Final payment percentage is required.' }}
+                  </div>
+                </div>
+              </div>
+
+              <div class="sp-field__hint sp-field__hint--danger"
+                *ngIf="shouldShowPaymentSplitError(firstPaymentPercentageModel, finalPaymentPercentageModel)">
+                {{ lang === 'ar'
+                ? 'يجب أن تكون كل نسبة بين 1 و99 وأن يكون المجموع 100%.'
+                : 'Each percentage must be between 1 and 99, and the total must be 100%.' }}
+              </div>
+            </ng-container>
+
+            <div class="sp-plan-summary" *ngIf="paymentPlan !== 'partial'">
+              <span>{{ lang === 'ar' ? 'الدفعة الأولى' : 'First payment' }}: {{ downPaymentPercentageForPayload }}%</span>
+              <span>{{ lang === 'ar' ? 'الدفعة النهائية' : 'Final payment' }}: {{ finalPaymentPercentageForPayload }}%</span>
             </div>
           </section>
 
@@ -244,7 +290,7 @@
             </div>
             <div class="sp-summary__row sp-summary__row--total">
               <span class="sp-summary__label">{{ lang === 'ar' ? 'الإجمالي' : 'Total' }}</span>
-              <span class="sp-summary__value">{{ formatPrice(proposedPrice || 0) }}</span>
+              <span class="sp-summary__value">{{ formatPrice(suggestedPrice) }}</span>
             </div>
           </div>
 

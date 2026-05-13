@@ -1,11 +1,9 @@
 import { Component, Injector, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { BaseComponent } from 'src/app/modules/base.component';
 import {
-  InsighterProjectAccountSettings,
   ProjectOffer,
   ProjectOfferFile,
   ProjectOfferScope,
@@ -14,6 +12,7 @@ import {
 } from 'src/app/_fake/services/project-offers/project-offers.service';
 
 const HOURS_PER_DAY = 8;
+type PaymentPlan = 'partial' | 'full_at_start' | 'full_at_end';
 
 @Component({
   selector: 'app-send-proposal',
@@ -24,14 +23,11 @@ export class SendProposalComponent extends BaseComponent implements OnInit, OnDe
   @ViewChildren(NgModel) private formModels!: QueryList<NgModel>;
 
   proposal: ProjectOffer | null = null;
-  settings: InsighterProjectAccountSettings | null = null;
 
   proposalUuid: string | null = null;
-  hourlyRate: number = 0;
+  hourlyRate: number | null = null;
   isLoading: boolean = false;
   isSubmitting: boolean = false;
-  hasSubmitAttempted: boolean = false;
-  priceManuallyEdited: boolean = false;
 
   // Project details drawer state
   detailsDrawerVisible: boolean = false;
@@ -40,9 +36,9 @@ export class SendProposalComponent extends BaseComponent implements OnInit, OnDe
   // Form state
   estimateUnit: ProposalEstimateUnit = 'hours';
   estimateAmount: number | null = null;
-  proposedPrice: number | null = null;
   coverLetter: string = '';
   selectedAttachments: File[] = [];
+  paymentPlan: PaymentPlan = 'partial';
   firstPaymentPercentage: number | null = 30;
   finalPaymentPercentage: number | null = 70;
 
@@ -100,16 +96,28 @@ export class SendProposalComponent extends BaseComponent implements OnInit, OnDe
   setEstimateUnit(unit: ProposalEstimateUnit): void {
     if (this.estimateUnit === unit) return;
     this.estimateUnit = unit;
-    this.recomputePrice(true);
   }
 
-  onEstimateAmountChange(): void {
-    this.recomputePrice(false);
-  }
+  setPaymentPlan(plan: PaymentPlan): void {
+    if (this.paymentPlan === plan) return;
+    this.paymentPlan = plan;
 
-  onProposedPriceManualChange(): void {
-    // The user has touched the price — stop auto-overwriting it.
-    this.priceManuallyEdited = true;
+    if (plan === 'full_at_start') {
+      this.firstPaymentPercentage = 100;
+      this.finalPaymentPercentage = 0;
+      return;
+    }
+
+    if (plan === 'full_at_end') {
+      this.firstPaymentPercentage = 0;
+      this.finalPaymentPercentage = 100;
+      return;
+    }
+
+    if (this.isPaymentSplitInvalid()) {
+      this.firstPaymentPercentage = 30;
+      this.finalPaymentPercentage = 70;
+    }
   }
 
   onAttachmentsSelected(event: Event): void {
@@ -134,7 +142,7 @@ export class SendProposalComponent extends BaseComponent implements OnInit, OnDe
 
   /** Auto-suggested price from hours × hourly rate (used when user hasn't edited). */
   get suggestedPrice(): number {
-    return this.totalHours * (this.hourlyRate || 0);
+    return this.totalHours * (Number(this.hourlyRate) || 0);
   }
 
   get paymentSplitTotal(): number {
@@ -142,6 +150,18 @@ export class SendProposalComponent extends BaseComponent implements OnInit, OnDe
     const final = Number(this.finalPaymentPercentage);
     if (!isFinite(first) || !isFinite(final)) return 0;
     return Number((first + final).toFixed(2));
+  }
+
+  get downPaymentPercentageForPayload(): number {
+    if (this.paymentPlan === 'full_at_start') return 100;
+    if (this.paymentPlan === 'full_at_end') return 0;
+    return Number(this.firstPaymentPercentage);
+  }
+
+  get finalPaymentPercentageForPayload(): number {
+    if (this.paymentPlan === 'full_at_start') return 0;
+    if (this.paymentPlan === 'full_at_end') return 100;
+    return Number(this.finalPaymentPercentage);
   }
 
   submitProposal(): void {
@@ -401,7 +421,7 @@ export class SendProposalComponent extends BaseComponent implements OnInit, OnDe
   formatPrice(value: number | null | undefined): string {
     const n = Number(value ?? 0);
     if (!isFinite(n)) return '$0.00';
-    return n.toLocaleString(this.lang === 'ar' ? 'ar-EG' : 'en-US', {
+    return n.toLocaleString('en-US', {
       style: 'currency',
       currency: 'USD',
     });
@@ -426,19 +446,19 @@ export class SendProposalComponent extends BaseComponent implements OnInit, OnDe
     return !this.estimateAmount || this.estimateAmount <= 0;
   }
 
-  isProposedPriceInvalid(): boolean {
-    return !this.proposedPrice || this.proposedPrice <= 0;
+  isHourlyRateInvalid(): boolean {
+    return !this.hourlyRate || this.hourlyRate <= 0;
   }
 
   shouldShowFieldError(model: NgModel | null | undefined, invalidByValue: boolean = false): boolean {
     return !!(
-      (model?.touched || model?.dirty || this.hasSubmitAttempted)
+      (model?.touched || model?.dirty)
       && (model?.invalid || invalidByValue)
     );
   }
 
   shouldShowPaymentSplitError(...models: Array<NgModel | null | undefined>): boolean {
-    const hasInteracted = this.hasSubmitAttempted || models.some(model => !!(model?.touched || model?.dirty));
+    const hasInteracted = models.some(model => !!(model?.touched || model?.dirty));
     return hasInteracted && this.isPaymentSplitInvalid();
   }
 
@@ -446,12 +466,15 @@ export class SendProposalComponent extends BaseComponent implements OnInit, OnDe
 
   private buildProposalFormData(): FormData {
     const formData = new FormData();
+    formData.append('hourly_rate', `${Number(this.hourlyRate)}`);
     formData.append('estimated_hours', `${this.totalHours}`);
     formData.append('cover_letter', (this.coverLetter || '').trim());
-    formData.append('proposed_price', `${Number(this.proposedPrice)}`);
-    formData.append('down_payment_percentage', `${Number(this.firstPaymentPercentage)}`);
-    formData.append('first_payment_percentage', `${Number(this.firstPaymentPercentage)}`);
-    formData.append('final_payment_percentage', `${Number(this.finalPaymentPercentage)}`);
+    formData.append('payment_plan', this.paymentPlan);
+
+    if (this.paymentPlan === 'partial') {
+      formData.append('down_payment_percentage', `${this.downPaymentPercentageForPayload}`);
+      formData.append('final_payment_percentage', `${this.finalPaymentPercentageForPayload}`);
+    }
 
     this.selectedAttachments.forEach((file, index) => {
       formData.append(`files[${index}]`, file, file.name);
@@ -461,6 +484,7 @@ export class SendProposalComponent extends BaseComponent implements OnInit, OnDe
   }
 
   private isPaymentSplitInvalid(): boolean {
+    if (this.paymentPlan !== 'partial') return false;
     return !this.isValidPercentage(this.firstPaymentPercentage)
       || !this.isValidPercentage(this.finalPaymentPercentage)
       || this.paymentSplitTotal !== 100;
@@ -469,20 +493,20 @@ export class SendProposalComponent extends BaseComponent implements OnInit, OnDe
   private isProposalFormInvalid(): boolean {
     return this.isCoverLetterInvalid()
       || this.isEstimateAmountInvalid()
-      || this.isProposedPriceInvalid()
+      || this.isHourlyRateInvalid()
       || this.isPaymentSplitInvalid();
   }
 
   private isValidPercentage(value: number | null): boolean {
     const n = Number(value);
-    return isFinite(n) && n >= 0 && n <= 100;
+    return isFinite(n) && n > 0 && n < 100;
   }
 
   private markRequiredFieldsTouchedAndDirty(): void {
-    this.hasSubmitAttempted = true;
     this.formModels?.forEach(model => {
       model.control.markAsTouched();
       model.control.markAsDirty();
+      model.control.updateValueAndValidity();
     });
     setTimeout(() => this.scrollToFirstInvalidField(), 0);
   }
@@ -495,38 +519,14 @@ export class SendProposalComponent extends BaseComponent implements OnInit, OnDe
   }
 
   private loadAll(uuid: string): void {
-    forkJoin({
-      proposal: this.projectOffersService.getProposalDetails(uuid),
-      settings: this.projectOffersService.getAccountSettings(),
-    })
+    this.projectOffersService.getProposalDetails(uuid)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: ({ proposal, settings }) => {
+        next: (proposal) => {
           this.proposal = proposal;
-          this.settings = settings;
-          this.hourlyRate = this.parseRate(settings?.hourly_rate);
-          this.recomputePrice(true);
         },
         error: (err) => this.handleServerErrors(err),
       });
-  }
-
-  private parseRate(value: string | number | null | undefined): number {
-    if (value === null || value === undefined || value === '') return 0;
-    const n = typeof value === 'number' ? value : parseFloat(value);
-    return isFinite(n) ? n : 0;
-  }
-
-  private recomputePrice(force: boolean): void {
-    // Only overwrite the price if the user hasn't manually edited it,
-    // or when we explicitly need to reset (mode change / fresh load).
-    if (force) {
-      this.priceManuallyEdited = false;
-    }
-    if (!this.priceManuallyEdited) {
-      const next = this.suggestedPrice;
-      this.proposedPrice = next > 0 ? Number(next.toFixed(2)) : null;
-    }
   }
 
   private humanizeValue(value: string): string {

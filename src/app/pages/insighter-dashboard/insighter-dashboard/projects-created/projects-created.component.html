@@ -9,26 +9,35 @@
     </div>
   </app-page-header>
 
-  <p-progressBar
-    *ngIf="isLoading$ | async"
-    mode="indeterminate"
-    [style]="{ height: '3px' }">
-  </p-progressBar>
-
   <div class="d-flex justify-content-between align-items-end flex-wrap gap-3">
     <div class="d-flex align-items-center flex-wrap gap-3">
       <div class="pc-filter">
         <label class="pc-filter__label">{{ lang === 'ar' ? 'حالة المشروع' : 'Project Status' }}</label>
-        <p-dropdown
-          [options]="projectStatusDropdownOptions"
-          [(ngModel)]="selectedProjectStatus"
-          optionLabel="label"
-          optionValue="value"
-          [showClear]="true"
-          [placeholder]="lang === 'ar' ? 'كل الحالات' : 'All statuses'"
-          styleClass="pc-filter__dropdown"
-          (onChange)="onProjectStatusChange($event.value)">
-        </p-dropdown>
+        <div class="pc-filter-chips" role="group" [attr.aria-label]="lang === 'ar' ? 'تصفية حسب حالة المشروع' : 'Filter by project status'">
+          <button type="button"
+            class="pc-filter-chip pc-filter-chip--all"
+            [class.active]="selectedProjectStatus === null"
+            [attr.aria-pressed]="selectedProjectStatus === null"
+            (click)="onProjectStatusChange(null)">
+            <span class="pc-filter-chip__icon">
+              <i class="ki-outline ki-rocket fs-6"></i>
+            </span>
+            <span>{{ lang === 'ar' ? 'الكل' : 'All' }}</span>
+          </button>
+
+          <button type="button"
+            *ngFor="let option of projectStatusOptions"
+            class="pc-filter-chip"
+            [ngClass]="'pc-filter-chip--' + option.value"
+            [class.active]="selectedProjectStatus === option.value"
+            [attr.aria-pressed]="selectedProjectStatus === option.value"
+            (click)="onProjectStatusChange(option.value)">
+            <span class="pc-filter-chip__icon">
+              <i class="ki-outline fs-6" [ngClass]="option.iconClass"></i>
+            </span>
+            <span>{{ lang === 'ar' ? option.labelAr : option.labelEn }}</span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -49,6 +58,12 @@
       </button>
     </div>
   </div>
+
+  <p-progressBar
+    *ngIf="isLoading$ | async"
+    mode="indeterminate"
+    [style]="{ height: '3px' }">
+  </p-progressBar>
 
   <div *ngIf="!(isLoading$ | async) && projects.length === 0" class="pc-empty">
     <i class="ki-outline ki-rocket fs-3x text-info mb-4"></i>

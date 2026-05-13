@@ -1,6 +1,6 @@
 import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { switchMap, takeUntil, tap } from 'rxjs/operators';
+import { takeUntil, tap } from 'rxjs/operators';
 import { BaseComponent } from 'src/app/modules/base.component';
 import {
   CreatedProject,
@@ -10,6 +10,7 @@ import {
   CreatedProjectProposalMatch,
   CreatedProjectProposalMatchCountry,
   CreatedProjectScope,
+  CreatedProjectSubmittedOffer,
   CreatedProjectType,
   ProjectsCreatedService,
   SubmitRematchProposalPayload,
@@ -55,6 +56,7 @@ export class ProjectDetailComponent extends BaseComponent implements OnInit, OnD
   proposalDrawerVisible: boolean = false;
   selectedInvite: CreatedProjectProposalInvite | null = null;
   openingFileUuid: string | null = null;
+  acceptingOfferUuid: string | null = null;
   rematchDialogVisible = false;
   rematchStep: RematchWizardStep = 'matches';
   rematchPhase: RematchPhase = 'idle';
@@ -141,6 +143,10 @@ export class ProjectDetailComponent extends BaseComponent implements OnInit, OnD
 
   get hasNewRematchMatches(): boolean {
     return this.rematchMatches.some(match => !match.is_match_before);
+  }
+
+  get shouldAskToIncludePreviousInvited(): boolean {
+    return this.hasNewRematchMatches && this.rematchMatches.some(match => match.is_match_before);
   }
 
   get selectedRematchCount(): number {
@@ -301,6 +307,64 @@ export class ProjectDetailComponent extends BaseComponent implements OnInit, OnD
     this.selectedInvite = null;
   }
 
+  acceptOffer(invite: CreatedProjectProposalInvite | null): void {
+    const offerUuid = invite?.offer?.uuid || '';
+    if (!offerUuid || this.acceptingOfferUuid) {
+      if (!offerUuid) {
+        this.showError(
+          this.lang === 'ar' ? 'تعذر قبول العرض' : 'Cannot accept offer',
+          this.lang === 'ar' ? 'لم يتم العثور على معرّف العرض.' : 'Offer identifier was not found.'
+        );
+      }
+      return;
+    }
+
+    this.acceptingOfferUuid = offerUuid;
+
+    this.projectsCreatedService.acceptProposalOffer(offerUuid)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: () => {
+          this.showSuccess(
+            this.lang === 'ar' ? 'تم قبول العرض' : 'Offer accepted',
+            this.lang === 'ar'
+              ? 'تم قبول العرض. يمكنك الآن مراجعة العقد.'
+              : 'The offer was accepted. You can now review the contract.'
+          );
+          this.closeProposalDrawer();
+          if (this.project?.uuid) {
+            this.router.navigate(['/app/insighter-dashboard/projects-created', this.project.uuid, 'contract']);
+          }
+        },
+        error: (err) => {
+          this.acceptingOfferUuid = null;
+          this.handleServerErrors(err);
+        },
+        complete: () => {
+          this.acceptingOfferUuid = null;
+        },
+      });
+  }
+
+  isAcceptingOffer(invite: CreatedProjectProposalInvite | null): boolean {
+    return !!invite?.offer?.uuid && this.acceptingOfferUuid === invite.offer.uuid;
+  }
+
+  canAcceptOffer(invite: CreatedProjectProposalInvite | null): boolean {
+    if (!invite?.offer?.uuid || this.acceptingOfferUuid) return false;
+    const status = this.getInvitedStatus(invite);
+    return !['accepted', 'approved', 'closed', 'cancelled', 'expired'].includes(status);
+  }
+
+  hasContractAction(project: CreatedProject | null = this.project): boolean {
+    return !!project?.contract_uuid || this.normalizeValue(project?.status) === 'contract';
+  }
+
+  viewContract(): void {
+    if (!this.project?.uuid) return;
+    this.router.navigate(['/app/insighter-dashboard/projects-created', this.project.uuid, 'contract']);
+  }
+
   getTypeLabel(type: CreatedProjectType | null | undefined): string {
     if (!type) return '-';
     const meta = this.projectTypeOptions.find(o => o.key === type);
@@ -312,6 +376,7 @@ export class ProjectDetailComponent extends BaseComponent implements OnInit, OnD
     switch ((status || '').toLowerCase()) {
       case 'proposal': return 'badge-light-warning';
       case 'submitted': return 'badge-light-primary';
+      case 'contract': return 'badge-light-info';
       case 'closed': return 'badge-light-success';
       case 'cancelled': return 'badge-light-danger';
       case 'expired': return 'badge-light-danger';
@@ -323,13 +388,14 @@ export class ProjectDetailComponent extends BaseComponent implements OnInit, OnD
     const labels: Record<string, { en: string; ar: string }> = {
       proposal: { en: 'Proposal', ar: 'مقترح' },
       submitted: { en: 'Submitted', ar: 'مُرسل' },
+      contract: { en: 'Contract', ar: 'العقد' },
       closed: { en: 'Closed', ar: 'مغلق' },
       cancelled: { en: 'Cancelled', ar: 'ملغي' },
       expired: { en: 'Expired', ar: 'منتهي' },
     };
     const key = (status || '').toLowerCase();
     const match = labels[key];
-    if (!match) return status || '-';
+    if (!match) return this.humanizeValue(key) || '-';
     return this.lang === 'ar' ? match.ar : match.en;
   }
 
@@ -383,7 +449,7 @@ export class ProjectDetailComponent extends BaseComponent implements OnInit, OnD
     if (!value) return '-';
     try {
       const d = new Date(value);
-      return d.toLocaleDateString(this.lang === 'ar' ? 'ar-EG' : 'en-US', {
+      return d.toLocaleDateString('en-US', {
         year: 'numeric', month: 'short', day: 'numeric'
       });
     } catch {
@@ -394,10 +460,41 @@ export class ProjectDetailComponent extends BaseComponent implements OnInit, OnD
   formatPrice(value: string | number | null | undefined): string {
     const n = Number(value ?? 0);
     if (!isFinite(n)) return '$0.00';
-    return n.toLocaleString(this.lang === 'ar' ? 'ar-EG' : 'en-US', {
+    return n.toLocaleString('en-US', {
       style: 'currency',
       currency: 'USD',
     });
+  }
+
+  shouldShowDownPayment(offer: CreatedProjectSubmittedOffer | null | undefined): boolean {
+    const paymentPlan = this.normalizeValue(offer?.payment_plan);
+    if (paymentPlan) return paymentPlan === 'full_at_start' || paymentPlan === 'partial';
+
+    return this.hasPaymentAmount(offer?.down_payment);
+  }
+
+  shouldShowFinalPayment(offer: CreatedProjectSubmittedOffer | null | undefined): boolean {
+    const paymentPlan = this.normalizeValue(offer?.payment_plan);
+    if (paymentPlan) return paymentPlan === 'full_at_end' || paymentPlan === 'partial';
+
+    return this.hasPaymentAmount(offer?.final_payment);
+  }
+
+  getDownPaymentAmount(offer: CreatedProjectSubmittedOffer | null | undefined): string | number | null | undefined {
+    return this.normalizeValue(offer?.payment_plan) === 'full_at_start'
+      ? offer?.proposed_price
+      : offer?.down_payment;
+  }
+
+  getFinalPaymentAmount(offer: CreatedProjectSubmittedOffer | null | undefined): string | number | null | undefined {
+    return this.normalizeValue(offer?.payment_plan) === 'full_at_end'
+      ? offer?.proposed_price
+      : offer?.final_payment;
+  }
+
+  private hasPaymentAmount(value: string | number | null | undefined): boolean {
+    const n = Number(value ?? 0);
+    return Number.isFinite(n) && n > 0;
   }
 
   getProfileUrl(insighterUuid: string | null | undefined): string {
@@ -494,7 +591,7 @@ export class ProjectDetailComponent extends BaseComponent implements OnInit, OnD
 
   getMatchScoreStyle(score: number | null | undefined): Record<string, string> {
     const pct = this.getMatchScorePercent(score);
-    const color = pct >= 80 ? '#16a34a' : pct >= 50 ? '#1d9cfd' : '#d97706';
+    const color = pct >= 80 ? '#16a34a' : pct >= 50 ? '#3b82f6' : '#d97706';
 
     return {
       '--match-score': `${pct}%`,
@@ -550,7 +647,103 @@ export class ProjectDetailComponent extends BaseComponent implements OnInit, OnD
     const submissionStatus = (invite.submission_status || '').toLowerCase();
     if (submissionStatus) return submissionStatus;
 
+    const status = (invite.status || '').toLowerCase();
+    if (status) return status;
+
     return 'pending';
+  }
+
+  getInviteActionStatus(invite: CreatedProjectProposalInvite | null): string {
+    return this.normalizeValue(invite?.action_status) || 'pending';
+  }
+
+  getInviteStatus(invite: CreatedProjectProposalInvite | null): string {
+    return this.normalizeValue(invite?.status) || 'invited';
+  }
+
+  getInviteActionStatusBadgeClass(invite: CreatedProjectProposalInvite | null): string {
+    switch (this.getInviteActionStatus(invite)) {
+      case 'pending':
+      case 'viewed':
+        return 'badge-light-warning';
+      case 'submitted':
+        return 'badge-light-primary';
+      case 'accepted':
+      case 'approved':
+      case 'offered':
+        return 'badge-light-success';
+      case 'rejected':
+      case 'declined':
+      case 'cancelled':
+      case 'expired':
+        return 'badge-light-danger';
+      case 'closed':
+        return 'badge-light-info';
+      default:
+        return 'badge-light-info';
+    }
+  }
+
+  getInviteStatusBadgeClass(invite: CreatedProjectProposalInvite | null): string {
+    switch (this.getInviteStatus(invite)) {
+      case 'invited':
+      case 'pending':
+        return 'badge-light-warning';
+      case 'submitted':
+        return 'badge-light-primary';
+      case 'accepted':
+      case 'approved':
+      case 'closed':
+        return 'badge-light-success';
+      case 'rejected':
+      case 'declined':
+      case 'cancelled':
+      case 'expired':
+        return 'badge-light-danger';
+      default:
+        return 'badge-light-info';
+    }
+  }
+
+  getInviteActionStatusLabel(invite: CreatedProjectProposalInvite | null): string {
+    const labels: Record<string, { en: string; ar: string }> = {
+      pending: { en: 'Pending', ar: 'قيد الانتظار' },
+      viewed: { en: 'Viewed', ar: 'تمت المشاهدة' },
+      offered: { en: 'Offered', ar: 'تم تقديم العرض' },
+      submitted: { en: 'Submitted', ar: 'مُرسل' },
+      accepted: { en: 'Accepted', ar: 'مقبول' },
+      approved: { en: 'Approved', ar: 'موافق' },
+      rejected: { en: 'Rejected', ar: 'مرفوض' },
+      declined: { en: 'Declined', ar: 'مرفوض' },
+      closed: { en: 'Closed', ar: 'مغلق' },
+      cancelled: { en: 'Cancelled', ar: 'ملغي' },
+      expired: { en: 'Expired', ar: 'منتهي' },
+    };
+
+    const key = this.getInviteActionStatus(invite);
+    const match = labels[key];
+    if (!match) return this.humanizeValue(key) || '-';
+    return this.lang === 'ar' ? match.ar : match.en;
+  }
+
+  getInviteStatusLabel(invite: CreatedProjectProposalInvite | null): string {
+    const labels: Record<string, { en: string; ar: string }> = {
+      invited: { en: 'Invited', ar: 'مدعو' },
+      pending: { en: 'Pending', ar: 'قيد الانتظار' },
+      submitted: { en: 'Submitted', ar: 'مُرسل' },
+      accepted: { en: 'Accepted', ar: 'مقبول' },
+      approved: { en: 'Approved', ar: 'موافق' },
+      rejected: { en: 'Rejected', ar: 'مرفوض' },
+      declined: { en: 'Declined', ar: 'مرفوض' },
+      closed: { en: 'Closed', ar: 'مغلق' },
+      cancelled: { en: 'Cancelled', ar: 'ملغي' },
+      expired: { en: 'Expired', ar: 'منتهي' },
+    };
+
+    const key = this.getInviteStatus(invite);
+    const match = labels[key];
+    if (!match) return this.humanizeValue(key) || '-';
+    return this.lang === 'ar' ? match.ar : match.en;
   }
 
   getInvitedStatusBadgeClass(invite: CreatedProjectProposalInvite | null): string {
@@ -595,12 +788,12 @@ export class ProjectDetailComponent extends BaseComponent implements OnInit, OnD
 
     const key = this.getInvitedStatus(invite);
     const match = labels[key];
-    if (!match) return key || '-';
+    if (!match) return this.humanizeValue(key) || '-';
     return this.lang === 'ar' ? match.ar : match.en;
   }
 
   canViewSubmittedOffer(invite: CreatedProjectProposalInvite | null): boolean {
-    return !!invite?.offer;
+    return this.getInviteActionStatus(invite) === 'offered' && !!invite?.offer;
   }
 
   getOfferFiles(invite: CreatedProjectProposalInvite | null): CreatedProjectFile[] {
@@ -847,13 +1040,11 @@ export class ProjectDetailComponent extends BaseComponent implements OnInit, OnD
       .pipe(
         tap(project => {
           this.project = project;
-        }),
-        switchMap(() => this.projectsCreatedService.getProjectProposalInvites(uuid))
+          this.invitedInsighters = project.invited || [];
+        })
       )
       .subscribe({
-        next: (invites) => {
-          this.invitedInsighters = invites;
-        },
+        next: () => undefined,
         error: (err) => this.handleServerErrors(err),
       });
   }
@@ -900,6 +1091,15 @@ export class ProjectDetailComponent extends BaseComponent implements OnInit, OnD
   private handleRematchStartError(error: any, fallback: string): void {
     const message = this.getServerErrorMessage(error, fallback);
     this.resetRematchState();
+
+    if (this.isWarningResponse(error)) {
+      this.showWarn(
+        this.lang === 'ar' ? 'تحذير' : 'Warning',
+        message
+      );
+      return;
+    }
+
     this.showError(
       this.lang === 'ar' ? 'حدث خطأ' : 'An error occurred',
       message
@@ -988,6 +1188,10 @@ export class ProjectDetailComponent extends BaseComponent implements OnInit, OnD
 
   private normalizeValue(value: unknown): string {
     return String(value || '').trim().toLowerCase();
+  }
+
+  private isWarningResponse(error: any): boolean {
+    return this.normalizeValue(error?.error?.type ?? error?.type) === 'warning';
   }
 
   private handleServerErrors(error: any): void {

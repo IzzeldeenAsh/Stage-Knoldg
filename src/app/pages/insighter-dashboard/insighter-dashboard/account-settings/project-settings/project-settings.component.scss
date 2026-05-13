@@ -209,6 +209,7 @@
   border-radius: 999px;
   display: inline-flex;
   flex-shrink: 0;
+  gap: 0.4rem;
   font-size: 0.85rem;
   font-weight: 700;
   justify-content: center;
@@ -225,8 +226,14 @@
 }
 
 .project-checklist-status.is-pending {
-  background: #fff1bf;
-  color: #bd5d00;
+  background: #0d6efd;
+  
+  color: #ffffff;
+}
+
+.project-checklist-status.is-pending i {
+  font-size: 0.7rem;
+  font-weight: 700;
 }
 
 .project-preferences {
