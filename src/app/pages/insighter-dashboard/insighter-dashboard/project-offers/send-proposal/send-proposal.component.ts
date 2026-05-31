@@ -38,9 +38,16 @@ export class SendProposalComponent extends BaseComponent implements OnInit, OnDe
   estimateAmount: number | null = null;
   coverLetter: string = '';
   selectedAttachments: File[] = [];
-  paymentPlan: PaymentPlan = 'partial';
   firstPaymentPercentage: number | null = 30;
   finalPaymentPercentage: number | null = 70;
+
+  get paymentPlan(): PaymentPlan {
+    const first = Number(this.firstPaymentPercentage);
+    const final = Number(this.finalPaymentPercentage);
+    if (first === 0 && final === 100) return 'full_at_end';
+    if (first === 100 && final === 0) return 'full_at_start';
+    return 'partial';
+  }
 
   readonly hoursPerDay = HOURS_PER_DAY;
 
@@ -98,28 +105,6 @@ export class SendProposalComponent extends BaseComponent implements OnInit, OnDe
     this.estimateUnit = unit;
   }
 
-  setPaymentPlan(plan: PaymentPlan): void {
-    if (this.paymentPlan === plan) return;
-    this.paymentPlan = plan;
-
-    if (plan === 'full_at_start') {
-      this.firstPaymentPercentage = 100;
-      this.finalPaymentPercentage = 0;
-      return;
-    }
-
-    if (plan === 'full_at_end') {
-      this.firstPaymentPercentage = 0;
-      this.finalPaymentPercentage = 100;
-      return;
-    }
-
-    if (this.isPaymentSplitInvalid()) {
-      this.firstPaymentPercentage = 30;
-      this.finalPaymentPercentage = 70;
-    }
-  }
-
   onAttachmentsSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     const files = input.files ? Array.from(input.files) : [];
@@ -153,14 +138,10 @@ export class SendProposalComponent extends BaseComponent implements OnInit, OnDe
   }
 
   get downPaymentPercentageForPayload(): number {
-    if (this.paymentPlan === 'full_at_start') return 100;
-    if (this.paymentPlan === 'full_at_end') return 0;
     return Number(this.firstPaymentPercentage);
   }
 
   get finalPaymentPercentageForPayload(): number {
-    if (this.paymentPlan === 'full_at_start') return 0;
-    if (this.paymentPlan === 'full_at_end') return 100;
     return Number(this.finalPaymentPercentage);
   }
 
@@ -462,6 +443,27 @@ export class SendProposalComponent extends BaseComponent implements OnInit, OnDe
     return hasInteracted && this.isPaymentSplitInvalid();
   }
 
+  getPaymentSplitErrorMessage(): string {
+    const first = Number(this.firstPaymentPercentage);
+    const final = Number(this.finalPaymentPercentage);
+
+    if (first === 0 && final !== 100) {
+      return this.lang === 'ar'
+        ? 'عند جعل الدفعة المقدمة 0% يجب أن تكون الدفعة الأخيرة 100%.'
+        : 'When down payment is 0%, final payment must be 100%.';
+    }
+
+    if (final === 0 && first !== 100) {
+      return this.lang === 'ar'
+        ? 'عند جعل الدفعة الأخيرة 0% يجب أن تكون الدفعة المقدمة 100%.'
+        : 'When final payment is 0%, down payment must be 100%.';
+    }
+
+    return this.lang === 'ar'
+      ? 'يجب أن تكون كل نسبة بين 0 و100 وأن يكون المجموع 100%.'
+      : 'Each percentage must be between 0 and 100, and the total must be 100%.';
+  }
+
   // ---------- Internals ----------
 
   private buildProposalFormData(): FormData {
@@ -476,6 +478,7 @@ export class SendProposalComponent extends BaseComponent implements OnInit, OnDe
       formData.append('final_payment_percentage', `${this.finalPaymentPercentageForPayload}`);
     }
 
+
     this.selectedAttachments.forEach((file, index) => {
       formData.append(`files[${index}]`, file, file.name);
     });
@@ -484,10 +487,18 @@ export class SendProposalComponent extends BaseComponent implements OnInit, OnDe
   }
 
   private isPaymentSplitInvalid(): boolean {
-    if (this.paymentPlan !== 'partial') return false;
-    return !this.isValidPercentage(this.firstPaymentPercentage)
-      || !this.isValidPercentage(this.finalPaymentPercentage)
-      || this.paymentSplitTotal !== 100;
+    if (!this.isValidPercentage(this.firstPaymentPercentage)
+      || !this.isValidPercentage(this.finalPaymentPercentage)) {
+      return true;
+    }
+
+    const first = Number(this.firstPaymentPercentage);
+    const final = Number(this.finalPaymentPercentage);
+
+    if (first === 0) return final !== 100;
+    if (final === 0) return first !== 100;
+
+    return this.paymentSplitTotal !== 100;
   }
 
   private isProposalFormInvalid(): boolean {
@@ -499,7 +510,7 @@ export class SendProposalComponent extends BaseComponent implements OnInit, OnDe
 
   private isValidPercentage(value: number | null): boolean {
     const n = Number(value);
-    return isFinite(n) && n > 0 && n < 100;
+    return isFinite(n) && n >= 0 && n <= 100;
   }
 
   private markRequiredFieldsTouchedAndDirty(): void {

@@ -1,4 +1,4 @@
-<div class="d-flex flex-column gap-10">
+<div *ngIf="!isDetailsPage" class="d-flex flex-column gap-10">
   <app-page-header
     [titleEn]="'Projects'"
     [titleAr]="'المشاريع'"
@@ -221,19 +221,26 @@
   </span>
 </ng-template>
 
-<p-sidebar
-  [(visible)]="drawerVisible"
-  position="right"
-  appendTo="body"
-  [modal]="true"
-  [dismissible]="true"
-  [blockScroll]="false"
-  [baseZIndex]="1300"
-  [showCloseIcon]="false"
-  [style]="{ width: '66vw', maxWidth: '1200px' }"
-  styleClass="po-drawer owp-drawer"
-  (onHide)="closeDrawer()">
+<div *ngIf="isDetailsPage" class="po-details-page">
+  <p-progressBar *ngIf="projectDetailsLoading" mode="indeterminate" [style]="{ height: '3px' }"></p-progressBar>
+
+  <div *ngIf="!projectDetailsLoading && projectDetailsError" class="po-empty">
+    <i class="ki-outline ki-information-2 fs-3x text-warning mb-4"></i>
+    <h6 class="fw-semibold text-gray-800 mb-2">
+      {{ lang === 'ar' ? 'تعذر تحميل تفاصيل المشروع' : 'Could not load project details' }}
+    </h6>
+    <button type="button" class="btn btn-info mt-3" (click)="closeDrawer()">
+      <i class="ki-outline fs-6 me-1" [ngClass]="getDrawerBackIcon()"></i>
+      {{ lang === 'ar' ? 'العودة للمشاريع' : 'Back to projects' }}
+    </button>
+  </div>
+
   <ng-container *ngIf="selectedProject as project">
+    <ng-container *ngTemplateOutlet="projectDetailsContent; context: { $implicit: project }"></ng-container>
+  </ng-container>
+</div>
+
+<ng-template #projectDetailsContent let-project>
     <div class="po-drawer__wrap">
       <div class="po-drawer__main">
         <div class="po-drawer__topbar">
@@ -588,13 +595,78 @@
               </section>
             </div>
 
-            <section *ngSwitchCase="'documents'" class="po-section po-documents">
+            <section *ngSwitchCase="'documents'" class="po-section po-documents owp-doc-workspace">
               <div class="po-section__head">
                 <h6 class="po-section__title">{{ lang === 'ar' ? 'المستندات' : 'Documents' }}</h6>
-                <span class="po-section__eyebrow">{{ lang === 'ar' ? 'ملفات المشروع والعرض' : 'Project & Offer Files' }}</span>
+                <span class="po-section__eyebrow">{{ lang === 'ar' ? 'تسليم المشروع' : 'Project Delivery' }}</span>
               </div>
 
-              <ng-container *ngIf="getAllProposalFiles(project).length || getRequestFiles(project).length; else noProjectDocuments">
+              <p-progressBar
+                *ngIf="projectDetailsLoading"
+                mode="indeterminate"
+                [style]="{ height: '3px' }">
+              </p-progressBar>
+
+              <button
+                type="button"
+                class="owp-document-submit-card"
+                (click)="documentUploadDialogVisible = true">
+                <span class="owp-document-submit-card__icon">
+                  <i class="ki-outline ki-plus fs-2"></i>
+                </span>
+                <span class="owp-document-submit-card__text">
+                  {{ lang === 'ar' ? 'إرسال المستندات' : 'Add Documents' }}
+                </span>
+              </button>
+
+              <ng-container *ngIf="hasAnyProjectDocuments(project); else noProjectDocuments">
+                <div class="owp-subsection-head" *ngIf="getDeliveryDocumentGroups(project).length">
+                  <div>
+                    <h6>{{ lang === 'ar' ? 'ملفات التسليم' : 'Delivery Files' }}</h6>
+                    <p>{{ lang === 'ar' ? 'مصنفة حسب نوع التسليم.' : 'Grouped by delivery type.' }}</p>
+                  </div>
+                  <span>{{ getDeliveryDocumentCount(project) }} {{ lang === 'ar' ? 'ملف' : (getDeliveryDocumentCount(project) === 1 ? 'file' : 'files') }}</span>
+                </div>
+
+                <div
+                  class="po-document-group owp-delivery-group"
+                  *ngFor="let group of getDeliveryDocumentGroups(project); trackBy: trackByDocumentGroup">
+                  <div class="po-document-group__head">
+                    <span class="po-document-group__icon po-document-group__icon--offer"><i class="ki-outline ki-folder fs-5"></i></span>
+                    <div>
+                      <h6>{{ getDocumentGroupLabel(group) }}</h6>
+                      <span>{{ group.files.length }} {{ lang === 'ar' ? 'ملف' : (group.files.length === 1 ? 'file' : 'files') }} · {{ getDocumentGroupDescription(group) }}</span>
+                    </div>
+                  </div>
+                  <div class="po-document-list">
+                    <button
+                      type="button"
+                      class="po-document-item"
+                      *ngFor="let file of group.files; trackBy: trackByFile"
+                      [disabled]="isOpeningFile(file)"
+                      (click)="openProjectFile(file)">
+                      <span class="po-document-item__icon">
+                        <img
+                          [src]="getFileTypeIconPath(getProjectFileExtension(file))"
+                          [alt]="getProjectFileExtension(file) || 'file'"
+                          loading="lazy"
+                          (error)="onFileIconLoadError($event)">
+                      </span>
+                      <span class="po-document-item__copy">
+                        <strong>{{ isOpeningFile(file) ? (lang === 'ar' ? 'جارٍ الفتح...' : 'Opening...') : getProjectFileName(file) }}</strong>
+                        <small>{{ file.uploadBy || file.uploaded_by || '-' }} &middot; {{ formatDate(file.upload_date) }}</small>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="owp-subsection-head" *ngIf="getAllProposalFiles(project).length || getRequestFiles(project).length">
+                  <div>
+                    <h6>{{ lang === 'ar' ? 'مستندات مرجعية' : 'Reference Documents' }}</h6>
+                    <p>{{ lang === 'ar' ? 'ملفات الطلب والعرض السابقة.' : 'Existing request and offer files.' }}</p>
+                  </div>
+                </div>
+
                 <div class="po-document-group" *ngIf="getProposalFiles(project, 'general').length">
                   <div class="po-document-group__head">
                     <span class="po-document-group__icon"><i class="ki-outline ki-folder fs-5"></i></span>
@@ -604,14 +676,15 @@
                     </div>
                   </div>
                   <div class="po-document-list">
-                    <button
-                      type="button"
-                      class="po-document-item"
-                      *ngFor="let file of getProposalFiles(project, 'general'); trackBy: trackByFile"
-                      [disabled]="isOpeningFile(file)"
-                      (click)="openProjectFile(file)">
+                    <button type="button" class="po-document-item" *ngFor="let file of getProposalFiles(project, 'general'); trackBy: trackByFile" [disabled]="isOpeningFile(file)" (click)="openProjectFile(file)">
                       <span class="po-document-item__icon">
-                        <i class="ki-outline fs-5" [ngClass]="isOpeningFile(file) ? 'ki-loading' : 'ki-file-down'"></i>
+                        <i *ngIf="isOpeningFile(file)" class="ki-outline ki-loading fs-5"></i>
+                        <img
+                          *ngIf="!isOpeningFile(file)"
+                          [src]="getFileTypeIconPath(getProjectFileExtension(file))"
+                          [alt]="getProjectFileExtension(file) || 'file'"
+                          loading="lazy"
+                          (error)="onFileIconLoadError($event)">
                       </span>
                       <span class="po-document-item__copy">
                         <strong>{{ getProjectFileName(file) }}</strong>
@@ -630,21 +703,19 @@
                     </div>
                   </div>
                   <div class="po-document-list">
-                    <button
-                      type="button"
-                      class="po-document-item"
-                      *ngFor="let file of getProposalFiles(project, 'scopes'); trackBy: trackByFile"
-                      [disabled]="isOpeningFile(file)"
-                      (click)="openProjectFile(file)">
+                    <button type="button" class="po-document-item" *ngFor="let file of getProposalFiles(project, 'scopes'); trackBy: trackByFile" [disabled]="isOpeningFile(file)" (click)="openProjectFile(file)">
                       <span class="po-document-item__icon">
-                        <i class="ki-outline fs-5" [ngClass]="isOpeningFile(file) ? 'ki-loading' : 'ki-file-down'"></i>
+                        <i *ngIf="isOpeningFile(file)" class="ki-outline ki-loading fs-5"></i>
+                        <img
+                          *ngIf="!isOpeningFile(file)"
+                          [src]="getFileTypeIconPath(getProjectFileExtension(file))"
+                          [alt]="getProjectFileExtension(file) || 'file'"
+                          loading="lazy"
+                          (error)="onFileIconLoadError($event)">
                       </span>
                       <span class="po-document-item__copy">
                         <strong>{{ file.scope || getProjectFileName(file) }}</strong>
-                        <small>
-                          <ng-container *ngIf="file.scope">{{ getProjectFileName(file) }} &middot; </ng-container>
-                          {{ file.uploadBy || '-' }} &middot; {{ formatDate(file.upload_date) }}
-                        </small>
+                        <small><ng-container *ngIf="file.scope">{{ getProjectFileName(file) }} &middot; </ng-container>{{ file.uploadBy || '-' }} &middot; {{ formatDate(file.upload_date) }}</small>
                       </span>
                     </button>
                   </div>
@@ -659,14 +730,15 @@
                     </div>
                   </div>
                   <div class="po-document-list">
-                    <button
-                      type="button"
-                      class="po-document-item"
-                      *ngFor="let file of getProposalFiles(project, 'offer'); trackBy: trackByFile"
-                      [disabled]="isOpeningFile(file)"
-                      (click)="openProjectFile(file)">
+                    <button type="button" class="po-document-item" *ngFor="let file of getProposalFiles(project, 'offer'); trackBy: trackByFile" [disabled]="isOpeningFile(file)" (click)="openProjectFile(file)">
                       <span class="po-document-item__icon">
-                        <i class="ki-outline fs-5" [ngClass]="isOpeningFile(file) ? 'ki-loading' : 'ki-file-down'"></i>
+                        <i *ngIf="isOpeningFile(file)" class="ki-outline ki-loading fs-5"></i>
+                        <img
+                          *ngIf="!isOpeningFile(file)"
+                          [src]="getFileTypeIconPath(getProjectFileExtension(file))"
+                          [alt]="getProjectFileExtension(file) || 'file'"
+                          loading="lazy"
+                          (error)="onFileIconLoadError($event)">
                       </span>
                       <span class="po-document-item__copy">
                         <strong>{{ getProjectFileName(file) }}</strong>
@@ -685,14 +757,15 @@
                     </div>
                   </div>
                   <div class="po-document-list">
-                    <button
-                      type="button"
-                      class="po-document-item"
-                      *ngFor="let file of getRequestFiles(project); trackBy: trackByFile"
-                      [disabled]="isOpeningFile(file)"
-                      (click)="openProjectFile(file)">
+                    <button type="button" class="po-document-item" *ngFor="let file of getRequestFiles(project); trackBy: trackByFile" [disabled]="isOpeningFile(file)" (click)="openProjectFile(file)">
                       <span class="po-document-item__icon">
-                        <i class="ki-outline fs-5" [ngClass]="isOpeningFile(file) ? 'ki-loading' : 'ki-file-down'"></i>
+                        <i *ngIf="isOpeningFile(file)" class="ki-outline ki-loading fs-5"></i>
+                        <img
+                          *ngIf="!isOpeningFile(file)"
+                          [src]="getFileTypeIconPath(getProjectFileExtension(file))"
+                          [alt]="getProjectFileExtension(file) || 'file'"
+                          loading="lazy"
+                          (error)="onFileIconLoadError($event)">
                       </span>
                       <span class="po-document-item__copy">
                         <strong>{{ getProjectFileName(file) }}</strong>
@@ -710,10 +783,230 @@
                     {{ lang === 'ar' ? 'لا توجد مستندات' : 'No documents' }}
                   </h6>
                   <p class="text-gray-500 fs-7 mb-0">
-                    {{ lang === 'ar' ? 'لم يتم إرفاق ملفات لهذا المشروع.' : 'No project files are attached yet.' }}
+                    {{ lang === 'ar' ? 'ارفع ملفات المشروع أو انتظر ملفات العميل.' : 'Upload project files or wait for client files.' }}
                   </p>
                 </div>
               </ng-template>
+
+              <p-dialog
+                [(visible)]="documentUploadDialogVisible"
+                [modal]="true"
+                [draggable]="false"
+                [resizable]="false"
+                [dismissableMask]="!projectFilesUploading"
+                appendTo="body"
+                styleClass="owp-document-upload-dialog"
+                [style]="{ width: 'min(560px, calc(100vw - 32px))' }"
+                [header]="lang === 'ar' ? 'إرسال المستندات' : 'Add Documents'">
+                <form class="owp-action-panel owp-action-panel--modal" (ngSubmit)="submitProjectFileUpload()">
+                  <div class="owp-action-panel__head">
+                    <span class="owp-action-panel__icon owp-action-panel__icon--upload">
+                      <i class="ki-outline ki-file-up fs-3"></i>
+                    </span>
+                    <div>
+                      <h6>{{ lang === 'ar' ? 'رفع ملفات' : 'Upload Files' }}</h6>
+                      <p>{{ lang === 'ar' ? 'ارفع مسودة أو مستندات داعمة لهذا المشروع.' : 'Upload drafts or supporting project material.' }}</p>
+                    </div>
+                  </div>
+
+                  <label class="owp-field">
+                    <span>{{ lang === 'ar' ? 'اسم المجموعة' : 'File group name' }}</span>
+                    <input
+                      type="text"
+                      name="projectFileName"
+                      [(ngModel)]="projectFileName"
+                      [placeholder]="lang === 'ar' ? 'مثال: مسودة التقرير الأولى' : 'Example: First report draft'">
+                  </label>
+
+                  <label class="owp-field">
+                    <span>{{ lang === 'ar' ? 'نوع الملفات' : 'File type' }}</span>
+                    <select name="projectFileType" [(ngModel)]="projectFileType">
+                      <option
+                        *ngFor="let option of projectFileTypeOptions; trackBy: trackByFileOption"
+                        [ngValue]="option.value">
+                        {{ lang === 'ar' ? option.labelAr : option.labelEn }}
+                      </option>
+                    </select>
+                  </label>
+
+                  <label class="owp-upload-drop" for="owp-project-files">
+                    <i class="ki-outline ki-file-up fs-2"></i>
+                    <strong>{{ lang === 'ar' ? 'اختر الملفات' : 'Choose files' }}</strong>
+                    <span>{{ lang === 'ar' ? 'يمكنك اختيار أكثر من ملف' : 'You can attach multiple files' }}</span>
+                  </label>
+                  <input
+                    id="owp-project-files"
+                    class="owp-file-input"
+                    type="file"
+                    multiple
+                    (change)="onProjectFilesSelected($event)">
+
+                  <div class="owp-selected-files" *ngIf="selectedProjectFiles.length">
+                    <div class="owp-selected-file" *ngFor="let file of selectedProjectFiles; let i = index">
+                      <span class="owp-selected-file__meta">
+                        <img
+                          class="owp-selected-file__icon"
+                          [src]="getSelectedFileIconPath(file)"
+                          [alt]="getSelectedFileExtension(file) || 'file'"
+                          loading="lazy"
+                          (error)="onFileIconLoadError($event)">
+                        <span>
+                          <strong>{{ file.name }}</strong>
+                          <small>{{ formatFileSize(file) }}</small>
+                        </span>
+                      </span>
+                      <button type="button" (click)="removeSelectedProjectFile(i)" [attr.aria-label]="lang === 'ar' ? 'إزالة' : 'Remove'">
+                        <i class="ki-outline ki-cross fs-5"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    class="btn btn-info w-100"
+                    [disabled]="projectFilesUploading || !projectFileName.trim() || !selectedProjectFiles.length">
+                    <span *ngIf="projectFilesUploading" class="spinner-border spinner-border-sm me-2"></span>
+                    {{ projectFilesUploading ? (lang === 'ar' ? 'جاري الرفع...' : 'Uploading...') : (lang === 'ar' ? 'رفع الملفات' : 'Upload Files') }}
+                  </button>
+                </form>
+              </p-dialog>
+            </section>
+
+            <section *ngSwitchCase="'reviews'" class="po-section po-documents owp-doc-workspace">
+              <div class="po-section__head">
+                <h6 class="po-section__title">{{ lang === 'ar' ? 'طلب المراجعة' : 'Review Request' }}</h6>
+                <span class="po-section__eyebrow">{{ lang === 'ar' ? 'اعتماد العميل' : 'Client Approval' }}</span>
+              </div>
+
+              <p-progressBar
+                *ngIf="reviewSubmissionsLoading"
+                mode="indeterminate"
+                [style]="{ height: '3px' }">
+              </p-progressBar>
+
+              <div class="pd-review-tab">
+                <button
+                  type="button"
+                  class="owp-review-request-trigger"
+                  (click)="reviewRequestDialogVisible = true">
+                  <span class="owp-review-request-trigger__icon" aria-hidden="true">
+                    <i class="pi pi-comments"></i>
+                  </span>
+                  <span class="owp-review-request-trigger__text">
+                    {{ lang === 'ar' ? 'طلب مراجعة' : 'Request Review' }}
+                  </span>
+                </button>
+
+                <div class="pd-review-stack" *ngIf="reviewSubmissions.length; else noReviewRequests">
+                  <article
+                    class="pd-review-card"
+                    [class.pd-review-card--pending]="isReviewPending(review)"
+                    [class.pd-review-card--answered]="!isReviewPending(review)"
+                    *ngFor="let review of getSortedReviewSubmissions(); let i = index; trackBy: trackByReview">
+                    <div class="pd-review-card__tab">
+                      {{ lang === 'ar' ? 'مراجعة' : 'Review' }} {{ i + 1 }}
+                    </div>
+
+                    <div class="pd-review-card__panel">
+                      <div class="pd-review-card__head">
+                        <span class="pd-review-card__icon" aria-hidden="true">
+                          <i class="ki-outline" [ngClass]="getReviewStatusIconClass(review.status)"></i>
+                        </span>
+
+                        <div class="pd-review-card__title-group">
+                          <h3 class="pd-review-card__note">{{ getReviewMainText(review) }}</h3>
+                          <div class="pd-review-card__meta">
+                            <span>{{ getReviewType(review) ? getReviewTypeLabel(getReviewType(review)) : (lang === 'ar' ? 'طلب مراجعة' : 'Review request') }}</span>
+                            <span>{{ formatDate(review.request_at) }}</span>
+                            <span>{{ getReviewStatusLabel(review.status) }}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="pd-review-card__response" *ngIf="!isReviewPending(review)">
+                        <span class="pd-review-card__response-label">
+                          <i class="ki-outline ki-message-text-2 fs-6"></i>
+                          {{ lang === 'ar' ? 'رد العميل' : 'Client reply' }}
+                        </span>
+                        <p>{{ getReviewResponseText(review) }}</p>
+                        <small *ngIf="review.reviewed_at">{{ formatDate(review.reviewed_at) }}</small>
+                      </div>
+                    </div>
+                  </article>
+                </div>
+
+                <ng-template #noReviewRequests>
+                  <div class="owp-mini-empty">
+                    <i class="ki-outline ki-message-question fs-2"></i>
+                    <span>{{ lang === 'ar' ? 'لا توجد طلبات مراجعة بعد.' : 'No review requests yet.' }}</span>
+                  </div>
+                </ng-template>
+              </div>
+
+              <p-dialog
+                [(visible)]="reviewRequestDialogVisible"
+                [modal]="true"
+                [dismissableMask]="!reviewRequestSubmitting"
+                [closable]="!reviewRequestSubmitting"
+                [draggable]="false"
+                [resizable]="false"
+                appendTo="body"
+                [style]="{ width: 'min(560px, calc(100vw - 32px))' }"
+                styleClass="owp-review-request-dialog"
+                [header]="lang === 'ar' ? 'طلب مراجعة' : 'Request Review'">
+                <form class="owp-review-modal-form" (ngSubmit)="submitReviewRequest()">
+                  <div class="pd-review-card__head">
+                    <span class="pd-review-card__icon" aria-hidden="true">
+                      <i class="pi pi-comments"></i>
+                    </span>
+
+                    <div class="pd-review-card__title-group">
+                      <h3 class="pd-review-card__note">
+                        {{ lang === 'ar' ? 'إرسال طلب مراجعة للعميل' : 'Send a review request to the client' }}
+                      </h3>
+                      <div class="pd-review-card__meta">
+                        <span>{{ lang === 'ar' ? 'اعتماد العميل' : 'Client approval' }}</span>
+                        <span>{{ getReviewTypeLabel(reviewRequestType) }}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <label class="owp-review-type-select owp-review-type-select--modal">
+                    <span>{{ lang === 'ar' ? 'نوع المراجعة' : 'Review type' }}</span>
+                    <select name="reviewRequestType" [(ngModel)]="reviewRequestType">
+                      <option
+                        *ngFor="let option of reviewRequestTypeOptions; trackBy: trackByReviewTypeOption"
+                        [ngValue]="option.value">
+                        {{ lang === 'ar' ? option.labelAr : option.labelEn }}
+                      </option>
+                    </select>
+                  </label>
+
+                  <div class="owp-inline-alert" *ngIf="hasPendingReviewForType(reviewRequestType)">
+                    <i class="ki-outline ki-time fs-5"></i>
+                    <span>{{ lang === 'ar' ? 'يوجد طلب مراجعة معلق لهذا النوع.' : 'A pending review already exists for this type.' }}</span>
+                  </div>
+
+                  <div class="pd-review-compose">
+                    <textarea
+                      name="reviewRequestNote"
+                      rows="4"
+                      [(ngModel)]="reviewRequestNote"
+                      [placeholder]="lang === 'ar' ? 'اكتب ما تريد من العميل مراجعته...' : 'Describe what the client should review...'">
+                    </textarea>
+                    <div class="pd-review-compose__buttons">
+                      <button
+                        type="submit"
+                        class="pd-review-compose__btn pd-review-compose__btn--approve"
+                        [disabled]="!canSubmitReviewRequest()">
+                        <span *ngIf="reviewRequestSubmitting" class="spinner-border spinner-border-sm me-2"></span>
+                        <i *ngIf="!reviewRequestSubmitting" class="ki-outline ki-send fs-6"></i>
+                        {{ reviewRequestSubmitting ? (lang === 'ar' ? 'جاري الإرسال...' : 'Submitting...') : (lang === 'ar' ? 'إرسال طلب المراجعة' : 'Request Review') }}
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </p-dialog>
             </section>
 
             <section *ngSwitchCase="'contract'" class="po-section owp-contract-tab">
@@ -845,5 +1138,22 @@
         </div>
       </aside>
     </div>
+</ng-template>
+
+<p-sidebar
+  *ngIf="!isDetailsPage"
+  [(visible)]="drawerVisible"
+  position="right"
+  appendTo="body"
+  [modal]="true"
+  [dismissible]="true"
+  [blockScroll]="false"
+  [baseZIndex]="1300"
+  [showCloseIcon]="false"
+  [style]="{ width: '66vw', maxWidth: '1200px' }"
+  styleClass="po-drawer owp-drawer"
+  (onHide)="closeDrawer()">
+  <ng-container *ngIf="selectedProject as project">
+    <ng-container *ngTemplateOutlet="projectDetailsContent; context: { $implicit: project }"></ng-container>
   </ng-container>
 </p-sidebar>
