@@ -321,7 +321,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     const effectiveLang = this.selectedLang || 'en';
     this.cookieService.setPreferredLanguage(effectiveLang);
 
-    window.location.href = `http://localhost:3000/${effectiveLang}/dashboard`;
+    window.location.href = `https://foresighta.co/${effectiveLang}/dashboard`;
   }
 
   private setReturnUrlCookie(url: string): void {
