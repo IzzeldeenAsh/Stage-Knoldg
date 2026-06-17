@@ -321,7 +321,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     const effectiveLang = this.selectedLang || 'en';
     this.cookieService.setPreferredLanguage(effectiveLang);
 
-    window.location.href = `https://foresighta.co/${effectiveLang}/dashboard`;
+    window.location.href = `http://localhost:3000/${effectiveLang}/dashboard`;
   }
 
   private setReturnUrlCookie(url: string): void {
@@ -341,7 +341,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
         `Path=/`,
         `Max-Age=${60 * 60}`, // 1 hour
         `SameSite=None`,
-        `Domain=.foresighta.co`,
+        `Domain=.insightabusiness.com`,
         `Secure`
       ];
     }
@@ -361,7 +361,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
         return absolute.toString();
       }
       const isNextHost = absolute.hostname === 'localhost' && absolute.port === '3000';
-      const isProdNextHost = absolute.hostname.endsWith('insightabusiness.com') && absolute.hostname !== 'app.foresighta.co';
+      const isProdNextHost = absolute.hostname.endsWith('insightabusiness.com') && absolute.hostname !== 'app.insightabusiness.com';
       if (isNextHost || isProdNextHost) {
         const adjustedPath = this.ensureLocalePrefix(absolute.pathname, lang);
         absolute.pathname = adjustedPath;

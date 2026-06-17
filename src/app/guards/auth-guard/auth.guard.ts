@@ -64,7 +64,7 @@ export class authGuard  {
       map(user => {
         if(user.roles.includes('admin') || user.roles.includes('staff')){
           if (typeof window !== 'undefined') {
-            window.location.replace('https://foresighta.co/en/dashboard');
+            window.location.replace('http://localhost:3000/en/dashboard');
           }
           return false;
         }

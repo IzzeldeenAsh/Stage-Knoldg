@@ -433,7 +433,7 @@ export class ReviewInsighterKnowledgeComponent extends BaseComponent implements 
   getShareableLink(): string {
     const knowledgeType = this.knowledge?.type?.toLowerCase() || 'knowledge';
     const slug = this.knowledge?.slug || '';
-    return `https://foresighta.co/${this.lang}/knowledge/${knowledgeType}/${slug}`;
+    return `http://localhost:3000/${this.lang}/knowledge/${knowledgeType}/${slug}`;
   }
 
   getSocialShareTitle(): string {

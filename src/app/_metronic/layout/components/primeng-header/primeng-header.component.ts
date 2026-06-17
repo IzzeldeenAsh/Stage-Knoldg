@@ -118,7 +118,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
     searchParams.set('search_type', searchType);
 
     // Navigate to the React app's search page
-    const searchUrl = `https://foresighta.co/${this.lang}/home?${searchParams.toString()}`;
+    const searchUrl = `http://localhost:3000/${this.lang}/home?${searchParams.toString()}`;
     window.location.href = searchUrl;
   }
 
@@ -442,7 +442,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
   }
 
   getIndustryUrl(industry: Industry): string {
-    return `https://foresighta.co/${this.lang}/industry/${industry.id}/${industry.slug}`;
+    return `http://localhost:3000/${this.lang}/industry/${industry.id}/${industry.slug}`;
   }
 
   initializeMenu() {
@@ -468,7 +468,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: `https://foresighta.co/${this.lang}/industries/report`
+        routerLink: `http://localhost:3000/${this.lang}/industries/report`
       },
       {
         label: this.translate.instant('MENU.INSIGHTS'),
@@ -476,7 +476,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: `https://foresighta.co/${this.lang}/industries/insight`
+        routerLink: `http://localhost:3000/${this.lang}/industries/insight`
       },
 
       {
@@ -485,7 +485,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: `https://foresighta.co/${this.lang}/industries/data`
+        routerLink: `http://localhost:3000/${this.lang}/industries/data`
       },
       {
         label: this.translate.instant('MENU.MANUAL'),
@@ -493,7 +493,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: `https://foresighta.co/${this.lang}/industries/manual`
+        routerLink: `http://localhost:3000/${this.lang}/industries/manual`
       },
       {
         label: this.translate.instant('MENU.COURSES'),
@@ -501,7 +501,7 @@ export class PrimengHeaderComponent implements OnInit, OnDestroy {
         iconClass: 'text-primary',
         iconType: 'outline',
         expanded: false,
-        routerLink: `https://foresighta.co/${this.lang}/industries/course`
+        routerLink: `http://localhost:3000/${this.lang}/industries/course`
       }
     ];
 

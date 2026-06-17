@@ -13,7 +13,7 @@ export interface CookieOptions {
   providedIn: 'root'
 })
 export class CookieService {
-  private readonly DEFAULT_DOMAIN = '.foresighta.co';
+  private readonly DEFAULT_DOMAIN = '.insightabusiness.com';
   private readonly DEFAULT_PATH = '/';
   private readonly DEFAULT_MAX_AGE = 60 * 60 * 24 * 365; // 1 year
 
@@ -101,7 +101,7 @@ export class CookieService {
   /**
    * Sets the preferred language cookie with proper cleanup.
    * Uses SameSite=Lax to match Next.js cookie handling - both apps are on
-   * subdomains of .foresighta.co so Lax is correct and more compatible
+   * subdomains of .insightabusiness.com so Lax is correct and more compatible
    * across browsers (especially Safari) than SameSite=None.
    */
   setPreferredLanguage(language: string): void {
