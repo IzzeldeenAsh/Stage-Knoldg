@@ -25,7 +25,7 @@ export class VerifyEmailComponent extends BaseComponent implements OnInit, OnDes
   error: boolean = false;
   loading: boolean = true;
 
-  private insightaHost: string = "https://api.insightabusiness.com";
+  private insightaHost: string = "https://api.foresighta.co";
   verified: boolean = false;
   showSignUpButton: boolean = false;
 
