@@ -10,15 +10,15 @@ export const environment = {
   apiUrl: 'api',
 
   // Realtime (Pusher) configuration
-  pusherKey: (window as any)?.__env?.PUSHER_KEY || '81566bb993a074e07d41 ',
+  pusherKey: (window as any)?.__env?.PUSHER_KEY || ' ',
   pusherCluster: (window as any)?.__env?.PUSHER_CLUSTER || 'eu',
-  pusherAuthEndpoint: (window as any)?.__env?.PUSHER_AUTH_ENDPOINT || 'https://api.foresighta.co/broadcasting/auth',
+  pusherAuthEndpoint: (window as any)?.__env?.PUSHER_AUTH_ENDPOINT || 'https://api.insightabusiness.com/broadcasting/auth',
 
   // API configuration for sharing authentication between domains
-  apiBaseUrl: 'https://api.foresighta.co/api',
+  apiBaseUrl: 'https://api.insightabusiness.com/api',
   appDomain: '.insightabusiness.com',
-  mainAppUrl: 'http://localhost:3000',
-  subAppUrl: 'http://localhost:4200',
+  mainAppUrl: 'https://foresighta.co',
+  subAppUrl: 'https://app.foresighta.co',
 
   // Cookie configuration
   cookieOptions: {
