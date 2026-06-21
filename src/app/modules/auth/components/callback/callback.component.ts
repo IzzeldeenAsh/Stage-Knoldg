@@ -38,7 +38,7 @@ export class CallbackComponent extends BaseComponent implements OnInit {
         
         if (token) {
           try {
-            // Store token in cookie with .insightabusiness.com domain
+            // Store token in cookie with .foresighta.co domain
             this.productionCookieService.setAuthToken(token);
             console.log('[callback] Token stored successfully');
             
@@ -147,7 +147,7 @@ export class CallbackComponent extends BaseComponent implements OnInit {
     if (returnUrl) {
       try {
         const returnUrlObj = new URL(returnUrl);
-        const allowedDomains = ['foresighta.co', 'www.insightabusiness.com', 'app.insightabusiness.com', 'localhost', 'insightabusiness.com', 'www.insightabusiness.com'];
+        const allowedDomains = ['foresighta.co', 'www.foresighta.co', 'app.foresighta.co', 'localhost', 'insightabusiness.com', 'www.foresighta.co'];
         const isAllowed = allowedDomains.some(domain => 
           returnUrlObj.hostname === domain || 
           returnUrlObj.hostname.endsWith(`.${domain}`) ||
@@ -187,8 +187,8 @@ export class CallbackComponent extends BaseComponent implements OnInit {
     if (isLocalhost) {
       baseUrl = `https://foresighta.co/${currentLang}/home`;
     } else {
-      // For production, use www.insightabusiness.com (not foresighta.co:3000)
-      baseUrl = `https://www.insightabusiness.com/${currentLang}/home`;
+      // For production, use www.foresighta.co (not foresighta.co:3000)
+      baseUrl = `https://www.foresighta.co/${currentLang}/home`;
     }
     
     console.log('[callback] Redirecting to default URL:', baseUrl);
@@ -252,7 +252,7 @@ export class CallbackComponent extends BaseComponent implements OnInit {
         'Path=/',
         'Max-Age=-1',
         'SameSite=None',
-        'Domain=.insightabusiness.com',
+        'Domain=.foresighta.co',
         'Secure'
       ];
     }
@@ -292,7 +292,7 @@ export class CallbackComponent extends BaseComponent implements OnInit {
         'Path=/',
         'Max-Age=-1',
         'SameSite=None',
-        'Domain=.insightabusiness.com',
+        'Domain=.foresighta.co',
         'Secure'
       ];
     }
