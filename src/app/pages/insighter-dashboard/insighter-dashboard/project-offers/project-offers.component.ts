@@ -77,6 +77,12 @@ export class ProjectOffersComponent extends BaseComponent implements OnInit, OnD
   private deadlineTicker: ReturnType<typeof setInterval> | null = null;
   private drawerDetailsRequestId = 0;
   private readonly defaultOfferDeadlineWindowMs = 14 * 86_400_000;
+  private chipRailDragTarget: HTMLElement | null = null;
+  private chipRailDragPointerId: number | null = null;
+  private chipRailDragStartX = 0;
+  private chipRailDragStartScrollLeft = 0;
+  private chipRailDragMoved = false;
+  private suppressChipClick = false;
 
   projectTypeOptions: ProjectTypeMeta[] = [
     { key: 'ad_hoc', labelEn: 'Ad Hoc', labelAr: 'خاص' },
@@ -84,12 +90,12 @@ export class ProjectOffersComponent extends BaseComponent implements OnInit, OnD
     { key: 'urgent_request', labelEn: 'Urgent Request', labelAr: 'طلب عاجل' },
   ];
   actionStatusOptions: StatusFilterOption<ProjectOfferActionStatus>[] = [
-    { value: 'new', labelEn: 'New', labelAr: 'جديد', iconClass: 'ki-notification-on' },
-    { value: 'viewed', labelEn: 'Viewed', labelAr: 'تمت المشاهدة', iconClass: 'ki-eye' },
-    { value: 'offered', labelEn: 'Offered', labelAr: 'تم تقديم العرض', iconClass: 'ki-check-circle' },
-    { value: 'awarded', labelEn: 'Awarded', labelAr: 'تم الترسية', iconClass: 'ki-medal-star' },
-    { value: 'technical_rejected', labelEn: 'Technical Rejected', labelAr: 'مرفوض فنياً', iconClass: 'ki-cross-circle' },
-    { value: 'expired', labelEn: 'Expired', labelAr: 'منتهي', iconClass: 'ki-time' },
+    { value: 'pending', labelEn: 'Pending', labelAr: 'قيد الانتظار', iconClass: 'pi-clock' },
+    { value: 'viewed', labelEn: 'Viewed', labelAr: 'تمت المشاهدة', iconClass: 'pi-eye' },
+    { value: 'offered', labelEn: 'Offered', labelAr: 'تم تقديم العرض', iconClass: 'pi-send' },
+    { value: 'awarded', labelEn: 'Awarded', labelAr: 'تم الترسية', iconClass: 'pi-star' },
+    { value: 'technical_rejected', labelEn: 'Technical Rejected', labelAr: 'مرفوض فنياً', iconClass: 'pi-times-circle' },
+    { value: 'expired', labelEn: 'Expired', labelAr: 'منتهي', iconClass: 'pi-clock' },
   ];
   readStatusOptions: StatusFilterOption<ProjectOfferReadStatus>[] = [
     { value: 'not_read', labelEn: 'Unread', labelAr: 'غير مقروء', iconClass: 'ki-notification-on' },
@@ -171,13 +177,76 @@ export class ProjectOffersComponent extends BaseComponent implements OnInit, OnD
   }
 
   onActionStatusChange(actionStatus: ProjectOfferActionStatus | null): void {
+    if (this.suppressChipClick) return;
     this.selectedActionStatus = actionStatus;
     this.resetPaginationAndReload();
   }
 
   onReadStatusChange(readStatus: ProjectOfferReadStatus | null): void {
+    if (this.suppressChipClick) return;
     this.selectedReadStatus = this.selectedReadStatus === readStatus ? null : readStatus;
     this.resetPaginationAndReload();
+  }
+
+  onChipRailWheel(event: WheelEvent): void {
+    const rail = event.currentTarget as HTMLElement;
+    if (rail.scrollWidth <= rail.clientWidth) return;
+
+    const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+    const direction = getComputedStyle(rail).direction === 'rtl' ? -1 : 1;
+    rail.scrollLeft += delta * direction;
+    event.preventDefault();
+  }
+
+  onChipRailPointerDown(event: PointerEvent): void {
+    if (event.pointerType !== 'mouse' || event.button !== 0) return;
+
+    const rail = event.currentTarget as HTMLElement;
+    if (rail.scrollWidth <= rail.clientWidth) return;
+
+    this.chipRailDragTarget = rail;
+    this.chipRailDragPointerId = event.pointerId;
+    this.chipRailDragStartX = event.clientX;
+    this.chipRailDragStartScrollLeft = rail.scrollLeft;
+    this.chipRailDragMoved = false;
+    rail.setPointerCapture(event.pointerId);
+    rail.classList.add('is-dragging');
+  }
+
+  onChipRailPointerMove(event: PointerEvent): void {
+    if (!this.chipRailDragTarget || this.chipRailDragPointerId !== event.pointerId) return;
+    if ((event.buttons & 1) !== 1) {
+      this.onChipRailPointerUp(event);
+      return;
+    }
+
+    const distance = event.clientX - this.chipRailDragStartX;
+    if (Math.abs(distance) > 4) {
+      this.chipRailDragMoved = true;
+      this.suppressChipClick = true;
+    }
+
+    if (this.chipRailDragMoved) {
+      this.chipRailDragTarget.scrollLeft = this.chipRailDragStartScrollLeft - distance;
+      event.preventDefault();
+    }
+  }
+
+  onChipRailPointerUp(event: PointerEvent): void {
+    if (!this.chipRailDragTarget || this.chipRailDragPointerId !== event.pointerId) return;
+
+    const rail = this.chipRailDragTarget;
+    rail.classList.remove('is-dragging');
+    if (rail.hasPointerCapture(event.pointerId)) {
+      rail.releasePointerCapture(event.pointerId);
+    }
+
+    this.chipRailDragTarget = null;
+    this.chipRailDragPointerId = null;
+    this.chipRailDragMoved = false;
+    setTimeout(() => {
+      this.suppressChipClick = false;
+    });
   }
 
   setViewMode(mode: ViewMode): void {
@@ -250,7 +319,7 @@ export class ProjectOffersComponent extends BaseComponent implements OnInit, OnD
     switch (status) {
       case 'viewed':
         return 'badge-light-viewed';
-      case 'new':
+      case 'pending':
       case 'invited':
         return 'badge-light-warning';
       case 'accepted':
@@ -278,7 +347,7 @@ export class ProjectOffersComponent extends BaseComponent implements OnInit, OnD
   getStatusLabel(offer: ProjectOffer): string {
     const status = this.getDisplayStatus(offer);
     const labels: { [k: string]: { en: string; ar: string } } = {
-      new: { en: 'New', ar: 'جديد' },
+      pending: { en: 'Pending', ar: 'قيد الانتظار' },
       invited: { en: 'Invited', ar: 'مدعو' },
       viewed: { en: 'Viewed', ar: 'تمت المشاهدة' },
       offered: { en: 'Offered', ar: 'تم تقديم العرض' },
@@ -513,7 +582,12 @@ export class ProjectOffersComponent extends BaseComponent implements OnInit, OnD
       return false;
     }
 
-    return this.getResolvedStatus(offer) !== 'offered';
+    return this.getResolvedStatus(offer) !== 'awarded'
+      && this.getDisplayStatus(offer) !== 'awarded';
+  }
+
+  isOfferTimedOut(offer: ProjectOffer | null | undefined): boolean {
+    return !!this.getOfferDeadlineDate(offer) && this.getOfferRemainingMs(offer) <= 0;
   }
 
   getDrawerBackIcon(): string {
@@ -1089,7 +1163,7 @@ export class ProjectOffersComponent extends BaseComponent implements OnInit, OnD
     }
 
     const status = this.getResolvedStatus(offer);
-    return ['new', 'viewed'].includes(status);
+    return ['pending', 'viewed'].includes(status);
   }
 
   canSendOffer(offer: ProjectOffer | null): boolean {
@@ -1097,7 +1171,7 @@ export class ProjectOffersComponent extends BaseComponent implements OnInit, OnD
       return false;
     }
 
-    return ['new', 'viewed', 'interested'].includes(this.getResolvedStatus(offer));
+    return ['pending', 'viewed', 'interested'].includes(this.getResolvedStatus(offer));
   }
 
   canInterestOffer(offer: ProjectOffer | null): boolean {
@@ -1105,7 +1179,7 @@ export class ProjectOffersComponent extends BaseComponent implements OnInit, OnD
       return false;
     }
 
-    return this.getResolvedStatus(offer) === 'new';
+    return this.getResolvedStatus(offer) === 'pending';
   }
 
   isRejectingSelectedOffer(): boolean {

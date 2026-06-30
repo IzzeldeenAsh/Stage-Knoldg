@@ -6,7 +6,7 @@
     [lang]="lang"
     [showTabs]="true">
     <div slot="icon">
-      <i class="ki-outline ki-briefcase fs-2x text-info"></i>
+      <img src="assets/media/icons/projects/client-projects.svg" width="32" height="32" alt="" aria-hidden="true">
     </div>
 
     <div slot="tabs" class="d-flex justify-content-between w-100">
@@ -29,8 +29,12 @@
     </div>
   </app-page-header>
 
-  <div class="d-flex justify-content-end align-items-center">
-    <div class="po-view-toggle" role="group" style="max-height: fit-content;">
+  <div class="po-control-bar po-control-bar--simple">
+    <span class="po-control-bar__count">
+      <strong>{{ totalRecords }}</strong>
+      {{ lang === 'ar' ? 'مشاريع' : (totalRecords === 1 ? 'project' : 'projects') }}
+    </span>
+    <div class="po-view-toggle" role="group">
       <button
         type="button"
         class="po-view-toggle__btn"
@@ -68,14 +72,14 @@
     </div>
   </div>
 
-  <div *ngIf="projects.length > 0 && viewMode === 'list'" class="table-responsive po-table-shell">
+  <div *ngIf="projects.length > 0 && viewMode === 'list'" class="table-responsive po-table-shell po-table-shell--desktop">
     <table class="table align-middle fs-6 po-table">
       <thead>
         <tr class="text-inline-start text-gray-500 fw-semibold fs-8 text-uppercase gs-0">
+          <th class="w-64px"></th>
           <th class="min-w-300px">
             <span class="po-table__heading">
               <span>{{ lang === 'ar' ? 'المشروع' : 'Project' }}</span>
-              <span class="po-table__total-badge">{{ totalRecords }}</span>
             </span>
           </th>
           <th class="min-w-170px">{{ lang === 'ar' ? 'النوع' : 'Type' }}</th>
@@ -89,13 +93,14 @@
       <tbody class="fw-semibold text-gray-600">
         <tr *ngFor="let project of projects; trackBy: trackByProject" class="po-table__row">
           <td>
+            <span class="po-table__project-image">
+              <img src="assets/media/icons/projects/project-row-document.svg" alt="" loading="lazy">
+            </span>
+          </td>
+
+          <td>
             <button type="button" class="po-table__project" (click)="openDrawer(project)">
-              <span class="po-table__project-image">
-                <img
-                  src="https://res.cloudinary.com/dsiku9ipv/image/upload/v1777637418/job-offer_8062313_lqbkuq.png"
-                  alt=""
-                  loading="lazy">
-              </span>
+              <span class="po-table__unread-dot" aria-hidden="true"></span>
               <span class="po-table__project-copy">
                 <span class="po-table__project-title">{{ project.project.title }}</span>
                 <span class="po-table__project-summary">{{ getSummary(project) }}</span>
@@ -132,11 +137,61 @@
           <td class="text-end">
             <button
               type="button"
-              class="btn btn-sm btn-info owp-contract-button"
-              (click)="openDrawer(project)">
-              <i class="ki-outline ki-eye fs-6 me-1"></i>
-              {{ lang === 'ar' ? 'عرض التفاصيل' : 'View Details' }}
+              class="po-table__action"
+              [attr.aria-label]="lang === 'ar' ? 'عرض المشروع' : 'View project'"
+              [attr.title]="lang === 'ar' ? 'عرض المشروع' : 'View project'"
+              (click)="$event.stopPropagation(); openDrawer(project)">
+              <i class="ki-outline ki-eye fs-5"></i>
             </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="projects.length > 0 && viewMode === 'list'" class="po-mobile-table-shell">
+    <table class="po-mobile-table">
+      <thead>
+        <tr>
+          <th>
+            <span class="po-mobile-table__heading">
+              <span>{{ lang === 'ar' ? 'المشروع' : 'Project' }}</span>
+            </span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let project of projects; trackBy: trackByProject"
+            class="po-mobile-table__row"
+            role="button"
+            tabindex="0"
+            (click)="openDrawer(project)"
+            (keydown.enter)="openDrawer(project)"
+            (keydown.space)="$event.preventDefault(); openDrawer(project)">
+          <td>
+            <div class="po-mobile-table__main">
+              <span class="po-mobile-table__image">
+                <img src="assets/media/icons/projects/project-row-document.svg" alt="" loading="lazy">
+              </span>
+              <span class="po-mobile-table__copy">
+                <span class="po-mobile-table__title">{{ project.project.title }}</span>
+                <span class="po-mobile-table__summary">{{ getSummary(project) }}</span>
+              </span>
+              <i class="ki-outline po-mobile-table__chevron"
+                 [ngClass]="lang === 'ar' ? 'ki-arrow-left' : 'ki-arrow-right'"
+                 aria-hidden="true"></i>
+            </div>
+
+            <div class="po-mobile-table__meta">
+              <span class="po-mobile-table__deadline">
+                <span class="po-mobile-table__meta-label">{{ lang === 'ar' ? 'موعد التسليم' : 'Deadline' }}</span>
+                <span class="po-mobile-table__meta-value">{{ getDeadlineLabel(project) }}</span>
+              </span>
+              <span class="po-card__status" [ngClass]="getContractStatusClass(project)">
+                <span class="po-card__status-dot"></span>
+                {{ getContractStatusLabel(project) }}
+              </span>
+            </div>
           </td>
         </tr>
       </tbody>
@@ -413,7 +468,7 @@
               <details class="po-section po-section--accordion po-section--scope" *ngIf="project.project.scopes?.length">
                 <summary class="po-section__head po-section__summary">
                   <span class="po-section__title-icon" aria-hidden="true"><i class="pi pi-list"></i></span>
-                  <h6 class="po-section__title">{{ lang === 'ar' ? 'النطاقات' : 'Scopes' }}</h6>
+                  <h6 class="po-section__title">{{ lang === 'ar' ? 'نطاقات العمل' : 'Scopes' }}</h6>
                   <span class="po-section__eyebrow">{{ lang === 'ar' ? 'تفاصيل العمل' : 'Work Scope' }}</span>
                   <span class="po-section__chevron" aria-hidden="true">
                     <i class="pi pi-chevron-down"></i>
@@ -772,7 +827,7 @@
                   <div class="po-document-group__head">
                     <span class="po-document-group__icon po-document-group__icon--scope"><i class="ki-outline ki-subtitle fs-5"></i></span>
                     <div>
-                      <h6>{{ lang === 'ar' ? 'النطاقات' : 'Scopes' }}</h6>
+                      <h6>{{ lang === 'ar' ? 'نطاقات العمل' : 'Scopes' }}</h6>
                       <span>{{ getProposalFiles(project, 'scopes').length }} {{ lang === 'ar' ? 'ملف' : 'file(s)' }}</span>
                     </div>
                   </div>
